@@ -27,6 +27,7 @@ type Client interface {
 	MatchFile(ctx context.Context, fileName, fileHash string, fileSize int64, videoDuration int) (*MatchResult, error)
 	GetComments(ctx context.Context, episodeID int64) ([]Comment, error)
 	PostComment(ctx context.Context, episodeID int64, req PostCommentReq) error
+	GetBangumiInfo(ctx context.Context, dandanplayAnimeID int64) (*BangumiInfo, error)
 }
 
 type httpClient struct {
@@ -123,4 +124,24 @@ func (c *httpClient) PostComment(ctx context.Context, episodeID int64, req PostC
 	path := "/api/v2/comment/" + strconv.FormatInt(episodeID, 10)
 	_, err := c.do(ctx, http.MethodPost, path, bytes.NewReader(body))
 	return err
+}
+
+func (c *httpClient) GetBangumiInfo(ctx context.Context, dandanplayAnimeID int64) (*BangumiInfo, error) {
+	path := "/api/v2/bangumi/" + strconv.FormatInt(dandanplayAnimeID, 10)
+	data, err := c.do(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+	var resp bangumiInfoResponse
+	if err := json.Unmarshal(data, &resp); err != nil {
+		return nil, err
+	}
+	if resp.ErrorCode != 0 {
+		return nil, fmt.Errorf("%w: %s", ErrAPIError, resp.ErrorMessage)
+	}
+	return &BangumiInfo{
+		AnimeID:    dandanplayAnimeID,
+		AnimeTitle: resp.AnimeTitle,
+		BangumiID:  resp.BangumiID,
+	}, nil
 }

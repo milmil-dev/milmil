@@ -47,3 +47,16 @@ type commentResponse struct {
 	Count    int       `json:"count"`
 	Comments []Comment `json:"comments"`
 }
+
+type BangumiInfo struct {
+	AnimeID    int64  `json:"animeId"`
+	AnimeTitle string `json:"animeTitle"`
+	BangumiID  int64  `json:"bangumiId"`
+}
+
+type bangumiInfoResponse struct {
+	ErrorCode    int    `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+	BangumiID    int64  `json:"bangumiId"`
+	AnimeTitle   string `json:"animeTitle"`
+}

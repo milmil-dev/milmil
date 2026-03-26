@@ -108,6 +108,7 @@ type MediaFile struct {
 	SubtitleTracks      string         `json:"subtitle_tracks"`
 	CreatedAt           string         `json:"created_at"`
 	UpdatedAt           string         `json:"updated_at"`
+	DandanplayAnimeID   sql.NullInt64  `json:"dandanplay_anime_id"`
 }
 
 type Playlist struct {

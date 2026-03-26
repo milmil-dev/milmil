@@ -6,23 +6,31 @@ package store
 
 import (
 	"context"
+	"database/sql"
 )
 
 type Querier interface {
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
+	CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime, error)
+	CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (Episode, error)
 	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
 	CreateScanSummary(ctx context.Context, arg CreateScanSummaryParams) (ScanSummary, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
+	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
+	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
+	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListLibraries(ctx context.Context) ([]Library, error)
+	ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
@@ -30,6 +38,8 @@ type Querier interface {
 	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
 	UpdateLibraryLastScanned(ctx context.Context, id string) error
 	UpdateMediaFileDandanplayID(ctx context.Context, arg UpdateMediaFileDandanplayIDParams) error
+	UpdateMediaFileDandanplayIDs(ctx context.Context, arg UpdateMediaFileDandanplayIDsParams) error
+	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)

@@ -33,3 +33,18 @@ WHERE library_id = ? AND match_status = 'unmatched' AND file_hash IS NOT NULL;
 
 -- name: GetMediaFileByID :one
 SELECT * FROM media_files WHERE id = ? LIMIT 1;
+
+-- name: UpdateMediaFileDandanplayIDs :exec
+UPDATE media_files
+SET dandanplay_episode_id = ?, dandanplay_anime_id = ?, match_status = 'auto',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;
+
+-- name: ListMatchedUnlinkedMediaFiles :many
+SELECT * FROM media_files
+WHERE library_id = ? AND dandanplay_episode_id IS NOT NULL AND episode_id IS NULL;
+
+-- name: UpdateMediaFileEpisodeID :exec
+UPDATE media_files
+SET episode_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;

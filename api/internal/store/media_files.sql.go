@@ -31,7 +31,7 @@ func (q *Queries) DeleteMediaFile(ctx context.Context, path string) error {
 }
 
 const getMediaFileByID = `-- name: GetMediaFileByID :one
-SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at FROM media_files WHERE id = ? LIMIT 1
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id FROM media_files WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetMediaFileByID(ctx context.Context, id string) (MediaFile, error) {
@@ -58,8 +58,59 @@ func (q *Queries) GetMediaFileByID(ctx context.Context, id string) (MediaFile, e
 		&i.SubtitleTracks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DandanplayAnimeID,
 	)
 	return i, err
+}
+
+const listMatchedUnlinkedMediaFiles = `-- name: ListMatchedUnlinkedMediaFiles :many
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id FROM media_files
+WHERE library_id = ? AND dandanplay_episode_id IS NOT NULL AND episode_id IS NULL
+`
+
+func (q *Queries) ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error) {
+	rows, err := q.db.QueryContext(ctx, listMatchedUnlinkedMediaFiles, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MediaFile{}
+	for rows.Next() {
+		var i MediaFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listMediaFilePathsByLibrary = `-- name: ListMediaFilePathsByLibrary :many
@@ -90,7 +141,7 @@ func (q *Queries) ListMediaFilePathsByLibrary(ctx context.Context, libraryID str
 }
 
 const listUnmatchedMediaFilesByLibrary = `-- name: ListUnmatchedMediaFilesByLibrary :many
-SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at FROM media_files
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id FROM media_files
 WHERE library_id = ? AND match_status = 'unmatched' AND file_hash IS NOT NULL
 `
 
@@ -124,6 +175,7 @@ func (q *Queries) ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryI
 			&i.SubtitleTracks,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
 		); err != nil {
 			return nil, err
 		}
@@ -155,6 +207,40 @@ func (q *Queries) UpdateMediaFileDandanplayID(ctx context.Context, arg UpdateMed
 	return err
 }
 
+const updateMediaFileDandanplayIDs = `-- name: UpdateMediaFileDandanplayIDs :exec
+UPDATE media_files
+SET dandanplay_episode_id = ?, dandanplay_anime_id = ?, match_status = 'auto',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateMediaFileDandanplayIDsParams struct {
+	DandanplayEpisodeID sql.NullInt64 `json:"dandanplay_episode_id"`
+	DandanplayAnimeID   sql.NullInt64 `json:"dandanplay_anime_id"`
+	ID                  string        `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFileDandanplayIDs(ctx context.Context, arg UpdateMediaFileDandanplayIDsParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFileDandanplayIDs, arg.DandanplayEpisodeID, arg.DandanplayAnimeID, arg.ID)
+	return err
+}
+
+const updateMediaFileEpisodeID = `-- name: UpdateMediaFileEpisodeID :exec
+UPDATE media_files
+SET episode_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateMediaFileEpisodeIDParams struct {
+	EpisodeID sql.NullString `json:"episode_id"`
+	ID        string         `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFileEpisodeID, arg.EpisodeID, arg.ID)
+	return err
+}
+
 const updateMediaFileHash = `-- name: UpdateMediaFileHash :exec
 UPDATE media_files
 SET file_hash = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
@@ -178,7 +264,7 @@ ON CONFLICT(path) DO UPDATE SET
     filename   = excluded.filename,
     size_bytes = excluded.size_bytes,
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
-RETURNING id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at
+RETURNING id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id
 `
 
 type UpsertMediaFileParams struct {
@@ -219,6 +305,7 @@ func (q *Queries) UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams
 		&i.SubtitleTracks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DandanplayAnimeID,
 	)
 	return i, err
 }
