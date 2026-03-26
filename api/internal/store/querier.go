@@ -36,6 +36,8 @@ type Querier interface {
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
+	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
@@ -48,6 +50,7 @@ type Querier interface {
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
+	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
 	UpdateDownloadRuleTriggered(ctx context.Context, id string) error
 	UpdateDownloadStatus(ctx context.Context, arg UpdateDownloadStatusParams) error
@@ -61,6 +64,7 @@ type Querier interface {
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
+	UpsertWatchProgress(ctx context.Context, arg UpsertWatchProgressParams) (WatchProgress, error)
 }
 
 var _ Querier = (*Queries)(nil)

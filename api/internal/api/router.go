@@ -110,6 +110,12 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	rssGroup.DELETE("/:id", h.handleDeleteRSSFeed)
 	rssGroup.POST("/:id/refresh", h.handleRefreshRSSFeed)
 
+	// Watch Progress — protected
+	progressGroup := v1.Group("/progress", jwtMiddleware(cfg.JWTSecret))
+	progressGroup.POST("", h.handleSaveProgress)
+	progressGroup.GET("/recent", h.handleListRecentProgress)
+	progressGroup.GET("/file/:fileId", h.handleGetProgressByFile)
+
 	// Download Rules — protected
 	ruleGroup := v1.Group("/download-rules", jwtMiddleware(cfg.JWTSecret))
 	ruleGroup.GET("", h.handleListDownloadRules)
