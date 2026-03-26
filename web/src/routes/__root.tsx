@@ -1,37 +1,43 @@
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence } from 'motion/react';
 import { AppSidebar } from '../components/AppSidebar';
+import { CommandPalette } from '../components/CommandPalette';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
 
 interface StatusResponse {
   initialized: boolean;
 }
-
 interface UserResponse {
   id: string;
   username: string;
 }
 
-const PUBLIC_ROUTES = ['/login', '/setup'];
 const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS === 'true';
+
+function isPublicRoute(pathname: string): boolean {
+  const publicExact = ['/login', '/setup', '/schedule', '/trending', '/search'];
+  if (publicExact.includes(pathname)) return true;
+  if (pathname.startsWith('/anime/')) return true;
+  return false;
+}
 
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isPublic = PUBLIC_ROUTES.includes(pathname);
 
-  if (isPublic) {
+  if (pathname === '/login' || pathname === '/setup') {
     return <Outlet />;
   }
 
   return (
     <div className="flex min-h-screen" style={{ backgroundColor: 'oklch(7% 0.01 280)' }}>
       <AppSidebar />
-      <main className="flex-1 ml-[240px] min-h-screen overflow-y-auto">
+      <main className="flex-1 ml-[60px] min-h-screen overflow-y-auto">
         <AnimatePresence mode="wait">
           <Outlet key={pathname} />
         </AnimatePresence>
       </main>
+      <CommandPalette />
     </div>
   );
 }
@@ -39,7 +45,7 @@ function RootLayout() {
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
     if (AUTH_BYPASS) return;
-    if (PUBLIC_ROUTES.includes(location.pathname)) return;
+    if (isPublicRoute(location.pathname)) return;
 
     const { token, user, initialized, setInitialized } = useAuthStore.getState();
 

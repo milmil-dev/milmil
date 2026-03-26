@@ -1,125 +1,139 @@
-import { FolderLibraryIcon, HouseIcon, Setting07Icon } from '@hugeicons/core-free-icons';
+import {
+  Calendar03Icon,
+  FireIcon,
+  FolderLibraryIcon,
+  HouseIcon,
+  Search01Icon,
+  Setting07Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 
-const navItems = [
+const mainNav = [
   { to: '/', label: 'Home', icon: HouseIcon },
+  { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
+  { to: '/search', label: 'Search', icon: Search01Icon },
+  { to: '/trending', label: 'Trending', icon: FireIcon },
+] as const;
+
+const bottomNav = [
   { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
   { to: '/settings', label: 'Settings', icon: Setting07Icon },
 ] as const;
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 0.08 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -12 },
+  hidden: { opacity: 0, x: -6 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { type: 'spring' as const, stiffness: 380, damping: 28 },
+    transition: { type: 'spring' as const, stiffness: 400, damping: 30 },
   },
 };
 
+function NavItem({
+  to,
+  label,
+  icon,
+  isActive,
+}: {
+  to: string;
+  label: string;
+  icon: typeof HouseIcon;
+  isActive: boolean;
+}) {
+  return (
+    <motion.div variants={itemVariants}>
+      <Link
+        to={to}
+        className={cn(
+          'relative flex items-center justify-center w-10 h-10 rounded transition-colors group',
+          isActive ? 'text-white' : 'text-[oklch(42%_0.01_280)] hover:text-[oklch(70%_0.01_280)]'
+        )}
+        title={label}
+      >
+        {isActive && (
+          <motion.div
+            layoutId="activeBar"
+            className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full"
+            style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
+            transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+          />
+        )}
+        {isActive && (
+          <motion.div
+            layoutId="activeBg"
+            className="absolute inset-0 rounded"
+            style={{ backgroundColor: 'oklch(14% 0.02 280)' }}
+            transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+          />
+        )}
+        <span className="relative z-10">
+          <HugeiconsIcon icon={icon} size={20} />
+        </span>
+      </Link>
+    </motion.div>
+  );
+}
+
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
 
   return (
     <motion.aside
-      initial={{ x: -240, opacity: 0 }}
+      initial={{ x: -60, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-      className="fixed left-0 top-0 bottom-0 w-[240px] z-40 flex flex-col border-r"
+      className="fixed left-0 top-0 bottom-0 w-[60px] z-40 flex flex-col items-center border-r"
       style={{
         backgroundColor: 'oklch(9% 0.01 280)',
         borderColor: 'oklch(14% 0.01 280)',
       }}
     >
       {/* Logo */}
-      <div className="px-6 py-7 shrink-0">
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          <p className="text-xl font-bold tracking-tight" style={{ color: 'oklch(65% 0.2 35)' }}>
-            milmil
-          </p>
-          <p
-            className="text-[10px] uppercase tracking-[0.25em] mt-0.5"
-            style={{ color: 'oklch(35% 0.01 280)' }}
-          >
-            media server
-          </p>
-        </motion.div>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="py-5"
+      >
+        <p className="text-base font-bold tracking-tight" style={{ color: 'oklch(65% 0.2 35)' }}>
+          m
+        </p>
+      </motion.div>
 
-      {/* Nav */}
+      {/* Main nav */}
       <motion.nav
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex-1 px-3 space-y-0.5"
+        className="flex-1 flex flex-col items-center gap-1 pt-2"
       >
-        {navItems.map(({ to, label, icon }) => {
-          const isActive = to === '/' ? pathname === '/' : pathname.startsWith(to);
-          return (
-            <motion.div key={to} variants={itemVariants}>
-              <motion.div
-                whileHover={{ x: 3 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              >
-                <Link
-                  to={to}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded text-sm font-medium transition-colors relative',
-                    isActive
-                      ? 'text-white'
-                      : 'text-[oklch(45%_0.01_280)] hover:text-[oklch(70%_0.01_280)] hover:bg-[oklch(13%_0.01_280)]'
-                  )}
-                >
-                  {/* Active indicator */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="absolute inset-0 rounded"
-                      style={{ backgroundColor: 'oklch(14% 0.02 280)' }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                    />
-                  )}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeBar"
-                      className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full"
-                      style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                    />
-                  )}
-                  <span className="relative z-10 opacity-80">
-                    <HugeiconsIcon icon={icon} size={18} />
-                  </span>
-                  <span className="relative z-10">{label}</span>
-                </Link>
-              </motion.div>
-            </motion.div>
-          );
-        })}
+        {mainNav.map(({ to, label, icon }) => (
+          <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+        ))}
       </motion.nav>
 
-      {/* Bottom section */}
+      {/* Separator */}
+      <div className="w-6 h-px my-2" style={{ backgroundColor: 'oklch(16% 0.01 280)' }} />
+
+      {/* Bottom nav */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="px-5 py-5 border-t"
-        style={{ borderColor: 'oklch(14% 0.01 280)' }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col items-center gap-1 pb-4"
       >
-        <p className="text-[10px]" style={{ color: 'oklch(28% 0.01 280)' }}>
-          v{__APP_VERSION__}
-        </p>
+        {bottomNav.map(({ to, label, icon }) => (
+          <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+        ))}
       </motion.div>
     </motion.aside>
   );
