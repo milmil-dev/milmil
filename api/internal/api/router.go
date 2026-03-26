@@ -116,6 +116,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	progressGroup.GET("/recent", h.handleListRecentProgress)
 	progressGroup.GET("/file/:fileId", h.handleGetProgressByFile)
 
+	// Torrent Search — protected
+	searchGroup := v1.Group("/torrent-search", jwtMiddleware(cfg.JWTSecret))
+	searchGroup.GET("", h.handleTorrentSearch)
+	searchGroup.POST("/add", h.handleTorrentSearchAdd)
+
 	// Download Rules — protected
 	ruleGroup := v1.Group("/download-rules", jwtMiddleware(cfg.JWTSecret))
 	ruleGroup.GET("", h.handleListDownloadRules)
