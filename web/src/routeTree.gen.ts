@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrendingRouteImport } from './routes/trending'
+import { Route as TorrentSearchRouteImport } from './routes/torrent-search'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
@@ -25,6 +26,11 @@ import { Route as AnimeIdRouteImport } from './routes/anime.$id'
 const TrendingRoute = TrendingRouteImport.update({
   id: '/trending',
   path: '/trending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TorrentSearchRoute = TorrentSearchRouteImport.update({
+  id: '/torrent-search',
+  path: '/torrent-search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SetupRoute = SetupRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
+  '/torrent-search': typeof TorrentSearchRoute
   '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/watch/$fileId': typeof WatchFileIdRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
+  '/torrent-search': typeof TorrentSearchRoute
   '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/watch/$fileId': typeof WatchFileIdRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
+  '/torrent-search': typeof TorrentSearchRoute
   '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/watch/$fileId': typeof WatchFileIdRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/setup'
+    | '/torrent-search'
     | '/trending'
     | '/anime/$id'
     | '/watch/$fileId'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/setup'
+    | '/torrent-search'
     | '/trending'
     | '/anime/$id'
     | '/watch/$fileId'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/setup'
+    | '/torrent-search'
     | '/trending'
     | '/anime/$id'
     | '/watch/$fileId'
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   SetupRoute: typeof SetupRoute
+  TorrentSearchRoute: typeof TorrentSearchRoute
   TrendingRoute: typeof TrendingRoute
   AnimeIdRoute: typeof AnimeIdRoute
   WatchFileIdRoute: typeof WatchFileIdRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/trending'
       fullPath: '/trending'
       preLoaderRoute: typeof TrendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/torrent-search': {
+      id: '/torrent-search'
+      path: '/torrent-search'
+      fullPath: '/torrent-search'
+      preLoaderRoute: typeof TorrentSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/setup': {
@@ -285,6 +305,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   SetupRoute: SetupRoute,
+  TorrentSearchRoute: TorrentSearchRoute,
   TrendingRoute: TrendingRoute,
   AnimeIdRoute: AnimeIdRoute,
   WatchFileIdRoute: WatchFileIdRoute,

@@ -4,6 +4,7 @@ import {
   FireIcon,
   FolderLibraryIcon,
   HouseIcon,
+  MagnetIcon,
   RssIcon,
   Search01Icon,
   Setting07Icon,
@@ -23,6 +24,7 @@ const mainNav = [
 ] as const;
 
 const bottomNav = [
+  { to: '/torrent-search', label: 'Torrent', icon: MagnetIcon },
   { to: '/downloads', label: 'Downloads', icon: Download04Icon },
   { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
   { to: '/settings', label: 'Settings', icon: Setting07Icon },

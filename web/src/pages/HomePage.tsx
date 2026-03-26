@@ -9,6 +9,7 @@ import { HeroBanner } from '../components/HeroBanner';
 import { PageTransition } from '../components/PageTransition';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { libraryApi, libraryKeys } from '../lib/api/library';
+import { progressApi, progressKeys } from '../lib/api/progress';
 import { libraryGradient } from '../lib/gradient';
 
 const GENRES = [
@@ -37,6 +38,13 @@ export function HomePage() {
     queryKey: libraryKeys.list(),
     queryFn: libraryApi.list,
   });
+  const { data: recentProgress = [] } = useQuery({
+    queryKey: progressKeys.recent(),
+    queryFn: progressApi.recent,
+  });
+
+  // Filter out completed items and limit to 6
+  const continueWatching = recentProgress.filter((p) => p.completed !== 1).slice(0, 6);
 
   const todayCN = (() => {
     const weekdays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
@@ -58,6 +66,58 @@ export function HomePage() {
           <div className="px-6 pt-4">
             <HeroBanner items={heroItems} />
           </div>
+        )}
+
+        {/* ── Continue Watching ────────────────────────────────── */}
+        {continueWatching.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="px-6 mt-8"
+          >
+            <SectionHeader title="繼續觀看" to="/" />
+            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+              {continueWatching.map((item) => {
+                const pct =
+                  item.duration_seconds && item.duration_seconds > 0
+                    ? Math.round((item.position_seconds / item.duration_seconds) * 100)
+                    : 0;
+                return (
+                  <Link
+                    key={item.id}
+                    to="/watch/$fileId"
+                    params={{ fileId: item.media_file_id ?? '' }}
+                    className="group shrink-0 w-[220px] rounded overflow-hidden bg-mm-surface relative"
+                  >
+                    {/* Gradient overlay */}
+                    <div className="h-[124px] relative flex items-end">
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            'linear-gradient(to top, oklch(10% 0.01 280), oklch(16% 0.01 280))',
+                        }}
+                      />
+                      <div className="relative z-10 p-3 w-full">
+                        <p className="text-[12px] font-medium text-white truncate">
+                          {item.media_file_id ?? 'Unknown'}
+                        </p>
+                        <p className="text-[11px] mt-0.5 text-mm-accent">{pct}% watched</p>
+                      </div>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="h-1 bg-mm-border-subtle">
+                      <div
+                        className="h-full bg-mm-accent transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.section>
         )}
 
         {/* ── Today's Schedule ─────────────────────────────────── */}
