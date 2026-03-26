@@ -1,11 +1,11 @@
 {
-  "name": "TanStack SPA Template",
-  "short_name": "TanStack SPA",
-  "description": "A modern React SPA with TanStack Router and PWA support",
+  "name": "milmil",
+  "short_name": "milmil",
+  "description": "自架動畫媒體伺服器 — 媒體庫管理、新番日曆、熱門動畫、彈幕播放",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#111111",
+  "theme_color": "#111111",
   "icons": [
     {
       "src": "/icons/icon-192.png",

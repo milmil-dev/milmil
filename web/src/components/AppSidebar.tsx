@@ -10,6 +10,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
   { to: '/', label: 'Home', icon: HouseIcon },
@@ -50,34 +51,40 @@ function NavItem({
 }) {
   return (
     <motion.div variants={itemVariants}>
-      <Link
-        to={to}
-        className={cn(
-          'relative flex items-center justify-center w-10 h-10 rounded transition-colors group',
-          isActive ? 'text-white' : 'text-[oklch(42%_0.01_280)] hover:text-[oklch(70%_0.01_280)]'
-        )}
-        title={label}
-      >
-        {isActive && (
-          <motion.div
-            layoutId="activeBar"
-            className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full"
-            style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-          />
-        )}
-        {isActive && (
-          <motion.div
-            layoutId="activeBg"
-            className="absolute inset-0 rounded"
-            style={{ backgroundColor: 'oklch(14% 0.02 280)' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-          />
-        )}
-        <span className="relative z-10">
-          <HugeiconsIcon icon={icon} size={20} />
-        </span>
-      </Link>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to={to}
+            className={cn(
+              'relative flex items-center justify-center w-10 h-10 rounded transition-colors',
+              isActive
+                ? 'text-white'
+                : 'text-[oklch(42%_0.01_280)] hover:text-[oklch(70%_0.01_280)]'
+            )}
+          >
+            {isActive && (
+              <motion.div
+                layoutId="activeBar"
+                className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full"
+                style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
+                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+              />
+            )}
+            {isActive && (
+              <motion.div
+                layoutId="activeBg"
+                className="absolute inset-0 rounded"
+                style={{ backgroundColor: 'oklch(14% 0.02 280)' }}
+                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+              />
+            )}
+            <span className="relative z-10">
+              <HugeiconsIcon icon={icon} size={20} />
+            </span>
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right">{label}</TooltipContent>
+      </Tooltip>
     </motion.div>
   );
 }
@@ -87,54 +94,56 @@ export function AppSidebar() {
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
 
   return (
-    <motion.aside
-      initial={{ x: -60, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-      className="fixed left-0 top-0 bottom-0 w-[60px] z-40 flex flex-col items-center border-r"
-      style={{
-        backgroundColor: 'oklch(9% 0.01 280)',
-        borderColor: 'oklch(14% 0.01 280)',
-      }}
-    >
-      {/* Logo */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="py-5"
+    <TooltipProvider>
+      <motion.aside
+        initial={{ x: -60, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 32 }}
+        className="fixed left-0 top-0 bottom-0 w-[60px] z-40 flex flex-col items-center border-r"
+        style={{
+          backgroundColor: 'oklch(9% 0.01 280)',
+          borderColor: 'oklch(14% 0.01 280)',
+        }}
       >
-        <p className="text-base font-bold tracking-tight" style={{ color: 'oklch(65% 0.2 35)' }}>
-          m
-        </p>
-      </motion.div>
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="py-5"
+        >
+          <p className="text-base font-bold tracking-tight" style={{ color: 'oklch(65% 0.2 35)' }}>
+            m
+          </p>
+        </motion.div>
 
-      {/* Main nav */}
-      <motion.nav
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="flex-1 flex flex-col items-center gap-1 pt-2"
-      >
-        {mainNav.map(({ to, label, icon }) => (
-          <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
-        ))}
-      </motion.nav>
+        {/* Main nav */}
+        <motion.nav
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex-1 flex flex-col items-center gap-1 pt-2"
+        >
+          {mainNav.map(({ to, label, icon }) => (
+            <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+          ))}
+        </motion.nav>
 
-      {/* Separator */}
-      <div className="w-6 h-px my-2" style={{ backgroundColor: 'oklch(16% 0.01 280)' }} />
+        {/* Separator */}
+        <div className="w-6 h-px my-2" style={{ backgroundColor: 'oklch(16% 0.01 280)' }} />
 
-      {/* Bottom nav */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="flex flex-col items-center gap-1 pb-4"
-      >
-        {bottomNav.map(({ to, label, icon }) => (
-          <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
-        ))}
-      </motion.div>
-    </motion.aside>
+        {/* Bottom nav */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col items-center gap-1 pb-4"
+        >
+          {bottomNav.map(({ to, label, icon }) => (
+            <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+          ))}
+        </motion.div>
+      </motion.aside>
+    </TooltipProvider>
   );
 }
