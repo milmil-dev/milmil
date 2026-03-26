@@ -7,6 +7,7 @@ package store
 
 import (
 	"context"
+	"database/sql"
 )
 
 const countMediaFilesByLibrary = `-- name: CountMediaFilesByLibrary :one
@@ -27,6 +28,38 @@ DELETE FROM media_files WHERE path = ?
 func (q *Queries) DeleteMediaFile(ctx context.Context, path string) error {
 	_, err := q.db.ExecContext(ctx, deleteMediaFile, path)
 	return err
+}
+
+const getMediaFileByID = `-- name: GetMediaFileByID :one
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at FROM media_files WHERE id = ? LIMIT 1
+`
+
+func (q *Queries) GetMediaFileByID(ctx context.Context, id string) (MediaFile, error) {
+	row := q.db.QueryRowContext(ctx, getMediaFileByID, id)
+	var i MediaFile
+	err := row.Scan(
+		&i.ID,
+		&i.EpisodeID,
+		&i.LibraryID,
+		&i.Path,
+		&i.Filename,
+		&i.SizeBytes,
+		&i.DurationSeconds,
+		&i.ContainerFormat,
+		&i.VideoCodec,
+		&i.AudioCodec,
+		&i.Width,
+		&i.Height,
+		&i.FileHash,
+		&i.DandanplayEpisodeID,
+		&i.MatchStatus,
+		&i.VideoTracks,
+		&i.AudioTracks,
+		&i.SubtitleTracks,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const listMediaFilePathsByLibrary = `-- name: ListMediaFilePathsByLibrary :many
@@ -54,6 +87,88 @@ func (q *Queries) ListMediaFilePathsByLibrary(ctx context.Context, libraryID str
 		return nil, err
 	}
 	return items, nil
+}
+
+const listUnmatchedMediaFilesByLibrary = `-- name: ListUnmatchedMediaFilesByLibrary :many
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at FROM media_files
+WHERE library_id = ? AND match_status = 'unmatched' AND file_hash IS NOT NULL
+`
+
+func (q *Queries) ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error) {
+	rows, err := q.db.QueryContext(ctx, listUnmatchedMediaFilesByLibrary, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MediaFile{}
+	for rows.Next() {
+		var i MediaFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateMediaFileDandanplayID = `-- name: UpdateMediaFileDandanplayID :exec
+UPDATE media_files
+SET dandanplay_episode_id = ?, match_status = 'auto',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateMediaFileDandanplayIDParams struct {
+	DandanplayEpisodeID sql.NullInt64 `json:"dandanplay_episode_id"`
+	ID                  string        `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFileDandanplayID(ctx context.Context, arg UpdateMediaFileDandanplayIDParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFileDandanplayID, arg.DandanplayEpisodeID, arg.ID)
+	return err
+}
+
+const updateMediaFileHash = `-- name: UpdateMediaFileHash :exec
+UPDATE media_files
+SET file_hash = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateMediaFileHashParams struct {
+	FileHash sql.NullString `json:"file_hash"`
+	ID       string         `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFileHash, arg.FileHash, arg.ID)
+	return err
 }
 
 const upsertMediaFile = `-- name: UpsertMediaFile :one

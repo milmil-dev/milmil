@@ -18,6 +18,7 @@ type Querier interface {
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
 	GetLibrary(ctx context.Context, id string) (Library, error)
+	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
@@ -25,8 +26,11 @@ type Querier interface {
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
+	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
 	UpdateLibraryLastScanned(ctx context.Context, id string) error
+	UpdateMediaFileDandanplayID(ctx context.Context, arg UpdateMediaFileDandanplayIDParams) error
+	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
 }

@@ -15,3 +15,21 @@ DELETE FROM media_files WHERE path = ?;
 
 -- name: CountMediaFilesByLibrary :one
 SELECT COUNT(*) FROM media_files WHERE library_id = ?;
+
+-- name: UpdateMediaFileHash :exec
+UPDATE media_files
+SET file_hash = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;
+
+-- name: UpdateMediaFileDandanplayID :exec
+UPDATE media_files
+SET dandanplay_episode_id = ?, match_status = 'auto',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;
+
+-- name: ListUnmatchedMediaFilesByLibrary :many
+SELECT * FROM media_files
+WHERE library_id = ? AND match_status = 'unmatched' AND file_hash IS NOT NULL;
+
+-- name: GetMediaFileByID :one
+SELECT * FROM media_files WHERE id = ? LIMIT 1;
