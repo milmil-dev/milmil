@@ -135,6 +135,245 @@
           }
         }
       }
+    },
+    "/api/v1/libraries": {
+      "get": {
+        "summary": "List all libraries",
+        "operationId": "listLibraries",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Array of libraries",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Library" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new library",
+        "operationId": "createLibrary",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "path"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "path": { "type": "string" },
+                  "scan_interval_minutes": { "type": "integer", "default": 60 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Library created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Library" } } } },
+          "400": { "description": "Invalid input or path does not exist" }
+        }
+      }
+    },
+    "/api/v1/libraries/{id}": {
+      "get": {
+        "summary": "Get a library by ID",
+        "operationId": "getLibrary",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Library details", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Library" } } } },
+          "404": { "description": "Library not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a library",
+        "operationId": "updateLibrary",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "path"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "path": { "type": "string" },
+                  "enabled": { "type": "boolean" },
+                  "scan_interval_minutes": { "type": "integer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Library updated", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Library" } } } },
+          "400": { "description": "Invalid input" },
+          "404": { "description": "Library not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a library",
+        "operationId": "deleteLibrary",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "204": { "description": "Library deleted" }
+        }
+      }
+    },
+    "/api/v1/libraries/{id}/scan": {
+      "post": {
+        "summary": "Trigger a library scan",
+        "operationId": "scanLibrary",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "204": { "description": "Scan started" },
+          "404": { "description": "Library not found" }
+        }
+      }
+    },
+    "/api/v1/libraries/{id}/scan-summaries": {
+      "get": {
+        "summary": "List recent scan summaries for a library",
+        "operationId": "listScanSummaries",
+        "tags": ["Libraries"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Array of scan summaries (last 10)",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ScanSummary" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/discover/calendar": {
+      "get": {
+        "summary": "Daily airing schedule from Bangumi.tv",
+        "operationId": "getCalendar",
+        "tags": ["Discover"],
+        "responses": {
+          "200": {
+            "description": "Array of calendar days with anime per weekday",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/CalendarDay" } }
+              }
+            }
+          },
+          "429": { "description": "Upstream rate limited" },
+          "502": { "description": "External service unavailable" }
+        }
+      }
+    },
+    "/api/v1/discover/trending": {
+      "get": {
+        "summary": "Global trending anime from AniList, enriched with Bangumi Chinese titles",
+        "operationId": "getTrending",
+        "tags": ["Discover"],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of trending anime",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/AnimeSummary" } }
+              }
+            }
+          },
+          "429": { "description": "Upstream rate limited" },
+          "502": { "description": "External service unavailable" }
+        }
+      }
+    },
+    "/api/v1/discover/search": {
+      "get": {
+        "summary": "Search anime on Bangumi.tv",
+        "operationId": "searchAnime",
+        "tags": ["Discover"],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/AnimeSummary" } }
+              }
+            }
+          },
+          "400": { "description": "Missing q parameter" },
+          "429": { "description": "Upstream rate limited" },
+          "502": { "description": "External service unavailable" }
+        }
+      }
+    },
+    "/api/v1/discover/anime/{id}": {
+      "get": {
+        "summary": "Anime detail by Bangumi ID, enriched with AniList cover and banner",
+        "operationId": "getAnimeDetail",
+        "tags": ["Discover"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Anime detail",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AnimeDetail" }
+              }
+            }
+          },
+          "400": { "description": "Invalid ID" },
+          "404": { "description": "Anime not found" },
+          "429": { "description": "Upstream rate limited" },
+          "502": { "description": "External service unavailable" }
+        }
+      }
+    },
+    "/api/v1/discover/anime/{id}/episodes": {
+      "get": {
+        "summary": "Episode list for an anime by Bangumi ID",
+        "operationId": "getAnimeEpisodes",
+        "tags": ["Discover"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of episodes",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Episode" } }
+              }
+            }
+          },
+          "400": { "description": "Invalid ID" },
+          "429": { "description": "Upstream rate limited" },
+          "502": { "description": "External service unavailable" }
+        }
+      }
     }
   },
   "components": {
@@ -143,6 +382,89 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Library": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "enabled": { "type": "integer", "description": "1 = enabled, 0 = disabled" },
+          "scan_interval_minutes": { "type": "integer" },
+          "last_scanned_at": { "type": "string", "nullable": true },
+          "created_at": { "type": "string" },
+          "updated_at": { "type": "string" }
+        }
+      },
+      "ScanSummary": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "library_id": { "type": "string" },
+          "started_at": { "type": "string" },
+          "completed_at": { "type": "string", "nullable": true },
+          "files_found": { "type": "integer" },
+          "files_matched": { "type": "integer" },
+          "files_unmatched": { "type": "integer" },
+          "errors": { "type": "string", "description": "JSON array string" }
+        }
+      },
+      "AnimeSummary": {
+        "type": "object",
+        "properties": {
+          "bangumi_id": { "type": "integer" },
+          "anilist_id": { "type": "integer" },
+          "title": { "type": "string", "description": "Chinese title preferred, fallback Japanese" },
+          "title_original": { "type": "string", "description": "Original Japanese title" },
+          "title_en": { "type": "string" },
+          "cover_image": { "type": "string" },
+          "air_date": { "type": "string" },
+          "episode_count": { "type": "integer" },
+          "score": { "type": "number" }
+        }
+      },
+      "AnimeDetail": {
+        "allOf": [
+          { "$ref": "#/components/schemas/AnimeSummary" },
+          {
+            "type": "object",
+            "properties": {
+              "synopsis": { "type": "string", "description": "Chinese synopsis from Bangumi" },
+              "banner_image": { "type": "string" },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "popularity": { "type": "integer" },
+              "rating": { "$ref": "#/components/schemas/Rating" }
+            }
+          }
+        ]
+      },
+      "CalendarDay": {
+        "type": "object",
+        "properties": {
+          "weekday": { "type": "string", "description": "Chinese weekday name" },
+          "weekday_en": { "type": "string" },
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/AnimeSummary" } }
+        }
+      },
+      "Episode": {
+        "type": "object",
+        "properties": {
+          "bangumi_episode_id": { "type": "integer" },
+          "sort": { "type": "number", "description": "Episode number (supports 12.5 for specials)" },
+          "title": { "type": "string", "description": "Chinese title preferred" },
+          "title_original": { "type": "string" },
+          "air_date": { "type": "string" },
+          "synopsis": { "type": "string" }
+        }
+      },
+      "Rating": {
+        "type": "object",
+        "properties": {
+          "score": { "type": "number" },
+          "total": { "type": "integer" }
+        }
       }
     }
   }
