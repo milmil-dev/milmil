@@ -1,4 +1,6 @@
-.PHONY: dev dev-api dev-web build test lint
+.PHONY: dev dev-api dev-web build test lint setup
+
+# Prerequisites: go install github.com/air-verse/air@latest
 
 # Start both API (air) and web (vite) dev servers
 dev:
@@ -27,3 +29,7 @@ test:
 lint:
 	cd api && go vet ./...
 	cd web && bun run lint
+
+setup:
+	mise install
+	go install github.com/air-verse/air@latest
