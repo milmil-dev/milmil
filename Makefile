@@ -1,3 +1,5 @@
+export PATH := $(HOME)/go/bin:$(PATH)
+
 .PHONY: dev dev-api dev-web build test lint setup
 
 # Prerequisites: go install github.com/air-verse/air@latest
