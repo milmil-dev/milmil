@@ -47,5 +47,15 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache) *echo.Ec
 	authProtected.POST("/logout", h.handleAuthLogout)
 	authProtected.GET("/me", h.handleAuthMe)
 
+	// Libraries — protected
+	libGroup := v1.Group("/libraries", jwtMiddleware(cfg.JWTSecret))
+	libGroup.GET("", h.handleListLibraries)
+	libGroup.POST("", h.handleCreateLibrary)
+	libGroup.GET("/:id", h.handleGetLibrary)
+	libGroup.PUT("/:id", h.handleUpdateLibrary)
+	libGroup.DELETE("/:id", h.handleDeleteLibrary)
+	libGroup.POST("/:id/scan", h.handleScanLibrary)
+	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
+
 	return e
 }
