@@ -62,6 +62,7 @@ Replace current 240px text sidebar (`AppSidebar.tsx`) with Seanime-style icon-on
 
 ### Impact
 - `__root.tsx`: change `ml-[240px]` to `ml-[60px]`
+- `__root.tsx`: add discover routes to `PUBLIC_ROUTES` — `/schedule`, `/trending`, `/search`, and paths starting with `/anime/` should bypass auth (discover data is public)
 - All pages get more horizontal space
 
 ---
@@ -72,7 +73,7 @@ Replace current 240px text sidebar (`AppSidebar.tsx`) with Seanime-style icon-on
 
 **`AnimeCard.tsx`** — Poster-style card for trending/search
 - Tall rectangle with cover image (from `cover_image` field)
-- Fallback: procedural gradient from title (reuse existing `hashName` function)
+- Fallback: procedural gradient from title (extracted `hashName`/`animeGradient` from `web/src/lib/gradient.ts`)
 - Score badge overlaid on bottom of image
 - Title + episode count below
 - Hover: scale up slightly (whileHover)
@@ -91,7 +92,7 @@ Replace current 240px text sidebar (`AppSidebar.tsx`) with Seanime-style icon-on
 - Click result → navigate to `/anime/:id`, close palette
 - ESC or click backdrop → close
 - Zustand store: `useCommandPaletteStore` with `isOpen`, `open()`, `close()`, `toggle()`
-- Global keyboard listener for ⌘K / Ctrl+K
+- Global `useEffect` keyboard listener for ⌘K / Ctrl+K lives inside `CommandPalette.tsx` (not in `__root.tsx`)
 
 ### New API Client
 
@@ -163,19 +164,23 @@ Three sections with staggered entrance animations:
 
 Each section has a small uppercase label header (existing pattern from current HomePage).
 
+Loading: skeleton rows/cards per section. Error: section shows inline "載入失敗" with retry link — other sections still render.
+
 ### SchedulePage
 
 - Tab bar or weekday selector at top (星期一 through 星期日)
 - Today's tab highlighted by default
 - Each day shows its anime as `AnimeRow` list
 - Staggered entrance animation per row
+- Loading: skeleton horizontal rows. Error: "載入日曆失敗" with retry button.
 
 ### TrendingPage
 
 - Grid of `AnimeCard` poster cards
 - `gridTemplateColumns: repeat(auto-fill, minmax(150px, 1fr))`
-- "載入更多" button at bottom for pagination
+- "載入更多" button at bottom for pagination — hidden when API returns empty array (no more pages)
 - Staggered card entrance (delay: i * 0.03)
+- Loading: skeleton poster cards. Error: "載入失敗" with retry.
 
 ### SearchPage
 
@@ -195,6 +200,8 @@ Seanime-style layout:
 3. **Content below hero** — Synopsis section + episode list.
 4. **Episode list** — Numbered rows with title (Chinese preferred), air date. Click navigates nowhere yet (no playback in this plan).
 
+Loading: skeleton hero + skeleton rows. Error (404): "找不到此動畫" message. Error (network): "載入失敗" with retry.
+
 ### CommandPalette
 
 - Triggered by ⌘K / Ctrl+K globally
@@ -210,6 +217,7 @@ Seanime-style layout:
 ## 6. File Map
 
 ### Created
+- `web/src/lib/gradient.ts` — shared `hashName`, `animeGradient`, `libraryGradient` functions (extracted from existing code)
 - `web/src/lib/api/discover.ts` — API client + query keys
 - `web/src/store/command-palette-store.ts` — Zustand store for ⌘K state
 - `web/src/components/AnimeCard.tsx` — Poster card component
@@ -228,6 +236,7 @@ Seanime-style layout:
 - `web/src/components/AppSidebar.tsx` — rewrite to icon-only 60px
 - `web/src/routes/__root.tsx` — change `ml-[240px]` to `ml-[60px]`, add CommandPalette, add ⌘K listener
 - `web/src/pages/HomePage.tsx` — rewrite with calendar + trending + libraries sections
+- `web/src/pages/LibrariesPage.tsx` — import gradient functions from `gradient.ts` instead of local definitions
 - `web/src/routeTree.gen.ts` — regenerated after new routes
 
 ---
