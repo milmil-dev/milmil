@@ -74,9 +74,33 @@
   --scrollbar-thumb: color-mix(in oklch, var(--foreground) 32%, transparent);
   --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 54%, var(--foreground) 10%);
   --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 68%, var(--foreground) 6%);
+
+  /* milmil app theme */
+  --mm-bg: oklch(7% 0.01 280);
+  --mm-surface: oklch(10% 0.01 280);
+  --mm-surface-hover: oklch(13% 0.01 280);
+  --mm-border: oklch(14% 0.01 280);
+  --mm-border-subtle: oklch(12% 0.01 280);
+  --mm-sidebar: oklch(9% 0.01 280);
+  --mm-accent: oklch(65% 0.2 35);
+  --mm-text-primary: oklch(95% 0.01 280);
+  --mm-text-secondary: oklch(50% 0.01 280);
+  --mm-text-tertiary: oklch(38% 0.01 280);
+  --mm-text-muted: oklch(30% 0.01 280);
 }
 
 @theme inline {
+  --color-mm-bg: var(--mm-bg);
+  --color-mm-surface: var(--mm-surface);
+  --color-mm-surface-hover: var(--mm-surface-hover);
+  --color-mm-border: var(--mm-border);
+  --color-mm-border-subtle: var(--mm-border-subtle);
+  --color-mm-sidebar: var(--mm-sidebar);
+  --color-mm-accent: var(--mm-accent);
+  --color-mm-text-primary: var(--mm-text-primary);
+  --color-mm-text-secondary: var(--mm-text-secondary);
+  --color-mm-text-tertiary: var(--mm-text-tertiary);
+  --color-mm-text-muted: var(--mm-text-muted);
   --font-sans: "Figtree Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
