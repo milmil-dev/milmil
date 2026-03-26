@@ -21,7 +21,8 @@ Integrate the DandanPlay API for file-to-episode matching and danmaku (bullet co
 - Frontend DanmakuLayer canvas renderer
 - Video.js player
 - DandanPlay settings page (AppId/AppSecret input UI)
-- Bilibili extended danmaku (includeExt) — deferred to player plan
+- Bilibili extended danmaku (`GET /danmaku/:id/ext`) — deferred to player plan
+- Episode association mappings (`GET /danmaku/:id/related`) — deferred to player plan
 
 ---
 
@@ -54,20 +55,28 @@ Separation of concerns:
 ### Interface
 
 ```go
+// CredentialsFn provides DandanPlay API credentials per-request (reads from settings DB).
 type CredentialsFn func(ctx context.Context) (appID, appSecret string, err error)
 
 type Client interface {
-    MatchFile(ctx context.Context, fileName, fileHash string, fileSize int64) (*MatchResult, error)
+    MatchFile(ctx context.Context, fileName, fileHash string, fileSize int64, videoDuration int) (*MatchResult, error)
     GetComments(ctx context.Context, episodeID int64) ([]Comment, error)
     PostComment(ctx context.Context, episodeID int64, req PostCommentReq) error
 }
+
+// Constructor:
+func NewClient(httpClient *http.Client, credFn CredentialsFn) Client
+// credFn is called on every request to get current AppId/AppSecret.
+// Returns ErrNoCredentials if credFn returns empty values.
 ```
+
+**Note on batch matching:** The DandanPlay API supports `/api/v2/match/batch` for up to 32 files. This plan uses single-file matching for simplicity. Batch matching is a future optimization — the current approach works correctly, just with more HTTP calls.
 
 ### API Endpoints Used
 
 | Method | DandanPlay API | Purpose |
 |--------|---------------|---------|
-| `MatchFile` | `POST /api/v2/match` | Match a file to an anime episode by hash/name |
+| `MatchFile` | `POST /api/v2/match` | Match a file to an anime episode by hash/name/size/duration |
 | `GetComments` | `GET /api/v2/comment/{episodeId}?withRelated=true` | Fetch danmaku comments |
 | `PostComment` | `POST /api/v2/comment/{episodeId}` | Submit a user's danmaku |
 
@@ -180,8 +189,10 @@ func (m *Matcher) MatchFile(ctx context.Context, fileID string) (*store.MediaFil
    a. Check cache `danmaku:match:{fileHash}` for cached DandanPlay episode ID
    b. On cache miss, call `dandanplay.MatchFile(fileName, fileHash, fileSize)`
    c. If matched (first match result), update `media_files.dandanplay_episode_id` + `match_status='auto'`
-   d. Cache the match result: `danmaku:match:{fileHash}` → episodeID (7 day TTL)
-3. Return summary: `{ matched, unmatched, errors }`
+   d. Cache the match result: `danmaku:match:{fileHash}` → JSON-encoded `int64` episodeID (7 day TTL)
+   e. On cache hit (step 2a): use cached episodeID to update DB directly — skip DandanPlay API call
+3. `MatchLibrary` continues on per-file errors (non-fatal) — increments `Errors` counter
+4. Return summary: `{ matched, unmatched, errors }`
 
 **MatchSummary:**
 ```go
@@ -272,7 +283,17 @@ Current: calls `scanner.ScanLibrary()` only.
 
 New: calls `scanner.ScanLibrary()`, then `matcher.MatchLibrary()`.
 
-The handler needs access to the `Matcher` service. Add `matcher *matcher.Matcher` to the `handler` struct.
+Add two new fields to the `handler` struct:
+
+```go
+type handler struct {
+    // ... existing fields (cfg, db, queries, cache, metadata)
+    matcher    *matcher.Matcher
+    dandanplay dandanplay.Client
+}
+```
+
+The `matcher` is used by the scan handler to auto-match after scanning. The `dandanplay` client is used by the danmaku handler to fetch/submit comments directly.
 
 ---
 
@@ -297,7 +318,7 @@ The handler needs access to the `Matcher` service. Add `matcher *matcher.Matcher
 
 ### Matcher
 - Mock DandanPlay client + mock store queries
-- Test: successful match, no match, cached match, API error (non-fatal)
+- Test: successful match, no match, cached match, partial errors (3 files: 2 matched + 1 error → continues, summary counts correct)
 
 ### Danmaku Handler
 - Use `newTestApp` pattern with mock DandanPlay client
