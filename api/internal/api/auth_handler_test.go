@@ -121,6 +121,22 @@ func TestAuthLogin_WrongPassword(t *testing.T) {
 	}
 }
 
+func TestAuthLogin_EmptyCredentials(t *testing.T) {
+	e := newTestApp(t)
+	for _, body := range []string{
+		`{"username":"","password":"password123"}`,
+		`{"username":"admin","password":""}`,
+	} {
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/login", strings.NewReader(body))
+		req.Header.Set("Content-Type", "application/json")
+		rec := httptest.NewRecorder()
+		e.ServeHTTP(rec, req)
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf("body %s: want 400 got %d", body, rec.Code)
+		}
+	}
+}
+
 func TestAuthMe_RequiresToken(t *testing.T) {
 	e := newTestApp(t)
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/auth/me", nil)
