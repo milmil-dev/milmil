@@ -3,6 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { AnimeRow } from '../components/AnimeRow';
 import { ContinueWatchingCard } from '../components/ContinueWatchingCard';
@@ -12,6 +13,7 @@ import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import { progressApi, progressKeys } from '../lib/api/progress';
 import { libraryGradient } from '../lib/gradient';
+import { useBgStore } from '../store/bg-store';
 
 const GENRES = [
   'Action',
@@ -55,6 +57,14 @@ export function HomePage() {
 
   const heroItems = trending.slice(0, 5);
   const trendingRest = trending.slice(5, 15);
+
+  // Set background from first trending item — Seanime-style immersive bg
+  const setImage = useBgStore((s) => s.setImage);
+  useEffect(() => {
+    const img = heroItems[0]?.cover_image;
+    if (img?.startsWith('http')) setImage(img);
+    return () => setImage(null);
+  }, [heroItems[0]?.cover_image, setImage]);
 
   return (
     <PageTransition>
@@ -109,7 +119,7 @@ export function HomePage() {
                 className="mt-6"
               >
                 <SectionHeader title="今日新番" to="/schedule" />
-                <div className="rounded-lg bg-mm-surface/50 divide-y divide-mm-border/30">
+                <div className="rounded-lg bg-white/[0.03]">
                   {todayAnime.slice(0, 5).map((anime, i) => (
                     <AnimeRow key={anime.bangumi_id} anime={anime} index={i} />
                   ))}
@@ -130,7 +140,7 @@ export function HomePage() {
                   key={genre}
                   to="/search"
                   search={{ q: genre }}
-                  className="shrink-0 px-3 py-1 text-[11px] font-medium rounded-full transition-colors bg-mm-surface hover:bg-mm-surface-hover text-mm-text-secondary"
+                  className="shrink-0 px-3 py-1 text-[11px] font-medium rounded-full transition-colors bg-white/[0.04] hover:bg-white/[0.07] text-mm-text-tertiary"
                 >
                   {genre}
                 </Link>
@@ -166,9 +176,9 @@ export function HomePage() {
             {libraries.length === 0 ? (
               <Link
                 to="/libraries"
-                className="group block rounded-lg border border-dashed py-6 px-4 text-center transition-colors hover:border-mm-accent/30 border-mm-border/40"
+                className="group block rounded-lg py-6 px-4 text-center transition-all duration-200 bg-white/[0.02] hover:bg-white/[0.04]"
               >
-                <div className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3 bg-mm-surface group-hover:bg-mm-accent/10 transition-colors">
+                <div className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3 bg-white/[0.04] group-hover:bg-mm-accent/10 transition-colors">
                   <HugeiconsIcon
                     icon={FolderLibraryIcon}
                     size={18}
@@ -184,7 +194,7 @@ export function HomePage() {
                   <Link
                     key={lib.id}
                     to="/libraries"
-                    className="group block rounded-lg overflow-hidden bg-mm-surface hover:bg-mm-surface-hover transition-colors"
+                    className="group block rounded-lg overflow-hidden bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
                   >
                     <div
                       className="h-1 transition-all duration-300 group-hover:h-1.5"
@@ -214,9 +224,9 @@ export function HomePage() {
           {libraries.length === 0 ? (
             <Link
               to="/libraries"
-              className="group block rounded-lg border border-dashed py-6 px-4 text-center transition-colors hover:border-mm-accent/30 border-mm-border/40"
+              className="group block rounded-lg py-6 px-4 text-center transition-all duration-200 bg-white/[0.02] hover:bg-white/[0.04]"
             >
-              <div className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3 bg-mm-surface group-hover:bg-mm-accent/10 transition-colors">
+              <div className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3 bg-white/[0.04] group-hover:bg-mm-accent/10 transition-colors">
                 <HugeiconsIcon
                   icon={FolderLibraryIcon}
                   size={18}
@@ -232,7 +242,7 @@ export function HomePage() {
                 <Link
                   key={lib.id}
                   to="/libraries"
-                  className="group block rounded-lg overflow-hidden bg-mm-surface hover:bg-mm-surface-hover transition-colors"
+                  className="group block rounded-lg overflow-hidden bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
                 >
                   <div
                     className="h-1 transition-all duration-300 group-hover:h-1.5"

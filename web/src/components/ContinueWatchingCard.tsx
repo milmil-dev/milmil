@@ -25,7 +25,7 @@ export function ContinueWatchingCard({
     <Link
       to={href}
       className={cn(
-        'group block rounded-lg overflow-hidden bg-mm-surface hover:bg-mm-surface-hover transition-colors',
+        'group block rounded-lg overflow-hidden hover:ring-1 hover:ring-white/[0.06] transition-all duration-200',
         className
       )}
     >

@@ -48,11 +48,11 @@ export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: n
             )}
           </div>
         </div>
-        <div className="p-2 bg-mm-surface">
-          <p className="text-[12px] font-semibold text-white truncate leading-snug">
+        <div className="px-1 pt-2 pb-1">
+          <p className="text-[12px] font-medium text-mm-text-primary truncate leading-snug">
             {anime.title}
           </p>
-          <p className="text-[10px] mt-0.5 text-mm-text-tertiary">
+          <p className="text-[10px] mt-0.5 text-mm-text-muted">
             {anime.episode_count > 0 ? `${anime.episode_count} 集` : ''}
           </p>
         </div>

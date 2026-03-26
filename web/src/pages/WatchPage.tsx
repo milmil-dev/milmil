@@ -168,7 +168,7 @@ export function WatchPage() {
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="lg:w-[320px] lg:shrink-0 bg-mm-sidebar lg:border-l border-mm-border/30 overflow-y-auto"
+            className="lg:w-[320px] lg:shrink-0 bg-mm-sidebar overflow-y-auto"
           >
             <div className="p-4 space-y-4">
               {/* Danmaku status */}

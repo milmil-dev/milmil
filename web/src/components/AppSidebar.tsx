@@ -60,16 +60,16 @@ function NavItem({
       <Link
         to={to}
         className={cn(
-          'relative flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium transition-colors',
+          'relative flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium transition-all duration-200',
           isActive
-            ? 'text-white bg-white/[0.08]'
-            : 'text-mm-text-secondary hover:text-mm-text-primary hover:bg-white/[0.04]'
+            ? 'text-white bg-white/[0.06]'
+            : 'text-mm-text-tertiary hover:text-mm-text-secondary hover:bg-white/[0.03]'
         )}
       >
         {isActive && (
           <motion.div
             layoutId="sidebarActive"
-            className="absolute left-0 top-1 bottom-1 w-[3px] rounded-full bg-mm-accent"
+            className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-mm-accent"
             transition={{ type: 'spring', stiffness: 380, damping: 32 }}
           />
         )}
@@ -86,12 +86,17 @@ export function AppSidebar() {
 
   return (
     <>
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar — no borders, pure background separation */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-        className="fixed left-0 top-0 bottom-0 w-[200px] z-40 flex flex-col border-r bg-mm-sidebar border-mm-border/50 max-md:hidden"
+        className="fixed left-0 top-0 bottom-0 w-[200px] z-40 flex flex-col max-md:hidden"
+        style={{
+          backgroundColor: 'oklch(7% 0.01 260 / 0.85)',
+          backdropFilter: 'blur(24px) saturate(1.1)',
+          WebkitBackdropFilter: 'blur(24px) saturate(1.1)',
+        }}
       >
         {/* Logo */}
         <div className="flex items-center gap-2 px-4 h-14 shrink-0">
@@ -105,16 +110,17 @@ export function AppSidebar() {
           animate="visible"
           className="flex-1 flex flex-col gap-0.5 px-2 pt-2 overflow-y-auto"
         >
-          <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mm-text-muted">
+          <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-mm-text-muted">
             Browse
           </p>
           {mainNav.map(({ to, label, icon }) => (
             <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
           ))}
 
-          <div className="h-px my-3 mx-2 bg-mm-border/40" />
+          {/* Subtle separator — no border, just spacing + faint line */}
+          <div className="h-px my-3 mx-3 bg-white/[0.04]" />
 
-          <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mm-text-muted">
+          <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-mm-text-muted">
             Manage
           </p>
           {bottomNav.map(({ to, label, icon }) => (
@@ -123,7 +129,6 @@ export function AppSidebar() {
         </motion.nav>
       </motion.aside>
 
-      {/* Mobile bottom nav */}
       <MobileNav />
     </>
   );
@@ -142,14 +147,21 @@ export function MobileNav() {
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around h-14 border-t border-mm-border/40 bg-mm-sidebar md:hidden safe-area-bottom">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around h-14 md:hidden safe-area-bottom"
+      style={{
+        backgroundColor: 'oklch(7% 0.01 260 / 0.88)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+      }}
+    >
       {mobileNav.map(({ to, label, icon }) => (
         <Link
           key={to}
           to={to}
           className={cn(
             'flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors',
-            isActive(to) ? 'text-mm-accent' : 'text-mm-text-tertiary'
+            isActive(to) ? 'text-mm-accent' : 'text-mm-text-muted'
           )}
         >
           <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive(to) ? 2 : 1.5} />

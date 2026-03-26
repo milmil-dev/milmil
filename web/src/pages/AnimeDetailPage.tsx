@@ -1,14 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
 import { EpisodeListItem } from '../components/EpisodeListItem';
 import { PageTransition } from '../components/PageTransition';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
+import { useBgStore } from '../store/bg-store';
 
 export function AnimeDetailPage() {
   const { id } = useParams({ strict: false });
   const numericId = Number(id);
+  const setImage = useBgStore((s) => s.setImage);
 
   const {
     data: anime,
@@ -25,6 +28,15 @@ export function AnimeDetailPage() {
     queryFn: () => discoverApi.episodes(numericId),
     enabled: !Number.isNaN(numericId),
   });
+
+  // Set full-screen background image (behind sidebar) — Seanime style
+  useEffect(() => {
+    const img = anime?.banner_image || anime?.cover_image;
+    if (img?.startsWith('http')) {
+      setImage(img);
+    }
+    return () => setImage(null);
+  }, [anime?.banner_image, anime?.cover_image, setImage]);
 
   if (isLoading) {
     return (
