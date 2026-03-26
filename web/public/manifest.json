@@ -4,8 +4,8 @@
   "description": "自架動畫媒體伺服器 — 媒體庫管理、新番日曆、熱門動畫、彈幕播放",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
+  "background_color": "#1a1b26",
+  "theme_color": "#1a1b26",
   "icons": [
     {
       "src": "/icons/icon-192.png",

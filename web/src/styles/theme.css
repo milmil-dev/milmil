@@ -76,18 +76,18 @@
   --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 54%, var(--foreground) 10%);
   --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 68%, var(--foreground) 6%);
 
-  /* milmil app theme */
-  --mm-bg: oklch(7% 0.01 280);
-  --mm-surface: oklch(10% 0.01 280);
-  --mm-surface-hover: oklch(13% 0.01 280);
-  --mm-border: oklch(14% 0.01 280);
-  --mm-border-subtle: oklch(12% 0.01 280);
-  --mm-sidebar: oklch(9% 0.01 280);
-  --mm-accent: oklch(65% 0.2 35);
-  --mm-text-primary: oklch(95% 0.01 280);
-  --mm-text-secondary: oklch(50% 0.01 280);
-  --mm-text-tertiary: oklch(38% 0.01 280);
-  --mm-text-muted: oklch(30% 0.01 280);
+  /* milmil app theme — Tokyo Night */
+  --mm-bg: oklch(16% 0.02 260);           /* #1a1b26 */
+  --mm-surface: oklch(20% 0.02 258);      /* #24283b */
+  --mm-surface-hover: oklch(24% 0.02 256); /* #292e42 */
+  --mm-border: oklch(26% 0.02 258);       /* #3b4261 */
+  --mm-border-subtle: oklch(22% 0.02 258); /* #2f3549 */
+  --mm-sidebar: oklch(14% 0.02 262);      /* #16161e */
+  --mm-accent: oklch(72% 0.16 250);       /* #7aa2f7 — Tokyo Night blue */
+  --mm-text-primary: oklch(90% 0.02 260); /* #c0caf5 */
+  --mm-text-secondary: oklch(62% 0.03 260); /* #9aa5ce */
+  --mm-text-tertiary: oklch(50% 0.03 258); /* #565f89 */
+  --mm-text-muted: oklch(38% 0.02 258);   /* #414868 */
 }
 
 @theme inline {
