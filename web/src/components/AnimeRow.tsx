@@ -1,10 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 
 export function AnimeRow({ anime, index = 0 }: { anime: AnimeSummary; index?: number }) {
-  const hasCover = anime.cover_image?.startsWith('http');
+  const [imgFailed, setImgFailed] = useState(false);
+  const hasCover = !imgFailed && anime.cover_image?.startsWith('http');
 
   return (
     <motion.div
@@ -14,14 +16,19 @@ export function AnimeRow({ anime, index = 0 }: { anime: AnimeSummary; index?: nu
     >
       <Link
         to={`/anime/${anime.bangumi_id}` as string}
-        className="group flex items-center gap-3 py-2.5 px-3 rounded transition-colors hover:bg-[oklch(11%_0.01_280)]"
+        className="group flex items-center gap-3 py-2.5 px-3 rounded-md transition-colors hover:bg-white/[0.04]"
       >
         <div
           className="shrink-0 w-10 h-14 rounded overflow-hidden"
           style={hasCover ? undefined : { background: animeGradient(anime.title) }}
         >
           {hasCover && (
-            <img src={anime.cover_image} alt={anime.title} className="w-full h-full object-cover" />
+            <img
+              src={anime.cover_image}
+              alt={anime.title}
+              className="w-full h-full object-cover"
+              onError={() => setImgFailed(true)}
+            />
           )}
         </div>
         <div className="flex-1 min-w-0">

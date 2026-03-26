@@ -1,10 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 
 export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: number }) {
-  const hasCover = anime.cover_image?.startsWith('http');
+  const [imgFailed, setImgFailed] = useState(false);
+  const hasCover = !imgFailed && anime.cover_image?.startsWith('http');
 
   return (
     <motion.div
@@ -15,7 +17,7 @@ export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: n
     >
       <Link
         to={`/anime/${anime.bangumi_id}` as string}
-        className="block rounded overflow-hidden group"
+        className="block rounded-lg overflow-hidden group"
       >
         <div
           className="relative aspect-[3/4] overflow-hidden"
@@ -26,7 +28,16 @@ export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: n
               src={anime.cover_image}
               alt={anime.title}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              onError={() => setImgFailed(true)}
             />
+          )}
+          {/* Gradient fallback label when no image */}
+          {!hasCover && (
+            <div className="absolute inset-0 flex items-center justify-center p-2">
+              <span className="text-[11px] font-medium text-white/60 text-center line-clamp-3">
+                {anime.title}
+              </span>
+            </div>
           )}
           <div
             className="absolute bottom-0 left-0 right-0 p-2"
