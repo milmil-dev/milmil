@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence } from 'motion/react';
-import { type ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
@@ -58,7 +58,9 @@ function RootLayout() {
   if (pathname === '/login' || pathname === '/setup') {
     return (
       <>
-        <Outlet />
+        <Suspense>
+          <Outlet />
+        </Suspense>
         <CommandPalette />
       </>
     );
@@ -68,7 +70,9 @@ function RootLayout() {
     <>
       <DesktopShell>
         <AnimatePresence mode="wait">
-          <Outlet key={pathname} />
+          <Suspense>
+            <Outlet key={pathname} />
+          </Suspense>
         </AnimatePresence>
       </DesktopShell>
       <CommandPalette />
