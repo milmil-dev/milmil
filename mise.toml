@@ -1,4 +1,4 @@
 [tools]
 go = "1.24.4"
-bun = "latest"
+bun = "1.3.9"
 neovim = "latest"
