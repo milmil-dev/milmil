@@ -1,26 +1,11 @@
-import { Link } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { motion } from 'motion/react';
 import { FolderLibraryIcon, Setting07Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
+import { motion } from 'motion/react';
 import { PageTransition } from '../components/PageTransition';
-import { libraryApi, libraryKeys, type Library } from '../lib/api/library';
-
-// ─── Gradient from library name ───────────────────────────────────────────────
-function hashName(name: string): number {
-  let h = 5381;
-  for (let i = 0; i < name.length; i++) {
-    h = ((h << 5) + h) ^ name.charCodeAt(i);
-  }
-  return Math.abs(h);
-}
-
-function libraryGradient(name: string): string {
-  const h = hashName(name);
-  const h1 = h % 360;
-  const h2 = (h1 + 55 + ((h >> 8) % 50)) % 360;
-  return `linear-gradient(135deg, oklch(32% 0.18 ${h1}), oklch(16% 0.12 ${h2}))`;
-}
+import { type Library, libraryApi, libraryKeys } from '../lib/api/library';
+import { libraryGradient } from '../lib/gradient';
 
 // ─── Time greeting ────────────────────────────────────────────────────────────
 function greeting(): string {
@@ -141,10 +126,7 @@ function QuickAction({
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      <Link
-        to={to}
-        className="group flex items-center gap-3 py-2 transition-colors"
-      >
+      <Link to={to} className="group flex items-center gap-3 py-2 transition-colors">
         <div
           className="shrink-0 w-8 h-8 rounded-sm flex items-center justify-center transition-colors group-hover:bg-[oklch(14%_0.02_280)]"
           style={{ backgroundColor: 'oklch(11% 0.01 280)' }}
@@ -237,10 +219,7 @@ export function HomePage() {
 
         {/* ── Content ───────────────────────────────────────────── */}
         <div className="px-8 pb-16">
-          <div
-            className="grid gap-10"
-            style={{ gridTemplateColumns: 'minmax(0, 1fr) 200px' }}
-          >
+          <div className="grid gap-10" style={{ gridTemplateColumns: 'minmax(0, 1fr) 200px' }}>
             {/* Left: Libraries */}
             <div>
               <motion.div

@@ -26,24 +26,8 @@ import {
   libraryKeys,
   type UpdateLibraryInput,
 } from '../lib/api/library';
+import { animeGradient as cardGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
-
-// ─── Gradient generator ───────────────────────────────────────────────────────
-function hashName(name: string): number {
-  let h = 5381;
-  for (let i = 0; i < name.length; i++) {
-    h = ((h << 5) + h) ^ name.charCodeAt(i);
-  }
-  return Math.abs(h);
-}
-
-function cardGradient(name: string): string {
-  const h = hashName(name);
-  const h1 = h % 360;
-  const h2 = (h1 + 55 + ((h >> 8) % 50)) % 360;
-  const h3 = (h2 + 45 + ((h >> 16) % 40)) % 360;
-  return `linear-gradient(150deg, oklch(40% 0.22 ${h1}) 0%, oklch(28% 0.26 ${h2}) 55%, oklch(18% 0.16 ${h3}) 100%)`;
-}
 
 // ─── Library card ─────────────────────────────────────────────────────────────
 function LibraryCard({
