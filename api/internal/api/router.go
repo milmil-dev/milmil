@@ -83,5 +83,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	streamGroup := v1.Group("/stream", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
 	streamGroup.GET("/:fileId/direct", h.handleStreamDirect)
 
+	// Settings — protected
+	settingsGroup := v1.Group("/settings", jwtMiddleware(cfg.JWTSecret))
+	settingsGroup.GET("", h.handleGetSettings)
+	settingsGroup.PUT("/:section", h.handleUpdateSettings)
+
 	return e
 }
