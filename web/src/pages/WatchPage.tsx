@@ -1,21 +1,29 @@
 // web/src/pages/WatchPage.tsx
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
+import { useParams, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type Player from 'video.js/dist/types/player';
 import { DanmakuOverlay } from '@/components/DanmakuOverlay';
 import { DanmakuSettings } from '@/components/DanmakuSettings';
 import { PageTransition } from '@/components/PageTransition';
 import { VideoPlayer } from '@/components/VideoPlayer';
+import { progressApi, progressKeys } from '@/lib/api/progress';
 import { type DanmakuComment, getStreamUrl, parseDandanplayComments } from '@/lib/api/stream';
 import { usePlayerStore } from '@/store/player-store';
 
+const SAVE_INTERVAL_MS = 10_000;
+const COMPLETION_THRESHOLD_SECONDS = 30;
+
 export function WatchPage() {
   const { fileId } = useParams({ strict: false });
+  const { episodeId } = useSearch({ strict: false }) as { episodeId?: string };
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
   const danmakuOpacity = usePlayerStore((s) => s.danmakuOpacity);
   const danmakuFontSize = usePlayerStore((s) => s.danmakuFontSize);
+
+  const playerRef = useRef<Player | null>(null);
+  const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Fetch danmaku (may 404 — that's OK)
   const { data: danmakuData } = useQuery({
@@ -38,6 +46,14 @@ export function WatchPage() {
     enabled: !!fileId,
   });
 
+  // Fetch saved progress for this media file
+  const { data: savedProgress } = useQuery({
+    queryKey: progressKeys.byFile(fileId ?? ''),
+    queryFn: () => progressApi.byFile(fileId!),
+    enabled: !!fileId,
+    retry: false,
+  });
+
   const comments: DanmakuComment[] = danmakuData?.comments
     ? parseDandanplayComments(danmakuData.comments, danmakuFontSize, danmakuOpacity)
     : [];
@@ -48,9 +64,77 @@ export function WatchPage() {
   // TODO: fetch media file details to get actual filename/type
   const mimeType = 'video/mp4';
 
+  // Resolve the episode ID: from search param or from saved progress
+  const resolvedEpisodeId = episodeId ?? savedProgress?.episode_id;
+
+  const saveProgress = useCallback(() => {
+    const player = playerRef.current;
+    if (!player || player.isDisposed() || !fileId || !resolvedEpisodeId) return;
+
+    const position = Math.floor(player.currentTime?.() ?? 0);
+    const duration = Math.floor(player.duration?.() ?? 0);
+    if (position <= 0) return;
+
+    const completed = duration > 0 && position >= duration - COMPLETION_THRESHOLD_SECONDS;
+
+    progressApi
+      .save({
+        media_file_id: fileId,
+        episode_id: resolvedEpisodeId,
+        position_seconds: position,
+        duration_seconds: duration,
+        completed,
+      })
+      .catch(() => {
+        // Silent — background sync, no toast
+      });
+  }, [fileId, resolvedEpisodeId]);
+
+  // Set up periodic save interval
+  const startSaveInterval = useCallback(() => {
+    if (saveIntervalRef.current) return;
+    saveIntervalRef.current = setInterval(saveProgress, SAVE_INTERVAL_MS);
+  }, [saveProgress]);
+
+  const stopSaveInterval = useCallback(() => {
+    if (saveIntervalRef.current) {
+      clearInterval(saveIntervalRef.current);
+      saveIntervalRef.current = null;
+    }
+  }, []);
+
+  // Cleanup interval and save on unmount
+  useEffect(() => {
+    return () => {
+      stopSaveInterval();
+      saveProgress();
+    };
+  }, [stopSaveInterval, saveProgress]);
+
   const handlePlayerReady = (player: Player) => {
     const el = player.el()?.querySelector('video') as HTMLVideoElement | null;
     setVideoEl(el);
+    playerRef.current = player;
+
+    // Restore saved position
+    if (savedProgress && savedProgress.position_seconds > 0 && !savedProgress.completed) {
+      player.currentTime(savedProgress.position_seconds);
+    }
+
+    // Start saving on play, stop on pause
+    player.on('play', () => {
+      startSaveInterval();
+    });
+
+    player.on('pause', () => {
+      stopSaveInterval();
+      saveProgress();
+    });
+
+    player.on('ended', () => {
+      stopSaveInterval();
+      saveProgress();
+    });
   };
 
   return (

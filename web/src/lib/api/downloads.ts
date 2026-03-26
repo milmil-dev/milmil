@@ -52,8 +52,7 @@ export const rssFeedApi = {
   list: () => api.get<RSSFeed[]>('/api/v1/rss-feeds'),
   create: (data: { name: string; url: string; type: string }) =>
     api.post<RSSFeed>('/api/v1/rss-feeds', data),
-  update: (id: string, data: Partial<RSSFeed>) =>
-    api.put<void>(`/api/v1/rss-feeds/${id}`, data),
+  update: (id: string, data: Partial<RSSFeed>) => api.put<void>(`/api/v1/rss-feeds/${id}`, data),
   delete: (id: string) => api.delete<void>(`/api/v1/rss-feeds/${id}`),
   refresh: (id: string) => api.post<void>(`/api/v1/rss-feeds/${id}/refresh`),
 };

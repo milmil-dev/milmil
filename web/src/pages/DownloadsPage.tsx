@@ -66,7 +66,9 @@ function DownloadRow({
       {/* Top row: name + status + actions */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-white truncate leading-snug">{dl.name || dl.url}</p>
+          <p className="text-sm font-semibold text-white truncate leading-snug">
+            {dl.name || dl.url}
+          </p>
           <p className="text-[11px] font-mono text-mm-text-tertiary truncate mt-0.5">{dl.url}</p>
         </div>
 
@@ -74,7 +76,7 @@ function DownloadRow({
           <span
             className={cn(
               'text-[10px] font-bold uppercase px-1.5 py-0.5 rounded',
-              statusColor[dl.status] ?? statusColor.removed,
+              statusColor[dl.status] ?? statusColor.removed
             )}
           >
             {dl.status}
@@ -111,10 +113,15 @@ function DownloadRow({
       </div>
 
       {/* Progress bar */}
-      <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'oklch(16% 0.01 280)' }}>
+      <div
+        className="mt-3 h-1.5 rounded-full overflow-hidden"
+        style={{ backgroundColor: 'oklch(16% 0.01 280)' }}
+      >
         <motion.div
           className="h-full rounded-full"
-          style={{ backgroundColor: dl.status === 'error' ? 'oklch(60% 0.2 25)' : 'oklch(70% 0.18 145)' }}
+          style={{
+            backgroundColor: dl.status === 'error' ? 'oklch(60% 0.2 25)' : 'oklch(70% 0.18 145)',
+          }}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -127,7 +134,9 @@ function DownloadRow({
         <span>
           {formatBytes(dl.completed_bytes)} / {formatBytes(dl.total_bytes)}
         </span>
-        {dl.status === 'active' && <span className="text-mm-accent">{formatSpeed(dl.speed_bytes)}</span>}
+        {dl.status === 'active' && (
+          <span className="text-mm-accent">{formatSpeed(dl.speed_bytes)}</span>
+        )}
       </div>
     </motion.div>
   );
@@ -224,8 +233,14 @@ export function DownloadsPage() {
           {isLoading ? (
             skeletonRows.map((i) => (
               <div key={i} className="rounded p-4 animate-pulse bg-mm-surface">
-                <div className="h-3 rounded mb-3" style={{ backgroundColor: 'oklch(18% 0.01 280)', width: '40%' }} />
-                <div className="h-1.5 rounded-full" style={{ backgroundColor: 'oklch(16% 0.01 280)' }} />
+                <div
+                  className="h-3 rounded mb-3"
+                  style={{ backgroundColor: 'oklch(18% 0.01 280)', width: '40%' }}
+                />
+                <div
+                  className="h-1.5 rounded-full"
+                  style={{ backgroundColor: 'oklch(16% 0.01 280)' }}
+                />
                 <div
                   className="h-2 rounded mt-2"
                   style={{ backgroundColor: 'oklch(15% 0.01 280)', width: '25%' }}
@@ -235,7 +250,9 @@ export function DownloadsPage() {
           ) : downloads.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-mm-text-tertiary text-sm">No downloads yet.</p>
-              <p className="text-mm-text-muted text-xs mt-1">Paste a magnet link or URL above to get started.</p>
+              <p className="text-mm-text-muted text-xs mt-1">
+                Paste a magnet link or URL above to get started.
+              </p>
             </div>
           ) : (
             <AnimatePresence mode="popLayout">
