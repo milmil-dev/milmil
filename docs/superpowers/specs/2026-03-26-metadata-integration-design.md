@@ -287,6 +287,8 @@ type Rating struct {
 | Episodes | `meta:episodes:{id}` | 24 hours |
 | AniList media | `meta:anilist:{id}` | 24 hours |
 | Trending | `meta:trending:{page}` | 6 hours |
+| Bangumi→AniList xref | `meta:xref:bgm:{bangumiID}` | 7 days |
+| AniList→Bangumi xref | `meta:xref:al:{anilistID}` | 7 days |
 
 All caching goes through the existing `cache.Cache` interface (Redis in production, in-memory for dev).
 
@@ -294,16 +296,17 @@ All caching goes through the existing `cache.Cache` interface (Redis in producti
 
 When enriching Bangumi data with AniList covers:
 
-1. If the Bangumi subject title matches an AniList result by romaji/native title → use that AniList entry
-2. Cache the Bangumi→AniList ID mapping: `meta:xref:bgm:{bangumiID}` → AniList ID (TTL 7 days)
-3. On cache miss, search AniList by the Bangumi subject's original title
+1. Check xref cache `meta:xref:bgm:{bangumiID}` for known AniList ID
+2. On cache miss, search AniList by the Bangumi subject's original title
+3. If match found, cache both directions (`meta:xref:bgm:{bangumiID}` and `meta:xref:al:{anilistID}`)
 4. If no match found, use Bangumi's own cover image (lower quality but functional)
 
 For the `GetTrending` method (AniList primary):
 1. Fetch AniList trending
-2. For each result, try to find Bangumi subject by searching the native/romaji title
-3. If found, use Bangumi's Chinese title and synopsis
-4. If not found, use AniList's romaji title as-is (no Chinese available)
+2. For each result, check reverse xref cache `meta:xref:al:{anilistID}` for known Bangumi ID
+3. On cache miss, search Bangumi by native/romaji title concurrently (bounded `errgroup`, max 5 concurrent)
+4. If Bangumi match found, use Chinese title and synopsis; cache both directions (`meta:xref:bgm:{bangumiID}` and `meta:xref:al:{anilistID}`)
+5. If not found or search fails, use AniList's romaji title as-is — enrichment failures are non-fatal
 
 ---
 
@@ -320,6 +323,17 @@ GET /api/v1/discover/search?q=...       → Search anime
 GET /api/v1/discover/anime/:id          → Anime detail (Bangumi ID)
 GET /api/v1/discover/anime/:id/episodes → Episode list
 ```
+
+**Note:** These routes supersede the project design spec's `/discover` group. Changes: `/seasonal` → `/calendar` (Bangumi calendar is day-based, not season-based), `/popular` dropped (covered by `/trending`), `/anime/:id` and `/anime/:id/episodes` added for detail views.
+
+### Error Mapping
+
+| Service Error | HTTP Status | Reason |
+|---------------|-------------|--------|
+| `ErrNotFound` | 404 | Bangumi subject not found |
+| `ErrRateLimited` | 429 | Upstream rate limited — client should retry |
+| `ErrUnavailable` | 502 | External API unreachable |
+| `ErrQueryFailed` | 502 | AniList GraphQL error |
 
 ### Handler Registration
 
@@ -377,9 +391,9 @@ All endpoints return JSON. Errors use Echo's `echo.NewHTTPError`. Handlers are t
 - Test: caching (second call skips client), data merging (AniList cover fills in), Chinese title fallback logic, cross-matching
 
 ### Discover Handlers
-- Use existing `newTestApp(t)` pattern
-- Need to inject a mock metadata service — make `metadata.Service` accept interfaces (already designed this way)
-- Test: HTTP status codes, JSON structure, query parameter parsing, error propagation
+- Use existing `newTestApp(t)` pattern, extended to accept a `*metadata.Service`
+- Handler tests create a real `metadata.Service` with mock Bangumi/AniList client interfaces injected — no need for a service-level interface
+- Test: HTTP status codes, JSON structure, query parameter parsing, error propagation from mock clients
 
 ---
 
