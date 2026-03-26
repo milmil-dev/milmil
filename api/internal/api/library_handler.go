@@ -127,6 +127,10 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 	if h.matcher != nil {
 		_, _ = h.matcher.MatchLibrary(c.Request().Context(), lib.ID)
 	}
+	// Resolve anime metadata after matching (non-fatal if resolver is nil or fails)
+	if h.resolver != nil {
+		_, _ = h.resolver.ResolveLibrary(c.Request().Context(), lib.ID)
+	}
 	return c.NoContent(http.StatusNoContent)
 }
 

@@ -9,6 +9,7 @@ import (
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -20,10 +21,11 @@ type handler struct {
 	metadata   *metadata.Service
 	matcher    *matcher.Matcher
 	dandanplay dandanplay.Client
+	resolver   *resolver.Resolver
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -36,6 +38,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		metadata:   metadataSvc,
 		matcher:    matcherSvc,
 		dandanplay: ddpClient,
+		resolver:   resolverSvc,
 	}
 
 	// System routes

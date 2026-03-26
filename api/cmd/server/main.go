@@ -24,6 +24,7 @@ import (
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/migrations"
 )
@@ -84,9 +85,10 @@ func main() {
 	}
 	ddpClient := dandanplay.NewClient(&http.Client{Timeout: 10 * time.Second}, ddpCredFn)
 	matcherSvc := matcher.New(store.New(database), ddpClient, cacheClient)
+	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
 
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)
