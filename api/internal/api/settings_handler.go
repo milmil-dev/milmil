@@ -11,7 +11,7 @@ import (
 	"github.com/milmil/api/internal/store"
 )
 
-var settingsKeys = []string{"dandanplay", "player", "appearance"}
+var settingsKeys = []string{"dandanplay", "player", "appearance", "bangumi_oauth", "bangumi_token", "anilist_oauth", "anilist_token"}
 
 func (h *handler) handleGetSettings(c echo.Context) error {
 	ctx := c.Request().Context()

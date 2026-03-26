@@ -66,6 +66,45 @@ func (q *Queries) GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchP
 	return i, err
 }
 
+const listCompletedWatchProgress = `-- name: ListCompletedWatchProgress :many
+SELECT id, user_id, episode_id, media_file_id, position_seconds, duration_seconds, completed, last_watched_at, bangumi_synced_at, mal_synced_at, anilist_synced_at FROM watch_progress WHERE user_id = ? AND completed = 1 ORDER BY last_watched_at DESC
+`
+
+func (q *Queries) ListCompletedWatchProgress(ctx context.Context, userID string) ([]WatchProgress, error) {
+	rows, err := q.db.QueryContext(ctx, listCompletedWatchProgress, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []WatchProgress{}
+	for rows.Next() {
+		var i WatchProgress
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.EpisodeID,
+			&i.MediaFileID,
+			&i.PositionSeconds,
+			&i.DurationSeconds,
+			&i.Completed,
+			&i.LastWatchedAt,
+			&i.BangumiSyncedAt,
+			&i.MalSyncedAt,
+			&i.AnilistSyncedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listWatchProgressByUser = `-- name: ListWatchProgressByUser :many
 SELECT id, user_id, episode_id, media_file_id, position_seconds, duration_seconds, completed, last_watched_at, bangumi_synced_at, mal_synced_at, anilist_synced_at FROM watch_progress WHERE user_id = ? ORDER BY last_watched_at DESC LIMIT 20
 `

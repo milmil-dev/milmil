@@ -59,6 +59,31 @@ func (q *Queries) CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (E
 	return i, err
 }
 
+const getEpisode = `-- name: GetEpisode :one
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at FROM episodes WHERE id = ? LIMIT 1
+`
+
+func (q *Queries) GetEpisode(ctx context.Context, id string) (Episode, error) {
+	row := q.db.QueryRowContext(ctx, getEpisode, id)
+	var i Episode
+	err := row.Scan(
+		&i.ID,
+		&i.AnimeID,
+		&i.EpisodeNumber,
+		&i.Title,
+		&i.TitleZh,
+		&i.AirDate,
+		&i.Synopsis,
+		&i.ThumbnailUrl,
+		&i.DandanplayEpisodeID,
+		&i.BangumiEpisodeID,
+		&i.MalEpisodeID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getEpisodeByDandanplayID = `-- name: GetEpisodeByDandanplayID :one
 SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at FROM episodes WHERE dandanplay_episode_id = ? LIMIT 1
 `

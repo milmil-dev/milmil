@@ -283,6 +283,159 @@ function AppearanceSection() {
   );
 }
 
+// ─── Integration Section (Bangumi / AniList) ───────────────────────────────
+function IntegrationSection({
+  provider,
+  label,
+  delay,
+}: {
+  provider: 'bangumi' | 'anilist';
+  label: string;
+  delay: number;
+}) {
+  const queryClient = useQueryClient();
+
+  const { data: settings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get<Record<string, any>>('/api/v1/settings'),
+  });
+
+  const oauthKey = `${provider}_oauth`;
+  const tokenKey = `${provider}_token`;
+  const isConfigured = settings?.[oauthKey]?.client_id;
+  const isConnected = settings?.[tokenKey]?.access_token;
+
+  const [clientId, setClientId] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
+
+  useEffect(() => {
+    if (settings?.[oauthKey]) {
+      setClientId(settings[oauthKey].client_id ?? '');
+      setClientSecret(settings[oauthKey].client_secret ?? '');
+    }
+  }, [settings, oauthKey]);
+
+  const saveCredsMutation = useMutation({
+    mutationFn: (data: { client_id: string; client_secret: string }) =>
+      api.put(`/api/v1/settings/${oauthKey}`, data),
+    onSuccess: () => {
+      toast.success('已儲存');
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    },
+    onError: () => toast.error('儲存失敗'),
+  });
+
+  const connectMutation = useMutation({
+    mutationFn: () => api.get<{ url: string }>(`/api/v1/integrations/${provider}/auth-url`),
+    onSuccess: (data) => {
+      window.open(data.url, '_blank');
+    },
+    onError: () => toast.error('取得授權連結失敗'),
+  });
+
+  const disconnectMutation = useMutation({
+    mutationFn: () => api.delete<void>(`/api/v1/integrations/${provider}`),
+    onSuccess: () => {
+      toast.success('已斷開連線');
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    },
+    onError: () => toast.error('斷開連線失敗'),
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: () =>
+      api.post<{ synced: number; errors: number; total: number }>(
+        `/api/v1/integrations/${provider}/sync`
+      ),
+    onSuccess: (data) => {
+      toast.success(`同步完成：${String(data.synced)} 筆成功，${String(data.errors)} 筆失敗`);
+    },
+    onError: () => toast.error('同步失敗'),
+  });
+
+  return (
+    <Section title={`${label} 連動`} delay={delay}>
+      {/* OAuth credentials */}
+      <div className="space-y-1.5">
+        <Label
+          htmlFor={`${provider}-client-id`}
+          className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+        >
+          Client ID
+        </Label>
+        <Input
+          id={`${provider}-client-id`}
+          value={clientId}
+          onChange={(e) => setClientId(e.target.value)}
+          placeholder={`Your ${label} Client ID`}
+          className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label
+          htmlFor={`${provider}-client-secret`}
+          className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+        >
+          Client Secret
+        </Label>
+        <Input
+          id={`${provider}-client-secret`}
+          type="password"
+          value={clientSecret}
+          onChange={(e) => setClientSecret(e.target.value)}
+          placeholder={`Your ${label} Client Secret`}
+          className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+        />
+      </div>
+
+      <div className="flex items-center gap-3 flex-wrap">
+        <Button
+          onClick={() =>
+            saveCredsMutation.mutate({ client_id: clientId, client_secret: clientSecret })
+          }
+          disabled={saveCredsMutation.isPending}
+          className="font-bold text-black bg-mm-accent"
+        >
+          {saveCredsMutation.isPending ? '儲存中…' : '儲存'}
+        </Button>
+
+        {isConfigured && !isConnected && (
+          <Button
+            onClick={() => connectMutation.mutate()}
+            disabled={connectMutation.isPending}
+            variant="outline"
+            className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
+          >
+            {connectMutation.isPending ? '連線中…' : '連線帳號'}
+          </Button>
+        )}
+
+        {isConnected && (
+          <>
+            <span className="text-xs font-bold text-green-400">Connected</span>
+            <Button
+              onClick={() => disconnectMutation.mutate()}
+              disabled={disconnectMutation.isPending}
+              variant="outline"
+              className="font-bold border-[oklch(30%_0.01_280)] text-red-400 hover:bg-[oklch(20%_0.01_280)]"
+            >
+              {disconnectMutation.isPending ? '斷開中…' : '斷開連線'}
+            </Button>
+            <Button
+              onClick={() => syncMutation.mutate()}
+              disabled={syncMutation.isPending}
+              variant="outline"
+              className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
+            >
+              {syncMutation.isPending ? '同步中…' : '同步進度'}
+            </Button>
+          </>
+        )}
+      </div>
+    </Section>
+  );
+}
+
 // ─── Settings Page ───────────────────────────────────────────────────────────
 export function SettingsPage() {
   return (
@@ -297,6 +450,8 @@ export function SettingsPage() {
         {/* Sections */}
         <div className="px-8 pb-16 max-w-2xl">
           <DandanPlaySection />
+          <IntegrationSection provider="bangumi" label="Bangumi" delay={0.04} />
+          <IntegrationSection provider="anilist" label="AniList" delay={0.08} />
           <PlayerSection />
           <AppearanceSection />
         </div>

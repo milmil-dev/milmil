@@ -17,3 +17,6 @@ SELECT * FROM watch_progress WHERE user_id = ? ORDER BY last_watched_at DESC LIM
 
 -- name: GetWatchProgressByMediaFile :one
 SELECT * FROM watch_progress WHERE user_id = ? AND media_file_id = ? LIMIT 1;
+
+-- name: ListCompletedWatchProgress :many
+SELECT * FROM watch_progress WHERE user_id = ? AND completed = 1 ORDER BY last_watched_at DESC;

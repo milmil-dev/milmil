@@ -139,5 +139,18 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	ruleGroup.PUT("/:id", h.handleUpdateDownloadRule)
 	ruleGroup.DELETE("/:id", h.handleDeleteDownloadRule)
 
+	// Integrations — protected
+	intGroup := v1.Group("/integrations", jwtMiddleware(cfg.JWTSecret))
+	// Bangumi
+	intGroup.GET("/bangumi/auth-url", h.handleBangumiAuthURL)
+	intGroup.GET("/bangumi/callback", h.handleBangumiCallback)
+	intGroup.DELETE("/bangumi", h.handleBangumiDisconnect)
+	intGroup.POST("/bangumi/sync", h.handleBangumiSync)
+	// AniList
+	intGroup.GET("/anilist/auth-url", h.handleAniListAuthURL)
+	intGroup.GET("/anilist/callback", h.handleAniListCallback)
+	intGroup.DELETE("/anilist", h.handleAniListDisconnect)
+	intGroup.POST("/anilist/sync", h.handleAniListSync)
+
 	return e
 }

@@ -1,3 +1,6 @@
+-- name: GetAnime :one
+SELECT * FROM anime WHERE id = ? LIMIT 1;
+
 -- name: GetAnimeByBangumiID :one
 SELECT * FROM anime WHERE bangumi_id = ? LIMIT 1;
 

@@ -1,3 +1,6 @@
+-- name: GetEpisode :one
+SELECT * FROM episodes WHERE id = ? LIMIT 1;
+
 -- name: GetEpisodeByDandanplayID :one
 SELECT * FROM episodes WHERE dandanplay_episode_id = ? LIMIT 1;
 

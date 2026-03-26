@@ -9,5 +9,8 @@ ON CONFLICT (key) DO UPDATE
       updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 RETURNING *;
 
+-- name: DeleteSetting :exec
+DELETE FROM settings WHERE key = ?;
+
 -- name: ListSettings :many
 SELECT key, value, updated_at FROM settings ORDER BY key;

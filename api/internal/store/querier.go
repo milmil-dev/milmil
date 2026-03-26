@@ -27,10 +27,13 @@ type Querier interface {
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteRSSFeed(ctx context.Context, id string) error
+	DeleteSetting(ctx context.Context, key string) error
 	DeleteSubtitleFile(ctx context.Context, id string) error
+	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
+	GetEpisode(ctx context.Context, id string) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
@@ -42,6 +45,7 @@ type Querier interface {
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
+	ListCompletedWatchProgress(ctx context.Context, userID string) ([]WatchProgress, error)
 	ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
 	ListDownloads(ctx context.Context) ([]Download, error)

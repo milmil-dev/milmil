@@ -82,6 +82,39 @@ func (q *Queries) CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime
 	return i, err
 }
 
+const getAnime = `-- name: GetAnime :one
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at FROM anime WHERE id = ? LIMIT 1
+`
+
+func (q *Queries) GetAnime(ctx context.Context, id string) (Anime, error) {
+	row := q.db.QueryRowContext(ctx, getAnime, id)
+	var i Anime
+	err := row.Scan(
+		&i.ID,
+		&i.LibraryID,
+		&i.Title,
+		&i.TitleZh,
+		&i.TitleEn,
+		&i.Synopsis,
+		&i.CoverImageUrl,
+		&i.TotalEpisodes,
+		&i.Status,
+		&i.AirDate,
+		&i.Year,
+		&i.Season,
+		&i.Genres,
+		&i.IsCustom,
+		&i.AnilistID,
+		&i.BangumiID,
+		&i.DandanplayBangumiID,
+		&i.MalID,
+		&i.TmdbID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getAnimeByBangumiID = `-- name: GetAnimeByBangumiID :one
 SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at FROM anime WHERE bangumi_id = ? LIMIT 1
 `
