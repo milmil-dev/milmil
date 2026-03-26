@@ -3,9 +3,11 @@
 package db_test
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/migrations"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,9 +24,9 @@ func TestOpen_SQLite(t *testing.T) {
 }
 
 func TestMigrateUp_AllTablesExist(t *testing.T) {
-	// Use a unique in-memory DB per test run
-	dsn := "sqlite://file:testmigrate?mode=memory&cache=shared"
-	err := db.MigrateUp(dsn)
+	// Use a temp file — golang-migrate's sqlite driver doesn't support named in-memory URIs.
+	dsn := "sqlite://" + filepath.Join(t.TempDir(), "test.db")
+	err := db.MigrateUp(migrations.FS, dsn)
 	require.NoError(t, err)
 
 	database, err := db.Open(dsn)

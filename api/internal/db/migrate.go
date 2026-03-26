@@ -3,20 +3,23 @@ package db
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5" // postgres
-	_ "github.com/golang-migrate/migrate/v4/database/sqlite"  // sqlite (modernc, no CGO)
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
+	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5" // postgres driver
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite"  // sqlite driver (modernc, no CGO)
 )
 
-// MigrateUp runs all pending up migrations from the migrations directory.
-// The working directory must be api/ so that "file://migrations" resolves correctly.
-func MigrateUp(dsn string) error {
-	migrateURL := toMigrateURL(dsn)
+// MigrateUp runs all pending up migrations from the provided embedded FS.
+func MigrateUp(migrationsFS fs.FS, dsn string) error {
+	src, err := iofs.New(migrationsFS, ".")
+	if err != nil {
+		return fmt.Errorf("iofs.New: %w", err)
+	}
 
-	m, err := migrate.New("file://migrations", migrateURL)
+	m, err := migrate.NewWithSourceInstance("iofs", src, toMigrateURL(dsn))
 	if err != nil {
 		return fmt.Errorf("migrate.New: %w", err)
 	}
@@ -31,9 +34,7 @@ func MigrateUp(dsn string) error {
 // toMigrateURL converts milmil DSN format to golang-migrate database URL format.
 func toMigrateURL(dsn string) string {
 	if strings.HasPrefix(dsn, "sqlite://") {
-		// golang-migrate sqlite driver expects: sqlite://path/to/file.db
 		return dsn
 	}
-	// postgres DSN is passed through unchanged
 	return dsn
 }

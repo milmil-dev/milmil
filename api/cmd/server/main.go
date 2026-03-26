@@ -16,6 +16,7 @@ import (
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/migrations"
 )
 
 func main() {
@@ -45,7 +46,7 @@ func main() {
 	defer database.Close()
 
 	// Migrations
-	if err := db.MigrateUp(cfg.DatabaseURL); err != nil {
+	if err := db.MigrateUp(migrations.FS, cfg.DatabaseURL); err != nil {
 		slog.Error("migrate", "err", err)
 		os.Exit(1)
 	}
