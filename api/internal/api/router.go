@@ -12,6 +12,7 @@ import (
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/ws"
 )
 
 type handler struct {
@@ -24,10 +25,11 @@ type handler struct {
 	dandanplay dandanplay.Client
 	resolver   *resolver.Resolver
 	aria2      aria2.Client
+	wsHub      *ws.Hub
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -42,7 +44,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		dandanplay: ddpClient,
 		resolver:   resolverSvc,
 		aria2:      aria2Client,
+		wsHub:      wsHub,
 	}
+
+	// WebSocket (no auth — WS auth is complex, keep it simple)
+	e.GET("/ws", h.handleWebSocket)
 
 	// System routes
 	e.GET("/health", handleHealth)

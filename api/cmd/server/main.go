@@ -18,6 +18,7 @@ import (
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/integration/anilist"
@@ -91,8 +92,11 @@ func main() {
 	// Aria2 client
 	aria2Client := aria2.NewClient(&http.Client{Timeout: 10 * time.Second}, cfg.Aria2RPCURL, cfg.Aria2RPCSecret)
 
+	// WebSocket hub
+	wsHub := ws.NewHub()
+
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)

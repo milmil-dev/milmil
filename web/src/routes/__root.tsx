@@ -1,8 +1,11 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
 import { TopNav } from '../components/TopNav';
+import { useWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
 
@@ -26,6 +29,16 @@ function isPublicRoute(pathname: string): boolean {
 
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const queryClient = useQueryClient();
+  useWebSocket((event) => {
+    if (event.type === 'scan:completed') {
+      toast.success(`掃描完成: ${event.data.library_name}`);
+      queryClient.invalidateQueries({ queryKey: ['libraries'] });
+    }
+    if (event.type === 'download:added') {
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    }
+  });
 
   if (pathname === '/login' || pathname === '/setup') {
     return <Outlet />;

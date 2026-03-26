@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/ws"
 )
 
 type createLibraryRequest struct {
@@ -130,6 +131,9 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 	// Resolve anime metadata after matching (non-fatal if resolver is nil or fails)
 	if h.resolver != nil {
 		_, _ = h.resolver.ResolveLibrary(c.Request().Context(), lib.ID)
+	}
+	if h.wsHub != nil {
+		h.wsHub.Broadcast(ws.Event{Type: "scan:completed", Data: map[string]any{"library_id": lib.ID, "library_name": lib.Name}})
 	}
 	return c.NoContent(http.StatusNoContent)
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/ws"
 )
 
 type addDownloadRequest struct {
@@ -58,6 +59,9 @@ func (h *handler) handleAddDownload(c echo.Context) error {
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
+	}
+	if h.wsHub != nil {
+		h.wsHub.Broadcast(ws.Event{Type: "download:added", Data: map[string]any{"gid": gid, "name": name}})
 	}
 	return c.JSON(http.StatusCreated, dl)
 }
