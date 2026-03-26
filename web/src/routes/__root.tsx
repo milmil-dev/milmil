@@ -47,7 +47,7 @@ function RootLayout() {
   return (
     <div className="flex min-h-screen bg-mm-bg">
       <AppSidebar />
-      <div className="flex-1 ml-[60px] min-h-screen flex flex-col">
+      <div className="flex-1 md:ml-[200px] min-h-screen flex flex-col">
         <TopNav />
         <main className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
