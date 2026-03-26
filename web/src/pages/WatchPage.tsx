@@ -10,6 +10,7 @@ import { PageTransition } from '@/components/PageTransition';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { progressApi, progressKeys } from '@/lib/api/progress';
 import { type DanmakuComment, getStreamUrl, parseDandanplayComments } from '@/lib/api/stream';
+import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
 import { usePlayerStore } from '@/store/player-store';
 
 const SAVE_INTERVAL_MS = 10_000;
@@ -43,6 +44,13 @@ export function WatchPage() {
         comments: { p: string; m: string }[];
       }>;
     },
+    enabled: !!fileId,
+  });
+
+  // Fetch subtitles for this media file
+  const { data: subtitles } = useQuery({
+    queryKey: ['subtitles', fileId],
+    queryFn: () => subtitleApi.list(fileId!),
     enabled: !!fileId,
   });
 
@@ -119,6 +127,21 @@ export function WatchPage() {
     // Restore saved position
     if (savedProgress && savedProgress.position_seconds > 0 && !savedProgress.completed) {
       player.currentTime(savedProgress.position_seconds);
+    }
+
+    // Add subtitle tracks
+    if (subtitles?.length) {
+      for (const sub of subtitles) {
+        player.addRemoteTextTrack(
+          {
+            kind: 'subtitles',
+            src: getSubtitleUrl(sub.id),
+            srclang: sub.language,
+            label: sub.language,
+          },
+          false
+        );
+      }
     }
 
     // Start saving on play, stop on pause
