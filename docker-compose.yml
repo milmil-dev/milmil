@@ -1,0 +1,14 @@
+services:
+  aria2:
+    image: p3terx/aria2-pro
+    restart: unless-stopped
+    environment:
+      RPC_SECRET: ${ARIA2_RPC_SECRET:-milmil_secret}
+      RPC_PORT: 6800
+      LISTEN_PORT: 6888
+    volumes:
+      - ./downloads:/downloads
+      - ./aria2-config:/config
+    ports:
+      - "6800:6800"
+      - "6888:6888"
