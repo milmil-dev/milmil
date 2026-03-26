@@ -12,10 +12,15 @@ import (
 	"github.com/rs/zerolog"
 	slogzerolog "github.com/samber/slog-zerolog/v2"
 
+	"net/http"
+
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/integration/anilist"
+	"github.com/milmil/api/internal/integration/bangumi"
+	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/migrations"
 )
 
@@ -54,8 +59,14 @@ func main() {
 	// Cache (Redis or in-memory)
 	cacheClient := cache.New(cfg.RedisURL)
 
+	// Metadata service
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	bangumiClient := bangumi.NewClient(httpClient, "milmil/1.0")
+	anilistClient := anilist.NewClient(httpClient)
+	metadataSvc := metadata.New(bangumiClient, anilistClient, cacheClient)
+
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)

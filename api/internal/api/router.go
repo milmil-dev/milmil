@@ -6,27 +6,30 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
+	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/store"
 )
 
 type handler struct {
-	cfg     *config.Config
-	db      *sql.DB
-	queries *store.Queries
-	cache   cache.Cache
+	cfg      *config.Config
+	db       *sql.DB
+	queries  *store.Queries
+	cache    cache.Cache
+	metadata *metadata.Service
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
 
 	h := &handler{
-		cfg:     cfg,
-		db:      db,
-		queries: store.New(db),
-		cache:   cacheClient,
+		cfg:      cfg,
+		db:       db,
+		queries:  store.New(db),
+		cache:    cacheClient,
+		metadata: metadataSvc,
 	}
 
 	// System routes
@@ -56,6 +59,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache) *echo.Ec
 	libGroup.DELETE("/:id", h.handleDeleteLibrary)
 	libGroup.POST("/:id/scan", h.handleScanLibrary)
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
+
+	// Discover — public
+	discoverGroup := v1.Group("/discover")
+	discoverGroup.GET("/calendar", h.handleCalendar)
+	discoverGroup.GET("/trending", h.handleTrending)
+	discoverGroup.GET("/search", h.handleSearch)
+	discoverGroup.GET("/anime/:id", h.handleAnimeDetail)
+	discoverGroup.GET("/anime/:id/episodes", h.handleAnimeEpisodes)
 
 	return e
 }

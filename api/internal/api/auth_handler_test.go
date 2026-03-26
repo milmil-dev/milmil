@@ -12,6 +12,7 @@ import (
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/migrations"
 	_ "modernc.org/sqlite"
 )
@@ -27,7 +28,9 @@ func newTestApp(t *testing.T) *echo.Echo {
 		t.Fatal(err)
 	}
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
-	return api.NewRouter(cfg, database, cache.New(""))
+	c := cache.New("")
+	metadataSvc := metadata.New(nil, nil, c)
+	return api.NewRouter(cfg, database, c, metadataSvc)
 }
 
 func TestAuthStatus_NotInitialized(t *testing.T) {
