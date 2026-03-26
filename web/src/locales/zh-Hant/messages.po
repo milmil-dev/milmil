@@ -4,3 +4,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh-Hant\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+
+#: src/pages/LoginPage.tsx:34
+msgid "auth.error.invalidCredentials"
+msgstr "帳號或密碼錯誤"
+
+#: src/pages/LoginPage.tsx:79
+msgid "auth.login.loading"
+msgstr "登入中..."
+
+#: src/pages/LoginPage.tsx:62
+msgid "auth.login.password"
+msgstr "密碼"
+
+#: src/pages/LoginPage.tsx:79
+msgid "auth.login.submit"
+msgstr "登入"
+
+#: src/pages/LoginPage.tsx:44
+msgid "auth.login.title"
+msgstr "登入 milmil"
+
+#: src/pages/LoginPage.tsx:49
+msgid "auth.login.username"
+msgstr "帳號"
+
+#: src/pages/SetupPage.tsx:38
+msgid "auth.setup.error"
+msgstr "設定失敗，請再試一次。"
+
+#: src/pages/SetupPage.tsx:86
+msgid "auth.setup.loading"
+msgstr "建立帳號中..."
+
+#: src/pages/SetupPage.tsx:69
+msgid "auth.setup.password"
+msgstr "密碼"
+
+#: src/pages/SetupPage.tsx:26
+msgid "auth.setup.passwordTooShort"
+msgstr "密碼至少需要 8 個字元"
+
+#: src/pages/SetupPage.tsx:86
+msgid "auth.setup.submit"
+msgstr "建立帳號"
+
+#: src/pages/SetupPage.tsx:51
+msgid "auth.setup.subtitle"
+msgstr "建立管理員帳號以開始使用。"
+
+#: src/pages/SetupPage.tsx:48
+msgid "auth.setup.title"
+msgstr "歡迎使用 milmil"
+
+#: src/pages/SetupPage.tsx:56
+msgid "auth.setup.username"
+msgstr "帳號"

@@ -12,3 +12,59 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+
+#: src/pages/LoginPage.tsx:34
+msgid "auth.error.invalidCredentials"
+msgstr "Invalid username or password"
+
+#: src/pages/LoginPage.tsx:79
+msgid "auth.login.loading"
+msgstr "Signing in..."
+
+#: src/pages/LoginPage.tsx:62
+msgid "auth.login.password"
+msgstr "Password"
+
+#: src/pages/LoginPage.tsx:79
+msgid "auth.login.submit"
+msgstr "Sign in"
+
+#: src/pages/LoginPage.tsx:44
+msgid "auth.login.title"
+msgstr "Sign in to milmil"
+
+#: src/pages/LoginPage.tsx:49
+msgid "auth.login.username"
+msgstr "Username"
+
+#: src/pages/SetupPage.tsx:38
+msgid "auth.setup.error"
+msgstr "Setup failed. Please try again."
+
+#: src/pages/SetupPage.tsx:86
+msgid "auth.setup.loading"
+msgstr "Creating account..."
+
+#: src/pages/SetupPage.tsx:69
+msgid "auth.setup.password"
+msgstr "Password"
+
+#: src/pages/SetupPage.tsx:26
+msgid "auth.setup.passwordTooShort"
+msgstr "Password must be at least 8 characters"
+
+#: src/pages/SetupPage.tsx:86
+msgid "auth.setup.submit"
+msgstr "Create account"
+
+#: src/pages/SetupPage.tsx:51
+msgid "auth.setup.subtitle"
+msgstr "Create your admin account to get started."
+
+#: src/pages/SetupPage.tsx:48
+msgid "auth.setup.title"
+msgstr "Welcome to milmil"
+
+#: src/pages/SetupPage.tsx:56
+msgid "auth.setup.username"
+msgstr "Username"
