@@ -4,6 +4,7 @@ import {
   FireIcon,
   FolderLibraryIcon,
   HouseIcon,
+  RssIcon,
   Search01Icon,
   Setting07Icon,
 } from '@hugeicons/core-free-icons';
@@ -18,6 +19,7 @@ const mainNav = [
   { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
   { to: '/search', label: 'Search', icon: Search01Icon },
   { to: '/trending', label: 'Trending', icon: FireIcon },
+  { to: '/rss', label: 'RSS', icon: RssIcon },
 ] as const;
 
 const bottomNav = [
