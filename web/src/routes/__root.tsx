@@ -49,21 +49,22 @@ function RootLayout() {
   return (
     <div className="relative flex min-h-screen" style={{ backgroundColor: 'var(--mm-bg)' }}>
       {/* Full-screen background image — behind everything including sidebar */}
+      {/* Background image — top area only with max height, fades into bg */}
       {bgImage && (
-        <div className="fixed inset-0 z-0">
+        <div className="fixed top-0 left-0 right-0 z-0" style={{ height: 'clamp(400px, 50vh, 600px)' }}>
           <img
             src={bgImage}
             alt=""
-            className="w-full h-full object-cover"
-            style={{ filter: 'brightness(0.2) saturate(1.3) blur(2px)', transform: 'scale(1.05)' }}
+            className="w-full h-full object-cover object-center"
+            style={{ filter: 'brightness(0.18) saturate(1.4)', transform: 'scale(1.02)' }}
           />
-          {/* Gradient overlays for depth — Seanime style */}
+          {/* Hard fade to bg at bottom + left darken for sidebar readability */}
           <div
             className="absolute inset-0"
             style={{
               background: [
-                'linear-gradient(to bottom, var(--mm-bg) 0%, transparent 30%, transparent 60%, var(--mm-bg) 100%)',
-                'linear-gradient(to right, oklch(7% 0.01 260 / 0.85) 0%, transparent 50%)',
+                'linear-gradient(to bottom, transparent 30%, var(--mm-bg) 100%)',
+                'linear-gradient(to right, oklch(7% 0.01 260 / 0.7) 0%, transparent 40%)',
               ].join(', '),
             }}
           />
