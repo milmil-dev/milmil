@@ -16,6 +16,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache) *echo.Ec
 	attachMiddleware(e)
 
 	e.GET("/health", handleHealth)
+	e.GET("/docs", handleDocs)
+	e.GET("/openapi.json", handleOpenAPISpec)
 
 	// v1 API group — handlers registered in Plans 2–8
 	// v1 := e.Group("/api/v1")
