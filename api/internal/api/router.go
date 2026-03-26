@@ -79,5 +79,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	danmakuGroup.GET("/:mediaFileId", h.handleGetDanmaku)
 	danmakuGroup.POST("/:mediaFileId", h.handlePostDanmaku)
 
+	// Stream — protected (with query param token fallback for <video src>)
+	streamGroup := v1.Group("/stream", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
+	streamGroup.GET("/:fileId/direct", h.handleStreamDirect)
+
 	return e
 }
