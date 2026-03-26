@@ -1,0 +1,34 @@
+# Environment
+.env
+.env.local
+*.env.local
+
+# Go
+api/vendor/
+api/tmp/
+*.exe
+
+# SQLite data files
+*.db
+*.db-shm
+*.db-wal
+data/
+
+# Node
+web/node_modules/
+web/dist/
+
+# Docker volumes
+downloads/
+aria2-config/
+transcode-tmp/
+pgdata/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
