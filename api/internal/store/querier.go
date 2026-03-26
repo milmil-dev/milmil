@@ -9,7 +9,11 @@ import (
 )
 
 type Querier interface {
+	CountUsers(ctx context.Context) (int64, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
+	GetUserByID(ctx context.Context, id string) (User, error)
+	GetUserByUsername(ctx context.Context, username string) (User, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
 }
