@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
+	"github.com/milmil/api/internal/integration/aria2"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
@@ -22,10 +23,11 @@ type handler struct {
 	matcher    *matcher.Matcher
 	dandanplay dandanplay.Client
 	resolver   *resolver.Resolver
+	aria2      aria2.Client
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -39,6 +41,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		matcher:    matcherSvc,
 		dandanplay: ddpClient,
 		resolver:   resolverSvc,
+		aria2:      aria2Client,
 	}
 
 	// System routes
@@ -90,6 +93,29 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	settingsGroup := v1.Group("/settings", jwtMiddleware(cfg.JWTSecret))
 	settingsGroup.GET("", h.handleGetSettings)
 	settingsGroup.PUT("/:section", h.handleUpdateSettings)
+
+	// Downloads — protected
+	dlGroup := v1.Group("/downloads", jwtMiddleware(cfg.JWTSecret))
+	dlGroup.GET("", h.handleListDownloads)
+	dlGroup.POST("", h.handleAddDownload)
+	dlGroup.POST("/:gid/pause", h.handlePauseDownload)
+	dlGroup.POST("/:gid/resume", h.handleResumeDownload)
+	dlGroup.DELETE("/:gid", h.handleDeleteDownload)
+
+	// RSS Feeds — protected
+	rssGroup := v1.Group("/rss-feeds", jwtMiddleware(cfg.JWTSecret))
+	rssGroup.GET("", h.handleListRSSFeeds)
+	rssGroup.POST("", h.handleCreateRSSFeed)
+	rssGroup.PUT("/:id", h.handleUpdateRSSFeed)
+	rssGroup.DELETE("/:id", h.handleDeleteRSSFeed)
+	rssGroup.POST("/:id/refresh", h.handleRefreshRSSFeed)
+
+	// Download Rules — protected
+	ruleGroup := v1.Group("/download-rules", jwtMiddleware(cfg.JWTSecret))
+	ruleGroup.GET("", h.handleListDownloadRules)
+	ruleGroup.POST("", h.handleCreateDownloadRule)
+	ruleGroup.PUT("/:id", h.handleUpdateDownloadRule)
+	ruleGroup.DELETE("/:id", h.handleDeleteDownloadRule)
 
 	return e
 }

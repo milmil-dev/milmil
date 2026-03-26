@@ -17,6 +17,7 @@ import (
 
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
+	"github.com/milmil/api/internal/integration/aria2"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/integration/anilist"
@@ -87,8 +88,11 @@ func main() {
 	matcherSvc := matcher.New(store.New(database), ddpClient, cacheClient)
 	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
 
+	// Aria2 client
+	aria2Client := aria2.NewClient(&http.Client{Timeout: 10 * time.Second}, cfg.Aria2RPCURL, cfg.Aria2RPCSecret)
+
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)
