@@ -1,5 +1,6 @@
 import {
   Calendar03Icon,
+  Download04Icon,
   FireIcon,
   FolderLibraryIcon,
   HouseIcon,
@@ -20,6 +21,7 @@ const mainNav = [
 ] as const;
 
 const bottomNav = [
+  { to: '/downloads', label: 'Downloads', icon: Download04Icon },
   { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
   { to: '/settings', label: 'Settings', icon: Setting07Icon },
 ] as const;
