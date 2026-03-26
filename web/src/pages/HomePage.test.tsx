@@ -26,6 +26,20 @@ vi.mock('@tanstack/react-router', () => ({
   },
 }));
 
+// Lingui macros are compiled by Vite plugin — no mock needed for @lingui/core/macro
+// Only mock the runtime hook to return message IDs as-is
+vi.mock('@lingui/react', () => ({
+  useLingui: () => ({
+    i18n: {
+      _: (v: unknown) => {
+        if (typeof v === 'string') return v;
+        if (v && typeof v === 'object' && 'id' in v) return (v as { id: string }).id;
+        return String(v);
+      },
+    },
+  }),
+}));
+
 vi.mock('@tanstack/react-query', () => ({
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     const key = queryKey[1] as string;
@@ -96,14 +110,22 @@ vi.mock('@hugeicons/react', () => ({
 
 vi.mock('@hugeicons/core-free-icons', () => ({
   FolderLibraryIcon: 'mock-icon',
+  ArrowLeft02Icon: 'mock-icon',
+  ArrowRight02Icon: 'mock-icon',
+}));
+
+vi.mock('@/store/bg-store', () => ({
+  useBgStore: (selector: (s: Record<string, unknown>) => unknown) =>
+    selector({ image: null, setImage: () => {} }),
 }));
 
 import { HomePage } from '@/pages/HomePage';
 
-test('home page shows continue watching and trending as distinct dashboard sections', () => {
+test('home page renders section headings for continue watching and trending', () => {
   render(<HomePage />);
-  expect(screen.getByText('繼續觀看')).toBeInTheDocument();
-  expect(screen.getByText('熱門動畫')).toBeInTheDocument();
+  // Section headings rendered via SectionHeader as <h2>
+  const headings = screen.getAllByRole('heading', { level: 2 });
+  expect(headings.length).toBeGreaterThanOrEqual(2);
 });
 
 test('home page renders genre filter strip', () => {

@@ -7,8 +7,8 @@ import { CommandPalette } from '../components/CommandPalette';
 import { TopNav } from '../components/TopNav';
 import { useWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
-import { useBgStore } from '../store/bg-store';
 import { useAuthStore } from '../store/auth-store';
+import { useBgStore } from '../store/bg-store';
 
 interface StatusResponse {
   initialized: boolean;
@@ -51,7 +51,10 @@ function RootLayout() {
       {/* Full-screen background image — behind everything including sidebar */}
       {/* Background image — top area only with max height, fades into bg */}
       {bgImage && (
-        <div className="fixed top-0 left-0 right-0 z-0" style={{ height: 'clamp(400px, 50vh, 600px)' }}>
+        <div
+          className="fixed top-0 left-0 right-0 z-0"
+          style={{ height: 'clamp(400px, 50vh, 600px)' }}
+        >
           <img
             src={bgImage}
             alt=""

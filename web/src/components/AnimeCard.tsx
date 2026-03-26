@@ -48,7 +48,7 @@ export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: n
             )}
           </div>
         </div>
-        <div className="px-1 pt-2 pb-1">
+        <div className="px-1.5 pt-2 pb-1">
           <p className="text-[12px] font-medium text-mm-text-primary truncate leading-snug">
             {anime.title}
           </p>

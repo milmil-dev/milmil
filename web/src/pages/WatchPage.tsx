@@ -144,7 +144,7 @@ export function WatchPage() {
     <PageTransition>
       <div className="min-h-screen bg-black/20">
         {/* Session layout — player + context panel */}
-        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-3.5rem)]">
+        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-3rem)]">
           {/* Player area */}
           <div className="flex-1 min-w-0 flex flex-col">
             <motion.div
@@ -172,7 +172,7 @@ export function WatchPage() {
           >
             <div className="p-4 space-y-4">
               {/* Danmaku status */}
-              <div className="rounded-lg bg-mm-surface/50 p-3">
+              <div className="rounded-lg bg-white/[0.04] p-3">
                 <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
                   彈幕
                 </h3>
@@ -183,7 +183,7 @@ export function WatchPage() {
 
               {/* Subtitle info */}
               {subtitles && subtitles.length > 0 && (
-                <div className="rounded-lg bg-mm-surface/50 p-3">
+                <div className="rounded-lg bg-white/[0.04] p-3">
                   <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
                     字幕
                   </h3>
@@ -201,7 +201,7 @@ export function WatchPage() {
               )}
 
               {/* File info */}
-              <div className="rounded-lg bg-mm-surface/50 p-3">
+              <div className="rounded-lg bg-white/[0.04] p-3">
                 <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
                   媒體檔案
                 </h3>

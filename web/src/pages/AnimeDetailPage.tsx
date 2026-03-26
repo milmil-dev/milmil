@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useEffect } from 'react';
 import { EpisodeListItem } from '../components/EpisodeListItem';
@@ -42,10 +42,10 @@ export function AnimeDetailPage() {
     return (
       <PageTransition>
         <div className="min-h-screen">
-          <div className="h-[340px] animate-pulse bg-mm-border-subtle" />
+          <div className="h-[340px] animate-pulse bg-white/[0.04]" />
           <div className="px-4 md:px-8 py-6 space-y-4">
-            <div className="h-6 rounded bg-mm-border" style={{ width: '30%' }} />
-            <div className="h-4 rounded bg-mm-border-subtle" style={{ width: '60%' }} />
+            <div className="h-6 rounded bg-white/[0.06]" style={{ width: '30%' }} />
+            <div className="h-4 rounded bg-white/[0.04]" style={{ width: '60%' }} />
           </div>
         </div>
       </PageTransition>
@@ -55,8 +55,20 @@ export function AnimeDetailPage() {
   if (isError || !anime) {
     return (
       <PageTransition>
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex flex-col items-center justify-center">
           <p className="text-sm text-mm-text-tertiary">{isError ? '載入失敗' : '找不到此動畫'}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-3 px-4 py-1.5 rounded-md bg-white/[0.06] text-[13px] text-mm-text-secondary hover:bg-white/[0.1] transition-colors"
+          >
+            重試
+          </button>
+          <Link
+            to="/"
+            className="mt-2 text-[12px] text-mm-text-muted hover:text-mm-text-secondary transition-colors"
+          >
+            返回首頁
+          </Link>
         </div>
       </PageTransition>
     );
@@ -88,7 +100,7 @@ export function AnimeDetailPage() {
             style={{
               background: [
                 'linear-gradient(to top, var(--mm-bg) 0%, transparent 50%)',
-                'linear-gradient(90deg, oklch(8% 0.015 260 / 0.7) 0%, transparent 70%)',
+                'linear-gradient(90deg, oklch(from var(--mm-bg) l c h / 0.7) 0%, transparent 70%)',
               ].join(', '),
             }}
           />
@@ -199,7 +211,7 @@ export function AnimeDetailPage() {
               <h2 className="text-[11px] font-bold uppercase tracking-[0.15em] mb-3 text-mm-text-muted">
                 劇集 ({episodes.length})
               </h2>
-              <div className="space-y-0.5 rounded-lg bg-mm-surface/30 p-1">
+              <div className="space-y-0.5 rounded-lg bg-white/[0.03] p-1">
                 {episodes.map((ep) => (
                   <EpisodeListItem
                     key={ep.bangumi_episode_id}

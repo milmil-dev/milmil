@@ -44,9 +44,18 @@ export function ContinueWatchingCard({
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to top, oklch(8% 0.01 260 / 0.8), transparent 50%)',
+            background:
+              'linear-gradient(to top, oklch(from var(--mm-bg) l c h / 0.8), transparent 50%)',
           }}
         />
+        {/* Play icon overlay on hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="black">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
         {/* Progress bar */}
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">
           <div

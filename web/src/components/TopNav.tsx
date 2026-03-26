@@ -35,9 +35,7 @@ export function TopNav() {
               to={to}
               className={cn(
                 'relative px-3 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200',
-                isActive
-                  ? 'text-white'
-                  : 'text-mm-text-muted hover:text-mm-text-secondary'
+                isActive ? 'text-white' : 'text-mm-text-muted hover:text-mm-text-secondary'
               )}
             >
               {label}
