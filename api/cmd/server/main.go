@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os"
@@ -20,7 +21,10 @@ import (
 	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
+	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/migrations"
 )
 
@@ -65,8 +69,24 @@ func main() {
 	anilistClient := anilist.NewClient(httpClient)
 	metadataSvc := metadata.New(bangumiClient, anilistClient, cacheClient)
 
+	// DandanPlay client + matcher
+	ddpCredFn := func(ctx context.Context) (string, string, error) {
+		setting, err := store.New(database).GetSetting(ctx, "dandanplay")
+		if err != nil {
+			return "", "", err
+		}
+		var creds struct {
+			AppID     string `json:"app_id"`
+			AppSecret string `json:"app_secret"`
+		}
+		json.Unmarshal([]byte(setting.Value), &creds)
+		return creds.AppID, creds.AppSecret, nil
+	}
+	ddpClient := dandanplay.NewClient(&http.Client{Timeout: 10 * time.Second}, ddpCredFn)
+	matcherSvc := matcher.New(store.New(database), ddpClient, cacheClient)
+
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)

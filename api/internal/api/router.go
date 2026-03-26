@@ -6,30 +6,36 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
+	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/store"
 )
 
 type handler struct {
-	cfg      *config.Config
-	db       *sql.DB
-	queries  *store.Queries
-	cache    cache.Cache
-	metadata *metadata.Service
+	cfg        *config.Config
+	db         *sql.DB
+	queries    *store.Queries
+	cache      cache.Cache
+	metadata   *metadata.Service
+	matcher    *matcher.Matcher
+	dandanplay dandanplay.Client
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
 
 	h := &handler{
-		cfg:      cfg,
-		db:       db,
-		queries:  store.New(db),
-		cache:    cacheClient,
-		metadata: metadataSvc,
+		cfg:        cfg,
+		db:         db,
+		queries:    store.New(db),
+		cache:      cacheClient,
+		metadata:   metadataSvc,
+		matcher:    matcherSvc,
+		dandanplay: ddpClient,
 	}
 
 	// System routes
@@ -67,6 +73,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	discoverGroup.GET("/search", h.handleSearch)
 	discoverGroup.GET("/anime/:id", h.handleAnimeDetail)
 	discoverGroup.GET("/anime/:id/episodes", h.handleAnimeEpisodes)
+
+	// Danmaku — protected
+	danmakuGroup := v1.Group("/danmaku", jwtMiddleware(cfg.JWTSecret))
+	danmakuGroup.GET("/:mediaFileId", h.handleGetDanmaku)
+	danmakuGroup.POST("/:mediaFileId", h.handlePostDanmaku)
 
 	return e
 }

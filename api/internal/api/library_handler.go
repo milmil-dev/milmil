@@ -123,6 +123,10 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 	if err := sc.ScanLibrary(c.Request().Context(), lib); err != nil {
 		return echo.ErrInternalServerError
 	}
+	// Auto-match after scan (non-fatal if matcher is nil or fails)
+	if h.matcher != nil {
+		_, _ = h.matcher.MatchLibrary(c.Request().Context(), lib.ID)
+	}
 	return c.NoContent(http.StatusNoContent)
 }
 
