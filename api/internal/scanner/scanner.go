@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"context"
+	"database/sql"
 	"os"
 	"path/filepath"
 	"strings"
@@ -43,7 +44,7 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 		if _, ok := videoExtensions[ext]; !ok {
 			return nil
 		}
-		_, upsertErr := s.queries.UpsertMediaFile(ctx, store.UpsertMediaFileParams{
+		upsertedFile, upsertErr := s.queries.UpsertMediaFile(ctx, store.UpsertMediaFileParams{
 			ID:        uuid.NewString(),
 			LibraryID: library.ID,
 			Path:      path,
@@ -55,6 +56,17 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 		}
 		scannedPaths[path] = struct{}{}
 		filesFound++
+
+		// Compute file hash if not already set
+		if !upsertedFile.FileHash.Valid || upsertedFile.FileHash.String == "" {
+			if hash, hashErr := ComputeFileHash(path); hashErr == nil {
+				_ = s.queries.UpdateMediaFileHash(ctx, store.UpdateMediaFileHashParams{
+					FileHash: sql.NullString{String: hash, Valid: true},
+					ID:       upsertedFile.ID,
+				})
+			}
+		}
+
 		return nil
 	})
 	if walkErr != nil {
