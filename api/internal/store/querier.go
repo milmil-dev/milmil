@@ -21,6 +21,7 @@ type Querier interface {
 	CreateRSSFeed(ctx context.Context, arg CreateRSSFeedParams) (RssFeed, error)
 	CreateScanSummary(ctx context.Context, arg CreateScanSummaryParams) (ScanSummary, error)
 	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
+	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
@@ -29,6 +30,7 @@ type Querier interface {
 	DeleteRSSFeed(ctx context.Context, id string) error
 	DeleteSetting(ctx context.Context, key string) error
 	DeleteSubtitleFile(ctx context.Context, id string) error
+	DeleteTranscodeSession(ctx context.Context, sessionToken string) error
 	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
@@ -40,6 +42,7 @@ type Querier interface {
 	GetRSSFeed(ctx context.Context, id string) (RssFeed, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetSubtitleFile(ctx context.Context, id string) (SubtitleFile, error)
+	GetTranscodeSession(ctx context.Context, sessionToken string) (TranscodeSession, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
@@ -58,6 +61,7 @@ type Querier interface {
 	ListSettings(ctx context.Context) ([]Setting, error)
 	ListSubtitlePathsByMediaFile(ctx context.Context, mediaFileID string) ([]string, error)
 	ListSubtitlesByMediaFile(ctx context.Context, mediaFileID string) ([]SubtitleFile, error)
+	ListTranscodeSessionsByFile(ctx context.Context, mediaFileID string) ([]TranscodeSession, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
@@ -71,6 +75,7 @@ type Querier interface {
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
+	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
 	UpsertWatchProgress(ctx context.Context, arg UpsertWatchProgressParams) (WatchProgress, error)

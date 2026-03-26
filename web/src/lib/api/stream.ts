@@ -22,6 +22,20 @@ export function getMimeType(filename: string): string {
   return types[ext] ?? 'video/mp4';
 }
 
+import { api } from '../api-client';
+
+export function getHLSUrl(token: string): string {
+  return `${API_URL}/api/v1/stream/hls/${token}/master.m3u8`;
+}
+
+export const streamApi = {
+  transcode: (fileId: string, opts?: { codec?: string; resolution?: string }) =>
+    api.post<{ token: string; status: string }>(
+      `/api/v1/stream/${fileId}/transcode`,
+      opts ?? { codec: 'h264', resolution: '1080p' },
+    ),
+};
+
 export interface DanmakuComment {
   text: string;
   time: number;
