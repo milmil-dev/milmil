@@ -38,14 +38,12 @@ export interface UpdateLibraryInput {
 export const libraryApi = {
   list: () => api.get<Library[]>('/api/v1/libraries'),
   get: (id: string) => api.get<Library>(`/api/v1/libraries/${id}`),
-  create: (input: CreateLibraryInput) =>
-    api.post<Library>('/api/v1/libraries', input),
+  create: (input: CreateLibraryInput) => api.post<Library>('/api/v1/libraries', input),
   update: (id: string, input: UpdateLibraryInput) =>
     api.put<Library>(`/api/v1/libraries/${id}`, input),
   delete: (id: string) => api.delete<void>(`/api/v1/libraries/${id}`),
   scan: (id: string) => api.post<void>(`/api/v1/libraries/${id}/scan`),
-  scanSummaries: (id: string) =>
-    api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
+  scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
 };
 
 export const libraryKeys = {
