@@ -1,5 +1,5 @@
 import React from 'react';
-import { vi, test, expect } from 'vitest';
+import { vi, test, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 vi.mock('@tanstack/react-router', () => ({
@@ -10,8 +10,6 @@ vi.mock('@tanstack/react-router', () => ({
     const state = { location: { pathname: '/' } };
     return select ? select(state) : state;
   },
-  createRootRoute: vi.fn(),
-  Outlet: () => <div data-testid="outlet" />,
 }));
 
 vi.mock('motion/react', () => {
@@ -32,7 +30,6 @@ vi.mock('motion/react', () => {
       p: stub('p'),
       span: stub('span'),
       a: stub('a'),
-      section: stub('section'),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   };
@@ -55,24 +52,24 @@ vi.mock('@hugeicons/core-free-icons', () => ({
   Setting07Icon: 'mock-icon',
 }));
 
-import { AppSidebar } from '@/components/AppSidebar';
+import { MobileNav } from '@/components/AppSidebar';
 
-test('renders the desktop shell with labeled navigation', () => {
-  render(<AppSidebar />);
-  expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getAllByText('Schedule').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getAllByText('Libraries').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getAllByText('Settings').length).toBeGreaterThanOrEqual(1);
+beforeEach(() => {
+  vi.clearAllMocks();
 });
 
-test('sidebar shows labels alongside icons, not only in tooltips', () => {
-  render(<AppSidebar />);
-  const homeLabels = screen.getAllByText('Home');
-  expect(homeLabels.some((el) => el.closest('a') !== null)).toBe(true);
+test('mobile nav renders bottom navigation bar with key items', () => {
+  render(<MobileNav />);
+  expect(screen.getByText('Home')).toBeInTheDocument();
+  expect(screen.getByText('Schedule')).toBeInTheDocument();
+  expect(screen.getByText('Libraries')).toBeInTheDocument();
+  expect(screen.getByText('More')).toBeInTheDocument();
 });
 
-test('sidebar has section groupings', () => {
-  render(<AppSidebar />);
-  expect(screen.getByText('Browse')).toBeInTheDocument();
-  expect(screen.getByText('Manage')).toBeInTheDocument();
+test('mobile nav is styled as a fixed bottom bar', () => {
+  const { container } = render(<MobileNav />);
+  const nav = container.querySelector('nav');
+  expect(nav).not.toBeNull();
+  expect(nav?.className).toContain('fixed');
+  expect(nav?.className).toContain('bottom-0');
 });

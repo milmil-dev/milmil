@@ -5,6 +5,7 @@ import {
   FolderLibraryIcon,
   HouseIcon,
   MagnetIcon,
+  Menu01Icon,
   RssIcon,
   Search01Icon,
   Setting07Icon,
@@ -84,40 +85,79 @@ export function AppSidebar() {
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
 
   return (
-    <motion.aside
-      initial={{ x: -20, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-      className="fixed left-0 top-0 bottom-0 w-[200px] z-40 flex flex-col border-r bg-mm-sidebar border-mm-border/50 max-md:hidden"
-    >
-      {/* Logo */}
-      <div className="flex items-center gap-2 px-4 h-14 shrink-0">
-        <span className="text-lg font-bold tracking-tight text-mm-accent">milmil</span>
-      </div>
-
-      {/* Main nav */}
-      <motion.nav
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="flex-1 flex flex-col gap-0.5 px-2 pt-2 overflow-y-auto"
+    <>
+      {/* Desktop sidebar */}
+      <motion.aside
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 32 }}
+        className="fixed left-0 top-0 bottom-0 w-[200px] z-40 flex flex-col border-r bg-mm-sidebar border-mm-border/50 max-md:hidden"
       >
-        <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mm-text-muted">
-          Browse
-        </p>
-        {mainNav.map(({ to, label, icon }) => (
-          <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
-        ))}
+        {/* Logo */}
+        <div className="flex items-center gap-2 px-4 h-14 shrink-0">
+          <span className="text-lg font-bold tracking-tight text-mm-accent">milmil</span>
+        </div>
 
-        <div className="h-px my-3 mx-2 bg-mm-border/40" />
+        {/* Main nav */}
+        <motion.nav
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex-1 flex flex-col gap-0.5 px-2 pt-2 overflow-y-auto"
+        >
+          <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mm-text-muted">
+            Browse
+          </p>
+          {mainNav.map(({ to, label, icon }) => (
+            <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+          ))}
 
-        <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mm-text-muted">
-          Manage
-        </p>
-        {bottomNav.map(({ to, label, icon }) => (
-          <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
-        ))}
-      </motion.nav>
-    </motion.aside>
+          <div className="h-px my-3 mx-2 bg-mm-border/40" />
+
+          <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mm-text-muted">
+            Manage
+          </p>
+          {bottomNav.map(({ to, label, icon }) => (
+            <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+          ))}
+        </motion.nav>
+      </motion.aside>
+
+      {/* Mobile bottom nav */}
+      <MobileNav />
+    </>
+  );
+}
+
+const mobileNav = [
+  { to: '/', label: 'Home', icon: HouseIcon },
+  { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
+  { to: '/search', label: 'Search', icon: Search01Icon },
+  { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
+  { to: '/more', label: 'More', icon: Menu01Icon },
+] as const;
+
+export function MobileNav() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around h-14 border-t border-mm-border/40 bg-mm-sidebar md:hidden safe-area-bottom">
+      {mobileNav.map(({ to, label, icon }) => (
+        <Link
+          key={to}
+          to={to}
+          className={cn(
+            'flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors',
+            isActive(to)
+              ? 'text-mm-accent'
+              : 'text-mm-text-tertiary'
+          )}
+        >
+          <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive(to) ? 2 : 1.5} />
+          <span>{label}</span>
+        </Link>
+      ))}
+    </nav>
   );
 }

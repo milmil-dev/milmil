@@ -49,7 +49,7 @@ function RootLayout() {
       <AppSidebar />
       <div className="flex-1 md:ml-[200px] min-h-screen flex flex-col">
         <TopNav />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
           <AnimatePresence mode="wait">
             <Outlet key={pathname} />
           </AnimatePresence>
