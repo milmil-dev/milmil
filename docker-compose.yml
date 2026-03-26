@@ -1,4 +1,37 @@
 services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8080}:8080"
+    volumes:
+      - ${DATA_DIR:-./data}:/data
+      - ${MEDIA_DIR:-/mnt/media}:/media:ro
+    environment:
+      - DATA_DIR=/data
+      - DATABASE_URL=sqlite:///data/milmil.db
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
+      - REDIS_URL=${REDIS_URL:-}
+      - ARIA2_RPC_URL=http://aria2:6800/jsonrpc
+      - ARIA2_RPC_SECRET=${ARIA2_RPC_SECRET:-milmil_secret}
+      - API_PORT=8080
+    depends_on:
+      - aria2
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:80"
+    environment:
+      - VITE_API_URL=http://localhost:${API_PORT:-8080}
+    depends_on:
+      - api
+
   aria2:
     image: p3terx/aria2-pro
     restart: unless-stopped
@@ -7,8 +40,20 @@ services:
       RPC_PORT: 6800
       LISTEN_PORT: 6888
     volumes:
-      - ./downloads:/downloads
-      - ./aria2-config:/config
+      - ${DOWNLOAD_DIR:-./downloads}:/downloads
+      - ./data/aria2:/config
     ports:
       - "6800:6800"
       - "6888:6888"
+      - "6888:6888/udp"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    profiles:
+      - with-redis
+
+volumes:
+  redis-data:
