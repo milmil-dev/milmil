@@ -98,6 +98,10 @@ func (m *mockDandanplay) PostComment(_ context.Context, _ int64, _ dandanplay.Po
 	return nil
 }
 
+func (m *mockDandanplay) GetBangumiInfo(_ context.Context, _ int64) (*dandanplay.BangumiInfo, error) {
+	return nil, nil
+}
+
 func TestMatchLibrary_MatchesFile(t *testing.T) {
 	q, cleanup := newTestDB(t)
 	defer cleanup()
@@ -136,6 +140,9 @@ func TestMatchLibrary_MatchesFile(t *testing.T) {
 	}
 	if !mf.DandanplayEpisodeID.Valid || mf.DandanplayEpisodeID.Int64 != 12345 {
 		t.Errorf("want dandanplay_episode_id=12345, got %v", mf.DandanplayEpisodeID)
+	}
+	if !mf.DandanplayAnimeID.Valid || mf.DandanplayAnimeID.Int64 != 100 {
+		t.Errorf("want dandanplay_anime_id=100, got %v", mf.DandanplayAnimeID)
 	}
 	if mf.MatchStatus != "auto" {
 		t.Errorf("want match_status=auto, got %s", mf.MatchStatus)
