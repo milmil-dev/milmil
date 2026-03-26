@@ -44,9 +44,7 @@ export function AnimeDetailPage() {
     return (
       <PageTransition>
         <div className="min-h-screen flex items-center justify-center">
-          <p className="text-sm text-mm-text-tertiary">
-            {isError ? '載入失敗' : '找不到此動畫'}
-          </p>
+          <p className="text-sm text-mm-text-tertiary">{isError ? '載入失敗' : '找不到此動畫'}</p>
         </div>
       </PageTransition>
     );
@@ -94,7 +92,11 @@ export function AnimeDetailPage() {
               style={hasCover ? undefined : { background: animeGradient(anime.title) }}
             >
               {hasCover && (
-                <img src={anime.cover_image} alt={anime.title} className="w-full h-full object-cover" />
+                <img
+                  src={anime.cover_image}
+                  alt={anime.title}
+                  className="w-full h-full object-cover"
+                />
               )}
             </motion.div>
 
@@ -127,9 +129,7 @@ export function AnimeDetailPage() {
                   </span>
                 )}
                 {anime.episode_count > 0 && (
-                  <span className="text-[11px] text-mm-text-muted">
-                    {anime.episode_count} 集
-                  </span>
+                  <span className="text-[11px] text-mm-text-muted">{anime.episode_count} 集</span>
                 )}
                 {anime.air_date && (
                   <span className="text-[11px] text-mm-text-muted">

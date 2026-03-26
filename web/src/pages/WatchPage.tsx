@@ -130,8 +130,14 @@ export function WatchPage() {
     }
 
     player.on('play', () => startSaveInterval());
-    player.on('pause', () => { stopSaveInterval(); saveProgress(); });
-    player.on('ended', () => { stopSaveInterval(); saveProgress(); });
+    player.on('pause', () => {
+      stopSaveInterval();
+      saveProgress();
+    });
+    player.on('ended', () => {
+      stopSaveInterval();
+      saveProgress();
+    });
   };
 
   return (

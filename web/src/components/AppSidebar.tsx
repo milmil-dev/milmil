@@ -134,7 +134,7 @@ const mobileNav = [
   { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
   { to: '/search', label: 'Search', icon: Search01Icon },
   { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
-  { to: '/more', label: 'More', icon: Menu01Icon },
+  { to: '/settings', label: 'More', icon: Menu01Icon },
 ] as const;
 
 export function MobileNav() {
@@ -149,9 +149,7 @@ export function MobileNav() {
           to={to}
           className={cn(
             'flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors',
-            isActive(to)
-              ? 'text-mm-accent'
-              : 'text-mm-text-tertiary'
+            isActive(to) ? 'text-mm-accent' : 'text-mm-text-tertiary'
           )}
         >
           <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive(to) ? 2 : 1.5} />

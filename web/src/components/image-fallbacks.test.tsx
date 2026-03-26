@@ -1,12 +1,28 @@
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { vi, test, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
-  Link: ({ children, to, className, style }: { children: React.ReactNode; to: string; className?: string; style?: Record<string, unknown> }) => (
-    <a href={to} className={className} style={style}>{children}</a>
+  Link: ({
+    children,
+    to,
+    className,
+    style,
+  }: {
+    children: React.ReactNode;
+    to: string;
+    className?: string;
+    style?: Record<string, unknown>;
+  }) => (
+    <a href={to} className={className} style={style}>
+      {children}
+    </a>
   ),
-  useRouterState: ({ select }: { select?: (s: { location: { pathname: string } }) => unknown } = {}) => {
+  useRouterState: ({
+    select,
+  }: {
+    select?: (s: { location: { pathname: string } }) => unknown;
+  } = {}) => {
     const state = { location: { pathname: '/' } };
     return select ? select(state) : state;
   },
@@ -15,10 +31,14 @@ vi.mock('@tanstack/react-router', () => ({
 vi.mock('motion/react', () => {
   function stub(tag: string) {
     return function MotionStub(props: Record<string, unknown>) {
-      return React.createElement(tag, {
-        className: props.className,
-        style: props.style,
-      }, props.children as React.ReactNode);
+      return React.createElement(
+        tag,
+        {
+          className: props.className,
+          style: props.style,
+        },
+        props.children as React.ReactNode
+      );
     };
   }
   return {
@@ -42,7 +62,14 @@ import { AnimeRow } from '@/components/AnimeRow';
 test('anime card renders a gradient surface when cover_image is empty', () => {
   const { container } = render(
     <AnimeCard
-      anime={{ bangumi_id: 1, title: 'Fallback Test', title_original: '', cover_image: '', score: 0, episode_count: 0 }}
+      anime={{
+        bangumi_id: 1,
+        title: 'Fallback Test',
+        title_original: '',
+        cover_image: '',
+        score: 0,
+        episode_count: 0,
+      }}
     />
   );
   expect(screen.getAllByText('Fallback Test').length).toBeGreaterThanOrEqual(1);
@@ -54,7 +81,14 @@ test('anime card renders a gradient surface when cover_image is empty', () => {
 test('anime row still renders when cover image is missing', () => {
   render(
     <AnimeRow
-      anime={{ bangumi_id: 2, title: 'No Cover', title_original: 'ノーカバー', cover_image: '', score: 7.5, episode_count: 24 }}
+      anime={{
+        bangumi_id: 2,
+        title: 'No Cover',
+        title_original: 'ノーカバー',
+        cover_image: '',
+        score: 7.5,
+        episode_count: 24,
+      }}
     />
   );
   expect(screen.getByText('No Cover')).toBeInTheDocument();
@@ -64,7 +98,14 @@ test('anime row still renders when cover image is missing', () => {
 test('anime card handles broken image gracefully by showing gradient fallback', () => {
   const { container } = render(
     <AnimeCard
-      anime={{ bangumi_id: 3, title: 'Broken Image', title_original: '', cover_image: 'http://broken.example/img.jpg', score: 8.0, episode_count: 12 }}
+      anime={{
+        bangumi_id: 3,
+        title: 'Broken Image',
+        title_original: '',
+        cover_image: 'http://broken.example/img.jpg',
+        score: 8.0,
+        episode_count: 12,
+      }}
     />
   );
   // Image should exist initially

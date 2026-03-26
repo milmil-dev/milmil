@@ -43,7 +43,9 @@ export function ContinueWatchingCard({
         )}
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, oklch(8% 0.01 260 / 0.8), transparent 50%)' }}
+          style={{
+            background: 'linear-gradient(to top, oklch(8% 0.01 260 / 0.8), transparent 50%)',
+          }}
         />
         {/* Progress bar */}
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">

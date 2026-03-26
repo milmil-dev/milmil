@@ -43,9 +43,7 @@ export function EpisodeListItem({
         <p className={cn('text-[13px] font-medium truncate', isActive && 'text-mm-accent')}>
           {title}
         </p>
-        {airDate && (
-          <p className="text-[10px] mt-0.5 text-mm-text-muted">{airDate}</p>
-        )}
+        {airDate && <p className="text-[10px] mt-0.5 text-mm-text-muted">{airDate}</p>}
       </div>
 
       {/* Progress indicator */}

@@ -1,12 +1,26 @@
-import React from 'react';
-import { vi, test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
-  Link: ({ children, to, className }: { children: React.ReactNode; to: string; className?: string }) => (
-    <a href={to} className={className}>{children}</a>
+  Link: ({
+    children,
+    to,
+    className,
+  }: {
+    children: React.ReactNode;
+    to: string;
+    className?: string;
+  }) => (
+    <a href={to} className={className}>
+      {children}
+    </a>
   ),
-  useRouterState: ({ select }: { select?: (s: { location: { pathname: string } }) => unknown } = {}) => {
+  useRouterState: ({
+    select,
+  }: {
+    select?: (s: { location: { pathname: string } }) => unknown;
+  } = {}) => {
     const state = { location: { pathname: '/' } };
     return select ? select(state) : state;
   },
@@ -15,10 +29,14 @@ vi.mock('@tanstack/react-router', () => ({
 vi.mock('motion/react', () => {
   function stub(tag: string) {
     return function MotionStub(props: Record<string, unknown>) {
-      return React.createElement(tag, {
-        className: props.className,
-        style: props.style,
-      }, props.children as React.ReactNode);
+      return React.createElement(
+        tag,
+        {
+          className: props.className,
+          style: props.style,
+        },
+        props.children as React.ReactNode
+      );
     };
   }
   return {
@@ -53,7 +71,7 @@ test('anime card exposes title and metadata in a denser media surface', () => {
       }}
     />
   );
-  expect(screen.getByText('Test Anime')).toBeInTheDocument();
+  expect(screen.getAllByText('Test Anime').length).toBeGreaterThanOrEqual(1);
   expect(screen.getByText('12 集')).toBeInTheDocument();
 });
 
@@ -73,26 +91,14 @@ test('continue watching card renders progress and anime info', () => {
 
 test('episode list item shows episode number and title', () => {
   render(
-    <EpisodeListItem
-      sort={3}
-      title="The Journey Begins"
-      isActive={false}
-      href="/watch/456"
-    />
+    <EpisodeListItem sort={3} title="The Journey Begins" isActive={false} href="/watch/456" />
   );
   expect(screen.getByText('3')).toBeInTheDocument();
   expect(screen.getByText('The Journey Begins')).toBeInTheDocument();
 });
 
 test('episode list item marks active episode', () => {
-  render(
-    <EpisodeListItem
-      sort={1}
-      title="Pilot"
-      isActive={true}
-      href="/watch/789"
-    />
-  );
+  render(<EpisodeListItem sort={1} title="Pilot" isActive={true} href="/watch/789" />);
   const link = screen.getByText('Pilot').closest('a');
   expect(link?.className).toContain('accent');
 });

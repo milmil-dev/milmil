@@ -1,14 +1,28 @@
-import React from 'react';
-import { vi, test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
-  Link: ({ children, to, className }: { children: React.ReactNode; to: string; className?: string }) => (
-    <a href={to} className={className}>{children}</a>
+  Link: ({
+    children,
+    to,
+    className,
+  }: {
+    children: React.ReactNode;
+    to: string;
+    className?: string;
+  }) => (
+    <a href={to} className={className}>
+      {children}
+    </a>
   ),
   useParams: () => ({ fileId: 'test-file-123' }),
   useSearch: () => ({ episodeId: 'ep1' }),
-  useRouterState: ({ select }: { select?: (s: { location: { pathname: string } }) => unknown } = {}) => {
+  useRouterState: ({
+    select,
+  }: {
+    select?: (s: { location: { pathname: string } }) => unknown;
+  } = {}) => {
     const state = { location: { pathname: '/watch/test-file-123' } };
     return select ? select(state) : state;
   },
@@ -26,10 +40,14 @@ vi.mock('@tanstack/react-query', () => ({
 vi.mock('motion/react', () => {
   function stub(tag: string) {
     return function MotionStub(props: Record<string, unknown>) {
-      return React.createElement(tag, {
-        className: props.className,
-        style: props.style,
-      }, props.children as React.ReactNode);
+      return React.createElement(
+        tag,
+        {
+          className: props.className,
+          style: props.style,
+        },
+        props.children as React.ReactNode
+      );
     };
   }
   return {
