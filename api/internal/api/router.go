@@ -121,6 +121,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	searchGroup.GET("", h.handleTorrentSearch)
 	searchGroup.POST("/add", h.handleTorrentSearchAdd)
 
+	// Subtitles — protected (with query param token fallback for <track src>)
+	subGroup := v1.Group("/subtitles", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
+	subGroup.GET("/media/:fileId", h.handleListSubtitles)
+	subGroup.GET("/:id/content", h.handleSubtitleContent)
+
 	// Download Rules — protected
 	ruleGroup := v1.Group("/download-rules", jwtMiddleware(cfg.JWTSecret))
 	ruleGroup.GET("", h.handleListDownloadRules)

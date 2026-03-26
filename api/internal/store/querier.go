@@ -20,12 +20,14 @@ type Querier interface {
 	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
 	CreateRSSFeed(ctx context.Context, arg CreateRSSFeedParams) (RssFeed, error)
 	CreateScanSummary(ctx context.Context, arg CreateScanSummaryParams) (ScanSummary, error)
+	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteRSSFeed(ctx context.Context, id string) error
+	DeleteSubtitleFile(ctx context.Context, id string) error
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
@@ -34,6 +36,7 @@ type Querier interface {
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
 	GetRSSFeed(ctx context.Context, id string) (RssFeed, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
+	GetSubtitleFile(ctx context.Context, id string) (SubtitleFile, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
@@ -49,6 +52,8 @@ type Querier interface {
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
+	ListSubtitlePathsByMediaFile(ctx context.Context, mediaFileID string) ([]string, error)
+	ListSubtitlesByMediaFile(ctx context.Context, mediaFileID string) ([]SubtitleFile, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error

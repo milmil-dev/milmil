@@ -16,6 +16,26 @@ var videoExtensions = map[string]struct{}{
 	".wmv": {}, ".m4v": {}, ".ts": {}, ".webm": {}, ".flv": {},
 }
 
+var subtitleExtensions = map[string]string{
+	".srt": "srt",
+	".ass": "ass",
+	".ssa": "ass",
+	".vtt": "vtt",
+}
+
+// languageSuffixes maps common filename language tags to BCP-47 codes.
+var languageSuffixes = map[string]string{
+	"chs": "zh-Hans",
+	"cht": "zh-Hant",
+	"sc":  "zh-Hans",
+	"tc":  "zh-Hant",
+	"zh":  "zh",
+	"en":  "en",
+	"ja":  "ja",
+	"jp":  "ja",
+	"ko":  "ko",
+}
+
 type Scanner struct {
 	queries *store.Queries
 }
@@ -33,7 +53,8 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 		return err
 	}
 
-	scannedPaths := make(map[string]struct{})
+	// scannedPaths maps video file path → media file ID
+	scannedPaths := make(map[string]string)
 	var filesFound int64
 
 	walkErr := filepath.Walk(library.Path, func(path string, info os.FileInfo, err error) error {
@@ -54,7 +75,7 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 		if upsertErr != nil {
 			return upsertErr
 		}
-		scannedPaths[path] = struct{}{}
+		scannedPaths[path] = upsertedFile.ID
 		filesFound++
 
 		// Compute file hash if not already set
@@ -71,6 +92,11 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 	})
 	if walkErr != nil {
 		return walkErr
+	}
+
+	// Scan for external subtitle files matching each video
+	if err := s.scanSubtitles(ctx, scannedPaths); err != nil {
+		return err
 	}
 
 	// Remove media files that no longer exist on disk
@@ -95,4 +121,83 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 	_ = s.queries.UpdateLibraryLastScanned(ctx, library.ID)
 
 	return nil
+}
+
+// scanSubtitles discovers external subtitle files that match scanned video files.
+// scannedPaths maps video file path → media file ID.
+func (s *Scanner) scanSubtitles(ctx context.Context, scannedPaths map[string]string) error {
+	for videoPath, mediaFileID := range scannedPaths {
+		dir := filepath.Dir(videoPath)
+		videoBase := strings.TrimSuffix(filepath.Base(videoPath), filepath.Ext(videoPath))
+
+		// Build a set of already-known subtitle paths for this media file
+		existingPaths, err := s.queries.ListSubtitlePathsByMediaFile(ctx, mediaFileID)
+		if err != nil {
+			return err
+		}
+		known := make(map[string]struct{}, len(existingPaths))
+		for _, p := range existingPaths {
+			known[p] = struct{}{}
+		}
+
+		// Look for subtitle files in the same directory
+		for ext, format := range subtitleExtensions {
+			pattern := filepath.Join(dir, videoBase+"*"+ext)
+			matches, globErr := filepath.Glob(pattern)
+			if globErr != nil {
+				continue
+			}
+			for _, subPath := range matches {
+				// Verify the match starts with the video base name
+				subBase := filepath.Base(subPath)
+				if !strings.HasPrefix(subBase, videoBase) {
+					continue
+				}
+
+				if _, exists := known[subPath]; exists {
+					continue
+				}
+
+				lang := detectLanguage(subBase, videoBase)
+				_, createErr := s.queries.CreateSubtitleFile(ctx, store.CreateSubtitleFileParams{
+					ID:          uuid.NewString(),
+					MediaFileID: mediaFileID,
+					Path:        subPath,
+					Language:    lang,
+					Format:      format,
+					Source:      "local",
+				})
+				if createErr != nil {
+					// Skip duplicates or other errors silently
+					continue
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// detectLanguage extracts the language tag from a subtitle filename.
+// Given videoBase "episode01" and subBase "episode01.chs.srt", it returns "zh-Hans".
+// Falls back to "unknown" if no known suffix is found.
+func detectLanguage(subBase, videoBase string) string {
+	// Remove the subtitle extension to get the middle part
+	withoutExt := strings.TrimSuffix(subBase, filepath.Ext(subBase))
+	// The suffix is everything after the video base name
+	suffix := strings.TrimPrefix(withoutExt, videoBase)
+	suffix = strings.TrimLeft(suffix, ".")
+
+	if suffix == "" {
+		return "unknown"
+	}
+
+	// Check each dot-separated part against known language suffixes
+	parts := strings.Split(suffix, ".")
+	for _, part := range parts {
+		lower := strings.ToLower(part)
+		if lang, ok := languageSuffixes[lower]; ok {
+			return lang
+		}
+	}
+	return "unknown"
 }
