@@ -5,6 +5,26 @@ import { type RenderOptions, render } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
+const storage = new Map<string, string>();
+
+if (typeof window !== 'undefined' && typeof window.localStorage?.setItem !== 'function') {
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        storage.set(key, value);
+      },
+      removeItem: (key: string) => {
+        storage.delete(key);
+      },
+      clear: () => {
+        storage.clear();
+      },
+    },
+  });
+}
+
 function createTestQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -22,7 +42,7 @@ function AllProviders({ children }: { children: ReactNode }) {
   return (
     <I18nProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="light">{children}</ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </QueryClientProvider>
     </I18nProvider>
   );
