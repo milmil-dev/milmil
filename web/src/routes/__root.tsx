@@ -8,6 +8,7 @@ import { CommandPalette } from '../components/CommandPalette';
 import { TopNav } from '../components/TopNav';
 import { useWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
+import { NotFoundPage } from '../pages/NotFoundPage';
 import { useAuthStore } from '../store/auth-store';
 
 interface StatusResponse {
@@ -38,6 +39,22 @@ export function DesktopShell({ children }: { children: ReactNode }) {
           <div className="mx-auto w-full max-w-[1840px]">{children}</div>
         </main>
       </div>
+    </div>
+  );
+}
+
+function RootError() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-mm-bg">
+      <h1 className="text-2xl font-bold text-white mb-2">出錯了</h1>
+      <p className="text-sm text-mm-text-secondary mb-4">發生了意外錯誤</p>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="text-sm font-medium text-mm-accent hover:underline"
+      >
+        重新載入
+      </button>
     </div>
   );
 }
@@ -109,4 +126,6 @@ export const Route = createRootRoute({
     }
   },
   component: RootLayout,
+  notFoundComponent: NotFoundPage,
+  errorComponent: RootError,
 });
