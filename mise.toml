@@ -1,0 +1,4 @@
+[tools]
+go = "1.24.4"
+bun = "latest"
+neovim = "latest"
