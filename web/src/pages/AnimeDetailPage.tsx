@@ -29,23 +29,11 @@ export function AnimeDetailPage() {
     return (
       <PageTransition>
         <div className="min-h-screen">
-          <div
-            className="h-[280px] animate-pulse"
-            style={{ backgroundColor: 'oklch(12% 0.01 280)' }}
-          />
+          <div className="h-[280px] animate-pulse bg-mm-border-subtle" />
           <div className="px-8 py-6 space-y-4">
-            <div
-              className="h-6 rounded"
-              style={{ backgroundColor: 'oklch(14% 0.01 280)', width: '30%' }}
-            />
-            <div
-              className="h-4 rounded"
-              style={{ backgroundColor: 'oklch(12% 0.01 280)', width: '60%' }}
-            />
-            <div
-              className="h-4 rounded"
-              style={{ backgroundColor: 'oklch(11% 0.01 280)', width: '80%' }}
-            />
+            <div className="h-6 rounded bg-mm-border" style={{ width: '30%' }} />
+            <div className="h-4 rounded bg-mm-border-subtle" style={{ width: '60%' }} />
+            <div className="h-4 rounded bg-mm-surface" style={{ width: '80%' }} />
           </div>
         </div>
       </PageTransition>
@@ -127,7 +115,7 @@ export function AnimeDetailPage() {
               )}
               <div className="flex items-center gap-3 mt-2 flex-wrap">
                 {anime.score > 0 && (
-                  <span className="text-[13px] font-bold" style={{ color: 'oklch(65% 0.2 35)' }}>
+                  <span className="text-[13px] font-bold text-mm-accent">
                     {anime.score.toFixed(1)} 分
                   </span>
                 )}

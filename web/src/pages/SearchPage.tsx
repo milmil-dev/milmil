@@ -42,15 +42,14 @@ export function SearchPage() {
           <HugeiconsIcon
             icon={Search01Icon}
             size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2"
-            style={{ color: 'oklch(35% 0.01 280)' }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-mm-text-muted"
           />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="搜索你喜歡的動畫..."
-            className="w-full pl-10 pr-4 py-3 rounded-lg text-sm text-white bg-transparent border outline-none transition-colors focus:border-[oklch(65%_0.2_35)] placeholder:text-[oklch(30%_0.01_280)]"
-            style={{ borderColor: 'oklch(18% 0.01 280)', backgroundColor: 'oklch(9% 0.01 280)' }}
+            className="w-full pl-10 pr-4 py-3 rounded-lg text-sm text-white bg-mm-sidebar border outline-none transition-colors focus:border-[oklch(65%_0.2_35)] placeholder:text-mm-text-muted"
+            style={{ borderColor: 'oklch(18% 0.01 280)' }}
           />
         </motion.div>
 
@@ -62,9 +61,7 @@ export function SearchPage() {
               style={{ color: 'oklch(22% 0.01 280)' }}
               className="mx-auto mb-4"
             />
-            <p className="text-sm" style={{ color: 'oklch(32% 0.01 280)' }}>
-              搜索你喜歡的動畫
-            </p>
+            <p className="text-sm text-mm-text-muted">搜索你喜歡的動畫</p>
           </div>
         )}
 
@@ -75,8 +72,8 @@ export function SearchPage() {
           >
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="animate-pulse rounded overflow-hidden">
-                <div className="aspect-[3/4]" style={{ backgroundColor: 'oklch(14% 0.01 280)' }} />
-                <div className="p-2" style={{ backgroundColor: 'oklch(10% 0.01 280)' }}>
+                <div className="aspect-[3/4] bg-mm-border" />
+                <div className="p-2 bg-mm-surface">
                   <div
                     className="h-3 rounded"
                     style={{ backgroundColor: 'oklch(16% 0.01 280)', width: '60%' }}
@@ -100,9 +97,7 @@ export function SearchPage() {
 
         {!isLoading && debouncedQuery && results.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-sm" style={{ color: 'oklch(38% 0.01 280)' }}>
-              找不到「{debouncedQuery}」的結果
-            </p>
+            <p className="text-sm text-mm-text-tertiary">找不到「{debouncedQuery}」的結果</p>
           </div>
         )}
       </div>

@@ -57,16 +57,13 @@ function NavItem({
             to={to}
             className={cn(
               'relative flex items-center justify-center w-10 h-10 rounded transition-colors',
-              isActive
-                ? 'text-white'
-                : 'text-[oklch(42%_0.01_280)] hover:text-[oklch(70%_0.01_280)]'
+              isActive ? 'text-white' : 'text-mm-text-tertiary hover:text-[oklch(70%_0.01_280)]'
             )}
           >
             {isActive && (
               <motion.div
                 layoutId="activeBar"
-                className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full"
-                style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
+                className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-mm-accent"
                 transition={{ type: 'spring', stiffness: 380, damping: 32 }}
               />
             )}
@@ -99,11 +96,7 @@ export function AppSidebar() {
         initial={{ x: -60, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-        className="fixed left-0 top-0 bottom-0 w-[60px] z-40 flex flex-col items-center border-r"
-        style={{
-          backgroundColor: 'oklch(9% 0.01 280)',
-          borderColor: 'oklch(14% 0.01 280)',
-        }}
+        className="fixed left-0 top-0 bottom-0 w-[60px] z-40 flex flex-col items-center border-r bg-mm-sidebar border-mm-border"
       >
         {/* Logo */}
         <motion.div
@@ -112,9 +105,7 @@ export function AppSidebar() {
           transition={{ delay: 0.1 }}
           className="py-5"
         >
-          <p className="text-base font-bold tracking-tight" style={{ color: 'oklch(65% 0.2 35)' }}>
-            m
-          </p>
+          <p className="text-base font-bold tracking-tight text-mm-accent">m</p>
         </motion.div>
 
         {/* Main nav */}

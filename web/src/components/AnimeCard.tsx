@@ -33,17 +33,15 @@ export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: n
             style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}
           >
             {anime.score > 0 && (
-              <span className="text-[10px] font-bold" style={{ color: 'oklch(65% 0.2 35)' }}>
-                {anime.score.toFixed(1)}
-              </span>
+              <span className="text-[10px] font-bold text-mm-accent">{anime.score.toFixed(1)}</span>
             )}
           </div>
         </div>
-        <div className="p-2" style={{ backgroundColor: 'oklch(10% 0.01 280)' }}>
+        <div className="p-2 bg-mm-surface">
           <p className="text-[12px] font-semibold text-white truncate leading-snug">
             {anime.title}
           </p>
-          <p className="text-[10px] mt-0.5" style={{ color: 'oklch(38% 0.01 280)' }}>
+          <p className="text-[10px] mt-0.5 text-mm-text-tertiary">
             {anime.episode_count > 0 ? `${anime.episode_count} 集` : ''}
           </p>
         </div>

@@ -16,10 +16,9 @@ export function TopNav() {
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="sticky top-0 z-30 flex items-center h-12 px-6 gap-6 border-b"
+      className="sticky top-0 z-30 flex items-center h-12 px-6 gap-6 border-b border-mm-border-subtle"
       style={{
         backgroundColor: 'oklch(7% 0.01 280 / 0.85)',
-        borderColor: 'oklch(12% 0.01 280)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
       }}
@@ -32,17 +31,14 @@ export function TopNav() {
             to={to}
             className={cn(
               'relative text-[13px] font-medium transition-colors py-1',
-              isActive
-                ? 'text-white'
-                : 'text-[oklch(45%_0.01_280)] hover:text-[oklch(75%_0.01_280)]'
+              isActive ? 'text-white' : 'text-mm-text-secondary hover:text-[oklch(75%_0.01_280)]'
             )}
           >
             {label}
             {isActive && (
               <motion.div
                 layoutId="topNavUnderline"
-                className="absolute -bottom-[13px] left-0 right-0 h-px"
-                style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
+                className="absolute -bottom-[13px] left-0 right-0 h-px bg-mm-accent"
                 transition={{ type: 'spring', stiffness: 400, damping: 35 }}
               />
             )}

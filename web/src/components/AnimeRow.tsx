@@ -26,17 +26,15 @@ export function AnimeRow({ anime, index = 0 }: { anime: AnimeSummary; index?: nu
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-medium text-white truncate">{anime.title}</p>
-          <p className="text-[11px] truncate mt-0.5" style={{ color: 'oklch(38% 0.01 280)' }}>
+          <p className="text-[11px] truncate mt-0.5 text-mm-text-tertiary">
             {anime.title_original}
           </p>
         </div>
         <div className="shrink-0 text-right">
           {anime.score > 0 && (
-            <p className="text-[11px] font-medium" style={{ color: 'oklch(65% 0.2 35)' }}>
-              {anime.score.toFixed(1)}
-            </p>
+            <p className="text-[11px] font-medium text-mm-accent">{anime.score.toFixed(1)}</p>
           )}
-          <p className="text-[10px]" style={{ color: 'oklch(32% 0.01 280)' }}>
+          <p className="text-[10px] text-mm-text-muted">
             {anime.episode_count > 0 ? `${anime.episode_count} 集` : ''}
           </p>
         </div>

@@ -38,6 +38,6 @@ export const useAuthStore = create<AuthState>()(
         set({ initialized: value }, false, 'auth/setInitialized');
       },
     }),
-    { name: 'auth' },
-  ),
+    { name: 'auth' }
+  )
 );

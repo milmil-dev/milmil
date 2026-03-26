@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useAuthStore } from '../store/auth-store';
 import { LoginPage } from '../pages/LoginPage';
+import { useAuthStore } from '../store/auth-store';
 
 export const Route = createFileRoute('/login')({
   beforeLoad: () => {

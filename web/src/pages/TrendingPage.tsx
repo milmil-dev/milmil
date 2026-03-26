@@ -45,16 +45,13 @@ export function TrendingPage() {
           >
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="animate-pulse rounded overflow-hidden">
-                <div className="aspect-[3/4]" style={{ backgroundColor: 'oklch(14% 0.01 280)' }} />
-                <div className="p-2" style={{ backgroundColor: 'oklch(10% 0.01 280)' }}>
+                <div className="aspect-[3/4] bg-mm-border" />
+                <div className="p-2 bg-mm-surface">
                   <div
                     className="h-3 rounded mb-1"
                     style={{ backgroundColor: 'oklch(16% 0.01 280)', width: '70%' }}
                   />
-                  <div
-                    className="h-2 rounded"
-                    style={{ backgroundColor: 'oklch(13% 0.01 280)', width: '40%' }}
-                  />
+                  <div className="h-2 rounded bg-mm-surface-hover" style={{ width: '40%' }} />
                 </div>
               </div>
             ))}
@@ -63,14 +60,11 @@ export function TrendingPage() {
 
         {isError && allItems.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-sm mb-3" style={{ color: 'oklch(45% 0.01 280)' }}>
-              載入失敗
-            </p>
+            <p className="text-sm mb-3 text-mm-text-secondary">載入失敗</p>
             <button
               type="button"
               onClick={() => refetch()}
-              className="text-sm font-medium"
-              style={{ color: 'oklch(65% 0.2 35)' }}
+              className="text-sm font-medium text-mm-accent"
             >
               重試
             </button>
@@ -94,8 +88,8 @@ export function TrendingPage() {
                   whileTap={{ scale: 0.96 }}
                   onClick={() => setPage((p) => p + 1)}
                   disabled={isLoading}
-                  className="px-5 py-2 text-sm font-medium rounded transition-colors disabled:opacity-40"
-                  style={{ backgroundColor: 'oklch(14% 0.01 280)', color: 'oklch(65% 0.01 280)' }}
+                  className="px-5 py-2 text-sm font-medium rounded transition-colors disabled:opacity-40 bg-mm-border"
+                  style={{ color: 'oklch(65% 0.01 280)' }}
                 >
                   {isLoading ? '載入中...' : '載入更多'}
                 </motion.button>

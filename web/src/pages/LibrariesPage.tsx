@@ -70,10 +70,7 @@ function LibraryCard({
 
         {/* Scanning badge */}
         {scanning && (
-          <div
-            className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'oklch(65% 0.2 35)', color: '#000' }}
-          >
+          <div className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-mm-accent text-black">
             SCANNING
           </div>
         )}
@@ -109,14 +106,9 @@ function LibraryCard({
       </div>
 
       {/* Info area */}
-      <div className="p-3" style={{ backgroundColor: 'oklch(11% 0.01 280)' }}>
+      <div className="p-3 bg-mm-surface">
         <p className="font-semibold text-sm text-white truncate leading-snug">{lib.name}</p>
-        <p
-          className="text-[11px] font-mono truncate mt-0.5"
-          style={{ color: 'oklch(48% 0.01 280)' }}
-        >
-          {lib.path}
-        </p>
+        <p className="text-[11px] font-mono truncate mt-0.5 text-mm-text-secondary">{lib.path}</p>
         <div className="flex items-center gap-2 mt-2">
           <span
             className={cn(
@@ -128,9 +120,7 @@ function LibraryCard({
           >
             {lib.enabled ? 'ON' : 'OFF'}
           </span>
-          <span className="text-[10px]" style={{ color: 'oklch(38% 0.01 280)' }}>
-            {lastScanned}
-          </span>
+          <span className="text-[10px] text-mm-text-tertiary">{lastScanned}</span>
         </div>
       </div>
     </div>
@@ -146,32 +136,21 @@ function AddCard({ onClick }: { onClick: () => void }) {
       className="group rounded overflow-hidden border border-dashed transition-colors w-full focus-visible:ring-2 focus-visible:ring-[oklch(65%_0.2_35)] focus-visible:outline-none"
       style={{ borderColor: 'oklch(22% 0.01 280)' }}
     >
-      <div
-        className="h-44 flex items-center justify-center transition-colors"
-        style={{ backgroundColor: 'oklch(9% 0.01 280)' }}
-      >
+      <div className="h-44 flex items-center justify-center transition-colors bg-mm-sidebar">
         <div
           className="w-11 h-11 rounded-full border flex items-center justify-center transition-colors group-hover:border-[oklch(65%_0.2_35)]"
           style={{ borderColor: 'oklch(25% 0.01 280)' }}
         >
-          <span
-            className="text-xl leading-none transition-colors group-hover:text-[oklch(65%_0.2_35)]"
-            style={{ color: 'oklch(32% 0.01 280)' }}
-          >
+          <span className="text-xl leading-none transition-colors group-hover:text-[oklch(65%_0.2_35)] text-mm-text-muted">
             +
           </span>
         </div>
       </div>
-      <div className="p-3" style={{ backgroundColor: 'oklch(11% 0.01 280)' }}>
-        <p
-          className="text-sm font-semibold transition-colors group-hover:text-white"
-          style={{ color: 'oklch(40% 0.01 280)' }}
-        >
+      <div className="p-3 bg-mm-surface">
+        <p className="text-sm font-semibold transition-colors group-hover:text-white text-mm-text-tertiary">
           Add Library
         </p>
-        <p className="text-[11px] mt-0.5" style={{ color: 'oklch(30% 0.01 280)' }}>
-          Connect a media folder
-        </p>
+        <p className="text-[11px] mt-0.5 text-mm-text-muted">Connect a media folder</p>
       </div>
     </button>
   );
@@ -216,8 +195,7 @@ function LibraryForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="lib-name"
-              className="text-[10px] font-bold uppercase tracking-[0.2em]"
-              style={{ color: 'oklch(50% 0.01 280)' }}
+              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Name
             </Label>
@@ -243,8 +221,7 @@ function LibraryForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="lib-path"
-              className="text-[10px] font-bold uppercase tracking-[0.2em]"
-              style={{ color: 'oklch(50% 0.01 280)' }}
+              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Path
             </Label>
@@ -267,8 +244,7 @@ function LibraryForm({
           <div className="space-y-1.5">
             <Label
               htmlFor="lib-interval"
-              className="text-[10px] font-bold uppercase tracking-[0.2em]"
-              style={{ color: 'oklch(50% 0.01 280)' }}
+              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Scan Interval (minutes)
             </Label>
@@ -293,8 +269,7 @@ function LibraryForm({
           >
             <Label
               htmlFor="lib-enabled"
-              className="text-[10px] font-bold uppercase tracking-[0.2em]"
-              style={{ color: 'oklch(50% 0.01 280)' }}
+              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Enabled
             </Label>
@@ -312,8 +287,7 @@ function LibraryForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full font-bold text-black"
-            style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
+            className="w-full font-bold text-black bg-mm-accent"
           >
             {isSubmitting ? 'Saving\u2026' : submitLabel}
           </Button>
@@ -393,10 +367,7 @@ export function LibrariesPage() {
         <div className="px-8 pt-12 pb-6">
           <div className="flex items-end justify-between">
             <div>
-              <p
-                className="text-[11px] font-bold uppercase tracking-[0.3em]"
-                style={{ color: 'oklch(65% 0.2 35)' }}
-              >
+              <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">
                 milmil
               </p>
               <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">My Libraries</h1>
@@ -404,8 +375,7 @@ export function LibrariesPage() {
             <motion.button
               whileTap={{ scale: 0.94 }}
               onClick={() => setDrawerMode('add')}
-              className="px-4 py-2 text-sm font-bold rounded transition-opacity hover:opacity-80 text-black"
-              style={{ backgroundColor: 'oklch(65% 0.2 35)' }}
+              className="px-4 py-2 text-sm font-bold rounded transition-opacity hover:opacity-80 text-black bg-mm-accent"
             >
               + Add Library
             </motion.button>
@@ -421,8 +391,8 @@ export function LibrariesPage() {
             >
               {skeletonCards.map((i) => (
                 <div key={i} className="rounded overflow-hidden animate-pulse">
-                  <div className="h-44" style={{ backgroundColor: 'oklch(14% 0.01 280)' }} />
-                  <div className="p-3" style={{ backgroundColor: 'oklch(11% 0.01 280)' }}>
+                  <div className="h-44 bg-mm-border" />
+                  <div className="p-3 bg-mm-surface">
                     <div
                       className="h-3 rounded mb-2"
                       style={{ backgroundColor: 'oklch(18% 0.01 280)', width: '55%' }}
@@ -494,9 +464,8 @@ export function LibrariesPage() {
         >
           <SheetContent
             side="right"
-            className="w-[380px] border-l"
+            className="w-[380px] border-l bg-mm-surface"
             style={{
-              backgroundColor: 'oklch(10% 0.01 280)',
               borderColor: 'oklch(18% 0.01 280)',
             }}
           >
@@ -540,8 +509,8 @@ export function LibrariesPage() {
         {/* Delete confirmation */}
         <AlertDialog open={!!deleteLib} onOpenChange={(open) => !open && setDeleteLib(null)}>
           <AlertDialogContent
+            className="bg-mm-border-subtle"
             style={{
-              backgroundColor: 'oklch(12% 0.01 280)',
               borderColor: 'oklch(20% 0.01 280)',
             }}
           >
@@ -549,7 +518,7 @@ export function LibrariesPage() {
               <AlertDialogTitle className="text-white">
                 Delete &ldquo;{deleteLib?.name}&rdquo;?
               </AlertDialogTitle>
-              <AlertDialogDescription style={{ color: 'oklch(52% 0.01 280)' }}>
+              <AlertDialogDescription className="text-mm-text-secondary">
                 All media file records will be removed. Your files on disk are unaffected.
               </AlertDialogDescription>
             </AlertDialogHeader>

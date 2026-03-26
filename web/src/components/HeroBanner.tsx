@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
+import { cn } from '../lib/utils';
 
 export function HeroBanner({ items }: { items: AnimeSummary[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -117,10 +118,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                   </h2>
 
                   {featured.title_original && featured.title_original !== featured.title && (
-                    <p
-                      className="text-[12px] mt-1 truncate"
-                      style={{ color: 'oklch(48% 0.01 280)' }}
-                    >
+                    <p className="text-[12px] mt-1 truncate text-mm-text-secondary">
                       {featured.title_original}
                     </p>
                   )}
@@ -128,15 +126,12 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                   {/* Score + episode count */}
                   <div className="flex items-center gap-3 mt-2">
                     {featured.score > 0 && (
-                      <span
-                        className="text-[13px] font-bold"
-                        style={{ color: 'oklch(65% 0.2 35)' }}
-                      >
+                      <span className="text-[13px] font-bold text-mm-accent">
                         ♡ {featured.score.toFixed(1)}
                       </span>
                     )}
                     {featured.episode_count > 0 && (
-                      <span className="text-[12px]" style={{ color: 'oklch(42% 0.01 280)' }}>
+                      <span className="text-[12px] text-mm-text-tertiary">
                         {featured.episode_count} 集
                       </span>
                     )}
@@ -163,12 +158,11 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                   type="button"
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
-                  className="h-1 rounded-full transition-all duration-300"
-                  style={{
-                    width: i === activeIndex ? 20 : 6,
-                    backgroundColor:
-                      i === activeIndex ? 'oklch(65% 0.2 35)' : 'oklch(30% 0.01 280)',
-                  }}
+                  className={cn(
+                    'h-1 rounded-full transition-all duration-300',
+                    i === activeIndex ? 'bg-mm-accent' : 'bg-mm-text-muted'
+                  )}
+                  style={{ width: i === activeIndex ? 20 : 6 }}
                 />
               ))}
             </div>
@@ -205,7 +199,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
               </div>
               <div className="px-3 py-2.5">
                 <p className="text-[12px] font-semibold text-white truncate">{nextItem.title}</p>
-                <p className="text-[10px] mt-0.5" style={{ color: 'oklch(40% 0.01 280)' }}>
+                <p className="text-[10px] mt-0.5 text-mm-text-tertiary">
                   {nextItem.episode_count > 0 ? `${nextItem.episode_count} 集` : ''}
                   {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
                 </p>

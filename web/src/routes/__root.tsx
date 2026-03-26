@@ -31,7 +31,7 @@ function RootLayout() {
   }
 
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: 'oklch(7% 0.01 280)' }}>
+    <div className="flex min-h-screen bg-mm-bg">
       <AppSidebar />
       <div className="flex-1 ml-[60px] min-h-screen flex flex-col">
         <TopNav />

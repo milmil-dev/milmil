@@ -90,8 +90,8 @@ export function HomePage() {
               key={genre}
               to="/search"
               search={{ q: genre }}
-              className="shrink-0 px-3 py-1 text-[11px] font-medium rounded-full transition-colors"
-              style={{ backgroundColor: 'oklch(12% 0.01 280)', color: 'oklch(52% 0.01 280)' }}
+              className="shrink-0 px-3 py-1 text-[11px] font-medium rounded-full transition-colors bg-mm-border-subtle"
+              style={{ color: 'oklch(52% 0.01 280)' }}
             >
               {genre}
             </Link>
@@ -131,21 +131,15 @@ export function HomePage() {
               className="group block rounded border border-dashed py-8 px-6 text-center transition-colors hover:border-[oklch(65%_0.2_35)]/30"
               style={{ borderColor: 'oklch(18% 0.01 280)' }}
             >
-              <div
-                className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3 transition-colors group-hover:bg-[oklch(65%_0.2_35)]/10"
-                style={{ backgroundColor: 'oklch(12% 0.01 280)' }}
-              >
+              <div className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3 transition-colors group-hover:bg-[oklch(65%_0.2_35)]/10 bg-mm-border-subtle">
                 <HugeiconsIcon
                   icon={FolderLibraryIcon}
                   size={18}
-                  className="transition-colors group-hover:text-[oklch(65%_0.2_35)]"
-                  style={{ color: 'oklch(32% 0.01 280)' }}
+                  className="transition-colors group-hover:text-[oklch(65%_0.2_35)] text-mm-text-muted"
                 />
               </div>
               <p className="text-sm font-medium text-white mb-1">尚未新增媒體庫</p>
-              <p className="text-[12px]" style={{ color: 'oklch(38% 0.01 280)' }}>
-                新增資料夾開始掃描
-              </p>
+              <p className="text-[12px] text-mm-text-tertiary">新增資料夾開始掃描</p>
             </Link>
           ) : (
             <div className="grid gap-2">
@@ -153,8 +147,7 @@ export function HomePage() {
                 <Link
                   key={lib.id}
                   to="/libraries"
-                  className="group block rounded overflow-hidden"
-                  style={{ backgroundColor: 'oklch(10% 0.01 280)' }}
+                  className="group block rounded overflow-hidden bg-mm-surface"
                 >
                   <div
                     className="h-1.5 transition-all duration-300 group-hover:h-2.5"
@@ -162,10 +155,7 @@ export function HomePage() {
                   />
                   <div className="px-4 py-3">
                     <p className="text-[13px] font-semibold text-white truncate">{lib.name}</p>
-                    <p
-                      className="text-[11px] font-mono truncate mt-0.5"
-                      style={{ color: 'oklch(38% 0.01 280)' }}
-                    >
+                    <p className="text-[11px] font-mono truncate mt-0.5 text-mm-text-tertiary">
                       {lib.path}
                     </p>
                   </div>
@@ -186,8 +176,7 @@ function SectionHeader({ title, to }: { title: string; to: string }) {
       <h2 className="text-[15px] font-bold text-white tracking-tight">{title}</h2>
       <Link
         to={to}
-        className="text-[11px] font-medium transition-colors hover:text-white"
-        style={{ color: 'oklch(45% 0.01 280)' }}
+        className="text-[11px] font-medium transition-colors hover:text-white text-mm-text-secondary"
       >
         查看全部 →
       </Link>

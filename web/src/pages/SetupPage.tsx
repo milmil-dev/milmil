@@ -47,9 +47,7 @@ export function SetupPage() {
         <h1 className="text-xl font-semibold text-zinc-100 mb-2">
           {i18n._(msg`auth.setup.title`)}
         </h1>
-        <p className="text-sm text-zinc-400 mb-6">
-          {i18n._(msg`auth.setup.subtitle`)}
-        </p>
+        <p className="text-sm text-zinc-400 mb-6">{i18n._(msg`auth.setup.subtitle`)}</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm text-zinc-400 mb-1">

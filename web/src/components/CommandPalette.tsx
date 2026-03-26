@@ -89,9 +89,8 @@ export function CommandPalette() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="fixed z-50 top-[20%] left-1/2 -translate-x-1/2 w-full max-w-[500px] rounded-lg border overflow-hidden"
+            className="fixed z-50 top-[20%] left-1/2 -translate-x-1/2 w-full max-w-[500px] rounded-lg border overflow-hidden bg-mm-surface"
             style={{
-              backgroundColor: 'oklch(10% 0.01 280)',
               borderColor: 'oklch(18% 0.01 280)',
             }}
           >
@@ -99,11 +98,7 @@ export function CommandPalette() {
               className="flex items-center gap-3 px-4 py-3 border-b"
               style={{ borderColor: 'oklch(15% 0.01 280)' }}
             >
-              <HugeiconsIcon
-                icon={Search01Icon}
-                size={16}
-                style={{ color: 'oklch(40% 0.01 280)' }}
-              />
+              <HugeiconsIcon icon={Search01Icon} size={16} className="text-mm-text-tertiary" />
               <input
                 ref={inputRef}
                 value={query}
@@ -113,13 +108,12 @@ export function CommandPalette() {
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder="搜索動畫..."
-                className="flex-1 bg-transparent text-sm text-white placeholder:text-[oklch(35%_0.01_280)] outline-none"
+                className="flex-1 bg-transparent text-sm text-white placeholder:text-mm-text-muted outline-none"
               />
               <kbd
-                className="text-[10px] px-1.5 py-0.5 rounded"
+                className="text-[10px] px-1.5 py-0.5 rounded text-mm-text-tertiary"
                 style={{
                   backgroundColor: 'oklch(15% 0.01 280)',
-                  color: 'oklch(40% 0.01 280)',
                 }}
               >
                 ESC
@@ -155,18 +149,12 @@ export function CommandPalette() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] font-medium text-white truncate">{anime.title}</p>
-                        <p
-                          className="text-[11px] truncate"
-                          style={{ color: 'oklch(40% 0.01 280)' }}
-                        >
+                        <p className="text-[11px] truncate text-mm-text-tertiary">
                           {anime.title_original}
                         </p>
                       </div>
                       {anime.score > 0 && (
-                        <span
-                          className="text-[11px] font-medium shrink-0"
-                          style={{ color: 'oklch(65% 0.2 35)' }}
-                        >
+                        <span className="text-[11px] font-medium shrink-0 text-mm-accent">
                           {anime.score.toFixed(1)}
                         </span>
                       )}
@@ -178,9 +166,7 @@ export function CommandPalette() {
 
             {debouncedQuery && visibleResults.length === 0 && (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm" style={{ color: 'oklch(38% 0.01 280)' }}>
-                  找不到結果
-                </p>
+                <p className="text-sm text-mm-text-tertiary">找不到結果</p>
               </div>
             )}
           </motion.div>
