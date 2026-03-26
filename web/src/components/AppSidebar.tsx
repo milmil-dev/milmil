@@ -1,146 +1,150 @@
 import {
-  Calendar03Icon,
-  Download04Icon,
-  FireIcon,
-  FolderLibraryIcon,
-  HouseIcon,
-  MagnetIcon,
-  RssIcon,
-  Search01Icon,
-  Setting07Icon,
 } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, useRouterState } from '@tanstack/react-router';
-import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
-  { to: '/', label: 'Home', icon: HouseIcon },
-  { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
-  { to: '/search', label: 'Search', icon: Search01Icon },
-  { to: '/trending', label: 'Trending', icon: FireIcon },
-  { to: '/rss', label: 'RSS', icon: RssIcon },
+  { to: '/', label: 'Home' },
+  { to: '/schedule', label: 'Schedule' },
+  { to: '/search', label: 'Search' },
+  { to: '/trending', label: 'Trending' },
+  { to: '/rss', label: 'RSS' },
 ] as const;
 
-const bottomNav = [
-  { to: '/torrent-search', label: 'Torrent', icon: MagnetIcon },
-  { to: '/downloads', label: 'Downloads', icon: Download04Icon },
-  { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
-  { to: '/settings', label: 'Settings', icon: Setting07Icon },
+const utilityNav = [
+  { to: '/torrent-search', label: 'Torrent' },
+  { to: '/downloads', label: 'Downloads' },
+  { to: '/libraries', label: 'Libraries' },
+  { to: '/settings', label: 'Settings' },
 ] as const;
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 0.08 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -6 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 30 },
-  },
-};
 
 function NavItem({
   to,
   label,
-  icon,
   isActive,
+  useRouterLinks,
 }: {
   to: string;
   label: string;
-  icon: typeof HouseIcon;
   isActive: boolean;
+  useRouterLinks: boolean;
 }) {
+  const IconGlyph = label.slice(0, 1);
+
+  if (!useRouterLinks) {
+    return (
+      <div>
+        <a
+          href={to}
+          aria-current={isActive ? 'page' : undefined}
+          className={cn(
+            'group relative flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm transition-all duration-200',
+            isActive
+              ? 'border-mm-border-subtle bg-[linear-gradient(90deg,rgba(122,162,247,0.22),rgba(30,35,51,0.98))] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+              : 'border-transparent text-mm-text-secondary hover:border-mm-border hover:bg-mm-surface/70 hover:text-white'
+          )}
+        >
+          {isActive && <span className="absolute left-0 top-2 bottom-2 w-1 rounded-full bg-mm-accent" />}
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-mm-border-subtle bg-mm-surface/60 text-mm-text-secondary">
+            {IconGlyph}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate font-medium">{label}</span>
+          </span>
+        </a>
+      </div>
+    );
+  }
+
   return (
-    <motion.div variants={itemVariants}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Link
-            to={to}
-            className={cn(
-              'relative flex items-center justify-center w-10 h-10 rounded transition-colors',
-              isActive ? 'text-white' : 'text-mm-text-tertiary hover:text-[oklch(70%_0.01_280)]'
-            )}
-          >
-            {isActive && (
-              <motion.div
-                layoutId="activeBar"
-                className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-mm-accent"
-                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-              />
-            )}
-            {isActive && (
-              <motion.div
-                layoutId="activeBg"
-                className="absolute inset-0 rounded"
-                style={{ backgroundColor: 'oklch(14% 0.02 280)' }}
-                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-              />
-            )}
-            <span className="relative z-10">
-              <HugeiconsIcon icon={icon} size={20} />
-            </span>
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent side="right">{label}</TooltipContent>
-      </Tooltip>
-    </motion.div>
+    <div>
+      <Link
+        to={to}
+        aria-current={isActive ? 'page' : undefined}
+        className={cn(
+          'group relative flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm transition-all duration-200',
+          isActive
+            ? 'border-mm-border-subtle bg-[linear-gradient(90deg,rgba(122,162,247,0.22),rgba(30,35,51,0.98))] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+            : 'border-transparent text-mm-text-secondary hover:border-mm-border hover:bg-mm-surface/70 hover:text-white'
+        )}
+      >
+        {isActive && <span className="absolute left-0 top-2 bottom-2 w-1 rounded-full bg-mm-accent" />}
+        <span
+          className={cn(
+            'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-colors',
+            isActive
+              ? 'border-[color-mix(in_oklch,var(--mm-accent)_46%,white_4%)] bg-[color-mix(in_oklch,var(--mm-accent)_16%,transparent)] text-white'
+              : 'border-mm-border-subtle bg-mm-surface/60 text-mm-text-secondary group-hover:bg-mm-surface group-hover:text-white'
+          )}
+        >
+          {IconGlyph}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate font-medium">{label}</span>
+        </span>
+      </Link>
+    </div>
   );
 }
 
-export function AppSidebar() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+function AppSidebarContent({ pathname, useRouterLinks }: { pathname: string; useRouterLinks: boolean }) {
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
 
   return (
-    <TooltipProvider>
-      <motion.aside
-        initial={{ x: -60, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-        className="fixed left-0 top-0 bottom-0 w-[60px] z-40 flex flex-col items-center border-r bg-mm-sidebar border-mm-border"
-      >
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="py-5"
-        >
-          <p className="text-base font-bold tracking-tight text-mm-accent">m</p>
-        </motion.div>
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[280px] flex-col border-r border-mm-border bg-[linear-gradient(180deg,rgba(12,14,21,0.98),rgba(8,9,14,0.94))] lg:flex">
+      <div className="flex items-center gap-3 border-b border-mm-border-subtle px-5 py-5">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color-mix(in_oklch,var(--mm-accent)_18%,transparent)] text-mm-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+          <p className="text-lg font-bold tracking-tight">m</p>
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold tracking-[0.22em] text-mm-text-primary">milmil</p>
+          <p className="text-xs text-mm-text-secondary">Desktop media shell</p>
+        </div>
+      </div>
 
-        {/* Main nav */}
-        <motion.nav
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="flex-1 flex flex-col items-center gap-1 pt-2"
-        >
-          {mainNav.map(({ to, label, icon }) => (
-            <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+      <div className="flex-1 overflow-y-auto px-3 py-4">
+        <nav aria-label="Primary navigation" className="space-y-2">
+          {mainNav.map(({ to, label }) => (
+            <NavItem
+              key={to}
+              to={to}
+              label={label}
+              isActive={isActive(to)}
+              useRouterLinks={useRouterLinks}
+            />
           ))}
-        </motion.nav>
+        </nav>
 
-        {/* Separator */}
-        <div className="w-6 h-px my-2" style={{ backgroundColor: 'oklch(16% 0.01 280)' }} />
-
-        {/* Bottom nav */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col items-center gap-1 pb-4"
-        >
-          {bottomNav.map(({ to, label, icon }) => (
-            <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
-          ))}
-        </motion.div>
-      </motion.aside>
-    </TooltipProvider>
+        <div className="mt-6 border-t border-mm-border-subtle pt-4">
+          <p className="px-3 pb-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-mm-text-muted">
+            Library tools
+          </p>
+          <nav aria-label="Utility navigation" className="space-y-2">
+            {utilityNav.map(({ to, label }) => (
+              <NavItem
+                key={to}
+                to={to}
+                label={label}
+                isActive={isActive(to)}
+                useRouterLinks={useRouterLinks}
+              />
+            ))}
+          </nav>
+        </div>
+      </div>
+    </aside>
   );
+}
+
+function AppSidebarWithRouter() {
+  const routerPathname = useRouterState({ select: (s) => s.location.pathname });
+  return <AppSidebarContent pathname={routerPathname} useRouterLinks />;
+}
+
+export function AppSidebar({ pathname }: { pathname?: string }) {
+  if (pathname !== undefined) {
+    return <AppSidebarContent pathname={pathname} useRouterLinks={false} />;
+  }
+
+  return <AppSidebarWithRouter />;
 }

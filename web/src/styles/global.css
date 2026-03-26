@@ -40,9 +40,22 @@
     background: transparent;
   }
   body {
-    @apply font-sans bg-background text-foreground;
+    @apply font-sans bg-mm-bg text-mm-text-primary antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-color: var(--mm-bg);
+    background-image:
+      radial-gradient(circle at top left, color-mix(in oklch, var(--mm-accent) 14%, transparent), transparent 34%),
+      radial-gradient(circle at 80% 0%, color-mix(in oklch, var(--mm-sidebar) 88%, transparent), transparent 30%),
+      linear-gradient(180deg, color-mix(in oklch, var(--mm-sidebar) 68%, transparent), var(--mm-bg) 26%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;
+    min-height: 100%;
+  }
+  #root {
+    min-height: 100dvh;
   }
 }

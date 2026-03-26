@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence } from 'motion/react';
+import { type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
@@ -27,6 +28,20 @@ function isPublicRoute(pathname: string): boolean {
   return false;
 }
 
+export function DesktopShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative flex min-h-screen overflow-x-hidden bg-mm-bg text-mm-text-primary">
+      <AppSidebar />
+      <div className="relative min-h-screen flex min-w-0 flex-1 flex-col lg:pl-[280px]">
+        <TopNav />
+        <main className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-4 sm:px-6 sm:pt-5 lg:px-8 lg:pb-8 lg:pt-6">
+          <div className="mx-auto w-full max-w-[1840px]">{children}</div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const queryClient = useQueryClient();
@@ -41,22 +56,23 @@ function RootLayout() {
   });
 
   if (pathname === '/login' || pathname === '/setup') {
-    return <Outlet />;
+    return (
+      <>
+        <Outlet />
+        <CommandPalette />
+      </>
+    );
   }
 
   return (
-    <div className="flex min-h-screen bg-mm-bg">
-      <AppSidebar />
-      <div className="flex-1 ml-[60px] min-h-screen flex flex-col">
-        <TopNav />
-        <main className="flex-1 overflow-y-auto">
-          <AnimatePresence mode="wait">
-            <Outlet key={pathname} />
-          </AnimatePresence>
-        </main>
-      </div>
+    <>
+      <DesktopShell>
+        <AnimatePresence mode="wait">
+          <Outlet key={pathname} />
+        </AnimatePresence>
+      </DesktopShell>
       <CommandPalette />
-    </div>
+    </>
   );
 }
 
