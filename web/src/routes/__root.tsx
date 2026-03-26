@@ -20,6 +20,7 @@ function isPublicRoute(pathname: string): boolean {
   const publicExact = ['/login', '/setup', '/schedule', '/trending', '/search'];
   if (publicExact.includes(pathname)) return true;
   if (pathname.startsWith('/anime/')) return true;
+  if (pathname.startsWith('/watch/')) return true;
   return false;
 }
 
