@@ -29,7 +29,12 @@ function getWeekdayLabel(bangumiWeekday: string): string {
 }
 
 function getCurrentSeason(): string {
-  return format(new Date(), "yyyy 年 QQQ '番'", { locale: zhTW });
+  const month = new Date().getMonth() + 1;
+  const year = new Date().getFullYear();
+  if (month <= 3) return `${year} 一月冬番`;
+  if (month <= 6) return `${year} 四月春番`;
+  if (month <= 9) return `${year} 七月夏番`;
+  return `${year} 十月秋番`;
 }
 
 function WeekdayColumn({ day, isToday }: { day: CalendarDay; isToday: boolean }) {
