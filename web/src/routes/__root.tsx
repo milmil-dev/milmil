@@ -2,6 +2,7 @@ import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/rea
 import { AnimatePresence } from 'motion/react';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
+import { TopNav } from '../components/TopNav';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
 
@@ -32,11 +33,14 @@ function RootLayout() {
   return (
     <div className="flex min-h-screen" style={{ backgroundColor: 'oklch(7% 0.01 280)' }}>
       <AppSidebar />
-      <main className="flex-1 ml-[60px] min-h-screen overflow-y-auto">
-        <AnimatePresence mode="wait">
-          <Outlet key={pathname} />
-        </AnimatePresence>
-      </main>
+      <div className="flex-1 ml-[60px] min-h-screen flex flex-col">
+        <TopNav />
+        <main className="flex-1 overflow-y-auto">
+          <AnimatePresence mode="wait">
+            <Outlet key={pathname} />
+          </AnimatePresence>
+        </main>
+      </div>
       <CommandPalette />
     </div>
   );

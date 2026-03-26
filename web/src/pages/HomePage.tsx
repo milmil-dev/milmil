@@ -5,13 +5,26 @@ import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { AnimeCard } from '../components/AnimeCard';
 import { AnimeRow } from '../components/AnimeRow';
+import { HeroBanner } from '../components/HeroBanner';
 import { PageTransition } from '../components/PageTransition';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import { libraryGradient } from '../lib/gradient';
 
+const GENRES = [
+  'Action',
+  'Adventure',
+  'Comedy',
+  'Drama',
+  'Fantasy',
+  'Mystery',
+  'Psychological',
+  'Romance',
+  'Slice of Life',
+  'Supernatural',
+];
+
 export function HomePage() {
-  // Queries
   const { data: calendar } = useQuery({
     queryKey: discoverKeys.calendar(),
     queryFn: discoverApi.calendar,
@@ -25,90 +38,77 @@ export function HomePage() {
     queryFn: libraryApi.list,
   });
 
-  // Today's weekday (Chinese)
   const todayCN = (() => {
-    const Weekdays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+    const weekdays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
     const day = new Date().getDay();
-    return Weekdays[day === 0 ? 6 : day - 1];
+    return weekdays[day === 0 ? 6 : day - 1];
   })();
   const todayAnime = calendar?.find((d) => d.weekday === todayCN)?.items ?? [];
 
+  // Hero uses first 5 trending items
+  const heroItems = trending.slice(0, 5);
+  // Remaining trending for the row below
+  const trendingRest = trending.slice(5, 15);
+
   return (
     <PageTransition>
-      <div className="min-h-screen px-8 pt-10 pb-16">
-        {/* Greeting */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold text-white tracking-tight">milmil</h1>
-          <p className="text-[13px] mt-1" style={{ color: 'oklch(42% 0.01 280)' }}>
-            Your self-hosted anime media server
-          </p>
-        </motion.div>
+      <div className="min-h-screen">
+        {/* ── Hero Banner ──────────────────────────────────────── */}
+        {heroItems.length > 0 && (
+          <div className="px-6 pt-4">
+            <HeroBanner items={heroItems} />
+          </div>
+        )}
 
-        {/* Decorative rule */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.2, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="mt-5 mb-8 h-px w-full origin-left"
-          style={{ backgroundColor: 'oklch(14% 0.01 280)' }}
-        />
-
-        {/* Section 1: 今日新番 */}
+        {/* ── Today's Schedule ─────────────────────────────────── */}
         {todayAnime.length > 0 && (
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="mb-10"
+            transition={{ delay: 0.2 }}
+            className="px-6 mt-8"
           >
-            <div className="flex items-baseline justify-between mb-3">
-              <h2
-                className="text-[10px] font-bold uppercase tracking-[0.25em]"
-                style={{ color: 'oklch(35% 0.01 280)' }}
-              >
-                今日新番
-              </h2>
-              <Link
-                to="/schedule"
-                className="text-[11px] font-medium transition-colors hover:text-white"
-                style={{ color: 'oklch(45% 0.01 280)' }}
-              >
-                查看全部 →
-              </Link>
-            </div>
+            <SectionHeader title="今日新番" to="/schedule" />
             <div>
-              {todayAnime.slice(0, 6).map((anime, i) => (
+              {todayAnime.slice(0, 5).map((anime, i) => (
                 <AnimeRow key={anime.bangumi_id} anime={anime} index={i} />
               ))}
             </div>
           </motion.section>
         )}
 
-        {/* Section 2: 熱門動畫 */}
-        {trending.length > 0 && (
+        {/* ── Genre Filter Strip ───────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.35 }}
+          className="px-6 mt-8 flex gap-2 overflow-x-auto pb-1"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {GENRES.map((genre) => (
+            <Link
+              key={genre}
+              to="/search"
+              search={{ q: genre }}
+              className="shrink-0 px-3 py-1 text-[11px] font-medium rounded-full transition-colors"
+              style={{ backgroundColor: 'oklch(12% 0.01 280)', color: 'oklch(52% 0.01 280)' }}
+            >
+              {genre}
+            </Link>
+          ))}
+        </motion.div>
+
+        {/* ── Trending ─────────────────────────────────────────── */}
+        {trendingRest.length > 0 && (
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 }}
-            className="mb-10"
+            transition={{ delay: 0.4 }}
+            className="px-6 mt-8"
           >
-            <div className="flex items-baseline justify-between mb-3">
-              <h2
-                className="text-[10px] font-bold uppercase tracking-[0.25em]"
-                style={{ color: 'oklch(35% 0.01 280)' }}
-              >
-                熱門動畫
-              </h2>
-              <Link
-                to="/trending"
-                className="text-[11px] font-medium transition-colors hover:text-white"
-                style={{ color: 'oklch(45% 0.01 280)' }}
-              >
-                查看全部 →
-              </Link>
-            </div>
+            <SectionHeader title="熱門動畫" to="/trending" />
             <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-              {trending.slice(0, 10).map((anime, i) => (
+              {trendingRest.map((anime, i) => (
                 <div key={anime.bangumi_id} className="shrink-0 w-[140px]">
                   <AnimeCard anime={anime} index={i} />
                 </div>
@@ -117,31 +117,18 @@ export function HomePage() {
           </motion.section>
         )}
 
-        {/* Section 3: 我的媒體庫 */}
+        {/* ── Libraries ────────────────────────────────────────── */}
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
+          transition={{ delay: 0.5 }}
+          className="px-6 mt-8 pb-16"
         >
-          <div className="flex items-baseline justify-between mb-3">
-            <h2
-              className="text-[10px] font-bold uppercase tracking-[0.25em]"
-              style={{ color: 'oklch(35% 0.01 280)' }}
-            >
-              我的媒體庫
-            </h2>
-            <Link
-              to="/libraries"
-              className="text-[11px] font-medium transition-colors hover:text-white"
-              style={{ color: 'oklch(45% 0.01 280)' }}
-            >
-              查看全部 →
-            </Link>
-          </div>
+          <SectionHeader title="我的媒體庫" to="/libraries" />
           {libraries.length === 0 ? (
             <Link
               to="/libraries"
-              className="group block rounded-sm border border-dashed py-8 px-6 text-center transition-colors hover:border-[oklch(65%_0.2_35)]/30"
+              className="group block rounded border border-dashed py-8 px-6 text-center transition-colors hover:border-[oklch(65%_0.2_35)]/30"
               style={{ borderColor: 'oklch(18% 0.01 280)' }}
             >
               <div
@@ -155,9 +142,9 @@ export function HomePage() {
                   style={{ color: 'oklch(32% 0.01 280)' }}
                 />
               </div>
-              <p className="text-sm font-medium text-white mb-1">No libraries yet</p>
+              <p className="text-sm font-medium text-white mb-1">尚未新增媒體庫</p>
               <p className="text-[12px]" style={{ color: 'oklch(38% 0.01 280)' }}>
-                Add a folder to start scanning
+                新增資料夾開始掃描
               </p>
             </Link>
           ) : (
@@ -166,7 +153,7 @@ export function HomePage() {
                 <Link
                   key={lib.id}
                   to="/libraries"
-                  className="group block rounded-sm overflow-hidden"
+                  className="group block rounded overflow-hidden"
                   style={{ backgroundColor: 'oklch(10% 0.01 280)' }}
                 >
                   <div
@@ -189,5 +176,21 @@ export function HomePage() {
         </motion.section>
       </div>
     </PageTransition>
+  );
+}
+
+// ─── Shared section header ────────────────────────────────────────────────────
+function SectionHeader({ title, to }: { title: string; to: string }) {
+  return (
+    <div className="flex items-baseline justify-between mb-3">
+      <h2 className="text-[15px] font-bold text-white tracking-tight">{title}</h2>
+      <Link
+        to={to}
+        className="text-[11px] font-medium transition-colors hover:text-white"
+        style={{ color: 'oklch(45% 0.01 280)' }}
+      >
+        查看全部 →
+      </Link>
+    </div>
   );
 }
