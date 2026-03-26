@@ -35,3 +35,4 @@ Thumbs.db
 
 # Git worktrees
 .worktrees/
+.superpowers/
