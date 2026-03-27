@@ -79,11 +79,7 @@ export function AppSidebar() {
       <TooltipProvider>
         <aside
           className="fixed left-0 top-0 bottom-0 w-20 z-40 flex flex-col items-center max-md:hidden"
-          style={{
-            backgroundColor: 'transparent',
-            backdropFilter: 'blur(12px) saturate(1.2)',
-            WebkitBackdropFilter: 'blur(12px) saturate(1.2)',
-          }}
+          style={{ backgroundColor: 'transparent' }}
         >
           {/* Logo */}
           <div className="flex items-center justify-center h-16 shrink-0">
