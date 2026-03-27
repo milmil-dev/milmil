@@ -11,37 +11,40 @@ import {
   Setting07Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
-  { to: '/', label: 'Home', icon: HouseIcon },
-  { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
-  { to: '/search', label: 'Search', icon: Search01Icon },
-  { to: '/trending', label: 'Trending', icon: FireIcon },
-  { to: '/rss', label: 'RSS', icon: RssIcon },
+  { to: '/', msgKey: msg`nav.home`, icon: HouseIcon },
+  { to: '/schedule', msgKey: msg`nav.schedule`, icon: Calendar03Icon },
+  { to: '/search', msgKey: msg`nav.search`, icon: Search01Icon },
+  { to: '/trending', msgKey: msg`nav.trending`, icon: FireIcon },
+  { to: '/rss', msgKey: msg`nav.rss`, icon: RssIcon },
 ] as const;
 
 const bottomNav = [
-  { to: '/torrent-search', label: 'Torrent', icon: MagnetIcon },
-  { to: '/downloads', label: 'Downloads', icon: Download04Icon },
-  { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
-  { to: '/settings', label: 'Settings', icon: Setting07Icon },
+  { to: '/torrent-search', msgKey: msg`nav.torrent`, icon: MagnetIcon },
+  { to: '/downloads', msgKey: msg`nav.downloads`, icon: Download04Icon },
+  { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
+  { to: '/settings', msgKey: msg`nav.settings`, icon: Setting07Icon },
 ] as const;
 
 function NavItem({
   to,
-  label,
+  msgKey,
   icon,
   isActive,
 }: {
   to: string;
-  label: string;
+  msgKey: { id: string };
   icon: typeof HouseIcon;
   isActive: boolean;
 }) {
+  const { i18n } = useLingui();
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -64,7 +67,7 @@ function NavItem({
           <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive ? 2 : 1.5} />
         </Link>
       </TooltipTrigger>
-      <TooltipContent side="right">{label}</TooltipContent>
+      <TooltipContent side="right">{i18n._(msgKey)}</TooltipContent>
     </Tooltip>
   );
 }
@@ -88,14 +91,14 @@ export function AppSidebar() {
 
           {/* Main nav */}
           <nav className="flex-1 flex flex-col items-center gap-1 pt-2 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-            {mainNav.map(({ to, label, icon }) => (
-              <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+            {mainNav.map(({ to, msgKey, icon }) => (
+              <NavItem key={to} to={to} msgKey={msgKey} icon={icon} isActive={isActive(to)} />
             ))}
 
             <div className="w-6 h-px my-3 bg-white/[0.06]" />
 
-            {bottomNav.map(({ to, label, icon }) => (
-              <NavItem key={to} to={to} label={label} icon={icon} isActive={isActive(to)} />
+            {bottomNav.map(({ to, msgKey, icon }) => (
+              <NavItem key={to} to={to} msgKey={msgKey} icon={icon} isActive={isActive(to)} />
             ))}
           </nav>
         </aside>
@@ -107,14 +110,15 @@ export function AppSidebar() {
 }
 
 const mobileNav = [
-  { to: '/', label: 'Home', icon: HouseIcon },
-  { to: '/schedule', label: 'Schedule', icon: Calendar03Icon },
-  { to: '/search', label: 'Search', icon: Search01Icon },
-  { to: '/libraries', label: 'Libraries', icon: FolderLibraryIcon },
-  { to: '/settings', label: 'More', icon: Menu01Icon },
+  { to: '/', msgKey: msg`nav.home`, icon: HouseIcon },
+  { to: '/schedule', msgKey: msg`nav.schedule`, icon: Calendar03Icon },
+  { to: '/search', msgKey: msg`nav.search`, icon: Search01Icon },
+  { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
+  { to: '/settings', msgKey: msg`nav.more`, icon: Menu01Icon },
 ] as const;
 
 export function MobileNav() {
+  const { i18n } = useLingui();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
 
@@ -127,7 +131,7 @@ export function MobileNav() {
         WebkitBackdropFilter: 'blur(20px)',
       }}
     >
-      {mobileNav.map(({ to, label, icon }) => (
+      {mobileNav.map(({ to, msgKey, icon }) => (
         <Link
           key={to}
           to={to}
@@ -137,7 +141,7 @@ export function MobileNav() {
           )}
         >
           <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive(to) ? 2 : 1.5} />
-          <span>{label}</span>
+          <span>{i18n._(msgKey)}</span>
         </Link>
       ))}
     </nav>

@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Link, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -103,17 +105,17 @@ function BannerImage({ src }: { src: string | null }) {
   );
 }
 
-const topNavItems = [
-  { to: '/', label: 'Home', exact: true },
-  { to: '/schedule', label: 'Schedule', exact: false },
-  { to: '/libraries', label: 'Library', exact: false },
-  { to: '/trending', label: 'Discover', exact: false },
-] as const;
-
 function TopNavLinks({ pathname }: { pathname: string }) {
+  const { i18n } = useLingui();
+  const items = [
+    { to: '/', label: i18n._(msg`nav.home`), exact: true },
+    { to: '/schedule', label: i18n._(msg`nav.schedule`), exact: false },
+    { to: '/libraries', label: i18n._(msg`nav.libraries`), exact: false },
+    { to: '/trending', label: i18n._(msg`nav.discover`), exact: false },
+  ];
   return (
     <nav className="fixed top-0 z-[10] hidden md:flex items-center gap-6 md:pl-24 h-[5rem]">
-      {topNavItems.map(({ to, label, exact }) => {
+      {items.map(({ to, label, exact }) => {
         const active = exact ? pathname === to : pathname.startsWith(to);
         return (
           <Link

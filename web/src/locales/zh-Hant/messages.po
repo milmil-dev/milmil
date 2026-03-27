@@ -143,6 +143,57 @@ msgstr "熱門動畫"
 msgid "home.viewAll"
 msgstr "查看全部 →"
 
+#: src/routes/__root.tsx:114
+msgid "nav.discover"
+msgstr "探索"
+
+#: src/components/AppSidebar.tsx:31
+msgid "nav.downloads"
+msgstr "下載"
+
+#: src/components/AppSidebar.tsx:22
+#: src/components/AppSidebar.tsx:113
+#: src/routes/__root.tsx:111
+msgid "nav.home"
+msgstr "首頁"
+
+#: src/components/AppSidebar.tsx:32
+#: src/components/AppSidebar.tsx:116
+#: src/routes/__root.tsx:113
+msgid "nav.libraries"
+msgstr "媒體庫"
+
+#: src/components/AppSidebar.tsx:117
+msgid "nav.more"
+msgstr "更多"
+
+#: src/components/AppSidebar.tsx:26
+msgid "nav.rss"
+msgstr "RSS"
+
+#: src/components/AppSidebar.tsx:23
+#: src/components/AppSidebar.tsx:114
+#: src/routes/__root.tsx:112
+msgid "nav.schedule"
+msgstr "時間表"
+
+#: src/components/AppSidebar.tsx:24
+#: src/components/AppSidebar.tsx:115
+msgid "nav.search"
+msgstr "搜索"
+
+#: src/components/AppSidebar.tsx:33
+msgid "nav.settings"
+msgstr "設定"
+
+#: src/components/AppSidebar.tsx:30
+msgid "nav.torrent"
+msgstr "種子"
+
+#: src/components/AppSidebar.tsx:25
+msgid "nav.trending"
+msgstr "熱門"
+
 #: src/pages/SchedulePage.tsx:157
 msgid "schedule.loadFailed"
 msgstr "載入日曆失敗"
