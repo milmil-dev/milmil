@@ -11,6 +11,28 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 
+#: src/components/PreviewModal.tsx:154
+#: src/pages/AnimeDetailPage.tsx:219
+msgid "anime.episodes"
+msgstr "剧集"
+
+#: src/pages/AnimeDetailPage.tsx:63
+msgid "anime.notFound"
+msgstr "找不到此动画"
+
+#: src/components/PreviewModal.tsx:103
+#: src/pages/AnimeDetailPage.tsx:157
+msgid "anime.ratings"
+msgstr "人评价"
+
+#: src/pages/AnimeDetailPage.tsx:152
+msgid "anime.score"
+msgstr "分"
+
+#: src/pages/AnimeDetailPage.tsx:201
+msgid "anime.synopsis"
+msgstr "简介"
+
 #: src/pages/LoginPage.tsx:34
 msgid "auth.error.invalidCredentials"
 msgstr "账号或密码错误"
@@ -39,11 +61,11 @@ msgstr "账号"
 msgid "auth.setup.error"
 msgstr "设置失败，请再试一次。"
 
-#: src/pages/SetupPage.tsx:86
+#: src/pages/SetupPage.tsx:84
 msgid "auth.setup.loading"
 msgstr "创建账号中..."
 
-#: src/pages/SetupPage.tsx:69
+#: src/pages/SetupPage.tsx:67
 msgid "auth.setup.password"
 msgstr "密码"
 
@@ -51,11 +73,11 @@ msgstr "密码"
 msgid "auth.setup.passwordTooShort"
 msgstr "密码至少需要 8 个字符"
 
-#: src/pages/SetupPage.tsx:86
+#: src/pages/SetupPage.tsx:84
 msgid "auth.setup.submit"
 msgstr "创建账号"
 
-#: src/pages/SetupPage.tsx:51
+#: src/pages/SetupPage.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "创建管理员账号以开始使用。"
 
@@ -63,6 +85,137 @@ msgstr "创建管理员账号以开始使用。"
 msgid "auth.setup.title"
 msgstr "欢迎使用 milmil"
 
-#: src/pages/SetupPage.tsx:56
+#: src/pages/SetupPage.tsx:54
 msgid "auth.setup.username"
 msgstr "账号"
+
+#: src/pages/AnimeDetailPage.tsx:75
+msgid "common.backHome"
+msgstr "返回首页"
+
+#: src/components/AnimeCard.tsx:53
+#: src/components/AnimeRow.tsx:48
+#: src/components/HeroBanner.tsx:174
+#: src/components/PreviewModal.tsx:106
+#: src/pages/AnimeDetailPage.tsx:162
+msgid "common.ep"
+msgstr "集"
+
+#: src/pages/AnimeDetailPage.tsx:63
+msgid "common.loadFailed"
+msgstr "加载失败"
+
+#: src/pages/AnimeDetailPage.tsx:69
+#: src/pages/SchedulePage.tsx:164
+msgid "common.retry"
+msgstr "重试"
+
+#: src/components/PreviewModal.tsx:136
+msgid "hero.details"
+msgstr "详情"
+
+#: src/pages/HomePage.tsx:103
+msgid "home.continueWatching"
+msgstr "继续观看"
+
+#: src/components/LibraryEmptyState.tsx:23
+msgid "home.library.empty.subtitle"
+msgstr "添加文件夹开始扫描"
+
+#: src/components/LibraryEmptyState.tsx:21
+msgid "home.library.empty.title"
+msgstr "尚未添加媒体库"
+
+#: src/pages/HomePage.tsx:194
+#: src/pages/HomePage.tsx:229
+msgid "home.myLibraries"
+msgstr "我的媒体库"
+
+#: src/pages/HomePage.tsx:134
+msgid "home.todaySchedule"
+msgstr "今日新番"
+
+#: src/pages/HomePage.tsx:177
+msgid "home.trending"
+msgstr "热门动画"
+
+#: src/pages/HomePage.tsx:269
+msgid "home.viewAll"
+msgstr "查看全部 →"
+
+#: src/pages/SchedulePage.tsx:157
+msgid "schedule.loadFailed"
+msgstr "加载日历失败"
+
+#: src/pages/SchedulePage.tsx:39
+msgid "schedule.season.fall"
+msgstr "十月秋番"
+
+#: src/pages/SchedulePage.tsx:37
+msgid "schedule.season.spring"
+msgstr "四月春番"
+
+#: src/pages/SchedulePage.tsx:38
+msgid "schedule.season.summer"
+msgstr "七月夏番"
+
+#: src/pages/SchedulePage.tsx:36
+msgid "schedule.season.winter"
+msgstr "一月冬番"
+
+#: src/components/CommandPalette.tsx:172
+msgid "search.noResults"
+msgstr "找不到结果"
+
+#: src/components/CommandPalette.tsx:113
+msgid "search.placeholder"
+msgstr "搜索动画..."
+
+#: src/components/DanmakuSettings.tsx:50
+#: src/pages/WatchPage.tsx:180
+msgid "watch.danmaku"
+msgstr "弹幕"
+
+#: src/pages/WatchPage.tsx:184
+msgid "watch.danmaku.count"
+msgstr "条弹幕"
+
+#: src/components/DanmakuSettings.tsx:113
+msgid "watch.danmaku.fast"
+msgstr "快"
+
+#: src/components/DanmakuSettings.tsx:83
+msgid "watch.danmaku.fontSize"
+msgstr "字体大小"
+
+#: src/pages/WatchPage.tsx:185
+msgid "watch.danmaku.noData"
+msgstr "无弹幕数据"
+
+#: src/components/DanmakuSettings.tsx:112
+msgid "watch.danmaku.normal"
+msgstr "正常"
+
+#: src/components/DanmakuSettings.tsx:67
+msgid "watch.danmaku.opacity"
+msgstr "透明度"
+
+#: src/components/DanmakuSettings.tsx:34
+msgid "watch.danmaku.short"
+msgstr "弹"
+
+#: src/components/DanmakuSettings.tsx:111
+msgid "watch.danmaku.slow"
+msgstr "慢"
+
+#: src/components/DanmakuSettings.tsx:107
+msgid "watch.danmaku.speed"
+msgstr "速度"
+
+#: src/pages/WatchPage.tsx:211
+msgid "watch.mediaFile"
+msgstr "媒体文件"
+
+#: src/pages/WatchPage.tsx:193
+msgid "watch.subtitle"
+msgstr "字幕"

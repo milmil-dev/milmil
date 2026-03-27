@@ -13,6 +13,28 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/PreviewModal.tsx:154
+#: src/pages/AnimeDetailPage.tsx:219
+msgid "anime.episodes"
+msgstr "Episodes"
+
+#: src/pages/AnimeDetailPage.tsx:63
+msgid "anime.notFound"
+msgstr "Anime not found"
+
+#: src/components/PreviewModal.tsx:103
+#: src/pages/AnimeDetailPage.tsx:157
+msgid "anime.ratings"
+msgstr "ratings"
+
+#: src/pages/AnimeDetailPage.tsx:152
+msgid "anime.score"
+msgstr "pts"
+
+#: src/pages/AnimeDetailPage.tsx:201
+msgid "anime.synopsis"
+msgstr "Synopsis"
+
 #: src/pages/LoginPage.tsx:34
 msgid "auth.error.invalidCredentials"
 msgstr "Invalid username or password"
@@ -41,11 +63,11 @@ msgstr "Username"
 msgid "auth.setup.error"
 msgstr "Setup failed. Please try again."
 
-#: src/pages/SetupPage.tsx:86
+#: src/pages/SetupPage.tsx:84
 msgid "auth.setup.loading"
 msgstr "Creating account..."
 
-#: src/pages/SetupPage.tsx:69
+#: src/pages/SetupPage.tsx:67
 msgid "auth.setup.password"
 msgstr "Password"
 
@@ -53,11 +75,11 @@ msgstr "Password"
 msgid "auth.setup.passwordTooShort"
 msgstr "Password must be at least 8 characters"
 
-#: src/pages/SetupPage.tsx:86
+#: src/pages/SetupPage.tsx:84
 msgid "auth.setup.submit"
 msgstr "Create account"
 
-#: src/pages/SetupPage.tsx:51
+#: src/pages/SetupPage.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "Create your admin account to get started."
 
@@ -65,6 +87,137 @@ msgstr "Create your admin account to get started."
 msgid "auth.setup.title"
 msgstr "Welcome to milmil"
 
-#: src/pages/SetupPage.tsx:56
+#: src/pages/SetupPage.tsx:54
 msgid "auth.setup.username"
 msgstr "Username"
+
+#: src/pages/AnimeDetailPage.tsx:75
+msgid "common.backHome"
+msgstr "Back to Home"
+
+#: src/components/AnimeCard.tsx:53
+#: src/components/AnimeRow.tsx:48
+#: src/components/HeroBanner.tsx:174
+#: src/components/PreviewModal.tsx:106
+#: src/pages/AnimeDetailPage.tsx:162
+msgid "common.ep"
+msgstr "ep"
+
+#: src/pages/AnimeDetailPage.tsx:63
+msgid "common.loadFailed"
+msgstr "Failed to load"
+
+#: src/pages/AnimeDetailPage.tsx:69
+#: src/pages/SchedulePage.tsx:164
+msgid "common.retry"
+msgstr "Retry"
+
+#: src/components/PreviewModal.tsx:136
+msgid "hero.details"
+msgstr "Details"
+
+#: src/pages/HomePage.tsx:103
+msgid "home.continueWatching"
+msgstr "Continue Watching"
+
+#: src/components/LibraryEmptyState.tsx:23
+msgid "home.library.empty.subtitle"
+msgstr "Add a folder to start scanning"
+
+#: src/components/LibraryEmptyState.tsx:21
+msgid "home.library.empty.title"
+msgstr "No libraries added"
+
+#: src/pages/HomePage.tsx:194
+#: src/pages/HomePage.tsx:229
+msgid "home.myLibraries"
+msgstr "My Libraries"
+
+#: src/pages/HomePage.tsx:134
+msgid "home.todaySchedule"
+msgstr "Today's Schedule"
+
+#: src/pages/HomePage.tsx:177
+msgid "home.trending"
+msgstr "Trending"
+
+#: src/pages/HomePage.tsx:269
+msgid "home.viewAll"
+msgstr "View All →"
+
+#: src/pages/SchedulePage.tsx:157
+msgid "schedule.loadFailed"
+msgstr "Failed to load calendar"
+
+#: src/pages/SchedulePage.tsx:39
+msgid "schedule.season.fall"
+msgstr "Fall"
+
+#: src/pages/SchedulePage.tsx:37
+msgid "schedule.season.spring"
+msgstr "Spring"
+
+#: src/pages/SchedulePage.tsx:38
+msgid "schedule.season.summer"
+msgstr "Summer"
+
+#: src/pages/SchedulePage.tsx:36
+msgid "schedule.season.winter"
+msgstr "Winter"
+
+#: src/components/CommandPalette.tsx:172
+msgid "search.noResults"
+msgstr "No results found"
+
+#: src/components/CommandPalette.tsx:113
+msgid "search.placeholder"
+msgstr "Search anime..."
+
+#: src/components/DanmakuSettings.tsx:50
+#: src/pages/WatchPage.tsx:180
+msgid "watch.danmaku"
+msgstr "Danmaku"
+
+#: src/pages/WatchPage.tsx:184
+msgid "watch.danmaku.count"
+msgstr "comments"
+
+#: src/components/DanmakuSettings.tsx:113
+msgid "watch.danmaku.fast"
+msgstr "Fast"
+
+#: src/components/DanmakuSettings.tsx:83
+msgid "watch.danmaku.fontSize"
+msgstr "Font Size"
+
+#: src/pages/WatchPage.tsx:185
+msgid "watch.danmaku.noData"
+msgstr "No danmaku data"
+
+#: src/components/DanmakuSettings.tsx:112
+msgid "watch.danmaku.normal"
+msgstr "Normal"
+
+#: src/components/DanmakuSettings.tsx:67
+msgid "watch.danmaku.opacity"
+msgstr "Opacity"
+
+#: src/components/DanmakuSettings.tsx:34
+msgid "watch.danmaku.short"
+msgstr "D"
+
+#: src/components/DanmakuSettings.tsx:111
+msgid "watch.danmaku.slow"
+msgstr "Slow"
+
+#: src/components/DanmakuSettings.tsx:107
+msgid "watch.danmaku.speed"
+msgstr "Speed"
+
+#: src/pages/WatchPage.tsx:211
+msgid "watch.mediaFile"
+msgstr "Media File"
+
+#: src/pages/WatchPage.tsx:193
+msgid "watch.subtitle"
+msgstr "Subtitles"
