@@ -114,7 +114,7 @@ function TopNavLinks({ pathname }: { pathname: string }) {
     { to: '/trending', label: i18n._(msg`nav.discover`), exact: false },
   ];
   return (
-    <nav className="fixed top-0 z-[20] hidden md:flex items-center gap-6 md:pl-24 h-[5rem]">
+    <nav className="relative z-[10] hidden md:flex items-center gap-6 md:pl-4 h-[5rem]">
       {items.map(({ to, label, exact }) => {
         const active = exact ? pathname === to : pathname.startsWith(to);
         return (
