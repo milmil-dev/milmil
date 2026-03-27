@@ -117,7 +117,7 @@ export function AnimeDetailPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="shrink-0 w-[110px] md:w-[130px] aspect-[3/4] rounded-lg overflow-hidden shadow-2xl ring-1 ring-white/10"
+              className="shrink-0 w-[110px] md:w-[130px] aspect-[3/4] rounded-lg overflow-hidden shadow-sm"
               style={hasCover ? undefined : { background: animeGradient(anime.title) }}
             >
               {hasCover && (

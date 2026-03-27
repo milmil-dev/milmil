@@ -46,37 +46,13 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background — FULL banner image, NO blur (like Seanime) */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={featured.bangumi_id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0"
-        >
-          {hasCover ? (
-            <img
-              src={featured.cover_image}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: 'brightness(0.55) saturate(1.2)' }}
-            />
-          ) : (
-            <div className="absolute inset-0" style={{ background: animeGradient(featured.title) }} />
-          )}
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Gradient overlays — left fade for text readability + bottom fade */}
+      {/* No background image here — the root layout bg-store already shows
+           the cover art behind everything. Just add a subtle bottom gradient
+           so text is readable against the existing bg image. */}
       <div
         className="absolute inset-0 z-[1]"
         style={{
-          background: [
-            'linear-gradient(90deg, var(--mm-bg) 0%, oklch(from var(--mm-bg) l c h / 0.7) 35%, transparent 65%)',
-            'linear-gradient(to top, var(--mm-bg) 0%, transparent 50%)',
-          ].join(', '),
+          background: 'linear-gradient(to top, var(--mm-bg) 0%, transparent 60%)',
         }}
       />
 
@@ -95,7 +71,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
               <div className="flex items-end gap-5">
                 <Link
                   to={`/anime/${featured.bangumi_id}` as string}
-                  className="shrink-0 w-[110px] h-[155px] rounded-lg overflow-hidden shadow-2xl ring-1 ring-white/10 block"
+                  className="shrink-0 w-[110px] h-[155px] rounded-lg overflow-hidden block"
                   style={hasCover ? undefined : { background: animeGradient(featured.title) }}
                 >
                   {hasCover && (
