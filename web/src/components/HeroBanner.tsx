@@ -134,15 +134,15 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
           )}
         </div>
 
-        {/* Right: next-up card */}
+        {/* Next-up card — absolute positioned at far right (Seanime EpisodeCardSidebar) */}
         {nextItem && (
-          <div className="hidden lg:flex items-end p-6 pb-8 shrink-0">
+          <div className="absolute right-6 bottom-8 z-[3] hidden lg:block">
             <Link
               to={`/anime/${nextItem.bangumi_id}` as string}
-              className="group block w-[240px] rounded-lg overflow-hidden"
+              className="group block 2xl:w-[500px] xl:w-[400px] lg:w-[300px] rounded-xl overflow-hidden"
               style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
             >
-              <div className="relative h-[135px] overflow-hidden">
+              <div className="relative aspect-[16/9] overflow-hidden">
                 {nextItem.cover_image?.startsWith('http') ? (
                   <img
                     src={nextItem.cover_image}
@@ -156,10 +156,9 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
                   className="absolute inset-0"
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%)' }}
                 />
-                {/* Episode info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <p className="text-[12px] font-semibold text-white truncate">{nextItem.title}</p>
-                  <p className="text-[10px] mt-0.5 text-white/50">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="text-sm font-semibold text-white truncate">{nextItem.title}</p>
+                  <p className="text-[11px] mt-0.5 text-white/50">
                     {nextItem.episode_count > 0 ? `${nextItem.episode_count} ${i18n._(msg`common.ep`)}` : ''}
                     {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
                   </p>
