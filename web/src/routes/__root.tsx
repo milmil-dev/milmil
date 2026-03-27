@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
 import { SplashScreen } from '../components/SplashScreen';
-import { TopNav } from '../components/TopNav';
 import { useWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
@@ -62,14 +61,11 @@ function RootLayout() {
             className="w-full h-full object-cover object-center"
             style={{ filter: 'brightness(0.18) saturate(1.4)', transform: 'scale(1.02)' }}
           />
-          {/* Hard fade to bg at bottom + left darken for sidebar readability */}
+          {/* Fade to bg at bottom */}
           <div
             className="absolute inset-0"
             style={{
-              background: [
-                'linear-gradient(to bottom, transparent 30%, var(--mm-bg) 100%)',
-                'linear-gradient(to right, oklch(7% 0.01 260 / 0.7) 0%, transparent 40%)',
-              ].join(', '),
+              background: 'linear-gradient(to bottom, transparent 40%, var(--mm-bg) 100%)',
             }}
           />
         </div>
@@ -78,15 +74,12 @@ function RootLayout() {
       {/* Sidebar — sits on top of bg, transparent so bg shows through */}
       <AppSidebar />
 
-      {/* Main content area */}
-      <div className="relative z-[5] flex-1 md:ml-[200px] min-h-screen flex flex-col">
-        <TopNav />
-        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-          <AnimatePresence mode="wait">
-            <Outlet key={pathname} />
-          </AnimatePresence>
-        </main>
-      </div>
+      {/* Main content — no header bar, content fills viewport */}
+      <main className="relative z-[5] flex-1 md:ml-[200px] min-h-screen overflow-y-auto pb-16 md:pb-0">
+        <AnimatePresence mode="wait">
+          <Outlet key={pathname} />
+        </AnimatePresence>
+      </main>
       <CommandPalette />
     </div>
   );

@@ -92,11 +92,6 @@ export function AppSidebar() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 32 }}
         className="fixed left-0 top-0 bottom-0 w-[200px] z-40 flex flex-col max-md:hidden"
-        style={{
-          backgroundColor: 'oklch(7% 0.01 260 / 0.85)',
-          backdropFilter: 'blur(24px) saturate(1.1)',
-          WebkitBackdropFilter: 'blur(24px) saturate(1.1)',
-        }}
       >
         {/* Logo */}
         <div className="flex items-center gap-2 px-4 h-14 shrink-0">
@@ -150,7 +145,7 @@ export function MobileNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around h-14 md:hidden safe-area-bottom"
       style={{
-        backgroundColor: 'oklch(7% 0.01 260 / 0.88)',
+        backgroundColor: 'oklch(7% 0.01 260 / 0.5)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
       }}

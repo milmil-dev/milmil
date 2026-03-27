@@ -3,21 +3,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '../components/ui/alert-dialog';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../components/ui/sheet';
 import { Switch } from '../components/ui/switch';
 import {
   type CreateLibraryInput,
@@ -452,90 +442,76 @@ export function LibrariesPage() {
           )}
         </div>
 
-        {/* Add / Edit sheet */}
-        <Sheet
+        {/* Add / Edit modal */}
+        <Modal
           open={drawerMode !== null}
-          onOpenChange={(open) => {
-            if (!open) {
-              setDrawerMode(null);
-              setEditLib(null);
-            }
+          onClose={() => {
+            setDrawerMode(null);
+            setEditLib(null);
           }}
+          title={drawerMode === 'add' ? 'Add Library' : 'Edit Library'}
+          size="sm"
         >
-          <SheetContent
-            side="right"
-            className="w-[380px] border-l bg-mm-surface"
-            style={{
-              borderColor: 'oklch(18% 0.01 280)',
-            }}
-          >
-            <SheetHeader>
-              <SheetTitle className="text-white">
-                {drawerMode === 'add' ? 'Add Library' : 'Edit Library'}
-              </SheetTitle>
-            </SheetHeader>
+          {drawerMode === 'add' && (
+            <LibraryForm
+              defaultValues={{ name: '', path: '', enabled: true, scan_interval_minutes: 60 }}
+              submitLabel="Add Library"
+              onSubmit={async (values) => {
+                await createMutation.mutateAsync({
+                  name: values.name,
+                  path: values.path,
+                  scan_interval_minutes: values.scan_interval_minutes,
+                });
+              }}
+            />
+          )}
 
-            {drawerMode === 'add' && (
-              <LibraryForm
-                defaultValues={{ name: '', path: '', enabled: true, scan_interval_minutes: 60 }}
-                submitLabel="Add Library"
-                onSubmit={async (values) => {
-                  await createMutation.mutateAsync({
-                    name: values.name,
-                    path: values.path,
-                    scan_interval_minutes: values.scan_interval_minutes,
-                  });
-                }}
-              />
-            )}
+          {drawerMode === 'edit' && editLib && (
+            <LibraryForm
+              defaultValues={{
+                name: editLib.name,
+                path: editLib.path,
+                enabled: editLib.enabled === 1,
+                scan_interval_minutes: editLib.scan_interval_minutes,
+              }}
+              submitLabel="Save Changes"
+              onSubmit={async (values) => {
+                await updateMutation.mutateAsync({ id: editLib.id, input: values });
+              }}
+            />
+          )}
+        </Modal>
 
-            {drawerMode === 'edit' && editLib && (
-              <LibraryForm
-                defaultValues={{
-                  name: editLib.name,
-                  path: editLib.path,
-                  enabled: editLib.enabled === 1,
-                  scan_interval_minutes: editLib.scan_interval_minutes,
-                }}
-                submitLabel="Save Changes"
-                onSubmit={async (values) => {
-                  await updateMutation.mutateAsync({ id: editLib.id, input: values });
-                }}
-              />
-            )}
-          </SheetContent>
-        </Sheet>
-
-        {/* Delete confirmation */}
-        <AlertDialog open={!!deleteLib} onOpenChange={(open) => !open && setDeleteLib(null)}>
-          <AlertDialogContent
-            className="bg-mm-border-subtle"
-            style={{
-              borderColor: 'oklch(20% 0.01 280)',
-            }}
-          >
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">
-                Delete &ldquo;{deleteLib?.name}&rdquo;?
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-mm-text-secondary">
-                All media file records will be removed. Your files on disk are unaffected.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="border-[oklch(22%_0.01_280)] text-white hover:bg-[oklch(16%_0.01_280)]">
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => deleteLib && deleteMutation.mutate(deleteLib.id)}
-                className="text-white"
-                style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {/* Delete confirmation modal */}
+        <Modal
+          open={!!deleteLib}
+          onClose={() => setDeleteLib(null)}
+          title={`Delete "${deleteLib?.name}"?`}
+          size="sm"
+        >
+          <p className="text-[13px] text-mm-text-secondary mb-5">
+            All media file records will be removed. Your files on disk are unaffected.
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setDeleteLib(null)}
+              className="px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (deleteLib) deleteMutation.mutate(deleteLib.id);
+              }}
+              className="px-4 py-2 text-[13px] font-medium rounded-md text-white transition-colors"
+              style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
+            >
+              Delete
+            </button>
+          </div>
+        </Modal>
       </div>
     </PageTransition>
   );

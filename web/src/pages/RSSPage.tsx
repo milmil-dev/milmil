@@ -3,21 +3,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '../components/ui/alert-dialog';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../components/ui/sheet';
 import {
   type DownloadRule,
   downloadKeys,
@@ -756,128 +746,104 @@ export function RSSPage() {
           )}
         </div>
 
-        {/* Sheet drawer for add/edit */}
-        <Sheet
-          open={drawer !== null}
-          onOpenChange={(open) => {
-            if (!open) setDrawer(null);
-          }}
+        {/* Add/Edit modal */}
+        <Modal open={drawer !== null} onClose={() => setDrawer(null)} title={drawerTitle} size="md">
+          {drawer?.kind === 'add-feed' && (
+            <FeedForm
+              defaultValues={{ name: '', url: '', type: 'mikan' }}
+              submitLabel="Add Feed"
+              onSubmit={async (values) => {
+                await createFeedMutation.mutateAsync(values);
+              }}
+            />
+          )}
+
+          {drawer?.kind === 'edit-feed' && (
+            <FeedForm
+              defaultValues={{
+                name: drawer.feed.name,
+                url: drawer.feed.url,
+                type: drawer.feed.type,
+              }}
+              submitLabel="Save Changes"
+              onSubmit={async (values) => {
+                await updateFeedMutation.mutateAsync({ id: drawer.feed.id, data: values });
+              }}
+            />
+          )}
+
+          {drawer?.kind === 'add-rule' && (
+            <RuleForm
+              defaultValues={{
+                name: '',
+                enabled: 1,
+                rss_feed_id: '',
+                filter_regex: '',
+                exclude_regex: '',
+                save_dir: '',
+                episode_offset: 0,
+              }}
+              feeds={feeds}
+              submitLabel="Add Rule"
+              onSubmit={async (values) => {
+                await createRuleMutation.mutateAsync(values);
+              }}
+            />
+          )}
+
+          {drawer?.kind === 'edit-rule' && (
+            <RuleForm
+              defaultValues={{
+                name: drawer.rule.name,
+                enabled: drawer.rule.enabled,
+                rss_feed_id: drawer.rule.rss_feed_id,
+                filter_regex: drawer.rule.filter_regex,
+                exclude_regex: drawer.rule.exclude_regex,
+                save_dir: drawer.rule.save_dir,
+                episode_offset: drawer.rule.episode_offset,
+              }}
+              feeds={feeds}
+              submitLabel="Save Changes"
+              onSubmit={async (values) => {
+                await updateRuleMutation.mutateAsync({ id: drawer.rule.id, data: values });
+              }}
+            />
+          )}
+        </Modal>
+
+        {/* Delete confirmation modal */}
+        <Modal
+          open={!!deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          title={`Delete "${deleteTarget?.kind === 'feed' ? deleteTarget.feed.name : deleteTarget?.kind === 'rule' ? deleteTarget.rule.name : ''}"?`}
+          size="sm"
         >
-          <SheetContent
-            side="right"
-            className="w-[380px] border-l bg-mm-surface overflow-y-auto"
-            style={{ borderColor: 'oklch(18% 0.01 280)' }}
-          >
-            <SheetHeader>
-              <SheetTitle className="text-white">{drawerTitle}</SheetTitle>
-            </SheetHeader>
-
-            {drawer?.kind === 'add-feed' && (
-              <FeedForm
-                defaultValues={{ name: '', url: '', type: 'mikan' }}
-                submitLabel="Add Feed"
-                onSubmit={async (values) => {
-                  await createFeedMutation.mutateAsync(values);
-                }}
-              />
-            )}
-
-            {drawer?.kind === 'edit-feed' && (
-              <FeedForm
-                defaultValues={{
-                  name: drawer.feed.name,
-                  url: drawer.feed.url,
-                  type: drawer.feed.type,
-                }}
-                submitLabel="Save Changes"
-                onSubmit={async (values) => {
-                  await updateFeedMutation.mutateAsync({ id: drawer.feed.id, data: values });
-                }}
-              />
-            )}
-
-            {drawer?.kind === 'add-rule' && (
-              <RuleForm
-                defaultValues={{
-                  name: '',
-                  enabled: 1,
-                  rss_feed_id: '',
-                  filter_regex: '',
-                  exclude_regex: '',
-                  save_dir: '',
-                  episode_offset: 0,
-                }}
-                feeds={feeds}
-                submitLabel="Add Rule"
-                onSubmit={async (values) => {
-                  await createRuleMutation.mutateAsync(values);
-                }}
-              />
-            )}
-
-            {drawer?.kind === 'edit-rule' && (
-              <RuleForm
-                defaultValues={{
-                  name: drawer.rule.name,
-                  enabled: drawer.rule.enabled,
-                  rss_feed_id: drawer.rule.rss_feed_id,
-                  filter_regex: drawer.rule.filter_regex,
-                  exclude_regex: drawer.rule.exclude_regex,
-                  save_dir: drawer.rule.save_dir,
-                  episode_offset: drawer.rule.episode_offset,
-                }}
-                feeds={feeds}
-                submitLabel="Save Changes"
-                onSubmit={async (values) => {
-                  await updateRuleMutation.mutateAsync({ id: drawer.rule.id, data: values });
-                }}
-              />
-            )}
-          </SheetContent>
-        </Sheet>
-
-        {/* Delete confirmation */}
-        <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
-          <AlertDialogContent
-            className="bg-mm-border-subtle"
-            style={{ borderColor: 'oklch(20% 0.01 280)' }}
-          >
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">
-                Delete &ldquo;
-                {deleteTarget?.kind === 'feed'
-                  ? deleteTarget.feed.name
-                  : deleteTarget?.kind === 'rule'
-                    ? deleteTarget.rule.name
-                    : ''}
-                &rdquo;?
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-mm-text-secondary">
-                {deleteTarget?.kind === 'feed'
-                  ? 'This feed and all its items will be removed. Associated rules will stop matching.'
-                  : 'This download rule will be permanently removed.'}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="border-[oklch(22%_0.01_280)] text-white hover:bg-[oklch(16%_0.01_280)]">
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  if (deleteTarget?.kind === 'feed') {
-                    deleteFeedMutation.mutate(deleteTarget.feed.id);
-                  } else if (deleteTarget?.kind === 'rule') {
-                    deleteRuleMutation.mutate(deleteTarget.rule.id);
-                  }
-                }}
-                className="text-white"
-                style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          <p className="text-[13px] text-mm-text-secondary mb-5">
+            {deleteTarget?.kind === 'feed'
+              ? 'This feed and all its items will be removed. Associated rules will stop matching.'
+              : 'This download rule will be permanently removed.'}
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setDeleteTarget(null)}
+              className="px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (deleteTarget?.kind === 'feed') deleteFeedMutation.mutate(deleteTarget.feed.id);
+                else if (deleteTarget?.kind === 'rule') deleteRuleMutation.mutate(deleteTarget.rule.id);
+              }}
+              className="px-4 py-2 text-[13px] font-medium rounded-md text-white transition-colors"
+              style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
+            >
+              Delete
+            </button>
+          </div>
+        </Modal>
       </div>
     </PageTransition>
   );
