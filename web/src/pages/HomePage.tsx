@@ -12,7 +12,7 @@ import { HomePageSkeleton } from '../components/HomePageSkeleton';
 import { LibraryEmptyState } from '../components/LibraryEmptyState';
 import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
-import { discoverApi, discoverKeys } from '../lib/api/discover';
+import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import { progressApi, progressKeys } from '../lib/api/progress';
 import { libraryGradient } from '../lib/gradient';
@@ -65,13 +65,13 @@ export function HomePage() {
   const trendingRest = trending.slice(5, 15);
 
   const setImage = useBgStore((s) => s.setImage);
-  useEffect(() => {
-    // banner_image is high-res from AniList, cover_image is small poster fallback
-    const hero = heroItems[0];
-    const img = hero?.banner_image || hero?.cover_image;
+  // Clear bg on unmount
+  useEffect(() => () => setImage(null), [setImage]);
+  // Update bg when hero carousel rotates
+  const handleHeroChange = (item: AnimeSummary) => {
+    const img = item.banner_image || item.cover_image;
     if (img?.startsWith('http')) setImage(img);
-    return () => setImage(null);
-  }, [heroItems[0]?.banner_image, heroItems[0]?.cover_image, setImage]);
+  };
 
   if (isLoading) {
     return (
@@ -85,7 +85,7 @@ export function HomePage() {
     <PageTransition>
       <div className="min-h-screen">
         {/* Hero — full width, no padding, edge-to-edge like Seanime */}
-        {heroItems.length > 0 && <HeroBanner items={heroItems} />}
+        {heroItems.length > 0 && <HeroBanner items={heroItems} onActiveChange={handleHeroChange} />}
 
         {/* Main content grid */}
         <div className="flex gap-6 px-4 md:px-6">
@@ -130,7 +130,7 @@ export function HomePage() {
                 className="mt-6"
               >
                 <SectionHeader title={i18n._(msg`home.todaySchedule`)} to="/schedule" />
-                <div className="rounded-lg bg-white/[0.03]">
+                <div>
                   {todayAnime.slice(0, 5).map((anime, i) => (
                     <AnimeRow key={anime.bangumi_id} anime={anime} index={i} />
                   ))}
@@ -151,7 +151,7 @@ export function HomePage() {
                     key={genre}
                     to="/search"
                     search={{ q: genre }}
-                    className="shrink-0 px-3 py-1 text-[11px] font-medium rounded-full transition-colors bg-white/[0.04] hover:bg-white/[0.07] text-mm-text-tertiary"
+                    className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors bg-transparent hover:bg-white/[0.06] text-white/40 hover:text-white/70 cursor-pointer"
                   >
                     {genre}
                   </Link>
@@ -258,11 +258,11 @@ export function HomePage() {
 function SectionHeader({ title, to }: { title: string; to: string }) {
   const { i18n } = useLingui();
   return (
-    <div className="flex items-baseline justify-between mb-3">
-      <h2 className="text-[16px] font-bold text-white tracking-tight">{title}</h2>
+    <div className="flex items-baseline justify-between mb-4">
+      <h2 className="text-lg lg:text-xl font-bold text-white tracking-tight">{title}</h2>
       <Link
         to={to}
-        className="text-[11px] font-medium transition-colors hover:text-white text-mm-text-tertiary"
+        className="text-[12px] font-medium transition-colors hover:text-white text-white/40 cursor-pointer"
       >
         {i18n._(msg`home.viewAll`)}
       </Link>

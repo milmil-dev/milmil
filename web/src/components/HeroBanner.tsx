@@ -7,11 +7,16 @@ import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
-export function HeroBanner({ items }: { items: AnimeSummary[] }) {
+export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; onActiveChange?: (item: AnimeSummary) => void }) {
   const { i18n } = useLingui();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const featured = items[activeIndex];
+
+  // Notify parent when active item changes
+  useEffect(() => {
+    if (featured) onActiveChange?.(featured);
+  }, [activeIndex, featured, onActiveChange]);
 
   useEffect(() => {
     if (items.length <= 1 || isPaused) return;
@@ -39,7 +44,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ height: 'clamp(360px, 50vh, 520px)' }}
+      style={{ height: 'clamp(400px, 55vh, 32rem)' }}
       tabIndex={0}
       role="region"
       aria-label="Featured anime"
@@ -63,7 +68,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
               <div className="flex items-end gap-5">
                 <Link
                   to={`/anime/${featured.bangumi_id}` as string}
-                  className="shrink-0 w-[110px] h-[155px] rounded-lg overflow-hidden block"
+                  className="shrink-0 w-[140px] h-[200px] lg:w-[180px] lg:h-[260px] rounded-md overflow-hidden block"
                   style={hasCover ? undefined : { background: animeGradient(featured.title) }}
                 >
                   {hasCover && (
@@ -72,7 +77,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                 </Link>
 
                 <div className="min-w-0 flex-1 pb-1">
-                  <h2 className="text-[clamp(1.4rem,3vw,2rem)] font-bold text-white tracking-tight leading-tight line-clamp-2">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-tight line-clamp-2">
                     {featured.title}
                   </h2>
 
@@ -120,7 +125,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
                   className={cn(
-                    'h-[3px] rounded-full transition-all duration-300',
+                    'h-[3px] rounded-full transition-all duration-300 cursor-pointer hover:bg-white/60',
                     i === activeIndex ? 'bg-white w-5' : 'bg-white/30 w-1.5'
                   )}
                 />

@@ -51,10 +51,10 @@ function BannerImage({ src }: { src: string | null }) {
   return (
     <div
       className={cn(
-        'fixed top-0 z-0 h-[35rem] bg-[--mm-bg] transition-opacity duration-1000',
+        'fixed top-0 z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
         dimmed && 'opacity-[0.05]',
       )}
-      style={{ width: 'calc(100% + 5rem)', left: '-5rem' }}
+      style={{ left: 0, right: 0 }}
     >
       {/* Bottom bleed — prevents hard edge below banner */}
       <div className="w-full z-[2] absolute -bottom-[5rem] h-[5rem]" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
