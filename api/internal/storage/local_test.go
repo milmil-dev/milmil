@@ -1,0 +1,60 @@
+package storage
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestLocalProvider_Walk(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "test.mkv"), []byte("video"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	p := NewLocalProvider()
+	defer p.Close()
+
+	var found []string
+	err := p.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() {
+			return err
+		}
+		found = append(found, info.Name())
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(found) != 1 || found[0] != "test.mkv" {
+		t.Fatalf("expected [test.mkv], got %v", found)
+	}
+}
+
+func TestLocalProvider_StatAndOpen(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.txt")
+	if err := os.WriteFile(path, []byte("hello"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	p := NewLocalProvider()
+	defer p.Close()
+
+	info, err := p.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if info.Size() != 5 {
+		t.Fatalf("expected size 5, got %d", info.Size())
+	}
+
+	rc, err := p.Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rc.Close()
+	buf := make([]byte, 5)
+	n, _ := rc.Read(buf)
+	if string(buf[:n]) != "hello" {
+		t.Fatalf("expected hello, got %s", string(buf[:n]))
+	}
+}
