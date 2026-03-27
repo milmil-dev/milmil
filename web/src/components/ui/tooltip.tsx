@@ -42,7 +42,7 @@ function TooltipContent({
 }) {
   return (
     <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Positioner side={side} sideOffset={sideOffset}>
+      <TooltipPrimitive.Positioner side={side} sideOffset={sideOffset} className="z-[100]">
         <TooltipPrimitive.Popup
           className={cn(
             'z-50 rounded-md px-2.5 py-1 text-xs font-medium shadow-md transition-all duration-150 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
