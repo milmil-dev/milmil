@@ -52,9 +52,9 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
       onMouseLeave={() => setIsPaused(false)}
     >
 
-      {/* Content — anchored bottom-left */}
+      {/* Content — vertically centered */}
       <div className="relative z-[2] h-full flex">
-        <div className="flex-1 flex flex-col justify-end p-6 md:p-8 pb-6 min-w-0 max-w-[700px]">
+        <div className="flex-1 flex flex-col justify-center p-6 md:p-8 min-w-0 max-w-[700px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.bangumi_id}
