@@ -54,18 +54,14 @@ function LibraryCard({
     : 'Never';
 
   return (
-    <div className="group relative rounded overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-[oklch(65%_0.2_35)]">
-      {/* Poster area */}
-      <div className="relative h-44 overflow-hidden" style={{ background: cardGradient(lib.name) }}>
-        {/* Scanner sweep animation */}
+    <div className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:ring-1 hover:ring-mm-accent/20">
+      {/* Art area */}
+      <div className="relative h-40 overflow-hidden" style={{ background: cardGradient(lib.name) }}>
         <AnimatePresence>
           {scanning && (
             <motion.div
               className="absolute inset-0"
-              style={{
-                background:
-                  'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%)',
-              }}
+              style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(232,143,170,0.25) 50%, transparent 100%)' }}
               initial={{ x: '-100%' }}
               animate={{ x: '200%' }}
               exit={{ opacity: 0 }}
@@ -74,60 +70,42 @@ function LibraryCard({
           )}
         </AnimatePresence>
 
-        {/* Scanning badge */}
         {scanning && (
-          <div className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-mm-accent text-black">
+          <div className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-mm-accent text-black">
             SCANNING
           </div>
         )}
 
-        {/* Hover action overlay */}
-        <div
-          className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          style={{ backgroundColor: 'rgba(0,0,0,0.62)' }}
-        >
-          <motion.button
-            whileTap={{ scale: 0.94 }}
-            onClick={onScan}
-            disabled={scanning}
-            className="px-3 py-1.5 text-xs font-semibold rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors disabled:opacity-40"
-          >
-            {scanning ? 'Scanning\u2026' : 'Scan'}
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.94 }}
-            onClick={onEdit}
-            className="px-3 py-1.5 text-xs font-semibold rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
-          >
+        {/* Hover actions — no borders */}
+        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60">
+          <button type="button" onClick={onScan} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer">
+            {scanning ? 'Scanning…' : 'Scan'}
+          </button>
+          <button type="button" onClick={onEdit} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer">
             Edit
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.94 }}
-            onClick={onDelete}
-            className="px-3 py-1.5 text-xs font-semibold rounded text-red-300 border border-red-400/30 bg-red-900/20 hover:bg-red-900/40 transition-colors"
-          >
+          </button>
+          <button type="button" onClick={onDelete} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer">
             Delete
-          </motion.button>
+          </button>
         </div>
+
+        {/* Bottom gradient for text readability */}
+        <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
       </div>
 
-      {/* Info area */}
-      <div className="p-3 bg-mm-surface">
+      {/* Info — floats on dark, no solid bg */}
+      <div className="p-3">
         <p className="font-semibold text-sm text-white truncate leading-snug">{lib.name}</p>
-        <p className="text-[11px] font-mono truncate mt-0.5 text-mm-text-secondary">{lib.path}</p>
+        <p className="text-[11px] font-mono truncate mt-0.5 text-white/40">{lib.path}</p>
         <div className="flex items-center gap-2 mt-2">
-          <span
-            className={cn(
-              'text-[10px] font-bold px-1.5 py-0.5 rounded',
-              lib.enabled
-                ? 'bg-[oklch(32%_0.14_145)] text-[oklch(80%_0.12_145)]'
-                : 'bg-[oklch(18%_0.01_280)] text-[oklch(42%_0.01_280)]'
-            )}
-          >
+          <span className={cn(
+            'text-[10px] font-bold px-1.5 py-0.5 rounded',
+            lib.enabled ? 'bg-green-500/15 text-green-400' : 'bg-white/[0.04] text-white/30'
+          )}>
             {lib.enabled ? 'ON' : 'OFF'}
           </span>
           <SourceBadge sourceType={lib.source_type} />
-          <span className="text-[10px] text-mm-text-tertiary">{lastScanned}</span>
+          <span className="text-[10px] text-white/30">{lastScanned}</span>
         </div>
       </div>
     </div>
@@ -140,24 +118,20 @@ function AddCard({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="group rounded overflow-hidden border border-dashed transition-colors w-full focus-visible:ring-2 focus-visible:ring-[oklch(65%_0.2_35)] focus-visible:outline-none"
-      style={{ borderColor: 'oklch(22% 0.01 280)' }}
+      className="group rounded-lg overflow-hidden w-full transition-all duration-200 hover:ring-1 hover:ring-mm-accent/30 cursor-pointer"
     >
-      <div className="h-44 flex items-center justify-center transition-colors bg-mm-sidebar">
-        <div
-          className="w-11 h-11 rounded-full border flex items-center justify-center transition-colors group-hover:border-[oklch(65%_0.2_35)]"
-          style={{ borderColor: 'oklch(25% 0.01 280)' }}
-        >
-          <span className="text-xl leading-none transition-colors group-hover:text-[oklch(65%_0.2_35)] text-mm-text-muted">
-            +
-          </span>
+      <div className="h-40 flex items-center justify-center bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-10 h-10 rounded-full bg-mm-accent/10 flex items-center justify-center group-hover:bg-mm-accent/20 transition-colors">
+            <span className="text-lg text-mm-accent">+</span>
+          </div>
         </div>
       </div>
-      <div className="p-3 bg-mm-surface">
-        <p className="text-sm font-semibold transition-colors group-hover:text-white text-mm-text-tertiary">
+      <div className="p-3">
+        <p className="text-sm font-semibold text-white/50 group-hover:text-white transition-colors">
           Add Library
         </p>
-        <p className="text-[11px] mt-0.5 text-mm-text-muted">Connect a media folder</p>
+        <p className="text-[11px] mt-0.5 text-white/20">Connect a media source</p>
       </div>
     </button>
   );
@@ -186,7 +160,7 @@ interface LibraryFormValues {
 
 const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
 const inputClass =
-  'bg-white/[0.06] border-none focus:ring-1 focus:ring-[oklch(65%_0.2_35)] text-white rounded-md';
+  'bg-white/[0.06] border-none focus:ring-1 focus:ring-mm-accent/50 text-white rounded-md';
 
 // ─── Source type selector ─────────────────────────────────────────────────────
 function SourceTypeSelector({
@@ -565,10 +539,7 @@ function LibraryForm({
       {/* Enabled toggle */}
       <form.Field name="enabled">
         {(field) => (
-          <div
-            className="flex items-center justify-between py-3 border-t"
-            style={{ borderColor: 'oklch(18% 0.01 280)' }}
-          >
+          <div className="flex items-center justify-between py-3 border-t border-white/[0.06]">
             <Label htmlFor="lib-enabled" className={labelClass}>
               {i18n._(msg`library.enabled`)}
             </Label>
