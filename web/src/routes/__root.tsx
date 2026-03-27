@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
+import { createRootRoute, Link, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -103,6 +103,35 @@ function BannerImage({ src }: { src: string | null }) {
   );
 }
 
+const topNavItems = [
+  { to: '/', label: 'Home', exact: true },
+  { to: '/schedule', label: 'Schedule', exact: false },
+  { to: '/libraries', label: 'Library', exact: false },
+  { to: '/trending', label: 'Discover', exact: false },
+] as const;
+
+function TopNavLinks({ pathname }: { pathname: string }) {
+  return (
+    <nav className="fixed top-0 z-[10] hidden md:flex items-center gap-6 md:pl-24 h-[5rem]">
+      {topNavItems.map(({ to, label, exact }) => {
+        const active = exact ? pathname === to : pathname.startsWith(to);
+        return (
+          <Link
+            key={to}
+            to={to}
+            className={cn(
+              'text-[15px] font-semibold transition-colors cursor-pointer',
+              active ? 'text-white' : 'text-white/50 hover:text-white/80'
+            )}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const bgImage = useBgStore((s) => s.image);
@@ -128,6 +157,9 @@ function RootLayout() {
 
       {/* Sidebar */}
       <AppSidebar />
+
+      {/* Top nav — Seanime TopMenu style, overlays banner */}
+      <TopNavLinks pathname={pathname} />
 
       {/* Main content — pl-20 for 80px sidebar */}
       <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
