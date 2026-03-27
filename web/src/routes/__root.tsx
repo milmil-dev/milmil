@@ -57,11 +57,11 @@ function BannerImage({ src }: { src: string | null }) {
       style={{ width: 'calc(100% + 5rem)', left: '-5rem' }}
     >
       {/* Bottom bleed — prevents hard edge below banner */}
-      <div className="w-full z-[2] absolute -bottom-[10rem] h-[10rem]" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
-      {/* Top fade */}
+      <div className="w-full z-[2] absolute -bottom-[5rem] h-[5rem]" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
+      {/* Top fade — Seanime: h-[10rem] opacity-50 */}
       <div className="w-full absolute z-[2] top-0 h-[10rem] opacity-50" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
 
-      {/* The image */}
+      {/* The image — z-[1] so gradients at z-[2] overlay it */}
       <AnimatePresence mode="wait">
         <motion.div
           key={src}
@@ -79,25 +79,25 @@ function BannerImage({ src }: { src: string | null }) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Left gradient — wide, for content readability */}
+      {/* Left gradient — Seanime: max-w-[80rem], from-5% via-bg via-opacity-50 */}
       <div
-        className="hidden lg:block max-w-[80rem] w-full z-[2] h-full absolute left-0"
-        style={{ background: 'linear-gradient(to right, var(--mm-bg) 5%, rgba(7,7,7,0.5) 5%, transparent)', opacity: 1 }}
+        className="hidden lg:block w-full z-[2] h-full absolute left-0"
+        style={{ maxWidth: '80rem', background: 'linear-gradient(to right, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)' }}
       />
-      {/* Right gradient */}
+      {/* Right gradient — Seanime: max-w-[60rem], opacity-90 */}
       <div
-        className="hidden lg:block max-w-[60rem] w-full right-0 z-[2] h-full absolute opacity-90"
-        style={{ background: 'linear-gradient(to left, var(--mm-bg) 5%, rgba(7,7,7,0.5) 5%, transparent)' }}
+        className="hidden lg:block w-full z-[2] h-full absolute right-0 opacity-90"
+        style={{ maxWidth: '60rem', background: 'linear-gradient(to left, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)' }}
       />
-      {/* Sidebar-edge gradient — darker near sidebar for icon readability */}
+      {/* Sidebar-edge gradient — Seanime: max-w-[10rem] opacity-70 */}
       <div
-        className="hidden lg:block max-w-[10rem] w-full z-[2] h-full absolute left-0 opacity-70"
-        style={{ background: 'linear-gradient(to right, var(--mm-bg), rgba(7,7,7,0.5) 5%, transparent)' }}
+        className="hidden lg:block w-full z-[2] h-full absolute left-0 opacity-80"
+        style={{ maxWidth: '10rem', background: 'linear-gradient(to right, var(--mm-bg), transparent)' }}
       />
-      {/* Bottom gradient — strongest fade */}
+      {/* Bottom gradient — Seanime: h-[20rem] from-bg via-bg via-10% */}
       <div
         className="w-full z-[2] absolute bottom-0 h-[20rem]"
-        style={{ background: 'linear-gradient(to top, var(--mm-bg), var(--mm-bg) 10%, transparent)' }}
+        style={{ background: 'linear-gradient(to top, var(--mm-bg) 0%, var(--mm-bg) 10%, transparent)' }}
       />
     </div>
   );

@@ -49,15 +49,15 @@ function TooltipContent({
             className
           )}
           style={{
-            backgroundColor: 'oklch(85% 0.01 280)',
-            color: 'oklch(10% 0.01 280)',
+            backgroundColor: 'rgba(20,20,20,0.95)',
+            color: 'rgba(255,255,255,0.9)',
           }}
           {...props}
         >
           {children}
           <TooltipPrimitive.Arrow
             className="translate-y-[calc(-50%_-_1px)]"
-            style={{ color: 'oklch(85% 0.01 280)' }}
+            style={{ color: 'rgba(20,20,20,0.95)' }}
           />
         </TooltipPrimitive.Popup>
       </TooltipPrimitive.Positioner>
