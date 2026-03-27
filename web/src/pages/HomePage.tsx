@@ -82,12 +82,8 @@ export function HomePage() {
   return (
     <PageTransition>
       <div className="min-h-screen">
-        {/* Hero */}
-        {heroItems.length > 0 && (
-          <div className="px-4 md:px-6 pt-3">
-            <HeroBanner items={heroItems} />
-          </div>
-        )}
+        {/* Hero — full width, no padding, edge-to-edge like Seanime */}
+        {heroItems.length > 0 && <HeroBanner items={heroItems} />}
 
         {/* Main content grid */}
         <div className="flex gap-6 px-4 md:px-6">

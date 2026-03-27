@@ -13,18 +13,14 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
   const [isPaused, setIsPaused] = useState(false);
   const featured = items[activeIndex];
 
-  // Auto-rotate every 8 seconds
   useEffect(() => {
-    if (items.length <= 1) return;
-    if (!isPaused) {
-      const interval = setInterval(() => {
-        setActiveIndex((i) => (i + 1) % items.length);
-      }, 8000);
-      return () => clearInterval(interval);
-    }
+    if (items.length <= 1 || isPaused) return;
+    const interval = setInterval(() => {
+      setActiveIndex((i) => (i + 1) % items.length);
+    }, 8000);
+    return () => clearInterval(interval);
   }, [items.length, isPaused]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') setActiveIndex((i) => (i - 1 + items.length) % items.length);
@@ -42,15 +38,15 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-lg"
-      style={{ height: 'clamp(280px, 38vh, 420px)' }}
+      className="relative w-full overflow-hidden"
+      style={{ height: 'clamp(360px, 50vh, 520px)' }}
       tabIndex={0}
       role="region"
       aria-label="Featured anime"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background — blurred cover or gradient */}
+      {/* Background — FULL banner image, NO blur (like Seanime) */}
       <AnimatePresence mode="wait">
         <motion.div
           key={featured.bangumi_id}
@@ -65,120 +61,81 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
               src={featured.cover_image}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                filter: 'blur(40px) brightness(0.35) saturate(1.4)',
-                transform: 'scale(1.3)',
-              }}
+              style={{ filter: 'brightness(0.55) saturate(1.2)' }}
             />
           ) : (
-            <div
-              className="absolute inset-0"
-              style={{ background: animeGradient(featured.title) }}
-            />
+            <div className="absolute inset-0" style={{ background: animeGradient(featured.title) }} />
           )}
         </motion.div>
       </AnimatePresence>
 
-      {/* Dark overlay gradient */}
+      {/* Gradient overlays — left fade for text readability + bottom fade */}
       <div
         className="absolute inset-0 z-[1]"
         style={{
-          background:
-            'linear-gradient(90deg, oklch(from var(--mm-bg) l c h / 0.92) 0%, oklch(from var(--mm-bg) l c h / 0.5) 55%, transparent 100%), linear-gradient(to top, var(--mm-bg) 0%, transparent 40%)',
+          background: [
+            'linear-gradient(90deg, var(--mm-bg) 0%, oklch(from var(--mm-bg) l c h / 0.7) 35%, transparent 65%)',
+            'linear-gradient(to top, var(--mm-bg) 0%, transparent 50%)',
+          ].join(', '),
         }}
       />
 
-      {/* Content */}
+      {/* Content — anchored bottom-left */}
       <div className="relative z-[2] h-full flex">
-        {/* Left: info */}
-        <div className="flex-1 flex flex-col justify-end p-8 pb-7 min-w-0">
+        <div className="flex-1 flex flex-col justify-end p-6 md:p-8 pb-6 min-w-0 max-w-[600px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.bangumi_id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
+              exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              {/* Cover + text side by side */}
+              {/* Poster + info */}
               <div className="flex items-end gap-5">
-                {/* Cover poster */}
                 <Link
                   to={`/anime/${featured.bangumi_id}` as string}
-                  className="shrink-0 w-[100px] h-[140px] rounded overflow-hidden shadow-lg block"
+                  className="shrink-0 w-[110px] h-[155px] rounded-lg overflow-hidden shadow-2xl ring-1 ring-white/10 block"
                   style={hasCover ? undefined : { background: animeGradient(featured.title) }}
                 >
                   {hasCover && (
-                    <img
-                      src={featured.cover_image}
-                      alt={featured.title}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={featured.cover_image} alt={featured.title} className="w-full h-full object-cover" />
                   )}
                 </Link>
 
                 <div className="min-w-0 flex-1 pb-1">
-                  {/* Tags */}
-                  {featured.air_date && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-white/[0.08] text-mm-text-secondary">
-                        {new Date(featured.air_date).getFullYear()}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Title */}
-                  <h2 className="text-[clamp(1.2rem,2.5vw,1.8rem)] font-bold text-white tracking-tight leading-tight line-clamp-2">
+                  <h2 className="text-[clamp(1.4rem,3vw,2rem)] font-bold text-white tracking-tight leading-tight line-clamp-2">
                     {featured.title}
                   </h2>
 
                   {featured.title_original && featured.title_original !== featured.title && (
-                    <p className="text-[12px] mt-1 truncate text-mm-text-secondary">
+                    <p className="text-[12px] mt-1 truncate text-white/50">
                       {featured.title_original}
                     </p>
                   )}
 
-                  {/* Score + episode count */}
-                  <div className="flex items-center gap-3 mt-2">
+                  {/* Score + episodes */}
+                  <div className="flex items-center gap-3 mt-2.5">
                     {featured.score > 0 && (
-                      <span className="text-[13px] font-bold text-mm-accent">
+                      <span className="text-[14px] font-bold text-mm-accent">
                         ♡ {featured.score.toFixed(1)}
                       </span>
                     )}
                     {featured.episode_count > 0 && (
-                      <span className="text-[12px] text-mm-text-tertiary">
+                      <span className="text-[12px] text-white/40">
                         {featured.episode_count} {i18n._(msg`common.ep`)}
                       </span>
                     )}
                   </div>
 
-                  {/* Action buttons — Netflix-style */}
+                  {/* CTA */}
                   <div className="flex items-center gap-2.5 mt-4">
                     <Link
                       to={`/anime/${featured.bangumi_id}` as string}
                       className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                       {i18n._(msg`hero.details`)}
-                    </Link>
-                    <Link
-                      to={`/anime/${featured.bangumi_id}` as string}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.1] text-white hover:bg-white/[0.18] transition-colors"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 16v-4m0-4h.01" />
-                      </svg>
-                      {i18n._(msg`hero.moreInfo`)}
                     </Link>
                   </div>
                 </div>
@@ -188,31 +145,31 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
 
           {/* Pagination dots */}
           {items.length > 1 && (
-            <div className="flex items-center gap-1.5 mt-4">
+            <div className="flex items-center gap-1.5 mt-5">
               {items.map((item, i) => (
                 <button
                   type="button"
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
                   className={cn(
-                    'h-1 rounded-full transition-all duration-300',
-                    i === activeIndex ? 'bg-mm-accent' : 'bg-mm-text-muted'
+                    'h-[3px] rounded-full transition-all duration-300',
+                    i === activeIndex ? 'bg-white w-5' : 'bg-white/30 w-1.5'
                   )}
-                  style={{ width: i === activeIndex ? 20 : 6 }}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* Right: next-up card (like Seanime) */}
+        {/* Right: next-up card */}
         {nextItem && (
-          <div className="hidden lg:flex items-end p-6 pb-7 shrink-0">
+          <div className="hidden lg:flex items-end p-6 pb-8 shrink-0">
             <Link
               to={`/anime/${nextItem.bangumi_id}` as string}
-              className="group block w-[220px] rounded overflow-hidden bg-white/[0.04]"
+              className="group block w-[240px] rounded-lg overflow-hidden"
+              style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
             >
-              <div className="relative h-[120px] overflow-hidden">
+              <div className="relative h-[135px] overflow-hidden">
                 {nextItem.cover_image?.startsWith('http') ? (
                   <img
                     src={nextItem.cover_image}
@@ -220,26 +177,20 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div
-                    className="w-full h-full"
-                    style={{ background: animeGradient(nextItem.title) }}
-                  />
+                  <div className="w-full h-full" style={{ background: animeGradient(nextItem.title) }} />
                 )}
                 <div
                   className="absolute inset-0"
-                  style={{
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%)',
-                  }}
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%)' }}
                 />
-              </div>
-              <div className="px-3 py-2.5">
-                <p className="text-[12px] font-semibold text-white truncate">{nextItem.title}</p>
-                <p className="text-[10px] mt-0.5 text-mm-text-tertiary">
-                  {nextItem.episode_count > 0
-                    ? `${nextItem.episode_count} ${i18n._(msg`common.ep`)}`
-                    : ''}
-                  {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
-                </p>
+                {/* Episode info overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <p className="text-[12px] font-semibold text-white truncate">{nextItem.title}</p>
+                  <p className="text-[10px] mt-0.5 text-white/50">
+                    {nextItem.episode_count > 0 ? `${nextItem.episode_count} ${i18n._(msg`common.ep`)}` : ''}
+                    {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
+                  </p>
+                </div>
               </div>
             </Link>
           </div>
