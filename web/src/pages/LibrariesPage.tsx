@@ -1,5 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -12,12 +14,26 @@ import { Switch } from '../components/ui/switch';
 import {
   type CreateLibraryInput,
   type Library,
+  type TestConnectionInput,
+  type UpdateLibraryInput,
   libraryApi,
   libraryKeys,
-  type UpdateLibraryInput,
 } from '../lib/api/library';
 import { animeGradient as cardGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
+
+type SourceType = 'local' | 'smb' | 'sftp';
+
+// ─── Source type badge ────────────────────────────────────────────────────────
+function SourceBadge({ sourceType }: { sourceType: string }) {
+  if (!sourceType || sourceType === 'local') return null;
+  const label = sourceType.toUpperCase();
+  return (
+    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.12] text-gray-200">
+      {label}
+    </span>
+  );
+}
 
 // ─── Library card ─────────────────────────────────────────────────────────────
 function LibraryCard({
@@ -110,6 +126,7 @@ function LibraryCard({
           >
             {lib.enabled ? 'ON' : 'OFF'}
           </span>
+          <SourceBadge sourceType={lib.source_type} />
           <span className="text-[10px] text-mm-text-tertiary">{lastScanned}</span>
         </div>
       </div>
@@ -152,6 +169,103 @@ interface LibraryFormValues {
   path: string;
   enabled: boolean;
   scan_interval_minutes: number;
+  source_type: SourceType;
+  // SMB fields
+  smb_host: string;
+  smb_port: number;
+  smb_share: string;
+  smb_username: string;
+  smb_password: string;
+  smb_domain: string;
+  // SFTP fields
+  sftp_host: string;
+  sftp_port: number;
+  sftp_username: string;
+  sftp_password: string;
+}
+
+const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
+const inputClass =
+  'bg-white/[0.06] border-none focus:ring-1 focus:ring-[oklch(65%_0.2_35)] text-white rounded-md';
+
+// ─── Source type selector ─────────────────────────────────────────────────────
+function SourceTypeSelector({
+  value,
+  onChange,
+}: {
+  value: SourceType;
+  onChange: (v: SourceType) => void;
+}) {
+  const { i18n } = useLingui();
+  const types: { key: SourceType; label: string }[] = [
+    { key: 'local', label: i18n._(msg`library.sourceType.local`) },
+    { key: 'smb', label: i18n._(msg`library.sourceType.smb`) },
+    { key: 'sftp', label: i18n._(msg`library.sourceType.sftp`) },
+  ];
+
+  return (
+    <div className="space-y-1.5">
+      <Label className={labelClass}>{i18n._(msg`library.sourceType`)}</Label>
+      <div className="flex gap-1.5">
+        {types.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => onChange(t.key)}
+            className={cn(
+              'flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors',
+              value === t.key
+                ? 'bg-mm-accent text-black'
+                : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Test connection button ───────────────────────────────────────────────────
+function TestConnectionButton({
+  getConnectionInput,
+}: {
+  getConnectionInput: () => TestConnectionInput;
+}) {
+  const { i18n } = useLingui();
+  const [result, setResult] = useState<{ ok: boolean; error?: string } | null>(null);
+
+  const testMutation = useMutation({
+    mutationFn: (input: TestConnectionInput) => libraryApi.testConnection(input),
+    onSuccess: (data) => setResult(data),
+    onError: (err: Error) => setResult({ ok: false, error: err.message }),
+  });
+
+  return (
+    <div className="space-y-2">
+      <button
+        type="button"
+        onClick={() => {
+          setResult(null);
+          testMutation.mutate(getConnectionInput());
+        }}
+        disabled={testMutation.isPending}
+        className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/[0.06] text-gray-200 hover:bg-white/[0.1] transition-colors disabled:opacity-40"
+      >
+        {testMutation.isPending
+          ? i18n._(msg`library.testConnection.testing`)
+          : i18n._(msg`library.testConnection`)}
+      </button>
+      {result && (
+        <p className={cn('text-xs', result.ok ? 'text-green-400' : 'text-red-400')}>
+          {result.ok
+            ? i18n._(msg`library.testConnection.success`)
+            : result.error || i18n._(msg`library.testConnection.failed`)}
+        </p>
+      )}
+    </div>
+  );
 }
 
 // ─── Library form ─────────────────────────────────────────────────────────────
@@ -164,6 +278,7 @@ function LibraryForm({
   onSubmit: (values: LibraryFormValues) => Promise<void>;
   submitLabel: string;
 }) {
+  const { i18n } = useLingui();
   const form = useForm({
     defaultValues,
     onSubmit: async ({ value }) => onSubmit(value),
@@ -177,24 +292,32 @@ function LibraryForm({
       }}
       className="space-y-5 mt-4"
     >
+      {/* Source type selector */}
+      <form.Field name="source_type">
+        {(field) => (
+          <SourceTypeSelector
+            value={field.state.value}
+            onChange={field.handleChange}
+          />
+        )}
+      </form.Field>
+
+      {/* Name */}
       <form.Field
         name="name"
         validators={{ onChange: ({ value }) => (!value ? 'Name required' : undefined) }}
       >
         {(field) => (
           <div className="space-y-1.5">
-            <Label
-              htmlFor="lib-name"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-            >
-              Name
+            <Label htmlFor="lib-name" className={labelClass}>
+              {i18n._(msg`library.name`)}
             </Label>
             <Input
               id="lib-name"
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder="Anime"
-              className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className={inputClass}
             />
             {field.state.meta.errors[0] && (
               <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
@@ -203,24 +326,178 @@ function LibraryForm({
         )}
       </form.Field>
 
+      {/* SMB-specific fields */}
+      <form.Subscribe selector={(s) => s.values.source_type}>
+        {(sourceType) =>
+          sourceType === 'smb' ? (
+            <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+              <form.Field name="smb_host">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.smb.host`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="192.168.1.100"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <div className="grid grid-cols-2 gap-3">
+                <form.Field name="smb_port">
+                  {(field) => (
+                    <div className="space-y-1.5">
+                      <Label className={labelClass}>{i18n._(msg`library.smb.port`)}</Label>
+                      <Input
+                        type="number"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(Number(e.target.value))}
+                        placeholder="445"
+                        className={inputClass}
+                      />
+                    </div>
+                  )}
+                </form.Field>
+                <form.Field name="smb_share">
+                  {(field) => (
+                    <div className="space-y-1.5">
+                      <Label className={labelClass}>{i18n._(msg`library.smb.share`)}</Label>
+                      <Input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="media"
+                        className={inputClass}
+                      />
+                    </div>
+                  )}
+                </form.Field>
+              </div>
+              <form.Field name="smb_username">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.smb.username`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="user"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="smb_password">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.smb.password`)}</Label>
+                    <Input
+                      type="password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="smb_domain">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.smb.domain`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="WORKGROUP"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </div>
+          ) : null
+        }
+      </form.Subscribe>
+
+      {/* SFTP-specific fields */}
+      <form.Subscribe selector={(s) => s.values.source_type}>
+        {(sourceType) =>
+          sourceType === 'sftp' ? (
+            <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+              <form.Field name="sftp_host">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.sftp.host`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="192.168.1.100"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="sftp_port">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.sftp.port`)}</Label>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(Number(e.target.value))}
+                      placeholder="22"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="sftp_username">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.sftp.username`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="user"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="sftp_password">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.sftp.password`)}</Label>
+                    <Input
+                      type="password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </div>
+          ) : null
+        }
+      </form.Subscribe>
+
+      {/* Path */}
       <form.Field
         name="path"
         validators={{ onChange: ({ value }) => (!value ? 'Path required' : undefined) }}
       >
         {(field) => (
           <div className="space-y-1.5">
-            <Label
-              htmlFor="lib-path"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-            >
-              Path
+            <Label htmlFor="lib-path" className={labelClass}>
+              {i18n._(msg`library.path`)}
             </Label>
             <Input
               id="lib-path"
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder="/mnt/media/anime"
-              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className={cn('font-mono text-sm', inputClass)}
             />
             {field.state.meta.errors[0] && (
               <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
@@ -229,14 +506,48 @@ function LibraryForm({
         )}
       </form.Field>
 
+      {/* Test connection for non-local */}
+      <form.Subscribe selector={(s) => s.values}>
+        {(values) =>
+          values.source_type !== 'local' ? (
+            <TestConnectionButton
+              getConnectionInput={() => {
+                if (values.source_type === 'smb') {
+                  return {
+                    source_type: 'smb',
+                    source_config: {
+                      host: values.smb_host,
+                      port: values.smb_port,
+                      share: values.smb_share,
+                      username: values.smb_username,
+                      password: values.smb_password,
+                      domain: values.smb_domain,
+                    },
+                    path: values.path,
+                  };
+                }
+                return {
+                  source_type: 'sftp',
+                  source_config: {
+                    host: values.sftp_host,
+                    port: values.sftp_port,
+                    username: values.sftp_username,
+                    password: values.sftp_password,
+                  },
+                  path: values.path,
+                };
+              }}
+            />
+          ) : null
+        }
+      </form.Subscribe>
+
+      {/* Scan interval */}
       <form.Field name="scan_interval_minutes">
         {(field) => (
           <div className="space-y-1.5">
-            <Label
-              htmlFor="lib-interval"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-            >
-              Scan Interval (minutes)
+            <Label htmlFor="lib-interval" className={labelClass}>
+              {i18n._(msg`library.scanInterval`)}
             </Label>
             <Input
               id="lib-interval"
@@ -245,23 +556,21 @@ function LibraryForm({
               onChange={(e) => field.handleChange(Number(e.target.value))}
               min={1}
               max={10080}
-              className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className={inputClass}
             />
           </div>
         )}
       </form.Field>
 
+      {/* Enabled toggle */}
       <form.Field name="enabled">
         {(field) => (
           <div
             className="flex items-center justify-between py-3 border-t"
             style={{ borderColor: 'oklch(18% 0.01 280)' }}
           >
-            <Label
-              htmlFor="lib-enabled"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-            >
-              Enabled
+            <Label htmlFor="lib-enabled" className={labelClass}>
+              {i18n._(msg`library.enabled`)}
             </Label>
             <Switch
               id="lib-enabled"
@@ -285,6 +594,49 @@ function LibraryForm({
       </form.Subscribe>
     </form>
   );
+}
+
+// ─── Helpers to build source_config from form values ──────────────────────────
+function buildSourceConfig(values: LibraryFormValues): Record<string, unknown> | undefined {
+  if (values.source_type === 'smb') {
+    return {
+      host: values.smb_host,
+      port: values.smb_port,
+      share: values.smb_share,
+      username: values.smb_username,
+      password: values.smb_password,
+      domain: values.smb_domain,
+    };
+  }
+  if (values.source_type === 'sftp') {
+    return {
+      host: values.sftp_host,
+      port: values.sftp_port,
+      username: values.sftp_username,
+      password: values.sftp_password,
+    };
+  }
+  return undefined;
+}
+
+function formDefaultValues(lib?: Library): LibraryFormValues {
+  return {
+    name: lib?.name ?? '',
+    path: lib?.path ?? '',
+    enabled: lib ? lib.enabled === 1 : true,
+    scan_interval_minutes: lib?.scan_interval_minutes ?? 60,
+    source_type: (lib?.source_type as SourceType) || 'local',
+    smb_host: '',
+    smb_port: 445,
+    smb_share: '',
+    smb_username: '',
+    smb_password: '',
+    smb_domain: '',
+    sftp_host: '',
+    sftp_port: 22,
+    sftp_username: '',
+    sftp_password: '',
+  };
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -454,13 +806,15 @@ export function LibrariesPage() {
         >
           {drawerMode === 'add' && (
             <LibraryForm
-              defaultValues={{ name: '', path: '', enabled: true, scan_interval_minutes: 60 }}
+              defaultValues={formDefaultValues()}
               submitLabel="Add Library"
               onSubmit={async (values) => {
                 await createMutation.mutateAsync({
                   name: values.name,
                   path: values.path,
                   scan_interval_minutes: values.scan_interval_minutes,
+                  source_type: values.source_type,
+                  source_config: buildSourceConfig(values),
                 });
               }}
             />
@@ -468,15 +822,20 @@ export function LibrariesPage() {
 
           {drawerMode === 'edit' && editLib && (
             <LibraryForm
-              defaultValues={{
-                name: editLib.name,
-                path: editLib.path,
-                enabled: editLib.enabled === 1,
-                scan_interval_minutes: editLib.scan_interval_minutes,
-              }}
+              defaultValues={formDefaultValues(editLib)}
               submitLabel="Save Changes"
               onSubmit={async (values) => {
-                await updateMutation.mutateAsync({ id: editLib.id, input: values });
+                await updateMutation.mutateAsync({
+                  id: editLib.id,
+                  input: {
+                    name: values.name,
+                    path: values.path,
+                    enabled: values.enabled,
+                    scan_interval_minutes: values.scan_interval_minutes,
+                    source_type: values.source_type,
+                    source_config: buildSourceConfig(values),
+                  },
+                });
               }}
             />
           )}

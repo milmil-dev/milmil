@@ -4,6 +4,7 @@ export interface Library {
   id: string;
   name: string;
   path: string;
+  source_type: string;
   enabled: number;
   scan_interval_minutes: number;
   last_scanned_at: string | null;
@@ -26,6 +27,8 @@ export interface CreateLibraryInput {
   name: string;
   path: string;
   scan_interval_minutes?: number;
+  source_type?: string;
+  source_config?: Record<string, unknown>;
 }
 
 export interface UpdateLibraryInput {
@@ -33,6 +36,19 @@ export interface UpdateLibraryInput {
   path: string;
   enabled: boolean;
   scan_interval_minutes: number;
+  source_type?: string;
+  source_config?: Record<string, unknown>;
+}
+
+export interface TestConnectionInput {
+  source_type: string;
+  source_config: Record<string, unknown>;
+  path: string;
+}
+
+export interface TestConnectionResult {
+  ok: boolean;
+  error?: string;
 }
 
 export const libraryApi = {
@@ -44,6 +60,8 @@ export const libraryApi = {
   delete: (id: string) => api.delete<void>(`/api/v1/libraries/${id}`),
   scan: (id: string) => api.post<void>(`/api/v1/libraries/${id}/scan`),
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
+  testConnection: (input: TestConnectionInput) =>
+    api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
 };
 
 export const libraryKeys = {
