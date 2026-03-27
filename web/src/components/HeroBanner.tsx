@@ -54,7 +54,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
       {/* Content — vertically centered */}
       <div className="relative z-[2] h-full flex">
-        <div className="flex-1 flex flex-col justify-center p-6 md:p-8 min-w-0 max-w-[700px]">
+        <div className="flex-1 flex flex-col justify-start p-6 md:p-8 pt-12 md:pt-16 min-w-0 max-w-[700px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.bangumi_id}
