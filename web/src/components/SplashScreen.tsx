@@ -12,7 +12,13 @@ export function SplashScreen() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <h1 className="text-3xl font-bold tracking-tight text-mm-accent">milmil</h1>
+        <svg width="48" height="48" viewBox="0 0 28 28" fill="none" className="text-mm-accent mb-3">
+          <circle cx="14" cy="18" r="7" fill="currentColor" opacity="0.85"/>
+          <circle cx="7" cy="10" r="3.5" fill="currentColor" opacity="0.65"/>
+          <circle cx="14" cy="6" r="3.5" fill="currentColor" opacity="0.65"/>
+          <circle cx="21" cy="10" r="3.5" fill="currentColor" opacity="0.65"/>
+        </svg>
+        <h1 className="text-2xl font-bold tracking-tight text-mm-accent">milmil</h1>
       </motion.div>
 
       {/* Thin sliding accent bar */}

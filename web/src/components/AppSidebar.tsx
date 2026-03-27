@@ -84,9 +84,14 @@ export function AppSidebar() {
           className="fixed left-0 top-0 bottom-0 w-20 z-40 flex flex-col items-center max-md:hidden"
           style={{ backgroundColor: 'transparent' }}
         >
-          {/* Logo */}
+          {/* Logo — paw print */}
           <div className="flex items-center justify-center h-16 shrink-0">
-            <span className="text-lg font-bold tracking-tight text-mm-accent">m</span>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="text-mm-accent">
+              <circle cx="14" cy="18" r="7" fill="currentColor" opacity="0.85"/>
+              <circle cx="7" cy="10" r="3.5" fill="currentColor" opacity="0.65"/>
+              <circle cx="14" cy="6" r="3.5" fill="currentColor" opacity="0.65"/>
+              <circle cx="21" cy="10" r="3.5" fill="currentColor" opacity="0.65"/>
+            </svg>
           </div>
 
           {/* Main nav */}

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { expect, test, vi } from 'vitest';
 
@@ -91,8 +91,9 @@ test('renders the sidebar with navigation links', () => {
 });
 
 test('sidebar renders logo', () => {
-  render(<AppSidebar />);
-  expect(screen.getByText('m')).toBeInTheDocument();
+  const { container } = render(<AppSidebar />);
+  // Logo is now an SVG paw print
+  expect(container.querySelector('svg')).not.toBeNull();
 });
 
 test('sidebar has nav links as anchor elements', () => {

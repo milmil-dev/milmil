@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>milmil Theme Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #070707; color: #e0e0e0; font-family: 'Figtree', system-ui, sans-serif; padding: 40px; }
+  h1 { font-size: 24px; font-weight: 700; margin-bottom: 32px; color: #fff; }
+  h2 { font-size: 18px; font-weight: 600; margin: 40px 0 20px; color: #aaa; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .card:hover { background: rgba(255,255,255,0.06); }
+  .card.selected { border-color: currentColor; }
+  .logo-preview {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .logo-text { font-weight: 800; font-size: 32px; letter-spacing: -1px; }
+  .label { font-size: 14px; font-weight: 600; color: #999; margin-bottom: 4px; }
+  .desc { font-size: 12px; color: #666; line-height: 1.5; }
+
+  /* Color swatches */
+  .swatches { display: flex; gap: 8px; margin: 12px 0; }
+  .swatch { width: 32px; height: 32px; border-radius: 8px; }
+
+  /* Mini app preview */
+  .app-preview {
+    background: #070707;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 200px;
+    position: relative;
+    margin-top: 16px;
+  }
+  .app-sidebar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 12px;
+    gap: 8px;
+  }
+  .sidebar-dot { width: 20px; height: 20px; border-radius: 6px; background: rgba(255,255,255,0.06); }
+  .sidebar-dot.active { background: currentColor; opacity: 0.2; }
+  .app-content { margin-left: 48px; padding: 12px; }
+  .app-hero {
+    height: 90px;
+    border-radius: 6px;
+    opacity: 0.3;
+    margin-bottom: 8px;
+  }
+  .app-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .app-meta { font-size: 10px; opacity: 0.5; }
+  .app-cards { display: flex; gap: 6px; margin-top: 10px; }
+  .app-card { width: 50px; height: 70px; border-radius: 4px; opacity: 0.6; }
+
+  /* Section separator */
+  hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 40px 0; }
+
+  /* SVG cat ear logo */
+  .cat-logo svg { height: 48px; }
+</style>
+</head>
+<body>
+
+<h1>milmil Theme Preview</h1>
+<p style="color:#666; margin-bottom:32px;">Click any option to see the full app preview update. Scroll down for all options.</p>
+
+<!-- SECTION 1: Logo Styles -->
+<h2>1. Logo Style</h2>
+<div class="grid">
+
+  <!-- A: Cat ears text -->
+  <div class="card" onclick="selectLogo(this, 'cat-ears')">
+    <div class="logo-preview">
+      <svg width="160" height="60" viewBox="0 0 160 60">
+        <!-- Cat ears on the 'm' -->
+        <polygon points="20,20 28,5 36,20" fill="currentColor" opacity="0.8"/>
+        <polygon points="36,20 44,5 52,20" fill="currentColor" opacity="0.6"/>
+        <text x="16" y="48" font-family="system-ui" font-weight="800" font-size="36" fill="currentColor">milmil</text>
+      </svg>
+    </div>
+    <div class="label">A: Cat Ears Text</div>
+    <div class="desc">The "m" grows cat ears. Playful but readable. Works at all sizes.</div>
+  </div>
+
+  <!-- B: Cat icon + text -->
+  <div class="card" onclick="selectLogo(this, 'cat-icon')">
+    <div class="logo-preview">
+      <svg width="180" height="60" viewBox="0 0 180 60">
+        <!-- Simple cat face -->
+        <circle cx="24" cy="32" r="16" fill="currentColor" opacity="0.2"/>
+        <!-- ears -->
+        <polygon points="12,20 18,6 24,18" fill="currentColor" opacity="0.7"/>
+        <polygon points="24,18 30,6 36,20" fill="currentColor" opacity="0.7"/>
+        <!-- eyes -->
+        <circle cx="19" cy="30" r="2.5" fill="currentColor"/>
+        <circle cx="29" cy="30" r="2.5" fill="currentColor"/>
+        <!-- mouth -->
+        <path d="M21,36 Q24,39 27,36" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        <text x="50" y="42" font-family="system-ui" font-weight="800" font-size="32" fill="currentColor">milmil</text>
+      </svg>
+    </div>
+    <div class="label">B: Cat Mascot + Text</div>
+    <div class="desc">Small cat face icon alongside the wordmark. More mascot-like.</div>
+  </div>
+
+  <!-- C: Stylized with paw -->
+  <div class="card" onclick="selectLogo(this, 'paw')">
+    <div class="logo-preview">
+      <svg width="180" height="60" viewBox="0 0 180 60">
+        <text x="10" y="44" font-family="system-ui" font-weight="800" font-size="34" fill="currentColor" letter-spacing="-1">
+          <tspan>mil</tspan><tspan fill="currentColor" opacity="0.6">mil</tspan>
+        </text>
+        <!-- paw print replacing dot -->
+        <circle cx="160" cy="20" r="5" fill="currentColor" opacity="0.8"/>
+        <circle cx="152" cy="14" r="3" fill="currentColor" opacity="0.6"/>
+        <circle cx="160" cy="10" r="3" fill="currentColor" opacity="0.6"/>
+        <circle cx="168" cy="14" r="3" fill="currentColor" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="label">C: Text + Paw Print</div>
+    <div class="desc">Clean wordmark with a paw print accent. Subtle cat reference.</div>
+  </div>
+
+</div>
+
+<hr>
+
+<!-- SECTION 2: Pink Shades -->
+<h2>2. Pink Shade</h2>
+<div class="grid">
+
+  <div class="card" style="color: #FF9CAA" onclick="selectColor(this, '#FF9CAA', 'sakura')">
+    <div class="swatches">
+      <div class="swatch" style="background: #FF9CAA"></div>
+      <div class="swatch" style="background: #FF7A8F"></div>
+      <div class="swatch" style="background: #CC7D87"></div>
+      <div class="swatch" style="background: #331F22"></div>
+    </div>
+    <div class="label" style="color: #FF9CAA">A: Sakura Pink</div>
+    <div class="desc">Soft, warm cherry blossom. Gentle and inviting.</div>
+    <div class="app-preview">
+      <div class="app-sidebar" style="color: #FF9CAA">
+        <div class="sidebar-dot active"></div>
+        <div class="sidebar-dot"></div>
+        <div class="sidebar-dot"></div>
+      </div>
+      <div class="app-content">
+        <div class="app-hero" style="background: linear-gradient(135deg, #FF9CAA, #331F22)"></div>
+        <div class="app-title" style="color: #FF9CAA">♡ 8.4</div>
+        <div class="app-meta">Action · Drama · Supernatural</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="color: #FF1493" onclick="selectColor(this, '#FF1493', 'hot')">
+    <div class="swatches">
+      <div class="swatch" style="background: #FF1493"></div>
+      <div class="swatch" style="background: #D4107A"></div>
+      <div class="swatch" style="background: #990C5A"></div>
+      <div class="swatch" style="background: #2D0A1A"></div>
+    </div>
+    <div class="label" style="color: #FF1493">B: Hot Pink</div>
+    <div class="desc">Vibrant, bold, high-energy. Strong statement.</div>
+    <div class="app-preview">
+      <div class="app-sidebar" style="color: #FF1493">
+        <div class="sidebar-dot active"></div>
+        <div class="sidebar-dot"></div>
+        <div class="sidebar-dot"></div>
+      </div>
+      <div class="app-content">
+        <div class="app-hero" style="background: linear-gradient(135deg, #FF1493, #2D0A1A)"></div>
+        <div class="app-title" style="color: #FF1493">♡ 8.4</div>
+        <div class="app-meta">Action · Drama · Supernatural</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="color: #E88FAA" onclick="selectColor(this, '#E88FAA', 'moe')">
+    <div class="swatches">
+      <div class="swatch" style="background: #E88FAA"></div>
+      <div class="swatch" style="background: #C97090"></div>
+      <div class="swatch" style="background: #8F4D65"></div>
+      <div class="swatch" style="background: #2A1520"></div>
+    </div>
+    <div class="label" style="color: #E88FAA">C: Moe Pink</div>
+    <div class="desc">Between sakura and magenta. Anime-style, balanced warmth.</div>
+    <div class="app-preview">
+      <div class="app-sidebar" style="color: #E88FAA">
+        <div class="sidebar-dot active"></div>
+        <div class="sidebar-dot"></div>
+        <div class="sidebar-dot"></div>
+      </div>
+      <div class="app-content">
+        <div class="app-hero" style="background: linear-gradient(135deg, #E88FAA, #2A1520)"></div>
+        <div class="app-title" style="color: #E88FAA">♡ 8.4</div>
+        <div class="app-meta">Action · Drama · Supernatural</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="color: #FFB7C5" onclick="selectColor(this, '#FFB7C5', 'pastel')">
+    <div class="swatches">
+      <div class="swatch" style="background: #FFB7C5"></div>
+      <div class="swatch" style="background: #E89DAD"></div>
+      <div class="swatch" style="background: #A67080"></div>
+      <div class="swatch" style="background: #2B1A1F"></div>
+    </div>
+    <div class="label" style="color: #FFB7C5">D: Pastel Kawaii</div>
+    <div class="desc">Soft, dreamy pastel. Very kawaii aesthetic.</div>
+    <div class="app-preview">
+      <div class="app-sidebar" style="color: #FFB7C5">
+        <div class="sidebar-dot active"></div>
+        <div class="sidebar-dot"></div>
+        <div class="sidebar-dot"></div>
+      </div>
+      <div class="app-content">
+        <div class="app-hero" style="background: linear-gradient(135deg, #FFB7C5, #2B1A1F)"></div>
+        <div class="app-title" style="color: #FFB7C5">♡ 8.4</div>
+        <div class="app-meta">Action · Drama · Supernatural</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+<!-- SECTION 3: Full App Mockup -->
+<h2>3. Full App Preview (click options above to update)</h2>
+<div id="full-preview" style="background: #070707; border-radius: 12px; overflow: hidden; height: 500px; position: relative; border: 1px solid rgba(255,255,255,0.05);">
+
+  <!-- Sidebar -->
+  <div id="preview-sidebar" style="position: absolute; left: 0; top: 0; bottom: 0; width: 60px; display: flex; flex-direction: column; align-items: center; padding-top: 16px; gap: 6px; z-index: 10;">
+    <div id="preview-logo" style="font-weight: 800; font-size: 20px; margin-bottom: 12px; color: #E88FAA;">m</div>
+    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;">
+      <div style="width: 16px; height: 16px; border-radius: 4px; background: currentColor; opacity: 0.3;"></div>
+    </div>
+    <div style="width: 32px; height: 32px; border-radius: 8px; display:flex; align-items:center; justify-content:center;">
+      <div style="width: 16px; height: 16px; border-radius: 4px; background: rgba(255,255,255,0.15);"></div>
+    </div>
+    <div style="width: 32px; height: 32px; border-radius: 8px; display:flex; align-items:center; justify-content:center;">
+      <div style="width: 16px; height: 16px; border-radius: 4px; background: rgba(255,255,255,0.15);"></div>
+    </div>
+  </div>
+
+  <!-- Banner bg -->
+  <div id="preview-banner" style="position: absolute; top: 0; left: 0; right: 0; height: 280px; background: linear-gradient(135deg, rgba(232,143,170,0.15), rgba(7,7,7,0.9)); z-index: 0;"></div>
+  <div style="position: absolute; top: 0; left: 0; right: 0; height: 280px; background: linear-gradient(to bottom, transparent 40%, #070707); z-index: 1;"></div>
+
+  <!-- Content -->
+  <div style="position: relative; z-index: 5; margin-left: 60px; padding: 20px;">
+    <!-- Top nav -->
+    <div style="display: flex; gap: 16px; margin-bottom: 20px; font-size: 13px; font-weight: 600;">
+      <span style="color: #fff;">首頁</span>
+      <span style="color: rgba(255,255,255,0.4);">時間表</span>
+      <span style="color: rgba(255,255,255,0.4);">媒體庫</span>
+      <span style="color: rgba(255,255,255,0.4);">探索</span>
+    </div>
+
+    <!-- Hero -->
+    <div style="display: flex; gap: 16px; align-items: flex-start;">
+      <div style="width: 120px; height: 170px; border-radius: 6px; background: linear-gradient(135deg, #333, #1a1a1a); flex-shrink: 0;"></div>
+      <div>
+        <div style="font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px;">咒术回战 死灭回游 前篇</div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 8px;">Action · Drama · Supernatural</div>
+        <div id="preview-score" style="font-size: 14px; font-weight: 700; color: #E88FAA; margin-bottom: 8px;">♡ 8.4</div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; max-width: 400px;">The third season of Jujutsu Kaisen. After the Shibuya Incident, a deadly jujutsu battle known as the Culling Game...</div>
+        <div id="preview-btn" style="display: inline-block; margin-top: 12px; padding: 6px 16px; border-radius: 20px; background: rgba(232,143,170,0.15); color: #E88FAA; font-size: 12px; font-weight: 600;">Preview</div>
+      </div>
+    </div>
+
+    <!-- Indicators -->
+    <div style="display: flex; gap: 6px; margin-top: 16px;">
+      <div id="preview-dot-active" style="width: 20px; height: 5px; border-radius: 3px; background: #E88FAA;"></div>
+      <div style="width: 10px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.15);"></div>
+      <div style="width: 10px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.15);"></div>
+      <div style="width: 10px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.15);"></div>
+    </div>
+
+    <!-- Section -->
+    <div style="margin-top: 24px;">
+      <div style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px;">熱門動畫</div>
+      <div style="display: flex; gap: 10px;">
+        <div style="width: 90px; height: 120px; border-radius: 6px; background: linear-gradient(135deg, #2a1520, #1a0a10);"></div>
+        <div style="width: 90px; height: 120px; border-radius: 6px; background: linear-gradient(135deg, #1a1525, #0a0a15);"></div>
+        <div style="width: 90px; height: 120px; border-radius: 6px; background: linear-gradient(135deg, #15201a, #0a150a);"></div>
+        <div style="width: 90px; height: 120px; border-radius: 6px; background: linear-gradient(135deg, #201a15, #150a0a);"></div>
+        <div style="width: 90px; height: 120px; border-radius: 6px; background: linear-gradient(135deg, #1a1520, #0a0a10);"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedColor = '#E88FAA';
+
+function selectColor(card, color, name) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedColor = color;
+  updatePreview();
+}
+
+function selectLogo(card, type) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+}
+
+function updatePreview() {
+  document.getElementById('preview-logo').style.color = selectedColor;
+  document.getElementById('preview-score').style.color = selectedColor;
+  document.getElementById('preview-btn').style.color = selectedColor;
+  document.getElementById('preview-btn').style.background = selectedColor + '22';
+  document.getElementById('preview-dot-active').style.background = selectedColor;
+  document.getElementById('preview-banner').style.background = `linear-gradient(135deg, ${selectedColor}22, rgba(7,7,7,0.9))`;
+  document.getElementById('preview-sidebar').style.color = selectedColor;
+}
+</script>
+
+</body>
+</html>
