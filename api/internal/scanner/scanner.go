@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -37,14 +38,24 @@ var languageSuffixes = map[string]string{
 }
 
 type Scanner struct {
-	queries *store.Queries
+	queries         *store.Queries
+	providerFactory func(sourceType, configJSON string) (storage.Provider, error)
 }
 
 func New(queries *store.Queries) *Scanner {
-	return &Scanner{queries: queries}
+	return &Scanner{
+		queries:         queries,
+		providerFactory: storage.NewProvider,
+	}
 }
 
-func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error {
+func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, configJSON string) error {
+	provider, err := s.providerFactory(library.SourceType, configJSON)
+	if err != nil {
+		return err
+	}
+	defer provider.Close()
+
 	summary, err := s.queries.CreateScanSummary(ctx, store.CreateScanSummaryParams{
 		ID:        uuid.NewString(),
 		LibraryID: library.ID,
@@ -57,7 +68,7 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 	scannedPaths := make(map[string]string)
 	var filesFound int64
 
-	walkErr := filepath.Walk(library.Path, func(path string, info os.FileInfo, err error) error {
+	walkErr := provider.Walk(library.Path, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return err
 		}
@@ -80,11 +91,14 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library) error 
 
 		// Compute file hash if not already set
 		if !upsertedFile.FileHash.Valid || upsertedFile.FileHash.String == "" {
-			if hash, hashErr := ComputeFileHash(path); hashErr == nil {
-				_ = s.queries.UpdateMediaFileHash(ctx, store.UpdateMediaFileHashParams{
-					FileHash: sql.NullString{String: hash, Valid: true},
-					ID:       upsertedFile.ID,
-				})
+			if r, openErr := provider.Open(path); openErr == nil {
+				if hash, hashErr := ComputeFileHashFromReader(r); hashErr == nil {
+					_ = s.queries.UpdateMediaFileHash(ctx, store.UpdateMediaFileHashParams{
+						FileHash: sql.NullString{String: hash, Valid: true},
+						ID:       upsertedFile.ID,
+					})
+				}
+				r.Close()
 			}
 		}
 

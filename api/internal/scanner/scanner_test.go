@@ -50,7 +50,7 @@ func TestScanner_EmptyDir(t *testing.T) {
 	lib := makeLibrary(t, q, dir)
 
 	sc := scanner.New(q)
-	if err := sc.ScanLibrary(context.Background(), lib); err != nil {
+	if err := sc.ScanLibrary(context.Background(), lib, ""); err != nil {
 		t.Fatalf("ScanLibrary: %v", err)
 	}
 
@@ -74,7 +74,7 @@ func TestScanner_VideoFiles(t *testing.T) {
 
 	lib := makeLibrary(t, q, dir)
 	sc := scanner.New(q)
-	if err := sc.ScanLibrary(context.Background(), lib); err != nil {
+	if err := sc.ScanLibrary(context.Background(), lib, ""); err != nil {
 		t.Fatalf("ScanLibrary: %v", err)
 	}
 
@@ -98,13 +98,13 @@ func TestScanner_RemovesStaleFiles(t *testing.T) {
 	lib := makeLibrary(t, q, dir)
 	sc := scanner.New(q)
 	// First scan: inserts the file
-	if err := sc.ScanLibrary(context.Background(), lib); err != nil {
+	if err := sc.ScanLibrary(context.Background(), lib, ""); err != nil {
 		t.Fatal(err)
 	}
 
 	// Remove the file and scan again
 	os.Remove(videoPath)
-	if err := sc.ScanLibrary(context.Background(), lib); err != nil {
+	if err := sc.ScanLibrary(context.Background(), lib, ""); err != nil {
 		t.Fatal(err)
 	}
 
