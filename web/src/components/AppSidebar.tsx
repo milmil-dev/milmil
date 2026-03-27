@@ -80,7 +80,7 @@ export function AppSidebar() {
         <aside
           className="fixed left-0 top-0 bottom-0 w-20 z-40 flex flex-col items-center max-md:hidden"
           style={{
-            backgroundColor: 'rgba(7,7,7,0.6)',
+            backgroundColor: 'transparent',
             backdropFilter: 'blur(12px) saturate(1.2)',
             WebkitBackdropFilter: 'blur(12px) saturate(1.2)',
           }}
