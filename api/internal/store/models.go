@@ -77,14 +77,16 @@ type Episode struct {
 }
 
 type Library struct {
-	ID                  string         `json:"id"`
-	Name                string         `json:"name"`
-	Path                string         `json:"path"`
-	Enabled             int64          `json:"enabled"`
-	ScanIntervalMinutes int64          `json:"scan_interval_minutes"`
-	LastScannedAt       sql.NullString `json:"last_scanned_at"`
-	CreatedAt           string         `json:"created_at"`
-	UpdatedAt           string         `json:"updated_at"`
+	ID                    string         `json:"id"`
+	Name                  string         `json:"name"`
+	Path                  string         `json:"path"`
+	Enabled               int64          `json:"enabled"`
+	ScanIntervalMinutes   int64          `json:"scan_interval_minutes"`
+	LastScannedAt         sql.NullString `json:"last_scanned_at"`
+	CreatedAt             string         `json:"created_at"`
+	UpdatedAt             string         `json:"updated_at"`
+	SourceType            string         `json:"source_type"`
+	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
 }
 
 type MediaFile struct {

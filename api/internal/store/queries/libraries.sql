@@ -5,13 +5,14 @@ SELECT * FROM libraries ORDER BY name;
 SELECT * FROM libraries WHERE id = ? LIMIT 1;
 
 -- name: CreateLibrary :one
-INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, source_type, source_config_encrypted, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 RETURNING *;
 
 -- name: UpdateLibrary :one
 UPDATE libraries
 SET name = ?, path = ?, enabled = ?, scan_interval_minutes = ?,
+    source_type = ?, source_config_encrypted = ?,
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = ?
 RETURNING *;

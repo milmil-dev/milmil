@@ -61,11 +61,13 @@ func (h *handler) handleCreateLibrary(c echo.Context) error {
 		interval = 60
 	}
 	lib, err := h.queries.CreateLibrary(c.Request().Context(), store.CreateLibraryParams{
-		ID:                  uuid.NewString(),
-		Name:                req.Name,
-		Path:                req.Path,
-		Enabled:             1,
-		ScanIntervalMinutes: interval,
+		ID:                    uuid.NewString(),
+		Name:                  req.Name,
+		Path:                  req.Path,
+		Enabled:               1,
+		ScanIntervalMinutes:   interval,
+		SourceType:            "local",
+		SourceConfigEncrypted: sql.NullString{},
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -90,11 +92,13 @@ func (h *handler) handleUpdateLibrary(c echo.Context) error {
 		interval = 60
 	}
 	lib, err := h.queries.UpdateLibrary(c.Request().Context(), store.UpdateLibraryParams{
-		ID:                  c.Param("id"),
-		Name:                req.Name,
-		Path:                req.Path,
-		Enabled:             enabled,
-		ScanIntervalMinutes: interval,
+		ID:                    c.Param("id"),
+		Name:                  req.Name,
+		Path:                  req.Path,
+		Enabled:               enabled,
+		ScanIntervalMinutes:   interval,
+		SourceType:            "local",
+		SourceConfigEncrypted: sql.NullString{},
 	})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

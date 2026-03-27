@@ -7,20 +7,23 @@ package store
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createLibrary = `-- name: CreateLibrary :one
-INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at
+INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, source_type, source_config_encrypted, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted
 `
 
 type CreateLibraryParams struct {
-	ID                  string `json:"id"`
-	Name                string `json:"name"`
-	Path                string `json:"path"`
-	Enabled             int64  `json:"enabled"`
-	ScanIntervalMinutes int64  `json:"scan_interval_minutes"`
+	ID                    string         `json:"id"`
+	Name                  string         `json:"name"`
+	Path                  string         `json:"path"`
+	Enabled               int64          `json:"enabled"`
+	ScanIntervalMinutes   int64          `json:"scan_interval_minutes"`
+	SourceType            string         `json:"source_type"`
+	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
 }
 
 func (q *Queries) CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error) {
@@ -30,6 +33,8 @@ func (q *Queries) CreateLibrary(ctx context.Context, arg CreateLibraryParams) (L
 		arg.Path,
 		arg.Enabled,
 		arg.ScanIntervalMinutes,
+		arg.SourceType,
+		arg.SourceConfigEncrypted,
 	)
 	var i Library
 	err := row.Scan(
@@ -41,6 +46,8 @@ func (q *Queries) CreateLibrary(ctx context.Context, arg CreateLibraryParams) (L
 		&i.LastScannedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SourceType,
+		&i.SourceConfigEncrypted,
 	)
 	return i, err
 }
@@ -55,7 +62,7 @@ func (q *Queries) DeleteLibrary(ctx context.Context, id string) error {
 }
 
 const getLibrary = `-- name: GetLibrary :one
-SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at FROM libraries WHERE id = ? LIMIT 1
+SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted FROM libraries WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetLibrary(ctx context.Context, id string) (Library, error) {
@@ -70,12 +77,14 @@ func (q *Queries) GetLibrary(ctx context.Context, id string) (Library, error) {
 		&i.LastScannedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SourceType,
+		&i.SourceConfigEncrypted,
 	)
 	return i, err
 }
 
 const listLibraries = `-- name: ListLibraries :many
-SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at FROM libraries ORDER BY name
+SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted FROM libraries ORDER BY name
 `
 
 func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
@@ -96,6 +105,8 @@ func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
 			&i.LastScannedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.SourceType,
+			&i.SourceConfigEncrypted,
 		); err != nil {
 			return nil, err
 		}
@@ -113,17 +124,20 @@ func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
 const updateLibrary = `-- name: UpdateLibrary :one
 UPDATE libraries
 SET name = ?, path = ?, enabled = ?, scan_interval_minutes = ?,
+    source_type = ?, source_config_encrypted = ?,
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = ?
-RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at
+RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted
 `
 
 type UpdateLibraryParams struct {
-	Name                string `json:"name"`
-	Path                string `json:"path"`
-	Enabled             int64  `json:"enabled"`
-	ScanIntervalMinutes int64  `json:"scan_interval_minutes"`
-	ID                  string `json:"id"`
+	Name                  string         `json:"name"`
+	Path                  string         `json:"path"`
+	Enabled               int64          `json:"enabled"`
+	ScanIntervalMinutes   int64          `json:"scan_interval_minutes"`
+	SourceType            string         `json:"source_type"`
+	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
+	ID                    string         `json:"id"`
 }
 
 func (q *Queries) UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error) {
@@ -132,6 +146,8 @@ func (q *Queries) UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (L
 		arg.Path,
 		arg.Enabled,
 		arg.ScanIntervalMinutes,
+		arg.SourceType,
+		arg.SourceConfigEncrypted,
 		arg.ID,
 	)
 	var i Library
@@ -144,6 +160,8 @@ func (q *Queries) UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (L
 		&i.LastScannedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SourceType,
+		&i.SourceConfigEncrypted,
 	)
 	return i, err
 }
