@@ -7,12 +7,14 @@ import (
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/env"
 	"github.com/knadh/koanf/v2"
+	"github.com/milmil/api/internal/crypto"
 )
 
 type Config struct {
 	DatabaseURL         string
 	RedisURL            string // optional
 	JWTSecret           string
+	EncryptionKey       []byte // 32-byte AES-256 key for encrypting storage credentials
 	APIPort             int
 	DataDir             string
 	Aria2RPCURL         string
@@ -69,5 +71,13 @@ func Load() (*Config, error) {
 	if cfg.JWTSecret == "" {
 		return nil, fmt.Errorf("JWT_SECRET is required")
 	}
+
+	// Derive encryption key from MILMIL_ENCRYPTION_KEY or fall back to JWT_SECRET.
+	encSecret := k.String("MILMIL_ENCRYPTION_KEY")
+	if encSecret == "" {
+		encSecret = cfg.JWTSecret
+	}
+	cfg.EncryptionKey = crypto.DeriveKey(encSecret)
+
 	return cfg, nil
 }

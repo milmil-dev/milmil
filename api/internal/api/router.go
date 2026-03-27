@@ -16,16 +16,17 @@ import (
 )
 
 type handler struct {
-	cfg        *config.Config
-	db         *sql.DB
-	queries    *store.Queries
-	cache      cache.Cache
-	metadata   *metadata.Service
-	matcher    *matcher.Matcher
-	dandanplay dandanplay.Client
-	resolver   *resolver.Resolver
-	aria2      aria2.Client
-	wsHub      *ws.Hub
+	cfg           *config.Config
+	db            *sql.DB
+	queries       *store.Queries
+	cache         cache.Cache
+	metadata      *metadata.Service
+	matcher       *matcher.Matcher
+	dandanplay    dandanplay.Client
+	resolver      *resolver.Resolver
+	aria2         aria2.Client
+	wsHub         *ws.Hub
+	encryptionKey []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
@@ -35,16 +36,17 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	attachMiddleware(e)
 
 	h := &handler{
-		cfg:        cfg,
-		db:         db,
-		queries:    store.New(db),
-		cache:      cacheClient,
-		metadata:   metadataSvc,
-		matcher:    matcherSvc,
-		dandanplay: ddpClient,
-		resolver:   resolverSvc,
-		aria2:      aria2Client,
-		wsHub:      wsHub,
+		cfg:           cfg,
+		db:            db,
+		queries:       store.New(db),
+		cache:         cacheClient,
+		metadata:      metadataSvc,
+		matcher:       matcherSvc,
+		dandanplay:    ddpClient,
+		resolver:      resolverSvc,
+		aria2:         aria2Client,
+		wsHub:         wsHub,
+		encryptionKey: cfg.EncryptionKey,
 	}
 
 	// WebSocket (no auth — WS auth is complex, keep it simple)
@@ -77,6 +79,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.DELETE("/:id", h.handleDeleteLibrary)
 	libGroup.POST("/:id/scan", h.handleScanLibrary)
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
+	libGroup.POST("/test-connection", h.handleTestConnection)
 
 	// Discover — public
 	discoverGroup := v1.Group("/discover")
