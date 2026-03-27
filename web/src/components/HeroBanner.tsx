@@ -7,7 +7,7 @@ import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
-export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; onActiveChange?: (item: AnimeSummary) => void }) {
+export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: AnimeSummary[]; onActiveChange?: (item: AnimeSummary) => void; hasWatchRecord?: boolean }) {
   const { i18n } = useLingui();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -132,8 +132,8 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
           )}
         </div>
 
-        {/* Episode card — Seanime EpisodeCardSidebar: shows current anime's episode info */}
-        {featured && (
+        {/* Episode card — only show if user has watch records */}
+        {featured && hasWatchRecord && (
           <div className="absolute right-6 bottom-8 z-[3] hidden lg:block">
             <Link
               to={`/anime/${featured.bangumi_id}` as string}

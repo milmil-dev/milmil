@@ -62,7 +62,9 @@ export function HomePage() {
   const isLoading = !calendar && !trending.length;
 
   const heroItems = trending.slice(0, 5);
-  const trendingRest = trending.slice(5, 15);
+  // Deduplicate: exclude hero items from trending grid by bangumi_id
+  const heroIds = new Set(heroItems.map((h) => h.bangumi_id));
+  const trendingRest = trending.filter((t) => !heroIds.has(t.bangumi_id)).slice(0, 7);
 
   const setImage = useBgStore((s) => s.setImage);
   // Clear bg on unmount
@@ -85,7 +87,7 @@ export function HomePage() {
     <PageTransition>
       <div className="min-h-screen">
         {/* Hero — full width, no padding, edge-to-edge like Seanime */}
-        {heroItems.length > 0 && <HeroBanner items={heroItems} onActiveChange={handleHeroChange} />}
+        {heroItems.length > 0 && <HeroBanner items={heroItems} onActiveChange={handleHeroChange} hasWatchRecord={continueWatching.length > 0} />}
 
         {/* Main content grid */}
         <div className="flex gap-6 px-4 md:px-6">
