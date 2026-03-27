@@ -118,15 +118,15 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
 
           {/* Pagination dots */}
           {items.length > 1 && (
-            <div className="flex items-center gap-1.5 mt-5">
+            <div className="flex items-center gap-2 mt-5">
               {items.map((item, i) => (
                 <button
                   type="button"
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
                   className={cn(
-                    'h-[3px] rounded-full transition-all duration-300 cursor-pointer hover:bg-white/60',
-                    i === activeIndex ? 'bg-white w-5' : 'bg-white/30 w-1.5'
+                    'h-1.5 rounded-sm transition-all duration-300 cursor-pointer hover:bg-white/60',
+                    i === activeIndex ? 'bg-white/80 w-6' : 'bg-white/20 w-3'
                   )}
                 />
               ))}
