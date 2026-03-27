@@ -1,9 +1,9 @@
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { loadAndActivate } from './i18n/config';
+import { defaultLocale, loadAndActivate } from './i18n/config';
 import './styles/global.css';
 
-loadAndActivate('en');
+loadAndActivate(localStorage.getItem('milmil-locale') || defaultLocale);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
 
