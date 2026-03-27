@@ -75,10 +75,10 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                   )}
                 </Link>
 
-                <div className="min-w-0 flex-1 pb-1 space-y-2" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5)' }}>
-                  {/* Title — clickable, animated text reveal like Seanime TextGenerateEffect */}
+                <div className="min-w-0 flex-1 pb-1 space-y-2">
+                  {/* Title — clickable, animated text reveal */}
                   <Link to={`/anime/${featured.bangumi_id}` as string} className="block cursor-pointer">
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-white/80 transition-colors">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-gray-300 transition-colors">
                       {featured.title.split('').map((char, ci) => (
                         <motion.span
                           key={`${featured.bangumi_id}-${ci}`}
@@ -92,9 +92,9 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     </h2>
                   </Link>
 
-                  {/* Genres — dot-separated, subtle */}
+                  {/* Genres */}
                   {featured.genres && featured.genres.length > 0 && (
-                    <p className="text-[13px] text-white/50">
+                    <p className="text-[13px] text-gray-300">
                       {featured.genres.slice(0, 4).join(' · ')}
                     </p>
                   )}
@@ -108,16 +108,16 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                   {/* Description */}
                   {featured.description && (
-                    <p className="text-[13px] text-white/50 line-clamp-4 max-w-xl leading-relaxed">
+                    <p className="text-[13px] text-gray-300 line-clamp-4 max-w-xl leading-relaxed">
                       {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
 
-                  {/* Preview button — opens preview modal (Seanime pattern) */}
+                  {/* Preview button */}
                   <button
                     type="button"
                     onClick={() => setPreviewOpen(true)}
-                    className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.14] transition-colors cursor-pointer mt-1"
+                    className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/[0.08] text-white hover:bg-white/[0.14] transition-colors cursor-pointer mt-1"
                   >
                     Preview
                   </button>
