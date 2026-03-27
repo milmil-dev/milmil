@@ -94,21 +94,21 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                   {/* Genres */}
                   {featured.genres && featured.genres.length > 0 && (
-                    <p className="text-[14px] font-semibold text-gray-200">
+                    <p className="text-[15px] font-semibold text-gray-200">
                       {featured.genres.slice(0, 4).join(' · ')}
                     </p>
                   )}
 
                   {/* Score */}
                   {featured.score > 0 && (
-                    <span className="text-base font-bold text-mm-accent inline-block">
+                    <span className="text-[16px] font-bold text-mm-accent inline-block">
                       ♡ {featured.score.toFixed(1)}
                     </span>
                   )}
 
                   {/* Description */}
                   {featured.description && (
-                    <p className="text-sm text-gray-200 line-clamp-4 max-w-xl leading-relaxed">
+                    <p className="text-[15px] text-gray-200 line-clamp-4 max-w-xl leading-relaxed">
                       {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
