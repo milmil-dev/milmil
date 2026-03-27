@@ -147,7 +147,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                     )}
                     {featured.episode_count > 0 && (
                       <span className="text-[12px] text-mm-text-tertiary">
-                        {featured.episode_count} 集
+                        {featured.episode_count} {i18n._(msg`common.ep`)}
                       </span>
                     )}
                   </div>
@@ -235,7 +235,9 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
               <div className="px-3 py-2.5">
                 <p className="text-[12px] font-semibold text-white truncate">{nextItem.title}</p>
                 <p className="text-[10px] mt-0.5 text-mm-text-tertiary">
-                  {nextItem.episode_count > 0 ? `${nextItem.episode_count} 集` : ''}
+                  {nextItem.episode_count > 0
+                    ? `${nextItem.episode_count} ${i18n._(msg`common.ep`)}`
+                    : ''}
                   {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
                 </p>
               </div>

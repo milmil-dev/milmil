@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
@@ -9,6 +11,7 @@ import { animeGradient } from '../lib/gradient';
 import { useBgStore } from '../store/bg-store';
 
 export function AnimeDetailPage() {
+  const { i18n } = useLingui();
   const { id } = useParams({ strict: false });
   const numericId = Number(id);
   const setImage = useBgStore((s) => s.setImage);
@@ -56,18 +59,20 @@ export function AnimeDetailPage() {
     return (
       <PageTransition>
         <div className="min-h-screen flex flex-col items-center justify-center">
-          <p className="text-sm text-mm-text-tertiary">{isError ? '載入失敗' : '找不到此動畫'}</p>
+          <p className="text-sm text-mm-text-tertiary">
+            {isError ? i18n._(msg`common.loadFailed`) : i18n._(msg`anime.notFound`)}
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="mt-3 px-4 py-1.5 rounded-md bg-white/[0.06] text-[13px] text-mm-text-secondary hover:bg-white/[0.1] transition-colors"
           >
-            重試
+            {i18n._(msg`common.retry`)}
           </button>
           <Link
             to="/"
             className="mt-2 text-[12px] text-mm-text-muted hover:text-mm-text-secondary transition-colors"
           >
-            返回首頁
+            {i18n._(msg`common.backHome`)}
           </Link>
         </div>
       </PageTransition>
@@ -144,16 +149,18 @@ export function AnimeDetailPage() {
               <div className="flex items-center gap-3 mt-2.5 flex-wrap">
                 {anime.score > 0 && (
                   <span className="text-[13px] font-bold text-mm-accent">
-                    {anime.score.toFixed(1)} 分
+                    {anime.score.toFixed(1)} {i18n._(msg`anime.score`)}
                   </span>
                 )}
                 {anime.rating?.total > 0 && (
                   <span className="text-[11px] text-mm-text-muted">
-                    {anime.rating.total} 人評價
+                    {anime.rating.total} {i18n._(msg`anime.ratings`)}
                   </span>
                 )}
                 {anime.episode_count > 0 && (
-                  <span className="text-[11px] text-mm-text-muted">{anime.episode_count} 集</span>
+                  <span className="text-[11px] text-mm-text-muted">
+                    {anime.episode_count} {i18n._(msg`common.ep`)}
+                  </span>
                 )}
                 {anime.air_date && (
                   <span className="text-[11px] text-mm-text-muted">
@@ -191,7 +198,7 @@ export function AnimeDetailPage() {
             {anime.synopsis && (
               <div>
                 <h2 className="text-[11px] font-bold uppercase tracking-[0.15em] mb-2 text-mm-text-muted">
-                  簡介
+                  {i18n._(msg`anime.synopsis`)}
                 </h2>
                 <p className="text-[13px] leading-relaxed text-mm-text-secondary">
                   {anime.synopsis}
@@ -209,7 +216,7 @@ export function AnimeDetailPage() {
               className="flex-1 min-w-0"
             >
               <h2 className="text-[11px] font-bold uppercase tracking-[0.15em] mb-3 text-mm-text-muted">
-                劇集 ({episodes.length})
+                {i18n._(msg`anime.episodes`)} ({episodes.length})
               </h2>
               <div className="space-y-0.5 rounded-lg bg-white/[0.03] p-1">
                 {episodes.map((ep) => (

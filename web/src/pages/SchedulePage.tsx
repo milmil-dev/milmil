@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
@@ -28,13 +30,13 @@ function getWeekdayLabel(bangumiWeekday: string): string {
   return format(target, 'EEEE', { locale: zhTW });
 }
 
-function getCurrentSeason(): string {
+function getCurrentSeason(i18n: ReturnType<typeof useLingui>['i18n']): string {
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
-  if (month <= 3) return `${year} 一月冬番`;
-  if (month <= 6) return `${year} 四月春番`;
-  if (month <= 9) return `${year} 七月夏番`;
-  return `${year} 十月秋番`;
+  if (month <= 3) return `${year} ${i18n._(msg`schedule.season.winter`)}`;
+  if (month <= 6) return `${year} ${i18n._(msg`schedule.season.spring`)}`;
+  if (month <= 9) return `${year} ${i18n._(msg`schedule.season.summer`)}`;
+  return `${year} ${i18n._(msg`schedule.season.fall`)}`;
 }
 
 function WeekdayColumn({ day, isToday }: { day: CalendarDay; isToday: boolean }) {
@@ -103,6 +105,7 @@ function WeekdayColumn({ day, isToday }: { day: CalendarDay; isToday: boolean })
 }
 
 export function SchedulePage() {
+  const { i18n } = useLingui();
   const {
     data: calendar,
     isLoading,
@@ -130,7 +133,9 @@ export function SchedulePage() {
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex items-baseline gap-3">
             <div className="w-1 h-5 rounded-full bg-mm-accent" />
-            <h1 className="text-xl font-bold text-white tracking-tight">{getCurrentSeason()}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight">
+              {getCurrentSeason(i18n)}
+            </h1>
           </div>
         </motion.div>
 
@@ -148,13 +153,15 @@ export function SchedulePage() {
 
         {isError && (
           <div className="text-center py-16">
-            <p className="text-sm mb-3 text-mm-text-secondary">載入日曆失敗</p>
+            <p className="text-sm mb-3 text-mm-text-secondary">
+              {i18n._(msg`schedule.loadFailed`)}
+            </p>
             <button
               type="button"
               onClick={() => refetch()}
               className="text-sm font-medium text-mm-accent"
             >
-              重試
+              {i18n._(msg`common.retry`)}
             </button>
           </div>
         )}

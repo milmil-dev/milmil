@@ -4,6 +4,7 @@ import { AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
+import { SplashScreen } from '../components/SplashScreen';
 import { TopNav } from '../components/TopNav';
 import { useWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
@@ -119,5 +120,6 @@ export const Route = createRootRoute({
       }
     }
   },
+  pendingComponent: SplashScreen,
   component: RootLayout,
 });

@@ -56,6 +56,15 @@ vi.mock('motion/react', () => {
   };
 });
 
+vi.mock('@lingui/react', () => ({
+  useLingui: () => ({
+    i18n: {
+      _: (v: unknown) =>
+        typeof v === 'object' && v && 'id' in v ? (v as { id: string }).id : String(v),
+    },
+  }),
+}));
+
 import { AnimeCard } from '@/components/AnimeCard';
 import { AnimeRow } from '@/components/AnimeRow';
 

@@ -54,6 +54,15 @@ vi.mock('motion/react', () => {
   };
 });
 
+vi.mock('@lingui/react', () => ({
+  useLingui: () => ({
+    i18n: {
+      _: (v: unknown) =>
+        typeof v === 'object' && v && 'id' in v ? (v as { id: string }).id : String(v),
+    },
+  }),
+}));
+
 import { AnimeCard } from '@/components/AnimeCard';
 import { ContinueWatchingCard } from '@/components/ContinueWatchingCard';
 import { EpisodeListItem } from '@/components/EpisodeListItem';
@@ -72,7 +81,7 @@ test('anime card exposes title and metadata in a denser media surface', () => {
     />
   );
   expect(screen.getAllByText('Test Anime').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getByText('12 集')).toBeInTheDocument();
+  expect(screen.getByText(/12/)).toBeInTheDocument();
 });
 
 test('continue watching card renders progress and anime info', () => {

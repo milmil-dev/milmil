@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useState } from 'react';
@@ -5,6 +7,7 @@ import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 
 export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: number }) {
+  const { i18n } = useLingui();
   const [imgFailed, setImgFailed] = useState(false);
   const hasCover = !imgFailed && anime.cover_image?.startsWith('http');
 
@@ -53,7 +56,7 @@ export function AnimeCard({ anime, index = 0 }: { anime: AnimeSummary; index?: n
             {anime.title}
           </p>
           <p className="text-[10px] mt-0.5 text-mm-text-muted">
-            {anime.episode_count > 0 ? `${anime.episode_count} 集` : ''}
+            {anime.episode_count > 0 ? `${anime.episode_count} ${i18n._(msg`common.ep`)}` : ''}
           </p>
         </div>
       </Link>

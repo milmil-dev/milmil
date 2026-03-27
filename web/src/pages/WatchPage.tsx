@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
@@ -16,6 +18,7 @@ const SAVE_INTERVAL_MS = 10_000;
 const COMPLETION_THRESHOLD_SECONDS = 30;
 
 export function WatchPage() {
+  const { i18n } = useLingui();
   const { fileId } = useParams({ strict: false });
   const { episodeId } = useSearch({ strict: false }) as { episodeId?: string };
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
@@ -174,10 +177,12 @@ export function WatchPage() {
               {/* Danmaku status */}
               <div className="rounded-lg bg-white/[0.04] p-3">
                 <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
-                  彈幕
+                  {i18n._(msg`watch.danmaku`)}
                 </h3>
                 <p className="text-[13px] text-mm-text-secondary">
-                  {danmakuData ? `${danmakuData.count} 條彈幕` : '無彈幕數據'}
+                  {danmakuData
+                    ? `${danmakuData.count} ${i18n._(msg`watch.danmaku.count`)}`
+                    : i18n._(msg`watch.danmaku.noData`)}
                 </p>
               </div>
 
@@ -185,7 +190,7 @@ export function WatchPage() {
               {subtitles && subtitles.length > 0 && (
                 <div className="rounded-lg bg-white/[0.04] p-3">
                   <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
-                    字幕
+                    {i18n._(msg`watch.subtitle`)}
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {subtitles.map((sub) => (
@@ -203,7 +208,7 @@ export function WatchPage() {
               {/* File info */}
               <div className="rounded-lg bg-white/[0.04] p-3">
                 <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
-                  媒體檔案
+                  {i18n._(msg`watch.mediaFile`)}
                 </h3>
                 <p className="text-[12px] font-mono text-mm-text-tertiary break-all">
                   {fileId ?? 'Unknown'}
