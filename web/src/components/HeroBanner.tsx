@@ -55,7 +55,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
       {/* Content — anchored bottom-left */}
       <div className="relative z-[2] h-full flex">
-        <div className="flex-1 flex flex-col justify-end p-6 md:p-8 pb-6 min-w-0 max-w-[600px]">
+        <div className="flex-1 flex flex-col justify-end p-6 md:p-8 pb-6 min-w-0 max-w-[700px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.bangumi_id}
@@ -79,7 +79,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                 <div className="min-w-0 flex-1 pb-1 space-y-2">
                   {/* Title — clickable, animated text reveal like Seanime TextGenerateEffect */}
                   <Link to={`/anime/${featured.bangumi_id}` as string} className="block cursor-pointer">
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-tight line-clamp-2 hover:text-white/80 transition-colors">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-white/80 transition-colors" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.2)' }}>
                       {featured.title.split('').map((char, ci) => (
                         <motion.span
                           key={`${featured.bangumi_id}-${ci}`}
@@ -93,15 +93,11 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     </h2>
                   </Link>
 
-                  {/* Genres — Seanime shows up to 3 */}
+                  {/* Genres — dot-separated, subtle */}
                   {featured.genres && featured.genres.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {featured.genres.slice(0, 3).map((genre) => (
-                        <span key={genre} className="text-sm font-semibold text-gray-300 px-1">
-                          {genre}
-                        </span>
-                      ))}
-                    </div>
+                    <p className="text-[13px] text-white/50">
+                      {featured.genres.slice(0, 4).join(' · ')}
+                    </p>
                   )}
 
                   {/* Score */}
@@ -111,9 +107,9 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     </span>
                   )}
 
-                  {/* Description — Seanime shows in a scroll area, max ~3 lines */}
+                  {/* Description */}
                   {featured.description && (
-                    <p className="text-sm text-white/60 line-clamp-3 max-w-lg leading-relaxed">
+                    <p className="text-[13px] text-white/50 line-clamp-4 max-w-xl leading-relaxed">
                       {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
