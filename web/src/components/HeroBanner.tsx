@@ -44,7 +44,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ height: 'clamp(400px, 55vh, 32rem)' }}
+      style={{ height: 'clamp(368px, 50vh, 29.5rem)' }}
       tabIndex={0}
       role="region"
       aria-label="Featured anime"
