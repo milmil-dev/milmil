@@ -1,14 +1,14 @@
 import { createContext } from 'react';
 
-export type Theme = 'dark' | 'light' | 'system';
+export type Theme = 'dark';
 
 export interface ThemeProviderState {
   theme: Theme;
-  setTheme: (theme: Theme) => void;
+  setTheme: () => void;
 }
 
 const initialState: ThemeProviderState = {
-  theme: 'system',
+  theme: 'dark',
   setTheme: () => null,
 };
 

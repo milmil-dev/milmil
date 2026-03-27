@@ -1,4 +1,5 @@
-// web/src/pages/WatchPage.tsx
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
@@ -17,6 +18,7 @@ const SAVE_INTERVAL_MS = 10_000;
 const COMPLETION_THRESHOLD_SECONDS = 30;
 
 export function WatchPage() {
+  const { i18n } = useLingui();
   const { fileId } = useParams({ strict: false });
   const { episodeId } = useSearch({ strict: false }) as { episodeId?: string };
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
@@ -26,7 +28,6 @@ export function WatchPage() {
   const playerRef = useRef<Player | null>(null);
   const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Fetch danmaku (may 404 — that's OK)
   const { data: danmakuData } = useQuery({
     queryKey: ['danmaku', fileId],
     queryFn: async () => {
@@ -47,14 +48,12 @@ export function WatchPage() {
     enabled: !!fileId,
   });
 
-  // Fetch subtitles for this media file
   const { data: subtitles } = useQuery({
     queryKey: ['subtitles', fileId],
     queryFn: () => subtitleApi.list(fileId!),
     enabled: !!fileId,
   });
 
-  // Fetch saved progress for this media file
   const { data: savedProgress } = useQuery({
     queryKey: progressKeys.byFile(fileId ?? ''),
     queryFn: () => progressApi.byFile(fileId!),
@@ -66,13 +65,8 @@ export function WatchPage() {
     ? parseDandanplayComments(danmakuData.comments, danmakuFontSize, danmakuOpacity)
     : [];
 
-  // Stream URL — uses query param token for <video src>
   const streamUrl = fileId ? getStreamUrl(fileId) : '';
-  // Use mp4 as default since we don't have the filename here
-  // TODO: fetch media file details to get actual filename/type
   const mimeType = 'video/mp4';
-
-  // Resolve the episode ID: from search param or from saved progress
   const resolvedEpisodeId = episodeId ?? savedProgress?.episode_id;
 
   const saveProgress = useCallback(() => {
@@ -93,12 +87,9 @@ export function WatchPage() {
         duration_seconds: duration,
         completed,
       })
-      .catch(() => {
-        // Silent — background sync, no toast
-      });
+      .catch(() => {});
   }, [fileId, resolvedEpisodeId]);
 
-  // Set up periodic save interval
   const startSaveInterval = useCallback(() => {
     if (saveIntervalRef.current) return;
     saveIntervalRef.current = setInterval(saveProgress, SAVE_INTERVAL_MS);
@@ -111,7 +102,6 @@ export function WatchPage() {
     }
   }, []);
 
-  // Cleanup interval and save on unmount
   useEffect(() => {
     return () => {
       stopSaveInterval();
@@ -124,12 +114,10 @@ export function WatchPage() {
     setVideoEl(el);
     playerRef.current = player;
 
-    // Restore saved position
     if (savedProgress && savedProgress.position_seconds > 0 && !savedProgress.completed) {
       player.currentTime(savedProgress.position_seconds);
     }
 
-    // Add subtitle tracks
     if (subtitles?.length) {
       for (const sub of subtitles) {
         player.addRemoteTextTrack(
@@ -144,16 +132,11 @@ export function WatchPage() {
       }
     }
 
-    // Start saving on play, stop on pause
-    player.on('play', () => {
-      startSaveInterval();
-    });
-
+    player.on('play', () => startSaveInterval());
     player.on('pause', () => {
       stopSaveInterval();
       saveProgress();
     });
-
     player.on('ended', () => {
       stopSaveInterval();
       saveProgress();
@@ -162,35 +145,77 @@ export function WatchPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-mm-bg">
-        <div className="max-w-[1200px] mx-auto px-4 pt-4 pb-16">
-          {/* Player container */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative w-full aspect-video rounded-lg overflow-hidden bg-black"
-          >
-            <VideoPlayer
-              src={streamUrl}
-              type={mimeType}
-              onReady={handlePlayerReady}
-              className="w-full h-full"
-            />
-            <DanmakuOverlay videoElement={videoEl} comments={comments} />
-            <DanmakuSettings />
-          </motion.div>
+      <div className="min-h-screen bg-black/20">
+        {/* Session layout — player + context panel */}
+        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-3rem)]">
+          {/* Player area */}
+          <div className="flex-1 min-w-0 flex flex-col">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative w-full aspect-video lg:aspect-auto lg:flex-1 bg-black"
+            >
+              <VideoPlayer
+                src={streamUrl}
+                type={mimeType}
+                onReady={handlePlayerReady}
+                className="w-full h-full"
+              />
+              <DanmakuOverlay videoElement={videoEl} comments={comments} />
+              <DanmakuSettings />
+            </motion.div>
+          </div>
 
-          {/* File info */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="mt-4"
+          {/* Context panel — right side on lg, below on mobile */}
+          <motion.aside
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.15 }}
+            className="lg:w-[320px] lg:shrink-0 bg-mm-sidebar overflow-y-auto"
           >
-            <p className="text-sm text-mm-text-tertiary">
-              {danmakuData ? `${danmakuData.count} 條彈幕` : '無彈幕數據'}
-            </p>
-          </motion.div>
+            <div className="p-4 space-y-4">
+              {/* Danmaku status */}
+              <div className="rounded-lg bg-white/[0.04] p-3">
+                <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
+                  {i18n._(msg`watch.danmaku`)}
+                </h3>
+                <p className="text-[13px] text-mm-text-secondary">
+                  {danmakuData
+                    ? `${danmakuData.count} ${i18n._(msg`watch.danmaku.count`)}`
+                    : i18n._(msg`watch.danmaku.noData`)}
+                </p>
+              </div>
+
+              {/* Subtitle info */}
+              {subtitles && subtitles.length > 0 && (
+                <div className="rounded-lg bg-white/[0.04] p-3">
+                  <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
+                    {i18n._(msg`watch.subtitle`)}
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {subtitles.map((sub) => (
+                      <span
+                        key={sub.id}
+                        className="text-[11px] px-2 py-0.5 rounded bg-white/[0.06] text-mm-text-secondary"
+                      >
+                        {sub.language}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* File info */}
+              <div className="rounded-lg bg-white/[0.04] p-3">
+                <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-mm-text-muted mb-1.5">
+                  {i18n._(msg`watch.mediaFile`)}
+                </h3>
+                <p className="text-[12px] font-mono text-mm-text-tertiary break-all">
+                  {fileId ?? 'Unknown'}
+                </p>
+              </div>
+            </div>
+          </motion.aside>
         </div>
       </div>
     </PageTransition>

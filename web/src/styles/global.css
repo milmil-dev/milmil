@@ -58,4 +58,14 @@
   #root {
     min-height: 100dvh;
   }
+  :focus-visible {
+    outline: 2px solid oklch(72% 0.16 250 / 0.5);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+  a:active,
+  button:active {
+    transform: scale(0.97);
+    transition: transform 0.1s;
+  }
 }

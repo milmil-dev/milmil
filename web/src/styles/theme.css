@@ -2,42 +2,24 @@
 @import "@fontsource/huninn";
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.59 0.22 1);
-  --primary-foreground: oklch(0.97 0.01 343);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
-  --chart-1: oklch(0.82 0.11 346);
-  --chart-2: oklch(0.73 0.18 350);
-  --chart-3: oklch(0.66 0.21 354);
-  --chart-4: oklch(0.59 0.22 1);
-  --chart-5: oklch(0.52 0.2 4);
   --radius: 0.45rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.59 0.22 1);
-  --sidebar-primary-foreground: oklch(0.97 0.01 343);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.705 0.015 286.067);
   --scrollbar-size: 10px;
   --scrollbar-thumb: color-mix(in oklch, var(--foreground) 26%, transparent);
   --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 42%, var(--foreground) 18%);
   --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 58%, var(--foreground) 12%);
+  /* milmil app theme — deep immersive dark */
+  --mm-bg: oklch(8% 0.01 260); /* near-black base — like Seanime #0c0c0c */
+  --mm-bg-elevated: oklch(11% 0.015 260); /* raised content areas */
+  --mm-surface: oklch(14% 0.015 258); /* card/panel backgrounds */
+  --mm-surface-hover: oklch(17% 0.015 258); /* hover state */
+  --mm-border: oklch(20% 0.01 258); /* subtle separators — almost invisible */
+  --mm-border-subtle: oklch(15% 0.01 258); /* barely-there dividers */
+  --mm-sidebar: oklch(7% 0.01 260); /* sidebar darker than bg */
+  --mm-accent: oklch(72% 0.16 250); /* #7aa2f7 — Tokyo Night blue */
+  --mm-text-primary: oklch(90% 0.02 260); /* #c0caf5 */
+  --mm-text-secondary: oklch(58% 0.02 260); /* dimmer for less contrast */
+  --mm-text-tertiary: oklch(42% 0.02 258); /* very subtle */
+  --mm-text-muted: oklch(30% 0.015 258); /* nearly invisible labels */
 }
 
 .dark {
@@ -75,23 +57,11 @@
   --scrollbar-thumb: color-mix(in oklch, var(--foreground) 32%, transparent);
   --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 54%, var(--foreground) 10%);
   --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 68%, var(--foreground) 6%);
-
-  /* milmil app theme — Tokyo Night */
-  --mm-bg: oklch(16% 0.02 260); /* #1a1b26 */
-  --mm-surface: oklch(20% 0.02 258); /* #24283b */
-  --mm-surface-hover: oklch(24% 0.02 256); /* #292e42 */
-  --mm-border: oklch(26% 0.02 258); /* #3b4261 */
-  --mm-border-subtle: oklch(22% 0.02 258); /* #2f3549 */
-  --mm-sidebar: oklch(14% 0.02 262); /* #16161e */
-  --mm-accent: oklch(72% 0.16 250); /* #7aa2f7 — Tokyo Night blue */
-  --mm-text-primary: oklch(90% 0.02 260); /* #c0caf5 */
-  --mm-text-secondary: oklch(62% 0.03 260); /* #9aa5ce */
-  --mm-text-tertiary: oklch(50% 0.03 258); /* #565f89 */
-  --mm-text-muted: oklch(38% 0.02 258); /* #414868 */
 }
 
 @theme inline {
   --color-mm-bg: var(--mm-bg);
+  --color-mm-bg-elevated: var(--mm-bg-elevated);
   --color-mm-surface: var(--mm-surface);
   --color-mm-surface-hover: var(--mm-surface-hover);
   --color-mm-border: var(--mm-border);

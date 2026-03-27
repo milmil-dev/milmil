@@ -1,17 +1,15 @@
 // web/src/components/DanmakuSettings.tsx
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { usePlayerStore } from '@/store/player-store';
 
 const FONT_SIZES = [16, 20, 24] as const;
-const SPEEDS = [
-  { label: '慢', value: 100 },
-  { label: '正常', value: 144 },
-  { label: '快', value: 200 },
-] as const;
 
 export function DanmakuSettings() {
+  const { i18n } = useLingui();
   const [open, setOpen] = useState(false);
   const enabled = usePlayerStore((s) => s.danmakuEnabled);
   const opacity = usePlayerStore((s) => s.danmakuOpacity);
@@ -33,7 +31,7 @@ export function DanmakuSettings() {
           enabled ? 'bg-mm-accent text-black' : 'bg-mm-surface text-mm-text-secondary'
         )}
       >
-        彈
+        {i18n._(msg`watch.danmaku.short`)}
       </button>
 
       {/* Settings panel */}
@@ -48,7 +46,9 @@ export function DanmakuSettings() {
           >
             {/* On/Off */}
             <div className="flex items-center justify-between">
-              <span className="text-[11px] text-mm-text-secondary">彈幕</span>
+              <span className="text-[11px] text-mm-text-secondary">
+                {i18n._(msg`watch.danmaku`)}
+              </span>
               <button
                 type="button"
                 onClick={toggleDanmaku}
@@ -63,7 +63,9 @@ export function DanmakuSettings() {
 
             {/* Opacity */}
             <label className="block">
-              <span className="text-[10px] text-mm-text-muted block mb-1">透明度</span>
+              <span className="text-[10px] text-mm-text-muted block mb-1">
+                {i18n._(msg`watch.danmaku.opacity`)}
+              </span>
               <input
                 type="range"
                 min={0}
@@ -77,7 +79,9 @@ export function DanmakuSettings() {
 
             {/* Font size */}
             <div>
-              <span className="text-[10px] text-mm-text-muted block mb-1">字體大小</span>
+              <span className="text-[10px] text-mm-text-muted block mb-1">
+                {i18n._(msg`watch.danmaku.fontSize`)}
+              </span>
               <div className="flex gap-1">
                 {FONT_SIZES.map((s) => (
                   <button
@@ -99,9 +103,15 @@ export function DanmakuSettings() {
 
             {/* Speed */}
             <div>
-              <span className="text-[10px] text-mm-text-muted block mb-1">速度</span>
+              <span className="text-[10px] text-mm-text-muted block mb-1">
+                {i18n._(msg`watch.danmaku.speed`)}
+              </span>
               <div className="flex gap-1">
-                {SPEEDS.map((s) => (
+                {[
+                  { label: i18n._(msg`watch.danmaku.slow`), value: 100 },
+                  { label: i18n._(msg`watch.danmaku.normal`), value: 144 },
+                  { label: i18n._(msg`watch.danmaku.fast`), value: 200 },
+                ].map((s) => (
                   <button
                     type="button"
                     key={s.value}

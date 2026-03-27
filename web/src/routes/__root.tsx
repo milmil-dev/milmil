@@ -1,15 +1,15 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence } from 'motion/react';
-import { Suspense, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
+import { SplashScreen } from '../components/SplashScreen';
 import { TopNav } from '../components/TopNav';
 import { useWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
-import { NotFoundPage } from '../pages/NotFoundPage';
 import { useAuthStore } from '../store/auth-store';
+import { useBgStore } from '../store/bg-store';
 
 interface StatusResponse {
   initialized: boolean;
@@ -29,38 +29,9 @@ function isPublicRoute(pathname: string): boolean {
   return false;
 }
 
-export function DesktopShell({ children }: { children: ReactNode }) {
-  return (
-    <div className="relative flex min-h-screen overflow-x-hidden bg-mm-bg text-mm-text-primary">
-      <AppSidebar />
-      <div className="relative min-h-screen flex min-w-0 flex-1 flex-col lg:pl-[280px]">
-        <TopNav />
-        <main className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-4 sm:px-6 sm:pt-5 lg:px-8 lg:pb-8 lg:pt-6">
-          <div className="mx-auto w-full max-w-[1840px]">{children}</div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
-function RootError() {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-mm-bg">
-      <h1 className="text-2xl font-bold text-white mb-2">出錯了</h1>
-      <p className="text-sm text-mm-text-secondary mb-4">發生了意外錯誤</p>
-      <button
-        type="button"
-        onClick={() => window.location.reload()}
-        className="text-sm font-medium text-mm-accent hover:underline"
-      >
-        重新載入
-      </button>
-    </div>
-  );
-}
-
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const bgImage = useBgStore((s) => s.image);
   const queryClient = useQueryClient();
   useWebSocket((event) => {
     if (event.type === 'scan:completed') {
@@ -73,27 +44,51 @@ function RootLayout() {
   });
 
   if (pathname === '/login' || pathname === '/setup') {
-    return (
-      <>
-        <Suspense>
-          <Outlet />
-        </Suspense>
-        <CommandPalette />
-      </>
-    );
+    return <Outlet />;
   }
 
   return (
-    <>
-      <DesktopShell>
-        <AnimatePresence mode="wait">
-          <Suspense>
+    <div className="relative flex min-h-screen" style={{ backgroundColor: 'var(--mm-bg)' }}>
+      {/* Full-screen background image — behind everything including sidebar */}
+      {/* Background image — top area only with max height, fades into bg */}
+      {bgImage && (
+        <div
+          className="fixed top-0 left-0 right-0 z-0"
+          style={{ height: 'clamp(400px, 50vh, 600px)' }}
+        >
+          <img
+            src={bgImage}
+            alt=""
+            className="w-full h-full object-cover object-center"
+            style={{ filter: 'brightness(0.18) saturate(1.4)', transform: 'scale(1.02)' }}
+          />
+          {/* Hard fade to bg at bottom + left darken for sidebar readability */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: [
+                'linear-gradient(to bottom, transparent 30%, var(--mm-bg) 100%)',
+                'linear-gradient(to right, oklch(7% 0.01 260 / 0.7) 0%, transparent 40%)',
+              ].join(', '),
+            }}
+          />
+        </div>
+      )}
+
+      {/* Sidebar — sits on top of bg, transparent so bg shows through */}
+      <AppSidebar />
+
+      {/* Main content area */}
+      <div className="relative z-[5] flex-1 md:ml-[200px] min-h-screen flex flex-col">
+        <TopNav />
+        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
+          <AnimatePresence mode="wait">
             <Outlet key={pathname} />
-          </Suspense>
-        </AnimatePresence>
-      </DesktopShell>
+          </AnimatePresence>
+        </main>
+      </div>
       <CommandPalette />
-    </>
+    </div>
   );
 }
 
@@ -125,7 +120,6 @@ export const Route = createRootRoute({
       }
     }
   },
+  pendingComponent: SplashScreen,
   component: RootLayout,
-  notFoundComponent: NotFoundPage,
-  errorComponent: RootError,
 });

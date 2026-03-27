@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
@@ -6,16 +8,30 @@ import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
 export function HeroBanner({ items }: { items: AnimeSummary[] }) {
+  const { i18n } = useLingui();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const featured = items[activeIndex];
 
   // Auto-rotate every 8 seconds
   useEffect(() => {
     if (items.length <= 1) return;
-    const interval = setInterval(() => {
-      setActiveIndex((i) => (i + 1) % items.length);
-    }, 8000);
-    return () => clearInterval(interval);
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        setActiveIndex((i) => (i + 1) % items.length);
+      }, 8000);
+      return () => clearInterval(interval);
+    }
+  }, [items.length, isPaused]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') setActiveIndex((i) => (i - 1 + items.length) % items.length);
+      if (e.key === 'ArrowRight') setActiveIndex((i) => (i + 1) % items.length);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [items.length]);
 
   if (!featured) return null;
@@ -28,6 +44,11 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
     <div
       className="relative w-full overflow-hidden rounded-lg"
       style={{ height: 'clamp(280px, 38vh, 420px)' }}
+      tabIndex={0}
+      role="region"
+      aria-label="Featured anime"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
     >
       {/* Background — blurred cover or gradient */}
       <AnimatePresence mode="wait">
@@ -63,7 +84,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
         className="absolute inset-0 z-[1]"
         style={{
           background:
-            'linear-gradient(90deg, oklch(7% 0.01 280 / 0.92) 0%, oklch(7% 0.01 280 / 0.5) 55%, transparent 100%), linear-gradient(to top, oklch(7% 0.01 280) 0%, transparent 40%)',
+            'linear-gradient(90deg, oklch(from var(--mm-bg) l c h / 0.92) 0%, oklch(from var(--mm-bg) l c h / 0.5) 55%, transparent 100%), linear-gradient(to top, var(--mm-bg) 0%, transparent 40%)',
         }}
       />
 
@@ -100,13 +121,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                   {/* Tags */}
                   {featured.air_date && (
                     <div className="flex items-center gap-2 mb-2">
-                      <span
-                        className="text-[10px] font-medium px-1.5 py-0.5 rounded"
-                        style={{
-                          backgroundColor: 'oklch(20% 0.01 280)',
-                          color: 'oklch(60% 0.01 280)',
-                        }}
-                      >
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-white/[0.08] text-mm-text-secondary">
                         {new Date(featured.air_date).getFullYear()}
                       </span>
                     </div>
@@ -132,19 +147,40 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
                     )}
                     {featured.episode_count > 0 && (
                       <span className="text-[12px] text-mm-text-tertiary">
-                        {featured.episode_count} 集
+                        {featured.episode_count} {i18n._(msg`common.ep`)}
                       </span>
                     )}
                   </div>
 
-                  {/* Preview button */}
-                  <Link
-                    to={`/anime/${featured.bangumi_id}` as string}
-                    className="inline-flex items-center mt-4 px-4 py-1.5 text-[12px] font-semibold rounded transition-colors"
-                    style={{ backgroundColor: 'oklch(18% 0.01 280)', color: 'oklch(75% 0.01 280)' }}
-                  >
-                    Preview
-                  </Link>
+                  {/* Action buttons — Netflix-style */}
+                  <div className="flex items-center gap-2.5 mt-4">
+                    <Link
+                      to={`/anime/${featured.bangumi_id}` as string}
+                      className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                      {i18n._(msg`hero.details`)}
+                    </Link>
+                    <Link
+                      to={`/anime/${featured.bangumi_id}` as string}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.1] text-white hover:bg-white/[0.18] transition-colors"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4m0-4h.01" />
+                      </svg>
+                      {i18n._(msg`hero.moreInfo`)}
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -174,8 +210,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
           <div className="hidden lg:flex items-end p-6 pb-7 shrink-0">
             <Link
               to={`/anime/${nextItem.bangumi_id}` as string}
-              className="group block w-[220px] rounded overflow-hidden"
-              style={{ backgroundColor: 'oklch(12% 0.01 280 / 0.8)' }}
+              className="group block w-[220px] rounded overflow-hidden bg-white/[0.04]"
             >
               <div className="relative h-[120px] overflow-hidden">
                 {nextItem.cover_image?.startsWith('http') ? (
@@ -200,7 +235,9 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
               <div className="px-3 py-2.5">
                 <p className="text-[12px] font-semibold text-white truncate">{nextItem.title}</p>
                 <p className="text-[10px] mt-0.5 text-mm-text-tertiary">
-                  {nextItem.episode_count > 0 ? `${nextItem.episode_count} 集` : ''}
+                  {nextItem.episode_count > 0
+                    ? `${nextItem.episode_count} ${i18n._(msg`common.ep`)}`
+                    : ''}
                   {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
                 </p>
               </div>

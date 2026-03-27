@@ -1,5 +1,7 @@
 import { Search01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -9,6 +11,7 @@ import { animeGradient } from '../lib/gradient';
 import { useCommandPaletteStore } from '../store/command-palette-store';
 
 export function CommandPalette() {
+  const { i18n } = useLingui();
   const isOpen = useCommandPaletteStore((s) => s.isOpen);
   const close = useCommandPaletteStore((s) => s.close);
   const toggle = useCommandPaletteStore((s) => s.toggle);
@@ -107,7 +110,7 @@ export function CommandPalette() {
                   setSelectedIndex(0);
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder="搜索動畫..."
+                placeholder={i18n._(msg`search.placeholder`)}
                 className="flex-1 bg-transparent text-sm text-white placeholder:text-mm-text-muted outline-none"
               />
               <kbd
@@ -166,7 +169,7 @@ export function CommandPalette() {
 
             {debouncedQuery && visibleResults.length === 0 && (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm text-mm-text-tertiary">找不到結果</p>
+                <p className="text-sm text-mm-text-tertiary">{i18n._(msg`search.noResults`)}</p>
               </div>
             )}
           </motion.div>

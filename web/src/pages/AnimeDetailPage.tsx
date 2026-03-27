@@ -1,13 +1,20 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
+import { EpisodeListItem } from '../components/EpisodeListItem';
 import { PageTransition } from '../components/PageTransition';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
+import { useBgStore } from '../store/bg-store';
 
 export function AnimeDetailPage() {
+  const { i18n } = useLingui();
   const { id } = useParams({ strict: false });
   const numericId = Number(id);
+  const setImage = useBgStore((s) => s.setImage);
 
   const {
     data: anime,
@@ -25,15 +32,23 @@ export function AnimeDetailPage() {
     enabled: !Number.isNaN(numericId),
   });
 
+  // Set full-screen background image (behind sidebar) — Seanime style
+  useEffect(() => {
+    const img = anime?.banner_image || anime?.cover_image;
+    if (img?.startsWith('http')) {
+      setImage(img);
+    }
+    return () => setImage(null);
+  }, [anime?.banner_image, anime?.cover_image, setImage]);
+
   if (isLoading) {
     return (
       <PageTransition>
         <div className="min-h-screen">
-          <div className="h-[280px] animate-pulse bg-mm-border-subtle" />
-          <div className="px-8 py-6 space-y-4">
-            <div className="h-6 rounded bg-mm-border" style={{ width: '30%' }} />
-            <div className="h-4 rounded bg-mm-border-subtle" style={{ width: '60%' }} />
-            <div className="h-4 rounded bg-mm-surface" style={{ width: '80%' }} />
+          <div className="h-[340px] animate-pulse bg-white/[0.04]" />
+          <div className="px-4 md:px-8 py-6 space-y-4">
+            <div className="h-6 rounded bg-white/[0.06]" style={{ width: '30%' }} />
+            <div className="h-4 rounded bg-white/[0.04]" style={{ width: '60%' }} />
           </div>
         </div>
       </PageTransition>
@@ -43,10 +58,22 @@ export function AnimeDetailPage() {
   if (isError || !anime) {
     return (
       <PageTransition>
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-sm" style={{ color: 'oklch(45% 0.01 280)' }}>
-            {isError ? '載入失敗' : '找不到此動畫'}
+        <div className="min-h-screen flex flex-col items-center justify-center">
+          <p className="text-sm text-mm-text-tertiary">
+            {isError ? i18n._(msg`common.loadFailed`) : i18n._(msg`anime.notFound`)}
           </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-3 px-4 py-1.5 rounded-md bg-white/[0.06] text-[13px] text-mm-text-secondary hover:bg-white/[0.1] transition-colors"
+          >
+            {i18n._(msg`common.retry`)}
+          </button>
+          <Link
+            to="/"
+            className="mt-2 text-[12px] text-mm-text-muted hover:text-mm-text-secondary transition-colors"
+          >
+            {i18n._(msg`common.backHome`)}
+          </Link>
         </div>
       </PageTransition>
     );
@@ -58,31 +85,39 @@ export function AnimeDetailPage() {
   return (
     <PageTransition>
       <div className="min-h-screen">
-        {/* Hero banner */}
-        <div className="relative h-[280px] overflow-hidden">
+        {/* Cinematic header */}
+        <div className="relative overflow-hidden" style={{ height: 'clamp(300px, 40vh, 420px)' }}>
+          {/* Background art */}
           {hasBanner ? (
             <img
               src={anime.banner_image}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: 'brightness(0.5) saturate(1.2)' }}
             />
           ) : (
             <div className="absolute inset-0" style={{ background: animeGradient(anime.title) }} />
           )}
+
+          {/* Multi-layer scrim */}
           <div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(to top, oklch(7% 0.01 280) 0%, transparent 60%)',
+              background: [
+                'linear-gradient(to top, var(--mm-bg) 0%, transparent 50%)',
+                'linear-gradient(90deg, oklch(from var(--mm-bg) l c h / 0.7) 0%, transparent 70%)',
+              ].join(', '),
             }}
           />
 
-          {/* Cover + info */}
-          <div className="absolute bottom-0 left-0 right-0 px-8 pb-6 flex items-end gap-5">
+          {/* Content anchored to bottom */}
+          <div className="absolute bottom-0 left-0 right-0 px-4 md:px-8 pb-6 flex items-end gap-5">
+            {/* Poster */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="shrink-0 w-[120px] h-[170px] rounded overflow-hidden shadow-lg"
+              className="shrink-0 w-[110px] md:w-[130px] aspect-[3/4] rounded-lg overflow-hidden shadow-2xl ring-1 ring-white/10"
               style={hasCover ? undefined : { background: animeGradient(anime.title) }}
             >
               {hasCover && (
@@ -94,120 +129,105 @@ export function AnimeDetailPage() {
               )}
             </motion.div>
 
+            {/* Title block */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
               className="min-w-0 flex-1 pb-1"
             >
-              <h1 className="text-2xl font-bold text-white tracking-tight truncate">
+              <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight line-clamp-2">
                 {anime.title}
               </h1>
               {anime.title_original && anime.title_original !== anime.title && (
-                <p className="text-[13px] mt-1 truncate" style={{ color: 'oklch(50% 0.01 280)' }}>
+                <p className="text-[13px] mt-1 truncate text-mm-text-tertiary">
                   {anime.title_original}
                 </p>
               )}
-              {anime.title_en && (
-                <p className="text-[12px] mt-0.5 truncate" style={{ color: 'oklch(40% 0.01 280)' }}>
-                  {anime.title_en}
-                </p>
-              )}
-              <div className="flex items-center gap-3 mt-2 flex-wrap">
+
+              {/* Stats row */}
+              <div className="flex items-center gap-3 mt-2.5 flex-wrap">
                 {anime.score > 0 && (
                   <span className="text-[13px] font-bold text-mm-accent">
-                    {anime.score.toFixed(1)} 分
+                    {anime.score.toFixed(1)} {i18n._(msg`anime.score`)}
+                  </span>
+                )}
+                {anime.rating?.total > 0 && (
+                  <span className="text-[11px] text-mm-text-muted">
+                    {anime.rating.total} {i18n._(msg`anime.ratings`)}
                   </span>
                 )}
                 {anime.episode_count > 0 && (
-                  <span className="text-[12px]" style={{ color: 'oklch(45% 0.01 280)' }}>
-                    {anime.episode_count} 集
+                  <span className="text-[11px] text-mm-text-muted">
+                    {anime.episode_count} {i18n._(msg`common.ep`)}
+                  </span>
+                )}
+                {anime.air_date && (
+                  <span className="text-[11px] text-mm-text-muted">
+                    {new Date(anime.air_date).getFullYear()}
                   </span>
                 )}
               </div>
+
+              {/* Tags inline */}
+              {anime.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {anime.tags.slice(0, 8).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] font-medium px-2 py-0.5 rounded bg-white/[0.06] text-mm-text-secondary"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="px-8 py-6">
-          {anime.tags?.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-wrap gap-1.5 mb-5"
-            >
-              {anime.tags.slice(0, 10).map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[10px] font-medium px-2 py-0.5 rounded"
-                  style={{ backgroundColor: 'oklch(14% 0.01 280)', color: 'oklch(55% 0.01 280)' }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </motion.div>
-          )}
+        {/* Body — synopsis + episodes in two-column on lg */}
+        <div className="px-4 md:px-8 py-6 flex flex-col lg:flex-row gap-8">
+          {/* Synopsis column */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.22 }}
+            className="lg:w-[360px] lg:shrink-0"
+          >
+            {anime.synopsis && (
+              <div>
+                <h2 className="text-[11px] font-bold uppercase tracking-[0.15em] mb-2 text-mm-text-muted">
+                  {i18n._(msg`anime.synopsis`)}
+                </h2>
+                <p className="text-[13px] leading-relaxed text-mm-text-secondary">
+                  {anime.synopsis}
+                </p>
+              </div>
+            )}
+          </motion.div>
 
-          {anime.synopsis && (
-            <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.22 }}
-              className="mb-8"
-            >
-              <h2
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
-                style={{ color: 'oklch(35% 0.01 280)' }}
-              >
-                簡介
-              </h2>
-              <p className="text-[13px] leading-relaxed" style={{ color: 'oklch(55% 0.01 280)' }}>
-                {anime.synopsis}
-              </p>
-            </motion.div>
-          )}
-
+          {/* Episodes column — watch queue style */}
           {episodes.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.28 }}
+              className="flex-1 min-w-0"
             >
-              <h2
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3"
-                style={{ color: 'oklch(35% 0.01 280)' }}
-              >
-                劇集 ({episodes.length})
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.15em] mb-3 text-mm-text-muted">
+                {i18n._(msg`anime.episodes`)} ({episodes.length})
               </h2>
-              <div className="space-y-0.5">
-                {episodes.map((ep, i) => (
-                  <motion.div
+              <div className="space-y-0.5 rounded-lg bg-white/[0.03] p-1">
+                {episodes.map((ep) => (
+                  <EpisodeListItem
                     key={ep.bangumi_episode_id}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + i * 0.02 }}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded transition-colors hover:bg-[oklch(11%_0.01_280)]"
-                  >
-                    <span
-                      className="shrink-0 w-7 text-[12px] font-mono text-right"
-                      style={{ color: 'oklch(35% 0.01 280)' }}
-                    >
-                      {ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] text-white truncate">{ep.title}</p>
-                    </div>
-                    {ep.air_date && (
-                      <span
-                        className="shrink-0 text-[10px]"
-                        style={{ color: 'oklch(30% 0.01 280)' }}
-                      >
-                        {ep.air_date}
-                      </span>
-                    )}
-                  </motion.div>
+                    sort={ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
+                    title={ep.title}
+                    isActive={false}
+                    href={`/anime/${numericId}`}
+                    airDate={ep.air_date}
+                  />
                 ))}
               </div>
             </motion.div>

@@ -1,84 +1,69 @@
+import { Search01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, useRouterState } from '@tanstack/react-router';
+import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 
-const navLinks = [
+const tabs = [
   { to: '/', label: 'Home', exact: true },
   { to: '/schedule', label: 'Schedule', exact: false },
   { to: '/trending', label: 'Discover', exact: false },
 ] as const;
 
-function getSectionLabel(pathname: string) {
-  if (pathname === '/') return 'Home';
-  if (pathname.startsWith('/schedule')) return 'Schedule';
-  if (pathname.startsWith('/trending')) return 'Discover';
-  if (pathname.startsWith('/search')) return 'Search';
-  if (pathname.startsWith('/downloads')) return 'Downloads';
-  if (pathname.startsWith('/libraries')) return 'Libraries';
-  return 'Browse';
-}
-
-function TopNavContent({ pathname, useRouterLinks }: { pathname: string; useRouterLinks: boolean }) {
-  const sectionLabel = getSectionLabel(pathname);
+export function TopNav() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <header
-      className="sticky top-0 z-30 border-b border-mm-border-subtle bg-[linear-gradient(180deg,rgba(10,11,17,0.94),rgba(12,14,22,0.84))] backdrop-blur-xl"
+    <motion.header
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="sticky top-0 z-30 flex items-center h-12 px-6 gap-1"
       style={{
-        boxShadow: 'inset 0 -1px 0 rgba(255,255,255,0.03), 0 12px 30px rgba(0, 0, 0, 0.22)',
+        backgroundColor: 'oklch(8% 0.01 260 / 0.6)',
+        backdropFilter: 'blur(20px) saturate(1.2)',
+        WebkitBackdropFilter: 'blur(20px) saturate(1.2)',
       }}
     >
-      <div className="flex items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-mm-text-muted">
-            Desktop context
-          </p>
-          <div className="mt-1 flex items-center gap-3">
-            <h1 className="truncate text-sm font-semibold text-white">{sectionLabel}</h1>
-            <span className="hidden rounded-full border border-mm-border-subtle bg-mm-surface/70 px-2.5 py-1 text-[11px] font-medium text-mm-text-secondary sm:inline-flex">
-              Focused browsing
-            </span>
-          </div>
-        </div>
+      {/* Page tabs */}
+      <nav className="flex items-center gap-0.5">
+        {tabs.map(({ to, label, exact }) => {
+          const isActive = exact ? pathname === to : pathname.startsWith(to);
+          return (
+            <Link
+              key={to}
+              to={to}
+              className={cn(
+                'relative px-3 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200',
+                isActive ? 'text-white' : 'text-mm-text-muted hover:text-mm-text-secondary'
+              )}
+            >
+              {label}
+              {isActive && (
+                <motion.div
+                  layoutId="topNavActive"
+                  className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-mm-accent"
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
 
-        <nav
-          aria-label="Context navigation"
-          className="flex items-center gap-1 rounded-full border border-mm-border-subtle bg-[color-mix(in_oklch,var(--mm-sidebar)_88%,transparent)] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
-        >
-          {navLinks.map(({ to, label, exact }) => {
-            const isActive = exact ? pathname === to : pathname.startsWith(to);
-            const LinkComponent = useRouterLinks ? Link : 'a';
-            const linkProps = useRouterLinks ? { to } : { href: to };
-            return (
-              <LinkComponent
-                key={to}
-                {...linkProps}
-                aria-current={isActive ? 'page' : undefined}
-                className={cn(
-                  'rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors',
-                  isActive
-                    ? 'bg-mm-border-subtle text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
-                    : 'text-mm-text-secondary hover:text-white'
-                )}
-              >
-                {label}
-              </LinkComponent>
-            );
-          })}
-        </nav>
-      </div>
-    </header>
+      <div className="flex-1" />
+
+      {/* Search shortcut — no border on kbd */}
+      <Link
+        to="/search"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-md text-[13px] text-mm-text-muted hover:text-mm-text-secondary hover:bg-white/[0.03] transition-all duration-200"
+      >
+        <HugeiconsIcon icon={Search01Icon} size={15} />
+        <span className="hidden sm:inline">Search</span>
+        <kbd className="hidden sm:inline ml-1 text-[10px] text-mm-text-muted bg-white/[0.04] rounded px-1.5 py-0.5">
+          ⌘K
+        </kbd>
+      </Link>
+    </motion.header>
   );
-}
-
-function TopNavWithRouter() {
-  const routerPathname = useRouterState({ select: (s) => s.location.pathname });
-  return <TopNavContent pathname={routerPathname} useRouterLinks />;
-}
-
-export function TopNav({ pathname }: { pathname?: string }) {
-  if (pathname !== undefined) {
-    return <TopNavContent pathname={pathname} useRouterLinks={false} />;
-  }
-
-  return <TopNavWithRouter />;
 }
