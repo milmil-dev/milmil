@@ -162,7 +162,7 @@ export function HomePage() {
               />
             </motion.div>
 
-            {/* Trending — horizontal scroll rail like Netflix */}
+            {/* Trending — Seanime-style responsive grid */}
             {trendingRest.length > 0 && (
               <motion.section
                 initial={{ opacity: 0, y: 10 }}
@@ -171,13 +171,11 @@ export function HomePage() {
                 className="mt-6"
               >
                 <SectionHeader title={i18n._(msg`home.trending`)} to="/trending" />
-                <MediaRail>
+                <div className="grid grid-cols-2 min-[768px]:grid-cols-3 min-[1080px]:grid-cols-4 min-[1320px]:grid-cols-5 min-[1750px]:grid-cols-6 min-[2000px]:grid-cols-8 gap-4">
                   {trendingRest.map((anime, i) => (
-                    <div key={anime.bangumi_id} className="shrink-0 w-[130px] md:w-[150px]">
-                      <AnimeCard anime={anime} index={i} />
-                    </div>
+                    <AnimeCard key={anime.bangumi_id} anime={anime} index={i} />
                   ))}
-                </MediaRail>
+                </div>
               </motion.section>
             )}
           </div>

@@ -7,19 +7,24 @@
   --scrollbar-thumb: color-mix(in oklch, var(--foreground) 26%, transparent);
   --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 42%, var(--foreground) 18%);
   --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 58%, var(--foreground) 12%);
-  /* milmil app theme — deep immersive dark */
-  --mm-bg: oklch(8% 0.01 260); /* near-black base — like Seanime #0c0c0c */
-  --mm-bg-elevated: oklch(11% 0.015 260); /* raised content areas */
-  --mm-surface: oklch(14% 0.015 258); /* card/panel backgrounds */
-  --mm-surface-hover: oklch(17% 0.015 258); /* hover state */
-  --mm-border: oklch(20% 0.01 258); /* subtle separators — almost invisible */
-  --mm-border-subtle: oklch(15% 0.01 258); /* barely-there dividers */
-  --mm-sidebar: oklch(7% 0.01 260); /* sidebar darker than bg */
-  --mm-accent: oklch(72% 0.16 250); /* #7aa2f7 — Tokyo Night blue */
-  --mm-text-primary: oklch(90% 0.02 260); /* #c0caf5 */
-  --mm-text-secondary: oklch(58% 0.02 260); /* dimmer for less contrast */
-  --mm-text-tertiary: oklch(42% 0.02 258); /* very subtle */
-  --mm-text-muted: oklch(30% 0.015 258); /* nearly invisible labels */
+  /* milmil app theme — matching Seanime's CSS variable system */
+  --mm-bg: #070707; /* Seanime uses #070707 as --background */
+  --mm-bg-elevated: #0c0c0c; /* slightly raised */
+  --mm-surface: #0c0c0c; /* gray-950 equivalent */
+  --mm-surface-hover: #141414;
+  --mm-border: rgba(255, 255, 255, 0.1); /* Seanime: rgba white 10% */
+  --mm-border-subtle: rgba(255, 255, 255, 0.05);
+  --mm-sidebar: #070707;
+  --mm-accent: #7aa2f7; /* Tokyo Night blue */
+  --mm-text-primary: rgba(255, 255, 255, 0.93); /* gray-200 equivalent */
+  --mm-text-secondary: rgba(255, 255, 255, 0.6);
+  --mm-text-tertiary: rgba(255, 255, 255, 0.4); /* Seanime --muted */
+  --mm-text-muted: rgba(255, 255, 255, 0.2);
+  /* Seanime-compatible aliases */
+  --background: #070707;
+  --foreground: rgba(255, 255, 255, 0.93);
+  --muted: rgba(255, 255, 255, 0.4);
+  --subtle: rgba(255, 255, 255, 0.06);
 }
 
 .dark {

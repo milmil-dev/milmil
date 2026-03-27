@@ -47,35 +47,30 @@ function RootLayout() {
   }
 
   return (
-    <div className="relative flex min-h-screen" style={{ backgroundColor: 'var(--mm-bg)' }}>
-      {/* Full-screen background image — behind everything including sidebar */}
-      {/* Background image — top area only with max height, fades into bg */}
+    <div className="relative min-h-screen" style={{ backgroundColor: 'var(--mm-bg)' }}>
+      {/* Background image — fixed, extends behind sidebar (Seanime pattern) */}
       {bgImage && (
-        <div
-          className="fixed top-0 left-0 right-0 z-0"
-          style={{ height: 'clamp(400px, 50vh, 600px)' }}
-        >
+        <div className="fixed top-0 z-0" style={{ height: 'clamp(400px, 55vh, 35rem)', left: 0, right: 0 }}>
           <img
             src={bgImage}
             alt=""
             className="w-full h-full object-cover object-center"
-            style={{ filter: 'brightness(0.18) saturate(1.4)', transform: 'scale(1.02)' }}
           />
-          {/* Fade to bg at bottom */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(to bottom, transparent 40%, var(--mm-bg) 100%)',
-            }}
-          />
+          {/* Multi-layer gradients like Seanime */}
+          {/* Top fade */}
+          <div className="absolute top-0 left-0 right-0 h-[10rem] opacity-50" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
+          {/* Bottom fade */}
+          <div className="absolute bottom-0 left-0 right-0 h-[20rem]" style={{ background: 'linear-gradient(to top, var(--mm-bg), var(--mm-bg) 10%, transparent)' }} />
+          {/* Left fade for sidebar area */}
+          <div className="absolute inset-0 max-w-[10rem] opacity-70 hidden md:block" style={{ background: 'linear-gradient(to right, var(--mm-bg), transparent)' }} />
         </div>
       )}
 
-      {/* Sidebar — sits on top of bg, transparent so bg shows through */}
+      {/* Sidebar */}
       <AppSidebar />
 
-      {/* Main content — no header bar, content fills viewport */}
-      <main className="relative z-[5] flex-1 md:ml-[200px] min-h-screen overflow-y-auto pb-16 md:pb-0">
+      {/* Main content — pl-20 for 80px sidebar (Seanime slim sidebar) */}
+      <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
         <AnimatePresence mode="wait">
           <Outlet key={pathname} />
         </AnimatePresence>

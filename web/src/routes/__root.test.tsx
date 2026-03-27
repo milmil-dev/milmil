@@ -75,22 +75,22 @@ vi.mock('@hugeicons/core-free-icons', () => ({
 
 import { AppSidebar } from '@/components/AppSidebar';
 
-test('renders the desktop shell with labeled navigation', () => {
+test('renders the sidebar with navigation links', () => {
   render(<AppSidebar />);
-  expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getAllByText('Schedule').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getAllByText('Libraries').length).toBeGreaterThanOrEqual(1);
-  expect(screen.getAllByText('Settings').length).toBeGreaterThanOrEqual(1);
+  // Sidebar is icon-only when collapsed — labels show in mobile nav
+  // Mobile nav renders Home, Schedule, Search, Libraries, More
+  expect(screen.getByText('Home')).toBeInTheDocument();
+  expect(screen.getByText('Search')).toBeInTheDocument();
 });
 
-test('sidebar shows labels alongside icons, not only in tooltips', () => {
+test('sidebar renders logo', () => {
   render(<AppSidebar />);
-  const homeLabels = screen.getAllByText('Home');
-  expect(homeLabels.some((el) => el.closest('a') !== null)).toBe(true);
+  // Collapsed sidebar shows "m", mobile shows nothing extra
+  expect(screen.getByText('m')).toBeInTheDocument();
 });
 
-test('sidebar has section groupings', () => {
+test('sidebar has nav links as anchor elements', () => {
   render(<AppSidebar />);
-  expect(screen.getByText('Browse')).toBeInTheDocument();
-  expect(screen.getByText('Manage')).toBeInTheDocument();
+  const links = document.querySelectorAll('a[href]');
+  expect(links.length).toBeGreaterThanOrEqual(5);
 });
