@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: \n"
 
 #: src/components/PreviewModal.tsx:154
-#: src/pages/AnimeDetailPage.tsx:219
+#: src/pages/AnimeDetailPage.tsx:173
 msgid "anime.episodes"
 msgstr "劇集"
 
@@ -21,17 +21,17 @@ msgid "anime.notFound"
 msgstr "找不到此動畫"
 
 #: src/components/PreviewModal.tsx:103
-#: src/pages/AnimeDetailPage.tsx:157
+#: src/pages/AnimeDetailPage.tsx:146
 msgid "anime.ratings"
 msgstr "人評價"
 
 #: src/pages/AnimeDetailPage.tsx:152
-msgid "anime.score"
-msgstr "分"
+#~ msgid "anime.score"
+#~ msgstr "分"
 
 #: src/pages/AnimeDetailPage.tsx:201
-msgid "anime.synopsis"
-msgstr "簡介"
+#~ msgid "anime.synopsis"
+#~ msgstr "簡介"
 
 #: src/pages/LoginPage.tsx:34
 msgid "auth.error.invalidCredentials"
@@ -97,7 +97,7 @@ msgstr "返回首頁"
 #: src/components/AnimeRow.tsx:48
 #: src/components/HeroBanner.tsx:174
 #: src/components/PreviewModal.tsx:106
-#: src/pages/AnimeDetailPage.tsx:162
+#: src/pages/AnimeDetailPage.tsx:136
 msgid "common.ep"
 msgstr "集"
 
@@ -142,6 +142,94 @@ msgstr "熱門動畫"
 #: src/pages/HomePage.tsx:269
 msgid "home.viewAll"
 msgstr "查看全部 →"
+
+#: src/pages/LibrariesPage.tsx:573
+msgid "library.enabled"
+msgstr "啟用"
+
+#: src/pages/LibrariesPage.tsx:313
+msgid "library.name"
+msgstr "名稱"
+
+#: src/pages/LibrariesPage.tsx:493
+msgid "library.path"
+msgstr "路徑"
+
+#: src/pages/LibrariesPage.tsx:550
+msgid "library.scanInterval"
+msgstr "掃描間隔（分鐘）"
+
+#: src/pages/LibrariesPage.tsx:429
+msgid "library.sftp.host"
+msgstr "主機"
+
+#: src/pages/LibrariesPage.tsx:469
+msgid "library.sftp.password"
+msgstr "密碼"
+
+#: src/pages/LibrariesPage.tsx:442
+msgid "library.sftp.port"
+msgstr "連接埠"
+
+#: src/pages/LibrariesPage.tsx:456
+msgid "library.sftp.username"
+msgstr "帳號"
+
+#: src/pages/LibrariesPage.tsx:406
+msgid "library.smb.domain"
+msgstr "網域"
+
+#: src/pages/LibrariesPage.tsx:337
+msgid "library.smb.host"
+msgstr "主機"
+
+#: src/pages/LibrariesPage.tsx:392
+msgid "library.smb.password"
+msgstr "密碼"
+
+#: src/pages/LibrariesPage.tsx:351
+msgid "library.smb.port"
+msgstr "連接埠"
+
+#: src/pages/LibrariesPage.tsx:365
+msgid "library.smb.share"
+msgstr "共用資料夾"
+
+#: src/pages/LibrariesPage.tsx:379
+msgid "library.smb.username"
+msgstr "帳號"
+
+#: src/pages/LibrariesPage.tsx:208
+msgid "library.sourceType"
+msgstr "來源類型"
+
+#: src/pages/LibrariesPage.tsx:201
+msgid "library.sourceType.local"
+msgstr "本機"
+
+#: src/pages/LibrariesPage.tsx:203
+msgid "library.sourceType.sftp"
+msgstr "SFTP"
+
+#: src/pages/LibrariesPage.tsx:202
+msgid "library.sourceType.smb"
+msgstr "SMB"
+
+#: src/pages/LibrariesPage.tsx:258
+msgid "library.testConnection"
+msgstr "測試連線"
+
+#: src/pages/LibrariesPage.tsx:264
+msgid "library.testConnection.failed"
+msgstr "連線失敗"
+
+#: src/pages/LibrariesPage.tsx:263
+msgid "library.testConnection.success"
+msgstr "連線成功"
+
+#: src/pages/LibrariesPage.tsx:257
+msgid "library.testConnection.testing"
+msgstr "測試中..."
 
 #: src/routes/__root.tsx:114
 msgid "nav.discover"

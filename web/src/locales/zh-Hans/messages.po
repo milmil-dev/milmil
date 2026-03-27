@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: \n"
 
 #: src/components/PreviewModal.tsx:154
-#: src/pages/AnimeDetailPage.tsx:219
+#: src/pages/AnimeDetailPage.tsx:173
 msgid "anime.episodes"
 msgstr "剧集"
 
@@ -21,17 +21,17 @@ msgid "anime.notFound"
 msgstr "找不到此动画"
 
 #: src/components/PreviewModal.tsx:103
-#: src/pages/AnimeDetailPage.tsx:157
+#: src/pages/AnimeDetailPage.tsx:146
 msgid "anime.ratings"
 msgstr "人评价"
 
 #: src/pages/AnimeDetailPage.tsx:152
-msgid "anime.score"
-msgstr "分"
+#~ msgid "anime.score"
+#~ msgstr "分"
 
 #: src/pages/AnimeDetailPage.tsx:201
-msgid "anime.synopsis"
-msgstr "简介"
+#~ msgid "anime.synopsis"
+#~ msgstr "简介"
 
 #: src/pages/LoginPage.tsx:34
 msgid "auth.error.invalidCredentials"
@@ -97,7 +97,7 @@ msgstr "返回首页"
 #: src/components/AnimeRow.tsx:48
 #: src/components/HeroBanner.tsx:174
 #: src/components/PreviewModal.tsx:106
-#: src/pages/AnimeDetailPage.tsx:162
+#: src/pages/AnimeDetailPage.tsx:136
 msgid "common.ep"
 msgstr "集"
 
@@ -142,6 +142,94 @@ msgstr "热门动画"
 #: src/pages/HomePage.tsx:269
 msgid "home.viewAll"
 msgstr "查看全部 →"
+
+#: src/pages/LibrariesPage.tsx:573
+msgid "library.enabled"
+msgstr "启用"
+
+#: src/pages/LibrariesPage.tsx:313
+msgid "library.name"
+msgstr "名称"
+
+#: src/pages/LibrariesPage.tsx:493
+msgid "library.path"
+msgstr "路径"
+
+#: src/pages/LibrariesPage.tsx:550
+msgid "library.scanInterval"
+msgstr "扫描间隔（分钟）"
+
+#: src/pages/LibrariesPage.tsx:429
+msgid "library.sftp.host"
+msgstr "主机"
+
+#: src/pages/LibrariesPage.tsx:469
+msgid "library.sftp.password"
+msgstr "密码"
+
+#: src/pages/LibrariesPage.tsx:442
+msgid "library.sftp.port"
+msgstr "端口"
+
+#: src/pages/LibrariesPage.tsx:456
+msgid "library.sftp.username"
+msgstr "账号"
+
+#: src/pages/LibrariesPage.tsx:406
+msgid "library.smb.domain"
+msgstr "域"
+
+#: src/pages/LibrariesPage.tsx:337
+msgid "library.smb.host"
+msgstr "主机"
+
+#: src/pages/LibrariesPage.tsx:392
+msgid "library.smb.password"
+msgstr "密码"
+
+#: src/pages/LibrariesPage.tsx:351
+msgid "library.smb.port"
+msgstr "端口"
+
+#: src/pages/LibrariesPage.tsx:365
+msgid "library.smb.share"
+msgstr "共享文件夹"
+
+#: src/pages/LibrariesPage.tsx:379
+msgid "library.smb.username"
+msgstr "账号"
+
+#: src/pages/LibrariesPage.tsx:208
+msgid "library.sourceType"
+msgstr "来源类型"
+
+#: src/pages/LibrariesPage.tsx:201
+msgid "library.sourceType.local"
+msgstr "本机"
+
+#: src/pages/LibrariesPage.tsx:203
+msgid "library.sourceType.sftp"
+msgstr "SFTP"
+
+#: src/pages/LibrariesPage.tsx:202
+msgid "library.sourceType.smb"
+msgstr "SMB"
+
+#: src/pages/LibrariesPage.tsx:258
+msgid "library.testConnection"
+msgstr "测试连接"
+
+#: src/pages/LibrariesPage.tsx:264
+msgid "library.testConnection.failed"
+msgstr "连接失败"
+
+#: src/pages/LibrariesPage.tsx:263
+msgid "library.testConnection.success"
+msgstr "连接成功"
+
+#: src/pages/LibrariesPage.tsx:257
+msgid "library.testConnection.testing"
+msgstr "测试中..."
 
 #: src/routes/__root.tsx:114
 msgid "nav.discover"
