@@ -94,7 +94,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                   {/* Genres */}
                   {featured.genres && featured.genres.length > 0 && (
-                    <p className="text-[14px] font-semibold text-gray-300">
+                    <p className="text-[14px] font-semibold text-gray-200">
                       {featured.genres.slice(0, 4).join(' · ')}
                     </p>
                   )}
@@ -108,7 +108,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                   {/* Description */}
                   {featured.description && (
-                    <p className="text-sm text-gray-300 line-clamp-4 max-w-xl leading-relaxed">
+                    <p className="text-sm text-gray-200 line-clamp-4 max-w-xl leading-relaxed">
                       {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
