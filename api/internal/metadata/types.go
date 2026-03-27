@@ -7,6 +7,7 @@ type AnimeSummary struct {
 	TitleOriginal string  `json:"title_original"`
 	TitleEN       string  `json:"title_en,omitempty"`
 	CoverImage    string  `json:"cover_image"`
+	BannerImage   string  `json:"banner_image,omitempty"`
 	AirDate       string  `json:"air_date,omitempty"`
 	EpisodeCount  int     `json:"episode_count"`
 	Score         float64 `json:"score"`

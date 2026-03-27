@@ -64,21 +64,14 @@ export function HomePage() {
   const heroItems = trending.slice(0, 5);
   const trendingRest = trending.slice(5, 15);
 
-  // Fetch detail for first hero item to get high-res banner_image
-  const heroId = heroItems[0]?.bangumi_id;
-  const { data: heroDetail } = useQuery({
-    queryKey: discoverKeys.detail(heroId ?? 0),
-    queryFn: () => discoverApi.detail(heroId!),
-    enabled: !!heroId,
-  });
-
   const setImage = useBgStore((s) => s.setImage);
   useEffect(() => {
-    // Prefer banner_image (1920x1080) over cover_image (230x350)
-    const img = heroDetail?.banner_image || heroDetail?.cover_image || heroItems[0]?.cover_image;
+    // banner_image is high-res from AniList, cover_image is small poster fallback
+    const hero = heroItems[0];
+    const img = hero?.banner_image || hero?.cover_image;
     if (img?.startsWith('http')) setImage(img);
     return () => setImage(null);
-  }, [heroDetail?.banner_image, heroDetail?.cover_image, heroItems[0]?.cover_image, setImage]);
+  }, [heroItems[0]?.banner_image, heroItems[0]?.cover_image, setImage]);
 
   if (isLoading) {
     return (
