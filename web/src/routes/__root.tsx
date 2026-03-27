@@ -114,7 +114,7 @@ function TopNavLinks({ pathname }: { pathname: string }) {
     { to: '/trending', label: i18n._(msg`nav.discover`), exact: false },
   ];
   return (
-    <nav className="relative z-[10] hidden md:flex items-center gap-6 md:pl-4 h-[5rem]">
+    <nav className="relative z-[10] hidden md:flex items-center gap-6 px-6 h-[5rem]">
       {items.map(({ to, label, exact }) => {
         const active = exact ? pathname === to : pathname.startsWith(to);
         return (
@@ -160,11 +160,10 @@ function RootLayout() {
       {/* Sidebar */}
       <AppSidebar />
 
-      {/* Top nav — Seanime TopMenu style, overlays banner */}
-      <TopNavLinks pathname={pathname} />
-
       {/* Main content — pl-20 for 80px sidebar */}
       <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
+        {/* Top nav — inside main, after sidebar offset */}
+        <TopNavLinks pathname={pathname} />
         <AnimatePresence mode="wait">
           <Outlet key={pathname} />
         </AnimatePresence>
