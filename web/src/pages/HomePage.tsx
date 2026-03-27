@@ -61,7 +61,7 @@ export function HomePage() {
 
   const isLoading = !calendar && !trending.length;
 
-  const heroItems = trending.slice(0, 5);
+  const heroItems = trending.slice(0, 7);
   // Deduplicate: exclude hero items from trending grid by bangumi_id
   const heroIds = new Set(heroItems.map((h) => h.bangumi_id));
   const trendingRest = trending.filter((t) => !heroIds.has(t.bangumi_id)).slice(0, 7);

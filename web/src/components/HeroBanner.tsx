@@ -51,7 +51,6 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* No gradient overlay — root layout bg already handles fading */}
 
       {/* Content — anchored bottom-left */}
       <div className="relative z-[2] h-full flex">
@@ -76,10 +75,10 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                   )}
                 </Link>
 
-                <div className="min-w-0 flex-1 pb-1 space-y-2">
+                <div className="min-w-0 flex-1 pb-1 space-y-2" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5)' }}>
                   {/* Title — clickable, animated text reveal like Seanime TextGenerateEffect */}
                   <Link to={`/anime/${featured.bangumi_id}` as string} className="block cursor-pointer">
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-white/80 transition-colors" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.2)' }}>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-white/80 transition-colors">
                       {featured.title.split('').map((char, ci) => (
                         <motion.span
                           key={`${featured.bangumi_id}-${ci}`}
