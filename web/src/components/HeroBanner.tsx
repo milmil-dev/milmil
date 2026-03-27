@@ -38,8 +38,6 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
   if (!featured) return null;
 
   const hasCover = featured.cover_image?.startsWith('http');
-  const hasNext = items.length > 1;
-  const nextItem = hasNext ? items[(activeIndex + 1) % items.length] : null;
 
   return (
     <div
@@ -134,33 +132,32 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
           )}
         </div>
 
-        {/* Next-up card — absolute positioned at far right (Seanime EpisodeCardSidebar) */}
-        {nextItem && (
+        {/* Episode card — Seanime EpisodeCardSidebar: shows current anime's episode info */}
+        {featured && (
           <div className="absolute right-6 bottom-8 z-[3] hidden lg:block">
             <Link
-              to={`/anime/${nextItem.bangumi_id}` as string}
-              className="group block 2xl:w-[500px] xl:w-[400px] lg:w-[300px] rounded-xl overflow-hidden"
-              style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
+              to={`/anime/${featured.bangumi_id}` as string}
+              className="group block 2xl:w-[420px] xl:w-[340px] lg:w-[260px] rounded-xl overflow-hidden cursor-pointer"
+              style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}
             >
               <div className="relative aspect-[16/9] overflow-hidden">
-                {nextItem.cover_image?.startsWith('http') ? (
+                {hasCover ? (
                   <img
-                    src={nextItem.cover_image}
+                    src={featured.banner_image || featured.cover_image}
                     alt=""
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-full" style={{ background: animeGradient(nextItem.title) }} />
+                  <div className="w-full h-full" style={{ background: animeGradient(featured.title) }} />
                 )}
                 <div
                   className="absolute inset-0"
-                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%)' }}
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)' }}
                 />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-sm font-semibold text-white truncate">{nextItem.title}</p>
-                  <p className="text-[11px] mt-0.5 text-white/50">
-                    {nextItem.episode_count > 0 ? `${nextItem.episode_count} ${i18n._(msg`common.ep`)}` : ''}
-                    {nextItem.score > 0 ? ` · ${nextItem.score.toFixed(1)}` : ''}
+                <div className="absolute bottom-0 left-0 right-0 p-3.5">
+                  <p className="text-[11px] text-white/50 truncate">{featured.title}</p>
+                  <p className="text-[13px] font-semibold text-white mt-0.5">
+                    Episode 1 / {featured.episode_count || '?'}
                   </p>
                 </div>
               </div>
