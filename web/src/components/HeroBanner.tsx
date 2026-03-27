@@ -67,7 +67,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
               <div className="flex items-end gap-6">
                 <Link
                   to={`/anime/${featured.bangumi_id}` as string}
-                  className="shrink-0 w-[140px] h-[200px] lg:w-[180px] lg:h-[260px] rounded-md overflow-hidden block cursor-pointer shadow-md"
+                  className="shrink-0 w-[160px] h-[225px] lg:w-[200px] lg:h-[290px] rounded-md overflow-hidden block cursor-pointer shadow-md"
                   style={hasCover ? undefined : { background: animeGradient(featured.title) }}
                 >
                   {hasCover && (
