@@ -62,11 +62,11 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              {/* Poster + info */}
-              <div className="flex items-end gap-5">
+              {/* Poster + info — Seanime MediaMetadata layout */}
+              <div className="flex items-end gap-6">
                 <Link
                   to={`/anime/${featured.bangumi_id}` as string}
-                  className="shrink-0 w-[140px] h-[200px] lg:w-[180px] lg:h-[260px] rounded-md overflow-hidden block"
+                  className="shrink-0 w-[140px] h-[200px] lg:w-[180px] lg:h-[260px] rounded-md overflow-hidden block cursor-pointer shadow-md"
                   style={hasCover ? undefined : { background: animeGradient(featured.title) }}
                 >
                   {hasCover && (
@@ -74,41 +74,59 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                   )}
                 </Link>
 
-                <div className="min-w-0 flex-1 pb-1">
-                  <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-tight line-clamp-2">
-                    {featured.title}
-                  </h2>
+                <div className="min-w-0 flex-1 pb-1 space-y-2">
+                  {/* Title — clickable, animated text reveal like Seanime TextGenerateEffect */}
+                  <Link to={`/anime/${featured.bangumi_id}` as string} className="block cursor-pointer">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-tight line-clamp-2 hover:text-white/80 transition-colors">
+                      {featured.title.split('').map((char, ci) => (
+                        <motion.span
+                          key={`${featured.bangumi_id}-${ci}`}
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: ci * 0.02, duration: 0.3 }}
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
+                    </h2>
+                  </Link>
 
-                  {featured.title_original && featured.title_original !== featured.title && (
-                    <p className="text-[12px] mt-1 truncate text-white/50">
-                      {featured.title_original}
+                  {/* Genres — Seanime shows up to 3 */}
+                  {featured.genres && featured.genres.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {featured.genres.slice(0, 3).map((genre) => (
+                        <span key={genre} className="text-sm font-semibold text-gray-300 px-1">
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Score */}
+                  {featured.score > 0 && (
+                    <span className="text-[14px] font-bold text-mm-accent inline-block">
+                      ♡ {featured.score.toFixed(1)}
+                    </span>
+                  )}
+
+                  {/* Description — Seanime shows in a scroll area, max ~3 lines */}
+                  {featured.description && (
+                    <p className="text-sm text-white/60 line-clamp-3 max-w-lg leading-relaxed">
+                      {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
 
-                  {/* Score + episodes */}
-                  <div className="flex items-center gap-3 mt-2.5">
-                    {featured.score > 0 && (
-                      <span className="text-[14px] font-bold text-mm-accent">
-                        ♡ {featured.score.toFixed(1)}
-                      </span>
-                    )}
-                    {featured.episode_count > 0 && (
-                      <span className="text-[12px] text-white/40">
-                        {featured.episode_count} {i18n._(msg`common.ep`)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* CTA */}
-                  <div className="flex items-center gap-2.5 mt-4">
-                    <Link
-                      to={`/anime/${featured.bangumi_id}` as string}
-                      className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      {i18n._(msg`hero.details`)}
-                    </Link>
-                  </div>
+                  {/* Preview button — Seanime: opens preview modal */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // TODO: open preview modal
+                      window.location.href = `/anime/${featured.bangumi_id}`;
+                    }}
+                    className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.14] transition-colors cursor-pointer mt-1"
+                  >
+                    Preview
+                  </button>
                 </div>
               </div>
             </motion.div>

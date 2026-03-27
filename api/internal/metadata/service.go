@@ -232,6 +232,8 @@ func (s *Service) GetTrending(ctx context.Context, page int) ([]AnimeSummary, er
 			TitleEN:       m.Title.English,
 			CoverImage:    m.CoverImage.ExtraLarge,
 			BannerImage:   m.BannerImage,
+			Description:   m.Description,
+			Genres:        m.Genres,
 			EpisodeCount:  m.Episodes,
 			Score:         float64(m.AverageScore) / 10.0,
 		}

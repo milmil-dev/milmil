@@ -8,6 +8,8 @@ export interface AnimeSummary {
   title_en?: string;
   cover_image: string;
   banner_image?: string;
+  description?: string;
+  genres?: string[];
   air_date?: string;
   episode_count: number;
   score: number;

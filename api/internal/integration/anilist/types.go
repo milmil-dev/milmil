@@ -3,6 +3,7 @@ package anilist
 type Media struct {
 	ID           int        `json:"id"`
 	Title        MediaTitle `json:"title"`
+	Description  string     `json:"description"`
 	CoverImage   CoverImage `json:"coverImage"`
 	BannerImage  string     `json:"bannerImage"`
 	Popularity   int        `json:"popularity"`
@@ -12,6 +13,7 @@ type Media struct {
 	Season       string     `json:"season"`
 	SeasonYear   int        `json:"seasonYear"`
 	Format       string     `json:"format"`
+	Genres       []string   `json:"genres"`
 }
 
 type MediaTitle struct {

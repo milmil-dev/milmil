@@ -21,9 +21,11 @@ const defaultEndpoint = "https://graphql.anilist.co"
 const mediaFields = `
 	id
 	title { romaji english native }
+	description(asHtml: false)
 	coverImage { extraLarge large }
 	bannerImage
 	popularity averageScore episodes status season seasonYear format
+	genres
 `
 
 type Client interface {
