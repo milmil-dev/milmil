@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -9,6 +10,12 @@ func NewProvider(sourceType string, configJSON string) (Provider, error) {
 	switch sourceType {
 	case "local", "":
 		return NewLocalProvider(), nil
+	case "sftp":
+		var cfg SFTPConfig
+		if err := json.Unmarshal([]byte(configJSON), &cfg); err != nil {
+			return nil, fmt.Errorf("invalid sftp config: %w", err)
+		}
+		return NewSFTPProvider(cfg)
 	default:
 		return nil, fmt.Errorf("unsupported source type: %s", sourceType)
 	}
