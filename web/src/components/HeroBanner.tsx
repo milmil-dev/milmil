@@ -155,10 +155,14 @@ export function HeroBanner({ items, onActiveChange }: { items: AnimeSummary[]; o
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)' }}
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-3.5">
-                  <p className="text-[11px] text-white/50 truncate">{featured.title}</p>
-                  <p className="text-[13px] font-semibold text-white mt-0.5">
-                    Episode 1 / {featured.episode_count || '?'}
-                  </p>
+                  <p className="text-[11px] text-white/50 truncate">{featured.title_original || featured.title}</p>
+                  <p className="text-[13px] font-semibold text-white mt-0.5 truncate">{featured.title}</p>
+                  {featured.episode_count > 0 && (
+                    <p className="text-[11px] text-white/40 mt-0.5">
+                      {featured.episode_count} {i18n._(msg`common.ep`)}
+                      {featured.score > 0 ? ` · ${featured.score.toFixed(1)}` : ''}
+                    </p>
+                  )}
                 </div>
               </div>
             </Link>
