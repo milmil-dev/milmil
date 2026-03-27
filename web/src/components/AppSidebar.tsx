@@ -84,13 +84,34 @@ export function AppSidebar() {
           className="fixed left-0 top-0 bottom-0 w-20 z-40 flex flex-col items-center max-md:hidden"
           style={{ backgroundColor: 'transparent' }}
         >
-          {/* Logo — paw print */}
+          {/* Logo — neko face */}
           <div className="flex items-center justify-center h-16 shrink-0">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="text-mm-accent">
-              <circle cx="14" cy="18" r="7" fill="currentColor" opacity="0.85"/>
-              <circle cx="7" cy="10" r="3.5" fill="currentColor" opacity="0.65"/>
-              <circle cx="14" cy="6" r="3.5" fill="currentColor" opacity="0.65"/>
-              <circle cx="21" cy="10" r="3.5" fill="currentColor" opacity="0.65"/>
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              {/* Head */}
+              <circle cx="32" cy="36" r="20" fill="#E88FAA"/>
+              {/* Left ear */}
+              <polygon points="15,26 10,8 28,26" fill="#E88FAA"/>
+              <polygon points="17,24 13,12 26,24" fill="#C97090"/>
+              {/* Right ear */}
+              <polygon points="36,26 54,8 49,26" fill="#E88FAA"/>
+              <polygon points="38,24 51,12 47,24" fill="#C97090"/>
+              {/* Left eye */}
+              <ellipse cx="25" cy="33" rx="4" ry="5" fill="#070707"/>
+              <ellipse cx="25" cy="33" rx="2" ry="4" fill="white" opacity="0.9"/>
+              <ellipse cx="24" cy="31" rx="1" ry="1.5" fill="white"/>
+              {/* Right eye */}
+              <ellipse cx="39" cy="32" rx="4" ry="5" fill="#070707"/>
+              <ellipse cx="39" cy="32" rx="2" ry="4" fill="white" opacity="0.9"/>
+              <ellipse cx="38" cy="30" rx="1" ry="1.5" fill="white"/>
+              {/* Nose */}
+              <polygon points="31,40 33,40 32,43" fill="#C97090"/>
+              {/* Mouth */}
+              <path d="M28,45 Q32,48 36,45" stroke="#C97090" strokeWidth="1.2" fill="none"/>
+              {/* Whiskers */}
+              <line x1="18" y1="37" x2="4" y2="35" stroke="#E88FAA" strokeWidth="1" opacity="0.4"/>
+              <line x1="18" y1="40" x2="4" y2="40" stroke="#E88FAA" strokeWidth="1" opacity="0.4"/>
+              <line x1="46" y1="37" x2="60" y2="35" stroke="#E88FAA" strokeWidth="1" opacity="0.4"/>
+              <line x1="46" y1="40" x2="60" y2="40" stroke="#E88FAA" strokeWidth="1" opacity="0.4"/>
             </svg>
           </div>
 
