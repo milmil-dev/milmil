@@ -46,15 +46,7 @@ export function HeroBanner({ items }: { items: AnimeSummary[] }) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* No background image here — the root layout bg-store already shows
-           the cover art behind everything. Just add a subtle bottom gradient
-           so text is readable against the existing bg image. */}
-      <div
-        className="absolute inset-0 z-[1]"
-        style={{
-          background: 'linear-gradient(to top, var(--mm-bg) 0%, transparent 60%)',
-        }}
-      />
+      {/* No gradient overlay — root layout bg already handles fading */}
 
       {/* Content — anchored bottom-left */}
       <div className="relative z-[2] h-full flex">
