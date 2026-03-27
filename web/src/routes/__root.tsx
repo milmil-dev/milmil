@@ -74,7 +74,7 @@ function BannerImage({ src }: { src: string | null }) {
           <img
             src={src}
             alt=""
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center brightness-[0.6]"
           />
         </motion.div>
       </AnimatePresence>
