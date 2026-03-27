@@ -6,11 +6,13 @@ import { useEffect, useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
+import { PreviewModal } from './PreviewModal';
 
 export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: AnimeSummary[]; onActiveChange?: (item: AnimeSummary) => void; hasWatchRecord?: boolean }) {
   const { i18n } = useLingui();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const featured = items[activeIndex];
 
   // Notify parent when active item changes
@@ -116,13 +118,10 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     </p>
                   )}
 
-                  {/* Preview button — Seanime: opens preview modal */}
+                  {/* Preview button — opens preview modal (Seanime pattern) */}
                   <button
                     type="button"
-                    onClick={() => {
-                      // TODO: open preview modal
-                      window.location.href = `/anime/${featured.bangumi_id}`;
-                    }}
+                    onClick={() => setPreviewOpen(true)}
                     className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.14] transition-colors cursor-pointer mt-1"
                   >
                     Preview
@@ -187,6 +186,9 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
           </div>
         )}
       </div>
+
+      {/* Preview modal */}
+      <PreviewModal anime={featured} open={previewOpen} onClose={() => setPreviewOpen(false)} />
     </div>
   );
 }
