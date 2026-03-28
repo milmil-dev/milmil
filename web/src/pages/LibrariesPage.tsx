@@ -22,7 +22,7 @@ import {
   libraryApi,
   libraryKeys,
 } from '../lib/api/library';
-import { animeGradient as cardGradient } from '../lib/gradient';
+import { hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
 type SourceType = 'local' | 'smb' | 'sftp';
@@ -35,12 +35,44 @@ function formatBytes(bytes: number): string {
   return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
 }
 
+// Derive a subtle accent hue from library name for the top border line
+function cardAccentColor(name: string): string {
+  const h = hashName(name) % 360;
+  return `oklch(55% 0.18 ${h})`;
+}
+
+// ─── Source type icon (SVG) ─────────────────────────────────────────────────
+function SourceIcon({ sourceType, className }: { sourceType: string; className?: string }) {
+  if (sourceType === 'smb' || sourceType === 'sftp') {
+    // Network/server icon
+    return (
+      <svg viewBox="0 0 48 48" fill="none" className={className}>
+        <rect x="8" y="10" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="8" y="28" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="14" cy="15" r="1.5" fill="currentColor" />
+        <circle cx="14" cy="33" r="1.5" fill="currentColor" />
+        <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+  // Default folder icon
+  return (
+    <svg viewBox="0 0 48 48" fill="none" className={className}>
+      <path
+        d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
 // ─── Source type badge ────────────────────────────────────────────────────────
 function SourceBadge({ sourceType }: { sourceType: string }) {
   if (!sourceType || sourceType === 'local') return null;
   const label = sourceType.toUpperCase();
   return (
-    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.12] text-gray-200">
+    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.08] text-white/50">
       {label}
     </span>
   );
@@ -66,10 +98,11 @@ function LibraryCard({
     ? new Date(lib.last_scanned_at).toLocaleDateString()
     : i18n._(msg`library.neverScanned`);
   const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
+  const accentColor = cardAccentColor(lib.name);
 
   return (
     <div
-      className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:ring-1 hover:ring-mm-accent/20"
+      className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.12] bg-white/[0.025]"
       onClick={() => navigate({ to: `/libraries/${lib.id}` })}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') navigate({ to: `/libraries/${lib.id}` });
@@ -77,13 +110,18 @@ function LibraryCard({
       role="link"
       tabIndex={0}
     >
+      {/* Accent top line */}
+      <div className="h-[2px]" style={{ backgroundColor: accentColor }} />
+
       {/* Art area */}
-      <div className="relative h-40 overflow-hidden" style={{ background: cardGradient(lib.name) }}>
+      <div className="relative h-44 overflow-hidden bg-white/[0.02] flex items-center justify-center">
+        <SourceIcon sourceType={lib.source_type} className="w-16 h-16 text-white/[0.08]" />
+
         <AnimatePresence>
           {scanning && (
             <motion.div
               className="absolute inset-0"
-              style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(232,143,170,0.25) 50%, transparent 100%)' }}
+              style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(232,143,170,0.18) 50%, transparent 100%)' }}
               initial={{ x: '-100%' }}
               animate={{ x: '200%' }}
               exit={{ opacity: 0 }}
@@ -98,7 +136,7 @@ function LibraryCard({
           </div>
         )}
 
-        {/* Hover actions — no borders */}
+        {/* Hover actions */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60">
           <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer">
             {scanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
@@ -111,34 +149,27 @@ function LibraryCard({
           </button>
         </div>
 
-        {/* Bottom gradient for text readability */}
-        <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
-
         {/* Match percentage bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10">
-          <div className="h-full bg-green-500" style={{ width: `${matchPct}%` }} />
+        <div className="absolute bottom-0 left-0 right-0 h-[3px] rounded-full bg-white/[0.06]">
+          <div className="h-full rounded-full bg-green-500/70" style={{ width: `${matchPct}%` }} />
         </div>
       </div>
 
-      {/* Info — floats on dark, no solid bg */}
-      <div className="p-3">
-        <p className="font-semibold text-sm text-white truncate leading-snug">{lib.name}</p>
-        <p className="text-[11px] font-mono truncate mt-0.5 text-white/40">{lib.path}</p>
-        <div className="flex items-center gap-2 mt-2">
-          <span className={cn(
-            'text-[10px] font-bold px-1.5 py-0.5 rounded',
-            lib.enabled ? 'bg-green-500/15 text-green-400' : 'bg-white/[0.04] text-white/30'
-          )}>
-            {lib.enabled ? i18n._(msg`library.on`) : i18n._(msg`library.off`)}
-          </span>
+      {/* Info */}
+      <div className="p-4">
+        <div className="flex items-center gap-2">
+          <p className="font-semibold text-sm text-white truncate leading-snug">{lib.name}</p>
+          {!lib.enabled && (
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.04] text-white/30">
+              {i18n._(msg`library.off`)}
+            </span>
+          )}
           <SourceBadge sourceType={lib.source_type} />
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.12] text-gray-200">
-            {lib.file_count} files
-          </span>
-          <span className="text-[10px] text-white/30">
-            {lastScanned} · {formatBytes(lib.total_size_bytes)}
-          </span>
         </div>
+        <p className="text-[11px] font-mono truncate mt-1 text-white/30">{lib.path}</p>
+        <p className="text-[11px] text-white/25 mt-2">
+          {lib.file_count} files · {formatBytes(lib.total_size_bytes)} · {lastScanned}
+        </p>
       </div>
     </div>
   );
@@ -151,22 +182,55 @@ function AddCard({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="group rounded-lg overflow-hidden w-full transition-all duration-200 hover:ring-1 hover:ring-mm-accent/30 cursor-pointer"
+      className="group rounded-lg overflow-hidden w-full transition-all duration-200 cursor-pointer border border-dashed border-white/[0.08] hover:border-white/20"
     >
-      <div className="h-40 flex items-center justify-center bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-mm-accent/10 flex items-center justify-center group-hover:bg-mm-accent/20 transition-colors">
-            <span className="text-lg text-mm-accent">+</span>
+      <div className="h-44 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-full border border-white/[0.1] flex items-center justify-center group-hover:border-white/20 transition-colors">
+            <span className="text-lg text-white/40 group-hover:text-white/60 transition-colors">+</span>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-white/40 group-hover:text-white/60 transition-colors">
+              {i18n._(msg`library.addLibrary`)}
+            </p>
           </div>
         </div>
       </div>
-      <div className="p-3">
-        <p className="text-sm font-semibold text-white/50 group-hover:text-white transition-colors">
-          {i18n._(msg`library.addLibrary`)}
-        </p>
-        <p className="text-[11px] mt-0.5 text-white/20">{i18n._(msg`library.connectSource`)}</p>
-      </div>
+      <div className="p-4" />
     </button>
+  );
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+function EmptyState({ onAdd }: { onAdd: () => void }) {
+  const { i18n } = useLingui();
+  return (
+    <div className="flex flex-col items-center justify-center pt-32 pb-16">
+      {/* Folder illustration */}
+      <div className="mb-8">
+        <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
+          <path
+            d="M10 22a4 4 0 0 1 4-4h16l6 6h28a4 4 0 0 1 4 4v30a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V22z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+      <h2 className="text-xl font-semibold text-white/70 mb-2">
+        {i18n._(msg`home.library.empty.title`)}
+      </h2>
+      <p className="text-sm text-white/30 mb-8">
+        {i18n._(msg`home.library.empty.subtitle`)}
+      </p>
+      <button
+        type="button"
+        onClick={onAdd}
+        className="px-5 py-2.5 text-sm font-semibold rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
+      >
+        + {i18n._(msg`library.addLibrary`)}
+      </button>
+    </div>
   );
 }
 
@@ -333,7 +397,7 @@ function NetworkBrowser({
                     className="text-[10px] text-white/40 transition-transform"
                     style={{ transform: isExpanded ? 'rotate(90deg)' : undefined }}
                   >
-                    ▶
+                    &#9654;
                   </span>
                   <span className="font-medium">{label}</span>
                   {host.hostname && (
@@ -499,7 +563,7 @@ function LibraryForm({
                       type="password"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                      placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
                       className={inputClass}
                     />
                   </div>
@@ -576,7 +640,7 @@ function LibraryForm({
                       type="password"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                      placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
                       className={inputClass}
                     />
                   </div>
@@ -804,40 +868,42 @@ export function LibrariesPage() {
   });
 
   const skeletonCards = [1, 2, 3, 4];
+  const hasLibraries = !isLoading && libraries.length > 0;
+  const isEmpty = !isLoading && libraries.length === 0;
 
   return (
     <PageTransition>
       <div className="min-h-screen">
-        {/* Header */}
-        <div className="px-8 pt-12 pb-6">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">
-                milmil
-              </p>
-              <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">{i18n._(msg`library.pageTitle`)}</h1>
+        {/* Header — only show when libraries exist */}
+        {(hasLibraries || isLoading) && (
+          <div className="px-8 pt-14 pb-8">
+            <div className="flex items-end justify-between">
+              <h1 className="text-4xl font-bold text-white tracking-tight">
+                {i18n._(msg`library.pageTitle`)}
+              </h1>
+              <button
+                type="button"
+                onClick={() => setDrawerMode('add')}
+                className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
+              >
+                + {i18n._(msg`library.addLibrary`)}
+              </button>
             </div>
-            <motion.button
-              whileTap={{ scale: 0.94 }}
-              onClick={() => setDrawerMode('add')}
-              className="px-4 py-2 text-sm font-bold rounded transition-opacity hover:opacity-80 text-black bg-mm-accent"
-            >
-              + {i18n._(msg`library.addLibrary`)}
-            </motion.button>
           </div>
-        </div>
+        )}
 
         {/* Grid */}
         <div className="px-8 pb-16">
           {isLoading ? (
             <div
-              className="grid gap-4"
-              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}
+              className="grid gap-5"
+              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}
             >
               {skeletonCards.map((i) => (
-                <div key={i} className="rounded overflow-hidden animate-pulse">
-                  <div className="h-44 bg-mm-border" />
-                  <div className="p-3 bg-mm-surface">
+                <div key={i} className="rounded-lg overflow-hidden animate-pulse bg-white/[0.025]">
+                  <div className="h-[2px] bg-white/[0.04]" />
+                  <div className="h-44 bg-white/[0.02]" />
+                  <div className="p-4">
                     <div
                       className="h-3 rounded mb-2"
                       style={{ backgroundColor: 'oklch(18% 0.01 280)', width: '55%' }}
@@ -850,10 +916,12 @@ export function LibrariesPage() {
                 </div>
               ))}
             </div>
+          ) : isEmpty ? (
+            <EmptyState onAdd={() => setDrawerMode('add')} />
           ) : (
             <motion.div
-              className="grid gap-4"
-              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}
+              className="grid gap-5"
+              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}
             >
               <AnimatePresence mode="popLayout">
                 {libraries.map((lib, i) => (
@@ -868,7 +936,6 @@ export function LibrariesPage() {
                       duration: 0.28,
                       ease: [0.25, 0.46, 0.45, 0.94],
                     }}
-                    whileHover={{ scale: 1.03 }}
                   >
                     <LibraryCard
                       lib={lib}

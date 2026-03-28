@@ -21,33 +21,19 @@ function formatBytes(bytes: number): string {
   return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
 }
 
-function SourceBadge({ sourceType }: { sourceType: string }) {
-  if (!sourceType || sourceType === 'local') return null;
-  const label = sourceType.toUpperCase();
-  return (
-    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.12] text-gray-200">
-      {label}
-    </span>
-  );
-}
-
 /* -- Skeleton loader -------------------------------------------------------- */
 
 function LibraryDetailSkeleton() {
   return (
     <div className="min-h-screen px-4 md:px-8 pt-6 pb-16">
       {/* Back link */}
-      <Skeleton className="h-4 w-24 mb-6" />
+      <Skeleton className="h-4 w-24 mb-8" />
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between mb-4">
         <div className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-4 w-48" />
-            <Skeleton className="h-5 w-12 rounded" />
-            <Skeleton className="h-4 w-32" />
-          </div>
+          <Skeleton className="h-9 w-64" />
+          <Skeleton className="h-4 w-80" />
         </div>
         <div className="flex gap-2">
           <Skeleton className="h-9 w-24 rounded-md" />
@@ -55,20 +41,13 @@ function LibraryDetailSkeleton() {
         </div>
       </div>
 
-      {/* Stats bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white/[0.03] rounded-lg p-4">
-            <Skeleton className="h-7 w-16 mb-2" />
-            <Skeleton className="h-3.5 w-20" />
-          </div>
-        ))}
-      </div>
+      {/* Stats strip */}
+      <Skeleton className="h-5 w-96 mb-8" />
 
       {/* Tab bar */}
-      <div className="flex gap-4 mb-6 border-b border-white/[0.06] pb-2">
+      <div className="flex gap-6 mb-6 border-b border-white/[0.06] pb-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-5 w-20" />
+          <Skeleton key={i} className="h-4 w-20" />
         ))}
       </div>
     </div>
@@ -79,13 +58,13 @@ function LibraryDetailSkeleton() {
 
 function StatusBadge({ status }: { status: MediaFileEntry['match_status'] }) {
   const styles = {
-    auto: 'bg-green-400/15 text-green-400',
-    manual: 'bg-blue-400/15 text-blue-400',
-    unmatched: 'bg-amber-400/15 text-amber-400',
+    auto: 'bg-green-400/10 text-green-400/80',
+    manual: 'bg-blue-400/10 text-blue-400/80',
+    unmatched: 'bg-amber-400/10 text-amber-400/80',
   };
   const labels = { auto: 'AUTO', manual: 'MANUAL', unmatched: 'UNMATCHED' };
   return (
-    <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded', styles[status])}>
+    <span className={cn('text-[9px] font-bold px-1.5 py-0.5 rounded', styles[status])}>
       {labels[status]}
     </span>
   );
@@ -155,13 +134,13 @@ function FileTable({
   return (
     <div>
       {/* Search */}
-      <div className="mb-4">
+      <div className="mb-5">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={i18n._(msg`library.detail.searchFiles`)}
-          className="w-full max-w-sm bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-mm-text-muted focus:outline-none focus:ring-1 focus:ring-mm-accent/50"
+          className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
         />
       </div>
 
@@ -169,50 +148,50 @@ function FileTable({
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
-            <tr className="text-[11px] uppercase tracking-wider text-mm-text-muted border-b border-white/[0.04]">
-              <th className="pb-2 pr-4 font-medium">{i18n._(msg`library.detail.col.filename`)}</th>
-              <th className="pb-2 pr-4 font-medium">{i18n._(msg`library.detail.col.matchedTo`)}</th>
-              <th className="pb-2 pr-4 font-medium">{i18n._(msg`library.detail.col.status`)}</th>
-              <th className="pb-2 pr-4 font-medium">{i18n._(msg`library.detail.col.subs`)}</th>
-              <th className="pb-2 pr-4 font-medium">{i18n._(msg`library.detail.col.size`)}</th>
-              {onMatch && <th className="pb-2 font-medium" />}
+            <tr className="text-[10px] uppercase tracking-wider text-white/30">
+              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.filename`)}</th>
+              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.matchedTo`)}</th>
+              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.status`)}</th>
+              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.subs`)}</th>
+              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.size`)}</th>
+              {onMatch && <th className="pb-3 font-medium" />}
             </tr>
           </thead>
           <tbody>
             {files.map((file) => (
-              <tr key={file.id} className="bg-white/[0.03] border-b border-white/[0.04] hover:bg-white/[0.05] transition-colors">
-                <td className="py-2.5 pr-4 max-w-[300px]">
-                  <span className="font-mono text-xs text-white truncate block" title={file.path}>
+              <tr key={file.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                <td className="py-3 pr-4 max-w-[300px]">
+                  <span className="font-mono text-sm text-white/80 truncate block" title={file.path}>
                     {file.filename}
                   </span>
                 </td>
-                <td className="py-2.5 pr-4 text-[13px]">
+                <td className="py-3 pr-4 text-[13px]">
                   {file.matched_anime_title ? (
-                    <span className="text-white">
+                    <span className="text-white/70">
                       {file.matched_anime_title}{' '}
-                      <span className="text-mm-text-muted">EP {String(file.matched_episode_sort).padStart(2, '0')}</span>
+                      <span className="text-white/30">EP {String(file.matched_episode_sort).padStart(2, '0')}</span>
                     </span>
                   ) : (
-                    <span className="text-mm-text-muted">&mdash;</span>
+                    <span className="text-white/20">&mdash;</span>
                   )}
                 </td>
-                <td className="py-2.5 pr-4">
+                <td className="py-3 pr-4">
                   <StatusBadge status={file.match_status} />
                 </td>
-                <td className="py-2.5 pr-4 text-[12px] text-mm-text-secondary tabular-nums">
+                <td className="py-3 pr-4 text-[12px] text-white/30 tabular-nums">
                   <span className="inline-flex items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-mm-text-muted">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/20">
                       <rect x="2" y="4" width="20" height="16" rx="2" />
                       <path d="M7 15h4M13 15h4M7 11h10" />
                     </svg>
                     {file.subtitle_count}
                   </span>
                 </td>
-                <td className="py-2.5 pr-4 text-[12px] text-mm-text-secondary tabular-nums whitespace-nowrap">
+                <td className="py-3 pr-4 text-[12px] text-white/30 tabular-nums whitespace-nowrap">
                   {formatBytes(file.size_bytes)}
                 </td>
                 {onMatch && (
-                  <td className="py-2.5">
+                  <td className="py-3">
                     <button
                       type="button"
                       onClick={() => onMatch(file)}
@@ -230,7 +209,7 @@ function FileTable({
 
       {isLoading && (
         <div className="py-6 text-center">
-          <p className="text-[12px] text-mm-text-muted animate-pulse">{i18n._(msg`common.loading`)}</p>
+          <p className="text-[12px] text-white/25 animate-pulse">{i18n._(msg`common.loading`)}</p>
         </div>
       )}
 
@@ -317,26 +296,26 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
         const isExpanded = expandedIds.has(scan.id);
 
         return (
-          <div key={scan.id} className="bg-white/[0.03] rounded-lg p-4 border border-white/[0.04]">
+          <div key={scan.id} className="rounded-lg p-4 border border-white/[0.04]">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-4 text-[13px]">
-                <span className="text-mm-text-secondary">
+                <span className="text-white/40">
                   {startDate.toLocaleDateString()} {startDate.toLocaleTimeString()}
                 </span>
-                <span className="text-mm-text-muted">
+                <span className="text-white/25">
                   {duration !== null
                     ? `${duration}s`
                     : i18n._(msg`library.detail.inProgress`)}
                 </span>
               </div>
               <div className="flex items-center gap-3 text-[12px] tabular-nums">
-                <span className="text-mm-text-secondary">
+                <span className="text-white/40">
                   {scan.files_found} {i18n._(msg`library.detail.found`)}
                 </span>
-                <span className="text-green-400">
+                <span className="text-green-400/80">
                   {scan.files_matched} {i18n._(msg`library.detail.matched`)}
                 </span>
-                <span className="text-amber-400">
+                <span className="text-amber-400/80">
                   {scan.files_unmatched} {i18n._(msg`library.detail.unmatchedShort`)}
                 </span>
                 {errors.length > 0 && (
@@ -345,7 +324,7 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
                     onClick={() => toggleExpand(scan.id)}
                     className="text-red-400 hover:text-red-300 transition-colors cursor-pointer"
                   >
-                    {errors.length} {i18n._(msg`library.detail.errors`)} {isExpanded ? '▾' : '▸'}
+                    {errors.length} {i18n._(msg`library.detail.errors`)} {isExpanded ? '\u25BE' : '\u25B8'}
                   </button>
                 )}
               </div>
@@ -683,6 +662,10 @@ export function LibraryDetailPage() {
     ? formatDistanceToNow(new Date(library.last_scanned_at), { addSuffix: true })
     : i18n._(msg`library.neverScanned`);
 
+  const sourceLabel = library.source_type && library.source_type !== 'local'
+    ? library.source_type.toUpperCase()
+    : null;
+
   return (
     <PageTransition>
       <div className="min-h-screen px-4 md:px-8 pt-6 pb-16">
@@ -690,7 +673,7 @@ export function LibraryDetailPage() {
         <motion.div initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}>
           <Link
             to="/libraries"
-            className="inline-flex items-center gap-1 text-[13px] text-mm-text-muted hover:text-mm-text-secondary transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 text-[12px] text-white/30 hover:text-white/50 transition-colors mb-8"
           >
             <span>&larr;</span> {i18n._(msg`library.detail.backToLibraries`)}
           </Link>
@@ -700,21 +683,19 @@ export function LibraryDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6"
+          className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3"
         >
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-3xl font-bold text-white tracking-tight">
               {library.name}
             </h1>
-            <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-              <span className="text-[13px] font-mono text-white/40 truncate max-w-[400px]">
-                {library.path}
-              </span>
-              <SourceBadge sourceType={library.source_type} />
-              <span className="text-[12px] text-mm-text-muted">
-                {lastScannedText}
-              </span>
-            </div>
+            <p className="text-sm text-white/40 mt-1.5 truncate">
+              <span className="font-mono">{library.path}</span>
+              {sourceLabel && (
+                <> <span className="text-white/15">&middot;</span> {sourceLabel}</>
+              )}
+              <> <span className="text-white/15">&middot;</span> {lastScannedText}</>
+            </p>
           </div>
 
           <div className="flex gap-2 shrink-0">
@@ -723,7 +704,7 @@ export function LibraryDetailPage() {
               type="button"
               onClick={() => scanMutation.mutate()}
               disabled={scanMutation.isPending}
-              className="px-4 py-2 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors disabled:opacity-50 cursor-pointer"
             >
               {scanMutation.isPending
                 ? i18n._(msg`library.scanning`)
@@ -731,67 +712,27 @@ export function LibraryDetailPage() {
             </motion.button>
             <button
               type="button"
-              className="px-4 py-2 text-sm font-bold rounded-md bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors cursor-pointer"
+              className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
             >
               {i18n._(msg`library.detail.settings`)}
             </button>
           </div>
         </motion.div>
 
-        {/* Stats bar */}
+        {/* Stats strip */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
+          className="mb-8 text-sm text-white/40 tabular-nums"
         >
-          {/* Total Files */}
-          <div className="bg-white/[0.03] rounded-lg p-4">
-            <p className="text-2xl font-bold text-white tabular-nums">
-              {library.file_count}
-            </p>
-            <p className="text-[12px] text-mm-text-muted mt-1">
-              {i18n._(msg`library.detail.totalFiles`)}
-            </p>
-          </div>
-
-          {/* Matched */}
-          <div className="bg-white/[0.03] rounded-lg p-4">
-            <p className="text-2xl font-bold text-green-400 tabular-nums">
-              {matchPct}%
-            </p>
-            <p className="text-[12px] text-mm-text-muted mt-1">
-              {i18n._(msg`library.detail.matched`)}
-            </p>
-          </div>
-
-          {/* Unmatched */}
-          <button
-            type="button"
-            onClick={() => setActiveTab('unmatched')}
-            className={cn(
-              'bg-white/[0.03] rounded-lg p-4 text-left transition-colors cursor-pointer',
-              activeTab === 'unmatched' && 'ring-1 ring-amber-400/30',
-              'hover:bg-white/[0.05]',
-            )}
-          >
-            <p className="text-2xl font-bold text-amber-400 tabular-nums">
-              {library.unmatched_count}
-            </p>
-            <p className="text-[12px] text-mm-text-muted mt-1">
-              {i18n._(msg`library.detail.unmatched`)}
-            </p>
-          </button>
-
-          {/* Total Size */}
-          <div className="bg-white/[0.03] rounded-lg p-4">
-            <p className="text-2xl font-bold text-white tabular-nums">
-              {formatBytes(library.total_size_bytes)}
-            </p>
-            <p className="text-[12px] text-mm-text-muted mt-1">
-              {i18n._(msg`library.detail.totalSize`)}
-            </p>
-          </div>
+          <span className="text-white/60">{library.file_count}</span> files
+          <span className="text-white/15 mx-2">&middot;</span>
+          <span className="text-green-400/80">{matchPct}%</span> matched
+          <span className="text-white/15 mx-2">&middot;</span>
+          <span className="text-amber-400/80">{library.unmatched_count}</span> unmatched
+          <span className="text-white/15 mx-2">&middot;</span>
+          <span className="text-white/60">{formatBytes(library.total_size_bytes)}</span>
         </motion.div>
 
         {/* Tab bar */}
@@ -809,10 +750,10 @@ export function LibraryDetailPage() {
                   type="button"
                   onClick={() => setActiveTab(tab.key)}
                   className={cn(
-                    'relative px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200',
+                    'relative px-4 pb-3 pt-2 text-sm font-medium uppercase tracking-wider cursor-pointer transition-colors duration-200',
                     isActive
-                      ? 'text-mm-accent'
-                      : 'text-mm-text-tertiary hover:text-mm-text-secondary',
+                      ? 'text-white'
+                      : 'text-white/25 hover:text-white/40',
                   )}
                 >
                   {tab.label}
