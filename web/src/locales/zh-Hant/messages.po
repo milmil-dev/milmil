@@ -16,6 +16,18 @@ msgstr ""
 msgid "anime.episodes"
 msgstr "劇集"
 
+msgid "anime.relations"
+msgstr "相關作品"
+
+msgid "anime.reviews"
+msgstr "評論"
+
+msgid "anime.comments"
+msgstr "吐槽"
+
+msgid "anime.recommendations"
+msgstr "推薦"
+
 #: src/pages/AnimeDetailPage.tsx:63
 msgid "anime.notFound"
 msgstr "找不到此動畫"
@@ -24,6 +36,9 @@ msgstr "找不到此動畫"
 #: src/pages/AnimeDetailPage.tsx:146
 msgid "anime.ratings"
 msgstr "人評價"
+
+msgid "anime.trailer"
+msgstr "預告片"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
@@ -101,6 +116,15 @@ msgstr "返回首頁"
 msgid "common.ep"
 msgstr "集"
 
+msgid "common.minuteShort"
+msgstr "分鐘"
+
+msgid "episode.prefix"
+msgstr "第"
+
+msgid "episode.suffix"
+msgstr "集"
+
 #: src/pages/AnimeDetailPage.tsx:63
 msgid "common.loadFailed"
 msgstr "載入失敗"
@@ -113,6 +137,10 @@ msgstr "重試"
 #: src/components/PreviewModal.tsx:136
 msgid "hero.details"
 msgstr "詳情"
+
+#: src/components/HeroBanner.tsx:122
+msgid "hero.preview"
+msgstr "預覽"
 
 #: src/pages/HomePage.tsx:103
 msgid "home.continueWatching"
@@ -143,9 +171,97 @@ msgstr "熱門動畫"
 msgid "home.viewAll"
 msgstr "查看全部 →"
 
+#: src/pages/LibrariesPage.tsx
+msgid "library.addLibrary"
+msgstr "新增媒體庫"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.cancel"
+msgstr "取消"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.connectSource"
+msgstr "連接媒體來源"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.delete"
+msgstr "刪除"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.deleteConfirm"
+msgstr "所有媒體檔案記錄將被移除，磁碟上的檔案不受影響。"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.edit"
+msgstr "編輯"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.editLibrary"
+msgstr "編輯媒體庫"
+
 #: src/pages/LibrariesPage.tsx:573
 msgid "library.enabled"
 msgstr "啟用"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nameRequired"
+msgstr "請輸入名稱"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.neverScanned"
+msgstr "未掃描"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.off"
+msgstr "關閉"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.on"
+msgstr "開啟"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.pageTitle"
+msgstr "我的媒體庫"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.pathRequired"
+msgstr "請輸入路徑"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.saveChanges"
+msgstr "儲存變更"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.saving"
+msgstr "儲存中…"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.scan"
+msgstr "掃描"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.scanning"
+msgstr "掃描中"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.toast.added"
+msgstr "媒體庫已新增"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.toast.deleted"
+msgstr "媒體庫已刪除"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.toast.scanComplete"
+msgstr "掃描完成"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.toast.scanFailed"
+msgstr "掃描失敗"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.toast.updated"
+msgstr "媒體庫已更新"
 
 #: src/pages/LibrariesPage.tsx:313
 msgid "library.name"
@@ -302,6 +418,18 @@ msgstr "七月夏番"
 msgid "schedule.season.winter"
 msgstr "一月冬番"
 
+msgid "schedule.today"
+msgstr "今天"
+
+msgid "schedule.totalShows"
+msgstr "部本週放送"
+
+msgid "schedule.noShows"
+msgstr "本日無放送"
+
+msgid "schedule.all"
+msgstr "全部"
+
 #: src/components/CommandPalette.tsx:172
 msgid "search.noResults"
 msgstr "找不到結果"
@@ -358,3 +486,133 @@ msgstr "媒體檔案"
 #: src/pages/WatchPage.tsx:193
 msgid "watch.subtitle"
 msgstr "字幕"
+
+#: src/pages/SearchPage.tsx
+msgid "search.title"
+msgstr "搜索"
+
+#: src/pages/SearchPage.tsx
+msgid "search.inputPlaceholder"
+msgstr "搜索你喜歡的動畫..."
+
+#: src/pages/SearchPage.tsx
+msgid "search.emptyHint"
+msgstr "搜索你喜歡的動畫"
+
+#: src/pages/SearchPage.tsx
+msgid "search.loadMore"
+msgstr "載入更多"
+
+msgid "search.loadingMore"
+msgstr "載入中…"
+
+msgid "search.noResultsFor"
+msgstr "找不到結果"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.pageTitle"
+msgstr "設定"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.save"
+msgstr "儲存"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.saved"
+msgstr "已儲存"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.saving"
+msgstr "儲存中…"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.saveFailed"
+msgstr "儲存失敗"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.dandanplay.title"
+msgstr "DandanPlay 設定"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.player.title"
+msgstr "播放器設定"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.player.danmakuEnabled"
+msgstr "彈幕預設開啟"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.player.danmakuOpacity"
+msgstr "彈幕透明度"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.player.danmakuFontSize"
+msgstr "彈幕字體大小"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.player.danmakuSpeed"
+msgstr "彈幕速度"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.appearance.title"
+msgstr "外觀設定"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.appearance.language"
+msgstr "語言選擇"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.title"
+msgstr "連動"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.connect"
+msgstr "連線帳號"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.connecting"
+msgstr "連線中…"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.connected"
+msgstr "已連線"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.disconnect"
+msgstr "斷開連線"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.disconnecting"
+msgstr "斷開中…"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.disconnected"
+msgstr "已斷開連線"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.disconnectFailed"
+msgstr "斷開連線失敗"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.authUrlFailed"
+msgstr "取得授權連結失敗"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.sync"
+msgstr "同步進度"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.syncing"
+msgstr "同步中…"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.syncComplete"
+msgstr "同步完成"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.syncErrors"
+msgstr "筆失敗"
+
+#: src/pages/SettingsPage.tsx
+msgid "settings.integration.syncFailed"
+msgstr "同步失敗"
