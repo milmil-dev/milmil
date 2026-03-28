@@ -2,6 +2,7 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -24,6 +25,14 @@ import { animeGradient as cardGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
 type SourceType = 'local' | 'smb' | 'sftp';
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
+}
 
 // ─── Source type badge ────────────────────────────────────────────────────────
 function SourceBadge({ sourceType }: { sourceType: string }) {
@@ -51,12 +60,22 @@ function LibraryCard({
   onDelete: () => void;
 }) {
   const { i18n } = useLingui();
+  const navigate = useNavigate();
   const lastScanned = lib.last_scanned_at
     ? new Date(lib.last_scanned_at).toLocaleDateString()
     : i18n._(msg`library.neverScanned`);
+  const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
 
   return (
-    <div className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:ring-1 hover:ring-mm-accent/20">
+    <div
+      className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:ring-1 hover:ring-mm-accent/20"
+      onClick={() => navigate({ to: `/libraries/${lib.id}` })}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') navigate({ to: `/libraries/${lib.id}` });
+      }}
+      role="link"
+      tabIndex={0}
+    >
       {/* Art area */}
       <div className="relative h-40 overflow-hidden" style={{ background: cardGradient(lib.name) }}>
         <AnimatePresence>
@@ -80,19 +99,24 @@ function LibraryCard({
 
         {/* Hover actions — no borders */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60">
-          <button type="button" onClick={onScan} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer">
+          <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer">
             {scanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
           </button>
-          <button type="button" onClick={onEdit} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer">
+          <button type="button" onClick={(e) => { e.stopPropagation(); onEdit(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer">
             {i18n._(msg`library.edit`)}
           </button>
-          <button type="button" onClick={onDelete} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer">
+          <button type="button" onClick={(e) => { e.stopPropagation(); onDelete(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer">
             {i18n._(msg`library.delete`)}
           </button>
         </div>
 
         {/* Bottom gradient for text readability */}
         <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
+
+        {/* Match percentage bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10">
+          <div className="h-full bg-green-500" style={{ width: `${matchPct}%` }} />
+        </div>
       </div>
 
       {/* Info — floats on dark, no solid bg */}
@@ -107,7 +131,12 @@ function LibraryCard({
             {lib.enabled ? i18n._(msg`library.on`) : i18n._(msg`library.off`)}
           </span>
           <SourceBadge sourceType={lib.source_type} />
-          <span className="text-[10px] text-white/30">{lastScanned}</span>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.12] text-gray-200">
+            {lib.file_count} files
+          </span>
+          <span className="text-[10px] text-white/30">
+            {lastScanned} · {formatBytes(lib.total_size_bytes)}
+          </span>
         </div>
       </div>
     </div>
