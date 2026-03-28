@@ -560,26 +560,48 @@ function FolderBrowser({
               </div>
             )}
             {browseMutation.isSuccess && directories.length > 0 && (
-              <div className="py-1">
-                {directories.map((entry) => (
-                  <button
+              <motion.div
+                key={browsePath}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.15 }}
+                className="py-1"
+              >
+                {directories.map((entry, i) => (
+                  <motion.button
                     key={entry.path}
                     type="button"
                     onClick={() => handleDirectoryClick(entry)}
-                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] rounded cursor-pointer text-sm text-white/70 transition-colors"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.03, duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70"
                   >
-                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 shrink-0 text-white/30">
-                      <path
-                        d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
-                        stroke="currentColor"
-                        strokeWidth="1.2"
-                      />
-                    </svg>
-                    <span className="truncate">{entry.name}</span>
-                    <span className="ml-auto text-white/20 text-[10px] shrink-0">&#9654;</span>
-                  </button>
+                    <motion.div
+                      className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center"
+                      whileHover={{ backgroundColor: 'rgba(232,143,170,0.1)' }}
+                    >
+                      <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/40">
+                        <path
+                          d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
+                          stroke="currentColor"
+                          strokeWidth="1.2"
+                        />
+                      </svg>
+                    </motion.div>
+                    <span className="truncate font-medium">{entry.name}</span>
+                    <motion.span
+                      className="ml-auto text-white/15 text-[10px] shrink-0"
+                      whileHover={{ x: 2, color: 'rgba(232,143,170,0.6)' }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      &#9654;
+                    </motion.span>
+                  </motion.button>
                 ))}
-              </div>
+              </motion.div>
             )}
           </div>
 
