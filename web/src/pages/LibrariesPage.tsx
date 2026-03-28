@@ -542,8 +542,8 @@ function FolderBrowser({
             ))}
           </div>
 
-          {/* Directory listing with slide animation */}
-          <div className="max-h-[200px] overflow-y-auto overflow-x-hidden">
+          {/* Directory listing — fixed height, no layout shift */}
+          <div className="h-[200px] overflow-y-auto overflow-x-hidden relative">
             {browseMutation.isPending && (
               <div className="space-y-1 p-2">
                 {[1, 2, 3].map((i) => (
@@ -551,52 +551,36 @@ function FolderBrowser({
                 ))}
               </div>
             )}
-            <AnimatePresence mode="wait" initial={false}>
-              {browseMutation.isSuccess && directories.length === 0 && (
-                <motion.div
-                  key={`empty-${browsePath}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="px-3 py-4 text-center"
-                >
-                  <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
-                </motion.div>
-              )}
-              {browseMutation.isSuccess && directories.length > 0 && (
-                <motion.div
-                  key={browsePath}
-                  initial={{ opacity: 0, x: browseDirection * 60 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: browseDirection * -60 }}
-                  transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="py-1"
-                >
-                  {directories.map((entry, i) => (
-                    <motion.button
-                      key={entry.path}
-                      type="button"
-                      onClick={() => handleDirectoryClick(entry)}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03, duration: 0.2 }}
-                      className="w-full px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] rounded cursor-pointer text-sm text-white/70 transition-colors"
-                    >
-                      <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 shrink-0 text-white/30">
-                        <path
-                          d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
-                          stroke="currentColor"
-                          strokeWidth="1.2"
-                        />
-                      </svg>
-                      <span className="truncate">{entry.name}</span>
-                      <span className="ml-auto text-white/20 text-[10px] shrink-0">&#9654;</span>
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {browseMutation.isSuccess && directories.length === 0 && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
+              </div>
+            )}
+            {browseMutation.isSuccess && directories.length > 0 && (
+              <div className="py-1">
+                {directories.map((entry, i) => (
+                  <motion.button
+                    key={`${browsePath}-${entry.path}`}
+                    type="button"
+                    onClick={() => handleDirectoryClick(entry)}
+                    initial={{ opacity: 0, x: 12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.025, duration: 0.15, ease: 'easeOut' }}
+                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] rounded cursor-pointer text-sm text-white/70 transition-colors"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 shrink-0 text-white/30">
+                      <path
+                        d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      />
+                    </svg>
+                    <span className="truncate">{entry.name}</span>
+                    <span className="ml-auto text-white/20 text-[10px] shrink-0">&#9654;</span>
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Select button */}
