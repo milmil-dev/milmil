@@ -58,22 +58,39 @@ msgstr "预告片"
 msgid "auth.error.invalidCredentials"
 msgstr "账号或密码错误"
 
+#: src/pages/LibrariesPage.tsx:2286
+#: src/pages/LibraryDetailPage.tsx:660
+msgid "auth.libraries.signInSubtitle"
+msgstr "登录以管理您的媒体库"
+
+#: src/pages/LibrariesPage.tsx:2283
+#: src/pages/LibraryDetailPage.tsx:657
+msgid "auth.libraries.signInTitle"
+msgstr "需要登录"
+
 #: src/pages/LoginPage.tsx:79
 msgid "auth.login.loading"
 msgstr "登录中..."
 
+#: src/components/LoginModal.tsx:134
 #: src/pages/LoginPage.tsx:62
 msgid "auth.login.password"
 msgstr "密码"
 
+#: src/components/LoginModal.tsx:158
+#: src/pages/LibrariesPage.tsx:2293
+#: src/pages/LibraryDetailPage.tsx:667
 #: src/pages/LoginPage.tsx:79
 msgid "auth.login.submit"
 msgstr "登录"
 
+#: src/components/LoginModal.tsx:91
+#: src/components/LoginModal.tsx:107
 #: src/pages/LoginPage.tsx:44
 msgid "auth.login.title"
 msgstr "登录 milmil"
 
+#: src/components/LoginModal.tsx:120
 #: src/pages/LoginPage.tsx:49
 msgid "auth.login.username"
 msgstr "账号"
@@ -90,18 +107,22 @@ msgstr "创建账号中..."
 msgid "auth.setup.password"
 msgstr "密码"
 
+#: src/components/LoginModal.tsx:56
 #: src/pages/SetupPage.tsx:26
 msgid "auth.setup.passwordTooShort"
 msgstr "密码至少需要 8 个字符"
 
+#: src/components/LoginModal.tsx:159
 #: src/pages/SetupPage.tsx:84
 msgid "auth.setup.submit"
 msgstr "创建账号"
 
+#: src/components/LoginModal.tsx:113
 #: src/pages/SetupPage.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "创建管理员账号以开始使用。"
 
+#: src/components/LoginModal.tsx:102
 #: src/pages/SetupPage.tsx:48
 msgid "auth.setup.title"
 msgstr "欢迎使用 milmil"
@@ -125,12 +146,13 @@ msgid "common.ep"
 msgstr "集"
 
 #: src/pages/AnimeDetailPage.tsx:88
-#: src/pages/LibraryDetailPage.tsx:644
+#: src/pages/LibraryDetailPage.tsx:691
 msgid "common.loadFailed"
 msgstr "加载失败"
 
-#: src/pages/LibraryDetailPage.tsx:212
-#: src/pages/LibraryDetailPage.tsx:586
+#: src/components/LoginModal.tsx:156
+#: src/pages/LibraryDetailPage.tsx:214
+#: src/pages/LibraryDetailPage.tsx:588
 msgid "common.loading"
 msgstr "加载中..."
 
@@ -167,12 +189,12 @@ msgid "home.continueWatching"
 msgstr "继续观看"
 
 #: src/components/LibraryEmptyState.tsx:23
-#: src/pages/LibrariesPage.tsx:242
+#: src/pages/LibrariesPage.tsx:246
 msgid "home.library.empty.subtitle"
 msgstr "添加文件夹开始扫描"
 
 #: src/components/LibraryEmptyState.tsx:21
-#: src/pages/LibrariesPage.tsx:239
+#: src/pages/LibrariesPage.tsx:243
 msgid "home.library.empty.title"
 msgstr "尚未添加媒体库"
 
@@ -193,15 +215,16 @@ msgstr "热门动画"
 msgid "home.viewAll"
 msgstr "查看全部 →"
 
-#: src/pages/LibrariesPage.tsx:212
-#: src/pages/LibrariesPage.tsx:249
-#: src/pages/LibrariesPage.tsx:1671
-#: src/pages/LibrariesPage.tsx:1857
-#: src/pages/LibrariesPage.tsx:1939
+#: src/pages/LibrariesPage.tsx:216
+#: src/pages/LibrariesPage.tsx:253
+#: src/pages/LibrariesPage.tsx:1641
+#: src/pages/LibrariesPage.tsx:2084
+#: src/pages/LibrariesPage.tsx:2319
+#: src/pages/LibrariesPage.tsx:2401
 msgid "library.addLibrary"
 msgstr "添加媒体库"
 
-#: src/pages/LibrariesPage.tsx:2002
+#: src/pages/LibrariesPage.tsx:2464
 msgid "library.cancel"
 msgstr "取消"
 
@@ -209,95 +232,95 @@ msgstr "取消"
 #~ msgid "library.connectSource"
 #~ msgstr "连接媒体来源"
 
-#: src/pages/LibrariesPage.tsx:166
-#: src/pages/LibrariesPage.tsx:1990
-#: src/pages/LibrariesPage.tsx:2012
+#: src/pages/LibrariesPage.tsx:170
+#: src/pages/LibrariesPage.tsx:2452
+#: src/pages/LibrariesPage.tsx:2474
 msgid "library.delete"
 msgstr "删除"
 
-#: src/pages/LibrariesPage.tsx:1994
+#: src/pages/LibrariesPage.tsx:2456
 msgid "library.deleteConfirm"
 msgstr "所有媒体文件记录将被移除，磁盘上的文件不受影响。"
 
-#: src/pages/LibraryDetailPage.tsx:123
+#: src/pages/LibraryDetailPage.tsx:125
 msgid "library.detail.allMatched"
 msgstr "所有文件已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:650
-#: src/pages/LibraryDetailPage.tsx:678
+#: src/pages/LibraryDetailPage.tsx:697
+#: src/pages/LibraryDetailPage.tsx:725
 msgid "library.detail.backToLibraries"
 msgstr "媒体库"
 
-#: src/pages/LibraryDetailPage.tsx:152
+#: src/pages/LibraryDetailPage.tsx:154
 msgid "library.detail.col.filename"
 msgstr "文件名"
 
-#: src/pages/LibraryDetailPage.tsx:153
+#: src/pages/LibraryDetailPage.tsx:155
 msgid "library.detail.col.matchedTo"
 msgstr "匹配至"
 
-#: src/pages/LibraryDetailPage.tsx:156
+#: src/pages/LibraryDetailPage.tsx:158
 msgid "library.detail.col.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:154
+#: src/pages/LibraryDetailPage.tsx:156
 msgid "library.detail.col.status"
 msgstr "状态"
 
-#: src/pages/LibraryDetailPage.tsx:155
+#: src/pages/LibraryDetailPage.tsx:157
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:327
+#: src/pages/LibraryDetailPage.tsx:329
 msgid "library.detail.errors"
 msgstr "错误"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "文件名"
 
-#: src/pages/LibraryDetailPage.tsx:313
+#: src/pages/LibraryDetailPage.tsx:315
 msgid "library.detail.found"
 msgstr "发现"
 
-#: src/pages/LibraryDetailPage.tsx:308
+#: src/pages/LibraryDetailPage.tsx:310
 msgid "library.detail.inProgress"
 msgstr "进行中"
 
-#: src/pages/LibraryDetailPage.tsx:229
+#: src/pages/LibraryDetailPage.tsx:231
 msgid "library.detail.loadMore"
 msgstr "加载更多"
 
-#: src/pages/LibraryDetailPage.tsx:200
+#: src/pages/LibraryDetailPage.tsx:202
 msgid "library.detail.match"
 msgstr "匹配"
 
-#: src/pages/LibraryDetailPage.tsx:316
+#: src/pages/LibraryDetailPage.tsx:318
 msgid "library.detail.matched"
 msgstr "已匹配"
 
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "匹配至"
 
-#: src/pages/LibraryDetailPage.tsx:525
+#: src/pages/LibraryDetailPage.tsx:527
 msgid "library.detail.matchModal.change"
 msgstr "更换"
 
-#: src/pages/LibraryDetailPage.tsx:587
+#: src/pages/LibraryDetailPage.tsx:589
 msgid "library.detail.matchModal.confirm"
 msgstr "确认匹配"
 
 #~ msgid "library.detail.matchModal.failed"
 #~ msgstr "匹配失败"
 
-#: src/pages/LibraryDetailPage.tsx:408
+#: src/pages/LibraryDetailPage.tsx:410
 msgid "library.detail.matchModal.matched"
 msgstr "文件已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:574
+#: src/pages/LibraryDetailPage.tsx:576
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "未找到集数"
 
-#: src/pages/LibraryDetailPage.tsx:475
+#: src/pages/LibraryDetailPage.tsx:477
 msgid "library.detail.matchModal.noResults"
 msgstr "未找到结果"
 
@@ -307,28 +330,28 @@ msgstr "未找到结果"
 #~ msgid "library.detail.matchModal.searchAnime"
 #~ msgstr "搜索动画..."
 
-#: src/pages/LibraryDetailPage.tsx:461
+#: src/pages/LibraryDetailPage.tsx:463
 msgid "library.detail.matchModal.searchHint"
 msgstr "搜索动画以匹配此文件"
 
-#: src/pages/LibraryDetailPage.tsx:453
+#: src/pages/LibraryDetailPage.tsx:455
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "搜索动画..."
 
-#: src/pages/LibraryDetailPage.tsx:434
+#: src/pages/LibraryDetailPage.tsx:436
 msgid "library.detail.matchModal.title"
 msgstr "匹配文件"
 
-#: src/pages/LibraryDetailPage.tsx:129
-#: src/pages/LibraryDetailPage.tsx:218
+#: src/pages/LibraryDetailPage.tsx:131
+#: src/pages/LibraryDetailPage.tsx:220
 msgid "library.detail.noFiles"
 msgstr "未找到文件"
 
-#: src/pages/LibraryDetailPage.tsx:274
+#: src/pages/LibraryDetailPage.tsx:276
 msgid "library.detail.noScans"
 msgstr "尚未扫描"
 
-#: src/pages/LibraryDetailPage.tsx:644
+#: src/pages/LibraryDetailPage.tsx:691
 msgid "library.detail.notFound"
 msgstr "未找到媒体库"
 
@@ -350,18 +373,18 @@ msgstr "未找到媒体库"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "开始时间"
 
-#: src/pages/LibraryDetailPage.tsx:711
+#: src/pages/LibraryDetailPage.tsx:758
 msgid "library.detail.scanNow"
 msgstr "立即扫描"
 
 #~ msgid "library.detail.search"
 #~ msgstr "搜索文件..."
 
-#: src/pages/LibraryDetailPage.tsx:142
+#: src/pages/LibraryDetailPage.tsx:144
 msgid "library.detail.searchFiles"
 msgstr "搜索文件..."
 
-#: src/pages/LibraryDetailPage.tsx:717
+#: src/pages/LibraryDetailPage.tsx:764
 msgid "library.detail.settings"
 msgstr "设置"
 
@@ -374,15 +397,15 @@ msgstr "设置"
 #~ msgid "library.detail.subtitles"
 #~ msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:626
+#: src/pages/LibraryDetailPage.tsx:636
 msgid "library.detail.tab.allFiles"
 msgstr "全部文件"
 
-#: src/pages/LibraryDetailPage.tsx:628
+#: src/pages/LibraryDetailPage.tsx:638
 msgid "library.detail.tab.scanHistory"
 msgstr "扫描记录"
 
-#: src/pages/LibraryDetailPage.tsx:627
+#: src/pages/LibraryDetailPage.tsx:637
 msgid "library.detail.tab.unmatched"
 msgstr "未匹配"
 
@@ -401,83 +424,84 @@ msgstr "未匹配"
 #~ msgid "library.detail.unmatched"
 #~ msgstr "未匹配"
 
-#: src/pages/LibraryDetailPage.tsx:319
+#: src/pages/LibraryDetailPage.tsx:321
 msgid "library.detail.unmatchedShort"
 msgstr "未匹配"
 
-#: src/pages/LibrariesPage.tsx:438
-#: src/pages/LibrariesPage.tsx:524
-#: src/pages/LibrariesPage.tsx:1128
+#: src/pages/LibrariesPage.tsx:653
+#: src/pages/LibrariesPage.tsx:751
 msgid "library.discover.browse"
 msgstr "浏览网络"
 
-#: src/pages/LibrariesPage.tsx:432
+#: src/pages/LibrariesPage.tsx:647
 msgid "library.discover.noHosts"
 msgstr "未找到主机"
 
-#: src/pages/LibrariesPage.tsx:421
+#: src/pages/LibrariesPage.tsx:636
 msgid "library.discover.scanning"
 msgstr "扫描网络中..."
 
 #~ msgid "library.discover.timeout"
 #~ msgstr "发现超时"
 
-#: src/pages/LibrariesPage.tsx:163
+#: src/pages/LibrariesPage.tsx:167
 msgid "library.edit"
 msgstr "编辑"
 
-#: src/pages/LibrariesPage.tsx:1962
+#: src/pages/LibrariesPage.tsx:2424
 msgid "library.editLibrary"
 msgstr "编辑媒体库"
 
-#: src/pages/LibrariesPage.tsx:817
-#: src/pages/LibrariesPage.tsx:1647
+#: src/pages/LibrariesPage.tsx:1054
+#: src/pages/LibrariesPage.tsx:2060
 msgid "library.enabled"
 msgstr "启用"
 
 #~ msgid "library.files"
 #~ msgstr "个文件"
 
-#: src/pages/LibrariesPage.tsx:1462
+#: src/pages/LibrariesPage.tsx:1859
 msgid "library.ftp.host"
 msgstr "主机"
 
-#: src/pages/LibrariesPage.tsx:1502
+#: src/pages/LibrariesPage.tsx:1899
 msgid "library.ftp.password"
 msgstr "密码"
 
-#: src/pages/LibrariesPage.tsx:1475
+#: src/pages/LibrariesPage.tsx:1872
 msgid "library.ftp.port"
 msgstr "端口"
 
-#: src/pages/LibrariesPage.tsx:1489
+#: src/pages/LibrariesPage.tsx:1886
 msgid "library.ftp.username"
 msgstr "账号"
 
-#: src/pages/LibrariesPage.tsx:1529
+#: src/pages/LibrariesPage.tsx:1926
 msgid "library.http.readOnly"
 msgstr "只读"
 
-#: src/pages/LibrariesPage.tsx:1522
+#: src/pages/LibrariesPage.tsx:1919
 msgid "library.http.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:574
-#: src/pages/LibrariesPage.tsx:1107
+#: src/pages/LibrariesPage.tsx:801
+#: src/pages/LibrariesPage.tsx:1347
+#: src/pages/LibrariesPage.tsx:1614
 msgid "library.name"
 msgstr "名称"
 
-#: src/pages/LibrariesPage.tsx:569
-#: src/pages/LibrariesPage.tsx:1102
+#: src/pages/LibrariesPage.tsx:796
+#: src/pages/LibrariesPage.tsx:1342
+#: src/pages/LibrariesPage.tsx:1609
 msgid "library.nameRequired"
 msgstr "请输入名称"
 
-#: src/pages/LibrariesPage.tsx:117
-#: src/pages/LibraryDetailPage.tsx:663
+#: src/pages/LibrariesPage.tsx:121
+#: src/pages/LibraryDetailPage.tsx:710
 msgid "library.neverScanned"
 msgstr "未扫描"
 
-#: src/pages/LibrariesPage.tsx:182
+#: src/pages/LibrariesPage.tsx:186
 msgid "library.off"
 msgstr "关闭"
 
@@ -485,300 +509,298 @@ msgstr "关闭"
 #~ msgid "library.on"
 #~ msgstr "开启"
 
-#: src/pages/LibrariesPage.tsx:1850
+#: src/pages/LibrariesPage.tsx:2312
 msgid "library.pageTitle"
 msgstr "我的媒体库"
 
-#: src/pages/LibrariesPage.tsx:761
-#: src/pages/LibrariesPage.tsx:1569
+#: src/pages/LibrariesPage.tsx:991
+#: src/pages/LibrariesPage.tsx:1970
 msgid "library.path"
 msgstr "路径"
 
-#: src/pages/LibrariesPage.tsx:756
-#: src/pages/LibrariesPage.tsx:1564
+#: src/pages/LibrariesPage.tsx:986
+#: src/pages/LibrariesPage.tsx:1965
 msgid "library.pathRequired"
 msgstr "请输入路径"
 
-#: src/pages/LibrariesPage.tsx:863
+#: src/pages/LibrariesPage.tsx:1100
 msgid "library.rclone.availableRemotes"
 msgstr "可用的远程"
 
-#: src/pages/LibrariesPage.tsx:874
+#: src/pages/LibrariesPage.tsx:1111
 msgid "library.rclone.noRemotes"
 msgstr "未找到远程"
 
-#: src/pages/LibrariesPage.tsx:1548
+#: src/pages/LibrariesPage.tsx:1945
 msgid "library.rclone.remoteName"
 msgstr "远程名称"
 
-#: src/pages/LibrariesPage.tsx:1429
+#: src/pages/LibrariesPage.tsx:1826
 msgid "library.s3.accessKey"
 msgstr "访问密钥"
 
-#: src/pages/LibrariesPage.tsx:1403
+#: src/pages/LibrariesPage.tsx:1800
 msgid "library.s3.bucket"
 msgstr "存储桶"
 
-#: src/pages/LibrariesPage.tsx:1390
+#: src/pages/LibrariesPage.tsx:1787
 msgid "library.s3.endpoint"
 msgstr "端点"
 
-#: src/pages/LibrariesPage.tsx:1416
+#: src/pages/LibrariesPage.tsx:1813
 msgid "library.s3.region"
 msgstr "区域"
 
-#: src/pages/LibrariesPage.tsx:1442
+#: src/pages/LibrariesPage.tsx:1839
 msgid "library.s3.secretKey"
 msgstr "密钥"
 
-#: src/pages/LibrariesPage.tsx:1968
+#: src/pages/LibrariesPage.tsx:2430
 msgid "library.saveChanges"
 msgstr "保存更改"
 
-#: src/pages/LibrariesPage.tsx:835
-#: src/pages/LibrariesPage.tsx:1671
+#: src/pages/LibrariesPage.tsx:1072
+#: src/pages/LibrariesPage.tsx:1641
+#: src/pages/LibrariesPage.tsx:2084
 msgid "library.saving"
 msgstr "保存中…"
 
-#: src/pages/LibrariesPage.tsx:160
+#: src/pages/LibrariesPage.tsx:164
 msgid "library.scan"
 msgstr "扫描"
 
-#: src/pages/LibrariesPage.tsx:797
-#: src/pages/LibrariesPage.tsx:1629
+#: src/pages/LibrariesPage.tsx:1034
+#: src/pages/LibrariesPage.tsx:2042
 msgid "library.scanInterval"
 msgstr "扫描间隔（分钟）"
 
-#: src/pages/LibrariesPage.tsx:153
-#: src/pages/LibrariesPage.tsx:160
-#: src/pages/LibraryDetailPage.tsx:710
+#: src/pages/LibrariesPage.tsx:157
+#: src/pages/LibrariesPage.tsx:164
+#: src/pages/LibraryDetailPage.tsx:757
 msgid "library.scanning"
 msgstr "扫描中"
 
-#: src/pages/LibrariesPage.tsx:697
-#: src/pages/LibrariesPage.tsx:1260
+#: src/pages/LibrariesPage.tsx:924
+#: src/pages/LibrariesPage.tsx:1657
 msgid "library.sftp.host"
 msgstr "主机"
 
-#: src/pages/LibrariesPage.tsx:737
-#: src/pages/LibrariesPage.tsx:1300
+#: src/pages/LibrariesPage.tsx:964
+#: src/pages/LibrariesPage.tsx:1697
 msgid "library.sftp.password"
 msgstr "密码"
 
-#: src/pages/LibrariesPage.tsx:710
-#: src/pages/LibrariesPage.tsx:1273
+#: src/pages/LibrariesPage.tsx:937
+#: src/pages/LibrariesPage.tsx:1670
 msgid "library.sftp.port"
 msgstr "端口"
 
-#: src/pages/LibrariesPage.tsx:724
-#: src/pages/LibrariesPage.tsx:1287
+#: src/pages/LibrariesPage.tsx:951
+#: src/pages/LibrariesPage.tsx:1684
 msgid "library.sftp.username"
 msgstr "账号"
 
-#: src/pages/LibrariesPage.tsx:674
-#: src/pages/LibrariesPage.tsx:1237
+#: src/pages/LibrariesPage.tsx:901
+#: src/pages/LibrariesPage.tsx:1533
 msgid "library.smb.domain"
 msgstr "域"
 
-#: src/pages/LibrariesPage.tsx:598
-#: src/pages/LibrariesPage.tsx:1168
+#: src/pages/LibrariesPage.tsx:825
 msgid "library.smb.host"
 msgstr "主机"
 
-#: src/pages/LibrariesPage.tsx:660
-#: src/pages/LibrariesPage.tsx:1223
+#: src/pages/LibrariesPage.tsx:887
+#: src/pages/LibrariesPage.tsx:1518
 msgid "library.smb.password"
 msgstr "密码"
 
-#: src/pages/LibrariesPage.tsx:619
-#: src/pages/LibrariesPage.tsx:1182
+#: src/pages/LibrariesPage.tsx:846
 msgid "library.smb.port"
 msgstr "端口"
 
-#: src/pages/LibrariesPage.tsx:633
-#: src/pages/LibrariesPage.tsx:1196
+#: src/pages/LibrariesPage.tsx:860
 msgid "library.smb.share"
 msgstr "共享文件夹"
 
-#: src/pages/LibrariesPage.tsx:647
-#: src/pages/LibrariesPage.tsx:1210
+#: src/pages/LibrariesPage.tsx:874
+#: src/pages/LibrariesPage.tsx:1505
 msgid "library.smb.username"
 msgstr "账号"
 
-#: src/pages/LibrariesPage.tsx:324
+#: src/pages/LibrariesPage.tsx:328
 msgid "library.sourceType"
 msgstr "来源类型"
 
-#: src/pages/LibrariesPage.tsx:310
-#: src/pages/LibrariesPage.tsx:973
+#: src/pages/LibrariesPage.tsx:314
+#: src/pages/LibrariesPage.tsx:1210
 msgid "library.sourceType.local"
 msgstr "本机"
 
-#: src/pages/LibrariesPage.tsx:312
-#: src/pages/LibrariesPage.tsx:975
+#: src/pages/LibrariesPage.tsx:316
+#: src/pages/LibrariesPage.tsx:1212
 msgid "library.sourceType.sftp"
 msgstr "SFTP"
 
-#: src/pages/LibrariesPage.tsx:311
-#: src/pages/LibrariesPage.tsx:974
+#: src/pages/LibrariesPage.tsx:315
+#: src/pages/LibrariesPage.tsx:1211
 msgid "library.sourceType.smb"
 msgstr "SMB"
 
-#: src/pages/LibrariesPage.tsx:374
+#: src/pages/LibrariesPage.tsx:378
 msgid "library.testConnection"
 msgstr "测试连接"
 
-#: src/pages/LibrariesPage.tsx:380
+#: src/pages/LibrariesPage.tsx:384
 msgid "library.testConnection.failed"
 msgstr "连接失败"
 
-#: src/pages/LibrariesPage.tsx:379
+#: src/pages/LibrariesPage.tsx:383
 msgid "library.testConnection.success"
 msgstr "连接成功"
 
-#: src/pages/LibrariesPage.tsx:373
+#: src/pages/LibrariesPage.tsx:377
 msgid "library.testConnection.testing"
 msgstr "测试中..."
 
-#: src/pages/LibrariesPage.tsx:1795
+#: src/pages/LibrariesPage.tsx:2219
 msgid "library.toast.added"
 msgstr "媒体库已添加"
 
-#: src/pages/LibrariesPage.tsx:1817
+#: src/pages/LibrariesPage.tsx:2241
 msgid "library.toast.deleted"
 msgstr "媒体库已删除"
 
-#: src/pages/LibrariesPage.tsx:1830
-#: src/pages/LibraryDetailPage.tsx:618
+#: src/pages/LibrariesPage.tsx:2254
+#: src/pages/LibraryDetailPage.tsx:628
 msgid "library.toast.scanComplete"
 msgstr "扫描完成"
 
-#: src/pages/LibrariesPage.tsx:1834
-#: src/pages/LibraryDetailPage.tsx:621
+#: src/pages/LibrariesPage.tsx:2258
+#: src/pages/LibraryDetailPage.tsx:631
 msgid "library.toast.scanFailed"
 msgstr "扫描失败"
 
-#: src/pages/LibrariesPage.tsx:1807
+#: src/pages/LibrariesPage.tsx:2231
 msgid "library.toast.updated"
 msgstr "媒体库已更新"
 
-#: src/pages/LibrariesPage.tsx:1370
+#: src/pages/LibrariesPage.tsx:1767
 msgid "library.webdav.password"
 msgstr "密码"
 
-#: src/pages/LibrariesPage.tsx:1320
+#: src/pages/LibrariesPage.tsx:1717
 msgid "library.webdav.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:1357
+#: src/pages/LibrariesPage.tsx:1754
 msgid "library.webdav.username"
 msgstr "账号"
 
-#: src/pages/LibrariesPage.tsx:1333
+#: src/pages/LibrariesPage.tsx:1730
 msgid "library.webdav.vendor"
 msgstr "供应商"
 
-#: src/pages/LibrariesPage.tsx:1347
+#: src/pages/LibrariesPage.tsx:1744
 msgid "library.webdav.vendorOther"
 msgstr "其他 WebDAV"
 
-#: src/pages/LibrariesPage.tsx:1613
+#: src/pages/LibrariesPage.tsx:2026
 msgid "library.wizard.advanced"
 msgstr "高级设置"
 
-#: src/pages/LibrariesPage.tsx:1079
+#: src/pages/LibrariesPage.tsx:1318
 msgid "library.wizard.changeSource"
 msgstr "更换来源"
 
-#: src/pages/LibrariesPage.tsx:1035
+#: src/pages/LibrariesPage.tsx:1273
 msgid "library.wizard.chooseSource"
 msgstr "选择来源类型"
 
-#: src/pages/LibrariesPage.tsx:992
+#: src/pages/LibrariesPage.tsx:1229
 msgid "library.wizard.dropbox.desc"
 msgstr "从 Dropbox 访问文件"
 
-#: src/pages/LibrariesPage.tsx:992
+#: src/pages/LibrariesPage.tsx:1229
 msgid "library.wizard.dropbox.name"
 msgstr "Dropbox"
 
-#: src/pages/LibrariesPage.tsx:976
+#: src/pages/LibrariesPage.tsx:1213
 msgid "library.wizard.ftp.desc"
 msgstr "通过 FTP 文件传输连接"
 
-#: src/pages/LibrariesPage.tsx:976
+#: src/pages/LibrariesPage.tsx:1213
 msgid "library.wizard.ftp.name"
 msgstr "FTP"
 
-#: src/pages/LibrariesPage.tsx:990
+#: src/pages/LibrariesPage.tsx:1227
 msgid "library.wizard.gdrive.desc"
 msgstr "从 Google Drive 访问文件"
 
-#: src/pages/LibrariesPage.tsx:990
+#: src/pages/LibrariesPage.tsx:1227
 msgid "library.wizard.gdrive.name"
 msgstr "Google Drive"
 
 #: src/pages/LibrariesPage.tsx:1149
-msgid "library.wizard.hideManual"
-msgstr "隐藏手动输入"
+#~ msgid "library.wizard.hideManual"
+#~ msgstr "隐藏手动输入"
 
-#: src/pages/LibrariesPage.tsx:977
+#: src/pages/LibrariesPage.tsx:1214
 msgid "library.wizard.http.desc"
 msgstr "从网页服务器串流"
 
-#: src/pages/LibrariesPage.tsx:977
+#: src/pages/LibrariesPage.tsx:1214
 msgid "library.wizard.http.name"
 msgstr "HTTP"
 
-#: src/pages/LibrariesPage.tsx:973
+#: src/pages/LibrariesPage.tsx:1210
 msgid "library.wizard.local.desc"
 msgstr "扫描此服务器上的文件夹"
 
-#: src/pages/LibrariesPage.tsx:991
+#: src/pages/LibrariesPage.tsx:1228
 msgid "library.wizard.onedrive.desc"
 msgstr "从 OneDrive 访问文件"
 
-#: src/pages/LibrariesPage.tsx:991
+#: src/pages/LibrariesPage.tsx:1228
 msgid "library.wizard.onedrive.name"
 msgstr "OneDrive"
 
 #: src/pages/LibrariesPage.tsx:1149
-msgid "library.wizard.orManual"
-msgstr "或手动输入"
+#~ msgid "library.wizard.orManual"
+#~ msgstr "或手动输入"
 
-#: src/pages/LibrariesPage.tsx:984
+#: src/pages/LibrariesPage.tsx:1221
 msgid "library.wizard.s3.desc"
 msgstr "Amazon S3 或兼容的存储"
 
-#: src/pages/LibrariesPage.tsx:984
+#: src/pages/LibrariesPage.tsx:1221
 msgid "library.wizard.s3.name"
 msgstr "S3"
 
-#: src/pages/LibrariesPage.tsx:981
+#: src/pages/LibrariesPage.tsx:1218
 msgid "library.wizard.section.cloud"
 msgstr "云端 & WebDAV"
 
-#: src/pages/LibrariesPage.tsx:988
+#: src/pages/LibrariesPage.tsx:1225
 msgid "library.wizard.section.rclone"
 msgstr "从 Rclone 导入"
 
-#: src/pages/LibrariesPage.tsx:971
+#: src/pages/LibrariesPage.tsx:1208
 msgid "library.wizard.section.storage"
 msgstr "存储"
 
-#: src/pages/LibrariesPage.tsx:975
+#: src/pages/LibrariesPage.tsx:1212
 msgid "library.wizard.sftp.desc"
 msgstr "通过 SSH 文件传输连接"
 
-#: src/pages/LibrariesPage.tsx:974
+#: src/pages/LibrariesPage.tsx:1211
 msgid "library.wizard.smb.desc"
 msgstr "连接 Windows 或 NAS 共享"
 
-#: src/pages/LibrariesPage.tsx:983
+#: src/pages/LibrariesPage.tsx:1220
 msgid "library.wizard.webdav.desc"
 msgstr "连接 WebDAV 服务器"
 
-#: src/pages/LibrariesPage.tsx:983
+#: src/pages/LibrariesPage.tsx:1220
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 

@@ -60,22 +60,39 @@ msgstr "Trailer"
 msgid "auth.error.invalidCredentials"
 msgstr "Invalid username or password"
 
+#: src/pages/LibrariesPage.tsx:2286
+#: src/pages/LibraryDetailPage.tsx:660
+msgid "auth.libraries.signInSubtitle"
+msgstr "auth.libraries.signInSubtitle"
+
+#: src/pages/LibrariesPage.tsx:2283
+#: src/pages/LibraryDetailPage.tsx:657
+msgid "auth.libraries.signInTitle"
+msgstr "auth.libraries.signInTitle"
+
 #: src/pages/LoginPage.tsx:79
 msgid "auth.login.loading"
 msgstr "Signing in..."
 
+#: src/components/LoginModal.tsx:134
 #: src/pages/LoginPage.tsx:62
 msgid "auth.login.password"
 msgstr "Password"
 
+#: src/components/LoginModal.tsx:158
+#: src/pages/LibrariesPage.tsx:2293
+#: src/pages/LibraryDetailPage.tsx:667
 #: src/pages/LoginPage.tsx:79
 msgid "auth.login.submit"
 msgstr "Sign in"
 
+#: src/components/LoginModal.tsx:91
+#: src/components/LoginModal.tsx:107
 #: src/pages/LoginPage.tsx:44
 msgid "auth.login.title"
 msgstr "Sign in to milmil"
 
+#: src/components/LoginModal.tsx:120
 #: src/pages/LoginPage.tsx:49
 msgid "auth.login.username"
 msgstr "Username"
@@ -92,18 +109,22 @@ msgstr "Creating account..."
 msgid "auth.setup.password"
 msgstr "Password"
 
+#: src/components/LoginModal.tsx:56
 #: src/pages/SetupPage.tsx:26
 msgid "auth.setup.passwordTooShort"
 msgstr "Password must be at least 8 characters"
 
+#: src/components/LoginModal.tsx:159
 #: src/pages/SetupPage.tsx:84
 msgid "auth.setup.submit"
 msgstr "Create account"
 
+#: src/components/LoginModal.tsx:113
 #: src/pages/SetupPage.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "Create your admin account to get started."
 
+#: src/components/LoginModal.tsx:102
 #: src/pages/SetupPage.tsx:48
 msgid "auth.setup.title"
 msgstr "Welcome to milmil"
@@ -127,12 +148,13 @@ msgid "common.ep"
 msgstr "ep"
 
 #: src/pages/AnimeDetailPage.tsx:88
-#: src/pages/LibraryDetailPage.tsx:644
+#: src/pages/LibraryDetailPage.tsx:691
 msgid "common.loadFailed"
 msgstr "Failed to load"
 
-#: src/pages/LibraryDetailPage.tsx:212
-#: src/pages/LibraryDetailPage.tsx:586
+#: src/components/LoginModal.tsx:156
+#: src/pages/LibraryDetailPage.tsx:214
+#: src/pages/LibraryDetailPage.tsx:588
 msgid "common.loading"
 msgstr "Loading..."
 
@@ -169,12 +191,12 @@ msgid "home.continueWatching"
 msgstr "Continue Watching"
 
 #: src/components/LibraryEmptyState.tsx:23
-#: src/pages/LibrariesPage.tsx:242
+#: src/pages/LibrariesPage.tsx:246
 msgid "home.library.empty.subtitle"
 msgstr "Add a folder to start scanning"
 
 #: src/components/LibraryEmptyState.tsx:21
-#: src/pages/LibrariesPage.tsx:239
+#: src/pages/LibrariesPage.tsx:243
 msgid "home.library.empty.title"
 msgstr "No libraries added"
 
@@ -195,15 +217,16 @@ msgstr "Trending"
 msgid "home.viewAll"
 msgstr "View All →"
 
-#: src/pages/LibrariesPage.tsx:212
-#: src/pages/LibrariesPage.tsx:249
-#: src/pages/LibrariesPage.tsx:1671
-#: src/pages/LibrariesPage.tsx:1857
-#: src/pages/LibrariesPage.tsx:1939
+#: src/pages/LibrariesPage.tsx:216
+#: src/pages/LibrariesPage.tsx:253
+#: src/pages/LibrariesPage.tsx:1641
+#: src/pages/LibrariesPage.tsx:2084
+#: src/pages/LibrariesPage.tsx:2319
+#: src/pages/LibrariesPage.tsx:2401
 msgid "library.addLibrary"
 msgstr "Add Library"
 
-#: src/pages/LibrariesPage.tsx:2002
+#: src/pages/LibrariesPage.tsx:2464
 msgid "library.cancel"
 msgstr "Cancel"
 
@@ -211,95 +234,95 @@ msgstr "Cancel"
 #~ msgid "library.connectSource"
 #~ msgstr "Connect a media source"
 
-#: src/pages/LibrariesPage.tsx:166
-#: src/pages/LibrariesPage.tsx:1990
-#: src/pages/LibrariesPage.tsx:2012
+#: src/pages/LibrariesPage.tsx:170
+#: src/pages/LibrariesPage.tsx:2452
+#: src/pages/LibrariesPage.tsx:2474
 msgid "library.delete"
 msgstr "Delete"
 
-#: src/pages/LibrariesPage.tsx:1994
+#: src/pages/LibrariesPage.tsx:2456
 msgid "library.deleteConfirm"
 msgstr "All media file records will be removed. Your files on disk are unaffected."
 
-#: src/pages/LibraryDetailPage.tsx:123
+#: src/pages/LibraryDetailPage.tsx:125
 msgid "library.detail.allMatched"
 msgstr "All files matched"
 
-#: src/pages/LibraryDetailPage.tsx:650
-#: src/pages/LibraryDetailPage.tsx:678
+#: src/pages/LibraryDetailPage.tsx:697
+#: src/pages/LibraryDetailPage.tsx:725
 msgid "library.detail.backToLibraries"
 msgstr "Libraries"
 
-#: src/pages/LibraryDetailPage.tsx:152
+#: src/pages/LibraryDetailPage.tsx:154
 msgid "library.detail.col.filename"
 msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:153
+#: src/pages/LibraryDetailPage.tsx:155
 msgid "library.detail.col.matchedTo"
 msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:156
+#: src/pages/LibraryDetailPage.tsx:158
 msgid "library.detail.col.size"
 msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:154
+#: src/pages/LibraryDetailPage.tsx:156
 msgid "library.detail.col.status"
 msgstr "Status"
 
-#: src/pages/LibraryDetailPage.tsx:155
+#: src/pages/LibraryDetailPage.tsx:157
 msgid "library.detail.col.subs"
 msgstr "Subs"
 
-#: src/pages/LibraryDetailPage.tsx:327
+#: src/pages/LibraryDetailPage.tsx:329
 msgid "library.detail.errors"
 msgstr "Errors"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:313
+#: src/pages/LibraryDetailPage.tsx:315
 msgid "library.detail.found"
 msgstr "Found"
 
-#: src/pages/LibraryDetailPage.tsx:308
+#: src/pages/LibraryDetailPage.tsx:310
 msgid "library.detail.inProgress"
 msgstr "In Progress"
 
-#: src/pages/LibraryDetailPage.tsx:229
+#: src/pages/LibraryDetailPage.tsx:231
 msgid "library.detail.loadMore"
 msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:200
+#: src/pages/LibraryDetailPage.tsx:202
 msgid "library.detail.match"
 msgstr "Match"
 
-#: src/pages/LibraryDetailPage.tsx:316
+#: src/pages/LibraryDetailPage.tsx:318
 msgid "library.detail.matched"
 msgstr "Matched"
 
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:525
+#: src/pages/LibraryDetailPage.tsx:527
 msgid "library.detail.matchModal.change"
 msgstr "Change"
 
-#: src/pages/LibraryDetailPage.tsx:587
+#: src/pages/LibraryDetailPage.tsx:589
 msgid "library.detail.matchModal.confirm"
 msgstr "Confirm Match"
 
 #~ msgid "library.detail.matchModal.failed"
 #~ msgstr "Match failed"
 
-#: src/pages/LibraryDetailPage.tsx:408
+#: src/pages/LibraryDetailPage.tsx:410
 msgid "library.detail.matchModal.matched"
 msgstr "File matched"
 
-#: src/pages/LibraryDetailPage.tsx:574
+#: src/pages/LibraryDetailPage.tsx:576
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "No episodes found"
 
-#: src/pages/LibraryDetailPage.tsx:475
+#: src/pages/LibraryDetailPage.tsx:477
 msgid "library.detail.matchModal.noResults"
 msgstr "No results found"
 
@@ -309,28 +332,28 @@ msgstr "No results found"
 #~ msgid "library.detail.matchModal.searchAnime"
 #~ msgstr "Search anime..."
 
-#: src/pages/LibraryDetailPage.tsx:461
+#: src/pages/LibraryDetailPage.tsx:463
 msgid "library.detail.matchModal.searchHint"
 msgstr "Search for an anime to match this file"
 
-#: src/pages/LibraryDetailPage.tsx:453
+#: src/pages/LibraryDetailPage.tsx:455
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "Search anime..."
 
-#: src/pages/LibraryDetailPage.tsx:434
+#: src/pages/LibraryDetailPage.tsx:436
 msgid "library.detail.matchModal.title"
 msgstr "Match File"
 
-#: src/pages/LibraryDetailPage.tsx:129
-#: src/pages/LibraryDetailPage.tsx:218
+#: src/pages/LibraryDetailPage.tsx:131
+#: src/pages/LibraryDetailPage.tsx:220
 msgid "library.detail.noFiles"
 msgstr "No files found"
 
-#: src/pages/LibraryDetailPage.tsx:274
+#: src/pages/LibraryDetailPage.tsx:276
 msgid "library.detail.noScans"
 msgstr "No scans yet"
 
-#: src/pages/LibraryDetailPage.tsx:644
+#: src/pages/LibraryDetailPage.tsx:691
 msgid "library.detail.notFound"
 msgstr "Library not found"
 
@@ -352,18 +375,18 @@ msgstr "Library not found"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:711
+#: src/pages/LibraryDetailPage.tsx:758
 msgid "library.detail.scanNow"
 msgstr "Scan Now"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:142
+#: src/pages/LibraryDetailPage.tsx:144
 msgid "library.detail.searchFiles"
 msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:717
+#: src/pages/LibraryDetailPage.tsx:764
 msgid "library.detail.settings"
 msgstr "Settings"
 
@@ -376,15 +399,15 @@ msgstr "Settings"
 #~ msgid "library.detail.subtitles"
 #~ msgstr "Subs"
 
-#: src/pages/LibraryDetailPage.tsx:626
+#: src/pages/LibraryDetailPage.tsx:636
 msgid "library.detail.tab.allFiles"
 msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:628
+#: src/pages/LibraryDetailPage.tsx:638
 msgid "library.detail.tab.scanHistory"
 msgstr "Scan History"
 
-#: src/pages/LibraryDetailPage.tsx:627
+#: src/pages/LibraryDetailPage.tsx:637
 msgid "library.detail.tab.unmatched"
 msgstr "Unmatched"
 
@@ -403,83 +426,84 @@ msgstr "Unmatched"
 #~ msgid "library.detail.unmatched"
 #~ msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:319
+#: src/pages/LibraryDetailPage.tsx:321
 msgid "library.detail.unmatchedShort"
 msgstr "Unmatched"
 
-#: src/pages/LibrariesPage.tsx:438
-#: src/pages/LibrariesPage.tsx:524
-#: src/pages/LibrariesPage.tsx:1128
+#: src/pages/LibrariesPage.tsx:653
+#: src/pages/LibrariesPage.tsx:751
 msgid "library.discover.browse"
 msgstr "Browse Network"
 
-#: src/pages/LibrariesPage.tsx:432
+#: src/pages/LibrariesPage.tsx:647
 msgid "library.discover.noHosts"
 msgstr "No hosts found"
 
-#: src/pages/LibrariesPage.tsx:421
+#: src/pages/LibrariesPage.tsx:636
 msgid "library.discover.scanning"
 msgstr "Scanning network..."
 
 #~ msgid "library.discover.timeout"
 #~ msgstr "Discovery timed out"
 
-#: src/pages/LibrariesPage.tsx:163
+#: src/pages/LibrariesPage.tsx:167
 msgid "library.edit"
 msgstr "Edit"
 
-#: src/pages/LibrariesPage.tsx:1962
+#: src/pages/LibrariesPage.tsx:2424
 msgid "library.editLibrary"
 msgstr "Edit Library"
 
-#: src/pages/LibrariesPage.tsx:817
-#: src/pages/LibrariesPage.tsx:1647
+#: src/pages/LibrariesPage.tsx:1054
+#: src/pages/LibrariesPage.tsx:2060
 msgid "library.enabled"
 msgstr "Enabled"
 
 #~ msgid "library.files"
 #~ msgstr "files"
 
-#: src/pages/LibrariesPage.tsx:1462
+#: src/pages/LibrariesPage.tsx:1859
 msgid "library.ftp.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:1502
+#: src/pages/LibrariesPage.tsx:1899
 msgid "library.ftp.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:1475
+#: src/pages/LibrariesPage.tsx:1872
 msgid "library.ftp.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:1489
+#: src/pages/LibrariesPage.tsx:1886
 msgid "library.ftp.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:1529
+#: src/pages/LibrariesPage.tsx:1926
 msgid "library.http.readOnly"
 msgstr "Read-only"
 
-#: src/pages/LibrariesPage.tsx:1522
+#: src/pages/LibrariesPage.tsx:1919
 msgid "library.http.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:574
-#: src/pages/LibrariesPage.tsx:1107
+#: src/pages/LibrariesPage.tsx:801
+#: src/pages/LibrariesPage.tsx:1347
+#: src/pages/LibrariesPage.tsx:1614
 msgid "library.name"
 msgstr "Name"
 
-#: src/pages/LibrariesPage.tsx:569
-#: src/pages/LibrariesPage.tsx:1102
+#: src/pages/LibrariesPage.tsx:796
+#: src/pages/LibrariesPage.tsx:1342
+#: src/pages/LibrariesPage.tsx:1609
 msgid "library.nameRequired"
 msgstr "Name required"
 
-#: src/pages/LibrariesPage.tsx:117
-#: src/pages/LibraryDetailPage.tsx:663
+#: src/pages/LibrariesPage.tsx:121
+#: src/pages/LibraryDetailPage.tsx:710
 msgid "library.neverScanned"
 msgstr "Never"
 
-#: src/pages/LibrariesPage.tsx:182
+#: src/pages/LibrariesPage.tsx:186
 msgid "library.off"
 msgstr "OFF"
 
@@ -487,300 +511,298 @@ msgstr "OFF"
 #~ msgid "library.on"
 #~ msgstr "ON"
 
-#: src/pages/LibrariesPage.tsx:1850
+#: src/pages/LibrariesPage.tsx:2312
 msgid "library.pageTitle"
 msgstr "My Libraries"
 
-#: src/pages/LibrariesPage.tsx:761
-#: src/pages/LibrariesPage.tsx:1569
+#: src/pages/LibrariesPage.tsx:991
+#: src/pages/LibrariesPage.tsx:1970
 msgid "library.path"
 msgstr "Path"
 
-#: src/pages/LibrariesPage.tsx:756
-#: src/pages/LibrariesPage.tsx:1564
+#: src/pages/LibrariesPage.tsx:986
+#: src/pages/LibrariesPage.tsx:1965
 msgid "library.pathRequired"
 msgstr "Path required"
 
-#: src/pages/LibrariesPage.tsx:863
+#: src/pages/LibrariesPage.tsx:1100
 msgid "library.rclone.availableRemotes"
 msgstr "Available Remotes"
 
-#: src/pages/LibrariesPage.tsx:874
+#: src/pages/LibrariesPage.tsx:1111
 msgid "library.rclone.noRemotes"
 msgstr "No remotes found"
 
-#: src/pages/LibrariesPage.tsx:1548
+#: src/pages/LibrariesPage.tsx:1945
 msgid "library.rclone.remoteName"
 msgstr "Remote Name"
 
-#: src/pages/LibrariesPage.tsx:1429
+#: src/pages/LibrariesPage.tsx:1826
 msgid "library.s3.accessKey"
 msgstr "Access Key"
 
-#: src/pages/LibrariesPage.tsx:1403
+#: src/pages/LibrariesPage.tsx:1800
 msgid "library.s3.bucket"
 msgstr "Bucket"
 
-#: src/pages/LibrariesPage.tsx:1390
+#: src/pages/LibrariesPage.tsx:1787
 msgid "library.s3.endpoint"
 msgstr "Endpoint"
 
-#: src/pages/LibrariesPage.tsx:1416
+#: src/pages/LibrariesPage.tsx:1813
 msgid "library.s3.region"
 msgstr "Region"
 
-#: src/pages/LibrariesPage.tsx:1442
+#: src/pages/LibrariesPage.tsx:1839
 msgid "library.s3.secretKey"
 msgstr "Secret Key"
 
-#: src/pages/LibrariesPage.tsx:1968
+#: src/pages/LibrariesPage.tsx:2430
 msgid "library.saveChanges"
 msgstr "Save Changes"
 
-#: src/pages/LibrariesPage.tsx:835
-#: src/pages/LibrariesPage.tsx:1671
+#: src/pages/LibrariesPage.tsx:1072
+#: src/pages/LibrariesPage.tsx:1641
+#: src/pages/LibrariesPage.tsx:2084
 msgid "library.saving"
 msgstr "Saving…"
 
-#: src/pages/LibrariesPage.tsx:160
+#: src/pages/LibrariesPage.tsx:164
 msgid "library.scan"
 msgstr "Scan"
 
-#: src/pages/LibrariesPage.tsx:797
-#: src/pages/LibrariesPage.tsx:1629
+#: src/pages/LibrariesPage.tsx:1034
+#: src/pages/LibrariesPage.tsx:2042
 msgid "library.scanInterval"
 msgstr "Scan Interval (min)"
 
-#: src/pages/LibrariesPage.tsx:153
-#: src/pages/LibrariesPage.tsx:160
-#: src/pages/LibraryDetailPage.tsx:710
+#: src/pages/LibrariesPage.tsx:157
+#: src/pages/LibrariesPage.tsx:164
+#: src/pages/LibraryDetailPage.tsx:757
 msgid "library.scanning"
 msgstr "Scanning"
 
-#: src/pages/LibrariesPage.tsx:697
-#: src/pages/LibrariesPage.tsx:1260
+#: src/pages/LibrariesPage.tsx:924
+#: src/pages/LibrariesPage.tsx:1657
 msgid "library.sftp.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:737
-#: src/pages/LibrariesPage.tsx:1300
+#: src/pages/LibrariesPage.tsx:964
+#: src/pages/LibrariesPage.tsx:1697
 msgid "library.sftp.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:710
-#: src/pages/LibrariesPage.tsx:1273
+#: src/pages/LibrariesPage.tsx:937
+#: src/pages/LibrariesPage.tsx:1670
 msgid "library.sftp.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:724
-#: src/pages/LibrariesPage.tsx:1287
+#: src/pages/LibrariesPage.tsx:951
+#: src/pages/LibrariesPage.tsx:1684
 msgid "library.sftp.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:674
-#: src/pages/LibrariesPage.tsx:1237
+#: src/pages/LibrariesPage.tsx:901
+#: src/pages/LibrariesPage.tsx:1533
 msgid "library.smb.domain"
 msgstr "Domain"
 
-#: src/pages/LibrariesPage.tsx:598
-#: src/pages/LibrariesPage.tsx:1168
+#: src/pages/LibrariesPage.tsx:825
 msgid "library.smb.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:660
-#: src/pages/LibrariesPage.tsx:1223
+#: src/pages/LibrariesPage.tsx:887
+#: src/pages/LibrariesPage.tsx:1518
 msgid "library.smb.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:619
-#: src/pages/LibrariesPage.tsx:1182
+#: src/pages/LibrariesPage.tsx:846
 msgid "library.smb.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:633
-#: src/pages/LibrariesPage.tsx:1196
+#: src/pages/LibrariesPage.tsx:860
 msgid "library.smb.share"
 msgstr "Share"
 
-#: src/pages/LibrariesPage.tsx:647
-#: src/pages/LibrariesPage.tsx:1210
+#: src/pages/LibrariesPage.tsx:874
+#: src/pages/LibrariesPage.tsx:1505
 msgid "library.smb.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:324
+#: src/pages/LibrariesPage.tsx:328
 msgid "library.sourceType"
 msgstr "Source Type"
 
-#: src/pages/LibrariesPage.tsx:310
-#: src/pages/LibrariesPage.tsx:973
+#: src/pages/LibrariesPage.tsx:314
+#: src/pages/LibrariesPage.tsx:1210
 msgid "library.sourceType.local"
 msgstr "Local"
 
-#: src/pages/LibrariesPage.tsx:312
-#: src/pages/LibrariesPage.tsx:975
+#: src/pages/LibrariesPage.tsx:316
+#: src/pages/LibrariesPage.tsx:1212
 msgid "library.sourceType.sftp"
 msgstr "SFTP"
 
-#: src/pages/LibrariesPage.tsx:311
-#: src/pages/LibrariesPage.tsx:974
+#: src/pages/LibrariesPage.tsx:315
+#: src/pages/LibrariesPage.tsx:1211
 msgid "library.sourceType.smb"
 msgstr "SMB"
 
-#: src/pages/LibrariesPage.tsx:374
+#: src/pages/LibrariesPage.tsx:378
 msgid "library.testConnection"
 msgstr "Test Connection"
 
-#: src/pages/LibrariesPage.tsx:380
+#: src/pages/LibrariesPage.tsx:384
 msgid "library.testConnection.failed"
 msgstr "Connection Failed"
 
-#: src/pages/LibrariesPage.tsx:379
+#: src/pages/LibrariesPage.tsx:383
 msgid "library.testConnection.success"
 msgstr "Connected"
 
-#: src/pages/LibrariesPage.tsx:373
+#: src/pages/LibrariesPage.tsx:377
 msgid "library.testConnection.testing"
 msgstr "Testing..."
 
-#: src/pages/LibrariesPage.tsx:1795
+#: src/pages/LibrariesPage.tsx:2219
 msgid "library.toast.added"
 msgstr "Library added"
 
-#: src/pages/LibrariesPage.tsx:1817
+#: src/pages/LibrariesPage.tsx:2241
 msgid "library.toast.deleted"
 msgstr "Library deleted"
 
-#: src/pages/LibrariesPage.tsx:1830
-#: src/pages/LibraryDetailPage.tsx:618
+#: src/pages/LibrariesPage.tsx:2254
+#: src/pages/LibraryDetailPage.tsx:628
 msgid "library.toast.scanComplete"
 msgstr "Scan complete"
 
-#: src/pages/LibrariesPage.tsx:1834
-#: src/pages/LibraryDetailPage.tsx:621
+#: src/pages/LibrariesPage.tsx:2258
+#: src/pages/LibraryDetailPage.tsx:631
 msgid "library.toast.scanFailed"
 msgstr "Scan failed"
 
-#: src/pages/LibrariesPage.tsx:1807
+#: src/pages/LibrariesPage.tsx:2231
 msgid "library.toast.updated"
 msgstr "Library updated"
 
-#: src/pages/LibrariesPage.tsx:1370
+#: src/pages/LibrariesPage.tsx:1767
 msgid "library.webdav.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:1320
+#: src/pages/LibrariesPage.tsx:1717
 msgid "library.webdav.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:1357
+#: src/pages/LibrariesPage.tsx:1754
 msgid "library.webdav.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:1333
+#: src/pages/LibrariesPage.tsx:1730
 msgid "library.webdav.vendor"
 msgstr "Vendor"
 
-#: src/pages/LibrariesPage.tsx:1347
+#: src/pages/LibrariesPage.tsx:1744
 msgid "library.webdav.vendorOther"
 msgstr "Other WebDAV"
 
-#: src/pages/LibrariesPage.tsx:1613
+#: src/pages/LibrariesPage.tsx:2026
 msgid "library.wizard.advanced"
 msgstr "Advanced"
 
-#: src/pages/LibrariesPage.tsx:1079
+#: src/pages/LibrariesPage.tsx:1318
 msgid "library.wizard.changeSource"
 msgstr "Change source"
 
-#: src/pages/LibrariesPage.tsx:1035
+#: src/pages/LibrariesPage.tsx:1273
 msgid "library.wizard.chooseSource"
 msgstr "Choose a source type"
 
-#: src/pages/LibrariesPage.tsx:992
+#: src/pages/LibrariesPage.tsx:1229
 msgid "library.wizard.dropbox.desc"
 msgstr "Access files from Dropbox"
 
-#: src/pages/LibrariesPage.tsx:992
+#: src/pages/LibrariesPage.tsx:1229
 msgid "library.wizard.dropbox.name"
 msgstr "Dropbox"
 
-#: src/pages/LibrariesPage.tsx:976
+#: src/pages/LibrariesPage.tsx:1213
 msgid "library.wizard.ftp.desc"
 msgstr "Connect via FTP file transfer"
 
-#: src/pages/LibrariesPage.tsx:976
+#: src/pages/LibrariesPage.tsx:1213
 msgid "library.wizard.ftp.name"
 msgstr "FTP"
 
-#: src/pages/LibrariesPage.tsx:990
+#: src/pages/LibrariesPage.tsx:1227
 msgid "library.wizard.gdrive.desc"
 msgstr "Access files from Google Drive"
 
-#: src/pages/LibrariesPage.tsx:990
+#: src/pages/LibrariesPage.tsx:1227
 msgid "library.wizard.gdrive.name"
 msgstr "Google Drive"
 
 #: src/pages/LibrariesPage.tsx:1149
-msgid "library.wizard.hideManual"
-msgstr "Hide manual fields"
+#~ msgid "library.wizard.hideManual"
+#~ msgstr "Hide manual fields"
 
-#: src/pages/LibrariesPage.tsx:977
+#: src/pages/LibrariesPage.tsx:1214
 msgid "library.wizard.http.desc"
 msgstr "Stream from a web server"
 
-#: src/pages/LibrariesPage.tsx:977
+#: src/pages/LibrariesPage.tsx:1214
 msgid "library.wizard.http.name"
 msgstr "HTTP"
 
-#: src/pages/LibrariesPage.tsx:973
+#: src/pages/LibrariesPage.tsx:1210
 msgid "library.wizard.local.desc"
 msgstr "Scan a folder on this server"
 
-#: src/pages/LibrariesPage.tsx:991
+#: src/pages/LibrariesPage.tsx:1228
 msgid "library.wizard.onedrive.desc"
 msgstr "Access files from OneDrive"
 
-#: src/pages/LibrariesPage.tsx:991
+#: src/pages/LibrariesPage.tsx:1228
 msgid "library.wizard.onedrive.name"
 msgstr "OneDrive"
 
 #: src/pages/LibrariesPage.tsx:1149
-msgid "library.wizard.orManual"
-msgstr "or enter manually"
+#~ msgid "library.wizard.orManual"
+#~ msgstr "or enter manually"
 
-#: src/pages/LibrariesPage.tsx:984
+#: src/pages/LibrariesPage.tsx:1221
 msgid "library.wizard.s3.desc"
 msgstr "Amazon S3 or compatible storage"
 
-#: src/pages/LibrariesPage.tsx:984
+#: src/pages/LibrariesPage.tsx:1221
 msgid "library.wizard.s3.name"
 msgstr "S3"
 
-#: src/pages/LibrariesPage.tsx:981
+#: src/pages/LibrariesPage.tsx:1218
 msgid "library.wizard.section.cloud"
 msgstr "Cloud & WebDAV"
 
-#: src/pages/LibrariesPage.tsx:988
+#: src/pages/LibrariesPage.tsx:1225
 msgid "library.wizard.section.rclone"
 msgstr "Import from Rclone"
 
-#: src/pages/LibrariesPage.tsx:971
+#: src/pages/LibrariesPage.tsx:1208
 msgid "library.wizard.section.storage"
 msgstr "Storage"
 
-#: src/pages/LibrariesPage.tsx:975
+#: src/pages/LibrariesPage.tsx:1212
 msgid "library.wizard.sftp.desc"
 msgstr "Connect via SSH file transfer"
 
-#: src/pages/LibrariesPage.tsx:974
+#: src/pages/LibrariesPage.tsx:1211
 msgid "library.wizard.smb.desc"
 msgstr "Connect to a Windows or NAS share"
 
-#: src/pages/LibrariesPage.tsx:983
+#: src/pages/LibrariesPage.tsx:1220
 msgid "library.wizard.webdav.desc"
 msgstr "Connect to a WebDAV server"
 
-#: src/pages/LibrariesPage.tsx:983
+#: src/pages/LibrariesPage.tsx:1220
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
