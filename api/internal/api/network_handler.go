@@ -32,62 +32,76 @@ func (h *handler) handleDiscoverNetwork(c echo.Context) error {
 		return c.JSON(http.StatusOK, discoverNetworkResponse{Hosts: []discoveredHost{}})
 	}
 
-	// Scan port 445 on all /24 subnets concurrently
+	// Collect all IPs to scan
+	seen := make(map[string]bool)
+	var ips []string
+	for _, subnet := range subnets {
+		for i := 1; i < 255; i++ {
+			ip := fmt.Sprintf("%s.%d", subnet, i)
+			if !seen[ip] {
+				seen[ip] = true
+				ips = append(ips, ip)
+			}
+		}
+	}
+
+	// Scan port 445 concurrently with proper cancellation
 	var (
 		mu    sync.Mutex
 		hosts []discoveredHost
 		wg    sync.WaitGroup
-		sem   = make(chan struct{}, 64) // max 64 concurrent goroutines
-		seen  = make(map[string]bool)
 	)
 
-	for _, subnet := range subnets {
-		for i := 1; i < 255; i++ {
-			ip := fmt.Sprintf("%s.%d", subnet, i)
-			if seen[ip] {
-				continue
-			}
-			seen[ip] = true
+	sem := make(chan struct{}, 64)
 
-			select {
-			case <-ctx.Done():
-				goto done
-			default:
-			}
-
-			wg.Add(1)
-			sem <- struct{}{}
-
-			go func(ip string) {
-				defer wg.Done()
-				defer func() { <-sem }()
-
-				conn, err := net.DialTimeout("tcp", ip+":445", 2*time.Second)
-				if err != nil {
-					return
-				}
-				conn.Close()
-
-				host := discoveredHost{IP: ip}
-
-				// Try to resolve hostname
-				names, err := net.LookupAddr(ip)
-				if err == nil && len(names) > 0 {
-					host.Hostname = names[0]
-				}
-
-				// Try to list SMB shares
-				shares := listSMBShares(ip)
-				host.Shares = shares
-
-				mu.Lock()
-				hosts = append(hosts, host)
-				mu.Unlock()
-			}(ip)
+	for _, ip := range ips {
+		select {
+		case <-ctx.Done():
+			break
+		case sem <- struct{}{}:
 		}
+
+		select {
+		case <-ctx.Done():
+			break
+		default:
+		}
+
+		wg.Add(1)
+		go func(ip string) {
+			defer wg.Done()
+			defer func() { <-sem }()
+
+			// Quick TCP probe
+			d := net.Dialer{Timeout: 1500 * time.Millisecond}
+			conn, err := d.DialContext(ctx, "tcp", ip+":445")
+			if err != nil {
+				return
+			}
+			conn.Close()
+
+			host := discoveredHost{IP: ip, Shares: []string{}}
+
+			// Resolve hostname (1s timeout)
+			lookupCtx, lookupCancel := context.WithTimeout(ctx, 1*time.Second)
+			names, err := net.DefaultResolver.LookupAddr(lookupCtx, ip)
+			lookupCancel()
+			if err == nil && len(names) > 0 {
+				host.Hostname = names[0]
+			}
+
+			// List shares (respects parent context)
+			shares := listSMBShares(ctx, ip)
+			if shares != nil {
+				host.Shares = shares
+			}
+
+			mu.Lock()
+			hosts = append(hosts, host)
+			mu.Unlock()
+		}(ip)
 	}
 
-done:
 	wg.Wait()
 
 	if hosts == nil {
@@ -116,30 +130,33 @@ func getLocalSubnets() []string {
 	return subnets
 }
 
-func listSMBShares(ip string) []string {
-	// Try multiple auth strategies: anonymous first, then guest
-	strategies := []struct {
-		user string
-		pass string
-	}{
-		{"", ""},           // anonymous
-		{"Guest", ""},      // guest
+func listSMBShares(ctx context.Context, ip string) []string {
+	strategies := []struct{ user, pass string }{
+		{"", ""},
+		{"Guest", ""},
 	}
 
 	for _, cred := range strategies {
-		conn, err := net.DialTimeout("tcp", ip+":445", 2*time.Second)
+		select {
+		case <-ctx.Done():
+			return nil
+		default:
+		}
+
+		d := net.Dialer{Timeout: 2 * time.Second}
+		conn, err := d.DialContext(ctx, "tcp", ip+":445")
 		if err != nil {
 			return nil
 		}
 
-		d := &smb2.Dialer{
+		smbDialer := &smb2.Dialer{
 			Initiator: &smb2.NTLMInitiator{
 				User:     cred.user,
 				Password: cred.pass,
 			},
 		}
 
-		s, err := d.DialContext(context.Background(), conn)
+		s, err := smbDialer.DialContext(ctx, conn)
 		if err != nil {
 			conn.Close()
 			continue
@@ -153,7 +170,6 @@ func listSMBShares(ip string) []string {
 			continue
 		}
 
-		// Filter out admin shares (ending with $)
 		var shares []string
 		for _, name := range names {
 			if len(name) > 0 && name[len(name)-1] != '$' {
