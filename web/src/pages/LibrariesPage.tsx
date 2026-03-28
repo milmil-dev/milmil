@@ -562,11 +562,35 @@ function FolderBrowser({
             {browseMutation.isSuccess && directories.length > 0 && (
               <motion.div
                 key={browsePath}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.15 }}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 className="py-1"
               >
+                {/* Back to parent folder */}
+                {(browsePath !== '/' || selectedShare) && (
+                  <motion.button
+                    type="button"
+                    onClick={() => {
+                      if (breadcrumbs.length > 0) {
+                        handleCrumbClick(selectedShare ? breadcrumbs.length - 1 : breadcrumbs.length - 2);
+                      } else if (selectedShare) {
+                        // Go back to share list
+                        handleCrumbClick(0);
+                      } else {
+                        handleCrumbClick(-1);
+                      }
+                    }}
+                    whileHover={{ x: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full px-3 py-2 flex items-center gap-2 rounded-md cursor-pointer text-xs text-white/40 hover:text-white/60 mb-0.5"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
+                      <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
+                    <span>..</span>
+                  </motion.button>
+                )}
                 {directories.map((entry, i) => (
                   <motion.button
                     key={entry.path}
@@ -574,7 +598,7 @@ function FolderBrowser({
                     onClick={() => handleDirectoryClick(entry)}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.03, duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.025 }}
                     whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70"
