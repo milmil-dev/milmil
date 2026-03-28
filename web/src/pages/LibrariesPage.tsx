@@ -1034,27 +1034,28 @@ function AddLibraryWizard({
             <p className="text-xs text-white/40 mb-4">
               {i18n._(msg`library.wizard.chooseSource`)}
             </p>
-            <div className="max-h-[60vh] overflow-y-auto space-y-1">
+            <div className="max-h-[60vh] overflow-y-auto space-y-5">
               {sourceSections.map((section) => (
                 <div key={section.label}>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mt-4 mb-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-3">
                     {section.label}
                   </p>
-                  {section.cards.map((card) => (
-                    <button
-                      key={card.key}
-                      type="button"
-                      onClick={() => handleSelectSource(card.key)}
-                      className="w-full rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.15] transition-all cursor-pointer text-left flex items-center gap-4 mb-1.5"
-                    >
-                      <div className="shrink-0 text-white/40">{card.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white/80">{card.name}</p>
-                        <p className="text-xs text-white/35 mt-0.5">{card.desc}</p>
-                      </div>
-                      <span className="text-white/20 text-sm">&#8250;</span>
-                    </button>
-                  ))}
+                  <div className="grid grid-cols-2 gap-2">
+                    {section.cards.map((card) => (
+                      <button
+                        key={card.key}
+                        type="button"
+                        onClick={() => handleSelectSource(card.key)}
+                        className="rounded-xl border border-white/[0.06] p-4 hover:border-white/[0.15] hover:bg-white/[0.02] transition-all cursor-pointer text-left flex flex-col gap-3"
+                      >
+                        <div className="text-white/40">{card.icon}</div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-white/80">{card.name}</p>
+                          <p className="text-[11px] text-white/35 mt-0.5 leading-snug">{card.desc}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
