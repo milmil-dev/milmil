@@ -411,19 +411,21 @@ function FolderBrowser({
 }) {
   const { i18n } = useLingui();
   const [browsePath, setBrowsePath] = useState('/');
-  const [prevBrowsePath, setPrevBrowsePath] = useState('/');
   const [directories, setDirectories] = useState<BrowseEntry[]>([]);
   const [isShareLevel, setIsShareLevel] = useState(false);
   const [selectedShare, setSelectedShare] = useState('');
-  const [, setSelectedPath] = useState('');
-
-  // Track navigation direction for animation
-  const browseDirection = browsePath.length >= prevBrowsePath.length ? 1 : -1;
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const browseMutation = useMutation({
     mutationFn: (input: BrowseInput) => libraryApi.browse(input),
     onSuccess: (data) => {
       setDirectories(data.directories ?? []);
+      setIsNavigating(false);
+      setHasLoaded(true);
+    },
+    onError: () => {
+      setIsNavigating(false);
     },
   });
 
@@ -431,7 +433,7 @@ function FolderBrowser({
     const config = overrideConfig ?? getSourceConfig();
     const noShare = sourceType === 'smb' && !config.share;
     setIsShareLevel(noShare && (path === '/' || path === ''));
-    setPrevBrowsePath(browsePath);
+    setIsNavigating(true);
     setBrowsePath(path);
     browseMutation.mutate({
       source_type: sourceType,
@@ -458,7 +460,7 @@ function FolderBrowser({
       if (index === 0) {
         // Click on share name → go back to share list
         setSelectedShare('');
-        setSelectedPath('');
+        void('');
         const config = getSourceConfig();
         delete config.share;
         doBrowse('/', config);
@@ -492,7 +494,7 @@ function FolderBrowser({
       return;
     }
     doBrowse(entry.path);
-    setSelectedPath(entry.path);
+    void(entry.path);
   };
 
   const handleSelectFolder = () => {
@@ -547,20 +549,21 @@ function FolderBrowser({
 
           {/* Directory listing — fixed height, no layout shift */}
           <div className="overflow-y-auto overflow-x-hidden relative" style={{ height: `${height}px` }}>
-            {browseMutation.isPending && (
+            {/* Skeleton only on first load */}
+            {!hasLoaded && browseMutation.isPending && (
               <div className="space-y-1 p-2">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="h-8 rounded bg-white/[0.04] animate-pulse" />
                 ))}
               </div>
             )}
-            {browseMutation.isSuccess && directories.length === 0 && (
+            {hasLoaded && directories.length === 0 && !isNavigating && (
               <div className="flex items-center justify-center h-full">
                 <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
               </div>
             )}
-            {browseMutation.isSuccess && directories.length > 0 && (
-              <div key={browsePath} className="py-1 animate-[fadeIn_0.2s_ease-out]">
+            {directories.length > 0 && (
+              <div className={cn('py-1 transition-opacity duration-200', isNavigating && 'opacity-40 pointer-events-none')}>
                 {/* Back to parent folder */}
                 {(browsePath !== '/' || selectedShare) && (
                   <button
