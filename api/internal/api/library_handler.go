@@ -40,7 +40,7 @@ type testConnectionRequest struct {
 }
 
 func (h *handler) handleListLibraries(c echo.Context) error {
-	libs, err := h.queries.ListLibraries(c.Request().Context())
+	libs, err := h.queries.ListLibrariesWithStats(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
@@ -48,7 +48,7 @@ func (h *handler) handleListLibraries(c echo.Context) error {
 }
 
 func (h *handler) handleGetLibrary(c echo.Context) error {
-	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
+	lib, err := h.queries.GetLibraryWithStats(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return echo.ErrNotFound

@@ -79,7 +79,13 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.DELETE("/:id", h.handleDeleteLibrary)
 	libGroup.POST("/:id/scan", h.handleScanLibrary)
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
+	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
 	libGroup.POST("/test-connection", h.handleTestConnection)
+
+	// Media files — protected
+	mediaGroup := v1.Group("/media-files", jwtMiddleware(cfg.JWTSecret))
+	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)
+	mediaGroup.DELETE("/:id/match", h.handleUnmatchMediaFile)
 
 	// Discover — public
 	discoverGroup := v1.Group("/discover")

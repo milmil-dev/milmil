@@ -125,6 +125,77 @@ func TestDeleteLibrary_Success(t *testing.T) {
 	}
 }
 
+func TestListMediaFiles_Empty(t *testing.T) {
+	e := newTestApp(t)
+	dir := t.TempDir()
+
+	// Create library first
+	createBody := `{"name":"Anime","path":"` + dir + `"}`
+	req := makeAuthRequest(t, e, http.MethodPost, "/api/v1/libraries", createBody)
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("create: want 201 got %d: %s", rec.Code, rec.Body.String())
+	}
+	var lib map[string]any
+	json.NewDecoder(rec.Body).Decode(&lib)
+	id, _ := lib["id"].(string)
+
+	// List media files
+	req2 := makeAuthRequest(t, e, http.MethodGet, "/api/v1/libraries/"+id+"/media-files", "")
+	rec2 := httptest.NewRecorder()
+	e.ServeHTTP(rec2, req2)
+	if rec2.Code != http.StatusOK {
+		t.Fatalf("want 200 got %d: %s", rec2.Code, rec2.Body.String())
+	}
+	var resp map[string]any
+	json.NewDecoder(rec2.Body).Decode(&resp)
+	items, ok := resp["items"].([]any)
+	if !ok {
+		t.Fatalf("items is not an array: %v", resp["items"])
+	}
+	if len(items) != 0 {
+		t.Errorf("want empty items, got %d", len(items))
+	}
+	if resp["total"] != float64(0) {
+		t.Errorf("want total=0, got %v", resp["total"])
+	}
+}
+
+func TestListLibrariesWithStats(t *testing.T) {
+	e := newTestApp(t)
+	dir := t.TempDir()
+
+	// Create library
+	createBody := `{"name":"Anime","path":"` + dir + `"}`
+	req := makeAuthRequest(t, e, http.MethodPost, "/api/v1/libraries", createBody)
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("create: want 201 got %d: %s", rec.Code, rec.Body.String())
+	}
+
+	// List libraries — should include stats fields
+	req2 := makeAuthRequest(t, e, http.MethodGet, "/api/v1/libraries", "")
+	rec2 := httptest.NewRecorder()
+	e.ServeHTTP(rec2, req2)
+	if rec2.Code != http.StatusOK {
+		t.Fatalf("want 200 got %d: %s", rec2.Code, rec2.Body.String())
+	}
+	var libs []map[string]any
+	json.NewDecoder(rec2.Body).Decode(&libs)
+	if len(libs) != 1 {
+		t.Fatalf("want 1 library, got %d", len(libs))
+	}
+	lib := libs[0]
+	// Verify stats fields are present
+	for _, field := range []string{"file_count", "matched_count", "unmatched_count", "total_size_bytes"} {
+		if _, ok := lib[field]; !ok {
+			t.Errorf("missing stats field %q in response", field)
+		}
+	}
+}
+
 func TestScanLibrary_Success(t *testing.T) {
 	e := newTestApp(t)
 	dir := t.TempDir()
