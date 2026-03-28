@@ -560,53 +560,38 @@ function FolderBrowser({
               </div>
             )}
             {browseMutation.isSuccess && directories.length > 0 && (
-              <motion.div
-                key={browsePath}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="py-1"
-              >
+              <div key={browsePath} className="py-1 animate-[fadeIn_0.2s_ease-out]">
                 {/* Back to parent folder */}
                 {(browsePath !== '/' || selectedShare) && (
-                  <motion.button
+                  <button
                     type="button"
                     onClick={() => {
                       if (breadcrumbs.length > 0) {
                         handleCrumbClick(selectedShare ? breadcrumbs.length - 1 : breadcrumbs.length - 2);
                       } else if (selectedShare) {
-                        // Go back to share list
                         handleCrumbClick(0);
                       } else {
                         handleCrumbClick(-1);
                       }
                     }}
-                    whileHover={{ x: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full px-3 py-2 flex items-center gap-2 rounded-md cursor-pointer text-xs text-white/40 hover:text-white/60 mb-0.5"
+                    className="w-full px-3 py-2 flex items-center gap-2.5 rounded-md cursor-pointer text-xs text-white/40 hover:text-white/60 hover:bg-white/[0.03] transition-colors mb-0.5"
                   >
-                    <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
-                      <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
-                    </svg>
+                    <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
+                      <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
+                        <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
+                      </svg>
+                    </div>
                     <span>..</span>
-                  </motion.button>
+                  </button>
                 )}
-                {directories.map((entry, i) => (
-                  <motion.button
+                {directories.map((entry) => (
+                  <button
                     key={entry.path}
                     type="button"
                     onClick={() => handleDirectoryClick(entry)}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 30, delay: i * 0.025 }}
-                    whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70"
+                    className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70 hover:bg-white/[0.04] transition-colors"
                   >
-                    <motion.div
-                      className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center"
-                      whileHover={{ backgroundColor: 'rgba(232,143,170,0.1)' }}
-                    >
+                    <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
                       <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/40">
                         <path
                           d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
@@ -614,18 +599,12 @@ function FolderBrowser({
                           strokeWidth="1.2"
                         />
                       </svg>
-                    </motion.div>
+                    </div>
                     <span className="truncate font-medium">{entry.name}</span>
-                    <motion.span
-                      className="ml-auto text-white/15 text-[10px] shrink-0"
-                      whileHover={{ x: 2, color: 'rgba(232,143,170,0.6)' }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      &#9654;
-                    </motion.span>
-                  </motion.button>
+                    <span className="ml-auto text-white/15 text-[10px] shrink-0">&#9654;</span>
+                  </button>
                 ))}
-              </motion.div>
+              </div>
             )}
           </div>
 
