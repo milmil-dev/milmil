@@ -83,6 +83,63 @@ func (q *Queries) GetLibrary(ctx context.Context, id string) (Library, error) {
 	return i, err
 }
 
+const getLibraryWithStats = `-- name: GetLibraryWithStats :one
+SELECT l.id, l.name, l.path, l.enabled, l.scan_interval_minutes, l.last_scanned_at, l.created_at, l.updated_at, l.source_type, l.source_config_encrypted,
+  COALESCE(s.file_count, 0) AS file_count,
+  COALESCE(s.matched_count, 0) AS matched_count,
+  COALESCE(s.unmatched_count, 0) AS unmatched_count,
+  COALESCE(s.total_size_bytes, 0) AS total_size_bytes
+FROM libraries l
+LEFT JOIN (
+  SELECT library_id,
+    COUNT(*) AS file_count,
+    SUM(CASE WHEN match_status != 'unmatched' THEN 1 ELSE 0 END) AS matched_count,
+    SUM(CASE WHEN match_status = 'unmatched' THEN 1 ELSE 0 END) AS unmatched_count,
+    COALESCE(SUM(size_bytes), 0) AS total_size_bytes
+  FROM media_files GROUP BY library_id
+) s ON l.id = s.library_id
+WHERE l.id = ?
+`
+
+type GetLibraryWithStatsRow struct {
+	ID                    string         `json:"id"`
+	Name                  string         `json:"name"`
+	Path                  string         `json:"path"`
+	Enabled               int64          `json:"enabled"`
+	ScanIntervalMinutes   int64          `json:"scan_interval_minutes"`
+	LastScannedAt         sql.NullString `json:"last_scanned_at"`
+	CreatedAt             string         `json:"created_at"`
+	UpdatedAt             string         `json:"updated_at"`
+	SourceType            string         `json:"source_type"`
+	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
+	FileCount             int64          `json:"file_count"`
+	MatchedCount          float64        `json:"matched_count"`
+	UnmatchedCount        float64        `json:"unmatched_count"`
+	TotalSizeBytes        interface{}    `json:"total_size_bytes"`
+}
+
+func (q *Queries) GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error) {
+	row := q.db.QueryRowContext(ctx, getLibraryWithStats, id)
+	var i GetLibraryWithStatsRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Path,
+		&i.Enabled,
+		&i.ScanIntervalMinutes,
+		&i.LastScannedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SourceType,
+		&i.SourceConfigEncrypted,
+		&i.FileCount,
+		&i.MatchedCount,
+		&i.UnmatchedCount,
+		&i.TotalSizeBytes,
+	)
+	return i, err
+}
+
 const listLibraries = `-- name: ListLibraries :many
 SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted FROM libraries ORDER BY name
 `
@@ -107,6 +164,79 @@ func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
 			&i.UpdatedAt,
 			&i.SourceType,
 			&i.SourceConfigEncrypted,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listLibrariesWithStats = `-- name: ListLibrariesWithStats :many
+SELECT l.id, l.name, l.path, l.enabled, l.scan_interval_minutes, l.last_scanned_at, l.created_at, l.updated_at, l.source_type, l.source_config_encrypted,
+  COALESCE(s.file_count, 0) AS file_count,
+  COALESCE(s.matched_count, 0) AS matched_count,
+  COALESCE(s.unmatched_count, 0) AS unmatched_count,
+  COALESCE(s.total_size_bytes, 0) AS total_size_bytes
+FROM libraries l
+LEFT JOIN (
+  SELECT library_id,
+    COUNT(*) AS file_count,
+    SUM(CASE WHEN match_status != 'unmatched' THEN 1 ELSE 0 END) AS matched_count,
+    SUM(CASE WHEN match_status = 'unmatched' THEN 1 ELSE 0 END) AS unmatched_count,
+    COALESCE(SUM(size_bytes), 0) AS total_size_bytes
+  FROM media_files GROUP BY library_id
+) s ON l.id = s.library_id
+ORDER BY l.name ASC
+`
+
+type ListLibrariesWithStatsRow struct {
+	ID                    string         `json:"id"`
+	Name                  string         `json:"name"`
+	Path                  string         `json:"path"`
+	Enabled               int64          `json:"enabled"`
+	ScanIntervalMinutes   int64          `json:"scan_interval_minutes"`
+	LastScannedAt         sql.NullString `json:"last_scanned_at"`
+	CreatedAt             string         `json:"created_at"`
+	UpdatedAt             string         `json:"updated_at"`
+	SourceType            string         `json:"source_type"`
+	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
+	FileCount             int64          `json:"file_count"`
+	MatchedCount          float64        `json:"matched_count"`
+	UnmatchedCount        float64        `json:"unmatched_count"`
+	TotalSizeBytes        interface{}    `json:"total_size_bytes"`
+}
+
+func (q *Queries) ListLibrariesWithStats(ctx context.Context) ([]ListLibrariesWithStatsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listLibrariesWithStats)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListLibrariesWithStatsRow{}
+	for rows.Next() {
+		var i ListLibrariesWithStatsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Path,
+			&i.Enabled,
+			&i.ScanIntervalMinutes,
+			&i.LastScannedAt,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.SourceType,
+			&i.SourceConfigEncrypted,
+			&i.FileCount,
+			&i.MatchedCount,
+			&i.UnmatchedCount,
+			&i.TotalSizeBytes,
 		); err != nil {
 			return nil, err
 		}

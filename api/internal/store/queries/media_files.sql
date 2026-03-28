@@ -48,3 +48,36 @@ WHERE library_id = ? AND dandanplay_episode_id IS NOT NULL AND episode_id IS NUL
 UPDATE media_files
 SET episode_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = ?;
+
+-- name: ListMediaFilesByLibrary :many
+SELECT mf.*,
+       COALESCE(e.title, '') AS matched_anime_title,
+       COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
+FROM media_files mf
+LEFT JOIN episodes e ON mf.episode_id = e.id
+WHERE mf.library_id = ?
+  AND (? = 'all' OR mf.match_status = ?)
+  AND (? = '' OR mf.filename LIKE '%' || ? || '%')
+ORDER BY mf.filename ASC
+LIMIT ? OFFSET ?;
+
+-- name: CountMediaFilesByStatus :one
+SELECT COUNT(*) AS total
+FROM media_files
+WHERE library_id = ?
+  AND (? = 'all' OR match_status = ?)
+  AND (? = '' OR filename LIKE '%' || ? || '%');
+
+-- name: UpdateMediaFileMatch :exec
+UPDATE media_files
+SET dandanplay_anime_id = ?, dandanplay_episode_id = ?, match_status = 'manual',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;
+
+-- name: ClearMediaFileMatch :exec
+UPDATE media_files
+SET dandanplay_anime_id = NULL, dandanplay_episode_id = NULL,
+    episode_id = NULL, match_status = 'unmatched',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;

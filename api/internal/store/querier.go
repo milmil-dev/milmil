@@ -10,8 +10,10 @@ import (
 )
 
 type Querier interface {
+	ClearMediaFileMatch(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
+	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime, error)
 	CreateDownload(ctx context.Context, arg CreateDownloadParams) (Download, error)
@@ -38,6 +40,7 @@ type Querier interface {
 	GetEpisode(ctx context.Context, id string) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
+	GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
 	GetRSSFeed(ctx context.Context, id string) (RssFeed, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
@@ -54,8 +57,10 @@ type Querier interface {
 	ListDownloads(ctx context.Context) ([]Download, error)
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListLibraries(ctx context.Context) ([]Library, error)
+	ListLibrariesWithStats(ctx context.Context) ([]ListLibrariesWithStatsRow, error)
 	ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
+	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
@@ -73,6 +78,7 @@ type Querier interface {
 	UpdateMediaFileDandanplayIDs(ctx context.Context, arg UpdateMediaFileDandanplayIDsParams) error
 	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
+	UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
 	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error

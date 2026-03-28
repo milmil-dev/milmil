@@ -25,3 +25,37 @@ UPDATE libraries
 SET last_scanned_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
     updated_at      = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = ?;
+
+-- name: ListLibrariesWithStats :many
+SELECT l.*,
+  COALESCE(s.file_count, 0) AS file_count,
+  COALESCE(s.matched_count, 0) AS matched_count,
+  COALESCE(s.unmatched_count, 0) AS unmatched_count,
+  COALESCE(s.total_size_bytes, 0) AS total_size_bytes
+FROM libraries l
+LEFT JOIN (
+  SELECT library_id,
+    COUNT(*) AS file_count,
+    SUM(CASE WHEN match_status != 'unmatched' THEN 1 ELSE 0 END) AS matched_count,
+    SUM(CASE WHEN match_status = 'unmatched' THEN 1 ELSE 0 END) AS unmatched_count,
+    COALESCE(SUM(size_bytes), 0) AS total_size_bytes
+  FROM media_files GROUP BY library_id
+) s ON l.id = s.library_id
+ORDER BY l.name ASC;
+
+-- name: GetLibraryWithStats :one
+SELECT l.*,
+  COALESCE(s.file_count, 0) AS file_count,
+  COALESCE(s.matched_count, 0) AS matched_count,
+  COALESCE(s.unmatched_count, 0) AS unmatched_count,
+  COALESCE(s.total_size_bytes, 0) AS total_size_bytes
+FROM libraries l
+LEFT JOIN (
+  SELECT library_id,
+    COUNT(*) AS file_count,
+    SUM(CASE WHEN match_status != 'unmatched' THEN 1 ELSE 0 END) AS matched_count,
+    SUM(CASE WHEN match_status = 'unmatched' THEN 1 ELSE 0 END) AS unmatched_count,
+    COALESCE(SUM(size_bytes), 0) AS total_size_bytes
+  FROM media_files GROUP BY library_id
+) s ON l.id = s.library_id
+WHERE l.id = ?;

@@ -10,6 +10,19 @@ import (
 	"database/sql"
 )
 
+const clearMediaFileMatch = `-- name: ClearMediaFileMatch :exec
+UPDATE media_files
+SET dandanplay_anime_id = NULL, dandanplay_episode_id = NULL,
+    episode_id = NULL, match_status = 'unmatched',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+func (q *Queries) ClearMediaFileMatch(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, clearMediaFileMatch, id)
+	return err
+}
+
 const countMediaFilesByLibrary = `-- name: CountMediaFilesByLibrary :one
 SELECT COUNT(*) FROM media_files WHERE library_id = ?
 `
@@ -19,6 +32,35 @@ func (q *Queries) CountMediaFilesByLibrary(ctx context.Context, libraryID string
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const countMediaFilesByStatus = `-- name: CountMediaFilesByStatus :one
+SELECT COUNT(*) AS total
+FROM media_files
+WHERE library_id = ?
+  AND (? = 'all' OR match_status = ?)
+  AND (? = '' OR filename LIKE '%' || ? || '%')
+`
+
+type CountMediaFilesByStatusParams struct {
+	LibraryID   string         `json:"library_id"`
+	Column2     interface{}    `json:"column_2"`
+	MatchStatus string         `json:"match_status"`
+	Column4     interface{}    `json:"column_4"`
+	Column5     sql.NullString `json:"column_5"`
+}
+
+func (q *Queries) CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countMediaFilesByStatus,
+		arg.LibraryID,
+		arg.Column2,
+		arg.MatchStatus,
+		arg.Column4,
+		arg.Column5,
+	)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
 }
 
 const deleteMediaFile = `-- name: DeleteMediaFile :exec
@@ -130,6 +172,113 @@ func (q *Queries) ListMediaFilePathsByLibrary(ctx context.Context, libraryID str
 			return nil, err
 		}
 		items = append(items, path)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMediaFilesByLibrary = `-- name: ListMediaFilesByLibrary :many
+SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.duration_seconds, mf.container_format, mf.video_codec, mf.audio_codec, mf.width, mf.height, mf.file_hash, mf.dandanplay_episode_id, mf.match_status, mf.video_tracks, mf.audio_tracks, mf.subtitle_tracks, mf.created_at, mf.updated_at, mf.dandanplay_anime_id,
+       COALESCE(e.title, '') AS matched_anime_title,
+       COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
+FROM media_files mf
+LEFT JOIN episodes e ON mf.episode_id = e.id
+WHERE mf.library_id = ?
+  AND (? = 'all' OR mf.match_status = ?)
+  AND (? = '' OR mf.filename LIKE '%' || ? || '%')
+ORDER BY mf.filename ASC
+LIMIT ? OFFSET ?
+`
+
+type ListMediaFilesByLibraryParams struct {
+	LibraryID   string         `json:"library_id"`
+	Column2     interface{}    `json:"column_2"`
+	MatchStatus string         `json:"match_status"`
+	Column4     interface{}    `json:"column_4"`
+	Column5     sql.NullString `json:"column_5"`
+	Limit       int64          `json:"limit"`
+	Offset      int64          `json:"offset"`
+}
+
+type ListMediaFilesByLibraryRow struct {
+	ID                  string         `json:"id"`
+	EpisodeID           sql.NullString `json:"episode_id"`
+	LibraryID           string         `json:"library_id"`
+	Path                string         `json:"path"`
+	Filename            string         `json:"filename"`
+	SizeBytes           int64          `json:"size_bytes"`
+	DurationSeconds     sql.NullInt64  `json:"duration_seconds"`
+	ContainerFormat     sql.NullString `json:"container_format"`
+	VideoCodec          sql.NullString `json:"video_codec"`
+	AudioCodec          sql.NullString `json:"audio_codec"`
+	Width               sql.NullInt64  `json:"width"`
+	Height              sql.NullInt64  `json:"height"`
+	FileHash            sql.NullString `json:"file_hash"`
+	DandanplayEpisodeID sql.NullInt64  `json:"dandanplay_episode_id"`
+	MatchStatus         string         `json:"match_status"`
+	VideoTracks         string         `json:"video_tracks"`
+	AudioTracks         string         `json:"audio_tracks"`
+	SubtitleTracks      string         `json:"subtitle_tracks"`
+	CreatedAt           string         `json:"created_at"`
+	UpdatedAt           string         `json:"updated_at"`
+	DandanplayAnimeID   sql.NullInt64  `json:"dandanplay_anime_id"`
+	MatchedAnimeTitle   string         `json:"matched_anime_title"`
+	MatchedEpisodeSort  float64        `json:"matched_episode_sort"`
+	SubtitleCount       int64          `json:"subtitle_count"`
+}
+
+func (q *Queries) ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error) {
+	rows, err := q.db.QueryContext(ctx, listMediaFilesByLibrary,
+		arg.LibraryID,
+		arg.Column2,
+		arg.MatchStatus,
+		arg.Column4,
+		arg.Column5,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListMediaFilesByLibraryRow{}
+	for rows.Next() {
+		var i ListMediaFilesByLibraryRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
+			&i.MatchedAnimeTitle,
+			&i.MatchedEpisodeSort,
+			&i.SubtitleCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err
@@ -254,6 +403,24 @@ type UpdateMediaFileHashParams struct {
 
 func (q *Queries) UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error {
 	_, err := q.db.ExecContext(ctx, updateMediaFileHash, arg.FileHash, arg.ID)
+	return err
+}
+
+const updateMediaFileMatch = `-- name: UpdateMediaFileMatch :exec
+UPDATE media_files
+SET dandanplay_anime_id = ?, dandanplay_episode_id = ?, match_status = 'manual',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateMediaFileMatchParams struct {
+	DandanplayAnimeID   sql.NullInt64 `json:"dandanplay_anime_id"`
+	DandanplayEpisodeID sql.NullInt64 `json:"dandanplay_episode_id"`
+	ID                  string        `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFileMatch, arg.DandanplayAnimeID, arg.DandanplayEpisodeID, arg.ID)
 	return err
 }
 
