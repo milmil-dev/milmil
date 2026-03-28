@@ -14,6 +14,7 @@ import { Switch } from '../components/ui/switch';
 import {
   type CreateLibraryInput,
   type Library,
+  type LibraryWithStats,
   type TestConnectionInput,
   type UpdateLibraryInput,
   libraryApi,
@@ -43,7 +44,7 @@ function LibraryCard({
   onEdit,
   onDelete,
 }: {
-  lib: Library;
+  lib: LibraryWithStats;
   scanning: boolean;
   onScan: () => void;
   onEdit: () => void;
@@ -617,8 +618,8 @@ export function LibrariesPage() {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
   const [drawerMode, setDrawerMode] = useState<'add' | 'edit' | null>(null);
-  const [editLib, setEditLib] = useState<Library | null>(null);
-  const [deleteLib, setDeleteLib] = useState<Library | null>(null);
+  const [editLib, setEditLib] = useState<LibraryWithStats | null>(null);
+  const [deleteLib, setDeleteLib] = useState<LibraryWithStats | null>(null);
   const [scanningId, setScanningId] = useState<string | null>(null);
 
   const { data: libraries = [], isLoading } = useQuery({

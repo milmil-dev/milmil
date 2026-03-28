@@ -51,9 +51,51 @@ export interface TestConnectionResult {
   error?: string;
 }
 
+export interface MediaFileEntry {
+  id: string;
+  library_id: string;
+  path: string;
+  filename: string;
+  size_bytes: number;
+  match_status: 'unmatched' | 'auto' | 'manual';
+  dandanplay_anime_id: number | null;
+  dandanplay_episode_id: number | null;
+  subtitle_count: number;
+  matched_anime_title: string;
+  matched_episode_sort: number;
+  created_at: string;
+}
+
+export interface MediaFilesResponse {
+  items: MediaFileEntry[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+export interface LibraryWithStats extends Library {
+  file_count: number;
+  matched_count: number;
+  unmatched_count: number;
+  total_size_bytes: number;
+}
+
+export interface DiscoveredHost {
+  ip: string;
+  hostname: string;
+  shares: string[];
+}
+
+export interface MediaFilesParams {
+  status?: 'all' | 'matched' | 'unmatched';
+  q?: string;
+  page?: number;
+  per_page?: number;
+}
+
 export const libraryApi = {
-  list: () => api.get<Library[]>('/api/v1/libraries'),
-  get: (id: string) => api.get<Library>(`/api/v1/libraries/${id}`),
+  list: () => api.get<LibraryWithStats[]>('/api/v1/libraries'),
+  get: (id: string) => api.get<LibraryWithStats>(`/api/v1/libraries/${id}`),
   create: (input: CreateLibraryInput) => api.post<Library>('/api/v1/libraries', input),
   update: (id: string, input: UpdateLibraryInput) =>
     api.put<Library>(`/api/v1/libraries/${id}`, input),
@@ -62,6 +104,19 @@ export const libraryApi = {
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
   testConnection: (input: TestConnectionInput) =>
     api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
+  mediaFiles: (id: string, params: MediaFilesParams = {}) => {
+    const searchParams = new URLSearchParams();
+    if (params.status) searchParams.set('status', params.status);
+    if (params.q) searchParams.set('q', params.q);
+    if (params.page) searchParams.set('page', String(params.page));
+    if (params.per_page) searchParams.set('per_page', String(params.per_page));
+    const qs = searchParams.toString();
+    return api.get<MediaFilesResponse>(`/api/v1/libraries/${id}/media-files${qs ? `?${qs}` : ''}`);
+  },
+  matchFile: (fileId: string, body: { bangumi_id: number; episode_id: number }) =>
+    api.put<MediaFileEntry>(`/api/v1/media-files/${fileId}/match`, body),
+  unmatchFile: (fileId: string) => api.delete<void>(`/api/v1/media-files/${fileId}/match`),
+  discoverNetwork: () => api.get<{ hosts: DiscoveredHost[] }>('/api/v1/libraries/discover-network'),
 };
 
 export const libraryKeys = {
@@ -69,4 +124,7 @@ export const libraryKeys = {
   list: () => [...libraryKeys.all, 'list'] as const,
   detail: (id: string) => [...libraryKeys.all, 'detail', id] as const,
   summaries: (id: string) => [...libraryKeys.all, 'summaries', id] as const,
+  mediaFiles: (id: string, params: MediaFilesParams = {}) =>
+    [...libraryKeys.all, 'media-files', id, params] as const,
+  network: () => [...libraryKeys.all, 'network'] as const,
 };
