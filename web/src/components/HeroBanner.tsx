@@ -2,8 +2,9 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
+import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { PreviewModal } from './PreviewModal';
@@ -40,6 +41,14 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
   if (!featured) return null;
 
   const hasCover = featured.cover_image?.startsWith('http');
+  const [coverLoaded, setCoverLoaded] = useState(false);
+
+  // Reset loaded state when featured changes
+  useEffect(() => {
+    setCoverLoaded(false);
+  }, [featured.bangumi_id]);
+
+  const handleCoverLoad = useCallback(() => setCoverLoaded(true), []);
 
   return (
     <div
@@ -71,7 +80,17 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                   style={hasCover ? undefined : { background: animeGradient(featured.title) }}
                 >
                   {hasCover && (
-                    <img src={featured.cover_image} alt={featured.title} className="w-full h-full object-cover" />
+                    <>
+                      {!coverLoaded && (
+                        <div className="absolute inset-0 animate-pulse bg-white/[0.06]" />
+                      )}
+                      <img
+                        src={featured.cover_image}
+                        alt={featured.title}
+                        className={cn('w-full h-full object-cover transition-opacity duration-300', coverLoaded ? 'opacity-100' : 'opacity-0')}
+                        onLoad={handleCoverLoad}
+                      />
+                    </>
                   )}
                 </Link>
 
@@ -92,11 +111,20 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     </h2>
                   </Link>
 
-                  {/* Genres */}
+                  {/* Genres — clickable */}
                   {featured.genres && featured.genres.length > 0 && (
-                    <p className="text-[15px] font-semibold text-gray-200">
-                      {featured.genres.slice(0, 4).join(' · ')}
-                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {featured.genres.slice(0, 4).map((g) => (
+                        <Link
+                          key={g}
+                          to="/search"
+                          search={{ genre: g }}
+                          className="text-[12px] font-semibold px-2 py-0.5 rounded bg-white/[0.1] text-white/80 hover:bg-mm-accent/20 hover:text-mm-accent transition-colors"
+                        >
+                          {translateGenre(g, i18n.locale)}
+                        </Link>
+                      ))}
+                    </div>
                   )}
 
                   {/* Score */}
@@ -108,7 +136,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                   {/* Description */}
                   {featured.description && (
-                    <p className="text-[15px] text-gray-200 line-clamp-4 max-w-xl leading-relaxed">
+                    <p className="text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-5" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
                       {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
@@ -119,7 +147,7 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     onClick={() => setPreviewOpen(true)}
                     className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/[0.08] text-white hover:bg-white/[0.14] transition-colors cursor-pointer mt-1"
                   >
-                    Preview
+                    {i18n._(msg`hero.preview`)}
                   </button>
                 </div>
               </div>
