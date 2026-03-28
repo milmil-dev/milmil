@@ -6,8 +6,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
+import { discoverApi, discoverKeys, type AnimeSummary, type Episode } from '../lib/api/discover';
 import { libraryApi, libraryKeys, type MediaFileEntry } from '../lib/api/library';
 import { cn } from '../lib/utils';
 
@@ -364,6 +366,253 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
   );
 }
 
+/* -- Match modal ------------------------------------------------------------ */
+
+function MatchModal({
+  file,
+  onClose,
+  libraryId,
+}: {
+  file: MediaFileEntry | null;
+  onClose: () => void;
+  libraryId: string;
+}) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [step, setStep] = useState<1 | 2>(1);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
+  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
+
+  // Reset state when file changes (modal opens/closes)
+  useEffect(() => {
+    if (file) {
+      setStep(1);
+      setSearchInput('');
+      setDebouncedSearch('');
+      setSelectedAnime(null);
+      setSelectedEpisode(null);
+    }
+  }, [file]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // Search anime query
+  const { data: searchResults, isLoading: isSearching } = useQuery({
+    queryKey: discoverKeys.search(debouncedSearch),
+    queryFn: () => discoverApi.search(debouncedSearch),
+    enabled: debouncedSearch.length > 0,
+  });
+
+  // Episodes query
+  const { data: episodes, isLoading: isLoadingEpisodes } = useQuery({
+    queryKey: discoverKeys.episodes(selectedAnime?.bangumi_id ?? 0),
+    queryFn: () => discoverApi.episodes(selectedAnime!.bangumi_id),
+    enabled: !!selectedAnime && step === 2,
+  });
+
+  // Match mutation
+  const matchMutation = useMutation({
+    mutationFn: () => {
+      if (!file || !selectedAnime || !selectedEpisode) throw new Error('Missing data');
+      return libraryApi.matchFile(file.id, {
+        bangumi_id: selectedAnime.bangumi_id,
+        episode_id: selectedEpisode.bangumi_episode_id,
+      });
+    },
+    onSuccess: () => {
+      toast.success(i18n._(msg`library.detail.matchModal.matched`));
+      queryClient.invalidateQueries({ queryKey: libraryKeys.mediaFiles(libraryId) });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
+      onClose();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
+  });
+
+  const handleSelectAnime = (anime: AnimeSummary) => {
+    setSelectedAnime(anime);
+    setSelectedEpisode(null);
+    setStep(2);
+  };
+
+  const handleGoBackToSearch = () => {
+    setStep(1);
+    setSelectedAnime(null);
+    setSelectedEpisode(null);
+  };
+
+  return (
+    <Modal
+      open={!!file}
+      onClose={onClose}
+      title={i18n._(msg`library.detail.matchModal.title`)}
+      size="lg"
+    >
+      {/* Filename banner */}
+      {file && (
+        <div className="mb-4 rounded-md bg-white/[0.04] px-3 py-2">
+          <p className="font-mono text-xs text-mm-text-muted truncate" title={file.filename}>
+            {file.filename}
+          </p>
+        </div>
+      )}
+
+      {step === 1 && (
+        <div>
+          {/* Search input */}
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={i18n._(msg`library.detail.matchModal.searchPlaceholder`)}
+            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-mm-text-muted focus:outline-none focus:ring-1 focus:ring-mm-accent/50 mb-4"
+            autoFocus
+          />
+
+          {/* Results */}
+          {!debouncedSearch && (
+            <p className="text-center text-[13px] text-mm-text-muted py-8">
+              {i18n._(msg`library.detail.matchModal.searchHint`)}
+            </p>
+          )}
+
+          {isSearching && (
+            <div className="space-y-2 py-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-12 w-full rounded-md" />
+              ))}
+            </div>
+          )}
+
+          {debouncedSearch && !isSearching && searchResults && searchResults.length === 0 && (
+            <p className="text-center text-[13px] text-mm-text-muted py-8">
+              {i18n._(msg`library.detail.matchModal.noResults`)}
+            </p>
+          )}
+
+          {searchResults && searchResults.length > 0 && (
+            <div className="space-y-1 max-h-[45vh] overflow-y-auto">
+              {searchResults.map((anime) => (
+                <button
+                  key={anime.bangumi_id}
+                  type="button"
+                  onClick={() => handleSelectAnime(anime)}
+                  className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+                >
+                  <img
+                    src={anime.cover_image}
+                    alt={anime.title}
+                    className="w-10 h-14 object-cover rounded flex-shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-white truncate">{anime.title}</p>
+                    <div className="flex items-center gap-2 text-[11px] text-mm-text-muted mt-0.5">
+                      <span>{anime.episode_count} eps</span>
+                      {anime.score > 0 && (
+                        <span className="text-amber-400">{anime.score.toFixed(1)}</span>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {step === 2 && selectedAnime && (
+        <div>
+          {/* Selected anime header */}
+          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.06]">
+            <img
+              src={selectedAnime.cover_image}
+              alt={selectedAnime.title}
+              className="w-10 h-14 object-cover rounded flex-shrink-0"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-white truncate">{selectedAnime.title}</p>
+              <button
+                type="button"
+                onClick={handleGoBackToSearch}
+                className="text-[11px] text-mm-accent hover:text-mm-accent/80 transition-colors cursor-pointer"
+              >
+                {i18n._(msg`library.detail.matchModal.change`)}
+              </button>
+            </div>
+          </div>
+
+          {/* Episode list */}
+          {isLoadingEpisodes && (
+            <div className="space-y-2 py-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full rounded-md" />
+              ))}
+            </div>
+          )}
+
+          {episodes && episodes.length > 0 && (
+            <div className="space-y-1 max-h-[35vh] overflow-y-auto mb-4">
+              {episodes.map((ep) => {
+                const isSelected = selectedEpisode?.bangumi_episode_id === ep.bangumi_episode_id;
+                return (
+                  <button
+                    key={ep.bangumi_episode_id}
+                    type="button"
+                    onClick={() => setSelectedEpisode(ep)}
+                    className={cn(
+                      'w-full flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors cursor-pointer text-left',
+                      isSelected
+                        ? 'bg-mm-accent/15 border border-mm-accent/40'
+                        : 'hover:bg-white/[0.06] border border-transparent',
+                    )}
+                  >
+                    <span className="text-[12px] font-bold text-mm-text-secondary tabular-nums whitespace-nowrap">
+                      EP {String(ep.sort).padStart(2, '0')}
+                    </span>
+                    <span className="text-sm text-white truncate flex-1">
+                      {ep.title || ep.title_original}
+                    </span>
+                    {ep.air_date && (
+                      <span className="text-[11px] text-mm-text-muted whitespace-nowrap">
+                        {ep.air_date}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {episodes && episodes.length === 0 && !isLoadingEpisodes && (
+            <p className="text-center text-[13px] text-mm-text-muted py-8">
+              {i18n._(msg`library.detail.matchModal.noEpisodes`)}
+            </p>
+          )}
+
+          {/* Confirm button */}
+          <button
+            type="button"
+            onClick={() => matchMutation.mutate()}
+            disabled={!selectedEpisode || matchMutation.isPending}
+            className="w-full py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-40 cursor-pointer"
+          >
+            {matchMutation.isPending
+              ? i18n._(msg`common.loading`)
+              : i18n._(msg`library.detail.matchModal.confirm`)}
+          </button>
+        </div>
+      )}
+    </Modal>
+  );
+}
+
 /* -- Main page -------------------------------------------------------------- */
 
 export function LibraryDetailPage() {
@@ -371,8 +620,7 @@ export function LibraryDetailPage() {
   const { id } = useParams({ from: '/libraries/$id' });
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
-  // Used by Task 8 match modal
-  const [_matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
+  const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
 
   const {
     data: library,
@@ -618,6 +866,12 @@ export function LibraryDetailPage() {
           </AnimatePresence>
         </motion.div>
       </div>
+
+      <MatchModal
+        file={matchingFile}
+        onClose={() => setMatchingFile(null)}
+        libraryId={id}
+      />
     </PageTransition>
   );
 }
