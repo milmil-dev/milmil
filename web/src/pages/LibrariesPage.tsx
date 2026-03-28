@@ -4,7 +4,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
@@ -339,11 +339,13 @@ function TestConnectionButton({
   );
 }
 
-// ─── Network browser ──────────────────────────────────────────────────────────
+// ─── Network browser (enhanced — auto-discovers, visual cards) ───────────────
 function NetworkBrowser({
   onSelect,
+  autoDiscover,
 }: {
   onSelect: (host: string, port: number, share: string) => void;
+  autoDiscover?: boolean;
 }) {
   const { i18n } = useLingui();
   const [expandedIp, setExpandedIp] = useState<string | null>(null);
@@ -352,78 +354,130 @@ function NetworkBrowser({
     mutationFn: () => libraryApi.discoverNetwork(),
   });
 
+  // Auto-discover on mount when requested
+  useEffect(() => {
+    if (autoDiscover) {
+      discoverMutation.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [autoDiscover]);
+
   const hosts: DiscoveredHost[] = discoverMutation.data?.hosts ?? [];
 
   return (
-    <div className="space-y-2">
-      <button
-        type="button"
-        onClick={() => discoverMutation.mutate()}
-        disabled={discoverMutation.isPending}
-        className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/[0.06] text-gray-200 hover:bg-white/[0.1] transition-colors disabled:opacity-40"
-      >
-        {discoverMutation.isPending
-          ? i18n._(msg`library.discover.scanning`)
-          : i18n._(msg`library.discover.browse`)}
-      </button>
-
-      {/* Loading skeleton */}
+    <div className="space-y-3">
+      {/* Scanning state */}
       {discoverMutation.isPending && (
-        <div className="space-y-1.5">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-xs text-white/50">
+            <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeDasharray="32" strokeLinecap="round" />
+            </svg>
+            {i18n._(msg`library.discover.scanning`)}
+          </div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-7 rounded bg-white/[0.04] animate-pulse" />
+            <div key={i} className="h-12 rounded-lg bg-white/[0.04] animate-pulse" />
           ))}
         </div>
       )}
 
-      {/* Results */}
+      {/* Empty state */}
       {discoverMutation.isSuccess && hosts.length === 0 && (
-        <p className="text-xs text-white/40">{i18n._(msg`library.discover.noHosts`)}</p>
+        <div className="text-center py-6">
+          <p className="text-xs text-white/40 mb-2">{i18n._(msg`library.discover.noHosts`)}</p>
+          <button
+            type="button"
+            onClick={() => discoverMutation.mutate()}
+            className="text-xs text-mm-accent hover:underline"
+          >
+            {i18n._(msg`library.discover.browse`)}
+          </button>
+        </div>
       )}
 
+      {/* Discovered host cards */}
       {hosts.length > 0 && (
-        <div className="space-y-0.5">
+        <div className="space-y-2">
           {hosts.map((host) => {
             const label = host.hostname || host.ip;
             const isExpanded = expandedIp === host.ip;
             return (
-              <div key={host.ip}>
+              <div
+                key={host.ip}
+                className="rounded-lg border border-white/[0.06] hover:bg-white/[0.03] transition-all"
+              >
                 <button
                   type="button"
                   onClick={() => setExpandedIp(isExpanded ? null : host.ip)}
-                  className="w-full flex items-center gap-1.5 px-2 py-1.5 text-xs text-gray-200 rounded hover:bg-white/[0.06] transition-colors"
+                  className="w-full flex items-center gap-3 p-3 cursor-pointer"
                 >
+                  {/* Server icon */}
+                  <div className="shrink-0 w-8 h-8 rounded-md bg-white/[0.06] flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white/50">
+                      <rect x="4" y="5" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                      <circle cx="7" cy="7.5" r="0.8" fill="currentColor" />
+                      <circle cx="7" cy="16.5" r="0.8" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 text-left">
+                    <p className="text-sm font-medium text-white/80">{label}</p>
+                  </div>
+                  {host.hostname && (
+                    <span className="text-[11px] font-mono text-white/30">{host.ip}</span>
+                  )}
                   <span
-                    className="text-[10px] text-white/40 transition-transform"
+                    className="text-[10px] text-white/30 transition-transform duration-150"
                     style={{ transform: isExpanded ? 'rotate(90deg)' : undefined }}
                   >
                     &#9654;
                   </span>
-                  <span className="font-medium">{label}</span>
-                  {host.hostname && (
-                    <span className="text-white/30 font-mono">{host.ip}</span>
-                  )}
                 </button>
-                {isExpanded && host.shares.length > 0 && (
-                  <div className="ml-5 space-y-0.5">
-                    {host.shares.map((share) => (
-                      <button
-                        key={share}
-                        type="button"
-                        onClick={() => onSelect(host.ip, 445, share)}
-                        className="w-full text-left px-2 py-1 text-xs text-white/60 rounded hover:bg-white/[0.08] hover:text-white transition-colors"
-                      >
-                        {share}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {isExpanded && host.shares.length === 0 && (
-                  <p className="ml-5 px-2 py-1 text-[11px] text-white/30">No shares</p>
-                )}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-3 pb-3">
+                        {host.shares.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {host.shares.map((share) => (
+                              <button
+                                key={share}
+                                type="button"
+                                onClick={() => {
+                                  onSelect(host.ip, 445, share);
+                                  toast.success(`Selected ${label}/${share}`);
+                                }}
+                                className="px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-white/60 transition-colors cursor-pointer"
+                              >
+                                {share}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-white/30">No shares found</p>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
+          {/* Re-scan link */}
+          <button
+            type="button"
+            onClick={() => discoverMutation.mutate()}
+            disabled={discoverMutation.isPending}
+            className="text-xs text-white/40 hover:text-white/60 transition-colors disabled:opacity-40"
+          >
+            {i18n._(msg`library.discover.browse`)}
+          </button>
         </div>
       )}
     </div>
@@ -762,6 +816,507 @@ function LibraryForm({
   );
 }
 
+// ─── Add Library Wizard (two-step) ────────────────────────────────────────────
+function AddLibraryWizard({
+  onSubmit,
+}: {
+  onSubmit: (values: LibraryFormValues) => Promise<void>;
+}) {
+  const { i18n } = useLingui();
+  const [step, setStep] = useState<'source' | 'configure'>('source');
+  const [sourceType, setSourceType] = useState<SourceType>('local');
+
+  const sourceCards: { key: SourceType; name: string; desc: string; icon: React.ReactNode }[] = [
+    {
+      key: 'local',
+      name: i18n._(msg`library.sourceType.local`),
+      desc: i18n._(msg`library.wizard.local.desc`),
+      icon: (
+        <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+          <path
+            d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+        </svg>
+      ),
+    },
+    {
+      key: 'smb',
+      name: i18n._(msg`library.sourceType.smb`),
+      desc: i18n._(msg`library.wizard.smb.desc`),
+      icon: (
+        <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+          <rect x="8" y="10" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+          <rect x="8" y="28" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="14" cy="15" r="1.5" fill="currentColor" />
+          <circle cx="14" cy="33" r="1.5" fill="currentColor" />
+          <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      ),
+    },
+    {
+      key: 'sftp',
+      name: i18n._(msg`library.sourceType.sftp`),
+      desc: i18n._(msg`library.wizard.sftp.desc`),
+      icon: (
+        <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+          <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M12 20h6M12 26h10M12 32h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <text x="30" y="22" fontSize="8" fill="currentColor" fontFamily="monospace">$_</text>
+        </svg>
+      ),
+    },
+  ];
+
+  const handleSelectSource = (key: SourceType) => {
+    setSourceType(key);
+    setStep('configure');
+  };
+
+  const form = useForm({
+    defaultValues: {
+      ...formDefaultValues(),
+      source_type: sourceType,
+    },
+    onSubmit: async ({ value }) => onSubmit({ ...value, source_type: sourceType }),
+  });
+
+  // Sync sourceType into form when it changes
+  useEffect(() => {
+    form.setFieldValue('source_type', sourceType);
+  }, [sourceType, form]);
+
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showManualSmb, setShowManualSmb] = useState(false);
+
+  return (
+    <div className="mt-2">
+      <AnimatePresence mode="wait">
+        {/* ─── Step 1: Choose Source ─── */}
+        {step === 'source' && (
+          <motion.div
+            key="source"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.18 }}
+            className="space-y-3"
+          >
+            <p className="text-xs text-white/40 mb-4">
+              {i18n._(msg`library.wizard.chooseSource`)}
+            </p>
+            {sourceCards.map((card) => (
+              <button
+                key={card.key}
+                type="button"
+                onClick={() => handleSelectSource(card.key)}
+                className="w-full rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.15] transition-all cursor-pointer text-left flex items-center gap-4"
+              >
+                <div className="shrink-0 text-white/40">{card.icon}</div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white/80">{card.name}</p>
+                  <p className="text-xs text-white/35 mt-0.5">{card.desc}</p>
+                </div>
+                <span className="text-white/20 text-sm">&#8250;</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+
+        {/* ─── Step 2: Configure ─── */}
+        {step === 'configure' && (
+          <motion.div
+            key="configure"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.18 }}
+          >
+            {/* Back link */}
+            <button
+              type="button"
+              onClick={() => { setStep('source'); setShowManualSmb(false); }}
+              className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors mb-4 cursor-pointer"
+            >
+              <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
+            </button>
+
+            {/* Source label */}
+            <div className="flex items-center gap-2 mb-5">
+              <div className="text-white/30">
+                {sourceCards.find((c) => c.key === sourceType)?.icon}
+              </div>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-white/40">
+                {sourceCards.find((c) => c.key === sourceType)?.name}
+              </span>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+              className="space-y-5"
+            >
+              {/* Name */}
+              <form.Field
+                name="name"
+                validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+              >
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="wiz-name" className={labelClass}>
+                      {i18n._(msg`library.name`)}
+                    </Label>
+                    <Input
+                      id="wiz-name"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Anime"
+                      className={inputClass}
+                    />
+                    {field.state.meta.errors[0] && (
+                      <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                    )}
+                  </div>
+                )}
+              </form.Field>
+
+              {/* ── SMB: Network Discovery prominent ── */}
+              {sourceType === 'smb' && (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200 mb-2">
+                      {i18n._(msg`library.discover.browse`)}
+                    </p>
+                    <NetworkBrowser
+                      autoDiscover
+                      onSelect={(host, port, share) => {
+                        form.setFieldValue('smb_host', host);
+                        form.setFieldValue('smb_port', port);
+                        form.setFieldValue('smb_share', share);
+                        setShowManualSmb(false);
+                      }}
+                    />
+                  </div>
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-white/[0.06]" />
+                    <button
+                      type="button"
+                      onClick={() => setShowManualSmb(!showManualSmb)}
+                      className="text-[11px] text-white/30 hover:text-white/50 transition-colors cursor-pointer"
+                    >
+                      {showManualSmb ? i18n._(msg`library.wizard.hideManual`) : i18n._(msg`library.wizard.orManual`)}
+                    </button>
+                    <div className="flex-1 h-px bg-white/[0.06]" />
+                  </div>
+
+                  {/* Manual SMB fields */}
+                  <AnimatePresence>
+                    {showManualSmb && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                          <form.Field name="smb_host">
+                            {(field) => (
+                              <div className="space-y-1.5">
+                                <Label className={labelClass}>{i18n._(msg`library.smb.host`)}</Label>
+                                <Input
+                                  value={field.state.value}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder="192.168.1.100"
+                                  className={inputClass}
+                                />
+                              </div>
+                            )}
+                          </form.Field>
+                          <div className="grid grid-cols-2 gap-3">
+                            <form.Field name="smb_port">
+                              {(field) => (
+                                <div className="space-y-1.5">
+                                  <Label className={labelClass}>{i18n._(msg`library.smb.port`)}</Label>
+                                  <Input
+                                    type="number"
+                                    value={field.state.value}
+                                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                                    placeholder="445"
+                                    className={inputClass}
+                                  />
+                                </div>
+                              )}
+                            </form.Field>
+                            <form.Field name="smb_share">
+                              {(field) => (
+                                <div className="space-y-1.5">
+                                  <Label className={labelClass}>{i18n._(msg`library.smb.share`)}</Label>
+                                  <Input
+                                    value={field.state.value}
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    placeholder="media"
+                                    className={inputClass}
+                                  />
+                                </div>
+                              )}
+                            </form.Field>
+                          </div>
+                          <form.Field name="smb_username">
+                            {(field) => (
+                              <div className="space-y-1.5">
+                                <Label className={labelClass}>{i18n._(msg`library.smb.username`)}</Label>
+                                <Input
+                                  value={field.state.value}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder="user"
+                                  className={inputClass}
+                                />
+                              </div>
+                            )}
+                          </form.Field>
+                          <form.Field name="smb_password">
+                            {(field) => (
+                              <div className="space-y-1.5">
+                                <Label className={labelClass}>{i18n._(msg`library.smb.password`)}</Label>
+                                <Input
+                                  type="password"
+                                  value={field.state.value}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                                  className={inputClass}
+                                />
+                              </div>
+                            )}
+                          </form.Field>
+                          <form.Field name="smb_domain">
+                            {(field) => (
+                              <div className="space-y-1.5">
+                                <Label className={labelClass}>{i18n._(msg`library.smb.domain`)}</Label>
+                                <Input
+                                  value={field.state.value}
+                                  onChange={(e) => field.handleChange(e.target.value)}
+                                  placeholder="WORKGROUP"
+                                  className={inputClass}
+                                />
+                              </div>
+                            )}
+                          </form.Field>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* ── SFTP fields ── */}
+              {sourceType === 'sftp' && (
+                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                  <form.Field name="sftp_host">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.sftp.host`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="192.168.1.100"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="sftp_port">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.sftp.port`)}</Label>
+                        <Input
+                          type="number"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(Number(e.target.value))}
+                          placeholder="22"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="sftp_username">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.sftp.username`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="user"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="sftp_password">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.sftp.password`)}</Label>
+                        <Input
+                          type="password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+              )}
+
+              {/* Path */}
+              <form.Field
+                name="path"
+                validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
+              >
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="wiz-path" className={labelClass}>
+                      {i18n._(msg`library.path`)}
+                    </Label>
+                    <Input
+                      id="wiz-path"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="/mnt/media/anime"
+                      className={cn('font-mono text-sm', inputClass)}
+                    />
+                    {field.state.meta.errors[0] && (
+                      <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                    )}
+                  </div>
+                )}
+              </form.Field>
+
+              {/* Test connection for non-local */}
+              {sourceType !== 'local' && (
+                <form.Subscribe selector={(s) => s.values}>
+                  {(values) => (
+                    <TestConnectionButton
+                      getConnectionInput={() => {
+                        if (sourceType === 'smb') {
+                          return {
+                            source_type: 'smb',
+                            source_config: {
+                              host: values.smb_host,
+                              port: values.smb_port,
+                              share: values.smb_share,
+                              username: values.smb_username,
+                              password: values.smb_password,
+                              domain: values.smb_domain,
+                            },
+                            path: values.path,
+                          };
+                        }
+                        return {
+                          source_type: 'sftp',
+                          source_config: {
+                            host: values.sftp_host,
+                            port: values.sftp_port,
+                            username: values.sftp_username,
+                            password: values.sftp_password,
+                          },
+                          path: values.path,
+                        };
+                      }}
+                    />
+                  )}
+                </form.Subscribe>
+              )}
+
+              {/* Advanced section */}
+              <div className="border-t border-white/[0.06] pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+                >
+                  <span
+                    className="text-[9px] transition-transform duration-150"
+                    style={{ transform: showAdvanced ? 'rotate(90deg)' : undefined }}
+                  >
+                    &#9654;
+                  </span>
+                  {i18n._(msg`library.wizard.advanced`)}
+                </button>
+                <AnimatePresence>
+                  {showAdvanced && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-4 pt-4">
+                        <form.Field name="scan_interval_minutes">
+                          {(field) => (
+                            <div className="space-y-1.5">
+                              <Label htmlFor="wiz-interval" className={labelClass}>
+                                {i18n._(msg`library.scanInterval`)}
+                              </Label>
+                              <Input
+                                id="wiz-interval"
+                                type="number"
+                                value={field.state.value}
+                                onChange={(e) => field.handleChange(Number(e.target.value))}
+                                min={1}
+                                max={10080}
+                                className={inputClass}
+                              />
+                            </div>
+                          )}
+                        </form.Field>
+                        <form.Field name="enabled">
+                          {(field) => (
+                            <div className="flex items-center justify-between py-1">
+                              <Label htmlFor="wiz-enabled" className={labelClass}>
+                                {i18n._(msg`library.enabled`)}
+                              </Label>
+                              <Switch
+                                id="wiz-enabled"
+                                checked={field.state.value}
+                                onCheckedChange={field.handleChange}
+                              />
+                            </div>
+                          )}
+                        </form.Field>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Submit */}
+              <form.Subscribe selector={(s) => s.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full font-bold text-black bg-mm-accent"
+                  >
+                    {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
+                  </Button>
+                )}
+              </form.Subscribe>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ─── Helpers to build source_config from form values ──────────────────────────
 function buildSourceConfig(values: LibraryFormValues): Record<string, unknown> | undefined {
   if (values.source_type === 'smb') {
@@ -964,33 +1519,37 @@ export function LibrariesPage() {
           )}
         </div>
 
-        {/* Add / Edit modal */}
+        {/* Add library modal (wizard, larger) */}
         <Modal
-          open={drawerMode !== null}
+          open={drawerMode === 'add'}
+          onClose={() => setDrawerMode(null)}
+          title={i18n._(msg`library.addLibrary`)}
+          size="md"
+        >
+          <AddLibraryWizard
+            onSubmit={async (values) => {
+              await createMutation.mutateAsync({
+                name: values.name,
+                path: values.path,
+                scan_interval_minutes: values.scan_interval_minutes,
+                source_type: values.source_type,
+                source_config: buildSourceConfig(values),
+              });
+            }}
+          />
+        </Modal>
+
+        {/* Edit library modal (original form, small) */}
+        <Modal
+          open={drawerMode === 'edit' && !!editLib}
           onClose={() => {
             setDrawerMode(null);
             setEditLib(null);
           }}
-          title={drawerMode === 'add' ? i18n._(msg`library.addLibrary`) : i18n._(msg`library.editLibrary`)}
+          title={i18n._(msg`library.editLibrary`)}
           size="sm"
         >
-          {drawerMode === 'add' && (
-            <LibraryForm
-              defaultValues={formDefaultValues()}
-              submitLabel={i18n._(msg`library.addLibrary`)}
-              onSubmit={async (values) => {
-                await createMutation.mutateAsync({
-                  name: values.name,
-                  path: values.path,
-                  scan_interval_minutes: values.scan_interval_minutes,
-                  source_type: values.source_type,
-                  source_config: buildSourceConfig(values),
-                });
-              }}
-            />
-          )}
-
-          {drawerMode === 'edit' && editLib && (
+          {editLib && (
             <LibraryForm
               defaultValues={formDefaultValues(editLib)}
               submitLabel={i18n._(msg`library.saveChanges`)}
