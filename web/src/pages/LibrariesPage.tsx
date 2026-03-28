@@ -25,7 +25,7 @@ import {
 import { hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
-type SourceType = 'local' | 'smb' | 'sftp';
+type SourceType = 'local' | 'smb' | 'sftp' | 'webdav' | 's3' | 'ftp' | 'http' | 'gdrive' | 'onedrive' | 'dropbox';
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -43,7 +43,7 @@ function cardAccentColor(name: string): string {
 
 // ─── Source type icon (SVG) ─────────────────────────────────────────────────
 function SourceIcon({ sourceType, className }: { sourceType: string; className?: string }) {
-  if (sourceType === 'smb' || sourceType === 'sftp') {
+  if (sourceType === 'smb' || sourceType === 'sftp' || sourceType === 'ftp') {
     // Network/server icon
     return (
       <svg viewBox="0 0 48 48" fill="none" className={className}>
@@ -52,6 +52,24 @@ function SourceIcon({ sourceType, className }: { sourceType: string; className?:
         <circle cx="14" cy="15" r="1.5" fill="currentColor" />
         <circle cx="14" cy="33" r="1.5" fill="currentColor" />
         <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+  if (sourceType === 'webdav' || sourceType === 's3' || sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') {
+    // Cloud icon
+    return (
+      <svg viewBox="0 0 48 48" fill="none" className={className}>
+        <path d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+  if (sourceType === 'http') {
+    // Globe icon
+    return (
+      <svg viewBox="0 0 48 48" fill="none" className={className}>
+        <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="24" cy="24" rx="8" ry="16" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="8" y1="24" x2="40" y2="24" stroke="currentColor" strokeWidth="1.5" />
       </svg>
     );
   }
@@ -253,6 +271,26 @@ interface LibraryFormValues {
   sftp_port: number;
   sftp_username: string;
   sftp_password: string;
+  // WebDAV fields
+  webdav_url: string;
+  webdav_vendor: string;
+  webdav_username: string;
+  webdav_password: string;
+  // S3 fields
+  s3_endpoint: string;
+  s3_bucket: string;
+  s3_region: string;
+  s3_access_key: string;
+  s3_secret_key: string;
+  // FTP fields
+  ftp_host: string;
+  ftp_port: number;
+  ftp_username: string;
+  ftp_password: string;
+  // HTTP fields
+  http_url: string;
+  // Rclone import fields
+  rclone_remote_name: string;
 }
 
 const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
@@ -272,19 +310,26 @@ function SourceTypeSelector({
     { key: 'local', label: i18n._(msg`library.sourceType.local`) },
     { key: 'smb', label: i18n._(msg`library.sourceType.smb`) },
     { key: 'sftp', label: i18n._(msg`library.sourceType.sftp`) },
+    { key: 'ftp', label: 'FTP' },
+    { key: 'http', label: 'HTTP' },
+    { key: 'webdav', label: 'WebDAV' },
+    { key: 's3', label: 'S3' },
+    { key: 'gdrive', label: 'GDrive' },
+    { key: 'onedrive', label: 'OneDrive' },
+    { key: 'dropbox', label: 'Dropbox' },
   ];
 
   return (
     <div className="space-y-1.5">
       <Label className={labelClass}>{i18n._(msg`library.sourceType`)}</Label>
-      <div className="flex gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         {types.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => onChange(t.key)}
             className={cn(
-              'flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors',
+              'px-3 py-2 text-xs font-bold rounded-md transition-colors',
               value === t.key
                 ? 'bg-mm-accent text-black'
                 : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
@@ -734,32 +779,11 @@ function LibraryForm({
         {(values) =>
           values.source_type !== 'local' ? (
             <TestConnectionButton
-              getConnectionInput={() => {
-                if (values.source_type === 'smb') {
-                  return {
-                    source_type: 'smb',
-                    source_config: {
-                      host: values.smb_host,
-                      port: values.smb_port,
-                      share: values.smb_share,
-                      username: values.smb_username,
-                      password: values.smb_password,
-                      domain: values.smb_domain,
-                    },
-                    path: values.path,
-                  };
-                }
-                return {
-                  source_type: 'sftp',
-                  source_config: {
-                    host: values.sftp_host,
-                    port: values.sftp_port,
-                    username: values.sftp_username,
-                    password: values.sftp_password,
-                  },
-                  path: values.path,
-                };
-              }}
+              getConnectionInput={() => ({
+                source_type: values.source_type,
+                source_config: buildSourceConfig(values) ?? {},
+                path: values.path,
+              })}
             />
           ) : null
         }
@@ -816,6 +840,59 @@ function LibraryForm({
   );
 }
 
+// ─── Rclone remote picker ─────────────────────────────────────────────────────
+function RcloneRemotePicker({
+  sourceType,
+  onSelect,
+}: {
+  sourceType: SourceType;
+  onSelect: (remoteName: string) => void;
+}) {
+  const { i18n } = useLingui();
+  const rcloneType = sourceType === 'gdrive' ? 'drive' : sourceType;
+  const { data, isLoading } = useQuery({
+    queryKey: libraryKeys.rcloneRemotes(),
+    queryFn: libraryApi.listRcloneRemotes,
+  });
+
+  const remotes = (data?.remotes ?? []).filter((r) => r.type === rcloneType);
+
+  return (
+    <div className="space-y-3 p-4 rounded-md bg-white/[0.03]">
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200">
+        {i18n._(msg`library.rclone.availableRemotes`)}
+      </p>
+      {isLoading && (
+        <div className="space-y-2">
+          {[1, 2].map((i) => (
+            <div key={i} className="h-10 rounded-lg bg-white/[0.04] animate-pulse" />
+          ))}
+        </div>
+      )}
+      {!isLoading && remotes.length === 0 && (
+        <p className="text-xs text-white/40 py-3">
+          {i18n._(msg`library.rclone.noRemotes`)}
+        </p>
+      )}
+      {remotes.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {remotes.map((remote) => (
+            <button
+              key={remote.name}
+              type="button"
+              onClick={() => onSelect(remote.name)}
+              className="px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-white/60 transition-colors cursor-pointer"
+            >
+              {remote.name}
+              <span className="ml-1.5 text-white/30">{remote.type}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Add Library Wizard (two-step) ────────────────────────────────────────────
 function AddLibraryWizard({
   onSubmit,
@@ -826,48 +903,99 @@ function AddLibraryWizard({
   const [step, setStep] = useState<'source' | 'configure'>('source');
   const [sourceType, setSourceType] = useState<SourceType>('local');
 
-  const sourceCards: { key: SourceType; name: string; desc: string; icon: React.ReactNode }[] = [
+  // Icon components for reuse
+  const folderIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <path d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const networkIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <rect x="8" y="10" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="8" y="28" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="14" cy="15" r="1.5" fill="currentColor" />
+      <circle cx="14" cy="33" r="1.5" fill="currentColor" />
+      <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const terminalIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 20h6M12 26h10M12 32h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <text x="30" y="22" fontSize="8" fill="currentColor" fontFamily="monospace">$_</text>
+    </svg>
+  );
+  const cloudIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <path d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const globeIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="1.5" />
+      <ellipse cx="24" cy="24" rx="8" ry="16" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="8" y1="24" x2="40" y2="24" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const bucketIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <path d="M10 16h28l-3 22H13L10 16z" stroke="currentColor" strokeWidth="1.5" />
+      <ellipse cx="24" cy="16" rx="14" ry="4" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const driveIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <path d="M17.2 10h13.6L42 30H30.8L17.2 10z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M6 30l5.6-10L24.8 40H13.2L6 30z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M18 40h24l-5.6-10H12.4L18 40z" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const onedriveIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <path d="M18 34a7 7 0 0 1-1-13.9 9 9 0 0 1 17.2-1A7 7 0 0 1 36 34H18z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 34a5 5 0 0 1 0-10h3" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+  const dropboxIcon = (
+    <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
+      <path d="M14 12l10 7-10 7 10 7-10 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M34 12l-10 7 10 7-10 7 10 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+
+  type SourceCard = { key: SourceType; name: string; desc: string; icon: React.ReactNode };
+  type SourceSection = { label: string; cards: SourceCard[] };
+
+  const sourceSections: SourceSection[] = [
     {
-      key: 'local',
-      name: i18n._(msg`library.sourceType.local`),
-      desc: i18n._(msg`library.wizard.local.desc`),
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-          <path
-            d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-        </svg>
-      ),
+      label: i18n._(msg`library.wizard.section.storage`),
+      cards: [
+        { key: 'local', name: i18n._(msg`library.sourceType.local`), desc: i18n._(msg`library.wizard.local.desc`), icon: folderIcon },
+        { key: 'smb', name: i18n._(msg`library.sourceType.smb`), desc: i18n._(msg`library.wizard.smb.desc`), icon: networkIcon },
+        { key: 'sftp', name: i18n._(msg`library.sourceType.sftp`), desc: i18n._(msg`library.wizard.sftp.desc`), icon: terminalIcon },
+        { key: 'ftp', name: i18n._(msg`library.wizard.ftp.name`), desc: i18n._(msg`library.wizard.ftp.desc`), icon: terminalIcon },
+        { key: 'http', name: i18n._(msg`library.wizard.http.name`), desc: i18n._(msg`library.wizard.http.desc`), icon: globeIcon },
+      ],
     },
     {
-      key: 'smb',
-      name: i18n._(msg`library.sourceType.smb`),
-      desc: i18n._(msg`library.wizard.smb.desc`),
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-          <rect x="8" y="10" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="8" y="28" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="14" cy="15" r="1.5" fill="currentColor" />
-          <circle cx="14" cy="33" r="1.5" fill="currentColor" />
-          <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      ),
+      label: i18n._(msg`library.wizard.section.cloud`),
+      cards: [
+        { key: 'webdav', name: i18n._(msg`library.wizard.webdav.name`), desc: i18n._(msg`library.wizard.webdav.desc`), icon: cloudIcon },
+        { key: 's3', name: i18n._(msg`library.wizard.s3.name`), desc: i18n._(msg`library.wizard.s3.desc`), icon: bucketIcon },
+      ],
     },
     {
-      key: 'sftp',
-      name: i18n._(msg`library.sourceType.sftp`),
-      desc: i18n._(msg`library.wizard.sftp.desc`),
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-          <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M12 20h6M12 26h10M12 32h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <text x="30" y="22" fontSize="8" fill="currentColor" fontFamily="monospace">$_</text>
-        </svg>
-      ),
+      label: i18n._(msg`library.wizard.section.rclone`),
+      cards: [
+        { key: 'gdrive', name: i18n._(msg`library.wizard.gdrive.name`), desc: i18n._(msg`library.wizard.gdrive.desc`), icon: driveIcon },
+        { key: 'onedrive', name: i18n._(msg`library.wizard.onedrive.name`), desc: i18n._(msg`library.wizard.onedrive.desc`), icon: onedriveIcon },
+        { key: 'dropbox', name: i18n._(msg`library.wizard.dropbox.name`), desc: i18n._(msg`library.wizard.dropbox.desc`), icon: dropboxIcon },
+      ],
     },
   ];
+
+  // Flat list for lookups by key
+  const allSourceCards = sourceSections.flatMap((s) => s.cards);
 
   const handleSelectSource = (key: SourceType) => {
     setSourceType(key);
@@ -906,21 +1034,30 @@ function AddLibraryWizard({
             <p className="text-xs text-white/40 mb-4">
               {i18n._(msg`library.wizard.chooseSource`)}
             </p>
-            {sourceCards.map((card) => (
-              <button
-                key={card.key}
-                type="button"
-                onClick={() => handleSelectSource(card.key)}
-                className="w-full rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.15] transition-all cursor-pointer text-left flex items-center gap-4"
-              >
-                <div className="shrink-0 text-white/40">{card.icon}</div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white/80">{card.name}</p>
-                  <p className="text-xs text-white/35 mt-0.5">{card.desc}</p>
+            <div className="max-h-[60vh] overflow-y-auto space-y-1">
+              {sourceSections.map((section) => (
+                <div key={section.label}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mt-4 mb-2">
+                    {section.label}
+                  </p>
+                  {section.cards.map((card) => (
+                    <button
+                      key={card.key}
+                      type="button"
+                      onClick={() => handleSelectSource(card.key)}
+                      className="w-full rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.15] transition-all cursor-pointer text-left flex items-center gap-4 mb-1.5"
+                    >
+                      <div className="shrink-0 text-white/40">{card.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white/80">{card.name}</p>
+                        <p className="text-xs text-white/35 mt-0.5">{card.desc}</p>
+                      </div>
+                      <span className="text-white/20 text-sm">&#8250;</span>
+                    </button>
+                  ))}
                 </div>
-                <span className="text-white/20 text-sm">&#8250;</span>
-              </button>
-            ))}
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -945,10 +1082,10 @@ function AddLibraryWizard({
             {/* Source label */}
             <div className="flex items-center gap-2 mb-5">
               <div className="text-white/30">
-                {sourceCards.find((c) => c.key === sourceType)?.icon}
+                {allSourceCards.find((c) => c.key === sourceType)?.icon}
               </div>
               <span className="text-xs font-bold uppercase tracking-[0.15em] text-white/40">
-                {sourceCards.find((c) => c.key === sourceType)?.name}
+                {allSourceCards.find((c) => c.key === sourceType)?.name}
               </span>
             </div>
 
@@ -1174,6 +1311,253 @@ function AddLibraryWizard({
                 </div>
               )}
 
+              {/* ── WebDAV fields ── */}
+              {sourceType === 'webdav' && (
+                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                  <form.Field name="webdav_url">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.webdav.url`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="https://nextcloud.example.com/remote.php/dav/files/user/"
+                          className={cn('font-mono text-sm', inputClass)}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="webdav_vendor">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.webdav.vendor`)}</Label>
+                        <div className="flex gap-1.5">
+                          {(['nextcloud', 'owncloud', 'other'] as const).map((v) => (
+                            <button
+                              key={v}
+                              type="button"
+                              onClick={() => field.handleChange(v)}
+                              className={cn(
+                                'flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors',
+                                field.state.value === v
+                                  ? 'bg-mm-accent text-black'
+                                  : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
+                              )}
+                            >
+                              {v === 'nextcloud' ? 'Nextcloud' : v === 'owncloud' ? 'OwnCloud' : i18n._(msg`library.webdav.vendorOther`)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="webdav_username">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.webdav.username`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="user"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="webdav_password">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.webdav.password`)}</Label>
+                        <Input
+                          type="password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+              )}
+
+              {/* ── S3 fields ── */}
+              {sourceType === 's3' && (
+                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                  <form.Field name="s3_endpoint">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.s3.endpoint`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="https://s3.amazonaws.com"
+                          className={cn('font-mono text-sm', inputClass)}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="s3_bucket">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.s3.bucket`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="my-bucket"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="s3_region">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.s3.region`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="us-east-1"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="s3_access_key">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.s3.accessKey`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="AKIAIOSFODNN7EXAMPLE"
+                          className={cn('font-mono text-sm', inputClass)}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="s3_secret_key">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.s3.secretKey`)}</Label>
+                        <Input
+                          type="password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+              )}
+
+              {/* ── FTP fields ── */}
+              {sourceType === 'ftp' && (
+                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                  <form.Field name="ftp_host">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.ftp.host`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="ftp.example.com"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="ftp_port">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.ftp.port`)}</Label>
+                        <Input
+                          type="number"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(Number(e.target.value))}
+                          placeholder="21"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="ftp_username">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.ftp.username`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="user"
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                  <form.Field name="ftp_password">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.ftp.password`)}</Label>
+                        <Input
+                          type="password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                          className={inputClass}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+              )}
+
+              {/* ── HTTP fields ── */}
+              {sourceType === 'http' && (
+                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                  <form.Field name="http_url">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.http.url`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="https://example.com/media/"
+                          className={cn('font-mono text-sm', inputClass)}
+                        />
+                        <p className="text-[11px] text-white/30">{i18n._(msg`library.http.readOnly`)}</p>
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+              )}
+
+              {/* ── Rclone import fields (gdrive/onedrive/dropbox) ── */}
+              {(sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') && (
+                <RcloneRemotePicker
+                  sourceType={sourceType}
+                  onSelect={(remoteName) => form.setFieldValue('rclone_remote_name', remoteName)}
+                />
+              )}
+              {(sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') && (
+                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                  <form.Field name="rclone_remote_name">
+                    {(field) => (
+                      <div className="space-y-1.5">
+                        <Label className={labelClass}>{i18n._(msg`library.rclone.remoteName`)}</Label>
+                        <Input
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          placeholder="my-gdrive"
+                          className={cn('font-mono text-sm', inputClass)}
+                        />
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+              )}
+
               {/* Path */}
               <form.Field
                 name="path"
@@ -1203,32 +1587,11 @@ function AddLibraryWizard({
                 <form.Subscribe selector={(s) => s.values}>
                   {(values) => (
                     <TestConnectionButton
-                      getConnectionInput={() => {
-                        if (sourceType === 'smb') {
-                          return {
-                            source_type: 'smb',
-                            source_config: {
-                              host: values.smb_host,
-                              port: values.smb_port,
-                              share: values.smb_share,
-                              username: values.smb_username,
-                              password: values.smb_password,
-                              domain: values.smb_domain,
-                            },
-                            path: values.path,
-                          };
-                        }
-                        return {
-                          source_type: 'sftp',
-                          source_config: {
-                            host: values.sftp_host,
-                            port: values.sftp_port,
-                            username: values.sftp_username,
-                            password: values.sftp_password,
-                          },
-                          path: values.path,
-                        };
-                      }}
+                      getConnectionInput={() => ({
+                        source_type: sourceType,
+                        source_config: buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
+                        path: values.path,
+                      })}
                     />
                   )}
                 </form.Subscribe>
@@ -1337,6 +1700,41 @@ function buildSourceConfig(values: LibraryFormValues): Record<string, unknown> |
       password: values.sftp_password,
     };
   }
+  if (values.source_type === 'webdav') {
+    return {
+      url: values.webdav_url,
+      vendor: values.webdav_vendor,
+      username: values.webdav_username,
+      password: values.webdav_password,
+    };
+  }
+  if (values.source_type === 's3') {
+    return {
+      endpoint: values.s3_endpoint,
+      bucket: values.s3_bucket,
+      region: values.s3_region,
+      access_key: values.s3_access_key,
+      secret_key: values.s3_secret_key,
+    };
+  }
+  if (values.source_type === 'ftp') {
+    return {
+      host: values.ftp_host,
+      port: values.ftp_port,
+      username: values.ftp_username,
+      password: values.ftp_password,
+    };
+  }
+  if (values.source_type === 'http') {
+    return {
+      url: values.http_url,
+    };
+  }
+  if (values.source_type === 'gdrive' || values.source_type === 'onedrive' || values.source_type === 'dropbox') {
+    return {
+      remote_name: values.rclone_remote_name,
+    };
+  }
   return undefined;
 }
 
@@ -1357,6 +1755,21 @@ function formDefaultValues(lib?: Library): LibraryFormValues {
     sftp_port: 22,
     sftp_username: '',
     sftp_password: '',
+    webdav_url: '',
+    webdav_vendor: 'other',
+    webdav_username: '',
+    webdav_password: '',
+    s3_endpoint: '',
+    s3_bucket: '',
+    s3_region: '',
+    s3_access_key: '',
+    s3_secret_key: '',
+    ftp_host: '',
+    ftp_port: 21,
+    ftp_username: '',
+    ftp_password: '',
+    http_url: '',
+    rclone_remote_name: '',
   };
 }
 

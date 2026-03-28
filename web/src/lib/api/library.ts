@@ -117,6 +117,7 @@ export const libraryApi = {
     api.put<MediaFileEntry>(`/api/v1/media-files/${fileId}/match`, body),
   unmatchFile: (fileId: string) => api.delete<void>(`/api/v1/media-files/${fileId}/match`),
   discoverNetwork: () => api.get<{ hosts: DiscoveredHost[] }>('/api/v1/libraries/discover-network'),
+  listRcloneRemotes: () => api.get<{ remotes: { name: string; type: string }[] }>('/api/v1/rclone/remotes'),
 };
 
 export const libraryKeys = {
@@ -127,4 +128,5 @@ export const libraryKeys = {
   mediaFiles: (id: string, params: MediaFilesParams = {}) =>
     [...libraryKeys.all, 'media-files', id, params] as const,
   network: () => [...libraryKeys.all, 'network'] as const,
+  rcloneRemotes: () => [...libraryKeys.all, 'rclone-remotes'] as const,
 };
