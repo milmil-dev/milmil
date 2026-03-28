@@ -547,68 +547,96 @@ function FolderBrowser({
             ))}
           </div>
 
-          {/* Directory listing — fixed height, no layout shift */}
-          <div className="overflow-y-auto overflow-x-hidden relative" style={{ height: `${height}px` }}>
-            {/* Skeleton only on first load */}
-            {!hasLoaded && browseMutation.isPending && (
-              <div className="space-y-1 p-2">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-8 rounded bg-white/[0.04] animate-pulse" />
-                ))}
-              </div>
-            )}
-            {hasLoaded && directories.length === 0 && !isNavigating && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
-              </div>
-            )}
-            {directories.length > 0 && (
-              <div className={cn('py-1 transition-opacity duration-200', isNavigating && 'opacity-40 pointer-events-none')}>
-                {/* Back to parent folder */}
-                {(browsePath !== '/' || selectedShare) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (breadcrumbs.length > 0) {
-                        handleCrumbClick(selectedShare ? breadcrumbs.length - 1 : breadcrumbs.length - 2);
-                      } else if (selectedShare) {
-                        handleCrumbClick(0);
-                      } else {
-                        handleCrumbClick(-1);
-                      }
-                    }}
-                    className="w-full px-3 py-2 flex items-center gap-2.5 rounded-md cursor-pointer text-xs text-white/40 hover:text-white/60 hover:bg-white/[0.03] transition-colors mb-0.5"
-                  >
-                    <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
-                      <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
-                        <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
-                      </svg>
-                    </div>
-                    <span>..</span>
-                  </button>
-                )}
-                {directories.map((entry) => (
-                  <button
-                    key={entry.path}
-                    type="button"
-                    onClick={() => handleDirectoryClick(entry)}
-                    className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70 hover:bg-white/[0.04] transition-colors"
-                  >
-                    <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
-                      <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/40">
-                        <path
-                          d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
-                          stroke="currentColor"
-                          strokeWidth="1.2"
-                        />
-                      </svg>
-                    </div>
-                    <span className="truncate font-medium">{entry.name}</span>
-                    <span className="ml-auto text-white/15 text-[10px] shrink-0">&#9654;</span>
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* Directory listing — fixed height, crossfade between states */}
+          <div className="overflow-y-auto overflow-x-hidden" style={{ height: `${height}px` }}>
+            <AnimatePresence mode="popLayout" initial={false}>
+              {/* Skeleton — first load only */}
+              {!hasLoaded && browseMutation.isPending && (
+                <motion.div
+                  key="skeleton"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="space-y-1 p-2"
+                >
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-10 rounded bg-white/[0.04] animate-pulse" />
+                  ))}
+                </motion.div>
+              )}
+
+              {/* Empty state */}
+              {hasLoaded && directories.length === 0 && !isNavigating && (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-center justify-center h-full"
+                >
+                  <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
+                </motion.div>
+              )}
+
+              {/* Directory list */}
+              {directories.length > 0 && (
+                <motion.div
+                  key={`dir-${browsePath}-${selectedShare}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isNavigating ? 0.4 : 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="py-1"
+                  style={{ pointerEvents: isNavigating ? 'none' : 'auto' }}
+                >
+                  {/* Back to parent folder */}
+                  {(browsePath !== '/' || selectedShare) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (breadcrumbs.length > 0) {
+                          handleCrumbClick(selectedShare ? breadcrumbs.length - 1 : breadcrumbs.length - 2);
+                        } else if (selectedShare) {
+                          handleCrumbClick(0);
+                        } else {
+                          handleCrumbClick(-1);
+                        }
+                      }}
+                      className="w-full px-3 py-2 flex items-center gap-2.5 rounded-md cursor-pointer text-xs text-white/40 hover:text-white/60 hover:bg-white/[0.03] transition-colors mb-0.5"
+                    >
+                      <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
+                        <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
+                          <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
+                        </svg>
+                      </div>
+                      <span>..</span>
+                    </button>
+                  )}
+                  {directories.map((entry) => (
+                    <button
+                      key={entry.path}
+                      type="button"
+                      onClick={() => handleDirectoryClick(entry)}
+                      className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70 hover:bg-white/[0.04] transition-colors"
+                    >
+                      <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
+                        <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/40">
+                          <path
+                            d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                          />
+                        </svg>
+                      </div>
+                      <span className="truncate font-medium">{entry.name}</span>
+                      <span className="ml-auto text-white/15 text-[10px] shrink-0">&#9654;</span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Footer — always rendered with fixed height to prevent layout shift */}
