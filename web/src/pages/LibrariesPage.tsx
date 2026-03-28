@@ -550,8 +550,8 @@ function FolderBrowser({
           {/* Directory listing — fixed height, crossfade between states */}
           <div className="overflow-y-auto overflow-x-hidden" style={{ height: `${height}px` }}>
             <AnimatePresence mode="popLayout" initial={false}>
-              {/* Skeleton — first load only */}
-              {!hasLoaded && browseMutation.isPending && (
+              {/* Skeleton — shows during loading */}
+              {browseMutation.isPending && (
                 <motion.div
                   key="skeleton"
                   initial={{ opacity: 0 }}
