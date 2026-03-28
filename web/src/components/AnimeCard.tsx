@@ -5,17 +5,31 @@ import { useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 
-export function AnimeCard({ anime }: { anime: AnimeSummary; index?: number }) {
+interface AnimeCardProps {
+  anime: AnimeSummary;
+  index?: number;
+  onPreview?: (anime: AnimeSummary) => void;
+}
+
+export function AnimeCard({ anime, onPreview }: AnimeCardProps) {
   const { i18n } = useLingui();
   const [imgFailed, setImgFailed] = useState(false);
   const hasCover = !imgFailed && anime.cover_image?.startsWith('http');
+  const hasDetailPage = anime.bangumi_id > 0;
 
-  return (
-    <Link
-      to={`/anime/${anime.bangumi_id}` as string}
-      className="group/media-entry-card relative flex flex-col"
-    >
-      {/* Card body — Seanime: aspect-[6/8], hover zoom */}
+  const handleClick = (e: React.MouseEvent) => {
+    if (onPreview) {
+      e.preventDefault();
+      onPreview(anime);
+    } else if (!hasDetailPage) {
+      e.preventDefault();
+      // No bangumi_id and no preview handler — do nothing
+    }
+  };
+
+  const content = (
+    <>
+      {/* Card body */}
       <div
         className="relative aspect-[6/8] rounded-md overflow-hidden"
         style={hasCover ? undefined : { background: animeGradient(anime.title) }}
@@ -24,6 +38,7 @@ export function AnimeCard({ anime }: { anime: AnimeSummary; index?: number }) {
           <img
             src={anime.cover_image}
             alt={anime.title}
+            loading="lazy"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover/media-entry-card:scale-110"
             onError={() => setImgFailed(true)}
           />
@@ -35,7 +50,6 @@ export function AnimeCard({ anime }: { anime: AnimeSummary; index?: number }) {
             </span>
           </div>
         )}
-        {/* Bottom gradient — Seanime: from-[#0c0c0c] opacity-90 */}
         <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
         {anime.score > 0 && (
           <div className="absolute bottom-2 left-2">
@@ -43,7 +57,7 @@ export function AnimeCard({ anime }: { anime: AnimeSummary; index?: number }) {
           </div>
         )}
       </div>
-      {/* Title — Seanime: text-sm, line-clamp-2 */}
+      {/* Title */}
       <div className="pt-1.5">
         <p className="text-sm font-medium text-[--foreground] line-clamp-2 leading-snug">
           {anime.title}
@@ -54,6 +68,27 @@ export function AnimeCard({ anime }: { anime: AnimeSummary; index?: number }) {
           </p>
         )}
       </div>
-    </Link>
+    </>
+  );
+
+  if (hasDetailPage && !onPreview) {
+    return (
+      <Link
+        to={`/anime/${anime.bangumi_id}` as string}
+        className="group/media-entry-card relative flex flex-col"
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className="group/media-entry-card relative flex flex-col text-left cursor-pointer"
+    >
+      {content}
+    </button>
   );
 }

@@ -15,6 +15,7 @@ import { PageTransition } from '../components/PageTransition';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import { progressApi, progressKeys } from '../lib/api/progress';
+import { translateGenre } from '../lib/genre-i18n';
 import { libraryGradient } from '../lib/gradient';
 import { useBgStore } from '../store/bg-store';
 
@@ -152,10 +153,10 @@ export function HomePage() {
                   <Link
                     key={genre}
                     to="/search"
-                    search={{ q: genre }}
+                    search={{ genre }}
                     className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors bg-transparent hover:bg-white/[0.06] text-white/40 hover:text-white/70 cursor-pointer"
                   >
-                    {genre}
+                    {translateGenre(genre, i18n.locale)}
                   </Link>
                 ))}
               </div>

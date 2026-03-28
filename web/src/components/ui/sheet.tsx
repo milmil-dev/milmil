@@ -43,12 +43,20 @@ function SheetContent({
     <DialogPrimitive.Portal>
       <DialogPrimitive.Backdrop
         data-slot="sheet-overlay"
-        className="fixed inset-0 z-50 bg-black/50 transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0"
+        className="fixed inset-0 z-50 transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0"
+        style={{ backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       />
       <DialogPrimitive.Popup
         data-slot="sheet-content"
+        style={{
+          backgroundColor: 'oklch(12% 0.01 260 / 0.72)',
+          backdropFilter: 'blur(40px) saturate(1.5)',
+          WebkitBackdropFilter: 'blur(40px) saturate(1.5)',
+          borderLeft: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.05) inset',
+        }}
         className={cn(
-          'fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition-all duration-300',
+          'fixed z-50 flex flex-col gap-4 shadow-lg transition-all duration-300',
           side === 'right' &&
             'inset-y-0 right-0 h-full w-3/4 border-l data-[ending-style]:translate-x-full data-[starting-style]:translate-x-full sm:max-w-sm',
           side === 'left' &&

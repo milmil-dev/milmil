@@ -92,8 +92,9 @@ test('renders the sidebar with navigation links', () => {
 
 test('sidebar renders logo', () => {
   const { container } = render(<AppSidebar />);
-  // Logo is now an SVG paw print
-  expect(container.querySelector('svg')).not.toBeNull();
+  // Logo is an <img> pointing to /icons/logo.svg
+  const img = container.querySelector('img[src="/icons/logo.svg"]');
+  expect(img).not.toBeNull();
 });
 
 test('sidebar has nav links as anchor elements', () => {

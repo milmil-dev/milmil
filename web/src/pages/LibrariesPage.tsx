@@ -49,9 +49,10 @@ function LibraryCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const { i18n } = useLingui();
   const lastScanned = lib.last_scanned_at
     ? new Date(lib.last_scanned_at).toLocaleDateString()
-    : 'Never';
+    : i18n._(msg`library.neverScanned`);
 
   return (
     <div className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:ring-1 hover:ring-mm-accent/20">
@@ -72,20 +73,20 @@ function LibraryCard({
 
         {scanning && (
           <div className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-mm-accent text-black">
-            SCANNING
+            {i18n._(msg`library.scanning`).toUpperCase()}
           </div>
         )}
 
         {/* Hover actions — no borders */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60">
           <button type="button" onClick={onScan} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer">
-            {scanning ? 'Scanning…' : 'Scan'}
+            {scanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
           </button>
           <button type="button" onClick={onEdit} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer">
-            Edit
+            {i18n._(msg`library.edit`)}
           </button>
           <button type="button" onClick={onDelete} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer">
-            Delete
+            {i18n._(msg`library.delete`)}
           </button>
         </div>
 
@@ -102,7 +103,7 @@ function LibraryCard({
             'text-[10px] font-bold px-1.5 py-0.5 rounded',
             lib.enabled ? 'bg-green-500/15 text-green-400' : 'bg-white/[0.04] text-white/30'
           )}>
-            {lib.enabled ? 'ON' : 'OFF'}
+            {lib.enabled ? i18n._(msg`library.on`) : i18n._(msg`library.off`)}
           </span>
           <SourceBadge sourceType={lib.source_type} />
           <span className="text-[10px] text-white/30">{lastScanned}</span>
@@ -114,6 +115,7 @@ function LibraryCard({
 
 // ─── Add card ─────────────────────────────────────────────────────────────────
 function AddCard({ onClick }: { onClick: () => void }) {
+  const { i18n } = useLingui();
   return (
     <button
       type="button"
@@ -129,9 +131,9 @@ function AddCard({ onClick }: { onClick: () => void }) {
       </div>
       <div className="p-3">
         <p className="text-sm font-semibold text-white/50 group-hover:text-white transition-colors">
-          Add Library
+          {i18n._(msg`library.addLibrary`)}
         </p>
-        <p className="text-[11px] mt-0.5 text-white/20">Connect a media source</p>
+        <p className="text-[11px] mt-0.5 text-white/20">{i18n._(msg`library.connectSource`)}</p>
       </div>
     </button>
   );
@@ -279,7 +281,7 @@ function LibraryForm({
       {/* Name */}
       <form.Field
         name="name"
-        validators={{ onChange: ({ value }) => (!value ? 'Name required' : undefined) }}
+        validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
       >
         {(field) => (
           <div className="space-y-1.5">
@@ -459,7 +461,7 @@ function LibraryForm({
       {/* Path */}
       <form.Field
         name="path"
-        validators={{ onChange: ({ value }) => (!value ? 'Path required' : undefined) }}
+        validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
       >
         {(field) => (
           <div className="space-y-1.5">
@@ -559,7 +561,7 @@ function LibraryForm({
             disabled={isSubmitting}
             className="w-full font-bold text-black bg-mm-accent"
           >
-            {isSubmitting ? 'Saving\u2026' : submitLabel}
+            {isSubmitting ? i18n._(msg`library.saving`) : submitLabel}
           </Button>
         )}
       </form.Subscribe>
@@ -612,6 +614,7 @@ function formDefaultValues(lib?: Library): LibraryFormValues {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function LibrariesPage() {
+  const { i18n } = useLingui();
   const queryClient = useQueryClient();
   const [drawerMode, setDrawerMode] = useState<'add' | 'edit' | null>(null);
   const [editLib, setEditLib] = useState<Library | null>(null);
@@ -628,7 +631,7 @@ export function LibrariesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
       setDrawerMode(null);
-      toast.success('Library added');
+      toast.success(i18n._(msg`library.toast.added`));
     },
     onError: (err: Error) => toast.error(err.message),
   });
@@ -640,7 +643,7 @@ export function LibrariesPage() {
       queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
       setDrawerMode(null);
       setEditLib(null);
-      toast.success('Library updated');
+      toast.success(i18n._(msg`library.toast.updated`));
     },
     onError: (err: Error) => toast.error(err.message),
   });
@@ -650,7 +653,7 @@ export function LibrariesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
       setDeleteLib(null);
-      toast.success('Library deleted');
+      toast.success(i18n._(msg`library.toast.deleted`));
     },
     onError: (err: Error) => toast.error(err.message),
   });
@@ -663,11 +666,11 @@ export function LibrariesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
       setScanningId(null);
-      toast.success('Scan complete');
+      toast.success(i18n._(msg`library.toast.scanComplete`));
     },
     onError: (err: Error) => {
       setScanningId(null);
-      toast.error(`Scan failed: ${err.message}`);
+      toast.error(`${i18n._(msg`library.toast.scanFailed`)}: ${err.message}`);
     },
   });
 
@@ -683,14 +686,14 @@ export function LibrariesPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">
                 milmil
               </p>
-              <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">My Libraries</h1>
+              <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">{i18n._(msg`library.pageTitle`)}</h1>
             </div>
             <motion.button
               whileTap={{ scale: 0.94 }}
               onClick={() => setDrawerMode('add')}
               className="px-4 py-2 text-sm font-bold rounded transition-opacity hover:opacity-80 text-black bg-mm-accent"
             >
-              + Add Library
+              + {i18n._(msg`library.addLibrary`)}
             </motion.button>
           </div>
         </div>
@@ -772,13 +775,13 @@ export function LibrariesPage() {
             setDrawerMode(null);
             setEditLib(null);
           }}
-          title={drawerMode === 'add' ? 'Add Library' : 'Edit Library'}
+          title={drawerMode === 'add' ? i18n._(msg`library.addLibrary`) : i18n._(msg`library.editLibrary`)}
           size="sm"
         >
           {drawerMode === 'add' && (
             <LibraryForm
               defaultValues={formDefaultValues()}
-              submitLabel="Add Library"
+              submitLabel={i18n._(msg`library.addLibrary`)}
               onSubmit={async (values) => {
                 await createMutation.mutateAsync({
                   name: values.name,
@@ -794,7 +797,7 @@ export function LibrariesPage() {
           {drawerMode === 'edit' && editLib && (
             <LibraryForm
               defaultValues={formDefaultValues(editLib)}
-              submitLabel="Save Changes"
+              submitLabel={i18n._(msg`library.saveChanges`)}
               onSubmit={async (values) => {
                 await updateMutation.mutateAsync({
                   id: editLib.id,
@@ -816,11 +819,11 @@ export function LibrariesPage() {
         <Modal
           open={!!deleteLib}
           onClose={() => setDeleteLib(null)}
-          title={`Delete "${deleteLib?.name}"?`}
+          title={`${i18n._(msg`library.delete`)} "${deleteLib?.name}"?`}
           size="sm"
         >
           <p className="text-[13px] text-mm-text-secondary mb-5">
-            All media file records will be removed. Your files on disk are unaffected.
+            {i18n._(msg`library.deleteConfirm`)}
           </p>
           <div className="flex justify-end gap-2">
             <button
@@ -828,7 +831,7 @@ export function LibrariesPage() {
               onClick={() => setDeleteLib(null)}
               className="px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors"
             >
-              Cancel
+              {i18n._(msg`library.cancel`)}
             </button>
             <button
               type="button"
@@ -838,7 +841,7 @@ export function LibrariesPage() {
               className="px-4 py-2 text-[13px] font-medium rounded-md text-white transition-colors"
               style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
             >
-              Delete
+              {i18n._(msg`library.delete`)}
             </button>
           </div>
         </Modal>

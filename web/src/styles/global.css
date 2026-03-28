@@ -45,10 +45,18 @@
     overflow-x: hidden;
     background-color: var(--mm-bg);
     background-image:
-      radial-gradient(circle at top left, color-mix(in oklch, var(--mm-accent) 14%, transparent), transparent 34%),
-      radial-gradient(circle at 80% 0%, color-mix(in oklch, var(--mm-sidebar) 88%, transparent), transparent 30%),
+      /* Warm accent glow — top left (pink) */
+      radial-gradient(ellipse 600px 500px at 5% 0%, color-mix(in oklch, var(--mm-accent) 12%, transparent), transparent),
+      /* Secondary glow — top right (cool purple tint) */
+      radial-gradient(ellipse 500px 400px at 85% 2%, oklch(0.45 0.12 300 / 0.08), transparent),
+      /* Subtle center glow — mid page warmth */
+      radial-gradient(ellipse 800px 600px at 40% 30%, color-mix(in oklch, var(--mm-accent) 4%, transparent), transparent),
+      /* Dot grid — 二次元 screen-tone texture */
+      radial-gradient(circle 0.5px at center, oklch(1 0 0 / 0.025) 0.5px, transparent 0.5px),
+      /* Base gradient */
       linear-gradient(180deg, color-mix(in oklch, var(--mm-sidebar) 68%, transparent), var(--mm-bg) 26%);
-    background-repeat: no-repeat;
+    background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px, 100% 100%;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
     background-attachment: fixed;
   }
   html {

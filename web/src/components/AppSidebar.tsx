@@ -50,6 +50,7 @@ function NavItem({
       <TooltipTrigger asChild>
         <Link
           to={to}
+          aria-label={i18n._(msgKey)}
           className={cn(
             'relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200',
             isActive
@@ -79,7 +80,7 @@ export function AppSidebar() {
   return (
     <>
       {/* Desktop sidebar — Seanime: icon-only w-20, bg-[--background], tooltip on hover */}
-      <TooltipProvider>
+      <TooltipProvider delayDuration={100}>
         <aside
           className="fixed left-0 top-0 bottom-0 w-20 z-40 flex flex-col items-center max-md:hidden"
           style={{ backgroundColor: 'transparent' }}

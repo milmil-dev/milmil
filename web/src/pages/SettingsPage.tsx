@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
@@ -69,6 +71,7 @@ function SelectorGroup<T extends string | number>({
 
 // ─── DandanPlay Section ──────────────────────────────────────────────────────
 function DandanPlaySection() {
+  const { i18n } = useLingui();
   const queryClient = useQueryClient();
 
   const { data: settings } = useQuery({
@@ -90,14 +93,14 @@ function DandanPlaySection() {
     mutationFn: ({ section, data }: { section: string; data: any }) =>
       api.put(`/api/v1/settings/${section}`, data),
     onSuccess: () => {
-      toast.success('已儲存');
+      toast.success(i18n._(msg`settings.saved`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
-    onError: () => toast.error('儲存失敗'),
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
   });
 
   return (
-    <Section title="DandanPlay 設定" delay={0}>
+    <Section title={i18n._(msg`settings.dandanplay.title`)} delay={0}>
       <div className="space-y-1.5">
         <Label
           htmlFor="dandanplay-app-id"
@@ -139,7 +142,7 @@ function DandanPlaySection() {
         disabled={saveMutation.isPending}
         className="font-bold text-black bg-mm-accent"
       >
-        {saveMutation.isPending ? '儲存中…' : '儲存'}
+        {saveMutation.isPending ? i18n._(msg`settings.saving`) : i18n._(msg`settings.save`)}
       </Button>
     </Section>
   );
@@ -160,6 +163,7 @@ const FONT_SIZE_OPTIONS = [
 
 // ─── Player Section ──────────────────────────────────────────────────────────
 function PlayerSection() {
+  const { i18n } = useLingui();
   const queryClient = useQueryClient();
 
   const danmakuEnabled = usePlayerStore((s) => s.danmakuEnabled);
@@ -190,24 +194,24 @@ function PlayerSection() {
       store.setDanmakuFontSize(fontSize);
       store.setDanmakuSpeed(speed);
 
-      toast.success('已儲存');
+      toast.success(i18n._(msg`settings.saved`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
-    onError: () => toast.error('儲存失敗'),
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
   });
 
   return (
-    <Section title="播放器設定" delay={0.08}>
+    <Section title={i18n._(msg`settings.player.title`)} delay={0.08}>
       {/* Danmaku enabled */}
       <div className="flex items-center justify-between">
-        <Label className="text-sm text-mm-text-secondary">彈幕預設開啟</Label>
+        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuEnabled`)}</Label>
         <Switch checked={enabled} onCheckedChange={setEnabled} />
       </div>
 
       {/* Danmaku opacity */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-sm text-mm-text-secondary">彈幕透明度</Label>
+          <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuOpacity`)}</Label>
           <span className="text-xs text-mm-text-tertiary tabular-nums">{opacity}%</span>
         </div>
         <input
@@ -225,13 +229,13 @@ function PlayerSection() {
 
       {/* Danmaku font size */}
       <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">彈幕字體大小</Label>
+        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuFontSize`)}</Label>
         <SelectorGroup options={[...FONT_SIZE_OPTIONS]} value={fontSize} onChange={setFontSize} />
       </div>
 
       {/* Danmaku speed */}
       <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">彈幕速度</Label>
+        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuSpeed`)}</Label>
         <SelectorGroup options={[...SPEED_OPTIONS]} value={speed} onChange={setSpeed} />
       </div>
 
@@ -250,7 +254,7 @@ function PlayerSection() {
         disabled={saveMutation.isPending}
         className="font-bold text-black bg-mm-accent"
       >
-        {saveMutation.isPending ? '儲存中…' : '儲存'}
+        {saveMutation.isPending ? i18n._(msg`settings.saving`) : i18n._(msg`settings.save`)}
       </Button>
     </Section>
   );
@@ -258,6 +262,7 @@ function PlayerSection() {
 
 // ─── Appearance Section ──────────────────────────────────────────────────────
 function AppearanceSection() {
+  const { i18n } = useLingui();
   const [currentLang, setCurrentLang] = useState(
     () => localStorage.getItem('milmil-locale') ?? 'zh-Hant'
   );
@@ -266,13 +271,13 @@ function AppearanceSection() {
     setCurrentLang(code);
     localStorage.setItem('milmil-locale', code);
     loadAndActivate(code);
-    toast.success('已儲存');
+    toast.success(i18n._(msg`settings.saved`));
   };
 
   return (
-    <Section title="外觀設定" delay={0.16}>
+    <Section title={i18n._(msg`settings.appearance.title`)} delay={0.16}>
       <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">語言選擇</Label>
+        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.appearance.language`)}</Label>
         <SelectorGroup
           options={availableLanguages.map((l) => ({ label: l.label, value: l.code }))}
           value={currentLang}
@@ -293,6 +298,7 @@ function IntegrationSection({
   label: string;
   delay: number;
 }) {
+  const { i18n } = useLingui();
   const queryClient = useQueryClient();
 
   const { data: settings } = useQuery({
@@ -319,10 +325,10 @@ function IntegrationSection({
     mutationFn: (data: { client_id: string; client_secret: string }) =>
       api.put(`/api/v1/settings/${oauthKey}`, data),
     onSuccess: () => {
-      toast.success('已儲存');
+      toast.success(i18n._(msg`settings.saved`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
-    onError: () => toast.error('儲存失敗'),
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
   });
 
   const connectMutation = useMutation({
@@ -330,16 +336,16 @@ function IntegrationSection({
     onSuccess: (data) => {
       window.open(data.url, '_blank');
     },
-    onError: () => toast.error('取得授權連結失敗'),
+    onError: () => toast.error(i18n._(msg`settings.integration.authUrlFailed`)),
   });
 
   const disconnectMutation = useMutation({
     mutationFn: () => api.delete<void>(`/api/v1/integrations/${provider}`),
     onSuccess: () => {
-      toast.success('已斷開連線');
+      toast.success(i18n._(msg`settings.integration.disconnected`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
-    onError: () => toast.error('斷開連線失敗'),
+    onError: () => toast.error(i18n._(msg`settings.integration.disconnectFailed`)),
   });
 
   const syncMutation = useMutation({
@@ -348,13 +354,13 @@ function IntegrationSection({
         `/api/v1/integrations/${provider}/sync`
       ),
     onSuccess: (data) => {
-      toast.success(`同步完成：${String(data.synced)} 筆成功，${String(data.errors)} 筆失敗`);
+      toast.success(`${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.synced)} / ${String(data.errors)} ${i18n._(msg`settings.integration.syncErrors`)}`);
     },
-    onError: () => toast.error('同步失敗'),
+    onError: () => toast.error(i18n._(msg`settings.integration.syncFailed`)),
   });
 
   return (
-    <Section title={`${label} 連動`} delay={delay}>
+    <Section title={`${label} ${i18n._(msg`settings.integration.title`)}`} delay={delay}>
       {/* OAuth credentials */}
       <div className="space-y-1.5">
         <Label
@@ -396,7 +402,7 @@ function IntegrationSection({
           disabled={saveCredsMutation.isPending}
           className="font-bold text-black bg-mm-accent"
         >
-          {saveCredsMutation.isPending ? '儲存中…' : '儲存'}
+          {saveCredsMutation.isPending ? i18n._(msg`settings.saving`) : i18n._(msg`settings.save`)}
         </Button>
 
         {isConfigured && !isConnected && (
@@ -406,20 +412,20 @@ function IntegrationSection({
             variant="outline"
             className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
           >
-            {connectMutation.isPending ? '連線中…' : '連線帳號'}
+            {connectMutation.isPending ? i18n._(msg`settings.integration.connecting`) : i18n._(msg`settings.integration.connect`)}
           </Button>
         )}
 
         {isConnected && (
           <>
-            <span className="text-xs font-bold text-green-400">Connected</span>
+            <span className="text-xs font-bold text-green-400">{i18n._(msg`settings.integration.connected`)}</span>
             <Button
               onClick={() => disconnectMutation.mutate()}
               disabled={disconnectMutation.isPending}
               variant="outline"
               className="font-bold border-[oklch(30%_0.01_280)] text-red-400 hover:bg-[oklch(20%_0.01_280)]"
             >
-              {disconnectMutation.isPending ? '斷開中…' : '斷開連線'}
+              {disconnectMutation.isPending ? i18n._(msg`settings.integration.disconnecting`) : i18n._(msg`settings.integration.disconnect`)}
             </Button>
             <Button
               onClick={() => syncMutation.mutate()}
@@ -427,7 +433,7 @@ function IntegrationSection({
               variant="outline"
               className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
             >
-              {syncMutation.isPending ? '同步中…' : '同步進度'}
+              {syncMutation.isPending ? i18n._(msg`settings.integration.syncing`) : i18n._(msg`settings.integration.sync`)}
             </Button>
           </>
         )}
@@ -438,13 +444,14 @@ function IntegrationSection({
 
 // ─── Settings Page ───────────────────────────────────────────────────────────
 export function SettingsPage() {
+  const { i18n } = useLingui();
   return (
     <PageTransition>
       <div className="min-h-screen">
         {/* Header */}
         <div className="px-8 pt-12 pb-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">milmil</p>
-          <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">Settings</h1>
+          <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">{i18n._(msg`settings.pageTitle`)}</h1>
         </div>
 
         {/* Sections */}
