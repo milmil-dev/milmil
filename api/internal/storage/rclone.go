@@ -38,6 +38,9 @@ type RcloneConfig struct {
 	AccessKey string `json:"access_key,omitempty"`
 	SecretKey string `json:"secret_key,omitempty"`
 	Region    string `json:"region,omitempty"`
+
+	// OAuth backends (gdrive, onedrive, dropbox) — use pre-configured rclone remote
+	RemoteName string `json:"remote_name,omitempty"`
 }
 
 // RcloneProvider implements Provider using rclone's VFS layer.
@@ -185,6 +188,14 @@ func buildRemoteString(backendType string, cfg RcloneConfig) (string, error) {
 		}
 		params = append(params, "url="+cfg.URL)
 		rootPath = "/"
+
+	case "gdrive", "onedrive", "dropbox":
+		if cfg.RemoteName == "" {
+			return "", fmt.Errorf("rclone %s: remote_name is required", backendType)
+		}
+		// OAuth backends use a pre-configured rclone remote (set up via `rclone config`).
+		// Return "remoteName:/" directly instead of the on-the-fly syntax.
+		return cfg.RemoteName + ":/", nil
 
 	default:
 		return "", fmt.Errorf("rclone: unsupported backend type %q", backendType)

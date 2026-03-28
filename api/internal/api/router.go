@@ -85,6 +85,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Network discovery — public (used during initial setup before login)
 	v1.GET("/libraries/discover-network", h.handleDiscoverNetwork)
 
+	// Rclone remotes — public (used during library setup to pick OAuth remotes)
+	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
+
 	// Media files — protected
 	mediaGroup := v1.Group("/media-files", jwtMiddleware(cfg.JWTSecret))
 	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)

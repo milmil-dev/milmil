@@ -122,3 +122,48 @@ func TestBuildRemoteString_HTTP_MissingURL(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "url is required")
 }
+
+// --- Google Drive ---
+
+func TestBuildRemoteString_GDrive(t *testing.T) {
+	cfg := RcloneConfig{RemoteName: "my-gdrive"}
+	remote, err := buildRemoteString("gdrive", cfg)
+	assert.NoError(t, err)
+	assert.Equal(t, "my-gdrive:/", remote)
+}
+
+func TestBuildRemoteString_GDrive_MissingRemoteName(t *testing.T) {
+	_, err := buildRemoteString("gdrive", RcloneConfig{})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "remote_name is required")
+}
+
+// --- OneDrive ---
+
+func TestBuildRemoteString_OneDrive(t *testing.T) {
+	cfg := RcloneConfig{RemoteName: "my-onedrive"}
+	remote, err := buildRemoteString("onedrive", cfg)
+	assert.NoError(t, err)
+	assert.Equal(t, "my-onedrive:/", remote)
+}
+
+func TestBuildRemoteString_OneDrive_MissingRemoteName(t *testing.T) {
+	_, err := buildRemoteString("onedrive", RcloneConfig{})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "remote_name is required")
+}
+
+// --- Dropbox ---
+
+func TestBuildRemoteString_Dropbox(t *testing.T) {
+	cfg := RcloneConfig{RemoteName: "my-dropbox"}
+	remote, err := buildRemoteString("dropbox", cfg)
+	assert.NoError(t, err)
+	assert.Equal(t, "my-dropbox:/", remote)
+}
+
+func TestBuildRemoteString_Dropbox_MissingRemoteName(t *testing.T) {
+	_, err := buildRemoteString("dropbox", RcloneConfig{})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "remote_name is required")
+}
