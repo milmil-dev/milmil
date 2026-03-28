@@ -1214,7 +1214,8 @@ function AddLibraryWizard({
   }, [sourceType, form]);
 
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [showManualSmb, setShowManualSmb] = useState(false);
+  const [smbStep, setSmbStep] = useState<'server' | 'credentials' | 'folder'>('server');
+  const [manualSmbHost, setManualSmbHost] = useState('');
 
   return (
     <div className="mt-2">
@@ -1272,7 +1273,7 @@ function AddLibraryWizard({
             {/* Back link */}
             <button
               type="button"
-              onClick={() => { setStep('source'); setShowManualSmb(false); }}
+              onClick={() => { setStep('source'); setSmbStep('server'); }}
               className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors mb-4 cursor-pointer"
             >
               <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
@@ -1295,119 +1296,170 @@ function AddLibraryWizard({
               }}
               className="space-y-5"
             >
-              {/* Name */}
-              <form.Field
-                name="name"
-                validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
-              >
-                {(field) => (
-                  <div className="space-y-1.5">
-                    <Label htmlFor="wiz-name" className={labelClass}>
-                      {i18n._(msg`library.name`)}
-                    </Label>
-                    <Input
-                      id="wiz-name"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Anime"
-                      className={inputClass}
-                    />
-                    {field.state.meta.errors[0] && (
-                      <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-                    )}
-                  </div>
-                )}
-              </form.Field>
+              {/* Name — shown for non-SMB sources (SMB has it in sub-step 3) */}
+              {sourceType !== 'smb' && (
+                <form.Field
+                  name="name"
+                  validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+                >
+                  {(field) => (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="wiz-name" className={labelClass}>
+                        {i18n._(msg`library.name`)}
+                      </Label>
+                      <Input
+                        id="wiz-name"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder="Anime"
+                        className={inputClass}
+                      />
+                      {field.state.meta.errors[0] && (
+                        <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                      )}
+                    </div>
+                  )}
+                </form.Field>
+              )}
 
-              {/* ── SMB: Network Discovery prominent ── */}
+              {/* ── SMB: Guided 3-step flow ── */}
               {sourceType === 'smb' && (
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200 mb-2">
-                      {i18n._(msg`library.discover.browse`)}
-                    </p>
-                    <NetworkBrowser
-                      autoDiscover
-                      onSelect={(host, port, share) => {
-                        form.setFieldValue('smb_host', host);
-                        form.setFieldValue('smb_port', port);
-                        form.setFieldValue('smb_share', share);
-                        setShowManualSmb(false);
-                      }}
-                      onSelectHost={(host, port) => {
-                        form.setFieldValue('smb_host', host);
-                        form.setFieldValue('smb_port', port);
-                        setShowManualSmb(true);
-                      }}
-                    />
+                <div className="space-y-5">
+                  {/* Step indicator */}
+                  <div className="flex items-center gap-2 text-xs">
+                    {([
+                      { key: 'server' as const, label: 'Server', num: '1' },
+                      { key: 'credentials' as const, label: 'Credentials', num: '2' },
+                      { key: 'folder' as const, label: 'Folder', num: '3' },
+                    ] as const).map((s, idx) => {
+                      const steps: ('server' | 'credentials' | 'folder')[] = ['server', 'credentials', 'folder'];
+                      const currentIdx = steps.indexOf(smbStep);
+                      const stepIdx = steps.indexOf(s.key);
+                      const isActive = smbStep === s.key;
+                      const isCompleted = stepIdx < currentIdx;
+                      return (
+                        <span key={s.key} className="flex items-center gap-2">
+                          {idx > 0 && <span className="text-white/15">&#8212;</span>}
+                          <span className={cn(
+                            'font-bold transition-colors',
+                            isActive && 'text-white',
+                            isCompleted && 'text-green-400',
+                            !isActive && !isCompleted && 'text-white/25',
+                          )}>
+                            {isCompleted ? '\u2713' : s.num}
+                          </span>
+                          <span className={cn(
+                            'transition-colors',
+                            isActive && 'text-white/70',
+                            isCompleted && 'text-green-400/70',
+                            !isActive && !isCompleted && 'text-white/25',
+                          )}>
+                            {s.label}
+                          </span>
+                        </span>
+                      );
+                    })}
                   </div>
 
-                  {/* Divider */}
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-px bg-white/[0.06]" />
-                    <button
-                      type="button"
-                      onClick={() => setShowManualSmb(!showManualSmb)}
-                      className="text-[11px] text-white/30 hover:text-white/50 transition-colors cursor-pointer"
-                    >
-                      {showManualSmb ? i18n._(msg`library.wizard.hideManual`) : i18n._(msg`library.wizard.orManual`)}
-                    </button>
-                    <div className="flex-1 h-px bg-white/[0.06]" />
-                  </div>
-
-                  {/* Manual SMB fields */}
-                  <AnimatePresence>
-                    {showManualSmb && (
+                  <AnimatePresence mode="wait">
+                    {/* Sub-step 1: Pick a Server */}
+                    {smbStep === 'server' && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
+                        key="smb-server"
+                        initial={{ opacity: 0, x: -16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.15 }}
-                        className="overflow-hidden"
+                        className="space-y-4"
                       >
-                        <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
-                          <form.Field name="smb_host">
-                            {(field) => (
-                              <div className="space-y-1.5">
-                                <Label className={labelClass}>{i18n._(msg`library.smb.host`)}</Label>
-                                <Input
-                                  value={field.state.value}
-                                  onChange={(e) => field.handleChange(e.target.value)}
-                                  placeholder="192.168.1.100"
-                                  className={inputClass}
-                                />
-                              </div>
-                            )}
-                          </form.Field>
-                          <div className="grid grid-cols-2 gap-3">
-                            <form.Field name="smb_port">
-                              {(field) => (
-                                <div className="space-y-1.5">
-                                  <Label className={labelClass}>{i18n._(msg`library.smb.port`)}</Label>
-                                  <Input
-                                    type="number"
-                                    value={field.state.value}
-                                    onChange={(e) => field.handleChange(Number(e.target.value))}
-                                    placeholder="445"
-                                    className={inputClass}
-                                  />
-                                </div>
-                              )}
-                            </form.Field>
-                            <form.Field name="smb_share">
-                              {(field) => (
-                                <div className="space-y-1.5">
-                                  <Label className={labelClass}>{i18n._(msg`library.smb.share`)}</Label>
-                                  <Input
-                                    value={field.state.value}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    placeholder="media"
-                                    className={inputClass}
-                                  />
-                                </div>
-                              )}
-                            </form.Field>
+                        <p className="text-xs text-white/40">Choose a server</p>
+                        <NetworkBrowser
+                          autoDiscover
+                          onSelect={(host, port) => {
+                            form.setFieldValue('smb_host', host);
+                            form.setFieldValue('smb_port', port);
+                            setManualSmbHost('');
+                            setSmbStep('credentials');
+                          }}
+                          onSelectHost={(host, port) => {
+                            form.setFieldValue('smb_host', host);
+                            form.setFieldValue('smb_port', port);
+                            setManualSmbHost('');
+                            setSmbStep('credentials');
+                          }}
+                        />
+
+                        {/* Manual entry */}
+                        <div className="space-y-2 pt-2">
+                          <p className="text-[11px] text-white/30">Enter server address manually</p>
+                          <div className="flex gap-2">
+                            <Input
+                              value={manualSmbHost}
+                              onChange={(e) => setManualSmbHost(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && manualSmbHost.trim()) {
+                                  e.preventDefault();
+                                  form.setFieldValue('smb_host', manualSmbHost.trim());
+                                  form.setFieldValue('smb_port', 445);
+                                  setSmbStep('credentials');
+                                }
+                              }}
+                              placeholder="192.168.1.100"
+                              className={cn('flex-1', inputClass)}
+                            />
+                            <button
+                              type="button"
+                              disabled={!manualSmbHost.trim()}
+                              onClick={() => {
+                                form.setFieldValue('smb_host', manualSmbHost.trim());
+                                form.setFieldValue('smb_port', 445);
+                                setSmbStep('credentials');
+                              }}
+                              className="px-4 py-2 text-xs font-bold rounded-md bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
+                            >
+                              Next
+                            </button>
                           </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Sub-step 2: Enter Credentials */}
+                    {smbStep === 'credentials' && (
+                      <motion.div
+                        key="smb-credentials"
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -16 }}
+                        transition={{ duration: 0.15 }}
+                        className="space-y-4"
+                      >
+                        {/* Selected server summary */}
+                        <form.Subscribe selector={(s) => ({ host: s.values.smb_host, port: s.values.smb_port })}>
+                          {({ host, port }) => (
+                            <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                              <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center">
+                                <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-white/50">
+                                  <rect x="4" y="5" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                                  <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                                  <circle cx="7" cy="7.5" r="0.8" fill="currentColor" />
+                                  <circle cx="7" cy="16.5" r="0.8" fill="currentColor" />
+                                </svg>
+                              </div>
+                              <span className="text-sm text-white/70 font-medium">{host}</span>
+                              {port !== 445 && <span className="text-[11px] text-white/30">:{port}</span>}
+                              <button
+                                type="button"
+                                onClick={() => setSmbStep('server')}
+                                className="ml-auto text-[11px] text-mm-accent hover:underline cursor-pointer"
+                              >
+                                Change
+                              </button>
+                            </div>
+                          )}
+                        </form.Subscribe>
+
+                        <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
                           <form.Field name="smb_username">
                             {(field) => (
                               <div className="space-y-1.5">
@@ -1438,7 +1490,10 @@ function AddLibraryWizard({
                           <form.Field name="smb_domain">
                             {(field) => (
                               <div className="space-y-1.5">
-                                <Label className={labelClass}>{i18n._(msg`library.smb.domain`)}</Label>
+                                <Label className={labelClass}>
+                                  {i18n._(msg`library.smb.domain`)}
+                                  <span className="ml-1.5 text-white/25 normal-case tracking-normal font-normal">(optional)</span>
+                                </Label>
                                 <Input
                                   value={field.state.value}
                                   onChange={(e) => field.handleChange(e.target.value)}
@@ -1449,6 +1504,108 @@ function AddLibraryWizard({
                             )}
                           </form.Field>
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setSmbStep('folder')}
+                          className="w-full px-4 py-2.5 text-sm font-bold rounded-lg bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] text-white transition-all cursor-pointer"
+                        >
+                          Connect
+                        </button>
+                      </motion.div>
+                    )}
+
+                    {/* Sub-step 3: Browse & Select Folder */}
+                    {smbStep === 'folder' && (
+                      <motion.div
+                        key="smb-folder"
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -16 }}
+                        transition={{ duration: 0.15 }}
+                        className="space-y-4"
+                      >
+                        {/* Summary line */}
+                        <form.Subscribe selector={(s) => ({ host: s.values.smb_host, user: s.values.smb_username })}>
+                          {({ host, user }) => (
+                            <div className="flex items-center gap-2 text-xs text-white/40">
+                              <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-white/30">
+                                <rect x="4" y="5" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                                <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                              </svg>
+                              <span>{host}</span>
+                              {user && <span>as {user}</span>}
+                              <button
+                                type="button"
+                                onClick={() => setSmbStep('credentials')}
+                                className="ml-auto text-[11px] text-mm-accent hover:underline cursor-pointer"
+                              >
+                                Change
+                              </button>
+                            </div>
+                          )}
+                        </form.Subscribe>
+
+                        {/* Folder browser — auto-loads shares */}
+                        <form.Subscribe selector={(s) => s.values}>
+                          {(values) => (
+                            <FolderBrowser
+                              sourceType="smb"
+                              getSourceConfig={() => buildSourceConfig({ ...values, source_type: 'smb' }) ?? {}}
+                              currentPath={values.path}
+                              onSelect={(path) => {
+                                form.setFieldValue('path', path);
+                                // If selecting a share (path starts with / and has one segment), set smb_share
+                                const segments = path.split('/').filter(Boolean);
+                                if (segments.length >= 1 && segments[0]) {
+                                  form.setFieldValue('smb_share', segments[0]);
+                                  if (segments.length > 1) {
+                                    form.setFieldValue('path', '/' + segments.slice(1).join('/'));
+                                  } else {
+                                    form.setFieldValue('path', '/');
+                                  }
+                                }
+                              }}
+                            />
+                          )}
+                        </form.Subscribe>
+
+                        {/* Library name */}
+                        <form.Field
+                          name="name"
+                          validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+                        >
+                          {(field) => (
+                            <div className="space-y-1.5">
+                              <Label htmlFor="wiz-name-smb" className={labelClass}>
+                                {i18n._(msg`library.name`)}
+                              </Label>
+                              <Input
+                                id="wiz-name-smb"
+                                value={field.state.value}
+                                onChange={(e) => field.handleChange(e.target.value)}
+                                placeholder="Anime"
+                                className={inputClass}
+                              />
+                              {field.state.meta.errors[0] && (
+                                <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                              )}
+                            </div>
+                          )}
+                        </form.Field>
+
+                        {/* Submit */}
+                        <form.Subscribe selector={(s) => ({ isSubmitting: s.isSubmitting, path: s.values.path })}>
+                          {({ isSubmitting, path }) => (
+                            <Button
+                              type="submit"
+                              disabled={isSubmitting || !path}
+                              className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
+                            >
+                              {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
+                            </Button>
+                          )}
+                        </form.Subscribe>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -1762,132 +1919,138 @@ function AddLibraryWizard({
                 </div>
               )}
 
-              {/* Path — with folder browser for non-local sources */}
-              <form.Subscribe selector={(s) => s.values}>
-                {(values) => (
-                  <div className="space-y-3">
-                    <form.Field
-                      name="path"
-                      validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
-                    >
-                      {(field) => (
-                        <div className="space-y-1.5">
-                          <Label htmlFor="wiz-path" className={labelClass}>
-                            {i18n._(msg`library.path`)}
-                          </Label>
-                          <Input
-                            id="wiz-path"
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            placeholder={sourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
-                            className={cn('font-mono text-sm', inputClass)}
-                          />
-                          {field.state.meta.errors[0] && (
-                            <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-                          )}
-                        </div>
+              {/* Path — with folder browser for non-local, non-SMB sources */}
+              {sourceType !== 'smb' && (
+                <form.Subscribe selector={(s) => s.values}>
+                  {(values) => (
+                    <div className="space-y-3">
+                      <form.Field
+                        name="path"
+                        validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
+                      >
+                        {(field) => (
+                          <div className="space-y-1.5">
+                            <Label htmlFor="wiz-path" className={labelClass}>
+                              {i18n._(msg`library.path`)}
+                            </Label>
+                            <Input
+                              id="wiz-path"
+                              value={field.state.value}
+                              onChange={(e) => field.handleChange(e.target.value)}
+                              placeholder={sourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                              className={cn('font-mono text-sm', inputClass)}
+                            />
+                            {field.state.meta.errors[0] && (
+                              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                            )}
+                          </div>
+                        )}
+                      </form.Field>
+
+                      {/* Folder browser for non-local source types */}
+                      {sourceType !== 'local' && (
+                        <FolderBrowser
+                          sourceType={sourceType}
+                          getSourceConfig={() => buildSourceConfig({ ...values, source_type: sourceType }) ?? {}}
+                          currentPath={values.path}
+                          onSelect={(path) => form.setFieldValue('path', path)}
+                        />
                       )}
-                    </form.Field>
 
-                    {/* Folder browser for non-local source types */}
-                    {sourceType !== 'local' && (
-                      <FolderBrowser
-                        sourceType={sourceType}
-                        getSourceConfig={() => buildSourceConfig({ ...values, source_type: sourceType }) ?? {}}
-                        currentPath={values.path}
-                        onSelect={(path) => form.setFieldValue('path', path)}
-                      />
-                    )}
-
-                    {/* Test connection for non-local */}
-                    {sourceType !== 'local' && (
-                      <TestConnectionButton
-                        getConnectionInput={() => ({
-                          source_type: sourceType,
-                          source_config: buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
-                          path: values.path,
-                        })}
-                      />
-                    )}
-                  </div>
-                )}
-              </form.Subscribe>
-
-              {/* Advanced section */}
-              <div className="border-t border-white/[0.06] pt-3">
-                <button
-                  type="button"
-                  onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/60 transition-colors cursor-pointer"
-                >
-                  <span
-                    className="text-[9px] transition-transform duration-150"
-                    style={{ transform: showAdvanced ? 'rotate(90deg)' : undefined }}
-                  >
-                    &#9654;
-                  </span>
-                  {i18n._(msg`library.wizard.advanced`)}
-                </button>
-                <AnimatePresence>
-                  {showAdvanced && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="space-y-4 pt-4">
-                        <form.Field name="scan_interval_minutes">
-                          {(field) => (
-                            <div className="space-y-1.5">
-                              <Label htmlFor="wiz-interval" className={labelClass}>
-                                {i18n._(msg`library.scanInterval`)}
-                              </Label>
-                              <Input
-                                id="wiz-interval"
-                                type="number"
-                                value={field.state.value}
-                                onChange={(e) => field.handleChange(Number(e.target.value))}
-                                min={1}
-                                max={10080}
-                                className={inputClass}
-                              />
-                            </div>
-                          )}
-                        </form.Field>
-                        <form.Field name="enabled">
-                          {(field) => (
-                            <div className="flex items-center justify-between py-1">
-                              <Label htmlFor="wiz-enabled" className={labelClass}>
-                                {i18n._(msg`library.enabled`)}
-                              </Label>
-                              <Switch
-                                id="wiz-enabled"
-                                checked={field.state.value}
-                                onCheckedChange={field.handleChange}
-                              />
-                            </div>
-                          )}
-                        </form.Field>
-                      </div>
-                    </motion.div>
+                      {/* Test connection for non-local */}
+                      {sourceType !== 'local' && (
+                        <TestConnectionButton
+                          getConnectionInput={() => ({
+                            source_type: sourceType,
+                            source_config: buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
+                            path: values.path,
+                          })}
+                        />
+                      )}
+                    </div>
                   )}
-                </AnimatePresence>
-              </div>
+                </form.Subscribe>
+              )}
 
-              {/* Submit */}
-              <form.Subscribe selector={(s) => s.isSubmitting}>
-                {(isSubmitting) => (
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
-                  >
-                    {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
-                  </Button>
-                )}
-              </form.Subscribe>
+              {/* Advanced section + Submit — hidden for SMB (handled in sub-step 3) */}
+              {sourceType !== 'smb' && (
+                <>
+                  <div className="border-t border-white/[0.06] pt-3">
+                    <button
+                      type="button"
+                      onClick={() => setShowAdvanced(!showAdvanced)}
+                      className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+                    >
+                      <span
+                        className="text-[9px] transition-transform duration-150"
+                        style={{ transform: showAdvanced ? 'rotate(90deg)' : undefined }}
+                      >
+                        &#9654;
+                      </span>
+                      {i18n._(msg`library.wizard.advanced`)}
+                    </button>
+                    <AnimatePresence>
+                      {showAdvanced && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="space-y-4 pt-4">
+                            <form.Field name="scan_interval_minutes">
+                              {(field) => (
+                                <div className="space-y-1.5">
+                                  <Label htmlFor="wiz-interval" className={labelClass}>
+                                    {i18n._(msg`library.scanInterval`)}
+                                  </Label>
+                                  <Input
+                                    id="wiz-interval"
+                                    type="number"
+                                    value={field.state.value}
+                                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                                    min={1}
+                                    max={10080}
+                                    className={inputClass}
+                                  />
+                                </div>
+                              )}
+                            </form.Field>
+                            <form.Field name="enabled">
+                              {(field) => (
+                                <div className="flex items-center justify-between py-1">
+                                  <Label htmlFor="wiz-enabled" className={labelClass}>
+                                    {i18n._(msg`library.enabled`)}
+                                  </Label>
+                                  <Switch
+                                    id="wiz-enabled"
+                                    checked={field.state.value}
+                                    onCheckedChange={field.handleChange}
+                                  />
+                                </div>
+                              )}
+                            </form.Field>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Submit */}
+                  <form.Subscribe selector={(s) => s.isSubmitting}>
+                    {(isSubmitting) => (
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
+                      >
+                        {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
+                      </Button>
+                    )}
+                  </form.Subscribe>
+                </>
+              )}
             </form>
           </motion.div>
         )}
