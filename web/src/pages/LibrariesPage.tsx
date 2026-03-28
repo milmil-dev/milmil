@@ -557,11 +557,18 @@ function FolderBrowser({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="space-y-1 p-2"
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                  className="space-y-1.5 p-2"
                 >
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-10 rounded bg-white/[0.04] animate-pulse" />
+                  {[1, 2, 3, 4].map((i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scaleX: 0.7 }}
+                      animate={{ opacity: 1, scaleX: 1 }}
+                      transition={{ delay: i * 0.05, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                      className="h-10 rounded-md bg-white/[0.03] origin-left"
+                      style={{ animationName: 'pulse', animationDuration: '1.5s', animationIterationCount: 'infinite', animationTimingFunction: 'ease-in-out' }}
+                    />
                   ))}
                 </motion.div>
               )}
@@ -570,10 +577,10 @@ function FolderBrowser({
               {hasLoaded && directories.length === 0 && !isNavigating && (
                 <motion.div
                   key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                   className="flex items-center justify-center h-full"
                 >
                   <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
@@ -584,10 +591,10 @@ function FolderBrowser({
               {directories.length > 0 && (
                 <motion.div
                   key={`dir-${browsePath}-${selectedShare}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: isNavigating ? 0.4 : 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: isNavigating ? 0.3 : 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   className="py-1"
                   style={{ pointerEvents: isNavigating ? 'none' : 'auto' }}
                 >
