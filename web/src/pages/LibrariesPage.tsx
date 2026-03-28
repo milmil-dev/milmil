@@ -387,9 +387,11 @@ function TestConnectionButton({
 // ─── Network browser (enhanced — auto-discovers, visual cards) ───────────────
 function NetworkBrowser({
   onSelect,
+  onSelectHost,
   autoDiscover,
 }: {
   onSelect: (host: string, port: number, share: string) => void;
+  onSelectHost?: (host: string, port: number) => void;
   autoDiscover?: boolean;
 }) {
   const { i18n } = useLingui();
@@ -505,7 +507,19 @@ function NetworkBrowser({
                             ))}
                           </div>
                         ) : (
-                          <p className="text-[11px] text-white/30">No shares found</p>
+                          <div className="space-y-2">
+                            <p className="text-[11px] text-white/30">No shares found — credentials may be required</p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onSelectHost) onSelectHost(host.ip, 445);
+                                toast.success(`Selected ${label}`);
+                              }}
+                              className="px-3 py-1.5 rounded-md bg-white/[0.08] hover:bg-white/[0.12] text-xs text-white/60 hover:text-white transition-colors cursor-pointer"
+                            >
+                              Use this host
+                            </button>
+                          </div>
                         )}
                       </div>
                     </motion.div>
@@ -1135,6 +1149,11 @@ function AddLibraryWizard({
                         form.setFieldValue('smb_port', port);
                         form.setFieldValue('smb_share', share);
                         setShowManualSmb(false);
+                      }}
+                      onSelectHost={(host, port) => {
+                        form.setFieldValue('smb_host', host);
+                        form.setFieldValue('smb_port', port);
+                        setShowManualSmb(true);
                       }}
                     />
                   </div>
