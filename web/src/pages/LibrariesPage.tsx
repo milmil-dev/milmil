@@ -1643,13 +1643,28 @@ function AddLibraryWizard({
                         </form.Subscribe>
 
                         {/* Folder browser — auto-loads shares */}
-                        <form.Subscribe selector={(s) => s.values}>
-                          {(values) => (
+                        <form.Subscribe selector={(s) => ({
+                          path: s.values.path,
+                          smb_host: s.values.smb_host,
+                          smb_port: s.values.smb_port,
+                          smb_share: s.values.smb_share,
+                          smb_username: s.values.smb_username,
+                          smb_password: s.values.smb_password,
+                          smb_domain: s.values.smb_domain,
+                        })}>
+                          {(vals) => (
                             <FolderBrowser
                               sourceType="smb"
                               autoLoad
-                              getSourceConfig={() => buildSourceConfig({ ...values, source_type: 'smb' }) ?? {}}
-                              currentPath={values.path}
+                              getSourceConfig={() => ({
+                                host: vals.smb_host,
+                                port: vals.smb_port,
+                                share: vals.smb_share,
+                                username: vals.smb_username,
+                                password: vals.smb_password,
+                                domain: vals.smb_domain,
+                              })}
+                              currentPath={vals.path}
                               onShareSelect={(share) => {
                                 form.setFieldValue('smb_share', share);
                               }}
