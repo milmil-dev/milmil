@@ -1720,7 +1720,7 @@ function AddLibraryWizard({
                           validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
                         >
                           {(field) => (
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 mt-5 pt-5 border-t border-white/[0.06]">
                               <Label htmlFor="wiz-name-smb" className={labelClass}>
                                 {i18n._(msg`library.name`)}
                                 <span className="ml-2 font-normal normal-case tracking-normal text-white/25">
