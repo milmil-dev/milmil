@@ -14,6 +14,7 @@ import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import {
   type CreateLibraryInput,
+  type DiscoveredHost,
   type Library,
   type LibraryWithStats,
   type TestConnectionInput,
@@ -274,6 +275,97 @@ function TestConnectionButton({
   );
 }
 
+// ─── Network browser ──────────────────────────────────────────────────────────
+function NetworkBrowser({
+  onSelect,
+}: {
+  onSelect: (host: string, port: number, share: string) => void;
+}) {
+  const { i18n } = useLingui();
+  const [expandedIp, setExpandedIp] = useState<string | null>(null);
+
+  const discoverMutation = useMutation({
+    mutationFn: () => libraryApi.discoverNetwork(),
+  });
+
+  const hosts: DiscoveredHost[] = discoverMutation.data?.hosts ?? [];
+
+  return (
+    <div className="space-y-2">
+      <button
+        type="button"
+        onClick={() => discoverMutation.mutate()}
+        disabled={discoverMutation.isPending}
+        className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/[0.06] text-gray-200 hover:bg-white/[0.1] transition-colors disabled:opacity-40"
+      >
+        {discoverMutation.isPending
+          ? i18n._(msg`library.discover.scanning`)
+          : i18n._(msg`library.discover.browse`)}
+      </button>
+
+      {/* Loading skeleton */}
+      {discoverMutation.isPending && (
+        <div className="space-y-1.5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-7 rounded bg-white/[0.04] animate-pulse" />
+          ))}
+        </div>
+      )}
+
+      {/* Results */}
+      {discoverMutation.isSuccess && hosts.length === 0 && (
+        <p className="text-xs text-white/40">{i18n._(msg`library.discover.noHosts`)}</p>
+      )}
+
+      {hosts.length > 0 && (
+        <div className="space-y-0.5">
+          {hosts.map((host) => {
+            const label = host.hostname || host.ip;
+            const isExpanded = expandedIp === host.ip;
+            return (
+              <div key={host.ip}>
+                <button
+                  type="button"
+                  onClick={() => setExpandedIp(isExpanded ? null : host.ip)}
+                  className="w-full flex items-center gap-1.5 px-2 py-1.5 text-xs text-gray-200 rounded hover:bg-white/[0.06] transition-colors"
+                >
+                  <span
+                    className="text-[10px] text-white/40 transition-transform"
+                    style={{ transform: isExpanded ? 'rotate(90deg)' : undefined }}
+                  >
+                    ▶
+                  </span>
+                  <span className="font-medium">{label}</span>
+                  {host.hostname && (
+                    <span className="text-white/30 font-mono">{host.ip}</span>
+                  )}
+                </button>
+                {isExpanded && host.shares.length > 0 && (
+                  <div className="ml-5 space-y-0.5">
+                    {host.shares.map((share) => (
+                      <button
+                        key={share}
+                        type="button"
+                        onClick={() => onSelect(host.ip, 445, share)}
+                        className="w-full text-left px-2 py-1 text-xs text-white/60 rounded hover:bg-white/[0.08] hover:text-white transition-colors"
+                      >
+                        {share}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {isExpanded && host.shares.length === 0 && (
+                  <p className="ml-5 px-2 py-1 text-[11px] text-white/30">No shares</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Library form ─────────────────────────────────────────────────────────────
 function LibraryForm({
   defaultValues,
@@ -350,6 +442,13 @@ function LibraryForm({
                   </div>
                 )}
               </form.Field>
+              <NetworkBrowser
+                onSelect={(host, port, share) => {
+                  form.setFieldValue('smb_host', host);
+                  form.setFieldValue('smb_port', port);
+                  form.setFieldValue('smb_share', share);
+                }}
+              />
               <div className="grid grid-cols-2 gap-3">
                 <form.Field name="smb_port">
                   {(field) => (
