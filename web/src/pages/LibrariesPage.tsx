@@ -1266,7 +1266,7 @@ function AddLibraryWizard({
   const [manualSmbHost, setManualSmbHost] = useState('');
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 h-[520px] overflow-y-auto">
       <AnimatePresence mode="wait">
         {/* ─── Step 1: Choose Source ─── */}
         {step === 'source' && (
