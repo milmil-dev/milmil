@@ -1409,15 +1409,16 @@ function AddLibraryWizard({
                     })}
                   </div>
 
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence mode="popLayout">
                     {/* Sub-step 1: Pick a Server */}
                     {smbStep === 'server' && (
                       <motion.div
                         key="smb-server"
-                        initial={{ opacity: 0, x: -16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -16 }}
-                        transition={{ duration: 0.15 }}
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                         className="space-y-4"
                       >
                         <p className="text-xs text-white/40">{i18n._(msg`library.wizard.smb.chooseServer`)}</p>
@@ -1476,10 +1477,11 @@ function AddLibraryWizard({
                     {smbStep === 'credentials' && (
                       <motion.div
                         key="smb-credentials"
-                        initial={{ opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -16 }}
-                        transition={{ duration: 0.15 }}
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                         className="space-y-4"
                       >
                         {/* Selected server summary */}
@@ -1567,11 +1569,12 @@ function AddLibraryWizard({
                     {smbStep === 'folder' && (
                       <motion.div
                         key="smb-folder"
-                        initial={{ opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -16 }}
-                        transition={{ duration: 0.15 }}
-                        className="space-y-4 min-h-[420px]"
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-4"
                       >
                         {/* Summary line */}
                         <form.Subscribe selector={(s) => ({ host: s.values.smb_host, user: s.values.smb_username })}>
