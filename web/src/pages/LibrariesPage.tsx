@@ -561,14 +561,11 @@ function FolderBrowser({
             )}
             {browseMutation.isSuccess && directories.length > 0 && (
               <div className="py-1">
-                {directories.map((entry, i) => (
-                  <motion.button
-                    key={`${browsePath}-${entry.path}`}
+                {directories.map((entry) => (
+                  <button
+                    key={entry.path}
                     type="button"
                     onClick={() => handleDirectoryClick(entry)}
-                    initial={{ opacity: 0, x: 12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.025, duration: 0.15, ease: 'easeOut' }}
                     className="w-full px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] rounded cursor-pointer text-sm text-white/70 transition-colors"
                   >
                     <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 shrink-0 text-white/30">
@@ -580,7 +577,7 @@ function FolderBrowser({
                     </svg>
                     <span className="truncate">{entry.name}</span>
                     <span className="ml-auto text-white/20 text-[10px] shrink-0">&#9654;</span>
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             )}
