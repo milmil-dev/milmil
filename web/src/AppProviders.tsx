@@ -3,6 +3,7 @@ import { I18nProvider } from '@lingui/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeProvider } from './components/ThemeProvider';
+import { Toaster } from './components/ui/sonner';
 import { queryClient } from './lib/query-client';
 
 interface AppProvidersProps {
@@ -14,7 +15,10 @@ export function AppProviders({ children }: AppProvidersProps) {
     <I18nProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+            <Toaster position="bottom-right" />
+          </ThemeProvider>
         </ErrorBoundary>
       </QueryClientProvider>
     </I18nProvider>
