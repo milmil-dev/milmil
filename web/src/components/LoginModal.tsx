@@ -1,7 +1,9 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
+import { api } from '../lib/api-client';
 import { Modal } from './Modal';
 
 interface LoginModalProps {
@@ -13,7 +15,23 @@ interface LoginModalProps {
 export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
   const { i18n } = useLingui();
   const { login, setup, loading, error, clearError } = useAuth();
+
+  // Check if admin user already exists
+  const { data: status } = useQuery({
+    queryKey: ['auth', 'status'],
+    queryFn: () => api.get<{ initialized: boolean }>('/api/v1/auth/status'),
+    enabled: open,
+  });
+  const isInitialized = status?.initialized ?? true; // default to true (hide setup)
+
   const [mode, setMode] = useState<'login' | 'setup'>('login');
+
+  // Auto-switch to setup if not initialized
+  useEffect(() => {
+    if (open && status && !status.initialized) {
+      setMode('setup');
+    }
+  }, [open, status]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState('');
@@ -58,31 +76,37 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
   return (
     <Modal open={open} onClose={onClose} size="sm">
       <div className="pt-2">
-        {/* Mode tabs */}
-        <div className="flex mb-6 border-b border-white/[0.06]">
-          <button
-            type="button"
-            onClick={() => switchMode('login')}
-            className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
-              mode === 'login'
-                ? 'text-white border-b-2 border-mm-accent'
-                : 'text-white/30 hover:text-white/50'
-            }`}
-          >
+        {/* Mode tabs — only show setup tab if no admin exists yet */}
+        {!isInitialized ? (
+          <div className="flex mb-6 border-b border-white/[0.06]">
+            <button
+              type="button"
+              onClick={() => switchMode('login')}
+              className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
+                mode === 'login'
+                  ? 'text-white border-b-2 border-mm-accent'
+                  : 'text-white/30 hover:text-white/50'
+              }`}
+            >
+              {i18n._(msg`auth.login.title`)}
+            </button>
+            <button
+              type="button"
+              onClick={() => switchMode('setup')}
+              className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
+                mode === 'setup'
+                  ? 'text-white border-b-2 border-mm-accent'
+                  : 'text-white/30 hover:text-white/50'
+              }`}
+            >
+              {i18n._(msg`auth.setup.title`)}
+            </button>
+          </div>
+        ) : (
+          <h3 className="text-lg font-semibold text-white mb-6">
             {i18n._(msg`auth.login.title`)}
-          </button>
-          <button
-            type="button"
-            onClick={() => switchMode('setup')}
-            className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
-              mode === 'setup'
-                ? 'text-white border-b-2 border-mm-accent'
-                : 'text-white/30 hover:text-white/50'
-            }`}
-          >
-            {i18n._(msg`auth.setup.title`)}
-          </button>
-        </div>
+          </h3>
+        )}
 
         {mode === 'setup' && (
           <p className="text-[13px] text-white/40 mb-4">
