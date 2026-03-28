@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/grandcat/zeroconf"
 	smb2 "github.com/hirochachacha/go-smb2"
 	"github.com/labstack/echo/v4"
 )
@@ -23,16 +25,110 @@ type discoverNetworkResponse struct {
 }
 
 func (h *handler) handleDiscoverNetwork(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(c.Request().Context(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request().Context(), 6*time.Second)
 	defer cancel()
 
-	// Get all local subnets (multiple interfaces)
-	subnets := getLocalSubnets()
-	if len(subnets) == 0 {
-		return c.JSON(http.StatusOK, discoverNetworkResponse{Hosts: []discoveredHost{}})
+	// Phase 1: mDNS/Bonjour discovery (fast, ~2 seconds)
+	mdnsHosts := discoverViaMDNS(ctx)
+
+	// Phase 2: For hosts found, try to list their SMB shares
+	var (
+		mu    sync.Mutex
+		hosts []discoveredHost
+		wg    sync.WaitGroup
+	)
+
+	for _, mh := range mdnsHosts {
+		wg.Add(1)
+		go func(mh discoveredHost) {
+			defer wg.Done()
+			shares := listSMBShares(ctx, mh.IP)
+			mh.Shares = shares
+			if mh.Shares == nil {
+				mh.Shares = []string{}
+			}
+			mu.Lock()
+			hosts = append(hosts, mh)
+			mu.Unlock()
+		}(mh)
 	}
 
-	// Collect all IPs to scan
+	wg.Wait()
+
+	// Phase 3: If mDNS found nothing, fall back to port scan on local subnet
+	if len(hosts) == 0 {
+		hosts = discoverViaPortScan(ctx)
+	}
+
+	if hosts == nil {
+		hosts = []discoveredHost{}
+	}
+	return c.JSON(http.StatusOK, discoverNetworkResponse{Hosts: hosts})
+}
+
+// discoverViaMDNS browses for SMB services using mDNS/Bonjour (_smb._tcp)
+func discoverViaMDNS(ctx context.Context) []discoveredHost {
+	// Browse for 3 seconds max
+	browseCtx, browseCancel := context.WithTimeout(ctx, 3*time.Second)
+	defer browseCancel()
+
+	resolver, err := zeroconf.NewResolver(nil)
+	if err != nil {
+		return nil
+	}
+
+	entries := make(chan *zeroconf.ServiceEntry, 32)
+	var hosts []discoveredHost
+	seen := make(map[string]bool)
+
+	go func() {
+		for entry := range entries {
+			// Get the best IP (prefer IPv4)
+			var ip string
+			for _, addr := range entry.AddrIPv4 {
+				ip = addr.String()
+				break
+			}
+			if ip == "" {
+				for _, addr := range entry.AddrIPv6 {
+					ip = addr.String()
+					break
+				}
+			}
+			if ip == "" || seen[ip] {
+				continue
+			}
+			seen[ip] = true
+
+			hostname := strings.TrimSuffix(entry.HostName, ".")
+			if hostname == "" {
+				hostname = entry.Instance
+			}
+
+			hosts = append(hosts, discoveredHost{
+				IP:       ip,
+				Hostname: hostname,
+				Shares:   []string{},
+			})
+		}
+	}()
+
+	// Browse _smb._tcp services
+	if err := resolver.Browse(browseCtx, "_smb._tcp", "local.", entries); err != nil {
+		return hosts
+	}
+
+	<-browseCtx.Done()
+	return hosts
+}
+
+// discoverViaPortScan falls back to TCP port 445 scanning on local subnets
+func discoverViaPortScan(ctx context.Context) []discoveredHost {
+	subnets := getLocalSubnets()
+	if len(subnets) == 0 {
+		return nil
+	}
+
 	seen := make(map[string]bool)
 	var ips []string
 	for _, subnet := range subnets {
@@ -45,14 +141,12 @@ func (h *handler) handleDiscoverNetwork(c echo.Context) error {
 		}
 	}
 
-	// Scan port 445 concurrently with proper cancellation
 	var (
 		mu    sync.Mutex
 		hosts []discoveredHost
 		wg    sync.WaitGroup
+		sem   = make(chan struct{}, 64)
 	)
-
-	sem := make(chan struct{}, 64)
 
 	for _, ip := range ips {
 		select {
@@ -72,8 +166,7 @@ func (h *handler) handleDiscoverNetwork(c echo.Context) error {
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			// Quick TCP probe
-			d := net.Dialer{Timeout: 1500 * time.Millisecond}
+			d := net.Dialer{Timeout: 1 * time.Second}
 			conn, err := d.DialContext(ctx, "tcp", ip+":445")
 			if err != nil {
 				return
@@ -82,15 +175,13 @@ func (h *handler) handleDiscoverNetwork(c echo.Context) error {
 
 			host := discoveredHost{IP: ip, Shares: []string{}}
 
-			// Resolve hostname (1s timeout)
-			lookupCtx, lookupCancel := context.WithTimeout(ctx, 1*time.Second)
-			names, err := net.DefaultResolver.LookupAddr(lookupCtx, ip)
+			lookupCtx, lookupCancel := context.WithTimeout(ctx, 500*time.Millisecond)
+			names, _ := net.DefaultResolver.LookupAddr(lookupCtx, ip)
 			lookupCancel()
-			if err == nil && len(names) > 0 {
-				host.Hostname = names[0]
+			if len(names) > 0 {
+				host.Hostname = strings.TrimSuffix(names[0], ".")
 			}
 
-			// List shares (respects parent context)
 			shares := listSMBShares(ctx, ip)
 			if shares != nil {
 				host.Shares = shares
@@ -103,11 +194,7 @@ func (h *handler) handleDiscoverNetwork(c echo.Context) error {
 	}
 
 	wg.Wait()
-
-	if hosts == nil {
-		hosts = []discoveredHost{}
-	}
-	return c.JSON(http.StatusOK, discoverNetworkResponse{Hosts: hosts})
+	return hosts
 }
 
 func getLocalSubnets() []string {
