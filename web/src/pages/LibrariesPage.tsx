@@ -607,19 +607,36 @@ function FolderBrowser({
 
           {/* Select button */}
           {browseMutation.isSuccess && !isShareLevel && (
-            <div className="px-3 py-2 border-t border-white/[0.06]">
-              <button
+            <div className="px-3 py-2.5 border-t border-white/[0.06]">
+              <motion.button
                 type="button"
                 onClick={handleSelectFolder}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
                 className={cn(
-                  'w-full px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer',
+                  'w-full px-4 py-2.5 rounded-lg font-medium text-sm transition-all cursor-pointer flex items-center justify-center gap-2',
                   currentPath === browsePath
-                    ? 'bg-mm-accent/10 border border-mm-accent/30 text-mm-accent'
-                    : 'bg-white/[0.06] text-white/60 hover:bg-white/[0.1]',
+                    ? 'bg-mm-accent/15 border border-mm-accent/30 text-mm-accent'
+                    : 'bg-white/[0.06] border border-white/[0.08] text-white/70 hover:bg-white/[0.1] hover:border-white/[0.15] hover:text-white',
                 )}
               >
-                {currentPath === browsePath ? i18n._(msg`library.browse.selected`) : `${i18n._(msg`library.browse.select`)} ${browsePath}`}
-              </button>
+                {currentPath === browsePath ? (
+                  <>
+                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
+                      <path d="M5 10l3 3 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {i18n._(msg`library.browse.selected`)}
+                  </>
+                ) : (
+                  <>
+                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-white/40">
+                      <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
+                    {i18n._(msg`library.browse.select`)}
+                    <span className="font-mono text-xs text-white/40">{browsePath}</span>
+                  </>
+                )}
+              </motion.button>
             </div>
           )}
         </div>
