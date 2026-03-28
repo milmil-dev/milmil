@@ -611,16 +611,18 @@ function FolderBrowser({
             )}
           </div>
 
-          {/* Select button */}
-          {browseMutation.isSuccess && !isShareLevel && (
-            <div className="px-3 py-2.5 border-t border-white/[0.06]">
-              <motion.button
+          {/* Footer — always rendered with fixed height to prevent layout shift */}
+          <div className="h-[52px] px-3 py-2.5 border-t border-white/[0.06] flex items-center">
+            {isShareLevel ? (
+              <p className="text-[11px] text-white/25 text-center w-full">
+                {i18n._(msg`library.wizard.smb.chooseServer`)}
+              </p>
+            ) : hasLoaded ? (
+              <button
                 type="button"
                 onClick={handleSelectFolder}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
                 className={cn(
-                  'w-full px-4 py-2.5 rounded-lg font-medium text-sm transition-all cursor-pointer flex items-center justify-center gap-2',
+                  'w-full px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer flex items-center justify-center gap-2',
                   currentPath === browsePath
                     ? 'bg-mm-accent/15 border border-mm-accent/30 text-mm-accent'
                     : 'bg-white/[0.06] border border-white/[0.08] text-white/70 hover:bg-white/[0.1] hover:border-white/[0.15] hover:text-white',
@@ -642,9 +644,9 @@ function FolderBrowser({
                     <span className="font-mono text-xs text-white/40">{browsePath}</span>
                   </>
                 )}
-              </motion.button>
-            </div>
-          )}
+              </button>
+            ) : null}
+          </div>
         </div>
       )}
     </div>
