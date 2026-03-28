@@ -430,6 +430,8 @@ function FolderBrowser({
   });
 
   const doBrowse = (path: string, overrideConfig?: Record<string, unknown>) => {
+    // Prevent rapid-fire requests (SMB connection limit)
+    if (browseMutation.isPending) return;
     const config = overrideConfig ?? getSourceConfig();
     const noShare = sourceType === 'smb' && !config.share;
     setIsShareLevel(noShare && (path === '/' || path === ''));
@@ -548,8 +550,8 @@ function FolderBrowser({
           </div>
 
           {/* Directory listing — fixed height, crossfade between states */}
-          <div className="overflow-y-auto overflow-x-hidden" style={{ height: `${height}px` }}>
-            <AnimatePresence mode="popLayout" initial={false}>
+          <div className="overflow-hidden" style={{ height: `${height}px` }}>
+            <AnimatePresence mode="wait" initial={false}>
               {/* Skeleton — shows during loading */}
               {browseMutation.isPending && (
                 <motion.div
@@ -591,12 +593,12 @@ function FolderBrowser({
               {directories.length > 0 && (
                 <motion.div
                   key={`dir-${browsePath}-${selectedShare}`}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: isNavigating ? 0.3 : 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  className="py-1"
-                  style={{ pointerEvents: isNavigating ? 'none' : 'auto' }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  className="py-1 overflow-y-auto"
+                  style={{ height: `${height}px` }}
                 >
                   {/* Back to parent folder */}
                   {(browsePath !== '/' || selectedShare) && (
