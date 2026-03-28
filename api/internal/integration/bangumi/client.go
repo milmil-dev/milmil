@@ -18,12 +18,14 @@ var (
 )
 
 const defaultBaseURL = "https://api.bgm.tv"
+const nextBaseURL = "https://next.bgm.tv"
 
 type Client interface {
 	SearchSubjects(ctx context.Context, query string) ([]Subject, error)
 	GetCalendar(ctx context.Context) ([]CalendarDay, error)
 	GetSubject(ctx context.Context, id int) (*Subject, error)
 	GetSubjectEpisodes(ctx context.Context, subjectID int) ([]Episode, error)
+	GetSubjectComments(ctx context.Context, subjectID int, limit int) ([]SubjectComment, error)
 }
 
 type httpClient struct {
@@ -120,6 +122,36 @@ func (c *httpClient) GetSubjectEpisodes(ctx context.Context, subjectID int) ([]E
 		return nil, err
 	}
 	var result EpisodeList
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil, err
+	}
+	return result.Data, nil
+}
+
+func (c *httpClient) GetSubjectComments(ctx context.Context, subjectID int, limit int) ([]SubjectComment, error) {
+	url := nextBaseURL + "/p1/subjects/" + strconv.Itoa(subjectID) + "/comments?limit=" + strconv.Itoa(limit)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", c.ua)
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("bangumi comments: status %d", resp.StatusCode)
+	}
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result CommentList
 	if err := json.Unmarshal(data, &result); err != nil {
 		return nil, err
 	}

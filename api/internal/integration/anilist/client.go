@@ -24,14 +24,36 @@ const mediaFields = `
 	description(asHtml: false)
 	coverImage { extraLarge large }
 	bannerImage
+	trailer { id site }
 	popularity averageScore episodes status season seasonYear format
 	genres
+`
+
+const mediaFieldsWithRelations = mediaFields + `
+	relations {
+		edges {
+			relationType
+			node {` + mediaFields + `}
+		}
+	}
+	recommendations(sort: RATING_DESC, perPage: 8) {
+		nodes {
+			mediaRecommendation {` + mediaFields + `}
+		}
+	}
+	reviews(limit: 10, sort: RATING_DESC) {
+		nodes {
+			id summary score rating ratingAmount
+			user { name avatar { medium } }
+		}
+	}
 `
 
 type Client interface {
 	SearchMedia(ctx context.Context, query string) ([]Media, error)
 	GetMedia(ctx context.Context, id int) (*Media, error)
 	GetTrending(ctx context.Context, page, perPage int) ([]Media, error)
+	BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]Media, error)
 }
 
 type graphqlClient struct {
@@ -116,7 +138,7 @@ func (c *graphqlClient) SearchMedia(ctx context.Context, search string) ([]Media
 
 func (c *graphqlClient) GetMedia(ctx context.Context, id int) (*Media, error) {
 	q := `query ($id: Int) {
-		Media(id: $id, type: ANIME) {` + mediaFields + `}
+		Media(id: $id, type: ANIME) {` + mediaFieldsWithRelations + `}
 	}`
 	var result struct {
 		Media Media `json:"Media"`
@@ -125,6 +147,23 @@ func (c *graphqlClient) GetMedia(ctx context.Context, id int) (*Media, error) {
 		return nil, err
 	}
 	return &result.Media, nil
+}
+
+func (c *graphqlClient) BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]Media, error) {
+	q := `query ($genre: String, $page: Int, $perPage: Int) {
+		Page(page: $page, perPage: $perPage) {
+			media(type: ANIME, genre: $genre, sort: POPULARITY_DESC) {` + mediaFields + `}
+		}
+	}`
+	var result struct {
+		Page struct {
+			Media []Media `json:"media"`
+		} `json:"Page"`
+	}
+	if err := c.query(ctx, q, map[string]any{"genre": genre, "page": page, "perPage": perPage}, &result); err != nil {
+		return nil, err
+	}
+	return result.Page.Media, nil
 }
 
 func (c *graphqlClient) GetTrending(ctx context.Context, page, perPage int) ([]Media, error) {

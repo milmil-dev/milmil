@@ -60,3 +60,29 @@ type EpisodeList struct {
 	Data  []Episode `json:"data"`
 	Total int       `json:"total"`
 }
+
+type SubjectComment struct {
+	ID        int         `json:"id"`
+	User      CommentUser `json:"user"`
+	Rate      int         `json:"rate"`
+	Comment   string      `json:"comment"`
+	UpdatedAt int64       `json:"updatedAt"`
+}
+
+type CommentUser struct {
+	ID       int          `json:"id"`
+	Username string       `json:"username"`
+	Nickname string       `json:"nickname"`
+	Avatar   CommentAvatar `json:"avatar"`
+}
+
+type CommentAvatar struct {
+	Small  string `json:"small"`
+	Medium string `json:"medium"`
+	Large  string `json:"large"`
+}
+
+type CommentList struct {
+	Data  []SubjectComment `json:"data"`
+	Total int              `json:"total"`
+}

@@ -56,6 +56,36 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 	return c.JSON(http.StatusOK, detail)
 }
 
+func (h *handler) handleBrowseByGenre(c echo.Context) error {
+	genre := c.QueryParam("genre")
+	if genre == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "genre parameter required")
+	}
+	page := 1
+	if p := c.QueryParam("page"); p != "" {
+		if v, err := strconv.Atoi(p); err == nil && v > 0 {
+			page = v
+		}
+	}
+	results, err := h.metadata.BrowseByGenre(c.Request().Context(), genre, page)
+	if err != nil {
+		return mapMetadataError(err)
+	}
+	return c.JSON(http.StatusOK, results)
+}
+
+func (h *handler) handleResolveAniList(c echo.Context) error {
+	anilistID, err := strconv.Atoi(c.QueryParam("anilist_id"))
+	if err != nil || anilistID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "anilist_id parameter required")
+	}
+	bangumiID, err := h.metadata.ResolveBangumiID(c.Request().Context(), anilistID)
+	if err != nil {
+		return mapMetadataError(err)
+	}
+	return c.JSON(http.StatusOK, map[string]int{"bangumi_id": bangumiID})
+}
+
 func (h *handler) handleAnimeEpisodes(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -66,6 +96,18 @@ func (h *handler) handleAnimeEpisodes(c echo.Context) error {
 		return mapMetadataError(err)
 	}
 	return c.JSON(http.StatusOK, eps)
+}
+
+func (h *handler) handleAnimeComments(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
+	}
+	comments, err := h.metadata.GetComments(c.Request().Context(), id)
+	if err != nil {
+		return mapMetadataError(err)
+	}
+	return c.JSON(http.StatusOK, comments)
 }
 
 func mapMetadataError(err error) *echo.HTTPError {

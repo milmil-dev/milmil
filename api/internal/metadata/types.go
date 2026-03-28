@@ -13,15 +13,25 @@ type AnimeSummary struct {
 	AirDate       string   `json:"air_date,omitempty"`
 	EpisodeCount  int      `json:"episode_count"`
 	Score         float64  `json:"score"`
+	NextEpisode   int      `json:"next_episode,omitempty"`
 }
 
 type AnimeDetail struct {
 	AnimeSummary
-	Synopsis    string   `json:"synopsis"`
-	BannerImage string   `json:"banner_image,omitempty"`
-	Tags        []string `json:"tags"`
-	Popularity  int      `json:"popularity,omitempty"`
-	Rating      Rating   `json:"rating"`
+	Synopsis        string         `json:"synopsis"`
+	BannerImage     string         `json:"banner_image,omitempty"`
+	TrailerURL      string         `json:"trailer_url,omitempty"`
+	Tags            []string       `json:"tags"`
+	Popularity      int            `json:"popularity,omitempty"`
+	Rating          Rating         `json:"rating"`
+	Relations       []RelatedAnime `json:"relations,omitempty"`
+	Recommendations []AnimeSummary `json:"recommendations,omitempty"`
+	Reviews         []UserReview   `json:"reviews,omitempty"`
+}
+
+type RelatedAnime struct {
+	RelationType string       `json:"relation_type"` // PREQUEL, SEQUEL, SIDE_STORY, etc.
+	Anime        AnimeSummary `json:"anime"`
 }
 
 type CalendarDay struct {
@@ -37,9 +47,19 @@ type Episode struct {
 	TitleOriginal    string  `json:"title_original"`
 	AirDate          string  `json:"air_date,omitempty"`
 	Synopsis         string  `json:"synopsis,omitempty"`
+	Image            string  `json:"image,omitempty"`
+	Duration         int     `json:"duration,omitempty"` // minutes
 }
 
 type Rating struct {
 	Score float64 `json:"score"`
 	Total int     `json:"total"`
+}
+
+type UserReview struct {
+	ID       int    `json:"id"`
+	Summary  string `json:"summary"`
+	Score    int    `json:"score"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar,omitempty"`
 }
