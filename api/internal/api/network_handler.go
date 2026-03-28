@@ -152,7 +152,8 @@ func discoverViaMDNS(ctx context.Context) []discoveredHost {
 	return hosts
 }
 
-// discoverViaPortScan falls back to TCP port 445 scanning on local subnets
+// discoverViaPortScan probes TCP port 445 on local subnets.
+// Only discovers IPs — share listing is done by the caller.
 func discoverViaPortScan(ctx context.Context) []discoveredHost {
 	subnets := getLocalSubnets()
 	if len(subnets) == 0 {
@@ -175,28 +176,18 @@ func discoverViaPortScan(ctx context.Context) []discoveredHost {
 		mu    sync.Mutex
 		hosts []discoveredHost
 		wg    sync.WaitGroup
-		sem   = make(chan struct{}, 64)
 	)
 
+	// Launch all probes at once — 500ms timeout is fast enough
 	for _, ip := range ips {
-		select {
-		case <-ctx.Done():
+		if ctx.Err() != nil {
 			break
-		case sem <- struct{}{}:
 		}
-
-		select {
-		case <-ctx.Done():
-			break
-		default:
-		}
-
 		wg.Add(1)
 		go func(ip string) {
 			defer wg.Done()
-			defer func() { <-sem }()
 
-			d := net.Dialer{Timeout: 1 * time.Second}
+			d := net.Dialer{Timeout: 500 * time.Millisecond}
 			conn, err := d.DialContext(ctx, "tcp", ip+":445")
 			if err != nil {
 				return
@@ -205,16 +196,12 @@ func discoverViaPortScan(ctx context.Context) []discoveredHost {
 
 			host := discoveredHost{IP: ip, Shares: []string{}}
 
-			lookupCtx, lookupCancel := context.WithTimeout(ctx, 500*time.Millisecond)
+			// Quick reverse DNS (don't block long)
+			lookupCtx, lookupCancel := context.WithTimeout(ctx, 300*time.Millisecond)
 			names, _ := net.DefaultResolver.LookupAddr(lookupCtx, ip)
 			lookupCancel()
 			if len(names) > 0 {
 				host.Hostname = strings.TrimSuffix(names[0], ".")
-			}
-
-			shares := listSMBShares(ctx, ip)
-			if shares != nil {
-				host.Shares = shares
 			}
 
 			mu.Lock()
