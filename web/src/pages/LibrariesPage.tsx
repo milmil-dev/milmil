@@ -116,7 +116,7 @@ function LibraryCard({
 }) {
   const { i18n } = useLingui();
   const navigate = useNavigate();
-  const lastScanned = lib.last_scanned_at
+  const lastScanned = lib.last_scanned_at && lib.last_scanned_at !== ''
     ? new Date(lib.last_scanned_at).toLocaleDateString()
     : i18n._(msg`library.neverScanned`);
   const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
@@ -159,14 +159,14 @@ function LibraryCard({
         )}
 
         {/* Hover actions */}
-        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60">
-          <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer">
+        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60 pointer-events-none">
+          <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer pointer-events-auto">
             {scanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
           </button>
-          <button type="button" onClick={(e) => { e.stopPropagation(); onEdit(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer">
+          <button type="button" onClick={(e) => { e.stopPropagation(); onEdit(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer pointer-events-auto">
             {i18n._(msg`library.edit`)}
           </button>
-          <button type="button" onClick={(e) => { e.stopPropagation(); onDelete(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer">
+          <button type="button" onClick={(e) => { e.stopPropagation(); onDelete(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer pointer-events-auto">
             {i18n._(msg`library.delete`)}
           </button>
         </div>
@@ -2553,10 +2553,12 @@ export function LibrariesPage() {
 
   const createMutation = useMutation({
     mutationFn: (input: CreateLibraryInput) => libraryApi.create(input),
-    onSuccess: () => {
+    onSuccess: (newLib) => {
       queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
       setDrawerMode(null);
       toast.success(i18n._(msg`library.toast.added`));
+      // Auto-trigger scan for newly created library
+      scanMutation.mutate(newLib.id);
     },
     onError: (err: Error) => toast.error(err.message),
   });
@@ -2586,6 +2588,7 @@ export function LibrariesPage() {
   const scanMutation = useMutation({
     mutationFn: async (id: string) => {
       setScanningId(id);
+      toast.info(i18n._(msg`library.toast.scanStarted`));
       return libraryApi.scan(id);
     },
     onSuccess: () => {
