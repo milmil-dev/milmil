@@ -396,6 +396,7 @@ function FolderBrowser({
   onSelect,
   onShareSelect,
   autoLoad,
+  height = 200,
 }: {
   sourceType: SourceType;
   getSourceConfig: () => Record<string, unknown>;
@@ -405,6 +406,8 @@ function FolderBrowser({
   onShareSelect?: (share: string) => void;
   /** Auto-load root directory on mount */
   autoLoad?: boolean;
+  /** Fixed height for the directory listing area in px */
+  height?: number;
 }) {
   const { i18n } = useLingui();
   const [browsePath, setBrowsePath] = useState('/');
@@ -543,7 +546,7 @@ function FolderBrowser({
           </div>
 
           {/* Directory listing — fixed height, no layout shift */}
-          <div className="h-[200px] overflow-y-auto overflow-x-hidden relative">
+          <div className="overflow-y-auto overflow-x-hidden relative" style={{ height: `${height}px` }}>
             {browseMutation.isPending && (
               <div className="space-y-1 p-2">
                 {[1, 2, 3].map((i) => (
