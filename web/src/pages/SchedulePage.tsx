@@ -4,9 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PageTransition } from '../components/PageTransition';
-import { type CalendarDay, discoverApi, discoverKeys } from '../lib/api/discover';
+import { Skeleton } from '../components/Skeleton';
+import { type AnimeSummary, type CalendarDay, discoverApi, discoverKeys } from '../lib/api/discover';
+import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
@@ -17,17 +20,40 @@ function todayWeekdayCN(): string {
   return BANGUMI_WEEKDAYS[jsDay === 0 ? 6 : jsDay - 1] as string;
 }
 
-function getWeekdayLabel(bangumiWeekday: string): string {
+function getWeekdayShort(bangumiWeekday: string): string {
   const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
   if (idx === -1) return bangumiWeekday;
-  // Create a date for that weekday this week and format with date-fns
   const now = new Date();
-  const jsDay = getDay(now); // 0=Sun
-  const currentIdx = jsDay === 0 ? 6 : jsDay - 1; // 0=Mon
+  const jsDay = getDay(now);
+  const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
+  const diff = idx - currentIdx;
+  const target = new Date(now);
+  target.setDate(target.getDate() + diff);
+  return format(target, 'EEE', { locale: zhTW });
+}
+
+function getWeekdayFull(bangumiWeekday: string): string {
+  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
+  if (idx === -1) return bangumiWeekday;
+  const now = new Date();
+  const jsDay = getDay(now);
+  const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
   const diff = idx - currentIdx;
   const target = new Date(now);
   target.setDate(target.getDate() + diff);
   return format(target, 'EEEE', { locale: zhTW });
+}
+
+function getDateForWeekday(bangumiWeekday: string): string {
+  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
+  if (idx === -1) return '';
+  const now = new Date();
+  const jsDay = getDay(now);
+  const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
+  const diff = idx - currentIdx;
+  const target = new Date(now);
+  target.setDate(target.getDate() + diff);
+  return format(target, 'M/d');
 }
 
 function getCurrentSeason(i18n: ReturnType<typeof useLingui>['i18n']): string {
@@ -39,73 +65,270 @@ function getCurrentSeason(i18n: ReturnType<typeof useLingui>['i18n']): string {
   return `${year} ${i18n._(msg`schedule.season.fall`)}`;
 }
 
-function WeekdayColumn({ day, isToday }: { day: CalendarDay; isToday: boolean }) {
-  const label = getWeekdayLabel(day.weekday);
+/* ── Anime row item ────────────────────────────────────────── */
+
+function ScheduleAnimeItem({ anime, index, locale, variant = 'row' }: { anime: AnimeSummary; index: number; locale: string; variant?: 'row' | 'card' }) {
+  const hasCover = anime.cover_image?.startsWith('http');
+  const [showCard, setShowCard] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [cardSide, setCardSide] = useState<'right' | 'left'>('right');
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  // Fetch full detail when hovered (prefetch on hover, show on delay)
+  const { data: detail } = useQuery({
+    queryKey: discoverKeys.detail(anime.bangumi_id),
+    queryFn: () => discoverApi.detail(anime.bangumi_id),
+    enabled: hovered && anime.bangumi_id > 0,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const handleEnter = useCallback(() => {
+    setHovered(true);
+    // Detect available space — card is 400px + 16px margin
+    if (itemRef.current) {
+      const rect = itemRef.current.getBoundingClientRect();
+      const spaceRight = window.innerWidth - rect.right;
+      setCardSide(spaceRight >= 530 ? 'right' : 'left');
+    }
+    timerRef.current = setTimeout(() => setShowCard(true), 400);
+  }, []);
+
+  const handleLeave = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setShowCard(false);
+    setHovered(false);
+  }, []);
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
 
   return (
-    <div className="min-w-0">
-      <div className="pb-3 mb-1 border-b border-mm-border">
-        <h3
+    <motion.div
+      ref={itemRef}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.025, duration: 0.3 }}
+      className="relative"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <Link
+        to={`/anime/${anime.bangumi_id}` as string}
+        className={cn(
+          'group rounded-lg transition-colors',
+          variant === 'row'
+            ? 'flex items-center gap-3.5 py-3 px-2.5 -mx-2.5 hover:bg-white/[0.04]'
+            : 'block p-1.5 -m-1.5 hover:bg-white/[0.03]',
+        )}
+      >
+        {/* Cover */}
+        <div
           className={cn(
-            'text-[13px] font-semibold',
-            isToday ? 'text-mm-accent' : 'text-mm-text-secondary'
+            'relative rounded overflow-hidden',
+            variant === 'row'
+              ? 'shrink-0 w-[80px] h-[112px]'
+              : 'w-full aspect-[4/5]',
           )}
+          style={hasCover ? undefined : { background: animeGradient(anime.title) }}
         >
-          {label}
-        </h3>
-      </div>
+          {hasCover && (
+            <img src={anime.cover_image} alt="" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+          )}
+          {/* Next episode badge — top left */}
+          {anime.next_episode && anime.next_episode > 0 && (
+            <span className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+              EP {anime.next_episode}
+            </span>
+          )}
+          {/* Rating badge — top right, glass */}
+          {anime.score > 0 && (
+            <span className="absolute top-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white tabular-nums backdrop-blur-md" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+              ♡ {anime.score.toFixed(1)}
+            </span>
+          )}
+        </div>
 
-      <div className="space-y-0">
-        {day.items.map((anime, i) => (
-          <motion.div
-            key={anime.bangumi_id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.02 }}
-          >
-            <Link
-              to={`/anime/${anime.bangumi_id}` as string}
-              className="group flex items-center gap-2.5 py-2 transition-colors border-b border-mm-border-subtle"
+        {/* Info */}
+        <div className={cn('min-w-0', variant === 'row' ? 'flex-1' : 'mt-1.5')}>
+          <p className={cn(
+            'leading-snug text-mm-text-primary font-medium group-hover:text-white transition-colors',
+            variant === 'row' ? 'text-[13px] truncate' : 'text-[14px] line-clamp-2',
+          )}>
+            {anime.title}
+          </p>
+          {variant === 'row' && anime.title_original && anime.title_original !== anime.title && (
+            <p className="text-[11px] text-mm-text-muted truncate mt-0.5">
+              {anime.title_original}
+            </p>
+          )}
+          {variant === 'row' && (
+            <div className="flex items-center gap-2 mt-1">
+              {anime.score > 0 && (
+                <span className="text-[11px] font-semibold text-mm-accent tabular-nums">
+                  {anime.score.toFixed(1)}
+                </span>
+              )}
+              {anime.episode_count > 0 && (
+                <span className="text-[10px] text-mm-text-muted">
+                  {anime.episode_count} ep
+                </span>
+              )}
+            </div>
+          )}
+          {variant === 'card' && anime.episode_count > 0 && (
+            <span className="text-[10px] text-mm-text-muted mt-0.5 block">
+              {anime.episode_count} ep
+            </span>
+          )}
+        </div>
+
+        {/* Arrow hint — row only */}
+        {variant === 'row' && (
+          <span className="text-mm-text-muted text-[11px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+            →
+          </span>
+        )}
+      </Link>
+
+      {/* Hover card — mini hero banner style */}
+      {showCard && (() => {
+        const info = detail || anime;
+        const bannerSrc = detail?.banner_image || anime.banner_image || anime.cover_image;
+        const hasBanner = !!(detail?.banner_image || anime.banner_image);
+        const tags = detail?.tags || [];
+        const genres = anime.genres || [];
+        const displayTags = tags.length > 0 ? tags : genres;
+        const synopsis = detail?.synopsis || anime.description;
+
+        return (
+          <div className={cn(
+            'absolute top-1/2 -translate-y-1/2 z-50 w-[506px] pointer-events-none hidden lg:block',
+            cardSide === 'right' ? 'left-full ml-4' : 'right-full mr-4',
+          )}>
+            <motion.div
+              initial={{ opacity: 0, x: cardSide === 'right' ? -10 : 10, scale: 0.97 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="relative rounded-lg overflow-hidden border border-white/[0.08] shadow-2xl"
             >
-              {/* Small cover thumbnail */}
-              <div
-                className="shrink-0 w-8 h-11 rounded overflow-hidden"
-                style={
-                  anime.cover_image?.startsWith('http')
-                    ? undefined
-                    : { background: animeGradient(anime.title) }
-                }
-              >
-                {anime.cover_image?.startsWith('http') && (
-                  <img src={anime.cover_image} alt="" className="w-full h-full object-cover" />
+              {/* Full-bleed background image */}
+              <div className="absolute inset-0">
+                {bannerSrc?.startsWith('http') ? (
+                  <img
+                    src={bannerSrc}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    style={!hasBanner
+                      ? { filter: 'blur(20px) saturate(1.2) brightness(0.5)', transform: 'scale(1.4)' }
+                      : { filter: 'blur(2px) brightness(0.45)' }}
+                  />
+                ) : (
+                  <div className="w-full h-full" style={{ background: animeGradient(anime.title) }} />
                 )}
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)' }} />
               </div>
-              {/* Title + score */}
-              <div className="flex-1 min-w-0">
-                <p
-                  className={cn(
-                    'text-[12px] leading-snug truncate transition-colors group-hover:text-white',
-                    anime.score >= 8 ? 'text-mm-text-primary font-medium' : 'text-mm-text-secondary'
-                  )}
-                >
-                  {anime.title}
-                </p>
-                {anime.score > 0 && (
-                  <p className="text-[10px] mt-0.5 text-mm-accent">{anime.score.toFixed(1)}</p>
-                )}
-              </div>
-            </Link>
-          </motion.div>
-        ))}
 
-        {day.items.length === 0 && <p className="py-4 text-[12px] text-mm-text-muted">—</p>}
+              {/* Content — poster + info */}
+              <div className="relative z-[1] flex items-start gap-4 p-4">
+                {/* Poster */}
+                <div
+                  className="shrink-0 w-[150px] h-[210px] rounded overflow-hidden shadow-lg ring-1 ring-white/10"
+                  style={hasCover ? undefined : { background: animeGradient(anime.title) }}
+                >
+                  {hasCover && (
+                    <img src={anime.cover_image} alt="" className="w-full h-full object-cover" />
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0 pt-0.5 space-y-1.5">
+                  {/* Title */}
+                  <p className="text-[15px] font-bold text-white leading-snug line-clamp-2">
+                    {info.title}
+                  </p>
+                  {info.title_original && info.title_original !== info.title && (
+                    <p className="text-[11px] text-white/40 truncate">
+                      {info.title_original}
+                    </p>
+                  )}
+
+                  {/* Tags / Genres */}
+                  {displayTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {displayTags.slice(0, 5).map((t) => (
+                        <span key={t} className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-mm-accent/10 text-mm-accent/80">
+                          {translateGenre(t, locale)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Score + meta */}
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    {info.score > 0 && (
+                      <span className="text-[13px] font-bold text-mm-accent">♡ {info.score.toFixed(1)}</span>
+                    )}
+                    {info.episode_count > 0 && (
+                      <span className="text-[11px] text-white/50">{info.episode_count} ep</span>
+                    )}
+                    {info.air_date && (
+                      <span className="text-[11px] text-white/40">{new Date(info.air_date).getFullYear()}</span>
+                    )}
+                    {detail?.rating && detail.rating.total > 0 && (
+                      <span className="text-[11px] text-white/40">{detail.rating.total} ratings</span>
+                    )}
+                  </div>
+
+                  {/* Synopsis */}
+                  {synopsis && (
+                    <p className="text-[11px] text-white/50 leading-relaxed line-clamp-4">
+                      {synopsis.replace(/<[^>]+>/g, '')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        );
+      })()}
+    </motion.div>
+  );
+}
+
+/* ── Skeleton loader ───────────────────────────────────────── */
+
+function ScheduleSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Tab bar skeleton */}
+      <div className="flex gap-2">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <Skeleton key={i} className="h-9 w-16 rounded-lg" />
+        ))}
+      </div>
+      {/* Items skeleton */}
+      <div className="space-y-1">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3 py-2.5">
+            <Skeleton className="w-[42px] h-[58px] rounded" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-3.5" style={{ width: `${55 + (i % 3) * 15}%` }} />
+              <Skeleton className="h-2.5 w-20" />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
+/* ── Main page ─────────────────────────────────────────────── */
+
 export function SchedulePage() {
   const { i18n } = useLingui();
+  const tabsRef = useRef<HTMLDivElement>(null);
   const {
     data: calendar,
     isLoading,
@@ -117,7 +340,9 @@ export function SchedulePage() {
   });
 
   const today = todayWeekdayCN();
+  const [activeDay, setActiveDay] = useState<string | 'all'>(today);
 
+  // Reorder: today first
   const sortedCalendar = (() => {
     if (!calendar) return [];
     const todayIdx = BANGUMI_WEEKDAYS.indexOf(today);
@@ -127,29 +352,41 @@ export function SchedulePage() {
       .filter((d): d is CalendarDay => d !== undefined);
   })();
 
+  // Scroll active tab into view on mount
+  useEffect(() => {
+    if (!tabsRef.current) return;
+    const activeBtn = tabsRef.current.querySelector('[data-active="true"]');
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [sortedCalendar.length]);
+
+  // Total anime count for the week
+  const totalCount = sortedCalendar.reduce((sum, d) => sum + d.items.length, 0);
+
   return (
     <PageTransition>
-      <div className="min-h-screen px-6 pt-8 pb-16">
+      <div className="min-h-screen px-4 md:px-6 pt-6 pb-16">
+        {/* Header */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <div className="flex items-baseline gap-3">
-            <div className="w-1 h-5 rounded-full bg-mm-accent" />
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              {getCurrentSeason(i18n)}
-            </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-7 rounded-full bg-gradient-to-b from-mm-accent to-mm-accent/30" />
+              <div>
+                <h1 className="text-2xl font-bold text-white tracking-tight">
+                  {getCurrentSeason(i18n)}
+                </h1>
+                {!isLoading && totalCount > 0 && (
+                  <p className="text-[13px] text-mm-accent/50 mt-0.5">
+                    {totalCount} {i18n._(msg`schedule.totalShows`)}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </motion.div>
 
-        {isLoading && (
-          <div className="grid grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="space-y-3 animate-pulse">
-                <div className="h-4 rounded bg-mm-border" style={{ width: '50%' }} />
-                <div className="h-3 rounded bg-mm-border-subtle" style={{ width: '80%' }} />
-                <div className="h-3 rounded bg-mm-border-subtle" style={{ width: '65%' }} />
-              </div>
-            ))}
-          </div>
-        )}
+        {isLoading && <ScheduleSkeleton />}
 
         {isError && (
           <div className="text-center py-16">
@@ -159,7 +396,7 @@ export function SchedulePage() {
             <button
               type="button"
               onClick={() => refetch()}
-              className="text-sm font-medium text-mm-accent"
+              className="text-sm font-medium text-mm-accent cursor-pointer"
             >
               {i18n._(msg`common.retry`)}
             </button>
@@ -167,28 +404,161 @@ export function SchedulePage() {
         )}
 
         {!isLoading && !isError && sortedCalendar.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="grid gap-0"
-            style={{
-              gridTemplateColumns: `repeat(${Math.min(sortedCalendar.length, 7)}, minmax(0, 1fr))`,
-            }}
-          >
-            {sortedCalendar.map((day, i) => (
-              <div
-                key={day.weekday}
-                className="px-3 first:pl-0 last:pr-0"
-                style={
-                  i < sortedCalendar.length - 1
-                    ? { borderRight: '1px solid var(--mm-border-subtle)' }
-                    : undefined
-                }
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+            {/* Weekday tabs — underline style */}
+            <div
+              ref={tabsRef}
+              className="flex items-end gap-0 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none border-b border-white/[0.06] mb-5"
+            >
+              {/* 全部 tab */}
+              <button
+                type="button"
+                data-active={activeDay === 'all'}
+                onClick={() => setActiveDay('all')}
+                className={cn(
+                  'relative shrink-0 px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200',
+                  activeDay === 'all'
+                    ? 'text-mm-accent'
+                    : 'text-mm-text-tertiary hover:text-mm-text-secondary',
+                )}
               >
-                <WeekdayColumn day={day} isToday={day.weekday === today} />
-              </div>
-            ))}
+                {i18n._(msg`schedule.all`)}
+                {activeDay === 'all' && (
+                  <motion.div
+                    layoutId="schedule-underline"
+                    className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
+                    transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                  />
+                )}
+              </button>
+
+              <div className="w-px h-4 bg-white/[0.06] mx-0.5 mb-2 shrink-0" />
+
+              {sortedCalendar.map((day) => {
+                const isToday = day.weekday === today;
+                const isActive = day.weekday === activeDay;
+                return (
+                  <button
+                    key={day.weekday}
+                    type="button"
+                    data-active={isActive}
+                    onClick={() => setActiveDay(day.weekday)}
+                    className={cn(
+                      'relative shrink-0 flex items-center gap-1.5 px-3 pb-2.5 pt-2 cursor-pointer transition-colors duration-200',
+                      isActive
+                        ? 'text-mm-accent'
+                        : 'text-mm-text-tertiary hover:text-mm-text-secondary',
+                    )}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="schedule-underline"
+                        className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
+                        transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                      />
+                    )}
+                    <span className={cn(
+                      'text-[13px] font-semibold',
+                      isToday && !isActive && 'text-mm-accent/70',
+                    )}>
+                      {getWeekdayShort(day.weekday)}
+                    </span>
+                    <span className={cn(
+                      'text-[11px] tabular-nums',
+                      isActive ? 'text-mm-accent/60' : 'text-mm-text-muted',
+                    )}>
+                      {getDateForWeekday(day.weekday)}
+                    </span>
+                    <span className={cn(
+                      'text-[10px] tabular-nums font-medium',
+                      isActive ? 'text-mm-accent/50' : 'text-mm-text-muted',
+                    )}>
+                      {day.items.length}
+                    </span>
+                    {isToday && !isActive && (
+                      <div className="w-1 h-1 rounded-full bg-mm-accent shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Content — smooth crossfade on tab change */}
+            <AnimatePresence mode="wait">
+              {activeDay !== 'all' ? (() => {
+                const activeCalendar = sortedCalendar.find((d) => d.weekday === activeDay);
+                if (!activeCalendar) return null;
+                return (
+                  <motion.div
+                    key={activeDay}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <h2 className="text-[15px] font-semibold text-mm-text-secondary">
+                        {getWeekdayFull(activeCalendar.weekday)}
+                      </h2>
+                      {activeCalendar.weekday === today && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-mm-accent bg-mm-accent/10 px-2 py-0.5 rounded-full">
+                          {i18n._(msg`schedule.today`)}
+                        </span>
+                      )}
+                    </div>
+                    {activeCalendar.items.length > 0 ? (
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
+                        {activeCalendar.items.map((anime, i) => (
+                          <ScheduleAnimeItem key={anime.bangumi_id} anime={anime} index={i} locale={i18n.locale} variant="card" />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <p className="text-[13px] text-mm-text-muted">
+                          {i18n._(msg`schedule.noShows`)}
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })() : (
+                <motion.div
+                  key="all"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="space-y-8"
+                >
+                  {sortedCalendar.map((day) => (
+                    <div key={day.weekday}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <h2 className="text-[15px] font-semibold text-mm-text-secondary">
+                          {getWeekdayFull(day.weekday)}
+                        </h2>
+                        <span className="text-[11px] text-mm-text-muted tabular-nums">
+                          {getDateForWeekday(day.weekday)}
+                        </span>
+                        {day.weekday === today && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-mm-accent bg-mm-accent/10 px-2 py-0.5 rounded-full">
+                            {i18n._(msg`schedule.today`)}
+                          </span>
+                        )}
+                      </div>
+                      {day.items.length > 0 ? (
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
+                          {day.items.map((anime, i) => (
+                            <ScheduleAnimeItem key={anime.bangumi_id} anime={anime} index={i} locale={i18n.locale} variant="card" />
+                          ))}
+                        </div>
+                    ) : (
+                      <p className="text-[12px] text-mm-text-muted py-4">—</p>
+                    )}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+            </AnimatePresence>
           </motion.div>
         )}
       </div>
