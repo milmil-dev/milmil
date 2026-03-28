@@ -301,51 +301,6 @@ const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-2
 const inputClass =
   'bg-white/[0.06] border-none focus:ring-1 focus:ring-mm-accent/50 text-white rounded-md';
 
-// ─── Source type selector ─────────────────────────────────────────────────────
-function SourceTypeSelector({
-  value,
-  onChange,
-}: {
-  value: SourceType;
-  onChange: (v: SourceType) => void;
-}) {
-  const { i18n } = useLingui();
-  const types: { key: SourceType; label: string }[] = [
-    { key: 'local', label: i18n._(msg`library.sourceType.local`) },
-    { key: 'smb', label: i18n._(msg`library.sourceType.smb`) },
-    { key: 'sftp', label: i18n._(msg`library.sourceType.sftp`) },
-    { key: 'ftp', label: i18n._(msg`library.wizard.ftp.name`) },
-    { key: 'http', label: i18n._(msg`library.wizard.http.name`) },
-    { key: 'webdav', label: i18n._(msg`library.wizard.webdav.name`) },
-    { key: 's3', label: i18n._(msg`library.wizard.s3.name`) },
-    { key: 'gdrive', label: i18n._(msg`library.wizard.gdrive.name`) },
-    { key: 'onedrive', label: i18n._(msg`library.wizard.onedrive.name`) },
-    { key: 'dropbox', label: i18n._(msg`library.wizard.dropbox.name`) },
-  ];
-
-  return (
-    <div className="space-y-1.5">
-      <Label className={labelClass}>{i18n._(msg`library.sourceType`)}</Label>
-      <div className="flex flex-wrap gap-1.5">
-        {types.map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => onChange(t.key)}
-            className={cn(
-              'px-3 py-2 text-xs font-bold rounded-md transition-colors',
-              value === t.key
-                ? 'bg-mm-accent text-black'
-                : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ─── Test connection button ───────────────────────────────────────────────────
 function TestConnectionButton({
@@ -849,7 +804,24 @@ function NetworkBrowser({
   );
 }
 
-// ─── Library form ─────────────────────────────────────────────────────────────
+// ─── Source type display name helper ──────────────────────────────────────────
+function sourceTypeName(type: SourceType, i18n: ReturnType<typeof useLingui>['i18n']): string {
+  const map: Record<SourceType, string> = {
+    local: i18n._(msg`library.sourceType.local`),
+    smb: i18n._(msg`library.sourceType.smb`),
+    sftp: i18n._(msg`library.sourceType.sftp`),
+    ftp: i18n._(msg`library.wizard.ftp.name`),
+    http: i18n._(msg`library.wizard.http.name`),
+    webdav: i18n._(msg`library.wizard.webdav.name`),
+    s3: i18n._(msg`library.wizard.s3.name`),
+    gdrive: i18n._(msg`library.wizard.gdrive.name`),
+    onedrive: i18n._(msg`library.wizard.onedrive.name`),
+    dropbox: i18n._(msg`library.wizard.dropbox.name`),
+  };
+  return map[type] ?? type.toUpperCase();
+}
+
+// ─── Library form (edit mode — refined layout) ───────────────────────────────
 function LibraryForm({
   defaultValues,
   onSubmit,
@@ -860,10 +832,13 @@ function LibraryForm({
   submitLabel: string;
 }) {
   const { i18n } = useLingui();
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const form = useForm({
     defaultValues,
     onSubmit: async ({ value }) => onSubmit(value),
   });
+
+  const fixedSourceType = defaultValues.source_type;
 
   return (
     <form
@@ -871,47 +846,66 @@ function LibraryForm({
         e.preventDefault();
         form.handleSubmit();
       }}
-      className="space-y-5 mt-4"
+      className="space-y-6 mt-2"
     >
-      {/* Source type selector */}
-      <form.Field name="source_type">
-        {(field) => (
-          <SourceTypeSelector
-            value={field.state.value}
-            onChange={field.handleChange}
-          />
-        )}
-      </form.Field>
+      {/* ── Source type read-only display ── */}
+      <div className="flex items-center gap-2 mb-1">
+        <div className="text-white/30">
+          <SourceIcon sourceType={fixedSourceType} className="w-6 h-6" />
+        </div>
+        <span className="text-xs font-bold uppercase tracking-[0.15em] text-white/40">
+          {sourceTypeName(fixedSourceType, i18n)}
+        </span>
+      </div>
 
-      {/* Name */}
-      <form.Field
-        name="name"
-        validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
-      >
-        {(field) => (
-          <div className="space-y-1.5">
-            <Label htmlFor="lib-name" className={labelClass}>
-              {i18n._(msg`library.name`)}
-            </Label>
-            <Input
-              id="lib-name"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder="Anime"
-              className={inputClass}
-            />
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+      {/* ── Top section: Name + Enabled toggle ── */}
+      <div className="flex items-start gap-4">
+        <div className="flex-1">
+          <form.Field
+            name="name"
+            validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+          >
+            {(field) => (
+              <div className="space-y-1.5">
+                <Label htmlFor="lib-name" className={labelClass}>
+                  {i18n._(msg`library.name`)}
+                </Label>
+                <Input
+                  id="lib-name"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Anime"
+                  className={inputClass}
+                />
+                {field.state.meta.errors[0] && (
+                  <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                )}
+              </div>
             )}
-          </div>
-        )}
-      </form.Field>
+          </form.Field>
+        </div>
+        <form.Field name="enabled">
+          {(field) => (
+            <div className="flex flex-col items-center gap-1.5 pt-5">
+              <Switch
+                id="lib-enabled"
+                checked={field.state.value}
+                onCheckedChange={field.handleChange}
+              />
+              <Label htmlFor="lib-enabled" className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/30">
+                {i18n._(msg`library.enabled`)}
+              </Label>
+            </div>
+          )}
+        </form.Field>
+      </div>
 
-      {/* SMB-specific fields */}
-      <form.Subscribe selector={(s) => s.values.source_type}>
-        {(sourceType) =>
-          sourceType === 'smb' ? (
-            <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+      {/* ── Connection section ── */}
+      {fixedSourceType !== 'local' && (
+        <div className="rounded-lg border border-white/[0.06] p-4 space-y-4">
+          {/* SMB fields */}
+          {fixedSourceType === 'smb' && (
+            <>
               <form.Field name="smb_host">
                 {(field) => (
                   <div className="space-y-1.5">
@@ -1001,16 +995,12 @@ function LibraryForm({
                   </div>
                 )}
               </form.Field>
-            </div>
-          ) : null
-        }
-      </form.Subscribe>
+            </>
+          )}
 
-      {/* SFTP-specific fields */}
-      <form.Subscribe selector={(s) => s.values.source_type}>
-        {(sourceType) =>
-          sourceType === 'sftp' ? (
-            <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+          {/* SFTP fields */}
+          {fixedSourceType === 'sftp' && (
+            <>
               <form.Field name="sftp_host">
                 {(field) => (
                   <div className="space-y-1.5">
@@ -1065,12 +1055,255 @@ function LibraryForm({
                   </div>
                 )}
               </form.Field>
-            </div>
-          ) : null
-        }
-      </form.Subscribe>
+            </>
+          )}
 
-      {/* Path — with folder browser for non-local sources */}
+          {/* WebDAV fields */}
+          {fixedSourceType === 'webdav' && (
+            <>
+              <form.Field name="webdav_url">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.webdav.url`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="https://nextcloud.example.com/remote.php/dav/files/user/"
+                      className={cn('font-mono text-sm', inputClass)}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="webdav_vendor">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.webdav.vendor`)}</Label>
+                    <div className="flex gap-1.5">
+                      {(['nextcloud', 'owncloud', 'other'] as const).map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => field.handleChange(v)}
+                          className={cn(
+                            'flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors',
+                            field.state.value === v
+                              ? 'bg-mm-accent text-black'
+                              : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
+                          )}
+                        >
+                          {v === 'nextcloud' ? 'Nextcloud' : v === 'owncloud' ? 'OwnCloud' : i18n._(msg`library.webdav.vendorOther`)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="webdav_username">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.webdav.username`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="user"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="webdav_password">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.webdav.password`)}</Label>
+                    <Input
+                      type="password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </>
+          )}
+
+          {/* S3 fields */}
+          {fixedSourceType === 's3' && (
+            <>
+              <form.Field name="s3_endpoint">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.s3.endpoint`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="https://s3.amazonaws.com"
+                      className={cn('font-mono text-sm', inputClass)}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="s3_bucket">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.s3.bucket`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="my-bucket"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="s3_region">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.s3.region`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="us-east-1"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="s3_access_key">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.s3.accessKey`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="AKIAIOSFODNN7EXAMPLE"
+                      className={cn('font-mono text-sm', inputClass)}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="s3_secret_key">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.s3.secretKey`)}</Label>
+                    <Input
+                      type="password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </>
+          )}
+
+          {/* FTP fields */}
+          {fixedSourceType === 'ftp' && (
+            <>
+              <form.Field name="ftp_host">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.ftp.host`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="ftp.example.com"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="ftp_port">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.ftp.port`)}</Label>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(Number(e.target.value))}
+                      placeholder="21"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="ftp_username">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.ftp.username`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="user"
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+              <form.Field name="ftp_password">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.ftp.password`)}</Label>
+                    <Input
+                      type="password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </>
+          )}
+
+          {/* HTTP fields */}
+          {fixedSourceType === 'http' && (
+            <form.Field name="http_url">
+              {(field) => (
+                <div className="space-y-1.5">
+                  <Label className={labelClass}>{i18n._(msg`library.http.url`)}</Label>
+                  <Input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="https://example.com/media/"
+                    className={cn('font-mono text-sm', inputClass)}
+                  />
+                  <p className="text-[11px] text-white/30">{i18n._(msg`library.http.readOnly`)}</p>
+                </div>
+              )}
+            </form.Field>
+          )}
+
+          {/* Rclone fields (gdrive/onedrive/dropbox) */}
+          {(fixedSourceType === 'gdrive' || fixedSourceType === 'onedrive' || fixedSourceType === 'dropbox') && (
+            <>
+              <RcloneRemotePicker
+                sourceType={fixedSourceType}
+                onSelect={(remoteName) => form.setFieldValue('rclone_remote_name', remoteName)}
+              />
+              <form.Field name="rclone_remote_name">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className={labelClass}>{i18n._(msg`library.rclone.remoteName`)}</Label>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="my-gdrive"
+                      className={cn('font-mono text-sm', inputClass)}
+                    />
+                  </div>
+                )}
+              </form.Field>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ── Path section with folder browser ── */}
       <form.Subscribe selector={(s) => s.values}>
         {(values) => (
           <div className="space-y-3">
@@ -1087,7 +1320,7 @@ function LibraryForm({
                     id="lib-path"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={values.source_type === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                    placeholder={fixedSourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
                     className={cn('font-mono text-sm', inputClass)}
                   />
                   {field.state.meta.errors[0] && (
@@ -1097,16 +1330,16 @@ function LibraryForm({
               )}
             </form.Field>
 
-            {values.source_type !== 'local' && (
+            {fixedSourceType !== 'local' && (
               <FolderBrowser
-                sourceType={values.source_type as SourceType}
+                sourceType={fixedSourceType}
                 getSourceConfig={() => buildSourceConfig(values) ?? {}}
                 currentPath={values.path}
                 onSelect={(path) => form.setFieldValue('path', path)}
               />
             )}
 
-            {values.source_type !== 'local' && (
+            {fixedSourceType !== 'local' && (
               <TestConnectionButton
                 getConnectionInput={() => ({
                   source_type: values.source_type,
@@ -1119,42 +1352,36 @@ function LibraryForm({
         )}
       </form.Subscribe>
 
-      {/* Scan interval */}
-      <form.Field name="scan_interval_minutes">
-        {(field) => (
-          <div className="space-y-1.5">
-            <Label htmlFor="lib-interval" className={labelClass}>
-              {i18n._(msg`library.scanInterval`)}
-            </Label>
-            <Input
-              id="lib-interval"
-              type="number"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-              min={1}
-              max={10080}
-              className={inputClass}
-            />
+      {/* ── Advanced section (collapsible) ── */}
+      <div className="rounded-lg border border-white/[0.06] overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setShowAdvanced((v) => !v)}
+          className="w-full flex items-center justify-between px-4 py-3 text-left cursor-pointer hover:bg-white/[0.02] transition-colors"
+        >
+          <span className={labelClass}>{i18n._(msg`library.scanInterval`)}</span>
+          <span className="text-white/30 text-xs">{showAdvanced ? '\u25B2' : '\u25BC'}</span>
+        </button>
+        {showAdvanced && (
+          <div className="px-4 pb-4">
+            <form.Field name="scan_interval_minutes">
+              {(field) => (
+                <Input
+                  id="lib-interval"
+                  type="number"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(Number(e.target.value))}
+                  min={1}
+                  max={10080}
+                  className={inputClass}
+                />
+              )}
+            </form.Field>
           </div>
         )}
-      </form.Field>
+      </div>
 
-      {/* Enabled toggle */}
-      <form.Field name="enabled">
-        {(field) => (
-          <div className="flex items-center justify-between py-3 border-t border-white/[0.06]">
-            <Label htmlFor="lib-enabled" className={labelClass}>
-              {i18n._(msg`library.enabled`)}
-            </Label>
-            <Switch
-              id="lib-enabled"
-              checked={field.state.value}
-              onCheckedChange={field.handleChange}
-            />
-          </div>
-        )}
-      </form.Field>
-
+      {/* ── Submit button ── */}
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button
@@ -2527,7 +2754,7 @@ export function LibrariesPage() {
           />
         </Modal>
 
-        {/* Edit library modal (original form, small) */}
+        {/* Edit library modal */}
         <Modal
           open={drawerMode === 'edit' && !!editLib}
           onClose={() => {
@@ -2535,7 +2762,7 @@ export function LibrariesPage() {
             setEditLib(null);
           }}
           title={i18n._(msg`library.editLibrary`)}
-          size="sm"
+          size="lg"
         >
           {editLib && (
             <LibraryForm
