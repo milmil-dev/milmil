@@ -830,7 +830,7 @@ function LibraryForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full font-bold text-black bg-mm-accent"
+            className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
           >
             {isSubmitting ? i18n._(msg`library.saving`) : submitLabel}
           </Button>
@@ -1667,7 +1667,7 @@ function AddLibraryWizard({
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full font-bold text-black bg-mm-accent"
+                    className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
                   >
                     {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
                   </Button>
