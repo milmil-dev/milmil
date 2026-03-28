@@ -394,15 +394,23 @@ function FolderBrowser({
   getSourceConfig,
   currentPath,
   onSelect,
+  onShareSelect,
+  autoLoad,
 }: {
   sourceType: SourceType;
   getSourceConfig: () => Record<string, unknown>;
   currentPath: string;
   onSelect: (path: string) => void;
+  /** Called when user selects an SMB share — parent should update smb_share field */
+  onShareSelect?: (share: string) => void;
+  /** Auto-load root directory on mount */
+  autoLoad?: boolean;
 }) {
   const [browsePath, setBrowsePath] = useState('/');
   const [directories, setDirectories] = useState<BrowseEntry[]>([]);
   const [isShareLevel, setIsShareLevel] = useState(false);
+  const [selectedShare, setSelectedShare] = useState('');
+  const [, setSelectedPath] = useState('');
 
   const browseMutation = useMutation({
     mutationFn: (input: BrowseInput) => libraryApi.browse(input),
@@ -411,40 +419,71 @@ function FolderBrowser({
     },
   });
 
-  const doBrowse = (path: string) => {
-    const config = getSourceConfig();
-    // If SMB and browsing root with no share, this will list shares
+  const doBrowse = (path: string, overrideConfig?: Record<string, unknown>) => {
+    const config = overrideConfig ?? getSourceConfig();
     const noShare = sourceType === 'smb' && !config.share;
     setIsShareLevel(noShare && (path === '/' || path === ''));
     setBrowsePath(path);
     browseMutation.mutate({
       source_type: sourceType,
       source_config: config,
-      path: path,
+      path,
     });
   };
 
-  // Build breadcrumb segments from the current browsePath
+  // Auto-load on mount
+  useEffect(() => {
+    if (autoLoad) {
+      doBrowse('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [autoLoad]);
+
   const breadcrumbs = browsePath === '/' ? [] : browsePath.split('/').filter(Boolean);
+  const displayBreadcrumbs = selectedShare
+    ? [selectedShare, ...breadcrumbs]
+    : breadcrumbs;
 
   const handleCrumbClick = (index: number) => {
-    if (index < 0) {
-      doBrowse('/');
+    if (selectedShare) {
+      if (index === 0) {
+        // Click on share name → go back to share list
+        setSelectedShare('');
+        setSelectedPath('');
+        const config = getSourceConfig();
+        delete config.share;
+        doBrowse('/', config);
+        return;
+      }
+      // Adjust for the share prefix
+      const realIndex = index - 1;
+      if (realIndex < 0) {
+        doBrowse('/');
+      } else {
+        doBrowse('/' + breadcrumbs.slice(0, realIndex + 1).join('/'));
+      }
     } else {
-      const newPath = '/' + breadcrumbs.slice(0, index + 1).join('/');
-      doBrowse(newPath);
+      if (index < 0) {
+        doBrowse('/');
+      } else {
+        doBrowse('/' + breadcrumbs.slice(0, index + 1).join('/'));
+      }
     }
   };
 
   const handleDirectoryClick = (entry: BrowseEntry) => {
     if (isShareLevel && sourceType === 'smb') {
-      // User selected a share — we need to re-browse with the share set
-      // The entry.path is the share name
-      // We signal the parent to update the share, then browse root of that share
-      onSelect('/' + entry.name);
+      // User clicked a share — set it and browse inside
+      setSelectedShare(entry.name);
+      if (onShareSelect) onShareSelect(entry.name);
+      // Re-browse with share set in config
+      const config = getSourceConfig();
+      config.share = entry.name;
+      doBrowse('/', config);
       return;
     }
     doBrowse(entry.path);
+    setSelectedPath(entry.path);
   };
 
   const handleSelectFolder = () => {
@@ -478,15 +517,15 @@ function FolderBrowser({
             >
               /
             </button>
-            {breadcrumbs.map((segment, i) => (
+            {displayBreadcrumbs.map((segment, i) => (
               <span key={`${segment}-${i}`} className="flex items-center gap-1 shrink-0">
-                <span className="text-white/20 text-[10px]">/</span>
+                <span className="text-white/20 text-[10px]">›</span>
                 <button
                   type="button"
                   onClick={() => handleCrumbClick(i)}
                   className={cn(
                     'text-xs transition-colors cursor-pointer',
-                    i === breadcrumbs.length - 1
+                    i === displayBreadcrumbs.length - 1
                       ? 'text-white/70 font-medium'
                       : 'text-white/40 hover:text-white/60',
                   )}
@@ -1551,20 +1590,14 @@ function AddLibraryWizard({
                           {(values) => (
                             <FolderBrowser
                               sourceType="smb"
+                              autoLoad
                               getSourceConfig={() => buildSourceConfig({ ...values, source_type: 'smb' }) ?? {}}
                               currentPath={values.path}
+                              onShareSelect={(share) => {
+                                form.setFieldValue('smb_share', share);
+                              }}
                               onSelect={(path) => {
                                 form.setFieldValue('path', path);
-                                // If selecting a share (path starts with / and has one segment), set smb_share
-                                const segments = path.split('/').filter(Boolean);
-                                if (segments.length >= 1 && segments[0]) {
-                                  form.setFieldValue('smb_share', segments[0]);
-                                  if (segments.length > 1) {
-                                    form.setFieldValue('path', '/' + segments.slice(1).join('/'));
-                                  } else {
-                                    form.setFieldValue('path', '/');
-                                  }
-                                }
                               }}
                             />
                           )}
@@ -1579,12 +1612,15 @@ function AddLibraryWizard({
                             <div className="space-y-1.5">
                               <Label htmlFor="wiz-name-smb" className={labelClass}>
                                 {i18n._(msg`library.name`)}
+                                <span className="ml-2 font-normal normal-case tracking-normal text-white/25">
+                                  — display name in your library list
+                                </span>
                               </Label>
                               <Input
                                 id="wiz-name-smb"
                                 value={field.state.value}
                                 onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder="Anime"
+                                placeholder="e.g. Anime Collection"
                                 className={inputClass}
                               />
                               {field.state.meta.errors[0] && (
