@@ -47,6 +47,10 @@ func (m *mockBangumi) GetSubjectEpisodes(ctx context.Context, subjectID int) ([]
 	return nil, nil
 }
 
+func (m *mockBangumi) GetSubjectComments(ctx context.Context, subjectID int, limit int) ([]bangumi.SubjectComment, error) {
+	return nil, nil
+}
+
 // ─── Mock AniList Client ──────────────────────────────────────────────────────
 
 type mockAniList struct {
@@ -73,6 +77,10 @@ func (m *mockAniList) GetTrending(ctx context.Context, page, perPage int) ([]ani
 	if m.trendingFn != nil {
 		return m.trendingFn(ctx, page, perPage)
 	}
+	return nil, nil
+}
+
+func (m *mockAniList) BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]anilist.Media, error) {
 	return nil, nil
 }
 

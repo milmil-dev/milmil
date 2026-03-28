@@ -127,6 +127,9 @@ func (m *mockBangumi) GetSubject(_ context.Context, _ int) (*bangumi.Subject, er
 func (m *mockBangumi) GetSubjectEpisodes(_ context.Context, _ int) ([]bangumi.Episode, error) {
 	return m.episodes, m.episodesErr
 }
+func (m *mockBangumi) GetSubjectComments(_ context.Context, _ int, _ int) ([]bangumi.SubjectComment, error) {
+	return nil, nil
+}
 
 // ─── Tests ─────────────────────────────────────────────────────────────────────
 
