@@ -255,6 +255,11 @@ func (p *RcloneProvider) walk(dir string, fn filepath.WalkFunc) error {
 	return nil
 }
 
+// ReadDir returns directory entries for the given path.
+func (p *RcloneProvider) ReadDir(path string) ([]os.FileInfo, error) {
+	return p.vfs.ReadDir(path)
+}
+
 // Stat returns file info for the given path.
 func (p *RcloneProvider) Stat(path string) (os.FileInfo, error) {
 	return p.vfs.Stat(path)

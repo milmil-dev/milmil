@@ -15,6 +15,8 @@ import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { useAuth } from '../hooks/use-auth';
 import {
+  type BrowseInput,
+  type BrowseEntry,
   type CreateLibraryInput,
   type DiscoveredHost,
   type Library,
@@ -381,6 +383,176 @@ function TestConnectionButton({
             ? i18n._(msg`library.testConnection.success`)
             : result.error || i18n._(msg`library.testConnection.failed`)}
         </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Folder browser (cascading directory picker) ─────────────────────────────
+function FolderBrowser({
+  sourceType,
+  getSourceConfig,
+  currentPath,
+  onSelect,
+}: {
+  sourceType: SourceType;
+  getSourceConfig: () => Record<string, unknown>;
+  currentPath: string;
+  onSelect: (path: string) => void;
+}) {
+  const [browsePath, setBrowsePath] = useState('/');
+  const [directories, setDirectories] = useState<BrowseEntry[]>([]);
+  const [isShareLevel, setIsShareLevel] = useState(false);
+
+  const browseMutation = useMutation({
+    mutationFn: (input: BrowseInput) => libraryApi.browse(input),
+    onSuccess: (data) => {
+      setDirectories(data.directories ?? []);
+    },
+  });
+
+  const doBrowse = (path: string) => {
+    const config = getSourceConfig();
+    // If SMB and browsing root with no share, this will list shares
+    const noShare = sourceType === 'smb' && !config.share;
+    setIsShareLevel(noShare && (path === '/' || path === ''));
+    setBrowsePath(path);
+    browseMutation.mutate({
+      source_type: sourceType,
+      source_config: config,
+      path: path,
+    });
+  };
+
+  // Build breadcrumb segments from the current browsePath
+  const breadcrumbs = browsePath === '/' ? [] : browsePath.split('/').filter(Boolean);
+
+  const handleCrumbClick = (index: number) => {
+    if (index < 0) {
+      doBrowse('/');
+    } else {
+      const newPath = '/' + breadcrumbs.slice(0, index + 1).join('/');
+      doBrowse(newPath);
+    }
+  };
+
+  const handleDirectoryClick = (entry: BrowseEntry) => {
+    if (isShareLevel && sourceType === 'smb') {
+      // User selected a share — we need to re-browse with the share set
+      // The entry.path is the share name
+      // We signal the parent to update the share, then browse root of that share
+      onSelect('/' + entry.name);
+      return;
+    }
+    doBrowse(entry.path);
+  };
+
+  const handleSelectFolder = () => {
+    onSelect(browsePath);
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => doBrowse('/')}
+          className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+        >
+          Browse folders
+        </button>
+      </div>
+
+      {/* Show content only after first browse */}
+      {(browseMutation.isSuccess || browseMutation.isPending) && (
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+          {/* Breadcrumb trail */}
+          <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.06] overflow-x-auto">
+            <button
+              type="button"
+              onClick={() => handleCrumbClick(-1)}
+              className={cn(
+                'text-xs shrink-0 transition-colors cursor-pointer',
+                breadcrumbs.length === 0 ? 'text-white/70 font-medium' : 'text-white/40 hover:text-white/60',
+              )}
+            >
+              /
+            </button>
+            {breadcrumbs.map((segment, i) => (
+              <span key={`${segment}-${i}`} className="flex items-center gap-1 shrink-0">
+                <span className="text-white/20 text-[10px]">/</span>
+                <button
+                  type="button"
+                  onClick={() => handleCrumbClick(i)}
+                  className={cn(
+                    'text-xs transition-colors cursor-pointer',
+                    i === breadcrumbs.length - 1
+                      ? 'text-white/70 font-medium'
+                      : 'text-white/40 hover:text-white/60',
+                  )}
+                >
+                  {segment}
+                </button>
+              </span>
+            ))}
+          </div>
+
+          {/* Directory listing */}
+          <div className="max-h-[200px] overflow-y-auto">
+            {browseMutation.isPending && (
+              <div className="space-y-1 p-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-8 rounded bg-white/[0.04] animate-pulse" />
+                ))}
+              </div>
+            )}
+            {browseMutation.isSuccess && directories.length === 0 && (
+              <div className="px-3 py-4 text-center">
+                <p className="text-xs text-white/30">No subdirectories found</p>
+              </div>
+            )}
+            {browseMutation.isSuccess && directories.length > 0 && (
+              <div className="py-1">
+                {directories.map((entry) => (
+                  <button
+                    key={entry.path}
+                    type="button"
+                    onClick={() => handleDirectoryClick(entry)}
+                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-white/[0.04] rounded cursor-pointer text-sm text-white/70 transition-colors"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 shrink-0 text-white/30">
+                      <path
+                        d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      />
+                    </svg>
+                    <span className="truncate">{entry.name}</span>
+                    <span className="ml-auto text-white/20 text-[10px] shrink-0">&#9654;</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Select button */}
+          {browseMutation.isSuccess && !isShareLevel && (
+            <div className="px-3 py-2 border-t border-white/[0.06]">
+              <button
+                type="button"
+                onClick={handleSelectFolder}
+                className={cn(
+                  'w-full px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer',
+                  currentPath === browsePath
+                    ? 'bg-mm-accent/10 border border-mm-accent/30 text-mm-accent'
+                    : 'bg-white/[0.06] text-white/60 hover:bg-white/[0.1]',
+                )}
+              >
+                {currentPath === browsePath ? 'Selected' : `Select ${browsePath}`}
+              </button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
@@ -766,43 +938,53 @@ function LibraryForm({
         }
       </form.Subscribe>
 
-      {/* Path */}
-      <form.Field
-        name="path"
-        validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
-      >
-        {(field) => (
-          <div className="space-y-1.5">
-            <Label htmlFor="lib-path" className={labelClass}>
-              {i18n._(msg`library.path`)}
-            </Label>
-            <Input
-              id="lib-path"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder="/mnt/media/anime"
-              className={cn('font-mono text-sm', inputClass)}
-            />
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+      {/* Path — with folder browser for non-local sources */}
+      <form.Subscribe selector={(s) => s.values}>
+        {(values) => (
+          <div className="space-y-3">
+            <form.Field
+              name="path"
+              validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
+            >
+              {(field) => (
+                <div className="space-y-1.5">
+                  <Label htmlFor="lib-path" className={labelClass}>
+                    {i18n._(msg`library.path`)}
+                  </Label>
+                  <Input
+                    id="lib-path"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder={values.source_type === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                    className={cn('font-mono text-sm', inputClass)}
+                  />
+                  {field.state.meta.errors[0] && (
+                    <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                  )}
+                </div>
+              )}
+            </form.Field>
+
+            {values.source_type !== 'local' && (
+              <FolderBrowser
+                sourceType={values.source_type as SourceType}
+                getSourceConfig={() => buildSourceConfig(values) ?? {}}
+                currentPath={values.path}
+                onSelect={(path) => form.setFieldValue('path', path)}
+              />
+            )}
+
+            {values.source_type !== 'local' && (
+              <TestConnectionButton
+                getConnectionInput={() => ({
+                  source_type: values.source_type,
+                  source_config: buildSourceConfig(values) ?? {},
+                  path: values.path,
+                })}
+              />
             )}
           </div>
         )}
-      </form.Field>
-
-      {/* Test connection for non-local */}
-      <form.Subscribe selector={(s) => s.values}>
-        {(values) =>
-          values.source_type !== 'local' ? (
-            <TestConnectionButton
-              getConnectionInput={() => ({
-                source_type: values.source_type,
-                source_config: buildSourceConfig(values) ?? {},
-                path: values.path,
-              })}
-            />
-          ) : null
-        }
       </form.Subscribe>
 
       {/* Scan interval */}
@@ -1580,44 +1762,56 @@ function AddLibraryWizard({
                 </div>
               )}
 
-              {/* Path */}
-              <form.Field
-                name="path"
-                validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
-              >
-                {(field) => (
-                  <div className="space-y-1.5">
-                    <Label htmlFor="wiz-path" className={labelClass}>
-                      {i18n._(msg`library.path`)}
-                    </Label>
-                    <Input
-                      id="wiz-path"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="/mnt/media/anime"
-                      className={cn('font-mono text-sm', inputClass)}
-                    />
-                    {field.state.meta.errors[0] && (
-                      <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+              {/* Path — with folder browser for non-local sources */}
+              <form.Subscribe selector={(s) => s.values}>
+                {(values) => (
+                  <div className="space-y-3">
+                    <form.Field
+                      name="path"
+                      validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
+                    >
+                      {(field) => (
+                        <div className="space-y-1.5">
+                          <Label htmlFor="wiz-path" className={labelClass}>
+                            {i18n._(msg`library.path`)}
+                          </Label>
+                          <Input
+                            id="wiz-path"
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder={sourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                            className={cn('font-mono text-sm', inputClass)}
+                          />
+                          {field.state.meta.errors[0] && (
+                            <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                          )}
+                        </div>
+                      )}
+                    </form.Field>
+
+                    {/* Folder browser for non-local source types */}
+                    {sourceType !== 'local' && (
+                      <FolderBrowser
+                        sourceType={sourceType}
+                        getSourceConfig={() => buildSourceConfig({ ...values, source_type: sourceType }) ?? {}}
+                        currentPath={values.path}
+                        onSelect={(path) => form.setFieldValue('path', path)}
+                      />
+                    )}
+
+                    {/* Test connection for non-local */}
+                    {sourceType !== 'local' && (
+                      <TestConnectionButton
+                        getConnectionInput={() => ({
+                          source_type: sourceType,
+                          source_config: buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
+                          path: values.path,
+                        })}
+                      />
                     )}
                   </div>
                 )}
-              </form.Field>
-
-              {/* Test connection for non-local */}
-              {sourceType !== 'local' && (
-                <form.Subscribe selector={(s) => s.values}>
-                  {(values) => (
-                    <TestConnectionButton
-                      getConnectionInput={() => ({
-                        source_type: sourceType,
-                        source_config: buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
-                        path: values.path,
-                      })}
-                    />
-                  )}
-                </form.Subscribe>
-              )}
+              </form.Subscribe>
 
               {/* Advanced section */}
               <div className="border-t border-white/[0.06] pt-3">

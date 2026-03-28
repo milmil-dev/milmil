@@ -82,6 +82,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
 	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
 	libGroup.POST("/test-connection", h.handleTestConnection)
+	libGroup.POST("/browse", h.handleBrowse)
 
 	// Rclone remotes — public (used during library setup to pick OAuth remotes)
 	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)

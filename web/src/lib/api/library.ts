@@ -51,6 +51,21 @@ export interface TestConnectionResult {
   error?: string;
 }
 
+export interface BrowseInput {
+  source_type: string;
+  source_config: Record<string, unknown>;
+  path: string;
+}
+
+export interface BrowseEntry {
+  name: string;
+  path: string;
+}
+
+export interface BrowseResult {
+  directories: BrowseEntry[];
+}
+
 export interface MediaFileEntry {
   id: string;
   library_id: string;
@@ -104,6 +119,8 @@ export const libraryApi = {
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
   testConnection: (input: TestConnectionInput) =>
     api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
+  browse: (input: BrowseInput) =>
+    api.post<BrowseResult>('/api/v1/libraries/browse', input),
   mediaFiles: (id: string, params: MediaFilesParams = {}) => {
     const searchParams = new URLSearchParams();
     if (params.status) searchParams.set('status', params.status);

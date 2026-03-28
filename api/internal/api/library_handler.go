@@ -1,13 +1,19 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"net"
 	"net/http"
 	"os"
+	"path"
+	"time"
 
 	"github.com/google/uuid"
+	smb2 "github.com/hirochachacha/go-smb2"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/scanner"
@@ -239,4 +245,128 @@ func (h *handler) handleTestConnection(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"ok": true})
+}
+
+// ─── Browse directories ─────────────────────────────────────────────────────
+
+type browseRequest struct {
+	SourceType   string                 `json:"source_type"`
+	SourceConfig map[string]interface{} `json:"source_config"`
+	Path         string                 `json:"path"`
+}
+
+type browseEntry struct {
+	Name string `json:"name"`
+	Path string `json:"path"`
+}
+
+type browseResponse struct {
+	Directories []browseEntry `json:"directories"`
+}
+
+func (h *handler) handleBrowse(c echo.Context) error {
+	var req browseRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+
+	// For SMB: if share is empty, list available shares on the host instead of directories.
+	if req.SourceType == "smb" {
+		configJSON, _ := json.Marshal(req.SourceConfig)
+		var cfg storage.RcloneConfig
+		if err := json.Unmarshal(configJSON, &cfg); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "invalid source_config")
+		}
+		if cfg.Share == "" {
+			shares := listSMBSharesWithCredentials(
+				c.Request().Context(),
+				cfg.Host, cfg.Port,
+				cfg.Username, cfg.Password, cfg.Domain,
+			)
+			dirs := make([]browseEntry, 0, len(shares))
+			for _, s := range shares {
+				dirs = append(dirs, browseEntry{Name: s, Path: s})
+			}
+			return c.JSON(http.StatusOK, browseResponse{Directories: dirs})
+		}
+	}
+
+	configJSON, _ := json.Marshal(req.SourceConfig)
+	provider, err := storage.NewProvider(req.SourceType, string(configJSON))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	defer provider.Close()
+
+	browsePath := req.Path
+	if browsePath == "" {
+		browsePath = "/"
+	}
+
+	entries, err := provider.ReadDir(browsePath)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	dirs := make([]browseEntry, 0)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			entryPath := path.Join(browsePath, entry.Name())
+			dirs = append(dirs, browseEntry{
+				Name: entry.Name(),
+				Path: entryPath,
+			})
+		}
+	}
+
+	return c.JSON(http.StatusOK, browseResponse{Directories: dirs})
+}
+
+// listSMBSharesWithCredentials lists SMB shares on a host using provided credentials.
+func listSMBSharesWithCredentials(ctx context.Context, host string, port int, username, password, domain string) []string {
+	if host == "" {
+		return nil
+	}
+	if port == 0 {
+		port = 445
+	}
+	addr := fmt.Sprintf("%s:%d", host, port)
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	d := net.Dialer{Timeout: 3 * time.Second}
+	conn, err := d.DialContext(ctx, "tcp", addr)
+	if err != nil {
+		return nil
+	}
+
+	initiator := &smb2.NTLMInitiator{
+		User:     username,
+		Password: password,
+		Domain:   domain,
+	}
+	smbDialer := &smb2.Dialer{Initiator: initiator}
+
+	s, err := smbDialer.DialContext(ctx, conn)
+	if err != nil {
+		conn.Close()
+		return nil
+	}
+
+	names, err := s.ListSharenames()
+	s.Logoff()
+	conn.Close()
+
+	if err != nil {
+		return nil
+	}
+
+	var shares []string
+	for _, name := range names {
+		if len(name) > 0 && name[len(name)-1] != '$' {
+			shares = append(shares, name)
+		}
+	}
+	return shares
 }
