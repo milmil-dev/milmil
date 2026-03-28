@@ -25,44 +25,74 @@ type discoverNetworkResponse struct {
 }
 
 func (h *handler) handleDiscoverNetwork(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(c.Request().Context(), 6*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request().Context(), 8*time.Second)
 	defer cancel()
 
-	// Phase 1: mDNS/Bonjour discovery (fast, ~2 seconds)
-	mdnsHosts := discoverViaMDNS(ctx)
-
-	// Phase 2: For hosts found, try to list their SMB shares
+	// Run mDNS and port scan in parallel, merge results
 	var (
-		mu    sync.Mutex
-		hosts []discoveredHost
-		wg    sync.WaitGroup
+		mu        sync.Mutex
+		hostMap   = make(map[string]*discoveredHost) // keyed by IP
+		wgPhase1  sync.WaitGroup
 	)
 
-	for _, mh := range mdnsHosts {
-		wg.Add(1)
-		go func(mh discoveredHost) {
-			defer wg.Done()
-			shares := listSMBShares(ctx, mh.IP)
-			mh.Shares = shares
-			if mh.Shares == nil {
-				mh.Shares = []string{}
-			}
+	// Phase 1a: mDNS/Bonjour discovery (fast, finds macOS/Linux hosts)
+	wgPhase1.Add(1)
+	go func() {
+		defer wgPhase1.Done()
+		for _, mh := range discoverViaMDNS(ctx) {
 			mu.Lock()
-			hosts = append(hosts, mh)
+			if _, exists := hostMap[mh.IP]; !exists {
+				h := mh
+				hostMap[mh.IP] = &h
+			}
 			mu.Unlock()
-		}(mh)
+		}
+	}()
+
+	// Phase 1b: Port scan (finds Windows/NAS hosts that don't advertise via mDNS)
+	wgPhase1.Add(1)
+	go func() {
+		defer wgPhase1.Done()
+		for _, ph := range discoverViaPortScan(ctx) {
+			mu.Lock()
+			if existing, exists := hostMap[ph.IP]; exists {
+				// mDNS found it too — keep the mDNS hostname (usually better)
+				if existing.Hostname == "" && ph.Hostname != "" {
+					existing.Hostname = ph.Hostname
+				}
+			} else {
+				h := ph
+				hostMap[ph.IP] = &h
+			}
+			mu.Unlock()
+		}
+	}()
+
+	wgPhase1.Wait()
+
+	// Phase 2: List SMB shares for all discovered hosts
+	var wgShares sync.WaitGroup
+	for _, host := range hostMap {
+		wgShares.Add(1)
+		go func(h *discoveredHost) {
+			defer wgShares.Done()
+			shares := listSMBShares(ctx, h.IP)
+			if shares != nil {
+				h.Shares = shares
+			}
+		}(host)
+	}
+	wgShares.Wait()
+
+	// Collect results
+	hosts := make([]discoveredHost, 0, len(hostMap))
+	for _, h := range hostMap {
+		if h.Shares == nil {
+			h.Shares = []string{}
+		}
+		hosts = append(hosts, *h)
 	}
 
-	wg.Wait()
-
-	// Phase 3: If mDNS found nothing, fall back to port scan on local subnet
-	if len(hosts) == 0 {
-		hosts = discoverViaPortScan(ctx)
-	}
-
-	if hosts == nil {
-		hosts = []discoveredHost{}
-	}
 	return c.JSON(http.StatusOK, discoverNetworkResponse{Hosts: hosts})
 }
 
