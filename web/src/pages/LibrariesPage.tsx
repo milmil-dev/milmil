@@ -1720,7 +1720,7 @@ function AddLibraryWizard({
                           validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
                         >
                           {(field) => (
-                            <div className="space-y-1.5 mt-5 pt-5 border-t border-white/[0.06]">
+                            <div className="space-y-1.5 mt-5 pt-5 border-t border-white/[0.06] px-1">
                               <Label htmlFor="wiz-name-smb" className={labelClass}>
                                 {i18n._(msg`library.name`)}
                                 <span className="ml-2 font-normal normal-case tracking-normal text-white/25">
@@ -1744,6 +1744,7 @@ function AddLibraryWizard({
                         {/* Submit */}
                         <form.Subscribe selector={(s) => ({ isSubmitting: s.isSubmitting, path: s.values.path })}>
                           {({ isSubmitting, path }) => (
+                            <div className="px-1">
                             <Button
                               type="submit"
                               disabled={isSubmitting || !path}
@@ -1751,6 +1752,7 @@ function AddLibraryWizard({
                             >
                               {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
                             </Button>
+                            </div>
                           )}
                         </form.Subscribe>
                       </motion.div>
