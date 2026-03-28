@@ -1938,7 +1938,7 @@ export function LibrariesPage() {
           open={drawerMode === 'add'}
           onClose={() => setDrawerMode(null)}
           title={i18n._(msg`library.addLibrary`)}
-          size="md"
+          size="lg"
         >
           <AddLibraryWizard
             onSubmit={async (values) => {
