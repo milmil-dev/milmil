@@ -1,0 +1,141 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useState } from 'react';
+import { useAuth } from '../hooks/use-auth';
+import { Modal } from './Modal';
+
+interface LoginModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+
+export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
+  const { i18n } = useLingui();
+  const { login, setup, loading, error, clearError } = useAuth();
+  const [mode, setMode] = useState<'login' | 'setup'>('login');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [localError, setLocalError] = useState('');
+
+  function reset() {
+    setUsername('');
+    setPassword('');
+    setLocalError('');
+    clearError();
+  }
+
+  function switchMode(newMode: 'login' | 'setup') {
+    reset();
+    setMode(newMode);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLocalError('');
+
+    if (mode === 'setup' && password.length < 8) {
+      setLocalError(i18n._(msg`auth.setup.passwordTooShort`));
+      return;
+    }
+
+    try {
+      if (mode === 'login') {
+        await login(username, password);
+      } else {
+        await setup(username, password);
+      }
+      reset();
+      onSuccess?.();
+      onClose();
+    } catch {
+      // error is set by useAuth
+    }
+  }
+
+  const displayError = localError || error;
+
+  return (
+    <Modal open={open} onClose={onClose} size="sm">
+      <div className="pt-2">
+        {/* Mode tabs */}
+        <div className="flex mb-6 border-b border-white/[0.06]">
+          <button
+            type="button"
+            onClick={() => switchMode('login')}
+            className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
+              mode === 'login'
+                ? 'text-white border-b-2 border-mm-accent'
+                : 'text-white/30 hover:text-white/50'
+            }`}
+          >
+            {i18n._(msg`auth.login.title`)}
+          </button>
+          <button
+            type="button"
+            onClick={() => switchMode('setup')}
+            className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
+              mode === 'setup'
+                ? 'text-white border-b-2 border-mm-accent'
+                : 'text-white/30 hover:text-white/50'
+            }`}
+          >
+            {i18n._(msg`auth.setup.title`)}
+          </button>
+        </div>
+
+        {mode === 'setup' && (
+          <p className="text-[13px] text-white/40 mb-4">
+            {i18n._(msg`auth.setup.subtitle`)}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
+              {i18n._(msg`auth.login.username`)}
+            </label>
+            <input
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-white/[0.06] border border-white/[0.08] rounded-md px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-mm-accent/50"
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
+              {i18n._(msg`auth.login.password`)}
+            </label>
+            <input
+              type="password"
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-white/[0.06] border border-white/[0.08] rounded-md px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-mm-accent/50"
+              required
+            />
+          </div>
+
+          {displayError && (
+            <p className="text-red-400 text-[13px]">{displayError}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-40 cursor-pointer"
+          >
+            {loading
+              ? i18n._(msg`common.loading`)
+              : mode === 'login'
+                ? i18n._(msg`auth.login.submit`)
+                : i18n._(msg`auth.setup.submit`)}
+          </button>
+        </form>
+      </div>
+    </Modal>
+  );
+}

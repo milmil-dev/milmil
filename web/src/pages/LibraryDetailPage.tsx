@@ -6,9 +6,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
+import { useAuth } from '../hooks/use-auth';
 import { discoverApi, discoverKeys, type AnimeSummary, type Episode } from '../lib/api/discover';
 import { libraryApi, libraryKeys, type MediaFileEntry } from '../lib/api/library';
 import { cn } from '../lib/utils';
@@ -596,10 +598,17 @@ function MatchModal({
 
 export function LibraryDetailPage() {
   const { i18n } = useLingui();
+  const { isAuthenticated } = useAuth();
+  const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const { id } = useParams({ from: '/libraries/$id' });
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated) setShowLogin(false);
+    else setShowLogin(true);
+  }, [isAuthenticated]);
 
   const {
     data: library,
@@ -608,6 +617,7 @@ export function LibraryDetailPage() {
   } = useQuery({
     queryKey: libraryKeys.detail(id),
     queryFn: () => libraryApi.get(id),
+    enabled: isAuthenticated,
   });
 
   const scanMutation = useMutation({
@@ -627,6 +637,43 @@ export function LibraryDetailPage() {
     { key: 'unmatched', label: i18n._(msg`library.detail.tab.unmatched`) },
     { key: 'history', label: i18n._(msg`library.detail.tab.scanHistory`) },
   ];
+
+  if (!isAuthenticated) {
+    return (
+      <PageTransition>
+        <div className="min-h-screen flex flex-col items-center justify-center px-4">
+          <div className="mb-8">
+            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
+              <path
+                d="M40 10a14 14 0 0 1 14 14v6H26v-6A14 14 0 0 1 40 10z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <rect x="16" y="30" width="48" height="36" rx="4" stroke="currentColor" strokeWidth="1.5" fill="currentColor" />
+              <circle cx="40" cy="46" r="4" fill="oklch(12% 0.01 260)" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-white/70 mb-2">
+            {i18n._(msg`auth.libraries.signInTitle`)}
+          </h2>
+          <p className="text-sm text-white/30 mb-8 text-center max-w-xs">
+            {i18n._(msg`auth.libraries.signInSubtitle`)}
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowLogin(true)}
+            className="px-5 py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
+          >
+            {i18n._(msg`auth.login.submit`)}
+          </button>
+          <LoginModal
+            open={showLogin}
+            onClose={() => setShowLogin(false)}
+          />
+        </div>
+      </PageTransition>
+    );
+  }
 
   if (isLoading) {
     return (

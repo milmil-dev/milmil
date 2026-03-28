@@ -6,12 +6,14 @@ import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
+import { useAuth } from '../hooks/use-auth';
 import {
   type CreateLibraryInput,
   type DiscoveredHost,
@@ -1796,15 +1798,24 @@ function formDefaultValues(lib?: Library): LibraryFormValues {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function LibrariesPage() {
   const { i18n } = useLingui();
+  const { isAuthenticated } = useAuth();
+  const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const queryClient = useQueryClient();
   const [drawerMode, setDrawerMode] = useState<'add' | 'edit' | null>(null);
   const [editLib, setEditLib] = useState<LibraryWithStats | null>(null);
   const [deleteLib, setDeleteLib] = useState<LibraryWithStats | null>(null);
   const [scanningId, setScanningId] = useState<string | null>(null);
 
+  // Sync login modal visibility with auth state
+  useEffect(() => {
+    if (isAuthenticated) setShowLogin(false);
+    else setShowLogin(true);
+  }, [isAuthenticated]);
+
   const { data: libraries = [], isLoading } = useQuery({
     queryKey: libraryKeys.list(),
     queryFn: libraryApi.list,
+    enabled: isAuthenticated,
   });
 
   const createMutation = useMutation({
@@ -1858,6 +1869,44 @@ export function LibrariesPage() {
   const skeletonCards = [1, 2, 3, 4];
   const hasLibraries = !isLoading && libraries.length > 0;
   const isEmpty = !isLoading && libraries.length === 0;
+
+  // Not authenticated — show prompt
+  if (!isAuthenticated) {
+    return (
+      <PageTransition>
+        <div className="min-h-screen flex flex-col items-center justify-center px-4">
+          <div className="mb-8">
+            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
+              <path
+                d="M40 10a14 14 0 0 1 14 14v6H26v-6A14 14 0 0 1 40 10z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <rect x="16" y="30" width="48" height="36" rx="4" stroke="currentColor" strokeWidth="1.5" fill="currentColor" />
+              <circle cx="40" cy="46" r="4" fill="oklch(12% 0.01 260)" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-white/70 mb-2">
+            {i18n._(msg`auth.libraries.signInTitle`)}
+          </h2>
+          <p className="text-sm text-white/30 mb-8 text-center max-w-xs">
+            {i18n._(msg`auth.libraries.signInSubtitle`)}
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowLogin(true)}
+            className="px-5 py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
+          >
+            {i18n._(msg`auth.login.submit`)}
+          </button>
+          <LoginModal
+            open={showLogin}
+            onClose={() => setShowLogin(false)}
+          />
+        </div>
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition>

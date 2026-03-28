@@ -74,6 +74,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup := v1.Group("/libraries", jwtMiddleware(cfg.JWTSecret))
 	libGroup.GET("", h.handleListLibraries)
 	libGroup.POST("", h.handleCreateLibrary)
+	libGroup.GET("/discover-network", h.handleDiscoverNetwork)
 	libGroup.GET("/:id", h.handleGetLibrary)
 	libGroup.PUT("/:id", h.handleUpdateLibrary)
 	libGroup.DELETE("/:id", h.handleDeleteLibrary)
@@ -81,9 +82,6 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
 	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
 	libGroup.POST("/test-connection", h.handleTestConnection)
-
-	// Network discovery — public (used during initial setup before login)
-	v1.GET("/libraries/discover-network", h.handleDiscoverNetwork)
 
 	// Rclone remotes — public (used during library setup to pick OAuth remotes)
 	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
