@@ -81,6 +81,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
 	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
 	libGroup.POST("/test-connection", h.handleTestConnection)
+	libGroup.GET("/discover-network", h.handleDiscoverNetwork)
 
 	// Media files — protected
 	mediaGroup := v1.Group("/media-files", jwtMiddleware(cfg.JWTSecret))
