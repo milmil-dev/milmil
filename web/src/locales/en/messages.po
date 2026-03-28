@@ -13,34 +13,35 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/PreviewModal.tsx:154
-#: src/pages/AnimeDetailPage.tsx:173
-msgid "anime.episodes"
-msgstr "Episodes"
-
-msgid "anime.relations"
-msgstr "Related"
-
-msgid "anime.reviews"
-msgstr "Reviews"
-
+#: src/pages/AnimeDetailPage.tsx:404
 msgid "anime.comments"
 msgstr "Comments"
 
-msgid "anime.recommendations"
-msgstr "Recommended"
+#: src/components/PreviewModal.tsx:286
+#: src/pages/AnimeDetailPage.tsx:248
+msgid "anime.episodes"
+msgstr "Episodes"
 
-#: src/pages/AnimeDetailPage.tsx:63
+#: src/pages/AnimeDetailPage.tsx:88
 msgid "anime.notFound"
 msgstr "Anime not found"
 
-#: src/components/PreviewModal.tsx:103
-#: src/pages/AnimeDetailPage.tsx:146
+#: src/components/PreviewModal.tsx:187
+#: src/pages/AnimeDetailPage.tsx:209
 msgid "anime.ratings"
 msgstr "ratings"
 
-msgid "anime.trailer"
-msgstr "Trailer"
+#: src/pages/AnimeDetailPage.tsx:335
+msgid "anime.recommendations"
+msgstr "Recommended"
+
+#: src/pages/AnimeDetailPage.tsx:311
+msgid "anime.relations"
+msgstr "Related"
+
+#: src/pages/AnimeDetailPage.tsx:354
+msgid "anime.reviews"
+msgstr "Reviews"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
@@ -49,6 +50,11 @@ msgstr "Trailer"
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
 #~ msgstr "Synopsis"
+
+#: src/components/PreviewModal.tsx:252
+#: src/pages/AnimeDetailPage.tsx:283
+msgid "anime.trailer"
+msgstr "Trailer"
 
 #: src/pages/LoginPage.tsx:34
 msgid "auth.error.invalidCredentials"
@@ -106,45 +112,59 @@ msgstr "Welcome to milmil"
 msgid "auth.setup.username"
 msgstr "Username"
 
-#: src/pages/AnimeDetailPage.tsx:75
+#: src/pages/AnimeDetailPage.tsx:100
 msgid "common.backHome"
 msgstr "Back to Home"
 
-#: src/components/AnimeCard.tsx:53
+#: src/components/AnimeCard.tsx:67
 #: src/components/AnimeRow.tsx:48
-#: src/components/HeroBanner.tsx:174
-#: src/components/PreviewModal.tsx:106
-#: src/pages/AnimeDetailPage.tsx:136
+#: src/components/HeroBanner.tsx:202
+#: src/components/PreviewModal.tsx:182
+#: src/components/PreviewModal.tsx:311
+#: src/pages/AnimeDetailPage.tsx:199
+#: src/pages/AnimeDetailPage.tsx:251
 msgid "common.ep"
 msgstr "ep"
 
-msgid "common.minuteShort"
-msgstr "min"
-
-msgid "episode.prefix"
-msgstr "Episode "
-
-msgid "episode.suffix"
-msgstr ""
-
-#: src/pages/AnimeDetailPage.tsx:63
+#: src/pages/AnimeDetailPage.tsx:88
+#: src/pages/LibraryDetailPage.tsx:665
 msgid "common.loadFailed"
 msgstr "Failed to load"
 
-#: src/pages/AnimeDetailPage.tsx:69
-#: src/pages/SchedulePage.tsx:164
+#: src/pages/LibraryDetailPage.tsx:233
+#: src/pages/LibraryDetailPage.tsx:607
+msgid "common.loading"
+msgstr "Loading..."
+
+#: src/components/EpisodeListItem.tsx:47
+msgid "common.minuteShort"
+msgstr "min"
+
+#: src/pages/AnimeDetailPage.tsx:94
+#: src/pages/SchedulePage.tsx:401
 msgid "common.retry"
 msgstr "Retry"
 
-#: src/components/PreviewModal.tsx:136
+#: src/components/EpisodeListItem.tsx:105
+#: src/components/EpisodeListItem.tsx:188
+msgid "episode.prefix"
+msgstr "Episode "
+
+#: src/components/EpisodeListItem.tsx:105
+#: src/components/EpisodeListItem.tsx:188
+msgid "episode.suffix"
+msgstr ""
+
+#: src/components/PreviewModal.tsx:217
+#: src/components/PreviewModal.tsx:221
 msgid "hero.details"
 msgstr "Details"
 
-#: src/components/HeroBanner.tsx:122
+#: src/components/HeroBanner.tsx:150
 msgid "hero.preview"
 msgstr "Preview"
 
-#: src/pages/HomePage.tsx:103
+#: src/pages/HomePage.tsx:104
 msgid "home.continueWatching"
 msgstr "Continue Watching"
 
@@ -156,198 +176,413 @@ msgstr "Add a folder to start scanning"
 msgid "home.library.empty.title"
 msgstr "No libraries added"
 
-#: src/pages/HomePage.tsx:194
-#: src/pages/HomePage.tsx:229
+#: src/pages/HomePage.tsx:195
+#: src/pages/HomePage.tsx:230
 msgid "home.myLibraries"
 msgstr "My Libraries"
 
-#: src/pages/HomePage.tsx:134
+#: src/pages/HomePage.tsx:135
 msgid "home.todaySchedule"
 msgstr "Today's Schedule"
 
-#: src/pages/HomePage.tsx:177
+#: src/pages/HomePage.tsx:178
 msgid "home.trending"
 msgstr "Trending"
 
-#: src/pages/HomePage.tsx:269
+#: src/pages/HomePage.tsx:270
 msgid "home.viewAll"
 msgstr "View All →"
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibrariesPage.tsx:165
+#: src/pages/LibrariesPage.tsx:825
+#: src/pages/LibrariesPage.tsx:907
+#: src/pages/LibrariesPage.tsx:913
 msgid "library.addLibrary"
 msgstr "Add Library"
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibrariesPage.tsx:963
 msgid "library.cancel"
 msgstr "Cancel"
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibrariesPage.tsx:167
 msgid "library.connectSource"
 msgstr "Connect a media source"
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibrariesPage.tsx:110
+#: src/pages/LibrariesPage.tsx:951
+#: src/pages/LibrariesPage.tsx:973
 msgid "library.delete"
 msgstr "Delete"
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibrariesPage.tsx:955
 msgid "library.deleteConfirm"
 msgstr "All media file records will be removed. Your files on disk are unaffected."
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibraryDetailPage.tsx:144
+msgid "library.detail.allMatched"
+msgstr "All files matched"
+
+#: src/pages/LibraryDetailPage.tsx:671
+#: src/pages/LibraryDetailPage.tsx:695
+msgid "library.detail.backToLibraries"
+msgstr "Libraries"
+
+#: src/pages/LibraryDetailPage.tsx:173
+msgid "library.detail.col.filename"
+msgstr "Filename"
+
+#: src/pages/LibraryDetailPage.tsx:174
+msgid "library.detail.col.matchedTo"
+msgstr "Matched To"
+
+#: src/pages/LibraryDetailPage.tsx:177
+msgid "library.detail.col.size"
+msgstr "Size"
+
+#: src/pages/LibraryDetailPage.tsx:175
+msgid "library.detail.col.status"
+msgstr "Status"
+
+#: src/pages/LibraryDetailPage.tsx:176
+msgid "library.detail.col.subs"
+msgstr "Subs"
+
+#: src/pages/LibraryDetailPage.tsx:348
+msgid "library.detail.errors"
+msgstr "Errors"
+
+#~ msgid "library.detail.filename"
+#~ msgstr "Filename"
+
+#: src/pages/LibraryDetailPage.tsx:334
+msgid "library.detail.found"
+msgstr "Found"
+
+#: src/pages/LibraryDetailPage.tsx:329
+msgid "library.detail.inProgress"
+msgstr "In Progress"
+
+#: src/pages/LibraryDetailPage.tsx:250
+msgid "library.detail.loadMore"
+msgstr "Load More"
+
+#: src/pages/LibraryDetailPage.tsx:221
+msgid "library.detail.match"
+msgstr "Match"
+
+#: src/pages/LibraryDetailPage.tsx:337
+#: src/pages/LibraryDetailPage.tsx:764
+msgid "library.detail.matched"
+msgstr "Matched"
+
+#~ msgid "library.detail.matchedTo"
+#~ msgstr "Matched To"
+
+#: src/pages/LibraryDetailPage.tsx:546
+msgid "library.detail.matchModal.change"
+msgstr "Change"
+
+#: src/pages/LibraryDetailPage.tsx:608
+msgid "library.detail.matchModal.confirm"
+msgstr "Confirm Match"
+
+#~ msgid "library.detail.matchModal.failed"
+#~ msgstr "Match failed"
+
+#: src/pages/LibraryDetailPage.tsx:429
+msgid "library.detail.matchModal.matched"
+msgstr "File matched"
+
+#: src/pages/LibraryDetailPage.tsx:595
+msgid "library.detail.matchModal.noEpisodes"
+msgstr "No episodes found"
+
+#: src/pages/LibraryDetailPage.tsx:496
+msgid "library.detail.matchModal.noResults"
+msgstr "No results found"
+
+#~ msgid "library.detail.matchModal.pickEpisode"
+#~ msgstr "Pick Episode"
+
+#~ msgid "library.detail.matchModal.searchAnime"
+#~ msgstr "Search anime..."
+
+#: src/pages/LibraryDetailPage.tsx:482
+msgid "library.detail.matchModal.searchHint"
+msgstr "Search for an anime to match this file"
+
+#: src/pages/LibraryDetailPage.tsx:474
+msgid "library.detail.matchModal.searchPlaceholder"
+msgstr "Search anime..."
+
+#: src/pages/LibraryDetailPage.tsx:455
+msgid "library.detail.matchModal.title"
+msgstr "Match File"
+
+#: src/pages/LibraryDetailPage.tsx:150
+#: src/pages/LibraryDetailPage.tsx:239
+msgid "library.detail.noFiles"
+msgstr "No files found"
+
+#: src/pages/LibraryDetailPage.tsx:295
+msgid "library.detail.noScans"
+msgstr "No scans yet"
+
+#: src/pages/LibraryDetailPage.tsx:665
+msgid "library.detail.notFound"
+msgstr "Library not found"
+
+#~ msgid "library.detail.runFirstScan"
+#~ msgstr "Run your first scan"
+
+#~ msgid "library.detail.scanHistory.duration"
+#~ msgstr "Duration"
+
+#~ msgid "library.detail.scanHistory.errors"
+#~ msgstr "Errors"
+
+#~ msgid "library.detail.scanHistory.found"
+#~ msgstr "Found"
+
+#~ msgid "library.detail.scanHistory.noScans"
+#~ msgstr "No scans yet"
+
+#~ msgid "library.detail.scanHistory.started"
+#~ msgstr "Started"
+
+#: src/pages/LibraryDetailPage.tsx:730
+msgid "library.detail.scanNow"
+msgstr "Scan Now"
+
+#~ msgid "library.detail.search"
+#~ msgstr "Search files..."
+
+#: src/pages/LibraryDetailPage.tsx:163
+msgid "library.detail.searchFiles"
+msgstr "Search files..."
+
+#: src/pages/LibraryDetailPage.tsx:736
+msgid "library.detail.settings"
+msgstr "Settings"
+
+#~ msgid "library.detail.size"
+#~ msgstr "Size"
+
+#~ msgid "library.detail.status"
+#~ msgstr "Status"
+
+#~ msgid "library.detail.subtitles"
+#~ msgstr "Subs"
+
+#: src/pages/LibraryDetailPage.tsx:647
+msgid "library.detail.tab.allFiles"
+msgstr "All Files"
+
+#: src/pages/LibraryDetailPage.tsx:649
+msgid "library.detail.tab.scanHistory"
+msgstr "Scan History"
+
+#: src/pages/LibraryDetailPage.tsx:648
+msgid "library.detail.tab.unmatched"
+msgstr "Unmatched"
+
+#: src/pages/LibraryDetailPage.tsx:754
+msgid "library.detail.totalFiles"
+msgstr "Total Files"
+
+#: src/pages/LibraryDetailPage.tsx:792
+msgid "library.detail.totalSize"
+msgstr "Total Size"
+
+#~ msgid "library.detail.unmatch"
+#~ msgstr "Unmatch"
+
+#: src/pages/LibraryDetailPage.tsx:782
+msgid "library.detail.unmatched"
+msgstr "Unmatched"
+
+#: src/pages/LibraryDetailPage.tsx:340
+msgid "library.detail.unmatchedShort"
+msgstr "Unmatched"
+
+#: src/pages/LibrariesPage.tsx:303
+msgid "library.discover.browse"
+msgstr "Browse Network"
+
+#: src/pages/LibrariesPage.tsx:317
+msgid "library.discover.noHosts"
+msgstr "No hosts found"
+
+#: src/pages/LibrariesPage.tsx:302
+msgid "library.discover.scanning"
+msgstr "Scanning network..."
+
+#~ msgid "library.discover.timeout"
+#~ msgstr "Discovery timed out"
+
+#: src/pages/LibrariesPage.tsx:107
 msgid "library.edit"
 msgstr "Edit"
 
-#: src/pages/LibrariesPage.tsx
+#: src/pages/LibrariesPage.tsx:907
 msgid "library.editLibrary"
 msgstr "Edit Library"
 
-#: src/pages/LibrariesPage.tsx:573
+#: src/pages/LibrariesPage.tsx:675
 msgid "library.enabled"
 msgstr "Enabled"
 
-#: src/pages/LibrariesPage.tsx
-msgid "library.nameRequired"
-msgstr "Name required"
+#~ msgid "library.files"
+#~ msgstr "files"
 
-#: src/pages/LibrariesPage.tsx
-msgid "library.neverScanned"
-msgstr "Never"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.off"
-msgstr "OFF"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.on"
-msgstr "ON"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.pageTitle"
-msgstr "My Libraries"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.pathRequired"
-msgstr "Path required"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.saveChanges"
-msgstr "Save Changes"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.saving"
-msgstr "Saving…"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.scan"
-msgstr "Scan"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.scanning"
-msgstr "Scanning"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.toast.added"
-msgstr "Library added"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.toast.deleted"
-msgstr "Library deleted"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.toast.scanComplete"
-msgstr "Scan complete"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.toast.scanFailed"
-msgstr "Scan failed"
-
-#: src/pages/LibrariesPage.tsx
-msgid "library.toast.updated"
-msgstr "Library updated"
-
-#: src/pages/LibrariesPage.tsx:313
+#: src/pages/LibrariesPage.tsx:411
 msgid "library.name"
 msgstr "Name"
 
-#: src/pages/LibrariesPage.tsx:493
+#: src/pages/LibrariesPage.tsx:406
+msgid "library.nameRequired"
+msgstr "Name required"
+
+#: src/pages/LibrariesPage.tsx:67
+#: src/pages/LibraryDetailPage.tsx:684
+msgid "library.neverScanned"
+msgstr "Never"
+
+#: src/pages/LibrariesPage.tsx:132
+msgid "library.off"
+msgstr "OFF"
+
+#: src/pages/LibrariesPage.tsx:132
+msgid "library.on"
+msgstr "ON"
+
+#: src/pages/LibrariesPage.tsx:818
+msgid "library.pageTitle"
+msgstr "My Libraries"
+
+#: src/pages/LibrariesPage.tsx:598
 msgid "library.path"
 msgstr "Path"
 
-#: src/pages/LibrariesPage.tsx:550
+#: src/pages/LibrariesPage.tsx:593
+msgid "library.pathRequired"
+msgstr "Path required"
+
+#: src/pages/LibrariesPage.tsx:929
+msgid "library.saveChanges"
+msgstr "Save Changes"
+
+#: src/pages/LibrariesPage.tsx:693
+msgid "library.saving"
+msgstr "Saving…"
+
+#: src/pages/LibrariesPage.tsx:104
+msgid "library.scan"
+msgstr "Scan"
+
+#: src/pages/LibrariesPage.tsx:655
 msgid "library.scanInterval"
 msgstr "Scan Interval (min)"
 
-#: src/pages/LibrariesPage.tsx:429
+#: src/pages/LibrariesPage.tsx:97
+#: src/pages/LibrariesPage.tsx:104
+#: src/pages/LibraryDetailPage.tsx:729
+msgid "library.scanning"
+msgstr "Scanning"
+
+#: src/pages/LibrariesPage.tsx:534
 msgid "library.sftp.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:469
+#: src/pages/LibrariesPage.tsx:574
 msgid "library.sftp.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:442
+#: src/pages/LibrariesPage.tsx:547
 msgid "library.sftp.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:456
+#: src/pages/LibrariesPage.tsx:561
 msgid "library.sftp.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:406
+#: src/pages/LibrariesPage.tsx:511
 msgid "library.smb.domain"
 msgstr "Domain"
 
-#: src/pages/LibrariesPage.tsx:337
+#: src/pages/LibrariesPage.tsx:435
 msgid "library.smb.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:392
+#: src/pages/LibrariesPage.tsx:497
 msgid "library.smb.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:351
+#: src/pages/LibrariesPage.tsx:456
 msgid "library.smb.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:365
+#: src/pages/LibrariesPage.tsx:470
 msgid "library.smb.share"
 msgstr "Share"
 
-#: src/pages/LibrariesPage.tsx:379
+#: src/pages/LibrariesPage.tsx:484
 msgid "library.smb.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:208
+#: src/pages/LibrariesPage.tsx:215
 msgid "library.sourceType"
 msgstr "Source Type"
 
-#: src/pages/LibrariesPage.tsx:201
+#: src/pages/LibrariesPage.tsx:208
 msgid "library.sourceType.local"
 msgstr "Local"
 
-#: src/pages/LibrariesPage.tsx:203
+#: src/pages/LibrariesPage.tsx:210
 msgid "library.sourceType.sftp"
 msgstr "SFTP"
 
-#: src/pages/LibrariesPage.tsx:202
+#: src/pages/LibrariesPage.tsx:209
 msgid "library.sourceType.smb"
 msgstr "SMB"
 
-#: src/pages/LibrariesPage.tsx:258
+#: src/pages/LibrariesPage.tsx:265
 msgid "library.testConnection"
 msgstr "Test Connection"
 
-#: src/pages/LibrariesPage.tsx:264
+#: src/pages/LibrariesPage.tsx:271
 msgid "library.testConnection.failed"
 msgstr "Connection Failed"
 
-#: src/pages/LibrariesPage.tsx:263
+#: src/pages/LibrariesPage.tsx:270
 msgid "library.testConnection.success"
 msgstr "Connected"
 
-#: src/pages/LibrariesPage.tsx:257
+#: src/pages/LibrariesPage.tsx:264
 msgid "library.testConnection.testing"
 msgstr "Testing..."
+
+#: src/pages/LibrariesPage.tsx:763
+msgid "library.toast.added"
+msgstr "Library added"
+
+#: src/pages/LibrariesPage.tsx:785
+msgid "library.toast.deleted"
+msgstr "Library deleted"
+
+#: src/pages/LibrariesPage.tsx:798
+#: src/pages/LibraryDetailPage.tsx:639
+msgid "library.toast.scanComplete"
+msgstr "Scan complete"
+
+#: src/pages/LibrariesPage.tsx:802
+#: src/pages/LibraryDetailPage.tsx:642
+msgid "library.toast.scanFailed"
+msgstr "Scan failed"
+
+#: src/pages/LibrariesPage.tsx:775
+msgid "library.toast.updated"
+msgstr "Library updated"
 
 #: src/routes/__root.tsx:114
 msgid "nav.discover"
@@ -358,18 +593,18 @@ msgid "nav.downloads"
 msgstr "Downloads"
 
 #: src/components/AppSidebar.tsx:22
-#: src/components/AppSidebar.tsx:113
+#: src/components/AppSidebar.tsx:114
 #: src/routes/__root.tsx:111
 msgid "nav.home"
 msgstr "Home"
 
 #: src/components/AppSidebar.tsx:32
-#: src/components/AppSidebar.tsx:116
+#: src/components/AppSidebar.tsx:117
 #: src/routes/__root.tsx:113
 msgid "nav.libraries"
 msgstr "Library"
 
-#: src/components/AppSidebar.tsx:117
+#: src/components/AppSidebar.tsx:118
 msgid "nav.more"
 msgstr "More"
 
@@ -378,13 +613,13 @@ msgid "nav.rss"
 msgstr "RSS"
 
 #: src/components/AppSidebar.tsx:23
-#: src/components/AppSidebar.tsx:114
+#: src/components/AppSidebar.tsx:115
 #: src/routes/__root.tsx:112
 msgid "nav.schedule"
 msgstr "Schedule"
 
 #: src/components/AppSidebar.tsx:24
-#: src/components/AppSidebar.tsx:115
+#: src/components/AppSidebar.tsx:116
 msgid "nav.search"
 msgstr "Search"
 
@@ -400,45 +635,193 @@ msgstr "Torrent"
 msgid "nav.trending"
 msgstr "Trending"
 
-#: src/pages/SchedulePage.tsx:157
+#: src/pages/SchedulePage.tsx:425
+msgid "schedule.all"
+msgstr "All"
+
+#: src/pages/SchedulePage.tsx:394
 msgid "schedule.loadFailed"
 msgstr "Failed to load calendar"
 
-#: src/pages/SchedulePage.tsx:39
-msgid "schedule.season.fall"
-msgstr "Fall"
-
-#: src/pages/SchedulePage.tsx:37
-msgid "schedule.season.spring"
-msgstr "Spring"
-
-#: src/pages/SchedulePage.tsx:38
-msgid "schedule.season.summer"
-msgstr "Summer"
-
-#: src/pages/SchedulePage.tsx:36
-msgid "schedule.season.winter"
-msgstr "Winter"
-
-msgid "schedule.today"
-msgstr "Today"
-
-msgid "schedule.totalShows"
-msgstr "shows this week"
-
+#: src/pages/SchedulePage.tsx:518
 msgid "schedule.noShows"
 msgstr "No shows scheduled"
 
-msgid "schedule.all"
-msgstr "All"
+#: src/pages/SchedulePage.tsx:65
+msgid "schedule.season.fall"
+msgstr "Fall"
+
+#: src/pages/SchedulePage.tsx:63
+msgid "schedule.season.spring"
+msgstr "Spring"
+
+#: src/pages/SchedulePage.tsx:64
+msgid "schedule.season.summer"
+msgstr "Summer"
+
+#: src/pages/SchedulePage.tsx:62
+msgid "schedule.season.winter"
+msgstr "Winter"
+
+#: src/pages/SchedulePage.tsx:505
+#: src/pages/SchedulePage.tsx:544
+msgid "schedule.today"
+msgstr "Today"
+
+#: src/pages/SchedulePage.tsx:381
+msgid "schedule.totalShows"
+msgstr "shows this week"
+
+#: src/pages/SearchPage.tsx:158
+msgid "search.emptyHint"
+msgstr "Search your favorite anime"
+
+#: src/pages/SearchPage.tsx:119
+msgid "search.inputPlaceholder"
+msgstr "Search your favorite anime..."
+
+#: src/pages/SearchPage.tsx:200
+msgid "search.loadingMore"
+msgstr "Loading…"
+
+#: src/components/PreviewModal.tsx:310
+#: src/pages/SearchPage.tsx:201
+msgid "search.loadMore"
+msgstr "Load More"
 
 #: src/components/CommandPalette.tsx:172
 msgid "search.noResults"
 msgstr "No results found"
 
+#: src/pages/SearchPage.tsx:213
+#: src/pages/SearchPage.tsx:214
+msgid "search.noResultsFor"
+msgstr "No results for"
+
 #: src/components/CommandPalette.tsx:113
 msgid "search.placeholder"
 msgstr "Search anime..."
+
+#: src/pages/SearchPage.tsx:99
+msgid "search.title"
+msgstr "Search"
+
+#: src/pages/SettingsPage.tsx:280
+msgid "settings.appearance.language"
+msgstr "Language"
+
+#: src/pages/SettingsPage.tsx:278
+msgid "settings.appearance.title"
+msgstr "Appearance"
+
+#: src/pages/SettingsPage.tsx:103
+msgid "settings.dandanplay.title"
+msgstr "DandanPlay Settings"
+
+#: src/pages/SettingsPage.tsx:339
+msgid "settings.integration.authUrlFailed"
+msgstr "Failed to get auth URL"
+
+#: src/pages/SettingsPage.tsx:415
+msgid "settings.integration.connect"
+msgstr "Connect Account"
+
+#: src/pages/SettingsPage.tsx:421
+msgid "settings.integration.connected"
+msgstr "Connected"
+
+#: src/pages/SettingsPage.tsx:415
+msgid "settings.integration.connecting"
+msgstr "Connecting…"
+
+#: src/pages/SettingsPage.tsx:428
+msgid "settings.integration.disconnect"
+msgstr "Disconnect"
+
+#: src/pages/SettingsPage.tsx:345
+msgid "settings.integration.disconnected"
+msgstr "Disconnected"
+
+#: src/pages/SettingsPage.tsx:348
+msgid "settings.integration.disconnectFailed"
+msgstr "Disconnect failed"
+
+#: src/pages/SettingsPage.tsx:428
+msgid "settings.integration.disconnecting"
+msgstr "Disconnecting…"
+
+#: src/pages/SettingsPage.tsx:436
+msgid "settings.integration.sync"
+msgstr "Sync Progress"
+
+#: src/pages/SettingsPage.tsx:357
+msgid "settings.integration.syncComplete"
+msgstr "Sync complete"
+
+#: src/pages/SettingsPage.tsx:357
+msgid "settings.integration.syncErrors"
+msgstr "errors"
+
+#: src/pages/SettingsPage.tsx:359
+msgid "settings.integration.syncFailed"
+msgstr "Sync failed"
+
+#: src/pages/SettingsPage.tsx:436
+msgid "settings.integration.syncing"
+msgstr "Syncing…"
+
+#: src/pages/SettingsPage.tsx:363
+msgid "settings.integration.title"
+msgstr "Integration"
+
+#: src/pages/SettingsPage.tsx:454
+msgid "settings.pageTitle"
+msgstr "Settings"
+
+#: src/pages/SettingsPage.tsx:207
+msgid "settings.player.danmakuEnabled"
+msgstr "Danmaku enabled by default"
+
+#: src/pages/SettingsPage.tsx:232
+msgid "settings.player.danmakuFontSize"
+msgstr "Danmaku font size"
+
+#: src/pages/SettingsPage.tsx:214
+msgid "settings.player.danmakuOpacity"
+msgstr "Danmaku opacity"
+
+#: src/pages/SettingsPage.tsx:238
+msgid "settings.player.danmakuSpeed"
+msgstr "Danmaku speed"
+
+#: src/pages/SettingsPage.tsx:204
+msgid "settings.player.title"
+msgstr "Player Settings"
+
+#: src/pages/SettingsPage.tsx:145
+#: src/pages/SettingsPage.tsx:257
+#: src/pages/SettingsPage.tsx:405
+msgid "settings.save"
+msgstr "Save"
+
+#: src/pages/SettingsPage.tsx:96
+#: src/pages/SettingsPage.tsx:197
+#: src/pages/SettingsPage.tsx:274
+#: src/pages/SettingsPage.tsx:328
+msgid "settings.saved"
+msgstr "Saved"
+
+#: src/pages/SettingsPage.tsx:99
+#: src/pages/SettingsPage.tsx:200
+#: src/pages/SettingsPage.tsx:331
+msgid "settings.saveFailed"
+msgstr "Save failed"
+
+#: src/pages/SettingsPage.tsx:145
+#: src/pages/SettingsPage.tsx:257
+#: src/pages/SettingsPage.tsx:405
+msgid "settings.saving"
+msgstr "Saving…"
 
 #: src/components/DanmakuSettings.tsx:50
 #: src/pages/WatchPage.tsx:180
@@ -488,133 +871,3 @@ msgstr "Media File"
 #: src/pages/WatchPage.tsx:193
 msgid "watch.subtitle"
 msgstr "Subtitles"
-
-#: src/pages/SearchPage.tsx
-msgid "search.title"
-msgstr "Search"
-
-#: src/pages/SearchPage.tsx
-msgid "search.inputPlaceholder"
-msgstr "Search your favorite anime..."
-
-#: src/pages/SearchPage.tsx
-msgid "search.emptyHint"
-msgstr "Search your favorite anime"
-
-#: src/pages/SearchPage.tsx
-msgid "search.loadMore"
-msgstr "Load More"
-
-msgid "search.loadingMore"
-msgstr "Loading…"
-
-msgid "search.noResultsFor"
-msgstr "No results for"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.pageTitle"
-msgstr "Settings"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.save"
-msgstr "Save"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.saved"
-msgstr "Saved"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.saving"
-msgstr "Saving…"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.saveFailed"
-msgstr "Save failed"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.dandanplay.title"
-msgstr "DandanPlay Settings"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.player.title"
-msgstr "Player Settings"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.player.danmakuEnabled"
-msgstr "Danmaku enabled by default"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.player.danmakuOpacity"
-msgstr "Danmaku opacity"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.player.danmakuFontSize"
-msgstr "Danmaku font size"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.player.danmakuSpeed"
-msgstr "Danmaku speed"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.appearance.title"
-msgstr "Appearance"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.appearance.language"
-msgstr "Language"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.title"
-msgstr "Integration"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.connect"
-msgstr "Connect Account"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.connecting"
-msgstr "Connecting…"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.connected"
-msgstr "Connected"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.disconnect"
-msgstr "Disconnect"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.disconnecting"
-msgstr "Disconnecting…"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.disconnected"
-msgstr "Disconnected"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.disconnectFailed"
-msgstr "Disconnect failed"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.authUrlFailed"
-msgstr "Failed to get auth URL"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.sync"
-msgstr "Sync Progress"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.syncing"
-msgstr "Syncing…"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.syncComplete"
-msgstr "Sync complete"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.syncErrors"
-msgstr "errors"
-
-#: src/pages/SettingsPage.tsx
-msgid "settings.integration.syncFailed"
-msgstr "Sync failed"
