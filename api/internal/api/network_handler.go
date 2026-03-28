@@ -215,19 +215,44 @@ func discoverViaPortScan(ctx context.Context) []discoveredHost {
 }
 
 func getLocalSubnets() []string {
-	addrs, err := net.InterfaceAddrs()
+	ifaces, err := net.Interfaces()
 	if err != nil {
 		return nil
 	}
 	seen := make(map[string]bool)
 	var subnets []string
-	for _, addr := range addrs {
-		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
-			ip := ipnet.IP.To4()
-			subnet := fmt.Sprintf("%d.%d.%d", ip[0], ip[1], ip[2])
-			if !seen[subnet] {
-				seen[subnet] = true
-				subnets = append(subnets, subnet)
+	for _, iface := range ifaces {
+		// Skip loopback, down, and virtual/docker interfaces
+		if iface.Flags&net.FlagLoopback != 0 || iface.Flags&net.FlagUp == 0 {
+			continue
+		}
+		name := iface.Name
+		// Skip Docker, veth, bridge, VM interfaces
+		if strings.HasPrefix(name, "docker") || strings.HasPrefix(name, "veth") ||
+			strings.HasPrefix(name, "br-") || strings.HasPrefix(name, "virbr") ||
+			strings.HasPrefix(name, "vmnet") || strings.HasPrefix(name, "vbox") {
+			continue
+		}
+
+		addrs, err := iface.Addrs()
+		if err != nil {
+			continue
+		}
+		for _, addr := range addrs {
+			if ipnet, ok := addr.(*net.IPNet); ok && ipnet.IP.To4() != nil {
+				ip := ipnet.IP.To4()
+				// Skip link-local (169.254.x.x) and Docker ranges (172.16-31.x.x)
+				if ip[0] == 169 && ip[1] == 254 {
+					continue
+				}
+				if ip[0] == 172 && ip[1] >= 16 && ip[1] <= 31 {
+					continue
+				}
+				subnet := fmt.Sprintf("%d.%d.%d", ip[0], ip[1], ip[2])
+				if !seen[subnet] {
+					seen[subnet] = true
+					subnets = append(subnets, subnet)
+				}
 			}
 		}
 	}
