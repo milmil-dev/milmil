@@ -27,6 +27,17 @@ type RcloneConfig struct {
 	Password   string `json:"password,omitempty"`
 	Domain     string `json:"domain,omitempty"`    // SMB domain
 	PrivateKey string `json:"privateKey,omitempty"` // SFTP private key
+
+	// WebDAV / HTTP
+	URL    string `json:"url,omitempty"`
+	Vendor string `json:"vendor,omitempty"` // WebDAV vendor (nextcloud/owncloud/other)
+
+	// S3
+	Endpoint  string `json:"endpoint,omitempty"`
+	Bucket    string `json:"bucket,omitempty"`
+	AccessKey string `json:"access_key,omitempty"`
+	SecretKey string `json:"secret_key,omitempty"`
+	Region    string `json:"region,omitempty"`
 }
 
 // RcloneProvider implements Provider using rclone's VFS layer.
@@ -112,6 +123,67 @@ func buildRemoteString(backendType string, cfg RcloneConfig) (string, error) {
 		}
 		// Disable host key checking for home-server use case (matches old behaviour).
 		params = append(params, "known_hosts_file=/dev/null")
+		rootPath = "/"
+
+	case "webdav":
+		if cfg.URL == "" {
+			return "", fmt.Errorf("rclone webdav: url is required")
+		}
+		params = append(params, "url="+cfg.URL)
+		if cfg.Username != "" {
+			params = append(params, "user="+cfg.Username)
+		}
+		if cfg.Password != "" {
+			params = append(params, "pass="+obscurePassword(cfg.Password))
+		}
+		if cfg.Vendor != "" {
+			params = append(params, "vendor="+cfg.Vendor)
+		}
+		rootPath = "/"
+
+	case "s3":
+		if cfg.Endpoint == "" {
+			return "", fmt.Errorf("rclone s3: endpoint is required")
+		}
+		if cfg.Bucket == "" {
+			return "", fmt.Errorf("rclone s3: bucket is required")
+		}
+		if cfg.AccessKey == "" {
+			return "", fmt.Errorf("rclone s3: access_key is required")
+		}
+		if cfg.SecretKey == "" {
+			return "", fmt.Errorf("rclone s3: secret_key is required")
+		}
+		params = append(params, "provider=Other")
+		params = append(params, "endpoint="+cfg.Endpoint)
+		params = append(params, "access_key_id="+cfg.AccessKey)
+		params = append(params, "secret_access_key="+cfg.SecretKey)
+		if cfg.Region != "" {
+			params = append(params, "region="+cfg.Region)
+		}
+		rootPath = cfg.Bucket
+
+	case "ftp":
+		if cfg.Host == "" {
+			return "", fmt.Errorf("rclone ftp: host is required")
+		}
+		params = append(params, "host="+cfg.Host)
+		if cfg.Port != 0 {
+			params = append(params, fmt.Sprintf("port=%d", cfg.Port))
+		}
+		if cfg.Username != "" {
+			params = append(params, "user="+cfg.Username)
+		}
+		if cfg.Password != "" {
+			params = append(params, "pass="+obscurePassword(cfg.Password))
+		}
+		rootPath = "/"
+
+	case "http":
+		if cfg.URL == "" {
+			return "", fmt.Errorf("rclone http: url is required")
+		}
+		params = append(params, "url="+cfg.URL)
 		rootPath = "/"
 
 	default:
