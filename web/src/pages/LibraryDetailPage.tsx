@@ -495,7 +495,7 @@ function MatchModal({
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-white truncate">{anime.title}</p>
                     <div className="flex items-center gap-2 text-[11px] text-mm-text-muted mt-0.5">
-                      <span>{anime.episode_count} eps</span>
+                      <span>{anime.episode_count} {i18n._(msg`common.ep`)}</span>
                       {anime.score > 0 && (
                         <span className="text-amber-400">{anime.score.toFixed(1)}</span>
                       )}
@@ -773,11 +773,11 @@ export function LibraryDetailPage() {
           transition={{ delay: 0.05 }}
           className="mb-8 text-sm text-white/40 tabular-nums"
         >
-          <span className="text-white/60">{library.file_count}</span> files
+          <span className="text-white/60">{library.file_count}</span> {i18n._(msg`library.detail.stats.files`)}
           <span className="text-white/15 mx-2">&middot;</span>
-          <span className="text-green-400/80">{matchPct}%</span> matched
+          <span className="text-green-400/80">{matchPct}%</span> {i18n._(msg`library.detail.stats.matched`)}
           <span className="text-white/15 mx-2">&middot;</span>
-          <span className="text-amber-400/80">{library.unmatched_count}</span> unmatched
+          <span className="text-amber-400/80">{library.unmatched_count}</span> {i18n._(msg`library.detail.stats.unmatched`)}
           <span className="text-white/15 mx-2">&middot;</span>
           <span className="text-white/60">{formatBytes(library.total_size_bytes)}</span>
         </motion.div>

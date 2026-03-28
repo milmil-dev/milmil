@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useState } from 'react';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
@@ -21,6 +23,7 @@ function isTokenExpired(token: string): boolean {
 }
 
 export function useAuth() {
+  const { i18n } = useLingui();
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
   const storeLogin = useAuthStore((s) => s.login);
@@ -37,7 +40,7 @@ export function useAuth() {
       const res = await api.post<AuthResponse>('/api/v1/auth/login', { username, password });
       storeLogin(res.token, res.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed';
+      const message = err instanceof Error ? err.message : i18n._(msg`auth.error.loginFailed`);
       setError(message);
       throw err;
     } finally {
@@ -52,7 +55,7 @@ export function useAuth() {
       const res = await api.post<AuthResponse>('/api/v1/auth/setup', { username, password });
       storeLogin(res.token, res.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Setup failed';
+      const message = err instanceof Error ? err.message : i18n._(msg`auth.error.setupFailed`);
       setError(message);
       throw err;
     } finally {

@@ -314,13 +314,13 @@ function SourceTypeSelector({
     { key: 'local', label: i18n._(msg`library.sourceType.local`) },
     { key: 'smb', label: i18n._(msg`library.sourceType.smb`) },
     { key: 'sftp', label: i18n._(msg`library.sourceType.sftp`) },
-    { key: 'ftp', label: 'FTP' },
-    { key: 'http', label: 'HTTP' },
-    { key: 'webdav', label: 'WebDAV' },
-    { key: 's3', label: 'S3' },
-    { key: 'gdrive', label: 'GDrive' },
-    { key: 'onedrive', label: 'OneDrive' },
-    { key: 'dropbox', label: 'Dropbox' },
+    { key: 'ftp', label: i18n._(msg`library.wizard.ftp.name`) },
+    { key: 'http', label: i18n._(msg`library.wizard.http.name`) },
+    { key: 'webdav', label: i18n._(msg`library.wizard.webdav.name`) },
+    { key: 's3', label: i18n._(msg`library.wizard.s3.name`) },
+    { key: 'gdrive', label: i18n._(msg`library.wizard.gdrive.name`) },
+    { key: 'onedrive', label: i18n._(msg`library.wizard.onedrive.name`) },
+    { key: 'dropbox', label: i18n._(msg`library.wizard.dropbox.name`) },
   ];
 
   return (
@@ -406,6 +406,7 @@ function FolderBrowser({
   /** Auto-load root directory on mount */
   autoLoad?: boolean;
 }) {
+  const { i18n } = useLingui();
   const [browsePath, setBrowsePath] = useState('/');
   const [directories, setDirectories] = useState<BrowseEntry[]>([]);
   const [isShareLevel, setIsShareLevel] = useState(false);
@@ -498,7 +499,7 @@ function FolderBrowser({
           onClick={() => doBrowse('/')}
           className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
         >
-          Browse folders
+          {i18n._(msg`library.browse.folders`)}
         </button>
       </div>
 
@@ -547,7 +548,7 @@ function FolderBrowser({
             )}
             {browseMutation.isSuccess && directories.length === 0 && (
               <div className="px-3 py-4 text-center">
-                <p className="text-xs text-white/30">No subdirectories found</p>
+                <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
               </div>
             )}
             {browseMutation.isSuccess && directories.length > 0 && (
@@ -587,7 +588,7 @@ function FolderBrowser({
                     : 'bg-white/[0.06] text-white/60 hover:bg-white/[0.1]',
                 )}
               >
-                {currentPath === browsePath ? 'Selected' : `Select ${browsePath}`}
+                {currentPath === browsePath ? i18n._(msg`library.browse.selected`) : `${i18n._(msg`library.browse.select`)} ${browsePath}`}
               </button>
             </div>
           )}
@@ -711,7 +712,7 @@ function NetworkBrowser({
                                 type="button"
                                 onClick={() => {
                                   onSelect(host.ip, 445, share);
-                                  toast.success(`Selected ${label}/${share}`);
+                                  toast.success(`${i18n._(msg`library.browse.selected`)} ${label}/${share}`);
                                 }}
                                 className="px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-white/60 transition-colors cursor-pointer"
                               >
@@ -721,16 +722,16 @@ function NetworkBrowser({
                           </div>
                         ) : (
                           <div className="space-y-2">
-                            <p className="text-[11px] text-white/30">No shares found — credentials may be required</p>
+                            <p className="text-[11px] text-white/30">{i18n._(msg`library.discover.noShares`)}</p>
                             <button
                               type="button"
                               onClick={() => {
                                 if (onSelectHost) onSelectHost(host.ip, 445);
-                                toast.success(`Selected ${label}`);
+                                toast.success(`${i18n._(msg`library.browse.selected`)} ${label}`);
                               }}
                               className="px-3 py-1.5 rounded-md bg-white/[0.08] hover:bg-white/[0.12] text-xs text-white/60 hover:text-white transition-colors cursor-pointer"
                             >
-                              Use this host
+                              {i18n._(msg`library.discover.useThisHost`)}
                             </button>
                           </div>
                         )}
@@ -1367,9 +1368,9 @@ function AddLibraryWizard({
                   {/* Step indicator */}
                   <div className="flex items-center gap-2 text-xs">
                     {([
-                      { key: 'server' as const, label: 'Server', num: '1' },
-                      { key: 'credentials' as const, label: 'Credentials', num: '2' },
-                      { key: 'folder' as const, label: 'Folder', num: '3' },
+                      { key: 'server' as const, label: i18n._(msg`library.wizard.smb.server`), num: '1' },
+                      { key: 'credentials' as const, label: i18n._(msg`library.wizard.smb.credentials`), num: '2' },
+                      { key: 'folder' as const, label: i18n._(msg`library.wizard.smb.folder`), num: '3' },
                     ] as const).map((s, idx) => {
                       const steps: ('server' | 'credentials' | 'folder')[] = ['server', 'credentials', 'folder'];
                       const currentIdx = steps.indexOf(smbStep);
@@ -1411,7 +1412,7 @@ function AddLibraryWizard({
                         transition={{ duration: 0.15 }}
                         className="space-y-4"
                       >
-                        <p className="text-xs text-white/40">Choose a server</p>
+                        <p className="text-xs text-white/40">{i18n._(msg`library.wizard.smb.chooseServer`)}</p>
                         <NetworkBrowser
                           autoDiscover
                           onSelect={(host, port) => {
@@ -1430,7 +1431,7 @@ function AddLibraryWizard({
 
                         {/* Manual entry */}
                         <div className="space-y-2 pt-2">
-                          <p className="text-[11px] text-white/30">Enter server address manually</p>
+                          <p className="text-[11px] text-white/30">{i18n._(msg`library.wizard.smb.enterManually`)}</p>
                           <div className="flex gap-2">
                             <Input
                               value={manualSmbHost}
@@ -1456,7 +1457,7 @@ function AddLibraryWizard({
                               }}
                               className="px-4 py-2 text-xs font-bold rounded-md bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
                             >
-                              Next
+                              {i18n._(msg`library.wizard.smb.next`)}
                             </button>
                           </div>
                         </div>
@@ -1492,7 +1493,7 @@ function AddLibraryWizard({
                                 onClick={() => setSmbStep('server')}
                                 className="ml-auto text-[11px] text-mm-accent hover:underline cursor-pointer"
                               >
-                                Change
+                                {i18n._(msg`library.wizard.smb.change`)}
                               </button>
                             </div>
                           )}
@@ -1531,7 +1532,7 @@ function AddLibraryWizard({
                               <div className="space-y-1.5">
                                 <Label className={labelClass}>
                                   {i18n._(msg`library.smb.domain`)}
-                                  <span className="ml-1.5 text-white/25 normal-case tracking-normal font-normal">(optional)</span>
+                                  <span className="ml-1.5 text-white/25 normal-case tracking-normal font-normal">({i18n._(msg`library.wizard.optional`)})</span>
                                 </Label>
                                 <Input
                                   value={field.state.value}
@@ -1549,7 +1550,7 @@ function AddLibraryWizard({
                           onClick={() => setSmbStep('folder')}
                           className="w-full px-4 py-2.5 text-sm font-bold rounded-lg bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] text-white transition-all cursor-pointer"
                         >
-                          Connect
+                          {i18n._(msg`library.wizard.smb.connect`)}
                         </button>
                       </motion.div>
                     )}
@@ -1573,13 +1574,13 @@ function AddLibraryWizard({
                                 <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
                               </svg>
                               <span>{host}</span>
-                              {user && <span>as {user}</span>}
+                              {user && <span>{i18n._(msg`library.wizard.smb.asUser`)} {user}</span>}
                               <button
                                 type="button"
                                 onClick={() => setSmbStep('credentials')}
                                 className="ml-auto text-[11px] text-mm-accent hover:underline cursor-pointer"
                               >
-                                Change
+                                {i18n._(msg`library.wizard.smb.change`)}
                               </button>
                             </div>
                           )}
@@ -1613,7 +1614,7 @@ function AddLibraryWizard({
                               <Label htmlFor="wiz-name-smb" className={labelClass}>
                                 {i18n._(msg`library.name`)}
                                 <span className="ml-2 font-normal normal-case tracking-normal text-white/25">
-                                  — display name in your library list
+                                    — {i18n._(msg`library.wizard.smb.nameHint`)}
                                 </span>
                               </Label>
                               <Input
