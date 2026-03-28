@@ -1571,7 +1571,7 @@ function AddLibraryWizard({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.15 }}
-                        className="space-y-4"
+                        className="space-y-4 min-h-[420px]"
                       >
                         {/* Summary line */}
                         <form.Subscribe selector={(s) => ({ host: s.values.smb_host, user: s.values.smb_username })}>
