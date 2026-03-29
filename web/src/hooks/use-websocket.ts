@@ -1,43 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import useWebSocket from 'react-use-websocket';
+import { useScanStore } from '../store/scan-store';
 
-interface WSEvent {
-  type: string;
-  data: any;
-}
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const WS_URL = API_URL.replace(/^http/, 'ws') + '/ws';
 
-type EventHandler = (event: WSEvent) => void;
+export function useMillilWebSocket() {
+  const handleScanEvent = useScanStore((s) => s.handleEvent);
 
-export function useWebSocket(onEvent?: EventHandler) {
-  const wsRef = useRef<WebSocket | null>(null);
+  const { lastJsonMessage } = useWebSocket(WS_URL, {
+    shouldReconnect: () => true,
+    reconnectAttempts: Infinity,
+    reconnectInterval: 3000,
+    share: true,
+  });
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
-    const wsUrl = apiUrl.replace(/^http/, 'ws') + '/ws';
-
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
-
-    ws.onmessage = (e) => {
-      try {
-        const event: WSEvent = JSON.parse(e.data);
-        onEvent?.(event);
-      } catch {
-        // ignore malformed messages
+    if (lastJsonMessage && typeof lastJsonMessage === 'object' && 'type' in lastJsonMessage) {
+      const event = lastJsonMessage as { type: string; data: Record<string, unknown> };
+      // Route scan-related events to the store
+      if (event.type.startsWith('scan:') || event.type.startsWith('match:')) {
+        handleScanEvent(event);
       }
-    };
+    }
+  }, [lastJsonMessage, handleScanEvent]);
 
-    ws.onclose = () => {
-      // Reconnect after 3 seconds
-      setTimeout(() => {
-        wsRef.current = null;
-      }, 3000);
-    };
-
-    return () => {
-      ws.close();
-      wsRef.current = null;
-    };
-  }, []); // eslint-disable-line
-
-  return wsRef;
+  return lastJsonMessage as { type: string; data: Record<string, unknown> } | null;
 }

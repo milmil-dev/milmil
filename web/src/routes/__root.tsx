@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
 import { SplashScreen } from '../components/SplashScreen';
-import { useWebSocket } from '../hooks/use-websocket';
+import { useMillilWebSocket } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
@@ -138,15 +138,18 @@ function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const bgImage = useBgStore((s) => s.image);
   const queryClient = useQueryClient();
-  useWebSocket((event) => {
-    if (event.type === 'scan:completed') {
-      toast.success(`掃描完成: ${event.data.library_name}`);
+  const lastEvent = useMillilWebSocket();
+
+  useEffect(() => {
+    if (!lastEvent) return;
+    if (lastEvent.type === 'scan:completed') {
+      toast.success(`掃描完成: ${lastEvent.data?.library_name}`);
       queryClient.invalidateQueries({ queryKey: ['libraries'] });
     }
-    if (event.type === 'download:added') {
+    if (lastEvent.type === 'download:added') {
       queryClient.invalidateQueries({ queryKey: ['downloads'] });
     }
-  });
+  }, [lastEvent, queryClient]);
 
   if (pathname === '/login' || pathname === '/setup') {
     return <Outlet />;
