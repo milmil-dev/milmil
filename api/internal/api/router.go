@@ -126,6 +126,13 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	settingsGroup.GET("", h.handleGetSettings)
 	settingsGroup.PUT("/:section", h.handleUpdateSettings)
 
+	// Collection — protected
+	collectionGroup := v1.Group("/collection", jwtMiddleware(cfg.JWTSecret))
+	collectionGroup.GET("", h.handleListCollection)
+	collectionGroup.GET("/recent", h.handleListRecentCollection)
+	collectionGroup.GET("/status-counts", h.handleCollectionStatusCounts)
+	collectionGroup.PATCH("/:bangumiId/status", h.handleUpdateWatchStatus)
+
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", jwtMiddleware(cfg.JWTSecret))
 	dlGroup.GET("", h.handleListDownloads)
