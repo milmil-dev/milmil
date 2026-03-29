@@ -294,11 +294,13 @@ func (q *Queries) ListMediaFilePathsByLibrary(ctx context.Context, libraryID str
 
 const listMediaFilesByLibrary = `-- name: ListMediaFilesByLibrary :many
 SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.duration_seconds, mf.container_format, mf.video_codec, mf.audio_codec, mf.width, mf.height, mf.file_hash, mf.dandanplay_episode_id, mf.match_status, mf.video_tracks, mf.audio_tracks, mf.subtitle_tracks, mf.created_at, mf.updated_at, mf.dandanplay_anime_id, mf.bangumi_subject_id, mf.bangumi_episode_id,
-       COALESCE(e.title, '') AS matched_anime_title,
+       COALESCE(a.title, '') AS matched_anime_title,
        COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       COALESCE(a.bangumi_id, 0) AS matched_bangumi_id,
        (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
 FROM media_files mf
 LEFT JOIN episodes e ON mf.episode_id = e.id
+LEFT JOIN anime a ON e.anime_id = a.id
 WHERE mf.library_id = ?
   AND (? = 'all' OR (? = 'matched' AND mf.match_status != 'unmatched') OR mf.match_status = ?)
   AND (? = '' OR mf.filename LIKE '%' || ? || '%')
@@ -343,6 +345,7 @@ type ListMediaFilesByLibraryRow struct {
 	BangumiEpisodeID    sql.NullInt64  `json:"bangumi_episode_id"`
 	MatchedAnimeTitle   string         `json:"matched_anime_title"`
 	MatchedEpisodeSort  float64        `json:"matched_episode_sort"`
+	MatchedBangumiID    int64          `json:"matched_bangumi_id"`
 	SubtitleCount       int64          `json:"subtitle_count"`
 }
 
@@ -390,6 +393,7 @@ func (q *Queries) ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFile
 			&i.BangumiEpisodeID,
 			&i.MatchedAnimeTitle,
 			&i.MatchedEpisodeSort,
+			&i.MatchedBangumiID,
 			&i.SubtitleCount,
 		); err != nil {
 			return nil, err

@@ -281,10 +281,25 @@ function FileTable({
           const file = row.original
           if (file.matched_anime_title && file.matched_episode_sort > 0) {
             return (
-              <span className="text-sm text-white/60">
-                {file.matched_anime_title} EP
-                {String(file.matched_episode_sort).padStart(2, "0")}
-              </span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                {file.matched_bangumi_id > 0 ? (
+                  <Link
+                    to="/anime/$id"
+                    params={{ id: String(file.matched_bangumi_id) }}
+                    className="text-sm text-white/70 hover:text-mm-accent transition-colors truncate"
+                    title={`${file.matched_anime_title} EP${String(file.matched_episode_sort).padStart(2, "0")}`}
+                  >
+                    {file.matched_anime_title}
+                  </Link>
+                ) : (
+                  <span className="text-sm text-white/60 truncate">
+                    {file.matched_anime_title}
+                  </span>
+                )}
+                <span className="text-[10px] text-white/30 shrink-0 tabular-nums">
+                  EP{String(file.matched_episode_sort).padStart(2, "0")}
+                </span>
+              </div>
             )
           }
           return <span className="text-white/20">&mdash;</span>
@@ -318,18 +333,30 @@ function FileTable({
             {
               id: "actions",
               cell: ({ row }: { row: { original: MediaFileEntry } }) => {
-                if (row.original.match_status === "unmatched") {
+                const file = row.original
+                if (file.match_status === "unmatched") {
                   return (
                     <button
                       type="button"
-                      onClick={() => onMatch(row.original)}
+                      onClick={() => onMatch(file)}
                       className="text-[11px] font-bold text-mm-accent hover:text-mm-accent/80 transition-colors px-2 py-1 rounded bg-mm-accent/10 hover:bg-mm-accent/20 cursor-pointer"
                     >
                       {i18n._(msg`library.detail.match`)}
                     </button>
                   )
                 }
-                return null
+                return (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => onMatch(file)}
+                      className="text-[11px] text-white/30 hover:text-white/60 transition-colors px-1.5 py-0.5 rounded hover:bg-white/[0.06] cursor-pointer"
+                      title={i18n._(msg`library.detail.editMatch`)}
+                    >
+                      {i18n._(msg`library.detail.editMatch`)}
+                    </button>
+                  </div>
+                )
               },
             } satisfies ColumnDef<MediaFileEntry>,
           ]
@@ -460,7 +487,9 @@ function FileTable({
             <MotionTable table={table} tableClassName="table-fixed" />
             {showOverlay && (
               <div className="absolute inset-0 bg-black/20 z-20 pointer-events-none flex items-center justify-center">
-                <span className="text-sm text-white/80">{i18n._(msg`common.loading`)}...</span>
+                <span className="text-sm text-white/80">
+                  {i18n._(msg`common.loading`)}...
+                </span>
               </div>
             )}
           </div>
@@ -1249,7 +1278,7 @@ export function LibraryDetailPage() {
               disabled={isScanning || matchMutation.isPending}
               className="px-5 py-2.5 text-sm font-bold rounded-lg border border-mm-accent/40 text-mm-accent hover:bg-mm-accent/10 transition-colors disabled:opacity-50 cursor-pointer"
             >
-              {isScanning && scanProgress?.phase === 'matching'
+              {isScanning && scanProgress?.phase === "matching"
                 ? i18n._(msg`library.matching`)
                 : i18n._(msg`library.detail.autoMatch`)}
             </motion.button>

@@ -78,6 +78,7 @@ export interface MediaFileEntry {
   subtitle_count: number;
   matched_anime_title: string;
   matched_episode_sort: number;
+  matched_bangumi_id: number;
   created_at: string;
 }
 

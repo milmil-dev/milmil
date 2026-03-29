@@ -51,11 +51,13 @@ WHERE id = ?;
 
 -- name: ListMediaFilesByLibrary :many
 SELECT mf.*,
-       COALESCE(e.title, '') AS matched_anime_title,
+       COALESCE(a.title, '') AS matched_anime_title,
        COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       COALESCE(a.bangumi_id, 0) AS matched_bangumi_id,
        (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
 FROM media_files mf
 LEFT JOIN episodes e ON mf.episode_id = e.id
+LEFT JOIN anime a ON e.anime_id = a.id
 WHERE mf.library_id = ?
   AND (? = 'all' OR (? = 'matched' AND mf.match_status != 'unmatched') OR mf.match_status = ?)
   AND (? = '' OR mf.filename LIKE '%' || ? || '%')
