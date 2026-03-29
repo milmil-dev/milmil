@@ -116,8 +116,9 @@ function LibraryCard({
 }) {
   const { i18n } = useLingui();
   const navigate = useNavigate();
-  const lastScanned = lib.last_scanned_at && lib.last_scanned_at !== ''
-    ? new Date(lib.last_scanned_at).toLocaleDateString()
+  const lastScannedDate = lib.last_scanned_at ? new Date(lib.last_scanned_at) : null;
+  const lastScanned = lastScannedDate && !Number.isNaN(lastScannedDate.getTime()) && lastScannedDate.getFullYear() > 2000
+    ? lastScannedDate.toLocaleDateString()
     : i18n._(msg`library.neverScanned`);
   const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
   const accentColor = cardAccentColor(lib.name);
