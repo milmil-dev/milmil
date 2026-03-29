@@ -376,9 +376,17 @@ msgstr "Match File"
 msgid "library.detail.noFiles"
 msgstr "No files found"
 
+#: src/pages/LibraryDetailPage.tsx
+msgid "library.detail.noFilesHint"
+msgstr "Run a scan to discover media files in this library"
+
 #: src/pages/LibraryDetailPage.tsx:276
 msgid "library.detail.noScans"
 msgstr "No scans yet"
+
+#: src/pages/LibraryDetailPage.tsx
+msgid "library.detail.noScansHint"
+msgstr "Run your first scan to see history here"
 
 #: src/pages/LibraryDetailPage.tsx:691
 msgid "library.detail.notFound"
@@ -431,6 +439,10 @@ msgstr "matched"
 #: src/pages/LibraryDetailPage.tsx:780
 msgid "library.detail.stats.unmatched"
 msgstr "unmatched"
+
+#: src/pages/LibraryDetailPage.tsx
+msgid "library.detail.stats.size"
+msgstr "Size"
 
 #~ msgid "library.detail.status"
 #~ msgstr "Status"

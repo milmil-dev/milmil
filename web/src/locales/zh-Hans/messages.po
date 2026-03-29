@@ -374,9 +374,17 @@ msgstr "匹配文件"
 msgid "library.detail.noFiles"
 msgstr "未找到文件"
 
+#: src/pages/LibraryDetailPage.tsx
+msgid "library.detail.noFilesHint"
+msgstr "运行扫描以发现此媒体库中的文件"
+
 #: src/pages/LibraryDetailPage.tsx:276
 msgid "library.detail.noScans"
 msgstr "尚未扫描"
+
+#: src/pages/LibraryDetailPage.tsx
+msgid "library.detail.noScansHint"
+msgstr "执行首次扫描以查看历史记录"
 
 #: src/pages/LibraryDetailPage.tsx:691
 msgid "library.detail.notFound"
@@ -429,6 +437,10 @@ msgstr "已匹配"
 #: src/pages/LibraryDetailPage.tsx:780
 msgid "library.detail.stats.unmatched"
 msgstr "未匹配"
+
+#: src/pages/LibraryDetailPage.tsx
+msgid "library.detail.stats.size"
+msgstr "大小"
 
 #~ msgid "library.detail.status"
 #~ msgstr "状态"

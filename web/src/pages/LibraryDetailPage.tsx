@@ -23,6 +23,47 @@ function formatBytes(bytes: number): string {
   return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
 }
 
+/* -- Source icon (inline) --------------------------------------------------- */
+
+function SourceIcon({ sourceType, className }: { sourceType: string; className?: string }) {
+  if (sourceType === 'smb' || sourceType === 'sftp' || sourceType === 'ftp') {
+    return (
+      <svg viewBox="0 0 48 48" fill="none" className={className}>
+        <rect x="8" y="10" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="8" y="28" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="14" cy="15" r="1.5" fill="currentColor" />
+        <circle cx="14" cy="33" r="1.5" fill="currentColor" />
+        <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+  if (sourceType === 'webdav' || sourceType === 's3' || sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') {
+    return (
+      <svg viewBox="0 0 48 48" fill="none" className={className}>
+        <path d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+  if (sourceType === 'http') {
+    return (
+      <svg viewBox="0 0 48 48" fill="none" className={className}>
+        <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="24" cy="24" rx="8" ry="16" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="8" y1="24" x2="40" y2="24" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 48 48" fill="none" className={className}>
+      <path
+        d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
 /* -- Skeleton loader -------------------------------------------------------- */
 
 function LibraryDetailSkeleton() {
@@ -32,19 +73,24 @@ function LibraryDetailSkeleton() {
       <Skeleton className="h-4 w-24 mb-8" />
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="space-y-2">
+      <div className="flex items-start gap-4 mb-6">
+        <Skeleton className="h-12 w-12 rounded-xl shrink-0" />
+        <div className="flex-1 space-y-2">
           <Skeleton className="h-9 w-64" />
           <Skeleton className="h-4 w-80" />
         </div>
         <div className="flex gap-2">
-          <Skeleton className="h-9 w-24 rounded-md" />
-          <Skeleton className="h-9 w-24 rounded-md" />
+          <Skeleton className="h-10 w-28 rounded-lg" />
+          <Skeleton className="h-10 w-24 rounded-lg" />
         </div>
       </div>
 
-      {/* Stats strip */}
-      <Skeleton className="h-5 w-96 mb-8" />
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-20 w-full rounded-lg" />
+        ))}
+      </div>
 
       {/* Tab bar */}
       <div className="flex gap-6 mb-6 border-b border-white/[0.06] pb-3">
@@ -127,8 +173,16 @@ function FileTable({
       );
     }
     return (
-      <div className="py-16 text-center">
-        <p className="text-[13px] text-mm-text-muted">{i18n._(msg`library.detail.noFiles`)}</p>
+      <div className="py-20 flex flex-col items-center text-center">
+        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-white/[0.08] mb-4">
+          <path
+            d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+        </svg>
+        <h3 className="text-sm font-semibold text-white/50 mb-1">{i18n._(msg`library.detail.noFiles`)}</h3>
+        <p className="text-xs text-white/25 mb-5 max-w-[260px]">{i18n._(msg`library.detail.noFilesHint`)}</p>
       </div>
     );
   }
@@ -136,13 +190,25 @@ function FileTable({
   return (
     <div>
       {/* Search */}
-      <div className="mb-5">
+      <div className="mb-5 relative">
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 pointer-events-none"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={i18n._(msg`library.detail.searchFiles`)}
-          className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+          className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
         />
       </div>
 
@@ -272,8 +338,13 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
 
   if (sorted.length === 0) {
     return (
-      <div className="py-16 text-center">
-        <p className="text-[13px] text-mm-text-muted">{i18n._(msg`library.detail.noScans`)}</p>
+      <div className="py-20 flex flex-col items-center text-center">
+        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-white/[0.08] mb-4">
+          <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.5" />
+          <polyline points="24,14 24,24 32,28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <h3 className="text-sm font-semibold text-white/50 mb-1">{i18n._(msg`library.detail.noScans`)}</h3>
+        <p className="text-xs text-white/25 mb-5 max-w-[260px]">{i18n._(msg`library.detail.noScansHint`)}</p>
       </div>
     );
   }
@@ -731,19 +802,29 @@ export function LibraryDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3"
+          className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6"
         >
-          <div className="min-w-0">
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              {library.name}
-            </h1>
-            <p className="text-sm text-white/40 mt-1.5 truncate">
-              <span className="font-mono">{library.path}</span>
-              {sourceLabel && (
-                <> <span className="text-white/15">&middot;</span> {sourceLabel}</>
-              )}
-              <> <span className="text-white/15">&middot;</span> {lastScannedText}</>
-            </p>
+          <div className="flex items-start gap-4 min-w-0">
+            {/* Library icon badge */}
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
+              <SourceIcon sourceType={library.source_type ?? 'local'} className="w-6 h-6 text-white/30" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                {library.name}
+              </h1>
+              <p className="font-mono text-xs text-white/30 mt-1 truncate">{library.path}</p>
+              <div className="flex items-center gap-2 mt-2">
+                {sourceLabel && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">
+                    {sourceLabel}
+                  </span>
+                )}
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-white/30">
+                  {lastScannedText}
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-2 shrink-0">
@@ -752,7 +833,7 @@ export function LibraryDetailPage() {
               type="button"
               onClick={() => scanMutation.mutate()}
               disabled={scanMutation.isPending}
-              className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors disabled:opacity-50 cursor-pointer"
+              className="px-5 py-2.5 text-sm font-bold rounded-lg text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
             >
               {scanMutation.isPending
                 ? i18n._(msg`library.scanning`)
@@ -760,27 +841,40 @@ export function LibraryDetailPage() {
             </motion.button>
             <button
               type="button"
-              className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
+              className="px-4 py-2.5 text-sm font-medium rounded-lg border border-white/[0.12] text-white/60 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
             >
               {i18n._(msg`library.detail.settings`)}
             </button>
           </div>
         </motion.div>
 
-        {/* Stats strip */}
+        {/* Stat cards */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="mb-8 text-sm text-white/40 tabular-nums"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
         >
-          <span className="text-white/60">{library.file_count}</span> {i18n._(msg`library.detail.stats.files`)}
-          <span className="text-white/15 mx-2">&middot;</span>
-          <span className="text-green-400/80">{matchPct}%</span> {i18n._(msg`library.detail.stats.matched`)}
-          <span className="text-white/15 mx-2">&middot;</span>
-          <span className="text-amber-400/80">{library.unmatched_count}</span> {i18n._(msg`library.detail.stats.unmatched`)}
-          <span className="text-white/15 mx-2">&middot;</span>
-          <span className="text-white/60">{formatBytes(library.total_size_bytes)}</span>
+          <div className="bg-white/[0.03] rounded-lg p-4">
+            <p className="text-2xl font-bold text-white tabular-nums">{library.file_count}</p>
+            <p className="text-xs text-white/40 mt-0.5">{i18n._(msg`library.detail.stats.files`)}</p>
+          </div>
+          <div className="bg-white/[0.03] rounded-lg p-4">
+            <p className="text-2xl font-bold text-green-400 tabular-nums">{matchPct}%</p>
+            <p className="text-xs text-white/40 mt-0.5">{i18n._(msg`library.detail.stats.matched`)}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab('unmatched')}
+            className="bg-white/[0.03] rounded-lg p-4 text-left hover:bg-white/[0.05] transition-colors cursor-pointer"
+          >
+            <p className="text-2xl font-bold text-amber-400 tabular-nums">{library.unmatched_count}</p>
+            <p className="text-xs text-white/40 mt-0.5">{i18n._(msg`library.detail.stats.unmatched`)}</p>
+          </button>
+          <div className="bg-white/[0.03] rounded-lg p-4">
+            <p className="text-2xl font-bold text-white tabular-nums">{formatBytes(library.total_size_bytes)}</p>
+            <p className="text-xs text-white/40 mt-0.5">{i18n._(msg`library.detail.stats.size`)}</p>
+          </div>
         </motion.div>
 
         {/* Tab bar */}
