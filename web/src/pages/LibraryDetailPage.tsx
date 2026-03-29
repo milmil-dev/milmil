@@ -282,30 +282,39 @@ function FileTable({
           const file = row.original
           if (file.matched_anime_title && file.matched_episode_sort > 0) {
             const hasBangumiLink = file.matched_bangumi_id > 0
-            return (
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="text-sm text-white/60 truncate">
+            const content = (
+              <div className={cn(
+                "inline-flex items-center gap-2 min-w-0 px-2 py-1 rounded-md transition-colors",
+                hasBangumiLink && "hover:bg-white/[0.06] group cursor-pointer",
+              )}>
+                <span className={cn(
+                  "text-sm truncate",
+                  hasBangumiLink ? "text-white/70 group-hover:text-mm-accent transition-colors" : "text-white/60",
+                )}>
                   {file.matched_anime_title}
                 </span>
-                <span className="text-[10px] text-white/30 shrink-0 tabular-nums">
+                <span className="text-[10px] font-medium text-white/25 shrink-0 tabular-nums px-1 py-px rounded bg-white/[0.04]">
                   EP{String(file.matched_episode_sort).padStart(2, "0")}
                 </span>
                 {hasBangumiLink && (
-                  <Link
-                    to="/anime/$id"
-                    params={{ id: String(file.matched_bangumi_id) }}
-                    className="shrink-0 text-white/25 hover:text-mm-accent transition-colors"
-                    title={file.matched_anime_title}
-                  >
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </Link>
+                  <svg className="w-3 h-3 shrink-0 text-white/15 group-hover:text-mm-accent/60 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
                 )}
               </div>
             )
+            if (hasBangumiLink) {
+              return (
+                <Link
+                  to="/anime/$id"
+                  params={{ id: String(file.matched_bangumi_id) }}
+                  title={file.matched_anime_title}
+                >
+                  {content}
+                </Link>
+              )
+            }
+            return content
           }
           return <span className="text-white/20">&mdash;</span>
         },
