@@ -1319,3 +1319,57 @@ msgstr "媒体文件"
 #: src/pages/WatchPage.tsx:193
 msgid "watch.subtitle"
 msgstr "字幕"
+
+msgid "collection.title"
+msgstr "收藏"
+
+msgid "collection.all"
+msgstr "全部"
+
+msgid "collection.watching"
+msgstr "在看"
+
+msgid "collection.planning"
+msgstr "想看"
+
+msgid "collection.completed"
+msgstr "已看"
+
+msgid "collection.paused"
+msgstr "搁置"
+
+msgid "collection.dropped"
+msgstr "弃番"
+
+msgid "collection.episodes"
+msgstr "集"
+
+msgid "collection.empty"
+msgstr "收藏里还没有动画"
+
+msgid "collection.emptyDesc"
+msgstr "扫描媒体库并匹配动画来开始建立收藏"
+
+msgid "collection.recentlyMatched"
+msgstr "最近匹配"
+
+msgid "collection.viewAll"
+msgstr "查看全部"
+
+msgid "collection.changeStatus"
+msgstr "更改状态"
+
+msgid "collection.sortByRecent"
+msgstr "最近匹配"
+
+msgid "collection.sortByName"
+msgstr "名称"
+
+msgid "settings.collection"
+msgstr "收藏"
+
+msgid "settings.autoAddToCollection"
+msgstr "自动加入收藏"
+
+msgid "settings.autoAddToCollectionDesc"
+msgstr "新匹配的动画自动加入收藏"

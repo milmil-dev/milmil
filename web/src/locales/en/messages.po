@@ -1321,3 +1321,57 @@ msgstr "Media File"
 #: src/pages/WatchPage.tsx:193
 msgid "watch.subtitle"
 msgstr "Subtitles"
+
+msgid "collection.title"
+msgstr "Collection"
+
+msgid "collection.all"
+msgstr "All"
+
+msgid "collection.watching"
+msgstr "Watching"
+
+msgid "collection.planning"
+msgstr "Planning"
+
+msgid "collection.completed"
+msgstr "Completed"
+
+msgid "collection.paused"
+msgstr "On Hold"
+
+msgid "collection.dropped"
+msgstr "Dropped"
+
+msgid "collection.episodes"
+msgstr "episodes"
+
+msgid "collection.empty"
+msgstr "No anime in your collection yet"
+
+msgid "collection.emptyDesc"
+msgstr "Scan a library and match anime to start building your collection"
+
+msgid "collection.recentlyMatched"
+msgstr "Recently Matched"
+
+msgid "collection.viewAll"
+msgstr "View All"
+
+msgid "collection.changeStatus"
+msgstr "Change Status"
+
+msgid "collection.sortByRecent"
+msgstr "Recently Matched"
+
+msgid "collection.sortByName"
+msgstr "Name"
+
+msgid "settings.collection"
+msgstr "Collection"
+
+msgid "settings.autoAddToCollection"
+msgstr "Auto-add matched anime"
+
+msgid "settings.autoAddToCollectionDesc"
+msgstr "Automatically add newly matched anime to your collection"
