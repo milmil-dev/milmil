@@ -28,6 +28,7 @@ import {
 } from '../lib/api/library';
 import { hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
+import { useScanStore } from '../store/scan-store';
 
 type SourceType = 'local' | 'smb' | 'sftp' | 'webdav' | 's3' | 'ftp' | 'http' | 'gdrive' | 'onedrive' | 'dropbox';
 
@@ -103,19 +104,19 @@ function SourceBadge({ sourceType }: { sourceType: string }) {
 // ─── Library card ─────────────────────────────────────────────────────────────
 function LibraryCard({
   lib,
-  scanning,
   onScan,
   onEdit,
   onDelete,
 }: {
   lib: LibraryWithStats;
-  scanning: boolean;
   onScan: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   const { i18n } = useLingui();
   const navigate = useNavigate();
+  const scanProgress = useScanStore((s) => s.getProgress(lib.id));
+  const isScanning = useScanStore((s) => s.isScanning(lib.id));
   const lastScannedDate = lib.last_scanned_at ? new Date(lib.last_scanned_at) : null;
   const lastScanned = lastScannedDate && !Number.isNaN(lastScannedDate.getTime()) && lastScannedDate.getFullYear() > 2000
     ? lastScannedDate.toLocaleDateString()
@@ -140,29 +141,33 @@ function LibraryCard({
       <div className="relative h-44 overflow-hidden bg-white/[0.02] flex items-center justify-center">
         <SourceIcon sourceType={lib.source_type} className="w-16 h-16 text-white/[0.08]" />
 
-        <AnimatePresence>
-          {scanning && (
-            <motion.div
-              className="absolute inset-0"
-              style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(232,143,170,0.18) 50%, transparent 100%)' }}
-              initial={{ x: '-100%' }}
-              animate={{ x: '200%' }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-            />
-          )}
-        </AnimatePresence>
-
-        {scanning && (
-          <div className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-mm-accent text-black">
-            {i18n._(msg`library.scanning`).toUpperCase()}
+        {isScanning && scanProgress && (
+          <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-2 p-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent">
+              {scanProgress.phase === 'scanning' && i18n._(msg`library.scanning`)}
+              {scanProgress.phase === 'hashing' && i18n._(msg`library.hashing`)}
+              {scanProgress.phase === 'matching' && i18n._(msg`library.matching`)}
+            </p>
+            <p className="text-xs text-white/60 truncate max-w-full">
+              {scanProgress.currentFile || '...'}
+            </p>
+            <p className="text-[10px] text-white/40">
+              {scanProgress.filesFound > 0 && `${scanProgress.filesFound} files`}
+              {scanProgress.filesMatched > 0 && ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
+            </p>
+            {scanProgress.filesTotal > 0 && (
+              <div className="w-full h-1 rounded-full bg-white/10 mt-1">
+                <div className="h-full rounded-full bg-mm-accent transition-all duration-300"
+                  style={{ width: `${(scanProgress.filesMatched / scanProgress.filesTotal) * 100}%` }} />
+              </div>
+            )}
           </div>
         )}
 
         {/* Hover actions */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60 pointer-events-none">
-          <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={scanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer pointer-events-auto">
-            {scanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
+          <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={isScanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer pointer-events-auto">
+            {isScanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
           </button>
           <button type="button" onClick={(e) => { e.stopPropagation(); onEdit(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer pointer-events-auto">
             {i18n._(msg`library.edit`)}
@@ -2538,7 +2543,6 @@ export function LibrariesPage() {
   const [drawerMode, setDrawerMode] = useState<'add' | 'edit' | null>(null);
   const [editLib, setEditLib] = useState<LibraryWithStats | null>(null);
   const [deleteLib, setDeleteLib] = useState<LibraryWithStats | null>(null);
-  const [scanningId, setScanningId] = useState<string | null>(null);
 
   // Sync login modal visibility with auth state
   useEffect(() => {
@@ -2587,20 +2591,8 @@ export function LibrariesPage() {
   });
 
   const scanMutation = useMutation({
-    mutationFn: async (id: string) => {
-      setScanningId(id);
-      toast.info(i18n._(msg`library.toast.scanStarted`));
-      return libraryApi.scan(id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
-      setScanningId(null);
-      toast.success(i18n._(msg`library.toast.scanComplete`));
-    },
-    onError: (err: Error) => {
-      setScanningId(null);
-      toast.error(`${i18n._(msg`library.toast.scanFailed`)}: ${err.message}`);
-    },
+    mutationFn: (id: string) => libraryApi.scan(id),
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const skeletonCards = [1, 2, 3, 4];
@@ -2655,6 +2647,18 @@ export function LibrariesPage() {
               <h1 className="text-4xl font-bold text-white tracking-tight">
                 {i18n._(msg`library.pageTitle`)}
               </h1>
+              <button
+                type="button"
+                onClick={() => {
+                  for (const lib of libraries) {
+                    scanMutation.mutate(lib.id);
+                  }
+                }}
+                disabled={libraries.length === 0}
+                className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/60 hover:text-white hover:border-white/25 transition-colors cursor-pointer disabled:opacity-30"
+              >
+                {i18n._(msg`scan.scanAll`)}
+              </button>
               <button
                 type="button"
                 onClick={() => setDrawerMode('add')}
@@ -2713,7 +2717,6 @@ export function LibrariesPage() {
                   >
                     <LibraryCard
                       lib={lib}
-                      scanning={scanningId === lib.id}
                       onScan={() => scanMutation.mutate(lib.id)}
                       onEdit={() => {
                         setEditLib(lib);
