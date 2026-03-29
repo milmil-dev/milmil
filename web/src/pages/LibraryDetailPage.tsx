@@ -705,8 +705,9 @@ export function LibraryDetailPage() {
     ? Math.round((library.matched_count / library.file_count) * 100)
     : 0;
 
-  const lastScannedText = library.last_scanned_at
-    ? formatDistanceToNow(new Date(library.last_scanned_at), { addSuffix: true })
+  const lastScannedDate = library.last_scanned_at ? new Date(library.last_scanned_at) : null;
+  const lastScannedText = lastScannedDate && !Number.isNaN(lastScannedDate.getTime())
+    ? formatDistanceToNow(lastScannedDate, { addSuffix: true })
     : i18n._(msg`library.neverScanned`);
 
   const sourceLabel = library.source_type && library.source_type !== 'local'
