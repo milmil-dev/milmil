@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestListLibraries_Empty(t *testing.T) {
@@ -213,8 +214,11 @@ func TestScanLibrary_Success(t *testing.T) {
 	req2 := makeAuthRequest(t, e, http.MethodPost, "/api/v1/libraries/"+id+"/scan", "")
 	rec2 := httptest.NewRecorder()
 	e.ServeHTTP(rec2, req2)
-	if rec2.Code != http.StatusNoContent {
-		t.Fatalf("want 204 got %d: %s", rec2.Code, rec2.Body.String())
+	if rec2.Code != http.StatusAccepted {
+		t.Fatalf("want 202 got %d: %s", rec2.Code, rec2.Body.String())
 	}
+
+	// Wait briefly for the background goroutine to finish so TempDir cleanup succeeds.
+	time.Sleep(500 * time.Millisecond)
 }
 

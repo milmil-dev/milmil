@@ -199,22 +199,40 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 		}
 		configJSON = decrypted
 	}
-	sc := scanner.New(h.queries)
-	if err := sc.ScanLibrary(c.Request().Context(), lib, configJSON); err != nil {
-		return echo.ErrInternalServerError
-	}
-	// Auto-match after scan (non-fatal if matcher is nil or fails)
-	if h.matcher != nil {
-		_, _ = h.matcher.MatchLibrary(c.Request().Context(), lib.ID)
-	}
-	// Resolve anime metadata after matching (non-fatal if resolver is nil or fails)
-	if h.resolver != nil {
-		_, _ = h.resolver.ResolveLibrary(c.Request().Context(), lib.ID)
-	}
-	if h.wsHub != nil {
-		h.wsHub.Broadcast(ws.Event{Type: "scan:completed", Data: map[string]any{"library_id": lib.ID, "library_name": lib.Name}})
-	}
-	return c.NoContent(http.StatusNoContent)
+
+	// Start scan in background goroutine — return 202 immediately.
+	go func() {
+		onProgress := func(event scanner.ProgressEvent) {
+			event.LibraryName = lib.Name
+			if h.wsHub != nil {
+				h.wsHub.Broadcast(ws.Event{Type: event.Type, Data: event})
+			}
+		}
+
+		onProgress(scanner.ProgressEvent{Type: "scan:started", LibraryID: lib.ID})
+
+		sc := scanner.New(h.queries)
+		if err := sc.ScanLibrary(context.Background(), lib, configJSON, onProgress); err != nil {
+			onProgress(scanner.ProgressEvent{Type: "scan:error", LibraryID: lib.ID, Error: err.Error()})
+			return
+		}
+
+		// Auto-match after scan (non-fatal if matcher is nil or fails)
+		if h.matcher != nil {
+			_, _ = h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress)
+		}
+		// Resolve anime metadata after matching (non-fatal if resolver is nil or fails)
+		if h.resolver != nil {
+			_, _ = h.resolver.ResolveLibrary(context.Background(), lib.ID)
+		}
+
+		onProgress(scanner.ProgressEvent{Type: "scan:completed", LibraryID: lib.ID})
+	}()
+
+	return c.JSON(http.StatusAccepted, map[string]string{
+		"status":     "scanning",
+		"library_id": lib.ID,
+	})
 }
 
 func (h *handler) handleListScanSummaries(c echo.Context) error {

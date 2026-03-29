@@ -9,6 +9,7 @@ import (
 
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -28,13 +29,20 @@ func New(q *store.Queries, ddp dandanplay.Client, c cache.Cache) *Matcher {
 	return &Matcher{queries: q, dandanplay: ddp, cache: c}
 }
 
-func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string) (*MatchSummary, error) {
+func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress ...scanner.ProgressFunc) (*MatchSummary, error) {
 	files, err := m.queries.ListUnmatchedMediaFilesByLibrary(ctx, libraryID)
 	if err != nil {
 		return nil, err
 	}
 
+	emit := func(e scanner.ProgressEvent) {
+		if len(onProgress) > 0 && onProgress[0] != nil {
+			onProgress[0](e)
+		}
+	}
+
 	summary := &MatchSummary{}
+	matched := 0
 
 	for _, f := range files {
 		if !f.FileHash.Valid || f.FileHash.String == "" {
@@ -42,12 +50,12 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string) (*MatchSum
 			continue
 		}
 
-		episodeID, animeID, matched, matchErr := m.matchSingleFile(ctx, f)
+		episodeID, animeID, ok, matchErr := m.matchSingleFile(ctx, f)
 		if matchErr != nil {
 			summary.Errors++
 			continue
 		}
-		if matched {
+		if ok {
 			summary.Matched++
 			_ = m.queries.UpdateMediaFileDandanplayIDs(ctx, store.UpdateMediaFileDandanplayIDsParams{
 				DandanplayEpisodeID: sql.NullInt64{Int64: episodeID, Valid: true},
@@ -57,6 +65,15 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string) (*MatchSum
 		} else {
 			summary.Unmatched++
 		}
+
+		matched++
+		emit(scanner.ProgressEvent{
+			Type:         "match:progress",
+			LibraryID:    libraryID,
+			FilesMatched: matched,
+			FilesTotal:   len(files),
+			CurrentFile:  f.Filename,
+		})
 	}
 
 	return summary, nil

@@ -6,11 +6,28 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 )
+
+// ProgressFunc is called during scan/match with progress events.
+type ProgressFunc func(event ProgressEvent)
+
+// ProgressEvent describes a scan or match progress update.
+type ProgressEvent struct {
+	Type         string `json:"type"`
+	LibraryID    string `json:"library_id"`
+	LibraryName  string `json:"library_name,omitempty"`
+	FilesFound   int    `json:"files_found,omitempty"`
+	FilesHashed  int    `json:"files_hashed,omitempty"`
+	FilesMatched int    `json:"files_matched,omitempty"`
+	FilesTotal   int    `json:"files_total,omitempty"`
+	CurrentFile  string `json:"current_file,omitempty"`
+	Error        string `json:"error,omitempty"`
+}
 
 var videoExtensions = map[string]struct{}{
 	".mkv": {}, ".mp4": {}, ".avi": {}, ".mov": {},
@@ -49,7 +66,17 @@ func New(queries *store.Queries) *Scanner {
 	}
 }
 
-func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, configJSON string) error {
+func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, configJSON string, onProgress ...ProgressFunc) error {
+	var progress ProgressFunc
+	if len(onProgress) > 0 && onProgress[0] != nil {
+		progress = onProgress[0]
+	}
+	emit := func(e ProgressEvent) {
+		if progress != nil {
+			progress(e)
+		}
+	}
+
 	provider, err := s.providerFactory(library.SourceType, configJSON)
 	if err != nil {
 		return err
@@ -67,6 +94,8 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 	// scannedPaths maps video file path → media file ID
 	scannedPaths := make(map[string]string)
 	var filesFound int64
+	var filesHashed int
+	var lastEmit time.Time
 
 	walkErr := provider.Walk(library.Path, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
@@ -89,6 +118,12 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 		scannedPaths[path] = upsertedFile.ID
 		filesFound++
 
+		// Emit scan progress every 5 files or every second
+		if int(filesFound)%5 == 0 || time.Since(lastEmit) > time.Second {
+			emit(ProgressEvent{Type: "scan:progress", LibraryID: library.ID, FilesFound: int(filesFound), CurrentFile: info.Name()})
+			lastEmit = time.Now()
+		}
+
 		// Compute file hash if not already set
 		if !upsertedFile.FileHash.Valid || upsertedFile.FileHash.String == "" {
 			if r, openErr := provider.Open(path); openErr == nil {
@@ -100,6 +135,8 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 				}
 				r.Close()
 			}
+			filesHashed++
+			emit(ProgressEvent{Type: "scan:hash", LibraryID: library.ID, FilesHashed: filesHashed, FilesTotal: int(filesFound), CurrentFile: info.Name()})
 		}
 
 		return nil
