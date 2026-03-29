@@ -24,6 +24,7 @@ import (
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
@@ -86,7 +87,13 @@ func main() {
 		return creds.AppID, creds.AppSecret, nil
 	}
 	ddpClient := dandanplay.NewClient(&http.Client{Timeout: 10 * time.Second}, ddpCredFn)
-	matcherSvc := matcher.New(store.New(database), ddpClient, cacheClient)
+	// TMDB client (optional — only if API key is configured)
+	var tmdbClient tmdb.Client
+	if tmdbSetting, tmdbErr := store.New(database).GetSetting(context.Background(), "tmdb_api_key"); tmdbErr == nil && tmdbSetting.Value != "" {
+		tmdbClient = tmdb.NewClient(&http.Client{Timeout: 10 * time.Second}, tmdbSetting.Value)
+	}
+
+	matcherSvc := matcher.NewMulti(store.New(database), ddpClient, bangumiClient, tmdbClient, cacheClient)
 	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
 
 	// Aria2 client
@@ -96,7 +103,7 @@ func main() {
 	wsHub := ws.NewHub()
 
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)

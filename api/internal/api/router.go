@@ -8,6 +8,7 @@ import (
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/integration/aria2"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
@@ -26,11 +27,12 @@ type handler struct {
 	resolver      *resolver.Resolver
 	aria2         aria2.Client
 	wsHub         *ws.Hub
+	tmdb          tmdb.Client
 	encryptionKey []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub, tmdbClient tmdb.Client) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -46,6 +48,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		resolver:      resolverSvc,
 		aria2:         aria2Client,
 		wsHub:         wsHub,
+		tmdb:          tmdbClient,
 		encryptionKey: cfg.EncryptionKey,
 	}
 
@@ -79,6 +82,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.PUT("/:id", h.handleUpdateLibrary)
 	libGroup.DELETE("/:id", h.handleDeleteLibrary)
 	libGroup.POST("/:id/scan", h.handleScanLibrary)
+	libGroup.POST("/:id/match", h.handleMatchLibrary)
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
 	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
 	libGroup.POST("/test-connection", h.handleTestConnection)

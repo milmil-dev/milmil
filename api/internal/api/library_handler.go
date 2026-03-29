@@ -16,6 +16,7 @@ import (
 	smb2 "github.com/hirochachacha/go-smb2"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/crypto"
+	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
@@ -226,6 +227,16 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 			_, _ = h.resolver.ResolveLibrary(context.Background(), lib.ID)
 		}
 
+		// Resolve Bangumi-matched files
+		if h.resolver != nil {
+			_, _ = h.resolver.ResolveBangumiMatched(context.Background(), lib.ID)
+		}
+
+		// Enrich episodes with TMDB Chinese metadata
+		if h.tmdb != nil {
+			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+		}
+
 		onProgress(scanner.ProgressEvent{Type: "scan:completed", LibraryID: lib.ID})
 	}()
 
@@ -235,11 +246,92 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 	})
 }
 
+func (h *handler) handleMatchLibrary(c echo.Context) error {
+	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.ErrNotFound
+		}
+		return echo.ErrInternalServerError
+	}
+
+	go func() {
+		onProgress := func(event scanner.ProgressEvent) {
+			event.LibraryName = lib.Name
+			if h.wsHub != nil {
+				h.wsHub.Broadcast(ws.Event{Type: event.Type, Data: event})
+			}
+		}
+
+		onProgress(scanner.ProgressEvent{Type: "match:started", LibraryID: lib.ID})
+
+		if h.matcher != nil {
+			_, _ = h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress)
+		}
+
+		if h.resolver != nil {
+			_, _ = h.resolver.ResolveLibrary(context.Background(), lib.ID)
+			_, _ = h.resolver.ResolveBangumiMatched(context.Background(), lib.ID)
+		}
+
+		if h.tmdb != nil {
+			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+		}
+
+		onProgress(scanner.ProgressEvent{Type: "match:completed", LibraryID: lib.ID})
+	}()
+
+	return c.JSON(http.StatusAccepted, map[string]string{
+		"status":     "matching",
+		"library_id": lib.ID,
+	})
+}
+
+func sanitizeTimestamp(raw string) (string, bool) {
+	if raw == "" {
+		return "", false
+	}
+	// Primary expected input format used by the database: RFC3339 UTC with Z suffix.
+	if t, err := time.Parse(time.RFC3339, raw); err == nil {
+		return t.UTC().Format(time.RFC3339), true
+	}
+	// Fallback for older or non-zoned values.
+	for _, layout := range []string{
+		"2006-01-02T15:04:05Z07:00",
+		"2006-01-02 15:04:05",
+		"2006-01-02",
+	} {
+		if t, err := time.Parse(layout, raw); err == nil {
+			return t.UTC().Format(time.RFC3339), true
+		}
+	}
+	return "", false
+}
+
 func (h *handler) handleListScanSummaries(c echo.Context) error {
 	summaries, err := h.queries.ListScanSummaries(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
+
+	for i := range summaries {
+		if normalized, ok := sanitizeTimestamp(summaries[i].StartedAt); ok {
+			summaries[i].StartedAt = normalized
+		} else {
+			// If started_at is invalid, make it a safe empty string for frontend guard.
+			summaries[i].StartedAt = ""
+		}
+
+		if summaries[i].CompletedAt.Valid {
+			if normalized, ok := sanitizeTimestamp(summaries[i].CompletedAt.String); ok {
+				summaries[i].CompletedAt.String = normalized
+				summaries[i].CompletedAt.Valid = true
+			} else {
+				summaries[i].CompletedAt = sql.NullString{}
+			}
+		}
+	}
+
 	return c.JSON(http.StatusOK, summaries)
 }
 
