@@ -60,6 +60,69 @@ func (r *Resolver) ResolveLibrary(ctx context.Context, libraryID string) (*Resol
 	return summary, nil
 }
 
+// ResolveBangumiMatched processes files matched via Bangumi/AniList/TMDB strategies.
+// These files have bangumi_subject_id set but no episode_id yet.
+func (r *Resolver) ResolveBangumiMatched(ctx context.Context, libraryID string) (*ResolveSummary, error) {
+	files, err := r.queries.ListBangumiMatchedUnlinkedMediaFiles(ctx, libraryID)
+	if err != nil {
+		return nil, err
+	}
+
+	summary := &ResolveSummary{}
+
+	// Group by bangumi_subject_id
+	groups := make(map[int64][]store.MediaFile)
+	for _, f := range files {
+		if !f.BangumiSubjectID.Valid {
+			continue
+		}
+		groups[f.BangumiSubjectID.Int64] = append(groups[f.BangumiSubjectID.Int64], f)
+	}
+
+	for bangumiID, groupFiles := range groups {
+		// Reuse existing getOrCreateAnime (pass 0 for ddpAnimeID since these aren't dandanplay matches)
+		anime, created, err := r.getOrCreateAnime(ctx, libraryID, bangumiID, 0)
+		if err != nil {
+			summary.Errors++
+			continue
+		}
+		if created {
+			summary.AnimeCreated++
+		}
+
+		epsCreated, err := r.ensureEpisodes(ctx, anime.ID, bangumiID)
+		if err != nil {
+			summary.Errors++
+			continue
+		}
+		summary.EpisodesCreated += epsCreated
+
+		// Link files by bangumi_episode_id
+		for _, f := range groupFiles {
+			if !f.BangumiEpisodeID.Valid {
+				continue
+			}
+			// Search episodes for this anime — match by bangumi episode ID
+			eps, _ := r.queries.ListEpisodesByAnimeID(ctx, anime.ID)
+			for _, ep := range eps {
+				// The Bangumi search strategy stores the Bangumi episode ID in bangumi_episode_id on the media file.
+				// Episodes created by ensureEpisodes store the Bangumi ep.ID in dandanplay_episode_id
+				// (historical naming — it's actually used for Bangumi episode IDs too).
+				if ep.DandanplayEpisodeID.Valid && ep.DandanplayEpisodeID.Int64 == f.BangumiEpisodeID.Int64 {
+					_ = r.queries.UpdateMediaFileEpisodeID(ctx, store.UpdateMediaFileEpisodeIDParams{
+						EpisodeID: sql.NullString{String: ep.ID, Valid: true},
+						ID:        f.ID,
+					})
+					summary.FilesLinked++
+					break
+				}
+			}
+		}
+	}
+
+	return summary, nil
+}
+
 func (r *Resolver) resolveAnimeGroup(ctx context.Context, libraryID string, ddpAnimeID int64, files []store.MediaFile, summary *ResolveSummary) error {
 	// 1. Resolve DandanPlay animeId → Bangumi subjectId
 	bangumiID, err := r.resolveBangumiID(ctx, ddpAnimeID)
