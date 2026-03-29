@@ -94,7 +94,7 @@ function LibraryDetailSkeleton() {
 
       {/* Tab bar */}
       <div className="flex gap-6 mb-6 border-b border-white/[0.06] pb-3">
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: 2 }).map((_, i) => (
           <Skeleton key={i} className="h-4 w-20" />
         ))}
       </div>
@@ -120,14 +120,13 @@ function StatusBadge({ status }: { status: MediaFileEntry['match_status'] }) {
 
 function FileTable({
   libraryId,
-  status,
   onMatch,
 }: {
   libraryId: string;
-  status: 'all' | 'matched' | 'unmatched';
   onMatch?: (file: MediaFileEntry) => void;
 }) {
   const { i18n } = useLingui();
+  const [statusFilter, setStatusFilter] = useState<'all' | 'matched' | 'unmatched'>('all');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -148,9 +147,15 @@ function FileTable({
     return () => clearTimeout(timer);
   }, [search]);
 
+  // Reset pagination when filter changes
+  useEffect(() => {
+    setPage(1);
+    setAccumulated([]);
+  }, [statusFilter]);
+
   const { data, isLoading } = useQuery({
-    queryKey: libraryKeys.mediaFiles(libraryId, { status, q: debouncedSearch || undefined, page }),
-    queryFn: () => libraryApi.mediaFiles(libraryId, { status, q: debouncedSearch || undefined, page }),
+    queryKey: libraryKeys.mediaFiles(libraryId, { status: statusFilter, q: debouncedSearch || undefined, page }),
+    queryFn: () => libraryApi.mediaFiles(libraryId, { status: statusFilter, q: debouncedSearch || undefined, page }),
   });
 
   // Accumulate pages for "Load More"
@@ -170,7 +175,7 @@ function FileTable({
 
   if (!isLoading && files.length === 0 && !debouncedSearch) {
     // Empty state
-    if (status === 'unmatched') {
+    if (statusFilter === 'unmatched') {
       return (
         <div className="py-16 text-center">
           <span className="text-green-400 text-2xl mb-2 block">&#10003;</span>
@@ -195,27 +200,50 @@ function FileTable({
 
   return (
     <div>
-      {/* Search */}
-      <div className="mb-5 relative">
-        <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 pointer-events-none"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={i18n._(msg`library.detail.searchFiles`)}
-          className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
-        />
+      {/* Search + filter */}
+      <div className="mb-5 flex items-center gap-2">
+        <div className="relative flex-1">
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 pointer-events-none"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={i18n._(msg`library.detail.searchFiles`)}
+            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+          />
+        </div>
+        <div className="flex rounded-lg border border-white/[0.08] overflow-hidden">
+          {([
+            { key: 'all' as const, label: i18n._(msg`schedule.all`) },
+            { key: 'matched' as const, label: i18n._(msg`library.detail.matched`) },
+            { key: 'unmatched' as const, label: i18n._(msg`library.detail.unmatchedShort`) },
+          ]).map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => setStatusFilter(f.key)}
+              className={cn(
+                'px-3 py-2 text-xs font-medium transition-colors cursor-pointer',
+                statusFilter === f.key
+                  ? 'bg-white/[0.08] text-white'
+                  : 'text-white/40 hover:text-white/60',
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Table */}
@@ -795,7 +823,7 @@ export function LibraryDetailPage() {
   const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const { id } = useParams({ from: '/libraries_/$id' });
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<string>('files');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -827,9 +855,7 @@ export function LibraryDetailPage() {
   });
 
   const tabs = [
-    { key: 'all', label: i18n._(msg`library.detail.tab.allFiles`) },
-    { key: 'matched', label: i18n._(msg`library.detail.tab.matched`) },
-    { key: 'unmatched', label: i18n._(msg`library.detail.tab.unmatched`) },
+    { key: 'files', label: i18n._(msg`library.detail.tab.files`) },
     { key: 'history', label: i18n._(msg`library.detail.tab.scanHistory`) },
   ];
 
@@ -990,7 +1016,7 @@ export function LibraryDetailPage() {
           </div>
           <button
             type="button"
-            onClick={() => setActiveTab('unmatched')}
+            onClick={() => setActiveTab('files')}
             className="bg-white/[0.03] rounded-lg p-4 text-left hover:bg-white/[0.05] transition-colors cursor-pointer"
           >
             <p className="text-2xl font-bold text-amber-400 tabular-nums">{library.unmatched_count}</p>
@@ -1038,37 +1064,15 @@ export function LibraryDetailPage() {
 
           {/* Tab content */}
           <AnimatePresence mode="wait">
-            {activeTab === 'all' && (
+            {activeTab === 'files' && (
               <motion.div
-                key="all"
+                key="files"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                <FileTable libraryId={id} status="all" />
-              </motion.div>
-            )}
-            {activeTab === 'matched' && (
-              <motion.div
-                key="matched"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <FileTable libraryId={id} status="matched" />
-              </motion.div>
-            )}
-            {activeTab === 'unmatched' && (
-              <motion.div
-                key="unmatched"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <FileTable libraryId={id} status="unmatched" onMatch={setMatchingFile} />
+                <FileTable libraryId={id} onMatch={setMatchingFile} />
               </motion.div>
             )}
             {activeTab === 'history' && (
