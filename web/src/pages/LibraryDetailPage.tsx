@@ -124,7 +124,7 @@ function FileTable({
   onMatch,
 }: {
   libraryId: string;
-  status: 'all' | 'unmatched';
+  status: 'all' | 'matched' | 'unmatched';
   onMatch?: (file: MediaFileEntry) => void;
 }) {
   const { i18n } = useLingui();
@@ -671,6 +671,122 @@ function MatchModal({
   );
 }
 
+/* -- Settings modal --------------------------------------------------------- */
+
+function SettingsModal({
+  open,
+  onClose,
+  library,
+  libraryId,
+}: {
+  open: boolean;
+  onClose: () => void;
+  library: { name: string; path: string; enabled: number; scan_interval_minutes: number; source_type: string; source_config?: Record<string, unknown> };
+  libraryId: string;
+}) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [name, setName] = useState(library.name);
+  const [scanInterval, setScanInterval] = useState(library.scan_interval_minutes);
+  const [enabled, setEnabled] = useState(!!library.enabled);
+
+  useEffect(() => {
+    if (open) {
+      setName(library.name);
+      setScanInterval(library.scan_interval_minutes);
+      setEnabled(!!library.enabled);
+    }
+  }, [open, library]);
+
+  const updateMutation = useMutation({
+    mutationFn: () =>
+      libraryApi.update(libraryId, {
+        name,
+        path: library.path,
+        enabled: enabled,
+        scan_interval_minutes: scanInterval,
+        source_type: library.source_type,
+        source_config: library.source_config,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
+      toast.success(i18n._(msg`library.toast.updated`));
+      onClose();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
+  });
+
+  return (
+    <Modal open={open} onClose={onClose} title={i18n._(msg`library.detail.settings`)}>
+      <div className="space-y-5">
+        {/* Name */}
+        <div>
+          <label className="block text-xs font-medium text-white/50 mb-1.5">
+            {i18n._(msg`library.name`)}
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+          />
+        </div>
+
+        {/* Scan interval */}
+        <div>
+          <label className="block text-xs font-medium text-white/50 mb-1.5">
+            {i18n._(msg`library.scanInterval`)}
+          </label>
+          <input
+            type="number"
+            min={0}
+            value={scanInterval}
+            onChange={(e) => setScanInterval(Number(e.target.value))}
+            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+          />
+        </div>
+
+        {/* Enabled toggle */}
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-medium text-white/50">
+            {i18n._(msg`library.enabled`)}
+          </label>
+          <button
+            type="button"
+            onClick={() => setEnabled((v) => !v)}
+            className={cn(
+              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer',
+              enabled ? 'bg-mm-accent' : 'bg-white/[0.12]',
+            )}
+          >
+            <span
+              className={cn(
+                'inline-block h-4 w-4 rounded-full bg-white transition-transform',
+                enabled ? 'translate-x-6' : 'translate-x-1',
+              )}
+            />
+          </button>
+        </div>
+
+        {/* Save */}
+        <button
+          type="button"
+          onClick={() => updateMutation.mutate()}
+          disabled={updateMutation.isPending || !name.trim()}
+          className="w-full py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-40 cursor-pointer"
+        >
+          {updateMutation.isPending
+            ? i18n._(msg`library.saving`)
+            : i18n._(msg`library.saveChanges`)}
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
 /* -- Main page -------------------------------------------------------------- */
 
 export function LibraryDetailPage() {
@@ -681,6 +797,7 @@ export function LibraryDetailPage() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) setShowLogin(false);
@@ -711,6 +828,7 @@ export function LibraryDetailPage() {
 
   const tabs = [
     { key: 'all', label: i18n._(msg`library.detail.tab.allFiles`) },
+    { key: 'matched', label: i18n._(msg`library.detail.tab.matched`) },
     { key: 'unmatched', label: i18n._(msg`library.detail.tab.unmatched`) },
     { key: 'history', label: i18n._(msg`library.detail.tab.scanHistory`) },
   ];
@@ -847,6 +965,7 @@ export function LibraryDetailPage() {
             </motion.button>
             <button
               type="button"
+              onClick={() => setShowSettings(true)}
               className="px-4 py-2.5 text-sm font-medium rounded-lg border border-white/[0.12] text-white/60 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
             >
               {i18n._(msg`library.detail.settings`)}
@@ -930,6 +1049,17 @@ export function LibraryDetailPage() {
                 <FileTable libraryId={id} status="all" />
               </motion.div>
             )}
+            {activeTab === 'matched' && (
+              <motion.div
+                key="matched"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <FileTable libraryId={id} status="matched" />
+              </motion.div>
+            )}
             {activeTab === 'unmatched' && (
               <motion.div
                 key="unmatched"
@@ -959,6 +1089,13 @@ export function LibraryDetailPage() {
       <MatchModal
         file={matchingFile}
         onClose={() => setMatchingFile(null)}
+        libraryId={id}
+      />
+
+      <SettingsModal
+        open={showSettings}
+        onClose={() => setShowSettings(false)}
+        library={library}
         libraryId={id}
       />
     </PageTransition>
