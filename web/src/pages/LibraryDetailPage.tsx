@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useScanStore } from '../store/scan-store';
 import { Link, useParams } from '@tanstack/react-router';
 import {
   type ColumnDef,
@@ -878,11 +879,21 @@ export function LibraryDetailPage() {
   const [activeTab, setActiveTab] = useState<string>('files');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const scanProgress = useScanStore((s) => s.getProgress(id));
+  const isScanning = useScanStore((s) => s.isScanning(id));
 
   useEffect(() => {
     if (isAuthenticated) setShowLogin(false);
     else setShowLogin(true);
   }, [isAuthenticated]);
+
+  // Auto-refresh data when scan completes
+  useEffect(() => {
+    if (scanProgress?.phase === 'completed') {
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.mediaFiles(id) });
+    }
+  }, [scanProgress?.phase, id, queryClient]);
 
   const {
     data: library,
@@ -896,11 +907,6 @@ export function LibraryDetailPage() {
 
   const scanMutation = useMutation({
     mutationFn: () => libraryApi.scan(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
-      toast.success(i18n._(msg`library.toast.scanComplete`));
-    },
     onError: (err: Error) => {
       toast.error(`${i18n._(msg`library.toast.scanFailed`)}: ${err.message}`);
     },
@@ -1034,10 +1040,10 @@ export function LibraryDetailPage() {
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={() => scanMutation.mutate()}
-              disabled={scanMutation.isPending}
+              disabled={isScanning || scanMutation.isPending}
               className="px-5 py-2.5 text-sm font-bold rounded-lg text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
             >
-              {scanMutation.isPending
+              {isScanning
                 ? i18n._(msg`library.scanning`)
                 : i18n._(msg`library.detail.scanNow`)}
             </motion.button>
@@ -1050,6 +1056,66 @@ export function LibraryDetailPage() {
             </button>
           </div>
         </motion.div>
+
+        {/* Scan progress banner */}
+        <AnimatePresence>
+          {isScanning && scanProgress && (() => {
+            const phaseLabel =
+              scanProgress.phase === 'scanning'
+                ? i18n._(msg`scan.phase.scanning`)
+                : scanProgress.phase === 'hashing'
+                  ? i18n._(msg`scan.phase.hashing`)
+                  : i18n._(msg`scan.phase.matching`);
+
+            const isIndeterminate = scanProgress.phase === 'scanning';
+            const percentage =
+              scanProgress.phase === 'hashing' && scanProgress.filesTotal > 0
+                ? (scanProgress.filesHashed / scanProgress.filesTotal) * 100
+                : scanProgress.phase === 'matching' && scanProgress.filesTotal > 0
+                  ? (scanProgress.filesMatched / scanProgress.filesTotal) * 100
+                  : 0;
+
+            return (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="rounded-lg border border-mm-accent/20 bg-mm-accent/[0.04] p-4 mb-6"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-mm-accent animate-pulse" />
+                    <span className="text-sm font-medium text-white/80">
+                      {phaseLabel}
+                    </span>
+                  </div>
+                  <span className="text-xs text-white/40 font-mono">
+                    {scanProgress.filesFound > 0 && `${scanProgress.filesFound} files`}
+                    {scanProgress.filesMatched > 0 && ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
+                  </span>
+                </div>
+                {/* Progress bar */}
+                <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden mb-2">
+                  {isIndeterminate ? (
+                    <div className="h-full w-1/3 rounded-full bg-mm-accent animate-pulse" />
+                  ) : (
+                    <motion.div
+                      className="h-full rounded-full bg-mm-accent"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${percentage}%` }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                </div>
+                {scanProgress.currentFile && (
+                  <p className="text-xs text-white/30 truncate font-mono">
+                    {scanProgress.currentFile}
+                  </p>
+                )}
+              </motion.div>
+            );
+          })()}
+        </AnimatePresence>
 
         {/* Stat cards */}
         <motion.div
