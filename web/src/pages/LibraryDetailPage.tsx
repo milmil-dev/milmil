@@ -132,8 +132,14 @@ function FileTable({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(1);
   const [accumulated, setAccumulated] = useState<MediaFileEntry[]>([]);
+  const isFirstRender = useState(true);
 
   useEffect(() => {
+    // Skip the initial mount — don't reset accumulated on first render
+    if (isFirstRender[0]) {
+      isFirstRender[0] = false;
+      return;
+    }
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
       setPage(1);
