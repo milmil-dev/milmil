@@ -9,27 +9,29 @@ import (
 )
 
 type Anime struct {
-	ID                  string         `json:"id"`
-	LibraryID           sql.NullString `json:"library_id"`
-	Title               string         `json:"title"`
-	TitleZh             sql.NullString `json:"title_zh"`
-	TitleEn             sql.NullString `json:"title_en"`
-	Synopsis            sql.NullString `json:"synopsis"`
-	CoverImageUrl       sql.NullString `json:"cover_image_url"`
-	TotalEpisodes       sql.NullInt64  `json:"total_episodes"`
-	Status              string         `json:"status"`
-	AirDate             sql.NullString `json:"air_date"`
-	Year                sql.NullInt64  `json:"year"`
-	Season              sql.NullString `json:"season"`
-	Genres              string         `json:"genres"`
-	IsCustom            int64          `json:"is_custom"`
-	AnilistID           sql.NullInt64  `json:"anilist_id"`
-	BangumiID           sql.NullInt64  `json:"bangumi_id"`
-	DandanplayBangumiID sql.NullInt64  `json:"dandanplay_bangumi_id"`
-	MalID               sql.NullInt64  `json:"mal_id"`
-	TmdbID              sql.NullInt64  `json:"tmdb_id"`
-	CreatedAt           string         `json:"created_at"`
-	UpdatedAt           string         `json:"updated_at"`
+	ID                   string         `json:"id"`
+	LibraryID            sql.NullString `json:"library_id"`
+	Title                string         `json:"title"`
+	TitleZh              sql.NullString `json:"title_zh"`
+	TitleEn              sql.NullString `json:"title_en"`
+	Synopsis             sql.NullString `json:"synopsis"`
+	CoverImageUrl        sql.NullString `json:"cover_image_url"`
+	TotalEpisodes        sql.NullInt64  `json:"total_episodes"`
+	Status               string         `json:"status"`
+	AirDate              sql.NullString `json:"air_date"`
+	Year                 sql.NullInt64  `json:"year"`
+	Season               sql.NullString `json:"season"`
+	Genres               string         `json:"genres"`
+	IsCustom             int64          `json:"is_custom"`
+	AnilistID            sql.NullInt64  `json:"anilist_id"`
+	BangumiID            sql.NullInt64  `json:"bangumi_id"`
+	DandanplayBangumiID  sql.NullInt64  `json:"dandanplay_bangumi_id"`
+	MalID                sql.NullInt64  `json:"mal_id"`
+	TmdbID               sql.NullInt64  `json:"tmdb_id"`
+	CreatedAt            string         `json:"created_at"`
+	UpdatedAt            string         `json:"updated_at"`
+	WatchStatus          string         `json:"watch_status"`
+	WatchStatusUpdatedAt sql.NullString `json:"watch_status_updated_at"`
 }
 
 type Download struct {

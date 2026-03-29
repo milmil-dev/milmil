@@ -12,6 +12,7 @@ import (
 type Querier interface {
 	ClearMediaFileMatch(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
+	CountCollectionByStatus(ctx context.Context) ([]CountCollectionByStatusRow, error)
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
 	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
@@ -55,6 +56,7 @@ type Querier interface {
 	ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
+	ListCollectionAnime(ctx context.Context, arg ListCollectionAnimeParams) ([]ListCollectionAnimeRow, error)
 	ListCompletedWatchProgress(ctx context.Context, userID string) ([]WatchProgress, error)
 	ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
@@ -66,6 +68,7 @@ type Querier interface {
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
+	ListRecentlyMatchedAnime(ctx context.Context) ([]ListRecentlyMatchedAnimeRow, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
 	ListSubtitlePathsByMediaFile(ctx context.Context, mediaFileID string) ([]string, error)
@@ -74,6 +77,7 @@ type Querier interface {
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
+	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
 	UpdateDownloadRuleTriggered(ctx context.Context, id string) error
 	UpdateDownloadStatus(ctx context.Context, arg UpdateDownloadStatusParams) error
