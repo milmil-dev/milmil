@@ -832,10 +832,13 @@ function LibraryForm({
   defaultValues,
   onSubmit,
   submitLabel,
+  isEdit = false,
 }: {
   defaultValues: LibraryFormValues;
   onSubmit: (values: LibraryFormValues) => Promise<void>;
   submitLabel: string;
+  /** When true, hides connection config fields (they can't be pre-filled since config is encrypted) */
+  isEdit?: boolean;
 }) {
   const { i18n } = useLingui();
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -906,8 +909,8 @@ function LibraryForm({
         </form.Field>
       </div>
 
-      {/* ── Connection section ── */}
-      {fixedSourceType !== 'local' && (
+      {/* ── Connection section (hidden in edit mode — config is encrypted) ── */}
+      {fixedSourceType !== 'local' && !isEdit && (
         <div className="rounded-lg border border-white/[0.06] p-4 space-y-4">
           {/* SMB fields */}
           {fixedSourceType === 'smb' && (
@@ -2643,29 +2646,31 @@ export function LibrariesPage() {
         {/* Header — only show when libraries exist */}
         {(hasLibraries || isLoading) && (
           <div className="px-8 pt-14 pb-8">
-            <div className="flex items-end justify-between">
+            <div className="flex items-center justify-between">
               <h1 className="text-4xl font-bold text-white tracking-tight">
                 {i18n._(msg`library.pageTitle`)}
               </h1>
-              <button
-                type="button"
-                onClick={() => {
-                  for (const lib of libraries) {
-                    scanMutation.mutate(lib.id);
-                  }
-                }}
-                disabled={libraries.length === 0}
-                className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/60 hover:text-white hover:border-white/25 transition-colors cursor-pointer disabled:opacity-30"
-              >
-                {i18n._(msg`scan.scanAll`)}
-              </button>
-              <button
-                type="button"
-                onClick={() => setDrawerMode('add')}
-                className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
-              >
-                + {i18n._(msg`library.addLibrary`)}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    for (const lib of libraries) {
+                      scanMutation.mutate(lib.id);
+                    }
+                  }}
+                  disabled={libraries.length === 0}
+                  className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/50 hover:text-white hover:border-white/25 transition-colors cursor-pointer disabled:opacity-30"
+                >
+                  {i18n._(msg`scan.scanAll`)}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDrawerMode('add')}
+                  className="px-4 py-2 text-sm font-medium rounded-md bg-mm-accent/10 border border-mm-accent/20 text-mm-accent hover:bg-mm-accent/20 transition-colors cursor-pointer"
+                >
+                  + {i18n._(msg`library.addLibrary`)}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -2775,6 +2780,7 @@ export function LibrariesPage() {
             <LibraryForm
               defaultValues={formDefaultValues(editLib)}
               submitLabel={i18n._(msg`library.saveChanges`)}
+              isEdit
               onSubmit={async (values) => {
                 await updateMutation.mutateAsync({
                   id: editLib.id,
