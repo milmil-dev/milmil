@@ -600,7 +600,7 @@ export function LibraryDetailPage() {
   const { i18n } = useLingui();
   const { isAuthenticated } = useAuth();
   const [showLogin, setShowLogin] = useState(!isAuthenticated);
-  const { id } = useParams({ from: '/libraries/$id' });
+  const { id } = useParams({ from: '/libraries_/$id' });
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);

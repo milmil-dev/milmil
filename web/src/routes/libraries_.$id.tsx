@@ -5,6 +5,6 @@ const LibraryDetailPage = lazy(() =>
   import('../pages/LibraryDetailPage').then((m) => ({ default: m.LibraryDetailPage })),
 );
 
-export const Route = createFileRoute('/libraries/$id')({
+export const Route = createFileRoute('/libraries_/$id')({
   component: LibraryDetailPage,
 });
