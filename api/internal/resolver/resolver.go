@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -68,6 +69,8 @@ func (r *Resolver) ResolveBangumiMatched(ctx context.Context, libraryID string) 
 		return nil, err
 	}
 
+	slog.Info("resolver: ResolveBangumiMatched", "library_id", libraryID, "unlinked_files", len(files))
+
 	summary := &ResolveSummary{}
 
 	// Group by bangumi_subject_id
@@ -79,19 +82,23 @@ func (r *Resolver) ResolveBangumiMatched(ctx context.Context, libraryID string) 
 		groups[f.BangumiSubjectID.Int64] = append(groups[f.BangumiSubjectID.Int64], f)
 	}
 
+	slog.Info("resolver: ResolveBangumiMatched", "anime_groups", len(groups))
+
 	for bangumiID, groupFiles := range groups {
-		// Reuse existing getOrCreateAnime (pass 0 for ddpAnimeID since these aren't dandanplay matches)
 		anime, created, err := r.getOrCreateAnime(ctx, libraryID, bangumiID, 0)
 		if err != nil {
+			slog.Error("resolver: getOrCreateAnime failed", "bangumi_id", bangumiID, "err", err)
 			summary.Errors++
 			continue
 		}
 		if created {
+			slog.Info("resolver: created anime", "bangumi_id", bangumiID, "anime_id", anime.ID, "title", anime.Title)
 			summary.AnimeCreated++
 		}
 
 		epsCreated, err := r.ensureEpisodes(ctx, anime.ID, bangumiID)
 		if err != nil {
+			slog.Error("resolver: ensureEpisodes failed", "bangumi_id", bangumiID, "err", err)
 			summary.Errors++
 			continue
 		}
@@ -100,22 +107,29 @@ func (r *Resolver) ResolveBangumiMatched(ctx context.Context, libraryID string) 
 		// Link files by bangumi_episode_id
 		for _, f := range groupFiles {
 			if !f.BangumiEpisodeID.Valid {
+				slog.Warn("resolver: file has no bangumi_episode_id", "file_id", f.ID, "filename", f.Filename)
 				continue
 			}
-			// Search episodes for this anime — match by bangumi episode ID
+
 			eps, _ := r.queries.ListEpisodesByAnimeID(ctx, anime.ID)
+			linked := false
 			for _, ep := range eps {
-				// The Bangumi search strategy stores the Bangumi episode ID in bangumi_episode_id on the media file.
-				// Episodes created by ensureEpisodes store the Bangumi ep.ID in dandanplay_episode_id
-				// (historical naming — it's actually used for Bangumi episode IDs too).
 				if ep.DandanplayEpisodeID.Valid && ep.DandanplayEpisodeID.Int64 == f.BangumiEpisodeID.Int64 {
 					_ = r.queries.UpdateMediaFileEpisodeID(ctx, store.UpdateMediaFileEpisodeIDParams{
 						EpisodeID: sql.NullString{String: ep.ID, Valid: true},
 						ID:        f.ID,
 					})
 					summary.FilesLinked++
+					linked = true
 					break
 				}
+			}
+			if !linked {
+				slog.Warn("resolver: no episode matched",
+					"file", f.Filename,
+					"bangumi_episode_id", f.BangumiEpisodeID.Int64,
+					"episodes_checked", len(eps),
+				)
 			}
 		}
 	}
