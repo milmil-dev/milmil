@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 	"os"
@@ -255,6 +256,8 @@ func (h *handler) handleMatchLibrary(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	slog.Info("match: starting", "library_id", lib.ID, "library_name", lib.Name)
+
 	go func() {
 		onProgress := func(event scanner.ProgressEvent) {
 			event.LibraryName = lib.Name
@@ -266,19 +269,46 @@ func (h *handler) handleMatchLibrary(c echo.Context) error {
 		onProgress(scanner.ProgressEvent{Type: "match:started", LibraryID: lib.ID})
 
 		if h.matcher != nil {
-			_, _ = h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress)
+			summary, err := h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress)
+			if err != nil {
+				slog.Error("match: MatchLibrary failed", "library_id", lib.ID, "err", err)
+			} else {
+				slog.Info("match: MatchLibrary done",
+					"library_id", lib.ID,
+					"matched", summary.Matched,
+					"unmatched", summary.Unmatched,
+					"errors", summary.Errors,
+					"by_dandanplay", summary.ByDandanplay,
+					"by_bangumi", summary.ByBangumi,
+					"by_tmdb", summary.ByTMDB,
+				)
+			}
 		}
 
 		if h.resolver != nil {
-			_, _ = h.resolver.ResolveLibrary(context.Background(), lib.ID)
-			_, _ = h.resolver.ResolveBangumiMatched(context.Background(), lib.ID)
+			if rs, err := h.resolver.ResolveLibrary(context.Background(), lib.ID); err != nil {
+				slog.Error("match: ResolveLibrary failed", "library_id", lib.ID, "err", err)
+			} else {
+				slog.Info("match: ResolveLibrary done", "library_id", lib.ID, "anime_created", rs.AnimeCreated, "episodes_created", rs.EpisodesCreated, "files_linked", rs.FilesLinked)
+			}
+			if rs, err := h.resolver.ResolveBangumiMatched(context.Background(), lib.ID); err != nil {
+				slog.Error("match: ResolveBangumiMatched failed", "library_id", lib.ID, "err", err)
+			} else {
+				slog.Info("match: ResolveBangumiMatched done", "library_id", lib.ID, "anime_created", rs.AnimeCreated, "episodes_created", rs.EpisodesCreated, "files_linked", rs.FilesLinked)
+			}
 		}
 
 		if h.tmdb != nil {
-			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+			enriched, err := matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+			if err != nil {
+				slog.Error("match: TMDB enrichment failed", "library_id", lib.ID, "err", err)
+			} else {
+				slog.Info("match: TMDB enrichment done", "library_id", lib.ID, "episodes_enriched", enriched)
+			}
 		}
 
 		onProgress(scanner.ProgressEvent{Type: "match:completed", LibraryID: lib.ID})
+		slog.Info("match: completed", "library_id", lib.ID)
 	}()
 
 	return c.JSON(http.StatusAccepted, map[string]string{

@@ -51,9 +51,10 @@ func (h *handler) handleListMediaFiles(c echo.Context) error {
 	files, err := h.queries.ListMediaFilesByLibrary(c.Request().Context(), store.ListMediaFilesByLibraryParams{
 		LibraryID:   libraryID,
 		Column2:     status,
+		Column3:     status,
 		MatchStatus: status,
-		Column4:     q,
-		Column5:     sql.NullString{String: q, Valid: q != ""},
+		Column5:     q,
+		Column6:     sql.NullString{String: q, Valid: q != ""},
 		Limit:       int64(perPage),
 		Offset:      int64(offset),
 	})
@@ -64,9 +65,10 @@ func (h *handler) handleListMediaFiles(c echo.Context) error {
 	total, err := h.queries.CountMediaFilesByStatus(c.Request().Context(), store.CountMediaFilesByStatusParams{
 		LibraryID:   libraryID,
 		Column2:     status,
+		Column3:     status,
 		MatchStatus: status,
-		Column4:     q,
-		Column5:     sql.NullString{String: q, Valid: q != ""},
+		Column5:     q,
+		Column6:     sql.NullString{String: q, Valid: q != ""},
 	})
 	if err != nil {
 		return echo.ErrInternalServerError

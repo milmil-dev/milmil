@@ -57,7 +57,7 @@ SELECT mf.*,
 FROM media_files mf
 LEFT JOIN episodes e ON mf.episode_id = e.id
 WHERE mf.library_id = ?
-  AND (? = 'all' OR mf.match_status = ?)
+  AND (? = 'all' OR (? = 'matched' AND mf.match_status != 'unmatched') OR mf.match_status = ?)
   AND (? = '' OR mf.filename LIKE '%' || ? || '%')
 ORDER BY mf.filename ASC
 LIMIT ? OFFSET ?;
@@ -66,7 +66,7 @@ LIMIT ? OFFSET ?;
 SELECT COUNT(*) AS total
 FROM media_files
 WHERE library_id = ?
-  AND (? = 'all' OR match_status = ?)
+  AND (? = 'all' OR (? = 'matched' AND match_status != 'unmatched') OR match_status = ?)
   AND (? = '' OR filename LIKE '%' || ? || '%');
 
 -- name: UpdateMediaFileMatch :exec

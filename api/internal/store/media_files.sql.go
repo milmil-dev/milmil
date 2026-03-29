@@ -38,25 +38,27 @@ const countMediaFilesByStatus = `-- name: CountMediaFilesByStatus :one
 SELECT COUNT(*) AS total
 FROM media_files
 WHERE library_id = ?
-  AND (? = 'all' OR match_status = ?)
+  AND (? = 'all' OR (? = 'matched' AND match_status != 'unmatched') OR match_status = ?)
   AND (? = '' OR filename LIKE '%' || ? || '%')
 `
 
 type CountMediaFilesByStatusParams struct {
 	LibraryID   string         `json:"library_id"`
 	Column2     interface{}    `json:"column_2"`
+	Column3     interface{}    `json:"column_3"`
 	MatchStatus string         `json:"match_status"`
-	Column4     interface{}    `json:"column_4"`
-	Column5     sql.NullString `json:"column_5"`
+	Column5     interface{}    `json:"column_5"`
+	Column6     sql.NullString `json:"column_6"`
 }
 
 func (q *Queries) CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error) {
 	row := q.db.QueryRowContext(ctx, countMediaFilesByStatus,
 		arg.LibraryID,
 		arg.Column2,
+		arg.Column3,
 		arg.MatchStatus,
-		arg.Column4,
 		arg.Column5,
+		arg.Column6,
 	)
 	var total int64
 	err := row.Scan(&total)
@@ -298,7 +300,7 @@ SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes,
 FROM media_files mf
 LEFT JOIN episodes e ON mf.episode_id = e.id
 WHERE mf.library_id = ?
-  AND (? = 'all' OR mf.match_status = ?)
+  AND (? = 'all' OR (? = 'matched' AND mf.match_status != 'unmatched') OR mf.match_status = ?)
   AND (? = '' OR mf.filename LIKE '%' || ? || '%')
 ORDER BY mf.filename ASC
 LIMIT ? OFFSET ?
@@ -307,9 +309,10 @@ LIMIT ? OFFSET ?
 type ListMediaFilesByLibraryParams struct {
 	LibraryID   string         `json:"library_id"`
 	Column2     interface{}    `json:"column_2"`
+	Column3     interface{}    `json:"column_3"`
 	MatchStatus string         `json:"match_status"`
-	Column4     interface{}    `json:"column_4"`
-	Column5     sql.NullString `json:"column_5"`
+	Column5     interface{}    `json:"column_5"`
+	Column6     sql.NullString `json:"column_6"`
 	Limit       int64          `json:"limit"`
 	Offset      int64          `json:"offset"`
 }
@@ -347,9 +350,10 @@ func (q *Queries) ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFile
 	rows, err := q.db.QueryContext(ctx, listMediaFilesByLibrary,
 		arg.LibraryID,
 		arg.Column2,
+		arg.Column3,
 		arg.MatchStatus,
-		arg.Column4,
 		arg.Column5,
+		arg.Column6,
 		arg.Limit,
 		arg.Offset,
 	)
