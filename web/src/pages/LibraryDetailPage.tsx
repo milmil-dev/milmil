@@ -2,6 +2,12 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
@@ -10,6 +16,14 @@ import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { useAuth } from '../hooks/use-auth';
 import { discoverApi, discoverKeys, type AnimeSummary, type Episode } from '../lib/api/discover';
 import { libraryApi, libraryKeys, type MediaFileEntry } from '../lib/api/library';
@@ -173,6 +187,81 @@ function FileTable({
 
   const files = accumulated;
 
+  const columns: ColumnDef<MediaFileEntry>[] = [
+    {
+      accessorKey: 'filename',
+      header: () => i18n._(msg`library.detail.col.filename`),
+      cell: ({ row }) => (
+        <div className="max-w-[300px]">
+          <span className="font-mono text-xs text-white/80 truncate block" title={row.original.path}>
+            {row.original.filename}
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: 'matched',
+      header: () => i18n._(msg`library.detail.col.matchedTo`),
+      cell: ({ row }) => {
+        const file = row.original;
+        if (file.matched_anime_title && file.matched_episode_sort > 0) {
+          return (
+            <span className="text-sm text-white/60">
+              {file.matched_anime_title} EP{String(file.matched_episode_sort).padStart(2, '0')}
+            </span>
+          );
+        }
+        return <span className="text-white/20">&mdash;</span>;
+      },
+    },
+    {
+      accessorKey: 'match_status',
+      header: () => i18n._(msg`library.detail.col.status`),
+      cell: ({ row }) => <StatusBadge status={row.original.match_status} />,
+    },
+    {
+      accessorKey: 'subtitle_count',
+      header: () => i18n._(msg`library.detail.col.subs`),
+      cell: ({ row }) => (
+        <span className="text-xs text-white/40">{row.original.subtitle_count}</span>
+      ),
+    },
+    {
+      accessorKey: 'size_bytes',
+      header: () => i18n._(msg`library.detail.col.size`),
+      cell: ({ row }) => (
+        <span className="text-xs text-white/50">{formatBytes(row.original.size_bytes)}</span>
+      ),
+    },
+    ...(onMatch
+      ? [
+          {
+            id: 'actions',
+            cell: ({ row }: { row: { original: MediaFileEntry } }) => {
+              if (row.original.match_status === 'unmatched') {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => onMatch(row.original)}
+                    className="text-[11px] font-bold text-mm-accent hover:text-mm-accent/80 transition-colors px-2 py-1 rounded bg-mm-accent/10 hover:bg-mm-accent/20 cursor-pointer"
+                  >
+                    {i18n._(msg`library.detail.match`)}
+                  </button>
+                );
+              }
+              return null;
+            },
+          } satisfies ColumnDef<MediaFileEntry>,
+        ]
+      : []),
+  ];
+
+  const table = useReactTable({
+    data: files,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   if (!isLoading && files.length === 0 && !debouncedSearch) {
     // Empty state
     if (statusFilter === 'unmatched') {
@@ -247,67 +336,30 @@ function FileTable({
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="text-[10px] uppercase tracking-wider text-white/30">
-              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.filename`)}</th>
-              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.matchedTo`)}</th>
-              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.status`)}</th>
-              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.subs`)}</th>
-              <th className="pb-3 pr-4 font-medium">{i18n._(msg`library.detail.col.size`)}</th>
-              {onMatch && <th className="pb-3 font-medium" />}
-            </tr>
-          </thead>
-          <tbody>
-            {files.map((file) => (
-              <tr key={file.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                <td className="py-3 pr-4 max-w-[300px]">
-                  <span className="font-mono text-sm text-white/80 truncate block" title={file.path}>
-                    {file.filename}
-                  </span>
-                </td>
-                <td className="py-3 pr-4 text-[13px]">
-                  {file.matched_anime_title ? (
-                    <span className="text-white/70">
-                      {file.matched_anime_title}{' '}
-                      <span className="text-white/30">EP {String(file.matched_episode_sort).padStart(2, '0')}</span>
-                    </span>
-                  ) : (
-                    <span className="text-white/20">&mdash;</span>
-                  )}
-                </td>
-                <td className="py-3 pr-4">
-                  <StatusBadge status={file.match_status} />
-                </td>
-                <td className="py-3 pr-4 text-[12px] text-white/30 tabular-nums">
-                  <span className="inline-flex items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/20">
-                      <rect x="2" y="4" width="20" height="16" rx="2" />
-                      <path d="M7 15h4M13 15h4M7 11h10" />
-                    </svg>
-                    {file.subtitle_count}
-                  </span>
-                </td>
-                <td className="py-3 pr-4 text-[12px] text-white/30 tabular-nums whitespace-nowrap">
-                  {formatBytes(file.size_bytes)}
-                </td>
-                {onMatch && (
-                  <td className="py-3">
-                    <button
-                      type="button"
-                      onClick={() => onMatch(file)}
-                      className="text-[11px] font-bold text-mm-accent hover:text-mm-accent/80 transition-colors px-2 py-1 rounded bg-mm-accent/10 hover:bg-mm-accent/20 cursor-pointer"
-                    >
-                      {i18n._(msg`library.detail.match`)}
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} className="border-white/[0.04] hover:bg-transparent">
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="text-[10px] uppercase tracking-wider text-white/30 font-medium h-auto pb-3">
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id} className="border-white/[0.04] hover:bg-white/[0.02]">
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id} className="py-2.5">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       {isLoading && (
         <div className="py-6 text-center">
