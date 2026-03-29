@@ -10,6 +10,7 @@ import (
 
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/store"
@@ -203,5 +204,125 @@ func TestMatchLibrary_ContinuesOnError(t *testing.T) {
 	}
 	if summary.Matched != 0 {
 		t.Errorf("want matched=0, got %d", summary.Matched)
+	}
+}
+
+// mockBangumi implements bangumi.Client for testing.
+type mockBangumi struct {
+	searchResult  []bangumi.Subject
+	searchErr     error
+	episodes      []bangumi.Episode
+	episodesErr   error
+}
+
+func (m *mockBangumi) SearchSubjects(_ context.Context, _ string) ([]bangumi.Subject, error) {
+	return m.searchResult, m.searchErr
+}
+
+func (m *mockBangumi) GetCalendar(_ context.Context) ([]bangumi.CalendarDay, error) {
+	return nil, nil
+}
+
+func (m *mockBangumi) GetSubject(_ context.Context, _ int) (*bangumi.Subject, error) {
+	return nil, nil
+}
+
+func (m *mockBangumi) GetSubjectEpisodes(_ context.Context, _ int) ([]bangumi.Episode, error) {
+	return m.episodes, m.episodesErr
+}
+
+func (m *mockBangumi) GetSubjectComments(_ context.Context, _ int, _ int) ([]bangumi.SubjectComment, error) {
+	return nil, nil
+}
+
+// seedLibraryAndFileWithName creates a library and a media file with a custom filename (no hash).
+func seedLibraryAndFileWithName(t *testing.T, q *store.Queries, filename string) (store.Library, store.MediaFile) {
+	t.Helper()
+	ctx := context.Background()
+
+	dir := t.TempDir()
+	os.WriteFile(filepath.Join(dir, filename), []byte("fake"), 0644)
+
+	lib, err := q.CreateLibrary(ctx, store.CreateLibraryParams{
+		ID:                  "lib-1",
+		Name:                "Test",
+		Path:                dir,
+		Enabled:             1,
+		ScanIntervalMinutes: 60,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	mf, err := q.UpsertMediaFile(ctx, store.UpsertMediaFileParams{
+		ID:        "mf-1",
+		LibraryID: lib.ID,
+		Path:      filepath.Join(dir, filename),
+		Filename:  filename,
+		SizeBytes: 1000000,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return lib, mf
+}
+
+func TestMatchLibrary_BangumiFallback(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+
+	// File with a parseable name but no hash — dandanplay cannot match it.
+	lib, _ := seedLibraryAndFileWithName(t, q, "[SubGroup] My Anime - 03.mkv")
+
+	// Dandanplay returns no match (no hash to work with).
+	ddpMock := &mockDandanplay{
+		matchResult: &dandanplay.MatchResult{IsMatched: false},
+	}
+
+	// Bangumi returns a subject and episodes.
+	bgmMock := &mockBangumi{
+		searchResult: []bangumi.Subject{
+			{ID: 200, Name: "My Anime", NameCN: "My Anime CN"},
+		},
+		episodes: []bangumi.Episode{
+			{ID: 5001, Sort: 1, Name: "Ep 1"},
+			{ID: 5002, Sort: 2, Name: "Ep 2"},
+			{ID: 5003, Sort: 3, Name: "Ep 3"},
+		},
+	}
+
+	c := cache.New("")
+	defer c.Close()
+
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c)
+	summary, err := m.MatchLibrary(context.Background(), lib.ID)
+	if err != nil {
+		t.Fatalf("MatchLibrary: %v", err)
+	}
+
+	if summary.Matched != 1 {
+		t.Errorf("want matched=1, got %d", summary.Matched)
+	}
+	if summary.ByBangumi != 1 {
+		t.Errorf("want by_bangumi=1, got %d", summary.ByBangumi)
+	}
+	if summary.ByDandanplay != 0 {
+		t.Errorf("want by_dandanplay=0, got %d", summary.ByDandanplay)
+	}
+	if summary.Unmatched != 0 {
+		t.Errorf("want unmatched=0, got %d", summary.Unmatched)
+	}
+
+	// Verify DB was updated with Bangumi IDs.
+	mf, err := q.GetMediaFileByID(context.Background(), "mf-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !mf.BangumiSubjectID.Valid || mf.BangumiSubjectID.Int64 != 200 {
+		t.Errorf("want bangumi_subject_id=200, got %v", mf.BangumiSubjectID)
+	}
+	if !mf.BangumiEpisodeID.Valid || mf.BangumiEpisodeID.Int64 != 5003 {
+		t.Errorf("want bangumi_episode_id=5003, got %v", mf.BangumiEpisodeID)
 	}
 }
