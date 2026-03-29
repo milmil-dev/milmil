@@ -69,12 +69,12 @@ msgid "auth.error.setupFailed"
 msgstr "Setup failed"
 
 #: src/pages/LibrariesPage.tsx:2954
-#: src/pages/LibraryDetailPage.tsx:1167
+#: src/pages/LibraryDetailPage.tsx:1186
 msgid "auth.libraries.signInSubtitle"
 msgstr "auth.libraries.signInSubtitle"
 
 #: src/pages/LibrariesPage.tsx:2951
-#: src/pages/LibraryDetailPage.tsx:1164
+#: src/pages/LibraryDetailPage.tsx:1183
 msgid "auth.libraries.signInTitle"
 msgstr "auth.libraries.signInTitle"
 
@@ -89,7 +89,7 @@ msgstr "Password"
 
 #: src/components/LoginModal.tsx:152
 #: src/pages/LibrariesPage.tsx:2961
-#: src/pages/LibraryDetailPage.tsx:1174
+#: src/pages/LibraryDetailPage.tsx:1193
 #: src/pages/LoginPage.tsx:79
 msgid "auth.login.submit"
 msgstr "Sign in"
@@ -152,18 +152,18 @@ msgstr "Back to Home"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:213
 #: src/pages/AnimeDetailPage.tsx:269
-#: src/pages/LibraryDetailPage.tsx:838
+#: src/pages/LibraryDetailPage.tsx:857
 msgid "common.ep"
 msgstr "ep"
 
 #: src/pages/AnimeDetailPage.tsx:89
-#: src/pages/LibraryDetailPage.tsx:1196
+#: src/pages/LibraryDetailPage.tsx:1215
 msgid "common.loadFailed"
 msgstr "Failed to load"
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:496
-#: src/pages/LibraryDetailPage.tsx:934
+#: src/pages/LibraryDetailPage.tsx:515
+#: src/pages/LibraryDetailPage.tsx:953
 msgid "common.loading"
 msgstr "Loading..."
 
@@ -271,16 +271,16 @@ msgstr "Delete"
 msgid "library.deleteConfirm"
 msgstr "All media file records will be removed. Your files on disk are unaffected."
 
-#: src/pages/LibraryDetailPage.tsx:481
+#: src/pages/LibraryDetailPage.tsx:500
 msgid "library.detail.allMatched"
 msgstr "All files matched"
 
-#: src/pages/LibraryDetailPage.tsx:1288
+#: src/pages/LibraryDetailPage.tsx:1307
 msgid "library.detail.autoMatch"
 msgstr "Auto Match"
 
-#: src/pages/LibraryDetailPage.tsx:1203
-#: src/pages/LibraryDetailPage.tsx:1240
+#: src/pages/LibraryDetailPage.tsx:1222
+#: src/pages/LibraryDetailPage.tsx:1259
 msgid "library.detail.backToLibraries"
 msgstr "Libraries"
 
@@ -296,35 +296,35 @@ msgstr "Matched Anime"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:329
+#: src/pages/LibraryDetailPage.tsx:338
 msgid "library.detail.col.size"
 msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:315
+#: src/pages/LibraryDetailPage.tsx:324
 msgid "library.detail.col.status"
 msgstr "Status"
 
-#: src/pages/LibraryDetailPage.tsx:320
+#: src/pages/LibraryDetailPage.tsx:329
 msgid "library.detail.col.subs"
 msgstr "Subs"
 
-#: src/pages/LibraryDetailPage.tsx:359
-#: src/pages/LibraryDetailPage.tsx:361
+#: src/pages/LibraryDetailPage.tsx:378
+#: src/pages/LibraryDetailPage.tsx:380
 msgid "library.detail.editMatch"
 msgstr "Edit"
 
-#: src/pages/LibraryDetailPage.tsx:651
+#: src/pages/LibraryDetailPage.tsx:670
 msgid "library.detail.errors"
 msgstr "Errors"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:636
+#: src/pages/LibraryDetailPage.tsx:655
 msgid "library.detail.found"
 msgstr "Found"
 
-#: src/pages/LibraryDetailPage.tsx:631
+#: src/pages/LibraryDetailPage.tsx:650
 msgid "library.detail.inProgress"
 msgstr "In Progress"
 
@@ -332,38 +332,38 @@ msgstr "In Progress"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:349
+#: src/pages/LibraryDetailPage.tsx:358
 msgid "library.detail.match"
 msgstr "Match"
 
-#: src/pages/LibraryDetailPage.tsx:441
-#: src/pages/LibraryDetailPage.tsx:639
+#: src/pages/LibraryDetailPage.tsx:460
+#: src/pages/LibraryDetailPage.tsx:658
 msgid "library.detail.matched"
 msgstr "Matched"
 
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:872
+#: src/pages/LibraryDetailPage.tsx:891
 msgid "library.detail.matchModal.change"
 msgstr "Change"
 
-#: src/pages/LibraryDetailPage.tsx:935
+#: src/pages/LibraryDetailPage.tsx:954
 msgid "library.detail.matchModal.confirm"
 msgstr "Confirm Match"
 
 #~ msgid "library.detail.matchModal.failed"
 #~ msgstr "Match failed"
 
-#: src/pages/LibraryDetailPage.tsx:737
+#: src/pages/LibraryDetailPage.tsx:756
 msgid "library.detail.matchModal.matched"
 msgstr "File matched"
 
-#: src/pages/LibraryDetailPage.tsx:922
+#: src/pages/LibraryDetailPage.tsx:941
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "No episodes found"
 
-#: src/pages/LibraryDetailPage.tsx:814
+#: src/pages/LibraryDetailPage.tsx:833
 msgid "library.detail.matchModal.noResults"
 msgstr "No results found"
 
@@ -373,38 +373,42 @@ msgstr "No results found"
 #~ msgid "library.detail.matchModal.searchAnime"
 #~ msgstr "Search anime..."
 
-#: src/pages/LibraryDetailPage.tsx:797
+#: src/pages/LibraryDetailPage.tsx:816
 msgid "library.detail.matchModal.searchHint"
 msgstr "Search for an anime to match this file"
 
-#: src/pages/LibraryDetailPage.tsx:788
+#: src/pages/LibraryDetailPage.tsx:807
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "Search anime..."
 
-#: src/pages/LibraryDetailPage.tsx:765
+#: src/pages/LibraryDetailPage.tsx:784
 msgid "library.detail.matchModal.title"
 msgstr "Match File"
 
-#: src/pages/LibraryDetailPage.tsx:400
-#: src/pages/LibraryDetailPage.tsx:486
+#: src/pages/LibraryDetailPage.tsx:419
+#: src/pages/LibraryDetailPage.tsx:505
 msgid "library.detail.noFiles"
 msgstr "No files found"
 
-#: src/pages/LibraryDetailPage.tsx:403
+#: src/pages/LibraryDetailPage.tsx:422
 msgid "library.detail.noFilesHint"
 msgstr "Run a scan to discover media files in this library"
 
-#: src/pages/LibraryDetailPage.tsx:577
+#: src/pages/LibraryDetailPage.tsx:596
 msgid "library.detail.noScans"
 msgstr "No scans yet"
 
-#: src/pages/LibraryDetailPage.tsx:580
+#: src/pages/LibraryDetailPage.tsx:599
 msgid "library.detail.noScansHint"
 msgstr "Run your first scan to see history here"
 
-#: src/pages/LibraryDetailPage.tsx:1197
+#: src/pages/LibraryDetailPage.tsx:1216
 msgid "library.detail.notFound"
 msgstr "Library not found"
+
+#: src/pages/LibraryDetailPage.tsx:372
+msgid "library.detail.play"
+msgstr "Play"
 
 #~ msgid "library.detail.runFirstScan"
 #~ msgstr "Run your first scan"
@@ -424,38 +428,38 @@ msgstr "Library not found"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:1299
+#: src/pages/LibraryDetailPage.tsx:1318
 msgid "library.detail.scanNow"
 msgstr "Scan Now"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:432
+#: src/pages/LibraryDetailPage.tsx:451
 msgid "library.detail.searchFiles"
 msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:1004
-#: src/pages/LibraryDetailPage.tsx:1306
+#: src/pages/LibraryDetailPage.tsx:1023
+#: src/pages/LibraryDetailPage.tsx:1325
 msgid "library.detail.settings"
 msgstr "Settings"
 
 #~ msgid "library.detail.size"
 #~ msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:1389
+#: src/pages/LibraryDetailPage.tsx:1408
 msgid "library.detail.stats.files"
 msgstr "files"
 
-#: src/pages/LibraryDetailPage.tsx:1397
+#: src/pages/LibraryDetailPage.tsx:1416
 msgid "library.detail.stats.matched"
 msgstr "matched"
 
-#: src/pages/LibraryDetailPage.tsx:1417
+#: src/pages/LibraryDetailPage.tsx:1436
 msgid "library.detail.stats.size"
 msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:1409
+#: src/pages/LibraryDetailPage.tsx:1428
 msgid "library.detail.stats.unmatched"
 msgstr "unmatched"
 
@@ -469,7 +473,7 @@ msgstr "unmatched"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:1131
+#: src/pages/LibraryDetailPage.tsx:1150
 msgid "library.detail.tab.files"
 msgstr "Files"
 
@@ -477,7 +481,7 @@ msgstr "Files"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "Matched"
 
-#: src/pages/LibraryDetailPage.tsx:1132
+#: src/pages/LibraryDetailPage.tsx:1151
 msgid "library.detail.tab.scanHistory"
 msgstr "Scan History"
 
@@ -500,8 +504,8 @@ msgstr "Scan History"
 #~ msgid "library.detail.unmatched"
 #~ msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:445
-#: src/pages/LibraryDetailPage.tsx:643
+#: src/pages/LibraryDetailPage.tsx:464
+#: src/pages/LibraryDetailPage.tsx:662
 msgid "library.detail.unmatchedShort"
 msgstr "Unmatched"
 
@@ -539,7 +543,7 @@ msgstr "Edit Library"
 
 #: src/pages/LibrariesPage.tsx:1010
 #: src/pages/LibrariesPage.tsx:2723
-#: src/pages/LibraryDetailPage.tsx:1037
+#: src/pages/LibraryDetailPage.tsx:1056
 msgid "library.enabled"
 msgstr "Enabled"
 
@@ -581,14 +585,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:172
-#: src/pages/LibraryDetailPage.tsx:1287
+#: src/pages/LibraryDetailPage.tsx:1306
 msgid "library.matching"
 msgstr "Matching..."
 
 #: src/pages/LibrariesPage.tsx:982
 #: src/pages/LibrariesPage.tsx:1872
 #: src/pages/LibrariesPage.tsx:2247
-#: src/pages/LibraryDetailPage.tsx:1010
+#: src/pages/LibraryDetailPage.tsx:1029
 msgid "library.name"
 msgstr "Name"
 
@@ -599,7 +603,7 @@ msgid "library.nameRequired"
 msgstr "Name required"
 
 #: src/pages/LibrariesPage.tsx:146
-#: src/pages/LibraryDetailPage.tsx:1221
+#: src/pages/LibraryDetailPage.tsx:1240
 msgid "library.neverScanned"
 msgstr "Never"
 
@@ -664,14 +668,14 @@ msgid "library.s3.secretKey"
 msgstr "Secret Key"
 
 #: src/pages/LibrariesPage.tsx:3108
-#: src/pages/LibraryDetailPage.tsx:1065
+#: src/pages/LibraryDetailPage.tsx:1084
 msgid "library.saveChanges"
 msgstr "Save Changes"
 
 #: src/pages/LibrariesPage.tsx:1514
 #: src/pages/LibrariesPage.tsx:2280
 #: src/pages/LibrariesPage.tsx:2748
-#: src/pages/LibraryDetailPage.tsx:1064
+#: src/pages/LibraryDetailPage.tsx:1083
 msgid "library.saving"
 msgstr "Saving…"
 
@@ -681,13 +685,13 @@ msgstr "Scan"
 
 #: src/pages/LibrariesPage.tsx:1484
 #: src/pages/LibrariesPage.tsx:2705
-#: src/pages/LibraryDetailPage.tsx:1023
+#: src/pages/LibraryDetailPage.tsx:1042
 msgid "library.scanInterval"
 msgstr "Scan Interval (min)"
 
 #: src/pages/LibrariesPage.tsx:170
 #: src/pages/LibrariesPage.tsx:206
-#: src/pages/LibraryDetailPage.tsx:1298
+#: src/pages/LibraryDetailPage.tsx:1317
 msgid "library.scanning"
 msgstr "Scanning"
 
@@ -781,11 +785,11 @@ msgstr "Library added"
 msgid "library.toast.deleted"
 msgstr "Library deleted"
 
-#: src/pages/LibraryDetailPage.tsx:1126
+#: src/pages/LibraryDetailPage.tsx:1145
 msgid "library.toast.matchFailed"
 msgstr "Auto matching failed"
 
-#: src/pages/LibraryDetailPage.tsx:1123
+#: src/pages/LibraryDetailPage.tsx:1142
 msgid "library.toast.matchStarted"
 msgstr "Auto matching started"
 
@@ -794,16 +798,16 @@ msgstr "Auto matching started"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "Scan complete"
 
-#: src/pages/LibraryDetailPage.tsx:1116
+#: src/pages/LibraryDetailPage.tsx:1135
 msgid "library.toast.scanFailed"
 msgstr "Scan failed"
 
-#: src/pages/LibraryDetailPage.tsx:1113
+#: src/pages/LibraryDetailPage.tsx:1132
 msgid "library.toast.scanStarted"
 msgstr "library.toast.scanStarted"
 
 #: src/pages/LibrariesPage.tsx:2901
-#: src/pages/LibraryDetailPage.tsx:992
+#: src/pages/LibraryDetailPage.tsx:1011
 msgid "library.toast.updated"
 msgstr "Library updated"
 
@@ -1064,15 +1068,15 @@ msgstr "Previous page"
 msgid "pagination.rows"
 msgstr "Rows"
 
-#: src/pages/LibraryDetailPage.tsx:1320
+#: src/pages/LibraryDetailPage.tsx:1339
 msgid "scan.phase.hashing"
 msgstr "scan.phase.hashing"
 
-#: src/pages/LibraryDetailPage.tsx:1321
+#: src/pages/LibraryDetailPage.tsx:1340
 msgid "scan.phase.matching"
 msgstr "scan.phase.matching"
 
-#: src/pages/LibraryDetailPage.tsx:1318
+#: src/pages/LibraryDetailPage.tsx:1337
 msgid "scan.phase.scanning"
 msgstr "scan.phase.scanning"
 
@@ -1080,7 +1084,7 @@ msgstr "scan.phase.scanning"
 msgid "scan.scanAll"
 msgstr "scan.scanAll"
 
-#: src/pages/LibraryDetailPage.tsx:438
+#: src/pages/LibraryDetailPage.tsx:457
 #: src/pages/SchedulePage.tsx:541
 msgid "schedule.all"
 msgstr "All"

@@ -360,7 +360,17 @@ function FileTable({
                   )
                 }
                 return (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      to="/watch/$fileId"
+                      params={{ fileId: file.id }}
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-mm-accent hover:text-mm-accent/80 transition-colors px-2 py-1 rounded bg-mm-accent/10 hover:bg-mm-accent/20"
+                    >
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                      {i18n._(msg`library.detail.play`)}
+                    </Link>
                     <button
                       type="button"
                       onClick={() => onMatch(file)}

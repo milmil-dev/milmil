@@ -67,12 +67,12 @@ msgid "auth.error.setupFailed"
 msgstr "设置失败"
 
 #: src/pages/LibrariesPage.tsx:2954
-#: src/pages/LibraryDetailPage.tsx:1167
+#: src/pages/LibraryDetailPage.tsx:1186
 msgid "auth.libraries.signInSubtitle"
 msgstr "登录以管理您的媒体库"
 
 #: src/pages/LibrariesPage.tsx:2951
-#: src/pages/LibraryDetailPage.tsx:1164
+#: src/pages/LibraryDetailPage.tsx:1183
 msgid "auth.libraries.signInTitle"
 msgstr "需要登录"
 
@@ -87,7 +87,7 @@ msgstr "密码"
 
 #: src/components/LoginModal.tsx:152
 #: src/pages/LibrariesPage.tsx:2961
-#: src/pages/LibraryDetailPage.tsx:1174
+#: src/pages/LibraryDetailPage.tsx:1193
 #: src/pages/LoginPage.tsx:79
 msgid "auth.login.submit"
 msgstr "登录"
@@ -150,18 +150,18 @@ msgstr "返回首页"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:213
 #: src/pages/AnimeDetailPage.tsx:269
-#: src/pages/LibraryDetailPage.tsx:838
+#: src/pages/LibraryDetailPage.tsx:857
 msgid "common.ep"
 msgstr "集"
 
 #: src/pages/AnimeDetailPage.tsx:89
-#: src/pages/LibraryDetailPage.tsx:1196
+#: src/pages/LibraryDetailPage.tsx:1215
 msgid "common.loadFailed"
 msgstr "加载失败"
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:496
-#: src/pages/LibraryDetailPage.tsx:934
+#: src/pages/LibraryDetailPage.tsx:515
+#: src/pages/LibraryDetailPage.tsx:953
 msgid "common.loading"
 msgstr "加载中..."
 
@@ -269,16 +269,16 @@ msgstr "删除"
 msgid "library.deleteConfirm"
 msgstr "所有媒体文件记录将被移除，磁盘上的文件不受影响。"
 
-#: src/pages/LibraryDetailPage.tsx:481
+#: src/pages/LibraryDetailPage.tsx:500
 msgid "library.detail.allMatched"
 msgstr "所有文件已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1288
+#: src/pages/LibraryDetailPage.tsx:1307
 msgid "library.detail.autoMatch"
 msgstr "自动匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1203
-#: src/pages/LibraryDetailPage.tsx:1240
+#: src/pages/LibraryDetailPage.tsx:1222
+#: src/pages/LibraryDetailPage.tsx:1259
 msgid "library.detail.backToLibraries"
 msgstr "媒体库"
 
@@ -294,35 +294,35 @@ msgstr "匹配动画"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "匹配至"
 
-#: src/pages/LibraryDetailPage.tsx:329
+#: src/pages/LibraryDetailPage.tsx:338
 msgid "library.detail.col.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:315
+#: src/pages/LibraryDetailPage.tsx:324
 msgid "library.detail.col.status"
 msgstr "状态"
 
-#: src/pages/LibraryDetailPage.tsx:320
+#: src/pages/LibraryDetailPage.tsx:329
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:359
-#: src/pages/LibraryDetailPage.tsx:361
+#: src/pages/LibraryDetailPage.tsx:378
+#: src/pages/LibraryDetailPage.tsx:380
 msgid "library.detail.editMatch"
 msgstr "编辑"
 
-#: src/pages/LibraryDetailPage.tsx:651
+#: src/pages/LibraryDetailPage.tsx:670
 msgid "library.detail.errors"
 msgstr "错误"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "文件名"
 
-#: src/pages/LibraryDetailPage.tsx:636
+#: src/pages/LibraryDetailPage.tsx:655
 msgid "library.detail.found"
 msgstr "发现"
 
-#: src/pages/LibraryDetailPage.tsx:631
+#: src/pages/LibraryDetailPage.tsx:650
 msgid "library.detail.inProgress"
 msgstr "进行中"
 
@@ -330,38 +330,38 @@ msgstr "进行中"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "加载更多"
 
-#: src/pages/LibraryDetailPage.tsx:349
+#: src/pages/LibraryDetailPage.tsx:358
 msgid "library.detail.match"
 msgstr "匹配"
 
-#: src/pages/LibraryDetailPage.tsx:441
-#: src/pages/LibraryDetailPage.tsx:639
+#: src/pages/LibraryDetailPage.tsx:460
+#: src/pages/LibraryDetailPage.tsx:658
 msgid "library.detail.matched"
 msgstr "已匹配"
 
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "匹配至"
 
-#: src/pages/LibraryDetailPage.tsx:872
+#: src/pages/LibraryDetailPage.tsx:891
 msgid "library.detail.matchModal.change"
 msgstr "更换"
 
-#: src/pages/LibraryDetailPage.tsx:935
+#: src/pages/LibraryDetailPage.tsx:954
 msgid "library.detail.matchModal.confirm"
 msgstr "确认匹配"
 
 #~ msgid "library.detail.matchModal.failed"
 #~ msgstr "匹配失败"
 
-#: src/pages/LibraryDetailPage.tsx:737
+#: src/pages/LibraryDetailPage.tsx:756
 msgid "library.detail.matchModal.matched"
 msgstr "文件已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:922
+#: src/pages/LibraryDetailPage.tsx:941
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "未找到集数"
 
-#: src/pages/LibraryDetailPage.tsx:814
+#: src/pages/LibraryDetailPage.tsx:833
 msgid "library.detail.matchModal.noResults"
 msgstr "未找到结果"
 
@@ -371,38 +371,42 @@ msgstr "未找到结果"
 #~ msgid "library.detail.matchModal.searchAnime"
 #~ msgstr "搜索动画..."
 
-#: src/pages/LibraryDetailPage.tsx:797
+#: src/pages/LibraryDetailPage.tsx:816
 msgid "library.detail.matchModal.searchHint"
 msgstr "搜索动画以匹配此文件"
 
-#: src/pages/LibraryDetailPage.tsx:788
+#: src/pages/LibraryDetailPage.tsx:807
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "搜索动画..."
 
-#: src/pages/LibraryDetailPage.tsx:765
+#: src/pages/LibraryDetailPage.tsx:784
 msgid "library.detail.matchModal.title"
 msgstr "匹配文件"
 
-#: src/pages/LibraryDetailPage.tsx:400
-#: src/pages/LibraryDetailPage.tsx:486
+#: src/pages/LibraryDetailPage.tsx:419
+#: src/pages/LibraryDetailPage.tsx:505
 msgid "library.detail.noFiles"
 msgstr "未找到文件"
 
-#: src/pages/LibraryDetailPage.tsx:403
+#: src/pages/LibraryDetailPage.tsx:422
 msgid "library.detail.noFilesHint"
 msgstr "运行扫描以发现此媒体库中的文件"
 
-#: src/pages/LibraryDetailPage.tsx:577
+#: src/pages/LibraryDetailPage.tsx:596
 msgid "library.detail.noScans"
 msgstr "尚未扫描"
 
-#: src/pages/LibraryDetailPage.tsx:580
+#: src/pages/LibraryDetailPage.tsx:599
 msgid "library.detail.noScansHint"
 msgstr "执行首次扫描以查看历史记录"
 
-#: src/pages/LibraryDetailPage.tsx:1197
+#: src/pages/LibraryDetailPage.tsx:1216
 msgid "library.detail.notFound"
 msgstr "未找到媒体库"
+
+#: src/pages/LibraryDetailPage.tsx:372
+msgid "library.detail.play"
+msgstr "播放"
 
 #~ msgid "library.detail.runFirstScan"
 #~ msgstr "执行首次扫描"
@@ -422,38 +426,38 @@ msgstr "未找到媒体库"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "开始时间"
 
-#: src/pages/LibraryDetailPage.tsx:1299
+#: src/pages/LibraryDetailPage.tsx:1318
 msgid "library.detail.scanNow"
 msgstr "立即扫描"
 
 #~ msgid "library.detail.search"
 #~ msgstr "搜索文件..."
 
-#: src/pages/LibraryDetailPage.tsx:432
+#: src/pages/LibraryDetailPage.tsx:451
 msgid "library.detail.searchFiles"
 msgstr "搜索文件..."
 
-#: src/pages/LibraryDetailPage.tsx:1004
-#: src/pages/LibraryDetailPage.tsx:1306
+#: src/pages/LibraryDetailPage.tsx:1023
+#: src/pages/LibraryDetailPage.tsx:1325
 msgid "library.detail.settings"
 msgstr "设置"
 
 #~ msgid "library.detail.size"
 #~ msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:1389
+#: src/pages/LibraryDetailPage.tsx:1408
 msgid "library.detail.stats.files"
 msgstr "个文件"
 
-#: src/pages/LibraryDetailPage.tsx:1397
+#: src/pages/LibraryDetailPage.tsx:1416
 msgid "library.detail.stats.matched"
 msgstr "已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1417
+#: src/pages/LibraryDetailPage.tsx:1436
 msgid "library.detail.stats.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:1409
+#: src/pages/LibraryDetailPage.tsx:1428
 msgid "library.detail.stats.unmatched"
 msgstr "未匹配"
 
@@ -467,7 +471,7 @@ msgstr "未匹配"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "全部文件"
 
-#: src/pages/LibraryDetailPage.tsx:1131
+#: src/pages/LibraryDetailPage.tsx:1150
 msgid "library.detail.tab.files"
 msgstr "文件"
 
@@ -475,7 +479,7 @@ msgstr "文件"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1132
+#: src/pages/LibraryDetailPage.tsx:1151
 msgid "library.detail.tab.scanHistory"
 msgstr "扫描记录"
 
@@ -498,8 +502,8 @@ msgstr "扫描记录"
 #~ msgid "library.detail.unmatched"
 #~ msgstr "未匹配"
 
-#: src/pages/LibraryDetailPage.tsx:445
-#: src/pages/LibraryDetailPage.tsx:643
+#: src/pages/LibraryDetailPage.tsx:464
+#: src/pages/LibraryDetailPage.tsx:662
 msgid "library.detail.unmatchedShort"
 msgstr "未匹配"
 
@@ -537,7 +541,7 @@ msgstr "编辑媒体库"
 
 #: src/pages/LibrariesPage.tsx:1010
 #: src/pages/LibrariesPage.tsx:2723
-#: src/pages/LibraryDetailPage.tsx:1037
+#: src/pages/LibraryDetailPage.tsx:1056
 msgid "library.enabled"
 msgstr "启用"
 
@@ -579,14 +583,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:172
-#: src/pages/LibraryDetailPage.tsx:1287
+#: src/pages/LibraryDetailPage.tsx:1306
 msgid "library.matching"
 msgstr "匹配中..."
 
 #: src/pages/LibrariesPage.tsx:982
 #: src/pages/LibrariesPage.tsx:1872
 #: src/pages/LibrariesPage.tsx:2247
-#: src/pages/LibraryDetailPage.tsx:1010
+#: src/pages/LibraryDetailPage.tsx:1029
 msgid "library.name"
 msgstr "名称"
 
@@ -597,7 +601,7 @@ msgid "library.nameRequired"
 msgstr "请输入名称"
 
 #: src/pages/LibrariesPage.tsx:146
-#: src/pages/LibraryDetailPage.tsx:1221
+#: src/pages/LibraryDetailPage.tsx:1240
 msgid "library.neverScanned"
 msgstr "未扫描"
 
@@ -662,14 +666,14 @@ msgid "library.s3.secretKey"
 msgstr "密钥"
 
 #: src/pages/LibrariesPage.tsx:3108
-#: src/pages/LibraryDetailPage.tsx:1065
+#: src/pages/LibraryDetailPage.tsx:1084
 msgid "library.saveChanges"
 msgstr "保存更改"
 
 #: src/pages/LibrariesPage.tsx:1514
 #: src/pages/LibrariesPage.tsx:2280
 #: src/pages/LibrariesPage.tsx:2748
-#: src/pages/LibraryDetailPage.tsx:1064
+#: src/pages/LibraryDetailPage.tsx:1083
 msgid "library.saving"
 msgstr "保存中…"
 
@@ -679,13 +683,13 @@ msgstr "扫描"
 
 #: src/pages/LibrariesPage.tsx:1484
 #: src/pages/LibrariesPage.tsx:2705
-#: src/pages/LibraryDetailPage.tsx:1023
+#: src/pages/LibraryDetailPage.tsx:1042
 msgid "library.scanInterval"
 msgstr "扫描间隔（分钟）"
 
 #: src/pages/LibrariesPage.tsx:170
 #: src/pages/LibrariesPage.tsx:206
-#: src/pages/LibraryDetailPage.tsx:1298
+#: src/pages/LibraryDetailPage.tsx:1317
 msgid "library.scanning"
 msgstr "扫描中"
 
@@ -779,11 +783,11 @@ msgstr "媒体库已添加"
 msgid "library.toast.deleted"
 msgstr "媒体库已删除"
 
-#: src/pages/LibraryDetailPage.tsx:1126
+#: src/pages/LibraryDetailPage.tsx:1145
 msgid "library.toast.matchFailed"
 msgstr "自动匹配失败"
 
-#: src/pages/LibraryDetailPage.tsx:1123
+#: src/pages/LibraryDetailPage.tsx:1142
 msgid "library.toast.matchStarted"
 msgstr "开始自动匹配"
 
@@ -792,16 +796,16 @@ msgstr "开始自动匹配"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "扫描完成"
 
-#: src/pages/LibraryDetailPage.tsx:1116
+#: src/pages/LibraryDetailPage.tsx:1135
 msgid "library.toast.scanFailed"
 msgstr "扫描失败"
 
-#: src/pages/LibraryDetailPage.tsx:1113
+#: src/pages/LibraryDetailPage.tsx:1132
 msgid "library.toast.scanStarted"
 msgstr ""
 
 #: src/pages/LibrariesPage.tsx:2901
-#: src/pages/LibraryDetailPage.tsx:992
+#: src/pages/LibraryDetailPage.tsx:1011
 msgid "library.toast.updated"
 msgstr "媒体库已更新"
 
@@ -1062,15 +1066,15 @@ msgstr "上一页"
 msgid "pagination.rows"
 msgstr "每页"
 
-#: src/pages/LibraryDetailPage.tsx:1320
+#: src/pages/LibraryDetailPage.tsx:1339
 msgid "scan.phase.hashing"
 msgstr "计算哈希中..."
 
-#: src/pages/LibraryDetailPage.tsx:1321
+#: src/pages/LibraryDetailPage.tsx:1340
 msgid "scan.phase.matching"
 msgstr "匹配动画中..."
 
-#: src/pages/LibraryDetailPage.tsx:1318
+#: src/pages/LibraryDetailPage.tsx:1337
 msgid "scan.phase.scanning"
 msgstr "扫描文件中..."
 
@@ -1078,7 +1082,7 @@ msgstr "扫描文件中..."
 msgid "scan.scanAll"
 msgstr "全部扫描"
 
-#: src/pages/LibraryDetailPage.tsx:438
+#: src/pages/LibraryDetailPage.tsx:457
 #: src/pages/SchedulePage.tsx:541
 msgid "schedule.all"
 msgstr "全部"
