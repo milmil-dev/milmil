@@ -116,11 +116,11 @@ export const libraryApi = {
     api.put<Library>(`/api/v1/libraries/${id}`, input),
   delete: (id: string) => api.delete<void>(`/api/v1/libraries/${id}`),
   scan: (id: string) => api.post<void>(`/api/v1/libraries/${id}/scan`),
+  matchLibrary: (id: string) => api.post<void>(`/api/v1/libraries/${id}/match`),
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
   testConnection: (input: TestConnectionInput) =>
     api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
-  browse: (input: BrowseInput) =>
-    api.post<BrowseResult>('/api/v1/libraries/browse', input),
+  browse: (input: BrowseInput) => api.post<BrowseResult>('/api/v1/libraries/browse', input),
   mediaFiles: (id: string, params: MediaFilesParams = {}) => {
     const searchParams = new URLSearchParams();
     if (params.status) searchParams.set('status', params.status);
@@ -134,7 +134,8 @@ export const libraryApi = {
     api.put<MediaFileEntry>(`/api/v1/media-files/${fileId}/match`, body),
   unmatchFile: (fileId: string) => api.delete<void>(`/api/v1/media-files/${fileId}/match`),
   discoverNetwork: () => api.get<{ hosts: DiscoveredHost[] }>('/api/v1/libraries/discover-network'),
-  listRcloneRemotes: () => api.get<{ remotes: { name: string; type: string }[] }>('/api/v1/rclone/remotes'),
+  listRcloneRemotes: () =>
+    api.get<{ remotes: { name: string; type: string }[] }>('/api/v1/rclone/remotes'),
 };
 
 export const libraryKeys = {

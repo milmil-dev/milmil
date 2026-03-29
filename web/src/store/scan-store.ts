@@ -21,10 +21,7 @@ interface ScanStore {
   clearCompleted: () => void;
 }
 
-const createInitialProgress = (
-  libraryId: string,
-  libraryName: string,
-): ScanProgress => ({
+const createInitialProgress = (libraryId: string, libraryName: string): ScanProgress => ({
   libraryId,
   libraryName,
   phase: 'scanning',
@@ -35,6 +32,14 @@ const createInitialProgress = (
   currentFile: '',
 });
 
+function getStringField(data: Record<string, unknown>, camelKey: string, snakeKey: string) {
+  return (data[camelKey] as string | undefined) ?? (data[snakeKey] as string | undefined);
+}
+
+function getNumberField(data: Record<string, unknown>, camelKey: string, snakeKey: string) {
+  return (data[camelKey] as number | undefined) ?? (data[snakeKey] as number | undefined);
+}
+
 export const useScanStore = create<ScanStore>()(
   devtools(
     (set, get) => ({
@@ -42,7 +47,8 @@ export const useScanStore = create<ScanStore>()(
 
       handleEvent: (event) => {
         const { type, data } = event;
-        const libraryId = data.libraryId as string;
+        const libraryId = getStringField(data, 'libraryId', 'library_id');
+        if (!libraryId) return;
 
         switch (type) {
           case 'scan:started': {
@@ -52,12 +58,12 @@ export const useScanStore = create<ScanStore>()(
                   ...state.scans,
                   [libraryId]: createInitialProgress(
                     libraryId,
-                    (data.libraryName as string) ?? '',
+                    getStringField(data, 'libraryName', 'library_name') ?? ''
                   ),
                 },
               }),
               false,
-              'scan/started',
+              'scan/started'
             );
             break;
           }
@@ -71,14 +77,16 @@ export const useScanStore = create<ScanStore>()(
                     ...state.scans,
                     [libraryId]: {
                       ...existing,
-                      filesFound: (data.filesFound as number) ?? existing.filesFound,
-                      currentFile: (data.currentFile as string) ?? existing.currentFile,
+                      filesFound:
+                        getNumberField(data, 'filesFound', 'files_found') ?? existing.filesFound,
+                      currentFile:
+                        getStringField(data, 'currentFile', 'current_file') ?? existing.currentFile,
                     },
                   },
                 };
               },
               false,
-              'scan/progress',
+              'scan/progress'
             );
             break;
           }
@@ -93,15 +101,18 @@ export const useScanStore = create<ScanStore>()(
                     [libraryId]: {
                       ...existing,
                       phase: 'hashing',
-                      filesHashed: (data.filesHashed as number) ?? existing.filesHashed,
-                      filesTotal: (data.filesTotal as number) ?? existing.filesTotal,
-                      currentFile: (data.currentFile as string) ?? existing.currentFile,
+                      filesHashed:
+                        getNumberField(data, 'filesHashed', 'files_hashed') ?? existing.filesHashed,
+                      filesTotal:
+                        getNumberField(data, 'filesTotal', 'files_total') ?? existing.filesTotal,
+                      currentFile:
+                        getStringField(data, 'currentFile', 'current_file') ?? existing.currentFile,
                     },
                   },
                 };
               },
               false,
-              'scan/hash',
+              'scan/hash'
             );
             break;
           }
@@ -116,15 +127,59 @@ export const useScanStore = create<ScanStore>()(
                     [libraryId]: {
                       ...existing,
                       phase: 'matching',
-                      filesMatched: (data.filesMatched as number) ?? existing.filesMatched,
-                      filesTotal: (data.filesTotal as number) ?? existing.filesTotal,
-                      currentFile: (data.currentFile as string) ?? existing.currentFile,
+                      filesMatched:
+                        getNumberField(data, 'filesMatched', 'files_matched') ??
+                        existing.filesMatched,
+                      filesTotal:
+                        getNumberField(data, 'filesTotal', 'files_total') ?? existing.filesTotal,
+                      currentFile:
+                        getStringField(data, 'currentFile', 'current_file') ?? existing.currentFile,
                     },
                   },
                 };
               },
               false,
-              'scan/matchProgress',
+              'scan/matchProgress'
+            );
+            break;
+          }
+          case 'match:started': {
+            set(
+              (state) => ({
+                scans: {
+                  ...state.scans,
+                  [libraryId]: {
+                    ...(state.scans[libraryId] ?? createInitialProgress(
+                      libraryId,
+                      getStringField(data, 'libraryName', 'library_name') ?? ''
+                    )),
+                    phase: 'matching',
+                  },
+                },
+              }),
+              false,
+              'match/started'
+            );
+            break;
+          }
+          case 'match:completed': {
+            set(
+              (state) => {
+                const existing = state.scans[libraryId];
+                if (!existing) return state;
+                return {
+                  scans: {
+                    ...state.scans,
+                    [libraryId]: {
+                      ...existing,
+                      phase: 'completed',
+                      currentFile: '',
+                    },
+                  },
+                };
+              },
+              false,
+              'match/completed'
             );
             break;
           }
@@ -145,7 +200,7 @@ export const useScanStore = create<ScanStore>()(
                 };
               },
               false,
-              'scan/completed',
+              'scan/completed'
             );
             break;
           }
@@ -160,14 +215,14 @@ export const useScanStore = create<ScanStore>()(
                     [libraryId]: {
                       ...existing,
                       phase: 'error',
-                      error: (data.error as string) ?? 'Unknown error',
+                      error: getStringField(data, 'error', 'error') ?? 'Unknown error',
                       currentFile: '',
                     },
                   },
                 };
               },
               false,
-              'scan/error',
+              'scan/error'
             );
             break;
           }
@@ -195,10 +250,10 @@ export const useScanStore = create<ScanStore>()(
             return { scans };
           },
           false,
-          'scan/clearCompleted',
+          'scan/clearCompleted'
         );
       },
     }),
-    { name: 'scan' },
-  ),
+    { name: 'scan' }
+  )
 );
