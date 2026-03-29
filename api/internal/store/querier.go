@@ -38,6 +38,7 @@ type Querier interface {
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
 	GetEpisode(ctx context.Context, id string) (Episode, error)
+	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error)
@@ -50,7 +51,10 @@ type Querier interface {
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
+	ListAllUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
+	ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
+	ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListCompletedWatchProgress(ctx context.Context, userID string) ([]WatchProgress, error)
 	ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
@@ -69,11 +73,14 @@ type Querier interface {
 	ListTranscodeSessionsByFile(ctx context.Context, mediaFileID string) ([]TranscodeSession, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
+	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
 	UpdateDownloadRuleTriggered(ctx context.Context, id string) error
 	UpdateDownloadStatus(ctx context.Context, arg UpdateDownloadStatusParams) error
+	UpdateEpisodeTMDBMetadata(ctx context.Context, arg UpdateEpisodeTMDBMetadataParams) error
 	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
 	UpdateLibraryLastScanned(ctx context.Context, id string) error
+	UpdateMediaFileBangumiIDs(ctx context.Context, arg UpdateMediaFileBangumiIDsParams) error
 	UpdateMediaFileDandanplayID(ctx context.Context, arg UpdateMediaFileDandanplayIDParams) error
 	UpdateMediaFileDandanplayIDs(ctx context.Context, arg UpdateMediaFileDandanplayIDsParams) error
 	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error

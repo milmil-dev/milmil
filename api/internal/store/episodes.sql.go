@@ -15,7 +15,7 @@ INSERT INTO episodes (id, anime_id, episode_number, title, title_zh, air_date,
     dandanplay_episode_id, bangumi_episode_id, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?,
     strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at
+RETURNING id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh
 `
 
 type CreateEpisodeParams struct {
@@ -55,12 +55,13 @@ func (q *Queries) CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (E
 		&i.MalEpisodeID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SynopsisZh,
 	)
 	return i, err
 }
 
 const getEpisode = `-- name: GetEpisode :one
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at FROM episodes WHERE id = ? LIMIT 1
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetEpisode(ctx context.Context, id string) (Episode, error) {
@@ -80,12 +81,44 @@ func (q *Queries) GetEpisode(ctx context.Context, id string) (Episode, error) {
 		&i.MalEpisodeID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SynopsisZh,
+	)
+	return i, err
+}
+
+const getEpisodeByAnimeAndNumber = `-- name: GetEpisodeByAnimeAndNumber :one
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE anime_id = ? AND episode_number = ? LIMIT 1
+`
+
+type GetEpisodeByAnimeAndNumberParams struct {
+	AnimeID       string  `json:"anime_id"`
+	EpisodeNumber float64 `json:"episode_number"`
+}
+
+func (q *Queries) GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error) {
+	row := q.db.QueryRowContext(ctx, getEpisodeByAnimeAndNumber, arg.AnimeID, arg.EpisodeNumber)
+	var i Episode
+	err := row.Scan(
+		&i.ID,
+		&i.AnimeID,
+		&i.EpisodeNumber,
+		&i.Title,
+		&i.TitleZh,
+		&i.AirDate,
+		&i.Synopsis,
+		&i.ThumbnailUrl,
+		&i.DandanplayEpisodeID,
+		&i.BangumiEpisodeID,
+		&i.MalEpisodeID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SynopsisZh,
 	)
 	return i, err
 }
 
 const getEpisodeByDandanplayID = `-- name: GetEpisodeByDandanplayID :one
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at FROM episodes WHERE dandanplay_episode_id = ? LIMIT 1
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE dandanplay_episode_id = ? LIMIT 1
 `
 
 func (q *Queries) GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error) {
@@ -105,12 +138,13 @@ func (q *Queries) GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisod
 		&i.MalEpisodeID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SynopsisZh,
 	)
 	return i, err
 }
 
 const listEpisodesByAnimeID = `-- name: ListEpisodesByAnimeID :many
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at FROM episodes WHERE anime_id = ? ORDER BY episode_number
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE anime_id = ? ORDER BY episode_number
 `
 
 func (q *Queries) ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error) {
@@ -136,6 +170,7 @@ func (q *Queries) ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]
 			&i.MalEpisodeID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.SynopsisZh,
 		); err != nil {
 			return nil, err
 		}
@@ -148,4 +183,30 @@ func (q *Queries) ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateEpisodeTMDBMetadata = `-- name: UpdateEpisodeTMDBMetadata :exec
+UPDATE episodes
+SET synopsis_zh = COALESCE(NULLIF(?, ''), synopsis_zh),
+    title_zh = COALESCE(NULLIF(?, ''), title_zh),
+    thumbnail_url = COALESCE(NULLIF(?, ''), thumbnail_url),
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateEpisodeTMDBMetadataParams struct {
+	NULLIF   interface{} `json:"NULLIF"`
+	NULLIF_2 interface{} `json:"NULLIF_2"`
+	NULLIF_3 interface{} `json:"NULLIF_3"`
+	ID       string      `json:"id"`
+}
+
+func (q *Queries) UpdateEpisodeTMDBMetadata(ctx context.Context, arg UpdateEpisodeTMDBMetadataParams) error {
+	_, err := q.db.ExecContext(ctx, updateEpisodeTMDBMetadata,
+		arg.NULLIF,
+		arg.NULLIF_2,
+		arg.NULLIF_3,
+		arg.ID,
+	)
+	return err
 }

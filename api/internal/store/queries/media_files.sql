@@ -81,3 +81,17 @@ SET dandanplay_anime_id = NULL, dandanplay_episode_id = NULL,
     episode_id = NULL, match_status = 'unmatched',
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = ?;
+
+-- name: ListAllUnmatchedMediaFilesByLibrary :many
+SELECT * FROM media_files
+WHERE library_id = ? AND match_status = 'unmatched';
+
+-- name: UpdateMediaFileBangumiIDs :exec
+UPDATE media_files
+SET bangumi_subject_id = ?, bangumi_episode_id = ?, match_status = 'auto',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?;
+
+-- name: ListBangumiMatchedUnlinkedMediaFiles :many
+SELECT * FROM media_files
+WHERE library_id = ? AND bangumi_subject_id IS NOT NULL AND episode_id IS NULL;

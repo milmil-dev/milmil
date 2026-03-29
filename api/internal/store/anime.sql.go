@@ -148,6 +148,55 @@ func (q *Queries) GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt
 	return i, err
 }
 
+const listAnimeByLibrary = `-- name: ListAnimeByLibrary :many
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at FROM anime WHERE library_id = ?
+`
+
+func (q *Queries) ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error) {
+	rows, err := q.db.QueryContext(ctx, listAnimeByLibrary, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Anime{}
+	for rows.Next() {
+		var i Anime
+		if err := rows.Scan(
+			&i.ID,
+			&i.LibraryID,
+			&i.Title,
+			&i.TitleZh,
+			&i.TitleEn,
+			&i.Synopsis,
+			&i.CoverImageUrl,
+			&i.TotalEpisodes,
+			&i.Status,
+			&i.AirDate,
+			&i.Year,
+			&i.Season,
+			&i.Genres,
+			&i.IsCustom,
+			&i.AnilistID,
+			&i.BangumiID,
+			&i.DandanplayBangumiID,
+			&i.MalID,
+			&i.TmdbID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listAnimeByLibraryID = `-- name: ListAnimeByLibraryID :many
 SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at FROM anime WHERE library_id = ? ORDER BY title
 `
@@ -195,4 +244,18 @@ func (q *Queries) ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullSt
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateAnimeTMDBID = `-- name: UpdateAnimeTMDBID :exec
+UPDATE anime SET tmdb_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+type UpdateAnimeTMDBIDParams struct {
+	TmdbID sql.NullInt64 `json:"tmdb_id"`
+	ID     string        `json:"id"`
+}
+
+func (q *Queries) UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error {
+	_, err := q.db.ExecContext(ctx, updateAnimeTMDBID, arg.TmdbID, arg.ID)
+	return err
 }

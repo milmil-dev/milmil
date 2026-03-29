@@ -74,6 +74,7 @@ type Episode struct {
 	MalEpisodeID        sql.NullInt64  `json:"mal_episode_id"`
 	CreatedAt           string         `json:"created_at"`
 	UpdatedAt           string         `json:"updated_at"`
+	SynopsisZh          sql.NullString `json:"synopsis_zh"`
 }
 
 type Library struct {
@@ -111,6 +112,8 @@ type MediaFile struct {
 	CreatedAt           string         `json:"created_at"`
 	UpdatedAt           string         `json:"updated_at"`
 	DandanplayAnimeID   sql.NullInt64  `json:"dandanplay_anime_id"`
+	BangumiSubjectID    sql.NullInt64  `json:"bangumi_subject_id"`
+	BangumiEpisodeID    sql.NullInt64  `json:"bangumi_episode_id"`
 }
 
 type Playlist struct {

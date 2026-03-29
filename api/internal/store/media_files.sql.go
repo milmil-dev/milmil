@@ -73,7 +73,7 @@ func (q *Queries) DeleteMediaFile(ctx context.Context, path string) error {
 }
 
 const getMediaFileByID = `-- name: GetMediaFileByID :one
-SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id FROM media_files WHERE id = ? LIMIT 1
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetMediaFileByID(ctx context.Context, id string) (MediaFile, error) {
@@ -101,12 +101,118 @@ func (q *Queries) GetMediaFileByID(ctx context.Context, id string) (MediaFile, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DandanplayAnimeID,
+		&i.BangumiSubjectID,
+		&i.BangumiEpisodeID,
 	)
 	return i, err
 }
 
+const listAllUnmatchedMediaFilesByLibrary = `-- name: ListAllUnmatchedMediaFilesByLibrary :many
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files
+WHERE library_id = ? AND match_status = 'unmatched'
+`
+
+func (q *Queries) ListAllUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error) {
+	rows, err := q.db.QueryContext(ctx, listAllUnmatchedMediaFilesByLibrary, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MediaFile{}
+	for rows.Next() {
+		var i MediaFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBangumiMatchedUnlinkedMediaFiles = `-- name: ListBangumiMatchedUnlinkedMediaFiles :many
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files
+WHERE library_id = ? AND bangumi_subject_id IS NOT NULL AND episode_id IS NULL
+`
+
+func (q *Queries) ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error) {
+	rows, err := q.db.QueryContext(ctx, listBangumiMatchedUnlinkedMediaFiles, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MediaFile{}
+	for rows.Next() {
+		var i MediaFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMatchedUnlinkedMediaFiles = `-- name: ListMatchedUnlinkedMediaFiles :many
-SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id FROM media_files
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files
 WHERE library_id = ? AND dandanplay_episode_id IS NOT NULL AND episode_id IS NULL
 `
 
@@ -141,6 +247,8 @@ func (q *Queries) ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID s
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
 		); err != nil {
 			return nil, err
 		}
@@ -183,7 +291,7 @@ func (q *Queries) ListMediaFilePathsByLibrary(ctx context.Context, libraryID str
 }
 
 const listMediaFilesByLibrary = `-- name: ListMediaFilesByLibrary :many
-SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.duration_seconds, mf.container_format, mf.video_codec, mf.audio_codec, mf.width, mf.height, mf.file_hash, mf.dandanplay_episode_id, mf.match_status, mf.video_tracks, mf.audio_tracks, mf.subtitle_tracks, mf.created_at, mf.updated_at, mf.dandanplay_anime_id,
+SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.duration_seconds, mf.container_format, mf.video_codec, mf.audio_codec, mf.width, mf.height, mf.file_hash, mf.dandanplay_episode_id, mf.match_status, mf.video_tracks, mf.audio_tracks, mf.subtitle_tracks, mf.created_at, mf.updated_at, mf.dandanplay_anime_id, mf.bangumi_subject_id, mf.bangumi_episode_id,
        COALESCE(e.title, '') AS matched_anime_title,
        COALESCE(e.episode_number, 0) AS matched_episode_sort,
        (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
@@ -228,6 +336,8 @@ type ListMediaFilesByLibraryRow struct {
 	CreatedAt           string         `json:"created_at"`
 	UpdatedAt           string         `json:"updated_at"`
 	DandanplayAnimeID   sql.NullInt64  `json:"dandanplay_anime_id"`
+	BangumiSubjectID    sql.NullInt64  `json:"bangumi_subject_id"`
+	BangumiEpisodeID    sql.NullInt64  `json:"bangumi_episode_id"`
 	MatchedAnimeTitle   string         `json:"matched_anime_title"`
 	MatchedEpisodeSort  float64        `json:"matched_episode_sort"`
 	SubtitleCount       int64          `json:"subtitle_count"`
@@ -272,6 +382,8 @@ func (q *Queries) ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFile
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
 			&i.MatchedAnimeTitle,
 			&i.MatchedEpisodeSort,
 			&i.SubtitleCount,
@@ -290,7 +402,7 @@ func (q *Queries) ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFile
 }
 
 const listUnmatchedMediaFilesByLibrary = `-- name: ListUnmatchedMediaFilesByLibrary :many
-SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id FROM media_files
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files
 WHERE library_id = ? AND match_status = 'unmatched' AND file_hash IS NOT NULL
 `
 
@@ -325,6 +437,8 @@ func (q *Queries) ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryI
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
 		); err != nil {
 			return nil, err
 		}
@@ -337,6 +451,24 @@ func (q *Queries) ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryI
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateMediaFileBangumiIDs = `-- name: UpdateMediaFileBangumiIDs :exec
+UPDATE media_files
+SET bangumi_subject_id = ?, bangumi_episode_id = ?, match_status = 'auto',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateMediaFileBangumiIDsParams struct {
+	BangumiSubjectID sql.NullInt64 `json:"bangumi_subject_id"`
+	BangumiEpisodeID sql.NullInt64 `json:"bangumi_episode_id"`
+	ID               string        `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFileBangumiIDs(ctx context.Context, arg UpdateMediaFileBangumiIDsParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFileBangumiIDs, arg.BangumiSubjectID, arg.BangumiEpisodeID, arg.ID)
+	return err
 }
 
 const updateMediaFileDandanplayID = `-- name: UpdateMediaFileDandanplayID :exec
@@ -431,7 +563,7 @@ ON CONFLICT(path) DO UPDATE SET
     filename   = excluded.filename,
     size_bytes = excluded.size_bytes,
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
-RETURNING id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id
+RETURNING id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id
 `
 
 type UpsertMediaFileParams struct {
@@ -473,6 +605,8 @@ func (q *Queries) UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DandanplayAnimeID,
+		&i.BangumiSubjectID,
+		&i.BangumiEpisodeID,
 	)
 	return i, err
 }
