@@ -276,7 +276,8 @@ function FileTable({
       },
       {
         id: "matched",
-        header: () => i18n._(msg`library.detail.col.matchedTo`),
+        header: () => i18n._(msg`library.detail.col.matchedAnime`),
+        meta: { width: 300 },
         cell: ({ row }) => {
           const file = row.original
           if (file.matched_anime_title && file.matched_episode_sort > 0) {
