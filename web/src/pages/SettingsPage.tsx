@@ -204,14 +204,18 @@ function PlayerSection() {
     <Section title={i18n._(msg`settings.player.title`)} delay={0.08}>
       {/* Danmaku enabled */}
       <div className="flex items-center justify-between">
-        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuEnabled`)}</Label>
+        <Label className="text-sm text-mm-text-secondary">
+          {i18n._(msg`settings.player.danmakuEnabled`)}
+        </Label>
         <Switch checked={enabled} onCheckedChange={setEnabled} />
       </div>
 
       {/* Danmaku opacity */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuOpacity`)}</Label>
+          <Label className="text-sm text-mm-text-secondary">
+            {i18n._(msg`settings.player.danmakuOpacity`)}
+          </Label>
           <span className="text-xs text-mm-text-tertiary tabular-nums">{opacity}%</span>
         </div>
         <input
@@ -229,13 +233,17 @@ function PlayerSection() {
 
       {/* Danmaku font size */}
       <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuFontSize`)}</Label>
+        <Label className="text-sm text-mm-text-secondary">
+          {i18n._(msg`settings.player.danmakuFontSize`)}
+        </Label>
         <SelectorGroup options={[...FONT_SIZE_OPTIONS]} value={fontSize} onChange={setFontSize} />
       </div>
 
       {/* Danmaku speed */}
       <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.player.danmakuSpeed`)}</Label>
+        <Label className="text-sm text-mm-text-secondary">
+          {i18n._(msg`settings.player.danmakuSpeed`)}
+        </Label>
         <SelectorGroup options={[...SPEED_OPTIONS]} value={speed} onChange={setSpeed} />
       </div>
 
@@ -277,7 +285,9 @@ function AppearanceSection() {
   return (
     <Section title={i18n._(msg`settings.appearance.title`)} delay={0.16}>
       <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">{i18n._(msg`settings.appearance.language`)}</Label>
+        <Label className="text-sm text-mm-text-secondary">
+          {i18n._(msg`settings.appearance.language`)}
+        </Label>
         <SelectorGroup
           options={availableLanguages.map((l) => ({ label: l.label, value: l.code }))}
           value={currentLang}
@@ -354,7 +364,9 @@ function IntegrationSection({
         `/api/v1/integrations/${provider}/sync`
       ),
     onSuccess: (data) => {
-      toast.success(`${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.synced)} / ${String(data.errors)} ${i18n._(msg`settings.integration.syncErrors`)}`);
+      toast.success(
+        `${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.synced)} / ${String(data.errors)} ${i18n._(msg`settings.integration.syncErrors`)}`
+      );
     },
     onError: () => toast.error(i18n._(msg`settings.integration.syncFailed`)),
   });
@@ -412,20 +424,26 @@ function IntegrationSection({
             variant="outline"
             className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
           >
-            {connectMutation.isPending ? i18n._(msg`settings.integration.connecting`) : i18n._(msg`settings.integration.connect`)}
+            {connectMutation.isPending
+              ? i18n._(msg`settings.integration.connecting`)
+              : i18n._(msg`settings.integration.connect`)}
           </Button>
         )}
 
         {isConnected && (
           <>
-            <span className="text-xs font-bold text-green-400">{i18n._(msg`settings.integration.connected`)}</span>
+            <span className="text-xs font-bold text-green-400">
+              {i18n._(msg`settings.integration.connected`)}
+            </span>
             <Button
               onClick={() => disconnectMutation.mutate()}
               disabled={disconnectMutation.isPending}
               variant="outline"
               className="font-bold border-[oklch(30%_0.01_280)] text-red-400 hover:bg-[oklch(20%_0.01_280)]"
             >
-              {disconnectMutation.isPending ? i18n._(msg`settings.integration.disconnecting`) : i18n._(msg`settings.integration.disconnect`)}
+              {disconnectMutation.isPending
+                ? i18n._(msg`settings.integration.disconnecting`)
+                : i18n._(msg`settings.integration.disconnect`)}
             </Button>
             <Button
               onClick={() => syncMutation.mutate()}
@@ -433,10 +451,61 @@ function IntegrationSection({
               variant="outline"
               className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
             >
-              {syncMutation.isPending ? i18n._(msg`settings.integration.syncing`) : i18n._(msg`settings.integration.sync`)}
+              {syncMutation.isPending
+                ? i18n._(msg`settings.integration.syncing`)
+                : i18n._(msg`settings.integration.sync`)}
             </Button>
           </>
         )}
+      </div>
+    </Section>
+  );
+}
+
+// ─── Collection Section ──────────────────────────────────────────────────────
+function CollectionSection() {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+
+  const { data: settings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get<Record<string, any>>('/api/v1/settings'),
+  });
+
+  const [autoAdd, setAutoAdd] = useState(true);
+
+  useEffect(() => {
+    if (settings?.collection) {
+      setAutoAdd(settings.collection.auto_add_to_collection ?? true);
+    }
+  }, [settings?.collection]);
+
+  const updateCollectionSettings = useMutation({
+    mutationFn: (data: { auto_add_to_collection: boolean }) =>
+      api.put('/api/v1/settings/collection', data),
+    onSuccess: () => {
+      toast.success(i18n._(msg`settings.saved`));
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    },
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
+  });
+
+  return (
+    <Section title={i18n._(msg`settings.collection`)} delay={0.24}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-white/80">{i18n._(msg`settings.autoAddToCollection`)}</p>
+          <p className="text-xs text-white/40 mt-0.5">
+            {i18n._(msg`settings.autoAddToCollectionDesc`)}
+          </p>
+        </div>
+        <Switch
+          checked={autoAdd}
+          onCheckedChange={(checked) => {
+            setAutoAdd(checked);
+            updateCollectionSettings.mutate({ auto_add_to_collection: checked });
+          }}
+        />
       </div>
     </Section>
   );
@@ -451,7 +520,9 @@ export function SettingsPage() {
         {/* Header */}
         <div className="px-8 pt-12 pb-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">milmil</p>
-          <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">{i18n._(msg`settings.pageTitle`)}</h1>
+          <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">
+            {i18n._(msg`settings.pageTitle`)}
+          </h1>
         </div>
 
         {/* Sections */}
@@ -461,6 +532,7 @@ export function SettingsPage() {
           <IntegrationSection provider="anilist" label="AniList" delay={0.08} />
           <PlayerSection />
           <AppearanceSection />
+          <CollectionSection />
         </div>
       </div>
     </PageTransition>
