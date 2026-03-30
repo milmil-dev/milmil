@@ -28,7 +28,10 @@ function getRelationLabel(type: string, locale: string): string {
 }
 
 import { Button } from '../components/ui/button';
+import { animeApi, animeKeys } from '../lib/api/anime';
+import type { PlayableEpisode } from '../lib/api/anime';
 import { animeGradient } from '../lib/gradient';
+import { useAuth } from '../hooks/use-auth';
 import { useBgStore } from '../store/bg-store';
 
 export function AnimeDetailPage() {
@@ -51,6 +54,14 @@ export function AnimeDetailPage() {
     queryKey: discoverKeys.episodes(numericId),
     queryFn: () => discoverApi.episodes(numericId),
     enabled: !Number.isNaN(numericId),
+  });
+
+  const { isAuthenticated } = useAuth();
+
+  const { data: playableData } = useQuery({
+    queryKey: animeKeys.playableEpisodes(numericId),
+    queryFn: () => animeApi.playableEpisodes(numericId),
+    enabled: !Number.isNaN(numericId) && isAuthenticated,
   });
 
   const { data: comments = [] } = useQuery({
@@ -110,6 +121,22 @@ export function AnimeDetailPage() {
   }
 
   const hasCover = anime.cover_image?.startsWith('http');
+
+  const episodeList: PlayableEpisode[] =
+    playableData?.episodes ??
+    episodes?.map((e) => ({
+      episode_id: '',
+      sort: e.sort,
+      title: e.title,
+      title_zh: null,
+      air_date: e.air_date ?? null,
+      synopsis: e.synopsis ?? null,
+      synopsis_zh: null,
+      image: e.image ?? null,
+      media_file: null,
+      progress: null,
+    })) ??
+    [];
 
   return (
     <PageTransition>
@@ -256,7 +283,7 @@ export function AnimeDetailPage() {
         </div>
 
         {/* Trailer + Episodes */}
-        {(episodes.length > 0 || anime.trailer_url) && (
+        {(episodeList.length > 0 || anime.trailer_url) && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -265,32 +292,39 @@ export function AnimeDetailPage() {
           >
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Episodes — left column */}
-              {episodes.length > 0 && (
+              {episodeList.length > 0 && (
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-3 mb-4">
                     <h2 className="text-lg font-bold text-white">{i18n._(msg`anime.episodes`)}</h2>
                     <span className="text-[13px] text-mm-text-muted tabular-nums">
-                      {episodes.length} {i18n._(msg`common.ep`)}
+                      {episodeList.length} {i18n._(msg`common.ep`)}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
-                    {episodes.map((ep, idx) => (
+                    {episodeList.map((ep, idx) => (
                       <motion.div
-                        key={ep.bangumi_episode_id}
+                        key={ep.episode_id || `ep-${ep.sort}`}
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.02, duration: 0.25 }}
                       >
                         <EpisodeListItem
                           sort={ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
-                          title={ep.title}
-                          titleOriginal={ep.title_original}
-                          synopsis={ep.synopsis}
-                          image={ep.image}
-                          duration={ep.duration}
+                          title={ep.title_zh || ep.title || `Episode ${ep.sort}`}
+                          titleOriginal={ep.title ?? undefined}
+                          synopsis={(ep.synopsis_zh || ep.synopsis) ?? undefined}
+                          image={ep.image ?? undefined}
+                          airDate={ep.air_date ?? undefined}
                           isActive={false}
-                          href={`/anime/${numericId}`}
-                          airDate={ep.air_date}
+                          href={ep.media_file ? `/watch/${ep.media_file.id}` : '#'}
+                          hasFile={!!ep.media_file}
+                          fileQuality={ep.media_file?.height ? `${ep.media_file.height}p` : undefined}
+                          progress={
+                            ep.progress && ep.progress.duration_seconds > 0
+                              ? ep.progress.position_seconds / ep.progress.duration_seconds
+                              : undefined
+                          }
+                          completed={ep.progress?.completed}
                         />
                       </motion.div>
                     ))}
