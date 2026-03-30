@@ -1393,3 +1393,15 @@ msgstr "Auto-add matched anime"
 
 msgid "settings.autoAddToCollectionDesc"
 msgstr "Automatically add newly matched anime to your collection"
+
+msgid "anime.continueWatching"
+msgstr "Continue Watching"
+
+msgid "anime.episode"
+msgstr "Episode"
+
+msgid "anime.noLocalFile"
+msgstr "No local file"
+
+msgid "anime.season"
+msgstr "Season"

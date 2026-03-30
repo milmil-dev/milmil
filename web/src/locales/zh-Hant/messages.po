@@ -1391,3 +1391,15 @@ msgstr "自動加入收藏"
 
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配的動畫自動加入收藏"
+
+msgid "anime.continueWatching"
+msgstr "繼續觀看"
+
+msgid "anime.episode"
+msgstr "第"
+
+msgid "anime.noLocalFile"
+msgstr "無本地文件"
+
+msgid "anime.season"
+msgstr "季"
