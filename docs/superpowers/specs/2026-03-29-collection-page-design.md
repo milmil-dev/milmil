@@ -11,6 +11,7 @@ Add a `/collection` route as the user's anime collection hub. Displays all match
 - **Watch status**: Local `watch_status` field on `anime` table, manual user control, future Bangumi bidirectional sync
 - **Libraries preview**: Recently matched anime (by match time), horizontal scroll, max 10 items
 - **Naming**: "Collection" / 收藏
+- **Auto-add**: Matched anime automatically added to Collection (default on), can be disabled in Settings
 
 ## 1. Data Layer
 
@@ -169,7 +170,19 @@ collection.sortBy.name = 名稱
 collection.sortBy.score = 評分
 ```
 
-## 6. Future Extension Points
+## 6. Settings
+
+Add to Settings page under a new "Collection" section:
+
+| Setting | Key | Default | Description |
+|---------|-----|---------|-------------|
+| Auto-add matched anime | `auto_add_to_collection` | `true` | When enabled, newly matched anime are automatically added to Collection with "watching" status. When disabled, matched anime only appear in library file tables but not in Collection until manually added. |
+
+- Stored in the existing settings/config mechanism
+- When disabled, the Collection page shows an "Add" action on anime detail pages so users can manually curate
+- Existing anime already in Collection are not affected by toggling this setting
+
+## 7. Future Extension Points
 
 - **Bangumi account binding**: After OAuth integration, `watch_status` syncs bidirectionally with Bangumi's collection API
 - **External-only entries**: Anime tracked on Bangumi but without local files can appear in Collection with a "no local files" indicator

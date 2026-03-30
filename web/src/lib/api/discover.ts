@@ -74,11 +74,14 @@ export const discoverApi = {
   search: (q: string) =>
     api.get<AnimeSummary[]>(`/api/v1/discover/search?q=${encodeURIComponent(q)}`),
   browse: (genre: string, page = 1) =>
-    api.get<AnimeSummary[]>(`/api/v1/discover/browse?genre=${encodeURIComponent(genre)}&page=${page}`),
+    api.get<AnimeSummary[]>(
+      `/api/v1/discover/browse?genre=${encodeURIComponent(genre)}&page=${page}`
+    ),
   detail: (id: number) => api.get<AnimeDetail>(`/api/v1/discover/anime/${id}`),
   episodes: (id: number) => api.get<Episode[]>(`/api/v1/discover/anime/${id}/episodes`),
   comments: (id: number) => api.get<BangumiComment[]>(`/api/v1/discover/anime/${id}/comments`),
-  resolve: (anilistId: number) => api.get<{ bangumi_id: number }>(`/api/v1/discover/resolve?anilist_id=${anilistId}`),
+  resolve: (anilistId: number) =>
+    api.get<{ bangumi_id: number }>(`/api/v1/discover/resolve?anilist_id=${anilistId}`),
 };
 
 export const discoverKeys = {

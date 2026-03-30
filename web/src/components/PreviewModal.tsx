@@ -87,13 +87,26 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
               src={bannerSrc}
               alt=""
               className="absolute inset-0 w-full h-full object-cover object-center brightness-[0.6]"
-              style={!hasBanner ? { filter: 'blur(24px) saturate(1.2) brightness(0.6)', transform: 'scale(1.3)' } : undefined}
+              style={
+                !hasBanner
+                  ? { filter: 'blur(24px) saturate(1.2) brightness(0.6)', transform: 'scale(1.3)' }
+                  : undefined
+              }
             />
           ) : (
-            <div className="absolute inset-0" style={{ background: animeGradient(displayAnime.title) }} />
+            <div
+              className="absolute inset-0"
+              style={{ background: animeGradient(displayAnime.title) }}
+            />
           )}
           {/* Gradient fade */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.3) 50%, rgba(10,10,10,0.7) 100%)' }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.3) 50%, rgba(10,10,10,0.7) 100%)',
+            }}
+          />
           {/* Scroll-driven dim overlay */}
           <div ref={dimRef} className="absolute inset-0 bg-black" style={{ opacity: 0 }} />
         </div>
@@ -105,7 +118,14 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
         onClick={onClose}
         className="absolute top-3 right-3 z-[10] w-8 h-8 rounded-full flex items-center justify-center bg-black/40 hover:bg-black/60 backdrop-blur-sm transition-colors text-white/70 hover:text-white cursor-pointer"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M18 6L6 18M6 6l12 12" />
         </svg>
       </button>
@@ -128,7 +148,11 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
                 style={hasCover ? undefined : { background: animeGradient(displayAnime.title) }}
               >
                 {hasCover && (
-                  <img src={displayAnime.cover_image} alt={displayAnime.title} className="w-full h-full object-cover" />
+                  <img
+                    src={displayAnime.cover_image}
+                    alt={displayAnime.title}
+                    className="w-full h-full object-cover"
+                  />
                 )}
               </motion.div>
 
@@ -145,18 +169,28 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
                 {detailLoading ? (
                   <div className="flex flex-wrap gap-1.5">
                     {Array.from({ length: 4 }).map((_, i) => (
-                      <Skeleton key={i} className="h-6 rounded-md" style={{ width: `${52 + (i % 3) * 16}px` }} />
+                      <Skeleton
+                        key={i}
+                        className="h-6 rounded-md"
+                        style={{ width: `${52 + (i % 3) * 16}px` }}
+                      />
                     ))}
                   </div>
-                ) : (genres.length > 0 || tags.length > 0) ? (
+                ) : genres.length > 0 || tags.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">
                     {genres.map((g) => (
-                      <span key={g} className="text-[12px] font-semibold px-2.5 py-1 rounded-md bg-white/[0.06] text-white/70">
+                      <span
+                        key={g}
+                        className="text-[12px] font-semibold px-2.5 py-1 rounded-md bg-white/[0.06] text-white/70"
+                      >
                         {translateGenre(g, i18n.locale)}
                       </span>
                     ))}
                     {tags.slice(0, 6).map((t) => (
-                      <span key={t} className="text-[12px] font-semibold px-2.5 py-1 rounded-md bg-white/[0.06] text-white/70">
+                      <span
+                        key={t}
+                        className="text-[12px] font-semibold px-2.5 py-1 rounded-md bg-white/[0.06] text-white/70"
+                      >
                         {translateGenre(t, i18n.locale)}
                       </span>
                     ))}
@@ -252,7 +286,10 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
             {i18n._(msg`anime.trailer`)}
           </h3>
           <div className="max-w-[320px]">
-            <div className="relative rounded-lg overflow-hidden border border-white/[0.06]" style={{ aspectRatio: '16/9' }}>
+            <div
+              className="relative rounded-lg overflow-hidden border border-white/[0.06]"
+              style={{ aspectRatio: '16/9' }}
+            >
               <iframe
                 src={detail.trailer_url}
                 title={`${info.title} trailer`}
@@ -308,7 +345,9 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
                 className="flex items-center justify-center gap-2 mt-4 py-2.5 rounded-lg bg-white/[0.06] text-[12px] font-semibold text-white/50 hover:bg-white/[0.1] hover:text-white/80 transition-colors"
               >
                 <span>{i18n._(msg`search.loadMore`)}</span>
-                <span className="text-[11px] text-white/30">+{episodes.length - 20} {i18n._(msg`common.ep`)}</span>
+                <span className="text-[11px] text-white/30">
+                  +{episodes.length - 20} {i18n._(msg`common.ep`)}
+                </span>
                 <span>→</span>
               </Link>
             )}

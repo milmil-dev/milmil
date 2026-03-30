@@ -119,7 +119,7 @@ import { AnimeDetailPage } from '@/pages/AnimeDetailPage';
 test('detail page presents title, synopsis, and episode list', () => {
   render(<AnimeDetailPage />);
   expect(screen.getByText('Frieren')).toBeInTheDocument();
-  expect(screen.getByText(/A story about an elf mage/)).toBeInTheDocument();
+  expect(screen.getAllByText(/A story about an elf mage/)[0]).toBeInTheDocument();
   expect(screen.getByText('The Journey Begins')).toBeInTheDocument();
   // Section headings exist (i18n keys rendered via mock)
   const headings = document.querySelectorAll('h2');

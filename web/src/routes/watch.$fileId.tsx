@@ -1,9 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { lazy } from 'react';
 
-const WatchPage = lazy(() =>
-  import('../pages/WatchPage').then((m) => ({ default: m.WatchPage })),
-);
+const WatchPage = lazy(() => import('../pages/WatchPage').then((m) => ({ default: m.WatchPage })));
 
 type WatchSearch = {
   episodeId?: string;

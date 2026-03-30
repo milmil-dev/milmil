@@ -2,11 +2,16 @@
 .env
 .env.local
 *.env.local
+*.env.*
+!.env.example
 
 # Go
-api/vendor/
-api/tmp/
+/api/vendor/
+/api/tmp/
 *.exe
+*.test
+*.out
+*.log
 
 # SQLite data files
 *.db
@@ -14,9 +19,13 @@ api/tmp/
 *.db-wal
 data/
 
-# Node
-web/node_modules/
-web/dist/
+# Node (web project)
+/web/node_modules/
+/web/dist/
+/web/.cache/
+/web/.vite/
+/web/build/
+/web/coverage/
 
 # Docker volumes
 downloads/
@@ -24,15 +33,63 @@ aria2-config/
 transcode-tmp/
 pgdata/
 
-# IDE
+# IDE and Editor
 .idea/
 .vscode/
 *.swp
+*.swo
+*.tmp
+*.temp
+*.bak
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Git worktrees
 .worktrees/
 .superpowers/
+
+# Optional local runtime artifacts
+*.pid
+*.seed
+*.cache
+
+# Keep generated log artifacts out of Git
+*.log
+
+# Generated binaries/build artifacts
+*.a
+*.o
+*.out
+*.so
+*.dylib
+*.dll
+*.lib
+*.class
+*.jar
+*.war
+*.ear
+*.pyc
+*.pyo
+*.pyd
+*.swp
+
+# Generic binary patterns for local artifacts
+*.bin
+*.exe
+*.app
+*.zip
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# Mcp
+.playwright-mcp
+
+# Ignore local milmil-api binaries/artifacts
+# the source subtree or generated directory
+milmil-api/
+node_modules/

@@ -32,7 +32,7 @@ export const streamApi = {
   transcode: (fileId: string, opts?: { codec?: string; resolution?: string }) =>
     api.post<{ token: string; status: string }>(
       `/api/v1/stream/${fileId}/transcode`,
-      opts ?? { codec: 'h264', resolution: '1080p' },
+      opts ?? { codec: 'h264', resolution: '1080p' }
     ),
 };
 

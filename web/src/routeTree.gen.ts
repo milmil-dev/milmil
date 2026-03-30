@@ -19,6 +19,7 @@ import { Route as RssRouteImport } from './routes/rss'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibrariesRouteImport } from './routes/libraries'
 import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchFileIdRouteImport } from './routes/watch.$fileId'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
@@ -74,6 +75,11 @@ const DownloadsRoute = DownloadsRouteImport.update({
   path: '/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectionRoute = CollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -97,6 +103,7 @@ const AnimeIdRoute = AnimeIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/collection': typeof CollectionRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/collection': typeof CollectionRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/collection': typeof CollectionRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/collection'
     | '/downloads'
     | '/libraries'
     | '/login'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/collection'
     | '/downloads'
     | '/libraries'
     | '/login'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/collection'
     | '/downloads'
     | '/libraries'
     | '/login'
@@ -197,6 +209,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CollectionRoute: typeof CollectionRoute
   DownloadsRoute: typeof DownloadsRoute
   LibrariesRoute: typeof LibrariesRoute
   LoginRoute: typeof LoginRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collection': {
+      id: '/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof CollectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -317,6 +337,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CollectionRoute: CollectionRoute,
   DownloadsRoute: DownloadsRoute,
   LibrariesRoute: LibrariesRoute,
   LoginRoute: LoginRoute,

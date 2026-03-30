@@ -43,9 +43,8 @@ export function EpisodeListItem({
   const [showInfo, setShowInfo] = useState(false);
   const hasImage = !imgFailed && image?.startsWith('http');
 
-  const durationLabel = duration && duration > 0
-    ? `${duration}${i18n._(msg`common.minuteShort`)}`
-    : null;
+  const durationLabel =
+    duration && duration > 0 ? `${duration}${i18n._(msg`common.minuteShort`)}` : null;
 
   const hasMeta = synopsis || (titleOriginal && titleOriginal !== title) || airDate;
 
@@ -98,11 +97,15 @@ export function EpisodeListItem({
         {/* Content */}
         <div className="flex-1 min-w-0 py-0.5">
           <div className="flex items-center gap-2">
-            <span className={cn(
-              'text-[12px] font-bold tabular-nums',
-              isActive ? 'text-mm-accent' : 'text-white/50'
-            )}>
-              {i18n._(msg`episode.prefix`)}{sort}{i18n._(msg`episode.suffix`)}
+            <span
+              className={cn(
+                'text-[12px] font-bold tabular-nums',
+                isActive ? 'text-mm-accent' : 'text-white/50'
+              )}
+            >
+              {i18n._(msg`episode.prefix`)}
+              {sort}
+              {i18n._(msg`episode.suffix`)}
             </span>
             {durationLabel && (
               <span className="text-[12px] text-white/30 tabular-nums">{durationLabel}</span>
@@ -153,10 +156,12 @@ export function EpisodeListItem({
             </button>
           )}
           {!hasImage && airDate && (
-            <span className={cn(
-              'text-[11px] tabular-nums',
-              isActive ? 'text-mm-accent/60' : 'text-white/20'
-            )}>
+            <span
+              className={cn(
+                'text-[11px] tabular-nums',
+                isActive ? 'text-mm-accent/60' : 'text-white/20'
+              )}
+            >
               {airDate}
             </span>
           )}
@@ -185,7 +190,9 @@ export function EpisodeListItem({
               {/* Popover header */}
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[11px] font-bold text-mm-accent tabular-nums">
-                  {i18n._(msg`episode.prefix`)}{sort}{i18n._(msg`episode.suffix`)}
+                  {i18n._(msg`episode.prefix`)}
+                  {sort}
+                  {i18n._(msg`episode.suffix`)}
                 </span>
                 {durationLabel && (
                   <span className="text-[11px] text-white/30">{durationLabel}</span>

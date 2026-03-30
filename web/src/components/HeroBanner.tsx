@@ -9,7 +9,15 @@ import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { PreviewModal } from './PreviewModal';
 
-export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: AnimeSummary[]; onActiveChange?: (item: AnimeSummary) => void; hasWatchRecord?: boolean }) {
+export function HeroBanner({
+  items,
+  onActiveChange,
+  hasWatchRecord,
+}: {
+  items: AnimeSummary[];
+  onActiveChange?: (item: AnimeSummary) => void;
+  hasWatchRecord?: boolean;
+}) {
   const { i18n } = useLingui();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -60,7 +68,6 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-
       {/* Content — vertically centered */}
       <div className="relative z-[2] h-full flex">
         <div className="flex-1 flex flex-col justify-start p-6 md:p-8 pt-12 md:pt-16 min-w-0 max-w-[700px]">
@@ -87,7 +94,10 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                       <img
                         src={featured.cover_image}
                         alt={featured.title}
-                        className={cn('w-full h-full object-cover transition-opacity duration-300', coverLoaded ? 'opacity-100' : 'opacity-0')}
+                        className={cn(
+                          'w-full h-full object-cover transition-opacity duration-300',
+                          coverLoaded ? 'opacity-100' : 'opacity-0'
+                        )}
                         onLoad={handleCoverLoad}
                       />
                     </>
@@ -96,7 +106,10 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                 <div className="min-w-0 flex-1 pb-1 space-y-2">
                   {/* Title — clickable, animated text reveal */}
-                  <Link to={`/anime/${featured.bangumi_id}` as string} className="block cursor-pointer">
+                  <Link
+                    to={`/anime/${featured.bangumi_id}` as string}
+                    className="block cursor-pointer"
+                  >
                     <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-gray-300 transition-colors">
                       {featured.title.split('').map((char, ci) => (
                         <motion.span
@@ -136,7 +149,10 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
 
                   {/* Description */}
                   {featured.description && (
-                    <p className="text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-5" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                    <p
+                      className="text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-5"
+                      style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
+                    >
                       {featured.description.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
@@ -188,15 +204,24 @@ export function HeroBanner({ items, onActiveChange, hasWatchRecord }: { items: A
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-full" style={{ background: animeGradient(featured.title) }} />
+                  <div
+                    className="w-full h-full"
+                    style={{ background: animeGradient(featured.title) }}
+                  />
                 )}
                 <div
                   className="absolute inset-0"
-                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)' }}
+                  style={{
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)',
+                  }}
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-3.5">
-                  <p className="text-[11px] text-white/50 truncate">{featured.title_original || featured.title}</p>
-                  <p className="text-[13px] font-semibold text-white mt-0.5 truncate">{featured.title}</p>
+                  <p className="text-[11px] text-white/50 truncate">
+                    {featured.title_original || featured.title}
+                  </p>
+                  <p className="text-[13px] font-semibold text-white mt-0.5 truncate">
+                    {featured.title}
+                  </p>
                   {featured.episode_count > 0 && (
                     <p className="text-[11px] text-white/40 mt-0.5">
                       {featured.episode_count} {i18n._(msg`common.ep`)}

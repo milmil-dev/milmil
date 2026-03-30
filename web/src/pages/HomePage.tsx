@@ -88,7 +88,13 @@ export function HomePage() {
     <PageTransition>
       <div className="min-h-screen">
         {/* Hero — full width, no padding, edge-to-edge like Seanime */}
-        {heroItems.length > 0 && <HeroBanner items={heroItems} onActiveChange={handleHeroChange} hasWatchRecord={continueWatching.length > 0} />}
+        {heroItems.length > 0 && (
+          <HeroBanner
+            items={heroItems}
+            onActiveChange={handleHeroChange}
+            hasWatchRecord={continueWatching.length > 0}
+          />
+        )}
 
         {/* Main content grid */}
         <div className="flex gap-6 px-4 md:px-6">

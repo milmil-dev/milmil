@@ -16,7 +16,16 @@ interface ModalProps {
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
 }
 
-export function Modal({ open, onClose, title, children, className, size = 'md', fixedBg, onScroll }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  className,
+  size = 'md',
+  fixedBg,
+  onScroll,
+}: ModalProps) {
   // Lock body scroll when open
   useEffect(() => {
     if (open) {
@@ -93,7 +102,10 @@ export function Modal({ open, onClose, title, children, className, size = 'md', 
             {fixedBg && (
               <div
                 className="absolute inset-x-0 top-0 z-0 pointer-events-none overflow-hidden h-[420px]"
-                style={{ maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)' }}
+                style={{
+                  maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                }}
               >
                 {fixedBg}
               </div>
@@ -105,7 +117,11 @@ export function Modal({ open, onClose, title, children, className, size = 'md', 
               {title && (
                 <div
                   className="sticky top-0 z-10 flex items-center justify-between px-5 py-4"
-                  style={{ backgroundColor: 'oklch(12% 0.01 260 / 0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+                  style={{
+                    backgroundColor: 'oklch(12% 0.01 260 / 0.5)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                  }}
                 >
                   <h2 className="text-[15px] font-bold text-white">{title}</h2>
                   <button
