@@ -123,6 +123,7 @@ function AnimeCard({
   anime: CollectionAnime
   index: number
 }) {
+  const { i18n } = useLingui()
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
   const [hovered, setHovered] = useState(false)
