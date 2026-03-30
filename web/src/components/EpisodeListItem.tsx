@@ -41,6 +41,7 @@ export function EpisodeListItem({
   duration,
   progress,
   hasFile = true,
+  fileId,
   fileQuality,
   completed,
 }: EpisodeListItemProps) {
