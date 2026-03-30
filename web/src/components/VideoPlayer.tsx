@@ -1,50 +1,92 @@
-// web/src/components/VideoPlayer.tsx
+import '@videojs/react/video/skin.css';
+import { createPlayer, usePlayer, videoFeatures } from '@videojs/react';
+import { VideoSkin, Video } from '@videojs/react/video';
 import { useEffect, useRef } from 'react';
-import videojs from 'video.js';
-import type Player from 'video.js/dist/types/player';
-import 'video.js/dist/video-js.css';
+
+const Player = createPlayer({ features: videoFeatures });
 
 interface VideoPlayerProps {
   src: string;
-  type: string;
-  onReady?: (player: Player) => void;
+  type?: string;
+  onReady?: (api: VideoPlayerAPI) => void;
   className?: string;
 }
 
-export function VideoPlayer({ src, type, onReady, className }: VideoPlayerProps) {
-  const videoRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<Player | null>(null);
-  const onReadyRef = useRef(onReady);
-  onReadyRef.current = onReady;
+/** Simplified API surface exposed to WatchPage */
+export interface VideoPlayerAPI {
+  currentTime: (t?: number) => number;
+  duration: () => number;
+  isDisposed: () => boolean;
+  on: (event: string, handler: () => void) => void;
+  addRemoteTextTrack: (opts: {
+    kind: string;
+    src: string;
+    srclang: string;
+    label: string;
+  }, manualCleanup: boolean) => void;
+  /** Access the underlying <video> element */
+  videoElement: () => HTMLVideoElement | null;
+}
 
+function PlayerInner({ src, onReady, className }: VideoPlayerProps) {
+  const player = usePlayer();
+  const readyFired = useRef(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Expose a stable API to parent once player is available
   useEffect(() => {
-    if (!videoRef.current) return;
+    if (!player || readyFired.current) return;
 
-    const videoElement = document.createElement('video-js');
-    videoElement.classList.add('vjs-big-play-centered', 'vjs-fluid');
-    videoRef.current.appendChild(videoElement);
-
-    const player = videojs(videoElement, {
-      controls: true,
-      autoplay: false,
-      preload: 'metadata',
-      responsive: true,
-      sources: [{ src, type }],
-    });
-
-    playerRef.current = player;
-
-    player.ready(() => {
-      onReadyRef.current?.(player);
-    });
-
-    return () => {
-      if (playerRef.current && !playerRef.current.isDisposed()) {
-        playerRef.current.dispose();
-        playerRef.current = null;
-      }
+    // Find the <video> element inside the player container
+    const findVideo = (): HTMLVideoElement | null => {
+      if (videoRef.current) return videoRef.current;
+      const el = document.querySelector('[data-videojs] video') as HTMLVideoElement | null;
+      videoRef.current = el;
+      return el;
     };
-  }, [src, type]);
 
-  return <div ref={videoRef} className={className} data-vjs-player />;
+    const api: VideoPlayerAPI = {
+      currentTime: (t?: number) => {
+        const video = findVideo();
+        if (!video) return 0;
+        if (t !== undefined) video.currentTime = t;
+        return video.currentTime;
+      },
+      duration: () => findVideo()?.duration ?? 0,
+      isDisposed: () => !findVideo(),
+      on: (event: string, handler: () => void) => {
+        findVideo()?.addEventListener(event, handler);
+      },
+      addRemoteTextTrack: (opts, _manualCleanup) => {
+        const video = findVideo();
+        if (!video) return;
+        const track = document.createElement('track');
+        track.kind = opts.kind;
+        track.src = opts.src;
+        track.srclang = opts.srclang;
+        track.label = opts.label;
+        video.appendChild(track);
+      },
+      videoElement: () => findVideo(),
+    };
+
+    readyFired.current = true;
+    onReady?.(api);
+  }, [player, onReady]);
+
+  return (
+    <div className={className} data-videojs>
+      <VideoSkin>
+        <Video src={src} playsInline />
+      </VideoSkin>
+    </div>
+  );
+}
+
+export function VideoPlayer(props: VideoPlayerProps) {
+  return (
+    <Player.Provider>
+      <PlayerInner {...props} />
+    </Player.Provider>
+  );
 }

@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type Player from 'video.js/dist/types/player';
+import type { VideoPlayerAPI } from '@/components/VideoPlayer';
 import { DanmakuOverlay } from '@/components/DanmakuOverlay';
 import { DanmakuSettings } from '@/components/DanmakuSettings';
 import { PageTransition } from '@/components/PageTransition';
@@ -54,7 +54,7 @@ export function WatchPage() {
   const danmakuFontSize = usePlayerStore((s) => s.danmakuFontSize);
   const queryClient = useQueryClient();
 
-  const playerRef = useRef<Player | null>(null);
+  const playerRef = useRef<VideoPlayerAPI | null>(null);
   const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Transcode state
@@ -190,18 +190,17 @@ export function WatchPage() {
     };
   }, [stopSaveInterval, saveProgress]);
 
-  const handlePlayerReady = (player: Player) => {
-    const el = player.el()?.querySelector('video') as HTMLVideoElement | null;
-    setVideoEl(el);
-    playerRef.current = player;
+  const handlePlayerReady = (api: VideoPlayerAPI) => {
+    setVideoEl(api.videoElement());
+    playerRef.current = api;
 
     if (savedProgress && savedProgress.position_seconds > 0 && !savedProgress.completed) {
-      player.currentTime(savedProgress.position_seconds);
+      api.currentTime(savedProgress.position_seconds);
     }
 
     if (subtitles?.length) {
       for (const sub of subtitles) {
-        player.addRemoteTextTrack(
+        api.addRemoteTextTrack(
           {
             kind: 'subtitles',
             src: getSubtitleUrl(sub.id),
@@ -213,12 +212,12 @@ export function WatchPage() {
       }
     }
 
-    player.on('play', () => startSaveInterval());
-    player.on('pause', () => {
+    api.on('play', () => startSaveInterval());
+    api.on('pause', () => {
       stopSaveInterval();
       saveProgress();
     });
-    player.on('ended', () => {
+    api.on('ended', () => {
       stopSaveInterval();
       saveProgress();
     });
