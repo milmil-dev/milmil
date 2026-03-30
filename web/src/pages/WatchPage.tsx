@@ -15,6 +15,7 @@ import {
   type DanmakuComment,
   getHLSUrl,
   getMimeType,
+  getRemuxUrl,
   getStreamUrl,
   type MediaInfo,
   mediaApi,
@@ -131,11 +132,12 @@ export function WatchPage() {
     return () => window.removeEventListener('milmil-ws', onWS);
   }, [transcodeToken]);
 
-  // Compute stream URL dynamically
+  // Compute stream URL dynamically: direct play > remux > transcode
   const streamUrl = useMemo(() => {
     if (!fileId) return '';
-    if (transcodeStatus === 'ready' && transcodeToken) return getHLSUrl(transcodeToken);
     if (mediaInfo?.can_direct_play) return getStreamUrl(fileId);
+    if (mediaInfo?.can_remux) return getRemuxUrl(fileId);
+    if (transcodeStatus === 'ready' && transcodeToken) return getHLSUrl(transcodeToken);
     return '';
   }, [fileId, mediaInfo, transcodeStatus, transcodeToken]);
 
@@ -311,6 +313,12 @@ export function WatchPage() {
                             : i18n._(msg`watch.unsupported`)}
                         </span>
                       </div>
+                      {mediaInfo.can_remux && (
+                        <div className="flex items-center justify-between text-[12px]">
+                          <span className="text-white/60">Remux (Direct Stream)</span>
+                          <span className="text-green-400">{i18n._(msg`watch.supported`)}</span>
+                        </div>
+                      )}
                       {mediaInfo.needs_transcode && (
                         <div className="flex items-center justify-between text-[12px]">
                           <span className="text-white/60">{i18n._(msg`watch.transcode`)}</span>

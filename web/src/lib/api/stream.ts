@@ -7,6 +7,11 @@ export function getStreamUrl(fileId: string): string {
   return `${API_URL}/api/v1/stream/${fileId}/direct?token=${encodeURIComponent(token)}`;
 }
 
+export function getRemuxUrl(fileId: string): string {
+  const token = localStorage.getItem('milmil-token') ?? '';
+  return `${API_URL}/api/v1/stream/${fileId}/remux?token=${encodeURIComponent(token)}`;
+}
+
 export function getMimeType(filename: string): string {
   const ext = filename.split('.').pop()?.toLowerCase() ?? '';
   const types: Record<string, string> = {
@@ -87,6 +92,7 @@ export interface MediaInfo {
   height: number | null;
   duration_seconds: number | null;
   can_direct_play: boolean;
+  can_remux: boolean;
   needs_transcode: boolean;
   library_online: boolean;
   library_type: string;

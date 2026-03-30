@@ -31,6 +31,7 @@ type mediaInfoResponse struct {
 	Height          *int64  `json:"height"`
 	DurationSeconds *int64  `json:"duration_seconds"`
 	CanDirectPlay   bool    `json:"can_direct_play"`
+	CanRemux        bool    `json:"can_remux"`
 	NeedsTranscode  bool    `json:"needs_transcode"`
 	LibraryOnline   bool    `json:"library_online"`
 	LibraryType     string  `json:"library_type"`
@@ -60,6 +61,8 @@ func (h *handler) handleMediaInfo(c echo.Context) error {
 	}
 
 	canDirect := directPlayContainers[ext] && directPlayCodecs[codec]
+	// Remux: codec is browser-compatible but container isn't (e.g. MKV with H264)
+	canRemux := !canDirect && directPlayCodecs[codec]
 
 	online := true
 	if lib.SourceType == "local" || lib.SourceType == "" {
@@ -101,7 +104,8 @@ func (h *handler) handleMediaInfo(c echo.Context) error {
 		Height:          nullInt(mf.Height),
 		DurationSeconds: nullInt(mf.DurationSeconds),
 		CanDirectPlay:   canDirect && online,
-		NeedsTranscode:  !canDirect,
+		CanRemux:        canRemux && online,
+		NeedsTranscode:  !canDirect && !canRemux,
 		LibraryOnline:   online,
 		LibraryType:     lib.SourceType,
 	})

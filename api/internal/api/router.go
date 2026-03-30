@@ -116,6 +116,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Stream — protected (with query param token fallback for <video src>)
 	streamGroup := v1.Group("/stream", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
 	streamGroup.GET("/:fileId/direct", h.handleStreamDirect)
+	streamGroup.GET("/:fileId/remux", h.handleStreamRemux)
 	streamGroup.POST("/:fileId/transcode", h.handleStartTranscode)
 
 	// HLS segments — no auth (token in URL is the auth)

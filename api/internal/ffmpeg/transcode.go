@@ -14,6 +14,28 @@ type TranscodeOptions struct {
 	Resolution string
 }
 
+// Remux re-wraps a video file into MP4 without re-encoding.
+// Very fast (seconds) — only changes the container, keeps video/audio codecs.
+// Blocks until FFmpeg finishes — call in a goroutine.
+func Remux(ctx context.Context, inputPath, outputPath string) error {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+		return err
+	}
+
+	args := []string{
+		"-i", inputPath,
+		"-c:v", "copy",
+		"-c:a", "copy",
+		"-movflags", "+faststart",
+		"-f", "mp4",
+		"-y",
+		outputPath,
+	}
+
+	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	return cmd.Run()
+}
+
 // Transcode converts a video file to HLS segments using FFmpeg.
 // Blocks until FFmpeg finishes — call in a goroutine.
 func Transcode(ctx context.Context, opts TranscodeOptions) error {
