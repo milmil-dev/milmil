@@ -109,7 +109,7 @@ function AccountAvatar() {
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className="flex items-center justify-center w-9 h-9 rounded-full bg-mm-accent/15 text-mm-accent text-xs font-bold cursor-pointer transition-all hover:bg-mm-accent/25 hover:ring-1 hover:ring-mm-accent/30"
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.08] text-white/60 text-xs font-bold cursor-pointer transition-all hover:bg-white/[0.12] hover:text-white/80"
             aria-label={user?.username ?? 'Account'}
           >
             {initial}
@@ -134,7 +134,7 @@ function AccountAvatar() {
             {/* User info */}
             <div className="px-3 py-3 border-b border-white/[0.06]">
               <div className="flex items-center gap-2.5">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mm-accent/15 text-mm-accent text-xs font-bold shrink-0">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/[0.08] text-white/60 text-xs font-bold shrink-0">
                   {initial}
                 </div>
                 <div className="min-w-0">
