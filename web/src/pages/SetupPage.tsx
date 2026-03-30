@@ -4,7 +4,7 @@ import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button } from '../components/ui/button';
-import { FormField } from '../components/ui/form-field';
+import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
@@ -58,7 +58,8 @@ export function SetupPage() {
         >
           <form.Field name="username">
             {(field) => (
-              <FormField field={field} label={i18n._(msg`auth.setup.username`)}>
+              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.setup.username`)}</FieldLabel>
                 <Input
                   id={field.name}
                   type="text"
@@ -67,13 +68,19 @@ export function SetupPage() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
                 />
-              </FormField>
+                <FieldError>
+                  {field.state.meta.isTouched && field.state.meta.errors[0]
+                    ? String(field.state.meta.errors[0])
+                    : null}
+                </FieldError>
+              </Field>
             )}
           </form.Field>
 
           <form.Field name="password">
             {(field) => (
-              <FormField field={field} label={i18n._(msg`auth.setup.password`)}>
+              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.setup.password`)}</FieldLabel>
                 <Input
                   id={field.name}
                   type="password"
@@ -82,7 +89,12 @@ export function SetupPage() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
                 />
-              </FormField>
+                <FieldError>
+                  {field.state.meta.isTouched && field.state.meta.errors[0]
+                    ? String(field.state.meta.errors[0])
+                    : null}
+                </FieldError>
+              </Field>
             )}
           </form.Field>
 

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { toast } from 'sonner';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
-import { FormField } from '../components/ui/form-field';
+import { Field } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { type Download, downloadApi, downloadKeys } from '../lib/api/downloads';
 import { cn } from '../lib/utils';
@@ -222,7 +222,7 @@ export function DownloadsPage() {
           >
             <form.Field name="url">
               {(field) => (
-                <FormField field={field} className="flex-1">
+                <Field className="flex-1">
                   <Input
                     id={field.name}
                     value={field.state.value}
@@ -230,7 +230,7 @@ export function DownloadsPage() {
                     placeholder="Paste magnet link or URL..."
                     className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
                   />
-                </FormField>
+                </Field>
               )}
             </form.Field>
 

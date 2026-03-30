@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
+import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
 import {
   type DownloadRule,
   downloadKeys,
@@ -189,13 +189,13 @@ function FeedForm({
         validators={{ onChange: ({ value }) => (!value ? 'Name required' : undefined) }}
       >
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+            <FieldLabel
               htmlFor="feed-name"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Name
-            </Label>
+            </FieldLabel>
             <Input
               id="feed-name"
               value={field.state.value}
@@ -203,10 +203,12 @@ function FeedForm({
               placeholder="Mikan Anime"
               className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
             />
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-            )}
-          </div>
+            <FieldError>
+              {field.state.meta.isTouched && field.state.meta.errors[0]
+                ? String(field.state.meta.errors[0])
+                : null}
+            </FieldError>
+          </Field>
         )}
       </form.Field>
 
@@ -215,13 +217,13 @@ function FeedForm({
         validators={{ onChange: ({ value }) => (!value ? 'URL required' : undefined) }}
       >
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+            <FieldLabel
               htmlFor="feed-url"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               URL
-            </Label>
+            </FieldLabel>
             <Input
               id="feed-url"
               value={field.state.value}
@@ -229,22 +231,24 @@ function FeedForm({
               placeholder="https://mikanani.me/RSS/..."
               className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
             />
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-            )}
-          </div>
+            <FieldError>
+              {field.state.meta.isTouched && field.state.meta.errors[0]
+                ? String(field.state.meta.errors[0])
+                : null}
+            </FieldError>
+          </Field>
         )}
       </form.Field>
 
       <form.Field name="type">
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field>
+            <FieldLabel
               htmlFor="feed-type"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Type
-            </Label>
+            </FieldLabel>
             <div className="flex gap-2">
               {FEED_TYPES.map((t) => (
                 <button
@@ -262,7 +266,7 @@ function FeedForm({
                 </button>
               ))}
             </div>
-          </div>
+          </Field>
         )}
       </form.Field>
 
@@ -321,13 +325,13 @@ function RuleForm({
         validators={{ onChange: ({ value }) => (!value ? 'Name required' : undefined) }}
       >
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+            <FieldLabel
               htmlFor="rule-name"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Name
-            </Label>
+            </FieldLabel>
             <Input
               id="rule-name"
               value={field.state.value}
@@ -335,10 +339,12 @@ function RuleForm({
               placeholder="My Rule"
               className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
             />
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-            )}
-          </div>
+            <FieldError>
+              {field.state.meta.isTouched && field.state.meta.errors[0]
+                ? String(field.state.meta.errors[0])
+                : null}
+            </FieldError>
+          </Field>
         )}
       </form.Field>
 
@@ -347,13 +353,13 @@ function RuleForm({
         validators={{ onChange: ({ value }) => (!value ? 'Feed required' : undefined) }}
       >
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+            <FieldLabel
               htmlFor="rule-feed"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Feed
-            </Label>
+            </FieldLabel>
             <select
               id="rule-feed"
               value={field.state.value}
@@ -369,10 +375,12 @@ function RuleForm({
                 </option>
               ))}
             </select>
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-            )}
-          </div>
+            <FieldError>
+              {field.state.meta.isTouched && field.state.meta.errors[0]
+                ? String(field.state.meta.errors[0])
+                : null}
+            </FieldError>
+          </Field>
         )}
       </form.Field>
 
@@ -381,13 +389,13 @@ function RuleForm({
         validators={{ onChange: ({ value }) => (!value ? 'Filter regex required' : undefined) }}
       >
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+            <FieldLabel
               htmlFor="rule-filter"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Filter Regex
-            </Label>
+            </FieldLabel>
             <Input
               id="rule-filter"
               value={field.state.value}
@@ -395,22 +403,24 @@ function RuleForm({
               placeholder=".*1080p.*"
               className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
             />
-            {field.state.meta.errors[0] && (
-              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
-            )}
-          </div>
+            <FieldError>
+              {field.state.meta.isTouched && field.state.meta.errors[0]
+                ? String(field.state.meta.errors[0])
+                : null}
+            </FieldError>
+          </Field>
         )}
       </form.Field>
 
       <form.Field name="exclude_regex">
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field>
+            <FieldLabel
               htmlFor="rule-exclude"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Exclude Regex
-            </Label>
+            </FieldLabel>
             <Input
               id="rule-exclude"
               value={field.state.value}
@@ -418,19 +428,19 @@ function RuleForm({
               placeholder=".*720p.*"
               className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
             />
-          </div>
+          </Field>
         )}
       </form.Field>
 
       <form.Field name="save_dir">
         {(field) => (
-          <div className="space-y-1.5">
-            <Label
+          <Field>
+            <FieldLabel
               htmlFor="rule-dir"
               className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Save Directory
-            </Label>
+            </FieldLabel>
             <Input
               id="rule-dir"
               value={field.state.value}
@@ -438,7 +448,7 @@ function RuleForm({
               placeholder="/mnt/media/anime"
               className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
             />
-          </div>
+          </Field>
         )}
       </form.Field>
 

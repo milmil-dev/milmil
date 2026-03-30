@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
-import { FormField } from '../components/ui/form-field';
+import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
@@ -121,7 +121,8 @@ function DandanPlaySection() {
       >
         <form.Field name="appId">
           {(field) => (
-            <FormField field={field} label="App ID">
+            <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <FieldLabel htmlFor={field.name}>App ID</FieldLabel>
               <Input
                 id={field.name}
                 value={field.state.value}
@@ -129,13 +130,19 @@ function DandanPlaySection() {
                 placeholder="Your DandanPlay App ID"
                 className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
               />
-            </FormField>
+              <FieldError>
+                {field.state.meta.isTouched && field.state.meta.errors[0]
+                  ? String(field.state.meta.errors[0])
+                  : null}
+              </FieldError>
+            </Field>
           )}
         </form.Field>
 
         <form.Field name="appSecret">
           {(field) => (
-            <FormField field={field} label="App Secret">
+            <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <FieldLabel htmlFor={field.name}>App Secret</FieldLabel>
               <Input
                 id={field.name}
                 type="password"
@@ -144,7 +151,12 @@ function DandanPlaySection() {
                 placeholder="Your DandanPlay App Secret"
                 className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
               />
-            </FormField>
+              <FieldError>
+                {field.state.meta.isTouched && field.state.meta.errors[0]
+                  ? String(field.state.meta.errors[0])
+                  : null}
+              </FieldError>
+            </Field>
           )}
         </form.Field>
 
@@ -461,7 +473,8 @@ function IntegrationSection({
       >
         <form.Field name="clientId">
           {(field) => (
-            <FormField field={field} label="Client ID">
+            <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <FieldLabel htmlFor={`${provider}-${field.name}`}>Client ID</FieldLabel>
               <Input
                 id={`${provider}-${field.name}`}
                 value={field.state.value}
@@ -469,13 +482,19 @@ function IntegrationSection({
                 placeholder={`Your ${label} Client ID`}
                 className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
               />
-            </FormField>
+              <FieldError>
+                {field.state.meta.isTouched && field.state.meta.errors[0]
+                  ? String(field.state.meta.errors[0])
+                  : null}
+              </FieldError>
+            </Field>
           )}
         </form.Field>
 
         <form.Field name="clientSecret">
           {(field) => (
-            <FormField field={field} label="Client Secret">
+            <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <FieldLabel htmlFor={`${provider}-${field.name}`}>Client Secret</FieldLabel>
               <Input
                 id={`${provider}-${field.name}`}
                 type="password"
@@ -484,7 +503,12 @@ function IntegrationSection({
                 placeholder={`Your ${label} Client Secret`}
                 className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
               />
-            </FormField>
+              <FieldError>
+                {field.state.meta.isTouched && field.state.meta.errors[0]
+                  ? String(field.state.meta.errors[0])
+                  : null}
+              </FieldError>
+            </Field>
           )}
         </form.Field>
 

@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api-client';
 import { Modal } from './Modal';
 import { Button } from './ui/button';
-import { FormField } from './ui/form-field';
+import { Field, FieldError, FieldLabel } from './ui/field';
 import { Input } from './ui/input';
 
 interface LoginModalProps {
@@ -120,7 +120,8 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
         >
           <form.Field name="username">
             {(field) => (
-              <FormField field={field} label={i18n._(msg`auth.login.username`)}>
+              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.login.username`)}</FieldLabel>
                 <Input
                   id={field.name}
                   type="text"
@@ -129,13 +130,19 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
                 />
-              </FormField>
+                <FieldError>
+                  {field.state.meta.isTouched && field.state.meta.errors[0]
+                    ? String(field.state.meta.errors[0])
+                    : null}
+                </FieldError>
+              </Field>
             )}
           </form.Field>
 
           <form.Field name="password">
             {(field) => (
-              <FormField field={field} label={i18n._(msg`auth.login.password`)}>
+              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.login.password`)}</FieldLabel>
                 <Input
                   id={field.name}
                   type="password"
@@ -144,7 +151,12 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
                 />
-              </FormField>
+                <FieldError>
+                  {field.state.meta.isTouched && field.state.meta.errors[0]
+                    ? String(field.state.meta.errors[0])
+                    : null}
+                </FieldError>
+              </Field>
             )}
           </form.Field>
 
