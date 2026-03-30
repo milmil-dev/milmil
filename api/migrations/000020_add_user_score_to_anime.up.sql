@@ -1,0 +1,1 @@
+ALTER TABLE anime ADD COLUMN user_score INTEGER;

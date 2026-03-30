@@ -32,6 +32,7 @@ type Anime struct {
 	UpdatedAt            string         `json:"updated_at"`
 	WatchStatus          string         `json:"watch_status"`
 	WatchStatusUpdatedAt sql.NullString `json:"watch_status_updated_at"`
+	UserScore            sql.NullInt64  `json:"user_score"`
 }
 
 type Download struct {

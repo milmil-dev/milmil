@@ -78,6 +78,7 @@ type Querier interface {
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
+	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
 	UpdateDownloadRuleTriggered(ctx context.Context, id string) error

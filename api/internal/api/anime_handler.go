@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/store"
 )
 
 type playableEpisodeMedia struct {
@@ -41,6 +42,7 @@ type playableEpisodesEnvelope struct {
 	WatchStatus string                    `json:"watch_status"`
 	MalID       *int64                    `json:"mal_id"`
 	TmdbID      *int64                    `json:"tmdb_id"`
+	UserScore   *int64                    `json:"user_score"`
 	Episodes    []playableEpisodeResponse `json:"episodes"`
 }
 
@@ -106,6 +108,40 @@ func (h *handler) handlePlayableEpisodes(c echo.Context) error {
 		WatchStatus: anime.WatchStatus,
 		MalID:       nullInt(anime.MalID),
 		TmdbID:      nullInt(anime.TmdbID),
+		UserScore:   nullInt(anime.UserScore),
 		Episodes:    episodes,
 	})
+}
+
+func (h *handler) handleUpdateScore(c echo.Context) error {
+	bangumiIDStr := c.Param("bangumiId")
+	bangumiID, err := strconv.ParseInt(bangumiIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid bangumiId")
+	}
+
+	var body struct {
+		Score *int64 `json:"score"`
+	}
+	if err := c.Bind(&body); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
+	}
+
+	ctx := c.Request().Context()
+	err = h.queries.UpdateAnimeUserScore(ctx, store.UpdateAnimeUserScoreParams{
+		UserScore: sql.NullInt64{Int64: derefInt64(body.Score), Valid: body.Score != nil},
+		BangumiID: sql.NullInt64{Int64: bangumiID, Valid: true},
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	return c.NoContent(http.StatusNoContent)
+}
+
+func derefInt64(p *int64) int64 {
+	if p == nil {
+		return 0
+	}
+	return *p
 }

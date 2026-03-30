@@ -22,3 +22,7 @@ SELECT * FROM anime WHERE library_id = ?;
 
 -- name: UpdateAnimeTMDBID :exec
 UPDATE anime SET tmdb_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: UpdateAnimeUserScore :exec
+UPDATE anime SET user_score = sqlc.arg(user_score), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE bangumi_id = sqlc.arg(bangumi_id);
