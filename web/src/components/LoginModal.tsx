@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api-client';
 import { Modal } from './Modal';
+import { Button } from './ui/button';
 
 interface LoginModalProps {
   open: boolean;
@@ -103,15 +104,11 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
             </button>
           </div>
         ) : (
-          <h3 className="text-lg font-semibold text-white mb-6">
-            {i18n._(msg`auth.login.title`)}
-          </h3>
+          <h3 className="text-lg font-semibold text-white mb-6">{i18n._(msg`auth.login.title`)}</h3>
         )}
 
         {mode === 'setup' && (
-          <p className="text-[13px] text-white/40 mb-4">
-            {i18n._(msg`auth.setup.subtitle`)}
-          </p>
+          <p className="text-[13px] text-white/40 mb-4">{i18n._(msg`auth.setup.subtitle`)}</p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -143,21 +140,19 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
             />
           </div>
 
-          {displayError && (
-            <p className="text-red-400 text-[13px]">{displayError}</p>
-          )}
+          {displayError && <p className="text-red-400 text-[13px]">{displayError}</p>}
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-40 cursor-pointer"
+            className="w-full"
           >
             {loading
               ? i18n._(msg`common.loading`)
               : mode === 'login'
                 ? i18n._(msg`auth.login.submit`)
                 : i18n._(msg`auth.setup.submit`)}
-          </button>
+          </Button>
         </form>
       </div>
     </Modal>

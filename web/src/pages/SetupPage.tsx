@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
+import { Button } from '../components/ui/button';
 
 interface SetupResponse {
   token: string;
@@ -76,13 +77,13 @@ export function SetupPage() {
             />
           </div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium py-2 rounded-lg text-sm transition-colors"
+            className="w-full"
           >
             {loading ? i18n._(msg`auth.setup.loading`) : i18n._(msg`auth.setup.submit`)}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

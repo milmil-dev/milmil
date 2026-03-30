@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
+import { Button } from '../components/ui/button';
 
 export function TrendingPage() {
   const [page, setPage] = useState(1);
@@ -61,13 +62,13 @@ export function TrendingPage() {
         {isError && allItems.length === 0 && (
           <div className="text-center py-16">
             <p className="text-sm mb-3 text-mm-text-secondary">載入失敗</p>
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() => refetch()}
-              className="text-sm font-medium text-mm-accent"
             >
               重試
-            </button>
+            </Button>
           </div>
         )}
 
@@ -84,15 +85,14 @@ export function TrendingPage() {
 
             {hasMore && (
               <div className="flex justify-center mt-8">
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => setPage((p) => p + 1)}
                   disabled={isLoading}
-                  className="px-5 py-2 text-sm font-medium rounded transition-colors disabled:opacity-40 bg-mm-border"
-                  style={{ color: 'oklch(65% 0.01 280)' }}
                 >
                   {isLoading ? '載入中...' : '載入更多'}
-                </motion.button>
+                </Button>
               </div>
             )}
           </>

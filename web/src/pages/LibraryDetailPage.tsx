@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns"
 import { AnimatePresence, motion } from "motion/react"
 import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
+import { Button } from "../components/ui/button"
 import { LoginModal } from "../components/LoginModal"
 import { Modal } from "../components/Modal"
 import { DataPagination } from "../components/DataPagination"
@@ -350,35 +351,40 @@ function FileTable({
                 const file = row.original
                 if (file.match_status === "unmatched") {
                   return (
-                    <button
+                    <Button
                       type="button"
+                      size="xs"
                       onClick={() => onMatch(file)}
-                      className="text-[11px] font-bold text-mm-accent hover:text-mm-accent/80 transition-colors px-2 py-1 rounded bg-mm-accent/10 hover:bg-mm-accent/20 cursor-pointer"
                     >
                       {i18n._(msg`library.detail.match`)}
-                    </button>
+                    </Button>
                   )
                 }
                 return (
                   <div className="flex items-center gap-1.5">
-                    <Link
-                      to="/watch/$fileId"
-                      params={{ fileId: file.id }}
-                      className="inline-flex items-center gap-1 text-[11px] font-bold text-mm-accent hover:text-mm-accent/80 transition-colors px-2 py-1 rounded bg-mm-accent/10 hover:bg-mm-accent/20"
+                    <Button
+                      size="xs"
+                      asChild
                     >
-                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                      {i18n._(msg`library.detail.play`)}
-                    </Link>
-                    <button
+                      <Link
+                        to="/watch/$fileId"
+                        params={{ fileId: file.id }}
+                      >
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                        {i18n._(msg`library.detail.play`)}
+                      </Link>
+                    </Button>
+                    <Button
                       type="button"
+                      size="xs"
+                      variant="ghost"
                       onClick={() => onMatch(file)}
-                      className="text-[11px] text-white/30 hover:text-white/60 transition-colors px-1.5 py-0.5 rounded hover:bg-white/[0.06] cursor-pointer"
                       title={i18n._(msg`library.detail.editMatch`)}
                     >
                       {i18n._(msg`library.detail.editMatch`)}
-                    </button>
+                    </Button>
                   </div>
                 )
               },
@@ -883,13 +889,15 @@ function MatchModal({
               <p className="text-sm font-medium text-white truncate">
                 {selectedAnime.title}
               </p>
-              <button
+              <Button
                 type="button"
+                size="xs"
+                variant="ghost"
                 onClick={handleGoBackToSearch}
-                className="text-[11px] text-mm-accent hover:text-mm-accent/80 transition-colors cursor-pointer"
+                className="text-mm-accent hover:text-mm-accent/80 px-0"
               >
                 {i18n._(msg`library.detail.matchModal.change`)}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -943,16 +951,16 @@ function MatchModal({
           )}
 
           {/* Confirm button */}
-          <button
+          <Button
             type="button"
             onClick={() => matchMutation.mutate()}
             disabled={!selectedEpisode || matchMutation.isPending}
-            className="w-full py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-40 cursor-pointer"
+            className="w-full"
           >
             {matchMutation.isPending
               ? i18n._(msg`common.loading`)
               : i18n._(msg`library.detail.matchModal.confirm`)}
-          </button>
+          </Button>
         </div>
       )}
     </Modal>
@@ -1073,16 +1081,16 @@ function SettingsModal({
         </div>
 
         {/* Save */}
-        <button
+        <Button
           type="button"
           onClick={() => updateMutation.mutate()}
           disabled={updateMutation.isPending || !name.trim()}
-          className="w-full py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-40 cursor-pointer"
+          className="w-full"
         >
           {updateMutation.isPending
             ? i18n._(msg`library.saving`)
             : i18n._(msg`library.saveChanges`)}
-        </button>
+        </Button>
       </div>
     </Modal>
   )
@@ -1185,13 +1193,12 @@ export function LibraryDetailPage() {
           <p className="text-sm text-white/30 mb-8 text-center max-w-xs">
             {i18n._(msg`auth.libraries.signInSubtitle`)}
           </p>
-          <button
+          <Button
             type="button"
             onClick={() => setShowLogin(true)}
-            className="px-5 py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
           >
             {i18n._(msg`auth.login.submit`)}
-          </button>
+          </Button>
           <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
         </div>
       </PageTransition>
@@ -1295,35 +1302,32 @@ export function LibraryDetailPage() {
           </div>
 
           <div className="flex gap-2 shrink-0">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <Button
               type="button"
+              variant="outline"
               onClick={() => matchMutation.mutate()}
               disabled={isScanning || matchMutation.isPending}
-              className="px-5 py-2.5 text-sm font-bold rounded-lg border border-mm-accent/40 text-mm-accent hover:bg-mm-accent/10 transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isScanning && scanProgress?.phase === "matching"
                 ? i18n._(msg`library.matching`)
                 : i18n._(msg`library.detail.autoMatch`)}
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            </Button>
+            <Button
               type="button"
               onClick={() => scanMutation.mutate()}
               disabled={isScanning || scanMutation.isPending}
-              className="px-5 py-2.5 text-sm font-bold rounded-lg text-black bg-mm-accent hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
             >
               {isScanning
                 ? i18n._(msg`library.scanning`)
                 : i18n._(msg`library.detail.scanNow`)}
-            </motion.button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => setShowSettings(true)}
-              className="px-4 py-2.5 text-sm font-medium rounded-lg border border-white/[0.12] text-white/60 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
             >
               {i18n._(msg`library.detail.settings`)}
-            </button>
+            </Button>
           </div>
         </motion.div>
 

@@ -9,19 +9,35 @@ import { useEffect, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { PreviewModal } from '../components/PreviewModal';
+import { Button } from '../components/ui/button';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
 import { cn } from '../lib/utils';
 
 const POPULAR_GENRES = [
-  'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy',
-  'Romance', 'Sci-Fi', 'Slice of Life', 'Supernatural', 'Mystery',
-  'Psychological', 'Horror', 'Sports', 'Music', 'Mecha',
+  'Action',
+  'Adventure',
+  'Comedy',
+  'Drama',
+  'Fantasy',
+  'Romance',
+  'Sci-Fi',
+  'Slice of Life',
+  'Supernatural',
+  'Mystery',
+  'Psychological',
+  'Horror',
+  'Sports',
+  'Music',
+  'Mecha',
 ];
 
 export function SearchPage() {
   const { i18n } = useLingui();
-  const { q: urlQuery, genre: urlGenre } = useSearch({ strict: false }) as { q?: string; genre?: string };
+  const { q: urlQuery, genre: urlGenre } = useSearch({ strict: false }) as {
+    q?: string;
+    genre?: string;
+  };
   const [query, setQuery] = useState(urlQuery ?? '');
   const [debouncedQuery, setDebouncedQuery] = useState(urlQuery ?? '');
   const [previewAnime, setPreviewAnime] = useState<AnimeSummary | null>(null);
@@ -80,11 +96,7 @@ export function SearchPage() {
     <PageTransition>
       <div className="min-h-screen px-8 pt-10 pb-16">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           {isGenreMode ? (
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-white tracking-tight">
@@ -190,16 +202,16 @@ export function SearchPage() {
             {/* Load more — genre browse only */}
             {isGenreMode && hasNextPage && (
               <div className="flex justify-center mt-8">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => fetchNextPage()}
                   disabled={isFetchingNextPage}
-                  className="px-6 py-2.5 text-[13px] font-bold rounded-lg bg-white/[0.06] text-white/70 hover:bg-white/[0.1] hover:text-white transition-colors disabled:opacity-40"
                 >
                   {isFetchingNextPage
                     ? i18n._(msg`search.loadingMore`)
                     : i18n._(msg`search.loadMore`)}
-                </button>
+                </Button>
               </div>
             )}
           </>

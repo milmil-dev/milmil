@@ -26,6 +26,8 @@ const RELATION_LABELS: Record<string, Record<string, string>> = {
 function getRelationLabel(type: string, locale: string): string {
   return RELATION_LABELS[type]?.[locale] ?? RELATION_LABELS[type]?.en ?? type.replace(/_/g, ' ');
 }
+
+import { Button } from '../components/ui/button';
 import { animeGradient } from '../lib/gradient';
 import { useBgStore } from '../store/bg-store';
 
@@ -87,12 +89,15 @@ export function AnimeDetailPage() {
           <p className="text-sm text-mm-text-tertiary">
             {isError ? i18n._(msg`common.loadFailed`) : i18n._(msg`anime.notFound`)}
           </p>
-          <button
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
             onClick={() => window.location.reload()}
-            className="mt-3 px-4 py-1.5 rounded-md bg-white/[0.06] text-[13px] text-mm-text-secondary hover:bg-white/[0.1] transition-colors"
+            className="mt-3"
           >
             {i18n._(msg`common.retry`)}
-          </button>
+          </Button>
           <Link
             to="/"
             className="mt-2 text-[12px] text-mm-text-muted hover:text-mm-text-secondary transition-colors"
@@ -120,7 +125,16 @@ export function AnimeDetailPage() {
               className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
               title="Bangumi"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" y1="14" x2="21" y2="3" />
@@ -158,7 +172,11 @@ export function AnimeDetailPage() {
                     style={hasCover ? undefined : { background: animeGradient(anime.title) }}
                   >
                     {hasCover && (
-                      <img src={anime.cover_image} alt={anime.title} className="w-full h-full object-cover" />
+                      <img
+                        src={anime.cover_image}
+                        alt={anime.title}
+                        className="w-full h-full object-cover"
+                      />
                     )}
                   </motion.div>
 
@@ -213,7 +231,10 @@ export function AnimeDetailPage() {
 
                     {/* Synopsis — hidden on small mobile, visible sm+ */}
                     {anime.synopsis && (
-                      <p className="hidden sm:block text-[14px] sm:text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-4" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                      <p
+                        className="hidden sm:block text-[14px] sm:text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-4"
+                        style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
+                      >
                         {anime.synopsis}
                       </p>
                     )}
@@ -222,7 +243,10 @@ export function AnimeDetailPage() {
 
                 {/* Synopsis — below poster on mobile only */}
                 {anime.synopsis && (
-                  <p className="sm:hidden mt-4 text-[13px] text-gray-300 leading-relaxed line-clamp-5" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                  <p
+                    className="sm:hidden mt-4 text-[13px] text-gray-300 leading-relaxed line-clamp-5"
+                    style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
+                  >
                     {anime.synopsis}
                   </p>
                 )}
@@ -244,9 +268,7 @@ export function AnimeDetailPage() {
               {episodes.length > 0 && (
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-3 mb-4">
-                    <h2 className="text-lg font-bold text-white">
-                      {i18n._(msg`anime.episodes`)}
-                    </h2>
+                    <h2 className="text-lg font-bold text-white">{i18n._(msg`anime.episodes`)}</h2>
                     <span className="text-[13px] text-mm-text-muted tabular-nums">
                       {episodes.length} {i18n._(msg`common.ep`)}
                     </span>
@@ -283,7 +305,10 @@ export function AnimeDetailPage() {
                     {i18n._(msg`anime.trailer`)}
                   </h2>
                   <div className="lg:sticky lg:top-6">
-                    <div className="relative rounded-lg overflow-hidden border border-white/[0.06]" style={{ aspectRatio: '16/9' }}>
+                    <div
+                      className="relative rounded-lg overflow-hidden border border-white/[0.06]"
+                      style={{ aspectRatio: '16/9' }}
+                    >
                       <iframe
                         src={anime.trailer_url}
                         title={`${anime.title} trailer`}
@@ -307,12 +332,13 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.3 }}
             className="px-4 md:px-8 py-6"
           >
-            <h2 className="text-lg font-bold text-white mb-4">
-              {i18n._(msg`anime.relations`)}
-            </h2>
+            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.relations`)}</h2>
             <MediaRail>
               {anime.relations.map((rel) => (
-                <div key={`${rel.relation_type}-${rel.anime.anilist_id}`} className="shrink-0 w-[150px]">
+                <div
+                  key={`${rel.relation_type}-${rel.anime.anilist_id}`}
+                  className="shrink-0 w-[150px]"
+                >
                   <AnimeCard anime={rel.anime} />
                   <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-1">
                     {getRelationLabel(rel.relation_type, i18n.locale)}
@@ -350,9 +376,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.4 }}
             className="px-4 md:px-8 py-6 pb-16"
           >
-            <h2 className="text-lg font-bold text-white mb-4">
-              {i18n._(msg`anime.reviews`)}
-            </h2>
+            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.reviews`)}</h2>
             <div className="space-y-3 max-w-2xl">
               {anime.reviews.map((review) => (
                 <a
@@ -400,17 +424,16 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.45 }}
             className="px-4 md:px-8 py-6 pb-16"
           >
-            <h2 className="text-lg font-bold text-white mb-4">
-              {i18n._(msg`anime.comments`)}
-            </h2>
+            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.comments`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl">
               {comments.map((c) => (
-                <div
-                  key={c.id}
-                  className="flex items-start gap-2.5 p-3 rounded-lg bg-white/[0.03]"
-                >
+                <div key={c.id} className="flex items-start gap-2.5 p-3 rounded-lg bg-white/[0.03]">
                   {c.avatar ? (
-                    <img src={c.avatar} alt="" className="w-7 h-7 rounded-full shrink-0 object-cover" />
+                    <img
+                      src={c.avatar}
+                      alt=""
+                      className="w-7 h-7 rounded-full shrink-0 object-cover"
+                    />
                   ) : (
                     <div className="w-7 h-7 rounded-full shrink-0 bg-white/[0.08]" />
                   )}

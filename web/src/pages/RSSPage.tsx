@@ -75,28 +75,28 @@ function FeedRow({
         <p className="text-[10px] text-mm-text-tertiary mt-0.5">Last fetched: {lastFetched}</p>
       </div>
       <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <motion.button
-          whileTap={{ scale: 0.94 }}
+        <Button
+          size="xs"
+          variant="secondary"
           onClick={onRefresh}
           disabled={refreshing}
-          className="px-2.5 py-1 text-[11px] font-semibold rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors disabled:opacity-40"
         >
           {refreshing ? 'Fetching\u2026' : 'Refresh'}
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.94 }}
+        </Button>
+        <Button
+          size="xs"
+          variant="secondary"
           onClick={onEdit}
-          className="px-2.5 py-1 text-[11px] font-semibold rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
         >
           Edit
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.94 }}
+        </Button>
+        <Button
+          size="xs"
+          variant="destructive"
           onClick={onDelete}
-          className="px-2.5 py-1 text-[11px] font-semibold rounded text-red-300 border border-red-400/30 bg-red-900/20 hover:bg-red-900/40 transition-colors"
         >
           Delete
-        </motion.button>
+        </Button>
       </div>
     </div>
   );
@@ -134,20 +134,20 @@ function RuleRow({
         <p className="text-[10px] text-mm-text-tertiary mt-0.5">Feed: {feedName}</p>
       </div>
       <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <motion.button
-          whileTap={{ scale: 0.94 }}
+        <Button
+          size="xs"
+          variant="secondary"
           onClick={onEdit}
-          className="px-2.5 py-1 text-[11px] font-semibold rounded bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
         >
           Edit
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.94 }}
+        </Button>
+        <Button
+          size="xs"
+          variant="destructive"
           onClick={onDelete}
-          className="px-2.5 py-1 text-[11px] font-semibold rounded text-red-300 border border-red-400/30 bg-red-900/20 hover:bg-red-900/40 transition-colors"
         >
           Delete
-        </motion.button>
+        </Button>
       </div>
     </div>
   );
@@ -475,13 +475,12 @@ function SectionHeader({
         <h2 className="text-lg font-bold text-white">{title}</h2>
         <span className="text-xs font-mono text-mm-text-tertiary">{count}</span>
       </div>
-      <motion.button
-        whileTap={{ scale: 0.94 }}
+      <Button
+        size="sm"
         onClick={onAdd}
-        className="px-3 py-1.5 text-xs font-bold rounded transition-opacity hover:opacity-80 text-black bg-mm-accent"
       >
         + {addLabel}
-      </motion.button>
+      </Button>
     </div>
   );
 }
@@ -824,24 +823,24 @@ export function RSSPage() {
               : 'This download rule will be permanently removed.'}
           </p>
           <div className="flex justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => setDeleteTarget(null)}
-              className="px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="destructive"
               onClick={() => {
                 if (deleteTarget?.kind === 'feed') deleteFeedMutation.mutate(deleteTarget.feed.id);
-                else if (deleteTarget?.kind === 'rule') deleteRuleMutation.mutate(deleteTarget.rule.id);
+                else if (deleteTarget?.kind === 'rule')
+                  deleteRuleMutation.mutate(deleteTarget.rule.id);
               }}
-              className="px-4 py-2 text-[13px] font-medium rounded-md text-white transition-colors"
-              style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
             >
               Delete
-            </button>
+            </Button>
           </div>
         </Modal>
       </div>
