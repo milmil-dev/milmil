@@ -1374,6 +1374,15 @@ msgstr "最近匹配"
 msgid "collection.sortByName"
 msgstr "名稱"
 
+msgid "collection.searchPlaceholder"
+msgstr "搜尋動畫..."
+
+msgid "collection.totalShows"
+msgstr "部"
+
+msgid "collection.goToLibraries"
+msgstr "前往媒體庫"
+
 msgid "settings.collection"
 msgstr "收藏"
 

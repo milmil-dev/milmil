@@ -1376,6 +1376,15 @@ msgstr "Recently Matched"
 msgid "collection.sortByName"
 msgstr "Name"
 
+msgid "collection.searchPlaceholder"
+msgstr "Search anime..."
+
+msgid "collection.totalShows"
+msgstr "shows"
+
+msgid "collection.goToLibraries"
+msgstr "Go to Libraries"
+
 msgid "settings.collection"
 msgstr "Collection"
 

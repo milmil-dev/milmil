@@ -17,13 +17,13 @@ import { cn } from "../lib/utils"
 
 /* ── Status config ─────────────────────────────────────────── */
 
-const STATUS_TABS = [
-  { value: "", label: "全部" },
-  { value: "watching", label: "在看" },
-  { value: "planning", label: "想看" },
-  { value: "completed", label: "已看" },
-  { value: "paused", label: "擱置" },
-  { value: "dropped", label: "棄番" },
+const STATUS_TAB_KEYS = [
+  { value: "", msgKey: msg`collection.all` },
+  { value: "watching", msgKey: msg`collection.watching` },
+  { value: "planning", msgKey: msg`collection.planning` },
+  { value: "completed", msgKey: msg`collection.completed` },
+  { value: "paused", msgKey: msg`collection.paused` },
+  { value: "dropped", msgKey: msg`collection.dropped` },
 ] as const
 
 const STATUS_COLORS: Record<string, string> = {
@@ -34,12 +34,12 @@ const STATUS_COLORS: Record<string, string> = {
   dropped: "bg-red-500/80",
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  watching: "在看",
-  planning: "想看",
-  completed: "已看",
-  paused: "擱置",
-  dropped: "棄番",
+const STATUS_LABEL_KEYS: Record<string, ReturnType<typeof msg>> = {
+  watching: msg`collection.watching`,
+  planning: msg`collection.planning`,
+  completed: msg`collection.completed`,
+  paused: msg`collection.paused`,
+  dropped: msg`collection.dropped`,
 }
 
 /* ── Status change dropdown ────────────────────────────────── */
@@ -75,7 +75,8 @@ function StatusDropdown({
     return () => document.removeEventListener("mousedown", handler)
   }, [onClose])
 
-  const options = STATUS_TABS.filter((t) => t.value !== "")
+  const { i18n: i18nDropdown } = useLingui()
+  const options = STATUS_TAB_KEYS.filter((t) => t.value !== "")
 
   return (
     <motion.div
@@ -106,7 +107,7 @@ function StatusDropdown({
               STATUS_COLORS[opt.value] ?? "bg-white/30",
             )}
           />
-          {opt.label}
+          {i18nDropdown._(opt.msgKey)}
         </button>
       ))}
     </motion.div>
@@ -178,7 +179,7 @@ function AnimeCard({
               STATUS_COLORS[anime.watch_status] ?? "bg-zinc-500/80",
             )}
           >
-            {STATUS_LABELS[anime.watch_status] ?? anime.watch_status}
+            {STATUS_LABEL_KEYS[anime.watch_status] ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]) : anime.watch_status}
           </span>
         )}
 
@@ -193,7 +194,7 @@ function AnimeCard({
               type="button"
               onClick={handleStatusClick}
               className="absolute bottom-2 right-2 z-10 w-6 h-6 rounded bg-black/70 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white hover:bg-black/90 transition-colors cursor-pointer"
-              title="更改狀態"
+              title={i18n._(msg`collection.changeStatus`)}
             >
               <span className="text-[10px] font-bold">…</span>
             </motion.button>
@@ -321,7 +322,7 @@ export function CollectionPage() {
           >
             {/* Status tabs */}
             <div className="flex items-end gap-0 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none border-b border-white/[0.06] mb-5">
-              {STATUS_TABS.map((tab) => {
+              {STATUS_TAB_KEYS.map((tab) => {
                 const isActive = selectedStatus === tab.value
                 const count = getCount(tab.value)
                 return (
@@ -336,7 +337,7 @@ export function CollectionPage() {
                         : "text-mm-text-tertiary hover:text-mm-text-secondary",
                     )}
                   >
-                    {tab.label}
+                    {i18n._(tab.msgKey)}
                     {count !== undefined && count > 0 && (
                       <span
                         className={cn(
@@ -379,10 +380,10 @@ export function CollectionPage() {
                 className="px-3 py-2 text-sm bg-white/[0.05] border border-white/[0.08] rounded-lg text-white/70 focus:outline-none focus:border-mm-accent/40 cursor-pointer appearance-none transition-colors hover:bg-white/[0.07]"
               >
                 <option value="recent" className="bg-zinc-900 text-white">
-                  {i18n._(msg`collection.sortRecent`)}
+                  {i18n._(msg`collection.sortByRecent`)}
                 </option>
                 <option value="name" className="bg-zinc-900 text-white">
-                  {i18n._(msg`collection.sortName`)}
+                  {i18n._(msg`collection.sortByName`)}
                 </option>
               </select>
             </div>
