@@ -510,7 +510,9 @@ export function AnimeDetailPage() {
                           isActive={false}
                           href={ep.media_file ? `/watch/${ep.media_file.id}` : '#'}
                           hasFile={!!ep.media_file}
-                          fileQuality={ep.media_file?.height ? `${ep.media_file.height}p` : undefined}
+                          fileQuality={ep.media_file?.height
+                            ? `${ep.media_file.height}p${ep.media_file.video_codec ? ` ${ep.media_file.video_codec.toUpperCase()}` : ''}`
+                            : undefined}
                           progress={
                             ep.progress && ep.progress.duration_seconds > 0
                               ? ep.progress.position_seconds / ep.progress.duration_seconds

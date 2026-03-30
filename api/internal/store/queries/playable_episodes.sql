@@ -13,6 +13,8 @@ SELECT
   mf.size_bytes AS media_size_bytes,
   mf.width AS media_width,
   mf.height AS media_height,
+  mf.video_codec AS media_video_codec,
+  mf.audio_codec AS media_audio_codec,
   wp.position_seconds,
   wp.duration_seconds AS progress_duration,
   wp.completed

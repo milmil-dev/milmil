@@ -25,6 +25,8 @@ SELECT
   mf.size_bytes AS media_size_bytes,
   mf.width AS media_width,
   mf.height AS media_height,
+  mf.video_codec AS media_video_codec,
+  mf.audio_codec AS media_audio_codec,
   wp.position_seconds,
   wp.duration_seconds AS progress_duration,
   wp.completed
@@ -49,6 +51,8 @@ type ListPlayableEpisodesRow struct {
 	MediaSizeBytes   sql.NullInt64  `json:"media_size_bytes"`
 	MediaWidth       sql.NullInt64  `json:"media_width"`
 	MediaHeight      sql.NullInt64  `json:"media_height"`
+	MediaVideoCodec  sql.NullString `json:"media_video_codec"`
+	MediaAudioCodec  sql.NullString `json:"media_audio_codec"`
 	PositionSeconds  sql.NullInt64  `json:"position_seconds"`
 	ProgressDuration sql.NullInt64  `json:"progress_duration"`
 	Completed        sql.NullInt64  `json:"completed"`
@@ -77,6 +81,8 @@ func (q *Queries) ListPlayableEpisodes(ctx context.Context, animeID string) ([]L
 			&i.MediaSizeBytes,
 			&i.MediaWidth,
 			&i.MediaHeight,
+			&i.MediaVideoCodec,
+			&i.MediaAudioCodec,
 			&i.PositionSeconds,
 			&i.ProgressDuration,
 			&i.Completed,
