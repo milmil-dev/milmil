@@ -37,8 +37,63 @@ import { Button } from '../components/ui/button';
 import { animeApi, animeKeys } from '../lib/api/anime';
 import type { PlayableEpisode } from '../lib/api/anime';
 import { animeGradient } from '../lib/gradient';
+import { cn } from '../lib/utils';
 import { useAuth } from '../hooks/use-auth';
 import { useBgStore } from '../store/bg-store';
+
+interface RelatedAnime {
+  relation_type: string;
+  anime: { bangumi_id: number; title: string; title_original?: string };
+}
+
+function buildSeasonChain(
+  relations: RelatedAnime[] | undefined,
+  currentId: number,
+  currentTitle: string
+): Array<{ bangumiId: number; title: string; label: string; isCurrent: boolean }> {
+  if (!relations?.length) return [];
+
+  const sequels = relations.filter(r =>
+    r.relation_type === 'SEQUEL' || r.relation_type === 'Sequel'
+  );
+  const prequels = relations.filter(r =>
+    r.relation_type === 'PREQUEL' || r.relation_type === 'Prequel'
+  );
+
+  if (sequels.length === 0 && prequels.length === 0) return [];
+
+  const chain: Array<{ bangumiId: number; title: string; label: string; isCurrent: boolean }> = [];
+
+  // Prequels (reversed — earliest first)
+  for (let i = prequels.length - 1; i >= 0; i--) {
+    chain.push({
+      bangumiId: prequels[i].anime.bangumi_id,
+      title: prequels[i].anime.title,
+      label: `S${chain.length + 1}`,
+      isCurrent: false,
+    });
+  }
+
+  // Current
+  chain.push({
+    bangumiId: currentId,
+    title: currentTitle,
+    label: `S${chain.length + 1}`,
+    isCurrent: true,
+  });
+
+  // Sequels
+  for (const sequel of sequels) {
+    chain.push({
+      bangumiId: sequel.anime.bangumi_id,
+      title: sequel.anime.title,
+      label: `S${chain.length + 1}`,
+      isCurrent: false,
+    });
+  }
+
+  return chain;
+}
 
 export function AnimeDetailPage() {
   const { i18n } = useLingui();
@@ -256,6 +311,32 @@ export function AnimeDetailPage() {
                         ))}
                       </div>
                     )}
+
+                    {/* Season tabs */}
+                    {(() => {
+                      const seasons = buildSeasonChain(anime.relations, numericId, anime.title);
+                      if (seasons.length <= 1) return null;
+                      return (
+                        <div className="flex gap-1.5 mt-3 overflow-x-auto scrollbar-none">
+                          {seasons.map(s => (
+                            <Link
+                              key={s.bangumiId}
+                              to="/anime/$id"
+                              params={{ id: String(s.bangumiId) }}
+                              className={cn(
+                                "px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0",
+                                s.isCurrent
+                                  ? "bg-mm-accent/20 text-mm-accent"
+                                  : "bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70"
+                              )}
+                              title={s.title}
+                            >
+                              {s.label}
+                            </Link>
+                          ))}
+                        </div>
+                      );
+                    })()}
 
                     {/* Score + meta */}
                     <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
