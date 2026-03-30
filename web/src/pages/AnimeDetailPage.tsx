@@ -270,6 +270,32 @@ export function AnimeDetailPage() {
                 </svg>
               </a>
             )}
+            {playableData?.mal_id && playableData.mal_id > 0 && (
+              <a
+                href={`https://myanimelist.net/anime/${playableData.mal_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
+                title="MyAnimeList"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 3h4v10.5l2.5-3.5H12l-3 4.5L12 18H9.5L7 14.5V18H3V3zm8 0h4v6h2V3h4v15h-4v-6h-2v6h-4V3z" />
+                </svg>
+              </a>
+            )}
+            {playableData?.tmdb_id && playableData.tmdb_id > 0 && (
+              <a
+                href={`https://www.themoviedb.org/tv/${playableData.tmdb_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
+                title="TMDB"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zm-1 3v4H7v2h4v4h2v-4h4v-2h-4V7h-2z" />
+                </svg>
+              </a>
+            )}
           </div>
           <div className="relative z-[2] h-full flex">
             <div className="flex-1 flex flex-col justify-start p-4 pt-6 md:p-8 md:pt-12 min-w-0 max-w-[700px]">

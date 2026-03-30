@@ -6,6 +6,8 @@ export interface PlayableEpisodeMedia {
   size_bytes: number;
   width: number | null;
   height: number | null;
+  video_codec: string | null;
+  audio_codec: string | null;
 }
 
 export interface PlayableEpisodeProgress {
@@ -29,6 +31,8 @@ export interface PlayableEpisode {
 
 export interface PlayableEpisodesResponse {
   watch_status: string;
+  mal_id: number | null;
+  tmdb_id: number | null;
   episodes: PlayableEpisode[];
 }
 

@@ -9,11 +9,13 @@ import (
 )
 
 type playableEpisodeMedia struct {
-	ID        string  `json:"id"`
-	Filename  string  `json:"filename"`
-	SizeBytes *int64  `json:"size_bytes"`
-	Width     *int64  `json:"width"`
-	Height    *int64  `json:"height"`
+	ID         string  `json:"id"`
+	Filename   string  `json:"filename"`
+	SizeBytes  *int64  `json:"size_bytes"`
+	Width      *int64  `json:"width"`
+	Height     *int64  `json:"height"`
+	VideoCodec *string `json:"video_codec,omitempty"`
+	AudioCodec *string `json:"audio_codec,omitempty"`
 }
 
 type playableEpisodeProgress struct {
@@ -37,6 +39,8 @@ type playableEpisodeResponse struct {
 
 type playableEpisodesEnvelope struct {
 	WatchStatus string                    `json:"watch_status"`
+	MalID       *int64                    `json:"mal_id"`
+	TmdbID      *int64                    `json:"tmdb_id"`
 	Episodes    []playableEpisodeResponse `json:"episodes"`
 }
 
@@ -77,11 +81,13 @@ func (h *handler) handlePlayableEpisodes(c echo.Context) error {
 
 		if row.MediaFileID.Valid {
 			ep.MediaFile = &playableEpisodeMedia{
-				ID:        row.MediaFileID.String,
-				Filename:  row.MediaFilename.String,
-				SizeBytes: nullInt(row.MediaSizeBytes),
-				Width:     nullInt(row.MediaWidth),
-				Height:    nullInt(row.MediaHeight),
+				ID:         row.MediaFileID.String,
+				Filename:   row.MediaFilename.String,
+				SizeBytes:  nullInt(row.MediaSizeBytes),
+				Width:      nullInt(row.MediaWidth),
+				Height:     nullInt(row.MediaHeight),
+				VideoCodec: nullStr(row.MediaVideoCodec),
+				AudioCodec: nullStr(row.MediaAudioCodec),
 			}
 		}
 
@@ -98,6 +104,8 @@ func (h *handler) handlePlayableEpisodes(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, playableEpisodesEnvelope{
 		WatchStatus: anime.WatchStatus,
+		MalID:       nullInt(anime.MalID),
+		TmdbID:      nullInt(anime.TmdbID),
 		Episodes:    episodes,
 	})
 }
