@@ -1,10 +1,13 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { Button } from '../components/ui/button';
+import { FormField } from '../components/ui/form-field';
+import { Input } from '../components/ui/input';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
-import { Button } from '../components/ui/button';
 
 interface SetupResponse {
   token: string;
@@ -15,32 +18,28 @@ export function SetupPage() {
   const { i18n } = useLingui();
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError('');
-    if (password.length < 8) {
-      setError(i18n._(msg`auth.setup.passwordTooShort`));
-      return;
-    }
-    setLoading(true);
-    try {
-      const { token, user } = await api.post<SetupResponse>('/api/v1/auth/setup', {
-        username,
-        password,
-      });
-      login(token, user);
-      navigate({ to: '/' });
-    } catch {
-      setError(i18n._(msg`auth.setup.error`));
-    } finally {
-      setLoading(false);
-    }
-  }
+  const form = useForm({
+    defaultValues: { username: '', password: '' },
+    onSubmit: async ({ value }) => {
+      setError('');
+      if (value.password.length < 8) {
+        setError(i18n._(msg`auth.setup.passwordTooShort`));
+        return;
+      }
+      try {
+        const { token, user } = await api.post<SetupResponse>('/api/v1/auth/setup', {
+          username: value.username,
+          password: value.password,
+        });
+        login(token, user);
+        navigate({ to: '/' });
+      } catch {
+        setError(i18n._(msg`auth.setup.error`));
+      }
+    },
+  });
 
   return (
     <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
@@ -49,41 +48,55 @@ export function SetupPage() {
           {i18n._(msg`auth.setup.title`)}
         </h1>
         <p className="text-sm text-zinc-400 mb-6">{i18n._(msg`auth.setup.subtitle`)}</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm text-zinc-400 mb-1">
-              {i18n._(msg`auth.setup.username`)}
-            </label>
-            <input
-              type="text"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 text-sm focus:outline-none focus:border-indigo-500"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-zinc-400 mb-1">
-              {i18n._(msg`auth.setup.password`)}
-            </label>
-            <input
-              type="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 text-sm focus:outline-none focus:border-indigo-500"
-              required
-            />
-          </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <form.Field name="username">
+            {(field) => (
+              <FormField field={field} label={i18n._(msg`auth.setup.username`)}>
+                <Input
+                  id={field.name}
+                  type="text"
+                  autoComplete="username"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  required
+                />
+              </FormField>
+            )}
+          </form.Field>
+
+          <form.Field name="password">
+            {(field) => (
+              <FormField field={field} label={i18n._(msg`auth.setup.password`)}>
+                <Input
+                  id={field.name}
+                  type="password"
+                  autoComplete="new-password"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  required
+                />
+              </FormField>
+            )}
+          </form.Field>
+
           {error && <p className="text-red-400 text-sm">{error}</p>}
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
-            {loading ? i18n._(msg`auth.setup.loading`) : i18n._(msg`auth.setup.submit`)}
-          </Button>
+
+          <form.Subscribe selector={(s) => s.isSubmitting}>
+            {(isSubmitting) => (
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting
+                  ? i18n._(msg`auth.setup.loading`)
+                  : i18n._(msg`auth.setup.submit`)}
+              </Button>
+            )}
+          </form.Subscribe>
         </form>
       </div>
     </div>

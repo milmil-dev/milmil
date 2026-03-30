@@ -1,11 +1,13 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
+import { FormField } from '../components/ui/form-field';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
@@ -79,13 +81,22 @@ function DandanPlaySection() {
     queryFn: () => api.get<Record<string, any>>('/api/v1/settings'),
   });
 
-  const [appId, setAppId] = useState('');
-  const [appSecret, setAppSecret] = useState('');
+  const form = useForm({
+    defaultValues: { appId: '', appSecret: '' },
+    onSubmit: async ({ value }) => {
+      await saveMutation.mutateAsync({
+        section: 'dandanplay',
+        data: { app_id: value.appId, app_secret: value.appSecret },
+      });
+    },
+  });
 
   useEffect(() => {
     if (settings?.dandanplay) {
-      setAppId(settings.dandanplay.app_id ?? '');
-      setAppSecret(settings.dandanplay.app_secret ?? '');
+      form.reset({
+        appId: settings.dandanplay.app_id ?? '',
+        appSecret: settings.dandanplay.app_secret ?? '',
+      });
     }
   }, [settings?.dandanplay]);
 
@@ -101,49 +112,56 @@ function DandanPlaySection() {
 
   return (
     <Section title={i18n._(msg`settings.dandanplay.title`)} delay={0}>
-      <div className="space-y-1.5">
-        <Label
-          htmlFor="dandanplay-app-id"
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-        >
-          App ID
-        </Label>
-        <Input
-          id="dandanplay-app-id"
-          value={appId}
-          onChange={(e) => setAppId(e.target.value)}
-          placeholder="Your DandanPlay App ID"
-          className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
-        />
-      </div>
-      <div className="space-y-1.5">
-        <Label
-          htmlFor="dandanplay-app-secret"
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-        >
-          App Secret
-        </Label>
-        <Input
-          id="dandanplay-app-secret"
-          type="password"
-          value={appSecret}
-          onChange={(e) => setAppSecret(e.target.value)}
-          placeholder="Your DandanPlay App Secret"
-          className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
-        />
-      </div>
-      <Button
-        onClick={() =>
-          saveMutation.mutate({
-            section: 'dandanplay',
-            data: { app_id: appId, app_secret: appSecret },
-          })
-        }
-        disabled={saveMutation.isPending}
-        className="font-bold text-black bg-mm-accent"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+        className="space-y-4"
       >
-        {saveMutation.isPending ? i18n._(msg`settings.saving`) : i18n._(msg`settings.save`)}
-      </Button>
+        <form.Field name="appId">
+          {(field) => (
+            <FormField field={field} label="App ID">
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Your DandanPlay App ID"
+                className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              />
+            </FormField>
+          )}
+        </form.Field>
+
+        <form.Field name="appSecret">
+          {(field) => (
+            <FormField field={field} label="App Secret">
+              <Input
+                id={field.name}
+                type="password"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Your DandanPlay App Secret"
+                className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              />
+            </FormField>
+          )}
+        </form.Field>
+
+        <form.Subscribe selector={(s) => s.isSubmitting}>
+          {(isSubmitting) => (
+            <Button
+              type="submit"
+              disabled={saveMutation.isPending || isSubmitting}
+              className="font-bold text-black bg-mm-accent"
+            >
+              {saveMutation.isPending || isSubmitting
+                ? i18n._(msg`settings.saving`)
+                : i18n._(msg`settings.save`)}
+            </Button>
+          )}
+        </form.Subscribe>
+      </form>
     </Section>
   );
 }
@@ -171,28 +189,47 @@ function PlayerSection() {
   const danmakuFontSize = usePlayerStore((s) => s.danmakuFontSize);
   const danmakuSpeed = usePlayerStore((s) => s.danmakuSpeed);
 
-  const [enabled, setEnabled] = useState(danmakuEnabled);
-  const [opacity, setOpacity] = useState(Math.round(danmakuOpacity * 100));
-  const [fontSize, setFontSize] = useState(danmakuFontSize);
-  const [speed, setSpeed] = useState(danmakuSpeed);
+  const form = useForm({
+    defaultValues: {
+      enabled: danmakuEnabled,
+      opacity: Math.round(danmakuOpacity * 100),
+      fontSize: danmakuFontSize,
+      speed: danmakuSpeed,
+    },
+    onSubmit: async ({ value }) => {
+      await saveMutation.mutateAsync({
+        section: 'player',
+        data: {
+          danmaku_enabled: value.enabled,
+          danmaku_opacity: value.opacity / 100,
+          danmaku_font_size: value.fontSize,
+          danmaku_speed: value.speed,
+        },
+      });
+    },
+  });
 
   useEffect(() => {
-    setEnabled(danmakuEnabled);
-    setOpacity(Math.round(danmakuOpacity * 100));
-    setFontSize(danmakuFontSize);
-    setSpeed(danmakuSpeed);
+    form.reset({
+      enabled: danmakuEnabled,
+      opacity: Math.round(danmakuOpacity * 100),
+      fontSize: danmakuFontSize,
+      speed: danmakuSpeed,
+    });
   }, [danmakuEnabled, danmakuOpacity, danmakuFontSize, danmakuSpeed]);
 
   const saveMutation = useMutation({
     mutationFn: ({ section, data }: { section: string; data: any }) =>
       api.put(`/api/v1/settings/${section}`, data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       // Update Zustand store
       const store = usePlayerStore.getState();
-      if (enabled !== store.danmakuEnabled) store.toggleDanmaku();
-      store.setDanmakuOpacity(opacity / 100);
-      store.setDanmakuFontSize(fontSize);
-      store.setDanmakuSpeed(speed);
+      const { danmaku_enabled, danmaku_opacity, danmaku_font_size, danmaku_speed } =
+        variables.data;
+      if (danmaku_enabled !== store.danmakuEnabled) store.toggleDanmaku();
+      store.setDanmakuOpacity(danmaku_opacity);
+      store.setDanmakuFontSize(danmaku_font_size);
+      store.setDanmakuSpeed(danmaku_speed);
 
       toast.success(i18n._(msg`settings.saved`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
@@ -202,68 +239,101 @@ function PlayerSection() {
 
   return (
     <Section title={i18n._(msg`settings.player.title`)} delay={0.08}>
-      {/* Danmaku enabled */}
-      <div className="flex items-center justify-between">
-        <Label className="text-sm text-mm-text-secondary">
-          {i18n._(msg`settings.player.danmakuEnabled`)}
-        </Label>
-        <Switch checked={enabled} onCheckedChange={setEnabled} />
-      </div>
-
-      {/* Danmaku opacity */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm text-mm-text-secondary">
-            {i18n._(msg`settings.player.danmakuOpacity`)}
-          </Label>
-          <span className="text-xs text-mm-text-tertiary tabular-nums">{opacity}%</span>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={opacity}
-          onChange={(e) => setOpacity(Number(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-mm-accent"
-          style={{
-            background: `linear-gradient(to right, var(--mm-accent) ${String(opacity)}%, oklch(18% 0.01 280) ${String(opacity)}%)`,
-          }}
-        />
-      </div>
-
-      {/* Danmaku font size */}
-      <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">
-          {i18n._(msg`settings.player.danmakuFontSize`)}
-        </Label>
-        <SelectorGroup options={[...FONT_SIZE_OPTIONS]} value={fontSize} onChange={setFontSize} />
-      </div>
-
-      {/* Danmaku speed */}
-      <div className="space-y-2">
-        <Label className="text-sm text-mm-text-secondary">
-          {i18n._(msg`settings.player.danmakuSpeed`)}
-        </Label>
-        <SelectorGroup options={[...SPEED_OPTIONS]} value={speed} onChange={setSpeed} />
-      </div>
-
-      <Button
-        onClick={() =>
-          saveMutation.mutate({
-            section: 'player',
-            data: {
-              danmaku_enabled: enabled,
-              danmaku_opacity: opacity / 100,
-              danmaku_font_size: fontSize,
-              danmaku_speed: speed,
-            },
-          })
-        }
-        disabled={saveMutation.isPending}
-        className="font-bold text-black bg-mm-accent"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+        className="space-y-4"
       >
-        {saveMutation.isPending ? i18n._(msg`settings.saving`) : i18n._(msg`settings.save`)}
-      </Button>
+        {/* Danmaku enabled */}
+        <form.Field name="enabled">
+          {(field) => (
+            <div className="flex items-center justify-between">
+              <Label className="text-sm text-mm-text-secondary">
+                {i18n._(msg`settings.player.danmakuEnabled`)}
+              </Label>
+              <Switch
+                checked={field.state.value}
+                onCheckedChange={(checked) => field.handleChange(checked)}
+              />
+            </div>
+          )}
+        </form.Field>
+
+        {/* Danmaku opacity */}
+        <form.Field name="opacity">
+          {(field) => (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm text-mm-text-secondary">
+                  {i18n._(msg`settings.player.danmakuOpacity`)}
+                </Label>
+                <span className="text-xs text-mm-text-tertiary tabular-nums">
+                  {field.state.value}%
+                </span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(Number(e.target.value))}
+                className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-mm-accent"
+                style={{
+                  background: `linear-gradient(to right, var(--mm-accent) ${String(field.state.value)}%, oklch(18% 0.01 280) ${String(field.state.value)}%)`,
+                }}
+              />
+            </div>
+          )}
+        </form.Field>
+
+        {/* Danmaku font size */}
+        <form.Field name="fontSize">
+          {(field) => (
+            <div className="space-y-2">
+              <Label className="text-sm text-mm-text-secondary">
+                {i18n._(msg`settings.player.danmakuFontSize`)}
+              </Label>
+              <SelectorGroup
+                options={[...FONT_SIZE_OPTIONS]}
+                value={field.state.value}
+                onChange={(v) => field.handleChange(v)}
+              />
+            </div>
+          )}
+        </form.Field>
+
+        {/* Danmaku speed */}
+        <form.Field name="speed">
+          {(field) => (
+            <div className="space-y-2">
+              <Label className="text-sm text-mm-text-secondary">
+                {i18n._(msg`settings.player.danmakuSpeed`)}
+              </Label>
+              <SelectorGroup
+                options={[...SPEED_OPTIONS]}
+                value={field.state.value}
+                onChange={(v) => field.handleChange(v)}
+              />
+            </div>
+          )}
+        </form.Field>
+
+        <form.Subscribe selector={(s) => s.isSubmitting}>
+          {(isSubmitting) => (
+            <Button
+              type="submit"
+              disabled={saveMutation.isPending || isSubmitting}
+              className="font-bold text-black bg-mm-accent"
+            >
+              {saveMutation.isPending || isSubmitting
+                ? i18n._(msg`settings.saving`)
+                : i18n._(msg`settings.save`)}
+            </Button>
+          )}
+        </form.Subscribe>
+      </form>
     </Section>
   );
 }
@@ -321,13 +391,22 @@ function IntegrationSection({
   const isConfigured = settings?.[oauthKey]?.client_id;
   const isConnected = settings?.[tokenKey]?.access_token;
 
-  const [clientId, setClientId] = useState('');
-  const [clientSecret, setClientSecret] = useState('');
+  const form = useForm({
+    defaultValues: { clientId: '', clientSecret: '' },
+    onSubmit: async ({ value }) => {
+      await saveCredsMutation.mutateAsync({
+        client_id: value.clientId,
+        client_secret: value.clientSecret,
+      });
+    },
+  });
 
   useEffect(() => {
     if (settings?.[oauthKey]) {
-      setClientId(settings[oauthKey].client_id ?? '');
-      setClientSecret(settings[oauthKey].client_secret ?? '');
+      form.reset({
+        clientId: settings[oauthKey].client_id ?? '',
+        clientSecret: settings[oauthKey].client_secret ?? '',
+      });
     }
   }, [settings, oauthKey]);
 
@@ -373,91 +452,102 @@ function IntegrationSection({
 
   return (
     <Section title={`${label} ${i18n._(msg`settings.integration.title`)}`} delay={delay}>
-      {/* OAuth credentials */}
-      <div className="space-y-1.5">
-        <Label
-          htmlFor={`${provider}-client-id`}
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-        >
-          Client ID
-        </Label>
-        <Input
-          id={`${provider}-client-id`}
-          value={clientId}
-          onChange={(e) => setClientId(e.target.value)}
-          placeholder={`Your ${label} Client ID`}
-          className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
-        />
-      </div>
-      <div className="space-y-1.5">
-        <Label
-          htmlFor={`${provider}-client-secret`}
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
-        >
-          Client Secret
-        </Label>
-        <Input
-          id={`${provider}-client-secret`}
-          type="password"
-          value={clientSecret}
-          onChange={(e) => setClientSecret(e.target.value)}
-          placeholder={`Your ${label} Client Secret`}
-          className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
-        />
-      </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+        className="space-y-4"
+      >
+        <form.Field name="clientId">
+          {(field) => (
+            <FormField field={field} label="Client ID">
+              <Input
+                id={`${provider}-${field.name}`}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={`Your ${label} Client ID`}
+                className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              />
+            </FormField>
+          )}
+        </form.Field>
 
-      <div className="flex items-center gap-3 flex-wrap">
-        <Button
-          onClick={() =>
-            saveCredsMutation.mutate({ client_id: clientId, client_secret: clientSecret })
-          }
-          disabled={saveCredsMutation.isPending}
-          className="font-bold text-black bg-mm-accent"
-        >
-          {saveCredsMutation.isPending ? i18n._(msg`settings.saving`) : i18n._(msg`settings.save`)}
-        </Button>
+        <form.Field name="clientSecret">
+          {(field) => (
+            <FormField field={field} label="Client Secret">
+              <Input
+                id={`${provider}-${field.name}`}
+                type="password"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={`Your ${label} Client Secret`}
+                className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              />
+            </FormField>
+          )}
+        </form.Field>
 
-        {isConfigured && !isConnected && (
-          <Button
-            onClick={() => connectMutation.mutate()}
-            disabled={connectMutation.isPending}
-            variant="outline"
-            className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
-          >
-            {connectMutation.isPending
-              ? i18n._(msg`settings.integration.connecting`)
-              : i18n._(msg`settings.integration.connect`)}
-          </Button>
-        )}
+        <div className="flex items-center gap-3 flex-wrap">
+          <form.Subscribe selector={(s) => s.isSubmitting}>
+            {(isSubmitting) => (
+              <Button
+                type="submit"
+                disabled={saveCredsMutation.isPending || isSubmitting}
+                className="font-bold text-black bg-mm-accent"
+              >
+                {saveCredsMutation.isPending || isSubmitting
+                  ? i18n._(msg`settings.saving`)
+                  : i18n._(msg`settings.save`)}
+              </Button>
+            )}
+          </form.Subscribe>
 
-        {isConnected && (
-          <>
-            <span className="text-xs font-bold text-green-400">
-              {i18n._(msg`settings.integration.connected`)}
-            </span>
+          {isConfigured && !isConnected && (
             <Button
-              onClick={() => disconnectMutation.mutate()}
-              disabled={disconnectMutation.isPending}
-              variant="outline"
-              className="font-bold border-[oklch(30%_0.01_280)] text-red-400 hover:bg-[oklch(20%_0.01_280)]"
-            >
-              {disconnectMutation.isPending
-                ? i18n._(msg`settings.integration.disconnecting`)
-                : i18n._(msg`settings.integration.disconnect`)}
-            </Button>
-            <Button
-              onClick={() => syncMutation.mutate()}
-              disabled={syncMutation.isPending}
+              type="button"
+              onClick={() => connectMutation.mutate()}
+              disabled={connectMutation.isPending}
               variant="outline"
               className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
             >
-              {syncMutation.isPending
-                ? i18n._(msg`settings.integration.syncing`)
-                : i18n._(msg`settings.integration.sync`)}
+              {connectMutation.isPending
+                ? i18n._(msg`settings.integration.connecting`)
+                : i18n._(msg`settings.integration.connect`)}
             </Button>
-          </>
-        )}
-      </div>
+          )}
+
+          {isConnected && (
+            <>
+              <span className="text-xs font-bold text-green-400">
+                {i18n._(msg`settings.integration.connected`)}
+              </span>
+              <Button
+                type="button"
+                onClick={() => disconnectMutation.mutate()}
+                disabled={disconnectMutation.isPending}
+                variant="outline"
+                className="font-bold border-[oklch(30%_0.01_280)] text-red-400 hover:bg-[oklch(20%_0.01_280)]"
+              >
+                {disconnectMutation.isPending
+                  ? i18n._(msg`settings.integration.disconnecting`)
+                  : i18n._(msg`settings.integration.disconnect`)}
+              </Button>
+              <Button
+                type="button"
+                onClick={() => syncMutation.mutate()}
+                disabled={syncMutation.isPending}
+                variant="outline"
+                className="font-bold border-[oklch(30%_0.01_280)] text-white hover:bg-[oklch(20%_0.01_280)]"
+              >
+                {syncMutation.isPending
+                  ? i18n._(msg`settings.integration.syncing`)
+                  : i18n._(msg`settings.integration.sync`)}
+              </Button>
+            </>
+          )}
+        </div>
+      </form>
     </Section>
   );
 }

@@ -1,11 +1,14 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useForm } from '@tanstack/react-form';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api-client';
 import { Modal } from './Modal';
 import { Button } from './ui/button';
+import { FormField } from './ui/form-field';
+import { Input } from './ui/input';
 
 interface LoginModalProps {
   open: boolean;
@@ -26,6 +29,34 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
   const isInitialized = status?.initialized ?? true; // default to true (hide setup)
 
   const [mode, setMode] = useState<'login' | 'setup'>('login');
+  const [localError, setLocalError] = useState('');
+
+  const form = useForm({
+    defaultValues: { username: '', password: '' },
+    onSubmit: async ({ value }) => {
+      setLocalError('');
+
+      if (mode === 'setup' && value.password.length < 8) {
+        setLocalError(i18n._(msg`auth.setup.passwordTooShort`));
+        return;
+      }
+
+      try {
+        if (mode === 'login') {
+          await login(value.username, value.password);
+        } else {
+          await setup(value.username, value.password);
+        }
+        form.reset();
+        setLocalError('');
+        clearError();
+        onSuccess?.();
+        onClose();
+      } catch {
+        // error is set by useAuth
+      }
+    },
+  });
 
   // Auto-switch to setup if not initialized
   useEffect(() => {
@@ -33,43 +64,12 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
       setMode('setup');
     }
   }, [open, status]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [localError, setLocalError] = useState('');
-
-  function reset() {
-    setUsername('');
-    setPassword('');
-    setLocalError('');
-    clearError();
-  }
 
   function switchMode(newMode: 'login' | 'setup') {
-    reset();
-    setMode(newMode);
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    form.reset();
     setLocalError('');
-
-    if (mode === 'setup' && password.length < 8) {
-      setLocalError(i18n._(msg`auth.setup.passwordTooShort`));
-      return;
-    }
-
-    try {
-      if (mode === 'login') {
-        await login(username, password);
-      } else {
-        await setup(username, password);
-      }
-      reset();
-      onSuccess?.();
-      onClose();
-    } catch {
-      // error is set by useAuth
-    }
+    clearError();
+    setMode(newMode);
   }
 
   const displayError = localError || error;
@@ -111,48 +111,56 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
           <p className="text-[13px] text-white/40 mb-4">{i18n._(msg`auth.setup.subtitle`)}</p>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
-              {i18n._(msg`auth.login.username`)}
-            </label>
-            <input
-              type="text"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-white/[0.06] border border-white/[0.08] rounded-md px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-mm-accent/50"
-              required
-            />
-          </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <form.Field name="username">
+            {(field) => (
+              <FormField field={field} label={i18n._(msg`auth.login.username`)}>
+                <Input
+                  id={field.name}
+                  type="text"
+                  autoComplete="username"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  required
+                />
+              </FormField>
+            )}
+          </form.Field>
 
-          <div className="space-y-1.5">
-            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
-              {i18n._(msg`auth.login.password`)}
-            </label>
-            <input
-              type="password"
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white/[0.06] border border-white/[0.08] rounded-md px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-mm-accent/50"
-              required
-            />
-          </div>
+          <form.Field name="password">
+            {(field) => (
+              <FormField field={field} label={i18n._(msg`auth.login.password`)}>
+                <Input
+                  id={field.name}
+                  type="password"
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  required
+                />
+              </FormField>
+            )}
+          </form.Field>
 
           {displayError && <p className="text-red-400 text-[13px]">{displayError}</p>}
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
-            {loading
-              ? i18n._(msg`common.loading`)
-              : mode === 'login'
-                ? i18n._(msg`auth.login.submit`)
-                : i18n._(msg`auth.setup.submit`)}
-          </Button>
+          <form.Subscribe selector={(s) => s.isSubmitting}>
+            {(isSubmitting) => (
+              <Button type="submit" disabled={loading || isSubmitting} className="w-full">
+                {loading || isSubmitting
+                  ? i18n._(msg`common.loading`)
+                  : mode === 'login'
+                    ? i18n._(msg`auth.login.submit`)
+                    : i18n._(msg`auth.setup.submit`)}
+              </Button>
+            )}
+          </form.Subscribe>
         </form>
       </div>
     </Modal>

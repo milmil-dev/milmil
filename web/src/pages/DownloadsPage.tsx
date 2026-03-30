@@ -1,9 +1,10 @@
+import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
 import { toast } from 'sonner';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
+import { FormField } from '../components/ui/form-field';
 import { Input } from '../components/ui/input';
 import { type Download, downloadApi, downloadKeys } from '../lib/api/downloads';
 import { cn } from '../lib/utils';
@@ -146,7 +147,6 @@ function DownloadRow({
 
 export function DownloadsPage() {
   const queryClient = useQueryClient();
-  const [urlInput, setUrlInput] = useState('');
 
   const { data: downloads = [], isLoading } = useQuery({
     queryKey: downloadKeys.list(),
@@ -158,7 +158,7 @@ export function DownloadsPage() {
     mutationFn: (url: string) => downloadApi.add({ url }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: downloadKeys.list() });
-      setUrlInput('');
+      form.reset();
       toast.success('Download added');
     },
     onError: (err: Error) => toast.error(err.message),
@@ -191,12 +191,14 @@ export function DownloadsPage() {
     onError: (err: Error) => toast.error(err.message),
   });
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    const url = urlInput.trim();
-    if (!url) return;
-    addMutation.mutate(url);
-  };
+  const form = useForm({
+    defaultValues: { url: '' },
+    onSubmit: async ({ value }) => {
+      const url = value.url.trim();
+      if (!url) return;
+      addMutation.mutate(url);
+    },
+  });
 
   const skeletonRows = [1, 2, 3];
 
@@ -211,20 +213,38 @@ export function DownloadsPage() {
 
         {/* Add download form */}
         <div className="px-8 pb-6">
-          <form onSubmit={handleAdd} className="flex gap-2">
-            <Input
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              placeholder="Paste magnet link or URL..."
-              className="flex-1 font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
-            />
-            <Button
-              type="submit"
-              disabled={addMutation.isPending || !urlInput.trim()}
-              className="px-5 font-bold text-black bg-mm-accent shrink-0"
-            >
-              {addMutation.isPending ? 'Adding...' : 'Add Download'}
-            </Button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+            className="flex gap-2 items-end"
+          >
+            <form.Field name="url">
+              {(field) => (
+                <FormField field={field} className="flex-1">
+                  <Input
+                    id={field.name}
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Paste magnet link or URL..."
+                    className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+                  />
+                </FormField>
+              )}
+            </form.Field>
+
+            <form.Subscribe selector={(s) => [s.isSubmitting, s.values.url] as const}>
+              {([isSubmitting, url]) => (
+                <Button
+                  type="submit"
+                  disabled={addMutation.isPending || isSubmitting || !url.trim()}
+                  className="px-5 font-bold text-black bg-mm-accent shrink-0"
+                >
+                  {addMutation.isPending || isSubmitting ? 'Adding...' : 'Add Download'}
+                </Button>
+              )}
+            </form.Subscribe>
           </form>
         </div>
 
