@@ -1,7 +1,7 @@
-import { useForm } from '@tanstack/react-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useForm } from '@tanstack/react-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
@@ -15,22 +15,33 @@ import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { useAuth } from '../hooks/use-auth';
 import {
-  type BrowseInput,
   type BrowseEntry,
+  type BrowseInput,
   type CreateLibraryInput,
   type DiscoveredHost,
   type Library,
   type LibraryWithStats,
-  type TestConnectionInput,
-  type UpdateLibraryInput,
   libraryApi,
   libraryKeys,
+  type TestConnectionInput,
+  type UpdateLibraryInput,
 } from '../lib/api/library';
-import { hashName } from '../lib/gradient';
+import { collectionApi, collectionKeys, type RecentCollectionAnime } from '../lib/api/collection';
+import { animeGradient, hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
 
-type SourceType = 'local' | 'smb' | 'sftp' | 'webdav' | 's3' | 'ftp' | 'http' | 'gdrive' | 'onedrive' | 'dropbox';
+type SourceType =
+  | 'local'
+  | 'smb'
+  | 'sftp'
+  | 'webdav'
+  | 's3'
+  | 'ftp'
+  | 'http'
+  | 'gdrive'
+  | 'onedrive'
+  | 'dropbox';
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -60,11 +71,21 @@ function SourceIcon({ sourceType, className }: { sourceType: string; className?:
       </svg>
     );
   }
-  if (sourceType === 'webdav' || sourceType === 's3' || sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') {
+  if (
+    sourceType === 'webdav' ||
+    sourceType === 's3' ||
+    sourceType === 'gdrive' ||
+    sourceType === 'onedrive' ||
+    sourceType === 'dropbox'
+  ) {
     // Cloud icon
     return (
       <svg viewBox="0 0 48 48" fill="none" className={className}>
-        <path d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z" stroke="currentColor" strokeWidth="1.5" />
+        <path
+          d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
       </svg>
     );
   }
@@ -118,9 +139,12 @@ function LibraryCard({
   const scanProgress = useScanStore((s) => s.getProgress(lib.id));
   const isScanning = useScanStore((s) => s.isScanning(lib.id));
   const lastScannedDate = lib.last_scanned_at ? new Date(lib.last_scanned_at) : null;
-  const lastScanned = lastScannedDate && !Number.isNaN(lastScannedDate.getTime()) && lastScannedDate.getFullYear() > 2000
-    ? lastScannedDate.toLocaleDateString()
-    : i18n._(msg`library.neverScanned`);
+  const lastScanned =
+    lastScannedDate &&
+    !Number.isNaN(lastScannedDate.getTime()) &&
+    lastScannedDate.getFullYear() > 2000
+      ? lastScannedDate.toLocaleDateString()
+      : i18n._(msg`library.neverScanned`);
   const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
   const accentColor = cardAccentColor(lib.name);
 
@@ -153,12 +177,17 @@ function LibraryCard({
             </p>
             <p className="text-[10px] text-white/40">
               {scanProgress.filesFound > 0 && `${scanProgress.filesFound} files`}
-              {scanProgress.filesMatched > 0 && ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
+              {scanProgress.filesMatched > 0 &&
+                ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
             </p>
             {scanProgress.filesTotal > 0 && (
               <div className="w-full h-1 rounded-full bg-white/10 mt-1">
-                <div className="h-full rounded-full bg-mm-accent transition-all duration-300"
-                  style={{ width: `${(scanProgress.filesMatched / scanProgress.filesTotal) * 100}%` }} />
+                <div
+                  className="h-full rounded-full bg-mm-accent transition-all duration-300"
+                  style={{
+                    width: `${(scanProgress.filesMatched / scanProgress.filesTotal) * 100}%`,
+                  }}
+                />
               </div>
             )}
           </div>
@@ -166,13 +195,35 @@ function LibraryCard({
 
         {/* Hover actions */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60 pointer-events-none">
-          <button type="button" onClick={(e) => { e.stopPropagation(); onScan(); }} disabled={isScanning} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer pointer-events-auto">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onScan();
+            }}
+            disabled={isScanning}
+            className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer pointer-events-auto"
+          >
             {isScanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
           </button>
-          <button type="button" onClick={(e) => { e.stopPropagation(); onEdit(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer pointer-events-auto">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer pointer-events-auto"
+          >
             {i18n._(msg`library.edit`)}
           </button>
-          <button type="button" onClick={(e) => { e.stopPropagation(); onDelete(); }} className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer pointer-events-auto">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer pointer-events-auto"
+          >
             {i18n._(msg`library.delete`)}
           </button>
         </div>
@@ -215,7 +266,9 @@ function AddCard({ onClick }: { onClick: () => void }) {
       <div className="h-44 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 rounded-full border border-white/[0.1] flex items-center justify-center group-hover:border-white/20 transition-colors">
-            <span className="text-lg text-white/40 group-hover:text-white/60 transition-colors">+</span>
+            <span className="text-lg text-white/40 group-hover:text-white/60 transition-colors">
+              +
+            </span>
           </div>
           <div>
             <p className="text-sm font-medium text-white/40 group-hover:text-white/60 transition-colors">
@@ -248,9 +301,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       <h2 className="text-xl font-semibold text-white/70 mb-2">
         {i18n._(msg`home.library.empty.title`)}
       </h2>
-      <p className="text-sm text-white/30 mb-8">
-        {i18n._(msg`home.library.empty.subtitle`)}
-      </p>
+      <p className="text-sm text-white/30 mb-8">{i18n._(msg`home.library.empty.subtitle`)}</p>
       <button
         type="button"
         onClick={onAdd}
@@ -306,7 +357,6 @@ interface LibraryFormValues {
 const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
 const inputClass =
   'bg-white/[0.06] border-none focus:ring-1 focus:ring-mm-accent/50 text-white rounded-md';
-
 
 // ─── Test connection button ───────────────────────────────────────────────────
 function TestConnectionButton({
@@ -414,16 +464,14 @@ function FolderBrowser({
   }, [autoLoad]);
 
   const breadcrumbs = browsePath === '/' ? [] : browsePath.split('/').filter(Boolean);
-  const displayBreadcrumbs = selectedShare
-    ? [selectedShare, ...breadcrumbs]
-    : breadcrumbs;
+  const displayBreadcrumbs = selectedShare ? [selectedShare, ...breadcrumbs] : breadcrumbs;
 
   const handleCrumbClick = (index: number) => {
     if (selectedShare) {
       if (index === 0) {
         // Click on share name → go back to share list
         setSelectedShare('');
-        void('');
+        void '';
         const config = getSourceConfig();
         delete config.share;
         doBrowse('/', config);
@@ -457,7 +505,7 @@ function FolderBrowser({
       return;
     }
     doBrowse(entry.path);
-    void(entry.path);
+    void entry.path;
   };
 
   const handleSelectFolder = () => {
@@ -486,7 +534,9 @@ function FolderBrowser({
               onClick={() => handleCrumbClick(-1)}
               className={cn(
                 'text-xs shrink-0 transition-colors cursor-pointer',
-                breadcrumbs.length === 0 ? 'text-white/70 font-medium' : 'text-white/40 hover:text-white/60',
+                breadcrumbs.length === 0
+                  ? 'text-white/70 font-medium'
+                  : 'text-white/40 hover:text-white/60'
               )}
             >
               /
@@ -501,7 +551,7 @@ function FolderBrowser({
                     'text-xs transition-colors cursor-pointer',
                     i === displayBreadcrumbs.length - 1
                       ? 'text-white/70 font-medium'
-                      : 'text-white/40 hover:text-white/60',
+                      : 'text-white/40 hover:text-white/60'
                   )}
                 >
                   {segment}
@@ -530,7 +580,12 @@ function FolderBrowser({
                       animate={{ opacity: 1, scaleX: 1 }}
                       transition={{ delay: i * 0.05, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                       className="h-10 rounded-md bg-white/[0.03] origin-left"
-                      style={{ animationName: 'pulse', animationDuration: '1.5s', animationIterationCount: 'infinite', animationTimingFunction: 'ease-in-out' }}
+                      style={{
+                        animationName: 'pulse',
+                        animationDuration: '1.5s',
+                        animationIterationCount: 'infinite',
+                        animationTimingFunction: 'ease-in-out',
+                      }}
                     />
                   ))}
                 </motion.div>
@@ -546,7 +601,9 @@ function FolderBrowser({
                   transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                   className="flex items-center justify-center h-full"
                 >
-                  <p className="text-xs text-white/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
+                  <p className="text-xs text-white/30">
+                    {i18n._(msg`library.browse.noSubdirectories`)}
+                  </p>
                 </motion.div>
               )}
 
@@ -567,7 +624,9 @@ function FolderBrowser({
                       type="button"
                       onClick={() => {
                         if (breadcrumbs.length > 0) {
-                          handleCrumbClick(selectedShare ? breadcrumbs.length - 1 : breadcrumbs.length - 2);
+                          handleCrumbClick(
+                            selectedShare ? breadcrumbs.length - 1 : breadcrumbs.length - 2
+                          );
                         } else if (selectedShare) {
                           handleCrumbClick(0);
                         } else {
@@ -578,7 +637,11 @@ function FolderBrowser({
                     >
                       <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
                         <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
-                          <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
+                          <path
+                            d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                          />
                         </svg>
                       </div>
                       <span>..</span>
@@ -623,20 +686,30 @@ function FolderBrowser({
                   'w-full px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer flex items-center justify-center gap-2',
                   currentPath === browsePath
                     ? 'bg-mm-accent/15 border border-mm-accent/30 text-mm-accent'
-                    : 'bg-white/[0.06] border border-white/[0.08] text-white/70 hover:bg-white/[0.1] hover:border-white/[0.15] hover:text-white',
+                    : 'bg-white/[0.06] border border-white/[0.08] text-white/70 hover:bg-white/[0.1] hover:border-white/[0.15] hover:text-white'
                 )}
               >
                 {currentPath === browsePath ? (
                   <>
                     <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
-                      <path d="M5 10l3 3 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M5 10l3 3 7-7"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     {i18n._(msg`library.browse.selected`)}
                   </>
                 ) : (
                   <>
                     <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-white/40">
-                      <path d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke="currentColor" strokeWidth="1.2" />
+                      <path
+                        d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      />
                     </svg>
                     {i18n._(msg`library.browse.select`)}
                     <span className="font-mono text-xs text-white/40">{browsePath}</span>
@@ -685,7 +758,15 @@ function NetworkBrowser({
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-xs text-white/50">
             <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeDasharray="32" strokeLinecap="round" />
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeDasharray="32"
+                strokeLinecap="round"
+              />
             </svg>
             {i18n._(msg`library.discover.scanning`)}
           </div>
@@ -728,8 +809,24 @@ function NetworkBrowser({
                   {/* Server icon */}
                   <div className="shrink-0 w-8 h-8 rounded-md bg-white/[0.06] flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white/50">
-                      <rect x="4" y="5" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-                      <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                      <rect
+                        x="4"
+                        y="5"
+                        width="16"
+                        height="5"
+                        rx="1.5"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      />
+                      <rect
+                        x="4"
+                        y="14"
+                        width="16"
+                        height="5"
+                        rx="1.5"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      />
                       <circle cx="7" cy="7.5" r="0.8" fill="currentColor" />
                       <circle cx="7" cy="16.5" r="0.8" fill="currentColor" />
                     </svg>
@@ -765,7 +862,9 @@ function NetworkBrowser({
                                 type="button"
                                 onClick={() => {
                                   onSelect(host.ip, 445, share);
-                                  toast.success(`${i18n._(msg`library.browse.selected`)} ${label}/${share}`);
+                                  toast.success(
+                                    `${i18n._(msg`library.browse.selected`)} ${label}/${share}`
+                                  );
                                 }}
                                 className="px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-white/60 transition-colors cursor-pointer"
                               >
@@ -775,7 +874,9 @@ function NetworkBrowser({
                           </div>
                         ) : (
                           <div className="space-y-2">
-                            <p className="text-[11px] text-white/30">{i18n._(msg`library.discover.noShares`)}</p>
+                            <p className="text-[11px] text-white/30">
+                              {i18n._(msg`library.discover.noShares`)}
+                            </p>
                             <button
                               type="button"
                               onClick={() => {
@@ -872,7 +973,9 @@ function LibraryForm({
         <div className="flex-1">
           <form.Field
             name="name"
-            validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+            validators={{
+              onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined),
+            }}
           >
             {(field) => (
               <div className="space-y-1.5">
@@ -901,7 +1004,10 @@ function LibraryForm({
                 checked={field.state.value}
                 onCheckedChange={field.handleChange}
               />
-              <Label htmlFor="lib-enabled" className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/30">
+              <Label
+                htmlFor="lib-enabled"
+                className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/30"
+              >
                 {i18n._(msg`library.enabled`)}
               </Label>
             </div>
@@ -1100,7 +1206,11 @@ function LibraryForm({
                               : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
                           )}
                         >
-                          {v === 'nextcloud' ? 'Nextcloud' : v === 'owncloud' ? 'OwnCloud' : i18n._(msg`library.webdav.vendorOther`)}
+                          {v === 'nextcloud'
+                            ? 'Nextcloud'
+                            : v === 'owncloud'
+                              ? 'OwnCloud'
+                              : i18n._(msg`library.webdav.vendorOther`)}
                         </button>
                       ))}
                     </div>
@@ -1288,7 +1398,9 @@ function LibraryForm({
           )}
 
           {/* Rclone fields (gdrive/onedrive/dropbox) */}
-          {(fixedSourceType === 'gdrive' || fixedSourceType === 'onedrive' || fixedSourceType === 'dropbox') && (
+          {(fixedSourceType === 'gdrive' ||
+            fixedSourceType === 'onedrive' ||
+            fixedSourceType === 'dropbox') && (
             <>
               <RcloneRemotePicker
                 sourceType={fixedSourceType}
@@ -1318,7 +1430,9 @@ function LibraryForm({
           <div className="space-y-3">
             <form.Field
               name="path"
-              validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
+              validators={{
+                onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined),
+              }}
             >
               {(field) => (
                 <div className="space-y-1.5">
@@ -1436,9 +1550,7 @@ function RcloneRemotePicker({
         </div>
       )}
       {!isLoading && remotes.length === 0 && (
-        <p className="text-xs text-white/40 py-3">
-          {i18n._(msg`library.rclone.noRemotes`)}
-        </p>
+        <p className="text-xs text-white/40 py-3">{i18n._(msg`library.rclone.noRemotes`)}</p>
       )}
       {remotes.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
@@ -1472,7 +1584,11 @@ function AddLibraryWizard({
   // Icon components for reuse
   const folderIcon = (
     <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-      <path d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
     </svg>
   );
   const networkIcon = (
@@ -1487,13 +1603,24 @@ function AddLibraryWizard({
   const terminalIcon = (
     <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
       <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 20h6M12 26h10M12 32h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <text x="30" y="22" fontSize="8" fill="currentColor" fontFamily="monospace">$_</text>
+      <path
+        d="M12 20h6M12 26h10M12 32h4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <text x="30" y="22" fontSize="8" fill="currentColor" fontFamily="monospace">
+        $_
+      </text>
     </svg>
   );
   const cloudIcon = (
     <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-      <path d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M14 34a8 8 0 0 1-.5-16 11 11 0 0 1 21 0A8 8 0 0 1 34 34H14z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
     </svg>
   );
   const globeIcon = (
@@ -1518,14 +1645,28 @@ function AddLibraryWizard({
   );
   const onedriveIcon = (
     <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-      <path d="M18 34a7 7 0 0 1-1-13.9 9 9 0 0 1 17.2-1A7 7 0 0 1 36 34H18z" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M18 34a7 7 0 0 1-1-13.9 9 9 0 0 1 17.2-1A7 7 0 0 1 36 34H18z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
       <path d="M12 34a5 5 0 0 1 0-10h3" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
   const dropboxIcon = (
     <svg viewBox="0 0 48 48" fill="none" className="w-8 h-8">
-      <path d="M14 12l10 7-10 7 10 7-10 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M34 12l-10 7 10 7-10 7 10 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path
+        d="M14 12l10 7-10 7 10 7-10 7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M34 12l-10 7 10 7-10 7 10 7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 
@@ -1536,26 +1677,76 @@ function AddLibraryWizard({
     {
       label: i18n._(msg`library.wizard.section.storage`),
       cards: [
-        { key: 'local', name: i18n._(msg`library.sourceType.local`), desc: i18n._(msg`library.wizard.local.desc`), icon: folderIcon },
-        { key: 'smb', name: i18n._(msg`library.sourceType.smb`), desc: i18n._(msg`library.wizard.smb.desc`), icon: networkIcon },
-        { key: 'sftp', name: i18n._(msg`library.sourceType.sftp`), desc: i18n._(msg`library.wizard.sftp.desc`), icon: terminalIcon },
-        { key: 'ftp', name: i18n._(msg`library.wizard.ftp.name`), desc: i18n._(msg`library.wizard.ftp.desc`), icon: terminalIcon },
-        { key: 'http', name: i18n._(msg`library.wizard.http.name`), desc: i18n._(msg`library.wizard.http.desc`), icon: globeIcon },
+        {
+          key: 'local',
+          name: i18n._(msg`library.sourceType.local`),
+          desc: i18n._(msg`library.wizard.local.desc`),
+          icon: folderIcon,
+        },
+        {
+          key: 'smb',
+          name: i18n._(msg`library.sourceType.smb`),
+          desc: i18n._(msg`library.wizard.smb.desc`),
+          icon: networkIcon,
+        },
+        {
+          key: 'sftp',
+          name: i18n._(msg`library.sourceType.sftp`),
+          desc: i18n._(msg`library.wizard.sftp.desc`),
+          icon: terminalIcon,
+        },
+        {
+          key: 'ftp',
+          name: i18n._(msg`library.wizard.ftp.name`),
+          desc: i18n._(msg`library.wizard.ftp.desc`),
+          icon: terminalIcon,
+        },
+        {
+          key: 'http',
+          name: i18n._(msg`library.wizard.http.name`),
+          desc: i18n._(msg`library.wizard.http.desc`),
+          icon: globeIcon,
+        },
       ],
     },
     {
       label: i18n._(msg`library.wizard.section.cloud`),
       cards: [
-        { key: 'webdav', name: i18n._(msg`library.wizard.webdav.name`), desc: i18n._(msg`library.wizard.webdav.desc`), icon: cloudIcon },
-        { key: 's3', name: i18n._(msg`library.wizard.s3.name`), desc: i18n._(msg`library.wizard.s3.desc`), icon: bucketIcon },
+        {
+          key: 'webdav',
+          name: i18n._(msg`library.wizard.webdav.name`),
+          desc: i18n._(msg`library.wizard.webdav.desc`),
+          icon: cloudIcon,
+        },
+        {
+          key: 's3',
+          name: i18n._(msg`library.wizard.s3.name`),
+          desc: i18n._(msg`library.wizard.s3.desc`),
+          icon: bucketIcon,
+        },
       ],
     },
     {
       label: i18n._(msg`library.wizard.section.rclone`),
       cards: [
-        { key: 'gdrive', name: i18n._(msg`library.wizard.gdrive.name`), desc: i18n._(msg`library.wizard.gdrive.desc`), icon: driveIcon },
-        { key: 'onedrive', name: i18n._(msg`library.wizard.onedrive.name`), desc: i18n._(msg`library.wizard.onedrive.desc`), icon: onedriveIcon },
-        { key: 'dropbox', name: i18n._(msg`library.wizard.dropbox.name`), desc: i18n._(msg`library.wizard.dropbox.desc`), icon: dropboxIcon },
+        {
+          key: 'gdrive',
+          name: i18n._(msg`library.wizard.gdrive.name`),
+          desc: i18n._(msg`library.wizard.gdrive.desc`),
+          icon: driveIcon,
+        },
+        {
+          key: 'onedrive',
+          name: i18n._(msg`library.wizard.onedrive.name`),
+          desc: i18n._(msg`library.wizard.onedrive.desc`),
+          icon: onedriveIcon,
+        },
+        {
+          key: 'dropbox',
+          name: i18n._(msg`library.wizard.dropbox.name`),
+          desc: i18n._(msg`library.wizard.dropbox.desc`),
+          icon: dropboxIcon,
+        },
       ],
     },
   ];
@@ -1598,9 +1789,7 @@ function AddLibraryWizard({
             transition={{ duration: 0.18 }}
             className="space-y-3"
           >
-            <p className="text-xs text-white/40 mb-4">
-              {i18n._(msg`library.wizard.chooseSource`)}
-            </p>
+            <p className="text-xs text-white/40 mb-4">{i18n._(msg`library.wizard.chooseSource`)}</p>
             <div className="max-h-[60vh] overflow-y-auto space-y-5">
               {sourceSections.map((section) => (
                 <div key={section.label}>
@@ -1618,7 +1807,9 @@ function AddLibraryWizard({
                         <div className="text-white/40">{card.icon}</div>
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-white/80">{card.name}</p>
-                          <p className="text-[11px] text-white/35 mt-0.5 leading-snug">{card.desc}</p>
+                          <p className="text-[11px] text-white/35 mt-0.5 leading-snug">
+                            {card.desc}
+                          </p>
                         </div>
                       </button>
                     ))}
@@ -1641,7 +1832,10 @@ function AddLibraryWizard({
             {/* Back link */}
             <button
               type="button"
-              onClick={() => { setStep('source'); setSmbStep('server'); }}
+              onClick={() => {
+                setStep('source');
+                setSmbStep('server');
+              }}
               className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors mb-4 cursor-pointer"
             >
               <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
@@ -1668,7 +1862,10 @@ function AddLibraryWizard({
               {sourceType !== 'smb' && (
                 <form.Field
                   name="name"
-                  validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+                  validators={{
+                    onChange: ({ value }) =>
+                      !value ? i18n._(msg`library.nameRequired`) : undefined,
+                  }}
                 >
                   {(field) => (
                     <div className="space-y-1.5">
@@ -1695,12 +1892,30 @@ function AddLibraryWizard({
                 <div className="space-y-5">
                   {/* Step indicator */}
                   <div className="flex items-center gap-2 text-xs">
-                    {([
-                      { key: 'server' as const, label: i18n._(msg`library.wizard.smb.server`), num: '1' },
-                      { key: 'credentials' as const, label: i18n._(msg`library.wizard.smb.credentials`), num: '2' },
-                      { key: 'folder' as const, label: i18n._(msg`library.wizard.smb.folder`), num: '3' },
-                    ] as const).map((s, idx) => {
-                      const steps: ('server' | 'credentials' | 'folder')[] = ['server', 'credentials', 'folder'];
+                    {(
+                      [
+                        {
+                          key: 'server' as const,
+                          label: i18n._(msg`library.wizard.smb.server`),
+                          num: '1',
+                        },
+                        {
+                          key: 'credentials' as const,
+                          label: i18n._(msg`library.wizard.smb.credentials`),
+                          num: '2',
+                        },
+                        {
+                          key: 'folder' as const,
+                          label: i18n._(msg`library.wizard.smb.folder`),
+                          num: '3',
+                        },
+                      ] as const
+                    ).map((s, idx) => {
+                      const steps: ('server' | 'credentials' | 'folder')[] = [
+                        'server',
+                        'credentials',
+                        'folder',
+                      ];
                       const currentIdx = steps.indexOf(smbStep);
                       const stepIdx = steps.indexOf(s.key);
                       const isActive = smbStep === s.key;
@@ -1708,20 +1923,24 @@ function AddLibraryWizard({
                       return (
                         <span key={s.key} className="flex items-center gap-2">
                           {idx > 0 && <span className="text-white/15">&#8212;</span>}
-                          <span className={cn(
-                            'font-bold transition-colors',
-                            isActive && 'text-white',
-                            isCompleted && 'text-green-400',
-                            !isActive && !isCompleted && 'text-white/25',
-                          )}>
+                          <span
+                            className={cn(
+                              'font-bold transition-colors',
+                              isActive && 'text-white',
+                              isCompleted && 'text-green-400',
+                              !isActive && !isCompleted && 'text-white/25'
+                            )}
+                          >
                             {isCompleted ? '\u2713' : s.num}
                           </span>
-                          <span className={cn(
-                            'transition-colors',
-                            isActive && 'text-white/70',
-                            isCompleted && 'text-green-400/70',
-                            !isActive && !isCompleted && 'text-white/25',
-                          )}>
+                          <span
+                            className={cn(
+                              'transition-colors',
+                              isActive && 'text-white/70',
+                              isCompleted && 'text-green-400/70',
+                              !isActive && !isCompleted && 'text-white/25'
+                            )}
+                          >
                             {s.label}
                           </span>
                         </span>
@@ -1741,7 +1960,9 @@ function AddLibraryWizard({
                         transition={{ duration: 0.2 }}
                         className="space-y-4"
                       >
-                        <p className="text-xs text-white/40">{i18n._(msg`library.wizard.smb.chooseServer`)}</p>
+                        <p className="text-xs text-white/40">
+                          {i18n._(msg`library.wizard.smb.chooseServer`)}
+                        </p>
                         <NetworkBrowser
                           autoDiscover
                           onSelect={(host, port) => {
@@ -1760,7 +1981,9 @@ function AddLibraryWizard({
 
                         {/* Manual entry */}
                         <div className="space-y-2 pt-2">
-                          <p className="text-[11px] text-white/30">{i18n._(msg`library.wizard.smb.enterManually`)}</p>
+                          <p className="text-[11px] text-white/30">
+                            {i18n._(msg`library.wizard.smb.enterManually`)}
+                          </p>
                           <div className="flex gap-2">
                             <Input
                               value={manualSmbHost}
@@ -1805,19 +2028,43 @@ function AddLibraryWizard({
                         className="space-y-4"
                       >
                         {/* Selected server summary */}
-                        <form.Subscribe selector={(s) => ({ host: s.values.smb_host, port: s.values.smb_port })}>
+                        <form.Subscribe
+                          selector={(s) => ({ host: s.values.smb_host, port: s.values.smb_port })}
+                        >
                           {({ host, port }) => (
                             <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
                               <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-white/50">
-                                  <rect x="4" y="5" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-                                  <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  className="w-3.5 h-3.5 text-white/50"
+                                >
+                                  <rect
+                                    x="4"
+                                    y="5"
+                                    width="16"
+                                    height="5"
+                                    rx="1.5"
+                                    stroke="currentColor"
+                                    strokeWidth="1.2"
+                                  />
+                                  <rect
+                                    x="4"
+                                    y="14"
+                                    width="16"
+                                    height="5"
+                                    rx="1.5"
+                                    stroke="currentColor"
+                                    strokeWidth="1.2"
+                                  />
                                   <circle cx="7" cy="7.5" r="0.8" fill="currentColor" />
                                   <circle cx="7" cy="16.5" r="0.8" fill="currentColor" />
                                 </svg>
                               </div>
                               <span className="text-sm text-white/70 font-medium">{host}</span>
-                              {port !== 445 && <span className="text-[11px] text-white/30">:{port}</span>}
+                              {port !== 445 && (
+                                <span className="text-[11px] text-white/30">:{port}</span>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => setSmbStep('server')}
@@ -1833,7 +2080,9 @@ function AddLibraryWizard({
                           <form.Field name="smb_username">
                             {(field) => (
                               <div className="space-y-1.5">
-                                <Label className={labelClass}>{i18n._(msg`library.smb.username`)}</Label>
+                                <Label className={labelClass}>
+                                  {i18n._(msg`library.smb.username`)}
+                                </Label>
                                 <Input
                                   value={field.state.value}
                                   onChange={(e) => field.handleChange(e.target.value)}
@@ -1846,7 +2095,9 @@ function AddLibraryWizard({
                           <form.Field name="smb_password">
                             {(field) => (
                               <div className="space-y-1.5">
-                                <Label className={labelClass}>{i18n._(msg`library.smb.password`)}</Label>
+                                <Label className={labelClass}>
+                                  {i18n._(msg`library.smb.password`)}
+                                </Label>
                                 <Input
                                   type="password"
                                   value={field.state.value}
@@ -1862,7 +2113,9 @@ function AddLibraryWizard({
                               <div className="space-y-1.5">
                                 <Label className={labelClass}>
                                   {i18n._(msg`library.smb.domain`)}
-                                  <span className="ml-1.5 text-white/25 normal-case tracking-normal font-normal">({i18n._(msg`library.wizard.optional`)})</span>
+                                  <span className="ml-1.5 text-white/25 normal-case tracking-normal font-normal">
+                                    ({i18n._(msg`library.wizard.optional`)})
+                                  </span>
                                 </Label>
                                 <Input
                                   value={field.state.value}
@@ -1897,15 +2150,44 @@ function AddLibraryWizard({
                         className="space-y-4"
                       >
                         {/* Summary line */}
-                        <form.Subscribe selector={(s) => ({ host: s.values.smb_host, user: s.values.smb_username })}>
+                        <form.Subscribe
+                          selector={(s) => ({
+                            host: s.values.smb_host,
+                            user: s.values.smb_username,
+                          })}
+                        >
                           {({ host, user }) => (
                             <div className="flex items-center gap-2 text-xs text-white/40">
-                              <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-white/30">
-                                <rect x="4" y="5" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-                                <rect x="4" y="14" width="16" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                className="w-3.5 h-3.5 text-white/30"
+                              >
+                                <rect
+                                  x="4"
+                                  y="5"
+                                  width="16"
+                                  height="5"
+                                  rx="1.5"
+                                  stroke="currentColor"
+                                  strokeWidth="1.2"
+                                />
+                                <rect
+                                  x="4"
+                                  y="14"
+                                  width="16"
+                                  height="5"
+                                  rx="1.5"
+                                  stroke="currentColor"
+                                  strokeWidth="1.2"
+                                />
                               </svg>
                               <span>{host}</span>
-                              {user && <span>{i18n._(msg`library.wizard.smb.asUser`)} {user}</span>}
+                              {user && (
+                                <span>
+                                  {i18n._(msg`library.wizard.smb.asUser`)} {user}
+                                </span>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => setSmbStep('credentials')}
@@ -1918,15 +2200,17 @@ function AddLibraryWizard({
                         </form.Subscribe>
 
                         {/* Folder browser — auto-loads shares */}
-                        <form.Subscribe selector={(s) => ({
-                          path: s.values.path,
-                          smb_host: s.values.smb_host,
-                          smb_port: s.values.smb_port,
-                          smb_share: s.values.smb_share,
-                          smb_username: s.values.smb_username,
-                          smb_password: s.values.smb_password,
-                          smb_domain: s.values.smb_domain,
-                        })}>
+                        <form.Subscribe
+                          selector={(s) => ({
+                            path: s.values.path,
+                            smb_host: s.values.smb_host,
+                            smb_port: s.values.smb_port,
+                            smb_share: s.values.smb_share,
+                            smb_username: s.values.smb_username,
+                            smb_password: s.values.smb_password,
+                            smb_domain: s.values.smb_domain,
+                          })}
+                        >
                           {(vals) => (
                             <FolderBrowser
                               sourceType="smb"
@@ -1953,14 +2237,17 @@ function AddLibraryWizard({
                         {/* Library name */}
                         <form.Field
                           name="name"
-                          validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.nameRequired`) : undefined) }}
+                          validators={{
+                            onChange: ({ value }) =>
+                              !value ? i18n._(msg`library.nameRequired`) : undefined,
+                          }}
                         >
                           {(field) => (
                             <div className="space-y-1.5 mt-5 pt-5 border-t border-white/[0.06] px-1">
                               <Label htmlFor="wiz-name-smb" className={labelClass}>
                                 {i18n._(msg`library.name`)}
                                 <span className="ml-2 font-normal normal-case tracking-normal text-white/25">
-                                    — {i18n._(msg`library.wizard.smb.nameHint`)}
+                                  — {i18n._(msg`library.wizard.smb.nameHint`)}
                                 </span>
                               </Label>
                               <Input
@@ -1971,23 +2258,29 @@ function AddLibraryWizard({
                                 className={inputClass}
                               />
                               {field.state.meta.errors[0] && (
-                                <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                                <p className="text-xs text-red-400">
+                                  {String(field.state.meta.errors[0])}
+                                </p>
                               )}
                             </div>
                           )}
                         </form.Field>
 
                         {/* Submit */}
-                        <form.Subscribe selector={(s) => ({ isSubmitting: s.isSubmitting, path: s.values.path })}>
+                        <form.Subscribe
+                          selector={(s) => ({ isSubmitting: s.isSubmitting, path: s.values.path })}
+                        >
                           {({ isSubmitting, path }) => (
                             <div className="px-1">
-                            <Button
-                              type="submit"
-                              disabled={isSubmitting || !path}
-                              className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
-                            >
-                              {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
-                            </Button>
+                              <Button
+                                type="submit"
+                                disabled={isSubmitting || !path}
+                                className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
+                              >
+                                {isSubmitting
+                                  ? i18n._(msg`library.saving`)
+                                  : i18n._(msg`library.addLibrary`)}
+                              </Button>
                             </div>
                           )}
                         </form.Subscribe>
@@ -2090,7 +2383,11 @@ function AddLibraryWizard({
                                   : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
                               )}
                             >
-                              {v === 'nextcloud' ? 'Nextcloud' : v === 'owncloud' ? 'OwnCloud' : i18n._(msg`library.webdav.vendorOther`)}
+                              {v === 'nextcloud'
+                                ? 'Nextcloud'
+                                : v === 'owncloud'
+                                  ? 'OwnCloud'
+                                  : i18n._(msg`library.webdav.vendorOther`)}
                             </button>
                           ))}
                         </div>
@@ -2272,7 +2569,9 @@ function AddLibraryWizard({
                           placeholder="https://example.com/media/"
                           className={cn('font-mono text-sm', inputClass)}
                         />
-                        <p className="text-[11px] text-white/30">{i18n._(msg`library.http.readOnly`)}</p>
+                        <p className="text-[11px] text-white/30">
+                          {i18n._(msg`library.http.readOnly`)}
+                        </p>
                       </div>
                     )}
                   </form.Field>
@@ -2280,18 +2579,24 @@ function AddLibraryWizard({
               )}
 
               {/* ── Rclone import fields (gdrive/onedrive/dropbox) ── */}
-              {(sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') && (
+              {(sourceType === 'gdrive' ||
+                sourceType === 'onedrive' ||
+                sourceType === 'dropbox') && (
                 <RcloneRemotePicker
                   sourceType={sourceType}
                   onSelect={(remoteName) => form.setFieldValue('rclone_remote_name', remoteName)}
                 />
               )}
-              {(sourceType === 'gdrive' || sourceType === 'onedrive' || sourceType === 'dropbox') && (
+              {(sourceType === 'gdrive' ||
+                sourceType === 'onedrive' ||
+                sourceType === 'dropbox') && (
                 <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
                   <form.Field name="rclone_remote_name">
                     {(field) => (
                       <div className="space-y-1.5">
-                        <Label className={labelClass}>{i18n._(msg`library.rclone.remoteName`)}</Label>
+                        <Label className={labelClass}>
+                          {i18n._(msg`library.rclone.remoteName`)}
+                        </Label>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2311,7 +2616,10 @@ function AddLibraryWizard({
                     <div className="space-y-3">
                       <form.Field
                         name="path"
-                        validators={{ onChange: ({ value }) => (!value ? i18n._(msg`library.pathRequired`) : undefined) }}
+                        validators={{
+                          onChange: ({ value }) =>
+                            !value ? i18n._(msg`library.pathRequired`) : undefined,
+                        }}
                       >
                         {(field) => (
                           <div className="space-y-1.5">
@@ -2322,11 +2630,15 @@ function AddLibraryWizard({
                               id="wiz-path"
                               value={field.state.value}
                               onChange={(e) => field.handleChange(e.target.value)}
-                              placeholder={sourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                              placeholder={
+                                sourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'
+                              }
                               className={cn('font-mono text-sm', inputClass)}
                             />
                             {field.state.meta.errors[0] && (
-                              <p className="text-xs text-red-400">{String(field.state.meta.errors[0])}</p>
+                              <p className="text-xs text-red-400">
+                                {String(field.state.meta.errors[0])}
+                              </p>
                             )}
                           </div>
                         )}
@@ -2336,7 +2648,9 @@ function AddLibraryWizard({
                       {sourceType !== 'local' && (
                         <FolderBrowser
                           sourceType={sourceType}
-                          getSourceConfig={() => buildSourceConfig({ ...values, source_type: sourceType }) ?? {}}
+                          getSourceConfig={() =>
+                            buildSourceConfig({ ...values, source_type: sourceType }) ?? {}
+                          }
                           currentPath={values.path}
                           onSelect={(path) => form.setFieldValue('path', path)}
                         />
@@ -2347,7 +2661,8 @@ function AddLibraryWizard({
                         <TestConnectionButton
                           getConnectionInput={() => ({
                             source_type: sourceType,
-                            source_config: buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
+                            source_config:
+                              buildSourceConfig({ ...values, source_type: sourceType }) ?? {},
                             path: values.path,
                           })}
                         />
@@ -2430,7 +2745,9 @@ function AddLibraryWizard({
                         disabled={isSubmitting}
                         className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
                       >
-                        {isSubmitting ? i18n._(msg`library.saving`) : i18n._(msg`library.addLibrary`)}
+                        {isSubmitting
+                          ? i18n._(msg`library.saving`)
+                          : i18n._(msg`library.addLibrary`)}
                       </Button>
                     )}
                   </form.Subscribe>
@@ -2494,7 +2811,11 @@ function buildSourceConfig(values: LibraryFormValues): Record<string, unknown> |
       url: values.http_url,
     };
   }
-  if (values.source_type === 'gdrive' || values.source_type === 'onedrive' || values.source_type === 'dropbox') {
+  if (
+    values.source_type === 'gdrive' ||
+    values.source_type === 'onedrive' ||
+    values.source_type === 'dropbox'
+  ) {
     return {
       remote_name: values.rclone_remote_name,
     };
@@ -2535,6 +2856,90 @@ function formDefaultValues(lib?: Library): LibraryFormValues {
     http_url: '',
     rclone_remote_name: '',
   };
+}
+
+// ─── Recently Matched Preview ─────────────────────────────────────────────────
+function RecentlyMatchedCard({
+  anime,
+  index,
+}: {
+  anime: RecentCollectionAnime;
+  index: number;
+}) {
+  const navigate = useNavigate();
+  const title = anime.title_zh ?? anime.title;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        delay: index * 0.03,
+        duration: 0.22,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }}
+      className="w-[120px] flex-shrink-0 cursor-pointer group"
+      onClick={() =>
+        anime.bangumi_id &&
+        navigate({ to: '/anime/$id', params: { id: String(anime.bangumi_id) } })
+      }
+    >
+      {/* Poster */}
+      <div className="aspect-[3/4] rounded-md overflow-hidden mb-1.5">
+        {anime.cover_image_url ? (
+          <img
+            src={anime.cover_image_url}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div
+            className="w-full h-full group-hover:scale-105 transition-transform duration-300"
+            style={{ background: animeGradient(anime.title) }}
+          />
+        )}
+      </div>
+      {/* Title */}
+      <p className="text-xs text-white/80 line-clamp-2 leading-tight">{title}</p>
+      {/* Episode count */}
+      <p className="text-[10px] text-white/40 mt-0.5">
+        {anime.local_file_count}/{anime.total_episodes ?? '?'} 集
+      </p>
+    </motion.div>
+  );
+}
+
+function RecentlyMatchedPreview() {
+  const { i18n } = useLingui();
+  const { data } = useQuery({
+    queryKey: collectionKeys.recent(),
+    queryFn: collectionApi.recent,
+  });
+
+  if (!data || data.length === 0) return null;
+
+  return (
+    <div className="px-8 mb-8">
+      {/* Header row */}
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-sm font-semibold text-white/60 uppercase tracking-wider">
+          {i18n._(msg`collection.recentlyMatched`)}
+        </span>
+        <a
+          href="/collection"
+          className="text-xs text-amber-400/80 hover:text-amber-400 transition-colors"
+        >
+          {i18n._(msg`collection.viewAll`)} →
+        </a>
+      </div>
+      {/* Scroll strip */}
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        {data.map((anime, i) => (
+          <RecentlyMatchedCard key={anime.id} anime={anime} index={i} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -2614,7 +3019,16 @@ export function LibrariesPage() {
                 stroke="currentColor"
                 strokeWidth="1.5"
               />
-              <rect x="16" y="30" width="48" height="36" rx="4" stroke="currentColor" strokeWidth="1.5" fill="currentColor" />
+              <rect
+                x="16"
+                y="30"
+                width="48"
+                height="36"
+                rx="4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="currentColor"
+              />
               <circle cx="40" cy="46" r="4" fill="oklch(12% 0.01 260)" />
             </svg>
           </div>
@@ -2631,10 +3045,7 @@ export function LibrariesPage() {
           >
             {i18n._(msg`auth.login.submit`)}
           </button>
-          <LoginModal
-            open={showLogin}
-            onClose={() => setShowLogin(false)}
-          />
+          <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
         </div>
       </PageTransition>
     );
@@ -2666,7 +3077,7 @@ export function LibrariesPage() {
                 <button
                   type="button"
                   onClick={() => setDrawerMode('add')}
-                  className="px-4 py-2 text-sm font-medium rounded-md bg-mm-accent/10 border border-mm-accent/20 text-mm-accent hover:bg-mm-accent/20 transition-colors cursor-pointer"
+                  className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
                 >
                   + {i18n._(msg`library.addLibrary`)}
                 </button>
@@ -2674,6 +3085,9 @@ export function LibrariesPage() {
             </div>
           </div>
         )}
+
+        {/* Recently Matched Preview */}
+        <RecentlyMatchedPreview />
 
         {/* Grid */}
         <div className="px-8 pb-16">
