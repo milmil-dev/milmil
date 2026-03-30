@@ -39,6 +39,19 @@ export interface UserReview {
   avatar?: string;
 }
 
+export interface AnimeCharacterPerson {
+  id: number;
+  name: string;
+  name_native?: string;
+  image?: string;
+}
+
+export interface AnimeCharacter {
+  role: string; // "MAIN" | "SUPPORTING"
+  character: AnimeCharacterPerson;
+  voice_actor?: AnimeCharacterPerson;
+}
+
 export interface AnimeDetail extends AnimeSummary {
   synopsis: string;
   banner_image?: string;
@@ -49,6 +62,7 @@ export interface AnimeDetail extends AnimeSummary {
   relations?: RelatedAnime[];
   recommendations?: AnimeSummary[];
   reviews?: UserReview[];
+  characters?: AnimeCharacter[];
 }
 
 export interface CalendarDay {

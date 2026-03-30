@@ -17,6 +17,12 @@ msgstr "本機帳號"
 msgid "account.logout"
 msgstr "登出"
 
+msgid "anime.characters"
+msgstr "角色"
+
+msgid "anime.voiceActor"
+msgstr "聲優"
+
 #: src/pages/AnimeDetailPage.tsx:423
 msgid "anime.comments"
 msgstr "吐槽"

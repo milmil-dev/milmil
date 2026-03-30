@@ -381,6 +381,31 @@ func (s *Service) GetAnimeDetail(ctx context.Context, bangumiID int) (*AnimeDeta
 					})
 				}
 			}
+
+			// Characters
+			if media.Characters != nil {
+				for _, edge := range media.Characters.Edges {
+					char := AnimeCharacter{
+						Role: edge.Role,
+						Character: CharacterPerson{
+							ID:         edge.Node.ID,
+							Name:       edge.Node.Name.Full,
+							NameNative: edge.Node.Name.Native,
+							Image:      edge.Node.Image.Medium,
+						},
+					}
+					if len(edge.VoiceActors) > 0 {
+						va := edge.VoiceActors[0]
+						char.VoiceActor = &CharacterPerson{
+							ID:         va.ID,
+							Name:       va.Name.Full,
+							NameNative: va.Name.Native,
+							Image:      va.Image.Medium,
+						}
+					}
+					detail.Characters = append(detail.Characters, char)
+				}
+			}
 		}
 	}
 

@@ -1,23 +1,66 @@
 package anilist
 
 type Media struct {
-	ID              int              `json:"id"`
-	Title           MediaTitle       `json:"title"`
-	Description     string           `json:"description"`
-	CoverImage      CoverImage       `json:"coverImage"`
-	BannerImage     string           `json:"bannerImage"`
-	Trailer         *MediaTrailer    `json:"trailer,omitempty"`
-	Popularity      int              `json:"popularity"`
-	AverageScore    int              `json:"averageScore"`
-	Episodes        int              `json:"episodes"`
-	Status          string           `json:"status"`
-	Season          string           `json:"season"`
-	SeasonYear      int              `json:"seasonYear"`
-	Format          string           `json:"format"`
-	Genres          []string         `json:"genres"`
-	Relations       *MediaConnection `json:"relations,omitempty"`
-	Recommendations *RecConnection   `json:"recommendations,omitempty"`
-	Reviews         *ReviewConnection `json:"reviews,omitempty"`
+	ID              int                  `json:"id"`
+	Title           MediaTitle           `json:"title"`
+	Description     string               `json:"description"`
+	CoverImage      CoverImage           `json:"coverImage"`
+	BannerImage     string               `json:"bannerImage"`
+	Trailer         *MediaTrailer        `json:"trailer,omitempty"`
+	Popularity      int                  `json:"popularity"`
+	AverageScore    int                  `json:"averageScore"`
+	Episodes        int                  `json:"episodes"`
+	Status          string               `json:"status"`
+	Season          string               `json:"season"`
+	SeasonYear      int                  `json:"seasonYear"`
+	Format          string               `json:"format"`
+	Genres          []string             `json:"genres"`
+	Relations       *MediaConnection     `json:"relations,omitempty"`
+	Recommendations *RecConnection       `json:"recommendations,omitempty"`
+	Reviews         *ReviewConnection    `json:"reviews,omitempty"`
+	Characters      *CharacterConnection `json:"characters,omitempty"`
+}
+
+// Character types
+
+type CharacterName struct {
+	Full   string `json:"full"`
+	Native string `json:"native"`
+}
+
+type CharacterImage struct {
+	Medium string `json:"medium"`
+}
+
+type Character struct {
+	ID    int            `json:"id"`
+	Name  CharacterName  `json:"name"`
+	Image CharacterImage `json:"image"`
+}
+
+type StaffName struct {
+	Full   string `json:"full"`
+	Native string `json:"native"`
+}
+
+type StaffImage struct {
+	Medium string `json:"medium"`
+}
+
+type Staff struct {
+	ID    int        `json:"id"`
+	Name  StaffName  `json:"name"`
+	Image StaffImage `json:"image"`
+}
+
+type CharacterEdge struct {
+	Role        string    `json:"role"`
+	Node        Character `json:"node"`
+	VoiceActors []Staff   `json:"voiceActors"`
+}
+
+type CharacterConnection struct {
+	Edges []CharacterEdge `json:"edges"`
 }
 
 type MediaTrailer struct {

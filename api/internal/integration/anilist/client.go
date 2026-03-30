@@ -47,6 +47,21 @@ const mediaFieldsWithRelations = mediaFields + `
 			user { name avatar { medium } }
 		}
 	}
+	characters(sort: [ROLE, RELEVANCE], perPage: 10) {
+		edges {
+			role
+			node {
+				id
+				name { full native }
+				image { medium }
+			}
+			voiceActors(language: JAPANESE) {
+				id
+				name { full native }
+				image { medium }
+			}
+		}
+	}
 `
 
 type Client interface {

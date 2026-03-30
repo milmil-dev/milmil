@@ -18,15 +18,29 @@ type AnimeSummary struct {
 
 type AnimeDetail struct {
 	AnimeSummary
-	Synopsis        string         `json:"synopsis"`
-	BannerImage     string         `json:"banner_image,omitempty"`
-	TrailerURL      string         `json:"trailer_url,omitempty"`
-	Tags            []string       `json:"tags"`
-	Popularity      int            `json:"popularity,omitempty"`
-	Rating          Rating         `json:"rating"`
-	Relations       []RelatedAnime `json:"relations,omitempty"`
-	Recommendations []AnimeSummary `json:"recommendations,omitempty"`
-	Reviews         []UserReview   `json:"reviews,omitempty"`
+	Synopsis        string           `json:"synopsis"`
+	BannerImage     string           `json:"banner_image,omitempty"`
+	TrailerURL      string           `json:"trailer_url,omitempty"`
+	Tags            []string         `json:"tags"`
+	Popularity      int              `json:"popularity,omitempty"`
+	Rating          Rating           `json:"rating"`
+	Relations       []RelatedAnime   `json:"relations,omitempty"`
+	Recommendations []AnimeSummary   `json:"recommendations,omitempty"`
+	Reviews         []UserReview     `json:"reviews,omitempty"`
+	Characters      []AnimeCharacter `json:"characters,omitempty"`
+}
+
+type AnimeCharacter struct {
+	Role      string          `json:"role"` // "MAIN" | "SUPPORTING"
+	Character CharacterPerson `json:"character"`
+	VoiceActor *CharacterPerson `json:"voice_actor,omitempty"`
+}
+
+type CharacterPerson struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	NameNative  string `json:"name_native,omitempty"`
+	Image       string `json:"image,omitempty"`
 }
 
 type RelatedAnime struct {

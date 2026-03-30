@@ -20,6 +20,12 @@ msgstr "Local account"
 msgid "account.logout"
 msgstr "Log out"
 
+msgid "anime.characters"
+msgstr "Characters"
+
+msgid "anime.voiceActor"
+msgstr "CV"
+
 msgid "anime.comments"
 msgstr "Comments"
 

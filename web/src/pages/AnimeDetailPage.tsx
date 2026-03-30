@@ -37,6 +37,7 @@ import { Button } from '../components/ui/button';
 import { animeApi, animeKeys } from '../lib/api/anime';
 import { collectionApi, collectionKeys } from '../lib/api/collection';
 import type { PlayableEpisode } from '../lib/api/anime';
+import type { AnimeCharacter } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useAuth } from '../hooks/use-auth';
@@ -96,6 +97,89 @@ function buildSeasonChain(
   return chain;
 }
 
+function ScoreSelector({ score, onChange, disabled }: {
+  score: number | null;
+  onChange: (score: number | null) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: 10 }, (_, i) => (
+        <button
+          key={i}
+          type="button"
+          disabled={disabled}
+          onClick={() => {
+            // Clicking the same score again clears it
+            onChange(score === i + 1 ? null : i + 1);
+          }}
+          className={cn(
+            "w-2.5 h-2.5 rounded-full transition-colors cursor-pointer disabled:cursor-not-allowed",
+            score != null && i < score
+              ? "bg-mm-accent"
+              : "bg-white/[0.10] hover:bg-white/[0.20]"
+          )}
+          title={`${i + 1}/10`}
+        />
+      ))}
+      {score != null && (
+        <span className="ml-1 text-xs text-white/50 tabular-nums">{score}/10</span>
+      )}
+    </div>
+  );
+}
+
+function CharacterCard({ entry, cvLabel }: { entry: AnimeCharacter; cvLabel: string }) {
+  const isMain = entry.role === 'MAIN';
+  return (
+    <div className="flex flex-col gap-1.5 p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] transition-colors">
+      {/* Images row */}
+      <div className="flex items-end gap-2">
+        {/* Character image */}
+        <div className="w-12 h-14 rounded-md overflow-hidden shrink-0 bg-white/[0.08]">
+          {entry.character.image ? (
+            <img
+              src={entry.character.image}
+              alt={entry.character.name}
+              className="w-full h-full object-cover"
+            />
+          ) : null}
+        </div>
+        {/* Voice actor image */}
+        {entry.voice_actor && (
+          <div className="w-10 h-12 rounded-md overflow-hidden shrink-0 bg-white/[0.08] -ml-4 border border-black/40">
+            {entry.voice_actor.image ? (
+              <img
+                src={entry.voice_actor.image}
+                alt={entry.voice_actor.name}
+                className="w-full h-full object-cover"
+              />
+            ) : null}
+          </div>
+        )}
+        {/* Role badge */}
+        {isMain && (
+          <span className="ml-auto text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-mm-accent/15 text-mm-accent shrink-0">
+            MAIN
+          </span>
+        )}
+      </div>
+      {/* Names */}
+      <div className="min-w-0">
+        <p className="text-[12px] font-semibold text-white/90 leading-snug truncate">
+          {entry.character.name}
+        </p>
+        {entry.voice_actor && (
+          <p className="text-[11px] text-white/45 truncate mt-0.5">
+            <span className="text-white/30">{cvLabel} </span>
+            {entry.voice_actor.name}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function AnimeDetailPage() {
   const { i18n } = useLingui();
   const { id } = useParams({ strict: false });
@@ -139,6 +223,11 @@ export function AnimeDetailPage() {
       queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) });
       queryClient.invalidateQueries({ queryKey: collectionKeys.all });
     },
+  });
+
+  const scoreMutation = useMutation({
+    mutationFn: (score: number | null) => animeApi.updateScore(numericId, score),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) }),
   });
 
   const continueEpisode = useMemo(() => {
@@ -559,6 +648,23 @@ export function AnimeDetailPage() {
                   </div>
                 </div>
               )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Characters & Voice Actors */}
+        {anime.characters && anime.characters.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }}
+            className="px-4 md:px-8 py-6"
+          >
+            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.characters`)}</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {anime.characters.map((c: AnimeCharacter) => (
+                <CharacterCard key={c.character.id} entry={c} cvLabel={i18n._(msg`anime.voiceActor`)} />
+              ))}
             </div>
           </motion.div>
         )}
