@@ -5,6 +5,7 @@ import {
   FireIcon,
   FolderLibraryIcon,
   HouseIcon,
+  Logout01Icon,
   MagnetIcon,
   Menu01Icon,
   RssIcon,
@@ -14,9 +15,11 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { Link, useRouterState } from '@tanstack/react-router';
-import { motion } from 'motion/react';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '../lib/utils';
+import { useAuthStore } from '../store/auth-store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
@@ -75,6 +78,111 @@ function NavItem({
   );
 }
 
+/* ── Account avatar + dropdown ─────────────────────────────── */
+
+function AccountAvatar() {
+  const { i18n } = useLingui();
+  const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close on click outside
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const initial = user?.username?.charAt(0)?.toUpperCase() ?? '?';
+
+  return (
+    <div ref={ref} className="relative">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-mm-accent/15 text-mm-accent text-xs font-bold cursor-pointer transition-all hover:bg-mm-accent/25 hover:ring-1 hover:ring-mm-accent/30"
+            aria-label={user?.username ?? 'Account'}
+          >
+            {initial}
+          </button>
+        </TooltipTrigger>
+        {!open && (
+          <TooltipContent side="right">
+            {user?.username ?? 'Account'}
+          </TooltipContent>
+        )}
+      </Tooltip>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, x: -4, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -4, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-[calc(100%+8px)] bottom-0 w-48 rounded-lg border border-white/[0.08] bg-[#111] shadow-xl shadow-black/50 overflow-hidden z-50"
+          >
+            {/* User info */}
+            <div className="px-3 py-3 border-b border-white/[0.06]">
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mm-accent/15 text-mm-accent text-xs font-bold shrink-0">
+                  {initial}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate">
+                    {user?.username}
+                  </p>
+                  <p className="text-[10px] text-white/30">
+                    {i18n._(msg`account.local`)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="py-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  navigate({ to: '/settings' });
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={Setting07Icon} size={15} strokeWidth={1.5} />
+                {i18n._(msg`nav.settings`)}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  logout();
+                  navigate({ to: '/login' });
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/[0.04] transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={Logout01Icon} size={15} strokeWidth={1.5} />
+                {i18n._(msg`account.logout`)}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Desktop sidebar ───────────────────────────────────────── */
+
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
@@ -104,6 +212,11 @@ export function AppSidebar() {
               <NavItem key={to} to={to} msgKey={msgKey} icon={icon} isActive={isActive(to)} />
             ))}
           </nav>
+
+          {/* Account avatar — bottom of sidebar */}
+          <div className="pb-4 pt-2">
+            <AccountAvatar />
+          </div>
         </aside>
       </TooltipProvider>
 
@@ -111,6 +224,8 @@ export function AppSidebar() {
     </>
   );
 }
+
+/* ── Mobile nav ────────────────────────────────────────────── */
 
 const mobileNav = [
   { to: '/', msgKey: msg`nav.home`, icon: HouseIcon },

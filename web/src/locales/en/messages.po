@@ -14,6 +14,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/pages/AnimeDetailPage.tsx:423
+msgid "account.local"
+msgstr "Local account"
+
+msgid "account.logout"
+msgstr "Log out"
+
 msgid "anime.comments"
 msgstr "Comments"
 

@@ -11,6 +11,12 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 
+msgid "account.local"
+msgstr "本機帳號"
+
+msgid "account.logout"
+msgstr "登出"
+
 #: src/pages/AnimeDetailPage.tsx:423
 msgid "anime.comments"
 msgstr "吐槽"
