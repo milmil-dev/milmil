@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-mm-accent/15 text-mm-accent border border-mm-accent/20 font-semibold hover:bg-mm-accent/25",
+          "bg-mm-accent text-white font-semibold hover:bg-mm-accent/85",
         destructive:
           "bg-red-500/20 text-red-400 border border-red-500/20 hover:bg-red-500/30 focus-visible:ring-red-500/20",
         outline:
