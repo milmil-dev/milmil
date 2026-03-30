@@ -1,6 +1,6 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useEffect, useMemo } from 'react';
@@ -35,6 +35,7 @@ function formatTime(seconds: number): string {
 
 import { Button } from '../components/ui/button';
 import { animeApi, animeKeys } from '../lib/api/anime';
+import { collectionApi, collectionKeys } from '../lib/api/collection';
 import type { PlayableEpisode } from '../lib/api/anime';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
@@ -129,6 +130,15 @@ export function AnimeDetailPage() {
     queryKey: discoverKeys.comments(numericId),
     queryFn: () => discoverApi.comments(numericId),
     enabled: !Number.isNaN(numericId),
+  });
+
+  const queryClient = useQueryClient();
+  const statusMutation = useMutation({
+    mutationFn: (status: string) => collectionApi.updateStatus(numericId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) });
+      queryClient.invalidateQueries({ queryKey: collectionKeys.all });
+    },
   });
 
   const continueEpisode = useMemo(() => {
@@ -361,6 +371,24 @@ export function AnimeDetailPage() {
                         </span>
                       )}
                     </div>
+
+                    {/* Collection watch status */}
+                    {playableData?.watch_status && playableData.watch_status !== 'none' && (
+                      <div className="flex justify-center sm:justify-start">
+                        <select
+                          value={playableData.watch_status}
+                          onChange={(e) => statusMutation.mutate(e.target.value)}
+                          className="text-xs px-2.5 py-1 rounded-full bg-white/[0.06] text-white/70 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
+                          disabled={statusMutation.isPending}
+                        >
+                          <option value="watching" className="bg-zinc-900">{i18n._(msg`collection.watching`)}</option>
+                          <option value="planning" className="bg-zinc-900">{i18n._(msg`collection.planning`)}</option>
+                          <option value="completed" className="bg-zinc-900">{i18n._(msg`collection.completed`)}</option>
+                          <option value="paused" className="bg-zinc-900">{i18n._(msg`collection.paused`)}</option>
+                          <option value="dropped" className="bg-zinc-900">{i18n._(msg`collection.dropped`)}</option>
+                        </select>
+                      </div>
+                    )}
 
                     {/* Synopsis — hidden on small mobile, visible sm+ */}
                     {anime.synopsis && (
