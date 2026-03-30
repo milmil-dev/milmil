@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { EpisodeListItem } from '../components/EpisodeListItem';
 import { MediaRail } from '../components/MediaRail';
@@ -25,6 +25,12 @@ const RELATION_LABELS: Record<string, Record<string, string>> = {
 
 function getRelationLabel(type: string, locale: string): string {
   return RELATION_LABELS[type]?.[locale] ?? RELATION_LABELS[type]?.en ?? type.replace(/_/g, ' ');
+}
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 import { Button } from '../components/ui/button';
@@ -69,6 +75,25 @@ export function AnimeDetailPage() {
     queryFn: () => discoverApi.comments(numericId),
     enabled: !Number.isNaN(numericId),
   });
+
+  const continueEpisode = useMemo(() => {
+    if (!playableData?.episodes) return null;
+    // Find first episode with progress but not completed
+    const inProgress = playableData.episodes.find(
+      ep => ep.progress && !ep.progress.completed && ep.progress.position_seconds > 0 && ep.media_file
+    );
+    if (inProgress) return inProgress;
+    // Find next unwatched episode after last completed
+    const lastCompleted = [...playableData.episodes]
+      .reverse()
+      .find(ep => ep.progress?.completed);
+    if (lastCompleted) {
+      const nextSort = lastCompleted.sort + 1;
+      return playableData.episodes.find(ep => ep.sort >= nextSort && ep.media_file);
+    }
+    // First episode with a file
+    return playableData.episodes.find(ep => ep.media_file) ?? null;
+  }, [playableData]);
 
   // Set full-screen background image (behind sidebar) — Seanime style
   useEffect(() => {
@@ -281,6 +306,38 @@ export function AnimeDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Continue Watching banner */}
+        {continueEpisode && continueEpisode.media_file && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-6 px-4 md:px-8"
+          >
+            <Link
+              to="/watch/$fileId"
+              params={{ fileId: continueEpisode.media_file.id }}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg bg-mm-accent/10 border border-mm-accent/20 hover:bg-mm-accent/15 transition-colors group"
+            >
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mm-accent/20 text-mm-accent group-hover:bg-mm-accent/30 transition-colors shrink-0">
+                <span className="text-sm ml-0.5">▶</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white">
+                  {i18n._(msg`anime.continueWatching`)}
+                </p>
+                <p className="text-xs text-white/50 truncate">
+                  {i18n._(msg`anime.episode`)} {continueEpisode.sort}
+                  {continueEpisode.title ? ` — ${continueEpisode.title_zh || continueEpisode.title}` : ''}
+                  {continueEpisode.progress && !continueEpisode.progress.completed
+                    ? ` · ${formatTime(continueEpisode.progress.position_seconds)} / ${formatTime(continueEpisode.progress.duration_seconds)}`
+                    : ''}
+                </p>
+              </div>
+            </Link>
+          </motion.div>
+        )}
 
         {/* Trailer + Episodes */}
         {(episodeList.length > 0 || anime.trailer_url) && (
