@@ -12,7 +12,8 @@ interface EpisodeListItemProps {
   title: string;
   titleOriginal?: string;
   isActive: boolean;
-  href: string;
+  href?: string;           // fallback link (for non-watch routes)
+  fileId?: string;         // media file ID — used for /watch/:fileId navigation
   airDate?: string;
   synopsis?: string;
   image?: string;
@@ -205,9 +206,17 @@ export function EpisodeListItem({
   return (
     <div className="relative">
       {hasFile ? (
-        <Link to={href} className={wrapperClassName}>
-          {innerContent}
-        </Link>
+        fileId ? (
+          <Link to="/watch/$fileId" params={{ fileId }} className={wrapperClassName}>
+            {innerContent}
+          </Link>
+        ) : href ? (
+          <Link to={href} className={wrapperClassName}>
+            {innerContent}
+          </Link>
+        ) : (
+          <div className={wrapperClassName}>{innerContent}</div>
+        )
       ) : (
         <div className={wrapperClassName}>{innerContent}</div>
       )}

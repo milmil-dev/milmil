@@ -212,9 +212,20 @@ export function AnimeDetailPage() {
 
   const hasCover = anime.cover_image?.startsWith('http');
 
-  const episodeList: PlayableEpisode[] =
-    playableData?.episodes ??
-    episodes?.map((e) => ({
+  // Build episode list: merge playable data (local files + progress) with discover images
+  const episodeList: PlayableEpisode[] = useMemo(() => {
+    if (playableData?.episodes) {
+      // Merge discover episode images into playable episodes (local DB may lack thumbnails)
+      const discoverImageMap = new Map(
+        episodes?.map((e) => [e.sort, e.image]) ?? []
+      );
+      return playableData.episodes.map((ep) => ({
+        ...ep,
+        image: ep.image || discoverImageMap.get(ep.sort) || null,
+        synopsis: ep.synopsis || episodes?.find(e => e.sort === ep.sort)?.synopsis || null,
+      }));
+    }
+    return episodes?.map((e) => ({
       episode_id: '',
       sort: e.sort,
       title: e.title,
@@ -225,8 +236,8 @@ export function AnimeDetailPage() {
       image: e.image ?? null,
       media_file: null,
       progress: null,
-    })) ??
-    [];
+    })) ?? [];
+  }, [playableData, episodes]);
 
   return (
     <PageTransition>
@@ -508,7 +519,7 @@ export function AnimeDetailPage() {
                           image={ep.image ?? undefined}
                           airDate={ep.air_date ?? undefined}
                           isActive={false}
-                          href={ep.media_file ? `/watch/${ep.media_file.id}` : '#'}
+                          fileId={ep.media_file?.id}
                           hasFile={!!ep.media_file}
                           fileQuality={ep.media_file?.height
                             ? `${ep.media_file.height}p${ep.media_file.video_codec ? ` ${ep.media_file.video_codec.toUpperCase()}` : ''}`
