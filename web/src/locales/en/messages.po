@@ -94,6 +94,9 @@ msgstr "Password"
 msgid "auth.login.submit"
 msgstr "Sign in"
 
+msgid "auth.login.subtitle"
+msgstr "Your personal anime media server"
+
 #: src/components/LoginModal.tsx:91
 #: src/components/LoginModal.tsx:106
 #: src/pages/LoginPage.tsx:44

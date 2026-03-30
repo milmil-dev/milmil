@@ -92,6 +92,9 @@ msgstr "密码"
 msgid "auth.login.submit"
 msgstr "登录"
 
+msgid "auth.login.subtitle"
+msgstr "你的个人动画媒体服务器"
+
 #: src/components/LoginModal.tsx:91
 #: src/components/LoginModal.tsx:106
 #: src/pages/LoginPage.tsx:44
