@@ -13,8 +13,10 @@ import (
 const createAnime = `-- name: CreateAnime :one
 INSERT INTO anime (id, library_id, title, title_zh, title_en, synopsis, cover_image_url,
     total_episodes, status, air_date, year, season, genres, bangumi_id, dandanplay_bangumi_id,
+    watch_status,
     created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ?,
     strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 RETURNING id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at
 `
@@ -35,6 +37,7 @@ type CreateAnimeParams struct {
 	Genres              string         `json:"genres"`
 	BangumiID           sql.NullInt64  `json:"bangumi_id"`
 	DandanplayBangumiID sql.NullInt64  `json:"dandanplay_bangumi_id"`
+	WatchStatus         string         `json:"watch_status"`
 }
 
 func (q *Queries) CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime, error) {
@@ -54,6 +57,7 @@ func (q *Queries) CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime
 		arg.Genres,
 		arg.BangumiID,
 		arg.DandanplayBangumiID,
+		arg.WatchStatus,
 	)
 	var i Anime
 	err := row.Scan(

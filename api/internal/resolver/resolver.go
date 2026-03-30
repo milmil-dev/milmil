@@ -220,6 +220,18 @@ func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangu
 		title = subject.Name
 	}
 
+	// Determine watch status from collection setting
+	watchStatus := "watching"
+	setting, err := r.queries.GetSetting(ctx, "collection")
+	if err == nil {
+		var col struct {
+			AutoAdd *bool `json:"auto_add_to_collection"`
+		}
+		if json.Unmarshal([]byte(setting.Value), &col) == nil && col.AutoAdd != nil && !*col.AutoAdd {
+			watchStatus = "none"
+		}
+	}
+
 	anime, err := r.queries.CreateAnime(ctx, store.CreateAnimeParams{
 		ID:                  uuid.NewString(),
 		LibraryID:           sql.NullString{String: libraryID, Valid: true},
@@ -233,6 +245,7 @@ func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangu
 		Genres:              "[]",
 		BangumiID:           sql.NullInt64{Int64: bangumiID, Valid: true},
 		DandanplayBangumiID: sql.NullInt64{Int64: ddpAnimeID, Valid: true},
+		WatchStatus:         watchStatus,
 	})
 	if err != nil {
 		return store.Anime{}, false, err
