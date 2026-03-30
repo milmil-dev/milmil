@@ -180,7 +180,7 @@ function AnimeCard({
               STATUS_COLORS[anime.watch_status] ?? "bg-zinc-500/80",
             )}
           >
-            {STATUS_LABEL_KEYS[anime.watch_status] ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]) : anime.watch_status}
+            {STATUS_LABEL_KEYS[anime.watch_status] ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]!) : anime.watch_status}
           </span>
         )}
 

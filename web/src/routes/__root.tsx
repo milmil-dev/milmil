@@ -1,7 +1,5 @@
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { createRootRoute, Link, Outlet, redirect, useRouterState } from '@tanstack/react-router';
+import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -150,36 +148,6 @@ function BannerImage({ src }: { src: string | null }) {
         }}
       />
     </div>
-  );
-}
-
-function TopNavLinks({ pathname }: { pathname: string }) {
-  const { i18n } = useLingui();
-  const items = [
-    { to: '/', label: i18n._(msg`nav.home`), exact: true },
-    { to: '/schedule', label: i18n._(msg`nav.schedule`), exact: false },
-    { to: '/libraries', label: i18n._(msg`nav.libraries`), exact: false },
-    { to: '/collection', label: i18n._(msg`collection.title`), exact: false },
-    { to: '/trending', label: i18n._(msg`nav.discover`), exact: false },
-  ];
-  return (
-    <nav className="relative z-[10] hidden md:flex items-center gap-6 px-6 h-[5rem]">
-      {items.map(({ to, label, exact }) => {
-        const active = exact ? pathname === to : pathname.startsWith(to);
-        return (
-          <Link
-            key={to}
-            to={to}
-            className={cn(
-              'text-[15px] font-semibold transition-colors cursor-pointer',
-              active ? 'text-white' : 'text-white/50 hover:text-white/80'
-            )}
-          >
-            {label}
-          </Link>
-        );
-      })}
-    </nav>
   );
 }
 
