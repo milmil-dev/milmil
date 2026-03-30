@@ -133,6 +133,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	collectionGroup.GET("/status-counts", h.handleCollectionStatusCounts)
 	collectionGroup.PATCH("/:bangumiId/status", h.handleUpdateWatchStatus)
 
+	// Anime — protected
+	animeGroup := v1.Group("/anime", jwtMiddleware(cfg.JWTSecret))
+	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
+
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", jwtMiddleware(cfg.JWTSecret))
 	dlGroup.GET("", h.handleListDownloads)
