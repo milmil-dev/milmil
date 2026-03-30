@@ -40,7 +40,7 @@ function PosterCollage() {
         className="absolute -inset-[20%]"
         style={{ transform: 'rotate(-12deg) scale(1.3)' }}
       >
-        <div className="grid grid-cols-6 gap-1.5 opacity-[0.12]">
+        <div className="grid grid-cols-6 gap-1.5 opacity-[0.45]">
           {posters.map((src, i) => (
             <motion.div
               key={`${src}-${i}`}
@@ -60,15 +60,15 @@ function PosterCollage() {
         </div>
       </div>
 
-      {/* Heavy dark overlay — ensures form readability */}
-      <div className="absolute inset-0 bg-mm-bg/80" />
+      {/* Dark overlay — ensures form readability */}
+      <div className="absolute inset-0 bg-mm-bg/50" />
 
       {/* Vignette — darker edges */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse at center, transparent 20%, var(--mm-bg) 75%)',
+            'radial-gradient(ellipse at center, transparent 30%, var(--mm-bg) 80%)',
         }}
       />
 
