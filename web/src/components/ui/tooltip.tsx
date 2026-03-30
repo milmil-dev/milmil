@@ -3,7 +3,13 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-function TooltipProvider({ children, delayDuration }: { children: React.ReactNode; delayDuration?: number }) {
+function TooltipProvider({
+  children,
+  delayDuration,
+}: {
+  children: React.ReactNode;
+  delayDuration?: number;
+}) {
   return <TooltipPrimitive.Provider delay={delayDuration}>{children}</TooltipPrimitive.Provider>;
 }
 
@@ -45,7 +51,7 @@ function TooltipContent({
       <TooltipPrimitive.Positioner side={side} sideOffset={sideOffset} className="z-[100]">
         <TooltipPrimitive.Popup
           className={cn(
-            'z-50 rounded-md px-2.5 py-1 text-xs font-medium shadow-md transition-all duration-200 ease-out data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[ending-style]:translate-x-[-4px] data-[starting-style]:scale-90 data-[starting-style]:opacity-0 data-[starting-style]:translate-x-[-4px]',
+            'z-50 rounded-lg px-2.5 py-1 text-xs font-medium shadow-md transition-all duration-200 ease-out data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[ending-style]:translate-x-[-4px] data-[starting-style]:scale-90 data-[starting-style]:opacity-0 data-[starting-style]:translate-x-[-4px]',
             className
           )}
           style={{

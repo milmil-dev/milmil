@@ -30,7 +30,11 @@ function AlertDialogContent({ className, children, ...props }: React.ComponentPr
       <AlertDialogPrimitive.Backdrop
         data-slot="alert-dialog-overlay"
         className="fixed inset-0 z-50 transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0"
-        style={{ backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+        style={{
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+        }}
       />
       <AlertDialogPrimitive.Popup
         data-slot="alert-dialog-content"

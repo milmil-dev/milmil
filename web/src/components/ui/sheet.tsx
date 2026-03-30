@@ -44,7 +44,11 @@ function SheetContent({
       <DialogPrimitive.Backdrop
         data-slot="sheet-overlay"
         className="fixed inset-0 z-50 transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0"
-        style={{ backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+        style={{
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+        }}
       />
       <DialogPrimitive.Popup
         data-slot="sheet-content"
@@ -71,7 +75,7 @@ function SheetContent({
       >
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+          <DialogPrimitive.Close className="absolute top-4 right-4 rounded-md opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
             <HugeiconsIcon icon={XIcon} size={16} />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>

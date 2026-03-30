@@ -7,8 +7,7 @@ function Toaster(props: ToasterProps) {
       className="toaster group"
       toastOptions={{
         classNames: {
-          toast:
-            'group toast bg-mm-surface border-white/[0.08] text-white shadow-lg rounded-lg',
+          toast: 'group toast bg-mm-surface border-white/[0.08] text-white shadow-lg rounded-lg',
           title: 'text-sm font-medium',
           description: 'text-xs text-white/50',
           actionButton: 'bg-mm-accent text-black font-medium',
