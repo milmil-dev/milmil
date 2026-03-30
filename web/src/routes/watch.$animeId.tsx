@@ -4,12 +4,12 @@ import { lazy } from 'react';
 const WatchPage = lazy(() => import('../pages/WatchPage').then((m) => ({ default: m.WatchPage })));
 
 type WatchSearch = {
-  episodeId?: string;
+  ep?: number;
 };
 
-export const Route = createFileRoute('/watch/$fileId')({
+export const Route = createFileRoute('/watch/$animeId')({
   component: WatchPage,
   validateSearch: (search: Record<string, unknown>): WatchSearch => ({
-    episodeId: typeof search.episodeId === 'string' ? search.episodeId : undefined,
+    ep: typeof search.ep === 'number' ? search.ep : typeof search.ep === 'string' ? parseInt(search.ep, 10) || undefined : undefined,
   }),
 });

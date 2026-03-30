@@ -367,8 +367,9 @@ function FileTable({
                       asChild
                     >
                       <Link
-                        to="/watch/$fileId"
-                        params={{ fileId: file.id }}
+                        to="/watch/$animeId"
+                        params={{ animeId: String(file.matched_bangumi_id) }}
+                        search={{ ep: file.matched_episode_sort }}
                       >
                         <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M8 5v14l11-7z" />

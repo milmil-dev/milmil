@@ -498,13 +498,13 @@ export function AnimeDetailPage() {
                       )}
                     </div>
 
-                    {/* Collection watch status */}
+                    {/* Collection watch status + personal score */}
                     {playableData?.watch_status && playableData.watch_status !== 'none' && (
-                      <div className="flex justify-center sm:justify-start">
+                      <div className="flex flex-col justify-center sm:justify-start gap-2">
                         <select
                           value={playableData.watch_status}
                           onChange={(e) => statusMutation.mutate(e.target.value)}
-                          className="text-xs px-2.5 py-1 rounded-full bg-white/[0.06] text-white/70 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
+                          className="text-xs px-2.5 py-1 rounded-full bg-white/[0.06] text-white/70 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none self-center sm:self-start"
                           disabled={statusMutation.isPending}
                         >
                           <option value="watching" className="bg-zinc-900">{i18n._(msg`collection.watching`)}</option>
@@ -513,6 +513,14 @@ export function AnimeDetailPage() {
                           <option value="paused" className="bg-zinc-900">{i18n._(msg`collection.paused`)}</option>
                           <option value="dropped" className="bg-zinc-900">{i18n._(msg`collection.dropped`)}</option>
                         </select>
+                        <div className="flex items-center gap-2 justify-center sm:justify-start">
+                          <span className="text-[11px] text-white/40 shrink-0">{i18n._(msg`anime.myScore`)}</span>
+                          <ScoreSelector
+                            score={playableData.user_score ?? null}
+                            onChange={(s) => scoreMutation.mutate(s)}
+                            disabled={scoreMutation.isPending}
+                          />
+                        </div>
                       </div>
                     )}
 
@@ -551,8 +559,9 @@ export function AnimeDetailPage() {
             className="mb-6 px-4 md:px-8"
           >
             <Link
-              to="/watch/$fileId"
-              params={{ fileId: continueEpisode.media_file.id }}
+              to="/watch/$animeId"
+              params={{ animeId: String(numericId) }}
+              search={{ ep: continueEpisode.sort % 1 === 0 ? Math.floor(continueEpisode.sort) : continueEpisode.sort }}
               className="flex items-center gap-3 px-4 py-3 rounded-lg bg-mm-accent/10 border border-mm-accent/20 hover:bg-mm-accent/15 transition-colors group"
             >
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mm-accent/20 text-mm-accent group-hover:bg-mm-accent/30 transition-colors shrink-0">
@@ -608,7 +617,8 @@ export function AnimeDetailPage() {
                           image={ep.image ?? undefined}
                           airDate={ep.air_date ?? undefined}
                           isActive={false}
-                          fileId={ep.media_file?.id}
+                          bangumiId={numericId}
+                          episodeSort={ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
                           hasFile={!!ep.media_file}
                           fileQuality={ep.media_file?.height
                             ? `${ep.media_file.height}p${ep.media_file.video_codec ? ` ${ep.media_file.video_codec.toUpperCase()}` : ''}`
