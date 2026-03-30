@@ -54,14 +54,20 @@ function BannerImage({ src }: { src: string | null }) {
     <div
       className={cn(
         'fixed top-0 z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
-        dimmed && 'opacity-[0.05]',
+        dimmed && 'opacity-[0.05]'
       )}
       style={{ left: 0, right: 0 }}
     >
       {/* Bottom bleed — prevents hard edge below banner */}
-      <div className="w-full z-[2] absolute -bottom-[5rem] h-[5rem]" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
+      <div
+        className="w-full z-[2] absolute -bottom-[5rem] h-[5rem]"
+        style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+      />
       {/* Top fade — Seanime: h-[10rem] opacity-50 */}
-      <div className="w-full absolute z-[2] top-0 h-[10rem] opacity-50" style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }} />
+      <div
+        className="w-full absolute z-[2] top-0 h-[10rem] opacity-50"
+        style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+      />
 
       {/* The image — z-[1] so gradients at z-[2] overlay it */}
       <AnimatePresence mode="wait">
@@ -84,22 +90,35 @@ function BannerImage({ src }: { src: string | null }) {
       {/* Left gradient — Seanime: max-w-[80rem], from-5% via-bg via-opacity-50 */}
       <div
         className="hidden lg:block w-full z-[2] h-full absolute left-0"
-        style={{ maxWidth: '80rem', background: 'linear-gradient(to right, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)' }}
+        style={{
+          maxWidth: '80rem',
+          background:
+            'linear-gradient(to right, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)',
+        }}
       />
       {/* Right gradient — Seanime: max-w-[60rem], opacity-90 */}
       <div
         className="hidden lg:block w-full z-[2] h-full absolute right-0 opacity-90"
-        style={{ maxWidth: '60rem', background: 'linear-gradient(to left, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)' }}
+        style={{
+          maxWidth: '60rem',
+          background:
+            'linear-gradient(to left, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)',
+        }}
       />
       {/* Sidebar-edge gradient — Seanime: max-w-[10rem] opacity-70 */}
       <div
         className="hidden lg:block w-full z-[2] h-full absolute left-0 opacity-80"
-        style={{ maxWidth: '10rem', background: 'linear-gradient(to right, var(--mm-bg), transparent)' }}
+        style={{
+          maxWidth: '10rem',
+          background: 'linear-gradient(to right, var(--mm-bg), transparent)',
+        }}
       />
       {/* Bottom gradient — Seanime: h-[20rem] from-bg via-bg via-10% */}
       <div
         className="w-full z-[2] absolute bottom-0 h-[20rem]"
-        style={{ background: 'linear-gradient(to top, var(--mm-bg) 0%, var(--mm-bg) 10%, transparent)' }}
+        style={{
+          background: 'linear-gradient(to top, var(--mm-bg) 0%, var(--mm-bg) 10%, transparent)',
+        }}
       />
     </div>
   );
@@ -111,6 +130,7 @@ function TopNavLinks({ pathname }: { pathname: string }) {
     { to: '/', label: i18n._(msg`nav.home`), exact: true },
     { to: '/schedule', label: i18n._(msg`nav.schedule`), exact: false },
     { to: '/libraries', label: i18n._(msg`nav.libraries`), exact: false },
+    { to: '/collection', label: i18n._(msg`collection.title`), exact: false },
     { to: '/trending', label: i18n._(msg`nav.discover`), exact: false },
   ];
   return (
@@ -144,7 +164,11 @@ function RootLayout() {
   // Handle specific WS events for toasts + query invalidation
   useWSEvent((event) => {
     if (event.type === 'scan:completed') {
-      toast.success(`掃描完成: ${event.data?.library_name}`);
+      const libraryName =
+        (event.data?.libraryName as string | undefined) ??
+        (event.data?.library_name as string | undefined) ??
+        '';
+      toast.success(`掃描完成: ${libraryName}`);
       queryClient.invalidateQueries({ queryKey: ['libraries'] });
     }
     if (event.type === 'download:added') {

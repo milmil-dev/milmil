@@ -1,4 +1,5 @@
 import {
+  Bookmark01Icon,
   Calendar03Icon,
   Download04Icon,
   FireIcon,
@@ -30,6 +31,7 @@ const bottomNav = [
   { to: '/torrent-search', msgKey: msg`nav.torrent`, icon: MagnetIcon },
   { to: '/downloads', msgKey: msg`nav.downloads`, icon: Download04Icon },
   { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
+  { to: '/collection', msgKey: msg`collection.title`, icon: Bookmark01Icon },
   { to: '/settings', msgKey: msg`nav.settings`, icon: Setting07Icon },
 ] as const;
 
