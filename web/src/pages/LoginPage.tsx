@@ -3,28 +3,77 @@ import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api-client';
+import { discoverApi, discoverKeys } from '../lib/api/discover';
 
-/* ── Decorative floating orbs ──────────────────────────────── */
+/* ── Poster collage background ─────────────────────────────── */
 
-function BackgroundOrbs() {
+function PosterCollage() {
+  const { data: trending } = useQuery({
+    queryKey: discoverKeys.trending(1),
+    queryFn: () => discoverApi.trending(1),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Pick posters with valid cover images, fill to 24 slots
+  const posters = useMemo(() => {
+    if (!trending) return [];
+    const valid = trending
+      .filter((a) => a.cover_image?.startsWith('http'))
+      .map((a) => a.cover_image);
+    // Duplicate to fill grid if fewer than 24
+    const result: string[] = [];
+    while (result.length < 24 && valid.length > 0) {
+      result.push(...valid);
+    }
+    return result.slice(0, 24);
+  }, [trending]);
+
+  if (posters.length === 0) return null;
+
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
-      {/* Large pink glow — top-right */}
-      <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-mm-accent/[0.06] blur-[120px]" />
-      {/* Smaller warm glow — bottom-left */}
-      <div className="absolute -bottom-24 -left-24 h-[360px] w-[360px] rounded-full bg-mm-accent/[0.04] blur-[100px]" />
-      {/* Subtle grid overlay */}
+      {/* Poster grid — rotated for visual interest */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute -inset-[20%]"
+        style={{ transform: 'rotate(-12deg) scale(1.3)' }}
+      >
+        <div className="grid grid-cols-6 gap-1.5 opacity-[0.12]">
+          {posters.map((src, i) => (
+            <motion.div
+              key={`${src}-${i}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: i * 0.04, duration: 0.8 }}
+              className="aspect-[3/4] overflow-hidden rounded-sm"
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Heavy dark overlay — ensures form readability */}
+      <div className="absolute inset-0 bg-mm-bg/80" />
+
+      {/* Vignette — darker edges */}
+      <div
+        className="absolute inset-0"
         style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
+          background:
+            'radial-gradient(ellipse at center, transparent 20%, var(--mm-bg) 75%)',
         }}
       />
+
+      {/* Accent glow behind form area */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-mm-accent/[0.04] blur-[120px]" />
     </div>
   );
 }
@@ -93,7 +142,7 @@ export function LoginPage() {
 
   return (
     <div className="relative min-h-screen bg-mm-bg flex items-center justify-center p-4">
-      <BackgroundOrbs />
+      <PosterCollage />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -105,11 +154,10 @@ export function LoginPage() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.4 }}
+          transition={{ delay: 0.15, duration: 0.4 }}
           className="mb-8 text-center"
         >
-          {/* Logo mark */}
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20 backdrop-blur-sm">
             <span className="text-lg font-bold text-mm-accent">M</span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
@@ -122,8 +170,8 @@ export function LoginPage() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-8 backdrop-blur-sm shadow-2xl shadow-black/40"
+          transition={{ delay: 0.25, duration: 0.4 }}
+          className="rounded-xl border border-white/[0.06] bg-mm-bg/70 p-8 backdrop-blur-xl shadow-2xl shadow-black/50"
         >
           {/* Mode tabs — only show if not initialized */}
           {!isInitialized && (
@@ -222,7 +270,7 @@ export function LoginPage() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
           className="mt-6 text-center text-[11px] text-white/15"
         >
           milmil — Personal Anime Media Server
