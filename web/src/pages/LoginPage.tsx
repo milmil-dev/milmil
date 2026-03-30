@@ -8,9 +8,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../hooks/use-auth';
-import { api } from '../lib/api-client';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
+import { api } from '../lib/api-client';
 
 /* ── Poster collage background ─────────────────────────────── */
 
@@ -40,10 +41,7 @@ function PosterCollage() {
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
       {/* Poster grid — rotated for visual interest */}
-      <div
-        className="absolute -inset-[20%]"
-        style={{ transform: 'rotate(-12deg) scale(1.3)' }}
-      >
+      <div className="absolute -inset-[20%]" style={{ transform: 'rotate(-12deg) scale(1.3)' }}>
         <div className="grid grid-cols-6 gap-1.5 opacity-[0.45]">
           {posters.map((src, i) => (
             <motion.div
@@ -53,12 +51,7 @@ function PosterCollage() {
               transition={{ delay: i * 0.04, duration: 0.8 }}
               className="aspect-[3/4] overflow-hidden rounded-sm"
             >
-              <img
-                src={src}
-                alt=""
-                loading="lazy"
-                className="h-full w-full object-cover"
-              />
+              <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
             </motion.div>
           ))}
         </div>
@@ -71,8 +64,7 @@ function PosterCollage() {
       <div
         className="absolute inset-0"
         style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 30%, var(--mm-bg) 80%)',
+          background: 'radial-gradient(ellipse at center, transparent 30%, var(--mm-bg) 80%)',
         }}
       />
 
@@ -160,9 +152,7 @@ export function LoginPage() {
             <span className="text-lg font-bold text-mm-accent">M</span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
-          <p className="mt-1 text-[13px] text-white/30">
-            {i18n._(msg`auth.login.subtitle`)}
-          </p>
+          <p className="mt-1 text-[13px] text-white/30">{i18n._(msg`auth.login.subtitle`)}</p>
         </motion.div>
 
         {/* Card */}
@@ -207,9 +197,7 @@ export function LoginPage() {
           )}
 
           {mode === 'setup' && (
-            <p className="mb-4 text-[13px] text-white/40">
-              {i18n._(msg`auth.setup.subtitle`)}
-            </p>
+            <p className="mb-4 text-[13px] text-white/40">{i18n._(msg`auth.setup.subtitle`)}</p>
           )}
 
           <form
@@ -221,7 +209,9 @@ export function LoginPage() {
           >
             <form.Field name="username">
               {(field) => (
-                <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <Field
+                  data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                >
                   <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.login.username`)}</FieldLabel>
                   <Input
                     id={field.name}
@@ -242,11 +232,12 @@ export function LoginPage() {
 
             <form.Field name="password">
               {(field) => (
-                <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <Field
+                  data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                >
                   <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.login.password`)}</FieldLabel>
-                  <Input
+                  <PasswordInput
                     id={field.name}
-                    type="password"
                     autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}

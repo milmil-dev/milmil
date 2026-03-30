@@ -40,13 +40,21 @@ export function RelatedAnimeList({ relations }: RelatedAnimeListProps) {
             className="flex gap-2 rounded p-1 hover:bg-white/[0.04] transition-colors group"
           >
             {r.anime.cover_image ? (
-              <img src={r.anime.cover_image} alt="" className="w-16 h-10 rounded object-cover shrink-0" />
+              <img
+                src={r.anime.cover_image}
+                alt=""
+                className="w-16 h-10 rounded object-cover shrink-0"
+              />
             ) : (
               <div className="w-16 h-10 rounded bg-white/[0.06] shrink-0" />
             )}
             <div className="min-w-0">
-              <p className="text-[11px] text-white/60 line-clamp-2 leading-tight group-hover:text-white/80">{r.anime.title}</p>
-              <p className="text-[10px] text-white/30 mt-0.5">{getRelationLabel(r.relation_type, i18n.locale)}</p>
+              <p className="text-[11px] text-white/60 line-clamp-2 leading-tight group-hover:text-white/80">
+                {r.anime.title}
+              </p>
+              <p className="text-[10px] text-white/30 mt-0.5">
+                {getRelationLabel(r.relation_type, i18n.locale)}
+              </p>
             </div>
           </Link>
         ))}

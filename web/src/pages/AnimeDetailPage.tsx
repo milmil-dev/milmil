@@ -34,13 +34,13 @@ function formatTime(seconds: number): string {
 }
 
 import { Button } from '../components/ui/button';
+import { useAuth } from '../hooks/use-auth';
+import type { PlayableEpisode } from '../lib/api/anime';
 import { animeApi, animeKeys } from '../lib/api/anime';
 import { collectionApi, collectionKeys } from '../lib/api/collection';
-import type { PlayableEpisode } from '../lib/api/anime';
 import type { AnimeCharacter } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
-import { useAuth } from '../hooks/use-auth';
 import { useBgStore } from '../store/bg-store';
 
 interface RelatedAnime {
@@ -55,11 +55,11 @@ function buildSeasonChain(
 ): Array<{ bangumiId: number; title: string; label: string; isCurrent: boolean }> {
   if (!relations?.length) return [];
 
-  const sequels = relations.filter(r =>
-    r.relation_type === 'SEQUEL' || r.relation_type === 'Sequel'
+  const sequels = relations.filter(
+    (r) => r.relation_type === 'SEQUEL' || r.relation_type === 'Sequel'
   );
-  const prequels = relations.filter(r =>
-    r.relation_type === 'PREQUEL' || r.relation_type === 'Prequel'
+  const prequels = relations.filter(
+    (r) => r.relation_type === 'PREQUEL' || r.relation_type === 'Prequel'
   );
 
   if (sequels.length === 0 && prequels.length === 0) return [];
@@ -97,7 +97,11 @@ function buildSeasonChain(
   return chain;
 }
 
-function ScoreSelector({ score, onChange, disabled }: {
+function ScoreSelector({
+  score,
+  onChange,
+  disabled,
+}: {
   score: number | null;
   onChange: (score: number | null) => void;
   disabled?: boolean;
@@ -114,17 +118,13 @@ function ScoreSelector({ score, onChange, disabled }: {
             onChange(score === i + 1 ? null : i + 1);
           }}
           className={cn(
-            "w-2.5 h-2.5 rounded-full transition-colors cursor-pointer disabled:cursor-not-allowed",
-            score != null && i < score
-              ? "bg-mm-accent"
-              : "bg-white/[0.10] hover:bg-white/[0.20]"
+            'w-2.5 h-2.5 rounded-full transition-colors cursor-pointer disabled:cursor-not-allowed',
+            score != null && i < score ? 'bg-mm-accent' : 'bg-white/[0.10] hover:bg-white/[0.20]'
           )}
           title={`${i + 1}/10`}
         />
       ))}
-      {score != null && (
-        <span className="ml-1 text-xs text-white/50 tabular-nums">{score}/10</span>
-      )}
+      {score != null && <span className="ml-1 text-xs text-white/50 tabular-nums">{score}/10</span>}
     </div>
   );
 }
@@ -227,26 +227,26 @@ export function AnimeDetailPage() {
 
   const scoreMutation = useMutation({
     mutationFn: (score: number | null) => animeApi.updateScore(numericId, score),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) }),
   });
 
   const continueEpisode = useMemo(() => {
     if (!playableData?.episodes) return null;
     // Find first episode with progress but not completed
     const inProgress = playableData.episodes.find(
-      ep => ep.progress && !ep.progress.completed && ep.progress.position_seconds > 0 && ep.media_file
+      (ep) =>
+        ep.progress && !ep.progress.completed && ep.progress.position_seconds > 0 && ep.media_file
     );
     if (inProgress) return inProgress;
     // Find next unwatched episode after last completed
-    const lastCompleted = [...playableData.episodes]
-      .reverse()
-      .find(ep => ep.progress?.completed);
+    const lastCompleted = [...playableData.episodes].reverse().find((ep) => ep.progress?.completed);
     if (lastCompleted) {
       const nextSort = lastCompleted.sort + 1;
-      return playableData.episodes.find(ep => ep.sort >= nextSort && ep.media_file);
+      return playableData.episodes.find((ep) => ep.sort >= nextSort && ep.media_file);
     }
     // First episode with a file
-    return playableData.episodes.find(ep => ep.media_file) ?? null;
+    return playableData.episodes.find((ep) => ep.media_file) ?? null;
   }, [playableData]);
 
   // Set full-screen background image (behind sidebar) — Seanime style
@@ -305,27 +305,27 @@ export function AnimeDetailPage() {
   const episodeList: PlayableEpisode[] = useMemo(() => {
     if (playableData?.episodes) {
       // Merge discover episode images into playable episodes (local DB may lack thumbnails)
-      const discoverImageMap = new Map(
-        episodes?.map((e) => [e.sort, e.image]) ?? []
-      );
+      const discoverImageMap = new Map(episodes?.map((e) => [e.sort, e.image]) ?? []);
       return playableData.episodes.map((ep) => ({
         ...ep,
         image: ep.image || discoverImageMap.get(ep.sort) || null,
-        synopsis: ep.synopsis || episodes?.find(e => e.sort === ep.sort)?.synopsis || null,
+        synopsis: ep.synopsis || episodes?.find((e) => e.sort === ep.sort)?.synopsis || null,
       }));
     }
-    return episodes?.map((e) => ({
-      episode_id: '',
-      sort: e.sort,
-      title: e.title,
-      title_zh: null,
-      air_date: e.air_date ?? null,
-      synopsis: e.synopsis ?? null,
-      synopsis_zh: null,
-      image: e.image ?? null,
-      media_file: null,
-      progress: null,
-    })) ?? [];
+    return (
+      episodes?.map((e) => ({
+        episode_id: '',
+        sort: e.sort,
+        title: e.title,
+        title_zh: null,
+        air_date: e.air_date ?? null,
+        synopsis: e.synopsis ?? null,
+        synopsis_zh: null,
+        image: e.image ?? null,
+        media_file: null,
+        progress: null,
+      })) ?? []
+    );
   }, [playableData, episodes]);
 
   return (
@@ -454,16 +454,16 @@ export function AnimeDetailPage() {
                       if (seasons.length <= 1) return null;
                       return (
                         <div className="flex gap-1.5 mt-3 overflow-x-auto scrollbar-none">
-                          {seasons.map(s => (
+                          {seasons.map((s) => (
                             <Link
                               key={s.bangumiId}
                               to="/anime/$id"
                               params={{ id: String(s.bangumiId) }}
                               className={cn(
-                                "px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0",
+                                'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
                                 s.isCurrent
-                                  ? "bg-mm-accent/20 text-mm-accent"
-                                  : "bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70"
+                                  ? 'bg-mm-accent/20 text-mm-accent'
+                                  : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
                               )}
                               title={s.title}
                             >
@@ -507,14 +507,26 @@ export function AnimeDetailPage() {
                           className="text-xs px-2.5 py-1 rounded-full bg-white/[0.06] text-white/70 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none self-center sm:self-start"
                           disabled={statusMutation.isPending}
                         >
-                          <option value="watching" className="bg-zinc-900">{i18n._(msg`collection.watching`)}</option>
-                          <option value="planning" className="bg-zinc-900">{i18n._(msg`collection.planning`)}</option>
-                          <option value="completed" className="bg-zinc-900">{i18n._(msg`collection.completed`)}</option>
-                          <option value="paused" className="bg-zinc-900">{i18n._(msg`collection.paused`)}</option>
-                          <option value="dropped" className="bg-zinc-900">{i18n._(msg`collection.dropped`)}</option>
+                          <option value="watching" className="bg-zinc-900">
+                            {i18n._(msg`collection.watching`)}
+                          </option>
+                          <option value="planning" className="bg-zinc-900">
+                            {i18n._(msg`collection.planning`)}
+                          </option>
+                          <option value="completed" className="bg-zinc-900">
+                            {i18n._(msg`collection.completed`)}
+                          </option>
+                          <option value="paused" className="bg-zinc-900">
+                            {i18n._(msg`collection.paused`)}
+                          </option>
+                          <option value="dropped" className="bg-zinc-900">
+                            {i18n._(msg`collection.dropped`)}
+                          </option>
                         </select>
                         <div className="flex items-center gap-2 justify-center sm:justify-start">
-                          <span className="text-[11px] text-white/40 shrink-0">{i18n._(msg`anime.myScore`)}</span>
+                          <span className="text-[11px] text-white/40 shrink-0">
+                            {i18n._(msg`anime.myScore`)}
+                          </span>
                           <ScoreSelector
                             score={playableData.user_score ?? null}
                             onChange={(s) => scoreMutation.mutate(s)}
@@ -561,7 +573,12 @@ export function AnimeDetailPage() {
             <Link
               to="/watch/$animeId"
               params={{ animeId: String(numericId) }}
-              search={{ ep: continueEpisode.sort % 1 === 0 ? Math.floor(continueEpisode.sort) : continueEpisode.sort }}
+              search={{
+                ep:
+                  continueEpisode.sort % 1 === 0
+                    ? Math.floor(continueEpisode.sort)
+                    : continueEpisode.sort,
+              }}
               className="flex items-center gap-3 px-4 py-3 rounded-lg bg-mm-accent/10 border border-mm-accent/20 hover:bg-mm-accent/15 transition-colors group"
             >
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mm-accent/20 text-mm-accent group-hover:bg-mm-accent/30 transition-colors shrink-0">
@@ -573,7 +590,9 @@ export function AnimeDetailPage() {
                 </p>
                 <p className="text-xs text-white/50 truncate">
                   {i18n._(msg`anime.episode`)} {continueEpisode.sort}
-                  {continueEpisode.title ? ` — ${continueEpisode.title_zh || continueEpisode.title}` : ''}
+                  {continueEpisode.title
+                    ? ` — ${continueEpisode.title_zh || continueEpisode.title}`
+                    : ''}
                   {continueEpisode.progress && !continueEpisode.progress.completed
                     ? ` · ${formatTime(continueEpisode.progress.position_seconds)} / ${formatTime(continueEpisode.progress.duration_seconds)}`
                     : ''}
@@ -620,9 +639,11 @@ export function AnimeDetailPage() {
                           bangumiId={numericId}
                           episodeSort={ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
                           hasFile={!!ep.media_file}
-                          fileQuality={ep.media_file?.height
-                            ? `${ep.media_file.height}p${ep.media_file.video_codec ? ` ${ep.media_file.video_codec.toUpperCase()}` : ''}`
-                            : undefined}
+                          fileQuality={
+                            ep.media_file?.height
+                              ? `${ep.media_file.height}p${ep.media_file.video_codec ? ` ${ep.media_file.video_codec.toUpperCase()}` : ''}`
+                              : undefined
+                          }
                           progress={
                             ep.progress && ep.progress.duration_seconds > 0
                               ? ep.progress.position_seconds / ep.progress.duration_seconds
@@ -673,7 +694,11 @@ export function AnimeDetailPage() {
             <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.characters`)}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {anime.characters.map((c: AnimeCharacter) => (
-                <CharacterCard key={c.character.id} entry={c} cvLabel={i18n._(msg`anime.voiceActor`)} />
+                <CharacterCard
+                  key={c.character.id}
+                  entry={c}
+                  cvLabel={i18n._(msg`anime.voiceActor`)}
+                />
               ))}
             </div>
           </motion.div>

@@ -1,6 +1,6 @@
 import '@videojs/react/video/skin.css';
 import { createPlayer, usePlayer, videoFeatures } from '@videojs/react';
-import { VideoSkin, Video } from '@videojs/react/video';
+import { Video, VideoSkin } from '@videojs/react/video';
 import { useEffect, useRef } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
@@ -18,12 +18,15 @@ export interface VideoPlayerAPI {
   duration: () => number;
   isDisposed: () => boolean;
   on: (event: string, handler: () => void) => void;
-  addRemoteTextTrack: (opts: {
-    kind: string;
-    src: string;
-    srclang: string;
-    label: string;
-  }, manualCleanup: boolean) => void;
+  addRemoteTextTrack: (
+    opts: {
+      kind: string;
+      src: string;
+      srclang: string;
+      label: string;
+    },
+    manualCleanup: boolean
+  ) => void;
   /** Access the underlying <video> element */
   videoElement: () => HTMLVideoElement | null;
 }

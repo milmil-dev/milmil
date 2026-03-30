@@ -3,8 +3,8 @@ import { useLingui } from '@lingui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Bookmark, BookmarkCheck, Share2, Star } from 'lucide-react';
 import { motion } from 'motion/react';
-import { animeApi, animeKeys } from '../../lib/api/anime';
 import type { PlayableEpisodesResponse } from '../../lib/api/anime';
+import { animeApi, animeKeys } from '../../lib/api/anime';
 import { collectionApi, collectionKeys } from '../../lib/api/collection';
 import type { AnimeDetail } from '../../lib/api/discover';
 import { cn } from '../../lib/utils';
@@ -22,8 +22,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
   const year = anime.air_date ? new Date(anime.air_date).getFullYear() : null;
   const episodeCount = anime.episode_count;
   const userScore = episodesData.user_score;
-  const isInCollection =
-    episodesData.watch_status !== '' && episodesData.watch_status !== 'none';
+  const isInCollection = episodesData.watch_status !== '' && episodesData.watch_status !== 'none';
 
   const scoreMutation = useMutation({
     mutationFn: (score: number | null) => animeApi.updateScore(bangumiId, score),
@@ -92,7 +91,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
               'hover:bg-white/[0.08] text-white/60 hover:text-white/80',
               'disabled:opacity-40 disabled:pointer-events-none',
-              userScore && 'text-amber-400/80 hover:text-amber-400',
+              userScore && 'text-amber-400/80 hover:text-amber-400'
             )}
           >
             <Star className="size-3.5" fill={userScore ? 'currentColor' : 'none'} />
@@ -108,7 +107,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
               'hover:bg-white/[0.08] text-white/60 hover:text-white/80',
               'disabled:opacity-40 disabled:pointer-events-none',
-              isInCollection && 'text-blue-400/80 hover:text-blue-400',
+              isInCollection && 'text-blue-400/80 hover:text-blue-400'
             )}
           >
             {isInCollection ? (
@@ -130,7 +129,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
             onClick={handleShare}
             className={cn(
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
-              'hover:bg-white/[0.08] text-white/60 hover:text-white/80',
+              'hover:bg-white/[0.08] text-white/60 hover:text-white/80'
             )}
           >
             <Share2 className="size-3.5" />

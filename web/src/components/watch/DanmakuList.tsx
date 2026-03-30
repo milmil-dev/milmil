@@ -1,7 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { cn } from '@/lib/utils';
 import type { DanmakuComment } from '@/lib/api/stream';
+import { cn } from '@/lib/utils';
 
 interface DanmakuListProps {
   comments: DanmakuComment[];
@@ -37,7 +37,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
             onClick={() => onSeek(comment.time)}
             className={cn(
               'flex items-start gap-3 px-2 py-1.5 text-left rounded transition-colors',
-              'hover:bg-white/[0.05] group',
+              'hover:bg-white/[0.05] group'
             )}
           >
             <span className="shrink-0 text-[12px] tabular-nums text-blue-400/70 group-hover:text-blue-400 font-mono">

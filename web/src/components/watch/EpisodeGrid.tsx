@@ -1,8 +1,6 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import type { PlayableEpisode } from '@/lib/api/anime';
 import {
   Select,
   SelectContent,
@@ -10,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import type { PlayableEpisode } from '@/lib/api/anime';
+import { cn } from '@/lib/utils';
 
 interface EpisodeGridProps {
   episodes: PlayableEpisode[];
@@ -85,7 +85,7 @@ export function EpisodeGrid({ episodes, currentSort, onSelectEpisode }: EpisodeG
               onClick={() => hasFile && onSelectEpisode(ep.sort)}
               className={cn(
                 'rounded-md py-1.5 text-center text-sm tabular-nums transition-colors',
-                getButtonClass(ep),
+                getButtonClass(ep)
               )}
             >
               {ep.sort}

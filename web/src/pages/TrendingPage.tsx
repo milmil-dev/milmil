@@ -3,8 +3,8 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
-import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { Button } from '../components/ui/button';
+import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 
 export function TrendingPage() {
   const [page, setPage] = useState(1);
@@ -62,11 +62,7 @@ export function TrendingPage() {
         {isError && allItems.length === 0 && (
           <div className="text-center py-16">
             <p className="text-sm mb-3 text-mm-text-secondary">載入失敗</p>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => refetch()}
-            >
+            <Button type="button" variant="outline" onClick={() => refetch()}>
               重試
             </Button>
           </div>

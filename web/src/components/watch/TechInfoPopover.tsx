@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { useLingui } from '@lingui/react';
 import { msg } from '@lingui/core/macro';
-import { cn } from '@/lib/utils';
+import { useLingui } from '@lingui/react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
 import type { MediaInfo } from '@/lib/api/stream';
 import type { SubtitleFile } from '@/lib/api/subtitle';
+import { cn } from '@/lib/utils';
 
 interface TechInfoPopoverProps {
   mediaInfo: MediaInfo | undefined;
@@ -28,20 +28,14 @@ function formatDuration(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-export function TechInfoPopover({
-  mediaInfo,
-  subtitles,
-  transcodeStatus,
-}: TechInfoPopoverProps) {
+export function TechInfoPopover({ mediaInfo, subtitles, transcodeStatus }: TechInfoPopoverProps) {
   const [open, setOpen] = useState(false);
   const { i18n } = useLingui();
 
   return (
     <div className="absolute right-3 bottom-3 z-20">
       {/* Click-away backdrop */}
-      {open && (
-        <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-      )}
+      {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />}
 
       {/* Gear button */}
       <button
@@ -49,7 +43,7 @@ export function TechInfoPopover({
         onClick={() => setOpen((v) => !v)}
         className={cn(
           'relative z-40 flex h-8 w-8 items-center justify-center rounded-full',
-          'bg-white/15 text-white/70 transition-colors hover:bg-white/25',
+          'bg-white/15 text-white/70 transition-colors hover:bg-white/25'
         )}
         aria-label={i18n._(msg`watch.playbackInfo`)}
       >
@@ -91,11 +85,7 @@ export function TechInfoPopover({
                     {mediaInfo.width}x{mediaInfo.height}
                   </p>
                 )}
-                <p>
-                  {[mediaInfo.video_codec, mediaInfo.audio_codec]
-                    .filter(Boolean)
-                    .join(' / ')}
-                </p>
+                <p>{[mediaInfo.video_codec, mediaInfo.audio_codec].filter(Boolean).join(' / ')}</p>
                 <p>
                   {formatBytes(mediaInfo.size_bytes)}
                   {mediaInfo.duration_seconds != null &&
@@ -111,8 +101,7 @@ export function TechInfoPopover({
                   {i18n._(msg`watch.playbackMethod`)}
                 </h4>
                 <p>
-                  {i18n._(msg`watch.directStream`)}{' '}
-                  {mediaInfo.can_direct_play ? '✓' : '✗'}
+                  {i18n._(msg`watch.directStream`)} {mediaInfo.can_direct_play ? '✓' : '✗'}
                 </p>
                 {mediaInfo.can_remux && <p>Remux ✓</p>}
                 <p>

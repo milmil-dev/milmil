@@ -55,7 +55,9 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
                 {c.nickname || c.username}
                 {c.rate > 0 && <span className="ml-1.5 text-amber-400">★ {c.rate}</span>}
               </div>
-              <p className="text-xs text-white/40 mt-0.5 line-clamp-3 leading-relaxed">{c.comment}</p>
+              <p className="text-xs text-white/40 mt-0.5 line-clamp-3 leading-relaxed">
+                {c.comment}
+              </p>
             </div>
           </div>
         ))}

@@ -1,7 +1,7 @@
+import { Setting07Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Setting07Icon } from '@hugeicons/core-free-icons';
 import { AnimatePresence, motion } from 'motion/react';
 import { useRef, useState } from 'react';
 import { DanmakuSettingsControls } from '@/components/DanmakuSettings';

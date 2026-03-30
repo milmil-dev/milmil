@@ -151,9 +151,7 @@ export function DanmakuSettingsControls() {
     <div className="space-y-3">
       {/* On/Off */}
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-mm-text-secondary">
-          {i18n._(msg`watch.danmaku`)}
-        </span>
+        <span className="text-[11px] text-mm-text-secondary">{i18n._(msg`watch.danmaku`)}</span>
         <button
           type="button"
           onClick={toggleDanmaku}
@@ -195,9 +193,7 @@ export function DanmakuSettingsControls() {
               onClick={() => setFontSize(s)}
               className={cn(
                 'flex-1 py-0.5 text-[10px] rounded transition-colors',
-                fontSize === s
-                  ? 'bg-mm-accent text-black'
-                  : 'bg-mm-surface text-mm-text-secondary'
+                fontSize === s ? 'bg-mm-accent text-black' : 'bg-mm-surface text-mm-text-secondary'
               )}
             >
               {s}

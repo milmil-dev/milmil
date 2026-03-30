@@ -3,12 +3,12 @@ import { useLingui } from '@lingui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { VideoPlayerAPI } from '@/components/VideoPlayer';
 import { DanmakuOverlay } from '@/components/DanmakuOverlay';
 import { PageTransition } from '@/components/PageTransition';
 import { Skeleton } from '@/components/Skeleton';
-import { VideoPlayer } from '@/components/VideoPlayer';
 import { Spinner } from '@/components/ui/spinner';
+import type { VideoPlayerAPI } from '@/components/VideoPlayer';
+import { VideoPlayer } from '@/components/VideoPlayer';
 import { AnimeInfoSection } from '@/components/watch/AnimeInfoSection';
 import { BangumiComments } from '@/components/watch/BangumiComments';
 import { DanmakuBar } from '@/components/watch/DanmakuBar';
@@ -17,8 +17,8 @@ import { EpisodeTitleOverlay } from '@/components/watch/EpisodeTitleOverlay';
 import { RelatedAnimeList } from '@/components/watch/RelatedAnimeList';
 import { TechInfoPopover } from '@/components/watch/TechInfoPopover';
 import { WatchTitleBar } from '@/components/watch/WatchTitleBar';
-import { animeApi, animeKeys } from '@/lib/api/anime';
 import type { PlayableEpisode } from '@/lib/api/anime';
+import { animeApi, animeKeys } from '@/lib/api/anime';
 import { discoverApi, discoverKeys } from '@/lib/api/discover';
 import { progressApi } from '@/lib/api/progress';
 import {
@@ -44,7 +44,7 @@ function resolveEpisode(episodes: PlayableEpisode[], ep?: number): PlayableEpiso
     return episodes.find((e) => e.sort === ep);
   }
   const inProgress = episodes.find(
-    (e) => e.media_file && e.progress && e.progress.position_seconds > 0 && !e.progress.completed,
+    (e) => e.media_file && e.progress && e.progress.position_seconds > 0 && !e.progress.completed
   );
   if (inProgress) return inProgress;
   const fresh = episodes.find((e) => e.media_file && !e.progress);
@@ -67,7 +67,7 @@ export function WatchPage() {
 
   // --------------- Transcode state ---------------
   const [transcodeStatus, setTranscodeStatus] = useState<'idle' | 'processing' | 'ready' | 'error'>(
-    'idle',
+    'idle'
   );
   const [transcodeToken, setTranscodeToken] = useState<string | null>(null);
 
@@ -93,7 +93,7 @@ export function WatchPage() {
   // --------------- Episode resolution ---------------
   const currentEpisode = useMemo(
     () => resolveEpisode(episodesData?.episodes ?? [], ep),
-    [episodesData, ep],
+    [episodesData, ep]
   );
   const fileId = currentEpisode?.media_file?.id ?? null;
 
@@ -132,7 +132,7 @@ export function WatchPage() {
       danmakuRaw?.comments
         ? parseDandanplayComments(danmakuRaw.comments, danmakuFontSize, danmakuOpacity)
         : [],
-    [danmakuRaw, danmakuFontSize, danmakuOpacity],
+    [danmakuRaw, danmakuFontSize, danmakuOpacity]
   );
 
   // --------------- Transcode auto-trigger ---------------
@@ -152,7 +152,7 @@ export function WatchPage() {
             setTranscodeStatus('ready');
           }
         },
-        () => setTranscodeStatus('error'),
+        () => setTranscodeStatus('error')
       );
     }
   }, [mediaInfo, fileId, transcodeStatus]);
@@ -261,7 +261,11 @@ export function WatchPage() {
       setVideoEl(el);
 
       // Restore progress
-      if (currentEpisode?.progress && currentEpisode.progress.position_seconds > 0 && !currentEpisode.progress.completed) {
+      if (
+        currentEpisode?.progress &&
+        currentEpisode.progress.position_seconds > 0 &&
+        !currentEpisode.progress.completed
+      ) {
         api.currentTime(currentEpisode.progress.position_seconds);
       }
 
@@ -275,7 +279,7 @@ export function WatchPage() {
               srclang: sub.language,
               label: sub.language,
             },
-            true,
+            true
           );
         }
       }
@@ -294,7 +298,7 @@ export function WatchPage() {
         queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(bangumiId) });
       });
     },
-    [currentEpisode, subtitles, saveProgress, fileId, bangumiId, queryClient],
+    [currentEpisode, subtitles, saveProgress, fileId, bangumiId, queryClient]
   );
 
   // --------------- Episode switching ---------------
@@ -318,7 +322,7 @@ export function WatchPage() {
         replace: true,
       });
     },
-    [saveProgress, navigate, bangumiId],
+    [saveProgress, navigate, bangumiId]
   );
 
   // --------------- Danmaku seek ---------------

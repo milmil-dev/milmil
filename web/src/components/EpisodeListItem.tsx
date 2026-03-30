@@ -12,9 +12,9 @@ interface EpisodeListItemProps {
   title: string;
   titleOriginal?: string;
   isActive: boolean;
-  href?: string;           // fallback link (for non-watch routes)
-  bangumiId?: number;      // anime bangumi ID — used for /watch/:animeId navigation
-  episodeSort?: number;    // episode sort number — passed as ?ep= search param
+  href?: string; // fallback link (for non-watch routes)
+  bangumiId?: number; // anime bangumi ID — used for /watch/:animeId navigation
+  episodeSort?: number; // episode sort number — passed as ?ep= search param
   airDate?: string;
   synopsis?: string;
   image?: string;
@@ -210,7 +210,12 @@ export function EpisodeListItem({
     <div className="relative">
       {hasFile ? (
         bangumiId ? (
-          <Link to="/watch/$animeId" params={{ animeId: String(bangumiId) }} search={{ ep: episodeSort }} className={wrapperClassName}>
+          <Link
+            to="/watch/$animeId"
+            params={{ animeId: String(bangumiId) }}
+            search={{ ep: episodeSort }}
+            className={wrapperClassName}
+          >
             {innerContent}
           </Link>
         ) : href ? (

@@ -1,96 +1,58 @@
-import { msg } from "@lingui/core/macro"
-import { useLingui } from "@lingui/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, useParams } from "@tanstack/react-router"
-import {
-  type ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
-import { formatDistanceToNow } from "date-fns"
-import { AnimatePresence, motion } from "motion/react"
-import React, { useEffect, useState } from "react"
-import { toast } from "sonner"
-import { Button } from "../components/ui/button"
-import { LoginModal } from "../components/LoginModal"
-import { Modal } from "../components/Modal"
-import { DataPagination } from "../components/DataPagination"
-import { MotionTable } from "../components/MotionTable"
-import { PageTransition } from "../components/PageTransition"
-import { Skeleton } from "../components/Skeleton"
-import { useAuth } from "../hooks/use-auth"
-import {
-  type AnimeSummary,
-  discoverApi,
-  discoverKeys,
-  type Episode,
-} from "../lib/api/discover"
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link, useParams } from '@tanstack/react-router';
+import { type ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { formatDistanceToNow } from 'date-fns';
+import { AnimatePresence, motion } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { DataPagination } from '../components/DataPagination';
+import { LoginModal } from '../components/LoginModal';
+import { Modal } from '../components/Modal';
+import { MotionTable } from '../components/MotionTable';
+import { PageTransition } from '../components/PageTransition';
+import { Skeleton } from '../components/Skeleton';
+import { Button } from '../components/ui/button';
+import { useAuth } from '../hooks/use-auth';
+import { type AnimeSummary, discoverApi, discoverKeys, type Episode } from '../lib/api/discover';
 import {
   libraryApi,
   libraryKeys,
   type MediaFileEntry,
   type MediaFilesResponse,
-} from "../lib/api/library"
-import { cn } from "../lib/utils"
-import { useScanStore } from "../store/scan-store"
+} from '../lib/api/library';
+import { cn } from '../lib/utils';
+import { useScanStore } from '../store/scan-store';
 
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B"
-  const k = 1024
-  const sizes = ["B", "KB", "MB", "GB", "TB"]
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
 }
 
 /* -- Source icon (inline) --------------------------------------------------- */
 
-function SourceIcon({
-  sourceType,
-  className,
-}: {
-  sourceType: string
-  className?: string
-}) {
-  if (sourceType === "smb" || sourceType === "sftp" || sourceType === "ftp") {
+function SourceIcon({ sourceType, className }: { sourceType: string; className?: string }) {
+  if (sourceType === 'smb' || sourceType === 'sftp' || sourceType === 'ftp') {
     return (
       <svg viewBox="0 0 48 48" fill="none" className={className}>
-        <rect
-          x="8"
-          y="10"
-          width="32"
-          height="10"
-          rx="3"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <rect
-          x="8"
-          y="28"
-          width="32"
-          height="10"
-          rx="3"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
+        <rect x="8" y="10" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="8" y="28" width="32" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
         <circle cx="14" cy="15" r="1.5" fill="currentColor" />
         <circle cx="14" cy="33" r="1.5" fill="currentColor" />
-        <line
-          x1="24"
-          y1="20"
-          x2="24"
-          y2="28"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
+        <line x1="24" y1="20" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
       </svg>
-    )
+    );
   }
   if (
-    sourceType === "webdav" ||
-    sourceType === "s3" ||
-    sourceType === "gdrive" ||
-    sourceType === "onedrive" ||
-    sourceType === "dropbox"
+    sourceType === 'webdav' ||
+    sourceType === 's3' ||
+    sourceType === 'gdrive' ||
+    sourceType === 'onedrive' ||
+    sourceType === 'dropbox'
   ) {
     return (
       <svg viewBox="0 0 48 48" fill="none" className={className}>
@@ -100,36 +62,16 @@ function SourceIcon({
           strokeWidth="1.5"
         />
       </svg>
-    )
+    );
   }
-  if (sourceType === "http") {
+  if (sourceType === 'http') {
     return (
       <svg viewBox="0 0 48 48" fill="none" className={className}>
-        <circle
-          cx="24"
-          cy="24"
-          r="16"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <ellipse
-          cx="24"
-          cy="24"
-          rx="8"
-          ry="16"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <line
-          x1="8"
-          y1="24"
-          x2="40"
-          y2="24"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
+        <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="24" cy="24" rx="8" ry="16" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="8" y1="24" x2="40" y2="24" stroke="currentColor" strokeWidth="1.5" />
       </svg>
-    )
+    );
   }
   return (
     <svg viewBox="0 0 48 48" fill="none" className={className}>
@@ -139,7 +81,7 @@ function SourceIcon({
         strokeWidth="1.5"
       />
     </svg>
-  )
+  );
 }
 
 /* -- Skeleton loader -------------------------------------------------------- */
@@ -177,72 +119,58 @@ function LibraryDetailSkeleton() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 /* -- File table ------------------------------------------------------------- */
 
-function StatusBadge({ status }: { status: MediaFileEntry["match_status"] }) {
+function StatusBadge({ status }: { status: MediaFileEntry['match_status'] }) {
   const styles = {
-    auto: "bg-green-400/10 text-green-400/80",
-    manual: "bg-blue-400/10 text-blue-400/80",
-    unmatched: "bg-amber-400/10 text-amber-400/80",
-  }
-  const labels = { auto: "AUTO", manual: "MANUAL", unmatched: "UNMATCHED" }
+    auto: 'bg-green-400/10 text-green-400/80',
+    manual: 'bg-blue-400/10 text-blue-400/80',
+    unmatched: 'bg-amber-400/10 text-amber-400/80',
+  };
+  const labels = { auto: 'AUTO', manual: 'MANUAL', unmatched: 'UNMATCHED' };
   return (
-    <span
-      className={cn(
-        "text-[9px] font-bold px-1.5 py-0.5 rounded",
-        styles[status],
-      )}
-    >
+    <span className={cn('text-[9px] font-bold px-1.5 py-0.5 rounded', styles[status])}>
       {labels[status]}
     </span>
-  )
+  );
 }
 
 function FileTable({
   libraryId,
   onMatch,
 }: {
-  libraryId: string
-  onMatch?: (file: MediaFileEntry) => void
+  libraryId: string;
+  onMatch?: (file: MediaFileEntry) => void;
 }) {
-  const { i18n } = useLingui()
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "matched" | "unmatched"
-  >("all")
-  const [search, setSearch] = useState("")
-  const [debouncedSearch, setDebouncedSearch] = useState("")
-  const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(10)
+  const { i18n } = useLingui();
+  const [statusFilter, setStatusFilter] = useState<'all' | 'matched' | 'unmatched'>('all');
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search)
-      setPage(1)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [search])
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   // Reset pagination when filter changes
-  const handleFilterChange = (f: "all" | "matched" | "unmatched") => {
-    setStatusFilter(f)
-    setPage(1)
-  }
+  const handleFilterChange = (f: 'all' | 'matched' | 'unmatched') => {
+    setStatusFilter(f);
+    setPage(1);
+  };
 
   const { data, isLoading, isFetching } = useQuery<MediaFilesResponse, Error>({
-    queryKey: [
-      "media-files",
-      libraryId,
-      page,
-      perPage,
-      statusFilter,
-      debouncedSearch,
-    ],
+    queryKey: ['media-files', libraryId, page, perPage, statusFilter, debouncedSearch],
     queryFn: () =>
       libraryApi.mediaFiles(libraryId, {
-        status: statusFilter === "all" ? undefined : statusFilter,
+        status: statusFilter === 'all' ? undefined : statusFilter,
         q: debouncedSearch || undefined,
         page,
         per_page: perPage,
@@ -251,17 +179,17 @@ function FileTable({
     staleTime: 0,
     structuralSharing: false,
     keepPreviousData: true,
-  })
+  });
 
-  const files = data?.items ?? []
-  const total = data?.total ?? 0
+  const files = data?.items ?? [];
+  const total = data?.total ?? 0;
 
-  const showSkeleton = isFetching && files.length === 0
-  const showOverlay = isFetching && files.length > 0
+  const showSkeleton = isFetching && files.length === 0;
+  const showOverlay = isFetching && files.length > 0;
   const columns = React.useMemo<ColumnDef<MediaFileEntry>[]>(
     () => [
       {
-        accessorKey: "filename",
+        accessorKey: 'filename',
         header: () => i18n._(msg`library.detail.col.filename`),
         meta: { width: 650 },
         cell: ({ row }) => (
@@ -276,34 +204,48 @@ function FileTable({
         ),
       },
       {
-        id: "matched",
+        id: 'matched',
         header: () => i18n._(msg`library.detail.col.matchedAnime`),
         meta: { width: 300 },
         cell: ({ row }) => {
-          const file = row.original
+          const file = row.original;
           if (file.matched_anime_title && file.matched_episode_sort > 0) {
-            const hasBangumiLink = file.matched_bangumi_id > 0
+            const hasBangumiLink = file.matched_bangumi_id > 0;
             const content = (
-              <div className={cn(
-                "inline-flex items-center gap-2 min-w-0 px-2 py-1 rounded-md transition-colors",
-                hasBangumiLink && "hover:bg-white/[0.06] group cursor-pointer",
-              )}>
-                <span className={cn(
-                  "text-sm truncate",
-                  hasBangumiLink ? "text-white/70 group-hover:text-mm-accent transition-colors" : "text-white/60",
-                )}>
+              <div
+                className={cn(
+                  'inline-flex items-center gap-2 min-w-0 px-2 py-1 rounded-md transition-colors',
+                  hasBangumiLink && 'hover:bg-white/[0.06] group cursor-pointer'
+                )}
+              >
+                <span
+                  className={cn(
+                    'text-sm truncate',
+                    hasBangumiLink
+                      ? 'text-white/70 group-hover:text-mm-accent transition-colors'
+                      : 'text-white/60'
+                  )}
+                >
                   {file.matched_anime_title}
                 </span>
                 <span className="text-[10px] font-medium text-white/25 shrink-0 tabular-nums px-1 py-px rounded bg-white/[0.04]">
-                  EP{String(file.matched_episode_sort).padStart(2, "0")}
+                  EP{String(file.matched_episode_sort).padStart(2, '0')}
                 </span>
                 {hasBangumiLink && (
-                  <svg className="w-3 h-3 shrink-0 text-white/15 group-hover:text-mm-accent/60 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    className="w-3 h-3 shrink-0 text-white/15 group-hover:text-mm-accent/60 transition-colors"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
                 )}
               </div>
-            )
+            );
             if (hasBangumiLink) {
               return (
                 <Link
@@ -313,59 +255,48 @@ function FileTable({
                 >
                   {content}
                 </Link>
-              )
+              );
             }
-            return content
+            return content;
           }
-          return <span className="text-white/20">&mdash;</span>
+          return <span className="text-white/20">&mdash;</span>;
         },
       },
       {
-        accessorKey: "match_status",
+        accessorKey: 'match_status',
         header: () => i18n._(msg`library.detail.col.status`),
         cell: ({ row }) => <StatusBadge status={row.original.match_status} />,
       },
       {
-        accessorKey: "subtitle_count",
+        accessorKey: 'subtitle_count',
         header: () => i18n._(msg`library.detail.col.subs`),
         cell: ({ row }) => (
-          <span className="text-xs text-white/40">
-            {row.original.subtitle_count}
-          </span>
+          <span className="text-xs text-white/40">{row.original.subtitle_count}</span>
         ),
       },
       {
-        accessorKey: "size_bytes",
+        accessorKey: 'size_bytes',
         header: () => i18n._(msg`library.detail.col.size`),
         cell: ({ row }) => (
-          <span className="text-xs text-white/50">
-            {formatBytes(row.original.size_bytes)}
-          </span>
+          <span className="text-xs text-white/50">{formatBytes(row.original.size_bytes)}</span>
         ),
       },
       ...(onMatch
         ? [
             {
-              id: "actions",
+              id: 'actions',
               cell: ({ row }: { row: { original: MediaFileEntry } }) => {
-                const file = row.original
-                if (file.match_status === "unmatched") {
+                const file = row.original;
+                if (file.match_status === 'unmatched') {
                   return (
-                    <Button
-                      type="button"
-                      size="xs"
-                      onClick={() => onMatch(file)}
-                    >
+                    <Button type="button" size="xs" onClick={() => onMatch(file)}>
                       {i18n._(msg`library.detail.match`)}
                     </Button>
-                  )
+                  );
                 }
                 return (
                   <div className="flex items-center gap-1.5">
-                    <Button
-                      size="xs"
-                      asChild
-                    >
+                    <Button size="xs" asChild>
                       <Link
                         to="/watch/$animeId"
                         params={{ animeId: String(file.matched_bangumi_id) }}
@@ -387,35 +318,26 @@ function FileTable({
                       {i18n._(msg`library.detail.editMatch`)}
                     </Button>
                   </div>
-                )
+                );
               },
             } satisfies ColumnDef<MediaFileEntry>,
           ]
         : []),
     ],
-    [i18n, onMatch],
-  )
+    [i18n, onMatch]
+  );
 
   const table = useReactTable({
     data: files,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  });
 
   // Only show full-page empty state when no filters/search applied and truly no files
-  if (
-    !isLoading &&
-    files.length === 0 &&
-    !debouncedSearch &&
-    statusFilter === "all"
-  ) {
+  if (!isLoading && files.length === 0 && !debouncedSearch && statusFilter === 'all') {
     return (
       <div className="py-20 flex flex-col items-center text-center">
-        <svg
-          viewBox="0 0 48 48"
-          fill="none"
-          className="w-14 h-14 text-white/[0.08] mb-4"
-        >
+        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-white/[0.08] mb-4">
           <path
             d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
             stroke="currentColor"
@@ -429,10 +351,10 @@ function FileTable({
           {i18n._(msg`library.detail.noFilesHint`)}
         </p>
       </div>
-    )
+    );
   }
 
-  const showEmptyFiltered = !isLoading && files.length === 0
+  const showEmptyFiltered = !isLoading && files.length === 0;
 
   return (
     <div>
@@ -461,13 +383,13 @@ function FileTable({
         </div>
         <div className="flex rounded-lg border border-white/[0.08] overflow-hidden">
           {[
-            { key: "all" as const, label: i18n._(msg`schedule.all`) },
+            { key: 'all' as const, label: i18n._(msg`schedule.all`) },
             {
-              key: "matched" as const,
+              key: 'matched' as const,
               label: i18n._(msg`library.detail.matched`),
             },
             {
-              key: "unmatched" as const,
+              key: 'unmatched' as const,
               label: i18n._(msg`library.detail.unmatchedShort`),
             },
           ].map((f) => (
@@ -476,10 +398,10 @@ function FileTable({
               type="button"
               onClick={() => handleFilterChange(f.key)}
               className={cn(
-                "px-3 py-2 text-xs font-medium transition-colors cursor-pointer",
+                'px-3 py-2 text-xs font-medium transition-colors cursor-pointer',
                 statusFilter === f.key
-                  ? "bg-white/[0.08] text-white"
-                  : "text-white/40 hover:text-white/60",
+                  ? 'bg-white/[0.08] text-white'
+                  : 'text-white/40 hover:text-white/60'
               )}
             >
               {f.label}
@@ -498,11 +420,9 @@ function FileTable({
           </div>
         ) : showEmptyFiltered ? (
           <div className="flex items-center justify-center h-40">
-            {statusFilter === "unmatched" ? (
+            {statusFilter === 'unmatched' ? (
               <div className="text-center">
-                <span className="text-green-400 text-2xl mb-2 block">
-                  &#10003;
-                </span>
+                <span className="text-green-400 text-2xl mb-2 block">&#10003;</span>
                 <p className="text-[13px] text-green-400/70">
                   {i18n._(msg`library.detail.allMatched`)}
                 </p>
@@ -518,9 +438,7 @@ function FileTable({
             <MotionTable table={table} tableClassName="table-fixed" />
             {showOverlay && (
               <div className="absolute inset-0 bg-black/20 z-20 pointer-events-none flex items-center justify-center">
-                <span className="text-sm text-white/80">
-                  {i18n._(msg`common.loading`)}...
-                </span>
+                <span className="text-sm text-white/80">{i18n._(msg`common.loading`)}...</span>
               </div>
             )}
           </div>
@@ -535,28 +453,28 @@ function FileTable({
         onPerPageChange={setPerPage}
       />
     </div>
-  )
+  );
 }
 
 /* -- Scan history ----------------------------------------------------------- */
 
 function ScanHistoryList({ libraryId }: { libraryId: string }) {
-  const { i18n } = useLingui()
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+  const { i18n } = useLingui();
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const { data: summaries, isLoading } = useQuery({
     queryKey: libraryKeys.summaries(libraryId),
     queryFn: () => libraryApi.scanSummaries(libraryId),
-  })
+  });
 
   const toggleExpand = (scanId: string) => {
     setExpandedIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(scanId)) next.delete(scanId)
-      else next.add(scanId)
-      return next
-    })
-  }
+      const next = new Set(prev);
+      if (next.has(scanId)) next.delete(scanId);
+      else next.add(scanId);
+      return next;
+    });
+  };
 
   if (isLoading) {
     return (
@@ -565,32 +483,22 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
           <Skeleton key={i} className="h-16 w-full rounded-lg" />
         ))}
       </div>
-    )
+    );
   }
 
   const sorted = [...(summaries || [])].sort((a, b) => {
-    const aStart = new Date(a.started_at)
-    const bStart = new Date(b.started_at)
-    const aTime = Number.isNaN(aStart.getTime()) ? 0 : aStart.getTime()
-    const bTime = Number.isNaN(bStart.getTime()) ? 0 : bStart.getTime()
-    return bTime - aTime
-  })
+    const aStart = new Date(a.started_at);
+    const bStart = new Date(b.started_at);
+    const aTime = Number.isNaN(aStart.getTime()) ? 0 : aStart.getTime();
+    const bTime = Number.isNaN(bStart.getTime()) ? 0 : bStart.getTime();
+    return bTime - aTime;
+  });
 
   if (sorted.length === 0) {
     return (
       <div className="py-20 flex flex-col items-center text-center">
-        <svg
-          viewBox="0 0 48 48"
-          fill="none"
-          className="w-14 h-14 text-white/[0.08] mb-4"
-        >
-          <circle
-            cx="24"
-            cy="24"
-            r="18"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
+        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-white/[0.08] mb-4">
+          <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.5" />
           <polyline
             points="24,14 24,24 32,28"
             stroke="currentColor"
@@ -606,55 +514,45 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
           {i18n._(msg`library.detail.noScansHint`)}
         </p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-2">
       {sorted.map((scan) => {
-        const startDate = scan.started_at ? new Date(scan.started_at) : null
-        const startedAtValid = startDate && !Number.isNaN(startDate.getTime())
+        const startDate = scan.started_at ? new Date(scan.started_at) : null;
+        const startedAtValid = startDate && !Number.isNaN(startDate.getTime());
 
-        const completedDate = scan.completed_at
-          ? new Date(scan.completed_at)
-          : null
-        const completedAtValid =
-          completedDate && !Number.isNaN(completedDate.getTime())
+        const completedDate = scan.completed_at ? new Date(scan.completed_at) : null;
+        const completedAtValid = completedDate && !Number.isNaN(completedDate.getTime());
 
         const duration =
           startedAtValid && completedAtValid
-            ? Math.round(
-                (completedDate!.getTime() - startDate!.getTime()) / 1000,
-              )
-            : null
+            ? Math.round((completedDate!.getTime() - startDate!.getTime()) / 1000)
+            : null;
 
         const startDateLabel = startedAtValid
           ? `${startDate!.toLocaleDateString()} ${startDate!.toLocaleTimeString()}`
-          : "-"
+          : '-';
 
-        let errors: string[] = []
+        let errors: string[] = [];
         if (scan.errors) {
           try {
-            errors = JSON.parse(scan.errors)
+            errors = JSON.parse(scan.errors);
           } catch {
-            errors = scan.errors ? [scan.errors] : []
+            errors = scan.errors ? [scan.errors] : [];
           }
         }
 
-        const isExpanded = expandedIds.has(scan.id)
+        const isExpanded = expandedIds.has(scan.id);
 
         return (
-          <div
-            key={scan.id}
-            className="rounded-lg p-4 border border-white/[0.04]"
-          >
+          <div key={scan.id} className="rounded-lg p-4 border border-white/[0.04]">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-4 text-[13px]">
                 <span className="text-white/40">{startDateLabel}</span>
                 <span className="text-white/25">
-                  {duration !== null
-                    ? `${duration}s`
-                    : i18n._(msg`library.detail.inProgress`)}
+                  {duration !== null ? `${duration}s` : i18n._(msg`library.detail.inProgress`)}
                 </span>
               </div>
               <div className="flex items-center gap-3 text-[12px] tabular-nums">
@@ -665,8 +563,7 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
                   {scan.files_matched} {i18n._(msg`library.detail.matched`)}
                 </span>
                 <span className="text-amber-400/80">
-                  {scan.files_unmatched}{" "}
-                  {i18n._(msg`library.detail.unmatchedShort`)}
+                  {scan.files_unmatched} {i18n._(msg`library.detail.unmatchedShort`)}
                 </span>
                 {errors.length > 0 && (
                   <button
@@ -674,8 +571,8 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
                     onClick={() => toggleExpand(scan.id)}
                     className="text-red-400 hover:text-red-300 transition-colors cursor-pointer"
                   >
-                    {errors.length} {i18n._(msg`library.detail.errors`)}{" "}
-                    {isExpanded ? "\u25BE" : "\u25B8"}
+                    {errors.length} {i18n._(msg`library.detail.errors`)}{' '}
+                    {isExpanded ? '\u25BE' : '\u25B8'}
                   </button>
                 )}
               </div>
@@ -683,20 +580,17 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
             {isExpanded && errors.length > 0 && (
               <div className="mt-3 pt-3 border-t border-white/[0.04] space-y-1">
                 {errors.map((err, idx) => (
-                  <p
-                    key={idx}
-                    className="text-[11px] font-mono text-red-400/80"
-                  >
+                  <p key={idx} className="text-[11px] font-mono text-red-400/80">
                     {err}
                   </p>
                 ))}
               </div>
             )}
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 /* -- Match modal ------------------------------------------------------------ */
@@ -706,83 +600,82 @@ function MatchModal({
   onClose,
   libraryId,
 }: {
-  file: MediaFileEntry | null
-  onClose: () => void
-  libraryId: string
+  file: MediaFileEntry | null;
+  onClose: () => void;
+  libraryId: string;
 }) {
-  const { i18n } = useLingui()
-  const queryClient = useQueryClient()
-  const [step, setStep] = useState<1 | 2>(1)
-  const [searchInput, setSearchInput] = useState("")
-  const [debouncedSearch, setDebouncedSearch] = useState("")
-  const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null)
-  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null)
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [step, setStep] = useState<1 | 2>(1);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
+  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   // Reset state when file changes (modal opens/closes)
   useEffect(() => {
     if (file) {
-      setStep(1)
-      setSearchInput("")
-      setDebouncedSearch("")
-      setSelectedAnime(null)
-      setSelectedEpisode(null)
+      setStep(1);
+      setSearchInput('');
+      setDebouncedSearch('');
+      setSelectedAnime(null);
+      setSelectedEpisode(null);
     }
-  }, [file])
+  }, [file]);
 
   // Debounce search input
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300)
-    return () => clearTimeout(timer)
-  }, [searchInput])
+    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   // Search anime query
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: discoverKeys.search(debouncedSearch),
     queryFn: () => discoverApi.search(debouncedSearch),
     enabled: debouncedSearch.length > 0,
-  })
+  });
 
   // Episodes query
   const { data: episodes, isLoading: isLoadingEpisodes } = useQuery({
     queryKey: discoverKeys.episodes(selectedAnime?.bangumi_id ?? 0),
     queryFn: () => discoverApi.episodes(selectedAnime!.bangumi_id),
     enabled: !!selectedAnime && step === 2,
-  })
+  });
 
   // Match mutation
   const matchMutation = useMutation({
     mutationFn: () => {
-      if (!file || !selectedAnime || !selectedEpisode)
-        throw new Error("Missing data")
+      if (!file || !selectedAnime || !selectedEpisode) throw new Error('Missing data');
       return libraryApi.matchFile(file.id, {
         bangumi_id: selectedAnime.bangumi_id,
         episode_id: selectedEpisode.bangumi_episode_id,
-      })
+      });
     },
     onSuccess: () => {
-      toast.success(i18n._(msg`library.detail.matchModal.matched`))
+      toast.success(i18n._(msg`library.detail.matchModal.matched`));
       queryClient.invalidateQueries({
         queryKey: libraryKeys.mediaFiles(libraryId),
-      })
-      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) })
-      onClose()
+      });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
+      onClose();
     },
     onError: (err: Error) => {
-      toast.error(err.message)
+      toast.error(err.message);
     },
-  })
+  });
 
   const handleSelectAnime = (anime: AnimeSummary) => {
-    setSelectedAnime(anime)
-    setSelectedEpisode(null)
-    setStep(2)
-  }
+    setSelectedAnime(anime);
+    setSelectedEpisode(null);
+    setStep(2);
+  };
 
   const handleGoBackToSearch = () => {
-    setStep(1)
-    setSelectedAnime(null)
-    setSelectedEpisode(null)
-  }
+    setStep(1);
+    setSelectedAnime(null);
+    setSelectedEpisode(null);
+  };
 
   return (
     <Modal
@@ -794,10 +687,7 @@ function MatchModal({
       {/* Filename banner */}
       {file && (
         <div className="mb-4 rounded-md bg-white/[0.04] px-3 py-2">
-          <p
-            className="font-mono text-xs text-mm-text-muted truncate"
-            title={file.filename}
-          >
+          <p className="font-mono text-xs text-mm-text-muted truncate" title={file.filename}>
             {file.filename}
           </p>
         </div>
@@ -810,9 +700,7 @@ function MatchModal({
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder={i18n._(
-              msg`library.detail.matchModal.searchPlaceholder`,
-            )}
+            placeholder={i18n._(msg`library.detail.matchModal.searchPlaceholder`)}
             className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-mm-text-muted focus:outline-none focus:ring-1 focus:ring-mm-accent/50 mb-4"
             autoFocus
           />
@@ -832,14 +720,11 @@ function MatchModal({
             </div>
           )}
 
-          {debouncedSearch &&
-            !isSearching &&
-            searchResults &&
-            searchResults.length === 0 && (
-              <p className="text-center text-[13px] text-mm-text-muted py-8">
-                {i18n._(msg`library.detail.matchModal.noResults`)}
-              </p>
-            )}
+          {debouncedSearch && !isSearching && searchResults && searchResults.length === 0 && (
+            <p className="text-center text-[13px] text-mm-text-muted py-8">
+              {i18n._(msg`library.detail.matchModal.noResults`)}
+            </p>
+          )}
 
           {searchResults && searchResults.length > 0 && (
             <div className="space-y-1 max-h-[45vh] overflow-y-auto">
@@ -856,17 +741,13 @@ function MatchModal({
                     className="w-10 h-14 object-cover rounded flex-shrink-0"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-white truncate">
-                      {anime.title}
-                    </p>
+                    <p className="text-sm font-medium text-white truncate">{anime.title}</p>
                     <div className="flex items-center gap-2 text-[11px] text-mm-text-muted mt-0.5">
                       <span>
                         {anime.episode_count} {i18n._(msg`common.ep`)}
                       </span>
                       {anime.score > 0 && (
-                        <span className="text-amber-400">
-                          {anime.score.toFixed(1)}
-                        </span>
+                        <span className="text-amber-400">{anime.score.toFixed(1)}</span>
                       )}
                     </div>
                   </div>
@@ -887,9 +768,7 @@ function MatchModal({
               className="w-10 h-14 object-cover rounded flex-shrink-0"
             />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-white truncate">
-                {selectedAnime.title}
-              </p>
+              <p className="text-sm font-medium text-white truncate">{selectedAnime.title}</p>
               <Button
                 type="button"
                 size="xs"
@@ -914,22 +793,21 @@ function MatchModal({
           {episodes && episodes.length > 0 && (
             <div className="space-y-1 max-h-[35vh] overflow-y-auto mb-4">
               {episodes.map((ep) => {
-                const isSelected =
-                  selectedEpisode?.bangumi_episode_id === ep.bangumi_episode_id
+                const isSelected = selectedEpisode?.bangumi_episode_id === ep.bangumi_episode_id;
                 return (
                   <button
                     key={ep.bangumi_episode_id}
                     type="button"
                     onClick={() => setSelectedEpisode(ep)}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors cursor-pointer text-left",
+                      'w-full flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors cursor-pointer text-left',
                       isSelected
-                        ? "bg-mm-accent/15 border border-mm-accent/40"
-                        : "hover:bg-white/[0.06] border border-transparent",
+                        ? 'bg-mm-accent/15 border border-mm-accent/40'
+                        : 'hover:bg-white/[0.06] border border-transparent'
                     )}
                   >
                     <span className="text-[12px] font-bold text-mm-text-secondary tabular-nums whitespace-nowrap">
-                      EP {String(ep.sort).padStart(2, "0")}
+                      EP {String(ep.sort).padStart(2, '0')}
                     </span>
                     <span className="text-sm text-white truncate flex-1">
                       {ep.title || ep.title_original}
@@ -940,7 +818,7 @@ function MatchModal({
                       </span>
                     )}
                   </button>
-                )
+                );
               })}
             </div>
           )}
@@ -965,7 +843,7 @@ function MatchModal({
         </div>
       )}
     </Modal>
-  )
+  );
 }
 
 /* -- Settings modal --------------------------------------------------------- */
@@ -976,33 +854,31 @@ function SettingsModal({
   library,
   libraryId,
 }: {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
   library: {
-    name: string
-    path: string
-    enabled: number
-    scan_interval_minutes: number
-    source_type: string
-    source_config?: Record<string, unknown>
-  }
-  libraryId: string
+    name: string;
+    path: string;
+    enabled: number;
+    scan_interval_minutes: number;
+    source_type: string;
+    source_config?: Record<string, unknown>;
+  };
+  libraryId: string;
 }) {
-  const { i18n } = useLingui()
-  const queryClient = useQueryClient()
-  const [name, setName] = useState(library.name)
-  const [scanInterval, setScanInterval] = useState(
-    library.scan_interval_minutes,
-  )
-  const [enabled, setEnabled] = useState(!!library.enabled)
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [name, setName] = useState(library.name);
+  const [scanInterval, setScanInterval] = useState(library.scan_interval_minutes);
+  const [enabled, setEnabled] = useState(!!library.enabled);
 
   useEffect(() => {
     if (open) {
-      setName(library.name)
-      setScanInterval(library.scan_interval_minutes)
-      setEnabled(!!library.enabled)
+      setName(library.name);
+      setScanInterval(library.scan_interval_minutes);
+      setEnabled(!!library.enabled);
     }
-  }, [open, library])
+  }, [open, library]);
 
   const updateMutation = useMutation({
     mutationFn: () =>
@@ -1015,22 +891,18 @@ function SettingsModal({
         source_config: library.source_config,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) })
-      queryClient.invalidateQueries({ queryKey: libraryKeys.list() })
-      toast.success(i18n._(msg`library.toast.updated`))
-      onClose()
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
+      toast.success(i18n._(msg`library.toast.updated`));
+      onClose();
     },
     onError: (err: Error) => {
-      toast.error(err.message)
+      toast.error(err.message);
     },
-  })
+  });
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title={i18n._(msg`library.detail.settings`)}
-    >
+    <Modal open={open} onClose={onClose} title={i18n._(msg`library.detail.settings`)}>
       <div className="space-y-5">
         {/* Name */}
         <div>
@@ -1068,14 +940,14 @@ function SettingsModal({
             type="button"
             onClick={() => setEnabled((v) => !v)}
             className={cn(
-              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer",
-              enabled ? "bg-mm-accent" : "bg-white/[0.12]",
+              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer',
+              enabled ? 'bg-mm-accent' : 'bg-white/[0.12]'
             )}
           >
             <span
               className={cn(
-                "inline-block h-4 w-4 rounded-full bg-white transition-transform",
-                enabled ? "translate-x-6" : "translate-x-1",
+                'inline-block h-4 w-4 rounded-full bg-white transition-transform',
+                enabled ? 'translate-x-6' : 'translate-x-1'
               )}
             />
           </button>
@@ -1094,36 +966,36 @@ function SettingsModal({
         </Button>
       </div>
     </Modal>
-  )
+  );
 }
 
 /* -- Main page -------------------------------------------------------------- */
 
 export function LibraryDetailPage() {
-  const { i18n } = useLingui()
-  const { isAuthenticated } = useAuth()
-  const [showLogin, setShowLogin] = useState(!isAuthenticated)
-  const { id: rawId } = useParams({ strict: false }) as { id?: string }
-  const id = rawId ?? ""
-  const queryClient = useQueryClient()
-  const [activeTab, setActiveTab] = useState<string>("files")
-  const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null)
-  const [showSettings, setShowSettings] = useState(false)
-  const scanProgress = useScanStore((s) => s.getProgress(id))
-  const isScanning = useScanStore((s) => s.isScanning(id))
+  const { i18n } = useLingui();
+  const { isAuthenticated } = useAuth();
+  const [showLogin, setShowLogin] = useState(!isAuthenticated);
+  const { id: rawId } = useParams({ strict: false }) as { id?: string };
+  const id = rawId ?? '';
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState<string>('files');
+  const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const scanProgress = useScanStore((s) => s.getProgress(id));
+  const isScanning = useScanStore((s) => s.isScanning(id));
 
   useEffect(() => {
-    if (isAuthenticated) setShowLogin(false)
-    else setShowLogin(true)
-  }, [isAuthenticated])
+    if (isAuthenticated) setShowLogin(false);
+    else setShowLogin(true);
+  }, [isAuthenticated]);
 
   // Auto-refresh data when scan completes
   useEffect(() => {
-    if (scanProgress?.phase === "completed") {
-      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(id) })
-      queryClient.invalidateQueries({ queryKey: ["media-files", id] })
+    if (scanProgress?.phase === 'completed') {
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: ['media-files', id] });
     }
-  }, [scanProgress?.phase, id, queryClient])
+  }, [scanProgress?.phase, id, queryClient]);
 
   const {
     data: library,
@@ -1133,43 +1005,39 @@ export function LibraryDetailPage() {
     queryKey: libraryKeys.detail(id),
     queryFn: () => libraryApi.get(id),
     enabled: isAuthenticated && !!id,
-  })
+  });
 
   const scanMutation = useMutation({
     mutationFn: () => libraryApi.scan(id),
     onSuccess: () => {
-      toast.success(i18n._(msg`library.toast.scanStarted`))
+      toast.success(i18n._(msg`library.toast.scanStarted`));
     },
     onError: (err: Error) => {
-      toast.error(`${i18n._(msg`library.toast.scanFailed`)}: ${err.message}`)
+      toast.error(`${i18n._(msg`library.toast.scanFailed`)}: ${err.message}`);
     },
-  })
+  });
 
   const matchMutation = useMutation({
     mutationFn: () => libraryApi.matchLibrary(id),
     onSuccess: () => {
-      toast.success(i18n._(msg`library.toast.matchStarted`))
+      toast.success(i18n._(msg`library.toast.matchStarted`));
     },
     onError: (err: Error) => {
-      toast.error(`${i18n._(msg`library.toast.matchFailed`)}: ${err.message}`)
+      toast.error(`${i18n._(msg`library.toast.matchFailed`)}: ${err.message}`);
     },
-  })
+  });
 
   const tabs = [
-    { key: "files", label: i18n._(msg`library.detail.tab.files`) },
-    { key: "history", label: i18n._(msg`library.detail.tab.scanHistory`) },
-  ]
+    { key: 'files', label: i18n._(msg`library.detail.tab.files`) },
+    { key: 'history', label: i18n._(msg`library.detail.tab.scanHistory`) },
+  ];
 
   if (!isAuthenticated) {
     return (
       <PageTransition>
         <div className="min-h-screen flex flex-col items-center justify-center px-4">
           <div className="mb-8">
-            <svg
-              viewBox="0 0 80 80"
-              fill="none"
-              className="w-20 h-20 text-white/[0.07]"
-            >
+            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
               <path
                 d="M40 10a14 14 0 0 1 14 14v6H26v-6A14 14 0 0 1 40 10z"
                 stroke="currentColor"
@@ -1194,16 +1062,13 @@ export function LibraryDetailPage() {
           <p className="text-sm text-white/30 mb-8 text-center max-w-xs">
             {i18n._(msg`auth.libraries.signInSubtitle`)}
           </p>
-          <Button
-            type="button"
-            onClick={() => setShowLogin(true)}
-          >
+          <Button type="button" onClick={() => setShowLogin(true)}>
             {i18n._(msg`auth.login.submit`)}
           </Button>
           <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
         </div>
       </PageTransition>
-    )
+    );
   }
 
   if (isLoading) {
@@ -1211,7 +1076,7 @@ export function LibraryDetailPage() {
       <PageTransition>
         <LibraryDetailSkeleton />
       </PageTransition>
-    )
+    );
   }
 
   if (isError || !library) {
@@ -1219,9 +1084,7 @@ export function LibraryDetailPage() {
       <PageTransition>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <p className="text-sm text-mm-text-tertiary mb-3">
-            {isError
-              ? i18n._(msg`common.loadFailed`)
-              : i18n._(msg`library.detail.notFound`)}
+            {isError ? i18n._(msg`common.loadFailed`) : i18n._(msg`library.detail.notFound`)}
           </p>
           <Link
             to="/libraries"
@@ -1231,35 +1094,28 @@ export function LibraryDetailPage() {
           </Link>
         </div>
       </PageTransition>
-    )
+    );
   }
 
   const matchPct =
-    library.file_count > 0
-      ? Math.round((library.matched_count / library.file_count) * 100)
-      : 0
+    library.file_count > 0 ? Math.round((library.matched_count / library.file_count) * 100) : 0;
 
-  const lastScannedDate = library.last_scanned_at
-    ? new Date(library.last_scanned_at)
-    : null
+  const lastScannedDate = library.last_scanned_at ? new Date(library.last_scanned_at) : null;
   const lastScannedText =
     lastScannedDate && !Number.isNaN(lastScannedDate.getTime())
       ? formatDistanceToNow(lastScannedDate, { addSuffix: true })
-      : i18n._(msg`library.neverScanned`)
+      : i18n._(msg`library.neverScanned`);
 
   const sourceLabel =
-    library.source_type && library.source_type !== "local"
+    library.source_type && library.source_type !== 'local'
       ? library.source_type.toUpperCase()
-      : null
+      : null;
 
   return (
     <PageTransition>
       <div className="min-h-screen px-4 md:px-8 pt-6 pb-16">
         {/* Back link */}
-        <motion.div
-          initial={{ opacity: 0, x: -6 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
+        <motion.div initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}>
           <Link
             to="/libraries"
             className="inline-flex items-center gap-1.5 text-[12px] text-white/30 hover:text-white/50 transition-colors mb-8"
@@ -1278,17 +1134,13 @@ export function LibraryDetailPage() {
             {/* Library icon badge */}
             <div className="shrink-0 w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
               <SourceIcon
-                sourceType={library.source_type ?? "local"}
+                sourceType={library.source_type ?? 'local'}
                 className="w-6 h-6 text-white/30"
               />
             </div>
             <div className="min-w-0">
-              <h1 className="text-3xl font-bold text-white tracking-tight">
-                {library.name}
-              </h1>
-              <p className="font-mono text-xs text-white/30 mt-1 truncate">
-                {library.path}
-              </p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">{library.name}</h1>
+              <p className="font-mono text-xs text-white/30 mt-1 truncate">{library.path}</p>
               <div className="flex items-center gap-2 mt-2">
                 {sourceLabel && (
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">
@@ -1309,7 +1161,7 @@ export function LibraryDetailPage() {
               onClick={() => matchMutation.mutate()}
               disabled={isScanning || matchMutation.isPending}
             >
-              {isScanning && scanProgress?.phase === "matching"
+              {isScanning && scanProgress?.phase === 'matching'
                 ? i18n._(msg`library.matching`)
                 : i18n._(msg`library.detail.autoMatch`)}
             </Button>
@@ -1318,15 +1170,9 @@ export function LibraryDetailPage() {
               onClick={() => scanMutation.mutate()}
               disabled={isScanning || scanMutation.isPending}
             >
-              {isScanning
-                ? i18n._(msg`library.scanning`)
-                : i18n._(msg`library.detail.scanNow`)}
+              {isScanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.detail.scanNow`)}
             </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => setShowSettings(true)}
-            >
+            <Button type="button" variant="secondary" onClick={() => setShowSettings(true)}>
               {i18n._(msg`library.detail.settings`)}
             </Button>
           </div>
@@ -1338,39 +1184,34 @@ export function LibraryDetailPage() {
             scanProgress &&
             (() => {
               const phaseLabel =
-                scanProgress.phase === "scanning"
+                scanProgress.phase === 'scanning'
                   ? i18n._(msg`scan.phase.scanning`)
-                  : scanProgress.phase === "hashing"
+                  : scanProgress.phase === 'hashing'
                     ? i18n._(msg`scan.phase.hashing`)
-                    : i18n._(msg`scan.phase.matching`)
+                    : i18n._(msg`scan.phase.matching`);
 
-              const isIndeterminate = scanProgress.phase === "scanning"
+              const isIndeterminate = scanProgress.phase === 'scanning';
               const percentage =
-                scanProgress.phase === "hashing" && scanProgress.filesTotal > 0
+                scanProgress.phase === 'hashing' && scanProgress.filesTotal > 0
                   ? (scanProgress.filesHashed / scanProgress.filesTotal) * 100
-                  : scanProgress.phase === "matching" &&
-                      scanProgress.filesTotal > 0
-                    ? (scanProgress.filesMatched / scanProgress.filesTotal) *
-                      100
-                    : 0
+                  : scanProgress.phase === 'matching' && scanProgress.filesTotal > 0
+                    ? (scanProgress.filesMatched / scanProgress.filesTotal) * 100
+                    : 0;
 
               return (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
+                  animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   className="rounded-lg border border-mm-accent/20 bg-mm-accent/[0.04] p-4 mb-6"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-mm-accent animate-pulse" />
-                      <span className="text-sm font-medium text-white/80">
-                        {phaseLabel}
-                      </span>
+                      <span className="text-sm font-medium text-white/80">{phaseLabel}</span>
                     </div>
                     <span className="text-xs text-white/40 font-mono">
-                      {scanProgress.filesFound > 0 &&
-                        `${scanProgress.filesFound} files`}
+                      {scanProgress.filesFound > 0 && `${scanProgress.filesFound} files`}
                       {scanProgress.filesMatched > 0 &&
                         ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
                     </span>
@@ -1394,7 +1235,7 @@ export function LibraryDetailPage() {
                     </p>
                   )}
                 </motion.div>
-              )
+              );
             })()}
         </AnimatePresence>
 
@@ -1406,24 +1247,20 @@ export function LibraryDetailPage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
         >
           <div className="bg-white/[0.03] rounded-lg p-4">
-            <p className="text-2xl font-bold text-white tabular-nums">
-              {library.file_count}
-            </p>
+            <p className="text-2xl font-bold text-white tabular-nums">{library.file_count}</p>
             <p className="text-xs text-white/40 mt-0.5">
               {i18n._(msg`library.detail.stats.files`)}
             </p>
           </div>
           <div className="bg-white/[0.03] rounded-lg p-4">
-            <p className="text-2xl font-bold text-green-400 tabular-nums">
-              {matchPct}%
-            </p>
+            <p className="text-2xl font-bold text-green-400 tabular-nums">{matchPct}%</p>
             <p className="text-xs text-white/40 mt-0.5">
               {i18n._(msg`library.detail.stats.matched`)}
             </p>
           </div>
           <button
             type="button"
-            onClick={() => setActiveTab("files")}
+            onClick={() => setActiveTab('files')}
             className="bg-white/[0.03] rounded-lg p-4 text-left hover:bg-white/[0.05] transition-colors cursor-pointer"
           >
             <p className="text-2xl font-bold text-amber-400 tabular-nums">
@@ -1437,31 +1274,23 @@ export function LibraryDetailPage() {
             <p className="text-2xl font-bold text-white tabular-nums">
               {formatBytes(library.total_size_bytes)}
             </p>
-            <p className="text-xs text-white/40 mt-0.5">
-              {i18n._(msg`library.detail.stats.size`)}
-            </p>
+            <p className="text-xs text-white/40 mt-0.5">{i18n._(msg`library.detail.stats.size`)}</p>
           </div>
         </motion.div>
 
         {/* Tab bar */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
           <div className="flex items-end gap-0 border-b border-white/[0.06] mb-6">
             {tabs.map((tab) => {
-              const isActive = activeTab === tab.key
+              const isActive = activeTab === tab.key;
               return (
                 <button
                   key={tab.key}
                   type="button"
                   onClick={() => setActiveTab(tab.key)}
                   className={cn(
-                    "relative px-4 pb-3 pt-2 text-sm font-medium uppercase tracking-wider cursor-pointer transition-colors duration-200",
-                    isActive
-                      ? "text-white"
-                      : "text-white/25 hover:text-white/40",
+                    'relative px-4 pb-3 pt-2 text-sm font-medium uppercase tracking-wider cursor-pointer transition-colors duration-200',
+                    isActive ? 'text-white' : 'text-white/25 hover:text-white/40'
                   )}
                 >
                   {tab.label}
@@ -1470,20 +1299,20 @@ export function LibraryDetailPage() {
                       layoutId="library-tab-underline"
                       className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 500,
                         damping: 38,
                       }}
                     />
                   )}
                 </button>
-              )
+              );
             })}
           </div>
 
           {/* Tab content */}
           <AnimatePresence mode="wait">
-            {activeTab === "files" && (
+            {activeTab === 'files' && (
               <motion.div
                 key="files"
                 initial={{ opacity: 0 }}
@@ -1494,7 +1323,7 @@ export function LibraryDetailPage() {
                 <FileTable libraryId={id} onMatch={setMatchingFile} />
               </motion.div>
             )}
-            {activeTab === "history" && (
+            {activeTab === 'history' && (
               <motion.div
                 key="history"
                 initial={{ opacity: 0 }}
@@ -1509,11 +1338,7 @@ export function LibraryDetailPage() {
         </motion.div>
       </div>
 
-      <MatchModal
-        file={matchingFile}
-        onClose={() => setMatchingFile(null)}
-        libraryId={id}
-      />
+      <MatchModal file={matchingFile} onClose={() => setMatchingFile(null)} libraryId={id} />
 
       <SettingsModal
         open={showSettings}
@@ -1522,5 +1347,5 @@ export function LibraryDetailPage() {
         libraryId={id}
       />
     </PageTransition>
-  )
+  );
 }

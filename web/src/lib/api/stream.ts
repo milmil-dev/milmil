@@ -99,8 +99,7 @@ export interface MediaInfo {
 }
 
 export const mediaApi = {
-  info: (fileId: string) =>
-    api.get<MediaInfo>(`/api/v1/media-files/${fileId}/info`),
+  info: (fileId: string) => api.get<MediaInfo>(`/api/v1/media-files/${fileId}/info`),
 };
 
 export const mediaKeys = {

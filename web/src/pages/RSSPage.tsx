@@ -75,26 +75,13 @@ function FeedRow({
         <p className="text-[10px] text-mm-text-tertiary mt-0.5">Last fetched: {lastFetched}</p>
       </div>
       <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button
-          size="xs"
-          variant="secondary"
-          onClick={onRefresh}
-          disabled={refreshing}
-        >
+        <Button size="xs" variant="secondary" onClick={onRefresh} disabled={refreshing}>
           {refreshing ? 'Fetching\u2026' : 'Refresh'}
         </Button>
-        <Button
-          size="xs"
-          variant="secondary"
-          onClick={onEdit}
-        >
+        <Button size="xs" variant="secondary" onClick={onEdit}>
           Edit
         </Button>
-        <Button
-          size="xs"
-          variant="destructive"
-          onClick={onDelete}
-        >
+        <Button size="xs" variant="destructive" onClick={onDelete}>
           Delete
         </Button>
       </div>
@@ -134,18 +121,10 @@ function RuleRow({
         <p className="text-[10px] text-mm-text-tertiary mt-0.5">Feed: {feedName}</p>
       </div>
       <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button
-          size="xs"
-          variant="secondary"
-          onClick={onEdit}
-        >
+        <Button size="xs" variant="secondary" onClick={onEdit}>
           Edit
         </Button>
-        <Button
-          size="xs"
-          variant="destructive"
-          onClick={onDelete}
-        >
+        <Button size="xs" variant="destructive" onClick={onDelete}>
           Delete
         </Button>
       </div>
@@ -485,10 +464,7 @@ function SectionHeader({
         <h2 className="text-lg font-bold text-white">{title}</h2>
         <span className="text-xs font-mono text-mm-text-tertiary">{count}</span>
       </div>
-      <Button
-        size="sm"
-        onClick={onAdd}
-      >
+      <Button size="sm" onClick={onAdd}>
         + {addLabel}
       </Button>
     </div>
@@ -833,11 +809,7 @@ export function RSSPage() {
               : 'This download rule will be permanently removed.'}
           </p>
           <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => setDeleteTarget(null)}
-            >
+            <Button type="button" variant="secondary" onClick={() => setDeleteTarget(null)}>
               Cancel
             </Button>
             <Button

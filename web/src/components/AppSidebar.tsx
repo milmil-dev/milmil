@@ -115,11 +115,7 @@ function AccountAvatar() {
             {initial}
           </button>
         </TooltipTrigger>
-        {!open && (
-          <TooltipContent side="right">
-            {user?.username ?? 'Account'}
-          </TooltipContent>
-        )}
+        {!open && <TooltipContent side="right">{user?.username ?? 'Account'}</TooltipContent>}
       </Tooltip>
 
       <AnimatePresence>
@@ -138,12 +134,8 @@ function AccountAvatar() {
                   {initial}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white truncate">
-                    {user?.username}
-                  </p>
-                  <p className="text-[10px] text-white/30">
-                    {i18n._(msg`account.local`)}
-                  </p>
+                  <p className="text-sm font-medium text-white truncate">{user?.username}</p>
+                  <p className="text-[10px] text-white/30">{i18n._(msg`account.local`)}</p>
                 </div>
               </div>
             </div>

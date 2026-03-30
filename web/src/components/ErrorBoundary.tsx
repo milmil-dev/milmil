@@ -65,11 +65,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
 
             <div className="space-y-3">
-              <Button
-                type="button"
-                onClick={this.handleReload}
-                className="w-full"
-              >
+              <Button type="button" onClick={this.handleReload} className="w-full">
                 Reload Application
               </Button>
 

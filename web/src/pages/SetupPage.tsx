@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
 import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
 
@@ -58,7 +59,9 @@ export function SetupPage() {
         >
           <form.Field name="username">
             {(field) => (
-              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <Field
+                data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+              >
                 <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.setup.username`)}</FieldLabel>
                 <Input
                   id={field.name}
@@ -79,11 +82,12 @@ export function SetupPage() {
 
           <form.Field name="password">
             {(field) => (
-              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <Field
+                data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+              >
                 <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.setup.password`)}</FieldLabel>
-                <Input
+                <PasswordInput
                   id={field.name}
-                  type="password"
                   autoComplete="new-password"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -103,9 +107,7 @@ export function SetupPage() {
           <form.Subscribe selector={(s) => s.isSubmitting}>
             {(isSubmitting) => (
               <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting
-                  ? i18n._(msg`auth.setup.loading`)
-                  : i18n._(msg`auth.setup.submit`)}
+                {isSubmitting ? i18n._(msg`auth.setup.loading`) : i18n._(msg`auth.setup.submit`)}
               </Button>
             )}
           </form.Subscribe>

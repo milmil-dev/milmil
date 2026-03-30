@@ -10,6 +10,11 @@ type WatchSearch = {
 export const Route = createFileRoute('/watch/$animeId')({
   component: WatchPage,
   validateSearch: (search: Record<string, unknown>): WatchSearch => ({
-    ep: typeof search.ep === 'number' ? search.ep : typeof search.ep === 'string' ? parseInt(search.ep, 10) || undefined : undefined,
+    ep:
+      typeof search.ep === 'number'
+        ? search.ep
+        : typeof search.ep === 'string'
+          ? parseInt(search.ep, 10) || undefined
+          : undefined,
   }),
 });

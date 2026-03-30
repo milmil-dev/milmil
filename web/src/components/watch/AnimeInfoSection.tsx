@@ -20,7 +20,12 @@ export function AnimeInfoSection({ anime }: AnimeInfoSectionProps) {
           {anime.genres && anime.genres.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
               {anime.genres.map((g) => (
-                <span key={g} className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">{g}</span>
+                <span
+                  key={g}
+                  className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40"
+                >
+                  {g}
+                </span>
               ))}
             </div>
           )}

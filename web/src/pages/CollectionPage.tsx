@@ -1,38 +1,34 @@
-import { msg } from "@lingui/core/macro"
-import { useLingui } from "@lingui/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useNavigate } from "@tanstack/react-router"
-import { Bookmark, Search } from "lucide-react"
-import { AnimatePresence, motion } from "motion/react"
-import { useEffect, useRef, useState } from "react"
-import { PageTransition } from "../components/PageTransition"
-import { Skeleton } from "../components/Skeleton"
-import {
-  type CollectionAnime,
-  collectionApi,
-  collectionKeys,
-} from "../lib/api/collection"
-import { animeGradient } from "../lib/gradient"
-import { cn } from "../lib/utils"
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { Bookmark, Search } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { PageTransition } from '../components/PageTransition';
+import { Skeleton } from '../components/Skeleton';
+import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
+import { animeGradient } from '../lib/gradient';
+import { cn } from '../lib/utils';
 
 /* ── Status config ─────────────────────────────────────────── */
 
 const STATUS_TAB_KEYS = [
-  { value: "", msgKey: msg`collection.all` },
-  { value: "watching", msgKey: msg`collection.watching` },
-  { value: "planning", msgKey: msg`collection.planning` },
-  { value: "completed", msgKey: msg`collection.completed` },
-  { value: "paused", msgKey: msg`collection.paused` },
-  { value: "dropped", msgKey: msg`collection.dropped` },
-] as const
+  { value: '', msgKey: msg`collection.all` },
+  { value: 'watching', msgKey: msg`collection.watching` },
+  { value: 'planning', msgKey: msg`collection.planning` },
+  { value: 'completed', msgKey: msg`collection.completed` },
+  { value: 'paused', msgKey: msg`collection.paused` },
+  { value: 'dropped', msgKey: msg`collection.dropped` },
+] as const;
 
 const STATUS_COLORS: Record<string, string> = {
-  watching: "bg-blue-500/80",
-  planning: "bg-amber-500/80",
-  completed: "bg-green-500/80",
-  paused: "bg-zinc-500/80",
-  dropped: "bg-red-500/80",
-}
+  watching: 'bg-blue-500/80',
+  planning: 'bg-amber-500/80',
+  completed: 'bg-green-500/80',
+  paused: 'bg-zinc-500/80',
+  dropped: 'bg-red-500/80',
+};
 
 const STATUS_LABEL_KEYS: Record<string, ReturnType<typeof msg>> = {
   watching: msg`collection.watching`,
@@ -40,7 +36,7 @@ const STATUS_LABEL_KEYS: Record<string, ReturnType<typeof msg>> = {
   completed: msg`collection.completed`,
   paused: msg`collection.paused`,
   dropped: msg`collection.dropped`,
-}
+};
 
 /* ── Status change dropdown ────────────────────────────────── */
 
@@ -49,34 +45,34 @@ function StatusDropdown({
   currentStatus,
   onClose,
 }: {
-  bangumiId: number
-  currentStatus: string
-  onClose: () => void
+  bangumiId: number;
+  currentStatus: string;
+  onClose: () => void;
 }) {
-  const queryClient = useQueryClient()
-  const ref = useRef<HTMLDivElement>(null)
+  const queryClient = useQueryClient();
+  const ref = useRef<HTMLDivElement>(null);
 
   const mutation = useMutation({
     mutationFn: (status: string) => collectionApi.updateStatus(bangumiId, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: collectionKeys.all })
-      onClose()
+      queryClient.invalidateQueries({ queryKey: collectionKeys.all });
+      onClose();
     },
-  })
+  });
 
   // Close on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        onClose()
+        onClose();
       }
     }
-    document.addEventListener("mousedown", handler)
-    return () => document.removeEventListener("mousedown", handler)
-  }, [onClose])
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [onClose]);
 
-  const { i18n: i18nDropdown } = useLingui()
-  const options = STATUS_TAB_KEYS.filter((t) => t.value !== "")
+  const { i18n: i18nDropdown } = useLingui();
+  const options = STATUS_TAB_KEYS.filter((t) => t.value !== '');
 
   return (
     <motion.div
@@ -95,51 +91,45 @@ function StatusDropdown({
           disabled={mutation.isPending}
           onClick={() => mutation.mutate(opt.value)}
           className={cn(
-            "flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left transition-colors cursor-pointer",
+            'flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left transition-colors cursor-pointer',
             currentStatus === opt.value
-              ? "text-white bg-white/10"
-              : "text-white/60 hover:text-white hover:bg-white/[0.06]",
+              ? 'text-white bg-white/10'
+              : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
           )}
         >
           <span
             className={cn(
-              "w-1.5 h-1.5 rounded-full shrink-0",
-              STATUS_COLORS[opt.value] ?? "bg-white/30",
+              'w-1.5 h-1.5 rounded-full shrink-0',
+              STATUS_COLORS[opt.value] ?? 'bg-white/30'
             )}
           />
           {i18nDropdown._(opt.msgKey)}
         </button>
       ))}
     </motion.div>
-  )
+  );
 }
 
 /* ── Anime card ────────────────────────────────────────────── */
 
-function AnimeCard({
-  anime,
-  index,
-}: {
-  anime: CollectionAnime
-  index: number
-}) {
-  const { i18n } = useLingui()
-  const navigate = useNavigate()
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [hovered, setHovered] = useState(false)
+function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) {
+  const { i18n } = useLingui();
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
-  const hasCover = anime.cover_image_url?.startsWith("http")
-  const displayTitle = anime.title_zh || anime.title
+  const hasCover = anime.cover_image_url?.startsWith('http');
+  const displayTitle = anime.title_zh || anime.title;
 
   function handleCardClick() {
     if (!showDropdown && anime.bangumi_id) {
-      navigate({ to: "/anime/$id", params: { id: String(anime.bangumi_id) } })
+      navigate({ to: '/anime/$id', params: { id: String(anime.bangumi_id) } });
     }
   }
 
   function handleStatusClick(e: React.MouseEvent) {
-    e.stopPropagation()
-    setShowDropdown((v) => !v)
+    e.stopPropagation();
+    setShowDropdown((v) => !v);
   }
 
   return (
@@ -151,8 +141,8 @@ function AnimeCard({
       className="group cursor-pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => {
-        setHovered(false)
-        setShowDropdown(false)
+        setHovered(false);
+        setShowDropdown(false);
       }}
       onClick={handleCardClick}
     >
@@ -166,21 +156,20 @@ function AnimeCard({
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div
-            className="w-full h-full"
-            style={{ background: animeGradient(anime.title) }}
-          />
+          <div className="w-full h-full" style={{ background: animeGradient(anime.title) }} />
         )}
 
         {/* Watch status badge — top right */}
         {anime.watch_status && (
           <span
             className={cn(
-              "absolute top-1.5 right-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded text-white backdrop-blur-md",
-              STATUS_COLORS[anime.watch_status] ?? "bg-zinc-500/80",
+              'absolute top-1.5 right-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded text-white backdrop-blur-md',
+              STATUS_COLORS[anime.watch_status] ?? 'bg-zinc-500/80'
             )}
           >
-            {STATUS_LABEL_KEYS[anime.watch_status] ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]!) : anime.watch_status}
+            {STATUS_LABEL_KEYS[anime.watch_status]
+              ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]!)
+              : anime.watch_status}
           </span>
         )}
 
@@ -216,15 +205,13 @@ function AnimeCard({
 
       {/* Info below poster */}
       <div className="mt-1.5 px-0.5">
-        <p className="text-sm text-white/80 line-clamp-2 leading-snug">
-          {displayTitle}
-        </p>
+        <p className="text-sm text-white/80 line-clamp-2 leading-snug">{displayTitle}</p>
         <p className="text-xs text-white/40 mt-0.5">
-          {anime.local_file_count}/{anime.total_episodes ?? "?"} 集
+          {anime.local_file_count}/{anime.total_episodes ?? '?'} 集
         </p>
       </div>
     </motion.div>
-  )
+  );
 }
 
 /* ── Skeleton loader ───────────────────────────────────────── */
@@ -251,53 +238,49 @@ function CollectionSkeleton() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 /* ── Main page ─────────────────────────────────────────────── */
 
 export function CollectionPage() {
-  const { i18n } = useLingui()
+  const { i18n } = useLingui();
 
-  const [selectedStatus, setSelectedStatus] = useState("")
-  const [searchInput, setSearchInput] = useState("")
-  const [debouncedSearch, setDebouncedSearch] = useState("")
-  const [sort, setSort] = useState("recent")
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [sort, setSort] = useState('recent');
 
   // Debounce search
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(searchInput), 300)
-    return () => clearTimeout(t)
-  }, [searchInput])
+    const t = setTimeout(() => setDebouncedSearch(searchInput), 300);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
   const { data: anime, isLoading } = useQuery({
     queryKey: collectionKeys.list({ status: selectedStatus, search: debouncedSearch, sort }),
     queryFn: () => collectionApi.list({ status: selectedStatus, search: debouncedSearch, sort }),
-  })
+  });
 
   const { data: statusCounts } = useQuery({
     queryKey: collectionKeys.statusCounts(),
     queryFn: collectionApi.statusCounts,
-  })
+  });
 
   function getCount(status: string): number | undefined {
-    if (!statusCounts) return undefined
-    if (status === "") return statusCounts.reduce((sum, s) => sum + s.count, 0)
-    return statusCounts.find((s) => s.watch_status === status)?.count
+    if (!statusCounts) return undefined;
+    if (status === '') return statusCounts.reduce((sum, s) => sum + s.count, 0);
+    return statusCounts.find((s) => s.watch_status === status)?.count;
   }
 
-  const isEmpty = !isLoading && (!anime || anime.length === 0)
-  const isOverallEmpty = isEmpty && !debouncedSearch && !selectedStatus
+  const isEmpty = !isLoading && (!anime || anime.length === 0);
+  const isOverallEmpty = isEmpty && !debouncedSearch && !selectedStatus;
 
   return (
     <PageTransition>
       <div className="min-h-screen px-4 md:px-6 pt-6 pb-16">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex items-center gap-3">
             <div className="w-1 h-7 rounded-full bg-gradient-to-b from-mm-accent to-mm-accent/30" />
             <div>
@@ -306,7 +289,7 @@ export function CollectionPage() {
               </h1>
               {statusCounts && (
                 <p className="text-[13px] text-mm-accent/50 mt-0.5">
-                  {getCount("")} {i18n._(msg`collection.totalShows`)}
+                  {getCount('')} {i18n._(msg`collection.totalShows`)}
                 </p>
               )}
             </div>
@@ -324,28 +307,28 @@ export function CollectionPage() {
             {/* Status tabs */}
             <div className="flex items-end gap-0 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none border-b border-white/[0.06] mb-5">
               {STATUS_TAB_KEYS.map((tab) => {
-                const isActive = selectedStatus === tab.value
-                const count = getCount(tab.value)
+                const isActive = selectedStatus === tab.value;
+                const count = getCount(tab.value);
                 return (
                   <button
                     key={tab.value}
                     type="button"
                     onClick={() => setSelectedStatus(tab.value)}
                     className={cn(
-                      "relative shrink-0 flex items-center gap-1.5 px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200",
+                      'relative shrink-0 flex items-center gap-1.5 px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200',
                       isActive
-                        ? "text-mm-accent"
-                        : "text-mm-text-tertiary hover:text-mm-text-secondary",
+                        ? 'text-mm-accent'
+                        : 'text-mm-text-tertiary hover:text-mm-text-secondary'
                     )}
                   >
                     {i18n._(tab.msgKey)}
                     {count !== undefined && count > 0 && (
                       <span
                         className={cn(
-                          "text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full",
+                          'text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full',
                           isActive
-                            ? "bg-mm-accent/20 text-mm-accent"
-                            : "bg-white/[0.06] text-white/40",
+                            ? 'bg-mm-accent/20 text-mm-accent'
+                            : 'bg-white/[0.06] text-white/40'
                         )}
                       >
                         {count}
@@ -355,11 +338,11 @@ export function CollectionPage() {
                       <motion.div
                         layoutId="collection-underline"
                         className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
-                        transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 38 }}
                       />
                     )}
                   </button>
-                )
+                );
               })}
             </div>
 
@@ -426,5 +409,5 @@ export function CollectionPage() {
         )}
       </div>
     </PageTransition>
-  )
+  );
 }

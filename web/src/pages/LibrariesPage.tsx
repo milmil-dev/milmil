@@ -13,8 +13,10 @@ import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { Switch } from '../components/ui/switch';
 import { useAuth } from '../hooks/use-auth';
+import { collectionApi, collectionKeys, type RecentCollectionAnime } from '../lib/api/collection';
 import {
   type BrowseEntry,
   type BrowseInput,
@@ -27,7 +29,6 @@ import {
   type TestConnectionInput,
   type UpdateLibraryInput,
 } from '../lib/api/library';
-import { collectionApi, collectionKeys, type RecentCollectionAnime } from '../lib/api/collection';
 import { animeGradient, hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
@@ -979,7 +980,9 @@ function LibraryForm({
             }}
           >
             {(field) => (
-              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <Field
+                data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+              >
                 <FieldLabel htmlFor="lib-name" className={labelClass}>
                   {i18n._(msg`library.name`)}
                 </FieldLabel>
@@ -1048,7 +1051,9 @@ function LibraryForm({
                 <form.Field name="smb_port">
                   {(field) => (
                     <Field>
-                      <FieldLabel className={labelClass}>{i18n._(msg`library.smb.port`)}</FieldLabel>
+                      <FieldLabel className={labelClass}>
+                        {i18n._(msg`library.smb.port`)}
+                      </FieldLabel>
                       <Input
                         type="number"
                         value={field.state.value}
@@ -1062,7 +1067,9 @@ function LibraryForm({
                 <form.Field name="smb_share">
                   {(field) => (
                     <Field>
-                      <FieldLabel className={labelClass}>{i18n._(msg`library.smb.share`)}</FieldLabel>
+                      <FieldLabel className={labelClass}>
+                        {i18n._(msg`library.smb.share`)}
+                      </FieldLabel>
                       <Input
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -1076,7 +1083,9 @@ function LibraryForm({
               <form.Field name="smb_username">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.smb.username`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.smb.username`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1089,9 +1098,10 @@ function LibraryForm({
               <form.Field name="smb_password">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.smb.password`)}</FieldLabel>
-                    <Input
-                      type="password"
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.smb.password`)}
+                    </FieldLabel>
+                    <PasswordInput
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -1103,7 +1113,9 @@ function LibraryForm({
               <form.Field name="smb_domain">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.smb.domain`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.smb.domain`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1149,7 +1161,9 @@ function LibraryForm({
               <form.Field name="sftp_username">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.sftp.username`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.sftp.username`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1162,9 +1176,10 @@ function LibraryForm({
               <form.Field name="sftp_password">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.sftp.password`)}</FieldLabel>
-                    <Input
-                      type="password"
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.sftp.password`)}
+                    </FieldLabel>
+                    <PasswordInput
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -1182,7 +1197,9 @@ function LibraryForm({
               <form.Field name="webdav_url">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.url`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.webdav.url`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1195,7 +1212,9 @@ function LibraryForm({
               <form.Field name="webdav_vendor">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.vendor`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.webdav.vendor`)}
+                    </FieldLabel>
                     <div className="flex gap-1.5">
                       {(['nextcloud', 'owncloud', 'other'] as const).map((v) => (
                         <button
@@ -1223,7 +1242,9 @@ function LibraryForm({
               <form.Field name="webdav_username">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.username`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.webdav.username`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1236,9 +1257,10 @@ function LibraryForm({
               <form.Field name="webdav_password">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.password`)}</FieldLabel>
-                    <Input
-                      type="password"
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.webdav.password`)}
+                    </FieldLabel>
+                    <PasswordInput
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -1256,7 +1278,9 @@ function LibraryForm({
               <form.Field name="s3_endpoint">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.s3.endpoint`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.s3.endpoint`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1295,7 +1319,9 @@ function LibraryForm({
               <form.Field name="s3_access_key">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.s3.accessKey`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.s3.accessKey`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1308,9 +1334,10 @@ function LibraryForm({
               <form.Field name="s3_secret_key">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.s3.secretKey`)}</FieldLabel>
-                    <Input
-                      type="password"
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.s3.secretKey`)}
+                    </FieldLabel>
+                    <PasswordInput
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -1355,7 +1382,9 @@ function LibraryForm({
               <form.Field name="ftp_username">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.ftp.username`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.ftp.username`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1368,9 +1397,10 @@ function LibraryForm({
               <form.Field name="ftp_password">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.ftp.password`)}</FieldLabel>
-                    <Input
-                      type="password"
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.ftp.password`)}
+                    </FieldLabel>
+                    <PasswordInput
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -1412,7 +1442,9 @@ function LibraryForm({
               <form.Field name="rclone_remote_name">
                 {(field) => (
                   <Field>
-                    <FieldLabel className={labelClass}>{i18n._(msg`library.rclone.remoteName`)}</FieldLabel>
+                    <FieldLabel className={labelClass}>
+                      {i18n._(msg`library.rclone.remoteName`)}
+                    </FieldLabel>
                     <Input
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -1438,7 +1470,9 @@ function LibraryForm({
               }}
             >
               {(field) => (
-                <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                <Field
+                  data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                >
                   <FieldLabel htmlFor="lib-path" className={labelClass}>
                     {i18n._(msg`library.path`)}
                   </FieldLabel>
@@ -2103,8 +2137,7 @@ function AddLibraryWizard({
                                 <FieldLabel className={labelClass}>
                                   {i18n._(msg`library.smb.password`)}
                                 </FieldLabel>
-                                <Input
-                                  type="password"
+                                <PasswordInput
                                   value={field.state.value}
                                   onChange={(e) => field.handleChange(e.target.value)}
                                   placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -2249,7 +2282,9 @@ function AddLibraryWizard({
                         >
                           {(field) => (
                             <Field
-                              data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                              data-invalid={
+                                field.state.meta.isTouched && field.state.meta.errors.length > 0
+                              }
                               className="mt-5 pt-5 border-t border-white/[0.06] px-1"
                             >
                               <FieldLabel htmlFor="wiz-name-smb" className={labelClass}>
@@ -2304,7 +2339,9 @@ function AddLibraryWizard({
                   <form.Field name="sftp_host">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.sftp.host`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.sftp.host`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2317,7 +2354,9 @@ function AddLibraryWizard({
                   <form.Field name="sftp_port">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.sftp.port`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.sftp.port`)}
+                        </FieldLabel>
                         <Input
                           type="number"
                           value={field.state.value}
@@ -2331,7 +2370,9 @@ function AddLibraryWizard({
                   <form.Field name="sftp_username">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.sftp.username`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.sftp.username`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2344,9 +2385,10 @@ function AddLibraryWizard({
                   <form.Field name="sftp_password">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.sftp.password`)}</FieldLabel>
-                        <Input
-                          type="password"
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.sftp.password`)}
+                        </FieldLabel>
+                        <PasswordInput
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -2364,7 +2406,9 @@ function AddLibraryWizard({
                   <form.Field name="webdav_url">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.url`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.webdav.url`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2377,7 +2421,9 @@ function AddLibraryWizard({
                   <form.Field name="webdav_vendor">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.vendor`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.webdav.vendor`)}
+                        </FieldLabel>
                         <div className="flex gap-1.5">
                           {(['nextcloud', 'owncloud', 'other'] as const).map((v) => (
                             <button
@@ -2405,7 +2451,9 @@ function AddLibraryWizard({
                   <form.Field name="webdav_username">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.username`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.webdav.username`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2418,9 +2466,10 @@ function AddLibraryWizard({
                   <form.Field name="webdav_password">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.webdav.password`)}</FieldLabel>
-                        <Input
-                          type="password"
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.webdav.password`)}
+                        </FieldLabel>
+                        <PasswordInput
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -2438,7 +2487,9 @@ function AddLibraryWizard({
                   <form.Field name="s3_endpoint">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.s3.endpoint`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.s3.endpoint`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2451,7 +2502,9 @@ function AddLibraryWizard({
                   <form.Field name="s3_bucket">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.s3.bucket`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.s3.bucket`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2464,7 +2517,9 @@ function AddLibraryWizard({
                   <form.Field name="s3_region">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.s3.region`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.s3.region`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2477,7 +2532,9 @@ function AddLibraryWizard({
                   <form.Field name="s3_access_key">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.s3.accessKey`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.s3.accessKey`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2490,9 +2547,10 @@ function AddLibraryWizard({
                   <form.Field name="s3_secret_key">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.s3.secretKey`)}</FieldLabel>
-                        <Input
-                          type="password"
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.s3.secretKey`)}
+                        </FieldLabel>
+                        <PasswordInput
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -2510,7 +2568,9 @@ function AddLibraryWizard({
                   <form.Field name="ftp_host">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.ftp.host`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.ftp.host`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2523,7 +2583,9 @@ function AddLibraryWizard({
                   <form.Field name="ftp_port">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.ftp.port`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.ftp.port`)}
+                        </FieldLabel>
                         <Input
                           type="number"
                           value={field.state.value}
@@ -2537,7 +2599,9 @@ function AddLibraryWizard({
                   <form.Field name="ftp_username">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.ftp.username`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.ftp.username`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2550,9 +2614,10 @@ function AddLibraryWizard({
                   <form.Field name="ftp_password">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.ftp.password`)}</FieldLabel>
-                        <Input
-                          type="password"
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.ftp.password`)}
+                        </FieldLabel>
+                        <PasswordInput
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
@@ -2570,7 +2635,9 @@ function AddLibraryWizard({
                   <form.Field name="http_url">
                     {(field) => (
                       <Field>
-                        <FieldLabel className={labelClass}>{i18n._(msg`library.http.url`)}</FieldLabel>
+                        <FieldLabel className={labelClass}>
+                          {i18n._(msg`library.http.url`)}
+                        </FieldLabel>
                         <Input
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
@@ -2630,7 +2697,11 @@ function AddLibraryWizard({
                         }}
                       >
                         {(field) => (
-                          <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                          <Field
+                            data-invalid={
+                              field.state.meta.isTouched && field.state.meta.errors.length > 0
+                            }
+                          >
                             <FieldLabel htmlFor="wiz-path" className={labelClass}>
                               {i18n._(msg`library.path`)}
                             </FieldLabel>
@@ -2867,13 +2938,7 @@ function formDefaultValues(lib?: Library): LibraryFormValues {
 }
 
 // ─── Recently Matched Preview ─────────────────────────────────────────────────
-function RecentlyMatchedCard({
-  anime,
-  index,
-}: {
-  anime: RecentCollectionAnime;
-  index: number;
-}) {
+function RecentlyMatchedCard({ anime, index }: { anime: RecentCollectionAnime; index: number }) {
   const navigate = useNavigate();
   const title = anime.title_zh ?? anime.title;
 
@@ -2888,8 +2953,7 @@ function RecentlyMatchedCard({
       }}
       className="w-[120px] flex-shrink-0 cursor-pointer group"
       onClick={() =>
-        anime.bangumi_id &&
-        navigate({ to: '/anime/$id', params: { id: String(anime.bangumi_id) } })
+        anime.bangumi_id && navigate({ to: '/anime/$id', params: { id: String(anime.bangumi_id) } })
       }
     >
       {/* Poster */}

@@ -10,6 +10,7 @@ import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { Switch } from '../components/ui/switch';
 import { availableLanguages, loadAndActivate } from '../i18n/config';
 import { api } from '../lib/api-client';
@@ -143,9 +144,8 @@ function DandanPlaySection() {
           {(field) => (
             <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
               <FieldLabel htmlFor={field.name}>App Secret</FieldLabel>
-              <Input
+              <PasswordInput
                 id={field.name}
-                type="password"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 placeholder="Your DandanPlay App Secret"
@@ -236,8 +236,7 @@ function PlayerSection() {
     onSuccess: (_data, variables) => {
       // Update Zustand store
       const store = usePlayerStore.getState();
-      const { danmaku_enabled, danmaku_opacity, danmaku_font_size, danmaku_speed } =
-        variables.data;
+      const { danmaku_enabled, danmaku_opacity, danmaku_font_size, danmaku_speed } = variables.data;
       if (danmaku_enabled !== store.danmakuEnabled) store.toggleDanmaku();
       store.setDanmakuOpacity(danmaku_opacity);
       store.setDanmakuFontSize(danmaku_font_size);
@@ -495,9 +494,8 @@ function IntegrationSection({
           {(field) => (
             <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
               <FieldLabel htmlFor={`${provider}-${field.name}`}>Client Secret</FieldLabel>
-              <Input
+              <PasswordInput
                 id={`${provider}-${field.name}`}
-                type="password"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 placeholder={`Your ${label} Client Secret`}

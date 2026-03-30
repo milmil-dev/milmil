@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import type { PlayableEpisode } from '@/lib/api/anime';
 
 interface EpisodeTitleOverlayProps {

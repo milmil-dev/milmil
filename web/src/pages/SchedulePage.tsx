@@ -1,92 +1,76 @@
-import { msg } from "@lingui/core/macro"
-import { useLingui } from "@lingui/react"
-import { useQuery } from "@tanstack/react-query"
-import { Link } from "@tanstack/react-router"
-import { format, getDay } from "date-fns"
-import { zhTW } from "date-fns/locale"
-import { AnimatePresence, motion } from "motion/react"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { PageTransition } from "../components/PageTransition"
-import { Skeleton } from "../components/Skeleton"
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
+import { format, getDay } from 'date-fns';
+import { zhTW } from 'date-fns/locale';
+import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { PageTransition } from '../components/PageTransition';
+import { Skeleton } from '../components/Skeleton';
 import {
   type AnimeSummary,
   type CalendarDay,
   discoverApi,
   discoverKeys,
-} from "../lib/api/discover"
-import { translateGenre } from "../lib/genre-i18n"
-import { animeGradient } from "../lib/gradient"
-import { cn } from "../lib/utils"
+} from '../lib/api/discover';
+import { translateGenre } from '../lib/genre-i18n';
+import { animeGradient } from '../lib/gradient';
+import { cn } from '../lib/utils';
 
-const BANGUMI_WEEKDAYS = [
-  "星期一",
-  "星期二",
-  "星期三",
-  "星期四",
-  "星期五",
-  "星期六",
-  "星期日",
-]
-const BANGUMI_WEEKDAYS_JP = [
-  "月曜日",
-  "火曜日",
-  "水曜日",
-  "木曜日",
-  "金曜日",
-  "土曜日",
-  "日曜日",
-]
+const BANGUMI_WEEKDAYS = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+const BANGUMI_WEEKDAYS_JP = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
 
 function todayWeekdayCN(): string {
-  const jsDay = getDay(new Date()) // 0=Sun
-  return BANGUMI_WEEKDAYS[jsDay === 0 ? 6 : jsDay - 1] as string
+  const jsDay = getDay(new Date()); // 0=Sun
+  return BANGUMI_WEEKDAYS[jsDay === 0 ? 6 : jsDay - 1] as string;
 }
 
 function getWeekdayJapanese(bangumiWeekday: string): string {
-  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday)
-  if (idx === -1) return ""
-  return BANGUMI_WEEKDAYS_JP[idx] ?? ""
+  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
+  if (idx === -1) return '';
+  return BANGUMI_WEEKDAYS_JP[idx] ?? '';
 }
 
 function getWeekdayFull(bangumiWeekday: string): string {
-  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday)
-  if (idx === -1) return bangumiWeekday
-  const now = new Date()
-  const jsDay = getDay(now)
-  const currentIdx = jsDay === 0 ? 6 : jsDay - 1
-  const diff = idx - currentIdx
-  const target = new Date(now)
-  target.setDate(target.getDate() + diff)
-  return format(target, "EEEE", { locale: zhTW })
+  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
+  if (idx === -1) return bangumiWeekday;
+  const now = new Date();
+  const jsDay = getDay(now);
+  const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
+  const diff = idx - currentIdx;
+  const target = new Date(now);
+  target.setDate(target.getDate() + diff);
+  return format(target, 'EEEE', { locale: zhTW });
 }
 
 function getDateForWeekday(bangumiWeekday: string): string {
-  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday)
-  if (idx === -1) return ""
-  const now = new Date()
-  const jsDay = getDay(now)
-  const currentIdx = jsDay === 0 ? 6 : jsDay - 1
-  const diff = idx - currentIdx
-  const target = new Date(now)
-  target.setDate(target.getDate() + diff)
-  return format(target, "M月d日")
+  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
+  if (idx === -1) return '';
+  const now = new Date();
+  const jsDay = getDay(now);
+  const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
+  const diff = idx - currentIdx;
+  const target = new Date(now);
+  target.setDate(target.getDate() + diff);
+  return format(target, 'M月d日');
 }
 
 function getWeekdayTabLabel(bangumiWeekday: string): string {
-  const weekdayCn = bangumiWeekday.replace(/^星期/, "週")
-  const weekdayJp = getWeekdayJapanese(bangumiWeekday)
-  const weekdayJpShort = weekdayJp.charAt(0)
-  const date = getDateForWeekday(bangumiWeekday)
-  return `${weekdayCn} (${weekdayJpShort}) ${date}`
+  const weekdayCn = bangumiWeekday.replace(/^星期/, '週');
+  const weekdayJp = getWeekdayJapanese(bangumiWeekday);
+  const weekdayJpShort = weekdayJp.charAt(0);
+  const date = getDateForWeekday(bangumiWeekday);
+  return `${weekdayCn} (${weekdayJpShort}) ${date}`;
 }
 
-function getCurrentSeason(i18n: ReturnType<typeof useLingui>["i18n"]): string {
-  const month = new Date().getMonth() + 1
-  const year = new Date().getFullYear()
-  if (month <= 3) return `${year} ${i18n._(msg`schedule.season.winter`)}`
-  if (month <= 6) return `${year} ${i18n._(msg`schedule.season.spring`)}`
-  if (month <= 9) return `${year} ${i18n._(msg`schedule.season.summer`)}`
-  return `${year} ${i18n._(msg`schedule.season.fall`)}`
+function getCurrentSeason(i18n: ReturnType<typeof useLingui>['i18n']): string {
+  const month = new Date().getMonth() + 1;
+  const year = new Date().getFullYear();
+  if (month <= 3) return `${year} ${i18n._(msg`schedule.season.winter`)}`;
+  if (month <= 6) return `${year} ${i18n._(msg`schedule.season.spring`)}`;
+  if (month <= 9) return `${year} ${i18n._(msg`schedule.season.summer`)}`;
+  return `${year} ${i18n._(msg`schedule.season.fall`)}`;
 }
 
 /* ── Anime row item ────────────────────────────────────────── */
@@ -95,19 +79,19 @@ function ScheduleAnimeItem({
   anime,
   index,
   locale,
-  variant = "row",
+  variant = 'row',
 }: {
-  anime: AnimeSummary
-  index: number
-  locale: string
-  variant?: "row" | "card"
+  anime: AnimeSummary;
+  index: number;
+  locale: string;
+  variant?: 'row' | 'card';
 }) {
-  const hasCover = anime.cover_image?.startsWith("http")
-  const [showCard, setShowCard] = useState(false)
-  const [hovered, setHovered] = useState(false)
-  const [cardSide, setCardSide] = useState<"right" | "left">("right")
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
-  const itemRef = useRef<HTMLDivElement>(null)
+  const hasCover = anime.cover_image?.startsWith('http');
+  const [showCard, setShowCard] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [cardSide, setCardSide] = useState<'right' | 'left'>('right');
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
 
   // Fetch full detail when hovered (prefetch on hover, show on delay)
   const { data: detail } = useQuery({
@@ -115,30 +99,30 @@ function ScheduleAnimeItem({
     queryFn: () => discoverApi.detail(anime.bangumi_id),
     enabled: hovered && anime.bangumi_id > 0,
     staleTime: 5 * 60 * 1000,
-  })
+  });
 
   const handleEnter = useCallback(() => {
-    setHovered(true)
+    setHovered(true);
     // Detect available space — card is 400px + 16px margin
     if (itemRef.current) {
-      const rect = itemRef.current.getBoundingClientRect()
-      const spaceRight = window.innerWidth - rect.right
-      setCardSide(spaceRight >= 530 ? "right" : "left")
+      const rect = itemRef.current.getBoundingClientRect();
+      const spaceRight = window.innerWidth - rect.right;
+      setCardSide(spaceRight >= 530 ? 'right' : 'left');
     }
-    timerRef.current = setTimeout(() => setShowCard(true), 400)
-  }, [])
+    timerRef.current = setTimeout(() => setShowCard(true), 400);
+  }, []);
 
   const handleLeave = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setShowCard(false)
-    setHovered(false)
-  }, [])
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setShowCard(false);
+    setHovered(false);
+  }, []);
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
-  }, [])
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   return (
     <motion.div
@@ -153,23 +137,19 @@ function ScheduleAnimeItem({
       <Link
         to={`/anime/${anime.bangumi_id}` as string}
         className={cn(
-          "group rounded-lg transition-colors",
-          variant === "row"
-            ? "flex items-center gap-3.5 py-3 px-2.5 -mx-2.5 hover:bg-white/[0.04]"
-            : "block p-1.5 -m-1.5 hover:bg-white/[0.03]",
+          'group rounded-lg transition-colors',
+          variant === 'row'
+            ? 'flex items-center gap-3.5 py-3 px-2.5 -mx-2.5 hover:bg-white/[0.04]'
+            : 'block p-1.5 -m-1.5 hover:bg-white/[0.03]'
         )}
       >
         {/* Cover */}
         <div
           className={cn(
-            "relative rounded overflow-hidden",
-            variant === "row"
-              ? "shrink-0 w-[80px] h-[112px]"
-              : "w-full aspect-[4/5]",
+            'relative rounded overflow-hidden',
+            variant === 'row' ? 'shrink-0 w-[80px] h-[112px]' : 'w-full aspect-[4/5]'
           )}
-          style={
-            hasCover ? undefined : { background: animeGradient(anime.title) }
-          }
+          style={hasCover ? undefined : { background: animeGradient(anime.title) }}
         >
           {hasCover && (
             <img
@@ -183,7 +163,7 @@ function ScheduleAnimeItem({
           {anime.next_episode && anime.next_episode > 0 && (
             <span
               className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
-              style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
             >
               EP {anime.next_episode}
             </span>
@@ -192,7 +172,7 @@ function ScheduleAnimeItem({
           {anime.score > 0 && (
             <span
               className="absolute top-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white tabular-nums backdrop-blur-md"
-              style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
             >
               ♡ {anime.score.toFixed(1)}
             </span>
@@ -200,25 +180,19 @@ function ScheduleAnimeItem({
         </div>
 
         {/* Info */}
-        <div className={cn("min-w-0", variant === "row" ? "flex-1" : "mt-1.5")}>
+        <div className={cn('min-w-0', variant === 'row' ? 'flex-1' : 'mt-1.5')}>
           <p
             className={cn(
-              "leading-snug text-mm-text-primary font-medium group-hover:text-white transition-colors",
-              variant === "row"
-                ? "text-[13px] truncate"
-                : "text-[14px] line-clamp-2",
+              'leading-snug text-mm-text-primary font-medium group-hover:text-white transition-colors',
+              variant === 'row' ? 'text-[13px] truncate' : 'text-[14px] line-clamp-2'
             )}
           >
             {anime.title}
           </p>
-          {variant === "row" &&
-            anime.title_original &&
-            anime.title_original !== anime.title && (
-              <p className="text-[11px] text-mm-text-muted truncate mt-0.5">
-                {anime.title_original}
-              </p>
-            )}
-          {variant === "row" && (
+          {variant === 'row' && anime.title_original && anime.title_original !== anime.title && (
+            <p className="text-[11px] text-mm-text-muted truncate mt-0.5">{anime.title_original}</p>
+          )}
+          {variant === 'row' && (
             <div className="flex items-center gap-2 mt-1">
               {anime.score > 0 && (
                 <span className="text-[11px] font-semibold text-mm-accent tabular-nums">
@@ -226,13 +200,11 @@ function ScheduleAnimeItem({
                 </span>
               )}
               {anime.episode_count > 0 && (
-                <span className="text-[10px] text-mm-text-muted">
-                  {anime.episode_count} ep
-                </span>
+                <span className="text-[10px] text-mm-text-muted">{anime.episode_count} ep</span>
               )}
             </div>
           )}
-          {variant === "card" && anime.episode_count > 0 && (
+          {variant === 'card' && anime.episode_count > 0 && (
             <span className="text-[10px] text-mm-text-muted mt-0.5 block">
               {anime.episode_count} ep
             </span>
@@ -240,7 +212,7 @@ function ScheduleAnimeItem({
         </div>
 
         {/* Arrow hint — row only */}
-        {variant === "row" && (
+        {variant === 'row' && (
           <span className="text-mm-text-muted text-[11px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
             →
           </span>
@@ -250,26 +222,25 @@ function ScheduleAnimeItem({
       {/* Hover card — mini hero banner style */}
       {showCard &&
         (() => {
-          const info = detail || anime
-          const bannerSrc =
-            detail?.banner_image || anime.banner_image || anime.cover_image
-          const hasBanner = !!(detail?.banner_image || anime.banner_image)
-          const tags = detail?.tags || []
-          const genres = anime.genres || []
-          const displayTags = tags.length > 0 ? tags : genres
-          const synopsis = detail?.synopsis || anime.description
+          const info = detail || anime;
+          const bannerSrc = detail?.banner_image || anime.banner_image || anime.cover_image;
+          const hasBanner = !!(detail?.banner_image || anime.banner_image);
+          const tags = detail?.tags || [];
+          const genres = anime.genres || [];
+          const displayTags = tags.length > 0 ? tags : genres;
+          const synopsis = detail?.synopsis || anime.description;
 
           return (
             <div
               className={cn(
-                "absolute top-1/2 -translate-y-1/2 z-50 w-[506px] pointer-events-none hidden lg:block",
-                cardSide === "right" ? "left-full ml-4" : "right-full mr-4",
+                'absolute top-1/2 -translate-y-1/2 z-50 w-[506px] pointer-events-none hidden lg:block',
+                cardSide === 'right' ? 'left-full ml-4' : 'right-full mr-4'
               )}
             >
               <motion.div
                 initial={{
                   opacity: 0,
-                  x: cardSide === "right" ? -10 : 10,
+                  x: cardSide === 'right' ? -10 : 10,
                   scale: 0.97,
                 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -278,7 +249,7 @@ function ScheduleAnimeItem({
               >
                 {/* Full-bleed background image */}
                 <div className="absolute inset-0">
-                  {bannerSrc?.startsWith("http") ? (
+                  {bannerSrc?.startsWith('http') ? (
                     <img
                       src={bannerSrc}
                       alt=""
@@ -286,11 +257,10 @@ function ScheduleAnimeItem({
                       style={
                         !hasBanner
                           ? {
-                              filter:
-                                "blur(20px) saturate(1.2) brightness(0.5)",
-                              transform: "scale(1.4)",
+                              filter: 'blur(20px) saturate(1.2) brightness(0.5)',
+                              transform: 'scale(1.4)',
                             }
-                          : { filter: "blur(2px) brightness(0.45)" }
+                          : { filter: 'blur(2px) brightness(0.45)' }
                       }
                     />
                   ) : (
@@ -303,8 +273,7 @@ function ScheduleAnimeItem({
                   <div
                     className="absolute inset-0"
                     style={{
-                      background:
-                        "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)",
+                      background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)',
                     }}
                   />
                 </div>
@@ -314,18 +283,10 @@ function ScheduleAnimeItem({
                   {/* Poster */}
                   <div
                     className="shrink-0 w-[150px] h-[210px] rounded overflow-hidden shadow-lg ring-1 ring-white/10"
-                    style={
-                      hasCover
-                        ? undefined
-                        : { background: animeGradient(anime.title) }
-                    }
+                    style={hasCover ? undefined : { background: animeGradient(anime.title) }}
                   >
                     {hasCover && (
-                      <img
-                        src={anime.cover_image}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={anime.cover_image} alt="" className="w-full h-full object-cover" />
                     )}
                   </div>
 
@@ -334,12 +295,9 @@ function ScheduleAnimeItem({
                     <p className="text-[15px] font-bold text-white leading-snug line-clamp-2">
                       {info.title}
                     </p>
-                    {info.title_original &&
-                      info.title_original !== info.title && (
-                        <p className="text-[11px] text-white/40 truncate">
-                          {info.title_original}
-                        </p>
-                      )}
+                    {info.title_original && info.title_original !== info.title && (
+                      <p className="text-[11px] text-white/40 truncate">{info.title_original}</p>
+                    )}
 
                     {/* Tags / Genres */}
                     {displayTags.length > 0 && (
@@ -363,9 +321,7 @@ function ScheduleAnimeItem({
                         </span>
                       )}
                       {info.episode_count > 0 && (
-                        <span className="text-[11px] text-white/50">
-                          {info.episode_count} ep
-                        </span>
+                        <span className="text-[11px] text-white/50">{info.episode_count} ep</span>
                       )}
                       {info.air_date && (
                         <span className="text-[11px] text-white/40">
@@ -382,17 +338,17 @@ function ScheduleAnimeItem({
                     {/* Synopsis */}
                     {synopsis && (
                       <p className="text-[11px] text-white/50 leading-relaxed line-clamp-4">
-                        {synopsis.replace(/<[^>]+>/g, "")}
+                        {synopsis.replace(/<[^>]+>/g, '')}
                       </p>
                     )}
                   </div>
                 </div>
               </motion.div>
             </div>
-          )
+          );
         })()}
     </motion.div>
-  )
+  );
 }
 
 /* ── Skeleton loader ───────────────────────────────────────── */
@@ -412,24 +368,21 @@ function ScheduleSkeleton() {
           <div key={i} className="flex items-center gap-3 py-2.5">
             <Skeleton className="w-[42px] h-[58px] rounded" />
             <div className="flex-1 space-y-2">
-              <Skeleton
-                className="h-3.5"
-                style={{ width: `${55 + (i % 3) * 15}%` }}
-              />
+              <Skeleton className="h-3.5" style={{ width: `${55 + (i % 3) * 15}%` }} />
               <Skeleton className="h-2.5 w-20" />
             </div>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 /* ── Main page ─────────────────────────────────────────────── */
 
 export function SchedulePage() {
-  const { i18n } = useLingui()
-  const tabsRef = useRef<HTMLDivElement>(null)
+  const { i18n } = useLingui();
+  const tabsRef = useRef<HTMLDivElement>(null);
   const {
     data: calendar,
     isLoading,
@@ -438,49 +391,42 @@ export function SchedulePage() {
   } = useQuery({
     queryKey: discoverKeys.calendar(),
     queryFn: discoverApi.calendar,
-  })
+  });
 
-  const today = todayWeekdayCN()
-  const [activeDay, setActiveDay] = useState<string | "all">(today)
+  const today = todayWeekdayCN();
+  const [activeDay, setActiveDay] = useState<string | 'all'>(today);
 
   // Reorder: today first
   const sortedCalendar = (() => {
-    if (!calendar) return []
-    const todayIdx = BANGUMI_WEEKDAYS.indexOf(today)
-    const reordered = [
-      ...BANGUMI_WEEKDAYS.slice(todayIdx),
-      ...BANGUMI_WEEKDAYS.slice(0, todayIdx),
-    ]
+    if (!calendar) return [];
+    const todayIdx = BANGUMI_WEEKDAYS.indexOf(today);
+    const reordered = [...BANGUMI_WEEKDAYS.slice(todayIdx), ...BANGUMI_WEEKDAYS.slice(0, todayIdx)];
     return reordered
       .map((wd) => calendar.find((d) => d.weekday === wd))
-      .filter((d): d is CalendarDay => d !== undefined)
-  })()
+      .filter((d): d is CalendarDay => d !== undefined);
+  })();
 
   // Scroll active tab into view on mount
   useEffect(() => {
-    if (!tabsRef.current) return
-    const activeBtn = tabsRef.current.querySelector('[data-active="true"]')
+    if (!tabsRef.current) return;
+    const activeBtn = tabsRef.current.querySelector('[data-active="true"]');
     if (activeBtn) {
       activeBtn.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      })
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
     }
-  }, [sortedCalendar.length])
+  }, [sortedCalendar.length]);
 
   // Total anime count for the week
-  const totalCount = sortedCalendar.reduce((sum, d) => sum + d.items.length, 0)
+  const totalCount = sortedCalendar.reduce((sum, d) => sum + d.items.length, 0);
 
   return (
     <PageTransition>
       <div className="min-h-screen px-4 md:px-6 pt-6 pb-16">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-1 h-7 rounded-full bg-gradient-to-b from-mm-accent to-mm-accent/30" />
@@ -516,11 +462,7 @@ export function SchedulePage() {
         )}
 
         {!isLoading && !isError && sortedCalendar.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
             {/* Weekday tabs — underline style */}
             <div
               ref={tabsRef}
@@ -529,21 +471,21 @@ export function SchedulePage() {
               {/* 全部 tab */}
               <button
                 type="button"
-                data-active={activeDay === "all"}
-                onClick={() => setActiveDay("all")}
+                data-active={activeDay === 'all'}
+                onClick={() => setActiveDay('all')}
                 className={cn(
-                  "relative shrink-0 px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200",
-                  activeDay === "all"
-                    ? "text-mm-accent"
-                    : "text-mm-text-tertiary hover:text-mm-text-secondary",
+                  'relative shrink-0 px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200',
+                  activeDay === 'all'
+                    ? 'text-mm-accent'
+                    : 'text-mm-text-tertiary hover:text-mm-text-secondary'
                 )}
               >
                 {i18n._(msg`schedule.all`)}
-                {activeDay === "all" && (
+                {activeDay === 'all' && (
                   <motion.div
                     layoutId="schedule-underline"
                     className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
-                    transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 38 }}
                   />
                 )}
               </button>
@@ -551,8 +493,8 @@ export function SchedulePage() {
               <div className="w-px h-4 bg-white/[0.06] mx-0.5 mb-2 shrink-0" />
 
               {sortedCalendar.map((day) => {
-                const isToday = day.weekday === today
-                const isActive = day.weekday === activeDay
+                const isToday = day.weekday === today;
+                const isActive = day.weekday === activeDay;
                 return (
                   <button
                     key={day.weekday}
@@ -560,10 +502,8 @@ export function SchedulePage() {
                     data-active={isActive}
                     onClick={() => setActiveDay(day.weekday)}
                     className={cn(
-                      "relative shrink-0 flex items-center gap-1.5 px-3 pb-2.5 pt-2 cursor-pointer transition-colors duration-200",
-                      isActive
-                        ? "text-mm-accent"
-                        : "text-white/90 hover:text-white",
+                      'relative shrink-0 flex items-center gap-1.5 px-3 pb-2.5 pt-2 cursor-pointer transition-colors duration-200',
+                      isActive ? 'text-mm-accent' : 'text-white/90 hover:text-white'
                     )}
                   >
                     {isActive && (
@@ -571,7 +511,7 @@ export function SchedulePage() {
                         layoutId="schedule-underline"
                         className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
                         transition={{
-                          type: "spring",
+                          type: 'spring',
                           stiffness: 500,
                           damping: 38,
                         }}
@@ -579,11 +519,11 @@ export function SchedulePage() {
                     )}
                     <span
                       className={cn(
-                        "text-[13px] font-bold whitespace-nowrap",
-                        isActive ? "text-mm-accent" : "text-white/80",
+                        'text-[13px] font-bold whitespace-nowrap',
+                        isActive ? 'text-mm-accent' : 'text-white/80'
                       )}
                     >
-                      {day.weekday.replace(/^星期/, "週")} (
+                      {day.weekday.replace(/^星期/, '週')} (
                       {getWeekdayJapanese(day.weekday).slice(0, 1)})
                       <span className="ml-1 text-[10px] font-medium text-white/40">
                         {getDateForWeekday(day.weekday)}
@@ -593,18 +533,16 @@ export function SchedulePage() {
                       <div className="w-1 h-1 rounded-full bg-mm-accent shrink-0" />
                     )}
                   </button>
-                )
+                );
               })}
             </div>
 
             {/* Content — smooth crossfade on tab change */}
             <AnimatePresence mode="wait">
-              {activeDay !== "all" ? (
+              {activeDay !== 'all' ? (
                 (() => {
-                  const activeCalendar = sortedCalendar.find(
-                    (d) => d.weekday === activeDay,
-                  )
-                  if (!activeCalendar) return null
+                  const activeCalendar = sortedCalendar.find((d) => d.weekday === activeDay);
+                  if (!activeCalendar) return null;
                   return (
                     <motion.div
                       key={activeDay}
@@ -652,7 +590,7 @@ export function SchedulePage() {
                         </div>
                       )}
                     </motion.div>
-                  )
+                  );
                 })()
               ) : (
                 <motion.div
@@ -680,8 +618,7 @@ export function SchedulePage() {
                           )}
                         </div>
                         <p className="text-[13px] text-mm-text-muted">
-                          {getWeekdayFull(day.weekday)} (
-                          {getDateForWeekday(day.weekday)})
+                          {getWeekdayFull(day.weekday)} ({getDateForWeekday(day.weekday)})
                         </p>
                       </div>
                       {day.items.length > 0 ? (
@@ -708,5 +645,5 @@ export function SchedulePage() {
         )}
       </div>
     </PageTransition>
-  )
+  );
 }

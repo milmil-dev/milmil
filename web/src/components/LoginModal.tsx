@@ -9,6 +9,7 @@ import { Modal } from './Modal';
 import { Button } from './ui/button';
 import { Field, FieldError, FieldLabel } from './ui/field';
 import { Input } from './ui/input';
+import { PasswordInput } from './ui/password-input';
 
 interface LoginModalProps {
   open: boolean;
@@ -120,7 +121,9 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
         >
           <form.Field name="username">
             {(field) => (
-              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <Field
+                data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+              >
                 <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.login.username`)}</FieldLabel>
                 <Input
                   id={field.name}
@@ -141,11 +144,12 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
 
           <form.Field name="password">
             {(field) => (
-              <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <Field
+                data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+              >
                 <FieldLabel htmlFor={field.name}>{i18n._(msg`auth.login.password`)}</FieldLabel>
-                <Input
+                <PasswordInput
                   id={field.name}
-                  type="password"
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}

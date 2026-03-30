@@ -3,12 +3,12 @@ import { useLingui } from '@lingui/react';
 import { useState } from 'react';
 import {
   Pagination,
-  PaginationContent,
   PaginationButton,
-  PaginationItem,
+  PaginationContent,
   PaginationEllipsis,
-  PaginationPrevious,
+  PaginationItem,
   PaginationNext,
+  PaginationPrevious,
 } from './ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
@@ -22,7 +22,13 @@ interface DataPaginationProps {
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
-export function DataPagination({ total, page, perPage, onPageChange, onPerPageChange }: DataPaginationProps) {
+export function DataPagination({
+  total,
+  page,
+  perPage,
+  onPageChange,
+  onPerPageChange,
+}: DataPaginationProps) {
   const { i18n } = useLingui();
   const totalPages = Math.max(1, Math.ceil(total / perPage));
   const canPrev = page > 1;
@@ -90,8 +96,10 @@ export function DataPagination({ total, page, perPage, onPageChange, onPerPageCh
           </Select>
         </div>
         <span className="tabular-nums">
-          <span className="text-white/50">{rangeStart}–{rangeEnd}</span>
-          {' '}{i18n._(msg`pagination.of`)}{' '}
+          <span className="text-white/50">
+            {rangeStart}–{rangeEnd}
+          </span>{' '}
+          {i18n._(msg`pagination.of`)}{' '}
           <span className="text-white/50">{total.toLocaleString()}</span>
         </span>
       </div>
@@ -113,10 +121,7 @@ export function DataPagination({ total, page, perPage, onPageChange, onPerPageCh
                 {p === 'ellipsis' ? (
                   <PaginationEllipsis />
                 ) : (
-                  <PaginationButton
-                    isActive={page === p}
-                    onClick={() => onPageChange(p as number)}
-                  >
+                  <PaginationButton isActive={page === p} onClick={() => onPageChange(p as number)}>
                     {p}
                   </PaginationButton>
                 )}
@@ -177,7 +182,9 @@ function PageJumpInput({
         value={value}
         placeholder={String(currentPage)}
         onChange={(e) => setValue(e.target.value.replace(/\D/g, ''))}
-        onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') handleSubmit();
+        }}
         onBlur={handleSubmit}
         className="h-7 w-10 rounded-md border border-white/[0.08] bg-white/[0.04] text-center text-xs tabular-nums text-white/70 outline-none transition-colors placeholder:text-white/20 hover:border-white/15 focus:border-mm-accent/40 focus:ring-1 focus:ring-mm-accent/20"
       />

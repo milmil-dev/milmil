@@ -149,10 +149,11 @@ export const useScanStore = create<ScanStore>()(
                 scans: {
                   ...state.scans,
                   [libraryId]: {
-                    ...(state.scans[libraryId] ?? createInitialProgress(
-                      libraryId,
-                      getStringField(data, 'libraryName', 'library_name') ?? ''
-                    )),
+                    ...(state.scans[libraryId] ??
+                      createInitialProgress(
+                        libraryId,
+                        getStringField(data, 'libraryName', 'library_name') ?? ''
+                      )),
                     phase: 'matching',
                   },
                 },
