@@ -1,0 +1,31 @@
+import type { AnimeDetail } from '@/lib/api/discover';
+
+interface AnimeInfoSectionProps {
+  anime: AnimeDetail;
+}
+
+export function AnimeInfoSection({ anime }: AnimeInfoSectionProps) {
+  return (
+    <div className="mt-4 p-3 bg-white/[0.03] rounded-lg">
+      <div className="flex gap-3">
+        {anime.cover_image && (
+          <img src={anime.cover_image} alt="" className="w-14 h-20 rounded object-cover shrink-0" />
+        )}
+        <div className="min-w-0">
+          {anime.synopsis && (
+            <p className="text-xs text-white/50 line-clamp-4 leading-relaxed">
+              {anime.synopsis.replace(/<[^>]+>/g, '')}
+            </p>
+          )}
+          {anime.genres && anime.genres.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {anime.genres.map((g) => (
+                <span key={g} className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">{g}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
