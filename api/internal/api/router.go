@@ -95,6 +95,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	mediaGroup := v1.Group("/media-files", jwtMiddleware(cfg.JWTSecret))
 	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)
 	mediaGroup.DELETE("/:id/match", h.handleUnmatchMediaFile)
+	mediaGroup.GET("/:id/info", h.handleMediaInfo)
 
 	// Discover — public
 	discoverGroup := v1.Group("/discover")
@@ -136,6 +137,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Anime — protected
 	animeGroup := v1.Group("/anime", jwtMiddleware(cfg.JWTSecret))
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
+	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", jwtMiddleware(cfg.JWTSecret))

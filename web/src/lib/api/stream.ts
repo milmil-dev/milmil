@@ -75,3 +75,28 @@ export function parseDandanplayComments(
     };
   });
 }
+
+export interface MediaInfo {
+  id: string;
+  filename: string;
+  size_bytes: number;
+  container: string;
+  video_codec: string | null;
+  audio_codec: string | null;
+  width: number | null;
+  height: number | null;
+  duration_seconds: number | null;
+  can_direct_play: boolean;
+  needs_transcode: boolean;
+  library_online: boolean;
+  library_type: string;
+}
+
+export const mediaApi = {
+  info: (fileId: string) =>
+    api.get<MediaInfo>(`/api/v1/media-files/${fileId}/info`),
+};
+
+export const mediaKeys = {
+  info: (fileId: string) => ['media', 'info', fileId] as const,
+};

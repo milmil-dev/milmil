@@ -1398,6 +1398,9 @@ msgstr "自動加入收藏"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配的動畫自動加入收藏"
 
+msgid "anime.myScore"
+msgstr "我的評分"
+
 msgid "anime.continueWatching"
 msgstr "繼續觀看"
 
@@ -1409,3 +1412,51 @@ msgstr "無本地文件"
 
 msgid "anime.season"
 msgstr "季"
+
+msgid "watch.playbackInfo"
+msgstr "播放資訊"
+
+msgid "watch.playbackMethod"
+msgstr "播放方式"
+
+msgid "watch.directStream"
+msgstr "直接串流"
+
+msgid "watch.transcode"
+msgstr "HLS 轉碼"
+
+msgid "watch.transcoding"
+msgstr "轉碼中..."
+
+msgid "watch.transcodeReady"
+msgstr "轉碼完成"
+
+msgid "watch.unsupported"
+msgstr "不支援"
+
+msgid "watch.supported"
+msgstr "支援"
+
+msgid "watch.audioTrack"
+msgstr "音軌"
+
+msgid "watch.error.offline"
+msgstr "媒體庫離線"
+
+msgid "watch.error.offlineDesc"
+msgstr "無法連接到儲存伺服器"
+
+msgid "watch.error.notFound"
+msgstr "檔案不存在"
+
+msgid "watch.error.notFoundDesc"
+msgstr "檔案可能已被移動或刪除"
+
+msgid "watch.error.transcodeError"
+msgstr "轉碼失敗"
+
+msgid "watch.error.retry"
+msgstr "重試"
+
+msgid "watch.error.goBack"
+msgstr "返回"

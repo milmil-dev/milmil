@@ -1400,6 +1400,9 @@ msgstr "Auto-add matched anime"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "Automatically add newly matched anime to your collection"
 
+msgid "anime.myScore"
+msgstr "My Score"
+
 msgid "anime.continueWatching"
 msgstr "Continue Watching"
 
@@ -1411,3 +1414,51 @@ msgstr "No local file"
 
 msgid "anime.season"
 msgstr "Season"
+
+msgid "watch.playbackInfo"
+msgstr "Playback Info"
+
+msgid "watch.playbackMethod"
+msgstr "Playback Method"
+
+msgid "watch.directStream"
+msgstr "Direct Stream"
+
+msgid "watch.transcode"
+msgstr "HLS Transcode"
+
+msgid "watch.transcoding"
+msgstr "Transcoding..."
+
+msgid "watch.transcodeReady"
+msgstr "Transcode ready"
+
+msgid "watch.unsupported"
+msgstr "Not supported"
+
+msgid "watch.supported"
+msgstr "Supported"
+
+msgid "watch.audioTrack"
+msgstr "Audio"
+
+msgid "watch.error.offline"
+msgstr "Media library offline"
+
+msgid "watch.error.offlineDesc"
+msgstr "Cannot connect to the storage server"
+
+msgid "watch.error.notFound"
+msgstr "File not found"
+
+msgid "watch.error.notFoundDesc"
+msgstr "The file may have been moved or deleted"
+
+msgid "watch.error.transcodeError"
+msgstr "Transcode failed"
+
+msgid "watch.error.retry"
+msgstr "Retry"
+
+msgid "watch.error.goBack"
+msgstr "Go back"

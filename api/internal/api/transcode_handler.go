@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -11,7 +12,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/ffmpeg"
+	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 	ws2 "github.com/milmil/api/internal/ws"
 )
@@ -44,6 +47,11 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 		req.Resolution = "1080p"
 	}
 
+	lib, err := h.queries.GetLibrary(ctx, file.LibraryID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "library not found")
+	}
+
 	token := uuid.NewString()
 	outputDir := filepath.Join(os.TempDir(), "milmil", "transcode", token)
 
@@ -69,8 +77,43 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 			SessionToken: token,
 		})
 
+		// For remote storage backends, copy the file to a local temp path before transcoding.
+		inputPath := file.Path
+		var tempFile string
+		if lib.SourceType != "local" && lib.SourceType != "" {
+			var configJSON string
+			if lib.SourceConfigEncrypted.Valid && lib.SourceConfigEncrypted.String != "" {
+				if decrypted, decErr := crypto.Decrypt(h.encryptionKey, lib.SourceConfigEncrypted.String); decErr == nil {
+					configJSON = decrypted
+				}
+			}
+			provider, provErr := storage.NewProvider(lib.SourceType, configJSON)
+			if provErr == nil {
+				defer provider.Close()
+				rc, openErr := provider.Open(file.Path)
+				if openErr == nil {
+					tmpDir := filepath.Join(os.TempDir(), "milmil", "transcode-input", token)
+					_ = os.MkdirAll(tmpDir, 0o700)
+					tmpPath := filepath.Join(tmpDir, file.Filename)
+					if f, createErr := os.Create(tmpPath); createErr == nil {
+						if _, copyErr := io.Copy(f, rc); copyErr == nil {
+							inputPath = tmpPath
+							tempFile = tmpPath
+						}
+						f.Close()
+					}
+					rc.Close()
+				}
+			}
+		}
+		defer func() {
+			if tempFile != "" {
+				_ = os.Remove(tempFile)
+			}
+		}()
+
 		err := ffmpeg.Transcode(bgCtx, ffmpeg.TranscodeOptions{
-			InputPath:  file.Path,
+			InputPath:  inputPath,
 			OutputDir:  outputDir,
 			Codec:      req.Codec,
 			Resolution: req.Resolution,
