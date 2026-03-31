@@ -21,9 +21,11 @@ WITH ranked AS (
         wp.id, wp.user_id, wp.episode_id, wp.media_file_id,
         wp.position_seconds, wp.duration_seconds, wp.completed, wp.last_watched_at,
         e.anime_id, e.episode_number,
-        ROW_NUMBER() OVER (PARTITION BY e.anime_id ORDER BY wp.last_watched_at DESC) AS rn
+        a.bangumi_id,
+        ROW_NUMBER() OVER (PARTITION BY COALESCE(a.bangumi_id, a.id) ORDER BY wp.last_watched_at DESC) AS rn
     FROM watch_progress wp
     JOIN episodes e ON e.id = wp.episode_id
+    JOIN anime a ON a.id = e.anime_id
     WHERE wp.user_id = ?
 )
 SELECT
