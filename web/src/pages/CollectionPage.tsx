@@ -5,10 +5,10 @@ import { useNavigate } from '@tanstack/react-router';
 import { Bookmark, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import { AnimePosterCard } from '../components/AnimePosterCard';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
-import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
 /* ── Status config ─────────────────────────────────────────── */
@@ -118,7 +118,6 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
   const [showDropdown, setShowDropdown] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  const hasCover = anime.cover_image_url?.startsWith('http');
   const displayTitle = anime.title_zh || anime.title;
 
   function handleCardClick() {
@@ -146,19 +145,7 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
       }}
       onClick={handleCardClick}
     >
-      {/* Poster */}
-      <div className="relative aspect-[3/4] rounded-lg overflow-hidden">
-        {hasCover ? (
-          <img
-            src={anime.cover_image_url!}
-            alt=""
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-full" style={{ background: animeGradient(anime.title) }} />
-        )}
-
+      <AnimePosterCard title={displayTitle} coverUrl={anime.cover_image_url}>
         {/* Watch status badge — top right */}
         {anime.watch_status && (
           <span
@@ -170,6 +157,13 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
             {STATUS_LABEL_KEYS[anime.watch_status]
               ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]!)
               : anime.watch_status}
+          </span>
+        )}
+
+        {/* Episode count — bottom left */}
+        {anime.total_episodes != null && anime.total_episodes > 0 && (
+          <span className="absolute bottom-1.5 left-1.5 z-10 text-[10px] font-medium text-white/70 bg-black/60 backdrop-blur-sm rounded px-1 py-0.5 leading-none">
+            {anime.total_episodes} 集
           </span>
         )}
 
@@ -201,15 +195,7 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
             />
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Info below poster */}
-      <div className="mt-1.5 px-0.5">
-        <p className="text-sm text-white/80 line-clamp-2 leading-snug">{displayTitle}</p>
-        <p className="text-xs text-white/40 mt-0.5">
-          {anime.local_file_count}/{anime.total_episodes ?? '?'} 集
-        </p>
-      </div>
+      </AnimePosterCard>
     </motion.div>
   );
 }

@@ -3036,10 +3036,6 @@ function RecentlyMatchedCard({ anime, index }: { anime: RecentCollectionAnime; i
       </div>
       {/* Title */}
       <p className="text-xs text-white/80 line-clamp-2 leading-tight">{title}</p>
-      {/* Episode count */}
-      <p className="text-[10px] text-white/40 mt-0.5">
-        {anime.local_file_count}/{anime.total_episodes ?? '?'} 集
-      </p>
     </motion.div>
   );
 }
