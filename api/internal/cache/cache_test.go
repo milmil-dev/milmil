@@ -49,3 +49,19 @@ func TestMemoryCache_Del(t *testing.T) {
 	_, err = c.Get(ctx, "del_key")
 	require.ErrorIs(t, err, cache.ErrCacheMiss)
 }
+
+func TestNewWithStatus_NoRedisURL(t *testing.T) {
+	res := cache.NewWithStatus("")
+	require.NotNil(t, res.Cache)
+	require.Equal(t, cache.BackendMemory, res.Backend)
+	require.False(t, res.Fallback)
+	require.NoError(t, res.Err)
+}
+
+func TestNewWithStatus_InvalidRedisURLFallsBack(t *testing.T) {
+	res := cache.NewWithStatus("redis://%zz")
+	require.NotNil(t, res.Cache)
+	require.Equal(t, cache.BackendMemory, res.Backend)
+	require.True(t, res.Fallback)
+	require.Error(t, res.Err)
+}

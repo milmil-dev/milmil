@@ -40,8 +40,32 @@ func TestLoad_RedisOptional(t *testing.T) {
 	t.Setenv("DATABASE_URL", "sqlite://data/test.db")
 	t.Setenv("JWT_SECRET", "secret")
 	os.Unsetenv("REDIS_URL")
+	os.Unsetenv("REDIS_FAIL_FAST")
 
 	cfg, err := config.Load()
 	require.NoError(t, err)
 	require.Empty(t, cfg.RedisURL) // Redis is optional
+	require.False(t, cfg.RedisFailFast)
+}
+
+func TestLoad_RedisFailFast(t *testing.T) {
+	t.Setenv("DATABASE_URL", "sqlite://data/test.db")
+	t.Setenv("JWT_SECRET", "secret")
+	t.Setenv("REDIS_FAIL_FAST", "true")
+	os.Unsetenv("DEBUG")
+
+	cfg, err := config.Load()
+	require.NoError(t, err)
+	require.True(t, cfg.RedisFailFast)
+	require.False(t, cfg.Debug)
+}
+
+func TestLoad_DebugEnabled(t *testing.T) {
+	t.Setenv("DATABASE_URL", "sqlite://data/test.db")
+	t.Setenv("JWT_SECRET", "secret")
+	t.Setenv("DEBUG", "1")
+
+	cfg, err := config.Load()
+	require.NoError(t, err)
+	require.True(t, cfg.Debug)
 }

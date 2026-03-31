@@ -9,11 +9,11 @@ services:
     volumes:
       - ${DATA_DIR:-./data}:/data
       - ${MEDIA_DIR:-/mnt/media}:/media:ro
+    env_file:
+      - ./api/.env
     environment:
       - DATA_DIR=/data
       - DATABASE_URL=sqlite:///data/milmil.db
-      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
-      - REDIS_URL=${REDIS_URL:-}
       - ARIA2_RPC_URL=http://aria2:6800/jsonrpc
       - ARIA2_RPC_SECRET=${ARIA2_RPC_SECRET:-milmil_secret}
       - API_PORT=8080

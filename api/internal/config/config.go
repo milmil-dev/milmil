@@ -13,6 +13,8 @@ import (
 type Config struct {
 	DatabaseURL         string
 	RedisURL            string // optional
+	RedisFailFast       bool   // if true, fail startup when Redis is configured but unavailable
+	Debug               bool   // enables debug logs when true (set DEBUG=1)
 	JWTSecret           string
 	EncryptionKey       []byte // 32-byte AES-256 key for encrypting storage credentials
 	APIPort             int
@@ -43,6 +45,8 @@ func Load() (*Config, error) {
 		"ARIA2_RPC_URL":    "http://localhost:6800/jsonrpc",
 		"ARIA2_RPC_SECRET": "",
 		"REDIS_URL":        "",
+		"REDIS_FAIL_FAST":  false,
+		"DEBUG":            false,
 	}
 	if err := k.Load(confmap.Provider(defaults, "."), nil); err != nil {
 		return nil, fmt.Errorf("defaults: %w", err)
@@ -56,6 +60,8 @@ func Load() (*Config, error) {
 	cfg := &Config{
 		DatabaseURL:         k.String("DATABASE_URL"),
 		RedisURL:            k.String("REDIS_URL"),
+		RedisFailFast:       k.Bool("REDIS_FAIL_FAST"),
+		Debug:               k.Bool("DEBUG"),
 		JWTSecret:           k.String("JWT_SECRET"),
 		APIPort:             k.Int("API_PORT"),
 		DataDir:             k.String("DATA_DIR"),

@@ -6,6 +6,21 @@ import (
 	"time"
 )
 
+type Backend string
+
+const (
+	BackendMemory Backend = "memory"
+	BackendRedis  Backend = "redis"
+)
+
+// InitResult describes which backend was actually initialized and whether a fallback happened.
+type InitResult struct {
+	Cache    Cache
+	Backend  Backend
+	Fallback bool
+	Err      error
+}
+
 // ErrCacheMiss is returned when a key is not found or has expired.
 var ErrCacheMiss = errors.New("cache miss")
 
@@ -20,10 +35,18 @@ type Cache interface {
 // New returns a Redis-backed cache if redisURL is non-empty,
 // or an in-memory cache otherwise (suitable for development).
 func New(redisURL string) Cache {
+	return NewWithStatus(redisURL).Cache
+}
+
+// NewWithStatus returns cache initialization details, including fallback cause.
+func NewWithStatus(redisURL string) InitResult {
 	if redisURL != "" {
 		if c, err := newRedisCache(redisURL); err == nil {
-			return c
+			return InitResult{Cache: c, Backend: BackendRedis}
+		} else {
+			return InitResult{Cache: newMemoryCache(), Backend: BackendMemory, Fallback: true, Err: err}
 		}
 	}
-	return newMemoryCache()
+
+	return InitResult{Cache: newMemoryCache(), Backend: BackendMemory}
 }

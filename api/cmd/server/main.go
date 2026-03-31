@@ -83,11 +83,23 @@ func main() {
 	}
 
 	// Cache (Redis or in-memory)
-	cacheClient := cache.New(cfg.RedisURL)
-	if cfg.RedisURL != "" {
+	cacheInit := cache.NewWithStatus(cfg.RedisURL)
+	cacheClient := cacheInit.Cache
+	if cfg.RedisURL == "" {
+		slog.Info("cache initialized", "backend", "memory")
+	} else if cacheInit.Backend == cache.BackendRedis {
 		slog.Info("cache initialized", "backend", "redis", "url", redactRedisURL(cfg.RedisURL))
 	} else {
-		slog.Info("cache initialized", "backend", "memory")
+		slog.Warn("redis unavailable, falling back to memory", "err", cacheInit.Err, "url", redactRedisURL(cfg.RedisURL))
+		if cfg.RedisFailFast {
+			slog.Error("cache init failed and REDIS_FAIL_FAST is enabled", "err", cacheInit.Err)
+			os.Exit(1)
+		}
+		slog.Info("cache initialized", "backend", "memory", "fallback_from", "redis")
+	}
+	if cfg.Debug {
+		cacheClient = cache.WithDebugLogging(cacheClient, cacheInit.Backend)
+		slog.Info("cache debug logging enabled")
 	}
 
 	// Metadata service
