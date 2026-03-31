@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react';
 import { msg } from '@lingui/core/macro';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'motion/react';
+
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
@@ -55,11 +55,7 @@ export function StoragePanel() {
   const fileCount = stats?.file_count ?? 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-    >
+    <div>
       <h2 className="text-[18px] font-bold text-white">
         {i18n._(msg`settings.nav.storage`)}
       </h2>
@@ -126,6 +122,6 @@ export function StoragePanel() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </motion.div>
+    </div>
   );
 }

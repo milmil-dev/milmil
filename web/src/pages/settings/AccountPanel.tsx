@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
-import { motion } from 'motion/react';
+
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
@@ -39,11 +39,7 @@ export function AccountPanel() {
   });
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-    >
+    <div>
       <h2 className="text-[18px] font-bold text-white">Account</h2>
       <p className="mt-1 mb-6 text-[11px] text-white/35">
         Manage your profile and security settings
@@ -182,6 +178,6 @@ export function AccountPanel() {
           </form>
         </SettingsCard>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'motion/react';
+
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { SelectorGroup } from '@/components/settings/SelectorGroup';
@@ -82,11 +82,7 @@ export function PlayerPanel() {
   }, [danmakuEnabled, danmakuOpacity, danmakuFontSize, danmakuSpeed, form.reset]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-    >
+    <div>
       <h2 className="text-[18px] font-bold text-white">{i18n._(msg`settings.nav.player`)}</h2>
       <p className="mt-1 mb-6 text-[11px] text-white/35">{i18n._(msg`settings.player.subtitle`)}</p>
 
@@ -197,6 +193,6 @@ export function PlayerPanel() {
           </form>
         </SettingsCard>
       </div>
-    </motion.div>
+    </div>
   );
 }

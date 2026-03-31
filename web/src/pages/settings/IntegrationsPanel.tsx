@@ -4,7 +4,6 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { motion } from 'motion/react';
 
 import { ConnectionBadge } from '@/components/settings/ConnectionBadge';
 import { SettingsCard } from '@/components/settings/SettingsCard';
@@ -340,32 +339,17 @@ export function IntegrationsPanel() {
         </p>
       </div>
 
-      <motion.div
-        className="space-y-4"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
+      <div className="space-y-4">
         <DandanPlayCard />
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="space-y-4"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.06, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
+      <div className="space-y-4">
         <OAuthProviderCard provider="bangumi" label="Bangumi" />
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="space-y-4"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
+      <div className="space-y-4">
         <OAuthProviderCard provider="anilist" label="AniList" />
-      </motion.div>
+      </div>
     </div>
   );
 }

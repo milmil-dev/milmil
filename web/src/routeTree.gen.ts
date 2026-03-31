@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TorrentSearchRouteImport } from './routes/torrent-search'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as RssRouteImport } from './routes/rss'
@@ -19,10 +20,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibrariesRouteImport } from './routes/libraries'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as CollectionRouteImport } from './routes/collection'
-import { Route as SettingsRouteRouteImport } from './routes/settings/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
-import { Route as SettingsGeneralRouteImport } from './routes/settings/general'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
 
@@ -39,6 +38,11 @@ const TorrentSearchRoute = TorrentSearchRouteImport.update({
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -76,11 +80,6 @@ const CollectionRoute = CollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRouteRoute = SettingsRouteRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -90,11 +89,6 @@ const WatchAnimeIdRoute = WatchAnimeIdRouteImport.update({
   id: '/watch/$animeId',
   path: '/watch/$animeId',
   getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsGeneralRoute = SettingsGeneralRouteImport.update({
-  id: '/general',
-  path: '/general',
-  getParentRoute: () => SettingsRouteRoute,
 } as any)
 const LibrariesIdRoute = LibrariesIdRouteImport.update({
   id: '/libraries_/$id',
@@ -109,7 +103,6 @@ const AnimeIdRoute = AnimeIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRouteRouteWithChildren
   '/collection': typeof CollectionRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
@@ -117,17 +110,16 @@ export interface FileRoutesByFullPath {
   '/rss': typeof RssRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRoute
-  '/settings/general': typeof SettingsGeneralRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRouteRouteWithChildren
   '/collection': typeof CollectionRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
@@ -135,18 +127,17 @@ export interface FileRoutesByTo {
   '/rss': typeof RssRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRoute
-  '/settings/general': typeof SettingsGeneralRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRouteRouteWithChildren
   '/collection': typeof CollectionRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
@@ -154,19 +145,18 @@ export interface FileRoutesById {
   '/rss': typeof RssRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries_/$id': typeof LibrariesIdRoute
-  '/settings/general': typeof SettingsGeneralRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/settings'
     | '/collection'
     | '/downloads'
     | '/libraries'
@@ -174,17 +164,16 @@ export interface FileRouteTypes {
     | '/rss'
     | '/schedule'
     | '/search'
+    | '/settings'
     | '/setup'
     | '/torrent-search'
     | '/trending'
     | '/anime/$id'
     | '/libraries/$id'
-    | '/settings/general'
     | '/watch/$animeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/settings'
     | '/collection'
     | '/downloads'
     | '/libraries'
@@ -192,17 +181,16 @@ export interface FileRouteTypes {
     | '/rss'
     | '/schedule'
     | '/search'
+    | '/settings'
     | '/setup'
     | '/torrent-search'
     | '/trending'
     | '/anime/$id'
     | '/libraries/$id'
-    | '/settings/general'
     | '/watch/$animeId'
   id:
     | '__root__'
     | '/'
-    | '/settings'
     | '/collection'
     | '/downloads'
     | '/libraries'
@@ -210,18 +198,17 @@ export interface FileRouteTypes {
     | '/rss'
     | '/schedule'
     | '/search'
+    | '/settings'
     | '/setup'
     | '/torrent-search'
     | '/trending'
     | '/anime/$id'
     | '/libraries_/$id'
-    | '/settings/general'
     | '/watch/$animeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SettingsRouteRoute: typeof SettingsRouteRouteWithChildren
   CollectionRoute: typeof CollectionRoute
   DownloadsRoute: typeof DownloadsRoute
   LibrariesRoute: typeof LibrariesRoute
@@ -229,6 +216,7 @@ export interface RootRouteChildren {
   RssRoute: typeof RssRoute
   ScheduleRoute: typeof ScheduleRoute
   SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
   SetupRoute: typeof SetupRoute
   TorrentSearchRoute: typeof TorrentSearchRoute
   TrendingRoute: typeof TrendingRoute
@@ -258,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -309,13 +304,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -329,13 +317,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/watch/$animeId'
       preLoaderRoute: typeof WatchAnimeIdRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/settings/general': {
-      id: '/settings/general'
-      path: '/general'
-      fullPath: '/settings/general'
-      preLoaderRoute: typeof SettingsGeneralRouteImport
-      parentRoute: typeof SettingsRouteRoute
     }
     '/libraries_/$id': {
       id: '/libraries_/$id'
@@ -354,21 +335,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface SettingsRouteRouteChildren {
-  SettingsGeneralRoute: typeof SettingsGeneralRoute
-}
-
-const SettingsRouteRouteChildren: SettingsRouteRouteChildren = {
-  SettingsGeneralRoute: SettingsGeneralRoute,
-}
-
-const SettingsRouteRouteWithChildren = SettingsRouteRoute._addFileChildren(
-  SettingsRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SettingsRouteRoute: SettingsRouteRouteWithChildren,
   CollectionRoute: CollectionRoute,
   DownloadsRoute: DownloadsRoute,
   LibrariesRoute: LibrariesRoute,
@@ -376,6 +344,7 @@ const rootRouteChildren: RootRouteChildren = {
   RssRoute: RssRoute,
   ScheduleRoute: ScheduleRoute,
   SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
   SetupRoute: SetupRoute,
   TorrentSearchRoute: TorrentSearchRoute,
   TrendingRoute: TrendingRoute,
