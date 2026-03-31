@@ -12,7 +12,8 @@ function PasswordInput({ className, type, ...props }: React.ComponentProps<'inpu
         type={showPassword ? 'text' : 'password'}
         data-slot="input"
         className={cn(
-          'h-10 w-full min-w-0 rounded-lg border border-mm-border bg-mm-surface px-3 py-2 pr-10 text-base text-white/90 shadow-sm transition-all duration-200 outline-none selection:bg-mm-accent/30 selection:text-white placeholder:text-white/40 hover:bg-mm-surface-hover hover:border-mm-border-subtle focus-visible:border-mm-accent/50 focus-visible:bg-mm-surface-hover focus-visible:ring-[3px] focus-visible:ring-mm-accent/20 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+          'h-9 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 py-1 pr-10 text-base shadow-xs transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+          'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
           'aria-invalid:border-red-500/50 aria-invalid:ring-red-500/20',
           className
         )}
