@@ -55,3 +55,61 @@ func (h *handler) handleUpdateSettings(c echo.Context) error {
 
 	return c.NoContent(http.StatusNoContent)
 }
+
+func (h *handler) handleExportSettings(c echo.Context) error {
+	ctx := c.Request().Context()
+	result := make(map[string]json.RawMessage, len(settingsKeys))
+
+	for _, key := range settingsKeys {
+		setting, err := h.queries.GetSetting(ctx, key)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				continue
+			}
+			return echo.ErrInternalServerError
+		}
+		result[key] = json.RawMessage(setting.Value)
+	}
+
+	c.Response().Header().Set("Content-Disposition", `attachment; filename="milmil-settings.json"`)
+	return c.JSON(http.StatusOK, result)
+}
+
+func (h *handler) handleImportSettings(c echo.Context) error {
+	body, err := io.ReadAll(c.Request().Body)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
+	}
+
+	var imported map[string]json.RawMessage
+	if err := json.Unmarshal(body, &imported); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid JSON")
+	}
+
+	ctx := c.Request().Context()
+	for key, value := range imported {
+		if !json.Valid([]byte(value)) {
+			continue
+		}
+		_, err := h.queries.UpsertSetting(ctx, store.UpsertSettingParams{
+			Key:   key,
+			Value: string(value),
+		})
+		if err != nil {
+			return echo.ErrInternalServerError
+		}
+	}
+
+	return c.NoContent(http.StatusNoContent)
+}
+
+func (h *handler) handleResetSettings(c echo.Context) error {
+	ctx := c.Request().Context()
+	for _, key := range settingsKeys {
+		_, _ = h.queries.UpsertSetting(ctx, store.UpsertSettingParams{
+			Key:   key,
+			Value: "{}",
+		})
+	}
+	return c.NoContent(http.StatusNoContent)
+}
