@@ -1534,6 +1534,75 @@ msgstr "搜尋動畫…"
 msgid "search.title"
 msgstr "搜尋"
 
+msgid "search.browseResults"
+msgstr "瀏覽結果"
+
+msgid "search.filter.sort"
+msgstr "排序"
+
+msgid "search.filter.year"
+msgstr "年份"
+
+msgid "search.filter.season"
+msgstr "季度"
+
+msgid "search.filter.rating"
+msgstr "評分"
+
+msgid "search.filter.status"
+msgstr "狀態"
+
+msgid "search.filter.clear"
+msgstr "清除篩選"
+
+msgid "search.filter.applied"
+msgstr "目前篩選條件"
+
+msgid "search.sort.popularity"
+msgstr "最受歡迎"
+
+msgid "search.sort.rating"
+msgstr "最高評分"
+
+msgid "search.sort.trending"
+msgstr "熱門趨勢"
+
+msgid "search.sort.newest"
+msgstr "最新上映"
+
+msgid "search.sort.oldest"
+msgstr "最早上映"
+
+msgid "search.season.winter"
+msgstr "冬季"
+
+msgid "search.season.spring"
+msgstr "春季"
+
+msgid "search.season.summer"
+msgstr "夏季"
+
+msgid "search.season.fall"
+msgstr "秋季"
+
+msgid "search.rating.7plus"
+msgstr "7分以上"
+
+msgid "search.rating.8plus"
+msgstr "8分以上"
+
+msgid "search.rating.9plus"
+msgstr "9分以上"
+
+msgid "search.status.airing"
+msgstr "放送中"
+
+msgid "search.status.finished"
+msgstr "已完結"
+
+msgid "search.status.upcoming"
+msgstr "即將播出"
+
 #: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.appearance.language"
 msgstr "語言"

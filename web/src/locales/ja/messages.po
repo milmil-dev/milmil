@@ -1536,6 +1536,75 @@ msgstr "アニメを検索…"
 msgid "search.title"
 msgstr "検索"
 
+msgid "search.browseResults"
+msgstr "検索結果"
+
+msgid "search.filter.sort"
+msgstr "並び替え"
+
+msgid "search.filter.year"
+msgstr "年"
+
+msgid "search.filter.season"
+msgstr "シーズン"
+
+msgid "search.filter.rating"
+msgstr "評価"
+
+msgid "search.filter.status"
+msgstr "状態"
+
+msgid "search.filter.clear"
+msgstr "フィルターをクリア"
+
+msgid "search.filter.applied"
+msgstr "現在のフィルター"
+
+msgid "search.sort.popularity"
+msgstr "人気順"
+
+msgid "search.sort.rating"
+msgstr "評価順"
+
+msgid "search.sort.trending"
+msgstr "トレンド"
+
+msgid "search.sort.newest"
+msgstr "新しい順"
+
+msgid "search.sort.oldest"
+msgstr "古い順"
+
+msgid "search.season.winter"
+msgstr "冬"
+
+msgid "search.season.spring"
+msgstr "春"
+
+msgid "search.season.summer"
+msgstr "夏"
+
+msgid "search.season.fall"
+msgstr "秋"
+
+msgid "search.rating.7plus"
+msgstr "7点以上"
+
+msgid "search.rating.8plus"
+msgstr "8点以上"
+
+msgid "search.rating.9plus"
+msgstr "9点以上"
+
+msgid "search.status.airing"
+msgstr "放送中"
+
+msgid "search.status.finished"
+msgstr "完結"
+
+msgid "search.status.upcoming"
+msgstr "放送予定"
+
 #: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.appearance.language"
 msgstr "言語"

@@ -1536,6 +1536,75 @@ msgstr "Search anime..."
 msgid "search.title"
 msgstr "Search"
 
+msgid "search.browseResults"
+msgstr "Browse Results"
+
+msgid "search.filter.sort"
+msgstr "Sort"
+
+msgid "search.filter.year"
+msgstr "Year"
+
+msgid "search.filter.season"
+msgstr "Season"
+
+msgid "search.filter.rating"
+msgstr "Rating"
+
+msgid "search.filter.status"
+msgstr "Status"
+
+msgid "search.filter.clear"
+msgstr "Clear Filters"
+
+msgid "search.filter.applied"
+msgstr "current filters"
+
+msgid "search.sort.popularity"
+msgstr "Most Popular"
+
+msgid "search.sort.rating"
+msgstr "Highest Rated"
+
+msgid "search.sort.trending"
+msgstr "Trending"
+
+msgid "search.sort.newest"
+msgstr "Newest First"
+
+msgid "search.sort.oldest"
+msgstr "Oldest First"
+
+msgid "search.season.winter"
+msgstr "Winter"
+
+msgid "search.season.spring"
+msgstr "Spring"
+
+msgid "search.season.summer"
+msgstr "Summer"
+
+msgid "search.season.fall"
+msgstr "Fall"
+
+msgid "search.rating.7plus"
+msgstr "7+ Score"
+
+msgid "search.rating.8plus"
+msgstr "8+ Score"
+
+msgid "search.rating.9plus"
+msgstr "9+ Score"
+
+msgid "search.status.airing"
+msgstr "Airing"
+
+msgid "search.status.finished"
+msgstr "Finished"
+
+msgid "search.status.upcoming"
+msgstr "Upcoming"
+
 #: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.appearance.language"
 msgstr "Language"

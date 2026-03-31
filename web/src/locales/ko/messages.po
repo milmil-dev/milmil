@@ -1536,6 +1536,75 @@ msgstr "애니메이션 검색…"
 msgid "search.title"
 msgstr "검색"
 
+msgid "search.browseResults"
+msgstr "검색 결과"
+
+msgid "search.filter.sort"
+msgstr "정렬"
+
+msgid "search.filter.year"
+msgstr "연도"
+
+msgid "search.filter.season"
+msgstr "시즌"
+
+msgid "search.filter.rating"
+msgstr "평점"
+
+msgid "search.filter.status"
+msgstr "상태"
+
+msgid "search.filter.clear"
+msgstr "필터 초기화"
+
+msgid "search.filter.applied"
+msgstr "현재 필터"
+
+msgid "search.sort.popularity"
+msgstr "인기순"
+
+msgid "search.sort.rating"
+msgstr "평점순"
+
+msgid "search.sort.trending"
+msgstr "트렌드"
+
+msgid "search.sort.newest"
+msgstr "최신순"
+
+msgid "search.sort.oldest"
+msgstr "오래된 순"
+
+msgid "search.season.winter"
+msgstr "겨울"
+
+msgid "search.season.spring"
+msgstr "봄"
+
+msgid "search.season.summer"
+msgstr "여름"
+
+msgid "search.season.fall"
+msgstr "가을"
+
+msgid "search.rating.7plus"
+msgstr "7점 이상"
+
+msgid "search.rating.8plus"
+msgstr "8점 이상"
+
+msgid "search.rating.9plus"
+msgstr "9점 이상"
+
+msgid "search.status.airing"
+msgstr "방영중"
+
+msgid "search.status.finished"
+msgstr "완결"
+
+msgid "search.status.upcoming"
+msgstr "방영 예정"
+
 #: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.appearance.language"
 msgstr "언어"
