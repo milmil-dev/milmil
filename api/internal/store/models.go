@@ -188,11 +188,13 @@ type TranscodeSession struct {
 }
 
 type User struct {
-	ID           string `json:"id"`
-	Username     string `json:"username"`
-	PasswordHash string `json:"password_hash"`
-	CreatedAt    string `json:"created_at"`
-	UpdatedAt    string `json:"updated_at"`
+	ID                string `json:"id"`
+	Username          string `json:"username"`
+	PasswordHash      string `json:"password_hash"`
+	TotpSecret        string `json:"totp_secret"`
+	TwoFactorEnabled  int64  `json:"two_factor_enabled"`
+	CreatedAt         string `json:"created_at"`
+	UpdatedAt         string `json:"updated_at"`
 }
 
 type WatchProgress struct {

@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
+	"github.com/pquerna/otp/totp"
 )
 
 type authSetupRequest struct {
@@ -105,6 +106,48 @@ func (h *handler) handleAuthLogin(c echo.Context) error {
 
 	if err := auth.CheckPassword(user.PasswordHash, req.Password); err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
+	}
+
+	if user.TwoFactorEnabled == 1 {
+		// Don't issue token yet — return a partial response indicating 2FA is needed
+		return c.JSON(http.StatusOK, map[string]any{
+			"requires_2fa": true,
+			"user_id":      user.ID,
+		})
+	}
+
+	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, authLoginResponse{
+		Token: token,
+		User:  authUserDTO{ID: user.ID, Username: user.Username},
+	})
+}
+
+type authLogin2FARequest struct {
+	UserID string `json:"user_id"`
+	Code   string `json:"code"`
+}
+
+func (h *handler) handleAuthLogin2FA(c echo.Context) error {
+	var req authLogin2FARequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+	if req.UserID == "" || req.Code == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "user_id and code required")
+	}
+
+	ctx := c.Request().Context()
+	user, err := h.queries.GetUserByID(ctx, req.UserID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
+	}
+
+	if !totp.Validate(req.Code, user.TotpSecret) {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid 2FA code")
 	}
 
 	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)

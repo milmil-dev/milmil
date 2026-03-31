@@ -26,6 +26,8 @@ type Querier interface {
 	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DisableTwoFactor(ctx context.Context, id string) error
+	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteLibrary(ctx context.Context, id string) error
@@ -93,6 +95,7 @@ type Querier interface {
 	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error
+	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UpdatePasswordHash(ctx context.Context, arg UpdatePasswordHashParams) error
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error

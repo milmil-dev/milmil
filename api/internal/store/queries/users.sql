@@ -14,3 +14,12 @@ RETURNING *;
 
 -- name: UpdatePasswordHash :exec
 UPDATE users SET password_hash = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: EnableTwoFactor :exec
+UPDATE users SET totp_secret = ?, two_factor_enabled = 1, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: DisableTwoFactor :exec
+UPDATE users SET totp_secret = '', two_factor_enabled = 0, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: SetTOTPSecret :exec
+UPDATE users SET totp_secret = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;

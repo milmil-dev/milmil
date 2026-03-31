@@ -15,6 +15,7 @@ require (
 	github.com/knadh/koanf/v2 v2.3.4
 	github.com/labstack/echo/v4 v4.15.1
 	github.com/mmcdole/gofeed v1.3.0
+	github.com/pquerna/otp v1.5.0
 	github.com/rclone/rclone v1.73.3
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/riverqueue/river v0.32.0
@@ -188,7 +189,6 @@ require (
 	github.com/pkg/xattr v0.4.12 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
-	github.com/pquerna/otp v1.5.0 // indirect
 	github.com/prometheus/client_golang v1.23.2 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.67.2 // indirect

@@ -23,7 +23,7 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, username, password_hash, created_at, updated_at)
 VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, username, password_hash, created_at, updated_at
+RETURNING id, username, password_hash, totp_secret, two_factor_enabled, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -39,6 +39,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.ID,
 		&i.Username,
 		&i.PasswordHash,
+		&i.TotpSecret,
+		&i.TwoFactorEnabled,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -46,7 +48,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password_hash, created_at, updated_at FROM users WHERE id = ? LIMIT 1
+SELECT id, username, password_hash, totp_secret, two_factor_enabled, created_at, updated_at FROM users WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
@@ -56,6 +58,8 @@ func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
 		&i.ID,
 		&i.Username,
 		&i.PasswordHash,
+		&i.TotpSecret,
+		&i.TwoFactorEnabled,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -63,7 +67,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password_hash, created_at, updated_at FROM users WHERE username = ? LIMIT 1
+SELECT id, username, password_hash, totp_secret, two_factor_enabled, created_at, updated_at FROM users WHERE username = ? LIMIT 1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -73,6 +77,8 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.ID,
 		&i.Username,
 		&i.PasswordHash,
+		&i.TotpSecret,
+		&i.TwoFactorEnabled,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -90,5 +96,42 @@ type UpdatePasswordHashParams struct {
 
 func (q *Queries) UpdatePasswordHash(ctx context.Context, arg UpdatePasswordHashParams) error {
 	_, err := q.db.ExecContext(ctx, updatePasswordHash, arg.PasswordHash, arg.ID)
+	return err
+}
+
+const enableTwoFactor = `-- name: EnableTwoFactor :exec
+UPDATE users SET totp_secret = ?, two_factor_enabled = 1, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+type EnableTwoFactorParams struct {
+	TotpSecret string `json:"totp_secret"`
+	ID         string `json:"id"`
+}
+
+func (q *Queries) EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error {
+	_, err := q.db.ExecContext(ctx, enableTwoFactor, arg.TotpSecret, arg.ID)
+	return err
+}
+
+const disableTwoFactor = `-- name: DisableTwoFactor :exec
+UPDATE users SET totp_secret = '', two_factor_enabled = 0, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+func (q *Queries) DisableTwoFactor(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, disableTwoFactor, id)
+	return err
+}
+
+const setTOTPSecret = `-- name: SetTOTPSecret :exec
+UPDATE users SET totp_secret = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+type SetTOTPSecretParams struct {
+	TotpSecret string `json:"totp_secret"`
+	ID         string `json:"id"`
+}
+
+func (q *Queries) SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error {
+	_, err := q.db.ExecContext(ctx, setTOTPSecret, arg.TotpSecret, arg.ID)
 	return err
 }
