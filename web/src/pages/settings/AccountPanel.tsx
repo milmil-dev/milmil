@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
@@ -14,10 +14,28 @@ import { useAuthStore } from '@/store/auth-store';
 
 const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
+interface TwoFactorSetupResponse {
+  secret: string;
+  qr_code: string; // base64 PNG
+  url: string;
+}
+
+interface TwoFactorStatusResponse {
+  enabled: boolean;
+}
+
 export function AccountPanel() {
   const user = useAuthStore((s) => s.user);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const queryClient = useQueryClient();
   const [totpCode, setTotpCode] = useState('');
+  const [setupData, setSetupData] = useState<TwoFactorSetupResponse | null>(null);
+
+  const { data: twoFactorStatus } = useQuery({
+    queryKey: ['2fa', 'status'],
+    queryFn: () => api.get<TwoFactorStatusResponse>('/api/v1/auth/2fa/status'),
+  });
+
+  const twoFactorEnabled = twoFactorStatus?.enabled ?? false;
 
   const changePassword = useMutation({
     mutationFn: (data: { current_password: string; new_password: string }) =>
@@ -184,60 +202,144 @@ export function AccountPanel() {
         </SettingsCard>
 
         {/* Two-Factor Authentication card */}
-        <SettingsCard label="Two-Factor Authentication">
-          <p className="mb-4 text-[11px] text-white/40">
-            Add an extra layer of security to your account by requiring a time-based one-time
-            password (TOTP) in addition to your password when signing in.
-          </p>
-
-          <div className="flex items-center gap-3">
-            <Switch
-              id="2fa-toggle"
-              checked={twoFactorEnabled}
-              onCheckedChange={(checked) => {
-                setTwoFactorEnabled(checked);
-                if (checked) {
-                  toast.info('2FA is not yet available');
-                }
-              }}
-            />
-            <label htmlFor="2fa-toggle" className="text-[12px] text-white/60">
-              {twoFactorEnabled ? 'Enabled' : 'Disabled'}
-            </label>
-          </div>
-
-          {twoFactorEnabled && (
-            <div className="mt-5 space-y-4">
-              <div className="flex h-40 w-40 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-[11px] text-white/20">
-                QR Code
-              </div>
-
-              <div className="flex items-end gap-3">
-                <div className="space-y-1.5">
-                  <label htmlFor="totp-code" className="text-[11px] font-medium text-white/50">
-                    Verification Code
-                  </label>
-                  <Input
-                    id="totp-code"
-                    placeholder="Enter 6-digit code"
-                    value={totpCode}
-                    onChange={(e) => setTotpCode(e.target.value)}
-                    className={`${inputClass} w-48`}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    toast.info('2FA is not yet available');
-                  }}
-                >
-                  Verify
-                </Button>
-              </div>
-            </div>
-          )}
-        </SettingsCard>
+        <TwoFactorCard
+          enabled={twoFactorEnabled}
+          setupData={setupData}
+          setSetupData={setSetupData}
+          totpCode={totpCode}
+          setTotpCode={setTotpCode}
+          queryClient={queryClient}
+        />
       </div>
     </div>
+  );
+}
+
+// ─── Two-Factor Authentication Card ─────────────────────────────────────────
+
+import type { QueryClient } from '@tanstack/react-query';
+
+function TwoFactorCard({
+  enabled,
+  setupData,
+  setSetupData,
+  totpCode,
+  setTotpCode,
+  queryClient,
+}: {
+  enabled: boolean;
+  setupData: TwoFactorSetupResponse | null;
+  setSetupData: (data: TwoFactorSetupResponse | null) => void;
+  totpCode: string;
+  setTotpCode: (code: string) => void;
+  queryClient: QueryClient;
+}) {
+  const setupMutation = useMutation({
+    mutationFn: () => api.post<TwoFactorSetupResponse>('/api/v1/auth/2fa/setup'),
+    onSuccess: (data) => {
+      setSetupData(data);
+    },
+    onError: () => toast.error('Failed to start 2FA setup'),
+  });
+
+  const verifyMutation = useMutation({
+    mutationFn: (code: string) => api.post('/api/v1/auth/2fa/verify', { code }),
+    onSuccess: () => {
+      toast.success('Two-factor authentication enabled');
+      setSetupData(null);
+      setTotpCode('');
+      queryClient.invalidateQueries({ queryKey: ['2fa', 'status'] });
+    },
+    onError: () => toast.error('Invalid verification code'),
+  });
+
+  const disableMutation = useMutation({
+    mutationFn: () => api.delete('/api/v1/auth/2fa'),
+    onSuccess: () => {
+      toast.success('Two-factor authentication disabled');
+      setSetupData(null);
+      setTotpCode('');
+      queryClient.invalidateQueries({ queryKey: ['2fa', 'status'] });
+    },
+    onError: () => toast.error('Failed to disable 2FA'),
+  });
+
+  const handleToggle = (checked: boolean) => {
+    if (checked) {
+      setupMutation.mutate();
+    } else {
+      disableMutation.mutate();
+    }
+  };
+
+  return (
+    <SettingsCard label="Two-Factor Authentication">
+      <p className="mb-4 text-[11px] text-white/40">
+        Add an extra layer of security by requiring a TOTP code when signing in.
+      </p>
+
+      <div className="flex items-center gap-3">
+        <Switch
+          id="2fa-toggle"
+          checked={enabled || !!setupData}
+          onCheckedChange={handleToggle}
+          disabled={setupMutation.isPending || disableMutation.isPending}
+        />
+        <label htmlFor="2fa-toggle" className="text-[12px] text-white/60">
+          {enabled ? 'Enabled' : setupData ? 'Pending verification' : 'Disabled'}
+        </label>
+      </div>
+
+      {/* Setup flow — show QR code and verify input */}
+      {setupData && !enabled && (
+        <div className="mt-5 space-y-4">
+          <p className="text-[11px] text-white/50">
+            Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.),
+            then enter the 6-digit code to verify.
+          </p>
+          <img
+            src={`data:image/png;base64,${setupData.qr_code}`}
+            alt="2FA QR Code"
+            className="h-40 w-40 rounded-lg border border-white/[0.08]"
+          />
+          <div className="space-y-1">
+            <p className="text-[10px] text-white/30">
+              Manual entry: <code className="font-mono text-white/50">{setupData.secret}</code>
+            </p>
+          </div>
+          <div className="flex items-end gap-3">
+            <div className="space-y-1.5">
+              <label htmlFor="totp-code" className="text-[11px] font-medium text-white/50">
+                Verification Code
+              </label>
+              <Input
+                id="totp-code"
+                placeholder="Enter 6-digit code"
+                value={totpCode}
+                onChange={(e) => setTotpCode(e.target.value)}
+                maxLength={6}
+                className={`${inputClass} w-48 font-mono tracking-widest`}
+              />
+            </div>
+            <Button
+              type="button"
+              disabled={totpCode.length !== 6 || verifyMutation.isPending}
+              onClick={() => verifyMutation.mutate(totpCode)}
+            >
+              {verifyMutation.isPending ? 'Verifying...' : 'Verify & Enable'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Already enabled — show status */}
+      {enabled && (
+        <div className="mt-4">
+          <p className="text-[11px] text-green-400/80">
+            ✓ Two-factor authentication is active. Toggle off to disable.
+          </p>
+        </div>
+      )}
+    </SettingsCard>
   );
 }
