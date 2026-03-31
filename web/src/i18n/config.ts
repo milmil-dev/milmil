@@ -22,8 +22,8 @@ async function loadAndActivate(locale: string): Promise<void> {
 }
 
 export const availableLanguages = [
-  { code: 'zh-TW', label: '繁體中文（台灣）' },
   { code: 'zh-HK', label: '粵語' },
+  { code: 'zh-TW', label: '繁體中文（台灣）' },
   { code: 'zh-CN', label: '简体中文' },
   { code: 'en', label: 'English' },
   { code: 'ja', label: '日本語' },
