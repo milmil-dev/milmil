@@ -32,6 +32,7 @@ type Rating struct {
 
 type Episode struct {
 	ID      int     `json:"id"`
+	Type    int     `json:"type"` // 0=main, 1=SP, 2=OP, 3=ED
 	Sort    float64 `json:"sort"`
 	Name    string  `json:"name"`
 	NameCN  string  `json:"name_cn"`

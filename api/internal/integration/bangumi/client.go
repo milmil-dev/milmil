@@ -117,7 +117,7 @@ func (c *httpClient) GetSubject(ctx context.Context, id int) (*Subject, error) {
 }
 
 func (c *httpClient) GetSubjectEpisodes(ctx context.Context, subjectID int) ([]Episode, error) {
-	data, err := c.do(ctx, http.MethodGet, "/v0/episodes?subject_id="+strconv.Itoa(subjectID), nil)
+	data, err := c.do(ctx, http.MethodGet, "/v0/episodes?subject_id="+strconv.Itoa(subjectID)+"&type=0", nil)
 	if err != nil {
 		return nil, err
 	}
