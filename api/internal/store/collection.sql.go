@@ -155,6 +155,7 @@ SELECT
   a.cover_image_url,
   a.total_episodes,
   a.watch_status,
+  a.user_score,
   COUNT(DISTINCT mf.id) AS local_file_count
 FROM anime a
 JOIN episodes e ON e.anime_id = a.id
@@ -174,6 +175,7 @@ type ListRecentlyMatchedAnimeRow struct {
 	CoverImageUrl  sql.NullString `json:"cover_image_url"`
 	TotalEpisodes  sql.NullInt64  `json:"total_episodes"`
 	WatchStatus    string         `json:"watch_status"`
+	UserScore      sql.NullInt64  `json:"user_score"`
 	LocalFileCount int64          `json:"local_file_count"`
 }
 
@@ -194,6 +196,7 @@ func (q *Queries) ListRecentlyMatchedAnime(ctx context.Context) ([]ListRecentlyM
 			&i.CoverImageUrl,
 			&i.TotalEpisodes,
 			&i.WatchStatus,
+			&i.UserScore,
 			&i.LocalFileCount,
 		); err != nil {
 			return nil, err

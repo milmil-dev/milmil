@@ -72,7 +72,7 @@ export function TrendingPage() {
           <>
             <div
               className="grid gap-4"
-              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}
+              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}
             >
               {allItems.map((anime, i) => (
                 <AnimeCard key={`${anime.bangumi_id}-${i}`} anime={anime} index={i} />

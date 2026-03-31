@@ -397,6 +397,7 @@ export function CollectionPage() {
                   'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 transition-opacity duration-200',
                   isFetching && 'opacity-50'
                 )}
+                style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}
               >
                 {anime?.map((item, index) => (
                   <CollectionAnimeCard key={item.id} anime={item} index={index} />

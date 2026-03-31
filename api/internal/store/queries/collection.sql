@@ -36,6 +36,7 @@ SELECT
   a.cover_image_url,
   a.total_episodes,
   a.watch_status,
+  a.user_score,
   COUNT(DISTINCT mf.id) AS local_file_count
 FROM anime a
 JOIN episodes e ON e.anime_id = a.id

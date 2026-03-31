@@ -6,6 +6,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { AnimeCard } from '../components/AnimeCard';
 import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
@@ -17,6 +18,7 @@ import { PasswordInput } from '../components/ui/password-input';
 import { Switch } from '../components/ui/switch';
 import { useAuth } from '../hooks/use-auth';
 import { collectionApi, collectionKeys, type RecentCollectionAnime } from '../lib/api/collection';
+import type { AnimeSummary } from '../lib/api/discover';
 import {
   type BrowseEntry,
   type BrowseInput,
@@ -29,7 +31,7 @@ import {
   type TestConnectionInput,
   type UpdateLibraryInput,
 } from '../lib/api/library';
-import { animeGradient, hashName } from '../lib/gradient';
+import { hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
 
@@ -3001,43 +3003,16 @@ function formDefaultValues(lib?: Library): LibraryFormValues {
 }
 
 // ─── Recently Matched Preview ─────────────────────────────────────────────────
-function RecentlyMatchedCard({ anime, index }: { anime: RecentCollectionAnime; index: number }) {
-  const navigate = useNavigate();
-  const title = anime.title_zh ?? anime.title;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        delay: index * 0.03,
-        duration: 0.22,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
-      className="w-[120px] flex-shrink-0 cursor-pointer group"
-      onClick={() =>
-        anime.bangumi_id && navigate({ to: '/anime/$id', params: { id: String(anime.bangumi_id) } })
-      }
-    >
-      {/* Poster */}
-      <div className="aspect-[3/4] rounded-md overflow-hidden mb-1.5">
-        {anime.cover_image_url ? (
-          <img
-            src={anime.cover_image_url}
-            alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div
-            className="w-full h-full group-hover:scale-105 transition-transform duration-300"
-            style={{ background: animeGradient(anime.title) }}
-          />
-        )}
-      </div>
-      {/* Title */}
-      <p className="text-xs text-white/80 line-clamp-2 leading-tight">{title}</p>
-    </motion.div>
-  );
+function recentToSummary(anime: RecentCollectionAnime): AnimeSummary {
+  return {
+    bangumi_id: anime.bangumi_id ?? 0,
+    title: anime.title_zh ?? anime.title,
+    title_original: anime.title,
+    cover_image: anime.cover_image_url ?? '',
+    episode_count: anime.total_episodes ?? 0,
+    score: anime.user_score ?? 0,
+  };
 }
 
 function RecentlyMatchedPreview() {
@@ -3065,8 +3040,10 @@ function RecentlyMatchedPreview() {
       </div>
       {/* Scroll strip */}
       <div className="flex gap-3 overflow-x-auto pb-2">
-        {data.map((anime, i) => (
-          <RecentlyMatchedCard key={anime.id} anime={anime} index={i} />
+        {data.map((anime) => (
+          <div key={anime.id} className="w-[120px] flex-shrink-0">
+            <AnimeCard anime={recentToSummary(anime)} />
+          </div>
         ))}
       </div>
     </div>

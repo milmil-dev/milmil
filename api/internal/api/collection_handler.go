@@ -74,6 +74,7 @@ type recentAnimeResponse struct {
 	CoverImageUrl  *string `json:"cover_image_url"`
 	TotalEpisodes  *int64  `json:"total_episodes"`
 	WatchStatus    string  `json:"watch_status"`
+	UserScore      *int64  `json:"user_score"`
 	LocalFileCount int64   `json:"local_file_count"`
 }
 
@@ -86,6 +87,7 @@ func toRecentAnime(row store.ListRecentlyMatchedAnimeRow) recentAnimeResponse {
 		CoverImageUrl:  nullStr(row.CoverImageUrl),
 		TotalEpisodes:  nullInt(row.TotalEpisodes),
 		WatchStatus:    row.WatchStatus,
+		UserScore:      nullInt(row.UserScore),
 		LocalFileCount: row.LocalFileCount,
 	}
 }

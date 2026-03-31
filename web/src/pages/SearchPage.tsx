@@ -5,10 +5,11 @@ import { useLingui } from '@lingui/react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { PreviewModal } from '../components/PreviewModal';
+import { TagMultiSelect } from '../components/TagMultiSelect';
 import { Button } from '../components/ui/button';
 import {
   Select,
@@ -85,6 +86,39 @@ interface SearchParams {
   season?: string;
   min_score?: string;
   status?: string;
+}
+
+function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const onVisibleRef = useRef(onVisible);
+  onVisibleRef.current = onVisible;
+  const loadingRef = useRef(loading);
+  loadingRef.current = loading;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting && !loadingRef.current) {
+          onVisibleRef.current();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="flex justify-center py-8">
+      {loading && (
+        <div className="flex items-center gap-2 text-[12px] text-mm-text-muted">
+          <div className="w-4 h-4 border-2 border-white/10 border-t-mm-accent rounded-full animate-spin" />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function SearchPage() {
@@ -384,6 +418,13 @@ export function SearchPage() {
               </SelectContent>
             </Select>
 
+            {/* Tag filter */}
+            <TagMultiSelect
+              selected={selectedTags}
+              onAdd={addTag}
+              onRemove={removeTag}
+            />
+
             {/* Clear filters */}
             {isFilterActive && (
               <Button
@@ -421,9 +462,12 @@ export function SearchPage() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && query.trim()) {
                     e.preventDefault();
-                    addTag(query.trim());
-                    setQuery('');
-                    setDebouncedQuery('');
+                    // Immediate text search on Enter
+                    setDebouncedQuery(query.trim());
+                    navigate({
+                      to: '/search',
+                      search: { ...searchParams, q: query.trim() } as any,
+                    });
                   }
                 }}
                 placeholder={i18n._(msg`search.inputPlaceholder`)}
@@ -495,7 +539,10 @@ export function SearchPage() {
         {/* Results grid */}
         {!isLoading && hasQuery && results.length > 0 && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+              style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}
+            >
               {results.map((anime) => (
                 <AnimeCard
                   key={`${anime.anilist_id}-${anime.bangumi_id}`}
@@ -505,20 +552,9 @@ export function SearchPage() {
               ))}
             </div>
 
-            {/* Load more */}
+            {/* Auto load more sentinel */}
             {isFilterActive && hasNextPage && (
-              <div className="flex justify-center mt-8">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetchingNextPage}
-                >
-                  {isFetchingNextPage
-                    ? i18n._(msg`search.loadingMore`)
-                    : i18n._(msg`search.loadMore`)}
-                </Button>
-              </div>
+              <LoadMoreSentinel loading={isFetchingNextPage} onVisible={() => fetchNextPage()} />
             )}
           </>
         )}

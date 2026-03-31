@@ -497,7 +497,7 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 		MinScore: filter.MinScore,
 		Status:   filter.Status,
 	}
-	media, err := s.anilist.Browse(ctx, alFilter, page, 20)
+	media, err := s.anilist.Browse(ctx, alFilter, page, 50)
 	if err != nil {
 		return nil, err
 	}

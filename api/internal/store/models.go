@@ -80,6 +80,14 @@ type Episode struct {
 	SynopsisZh          sql.NullString `json:"synopsis_zh"`
 }
 
+type HotTag struct {
+	ID        int64  `json:"id"`
+	Name      string `json:"name"`
+	Category  string `json:"category"`
+	Count     int64  `json:"count"`
+	CreatedAt string `json:"created_at"`
+}
+
 type Library struct {
 	ID                    string         `json:"id"`
 	Name                  string         `json:"name"`
@@ -188,13 +196,13 @@ type TranscodeSession struct {
 }
 
 type User struct {
-	ID                string `json:"id"`
-	Username          string `json:"username"`
-	PasswordHash      string `json:"password_hash"`
-	TotpSecret        string `json:"totp_secret"`
-	TwoFactorEnabled  int64  `json:"two_factor_enabled"`
-	CreatedAt         string `json:"created_at"`
-	UpdatedAt         string `json:"updated_at"`
+	ID               string `json:"id"`
+	Username         string `json:"username"`
+	PasswordHash     string `json:"password_hash"`
+	CreatedAt        string `json:"created_at"`
+	UpdatedAt        string `json:"updated_at"`
+	TotpSecret       string `json:"totp_secret"`
+	TwoFactorEnabled int64  `json:"two_factor_enabled"`
 }
 
 type WatchProgress struct {

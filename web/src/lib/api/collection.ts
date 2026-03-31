@@ -28,6 +28,7 @@ export interface RecentCollectionAnime {
   cover_image_url: string | null;
   total_episodes: number | null;
   watch_status: string;
+  user_score: number | null;
   local_file_count: number;
 }
 

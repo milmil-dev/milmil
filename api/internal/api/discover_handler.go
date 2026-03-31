@@ -10,6 +10,7 @@ import (
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/store"
 )
 
 func (h *handler) handleCalendar(c echo.Context) error {
@@ -139,6 +140,23 @@ func (h *handler) handleBrowseByTag(c echo.Context) error {
 		return mapMetadataError(err)
 	}
 	return c.JSON(http.StatusOK, results)
+}
+
+func (h *handler) handleHotTags(c echo.Context) error {
+	category := c.QueryParam("category")
+	var (
+		tags []store.HotTag
+		err  error
+	)
+	if category != "" {
+		tags, err = h.queries.ListHotTagsByCategory(c.Request().Context(), category)
+	} else {
+		tags, err = h.queries.ListHotTags(c.Request().Context())
+	}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to list tags")
+	}
+	return c.JSON(http.StatusOK, tags)
 }
 
 func (h *handler) handleResolveAniList(c echo.Context) error {

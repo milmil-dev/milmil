@@ -1,5 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useRef, useMemo } from 'react';
 import type { DanmakuComment } from '@/lib/api/stream';
 import { cn } from '@/lib/utils';
 
@@ -7,6 +9,8 @@ interface DanmakuListProps {
   comments: DanmakuComment[];
   onSeek: (time: number) => void;
 }
+
+const ITEM_HEIGHT = 32;
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -16,8 +20,19 @@ function formatTime(seconds: number): string {
 
 export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
   const { i18n } = useLingui();
+  const parentRef = useRef<HTMLDivElement>(null);
 
-  const sorted = [...comments].sort((a, b) => a.time - b.time);
+  const sorted = useMemo(
+    () => [...comments].sort((a, b) => a.time - b.time),
+    [comments]
+  );
+
+  const virtualizer = useVirtualizer({
+    count: sorted.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => ITEM_HEIGHT,
+    overscan: 10,
+  });
 
   if (sorted.length === 0) {
     return (
@@ -28,26 +43,33 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
   }
 
   return (
-    <div className="max-h-[400px] overflow-y-auto">
-      <div className="flex flex-col">
-        {sorted.map((comment, idx) => (
-          <button
-            key={`${comment.time}-${idx}`}
-            type="button"
-            onClick={() => onSeek(comment.time)}
-            className={cn(
-              'flex items-start gap-3 px-2 py-1.5 text-left rounded transition-colors',
-              'hover:bg-white/[0.05] group'
-            )}
-          >
-            <span className="shrink-0 text-[12px] tabular-nums text-blue-400/70 group-hover:text-blue-400 font-mono">
-              {formatTime(comment.time)}
-            </span>
-            <span className="text-[13px] text-white/50 group-hover:text-white/70 truncate">
-              {comment.text}
-            </span>
-          </button>
-        ))}
+    <div ref={parentRef} className="max-h-[400px] overflow-y-auto">
+      <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
+        {virtualizer.getVirtualItems().map((virtualItem) => {
+          const comment = sorted[virtualItem.index]!;
+          return (
+            <button
+              key={virtualItem.index}
+              type="button"
+              onClick={() => onSeek(comment.time)}
+              className={cn(
+                'absolute left-0 w-full flex items-start gap-3 px-2 py-1.5 text-left rounded transition-colors',
+                'hover:bg-white/[0.05] group'
+              )}
+              style={{
+                height: virtualItem.size,
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
+            >
+              <span className="shrink-0 text-[12px] tabular-nums text-blue-400/70 group-hover:text-blue-400 font-mono">
+                {formatTime(comment.time)}
+              </span>
+              <span className="text-[13px] text-white/50 group-hover:text-white/70 truncate">
+                {comment.text}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

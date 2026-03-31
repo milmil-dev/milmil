@@ -92,7 +92,18 @@ export interface BrowseParams {
   page?: number;
 }
 
+export interface HotTag {
+  id: number;
+  name: string;
+  category: string;
+  count: number;
+}
+
 export const discoverApi = {
+  hotTags: (category?: string) => {
+    const qs = category ? `?category=${encodeURIComponent(category)}` : '';
+    return api.get<HotTag[]>(`/api/v1/discover/tags/popular${qs}`);
+  },
   calendar: () => api.get<CalendarDay[]>('/api/v1/discover/calendar'),
   trending: (page: number) => api.get<AnimeSummary[]>(`/api/v1/discover/trending?page=${page}`),
   search: (q: string) =>

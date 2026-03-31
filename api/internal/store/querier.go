@@ -26,8 +26,6 @@ type Querier interface {
 	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DisableTwoFactor(ctx context.Context, id string) error
-	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteLibrary(ctx context.Context, id string) error
@@ -36,6 +34,8 @@ type Querier interface {
 	DeleteSetting(ctx context.Context, key string) error
 	DeleteSubtitleFile(ctx context.Context, id string) error
 	DeleteTranscodeSession(ctx context.Context, sessionToken string) error
+	DisableTwoFactor(ctx context.Context, id string) error
+	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
 	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
@@ -64,6 +64,8 @@ type Querier interface {
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
 	ListDownloads(ctx context.Context) ([]Download, error)
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
+	ListHotTags(ctx context.Context) ([]HotTag, error)
+	ListHotTagsByCategory(ctx context.Context, category string) ([]HotTag, error)
 	ListLibraries(ctx context.Context) ([]Library, error)
 	ListLibrariesWithStats(ctx context.Context) ([]ListLibrariesWithStatsRow, error)
 	ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
@@ -80,6 +82,8 @@ type Querier interface {
 	ListTranscodeSessionsByFile(ctx context.Context, mediaFileID string) ([]TranscodeSession, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
+	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
+	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
@@ -95,7 +99,6 @@ type Querier interface {
 	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error
-	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UpdatePasswordHash(ctx context.Context, arg UpdatePasswordHashParams) error
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
