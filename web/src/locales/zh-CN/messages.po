@@ -16,7 +16,7 @@ msgstr ""
 msgid "watch.resumeFrom"
 msgstr "从此处继续"
 
-#: src/pages/settings/AboutPanel.tsx:152
+#: src/pages/settings/AboutPanel.tsx:148
 msgid "about.export"
 msgstr "导出"
 
@@ -24,11 +24,11 @@ msgstr "导出"
 msgid "about.exportFailed"
 msgstr "导出失败"
 
-#: src/pages/settings/AboutPanel.tsx:144
+#: src/pages/settings/AboutPanel.tsx:140
 msgid "about.exportSettings"
 msgstr "导出设置"
 
-#: src/pages/settings/AboutPanel.tsx:147
+#: src/pages/settings/AboutPanel.tsx:143
 msgid "about.exportSettingsDesc"
 msgstr "将设置下载为 JSON 文件"
 
@@ -36,16 +36,16 @@ msgstr "将设置下载为 JSON 文件"
 msgid "about.exportSuccess"
 msgstr "设置已导出"
 
-#: src/pages/settings/AboutPanel.tsx:173
-#: src/pages/settings/AboutPanel.tsx:235
+#: src/pages/settings/AboutPanel.tsx:169
+#: src/pages/settings/AboutPanel.tsx:231
 msgid "about.import"
 msgstr "导入"
 
-#: src/pages/settings/AboutPanel.tsx:227
+#: src/pages/settings/AboutPanel.tsx:223
 msgid "about.importConfirmDesc"
 msgstr "这将覆盖您当前的设置，此操作无法撤销。"
 
-#: src/pages/settings/AboutPanel.tsx:225
+#: src/pages/settings/AboutPanel.tsx:221
 msgid "about.importConfirmTitle"
 msgstr "导入设置？"
 
@@ -53,11 +53,11 @@ msgstr "导入设置？"
 msgid "about.importFailed"
 msgstr "导入失败"
 
-#: src/pages/settings/AboutPanel.tsx:161
+#: src/pages/settings/AboutPanel.tsx:157
 msgid "about.importSettings"
 msgstr "导入设置"
 
-#: src/pages/settings/AboutPanel.tsx:164
+#: src/pages/settings/AboutPanel.tsx:160
 msgid "about.importSettingsDesc"
 msgstr "从 JSON 文件还原设置"
 
@@ -65,20 +65,20 @@ msgstr "从 JSON 文件还原设置"
 msgid "about.importSuccess"
 msgstr "设置已导入"
 
-#: src/pages/settings/AboutPanel.tsx:208
+#: src/pages/settings/AboutPanel.tsx:204
 msgid "about.links"
 msgstr "链接"
 
-#: src/pages/settings/AboutPanel.tsx:201
-#: src/pages/settings/AboutPanel.tsx:256
+#: src/pages/settings/AboutPanel.tsx:197
+#: src/pages/settings/AboutPanel.tsx:252
 msgid "about.reset"
 msgstr "重置"
 
-#: src/pages/settings/AboutPanel.tsx:247
+#: src/pages/settings/AboutPanel.tsx:243
 msgid "about.resetConfirmDesc"
 msgstr "这将把所有设置还原为默认值，此操作无法撤销。"
 
-#: src/pages/settings/AboutPanel.tsx:245
+#: src/pages/settings/AboutPanel.tsx:241
 msgid "about.resetConfirmTitle"
 msgstr "重置为默认值？"
 
@@ -90,25 +90,107 @@ msgstr "重置失败"
 msgid "about.resetSuccess"
 msgstr "设置已重置"
 
-#: src/pages/settings/AboutPanel.tsx:189
+#: src/pages/settings/AboutPanel.tsx:185
 msgid "about.resetToDefaults"
 msgstr "重置为默认值"
 
-#: src/pages/settings/AboutPanel.tsx:192
+#: src/pages/settings/AboutPanel.tsx:188
 msgid "about.resetToDefaultsDesc"
 msgstr "将所有设置还原为默认值"
 
-#: src/pages/settings/AboutPanel.tsx:139
+#: src/pages/settings/AboutPanel.tsx:135
 msgid "about.settingsManagement"
 msgstr "设置管理"
 
-#: src/pages/settings/AboutPanel.tsx:116
+#: src/pages/settings/AboutPanel.tsx:112
 msgid "about.subtitle"
 msgstr "关于 milmil"
 
-#: src/pages/settings/AboutPanel.tsx:121
+#: src/pages/settings/AboutPanel.tsx:117
 msgid "about.systemInfo"
 msgstr "系统信息"
+
+#: src/pages/settings/AccountPanel.tsx:363
+msgid "account.2fa.activeMessage"
+msgstr "双重认证已启用。关闭开关即可停用。"
+
+#: src/pages/settings/AccountPanel.tsx:275
+msgid "account.2fa.description"
+msgstr "通过在登录时要求输入 TOTP 验证码，为您的账号增加额外的安全保护。"
+
+#: src/pages/settings/AccountPanel.tsx:256
+msgid "account.2fa.disabled"
+msgstr "已停用双重认证"
+
+#: src/pages/settings/AccountPanel.tsx:261
+msgid "account.2fa.disableFailed"
+msgstr "停用双重认证失败"
+
+#: src/pages/settings/AccountPanel.tsx:245
+msgid "account.2fa.enabled"
+msgstr "已启用双重认证"
+
+#: src/pages/settings/AccountPanel.tsx:250
+msgid "account.2fa.invalidCode"
+msgstr "验证码无效"
+
+#: src/pages/settings/AccountPanel.tsx:312
+msgid "account.2fa.manualEntry"
+msgstr "手动输入"
+
+#: src/pages/settings/AccountPanel.tsx:298
+msgid "account.2fa.scanInstructions"
+msgstr "使用身份验证器应用扫描此二维码，然后输入 6 位验证码进行验证。"
+
+#: src/pages/settings/AccountPanel.tsx:239
+msgid "account.2fa.setupFailed"
+msgstr "双重认证设置失败"
+
+#: src/pages/settings/AccountPanel.tsx:290
+msgid "account.2fa.statusDisabled"
+msgstr "已停用"
+
+#: src/pages/settings/AccountPanel.tsx:287
+msgid "account.2fa.statusEnabled"
+msgstr "已启用"
+
+#: src/pages/settings/AccountPanel.tsx:289
+msgid "account.2fa.statusPending"
+msgstr "待验证"
+
+#: src/pages/settings/AccountPanel.tsx:273
+msgid "account.2fa.title"
+msgstr "双重认证"
+
+#: src/pages/settings/AccountPanel.tsx:323
+msgid "account.2fa.verificationCode"
+msgstr "验证码"
+
+#: src/pages/settings/AccountPanel.tsx:351
+msgid "account.2fa.verifyEnable"
+msgstr "验证并启用"
+
+#: src/pages/settings/AccountPanel.tsx:350
+msgid "account.2fa.verifying"
+msgstr "验证中..."
+
+#: src/pages/settings/AccountPanel.tsx:92
+msgid "account.changePassword"
+msgstr "修改密码"
+
+#: src/pages/settings/AccountPanel.tsx:173
+msgid "account.confirmPassword"
+msgstr "确认新密码"
+
+#: src/pages/settings/AccountPanel.tsx:110
+msgid "account.currentPassword"
+msgstr "当前密码"
+
+#: src/pages/settings/AccountPanel.tsx:104
+#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:163
+msgid "account.fieldRequired"
+msgstr "此字段为必填项"
 
 #: src/components/AppSidebar.tsx:138
 msgid "account.local"
@@ -117,6 +199,42 @@ msgstr "本地账号"
 #: src/components/AppSidebar.tsx:166
 msgid "account.logout"
 msgstr "退出登录"
+
+#: src/pages/settings/AccountPanel.tsx:141
+msgid "account.newPassword"
+msgstr "新密码"
+
+#: src/pages/settings/AccountPanel.tsx:133
+msgid "account.passwordMinLength"
+msgstr "密码至少需要 8 个字符"
+
+#: src/pages/settings/AccountPanel.tsx:165
+msgid "account.passwordMismatch"
+msgstr "两次密码不一致"
+
+#: src/pages/settings/AccountPanel.tsx:48
+msgid "account.passwordUpdated"
+msgstr "密码已更新"
+
+#: src/pages/settings/AccountPanel.tsx:51
+msgid "account.passwordUpdateFailed"
+msgstr "密码更新失败"
+
+#: src/pages/settings/AccountPanel.tsx:79
+msgid "account.profile"
+msgstr "个人资料"
+
+#: src/pages/settings/AccountPanel.tsx:74
+msgid "account.subtitle"
+msgstr "管理您的个人资料与安全设置"
+
+#: src/pages/settings/AccountPanel.tsx:196
+msgid "account.updatePassword"
+msgstr "更新密码"
+
+#: src/pages/settings/AccountPanel.tsx:195
+msgid "account.updating"
+msgstr "更新中..."
 
 #: src/pages/AnimeDetailPage.tsx:742
 msgid "anime.characters"
@@ -187,15 +305,35 @@ msgstr "预告片"
 msgid "anime.voiceActor"
 msgstr "声优"
 
+#: src/pages/LoginPage.tsx:200
+msgid "auth.2fa.codeLabel"
+msgstr "验证码"
+
+#: src/pages/LoginPage.tsx:194
+msgid "auth.2fa.subtitle"
+msgstr "请输入身份验证器应用中的 6 位验证码"
+
+#: src/pages/LoginPage.tsx:191
+msgid "auth.2fa.title"
+msgstr "双重认证"
+
+#: src/pages/LoginPage.tsx:265
+msgid "auth.2fa.verify"
+msgstr "验证"
+
+#: src/hooks/use-auth.ts:77
+msgid "auth.error.invalid2FA"
+msgstr "双重认证验证码无效"
+
 #: src/pages/LoginPage.tsx:34
 #~ msgid "auth.error.invalidCredentials"
 #~ msgstr "账号或密码错误"
 
-#: src/hooks/use-auth.ts:43
+#: src/hooks/use-auth.ts:57
 msgid "auth.error.loginFailed"
 msgstr "登录失败"
 
-#: src/hooks/use-auth.ts:58
+#: src/hooks/use-auth.ts:92
 msgid "auth.error.setupFailed"
 msgstr "设置失败"
 
@@ -214,30 +352,30 @@ msgstr "需要登录"
 #~ msgstr "登录中..."
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LoginPage.tsx:263
+#: src/pages/LoginPage.tsx:356
 msgid "auth.login.password"
 msgstr "密码"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3177
 #: src/pages/LibraryDetailPage.tsx:1066
-#: src/pages/LoginPage.tsx:324
+#: src/pages/LoginPage.tsx:417
 msgid "auth.login.submit"
 msgstr "登录"
 
-#: src/pages/LoginPage.tsx:168
+#: src/pages/LoginPage.tsx:175
 msgid "auth.login.subtitle"
 msgstr "您的个人动画媒体服务器"
 
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
-#: src/pages/LoginPage.tsx:191
-#: src/pages/LoginPage.tsx:209
+#: src/pages/LoginPage.tsx:284
+#: src/pages/LoginPage.tsx:302
 msgid "auth.login.title"
 msgstr "登录 milmil"
 
 #: src/components/LoginModal.tsx:127
-#: src/pages/LoginPage.tsx:235
+#: src/pages/LoginPage.tsx:328
 msgid "auth.login.username"
 msgstr "用户名"
 
@@ -254,25 +392,25 @@ msgid "auth.setup.password"
 msgstr "密码"
 
 #: src/components/LoginModal.tsx:41
-#: src/pages/LoginPage.tsx:110
+#: src/pages/LoginPage.tsx:112
 #: src/pages/SetupPage.tsx:29
 msgid "auth.setup.passwordTooShort"
 msgstr "密码至少需要 8 个字符"
 
 #: src/components/LoginModal.tsx:176
-#: src/pages/LoginPage.tsx:325
+#: src/pages/LoginPage.tsx:418
 #: src/pages/SetupPage.tsx:110
 msgid "auth.setup.submit"
 msgstr "创建账号"
 
 #: src/components/LoginModal.tsx:112
-#: src/pages/LoginPage.tsx:215
+#: src/pages/LoginPage.tsx:308
 #: src/pages/SetupPage.tsx:51
 msgid "auth.setup.subtitle"
 msgstr "创建管理员账号以开始使用。"
 
 #: src/components/LoginModal.tsx:104
-#: src/pages/LoginPage.tsx:202
+#: src/pages/LoginPage.tsx:295
 #: src/pages/SetupPage.tsx:49
 msgid "auth.setup.title"
 msgstr "欢迎使用 milmil"
@@ -363,13 +501,17 @@ msgstr "查看全部"
 msgid "collection.watching"
 msgstr "观看中"
 
+#: src/pages/LoginPage.tsx:247
+msgid "common.back"
+msgstr "返回"
+
 #: src/pages/AnimeDetailPage.tsx:295
 msgid "common.backHome"
 msgstr "返回首页"
 
-#: src/pages/settings/AboutPanel.tsx:232
-#: src/pages/settings/AboutPanel.tsx:251
-#: src/pages/settings/StoragePanel.tsx:117
+#: src/pages/settings/AboutPanel.tsx:228
+#: src/pages/settings/AboutPanel.tsx:247
+#: src/pages/settings/StoragePanel.tsx:112
 msgid "common.cancel"
 msgstr "取消"
 
@@ -391,7 +533,8 @@ msgstr "加载失败"
 #: src/components/LoginModal.tsx:173
 #: src/pages/LibraryDetailPage.tsx:441
 #: src/pages/LibraryDetailPage.tsx:840
-#: src/pages/LoginPage.tsx:312
+#: src/pages/LoginPage.tsx:262
+#: src/pages/LoginPage.tsx:405
 msgid "common.loading"
 msgstr "加载中…"
 
@@ -414,12 +557,13 @@ msgstr "第 "
 msgid "episode.suffix"
 msgstr " 集"
 
+#: src/components/HeroBanner.tsx:213
 #: src/components/PreviewModal.tsx:251
 #: src/components/PreviewModal.tsx:255
 msgid "hero.details"
 msgstr "详情"
 
-#: src/components/HeroBanner.tsx:167
+#: src/components/HeroBanner.tsx:224
 msgid "hero.preview"
 msgstr "预览"
 
@@ -1382,7 +1526,7 @@ msgstr "搜索动画…"
 msgid "search.title"
 msgstr "搜索"
 
-#: src/pages/settings/GeneralPanel.tsx:65
+#: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.appearance.language"
 msgstr "语言"
 
@@ -1390,15 +1534,15 @@ msgstr "语言"
 #~ msgid "settings.appearance.title"
 #~ msgstr "外观设置"
 
-#: src/pages/settings/GeneralPanel.tsx:77
+#: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.autoAddToCollection"
 msgstr "自动加入收藏"
 
-#: src/pages/settings/GeneralPanel.tsx:80
+#: src/pages/settings/GeneralPanel.tsx:76
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配的动画自动加入收藏"
 
-#: src/pages/settings/GeneralPanel.tsx:73
+#: src/pages/settings/GeneralPanel.tsx:69
 msgid "settings.collection"
 msgstr "收藏"
 
@@ -1406,63 +1550,63 @@ msgstr "收藏"
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay 设置"
 
-#: src/pages/settings/GeneralPanel.tsx:61
+#: src/pages/settings/GeneralPanel.tsx:57
 msgid "settings.general.subtitle"
 msgstr "语言、收藏与应用偏好设置"
 
-#: src/pages/settings/IntegrationsPanel.tsx:184
+#: src/pages/settings/IntegrationsPanel.tsx:180
 msgid "settings.integration.authUrlFailed"
 msgstr "获取授权链接失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:291
+#: src/pages/settings/IntegrationsPanel.tsx:285
 msgid "settings.integration.connect"
 msgstr "连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:214
+#: src/pages/settings/IntegrationsPanel.tsx:210
 msgid "settings.integration.connected"
 msgstr "已连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:290
+#: src/pages/settings/IntegrationsPanel.tsx:284
 msgid "settings.integration.connecting"
 msgstr "连接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:306
+#: src/pages/settings/IntegrationsPanel.tsx:299
 msgid "settings.integration.disconnect"
 msgstr "断开连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:190
+#: src/pages/settings/IntegrationsPanel.tsx:186
 msgid "settings.integration.disconnected"
 msgstr "已断开连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:193
+#: src/pages/settings/IntegrationsPanel.tsx:189
 msgid "settings.integration.disconnectFailed"
 msgstr "断开连接失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:298
 msgid "settings.integration.disconnecting"
 msgstr "断开连接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:215
+#: src/pages/settings/IntegrationsPanel.tsx:211
 msgid "settings.integration.notConnected"
 msgstr "未连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:317
+#: src/pages/settings/IntegrationsPanel.tsx:309
 msgid "settings.integration.sync"
 msgstr "同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:203
+#: src/pages/settings/IntegrationsPanel.tsx:199
 msgid "settings.integration.syncComplete"
 msgstr "同步完成"
 
-#: src/pages/settings/IntegrationsPanel.tsx:203
+#: src/pages/settings/IntegrationsPanel.tsx:199
 msgid "settings.integration.syncErrors"
 msgstr "个错误"
 
-#: src/pages/settings/IntegrationsPanel.tsx:206
+#: src/pages/settings/IntegrationsPanel.tsx:202
 msgid "settings.integration.syncFailed"
 msgstr "同步失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:316
+#: src/pages/settings/IntegrationsPanel.tsx:308
 msgid "settings.integration.syncing"
 msgstr "同步中…"
 
@@ -1470,60 +1614,61 @@ msgstr "同步中…"
 #~ msgid "settings.integration.title"
 #~ msgstr "联动"
 
-#: src/pages/settings/IntegrationsPanel.tsx:339
+#: src/pages/settings/IntegrationsPanel.tsx:331
 msgid "settings.integrations.description"
 msgstr "连接外部服务并同步数据"
 
-#: src/pages/settings/AboutPanel.tsx:113
-#: src/pages/settings/SettingsLayout.tsx:24
+#: src/pages/settings/AboutPanel.tsx:109
+#: src/pages/settings/SettingsPage.tsx:29
 msgid "settings.nav.about"
 msgstr "关于"
 
-#: src/pages/settings/SettingsLayout.tsx:22
+#: src/pages/settings/AccountPanel.tsx:71
+#: src/pages/settings/SettingsPage.tsx:27
 msgid "settings.nav.account"
 msgstr "账号"
 
-#: src/pages/settings/GeneralPanel.tsx:58
-#: src/pages/settings/SettingsLayout.tsx:19
+#: src/pages/settings/GeneralPanel.tsx:54
+#: src/pages/settings/SettingsPage.tsx:24
 msgid "settings.nav.general"
 msgstr "通用"
 
-#: src/pages/settings/IntegrationsPanel.tsx:336
-#: src/pages/settings/SettingsLayout.tsx:20
+#: src/pages/settings/IntegrationsPanel.tsx:328
+#: src/pages/settings/SettingsPage.tsx:25
 msgid "settings.nav.integrations"
 msgstr "集成"
 
-#: src/pages/settings/PlayerPanel.tsx:90
-#: src/pages/settings/SettingsLayout.tsx:21
+#: src/pages/settings/PlayerPanel.tsx:86
+#: src/pages/settings/SettingsPage.tsx:26
 msgid "settings.nav.player"
 msgstr "播放器"
 
-#: src/pages/settings/SettingsLayout.tsx:23
-#: src/pages/settings/StoragePanel.tsx:64
+#: src/pages/settings/SettingsPage.tsx:28
+#: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "存储空间"
 
-#: src/pages/settings/SettingsLayout.tsx:48
+#: src/pages/settings/SettingsPage.tsx:55
 msgid "settings.pageTitle"
 msgstr "设置"
 
-#: src/pages/settings/PlayerPanel.tsx:94
+#: src/pages/settings/PlayerPanel.tsx:90
 msgid "settings.player.danmaku"
 msgstr "弹幕"
 
-#: src/pages/settings/PlayerPanel.tsx:107
+#: src/pages/settings/PlayerPanel.tsx:103
 msgid "settings.player.danmakuEnabled"
 msgstr "显示弹幕"
 
-#: src/pages/settings/PlayerPanel.tsx:153
+#: src/pages/settings/PlayerPanel.tsx:149
 msgid "settings.player.danmakuFontSize"
 msgstr "字体大小"
 
-#: src/pages/settings/PlayerPanel.tsx:127
+#: src/pages/settings/PlayerPanel.tsx:123
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:169
+#: src/pages/settings/PlayerPanel.tsx:165
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
@@ -1539,7 +1684,7 @@ msgstr "正常"
 msgid "settings.player.speed.slow"
 msgstr "慢"
 
-#: src/pages/settings/PlayerPanel.tsx:91
+#: src/pages/settings/PlayerPanel.tsx:87
 msgid "settings.player.subtitle"
 msgstr "弹幕与播放偏好设置"
 
@@ -1547,42 +1692,42 @@ msgstr "弹幕与播放偏好设置"
 #~ msgid "settings.player.title"
 #~ msgstr "播放器设置"
 
-#: src/pages/settings/IntegrationsPanel.tsx:119
-#: src/pages/settings/IntegrationsPanel.tsx:276
-#: src/pages/settings/PlayerPanel.tsx:193
+#: src/pages/settings/IntegrationsPanel.tsx:115
+#: src/pages/settings/IntegrationsPanel.tsx:271
+#: src/pages/settings/PlayerPanel.tsx:189
 msgid "settings.save"
 msgstr "保存"
 
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
-#: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:173
+#: src/pages/settings/IntegrationsPanel.tsx:52
+#: src/pages/settings/IntegrationsPanel.tsx:169
 #: src/pages/settings/PlayerPanel.tsx:52
 msgid "settings.saved"
 msgstr "已保存"
 
 #: src/pages/settings/GeneralPanel.tsx:41
-#: src/pages/settings/IntegrationsPanel.tsx:58
-#: src/pages/settings/IntegrationsPanel.tsx:176
+#: src/pages/settings/IntegrationsPanel.tsx:55
+#: src/pages/settings/IntegrationsPanel.tsx:172
 #: src/pages/settings/PlayerPanel.tsx:55
 msgid "settings.saveFailed"
 msgstr "保存失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:118
-#: src/pages/settings/IntegrationsPanel.tsx:275
-#: src/pages/settings/PlayerPanel.tsx:192
+#: src/pages/settings/IntegrationsPanel.tsx:114
+#: src/pages/settings/IntegrationsPanel.tsx:270
+#: src/pages/settings/PlayerPanel.tsx:188
 msgid "settings.saving"
 msgstr "保存中…"
 
-#: src/pages/settings/StoragePanel.tsx:93
+#: src/pages/settings/StoragePanel.tsx:89
 msgid "settings.storage.actions"
 msgstr "操作"
 
-#: src/pages/settings/StoragePanel.tsx:113
+#: src/pages/settings/StoragePanel.tsx:108
 msgid "settings.storage.clearConfirmDesc"
 msgstr "这将删除所有转码视频文件，此操作无法撤销。"
 
-#: src/pages/settings/StoragePanel.tsx:110
+#: src/pages/settings/StoragePanel.tsx:105
 msgid "settings.storage.clearConfirmTitle"
 msgstr "清除转码缓存？"
 
@@ -1594,28 +1739,28 @@ msgstr "缓存已清除"
 msgid "settings.storage.clearFailed"
 msgstr "清除缓存失败"
 
-#: src/pages/settings/StoragePanel.tsx:123
+#: src/pages/settings/StoragePanel.tsx:118
 msgid "settings.storage.clearing"
 msgstr "清除中…"
 
-#: src/pages/settings/StoragePanel.tsx:101
-#: src/pages/settings/StoragePanel.tsx:124
+#: src/pages/settings/StoragePanel.tsx:96
+#: src/pages/settings/StoragePanel.tsx:119
 msgid "settings.storage.clearTranscode"
 msgstr "清除转码文件"
 
-#: src/pages/settings/StoragePanel.tsx:71
+#: src/pages/settings/StoragePanel.tsx:67
 msgid "settings.storage.diskUsage"
 msgstr "磁盘使用量"
 
-#: src/pages/settings/StoragePanel.tsx:78
+#: src/pages/settings/StoragePanel.tsx:74
 msgid "settings.storage.files"
 msgstr "个文件"
 
-#: src/pages/settings/StoragePanel.tsx:67
+#: src/pages/settings/StoragePanel.tsx:63
 msgid "settings.storage.subtitle"
 msgstr "管理转码文件与缓存"
 
-#: src/pages/settings/StoragePanel.tsx:88
+#: src/pages/settings/StoragePanel.tsx:84
 msgid "settings.storage.transcodeDesc"
 msgstr "转码视频文件存储在临时目录"
 

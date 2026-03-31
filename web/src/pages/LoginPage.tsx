@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "../components/ui/button"
 import { Field, FieldError, FieldLabel } from "../components/ui/field"
 import { Input } from "../components/ui/input"
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "../components/ui/input-otp"
 import { PasswordInput } from "../components/ui/password-input"
 import { Spinner } from "../components/ui/spinner"
 import { useAuth } from "../hooks/use-auth"
@@ -195,25 +196,32 @@ export function LoginPage() {
               </div>
 
               <div>
-                <label htmlFor="totp-login" className="mb-1.5 block text-[13px] font-medium text-white/60">
+                <label className="mb-2 block text-[13px] font-medium text-white/60">
                   {i18n._(msg`auth.2fa.codeLabel`)}
                 </label>
-                <Input
-                  id="totp-login"
-                  placeholder="000000"
-                  value={totpCode}
-                  onChange={(e) => setTotpCode(e.target.value)}
+                <InputOTP
                   maxLength={6}
-                  autoFocus
-                  className="font-mono text-center text-lg tracking-[0.3em]"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && totpCode.length === 6) {
-                      verify2FA(totpCode).then(() => {
-                        navigate({ to: '/' })
-                      }).catch(() => {})
-                    }
+                  value={totpCode}
+                  onChange={(value) => setTotpCode(value)}
+                  onComplete={(value) => {
+                    verify2FA(value).then(() => {
+                      navigate({ to: '/' })
+                    }).catch(() => {})
                   }}
-                />
+                  autoFocus
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
 
               {displayError && (
