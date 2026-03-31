@@ -13,10 +13,10 @@ import { LibraryEmptyState } from '../components/LibraryEmptyState';
 import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
-import { libraryApi, libraryKeys } from '../lib/api/library';
+import { type LibraryWithStats, libraryApi, libraryKeys } from '../lib/api/library';
 import { progressApi, progressKeys } from '../lib/api/progress';
 import { translateGenre } from '../lib/genre-i18n';
-import { libraryGradient } from '../lib/gradient';
+import { cn } from '../lib/utils';
 import { useBgStore } from '../store/bg-store';
 
 const GENRES = [
@@ -211,22 +211,7 @@ export function HomePage() {
             ) : (
               <div className="space-y-2">
                 {libraries.slice(0, 4).map((lib) => (
-                  <Link
-                    key={lib.id}
-                    to="/libraries"
-                    className="group block rounded-lg overflow-hidden bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
-                  >
-                    <div
-                      className="h-1 transition-all duration-300 group-hover:h-1.5"
-                      style={{ background: libraryGradient(lib.name) }}
-                    />
-                    <div className="px-3 py-2.5">
-                      <p className="text-[12px] font-semibold text-white truncate">{lib.name}</p>
-                      <p className="text-[10px] font-mono truncate mt-0.5 text-mm-text-tertiary">
-                        {lib.path}
-                      </p>
-                    </div>
-                  </Link>
+                  <HomeLibraryCard key={lib.id} lib={lib} />
                 ))}
               </div>
             )}
@@ -246,22 +231,7 @@ export function HomePage() {
           ) : (
             <div className="grid gap-2 sm:grid-cols-2">
               {libraries.slice(0, 4).map((lib) => (
-                <Link
-                  key={lib.id}
-                  to="/libraries"
-                  className="group block rounded-lg overflow-hidden bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
-                >
-                  <div
-                    className="h-1 transition-all duration-300 group-hover:h-1.5"
-                    style={{ background: libraryGradient(lib.name) }}
-                  />
-                  <div className="px-3 py-2.5">
-                    <p className="text-[12px] font-semibold text-white truncate">{lib.name}</p>
-                    <p className="text-[10px] font-mono truncate mt-0.5 text-mm-text-tertiary">
-                      {lib.path}
-                    </p>
-                  </div>
-                </Link>
+                <HomeLibraryCard key={lib.id} lib={lib} />
               ))}
             </div>
           )}
@@ -283,5 +253,137 @@ function SectionHeader({ title, to }: { title: string; to: string }) {
         {i18n._(msg`home.viewAll`)}
       </Link>
     </div>
+  );
+}
+
+// ─── Compact source icon for homepage cards ──────────────────────────────────
+function SourceIconSmall({ sourceType }: { sourceType: string }) {
+  const cls = 'w-3.5 h-3.5 text-white/50';
+  const isNetwork = sourceType === 'smb' || sourceType === 'sftp' || sourceType === 'ftp';
+  const isCloud =
+    sourceType === 'webdav' ||
+    sourceType === 's3' ||
+    sourceType === 'gdrive' ||
+    sourceType === 'onedrive' ||
+    sourceType === 'dropbox';
+
+  if (isNetwork) {
+    return (
+      <svg viewBox="0 0 16 16" fill="none" className={cls}>
+        <rect x="2" y="3" width="12" height="4" rx="1" stroke="currentColor" strokeWidth="1.2" />
+        <rect x="2" y="9" width="12" height="4" rx="1" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="5" cy="5" r="0.8" fill="currentColor" />
+        <circle cx="5" cy="11" r="0.8" fill="currentColor" />
+      </svg>
+    );
+  }
+  if (isCloud) {
+    return (
+      <svg viewBox="0 0 16 16" fill="none" className={cls}>
+        <path
+          d="M4.5 12a3 3 0 0 1-.2-6 4.2 4.2 0 0 1 7.9 0A3 3 0 0 1 11.5 12h-7z"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
+      </svg>
+    );
+  }
+  if (sourceType === 'http') {
+    return (
+      <svg viewBox="0 0 16 16" fill="none" className={cls}>
+        <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.2" />
+        <ellipse cx="8" cy="8" rx="2.8" ry="5.5" stroke="currentColor" strokeWidth="1.2" />
+        <line x1="2.5" y1="8" x2="13.5" y2="8" stroke="currentColor" strokeWidth="1.2" />
+      </svg>
+    );
+  }
+  // Local folder
+  return (
+    <svg viewBox="0 0 16 16" fill="none" className={cls}>
+      <path
+        d="M2 5a1 1 0 0 1 1-1h3.5l1.5 1.5H13a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}
+
+function formatBytesShort(bytes: number): string {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
+}
+
+// ─── Enriched library card for homepage ──────────────────────────────────────
+function HomeLibraryCard({ lib }: { lib: LibraryWithStats }) {
+  const isRemote = lib.source_type !== 'local' && lib.source_type !== '';
+
+  const { data: connectionStatus, isLoading: isCheckingConnection } = useQuery({
+    queryKey: libraryKeys.connectionStatus(lib.id),
+    queryFn: () => libraryApi.getConnectionStatus(lib.id),
+    enabled: isRemote,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+    retry: 1,
+  });
+
+  const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
+  const isOnline = !isCheckingConnection && connectionStatus?.online;
+  const isOffline = !isCheckingConnection && connectionStatus && !connectionStatus.online;
+
+  return (
+    <Link
+      to="/libraries"
+      className="group block rounded-lg overflow-hidden bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
+    >
+
+      <div className="px-3 py-2.5 space-y-1.5">
+        {/* Row 1: icon + name + connection + source badge */}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <SourceIconSmall sourceType={lib.source_type} />
+          <p className="text-[12px] font-semibold text-white truncate flex-1">{lib.name}</p>
+
+          {isRemote && (
+            <div className="shrink-0 flex items-center gap-1" title={connectionStatus?.error || ''}>
+              <span
+                className={cn(
+                  'h-1.5 w-1.5 rounded-full',
+                  isCheckingConnection && 'bg-amber-300/70 animate-pulse',
+                  isOnline && 'bg-emerald-400',
+                  isOffline && 'bg-red-400'
+                )}
+              />
+              <span className="text-[9px] font-bold px-1 py-px rounded bg-white/[0.06] text-white/35">
+                {lib.source_type.toUpperCase()}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Row 2: path */}
+        <p className="text-[10px] font-mono truncate text-mm-text-tertiary">{lib.path}</p>
+
+        {/* Row 3: match bar + stats */}
+        {lib.file_count > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${matchPct}%`,
+                  backgroundColor: 'oklch(70% 0.05 330)',
+                }}
+              />
+            </div>
+            <span className="text-[9px] text-white/25 tabular-nums shrink-0">
+              {lib.file_count} · {formatBytesShort(lib.total_size_bytes)}
+            </span>
+          </div>
+        )}
+      </div>
+    </Link>
   );
 }
