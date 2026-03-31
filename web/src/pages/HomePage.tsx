@@ -92,7 +92,7 @@ export function HomePage() {
           <HeroBanner
             items={heroItems}
             onActiveChange={handleHeroChange}
-            hasWatchRecord={continueWatching.length > 0}
+            watchHistory={recentProgress}
           />
         )}
 

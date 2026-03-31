@@ -4,24 +4,28 @@ import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useState } from 'react';
 import type { AnimeSummary } from '../lib/api/discover';
+import type { WatchProgress } from '../lib/api/progress';
 import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { PreviewModal } from './PreviewModal';
 
+const SLIDE_DURATION = 8000;
+
 export function HeroBanner({
   items,
   onActiveChange,
-  hasWatchRecord,
+  watchHistory,
 }: {
   items: AnimeSummary[];
   onActiveChange?: (item: AnimeSummary) => void;
-  hasWatchRecord?: boolean;
+  watchHistory?: WatchProgress[];
 }) {
   const { i18n } = useLingui();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
   const featured = items[activeIndex];
 
   // Notify parent when active item changes
@@ -29,13 +33,24 @@ export function HeroBanner({
     if (featured) onActiveChange?.(featured);
   }, [activeIndex, featured, onActiveChange]);
 
+  // Auto-advance with progress tracking
   useEffect(() => {
     if (items.length <= 1 || isPaused) return;
-    const interval = setInterval(() => {
-      setActiveIndex((i) => (i + 1) % items.length);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [items.length, isPaused]);
+    setProgress(0);
+    const start = Date.now();
+    const frame = () => {
+      const elapsed = Date.now() - start;
+      const pct = Math.min(elapsed / SLIDE_DURATION, 1);
+      setProgress(pct);
+      if (pct < 1) {
+        rafId = requestAnimationFrame(frame);
+      } else {
+        setActiveIndex((i) => (i + 1) % items.length);
+      }
+    };
+    let rafId = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(rafId);
+  }, [items.length, isPaused, activeIndex]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -48,121 +63,164 @@ export function HeroBanner({
 
   if (!featured) return null;
 
+  // Find watch progress matching the currently featured anime
+  const matchedWatch = watchHistory?.find(
+    (w) => w.anime_bangumi_id === featured.bangumi_id && w.completed !== 1
+  ) ?? null;
+
   const hasCover = featured.cover_image?.startsWith('http');
-  const [coverLoaded, setCoverLoaded] = useState(false);
-
-  // Reset loaded state when featured changes
-  useEffect(() => {
-    setCoverLoaded(false);
-  }, [featured.bangumi_id]);
-
-  const handleCoverLoad = useCallback(() => setCoverLoaded(true), []);
+  const hasBanner = featured.banner_image?.startsWith('http');
+  const bgImage = hasBanner ? featured.banner_image : hasCover ? featured.cover_image : null;
 
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ height: 'clamp(368px, 50vh, 29.5rem)' }}
+      style={{ height: 'clamp(400px, 56vh, 520px)' }}
       tabIndex={0}
       role="region"
       aria-label="Featured anime"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Content — vertically centered */}
-      <div className="relative z-[2] h-full flex">
-        <div className="flex-1 flex flex-col justify-start p-6 md:p-8 pt-12 md:pt-16 min-w-0 max-w-[700px]">
+      {/* Background images — crossfade */}
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={featured.bangumi_id}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
+        >
+          {bgImage ? (
+            <img
+              src={bgImage}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              style={
+                !hasBanner
+                  ? { filter: 'blur(20px) saturate(1.3) brightness(0.5)', transform: 'scale(1.15)' }
+                  : { filter: 'brightness(0.55) saturate(1.1)' }
+              }
+            />
+          ) : (
+            <div
+              className="absolute inset-0"
+              style={{ background: animeGradient(featured.title) }}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Cinematic gradient overlays */}
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{
+          background: [
+            'linear-gradient(to top, var(--mm-bg) 0%, rgba(7,7,7,0.85) 15%, rgba(7,7,7,0.4) 40%, transparent 70%)',
+            'linear-gradient(to right, rgba(7,7,7,0.7) 0%, rgba(7,7,7,0.3) 35%, transparent 60%)',
+            'radial-gradient(ellipse at 80% 20%, transparent 50%, rgba(7,7,7,0.3) 100%)',
+          ].join(', '),
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-[2] h-full flex items-end">
+        <div className="flex-1 min-w-0 p-6 md:p-8 pb-10 md:pb-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.bangumi_id}
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="flex items-end gap-6"
             >
-              {/* Poster + info — Seanime MediaMetadata layout */}
-              <div className="flex items-end gap-6">
+              {/* Poster — floats with shadow depth */}
+              <Link
+                to={`/anime/${featured.bangumi_id}` as string}
+                className="shrink-0 hidden md:block"
+              >
+                <PosterCard
+                  src={hasCover ? featured.cover_image : undefined}
+                  title={featured.title}
+                />
+              </Link>
+
+              {/* Text content */}
+              <div className="min-w-0 flex-1 space-y-3 max-w-[640px]">
+                {/* Title */}
                 <Link
                   to={`/anime/${featured.bangumi_id}` as string}
-                  className="shrink-0 w-[160px] h-[225px] lg:w-[200px] lg:h-[290px] rounded-md overflow-hidden block cursor-pointer shadow-md"
-                  style={hasCover ? undefined : { background: animeGradient(featured.title) }}
+                  className="block cursor-pointer group"
                 >
-                  {hasCover && (
-                    <>
-                      {!coverLoaded && (
-                        <div className="absolute inset-0 animate-pulse bg-white/[0.06]" />
-                      )}
-                      <img
-                        src={featured.cover_image}
-                        alt={featured.title}
-                        className={cn(
-                          'w-full h-full object-cover transition-opacity duration-300',
-                          coverLoaded ? 'opacity-100' : 'opacity-0'
-                        )}
-                        onLoad={handleCoverLoad}
-                      />
-                    </>
-                  )}
+                  <h2
+                    className="text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight line-clamp-2 group-hover:text-white/80 transition-colors"
+                    style={{ textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
+                  >
+                    {featured.title}
+                  </h2>
                 </Link>
 
-                <div className="min-w-0 flex-1 pb-1 space-y-2">
-                  {/* Title — clickable, animated text reveal */}
-                  <Link
-                    to={`/anime/${featured.bangumi_id}` as string}
-                    className="block cursor-pointer"
-                  >
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight leading-8 line-clamp-2 hover:text-gray-300 transition-colors">
-                      {featured.title.split('').map((char, ci) => (
-                        <motion.span
-                          key={`${featured.bangumi_id}-${ci}`}
-                          initial={{ opacity: 0, y: 4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: ci * 0.02, duration: 0.3 }}
-                        >
-                          {char}
-                        </motion.span>
-                      ))}
-                    </h2>
-                  </Link>
-
-                  {/* Genres — clickable */}
+                {/* Meta row — genres + score inline */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {featured.score > 0 && (
+                    <span className="text-mm-accent font-bold text-[15px] flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="opacity-80">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </svg>
+                      {featured.score.toFixed(1)}
+                    </span>
+                  )}
                   {featured.genres && featured.genres.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
+                    <>
+                      {featured.score > 0 && (
+                        <span className="w-px h-3.5 bg-white/15" />
+                      )}
                       {featured.genres.slice(0, 4).map((g) => (
                         <Link
                           key={g}
                           to="/search"
                           search={{ genre: g }}
-                          className="text-[12px] font-semibold px-2 py-0.5 rounded bg-white/[0.1] text-white/80 hover:bg-mm-accent/20 hover:text-mm-accent transition-colors"
+                          className="text-[12px] font-medium px-2.5 py-1 rounded-full bg-white/[0.08] text-white/70 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
                         >
                           {translateGenre(g, i18n.locale)}
                         </Link>
                       ))}
-                    </div>
+                    </>
                   )}
+                </div>
 
-                  {/* Score */}
-                  {featured.score > 0 && (
-                    <span className="text-[16px] font-bold text-mm-accent inline-block">
-                      ♡ {featured.score.toFixed(1)}
-                    </span>
-                  )}
+                {/* Description */}
+                {featured.description && (
+                  <p
+                    className="text-[14px] text-white/65 max-w-[560px] leading-relaxed line-clamp-3"
+                    style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}
+                  >
+                    {featured.description.replace(/<[^>]+>/g, '')}
+                  </p>
+                )}
 
-                  {/* Description */}
-                  {featured.description && (
-                    <p
-                      className="text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-5"
-                      style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
-                    >
-                      {featured.description.replace(/<[^>]+>/g, '')}
-                    </p>
-                  )}
-
-                  {/* Preview button */}
+                {/* Actions */}
+                <div className="flex items-center gap-2.5 pt-1">
+                  <Link
+                    to={`/anime/${featured.bangumi_id}` as string}
+                    className="inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    {i18n._(msg`hero.details`)}
+                  </Link>
                   <button
                     type="button"
                     onClick={() => setPreviewOpen(true)}
-                    className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/[0.08] text-white hover:bg-white/[0.14] transition-colors cursor-pointer mt-1"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.08] text-white/80 hover:bg-white/[0.14] transition-colors cursor-pointer"
                   >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" />
+                    </svg>
                     {i18n._(msg`hero.preview`)}
                   </button>
                 </div>
@@ -170,73 +228,203 @@ export function HeroBanner({
             </motion.div>
           </AnimatePresence>
 
-          {/* Pagination dots */}
+          {/* Slide indicators — thin progress bars */}
           {items.length > 1 && (
-            <div className="flex items-center gap-2 mt-5">
+            <div className="flex items-center gap-1.5 mt-6 max-w-[200px]">
               {items.map((item, i) => (
                 <button
                   type="button"
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
-                  className={cn(
-                    'h-1.5 rounded-sm transition-all duration-300 cursor-pointer hover:bg-white/60',
-                    i === activeIndex ? 'bg-white/80 w-6' : 'bg-white/20 w-3'
+                  className="relative h-[3px] flex-1 rounded-full overflow-hidden cursor-pointer bg-white/[0.12] hover:bg-white/[0.2] transition-colors"
+                >
+                  {i === activeIndex && (
+                    <motion.div
+                      className="absolute inset-y-0 left-0 bg-mm-accent rounded-full"
+                      style={{ width: `${progress * 100}%` }}
+                    />
                   )}
-                />
+                  {i < activeIndex && (
+                    <div className="absolute inset-0 bg-white/30 rounded-full" />
+                  )}
+                </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Episode card — only show if user has watch records */}
-        {featured && hasWatchRecord && (
-          <div className="absolute right-6 bottom-8 z-[3] hidden lg:block">
-            <Link
-              to={`/anime/${featured.bangumi_id}` as string}
-              className="group block 2xl:w-[420px] xl:w-[340px] lg:w-[260px] rounded-xl overflow-hidden cursor-pointer"
-              style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}
-            >
-              <div className="relative aspect-[16/9] overflow-hidden">
-                {hasCover ? (
-                  <img
-                    src={featured.banner_image || featured.cover_image}
-                    alt=""
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <div
-                    className="w-full h-full"
-                    style={{ background: animeGradient(featured.title) }}
-                  />
-                )}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)',
-                  }}
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-3.5">
-                  <p className="text-[11px] text-white/50 truncate">
-                    {featured.title_original || featured.title}
-                  </p>
-                  <p className="text-[13px] font-semibold text-white mt-0.5 truncate">
-                    {featured.title}
-                  </p>
-                  {featured.episode_count > 0 && (
-                    <p className="text-[11px] text-white/40 mt-0.5">
-                      {featured.episode_count} {i18n._(msg`common.ep`)}
-                      {featured.score > 0 ? ` · ${featured.score.toFixed(1)}` : ''}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </Link>
-          </div>
-        )}
+        {/* Resume watching card — only when featured anime has watch progress */}
+        <AnimatePresence>
+          {matchedWatch && (
+            <ResumeCard key={matchedWatch.id} item={matchedWatch} locale={i18n.locale} />
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Preview modal */}
       <PreviewModal anime={featured} open={previewOpen} onClose={() => setPreviewOpen(false)} />
     </div>
+  );
+}
+
+/** Poster with layered shadow for depth */
+function PosterCard({ src, title }: { src?: string; title: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const handleLoad = useCallback(() => setLoaded(true), []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.92, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ delay: 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="w-[150px] h-[215px] lg:w-[170px] lg:h-[245px] rounded-lg overflow-hidden"
+      style={{
+        boxShadow: [
+          '0 8px 30px rgba(0,0,0,0.5)',
+          '0 2px 8px rgba(0,0,0,0.3)',
+          `0 0 0 1px rgba(255,255,255,0.06)`,
+        ].join(', '),
+        background: src ? undefined : animeGradient(title),
+      }}
+    >
+      {src && (
+        <>
+          {!loaded && (
+            <div className="w-full h-full animate-pulse bg-white/[0.06]" />
+          )}
+          <img
+            src={src}
+            alt={title}
+            className={cn(
+              'w-full h-full object-cover transition-opacity duration-300',
+              loaded ? 'opacity-100' : 'opacity-0'
+            )}
+            onLoad={handleLoad}
+          />
+        </>
+      )}
+    </motion.div>
+  );
+}
+
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function ResumeCard({ item, locale }: { item: WatchProgress; locale: string }) {
+  const title = (locale.startsWith('zh')
+    ? item.anime_title_zh || item.anime_title
+    : item.anime_title) || 'Unknown';
+
+  const progress =
+    item.duration_seconds && item.duration_seconds > 0
+      ? item.position_seconds / item.duration_seconds
+      : 0;
+
+  const epNum = Number.isInteger(item.episode_number)
+    ? item.episode_number
+    : item.episode_number.toFixed(1);
+
+  const hasCover = item.anime_cover_image?.startsWith('http');
+  const timeLeft = item.duration_seconds
+    ? item.duration_seconds - item.position_seconds
+    : 0;
+
+  // SVG progress ring
+  const radius = 28;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference * (1 - progress);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.6, duration: 0.5 }}
+      className="absolute right-6 bottom-10 z-[3] hidden lg:block"
+    >
+      <Link
+        to="/watch/$animeId"
+        params={{ animeId: item.anime_id }}
+        search={{ ep: item.episode_number }}
+        className="group flex items-center gap-4 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-1.5 pr-5 py-1.5 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02]"
+        style={{
+          backgroundColor: 'rgba(7,7,7,0.65)',
+          backdropFilter: 'blur(20px) saturate(1.4)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
+        }}
+      >
+        {/* Cover with progress ring overlay */}
+        <div className="relative shrink-0 w-[72px] h-[96px] rounded-lg overflow-hidden">
+          <div
+            className="w-full h-full"
+            style={hasCover ? undefined : { background: animeGradient(title) }}
+          >
+            {hasCover && (
+              <img
+                src={item.anime_cover_image!}
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            )}
+          </div>
+          {/* Play icon with progress ring */}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
+            <div className="relative w-[64px] h-[64px] flex items-center justify-center">
+              {/* Progress ring */}
+              <svg
+                className="absolute inset-0 -rotate-90"
+                width="64"
+                height="64"
+                viewBox="0 0 64 64"
+              >
+                <circle
+                  cx="32" cy="32" r={radius}
+                  fill="none"
+                  stroke="rgba(255,255,255,0.12)"
+                  strokeWidth="2.5"
+                />
+                <circle
+                  cx="32" cy="32" r={radius}
+                  fill="none"
+                  stroke="var(--mm-accent)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  className="transition-all duration-500"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }}
+                />
+              </svg>
+              {/* Play button */}
+              <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="black">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Info */}
+        <div className="min-w-0 py-0.5">
+          <p className="text-[13px] font-semibold text-white truncate max-w-[180px]">
+            {title}
+          </p>
+          <p className="text-[11px] text-white/45 mt-1 font-medium">
+            EP {epNum} · {formatTime(item.position_seconds)}
+            {item.duration_seconds ? ` / ${formatTime(item.duration_seconds)}` : ''}
+          </p>
+          {timeLeft > 0 && (
+            <p className="text-[10px] text-mm-accent/70 mt-1.5 font-medium tracking-wide">
+              {formatTime(timeLeft)} remaining
+            </p>
+          )}
+        </div>
+      </Link>
+    </motion.div>
   );
 }
