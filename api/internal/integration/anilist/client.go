@@ -64,11 +64,23 @@ const mediaFieldsWithRelations = mediaFields + `
 	}
 `
 
+// BrowseFilter holds optional filters for the Browse query.
+type BrowseFilter struct {
+	Genre    string   // AniList genre name (e.g. "Action") — single genre (legacy)
+	Genres   []string // Multiple genre names — uses genre_in when len > 1
+	Sort     string   // AniList MediaSort enum value (e.g. "POPULARITY_DESC", "SCORE_DESC")
+	Year     int      // seasonYear filter (e.g. 2024)
+	Season   string   // AniList MediaSeason enum (WINTER, SPRING, SUMMER, FALL)
+	MinScore int      // averageScore_greater (0-100 scale)
+	Status   string   // AniList MediaStatus enum (FINISHED, RELEASING, NOT_YET_RELEASED)
+}
+
 type Client interface {
 	SearchMedia(ctx context.Context, query string) ([]Media, error)
 	GetMedia(ctx context.Context, id int) (*Media, error)
 	GetTrending(ctx context.Context, page, perPage int) ([]Media, error)
 	BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]Media, error)
+	Browse(ctx context.Context, filter BrowseFilter, page, perPage int) ([]Media, error)
 }
 
 type graphqlClient struct {
@@ -176,6 +188,70 @@ func (c *graphqlClient) BrowseByGenre(ctx context.Context, genre string, page, p
 		} `json:"Page"`
 	}
 	if err := c.query(ctx, q, map[string]any{"genre": genre, "page": page, "perPage": perPage}, &result); err != nil {
+		return nil, err
+	}
+	return result.Page.Media, nil
+}
+
+func (c *graphqlClient) Browse(ctx context.Context, filter BrowseFilter, page, perPage int) ([]Media, error) {
+	// Build dynamic GraphQL query with optional filter variables
+	varDefs := "$page: Int, $perPage: Int"
+	mediaArgs := "type: ANIME"
+	vars := map[string]any{"page": page, "perPage": perPage}
+
+	if len(filter.Genres) == 1 {
+		varDefs += ", $genre: String"
+		mediaArgs += ", genre: $genre"
+		vars["genre"] = filter.Genres[0]
+	} else if len(filter.Genres) > 1 {
+		varDefs += ", $genres: [String]"
+		mediaArgs += ", genre_in: $genres"
+		vars["genres"] = filter.Genres
+	} else if filter.Genre != "" {
+		varDefs += ", $genre: String"
+		mediaArgs += ", genre: $genre"
+		vars["genre"] = filter.Genre
+	}
+	if filter.Year > 0 {
+		varDefs += ", $seasonYear: Int"
+		mediaArgs += ", seasonYear: $seasonYear"
+		vars["seasonYear"] = filter.Year
+	}
+	if filter.Season != "" {
+		varDefs += ", $season: MediaSeason"
+		mediaArgs += ", season: $season"
+		vars["season"] = filter.Season
+	}
+	if filter.MinScore > 0 {
+		varDefs += ", $minScore: Int"
+		mediaArgs += ", averageScore_greater: $minScore"
+		vars["minScore"] = filter.MinScore
+	}
+	if filter.Status != "" {
+		varDefs += ", $status: MediaStatus"
+		mediaArgs += ", status: $status"
+		vars["status"] = filter.Status
+	}
+
+	// Default sort
+	sort := "POPULARITY_DESC"
+	if filter.Sort != "" {
+		sort = filter.Sort
+	}
+	mediaArgs += ", sort: " + sort
+
+	q := fmt.Sprintf(`query (%s) {
+		Page(page: $page, perPage: $perPage) {
+			media(%s) {`+mediaFields+`}
+		}
+	}`, varDefs, mediaArgs)
+
+	var result struct {
+		Page struct {
+			Media []Media `json:"media"`
+		} `json:"Page"`
+	}
+	if err := c.query(ctx, q, vars, &result); err != nil {
 		return nil, err
 	}
 	return result.Page.Media, nil

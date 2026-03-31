@@ -4,10 +4,12 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
+	"github.com/milmil/api/internal/metadata"
 )
 
 func (h *handler) handleCalendar(c echo.Context) error {
@@ -58,16 +60,59 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 
 func (h *handler) handleBrowseByGenre(c echo.Context) error {
 	genre := c.QueryParam("genre")
-	if genre == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "genre parameter required")
-	}
 	page := 1
 	if p := c.QueryParam("page"); p != "" {
 		if v, err := strconv.Atoi(p); err == nil && v > 0 {
 			page = v
 		}
 	}
-	results, err := h.metadata.BrowseByGenre(c.Request().Context(), genre, page)
+
+	// Check for advanced filter params — use new Browse method if any are present
+	sort := c.QueryParam("sort")
+	yearStr := c.QueryParam("year")
+	season := c.QueryParam("season")
+	minScoreStr := c.QueryParam("min_score")
+	status := c.QueryParam("status")
+
+	// Parse comma-separated genres for multi-select
+	var genres []string
+	if genre != "" {
+		genres = strings.Split(genre, ",")
+	}
+
+	hasAdvanced := sort != "" || yearStr != "" || season != "" || minScoreStr != "" || status != "" || len(genres) > 1
+
+	if !hasAdvanced && len(genres) == 1 {
+		// Legacy path: single genre browse
+		results, err := h.metadata.BrowseByGenre(c.Request().Context(), genres[0], page)
+		if err != nil {
+			return mapMetadataError(err)
+		}
+		return c.JSON(http.StatusOK, results)
+	}
+
+	// Advanced browse with filters
+	var year, minScore int
+	if yearStr != "" {
+		if v, err := strconv.Atoi(yearStr); err == nil && v > 1900 {
+			year = v
+		}
+	}
+	if minScoreStr != "" {
+		if v, err := strconv.Atoi(minScoreStr); err == nil && v > 0 && v <= 100 {
+			minScore = v
+		}
+	}
+
+	filter := metadata.BrowseFilter{
+		Genres:   genres,
+		Sort:     sort,
+		Year:     year,
+		Season:   season,
+		MinScore: minScore,
+		Status:   status,
+	}
+	results, err := h.metadata.Browse(c.Request().Context(), filter, page)
 	if err != nil {
 		return mapMetadataError(err)
 	}

@@ -430,6 +430,114 @@ func (s *Service) BrowseByGenre(ctx context.Context, genre string, page int) ([]
 		result[i] = anilistMediaToSummary(m)
 	}
 
+	// Enrich with Bangumi Chinese titles (same pattern as GetTrending/Browse)
+	g, gctx := errgroup.WithContext(ctx)
+	g.SetLimit(5)
+
+	for i := range result {
+		i := i
+		g.Go(func() error {
+			bgmID := s.findBangumiID(gctx, result[i].AniListID, result[i].TitleOriginal)
+			if bgmID > 0 {
+				result[i].BangumiID = bgmID
+				if sub, err := s.bangumi.GetSubject(gctx, bgmID); err == nil {
+					if sub.NameCN != "" {
+						result[i].Title = sub.NameCN
+					}
+					result[i].TitleOriginal = sub.Name
+					if sub.Summary != "" {
+						result[i].Description = sub.Summary
+					}
+					if sub.Rating.Score > 0 {
+						result[i].Score = sub.Rating.Score
+					}
+					if sub.AirDate != "" {
+						result[i].AirDate = sub.AirDate
+					}
+				}
+			}
+			return nil
+		})
+	}
+	_ = g.Wait()
+
+	s.setCache(ctx, cacheKey, result, 6*time.Hour)
+	return result, nil
+}
+
+// BrowseFilter mirrors the AniList browse filter for the metadata layer.
+type BrowseFilter struct {
+	Genre    string
+	Genres   []string
+	Sort     string
+	Year     int
+	Season   string
+	MinScore int
+	Status   string
+}
+
+func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]AnimeSummary, error) {
+	genreKey := filter.Genre
+	if len(filter.Genres) > 0 {
+		genreKey = fmt.Sprintf("%v", filter.Genres)
+	}
+	cacheKey := fmt.Sprintf("meta:browse:%s:%s:%d:%s:%d:%s:%d",
+		genreKey, filter.Sort, filter.Year, filter.Season, filter.MinScore, filter.Status, page)
+	var cached []AnimeSummary
+	if s.getCache(ctx, cacheKey, &cached) {
+		return cached, nil
+	}
+
+	alFilter := anilist.BrowseFilter{
+		Genre:    filter.Genre,
+		Genres:   filter.Genres,
+		Sort:     filter.Sort,
+		Year:     filter.Year,
+		Season:   filter.Season,
+		MinScore: filter.MinScore,
+		Status:   filter.Status,
+	}
+	media, err := s.anilist.Browse(ctx, alFilter, page, 20)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]AnimeSummary, len(media))
+	for i, m := range media {
+		result[i] = anilistMediaToSummary(m)
+	}
+
+	// Enrich with Bangumi Chinese titles (same pattern as GetTrending)
+	g, gctx := errgroup.WithContext(ctx)
+	g.SetLimit(5)
+
+	for i := range result {
+		i := i
+		g.Go(func() error {
+			bgmID := s.findBangumiID(gctx, result[i].AniListID, result[i].TitleOriginal)
+			if bgmID > 0 {
+				result[i].BangumiID = bgmID
+				if sub, err := s.bangumi.GetSubject(gctx, bgmID); err == nil {
+					if sub.NameCN != "" {
+						result[i].Title = sub.NameCN
+					}
+					result[i].TitleOriginal = sub.Name
+					if sub.Summary != "" {
+						result[i].Description = sub.Summary
+					}
+					if sub.Rating.Score > 0 {
+						result[i].Score = sub.Rating.Score
+					}
+					if sub.AirDate != "" {
+						result[i].AirDate = sub.AirDate
+					}
+				}
+			}
+			return nil
+		})
+	}
+	_ = g.Wait()
+
 	s.setCache(ctx, cacheKey, result, 6*time.Hour)
 	return result, nil
 }

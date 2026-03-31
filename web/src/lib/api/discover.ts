@@ -82,15 +82,32 @@ export interface Episode {
   duration?: number; // minutes
 }
 
+export interface BrowseParams {
+  genre?: string;
+  sort?: string;
+  year?: number;
+  season?: string;
+  min_score?: number;
+  status?: string;
+  page?: number;
+}
+
 export const discoverApi = {
   calendar: () => api.get<CalendarDay[]>('/api/v1/discover/calendar'),
   trending: (page: number) => api.get<AnimeSummary[]>(`/api/v1/discover/trending?page=${page}`),
   search: (q: string) =>
     api.get<AnimeSummary[]>(`/api/v1/discover/search?q=${encodeURIComponent(q)}`),
-  browse: (genre: string, page = 1) =>
-    api.get<AnimeSummary[]>(
-      `/api/v1/discover/browse?genre=${encodeURIComponent(genre)}&page=${page}`
-    ),
+  browse: (params: BrowseParams) => {
+    const qs = new URLSearchParams();
+    if (params.genre) qs.set('genre', params.genre);
+    if (params.sort) qs.set('sort', params.sort);
+    if (params.year) qs.set('year', String(params.year));
+    if (params.season) qs.set('season', params.season);
+    if (params.min_score) qs.set('min_score', String(params.min_score));
+    if (params.status) qs.set('status', params.status);
+    if (params.page) qs.set('page', String(params.page));
+    return api.get<AnimeSummary[]>(`/api/v1/discover/browse?${qs.toString()}`);
+  },
   detail: (id: number) => api.get<AnimeDetail>(`/api/v1/discover/anime/${id}`),
   episodes: (id: number) => api.get<Episode[]>(`/api/v1/discover/anime/${id}/episodes`),
   comments: (id: number) => api.get<BangumiComment[]>(`/api/v1/discover/anime/${id}/comments`),

@@ -84,6 +84,10 @@ func (m *mockAniList) BrowseByGenre(ctx context.Context, genre string, page, per
 	return nil, nil
 }
 
+func (m *mockAniList) Browse(ctx context.Context, filter anilist.BrowseFilter, page, perPage int) ([]anilist.Media, error) {
+	return nil, nil
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 func TestGetCalendar_ReturnsChinese(t *testing.T) {
