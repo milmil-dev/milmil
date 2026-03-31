@@ -5,10 +5,11 @@ import { useNavigate } from '@tanstack/react-router';
 import { Bookmark, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { AnimePosterCard } from '../components/AnimePosterCard';
+import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
+import type { AnimeSummary } from '../lib/api/discover';
 import { cn } from '../lib/utils';
 
 /* ── Status config ─────────────────────────────────────────── */
@@ -110,15 +111,28 @@ function StatusDropdown({
   );
 }
 
+/* ── Helper: map CollectionAnime → AnimeSummary ───────────── */
+
+function toAnimeSummary(anime: CollectionAnime): AnimeSummary {
+  return {
+    bangumi_id: anime.bangumi_id ?? 0,
+    title: anime.title_zh || anime.title,
+    title_original: anime.title,
+    cover_image: anime.cover_image_url ?? '',
+    episode_count: anime.total_episodes ?? 0,
+    score: 0,
+  };
+}
+
 /* ── Anime card ────────────────────────────────────────────── */
 
-function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) {
+function CollectionAnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) {
   const { i18n } = useLingui();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  const displayTitle = anime.title_zh || anime.title;
+  const summary = toAnimeSummary(anime);
 
   function handleCardClick() {
     if (!showDropdown && anime.bangumi_id) {
@@ -143,9 +157,8 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
         setHovered(false);
         setShowDropdown(false);
       }}
-      onClick={handleCardClick}
     >
-      <AnimePosterCard title={displayTitle} coverUrl={anime.cover_image_url}>
+      <AnimeCard anime={summary} onClick={handleCardClick}>
         {/* Watch status badge — top right */}
         {anime.watch_status && (
           <span
@@ -157,13 +170,6 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
             {STATUS_LABEL_KEYS[anime.watch_status]
               ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]!)
               : anime.watch_status}
-          </span>
-        )}
-
-        {/* Episode count — bottom left */}
-        {anime.total_episodes != null && anime.total_episodes > 0 && (
-          <span className="absolute bottom-1.5 left-1.5 z-10 text-[10px] font-medium text-white/70 bg-black/60 backdrop-blur-sm rounded px-1 py-0.5 leading-none">
-            {anime.total_episodes} 集
           </span>
         )}
 
@@ -195,7 +201,7 @@ function AnimeCard({ anime, index }: { anime: CollectionAnime; index: number }) 
             />
           )}
         </AnimatePresence>
-      </AnimePosterCard>
+      </AnimeCard>
     </motion.div>
   );
 }
@@ -393,7 +399,7 @@ export function CollectionPage() {
                 )}
               >
                 {anime?.map((item, index) => (
-                  <AnimeCard key={item.id} anime={item} index={index} />
+                  <CollectionAnimeCard key={item.id} anime={item} index={index} />
                 ))}
               </div>
             )}

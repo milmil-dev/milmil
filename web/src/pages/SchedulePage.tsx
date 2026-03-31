@@ -6,7 +6,7 @@ import { format, getDay } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimePosterCard } from '../components/AnimePosterCard';
+import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import {
@@ -135,18 +135,36 @@ function ScheduleAnimeItem({
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
-      <Link
-        to={`/anime/${anime.bangumi_id}` as string}
-        className={cn(
-          'group rounded-lg transition-colors',
-          variant === 'row'
-            ? 'flex items-center gap-3.5 py-3 px-2.5 -mx-2.5 hover:bg-white/[0.04]'
-            : 'block p-1.5 -m-1.5 hover:bg-white/[0.03]'
-        )}
-      >
-        {variant === 'card' ? (
-          <AnimePosterCard title={anime.title} coverUrl={anime.cover_image}>
-            {/* Next episode badge — top left */}
+      {variant === 'card' ? (
+        <AnimeCard anime={anime}>
+          {/* Next episode badge — top left */}
+          {anime.next_episode && anime.next_episode > 0 && (
+            <span
+              className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+            >
+              EP {anime.next_episode}
+            </span>
+          )}
+        </AnimeCard>
+      ) : (
+        <Link
+          to={`/anime/${anime.bangumi_id}` as string}
+          className="group flex items-center gap-3.5 py-3 px-2.5 -mx-2.5 rounded-lg transition-colors hover:bg-white/[0.04]"
+        >
+          {/* Cover — row variant */}
+          <div
+            className="relative rounded overflow-hidden shrink-0 w-[80px] h-[112px]"
+            style={hasCover ? undefined : { background: animeGradient(anime.title) }}
+          >
+            {hasCover && (
+              <img
+                src={anime.cover_image}
+                alt=""
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            )}
             {anime.next_episode && anime.next_episode > 0 && (
               <span
                 className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
@@ -155,7 +173,6 @@ function ScheduleAnimeItem({
                 EP {anime.next_episode}
               </span>
             )}
-            {/* Rating badge — top right */}
             {anime.score > 0 && (
               <span
                 className="absolute top-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white tabular-nums backdrop-blur-md"
@@ -164,73 +181,34 @@ function ScheduleAnimeItem({
                 ♡ {anime.score.toFixed(1)}
               </span>
             )}
-            {/* Episode count — bottom left */}
-            {anime.episode_count > 0 && (
-              <span className="absolute bottom-1.5 left-1.5 z-10 text-[10px] font-medium text-white/70 bg-black/60 backdrop-blur-sm rounded px-1 py-0.5 leading-none">
-                {anime.episode_count} 集
-              </span>
+          </div>
+
+          {/* Info — row variant */}
+          <div className="min-w-0 flex-1">
+            <p className="leading-snug text-mm-text-primary font-medium group-hover:text-white transition-colors text-[13px] truncate">
+              {anime.title}
+            </p>
+            {anime.title_original && anime.title_original !== anime.title && (
+              <p className="text-[11px] text-mm-text-muted truncate mt-0.5">{anime.title_original}</p>
             )}
-          </AnimePosterCard>
-        ) : (
-          <>
-            {/* Cover — row variant */}
-            <div
-              className="relative rounded overflow-hidden shrink-0 w-[80px] h-[112px]"
-              style={hasCover ? undefined : { background: animeGradient(anime.title) }}
-            >
-              {hasCover && (
-                <img
-                  src={anime.cover_image}
-                  alt=""
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
-              )}
-              {anime.next_episode && anime.next_episode > 0 && (
-                <span
-                  className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
-                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
-                >
-                  EP {anime.next_episode}
-                </span>
-              )}
+            <div className="flex items-center gap-2 mt-1">
               {anime.score > 0 && (
-                <span
-                  className="absolute top-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white tabular-nums backdrop-blur-md"
-                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
-                >
-                  ♡ {anime.score.toFixed(1)}
+                <span className="text-[11px] font-semibold text-mm-accent tabular-nums">
+                  {anime.score.toFixed(1)}
                 </span>
               )}
-            </div>
-
-            {/* Info — row variant */}
-            <div className="min-w-0 flex-1">
-              <p className="leading-snug text-mm-text-primary font-medium group-hover:text-white transition-colors text-[13px] truncate">
-                {anime.title}
-              </p>
-              {anime.title_original && anime.title_original !== anime.title && (
-                <p className="text-[11px] text-mm-text-muted truncate mt-0.5">{anime.title_original}</p>
+              {anime.episode_count > 0 && (
+                <span className="text-[10px] text-mm-text-muted">{anime.episode_count} ep</span>
               )}
-              <div className="flex items-center gap-2 mt-1">
-                {anime.score > 0 && (
-                  <span className="text-[11px] font-semibold text-mm-accent tabular-nums">
-                    {anime.score.toFixed(1)}
-                  </span>
-                )}
-                {anime.episode_count > 0 && (
-                  <span className="text-[10px] text-mm-text-muted">{anime.episode_count} ep</span>
-                )}
-              </div>
             </div>
+          </div>
 
-            {/* Arrow hint */}
-            <span className="text-mm-text-muted text-[11px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-              →
-            </span>
-          </>
-        )}
-      </Link>
+          {/* Arrow hint */}
+          <span className="text-mm-text-muted text-[11px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+            →
+          </span>
+        </Link>
+      )}
 
       {/* Hover card — mini hero banner style */}
       {showCard &&
