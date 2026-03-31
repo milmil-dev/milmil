@@ -187,15 +187,17 @@ export function AccountPanel() {
               )}
             </form.Field>
 
-            <form.Subscribe selector={(s) => s.isSubmitting}>
-              {(isSubmitting) => (
-                <Button type="submit" disabled={isSubmitting || changePassword.isPending}>
-                  {isSubmitting || changePassword.isPending
-                    ? i18n._(msg`account.updating`)
-                    : i18n._(msg`account.updatePassword`)}
-                </Button>
-              )}
-            </form.Subscribe>
+            <div className="flex justify-end">
+              <form.Subscribe selector={(s) => s.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button type="submit" disabled={isSubmitting || changePassword.isPending}>
+                    {isSubmitting || changePassword.isPending
+                      ? i18n._(msg`account.updating`)
+                      : i18n._(msg`account.updatePassword`)}
+                  </Button>
+                )}
+              </form.Subscribe>
+            </div>
           </form>
         </SettingsCard>
 
@@ -318,7 +320,7 @@ function TwoFactorCard({
                   navigator.clipboard.writeText(setupData.secret);
                   toast.success(i18n._(msg`common.copied`));
                 }}
-                title="Click to copy"
+                title={i18n._(msg`common.clickToCopy`)}
               >
                 {setupData.secret}
               </button>

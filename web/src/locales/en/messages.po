@@ -112,85 +112,85 @@ msgstr "About milmil"
 msgid "about.systemInfo"
 msgstr "System Information"
 
-#: src/pages/settings/AccountPanel.tsx:363
+#: src/pages/settings/AccountPanel.tsx:371
 msgid "account.2fa.activeMessage"
 msgstr "Two-factor authentication is active. Toggle off to disable."
 
-#: src/pages/settings/AccountPanel.tsx:275
+#: src/pages/settings/AccountPanel.tsx:276
 msgid "account.2fa.description"
 msgstr "Add an extra layer of security by requiring a TOTP code when signing in."
 
-#: src/pages/settings/AccountPanel.tsx:256
+#: src/pages/settings/AccountPanel.tsx:257
 msgid "account.2fa.disabled"
 msgstr "2FA disabled"
 
-#: src/pages/settings/AccountPanel.tsx:261
+#: src/pages/settings/AccountPanel.tsx:262
 msgid "account.2fa.disableFailed"
 msgstr "Failed to disable 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:245
+#: src/pages/settings/AccountPanel.tsx:246
 msgid "account.2fa.enabled"
 msgstr "2FA enabled"
 
-#: src/pages/settings/AccountPanel.tsx:250
+#: src/pages/settings/AccountPanel.tsx:251
 msgid "account.2fa.invalidCode"
 msgstr "Invalid code"
 
-#: src/pages/settings/AccountPanel.tsx:312
+#: src/pages/settings/AccountPanel.tsx:314
 msgid "account.2fa.manualEntry"
 msgstr "Manual entry"
 
-#: src/pages/settings/AccountPanel.tsx:298
+#: src/pages/settings/AccountPanel.tsx:300
 msgid "account.2fa.scanInstructions"
 msgstr "Scan this QR code with your authenticator app, then enter the 6-digit code to verify."
 
-#: src/pages/settings/AccountPanel.tsx:239
+#: src/pages/settings/AccountPanel.tsx:240
 msgid "account.2fa.setupFailed"
 msgstr "Failed to set up 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:290
+#: src/pages/settings/AccountPanel.tsx:286
 msgid "account.2fa.statusDisabled"
 msgstr "Disabled"
 
-#: src/pages/settings/AccountPanel.tsx:287
+#: src/pages/settings/AccountPanel.tsx:283
 msgid "account.2fa.statusEnabled"
 msgstr "Enabled"
 
-#: src/pages/settings/AccountPanel.tsx:289
+#: src/pages/settings/AccountPanel.tsx:285
 msgid "account.2fa.statusPending"
 msgstr "Pending verification"
 
-#: src/pages/settings/AccountPanel.tsx:273
+#: src/pages/settings/AccountPanel.tsx:274
 msgid "account.2fa.title"
 msgstr "Two-Factor Authentication"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:333
 msgid "account.2fa.verificationCode"
 msgstr "Verification Code"
 
-#: src/pages/settings/AccountPanel.tsx:351
+#: src/pages/settings/AccountPanel.tsx:360
 msgid "account.2fa.verifyEnable"
 msgstr "Verify & Enable"
 
-#: src/pages/settings/AccountPanel.tsx:350
+#: src/pages/settings/AccountPanel.tsx:359
 msgid "account.2fa.verifying"
 msgstr "Verifying..."
 
-#: src/pages/settings/AccountPanel.tsx:92
+#: src/pages/settings/AccountPanel.tsx:91
 msgid "account.changePassword"
 msgstr "Change Password"
 
-#: src/pages/settings/AccountPanel.tsx:173
+#: src/pages/settings/AccountPanel.tsx:172
 msgid "account.confirmPassword"
 msgstr "Confirm New Password"
 
-#: src/pages/settings/AccountPanel.tsx:110
+#: src/pages/settings/AccountPanel.tsx:109
 msgid "account.currentPassword"
 msgstr "Current Password"
 
-#: src/pages/settings/AccountPanel.tsx:104
-#: src/pages/settings/AccountPanel.tsx:132
-#: src/pages/settings/AccountPanel.tsx:163
+#: src/pages/settings/AccountPanel.tsx:103
+#: src/pages/settings/AccountPanel.tsx:131
+#: src/pages/settings/AccountPanel.tsx:162
 msgid "account.fieldRequired"
 msgstr "This field is required"
 
@@ -202,31 +202,31 @@ msgstr "Local account"
 msgid "account.logout"
 msgstr "Log out"
 
-#: src/pages/settings/AccountPanel.tsx:141
+#: src/pages/settings/AccountPanel.tsx:140
 msgid "account.newPassword"
 msgstr "New Password"
 
-#: src/pages/settings/AccountPanel.tsx:133
+#: src/pages/settings/AccountPanel.tsx:132
 msgid "account.passwordMinLength"
 msgstr "Password must be at least 8 characters"
 
-#: src/pages/settings/AccountPanel.tsx:165
+#: src/pages/settings/AccountPanel.tsx:164
 msgid "account.passwordMismatch"
 msgstr "Passwords do not match"
 
-#: src/pages/settings/AccountPanel.tsx:48
+#: src/pages/settings/AccountPanel.tsx:47
 msgid "account.passwordUpdated"
 msgstr "Password updated"
 
-#: src/pages/settings/AccountPanel.tsx:51
+#: src/pages/settings/AccountPanel.tsx:50
 msgid "account.passwordUpdateFailed"
 msgstr "Failed to update password"
 
-#: src/pages/settings/AccountPanel.tsx:79
+#: src/pages/settings/AccountPanel.tsx:78
 msgid "account.profile"
 msgstr "Profile"
 
-#: src/pages/settings/AccountPanel.tsx:74
+#: src/pages/settings/AccountPanel.tsx:73
 msgid "account.subtitle"
 msgstr "Manage your profile and security"
 
@@ -516,6 +516,14 @@ msgstr "Back to Home"
 #: src/pages/settings/StoragePanel.tsx:112
 msgid "common.cancel"
 msgstr "Cancel"
+
+#: src/pages/settings/AccountPanel.tsx:323
+msgid "common.clickToCopy"
+msgstr "common.clickToCopy"
+
+#: src/pages/settings/AccountPanel.tsx:321
+msgid "common.copied"
+msgstr "common.copied"
 
 #: src/components/AnimeCard.tsx:67
 #: src/components/AnimeRow.tsx:48
@@ -1556,59 +1564,59 @@ msgstr "Collection"
 msgid "settings.general.subtitle"
 msgstr "Language, collection, and app preferences"
 
-#: src/pages/settings/IntegrationsPanel.tsx:180
+#: src/pages/settings/IntegrationsPanel.tsx:182
 msgid "settings.integration.authUrlFailed"
 msgstr "Failed to get auth URL"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:287
 msgid "settings.integration.connect"
 msgstr "Connect Account"
 
-#: src/pages/settings/IntegrationsPanel.tsx:210
+#: src/pages/settings/IntegrationsPanel.tsx:212
 msgid "settings.integration.connected"
 msgstr "Connected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:284
+#: src/pages/settings/IntegrationsPanel.tsx:286
 msgid "settings.integration.connecting"
 msgstr "Connecting…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:299
+#: src/pages/settings/IntegrationsPanel.tsx:301
 msgid "settings.integration.disconnect"
 msgstr "Disconnect"
 
-#: src/pages/settings/IntegrationsPanel.tsx:186
+#: src/pages/settings/IntegrationsPanel.tsx:188
 msgid "settings.integration.disconnected"
 msgstr "Disconnected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:189
+#: src/pages/settings/IntegrationsPanel.tsx:191
 msgid "settings.integration.disconnectFailed"
 msgstr "Disconnect failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:298
+#: src/pages/settings/IntegrationsPanel.tsx:300
 msgid "settings.integration.disconnecting"
 msgstr "Disconnecting…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:211
+#: src/pages/settings/IntegrationsPanel.tsx:213
 msgid "settings.integration.notConnected"
 msgstr "Not connected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:309
+#: src/pages/settings/IntegrationsPanel.tsx:311
 msgid "settings.integration.sync"
 msgstr "Sync Progress"
 
-#: src/pages/settings/IntegrationsPanel.tsx:199
+#: src/pages/settings/IntegrationsPanel.tsx:201
 msgid "settings.integration.syncComplete"
 msgstr "Sync complete"
 
-#: src/pages/settings/IntegrationsPanel.tsx:199
+#: src/pages/settings/IntegrationsPanel.tsx:201
 msgid "settings.integration.syncErrors"
 msgstr "errors"
 
-#: src/pages/settings/IntegrationsPanel.tsx:202
+#: src/pages/settings/IntegrationsPanel.tsx:204
 msgid "settings.integration.syncFailed"
 msgstr "Sync failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:308
+#: src/pages/settings/IntegrationsPanel.tsx:310
 msgid "settings.integration.syncing"
 msgstr "Syncing…"
 
@@ -1616,7 +1624,7 @@ msgstr "Syncing…"
 #~ msgid "settings.integration.title"
 #~ msgstr "Integration"
 
-#: src/pages/settings/IntegrationsPanel.tsx:331
+#: src/pages/settings/IntegrationsPanel.tsx:333
 msgid "settings.integrations.description"
 msgstr "Connect external services and sync your data"
 
@@ -1625,7 +1633,7 @@ msgstr "Connect external services and sync your data"
 msgid "settings.nav.about"
 msgstr "About"
 
-#: src/pages/settings/AccountPanel.tsx:71
+#: src/pages/settings/AccountPanel.tsx:70
 #: src/pages/settings/SettingsPage.tsx:27
 msgid "settings.nav.account"
 msgstr "Account"
@@ -1635,12 +1643,12 @@ msgstr "Account"
 msgid "settings.nav.general"
 msgstr "General"
 
-#: src/pages/settings/IntegrationsPanel.tsx:328
+#: src/pages/settings/IntegrationsPanel.tsx:330
 #: src/pages/settings/SettingsPage.tsx:25
 msgid "settings.nav.integrations"
 msgstr "Integrations"
 
-#: src/pages/settings/PlayerPanel.tsx:86
+#: src/pages/settings/PlayerPanel.tsx:72
 #: src/pages/settings/SettingsPage.tsx:26
 msgid "settings.nav.player"
 msgstr "Player"
@@ -1654,39 +1662,39 @@ msgstr "Storage"
 msgid "settings.pageTitle"
 msgstr "Settings"
 
-#: src/pages/settings/PlayerPanel.tsx:90
+#: src/pages/settings/PlayerPanel.tsx:76
 msgid "settings.player.danmaku"
 msgstr "Danmaku"
 
-#: src/pages/settings/PlayerPanel.tsx:103
+#: src/pages/settings/PlayerPanel.tsx:81
 msgid "settings.player.danmakuEnabled"
 msgstr "Danmaku enabled by default"
 
-#: src/pages/settings/PlayerPanel.tsx:149
+#: src/pages/settings/PlayerPanel.tsx:121
 msgid "settings.player.danmakuFontSize"
 msgstr "Danmaku font size"
 
-#: src/pages/settings/PlayerPanel.tsx:123
+#: src/pages/settings/PlayerPanel.tsx:95
 msgid "settings.player.danmakuOpacity"
 msgstr "Danmaku opacity"
 
-#: src/pages/settings/PlayerPanel.tsx:165
+#: src/pages/settings/PlayerPanel.tsx:133
 msgid "settings.player.danmakuSpeed"
 msgstr "Danmaku speed"
 
-#: src/pages/settings/PlayerPanel.tsx:30
+#: src/pages/settings/PlayerPanel.tsx:27
 msgid "settings.player.speed.fast"
 msgstr "Fast"
 
-#: src/pages/settings/PlayerPanel.tsx:29
+#: src/pages/settings/PlayerPanel.tsx:26
 msgid "settings.player.speed.normal"
 msgstr "Normal"
 
-#: src/pages/settings/PlayerPanel.tsx:28
+#: src/pages/settings/PlayerPanel.tsx:25
 msgid "settings.player.speed.slow"
 msgstr "Slow"
 
-#: src/pages/settings/PlayerPanel.tsx:87
+#: src/pages/settings/PlayerPanel.tsx:73
 msgid "settings.player.subtitle"
 msgstr "Danmaku and playback preferences"
 
@@ -1694,30 +1702,28 @@ msgstr "Danmaku and playback preferences"
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
-#: src/pages/settings/IntegrationsPanel.tsx:115
-#: src/pages/settings/IntegrationsPanel.tsx:271
-#: src/pages/settings/PlayerPanel.tsx:189
+#: src/pages/settings/IntegrationsPanel.tsx:116
+#: src/pages/settings/IntegrationsPanel.tsx:273
 msgid "settings.save"
 msgstr "Save"
 
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
 #: src/pages/settings/IntegrationsPanel.tsx:52
-#: src/pages/settings/IntegrationsPanel.tsx:169
-#: src/pages/settings/PlayerPanel.tsx:52
+#: src/pages/settings/IntegrationsPanel.tsx:171
+#: src/pages/settings/PlayerPanel.tsx:49
 msgid "settings.saved"
 msgstr "Saved"
 
 #: src/pages/settings/GeneralPanel.tsx:41
 #: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:172
-#: src/pages/settings/PlayerPanel.tsx:55
+#: src/pages/settings/IntegrationsPanel.tsx:174
+#: src/pages/settings/PlayerPanel.tsx:52
 msgid "settings.saveFailed"
 msgstr "Save failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:114
-#: src/pages/settings/IntegrationsPanel.tsx:270
-#: src/pages/settings/PlayerPanel.tsx:188
+#: src/pages/settings/IntegrationsPanel.tsx:115
+#: src/pages/settings/IntegrationsPanel.tsx:272
 msgid "settings.saving"
 msgstr "Saving…"
 

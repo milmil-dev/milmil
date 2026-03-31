@@ -112,85 +112,85 @@ msgstr "milmil について"
 msgid "about.systemInfo"
 msgstr "システム情報"
 
-#: src/pages/settings/AccountPanel.tsx:363
+#: src/pages/settings/AccountPanel.tsx:371
 msgid "account.2fa.activeMessage"
 msgstr "二要素認証は有効です。オフに切り替えると無効になります。"
 
-#: src/pages/settings/AccountPanel.tsx:275
+#: src/pages/settings/AccountPanel.tsx:276
 msgid "account.2fa.description"
 msgstr "サインイン時に TOTP コードを要求することで、セキュリティを強化します。"
 
-#: src/pages/settings/AccountPanel.tsx:256
+#: src/pages/settings/AccountPanel.tsx:257
 msgid "account.2fa.disabled"
 msgstr "二要素認証が無効になりました"
 
-#: src/pages/settings/AccountPanel.tsx:261
+#: src/pages/settings/AccountPanel.tsx:262
 msgid "account.2fa.disableFailed"
 msgstr "二要素認証の無効化に失敗しました"
 
-#: src/pages/settings/AccountPanel.tsx:245
+#: src/pages/settings/AccountPanel.tsx:246
 msgid "account.2fa.enabled"
 msgstr "二要素認証が有効になりました"
 
-#: src/pages/settings/AccountPanel.tsx:250
+#: src/pages/settings/AccountPanel.tsx:251
 msgid "account.2fa.invalidCode"
 msgstr "無効なコードです"
 
-#: src/pages/settings/AccountPanel.tsx:312
+#: src/pages/settings/AccountPanel.tsx:314
 msgid "account.2fa.manualEntry"
 msgstr "手動入力"
 
-#: src/pages/settings/AccountPanel.tsx:298
+#: src/pages/settings/AccountPanel.tsx:300
 msgid "account.2fa.scanInstructions"
 msgstr "認証アプリでこの QR コードをスキャンし、6桁の認証コードを入力して検証してください。"
 
-#: src/pages/settings/AccountPanel.tsx:239
+#: src/pages/settings/AccountPanel.tsx:240
 msgid "account.2fa.setupFailed"
 msgstr "二要素認証の設定に失敗しました"
 
-#: src/pages/settings/AccountPanel.tsx:290
+#: src/pages/settings/AccountPanel.tsx:286
 msgid "account.2fa.statusDisabled"
 msgstr "無効"
 
-#: src/pages/settings/AccountPanel.tsx:287
+#: src/pages/settings/AccountPanel.tsx:283
 msgid "account.2fa.statusEnabled"
 msgstr "有効"
 
-#: src/pages/settings/AccountPanel.tsx:289
+#: src/pages/settings/AccountPanel.tsx:285
 msgid "account.2fa.statusPending"
 msgstr "検証待ち"
 
-#: src/pages/settings/AccountPanel.tsx:273
+#: src/pages/settings/AccountPanel.tsx:274
 msgid "account.2fa.title"
 msgstr "二要素認証"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:333
 msgid "account.2fa.verificationCode"
 msgstr "認証コード"
 
-#: src/pages/settings/AccountPanel.tsx:351
+#: src/pages/settings/AccountPanel.tsx:360
 msgid "account.2fa.verifyEnable"
 msgstr "検証して有効化"
 
-#: src/pages/settings/AccountPanel.tsx:350
+#: src/pages/settings/AccountPanel.tsx:359
 msgid "account.2fa.verifying"
 msgstr "検証中..."
 
-#: src/pages/settings/AccountPanel.tsx:92
+#: src/pages/settings/AccountPanel.tsx:91
 msgid "account.changePassword"
 msgstr "パスワード変更"
 
-#: src/pages/settings/AccountPanel.tsx:173
+#: src/pages/settings/AccountPanel.tsx:172
 msgid "account.confirmPassword"
 msgstr "新しいパスワードの確認"
 
-#: src/pages/settings/AccountPanel.tsx:110
+#: src/pages/settings/AccountPanel.tsx:109
 msgid "account.currentPassword"
 msgstr "現在のパスワード"
 
-#: src/pages/settings/AccountPanel.tsx:104
-#: src/pages/settings/AccountPanel.tsx:132
-#: src/pages/settings/AccountPanel.tsx:163
+#: src/pages/settings/AccountPanel.tsx:103
+#: src/pages/settings/AccountPanel.tsx:131
+#: src/pages/settings/AccountPanel.tsx:162
 msgid "account.fieldRequired"
 msgstr "この項目は必須です"
 
@@ -202,31 +202,31 @@ msgstr "ローカルアカウント"
 msgid "account.logout"
 msgstr "ログアウト"
 
-#: src/pages/settings/AccountPanel.tsx:141
+#: src/pages/settings/AccountPanel.tsx:140
 msgid "account.newPassword"
 msgstr "新しいパスワード"
 
-#: src/pages/settings/AccountPanel.tsx:133
+#: src/pages/settings/AccountPanel.tsx:132
 msgid "account.passwordMinLength"
 msgstr "パスワードは8文字以上である必要があります"
 
-#: src/pages/settings/AccountPanel.tsx:165
+#: src/pages/settings/AccountPanel.tsx:164
 msgid "account.passwordMismatch"
 msgstr "パスワードが一致しません"
 
-#: src/pages/settings/AccountPanel.tsx:48
+#: src/pages/settings/AccountPanel.tsx:47
 msgid "account.passwordUpdated"
 msgstr "パスワードを更新しました"
 
-#: src/pages/settings/AccountPanel.tsx:51
+#: src/pages/settings/AccountPanel.tsx:50
 msgid "account.passwordUpdateFailed"
 msgstr "パスワードの更新に失敗しました"
 
-#: src/pages/settings/AccountPanel.tsx:79
+#: src/pages/settings/AccountPanel.tsx:78
 msgid "account.profile"
 msgstr "プロフィール"
 
-#: src/pages/settings/AccountPanel.tsx:74
+#: src/pages/settings/AccountPanel.tsx:73
 msgid "account.subtitle"
 msgstr "プロフィールとセキュリティの管理"
 
@@ -516,6 +516,14 @@ msgstr "ホームに戻る"
 #: src/pages/settings/StoragePanel.tsx:112
 msgid "common.cancel"
 msgstr "キャンセル"
+
+#: src/pages/settings/AccountPanel.tsx:323
+msgid "common.clickToCopy"
+msgstr "クリックしてコピー"
+
+#: src/pages/settings/AccountPanel.tsx:321
+msgid "common.copied"
+msgstr "コピーしました"
 
 #: src/components/AnimeCard.tsx:67
 #: src/components/AnimeRow.tsx:48
@@ -1556,59 +1564,59 @@ msgstr "コレクション"
 msgid "settings.general.subtitle"
 msgstr "言語、コレクション、アプリの設定"
 
-#: src/pages/settings/IntegrationsPanel.tsx:180
+#: src/pages/settings/IntegrationsPanel.tsx:182
 msgid "settings.integration.authUrlFailed"
 msgstr "認証 URL の取得に失敗しました"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:287
 msgid "settings.integration.connect"
 msgstr "接続"
 
-#: src/pages/settings/IntegrationsPanel.tsx:210
+#: src/pages/settings/IntegrationsPanel.tsx:212
 msgid "settings.integration.connected"
 msgstr "接続済み"
 
-#: src/pages/settings/IntegrationsPanel.tsx:284
+#: src/pages/settings/IntegrationsPanel.tsx:286
 msgid "settings.integration.connecting"
 msgstr "接続中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:299
+#: src/pages/settings/IntegrationsPanel.tsx:301
 msgid "settings.integration.disconnect"
 msgstr "切断"
 
-#: src/pages/settings/IntegrationsPanel.tsx:186
+#: src/pages/settings/IntegrationsPanel.tsx:188
 msgid "settings.integration.disconnected"
 msgstr "切断済み"
 
-#: src/pages/settings/IntegrationsPanel.tsx:189
+#: src/pages/settings/IntegrationsPanel.tsx:191
 msgid "settings.integration.disconnectFailed"
 msgstr "切断に失敗しました"
 
-#: src/pages/settings/IntegrationsPanel.tsx:298
+#: src/pages/settings/IntegrationsPanel.tsx:300
 msgid "settings.integration.disconnecting"
 msgstr "切断中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:211
+#: src/pages/settings/IntegrationsPanel.tsx:213
 msgid "settings.integration.notConnected"
 msgstr "未接続"
 
-#: src/pages/settings/IntegrationsPanel.tsx:309
+#: src/pages/settings/IntegrationsPanel.tsx:311
 msgid "settings.integration.sync"
 msgstr "同期"
 
-#: src/pages/settings/IntegrationsPanel.tsx:199
+#: src/pages/settings/IntegrationsPanel.tsx:201
 msgid "settings.integration.syncComplete"
 msgstr "同期完了"
 
-#: src/pages/settings/IntegrationsPanel.tsx:199
+#: src/pages/settings/IntegrationsPanel.tsx:201
 msgid "settings.integration.syncErrors"
 msgstr "件のエラー"
 
-#: src/pages/settings/IntegrationsPanel.tsx:202
+#: src/pages/settings/IntegrationsPanel.tsx:204
 msgid "settings.integration.syncFailed"
 msgstr "同期に失敗しました"
 
-#: src/pages/settings/IntegrationsPanel.tsx:308
+#: src/pages/settings/IntegrationsPanel.tsx:310
 msgid "settings.integration.syncing"
 msgstr "同期中…"
 
@@ -1616,7 +1624,7 @@ msgstr "同期中…"
 #~ msgid "settings.integration.title"
 #~ msgstr "Integration"
 
-#: src/pages/settings/IntegrationsPanel.tsx:331
+#: src/pages/settings/IntegrationsPanel.tsx:333
 msgid "settings.integrations.description"
 msgstr "外部サービスを接続してデータを同期"
 
@@ -1625,7 +1633,7 @@ msgstr "外部サービスを接続してデータを同期"
 msgid "settings.nav.about"
 msgstr "このアプリについて"
 
-#: src/pages/settings/AccountPanel.tsx:71
+#: src/pages/settings/AccountPanel.tsx:70
 #: src/pages/settings/SettingsPage.tsx:27
 msgid "settings.nav.account"
 msgstr "アカウント"
@@ -1635,12 +1643,12 @@ msgstr "アカウント"
 msgid "settings.nav.general"
 msgstr "一般"
 
-#: src/pages/settings/IntegrationsPanel.tsx:328
+#: src/pages/settings/IntegrationsPanel.tsx:330
 #: src/pages/settings/SettingsPage.tsx:25
 msgid "settings.nav.integrations"
 msgstr "連携"
 
-#: src/pages/settings/PlayerPanel.tsx:86
+#: src/pages/settings/PlayerPanel.tsx:72
 #: src/pages/settings/SettingsPage.tsx:26
 msgid "settings.nav.player"
 msgstr "プレーヤー"
@@ -1654,39 +1662,39 @@ msgstr "ストレージ"
 msgid "settings.pageTitle"
 msgstr "設定"
 
-#: src/pages/settings/PlayerPanel.tsx:90
+#: src/pages/settings/PlayerPanel.tsx:76
 msgid "settings.player.danmaku"
 msgstr "弾幕"
 
-#: src/pages/settings/PlayerPanel.tsx:103
+#: src/pages/settings/PlayerPanel.tsx:81
 msgid "settings.player.danmakuEnabled"
 msgstr "弾幕を表示"
 
-#: src/pages/settings/PlayerPanel.tsx:149
+#: src/pages/settings/PlayerPanel.tsx:121
 msgid "settings.player.danmakuFontSize"
 msgstr "フォントサイズ"
 
-#: src/pages/settings/PlayerPanel.tsx:123
+#: src/pages/settings/PlayerPanel.tsx:95
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:165
+#: src/pages/settings/PlayerPanel.tsx:133
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:30
+#: src/pages/settings/PlayerPanel.tsx:27
 msgid "settings.player.speed.fast"
 msgstr "速い"
 
-#: src/pages/settings/PlayerPanel.tsx:29
+#: src/pages/settings/PlayerPanel.tsx:26
 msgid "settings.player.speed.normal"
 msgstr "普通"
 
-#: src/pages/settings/PlayerPanel.tsx:28
+#: src/pages/settings/PlayerPanel.tsx:25
 msgid "settings.player.speed.slow"
 msgstr "遅い"
 
-#: src/pages/settings/PlayerPanel.tsx:87
+#: src/pages/settings/PlayerPanel.tsx:73
 msgid "settings.player.subtitle"
 msgstr "弾幕と再生の設定"
 
@@ -1694,30 +1702,28 @@ msgstr "弾幕と再生の設定"
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
-#: src/pages/settings/IntegrationsPanel.tsx:115
-#: src/pages/settings/IntegrationsPanel.tsx:271
-#: src/pages/settings/PlayerPanel.tsx:189
+#: src/pages/settings/IntegrationsPanel.tsx:116
+#: src/pages/settings/IntegrationsPanel.tsx:273
 msgid "settings.save"
 msgstr "保存"
 
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
 #: src/pages/settings/IntegrationsPanel.tsx:52
-#: src/pages/settings/IntegrationsPanel.tsx:169
-#: src/pages/settings/PlayerPanel.tsx:52
+#: src/pages/settings/IntegrationsPanel.tsx:171
+#: src/pages/settings/PlayerPanel.tsx:49
 msgid "settings.saved"
 msgstr "保存しました"
 
 #: src/pages/settings/GeneralPanel.tsx:41
 #: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:172
-#: src/pages/settings/PlayerPanel.tsx:55
+#: src/pages/settings/IntegrationsPanel.tsx:174
+#: src/pages/settings/PlayerPanel.tsx:52
 msgid "settings.saveFailed"
 msgstr "保存に失敗しました"
 
-#: src/pages/settings/IntegrationsPanel.tsx:114
-#: src/pages/settings/IntegrationsPanel.tsx:270
-#: src/pages/settings/PlayerPanel.tsx:188
+#: src/pages/settings/IntegrationsPanel.tsx:115
+#: src/pages/settings/IntegrationsPanel.tsx:272
 msgid "settings.saving"
 msgstr "保存中…"
 

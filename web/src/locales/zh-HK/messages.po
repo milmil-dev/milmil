@@ -110,85 +110,85 @@ msgstr "關於 milmil"
 msgid "about.systemInfo"
 msgstr "系統信息"
 
-#: src/pages/settings/AccountPanel.tsx:363
+#: src/pages/settings/AccountPanel.tsx:371
 msgid "account.2fa.activeMessage"
 msgstr "雙重驗證已經開咗。撳關閉就可以停用。"
 
-#: src/pages/settings/AccountPanel.tsx:275
+#: src/pages/settings/AccountPanel.tsx:276
 msgid "account.2fa.description"
 msgstr "登入時要求輸入 TOTP 驗證碼，幫你嘅帳號加多一重保障。"
 
-#: src/pages/settings/AccountPanel.tsx:256
+#: src/pages/settings/AccountPanel.tsx:257
 msgid "account.2fa.disabled"
 msgstr "關咗 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:261
+#: src/pages/settings/AccountPanel.tsx:262
 msgid "account.2fa.disableFailed"
 msgstr "關閉 2FA 失敗咗"
 
-#: src/pages/settings/AccountPanel.tsx:245
+#: src/pages/settings/AccountPanel.tsx:246
 msgid "account.2fa.enabled"
 msgstr "開咗 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:250
+#: src/pages/settings/AccountPanel.tsx:251
 msgid "account.2fa.invalidCode"
 msgstr "驗證碼唔啱"
 
-#: src/pages/settings/AccountPanel.tsx:312
+#: src/pages/settings/AccountPanel.tsx:314
 msgid "account.2fa.manualEntry"
 msgstr "手動輸入"
 
-#: src/pages/settings/AccountPanel.tsx:298
+#: src/pages/settings/AccountPanel.tsx:300
 msgid "account.2fa.scanInstructions"
 msgstr "用驗證器 App 掃描呢個 QR 碼，然後輸入 6 位數驗證碼嚟驗證。"
 
-#: src/pages/settings/AccountPanel.tsx:239
+#: src/pages/settings/AccountPanel.tsx:240
 msgid "account.2fa.setupFailed"
 msgstr "設定 2FA 失敗咗"
 
-#: src/pages/settings/AccountPanel.tsx:290
+#: src/pages/settings/AccountPanel.tsx:286
 msgid "account.2fa.statusDisabled"
 msgstr "已關閉"
 
-#: src/pages/settings/AccountPanel.tsx:287
+#: src/pages/settings/AccountPanel.tsx:283
 msgid "account.2fa.statusEnabled"
 msgstr "已開啟"
 
-#: src/pages/settings/AccountPanel.tsx:289
+#: src/pages/settings/AccountPanel.tsx:285
 msgid "account.2fa.statusPending"
 msgstr "等緊驗證"
 
-#: src/pages/settings/AccountPanel.tsx:273
+#: src/pages/settings/AccountPanel.tsx:274
 msgid "account.2fa.title"
 msgstr "雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:333
 msgid "account.2fa.verificationCode"
 msgstr "驗證碼"
 
-#: src/pages/settings/AccountPanel.tsx:351
+#: src/pages/settings/AccountPanel.tsx:360
 msgid "account.2fa.verifyEnable"
 msgstr "驗證並開啟"
 
-#: src/pages/settings/AccountPanel.tsx:350
+#: src/pages/settings/AccountPanel.tsx:359
 msgid "account.2fa.verifying"
 msgstr "驗證緊..."
 
-#: src/pages/settings/AccountPanel.tsx:92
+#: src/pages/settings/AccountPanel.tsx:91
 msgid "account.changePassword"
 msgstr "改密碼"
 
-#: src/pages/settings/AccountPanel.tsx:173
+#: src/pages/settings/AccountPanel.tsx:172
 msgid "account.confirmPassword"
 msgstr "確認新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:110
+#: src/pages/settings/AccountPanel.tsx:109
 msgid "account.currentPassword"
 msgstr "而家嘅密碼"
 
-#: src/pages/settings/AccountPanel.tsx:104
-#: src/pages/settings/AccountPanel.tsx:132
-#: src/pages/settings/AccountPanel.tsx:163
+#: src/pages/settings/AccountPanel.tsx:103
+#: src/pages/settings/AccountPanel.tsx:131
+#: src/pages/settings/AccountPanel.tsx:162
 msgid "account.fieldRequired"
 msgstr "呢個欄位必須填"
 
@@ -200,31 +200,31 @@ msgstr "本機賬號"
 msgid "account.logout"
 msgstr "登出"
 
-#: src/pages/settings/AccountPanel.tsx:141
+#: src/pages/settings/AccountPanel.tsx:140
 msgid "account.newPassword"
 msgstr "新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:133
+#: src/pages/settings/AccountPanel.tsx:132
 msgid "account.passwordMinLength"
 msgstr "密碼最少要 8 個字元"
 
-#: src/pages/settings/AccountPanel.tsx:165
+#: src/pages/settings/AccountPanel.tsx:164
 msgid "account.passwordMismatch"
 msgstr "兩次密碼唔一樣"
 
-#: src/pages/settings/AccountPanel.tsx:48
+#: src/pages/settings/AccountPanel.tsx:47
 msgid "account.passwordUpdated"
 msgstr "密碼已經更新咗"
 
-#: src/pages/settings/AccountPanel.tsx:51
+#: src/pages/settings/AccountPanel.tsx:50
 msgid "account.passwordUpdateFailed"
 msgstr "更新密碼失敗咗"
 
-#: src/pages/settings/AccountPanel.tsx:79
+#: src/pages/settings/AccountPanel.tsx:78
 msgid "account.profile"
 msgstr "個人資料"
 
-#: src/pages/settings/AccountPanel.tsx:74
+#: src/pages/settings/AccountPanel.tsx:73
 msgid "account.subtitle"
 msgstr "管理你嘅個人資料同安全設定"
 
@@ -514,6 +514,14 @@ msgstr "返去主頁"
 #: src/pages/settings/StoragePanel.tsx:112
 msgid "common.cancel"
 msgstr "取消"
+
+#: src/pages/settings/AccountPanel.tsx:323
+msgid "common.clickToCopy"
+msgstr "撳嚟複製"
+
+#: src/pages/settings/AccountPanel.tsx:321
+msgid "common.copied"
+msgstr "複製咗"
 
 #: src/components/AnimeCard.tsx:67
 #: src/components/AnimeRow.tsx:48
@@ -1554,59 +1562,59 @@ msgstr "收藏"
 msgid "settings.general.subtitle"
 msgstr "語言、收藏與應用程式偏好設定"
 
-#: src/pages/settings/IntegrationsPanel.tsx:180
+#: src/pages/settings/IntegrationsPanel.tsx:182
 msgid "settings.integration.authUrlFailed"
 msgstr "取得授權連結失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:287
 msgid "settings.integration.connect"
 msgstr "連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:210
+#: src/pages/settings/IntegrationsPanel.tsx:212
 msgid "settings.integration.connected"
 msgstr "連咗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:284
+#: src/pages/settings/IntegrationsPanel.tsx:286
 msgid "settings.integration.connecting"
 msgstr "連緊…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:299
+#: src/pages/settings/IntegrationsPanel.tsx:301
 msgid "settings.integration.disconnect"
 msgstr "斷線"
 
-#: src/pages/settings/IntegrationsPanel.tsx:186
+#: src/pages/settings/IntegrationsPanel.tsx:188
 msgid "settings.integration.disconnected"
 msgstr "斷咗線"
 
-#: src/pages/settings/IntegrationsPanel.tsx:189
+#: src/pages/settings/IntegrationsPanel.tsx:191
 msgid "settings.integration.disconnectFailed"
 msgstr "斷線失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:298
+#: src/pages/settings/IntegrationsPanel.tsx:300
 msgid "settings.integration.disconnecting"
 msgstr "斷緊線…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:211
+#: src/pages/settings/IntegrationsPanel.tsx:213
 msgid "settings.integration.notConnected"
 msgstr "未連"
 
-#: src/pages/settings/IntegrationsPanel.tsx:309
+#: src/pages/settings/IntegrationsPanel.tsx:311
 msgid "settings.integration.sync"
 msgstr "同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:199
+#: src/pages/settings/IntegrationsPanel.tsx:201
 msgid "settings.integration.syncComplete"
 msgstr "同步完"
 
-#: src/pages/settings/IntegrationsPanel.tsx:199
+#: src/pages/settings/IntegrationsPanel.tsx:201
 msgid "settings.integration.syncErrors"
 msgstr "個錯誤"
 
-#: src/pages/settings/IntegrationsPanel.tsx:202
+#: src/pages/settings/IntegrationsPanel.tsx:204
 msgid "settings.integration.syncFailed"
 msgstr "同步唔到"
 
-#: src/pages/settings/IntegrationsPanel.tsx:308
+#: src/pages/settings/IntegrationsPanel.tsx:310
 msgid "settings.integration.syncing"
 msgstr "同步緊…"
 
@@ -1614,7 +1622,7 @@ msgstr "同步緊…"
 #~ msgid "settings.integration.title"
 #~ msgstr "連動"
 
-#: src/pages/settings/IntegrationsPanel.tsx:331
+#: src/pages/settings/IntegrationsPanel.tsx:333
 msgid "settings.integrations.description"
 msgstr "鏈接外部服務並同步資料"
 
@@ -1623,7 +1631,7 @@ msgstr "鏈接外部服務並同步資料"
 msgid "settings.nav.about"
 msgstr "關於"
 
-#: src/pages/settings/AccountPanel.tsx:71
+#: src/pages/settings/AccountPanel.tsx:70
 #: src/pages/settings/SettingsPage.tsx:27
 msgid "settings.nav.account"
 msgstr "賬號"
@@ -1633,12 +1641,12 @@ msgstr "賬號"
 msgid "settings.nav.general"
 msgstr "一般"
 
-#: src/pages/settings/IntegrationsPanel.tsx:328
+#: src/pages/settings/IntegrationsPanel.tsx:330
 #: src/pages/settings/SettingsPage.tsx:25
 msgid "settings.nav.integrations"
 msgstr "整合"
 
-#: src/pages/settings/PlayerPanel.tsx:86
+#: src/pages/settings/PlayerPanel.tsx:72
 #: src/pages/settings/SettingsPage.tsx:26
 msgid "settings.nav.player"
 msgstr "播放器"
@@ -1652,39 +1660,39 @@ msgstr "存儲空間"
 msgid "settings.pageTitle"
 msgstr "設定"
 
-#: src/pages/settings/PlayerPanel.tsx:90
+#: src/pages/settings/PlayerPanel.tsx:76
 msgid "settings.player.danmaku"
 msgstr "彈幕"
 
-#: src/pages/settings/PlayerPanel.tsx:103
+#: src/pages/settings/PlayerPanel.tsx:81
 msgid "settings.player.danmakuEnabled"
 msgstr "顯示彈幕"
 
-#: src/pages/settings/PlayerPanel.tsx:149
+#: src/pages/settings/PlayerPanel.tsx:121
 msgid "settings.player.danmakuFontSize"
 msgstr "字型大小"
 
-#: src/pages/settings/PlayerPanel.tsx:123
+#: src/pages/settings/PlayerPanel.tsx:95
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:165
+#: src/pages/settings/PlayerPanel.tsx:133
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:30
+#: src/pages/settings/PlayerPanel.tsx:27
 msgid "settings.player.speed.fast"
 msgstr "快"
 
-#: src/pages/settings/PlayerPanel.tsx:29
+#: src/pages/settings/PlayerPanel.tsx:26
 msgid "settings.player.speed.normal"
 msgstr "正常"
 
-#: src/pages/settings/PlayerPanel.tsx:28
+#: src/pages/settings/PlayerPanel.tsx:25
 msgid "settings.player.speed.slow"
 msgstr "慢"
 
-#: src/pages/settings/PlayerPanel.tsx:87
+#: src/pages/settings/PlayerPanel.tsx:73
 msgid "settings.player.subtitle"
 msgstr "彈幕與播放偏好設定"
 
@@ -1692,30 +1700,28 @@ msgstr "彈幕與播放偏好設定"
 #~ msgid "settings.player.title"
 #~ msgstr "播放器設定"
 
-#: src/pages/settings/IntegrationsPanel.tsx:115
-#: src/pages/settings/IntegrationsPanel.tsx:271
-#: src/pages/settings/PlayerPanel.tsx:189
+#: src/pages/settings/IntegrationsPanel.tsx:116
+#: src/pages/settings/IntegrationsPanel.tsx:273
 msgid "settings.save"
 msgstr "儲存"
 
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
 #: src/pages/settings/IntegrationsPanel.tsx:52
-#: src/pages/settings/IntegrationsPanel.tsx:169
-#: src/pages/settings/PlayerPanel.tsx:52
+#: src/pages/settings/IntegrationsPanel.tsx:171
+#: src/pages/settings/PlayerPanel.tsx:49
 msgid "settings.saved"
 msgstr "儲存咗"
 
 #: src/pages/settings/GeneralPanel.tsx:41
 #: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:172
-#: src/pages/settings/PlayerPanel.tsx:55
+#: src/pages/settings/IntegrationsPanel.tsx:174
+#: src/pages/settings/PlayerPanel.tsx:52
 msgid "settings.saveFailed"
 msgstr "儲存唔到"
 
-#: src/pages/settings/IntegrationsPanel.tsx:114
-#: src/pages/settings/IntegrationsPanel.tsx:270
-#: src/pages/settings/PlayerPanel.tsx:188
+#: src/pages/settings/IntegrationsPanel.tsx:115
+#: src/pages/settings/IntegrationsPanel.tsx:272
 msgid "settings.saving"
 msgstr "儲存緊…"
 
