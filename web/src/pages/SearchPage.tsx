@@ -98,14 +98,9 @@ export function SearchPage() {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           {isGenreMode ? (
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-white tracking-tight">
-                {translateGenre(urlGenre!, i18n.locale)}
-              </h1>
-              <span className="text-[12px] font-bold px-2.5 py-1 rounded-md bg-mm-accent/15 text-mm-accent">
-                {urlGenre}
-              </span>
-            </div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">
+              {translateGenre(urlGenre!, i18n.locale)}
+            </h1>
           ) : (
             <h1 className="text-2xl font-bold text-white tracking-tight">
               {i18n._(msg`search.title`)}

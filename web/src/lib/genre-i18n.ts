@@ -51,6 +51,9 @@ const GENRE_ZH_HANS: Record<string, string> = {
 const MAPS: Record<string, Record<string, string>> = {
   'zh-Hant': GENRE_ZH_HANT,
   'zh-Hans': GENRE_ZH_HANS,
+  'zh-TW': GENRE_ZH_HANT,
+  'zh-HK': GENRE_ZH_HANT,
+  'zh-CN': GENRE_ZH_HANS,
 };
 
 /** Translate a genre string based on the current locale. Falls back to the original English string. */
