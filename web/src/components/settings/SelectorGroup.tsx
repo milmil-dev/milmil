@@ -22,10 +22,10 @@ export function SelectorGroup<T extends string | number>({
           onClick={() => onChange(opt.value)}
           disabled={disabled}
           className={cn(
-            'rounded px-3.5 py-1.5 text-[11px] font-semibold transition-colors border',
+            'rounded px-3.5 py-1.5 text-xs font-semibold transition-colors',
             value === opt.value
-              ? 'bg-mm-accent text-black border-mm-accent'
-              : 'bg-transparent text-mm-text-secondary border-white/[0.08] hover:border-white/20',
+              ? 'bg-white/[0.10] text-white'
+              : 'bg-transparent text-mm-text-secondary hover:bg-white/[0.04] hover:text-white/70',
             disabled && 'opacity-50 pointer-events-none'
           )}
         >
