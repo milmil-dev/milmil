@@ -16,6 +16,7 @@ export interface CollectionAnime {
   season: string | null;
   air_date: string | null;
   created_at: string;
+  user_score: number | null;
   local_file_count: number;
 }
 

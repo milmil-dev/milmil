@@ -120,7 +120,7 @@ function toAnimeSummary(anime: CollectionAnime): AnimeSummary {
     title_original: anime.title,
     cover_image: anime.cover_image_url ?? '',
     episode_count: anime.total_episodes ?? 0,
-    score: 0,
+    score: anime.user_score ?? 0,
   };
 }
 

@@ -67,6 +67,7 @@ SELECT
   a.season,
   a.air_date,
   a.created_at,
+  a.user_score,
   COUNT(DISTINCT mf.id) AS local_file_count
 FROM anime a
 JOIN episodes e ON e.anime_id = a.id
@@ -100,6 +101,7 @@ type ListCollectionAnimeRow struct {
 	Season               sql.NullString `json:"season"`
 	AirDate              sql.NullString `json:"air_date"`
 	CreatedAt            string         `json:"created_at"`
+	UserScore            sql.NullInt64  `json:"user_score"`
 	LocalFileCount       int64          `json:"local_file_count"`
 }
 
@@ -128,6 +130,7 @@ func (q *Queries) ListCollectionAnime(ctx context.Context, arg ListCollectionAni
 			&i.Season,
 			&i.AirDate,
 			&i.CreatedAt,
+			&i.UserScore,
 			&i.LocalFileCount,
 		); err != nil {
 			return nil, err
