@@ -7,12 +7,14 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import packageJson from './package.json';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
   plugins: [
-    tanstackRouter(), // MUST be before react()
+    tanstackRouter({ routeFileIgnorePattern: '\\.test\\.tsx?$' }), // MUST be before react()
     react(),
     babel({
       presets: [
@@ -23,13 +25,14 @@ export default defineConfig({
     }),
     lingui(),
     tailwindcss(),
-    serwist({
-      swSrc: 'src/sw.ts',
-      swDest: 'sw.js',
-      globDirectory: 'dist',
-      injectionPoint: 'self.__SW_MANIFEST',
-      rollupFormat: 'iife',
-    }),
+    !isDev &&
+      serwist({
+        swSrc: 'src/sw.ts',
+        swDest: 'sw.js',
+        globDirectory: 'dist',
+        injectionPoint: 'self.__SW_MANIFEST',
+        rollupFormat: 'iife',
+      }),
   ],
   resolve: {
     tsconfigPaths: true,
