@@ -27,15 +27,15 @@ async function boot() {
 }
 boot();
 
-// Register Serwist service worker
-if ('serviceWorker' in navigator) {
+// Register Serwist service worker (always in prod, controlled by VITE_ENABLE_SW in dev)
+if ((import.meta.env.PROD || import.meta.env.VITE_ENABLE_SW === 'true') && 'serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const { Serwist } = await import('@serwist/window');
       const serwist = new Serwist('/sw.js', { scope: '/' });
       await serwist.register();
     } catch {
-      // Service worker registration failed — fine in dev
+      // Service worker registration failed
     }
   });
 }

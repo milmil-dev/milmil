@@ -59,7 +59,7 @@ export function AnimeCard({ anime, onPreview, children, onClick }: AnimeCardProp
         <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
         {anime.score > 0 && (
           <div className="absolute bottom-2 left-2">
-            <span className="text-[11px] font-bold text-mm-accent">{anime.score.toFixed(1)}</span>
+            <span className="text-[11px] font-bold text-white/90">{anime.score.toFixed(1)}</span>
           </div>
         )}
         {anime.episode_count > 0 && (
