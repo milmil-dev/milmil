@@ -7,7 +7,6 @@ import type { QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
@@ -291,38 +290,46 @@ function TwoFactorCard({
         </label>
       </div>
 
-      {/* Setup flow */}
+      {/* Setup flow — side by side: QR left, instructions + verify right */}
       {setupData && !enabled && (
-        <div className="mt-5 space-y-5">
-          <p className="text-xs leading-relaxed text-white/50">
-            {i18n._(msg`account.2fa.scanInstructions`)}
-          </p>
-
-          {/* QR code with dark-friendly container */}
-          <div className="inline-flex flex-col items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-            <div className="rounded-lg bg-white p-2.5">
+        <div className="mt-5 flex flex-col sm:flex-row gap-5">
+          {/* Left: QR code */}
+          <div className="shrink-0 flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+            <div className="rounded-md bg-white p-2">
               <img
                 src={`data:image/png;base64,${setupData.qr_code}`}
                 alt="2FA QR Code"
-                className="h-36 w-36"
+                className="h-28 w-28"
               />
             </div>
             <div className="text-center">
-              <p className="text-[9px] uppercase tracking-wider text-white/25">
+              <p className="text-[8px] uppercase tracking-wider text-white/20">
                 {i18n._(msg`account.2fa.manualEntry`)}
               </p>
-              <code className="mt-0.5 block text-xs font-mono text-mm-accent/80 select-all">
+              <button
+                type="button"
+                className="mt-0.5 block text-[10px] font-mono text-mm-accent/70 break-all max-w-[160px] cursor-pointer hover:text-mm-accent transition-colors"
+                onClick={() => {
+                  navigator.clipboard.writeText(setupData.secret);
+                  toast.success(i18n._(msg`common.copied`));
+                }}
+                title="Click to copy"
+              >
                 {setupData.secret}
-              </code>
+              </button>
             </div>
           </div>
 
-          {/* Verify input */}
-          <div className="space-y-3">
-            <label className="text-xs font-medium text-white/50">
-              {i18n._(msg`account.2fa.verificationCode`)}
-            </label>
-            <div className="flex items-center gap-4">
+          {/* Right: instructions + OTP */}
+          <div className="flex-1 flex flex-col justify-between gap-4">
+            <p className="text-[11px] leading-relaxed text-white/45">
+              {i18n._(msg`account.2fa.scanInstructions`)}
+            </p>
+
+            <div className="space-y-2.5">
+              <label className="text-[11px] font-medium text-white/50">
+                {i18n._(msg`account.2fa.verificationCode`)}
+              </label>
               <InputOTP
                 maxLength={6}
                 value={totpCode}
@@ -342,6 +349,7 @@ function TwoFactorCard({
               </InputOTP>
               <Button
                 type="button"
+                className="mt-1"
                 disabled={totpCode.length !== 6 || verifyMutation.isPending}
                 onClick={() => verifyMutation.mutate(totpCode)}
               >
