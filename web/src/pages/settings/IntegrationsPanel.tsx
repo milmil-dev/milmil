@@ -14,8 +14,6 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { api } from '@/lib/api-client';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
-const ACCENT_BTN_CLASS = 'font-bold text-black bg-mm-accent';
-const OUTLINE_BTN_CLASS = 'font-bold border-white/[0.1] text-white hover:bg-white/[0.05]';
 
 // ─── DandanPlay Card ────────────────────────────────────────────────────────
 
@@ -111,7 +109,6 @@ function DandanPlayCard() {
             <Button
               type="submit"
               disabled={saveMutation.isPending || isSubmitting}
-              className={ACCENT_BTN_CLASS}
             >
               {saveMutation.isPending || isSubmitting
                 ? i18n._(msg`settings.saving`)
@@ -268,7 +265,6 @@ function OAuthProviderCard({
               <Button
                 type="submit"
                 disabled={saveCredsMutation.isPending || isSubmitting}
-                className={ACCENT_BTN_CLASS}
               >
                 {saveCredsMutation.isPending || isSubmitting
                   ? i18n._(msg`settings.saving`)
@@ -283,7 +279,6 @@ function OAuthProviderCard({
               onClick={() => connectMutation.mutate()}
               disabled={connectMutation.isPending}
               variant="outline"
-              className={OUTLINE_BTN_CLASS}
             >
               {connectMutation.isPending
                 ? i18n._(msg`settings.integration.connecting`)
@@ -297,8 +292,7 @@ function OAuthProviderCard({
                 type="button"
                 onClick={() => disconnectMutation.mutate()}
                 disabled={disconnectMutation.isPending}
-                variant="outline"
-                className="font-bold border-white/[0.1] text-red-400 hover:bg-white/[0.05]"
+                variant="destructive"
               >
                 {disconnectMutation.isPending
                   ? i18n._(msg`settings.integration.disconnecting`)
@@ -309,7 +303,6 @@ function OAuthProviderCard({
                 onClick={() => syncMutation.mutate()}
                 disabled={syncMutation.isPending}
                 variant="outline"
-                className={OUTLINE_BTN_CLASS}
               >
                 {syncMutation.isPending
                   ? i18n._(msg`settings.integration.syncing`)
@@ -329,9 +322,9 @@ export function IntegrationsPanel() {
   const { i18n } = useLingui();
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-[18px] font-bold text-white">
+        <h2 className="text-xl font-bold text-white">
           {i18n._(msg`settings.nav.integrations`)}
         </h2>
         <p className="mt-1 text-sm text-white/40">

@@ -1,13 +1,10 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useForm } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { SelectorGroup } from '@/components/settings/SelectorGroup';
 import { SettingsCard } from '@/components/settings/SettingsCard';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
@@ -55,142 +52,94 @@ export function PlayerPanel() {
     onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
   });
 
-  const form = useForm({
-    defaultValues: {
-      enabled: danmakuEnabled,
-      opacity: Math.round(danmakuOpacity * 100),
-      fontSize: danmakuFontSize,
-      speed: danmakuSpeed,
-    },
-    onSubmit: async ({ value }) => {
-      await saveMutation.mutateAsync({
-        danmaku_enabled: value.enabled,
-        danmaku_opacity: value.opacity / 100,
-        danmaku_font_size: value.fontSize,
-        danmaku_speed: value.speed,
-      });
-    },
-  });
-
-  useEffect(() => {
-    form.reset({
-      enabled: danmakuEnabled,
-      opacity: Math.round(danmakuOpacity * 100),
-      fontSize: danmakuFontSize,
-      speed: danmakuSpeed,
+  const save = (overrides: Partial<{
+    enabled: boolean;
+    opacity: number;
+    fontSize: number;
+    speed: number;
+  }>) => {
+    const store = usePlayerStore.getState();
+    saveMutation.mutate({
+      danmaku_enabled: overrides.enabled ?? store.danmakuEnabled,
+      danmaku_opacity: overrides.opacity != null ? overrides.opacity / 100 : store.danmakuOpacity,
+      danmaku_font_size: overrides.fontSize ?? store.danmakuFontSize,
+      danmaku_speed: overrides.speed ?? store.danmakuSpeed,
     });
-  }, [danmakuEnabled, danmakuOpacity, danmakuFontSize, danmakuSpeed, form.reset]);
+  };
 
   return (
     <div>
-      <h2 className="text-[18px] font-bold text-white">{i18n._(msg`settings.nav.player`)}</h2>
-      <p className="mt-1 mb-6 text-[11px] text-white/35">{i18n._(msg`settings.player.subtitle`)}</p>
+      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.player`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`settings.player.subtitle`)}</p>
 
-      <div className="max-w-3xl space-y-3">
+      <div className="space-y-3">
         <SettingsCard label={i18n._(msg`settings.player.danmaku`)}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
-            }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             {/* Danmaku enabled toggle */}
-            <form.Field name="enabled">
-              {(field) => (
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm text-mm-text-secondary">
-                    {i18n._(msg`settings.player.danmakuEnabled`)}
-                  </Label>
-                  <Switch
-                    checked={field.state.value}
-                    onCheckedChange={(checked) => field.handleChange(checked)}
-                  />
-                </div>
-              )}
-            </form.Field>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm text-mm-text-secondary">
+                {i18n._(msg`settings.player.danmakuEnabled`)}
+              </Label>
+              <Switch
+                checked={danmakuEnabled}
+                onCheckedChange={(checked) => save({ enabled: checked })}
+              />
+            </div>
 
             {/* Remaining controls — disabled when danmaku is off */}
-            <form.Subscribe selector={(s) => s.values.enabled}>
-              {(enabled) => (
-                <div className={cn('space-y-4', !enabled && 'opacity-50 pointer-events-none')}>
-                  {/* Opacity slider */}
-                  <form.Field name="opacity">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-sm text-mm-text-secondary">
-                            {i18n._(msg`settings.player.danmakuOpacity`)}
-                          </Label>
-                          <span className="text-xs text-mm-text-tertiary tabular-nums">
-                            {field.state.value}%
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          min={0}
-                          max={100}
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(Number(e.target.value))}
-                          className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-mm-accent"
-                          style={{
-                            background: `linear-gradient(to right, var(--mm-accent) ${String(field.state.value)}%, oklch(18% 0.01 280) ${String(field.state.value)}%)`,
-                          }}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-
-                  {/* Font size selector */}
-                  <form.Field name="fontSize">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label className="text-sm text-mm-text-secondary">
-                          {i18n._(msg`settings.player.danmakuFontSize`)}
-                        </Label>
-                        <SelectorGroup
-                          options={[...FONT_SIZE_OPTIONS]}
-                          value={field.state.value}
-                          onChange={(v) => field.handleChange(v)}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-
-                  {/* Speed selector */}
-                  <form.Field name="speed">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label className="text-sm text-mm-text-secondary">
-                          {i18n._(msg`settings.player.danmakuSpeed`)}
-                        </Label>
-                        <SelectorGroup
-                          options={speedOptions}
-                          value={field.state.value}
-                          onChange={(v) => field.handleChange(v)}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
+            <div className={cn('space-y-4', !danmakuEnabled && 'opacity-50 pointer-events-none')}>
+              {/* Opacity slider */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm text-mm-text-secondary">
+                    {i18n._(msg`settings.player.danmakuOpacity`)}
+                  </Label>
+                  <span className="text-xs text-mm-text-tertiary tabular-nums">
+                    {Math.round(danmakuOpacity * 100)}%
+                  </span>
                 </div>
-              )}
-            </form.Subscribe>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={Math.round(danmakuOpacity * 100)}
+                  onChange={(e) => {
+                    usePlayerStore.getState().setDanmakuOpacity(Number(e.target.value) / 100);
+                  }}
+                  onMouseUp={(e) => save({ opacity: Number((e.target as HTMLInputElement).value) })}
+                  onTouchEnd={(e) => save({ opacity: Number((e.target as HTMLInputElement).value) })}
+                  className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-white/50"
+                  style={{
+                    background: `linear-gradient(to right, oklch(70% 0.01 280) ${String(Math.round(danmakuOpacity * 100))}%, oklch(18% 0.01 280) ${String(Math.round(danmakuOpacity * 100))}%)`,
+                  }}
+                />
+              </div>
 
-            {/* Save button */}
-            <form.Subscribe selector={(s) => s.isSubmitting}>
-              {(isSubmitting) => (
-                <Button
-                  type="submit"
-                  disabled={saveMutation.isPending || isSubmitting}
-                  className="font-bold text-black bg-mm-accent"
-                >
-                  {saveMutation.isPending || isSubmitting
-                    ? i18n._(msg`settings.saving`)
-                    : i18n._(msg`settings.save`)}
-                </Button>
-              )}
-            </form.Subscribe>
-          </form>
+              {/* Font size selector */}
+              <div className="space-y-2">
+                <Label className="text-sm text-mm-text-secondary">
+                  {i18n._(msg`settings.player.danmakuFontSize`)}
+                </Label>
+                <SelectorGroup
+                  options={[...FONT_SIZE_OPTIONS]}
+                  value={danmakuFontSize}
+                  onChange={(v) => save({ fontSize: v })}
+                />
+              </div>
+
+              {/* Speed selector */}
+              <div className="space-y-2">
+                <Label className="text-sm text-mm-text-secondary">
+                  {i18n._(msg`settings.player.danmakuSpeed`)}
+                </Label>
+                <SelectorGroup
+                  options={speedOptions}
+                  value={danmakuSpeed}
+                  onChange={(v) => save({ speed: v })}
+                />
+              </div>
+            </div>
+          </div>
         </SettingsCard>
       </div>
     </div>

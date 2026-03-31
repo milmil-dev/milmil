@@ -56,21 +56,21 @@ export function StoragePanel() {
 
   return (
     <div>
-      <h2 className="text-[18px] font-bold text-white">
+      <h2 className="text-xl font-bold text-white">
         {i18n._(msg`settings.nav.storage`)}
       </h2>
-      <p className="mt-1 mb-6 text-[11px] text-white/35">
+      <p className="mt-1 mb-6 text-xs text-white/35">
         {i18n._(msg`settings.storage.subtitle`)}
       </p>
 
-      <div className="max-w-3xl space-y-3">
+      <div className="space-y-3">
         <SettingsCard label={i18n._(msg`settings.storage.diskUsage`)}>
           <div className="space-y-3">
             <div className="flex items-baseline justify-between">
               <span className="text-[20px] font-bold text-white tabular-nums">
                 {formatBytes(totalSize)}
               </span>
-              <span className="text-[11px] text-white/30">
+              <span className="text-xs text-white/30">
                 {fileCount} {i18n._(msg`settings.storage.files`)}
               </span>
             </div>
@@ -80,7 +80,7 @@ export function StoragePanel() {
                 style={{ width: totalSize > 0 ? '100%' : '0%' }}
               />
             </div>
-            <p className="text-[10px] text-white/25">
+            <p className="text-[11px] text-white/25">
               {i18n._(msg`settings.storage.transcodeDesc`)}
             </p>
           </div>
@@ -89,10 +89,9 @@ export function StoragePanel() {
         <SettingsCard label={i18n._(msg`settings.storage.actions`)}>
           <Button
             type="button"
-            variant="outline"
+            variant="destructive"
             onClick={() => setShowClearDialog(true)}
             disabled={fileCount === 0}
-            className="font-bold border-white/[0.1] text-red-400 hover:bg-white/[0.05]"
           >
             {i18n._(msg`settings.storage.clearTranscode`)}
           </Button>

@@ -67,14 +67,14 @@ export function AccountPanel() {
 
   return (
     <div>
-      <h2 className="text-[18px] font-bold text-white">
+      <h2 className="text-xl font-bold text-white">
         {i18n._(msg`settings.nav.account`)}
       </h2>
-      <p className="mt-1 mb-6 text-[11px] text-white/35">
+      <p className="mt-1 mb-6 text-xs text-white/35">
         {i18n._(msg`account.subtitle`)}
       </p>
 
-      <div className="max-w-3xl space-y-3">
+      <div className="space-y-3">
         {/* Profile */}
         <SettingsCard label={i18n._(msg`account.profile`)}>
           <div className="flex items-center gap-3">
@@ -82,8 +82,8 @@ export function AccountPanel() {
               {user?.username?.charAt(0).toUpperCase() ?? '?'}
             </div>
             <div>
-              <p className="text-[13px] font-medium text-white">{user?.username ?? '—'}</p>
-              <p className="text-[10px] text-white/30">ID: {user?.id ?? '—'}</p>
+              <p className="text-sm font-medium text-white">{user?.username ?? '—'}</p>
+              <p className="text-xs text-white/30">ID: {user?.id ?? '—'}</p>
             </div>
           </div>
         </SettingsCard>
@@ -271,7 +271,7 @@ function TwoFactorCard({
 
   return (
     <SettingsCard label={i18n._(msg`account.2fa.title`)}>
-      <p className="mb-4 text-[11px] text-white/40">
+      <p className="mb-4 text-xs text-white/40">
         {i18n._(msg`account.2fa.description`)}
       </p>
 
@@ -282,7 +282,7 @@ function TwoFactorCard({
           onCheckedChange={handleToggle}
           disabled={setupMutation.isPending || disableMutation.isPending}
         />
-        <label htmlFor="2fa-toggle" className="text-[12px] text-white/60">
+        <label htmlFor="2fa-toggle" className="text-[13px] text-white/60">
           {enabled
             ? i18n._(msg`account.2fa.statusEnabled`)
             : setupData
@@ -294,7 +294,7 @@ function TwoFactorCard({
       {/* Setup flow */}
       {setupData && !enabled && (
         <div className="mt-5 space-y-5">
-          <p className="text-[11px] leading-relaxed text-white/50">
+          <p className="text-xs leading-relaxed text-white/50">
             {i18n._(msg`account.2fa.scanInstructions`)}
           </p>
 
@@ -311,7 +311,7 @@ function TwoFactorCard({
               <p className="text-[9px] uppercase tracking-wider text-white/25">
                 {i18n._(msg`account.2fa.manualEntry`)}
               </p>
-              <code className="mt-0.5 block text-[11px] font-mono text-mm-accent/80 select-all">
+              <code className="mt-0.5 block text-xs font-mono text-mm-accent/80 select-all">
                 {setupData.secret}
               </code>
             </div>
@@ -319,7 +319,7 @@ function TwoFactorCard({
 
           {/* Verify input */}
           <div className="space-y-3">
-            <label className="text-[11px] font-medium text-white/50">
+            <label className="text-xs font-medium text-white/50">
               {i18n._(msg`account.2fa.verificationCode`)}
             </label>
             <div className="flex items-center gap-4">
@@ -358,7 +358,7 @@ function TwoFactorCard({
       {enabled && (
         <div className="mt-4 flex items-center gap-2 rounded-lg bg-green-500/[0.06] px-3 py-2 border border-green-500/10">
           <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
-          <p className="text-[11px] text-green-400/90">
+          <p className="text-xs text-green-400/90">
             {i18n._(msg`account.2fa.activeMessage`)}
           </p>
         </div>

@@ -48,18 +48,18 @@ export function SettingsPage() {
 
   return (
     <PageTransition>
-      <div className="p-4 sm:p-8">
-        {/* Header */}
-        <div className="mb-6">
+      <div className="mx-auto max-w-5xl p-4 sm:p-8 lg:py-12">
+        {/* Header — centered */}
+        <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-white tracking-tight">
             {i18n._(msg`settings.pageTitle`)}
           </h1>
         </div>
 
-        {/* Seanime-style grid: nav column + content column */}
-        <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
+        {/* Two-column grid: nav + content, centered */}
+        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8">
           {/* Nav column */}
-          <div className="lg:sticky lg:top-6 lg:self-start">
+          <div className="lg:sticky lg:top-8 lg:self-start">
             <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-2">
               <nav className="flex flex-wrap lg:flex-col gap-1">
                 {TABS.map((tab) => {
@@ -70,7 +70,7 @@ export function SettingsPage() {
                       type="button"
                       onClick={() => setActiveTab(tab.id)}
                       className={cn(
-                        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-200 w-fit lg:w-full text-left',
+                        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 w-fit lg:w-full text-left',
                         isActive
                           ? 'bg-white/[0.06] text-white'
                           : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03]'

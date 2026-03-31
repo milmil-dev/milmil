@@ -105,24 +105,24 @@ export function AboutPanel() {
 
   return (
     <div>
-      <h2 className="text-[18px] font-bold text-white">
+      <h2 className="text-xl font-bold text-white">
         {i18n._(msg`settings.nav.about`)}
       </h2>
-      <p className="mt-1 mb-6 text-[11px] text-white/35">
+      <p className="mt-1 mb-6 text-xs text-white/35">
         {i18n._(msg`about.subtitle`)}
       </p>
 
-      <div className="max-w-3xl space-y-3">
+      <div className="space-y-3">
         {/* Card 1 — System Info */}
         <SettingsCard label={i18n._(msg`about.systemInfo`)}>
           <div className="space-y-2.5">
             {infoRows.map((row) => (
               <div key={row.label} className="flex items-center justify-between">
-                <span className="text-[12px] text-white/50">{row.label}</span>
+                <span className="text-[13px] text-white/50">{row.label}</span>
                 {isLoading ? (
                   <div className="h-4 w-28 animate-pulse rounded bg-white/[0.06]" />
                 ) : (
-                  <span className="font-mono text-[12px] tabular-nums text-white/85">
+                  <span className="font-mono text-[13px] tabular-nums text-white/85">
                     {row.value ?? '—'}
                   </span>
                 )}
@@ -136,10 +136,10 @@ export function AboutPanel() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[12px] text-white/85">
+                <p className="text-[13px] text-white/85">
                   {i18n._(msg`about.exportSettings`)}
                 </p>
-                <p className="mt-0.5 text-[10px] text-white/30">
+                <p className="mt-0.5 text-[11px] text-white/30">
                   {i18n._(msg`about.exportSettingsDesc`)}
                 </p>
               </div>
@@ -153,10 +153,10 @@ export function AboutPanel() {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[12px] text-white/85">
+                <p className="text-[13px] text-white/85">
                   {i18n._(msg`about.importSettings`)}
                 </p>
-                <p className="mt-0.5 text-[10px] text-white/30">
+                <p className="mt-0.5 text-[11px] text-white/30">
                   {i18n._(msg`about.importSettingsDesc`)}
                 </p>
               </div>
@@ -181,10 +181,10 @@ export function AboutPanel() {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[12px] text-white/85">
+                <p className="text-[13px] text-white/85">
                   {i18n._(msg`about.resetToDefaults`)}
                 </p>
-                <p className="mt-0.5 text-[10px] text-white/30">
+                <p className="mt-0.5 text-[11px] text-white/30">
                   {i18n._(msg`about.resetToDefaultsDesc`)}
                 </p>
               </div>
@@ -206,7 +206,7 @@ export function AboutPanel() {
             href="https://github.com/your-repo/milmil"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[12px] text-white/60 transition-colors hover:text-white/90"
+            className="inline-flex items-center gap-2 text-[13px] text-white/60 transition-colors hover:text-white/90"
           >
             <HugeiconsIcon icon={GithubIcon} size={16} />
             GitHub
@@ -246,7 +246,7 @@ export function AboutPanel() {
           <AlertDialogFooter>
             <AlertDialogCancel>{i18n._(msg`common.cancel`)}</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-500/20 text-red-400 border border-red-500/20 hover:bg-red-500/30"
+              className="bg-red-500 text-white hover:bg-red-600"
               onClick={handleResetConfirm}
             >
               {i18n._(msg`about.reset`)}

@@ -50,14 +50,14 @@ export function GeneralPanel() {
 
   return (
     <div>
-      <h2 className="text-[18px] font-bold text-white">
+      <h2 className="text-xl font-bold text-white">
         {i18n._(msg`settings.nav.general`)}
       </h2>
-      <p className="mt-1 mb-6 text-[11px] text-white/35">
+      <p className="mt-1 mb-6 text-xs text-white/35">
         {i18n._(msg`settings.general.subtitle`)}
       </p>
 
-      <div className="max-w-3xl space-y-3">
+      <div className="space-y-3">
         <SettingsCard label={i18n._(msg`settings.appearance.language`)}>
           <SelectorGroup
             options={availableLanguages.map((l) => ({ label: l.label, value: l.code }))}
@@ -69,10 +69,10 @@ export function GeneralPanel() {
         <SettingsCard label={i18n._(msg`settings.collection`)}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[12px] text-white/85">
+              <p className="text-[13px] text-white/85">
                 {i18n._(msg`settings.autoAddToCollection`)}
               </p>
-              <p className="mt-0.5 text-[10px] text-white/30">
+              <p className="mt-0.5 text-[11px] text-white/30">
                 {i18n._(msg`settings.autoAddToCollectionDesc`)}
               </p>
             </div>
