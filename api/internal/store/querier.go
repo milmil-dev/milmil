@@ -93,6 +93,7 @@ type Querier interface {
 	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error
+	UpdatePasswordHash(ctx context.Context, arg UpdatePasswordHashParams) error
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
 	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error
