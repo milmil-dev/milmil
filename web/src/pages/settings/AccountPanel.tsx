@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { PasswordInput } from '@/components/ui/password-input';
 import { api } from '@/lib/api-client';
@@ -13,6 +16,8 @@ const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent te
 
 export function AccountPanel() {
   const user = useAuthStore((s) => s.user);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [totpCode, setTotpCode] = useState('');
 
   const changePassword = useMutation({
     mutationFn: (data: { current_password: string; new_password: string }) =>
@@ -176,6 +181,61 @@ export function AccountPanel() {
               )}
             </form.Subscribe>
           </form>
+        </SettingsCard>
+
+        {/* Two-Factor Authentication card */}
+        <SettingsCard label="Two-Factor Authentication">
+          <p className="mb-4 text-[11px] text-white/40">
+            Add an extra layer of security to your account by requiring a time-based one-time
+            password (TOTP) in addition to your password when signing in.
+          </p>
+
+          <div className="flex items-center gap-3">
+            <Switch
+              id="2fa-toggle"
+              checked={twoFactorEnabled}
+              onCheckedChange={(checked) => {
+                setTwoFactorEnabled(checked);
+                if (checked) {
+                  toast.info('2FA is not yet available');
+                }
+              }}
+            />
+            <label htmlFor="2fa-toggle" className="text-[12px] text-white/60">
+              {twoFactorEnabled ? 'Enabled' : 'Disabled'}
+            </label>
+          </div>
+
+          {twoFactorEnabled && (
+            <div className="mt-5 space-y-4">
+              <div className="flex h-40 w-40 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.02] text-[11px] text-white/20">
+                QR Code
+              </div>
+
+              <div className="flex items-end gap-3">
+                <div className="space-y-1.5">
+                  <label htmlFor="totp-code" className="text-[11px] font-medium text-white/50">
+                    Verification Code
+                  </label>
+                  <Input
+                    id="totp-code"
+                    placeholder="Enter 6-digit code"
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value)}
+                    className={`${inputClass} w-48`}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    toast.info('2FA is not yet available');
+                  }}
+                >
+                  Verify
+                </Button>
+              </div>
+            </div>
+          )}
         </SettingsCard>
       </div>
     </div>
