@@ -1,9 +1,11 @@
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { defaultLocale, loadAndActivate } from './i18n/config';
+import { detectBrowserLocale, loadAndActivate } from './i18n/config';
 import './styles/global.css';
 
-loadAndActivate(localStorage.getItem('milmil-locale') || defaultLocale);
+const savedLocale = localStorage.getItem('milmil-locale');
+const locale = savedLocale ?? detectBrowserLocale();
+loadAndActivate(locale);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
 

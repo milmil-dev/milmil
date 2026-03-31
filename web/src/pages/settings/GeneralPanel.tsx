@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { SelectorGroup } from '@/components/settings/SelectorGroup';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Switch } from '@/components/ui/switch';
-import { availableLanguages, loadAndActivate } from '@/i18n/config';
+import { availableLanguages, detectBrowserLocale, loadAndActivate } from '@/i18n/config';
 import { api } from '@/lib/api-client';
 
 export function GeneralPanel() {
@@ -15,7 +15,7 @@ export function GeneralPanel() {
   const queryClient = useQueryClient();
 
   const [currentLang, setCurrentLang] = useState(
-    () => localStorage.getItem('milmil-locale') ?? 'zh-Hant'
+    () => localStorage.getItem('milmil-locale') ?? detectBrowserLocale()
   );
 
   const { data: settings } = useQuery({

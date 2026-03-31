@@ -15,19 +15,45 @@ async function loadAndActivate(locale: string): Promise<void> {
     onLocaleChange(locale);
   } catch (error) {
     console.error(`Failed to load locale: ${locale}`, error);
-    if (locale !== 'zh-Hant') {
-      await loadAndActivate('zh-Hant');
+    if (locale !== 'zh-TW') {
+      await loadAndActivate('zh-TW');
     }
   }
 }
 
 export const availableLanguages = [
-  { code: 'zh-Hant', label: '繁體中文' },
-  { code: 'zh-Hans', label: '简体中文' },
+  { code: 'zh-TW', label: '繁體中文（台灣）' },
+  { code: 'zh-HK', label: '繁體中文（香港）' },
+  { code: 'zh-CN', label: '简体中文' },
   { code: 'en', label: 'English' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
 ];
 
-export const defaultLocale = 'zh-Hant';
+export const defaultLocale = 'zh-TW';
+
+/**
+ * Detect the best matching locale from browser preferences.
+ * Falls back to defaultLocale if no match is found.
+ */
+export function detectBrowserLocale(): string {
+  const supported = availableLanguages.map((l) => l.code);
+  const browserLangs = navigator.languages ?? [navigator.language];
+
+  for (const lang of browserLangs) {
+    // Exact match (e.g., zh-TW)
+    if (supported.includes(lang)) return lang;
+    // Try with region normalization (e.g., zh-tw → zh-TW)
+    const normalized = lang.replace(/-(\w+)$/, (_, r) => `-${r.toUpperCase()}`);
+    if (supported.includes(normalized)) return normalized;
+    // Base language match (e.g., zh → zh-TW, ja → ja, ko → ko, en → en)
+    const base = lang.split('-')[0];
+    const match = supported.find((s) => s === base || s.startsWith(base + '-'));
+    if (match) return match;
+  }
+
+  return defaultLocale;
+}
 
 export const isRTL = (lng?: string): boolean => !!lng && rtlLanguages.includes(lng);
 

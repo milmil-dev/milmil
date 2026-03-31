@@ -1,379 +1,377 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2026-02-25 00:00+0000\n"
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: en\n"
+"Language: zh-CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Plural-Forms: \n"
 
 #. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:87
 msgid "watch.resumeFrom"
-msgstr "Resume from"
+msgstr "从此处继续"
 
 #: src/pages/settings/AboutPanel.tsx:152
 msgid "about.export"
-msgstr "Export"
+msgstr "导出"
 
 #: src/pages/settings/AboutPanel.tsx:62
 msgid "about.exportFailed"
-msgstr "Export failed"
+msgstr "导出失败"
 
 #: src/pages/settings/AboutPanel.tsx:144
 msgid "about.exportSettings"
-msgstr "Export Settings"
+msgstr "导出设置"
 
 #: src/pages/settings/AboutPanel.tsx:147
 msgid "about.exportSettingsDesc"
-msgstr "Download your settings as a JSON file"
+msgstr "将设置下载为 JSON 文件"
 
 #: src/pages/settings/AboutPanel.tsx:60
 msgid "about.exportSuccess"
-msgstr "Settings exported"
+msgstr "设置已导出"
 
 #: src/pages/settings/AboutPanel.tsx:173
 #: src/pages/settings/AboutPanel.tsx:235
 msgid "about.import"
-msgstr "Import"
+msgstr "导入"
 
 #: src/pages/settings/AboutPanel.tsx:227
 msgid "about.importConfirmDesc"
-msgstr "This will overwrite your current settings. This cannot be undone."
+msgstr "这将覆盖您当前的设置，此操作无法撤销。"
 
 #: src/pages/settings/AboutPanel.tsx:225
 msgid "about.importConfirmTitle"
-msgstr "Import settings?"
+msgstr "导入设置？"
 
 #: src/pages/settings/AboutPanel.tsx:84
 msgid "about.importFailed"
-msgstr "Import failed"
+msgstr "导入失败"
 
 #: src/pages/settings/AboutPanel.tsx:161
 msgid "about.importSettings"
-msgstr "Import Settings"
+msgstr "导入设置"
 
 #: src/pages/settings/AboutPanel.tsx:164
 msgid "about.importSettingsDesc"
-msgstr "Restore settings from a JSON file"
+msgstr "从 JSON 文件还原设置"
 
 #: src/pages/settings/AboutPanel.tsx:82
 msgid "about.importSuccess"
-msgstr "Settings imported"
+msgstr "设置已导入"
 
 #: src/pages/settings/AboutPanel.tsx:208
 msgid "about.links"
-msgstr "Links"
+msgstr "链接"
 
 #: src/pages/settings/AboutPanel.tsx:201
 #: src/pages/settings/AboutPanel.tsx:256
 msgid "about.reset"
-msgstr "Reset"
+msgstr "重置"
 
 #: src/pages/settings/AboutPanel.tsx:247
 msgid "about.resetConfirmDesc"
-msgstr "This will reset all settings to default values. This cannot be undone."
+msgstr "这将把所有设置还原为默认值，此操作无法撤销。"
 
 #: src/pages/settings/AboutPanel.tsx:245
 msgid "about.resetConfirmTitle"
-msgstr "Reset to defaults?"
+msgstr "重置为默认值？"
 
 #: src/pages/settings/AboutPanel.tsx:95
 msgid "about.resetFailed"
-msgstr "Reset failed"
+msgstr "重置失败"
 
 #: src/pages/settings/AboutPanel.tsx:93
 msgid "about.resetSuccess"
-msgstr "Settings reset"
+msgstr "设置已重置"
 
 #: src/pages/settings/AboutPanel.tsx:189
 msgid "about.resetToDefaults"
-msgstr "Reset to Defaults"
+msgstr "重置为默认值"
 
 #: src/pages/settings/AboutPanel.tsx:192
 msgid "about.resetToDefaultsDesc"
-msgstr "Restore all settings to their original values"
+msgstr "将所有设置还原为默认值"
 
 #: src/pages/settings/AboutPanel.tsx:139
 msgid "about.settingsManagement"
-msgstr "Settings Management"
+msgstr "设置管理"
 
 #: src/pages/settings/AboutPanel.tsx:116
 msgid "about.subtitle"
-msgstr "About milmil"
+msgstr "关于 milmil"
 
 #: src/pages/settings/AboutPanel.tsx:121
 msgid "about.systemInfo"
-msgstr "System Information"
+msgstr "系统信息"
 
 #: src/components/AppSidebar.tsx:138
 msgid "account.local"
-msgstr "Local account"
+msgstr "本地账号"
 
 #: src/components/AppSidebar.tsx:166
 msgid "account.logout"
-msgstr "Log out"
+msgstr "退出登录"
 
 #: src/pages/AnimeDetailPage.tsx:742
 msgid "anime.characters"
-msgstr "Characters"
+msgstr "角色"
 
 #: src/pages/AnimeDetailPage.tsx:855
 msgid "anime.comments"
-msgstr "Comments"
+msgstr "评论"
 
 #: src/pages/AnimeDetailPage.tsx:611
 msgid "anime.continueWatching"
-msgstr "Continue Watching"
+msgstr "继续观看"
 
 #: src/pages/AnimeDetailPage.tsx:615
 msgid "anime.episode"
-msgstr "Episode"
+msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
 #: src/pages/AnimeDetailPage.tsx:666
 msgid "anime.episodes"
-msgstr "Episodes"
+msgstr "集数"
 
 #: src/pages/AnimeDetailPage.tsx:528
 msgid "anime.myScore"
-msgstr "My Score"
+msgstr "我的评分"
 
 #~ msgid "anime.noLocalFile"
-#~ msgstr "No local file"
+#~ msgstr "无本地文件"
 
 #: src/pages/AnimeDetailPage.tsx:280
 msgid "anime.notFound"
-msgstr "Anime not found"
+msgstr "找不到动画"
 
 #: src/components/PreviewModal.tsx:221
 #: src/pages/AnimeDetailPage.tsx:496
 msgid "anime.ratings"
-msgstr "ratings"
+msgstr "评分"
 
 #: src/pages/AnimeDetailPage.tsx:789
 msgid "anime.recommendations"
-msgstr "Recommended"
+msgstr "推荐"
 
 #: src/pages/AnimeDetailPage.tsx:763
 msgid "anime.relations"
-msgstr "Related"
+msgstr "相关作品"
 
 #: src/pages/AnimeDetailPage.tsx:807
 msgid "anime.reviews"
-msgstr "Reviews"
+msgstr "评论"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
-#~ msgstr "pts"
+#~ msgstr "分"
 
 #~ msgid "anime.season"
-#~ msgstr "Season"
+#~ msgstr "季"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
-#~ msgstr "Synopsis"
+#~ msgstr "简介"
 
 #: src/components/PreviewModal.tsx:286
 #: src/pages/AnimeDetailPage.tsx:712
 msgid "anime.trailer"
-msgstr "Trailer"
+msgstr "预告片"
 
 #: src/pages/AnimeDetailPage.tsx:748
 msgid "anime.voiceActor"
-msgstr "CV"
+msgstr "声优"
 
 #: src/pages/LoginPage.tsx:34
 #~ msgid "auth.error.invalidCredentials"
-#~ msgstr "Invalid username or password"
+#~ msgstr "账号或密码错误"
 
 #: src/hooks/use-auth.ts:43
 msgid "auth.error.loginFailed"
-msgstr "Login failed"
+msgstr "登录失败"
 
 #: src/hooks/use-auth.ts:58
 msgid "auth.error.setupFailed"
-msgstr "Setup failed"
+msgstr "设置失败"
 
 #: src/pages/LibrariesPage.tsx:3170
 #: src/pages/LibraryDetailPage.tsx:1063
 msgid "auth.libraries.signInSubtitle"
-msgstr "Sign in to access your libraries"
+msgstr "登录以访问您的媒体库"
 
 #: src/pages/LibrariesPage.tsx:3167
 #: src/pages/LibraryDetailPage.tsx:1060
 msgid "auth.libraries.signInTitle"
-msgstr "Sign in required"
+msgstr "需要登录"
 
 #: src/pages/LoginPage.tsx:79
 #~ msgid "auth.login.loading"
-#~ msgstr "Signing in..."
+#~ msgstr "登录中..."
 
 #: src/components/LoginModal.tsx:150
 #: src/pages/LoginPage.tsx:263
 msgid "auth.login.password"
-msgstr "Password"
+msgstr "密码"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3177
 #: src/pages/LibraryDetailPage.tsx:1066
 #: src/pages/LoginPage.tsx:324
 msgid "auth.login.submit"
-msgstr "Sign in"
+msgstr "登录"
 
 #: src/pages/LoginPage.tsx:168
 msgid "auth.login.subtitle"
-msgstr "Your personal anime media server"
+msgstr "您的个人动画媒体服务器"
 
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
 #: src/pages/LoginPage.tsx:191
 #: src/pages/LoginPage.tsx:209
 msgid "auth.login.title"
-msgstr "Sign in to milmil"
+msgstr "登录 milmil"
 
 #: src/components/LoginModal.tsx:127
 #: src/pages/LoginPage.tsx:235
 msgid "auth.login.username"
-msgstr "Username"
+msgstr "用户名"
 
 #: src/pages/SetupPage.tsx:40
 msgid "auth.setup.error"
-msgstr "Setup failed. Please try again."
+msgstr "设置失败，请重试。"
 
 #: src/pages/SetupPage.tsx:110
 msgid "auth.setup.loading"
-msgstr "Creating account..."
+msgstr "创建账号中…"
 
 #: src/pages/SetupPage.tsx:88
 msgid "auth.setup.password"
-msgstr "Password"
+msgstr "密码"
 
 #: src/components/LoginModal.tsx:41
 #: src/pages/LoginPage.tsx:110
 #: src/pages/SetupPage.tsx:29
 msgid "auth.setup.passwordTooShort"
-msgstr "Password must be at least 8 characters"
+msgstr "密码至少需要 8 个字符"
 
 #: src/components/LoginModal.tsx:176
 #: src/pages/LoginPage.tsx:325
 #: src/pages/SetupPage.tsx:110
 msgid "auth.setup.submit"
-msgstr "Create account"
+msgstr "创建账号"
 
 #: src/components/LoginModal.tsx:112
 #: src/pages/LoginPage.tsx:215
 #: src/pages/SetupPage.tsx:51
 msgid "auth.setup.subtitle"
-msgstr "Create your admin account to get started."
+msgstr "创建管理员账号以开始使用。"
 
 #: src/components/LoginModal.tsx:104
 #: src/pages/LoginPage.tsx:202
 #: src/pages/SetupPage.tsx:49
 msgid "auth.setup.title"
-msgstr "Welcome to milmil"
+msgstr "欢迎使用 milmil"
 
 #: src/pages/SetupPage.tsx:65
 msgid "auth.setup.username"
-msgstr "Username"
+msgstr "用户名"
 
 #: src/pages/CollectionPage.tsx:17
 msgid "collection.all"
-msgstr "All"
+msgstr "全部"
 
 #: src/pages/CollectionPage.tsx:181
 msgid "collection.changeStatus"
-msgstr "Change Status"
+msgstr "更改状态"
 
 #: src/pages/AnimeDetailPage.tsx:517
 #: src/pages/CollectionPage.tsx:20
 #: src/pages/CollectionPage.tsx:36
 msgid "collection.completed"
-msgstr "Completed"
+msgstr "已完成"
 
 #: src/pages/AnimeDetailPage.tsx:523
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.dropped"
-msgstr "Dropped"
+msgstr "已弃番"
 
 #: src/pages/CollectionPage.tsx:371
 msgid "collection.empty"
-msgstr "No anime in your collection yet"
+msgstr "收藏中还没有动画"
 
 #: src/pages/CollectionPage.tsx:374
 msgid "collection.emptyDesc"
-msgstr "Scan a library and match anime to start building your collection"
+msgstr "扫描媒体库并匹配动画以建立您的收藏"
 
 #~ msgid "collection.episodes"
-#~ msgstr "episodes"
+#~ msgstr "集"
 
 #: src/pages/CollectionPage.tsx:381
 msgid "collection.goToLibraries"
-msgstr "Go to Libraries"
+msgstr "前往媒体库"
 
 #: src/pages/AnimeDetailPage.tsx:520
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.paused"
-msgstr "On Hold"
+msgstr "暂停"
 
 #: src/pages/AnimeDetailPage.tsx:514
 #: src/pages/CollectionPage.tsx:19
 #: src/pages/CollectionPage.tsx:35
 msgid "collection.planning"
-msgstr "Planning"
+msgstr "计划中"
 
 #: src/pages/LibrariesPage.tsx:3057
 msgid "collection.recentlyMatched"
-msgstr "Recently Matched"
+msgstr "最近匹配"
 
 #: src/pages/CollectionPage.tsx:344
 msgid "collection.searchPlaceholder"
-msgstr "Search anime..."
+msgstr "搜索动画…"
 
 #: src/pages/CollectionPage.tsx:357
 msgid "collection.sortByName"
-msgstr "Name"
+msgstr "名称"
 
 #: src/pages/CollectionPage.tsx:354
 msgid "collection.sortByRecent"
-msgstr "Recently Matched"
+msgstr "最近匹配"
 
 #: src/components/AppSidebar.tsx:37
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
-msgstr "Collection"
+msgstr "收藏"
 
 #: src/pages/CollectionPage.tsx:279
 msgid "collection.totalShows"
-msgstr "shows"
+msgstr "部作品"
 
 #: src/pages/LibrariesPage.tsx:3063
 msgid "collection.viewAll"
-msgstr "View All"
+msgstr "查看全部"
 
 #: src/pages/AnimeDetailPage.tsx:511
 #: src/pages/CollectionPage.tsx:18
 #: src/pages/CollectionPage.tsx:34
 msgid "collection.watching"
-msgstr "Watching"
+msgstr "观看中"
 
 #: src/pages/AnimeDetailPage.tsx:295
 msgid "common.backHome"
-msgstr "Back to Home"
+msgstr "返回首页"
 
 #: src/pages/settings/AboutPanel.tsx:232
 #: src/pages/settings/AboutPanel.tsx:251
 #: src/pages/settings/StoragePanel.tsx:117
 msgid "common.cancel"
-msgstr "Cancel"
+msgstr "取消"
 
 #: src/components/AnimeCard.tsx:67
 #: src/components/AnimeRow.tsx:48
@@ -383,78 +381,78 @@ msgstr "Cancel"
 #: src/pages/AnimeDetailPage.tsx:668
 #: src/pages/LibraryDetailPage.tsx:747
 msgid "common.ep"
-msgstr "ep"
+msgstr "集"
 
 #: src/pages/AnimeDetailPage.tsx:280
 #: src/pages/LibraryDetailPage.tsx:1087
 msgid "common.loadFailed"
-msgstr "Failed to load"
+msgstr "加载失败"
 
 #: src/components/LoginModal.tsx:173
 #: src/pages/LibraryDetailPage.tsx:441
 #: src/pages/LibraryDetailPage.tsx:840
 #: src/pages/LoginPage.tsx:312
 msgid "common.loading"
-msgstr "Loading..."
+msgstr "加载中…"
 
 #: src/components/EpisodeListItem.tsx:57
 msgid "common.minuteShort"
-msgstr "min"
+msgstr "分钟"
 
 #: src/pages/AnimeDetailPage.tsx:289
 #: src/pages/SchedulePage.tsx:472
 msgid "common.retry"
-msgstr "Retry"
+msgstr "重试"
 
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
 msgid "episode.prefix"
-msgstr "Episode "
+msgstr "第 "
 
 #: src/components/EpisodeListItem.tsx:124
 #: src/components/EpisodeListItem.tsx:256
 msgid "episode.suffix"
-msgstr ""
+msgstr " 集"
 
 #: src/components/PreviewModal.tsx:251
 #: src/components/PreviewModal.tsx:255
 msgid "hero.details"
-msgstr "Details"
+msgstr "详情"
 
 #: src/components/HeroBanner.tsx:167
 msgid "hero.preview"
-msgstr "Preview"
+msgstr "预览"
 
 #: src/pages/HomePage.tsx:110
 msgid "home.continueWatching"
-msgstr "Continue Watching"
+msgstr "继续观看"
 
 #: src/components/LibraryEmptyState.tsx:23
 #: src/pages/LibrariesPage.tsx:369
 msgid "home.library.empty.subtitle"
-msgstr "Add a folder to start scanning"
+msgstr "添加文件夹以开始扫描"
 
 #: src/components/LibraryEmptyState.tsx:21
 #: src/pages/LibrariesPage.tsx:367
 msgid "home.library.empty.title"
-msgstr "No libraries added"
+msgstr "尚未添加媒体库"
 
 #: src/pages/HomePage.tsx:208
 #: src/pages/HomePage.tsx:228
 msgid "home.myLibraries"
-msgstr "My Libraries"
+msgstr "我的媒体库"
 
 #: src/pages/HomePage.tsx:148
 msgid "home.todaySchedule"
-msgstr "Today's Schedule"
+msgstr "今日时刻表"
 
 #: src/pages/HomePage.tsx:191
 msgid "home.trending"
-msgstr "Trending"
+msgstr "热门"
 
 #: src/pages/HomePage.tsx:253
 msgid "home.viewAll"
-msgstr "View All →"
+msgstr "查看全部 →"
 
 #: src/pages/LibrariesPage.tsx:340
 #: src/pages/LibrariesPage.tsx:375
@@ -463,351 +461,351 @@ msgstr "View All →"
 #: src/pages/LibrariesPage.tsx:3213
 #: src/pages/LibrariesPage.tsx:3298
 msgid "library.addLibrary"
-msgstr "Add Library"
+msgstr "添加媒体库"
 
 #: src/pages/LibrariesPage.tsx:588
 msgid "library.browse.folders"
-msgstr "Browse folders"
+msgstr "浏览文件夹"
 
 #: src/pages/LibrariesPage.tsx:670
 msgid "library.browse.noSubdirectories"
-msgstr "No subdirectories found"
+msgstr "找不到子目录"
 
 #: src/pages/LibrariesPage.tsx:779
 msgid "library.browse.select"
-msgstr "Select"
+msgstr "选择"
 
 #: src/pages/LibrariesPage.tsx:768
 #: src/pages/LibrariesPage.tsx:931
 #: src/pages/LibrariesPage.tsx:949
 msgid "library.browse.selected"
-msgstr "Selected"
+msgstr "已选择"
 
 #: src/pages/LibrariesPage.tsx:3362
 msgid "library.cancel"
-msgstr "Cancel"
+msgstr "取消"
 
 #: src/pages/LibrariesPage.tsx:167
 #~ msgid "library.connectSource"
-#~ msgstr "Connect a media source"
+#~ msgstr "连接媒体来源"
 
 #: src/pages/LibrariesPage.tsx:260
 #: src/pages/LibrariesPage.tsx:3350
 #: src/pages/LibrariesPage.tsx:3372
 msgid "library.delete"
-msgstr "Delete"
+msgstr "删除"
 
 #: src/pages/LibrariesPage.tsx:3354
 msgid "library.deleteConfirm"
-msgstr "All media file records will be removed. Your files on disk are unaffected."
+msgstr "所有媒体文件记录将被移除，磁盘上的文件不受影响。"
 
 #: src/pages/LibraryDetailPage.tsx:427
 msgid "library.detail.allMatched"
-msgstr "All files matched"
+msgstr "所有文件已匹配"
 
 #: src/pages/LibraryDetailPage.tsx:1166
 msgid "library.detail.autoMatch"
-msgstr "Auto Match"
+msgstr "自动匹配"
 
 #: src/pages/LibraryDetailPage.tsx:1093
 #: src/pages/LibraryDetailPage.tsx:1123
 msgid "library.detail.backToLibraries"
-msgstr "Libraries"
+msgstr "媒体库"
 
 #: src/pages/LibraryDetailPage.tsx:193
 msgid "library.detail.col.filename"
-msgstr "Filename"
+msgstr "文件名"
 
 #: src/pages/LibraryDetailPage.tsx:208
 msgid "library.detail.col.matchedAnime"
-msgstr "Matched Anime"
+msgstr "匹配的动画"
 
 #: src/pages/LibraryDetailPage.tsx:279
 #~ msgid "library.detail.col.matchedTo"
-#~ msgstr "Matched To"
+#~ msgstr "匹配至"
 
 #: src/pages/LibraryDetailPage.tsx:279
 msgid "library.detail.col.size"
-msgstr "Size"
+msgstr "大小"
 
 #: src/pages/LibraryDetailPage.tsx:267
 msgid "library.detail.col.status"
-msgstr "Status"
+msgstr "状态"
 
 #: src/pages/LibraryDetailPage.tsx:272
 msgid "library.detail.col.subs"
-msgstr "Subs"
+msgstr "字幕"
 
 #: src/pages/LibraryDetailPage.tsx:316
 #: src/pages/LibraryDetailPage.tsx:318
 msgid "library.detail.editMatch"
-msgstr "Edit"
+msgstr "编辑"
 
 #: src/pages/LibraryDetailPage.tsx:574
 msgid "library.detail.errors"
-msgstr "Errors"
+msgstr "错误"
 
 #~ msgid "library.detail.filename"
-#~ msgstr "Filename"
+#~ msgstr "文件名"
 
 #: src/pages/LibraryDetailPage.tsx:560
 msgid "library.detail.found"
-msgstr "Found"
+msgstr "已发现"
 
 #: src/pages/LibraryDetailPage.tsx:555
 msgid "library.detail.inProgress"
-msgstr "In Progress"
+msgstr "进行中"
 
 #: src/pages/LibraryDetailPage.tsx:384
 #~ msgid "library.detail.loadMore"
-#~ msgstr "Load More"
+#~ msgstr "加载更多"
 
 #: src/pages/LibraryDetailPage.tsx:293
 msgid "library.detail.match"
-msgstr "Match"
+msgstr "匹配"
 
 #: src/pages/LibraryDetailPage.tsx:389
 #: src/pages/LibraryDetailPage.tsx:563
 msgid "library.detail.matched"
-msgstr "Matched"
+msgstr "已匹配"
 
 #~ msgid "library.detail.matchedTo"
-#~ msgstr "Matched To"
+#~ msgstr "匹配至"
 
 #: src/pages/LibraryDetailPage.tsx:779
 msgid "library.detail.matchModal.change"
-msgstr "Change"
+msgstr "更改"
 
 #: src/pages/LibraryDetailPage.tsx:841
 msgid "library.detail.matchModal.confirm"
-msgstr "Confirm Match"
+msgstr "确认匹配"
 
 #~ msgid "library.detail.matchModal.failed"
-#~ msgstr "Match failed"
+#~ msgstr "匹配失败"
 
 #: src/pages/LibraryDetailPage.tsx:656
 msgid "library.detail.matchModal.matched"
-msgstr "File matched"
+msgstr "文件已匹配"
 
 #: src/pages/LibraryDetailPage.tsx:828
 msgid "library.detail.matchModal.noEpisodes"
-msgstr "No episodes found"
+msgstr "找不到集数"
 
 #: src/pages/LibraryDetailPage.tsx:725
 msgid "library.detail.matchModal.noResults"
-msgstr "No results found"
+msgstr "找不到结果"
 
 #~ msgid "library.detail.matchModal.pickEpisode"
-#~ msgstr "Pick Episode"
+#~ msgstr "选择集数"
 
 #~ msgid "library.detail.matchModal.searchAnime"
-#~ msgstr "Search anime..."
+#~ msgstr "搜索动画..."
 
 #: src/pages/LibraryDetailPage.tsx:711
 msgid "library.detail.matchModal.searchHint"
-msgstr "Search for an anime to match this file"
+msgstr "搜索动画以匹配此文件"
 
 #: src/pages/LibraryDetailPage.tsx:703
 msgid "library.detail.matchModal.searchPlaceholder"
-msgstr "Search anime..."
+msgstr "搜索动画…"
 
 #: src/pages/LibraryDetailPage.tsx:684
 msgid "library.detail.matchModal.title"
-msgstr "Match File"
+msgstr "匹配文件"
 
 #: src/pages/LibraryDetailPage.tsx:348
 #: src/pages/LibraryDetailPage.tsx:432
 msgid "library.detail.noFiles"
-msgstr "No files found"
+msgstr "找不到文件"
 
 #: src/pages/LibraryDetailPage.tsx:351
 msgid "library.detail.noFilesHint"
-msgstr "Run a scan to discover media files in this library"
+msgstr "运行扫描以发现此媒体库中的媒体文件"
 
 #: src/pages/LibraryDetailPage.tsx:511
 msgid "library.detail.noScans"
-msgstr "No scans yet"
+msgstr "尚未扫描"
 
 #: src/pages/LibraryDetailPage.tsx:514
 msgid "library.detail.noScansHint"
-msgstr "Run your first scan to see history here"
+msgstr "运行第一次扫描以查看扫描记录"
 
 #: src/pages/LibraryDetailPage.tsx:1087
 msgid "library.detail.notFound"
-msgstr "Library not found"
+msgstr "找不到媒体库"
 
 #: src/pages/LibraryDetailPage.tsx:308
 msgid "library.detail.play"
-msgstr "Play"
+msgstr "播放"
 
 #~ msgid "library.detail.runFirstScan"
-#~ msgstr "Run your first scan"
+#~ msgstr "执行首次扫描"
 
 #~ msgid "library.detail.scanHistory.duration"
-#~ msgstr "Duration"
+#~ msgstr "耗时"
 
 #~ msgid "library.detail.scanHistory.errors"
-#~ msgstr "Errors"
+#~ msgstr "错误"
 
 #~ msgid "library.detail.scanHistory.found"
-#~ msgstr "Found"
+#~ msgstr "发现"
 
 #~ msgid "library.detail.scanHistory.noScans"
-#~ msgstr "No scans yet"
+#~ msgstr "尚未扫描"
 
 #~ msgid "library.detail.scanHistory.started"
-#~ msgstr "Started"
+#~ msgstr "开始时间"
 
 #: src/pages/LibraryDetailPage.tsx:1173
 msgid "library.detail.scanNow"
-msgstr "Scan Now"
+msgstr "立即扫描"
 
 #~ msgid "library.detail.search"
-#~ msgstr "Search files..."
+#~ msgstr "搜索文件..."
 
 #: src/pages/LibraryDetailPage.tsx:380
 msgid "library.detail.searchFiles"
-msgstr "Search files..."
+msgstr "搜索文件…"
 
 #: src/pages/LibraryDetailPage.tsx:905
 #: src/pages/LibraryDetailPage.tsx:1176
 msgid "library.detail.settings"
-msgstr "Settings"
+msgstr "设置"
 
 #~ msgid "library.detail.size"
-#~ msgstr "Size"
+#~ msgstr "大小"
 
 #: src/pages/LibraryDetailPage.tsx:1252
 msgid "library.detail.stats.files"
-msgstr "files"
+msgstr "个文件"
 
 #: src/pages/LibraryDetailPage.tsx:1258
 msgid "library.detail.stats.matched"
-msgstr "matched"
+msgstr "已匹配"
 
 #: src/pages/LibraryDetailPage.tsx:1277
 msgid "library.detail.stats.size"
-msgstr "Size"
+msgstr "大小"
 
 #: src/pages/LibraryDetailPage.tsx:1270
 msgid "library.detail.stats.unmatched"
-msgstr "unmatched"
+msgstr "未匹配"
 
 #~ msgid "library.detail.status"
-#~ msgstr "Status"
+#~ msgstr "状态"
 
 #~ msgid "library.detail.subtitles"
-#~ msgstr "Subs"
+#~ msgstr "字幕"
 
 #: src/pages/LibraryDetailPage.tsx:830
 #~ msgid "library.detail.tab.allFiles"
-#~ msgstr "All Files"
+#~ msgstr "全部文件"
 
 #: src/pages/LibraryDetailPage.tsx:1031
 msgid "library.detail.tab.files"
-msgstr "Files"
+msgstr "文件"
 
 #: src/pages/LibraryDetailPage.tsx:831
 #~ msgid "library.detail.tab.matched"
-#~ msgstr "Matched"
+#~ msgstr "已匹配"
 
 #: src/pages/LibraryDetailPage.tsx:1032
 msgid "library.detail.tab.scanHistory"
-msgstr "Scan History"
+msgstr "扫描记录"
 
 #: src/pages/LibraryDetailPage.tsx:832
 #~ msgid "library.detail.tab.unmatched"
-#~ msgstr "Unmatched"
+#~ msgstr "未匹配"
 
 #: src/pages/LibraryDetailPage.tsx:754
 #~ msgid "library.detail.totalFiles"
-#~ msgstr "Total Files"
+#~ msgstr "总文件"
 
 #: src/pages/LibraryDetailPage.tsx:792
 #~ msgid "library.detail.totalSize"
-#~ msgstr "Total Size"
+#~ msgstr "总大小"
 
 #~ msgid "library.detail.unmatch"
-#~ msgstr "Unmatch"
+#~ msgstr "取消匹配"
 
 #: src/pages/LibraryDetailPage.tsx:782
 #~ msgid "library.detail.unmatched"
-#~ msgstr "Unmatched"
+#~ msgstr "未匹配"
 
 #: src/pages/LibraryDetailPage.tsx:393
 #: src/pages/LibraryDetailPage.tsx:566
 msgid "library.detail.unmatchedShort"
-msgstr "Unmatched"
+msgstr "未匹配"
 
 #: src/pages/LibrariesPage.tsx:853
 #: src/pages/LibrariesPage.tsx:971
 msgid "library.discover.browse"
-msgstr "Browse Network"
+msgstr "浏览网络"
 
 #: src/pages/LibrariesPage.tsx:847
 msgid "library.discover.noHosts"
-msgstr "No hosts found"
+msgstr "找不到主机"
 
 #: src/pages/LibrariesPage.tsx:943
 msgid "library.discover.noShares"
-msgstr "No shares found — credentials may be required"
+msgstr "找不到共享文件夹 — 可能需要验证信息"
 
 #: src/pages/LibrariesPage.tsx:836
 msgid "library.discover.scanning"
-msgstr "Scanning network..."
+msgstr "正在扫描网络…"
 
 #~ msgid "library.discover.timeout"
-#~ msgstr "Discovery timed out"
+#~ msgstr "发现超时"
 
 #: src/pages/LibrariesPage.tsx:953
 msgid "library.discover.useThisHost"
-msgstr "Use this host"
+msgstr "使用此主机"
 
 #: src/pages/LibrariesPage.tsx:250
 msgid "library.edit"
-msgstr "Edit"
+msgstr "编辑"
 
 #: src/pages/LibrariesPage.tsx:3321
 msgid "library.editLibrary"
-msgstr "Edit Library"
+msgstr "编辑媒体库"
 
 #: src/pages/LibrariesPage.tsx:1080
 #: src/pages/LibrariesPage.tsx:2866
 #: src/pages/LibraryDetailPage.tsx:937
 msgid "library.enabled"
-msgstr "Enabled"
+msgstr "已启用"
 
 #~ msgid "library.files"
-#~ msgstr "files"
+#~ msgstr "个文件"
 
 #: src/pages/LibrariesPage.tsx:1421
 #: src/pages/LibrariesPage.tsx:2635
 msgid "library.ftp.host"
-msgstr "Host"
+msgstr "主机"
 
 #: src/pages/LibrariesPage.tsx:1464
 #: src/pages/LibrariesPage.tsx:2681
 msgid "library.ftp.password"
-msgstr "Password"
+msgstr "密码"
 
 #: src/pages/LibrariesPage.tsx:1434
 #: src/pages/LibrariesPage.tsx:2650
 msgid "library.ftp.port"
-msgstr "Port"
+msgstr "端口"
 
 #: src/pages/LibrariesPage.tsx:1449
 #: src/pages/LibrariesPage.tsx:2666
 msgid "library.ftp.username"
-msgstr "Username"
+msgstr "用户名"
 
 #: src/pages/LibrariesPage.tsx:205
 msgid "library.hashing"
-msgstr "Hashing..."
+msgstr "哈希中…"
 
 #: src/pages/LibrariesPage.tsx:1490
 #: src/pages/LibrariesPage.tsx:2711
 msgid "library.http.readOnly"
-msgstr "Read-only"
+msgstr "只读"
 
 #: src/pages/LibrariesPage.tsx:1483
 #: src/pages/LibrariesPage.tsx:2702
@@ -817,169 +815,169 @@ msgstr "URL"
 #: src/pages/LibrariesPage.tsx:206
 #: src/pages/LibraryDetailPage.tsx:1165
 msgid "library.matching"
-msgstr "Matching..."
+msgstr "匹配中…"
 
 #: src/pages/LibrariesPage.tsx:1050
 #: src/pages/LibrariesPage.tsx:1975
 #: src/pages/LibrariesPage.tsx:2354
 #: src/pages/LibraryDetailPage.tsx:910
 msgid "library.name"
-msgstr "Name"
+msgstr "名称"
 
 #: src/pages/LibrariesPage.tsx:1042
 #: src/pages/LibrariesPage.tsx:1969
 #: src/pages/LibrariesPage.tsx:2343
 msgid "library.nameRequired"
-msgstr "Name required"
+msgstr "名称为必填"
 
 #: src/pages/LibrariesPage.tsx:166
 #: src/pages/LibraryDetailPage.tsx:1107
 msgid "library.neverScanned"
-msgstr "Never"
+msgstr "从未"
 
 #: src/pages/LibrariesPage.tsx:276
 msgid "library.off"
-msgstr "OFF"
+msgstr "关闭"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
-#~ msgstr "ON"
+#~ msgstr "开启"
 
 #: src/pages/LibrariesPage.tsx:3193
 msgid "library.pageTitle"
-msgstr "My Libraries"
+msgstr "我的媒体库"
 
 #: src/pages/LibrariesPage.tsx:1540
 #: src/pages/LibrariesPage.tsx:2769
 msgid "library.path"
-msgstr "Path"
+msgstr "路径"
 
 #: src/pages/LibrariesPage.tsx:1532
 #: src/pages/LibrariesPage.tsx:2759
 msgid "library.pathRequired"
-msgstr "Path required"
+msgstr "路径为必填"
 
 #: src/pages/LibrariesPage.tsx:1645
 msgid "library.rclone.availableRemotes"
-msgstr "Available Remotes"
+msgstr "可用的远端"
 
 #: src/pages/LibrariesPage.tsx:1655
 msgid "library.rclone.noRemotes"
-msgstr "No remotes found"
+msgstr "找不到远端"
 
 #: src/pages/LibrariesPage.tsx:1509
 #: src/pages/LibrariesPage.tsx:2736
 msgid "library.rclone.remoteName"
-msgstr "Remote Name"
+msgstr "远端名称"
 
 #: src/pages/LibrariesPage.tsx:1386
 #: src/pages/LibrariesPage.tsx:2599
 msgid "library.s3.accessKey"
-msgstr "Access Key"
+msgstr "访问密钥"
 
 #: src/pages/LibrariesPage.tsx:1359
 #: src/pages/LibrariesPage.tsx:2569
 msgid "library.s3.bucket"
-msgstr "Bucket"
+msgstr "存储桶"
 
 #: src/pages/LibrariesPage.tsx:1345
 #: src/pages/LibrariesPage.tsx:2554
 msgid "library.s3.endpoint"
-msgstr "Endpoint"
+msgstr "端点"
 
 #: src/pages/LibrariesPage.tsx:1372
 #: src/pages/LibrariesPage.tsx:2584
 msgid "library.s3.region"
-msgstr "Region"
+msgstr "区域"
 
 #: src/pages/LibrariesPage.tsx:1401
 #: src/pages/LibrariesPage.tsx:2614
 msgid "library.s3.secretKey"
-msgstr "Secret Key"
+msgstr "密钥"
 
 #: src/pages/LibrariesPage.tsx:3327
 #: src/pages/LibraryDetailPage.tsx:965
 msgid "library.saveChanges"
-msgstr "Save Changes"
+msgstr "保存更改"
 
 #: src/pages/LibrariesPage.tsx:1617
 #: src/pages/LibrariesPage.tsx:2387
 #: src/pages/LibrariesPage.tsx:2891
 #: src/pages/LibraryDetailPage.tsx:964
 msgid "library.saving"
-msgstr "Saving…"
+msgstr "保存中…"
 
 #: src/pages/LibrariesPage.tsx:240
 msgid "library.scan"
-msgstr "Scan"
+msgstr "扫描"
 
 #: src/pages/LibrariesPage.tsx:1587
 #: src/pages/LibrariesPage.tsx:2848
 #: src/pages/LibraryDetailPage.tsx:923
 msgid "library.scanInterval"
-msgstr "Scan Interval (min)"
+msgstr "扫描间隔（分钟）"
 
 #: src/pages/LibrariesPage.tsx:204
 #: src/pages/LibrariesPage.tsx:240
 #: src/pages/LibraryDetailPage.tsx:1173
 msgid "library.scanning"
-msgstr "Scanning"
+msgstr "扫描中"
 
 #: src/pages/LibrariesPage.tsx:1200
 #: src/pages/LibrariesPage.tsx:2406
 msgid "library.sftp.host"
-msgstr "Host"
+msgstr "主机"
 
 #: src/pages/LibrariesPage.tsx:1243
 #: src/pages/LibrariesPage.tsx:2452
 msgid "library.sftp.password"
-msgstr "Password"
+msgstr "密码"
 
 #: src/pages/LibrariesPage.tsx:1213
 #: src/pages/LibrariesPage.tsx:2421
 msgid "library.sftp.port"
-msgstr "Port"
+msgstr "端口"
 
 #: src/pages/LibrariesPage.tsx:1228
 #: src/pages/LibrariesPage.tsx:2437
 msgid "library.sftp.username"
-msgstr "Username"
+msgstr "用户名"
 
 #: src/pages/LibrariesPage.tsx:1180
 #: src/pages/LibrariesPage.tsx:2216
 msgid "library.smb.domain"
-msgstr "Domain"
+msgstr "域"
 
 #: src/pages/LibrariesPage.tsx:1096
 msgid "library.smb.host"
-msgstr "Host"
+msgstr "主机"
 
 #: src/pages/LibrariesPage.tsx:1165
 #: src/pages/LibrariesPage.tsx:2201
 msgid "library.smb.password"
-msgstr "Password"
+msgstr "密码"
 
 #: src/pages/LibrariesPage.tsx:1118
 msgid "library.smb.port"
-msgstr "Port"
+msgstr "端口"
 
 #: src/pages/LibrariesPage.tsx:1134
 msgid "library.smb.share"
-msgstr "Share"
+msgstr "共享"
 
 #: src/pages/LibrariesPage.tsx:1150
 #: src/pages/LibrariesPage.tsx:2186
 msgid "library.smb.username"
-msgstr "Username"
+msgstr "用户名"
 
 #: src/pages/LibrariesPage.tsx:328
 #~ msgid "library.sourceType"
-#~ msgstr "Source Type"
+#~ msgstr "来源类型"
 
 #: src/pages/LibrariesPage.tsx:982
 #: src/pages/LibrariesPage.tsx:1784
 msgid "library.sourceType.local"
-msgstr "Local"
+msgstr "本地"
 
 #: src/pages/LibrariesPage.tsx:984
 #: src/pages/LibrariesPage.tsx:1796
@@ -993,58 +991,58 @@ msgstr "SMB"
 
 #: src/pages/LibrariesPage.tsx:454
 msgid "library.testConnection"
-msgstr "Test Connection"
+msgstr "测试连接"
 
 #: src/pages/LibrariesPage.tsx:460
 msgid "library.testConnection.failed"
-msgstr "Connection Failed"
+msgstr "连接失败"
 
 #: src/pages/LibrariesPage.tsx:459
 msgid "library.testConnection.success"
-msgstr "Connected"
+msgstr "已连接"
 
 #: src/pages/LibrariesPage.tsx:453
 msgid "library.testConnection.testing"
-msgstr "Testing..."
+msgstr "测试中…"
 
 #: src/pages/LibrariesPage.tsx:3103
 msgid "library.toast.added"
-msgstr "Library added"
+msgstr "媒体库已添加"
 
 #: src/pages/LibrariesPage.tsx:3127
 msgid "library.toast.deleted"
-msgstr "Library deleted"
+msgstr "媒体库已删除"
 
 #: src/pages/LibraryDetailPage.tsx:1026
 msgid "library.toast.matchFailed"
-msgstr "Auto matching failed"
+msgstr "自动匹配失败"
 
 #: src/pages/LibraryDetailPage.tsx:1023
 msgid "library.toast.matchStarted"
-msgstr "Auto matching started"
+msgstr "自动匹配已开始"
 
 #: src/pages/LibrariesPage.tsx:2598
 #: src/pages/LibraryDetailPage.tsx:850
 #~ msgid "library.toast.scanComplete"
-#~ msgstr "Scan complete"
+#~ msgstr "扫描完成"
 
 #: src/pages/LibraryDetailPage.tsx:1016
 msgid "library.toast.scanFailed"
-msgstr "Scan failed"
+msgstr "扫描失败"
 
 #: src/pages/LibraryDetailPage.tsx:1013
 msgid "library.toast.scanStarted"
-msgstr "Scan started"
+msgstr "扫描已开始"
 
 #: src/pages/LibrariesPage.tsx:3117
 #: src/pages/LibraryDetailPage.tsx:896
 msgid "library.toast.updated"
-msgstr "Library updated"
+msgstr "媒体库已更新"
 
 #: src/pages/LibrariesPage.tsx:1324
 #: src/pages/LibrariesPage.tsx:2533
 msgid "library.webdav.password"
-msgstr "Password"
+msgstr "密码"
 
 #: src/pages/LibrariesPage.tsx:1264
 #: src/pages/LibrariesPage.tsx:2473
@@ -1054,33 +1052,33 @@ msgstr "URL"
 #: src/pages/LibrariesPage.tsx:1309
 #: src/pages/LibrariesPage.tsx:2518
 msgid "library.webdav.username"
-msgstr "Username"
+msgstr "用户名"
 
 #: src/pages/LibrariesPage.tsx:1279
 #: src/pages/LibrariesPage.tsx:2488
 msgid "library.webdav.vendor"
-msgstr "Vendor"
+msgstr "供应商"
 
 #: src/pages/LibrariesPage.tsx:1298
 #: src/pages/LibrariesPage.tsx:2507
 msgid "library.webdav.vendorOther"
-msgstr "Other WebDAV"
+msgstr "其他 WebDAV"
 
 #: src/pages/LibrariesPage.tsx:2832
 msgid "library.wizard.advanced"
-msgstr "Advanced"
+msgstr "高级"
 
 #: src/pages/LibrariesPage.tsx:1943
 msgid "library.wizard.changeSource"
-msgstr "Change source"
+msgstr "更改来源"
 
 #: src/pages/LibrariesPage.tsx:1894
 msgid "library.wizard.chooseSource"
-msgstr "Choose a source type"
+msgstr "选择来源类型"
 
 #: src/pages/LibrariesPage.tsx:1849
 msgid "library.wizard.dropbox.desc"
-msgstr "Access files from Dropbox"
+msgstr "从 Dropbox 访问文件"
 
 #: src/pages/LibrariesPage.tsx:991
 #: src/pages/LibrariesPage.tsx:1848
@@ -1089,7 +1087,7 @@ msgstr "Dropbox"
 
 #: src/pages/LibrariesPage.tsx:1803
 msgid "library.wizard.ftp.desc"
-msgstr "Connect via FTP file transfer"
+msgstr "通过 FTP 文件传输连接"
 
 #: src/pages/LibrariesPage.tsx:985
 #: src/pages/LibrariesPage.tsx:1802
@@ -1098,7 +1096,7 @@ msgstr "FTP"
 
 #: src/pages/LibrariesPage.tsx:1837
 msgid "library.wizard.gdrive.desc"
-msgstr "Access files from Google Drive"
+msgstr "从 Google Drive 访问文件"
 
 #: src/pages/LibrariesPage.tsx:989
 #: src/pages/LibrariesPage.tsx:1836
@@ -1107,11 +1105,11 @@ msgstr "Google Drive"
 
 #: src/pages/LibrariesPage.tsx:1149
 #~ msgid "library.wizard.hideManual"
-#~ msgstr "Hide manual fields"
+#~ msgstr "隐藏手动输入"
 
 #: src/pages/LibrariesPage.tsx:1809
 msgid "library.wizard.http.desc"
-msgstr "Stream from a web server"
+msgstr "从网页服务器串流"
 
 #: src/pages/LibrariesPage.tsx:986
 #: src/pages/LibrariesPage.tsx:1808
@@ -1120,11 +1118,11 @@ msgstr "HTTP"
 
 #: src/pages/LibrariesPage.tsx:1785
 msgid "library.wizard.local.desc"
-msgstr "Scan a folder on this server"
+msgstr "扫描此服务器上的文件夹"
 
 #: src/pages/LibrariesPage.tsx:1843
 msgid "library.wizard.onedrive.desc"
-msgstr "Access files from OneDrive"
+msgstr "从 OneDrive 访问文件"
 
 #: src/pages/LibrariesPage.tsx:990
 #: src/pages/LibrariesPage.tsx:1842
@@ -1133,15 +1131,15 @@ msgstr "OneDrive"
 
 #: src/pages/LibrariesPage.tsx:2218
 msgid "library.wizard.optional"
-msgstr "optional"
+msgstr "选填"
 
 #: src/pages/LibrariesPage.tsx:1149
 #~ msgid "library.wizard.orManual"
-#~ msgstr "or enter manually"
+#~ msgstr "或手动输入"
 
 #: src/pages/LibrariesPage.tsx:1826
 msgid "library.wizard.s3.desc"
-msgstr "Amazon S3 or compatible storage"
+msgstr "Amazon S3 或兼容的存储服务"
 
 #: src/pages/LibrariesPage.tsx:988
 #: src/pages/LibrariesPage.tsx:1825
@@ -1150,69 +1148,69 @@ msgstr "S3"
 
 #: src/pages/LibrariesPage.tsx:1815
 msgid "library.wizard.section.cloud"
-msgstr "Cloud & WebDAV"
+msgstr "云端与 WebDAV"
 
 #: src/pages/LibrariesPage.tsx:1832
 msgid "library.wizard.section.rclone"
-msgstr "Import from Rclone"
+msgstr "从 Rclone 导入"
 
 #: src/pages/LibrariesPage.tsx:1780
 msgid "library.wizard.section.storage"
-msgstr "Storage"
+msgstr "存储"
 
 #: src/pages/LibrariesPage.tsx:1797
 msgid "library.wizard.sftp.desc"
-msgstr "Connect via SSH file transfer"
+msgstr "通过 SSH 文件传输连接"
 
 #: src/pages/LibrariesPage.tsx:2289
 msgid "library.wizard.smb.asUser"
-msgstr "as"
+msgstr "以"
 
 #: src/pages/LibrariesPage.tsx:2175
 #: src/pages/LibrariesPage.tsx:2297
 msgid "library.wizard.smb.change"
-msgstr "Change"
+msgstr "更改"
 
 #: src/pages/LibrariesPage.tsx:744
 #: src/pages/LibrariesPage.tsx:2066
 msgid "library.wizard.smb.chooseServer"
-msgstr "Choose a server"
+msgstr "选择服务器"
 
 #: src/pages/LibrariesPage.tsx:2237
 msgid "library.wizard.smb.connect"
-msgstr "Connect"
+msgstr "连接"
 
 #: src/pages/LibrariesPage.tsx:2006
 msgid "library.wizard.smb.credentials"
-msgstr "Credentials"
+msgstr "验证信息"
 
 #: src/pages/LibrariesPage.tsx:1791
 msgid "library.wizard.smb.desc"
-msgstr "Connect to a Windows or NAS share"
+msgstr "连接到 Windows 或 NAS 共享"
 
 #: src/pages/LibrariesPage.tsx:2087
 msgid "library.wizard.smb.enterManually"
-msgstr "Enter server address manually"
+msgstr "手动输入服务器地址"
 
 #: src/pages/LibrariesPage.tsx:2011
 msgid "library.wizard.smb.folder"
-msgstr "Folder"
+msgstr "文件夹"
 
 #: src/pages/LibrariesPage.tsx:2356
 msgid "library.wizard.smb.nameHint"
-msgstr "display name in your library list"
+msgstr "在媒体库列表中显示的名称"
 
 #: src/pages/LibrariesPage.tsx:2114
 msgid "library.wizard.smb.next"
-msgstr "Next"
+msgstr "下一步"
 
 #: src/pages/LibrariesPage.tsx:2001
 msgid "library.wizard.smb.server"
-msgstr "Server"
+msgstr "服务器"
 
 #: src/pages/LibrariesPage.tsx:1820
 msgid "library.wizard.webdav.desc"
-msgstr "Connect to a WebDAV server"
+msgstr "连接到 WebDAV 服务器"
 
 #: src/pages/LibrariesPage.tsx:987
 #: src/pages/LibrariesPage.tsx:1819
@@ -1221,25 +1219,25 @@ msgstr "WebDAV"
 
 #: src/routes/__root.tsx:133
 #~ msgid "nav.discover"
-#~ msgstr "Discover"
+#~ msgstr "探索"
 
 #: src/components/AppSidebar.tsx:35
 msgid "nav.downloads"
-msgstr "Downloads"
+msgstr "下载"
 
 #: src/components/AppSidebar.tsx:26
 #: src/components/AppSidebar.tsx:223
 msgid "nav.home"
-msgstr "Home"
+msgstr "首页"
 
 #: src/components/AppSidebar.tsx:36
 #: src/components/AppSidebar.tsx:226
 msgid "nav.libraries"
-msgstr "Library"
+msgstr "媒体库"
 
 #: src/components/AppSidebar.tsx:227
 msgid "nav.more"
-msgstr "More"
+msgstr "更多"
 
 #: src/components/AppSidebar.tsx:30
 msgid "nav.rss"
@@ -1248,312 +1246,312 @@ msgstr "RSS"
 #: src/components/AppSidebar.tsx:27
 #: src/components/AppSidebar.tsx:224
 msgid "nav.schedule"
-msgstr "Schedule"
+msgstr "时刻表"
 
 #: src/components/AppSidebar.tsx:28
 #: src/components/AppSidebar.tsx:225
 msgid "nav.search"
-msgstr "Search"
+msgstr "搜索"
 
 #: src/components/AppSidebar.tsx:38
 #: src/components/AppSidebar.tsx:154
 msgid "nav.settings"
-msgstr "Settings"
+msgstr "设置"
 
 #: src/components/AppSidebar.tsx:34
 msgid "nav.torrent"
-msgstr "Torrent"
+msgstr "种子"
 
 #: src/components/AppSidebar.tsx:29
 msgid "nav.trending"
-msgstr "Trending"
+msgstr "热门"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
-#~ msgstr "First page"
+#~ msgstr "第一页"
 
 #: src/components/DataPagination.tsx:147
 msgid "pagination.go"
-msgstr "Go"
+msgstr "前往"
 
 #: src/components/MotionPagination.tsx:230
 #~ msgid "pagination.lastPage"
-#~ msgstr "Last page"
+#~ msgstr "最后一页"
 
 #: src/components/DataPagination.tsx:135
 msgid "pagination.nextPage"
-msgstr "Next page"
+msgstr "下一页"
 
 #: src/components/DataPagination.tsx:102
 msgid "pagination.of"
-msgstr "of"
+msgstr "/"
 
 #: src/components/DataPagination.tsx:115
 msgid "pagination.prevPage"
-msgstr "Previous page"
+msgstr "上一页"
 
 #: src/components/DataPagination.tsx:78
 msgid "pagination.rows"
-msgstr "Rows"
+msgstr "行"
 
 #: src/pages/LibraryDetailPage.tsx:1190
 msgid "scan.phase.hashing"
-msgstr "Hashing"
+msgstr "哈希中"
 
 #: src/pages/LibraryDetailPage.tsx:1191
 msgid "scan.phase.matching"
-msgstr "Matching"
+msgstr "匹配中"
 
 #: src/pages/LibraryDetailPage.tsx:1188
 msgid "scan.phase.scanning"
-msgstr "Scanning"
+msgstr "扫描中"
 
 #: src/pages/LibrariesPage.tsx:3206
 msgid "scan.scanAll"
-msgstr "Scan All"
+msgstr "全部扫描"
 
 #: src/pages/LibraryDetailPage.tsx:386
 #: src/pages/SchedulePage.tsx:496
 msgid "schedule.all"
-msgstr "All"
+msgstr "全部"
 
 #: src/pages/SchedulePage.tsx:465
 msgid "schedule.loadFailed"
-msgstr "Failed to load calendar"
+msgstr "加载日历失败"
 
 #: src/pages/SchedulePage.tsx:601
 msgid "schedule.noShows"
-msgstr "No shows scheduled"
+msgstr "没有排定的节目"
 
 #: src/pages/SchedulePage.tsx:74
 msgid "schedule.season.fall"
-msgstr "Fall"
+msgstr "秋季"
 
 #: src/pages/SchedulePage.tsx:72
 msgid "schedule.season.spring"
-msgstr "Spring"
+msgstr "春季"
 
 #: src/pages/SchedulePage.tsx:73
 msgid "schedule.season.summer"
-msgstr "Summer"
+msgstr "夏季"
 
 #: src/pages/SchedulePage.tsx:71
 msgid "schedule.season.winter"
-msgstr "Winter"
+msgstr "冬季"
 
 #: src/pages/SchedulePage.tsx:577
 #: src/pages/SchedulePage.tsx:629
 msgid "schedule.today"
-msgstr "Today"
+msgstr "今天"
 
 #: src/pages/SchedulePage.tsx:452
 msgid "schedule.totalShows"
-msgstr "shows this week"
+msgstr "部本周节目"
 
 #: src/pages/SearchPage.tsx:170
 msgid "search.emptyHint"
-msgstr "Search your favorite anime"
+msgstr "搜索您喜欢的动画"
 
 #: src/pages/SearchPage.tsx:131
 msgid "search.inputPlaceholder"
-msgstr "Search your favorite anime..."
+msgstr "搜索您喜欢的动画…"
 
 #: src/pages/SearchPage.tsx:212
 msgid "search.loadingMore"
-msgstr "Loading…"
+msgstr "加载中…"
 
 #: src/components/PreviewModal.tsx:347
 #: src/pages/SearchPage.tsx:213
 msgid "search.loadMore"
-msgstr "Load More"
+msgstr "加载更多"
 
 #: src/components/CommandPalette.tsx:172
 msgid "search.noResults"
-msgstr "No results found"
+msgstr "找不到结果"
 
 #: src/pages/SearchPage.tsx:225
 #: src/pages/SearchPage.tsx:226
 msgid "search.noResultsFor"
-msgstr "No results for"
+msgstr "找不到相关结果："
 
 #: src/components/CommandPalette.tsx:113
 msgid "search.placeholder"
-msgstr "Search anime..."
+msgstr "搜索动画…"
 
 #: src/pages/SearchPage.tsx:111
 msgid "search.title"
-msgstr "Search"
+msgstr "搜索"
 
 #: src/pages/settings/GeneralPanel.tsx:65
 msgid "settings.appearance.language"
-msgstr "Language"
+msgstr "语言"
 
 #: src/pages/SettingsPage.tsx:367
 #~ msgid "settings.appearance.title"
-#~ msgstr "Appearance"
+#~ msgstr "外观设置"
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.autoAddToCollection"
-msgstr "Auto-add matched anime"
+msgstr "自动加入收藏"
 
 #: src/pages/settings/GeneralPanel.tsx:80
 msgid "settings.autoAddToCollectionDesc"
-msgstr "Automatically add newly matched anime to your collection"
+msgstr "新匹配的动画自动加入收藏"
 
 #: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.collection"
-msgstr "Collection"
+msgstr "收藏"
 
 #: src/pages/SettingsPage.tsx:115
 #~ msgid "settings.dandanplay.title"
-#~ msgstr "DandanPlay Settings"
+#~ msgstr "DandanPlay 设置"
 
 #: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.general.subtitle"
-msgstr "Language, collection, and app preferences"
+msgstr "语言、收藏与应用偏好设置"
 
 #: src/pages/settings/IntegrationsPanel.tsx:184
 msgid "settings.integration.authUrlFailed"
-msgstr "Failed to get auth URL"
+msgstr "获取授权链接失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:291
 msgid "settings.integration.connect"
-msgstr "Connect Account"
+msgstr "连接"
 
 #: src/pages/settings/IntegrationsPanel.tsx:214
 msgid "settings.integration.connected"
-msgstr "Connected"
+msgstr "已连接"
 
 #: src/pages/settings/IntegrationsPanel.tsx:290
 msgid "settings.integration.connecting"
-msgstr "Connecting…"
+msgstr "连接中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:306
 msgid "settings.integration.disconnect"
-msgstr "Disconnect"
+msgstr "断开连接"
 
 #: src/pages/settings/IntegrationsPanel.tsx:190
 msgid "settings.integration.disconnected"
-msgstr "Disconnected"
+msgstr "已断开连接"
 
 #: src/pages/settings/IntegrationsPanel.tsx:193
 msgid "settings.integration.disconnectFailed"
-msgstr "Disconnect failed"
+msgstr "断开连接失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:305
 msgid "settings.integration.disconnecting"
-msgstr "Disconnecting…"
+msgstr "断开连接中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:215
 msgid "settings.integration.notConnected"
-msgstr "Not connected"
+msgstr "未连接"
 
 #: src/pages/settings/IntegrationsPanel.tsx:317
 msgid "settings.integration.sync"
-msgstr "Sync Progress"
+msgstr "同步"
 
 #: src/pages/settings/IntegrationsPanel.tsx:203
 msgid "settings.integration.syncComplete"
-msgstr "Sync complete"
+msgstr "同步完成"
 
 #: src/pages/settings/IntegrationsPanel.tsx:203
 msgid "settings.integration.syncErrors"
-msgstr "errors"
+msgstr "个错误"
 
 #: src/pages/settings/IntegrationsPanel.tsx:206
 msgid "settings.integration.syncFailed"
-msgstr "Sync failed"
+msgstr "同步失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:316
 msgid "settings.integration.syncing"
-msgstr "Syncing…"
+msgstr "同步中…"
 
 #: src/pages/SettingsPage.tsx:465
 #~ msgid "settings.integration.title"
-#~ msgstr "Integration"
+#~ msgstr "联动"
 
 #: src/pages/settings/IntegrationsPanel.tsx:339
 msgid "settings.integrations.description"
-msgstr "Connect external services and sync your data"
+msgstr "连接外部服务并同步数据"
 
 #: src/pages/settings/AboutPanel.tsx:113
 #: src/pages/settings/SettingsLayout.tsx:24
 msgid "settings.nav.about"
-msgstr "About"
+msgstr "关于"
 
 #: src/pages/settings/SettingsLayout.tsx:22
 msgid "settings.nav.account"
-msgstr "Account"
+msgstr "账号"
 
 #: src/pages/settings/GeneralPanel.tsx:58
 #: src/pages/settings/SettingsLayout.tsx:19
 msgid "settings.nav.general"
-msgstr "General"
+msgstr "通用"
 
 #: src/pages/settings/IntegrationsPanel.tsx:336
 #: src/pages/settings/SettingsLayout.tsx:20
 msgid "settings.nav.integrations"
-msgstr "Integrations"
+msgstr "集成"
 
 #: src/pages/settings/PlayerPanel.tsx:90
 #: src/pages/settings/SettingsLayout.tsx:21
 msgid "settings.nav.player"
-msgstr "Player"
+msgstr "播放器"
 
 #: src/pages/settings/SettingsLayout.tsx:23
 #: src/pages/settings/StoragePanel.tsx:64
 msgid "settings.nav.storage"
-msgstr "Storage"
+msgstr "存储空间"
 
 #: src/pages/settings/SettingsLayout.tsx:48
 msgid "settings.pageTitle"
-msgstr "Settings"
+msgstr "设置"
 
 #: src/pages/settings/PlayerPanel.tsx:94
 msgid "settings.player.danmaku"
-msgstr "Danmaku"
+msgstr "弹幕"
 
 #: src/pages/settings/PlayerPanel.tsx:107
 msgid "settings.player.danmakuEnabled"
-msgstr "Danmaku enabled by default"
+msgstr "显示弹幕"
 
 #: src/pages/settings/PlayerPanel.tsx:153
 msgid "settings.player.danmakuFontSize"
-msgstr "Danmaku font size"
+msgstr "字体大小"
 
 #: src/pages/settings/PlayerPanel.tsx:127
 msgid "settings.player.danmakuOpacity"
-msgstr "Danmaku opacity"
+msgstr "不透明度"
 
 #: src/pages/settings/PlayerPanel.tsx:169
 msgid "settings.player.danmakuSpeed"
-msgstr "Danmaku speed"
+msgstr "速度"
 
 #: src/pages/settings/PlayerPanel.tsx:30
 msgid "settings.player.speed.fast"
-msgstr "Fast"
+msgstr "快"
 
 #: src/pages/settings/PlayerPanel.tsx:29
 msgid "settings.player.speed.normal"
-msgstr "Normal"
+msgstr "正常"
 
 #: src/pages/settings/PlayerPanel.tsx:28
 msgid "settings.player.speed.slow"
-msgstr "Slow"
+msgstr "慢"
 
 #: src/pages/settings/PlayerPanel.tsx:91
 msgid "settings.player.subtitle"
-msgstr "Danmaku and playback preferences"
+msgstr "弹幕与播放偏好设置"
 
 #: src/pages/SettingsPage.tsx:252
 #~ msgid "settings.player.title"
-#~ msgstr "Player Settings"
+#~ msgstr "播放器设置"
 
 #: src/pages/settings/IntegrationsPanel.tsx:119
 #: src/pages/settings/IntegrationsPanel.tsx:276
 #: src/pages/settings/PlayerPanel.tsx:193
 msgid "settings.save"
-msgstr "Save"
+msgstr "保存"
 
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
@@ -1561,240 +1559,240 @@ msgstr "Save"
 #: src/pages/settings/IntegrationsPanel.tsx:173
 #: src/pages/settings/PlayerPanel.tsx:52
 msgid "settings.saved"
-msgstr "Saved"
+msgstr "已保存"
 
 #: src/pages/settings/GeneralPanel.tsx:41
 #: src/pages/settings/IntegrationsPanel.tsx:58
 #: src/pages/settings/IntegrationsPanel.tsx:176
 #: src/pages/settings/PlayerPanel.tsx:55
 msgid "settings.saveFailed"
-msgstr "Save failed"
+msgstr "保存失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:118
 #: src/pages/settings/IntegrationsPanel.tsx:275
 #: src/pages/settings/PlayerPanel.tsx:192
 msgid "settings.saving"
-msgstr "Saving…"
+msgstr "保存中…"
 
 #: src/pages/settings/StoragePanel.tsx:93
 msgid "settings.storage.actions"
-msgstr "Actions"
+msgstr "操作"
 
 #: src/pages/settings/StoragePanel.tsx:113
 msgid "settings.storage.clearConfirmDesc"
-msgstr "This will delete all transcoded video files. This cannot be undone."
+msgstr "这将删除所有转码视频文件，此操作无法撤销。"
 
 #: src/pages/settings/StoragePanel.tsx:110
 msgid "settings.storage.clearConfirmTitle"
-msgstr "Clear transcode cache?"
+msgstr "清除转码缓存？"
 
 #: src/pages/settings/StoragePanel.tsx:47
 msgid "settings.storage.cleared"
-msgstr "Cache cleared"
+msgstr "缓存已清除"
 
 #: src/pages/settings/StoragePanel.tsx:51
 msgid "settings.storage.clearFailed"
-msgstr "Failed to clear cache"
+msgstr "清除缓存失败"
 
 #: src/pages/settings/StoragePanel.tsx:123
 msgid "settings.storage.clearing"
-msgstr "Clearing..."
+msgstr "清除中…"
 
 #: src/pages/settings/StoragePanel.tsx:101
 #: src/pages/settings/StoragePanel.tsx:124
 msgid "settings.storage.clearTranscode"
-msgstr "Clear transcoded files"
+msgstr "清除转码文件"
 
 #: src/pages/settings/StoragePanel.tsx:71
 msgid "settings.storage.diskUsage"
-msgstr "Disk Usage"
+msgstr "磁盘使用量"
 
 #: src/pages/settings/StoragePanel.tsx:78
 msgid "settings.storage.files"
-msgstr "files"
+msgstr "个文件"
 
 #: src/pages/settings/StoragePanel.tsx:67
 msgid "settings.storage.subtitle"
-msgstr "Manage transcoded files and cache"
+msgstr "管理转码文件与缓存"
 
 #: src/pages/settings/StoragePanel.tsx:88
 msgid "settings.storage.transcodeDesc"
-msgstr "Transcoded video files stored in temporary directory"
+msgstr "转码视频文件存储在临时目录"
 
 #~ msgid "watch.audioTrack"
-#~ msgstr "Audio"
+#~ msgstr "音轨"
 
 #: src/components/watch/WatchTitleBar.tsx:121
 msgid "watch.collect"
-msgstr "Collect"
+msgstr "收藏"
 
 #: src/components/watch/WatchTitleBar.tsx:116
 msgid "watch.collected"
-msgstr "Collected"
+msgstr "已收藏"
 
 #: src/components/watch/BangumiComments.tsx:43
 msgid "watch.comments"
-msgstr "Comments"
+msgstr "评论"
 
 #: src/components/watch/EpisodeGrid.tsx:105
 msgid "watch.completed"
-msgstr "Watched"
+msgstr "已观看"
 
 #: src/components/DanmakuSettings.tsx:50
 #: src/components/DanmakuSettings.tsx:154
 #: src/components/watch/DanmakuBar.tsx:51
 #: src/components/watch/EpisodeSidebar.tsx:34
 msgid "watch.danmaku"
-msgstr "Danmaku"
+msgstr "弹幕"
 
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
-#~ msgstr "comments"
+#~ msgstr "条弹幕"
 
 #: src/components/DanmakuSettings.tsx:113
 #: src/components/DanmakuSettings.tsx:214
 msgid "watch.danmaku.fast"
-msgstr "Fast"
+msgstr "快"
 
 #: src/components/DanmakuSettings.tsx:83
 #: src/components/DanmakuSettings.tsx:186
 msgid "watch.danmaku.fontSize"
-msgstr "Font Size"
+msgstr "字体大小"
 
 #: src/components/watch/DanmakuList.tsx:25
 msgid "watch.danmaku.noData"
-msgstr "No danmaku data"
+msgstr "没有弹幕数据"
 
 #: src/components/DanmakuSettings.tsx:112
 #: src/components/DanmakuSettings.tsx:213
 msgid "watch.danmaku.normal"
-msgstr "Normal"
+msgstr "正常"
 
 #: src/components/DanmakuSettings.tsx:67
 #: src/components/DanmakuSettings.tsx:170
 msgid "watch.danmaku.opacity"
-msgstr "Opacity"
+msgstr "不透明度"
 
 #: src/components/watch/DanmakuBar.tsx:61
 msgid "watch.danmaku.placeholder"
-msgstr "Send danmaku..."
+msgstr "发送弹幕…"
 
 #: src/components/watch/DanmakuBar.tsx:72
 msgid "watch.danmaku.send"
-msgstr "Send"
+msgstr "发送"
 
 #: src/components/DanmakuSettings.tsx:34
 msgid "watch.danmaku.short"
-msgstr "D"
+msgstr "弹"
 
 #: src/components/DanmakuSettings.tsx:111
 #: src/components/DanmakuSettings.tsx:212
 msgid "watch.danmaku.slow"
-msgstr "Slow"
+msgstr "慢"
 
 #: src/components/DanmakuSettings.tsx:107
 #: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.speed"
-msgstr "Speed"
+msgstr "速度"
 
 #: src/components/watch/TechInfoPopover.tsx:99
 msgid "watch.directStream"
-msgstr "Direct Stream"
+msgstr "直接串流"
 
 #: src/components/watch/EpisodeSidebar.tsx:31
 #: src/components/watch/WatchTitleBar.tsx:78
 msgid "watch.episodes"
-msgstr "Episodes"
+msgstr "集数"
 
 #~ msgid "watch.error.goBack"
-#~ msgstr "Go back"
+#~ msgstr "返回"
 
 #~ msgid "watch.error.notFound"
-#~ msgstr "File not found"
+#~ msgstr "文件不存在"
 
 #~ msgid "watch.error.notFoundDesc"
-#~ msgstr "The file may have been moved or deleted"
+#~ msgstr "文件可能已被移动或删除"
 
 #~ msgid "watch.error.offline"
-#~ msgstr "Media library offline"
+#~ msgstr "媒体库离线"
 
 #~ msgid "watch.error.offlineDesc"
-#~ msgstr "Cannot connect to the storage server"
+#~ msgstr "无法连接到存储服务器"
 
 #~ msgid "watch.error.retry"
-#~ msgstr "Retry"
+#~ msgstr "重试"
 
 #~ msgid "watch.error.transcodeError"
-#~ msgstr "Transcode failed"
+#~ msgstr "转码失败"
 
 #: src/components/watch/EpisodeGrid.tsx:109
 msgid "watch.inProgress"
-msgstr "In progress"
+msgstr "观看中"
 
 #: src/pages/WatchPage.tsx:211
 #~ msgid "watch.mediaFile"
-#~ msgstr "Media File"
+#~ msgstr "媒体文件"
 
 #: src/pages/WatchPage.tsx:427
 msgid "watch.notFound"
-msgstr "Anime not found"
+msgstr "找不到动画"
 
 #: src/components/watch/TechInfoPopover.tsx:44
 #: src/components/watch/TechInfoPopover.tsx:74
 msgid "watch.playbackInfo"
-msgstr "Playback Info"
+msgstr "播放信息"
 
 #: src/components/watch/TechInfoPopover.tsx:96
 msgid "watch.playbackMethod"
-msgstr "Playback Method"
+msgstr "播放方式"
 
 #: src/components/watch/EpisodeGrid.tsx:101
 msgid "watch.playing"
-msgstr "Playing"
+msgstr "播放中"
 
 #: src/components/watch/WatchTitleBar.tsx:98
 msgid "watch.rate"
-msgstr "Rate"
+msgstr "评分"
 
 #: src/components/watch/RelatedAnimeList.tsx:33
 msgid "watch.related"
-msgstr "Related"
+msgstr "相关推荐"
 
 #~ msgid "watch.resumeFrom"
-#~ msgstr "Resuming from {time}"
+#~ msgstr "从 {time} 继续播放"
 
 #: src/components/watch/WatchTitleBar.tsx:43
 msgid "watch.scorePrompt"
-msgstr "Rate (1-10)"
+msgstr "评分 (1-10)"
 
 #: src/components/watch/WatchTitleBar.tsx:136
 msgid "watch.share"
-msgstr "Share"
+msgstr "分享"
 
 #: src/components/watch/BangumiComments.tsx:71
 msgid "watch.showLess"
-msgstr "Show less"
+msgstr "收起"
 
 #: src/components/watch/BangumiComments.tsx:71
 msgid "watch.showMore"
-msgstr "Show more"
+msgstr "查看更多"
 
 #: src/components/watch/TechInfoPopover.tsx:116
 msgid "watch.subtitle"
-msgstr "Subtitles"
+msgstr "字幕"
 
 #~ msgid "watch.supported"
-#~ msgstr "Supported"
+#~ msgstr "支持"
 
 #: src/components/watch/TechInfoPopover.tsx:103
 msgid "watch.transcode"
-msgstr "HLS Transcode"
+msgstr "HLS 转码"
 
 #~ msgid "watch.transcodeReady"
-#~ msgstr "Transcode ready"
+#~ msgstr "转码完成"
 
 #~ msgid "watch.transcoding"
-#~ msgstr "Transcoding..."
+#~ msgstr "转码中..."
 
 #~ msgid "watch.unsupported"
-#~ msgstr "Not supported"
+#~ msgstr "不支持"

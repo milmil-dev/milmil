@@ -1,377 +1,379 @@
 msgid ""
 msgstr ""
+"POT-Creation-Date: 2026-02-25 00:00+0000\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh-Hans\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: @lingui/cli\n"
+"Language: ko\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Plural-Forms: \n"
 
 #. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:87
 msgid "watch.resumeFrom"
-msgstr ""
+msgstr "여기서 이어보기"
 
 #: src/pages/settings/AboutPanel.tsx:152
 msgid "about.export"
-msgstr ""
+msgstr "내보내기"
 
 #: src/pages/settings/AboutPanel.tsx:62
 msgid "about.exportFailed"
-msgstr ""
+msgstr "내보내기 실패"
 
 #: src/pages/settings/AboutPanel.tsx:144
 msgid "about.exportSettings"
-msgstr ""
+msgstr "설정 내보내기"
 
 #: src/pages/settings/AboutPanel.tsx:147
 msgid "about.exportSettingsDesc"
-msgstr ""
+msgstr "설정을 JSON 파일로 다운로드"
 
 #: src/pages/settings/AboutPanel.tsx:60
 msgid "about.exportSuccess"
-msgstr ""
+msgstr "설정을 내보냈습니다"
 
 #: src/pages/settings/AboutPanel.tsx:173
 #: src/pages/settings/AboutPanel.tsx:235
 msgid "about.import"
-msgstr ""
+msgstr "가져오기"
 
 #: src/pages/settings/AboutPanel.tsx:227
 msgid "about.importConfirmDesc"
-msgstr ""
+msgstr "현재 설정이 덮어쓰여집니다. 이 작업은 취소할 수 없습니다."
 
 #: src/pages/settings/AboutPanel.tsx:225
 msgid "about.importConfirmTitle"
-msgstr ""
+msgstr "설정을 가져오시겠습니까?"
 
 #: src/pages/settings/AboutPanel.tsx:84
 msgid "about.importFailed"
-msgstr ""
+msgstr "가져오기 실패"
 
 #: src/pages/settings/AboutPanel.tsx:161
 msgid "about.importSettings"
-msgstr ""
+msgstr "설정 가져오기"
 
 #: src/pages/settings/AboutPanel.tsx:164
 msgid "about.importSettingsDesc"
-msgstr ""
+msgstr "JSON 파일에서 설정 복원"
 
 #: src/pages/settings/AboutPanel.tsx:82
 msgid "about.importSuccess"
-msgstr ""
+msgstr "설정을 가져왔습니다"
 
 #: src/pages/settings/AboutPanel.tsx:208
 msgid "about.links"
-msgstr ""
+msgstr "링크"
 
 #: src/pages/settings/AboutPanel.tsx:201
 #: src/pages/settings/AboutPanel.tsx:256
 msgid "about.reset"
-msgstr ""
+msgstr "초기화"
 
 #: src/pages/settings/AboutPanel.tsx:247
 msgid "about.resetConfirmDesc"
-msgstr ""
+msgstr "모든 설정이 기본값으로 초기화됩니다. 이 작업은 취소할 수 없습니다."
 
 #: src/pages/settings/AboutPanel.tsx:245
 msgid "about.resetConfirmTitle"
-msgstr ""
+msgstr "기본값으로 초기화하시겠습니까?"
 
 #: src/pages/settings/AboutPanel.tsx:95
 msgid "about.resetFailed"
-msgstr ""
+msgstr "초기화 실패"
 
 #: src/pages/settings/AboutPanel.tsx:93
 msgid "about.resetSuccess"
-msgstr ""
+msgstr "설정을 초기화했습니다"
 
 #: src/pages/settings/AboutPanel.tsx:189
 msgid "about.resetToDefaults"
-msgstr ""
+msgstr "기본값으로 초기화"
 
 #: src/pages/settings/AboutPanel.tsx:192
 msgid "about.resetToDefaultsDesc"
-msgstr ""
+msgstr "모든 설정을 기본값으로 복원"
 
 #: src/pages/settings/AboutPanel.tsx:139
 msgid "about.settingsManagement"
-msgstr ""
+msgstr "설정 관리"
 
 #: src/pages/settings/AboutPanel.tsx:116
 msgid "about.subtitle"
-msgstr ""
+msgstr "milmil 정보"
 
 #: src/pages/settings/AboutPanel.tsx:121
 msgid "about.systemInfo"
-msgstr ""
+msgstr "시스템 정보"
 
 #: src/components/AppSidebar.tsx:138
 msgid "account.local"
-msgstr "本机账号"
+msgstr "로컬 계정"
 
 #: src/components/AppSidebar.tsx:166
 msgid "account.logout"
-msgstr "登出"
+msgstr "로그아웃"
 
 #: src/pages/AnimeDetailPage.tsx:742
 msgid "anime.characters"
-msgstr "角色"
+msgstr "캐릭터"
 
 #: src/pages/AnimeDetailPage.tsx:855
 msgid "anime.comments"
-msgstr "吐槽"
+msgstr "댓글"
 
 #: src/pages/AnimeDetailPage.tsx:611
 msgid "anime.continueWatching"
-msgstr "继续观看"
+msgstr "이어보기"
 
 #: src/pages/AnimeDetailPage.tsx:615
 msgid "anime.episode"
-msgstr "第"
+msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
 #: src/pages/AnimeDetailPage.tsx:666
 msgid "anime.episodes"
-msgstr "剧集"
+msgstr "에피소드"
 
 #: src/pages/AnimeDetailPage.tsx:528
 msgid "anime.myScore"
-msgstr "我的评分"
+msgstr "내 평점"
 
 #~ msgid "anime.noLocalFile"
-#~ msgstr "无本地文件"
+#~ msgstr "No local file"
 
 #: src/pages/AnimeDetailPage.tsx:280
 msgid "anime.notFound"
-msgstr "找不到此动画"
+msgstr "애니메이션을 찾을 수 없습니다"
 
 #: src/components/PreviewModal.tsx:221
 #: src/pages/AnimeDetailPage.tsx:496
 msgid "anime.ratings"
-msgstr "人评价"
+msgstr "평점"
 
 #: src/pages/AnimeDetailPage.tsx:789
 msgid "anime.recommendations"
-msgstr "推荐"
+msgstr "추천"
 
 #: src/pages/AnimeDetailPage.tsx:763
 msgid "anime.relations"
-msgstr "相关作品"
+msgstr "관련 작품"
 
 #: src/pages/AnimeDetailPage.tsx:807
 msgid "anime.reviews"
-msgstr "评论"
+msgstr "리뷰"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
-#~ msgstr "分"
+#~ msgstr "pts"
 
 #~ msgid "anime.season"
-#~ msgstr "季"
+#~ msgstr "Season"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
-#~ msgstr "简介"
+#~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
 #: src/pages/AnimeDetailPage.tsx:712
 msgid "anime.trailer"
-msgstr "预告片"
+msgstr "예고편"
 
 #: src/pages/AnimeDetailPage.tsx:748
 msgid "anime.voiceActor"
-msgstr "声优"
+msgstr "CV"
 
 #: src/pages/LoginPage.tsx:34
 #~ msgid "auth.error.invalidCredentials"
-#~ msgstr "账号或密码错误"
+#~ msgstr "Invalid username or password"
 
 #: src/hooks/use-auth.ts:43
 msgid "auth.error.loginFailed"
-msgstr "登录失败"
+msgstr "로그인 실패"
 
 #: src/hooks/use-auth.ts:58
 msgid "auth.error.setupFailed"
-msgstr "设置失败"
+msgstr "설정 실패"
 
 #: src/pages/LibrariesPage.tsx:3170
 #: src/pages/LibraryDetailPage.tsx:1063
 msgid "auth.libraries.signInSubtitle"
-msgstr "登录以管理您的媒体库"
+msgstr "라이브러리에 접근하려면 로그인하세요"
 
 #: src/pages/LibrariesPage.tsx:3167
 #: src/pages/LibraryDetailPage.tsx:1060
 msgid "auth.libraries.signInTitle"
-msgstr "需要登录"
+msgstr "로그인 필요"
 
 #: src/pages/LoginPage.tsx:79
 #~ msgid "auth.login.loading"
-#~ msgstr "登录中..."
+#~ msgstr "Signing in..."
 
 #: src/components/LoginModal.tsx:150
 #: src/pages/LoginPage.tsx:263
 msgid "auth.login.password"
-msgstr "密码"
+msgstr "비밀번호"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3177
 #: src/pages/LibraryDetailPage.tsx:1066
 #: src/pages/LoginPage.tsx:324
 msgid "auth.login.submit"
-msgstr "登录"
+msgstr "로그인"
 
 #: src/pages/LoginPage.tsx:168
 msgid "auth.login.subtitle"
-msgstr "你的个人动画媒体服务器"
+msgstr "개인 애니메이션 미디어 서버"
 
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
 #: src/pages/LoginPage.tsx:191
 #: src/pages/LoginPage.tsx:209
 msgid "auth.login.title"
-msgstr "登录 milmil"
+msgstr "milmil 로그인"
 
 #: src/components/LoginModal.tsx:127
 #: src/pages/LoginPage.tsx:235
 msgid "auth.login.username"
-msgstr "账号"
+msgstr "사용자 이름"
 
 #: src/pages/SetupPage.tsx:40
 msgid "auth.setup.error"
-msgstr "设置失败，请再试一次。"
+msgstr "설정에 실패했습니다. 다시 시도해 주세요."
 
 #: src/pages/SetupPage.tsx:110
 msgid "auth.setup.loading"
-msgstr "创建账号中..."
+msgstr "계정 생성 중…"
 
 #: src/pages/SetupPage.tsx:88
 msgid "auth.setup.password"
-msgstr "密码"
+msgstr "비밀번호"
 
 #: src/components/LoginModal.tsx:41
 #: src/pages/LoginPage.tsx:110
 #: src/pages/SetupPage.tsx:29
 msgid "auth.setup.passwordTooShort"
-msgstr "密码至少需要 8 个字符"
+msgstr "비밀번호는 최소 8자 이상이어야 합니다"
 
 #: src/components/LoginModal.tsx:176
 #: src/pages/LoginPage.tsx:325
 #: src/pages/SetupPage.tsx:110
 msgid "auth.setup.submit"
-msgstr "创建账号"
+msgstr "계정 만들기"
 
 #: src/components/LoginModal.tsx:112
 #: src/pages/LoginPage.tsx:215
 #: src/pages/SetupPage.tsx:51
 msgid "auth.setup.subtitle"
-msgstr "创建管理员账号以开始使用。"
+msgstr "관리자 계정을 만들어 시작하세요."
 
 #: src/components/LoginModal.tsx:104
 #: src/pages/LoginPage.tsx:202
 #: src/pages/SetupPage.tsx:49
 msgid "auth.setup.title"
-msgstr "欢迎使用 milmil"
+msgstr "milmil에 오신 것을 환영합니다"
 
 #: src/pages/SetupPage.tsx:65
 msgid "auth.setup.username"
-msgstr "账号"
+msgstr "사용자 이름"
 
 #: src/pages/CollectionPage.tsx:17
 msgid "collection.all"
-msgstr "全部"
+msgstr "전체"
 
 #: src/pages/CollectionPage.tsx:181
 msgid "collection.changeStatus"
-msgstr "更改状态"
+msgstr "상태 변경"
 
 #: src/pages/AnimeDetailPage.tsx:517
 #: src/pages/CollectionPage.tsx:20
 #: src/pages/CollectionPage.tsx:36
 msgid "collection.completed"
-msgstr "已看"
+msgstr "완료"
 
 #: src/pages/AnimeDetailPage.tsx:523
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.dropped"
-msgstr "弃番"
+msgstr "중단"
 
 #: src/pages/CollectionPage.tsx:371
 msgid "collection.empty"
-msgstr "收藏里还没有动画"
+msgstr "컬렉션에 애니메이션이 없습니다"
 
 #: src/pages/CollectionPage.tsx:374
 msgid "collection.emptyDesc"
-msgstr "扫描媒体库并匹配动画来开始建立收藏"
+msgstr "라이브러리를 스캔하고 애니메이션을 매치하여 컬렉션을 만드세요"
 
 #~ msgid "collection.episodes"
-#~ msgstr "集"
+#~ msgstr "episodes"
 
 #: src/pages/CollectionPage.tsx:381
 msgid "collection.goToLibraries"
-msgstr "前往媒体库"
+msgstr "라이브러리로 이동"
 
 #: src/pages/AnimeDetailPage.tsx:520
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.paused"
-msgstr "搁置"
+msgstr "일시 중단"
 
 #: src/pages/AnimeDetailPage.tsx:514
 #: src/pages/CollectionPage.tsx:19
 #: src/pages/CollectionPage.tsx:35
 msgid "collection.planning"
-msgstr "想看"
+msgstr "시청 예정"
 
 #: src/pages/LibrariesPage.tsx:3057
 msgid "collection.recentlyMatched"
-msgstr "最近匹配"
+msgstr "최근 매치"
 
 #: src/pages/CollectionPage.tsx:344
 msgid "collection.searchPlaceholder"
-msgstr "搜索动画..."
+msgstr "애니메이션 검색…"
 
 #: src/pages/CollectionPage.tsx:357
 msgid "collection.sortByName"
-msgstr "名称"
+msgstr "이름"
 
 #: src/pages/CollectionPage.tsx:354
 msgid "collection.sortByRecent"
-msgstr "最近匹配"
+msgstr "최근 매치"
 
 #: src/components/AppSidebar.tsx:37
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
-msgstr "收藏"
+msgstr "컬렉션"
 
 #: src/pages/CollectionPage.tsx:279
 msgid "collection.totalShows"
-msgstr "部"
+msgstr "작품"
 
 #: src/pages/LibrariesPage.tsx:3063
 msgid "collection.viewAll"
-msgstr "查看全部"
+msgstr "전체 보기"
 
 #: src/pages/AnimeDetailPage.tsx:511
 #: src/pages/CollectionPage.tsx:18
 #: src/pages/CollectionPage.tsx:34
 msgid "collection.watching"
-msgstr "在看"
+msgstr "시청 중"
 
 #: src/pages/AnimeDetailPage.tsx:295
 msgid "common.backHome"
-msgstr "返回首页"
+msgstr "홈으로 돌아가기"
 
 #: src/pages/settings/AboutPanel.tsx:232
 #: src/pages/settings/AboutPanel.tsx:251
 #: src/pages/settings/StoragePanel.tsx:117
 msgid "common.cancel"
-msgstr ""
+msgstr "취소"
 
 #: src/components/AnimeCard.tsx:67
 #: src/components/AnimeRow.tsx:48
@@ -381,78 +383,78 @@ msgstr ""
 #: src/pages/AnimeDetailPage.tsx:668
 #: src/pages/LibraryDetailPage.tsx:747
 msgid "common.ep"
-msgstr "集"
+msgstr "화"
 
 #: src/pages/AnimeDetailPage.tsx:280
 #: src/pages/LibraryDetailPage.tsx:1087
 msgid "common.loadFailed"
-msgstr "加载失败"
+msgstr "불러오기 실패"
 
 #: src/components/LoginModal.tsx:173
 #: src/pages/LibraryDetailPage.tsx:441
 #: src/pages/LibraryDetailPage.tsx:840
 #: src/pages/LoginPage.tsx:312
 msgid "common.loading"
-msgstr "加载中..."
+msgstr "불러오는 중…"
 
 #: src/components/EpisodeListItem.tsx:57
 msgid "common.minuteShort"
-msgstr "分钟"
+msgstr "분"
 
 #: src/pages/AnimeDetailPage.tsx:289
 #: src/pages/SchedulePage.tsx:472
 msgid "common.retry"
-msgstr "重试"
+msgstr "다시 시도"
 
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
 msgid "episode.prefix"
-msgstr "第"
+msgstr "제"
 
 #: src/components/EpisodeListItem.tsx:124
 #: src/components/EpisodeListItem.tsx:256
 msgid "episode.suffix"
-msgstr "集"
+msgstr "화"
 
 #: src/components/PreviewModal.tsx:251
 #: src/components/PreviewModal.tsx:255
 msgid "hero.details"
-msgstr "详情"
+msgstr "상세"
 
 #: src/components/HeroBanner.tsx:167
 msgid "hero.preview"
-msgstr "预览"
+msgstr "미리보기"
 
 #: src/pages/HomePage.tsx:110
 msgid "home.continueWatching"
-msgstr "继续观看"
+msgstr "이어보기"
 
 #: src/components/LibraryEmptyState.tsx:23
 #: src/pages/LibrariesPage.tsx:369
 msgid "home.library.empty.subtitle"
-msgstr "添加文件夹开始扫描"
+msgstr "폴더를 추가하여 스캔 시작"
 
 #: src/components/LibraryEmptyState.tsx:21
 #: src/pages/LibrariesPage.tsx:367
 msgid "home.library.empty.title"
-msgstr "尚未添加媒体库"
+msgstr "추가된 라이브러리가 없습니다"
 
 #: src/pages/HomePage.tsx:208
 #: src/pages/HomePage.tsx:228
 msgid "home.myLibraries"
-msgstr "我的媒体库"
+msgstr "내 라이브러리"
 
 #: src/pages/HomePage.tsx:148
 msgid "home.todaySchedule"
-msgstr "今日新番"
+msgstr "오늘 편성표"
 
 #: src/pages/HomePage.tsx:191
 msgid "home.trending"
-msgstr "热门动画"
+msgstr "인기"
 
 #: src/pages/HomePage.tsx:253
 msgid "home.viewAll"
-msgstr "查看全部 →"
+msgstr "전체 보기 →"
 
 #: src/pages/LibrariesPage.tsx:340
 #: src/pages/LibrariesPage.tsx:375
@@ -461,351 +463,351 @@ msgstr "查看全部 →"
 #: src/pages/LibrariesPage.tsx:3213
 #: src/pages/LibrariesPage.tsx:3298
 msgid "library.addLibrary"
-msgstr "添加媒体库"
+msgstr "라이브러리 추가"
 
 #: src/pages/LibrariesPage.tsx:588
 msgid "library.browse.folders"
-msgstr "浏览文件夹"
+msgstr "폴더 찾아보기"
 
 #: src/pages/LibrariesPage.tsx:670
 msgid "library.browse.noSubdirectories"
-msgstr "未找到子目录"
+msgstr "하위 디렉토리를 찾을 수 없습니다"
 
 #: src/pages/LibrariesPage.tsx:779
 msgid "library.browse.select"
-msgstr "选择"
+msgstr "선택"
 
 #: src/pages/LibrariesPage.tsx:768
 #: src/pages/LibrariesPage.tsx:931
 #: src/pages/LibrariesPage.tsx:949
 msgid "library.browse.selected"
-msgstr "已选择"
+msgstr "선택됨"
 
 #: src/pages/LibrariesPage.tsx:3362
 msgid "library.cancel"
-msgstr "取消"
+msgstr "취소"
 
 #: src/pages/LibrariesPage.tsx:167
 #~ msgid "library.connectSource"
-#~ msgstr "连接媒体来源"
+#~ msgstr "Connect a media source"
 
 #: src/pages/LibrariesPage.tsx:260
 #: src/pages/LibrariesPage.tsx:3350
 #: src/pages/LibrariesPage.tsx:3372
 msgid "library.delete"
-msgstr "删除"
+msgstr "삭제"
 
 #: src/pages/LibrariesPage.tsx:3354
 msgid "library.deleteConfirm"
-msgstr "所有媒体文件记录将被移除，磁盘上的文件不受影响。"
+msgstr "모든 미디어 파일 기록이 삭제됩니다. 디스크의 파일은 영향받지 않습니다."
 
 #: src/pages/LibraryDetailPage.tsx:427
 msgid "library.detail.allMatched"
-msgstr "所有文件已匹配"
+msgstr "모든 파일이 매치되었습니다"
 
 #: src/pages/LibraryDetailPage.tsx:1166
 msgid "library.detail.autoMatch"
-msgstr "自动匹配"
+msgstr "자동 매치"
 
 #: src/pages/LibraryDetailPage.tsx:1093
 #: src/pages/LibraryDetailPage.tsx:1123
 msgid "library.detail.backToLibraries"
-msgstr "媒体库"
+msgstr "라이브러리"
 
 #: src/pages/LibraryDetailPage.tsx:193
 msgid "library.detail.col.filename"
-msgstr "文件名"
+msgstr "파일명"
 
 #: src/pages/LibraryDetailPage.tsx:208
 msgid "library.detail.col.matchedAnime"
-msgstr "匹配动画"
+msgstr "매치된 애니메이션"
 
 #: src/pages/LibraryDetailPage.tsx:279
 #~ msgid "library.detail.col.matchedTo"
-#~ msgstr "匹配至"
+#~ msgstr "Matched To"
 
 #: src/pages/LibraryDetailPage.tsx:279
 msgid "library.detail.col.size"
-msgstr "大小"
+msgstr "크기"
 
 #: src/pages/LibraryDetailPage.tsx:267
 msgid "library.detail.col.status"
-msgstr "状态"
+msgstr "상태"
 
 #: src/pages/LibraryDetailPage.tsx:272
 msgid "library.detail.col.subs"
-msgstr "字幕"
+msgstr "자막"
 
 #: src/pages/LibraryDetailPage.tsx:316
 #: src/pages/LibraryDetailPage.tsx:318
 msgid "library.detail.editMatch"
-msgstr "编辑"
+msgstr "편집"
 
 #: src/pages/LibraryDetailPage.tsx:574
 msgid "library.detail.errors"
-msgstr "错误"
+msgstr "오류"
 
 #~ msgid "library.detail.filename"
-#~ msgstr "文件名"
+#~ msgstr "Filename"
 
 #: src/pages/LibraryDetailPage.tsx:560
 msgid "library.detail.found"
-msgstr "发现"
+msgstr "발견"
 
 #: src/pages/LibraryDetailPage.tsx:555
 msgid "library.detail.inProgress"
-msgstr "进行中"
+msgstr "진행 중"
 
 #: src/pages/LibraryDetailPage.tsx:384
 #~ msgid "library.detail.loadMore"
-#~ msgstr "加载更多"
+#~ msgstr "Load More"
 
 #: src/pages/LibraryDetailPage.tsx:293
 msgid "library.detail.match"
-msgstr "匹配"
+msgstr "매치"
 
 #: src/pages/LibraryDetailPage.tsx:389
 #: src/pages/LibraryDetailPage.tsx:563
 msgid "library.detail.matched"
-msgstr "已匹配"
+msgstr "매치됨"
 
 #~ msgid "library.detail.matchedTo"
-#~ msgstr "匹配至"
+#~ msgstr "Matched To"
 
 #: src/pages/LibraryDetailPage.tsx:779
 msgid "library.detail.matchModal.change"
-msgstr "更换"
+msgstr "변경"
 
 #: src/pages/LibraryDetailPage.tsx:841
 msgid "library.detail.matchModal.confirm"
-msgstr "确认匹配"
+msgstr "매치 확인"
 
 #~ msgid "library.detail.matchModal.failed"
-#~ msgstr "匹配失败"
+#~ msgstr "Match failed"
 
 #: src/pages/LibraryDetailPage.tsx:656
 msgid "library.detail.matchModal.matched"
-msgstr "文件已匹配"
+msgstr "파일이 매치되었습니다"
 
 #: src/pages/LibraryDetailPage.tsx:828
 msgid "library.detail.matchModal.noEpisodes"
-msgstr "未找到集数"
+msgstr "에피소드를 찾을 수 없습니다"
 
 #: src/pages/LibraryDetailPage.tsx:725
 msgid "library.detail.matchModal.noResults"
-msgstr "未找到结果"
+msgstr "결과를 찾을 수 없습니다"
 
 #~ msgid "library.detail.matchModal.pickEpisode"
-#~ msgstr "选择集数"
+#~ msgstr "Pick Episode"
 
 #~ msgid "library.detail.matchModal.searchAnime"
-#~ msgstr "搜索动画..."
+#~ msgstr "Search anime..."
 
 #: src/pages/LibraryDetailPage.tsx:711
 msgid "library.detail.matchModal.searchHint"
-msgstr "搜索动画以匹配此文件"
+msgstr "이 파일에 매치할 애니메이션을 검색"
 
 #: src/pages/LibraryDetailPage.tsx:703
 msgid "library.detail.matchModal.searchPlaceholder"
-msgstr "搜索动画..."
+msgstr "애니메이션 검색…"
 
 #: src/pages/LibraryDetailPage.tsx:684
 msgid "library.detail.matchModal.title"
-msgstr "匹配文件"
+msgstr "파일 매치"
 
 #: src/pages/LibraryDetailPage.tsx:348
 #: src/pages/LibraryDetailPage.tsx:432
 msgid "library.detail.noFiles"
-msgstr "未找到文件"
+msgstr "파일을 찾을 수 없습니다"
 
 #: src/pages/LibraryDetailPage.tsx:351
 msgid "library.detail.noFilesHint"
-msgstr "运行扫描以发现此媒体库中的文件"
+msgstr "스캔을 실행하여 이 라이브러리의 미디어 파일을 검색"
 
 #: src/pages/LibraryDetailPage.tsx:511
 msgid "library.detail.noScans"
-msgstr "尚未扫描"
+msgstr "아직 스캔되지 않았습니다"
 
 #: src/pages/LibraryDetailPage.tsx:514
 msgid "library.detail.noScansHint"
-msgstr "执行首次扫描以查看历史记录"
+msgstr "첫 스캔을 실행하여 기록을 확인하세요"
 
 #: src/pages/LibraryDetailPage.tsx:1087
 msgid "library.detail.notFound"
-msgstr "未找到媒体库"
+msgstr "라이브러리를 찾을 수 없습니다"
 
 #: src/pages/LibraryDetailPage.tsx:308
 msgid "library.detail.play"
-msgstr "播放"
+msgstr "재생"
 
 #~ msgid "library.detail.runFirstScan"
-#~ msgstr "执行首次扫描"
+#~ msgstr "Run your first scan"
 
 #~ msgid "library.detail.scanHistory.duration"
-#~ msgstr "耗时"
+#~ msgstr "Duration"
 
 #~ msgid "library.detail.scanHistory.errors"
-#~ msgstr "错误"
+#~ msgstr "Errors"
 
 #~ msgid "library.detail.scanHistory.found"
-#~ msgstr "发现"
+#~ msgstr "Found"
 
 #~ msgid "library.detail.scanHistory.noScans"
-#~ msgstr "尚未扫描"
+#~ msgstr "No scans yet"
 
 #~ msgid "library.detail.scanHistory.started"
-#~ msgstr "开始时间"
+#~ msgstr "Started"
 
 #: src/pages/LibraryDetailPage.tsx:1173
 msgid "library.detail.scanNow"
-msgstr "立即扫描"
+msgstr "지금 스캔"
 
 #~ msgid "library.detail.search"
-#~ msgstr "搜索文件..."
+#~ msgstr "Search files..."
 
 #: src/pages/LibraryDetailPage.tsx:380
 msgid "library.detail.searchFiles"
-msgstr "搜索文件..."
+msgstr "파일 검색…"
 
 #: src/pages/LibraryDetailPage.tsx:905
 #: src/pages/LibraryDetailPage.tsx:1176
 msgid "library.detail.settings"
-msgstr "设置"
+msgstr "설정"
 
 #~ msgid "library.detail.size"
-#~ msgstr "大小"
+#~ msgstr "Size"
 
 #: src/pages/LibraryDetailPage.tsx:1252
 msgid "library.detail.stats.files"
-msgstr "个文件"
+msgstr "파일"
 
 #: src/pages/LibraryDetailPage.tsx:1258
 msgid "library.detail.stats.matched"
-msgstr "已匹配"
+msgstr "매치됨"
 
 #: src/pages/LibraryDetailPage.tsx:1277
 msgid "library.detail.stats.size"
-msgstr "大小"
+msgstr "크기"
 
 #: src/pages/LibraryDetailPage.tsx:1270
 msgid "library.detail.stats.unmatched"
-msgstr "未匹配"
+msgstr "미매치"
 
 #~ msgid "library.detail.status"
-#~ msgstr "状态"
+#~ msgstr "Status"
 
 #~ msgid "library.detail.subtitles"
-#~ msgstr "字幕"
+#~ msgstr "Subs"
 
 #: src/pages/LibraryDetailPage.tsx:830
 #~ msgid "library.detail.tab.allFiles"
-#~ msgstr "全部文件"
+#~ msgstr "All Files"
 
 #: src/pages/LibraryDetailPage.tsx:1031
 msgid "library.detail.tab.files"
-msgstr "文件"
+msgstr "파일"
 
 #: src/pages/LibraryDetailPage.tsx:831
 #~ msgid "library.detail.tab.matched"
-#~ msgstr "已匹配"
+#~ msgstr "Matched"
 
 #: src/pages/LibraryDetailPage.tsx:1032
 msgid "library.detail.tab.scanHistory"
-msgstr "扫描记录"
+msgstr "스캔 기록"
 
 #: src/pages/LibraryDetailPage.tsx:832
 #~ msgid "library.detail.tab.unmatched"
-#~ msgstr "未匹配"
+#~ msgstr "Unmatched"
 
 #: src/pages/LibraryDetailPage.tsx:754
 #~ msgid "library.detail.totalFiles"
-#~ msgstr "总文件"
+#~ msgstr "Total Files"
 
 #: src/pages/LibraryDetailPage.tsx:792
 #~ msgid "library.detail.totalSize"
-#~ msgstr "总大小"
+#~ msgstr "Total Size"
 
 #~ msgid "library.detail.unmatch"
-#~ msgstr "取消匹配"
+#~ msgstr "Unmatch"
 
 #: src/pages/LibraryDetailPage.tsx:782
 #~ msgid "library.detail.unmatched"
-#~ msgstr "未匹配"
+#~ msgstr "Unmatched"
 
 #: src/pages/LibraryDetailPage.tsx:393
 #: src/pages/LibraryDetailPage.tsx:566
 msgid "library.detail.unmatchedShort"
-msgstr "未匹配"
+msgstr "미매치"
 
 #: src/pages/LibrariesPage.tsx:853
 #: src/pages/LibrariesPage.tsx:971
 msgid "library.discover.browse"
-msgstr "浏览网络"
+msgstr "네트워크 찾아보기"
 
 #: src/pages/LibrariesPage.tsx:847
 msgid "library.discover.noHosts"
-msgstr "未找到主机"
+msgstr "호스트를 찾을 수 없습니다"
 
 #: src/pages/LibrariesPage.tsx:943
 msgid "library.discover.noShares"
-msgstr "未找到共享 — 可能需要登录凭证"
+msgstr "공유를 찾을 수 없습니다 — 인증 정보가 필요할 수 있습니다"
 
 #: src/pages/LibrariesPage.tsx:836
 msgid "library.discover.scanning"
-msgstr "扫描网络中..."
+msgstr "네트워크 스캔 중…"
 
 #~ msgid "library.discover.timeout"
-#~ msgstr "发现超时"
+#~ msgstr "Discovery timed out"
 
 #: src/pages/LibrariesPage.tsx:953
 msgid "library.discover.useThisHost"
-msgstr "使用此主机"
+msgstr "이 호스트 사용"
 
 #: src/pages/LibrariesPage.tsx:250
 msgid "library.edit"
-msgstr "编辑"
+msgstr "편집"
 
 #: src/pages/LibrariesPage.tsx:3321
 msgid "library.editLibrary"
-msgstr "编辑媒体库"
+msgstr "라이브러리 편집"
 
 #: src/pages/LibrariesPage.tsx:1080
 #: src/pages/LibrariesPage.tsx:2866
 #: src/pages/LibraryDetailPage.tsx:937
 msgid "library.enabled"
-msgstr "启用"
+msgstr "활성화됨"
 
 #~ msgid "library.files"
-#~ msgstr "个文件"
+#~ msgstr "files"
 
 #: src/pages/LibrariesPage.tsx:1421
 #: src/pages/LibrariesPage.tsx:2635
 msgid "library.ftp.host"
-msgstr "主机"
+msgstr "호스트"
 
 #: src/pages/LibrariesPage.tsx:1464
 #: src/pages/LibrariesPage.tsx:2681
 msgid "library.ftp.password"
-msgstr "密码"
+msgstr "비밀번호"
 
 #: src/pages/LibrariesPage.tsx:1434
 #: src/pages/LibrariesPage.tsx:2650
 msgid "library.ftp.port"
-msgstr "端口"
+msgstr "포트"
 
 #: src/pages/LibrariesPage.tsx:1449
 #: src/pages/LibrariesPage.tsx:2666
 msgid "library.ftp.username"
-msgstr "账号"
+msgstr "사용자 이름"
 
 #: src/pages/LibrariesPage.tsx:205
 msgid "library.hashing"
-msgstr "计算哈希中"
+msgstr "해싱 중…"
 
 #: src/pages/LibrariesPage.tsx:1490
 #: src/pages/LibrariesPage.tsx:2711
 msgid "library.http.readOnly"
-msgstr "只读"
+msgstr "읽기 전용"
 
 #: src/pages/LibrariesPage.tsx:1483
 #: src/pages/LibrariesPage.tsx:2702
@@ -815,169 +817,169 @@ msgstr "URL"
 #: src/pages/LibrariesPage.tsx:206
 #: src/pages/LibraryDetailPage.tsx:1165
 msgid "library.matching"
-msgstr "匹配中..."
+msgstr "매칭 중…"
 
 #: src/pages/LibrariesPage.tsx:1050
 #: src/pages/LibrariesPage.tsx:1975
 #: src/pages/LibrariesPage.tsx:2354
 #: src/pages/LibraryDetailPage.tsx:910
 msgid "library.name"
-msgstr "名称"
+msgstr "이름"
 
 #: src/pages/LibrariesPage.tsx:1042
 #: src/pages/LibrariesPage.tsx:1969
 #: src/pages/LibrariesPage.tsx:2343
 msgid "library.nameRequired"
-msgstr "请输入名称"
+msgstr "이름은 필수입니다"
 
 #: src/pages/LibrariesPage.tsx:166
 #: src/pages/LibraryDetailPage.tsx:1107
 msgid "library.neverScanned"
-msgstr "未扫描"
+msgstr "없음"
 
 #: src/pages/LibrariesPage.tsx:276
 msgid "library.off"
-msgstr "关闭"
+msgstr "꺼짐"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
-#~ msgstr "开启"
+#~ msgstr "ON"
 
 #: src/pages/LibrariesPage.tsx:3193
 msgid "library.pageTitle"
-msgstr "我的媒体库"
+msgstr "내 라이브러리"
 
 #: src/pages/LibrariesPage.tsx:1540
 #: src/pages/LibrariesPage.tsx:2769
 msgid "library.path"
-msgstr "路径"
+msgstr "경로"
 
 #: src/pages/LibrariesPage.tsx:1532
 #: src/pages/LibrariesPage.tsx:2759
 msgid "library.pathRequired"
-msgstr "请输入路径"
+msgstr "경로는 필수입니다"
 
 #: src/pages/LibrariesPage.tsx:1645
 msgid "library.rclone.availableRemotes"
-msgstr "可用的远程"
+msgstr "사용 가능한 리모트"
 
 #: src/pages/LibrariesPage.tsx:1655
 msgid "library.rclone.noRemotes"
-msgstr "未找到远程"
+msgstr "리모트를 찾을 수 없습니다"
 
 #: src/pages/LibrariesPage.tsx:1509
 #: src/pages/LibrariesPage.tsx:2736
 msgid "library.rclone.remoteName"
-msgstr "远程名称"
+msgstr "리모트 이름"
 
 #: src/pages/LibrariesPage.tsx:1386
 #: src/pages/LibrariesPage.tsx:2599
 msgid "library.s3.accessKey"
-msgstr "访问密钥"
+msgstr "액세스 키"
 
 #: src/pages/LibrariesPage.tsx:1359
 #: src/pages/LibrariesPage.tsx:2569
 msgid "library.s3.bucket"
-msgstr "存储桶"
+msgstr "버킷"
 
 #: src/pages/LibrariesPage.tsx:1345
 #: src/pages/LibrariesPage.tsx:2554
 msgid "library.s3.endpoint"
-msgstr "端点"
+msgstr "엔드포인트"
 
 #: src/pages/LibrariesPage.tsx:1372
 #: src/pages/LibrariesPage.tsx:2584
 msgid "library.s3.region"
-msgstr "区域"
+msgstr "리전"
 
 #: src/pages/LibrariesPage.tsx:1401
 #: src/pages/LibrariesPage.tsx:2614
 msgid "library.s3.secretKey"
-msgstr "密钥"
+msgstr "시크릿 키"
 
 #: src/pages/LibrariesPage.tsx:3327
 #: src/pages/LibraryDetailPage.tsx:965
 msgid "library.saveChanges"
-msgstr "保存更改"
+msgstr "변경 사항 저장"
 
 #: src/pages/LibrariesPage.tsx:1617
 #: src/pages/LibrariesPage.tsx:2387
 #: src/pages/LibrariesPage.tsx:2891
 #: src/pages/LibraryDetailPage.tsx:964
 msgid "library.saving"
-msgstr "保存中…"
+msgstr "저장 중…"
 
 #: src/pages/LibrariesPage.tsx:240
 msgid "library.scan"
-msgstr "扫描"
+msgstr "스캔"
 
 #: src/pages/LibrariesPage.tsx:1587
 #: src/pages/LibrariesPage.tsx:2848
 #: src/pages/LibraryDetailPage.tsx:923
 msgid "library.scanInterval"
-msgstr "扫描间隔（分钟）"
+msgstr "스캔 간격 (분)"
 
 #: src/pages/LibrariesPage.tsx:204
 #: src/pages/LibrariesPage.tsx:240
 #: src/pages/LibraryDetailPage.tsx:1173
 msgid "library.scanning"
-msgstr "扫描中"
+msgstr "스캔 중"
 
 #: src/pages/LibrariesPage.tsx:1200
 #: src/pages/LibrariesPage.tsx:2406
 msgid "library.sftp.host"
-msgstr "主机"
+msgstr "호스트"
 
 #: src/pages/LibrariesPage.tsx:1243
 #: src/pages/LibrariesPage.tsx:2452
 msgid "library.sftp.password"
-msgstr "密码"
+msgstr "비밀번호"
 
 #: src/pages/LibrariesPage.tsx:1213
 #: src/pages/LibrariesPage.tsx:2421
 msgid "library.sftp.port"
-msgstr "端口"
+msgstr "포트"
 
 #: src/pages/LibrariesPage.tsx:1228
 #: src/pages/LibrariesPage.tsx:2437
 msgid "library.sftp.username"
-msgstr "账号"
+msgstr "사용자 이름"
 
 #: src/pages/LibrariesPage.tsx:1180
 #: src/pages/LibrariesPage.tsx:2216
 msgid "library.smb.domain"
-msgstr "域"
+msgstr "도메인"
 
 #: src/pages/LibrariesPage.tsx:1096
 msgid "library.smb.host"
-msgstr "主机"
+msgstr "호스트"
 
 #: src/pages/LibrariesPage.tsx:1165
 #: src/pages/LibrariesPage.tsx:2201
 msgid "library.smb.password"
-msgstr "密码"
+msgstr "비밀번호"
 
 #: src/pages/LibrariesPage.tsx:1118
 msgid "library.smb.port"
-msgstr "端口"
+msgstr "포트"
 
 #: src/pages/LibrariesPage.tsx:1134
 msgid "library.smb.share"
-msgstr "共享文件夹"
+msgstr "공유"
 
 #: src/pages/LibrariesPage.tsx:1150
 #: src/pages/LibrariesPage.tsx:2186
 msgid "library.smb.username"
-msgstr "账号"
+msgstr "사용자 이름"
 
 #: src/pages/LibrariesPage.tsx:328
 #~ msgid "library.sourceType"
-#~ msgstr "来源类型"
+#~ msgstr "Source Type"
 
 #: src/pages/LibrariesPage.tsx:982
 #: src/pages/LibrariesPage.tsx:1784
 msgid "library.sourceType.local"
-msgstr "本机"
+msgstr "로컬"
 
 #: src/pages/LibrariesPage.tsx:984
 #: src/pages/LibrariesPage.tsx:1796
@@ -991,58 +993,58 @@ msgstr "SMB"
 
 #: src/pages/LibrariesPage.tsx:454
 msgid "library.testConnection"
-msgstr "测试连接"
+msgstr "연결 테스트"
 
 #: src/pages/LibrariesPage.tsx:460
 msgid "library.testConnection.failed"
-msgstr "连接失败"
+msgstr "연결 실패"
 
 #: src/pages/LibrariesPage.tsx:459
 msgid "library.testConnection.success"
-msgstr "连接成功"
+msgstr "연결됨"
 
 #: src/pages/LibrariesPage.tsx:453
 msgid "library.testConnection.testing"
-msgstr "测试中..."
+msgstr "테스트 중…"
 
 #: src/pages/LibrariesPage.tsx:3103
 msgid "library.toast.added"
-msgstr "媒体库已添加"
+msgstr "라이브러리가 추가되었습니다"
 
 #: src/pages/LibrariesPage.tsx:3127
 msgid "library.toast.deleted"
-msgstr "媒体库已删除"
+msgstr "라이브러리가 삭제되었습니다"
 
 #: src/pages/LibraryDetailPage.tsx:1026
 msgid "library.toast.matchFailed"
-msgstr "自动匹配失败"
+msgstr "자동 매치 실패"
 
 #: src/pages/LibraryDetailPage.tsx:1023
 msgid "library.toast.matchStarted"
-msgstr "开始自动匹配"
+msgstr "자동 매치가 시작되었습니다"
 
 #: src/pages/LibrariesPage.tsx:2598
 #: src/pages/LibraryDetailPage.tsx:850
 #~ msgid "library.toast.scanComplete"
-#~ msgstr "扫描完成"
+#~ msgstr "Scan complete"
 
 #: src/pages/LibraryDetailPage.tsx:1016
 msgid "library.toast.scanFailed"
-msgstr "扫描失败"
+msgstr "스캔 실패"
 
 #: src/pages/LibraryDetailPage.tsx:1013
 msgid "library.toast.scanStarted"
-msgstr ""
+msgstr "스캔이 시작되었습니다"
 
 #: src/pages/LibrariesPage.tsx:3117
 #: src/pages/LibraryDetailPage.tsx:896
 msgid "library.toast.updated"
-msgstr "媒体库已更新"
+msgstr "라이브러리가 업데이트되었습니다"
 
 #: src/pages/LibrariesPage.tsx:1324
 #: src/pages/LibrariesPage.tsx:2533
 msgid "library.webdav.password"
-msgstr "密码"
+msgstr "비밀번호"
 
 #: src/pages/LibrariesPage.tsx:1264
 #: src/pages/LibrariesPage.tsx:2473
@@ -1052,33 +1054,33 @@ msgstr "URL"
 #: src/pages/LibrariesPage.tsx:1309
 #: src/pages/LibrariesPage.tsx:2518
 msgid "library.webdav.username"
-msgstr "账号"
+msgstr "사용자 이름"
 
 #: src/pages/LibrariesPage.tsx:1279
 #: src/pages/LibrariesPage.tsx:2488
 msgid "library.webdav.vendor"
-msgstr "供应商"
+msgstr "벤더"
 
 #: src/pages/LibrariesPage.tsx:1298
 #: src/pages/LibrariesPage.tsx:2507
 msgid "library.webdav.vendorOther"
-msgstr "其他 WebDAV"
+msgstr "기타 WebDAV"
 
 #: src/pages/LibrariesPage.tsx:2832
 msgid "library.wizard.advanced"
-msgstr "高级设置"
+msgstr "고급"
 
 #: src/pages/LibrariesPage.tsx:1943
 msgid "library.wizard.changeSource"
-msgstr "更换来源"
+msgstr "소스 변경"
 
 #: src/pages/LibrariesPage.tsx:1894
 msgid "library.wizard.chooseSource"
-msgstr "选择来源类型"
+msgstr "소스 유형 선택"
 
 #: src/pages/LibrariesPage.tsx:1849
 msgid "library.wizard.dropbox.desc"
-msgstr "从 Dropbox 访问文件"
+msgstr "Dropbox에서 파일 접근"
 
 #: src/pages/LibrariesPage.tsx:991
 #: src/pages/LibrariesPage.tsx:1848
@@ -1087,7 +1089,7 @@ msgstr "Dropbox"
 
 #: src/pages/LibrariesPage.tsx:1803
 msgid "library.wizard.ftp.desc"
-msgstr "通过 FTP 文件传输连接"
+msgstr "FTP 파일 전송으로 연결"
 
 #: src/pages/LibrariesPage.tsx:985
 #: src/pages/LibrariesPage.tsx:1802
@@ -1096,7 +1098,7 @@ msgstr "FTP"
 
 #: src/pages/LibrariesPage.tsx:1837
 msgid "library.wizard.gdrive.desc"
-msgstr "从 Google Drive 访问文件"
+msgstr "Google Drive에서 파일 접근"
 
 #: src/pages/LibrariesPage.tsx:989
 #: src/pages/LibrariesPage.tsx:1836
@@ -1105,11 +1107,11 @@ msgstr "Google Drive"
 
 #: src/pages/LibrariesPage.tsx:1149
 #~ msgid "library.wizard.hideManual"
-#~ msgstr "隐藏手动输入"
+#~ msgstr "Hide manual fields"
 
 #: src/pages/LibrariesPage.tsx:1809
 msgid "library.wizard.http.desc"
-msgstr "从网页服务器串流"
+msgstr "웹 서버에서 스트리밍"
 
 #: src/pages/LibrariesPage.tsx:986
 #: src/pages/LibrariesPage.tsx:1808
@@ -1118,11 +1120,11 @@ msgstr "HTTP"
 
 #: src/pages/LibrariesPage.tsx:1785
 msgid "library.wizard.local.desc"
-msgstr "扫描此服务器上的文件夹"
+msgstr "이 서버의 폴더를 스캔"
 
 #: src/pages/LibrariesPage.tsx:1843
 msgid "library.wizard.onedrive.desc"
-msgstr "从 OneDrive 访问文件"
+msgstr "OneDrive에서 파일 접근"
 
 #: src/pages/LibrariesPage.tsx:990
 #: src/pages/LibrariesPage.tsx:1842
@@ -1131,15 +1133,15 @@ msgstr "OneDrive"
 
 #: src/pages/LibrariesPage.tsx:2218
 msgid "library.wizard.optional"
-msgstr "选填"
+msgstr "선택사항"
 
 #: src/pages/LibrariesPage.tsx:1149
 #~ msgid "library.wizard.orManual"
-#~ msgstr "或手动输入"
+#~ msgstr "or enter manually"
 
 #: src/pages/LibrariesPage.tsx:1826
 msgid "library.wizard.s3.desc"
-msgstr "Amazon S3 或兼容的存储"
+msgstr "Amazon S3 또는 호환 스토리지"
 
 #: src/pages/LibrariesPage.tsx:988
 #: src/pages/LibrariesPage.tsx:1825
@@ -1148,69 +1150,69 @@ msgstr "S3"
 
 #: src/pages/LibrariesPage.tsx:1815
 msgid "library.wizard.section.cloud"
-msgstr "云端 & WebDAV"
+msgstr "클라우드 & WebDAV"
 
 #: src/pages/LibrariesPage.tsx:1832
 msgid "library.wizard.section.rclone"
-msgstr "从 Rclone 导入"
+msgstr "Rclone에서 가져오기"
 
 #: src/pages/LibrariesPage.tsx:1780
 msgid "library.wizard.section.storage"
-msgstr "存储"
+msgstr "스토리지"
 
 #: src/pages/LibrariesPage.tsx:1797
 msgid "library.wizard.sftp.desc"
-msgstr "通过 SSH 文件传输连接"
+msgstr "SSH 파일 전송으로 연결"
 
 #: src/pages/LibrariesPage.tsx:2289
 msgid "library.wizard.smb.asUser"
-msgstr "以"
+msgstr "사용자:"
 
 #: src/pages/LibrariesPage.tsx:2175
 #: src/pages/LibrariesPage.tsx:2297
 msgid "library.wizard.smb.change"
-msgstr "更改"
+msgstr "변경"
 
 #: src/pages/LibrariesPage.tsx:744
 #: src/pages/LibrariesPage.tsx:2066
 msgid "library.wizard.smb.chooseServer"
-msgstr "选择服务器"
+msgstr "서버 선택"
 
 #: src/pages/LibrariesPage.tsx:2237
 msgid "library.wizard.smb.connect"
-msgstr "连接"
+msgstr "연결"
 
 #: src/pages/LibrariesPage.tsx:2006
 msgid "library.wizard.smb.credentials"
-msgstr "凭证"
+msgstr "인증 정보"
 
 #: src/pages/LibrariesPage.tsx:1791
 msgid "library.wizard.smb.desc"
-msgstr "连接 Windows 或 NAS 共享"
+msgstr "Windows 또는 NAS 공유에 연결"
 
 #: src/pages/LibrariesPage.tsx:2087
 msgid "library.wizard.smb.enterManually"
-msgstr "手动输入服务器地址"
+msgstr "서버 주소를 직접 입력"
 
 #: src/pages/LibrariesPage.tsx:2011
 msgid "library.wizard.smb.folder"
-msgstr "文件夹"
+msgstr "폴더"
 
 #: src/pages/LibrariesPage.tsx:2356
 msgid "library.wizard.smb.nameHint"
-msgstr "显示在媒体库列表中的名称"
+msgstr "라이브러리 목록에 표시될 이름"
 
 #: src/pages/LibrariesPage.tsx:2114
 msgid "library.wizard.smb.next"
-msgstr "下一步"
+msgstr "다음"
 
 #: src/pages/LibrariesPage.tsx:2001
 msgid "library.wizard.smb.server"
-msgstr "服务器"
+msgstr "서버"
 
 #: src/pages/LibrariesPage.tsx:1820
 msgid "library.wizard.webdav.desc"
-msgstr "连接 WebDAV 服务器"
+msgstr "WebDAV 서버에 연결"
 
 #: src/pages/LibrariesPage.tsx:987
 #: src/pages/LibrariesPage.tsx:1819
@@ -1219,25 +1221,25 @@ msgstr "WebDAV"
 
 #: src/routes/__root.tsx:133
 #~ msgid "nav.discover"
-#~ msgstr "探索"
+#~ msgstr "Discover"
 
 #: src/components/AppSidebar.tsx:35
 msgid "nav.downloads"
-msgstr "下载"
+msgstr "다운로드"
 
 #: src/components/AppSidebar.tsx:26
 #: src/components/AppSidebar.tsx:223
 msgid "nav.home"
-msgstr "首页"
+msgstr "홈"
 
 #: src/components/AppSidebar.tsx:36
 #: src/components/AppSidebar.tsx:226
 msgid "nav.libraries"
-msgstr "媒体库"
+msgstr "라이브러리"
 
 #: src/components/AppSidebar.tsx:227
 msgid "nav.more"
-msgstr "更多"
+msgstr "더보기"
 
 #: src/components/AppSidebar.tsx:30
 msgid "nav.rss"
@@ -1246,590 +1248,553 @@ msgstr "RSS"
 #: src/components/AppSidebar.tsx:27
 #: src/components/AppSidebar.tsx:224
 msgid "nav.schedule"
-msgstr "时间表"
+msgstr "편성표"
 
 #: src/components/AppSidebar.tsx:28
 #: src/components/AppSidebar.tsx:225
 msgid "nav.search"
-msgstr "搜索"
+msgstr "검색"
 
 #: src/components/AppSidebar.tsx:38
 #: src/components/AppSidebar.tsx:154
 msgid "nav.settings"
-msgstr "设置"
+msgstr "설정"
 
 #: src/components/AppSidebar.tsx:34
 msgid "nav.torrent"
-msgstr "种子"
+msgstr "토렌트"
 
 #: src/components/AppSidebar.tsx:29
 msgid "nav.trending"
-msgstr "热门"
+msgstr "인기"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
-#~ msgstr "第一页"
+#~ msgstr "First page"
 
 #: src/components/DataPagination.tsx:147
 msgid "pagination.go"
-msgstr "跳至"
+msgstr "이동"
 
 #: src/components/MotionPagination.tsx:230
 #~ msgid "pagination.lastPage"
-#~ msgstr "最后一页"
+#~ msgstr "Last page"
 
 #: src/components/DataPagination.tsx:135
 msgid "pagination.nextPage"
-msgstr "下一页"
+msgstr "다음 페이지"
 
 #: src/components/DataPagination.tsx:102
 msgid "pagination.of"
-msgstr "共"
+msgstr "/"
 
 #: src/components/DataPagination.tsx:115
 msgid "pagination.prevPage"
-msgstr "上一页"
+msgstr "이전 페이지"
 
 #: src/components/DataPagination.tsx:78
 msgid "pagination.rows"
-msgstr "每页"
+msgstr "행"
 
 #: src/pages/LibraryDetailPage.tsx:1190
 msgid "scan.phase.hashing"
-msgstr "计算哈希中..."
+msgstr "해싱"
 
 #: src/pages/LibraryDetailPage.tsx:1191
 msgid "scan.phase.matching"
-msgstr "匹配动画中..."
+msgstr "매칭"
 
 #: src/pages/LibraryDetailPage.tsx:1188
 msgid "scan.phase.scanning"
-msgstr "扫描文件中..."
+msgstr "스캔"
 
 #: src/pages/LibrariesPage.tsx:3206
 msgid "scan.scanAll"
-msgstr "全部扫描"
+msgstr "전체 스캔"
 
 #: src/pages/LibraryDetailPage.tsx:386
 #: src/pages/SchedulePage.tsx:496
 msgid "schedule.all"
-msgstr "全部"
+msgstr "전체"
 
 #: src/pages/SchedulePage.tsx:465
 msgid "schedule.loadFailed"
-msgstr "加载日历失败"
+msgstr "캘린더 불러오기 실패"
 
 #: src/pages/SchedulePage.tsx:601
 msgid "schedule.noShows"
-msgstr "今日无放送"
+msgstr "편성된 프로그램이 없습니다"
 
 #: src/pages/SchedulePage.tsx:74
 msgid "schedule.season.fall"
-msgstr "十月秋番"
+msgstr "가을"
 
 #: src/pages/SchedulePage.tsx:72
 msgid "schedule.season.spring"
-msgstr "四月春番"
+msgstr "봄"
 
 #: src/pages/SchedulePage.tsx:73
 msgid "schedule.season.summer"
-msgstr "七月夏番"
+msgstr "여름"
 
 #: src/pages/SchedulePage.tsx:71
 msgid "schedule.season.winter"
-msgstr "一月冬番"
+msgstr "겨울"
 
 #: src/pages/SchedulePage.tsx:577
 #: src/pages/SchedulePage.tsx:629
 msgid "schedule.today"
-msgstr "今天"
+msgstr "오늘"
 
 #: src/pages/SchedulePage.tsx:452
 msgid "schedule.totalShows"
-msgstr "部本周放送"
+msgstr "편 이번 주 프로그램"
 
 #: src/pages/SearchPage.tsx:170
 msgid "search.emptyHint"
-msgstr "搜索你喜欢的动画"
+msgstr "좋아하는 애니메이션을 검색하세요"
 
 #: src/pages/SearchPage.tsx:131
 msgid "search.inputPlaceholder"
-msgstr "搜索你喜欢的动画..."
+msgstr "좋아하는 애니메이션을 검색…"
 
 #: src/pages/SearchPage.tsx:212
 msgid "search.loadingMore"
-msgstr "加载中…"
+msgstr "불러오는 중…"
 
 #: src/components/PreviewModal.tsx:347
 #: src/pages/SearchPage.tsx:213
 msgid "search.loadMore"
-msgstr "加载更多"
+msgstr "더 불러오기"
 
 #: src/components/CommandPalette.tsx:172
 msgid "search.noResults"
-msgstr "找不到结果"
+msgstr "결과를 찾을 수 없습니다"
 
 #: src/pages/SearchPage.tsx:225
 #: src/pages/SearchPage.tsx:226
 msgid "search.noResultsFor"
-msgstr "找不到结果"
+msgstr "관련 결과 없음:"
 
 #: src/components/CommandPalette.tsx:113
 msgid "search.placeholder"
-msgstr "搜索动画..."
+msgstr "애니메이션 검색…"
 
 #: src/pages/SearchPage.tsx:111
 msgid "search.title"
-msgstr "搜索"
+msgstr "검색"
 
 #: src/pages/settings/GeneralPanel.tsx:65
-#: src/pages/SettingsPage.tsx:370
 msgid "settings.appearance.language"
-msgstr "语言选择"
+msgstr "언어"
 
 #: src/pages/SettingsPage.tsx:367
-msgid "settings.appearance.title"
-msgstr "外观设置"
+#~ msgid "settings.appearance.title"
+#~ msgstr "Appearance"
 
 #: src/pages/settings/GeneralPanel.tsx:77
-#: src/pages/SettingsPage.tsx:609
 msgid "settings.autoAddToCollection"
-msgstr "自动加入收藏"
+msgstr "자동으로 컬렉션에 추가"
 
 #: src/pages/settings/GeneralPanel.tsx:80
-#: src/pages/SettingsPage.tsx:611
 msgid "settings.autoAddToCollectionDesc"
-msgstr "新匹配的动画自动加入收藏"
+msgstr "새로 매치된 애니메이션을 자동으로 컬렉션에 추가"
 
 #: src/pages/settings/GeneralPanel.tsx:73
-#: src/pages/SettingsPage.tsx:606
 msgid "settings.collection"
-msgstr "收藏"
+msgstr "컬렉션"
 
 #: src/pages/SettingsPage.tsx:115
-msgid "settings.dandanplay.title"
-msgstr "DandanPlay 设置"
+#~ msgid "settings.dandanplay.title"
+#~ msgstr "DandanPlay Settings"
 
 #: src/pages/settings/GeneralPanel.tsx:61
 msgid "settings.general.subtitle"
-msgstr ""
+msgstr "언어, 컬렉션 및 앱 환경설정"
 
 #: src/pages/settings/IntegrationsPanel.tsx:184
-#: src/pages/SettingsPage.tsx:439
 msgid "settings.integration.authUrlFailed"
-msgstr "获取授权链接失败"
+msgstr "인증 URL 가져오기 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:291
-#: src/pages/SettingsPage.tsx:538
 msgid "settings.integration.connect"
-msgstr "连接账号"
+msgstr "연결"
 
 #: src/pages/settings/IntegrationsPanel.tsx:214
-#: src/pages/SettingsPage.tsx:545
 msgid "settings.integration.connected"
-msgstr "已连接"
+msgstr "연결됨"
 
 #: src/pages/settings/IntegrationsPanel.tsx:290
-#: src/pages/SettingsPage.tsx:537
 msgid "settings.integration.connecting"
-msgstr "连接中…"
+msgstr "연결 중…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:306
-#: src/pages/SettingsPage.tsx:556
 msgid "settings.integration.disconnect"
-msgstr "断开连接"
+msgstr "연결 해제"
 
 #: src/pages/settings/IntegrationsPanel.tsx:190
-#: src/pages/SettingsPage.tsx:445
 msgid "settings.integration.disconnected"
-msgstr "已断开连接"
+msgstr "연결 해제됨"
 
 #: src/pages/settings/IntegrationsPanel.tsx:193
-#: src/pages/SettingsPage.tsx:448
 msgid "settings.integration.disconnectFailed"
-msgstr "断开连接失败"
+msgstr "연결 해제 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:305
-#: src/pages/SettingsPage.tsx:555
 msgid "settings.integration.disconnecting"
-msgstr "断开中…"
+msgstr "연결 해제 중…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:215
 msgid "settings.integration.notConnected"
-msgstr ""
+msgstr "연결되지 않음"
 
 #: src/pages/settings/IntegrationsPanel.tsx:317
-#: src/pages/SettingsPage.tsx:567
 msgid "settings.integration.sync"
-msgstr "同步进度"
+msgstr "동기화"
 
 #: src/pages/settings/IntegrationsPanel.tsx:203
-#: src/pages/SettingsPage.tsx:458
 msgid "settings.integration.syncComplete"
-msgstr "同步完成"
+msgstr "동기화 완료"
 
 #: src/pages/settings/IntegrationsPanel.tsx:203
-#: src/pages/SettingsPage.tsx:458
 msgid "settings.integration.syncErrors"
-msgstr "条失败"
+msgstr "개 오류"
 
 #: src/pages/settings/IntegrationsPanel.tsx:206
-#: src/pages/SettingsPage.tsx:461
 msgid "settings.integration.syncFailed"
-msgstr "同步失败"
+msgstr "동기화 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:316
-#: src/pages/SettingsPage.tsx:566
 msgid "settings.integration.syncing"
-msgstr "同步中…"
+msgstr "동기화 중…"
 
 #: src/pages/SettingsPage.tsx:465
-msgid "settings.integration.title"
-msgstr "联动"
+#~ msgid "settings.integration.title"
+#~ msgstr "Integration"
 
 #: src/pages/settings/IntegrationsPanel.tsx:339
 msgid "settings.integrations.description"
-msgstr ""
+msgstr "외부 서비스를 연결하고 데이터를 동기화"
 
 #: src/pages/settings/AboutPanel.tsx:113
 #: src/pages/settings/SettingsLayout.tsx:24
 msgid "settings.nav.about"
-msgstr ""
+msgstr "정보"
 
 #: src/pages/settings/SettingsLayout.tsx:22
 msgid "settings.nav.account"
-msgstr ""
+msgstr "계정"
 
 #: src/pages/settings/GeneralPanel.tsx:58
 #: src/pages/settings/SettingsLayout.tsx:19
 msgid "settings.nav.general"
-msgstr ""
+msgstr "일반"
 
 #: src/pages/settings/IntegrationsPanel.tsx:336
 #: src/pages/settings/SettingsLayout.tsx:20
 msgid "settings.nav.integrations"
-msgstr ""
+msgstr "연동"
 
 #: src/pages/settings/PlayerPanel.tsx:90
 #: src/pages/settings/SettingsLayout.tsx:21
 msgid "settings.nav.player"
-msgstr ""
+msgstr "플레이어"
 
 #: src/pages/settings/SettingsLayout.tsx:23
 #: src/pages/settings/StoragePanel.tsx:64
 msgid "settings.nav.storage"
-msgstr ""
+msgstr "저장소"
 
 #: src/pages/settings/SettingsLayout.tsx:48
-#: src/pages/SettingsPage.tsx:636
 msgid "settings.pageTitle"
-msgstr "设置"
+msgstr "설정"
 
 #: src/pages/settings/PlayerPanel.tsx:94
 msgid "settings.player.danmaku"
-msgstr ""
+msgstr "탄막"
 
 #: src/pages/settings/PlayerPanel.tsx:107
-#: src/pages/SettingsPage.tsx:265
 msgid "settings.player.danmakuEnabled"
-msgstr "弹幕默认开启"
+msgstr "탄막 표시"
 
 #: src/pages/settings/PlayerPanel.tsx:153
-#: src/pages/SettingsPage.tsx:307
 msgid "settings.player.danmakuFontSize"
-msgstr "弹幕字体大小"
+msgstr "글꼴 크기"
 
 #: src/pages/settings/PlayerPanel.tsx:127
-#: src/pages/SettingsPage.tsx:281
 msgid "settings.player.danmakuOpacity"
-msgstr "弹幕透明度"
+msgstr "불투명도"
 
 #: src/pages/settings/PlayerPanel.tsx:169
-#: src/pages/SettingsPage.tsx:323
 msgid "settings.player.danmakuSpeed"
-msgstr "弹幕速度"
+msgstr "속도"
 
 #: src/pages/settings/PlayerPanel.tsx:30
 msgid "settings.player.speed.fast"
-msgstr ""
+msgstr "빠름"
 
 #: src/pages/settings/PlayerPanel.tsx:29
 msgid "settings.player.speed.normal"
-msgstr ""
+msgstr "보통"
 
 #: src/pages/settings/PlayerPanel.tsx:28
 msgid "settings.player.speed.slow"
-msgstr ""
+msgstr "느림"
 
 #: src/pages/settings/PlayerPanel.tsx:91
 msgid "settings.player.subtitle"
-msgstr ""
+msgstr "탄막 및 재생 환경설정"
 
 #: src/pages/SettingsPage.tsx:252
-msgid "settings.player.title"
-msgstr "播放器设置"
+#~ msgid "settings.player.title"
+#~ msgstr "Player Settings"
 
 #: src/pages/settings/IntegrationsPanel.tsx:119
 #: src/pages/settings/IntegrationsPanel.tsx:276
 #: src/pages/settings/PlayerPanel.tsx:193
-#: src/pages/SettingsPage.tsx:172
-#: src/pages/SettingsPage.tsx:343
-#: src/pages/SettingsPage.tsx:523
 msgid "settings.save"
-msgstr "保存"
+msgstr "저장"
 
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:173
 #: src/pages/settings/PlayerPanel.tsx:52
-#: src/pages/SettingsPage.tsx:108
-#: src/pages/SettingsPage.tsx:245
-#: src/pages/SettingsPage.tsx:363
-#: src/pages/SettingsPage.tsx:428
-#: src/pages/SettingsPage.tsx:599
 msgid "settings.saved"
-msgstr "已保存"
+msgstr "저장됨"
 
 #: src/pages/settings/GeneralPanel.tsx:41
 #: src/pages/settings/IntegrationsPanel.tsx:58
 #: src/pages/settings/IntegrationsPanel.tsx:176
 #: src/pages/settings/PlayerPanel.tsx:55
-#: src/pages/SettingsPage.tsx:111
-#: src/pages/SettingsPage.tsx:248
-#: src/pages/SettingsPage.tsx:431
-#: src/pages/SettingsPage.tsx:602
 msgid "settings.saveFailed"
-msgstr "保存失败"
+msgstr "저장 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:118
 #: src/pages/settings/IntegrationsPanel.tsx:275
 #: src/pages/settings/PlayerPanel.tsx:192
-#: src/pages/SettingsPage.tsx:171
-#: src/pages/SettingsPage.tsx:342
-#: src/pages/SettingsPage.tsx:522
 msgid "settings.saving"
-msgstr "保存中…"
+msgstr "저장 중…"
 
 #: src/pages/settings/StoragePanel.tsx:93
 msgid "settings.storage.actions"
-msgstr ""
+msgstr "작업"
 
 #: src/pages/settings/StoragePanel.tsx:113
 msgid "settings.storage.clearConfirmDesc"
-msgstr ""
+msgstr "모든 트랜스코딩된 비디오 파일이 삭제됩니다. 이 작업은 취소할 수 없습니다."
 
 #: src/pages/settings/StoragePanel.tsx:110
 msgid "settings.storage.clearConfirmTitle"
-msgstr ""
+msgstr "트랜스코드 캐시를 지우시겠습니까?"
 
 #: src/pages/settings/StoragePanel.tsx:47
 msgid "settings.storage.cleared"
-msgstr ""
+msgstr "캐시가 지워졌습니다"
 
 #: src/pages/settings/StoragePanel.tsx:51
 msgid "settings.storage.clearFailed"
-msgstr ""
+msgstr "캐시 지우기 실패"
 
 #: src/pages/settings/StoragePanel.tsx:123
 msgid "settings.storage.clearing"
-msgstr ""
+msgstr "지우는 중…"
 
 #: src/pages/settings/StoragePanel.tsx:101
 #: src/pages/settings/StoragePanel.tsx:124
 msgid "settings.storage.clearTranscode"
-msgstr ""
+msgstr "트랜스코딩 파일 지우기"
 
 #: src/pages/settings/StoragePanel.tsx:71
 msgid "settings.storage.diskUsage"
-msgstr ""
+msgstr "디스크 사용량"
 
 #: src/pages/settings/StoragePanel.tsx:78
 msgid "settings.storage.files"
-msgstr ""
+msgstr "파일"
 
 #: src/pages/settings/StoragePanel.tsx:67
 msgid "settings.storage.subtitle"
-msgstr ""
+msgstr "트랜스코딩 파일 및 캐시 관리"
 
 #: src/pages/settings/StoragePanel.tsx:88
 msgid "settings.storage.transcodeDesc"
-msgstr ""
+msgstr "트랜스코딩된 비디오 파일이 임시 디렉토리에 저장됩니다"
 
 #~ msgid "watch.audioTrack"
-#~ msgstr "音轨"
+#~ msgstr "Audio"
 
 #: src/components/watch/WatchTitleBar.tsx:121
 msgid "watch.collect"
-msgstr "收藏"
+msgstr "컬렉션"
 
 #: src/components/watch/WatchTitleBar.tsx:116
 msgid "watch.collected"
-msgstr "已收藏"
+msgstr "컬렉션됨"
 
 #: src/components/watch/BangumiComments.tsx:43
 msgid "watch.comments"
-msgstr "评论"
+msgstr "댓글"
 
 #: src/components/watch/EpisodeGrid.tsx:105
 msgid "watch.completed"
-msgstr "已看完"
+msgstr "시청 완료"
 
 #: src/components/DanmakuSettings.tsx:50
 #: src/components/DanmakuSettings.tsx:154
 #: src/components/watch/DanmakuBar.tsx:51
 #: src/components/watch/EpisodeSidebar.tsx:34
 msgid "watch.danmaku"
-msgstr "弹幕"
+msgstr "탄막"
 
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
-#~ msgstr "条弹幕"
+#~ msgstr "comments"
 
 #: src/components/DanmakuSettings.tsx:113
 #: src/components/DanmakuSettings.tsx:214
 msgid "watch.danmaku.fast"
-msgstr "快"
+msgstr "빠름"
 
 #: src/components/DanmakuSettings.tsx:83
 #: src/components/DanmakuSettings.tsx:186
 msgid "watch.danmaku.fontSize"
-msgstr "字体大小"
+msgstr "글꼴 크기"
 
 #: src/components/watch/DanmakuList.tsx:25
 msgid "watch.danmaku.noData"
-msgstr "无弹幕数据"
+msgstr "탄막 데이터가 없습니다"
 
 #: src/components/DanmakuSettings.tsx:112
 #: src/components/DanmakuSettings.tsx:213
 msgid "watch.danmaku.normal"
-msgstr "正常"
+msgstr "보통"
 
 #: src/components/DanmakuSettings.tsx:67
 #: src/components/DanmakuSettings.tsx:170
 msgid "watch.danmaku.opacity"
-msgstr "透明度"
+msgstr "불투명도"
 
 #: src/components/watch/DanmakuBar.tsx:61
 msgid "watch.danmaku.placeholder"
-msgstr "发送弹幕..."
+msgstr "탄막 보내기…"
 
 #: src/components/watch/DanmakuBar.tsx:72
 msgid "watch.danmaku.send"
-msgstr "发送"
+msgstr "보내기"
 
 #: src/components/DanmakuSettings.tsx:34
 msgid "watch.danmaku.short"
-msgstr "弹"
+msgstr "탄"
 
 #: src/components/DanmakuSettings.tsx:111
 #: src/components/DanmakuSettings.tsx:212
 msgid "watch.danmaku.slow"
-msgstr "慢"
+msgstr "느림"
 
 #: src/components/DanmakuSettings.tsx:107
 #: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.speed"
-msgstr "速度"
+msgstr "속도"
 
 #: src/components/watch/TechInfoPopover.tsx:99
 msgid "watch.directStream"
-msgstr "直接串流"
+msgstr "다이렉트 스트림"
 
 #: src/components/watch/EpisodeSidebar.tsx:31
 #: src/components/watch/WatchTitleBar.tsx:78
 msgid "watch.episodes"
-msgstr "集"
+msgstr "에피소드"
 
 #~ msgid "watch.error.goBack"
-#~ msgstr "返回"
+#~ msgstr "Go back"
 
 #~ msgid "watch.error.notFound"
-#~ msgstr "文件不存在"
+#~ msgstr "File not found"
 
 #~ msgid "watch.error.notFoundDesc"
-#~ msgstr "文件可能已被移动或删除"
+#~ msgstr "The file may have been moved or deleted"
 
 #~ msgid "watch.error.offline"
-#~ msgstr "媒体库离线"
+#~ msgstr "Media library offline"
 
 #~ msgid "watch.error.offlineDesc"
-#~ msgstr "无法连接到存储服务器"
+#~ msgstr "Cannot connect to the storage server"
 
 #~ msgid "watch.error.retry"
-#~ msgstr "重试"
+#~ msgstr "Retry"
 
 #~ msgid "watch.error.transcodeError"
-#~ msgstr "转码失败"
+#~ msgstr "Transcode failed"
 
 #: src/components/watch/EpisodeGrid.tsx:109
 msgid "watch.inProgress"
-msgstr "看到一半"
+msgstr "시청 중"
 
 #: src/pages/WatchPage.tsx:211
 #~ msgid "watch.mediaFile"
-#~ msgstr "媒体文件"
+#~ msgstr "Media File"
 
 #: src/pages/WatchPage.tsx:427
 msgid "watch.notFound"
-msgstr "找不到动画"
+msgstr "애니메이션을 찾을 수 없습니다"
 
 #: src/components/watch/TechInfoPopover.tsx:44
 #: src/components/watch/TechInfoPopover.tsx:74
 msgid "watch.playbackInfo"
-msgstr "播放信息"
+msgstr "재생 정보"
 
 #: src/components/watch/TechInfoPopover.tsx:96
 msgid "watch.playbackMethod"
-msgstr "播放方式"
+msgstr "재생 방식"
 
 #: src/components/watch/EpisodeGrid.tsx:101
 msgid "watch.playing"
-msgstr "正在播放"
+msgstr "재생 중"
 
 #: src/components/watch/WatchTitleBar.tsx:98
 msgid "watch.rate"
-msgstr "评分"
+msgstr "평가"
 
 #: src/components/watch/RelatedAnimeList.tsx:33
 msgid "watch.related"
-msgstr "相关推荐"
+msgstr "Related"
 
 #~ msgid "watch.resumeFrom"
-#~ msgstr "从 {time} 继续播放"
+#~ msgstr "Resuming from {time}"
 
 #: src/components/watch/WatchTitleBar.tsx:43
 msgid "watch.scorePrompt"
-msgstr "评分 (1-10)"
+msgstr "Rate (1-10)"
 
 #: src/components/watch/WatchTitleBar.tsx:136
 msgid "watch.share"
-msgstr "分享"
+msgstr "Share"
 
 #: src/components/watch/BangumiComments.tsx:71
 msgid "watch.showLess"
-msgstr "收起"
+msgstr "Show less"
 
 #: src/components/watch/BangumiComments.tsx:71
 msgid "watch.showMore"
-msgstr "查看更多"
+msgstr "Show more"
 
 #: src/components/watch/TechInfoPopover.tsx:116
 msgid "watch.subtitle"
-msgstr "字幕"
+msgstr "Subtitles"
 
 #~ msgid "watch.supported"
-#~ msgstr "支持"
+#~ msgstr "Supported"
 
 #: src/components/watch/TechInfoPopover.tsx:103
 msgid "watch.transcode"
-msgstr "HLS 转码"
+msgstr "HLS Transcode"
 
 #~ msgid "watch.transcodeReady"
-#~ msgstr "转码完成"
+#~ msgstr "Transcode ready"
 
 #~ msgid "watch.transcoding"
-#~ msgstr "转码中..."
+#~ msgstr "Transcoding..."
 
 #~ msgid "watch.unsupported"
-#~ msgstr "不支持"
+#~ msgstr "Not supported"
