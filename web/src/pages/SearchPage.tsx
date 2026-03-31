@@ -79,6 +79,7 @@ const STATUS_OPTIONS = [
 interface SearchParams {
   q?: string;
   genre?: string;
+  tag?: string;
   sort?: string;
   year?: string;
   season?: string;
@@ -93,6 +94,7 @@ export function SearchPage() {
   const {
     q: urlQuery,
     genre: urlGenre,
+    tag: urlTag,
     sort: urlSort,
     year: urlYear,
     season: urlSeason,
@@ -104,8 +106,9 @@ export function SearchPage() {
   const [debouncedQuery, setDebouncedQuery] = useState(urlQuery ?? '');
   const [previewAnime, setPreviewAnime] = useState<AnimeSummary | null>(null);
 
-  // Parse comma-separated genres from URL
+  // Parse comma-separated genres/tags from URL
   const selectedGenres = useMemo(() => (urlGenre ? urlGenre.split(',') : []), [urlGenre]);
+  const selectedTags = useMemo(() => (urlTag ? urlTag.split(',') : []), [urlTag]);
 
   // Check if any advanced filters are active
   const hasActiveFilters = !!(urlSort || urlYear || urlSeason || urlMinScore || urlStatus);
@@ -144,7 +147,9 @@ export function SearchPage() {
     [urlGenre, urlSort, urlYear, urlSeason, urlMinScore, urlStatus]
   );
 
+  const isTagMode = selectedTags.length > 0;
   const isBrowseMode = !!(urlGenre || hasActiveFilters);
+  const isFilterActive = isBrowseMode || isTagMode;
 
   /** Toggle a genre in the multi-select list */
   const toggleGenre = (g: string) => {
@@ -161,33 +166,72 @@ export function SearchPage() {
   };
 
 
+  /** Add a Bangumi tag */
+  const addTag = (t: string) => {
+    const trimmed = t.trim();
+    if (!trimmed || selectedTags.includes(trimmed)) return;
+    const next = [...selectedTags, trimmed];
+    navigate({
+      to: '/search',
+      search: { ...searchParams, tag: next.join(',') } as any,
+    });
+  };
+
+  const removeTag = (t: string) => {
+    const next = selectedTags.filter((x) => x !== t);
+    navigate({
+      to: '/search',
+      search: { ...searchParams, tag: next.length > 0 ? next.join(',') : undefined } as any,
+    });
+  };
+
   // Text search (single page)
   const { data: searchResults = [], isLoading: searchLoading } = useQuery({
     queryKey: discoverKeys.search(debouncedQuery),
     queryFn: () => discoverApi.search(debouncedQuery),
-    enabled: debouncedQuery.length > 0 && !isBrowseMode,
+    enabled: debouncedQuery.length > 0 && !isFilterActive,
   });
 
-  // Genre browse (infinite pages) — now with filters
+  // Genre browse (infinite pages) — with filters
   const {
     data: genrePages,
     isLoading: genreLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
+    fetchNextPage: fetchNextGenrePage,
+    hasNextPage: hasNextGenrePage,
+    isFetchingNextPage: isFetchingNextGenrePage,
   } = useInfiniteQuery({
     queryKey: ['discover', 'browse', browseParams],
     queryFn: ({ pageParam }) => discoverApi.browse({ ...browseParams, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) =>
       lastPage.length >= 20 ? lastPageParam + 1 : undefined,
-    enabled: isBrowseMode,
+    enabled: isBrowseMode && !isTagMode,
+  });
+
+  // Tag browse (infinite pages) — Bangumi tag search
+  const {
+    data: tagPages,
+    isLoading: tagLoading,
+    fetchNextPage: fetchNextTagPage,
+    hasNextPage: hasNextTagPage,
+    isFetchingNextPage: isFetchingNextTagPage,
+  } = useInfiniteQuery({
+    queryKey: ['discover', 'tag', selectedTags, urlSort],
+    queryFn: ({ pageParam }) => discoverApi.browseByTag(selectedTags, urlSort, pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) =>
+      lastPage.length >= 20 ? lastPageParam + 1 : undefined,
+    enabled: isTagMode,
   });
 
   const genreResults = genrePages?.pages.flat() ?? [];
-  const results = isBrowseMode ? genreResults : searchResults;
-  const isLoading = isBrowseMode ? genreLoading : searchLoading;
-  const hasQuery = isBrowseMode || debouncedQuery.length > 0;
+  const tagResults = tagPages?.pages.flat() ?? [];
+  const results = isTagMode ? tagResults : isBrowseMode ? genreResults : searchResults;
+  const isLoading = isTagMode ? tagLoading : isBrowseMode ? genreLoading : searchLoading;
+  const hasQuery = isFilterActive || debouncedQuery.length > 0;
+  const fetchNextPage = isTagMode ? fetchNextTagPage : fetchNextGenrePage;
+  const hasNextPage = isTagMode ? hasNextTagPage : hasNextGenrePage;
+  const isFetchingNextPage = isTagMode ? isFetchingNextTagPage : isFetchingNextGenrePage;
 
   /** Navigate with updated search params */
   const updateFilter = (key: string, value: string | undefined) => {
@@ -229,6 +273,21 @@ export function SearchPage() {
             >
               {translateGenre(g, i18n.locale)}
             </button>
+          ))}
+          {selectedTags.map((t) => (
+            <span
+              key={`tag-${t}`}
+              className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1.5 rounded-md bg-white/[0.05] text-mm-accent"
+            >
+              {t}
+              <button
+                type="button"
+                onClick={() => removeTag(t)}
+                className="ml-0.5 text-white/30 hover:text-white/60"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={10} />
+              </button>
+            </span>
           ))}
         </motion.div>
 
@@ -326,7 +385,7 @@ export function SearchPage() {
             </Select>
 
             {/* Clear filters */}
-            {isBrowseMode && (
+            {isFilterActive && (
               <Button
                 type="button"
                 variant="ghost"
@@ -338,6 +397,7 @@ export function SearchPage() {
               </Button>
             )}
           </div>
+
         </motion.div>
 
         {/* Search input */}
@@ -358,6 +418,14 @@ export function SearchPage() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && query.trim()) {
+                    e.preventDefault();
+                    addTag(query.trim());
+                    setQuery('');
+                    setDebouncedQuery('');
+                  }
+                }}
                 placeholder={i18n._(msg`search.inputPlaceholder`)}
                 className="flex-1 bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-white/20"
               />
@@ -378,12 +446,14 @@ export function SearchPage() {
         </motion.div>
 
         {/* Active filter summary */}
-        {isBrowseMode && (
+        {isFilterActive && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
             <h2 className="text-lg font-bold text-white tracking-tight">
-              {selectedGenres.length > 0
-                ? selectedGenres.map((g) => translateGenre(g, i18n.locale)).join(' · ')
-                : i18n._(msg`search.browseResults`)}
+              {isTagMode
+                ? selectedTags.join(' · ')
+                : selectedGenres.length > 0
+                  ? selectedGenres.map((g) => translateGenre(g, i18n.locale)).join(' · ')
+                  : i18n._(msg`search.browseResults`)}
               {urlYear && <span className="text-white/40 font-normal ml-2">· {urlYear}</span>}
               {urlSeason && (
                 <span className="text-white/40 font-normal ml-1">
@@ -435,8 +505,8 @@ export function SearchPage() {
               ))}
             </div>
 
-            {/* Load more — browse mode only */}
-            {isBrowseMode && hasNextPage && (
+            {/* Load more */}
+            {isFilterActive && hasNextPage && (
               <div className="flex justify-center mt-8">
                 <Button
                   type="button"

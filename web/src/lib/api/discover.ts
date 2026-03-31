@@ -97,6 +97,13 @@ export const discoverApi = {
   trending: (page: number) => api.get<AnimeSummary[]>(`/api/v1/discover/trending?page=${page}`),
   search: (q: string) =>
     api.get<AnimeSummary[]>(`/api/v1/discover/search?q=${encodeURIComponent(q)}`),
+  browseByTag: (tags: string[], sort?: string, page?: number) => {
+    const qs = new URLSearchParams();
+    qs.set('tag', tags.join(','));
+    if (sort) qs.set('sort', sort);
+    if (page) qs.set('page', String(page));
+    return api.get<AnimeSummary[]>(`/api/v1/discover/browse/tag?${qs.toString()}`);
+  },
   browse: (params: BrowseParams) => {
     const qs = new URLSearchParams();
     if (params.genre) qs.set('genre', params.genre);
@@ -120,6 +127,7 @@ export const discoverKeys = {
   trending: (page: number) => ['discover', 'trending', page] as const,
   search: (q: string) => ['discover', 'search', q] as const,
   browse: (genre: string, page: number) => ['discover', 'browse', genre, page] as const,
+  browseParams: (params: BrowseParams) => ['discover', 'browse', params] as const,
   detail: (id: number) => ['discover', 'detail', id] as const,
   episodes: (id: number) => ['discover', 'episodes', id] as const,
   comments: (id: number) => ['discover', 'comments', id] as const,

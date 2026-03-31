@@ -1469,6 +1469,9 @@ msgstr "Scan All"
 msgid "schedule.all"
 msgstr "All"
 
+msgid "schedule.backToCurrent"
+msgstr "Back to current"
+
 #: src/pages/SchedulePage.tsx:465
 msgid "schedule.loadFailed"
 msgstr "Failed to load calendar"
@@ -1476,6 +1479,9 @@ msgstr "Failed to load calendar"
 #: src/pages/SchedulePage.tsx:601
 msgid "schedule.noShows"
 msgstr "No shows scheduled"
+
+msgid "schedule.page"
+msgstr "Page"
 
 #: src/pages/SchedulePage.tsx:74
 msgid "schedule.season.fall"
@@ -1508,7 +1514,7 @@ msgstr "Search your favorite anime"
 
 #: src/pages/SearchPage.tsx:131
 msgid "search.inputPlaceholder"
-msgstr "Search your favorite anime..."
+msgstr "Search anime name or tag…"
 
 #: src/pages/SearchPage.tsx:212
 msgid "search.loadingMore"
@@ -1556,6 +1562,9 @@ msgstr "Status"
 
 msgid "search.filter.clear"
 msgstr "Clear Filters"
+
+msgid "search.tagPlaceholder"
+msgstr "Add Bangumi tag…"
 
 msgid "search.filter.applied"
 msgstr "current filters"

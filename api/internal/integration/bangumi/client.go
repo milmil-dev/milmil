@@ -22,6 +22,7 @@ const nextBaseURL = "https://next.bgm.tv"
 
 type Client interface {
 	SearchSubjects(ctx context.Context, query string) ([]Subject, error)
+	SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]Subject, int, error)
 	GetCalendar(ctx context.Context) ([]CalendarDay, error)
 	GetSubject(ctx context.Context, id int) (*Subject, error)
 	GetSubjectEpisodes(ctx context.Context, subjectID int) ([]Episode, error)
@@ -90,6 +91,32 @@ func (c *httpClient) SearchSubjects(ctx context.Context, query string) ([]Subjec
 		return nil, err
 	}
 	return result.Data, nil
+}
+
+func (c *httpClient) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]Subject, int, error) {
+	filter := map[string]any{
+		"type": []int{2}, // anime only
+		"tag":  tags,
+	}
+	if sort == "" {
+		sort = "rank"
+	}
+	offset := (page - 1) * limit
+	reqBody, _ := json.Marshal(map[string]any{
+		"filter": filter,
+		"sort":   sort,
+		"limit":  limit,
+		"offset": offset,
+	})
+	data, err := c.do(ctx, http.MethodPost, "/v0/search/subjects", bytes.NewReader(reqBody))
+	if err != nil {
+		return nil, 0, err
+	}
+	var result SearchResult
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil, 0, err
+	}
+	return result.Data, result.Total, nil
 }
 
 func (c *httpClient) GetCalendar(ctx context.Context) ([]CalendarDay, error) {

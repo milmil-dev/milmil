@@ -542,6 +542,27 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 	return result, nil
 }
 
+func (s *Service) BrowseByTag(ctx context.Context, tags []string, sort string, page int) ([]AnimeSummary, error) {
+	cacheKey := fmt.Sprintf("meta:tag:%v:%s:%d", tags, sort, page)
+	var cached []AnimeSummary
+	if s.getCache(ctx, cacheKey, &cached) {
+		return cached, nil
+	}
+
+	subjects, _, err := s.bangumi.SearchByTag(ctx, tags, sort, page, 20)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]AnimeSummary, 0, len(subjects))
+	for _, sub := range subjects {
+		result = append(result, subjectToSummary(sub))
+	}
+
+	s.setCache(ctx, cacheKey, result, 6*time.Hour)
+	return result, nil
+}
+
 func (s *Service) findAniListID(ctx context.Context, bangumiID int, title string) int {
 	xrefKey := fmt.Sprintf("meta:xref:bgm:%d", bangumiID)
 	var alID int

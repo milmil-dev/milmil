@@ -1467,6 +1467,9 @@ msgstr "全部掃描"
 msgid "schedule.all"
 msgstr "全部"
 
+msgid "schedule.backToCurrent"
+msgstr "回到當季"
+
 #: src/pages/SchedulePage.tsx:465
 msgid "schedule.loadFailed"
 msgstr "載入日曆失敗"
@@ -1474,6 +1477,9 @@ msgstr "載入日曆失敗"
 #: src/pages/SchedulePage.tsx:601
 msgid "schedule.noShows"
 msgstr "沒有排定的節目"
+
+msgid "schedule.page"
+msgstr "頁"
 
 #: src/pages/SchedulePage.tsx:74
 msgid "schedule.season.fall"
@@ -1506,7 +1512,7 @@ msgstr "搜尋您喜愛的動畫"
 
 #: src/pages/SearchPage.tsx:131
 msgid "search.inputPlaceholder"
-msgstr "搜尋您喜愛的動畫…"
+msgstr "搜尋動畫名稱或標籤…"
 
 #: src/pages/SearchPage.tsx:212
 msgid "search.loadingMore"
@@ -1554,6 +1560,9 @@ msgstr "狀態"
 
 msgid "search.filter.clear"
 msgstr "清除篩選"
+
+msgid "search.tagPlaceholder"
+msgstr "輸入 Bangumi 標籤…"
 
 msgid "search.filter.applied"
 msgstr "目前篩選條件"

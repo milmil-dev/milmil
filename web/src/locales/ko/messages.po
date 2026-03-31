@@ -1469,6 +1469,9 @@ msgstr "전체 스캔"
 msgid "schedule.all"
 msgstr "전체"
 
+msgid "schedule.backToCurrent"
+msgstr "현재 시즌으로"
+
 #: src/pages/SchedulePage.tsx:465
 msgid "schedule.loadFailed"
 msgstr "캘린더 불러오기 실패"
@@ -1476,6 +1479,9 @@ msgstr "캘린더 불러오기 실패"
 #: src/pages/SchedulePage.tsx:601
 msgid "schedule.noShows"
 msgstr "편성된 프로그램이 없습니다"
+
+msgid "schedule.page"
+msgstr "페이지"
 
 #: src/pages/SchedulePage.tsx:74
 msgid "schedule.season.fall"
@@ -1508,7 +1514,7 @@ msgstr "좋아하는 애니메이션을 검색하세요"
 
 #: src/pages/SearchPage.tsx:131
 msgid "search.inputPlaceholder"
-msgstr "좋아하는 애니메이션을 검색…"
+msgstr "애니메이션 이름 또는 태그 검색…"
 
 #: src/pages/SearchPage.tsx:212
 msgid "search.loadingMore"
@@ -1556,6 +1562,9 @@ msgstr "상태"
 
 msgid "search.filter.clear"
 msgstr "필터 초기화"
+
+msgid "search.tagPlaceholder"
+msgstr "Bangumi 태그 추가…"
 
 msgid "search.filter.applied"
 msgstr "현재 필터"

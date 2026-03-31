@@ -110,6 +110,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	discoverGroup.GET("/trending", h.handleTrending)
 	discoverGroup.GET("/search", h.handleSearch)
 	discoverGroup.GET("/browse", h.handleBrowseByGenre)
+	discoverGroup.GET("/browse/tag", h.handleBrowseByTag)
 	discoverGroup.GET("/resolve", h.handleResolveAniList)
 	discoverGroup.GET("/anime/:id", h.handleAnimeDetail)
 	discoverGroup.GET("/anime/:id/episodes", h.handleAnimeEpisodes)

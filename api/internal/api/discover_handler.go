@@ -119,6 +119,28 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
+func (h *handler) handleBrowseByTag(c echo.Context) error {
+	tag := c.QueryParam("tag")
+	if tag == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "tag parameter required")
+	}
+	tags := strings.Split(tag, ",")
+	sort := c.QueryParam("sort")
+
+	page := 1
+	if p := c.QueryParam("page"); p != "" {
+		if v, err := strconv.Atoi(p); err == nil && v > 0 {
+			page = v
+		}
+	}
+
+	results, err := h.metadata.BrowseByTag(c.Request().Context(), tags, sort, page)
+	if err != nil {
+		return mapMetadataError(err)
+	}
+	return c.JSON(http.StatusOK, results)
+}
+
 func (h *handler) handleResolveAniList(c echo.Context) error {
 	anilistID, err := strconv.Atoi(c.QueryParam("anilist_id"))
 	if err != nil || anilistID <= 0 {

@@ -51,6 +51,10 @@ func (m *mockBangumi) GetSubjectComments(ctx context.Context, subjectID int, lim
 	return nil, nil
 }
 
+func (m *mockBangumi) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error) {
+	return nil, 0, nil
+}
+
 // ─── Mock AniList Client ──────────────────────────────────────────────────────
 
 type mockAniList struct {
