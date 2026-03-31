@@ -140,11 +140,11 @@ function BannerImage({ src }: { src: string | null }) {
           background: 'linear-gradient(to right, var(--mm-bg), transparent)',
         }}
       />
-      {/* Bottom gradient — Seanime: h-[20rem] from-bg via-bg via-10% */}
+      {/* Bottom gradient — gentle fade at very bottom */}
       <div
-        className="w-full z-[2] absolute bottom-0 h-[20rem]"
+        className="w-full z-[2] absolute bottom-0 h-[8rem]"
         style={{
-          background: 'linear-gradient(to top, var(--mm-bg) 0%, var(--mm-bg) 10%, transparent)',
+          background: 'linear-gradient(to top, var(--mm-bg), transparent)',
         }}
       />
     </div>
@@ -178,7 +178,7 @@ function RootLayout() {
   }
 
   return (
-    <div className="relative min-h-screen" style={{ backgroundColor: 'var(--mm-bg)' }}>
+    <div className="relative min-h-screen">
       {/* Banner image — Seanime pattern: fixed, h-[35rem], extends behind sidebar */}
       <BannerImage src={bgImage} />
 

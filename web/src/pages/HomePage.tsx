@@ -198,44 +198,7 @@ export function HomePage() {
             )}
           </div>
 
-          {/* Side panel — libraries on xl */}
-          <motion.aside
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.45 }}
-            className="hidden xl:block w-[260px] shrink-0 mt-6"
-          >
-            <SectionHeader title={i18n._(msg`home.myLibraries`)} to="/libraries" />
-            {libraries.length === 0 ? (
-              <LibraryEmptyState />
-            ) : (
-              <div className="space-y-2">
-                {libraries.slice(0, 4).map((lib) => (
-                  <HomeLibraryCard key={lib.id} lib={lib} />
-                ))}
-              </div>
-            )}
-          </motion.aside>
         </div>
-
-        {/* Libraries for non-xl screens */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="xl:hidden px-4 md:px-6 mt-6 pb-8"
-        >
-          <SectionHeader title={i18n._(msg`home.myLibraries`)} to="/libraries" />
-          {libraries.length === 0 ? (
-            <LibraryEmptyState />
-          ) : (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {libraries.slice(0, 4).map((lib) => (
-                <HomeLibraryCard key={lib.id} lib={lib} />
-              ))}
-            </div>
-          )}
-        </motion.section>
       </div>
     </PageTransition>
   );

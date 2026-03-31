@@ -69,12 +69,10 @@ export function HeroBanner({
   ) ?? null;
 
   const hasCover = featured.cover_image?.startsWith('http');
-  const hasBanner = featured.banner_image?.startsWith('http');
-  const bgImage = hasBanner ? featured.banner_image : hasCover ? featured.cover_image : null;
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full"
       style={{ height: 'clamp(400px, 56vh, 520px)' }}
       tabIndex={0}
       role="region"
@@ -82,51 +80,9 @@ export function HeroBanner({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background images — crossfade */}
-      <AnimatePresence mode="popLayout">
-        <motion.div
-          key={featured.bangumi_id}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-        >
-          {bgImage ? (
-            <img
-              src={bgImage}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              style={
-                !hasBanner
-                  ? { filter: 'blur(20px) saturate(1.3) brightness(0.5)', transform: 'scale(1.15)' }
-                  : { filter: 'brightness(0.55) saturate(1.1)' }
-              }
-            />
-          ) : (
-            <div
-              className="absolute inset-0"
-              style={{ background: animeGradient(featured.title) }}
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Cinematic gradient overlays */}
-      <div
-        className="absolute inset-0 z-[1]"
-        style={{
-          background: [
-            'linear-gradient(to top, var(--mm-bg) 0%, rgba(7,7,7,0.85) 15%, rgba(7,7,7,0.4) 40%, transparent 70%)',
-            'linear-gradient(to right, rgba(7,7,7,0.7) 0%, rgba(7,7,7,0.3) 35%, transparent 60%)',
-            'radial-gradient(ellipse at 80% 20%, transparent 50%, rgba(7,7,7,0.3) 100%)',
-          ].join(', '),
-        }}
-      />
-
       {/* Content */}
-      <div className="relative z-[2] h-full flex items-end">
-        <div className="flex-1 min-w-0 p-6 md:p-8 pb-10 md:pb-12">
+      <div className="relative z-[2] h-full flex items-center">
+        <div className="min-w-0 w-full px-6 md:px-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.bangumi_id}
@@ -134,7 +90,7 @@ export function HeroBanner({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="flex items-end gap-6"
+              className="flex items-center gap-6"
             >
               {/* Poster — floats with shadow depth */}
               <Link
@@ -194,7 +150,7 @@ export function HeroBanner({
                 {/* Description */}
                 {featured.description && (
                   <p
-                    className="text-[14px] text-white/65 max-w-[560px] leading-relaxed line-clamp-3"
+                    className="text-[14px] font-bold text-white/65 max-w-[560px] leading-relaxed line-clamp-3"
                     style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}
                   >
                     {featured.description.replace(/<[^>]+>/g, '')}
@@ -205,22 +161,15 @@ export function HeroBanner({
                 <div className="flex items-center gap-2.5 pt-1">
                   <Link
                     to={`/anime/${featured.bangumi_id}` as string}
-                    className="inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
+                    className="inline-flex items-center px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
                     {i18n._(msg`hero.details`)}
                   </Link>
                   <button
                     type="button"
                     onClick={() => setPreviewOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.08] text-white/80 hover:bg-white/[0.14] transition-colors cursor-pointer"
+                    className="inline-flex items-center px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.08] text-white/80 hover:bg-white/[0.14] transition-colors cursor-pointer"
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 16v-4M12 8h.01" />
-                    </svg>
                     {i18n._(msg`hero.preview`)}
                   </button>
                 </div>
@@ -272,7 +221,7 @@ function PosterCard({ src, title }: { src?: string; title: string }) {
       initial={{ opacity: 0, scale: 0.92, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="w-[150px] h-[215px] lg:w-[170px] lg:h-[245px] rounded-lg overflow-hidden"
+      className="w-[180px] h-[258px] lg:w-[210px] lg:h-[300px] rounded-lg overflow-hidden"
       style={{
         boxShadow: [
           '0 8px 30px rgba(0,0,0,0.5)',
