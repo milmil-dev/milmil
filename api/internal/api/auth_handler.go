@@ -131,3 +131,47 @@ func (h *handler) handleAuthMe(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, authUserDTO{ID: user.ID, Username: user.Username})
 }
+
+type changePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
+func (h *handler) handleChangePassword(c echo.Context) error {
+	var req changePasswordRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+	if req.CurrentPassword == "" || req.NewPassword == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "current and new password required")
+	}
+	if len(req.NewPassword) < 8 {
+		return echo.NewHTTPError(http.StatusBadRequest, "password must be at least 8 characters")
+	}
+
+	ctx := c.Request().Context()
+	userID := getUserID(c)
+
+	user, err := h.queries.GetUserByID(ctx, userID)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	if err := auth.CheckPassword(user.PasswordHash, req.CurrentPassword); err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "current password is incorrect")
+	}
+
+	hash, err := auth.HashPassword(req.NewPassword)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	if err := h.queries.UpdatePasswordHash(ctx, store.UpdatePasswordHashParams{
+		PasswordHash: hash,
+		ID:           userID,
+	}); err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	return c.NoContent(http.StatusNoContent)
+}

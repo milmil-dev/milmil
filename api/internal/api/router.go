@@ -72,6 +72,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authProtected := v1.Group("/auth", jwtMiddleware(cfg.JWTSecret))
 	authProtected.POST("/logout", h.handleAuthLogout)
 	authProtected.GET("/me", h.handleAuthMe)
+	authProtected.PUT("/password", h.handleChangePassword)
 
 	// Libraries — protected
 	libGroup := v1.Group("/libraries", jwtMiddleware(cfg.JWTSecret))
