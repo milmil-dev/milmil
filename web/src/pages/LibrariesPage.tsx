@@ -53,6 +53,23 @@ function formatBytes(bytes: number): string {
   return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
 }
 
+function formatCheckedAgo(timestamp: number): string {
+  const diffMs = Date.now() - timestamp;
+  if (diffMs < 10_000) return 'just now';
+
+  const seconds = Math.floor(diffMs / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 // Derive a subtle accent hue from library name for the top border line
 function cardAccentColor(name: string): string {
   const h = hashName(name) % 360;
@@ -149,6 +166,20 @@ function LibraryCard({
       : i18n._(msg`library.neverScanned`);
   const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
   const accentColor = cardAccentColor(lib.name);
+  const isRemoteLibrary = lib.source_type !== 'local' && lib.source_type !== '';
+  const {
+    data: connectionStatus,
+    isLoading: isCheckingConnection,
+    dataUpdatedAt: connectionUpdatedAt,
+  } = useQuery({
+    queryKey: libraryKeys.connectionStatus(lib.id),
+    queryFn: () => libraryApi.getConnectionStatus(lib.id),
+    enabled: isRemoteLibrary,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+    retry: 1,
+  });
+  const connectionCheckedAt = connectionUpdatedAt > 0 ? formatCheckedAgo(connectionUpdatedAt) : '';
 
   return (
     <div
@@ -246,11 +277,43 @@ function LibraryCard({
             </span>
           )}
           <SourceBadge sourceType={lib.source_type} />
+          {isRemoteLibrary && (
+            <div
+              className="inline-flex items-center gap-1.5 rounded bg-white/6 px-1.5 py-0.5"
+              title={connectionStatus?.error}
+            >
+              <span
+                className={cn(
+                  'h-1.5 w-1.5 rounded-full',
+                  isCheckingConnection
+                    ? 'bg-amber-300/80'
+                    : connectionStatus?.online
+                      ? 'bg-green-300'
+                      : 'bg-red-300'
+                )}
+              />
+              <span
+                className={cn(
+                  'text-[10px] font-bold',
+                  isCheckingConnection
+                    ? 'text-amber-200/80'
+                    : connectionStatus?.online
+                      ? 'text-green-300'
+                      : 'text-red-300'
+                )}
+              >
+                {isCheckingConnection ? 'CHECKING' : connectionStatus?.online ? 'ONLINE' : 'OFFLINE'}
+              </span>
+            </div>
+          )}
         </div>
         <p className="text-[11px] font-mono truncate mt-1 text-white/30">{lib.path}</p>
         <p className="text-[11px] text-white/25 mt-2">
           {lib.file_count} files · {formatBytes(lib.total_size_bytes)} · {lastScanned}
         </p>
+        {isRemoteLibrary && connectionCheckedAt && (
+          <p className="text-[10px] text-white/25 mt-1">Checked {connectionCheckedAt}</p>
+        )}
       </div>
     </div>
   );

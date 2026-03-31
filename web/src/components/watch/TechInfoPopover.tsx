@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import type { MediaInfo } from '@/lib/api/stream';
 import type { SubtitleFile } from '@/lib/api/subtitle';
-import { cn } from '@/lib/utils';
 
 interface TechInfoPopoverProps {
   mediaInfo: MediaInfo | undefined;
@@ -33,25 +32,23 @@ export function TechInfoPopover({ mediaInfo, subtitles, transcodeStatus }: TechI
   const { i18n } = useLingui();
 
   return (
-    <div className="absolute right-3 bottom-3 z-20">
+    <div className="relative">
       {/* Click-away backdrop */}
       {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />}
 
-      {/* Gear button */}
+      {/* Gear button — styled to match VideoJS control bar buttons */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={cn(
-          'relative z-40 flex h-8 w-8 items-center justify-center rounded-full',
-          'bg-white/15 text-white/70 transition-colors hover:bg-white/25'
-        )}
+        className="media-button media-button--subtle media-button--icon relative z-40"
         aria-label={i18n._(msg`watch.playbackInfo`)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          className="h-4 w-4"
+          className="media-icon"
+          style={{ width: 18, height: 18 }}
         >
           <path
             fillRule="evenodd"
@@ -61,7 +58,7 @@ export function TechInfoPopover({ mediaInfo, subtitles, transcodeStatus }: TechI
         </svg>
       </button>
 
-      {/* Popover */}
+      {/* Popover — opens upward from control bar */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -71,7 +68,6 @@ export function TechInfoPopover({ mediaInfo, subtitles, transcodeStatus }: TechI
             transition={{ duration: 0.15 }}
             className="absolute right-0 bottom-full z-40 mb-2 w-64 rounded-lg border border-white/10 bg-black/90 p-3 backdrop-blur-md"
           >
-            {/* File info */}
             {mediaInfo && (
               <section className="space-y-1 text-xs text-white/70">
                 <h4 className="text-xs font-semibold text-white/90">
@@ -94,7 +90,6 @@ export function TechInfoPopover({ mediaInfo, subtitles, transcodeStatus }: TechI
               </section>
             )}
 
-            {/* Playback method */}
             {mediaInfo && (
               <section className="mt-3 space-y-1 border-t border-white/10 pt-2 text-xs text-white/70">
                 <h4 className="text-xs font-semibold text-white/90">
@@ -115,7 +110,6 @@ export function TechInfoPopover({ mediaInfo, subtitles, transcodeStatus }: TechI
               </section>
             )}
 
-            {/* Subtitles */}
             {subtitles && subtitles.length > 0 && (
               <section className="mt-3 border-t border-white/10 pt-2 text-xs text-white/70">
                 <h4 className="mb-1 text-xs font-semibold text-white/90">

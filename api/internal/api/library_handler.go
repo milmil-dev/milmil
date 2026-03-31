@@ -47,12 +47,57 @@ type testConnectionRequest struct {
 	Path         string                 `json:"path"`
 }
 
+type libraryConnectionStatusResponse struct {
+	Online bool   `json:"online"`
+	Error  string `json:"error,omitempty"`
+}
+
+type libraryListItem struct {
+	ID                  string  `json:"id"`
+	Name                string  `json:"name"`
+	Path                string  `json:"path"`
+	Enabled             int64   `json:"enabled"`
+	ScanIntervalMinutes int64   `json:"scan_interval_minutes"`
+	LastScannedAt       *string `json:"last_scanned_at"`
+	CreatedAt           string  `json:"created_at"`
+	UpdatedAt           string  `json:"updated_at"`
+	SourceType          string  `json:"source_type"`
+	FileCount           int64   `json:"file_count"`
+	MatchedCount        float64 `json:"matched_count"`
+	UnmatchedCount      float64 `json:"unmatched_count"`
+	TotalSizeBytes      int64   `json:"total_size_bytes"`
+}
+
 func (h *handler) handleListLibraries(c echo.Context) error {
 	libs, err := h.queries.ListLibrariesWithStats(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-	return c.JSON(http.StatusOK, libs)
+	result := make([]libraryListItem, len(libs))
+	for i, lib := range libs {
+		var totalSize int64
+		if v, ok := lib.TotalSizeBytes.(int64); ok {
+			totalSize = v
+		} else if v, ok := lib.TotalSizeBytes.(float64); ok {
+			totalSize = int64(v)
+		}
+		result[i] = libraryListItem{
+			ID:                  lib.ID,
+			Name:                lib.Name,
+			Path:                lib.Path,
+			Enabled:             lib.Enabled,
+			ScanIntervalMinutes: lib.ScanIntervalMinutes,
+			LastScannedAt:       nullStr(lib.LastScannedAt),
+			CreatedAt:           lib.CreatedAt,
+			UpdatedAt:           lib.UpdatedAt,
+			SourceType:          lib.SourceType,
+			FileCount:           lib.FileCount,
+			MatchedCount:        lib.MatchedCount,
+			UnmatchedCount:      lib.UnmatchedCount,
+			TotalSizeBytes:      totalSize,
+		}
+	}
+	return c.JSON(http.StatusOK, result)
 }
 
 func (h *handler) handleGetLibrary(c echo.Context) error {
@@ -63,7 +108,71 @@ func (h *handler) handleGetLibrary(c echo.Context) error {
 		}
 		return echo.ErrInternalServerError
 	}
-	return c.JSON(http.StatusOK, lib)
+	var totalSize int64
+	if v, ok := lib.TotalSizeBytes.(int64); ok {
+		totalSize = v
+	} else if v, ok := lib.TotalSizeBytes.(float64); ok {
+		totalSize = int64(v)
+	}
+	return c.JSON(http.StatusOK, libraryListItem{
+		ID:                  lib.ID,
+		Name:                lib.Name,
+		Path:                lib.Path,
+		Enabled:             lib.Enabled,
+		ScanIntervalMinutes: lib.ScanIntervalMinutes,
+		LastScannedAt:       nullStr(lib.LastScannedAt),
+		CreatedAt:           lib.CreatedAt,
+		UpdatedAt:           lib.UpdatedAt,
+		SourceType:          lib.SourceType,
+		FileCount:           lib.FileCount,
+		MatchedCount:        lib.MatchedCount,
+		UnmatchedCount:      lib.UnmatchedCount,
+		TotalSizeBytes:      totalSize,
+	})
+}
+
+func (h *handler) handleGetLibraryConnectionStatus(c echo.Context) error {
+	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.ErrNotFound
+		}
+		return echo.ErrInternalServerError
+	}
+
+	online, errMsg := h.checkLibraryConnection(lib)
+	return c.JSON(http.StatusOK, libraryConnectionStatusResponse{Online: online, Error: errMsg})
+}
+
+func (h *handler) checkLibraryConnection(lib store.Library) (bool, string) {
+	if lib.SourceType == "local" || lib.SourceType == "" {
+		p := storage.NewLocalProvider()
+		if _, err := p.Stat(lib.Path); err != nil {
+			return false, err.Error()
+		}
+		return true, ""
+	}
+
+	var configJSON string
+	if lib.SourceConfigEncrypted.Valid && lib.SourceConfigEncrypted.String != "" {
+		decrypted, err := crypto.Decrypt(h.encryptionKey, lib.SourceConfigEncrypted.String)
+		if err != nil {
+			return false, "cannot decrypt storage config"
+		}
+		configJSON = decrypted
+	}
+
+	provider, err := storage.NewProvider(lib.SourceType, configJSON)
+	if err != nil {
+		return false, err.Error()
+	}
+	defer provider.Close()
+
+	if _, err := provider.Stat(lib.Path); err != nil {
+		return false, err.Error()
+	}
+
+	return true, ""
 }
 
 func (h *handler) handleCreateLibrary(c echo.Context) error {

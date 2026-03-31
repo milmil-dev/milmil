@@ -2,6 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
+import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DanmakuOverlay } from '@/components/DanmakuOverlay';
 import { PageTransition } from '@/components/PageTransition';
@@ -39,6 +40,14 @@ const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 const SAVE_INTERVAL_MS = 10_000;
 const COMPLETION_THRESHOLD_SECONDS = 30;
 
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 function resolveEpisode(episodes: PlayableEpisode[], ep?: number): PlayableEpisode | undefined {
   if (ep !== undefined) {
     return episodes.find((e) => e.sort === ep);
@@ -50,6 +59,37 @@ function resolveEpisode(episodes: PlayableEpisode[], ep?: number): PlayableEpiso
   const fresh = episodes.find((e) => e.media_file && !e.progress);
   if (fresh) return fresh;
   return episodes.find((e) => e.media_file);
+}
+
+function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: () => void }) {
+  const { i18n } = useLingui();
+
+  useEffect(() => {
+    if (seconds === null) return;
+    const timer = setTimeout(onDone, 3000);
+    return () => clearTimeout(timer);
+  }, [seconds, onDone]);
+
+  return (
+    <AnimatePresence>
+      {seconds !== null && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute bottom-14 left-3 z-10 flex items-center gap-2 rounded-md bg-black/70 px-3 py-1.5 backdrop-blur-sm"
+        >
+          <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 text-blue-400">
+            <path d="M8 3a5 5 0 110 10A5 5 0 018 3zm0 1.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h2a.5.5 0 000-1H8.5V5A.5.5 0 008 4.5z" />
+          </svg>
+          <span className="text-xs text-white/90">
+            {i18n._('watch.resumeFrom', { time: formatTime(seconds) })}
+          </span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 export function WatchPage() {
@@ -70,6 +110,9 @@ export function WatchPage() {
     'idle'
   );
   const [transcodeToken, setTranscodeToken] = useState<string | null>(null);
+
+  // --------------- Resume overlay state ---------------
+  const [resumeFrom, setResumeFrom] = useState<number | null>(null);
 
   // --------------- Core queries ---------------
   const { data: animeDetail, isLoading: detailLoading } = useQuery({
@@ -96,6 +139,18 @@ export function WatchPage() {
     [episodesData, ep]
   );
   const fileId = currentEpisode?.media_file?.id ?? null;
+
+  // Auto-sync URL when episode is auto-resolved (no ep param in URL)
+  useEffect(() => {
+    if (currentEpisode && ep === undefined) {
+      navigate({
+        to: '/watch/$animeId',
+        params: { animeId: String(bangumiId) },
+        search: { ep: currentEpisode.sort },
+        replace: true,
+      });
+    }
+  }, [currentEpisode, ep, navigate, bangumiId]);
 
   // --------------- File-dependent queries ---------------
   const { data: mediaInfo } = useQuery({
@@ -260,13 +315,15 @@ export function WatchPage() {
       videoElRef.current = el;
       setVideoEl(el);
 
-      // Restore progress
+      // Restore progress and show resume overlay
       if (
         currentEpisode?.progress &&
         currentEpisode.progress.position_seconds > 0 &&
         !currentEpisode.progress.completed
       ) {
-        api.currentTime(currentEpisode.progress.position_seconds);
+        const pos = currentEpisode.progress.position_seconds;
+        api.currentTime(pos);
+        setResumeFrom(pos);
       }
 
       // Add subtitle tracks
@@ -311,6 +368,7 @@ export function WatchPage() {
       }
       setTranscodeStatus('idle');
       setTranscodeToken(null);
+      setResumeFrom(null);
       setVideoEl(null);
       playerRef.current = null;
       videoElRef.current = null;
@@ -392,14 +450,17 @@ export function WatchPage() {
                       type={mimeType}
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
+                      controlBarExtra={
+                        <TechInfoPopover
+                          mediaInfo={mediaInfo}
+                          subtitles={subtitles}
+                          transcodeStatus={transcodeStatus}
+                        />
+                      }
                     />
                     <DanmakuOverlay videoElement={videoEl} comments={danmakuComments} />
                     <EpisodeTitleOverlay episode={currentEpisode} />
-                    <TechInfoPopover
-                      mediaInfo={mediaInfo}
-                      subtitles={subtitles}
-                      transcodeStatus={transcodeStatus}
-                    />
+                    <ResumeOverlay seconds={resumeFrom} onDone={() => setResumeFrom(null)} />
                   </>
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">

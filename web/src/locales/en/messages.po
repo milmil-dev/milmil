@@ -1533,6 +1533,9 @@ msgstr "In progress"
 msgid "watch.notFound"
 msgstr "Anime not found"
 
+msgid "watch.resumeFrom"
+msgstr "Resuming from {time}"
+
 #: src/components/watch/TechInfoPopover.tsx:54
 #: src/components/watch/TechInfoPopover.tsx:84
 msgid "watch.playbackInfo"

@@ -51,6 +51,11 @@ export interface TestConnectionResult {
   error?: string;
 }
 
+export interface LibraryConnectionStatus {
+  online: boolean;
+  error?: string;
+}
+
 export interface BrowseInput {
   source_type: string;
   source_config: Record<string, unknown>;
@@ -119,6 +124,8 @@ export const libraryApi = {
   scan: (id: string) => api.post<void>(`/api/v1/libraries/${id}/scan`),
   matchLibrary: (id: string) => api.post<void>(`/api/v1/libraries/${id}/match`),
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
+  getConnectionStatus: (id: string) =>
+    api.get<LibraryConnectionStatus>(`/api/v1/libraries/${id}/connection-status`),
   testConnection: (input: TestConnectionInput) =>
     api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
   browse: (input: BrowseInput) => api.post<BrowseResult>('/api/v1/libraries/browse', input),
@@ -144,6 +151,7 @@ export const libraryKeys = {
   list: () => [...libraryKeys.all, 'list'] as const,
   detail: (id: string) => [...libraryKeys.all, 'detail', id] as const,
   summaries: (id: string) => [...libraryKeys.all, 'summaries', id] as const,
+  connectionStatus: (id: string) => [...libraryKeys.all, 'connection-status', id] as const,
   mediaFiles: (id: string, params: MediaFilesParams = {}) =>
     [...libraryKeys.all, 'media-files', id, params] as const,
   network: () => [...libraryKeys.all, 'network'] as const,

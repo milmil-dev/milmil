@@ -1,17 +1,41 @@
 import '@videojs/react/video/skin.css';
-import { createPlayer, usePlayer, videoFeatures } from '@videojs/react';
-import { VideoSkin } from '@videojs/react/video';
+import {
+  BufferingIndicator,
+  CaptionsButton,
+  Container,
+  Controls,
+  FullscreenButton,
+  MuteButton,
+  PiPButton,
+  PlayButton,
+  PlaybackRateButton,
+  Popover,
+SeekButton,
+  Slider,
+  Time,
+  TimeSlider,
+  Tooltip,
+  VolumeSlider,
+  createPlayer,
+  usePlayer,
+  videoFeatures,
+} from '@videojs/react';
 import { Video } from '@videojs/react/video';
 import { HlsVideo } from '@videojs/react/media/hls-video';
-import { useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
+
+const SEEK_TIME = 10;
 
 interface VideoPlayerProps {
   src: string;
   type?: string;
   onReady?: (api: VideoPlayerAPI) => void;
   className?: string;
+  /** Extra buttons to insert in the control bar (before fullscreen) */
+  controlBarExtra?: ReactNode;
 }
 
 /** Simplified API surface exposed to WatchPage */
@@ -29,20 +53,230 @@ export interface VideoPlayerAPI {
     },
     manualCleanup: boolean
   ) => void;
-  /** Access the underlying <video> element */
   videoElement: () => HTMLVideoElement | null;
 }
 
-function PlayerInner({ src, type, onReady, className }: VideoPlayerProps) {
+// Reusable button matching the VideoJS skin style
+const SkinButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  ({ className, ...props }, ref) => (
+    <button
+      ref={ref}
+      type="button"
+      className={`media-button media-button--subtle media-button--icon ${className ?? ''}`}
+      {...props}
+    />
+  )
+);
+
+function PlayLabel() {
+  const paused = usePlayer((s) => Boolean(s.paused));
+  if (usePlayer((s) => Boolean(s.ended))) return 'Replay';
+  return paused ? 'Play' : 'Pause';
+}
+
+function CaptionsLabel() {
+  return usePlayer((s) => Boolean(s.subtitlesShowing)) ? 'Disable captions' : 'Enable captions';
+}
+
+function PiPLabel() {
+  return usePlayer((s) => Boolean(s.pip)) ? 'Exit picture-in-picture' : 'Enter picture-in-picture';
+}
+
+function FullscreenLabel() {
+  return usePlayer((s) => Boolean(s.fullscreen)) ? 'Exit fullscreen' : 'Enter fullscreen';
+}
+
+function VolumePopoverControl() {
+  const volumeUnsupported = usePlayer((s) => s.volumeAvailability === 'unsupported');
+  const muteBtn = (
+    <MuteButton className="media-button--mute" render={<SkinButton />}>
+      <svg className="media-icon media-icon--volume-off" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+      <svg className="media-icon media-icon--volume-low" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>
+      <svg className="media-icon media-icon--volume-high" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    </MuteButton>
+  );
+  if (volumeUnsupported) return muteBtn;
+  return (
+    <Popover.Root openOnHover delay={200} closeDelay={100} side="top">
+      <Popover.Trigger render={muteBtn} />
+      <Popover.Popup className="media-surface media-popover media-popover--volume">
+        <VolumeSlider.Root className="media-slider" orientation="vertical" thumbAlignment="edge">
+          <Slider.Track className="media-slider__track">
+            <Slider.Fill className="media-slider__fill" />
+          </Slider.Track>
+          <Slider.Thumb className="media-slider__thumb media-slider__thumb--persistent" />
+        </VolumeSlider.Root>
+      </Popover.Popup>
+    </Popover.Root>
+  );
+}
+
+function CustomVideoSkin({
+  children,
+  controlBarExtra,
+}: {
+  children: ReactNode;
+  controlBarExtra?: ReactNode;
+}) {
+  return (
+    <Container className="media-default-skin media-default-skin--video">
+      {children}
+      <BufferingIndicator
+        render={(props) => (
+          <div {...props} className="media-buffering-indicator">
+            <div className="media-surface">
+              <svg className="media-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" opacity=".25" />
+                <path d="M12 2a10 10 0 0 1 10 10h-2a8 8 0 0 0-8-8z">
+                  <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite" />
+                </path>
+              </svg>
+            </div>
+          </div>
+        )}
+      />
+      <Controls.Root className="media-surface media-controls">
+        <Tooltip.Provider>
+          {/* Play */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={
+                <PlayButton className="media-button--play" render={<SkinButton />}>
+                  <svg className="media-icon media-icon--restart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                  <svg className="media-icon media-icon--play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <svg className="media-icon media-icon--pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </PlayButton>
+              }
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">
+              <PlayLabel />
+            </Tooltip.Popup>
+          </Tooltip.Root>
+
+          {/* Seek backward */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={
+                <SeekButton seconds={-SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
+                  <span className="media-icon__container">
+                    <svg className="media-icon media-icon--seek media-icon--flipped" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
+                    <span className="media-icon__label">{SEEK_TIME}</span>
+                  </span>
+                </SeekButton>
+              }
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">
+              Seek backward {SEEK_TIME} seconds
+            </Tooltip.Popup>
+          </Tooltip.Root>
+
+          {/* Seek forward */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={
+                <SeekButton seconds={SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
+                  <span className="media-icon__container">
+                    <svg className="media-icon media-icon--seek" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
+                    <span className="media-icon__label">{SEEK_TIME}</span>
+                  </span>
+                </SeekButton>
+              }
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">
+              Seek forward {SEEK_TIME} seconds
+            </Tooltip.Popup>
+          </Tooltip.Root>
+
+          {/* Time + slider */}
+          <Time.Group className="media-time">
+            <Time.Value type="current" className="media-time__value" />
+            <TimeSlider.Root className="media-slider">
+              <Slider.Track className="media-slider__track">
+                <Slider.Fill className="media-slider__fill" />
+                <Slider.Buffer className="media-slider__buffer" />
+              </Slider.Track>
+              <Slider.Thumb className="media-slider__thumb" />
+              <div className="media-surface media-preview media-slider__preview">
+                <Slider.Thumbnail className="media-preview__thumbnail" />
+                <Slider.Value type="pointer" className="media-preview__timestamp" />
+              </div>
+            </TimeSlider.Root>
+            <Time.Value type="duration" className="media-time__value" />
+          </Time.Group>
+
+          {/* Playback rate */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">Toggle playback rate</Tooltip.Popup>
+          </Tooltip.Root>
+
+          {/* Volume */}
+          <VolumePopoverControl />
+
+          {/* Captions */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={
+                <CaptionsButton className="media-button--captions" render={<SkinButton />}>
+                  <svg className="media-icon media-icon--captions-off" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg>
+                  <svg className="media-icon media-icon--captions-on" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg>
+                </CaptionsButton>
+              }
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">
+              <CaptionsLabel />
+            </Tooltip.Popup>
+          </Tooltip.Root>
+
+          {/* PiP */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={
+                <PiPButton className="media-button--pip" render={<SkinButton />}>
+                  <svg className="media-icon media-icon--pip-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+                  <svg className="media-icon media-icon--pip-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
+                </PiPButton>
+              }
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">
+              <PiPLabel />
+            </Tooltip.Popup>
+          </Tooltip.Root>
+
+          {/* Custom extra buttons (e.g. settings gear) */}
+          {controlBarExtra}
+
+          {/* Fullscreen */}
+          <Tooltip.Root side="top">
+            <Tooltip.Trigger
+              render={
+                <FullscreenButton className="media-button--fullscreen" render={<SkinButton />}>
+                  <svg className="media-icon media-icon--fullscreen-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                  <svg className="media-icon media-icon--fullscreen-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+                </FullscreenButton>
+              }
+            />
+            <Tooltip.Popup className="media-surface media-tooltip">
+              <FullscreenLabel />
+            </Tooltip.Popup>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+      </Controls.Root>
+      <div className="media-overlay" />
+    </Container>
+  );
+}
+
+function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPlayerProps) {
   const player = usePlayer();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Expose a stable API to parent once player is available
   useEffect(() => {
     if (!player || readyFired.current) return;
 
-    // Find the <video> element inside the player container
     const findVideo = (): HTMLVideoElement | null => {
       if (videoRef.current) return videoRef.current;
       const el = document.querySelector('[data-videojs] video') as HTMLVideoElement | null;
@@ -83,13 +317,9 @@ function PlayerInner({ src, type, onReady, className }: VideoPlayerProps) {
 
   return (
     <div className={className} data-videojs>
-      <VideoSkin>
-        {isHLS ? (
-          <HlsVideo src={src} playsInline />
-        ) : (
-          <Video src={src} playsInline />
-        )}
-      </VideoSkin>
+      <CustomVideoSkin controlBarExtra={controlBarExtra}>
+        {isHLS ? <HlsVideo src={src} playsInline /> : <Video src={src} playsInline />}
+      </CustomVideoSkin>
     </div>
   );
 }

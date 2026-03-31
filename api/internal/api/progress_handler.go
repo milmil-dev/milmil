@@ -18,6 +18,30 @@ type saveProgressRequest struct {
 	Completed       bool   `json:"completed"`
 }
 
+type progressResponse struct {
+	ID              string  `json:"id"`
+	UserID          string  `json:"user_id"`
+	EpisodeID       string  `json:"episode_id"`
+	MediaFileID     *string `json:"media_file_id"`
+	PositionSeconds int64   `json:"position_seconds"`
+	DurationSeconds *int64  `json:"duration_seconds"`
+	Completed       int64   `json:"completed"`
+	LastWatchedAt   string  `json:"last_watched_at"`
+}
+
+func toProgressResponse(p store.WatchProgress) progressResponse {
+	return progressResponse{
+		ID:              p.ID,
+		UserID:          p.UserID,
+		EpisodeID:       p.EpisodeID,
+		MediaFileID:     nullStr(p.MediaFileID),
+		PositionSeconds: p.PositionSeconds,
+		DurationSeconds: nullInt(p.DurationSeconds),
+		Completed:       p.Completed,
+		LastWatchedAt:   p.LastWatchedAt,
+	}
+}
+
 func (h *handler) handleSaveProgress(c echo.Context) error {
 	var req saveProgressRequest
 	if err := c.Bind(&req); err != nil {
@@ -53,7 +77,7 @@ func (h *handler) handleSaveProgress(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return c.JSON(http.StatusOK, progress)
+	return c.JSON(http.StatusOK, toProgressResponse(progress))
 }
 
 func (h *handler) handleListRecentProgress(c echo.Context) error {
@@ -64,7 +88,12 @@ func (h *handler) handleListRecentProgress(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return c.JSON(http.StatusOK, items)
+	result := make([]progressResponse, len(items))
+	for i, item := range items {
+		result[i] = toProgressResponse(item)
+	}
+
+	return c.JSON(http.StatusOK, result)
 }
 
 func (h *handler) handleGetProgressByFile(c echo.Context) error {
@@ -85,5 +114,5 @@ func (h *handler) handleGetProgressByFile(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return c.JSON(http.StatusOK, progress)
+	return c.JSON(http.StatusOK, toProgressResponse(progress))
 }

@@ -1531,6 +1531,9 @@ msgstr "看到一半"
 msgid "watch.notFound"
 msgstr "找不到动画"
 
+msgid "watch.resumeFrom"
+msgstr "从 {time} 继续播放"
+
 #: src/components/watch/TechInfoPopover.tsx:54
 #: src/components/watch/TechInfoPopover.tsx:84
 msgid "watch.playbackInfo"
