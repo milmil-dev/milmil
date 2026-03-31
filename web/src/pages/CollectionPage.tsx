@@ -1,6 +1,6 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Bookmark, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -243,9 +243,10 @@ export function CollectionPage() {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  const { data: anime, isLoading } = useQuery({
+  const { data: anime, isLoading, isFetching } = useQuery({
     queryKey: collectionKeys.list({ status: selectedStatus, search: debouncedSearch, sort }),
     queryFn: () => collectionApi.list({ status: selectedStatus, search: debouncedSearch, sort }),
+    placeholderData: keepPreviousData,
   });
 
   const { data: statusCounts } = useQuery({
@@ -385,7 +386,12 @@ export function CollectionPage() {
 
             {/* Anime card grid */}
             {!isEmpty && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              <div
+                className={cn(
+                  'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 transition-opacity duration-200',
+                  isFetching && 'opacity-50'
+                )}
+              >
                 {anime?.map((item, index) => (
                   <AnimeCard key={item.id} anime={item} index={index} />
                 ))}
