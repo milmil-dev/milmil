@@ -228,26 +228,21 @@ export function HeroBanner({
             </motion.div>
           </AnimatePresence>
 
-          {/* Slide indicators — thin progress bars */}
+          {/* Slide indicators */}
           {items.length > 1 && (
-            <div className="flex items-center gap-1.5 mt-6 max-w-[200px]">
+            <div className="flex items-center gap-2.5 mt-6">
               {items.map((item, i) => (
                 <button
                   type="button"
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
-                  className="relative h-[3px] flex-1 rounded-full overflow-hidden cursor-pointer bg-white/[0.12] hover:bg-white/[0.2] transition-colors"
-                >
-                  {i === activeIndex && (
-                    <motion.div
-                      className="absolute inset-y-0 left-0 bg-mm-accent rounded-full"
-                      style={{ width: `${progress * 100}%` }}
-                    />
+                  className={cn(
+                    "size-2 rounded-full cursor-pointer transition-all duration-200",
+                    i === activeIndex
+                      ? "h-[6px] w-5 bg-white"
+                      : "bg-white/50 hover:bg-white/70",
                   )}
-                  {i < activeIndex && (
-                    <div className="absolute inset-0 bg-white/30 rounded-full" />
-                  )}
-                </button>
+                />
               ))}
             </div>
           )}
