@@ -1,6 +1,8 @@
 import '@videojs/react/video/skin.css';
 import { createPlayer, usePlayer, videoFeatures } from '@videojs/react';
-import { Video, VideoSkin } from '@videojs/react/video';
+import { VideoSkin } from '@videojs/react/video';
+import { Video } from '@videojs/react/video';
+import { HlsVideo } from '@videojs/react/media/hls-video';
 import { useEffect, useRef } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
@@ -31,7 +33,7 @@ export interface VideoPlayerAPI {
   videoElement: () => HTMLVideoElement | null;
 }
 
-function PlayerInner({ src, onReady, className }: VideoPlayerProps) {
+function PlayerInner({ src, type, onReady, className }: VideoPlayerProps) {
   const player = usePlayer();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -77,10 +79,16 @@ function PlayerInner({ src, onReady, className }: VideoPlayerProps) {
     onReady?.(api);
   }, [player, onReady]);
 
+  const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
+
   return (
     <div className={className} data-videojs>
       <VideoSkin>
-        <Video src={src} playsInline />
+        {isHLS ? (
+          <HlsVideo src={src} playsInline />
+        ) : (
+          <Video src={src} playsInline />
+        )}
       </VideoSkin>
     </div>
   );

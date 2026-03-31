@@ -16,6 +16,15 @@ var directPlayCodecs = map[string]bool{
 	"h264": true, "avc": true, "avc1": true,
 	"vp8": true, "vp9": true, "av1": true,
 }
+
+// remuxCodecs are codecs that modern browsers can play if wrapped in MP4.
+// HEVC/H265 is supported in Safari, Chrome 107+, Edge via hardware decoding.
+var remuxCodecs = map[string]bool{
+	"h264": true, "avc": true, "avc1": true,
+	"h265": true, "hevc": true,
+	"vp8": true, "vp9": true, "av1": true,
+}
+
 var directPlayContainers = map[string]bool{
 	".mp4": true, ".webm": true, ".m4v": true,
 }
@@ -60,9 +69,24 @@ func (h *handler) handleMediaInfo(c echo.Context) error {
 		codec = strings.ToLower(mf.VideoCodec.String)
 	}
 
+	// If codec metadata is missing, try to infer from filename
+	if codec == "" {
+		lowerName := strings.ToLower(mf.Filename)
+		switch {
+		case strings.Contains(lowerName, "x265") || strings.Contains(lowerName, "h265") || strings.Contains(lowerName, "hevc"):
+			codec = "hevc"
+		case strings.Contains(lowerName, "x264") || strings.Contains(lowerName, "h264") || strings.Contains(lowerName, "avc"):
+			codec = "h264"
+		case strings.Contains(lowerName, "av1"):
+			codec = "av1"
+		case strings.Contains(lowerName, "vp9"):
+			codec = "vp9"
+		}
+	}
+
 	canDirect := directPlayContainers[ext] && directPlayCodecs[codec]
-	// Remux: codec is browser-compatible but container isn't (e.g. MKV with H264)
-	canRemux := !canDirect && directPlayCodecs[codec]
+	// Remux: codec can play in modern browsers if wrapped in MP4 (e.g. MKV with H264 or HEVC)
+	canRemux := !canDirect && remuxCodecs[codec]
 
 	online := true
 	if lib.SourceType == "local" || lib.SourceType == "" {

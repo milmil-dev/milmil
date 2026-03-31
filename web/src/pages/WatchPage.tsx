@@ -162,7 +162,7 @@ export function WatchPage() {
     if (transcodeStatus !== 'processing' || !fileId) return;
 
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${wsProtocol}//${new URL(API_URL).host}/api/v1/ws`;
+    const wsUrl = `${wsProtocol}//${new URL(API_URL).host}/ws`;
     const ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
