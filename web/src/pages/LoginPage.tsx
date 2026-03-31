@@ -89,7 +89,8 @@ function PosterCollage() {
 export function LoginPage() {
   const { i18n } = useLingui()
   const navigate = useNavigate()
-  const { login, setup, loading, error, clearError } = useAuth()
+  const { login, setup, verify2FA, cancel2FA, pending2FA, loading, error, clearError } = useAuth()
+  const [totpCode, setTotpCode] = useState('')
 
   // Check if admin user already exists
   const { data: status } = useQuery({
@@ -114,11 +115,16 @@ export function LoginPage() {
       try {
         if (mode === "login") {
           await login(value.username, value.password)
+          // If pending2FA is set, login() returned early — don't navigate
+          if (!pending2FA) {
+            form.reset()
+            navigate({ to: "/" })
+          }
         } else {
           await setup(value.username, value.password)
+          form.reset()
+          navigate({ to: "/" })
         }
-        form.reset()
-        navigate({ to: "/" })
       } catch {
         // error is set by useAuth
       }
@@ -176,6 +182,85 @@ export function LoginPage() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="rounded-xl border border-white/[0.06] bg-mm-bg/70 p-8 backdrop-blur-xl shadow-2xl shadow-black/50"
         >
+          {/* 2FA verification step */}
+          {pending2FA ? (
+            <div className="space-y-5">
+              <div>
+                <h2 className="mb-1 text-lg font-semibold text-white">
+                  {i18n._(msg`auth.2fa.title`)}
+                </h2>
+                <p className="text-[13px] text-white/40">
+                  {i18n._(msg`auth.2fa.subtitle`)}
+                </p>
+              </div>
+
+              <div>
+                <label htmlFor="totp-login" className="mb-1.5 block text-[13px] font-medium text-white/60">
+                  {i18n._(msg`auth.2fa.codeLabel`)}
+                </label>
+                <Input
+                  id="totp-login"
+                  placeholder="000000"
+                  value={totpCode}
+                  onChange={(e) => setTotpCode(e.target.value)}
+                  maxLength={6}
+                  autoFocus
+                  className="font-mono text-center text-lg tracking-[0.3em]"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && totpCode.length === 6) {
+                      verify2FA(totpCode).then(() => {
+                        navigate({ to: '/' })
+                      }).catch(() => {})
+                    }
+                  }}
+                />
+              </div>
+
+              {displayError && (
+                <motion.p
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-[13px] text-red-400"
+                >
+                  {displayError}
+                </motion.p>
+              )}
+
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    cancel2FA()
+                    setTotpCode('')
+                  }}
+                  className="flex-1"
+                >
+                  {i18n._(msg`common.back`)}
+                </Button>
+                <Button
+                  type="button"
+                  disabled={totpCode.length !== 6 || loading}
+                  onClick={() => {
+                    verify2FA(totpCode).then(() => {
+                      navigate({ to: '/' })
+                    }).catch(() => {})
+                  }}
+                  className="flex-1"
+                >
+                  {loading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Spinner size={16} aria-hidden="true" />
+                      {i18n._(msg`common.loading`)}
+                    </span>
+                  ) : (
+                    i18n._(msg`auth.2fa.verify`)
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : (
+          <>
           {/* Mode tabs — only show if not initialized */}
           {!isInitialized && (
             <div className="mb-6 flex border-b border-white/[0.06]">
@@ -330,6 +415,8 @@ export function LoginPage() {
               )}
             </form.Subscribe>
           </form>
+          </>
+          )}
         </motion.div>
 
         {/* Footer */}
