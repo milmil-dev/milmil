@@ -104,18 +104,20 @@ function DandanPlayCard() {
           )}
         </form.Field>
 
-        <form.Subscribe selector={(s) => s.isSubmitting}>
-          {(isSubmitting) => (
-            <Button
-              type="submit"
-              disabled={saveMutation.isPending || isSubmitting}
-            >
-              {saveMutation.isPending || isSubmitting
-                ? i18n._(msg`settings.saving`)
-                : i18n._(msg`settings.save`)}
-            </Button>
-          )}
-        </form.Subscribe>
+        <div className="flex justify-end">
+          <form.Subscribe selector={(s) => s.isSubmitting}>
+            {(isSubmitting) => (
+              <Button
+                type="submit"
+                disabled={saveMutation.isPending || isSubmitting}
+              >
+                {saveMutation.isPending || isSubmitting
+                  ? i18n._(msg`settings.saving`)
+                  : i18n._(msg`settings.save`)}
+              </Button>
+            )}
+          </form.Subscribe>
+        </div>
       </form>
     </SettingsCard>
   );
@@ -259,7 +261,7 @@ function OAuthProviderCard({
           )}
         </form.Field>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap justify-end">
           <form.Subscribe selector={(s) => s.isSubmitting}>
             {(isSubmitting) => (
               <Button
