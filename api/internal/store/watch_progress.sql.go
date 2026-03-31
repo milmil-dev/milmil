@@ -105,6 +105,85 @@ func (q *Queries) ListCompletedWatchProgress(ctx context.Context, userID string)
 	return items, nil
 }
 
+const listRecentProgressWithAnime = `-- name: ListRecentProgressWithAnime :many
+WITH ranked AS (
+    SELECT
+        wp.id, wp.user_id, wp.episode_id, wp.media_file_id,
+        wp.position_seconds, wp.duration_seconds, wp.completed, wp.last_watched_at,
+        e.anime_id, e.episode_number,
+        ROW_NUMBER() OVER (PARTITION BY e.anime_id ORDER BY wp.last_watched_at DESC) AS rn
+    FROM watch_progress wp
+    JOIN episodes e ON e.id = wp.episode_id
+    WHERE wp.user_id = ?
+)
+SELECT
+    r.id, r.user_id, r.episode_id, r.media_file_id,
+    r.position_seconds, r.duration_seconds, r.completed, r.last_watched_at,
+    a.id AS anime_id, a.title AS anime_title, a.title_zh AS anime_title_zh,
+    a.cover_image_url AS anime_cover_image_url, a.bangumi_id AS anime_bangumi_id,
+    r.episode_number
+FROM ranked r
+JOIN anime a ON a.id = r.anime_id
+WHERE r.rn = 1
+ORDER BY r.last_watched_at DESC
+LIMIT 20
+`
+
+type ListRecentProgressWithAnimeRow struct {
+	ID                 string         `json:"id"`
+	UserID             string         `json:"user_id"`
+	EpisodeID          string         `json:"episode_id"`
+	MediaFileID        sql.NullString `json:"media_file_id"`
+	PositionSeconds    int64          `json:"position_seconds"`
+	DurationSeconds    sql.NullInt64  `json:"duration_seconds"`
+	Completed          int64          `json:"completed"`
+	LastWatchedAt      string         `json:"last_watched_at"`
+	AnimeID            string         `json:"anime_id"`
+	AnimeTitle         string         `json:"anime_title"`
+	AnimeTitleZh       sql.NullString `json:"anime_title_zh"`
+	AnimeCoverImageUrl sql.NullString `json:"anime_cover_image_url"`
+	AnimeBangumiID     sql.NullInt64  `json:"anime_bangumi_id"`
+	EpisodeNumber      float64        `json:"episode_number"`
+}
+
+func (q *Queries) ListRecentProgressWithAnime(ctx context.Context, userID string) ([]ListRecentProgressWithAnimeRow, error) {
+	rows, err := q.db.QueryContext(ctx, listRecentProgressWithAnime, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListRecentProgressWithAnimeRow{}
+	for rows.Next() {
+		var i ListRecentProgressWithAnimeRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.EpisodeID,
+			&i.MediaFileID,
+			&i.PositionSeconds,
+			&i.DurationSeconds,
+			&i.Completed,
+			&i.LastWatchedAt,
+			&i.AnimeID,
+			&i.AnimeTitle,
+			&i.AnimeTitleZh,
+			&i.AnimeCoverImageUrl,
+			&i.AnimeBangumiID,
+			&i.EpisodeNumber,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listWatchProgressByUser = `-- name: ListWatchProgressByUser :many
 SELECT id, user_id, episode_id, media_file_id, position_seconds, duration_seconds, completed, last_watched_at, bangumi_synced_at, mal_synced_at, anilist_synced_at FROM watch_progress WHERE user_id = ? ORDER BY last_watched_at DESC LIMIT 20
 `

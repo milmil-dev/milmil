@@ -114,14 +114,21 @@ export function HomePage() {
                       item.duration_seconds && item.duration_seconds > 0
                         ? item.position_seconds / item.duration_seconds
                         : 0;
+                    const title =
+                      (i18n.locale.startsWith('zh')
+                        ? item.anime_title_zh || item.anime_title
+                        : item.anime_title) || 'Unknown';
+                    const epNum = Number.isInteger(item.episode_number)
+                      ? item.episode_number
+                      : item.episode_number.toFixed(1);
                     return (
                       <div key={item.id} className="shrink-0 w-[220px] md:w-[260px]">
                         <ContinueWatchingCard
-                          title={item.media_file_id ?? 'Unknown'}
-                          episodeLabel={`${Math.round(progress * 100)}%`}
+                          title={title}
+                          episodeLabel={`EP ${epNum} · ${Math.round(progress * 100)}%`}
                           progress={progress}
-                          coverImage=""
-                          href={`/watch/${item.media_file_id ?? ''}`}
+                          coverImage={item.anime_cover_image ?? ''}
+                          href={`/watch/${item.anime_id}?ep=${item.episode_number}`}
                         />
                       </div>
                     );

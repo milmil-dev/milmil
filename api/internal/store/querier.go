@@ -69,6 +69,7 @@ type Querier interface {
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListPlayableEpisodes(ctx context.Context, animeID string) ([]ListPlayableEpisodesRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
+	ListRecentProgressWithAnime(ctx context.Context, userID string) ([]ListRecentProgressWithAnimeRow, error)
 	ListRecentlyMatchedAnime(ctx context.Context) ([]ListRecentlyMatchedAnimeRow, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSettings(ctx context.Context) ([]Setting, error)

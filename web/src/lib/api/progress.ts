@@ -9,6 +9,12 @@ export interface WatchProgress {
   duration_seconds: number | null;
   completed: number;
   last_watched_at: string;
+  anime_id: string;
+  anime_title: string;
+  anime_title_zh: string | null;
+  anime_cover_image: string | null;
+  anime_bangumi_id: number | null;
+  episode_number: number;
 }
 
 export const progressApi = {

@@ -80,17 +80,49 @@ func (h *handler) handleSaveProgress(c echo.Context) error {
 	return c.JSON(http.StatusOK, toProgressResponse(progress))
 }
 
+type enrichedProgressResponse struct {
+	ID              string  `json:"id"`
+	UserID          string  `json:"user_id"`
+	EpisodeID       string  `json:"episode_id"`
+	MediaFileID     *string `json:"media_file_id"`
+	PositionSeconds int64   `json:"position_seconds"`
+	DurationSeconds *int64  `json:"duration_seconds"`
+	Completed       int64   `json:"completed"`
+	LastWatchedAt   string  `json:"last_watched_at"`
+	AnimeID         string  `json:"anime_id"`
+	AnimeTitle      string  `json:"anime_title"`
+	AnimeTitleZh    *string `json:"anime_title_zh"`
+	AnimeCoverImage *string `json:"anime_cover_image"`
+	AnimeBangumiID  *int64  `json:"anime_bangumi_id"`
+	EpisodeNumber   float64 `json:"episode_number"`
+}
+
 func (h *handler) handleListRecentProgress(c echo.Context) error {
 	userID := getUserID(c)
 
-	items, err := h.queries.ListWatchProgressByUser(c.Request().Context(), userID)
+	items, err := h.queries.ListRecentProgressWithAnime(c.Request().Context(), userID)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
 
-	result := make([]progressResponse, len(items))
+	result := make([]enrichedProgressResponse, len(items))
 	for i, item := range items {
-		result[i] = toProgressResponse(item)
+		result[i] = enrichedProgressResponse{
+			ID:              item.ID,
+			UserID:          item.UserID,
+			EpisodeID:       item.EpisodeID,
+			MediaFileID:     nullStr(item.MediaFileID),
+			PositionSeconds: item.PositionSeconds,
+			DurationSeconds: nullInt(item.DurationSeconds),
+			Completed:       item.Completed,
+			LastWatchedAt:   item.LastWatchedAt,
+			AnimeID:         item.AnimeID,
+			AnimeTitle:      item.AnimeTitle,
+			AnimeTitleZh:    nullStr(item.AnimeTitleZh),
+			AnimeCoverImage: nullStr(item.AnimeCoverImageUrl),
+			AnimeBangumiID:  nullInt(item.AnimeBangumiID),
+			EpisodeNumber:   item.EpisodeNumber,
+		}
 	}
 
 	return c.JSON(http.StatusOK, result)
