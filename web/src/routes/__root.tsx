@@ -188,7 +188,7 @@ function RootLayout() {
       {/* Main content — pl-20 for 80px sidebar */}
       <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
         <AnimatePresence mode="wait">
-          <Outlet key={pathname} />
+          <Outlet key={pathname.startsWith('/settings/') ? '/settings' : pathname} />
         </AnimatePresence>
       </main>
       <CommandPalette />

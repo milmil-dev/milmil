@@ -67,7 +67,7 @@ export function StoragePanel() {
         {i18n._(msg`settings.storage.subtitle`)}
       </p>
 
-      <div className="max-w-2xl space-y-3">
+      <div className="max-w-3xl space-y-3">
         <SettingsCard label={i18n._(msg`settings.storage.diskUsage`)}>
           <div className="space-y-3">
             <div className="flex items-baseline justify-between">

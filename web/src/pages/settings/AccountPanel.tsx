@@ -49,7 +49,7 @@ export function AccountPanel() {
         Manage your profile and security settings
       </p>
 
-      <div className="max-w-2xl space-y-3">
+      <div className="max-w-3xl space-y-3">
         {/* Profile card */}
         <SettingsCard label="Profile">
           <div className="flex items-center gap-3">

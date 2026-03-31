@@ -330,7 +330,7 @@ export function IntegrationsPanel() {
   const { i18n } = useLingui();
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-3xl space-y-6">
       <div>
         <h2 className="text-[18px] font-bold text-white">
           {i18n._(msg`settings.nav.integrations`)}

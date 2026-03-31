@@ -116,7 +116,7 @@ export function AboutPanel() {
         {i18n._(msg`about.subtitle`)}
       </p>
 
-      <div className="max-w-2xl space-y-3">
+      <div className="max-w-3xl space-y-3">
         {/* Card 1 — System Info */}
         <SettingsCard label={i18n._(msg`about.systemInfo`)}>
           <div className="space-y-2.5">

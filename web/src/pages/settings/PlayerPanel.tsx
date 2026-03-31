@@ -90,7 +90,7 @@ export function PlayerPanel() {
       <h2 className="text-[18px] font-bold text-white">{i18n._(msg`settings.nav.player`)}</h2>
       <p className="mt-1 mb-6 text-[11px] text-white/35">{i18n._(msg`settings.player.subtitle`)}</p>
 
-      <div className="max-w-2xl space-y-3">
+      <div className="max-w-3xl space-y-3">
         <SettingsCard label={i18n._(msg`settings.player.danmaku`)}>
           <form
             onSubmit={(e) => {

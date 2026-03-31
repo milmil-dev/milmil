@@ -61,7 +61,7 @@ export function GeneralPanel() {
         {i18n._(msg`settings.general.subtitle`)}
       </p>
 
-      <div className="max-w-2xl space-y-3">
+      <div className="max-w-3xl space-y-3">
         <SettingsCard label={i18n._(msg`settings.appearance.language`)}>
           <SelectorGroup
             options={availableLanguages.map((l) => ({ label: l.label, value: l.code }))}
