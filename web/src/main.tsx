@@ -1,13 +1,31 @@
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { detectBrowserLocale, loadAndActivate } from './i18n/config';
+import { availableLanguages, detectBrowserLocale, loadAndActivate } from './i18n/config';
 import './styles/global.css';
 
-const savedLocale = localStorage.getItem('milmil-locale');
-const locale = savedLocale ?? detectBrowserLocale();
-loadAndActivate(locale);
+// Migrate old locale codes and validate saved locale
+const LOCALE_MIGRATIONS: Record<string, string> = {
+  'zh-Hant': 'zh-TW',
+  'zh-Hans': 'zh-CN',
+};
+const supportedCodes = new Set(availableLanguages.map((l) => l.code));
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+function resolveLocale(): string {
+  let saved = localStorage.getItem('milmil-locale');
+  if (saved && LOCALE_MIGRATIONS[saved]) {
+    saved = LOCALE_MIGRATIONS[saved];
+    localStorage.setItem('milmil-locale', saved);
+  }
+  if (saved && supportedCodes.has(saved)) return saved;
+  if (saved) localStorage.removeItem('milmil-locale');
+  return detectBrowserLocale();
+}
+
+async function boot() {
+  await loadAndActivate(resolveLocale());
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+}
+boot();
 
 // Register Serwist service worker
 if ('serviceWorker' in navigator) {

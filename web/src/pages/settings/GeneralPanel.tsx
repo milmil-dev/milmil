@@ -41,10 +41,10 @@ export function GeneralPanel() {
     onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
   });
 
-  const handleLanguageChange = (code: string) => {
+  const handleLanguageChange = async (code: string) => {
     setCurrentLang(code);
     localStorage.setItem('milmil-locale', code);
-    loadAndActivate(code);
+    await loadAndActivate(code);
     toast.success(i18n._(msg`settings.saved`));
   };
 
