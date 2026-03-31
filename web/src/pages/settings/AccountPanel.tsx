@@ -274,13 +274,8 @@ function TwoFactorCard({
         {i18n._(msg`account.2fa.description`)}
       </p>
 
-      <div className="flex items-center gap-3">
-        <Switch
-          id="2fa-toggle"
-          checked={enabled || !!setupData}
-          onCheckedChange={handleToggle}
-          disabled={setupMutation.isPending || disableMutation.isPending}
-        />
+      {/* Toggle row — label left, switch right */}
+      <div className="flex items-center justify-between">
         <label htmlFor="2fa-toggle" className="text-[13px] text-white/60">
           {enabled
             ? i18n._(msg`account.2fa.statusEnabled`)
@@ -288,18 +283,28 @@ function TwoFactorCard({
               ? i18n._(msg`account.2fa.statusPending`)
               : i18n._(msg`account.2fa.statusDisabled`)}
         </label>
+        <Switch
+          id="2fa-toggle"
+          checked={enabled || !!setupData}
+          onCheckedChange={handleToggle}
+          disabled={setupMutation.isPending || disableMutation.isPending}
+        />
       </div>
 
-      {/* Setup flow — side by side: QR left, instructions + verify right */}
+      {/* Setup flow — centered column */}
       {setupData && !enabled && (
-        <div className="mt-5 flex flex-col sm:flex-row gap-5">
-          {/* Left: QR code */}
-          <div className="shrink-0 flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-            <div className="rounded-md bg-white p-2">
+        <div className="mt-5 flex flex-col items-center gap-5">
+          <p className="text-[11px] leading-relaxed text-white/45 text-center max-w-sm">
+            {i18n._(msg`account.2fa.scanInstructions`)}
+          </p>
+
+          {/* QR code */}
+          <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+            <div className="rounded-md bg-white p-2.5">
               <img
                 src={`data:image/png;base64,${setupData.qr_code}`}
                 alt="2FA QR Code"
-                className="h-28 w-28"
+                className="h-32 w-32"
               />
             </div>
             <div className="text-center">
@@ -308,7 +313,7 @@ function TwoFactorCard({
               </p>
               <button
                 type="button"
-                className="mt-0.5 block text-[10px] font-mono text-mm-accent/70 break-all max-w-[160px] cursor-pointer hover:text-mm-accent transition-colors"
+                className="mt-0.5 block text-[10px] font-mono text-mm-accent/70 break-all max-w-[200px] cursor-pointer hover:text-mm-accent transition-colors"
                 onClick={() => {
                   navigator.clipboard.writeText(setupData.secret);
                   toast.success(i18n._(msg`common.copied`));
@@ -320,44 +325,38 @@ function TwoFactorCard({
             </div>
           </div>
 
-          {/* Right: instructions + OTP */}
-          <div className="flex-1 flex flex-col justify-between gap-4">
-            <p className="text-[11px] leading-relaxed text-white/45">
-              {i18n._(msg`account.2fa.scanInstructions`)}
-            </p>
-
-            <div className="space-y-2.5">
-              <label className="text-[11px] font-medium text-white/50">
-                {i18n._(msg`account.2fa.verificationCode`)}
-              </label>
-              <InputOTP
-                maxLength={6}
-                value={totpCode}
-                onChange={(value) => setTotpCode(value)}
-              >
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                </InputOTPGroup>
-                <InputOTPSeparator />
-                <InputOTPGroup>
-                  <InputOTPSlot index={3} />
-                  <InputOTPSlot index={4} />
-                  <InputOTPSlot index={5} />
-                </InputOTPGroup>
-              </InputOTP>
-              <Button
-                type="button"
-                className="mt-1"
-                disabled={totpCode.length !== 6 || verifyMutation.isPending}
-                onClick={() => verifyMutation.mutate(totpCode)}
-              >
-                {verifyMutation.isPending
-                  ? i18n._(msg`account.2fa.verifying`)
-                  : i18n._(msg`account.2fa.verifyEnable`)}
-              </Button>
-            </div>
+          {/* Verify input */}
+          <div className="flex flex-col items-center gap-2.5">
+            <label className="text-[11px] font-medium text-white/50">
+              {i18n._(msg`account.2fa.verificationCode`)}
+            </label>
+            <InputOTP
+              maxLength={6}
+              value={totpCode}
+              onChange={(value) => setTotpCode(value)}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+            <Button
+              type="button"
+              className="mt-1 w-full max-w-[240px]"
+              disabled={totpCode.length !== 6 || verifyMutation.isPending}
+              onClick={() => verifyMutation.mutate(totpCode)}
+            >
+              {verifyMutation.isPending
+                ? i18n._(msg`account.2fa.verifying`)
+                : i18n._(msg`account.2fa.verifyEnable`)}
+            </Button>
           </div>
         </div>
       )}
