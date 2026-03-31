@@ -563,44 +563,92 @@ export function AnimeDetailPage() {
         </div>
 
         {/* Continue Watching banner */}
-        {continueEpisode && continueEpisode.media_file && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="mb-6 px-4 md:px-8"
-          >
-            <Link
-              to="/watch/$animeId"
-              params={{ animeId: String(numericId) }}
-              search={{
-                ep:
-                  continueEpisode.sort % 1 === 0
-                    ? Math.floor(continueEpisode.sort)
-                    : continueEpisode.sort,
-              }}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg bg-mm-accent/10 border border-mm-accent/20 hover:bg-mm-accent/15 transition-colors group"
+        {continueEpisode && continueEpisode.media_file && (() => {
+          const prog = continueEpisode.progress;
+          const progress = prog && prog.duration_seconds > 0
+            ? prog.position_seconds / prog.duration_seconds
+            : 0;
+          const timeLeft = prog && !prog.completed
+            ? prog.duration_seconds - prog.position_seconds
+            : 0;
+          const epTitle = continueEpisode.title_zh || continueEpisode.title;
+
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="mb-6 px-4 md:px-8"
             >
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mm-accent/20 text-mm-accent group-hover:bg-mm-accent/30 transition-colors shrink-0">
-                <span className="text-sm ml-0.5">▶</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white">
-                  {i18n._(msg`anime.continueWatching`)}
-                </p>
-                <p className="text-xs text-white/50 truncate">
-                  {i18n._(msg`anime.episode`)} {continueEpisode.sort}
-                  {continueEpisode.title
-                    ? ` — ${continueEpisode.title_zh || continueEpisode.title}`
-                    : ''}
-                  {continueEpisode.progress && !continueEpisode.progress.completed
-                    ? ` · ${formatTime(continueEpisode.progress.position_seconds)} / ${formatTime(continueEpisode.progress.duration_seconds)}`
-                    : ''}
-                </p>
-              </div>
-            </Link>
-          </motion.div>
-        )}
+              <Link
+                to="/watch/$animeId"
+                params={{ animeId: String(numericId) }}
+                search={{
+                  ep:
+                    continueEpisode.sort % 1 === 0
+                      ? Math.floor(continueEpisode.sort)
+                      : continueEpisode.sort,
+                }}
+                className="group relative flex items-center gap-4 px-5 py-4 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.07] hover:border-white/[0.12] transition-all duration-200 overflow-hidden"
+              >
+                {/* Progress bar background fill */}
+                <div
+                  className="absolute inset-0 bg-mm-accent/[0.06] pointer-events-none"
+                  style={{ width: `${Math.min(progress * 100, 100)}%` }}
+                />
+
+                {/* Play button */}
+                <div className="relative z-[1] flex items-center justify-center w-10 h-10 rounded-full bg-mm-accent text-white shrink-0 group-hover:scale-105 transition-transform shadow-lg shadow-mm-accent/20">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+
+                {/* Info */}
+                <div className="relative z-[1] flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-sm font-semibold text-white">
+                      {i18n._(msg`anime.continueWatching`)}
+                    </p>
+                    <span className="text-xs text-white/30">·</span>
+                    <p className="text-xs text-white/50 truncate">
+                      {i18n._(msg`anime.episode`)} {continueEpisode.sort}
+                      {epTitle ? ` — ${epTitle}` : ''}
+                    </p>
+                  </div>
+
+                  {/* Progress details */}
+                  {prog && !prog.completed && (
+                    <div className="flex items-center gap-3 mt-1.5">
+                      {/* Progress bar */}
+                      <div className="flex-1 h-[3px] bg-white/[0.08] rounded-full overflow-hidden max-w-[240px]">
+                        <div
+                          className="h-full bg-mm-accent rounded-full transition-[width] duration-300"
+                          style={{ width: `${Math.min(progress * 100, 100)}%` }}
+                        />
+                      </div>
+                      <span className="text-[11px] text-white/40 tabular-nums shrink-0">
+                        {formatTime(prog.position_seconds)} / {formatTime(prog.duration_seconds)}
+                      </span>
+                      {timeLeft > 60 && (
+                        <span className="text-[11px] text-mm-accent/70 shrink-0">
+                          {formatTime(timeLeft)} left
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Percentage badge */}
+                {progress > 0 && (
+                  <div className="relative z-[1] text-xs font-medium text-white/40 tabular-nums shrink-0">
+                    {Math.round(progress * 100)}%
+                  </div>
+                )}
+              </Link>
+            </motion.div>
+          );
+        })()}
 
         {/* Trailer + Episodes */}
         {(episodeList.length > 0 || anime.trailer_url) && (
