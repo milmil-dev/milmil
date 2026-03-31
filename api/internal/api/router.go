@@ -127,6 +127,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Settings — protected
 	settingsGroup := v1.Group("/settings", jwtMiddleware(cfg.JWTSecret))
 	settingsGroup.GET("", h.handleGetSettings)
+	settingsGroup.GET("/export", h.handleExportSettings)
+	settingsGroup.POST("/import", h.handleImportSettings)
+	settingsGroup.POST("/reset", h.handleResetSettings)
 	settingsGroup.PUT("/:section", h.handleUpdateSettings)
 
 	// Collection — protected
@@ -192,6 +195,12 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	intGroup.GET("/anilist/callback", h.handleAniListCallback)
 	intGroup.DELETE("/anilist", h.handleAniListDisconnect)
 	intGroup.POST("/anilist/sync", h.handleAniListSync)
+
+	// System — protected
+	systemGroup := v1.Group("/system", jwtMiddleware(cfg.JWTSecret))
+	systemGroup.GET("/info", h.handleSystemInfo)
+	systemGroup.GET("/storage", h.handleStorageStats)
+	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
 
 	return e
 }
