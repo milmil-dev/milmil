@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -17,11 +18,10 @@ import (
 
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
-	"github.com/milmil/api/internal/integration/aria2"
-	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/integration/anilist"
+	"github.com/milmil/api/internal/integration/aria2"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/tmdb"
@@ -29,8 +29,26 @@ import (
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/migrations"
 )
+
+// redactRedisURL masks the password in redis://user:password@host:port format
+func redactRedisURL(url string) string {
+	if !strings.Contains(url, "@") {
+		return url // No password present
+	}
+	// Format: redis://user:password@host:port → redis://user:***@host:port
+	at := strings.LastIndex(url, "@")
+	before := url[:at]
+	after := url[at:]
+
+	colon := strings.LastIndex(before, ":")
+	if colon == -1 {
+		return before + ":***" + after
+	}
+	return before[:colon] + ":***" + after
+}
 
 func main() {
 	// Logger: zerolog backend wired into slog.
@@ -66,6 +84,11 @@ func main() {
 
 	// Cache (Redis or in-memory)
 	cacheClient := cache.New(cfg.RedisURL)
+	if cfg.RedisURL != "" {
+		slog.Info("cache initialized", "backend", "redis", "url", redactRedisURL(cfg.RedisURL))
+	} else {
+		slog.Info("cache initialized", "backend", "memory")
+	}
 
 	// Metadata service
 	httpClient := &http.Client{Timeout: 10 * time.Second}
