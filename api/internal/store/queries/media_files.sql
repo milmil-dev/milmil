@@ -97,3 +97,15 @@ WHERE id = ?;
 -- name: ListBangumiMatchedUnlinkedMediaFiles :many
 SELECT * FROM media_files
 WHERE library_id = ? AND bangumi_subject_id IS NOT NULL AND episode_id IS NULL;
+
+-- name: ListMediaFileTreeByLibrary :many
+SELECT mf.id, mf.path, mf.filename, mf.size_bytes, mf.match_status,
+       COALESCE(a.title, '') AS matched_anime_title,
+       COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       COALESCE(a.bangumi_id, 0) AS matched_bangumi_id,
+       (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
+FROM media_files mf
+LEFT JOIN episodes e ON mf.episode_id = e.id
+LEFT JOIN anime a ON e.anime_id = a.id
+WHERE mf.library_id = ?
+ORDER BY mf.path ASC;

@@ -10,7 +10,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from './ui/pagination';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface DataPaginationProps {
   total: number;
@@ -42,8 +41,6 @@ export function DataPagination({
     const result: (number | 'ellipsis')[] = [];
     let prev: number | undefined;
 
-    // Fix potential crash by not doing O(N) where N is total pages
-    // Calculate range explicitly
     const left = Math.max(2, page - delta);
     const right = Math.min(totalPages - 1, page + delta);
 
@@ -71,48 +68,48 @@ export function DataPagination({
   };
 
   return (
-    <div className="mt-6 flex items-center justify-between gap-4">
+    <div className="mt-5 flex items-center justify-between gap-4">
       {/* Left: rows-per-page + range */}
-      <div className="flex items-center gap-3 text-[11px] text-white/30">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3 text-[11px] text-white/25">
+        <div className="flex items-center gap-1.5">
           <span className="hidden sm:inline">{i18n._(msg`pagination.rows`)}</span>
-          <Select
-            value={String(perPage)}
-            onValueChange={(v) => {
-              onPerPageChange(Number(v));
-              onPageChange(1);
-            }}
-          >
-            <SelectTrigger className="h-7 w-[58px] text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_SIZE_OPTIONS.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex rounded-md bg-white/[0.04] p-0.5">
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => {
+                  onPerPageChange(size);
+                  onPageChange(1);
+                }}
+                className={`px-1.5 py-0.5 text-[10px] tabular-nums rounded transition-colors cursor-pointer ${
+                  perPage === size
+                    ? 'bg-white/[0.10] text-white/70'
+                    : 'text-white/25 hover:text-white/50'
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
         </div>
         <span className="tabular-nums">
-          <span className="text-white/50">
+          <span className="text-white/40">
             {rangeStart}–{rangeEnd}
           </span>{' '}
           {i18n._(msg`pagination.of`)}{' '}
-          <span className="text-white/50">{total.toLocaleString()}</span>
+          <span className="text-white/40">{total.toLocaleString()}</span>
         </span>
       </div>
 
       {/* Right: page navigation */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         <Pagination className="mx-0 w-auto">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => onPageChange(page - 1)}
                 disabled={!canPrev}
-                aria-label={i18n._(msg`pagination.prevPage`)}
               />
             </PaginationItem>
 
@@ -132,7 +129,6 @@ export function DataPagination({
               <PaginationNext
                 onClick={() => onPageChange(page + 1)}
                 disabled={!canNext}
-                aria-label={i18n._(msg`pagination.nextPage`)}
               />
             </PaginationItem>
           </PaginationContent>
@@ -175,7 +171,7 @@ function PageJumpInput({
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[11px] text-white/30 hidden sm:inline">{goLabel}</span>
+      <span className="text-[10px] text-white/20 hidden sm:inline">{goLabel}</span>
       <input
         type="text"
         inputMode="numeric"
@@ -186,7 +182,7 @@ function PageJumpInput({
           if (e.key === 'Enter') handleSubmit();
         }}
         onBlur={handleSubmit}
-        className="h-7 w-10 rounded-md border border-white/[0.08] bg-white/[0.04] text-center text-xs tabular-nums text-white/70 outline-none transition-colors placeholder:text-white/20 hover:border-white/15 focus:border-mm-accent/40 focus:ring-1 focus:ring-mm-accent/20"
+        className="h-7 w-10 rounded-md bg-white/[0.05] text-center text-xs tabular-nums text-white/50 outline-none transition-colors placeholder:text-white/15 hover:bg-white/[0.08] focus:bg-white/[0.08] focus:text-white/70"
       />
     </div>
   );

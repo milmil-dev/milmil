@@ -107,6 +107,26 @@ export interface DiscoveredHost {
   shares: string[];
 }
 
+export interface FileTreeFile {
+  id: string;
+  filename: string;
+  size_bytes: number;
+  match_status: 'unmatched' | 'auto' | 'manual';
+  matched_anime_title: string;
+  matched_episode_sort: number;
+  matched_bangumi_id: number;
+  subtitle_count: number;
+}
+
+export interface FileTreeNode {
+  name: string;
+  path: string;
+  children?: FileTreeNode[];
+  files?: FileTreeFile[];
+  file_count: number;
+  size_bytes: number;
+}
+
 export interface MediaFilesParams {
   status?: 'all' | 'matched' | 'unmatched';
   q?: string;
@@ -138,6 +158,7 @@ export const libraryApi = {
     const qs = searchParams.toString();
     return api.get<MediaFilesResponse>(`/api/v1/libraries/${id}/media-files${qs ? `?${qs}` : ''}`);
   },
+  fileTree: (id: string) => api.get<FileTreeNode>(`/api/v1/libraries/${id}/file-tree`),
   matchFile: (fileId: string, body: { bangumi_id: number; episode_id: number }) =>
     api.put<MediaFileEntry>(`/api/v1/media-files/${fileId}/match`, body),
   unmatchFile: (fileId: string) => api.delete<void>(`/api/v1/media-files/${fileId}/match`),
@@ -154,6 +175,7 @@ export const libraryKeys = {
   connectionStatus: (id: string) => [...libraryKeys.all, 'connection-status', id] as const,
   mediaFiles: (id: string, params: MediaFilesParams = {}) =>
     [...libraryKeys.all, 'media-files', id, params] as const,
+  fileTree: (id: string) => [...libraryKeys.all, 'file-tree', id] as const,
   network: () => [...libraryKeys.all, 'network'] as const,
   rcloneRemotes: () => [...libraryKeys.all, 'rclone-remotes'] as const,
 };

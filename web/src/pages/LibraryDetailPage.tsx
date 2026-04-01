@@ -1,6 +1,22 @@
+import {
+  ArrowReloadHorizontalIcon,
+  Cancel01Icon,
+  Copy01Icon,
+  Folder01Icon,
+  GridViewIcon,
+  InformationCircleIcon,
+  LinkSquare01Icon,
+  MoreHorizontalIcon,
+  PlayIcon,
+  ScanIcon,
+  Settings01Icon,
+  ShuffleIcon,
+  ViewIcon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { type ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
@@ -15,9 +31,17 @@ import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../components/ui/tooltip';
 import { useAuth } from '../hooks/use-auth';
 import { type AnimeSummary, discoverApi, discoverKeys, type Episode } from '../lib/api/discover';
 import {
+  type FileTreeNode,
   libraryApi,
   libraryKeys,
   type MediaFileEntry,
@@ -139,6 +163,92 @@ function StatusBadge({ status }: { status: MediaFileEntry['match_status'] }) {
   );
 }
 
+/* -- File action menu ------------------------------------------------------- */
+
+function FileActionMenu({
+  file,
+  onMatch,
+}: {
+  file: MediaFileEntry;
+  onMatch: (file: MediaFileEntry) => void;
+}) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const isMatched = file.match_status !== 'unmatched';
+
+  const unmatchMutation = useMutation({
+    mutationFn: () => libraryApi.unmatchFile(file.id),
+    onSuccess: () => {
+      toast.success(i18n._(msg`library.detail.unmatched`));
+      queryClient.invalidateQueries({ queryKey: ['media-files', file.library_id] });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(file.library_id) });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const copyPath = () => {
+    navigator.clipboard.writeText(file.path);
+    toast.success(i18n._(msg`library.detail.pathCopied`));
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          size="icon-xs"
+          variant="ghost"
+          className="text-white/25 hover:text-white/60"
+        >
+          <HugeiconsIcon icon={MoreHorizontalIcon} size={14} />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        side="bottom"
+        className="w-44 p-1 bg-mm-surface rounded-lg shadow-xl"
+      >
+        {isMatched && (
+          <button
+            type="button"
+            onClick={() => onMatch(file)}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-white hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer"
+          >
+            <HugeiconsIcon icon={ShuffleIcon} size={13} />
+            {i18n._(msg`library.detail.editMatch`)}
+          </button>
+        )}
+        {isMatched && (
+          <button
+            type="button"
+            onClick={() => unmatchMutation.mutate()}
+            disabled={unmatchMutation.isPending}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-red-400 hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer disabled:opacity-40"
+          >
+            <HugeiconsIcon icon={Cancel01Icon} size={13} />
+            {i18n._(msg`library.detail.unmatch`)}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={copyPath}
+          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-white hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer"
+        >
+          <HugeiconsIcon icon={Copy01Icon} size={13} />
+          {i18n._(msg`library.detail.copyPath`)}
+        </button>
+        <button
+          type="button"
+          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-white hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer"
+        >
+          <HugeiconsIcon icon={InformationCircleIcon} size={13} />
+          {i18n._(msg`library.detail.fileInfo`)}
+        </button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function FileTable({
   libraryId,
   onMatch,
@@ -178,14 +288,16 @@ function FileTable({
       }),
     enabled: !!libraryId,
     staleTime: 0,
-    structuralSharing: false,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   const files = data?.items ?? [];
   const total = data?.total ?? 0;
 
-  const showSkeleton = isFetching && files.length === 0;
+  // Only show skeleton on true initial load (no data at all).
+  // For subsequent fetches, show stale data with a subtle fade overlay
+  // that appears after 300ms via CSS transition (no UI freeze).
+  const showSkeleton = isLoading && files.length === 0;
   const showOverlay = isFetching && files.length > 0;
   const columns = React.useMemo<ColumnDef<MediaFileEntry>[]>(
     () => [
@@ -286,38 +398,38 @@ function FileTable({
         ? [
             {
               id: 'actions',
+              meta: { width: 140 },
               cell: ({ row }: { row: { original: MediaFileEntry } }) => {
                 const file = row.original;
-                if (file.match_status === 'unmatched') {
-                  return (
-                    <Button type="button" size="xs" onClick={() => onMatch(file)}>
-                      {i18n._(msg`library.detail.match`)}
-                    </Button>
-                  );
-                }
+                const isMatched = file.match_status !== 'unmatched';
                 return (
-                  <div className="flex items-center gap-1.5">
-                    <Button size="xs" asChild>
-                      <Link
-                        to="/watch/$animeId"
-                        params={{ animeId: String(file.matched_bangumi_id) }}
-                        search={{ ep: file.matched_episode_sort }}
+                  <div className="flex items-center gap-1 justify-end">
+                    {/* Primary action */}
+                    {isMatched && file.matched_bangumi_id > 0 ? (
+                      <Button size="icon-xs" variant="secondary" asChild title={i18n._(msg`library.detail.play`)}>
+                        <Link
+                          to="/watch/$animeId"
+                          params={{ animeId: String(file.matched_bangumi_id) }}
+                          search={{ ep: file.matched_episode_sort }}
+                        >
+                          <HugeiconsIcon icon={PlayIcon} size={13} />
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        size="xs"
+                        variant="secondary"
+                        onClick={() => onMatch(file)}
+                        className="gap-1.5"
                       >
-                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
-                        {i18n._(msg`library.detail.play`)}
-                      </Link>
-                    </Button>
-                    <Button
-                      type="button"
-                      size="xs"
-                      variant="ghost"
-                      onClick={() => onMatch(file)}
-                      title={i18n._(msg`library.detail.editMatch`)}
-                    >
-                      {i18n._(msg`library.detail.editMatch`)}
-                    </Button>
+                        <HugeiconsIcon icon={LinkSquare01Icon} size={13} />
+                        {i18n._(msg`library.detail.match`)}
+                      </Button>
+                    )}
+
+                    {/* More actions menu */}
+                    <FileActionMenu file={file} onMatch={onMatch} />
                   </div>
                 );
               },
@@ -359,11 +471,11 @@ function FileTable({
 
   return (
     <div>
-      {/* Search + filter */}
-      <div className="mb-5 flex items-center gap-2">
+      {/* Search + filter bar */}
+      <div className="mb-5 flex items-center gap-3">
         <div className="relative flex-1">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 pointer-events-none"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25 pointer-events-none"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -379,10 +491,10 @@ function FileTable({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={i18n._(msg`library.detail.searchFiles`)}
-            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+            className="w-full h-9 bg-white/[0.05] rounded-lg pl-10 pr-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.08] transition-colors"
           />
         </div>
-        <div className="flex rounded-lg border border-white/[0.08] overflow-hidden">
+        <div className="flex h-9 rounded-lg bg-white/[0.05] p-0.5">
           {[
             { key: 'all' as const, label: i18n._(msg`schedule.all`) },
             {
@@ -399,10 +511,10 @@ function FileTable({
               type="button"
               onClick={() => handleFilterChange(f.key)}
               className={cn(
-                'px-3 py-2 text-xs font-medium transition-colors cursor-pointer',
+                'px-3 py-1.5 text-xs font-medium transition-all rounded-md cursor-pointer',
                 statusFilter === f.key
-                  ? 'bg-white/[0.08] text-white'
-                  : 'text-white/40 hover:text-white/60'
+                  ? 'bg-white/[0.10] text-white shadow-sm'
+                  : 'text-white/35 hover:text-white/55'
               )}
             >
               {f.label}
@@ -414,11 +526,16 @@ function FileTable({
       {/* Table or empty state — min-height keeps layout stable */}
       <div style={{ minHeight: `${perPage * 45 + 40}px` }}>
         {showSkeleton ? (
-          <div className="space-y-2">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-2"
+          >
             {Array.from({ length: perPage }).map((_, i) => (
               <Skeleton key={i} className="h-11 w-full rounded-md" />
             ))}
-          </div>
+          </motion.div>
         ) : showEmptyFiltered ? (
           <div className="flex items-center justify-center h-40">
             {statusFilter === 'unmatched' ? (
@@ -437,11 +554,14 @@ function FileTable({
         ) : (
           <div className="relative">
             <MotionTable table={table} tableClassName="table-fixed" />
-            {showOverlay && (
-              <div className="absolute inset-0 bg-black/20 z-20 pointer-events-none flex items-center justify-center">
-                <span className="text-sm text-white/80">{i18n._(msg`common.loading`)}...</span>
-              </div>
-            )}
+            <div
+              className={cn(
+                'absolute inset-0 z-20 pointer-events-none flex items-center justify-center transition-opacity duration-200',
+                showOverlay ? 'opacity-100 delay-300' : 'opacity-0'
+              )}
+            >
+              <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white/60 animate-spin" />
+            </div>
           </div>
         )}
       </div>
@@ -455,6 +575,240 @@ function FileTable({
       />
     </div>
   );
+}
+
+/* -- File tree view --------------------------------------------------------- */
+
+function FileTreeView({
+  libraryId,
+  onMatch,
+}: {
+  libraryId: string;
+  onMatch?: (file: MediaFileEntry) => void;
+}) {
+  const { i18n } = useLingui();
+  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
+
+  const { data: tree, isLoading } = useQuery({
+    queryKey: libraryKeys.fileTree(libraryId),
+    queryFn: () => libraryApi.fileTree(libraryId),
+    enabled: !!libraryId,
+  });
+
+  const toggleFolder = (path: string) => {
+    setExpandedPaths((prev) => {
+      const next = new Set(prev);
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
+      return next;
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-1.5 py-2">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Skeleton key={i} className="h-8 w-full rounded-md" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!tree) {
+    return (
+      <div className="py-16 text-center text-sm text-white/25">
+        {i18n._(msg`library.detail.noFiles`)}
+      </div>
+    );
+  }
+
+  const renderNode = (node: FileTreeNode, depth: number) => {
+    const isExpanded = expandedPaths.has(node.path);
+    const hasChildren =
+      (node.children && node.children.length > 0) || (node.files && node.files.length > 0);
+    const matchedCount = countMatched(node);
+    const matchPct =
+      node.file_count > 0 ? Math.round((matchedCount / node.file_count) * 100) : 0;
+    const indent = depth * 20 + 12;
+
+    return (
+      <div key={node.path}>
+        {/* Folder row */}
+        <button
+          type="button"
+          onClick={() => toggleFolder(node.path)}
+          className={cn(
+            'w-full flex items-center gap-2 py-1.5 rounded-md text-left transition-colors cursor-pointer group',
+            'hover:bg-white/[0.04]',
+            isExpanded && 'bg-white/[0.02]'
+          )}
+          style={{ paddingLeft: `${indent}px`, paddingRight: 8 }}
+        >
+          <svg
+            className={cn(
+              'w-3.5 h-3.5 shrink-0 text-white/20 transition-transform duration-150',
+              isExpanded && 'rotate-90',
+              !hasChildren && 'invisible'
+            )}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+          <HugeiconsIcon
+            icon={Folder01Icon}
+            size={15}
+            className={cn(
+              'shrink-0 transition-colors',
+              isExpanded ? 'text-white/50' : 'text-white/20 group-hover:text-white/35'
+            )}
+          />
+          <span className="text-[13px] font-medium text-white/65 group-hover:text-white/90 truncate flex-1">
+            {node.name}
+          </span>
+          <span className="text-[10px] tabular-nums text-white/15 shrink-0 mr-2">
+            {node.file_count}
+          </span>
+          <span
+            className="text-[10px] tabular-nums shrink-0 w-8 text-right"
+            style={{
+              color:
+                matchPct === 100
+                  ? 'rgb(74 222 128 / 0.5)'
+                  : matchPct > 0
+                    ? 'rgb(251 191 36 / 0.4)'
+                    : 'rgb(255 255 255 / 0.10)',
+            }}
+          >
+            {matchPct}%
+          </span>
+          <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
+            {formatBytes(node.size_bytes)}
+          </span>
+        </button>
+
+        {/* Children with indent guide */}
+        {isExpanded && hasChildren && (
+          <div className="relative">
+            {/* Vertical guide line */}
+            <div
+              className="absolute top-0 bottom-0 w-px bg-white/[0.04]"
+              style={{ left: `${indent + 7}px` }}
+            />
+            {node.children?.map((child) => renderNode(child, depth + 1))}
+            {node.files?.map((file) => {
+              const fileIndent = (depth + 1) * 20 + 12 + 20;
+              return (
+                <div
+                  key={file.id}
+                  className="flex items-center gap-2 py-1 rounded-md hover:bg-white/[0.03] group/file"
+                  style={{ paddingLeft: `${fileIndent}px`, paddingRight: 8 }}
+                >
+                  <svg
+                    className="w-3.5 h-3.5 shrink-0 text-white/10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  <span className="text-[12px] font-mono text-white/40 group-hover/file:text-white/65 truncate flex-1">
+                    {file.filename}
+                  </span>
+                  <StatusBadge status={file.match_status} />
+                  <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
+                    {formatBytes(file.size_bytes)}
+                  </span>
+                  <div className="flex items-center gap-0.5 opacity-0 group-hover/file:opacity-100 transition-opacity shrink-0">
+                    {file.match_status !== 'unmatched' && file.matched_bangumi_id > 0 && (
+                      <Button
+                        size="icon-xs"
+                        variant="ghost"
+                        className="text-white/25 hover:text-white/60"
+                        asChild
+                      >
+                        <Link
+                          to="/watch/$animeId"
+                          params={{ animeId: String(file.matched_bangumi_id) }}
+                          search={{ ep: file.matched_episode_sort }}
+                        >
+                          <HugeiconsIcon icon={PlayIcon} size={12} />
+                        </Link>
+                      </Button>
+                    )}
+                    {onMatch && (
+                      <Button
+                        size="icon-xs"
+                        variant="ghost"
+                        className="text-white/25 hover:text-white/60"
+                        onClick={() =>
+                          onMatch({
+                            id: file.id,
+                            library_id: libraryId,
+                            path: '',
+                            filename: file.filename,
+                            size_bytes: file.size_bytes,
+                            match_status: file.match_status,
+                            dandanplay_anime_id: null,
+                            dandanplay_episode_id: null,
+                            subtitle_count: file.subtitle_count,
+                            matched_anime_title: file.matched_anime_title,
+                            matched_episode_sort: file.matched_episode_sort,
+                            matched_bangumi_id: file.matched_bangumi_id,
+                            created_at: '',
+                          })
+                        }
+                      >
+                        <HugeiconsIcon
+                          icon={
+                            file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon
+                          }
+                          size={12}
+                        />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="py-1">
+      {tree.children && tree.children.length > 0 ? (
+        tree.children.map((child) => renderNode(child, 0))
+      ) : tree.files && tree.files.length > 0 ? (
+        renderNode(tree, 0)
+      ) : (
+        <div className="py-12 text-center text-sm text-white/25">
+          {i18n._(msg`library.detail.noFiles`)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function countMatched(node: FileTreeNode): number {
+  let count = 0;
+  if (node.files) {
+    count += node.files.filter((f) => f.match_status !== 'unmatched').length;
+  }
+  if (node.children) {
+    for (const child of node.children) {
+      count += countMatched(child);
+    }
+  }
+  return count;
 }
 
 /* -- Scan history ----------------------------------------------------------- */
@@ -548,7 +902,7 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
         const isExpanded = expandedIds.has(scan.id);
 
         return (
-          <div key={scan.id} className="rounded-lg p-4 border border-white/[0.04]">
+          <div key={scan.id} className="rounded-lg p-4 bg-white/[0.03]">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-4 text-[13px]">
                 <span className="text-white/40">{startDateLabel}</span>
@@ -980,6 +1334,7 @@ export function LibraryDetailPage() {
   const id = rawId ?? '';
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('files');
+  const [viewMode, setViewMode] = useState<'table' | 'tree'>('table');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const scanProgress = useScanStore((s) => s.getProgress(id));
@@ -1134,7 +1489,7 @@ export function LibraryDetailPage() {
         >
           <div className="flex items-start gap-4 min-w-0">
             {/* Library icon badge */}
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center">
               <SourceIcon
                 sourceType={library.source_type ?? 'local'}
                 className="w-6 h-6 text-white/30"
@@ -1156,28 +1511,67 @@ export function LibraryDetailPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 shrink-0">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => matchMutation.mutate()}
-              disabled={isScanning || matchMutation.isPending}
-            >
-              {isScanning && scanProgress?.phase === 'matching'
-                ? i18n._(msg`library.matching`)
-                : i18n._(msg`library.detail.autoMatch`)}
-            </Button>
-            <Button
-              type="button"
-              onClick={() => scanMutation.mutate()}
-              disabled={isScanning || scanMutation.isPending}
-            >
-              {isScanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.detail.scanNow`)}
-            </Button>
-            <Button type="button" variant="secondary" onClick={() => setShowSettings(true)}>
-              {i18n._(msg`library.detail.settings`)}
-            </Button>
-          </div>
+          <TooltipProvider delayDuration={300}>
+            <div className="flex gap-2 shrink-0">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => matchMutation.mutate()}
+                    disabled={isScanning || matchMutation.isPending}
+                    className="gap-2"
+                  >
+                    <HugeiconsIcon icon={ArrowReloadHorizontalIcon} size={15} />
+                    {isScanning && scanProgress?.phase === 'matching'
+                      ? i18n._(msg`library.matching`)
+                      : i18n._(msg`library.detail.autoMatch`)}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {i18n._(msg`library.detail.autoMatchTooltip`)}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => scanMutation.mutate()}
+                    disabled={isScanning || scanMutation.isPending}
+                    className="gap-2"
+                  >
+                    <HugeiconsIcon icon={ScanIcon} size={15} />
+                    {isScanning
+                      ? i18n._(msg`library.scanning`)
+                      : i18n._(msg`library.detail.scanNow`)}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {i18n._(msg`library.detail.scanNowTooltip`)}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setShowSettings(true)}
+                    className="gap-2"
+                  >
+                    <HugeiconsIcon icon={Settings01Icon} size={15} />
+                    {i18n._(msg`library.detail.settings`)}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {i18n._(msg`library.detail.settingsTooltip`)}
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         </motion.div>
 
         {/* Scan progress banner */}
@@ -1248,81 +1642,140 @@ export function LibraryDetailPage() {
           transition={{ delay: 0.05 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
         >
-          <div className="bg-white/[0.03] rounded-lg p-4">
+          <div className="bg-white/[0.04] rounded-xl p-4">
             <p className="text-2xl font-bold text-white tabular-nums">{library.file_count}</p>
-            <p className="text-xs text-white/40 mt-0.5">
+            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
               {i18n._(msg`library.detail.stats.files`)}
             </p>
           </div>
-          <div className="bg-white/[0.03] rounded-lg p-4">
-            <p className="text-2xl font-bold text-green-400 tabular-nums">{matchPct}%</p>
-            <p className="text-xs text-white/40 mt-0.5">
+          <div className="bg-white/[0.04] rounded-xl p-4">
+            <p className={cn(
+              'text-2xl font-bold tabular-nums',
+              matchPct === 100 ? 'text-green-400' : matchPct >= 50 ? 'text-green-400/80' : 'text-amber-400/80'
+            )}>
+              {matchPct}%
+            </p>
+            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
               {i18n._(msg`library.detail.stats.matched`)}
             </p>
           </div>
           <button
             type="button"
             onClick={() => setActiveTab('files')}
-            className="bg-white/[0.03] rounded-lg p-4 text-left hover:bg-white/[0.05] transition-colors cursor-pointer"
+            className="bg-white/[0.04] rounded-xl p-4 text-left hover:bg-white/[0.07] transition-all cursor-pointer"
           >
             <p className="text-2xl font-bold text-amber-400 tabular-nums">
               {library.unmatched_count}
             </p>
-            <p className="text-xs text-white/40 mt-0.5">
+            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
               {i18n._(msg`library.detail.stats.unmatched`)}
             </p>
           </button>
-          <div className="bg-white/[0.03] rounded-lg p-4">
+          <div className="bg-white/[0.04] rounded-xl p-4">
             <p className="text-2xl font-bold text-white tabular-nums">
               {formatBytes(library.total_size_bytes)}
             </p>
-            <p className="text-xs text-white/40 mt-0.5">{i18n._(msg`library.detail.stats.size`)}</p>
+            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
+              {i18n._(msg`library.detail.stats.size`)}
+            </p>
           </div>
         </motion.div>
 
         {/* Tab bar */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-          <div className="flex items-end gap-0 border-b border-white/[0.06] mb-6">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setActiveTab(tab.key)}
-                  className={cn(
-                    'relative px-4 pb-3 pt-2 text-sm font-medium uppercase tracking-wider cursor-pointer transition-colors duration-200',
-                    isActive ? 'text-white' : 'text-white/25 hover:text-white/40'
-                  )}
-                >
-                  {tab.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="library-tab-underline"
-                      className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 500,
-                        damping: 38,
-                      }}
-                    />
-                  )}
-                </button>
-              );
-            })}
+          <div className="flex items-end justify-between border-b border-white/[0.04] mb-6">
+            <div className="flex items-end gap-0">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setActiveTab(tab.key)}
+                    className={cn(
+                      'relative px-4 pb-3 pt-2 text-sm font-medium uppercase tracking-wider cursor-pointer transition-colors duration-200',
+                      isActive ? 'text-white' : 'text-white/25 hover:text-white/40'
+                    )}
+                  >
+                    {tab.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="library-tab-underline"
+                        className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-mm-accent"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 500,
+                          damping: 38,
+                        }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* View mode toggle — only show on files tab */}
+            {activeTab === 'files' && (
+              <TooltipProvider delayDuration={300}>
+                <div className="flex items-center gap-0.5 pb-2">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('table')}
+                        className={cn(
+                          'p-1.5 rounded-md transition-colors cursor-pointer',
+                          viewMode === 'table'
+                            ? 'text-white bg-white/[0.08]'
+                            : 'text-white/25 hover:text-white/50'
+                        )}
+                      >
+                        <HugeiconsIcon icon={GridViewIcon} size={15} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {i18n._(msg`library.detail.viewTable`)}
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('tree')}
+                        className={cn(
+                          'p-1.5 rounded-md transition-colors cursor-pointer',
+                          viewMode === 'tree'
+                            ? 'text-white bg-white/[0.08]'
+                            : 'text-white/25 hover:text-white/50'
+                        )}
+                      >
+                        <HugeiconsIcon icon={ViewIcon} size={15} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {i18n._(msg`library.detail.viewTree`)}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </TooltipProvider>
+            )}
           </div>
 
           {/* Tab content */}
           <AnimatePresence mode="wait">
             {activeTab === 'files' && (
               <motion.div
-                key="files"
+                key={`files-${viewMode}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                <FileTable libraryId={id} onMatch={setMatchingFile} />
+                {viewMode === 'table' ? (
+                  <FileTable libraryId={id} onMatch={setMatchingFile} />
+                ) : (
+                  <FileTreeView libraryId={id} onMatch={setMatchingFile} />
+                )}
               </motion.div>
             )}
             {activeTab === 'history' && (

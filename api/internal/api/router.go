@@ -91,6 +91,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.POST("/:id/match", h.handleMatchLibrary)
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
 	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
+	libGroup.GET("/:id/file-tree", h.handleFileTree)
 	libGroup.GET("/:id/connection-status", h.handleGetLibraryConnectionStatus)
 	libGroup.POST("/test-connection", h.handleTestConnection)
 	libGroup.POST("/browse", h.handleBrowse)

@@ -70,6 +70,7 @@ type Querier interface {
 	ListLibrariesWithStats(ctx context.Context) ([]ListLibrariesWithStatsRow, error)
 	ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
+	ListMediaFileTreeByLibrary(ctx context.Context, libraryID string) ([]ListMediaFileTreeByLibraryRow, error)
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListPlayableEpisodes(ctx context.Context, animeID string) ([]ListPlayableEpisodesRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)

@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/store"
@@ -117,6 +119,117 @@ func (h *handler) handleMatchMediaFile(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	return c.JSON(http.StatusOK, updated)
+}
+
+func (h *handler) handleFileTree(c echo.Context) error {
+	libraryID := c.Param("id")
+
+	// Check library exists
+	lib, err := h.queries.GetLibrary(c.Request().Context(), libraryID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.ErrNotFound
+		}
+		return echo.ErrInternalServerError
+	}
+
+	files, err := h.queries.ListMediaFileTreeByLibrary(c.Request().Context(), libraryID)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	// Build tree structure from flat file list
+	type treeFile struct {
+		ID                 string  `json:"id"`
+		Filename           string  `json:"filename"`
+		SizeBytes          int64   `json:"size_bytes"`
+		MatchStatus        string  `json:"match_status"`
+		MatchedAnimeTitle  string  `json:"matched_anime_title"`
+		MatchedEpisodeSort float64 `json:"matched_episode_sort"`
+		MatchedBangumiID   int64   `json:"matched_bangumi_id"`
+		SubtitleCount      int64   `json:"subtitle_count"`
+	}
+	type treeNode struct {
+		Name      string      `json:"name"`
+		Path      string      `json:"path"`
+		Children  []*treeNode `json:"children,omitempty"`
+		Files     []treeFile  `json:"files,omitempty"`
+		FileCount int         `json:"file_count"`
+		SizeBytes int64       `json:"size_bytes"`
+	}
+
+	// Strip library base path prefix from file paths
+	basePath := filepath.Clean(lib.Path) + "/"
+
+	root := &treeNode{Name: lib.Name, Path: "/"}
+	nodeMap := map[string]*treeNode{"/": root}
+
+	for _, f := range files {
+		// Get relative directory by stripping the library base path
+		relPath := f.Path
+		if strings.HasPrefix(relPath, basePath) {
+			relPath = relPath[len(basePath):]
+		}
+		dir := filepath.Dir(relPath)
+
+		// Split directory into parts
+		var parts []string
+		if dir != "." && dir != "/" && dir != "" {
+			parts = strings.Split(filepath.ToSlash(dir), "/")
+		}
+
+		// Navigate/create directory nodes
+		current := root
+		currentPath := "/"
+		for _, part := range parts {
+			if part == "" {
+				continue
+			}
+			if currentPath == "/" {
+				currentPath = "/" + part
+			} else {
+				currentPath = currentPath + "/" + part
+			}
+			if node, ok := nodeMap[currentPath]; ok {
+				current = node
+			} else {
+				node := &treeNode{Name: part, Path: currentPath}
+				current.Children = append(current.Children, node)
+				nodeMap[currentPath] = node
+				current = node
+			}
+		}
+
+		// Add file to current directory
+		current.Files = append(current.Files, treeFile{
+			ID:                 f.ID,
+			Filename:           f.Filename,
+			SizeBytes:          f.SizeBytes,
+			MatchStatus:        f.MatchStatus,
+			MatchedAnimeTitle:  f.MatchedAnimeTitle,
+			MatchedEpisodeSort: f.MatchedEpisodeSort,
+			MatchedBangumiID:   f.MatchedBangumiID,
+			SubtitleCount:      f.SubtitleCount,
+		})
+	}
+
+	// Calculate cumulative counts
+	var accumulate func(n *treeNode)
+	accumulate = func(n *treeNode) {
+		n.FileCount = len(n.Files)
+		n.SizeBytes = 0
+		for _, f := range n.Files {
+			n.SizeBytes += f.SizeBytes
+		}
+		for _, child := range n.Children {
+			accumulate(child)
+			n.FileCount += child.FileCount
+			n.SizeBytes += child.SizeBytes
+		}
+	}
+	accumulate(root)
+
+	return c.JSON(http.StatusOK, root)
 }
 
 func (h *handler) handleUnmatchMediaFile(c echo.Context) error {

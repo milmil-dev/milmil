@@ -292,6 +292,64 @@ func (q *Queries) ListMediaFilePathsByLibrary(ctx context.Context, libraryID str
 	return items, nil
 }
 
+const listMediaFileTreeByLibrary = `-- name: ListMediaFileTreeByLibrary :many
+SELECT mf.id, mf.path, mf.filename, mf.size_bytes, mf.match_status,
+       COALESCE(a.title, '') AS matched_anime_title,
+       COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       COALESCE(a.bangumi_id, 0) AS matched_bangumi_id,
+       (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
+FROM media_files mf
+LEFT JOIN episodes e ON mf.episode_id = e.id
+LEFT JOIN anime a ON e.anime_id = a.id
+WHERE mf.library_id = ?
+ORDER BY mf.path ASC
+`
+
+type ListMediaFileTreeByLibraryRow struct {
+	ID                 string  `json:"id"`
+	Path               string  `json:"path"`
+	Filename           string  `json:"filename"`
+	SizeBytes          int64   `json:"size_bytes"`
+	MatchStatus        string  `json:"match_status"`
+	MatchedAnimeTitle  string  `json:"matched_anime_title"`
+	MatchedEpisodeSort float64 `json:"matched_episode_sort"`
+	MatchedBangumiID   int64   `json:"matched_bangumi_id"`
+	SubtitleCount      int64   `json:"subtitle_count"`
+}
+
+func (q *Queries) ListMediaFileTreeByLibrary(ctx context.Context, libraryID string) ([]ListMediaFileTreeByLibraryRow, error) {
+	rows, err := q.db.QueryContext(ctx, listMediaFileTreeByLibrary, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListMediaFileTreeByLibraryRow{}
+	for rows.Next() {
+		var i ListMediaFileTreeByLibraryRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.MatchStatus,
+			&i.MatchedAnimeTitle,
+			&i.MatchedEpisodeSort,
+			&i.MatchedBangumiID,
+			&i.SubtitleCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMediaFilesByLibrary = `-- name: ListMediaFilesByLibrary :many
 SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.duration_seconds, mf.container_format, mf.video_codec, mf.audio_codec, mf.width, mf.height, mf.file_hash, mf.dandanplay_episode_id, mf.match_status, mf.video_tracks, mf.audio_tracks, mf.subtitle_tracks, mf.created_at, mf.updated_at, mf.dandanplay_anime_id, mf.bangumi_subject_id, mf.bangumi_episode_id,
        COALESCE(a.title, '') AS matched_anime_title,

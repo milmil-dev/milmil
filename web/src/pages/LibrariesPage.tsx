@@ -144,12 +144,9 @@ function SourceBadge({ sourceType }: { sourceType: string }) {
   );
 }
 
-// ─── Library card ─────────────────────────────────────────────────────────────
+// ─── Library card (minimal list row) ─────────────────────────────────────────
 function LibraryCard({
   lib,
-  onScan,
-  onEdit,
-  onDelete,
 }: {
   lib: LibraryWithStats;
   onScan: () => void;
@@ -160,20 +157,11 @@ function LibraryCard({
   const navigate = useNavigate();
   const scanProgress = useScanStore((s) => s.getProgress(lib.id));
   const isScanning = useScanStore((s) => s.isScanning(lib.id));
-  const lastScannedDate = lib.last_scanned_at ? new Date(lib.last_scanned_at) : null;
-  const lastScanned =
-    lastScannedDate &&
-    !Number.isNaN(lastScannedDate.getTime()) &&
-    lastScannedDate.getFullYear() > 2000
-      ? lastScannedDate.toLocaleDateString()
-      : i18n._(msg`library.neverScanned`);
-  const matchPct = lib.file_count > 0 ? (lib.matched_count / lib.file_count) * 100 : 0;
-  const accentColor = cardAccentColor(lib.name);
+  const matchPct = lib.file_count > 0 ? Math.round((lib.matched_count / lib.file_count) * 100) : 0;
   const isRemoteLibrary = lib.source_type !== 'local' && lib.source_type !== '';
   const {
     data: connectionStatus,
     isLoading: isCheckingConnection,
-    dataUpdatedAt: connectionUpdatedAt,
   } = useQuery({
     queryKey: libraryKeys.connectionStatus(lib.id),
     queryFn: () => libraryApi.getConnectionStatus(lib.id),
@@ -182,11 +170,10 @@ function LibraryCard({
     refetchInterval: 60_000,
     retry: 1,
   });
-  const connectionCheckedAt = connectionUpdatedAt > 0 ? formatCheckedAgo(connectionUpdatedAt) : '';
 
   return (
     <div
-      className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.12] bg-white/[0.025]"
+      className="group flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-colors bg-white/[0.03] hover:bg-white/[0.06]"
       onClick={() => navigate({ to: `/libraries/${lib.id}` })}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') navigate({ to: `/libraries/${lib.id}` });
@@ -194,115 +181,45 @@ function LibraryCard({
       role="link"
       tabIndex={0}
     >
-      {/* Accent top line */}
-      <div className="h-[2px]" style={{ backgroundColor: accentColor }} />
-
-      {/* Art area */}
-      <div className="relative h-44 overflow-hidden bg-white/[0.02] flex items-center justify-center">
-        <SourceIcon sourceType={lib.source_type} className="w-16 h-16 text-white/[0.08]" />
-
-        {isScanning && scanProgress && (
-          <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-2 p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent">
-              {scanProgress.phase === 'scanning' && i18n._(msg`library.scanning`)}
-              {scanProgress.phase === 'hashing' && i18n._(msg`library.hashing`)}
-              {scanProgress.phase === 'matching' && i18n._(msg`library.matching`)}
-            </p>
-            <p className="text-xs text-white/60 truncate max-w-full">
-              {scanProgress.currentFile || '...'}
-            </p>
-            <p className="text-[10px] text-white/40">
-              {scanProgress.filesFound > 0 && `${scanProgress.filesFound} files`}
-              {scanProgress.filesMatched > 0 &&
-                ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
-            </p>
-            {scanProgress.filesTotal > 0 && (
-              <div className="w-full h-1 rounded-full bg-white/10 mt-1">
-                <div
-                  className="h-full rounded-full bg-mm-accent transition-all duration-300"
-                  style={{
-                    width: `${(scanProgress.filesMatched / scanProgress.filesTotal) * 100}%`,
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Hover actions */}
-        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/60 pointer-events-none">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onScan();
-            }}
-            disabled={isScanning}
-            className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-40 cursor-pointer pointer-events-auto"
-          >
-            {isScanning ? i18n._(msg`library.scanning`) : i18n._(msg`library.scan`)}
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit();
-            }}
-            className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer pointer-events-auto"
-          >
-            {i18n._(msg`library.edit`)}
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            className="px-3 py-1.5 text-xs font-bold rounded-md bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors cursor-pointer pointer-events-auto"
-          >
-            {i18n._(msg`library.delete`)}
-          </button>
-        </div>
-
-        {/* Match percentage bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] rounded-full bg-white/[0.06]">
-          <div className="h-full rounded-full bg-green-500/70" style={{ width: `${matchPct}%` }} />
-        </div>
+      {/* Source icon */}
+      <div className="w-9 h-9 rounded-[10px] bg-white/[0.05] flex items-center justify-center shrink-0">
+        <SourceIcon sourceType={lib.source_type} className="w-[18px] h-[18px] text-white/25" />
       </div>
 
-      {/* Info */}
-      <div className="p-4">
+      {/* Center info */}
+      <div className="flex-1 min-w-0">
+        {/* Line 1: name + badges */}
         <div className="flex items-center gap-2">
-          <p className="font-semibold text-sm text-white truncate leading-snug">{lib.name}</p>
+          <span className="text-sm font-semibold text-white/85 truncate">{lib.name}</span>
           {!lib.enabled && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.04] text-white/30">
+            <span className="text-[9px] font-bold px-1.5 py-px rounded bg-white/[0.04] text-white/25">
               {i18n._(msg`library.off`)}
             </span>
           )}
           <SourceBadge sourceType={lib.source_type} />
           {isRemoteLibrary && (
-            <div
-              className="inline-flex items-center gap-1.5 rounded bg-white/6 px-1.5 py-0.5"
+            <span
+              className="inline-flex items-center gap-1.5"
               title={connectionStatus?.error}
             >
               <span
                 className={cn(
-                  'h-1.5 w-1.5 rounded-full',
+                  'h-[5px] w-[5px] rounded-full',
                   isCheckingConnection
-                    ? 'bg-amber-300/80'
+                    ? 'bg-amber-300/70'
                     : connectionStatus?.online
-                      ? 'bg-green-300'
-                      : 'bg-red-300'
+                      ? 'bg-green-400/80'
+                      : 'bg-red-400/80'
                 )}
               />
               <span
                 className={cn(
-                  'text-[10px] font-bold',
+                  'text-[9px] font-bold',
                   isCheckingConnection
-                    ? 'text-amber-200/80'
+                    ? 'text-amber-300/50'
                     : connectionStatus?.online
-                      ? 'text-green-300'
-                      : 'text-red-300'
+                      ? 'text-green-400/50'
+                      : 'text-red-400/50'
                 )}
               >
                 {isCheckingConnection
@@ -311,23 +228,57 @@ function LibraryCard({
                     ? i18n._(msg`connection.online`)
                     : i18n._(msg`connection.offline`)}
               </span>
-            </div>
+            </span>
+          )}
+          {isScanning && (
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-mm-accent animate-pulse" />
+              <span className="text-[9px] font-bold text-mm-accent/60">
+                {scanProgress?.phase === 'scanning' && i18n._(msg`library.scanning`)}
+                {scanProgress?.phase === 'hashing' && i18n._(msg`library.hashing`)}
+                {scanProgress?.phase === 'matching' && i18n._(msg`library.matching`)}
+              </span>
+            </span>
           )}
         </div>
-        <p className="text-[11px] font-mono truncate mt-1 text-white/30">{lib.path}</p>
-        <p className="text-[11px] text-white/25 mt-2">
-          {lib.file_count} files · {formatBytes(lib.total_size_bytes)} · {lastScanned}
-        </p>
-        {isRemoteLibrary && connectionCheckedAt && (
-          <p className="text-[10px] text-white/25 mt-1">{i18n._(msg`library.checked`)} {connectionCheckedAt}</p>
-        )}
-        {!isScanning && (() => {
-          const nextScan = formatNextScan(lib.last_scanned_at, lib.scan_interval_minutes, lib.enabled, i18n);
-          return nextScan ? (
-            <p className="text-[10px] text-white/20 mt-0.5">{nextScan}</p>
-          ) : null;
-        })()}
+
+        {/* Line 2: path */}
+        <p className="text-[10px] font-mono text-white/20 truncate mt-1">{lib.path}</p>
+
+        {/* Progress bar */}
+        <div className="h-[3px] rounded-full bg-white/[0.04] mt-2 overflow-hidden">
+          <div
+            className={cn(
+              'h-full rounded-full transition-all duration-500',
+              isScanning ? 'bg-mm-accent/50 animate-pulse' : 'bg-mm-accent/40'
+            )}
+            style={{ width: `${matchPct}%` }}
+          />
+        </div>
       </div>
+
+      {/* Right stats */}
+      <div className="text-right shrink-0 mr-1">
+        <p className="text-lg font-bold text-white/65 tabular-nums tracking-tight">
+          {lib.file_count.toLocaleString()}
+        </p>
+        <p className="text-[9px] text-white/20 mt-0.5 tabular-nums">
+          {formatBytes(lib.total_size_bytes)} · <span className={matchPct === 100 ? 'text-green-400/50' : ''}>{matchPct}%</span>
+        </p>
+      </div>
+
+      {/* Chevron */}
+      <svg
+        className="w-4 h-4 text-white/10 group-hover:text-white/25 transition-colors shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
     </div>
   );
 }
@@ -339,23 +290,14 @@ function AddCard({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="group rounded-lg overflow-hidden w-full transition-all duration-200 cursor-pointer border border-dashed border-white/[0.08] hover:border-white/20"
+      className="group flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.04]"
     >
-      <div className="h-44 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-full border border-white/[0.1] flex items-center justify-center group-hover:border-white/20 transition-colors">
-            <span className="text-lg text-white/40 group-hover:text-white/60 transition-colors">
-              +
-            </span>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-white/40 group-hover:text-white/60 transition-colors">
-              {i18n._(msg`library.addLibrary`)}
-            </p>
-          </div>
-        </div>
+      <div className="w-7 h-7 rounded-lg bg-white/[0.06] flex items-center justify-center group-hover:bg-white/[0.10] transition-colors">
+        <span className="text-sm text-white/25 group-hover:text-white/45 transition-colors">+</span>
       </div>
-      <div className="p-4" />
+      <span className="text-sm text-white/25 group-hover:text-white/45 transition-colors">
+        {i18n._(msg`library.addLibrary`)}
+      </span>
     </button>
   );
 }
@@ -383,7 +325,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       <button
         type="button"
         onClick={onAdd}
-        className="px-5 py-2.5 text-sm font-semibold rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
+        className="px-5 py-2.5 text-sm font-semibold rounded-lg bg-white/[0.06] text-white/60 hover:bg-white/[0.10] hover:text-white/80 transition-colors cursor-pointer"
       >
         + {i18n._(msg`library.addLibrary`)}
       </button>
@@ -434,7 +376,7 @@ interface LibraryFormValues {
 
 const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
 const inputClass =
-  'bg-white/[0.06] border-none focus:ring-1 focus:ring-mm-accent/50 text-white rounded-md';
+  'bg-white/[0.06] border-none outline-none text-white rounded-md';
 
 // ─── Test connection button ───────────────────────────────────────────────────
 function TestConnectionButton({
@@ -762,7 +704,7 @@ function FolderBrowser({
                   'w-full px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer flex items-center justify-center gap-2',
                   currentPath === browsePath
                     ? 'bg-mm-accent/15 border border-mm-accent/30 text-mm-accent'
-                    : 'bg-white/[0.06] border border-white/[0.08] text-white/70 hover:bg-white/[0.1] hover:border-white/[0.15] hover:text-white'
+                    : 'bg-white/[0.06] text-white/60 hover:bg-white/[0.10] hover:text-white/80'
                 )}
               >
                 {currentPath === browsePath ? (
@@ -1623,7 +1565,7 @@ function LibraryForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
+            className="w-full font-semibold text-white bg-white/[0.08] hover:bg-white/[0.14] transition-all rounded-lg h-11"
           >
             {isSubmitting ? i18n._(msg`library.saving`) : submitLabel}
           </Button>
@@ -1902,25 +1844,25 @@ function AddLibraryWizard({
             transition={{ duration: 0.18 }}
             className="space-y-3"
           >
-            <p className="text-xs text-white/40 mb-4">{i18n._(msg`library.wizard.chooseSource`)}</p>
-            <div className="max-h-[60vh] overflow-y-auto space-y-5">
+            <p className="text-xs text-white/35 mb-3">{i18n._(msg`library.wizard.chooseSource`)}</p>
+            <div className="space-y-4">
               {sourceSections.map((section) => (
                 <div key={section.label}>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-3">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2">
                     {section.label}
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {section.cards.map((card) => (
                       <button
                         key={card.key}
                         type="button"
                         onClick={() => handleSelectSource(card.key)}
-                        className="rounded-xl border border-white/[0.06] p-4 hover:border-white/[0.15] hover:bg-white/[0.02] transition-all cursor-pointer text-left flex flex-col gap-3"
+                        className="rounded-lg bg-white/[0.04] px-4 py-3 hover:bg-white/[0.08] transition-colors cursor-pointer text-left flex items-center gap-3"
                       >
-                        <div className="text-white/40">{card.icon}</div>
+                        <div className="text-white/30 shrink-0 [&_svg]:w-6 [&_svg]:h-6">{card.icon}</div>
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-white/80">{card.name}</p>
-                          <p className="text-[11px] text-white/35 mt-0.5 leading-snug">
+                          <p className="text-[11px] text-white/30 leading-snug truncate">
                             {card.desc}
                           </p>
                         </div>
@@ -2243,7 +2185,7 @@ function AddLibraryWizard({
                         <button
                           type="button"
                           onClick={() => setSmbStep('folder')}
-                          className="w-full px-4 py-2.5 text-sm font-bold rounded-lg bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] text-white transition-all cursor-pointer"
+                          className="w-full px-4 py-2.5 text-sm font-bold rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-white transition-all cursor-pointer"
                         >
                           {i18n._(msg`library.wizard.smb.connect`)}
                         </button>
@@ -2392,7 +2334,7 @@ function AddLibraryWizard({
                               <Button
                                 type="submit"
                                 disabled={isSubmitting || !path}
-                                className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
+                                className="w-full font-semibold text-white bg-white/[0.08] hover:bg-white/[0.14] transition-all rounded-lg h-11"
                               >
                                 {isSubmitting
                                   ? i18n._(msg`library.saving`)
@@ -2896,7 +2838,7 @@ function AddLibraryWizard({
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full font-semibold text-white bg-white/[0.1] hover:bg-white/[0.16] border border-white/[0.08] hover:border-white/[0.15] transition-all rounded-lg h-11"
+                        className="w-full font-semibold text-white bg-white/[0.08] hover:bg-white/[0.14] transition-all rounded-lg h-11"
                       >
                         {isSubmitting
                           ? i18n._(msg`library.saving`)
@@ -3259,101 +3201,95 @@ export function LibrariesPage() {
                     toast.success(i18n._(msg`scan.scanAll`));
                   }}
                   disabled={libraries.length === 0}
-                  className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/50 hover:text-white hover:border-white/25 transition-colors cursor-pointer disabled:opacity-30"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/80 transition-colors cursor-pointer disabled:opacity-30"
                 >
                   {i18n._(msg`scan.scanAll`)}
                 </button>
                 <button
                   type="button"
                   onClick={() => setDrawerMode('add')}
-                  className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/70 hover:text-white hover:border-white/25 transition-colors cursor-pointer"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.06] text-white/60 hover:bg-white/[0.10] hover:text-white/80 transition-colors cursor-pointer"
                 >
                   + {i18n._(msg`library.addLibrary`)}
                 </button>
               </div>
             </div>
 
-            {/* Summary stats bar */}
+            {/* Summary stats + sort bar */}
             {hasLibraries && (
-              <p className="text-[11px] text-white/25 mt-3">
-                {libraries.length} {i18n._(msg`library.summary.libraries`)} · {totalFiles} {i18n._(msg`library.summary.files`)} · {formatBytes(totalSize)} · {matchPctAll}% {i18n._(msg`library.summary.matched`)}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Sort toolbar */}
-        {hasLibraries && (
-          <div className="px-8 pb-4 flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/25 mr-1">
-              {i18n._(msg`library.sort.label`)}
-            </span>
-            {(['name', 'match', 'size', 'scanned'] as const).map((key) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setSortKey(key)}
-                className={cn(
-                  'px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer',
-                  sortKey === key
-                    ? 'bg-white/[0.1] text-white/70'
-                    : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
+              <div className="flex items-center gap-4 mt-4">
+                <div className="flex items-center gap-3 text-[11px] text-white/30">
+                  <span className="tabular-nums">{libraries.length} {i18n._(msg`library.summary.libraries`)}</span>
+                  <span className="text-white/10">·</span>
+                  <span className="tabular-nums">{totalFiles} {i18n._(msg`library.summary.files`)}</span>
+                  <span className="text-white/10">·</span>
+                  <span className="tabular-nums">{formatBytes(totalSize)}</span>
+                  <span className="text-white/10">·</span>
+                  <span className={cn('tabular-nums', matchPctAll === 100 ? 'text-green-400/50' : 'text-white/30')}>
+                    {matchPctAll}% {i18n._(msg`library.summary.matched`)}
+                  </span>
+                </div>
+                {libraries.length > 1 && (
+                  <div className="ml-auto flex items-center rounded-md bg-white/[0.04] p-0.5">
+                    {(['name', 'match', 'size', 'scanned'] as const).map((key) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setSortKey(key)}
+                        className={cn(
+                          'px-2 py-1 text-[10px] font-medium rounded transition-colors cursor-pointer',
+                          sortKey === key
+                            ? 'bg-white/[0.08] text-white/70'
+                            : 'text-white/25 hover:text-white/50'
+                        )}
+                      >
+                        {key === 'name' && i18n._(msg`library.sort.name`)}
+                        {key === 'match' && i18n._(msg`library.sort.match`)}
+                        {key === 'size' && i18n._(msg`library.sort.size`)}
+                        {key === 'scanned' && i18n._(msg`library.sort.scanned`)}
+                      </button>
+                    ))}
+                  </div>
                 )}
-              >
-                {key === 'name' && i18n._(msg`library.sort.name`)}
-                {key === 'match' && i18n._(msg`library.sort.match`)}
-                {key === 'size' && i18n._(msg`library.sort.size`)}
-                {key === 'scanned' && i18n._(msg`library.sort.scanned`)}
-              </button>
-            ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Recently Matched Preview */}
         <RecentlyMatchedPreview />
 
-        {/* Grid */}
+        {/* Library list */}
         <div className="px-8 pb-16">
           {isLoading ? (
-            <div
-              className="grid gap-5"
-              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}
-            >
+            <div className="space-y-2">
               {skeletonCards.map((i) => (
-                <div key={i} className="rounded-lg overflow-hidden animate-pulse bg-white/[0.025]">
-                  <div className="h-[2px] bg-white/[0.04]" />
-                  <div className="h-44 bg-white/[0.02]" />
-                  <div className="p-4">
-                    <div
-                      className="h-3 rounded mb-2"
-                      style={{ backgroundColor: 'oklch(18% 0.01 280)', width: '55%' }}
-                    />
-                    <div
-                      className="h-2 rounded"
-                      style={{ backgroundColor: 'oklch(15% 0.01 280)', width: '75%' }}
-                    />
+                <div key={i} className="flex items-center gap-4 px-4 py-3 rounded-xl animate-pulse bg-white/[0.025]">
+                  <div className="w-9 h-9 rounded-[10px] bg-white/[0.04]" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 rounded w-1/3" style={{ backgroundColor: 'oklch(18% 0.01 280)' }} />
+                    <div className="h-2 rounded w-1/2" style={{ backgroundColor: 'oklch(15% 0.01 280)' }} />
+                    <div className="h-[3px] rounded-full w-full bg-white/[0.03]" />
                   </div>
+                  <div className="w-12 h-6 rounded bg-white/[0.03]" />
                 </div>
               ))}
             </div>
           ) : isEmpty ? (
             <EmptyState onAdd={() => setDrawerMode('add')} />
           ) : (
-            <motion.div
-              className="grid gap-5"
-              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}
-            >
+            <motion.div className="space-y-1.5">
               <AnimatePresence mode="popLayout">
                 {sortedLibraries.map((lib, i) => (
                   <motion.div
                     key={lib.id}
                     layout
-                    initial={{ opacity: 0, y: 18 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.94 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
                     transition={{
-                      delay: i * 0.04,
-                      duration: 0.28,
+                      delay: i * 0.03,
+                      duration: 0.2,
                       ease: [0.25, 0.46, 0.45, 0.94],
                     }}
                   >
@@ -3370,12 +3306,12 @@ export function LibrariesPage() {
                 ))}
               </AnimatePresence>
 
-              {/* Add card always last */}
+              {/* Add row always last */}
               <motion.div
                 layout
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: libraries.length * 0.04, duration: 0.28 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: libraries.length * 0.03, duration: 0.2 }}
               >
                 <AddCard onClick={() => setDrawerMode('add')} />
               </motion.div>

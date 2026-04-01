@@ -69,34 +69,23 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0"
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.6)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-            }}
+            className="absolute inset-0 bg-[var(--mm-overlay)] backdrop-blur-[12px]"
             onClick={onClose}
           />
 
-          {/* Panel — slides up on open, slides down on close */}
+          {/* Panel */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 32 }}
             className={cn(
-              'relative z-10 w-full rounded-t-2xl md:rounded-2xl overflow-hidden',
-              'max-h-[80vh]',
+              'relative z-10 w-full max-h-[85vh] rounded-t-2xl md:rounded-2xl overflow-hidden',
+              'bg-[var(--mm-glass)] backdrop-blur-[48px] backdrop-saturate-[1.4]',
+              'shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_0.5px_rgba(255,255,255,0.06)_inset]',
               sizeClasses[size],
               className
             )}
-            style={{
-              backgroundColor: 'oklch(12% 0.01 260 / 0.72)',
-              backdropFilter: 'blur(40px) saturate(1.5)',
-              WebkitBackdropFilter: 'blur(40px) saturate(1.5)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: '0 24px 80px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.05) inset',
-            }}
           >
             {/* Fixed background — covers top portion only, fades at bottom edge */}
             {fixedBg && (
@@ -112,18 +101,11 @@ export function Modal({
             )}
 
             {/* Scrollable area */}
-            <div className="relative z-[1] max-h-[80vh] overflow-y-auto" onScroll={onScroll}>
+            <div className="relative z-[1] overflow-y-auto max-h-[85vh]" onScroll={onScroll}>
               {/* Header */}
               {title && (
-                <div
-                  className="sticky top-0 z-10 flex items-center justify-between px-5 py-4"
-                  style={{
-                    backgroundColor: 'oklch(12% 0.01 260 / 0.5)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                  }}
-                >
-                  <h2 className="text-[15px] font-bold text-white">{title}</h2>
+                <div className="sticky top-0 z-10 flex items-center justify-between px-8 py-5">
+                  <h2 className="text-[15px] font-bold text-mm-text-primary">{title}</h2>
                   <button
                     type="button"
                     onClick={onClose}
@@ -144,7 +126,7 @@ export function Modal({
               )}
 
               {/* Content */}
-              <div className={cn('px-5 pb-5', !title && 'pt-5')}>{children}</div>
+              <div className={cn('px-8 pb-8', !title && 'pt-6')}>{children}</div>
             </div>
           </motion.div>
         </motion.div>

@@ -19,6 +19,8 @@
   --mm-text-secondary: rgba(255, 255, 255, 0.6);
   --mm-text-tertiary: rgba(255, 255, 255, 0.4); /* Seanime --muted */
   --mm-text-muted: rgba(255, 255, 255, 0.2);
+  --mm-overlay: rgba(0, 0, 0, 0.4);
+  --mm-glass: rgba(12, 12, 12, 0.82);
   /* Seanime-compatible aliases */
   --background: #070707;
   --foreground: rgba(255, 255, 255, 0.93);
