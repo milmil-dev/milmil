@@ -22,6 +22,8 @@ type Client interface {
 	Remove(ctx context.Context, gid string) error
 	GetStatus(ctx context.Context, gid string) (*Status, error)
 	ListActive(ctx context.Context) ([]Status, error)
+	GetVersion(ctx context.Context) (string, error)
+	RPCURL() string
 }
 
 type httpClient struct {
@@ -123,4 +125,20 @@ func (c *httpClient) ListActive(ctx context.Context) ([]Status, error) {
 	var statuses []Status
 	json.Unmarshal(result, &statuses)
 	return statuses, nil
+}
+
+func (c *httpClient) GetVersion(ctx context.Context) (string, error) {
+	result, err := c.call(ctx, "aria2.getVersion")
+	if err != nil {
+		return "", err
+	}
+	var v struct {
+		Version string `json:"version"`
+	}
+	json.Unmarshal(result, &v)
+	return v.Version, nil
+}
+
+func (c *httpClient) RPCURL() string {
+	return c.url
 }

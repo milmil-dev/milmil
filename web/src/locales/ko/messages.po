@@ -2402,3 +2402,126 @@ msgstr "다운로드 규칙이 없습니다."
 
 msgid "nav.subscribe"
 msgstr "구독"
+
+msgid "settings.nav.download"
+msgstr "다운로드"
+
+msgid "settings.download.aria2"
+msgstr "Aria2 연결 설정"
+
+msgid "settings.download.disconnected"
+msgstr "연결 안 됨"
+
+msgid "settings.download.test"
+msgstr "테스트"
+
+msgid "settings.download.rpcUrl"
+msgstr "RPC URL"
+
+msgid "settings.download.rpcSecret"
+msgstr "RPC 비밀번호"
+
+msgid "settings.download.saveDir"
+msgstr "기본 저장 경로"
+
+msgid "settings.download.howItWorks"
+msgstr "구독 방법"
+
+msgid "settings.download.guide.1"
+msgstr "1. '검색' 탭에서 애니메이션을 검색하거나 상세 페이지로 이동합니다."
+
+msgid "settings.download.guide.2"
+msgstr "2. '구독'을 클릭 — 자막 그룹, 화질, 소스를 선택합니다. RSS 피드가 자동 생성되어 새 에피소드를 정기적으로 확인합니다."
+
+msgid "settings.download.guide.3"
+msgstr "3. 새 에피소드는 30분마다 Aria2를 통해 자동 다운로드됩니다. '다운로드 중' 탭에서 진행 상황을 확인하세요."
+
+msgid "subscribe.aria2Warning"
+msgstr "Aria2에 연결되지 않았습니다. 설정 → 다운로드에서 연결을 구성하세요."
+
+msgid "subscribe.downloadAdded"
+msgstr "다운로드 추가됨"
+
+msgid "subscribe.manualSearch"
+msgstr "수동 검색"
+
+msgid "subscribe.searchPlaceholder"
+msgstr "모든 소스에서 애니메이션 검색..."
+
+msgid "subscribe.download"
+msgstr "다운"
+
+msgid "subscribe.noResults"
+msgstr "결과를 찾을 수 없습니다."
+
+msgid "subscribe.quickTitle"
+msgstr "빠른 구독"
+
+msgid "subscribe.quickDesc"
+msgstr "새 에피소드를 자동 다운로드합니다. 소스, 자막 그룹, 화질을 선택하면 30분마다 자동 확인합니다."
+
+msgid "subscribe.animeName"
+msgstr "애니메이션 이름"
+
+msgid "subscribe.animeNameHint"
+msgstr "예: 장송의 프리렌 S2"
+
+msgid "subscribe.searchQuery"
+msgstr "검색 키워드 (선택)"
+
+msgid "subscribe.searchQueryHint"
+msgstr "이름과 다른 경우 직접 입력"
+
+msgid "subscribe.source"
+msgstr "소스"
+
+msgid "subscribe.subGroup"
+msgstr "자막 그룹"
+
+msgid "subscribe.subGroupHint"
+msgstr "예: 桜都字幕组"
+
+msgid "subscribe.resolution"
+msgstr "화질"
+
+msgid "subscribe.button"
+msgstr "구독"
+
+msgid "subscribe.success"
+msgstr "구독이 생성되었습니다! 새 에피소드가 자동 다운로드됩니다."
+
+msgid "subscribe.refreshed"
+msgstr "새로고침 완료"
+
+msgid "subscribe.deleted"
+msgstr "구독 삭제됨"
+
+msgid "subscribe.every"
+msgstr ""
+
+msgid "subscribe.min"
+msgstr "분마다"
+
+msgid "subscribe.lastMatch"
+msgstr "마지막 매칭"
+
+msgid "subscribe.refresh"
+msgstr "지금 새로고침"
+
+msgid "subscribe.delete"
+msgstr "삭제"
+
+msgid "subscribe.emptyTitle"
+msgstr "아직 구독이 없습니다"
+
+msgid "subscribe.emptyHint"
+msgstr "'검색' 탭의 빠른 구독 양식으로 새 애니메이션 에피소드를 자동 다운로드하세요."
+
+msgid "subscribe.pasteUrl"
+msgstr "마그넷 링크 또는 토렌트 URL 붙여넣기..."
+
+msgid "subscribe.add"
+msgstr "추가"
+
+msgid "subscribe.noDownloads"
+msgstr "다운로드가 없습니다"

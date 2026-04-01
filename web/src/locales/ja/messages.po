@@ -2402,3 +2402,126 @@ msgstr "ダウンロードルールがありません。"
 
 msgid "nav.subscribe"
 msgstr "購読"
+
+msgid "settings.nav.download"
+msgstr "ダウンロード"
+
+msgid "settings.download.aria2"
+msgstr "Aria2 接続設定"
+
+msgid "settings.download.disconnected"
+msgstr "未接続"
+
+msgid "settings.download.test"
+msgstr "テスト"
+
+msgid "settings.download.rpcUrl"
+msgstr "RPC URL"
+
+msgid "settings.download.rpcSecret"
+msgstr "RPCシークレット"
+
+msgid "settings.download.saveDir"
+msgstr "デフォルト保存先"
+
+msgid "settings.download.howItWorks"
+msgstr "購読の仕組み"
+
+msgid "settings.download.guide.1"
+msgstr "1.「検索」タブでアニメを検索するか、アニメ詳細ページに移動します。"
+
+msgid "settings.download.guide.2"
+msgstr "2.「購読」をクリック — 字幕グループ、画質、ソースを選択。RSSフィードが自動作成され、新エピソードを定期チェックします。"
+
+msgid "settings.download.guide.3"
+msgstr "3. 新エピソードは30分ごとにAria2経由で自動ダウンロードされます。「ダウンロード中」タブで進捗を確認できます。"
+
+msgid "subscribe.aria2Warning"
+msgstr "Aria2に接続されていません。設定→ダウンロードで接続を設定してください。"
+
+msgid "subscribe.downloadAdded"
+msgstr "ダウンロードを追加しました"
+
+msgid "subscribe.manualSearch"
+msgstr "手動検索"
+
+msgid "subscribe.searchPlaceholder"
+msgstr "全ソースからアニメを検索..."
+
+msgid "subscribe.download"
+msgstr "DL"
+
+msgid "subscribe.noResults"
+msgstr "結果が見つかりません。"
+
+msgid "subscribe.quickTitle"
+msgstr "クイック購読"
+
+msgid "subscribe.quickDesc"
+msgstr "新エピソードを自動ダウンロード。ソース、字幕グループ、画質を選択すると、30分ごとに自動チェックします。"
+
+msgid "subscribe.animeName"
+msgstr "アニメ名"
+
+msgid "subscribe.animeNameHint"
+msgstr "例：葬送のフリーレン S2"
+
+msgid "subscribe.searchQuery"
+msgstr "検索キーワード（任意）"
+
+msgid "subscribe.searchQueryHint"
+msgstr "名前と異なる場合に上書き"
+
+msgid "subscribe.source"
+msgstr "ソース"
+
+msgid "subscribe.subGroup"
+msgstr "字幕グループ"
+
+msgid "subscribe.subGroupHint"
+msgstr "例：桜都字幕组"
+
+msgid "subscribe.resolution"
+msgstr "画質"
+
+msgid "subscribe.button"
+msgstr "購読する"
+
+msgid "subscribe.success"
+msgstr "購読を作成しました！新エピソードは自動ダウンロードされます。"
+
+msgid "subscribe.refreshed"
+msgstr "更新しました"
+
+msgid "subscribe.deleted"
+msgstr "購読を削除しました"
+
+msgid "subscribe.every"
+msgstr ""
+
+msgid "subscribe.min"
+msgstr "分ごと"
+
+msgid "subscribe.lastMatch"
+msgstr "最終一致"
+
+msgid "subscribe.refresh"
+msgstr "今すぐ更新"
+
+msgid "subscribe.delete"
+msgstr "削除"
+
+msgid "subscribe.emptyTitle"
+msgstr "購読はまだありません"
+
+msgid "subscribe.emptyHint"
+msgstr "「検索」タブのクイック購読フォームで、新しいアニメエピソードを自動ダウンロードしましょう。"
+
+msgid "subscribe.pasteUrl"
+msgstr "マグネットリンクまたはトレントURLを貼り付け..."
+
+msgid "subscribe.add"
+msgstr "追加"
+
+msgid "subscribe.noDownloads"
+msgstr "ダウンロードはありません"

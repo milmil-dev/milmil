@@ -2400,3 +2400,126 @@ msgstr "暂无下载规则。"
 
 msgid "nav.subscribe"
 msgstr "订阅"
+
+msgid "settings.nav.download"
+msgstr "下载"
+
+msgid "settings.download.aria2"
+msgstr "Aria2 连接设置"
+
+msgid "settings.download.disconnected"
+msgstr "未连接"
+
+msgid "settings.download.test"
+msgstr "测试"
+
+msgid "settings.download.rpcUrl"
+msgstr "RPC 地址"
+
+msgid "settings.download.rpcSecret"
+msgstr "RPC 密码"
+
+msgid "settings.download.saveDir"
+msgstr "默认保存目录"
+
+msgid "settings.download.howItWorks"
+msgstr "订阅流程说明"
+
+msgid "settings.download.guide.1"
+msgstr "1. 在「搜索」分页搜索番剧，或前往番剧详情页面。"
+
+msgid "settings.download.guide.2"
+msgstr "2. 点击「订阅」— 选择字幕组、画质和来源。系统会自动创建 RSS 订阅，定时检查新集数。"
+
+msgid "settings.download.guide.3"
+msgstr "3. 新集数会每 30 分钟通过 Aria2 自动下载。在「下载中」分页查看进度。"
+
+msgid "subscribe.aria2Warning"
+msgstr "Aria2 未连接。请前往 设置 → 下载 配置连接。"
+
+msgid "subscribe.downloadAdded"
+msgstr "已加入下载"
+
+msgid "subscribe.manualSearch"
+msgstr "手动搜索"
+
+msgid "subscribe.searchPlaceholder"
+msgstr "搜索番剧（跨所有来源）..."
+
+msgid "subscribe.download"
+msgstr "下载"
+
+msgid "subscribe.noResults"
+msgstr "未找到结果。"
+
+msgid "subscribe.quickTitle"
+msgstr "快速订阅"
+
+msgid "subscribe.quickDesc"
+msgstr "自动下载新集数。选择来源、字幕组和画质，系统每 30 分钟自动检查更新。"
+
+msgid "subscribe.animeName"
+msgstr "番剧名称"
+
+msgid "subscribe.animeNameHint"
+msgstr "例如：葬送的芙莉莲 S2"
+
+msgid "subscribe.searchQuery"
+msgstr "搜索关键字（选填）"
+
+msgid "subscribe.searchQueryHint"
+msgstr "如与名称不同可自行填写"
+
+msgid "subscribe.source"
+msgstr "来源"
+
+msgid "subscribe.subGroup"
+msgstr "字幕组"
+
+msgid "subscribe.subGroupHint"
+msgstr "例如：桜都字幕组"
+
+msgid "subscribe.resolution"
+msgstr "画质"
+
+msgid "subscribe.button"
+msgstr "订阅"
+
+msgid "subscribe.success"
+msgstr "订阅成功！新集数将自动下载。"
+
+msgid "subscribe.refreshed"
+msgstr "已刷新"
+
+msgid "subscribe.deleted"
+msgstr "已删除订阅"
+
+msgid "subscribe.every"
+msgstr "每 "
+
+msgid "subscribe.min"
+msgstr " 分钟"
+
+msgid "subscribe.lastMatch"
+msgstr "上次匹配"
+
+msgid "subscribe.refresh"
+msgstr "立即刷新"
+
+msgid "subscribe.delete"
+msgstr "删除"
+
+msgid "subscribe.emptyTitle"
+msgstr "暂无订阅"
+
+msgid "subscribe.emptyHint"
+msgstr "在「搜索」分页使用快速订阅表单，自动下载新番集数。"
+
+msgid "subscribe.pasteUrl"
+msgstr "粘贴磁力链接或种子网址..."
+
+msgid "subscribe.add"
+msgstr "添加"
+
+msgid "subscribe.noDownloads"
+msgstr "没有进行中的下载"

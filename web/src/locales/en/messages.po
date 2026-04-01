@@ -2402,3 +2402,126 @@ msgstr "No download rules yet."
 
 msgid "nav.subscribe"
 msgstr "Subscribe"
+
+msgid "settings.nav.download"
+msgstr "Download"
+
+msgid "settings.download.aria2"
+msgstr "Aria2 Connection"
+
+msgid "settings.download.disconnected"
+msgstr "Not connected"
+
+msgid "settings.download.test"
+msgstr "Test"
+
+msgid "settings.download.rpcUrl"
+msgstr "RPC URL"
+
+msgid "settings.download.rpcSecret"
+msgstr "RPC Secret"
+
+msgid "settings.download.saveDir"
+msgstr "Default Save Directory"
+
+msgid "settings.download.howItWorks"
+msgstr "How Subscribe Works"
+
+msgid "settings.download.guide.1"
+msgstr "1. Search for anime in the Search tab, or go to an anime's detail page."
+
+msgid "settings.download.guide.2"
+msgstr "2. Click Subscribe — choose your preferred fansub group, quality, and source. This creates an RSS feed that checks for new episodes automatically."
+
+msgid "settings.download.guide.3"
+msgstr "3. New episodes are downloaded via Aria2 every 30 minutes. Check the Active tab to see progress."
+
+msgid "subscribe.aria2Warning"
+msgstr "Aria2 is not connected. Go to Settings → Download to configure the connection."
+
+msgid "subscribe.downloadAdded"
+msgstr "Download added"
+
+msgid "subscribe.manualSearch"
+msgstr "Manual Search"
+
+msgid "subscribe.searchPlaceholder"
+msgstr "Search anime across all torrent sources..."
+
+msgid "subscribe.download"
+msgstr "Download"
+
+msgid "subscribe.noResults"
+msgstr "No results found."
+
+msgid "subscribe.quickTitle"
+msgstr "Quick Subscribe"
+
+msgid "subscribe.quickDesc"
+msgstr "Auto-download new episodes. Choose a source, fansub group and quality — we'll check for new releases every 30 minutes."
+
+msgid "subscribe.animeName"
+msgstr "Anime Name"
+
+msgid "subscribe.animeNameHint"
+msgstr "e.g. 葬送的芙莉蓮 S2"
+
+msgid "subscribe.searchQuery"
+msgstr "Search Query (optional)"
+
+msgid "subscribe.searchQueryHint"
+msgstr "Override search term if different from name"
+
+msgid "subscribe.source"
+msgstr "Source"
+
+msgid "subscribe.subGroup"
+msgstr "Fansub Group"
+
+msgid "subscribe.subGroupHint"
+msgstr "e.g. 桜都字幕组"
+
+msgid "subscribe.resolution"
+msgstr "Quality"
+
+msgid "subscribe.button"
+msgstr "Subscribe"
+
+msgid "subscribe.success"
+msgstr "Subscription created! New episodes will be auto-downloaded."
+
+msgid "subscribe.refreshed"
+msgstr "Feed refreshed"
+
+msgid "subscribe.deleted"
+msgstr "Subscription deleted"
+
+msgid "subscribe.every"
+msgstr "Every "
+
+msgid "subscribe.min"
+msgstr "min"
+
+msgid "subscribe.lastMatch"
+msgstr "Last match"
+
+msgid "subscribe.refresh"
+msgstr "Refresh now"
+
+msgid "subscribe.delete"
+msgstr "Delete"
+
+msgid "subscribe.emptyTitle"
+msgstr "No subscriptions yet"
+
+msgid "subscribe.emptyHint"
+msgstr "Use the Quick Subscribe form in the Search tab to auto-download new anime episodes."
+
+msgid "subscribe.pasteUrl"
+msgstr "Paste magnet link or torrent URL..."
+
+msgid "subscribe.add"
+msgstr "Add"
+
+msgid "subscribe.noDownloads"
+msgstr "No active downloads"

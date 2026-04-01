@@ -217,6 +217,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	systemGroup.GET("/info", h.handleSystemInfo)
 	systemGroup.GET("/storage", h.handleStorageStats)
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
+	systemGroup.GET("/aria2-status", h.handleAria2Status)
 
 	return e
 }
