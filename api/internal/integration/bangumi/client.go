@@ -9,8 +9,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-
-	"github.com/longbridgeapp/opencc"
+	"unicode/utf8"
 )
 
 var (
@@ -95,18 +94,37 @@ func (c *httpClient) SearchSubjects(ctx context.Context, query string) ([]Subjec
 	return result.Data, nil
 }
 
-// t2s converts Traditional Chinese to Simplified Chinese for Bangumi API compatibility.
-var t2s, _ = opencc.New("t2s")
+// t2sMap converts common Traditional Chinese characters to Simplified for Bangumi API.
+var t2sMap = map[rune]rune{
+	'龍': '龙', '戀': '恋', '愛': '爱', '後': '后', '宮': '宫', '戰': '战', '鬥': '斗',
+	'險': '险', '懸': '悬', '機': '机', '運': '运', '動': '动', '異': '异', '轉': '转',
+	'歷': '历', '軍': '军', '劇': '剧', '會': '会', '賽': '赛', '釣': '钓', '營': '营',
+	'聲': '声', '優': '优', '續': '续', '場': '场', '書': '书', '說': '说', '輕': '轻',
+	'遊': '游', '戲': '戏', '編': '编', '畫': '画', '創': '创', '癒': '愈', '淚': '泪',
+	'鬱': '郁', '勵': '励', '誌': '志', '蓮': '莲', '園': '园', '職': '职', '樂': '乐',
+	'體': '体', '開': '开', '門': '门', '間': '间', '車': '车', '東': '东', '飄': '飘',
+	'熱': '热', '鑰': '钥', '陣': '阵', '華': '华', '國': '国', '島': '岛', '來': '来',
+	'與': '与', '為': '为', '從': '从', '們': '们', '個': '个', '這': '这', '裡': '里',
+	'點': '点', '長': '长', '電': '电', '話': '话', '記': '记', '學': '学', '問': '问',
+}
+
+func convertT2S(s string) string {
+	out := make([]rune, 0, utf8.RuneCountInString(s))
+	for _, r := range s {
+		if mapped, ok := t2sMap[r]; ok {
+			out = append(out, mapped)
+		} else {
+			out = append(out, r)
+		}
+	}
+	return string(out)
+}
 
 func (c *httpClient) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]Subject, int, error) {
 	// Bangumi uses simplified Chinese tags; convert any traditional input.
 	simplified := make([]string, len(tags))
 	for i, tag := range tags {
-		if t2s != nil {
-			simplified[i], _ = t2s.Convert(tag)
-		} else {
-			simplified[i] = tag
-		}
+		simplified[i] = convertT2S(tag)
 	}
 	filter := map[string]any{
 		"type": []int{2}, // anime only

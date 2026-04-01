@@ -10,6 +10,7 @@ import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { api } from '@/lib/api-client';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
@@ -37,7 +38,7 @@ export function DownloadPanel() {
   });
 
   const form = useForm({
-    defaultValues: { rpc_url: '', rpc_secret: '', default_save_dir: '' },
+    defaultValues: { rpc_url: 'http://localhost:6800/jsonrpc', rpc_secret: '', default_save_dir: '/downloads' },
     onSubmit: async ({ value }) => {
       await saveMutation.mutateAsync(value);
     },
@@ -125,8 +126,7 @@ export function DownloadPanel() {
                 <FieldLabel className="text-white/50 text-xs">
                   {i18n._(msg`settings.download.rpcSecret`)}
                 </FieldLabel>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="••••••••"

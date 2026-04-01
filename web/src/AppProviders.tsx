@@ -31,7 +31,7 @@ export function AppProviders({ children }: AppProvidersProps) {
         <ErrorBoundary>
           <ThemeProvider>
             {children}
-            <Toaster position="bottom-right" />
+            <Toaster position="top-center" />
           </ThemeProvider>
         </ErrorBoundary>
       </QueryClientProvider>

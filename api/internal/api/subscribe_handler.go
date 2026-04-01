@@ -6,14 +6,37 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/longbridgeapp/opencc"
 	"github.com/milmil/api/internal/store"
 )
 
-var subscribeT2S, _ = opencc.New("t2s")
+// subscribeT2SMap — same map as bangumi client for Traditional→Simplified conversion.
+var subscribeT2SMap = map[rune]rune{
+	'龍': '龙', '戀': '恋', '愛': '爱', '後': '后', '宮': '宫', '戰': '战', '鬥': '斗',
+	'險': '险', '懸': '悬', '機': '机', '運': '运', '動': '动', '異': '异', '轉': '转',
+	'歷': '历', '軍': '军', '劇': '剧', '會': '会', '賽': '赛', '釣': '钓', '營': '营',
+	'聲': '声', '優': '优', '續': '续', '場': '场', '書': '书', '說': '说', '輕': '轻',
+	'遊': '游', '戲': '戏', '編': '编', '畫': '画', '創': '创', '癒': '愈', '淚': '泪',
+	'鬱': '郁', '勵': '励', '誌': '志', '蓮': '莲', '園': '园', '職': '职', '樂': '乐',
+	'體': '体', '開': '开', '門': '门', '間': '间', '車': '车', '東': '东', '飄': '飘',
+	'熱': '热', '華': '华', '國': '国', '島': '岛', '來': '来', '與': '与', '為': '为',
+	'從': '从', '們': '们', '個': '个', '這': '这', '裡': '里', '點': '点', '長': '长',
+}
+
+func subscribeConvertT2S(s string) string {
+	out := make([]rune, 0, utf8.RuneCountInString(s))
+	for _, r := range s {
+		if mapped, ok := subscribeT2SMap[r]; ok {
+			out = append(out, mapped)
+		} else {
+			out = append(out, r)
+		}
+	}
+	return string(out)
+}
 
 type subscribeRequest struct {
 	AnimeName      string `json:"anime_name"`
@@ -81,8 +104,8 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 	parts := splitQueryParts(req.Query)
 	pattern := joinRegexParts(parts)
 	filterRegex := fmt.Sprintf("(?i)%s", pattern)
-	if subscribeT2S != nil {
-		simplified, _ := subscribeT2S.Convert(req.Query)
+	{
+		simplified := subscribeConvertT2S(req.Query)
 		if simplified != req.Query {
 			simplifiedParts := splitQueryParts(simplified)
 			simplifiedPattern := joinRegexParts(simplifiedParts)

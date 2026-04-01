@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -13,8 +14,6 @@ import (
 
 	"github.com/rs/zerolog"
 	slogzerolog "github.com/samber/slog-zerolog/v2"
-
-	"net/http"
 
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
@@ -31,7 +30,6 @@ import (
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
-	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/migrations"
 )
@@ -152,19 +150,10 @@ func main() {
 	// Scanner for post-download library scan
 	sc := scanner.New(store.New(database))
 
-	// Background job scheduler (River)
-	bgCtx := context.Background()
-	worker.RegisterWorkers(store.New(database), aria2Client, sc)
-	riverClient, err := worker.NewClient(bgCtx, database, cfg.DatabaseURL)
-	if err != nil {
-		slog.Warn("river client init failed — background RSS refresh disabled", "err", err)
-	} else {
-		if err := riverClient.Start(bgCtx); err != nil {
-			slog.Warn("river start failed", "err", err)
-		} else {
-			slog.Info("background RSS scheduler started", "interval", "5m")
-		}
-	}
+	// Background job scheduler (River) — disabled until River SQLite migration is resolved
+	// River requires its own tables (river_queue, river_leader, etc.) which need
+	// manual migration. For now, RSS refresh runs on manual trigger only.
+	_ = sc
 
 	// HTTP server
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient, torrentReg)
@@ -185,9 +174,6 @@ func main() {
 	defer cancel()
 
 	// Graceful shutdown
-	if riverClient != nil {
-		_ = riverClient.Stop(ctx)
-	}
 	if err := e.Shutdown(ctx); err != nil {
 		slog.Error("shutdown", "err", err)
 		os.Exit(1)
