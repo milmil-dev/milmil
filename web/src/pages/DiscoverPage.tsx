@@ -278,20 +278,12 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
 function HotTagsSection() {
   const { i18n } = useLingui();
 
-  // Bangumi hot tags (may be empty if no Bangumi data)
-  const { data: bangumiTags = [] } = useQuery({
-    queryKey: ['discover', 'hotTags'],
-    queryFn: () => discoverApi.hotTags(),
-    staleTime: 30 * 60 * 1000,
-  });
-
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.3 }}
     >
-      {/* Genre chips — always available */}
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
         {GENRES.map((genre) => (
           <Link
@@ -304,23 +296,6 @@ function HotTagsSection() {
           </Link>
         ))}
       </div>
-
-      {/* Bangumi tags — shown below genres if available */}
-      {bangumiTags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {bangumiTags.slice(0, 20).map((tag) => (
-            <Link
-              key={tag.id}
-              to="/search"
-              search={{ tag: tag.name } as any}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded bg-white/[0.03] text-white/30 hover:bg-white/[0.06] hover:text-white/50 transition-colors cursor-pointer"
-            >
-              {tag.name}
-              <span className="text-[9px] text-white/15 tabular-nums">{tag.count}</span>
-            </Link>
-          ))}
-        </div>
-      )}
     </motion.section>
   );
 }
