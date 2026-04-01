@@ -3022,7 +3022,7 @@ type SortKey = 'name' | 'match' | 'size' | 'scanned';
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function LibrariesPage() {
   const { i18n } = useLingui();
-  useDocumentTitle('Libraries');
+  useDocumentTitle(i18n._(msg`nav.libraries`));
   const { isAuthenticated } = useAuth();
   const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const queryClient = useQueryClient();

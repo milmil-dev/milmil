@@ -1325,7 +1325,7 @@ function SettingsModal({
 
 export function LibraryDetailPage() {
   const { i18n } = useLingui();
-  useDocumentTitle('Library');
+  useDocumentTitle(i18n._(msg`nav.libraries`));
   const { isAuthenticated } = useAuth();
   const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const { id: rawId } = useParams({ strict: false }) as { id?: string };
