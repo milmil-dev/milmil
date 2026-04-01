@@ -185,14 +185,16 @@ export function DiscoverPage() {
         {/* Hero banner carousel */}
         {heroItems.length > 0 && <HeroBanner items={heroItems} onActiveChange={handleHeroChange} />}
 
+        {/* Hot Tags — right under hero */}
+        <div className="px-4 md:px-6 mt-4">
+          <HotTagsSection />
+        </div>
+
         {/* Sections */}
         <div className="px-4 md:px-6 pt-6 pb-16 space-y-8">
           {sections.map((section, i) => (
             <DiscoverSection key={section.queryKey.join('-')} def={section} index={i} />
           ))}
-
-          {/* Hot Tags */}
-          <HotTagsSection />
         </div>
       </div>
     </PageTransition>
@@ -275,47 +277,46 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
 
 function HotTagsSection() {
   const { i18n } = useLingui();
-  const { data: tags = [], isLoading } = useQuery({
+
+  // Bangumi hot tags (may be empty if no Bangumi data)
+  const { data: bangumiTags = [] } = useQuery({
     queryKey: ['discover', 'hotTags'],
     queryFn: () => discoverApi.hotTags(),
     staleTime: 30 * 60 * 1000,
   });
 
-  if (!isLoading && tags.length === 0) return null;
-
   return (
     <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.35 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.2, duration: 0.3 }}
     >
-      <h2 className="text-lg lg:text-xl font-bold text-white tracking-tight mb-4">
-        {i18n._(msg`discover.hotTags`)}
-      </h2>
+      {/* Genre chips — always available */}
+      <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+        {GENRES.map((genre) => (
+          <Link
+            key={genre}
+            to="/search"
+            search={{ genre } as any}
+            className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/70 transition-colors cursor-pointer"
+          >
+            {translateGenre(genre, i18n.locale)}
+          </Link>
+        ))}
+      </div>
 
-      {isLoading && (
-        <div className="flex flex-wrap gap-2">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <Skeleton
-              key={`tag-skel-${i}`}
-              className="h-7 rounded-md"
-              style={{ width: 60 + Math.random() * 40 }}
-            />
-          ))}
-        </div>
-      )}
-
-      {!isLoading && tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {tags.slice(0, 30).map((tag) => (
+      {/* Bangumi tags — shown below genres if available */}
+      {bangumiTags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {bangumiTags.slice(0, 20).map((tag) => (
             <Link
               key={tag.id}
               to="/search"
               search={{ tag: tag.name } as any}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium rounded-md bg-white/[0.04] text-white/50 hover:bg-white/[0.08] hover:text-white/70 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded bg-white/[0.03] text-white/30 hover:bg-white/[0.06] hover:text-white/50 transition-colors cursor-pointer"
             >
               {tag.name}
-              <span className="text-[10px] text-white/20 tabular-nums">{tag.count}</span>
+              <span className="text-[9px] text-white/15 tabular-nums">{tag.count}</span>
             </Link>
           ))}
         </div>
