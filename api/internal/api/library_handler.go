@@ -468,6 +468,17 @@ func sanitizeTimestamp(raw string) (string, bool) {
 	return "", false
 }
 
+type scanSummaryResponse struct {
+	ID             string  `json:"id"`
+	LibraryID      string  `json:"library_id"`
+	StartedAt      string  `json:"started_at"`
+	CompletedAt    *string `json:"completed_at"`
+	FilesFound     int64   `json:"files_found"`
+	FilesMatched   int64   `json:"files_matched"`
+	FilesUnmatched int64   `json:"files_unmatched"`
+	Errors         string  `json:"errors"`
+}
+
 func (h *handler) handleListScanSummaries(c echo.Context) error {
 	summaries, err := h.queries.ListScanSummaries(c.Request().Context(), c.Param("id"))
 	if err != nil {
@@ -475,25 +486,29 @@ func (h *handler) handleListScanSummaries(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	for i := range summaries {
-		if normalized, ok := sanitizeTimestamp(summaries[i].StartedAt); ok {
-			summaries[i].StartedAt = normalized
-		} else {
-			// If started_at is invalid, make it a safe empty string for frontend guard.
-			summaries[i].StartedAt = ""
+	resp := make([]scanSummaryResponse, len(summaries))
+	for i, s := range summaries {
+		resp[i] = scanSummaryResponse{
+			ID:             s.ID,
+			LibraryID:      s.LibraryID,
+			FilesFound:     s.FilesFound,
+			FilesMatched:   s.FilesMatched,
+			FilesUnmatched: s.FilesUnmatched,
+			Errors:         s.Errors,
 		}
 
-		if summaries[i].CompletedAt.Valid {
-			if normalized, ok := sanitizeTimestamp(summaries[i].CompletedAt.String); ok {
-				summaries[i].CompletedAt.String = normalized
-				summaries[i].CompletedAt.Valid = true
-			} else {
-				summaries[i].CompletedAt = sql.NullString{}
+		if normalized, ok := sanitizeTimestamp(s.StartedAt); ok {
+			resp[i].StartedAt = normalized
+		}
+
+		if s.CompletedAt.Valid {
+			if normalized, ok := sanitizeTimestamp(s.CompletedAt.String); ok {
+				resp[i].CompletedAt = &normalized
 			}
 		}
 	}
 
-	return c.JSON(http.StatusOK, summaries)
+	return c.JSON(http.StatusOK, resp)
 }
 
 func (h *handler) handleTestConnection(c echo.Context) error {

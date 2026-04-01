@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS hot_tags (
 CREATE INDEX IF NOT EXISTS idx_hot_tags_category ON hot_tags(category);
 CREATE INDEX IF NOT EXISTS idx_hot_tags_count    ON hot_tags(count DESC);
 
--- Seed popular Bangumi anime tags
+-- Seed popular Bangumi anime tags (traditional Chinese for display; opencc converts to simplified at API call time)
 INSERT OR IGNORE INTO hot_tags (name, category, count) VALUES
 -- Theme / Setting
 ('原創', 'theme', 100),

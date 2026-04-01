@@ -9,6 +9,8 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+
+	"github.com/longbridgeapp/opencc"
 )
 
 var (
@@ -93,22 +95,35 @@ func (c *httpClient) SearchSubjects(ctx context.Context, query string) ([]Subjec
 	return result.Data, nil
 }
 
+// t2s converts Traditional Chinese to Simplified Chinese for Bangumi API compatibility.
+var t2s, _ = opencc.New("t2s")
+
 func (c *httpClient) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]Subject, int, error) {
+	// Bangumi uses simplified Chinese tags; convert any traditional input.
+	simplified := make([]string, len(tags))
+	for i, tag := range tags {
+		if t2s != nil {
+			simplified[i], _ = t2s.Convert(tag)
+		} else {
+			simplified[i] = tag
+		}
+	}
 	filter := map[string]any{
 		"type": []int{2}, // anime only
-		"tag":  tags,
+		"tag":  simplified,
 	}
 	if sort == "" {
 		sort = "rank"
 	}
 	offset := (page - 1) * limit
 	reqBody, _ := json.Marshal(map[string]any{
-		"filter": filter,
-		"sort":   sort,
-		"limit":  limit,
-		"offset": offset,
+		"keyword": "",
+		"filter":  filter,
+		"sort":    sort,
 	})
-	data, err := c.do(ctx, http.MethodPost, "/v0/search/subjects", bytes.NewReader(reqBody))
+	// Bangumi requires limit/offset as query params, not body fields.
+	path := fmt.Sprintf("/v0/search/subjects?limit=%d&offset=%d", limit, offset)
+	data, err := c.do(ctx, http.MethodPost, path, bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, 0, err
 	}

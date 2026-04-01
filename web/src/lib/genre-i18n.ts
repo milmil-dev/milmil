@@ -50,12 +50,62 @@ const GENRE_ZH_HANS: Record<string, string> = {
   Harem: '后宫',
 };
 
+const GENRE_JA: Record<string, string> = {
+  Action: 'アクション',
+  Adventure: '冒険',
+  Comedy: 'コメディ',
+  Drama: 'ドラマ',
+  Fantasy: 'ファンタジー',
+  Horror: 'ホラー',
+  Mystery: 'ミステリー',
+  Psychological: '心理',
+  Romance: '恋愛',
+  'Sci-Fi': 'SF',
+  'Slice of Life': '日常',
+  Supernatural: '超自然',
+  Thriller: 'スリラー',
+  Sports: 'スポーツ',
+  Music: '音楽',
+  Mecha: 'メカ',
+  Ecchi: 'エッチ',
+  'Mahou Shoujo': '魔法少女',
+  Historical: '歴史',
+  Military: '軍事',
+  Harem: 'ハーレム',
+};
+
+const GENRE_KO: Record<string, string> = {
+  Action: '액션',
+  Adventure: '모험',
+  Comedy: '코미디',
+  Drama: '드라마',
+  Fantasy: '판타지',
+  Horror: '호러',
+  Mystery: '미스터리',
+  Psychological: '심리',
+  Romance: '로맨스',
+  'Sci-Fi': 'SF',
+  'Slice of Life': '일상',
+  Supernatural: '초자연',
+  Thriller: '스릴러',
+  Sports: '스포츠',
+  Music: '음악',
+  Mecha: '메카',
+  Ecchi: 'Ecchi',
+  'Mahou Shoujo': '마법소녀',
+  Historical: '역사',
+  Military: '군사',
+  Harem: '하렘',
+};
+
 const MAPS: Record<string, Record<string, string>> = {
   'zh-Hant': GENRE_ZH_HANT,
   'zh-Hans': GENRE_ZH_HANS,
   'zh-TW': GENRE_ZH_HANT,
   'zh-HK': GENRE_ZH_HANT,
   'zh-CN': GENRE_ZH_HANS,
+  ja: GENRE_JA,
+  ko: GENRE_KO,
 };
 
 /** Translate a genre string based on the current locale. Falls back to the original English string. */

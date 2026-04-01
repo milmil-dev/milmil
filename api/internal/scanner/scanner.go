@@ -91,6 +91,16 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 		return err
 	}
 
+	// completeScan ensures the scan summary is always marked as completed,
+	// even when an error occurs partway through.
+	completeScan := func(found int64) {
+		_ = s.queries.CompleteScanSummary(ctx, store.CompleteScanSummaryParams{
+			ID:             summary.ID,
+			FilesFound:     found,
+			FilesUnmatched: found,
+		})
+	}
+
 	// scannedPaths maps video file path → media file ID
 	scannedPaths := make(map[string]string)
 	var filesFound int64
@@ -142,17 +152,20 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 		return nil
 	})
 	if walkErr != nil {
+		completeScan(filesFound)
 		return walkErr
 	}
 
 	// Scan for external subtitle files matching each video
 	if err := s.scanSubtitles(ctx, scannedPaths); err != nil {
+		completeScan(filesFound)
 		return err
 	}
 
 	// Remove media files that no longer exist on disk
 	existingPaths, err := s.queries.ListMediaFilePathsByLibrary(ctx, library.ID)
 	if err != nil {
+		completeScan(filesFound)
 		return err
 	}
 	for _, p := range existingPaths {
@@ -162,11 +175,7 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 	}
 
 	// Record scan completion
-	_ = s.queries.CompleteScanSummary(ctx, store.CompleteScanSummaryParams{
-		ID:             summary.ID,
-		FilesFound:     filesFound,
-		FilesUnmatched: filesFound, // All files start as unmatched (no episode link yet)
-	})
+	completeScan(filesFound)
 
 	// Update library last_scanned_at
 	_ = s.queries.UpdateLibraryLastScanned(ctx, library.ID)
