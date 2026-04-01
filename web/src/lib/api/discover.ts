@@ -14,6 +14,7 @@ export interface AnimeSummary {
   episode_count: number;
   score: number;
   next_episode?: number;
+  media_type?: string; // TV, MOVIE, OVA, ONA, SPECIAL
 }
 
 export interface RelatedAnime {

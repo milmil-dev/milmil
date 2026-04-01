@@ -61,6 +61,7 @@ func anilistMediaToSummary(m anilist.Media) AnimeSummary {
 		Genres:        m.Genres,
 		EpisodeCount:  m.Episodes,
 		Score:         float64(m.AverageScore) / 10.0,
+		MediaType:     m.Format,
 	}
 }
 
@@ -343,6 +344,9 @@ func (s *Service) GetAnimeDetail(ctx context.Context, bangumiID int) (*AnimeDeta
 			detail.BannerImage = media.BannerImage
 			detail.TitleEN = media.Title.English
 			detail.Popularity = media.Popularity
+			if media.Format != "" {
+				detail.MediaType = media.Format
+			}
 			if media.Trailer != nil && media.Trailer.ID != "" && media.Trailer.Site == "youtube" {
 				detail.TrailerURL = "https://www.youtube.com/embed/" + media.Trailer.ID
 			}

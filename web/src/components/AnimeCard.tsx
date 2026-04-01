@@ -237,6 +237,7 @@ function HoverDetailCard({
   const displayTags = tags.length > 0 ? tags : genres;
   const synopsis = detail?.synopsis || anime.description;
   const seasonLabel = formatSeason(info.air_date, i18n);
+  const mediaType = info.media_type || null;
 
   return (
     <div
@@ -305,8 +306,13 @@ function HoverDetailCard({
               )}
             </div>
 
-            {/* Meta row — season, episodes, score */}
+            {/* Meta row — type, season, episodes, score */}
             <div className="flex items-center gap-1.5 flex-wrap">
+              {mediaType && (
+                <span className="text-[10px] font-bold text-white/70 bg-white/[0.08] rounded px-1.5 py-0.5">
+                  {mediaType}
+                </span>
+              )}
               {seasonLabel && (
                 <span className="text-[10px] font-medium text-white/50 bg-white/[0.06] rounded px-1.5 py-0.5">
                   {seasonLabel}
