@@ -39,11 +39,9 @@ services:
       CUSTOM_TRACKER_URL: ""
     volumes:
       - ${DOWNLOAD_DIR:-./downloads}:/downloads
-      - aria2_config:/config
+      - ./aria2-config:/config
     restart: unless-stopped
 
 volumes:
   redis_data:
-    driver: local
-  aria2_config:
     driver: local
