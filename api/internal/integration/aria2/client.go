@@ -22,6 +22,8 @@ type Client interface {
 	Remove(ctx context.Context, gid string) error
 	GetStatus(ctx context.Context, gid string) (*Status, error)
 	ListActive(ctx context.Context) ([]Status, error)
+	ListWaiting(ctx context.Context, offset, num int) ([]Status, error)
+	ListStopped(ctx context.Context, offset, num int) ([]Status, error)
 	GetVersion(ctx context.Context) (string, error)
 	RPCURL() string
 }
@@ -119,6 +121,26 @@ func (c *httpClient) GetStatus(ctx context.Context, gid string) (*Status, error)
 
 func (c *httpClient) ListActive(ctx context.Context) ([]Status, error) {
 	result, err := c.call(ctx, "aria2.tellActive")
+	if err != nil {
+		return nil, err
+	}
+	var statuses []Status
+	json.Unmarshal(result, &statuses)
+	return statuses, nil
+}
+
+func (c *httpClient) ListWaiting(ctx context.Context, offset, num int) ([]Status, error) {
+	result, err := c.call(ctx, "aria2.tellWaiting", offset, num)
+	if err != nil {
+		return nil, err
+	}
+	var statuses []Status
+	json.Unmarshal(result, &statuses)
+	return statuses, nil
+}
+
+func (c *httpClient) ListStopped(ctx context.Context, offset, num int) ([]Status, error) {
+	result, err := c.call(ctx, "aria2.tellStopped", offset, num)
 	if err != nil {
 		return nil, err
 	}

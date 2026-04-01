@@ -11,7 +11,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PageTransition } from '../components/PageTransition';
@@ -653,10 +653,11 @@ function SubscriptionsTab() {
 function ActiveTab() {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
-  const { data: downloads = [], isLoading } = useQuery({
-    queryKey: downloadKeys.list(),
-    queryFn: () => downloadApi.list(),
+  const { data: groups = [], isLoading } = useQuery({
+    queryKey: ['downloads', 'grouped'],
+    queryFn: () => downloadApi.grouped(),
     refetchInterval: 5000,
   });
 
@@ -664,22 +665,22 @@ function ActiveTab() {
     mutationFn: (url: string) => downloadApi.add({ url }),
     onSuccess: () => {
       toast.success(i18n._(msg`subscribe.downloadAdded`));
-      queryClient.invalidateQueries({ queryKey: downloadKeys.list() });
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
     },
     onError: (err: Error) => toast.error(err.message),
   });
 
   const pauseMutation = useMutation({
     mutationFn: downloadApi.pause,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: downloadKeys.list() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
   });
   const resumeMutation = useMutation({
     mutationFn: downloadApi.resume,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: downloadKeys.list() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
   });
   const deleteMutation = useMutation({
     mutationFn: downloadApi.delete,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: downloadKeys.list() }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
   });
 
   const form = useForm({
@@ -690,6 +691,15 @@ function ActiveTab() {
       form.reset();
     },
   });
+
+  const toggleGroup = (id: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
     <>
@@ -720,7 +730,7 @@ function ActiveTab() {
         </Button>
       </form>
 
-      {/* Downloads list */}
+      {/* Grouped downloads */}
       {isLoading ? (
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -730,23 +740,62 @@ function ActiveTab() {
             </div>
           ))}
         </div>
-      ) : downloads.length === 0 ? (
+      ) : groups.length === 0 ? (
         <div className="text-center py-16">
           <HugeiconsIcon icon={Download04Icon} size={32} className="mx-auto mb-4 text-white/10" />
           <p className="text-white/25 text-sm">{i18n._(msg`subscribe.noDownloads`)}</p>
         </div>
       ) : (
-        <AnimatePresence mode="popLayout">
-          {downloads.map((dl) => (
-            <DownloadRow
-              key={dl.id}
-              dl={dl}
-              onPause={() => pauseMutation.mutate(dl.gid)}
-              onResume={() => resumeMutation.mutate(dl.gid)}
-              onDelete={() => deleteMutation.mutate(dl.gid)}
-            />
-          ))}
-        </AnimatePresence>
+        <div className="space-y-3">
+          {groups.map((group) => {
+            const isExpanded = expandedGroups.has(group.rule_id || 'manual');
+            const groupKey = group.rule_id || 'manual';
+            return (
+              <div key={groupKey} className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+                {/* Group header */}
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(groupKey)}
+                  className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:bg-white/[0.02] transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-[14px] font-semibold text-white truncate">
+                      {group.rule_name}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {group.source && <SourceBadge source={group.source} />}
+                      {group.library_name && (
+                        <span className="text-[10px] text-white/20">📁 {group.library_name}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    {group.active_count > 0 && (
+                      <span className="text-[11px] text-green-400/70">{group.active_count} active</span>
+                    )}
+                    <span className="text-[11px] text-white/25">{group.total_count} total</span>
+                    <span className="text-white/20 text-xs">{isExpanded ? '▲' : '▼'}</span>
+                  </div>
+                </button>
+
+                {/* Expanded download list */}
+                {isExpanded && (
+                  <div className="border-t border-white/[0.04] px-4 pb-3">
+                    {group.downloads.map((dl) => (
+                      <DownloadRow
+                        key={dl.id}
+                        dl={{ ...dl, url: '', save_dir: '', rule_id: group.rule_id, updated_at: dl.created_at } as Download}
+                        onPause={() => pauseMutation.mutate(dl.gid)}
+                        onResume={() => resumeMutation.mutate(dl.gid)}
+                        onDelete={() => deleteMutation.mutate(dl.gid)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </>
   );

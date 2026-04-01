@@ -60,6 +60,8 @@ export interface SubscribeResponse {
 
 export const downloadApi = {
   list: () => api.get<Download[]>('/api/v1/downloads'),
+  grouped: () => api.get<DownloadGroup[]>('/api/v1/downloads/grouped'),
+  files: (gid: string) => api.get<DownloadFileInfo>(`/api/v1/downloads/${gid}/files`),
   add: (data: { url: string; name?: string; save_dir?: string }) =>
     api.post<Download>('/api/v1/downloads', data),
   pause: (gid: string) => api.post<void>(`/api/v1/downloads/${gid}/pause`),
@@ -84,6 +86,43 @@ export const ruleApi = {
     api.put<void>(`/api/v1/download-rules/${id}`, data),
   delete: (id: string) => api.delete<void>(`/api/v1/download-rules/${id}`),
 };
+
+export interface DownloadGroup {
+  rule_id: string;
+  rule_name: string;
+  bangumi_id?: number;
+  library_id?: string;
+  library_name?: string;
+  source?: string;
+  resolution_filter?: string;
+  subgroup_filter?: string;
+  downloads: {
+    id: string;
+    gid: string;
+    name: string;
+    status: string;
+    total_bytes: number;
+    completed_bytes: number;
+    speed_bytes: number;
+    created_at: string;
+  }[];
+  active_count: number;
+  complete_count: number;
+  total_count: number;
+}
+
+export interface DownloadFileInfo {
+  gid: string;
+  name: string;
+  status: string;
+  dir: string;
+  files: {
+    path: string;
+    size: number;
+    complete: number;
+    selected: boolean;
+  }[];
+}
 
 export const subscribeApi = {
   subscribe: (data: SubscribeInput) =>

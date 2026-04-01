@@ -9,11 +9,20 @@ type Status struct {
 	CompletedLength string `json:"completedLength"`
 	DownloadSpeed   string `json:"downloadSpeed"`
 	Dir             string `json:"dir"`
+	Files           []File `json:"files"`
 	BitTorrent      *struct {
 		Info struct {
 			Name string `json:"name"`
 		} `json:"info"`
 	} `json:"bittorrent"`
+}
+
+type File struct {
+	Index           string `json:"index"`
+	Path            string `json:"path"`
+	Length          string `json:"length"`
+	CompletedLength string `json:"completedLength"`
+	Selected        string `json:"selected"`
 }
 
 type rpcRequest struct {

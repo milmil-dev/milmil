@@ -29,6 +29,7 @@ import (
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
 	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
@@ -148,9 +149,12 @@ func main() {
 	torrentReg.Register(torrent.NewACGRipProvider())
 	torrentReg.Register(torrent.NewDanDanPlayProvider(""))
 
+	// Scanner for post-download library scan
+	sc := scanner.New(store.New(database))
+
 	// Background job scheduler (River)
 	bgCtx := context.Background()
-	worker.RegisterWorkers(store.New(database), aria2Client)
+	worker.RegisterWorkers(store.New(database), aria2Client, sc)
 	riverClient, err := worker.NewClient(bgCtx, database, cfg.DatabaseURL)
 	if err != nil {
 		slog.Warn("river client init failed — background RSS refresh disabled", "err", err)

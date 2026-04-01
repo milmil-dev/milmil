@@ -159,6 +159,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", jwtMiddleware(cfg.JWTSecret))
 	dlGroup.GET("", h.handleListDownloads)
+	dlGroup.GET("/grouped", h.handleDownloadsGrouped)
+	dlGroup.GET("/:gid/files", h.handleDownloadFiles)
 	dlGroup.POST("", h.handleAddDownload)
 	dlGroup.POST("/:gid/pause", h.handlePauseDownload)
 	dlGroup.POST("/:gid/resume", h.handleResumeDownload)
