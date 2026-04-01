@@ -2378,3 +2378,24 @@ msgstr "Daily"
 
 msgid "scanInterval.weekly"
 msgstr "Weekly"
+
+msgid "downloads.tab.search"
+msgstr "Search"
+
+msgid "downloads.tab.rules"
+msgstr "Auto Rules"
+
+msgid "downloads.tab.active"
+msgstr "Active"
+
+msgid "downloads.feeds"
+msgstr "RSS Feeds"
+
+msgid "downloads.rules"
+msgstr "Download Rules"
+
+msgid "downloads.noFeeds"
+msgstr "No RSS feeds configured. Subscribe to anime to auto-download."
+
+msgid "downloads.noRules"
+msgstr "No download rules yet."

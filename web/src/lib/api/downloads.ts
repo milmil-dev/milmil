@@ -35,8 +35,26 @@ export interface DownloadRule {
   exclude_regex: string;
   save_dir: string;
   episode_offset: number;
+  resolution_filter: string;
+  subgroup_filter: string;
+  min_seeders: number;
   last_triggered_at: string | null;
   created_at: string;
+}
+
+export interface SubscribeInput {
+  anime_name: string;
+  source: 'mikan' | 'nyaa' | 'dmhy';
+  query: string;
+  mikan_bangumi_id?: string;
+  sub_group?: string;
+  resolution?: string;
+  save_dir?: string;
+}
+
+export interface SubscribeResponse {
+  feed: RSSFeed;
+  rule: DownloadRule;
 }
 
 export const downloadApi = {
@@ -64,6 +82,11 @@ export const ruleApi = {
   update: (id: string, data: Partial<DownloadRule>) =>
     api.put<void>(`/api/v1/download-rules/${id}`, data),
   delete: (id: string) => api.delete<void>(`/api/v1/download-rules/${id}`),
+};
+
+export const subscribeApi = {
+  subscribe: (data: SubscribeInput) =>
+    api.post<SubscribeResponse>('/api/v1/subscribe', data),
 };
 
 export const downloadKeys = {

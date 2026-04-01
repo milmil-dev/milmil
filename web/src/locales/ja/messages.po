@@ -2378,3 +2378,24 @@ msgstr "毎日"
 
 msgid "scanInterval.weekly"
 msgstr "毎週"
+
+msgid "downloads.tab.search"
+msgstr "検索"
+
+msgid "downloads.tab.rules"
+msgstr "自動ルール"
+
+msgid "downloads.tab.active"
+msgstr "ダウンロード中"
+
+msgid "downloads.feeds"
+msgstr "RSSフィード"
+
+msgid "downloads.rules"
+msgstr "ダウンロードルール"
+
+msgid "downloads.noFeeds"
+msgstr "RSSフィードが未設定です。"
+
+msgid "downloads.noRules"
+msgstr "ダウンロードルールがありません。"

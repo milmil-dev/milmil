@@ -2378,3 +2378,24 @@ msgstr "매일"
 
 msgid "scanInterval.weekly"
 msgstr "매주"
+
+msgid "downloads.tab.search"
+msgstr "검색"
+
+msgid "downloads.tab.rules"
+msgstr "자동 규칙"
+
+msgid "downloads.tab.active"
+msgstr "다운로드 중"
+
+msgid "downloads.feeds"
+msgstr "RSS 피드"
+
+msgid "downloads.rules"
+msgstr "다운로드 규칙"
+
+msgid "downloads.noFeeds"
+msgstr "설정된 RSS 피드가 없습니다."
+
+msgid "downloads.noRules"
+msgstr "다운로드 규칙이 없습니다."

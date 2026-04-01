@@ -184,6 +184,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	searchGroup.GET("/providers", h.handleTorrentProviders)
 	searchGroup.POST("/add", h.handleTorrentSearchAdd)
 
+	// Auto-download subscription — protected
+	v1.POST("/subscribe", h.handleSubscribe, jwtMiddleware(cfg.JWTSecret))
+
 	// Subtitles — protected (with query param token fallback for <track src>)
 	subGroup := v1.Group("/subtitles", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
 	subGroup.GET("/media/:fileId", h.handleListSubtitles)

@@ -2376,3 +2376,24 @@ msgstr "每天"
 
 msgid "scanInterval.weekly"
 msgstr "每週"
+
+msgid "downloads.tab.search"
+msgstr "搜尋"
+
+msgid "downloads.tab.rules"
+msgstr "自動規則"
+
+msgid "downloads.tab.active"
+msgstr "下載中"
+
+msgid "downloads.feeds"
+msgstr "RSS 訂閱源"
+
+msgid "downloads.rules"
+msgstr "下載規則"
+
+msgid "downloads.noFeeds"
+msgstr "尚未設定 RSS 訂閱源。訂閱番劇即可自動下載。"
+
+msgid "downloads.noRules"
+msgstr "尚無下載規則。"

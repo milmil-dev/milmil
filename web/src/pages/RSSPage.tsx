@@ -273,6 +273,9 @@ interface RuleFormValues {
   exclude_regex: string;
   save_dir: string;
   episode_offset: number;
+  resolution_filter: string;
+  subgroup_filter: string;
+  min_seeders: number;
 }
 
 function RuleForm({
@@ -767,6 +770,9 @@ export function RSSPage() {
                 exclude_regex: '',
                 save_dir: '',
                 episode_offset: 0,
+                resolution_filter: '',
+                subgroup_filter: '',
+                min_seeders: 0,
               }}
               feeds={feeds}
               submitLabel="Add Rule"
@@ -786,6 +792,9 @@ export function RSSPage() {
                 exclude_regex: drawer.rule.exclude_regex,
                 save_dir: drawer.rule.save_dir,
                 episode_offset: drawer.rule.episode_offset,
+                resolution_filter: drawer.rule.resolution_filter ?? '',
+                subgroup_filter: drawer.rule.subgroup_filter ?? '',
+                min_seeders: drawer.rule.min_seeders ?? 0,
               }}
               feeds={feeds}
               submitLabel="Save Changes"

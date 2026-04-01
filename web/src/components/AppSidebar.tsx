@@ -6,9 +6,7 @@ import {
   FolderLibraryIcon,
   HouseIcon,
   Logout01Icon,
-  MagnetIcon,
   Menu01Icon,
-  RssIcon,
   Search01Icon,
   Setting07Icon,
 } from '@hugeicons/core-free-icons';
@@ -27,11 +25,9 @@ const mainNav = [
   { to: '/schedule', msgKey: msg`nav.schedule`, icon: Calendar03Icon },
   { to: '/search', msgKey: msg`nav.search`, icon: Search01Icon },
   { to: '/discover', msgKey: msg`nav.discover`, icon: FireIcon },
-  { to: '/rss', msgKey: msg`nav.rss`, icon: RssIcon },
 ] as const;
 
 const bottomNav = [
-  { to: '/torrent-search', msgKey: msg`nav.torrent`, icon: MagnetIcon },
   { to: '/downloads', msgKey: msg`nav.downloads`, icon: Download04Icon },
   { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
   { to: '/collection', msgKey: msg`collection.title`, icon: Bookmark01Icon },
