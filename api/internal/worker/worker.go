@@ -29,6 +29,9 @@ func NewClient(_ context.Context, db *sql.DB, databaseURL string) (*river.Client
 	}
 
 	client, err := river.NewClient(riversqlite.New(db), &river.Config{
+		Queues: map[string]river.QueueConfig{
+			river.QueueDefault: {MaxWorkers: 2},
+		},
 		Workers: Workers,
 		PeriodicJobs: []*river.PeriodicJob{
 			river.NewPeriodicJob(

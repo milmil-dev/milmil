@@ -2399,3 +2399,6 @@ msgstr "RSSフィードが未設定です。"
 
 msgid "downloads.noRules"
 msgstr "ダウンロードルールがありません。"
+
+msgid "nav.subscribe"
+msgstr "購読"

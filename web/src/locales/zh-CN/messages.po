@@ -2397,3 +2397,6 @@ msgstr "尚未配置 RSS 订阅源。订阅番剧即可自动下载。"
 
 msgid "downloads.noRules"
 msgstr "暂无下载规则。"
+
+msgid "nav.subscribe"
+msgstr "订阅"

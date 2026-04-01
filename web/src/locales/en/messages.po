@@ -2399,3 +2399,6 @@ msgstr "No RSS feeds configured. Subscribe to anime to auto-download."
 
 msgid "downloads.noRules"
 msgstr "No download rules yet."
+
+msgid "nav.subscribe"
+msgstr "Subscribe"

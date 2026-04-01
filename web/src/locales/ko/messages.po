@@ -2399,3 +2399,6 @@ msgstr "설정된 RSS 피드가 없습니다."
 
 msgid "downloads.noRules"
 msgstr "다운로드 규칙이 없습니다."
+
+msgid "nav.subscribe"
+msgstr "구독"
