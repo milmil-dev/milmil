@@ -629,27 +629,35 @@ msgstr "離線"
 msgid "connection.online"
 msgstr "在線"
 
-#: src/pages/DiscoverPage.tsx:77
+#: src/pages/DiscoverPage.tsx:113
 msgid "discover.airedRecently"
 msgstr "最近播出"
 
-#: src/pages/DiscoverPage.tsx:67
+#: src/pages/DiscoverPage.tsx:101
 msgid "discover.bestLastSeason"
 msgstr "上季最佳"
 
-#: src/pages/DiscoverPage.tsx:91
+#: src/pages/DiscoverPage.tsx:140
 msgid "discover.comingSoon"
 msgstr "即將上映"
 
-#: src/pages/DiscoverPage.tsx:57
+#: src/pages/DiscoverPage.tsx:132
+msgid "discover.genreSpotlight"
+msgstr "類型精選"
+
+#: src/pages/DiscoverPage.tsx:293
+msgid "discover.hotTags"
+msgstr "熱門標籤"
+
+#: src/pages/DiscoverPage.tsx:89
 msgid "discover.topOfSeason"
 msgstr "本季最佳"
 
-#: src/pages/DiscoverPage.tsx:86
+#: src/pages/DiscoverPage.tsx:124
 msgid "discover.trendingMovies"
 msgstr "熱門電影"
 
-#: src/pages/DiscoverPage.tsx:51
+#: src/pages/DiscoverPage.tsx:81
 msgid "discover.trendingNow"
 msgstr "現在熱門"
 
@@ -700,7 +708,7 @@ msgstr "今日時刻表"
 msgid "home.trending"
 msgstr "熱門"
 
-#: src/pages/DiscoverPage.tsx:170
+#: src/pages/DiscoverPage.tsx:242
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "睇晒 →"
@@ -710,7 +718,7 @@ msgstr "睇晒 →"
 #: src/pages/LibrariesPage.tsx:2341
 #: src/pages/LibrariesPage.tsx:2845
 #: src/pages/LibrariesPage.tsx:3213
-#: src/pages/LibrariesPage.tsx:3324
+#: src/pages/LibrariesPage.tsx:3326
 msgid "library.addLibrary"
 msgstr "新增媒體庫"
 
@@ -732,7 +740,7 @@ msgstr "揀"
 msgid "library.browse.selected"
 msgstr "已選擇"
 
-#: src/pages/LibrariesPage.tsx:3388
+#: src/pages/LibrariesPage.tsx:3390
 msgid "library.cancel"
 msgstr "取消"
 
@@ -744,12 +752,12 @@ msgstr "取消"
 #~ msgid "library.connectSource"
 #~ msgstr "連接媒體來源"
 
-#: src/pages/LibrariesPage.tsx:3376
-#: src/pages/LibrariesPage.tsx:3398
+#: src/pages/LibrariesPage.tsx:3378
+#: src/pages/LibrariesPage.tsx:3400
 msgid "library.delete"
 msgstr "刪除"
 
-#: src/pages/LibrariesPage.tsx:3380
+#: src/pages/LibrariesPage.tsx:3382
 msgid "library.deleteConfirm"
 msgstr "所有媒體檔案記錄將被移除，磁碟上的檔案不受影響。"
 
@@ -1061,7 +1069,7 @@ msgstr "使用此主機"
 #~ msgid "library.edit"
 #~ msgstr "改"
 
-#: src/pages/LibrariesPage.tsx:3347
+#: src/pages/LibrariesPage.tsx:3349
 msgid "library.editLibrary"
 msgstr "改媒體庫"
 
@@ -1201,7 +1209,7 @@ msgstr "區域"
 msgid "library.s3.secretKey"
 msgstr "密鑰"
 
-#: src/pages/LibrariesPage.tsx:3353
+#: src/pages/LibrariesPage.tsx:3355
 #: src/pages/LibraryDetailPage.tsx:1320
 msgid "library.saveChanges"
 msgstr "儲存變更"
@@ -1279,19 +1287,19 @@ msgstr "用戶名"
 #~ msgid "library.sort.label"
 #~ msgstr "排序"
 
-#: src/pages/LibrariesPage.tsx:3246
+#: src/pages/LibrariesPage.tsx:3247
 msgid "library.sort.match"
 msgstr "匹配率"
 
-#: src/pages/LibrariesPage.tsx:3245
+#: src/pages/LibrariesPage.tsx:3246
 msgid "library.sort.name"
 msgstr "名稱"
 
-#: src/pages/LibrariesPage.tsx:3248
+#: src/pages/LibrariesPage.tsx:3249
 msgid "library.sort.scanned"
 msgstr "上次掃描"
 
-#: src/pages/LibrariesPage.tsx:3247
+#: src/pages/LibrariesPage.tsx:3248
 msgid "library.sort.size"
 msgstr "大小"
 

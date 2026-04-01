@@ -631,27 +631,35 @@ msgstr "오프라인"
 msgid "connection.online"
 msgstr "온라인"
 
-#: src/pages/DiscoverPage.tsx:77
+#: src/pages/DiscoverPage.tsx:113
 msgid "discover.airedRecently"
 msgstr "최근 방영"
 
-#: src/pages/DiscoverPage.tsx:67
+#: src/pages/DiscoverPage.tsx:101
 msgid "discover.bestLastSeason"
 msgstr "지난 시즌 최고"
 
-#: src/pages/DiscoverPage.tsx:91
+#: src/pages/DiscoverPage.tsx:140
 msgid "discover.comingSoon"
 msgstr "곧 공개"
 
-#: src/pages/DiscoverPage.tsx:57
+#: src/pages/DiscoverPage.tsx:132
+msgid "discover.genreSpotlight"
+msgstr "장르 스포트라이트"
+
+#: src/pages/DiscoverPage.tsx:293
+msgid "discover.hotTags"
+msgstr "인기 태그"
+
+#: src/pages/DiscoverPage.tsx:89
 msgid "discover.topOfSeason"
 msgstr "이번 시즌 최고"
 
-#: src/pages/DiscoverPage.tsx:86
+#: src/pages/DiscoverPage.tsx:124
 msgid "discover.trendingMovies"
 msgstr "인기 영화"
 
-#: src/pages/DiscoverPage.tsx:51
+#: src/pages/DiscoverPage.tsx:81
 msgid "discover.trendingNow"
 msgstr "지금 인기"
 
@@ -702,7 +710,7 @@ msgstr "오늘 편성표"
 msgid "home.trending"
 msgstr "인기"
 
-#: src/pages/DiscoverPage.tsx:170
+#: src/pages/DiscoverPage.tsx:242
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "전체 보기 →"
@@ -712,7 +720,7 @@ msgstr "전체 보기 →"
 #: src/pages/LibrariesPage.tsx:2341
 #: src/pages/LibrariesPage.tsx:2845
 #: src/pages/LibrariesPage.tsx:3213
-#: src/pages/LibrariesPage.tsx:3324
+#: src/pages/LibrariesPage.tsx:3326
 msgid "library.addLibrary"
 msgstr "라이브러리 추가"
 
@@ -734,7 +742,7 @@ msgstr "선택"
 msgid "library.browse.selected"
 msgstr "선택됨"
 
-#: src/pages/LibrariesPage.tsx:3388
+#: src/pages/LibrariesPage.tsx:3390
 msgid "library.cancel"
 msgstr "취소"
 
@@ -746,12 +754,12 @@ msgstr "취소"
 #~ msgid "library.connectSource"
 #~ msgstr "Connect a media source"
 
-#: src/pages/LibrariesPage.tsx:3376
-#: src/pages/LibrariesPage.tsx:3398
+#: src/pages/LibrariesPage.tsx:3378
+#: src/pages/LibrariesPage.tsx:3400
 msgid "library.delete"
 msgstr "삭제"
 
-#: src/pages/LibrariesPage.tsx:3380
+#: src/pages/LibrariesPage.tsx:3382
 msgid "library.deleteConfirm"
 msgstr "모든 미디어 파일 기록이 삭제됩니다. 디스크의 파일은 영향받지 않습니다."
 
@@ -1063,7 +1071,7 @@ msgstr "이 호스트 사용"
 #~ msgid "library.edit"
 #~ msgstr "편집"
 
-#: src/pages/LibrariesPage.tsx:3347
+#: src/pages/LibrariesPage.tsx:3349
 msgid "library.editLibrary"
 msgstr "라이브러리 편집"
 
@@ -1203,7 +1211,7 @@ msgstr "리전"
 msgid "library.s3.secretKey"
 msgstr "시크릿 키"
 
-#: src/pages/LibrariesPage.tsx:3353
+#: src/pages/LibrariesPage.tsx:3355
 #: src/pages/LibraryDetailPage.tsx:1320
 msgid "library.saveChanges"
 msgstr "변경 사항 저장"
@@ -1281,19 +1289,19 @@ msgstr "사용자 이름"
 #~ msgid "library.sort.label"
 #~ msgstr "정렬"
 
-#: src/pages/LibrariesPage.tsx:3246
+#: src/pages/LibrariesPage.tsx:3247
 msgid "library.sort.match"
 msgstr "매칭률"
 
-#: src/pages/LibrariesPage.tsx:3245
+#: src/pages/LibrariesPage.tsx:3246
 msgid "library.sort.name"
 msgstr "이름"
 
-#: src/pages/LibrariesPage.tsx:3248
+#: src/pages/LibrariesPage.tsx:3249
 msgid "library.sort.scanned"
 msgstr "최근 스캔"
 
-#: src/pages/LibrariesPage.tsx:3247
+#: src/pages/LibrariesPage.tsx:3248
 msgid "library.sort.size"
 msgstr "크기"
 

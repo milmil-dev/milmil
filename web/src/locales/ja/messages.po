@@ -631,27 +631,35 @@ msgstr "オフライン"
 msgid "connection.online"
 msgstr "オンライン"
 
-#: src/pages/DiscoverPage.tsx:77
+#: src/pages/DiscoverPage.tsx:113
 msgid "discover.airedRecently"
 msgstr "最近放送"
 
-#: src/pages/DiscoverPage.tsx:67
+#: src/pages/DiscoverPage.tsx:101
 msgid "discover.bestLastSeason"
 msgstr "前期ベスト"
 
-#: src/pages/DiscoverPage.tsx:91
+#: src/pages/DiscoverPage.tsx:140
 msgid "discover.comingSoon"
 msgstr "近日公開"
 
-#: src/pages/DiscoverPage.tsx:57
+#: src/pages/DiscoverPage.tsx:132
+msgid "discover.genreSpotlight"
+msgstr "ジャンル特集"
+
+#: src/pages/DiscoverPage.tsx:293
+msgid "discover.hotTags"
+msgstr "人気タグ"
+
+#: src/pages/DiscoverPage.tsx:89
 msgid "discover.topOfSeason"
 msgstr "今期ベスト"
 
-#: src/pages/DiscoverPage.tsx:86
+#: src/pages/DiscoverPage.tsx:124
 msgid "discover.trendingMovies"
 msgstr "トレンド映画"
 
-#: src/pages/DiscoverPage.tsx:51
+#: src/pages/DiscoverPage.tsx:81
 msgid "discover.trendingNow"
 msgstr "今トレンド"
 
@@ -702,7 +710,7 @@ msgstr "今日の番組表"
 msgid "home.trending"
 msgstr "トレンド"
 
-#: src/pages/DiscoverPage.tsx:170
+#: src/pages/DiscoverPage.tsx:242
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "すべて表示 →"
@@ -712,7 +720,7 @@ msgstr "すべて表示 →"
 #: src/pages/LibrariesPage.tsx:2341
 #: src/pages/LibrariesPage.tsx:2845
 #: src/pages/LibrariesPage.tsx:3213
-#: src/pages/LibrariesPage.tsx:3324
+#: src/pages/LibrariesPage.tsx:3326
 msgid "library.addLibrary"
 msgstr "ライブラリを追加"
 
@@ -734,7 +742,7 @@ msgstr "選択"
 msgid "library.browse.selected"
 msgstr "選択済み"
 
-#: src/pages/LibrariesPage.tsx:3388
+#: src/pages/LibrariesPage.tsx:3390
 msgid "library.cancel"
 msgstr "キャンセル"
 
@@ -746,12 +754,12 @@ msgstr "キャンセル"
 #~ msgid "library.connectSource"
 #~ msgstr "Connect a media source"
 
-#: src/pages/LibrariesPage.tsx:3376
-#: src/pages/LibrariesPage.tsx:3398
+#: src/pages/LibrariesPage.tsx:3378
+#: src/pages/LibrariesPage.tsx:3400
 msgid "library.delete"
 msgstr "削除"
 
-#: src/pages/LibrariesPage.tsx:3380
+#: src/pages/LibrariesPage.tsx:3382
 msgid "library.deleteConfirm"
 msgstr "すべてのメディアファイル記録が削除されます。ディスク上のファイルには影響しません。"
 
@@ -1063,7 +1071,7 @@ msgstr "このホストを使用"
 #~ msgid "library.edit"
 #~ msgstr "編集"
 
-#: src/pages/LibrariesPage.tsx:3347
+#: src/pages/LibrariesPage.tsx:3349
 msgid "library.editLibrary"
 msgstr "ライブラリを編集"
 
@@ -1203,7 +1211,7 @@ msgstr "リージョン"
 msgid "library.s3.secretKey"
 msgstr "シークレットキー"
 
-#: src/pages/LibrariesPage.tsx:3353
+#: src/pages/LibrariesPage.tsx:3355
 #: src/pages/LibraryDetailPage.tsx:1320
 msgid "library.saveChanges"
 msgstr "変更を保存"
@@ -1281,19 +1289,19 @@ msgstr "ユーザー名"
 #~ msgid "library.sort.label"
 #~ msgstr "並び替え"
 
-#: src/pages/LibrariesPage.tsx:3246
+#: src/pages/LibrariesPage.tsx:3247
 msgid "library.sort.match"
 msgstr "一致率"
 
-#: src/pages/LibrariesPage.tsx:3245
+#: src/pages/LibrariesPage.tsx:3246
 msgid "library.sort.name"
 msgstr "名前"
 
-#: src/pages/LibrariesPage.tsx:3248
+#: src/pages/LibrariesPage.tsx:3249
 msgid "library.sort.scanned"
 msgstr "最終スキャン"
 
-#: src/pages/LibrariesPage.tsx:3247
+#: src/pages/LibrariesPage.tsx:3248
 msgid "library.sort.size"
 msgstr "サイズ"
 
