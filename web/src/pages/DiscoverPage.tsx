@@ -3,11 +3,14 @@ import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { useEffect } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
+import { HeroBanner } from '../components/HeroBanner';
 import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
+import { useBgStore } from '../store/bg-store';
 
 /* ── Season helpers ───────────────────────────────────────── */
 
@@ -82,8 +85,7 @@ function useSections(): SectionDef[] {
     {
       titleKey: msg`discover.trendingMovies`,
       queryKey: ['discover', 'trendingMovies'],
-      queryFn: () =>
-        discoverApi.browse({ sort: 'TRENDING_DESC', format: 'MOVIE' }),
+      queryFn: () => discoverApi.browse({ sort: 'TRENDING_DESC', format: 'MOVIE' }),
     },
   ];
 }
@@ -92,15 +94,36 @@ function useSections(): SectionDef[] {
 
 export function DiscoverPage() {
   const sections = useSections();
-  const anyLoading = sections.length === 0;
+
+  // Fetch trending for hero banner
+  const { data: trending = [] } = useQuery({
+    queryKey: discoverKeys.trending(1),
+    queryFn: () => discoverApi.trending(1),
+  });
+
+  const heroItems = trending.slice(0, 7);
+
+  // Atmospheric background from hero carousel
+  const setImage = useBgStore((s) => s.setImage);
+  useEffect(() => () => setImage(null), [setImage]);
+
+  const handleHeroChange = (item: AnimeSummary) => {
+    const img = item.banner_image || item.cover_image;
+    if (img?.startsWith('http')) setImage(img);
+  };
 
   return (
     <PageTransition>
-      <div className="min-h-screen px-4 md:px-6 pt-6 pb-16 space-y-8">
-        {anyLoading && <DiscoverPageSkeleton />}
-        {sections.map((section, i) => (
-          <DiscoverSection key={section.queryKey.join('-')} def={section} index={i} />
-        ))}
+      <div className="min-h-screen">
+        {/* Hero banner carousel */}
+        {heroItems.length > 0 && <HeroBanner items={heroItems} onActiveChange={handleHeroChange} />}
+
+        {/* Sections */}
+        <div className="px-4 md:px-6 pt-6 pb-16 space-y-8">
+          {sections.map((section, i) => (
+            <DiscoverSection key={section.queryKey.join('-')} def={section} index={i} />
+          ))}
+        </div>
       </div>
     </PageTransition>
   );
@@ -164,29 +187,5 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
         </MediaRail>
       )}
     </motion.section>
-  );
-}
-
-/* ── Skeleton ─────────────────────────────────────────────── */
-
-function DiscoverPageSkeleton() {
-  return (
-    <div className="space-y-8">
-      {Array.from({ length: 5 }).map((_, s) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
-        <div key={s}>
-          <Skeleton className="h-5 w-32 mb-4" />
-          <div className="flex gap-3 overflow-hidden">
-            {Array.from({ length: 7 }).map((_, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
-              <div key={i} className="shrink-0 w-[150px]">
-                <Skeleton className="aspect-[6/8] rounded-md" />
-                <Skeleton className="h-3 w-[80%] mt-2" />
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
