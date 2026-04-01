@@ -25,6 +25,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { DataPagination } from '../components/DataPagination';
 import { LoginModal } from '../components/LoginModal';
+import { MatchModal } from '../components/MatchModal';
 import { Modal } from '../components/Modal';
 import { MotionTable } from '../components/MotionTable';
 import { PageAtmosphere } from '../components/PageAtmosphere';
@@ -36,7 +37,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popove
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { useAuth } from '../hooks/use-auth';
 import { useDocumentTitle } from '../hooks/use-document-title';
-import { type AnimeSummary, discoverApi, discoverKeys, type Episode } from '../lib/api/discover';
 import {
   type FileTreeNode,
   libraryApi,
@@ -633,24 +633,32 @@ function FileTreeView({
     const indent = depth * 20 + 12;
 
     return (
-      <div key={node.path}>
+      <motion.div
+        key={node.path}
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+      >
         {/* Folder row */}
-        <button
+        <motion.button
           type="button"
           onClick={() => toggleFolder(node.path)}
           className={cn(
-            'w-full flex items-center gap-2 py-1.5 rounded-md text-left transition-colors cursor-pointer group',
-            'hover:bg-white/[0.04]',
+            'w-full flex items-center gap-2 py-1.5 rounded-md text-left cursor-pointer group',
             isExpanded && 'bg-white/[0.02]'
           )}
           style={{ paddingLeft: `${indent}px`, paddingRight: 8 }}
+          whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+          whileTap={{ scale: 0.995 }}
+          transition={{ duration: 0.15 }}
         >
-          <svg
+          <motion.svg
             className={cn(
-              'w-3.5 h-3.5 shrink-0 text-white/20 transition-transform duration-150',
-              isExpanded && 'rotate-90',
+              'w-3.5 h-3.5 shrink-0 text-white/20',
               !hasChildren && 'invisible'
             )}
+            animate={{ rotate: isExpanded ? 90 : 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -659,16 +667,17 @@ function FileTreeView({
             strokeLinejoin="round"
           >
             <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <HugeiconsIcon
-            icon={Folder01Icon}
-            size={15}
-            className={cn(
-              'shrink-0 transition-colors',
-              isExpanded ? 'text-white/50' : 'text-white/20 group-hover:text-white/35'
-            )}
-          />
-          <span className="text-[13px] font-medium text-white/65 group-hover:text-white/90 truncate flex-1">
+          </motion.svg>
+          <motion.div
+            animate={{
+              color: isExpanded ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)',
+            }}
+            transition={{ duration: 0.2 }}
+            className="shrink-0"
+          >
+            <HugeiconsIcon icon={Folder01Icon} size={15} />
+          </motion.div>
+          <span className="text-[13px] font-medium text-white/65 group-hover:text-white/90 truncate flex-1 min-w-0">
             {node.name}
           </span>
           <span className="text-[10px] tabular-nums text-white/15 shrink-0 mr-2">
@@ -690,100 +699,119 @@ function FileTreeView({
           <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
             {formatBytes(node.size_bytes)}
           </span>
-        </button>
+        </motion.button>
 
-        {/* Children with indent guide */}
-        {isExpanded && hasChildren && (
-          <div className="relative">
-            {/* Vertical guide line */}
-            <div
-              className="absolute top-0 bottom-0 w-px bg-white/[0.04]"
-              style={{ left: `${indent + 7}px` }}
-            />
-            {node.children?.map((child) => renderNode(child, depth + 1))}
-            {node.files?.map((file) => {
-              const fileIndent = (depth + 1) * 20 + 12 + 20;
-              return (
-                <div
-                  key={file.id}
-                  className="flex items-center gap-2 py-1 rounded-md hover:bg-white/[0.03] group/file"
-                  style={{ paddingLeft: `${fileIndent}px`, paddingRight: 8 }}
-                >
-                  <svg
-                    className="w-3.5 h-3.5 shrink-0 text-white/10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
+        {/* Children with indent guide — animated expand/collapse */}
+        <AnimatePresence initial={false}>
+          {isExpanded && hasChildren && (
+            <motion.div
+              className="relative overflow-hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            >
+              {/* Vertical guide line */}
+              <motion.div
+                className="absolute top-0 bottom-0 w-px bg-white/[0.04]"
+                style={{ left: `${indent + 7}px` }}
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                exit={{ scaleY: 0 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
+              />
+              {node.children?.map((child) => renderNode(child, depth + 1))}
+              {node.files?.map((file, fileIndex) => {
+                const fileIndent = (depth + 1) * 20 + 12 + 20;
+                return (
+                  <motion.div
+                    key={file.id}
+                    className="flex items-center gap-2 py-1 rounded-md hover:bg-white/[0.03] group/file"
+                    style={{ paddingLeft: `${fileIndent}px`, paddingRight: 8 }}
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.2,
+                      delay: Math.min(fileIndex * 0.02, 0.3),
+                      ease: 'easeOut',
+                    }}
                   >
-                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
-                  <span className="text-[12px] font-mono text-white/40 group-hover/file:text-white/65 truncate flex-1">
-                    {file.filename}
-                  </span>
-                  <StatusBadge status={file.match_status} />
-                  <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
-                    {formatBytes(file.size_bytes)}
-                  </span>
-                  <div className="flex items-center gap-0.5 opacity-0 group-hover/file:opacity-100 transition-opacity shrink-0">
-                    {file.match_status !== 'unmatched' && file.matched_bangumi_id > 0 && (
-                      <Button
-                        size="icon-xs"
-                        variant="ghost"
-                        className="text-white/25 hover:text-white/60"
-                        asChild
-                      >
-                        <Link
-                          to="/watch/$animeId"
-                          params={{ animeId: String(file.matched_bangumi_id) }}
-                          search={{ ep: file.matched_episode_sort }}
+                    <svg
+                      className="w-3.5 h-3.5 shrink-0 text-white/10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    <span className="text-[12px] font-mono text-white/40 group-hover/file:text-white/65 truncate flex-1 min-w-0">
+                      {file.filename}
+                    </span>
+                    <StatusBadge status={file.match_status} />
+                    <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
+                      {formatBytes(file.size_bytes)}
+                    </span>
+                    <div className="flex items-center gap-0.5 opacity-0 group-hover/file:opacity-100 transition-opacity shrink-0">
+                      {file.match_status !== 'unmatched' && file.matched_bangumi_id > 0 && (
+                        <Button
+                          size="icon-xs"
+                          variant="ghost"
+                          className="text-white/25 hover:text-white/60"
+                          asChild
                         >
-                          <HugeiconsIcon icon={PlayIcon} size={12} />
-                        </Link>
-                      </Button>
-                    )}
-                    {onMatch && (
-                      <Button
-                        size="icon-xs"
-                        variant="ghost"
-                        className="text-white/25 hover:text-white/60"
-                        onClick={() =>
-                          onMatch({
-                            id: file.id,
-                            library_id: libraryId,
-                            path: '',
-                            filename: file.filename,
-                            size_bytes: file.size_bytes,
-                            match_status: file.match_status,
-                            dandanplay_anime_id: null,
-                            dandanplay_episode_id: null,
-                            subtitle_count: file.subtitle_count,
-                            matched_anime_title: file.matched_anime_title,
-                            matched_episode_sort: file.matched_episode_sort,
-                            matched_bangumi_id: file.matched_bangumi_id,
-                            created_at: '',
-                          })
-                        }
-                      >
-                        <HugeiconsIcon
-                          icon={file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon}
-                          size={12}
-                        />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                          <Link
+                            to="/watch/$animeId"
+                            params={{ animeId: String(file.matched_bangumi_id) }}
+                            search={{ ep: file.matched_episode_sort }}
+                          >
+                            <HugeiconsIcon icon={PlayIcon} size={12} />
+                          </Link>
+                        </Button>
+                      )}
+                      {onMatch && (
+                        <Button
+                          size="icon-xs"
+                          variant="ghost"
+                          className="text-white/25 hover:text-white/60"
+                          onClick={() =>
+                            onMatch({
+                              id: file.id,
+                              library_id: libraryId,
+                              path: '',
+                              filename: file.filename,
+                              size_bytes: file.size_bytes,
+                              match_status: file.match_status,
+                              dandanplay_anime_id: null,
+                              dandanplay_episode_id: null,
+                              subtitle_count: file.subtitle_count,
+                              matched_anime_title: file.matched_anime_title,
+                              matched_episode_sort: file.matched_episode_sort,
+                              matched_bangumi_id: file.matched_bangumi_id,
+                              created_at: '',
+                            })
+                          }
+                        >
+                          <HugeiconsIcon
+                            icon={file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon}
+                            size={12}
+                          />
+                        </Button>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     );
   };
 
   return (
-    <div className="py-1">
+    <div className="py-1 overflow-hidden">
       {tree.children && tree.children.length > 0 ? (
         tree.children.map((child) => renderNode(child, 0))
       ) : tree.files && tree.files.length > 0 ? (
@@ -944,259 +972,6 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
         );
       })}
     </div>
-  );
-}
-
-/* -- Match modal ------------------------------------------------------------ */
-
-function MatchModal({
-  file,
-  onClose,
-  libraryId,
-}: {
-  file: MediaFileEntry | null;
-  onClose: () => void;
-  libraryId: string;
-}) {
-  const { i18n } = useLingui();
-  const queryClient = useQueryClient();
-  const [step, setStep] = useState<1 | 2>(1);
-  const [searchInput, setSearchInput] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
-  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-
-  // Reset state when file changes (modal opens/closes)
-  useEffect(() => {
-    if (file) {
-      setStep(1);
-      setSearchInput('');
-      setDebouncedSearch('');
-      setSelectedAnime(null);
-      setSelectedEpisode(null);
-    }
-  }, [file]);
-
-  // Debounce search input
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  // Search anime query
-  const { data: searchResults, isLoading: isSearching } = useQuery({
-    queryKey: discoverKeys.search(debouncedSearch),
-    queryFn: () => discoverApi.search(debouncedSearch),
-    enabled: debouncedSearch.length > 0,
-  });
-
-  // Episodes query
-  const { data: episodes, isLoading: isLoadingEpisodes } = useQuery({
-    queryKey: discoverKeys.episodes(selectedAnime?.bangumi_id ?? 0),
-    queryFn: () => discoverApi.episodes(selectedAnime!.bangumi_id),
-    enabled: !!selectedAnime && step === 2,
-  });
-
-  // Match mutation
-  const matchMutation = useMutation({
-    mutationFn: () => {
-      if (!file || !selectedAnime || !selectedEpisode) throw new Error('Missing data');
-      return libraryApi.matchFile(file.id, {
-        bangumi_id: selectedAnime.bangumi_id,
-        episode_id: selectedEpisode.bangumi_episode_id,
-      });
-    },
-    onSuccess: () => {
-      toast.success(i18n._(msg`library.detail.matchModal.matched`));
-      queryClient.invalidateQueries({
-        queryKey: libraryKeys.mediaFiles(libraryId),
-      });
-      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
-      onClose();
-    },
-    onError: (err: Error) => {
-      toast.error(err.message);
-    },
-  });
-
-  const handleSelectAnime = (anime: AnimeSummary) => {
-    setSelectedAnime(anime);
-    setSelectedEpisode(null);
-    setStep(2);
-  };
-
-  const handleGoBackToSearch = () => {
-    setStep(1);
-    setSelectedAnime(null);
-    setSelectedEpisode(null);
-  };
-
-  return (
-    <Modal
-      open={!!file}
-      onClose={onClose}
-      title={i18n._(msg`library.detail.matchModal.title`)}
-      size="lg"
-    >
-      {/* Filename banner */}
-      {file && (
-        <div className="mb-4 rounded-md bg-white/[0.04] px-3 py-2">
-          <p className="font-mono text-xs text-mm-text-muted truncate" title={file.filename}>
-            {file.filename}
-          </p>
-        </div>
-      )}
-
-      {step === 1 && (
-        <div>
-          {/* Search input */}
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder={i18n._(msg`library.detail.matchModal.searchPlaceholder`)}
-            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-mm-text-muted focus:outline-none focus:ring-1 focus:ring-mm-accent/50 mb-4"
-            autoFocus
-          />
-
-          {/* Results */}
-          {!debouncedSearch && (
-            <p className="text-center text-[13px] text-mm-text-muted py-8">
-              {i18n._(msg`library.detail.matchModal.searchHint`)}
-            </p>
-          )}
-
-          {isSearching && (
-            <div className="space-y-2 py-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full rounded-md" />
-              ))}
-            </div>
-          )}
-
-          {debouncedSearch && !isSearching && searchResults && searchResults.length === 0 && (
-            <p className="text-center text-[13px] text-mm-text-muted py-8">
-              {i18n._(msg`library.detail.matchModal.noResults`)}
-            </p>
-          )}
-
-          {searchResults && searchResults.length > 0 && (
-            <div className="space-y-1 max-h-[45vh] overflow-y-auto">
-              {searchResults.map((anime) => (
-                <button
-                  key={anime.bangumi_id}
-                  type="button"
-                  onClick={() => handleSelectAnime(anime)}
-                  className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
-                >
-                  <img
-                    src={anime.cover_image}
-                    alt={anime.title}
-                    className="w-10 h-14 object-cover rounded flex-shrink-0"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-white truncate">{anime.title}</p>
-                    <div className="flex items-center gap-2 text-[11px] text-mm-text-muted mt-0.5">
-                      <span>
-                        {anime.episode_count} {i18n._(msg`common.ep`)}
-                      </span>
-                      {anime.score > 0 && (
-                        <span className="text-amber-400">{anime.score.toFixed(1)}</span>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {step === 2 && selectedAnime && (
-        <div>
-          {/* Selected anime header */}
-          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.06]">
-            <img
-              src={selectedAnime.cover_image}
-              alt={selectedAnime.title}
-              className="w-10 h-14 object-cover rounded flex-shrink-0"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-white truncate">{selectedAnime.title}</p>
-              <Button
-                type="button"
-                size="xs"
-                variant="ghost"
-                onClick={handleGoBackToSearch}
-                className="text-mm-accent hover:text-mm-accent/80 px-0"
-              >
-                {i18n._(msg`library.detail.matchModal.change`)}
-              </Button>
-            </div>
-          </div>
-
-          {/* Episode list */}
-          {isLoadingEpisodes && (
-            <div className="space-y-2 py-2">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full rounded-md" />
-              ))}
-            </div>
-          )}
-
-          {episodes && episodes.length > 0 && (
-            <div className="space-y-1 max-h-[35vh] overflow-y-auto mb-4">
-              {episodes.map((ep) => {
-                const isSelected = selectedEpisode?.bangumi_episode_id === ep.bangumi_episode_id;
-                return (
-                  <button
-                    key={ep.bangumi_episode_id}
-                    type="button"
-                    onClick={() => setSelectedEpisode(ep)}
-                    className={cn(
-                      'w-full flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors cursor-pointer text-left',
-                      isSelected
-                        ? 'bg-mm-accent/15 border border-mm-accent/40'
-                        : 'hover:bg-white/[0.06] border border-transparent'
-                    )}
-                  >
-                    <span className="text-[12px] font-bold text-mm-text-secondary tabular-nums whitespace-nowrap">
-                      EP {String(ep.sort).padStart(2, '0')}
-                    </span>
-                    <span className="text-sm text-white truncate flex-1">
-                      {ep.title || ep.title_original}
-                    </span>
-                    {ep.air_date && (
-                      <span className="text-[11px] text-mm-text-muted whitespace-nowrap">
-                        {ep.air_date}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {episodes && episodes.length === 0 && !isLoadingEpisodes && (
-            <p className="text-center text-[13px] text-mm-text-muted py-8">
-              {i18n._(msg`library.detail.matchModal.noEpisodes`)}
-            </p>
-          )}
-
-          {/* Confirm button */}
-          <Button
-            type="button"
-            onClick={() => matchMutation.mutate()}
-            disabled={!selectedEpisode || matchMutation.isPending}
-            className="w-full"
-          >
-            {matchMutation.isPending
-              ? i18n._(msg`common.loading`)
-              : i18n._(msg`library.detail.matchModal.confirm`)}
-          </Button>
-        </div>
-      )}
-    </Modal>
   );
 }
 

@@ -884,6 +884,12 @@ msgstr "このファイルにマッチするアニメを検索"
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "アニメを検索…"
 
+msgid "library.detail.matchModal.stepEpisode"
+msgstr "エピソードを選択"
+
+msgid "library.detail.matchModal.stepSearch"
+msgstr "アニメを検索"
+
 #: src/pages/LibraryDetailPage.tsx:1039
 msgid "library.detail.matchModal.title"
 msgstr "ファイルをマッチ"
@@ -1231,7 +1237,7 @@ msgstr "保存中…"
 #: src/pages/LibrariesPage.tsx:2801
 #: src/pages/LibraryDetailPage.tsx:1278
 msgid "library.scanInterval"
-msgstr "スキャン間隔（分）"
+msgstr "スキャン間隔"
 
 #: src/pages/LibrariesPage.tsx:237
 #: src/pages/LibraryDetailPage.tsx:1548
@@ -2351,3 +2357,24 @@ msgstr "HLS Transcode"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "scanInterval.disabled"
+msgstr "無効"
+
+msgid "scanInterval.30min"
+msgstr "30分ごと"
+
+msgid "scanInterval.1h"
+msgstr "1時間ごと"
+
+msgid "scanInterval.6h"
+msgstr "6時間ごと"
+
+msgid "scanInterval.12h"
+msgstr "12時間ごと"
+
+msgid "scanInterval.daily"
+msgstr "毎日"
+
+msgid "scanInterval.weekly"
+msgstr "毎週"

@@ -884,6 +884,12 @@ msgstr "이 파일에 매치할 애니메이션을 검색"
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "애니메이션 검색…"
 
+msgid "library.detail.matchModal.stepEpisode"
+msgstr "에피소드 선택"
+
+msgid "library.detail.matchModal.stepSearch"
+msgstr "애니메이션 검색"
+
 #: src/pages/LibraryDetailPage.tsx:1039
 msgid "library.detail.matchModal.title"
 msgstr "파일 매치"
@@ -1231,7 +1237,7 @@ msgstr "저장 중…"
 #: src/pages/LibrariesPage.tsx:2801
 #: src/pages/LibraryDetailPage.tsx:1278
 msgid "library.scanInterval"
-msgstr "스캔 간격 (분)"
+msgstr "스캔 간격"
 
 #: src/pages/LibrariesPage.tsx:237
 #: src/pages/LibraryDetailPage.tsx:1548
@@ -2351,3 +2357,24 @@ msgstr "HLS Transcode"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "scanInterval.disabled"
+msgstr "비활성화"
+
+msgid "scanInterval.30min"
+msgstr "30분마다"
+
+msgid "scanInterval.1h"
+msgstr "매시간"
+
+msgid "scanInterval.6h"
+msgstr "6시간마다"
+
+msgid "scanInterval.12h"
+msgstr "12시간마다"
+
+msgid "scanInterval.daily"
+msgstr "매일"
+
+msgid "scanInterval.weekly"
+msgstr "매주"

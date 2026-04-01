@@ -882,6 +882,12 @@ msgstr "搜索动画以匹配此文件"
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "搜索动画…"
 
+msgid "library.detail.matchModal.stepEpisode"
+msgstr "选择集数"
+
+msgid "library.detail.matchModal.stepSearch"
+msgstr "搜索动画"
+
 #: src/pages/LibraryDetailPage.tsx:1039
 msgid "library.detail.matchModal.title"
 msgstr "匹配文件"
@@ -1229,7 +1235,7 @@ msgstr "保存中…"
 #: src/pages/LibrariesPage.tsx:2801
 #: src/pages/LibraryDetailPage.tsx:1278
 msgid "library.scanInterval"
-msgstr "扫描间隔（分钟）"
+msgstr "扫描间隔"
 
 #: src/pages/LibrariesPage.tsx:237
 #: src/pages/LibraryDetailPage.tsx:1548
@@ -2349,3 +2355,24 @@ msgstr "HLS 转码"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支持"
+
+msgid "scanInterval.disabled"
+msgstr "禁用"
+
+msgid "scanInterval.30min"
+msgstr "每 30 分钟"
+
+msgid "scanInterval.1h"
+msgstr "每小时"
+
+msgid "scanInterval.6h"
+msgstr "每 6 小时"
+
+msgid "scanInterval.12h"
+msgstr "每 12 小时"
+
+msgid "scanInterval.daily"
+msgstr "每天"
+
+msgid "scanInterval.weekly"
+msgstr "每周"
