@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -143,11 +144,19 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	// 4. For each feed item, check each rule
+	// 4. For each feed item, check each rule (regex + resolution + subgroup)
 	added := 0
 	for _, item := range items {
 		for _, rule := range rules {
 			if !rss.MatchRule(item.Title, rule.FilterRegex, rule.ExcludeRegex) {
+				continue
+			}
+			// Apply resolution filter
+			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+				continue
+			}
+			// Apply subgroup filter
+			if rule.SubgroupFilter != "" && !strings.Contains(item.Title, rule.SubgroupFilter) {
 				continue
 			}
 

@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/longbridgeapp/opencc"
 	"github.com/milmil/api/internal/store"
 )
+
+var subscribeT2S, _ = opencc.New("t2s")
 
 type subscribeRequest struct {
 	// AnimeName is the display name for this subscription
@@ -77,8 +81,19 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	// Build filter regex from query — escape special chars, make case-insensitive
-	filterRegex := fmt.Sprintf("(?i)%s", regexEscape(req.Query))
+	// Build filter regex — split query into parts joined by .* for flexible matching,
+	// and generate both traditional + simplified Chinese variants.
+	parts := splitQueryParts(req.Query)
+	pattern := joinRegexParts(parts)
+	filterRegex := fmt.Sprintf("(?i)%s", pattern)
+	if subscribeT2S != nil {
+		simplified, _ := subscribeT2S.Convert(req.Query)
+		if simplified != req.Query {
+			simplifiedParts := splitQueryParts(simplified)
+			simplifiedPattern := joinRegexParts(simplifiedParts)
+			filterRegex = fmt.Sprintf("(?i)(%s|%s)", pattern, simplifiedPattern)
+		}
+	}
 
 	// Create download rule
 	rule, err := h.queries.CreateDownloadRule(ctx, store.CreateDownloadRuleParams{
@@ -104,6 +119,29 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 		Feed: &feed,
 		Rule: &rule,
 	})
+}
+
+// splitQueryParts splits a query into meaningful parts for regex matching.
+// e.g. "葬送的芙莉蓮 S2" → ["葬送的芙莉蓮", "S2"]
+func splitQueryParts(query string) []string {
+	var parts []string
+	for _, p := range strings.Fields(query) {
+		p = strings.TrimSpace(p)
+		if p != "" {
+			parts = append(parts, p)
+		}
+	}
+	return parts
+}
+
+// joinRegexParts joins escaped query parts with .* for flexible matching.
+// e.g. ["葬送的芙莉蓮", "S2"] → "葬送的芙莉蓮.*S2"
+func joinRegexParts(parts []string) string {
+	escaped := make([]string, len(parts))
+	for i, p := range parts {
+		escaped[i] = regexEscape(p)
+	}
+	return strings.Join(escaped, ".*")
 }
 
 // regexEscape escapes special regex characters in a string.

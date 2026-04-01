@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/milmil/api/internal/integration/aria2"
@@ -60,6 +61,12 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 	for _, item := range items {
 		for _, rule := range rules {
 			if !rss.MatchRule(item.Title, rule.FilterRegex, rule.ExcludeRegex) {
+				continue
+			}
+			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+				continue
+			}
+			if rule.SubgroupFilter != "" && !strings.Contains(item.Title, rule.SubgroupFilter) {
 				continue
 			}
 

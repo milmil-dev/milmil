@@ -1,0 +1,49 @@
+services:
+  redis:
+    image: redis:alpine
+    container_name: milmil-redis
+    ports:
+      - "6379:6379"
+    command: redis-server /etc/redis/redis.conf
+    volumes:
+      - ./redis-config/redis.conf:/etc/redis/redis.conf:ro
+      - ./redis-config/users.acl:/etc/redis/users.acl:ro
+      - redis_data:/data
+    env_file:
+      - ./api/.env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'redis-cli --user "$${REDIS_USERNAME}" --pass "$${REDIS_PASSWORD}" ping | grep -q PONG',
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  aria2:
+    image: p3terx/aria2-pro
+    container_name: milmil-aria2
+    ports:
+      - "6800:6800"
+      - "6888:6888"
+      - "6888:6888/udp"
+    environment:
+      RPC_SECRET: milmil_aria2_dev
+      RPC_PORT: 6800
+      LISTEN_PORT: 6888
+      DISK_CACHE: 64M
+      IPV6_MODE: "false"
+      UPDATE_TRACKERS: "true"
+      CUSTOM_TRACKER_URL: ""
+    volumes:
+      - ${DOWNLOAD_DIR:-./downloads}:/downloads
+      - aria2_config:/config
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+    driver: local
+  aria2_config:
+    driver: local
