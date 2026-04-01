@@ -7,7 +7,7 @@ import { cn } from '../lib/utils';
 const tabs = [
   { to: '/', label: 'Home', exact: true },
   { to: '/schedule', label: 'Schedule', exact: false },
-  { to: '/trending', label: 'Discover', exact: false },
+  { to: '/discover', label: 'Discover', exact: false },
 ] as const;
 
 export function TopNav() {

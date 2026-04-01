@@ -26,7 +26,7 @@ const mainNav = [
   { to: '/', msgKey: msg`nav.home`, icon: HouseIcon },
   { to: '/schedule', msgKey: msg`nav.schedule`, icon: Calendar03Icon },
   { to: '/search', msgKey: msg`nav.search`, icon: Search01Icon },
-  { to: '/trending', msgKey: msg`nav.trending`, icon: FireIcon },
+  { to: '/discover', msgKey: msg`nav.discover`, icon: FireIcon },
   { to: '/rss', msgKey: msg`nav.rss`, icon: RssIcon },
 ] as const;
 

@@ -391,13 +391,13 @@ msgstr "ログインに失敗しました"
 msgid "auth.error.setupFailed"
 msgstr "セットアップに失敗しました"
 
-#: src/pages/LibrariesPage.tsx:3226
-#: src/pages/LibraryDetailPage.tsx:1356
+#: src/pages/LibrariesPage.tsx:3168
+#: src/pages/LibraryDetailPage.tsx:1419
 msgid "auth.libraries.signInSubtitle"
 msgstr "ライブラリにアクセスするにはログインしてください"
 
-#: src/pages/LibrariesPage.tsx:3223
-#: src/pages/LibraryDetailPage.tsx:1353
+#: src/pages/LibrariesPage.tsx:3165
+#: src/pages/LibraryDetailPage.tsx:1416
 msgid "auth.libraries.signInTitle"
 msgstr "ログインが必要です"
 
@@ -411,8 +411,8 @@ msgid "auth.login.password"
 msgstr "パスワード"
 
 #: src/components/LoginModal.tsx:175
-#: src/pages/LibrariesPage.tsx:3233
-#: src/pages/LibraryDetailPage.tsx:1359
+#: src/pages/LibrariesPage.tsx:3175
+#: src/pages/LibraryDetailPage.tsx:1422
 #: src/pages/LoginPage.tsx:417
 msgid "auth.login.submit"
 msgstr "ログイン"
@@ -528,7 +528,7 @@ msgstr "一時停止"
 msgid "collection.planning"
 msgstr "視聴予定"
 
-#: src/pages/LibrariesPage.tsx:3041
+#: src/pages/LibrariesPage.tsx:2983
 msgid "collection.recentlyMatched"
 msgstr "最近マッチ"
 
@@ -553,7 +553,7 @@ msgstr "コレクション"
 msgid "collection.totalShows"
 msgstr "作品"
 
-#: src/pages/LibrariesPage.tsx:3047
+#: src/pages/LibrariesPage.tsx:2989
 msgid "collection.viewAll"
 msgstr "すべて表示"
 
@@ -593,18 +593,17 @@ msgstr "コピーしました"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:486
 #: src/pages/AnimeDetailPage.tsx:668
-#: src/pages/LibraryDetailPage.tsx:1039
-#: src/pages/TrendingPage.tsx:273
+#: src/pages/LibraryDetailPage.tsx:1102
 msgid "common.ep"
 msgstr "話"
 
 #: src/pages/AnimeDetailPage.tsx:280
-#: src/pages/LibraryDetailPage.tsx:1380
+#: src/pages/LibraryDetailPage.tsx:1443
 msgid "common.loadFailed"
 msgstr "読み込みに失敗しました"
 
 #: src/components/LoginModal.tsx:173
-#: src/pages/LibraryDetailPage.tsx:1132
+#: src/pages/LibraryDetailPage.tsx:1195
 #: src/pages/LoginPage.tsx:262
 #: src/pages/LoginPage.tsx:405
 msgid "common.loading"
@@ -620,17 +619,37 @@ msgstr "分"
 msgid "common.retry"
 msgstr "リトライ"
 
-#: src/pages/LibrariesPage.tsx:309
+#: src/pages/LibrariesPage.tsx:226
 msgid "connection.checking"
 msgstr "確認中"
 
-#: src/pages/LibrariesPage.tsx:312
+#: src/pages/LibrariesPage.tsx:229
 msgid "connection.offline"
 msgstr "オフライン"
 
-#: src/pages/LibrariesPage.tsx:311
+#: src/pages/LibrariesPage.tsx:228
 msgid "connection.online"
 msgstr "オンライン"
+
+#: src/pages/DiscoverPage.tsx:74
+msgid "discover.airedRecently"
+msgstr "最近放送"
+
+#: src/pages/DiscoverPage.tsx:64
+msgid "discover.bestLastSeason"
+msgstr "前期ベスト"
+
+#: src/pages/DiscoverPage.tsx:54
+msgid "discover.topOfSeason"
+msgstr "今期ベスト"
+
+#: src/pages/DiscoverPage.tsx:83
+msgid "discover.trendingMovies"
+msgstr "トレンド映画"
+
+#: src/pages/DiscoverPage.tsx:48
+msgid "discover.trendingNow"
+msgstr "今トレンド"
 
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
@@ -657,12 +676,12 @@ msgid "home.continueWatching"
 msgstr "視聴を続ける"
 
 #: src/components/LibraryEmptyState.tsx:23
-#: src/pages/LibrariesPage.tsx:382
+#: src/pages/LibrariesPage.tsx:324
 msgid "home.library.empty.subtitle"
 msgstr "フォルダを追加してスキャンを開始"
 
 #: src/components/LibraryEmptyState.tsx:21
-#: src/pages/LibrariesPage.tsx:380
+#: src/pages/LibrariesPage.tsx:322
 msgid "home.library.empty.title"
 msgstr "ライブラリが追加されていません"
 
@@ -679,81 +698,81 @@ msgstr "今日の番組表"
 msgid "home.trending"
 msgstr "トレンド"
 
+#: src/pages/DiscoverPage.tsx:140
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "すべて表示 →"
 
-#: src/pages/LibrariesPage.tsx:353
-#: src/pages/LibrariesPage.tsx:388
-#: src/pages/LibrariesPage.tsx:2399
-#: src/pages/LibrariesPage.tsx:2903
-#: src/pages/LibrariesPage.tsx:3271
-#: src/pages/LibrariesPage.tsx:3390
+#: src/pages/LibrariesPage.tsx:299
+#: src/pages/LibrariesPage.tsx:330
+#: src/pages/LibrariesPage.tsx:2341
+#: src/pages/LibrariesPage.tsx:2845
+#: src/pages/LibrariesPage.tsx:3213
+#: src/pages/LibrariesPage.tsx:3324
 msgid "library.addLibrary"
 msgstr "ライブラリを追加"
 
-#: src/pages/LibrariesPage.tsx:599
+#: src/pages/LibrariesPage.tsx:541
 msgid "library.browse.folders"
 msgstr "フォルダを参照"
 
-#: src/pages/LibrariesPage.tsx:681
+#: src/pages/LibrariesPage.tsx:623
 msgid "library.browse.noSubdirectories"
 msgstr "サブディレクトリが見つかりません"
 
-#: src/pages/LibrariesPage.tsx:790
+#: src/pages/LibrariesPage.tsx:732
 msgid "library.browse.select"
 msgstr "選択"
 
-#: src/pages/LibrariesPage.tsx:779
-#: src/pages/LibrariesPage.tsx:942
-#: src/pages/LibrariesPage.tsx:960
+#: src/pages/LibrariesPage.tsx:721
+#: src/pages/LibrariesPage.tsx:884
+#: src/pages/LibrariesPage.tsx:902
 msgid "library.browse.selected"
 msgstr "選択済み"
 
-#: src/pages/LibrariesPage.tsx:3454
+#: src/pages/LibrariesPage.tsx:3388
 msgid "library.cancel"
 msgstr "キャンセル"
 
 #: src/pages/LibrariesPage.tsx:322
-msgid "library.checked"
-msgstr "確認"
+#~ msgid "library.checked"
+#~ msgstr "確認"
 
 #: src/pages/LibrariesPage.tsx:167
 #~ msgid "library.connectSource"
 #~ msgstr "Connect a media source"
 
-#: src/pages/LibrariesPage.tsx:263
-#: src/pages/LibrariesPage.tsx:3442
-#: src/pages/LibrariesPage.tsx:3464
+#: src/pages/LibrariesPage.tsx:3376
+#: src/pages/LibrariesPage.tsx:3398
 msgid "library.delete"
 msgstr "削除"
 
-#: src/pages/LibrariesPage.tsx:3446
+#: src/pages/LibrariesPage.tsx:3380
 msgid "library.deleteConfirm"
 msgstr "すべてのメディアファイル記録が削除されます。ディスク上のファイルには影響しません。"
 
-#: src/pages/LibraryDetailPage.tsx:485
+#: src/pages/LibraryDetailPage.tsx:545
 msgid "library.detail.allMatched"
 msgstr "すべてのファイルがマッチ済み"
 
-#: src/pages/LibraryDetailPage.tsx:1466
+#: src/pages/LibraryDetailPage.tsx:1529
 msgid "library.detail.autoMatch"
 msgstr "自動マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1470
+#: src/pages/LibraryDetailPage.tsx:1533
 msgid "library.detail.autoMatchTooltip"
 msgstr "未マッチのファイルをすべて自動マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1386
-#: src/pages/LibraryDetailPage.tsx:1417
+#: src/pages/LibraryDetailPage.tsx:1449
+#: src/pages/LibraryDetailPage.tsx:1480
 msgid "library.detail.backToLibraries"
 msgstr "ライブラリ"
 
-#: src/pages/LibraryDetailPage.tsx:216
+#: src/pages/LibraryDetailPage.tsx:306
 msgid "library.detail.col.filename"
 msgstr "ファイル名"
 
-#: src/pages/LibraryDetailPage.tsx:231
+#: src/pages/LibraryDetailPage.tsx:321
 msgid "library.detail.col.matchedAnime"
 msgstr "マッチしたアニメ"
 
@@ -761,34 +780,42 @@ msgstr "マッチしたアニメ"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:302
+#: src/pages/LibraryDetailPage.tsx:392
 msgid "library.detail.col.size"
 msgstr "サイズ"
 
-#: src/pages/LibraryDetailPage.tsx:290
+#: src/pages/LibraryDetailPage.tsx:380
 msgid "library.detail.col.status"
 msgstr "ステータス"
 
-#: src/pages/LibraryDetailPage.tsx:295
+#: src/pages/LibraryDetailPage.tsx:385
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:369
+#: src/pages/LibraryDetailPage.tsx:238
+msgid "library.detail.copyPath"
+msgstr "パスをコピー"
+
+#: src/pages/LibraryDetailPage.tsx:218
 msgid "library.detail.editMatch"
 msgstr "編集"
 
-#: src/pages/LibraryDetailPage.tsx:866
+#: src/pages/LibraryDetailPage.tsx:929
 msgid "library.detail.errors"
 msgstr "エラー"
+
+#: src/pages/LibraryDetailPage.tsx:245
+msgid "library.detail.fileInfo"
+msgstr "ファイル情報"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:852
+#: src/pages/LibraryDetailPage.tsx:915
 msgid "library.detail.found"
 msgstr "発見"
 
-#: src/pages/LibraryDetailPage.tsx:847
+#: src/pages/LibraryDetailPage.tsx:910
 msgid "library.detail.inProgress"
 msgstr "進行中"
 
@@ -796,38 +823,38 @@ msgstr "進行中"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:326
+#: src/pages/LibraryDetailPage.tsx:427
 msgid "library.detail.match"
 msgstr "マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:442
-#: src/pages/LibraryDetailPage.tsx:855
+#: src/pages/LibraryDetailPage.tsx:502
+#: src/pages/LibraryDetailPage.tsx:918
 msgid "library.detail.matched"
 msgstr "マッチ済み"
 
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:1071
+#: src/pages/LibraryDetailPage.tsx:1134
 msgid "library.detail.matchModal.change"
 msgstr "変更"
 
-#: src/pages/LibraryDetailPage.tsx:1133
+#: src/pages/LibraryDetailPage.tsx:1196
 msgid "library.detail.matchModal.confirm"
 msgstr "マッチを確定"
 
 #~ msgid "library.detail.matchModal.failed"
 #~ msgstr "Match failed"
 
-#: src/pages/LibraryDetailPage.tsx:948
+#: src/pages/LibraryDetailPage.tsx:1011
 msgid "library.detail.matchModal.matched"
 msgstr "ファイルがマッチしました"
 
-#: src/pages/LibraryDetailPage.tsx:1120
+#: src/pages/LibraryDetailPage.tsx:1183
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "エピソードが見つかりません"
 
-#: src/pages/LibraryDetailPage.tsx:1017
+#: src/pages/LibraryDetailPage.tsx:1080
 msgid "library.detail.matchModal.noResults"
 msgstr "結果が見つかりません"
 
@@ -837,52 +864,56 @@ msgstr "結果が見つかりません"
 #~ msgid "library.detail.matchModal.searchAnime"
 #~ msgstr "Search anime..."
 
-#: src/pages/LibraryDetailPage.tsx:1003
+#: src/pages/LibraryDetailPage.tsx:1066
 msgid "library.detail.matchModal.searchHint"
 msgstr "このファイルにマッチするアニメを検索"
 
-#: src/pages/LibraryDetailPage.tsx:995
+#: src/pages/LibraryDetailPage.tsx:1058
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "アニメを検索…"
 
-#: src/pages/LibraryDetailPage.tsx:976
+#: src/pages/LibraryDetailPage.tsx:1039
 msgid "library.detail.matchModal.title"
 msgstr "ファイルをマッチ"
 
 #: src/pages/LibraryDetailPage.tsx:330
-msgid "library.detail.matchTooltip"
-msgstr "このファイルをアニメエピソードにマッチ"
+#~ msgid "library.detail.matchTooltip"
+#~ msgstr "このファイルをアニメエピソードにマッチ"
 
-#: src/pages/LibraryDetailPage.tsx:401
-#: src/pages/LibraryDetailPage.tsx:490
-#: src/pages/LibraryDetailPage.tsx:560
-#: src/pages/LibraryDetailPage.tsx:730
+#: src/pages/LibraryDetailPage.tsx:461
+#: src/pages/LibraryDetailPage.tsx:550
+#: src/pages/LibraryDetailPage.tsx:620
+#: src/pages/LibraryDetailPage.tsx:794
 msgid "library.detail.noFiles"
 msgstr "ファイルが見つかりません"
 
-#: src/pages/LibraryDetailPage.tsx:404
+#: src/pages/LibraryDetailPage.tsx:464
 msgid "library.detail.noFilesHint"
 msgstr "スキャンを実行してこのライブラリのメディアファイルを検出"
 
-#: src/pages/LibraryDetailPage.tsx:803
+#: src/pages/LibraryDetailPage.tsx:866
 msgid "library.detail.noScans"
 msgstr "まだスキャンされていません"
 
-#: src/pages/LibraryDetailPage.tsx:806
+#: src/pages/LibraryDetailPage.tsx:869
 msgid "library.detail.noScansHint"
 msgstr "最初のスキャンを実行して履歴を確認"
 
-#: src/pages/LibraryDetailPage.tsx:1380
+#: src/pages/LibraryDetailPage.tsx:1443
 msgid "library.detail.notFound"
 msgstr "ライブラリが見つかりません"
 
-#: src/pages/LibraryDetailPage.tsx:348
+#: src/pages/LibraryDetailPage.tsx:191
+msgid "library.detail.pathCopied"
+msgstr "パスをコピーしました"
+
+#: src/pages/LibraryDetailPage.tsx:409
 msgid "library.detail.play"
 msgstr "再生"
 
 #: src/pages/LibraryDetailPage.tsx:353
-msgid "library.detail.playTooltip"
-msgstr "このエピソードを再生"
+#~ msgid "library.detail.playTooltip"
+#~ msgstr "このエピソードを再生"
 
 #~ msgid "library.detail.runFirstScan"
 #~ msgstr "Run your first scan"
@@ -902,47 +933,46 @@ msgstr "このエピソードを再生"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:1486
+#: src/pages/LibraryDetailPage.tsx:1549
 msgid "library.detail.scanNow"
 msgstr "今すぐスキャン"
 
-#: src/pages/LibraryDetailPage.tsx:1490
+#: src/pages/LibraryDetailPage.tsx:1553
 msgid "library.detail.scanNowTooltip"
 msgstr "ライブラリ内の新しいファイルをスキャン"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:433
+#: src/pages/LibraryDetailPage.tsx:493
 msgid "library.detail.searchFiles"
 msgstr "ファイルを検索…"
 
-#: src/pages/LibraryDetailPage.tsx:1197
-#: src/pages/LibraryDetailPage.tsx:1503
+#: src/pages/LibraryDetailPage.tsx:1260
+#: src/pages/LibraryDetailPage.tsx:1566
 msgid "library.detail.settings"
 msgstr "設定"
 
-#: src/pages/LibraryDetailPage.tsx:1507
+#: src/pages/LibraryDetailPage.tsx:1570
 msgid "library.detail.settingsTooltip"
 msgstr "ライブラリ設定"
 
 #~ msgid "library.detail.size"
 #~ msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:618
-#: src/pages/LibraryDetailPage.tsx:1585
+#: src/pages/LibraryDetailPage.tsx:1648
 msgid "library.detail.stats.files"
 msgstr "ファイル"
 
-#: src/pages/LibraryDetailPage.tsx:1596
+#: src/pages/LibraryDetailPage.tsx:1659
 msgid "library.detail.stats.matched"
 msgstr "マッチ済み"
 
-#: src/pages/LibraryDetailPage.tsx:1616
+#: src/pages/LibraryDetailPage.tsx:1679
 msgid "library.detail.stats.size"
 msgstr "サイズ"
 
-#: src/pages/LibraryDetailPage.tsx:1608
+#: src/pages/LibraryDetailPage.tsx:1671
 msgid "library.detail.stats.unmatched"
 msgstr "未マッチ"
 
@@ -956,7 +986,7 @@ msgstr "未マッチ"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:1324
+#: src/pages/LibraryDetailPage.tsx:1387
 msgid "library.detail.tab.files"
 msgstr "ファイル"
 
@@ -964,7 +994,7 @@ msgstr "ファイル"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "Matched"
 
-#: src/pages/LibraryDetailPage.tsx:1325
+#: src/pages/LibraryDetailPage.tsx:1388
 msgid "library.detail.tab.scanHistory"
 msgstr "スキャン履歴"
 
@@ -980,136 +1010,136 @@ msgstr "スキャン履歴"
 #~ msgid "library.detail.totalSize"
 #~ msgstr "Total Size"
 
-#~ msgid "library.detail.unmatch"
-#~ msgstr "Unmatch"
+#: src/pages/LibraryDetailPage.tsx:229
+msgid "library.detail.unmatch"
+msgstr "Unmatch"
 
-#: src/pages/LibraryDetailPage.tsx:782
-#~ msgid "library.detail.unmatched"
-#~ msgstr "Unmatched"
+#: src/pages/LibraryDetailPage.tsx:182
+msgid "library.detail.unmatched"
+msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:446
-#: src/pages/LibraryDetailPage.tsx:858
+#: src/pages/LibraryDetailPage.tsx:506
+#: src/pages/LibraryDetailPage.tsx:921
 msgid "library.detail.unmatchedShort"
 msgstr "未マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1674
+#: src/pages/LibraryDetailPage.tsx:1737
 msgid "library.detail.viewTable"
 msgstr "テーブル表示"
 
-#: src/pages/LibraryDetailPage.tsx:1693
+#: src/pages/LibraryDetailPage.tsx:1756
 msgid "library.detail.viewTree"
 msgstr "ツリー表示"
 
-#: src/pages/LibrariesPage.tsx:864
-#: src/pages/LibrariesPage.tsx:982
+#: src/pages/LibrariesPage.tsx:806
+#: src/pages/LibrariesPage.tsx:924
 msgid "library.discover.browse"
 msgstr "ネットワークを参照"
 
-#: src/pages/LibrariesPage.tsx:858
+#: src/pages/LibrariesPage.tsx:800
 msgid "library.discover.noHosts"
 msgstr "ホストが見つかりません"
 
-#: src/pages/LibrariesPage.tsx:954
+#: src/pages/LibrariesPage.tsx:896
 msgid "library.discover.noShares"
 msgstr "共有が見つかりません — 認証情報が必要な場合があります"
 
-#: src/pages/LibrariesPage.tsx:847
+#: src/pages/LibrariesPage.tsx:789
 msgid "library.discover.scanning"
 msgstr "ネットワークをスキャン中…"
 
 #~ msgid "library.discover.timeout"
 #~ msgstr "Discovery timed out"
 
-#: src/pages/LibrariesPage.tsx:964
+#: src/pages/LibrariesPage.tsx:906
 msgid "library.discover.useThisHost"
 msgstr "このホストを使用"
 
 #: src/pages/LibrariesPage.tsx:253
-msgid "library.edit"
-msgstr "編集"
+#~ msgid "library.edit"
+#~ msgstr "編集"
 
-#: src/pages/LibrariesPage.tsx:3413
+#: src/pages/LibrariesPage.tsx:3347
 msgid "library.editLibrary"
 msgstr "ライブラリを編集"
 
-#: src/pages/LibrariesPage.tsx:1091
-#: src/pages/LibrariesPage.tsx:2877
-#: src/pages/LibraryDetailPage.tsx:1229
+#: src/pages/LibrariesPage.tsx:1033
+#: src/pages/LibrariesPage.tsx:2819
+#: src/pages/LibraryDetailPage.tsx:1292
 msgid "library.enabled"
 msgstr "有効"
 
 #~ msgid "library.files"
 #~ msgstr "files"
 
-#: src/pages/LibrariesPage.tsx:1432
-#: src/pages/LibrariesPage.tsx:2646
+#: src/pages/LibrariesPage.tsx:1374
+#: src/pages/LibrariesPage.tsx:2588
 msgid "library.ftp.host"
 msgstr "ホスト"
 
-#: src/pages/LibrariesPage.tsx:1475
-#: src/pages/LibrariesPage.tsx:2692
+#: src/pages/LibrariesPage.tsx:1417
+#: src/pages/LibrariesPage.tsx:2634
 msgid "library.ftp.password"
 msgstr "パスワード"
 
-#: src/pages/LibrariesPage.tsx:1445
-#: src/pages/LibrariesPage.tsx:2661
+#: src/pages/LibrariesPage.tsx:1387
+#: src/pages/LibrariesPage.tsx:2603
 msgid "library.ftp.port"
 msgstr "ポート"
 
-#: src/pages/LibrariesPage.tsx:1460
-#: src/pages/LibrariesPage.tsx:2677
+#: src/pages/LibrariesPage.tsx:1402
+#: src/pages/LibrariesPage.tsx:2619
 msgid "library.ftp.username"
 msgstr "ユーザー名"
 
-#: src/pages/LibrariesPage.tsx:208
+#: src/pages/LibrariesPage.tsx:238
 msgid "library.hashing"
 msgstr "ハッシュ中…"
 
-#: src/pages/LibrariesPage.tsx:1501
-#: src/pages/LibrariesPage.tsx:2722
+#: src/pages/LibrariesPage.tsx:1443
+#: src/pages/LibrariesPage.tsx:2664
 msgid "library.http.readOnly"
 msgstr "読み取り専用"
 
-#: src/pages/LibrariesPage.tsx:1494
-#: src/pages/LibrariesPage.tsx:2713
+#: src/pages/LibrariesPage.tsx:1436
+#: src/pages/LibrariesPage.tsx:2655
 msgid "library.http.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:209
-#: src/pages/LibraryDetailPage.tsx:1465
+#: src/pages/LibrariesPage.tsx:239
+#: src/pages/LibraryDetailPage.tsx:1528
 msgid "library.matching"
 msgstr "マッチ中…"
 
-#: src/pages/LibrariesPage.tsx:1061
-#: src/pages/LibrariesPage.tsx:1986
-#: src/pages/LibrariesPage.tsx:2365
-#: src/pages/LibraryDetailPage.tsx:1202
+#: src/pages/LibrariesPage.tsx:1003
+#: src/pages/LibrariesPage.tsx:1928
+#: src/pages/LibrariesPage.tsx:2307
+#: src/pages/LibraryDetailPage.tsx:1265
 msgid "library.name"
 msgstr "名前"
 
-#: src/pages/LibrariesPage.tsx:1053
-#: src/pages/LibrariesPage.tsx:1980
-#: src/pages/LibrariesPage.tsx:2354
+#: src/pages/LibrariesPage.tsx:995
+#: src/pages/LibrariesPage.tsx:1922
+#: src/pages/LibrariesPage.tsx:2296
 msgid "library.nameRequired"
 msgstr "名前は必須です"
 
-#: src/pages/LibrariesPage.tsx:169
-#: src/pages/LibraryDetailPage.tsx:1400
+#: src/pages/LibraryDetailPage.tsx:1463
 msgid "library.neverScanned"
 msgstr "未実行"
 
-#: src/pages/LibrariesPage.tsx:3076
-#: src/pages/LibrariesPage.tsx:3081
-#: src/pages/LibrariesPage.tsx:3082
-#: src/pages/LibrariesPage.tsx:3085
+#: src/pages/LibrariesPage.tsx:3018
+#: src/pages/LibrariesPage.tsx:3023
+#: src/pages/LibrariesPage.tsx:3024
+#: src/pages/LibrariesPage.tsx:3027
 msgid "library.nextScan"
 msgstr "次のスキャン"
 
-#: src/pages/LibrariesPage.tsx:3074
+#: src/pages/LibrariesPage.tsx:3016
 msgid "library.nextScan.soon"
 msgstr "まもなくスキャン"
 
-#: src/pages/LibrariesPage.tsx:279
+#: src/pages/LibrariesPage.tsx:196
 msgid "library.off"
 msgstr "オフ"
 
@@ -1117,150 +1147,149 @@ msgstr "オフ"
 #~ msgid "library.on"
 #~ msgstr "ON"
 
-#: src/pages/LibrariesPage.tsx:3250
+#: src/pages/LibrariesPage.tsx:3192
 msgid "library.pageTitle"
 msgstr "マイライブラリ"
 
-#: src/pages/LibrariesPage.tsx:1551
-#: src/pages/LibrariesPage.tsx:2780
+#: src/pages/LibrariesPage.tsx:1493
+#: src/pages/LibrariesPage.tsx:2722
 msgid "library.path"
 msgstr "パス"
 
-#: src/pages/LibrariesPage.tsx:1543
-#: src/pages/LibrariesPage.tsx:2770
+#: src/pages/LibrariesPage.tsx:1485
+#: src/pages/LibrariesPage.tsx:2712
 msgid "library.pathRequired"
 msgstr "パスは必須です"
 
-#: src/pages/LibrariesPage.tsx:1656
+#: src/pages/LibrariesPage.tsx:1598
 msgid "library.rclone.availableRemotes"
 msgstr "利用可能なリモート"
 
-#: src/pages/LibrariesPage.tsx:1666
+#: src/pages/LibrariesPage.tsx:1608
 msgid "library.rclone.noRemotes"
 msgstr "リモートが見つかりません"
 
-#: src/pages/LibrariesPage.tsx:1520
-#: src/pages/LibrariesPage.tsx:2747
+#: src/pages/LibrariesPage.tsx:1462
+#: src/pages/LibrariesPage.tsx:2689
 msgid "library.rclone.remoteName"
 msgstr "リモート名"
 
-#: src/pages/LibrariesPage.tsx:1397
-#: src/pages/LibrariesPage.tsx:2610
+#: src/pages/LibrariesPage.tsx:1339
+#: src/pages/LibrariesPage.tsx:2552
 msgid "library.s3.accessKey"
 msgstr "アクセスキー"
 
-#: src/pages/LibrariesPage.tsx:1370
-#: src/pages/LibrariesPage.tsx:2580
+#: src/pages/LibrariesPage.tsx:1312
+#: src/pages/LibrariesPage.tsx:2522
 msgid "library.s3.bucket"
 msgstr "バケット"
 
-#: src/pages/LibrariesPage.tsx:1356
-#: src/pages/LibrariesPage.tsx:2565
+#: src/pages/LibrariesPage.tsx:1298
+#: src/pages/LibrariesPage.tsx:2507
 msgid "library.s3.endpoint"
 msgstr "エンドポイント"
 
-#: src/pages/LibrariesPage.tsx:1383
-#: src/pages/LibrariesPage.tsx:2595
+#: src/pages/LibrariesPage.tsx:1325
+#: src/pages/LibrariesPage.tsx:2537
 msgid "library.s3.region"
 msgstr "リージョン"
 
-#: src/pages/LibrariesPage.tsx:1412
-#: src/pages/LibrariesPage.tsx:2625
+#: src/pages/LibrariesPage.tsx:1354
+#: src/pages/LibrariesPage.tsx:2567
 msgid "library.s3.secretKey"
 msgstr "シークレットキー"
 
-#: src/pages/LibrariesPage.tsx:3419
-#: src/pages/LibraryDetailPage.tsx:1257
+#: src/pages/LibrariesPage.tsx:3353
+#: src/pages/LibraryDetailPage.tsx:1320
 msgid "library.saveChanges"
 msgstr "変更を保存"
 
-#: src/pages/LibrariesPage.tsx:1628
-#: src/pages/LibrariesPage.tsx:2398
-#: src/pages/LibrariesPage.tsx:2902
-#: src/pages/LibraryDetailPage.tsx:1256
+#: src/pages/LibrariesPage.tsx:1570
+#: src/pages/LibrariesPage.tsx:2340
+#: src/pages/LibrariesPage.tsx:2844
+#: src/pages/LibraryDetailPage.tsx:1319
 msgid "library.saving"
 msgstr "保存中…"
 
 #: src/pages/LibrariesPage.tsx:243
-msgid "library.scan"
-msgstr "スキャン"
+#~ msgid "library.scan"
+#~ msgstr "スキャン"
 
-#: src/pages/LibrariesPage.tsx:1598
-#: src/pages/LibrariesPage.tsx:2859
-#: src/pages/LibraryDetailPage.tsx:1215
+#: src/pages/LibrariesPage.tsx:1540
+#: src/pages/LibrariesPage.tsx:2801
+#: src/pages/LibraryDetailPage.tsx:1278
 msgid "library.scanInterval"
 msgstr "スキャン間隔（分）"
 
-#: src/pages/LibrariesPage.tsx:207
-#: src/pages/LibrariesPage.tsx:243
-#: src/pages/LibraryDetailPage.tsx:1485
+#: src/pages/LibrariesPage.tsx:237
+#: src/pages/LibraryDetailPage.tsx:1548
 msgid "library.scanning"
 msgstr "スキャン中"
 
-#: src/pages/LibrariesPage.tsx:1211
-#: src/pages/LibrariesPage.tsx:2417
+#: src/pages/LibrariesPage.tsx:1153
+#: src/pages/LibrariesPage.tsx:2359
 msgid "library.sftp.host"
 msgstr "ホスト"
 
-#: src/pages/LibrariesPage.tsx:1254
-#: src/pages/LibrariesPage.tsx:2463
+#: src/pages/LibrariesPage.tsx:1196
+#: src/pages/LibrariesPage.tsx:2405
 msgid "library.sftp.password"
 msgstr "パスワード"
 
-#: src/pages/LibrariesPage.tsx:1224
-#: src/pages/LibrariesPage.tsx:2432
+#: src/pages/LibrariesPage.tsx:1166
+#: src/pages/LibrariesPage.tsx:2374
 msgid "library.sftp.port"
 msgstr "ポート"
 
-#: src/pages/LibrariesPage.tsx:1239
-#: src/pages/LibrariesPage.tsx:2448
+#: src/pages/LibrariesPage.tsx:1181
+#: src/pages/LibrariesPage.tsx:2390
 msgid "library.sftp.username"
 msgstr "ユーザー名"
 
-#: src/pages/LibrariesPage.tsx:1191
-#: src/pages/LibrariesPage.tsx:2227
+#: src/pages/LibrariesPage.tsx:1133
+#: src/pages/LibrariesPage.tsx:2169
 msgid "library.smb.domain"
 msgstr "ドメイン"
 
-#: src/pages/LibrariesPage.tsx:1107
+#: src/pages/LibrariesPage.tsx:1049
 msgid "library.smb.host"
 msgstr "ホスト"
 
-#: src/pages/LibrariesPage.tsx:1176
-#: src/pages/LibrariesPage.tsx:2212
+#: src/pages/LibrariesPage.tsx:1118
+#: src/pages/LibrariesPage.tsx:2154
 msgid "library.smb.password"
 msgstr "パスワード"
 
-#: src/pages/LibrariesPage.tsx:1129
+#: src/pages/LibrariesPage.tsx:1071
 msgid "library.smb.port"
 msgstr "ポート"
 
-#: src/pages/LibrariesPage.tsx:1145
+#: src/pages/LibrariesPage.tsx:1087
 msgid "library.smb.share"
 msgstr "共有"
 
-#: src/pages/LibrariesPage.tsx:1161
-#: src/pages/LibrariesPage.tsx:2197
+#: src/pages/LibrariesPage.tsx:1103
+#: src/pages/LibrariesPage.tsx:2139
 msgid "library.smb.username"
 msgstr "ユーザー名"
 
 #: src/pages/LibrariesPage.tsx:3289
-msgid "library.sort.label"
-msgstr "並び替え"
+#~ msgid "library.sort.label"
+#~ msgstr "並び替え"
 
-#: src/pages/LibrariesPage.tsx:3304
+#: src/pages/LibrariesPage.tsx:3246
 msgid "library.sort.match"
 msgstr "一致率"
 
-#: src/pages/LibrariesPage.tsx:3303
+#: src/pages/LibrariesPage.tsx:3245
 msgid "library.sort.name"
 msgstr "名前"
 
-#: src/pages/LibrariesPage.tsx:3306
+#: src/pages/LibrariesPage.tsx:3248
 msgid "library.sort.scanned"
 msgstr "最終スキャン"
 
-#: src/pages/LibrariesPage.tsx:3305
+#: src/pages/LibrariesPage.tsx:3247
 msgid "library.sort.size"
 msgstr "サイズ"
 
@@ -1268,62 +1297,62 @@ msgstr "サイズ"
 #~ msgid "library.sourceType"
 #~ msgstr "Source Type"
 
-#: src/pages/LibrariesPage.tsx:993
-#: src/pages/LibrariesPage.tsx:1795
+#: src/pages/LibrariesPage.tsx:935
+#: src/pages/LibrariesPage.tsx:1737
 msgid "library.sourceType.local"
 msgstr "ローカル"
 
-#: src/pages/LibrariesPage.tsx:995
-#: src/pages/LibrariesPage.tsx:1807
+#: src/pages/LibrariesPage.tsx:937
+#: src/pages/LibrariesPage.tsx:1749
 msgid "library.sourceType.sftp"
 msgstr "SFTP"
 
-#: src/pages/LibrariesPage.tsx:994
-#: src/pages/LibrariesPage.tsx:1801
+#: src/pages/LibrariesPage.tsx:936
+#: src/pages/LibrariesPage.tsx:1743
 msgid "library.sourceType.smb"
 msgstr "SMB"
 
-#: src/pages/LibrariesPage.tsx:3279
+#: src/pages/LibrariesPage.tsx:3224
 msgid "library.summary.files"
 msgstr "ファイル"
 
-#: src/pages/LibrariesPage.tsx:3279
+#: src/pages/LibrariesPage.tsx:3222
 msgid "library.summary.libraries"
 msgstr "ライブラリ"
 
-#: src/pages/LibrariesPage.tsx:3279
+#: src/pages/LibrariesPage.tsx:3229
 msgid "library.summary.matched"
 msgstr "一致"
 
-#: src/pages/LibrariesPage.tsx:467
+#: src/pages/LibrariesPage.tsx:409
 msgid "library.testConnection"
 msgstr "接続テスト"
 
-#: src/pages/LibrariesPage.tsx:473
+#: src/pages/LibrariesPage.tsx:415
 msgid "library.testConnection.failed"
 msgstr "接続に失敗しました"
 
-#: src/pages/LibrariesPage.tsx:472
+#: src/pages/LibrariesPage.tsx:414
 msgid "library.testConnection.success"
 msgstr "接続済み"
 
-#: src/pages/LibrariesPage.tsx:466
+#: src/pages/LibrariesPage.tsx:408
 msgid "library.testConnection.testing"
 msgstr "テスト中…"
 
-#: src/pages/LibrariesPage.tsx:3119
+#: src/pages/LibrariesPage.tsx:3061
 msgid "library.toast.added"
 msgstr "ライブラリを追加しました"
 
-#: src/pages/LibrariesPage.tsx:3143
+#: src/pages/LibrariesPage.tsx:3085
 msgid "library.toast.deleted"
 msgstr "ライブラリを削除しました"
 
-#: src/pages/LibraryDetailPage.tsx:1319
+#: src/pages/LibraryDetailPage.tsx:1382
 msgid "library.toast.matchFailed"
 msgstr "自動マッチに失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:1316
+#: src/pages/LibraryDetailPage.tsx:1379
 msgid "library.toast.matchStarted"
 msgstr "自動マッチを開始しました"
 
@@ -1332,80 +1361,80 @@ msgstr "自動マッチを開始しました"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "Scan complete"
 
-#: src/pages/LibraryDetailPage.tsx:1309
+#: src/pages/LibraryDetailPage.tsx:1372
 msgid "library.toast.scanFailed"
 msgstr "スキャンに失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:1306
+#: src/pages/LibraryDetailPage.tsx:1369
 msgid "library.toast.scanStarted"
 msgstr "スキャンを開始しました"
 
-#: src/pages/LibrariesPage.tsx:3133
-#: src/pages/LibraryDetailPage.tsx:1188
+#: src/pages/LibrariesPage.tsx:3075
+#: src/pages/LibraryDetailPage.tsx:1251
 msgid "library.toast.updated"
 msgstr "ライブラリを更新しました"
 
-#: src/pages/LibrariesPage.tsx:1335
-#: src/pages/LibrariesPage.tsx:2544
+#: src/pages/LibrariesPage.tsx:1277
+#: src/pages/LibrariesPage.tsx:2486
 msgid "library.webdav.password"
 msgstr "パスワード"
 
-#: src/pages/LibrariesPage.tsx:1275
-#: src/pages/LibrariesPage.tsx:2484
+#: src/pages/LibrariesPage.tsx:1217
+#: src/pages/LibrariesPage.tsx:2426
 msgid "library.webdav.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:1320
-#: src/pages/LibrariesPage.tsx:2529
+#: src/pages/LibrariesPage.tsx:1262
+#: src/pages/LibrariesPage.tsx:2471
 msgid "library.webdav.username"
 msgstr "ユーザー名"
 
-#: src/pages/LibrariesPage.tsx:1290
-#: src/pages/LibrariesPage.tsx:2499
+#: src/pages/LibrariesPage.tsx:1232
+#: src/pages/LibrariesPage.tsx:2441
 msgid "library.webdav.vendor"
 msgstr "ベンダー"
 
-#: src/pages/LibrariesPage.tsx:1309
-#: src/pages/LibrariesPage.tsx:2518
+#: src/pages/LibrariesPage.tsx:1251
+#: src/pages/LibrariesPage.tsx:2460
 msgid "library.webdav.vendorOther"
 msgstr "その他の WebDAV"
 
-#: src/pages/LibrariesPage.tsx:2843
+#: src/pages/LibrariesPage.tsx:2785
 msgid "library.wizard.advanced"
 msgstr "詳細設定"
 
-#: src/pages/LibrariesPage.tsx:1954
+#: src/pages/LibrariesPage.tsx:1896
 msgid "library.wizard.changeSource"
 msgstr "ソースを変更"
 
-#: src/pages/LibrariesPage.tsx:1905
+#: src/pages/LibrariesPage.tsx:1847
 msgid "library.wizard.chooseSource"
 msgstr "ソースタイプを選択"
 
-#: src/pages/LibrariesPage.tsx:1860
+#: src/pages/LibrariesPage.tsx:1802
 msgid "library.wizard.dropbox.desc"
 msgstr "Dropbox からファイルにアクセス"
 
-#: src/pages/LibrariesPage.tsx:1002
-#: src/pages/LibrariesPage.tsx:1859
+#: src/pages/LibrariesPage.tsx:944
+#: src/pages/LibrariesPage.tsx:1801
 msgid "library.wizard.dropbox.name"
 msgstr "Dropbox"
 
-#: src/pages/LibrariesPage.tsx:1814
+#: src/pages/LibrariesPage.tsx:1756
 msgid "library.wizard.ftp.desc"
 msgstr "FTP ファイル転送で接続"
 
-#: src/pages/LibrariesPage.tsx:996
-#: src/pages/LibrariesPage.tsx:1813
+#: src/pages/LibrariesPage.tsx:938
+#: src/pages/LibrariesPage.tsx:1755
 msgid "library.wizard.ftp.name"
 msgstr "FTP"
 
-#: src/pages/LibrariesPage.tsx:1848
+#: src/pages/LibrariesPage.tsx:1790
 msgid "library.wizard.gdrive.desc"
 msgstr "Google Drive からファイルにアクセス"
 
-#: src/pages/LibrariesPage.tsx:1000
-#: src/pages/LibrariesPage.tsx:1847
+#: src/pages/LibrariesPage.tsx:942
+#: src/pages/LibrariesPage.tsx:1789
 msgid "library.wizard.gdrive.name"
 msgstr "Google Drive"
 
@@ -1413,29 +1442,29 @@ msgstr "Google Drive"
 #~ msgid "library.wizard.hideManual"
 #~ msgstr "Hide manual fields"
 
-#: src/pages/LibrariesPage.tsx:1820
+#: src/pages/LibrariesPage.tsx:1762
 msgid "library.wizard.http.desc"
 msgstr "ウェブサーバーからストリーミング"
 
-#: src/pages/LibrariesPage.tsx:997
-#: src/pages/LibrariesPage.tsx:1819
+#: src/pages/LibrariesPage.tsx:939
+#: src/pages/LibrariesPage.tsx:1761
 msgid "library.wizard.http.name"
 msgstr "HTTP"
 
-#: src/pages/LibrariesPage.tsx:1796
+#: src/pages/LibrariesPage.tsx:1738
 msgid "library.wizard.local.desc"
 msgstr "このサーバーのフォルダをスキャン"
 
-#: src/pages/LibrariesPage.tsx:1854
+#: src/pages/LibrariesPage.tsx:1796
 msgid "library.wizard.onedrive.desc"
 msgstr "OneDrive からファイルにアクセス"
 
-#: src/pages/LibrariesPage.tsx:1001
-#: src/pages/LibrariesPage.tsx:1853
+#: src/pages/LibrariesPage.tsx:943
+#: src/pages/LibrariesPage.tsx:1795
 msgid "library.wizard.onedrive.name"
 msgstr "OneDrive"
 
-#: src/pages/LibrariesPage.tsx:2229
+#: src/pages/LibrariesPage.tsx:2171
 msgid "library.wizard.optional"
 msgstr "任意"
 
@@ -1443,83 +1472,83 @@ msgstr "任意"
 #~ msgid "library.wizard.orManual"
 #~ msgstr "or enter manually"
 
-#: src/pages/LibrariesPage.tsx:1837
+#: src/pages/LibrariesPage.tsx:1779
 msgid "library.wizard.s3.desc"
 msgstr "Amazon S3 または互換ストレージ"
 
-#: src/pages/LibrariesPage.tsx:999
-#: src/pages/LibrariesPage.tsx:1836
+#: src/pages/LibrariesPage.tsx:941
+#: src/pages/LibrariesPage.tsx:1778
 msgid "library.wizard.s3.name"
 msgstr "S3"
 
-#: src/pages/LibrariesPage.tsx:1826
+#: src/pages/LibrariesPage.tsx:1768
 msgid "library.wizard.section.cloud"
 msgstr "クラウド & WebDAV"
 
-#: src/pages/LibrariesPage.tsx:1843
+#: src/pages/LibrariesPage.tsx:1785
 msgid "library.wizard.section.rclone"
 msgstr "Rclone からインポート"
 
-#: src/pages/LibrariesPage.tsx:1791
+#: src/pages/LibrariesPage.tsx:1733
 msgid "library.wizard.section.storage"
 msgstr "ストレージ"
 
-#: src/pages/LibrariesPage.tsx:1808
+#: src/pages/LibrariesPage.tsx:1750
 msgid "library.wizard.sftp.desc"
 msgstr "SSH ファイル転送で接続"
 
-#: src/pages/LibrariesPage.tsx:2300
+#: src/pages/LibrariesPage.tsx:2242
 msgid "library.wizard.smb.asUser"
 msgstr "として"
 
-#: src/pages/LibrariesPage.tsx:2186
-#: src/pages/LibrariesPage.tsx:2308
+#: src/pages/LibrariesPage.tsx:2128
+#: src/pages/LibrariesPage.tsx:2250
 msgid "library.wizard.smb.change"
 msgstr "変更"
 
-#: src/pages/LibrariesPage.tsx:755
-#: src/pages/LibrariesPage.tsx:2077
+#: src/pages/LibrariesPage.tsx:697
+#: src/pages/LibrariesPage.tsx:2019
 msgid "library.wizard.smb.chooseServer"
 msgstr "サーバーを選択"
 
-#: src/pages/LibrariesPage.tsx:2248
+#: src/pages/LibrariesPage.tsx:2190
 msgid "library.wizard.smb.connect"
 msgstr "接続"
 
-#: src/pages/LibrariesPage.tsx:2017
+#: src/pages/LibrariesPage.tsx:1959
 msgid "library.wizard.smb.credentials"
 msgstr "認証情報"
 
-#: src/pages/LibrariesPage.tsx:1802
+#: src/pages/LibrariesPage.tsx:1744
 msgid "library.wizard.smb.desc"
 msgstr "Windows または NAS 共有に接続"
 
-#: src/pages/LibrariesPage.tsx:2098
+#: src/pages/LibrariesPage.tsx:2040
 msgid "library.wizard.smb.enterManually"
 msgstr "サーバーアドレスを手動入力"
 
-#: src/pages/LibrariesPage.tsx:2022
+#: src/pages/LibrariesPage.tsx:1964
 msgid "library.wizard.smb.folder"
 msgstr "フォルダ"
 
-#: src/pages/LibrariesPage.tsx:2367
+#: src/pages/LibrariesPage.tsx:2309
 msgid "library.wizard.smb.nameHint"
 msgstr "ライブラリ一覧に表示される名前"
 
-#: src/pages/LibrariesPage.tsx:2125
+#: src/pages/LibrariesPage.tsx:2067
 msgid "library.wizard.smb.next"
 msgstr "次へ"
 
-#: src/pages/LibrariesPage.tsx:2012
+#: src/pages/LibrariesPage.tsx:1954
 msgid "library.wizard.smb.server"
 msgstr "サーバー"
 
-#: src/pages/LibrariesPage.tsx:1831
+#: src/pages/LibrariesPage.tsx:1773
 msgid "library.wizard.webdav.desc"
 msgstr "WebDAV サーバーに接続"
 
-#: src/pages/LibrariesPage.tsx:998
-#: src/pages/LibrariesPage.tsx:1830
+#: src/pages/LibrariesPage.tsx:940
+#: src/pages/LibrariesPage.tsx:1772
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
@@ -1527,9 +1556,9 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "マッチング完了"
 
-#: src/routes/__root.tsx:133
-#~ msgid "nav.discover"
-#~ msgstr "Discover"
+#: src/components/AppSidebar.tsx:29
+msgid "nav.discover"
+msgstr "探索"
 
 #: src/components/AppSidebar.tsx:35
 msgid "nav.downloads"
@@ -1573,8 +1602,8 @@ msgid "nav.torrent"
 msgstr "トレント"
 
 #: src/components/AppSidebar.tsx:29
-msgid "nav.trending"
-msgstr "トレンド"
+#~ msgid "nav.trending"
+#~ msgstr "トレンド"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
@@ -1620,24 +1649,24 @@ msgstr "行"
 msgid "scan.completed"
 msgstr "スキャン完了"
 
-#: src/pages/LibraryDetailPage.tsx:1523
+#: src/pages/LibraryDetailPage.tsx:1586
 msgid "scan.phase.hashing"
 msgstr "ハッシュ中"
 
-#: src/pages/LibraryDetailPage.tsx:1524
+#: src/pages/LibraryDetailPage.tsx:1587
 msgid "scan.phase.matching"
 msgstr "マッチ中"
 
-#: src/pages/LibraryDetailPage.tsx:1521
+#: src/pages/LibraryDetailPage.tsx:1584
 msgid "scan.phase.scanning"
 msgstr "スキャン中"
 
-#: src/pages/LibrariesPage.tsx:3259
-#: src/pages/LibrariesPage.tsx:3264
+#: src/pages/LibrariesPage.tsx:3201
+#: src/pages/LibrariesPage.tsx:3206
 msgid "scan.scanAll"
 msgstr "すべてスキャン"
 
-#: src/pages/LibraryDetailPage.tsx:439
+#: src/pages/LibraryDetailPage.tsx:499
 #: src/pages/SchedulePage.tsx:215
 msgid "schedule.all"
 msgstr "すべて"
@@ -2117,21 +2146,21 @@ msgstr "トランスコードファイルとキャッシュの管理"
 msgid "settings.storage.transcodeDesc"
 msgstr "トランスコード済みビデオファイルは一時ディレクトリに保存されます"
 
-#: src/pages/TrendingPage.tsx:160
-msgid "trending.filter.all"
-msgstr "すべて"
+#: src/pages/TrendingPage.tsx:161
+#~ msgid "trending.filter.all"
+#~ msgstr "すべて"
 
 #: src/pages/TrendingPage.tsx:24
-msgid "trending.tab.popular"
-msgstr "人気順"
+#~ msgid "trending.tab.popular"
+#~ msgstr "人気順"
 
 #: src/pages/TrendingPage.tsx:23
-msgid "trending.tab.topRated"
-msgstr "最高評価"
+#~ msgid "trending.tab.topRated"
+#~ msgstr "最高評価"
 
 #: src/pages/TrendingPage.tsx:22
-msgid "trending.tab.trending"
-msgstr "トレンド"
+#~ msgid "trending.tab.trending"
+#~ msgstr "トレンド"
 
 #~ msgid "watch.audioTrack"
 #~ msgstr "Audio"

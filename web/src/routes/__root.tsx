@@ -25,7 +25,7 @@ interface UserResponse {
 const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS === 'true';
 
 function isPublicRoute(pathname: string): boolean {
-  const publicExact = ['/login', '/setup', '/schedule', '/trending', '/search'];
+  const publicExact = ['/login', '/setup', '/schedule', '/discover', '/search'];
   if (publicExact.includes(pathname)) return true;
   if (pathname.startsWith('/anime/')) return true;
   if (pathname.startsWith('/watch/')) return true;

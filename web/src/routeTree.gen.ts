@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TorrentSearchRouteImport } from './routes/torrent-search'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -19,17 +18,13 @@ import { Route as RssRouteImport } from './routes/rss'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibrariesRouteImport } from './routes/libraries'
 import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
 
-const TrendingRoute = TrendingRouteImport.update({
-  id: '/trending',
-  path: '/trending',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TorrentSearchRoute = TorrentSearchRouteImport.update({
   id: '/torrent-search',
   path: '/torrent-search',
@@ -75,6 +70,11 @@ const DownloadsRoute = DownloadsRouteImport.update({
   path: '/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CollectionRoute = CollectionRouteImport.update({
   id: '/collection',
   path: '/collection',
@@ -104,6 +104,7 @@ const AnimeIdRoute = AnimeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/collection': typeof CollectionRoute
+  '/discover': typeof DiscoverRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
@@ -113,7 +114,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
-  '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
@@ -121,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/collection': typeof CollectionRoute
+  '/discover': typeof DiscoverRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
@@ -130,7 +131,6 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
-  '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
@@ -139,6 +139,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/collection': typeof CollectionRoute
+  '/discover': typeof DiscoverRoute
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
@@ -148,7 +149,6 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
-  '/trending': typeof TrendingRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries_/$id': typeof LibrariesIdRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
@@ -158,6 +158,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/collection'
+    | '/discover'
     | '/downloads'
     | '/libraries'
     | '/login'
@@ -167,7 +168,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/setup'
     | '/torrent-search'
-    | '/trending'
     | '/anime/$id'
     | '/libraries/$id'
     | '/watch/$animeId'
@@ -175,6 +175,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/collection'
+    | '/discover'
     | '/downloads'
     | '/libraries'
     | '/login'
@@ -184,7 +185,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/setup'
     | '/torrent-search'
-    | '/trending'
     | '/anime/$id'
     | '/libraries/$id'
     | '/watch/$animeId'
@@ -192,6 +192,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/collection'
+    | '/discover'
     | '/downloads'
     | '/libraries'
     | '/login'
@@ -201,7 +202,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/setup'
     | '/torrent-search'
-    | '/trending'
     | '/anime/$id'
     | '/libraries_/$id'
     | '/watch/$animeId'
@@ -210,6 +210,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CollectionRoute: typeof CollectionRoute
+  DiscoverRoute: typeof DiscoverRoute
   DownloadsRoute: typeof DownloadsRoute
   LibrariesRoute: typeof LibrariesRoute
   LoginRoute: typeof LoginRoute
@@ -219,7 +220,6 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SetupRoute: typeof SetupRoute
   TorrentSearchRoute: typeof TorrentSearchRoute
-  TrendingRoute: typeof TrendingRoute
   AnimeIdRoute: typeof AnimeIdRoute
   LibrariesIdRoute: typeof LibrariesIdRoute
   WatchAnimeIdRoute: typeof WatchAnimeIdRoute
@@ -227,13 +227,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/trending': {
-      id: '/trending'
-      path: '/trending'
-      fullPath: '/trending'
-      preLoaderRoute: typeof TrendingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/torrent-search': {
       id: '/torrent-search'
       path: '/torrent-search'
@@ -297,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/collection': {
       id: '/collection'
       path: '/collection'
@@ -338,6 +338,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CollectionRoute: CollectionRoute,
+  DiscoverRoute: DiscoverRoute,
   DownloadsRoute: DownloadsRoute,
   LibrariesRoute: LibrariesRoute,
   LoginRoute: LoginRoute,
@@ -347,7 +348,6 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SetupRoute: SetupRoute,
   TorrentSearchRoute: TorrentSearchRoute,
-  TrendingRoute: TrendingRoute,
   AnimeIdRoute: AnimeIdRoute,
   LibrariesIdRoute: LibrariesIdRoute,
   WatchAnimeIdRoute: WatchAnimeIdRoute,
