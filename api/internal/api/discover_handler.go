@@ -81,7 +81,9 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 		genres = strings.Split(genre, ",")
 	}
 
-	hasAdvanced := sort != "" || yearStr != "" || season != "" || minScoreStr != "" || status != "" || len(genres) > 1
+	format := c.QueryParam("format")
+
+	hasAdvanced := sort != "" || yearStr != "" || season != "" || minScoreStr != "" || status != "" || format != "" || len(genres) > 1
 
 	if !hasAdvanced && len(genres) == 1 {
 		// Legacy path: single genre browse
@@ -112,6 +114,7 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 		Season:   season,
 		MinScore: minScore,
 		Status:   status,
+		Format:   format,
 	}
 	results, err := h.metadata.Browse(c.Request().Context(), filter, page)
 	if err != nil {

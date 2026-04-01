@@ -73,6 +73,7 @@ type BrowseFilter struct {
 	Season   string   // AniList MediaSeason enum (WINTER, SPRING, SUMMER, FALL)
 	MinScore int      // averageScore_greater (0-100 scale)
 	Status   string   // AniList MediaStatus enum (FINISHED, RELEASING, NOT_YET_RELEASED)
+	Format   string   // AniList MediaFormat enum (TV, MOVIE, OVA, ONA, SPECIAL, TV_SHORT)
 }
 
 type Client interface {
@@ -231,6 +232,11 @@ func (c *graphqlClient) Browse(ctx context.Context, filter BrowseFilter, page, p
 		varDefs += ", $status: MediaStatus"
 		mediaArgs += ", status: $status"
 		vars["status"] = filter.Status
+	}
+	if filter.Format != "" {
+		varDefs += ", $format: MediaFormat"
+		mediaArgs += ", format: $format"
+		vars["format"] = filter.Format
 	}
 
 	// Default sort

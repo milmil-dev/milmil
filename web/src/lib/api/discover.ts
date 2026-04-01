@@ -90,6 +90,7 @@ export interface BrowseParams {
   season?: string;
   min_score?: number;
   status?: string;
+  format?: string;
   page?: number;
 }
 
@@ -124,6 +125,7 @@ export const discoverApi = {
     if (params.season) qs.set('season', params.season);
     if (params.min_score) qs.set('min_score', String(params.min_score));
     if (params.status) qs.set('status', params.status);
+    if (params.format) qs.set('format', params.format);
     if (params.page) qs.set('page', String(params.page));
     return api.get<AnimeSummary[]>(`/api/v1/discover/browse?${qs.toString()}`);
   },

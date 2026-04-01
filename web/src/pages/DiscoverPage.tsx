@@ -82,10 +82,8 @@ function useSections(): SectionDef[] {
     {
       titleKey: msg`discover.trendingMovies`,
       queryKey: ['discover', 'trendingMovies'],
-      queryFn: async () => {
-        const results = await discoverApi.browse({ sort: 'TRENDING_DESC' });
-        return results.filter((a) => a.media_type === 'MOVIE');
-      },
+      queryFn: () =>
+        discoverApi.browse({ sort: 'TRENDING_DESC', format: 'MOVIE' }),
     },
   ];
 }

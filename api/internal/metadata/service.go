@@ -478,6 +478,7 @@ type BrowseFilter struct {
 	Season   string
 	MinScore int
 	Status   string
+	Format   string
 }
 
 func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]AnimeSummary, error) {
@@ -485,8 +486,8 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 	if len(filter.Genres) > 0 {
 		genreKey = fmt.Sprintf("%v", filter.Genres)
 	}
-	cacheKey := fmt.Sprintf("meta:browse:%s:%s:%d:%s:%d:%s:%d",
-		genreKey, filter.Sort, filter.Year, filter.Season, filter.MinScore, filter.Status, page)
+	cacheKey := fmt.Sprintf("meta:browse:%s:%s:%d:%s:%d:%s:%s:%d",
+		genreKey, filter.Sort, filter.Year, filter.Season, filter.MinScore, filter.Status, filter.Format, page)
 	var cached []AnimeSummary
 	if s.getCache(ctx, cacheKey, &cached) {
 		return cached, nil
@@ -500,6 +501,7 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 		Season:   filter.Season,
 		MinScore: filter.MinScore,
 		Status:   filter.Status,
+		Format:   filter.Format,
 	}
 	media, err := s.anilist.Browse(ctx, alFilter, page, 50)
 	if err != nil {
