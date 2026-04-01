@@ -17,3 +17,10 @@ SELECT * FROM rss_feeds WHERE id = ? LIMIT 1;
 
 -- name: UpdateRSSFeedLastFetched :exec
 UPDATE rss_feeds SET last_fetched_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?;
+
+-- name: ListRSSFeedsDue :many
+SELECT * FROM rss_feeds
+WHERE enabled = 1
+  AND (last_fetched_at IS NULL
+       OR (strftime('%s', 'now') - strftime('%s', last_fetched_at)) >= fetch_interval_minutes * 60)
+ORDER BY last_fetched_at ASC;

@@ -29,6 +29,8 @@ import (
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/torrent"
+	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/migrations"
 )
@@ -137,8 +139,31 @@ func main() {
 	// WebSocket hub
 	wsHub := ws.NewHub()
 
+	// Torrent search providers
+	torrentReg := torrent.NewRegistry()
+	torrentReg.Register(torrent.NewNyaaProvider())
+	torrentReg.Register(torrent.NewDMHYProvider())
+	torrentReg.Register(torrent.NewMikanProvider())
+	torrentReg.Register(torrent.NewBangumiMoeProvider())
+	torrentReg.Register(torrent.NewACGRipProvider())
+	torrentReg.Register(torrent.NewDanDanPlayProvider(""))
+
+	// Background job scheduler (River)
+	bgCtx := context.Background()
+	worker.RegisterWorkers(store.New(database), aria2Client)
+	riverClient, err := worker.NewClient(bgCtx, database, cfg.DatabaseURL)
+	if err != nil {
+		slog.Warn("river client init failed — background RSS refresh disabled", "err", err)
+	} else {
+		if err := riverClient.Start(bgCtx); err != nil {
+			slog.Warn("river start failed", "err", err)
+		} else {
+			slog.Info("background RSS scheduler started", "interval", "5m")
+		}
+	}
+
 	// HTTP server
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient, torrentReg)
 
 	go func() {
 		addr := fmt.Sprintf(":%d", cfg.APIPort)
@@ -154,6 +179,11 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	// Graceful shutdown
+	if riverClient != nil {
+		_ = riverClient.Stop(ctx)
+	}
 	if err := e.Shutdown(ctx); err != nil {
 		slog.Error("shutdown", "err", err)
 		os.Exit(1)

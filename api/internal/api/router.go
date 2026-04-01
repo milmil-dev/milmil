@@ -13,43 +13,46 @@ import (
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/torrent"
 	"github.com/milmil/api/internal/ws"
 )
 
 type handler struct {
-	cfg           *config.Config
-	db            *sql.DB
-	queries       *store.Queries
-	cache         cache.Cache
-	metadata      *metadata.Service
-	matcher       *matcher.Matcher
-	dandanplay    dandanplay.Client
-	resolver      *resolver.Resolver
-	aria2         aria2.Client
-	wsHub         *ws.Hub
-	tmdb          tmdb.Client
-	encryptionKey []byte
+	cfg             *config.Config
+	db              *sql.DB
+	queries         *store.Queries
+	cache           cache.Cache
+	metadata        *metadata.Service
+	matcher         *matcher.Matcher
+	dandanplay      dandanplay.Client
+	resolver        *resolver.Resolver
+	aria2           aria2.Client
+	wsHub           *ws.Hub
+	tmdb            tmdb.Client
+	torrentRegistry *torrent.Registry
+	encryptionKey   []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub, tmdbClient tmdb.Client) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
 
 	h := &handler{
-		cfg:           cfg,
-		db:            db,
-		queries:       store.New(db),
-		cache:         cacheClient,
-		metadata:      metadataSvc,
-		matcher:       matcherSvc,
-		dandanplay:    ddpClient,
-		resolver:      resolverSvc,
-		aria2:         aria2Client,
-		wsHub:         wsHub,
-		tmdb:          tmdbClient,
-		encryptionKey: cfg.EncryptionKey,
+		cfg:             cfg,
+		db:              db,
+		queries:         store.New(db),
+		cache:           cacheClient,
+		metadata:        metadataSvc,
+		matcher:         matcherSvc,
+		dandanplay:      ddpClient,
+		resolver:        resolverSvc,
+		aria2:           aria2Client,
+		wsHub:           wsHub,
+		tmdb:            tmdbClient,
+		torrentRegistry: torrentReg,
+		encryptionKey:   cfg.EncryptionKey,
 	}
 
 	// WebSocket (no auth — WS auth is complex, keep it simple)
@@ -178,6 +181,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Torrent Search — protected
 	searchGroup := v1.Group("/torrent-search", jwtMiddleware(cfg.JWTSecret))
 	searchGroup.GET("", h.handleTorrentSearch)
+	searchGroup.GET("/providers", h.handleTorrentProviders)
 	searchGroup.POST("/add", h.handleTorrentSearchAdd)
 
 	// Subtitles — protected (with query param token fallback for <track src>)

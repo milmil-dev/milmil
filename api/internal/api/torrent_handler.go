@@ -2,14 +2,13 @@ package api
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
-	"net/url"
+	"sort"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/torrent"
 )
 
 func (h *handler) handleTorrentSearch(c echo.Context) error {
@@ -18,13 +17,30 @@ func (h *handler) handleTorrentSearch(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "q required")
 	}
 
-	feedURL := fmt.Sprintf("https://nyaa.si/?page=rss&q=%s&c=1_2&f=0", url.QueryEscape(q))
-	items, err := rss.ParseFeed(c.Request().Context(), feedURL)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, "search failed")
+	source := c.QueryParam("source")
+	ctx := c.Request().Context()
+
+	var results []torrent.SearchResult
+	if source == "" || source == "all" {
+		results = h.torrentRegistry.SearchAll(ctx, q)
+	} else {
+		var err error
+		results, err = h.torrentRegistry.Search(ctx, source, q)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadGateway, "search failed: "+err.Error())
+		}
 	}
 
-	return c.JSON(http.StatusOK, items)
+	// Sort by publish date descending
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].PublishDate.After(results[j].PublishDate)
+	})
+
+	return c.JSON(http.StatusOK, results)
+}
+
+func (h *handler) handleTorrentProviders(c echo.Context) error {
+	return c.JSON(http.StatusOK, h.torrentRegistry.Names())
 }
 
 type addTorrentRequest struct {

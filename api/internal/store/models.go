@@ -52,16 +52,19 @@ type Download struct {
 }
 
 type DownloadRule struct {
-	ID              string         `json:"id"`
-	Name            string         `json:"name"`
-	Enabled         int64          `json:"enabled"`
-	RssFeedID       string         `json:"rss_feed_id"`
-	FilterRegex     string         `json:"filter_regex"`
-	ExcludeRegex    string         `json:"exclude_regex"`
-	SaveDir         string         `json:"save_dir"`
-	EpisodeOffset   int64          `json:"episode_offset"`
-	LastTriggeredAt sql.NullString `json:"last_triggered_at"`
-	CreatedAt       string         `json:"created_at"`
+	ID               string         `json:"id"`
+	Name             string         `json:"name"`
+	Enabled          int64          `json:"enabled"`
+	RssFeedID        string         `json:"rss_feed_id"`
+	FilterRegex      string         `json:"filter_regex"`
+	ExcludeRegex     string         `json:"exclude_regex"`
+	SaveDir          string         `json:"save_dir"`
+	EpisodeOffset    int64          `json:"episode_offset"`
+	LastTriggeredAt  sql.NullString `json:"last_triggered_at"`
+	CreatedAt        string         `json:"created_at"`
+	ResolutionFilter string         `json:"resolution_filter"`
+	SubgroupFilter   string         `json:"subgroup_filter"`
+	MinSeeders       int64          `json:"min_seeders"`
 }
 
 type Episode struct {

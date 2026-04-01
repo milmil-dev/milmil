@@ -1,0 +1,2 @@
+-- SQLite does not support DROP COLUMN before 3.35.0; recreate table if needed.
+-- For development, these columns are harmless to keep.

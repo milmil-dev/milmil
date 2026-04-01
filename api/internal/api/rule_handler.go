@@ -9,23 +9,29 @@ import (
 )
 
 type createDownloadRuleRequest struct {
-	Name          string `json:"name"`
-	Enabled       bool   `json:"enabled"`
-	RSSFeedID     string `json:"rss_feed_id"`
-	FilterRegex   string `json:"filter_regex"`
-	ExcludeRegex  string `json:"exclude_regex"`
-	SaveDir       string `json:"save_dir"`
-	EpisodeOffset int64  `json:"episode_offset"`
+	Name             string `json:"name"`
+	Enabled          bool   `json:"enabled"`
+	RSSFeedID        string `json:"rss_feed_id"`
+	FilterRegex      string `json:"filter_regex"`
+	ExcludeRegex     string `json:"exclude_regex"`
+	SaveDir          string `json:"save_dir"`
+	EpisodeOffset    int64  `json:"episode_offset"`
+	ResolutionFilter string `json:"resolution_filter"`
+	SubGroupFilter   string `json:"subgroup_filter"`
+	MinSeeders       int64  `json:"min_seeders"`
 }
 
 type updateDownloadRuleRequest struct {
-	Name          string `json:"name"`
-	Enabled       bool   `json:"enabled"`
-	RSSFeedID     string `json:"rss_feed_id"`
-	FilterRegex   string `json:"filter_regex"`
-	ExcludeRegex  string `json:"exclude_regex"`
-	SaveDir       string `json:"save_dir"`
-	EpisodeOffset int64  `json:"episode_offset"`
+	Name             string `json:"name"`
+	Enabled          bool   `json:"enabled"`
+	RSSFeedID        string `json:"rss_feed_id"`
+	FilterRegex      string `json:"filter_regex"`
+	ExcludeRegex     string `json:"exclude_regex"`
+	SaveDir          string `json:"save_dir"`
+	EpisodeOffset    int64  `json:"episode_offset"`
+	ResolutionFilter string `json:"resolution_filter"`
+	SubGroupFilter   string `json:"subgroup_filter"`
+	MinSeeders       int64  `json:"min_seeders"`
 }
 
 func (h *handler) handleListDownloadRules(c echo.Context) error {
@@ -49,14 +55,17 @@ func (h *handler) handleCreateDownloadRule(c echo.Context) error {
 		enabled = 1
 	}
 	rule, err := h.queries.CreateDownloadRule(c.Request().Context(), store.CreateDownloadRuleParams{
-		ID:            uuid.NewString(),
-		Name:          req.Name,
-		Enabled:       enabled,
-		RssFeedID:     req.RSSFeedID,
-		FilterRegex:   req.FilterRegex,
-		ExcludeRegex:  req.ExcludeRegex,
-		SaveDir:       req.SaveDir,
-		EpisodeOffset: req.EpisodeOffset,
+		ID:               uuid.NewString(),
+		Name:             req.Name,
+		Enabled:          enabled,
+		RssFeedID:        req.RSSFeedID,
+		FilterRegex:      req.FilterRegex,
+		ExcludeRegex:     req.ExcludeRegex,
+		SaveDir:          req.SaveDir,
+		EpisodeOffset:    req.EpisodeOffset,
+		ResolutionFilter: req.ResolutionFilter,
+		SubgroupFilter:   req.SubGroupFilter,
+		MinSeeders:       req.MinSeeders,
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -77,14 +86,17 @@ func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
 		enabled = 1
 	}
 	if err := h.queries.UpdateDownloadRule(c.Request().Context(), store.UpdateDownloadRuleParams{
-		ID:            c.Param("id"),
-		Name:          req.Name,
-		Enabled:       enabled,
-		RssFeedID:     req.RSSFeedID,
-		FilterRegex:   req.FilterRegex,
-		ExcludeRegex:  req.ExcludeRegex,
-		SaveDir:       req.SaveDir,
-		EpisodeOffset: req.EpisodeOffset,
+		ID:               c.Param("id"),
+		Name:             req.Name,
+		Enabled:          enabled,
+		RssFeedID:        req.RSSFeedID,
+		FilterRegex:      req.FilterRegex,
+		ExcludeRegex:     req.ExcludeRegex,
+		SaveDir:          req.SaveDir,
+		EpisodeOffset:    req.EpisodeOffset,
+		ResolutionFilter: req.ResolutionFilter,
+		SubgroupFilter:   req.SubGroupFilter,
+		MinSeeders:       req.MinSeeders,
 	}); err != nil {
 		return echo.ErrInternalServerError
 	}

@@ -16,7 +16,7 @@ func TestHealthEndpoint(t *testing.T) {
 		JWTSecret:   "test",
 		DatabaseURL: "sqlite://data/test.db",
 	}
-	e := api.NewRouter(cfg, nil, nil, nil, nil, nil, nil, nil, nil)
+	e := api.NewRouter(cfg, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rec := httptest.NewRecorder()

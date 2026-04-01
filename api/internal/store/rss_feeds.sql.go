@@ -112,6 +112,46 @@ func (q *Queries) ListRSSFeeds(ctx context.Context) ([]RssFeed, error) {
 	return items, nil
 }
 
+const listRSSFeedsDue = `-- name: ListRSSFeedsDue :many
+SELECT id, name, url, type, enabled, fetch_interval_minutes, last_fetched_at, created_at FROM rss_feeds
+WHERE enabled = 1
+  AND (last_fetched_at IS NULL
+       OR (strftime('%s', 'now') - strftime('%s', last_fetched_at)) >= fetch_interval_minutes * 60)
+ORDER BY last_fetched_at ASC
+`
+
+func (q *Queries) ListRSSFeedsDue(ctx context.Context) ([]RssFeed, error) {
+	rows, err := q.db.QueryContext(ctx, listRSSFeedsDue)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []RssFeed{}
+	for rows.Next() {
+		var i RssFeed
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Url,
+			&i.Type,
+			&i.Enabled,
+			&i.FetchIntervalMinutes,
+			&i.LastFetchedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateRSSFeed = `-- name: UpdateRSSFeed :exec
 UPDATE rss_feeds SET name = ?, url = ?, type = ?, enabled = ?, fetch_interval_minutes = ? WHERE id = ?
 `
