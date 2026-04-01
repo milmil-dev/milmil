@@ -246,6 +246,7 @@ func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangu
 		BangumiID:           sql.NullInt64{Int64: bangumiID, Valid: true},
 		DandanplayBangumiID: sql.NullInt64{Int64: ddpAnimeID, Valid: true},
 		WatchStatus:         watchStatus,
+		Score:               subject.Rating.Score,
 	})
 	if err != nil {
 		return store.Anime{}, false, err

@@ -71,6 +71,7 @@ type libraryListItem struct {
 func (h *handler) handleListLibraries(c echo.Context) error {
 	libs, err := h.queries.ListLibrariesWithStats(c.Request().Context())
 	if err != nil {
+		slog.Error("failed to list libraries", "err", err)
 		return echo.ErrInternalServerError
 	}
 	result := make([]libraryListItem, len(libs))
@@ -106,6 +107,7 @@ func (h *handler) handleGetLibrary(c echo.Context) error {
 		if errors.Is(err, sql.ErrNoRows) {
 			return echo.ErrNotFound
 		}
+		slog.Error("failed to get library", "id", c.Param("id"), "err", err)
 		return echo.ErrInternalServerError
 	}
 	var totalSize int64
@@ -204,6 +206,7 @@ func (h *handler) handleCreateLibrary(c echo.Context) error {
 		}
 		encrypted, err := crypto.Encrypt(h.encryptionKey, string(configJSON))
 		if err != nil {
+			slog.Error("failed to encrypt source config", "err", err)
 			return echo.ErrInternalServerError
 		}
 		encryptedConfig = sql.NullString{String: encrypted, Valid: true}
@@ -223,6 +226,7 @@ func (h *handler) handleCreateLibrary(c echo.Context) error {
 		SourceConfigEncrypted: encryptedConfig,
 	})
 	if err != nil {
+		slog.Error("failed to create library", "name", req.Name, "err", err)
 		return echo.ErrInternalServerError
 	}
 	return c.JSON(http.StatusCreated, lib)
@@ -242,23 +246,37 @@ func (h *handler) handleUpdateLibrary(c echo.Context) error {
 		sourceType = "local"
 	}
 
-	var encryptedConfig sql.NullString
+	// Fetch existing library to preserve encrypted config when not provided.
+	existing, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.ErrNotFound
+		}
+		slog.Error("failed to get library for update", "id", c.Param("id"), "err", err)
+		return echo.ErrInternalServerError
+	}
+
+	encryptedConfig := existing.SourceConfigEncrypted
 
 	if sourceType == "local" {
 		if _, err := os.Stat(req.Path); os.IsNotExist(err) {
 			return echo.NewHTTPError(http.StatusBadRequest, "path does not exist")
 		}
-	} else {
+		encryptedConfig = sql.NullString{}
+	} else if len(req.SourceConfig) > 0 {
+		// Only re-encrypt if new source_config was actually provided.
 		configJSON, err := json.Marshal(req.SourceConfig)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "invalid source_config")
 		}
 		encrypted, err := crypto.Encrypt(h.encryptionKey, string(configJSON))
 		if err != nil {
+			slog.Error("failed to encrypt source config on update", "err", err)
 			return echo.ErrInternalServerError
 		}
 		encryptedConfig = sql.NullString{String: encrypted, Valid: true}
 	}
+	// else: keep existing.SourceConfigEncrypted (preserves credentials on edit)
 
 	enabled := int64(0)
 	if req.Enabled {
@@ -281,6 +299,7 @@ func (h *handler) handleUpdateLibrary(c echo.Context) error {
 		if errors.Is(err, sql.ErrNoRows) {
 			return echo.ErrNotFound
 		}
+		slog.Error("failed to update library", "id", c.Param("id"), "err", err)
 		return echo.ErrInternalServerError
 	}
 	return c.JSON(http.StatusOK, lib)
@@ -288,6 +307,7 @@ func (h *handler) handleUpdateLibrary(c echo.Context) error {
 
 func (h *handler) handleDeleteLibrary(c echo.Context) error {
 	if err := h.queries.DeleteLibrary(c.Request().Context(), c.Param("id")); err != nil {
+		slog.Error("failed to delete library", "id", c.Param("id"), "err", err)
 		return echo.ErrInternalServerError
 	}
 	return c.NoContent(http.StatusNoContent)
@@ -299,6 +319,7 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 		if errors.Is(err, sql.ErrNoRows) {
 			return echo.ErrNotFound
 		}
+		slog.Error("failed to get library for scan", "id", c.Param("id"), "err", err)
 		return echo.ErrInternalServerError
 	}
 	// Decrypt source config for network storage providers; local libraries use empty config.
@@ -306,6 +327,7 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 	if lib.SourceConfigEncrypted.Valid && lib.SourceConfigEncrypted.String != "" {
 		decrypted, err := crypto.Decrypt(h.encryptionKey, lib.SourceConfigEncrypted.String)
 		if err != nil {
+			slog.Error("failed to decrypt source config for scan", "library_id", lib.ID, "err", err)
 			return echo.ErrInternalServerError
 		}
 		configJSON = decrypted
@@ -436,7 +458,6 @@ func sanitizeTimestamp(raw string) (string, bool) {
 	}
 	// Fallback for older or non-zoned values.
 	for _, layout := range []string{
-		"2006-01-02T15:04:05Z07:00",
 		"2006-01-02 15:04:05",
 		"2006-01-02",
 	} {
@@ -450,6 +471,7 @@ func sanitizeTimestamp(raw string) (string, bool) {
 func (h *handler) handleListScanSummaries(c echo.Context) error {
 	summaries, err := h.queries.ListScanSummaries(c.Request().Context(), c.Param("id"))
 	if err != nil {
+		slog.Error("failed to list scan summaries", "library_id", c.Param("id"), "err", err)
 		return echo.ErrInternalServerError
 	}
 
@@ -519,9 +541,16 @@ func (h *handler) handleBrowse(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
 	}
 
+	// Sanitize browse path to prevent directory traversal attacks.
+	cleanPath := path.Clean("/" + req.Path)
+	req.Path = cleanPath
+
 	// For SMB: if share is empty, list available shares on the host instead of directories.
 	if req.SourceType == "smb" {
-		configJSON, _ := json.Marshal(req.SourceConfig)
+		configJSON, err := json.Marshal(req.SourceConfig)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "invalid source_config")
+		}
 		var cfg storage.RcloneConfig
 		if err := json.Unmarshal(configJSON, &cfg); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "invalid source_config")
@@ -540,7 +569,10 @@ func (h *handler) handleBrowse(c echo.Context) error {
 		}
 	}
 
-	configJSON, _ := json.Marshal(req.SourceConfig)
+	configJSON, err := json.Marshal(req.SourceConfig)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid source_config")
+	}
 	provider, err := storage.NewProvider(req.SourceType, string(configJSON))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())

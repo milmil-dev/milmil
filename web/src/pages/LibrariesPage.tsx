@@ -2,9 +2,9 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { LoginModal } from '../components/LoginModal';
@@ -304,7 +304,11 @@ function LibraryCard({
                       : 'text-red-300'
                 )}
               >
-                {isCheckingConnection ? 'CHECKING' : connectionStatus?.online ? 'ONLINE' : 'OFFLINE'}
+                {isCheckingConnection
+                  ? i18n._(msg`connection.checking`)
+                  : connectionStatus?.online
+                    ? i18n._(msg`connection.online`)
+                    : i18n._(msg`connection.offline`)}
               </span>
             </div>
           )}
@@ -314,8 +318,14 @@ function LibraryCard({
           {lib.file_count} files · {formatBytes(lib.total_size_bytes)} · {lastScanned}
         </p>
         {isRemoteLibrary && connectionCheckedAt && (
-          <p className="text-[10px] text-white/25 mt-1">Checked {connectionCheckedAt}</p>
+          <p className="text-[10px] text-white/25 mt-1">{i18n._(msg`library.checked`)} {connectionCheckedAt}</p>
         )}
+        {!isScanning && (() => {
+          const nextScan = formatNextScan(lib.last_scanned_at, lib.scan_interval_minutes, lib.enabled, i18n);
+          return nextScan ? (
+            <p className="text-[10px] text-white/20 mt-0.5">{nextScan}</p>
+          ) : null;
+        })()}
       </div>
     </div>
   );
@@ -538,7 +548,6 @@ function FolderBrowser({
       if (index === 0) {
         // Click on share name → go back to share list
         setSelectedShare('');
-        void '';
         const config = getSourceConfig();
         delete config.share;
         doBrowse('/', config);
@@ -572,7 +581,6 @@ function FolderBrowser({
       return;
     }
     doBrowse(entry.path);
-    void entry.path;
   };
 
   const handleSelectFolder = () => {
@@ -3031,12 +3039,12 @@ function RecentlyMatchedPreview() {
         <span className="text-sm font-semibold text-white/60 uppercase tracking-wider">
           {i18n._(msg`collection.recentlyMatched`)}
         </span>
-        <a
-          href="/collection"
+        <Link
+          to="/collection"
           className="text-xs text-amber-400/80 hover:text-amber-400 transition-colors"
         >
           {i18n._(msg`collection.viewAll`)} →
-        </a>
+        </Link>
       </div>
       {/* Scroll strip */}
       <div className="flex gap-3 overflow-x-auto pb-2">
@@ -3050,6 +3058,34 @@ function RecentlyMatchedPreview() {
   );
 }
 
+// ─── Next scan helper ────────────────────────────────────────────────────────
+function formatNextScan(
+  lastScannedAt: string | null,
+  intervalMinutes: number,
+  enabled: number,
+  i18n: ReturnType<typeof useLingui>['i18n']
+): string | null {
+  if (!enabled || !lastScannedAt || intervalMinutes <= 0) return null;
+  const lastScanned = new Date(lastScannedAt);
+  if (Number.isNaN(lastScanned.getTime()) || lastScanned.getFullYear() <= 2000) return null;
+  const nextScanMs = lastScanned.getTime() + intervalMinutes * 60_000;
+  const diffMs = nextScanMs - Date.now();
+  if (diffMs <= 0) return i18n._(msg`library.nextScan.soon`);
+  const minutes = Math.ceil(diffMs / 60_000);
+  if (minutes < 60) return `${i18n._(msg`library.nextScan`)} ${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMins = minutes % 60;
+  if (hours < 24) {
+    return remainingMins > 0
+      ? `${i18n._(msg`library.nextScan`)} ${hours}h ${remainingMins}m`
+      : `${i18n._(msg`library.nextScan`)} ${hours}h`;
+  }
+  const days = Math.floor(hours / 24);
+  return `${i18n._(msg`library.nextScan`)} ${days}d`;
+}
+
+type SortKey = 'name' | 'match' | 'size' | 'scanned';
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function LibrariesPage() {
   const { i18n } = useLingui();
@@ -3059,6 +3095,8 @@ export function LibrariesPage() {
   const [drawerMode, setDrawerMode] = useState<'add' | 'edit' | null>(null);
   const [editLib, setEditLib] = useState<LibraryWithStats | null>(null);
   const [deleteLib, setDeleteLib] = useState<LibraryWithStats | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>('name');
+  const [, setTick] = useState(0);
 
   // Sync login modal visibility with auth state
   useEffect(() => {
@@ -3110,6 +3148,46 @@ export function LibrariesPage() {
     mutationFn: (id: string) => libraryApi.scan(id),
     onError: (err: Error) => toast.error(err.message),
   });
+
+  // Refresh next-scan countdown every 60s
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Client-side sorting
+  const sortedLibraries = useMemo(() => {
+    const sorted = [...libraries];
+    switch (sortKey) {
+      case 'name':
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'match':
+        sorted.sort((a, b) => {
+          const pctA = a.file_count > 0 ? a.matched_count / a.file_count : 0;
+          const pctB = b.file_count > 0 ? b.matched_count / b.file_count : 0;
+          return pctB - pctA;
+        });
+        break;
+      case 'size':
+        sorted.sort((a, b) => b.total_size_bytes - a.total_size_bytes);
+        break;
+      case 'scanned':
+        sorted.sort((a, b) => {
+          const tA = a.last_scanned_at ? new Date(a.last_scanned_at).getTime() : 0;
+          const tB = b.last_scanned_at ? new Date(b.last_scanned_at).getTime() : 0;
+          return tB - tA;
+        });
+        break;
+    }
+    return sorted;
+  }, [libraries, sortKey]);
+
+  // Summary stats
+  const totalFiles = libraries.reduce((sum, l) => sum + l.file_count, 0);
+  const totalMatched = libraries.reduce((sum, l) => sum + l.matched_count, 0);
+  const totalSize = libraries.reduce((sum, l) => sum + l.total_size_bytes, 0);
+  const matchPctAll = totalFiles > 0 ? Math.round((totalMatched / totalFiles) * 100) : 0;
 
   const skeletonCards = [1, 2, 3, 4];
   const hasLibraries = !isLoading && libraries.length > 0;
@@ -3174,8 +3252,9 @@ export function LibrariesPage() {
                   type="button"
                   onClick={() => {
                     for (const lib of libraries) {
-                      scanMutation.mutate(lib.id);
+                      libraryApi.scan(lib.id).catch((err: Error) => toast.error(`${lib.name}: ${err.message}`));
                     }
+                    toast.success(i18n._(msg`scan.scanAll`));
                   }}
                   disabled={libraries.length === 0}
                   className="px-4 py-2 text-sm font-medium rounded-md border border-white/[0.12] text-white/50 hover:text-white hover:border-white/25 transition-colors cursor-pointer disabled:opacity-30"
@@ -3191,6 +3270,40 @@ export function LibrariesPage() {
                 </button>
               </div>
             </div>
+
+            {/* Summary stats bar */}
+            {hasLibraries && (
+              <p className="text-[11px] text-white/25 mt-3">
+                {libraries.length} {i18n._(msg`library.summary.libraries`)} · {totalFiles} {i18n._(msg`library.summary.files`)} · {formatBytes(totalSize)} · {matchPctAll}% {i18n._(msg`library.summary.matched`)}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Sort toolbar */}
+        {hasLibraries && (
+          <div className="px-8 pb-4 flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/25 mr-1">
+              {i18n._(msg`library.sort.label`)}
+            </span>
+            {(['name', 'match', 'size', 'scanned'] as const).map((key) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setSortKey(key)}
+                className={cn(
+                  'px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer',
+                  sortKey === key
+                    ? 'bg-white/[0.1] text-white/70'
+                    : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
+                )}
+              >
+                {key === 'name' && i18n._(msg`library.sort.name`)}
+                {key === 'match' && i18n._(msg`library.sort.match`)}
+                {key === 'size' && i18n._(msg`library.sort.size`)}
+                {key === 'scanned' && i18n._(msg`library.sort.scanned`)}
+              </button>
+            ))}
           </div>
         )}
 
@@ -3229,7 +3342,7 @@ export function LibrariesPage() {
               style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}
             >
               <AnimatePresence mode="popLayout">
-                {libraries.map((lib, i) => (
+                {sortedLibraries.map((lib, i) => (
                   <motion.div
                     key={lib.id}
                     layout

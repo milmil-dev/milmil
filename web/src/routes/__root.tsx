@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -152,6 +154,7 @@ function BannerImage({ src }: { src: string | null }) {
 }
 
 function RootLayout() {
+  const { i18n } = useLingui();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const bgImage = useBgStore((s) => s.image);
   const queryClient = useQueryClient();
@@ -160,13 +163,18 @@ function RootLayout() {
 
   // Handle specific WS events for toasts + query invalidation
   useWSEvent((event) => {
+    const libraryName =
+      (event.data?.libraryName as string | undefined) ??
+      (event.data?.library_name as string | undefined) ??
+      '';
     if (event.type === 'scan:completed') {
-      const libraryName =
-        (event.data?.libraryName as string | undefined) ??
-        (event.data?.library_name as string | undefined) ??
-        '';
-      toast.success(`掃描完成: ${libraryName}`);
+      toast.success(`${i18n._(msg`scan.completed`)}: ${libraryName}`);
       queryClient.invalidateQueries({ queryKey: ['libraries'] });
+    }
+    if (event.type === 'match:completed') {
+      toast.success(`${i18n._(msg`match.completed`)}: ${libraryName}`);
+      queryClient.invalidateQueries({ queryKey: ['libraries'] });
+      queryClient.invalidateQueries({ queryKey: ['collection'] });
     }
     if (event.type === 'download:added') {
       queryClient.invalidateQueries({ queryKey: ['downloads'] });

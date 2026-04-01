@@ -437,6 +437,18 @@ msgstr "milmil에 오신 것을 환영합니다"
 msgid "auth.setup.username"
 msgstr "사용자 이름"
 
+#: src/pages/LibrariesPage.tsx
+msgid "connection.checking"
+msgstr "확인 중"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.offline"
+msgstr "오프라인"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.online"
+msgstr "온라인"
+
 #: src/pages/CollectionPage.tsx:18
 msgid "collection.all"
 msgstr "전체"
@@ -624,6 +636,10 @@ msgstr "인기"
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "전체 보기 →"
+
+#: src/pages/LibrariesPage.tsx
+msgid "match.completed"
+msgstr "매칭 완료"
 
 #: src/pages/LibrariesPage.tsx:342
 #: src/pages/LibrariesPage.tsx:377
@@ -1009,6 +1025,50 @@ msgstr "없음"
 #: src/pages/LibrariesPage.tsx:278
 msgid "library.off"
 msgstr "꺼짐"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.checked"
+msgstr "확인"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan"
+msgstr "다음 스캔"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan.soon"
+msgstr "곧 스캔 예정"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.label"
+msgstr "정렬"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.match"
+msgstr "매칭률"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.name"
+msgstr "이름"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.scanned"
+msgstr "최근 스캔"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.size"
+msgstr "크기"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.files"
+msgstr "파일"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.libraries"
+msgstr "라이브러리"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.matched"
+msgstr "매칭"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
@@ -1480,6 +1540,10 @@ msgstr "스캔"
 #: src/pages/LibrariesPage.tsx:3183
 msgid "scan.scanAll"
 msgstr "전체 스캔"
+
+#: src/pages/LibrariesPage.tsx
+msgid "scan.completed"
+msgstr "스캔 완료"
 
 #: src/pages/LibraryDetailPage.tsx:386
 #: src/pages/SchedulePage.tsx:442

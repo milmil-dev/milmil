@@ -435,6 +435,18 @@ msgstr "欢迎使用 milmil"
 msgid "auth.setup.username"
 msgstr "用户名"
 
+#: src/pages/LibrariesPage.tsx
+msgid "connection.checking"
+msgstr "检查中"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.offline"
+msgstr "离线"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.online"
+msgstr "在线"
+
 #: src/pages/CollectionPage.tsx:18
 msgid "collection.all"
 msgstr "全部"
@@ -622,6 +634,10 @@ msgstr "热门"
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "查看全部 →"
+
+#: src/pages/LibrariesPage.tsx
+msgid "match.completed"
+msgstr "匹配完成"
 
 #: src/pages/LibrariesPage.tsx:342
 #: src/pages/LibrariesPage.tsx:377
@@ -1007,6 +1023,50 @@ msgstr "从未"
 #: src/pages/LibrariesPage.tsx:278
 msgid "library.off"
 msgstr "关闭"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.checked"
+msgstr "检查"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan"
+msgstr "下次扫描"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan.soon"
+msgstr "即将扫描"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.label"
+msgstr "排序"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.match"
+msgstr "匹配率"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.name"
+msgstr "名称"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.scanned"
+msgstr "上次扫描"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.size"
+msgstr "大小"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.files"
+msgstr "文件"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.libraries"
+msgstr "媒体库"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.matched"
+msgstr "已匹配"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
@@ -1478,6 +1538,10 @@ msgstr "扫描中"
 #: src/pages/LibrariesPage.tsx:3183
 msgid "scan.scanAll"
 msgstr "全部扫描"
+
+#: src/pages/LibrariesPage.tsx
+msgid "scan.completed"
+msgstr "扫描完成"
 
 #: src/pages/LibraryDetailPage.tsx:386
 #: src/pages/SchedulePage.tsx:442

@@ -82,7 +82,7 @@ function StatusDropdown({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.93, y: 4 }}
       transition={{ duration: 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="absolute bottom-2 right-2 z-50 bg-zinc-900/95 border border-white/10 rounded-lg shadow-2xl overflow-hidden backdrop-blur-md"
+      className="absolute top-8 left-1.5 z-50 bg-zinc-900/95 border border-white/10 rounded-lg shadow-2xl overflow-hidden backdrop-blur-md"
       onClick={(e) => e.stopPropagation()}
     >
       {options.map((opt) => (
@@ -120,7 +120,7 @@ function toAnimeSummary(anime: CollectionAnime): AnimeSummary {
     title_original: anime.title,
     cover_image: anime.cover_image_url ?? '',
     episode_count: anime.total_episodes ?? 0,
-    score: anime.user_score ?? 0,
+    score: anime.score || 0,
   };
 }
 
@@ -133,6 +133,7 @@ function CollectionAnimeCard({ anime, index }: { anime: CollectionAnime; index: 
   const [hovered, setHovered] = useState(false);
 
   const summary = toAnimeSummary(anime);
+  const isWatching = anime.watch_status === 'watching';
 
   function handleCardClick() {
     if (!showDropdown && anime.bangumi_id) {
@@ -142,6 +143,7 @@ function CollectionAnimeCard({ anime, index }: { anime: CollectionAnime; index: 
 
   function handleStatusClick(e: React.MouseEvent) {
     e.stopPropagation();
+    e.preventDefault();
     setShowDropdown((v) => !v);
   }
 
@@ -159,39 +161,23 @@ function CollectionAnimeCard({ anime, index }: { anime: CollectionAnime; index: 
       }}
     >
       <AnimeCard anime={summary} onClick={handleCardClick}>
-        {/* Watch status badge — top right */}
-        {anime.watch_status && (
-          <span
+        {/* Watch status badge — always visible for non-watching, show on hover for watching */}
+        {anime.watch_status && (!isWatching || hovered || showDropdown) && (
+          <button
+            type="button"
+            onClick={handleStatusClick}
             className={cn(
-              'absolute top-1.5 right-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded text-white backdrop-blur-md',
-              STATUS_COLORS[anime.watch_status] ?? 'bg-zinc-500/80'
+              'absolute top-1.5 left-1.5 z-10 text-[9px] font-bold px-1.5 py-0.5 rounded text-white backdrop-blur-md cursor-pointer transition-all hover:opacity-80',
+              isWatching ? 'bg-black/50' : (STATUS_COLORS[anime.watch_status] ?? 'bg-zinc-500/80')
             )}
           >
             {STATUS_LABEL_KEYS[anime.watch_status]
               ? i18n._(STATUS_LABEL_KEYS[anime.watch_status]!)
               : anime.watch_status}
-          </span>
+          </button>
         )}
 
-        {/* Status change button — bottom right, appears on hover */}
-        <AnimatePresence>
-          {hovered && anime.bangumi_id && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              type="button"
-              onClick={handleStatusClick}
-              className="absolute bottom-2 right-2 z-10 w-6 h-6 rounded bg-black/70 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white hover:bg-black/90 transition-colors cursor-pointer"
-              title={i18n._(msg`collection.changeStatus`)}
-            >
-              <span className="text-[10px] font-bold">…</span>
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        {/* Status dropdown */}
+        {/* Status dropdown — appears below the badge */}
         <AnimatePresence>
           {showDropdown && anime.bangumi_id && (
             <StatusDropdown

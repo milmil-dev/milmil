@@ -437,6 +437,18 @@ msgstr "milmil へようこそ"
 msgid "auth.setup.username"
 msgstr "ユーザー名"
 
+#: src/pages/LibrariesPage.tsx
+msgid "connection.checking"
+msgstr "確認中"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.offline"
+msgstr "オフライン"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.online"
+msgstr "オンライン"
+
 #: src/pages/CollectionPage.tsx:18
 msgid "collection.all"
 msgstr "すべて"
@@ -624,6 +636,10 @@ msgstr "トレンド"
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "すべて表示 →"
+
+#: src/pages/LibrariesPage.tsx
+msgid "match.completed"
+msgstr "マッチング完了"
 
 #: src/pages/LibrariesPage.tsx:342
 #: src/pages/LibrariesPage.tsx:377
@@ -1009,6 +1025,50 @@ msgstr "未実行"
 #: src/pages/LibrariesPage.tsx:278
 msgid "library.off"
 msgstr "オフ"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.checked"
+msgstr "確認"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan"
+msgstr "次のスキャン"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan.soon"
+msgstr "まもなくスキャン"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.label"
+msgstr "並び替え"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.match"
+msgstr "一致率"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.name"
+msgstr "名前"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.scanned"
+msgstr "最終スキャン"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.size"
+msgstr "サイズ"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.files"
+msgstr "ファイル"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.libraries"
+msgstr "ライブラリ"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.matched"
+msgstr "一致"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
@@ -1480,6 +1540,10 @@ msgstr "スキャン中"
 #: src/pages/LibrariesPage.tsx:3183
 msgid "scan.scanAll"
 msgstr "すべてスキャン"
+
+#: src/pages/LibrariesPage.tsx
+msgid "scan.completed"
+msgstr "スキャン完了"
 
 #: src/pages/LibraryDetailPage.tsx:386
 #: src/pages/SchedulePage.tsx:442

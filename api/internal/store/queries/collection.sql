@@ -16,6 +16,7 @@ SELECT
   a.air_date,
   a.created_at,
   a.user_score,
+  a.score,
   COUNT(DISTINCT mf.id) AS local_file_count
 FROM anime a
 JOIN episodes e ON e.anime_id = a.id

@@ -27,6 +27,7 @@ type collectionAnimeResponse struct {
 	AirDate              *string `json:"air_date"`
 	CreatedAt            string  `json:"created_at"`
 	UserScore            *int64  `json:"user_score"`
+	Score                float64 `json:"score"`
 	LocalFileCount       int64   `json:"local_file_count"`
 }
 
@@ -62,6 +63,7 @@ func toCollectionAnime(row store.ListCollectionAnimeRow) collectionAnimeResponse
 		AirDate:              nullStr(row.AirDate),
 		CreatedAt:            row.CreatedAt,
 		UserScore:            nullInt(row.UserScore),
+		Score:                row.Score,
 		LocalFileCount:       row.LocalFileCount,
 	}
 }

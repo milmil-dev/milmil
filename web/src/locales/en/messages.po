@@ -437,6 +437,18 @@ msgstr "Welcome to milmil"
 msgid "auth.setup.username"
 msgstr "Username"
 
+#: src/pages/LibrariesPage.tsx
+msgid "connection.checking"
+msgstr "CHECKING"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.offline"
+msgstr "OFFLINE"
+
+#: src/pages/LibrariesPage.tsx
+msgid "connection.online"
+msgstr "ONLINE"
+
 #: src/pages/CollectionPage.tsx:18
 msgid "collection.all"
 msgstr "All"
@@ -624,6 +636,10 @@ msgstr "Trending"
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "View All →"
+
+#: src/pages/LibrariesPage.tsx
+msgid "match.completed"
+msgstr "Matching completed"
 
 #: src/pages/LibrariesPage.tsx:342
 #: src/pages/LibrariesPage.tsx:377
@@ -1009,6 +1025,50 @@ msgstr "Never"
 #: src/pages/LibrariesPage.tsx:278
 msgid "library.off"
 msgstr "OFF"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.checked"
+msgstr "Checked"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan"
+msgstr "Next scan in"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.nextScan.soon"
+msgstr "Scan due soon"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.label"
+msgstr "Sort"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.match"
+msgstr "Match %"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.name"
+msgstr "Name"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.scanned"
+msgstr "Last Scanned"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.sort.size"
+msgstr "Size"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.files"
+msgstr "files"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.libraries"
+msgstr "libraries"
+
+#: src/pages/LibrariesPage.tsx
+msgid "library.summary.matched"
+msgstr "matched"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
@@ -1480,6 +1540,10 @@ msgstr "Scanning"
 #: src/pages/LibrariesPage.tsx:3183
 msgid "scan.scanAll"
 msgstr "Scan All"
+
+#: src/pages/LibrariesPage.tsx
+msgid "scan.completed"
+msgstr "Scan completed"
 
 #: src/pages/LibraryDetailPage.tsx:386
 #: src/pages/SchedulePage.tsx:442

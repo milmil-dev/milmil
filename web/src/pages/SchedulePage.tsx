@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
+import { Spinner } from '../components/ui/spinner';
 import {
   type AnimeSummary,
   type BrowseParams,
@@ -614,11 +615,7 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 
   return (
     <div ref={ref} className="flex justify-center py-8">
-      {loading && (
-        <div className="flex items-center gap-2 text-[12px] text-mm-text-muted">
-          <div className="w-4 h-4 border-2 border-white/10 border-t-mm-accent rounded-full animate-spin" />
-        </div>
-      )}
+      {loading && <Spinner size={24} className="text-white/30" />}
     </div>
   );
 }
