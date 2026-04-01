@@ -1,8 +1,9 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
@@ -13,6 +14,7 @@ import { useBgStore } from '../store/bg-store';
 
 type Tab = 'trending' | 'topRated' | 'popular';
 
+const TABS: Tab[] = ['trending', 'topRated', 'popular'];
 const MEDIA_TYPES = ['all', 'TV', 'MOVIE', 'OVA', 'ONA'] as const;
 
 const TAB_CONFIG: Record<Tab, { labelKey: ReturnType<typeof msg>; sort?: string }> = {
@@ -21,10 +23,24 @@ const TAB_CONFIG: Record<Tab, { labelKey: ReturnType<typeof msg>; sort?: string 
   popular: { labelKey: msg`trending.tab.popular`, sort: 'POPULARITY_DESC' },
 };
 
+interface TrendingSearchParams {
+  tab?: string;
+  type?: string;
+}
+
 export function TrendingPage() {
   const { i18n } = useLingui();
-  const [activeTab, setActiveTab] = useState<Tab>('trending');
-  const [mediaType, setMediaType] = useState<string>('all');
+  const navigate = useNavigate();
+  const searchParams = useSearch({ strict: false }) as TrendingSearchParams;
+
+  // Derive state from URL query params
+  const activeTab: Tab = TABS.includes(searchParams.tab as Tab)
+    ? (searchParams.tab as Tab)
+    : 'trending';
+  const mediaType: string =
+    searchParams.type && MEDIA_TYPES.includes(searchParams.type as (typeof MEDIA_TYPES)[number])
+      ? searchParams.type
+      : 'all';
 
   // Clear any lingering bg glow from other pages on mount/unmount
   const setImage = useBgStore((s) => s.setImage);
@@ -48,15 +64,34 @@ export function TrendingPage() {
       initialPageParam: 1,
       getNextPageParam: (lastPage, _allPages, lastPageParam) =>
         lastPage.length > 0 ? lastPageParam + 1 : undefined,
+      placeholderData: keepPreviousData,
     });
 
   // Flatten all pages into a single array
   const allItems = data?.pages.flat() ?? [];
 
-  // Reset when tab changes
+  // Navigate to update URL without full page refresh
   const switchTab = (tab: Tab) => {
     if (tab === activeTab) return;
-    setActiveTab(tab);
+    navigate({
+      to: '/trending',
+      search: {
+        ...(tab !== 'trending' ? { tab } : {}),
+        ...(mediaType !== 'all' ? { type: mediaType } : {}),
+      } as any,
+      replace: true,
+    });
+  };
+
+  const switchMediaType = (type: string) => {
+    navigate({
+      to: '/trending',
+      search: {
+        ...(activeTab !== 'trending' ? { tab: activeTab } : {}),
+        ...(type !== 'all' ? { type } : {}),
+      } as any,
+      replace: true,
+    });
   };
 
   // Client-side media type filtering
@@ -107,7 +142,7 @@ export function TrendingPage() {
           <div className="px-4 md:px-6">
             {/* Tab bar */}
             <div className="flex items-center gap-6 border-b border-white/[0.06] mt-5">
-              {(Object.keys(TAB_CONFIG) as Tab[]).map((tab) => (
+              {TABS.map((tab) => (
                 <button
                   key={tab}
                   type="button"
@@ -135,7 +170,7 @@ export function TrendingPage() {
                 <button
                   key={type}
                   type="button"
-                  onClick={() => setMediaType(type)}
+                  onClick={() => switchMediaType(type)}
                   className={cn(
                     'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors cursor-pointer',
                     mediaType === type
