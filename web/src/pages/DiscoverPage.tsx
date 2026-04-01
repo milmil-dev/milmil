@@ -104,13 +104,20 @@ function useSections(): SectionDef[] {
 export function DiscoverPage() {
   const sections = useSections();
 
-  // Fetch trending for hero banner
-  const { data: trending = [] } = useQuery({
-    queryKey: discoverKeys.trending(1),
-    queryFn: () => discoverApi.trending(1),
+  // Fetch current season anime for hero banner
+  const current = getCurrentSeason();
+  const { data: seasonAnime = [] } = useQuery({
+    queryKey: ['discover', 'heroSeason', current.season, current.year],
+    queryFn: () =>
+      discoverApi.browse({
+        season: current.season,
+        year: current.year,
+        sort: 'POPULARITY_DESC',
+      }),
+    staleTime: 10 * 60 * 1000,
   });
 
-  const heroItems = trending.slice(0, 7);
+  const heroItems = seasonAnime.slice(0, 7);
 
   // Atmospheric background from hero carousel
   const setImage = useBgStore((s) => s.setImage);
