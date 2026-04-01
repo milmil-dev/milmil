@@ -95,7 +95,6 @@ function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: ()
 
 export function WatchPage() {
   const { i18n } = useLingui();
-  useDocumentTitle('Watch');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { animeId } = useParams({ strict: false });
@@ -122,6 +121,13 @@ export function WatchPage() {
     queryFn: () => discoverApi.detail(bangumiId),
     enabled: !Number.isNaN(bangumiId),
   });
+
+  const watchTitle = animeDetail?.title
+    ? ep
+      ? `${animeDetail.title} EP${ep}`
+      : animeDetail.title
+    : undefined;
+  useDocumentTitle(watchTitle);
 
   const { data: episodesData, isLoading: episodesLoading } = useQuery({
     queryKey: animeKeys.playableEpisodes(bangumiId),
