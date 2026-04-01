@@ -275,6 +275,30 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
 
 /* ── Hot Tags ─────────────────────────────────────────────── */
 
+/* Well-known Bangumi tags — always searchable via Bangumi's SearchByTag API */
+const BANGUMI_TAGS = [
+  '漫畫改編',
+  '輕小說改編',
+  '原創',
+  '遊戲改編',
+  '續篇',
+  '異世界',
+  '校園',
+  '日常',
+  '戰鬥',
+  '後宮',
+  '百合',
+  '機戰',
+  '偶像',
+  '治癒',
+  '搞笑',
+  '致鬱',
+  '懸疑',
+  '熱血',
+  '運動',
+  '美食',
+];
+
 function HotTagsSection() {
   const { i18n } = useLingui();
 
@@ -283,7 +307,9 @@ function HotTagsSection() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.3 }}
+      className="space-y-3"
     >
+      {/* AniList genre chips */}
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
         {GENRES.map((genre) => (
           <Link
@@ -293,6 +319,20 @@ function HotTagsSection() {
             className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/70 transition-colors cursor-pointer"
           >
             {translateGenre(genre, i18n.locale)}
+          </Link>
+        ))}
+      </div>
+
+      {/* Bangumi tags */}
+      <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+        {BANGUMI_TAGS.map((tag) => (
+          <Link
+            key={tag}
+            to="/search"
+            search={{ tag } as any}
+            className="shrink-0 px-2.5 py-1 text-[11px] font-medium rounded bg-white/[0.03] text-white/25 hover:bg-white/[0.06] hover:text-white/50 transition-colors cursor-pointer"
+          >
+            {tag}
           </Link>
         ))}
       </div>
