@@ -40,7 +40,7 @@ export function TrendingPage() {
   const queryKey =
     activeTab === 'trending'
       ? discoverKeys.trending(page)
-      : (['discover', 'browse', activeTab, page] as const);
+      : discoverKeys.browseParams({ sort: tabConfig.sort, page });
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey,
@@ -114,7 +114,9 @@ export function TrendingPage() {
         {!showSkeleton && allItems.length > 0 && (
           <>
             {/* Hero banner for #1 */}
-            {heroItem && <TrendingHero anime={heroItem} />}
+            {heroItem && (
+              <TrendingHero anime={heroItem} tabLabel={i18n._(TAB_CONFIG[activeTab].labelKey)} />
+            )}
 
             <div className="px-4 md:px-6">
               {/* Tab bar */}
@@ -188,7 +190,7 @@ export function TrendingPage() {
               )}
 
               {/* No results after filtering */}
-              {!hasMore && filteredItems.length === 0 && (
+              {filteredItems.length === 0 && !isLoading && (
                 <div className="text-center py-16">
                   <p className="text-sm text-mm-text-secondary">沒有符合的結果</p>
                 </div>
@@ -203,7 +205,7 @@ export function TrendingPage() {
 
 /* ── Compact hero banner for #1 trending ──────────────────── */
 
-function TrendingHero({ anime }: { anime: AnimeSummary }) {
+function TrendingHero({ anime, tabLabel }: { anime: AnimeSummary; tabLabel: string }) {
   const { i18n } = useLingui();
   const bannerSrc = anime.banner_image || anime.cover_image;
   const hasBanner = !!anime.banner_image;
@@ -243,7 +245,7 @@ function TrendingHero({ anime }: { anime: AnimeSummary }) {
         >
           {/* Rank badge */}
           <span className="inline-flex items-center gap-1 text-[10px] font-bold text-white/70 bg-white/[0.08] backdrop-blur-sm rounded px-2 py-0.5 mb-2">
-            #1 {i18n._(msg`trending.tab.trending`)}
+            #1 {tabLabel}
           </span>
 
           {/* Title */}
