@@ -631,23 +631,27 @@ msgstr "오프라인"
 msgid "connection.online"
 msgstr "온라인"
 
-#: src/pages/DiscoverPage.tsx:74
+#: src/pages/DiscoverPage.tsx:77
 msgid "discover.airedRecently"
 msgstr "최근 방영"
 
-#: src/pages/DiscoverPage.tsx:64
+#: src/pages/DiscoverPage.tsx:67
 msgid "discover.bestLastSeason"
 msgstr "지난 시즌 최고"
 
-#: src/pages/DiscoverPage.tsx:54
+#: src/pages/DiscoverPage.tsx:91
+msgid "discover.comingSoon"
+msgstr "곧 공개"
+
+#: src/pages/DiscoverPage.tsx:57
 msgid "discover.topOfSeason"
 msgstr "이번 시즌 최고"
 
-#: src/pages/DiscoverPage.tsx:83
+#: src/pages/DiscoverPage.tsx:86
 msgid "discover.trendingMovies"
 msgstr "인기 영화"
 
-#: src/pages/DiscoverPage.tsx:48
+#: src/pages/DiscoverPage.tsx:51
 msgid "discover.trendingNow"
 msgstr "지금 인기"
 
@@ -698,7 +702,7 @@ msgstr "오늘 편성표"
 msgid "home.trending"
 msgstr "인기"
 
-#: src/pages/DiscoverPage.tsx:140
+#: src/pages/DiscoverPage.tsx:170
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "전체 보기 →"

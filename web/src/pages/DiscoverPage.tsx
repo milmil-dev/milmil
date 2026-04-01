@@ -87,6 +87,15 @@ function useSections(): SectionDef[] {
       queryKey: ['discover', 'trendingMovies'],
       queryFn: () => discoverApi.browse({ sort: 'TRENDING_DESC', format: 'MOVIE' }),
     },
+    {
+      titleKey: msg`discover.comingSoon`,
+      queryKey: ['discover', 'comingSoon'],
+      queryFn: () =>
+        discoverApi.browse({
+          status: 'NOT_YET_RELEASED',
+          sort: 'POPULARITY_DESC',
+        }),
+    },
   ];
 }
 

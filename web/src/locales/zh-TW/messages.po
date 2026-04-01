@@ -629,23 +629,27 @@ msgstr "離線"
 msgid "connection.online"
 msgstr "線上"
 
-#: src/pages/DiscoverPage.tsx:74
+#: src/pages/DiscoverPage.tsx:77
 msgid "discover.airedRecently"
 msgstr "最近播出"
 
-#: src/pages/DiscoverPage.tsx:64
+#: src/pages/DiscoverPage.tsx:67
 msgid "discover.bestLastSeason"
 msgstr "上季最佳"
 
-#: src/pages/DiscoverPage.tsx:54
+#: src/pages/DiscoverPage.tsx:91
+msgid "discover.comingSoon"
+msgstr "即將上映"
+
+#: src/pages/DiscoverPage.tsx:57
 msgid "discover.topOfSeason"
 msgstr "本季最佳"
 
-#: src/pages/DiscoverPage.tsx:83
+#: src/pages/DiscoverPage.tsx:86
 msgid "discover.trendingMovies"
 msgstr "熱門電影"
 
-#: src/pages/DiscoverPage.tsx:48
+#: src/pages/DiscoverPage.tsx:51
 msgid "discover.trendingNow"
 msgstr "現在熱門"
 
@@ -696,7 +700,7 @@ msgstr "今日時刻表"
 msgid "home.trending"
 msgstr "熱門"
 
-#: src/pages/DiscoverPage.tsx:140
+#: src/pages/DiscoverPage.tsx:170
 #: src/pages/HomePage.tsx:216
 msgid "home.viewAll"
 msgstr "查看全部 →"
