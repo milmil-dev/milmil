@@ -1,14 +1,14 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
-import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
+import { type AnimeSummary, discoverApi } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
@@ -28,50 +28,34 @@ export function TrendingPage() {
   const { i18n } = useLingui();
   const [activeTab, setActiveTab] = useState<Tab>('trending');
   const [mediaType, setMediaType] = useState<string>('all');
-  const [page, setPage] = useState(1);
-  const [allItems, setAllItems] = useState<AnimeSummary[]>([]);
-  const [hasMore, setHasMore] = useState(true);
 
   const setImage = useBgStore((s) => s.setImage);
   useEffect(() => () => setImage(null), [setImage]);
 
-  // Fetch data based on active tab
   const tabConfig = TAB_CONFIG[activeTab];
-  const queryKey =
-    activeTab === 'trending'
-      ? discoverKeys.trending(page)
-      : discoverKeys.browseParams({ sort: tabConfig.sort, page });
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey,
-    queryFn: () =>
-      activeTab === 'trending'
-        ? discoverApi.trending(page)
-        : discoverApi.browse({ sort: tabConfig.sort, page }),
-  });
+  const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey:
+        activeTab === 'trending'
+          ? ['discover', 'trending', 'infinite']
+          : ['discover', 'browse', activeTab, 'infinite'],
+      queryFn: ({ pageParam }) =>
+        activeTab === 'trending'
+          ? discoverApi.trending(pageParam)
+          : discoverApi.browse({ sort: tabConfig.sort, page: pageParam }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, _allPages, lastPageParam) =>
+        lastPage.length > 0 ? lastPageParam + 1 : undefined,
+    });
 
-  // Accumulate results across pages
-  useEffect(() => {
-    if (data) {
-      if (data.length === 0) {
-        setHasMore(false);
-      } else {
-        setAllItems((prev) => (page === 1 ? data : [...prev, ...data]));
-      }
-    }
-  }, [data, page]);
+  // Flatten all pages into a single array
+  const allItems = data?.pages.flat() ?? [];
 
   // Reset when tab changes
   const switchTab = (tab: Tab) => {
     if (tab === activeTab) return;
     setActiveTab(tab);
-    setPage(1);
-    setAllItems([]);
-    setHasMore(true);
-  };
-
-  const switchMediaType = (type: string) => {
-    setMediaType(type);
   };
 
   // Client-side media type filtering
@@ -91,6 +75,23 @@ export function TrendingPage() {
       if (img?.startsWith('http')) setImage(img);
     }
   }, [heroItem, setImage]);
+
+  // Intersection observer for auto-loading
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const showSkeleton = isLoading && allItems.length === 0;
 
@@ -120,7 +121,7 @@ export function TrendingPage() {
 
             <div className="px-4 md:px-6">
               {/* Tab bar */}
-              <div className="flex items-center gap-6 border-b border-white/[0.06] mt-2">
+              <div className="flex items-center gap-6 border-b border-white/[0.06] mt-5">
                 {(Object.keys(TAB_CONFIG) as Tab[]).map((tab) => (
                   <button
                     key={tab}
@@ -135,7 +136,7 @@ export function TrendingPage() {
                     {activeTab === tab && (
                       <motion.div
                         layoutId="trending-tab-indicator"
-                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/50"
+                        className="absolute -bottom-px left-0 right-0 h-[2px] bg-white/70"
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                       />
                     )}
@@ -149,7 +150,7 @@ export function TrendingPage() {
                   <button
                     key={type}
                     type="button"
-                    onClick={() => switchMediaType(type)}
+                    onClick={() => setMediaType(type)}
                     className={cn(
                       'px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors cursor-pointer',
                       mediaType === type
@@ -168,26 +169,35 @@ export function TrendingPage() {
                   <div key={`${anime.bangumi_id}-${i}`} className="relative">
                     <AnimeCard anime={anime} />
                     {/* Rank overlay */}
-                    <span className="absolute -bottom-1 -left-1 text-[42px] font-black leading-none text-white/[0.08] pointer-events-none select-none tabular-nums">
+                    <span className="absolute bottom-0 -left-1 text-[42px] font-black leading-none text-white/[0.12] pointer-events-none select-none tabular-nums">
                       {i + 2}
                     </span>
                   </div>
                 ))}
               </div>
 
-              {/* Load more */}
-              {hasMore && filteredItems.length > 0 && (
-                <div className="flex justify-center mt-8 pb-16">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setPage((p) => p + 1)}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? '載入中...' : '載入更多'}
-                  </Button>
-                </div>
-              )}
+              {/* Sentinel for auto-loading + loading indicator */}
+              <div ref={sentinelRef} className="flex justify-center py-12">
+                {isFetchingNextPage && (
+                  <div className="flex items-center gap-2 text-sm text-mm-text-tertiary">
+                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeDasharray="31.4"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    載入中...
+                  </div>
+                )}
+                {!hasNextPage && allItems.length > 0 && (
+                  <p className="text-sm text-mm-text-muted">— · —</p>
+                )}
+              </div>
 
               {/* No results after filtering */}
               {filteredItems.length === 0 && !isLoading && (
@@ -225,7 +235,7 @@ function TrendingHero({ anime, tabLabel }: { anime: AnimeSummary; tabLabel: stri
           style={
             !hasBanner
               ? { filter: 'blur(24px) saturate(1.2) brightness(0.3)', transform: 'scale(1.4)' }
-              : { filter: 'brightness(0.4)' }
+              : { filter: 'brightness(0.3) saturate(1.1)' }
           }
         />
       ) : (
@@ -233,7 +243,7 @@ function TrendingHero({ anime, tabLabel }: { anime: AnimeSummary; tabLabel: stri
       )}
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--mm-bg)] via-transparent to-[var(--mm-bg)]/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--mm-bg)] via-[var(--mm-bg)]/40 to-[var(--mm-bg)]/50" />
       <div className="absolute inset-0 bg-gradient-to-r from-[var(--mm-bg)]/80 to-transparent" />
 
       {/* Content */}
@@ -295,7 +305,7 @@ function TrendingPageSkeleton() {
 
       <div className="px-4 md:px-6">
         {/* Tab skeleton */}
-        <div className="flex items-center gap-6 mt-2 border-b border-white/[0.06] pb-2.5">
+        <div className="flex items-center gap-6 mt-5 border-b border-white/[0.06] pb-2.5">
           <Skeleton className="h-4 w-12" />
           <Skeleton className="h-4 w-16" />
           <Skeleton className="h-4 w-16" />
