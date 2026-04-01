@@ -59,18 +59,23 @@ function NavItem({
           className={cn(
             'relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200',
             isActive
-              ? 'text-white bg-white/[0.08]'
+              ? 'text-white'
               : 'text-white/40 hover:text-white/80 hover:bg-white/[0.04]'
           )}
         >
-          {isActive && (
-            <motion.div
-              layoutId="sidebarActive"
-              className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-mm-accent"
-              transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-            />
-          )}
-          <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive ? 2 : 1.5} />
+          <AnimatePresence>
+            {isActive && (
+              <motion.div
+                key="active"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 rounded-md bg-white/[0.08]"
+              />
+            )}
+          </AnimatePresence>
+          <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive ? 2 : 1.5} className="relative z-[1]" />
         </Link>
       </TooltipTrigger>
       <TooltipContent side="right">{i18n._(msgKey)}</TooltipContent>

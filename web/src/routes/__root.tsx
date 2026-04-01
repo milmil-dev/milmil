@@ -169,7 +169,7 @@ function RootLayout() {
 
       {/* Main content — pl-20 for 80px sidebar */}
       <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <Outlet key={pathname} />
         </AnimatePresence>
       </main>
