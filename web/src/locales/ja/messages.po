@@ -2525,3 +2525,9 @@ msgstr "追加"
 
 msgid "subscribe.noDownloads"
 msgstr "ダウンロードはありません"
+
+msgid "subscribe.library"
+msgstr "ライブラリに保存"
+
+msgid "subscribe.noLibrary"
+msgstr "デフォルト"

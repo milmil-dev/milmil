@@ -183,13 +183,15 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 			}
 
 			_, err = h.queries.CreateDownload(ctx, store.CreateDownloadParams{
-				ID:      uuid.NewString(),
-				Gid:     gid,
-				Url:     item.Link,
-				Name:    item.Title,
-				Status:  "active",
-				SaveDir: rule.SaveDir,
-				RuleID:  sql.NullString{String: rule.ID, Valid: true},
+				ID:        uuid.NewString(),
+				Gid:       gid,
+				Url:       item.Link,
+				Name:      item.Title,
+				Status:    "active",
+				SaveDir:   rule.SaveDir,
+				RuleID:    sql.NullString{String: rule.ID, Valid: true},
+				BangumiID: rule.BangumiID,
+				LibraryID: rule.LibraryID,
 			})
 			if err != nil {
 				slog.Error("create download", "err", err)

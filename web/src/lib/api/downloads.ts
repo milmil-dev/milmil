@@ -49,7 +49,8 @@ export interface SubscribeInput {
   mikan_bangumi_id?: string;
   sub_group?: string;
   resolution?: string;
-  save_dir?: string;
+  library_id?: string;
+  bangumi_id?: number;
 }
 
 export interface SubscribeResponse {

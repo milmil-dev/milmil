@@ -7,26 +7,29 @@ package store
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createDownloadRule = `-- name: CreateDownloadRule :one
-INSERT INTO download_rules (id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, resolution_filter, subgroup_filter, min_seeders, created_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
-RETURNING id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders
+INSERT INTO download_rules (id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+RETURNING id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id
 `
 
 type CreateDownloadRuleParams struct {
-	ID               string `json:"id"`
-	Name             string `json:"name"`
-	Enabled          int64  `json:"enabled"`
-	RssFeedID        string `json:"rss_feed_id"`
-	FilterRegex      string `json:"filter_regex"`
-	ExcludeRegex     string `json:"exclude_regex"`
-	SaveDir          string `json:"save_dir"`
-	EpisodeOffset    int64  `json:"episode_offset"`
-	ResolutionFilter string `json:"resolution_filter"`
-	SubgroupFilter   string `json:"subgroup_filter"`
-	MinSeeders       int64  `json:"min_seeders"`
+	ID               string         `json:"id"`
+	Name             string         `json:"name"`
+	Enabled          int64          `json:"enabled"`
+	RssFeedID        string         `json:"rss_feed_id"`
+	FilterRegex      string         `json:"filter_regex"`
+	ExcludeRegex     string         `json:"exclude_regex"`
+	SaveDir          string         `json:"save_dir"`
+	EpisodeOffset    int64          `json:"episode_offset"`
+	ResolutionFilter string         `json:"resolution_filter"`
+	SubgroupFilter   string         `json:"subgroup_filter"`
+	MinSeeders       int64          `json:"min_seeders"`
+	LibraryID        sql.NullString `json:"library_id"`
+	BangumiID        sql.NullInt64  `json:"bangumi_id"`
 }
 
 func (q *Queries) CreateDownloadRule(ctx context.Context, arg CreateDownloadRuleParams) (DownloadRule, error) {
@@ -42,6 +45,8 @@ func (q *Queries) CreateDownloadRule(ctx context.Context, arg CreateDownloadRule
 		arg.ResolutionFilter,
 		arg.SubgroupFilter,
 		arg.MinSeeders,
+		arg.LibraryID,
+		arg.BangumiID,
 	)
 	var i DownloadRule
 	err := row.Scan(
@@ -58,6 +63,8 @@ func (q *Queries) CreateDownloadRule(ctx context.Context, arg CreateDownloadRule
 		&i.ResolutionFilter,
 		&i.SubgroupFilter,
 		&i.MinSeeders,
+		&i.LibraryID,
+		&i.BangumiID,
 	)
 	return i, err
 }
@@ -72,7 +79,7 @@ func (q *Queries) DeleteDownloadRule(ctx context.Context, id string) error {
 }
 
 const listDownloadRules = `-- name: ListDownloadRules :many
-SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders FROM download_rules ORDER BY name
+SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id FROM download_rules ORDER BY name
 `
 
 func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error) {
@@ -98,6 +105,8 @@ func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 			&i.ResolutionFilter,
 			&i.SubgroupFilter,
 			&i.MinSeeders,
+			&i.LibraryID,
+			&i.BangumiID,
 		); err != nil {
 			return nil, err
 		}
@@ -113,7 +122,7 @@ func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 }
 
 const listDownloadRulesByFeedID = `-- name: ListDownloadRulesByFeedID :many
-SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders FROM download_rules WHERE rss_feed_id = ? AND enabled = 1
+SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id FROM download_rules WHERE rss_feed_id = ? AND enabled = 1
 `
 
 func (q *Queries) ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error) {
@@ -139,6 +148,8 @@ func (q *Queries) ListDownloadRulesByFeedID(ctx context.Context, rssFeedID strin
 			&i.ResolutionFilter,
 			&i.SubgroupFilter,
 			&i.MinSeeders,
+			&i.LibraryID,
+			&i.BangumiID,
 		); err != nil {
 			return nil, err
 		}
@@ -154,21 +165,23 @@ func (q *Queries) ListDownloadRulesByFeedID(ctx context.Context, rssFeedID strin
 }
 
 const updateDownloadRule = `-- name: UpdateDownloadRule :exec
-UPDATE download_rules SET name = ?, enabled = ?, rss_feed_id = ?, filter_regex = ?, exclude_regex = ?, save_dir = ?, episode_offset = ?, resolution_filter = ?, subgroup_filter = ?, min_seeders = ? WHERE id = ?
+UPDATE download_rules SET name = ?, enabled = ?, rss_feed_id = ?, filter_regex = ?, exclude_regex = ?, save_dir = ?, episode_offset = ?, resolution_filter = ?, subgroup_filter = ?, min_seeders = ?, library_id = ?, bangumi_id = ? WHERE id = ?
 `
 
 type UpdateDownloadRuleParams struct {
-	Name             string `json:"name"`
-	Enabled          int64  `json:"enabled"`
-	RssFeedID        string `json:"rss_feed_id"`
-	FilterRegex      string `json:"filter_regex"`
-	ExcludeRegex     string `json:"exclude_regex"`
-	SaveDir          string `json:"save_dir"`
-	EpisodeOffset    int64  `json:"episode_offset"`
-	ResolutionFilter string `json:"resolution_filter"`
-	SubgroupFilter   string `json:"subgroup_filter"`
-	MinSeeders       int64  `json:"min_seeders"`
-	ID               string `json:"id"`
+	Name             string         `json:"name"`
+	Enabled          int64          `json:"enabled"`
+	RssFeedID        string         `json:"rss_feed_id"`
+	FilterRegex      string         `json:"filter_regex"`
+	ExcludeRegex     string         `json:"exclude_regex"`
+	SaveDir          string         `json:"save_dir"`
+	EpisodeOffset    int64          `json:"episode_offset"`
+	ResolutionFilter string         `json:"resolution_filter"`
+	SubgroupFilter   string         `json:"subgroup_filter"`
+	MinSeeders       int64          `json:"min_seeders"`
+	LibraryID        sql.NullString `json:"library_id"`
+	BangumiID        sql.NullInt64  `json:"bangumi_id"`
+	ID               string         `json:"id"`
 }
 
 func (q *Queries) UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error {
@@ -183,6 +196,8 @@ func (q *Queries) UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRule
 		arg.ResolutionFilter,
 		arg.SubgroupFilter,
 		arg.MinSeeders,
+		arg.LibraryID,
+		arg.BangumiID,
 		arg.ID,
 	)
 	return err

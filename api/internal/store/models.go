@@ -49,6 +49,8 @@ type Download struct {
 	RuleID         sql.NullString `json:"rule_id"`
 	CreatedAt      string         `json:"created_at"`
 	UpdatedAt      string         `json:"updated_at"`
+	BangumiID      sql.NullInt64  `json:"bangumi_id"`
+	LibraryID      sql.NullString `json:"library_id"`
 }
 
 type DownloadRule struct {
@@ -65,6 +67,8 @@ type DownloadRule struct {
 	ResolutionFilter string         `json:"resolution_filter"`
 	SubgroupFilter   string         `json:"subgroup_filter"`
 	MinSeeders       int64          `json:"min_seeders"`
+	LibraryID        sql.NullString `json:"library_id"`
+	BangumiID        sql.NullInt64  `json:"bangumi_id"`
 }
 
 type Episode struct {

@@ -11,9 +11,9 @@ import (
 )
 
 const createDownload = `-- name: CreateDownload :one
-INSERT INTO downloads (id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'))
-RETURNING id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at
+INSERT INTO downloads (id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, bangumi_id, library_id, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+RETURNING id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id
 `
 
 type CreateDownloadParams struct {
@@ -27,6 +27,8 @@ type CreateDownloadParams struct {
 	SpeedBytes     int64          `json:"speed_bytes"`
 	SaveDir        string         `json:"save_dir"`
 	RuleID         sql.NullString `json:"rule_id"`
+	BangumiID      sql.NullInt64  `json:"bangumi_id"`
+	LibraryID      sql.NullString `json:"library_id"`
 }
 
 func (q *Queries) CreateDownload(ctx context.Context, arg CreateDownloadParams) (Download, error) {
@@ -41,6 +43,8 @@ func (q *Queries) CreateDownload(ctx context.Context, arg CreateDownloadParams) 
 		arg.SpeedBytes,
 		arg.SaveDir,
 		arg.RuleID,
+		arg.BangumiID,
+		arg.LibraryID,
 	)
 	var i Download
 	err := row.Scan(
@@ -56,6 +60,8 @@ func (q *Queries) CreateDownload(ctx context.Context, arg CreateDownloadParams) 
 		&i.RuleID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BangumiID,
+		&i.LibraryID,
 	)
 	return i, err
 }
@@ -70,7 +76,7 @@ func (q *Queries) DeleteDownload(ctx context.Context, gid string) error {
 }
 
 const getDownloadByGID = `-- name: GetDownloadByGID :one
-SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at FROM downloads WHERE gid = ? LIMIT 1
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE gid = ? LIMIT 1
 `
 
 func (q *Queries) GetDownloadByGID(ctx context.Context, gid string) (Download, error) {
@@ -89,12 +95,14 @@ func (q *Queries) GetDownloadByGID(ctx context.Context, gid string) (Download, e
 		&i.RuleID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BangumiID,
+		&i.LibraryID,
 	)
 	return i, err
 }
 
 const getDownloadByURL = `-- name: GetDownloadByURL :one
-SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at FROM downloads WHERE url = ? LIMIT 1
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE url = ? LIMIT 1
 `
 
 func (q *Queries) GetDownloadByURL(ctx context.Context, url string) (Download, error) {
@@ -113,12 +121,98 @@ func (q *Queries) GetDownloadByURL(ctx context.Context, url string) (Download, e
 		&i.RuleID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BangumiID,
+		&i.LibraryID,
 	)
 	return i, err
 }
 
+const listActiveDownloads = `-- name: ListActiveDownloads :many
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE status IN ('active', 'waiting', 'paused') ORDER BY created_at DESC
+`
+
+func (q *Queries) ListActiveDownloads(ctx context.Context) ([]Download, error) {
+	rows, err := q.db.QueryContext(ctx, listActiveDownloads)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Download{}
+	for rows.Next() {
+		var i Download
+		if err := rows.Scan(
+			&i.ID,
+			&i.Gid,
+			&i.Url,
+			&i.Name,
+			&i.Status,
+			&i.TotalBytes,
+			&i.CompletedBytes,
+			&i.SpeedBytes,
+			&i.SaveDir,
+			&i.RuleID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.BangumiID,
+			&i.LibraryID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listCompletedDownloads = `-- name: ListCompletedDownloads :many
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE status = 'complete' ORDER BY updated_at DESC LIMIT 50
+`
+
+func (q *Queries) ListCompletedDownloads(ctx context.Context) ([]Download, error) {
+	rows, err := q.db.QueryContext(ctx, listCompletedDownloads)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Download{}
+	for rows.Next() {
+		var i Download
+		if err := rows.Scan(
+			&i.ID,
+			&i.Gid,
+			&i.Url,
+			&i.Name,
+			&i.Status,
+			&i.TotalBytes,
+			&i.CompletedBytes,
+			&i.SpeedBytes,
+			&i.SaveDir,
+			&i.RuleID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.BangumiID,
+			&i.LibraryID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listDownloads = `-- name: ListDownloads :many
-SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at FROM downloads ORDER BY created_at DESC
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads ORDER BY created_at DESC
 `
 
 func (q *Queries) ListDownloads(ctx context.Context) ([]Download, error) {
@@ -143,6 +237,50 @@ func (q *Queries) ListDownloads(ctx context.Context) ([]Download, error) {
 			&i.RuleID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.BangumiID,
+			&i.LibraryID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDownloadsByRuleID = `-- name: ListDownloadsByRuleID :many
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE rule_id = ? ORDER BY created_at DESC
+`
+
+func (q *Queries) ListDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) ([]Download, error) {
+	rows, err := q.db.QueryContext(ctx, listDownloadsByRuleID, ruleID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Download{}
+	for rows.Next() {
+		var i Download
+		if err := rows.Scan(
+			&i.ID,
+			&i.Gid,
+			&i.Url,
+			&i.Name,
+			&i.Status,
+			&i.TotalBytes,
+			&i.CompletedBytes,
+			&i.SpeedBytes,
+			&i.SaveDir,
+			&i.RuleID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.BangumiID,
+			&i.LibraryID,
 		); err != nil {
 			return nil, err
 		}

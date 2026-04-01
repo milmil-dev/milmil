@@ -1,0 +1,1 @@
+-- SQLite limitation: cannot drop columns easily

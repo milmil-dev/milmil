@@ -91,13 +91,15 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 			}
 
 			_, err = w.queries.CreateDownload(ctx, store.CreateDownloadParams{
-				ID:      uuid.NewString(),
-				Gid:     gid,
-				Url:     item.Link,
-				Name:    item.Title,
-				Status:  "active",
-				SaveDir: rule.SaveDir,
-				RuleID:  sql.NullString{String: rule.ID, Valid: true},
+				ID:        uuid.NewString(),
+				Gid:       gid,
+				Url:       item.Link,
+				Name:      item.Title,
+				Status:    "active",
+				SaveDir:   rule.SaveDir,
+				RuleID:    sql.NullString{String: rule.ID, Valid: true},
+				BangumiID: rule.BangumiID,
+				LibraryID: rule.LibraryID,
 			})
 			if err != nil {
 				slog.Error("rss_refresh: create download", "err", err)

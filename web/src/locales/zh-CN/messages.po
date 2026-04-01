@@ -2523,3 +2523,9 @@ msgstr "添加"
 
 msgid "subscribe.noDownloads"
 msgstr "没有进行中的下载"
+
+msgid "subscribe.library"
+msgstr "下载到媒体库"
+
+msgid "subscribe.noLibrary"
+msgstr "默认"

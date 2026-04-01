@@ -2523,3 +2523,9 @@ msgstr "加入"
 
 msgid "subscribe.noDownloads"
 msgstr "沒有進行中的下載"
+
+msgid "subscribe.library"
+msgstr "下載到媒體庫"
+
+msgid "subscribe.noLibrary"
+msgstr "預設"

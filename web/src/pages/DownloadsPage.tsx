@@ -27,6 +27,7 @@ import {
   subscribeApi,
   type SubscribeInput,
 } from '../lib/api/downloads';
+import { libraryApi } from '../lib/api/library';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi, torrentKeys } from '../lib/api/torrent';
 import { api } from '../lib/api-client';
@@ -301,6 +302,11 @@ function QuickSubscribeForm() {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
 
+  const { data: libraries = [] } = useQuery({
+    queryKey: ['libraries'],
+    queryFn: () => libraryApi.list(),
+  });
+
   const form = useForm({
     defaultValues: {
       anime_name: '',
@@ -308,6 +314,7 @@ function QuickSubscribeForm() {
       source: 'mikan' as 'mikan' | 'nyaa' | 'dmhy',
       sub_group: '',
       resolution: '1080p',
+      library_id: '',
     },
     onSubmit: async ({ value }) => {
       await subscribeMutation.mutateAsync({
@@ -316,6 +323,7 @@ function QuickSubscribeForm() {
         source: value.source,
         sub_group: value.sub_group,
         resolution: value.resolution,
+        library_id: value.library_id || undefined,
       });
     },
   });
@@ -383,6 +391,46 @@ function QuickSubscribeForm() {
             )}
           </form.Field>
         </div>
+
+        {/* Library picker */}
+        {libraries.length > 0 && (
+          <form.Field name="library_id">
+            {(field) => (
+              <Field>
+                <label className="text-[11px] text-white/40 mb-1 block">{i18n._(msg`subscribe.library`)}</label>
+                <div className="flex gap-1.5 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => field.handleChange('')}
+                    className={cn(
+                      'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                      !field.state.value
+                        ? 'bg-white/[0.12] text-white'
+                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                    )}
+                  >
+                    {i18n._(msg`subscribe.noLibrary`)}
+                  </button>
+                  {libraries.map((lib) => (
+                    <button
+                      key={lib.id}
+                      type="button"
+                      onClick={() => field.handleChange(lib.id)}
+                      className={cn(
+                        'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                        field.state.value === lib.id
+                          ? 'bg-mm-accent/20 text-mm-accent'
+                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      )}
+                    >
+                      📁 {lib.name}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            )}
+          </form.Field>
+        )}
 
         <div className="grid grid-cols-3 gap-3">
           {/* Source */}

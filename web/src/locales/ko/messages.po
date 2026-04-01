@@ -2525,3 +2525,9 @@ msgstr "추가"
 
 msgid "subscribe.noDownloads"
 msgstr "다운로드가 없습니다"
+
+msgid "subscribe.library"
+msgstr "라이브러리에 다운로드"
+
+msgid "subscribe.noLibrary"
+msgstr "기본"

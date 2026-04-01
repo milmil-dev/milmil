@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -19,6 +20,8 @@ type createDownloadRuleRequest struct {
 	ResolutionFilter string `json:"resolution_filter"`
 	SubGroupFilter   string `json:"subgroup_filter"`
 	MinSeeders       int64  `json:"min_seeders"`
+	LibraryID        string `json:"library_id"`
+	BangumiID        int64  `json:"bangumi_id"`
 }
 
 type updateDownloadRuleRequest struct {
@@ -32,6 +35,8 @@ type updateDownloadRuleRequest struct {
 	ResolutionFilter string `json:"resolution_filter"`
 	SubGroupFilter   string `json:"subgroup_filter"`
 	MinSeeders       int64  `json:"min_seeders"`
+	LibraryID        string `json:"library_id"`
+	BangumiID        int64  `json:"bangumi_id"`
 }
 
 func (h *handler) handleListDownloadRules(c echo.Context) error {
@@ -66,6 +71,8 @@ func (h *handler) handleCreateDownloadRule(c echo.Context) error {
 		ResolutionFilter: req.ResolutionFilter,
 		SubgroupFilter:   req.SubGroupFilter,
 		MinSeeders:       req.MinSeeders,
+		LibraryID:        sql.NullString{String: req.LibraryID, Valid: req.LibraryID != ""},
+		BangumiID:        sql.NullInt64{Int64: req.BangumiID, Valid: req.BangumiID != 0},
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -97,6 +104,8 @@ func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
 		ResolutionFilter: req.ResolutionFilter,
 		SubgroupFilter:   req.SubGroupFilter,
 		MinSeeders:       req.MinSeeders,
+		LibraryID:        sql.NullString{String: req.LibraryID, Valid: req.LibraryID != ""},
+		BangumiID:        sql.NullInt64{Int64: req.BangumiID, Valid: req.BangumiID != 0},
 	}); err != nil {
 		return echo.ErrInternalServerError
 	}

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -15,20 +16,14 @@ import (
 var subscribeT2S, _ = opencc.New("t2s")
 
 type subscribeRequest struct {
-	// AnimeName is the display name for this subscription
-	AnimeName string `json:"anime_name"`
-	// Source determines which RSS feed to create: "mikan", "nyaa", "dmhy"
-	Source string `json:"source"`
-	// Query is the search term used to build the RSS URL and filter regex
-	Query string `json:"query"`
-	// MikanBangumiID is optional — if provided, creates a per-anime Mikan RSS feed
+	AnimeName      string `json:"anime_name"`
+	Source         string `json:"source"`
+	Query          string `json:"query"`
 	MikanBangumiID string `json:"mikan_bangumi_id,omitempty"`
-	// SubGroup filters downloads to a specific fansub group (optional)
-	SubGroup string `json:"sub_group,omitempty"`
-	// Resolution filters downloads to a specific quality (optional, e.g. "1080p")
-	Resolution string `json:"resolution,omitempty"`
-	// SaveDir is the download destination (optional)
-	SaveDir string `json:"save_dir,omitempty"`
+	SubGroup       string `json:"sub_group,omitempty"`
+	Resolution     string `json:"resolution,omitempty"`
+	LibraryID      string `json:"library_id,omitempty"`
+	BangumiID      int    `json:"bangumi_id,omitempty"`
 }
 
 type subscribeResponse struct {
@@ -95,6 +90,15 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 		}
 	}
 
+	// Resolve save directory from library path if library_id provided
+	saveDir := ""
+	if req.LibraryID != "" {
+		lib, libErr := h.queries.GetLibrary(ctx, req.LibraryID)
+		if libErr == nil {
+			saveDir = lib.Path
+		}
+	}
+
 	// Create download rule
 	rule, err := h.queries.CreateDownloadRule(ctx, store.CreateDownloadRuleParams{
 		ID:               uuid.NewString(),
@@ -103,11 +107,13 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 		RssFeedID:        feed.ID,
 		FilterRegex:      filterRegex,
 		ExcludeRegex:     "",
-		SaveDir:          req.SaveDir,
+		SaveDir:          saveDir,
 		EpisodeOffset:    0,
 		ResolutionFilter: req.Resolution,
 		SubgroupFilter:   req.SubGroup,
 		MinSeeders:       0,
+		LibraryID:        sql.NullString{String: req.LibraryID, Valid: req.LibraryID != ""},
+		BangumiID:        sql.NullInt64{Int64: int64(req.BangumiID), Valid: req.BangumiID != 0},
 	})
 	if err != nil {
 		// Clean up feed if rule creation fails

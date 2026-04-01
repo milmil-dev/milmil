@@ -2525,3 +2525,9 @@ msgstr "Add"
 
 msgid "subscribe.noDownloads"
 msgstr "No active downloads"
+
+msgid "subscribe.library"
+msgstr "Download to Library"
+
+msgid "subscribe.noLibrary"
+msgstr "Default"
