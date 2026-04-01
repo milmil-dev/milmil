@@ -7,6 +7,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
+import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { PreviewModal } from '../components/PreviewModal';
 import { TagMultiSelect } from '../components/TagMultiSelect';
@@ -283,7 +284,8 @@ export function SearchPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen px-8 pt-10 pb-16">
+      <div className="relative min-h-screen px-8 pt-10 pb-16">
+        <PageAtmosphere preset="search" />
         {/* Genre quick-filter chips */}
         <motion.div
           initial={{ opacity: 0 }}

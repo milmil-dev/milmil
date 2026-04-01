@@ -203,6 +203,16 @@ func (r *Resolver) resolveBangumiID(ctx context.Context, ddpAnimeID int64) (int6
 func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangumiID, ddpAnimeID int64) (store.Anime, bool, error) {
 	existing, err := r.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: bangumiID, Valid: true})
 	if err == nil {
+		// Backfill community score for pre-existing records
+		if existing.Score == 0 {
+			if subj, sErr := r.bangumi.GetSubject(ctx, int(bangumiID)); sErr == nil && subj.Rating.Score > 0 {
+				_ = r.queries.UpdateAnimeScore(ctx, store.UpdateAnimeScoreParams{
+					Score:     subj.Rating.Score,
+					BangumiID: existing.BangumiID,
+				})
+				existing.Score = subj.Rating.Score
+			}
+		}
 		return existing, false, nil
 	}
 	if !errors.Is(err, sql.ErrNoRows) {

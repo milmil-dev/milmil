@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
+import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
@@ -3239,7 +3240,8 @@ export function LibrariesPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen">
+      <div className="relative min-h-screen">
+        <PageAtmosphere preset="libraries" />
         {/* Header — only show when libraries exist */}
         {(hasLibraries || isLoading) && (
           <div className="px-8 pt-14 pb-8">

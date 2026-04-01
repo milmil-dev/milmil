@@ -12,6 +12,7 @@ import {
   InformationCircleIcon,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
+import { PageAtmosphere } from '@/components/PageAtmosphere';
 import { PageTransition } from '@/components/PageTransition';
 import { GeneralPanel } from './GeneralPanel';
 import { IntegrationsPanel } from './IntegrationsPanel';
@@ -48,7 +49,8 @@ export function SettingsPage() {
 
   return (
     <PageTransition>
-      <div className="mx-auto max-w-5xl p-4 sm:p-8 lg:py-12">
+      <div className="relative mx-auto max-w-5xl p-4 sm:p-8 lg:py-12">
+        <PageAtmosphere preset="settings" />
         {/* Header — centered */}
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-white tracking-tight">

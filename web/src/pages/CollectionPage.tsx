@@ -6,6 +6,7 @@ import { Bookmark, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
+import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
@@ -257,7 +258,8 @@ export function CollectionPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen px-4 md:px-6 pt-6 pb-16">
+      <div className="relative min-h-screen px-4 md:px-6 pt-6 pb-16">
+        <PageAtmosphere preset="collection" />
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex items-center gap-3">

@@ -49,34 +49,8 @@ function BannerImage({ src }: { src: string | null }) {
   }, []);
 
   if (!src) {
-    // Subtle ambient background when no image is set
-    return (
-      <div
-        className={cn(
-          'fixed top-0 z-0 h-[40rem] transition-opacity duration-1000',
-          dimmed && 'opacity-[0.05]'
-        )}
-        style={{ left: 0, right: 0 }}
-      >
-        {/* Soft accent glow — top-right */}
-        <div className="absolute -top-20 right-[10%] h-[400px] w-[500px] rounded-full bg-mm-accent/[0.03] blur-[120px]" />
-        {/* Secondary warm glow — left */}
-        <div className="absolute top-[10%] -left-20 h-[300px] w-[400px] rounded-full bg-mm-accent/[0.02] blur-[100px]" />
-        {/* Subtle noise texture */}
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 20% 30%, rgba(232,143,170,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(232,143,170,0.05) 0%, transparent 50%)',
-          }}
-        />
-        {/* Bottom fade to mm-bg */}
-        <div
-          className="absolute bottom-0 w-full h-[15rem] z-[2]"
-          style={{ background: 'linear-gradient(to top, var(--mm-bg), transparent)' }}
-        />
-      </div>
-    );
+    // No banner image — return nothing; pages provide their own atmospheric glows
+    return null;
   }
 
   return (

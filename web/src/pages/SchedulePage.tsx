@@ -1,11 +1,12 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
+import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Spinner } from '../components/ui/spinner';
@@ -16,8 +17,6 @@ import {
   discoverApi,
   discoverKeys,
 } from '../lib/api/discover';
-import { translateGenre } from '../lib/genre-i18n';
-import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 
 /* ── Season / year helpers ────────────────────────────────── */
@@ -75,252 +74,25 @@ function getDateForWeekday(bangumiWeekday: string): string {
   return format(target, 'M月d日');
 }
 
-/* ── Anime item with hover card ───────────────────────────── */
+/* ── Schedule card wrapper — adds EP badge overlay ────────── */
 
-function ScheduleAnimeItem({
-  anime,
-  index,
-  locale,
-  variant = 'card',
-}: {
-  anime: AnimeSummary;
-  index: number;
-  locale: string;
-  variant?: 'row' | 'card';
-}) {
-  const hasCover = anime.cover_image?.startsWith('http');
-  const [showCard, setShowCard] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [cardSide, setCardSide] = useState<'right' | 'left'>('right');
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const itemRef = useRef<HTMLDivElement>(null);
-
-  const { data: detail } = useQuery({
-    queryKey: discoverKeys.detail(anime.bangumi_id),
-    queryFn: () => discoverApi.detail(anime.bangumi_id),
-    enabled: hovered && anime.bangumi_id > 0,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const handleEnter = useCallback(() => {
-    setHovered(true);
-    if (itemRef.current) {
-      const rect = itemRef.current.getBoundingClientRect();
-      const spaceRight = window.innerWidth - rect.right;
-      setCardSide(spaceRight >= 530 ? 'right' : 'left');
-    }
-    timerRef.current = setTimeout(() => setShowCard(true), 400);
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setShowCard(false);
-    setHovered(false);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
+function ScheduleAnimeCard({ anime, index }: { anime: AnimeSummary; index: number }) {
   return (
     <motion.div
-      ref={itemRef}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.025, duration: 0.3 }}
-      className="relative"
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
     >
-      {variant === 'card' ? (
-        <AnimeCard anime={anime}>
-          {anime.next_episode && anime.next_episode > 0 && (
-            <span
-              className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
-              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
-            >
-              EP {anime.next_episode}
-            </span>
-          )}
-        </AnimeCard>
-      ) : (
-        <Link
-          to={`/anime/${anime.bangumi_id}` as string}
-          className="group flex items-center gap-3.5 py-3 px-2.5 -mx-2.5 rounded-lg transition-colors hover:bg-white/[0.04]"
-        >
-          <div
-            className="relative rounded overflow-hidden shrink-0 w-[80px] h-[112px]"
-            style={hasCover ? undefined : { background: animeGradient(anime.title) }}
+      <AnimeCard anime={anime}>
+        {anime.next_episode && anime.next_episode > 0 && (
+          <span
+            className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
+            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
           >
-            {hasCover && (
-              <img
-                src={anime.cover_image}
-                alt=""
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-              />
-            )}
-            {anime.next_episode && anime.next_episode > 0 && (
-              <span
-                className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
-                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
-              >
-                EP {anime.next_episode}
-              </span>
-            )}
-            {anime.score > 0 && (
-              <span
-                className="absolute top-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white tabular-nums backdrop-blur-md"
-                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
-              >
-                ♡ {anime.score.toFixed(1)}
-              </span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="leading-snug text-mm-text-primary font-medium group-hover:text-white transition-colors text-[13px] truncate">
-              {anime.title}
-            </p>
-            {anime.title_original && anime.title_original !== anime.title && (
-              <p className="text-[11px] text-mm-text-muted truncate mt-0.5">
-                {anime.title_original}
-              </p>
-            )}
-            <div className="flex items-center gap-2 mt-1">
-              {anime.score > 0 && (
-                <span className="text-[11px] font-semibold text-mm-accent tabular-nums">
-                  {anime.score.toFixed(1)}
-                </span>
-              )}
-              {anime.episode_count > 0 && (
-                <span className="text-[10px] text-mm-text-muted">{anime.episode_count} ep</span>
-              )}
-            </div>
-          </div>
-          <span className="text-mm-text-muted text-[11px] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-            →
+            EP {anime.next_episode}
           </span>
-        </Link>
-      )}
-
-      {/* Hover card */}
-      {showCard &&
-        (() => {
-          const info = detail || anime;
-          const bannerSrc = detail?.banner_image || anime.banner_image || anime.cover_image;
-          const hasBanner = !!(detail?.banner_image || anime.banner_image);
-          const tags = detail?.tags || [];
-          const genres = anime.genres || [];
-          const displayTags = tags.length > 0 ? tags : genres;
-          const synopsis = detail?.synopsis || anime.description;
-
-          return (
-            <div
-              className={cn(
-                'absolute top-1/2 -translate-y-1/2 z-50 w-[506px] pointer-events-none hidden lg:block',
-                cardSide === 'right' ? 'left-full ml-4' : 'right-full mr-4'
-              )}
-            >
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  x: cardSide === 'right' ? -10 : 10,
-                  scale: 0.97,
-                }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="relative rounded-lg overflow-hidden border border-white/[0.08] shadow-2xl"
-              >
-                <div className="absolute inset-0">
-                  {bannerSrc?.startsWith('http') ? (
-                    <img
-                      src={bannerSrc}
-                      alt=""
-                      className="w-full h-full object-cover"
-                      style={
-                        !hasBanner
-                          ? {
-                              filter: 'blur(20px) saturate(1.2) brightness(0.5)',
-                              transform: 'scale(1.4)',
-                            }
-                          : { filter: 'blur(2px) brightness(0.45)' }
-                      }
-                    />
-                  ) : (
-                    <div
-                      className="w-full h-full"
-                      style={{ background: animeGradient(anime.title) }}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-black/40" />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)',
-                    }}
-                  />
-                </div>
-                <div className="relative z-[1] flex items-start gap-4 p-4">
-                  <div
-                    className="shrink-0 w-[150px] h-[210px] rounded overflow-hidden shadow-lg ring-1 ring-white/10"
-                    style={hasCover ? undefined : { background: animeGradient(anime.title) }}
-                  >
-                    {hasCover && (
-                      <img src={anime.cover_image} alt="" className="w-full h-full object-cover" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0 pt-0.5 space-y-1.5">
-                    <p className="text-[15px] font-bold text-white leading-snug line-clamp-2">
-                      {info.title}
-                    </p>
-                    {info.title_original && info.title_original !== info.title && (
-                      <p className="text-[11px] text-white/40 truncate">{info.title_original}</p>
-                    )}
-                    {displayTags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {displayTags.slice(0, 5).map((t) => (
-                          <span
-                            key={t}
-                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-mm-accent/10 text-mm-accent/80"
-                          >
-                            {translateGenre(t, locale)}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      {info.score > 0 && (
-                        <span className="text-[13px] font-bold text-mm-accent">
-                          ♡ {info.score.toFixed(1)}
-                        </span>
-                      )}
-                      {info.episode_count > 0 && (
-                        <span className="text-[11px] text-white/50">{info.episode_count} ep</span>
-                      )}
-                      {info.air_date && (
-                        <span className="text-[11px] text-white/40">
-                          {new Date(info.air_date).getFullYear()}
-                        </span>
-                      )}
-                      {detail?.rating && detail.rating.total > 0 && (
-                        <span className="text-[11px] text-white/40">
-                          {detail.rating.total} ratings
-                        </span>
-                      )}
-                    </div>
-                    {synopsis && (
-                      <p className="text-[11px] text-white/50 leading-relaxed line-clamp-4">
-                        {synopsis.replace(/<[^>]+>/g, '')}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          );
-        })()}
+        )}
+      </AnimeCard>
     </motion.div>
   );
 }
@@ -364,7 +136,7 @@ function SeasonGridSkeleton() {
 
 /* ── Calendar view (weekly schedule) ──────────────────────── */
 
-function CalendarView({ locale }: { locale: string }) {
+function CalendarView() {
   const { i18n } = useLingui();
   const tabsRef = useRef<HTMLDivElement>(null);
   const {
@@ -521,12 +293,10 @@ function CalendarView({ locale }: { locale: string }) {
                 {activeCalendar.items.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
                     {activeCalendar.items.map((anime, i) => (
-                      <ScheduleAnimeItem
+                      <ScheduleAnimeCard
                         key={anime.bangumi_id}
                         anime={anime}
                         index={i}
-                        locale={locale}
-                        variant="card"
                       />
                     ))}
                   </div>
@@ -568,12 +338,10 @@ function CalendarView({ locale }: { locale: string }) {
                 {day.items.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
                     {day.items.map((anime, i) => (
-                      <ScheduleAnimeItem
+                      <ScheduleAnimeCard
                         key={anime.bangumi_id}
                         anime={anime}
                         index={i}
-                        locale={locale}
-                        variant="card"
                       />
                     ))}
                   </div>
@@ -625,11 +393,9 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 function SeasonBrowseView({
   year,
   season,
-  locale,
 }: {
   year: number;
   season: SeasonKey;
-  locale: string;
 }) {
   const { i18n } = useLingui();
   const [allItems, setAllItems] = useState<AnimeSummary[]>([]);
@@ -702,12 +468,10 @@ function SeasonBrowseView({
         style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}
       >
         {allItems.map((anime, i) => (
-          <ScheduleAnimeItem
+          <ScheduleAnimeCard
             key={`${anime.bangumi_id || anime.anilist_id || i}-${i}`}
             anime={anime}
             index={i < 50 ? i : 0}
-            locale={locale}
-            variant="card"
           />
         ))}
       </div>
@@ -746,7 +510,8 @@ export function SchedulePage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen px-4 md:px-6 pt-6 pb-16">
+      <div className="relative min-h-screen px-4 md:px-6 pt-6 pb-16">
+        <PageAtmosphere preset="schedule" />
         {/* Header — year nav + season chips in one row */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -826,12 +591,11 @@ export function SchedulePage() {
             transition={{ duration: 0.15 }}
           >
             {isCurrentSeason ? (
-              <CalendarView locale={i18n.locale} />
+              <CalendarView />
             ) : (
               <SeasonBrowseView
                 year={selectedYear}
                 season={selectedSeason}
-                locale={i18n.locale}
               />
             )}
           </motion.div>

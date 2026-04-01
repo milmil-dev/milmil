@@ -11,6 +11,7 @@ import { DataPagination } from '../components/DataPagination';
 import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { MotionTable } from '../components/MotionTable';
+import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
@@ -1113,7 +1114,8 @@ export function LibraryDetailPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen px-4 md:px-8 pt-6 pb-16">
+      <div className="relative min-h-screen px-4 md:px-8 pt-6 pb-16">
+        <PageAtmosphere preset="detail" />
         {/* Back link */}
         <motion.div initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}>
           <Link

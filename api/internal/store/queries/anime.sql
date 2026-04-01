@@ -26,3 +26,7 @@ UPDATE anime SET tmdb_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 -- name: UpdateAnimeUserScore :exec
 UPDATE anime SET user_score = sqlc.arg(user_score), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE bangumi_id = sqlc.arg(bangumi_id);
+
+-- name: UpdateAnimeScore :exec
+UPDATE anime SET score = sqlc.arg(score), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE bangumi_id = sqlc.arg(bangumi_id) AND (score = 0 OR score != sqlc.arg(score));

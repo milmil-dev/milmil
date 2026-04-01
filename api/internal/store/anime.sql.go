@@ -272,6 +272,21 @@ func (q *Queries) ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullSt
 	return items, nil
 }
 
+const updateAnimeScore = `-- name: UpdateAnimeScore :exec
+UPDATE anime SET score = ?1, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE bangumi_id = ?2 AND (score = 0 OR score != ?1)
+`
+
+type UpdateAnimeScoreParams struct {
+	Score     float64       `json:"score"`
+	BangumiID sql.NullInt64 `json:"bangumi_id"`
+}
+
+func (q *Queries) UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error {
+	_, err := q.db.ExecContext(ctx, updateAnimeScore, arg.Score, arg.BangumiID)
+	return err
+}
+
 const updateAnimeTMDBID = `-- name: UpdateAnimeTMDBID :exec
 UPDATE anime SET tmdb_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
 `

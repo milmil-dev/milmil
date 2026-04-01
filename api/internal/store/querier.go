@@ -84,6 +84,7 @@ type Querier interface {
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
+	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
