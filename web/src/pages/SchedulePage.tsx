@@ -10,6 +10,7 @@ import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Spinner } from '../components/ui/spinner';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import {
   type AnimeSummary,
   type BrowseParams,
@@ -60,7 +61,6 @@ function getWeekdayJapanese(bangumiWeekday: string): string {
   if (idx === -1) return '';
   return BANGUMI_WEEKDAYS_JP[idx] ?? '';
 }
-
 
 function getDateForWeekday(bangumiWeekday: string): string {
   const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
@@ -178,9 +178,7 @@ function CalendarView() {
   if (isError) {
     return (
       <div className="text-center py-16">
-        <p className="text-sm mb-3 text-mm-text-secondary">
-          {i18n._(msg`schedule.loadFailed`)}
-        </p>
+        <p className="text-sm mb-3 text-mm-text-secondary">{i18n._(msg`schedule.loadFailed`)}</p>
         <button
           type="button"
           onClick={() => refetch()}
@@ -293,11 +291,7 @@ function CalendarView() {
                 {activeCalendar.items.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
                     {activeCalendar.items.map((anime, i) => (
-                      <ScheduleAnimeCard
-                        key={anime.bangumi_id}
-                        anime={anime}
-                        index={i}
-                      />
+                      <ScheduleAnimeCard key={anime.bangumi_id} anime={anime} index={i} />
                     ))}
                   </div>
                 ) : (
@@ -320,7 +314,10 @@ function CalendarView() {
             className="space-y-8"
           >
             {sortedCalendar.map((day) => (
-              <div key={day.weekday} style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}>
+              <div
+                key={day.weekday}
+                style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
+              >
                 <div className="flex items-center gap-2.5 mb-3">
                   <h2 className="text-lg font-bold text-white">
                     {getWeekdayJapanese(day.weekday)}
@@ -338,11 +335,7 @@ function CalendarView() {
                 {day.items.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
                     {day.items.map((anime, i) => (
-                      <ScheduleAnimeCard
-                        key={anime.bangumi_id}
-                        anime={anime}
-                        index={i}
-                      />
+                      <ScheduleAnimeCard key={anime.bangumi_id} anime={anime} index={i} />
                     ))}
                   </div>
                 ) : (
@@ -390,13 +383,7 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 
 /* ── Season browse view (AniList grid) ────────────────────── */
 
-function SeasonBrowseView({
-  year,
-  season,
-}: {
-  year: number;
-  season: SeasonKey;
-}) {
+function SeasonBrowseView({ year, season }: { year: number; season: SeasonKey }) {
   const { i18n } = useLingui();
   const [allItems, setAllItems] = useState<AnimeSummary[]>([]);
   const [page, setPage] = useState(1);
@@ -439,9 +426,7 @@ function SeasonBrowseView({
   if (isError && allItems.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-sm mb-3 text-mm-text-secondary">
-          {i18n._(msg`schedule.loadFailed`)}
-        </p>
+        <p className="text-sm mb-3 text-mm-text-secondary">{i18n._(msg`schedule.loadFailed`)}</p>
         <button
           type="button"
           onClick={() => refetch()}
@@ -477,9 +462,7 @@ function SeasonBrowseView({
       </div>
 
       {/* Auto load more — sentinel triggers next page when scrolled into view */}
-      {hasMore && (
-        <LoadMoreSentinel loading={isFetching} onVisible={() => setPage((p) => p + 1)} />
-      )}
+      {hasMore && <LoadMoreSentinel loading={isFetching} onVisible={() => setPage((p) => p + 1)} />}
     </div>
   );
 }
@@ -488,13 +471,16 @@ function SeasonBrowseView({
 
 export function SchedulePage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.schedule`));
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { year?: number; season?: string };
   const currentYear = new Date().getFullYear();
   const currentSeason = getCurrentSeason();
 
   const selectedYear = search.year || currentYear;
-  const selectedSeason = (SEASONS.includes(search.season as SeasonKey) ? search.season : currentSeason) as SeasonKey;
+  const selectedSeason = (
+    SEASONS.includes(search.season as SeasonKey) ? search.season : currentSeason
+  ) as SeasonKey;
   const isCurrentSeason = selectedYear === currentYear && selectedSeason === currentSeason;
 
   const setSearch = (params: { year?: number; season?: string }) => {
@@ -593,10 +579,7 @@ export function SchedulePage() {
             {isCurrentSeason ? (
               <CalendarView />
             ) : (
-              <SeasonBrowseView
-                year={selectedYear}
-                season={selectedSeason}
-              />
+              <SeasonBrowseView year={selectedYear} season={selectedSeason} />
             )}
           </motion.div>
         </AnimatePresence>

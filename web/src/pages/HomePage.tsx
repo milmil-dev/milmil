@@ -12,6 +12,7 @@ import { HomePageSkeleton } from '../components/HomePageSkeleton';
 import { LibraryEmptyState } from '../components/LibraryEmptyState';
 import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { type LibraryWithStats, libraryApi, libraryKeys } from '../lib/api/library';
 import { progressApi, progressKeys } from '../lib/api/progress';
@@ -34,6 +35,7 @@ const GENRES = [
 
 export function HomePage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.home`));
   const { data: calendar } = useQuery({
     queryKey: discoverKeys.calendar(),
     queryFn: discoverApi.calendar,
@@ -197,7 +199,6 @@ export function HomePage() {
               </motion.section>
             )}
           </div>
-
         </div>
       </div>
     </PageTransition>
@@ -302,7 +303,6 @@ function HomeLibraryCard({ lib }: { lib: LibraryWithStats }) {
       to="/libraries"
       className="group block rounded-lg overflow-hidden bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
     >
-
       <div className="px-3 py-2.5 space-y-1.5">
         {/* Row 1: icon + name + connection + source badge */}
         <div className="flex items-center gap-1.5 min-w-0">

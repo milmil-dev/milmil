@@ -18,6 +18,7 @@ import { EpisodeTitleOverlay } from '@/components/watch/EpisodeTitleOverlay';
 import { RelatedAnimeList } from '@/components/watch/RelatedAnimeList';
 import { TechInfoPopover } from '@/components/watch/TechInfoPopover';
 import { WatchTitleBar } from '@/components/watch/WatchTitleBar';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import type { PlayableEpisode } from '@/lib/api/anime';
 import { animeApi, animeKeys } from '@/lib/api/anime';
 import { discoverApi, discoverKeys } from '@/lib/api/discover';
@@ -94,6 +95,7 @@ function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: ()
 
 export function WatchPage() {
   const { i18n } = useLingui();
+  useDocumentTitle('Watch');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { animeId } = useParams({ strict: false });

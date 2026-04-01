@@ -12,7 +12,6 @@ import { PageTransition } from '../components/PageTransition';
 import { PreviewModal } from '../components/PreviewModal';
 import { TagMultiSelect } from '../components/TagMultiSelect';
 import { Button } from '../components/ui/button';
-import { Spinner } from '../components/ui/spinner';
 import {
   Select,
   SelectContent,
@@ -20,7 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { type AnimeSummary, type BrowseParams, discoverApi, discoverKeys } from '../lib/api/discover';
+import { Spinner } from '../components/ui/spinner';
+import { useDocumentTitle } from '../hooks/use-document-title';
+import {
+  type AnimeSummary,
+  type BrowseParams,
+  discoverApi,
+  discoverKeys,
+} from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
 import { cn } from '../lib/utils';
 
@@ -121,6 +127,7 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 
 export function SearchPage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.search`));
   const navigate = useNavigate();
   const searchParams = useSearch({ strict: false }) as SearchParams;
   const {
@@ -196,7 +203,6 @@ export function SearchPage() {
       } as any,
     });
   };
-
 
   /** Add a Bangumi tag */
   const addTag = (t: string) => {
@@ -337,7 +343,10 @@ export function SearchPage() {
               value={urlSort ?? ''}
               onValueChange={(v) => updateFilter('sort', v || undefined)}
             >
-              <SelectTrigger size="sm" className="min-w-[120px] bg-white/[0.04] border-transparent text-xs text-white/70">
+              <SelectTrigger
+                size="sm"
+                className="min-w-[120px] bg-white/[0.04] border-transparent text-xs text-white/70"
+              >
                 <SelectValue placeholder={i18n._(msg`search.filter.sort`)} />
               </SelectTrigger>
               <SelectContent>
@@ -354,7 +363,10 @@ export function SearchPage() {
               value={urlYear ?? ''}
               onValueChange={(v) => updateFilter('year', v || undefined)}
             >
-              <SelectTrigger size="sm" className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70">
+              <SelectTrigger
+                size="sm"
+                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+              >
                 <SelectValue placeholder={i18n._(msg`search.filter.year`)} />
               </SelectTrigger>
               <SelectContent>
@@ -371,7 +383,10 @@ export function SearchPage() {
               value={urlSeason ?? ''}
               onValueChange={(v) => updateFilter('season', v || undefined)}
             >
-              <SelectTrigger size="sm" className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70">
+              <SelectTrigger
+                size="sm"
+                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+              >
                 <SelectValue placeholder={i18n._(msg`search.filter.season`)} />
               </SelectTrigger>
               <SelectContent>
@@ -388,7 +403,10 @@ export function SearchPage() {
               value={urlMinScore ?? ''}
               onValueChange={(v) => updateFilter('min_score', v || undefined)}
             >
-              <SelectTrigger size="sm" className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70">
+              <SelectTrigger
+                size="sm"
+                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+              >
                 <SelectValue placeholder={i18n._(msg`search.filter.rating`)} />
               </SelectTrigger>
               <SelectContent>
@@ -405,7 +423,10 @@ export function SearchPage() {
               value={urlStatus ?? ''}
               onValueChange={(v) => updateFilter('status', v || undefined)}
             >
-              <SelectTrigger size="sm" className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70">
+              <SelectTrigger
+                size="sm"
+                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+              >
                 <SelectValue placeholder={i18n._(msg`search.filter.status`)} />
               </SelectTrigger>
               <SelectContent>
@@ -418,11 +439,7 @@ export function SearchPage() {
             </Select>
 
             {/* Tag filter */}
-            <TagMultiSelect
-              selected={selectedTags}
-              onAdd={addTag}
-              onRemove={removeTag}
-            />
+            <TagMultiSelect selected={selectedTags} onAdd={addTag} onRemove={removeTag} />
 
             {/* Clear filters */}
             {isFilterActive && (
@@ -437,7 +454,6 @@ export function SearchPage() {
               </Button>
             )}
           </div>
-
         </motion.div>
 
         {/* Search input */}

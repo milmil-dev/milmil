@@ -9,6 +9,7 @@ import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
 import type { AnimeSummary } from '../lib/api/discover';
 import { cn } from '../lib/utils';
@@ -224,6 +225,7 @@ function CollectionSkeleton() {
 
 export function CollectionPage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.collection`));
 
   const [selectedStatus, setSelectedStatus] = useState('');
   const [searchInput, setSearchInput] = useState('');
@@ -236,7 +238,11 @@ export function CollectionPage() {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  const { data: anime, isLoading, isFetching } = useQuery({
+  const {
+    data: anime,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: collectionKeys.list({ status: selectedStatus, search: debouncedSearch, sort }),
     queryFn: () => collectionApi.list({ status: selectedStatus, search: debouncedSearch, sort }),
     placeholderData: keepPreviousData,

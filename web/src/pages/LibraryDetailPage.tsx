@@ -29,16 +29,13 @@ import { Modal } from '../components/Modal';
 import { MotionTable } from '../components/MotionTable';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
+import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { useAuth } from '../hooks/use-auth';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { type AnimeSummary, discoverApi, discoverKeys, type Episode } from '../lib/api/discover';
 import {
   type FileTreeNode,
@@ -406,7 +403,12 @@ function FileTable({
                   <div className="flex items-center gap-1 justify-end">
                     {/* Primary action */}
                     {isMatched && file.matched_bangumi_id > 0 ? (
-                      <Button size="icon-xs" variant="secondary" asChild title={i18n._(msg`library.detail.play`)}>
+                      <Button
+                        size="icon-xs"
+                        variant="secondary"
+                        asChild
+                        title={i18n._(msg`library.detail.play`)}
+                      >
                         <Link
                           to="/watch/$animeId"
                           params={{ animeId: String(file.matched_bangumi_id) }}
@@ -627,8 +629,7 @@ function FileTreeView({
     const hasChildren =
       (node.children && node.children.length > 0) || (node.files && node.files.length > 0);
     const matchedCount = countMatched(node);
-    const matchPct =
-      node.file_count > 0 ? Math.round((matchedCount / node.file_count) * 100) : 0;
+    const matchPct = node.file_count > 0 ? Math.round((matchedCount / node.file_count) * 100) : 0;
     const indent = depth * 20 + 12;
 
     return (
@@ -766,9 +767,7 @@ function FileTreeView({
                         }
                       >
                         <HugeiconsIcon
-                          icon={
-                            file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon
-                          }
+                          icon={file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon}
                           size={12}
                         />
                       </Button>
@@ -1277,12 +1276,10 @@ function SettingsModal({
           <label className="block text-xs font-medium text-white/50 mb-1.5">
             {i18n._(msg`library.scanInterval`)}
           </label>
-          <input
-            type="number"
-            min={0}
+          <ScanIntervalSelect
             value={scanInterval}
-            onChange={(e) => setScanInterval(Number(e.target.value))}
-            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+            onChange={setScanInterval}
+            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white"
           />
         </div>
 
@@ -1328,6 +1325,7 @@ function SettingsModal({
 
 export function LibraryDetailPage() {
   const { i18n } = useLingui();
+  useDocumentTitle('Library');
   const { isAuthenticated } = useAuth();
   const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const { id: rawId } = useParams({ strict: false }) as { id?: string };
@@ -1649,10 +1647,16 @@ export function LibraryDetailPage() {
             </p>
           </div>
           <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className={cn(
-              'text-2xl font-bold tabular-nums',
-              matchPct === 100 ? 'text-green-400' : matchPct >= 50 ? 'text-green-400/80' : 'text-amber-400/80'
-            )}>
+            <p
+              className={cn(
+                'text-2xl font-bold tabular-nums',
+                matchPct === 100
+                  ? 'text-green-400'
+                  : matchPct >= 50
+                    ? 'text-green-400/80'
+                    : 'text-amber-400/80'
+              )}
+            >
               {matchPct}%
             </p>
             <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">

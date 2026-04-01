@@ -11,6 +11,7 @@ import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
+import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
@@ -18,6 +19,7 @@ import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { Switch } from '../components/ui/switch';
 import { useAuth } from '../hooks/use-auth';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { collectionApi, collectionKeys, type RecentCollectionAnime } from '../lib/api/collection';
 import type { AnimeSummary } from '../lib/api/discover';
 import {
@@ -159,10 +161,7 @@ function LibraryCard({
   const isScanning = useScanStore((s) => s.isScanning(lib.id));
   const matchPct = lib.file_count > 0 ? Math.round((lib.matched_count / lib.file_count) * 100) : 0;
   const isRemoteLibrary = lib.source_type !== 'local' && lib.source_type !== '';
-  const {
-    data: connectionStatus,
-    isLoading: isCheckingConnection,
-  } = useQuery({
+  const { data: connectionStatus, isLoading: isCheckingConnection } = useQuery({
     queryKey: libraryKeys.connectionStatus(lib.id),
     queryFn: () => libraryApi.getConnectionStatus(lib.id),
     enabled: isRemoteLibrary,
@@ -198,10 +197,7 @@ function LibraryCard({
           )}
           <SourceBadge sourceType={lib.source_type} />
           {isRemoteLibrary && (
-            <span
-              className="inline-flex items-center gap-1.5"
-              title={connectionStatus?.error}
-            >
+            <span className="inline-flex items-center gap-1.5" title={connectionStatus?.error}>
               <span
                 className={cn(
                   'h-[5px] w-[5px] rounded-full',
@@ -263,7 +259,8 @@ function LibraryCard({
           {lib.file_count.toLocaleString()}
         </p>
         <p className="text-[9px] text-white/20 mt-0.5 tabular-nums">
-          {formatBytes(lib.total_size_bytes)} · <span className={matchPct === 100 ? 'text-green-400/50' : ''}>{matchPct}%</span>
+          {formatBytes(lib.total_size_bytes)} ·{' '}
+          <span className={matchPct === 100 ? 'text-green-400/50' : ''}>{matchPct}%</span>
         </p>
       </div>
 
@@ -375,8 +372,7 @@ interface LibraryFormValues {
 }
 
 const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
-const inputClass =
-  'bg-white/[0.06] border-none outline-none text-white rounded-md';
+const inputClass = 'bg-white/[0.06] border-none outline-none text-white rounded-md';
 
 // ─── Test connection button ───────────────────────────────────────────────────
 function TestConnectionButton({
@@ -1544,13 +1540,9 @@ function LibraryForm({
           <div className="px-4 pb-4">
             <form.Field name="scan_interval_minutes">
               {(field) => (
-                <Input
-                  id="lib-interval"
-                  type="number"
+                <ScanIntervalSelect
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(Number(e.target.value))}
-                  min={1}
-                  max={10080}
+                  onChange={field.handleChange}
                   className={inputClass}
                 />
               )}
@@ -1859,7 +1851,9 @@ function AddLibraryWizard({
                         onClick={() => handleSelectSource(card.key)}
                         className="rounded-lg bg-white/[0.04] px-4 py-3 hover:bg-white/[0.08] transition-colors cursor-pointer text-left flex items-center gap-3"
                       >
-                        <div className="text-white/30 shrink-0 [&_svg]:w-6 [&_svg]:h-6">{card.icon}</div>
+                        <div className="text-white/30 shrink-0 [&_svg]:w-6 [&_svg]:h-6">
+                          {card.icon}
+                        </div>
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-white/80">{card.name}</p>
                           <p className="text-[11px] text-white/30 leading-snug truncate">
@@ -2800,13 +2794,9 @@ function AddLibraryWizard({
                                   <FieldLabel htmlFor="wiz-interval" className={labelClass}>
                                     {i18n._(msg`library.scanInterval`)}
                                   </FieldLabel>
-                                  <Input
-                                    id="wiz-interval"
-                                    type="number"
+                                  <ScanIntervalSelect
                                     value={field.state.value}
-                                    onChange={(e) => field.handleChange(Number(e.target.value))}
-                                    min={1}
-                                    max={10080}
+                                    onChange={field.handleChange}
                                     className={inputClass}
                                   />
                                 </Field>
@@ -3032,6 +3022,7 @@ type SortKey = 'name' | 'match' | 'size' | 'scanned';
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function LibrariesPage() {
   const { i18n } = useLingui();
+  useDocumentTitle('Libraries');
   const { isAuthenticated } = useAuth();
   const [showLogin, setShowLogin] = useState(!isAuthenticated);
   const queryClient = useQueryClient();
@@ -3196,7 +3187,9 @@ export function LibrariesPage() {
                   type="button"
                   onClick={() => {
                     for (const lib of libraries) {
-                      libraryApi.scan(lib.id).catch((err: Error) => toast.error(`${lib.name}: ${err.message}`));
+                      libraryApi
+                        .scan(lib.id)
+                        .catch((err: Error) => toast.error(`${lib.name}: ${err.message}`));
                     }
                     toast.success(i18n._(msg`scan.scanAll`));
                   }}
@@ -3219,13 +3212,22 @@ export function LibrariesPage() {
             {hasLibraries && (
               <div className="flex items-center gap-4 mt-4">
                 <div className="flex items-center gap-3 text-[11px] text-white/30">
-                  <span className="tabular-nums">{libraries.length} {i18n._(msg`library.summary.libraries`)}</span>
+                  <span className="tabular-nums">
+                    {libraries.length} {i18n._(msg`library.summary.libraries`)}
+                  </span>
                   <span className="text-white/10">·</span>
-                  <span className="tabular-nums">{totalFiles} {i18n._(msg`library.summary.files`)}</span>
+                  <span className="tabular-nums">
+                    {totalFiles} {i18n._(msg`library.summary.files`)}
+                  </span>
                   <span className="text-white/10">·</span>
                   <span className="tabular-nums">{formatBytes(totalSize)}</span>
                   <span className="text-white/10">·</span>
-                  <span className={cn('tabular-nums', matchPctAll === 100 ? 'text-green-400/50' : 'text-white/30')}>
+                  <span
+                    className={cn(
+                      'tabular-nums',
+                      matchPctAll === 100 ? 'text-green-400/50' : 'text-white/30'
+                    )}
+                  >
                     {matchPctAll}% {i18n._(msg`library.summary.matched`)}
                   </span>
                 </div>
@@ -3264,11 +3266,20 @@ export function LibrariesPage() {
           {isLoading ? (
             <div className="space-y-2">
               {skeletonCards.map((i) => (
-                <div key={i} className="flex items-center gap-4 px-4 py-3 rounded-xl animate-pulse bg-white/[0.025]">
+                <div
+                  key={i}
+                  className="flex items-center gap-4 px-4 py-3 rounded-xl animate-pulse bg-white/[0.025]"
+                >
                   <div className="w-9 h-9 rounded-[10px] bg-white/[0.04]" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3 rounded w-1/3" style={{ backgroundColor: 'oklch(18% 0.01 280)' }} />
-                    <div className="h-2 rounded w-1/2" style={{ backgroundColor: 'oklch(15% 0.01 280)' }} />
+                    <div
+                      className="h-3 rounded w-1/3"
+                      style={{ backgroundColor: 'oklch(18% 0.01 280)' }}
+                    />
+                    <div
+                      className="h-2 rounded w-1/2"
+                      style={{ backgroundColor: 'oklch(15% 0.01 280)' }}
+                    />
                     <div className="h-[3px] rounded-full w-full bg-white/[0.03]" />
                   </div>
                   <div className="w-12 h-6 rounded bg-white/[0.03]" />

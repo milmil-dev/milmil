@@ -6,6 +6,7 @@ import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Field } from '../components/ui/field';
 import { Input } from '../components/ui/input';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { type Download, downloadApi, downloadKeys } from '../lib/api/downloads';
 import { cn } from '../lib/utils';
 
@@ -146,6 +147,7 @@ function DownloadRow({
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export function DownloadsPage() {
+  useDocumentTitle('Downloads');
   const queryClient = useQueryClient();
 
   const { data: downloads = [], isLoading } = useQuery({

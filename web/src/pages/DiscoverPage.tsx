@@ -9,6 +9,7 @@ import { HeroBanner } from '../components/HeroBanner';
 import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
 import { cn } from '../lib/utils';
@@ -153,6 +154,8 @@ function useSections(): SectionDef[] {
 /* ── Main page ────────────────────────────────────────────── */
 
 export function DiscoverPage() {
+  const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.discover`));
   const sections = useSections();
 
   // Fetch current season anime for hero banner
