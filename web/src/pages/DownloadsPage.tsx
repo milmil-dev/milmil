@@ -469,7 +469,7 @@ function AnimeTorrentView({
   return (
     <>
       {/* Anime context header */}
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 mb-6 relative overflow-hidden">
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 mb-6 relative overflow-hidden [&_a]:no-underline [&_a:hover]:no-underline">
         {/* Blurred background from cover */}
         {anime.cover_image && (
           <div className="absolute inset-0 opacity-[0.07]" style={{
@@ -494,7 +494,8 @@ function AnimeTorrentView({
           <Link
             to="/anime/$id"
             params={{ id: String(anime.bangumi_id) }}
-            className="shrink-0 ml-5 hover:opacity-90 transition-opacity"
+            className="shrink-0 ml-5 hover:opacity-90 transition-opacity no-underline"
+            style={{ textDecoration: 'none' }}
           >
             <img
               src={anime.cover_image}
@@ -976,7 +977,8 @@ function AnimeCover({ bangumiId, size = 62 }: { bangumiId?: number; size?: numbe
       <Link
         to="/anime/$id"
         params={{ id: String(bangumiId) }}
-        className="shrink-0 hover:opacity-80 transition-opacity"
+        className="shrink-0 hover:opacity-80 transition-opacity no-underline"
+        style={{ textDecoration: 'none' }}
       >
         {img}
       </Link>
