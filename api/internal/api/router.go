@@ -120,6 +120,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	discoverGroup.GET("/anime/:id", h.handleAnimeDetail)
 	discoverGroup.GET("/anime/:id/episodes", h.handleAnimeEpisodes)
 	discoverGroup.GET("/anime/:id/comments", h.handleAnimeComments)
+	discoverGroup.GET("/anime/:id/torrents", h.handleAnimeTorrents, jwtMiddleware(cfg.JWTSecret))
 
 	// Danmaku — protected
 	danmakuGroup := v1.Group("/danmaku", jwtMiddleware(cfg.JWTSecret))

@@ -2,6 +2,7 @@ package torrent
 
 import (
 	"context"
+	"sort"
 	"sync"
 	"time"
 )
@@ -86,4 +87,11 @@ func (r *Registry) SearchAll(ctx context.Context, query string) []SearchResult {
 	}
 	wg.Wait()
 	return results
+}
+
+// SortByDate sorts search results by publish date descending (newest first).
+func SortByDate(results []SearchResult) {
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].PublishDate.After(results[j].PublishDate)
+	})
 }
