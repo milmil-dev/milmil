@@ -2,10 +2,12 @@ package api
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
 	"sort"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/store"
 )
@@ -166,12 +168,55 @@ func (h *handler) handleUpdateWatchStatus(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "status must be one of: watching, planning, completed, paused, dropped")
 	}
 
-	err = h.queries.UpdateAnimeWatchStatus(c.Request().Context(), store.UpdateAnimeWatchStatusParams{
+	ctx := c.Request().Context()
+
+	// Try to update existing anime record
+	err = h.queries.UpdateAnimeWatchStatus(ctx, store.UpdateAnimeWatchStatusParams{
 		WatchStatus: req.Status,
 		BangumiID:   sql.NullInt64{Int64: bangumiID, Valid: true},
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
+	}
+
+	// Check if the anime exists in local DB — if not, create it from metadata
+	_, getErr := h.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: bangumiID, Valid: true})
+	if getErr != nil {
+		// Anime not in local DB — fetch metadata and create
+		detail, metaErr := h.metadata.GetAnimeDetail(ctx, int(bangumiID))
+		if metaErr == nil {
+			year := int64(0)
+			season := ""
+			if detail.AirDate != "" && len(detail.AirDate) >= 4 {
+				y, _ := strconv.ParseInt(detail.AirDate[:4], 10, 64)
+				year = y
+			}
+
+			genresJSON := "[]"
+			if len(detail.Genres) > 0 {
+				if b, e := json.Marshal(detail.Genres); e == nil {
+					genresJSON = string(b)
+				}
+			}
+
+			_, _ = h.queries.CreateAnime(ctx, store.CreateAnimeParams{
+				ID:            uuid.NewString(),
+				Title:         detail.TitleOriginal,
+				TitleZh:       sql.NullString{String: detail.Title, Valid: detail.Title != ""},
+				TitleEn:       sql.NullString{String: detail.TitleEN, Valid: detail.TitleEN != ""},
+				Synopsis:      sql.NullString{String: detail.Synopsis, Valid: detail.Synopsis != ""},
+				CoverImageUrl: sql.NullString{String: detail.CoverImage, Valid: detail.CoverImage != ""},
+				TotalEpisodes: sql.NullInt64{Int64: int64(detail.EpisodeCount), Valid: detail.EpisodeCount > 0},
+				Status:        "airing",
+				AirDate:       sql.NullString{String: detail.AirDate, Valid: detail.AirDate != ""},
+				Year:          sql.NullInt64{Int64: year, Valid: year > 0},
+				Season:        sql.NullString{String: season, Valid: season != ""},
+				Genres:        genresJSON,
+				BangumiID:     sql.NullInt64{Int64: bangumiID, Valid: true},
+				WatchStatus:   req.Status,
+				Score:         detail.Score,
+			})
+		}
 	}
 
 	return c.NoContent(http.StatusNoContent)
