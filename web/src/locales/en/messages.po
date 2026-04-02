@@ -290,60 +290,64 @@ msgstr "Update Password"
 msgid "account.updating"
 msgstr "Updating..."
 
-#: src/pages/AnimeDetailPage.tsx:560
+#: src/pages/AnimeDetailPage.tsx:563
 msgid "anime.addToCollection"
 msgstr "Add to Collection"
 
-#: src/pages/AnimeDetailPage.tsx:799
+#: src/pages/AnimeDetailPage.tsx:802
 msgid "anime.characters"
 msgstr "Characters"
 
-#: src/pages/AnimeDetailPage.tsx:912
+#: src/pages/AnimeDetailPage.tsx:257
+msgid "anime.collectionUpdated"
+msgstr "Collection updated"
+
+#: src/pages/AnimeDetailPage.tsx:915
 msgid "anime.comments"
 msgstr "Comments"
 
-#: src/pages/AnimeDetailPage.tsx:668
+#: src/pages/AnimeDetailPage.tsx:671
 msgid "anime.continueWatching"
 msgstr "Continue Watching"
 
-#: src/pages/AnimeDetailPage.tsx:672
+#: src/pages/AnimeDetailPage.tsx:675
 msgid "anime.episode"
 msgstr "Episode"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:723
+#: src/pages/AnimeDetailPage.tsx:726
 msgid "anime.episodes"
 msgstr "Episodes"
 
-#: src/pages/AnimeDetailPage.tsx:602
+#: src/pages/AnimeDetailPage.tsx:605
 msgid "anime.myScore"
 msgstr "My Score"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:502
+#: src/pages/AnimeDetailPage.tsx:505
 msgid "anime.notAired"
 msgstr "Not Yet Aired"
 
-#: src/pages/AnimeDetailPage.tsx:311
+#: src/pages/AnimeDetailPage.tsx:314
 msgid "anime.notFound"
 msgstr "Anime not found"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:495
+#: src/pages/AnimeDetailPage.tsx:498
 msgid "anime.ratings"
 msgstr "ratings"
 
-#: src/pages/AnimeDetailPage.tsx:846
+#: src/pages/AnimeDetailPage.tsx:849
 msgid "anime.recommendations"
 msgstr "Recommended"
 
-#: src/pages/AnimeDetailPage.tsx:820
+#: src/pages/AnimeDetailPage.tsx:823
 msgid "anime.relations"
 msgstr "Related"
 
-#: src/pages/AnimeDetailPage.tsx:864
+#: src/pages/AnimeDetailPage.tsx:867
 msgid "anime.reviews"
 msgstr "Reviews"
 
@@ -351,7 +355,7 @@ msgstr "Reviews"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:571
+#: src/pages/AnimeDetailPage.tsx:574
 msgid "anime.searchResources"
 msgstr "Search Resources"
 
@@ -363,11 +367,11 @@ msgstr "Search Resources"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:769
+#: src/pages/AnimeDetailPage.tsx:772
 msgid "anime.trailer"
 msgstr "Trailer"
 
-#: src/pages/AnimeDetailPage.tsx:805
+#: src/pages/AnimeDetailPage.tsx:808
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -713,14 +717,14 @@ msgstr "All"
 #~ msgstr "Change Status"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:591
+#: src/pages/AnimeDetailPage.tsx:594
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "Completed"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:597
+#: src/pages/AnimeDetailPage.tsx:600
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -742,14 +746,14 @@ msgid "collection.goToLibraries"
 msgstr "Go to Libraries"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:594
+#: src/pages/AnimeDetailPage.tsx:597
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "On Hold"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:588
+#: src/pages/AnimeDetailPage.tsx:591
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -785,7 +789,7 @@ msgid "collection.viewAll"
 msgstr "View All"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:585
+#: src/pages/AnimeDetailPage.tsx:588
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -795,7 +799,7 @@ msgstr "Watching"
 msgid "common.back"
 msgstr "Back"
 
-#: src/pages/AnimeDetailPage.tsx:326
+#: src/pages/AnimeDetailPage.tsx:329
 msgid "common.backHome"
 msgstr "Back to Home"
 
@@ -819,13 +823,13 @@ msgstr "common.copied"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:485
-#: src/pages/AnimeDetailPage.tsx:725
+#: src/pages/AnimeDetailPage.tsx:488
+#: src/pages/AnimeDetailPage.tsx:728
 #: src/pages/DownloadsPage.tsx:528
 msgid "common.ep"
 msgstr "ep"
 
-#: src/pages/AnimeDetailPage.tsx:311
+#: src/pages/AnimeDetailPage.tsx:314
 #: src/pages/LibraryDetailPage.tsx:1216
 msgid "common.loadFailed"
 msgstr "Failed to load"
@@ -841,7 +845,7 @@ msgstr "Loading..."
 msgid "common.minuteShort"
 msgstr "min"
 
-#: src/pages/AnimeDetailPage.tsx:320
+#: src/pages/AnimeDetailPage.tsx:323
 #: src/pages/SchedulePage.tsx:187
 #: src/pages/SchedulePage.tsx:435
 msgid "common.retry"
@@ -1906,11 +1910,11 @@ msgid "notifications.earlier"
 msgstr "Earlier"
 
 #: src/components/NotificationBell.tsx:152
-#: src/pages/NotificationsPage.tsx:235
+#: src/pages/NotificationsPage.tsx:234
 msgid "notifications.empty"
 msgstr "No notifications"
 
-#: src/pages/NotificationsPage.tsx:238
+#: src/pages/NotificationsPage.tsx:237
 msgid "notifications.emptyHint"
 msgstr "Notifications appear here..."
 
@@ -1930,7 +1934,7 @@ msgstr "Library"
 msgid "notifications.filter.system"
 msgstr "System"
 
-#: src/pages/NotificationsPage.tsx:218
+#: src/pages/NotificationsPage.tsx:217
 msgid "notifications.loadMore"
 msgstr "Load more"
 

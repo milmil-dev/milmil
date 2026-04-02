@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { EpisodeListItem } from '../components/EpisodeListItem';
 import { MediaRail } from '../components/MediaRail';
@@ -250,10 +251,12 @@ export function AnimeDetailPage() {
   const queryClient = useQueryClient();
   const statusMutation = useMutation({
     mutationFn: (status: string) => collectionApi.updateStatus(numericId, status),
-    onSuccess: () => {
+    onSuccess: (_data, status) => {
       queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) });
       queryClient.invalidateQueries({ queryKey: collectionKeys.all });
+      toast.success(i18n._(msg`anime.collectionUpdated`));
     },
+    onError: (err: Error) => toast.error(err.message),
   });
 
   const scoreMutation = useMutation({
@@ -557,7 +560,7 @@ export function AnimeDetailPage() {
                           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-                          {i18n._(msg`anime.addToCollection`)}
+                          {statusMutation.isPending ? '...' : i18n._(msg`anime.addToCollection`)}
                         </button>
                       )}
 
