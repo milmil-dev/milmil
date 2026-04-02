@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { EpisodeListItem } from '../components/EpisodeListItem';
@@ -11,6 +11,7 @@ import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
+import { ruleApi, downloadKeys } from '../lib/api/downloads';
 import { translateGenre } from '../lib/genre-i18n';
 
 const RELATION_LABELS: Record<string, Record<string, string>> = {
@@ -230,6 +231,19 @@ export function AnimeDetailPage() {
     queryFn: () => discoverApi.comments(numericId),
     enabled: !Number.isNaN(numericId),
   });
+
+  // Check if anime has active subscription
+  const { data: rules = [] } = useQuery({
+    queryKey: downloadKeys.rules(),
+    queryFn: () => ruleApi.list(),
+    enabled: isAuthenticated,
+    staleTime: 60000,
+  });
+  const hasSubscription = rules.some((r) => r.bangumi_id === numericId && r.enabled);
+
+  // Check if anime has local playable files
+  const hasPlayableFiles = (playableData?.episodes?.filter((ep) => ep.media_file)?.length ?? 0) > 0;
+  const playableCount = playableData?.episodes?.filter((ep) => ep.media_file)?.length ?? 0;
 
   const queryClient = useQueryClient();
   const statusMutation = useMutation({
@@ -487,6 +501,29 @@ export function AnimeDetailPage() {
                         </span>
                       )}
                     </motion.div>
+
+                    {/* Status badges: subscription + playable */}
+                    {(hasSubscription || hasPlayableFiles) && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.4 }}
+                        className="flex items-center justify-center sm:justify-start gap-2 flex-wrap"
+                      >
+                        {hasSubscription && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/15 text-green-400 text-[11px] font-medium">
+                            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+                            {i18n._(msg`anime.subscribed`)}
+                          </span>
+                        )}
+                        {hasPlayableFiles && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 text-blue-400 text-[11px] font-medium">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                            {playableCount} {i18n._(msg`anime.playableEps`)}
+                          </span>
+                        )}
+                      </motion.div>
+                    )}
 
                     {/* Tags */}
                     {anime.tags?.length > 0 && (

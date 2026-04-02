@@ -288,68 +288,72 @@ msgstr "更新密码"
 msgid "account.updating"
 msgstr "更新中..."
 
-#: src/pages/AnimeDetailPage.tsx:588
+#: src/pages/AnimeDetailPage.tsx:607
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:828
+#: src/pages/AnimeDetailPage.tsx:856
 msgid "anime.characters"
 msgstr "角色"
 
-#: src/pages/AnimeDetailPage.tsx:257
+#: src/pages/AnimeDetailPage.tsx:254
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:941
+#: src/pages/AnimeDetailPage.tsx:969
 msgid "anime.comments"
 msgstr "评论"
 
-#: src/pages/AnimeDetailPage.tsx:697
+#: src/pages/AnimeDetailPage.tsx:725
 msgid "anime.continueWatching"
 msgstr "继续观看"
 
-#: src/pages/AnimeDetailPage.tsx:701
+#: src/pages/AnimeDetailPage.tsx:729
 msgid "anime.episode"
 msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:752
+#: src/pages/AnimeDetailPage.tsx:780
 msgid "anime.episodes"
 msgstr "集数"
 
 #: src/pages/AnimeDetailPage.tsx:587
-msgid "anime.inCollection"
-msgstr ""
+#~ msgid "anime.inCollection"
+#~ msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:631
+#: src/pages/AnimeDetailPage.tsx:658
 msgid "anime.myScore"
 msgstr "我的评分"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "无本地文件"
 
-#: src/pages/AnimeDetailPage.tsx:505
+#: src/pages/AnimeDetailPage.tsx:500
 msgid "anime.notAired"
 msgstr "尚未播出"
 
-#: src/pages/AnimeDetailPage.tsx:314
+#: src/pages/AnimeDetailPage.tsx:311
 msgid "anime.notFound"
 msgstr "找不到动画"
 
+#: src/pages/AnimeDetailPage.tsx:522
+msgid "anime.playableEps"
+msgstr ""
+
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:498
+#: src/pages/AnimeDetailPage.tsx:493
 msgid "anime.ratings"
 msgstr "评分"
 
-#: src/pages/AnimeDetailPage.tsx:875
+#: src/pages/AnimeDetailPage.tsx:903
 msgid "anime.recommendations"
 msgstr "推荐"
 
-#: src/pages/AnimeDetailPage.tsx:849
+#: src/pages/AnimeDetailPage.tsx:877
 msgid "anime.relations"
 msgstr "相关作品"
 
-#: src/pages/AnimeDetailPage.tsx:893
+#: src/pages/AnimeDetailPage.tsx:921
 msgid "anime.reviews"
 msgstr "评论"
 
@@ -357,23 +361,27 @@ msgstr "评论"
 #~ msgid "anime.score"
 #~ msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:600
+#: src/pages/AnimeDetailPage.tsx:619
 msgid "anime.searchResources"
 msgstr "搜索资源"
 
 #~ msgid "anime.season"
 #~ msgstr "季"
 
+#: src/pages/AnimeDetailPage.tsx:516
+msgid "anime.subscribed"
+msgstr ""
+
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
 #~ msgstr "简介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:798
+#: src/pages/AnimeDetailPage.tsx:826
 msgid "anime.trailer"
 msgstr "预告片"
 
-#: src/pages/AnimeDetailPage.tsx:834
+#: src/pages/AnimeDetailPage.tsx:862
 msgid "anime.voiceActor"
 msgstr "声优"
 
@@ -719,14 +727,14 @@ msgstr "全部"
 #~ msgstr "更改状态"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:620
+#: src/pages/AnimeDetailPage.tsx:647
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "已完成"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:626
+#: src/pages/AnimeDetailPage.tsx:653
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -748,14 +756,14 @@ msgid "collection.goToLibraries"
 msgstr "前往媒体库"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:623
+#: src/pages/AnimeDetailPage.tsx:650
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暂停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:617
+#: src/pages/AnimeDetailPage.tsx:644
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -791,7 +799,7 @@ msgid "collection.viewAll"
 msgstr "查看全部"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:614
+#: src/pages/AnimeDetailPage.tsx:641
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -801,7 +809,7 @@ msgstr "观看中"
 msgid "common.back"
 msgstr "返回"
 
-#: src/pages/AnimeDetailPage.tsx:329
+#: src/pages/AnimeDetailPage.tsx:326
 msgid "common.backHome"
 msgstr "返回首页"
 
@@ -825,13 +833,13 @@ msgstr "已复制"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:488
-#: src/pages/AnimeDetailPage.tsx:754
+#: src/pages/AnimeDetailPage.tsx:483
+#: src/pages/AnimeDetailPage.tsx:782
 #: src/pages/DownloadsPage.tsx:528
 msgid "common.ep"
 msgstr "集"
 
-#: src/pages/AnimeDetailPage.tsx:314
+#: src/pages/AnimeDetailPage.tsx:311
 #: src/pages/LibraryDetailPage.tsx:1216
 msgid "common.loadFailed"
 msgstr "加载失败"
@@ -847,7 +855,7 @@ msgstr "加载中…"
 msgid "common.minuteShort"
 msgstr "分钟"
 
-#: src/pages/AnimeDetailPage.tsx:323
+#: src/pages/AnimeDetailPage.tsx:320
 #: src/pages/SchedulePage.tsx:187
 #: src/pages/SchedulePage.tsx:435
 msgid "common.retry"
