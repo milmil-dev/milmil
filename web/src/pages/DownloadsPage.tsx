@@ -1,7 +1,9 @@
 import {
+  ArrowDown01Icon,
   ArrowLeft01Icon,
   ArrowReloadHorizontalIcon,
   Cancel01Icon,
+  Delete02Icon,
   PauseIcon,
   PlayIcon,
   RssIcon,
@@ -19,7 +21,6 @@ import { Button } from '../components/ui/button';
 import { Field } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import {
-  type Download,
   type DownloadGroup,
   downloadApi,
   downloadKeys,
@@ -802,11 +803,53 @@ function SubscribePanel({
 // MANAGE TAB
 // ═══════════════════════════════════════════════════════════════════════════
 
+type ManageSubTab = 'subscriptions' | 'downloads' | 'completed';
+
+function formatETA(seconds: number): string {
+  if (seconds <= 0) return '--';
+  if (seconds < 60) return `${Math.ceil(seconds)}s`;
+  if (seconds < 3600) return `${Math.ceil(seconds / 60)} min`;
+  const h = Math.floor(seconds / 3600);
+  const m = Math.ceil((seconds % 3600) / 60);
+  return `${h}h ${m}m`;
+}
+
+/** Hook to fetch anime cover by bangumi_id with 24h cache. */
+function useAnimeDetail(bangumiId: number | undefined) {
+  return useQuery({
+    queryKey: discoverKeys.detail(bangumiId!),
+    queryFn: () => discoverApi.detail(bangumiId!),
+    enabled: !!bangumiId,
+    staleTime: 86400000,
+  });
+}
+
+/** Small cover thumbnail component that fetches anime detail on demand. */
+function AnimeCover({ bangumiId, size = 48 }: { bangumiId?: number; size?: number }) {
+  const { data } = useAnimeDetail(bangumiId);
+  const h = Math.round(size * (4 / 3));
+  if (!data?.cover_image) {
+    return (
+      <div
+        className="rounded bg-white/[0.06] shrink-0"
+        style={{ width: size, height: h }}
+      />
+    );
+  }
+  return (
+    <img
+      src={data.cover_image}
+      alt=""
+      className="rounded object-cover shrink-0"
+      style={{ width: size, height: h }}
+      loading="lazy"
+    />
+  );
+}
+
 function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
   const { i18n } = useLingui();
-  const queryClient = useQueryClient();
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  const [urlInput, setUrlInput] = useState('');
+  const [subTab, setSubTab] = useState<ManageSubTab>('subscriptions');
 
   // Data queries
   const { data: feeds = [] } = useQuery({
@@ -825,7 +868,133 @@ function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
     refetchInterval: 5000,
   });
 
-  // Mutations
+  // Derive all downloads from groups
+  const allDownloads = useMemo(() => {
+    return groups.flatMap((g) =>
+      g.downloads.map((dl) => ({
+        ...dl,
+        rule_id: g.rule_id,
+        rule_name: g.rule_name,
+        bangumi_id: g.bangumi_id,
+      }))
+    );
+  }, [groups]);
+
+  const activeDownloads = useMemo(
+    () =>
+      allDownloads
+        .filter((d) => d.status === 'active' || d.status === 'waiting' || d.status === 'paused')
+        .sort((a, b) => {
+          const order: Record<string, number> = { active: 0, waiting: 1, paused: 2 };
+          return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+        }),
+    [allDownloads]
+  );
+
+  const completedDownloads = useMemo(
+    () =>
+      allDownloads
+        .filter((d) => d.status === 'complete')
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
+    [allDownloads]
+  );
+
+  const subTabs: { key: ManageSubTab; label: string; count?: number }[] = [
+    { key: 'subscriptions', label: i18n._(msg`autoDownload.subtab.subscriptions`) },
+    {
+      key: 'downloads',
+      label: i18n._(msg`autoDownload.subtab.downloads`),
+      count: activeDownloads.length,
+    },
+    {
+      key: 'completed',
+      label: i18n._(msg`autoDownload.subtab.completed`),
+      count: completedDownloads.length,
+    },
+  ];
+
+  return (
+    <>
+      {/* Sub-tab bar */}
+      <div className="flex gap-1.5 mb-6">
+        {subTabs.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setSubTab(t.key)}
+            className={cn(
+              'px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors cursor-pointer flex items-center gap-1.5',
+              subTab === t.key
+                ? 'bg-white/[0.12] text-white'
+                : 'text-white/35 hover:text-white/55 hover:bg-white/[0.04]'
+            )}
+          >
+            {t.label}
+            {t.count != null && t.count > 0 && (
+              <span
+                className={cn(
+                  'text-[10px] px-1.5 py-px rounded-full font-semibold',
+                  subTab === t.key ? 'bg-white/[0.15] text-white' : 'bg-white/[0.08] text-white/40'
+                )}
+              >
+                {t.count}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Sub-tab content */}
+      {subTab === 'subscriptions' && (
+        <SubscriptionsSubTab
+          rules={rules}
+          feeds={feeds}
+          groups={groups}
+          isLoading={groupsLoading}
+          onSwitchToSearch={onSwitchToSearch}
+        />
+      )}
+      {subTab === 'downloads' && (
+        <DownloadsSubTab
+          downloads={activeDownloads}
+          isLoading={groupsLoading}
+        />
+      )}
+      {subTab === 'completed' && (
+        <CompletedSubTab
+          downloads={completedDownloads}
+          isLoading={groupsLoading}
+        />
+      )}
+    </>
+  );
+}
+
+// ── Subscriptions Sub-tab ────────────────────────────────────────────────
+
+function SubscriptionsSubTab({
+  rules,
+  feeds,
+  groups,
+  isLoading,
+  onSwitchToSearch,
+}: {
+  rules: import('../lib/api/downloads').DownloadRule[];
+  feeds: import('../lib/api/downloads').RSSFeed[];
+  groups: DownloadGroup[];
+  isLoading: boolean;
+  onSwitchToSearch: () => void;
+}) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [expandedRules, setExpandedRules] = useState<Set<string>>(new Set());
+
+  const feedMap = new Map(feeds.map((f) => [f.id, f]));
+  const ruleGroupMap = new Map<string, DownloadGroup>();
+  for (const g of groups) {
+    if (g.rule_id) ruleGroupMap.set(g.rule_id, g);
+  }
+
   const refreshMutation = useMutation({
     mutationFn: (id: string) => rssFeedApi.refresh(id),
     onSuccess: () => {
@@ -850,6 +1019,242 @@ function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
     },
   });
 
+  const pauseMutation = useMutation({
+    mutationFn: downloadApi.pause,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
+  });
+  const resumeMutation = useMutation({
+    mutationFn: downloadApi.resume,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
+  });
+  const deleteDlMutation = useMutation({
+    mutationFn: downloadApi.delete,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
+  });
+
+  const toggleRule = (id: string) => {
+    setExpandedRules((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex gap-3 p-4 rounded-xl bg-white/[0.03] animate-pulse border border-white/[0.06]">
+            <div className="w-12 h-16 rounded bg-white/[0.06] shrink-0" />
+            <div className="flex-1 space-y-2 py-1">
+              <div className="h-3.5 rounded bg-white/[0.06] w-[55%]" />
+              <div className="flex gap-2">
+                <div className="h-2.5 rounded bg-white/[0.04] w-14" />
+                <div className="h-2.5 rounded bg-white/[0.04] w-10" />
+              </div>
+              <div className="h-2.5 rounded bg-white/[0.04] w-[30%]" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Empty state
+  if (rules.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.015] p-6">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-lg bg-white/[0.04]">
+            <HugeiconsIcon icon={RssIcon} size={24} className="text-white/15" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-white/50 mb-1">
+              {i18n._(msg`autoDownload.noSubscriptions`)}
+            </p>
+            <p className="text-[12px] text-white/25">
+              {i18n._(msg`autoDownload.noSubscriptionsHint`)}
+            </p>
+          </div>
+          <Button
+            onClick={onSwitchToSearch}
+            variant="outline"
+            className="shrink-0 text-[12px]"
+          >
+            {i18n._(msg`autoDownload.goToSearch`)}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {rules.map((rule) => {
+        const feed = feedMap.get(rule.rss_feed_id);
+        const group = ruleGroupMap.get(rule.id);
+        const isExpanded = expandedRules.has(rule.id);
+
+        return (
+          <motion.div
+            key={rule.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden"
+          >
+            {/* Card header */}
+            <button
+              type="button"
+              onClick={() => toggleRule(rule.id)}
+              className="w-full flex items-start gap-3 p-4 text-left cursor-pointer hover:bg-white/[0.02] transition-colors"
+            >
+              <AnimeCover bangumiId={group?.bangumi_id} size={48} />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span
+                    className={cn(
+                      'h-2 w-2 rounded-full shrink-0',
+                      rule.enabled ? 'bg-green-400' : 'bg-white/20'
+                    )}
+                  />
+                  <h4 className="text-[14px] font-semibold text-white truncate">
+                    {rule.name}
+                  </h4>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                  {feed && <SourceBadge source={feed.type} />}
+                  {rule.resolution_filter && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400/70">
+                      {rule.resolution_filter}
+                    </span>
+                  )}
+                  {rule.subgroup_filter && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/70">
+                      {rule.subgroup_filter}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-[10px] text-white/25">
+                  {feed && <span>{feed.fetch_interval_minutes}min</span>}
+                  {rule.last_triggered_at && (
+                    <span>{new Date(rule.last_triggered_at).toLocaleString()}</span>
+                  )}
+                  {group && (
+                    <SubscriptionEpisodeCount group={group} bangumiId={group.bangumi_id} />
+                  )}
+                </div>
+              </div>
+              {/* Action buttons */}
+              <div className="flex gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                {feed && (
+                  <button
+                    type="button"
+                    onClick={() => refreshMutation.mutate(feed.id)}
+                    disabled={refreshMutation.isPending}
+                    className="p-1.5 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors cursor-pointer"
+                    title={i18n._(msg`autoDownload.refresh`)}
+                  >
+                    <HugeiconsIcon icon={ArrowReloadHorizontalIcon} size={14} />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => feed && deleteFeedMutation.mutate(feed.id)}
+                  className="p-1.5 rounded hover:bg-red-500/10 text-white/20 hover:text-red-400 transition-colors cursor-pointer"
+                  title={i18n._(msg`autoDownload.delete`)}
+                >
+                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                </button>
+              </div>
+            </button>
+
+            {/* Expanded nested downloads */}
+            {isExpanded && group && group.downloads.length > 0 && (
+              <div className="border-t border-white/[0.04] px-4 pb-3 space-y-1.5 pt-2">
+                {group.downloads.slice(0, 10).map((dl) => (
+                  <DownloadCard
+                    key={dl.id}
+                    dl={dl}
+                    ruleName={group.rule_name}
+                    bangumiId={group.bangumi_id}
+                    showCover={false}
+                    onPause={() => pauseMutation.mutate(dl.gid)}
+                    onResume={() => resumeMutation.mutate(dl.gid)}
+                    onDelete={() => deleteDlMutation.mutate(dl.gid)}
+                  />
+                ))}
+                {group.downloads.length > 10 && (
+                  <p className="text-[11px] text-white/20 text-center py-1">
+                    +{group.downloads.length - 10} more
+                  </p>
+                )}
+              </div>
+            )}
+            {isExpanded && (!group || group.downloads.length === 0) && (
+              <div className="border-t border-white/[0.04] px-4 py-4">
+                <p className="text-[12px] text-white/20 text-center">
+                  {i18n._(msg`autoDownload.noDownloadsYet`)}
+                </p>
+              </div>
+            )}
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Displays "N/M episodes" using anime detail for total episode count. */
+function SubscriptionEpisodeCount({
+  group,
+  bangumiId,
+}: { group: DownloadGroup; bangumiId?: number }) {
+  const { data: animeDetail } = useAnimeDetail(bangumiId);
+  const total = animeDetail?.episode_count ?? 0;
+  if (total > 0) {
+    return (
+      <span className="text-[10px] text-white/25">
+        {group.complete_count}/{total} eps
+      </span>
+    );
+  }
+  if (group.total_count > 0) {
+    return (
+      <span className="text-[10px] text-white/25">
+        {group.complete_count}/{group.total_count}
+      </span>
+    );
+  }
+  return null;
+}
+
+// ── Downloads Sub-tab ────────────────────────────────────────────────────
+
+function DownloadsSubTab({
+  downloads,
+  isLoading,
+}: {
+  downloads: {
+    id: string;
+    gid: string;
+    name: string;
+    status: string;
+    total_bytes: number;
+    completed_bytes: number;
+    speed_bytes: number;
+    created_at: string;
+    rule_id: string;
+    rule_name: string;
+    bangumi_id?: number;
+  }[];
+  isLoading: boolean;
+}) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [urlInput, setUrlInput] = useState('');
+
   const addMutation = useMutation({
     mutationFn: (url: string) => downloadApi.add({ url }),
     onSuccess: () => {
@@ -872,39 +1277,80 @@ function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
     mutationFn: downloadApi.delete,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
   });
+  const pauseAllMutation = useMutation({
+    mutationFn: async () => {
+      const active = downloads.filter((d) => d.status === 'active');
+      for (const d of active) await downloadApi.pause(d.gid);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
+  });
 
-  const feedMap = new Map(feeds.map((f) => [f.id, f]));
+  // Global summary calculations
+  const activeCount = downloads.filter((d) => d.status === 'active').length;
+  const totalSpeed = downloads
+    .filter((d) => d.status === 'active')
+    .reduce((sum, d) => sum + d.speed_bytes, 0);
+  const totalRemaining = downloads
+    .filter((d) => d.status === 'active')
+    .reduce((sum, d) => sum + Math.max(0, d.total_bytes - d.completed_bytes), 0);
+  const eta = totalSpeed > 0 ? totalRemaining / totalSpeed : 0;
 
-  // Split groups: subscription-linked vs manual
-  const subscriptionGroups = groups.filter((g) => g.rule_id);
-  const manualGroups = groups.filter((g) => !g.rule_id);
-
-  // Match rules to download groups
-  const ruleGroupMap = new Map<string, DownloadGroup>();
-  for (const g of subscriptionGroups) {
-    if (g.rule_id) ruleGroupMap.set(g.rule_id, g);
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex gap-3 p-4 rounded-xl bg-white/[0.03] animate-pulse border border-white/[0.06]">
+            <div className="w-10 h-[53px] rounded bg-white/[0.06] shrink-0" />
+            <div className="flex-1 space-y-2 py-1">
+              <div className="h-3 rounded bg-white/[0.06] w-[65%]" />
+              <div className="h-2 rounded bg-white/[0.04] w-[40%]" />
+              <div className="h-1.5 rounded bg-white/[0.04] w-full" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
-
-  const toggleGroup = (id: string) => {
-    setExpandedGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const hasContent = rules.length > 0 || groups.length > 0;
 
   return (
     <>
+      {/* Global summary bar */}
+      {activeCount > 0 && (
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 mb-4 px-4 py-2.5 rounded-lg bg-white/[0.04] border border-white/[0.06] backdrop-blur-sm">
+          <div className="flex items-center gap-1.5 text-[12px] text-white/60">
+            <HugeiconsIcon icon={ArrowDown01Icon} size={14} className="text-green-400/80" />
+            <span>
+              {activeCount} {i18n._(msg`autoDownload.downloading`)}
+            </span>
+            <span className="text-white/20">·</span>
+            <span>{formatSpeed(totalSpeed)}</span>
+            {eta > 0 && (
+              <>
+                <span className="text-white/20">·</span>
+                <span>~{formatETA(eta)}</span>
+              </>
+            )}
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => pauseAllMutation.mutate()}
+            disabled={pauseAllMutation.isPending}
+            className="text-[11px] h-7"
+          >
+            <HugeiconsIcon icon={PauseIcon} size={12} />
+            {i18n._(msg`autoDownload.pauseAll`)}
+          </Button>
+        </div>
+      )}
+
       {/* URL add form */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           if (urlInput.trim()) addMutation.mutate(urlInput.trim());
         }}
-        className="flex gap-2 items-end mb-6"
+        className="flex gap-2 items-end mb-5"
       >
         <Field className="flex-1">
           <Input
@@ -923,282 +1369,181 @@ function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
         </Button>
       </form>
 
-      {/* Loading skeleton */}
-      {groupsLoading && (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl p-4 animate-pulse bg-white/[0.03] border border-white/[0.06]">
-              <div className="h-3.5 rounded bg-white/[0.06] w-[45%] mb-3" />
-              <div className="flex gap-2">
-                <div className="h-2.5 rounded bg-white/[0.04] w-16" />
-                <div className="h-2.5 rounded bg-white/[0.04] w-12" />
-              </div>
-            </div>
-          ))}
+      {/* Download cards */}
+      {downloads.length > 0 ? (
+        <div className="space-y-2">
+          <AnimatePresence mode="popLayout">
+            {downloads.map((dl) => (
+              <DownloadCard
+                key={dl.id}
+                dl={dl}
+                ruleName={dl.rule_name}
+                bangumiId={dl.bangumi_id}
+                showCover
+                onPause={() => pauseMutation.mutate(dl.gid)}
+                onResume={() => resumeMutation.mutate(dl.gid)}
+                onDelete={() => deleteDlMutation.mutate(dl.gid)}
+              />
+            ))}
+          </AnimatePresence>
         </div>
-      )}
-
-      {/* No subscriptions hint — always show when there are no subscription rules */}
-      {!groupsLoading && rules.length === 0 && (
-        <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.015] p-6 mb-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-white/[0.04]">
-              <HugeiconsIcon icon={RssIcon} size={24} className="text-white/15" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-white/50 mb-1">
-                {i18n._(msg`autoDownload.noSubscriptions`)}
-              </p>
-              <p className="text-[12px] text-white/25">
-                {i18n._(msg`autoDownload.noSubscriptionsHint`)}
-              </p>
-            </div>
-            <Button
-              onClick={onSwitchToSearch}
-              variant="outline"
-              className="shrink-0 text-[12px]"
-            >
-              {i18n._(msg`autoDownload.goToSearch`)}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Subscription cards */}
-      {rules.length > 0 && (
-        <div className="space-y-3 mb-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-white/30">
-            {i18n._(msg`autoDownload.subscriptions`)}
-          </h3>
-          {rules.map((rule) => {
-            const feed = feedMap.get(rule.rss_feed_id);
-            const group = ruleGroupMap.get(rule.id);
-            const isExpanded = expandedGroups.has(rule.id);
-            return (
-              <motion.div
-                key={rule.id}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden"
-              >
-                {/* Subscription header */}
-                <div className="flex items-start justify-between gap-3 p-4">
-                  <button
-                    type="button"
-                    onClick={() => toggleGroup(rule.id)}
-                    className="flex-1 min-w-0 text-left cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className={cn(
-                          'h-2 w-2 rounded-full shrink-0',
-                          rule.enabled ? 'bg-green-400' : 'bg-white/20'
-                        )}
-                      />
-                      <h4 className="text-[14px] font-semibold text-white truncate">
-                        {rule.name}
-                      </h4>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 mt-2">
-                      {feed && <SourceBadge source={feed.type} />}
-                      {rule.resolution_filter && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400/70">
-                          {rule.resolution_filter}
-                        </span>
-                      )}
-                      {rule.subgroup_filter && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/70">
-                          {rule.subgroup_filter}
-                        </span>
-                      )}
-                      {group && group.total_count > 0 && (
-                        <span className="text-[10px] text-white/25">
-                          {group.complete_count}/{group.total_count}
-                        </span>
-                      )}
-                      {group && group.active_count > 0 && (() => {
-                        const totalSpeed = group.downloads
-                          .filter((d) => d.status === 'active')
-                          .reduce((sum, d) => sum + d.speed_bytes, 0);
-                        return totalSpeed > 0 ? (
-                          <span className="text-[10px] text-green-400/70">
-                            {formatSpeed(totalSpeed)}
-                          </span>
-                        ) : null;
-                      })()}
-                      {feed && (
-                        <span className="text-[10px] text-white/15">
-                          {feed.fetch_interval_minutes}min
-                        </span>
-                      )}
-                      {rule.last_triggered_at && (
-                        <span className="text-[10px] text-white/15">
-                          {new Date(rule.last_triggered_at).toLocaleString()}
-                        </span>
-                      )}
-                      {group && (
-                        <span className="text-[10px] text-white/20">
-                          {group.active_count > 0 && `${group.active_count} active, `}
-                          {group.total_count} total
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                  <div className="flex gap-1.5 shrink-0">
-                    {feed && (
-                      <button
-                        type="button"
-                        onClick={() => refreshMutation.mutate(feed.id)}
-                        disabled={refreshMutation.isPending}
-                        className="p-1.5 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors cursor-pointer"
-                        title={i18n._(msg`autoDownload.refresh`)}
-                      >
-                        <HugeiconsIcon icon={ArrowReloadHorizontalIcon} size={14} />
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => feed && deleteFeedMutation.mutate(feed.id)}
-                      className="p-1.5 rounded hover:bg-red-500/10 text-white/20 hover:text-red-400 transition-colors cursor-pointer"
-                      title={i18n._(msg`autoDownload.delete`)}
-                    >
-                      <HugeiconsIcon icon={Cancel01Icon} size={14} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Aggregate progress bar for active downloads */}
-                {group && group.active_count > 0 && (() => {
-                  const activeDownloads = group.downloads.filter((d) => d.status === 'active' || d.status === 'paused');
-                  const totalBytes = activeDownloads.reduce((s, d) => s + d.total_bytes, 0);
-                  const completedBytes = activeDownloads.reduce((s, d) => s + d.completed_bytes, 0);
-                  const pct = totalBytes > 0 ? Math.min(100, (completedBytes / totalBytes) * 100) : 0;
-                  return totalBytes > 0 ? (
-                    <div className="px-4 pb-2">
-                      <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-                        <motion.div className="h-full rounded-full bg-mm-accent" animate={{ width: `${pct}%` }} />
-                      </div>
-                      <div className="flex justify-between mt-1 text-[10px] text-white/20">
-                        <span>{formatBytes(completedBytes)} / {formatBytes(totalBytes)}</span>
-                        <span>{pct.toFixed(0)}%</span>
-                      </div>
-                    </div>
-                  ) : null;
-                })()}
-
-                {/* Nested downloads */}
-                {isExpanded && group && group.downloads.length > 0 && (
-                  <div className="border-t border-white/[0.04] px-4 pb-3">
-                    {group.downloads.map((dl) => (
-                      <DownloadRow
-                        key={dl.id}
-                        dl={
-                          {
-                            ...dl,
-                            url: '',
-                            save_dir: '',
-                            rule_id: group.rule_id,
-                            updated_at: dl.created_at,
-                          } as Download
-                        }
-                        onPause={() => pauseMutation.mutate(dl.gid)}
-                        onResume={() => resumeMutation.mutate(dl.gid)}
-                        onDelete={() => deleteDlMutation.mutate(dl.gid)}
-                      />
-                    ))}
-                  </div>
-                )}
-                {isExpanded && (!group || group.downloads.length === 0) && (
-                  <div className="border-t border-white/[0.04] px-4 py-4">
-                    <p className="text-[12px] text-white/20 text-center">
-                      {i18n._(msg`autoDownload.noDownloadsYet`)}
-                    </p>
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Manual downloads section */}
-      {manualGroups.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-white/30">
-            {i18n._(msg`autoDownload.manualDownloads`)}
-          </h3>
-          {manualGroups.map((group, idx) => {
-            const groupKey = `manual-${group.rule_id || idx}`;
-            const isExpanded = expandedGroups.has(groupKey);
-            return (
-              <div
-                key={groupKey}
-                className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleGroup(groupKey)}
-                  className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:bg-white/[0.02] transition-colors"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-[14px] font-semibold text-white truncate">
-                      {group.rule_name}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    {group.active_count > 0 && (
-                      <span className="text-[11px] text-green-400/70">
-                        {group.active_count} active
-                      </span>
-                    )}
-                    <span className="text-[11px] text-white/25">
-                      {group.total_count} total
-                    </span>
-                    <span className="text-white/20 text-xs">
-                      {isExpanded ? '▲' : '▼'}
-                    </span>
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="border-t border-white/[0.04] px-4 pb-3">
-                    {group.downloads.map((dl) => (
-                      <DownloadRow
-                        key={dl.id}
-                        dl={
-                          {
-                            ...dl,
-                            url: '',
-                            save_dir: '',
-                            rule_id: null,
-                            updated_at: dl.created_at,
-                          } as Download
-                        }
-                        onPause={() => pauseMutation.mutate(dl.gid)}
-                        onResume={() => resumeMutation.mutate(dl.gid)}
-                        onDelete={() => deleteDlMutation.mutate(dl.gid)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      ) : (
+        <div className="text-center py-12">
+          <HugeiconsIcon
+            icon={ArrowDown01Icon}
+            size={32}
+            className="mx-auto mb-3 text-white/10"
+          />
+          <p className="text-white/25 text-sm">
+            {i18n._(msg`autoDownload.noActiveDownloads`)}
+          </p>
         </div>
       )}
     </>
   );
 }
 
-// ── Download Row ──────────────────────────────────────────────────────────
+// ── Completed Sub-tab ────────────────────────────────────────────────────
 
-function DownloadRow({
+function CompletedSubTab({
+  downloads,
+  isLoading,
+}: {
+  downloads: {
+    id: string;
+    gid: string;
+    name: string;
+    status: string;
+    total_bytes: number;
+    completed_bytes: number;
+    speed_bytes: number;
+    created_at: string;
+    rule_id: string;
+    rule_name: string;
+    bangumi_id?: number;
+  }[];
+  isLoading: boolean;
+}) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+
+  const deleteDlMutation = useMutation({
+    mutationFn: downloadApi.delete,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
+  });
+
+  const clearAllMutation = useMutation({
+    mutationFn: async () => {
+      for (const dl of downloads) await downloadApi.delete(dl.gid);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex gap-3 p-4 rounded-xl bg-white/[0.03] animate-pulse border border-white/[0.06]">
+            <div className="w-10 h-[53px] rounded bg-white/[0.06] shrink-0" />
+            <div className="flex-1 space-y-2 py-1">
+              <div className="h-3 rounded bg-white/[0.06] w-[60%]" />
+              <div className="h-2.5 rounded bg-white/[0.04] w-[35%]" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (downloads.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-white/25 text-sm">
+          {i18n._(msg`autoDownload.noCompletedDownloads`)}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Header with Clear All */}
+      <div className="flex items-center justify-end mb-4">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => clearAllMutation.mutate()}
+          disabled={clearAllMutation.isPending}
+          className="text-[11px] h-7 text-red-400/60 hover:text-red-400"
+        >
+          <HugeiconsIcon icon={Delete02Icon} size={12} />
+          {i18n._(msg`autoDownload.clearAll`)}
+        </Button>
+      </div>
+
+      {/* Completed cards */}
+      <div className="space-y-2">
+        {downloads.map((dl) => (
+          <motion.div
+            key={dl.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.04] transition-colors"
+          >
+            <AnimeCover bangumiId={dl.bangumi_id} size={40} />
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-medium text-white truncate">
+                {dl.name}
+              </p>
+              {dl.rule_name && (
+                <p className="text-[11px] text-white/30 truncate mt-0.5">
+                  {dl.rule_name}
+                </p>
+              )}
+              <div className="flex items-center gap-2 mt-1 text-[10px] text-white/20">
+                <span>{formatBytes(dl.total_bytes)}</span>
+                <span className="text-white/10">·</span>
+                <span>{new Date(dl.created_at).toLocaleDateString()}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => deleteDlMutation.mutate(dl.gid)}
+              className="p-1.5 rounded hover:bg-red-500/10 text-white/15 hover:text-red-400 transition-colors cursor-pointer shrink-0"
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={14} />
+            </button>
+          </motion.div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+// ── Download Card (shared by Downloads sub-tab & Subscription expand) ────
+
+function DownloadCard({
   dl,
+  ruleName,
+  bangumiId,
+  showCover,
   onPause,
   onResume,
   onDelete,
 }: {
-  dl: Download;
+  dl: {
+    id: string;
+    gid: string;
+    name: string;
+    status: string;
+    total_bytes: number;
+    completed_bytes: number;
+    speed_bytes: number;
+    created_at: string;
+  };
+  ruleName?: string;
+  bangumiId?: number;
+  showCover?: boolean;
   onPause: () => void;
   onResume: () => void;
   onDelete: () => void;
@@ -1206,81 +1551,92 @@ function DownloadRow({
   const { i18n } = useLingui();
   const pct =
     dl.total_bytes > 0 ? Math.min(100, (dl.completed_bytes / dl.total_bytes) * 100) : 0;
+  const remaining = dl.total_bytes > 0 ? dl.total_bytes - dl.completed_bytes : 0;
+  const dlEta = dl.speed_bytes > 0 ? remaining / dl.speed_bytes : 0;
+
+  const isActive = dl.status === 'active' || dl.status === 'paused' || dl.status === 'waiting';
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      className="rounded-lg p-4 bg-white/[0.03] mb-2"
+      exit={{ opacity: 0, scale: 0.97 }}
+      className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.04] transition-colors"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-white truncate">{dl.name || dl.url}</p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span
-            className={cn(
-              'px-2 py-0.5 rounded text-[10px] font-medium',
-              STATUS_COLOR[dl.status] ?? 'bg-white/5 text-white/30'
-            )}
-          >
-            {dl.status}
-          </span>
-          {dl.status === 'active' && (
-            <button
-              type="button"
-              onClick={onPause}
-              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer text-[11px]"
-            >
-              <HugeiconsIcon icon={PauseIcon} size={12} />
-              {i18n._(msg`autoDownload.pause`)}
-            </button>
+      {showCover && <AnimeCover bangumiId={bangumiId} size={40} />}
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-medium text-white truncate">
+          {dl.name}
+        </p>
+        {ruleName && (
+          <p className="text-[11px] text-white/30 truncate mt-0.5">
+            {ruleName}
+          </p>
+        )}
+        {/* Progress bar */}
+        {isActive && (
+          <div className="mt-2">
+            <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+              {dl.total_bytes > 0 ? (
+                <motion.div
+                  className="h-full rounded-full bg-mm-accent"
+                  animate={{ width: `${pct}%` }}
+                />
+              ) : (
+                <div className="h-full w-full bg-mm-accent/30 animate-pulse rounded-full" />
+              )}
+            </div>
+            <div className="flex justify-between mt-1 text-[10px] text-white/25">
+              <span>
+                {dl.total_bytes > 0
+                  ? `${formatBytes(dl.completed_bytes)} / ${formatBytes(dl.total_bytes)} · ${formatSpeed(dl.speed_bytes)}${dlEta > 0 ? ` · ~${formatETA(dlEta)}` : ''}`
+                  : dl.status === 'waiting'
+                    ? i18n._(msg`autoDownload.waiting`)
+                    : i18n._(msg`autoDownload.connecting`)}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Controls */}
+      <div className="flex items-center gap-1.5 shrink-0">
+        <span
+          className={cn(
+            'px-1.5 py-0.5 rounded text-[10px] font-medium',
+            STATUS_COLOR[dl.status] ?? 'bg-white/5 text-white/30'
           )}
-          {dl.status === 'paused' && (
-            <button
-              type="button"
-              onClick={onResume}
-              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer text-[11px]"
-            >
-              <HugeiconsIcon icon={PlayIcon} size={12} />
-              {i18n._(msg`autoDownload.resume`)}
-            </button>
-          )}
+        >
+          {dl.status}
+        </span>
+        {dl.status === 'active' && (
           <button
             type="button"
-            onClick={onDelete}
-            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-red-500/10 text-red-400/40 hover:text-red-400 cursor-pointer text-[11px]"
+            onClick={onPause}
+            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer text-[11px]"
           >
-            <HugeiconsIcon icon={Cancel01Icon} size={12} />
+            <HugeiconsIcon icon={PauseIcon} size={12} />
+            {i18n._(msg`autoDownload.pause`)}
           </button>
-        </div>
+        )}
+        {(dl.status === 'paused' || dl.status === 'waiting') && (
+          <button
+            type="button"
+            onClick={onResume}
+            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer text-[11px]"
+          >
+            <HugeiconsIcon icon={PlayIcon} size={12} />
+            {i18n._(msg`autoDownload.resume`)}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={onDelete}
+          className="p-1 rounded hover:bg-red-500/10 text-red-400/40 hover:text-red-400 cursor-pointer"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} size={12} />
+        </button>
       </div>
-      {(dl.status === 'active' || dl.status === 'paused' || dl.status === 'waiting') && (
-        <div className="mt-3">
-          <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-            {dl.total_bytes > 0 ? (
-              <motion.div
-                className="h-full rounded-full bg-mm-accent"
-                animate={{ width: `${pct}%` }}
-              />
-            ) : (
-              <div className="h-full w-full bg-mm-accent/30 animate-pulse rounded-full" />
-            )}
-          </div>
-          <div className="flex justify-between mt-1.5 text-[10px] text-white/25">
-            <span>
-              {dl.total_bytes > 0
-                ? `${formatBytes(dl.completed_bytes)} / ${formatBytes(dl.total_bytes)}`
-                : dl.status === 'waiting'
-                  ? i18n._(msg`autoDownload.waiting`)
-                  : i18n._(msg`autoDownload.connecting`)}
-            </span>
-            <span>{formatSpeed(dl.speed_bytes)}</span>
-          </div>
-        </div>
-      )}
     </motion.div>
   );
 }
