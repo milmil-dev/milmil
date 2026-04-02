@@ -59,14 +59,40 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
 	}
-	if req.AnimeName == "" || req.Query == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "anime_name and query are required")
+	if req.AnimeName == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "anime_name is required")
 	}
 	if req.Source == "" {
 		req.Source = "mikan"
 	}
 
 	ctx := c.Request().Context()
+
+	// If bangumi_id is provided, resolve titles for better RSS matching
+	if req.BangumiID != 0 && req.Query == "" {
+		detail, err := h.metadata.GetAnimeDetail(ctx, req.BangumiID)
+		if err == nil {
+			switch req.Source {
+			case "mikan", "dmhy":
+				req.Query = detail.Title // Chinese title
+				if req.Query == "" {
+					req.Query = detail.TitleOriginal
+				}
+			case "nyaa":
+				req.Query = detail.TitleEN // English title
+				if req.Query == "" {
+					req.Query = detail.TitleOriginal
+				}
+			default:
+				req.Query = detail.TitleOriginal
+			}
+		}
+	}
+
+	// Fallback to anime_name if query still empty
+	if req.Query == "" {
+		req.Query = req.AnimeName
+	}
 
 	// Build RSS feed URL based on source
 	var feedURL string
