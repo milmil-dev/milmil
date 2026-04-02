@@ -559,7 +559,7 @@ export function AnimeDetailPage() {
                             type="button"
                             onClick={() => statusMutation.mutate(isBookmarked ? 'none' : 'planning')}
                             disabled={statusMutation.isPending}
-                            whileTap={{ scale: 0.92 }}
+                            whileTap={{ scale: 0.97 }}
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
                           >
                             <motion.svg
@@ -571,7 +571,7 @@ export function AnimeDetailPage() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               className={cn('size-4', isBookmarked ? 'text-mm-accent' : 'text-white/70')}
-                              animate={isBookmarked ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                              animate={isBookmarked ? { scale: [1, 1.15, 1] } : { scale: 1 }}
                               transition={{ duration: 0.3 }}
                             >
                               <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
