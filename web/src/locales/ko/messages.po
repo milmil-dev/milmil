@@ -487,7 +487,7 @@ msgstr "취소"
 
 #: src/pages/DownloadsPage.tsx:1481
 msgid "autoDownload.clearAll"
-msgstr ""
+msgstr "모두 지우기"
 
 #: src/pages/DownloadsPage.tsx:795
 msgid "autoDownload.confirm"
@@ -516,7 +516,7 @@ msgstr "다운로드 추가됨"
 
 #: src/pages/DownloadsPage.tsx:1324
 msgid "autoDownload.downloading"
-msgstr ""
+msgstr "다운로드 중"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -544,11 +544,11 @@ msgstr "일치"
 
 #: src/pages/DownloadsPage.tsx:1399
 msgid "autoDownload.noActiveDownloads"
-msgstr ""
+msgstr "활성 다운로드 없음"
 
 #: src/pages/DownloadsPage.tsx:1463
 msgid "autoDownload.noCompletedDownloads"
-msgstr ""
+msgstr "완료된 다운로드 없음"
 
 #: src/pages/DownloadsPage.tsx:1199
 msgid "autoDownload.noDownloadsYet"
@@ -588,7 +588,7 @@ msgstr "일시정지"
 
 #: src/pages/DownloadsPage.tsx:1343
 msgid "autoDownload.pauseAll"
-msgstr ""
+msgstr "모두 일시정지"
 
 #: src/pages/DownloadsPage.tsx:1158
 msgid "autoDownload.refresh"
@@ -640,15 +640,15 @@ msgstr "구독 확인"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subtab.completed"
-msgstr ""
+msgstr "완료"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.subtab.downloads"
-msgstr ""
+msgstr "다운로드"
 
 #: src/pages/DownloadsPage.tsx:904
 msgid "autoDownload.subtab.subscriptions"
-msgstr ""
+msgstr "구독"
 
 #: src/pages/DownloadsPage.tsx:147
 msgid "autoDownload.tab.manage"

@@ -487,7 +487,7 @@ msgstr "Cancel"
 
 #: src/pages/DownloadsPage.tsx:1481
 msgid "autoDownload.clearAll"
-msgstr "autoDownload.clearAll"
+msgstr "Clear All"
 
 #: src/pages/DownloadsPage.tsx:795
 msgid "autoDownload.confirm"
@@ -516,7 +516,7 @@ msgstr "Download added"
 
 #: src/pages/DownloadsPage.tsx:1324
 msgid "autoDownload.downloading"
-msgstr "autoDownload.downloading"
+msgstr "downloading"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -544,11 +544,11 @@ msgstr "Matches"
 
 #: src/pages/DownloadsPage.tsx:1399
 msgid "autoDownload.noActiveDownloads"
-msgstr "autoDownload.noActiveDownloads"
+msgstr "No active downloads"
 
 #: src/pages/DownloadsPage.tsx:1463
 msgid "autoDownload.noCompletedDownloads"
-msgstr "autoDownload.noCompletedDownloads"
+msgstr "No completed downloads"
 
 #: src/pages/DownloadsPage.tsx:1199
 msgid "autoDownload.noDownloadsYet"
@@ -588,7 +588,7 @@ msgstr "Pause"
 
 #: src/pages/DownloadsPage.tsx:1343
 msgid "autoDownload.pauseAll"
-msgstr "autoDownload.pauseAll"
+msgstr "Pause All"
 
 #: src/pages/DownloadsPage.tsx:1158
 msgid "autoDownload.refresh"
@@ -640,15 +640,15 @@ msgstr "Subscribe Confirmation"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subtab.completed"
-msgstr "autoDownload.subtab.completed"
+msgstr "Completed"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.subtab.downloads"
-msgstr "autoDownload.subtab.downloads"
+msgstr "Downloads"
 
 #: src/pages/DownloadsPage.tsx:904
 msgid "autoDownload.subtab.subscriptions"
-msgstr "autoDownload.subtab.subscriptions"
+msgstr "Subscriptions"
 
 #: src/pages/DownloadsPage.tsx:147
 msgid "autoDownload.tab.manage"

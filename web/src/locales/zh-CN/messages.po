@@ -485,7 +485,7 @@ msgstr "取消"
 
 #: src/pages/DownloadsPage.tsx:1481
 msgid "autoDownload.clearAll"
-msgstr ""
+msgstr "清除全部"
 
 #: src/pages/DownloadsPage.tsx:795
 msgid "autoDownload.confirm"
@@ -514,7 +514,7 @@ msgstr "已添加下载"
 
 #: src/pages/DownloadsPage.tsx:1324
 msgid "autoDownload.downloading"
-msgstr ""
+msgstr "下载中"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -542,11 +542,11 @@ msgstr "匹配"
 
 #: src/pages/DownloadsPage.tsx:1399
 msgid "autoDownload.noActiveDownloads"
-msgstr ""
+msgstr "无进行中的下载"
 
 #: src/pages/DownloadsPage.tsx:1463
 msgid "autoDownload.noCompletedDownloads"
-msgstr ""
+msgstr "无已完成的下载"
 
 #: src/pages/DownloadsPage.tsx:1199
 msgid "autoDownload.noDownloadsYet"
@@ -586,7 +586,7 @@ msgstr "暂停"
 
 #: src/pages/DownloadsPage.tsx:1343
 msgid "autoDownload.pauseAll"
-msgstr ""
+msgstr "全部暂停"
 
 #: src/pages/DownloadsPage.tsx:1158
 msgid "autoDownload.refresh"
@@ -638,15 +638,15 @@ msgstr "确认订阅"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subtab.completed"
-msgstr ""
+msgstr "已完成"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.subtab.downloads"
-msgstr ""
+msgstr "下载"
 
 #: src/pages/DownloadsPage.tsx:904
 msgid "autoDownload.subtab.subscriptions"
-msgstr ""
+msgstr "订阅"
 
 #: src/pages/DownloadsPage.tsx:147
 msgid "autoDownload.tab.manage"

@@ -69,6 +69,54 @@ const TORRENT_RESULTS: Record<number, ReturnType<typeof makeTorrentResults>> = {
   83937: makeTorrentResults('Tamayura', 4),
 };
 
+// ── Mock data for manage tab ──────────────────────────────────────────────
+
+const GROUPED_DOWNLOADS_WITH_DATA = [
+  {
+    rule_id: 'rule-1',
+    rule_name: 'Frieren S1',
+    bangumi_id: 400602,
+    downloads: [
+      { id: 'dl-1', gid: 'gid-1', name: '[桜都] Frieren - 01 [1080p]', status: 'active', total_bytes: 1500000000, completed_bytes: 1020000000, speed_bytes: 2100000, created_at: '2024-01-15T12:00:00Z' },
+      { id: 'dl-2', gid: 'gid-2', name: '[桜都] Frieren - 02 [1080p]', status: 'complete', total_bytes: 1400000000, completed_bytes: 1400000000, speed_bytes: 0, created_at: '2024-01-14T12:00:00Z' },
+    ],
+    active_count: 1,
+    complete_count: 1,
+    total_count: 2,
+  },
+  {
+    rule_id: '',
+    rule_name: 'Manual Downloads',
+    downloads: [
+      { id: 'dl-3', gid: 'gid-3', name: 'Some manual download.mkv', status: 'complete', total_bytes: 800000000, completed_bytes: 800000000, speed_bytes: 0, created_at: '2024-01-13T12:00:00Z' },
+    ],
+    active_count: 0,
+    complete_count: 1,
+    total_count: 1,
+  },
+];
+
+const RSS_FEEDS = [
+  { id: 'feed-1', name: '[Auto] Frieren', url: 'https://mikanani.me/RSS/Search?searchstr=Frieren', type: 'mikan', enabled: 1, fetch_interval_minutes: 30, last_fetched_at: '2024-01-15T10:00:00Z', created_at: '2024-01-01T00:00:00Z' },
+];
+
+const DOWNLOAD_RULES = [
+  { id: 'rule-1', name: 'Frieren S1', enabled: 1, rss_feed_id: 'feed-1', filter_regex: '.*Frieren.*', exclude_regex: '', save_dir: '', episode_offset: 0, resolution_filter: '1080p', subgroup_filter: '桜都字幕組', min_seeders: 0, last_triggered_at: '2024-01-15T11:00:00Z', created_at: '2024-01-01T00:00:00Z' },
+];
+
+const ANIME_DETAIL_FRIEREN = {
+  bangumi_id: 400602,
+  title: '葬送的芙莉蓮',
+  title_original: '葬送のフリーレン',
+  cover_image: 'https://lain.bgm.tv/pic/cover/l/00/00/400602_abc.jpg',
+  episode_count: 28,
+  score: 9.2,
+  media_type: 'TV',
+  synopsis: '',
+  tags: [],
+  rating: { score: 9.2, total: 1000 },
+};
+
 // ── Auth + API mock setup ───────────────────────────────────────────────────
 
 async function setupAuth(page: Page) {
@@ -88,7 +136,12 @@ async function setupAuth(page: Page) {
   });
 }
 
-async function setupApiMocks(page: Page) {
+async function setupApiMocks(page: Page, options?: {
+  withSubscriptions?: boolean;
+  withDownloads?: boolean;
+}) {
+  const { withSubscriptions = false, withDownloads = false } = options ?? {};
+
   // Auth endpoints
   await page.route('**/api/v1/auth/me', (route) =>
     route.fulfill({
@@ -128,6 +181,16 @@ async function setupApiMocks(page: Page) {
     return route.fulfill({ status: 200, body: JSON.stringify(results) });
   });
 
+  // Anime detail endpoint (for cover images)
+  await page.route('**/api/v1/discover/anime/*', (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname.includes('/torrents')) return route.continue();
+    return route.fulfill({
+      status: 200,
+      body: JSON.stringify(ANIME_DETAIL_FRIEREN),
+    });
+  });
+
   // Anime torrents endpoint
   await page.route('**/api/v1/discover/anime/*/torrents*', (route) => {
     const url = new URL(route.request().url());
@@ -162,7 +225,7 @@ async function setupApiMocks(page: Page) {
     })
   );
 
-  // Torrent add (download)
+  // Torrent add (download from search)
   await page.route('**/api/v1/torrent-search/add', (route) =>
     route.fulfill({
       status: 200,
@@ -170,23 +233,56 @@ async function setupApiMocks(page: Page) {
     })
   );
 
+  // Download add (URL add from manage tab)
+  await page.route('**/api/v1/downloads', (route) => {
+    if (route.request().method() === 'POST') {
+      return route.fulfill({
+        status: 200,
+        body: JSON.stringify({ id: 'dl-new', gid: 'gid-new', status: 'active', name: 'New download', total_bytes: 0, completed_bytes: 0, speed_bytes: 0, created_at: new Date().toISOString() }),
+      });
+    }
+    return route.continue();
+  });
+
   // RSS feeds
   await page.route('**/api/v1/rss-feeds', (route) => {
     if (route.request().method() === 'GET') {
-      return route.fulfill({ status: 200, body: JSON.stringify([]) });
+      return route.fulfill({
+        status: 200,
+        body: JSON.stringify(withSubscriptions ? RSS_FEEDS : []),
+      });
     }
     return route.fulfill({ status: 200, body: JSON.stringify({}) });
   });
 
   // Download rules
   await page.route('**/api/v1/download-rules', (route) =>
-    route.fulfill({ status: 200, body: JSON.stringify([]) })
+    route.fulfill({
+      status: 200,
+      body: JSON.stringify(withSubscriptions ? DOWNLOAD_RULES : []),
+    })
   );
 
   // Grouped downloads
   await page.route('**/api/v1/downloads/grouped', (route) =>
-    route.fulfill({ status: 200, body: JSON.stringify([]) })
+    route.fulfill({
+      status: 200,
+      body: JSON.stringify(withDownloads ? GROUPED_DOWNLOADS_WITH_DATA : []),
+    })
   );
+}
+
+// ── Helper: navigate to manage tab and click a sub-tab ────────────────────
+
+async function goToManageTab(page: Page) {
+  await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
+  await page.waitForTimeout(500);
+}
+
+async function clickSubTab(page: Page, name: string) {
+  // Sub-tab buttons are inside the manage tab content, pill-shaped buttons
+  await page.locator('button', { hasText: new RegExp(name, 'i') }).first().click();
+  await page.waitForTimeout(300);
 }
 
 // ── Tests ───────────────────────────────────────────────────────────────────
@@ -455,33 +551,126 @@ test.describe('Auto-Download Page', () => {
     await expect(page.locator('[data-sonner-toast]').first()).toBeVisible({ timeout: 3000 });
   });
 
-  // ── Manage Tab ────────────────────────────────────────────────────────
+  // ── Manage Tab — Sub-tab structure ────────────────────────────────────
 
-  test('manage tab shows empty state when no subscriptions', async ({ page }) => {
+  test('manage tab shows 3 sub-tabs: Subscriptions, Downloads, Completed', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    // Click Manage tab
-    const manageTab = page.locator('button', { hasText: /manage/i });
-    await manageTab.click();
-    await page.waitForTimeout(500);
+    await goToManageTab(page);
 
-    // Should show URL input form
-    await expect(page.locator('input[placeholder]').first()).toBeVisible();
+    // Should see all 3 sub-tab pill buttons
+    await expect(page.locator('button', { hasText: /subscriptions/i }).first()).toBeVisible();
+    await expect(page.locator('button', { hasText: /^downloads$/i }).first()).toBeVisible();
+    await expect(page.locator('button', { hasText: /completed/i }).first()).toBeVisible();
   });
 
-  test('manage tab URL add form accepts input', async ({ page }) => {
+  test('manage tab defaults to Subscriptions sub-tab', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    const manageTab = page.locator('button', { hasText: /manage/i });
-    await manageTab.click();
+    await goToManageTab(page);
+
+    // Subscriptions sub-tab should be active (has brighter styling)
+    // and should show subscription content (empty state or cards)
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
+  });
+
+  test('subscriptions sub-tab shows empty state with Go to Search CTA', async ({ page }) => {
+    await page.goto('/downloads');
     await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // Empty state text
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
+    // "Go to Search" CTA button
+    await expect(page.locator('button', { hasText: /go to search/i })).toBeVisible();
+  });
+
+  test('subscriptions sub-tab Go to Search button switches to Search tab', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // Click "Go to Search"
+    await page.locator('button', { hasText: /go to search/i }).click();
+    await page.waitForTimeout(300);
+
+    // Should now be on Search tab — search input visible
+    const searchInput = page.locator('input[placeholder]').first();
+    await expect(searchInput).toBeVisible();
+  });
+
+  test('downloads sub-tab shows URL input form', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'downloads');
+
+    // Should see the URL input with paste placeholder
+    await expect(page.locator('input[placeholder]').first()).toBeVisible();
+    // Should see the Add button
+    await expect(page.locator('button', { hasText: /^add$/i })).toBeVisible();
+  });
+
+  test('downloads sub-tab URL form accepts input', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'downloads');
 
     // Type a magnet URL
     const urlInput = page.locator('input[placeholder]').first();
     await urlInput.fill('magnet:?xt=urn:btih:abc123');
     await expect(urlInput).toHaveValue('magnet:?xt=urn:btih:abc123');
+  });
+
+  test('downloads sub-tab shows no active downloads empty state', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'downloads');
+
+    // Should show empty state when no active downloads
+    await expect(page.locator('text=/no active downloads/i')).toBeVisible();
+  });
+
+  test('completed sub-tab shows no completed downloads empty state', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'completed');
+
+    // Should show empty state
+    await expect(page.locator('text=/no completed downloads/i')).toBeVisible();
+  });
+
+  test('switching between sub-tabs works', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // Default: Subscriptions
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
+
+    // Switch to Downloads
+    await clickSubTab(page, 'downloads');
+    await expect(page.locator('text=/no active downloads/i')).toBeVisible();
+
+    // Switch to Completed
+    await clickSubTab(page, 'completed');
+    await expect(page.locator('text=/no completed downloads/i')).toBeVisible();
+
+    // Switch back to Subscriptions
+    await clickSubTab(page, 'subscriptions');
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
   });
 
   // ── Edge cases ────────────────────────────────────────────────────────
@@ -587,11 +776,127 @@ test.describe('Auto-Download Page', () => {
       }
     }
 
-    // Switch tabs
+    // Switch to Manage and cycle through sub-tabs
     await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
     await page.waitForTimeout(300);
+
+    await clickSubTab(page, 'downloads');
+    await clickSubTab(page, 'completed');
+    await clickSubTab(page, 'subscriptions');
+
+    // Switch back to Search
     await page.locator('[class*="border-b"] button', { hasText: /search/i }).click();
     await page.waitForTimeout(300);
+
+    expect(errors).toEqual([]);
+  });
+});
+
+// ── Manage Tab with populated data ──────────────────────────────────────────
+
+test.describe('Manage Tab — with subscriptions and downloads', () => {
+  test.beforeEach(async ({ page }) => {
+    await setupApiMocks(page, { withSubscriptions: true, withDownloads: true });
+    await page.goto('/');
+    await setupAuth(page);
+    await page.reload();
+    await page.waitForTimeout(500);
+  });
+
+  test('subscriptions sub-tab shows subscription cards', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // Should show the Frieren subscription rule name
+    await expect(page.locator('text=Frieren S1').first()).toBeVisible();
+  });
+
+  test('downloads sub-tab shows summary bar with active downloads', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'downloads');
+
+    // Should show the summary bar with active download count
+    await expect(page.locator('text=/downloading/i').first()).toBeVisible();
+    // Should show the active download card
+    await expect(page.locator('text=[桜都] Frieren - 01 [1080p]')).toBeVisible();
+  });
+
+  test('downloads sub-tab shows Pause All button when active downloads exist', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'downloads');
+
+    // Should show Pause All in the summary bar
+    await expect(page.locator('button', { hasText: /pause all/i })).toBeVisible();
+  });
+
+  test('completed sub-tab shows completed downloads with Clear All button', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+    await clickSubTab(page, 'completed');
+
+    // Should show completed download cards
+    await expect(page.locator('text=[桜都] Frieren - 02 [1080p]')).toBeVisible();
+    await expect(page.locator('text=Some manual download.mkv')).toBeVisible();
+
+    // Should show Clear All button
+    await expect(page.locator('button', { hasText: /clear all/i })).toBeVisible();
+  });
+
+  test('downloads sub-tab badge shows active count', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // The Downloads sub-tab pill should show "1" badge (1 active download)
+    const downloadsTab = page.locator('button', { hasText: /downloads/i }).filter({ hasNotText: /completed/i }).first();
+    await expect(downloadsTab).toContainText('1');
+  });
+
+  test('completed sub-tab badge shows completed count', async ({ page }) => {
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // The Completed sub-tab pill should show "2" badge (2 completed downloads)
+    const completedTab = page.locator('button', { hasText: /completed/i }).first();
+    await expect(completedTab).toContainText('2');
+  });
+
+  test('no crash when cycling through all sub-tabs with data', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (err) => errors.push(err.message));
+
+    await page.goto('/downloads');
+    await page.waitForTimeout(500);
+
+    await goToManageTab(page);
+
+    // Subscriptions (default)
+    await expect(page.locator('text=Frieren S1').first()).toBeVisible();
+
+    // Downloads
+    await clickSubTab(page, 'downloads');
+    await expect(page.locator('text=[桜都] Frieren - 01 [1080p]')).toBeVisible();
+
+    // Completed
+    await clickSubTab(page, 'completed');
+    await expect(page.locator('text=Some manual download.mkv')).toBeVisible();
+
+    // Back to Subscriptions
+    await clickSubTab(page, 'subscriptions');
+    await expect(page.locator('text=Frieren S1').first()).toBeVisible();
 
     expect(errors).toEqual([]);
   });

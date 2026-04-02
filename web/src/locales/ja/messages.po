@@ -487,7 +487,7 @@ msgstr "キャンセル"
 
 #: src/pages/DownloadsPage.tsx:1481
 msgid "autoDownload.clearAll"
-msgstr ""
+msgstr "すべてクリア"
 
 #: src/pages/DownloadsPage.tsx:795
 msgid "autoDownload.confirm"
@@ -516,7 +516,7 @@ msgstr "ダウンロードを追加しました"
 
 #: src/pages/DownloadsPage.tsx:1324
 msgid "autoDownload.downloading"
-msgstr ""
+msgstr "ダウンロード中"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -544,11 +544,11 @@ msgstr "一致"
 
 #: src/pages/DownloadsPage.tsx:1399
 msgid "autoDownload.noActiveDownloads"
-msgstr ""
+msgstr "アクティブなダウンロードなし"
 
 #: src/pages/DownloadsPage.tsx:1463
 msgid "autoDownload.noCompletedDownloads"
-msgstr ""
+msgstr "完了したダウンロードなし"
 
 #: src/pages/DownloadsPage.tsx:1199
 msgid "autoDownload.noDownloadsYet"
@@ -588,7 +588,7 @@ msgstr "一時停止"
 
 #: src/pages/DownloadsPage.tsx:1343
 msgid "autoDownload.pauseAll"
-msgstr ""
+msgstr "すべて一時停止"
 
 #: src/pages/DownloadsPage.tsx:1158
 msgid "autoDownload.refresh"
@@ -640,15 +640,15 @@ msgstr "購読確認"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subtab.completed"
-msgstr ""
+msgstr "完了"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.subtab.downloads"
-msgstr ""
+msgstr "ダウンロード"
 
 #: src/pages/DownloadsPage.tsx:904
 msgid "autoDownload.subtab.subscriptions"
-msgstr ""
+msgstr "購読"
 
 #: src/pages/DownloadsPage.tsx:147
 msgid "autoDownload.tab.manage"
