@@ -101,24 +101,27 @@ function buildSeasonChain(
 
 function SynopsisBlock({ text }: { text: string }) {
   const [expanded, setExpanded] = useState(false);
-  const needsExpand = text.length > 200;
+  const needsExpand = text.length > 150;
 
   return (
-    <div className="max-w-[660px]">
-      <p
+    <div className="max-w-[660px] relative">
+      <div
         className={cn(
-          'text-[13px] sm:text-[14px] text-gray-200 leading-relaxed',
-          !expanded && needsExpand && 'line-clamp-3'
+          'text-[13px] sm:text-[14px] text-gray-200 leading-relaxed whitespace-pre-line',
+          !expanded && needsExpand && 'max-h-[4.5em] overflow-hidden'
         )}
         style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
       >
         {text}
-      </p>
+      </div>
+      {!expanded && needsExpand && (
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+      )}
       {needsExpand && (
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="text-[12px] text-white/40 hover:text-white/70 mt-1 cursor-pointer transition-colors"
+          className="text-[12px] text-white/50 hover:text-white/80 mt-1.5 cursor-pointer transition-colors relative z-10"
         >
           {expanded ? '▲ 收起' : '▼ 展開更多'}
         </button>
