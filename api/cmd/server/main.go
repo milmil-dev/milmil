@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -34,6 +35,40 @@ import (
 	"github.com/milmil/api/migrations"
 )
 
+// initLogger creates a zerolog-backed slog.Logger.
+// In debug mode: console output with caller info.
+// In production: JSON output at info level.
+func initLogger(debug bool) *slog.Logger {
+	var zl zerolog.Logger
+	if debug {
+		zl = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).
+			Level(zerolog.DebugLevel).
+			With().Timestamp().Caller().Logger()
+	} else if isTerminal() {
+		zl = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).
+			Level(zerolog.InfoLevel).
+			With().Timestamp().Logger()
+	} else {
+		zl = zerolog.New(os.Stderr).
+			Level(zerolog.InfoLevel).
+			With().Timestamp().Logger()
+	}
+
+	level := slog.LevelInfo
+	if debug {
+		level = slog.LevelDebug
+	}
+	return slog.New(slogzerolog.Option{Level: level, Logger: &zl}.NewZerologHandler())
+}
+
+func isTerminal() bool {
+	fi, err := os.Stderr.Stat()
+	if err != nil {
+		return false
+	}
+	return fi.Mode()&os.ModeCharDevice != 0
+}
+
 // redactRedisURL masks the password in redis://user:password@host:port format
 func redactRedisURL(url string) string {
 	if !strings.Contains(url, "@") {
@@ -52,16 +87,21 @@ func redactRedisURL(url string) string {
 }
 
 func main() {
-	// Logger: zerolog backend wired into slog.
-	zl := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
-	logger := slog.New(slogzerolog.Option{Logger: &zl}.NewZerologHandler())
-	slog.SetDefault(logger)
+	bootStart := time.Now()
 
+	// Bootstrap logger (info-level) until config is loaded.
+	slog.SetDefault(initLogger(false))
+
+	step := time.Now()
 	cfg, err := config.Load()
 	if err != nil {
 		slog.Error("config", "err", err)
 		os.Exit(1)
 	}
+
+	// Re-init with final level based on DEBUG env.
+	slog.SetDefault(initLogger(cfg.Debug))
+	slog.Debug("boot: config loaded", "took", time.Since(step))
 
 	// Ensure data directory exists
 	if err := os.MkdirAll(cfg.DataDir, 0755); err != nil {
@@ -70,20 +110,28 @@ func main() {
 	}
 
 	// Database
+	step = time.Now()
+	slog.Debug("boot: opening db")
 	database, err := db.Open(cfg.DatabaseURL)
 	if err != nil {
 		slog.Error("db open", "err", err)
 		os.Exit(1)
 	}
 	defer database.Close()
+	slog.Debug("boot: db opened", "took", time.Since(step))
 
 	// Migrations
+	step = time.Now()
+	slog.Debug("boot: running migrations")
 	if err := db.MigrateUp(migrations.FS, cfg.DatabaseURL); err != nil {
 		slog.Error("migrate", "err", err)
 		os.Exit(1)
 	}
+	slog.Debug("boot: migrations done", "took", time.Since(step))
 
 	// Cache (Redis or in-memory)
+	step = time.Now()
+	slog.Debug("boot: initializing cache")
 	cacheInit := cache.NewWithStatus(cfg.RedisURL)
 	cacheClient := cacheInit.Cache
 	if cfg.RedisURL == "" {
@@ -102,14 +150,20 @@ func main() {
 		cacheClient = cache.WithDebugLogging(cacheClient, cacheInit.Backend)
 		slog.Info("cache debug logging enabled")
 	}
+	slog.Debug("boot: cache initialized", "took", time.Since(step))
 
 	// Metadata service
+	step = time.Now()
+	slog.Debug("boot: creating metadata service")
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	bangumiClient := bangumi.NewClient(httpClient, "milmil/1.0")
 	anilistClient := anilist.NewClient(httpClient)
 	metadataSvc := metadata.New(bangumiClient, anilistClient, cacheClient)
+	slog.Debug("boot: metadata service ready", "took", time.Since(step))
 
 	// DandanPlay client + matcher
+	step = time.Now()
+	slog.Debug("boot: creating API clients")
 	ddpCredFn := func(ctx context.Context) (string, string, error) {
 		setting, err := store.New(database).GetSetting(ctx, "dandanplay")
 		if err != nil {
@@ -128,17 +182,25 @@ func main() {
 	if tmdbSetting, tmdbErr := store.New(database).GetSetting(context.Background(), "tmdb_api_key"); tmdbErr == nil && tmdbSetting.Value != "" {
 		tmdbClient = tmdb.NewClient(&http.Client{Timeout: 10 * time.Second}, tmdbSetting.Value)
 	}
+	slog.Debug("boot: API clients ready", "took", time.Since(step))
 
+	step = time.Now()
+	slog.Debug("boot: creating matcher + resolver")
 	matcherSvc := matcher.NewMulti(store.New(database), ddpClient, bangumiClient, tmdbClient, cacheClient)
 	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
+	slog.Debug("boot: matcher + resolver ready", "took", time.Since(step))
 
 	// Aria2 client
+	step = time.Now()
+	slog.Debug("boot: creating aria2 client")
 	aria2Client := aria2.NewClient(&http.Client{Timeout: 10 * time.Second}, cfg.Aria2RPCURL, cfg.Aria2RPCSecret)
+	slog.Debug("boot: aria2 client ready", "took", time.Since(step))
 
 	// WebSocket hub
 	wsHub := ws.NewHub()
 
 	// Torrent search providers
+	step = time.Now()
 	torrentReg := torrent.NewRegistry()
 	torrentReg.Register(torrent.NewNyaaProvider())
 	torrentReg.Register(torrent.NewDMHYProvider())
@@ -146,6 +208,7 @@ func main() {
 	torrentReg.Register(torrent.NewBangumiMoeProvider())
 	torrentReg.Register(torrent.NewACGRipProvider())
 	torrentReg.Register(torrent.NewDanDanPlayProvider(""))
+	slog.Debug("boot: torrent providers registered", "took", time.Since(step))
 
 	// Scanner for post-download library scan
 	sc := scanner.New(store.New(database))
@@ -156,26 +219,30 @@ func main() {
 	_ = sc
 
 	// HTTP server
+	step = time.Now()
+	slog.Debug("boot: initializing router")
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient, torrentReg)
+	slog.Debug("boot: router initialized", "took", time.Since(step))
 
-	go func() {
-		addr := fmt.Sprintf(":%d", cfg.APIPort)
-		slog.Info("milmil-api starting", "addr", addr, "db", cfg.DatabaseURL)
-		if err := e.Start(addr); err != nil {
-			slog.Info("server stopped", "err", err)
-		}
-	}()
+	slog.Info("boot: ready", "total", time.Since(bootStart))
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
-	<-quit
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	go func() {
+		<-quit
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
-	// Graceful shutdown
-	if err := e.Shutdown(ctx); err != nil {
-		slog.Error("shutdown", "err", err)
+		if err := e.Shutdown(ctx); err != nil {
+			slog.Error("shutdown", "err", err)
+		}
+	}()
+
+	addr := fmt.Sprintf(":%d", cfg.APIPort)
+	slog.Info("milmil-api starting", "addr", addr, "db", cfg.DatabaseURL)
+	if err := e.Start(addr); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("server start failed", "err", err)
 		os.Exit(1)
 	}
 }
