@@ -187,8 +187,7 @@ function NotificationItem({
       type="button"
       onClick={onMarkRead}
       className={cn(
-        'w-full text-left flex gap-2.5 px-3 py-2.5 border-l-2 transition-colors cursor-pointer hover:bg-white/[0.03]',
-        SEVERITY_BORDER[severity] ?? 'border-l-blue-400',
+        'w-full text-left flex gap-2.5 px-3 py-2.5 transition-colors cursor-pointer hover:bg-white/[0.03]',
         !notification.read && 'bg-white/[0.02]'
       )}
     >
