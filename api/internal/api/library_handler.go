@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -192,6 +194,17 @@ func (h *handler) handleCreateLibrary(c echo.Context) error {
 	}
 
 	var encryptedConfig sql.NullString
+
+	// Expand ~ to home directory
+	if strings.HasPrefix(req.Path, "~") {
+		if home, err := os.UserHomeDir(); err == nil {
+			if req.Path == "~" {
+				req.Path = home
+			} else {
+				req.Path = filepath.Join(home, req.Path[2:]) // skip "~/"
+			}
+		}
+	}
 
 	if sourceType == "local" {
 		// For local sources, validate the path exists on disk.
