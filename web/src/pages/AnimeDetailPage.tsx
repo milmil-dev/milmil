@@ -612,6 +612,17 @@ export function AnimeDetailPage() {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
                         {i18n._(msg`anime.searchResources`)}
                       </Link>
+
+                      {/* Bangumi link */}
+                      <a
+                        href={`https://bgm.tv/subject/${anime.bangumi_id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/70 hover:text-[#F09199] transition-colors"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4"><path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2Zm3.926 14.844h3.408V7.156H3.926Zm6.352 0h3.444V7.156h-3.444Zm6.388 0h3.408V7.156h-3.408Z"/></svg>
+                        Bangumi
+                      </a>
                     </motion.div>
 
                     {/* Collection watch status + personal score — inline when in collection */}
