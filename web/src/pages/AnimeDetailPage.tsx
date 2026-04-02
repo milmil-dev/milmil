@@ -560,12 +560,7 @@ export function AnimeDetailPage() {
                             onClick={() => statusMutation.mutate(isBookmarked ? 'none' : 'planning')}
                             disabled={statusMutation.isPending}
                             whileTap={{ scale: 0.92 }}
-                            className={cn(
-                              'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer',
-                              isBookmarked
-                                ? 'bg-mm-accent/15 text-mm-accent hover:bg-mm-accent/25'
-                                : 'bg-white/[0.08] text-white/70 hover:bg-white/[0.14] hover:text-white'
-                            )}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
                           >
                             <motion.svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -575,7 +570,7 @@ export function AnimeDetailPage() {
                               strokeWidth={2}
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className="size-4"
+                              className={cn('size-4', isBookmarked ? 'text-mm-accent' : 'text-white/70')}
                               animate={isBookmarked ? { scale: [1, 1.3, 1] } : { scale: 1 }}
                               transition={{ duration: 0.3 }}
                             >
