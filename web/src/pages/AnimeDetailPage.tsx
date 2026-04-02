@@ -373,8 +373,13 @@ export function AnimeDetailPage() {
               className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
               title="Bangumi"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2Zm3.926 14.844h3.408V7.156H3.926Zm6.352 0h3.444V7.156h-3.444Zm6.388 0h3.408V7.156h-3.408Z"/>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                {/* TV antenna */}
+                <path d="M7 2l5 5 5-5"/>
+                {/* TV body */}
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                {/* Screen */}
+                <rect x="5" y="10" width="14" height="8" rx="1"/>
               </svg>
             </a>
             {anime?.anilist_id && anime.anilist_id > 0 && (
