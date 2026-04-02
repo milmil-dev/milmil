@@ -1863,7 +1863,7 @@ msgstr "더보기"
 #: src/components/AppSidebar.tsx:36
 #: src/components/NotificationBell.tsx:96
 msgid "nav.notifications"
-msgstr ""
+msgstr "알림"
 
 #: src/components/AppSidebar.tsx:30
 #~ msgid "nav.rss"
@@ -1899,63 +1899,63 @@ msgstr "설정"
 
 #: src/pages/NotificationsPage.tsx:140
 msgid "notifications.clearAll"
-msgstr ""
+msgstr "모두 지우기"
 
 #: src/pages/NotificationsPage.tsx:69
 msgid "notifications.earlier"
-msgstr ""
+msgstr "이전"
 
 #: src/components/NotificationBell.tsx:152
 #: src/pages/NotificationsPage.tsx:235
 msgid "notifications.empty"
-msgstr ""
+msgstr "알림 없음"
 
 #: src/pages/NotificationsPage.tsx:238
 msgid "notifications.emptyHint"
-msgstr ""
+msgstr "다운로드 완료 또는 새 에피소드 발견 시 알림이 표시됩니다."
 
 #: src/pages/NotificationsPage.tsx:46
 msgid "notifications.filter.all"
-msgstr ""
+msgstr "전체"
 
 #: src/pages/NotificationsPage.tsx:47
 msgid "notifications.filter.downloads"
-msgstr ""
+msgstr "다운로드"
 
 #: src/pages/NotificationsPage.tsx:48
 msgid "notifications.filter.library"
-msgstr ""
+msgstr "라이브러리"
 
 #: src/pages/NotificationsPage.tsx:49
 msgid "notifications.filter.system"
-msgstr ""
+msgstr "시스템"
 
 #: src/pages/NotificationsPage.tsx:218
 msgid "notifications.loadMore"
-msgstr ""
+msgstr "더 불러오기"
 
 #: src/components/NotificationBell.tsx:127
 #: src/pages/NotificationsPage.tsx:132
 msgid "notifications.markAllRead"
-msgstr ""
+msgstr "모두 읽음"
 
 #: src/components/NotificationBell.tsx:119
 #: src/pages/NotificationsPage.tsx:82
 #: src/pages/NotificationsPage.tsx:123
 msgid "notifications.title"
-msgstr ""
+msgstr "알림"
 
 #: src/pages/NotificationsPage.tsx:67
 msgid "notifications.today"
-msgstr ""
+msgstr "오늘"
 
 #: src/components/NotificationBell.tsx:164
 msgid "notifications.viewAll"
-msgstr ""
+msgstr "모두 보기"
 
 #: src/pages/NotificationsPage.tsx:68
 msgid "notifications.yesterday"
-msgstr ""
+msgstr "어제"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"

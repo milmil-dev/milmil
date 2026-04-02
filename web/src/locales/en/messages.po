@@ -1863,7 +1863,7 @@ msgstr "More"
 #: src/components/AppSidebar.tsx:36
 #: src/components/NotificationBell.tsx:96
 msgid "nav.notifications"
-msgstr "nav.notifications"
+msgstr "Notifications"
 
 #: src/components/AppSidebar.tsx:30
 #~ msgid "nav.rss"
@@ -1899,63 +1899,63 @@ msgstr "Settings"
 
 #: src/pages/NotificationsPage.tsx:140
 msgid "notifications.clearAll"
-msgstr "notifications.clearAll"
+msgstr "Clear all"
 
 #: src/pages/NotificationsPage.tsx:69
 msgid "notifications.earlier"
-msgstr "notifications.earlier"
+msgstr "Earlier"
 
 #: src/components/NotificationBell.tsx:152
 #: src/pages/NotificationsPage.tsx:235
 msgid "notifications.empty"
-msgstr "notifications.empty"
+msgstr "No notifications"
 
 #: src/pages/NotificationsPage.tsx:238
 msgid "notifications.emptyHint"
-msgstr "notifications.emptyHint"
+msgstr "Notifications appear here..."
 
 #: src/pages/NotificationsPage.tsx:46
 msgid "notifications.filter.all"
-msgstr "notifications.filter.all"
+msgstr "All"
 
 #: src/pages/NotificationsPage.tsx:47
 msgid "notifications.filter.downloads"
-msgstr "notifications.filter.downloads"
+msgstr "Downloads"
 
 #: src/pages/NotificationsPage.tsx:48
 msgid "notifications.filter.library"
-msgstr "notifications.filter.library"
+msgstr "Library"
 
 #: src/pages/NotificationsPage.tsx:49
 msgid "notifications.filter.system"
-msgstr "notifications.filter.system"
+msgstr "System"
 
 #: src/pages/NotificationsPage.tsx:218
 msgid "notifications.loadMore"
-msgstr "notifications.loadMore"
+msgstr "Load more"
 
 #: src/components/NotificationBell.tsx:127
 #: src/pages/NotificationsPage.tsx:132
 msgid "notifications.markAllRead"
-msgstr "notifications.markAllRead"
+msgstr "Mark all read"
 
 #: src/components/NotificationBell.tsx:119
 #: src/pages/NotificationsPage.tsx:82
 #: src/pages/NotificationsPage.tsx:123
 msgid "notifications.title"
-msgstr "notifications.title"
+msgstr "Notifications"
 
 #: src/pages/NotificationsPage.tsx:67
 msgid "notifications.today"
-msgstr "notifications.today"
+msgstr "Today"
 
 #: src/components/NotificationBell.tsx:164
 msgid "notifications.viewAll"
-msgstr "notifications.viewAll"
+msgstr "View all"
 
 #: src/pages/NotificationsPage.tsx:68
 msgid "notifications.yesterday"
-msgstr "notifications.yesterday"
+msgstr "Yesterday"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"

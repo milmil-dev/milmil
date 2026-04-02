@@ -1861,7 +1861,7 @@ msgstr "更多"
 #: src/components/AppSidebar.tsx:36
 #: src/components/NotificationBell.tsx:96
 msgid "nav.notifications"
-msgstr ""
+msgstr "通知"
 
 #: src/components/AppSidebar.tsx:30
 #~ msgid "nav.rss"
@@ -1897,63 +1897,63 @@ msgstr "設定"
 
 #: src/pages/NotificationsPage.tsx:140
 msgid "notifications.clearAll"
-msgstr ""
+msgstr "清除全部"
 
 #: src/pages/NotificationsPage.tsx:69
 msgid "notifications.earlier"
-msgstr ""
+msgstr "更早"
 
 #: src/components/NotificationBell.tsx:152
 #: src/pages/NotificationsPage.tsx:235
 msgid "notifications.empty"
-msgstr ""
+msgstr "暫無通知"
 
 #: src/pages/NotificationsPage.tsx:238
 msgid "notifications.emptyHint"
-msgstr ""
+msgstr "下載完成或發現新劇集時，通知會顯示在這裡。"
 
 #: src/pages/NotificationsPage.tsx:46
 msgid "notifications.filter.all"
-msgstr ""
+msgstr "全部"
 
 #: src/pages/NotificationsPage.tsx:47
 msgid "notifications.filter.downloads"
-msgstr ""
+msgstr "下載"
 
 #: src/pages/NotificationsPage.tsx:48
 msgid "notifications.filter.library"
-msgstr ""
+msgstr "媒體庫"
 
 #: src/pages/NotificationsPage.tsx:49
 msgid "notifications.filter.system"
-msgstr ""
+msgstr "系統"
 
 #: src/pages/NotificationsPage.tsx:218
 msgid "notifications.loadMore"
-msgstr ""
+msgstr "載入更多"
 
 #: src/components/NotificationBell.tsx:127
 #: src/pages/NotificationsPage.tsx:132
 msgid "notifications.markAllRead"
-msgstr ""
+msgstr "全部已讀"
 
 #: src/components/NotificationBell.tsx:119
 #: src/pages/NotificationsPage.tsx:82
 #: src/pages/NotificationsPage.tsx:123
 msgid "notifications.title"
-msgstr ""
+msgstr "通知"
 
 #: src/pages/NotificationsPage.tsx:67
 msgid "notifications.today"
-msgstr ""
+msgstr "今天"
 
 #: src/components/NotificationBell.tsx:164
 msgid "notifications.viewAll"
-msgstr ""
+msgstr "查看全部"
 
 #: src/pages/NotificationsPage.tsx:68
 msgid "notifications.yesterday"
-msgstr ""
+msgstr "昨天"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
