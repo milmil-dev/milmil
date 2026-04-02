@@ -359,19 +359,8 @@ export function AnimeDetailPage() {
               className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
               title="Bangumi"
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2Zm3.926 14.844h3.408V7.156H3.926Zm6.352 0h3.444V7.156h-3.444Zm6.388 0h3.408V7.156h-3.408Z"/>
               </svg>
             </a>
             {anime?.anilist_id && anime.anilist_id > 0 && (
@@ -593,16 +582,6 @@ export function AnimeDetailPage() {
                         {i18n._(msg`anime.searchResources`)}
                       </Link>
 
-                      {/* Bangumi link */}
-                      <a
-                        href={`https://bgm.tv/subject/${anime.bangumi_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/70 hover:text-[#F09199] transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4"><path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2Zm3.926 14.844h3.408V7.156H3.926Zm6.352 0h3.444V7.156h-3.444Zm6.388 0h3.408V7.156h-3.408Z"/></svg>
-                        Bangumi
-                      </a>
                     </motion.div>
 
                     {/* Collection watch status + personal score — inline when in collection */}
