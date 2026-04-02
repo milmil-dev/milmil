@@ -124,6 +124,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 const ALL_TORRENT_SOURCES = ['all', 'nyaa', 'mikan', 'dmhy', 'dandanplay', 'bangumi.moe', 'acg.rip'] as const;
+const RSS_SOURCES: ('mikan' | 'nyaa' | 'dmhy')[] = ['mikan', 'nyaa', 'dmhy'];
 const CJK_SOURCES = ['all', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip', 'dandanplay', 'nyaa'] as const;
 const EN_SOURCES = ['all', 'nyaa', 'dandanplay', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip'] as const;
 const RESOLUTIONS = ['Any', '1080p', '720p', '4K'] as const;
@@ -541,16 +542,11 @@ function AnimeTorrentView({
               </p>
             )}
 
-            {/* Subscribe button — inline */}
-            {results.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setShowSubscribe(true)}
-                className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
-              >
-                <HugeiconsIcon icon={RssIcon} size={13} />
-                {i18n._(msg`autoDownload.subscribe`)}
-              </button>
+            {/* Torrent count summary */}
+            {!isLoading && results.length > 0 && (
+              <p className="text-[11px] text-white/25 mt-2">
+                {results.length} {i18n._(msg`autoDownload.torrentsFound`)}
+              </p>
             )}
           </div>
         </div>
@@ -625,6 +621,28 @@ function AnimeTorrentView({
               ))}
             </select>
           </div>
+        )}
+
+        {/* Subscribe action — only when a specific RSS source is selected */}
+        {filteredResults.length > 0 && source !== 'all' && RSS_SOURCES.includes(source as 'mikan' | 'nyaa' | 'dmhy') && (
+          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/[0.04]">
+            <button
+              type="button"
+              onClick={() => setShowSubscribe(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
+            >
+              <HugeiconsIcon icon={RssIcon} size={14} />
+              {i18n._(msg`autoDownload.subscribeFilter`)}
+            </button>
+            <span className="text-[11px] text-white/25">
+              {SOURCE_LABELS[source]} · {resolution !== 'Any' ? resolution : i18n._(msg`autoDownload.anyResolution`)} · {subgroup !== 'all' ? subgroup : i18n._(msg`autoDownload.allSubgroups`)}
+            </span>
+          </div>
+        )}
+        {filteredResults.length > 0 && source === 'all' && (
+          <p className="text-[11px] text-white/20 mt-3 pt-3 border-t border-white/[0.04]">
+            {i18n._(msg`autoDownload.selectSourceToSubscribe`)}
+          </p>
         )}
       </div>
 
@@ -724,8 +742,6 @@ function AnimeTorrentView({
 }
 
 // ── Subscribe Confirmation Panel ──────────────────────────────────────────
-
-const RSS_SOURCES: ('mikan' | 'nyaa' | 'dmhy')[] = ['mikan', 'nyaa', 'dmhy'];
 
 function SubscribePanel({
   anime,
