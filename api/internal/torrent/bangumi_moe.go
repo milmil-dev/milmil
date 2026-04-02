@@ -28,8 +28,8 @@ func (p *BangumiMoeProvider) Search(ctx context.Context, query string) ([]Search
 	// Step 1: Search for tags matching the query
 	tagIDs, err := p.searchTags(ctx, query)
 	if err != nil || len(tagIDs) == 0 {
-		// Fall back to fetching latest if tag search fails
-		return p.fetchLatest(ctx)
+		// No matching tags — return empty instead of misleading "latest" results
+		return nil, nil
 	}
 
 	// Step 2: Search torrents by tag IDs
