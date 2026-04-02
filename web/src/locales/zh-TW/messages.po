@@ -288,52 +288,60 @@ msgstr "更新密碼"
 msgid "account.updating"
 msgstr "更新中..."
 
-#: src/pages/AnimeDetailPage.tsx:757
+#: src/pages/AnimeDetailPage.tsx:524
+msgid "anime.addToCollection"
+msgstr "加入收藏"
+
+#: src/pages/AnimeDetailPage.tsx:782
 msgid "anime.characters"
 msgstr "角色"
 
-#: src/pages/AnimeDetailPage.tsx:870
+#: src/pages/AnimeDetailPage.tsx:895
 msgid "anime.comments"
 msgstr "評論"
 
-#: src/pages/AnimeDetailPage.tsx:626
+#: src/pages/AnimeDetailPage.tsx:651
 msgid "anime.continueWatching"
 msgstr "繼續觀看"
 
-#: src/pages/AnimeDetailPage.tsx:630
+#: src/pages/AnimeDetailPage.tsx:655
 msgid "anime.episode"
 msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:681
+#: src/pages/AnimeDetailPage.tsx:706
 msgid "anime.episodes"
 msgstr "集數"
 
-#: src/pages/AnimeDetailPage.tsx:531
+#: src/pages/AnimeDetailPage.tsx:556
 msgid "anime.myScore"
 msgstr "我的評分"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "無本地文件"
 
+#: src/pages/AnimeDetailPage.tsx:485
+msgid "anime.notAired"
+msgstr "尚未播出"
+
 #: src/pages/AnimeDetailPage.tsx:283
 msgid "anime.notFound"
 msgstr "找不到動畫"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:499
+#: src/pages/AnimeDetailPage.tsx:509
 msgid "anime.ratings"
 msgstr "評分"
 
-#: src/pages/AnimeDetailPage.tsx:804
+#: src/pages/AnimeDetailPage.tsx:829
 msgid "anime.recommendations"
 msgstr "推薦"
 
-#: src/pages/AnimeDetailPage.tsx:778
+#: src/pages/AnimeDetailPage.tsx:803
 msgid "anime.relations"
 msgstr "相關作品"
 
-#: src/pages/AnimeDetailPage.tsx:822
+#: src/pages/AnimeDetailPage.tsx:847
 msgid "anime.reviews"
 msgstr "評論"
 
@@ -341,7 +349,7 @@ msgstr "評論"
 #~ msgid "anime.score"
 #~ msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:550
+#: src/pages/AnimeDetailPage.tsx:575
 msgid "anime.searchResources"
 msgstr "搜尋資源"
 
@@ -353,11 +361,11 @@ msgstr "搜尋資源"
 #~ msgstr "簡介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:727
+#: src/pages/AnimeDetailPage.tsx:752
 msgid "anime.trailer"
 msgstr "預告片"
 
-#: src/pages/AnimeDetailPage.tsx:763
+#: src/pages/AnimeDetailPage.tsx:788
 msgid "anime.voiceActor"
 msgstr "聲優"
 
@@ -475,48 +483,48 @@ msgstr "歡迎使用 milmil"
 msgid "auth.setup.username"
 msgstr "使用者名稱"
 
-#: src/pages/DownloadsPage.tsx:1384
+#: src/pages/DownloadsPage.tsx:1391
 msgid "autoDownload.add"
 msgstr "新增"
 
-#: src/pages/DownloadsPage.tsx:564
+#: src/pages/DownloadsPage.tsx:571
 msgid "autoDownload.allSubgroups"
 msgstr "全部字幕組"
 
-#: src/pages/DownloadsPage.tsx:801
+#: src/pages/DownloadsPage.tsx:808
 msgid "autoDownload.cancel"
 msgstr "取消"
 
-#: src/pages/DownloadsPage.tsx:1496
+#: src/pages/DownloadsPage.tsx:1503
 msgid "autoDownload.clearAll"
 msgstr "清除全部"
 
-#: src/pages/DownloadsPage.tsx:810
+#: src/pages/DownloadsPage.tsx:817
 msgid "autoDownload.confirm"
 msgstr "確認訂閱"
 
-#: src/pages/DownloadsPage.tsx:1612
+#: src/pages/DownloadsPage.tsx:1619
 msgid "autoDownload.connecting"
 msgstr "連線中..."
 
-#: src/pages/DownloadsPage.tsx:1182
+#: src/pages/DownloadsPage.tsx:1189
 msgid "autoDownload.delete"
 msgstr "刪除"
 
-#: src/pages/DownloadsPage.tsx:1031
+#: src/pages/DownloadsPage.tsx:1038
 msgid "autoDownload.deleted"
 msgstr "訂閱已刪除"
 
-#: src/pages/DownloadsPage.tsx:634
+#: src/pages/DownloadsPage.tsx:641
 msgid "autoDownload.download"
 msgstr "下載"
 
-#: src/pages/DownloadsPage.tsx:443
-#: src/pages/DownloadsPage.tsx:1277
+#: src/pages/DownloadsPage.tsx:450
+#: src/pages/DownloadsPage.tsx:1284
 msgid "autoDownload.downloadAdded"
 msgstr "已新增下載"
 
-#: src/pages/DownloadsPage.tsx:1339
+#: src/pages/DownloadsPage.tsx:1346
 msgid "autoDownload.downloading"
 msgstr "下載中"
 
@@ -528,11 +536,11 @@ msgstr "下載中"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "尚無訂閱"
 
-#: src/pages/DownloadsPage.tsx:1102
+#: src/pages/DownloadsPage.tsx:1109
 msgid "autoDownload.goToSearch"
 msgstr "前往搜尋"
 
-#: src/pages/DownloadsPage.tsx:764
+#: src/pages/DownloadsPage.tsx:771
 msgid "autoDownload.library"
 msgstr "媒體庫"
 
@@ -540,99 +548,99 @@ msgstr "媒體庫"
 #~ msgid "autoDownload.manualDownloads"
 #~ msgstr "手動下載"
 
-#: src/pages/DownloadsPage.tsx:755
+#: src/pages/DownloadsPage.tsx:762
 msgid "autoDownload.matchesCount"
 msgstr "匹配"
 
-#: src/pages/DownloadsPage.tsx:1414
+#: src/pages/DownloadsPage.tsx:1421
 msgid "autoDownload.noActiveDownloads"
 msgstr "無進行中的下載"
 
-#: src/pages/DownloadsPage.tsx:1478
+#: src/pages/DownloadsPage.tsx:1485
 msgid "autoDownload.noCompletedDownloads"
 msgstr "無已完成的下載"
 
-#: src/pages/DownloadsPage.tsx:1214
+#: src/pages/DownloadsPage.tsx:1221
 msgid "autoDownload.noDownloadsYet"
 msgstr "尚無下載"
 
-#: src/pages/DownloadsPage.tsx:644
+#: src/pages/DownloadsPage.tsx:651
 msgid "autoDownload.noFilteredResults"
 msgstr "無匹配結果"
 
-#: src/pages/DownloadsPage.tsx:777
+#: src/pages/DownloadsPage.tsx:784
 msgid "autoDownload.noLibrary"
 msgstr "無"
 
-#: src/pages/DownloadsPage.tsx:368
+#: src/pages/DownloadsPage.tsx:375
 msgid "autoDownload.noResults"
 msgstr "未找到結果"
 
-#: src/pages/DownloadsPage.tsx:1091
+#: src/pages/DownloadsPage.tsx:1098
 msgid "autoDownload.noSubscriptions"
 msgstr "尚無訂閱"
 
-#: src/pages/DownloadsPage.tsx:1094
+#: src/pages/DownloadsPage.tsx:1101
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "在搜尋標籤頁中搜尋動畫，建立自動下載訂閱。"
 
-#: src/pages/DownloadsPage.tsx:649
+#: src/pages/DownloadsPage.tsx:656
 msgid "autoDownload.noTorrents"
 msgstr "未找到種子"
 
-#: src/pages/DownloadsPage.tsx:1375
+#: src/pages/DownloadsPage.tsx:1382
 msgid "autoDownload.pasteUrl"
 msgstr "貼上種子或磁力連結..."
 
-#: src/pages/DownloadsPage.tsx:1635
+#: src/pages/DownloadsPage.tsx:1642
 msgid "autoDownload.pause"
 msgstr "暫停"
 
-#: src/pages/DownloadsPage.tsx:1358
+#: src/pages/DownloadsPage.tsx:1365
 msgid "autoDownload.pauseAll"
 msgstr "全部暫停"
 
-#: src/pages/DownloadsPage.tsx:1173
+#: src/pages/DownloadsPage.tsx:1180
 msgid "autoDownload.refresh"
 msgstr "重新整理"
 
-#: src/pages/DownloadsPage.tsx:1017
+#: src/pages/DownloadsPage.tsx:1024
 msgid "autoDownload.refreshed"
 msgstr "訂閱已重新整理"
 
-#: src/pages/DownloadsPage.tsx:532
+#: src/pages/DownloadsPage.tsx:539
 msgid "autoDownload.resolution"
 msgstr "解析度"
 
-#: src/pages/DownloadsPage.tsx:1645
+#: src/pages/DownloadsPage.tsx:1652
 msgid "autoDownload.resume"
 msgstr "恢復"
 
-#: src/pages/DownloadsPage.tsx:296
+#: src/pages/DownloadsPage.tsx:303
 msgid "autoDownload.searchAnime"
 msgstr "搜尋動畫..."
 
-#: src/pages/DownloadsPage.tsx:381
+#: src/pages/DownloadsPage.tsx:388
 msgid "autoDownload.searchHint"
 msgstr "選擇動畫瀏覽種子"
 
-#: src/pages/DownloadsPage.tsx:508
+#: src/pages/DownloadsPage.tsx:515
 msgid "autoDownload.source"
 msgstr "來源"
 
-#: src/pages/DownloadsPage.tsx:557
+#: src/pages/DownloadsPage.tsx:564
 msgid "autoDownload.subgroup"
 msgstr "字幕組"
 
-#: src/pages/DownloadsPage.tsx:499
+#: src/pages/DownloadsPage.tsx:506
 msgid "autoDownload.subscribe"
 msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:699
+#: src/pages/DownloadsPage.tsx:706
 msgid "autoDownload.subscribeSuccess"
 msgstr "訂閱已建立"
 
-#: src/pages/DownloadsPage.tsx:736
+#: src/pages/DownloadsPage.tsx:743
 msgid "autoDownload.subscribeTitle"
 msgstr "確認訂閱"
 
@@ -640,27 +648,27 @@ msgstr "確認訂閱"
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:927
+#: src/pages/DownloadsPage.tsx:934
 msgid "autoDownload.subtab.completed"
 msgstr "已完成"
 
-#: src/pages/DownloadsPage.tsx:922
+#: src/pages/DownloadsPage.tsx:929
 msgid "autoDownload.subtab.downloads"
 msgstr "下載"
 
-#: src/pages/DownloadsPage.tsx:919
+#: src/pages/DownloadsPage.tsx:926
 msgid "autoDownload.subtab.subscriptions"
 msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:147
+#: src/pages/DownloadsPage.tsx:148
 msgid "autoDownload.tab.manage"
 msgstr "管理"
 
-#: src/pages/DownloadsPage.tsx:146
+#: src/pages/DownloadsPage.tsx:147
 msgid "autoDownload.tab.search"
 msgstr "搜尋"
 
-#: src/pages/DownloadsPage.tsx:1611
+#: src/pages/DownloadsPage.tsx:1618
 msgid "autoDownload.waiting"
 msgstr "等待中..."
 
@@ -677,14 +685,14 @@ msgstr "全部"
 #~ msgstr "變更狀態"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:520
+#: src/pages/AnimeDetailPage.tsx:545
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "已完成"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:526
+#: src/pages/AnimeDetailPage.tsx:551
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -706,14 +714,14 @@ msgid "collection.goToLibraries"
 msgstr "前往媒體庫"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:523
+#: src/pages/AnimeDetailPage.tsx:548
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暫停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:517
+#: src/pages/AnimeDetailPage.tsx:542
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -749,7 +757,7 @@ msgid "collection.viewAll"
 msgstr "查看全部"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:514
+#: src/pages/AnimeDetailPage.tsx:539
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -783,8 +791,8 @@ msgstr "已複製"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:683
+#: src/pages/AnimeDetailPage.tsx:499
+#: src/pages/AnimeDetailPage.tsx:708
 msgid "common.ep"
 msgstr "集"
 
@@ -1789,7 +1797,7 @@ msgid "match.completed"
 msgstr "匹配完成"
 
 #: src/components/AppSidebar.tsx:31
-#: src/pages/DownloadsPage.tsx:173
+#: src/pages/DownloadsPage.tsx:180
 msgid "nav.autoDownload"
 msgstr "自動下載"
 
@@ -2216,7 +2224,7 @@ msgstr "收藏"
 msgid "settings.download.aria2"
 msgstr "Aria2 連線設定"
 
-#: src/pages/DownloadsPage.tsx:192
+#: src/pages/DownloadsPage.tsx:199
 #: src/pages/settings/DownloadPanel.tsx:87
 msgid "settings.download.disconnected"
 msgstr "未連線"
@@ -2480,7 +2488,7 @@ msgstr "轉碼影片檔案儲存在暫存目錄"
 #~ msgid "subscribe.animeNameHint"
 #~ msgstr "例如：葬送的芙莉蓮 S2"
 
-#: src/pages/DownloadsPage.tsx:202
+#: src/pages/DownloadsPage.tsx:209
 msgid "subscribe.aria2Warning"
 msgstr "Aria2 未連線。請前往 設定 → 下載 設定連線。"
 

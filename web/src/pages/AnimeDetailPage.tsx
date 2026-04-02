@@ -477,6 +477,16 @@ export function AnimeDetailPage() {
                       );
                     })()}
 
+                    {/* Not yet aired badge */}
+                    {anime.air_date && new Date(anime.air_date) > new Date() && (
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-400 text-[12px] font-medium">
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                          {i18n._(msg`anime.notAired`)} · {new Date(anime.air_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+
                     {/* Score + meta */}
                     <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
                       {anime.score > 0 && (
@@ -500,6 +510,21 @@ export function AnimeDetailPage() {
                         </span>
                       )}
                     </div>
+
+                    {/* Bookmark / Add to collection — show when NOT in collection yet */}
+                    {isAuthenticated && (!playableData?.watch_status || playableData.watch_status === 'none') && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => statusMutation.mutate('planning')}
+                          disabled={statusMutation.isPending}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-3.5"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                          {i18n._(msg`anime.addToCollection`)}
+                        </button>
+                      </div>
+                    )}
 
                     {/* Collection watch status + personal score */}
                     {playableData?.watch_status && playableData.watch_status !== 'none' && (
