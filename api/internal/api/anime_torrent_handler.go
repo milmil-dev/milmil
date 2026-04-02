@@ -1,8 +1,10 @@
 package api
 
 import (
+	"log/slog"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -25,31 +27,22 @@ func (h *handler) handleAnimeTorrents(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "failed to fetch anime detail: "+err.Error())
 	}
 
-	// Build per-source search queries using the best title variant.
-	// Mikan/DMHY: Chinese title preferred, fallback Japanese.
-	// Nyaa: English title preferred, fallback Japanese.
-	// DanDanPlay: Japanese title preferred, fallback Chinese.
-	chineseOrJP := detail.Title
-	if chineseOrJP == "" {
-		chineseOrJP = detail.TitleOriginal
+	// Collect all unique title variants for multi-language search.
+	titleSet := make(map[string]bool)
+	var titles []string
+	for _, t := range []string{detail.Title, detail.TitleOriginal, detail.TitleEN} {
+		t = strings.TrimSpace(t)
+		if t != "" && !titleSet[t] {
+			titleSet[t] = true
+			titles = append(titles, t)
+		}
 	}
-	jpOrChinese := detail.TitleOriginal
-	if jpOrChinese == "" {
-		jpOrChinese = detail.Title
-	}
-	englishOrJP := detail.TitleEN
-	if englishOrJP == "" {
-		englishOrJP = detail.TitleOriginal
+	if len(titles) == 0 {
+		return c.JSON(http.StatusOK, map[string]any{"results": []any{}})
 	}
 
-	titleForSource := map[string]string{
-		"mikan":      chineseOrJP,
-		"dmhy":       chineseOrJP,
-		"nyaa":       englishOrJP,
-		"dandanplay":  jpOrChinese,
-		"bangumi.moe": chineseOrJP,
-		"acg.rip":     chineseOrJP,
-	}
+	// All registered provider names.
+	allSources := h.torrentRegistry.Names()
 
 	// Determine which sources to query.
 	type sourceQuery struct {
@@ -59,21 +52,17 @@ func (h *handler) handleAnimeTorrents(c echo.Context) error {
 	var queries []sourceQuery
 
 	if source == "" || source == "all" {
-		for name, q := range titleForSource {
-			if q != "" {
-				queries = append(queries, sourceQuery{name: name, query: q})
+		// Search every source with every title variant.
+		for _, src := range allSources {
+			for _, t := range titles {
+				queries = append(queries, sourceQuery{name: src, query: t})
 			}
 		}
 	} else {
-		q, ok := titleForSource[source]
-		if !ok {
-			// Unknown source — try with Chinese/JP title as fallback.
-			q = chineseOrJP
+		// Single source — still search with all title variants.
+		for _, t := range titles {
+			queries = append(queries, sourceQuery{name: source, query: t})
 		}
-		if q == "" {
-			return echo.NewHTTPError(http.StatusBadRequest, "no usable title for search")
-		}
-		queries = append(queries, sourceQuery{name: source, query: q})
 	}
 
 	// Search all selected sources concurrently.
@@ -86,10 +75,17 @@ func (h *handler) handleAnimeTorrents(c echo.Context) error {
 		wg.Add(1)
 		go func(name, query string) {
 			defer wg.Done()
+			slog.Debug("anime torrents: searching", "source", name, "query", query)
 			res, err := h.torrentRegistry.Search(ctx, name, query)
-			if err != nil || len(res) == 0 {
+			if err != nil {
+				slog.Warn("anime torrents: search failed", "source", name, "error", err)
 				return
 			}
+			if len(res) == 0 {
+				slog.Debug("anime torrents: no results", "source", name)
+				return
+			}
+			slog.Debug("anime torrents: found results", "source", name, "count", len(res))
 			mu.Lock()
 			results = append(results, res...)
 			mu.Unlock()
