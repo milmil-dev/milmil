@@ -400,10 +400,29 @@ function AnimeTorrentView({
     });
   }, [results, resolution, subgroup]);
 
+  const [pendingDownloads, setPendingDownloads] = useState<Set<string>>(new Set());
+
   const addMutation = useMutation({
     mutationFn: (item: { url: string; name: string }) => torrentApi.add(item),
-    onSuccess: () => toast.success(i18n._(msg`autoDownload.downloadAdded`)),
-    onError: (err: Error) => toast.error(err.message),
+    onMutate: (item) => {
+      setPendingDownloads((prev) => new Set(prev).add(item.url));
+    },
+    onSuccess: (_data, item) => {
+      toast.success(i18n._(msg`autoDownload.downloadAdded`));
+      setPendingDownloads((prev) => {
+        const next = new Set(prev);
+        next.delete(item.url);
+        return next;
+      });
+    },
+    onError: (err: Error, item) => {
+      toast.error(err.message);
+      setPendingDownloads((prev) => {
+        const next = new Set(prev);
+        next.delete(item.url);
+        return next;
+      });
+    },
   });
 
   const downloadURL = (item: TorrentResult) => item.magnet || item.torrent_url;
@@ -574,7 +593,7 @@ function AnimeTorrentView({
               <Button
                 size="sm"
                 variant="outline"
-                disabled={addMutation.isPending || !downloadURL(item)}
+                disabled={pendingDownloads.has(downloadURL(item)) || !downloadURL(item)}
                 onClick={() =>
                   addMutation.mutate({ url: downloadURL(item), name: item.title })
                 }
@@ -1046,8 +1065,8 @@ function ManageTab() {
           <h3 className="text-xs font-bold uppercase tracking-wider text-white/30">
             {i18n._(msg`autoDownload.manualDownloads`)}
           </h3>
-          {manualGroups.map((group) => {
-            const groupKey = 'manual';
+          {manualGroups.map((group, idx) => {
+            const groupKey = `manual-${group.rule_id || idx}`;
             const isExpanded = expandedGroups.has(groupKey);
             return (
               <div
@@ -1122,6 +1141,7 @@ function DownloadRow({
   onResume: () => void;
   onDelete: () => void;
 }) {
+  const { i18n } = useLingui();
   const pct =
     dl.total_bytes > 0 ? Math.min(100, (dl.completed_bytes / dl.total_bytes) * 100) : 0;
 
@@ -1151,7 +1171,7 @@ function DownloadRow({
               type="button"
               onClick={onPause}
               className="p-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer"
-              title="Pause"
+              title={i18n._(msg`autoDownload.pause`)}
             >
               <HugeiconsIcon icon={PauseIcon} size={12} />
             </button>
@@ -1161,7 +1181,7 @@ function DownloadRow({
               type="button"
               onClick={onResume}
               className="p-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer"
-              title="Resume"
+              title={i18n._(msg`autoDownload.resume`)}
             >
               <HugeiconsIcon icon={PlayIcon} size={12} />
             </button>
@@ -1170,7 +1190,7 @@ function DownloadRow({
             type="button"
             onClick={onDelete}
             className="p-1 rounded hover:bg-red-500/10 text-red-400/40 hover:text-red-400 cursor-pointer"
-            title="Delete"
+            title={i18n._(msg`autoDownload.delete`)}
           >
             <HugeiconsIcon icon={Cancel01Icon} size={12} />
           </button>

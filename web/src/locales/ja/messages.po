@@ -473,132 +473,141 @@ msgstr "milmil へようこそ"
 msgid "auth.setup.username"
 msgstr "ユーザー名"
 
-#: src/pages/DownloadsPage.tsx:889
+#: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.add"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:514
+#: src/pages/DownloadsPage.tsx:532
 msgid "autoDownload.allSubgroups"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:751
+#: src/pages/DownloadsPage.tsx:769
 msgid "autoDownload.cancel"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:760
+#: src/pages/DownloadsPage.tsx:778
 msgid "autoDownload.confirm"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1002
+#: src/pages/DownloadsPage.tsx:1020
+#: src/pages/DownloadsPage.tsx:1193
 msgid "autoDownload.delete"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:813
+#: src/pages/DownloadsPage.tsx:831
 msgid "autoDownload.deleted"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:584
+#: src/pages/DownloadsPage.tsx:602
 msgid "autoDownload.download"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:406
-#: src/pages/DownloadsPage.tsx:823
+#: src/pages/DownloadsPage.tsx:411
+#: src/pages/DownloadsPage.tsx:841
 msgid "autoDownload.downloadAdded"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:916
+#: src/pages/DownloadsPage.tsx:934
 msgid "autoDownload.emptyHint"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:913
+#: src/pages/DownloadsPage.tsx:931
 msgid "autoDownload.emptyTitle"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:714
+#: src/pages/DownloadsPage.tsx:732
 msgid "autoDownload.library"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1048
+#: src/pages/DownloadsPage.tsx:1066
 msgid "autoDownload.manualDownloads"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:705
+#: src/pages/DownloadsPage.tsx:723
 msgid "autoDownload.matchesCount"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1034
+#: src/pages/DownloadsPage.tsx:1052
 msgid "autoDownload.noDownloadsYet"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:594
+#: src/pages/DownloadsPage.tsx:612
 msgid "autoDownload.noFilteredResults"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:727
+#: src/pages/DownloadsPage.tsx:745
 msgid "autoDownload.noLibrary"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:339
+#: src/pages/DownloadsPage.tsx:338
 msgid "autoDownload.noResults"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:599
+#: src/pages/DownloadsPage.tsx:617
 msgid "autoDownload.noTorrents"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:880
+#: src/pages/DownloadsPage.tsx:898
 msgid "autoDownload.pasteUrl"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:993
+#: src/pages/DownloadsPage.tsx:1174
+msgid "autoDownload.pause"
+msgstr ""
+
+#: src/pages/DownloadsPage.tsx:1011
 msgid "autoDownload.refresh"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:799
+#: src/pages/DownloadsPage.tsx:817
 msgid "autoDownload.refreshed"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:482
+#: src/pages/DownloadsPage.tsx:500
 msgid "autoDownload.resolution"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:267
+#: src/pages/DownloadsPage.tsx:1184
+msgid "autoDownload.resume"
+msgstr ""
+
+#: src/pages/DownloadsPage.tsx:266
 msgid "autoDownload.searchAnime"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:352
+#: src/pages/DownloadsPage.tsx:351
 msgid "autoDownload.searchHint"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:458
+#: src/pages/DownloadsPage.tsx:476
 msgid "autoDownload.source"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:507
+#: src/pages/DownloadsPage.tsx:525
 msgid "autoDownload.subgroup"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:449
+#: src/pages/DownloadsPage.tsx:467
 msgid "autoDownload.subscribe"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:649
+#: src/pages/DownloadsPage.tsx:667
 msgid "autoDownload.subscribeSuccess"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:686
+#: src/pages/DownloadsPage.tsx:704
 msgid "autoDownload.subscribeTitle"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:925
+#: src/pages/DownloadsPage.tsx:943
 msgid "autoDownload.subscriptions"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:133
+#: src/pages/DownloadsPage.tsx:132
 msgid "autoDownload.tab.manage"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:132
+#: src/pages/DownloadsPage.tsx:131
 msgid "autoDownload.tab.search"
 msgstr ""
 
@@ -1727,7 +1736,7 @@ msgid "match.completed"
 msgstr "マッチング完了"
 
 #: src/components/AppSidebar.tsx:31
-#: src/pages/DownloadsPage.tsx:158
+#: src/pages/DownloadsPage.tsx:157
 msgid "nav.autoDownload"
 msgstr ""
 
@@ -2154,7 +2163,7 @@ msgstr "コレクション"
 msgid "settings.download.aria2"
 msgstr "Aria2 接続設定"
 
-#: src/pages/DownloadsPage.tsx:177
+#: src/pages/DownloadsPage.tsx:176
 #: src/pages/settings/DownloadPanel.tsx:87
 msgid "settings.download.disconnected"
 msgstr "未接続"
@@ -2418,7 +2427,7 @@ msgstr "トランスコード済みビデオファイルは一時ディレクト
 #~ msgid "subscribe.animeNameHint"
 #~ msgstr "例：葬送のフリーレン S2"
 
-#: src/pages/DownloadsPage.tsx:187
+#: src/pages/DownloadsPage.tsx:186
 msgid "subscribe.aria2Warning"
 msgstr "Aria2に接続されていません。設定→ダウンロードで接続を設定してください。"
 

@@ -1,4 +1,5 @@
 import { api } from '../api-client';
+import type { TorrentResult } from './torrent';
 
 export interface AnimeSummary {
   bangumi_id: number;
@@ -134,6 +135,10 @@ export const discoverApi = {
   comments: (id: number) => api.get<BangumiComment[]>(`/api/v1/discover/anime/${id}/comments`),
   resolve: (anilistId: number) =>
     api.get<{ bangumi_id: number }>(`/api/v1/discover/resolve?anilist_id=${anilistId}`),
+  animeTorrents: (bangumiId: number, source?: string) =>
+    api.get<{ results: TorrentResult[] }>(
+      `/api/v1/discover/anime/${bangumiId}/torrents${source && source !== 'all' ? `?source=${source}` : ''}`
+    ),
 };
 
 export const discoverKeys = {
@@ -145,4 +150,6 @@ export const discoverKeys = {
   detail: (id: number) => ['discover', 'detail', id] as const,
   episodes: (id: number) => ['discover', 'episodes', id] as const,
   comments: (id: number) => ['discover', 'comments', id] as const,
+  animeTorrents: (bangumiId: number, source?: string) =>
+    ['discover', 'anime-torrents', bangumiId, source ?? 'all'] as const,
 };
