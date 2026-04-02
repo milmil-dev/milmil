@@ -244,11 +244,11 @@ msgstr "而家嘅密碼"
 msgid "account.fieldRequired"
 msgstr "呢個欄位必須填"
 
-#: src/components/AppSidebar.tsx:139
+#: src/components/AppSidebar.tsx:142
 msgid "account.local"
 msgstr "本機賬號"
 
-#: src/components/AppSidebar.tsx:167
+#: src/components/AppSidebar.tsx:170
 msgid "account.logout"
 msgstr "登出"
 
@@ -769,7 +769,7 @@ msgstr "名稱"
 msgid "collection.sortByRecent"
 msgstr "最近匹配"
 
-#: src/components/AppSidebar.tsx:33
+#: src/components/AppSidebar.tsx:35
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "收藏"
@@ -1823,7 +1823,7 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "匹配完成"
 
-#: src/components/AppSidebar.tsx:31
+#: src/components/AppSidebar.tsx:33
 #: src/pages/DownloadsPage.tsx:181
 msgid "nav.autoDownload"
 msgstr "自動下載"
@@ -1832,7 +1832,7 @@ msgstr "自動下載"
 msgid "nav.collection"
 msgstr ""
 
-#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "探索"
@@ -1841,41 +1841,46 @@ msgstr "探索"
 #~ msgid "nav.downloads"
 #~ msgstr "下載"
 
-#: src/components/AppSidebar.tsx:24
-#: src/components/AppSidebar.tsx:224
+#: src/components/AppSidebar.tsx:26
+#: src/components/AppSidebar.tsx:228
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "首頁"
 
-#: src/components/AppSidebar.tsx:32
-#: src/components/AppSidebar.tsx:227
+#: src/components/AppSidebar.tsx:34
+#: src/components/AppSidebar.tsx:231
 #: src/pages/LibrariesPage.tsx:3025
 #: src/pages/LibraryDetailPage.tsx:1103
 msgid "nav.libraries"
 msgstr "媒體庫"
 
-#: src/components/AppSidebar.tsx:228
+#: src/components/AppSidebar.tsx:232
 msgid "nav.more"
 msgstr "更多"
+
+#: src/components/AppSidebar.tsx:36
+#: src/components/NotificationBell.tsx:96
+msgid "nav.notifications"
+msgstr ""
 
 #: src/components/AppSidebar.tsx:30
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:25
-#: src/components/AppSidebar.tsx:225
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:229
 #: src/pages/SchedulePage.tsx:474
 msgid "nav.schedule"
 msgstr "時刻表"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:226
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:230
 #: src/pages/SearchPage.tsx:130
 msgid "nav.search"
 msgstr "搜尋"
 
-#: src/components/AppSidebar.tsx:34
-#: src/components/AppSidebar.tsx:155
+#: src/components/AppSidebar.tsx:37
+#: src/components/AppSidebar.tsx:158
 msgid "nav.settings"
 msgstr "設定"
 
@@ -1889,6 +1894,66 @@ msgstr "設定"
 #: src/components/AppSidebar.tsx:29
 #~ msgid "nav.trending"
 #~ msgstr "熱門"
+
+#: src/pages/NotificationsPage.tsx:140
+msgid "notifications.clearAll"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:69
+msgid "notifications.earlier"
+msgstr ""
+
+#: src/components/NotificationBell.tsx:152
+#: src/pages/NotificationsPage.tsx:235
+msgid "notifications.empty"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:238
+msgid "notifications.emptyHint"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:46
+msgid "notifications.filter.all"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:47
+msgid "notifications.filter.downloads"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:48
+msgid "notifications.filter.library"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:49
+msgid "notifications.filter.system"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:218
+msgid "notifications.loadMore"
+msgstr ""
+
+#: src/components/NotificationBell.tsx:127
+#: src/pages/NotificationsPage.tsx:132
+msgid "notifications.markAllRead"
+msgstr ""
+
+#: src/components/NotificationBell.tsx:119
+#: src/pages/NotificationsPage.tsx:82
+#: src/pages/NotificationsPage.tsx:123
+msgid "notifications.title"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:67
+msgid "notifications.today"
+msgstr ""
+
+#: src/components/NotificationBell.tsx:164
+msgid "notifications.viewAll"
+msgstr ""
+
+#: src/pages/NotificationsPage.tsx:68
+msgid "notifications.yesterday"
+msgstr ""
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"

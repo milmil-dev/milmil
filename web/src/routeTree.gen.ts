@@ -15,6 +15,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as RssRouteImport } from './routes/rss'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibrariesRouteImport } from './routes/libraries'
 import { Route as DownloadsRouteImport } from './routes/downloads'
@@ -53,6 +54,11 @@ const ScheduleRoute = ScheduleRouteImport.update({
 const RssRoute = RssRouteImport.update({
   id: '/rss',
   path: '/rss',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/rss': typeof RssRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/rss': typeof RssRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/downloads': typeof DownloadsRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
   '/rss': typeof RssRoute
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/libraries'
     | '/login'
+    | '/notifications'
     | '/rss'
     | '/schedule'
     | '/search'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/libraries'
     | '/login'
+    | '/notifications'
     | '/rss'
     | '/schedule'
     | '/search'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/libraries'
     | '/login'
+    | '/notifications'
     | '/rss'
     | '/schedule'
     | '/search'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   DownloadsRoute: typeof DownloadsRoute
   LibrariesRoute: typeof LibrariesRoute
   LoginRoute: typeof LoginRoute
+  NotificationsRoute: typeof NotificationsRoute
   RssRoute: typeof RssRoute
   ScheduleRoute: typeof ScheduleRoute
   SearchRoute: typeof SearchRoute
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/rss'
       fullPath: '/rss'
       preLoaderRoute: typeof RssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadsRoute: DownloadsRoute,
   LibrariesRoute: LibrariesRoute,
   LoginRoute: LoginRoute,
+  NotificationsRoute: NotificationsRoute,
   RssRoute: RssRoute,
   ScheduleRoute: ScheduleRoute,
   SearchRoute: SearchRoute,

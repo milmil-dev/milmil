@@ -7,6 +7,7 @@ import {
   HouseIcon,
   Logout01Icon,
   Menu01Icon,
+  Notification03Icon,
   Search01Icon,
   Setting07Icon,
 } from '@hugeicons/core-free-icons';
@@ -18,6 +19,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
+import { NotificationBell } from './NotificationBell';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
@@ -31,6 +33,7 @@ const bottomNav = [
   { to: '/downloads', msgKey: msg`nav.autoDownload`, icon: Download04Icon },
   { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
   { to: '/collection', msgKey: msg`collection.title`, icon: Bookmark01Icon },
+  { to: '/notifications', msgKey: msg`nav.notifications`, icon: Notification03Icon },
   { to: '/settings', msgKey: msg`nav.settings`, icon: Setting07Icon },
 ] as const;
 
@@ -206,8 +209,9 @@ export function AppSidebar() {
             ))}
           </nav>
 
-          {/* Account avatar — bottom of sidebar */}
-          <div className="pb-4 pt-2">
+          {/* Notification bell + Account avatar — bottom of sidebar */}
+          <div className="pb-4 pt-2 flex flex-col items-center gap-2">
+            <NotificationBell />
             <AccountAvatar />
           </div>
         </aside>

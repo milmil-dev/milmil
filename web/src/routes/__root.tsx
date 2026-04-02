@@ -153,6 +153,9 @@ function RootLayout() {
     if (event.type === 'download:added') {
       queryClient.invalidateQueries({ queryKey: ['downloads'] });
     }
+    if (event.type === 'notification:new') {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    }
   });
 
   if (pathname === '/login' || pathname === '/setup') {

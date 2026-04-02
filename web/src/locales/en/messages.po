@@ -246,11 +246,11 @@ msgstr "Current Password"
 msgid "account.fieldRequired"
 msgstr "This field is required"
 
-#: src/components/AppSidebar.tsx:139
+#: src/components/AppSidebar.tsx:142
 msgid "account.local"
 msgstr "Local account"
 
-#: src/components/AppSidebar.tsx:167
+#: src/components/AppSidebar.tsx:170
 msgid "account.logout"
 msgstr "Log out"
 
@@ -771,7 +771,7 @@ msgstr "Name"
 msgid "collection.sortByRecent"
 msgstr "Recently Matched"
 
-#: src/components/AppSidebar.tsx:33
+#: src/components/AppSidebar.tsx:35
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "Collection"
@@ -1825,7 +1825,7 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "Matching completed"
 
-#: src/components/AppSidebar.tsx:31
+#: src/components/AppSidebar.tsx:33
 #: src/pages/DownloadsPage.tsx:181
 msgid "nav.autoDownload"
 msgstr "Auto-Download"
@@ -1834,7 +1834,7 @@ msgstr "Auto-Download"
 msgid "nav.collection"
 msgstr "nav.collection"
 
-#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "Discover"
@@ -1843,41 +1843,46 @@ msgstr "Discover"
 #~ msgid "nav.downloads"
 #~ msgstr "Downloads"
 
-#: src/components/AppSidebar.tsx:24
-#: src/components/AppSidebar.tsx:224
+#: src/components/AppSidebar.tsx:26
+#: src/components/AppSidebar.tsx:228
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "Home"
 
-#: src/components/AppSidebar.tsx:32
-#: src/components/AppSidebar.tsx:227
+#: src/components/AppSidebar.tsx:34
+#: src/components/AppSidebar.tsx:231
 #: src/pages/LibrariesPage.tsx:3025
 #: src/pages/LibraryDetailPage.tsx:1103
 msgid "nav.libraries"
 msgstr "Library"
 
-#: src/components/AppSidebar.tsx:228
+#: src/components/AppSidebar.tsx:232
 msgid "nav.more"
 msgstr "More"
+
+#: src/components/AppSidebar.tsx:36
+#: src/components/NotificationBell.tsx:96
+msgid "nav.notifications"
+msgstr "nav.notifications"
 
 #: src/components/AppSidebar.tsx:30
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:25
-#: src/components/AppSidebar.tsx:225
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:229
 #: src/pages/SchedulePage.tsx:474
 msgid "nav.schedule"
 msgstr "Schedule"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:226
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:230
 #: src/pages/SearchPage.tsx:130
 msgid "nav.search"
 msgstr "Search"
 
-#: src/components/AppSidebar.tsx:34
-#: src/components/AppSidebar.tsx:155
+#: src/components/AppSidebar.tsx:37
+#: src/components/AppSidebar.tsx:158
 msgid "nav.settings"
 msgstr "Settings"
 
@@ -1891,6 +1896,66 @@ msgstr "Settings"
 #: src/components/AppSidebar.tsx:29
 #~ msgid "nav.trending"
 #~ msgstr "Trending"
+
+#: src/pages/NotificationsPage.tsx:140
+msgid "notifications.clearAll"
+msgstr "notifications.clearAll"
+
+#: src/pages/NotificationsPage.tsx:69
+msgid "notifications.earlier"
+msgstr "notifications.earlier"
+
+#: src/components/NotificationBell.tsx:152
+#: src/pages/NotificationsPage.tsx:235
+msgid "notifications.empty"
+msgstr "notifications.empty"
+
+#: src/pages/NotificationsPage.tsx:238
+msgid "notifications.emptyHint"
+msgstr "notifications.emptyHint"
+
+#: src/pages/NotificationsPage.tsx:46
+msgid "notifications.filter.all"
+msgstr "notifications.filter.all"
+
+#: src/pages/NotificationsPage.tsx:47
+msgid "notifications.filter.downloads"
+msgstr "notifications.filter.downloads"
+
+#: src/pages/NotificationsPage.tsx:48
+msgid "notifications.filter.library"
+msgstr "notifications.filter.library"
+
+#: src/pages/NotificationsPage.tsx:49
+msgid "notifications.filter.system"
+msgstr "notifications.filter.system"
+
+#: src/pages/NotificationsPage.tsx:218
+msgid "notifications.loadMore"
+msgstr "notifications.loadMore"
+
+#: src/components/NotificationBell.tsx:127
+#: src/pages/NotificationsPage.tsx:132
+msgid "notifications.markAllRead"
+msgstr "notifications.markAllRead"
+
+#: src/components/NotificationBell.tsx:119
+#: src/pages/NotificationsPage.tsx:82
+#: src/pages/NotificationsPage.tsx:123
+msgid "notifications.title"
+msgstr "notifications.title"
+
+#: src/pages/NotificationsPage.tsx:67
+msgid "notifications.today"
+msgstr "notifications.today"
+
+#: src/components/NotificationBell.tsx:164
+msgid "notifications.viewAll"
+msgstr "notifications.viewAll"
+
+#: src/pages/NotificationsPage.tsx:68
+msgid "notifications.yesterday"
+msgstr "notifications.yesterday"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
