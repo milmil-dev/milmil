@@ -485,48 +485,48 @@ msgstr "milmil へようこそ"
 msgid "auth.setup.username"
 msgstr "ユーザー名"
 
-#: src/pages/DownloadsPage.tsx:1391
+#: src/pages/DownloadsPage.tsx:1460
 msgid "autoDownload.add"
 msgstr "追加"
 
-#: src/pages/DownloadsPage.tsx:571
+#: src/pages/DownloadsPage.tsx:573
 msgid "autoDownload.allSubgroups"
 msgstr "すべてのグループ"
 
-#: src/pages/DownloadsPage.tsx:808
+#: src/pages/DownloadsPage.tsx:864
 msgid "autoDownload.cancel"
 msgstr "キャンセル"
 
-#: src/pages/DownloadsPage.tsx:1503
+#: src/pages/DownloadsPage.tsx:1572
 msgid "autoDownload.clearAll"
 msgstr "すべてクリア"
 
-#: src/pages/DownloadsPage.tsx:817
+#: src/pages/DownloadsPage.tsx:873
 msgid "autoDownload.confirm"
 msgstr "購読を確認"
 
-#: src/pages/DownloadsPage.tsx:1619
+#: src/pages/DownloadsPage.tsx:1688
 msgid "autoDownload.connecting"
 msgstr "接続中..."
 
-#: src/pages/DownloadsPage.tsx:1189
+#: src/pages/DownloadsPage.tsx:1258
 msgid "autoDownload.delete"
 msgstr "削除"
 
-#: src/pages/DownloadsPage.tsx:1038
+#: src/pages/DownloadsPage.tsx:1107
 msgid "autoDownload.deleted"
 msgstr "購読を削除しました"
 
-#: src/pages/DownloadsPage.tsx:641
+#: src/pages/DownloadsPage.tsx:643
 msgid "autoDownload.download"
 msgstr "ダウンロード"
 
 #: src/pages/DownloadsPage.tsx:450
-#: src/pages/DownloadsPage.tsx:1284
+#: src/pages/DownloadsPage.tsx:1353
 msgid "autoDownload.downloadAdded"
 msgstr "ダウンロードを追加しました"
 
-#: src/pages/DownloadsPage.tsx:1346
+#: src/pages/DownloadsPage.tsx:1415
 msgid "autoDownload.downloading"
 msgstr "ダウンロード中"
 
@@ -538,11 +538,11 @@ msgstr "ダウンロード中"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "購読がありません"
 
-#: src/pages/DownloadsPage.tsx:1109
+#: src/pages/DownloadsPage.tsx:1178
 msgid "autoDownload.goToSearch"
 msgstr "検索へ"
 
-#: src/pages/DownloadsPage.tsx:771
+#: src/pages/DownloadsPage.tsx:826
 msgid "autoDownload.library"
 msgstr "ライブラリ"
 
@@ -551,26 +551,30 @@ msgstr "ライブラリ"
 #~ msgstr "手動ダウンロード"
 
 #: src/pages/DownloadsPage.tsx:762
-msgid "autoDownload.matchesCount"
-msgstr "一致"
+#~ msgid "autoDownload.matchesCount"
+#~ msgstr "一致"
 
-#: src/pages/DownloadsPage.tsx:1421
+#: src/pages/DownloadsPage.tsx:1490
 msgid "autoDownload.noActiveDownloads"
 msgstr "アクティブなダウンロードなし"
 
-#: src/pages/DownloadsPage.tsx:1485
+#: src/pages/DownloadsPage.tsx:1554
 msgid "autoDownload.noCompletedDownloads"
 msgstr "完了したダウンロードなし"
 
-#: src/pages/DownloadsPage.tsx:1221
+#: src/pages/DownloadsPage.tsx:1290
 msgid "autoDownload.noDownloadsYet"
 msgstr "ダウンロードはまだありません"
 
-#: src/pages/DownloadsPage.tsx:651
+#: src/pages/DownloadsPage.tsx:653
 msgid "autoDownload.noFilteredResults"
 msgstr "フィルターに一致する結果なし"
 
-#: src/pages/DownloadsPage.tsx:784
+#: src/pages/DownloadsPage.tsx:818
+msgid "autoDownload.noFilters"
+msgstr "フィルターなし"
+
+#: src/pages/DownloadsPage.tsx:839
 msgid "autoDownload.noLibrary"
 msgstr "なし"
 
@@ -578,45 +582,49 @@ msgstr "なし"
 msgid "autoDownload.noResults"
 msgstr "結果が見つかりません"
 
-#: src/pages/DownloadsPage.tsx:1098
+#: src/pages/DownloadsPage.tsx:1167
 msgid "autoDownload.noSubscriptions"
 msgstr "まだ購読がありません"
 
-#: src/pages/DownloadsPage.tsx:1101
+#: src/pages/DownloadsPage.tsx:1170
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "検索タブでアニメを検索して、自動ダウンロードの購読を作成してください。"
 
-#: src/pages/DownloadsPage.tsx:656
+#: src/pages/DownloadsPage.tsx:658
 msgid "autoDownload.noTorrents"
 msgstr "トレントが見つかりません"
 
-#: src/pages/DownloadsPage.tsx:1382
+#: src/pages/DownloadsPage.tsx:1451
 msgid "autoDownload.pasteUrl"
 msgstr "トレントまたはマグネットURLを貼り付け..."
 
-#: src/pages/DownloadsPage.tsx:1642
+#: src/pages/DownloadsPage.tsx:1711
 msgid "autoDownload.pause"
 msgstr "一時停止"
 
-#: src/pages/DownloadsPage.tsx:1365
+#: src/pages/DownloadsPage.tsx:1434
 msgid "autoDownload.pauseAll"
 msgstr "すべて一時停止"
 
-#: src/pages/DownloadsPage.tsx:1180
+#: src/pages/DownloadsPage.tsx:1249
 msgid "autoDownload.refresh"
 msgstr "更新"
 
-#: src/pages/DownloadsPage.tsx:1024
+#: src/pages/DownloadsPage.tsx:1093
 msgid "autoDownload.refreshed"
 msgstr "購読を更新しました"
 
-#: src/pages/DownloadsPage.tsx:539
+#: src/pages/DownloadsPage.tsx:541
 msgid "autoDownload.resolution"
 msgstr "解像度"
 
-#: src/pages/DownloadsPage.tsx:1652
+#: src/pages/DownloadsPage.tsx:1721
 msgid "autoDownload.resume"
 msgstr "再開"
+
+#: src/pages/DownloadsPage.tsx:784
+msgid "autoDownload.rssSource"
+msgstr "RSSソース"
 
 #: src/pages/DownloadsPage.tsx:303
 msgid "autoDownload.searchAnime"
@@ -626,39 +634,39 @@ msgstr "アニメを検索..."
 msgid "autoDownload.searchHint"
 msgstr "アニメを選択してトレントを閲覧"
 
-#: src/pages/DownloadsPage.tsx:515
+#: src/pages/DownloadsPage.tsx:517
 msgid "autoDownload.source"
 msgstr "ソース"
 
-#: src/pages/DownloadsPage.tsx:564
+#: src/pages/DownloadsPage.tsx:566
 msgid "autoDownload.subgroup"
 msgstr "字幕グループ"
 
-#: src/pages/DownloadsPage.tsx:506
+#: src/pages/DownloadsPage.tsx:508
 msgid "autoDownload.subscribe"
 msgstr "購読"
 
-#: src/pages/DownloadsPage.tsx:706
+#: src/pages/DownloadsPage.tsx:716
 msgid "autoDownload.subscribeSuccess"
 msgstr "購読を作成しました"
 
 #: src/pages/DownloadsPage.tsx:743
-msgid "autoDownload.subscribeTitle"
-msgstr "購読確認"
+#~ msgid "autoDownload.subscribeTitle"
+#~ msgstr "購読確認"
 
 #: src/pages/DownloadsPage.tsx:971
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "購読"
 
-#: src/pages/DownloadsPage.tsx:934
+#: src/pages/DownloadsPage.tsx:1003
 msgid "autoDownload.subtab.completed"
 msgstr "完了"
 
-#: src/pages/DownloadsPage.tsx:929
+#: src/pages/DownloadsPage.tsx:998
 msgid "autoDownload.subtab.downloads"
 msgstr "ダウンロード"
 
-#: src/pages/DownloadsPage.tsx:926
+#: src/pages/DownloadsPage.tsx:995
 msgid "autoDownload.subtab.subscriptions"
 msgstr "購読"
 
@@ -670,7 +678,11 @@ msgstr "管理"
 msgid "autoDownload.tab.search"
 msgstr "検索"
 
-#: src/pages/DownloadsPage.tsx:1618
+#: src/pages/DownloadsPage.tsx:773
+msgid "autoDownload.torrentsFound"
+msgstr "件のトレント"
+
+#: src/pages/DownloadsPage.tsx:1687
 msgid "autoDownload.waiting"
 msgstr "待機中..."
 

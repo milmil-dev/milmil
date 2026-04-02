@@ -483,48 +483,48 @@ msgstr "歡迎使用 milmil"
 msgid "auth.setup.username"
 msgstr "使用者名稱"
 
-#: src/pages/DownloadsPage.tsx:1391
+#: src/pages/DownloadsPage.tsx:1460
 msgid "autoDownload.add"
 msgstr "新增"
 
-#: src/pages/DownloadsPage.tsx:571
+#: src/pages/DownloadsPage.tsx:573
 msgid "autoDownload.allSubgroups"
 msgstr "全部字幕組"
 
-#: src/pages/DownloadsPage.tsx:808
+#: src/pages/DownloadsPage.tsx:864
 msgid "autoDownload.cancel"
 msgstr "取消"
 
-#: src/pages/DownloadsPage.tsx:1503
+#: src/pages/DownloadsPage.tsx:1572
 msgid "autoDownload.clearAll"
 msgstr "清除全部"
 
-#: src/pages/DownloadsPage.tsx:817
+#: src/pages/DownloadsPage.tsx:873
 msgid "autoDownload.confirm"
 msgstr "確認訂閱"
 
-#: src/pages/DownloadsPage.tsx:1619
+#: src/pages/DownloadsPage.tsx:1688
 msgid "autoDownload.connecting"
 msgstr "連線中..."
 
-#: src/pages/DownloadsPage.tsx:1189
+#: src/pages/DownloadsPage.tsx:1258
 msgid "autoDownload.delete"
 msgstr "刪除"
 
-#: src/pages/DownloadsPage.tsx:1038
+#: src/pages/DownloadsPage.tsx:1107
 msgid "autoDownload.deleted"
 msgstr "訂閱已刪除"
 
-#: src/pages/DownloadsPage.tsx:641
+#: src/pages/DownloadsPage.tsx:643
 msgid "autoDownload.download"
 msgstr "下載"
 
 #: src/pages/DownloadsPage.tsx:450
-#: src/pages/DownloadsPage.tsx:1284
+#: src/pages/DownloadsPage.tsx:1353
 msgid "autoDownload.downloadAdded"
 msgstr "已新增下載"
 
-#: src/pages/DownloadsPage.tsx:1346
+#: src/pages/DownloadsPage.tsx:1415
 msgid "autoDownload.downloading"
 msgstr "下載中"
 
@@ -536,11 +536,11 @@ msgstr "下載中"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "尚無訂閱"
 
-#: src/pages/DownloadsPage.tsx:1109
+#: src/pages/DownloadsPage.tsx:1178
 msgid "autoDownload.goToSearch"
 msgstr "前往搜尋"
 
-#: src/pages/DownloadsPage.tsx:771
+#: src/pages/DownloadsPage.tsx:826
 msgid "autoDownload.library"
 msgstr "媒體庫"
 
@@ -549,26 +549,30 @@ msgstr "媒體庫"
 #~ msgstr "手動下載"
 
 #: src/pages/DownloadsPage.tsx:762
-msgid "autoDownload.matchesCount"
-msgstr "匹配"
+#~ msgid "autoDownload.matchesCount"
+#~ msgstr "匹配"
 
-#: src/pages/DownloadsPage.tsx:1421
+#: src/pages/DownloadsPage.tsx:1490
 msgid "autoDownload.noActiveDownloads"
 msgstr "無進行中的下載"
 
-#: src/pages/DownloadsPage.tsx:1485
+#: src/pages/DownloadsPage.tsx:1554
 msgid "autoDownload.noCompletedDownloads"
 msgstr "無已完成的下載"
 
-#: src/pages/DownloadsPage.tsx:1221
+#: src/pages/DownloadsPage.tsx:1290
 msgid "autoDownload.noDownloadsYet"
 msgstr "尚無下載"
 
-#: src/pages/DownloadsPage.tsx:651
+#: src/pages/DownloadsPage.tsx:653
 msgid "autoDownload.noFilteredResults"
 msgstr "無匹配結果"
 
-#: src/pages/DownloadsPage.tsx:784
+#: src/pages/DownloadsPage.tsx:818
+msgid "autoDownload.noFilters"
+msgstr "無篩選"
+
+#: src/pages/DownloadsPage.tsx:839
 msgid "autoDownload.noLibrary"
 msgstr "無"
 
@@ -576,45 +580,49 @@ msgstr "無"
 msgid "autoDownload.noResults"
 msgstr "未找到結果"
 
-#: src/pages/DownloadsPage.tsx:1098
+#: src/pages/DownloadsPage.tsx:1167
 msgid "autoDownload.noSubscriptions"
 msgstr "尚無訂閱"
 
-#: src/pages/DownloadsPage.tsx:1101
+#: src/pages/DownloadsPage.tsx:1170
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "在搜尋標籤頁中搜尋動畫，建立自動下載訂閱。"
 
-#: src/pages/DownloadsPage.tsx:656
+#: src/pages/DownloadsPage.tsx:658
 msgid "autoDownload.noTorrents"
 msgstr "未找到種子"
 
-#: src/pages/DownloadsPage.tsx:1382
+#: src/pages/DownloadsPage.tsx:1451
 msgid "autoDownload.pasteUrl"
 msgstr "貼上種子或磁力連結..."
 
-#: src/pages/DownloadsPage.tsx:1642
+#: src/pages/DownloadsPage.tsx:1711
 msgid "autoDownload.pause"
 msgstr "暫停"
 
-#: src/pages/DownloadsPage.tsx:1365
+#: src/pages/DownloadsPage.tsx:1434
 msgid "autoDownload.pauseAll"
 msgstr "全部暫停"
 
-#: src/pages/DownloadsPage.tsx:1180
+#: src/pages/DownloadsPage.tsx:1249
 msgid "autoDownload.refresh"
 msgstr "重新整理"
 
-#: src/pages/DownloadsPage.tsx:1024
+#: src/pages/DownloadsPage.tsx:1093
 msgid "autoDownload.refreshed"
 msgstr "訂閱已重新整理"
 
-#: src/pages/DownloadsPage.tsx:539
+#: src/pages/DownloadsPage.tsx:541
 msgid "autoDownload.resolution"
 msgstr "解析度"
 
-#: src/pages/DownloadsPage.tsx:1652
+#: src/pages/DownloadsPage.tsx:1721
 msgid "autoDownload.resume"
 msgstr "恢復"
+
+#: src/pages/DownloadsPage.tsx:784
+msgid "autoDownload.rssSource"
+msgstr "RSS 來源"
 
 #: src/pages/DownloadsPage.tsx:303
 msgid "autoDownload.searchAnime"
@@ -624,39 +632,39 @@ msgstr "搜尋動畫..."
 msgid "autoDownload.searchHint"
 msgstr "選擇動畫瀏覽種子"
 
-#: src/pages/DownloadsPage.tsx:515
+#: src/pages/DownloadsPage.tsx:517
 msgid "autoDownload.source"
 msgstr "來源"
 
-#: src/pages/DownloadsPage.tsx:564
+#: src/pages/DownloadsPage.tsx:566
 msgid "autoDownload.subgroup"
 msgstr "字幕組"
 
-#: src/pages/DownloadsPage.tsx:506
+#: src/pages/DownloadsPage.tsx:508
 msgid "autoDownload.subscribe"
 msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:706
+#: src/pages/DownloadsPage.tsx:716
 msgid "autoDownload.subscribeSuccess"
 msgstr "訂閱已建立"
 
 #: src/pages/DownloadsPage.tsx:743
-msgid "autoDownload.subscribeTitle"
-msgstr "確認訂閱"
+#~ msgid "autoDownload.subscribeTitle"
+#~ msgstr "確認訂閱"
 
 #: src/pages/DownloadsPage.tsx:971
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:934
+#: src/pages/DownloadsPage.tsx:1003
 msgid "autoDownload.subtab.completed"
 msgstr "已完成"
 
-#: src/pages/DownloadsPage.tsx:929
+#: src/pages/DownloadsPage.tsx:998
 msgid "autoDownload.subtab.downloads"
 msgstr "下載"
 
-#: src/pages/DownloadsPage.tsx:926
+#: src/pages/DownloadsPage.tsx:995
 msgid "autoDownload.subtab.subscriptions"
 msgstr "訂閱"
 
@@ -668,7 +676,11 @@ msgstr "管理"
 msgid "autoDownload.tab.search"
 msgstr "搜尋"
 
-#: src/pages/DownloadsPage.tsx:1618
+#: src/pages/DownloadsPage.tsx:773
+msgid "autoDownload.torrentsFound"
+msgstr "個種子"
+
+#: src/pages/DownloadsPage.tsx:1687
 msgid "autoDownload.waiting"
 msgstr "等待中..."
 

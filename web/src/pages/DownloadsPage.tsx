@@ -33,7 +33,7 @@ import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discove
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi } from '../lib/api/torrent';
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
 import type { DownloadsSearch } from '../routes/downloads';
@@ -480,7 +480,7 @@ function AnimeTorrentView({
         <img
           src={anime.cover_image}
           alt=""
-          className="w-14 h-auto rounded-md object-cover shrink-0"
+          className="w-[72px] h-auto rounded-md object-cover shrink-0"
           style={{ aspectRatio: '3/4' }}
         />
         <div className="flex-1 min-w-0">
@@ -499,12 +499,14 @@ function AnimeTorrentView({
             )}
           </div>
         </div>
-        <Button
+        <button
+          type="button"
           onClick={() => setShowSubscribe(true)}
-          className="shrink-0 font-semibold text-black bg-mm-accent hover:bg-mm-accent/90"
+          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
         >
+          <HugeiconsIcon icon={RssIcon} size={14} />
           {i18n._(msg`autoDownload.subscribe`)}
-        </Button>
+        </button>
       </div>
 
       {/* Filter chips */}
@@ -676,6 +678,8 @@ function AnimeTorrentView({
 
 // ── Subscribe Confirmation Panel ──────────────────────────────────────────
 
+const RSS_SOURCES: ('mikan' | 'nyaa' | 'dmhy')[] = ['mikan', 'nyaa', 'dmhy'];
+
 function SubscribePanel({
   anime,
   source,
@@ -693,6 +697,12 @@ function SubscribePanel({
 }) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
+
+  // Default RSS source: use current filter source if it supports RSS, otherwise mikan
+  const defaultSource = RSS_SOURCES.includes(source as 'mikan' | 'nyaa' | 'dmhy')
+    ? (source as 'mikan' | 'nyaa' | 'dmhy')
+    : 'mikan';
+  const [rssSource, setRssSource] = useState<'mikan' | 'nyaa' | 'dmhy'>(defaultSource);
   const [libraryId, setLibraryId] = useState<string>('');
 
   const { data: libraries = [] } = useQuery({
@@ -712,10 +722,9 @@ function SubscribePanel({
   });
 
   const handleConfirm = () => {
-    const subscribeSource = source === 'all' || source === 'dandanplay' ? 'mikan' : source;
     subscribeMutation.mutate({
       anime_name: anime.title,
-      source: subscribeSource as 'mikan' | 'nyaa' | 'dmhy',
+      source: rssSource,
       bangumi_id: anime.bangumi_id,
       sub_group: subgroup !== 'all' ? subgroup : undefined,
       resolution: resolution !== 'Any' ? resolution : undefined,
@@ -737,17 +746,64 @@ function SubscribePanel({
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md mx-4 rounded-xl border border-white/[0.08] bg-[#111] p-6 shadow-2xl"
+        className="w-full max-w-md mx-4 rounded-xl border border-white/[0.08] bg-zinc-900 p-6 shadow-2xl"
       >
-        <h3 className="text-lg font-bold text-white mb-4">
-          {i18n._(msg`autoDownload.subscribeTitle`)}
-        </h3>
+        {/* Header with anime cover */}
+        <div className="flex gap-3 mb-5">
+          {anime.cover_image && (
+            <img
+              src={anime.cover_image}
+              alt=""
+              className="w-12 h-[68px] rounded-md object-cover shrink-0"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-[15px] font-bold text-white truncate">{anime.title}</h3>
+            {anime.title_original && anime.title_original !== anime.title && (
+              <p className="text-[11px] text-white/30 truncate mt-0.5">{anime.title_original}</p>
+            )}
+            <div className="flex items-center gap-2 mt-1.5">
+              {anime.media_type && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">
+                  {anime.media_type}
+                </span>
+              )}
+              {matchCount > 0 && (
+                <span className="text-[10px] text-white/30">
+                  {matchCount} {i18n._(msg`autoDownload.torrentsFound`)}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
 
-        {/* Anime name */}
-        <div className="rounded-lg bg-white/[0.03] p-3 mb-4">
-          <p className="text-[13px] font-medium text-white">{anime.title}</p>
-          <div className="flex flex-wrap items-center gap-2 mt-1.5">
-            {source !== 'all' && <SourceBadge source={source} />}
+        <div className="space-y-4">
+          {/* RSS Source picker — user must explicitly choose */}
+          <div>
+            <label className="text-[11px] text-white/40 mb-1.5 block">
+              {i18n._(msg`autoDownload.rssSource`)}
+            </label>
+            <div className="flex gap-1.5">
+              {RSS_SOURCES.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setRssSource(s)}
+                  className={cn(
+                    'flex-1 px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                    rssSource === s
+                      ? 'bg-white/[0.12] text-white'
+                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                  )}
+                >
+                  {SOURCE_LABELS[s] ?? s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Current filters summary */}
+          <div className="flex flex-wrap items-center gap-2">
             {subgroup !== 'all' && (
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/70">
                 {subgroup}
@@ -758,59 +814,59 @@ function SubscribePanel({
                 {resolution}
               </span>
             )}
-            <span className="text-[10px] text-white/30">
-              {i18n._(msg`autoDownload.matchesCount`)} {matchCount}
-            </span>
+            {subgroup === 'all' && resolution === 'Any' && (
+              <span className="text-[10px] text-white/25">{i18n._(msg`autoDownload.noFilters`)}</span>
+            )}
           </div>
-        </div>
 
-        {/* Library picker */}
-        {libraries.length > 0 && (
-          <Field className="mb-4">
-            <label className="text-[11px] text-white/40 mb-1.5 block">
-              {i18n._(msg`autoDownload.library`)}
-            </label>
-            <div className="flex gap-1.5 flex-wrap">
-              <button
-                type="button"
-                onClick={() => setLibraryId('')}
-                className={cn(
-                  'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
-                  !libraryId
-                    ? 'bg-white/[0.12] text-white'
-                    : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
-                )}
-              >
-                {i18n._(msg`autoDownload.noLibrary`)}
-              </button>
-              {libraries.map((lib) => (
+          {/* Library picker */}
+          {libraries.length > 0 && (
+            <div>
+              <label className="text-[11px] text-white/40 mb-1.5 block">
+                {i18n._(msg`autoDownload.library`)}
+              </label>
+              <div className="flex gap-1.5 flex-wrap">
                 <button
-                  key={lib.id}
                   type="button"
-                  onClick={() => setLibraryId(lib.id)}
+                  onClick={() => setLibraryId('')}
                   className={cn(
                     'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
-                    libraryId === lib.id
-                      ? 'bg-mm-accent/20 text-mm-accent'
+                    !libraryId
+                      ? 'bg-white/[0.12] text-white'
                       : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
                   )}
                 >
-                  {lib.name}
+                  {i18n._(msg`autoDownload.noLibrary`)}
                 </button>
-              ))}
+                {libraries.map((lib) => (
+                  <button
+                    key={lib.id}
+                    type="button"
+                    onClick={() => setLibraryId(lib.id)}
+                    className={cn(
+                      'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                      libraryId === lib.id
+                        ? 'bg-white/[0.12] text-white'
+                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                    )}
+                  >
+                    {lib.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </Field>
-        )}
+          )}
+        </div>
 
         {/* Actions */}
-        <div className="flex gap-2 justify-end">
+        <div className="flex gap-2 justify-end mt-6">
           <Button variant="outline" onClick={onClose} className="text-[13px]">
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={subscribeMutation.isPending}
-            className="font-semibold text-black bg-mm-accent hover:bg-mm-accent/90 text-[13px]"
+            className="font-semibold text-[13px]"
           >
             {subscribeMutation.isPending
               ? '...'
@@ -847,19 +903,19 @@ function useAnimeDetail(bangumiId: number | undefined) {
   });
 }
 
-/** Small cover thumbnail component that fetches anime detail on demand. */
-function AnimeCover({ bangumiId, size = 48 }: { bangumiId?: number; size?: number }) {
+/** Small cover thumbnail component that fetches anime detail on demand. Clickable → anime detail page. */
+function AnimeCover({ bangumiId, size = 62 }: { bangumiId?: number; size?: number }) {
   const { data } = useAnimeDetail(bangumiId);
   const h = Math.round(size * (4 / 3));
-  if (!data?.cover_image) {
-    return (
-      <div
-        className="rounded bg-white/[0.06] shrink-0"
-        style={{ width: size, height: h }}
-      />
-    );
-  }
-  return (
+  const placeholder = (
+    <div
+      className="rounded bg-white/[0.06] shrink-0"
+      style={{ width: size, height: h }}
+    />
+  );
+  if (!data?.cover_image) return placeholder;
+
+  const img = (
     <img
       src={data.cover_image}
       alt=""
@@ -868,6 +924,19 @@ function AnimeCover({ bangumiId, size = 48 }: { bangumiId?: number; size?: numbe
       loading="lazy"
     />
   );
+
+  if (bangumiId) {
+    return (
+      <Link
+        to="/anime/$id"
+        params={{ id: String(bangumiId) }}
+        className="shrink-0 hover:opacity-80 transition-opacity"
+      >
+        {img}
+      </Link>
+    );
+  }
+  return img;
 }
 
 function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
