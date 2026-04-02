@@ -468,47 +468,91 @@ function AnimeTorrentView({
 
   return (
     <>
-      {/* Header */}
-      <div className="flex items-start gap-4 mb-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="mt-1 p-1.5 rounded-md hover:bg-white/[0.06] text-white/40 hover:text-white/70 transition-colors cursor-pointer shrink-0"
-        >
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
-        </button>
-        <img
-          src={anime.cover_image}
-          alt=""
-          className="w-[72px] h-auto rounded-md object-cover shrink-0"
-          style={{ aspectRatio: '3/4' }}
-        />
-        <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold text-white truncate">{anime.title}</h2>
-          <div className="flex flex-wrap items-center gap-2 mt-1">
-            {anime.media_type && <MediaTypeBadge type={anime.media_type} />}
-            {anime.score > 0 && (
-              <span className="text-[11px] text-yellow-400/80">
-                ★ {anime.score.toFixed(1)}
-              </span>
+      {/* Anime context header */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 mb-6 relative overflow-hidden">
+        {/* Blurred background from cover */}
+        {anime.cover_image && (
+          <div className="absolute inset-0 opacity-[0.07]" style={{
+            backgroundImage: `url(${anime.cover_image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(40px)',
+          }} />
+        )}
+
+        <div className="relative flex gap-4">
+          {/* Back button */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="absolute -left-1 -top-1 p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 transition-colors cursor-pointer z-10"
+          >
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
+          </button>
+
+          {/* Cover — clickable to anime detail */}
+          <Link
+            to="/anime/$id"
+            params={{ id: String(anime.bangumi_id) }}
+            className="shrink-0 ml-5 hover:opacity-90 transition-opacity"
+          >
+            <img
+              src={anime.cover_image}
+              alt=""
+              className="w-[80px] h-auto rounded-lg object-cover shadow-lg"
+              style={{ aspectRatio: '3/4' }}
+            />
+          </Link>
+
+          {/* Info */}
+          <div className="flex-1 min-w-0 py-0.5">
+            <h2 className="text-[17px] font-bold text-white leading-tight line-clamp-2">
+              {anime.title}
+            </h2>
+            {anime.title_original && anime.title_original !== anime.title && (
+              <p className="text-[11px] text-white/35 mt-0.5 truncate">{anime.title_original}</p>
             )}
-            {anime.episode_count > 0 && (
-              <span className="text-[11px] text-white/30">
-                {anime.episode_count} eps
-              </span>
+
+            {/* Meta row */}
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              {anime.media_type && <MediaTypeBadge type={anime.media_type} />}
+              {anime.score > 0 && (
+                <span className="text-[12px] font-semibold text-yellow-400/90 tabular-nums">
+                  ★ {anime.score.toFixed(1)}
+                </span>
+              )}
+              {anime.episode_count > 0 && (
+                <span className="text-[12px] text-white/45">
+                  {anime.episode_count} {i18n._(msg`common.ep`)}
+                </span>
+              )}
+              {anime.air_date && (
+                <span className="text-[12px] text-white/45">
+                  {anime.air_date.slice(0, 7)}
+                </span>
+              )}
+            </div>
+
+            {/* Description snippet */}
+            {anime.description && (
+              <p className="text-[11px] text-white/30 mt-2 line-clamp-2 leading-relaxed max-w-[500px]">
+                {anime.description}
+              </p>
+            )}
+
+            {/* Subscribe button — inline */}
+            {results.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowSubscribe(true)}
+                className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={RssIcon} size={13} />
+                {i18n._(msg`autoDownload.subscribe`)}
+              </button>
             )}
           </div>
         </div>
-        {results.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setShowSubscribe(true)}
-            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
-          >
-            <HugeiconsIcon icon={RssIcon} size={14} />
-            {i18n._(msg`autoDownload.subscribe`)}
-          </button>
-        )}
       </div>
 
       {/* Filter chips */}
