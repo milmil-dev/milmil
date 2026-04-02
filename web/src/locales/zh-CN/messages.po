@@ -473,141 +473,141 @@ msgstr "用户名"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.add"
-msgstr ""
+msgstr "添加"
 
 #: src/pages/DownloadsPage.tsx:532
 msgid "autoDownload.allSubgroups"
-msgstr ""
+msgstr "全部字幕组"
 
 #: src/pages/DownloadsPage.tsx:769
 msgid "autoDownload.cancel"
-msgstr ""
+msgstr "取消"
 
 #: src/pages/DownloadsPage.tsx:778
 msgid "autoDownload.confirm"
-msgstr ""
+msgstr "确认订阅"
 
 #: src/pages/DownloadsPage.tsx:1020
 #: src/pages/DownloadsPage.tsx:1193
 msgid "autoDownload.delete"
-msgstr ""
+msgstr "删除"
 
 #: src/pages/DownloadsPage.tsx:831
 msgid "autoDownload.deleted"
-msgstr ""
+msgstr "订阅已删除"
 
 #: src/pages/DownloadsPage.tsx:602
 msgid "autoDownload.download"
-msgstr ""
+msgstr "下载"
 
 #: src/pages/DownloadsPage.tsx:411
 #: src/pages/DownloadsPage.tsx:841
 msgid "autoDownload.downloadAdded"
-msgstr ""
+msgstr "已添加下载"
 
 #: src/pages/DownloadsPage.tsx:934
 msgid "autoDownload.emptyHint"
-msgstr ""
+msgstr "添加链接或订阅动画以开始"
 
 #: src/pages/DownloadsPage.tsx:931
 msgid "autoDownload.emptyTitle"
-msgstr ""
+msgstr "暂无订阅"
 
 #: src/pages/DownloadsPage.tsx:732
 msgid "autoDownload.library"
-msgstr ""
+msgstr "媒体库"
 
 #: src/pages/DownloadsPage.tsx:1066
 msgid "autoDownload.manualDownloads"
-msgstr ""
+msgstr "手动下载"
 
 #: src/pages/DownloadsPage.tsx:723
 msgid "autoDownload.matchesCount"
-msgstr ""
+msgstr "匹配"
 
 #: src/pages/DownloadsPage.tsx:1052
 msgid "autoDownload.noDownloadsYet"
-msgstr ""
+msgstr "暂无下载"
 
 #: src/pages/DownloadsPage.tsx:612
 msgid "autoDownload.noFilteredResults"
-msgstr ""
+msgstr "无匹配结果"
 
 #: src/pages/DownloadsPage.tsx:745
 msgid "autoDownload.noLibrary"
-msgstr ""
+msgstr "无"
 
 #: src/pages/DownloadsPage.tsx:338
 msgid "autoDownload.noResults"
-msgstr ""
+msgstr "未找到结果"
 
 #: src/pages/DownloadsPage.tsx:617
 msgid "autoDownload.noTorrents"
-msgstr ""
+msgstr "未找到种子"
 
 #: src/pages/DownloadsPage.tsx:898
 msgid "autoDownload.pasteUrl"
-msgstr ""
+msgstr "粘贴种子或磁力链接..."
 
 #: src/pages/DownloadsPage.tsx:1174
 msgid "autoDownload.pause"
-msgstr ""
+msgstr "暂停"
 
 #: src/pages/DownloadsPage.tsx:1011
 msgid "autoDownload.refresh"
-msgstr ""
+msgstr "刷新"
 
 #: src/pages/DownloadsPage.tsx:817
 msgid "autoDownload.refreshed"
-msgstr ""
+msgstr "订阅已刷新"
 
 #: src/pages/DownloadsPage.tsx:500
 msgid "autoDownload.resolution"
-msgstr ""
+msgstr "分辨率"
 
 #: src/pages/DownloadsPage.tsx:1184
 msgid "autoDownload.resume"
-msgstr ""
+msgstr "恢复"
 
 #: src/pages/DownloadsPage.tsx:266
 msgid "autoDownload.searchAnime"
-msgstr ""
+msgstr "搜索动画..."
 
 #: src/pages/DownloadsPage.tsx:351
 msgid "autoDownload.searchHint"
-msgstr ""
+msgstr "选择动画浏览种子"
 
 #: src/pages/DownloadsPage.tsx:476
 msgid "autoDownload.source"
-msgstr ""
+msgstr "来源"
 
 #: src/pages/DownloadsPage.tsx:525
 msgid "autoDownload.subgroup"
-msgstr ""
+msgstr "字幕组"
 
 #: src/pages/DownloadsPage.tsx:467
 msgid "autoDownload.subscribe"
-msgstr ""
+msgstr "订阅"
 
 #: src/pages/DownloadsPage.tsx:667
 msgid "autoDownload.subscribeSuccess"
-msgstr ""
+msgstr "订阅已创建"
 
 #: src/pages/DownloadsPage.tsx:704
 msgid "autoDownload.subscribeTitle"
-msgstr ""
+msgstr "确认订阅"
 
 #: src/pages/DownloadsPage.tsx:943
 msgid "autoDownload.subscriptions"
-msgstr ""
+msgstr "订阅"
 
 #: src/pages/DownloadsPage.tsx:132
 msgid "autoDownload.tab.manage"
-msgstr ""
+msgstr "管理"
 
 #: src/pages/DownloadsPage.tsx:131
 msgid "autoDownload.tab.search"
-msgstr ""
+msgstr "搜索"
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1736,7 +1736,7 @@ msgstr "匹配完成"
 #: src/components/AppSidebar.tsx:31
 #: src/pages/DownloadsPage.tsx:157
 msgid "nav.autoDownload"
-msgstr ""
+msgstr "自动下载"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"

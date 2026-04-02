@@ -475,141 +475,141 @@ msgstr "사용자 이름"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.add"
-msgstr ""
+msgstr "추가"
 
 #: src/pages/DownloadsPage.tsx:532
 msgid "autoDownload.allSubgroups"
-msgstr ""
+msgstr "모든 그룹"
 
 #: src/pages/DownloadsPage.tsx:769
 msgid "autoDownload.cancel"
-msgstr ""
+msgstr "취소"
 
 #: src/pages/DownloadsPage.tsx:778
 msgid "autoDownload.confirm"
-msgstr ""
+msgstr "구독 확인"
 
 #: src/pages/DownloadsPage.tsx:1020
 #: src/pages/DownloadsPage.tsx:1193
 msgid "autoDownload.delete"
-msgstr ""
+msgstr "삭제"
 
 #: src/pages/DownloadsPage.tsx:831
 msgid "autoDownload.deleted"
-msgstr ""
+msgstr "구독이 삭제되었습니다"
 
 #: src/pages/DownloadsPage.tsx:602
 msgid "autoDownload.download"
-msgstr ""
+msgstr "다운로드"
 
 #: src/pages/DownloadsPage.tsx:411
 #: src/pages/DownloadsPage.tsx:841
 msgid "autoDownload.downloadAdded"
-msgstr ""
+msgstr "다운로드 추가됨"
 
 #: src/pages/DownloadsPage.tsx:934
 msgid "autoDownload.emptyHint"
-msgstr ""
+msgstr "URL을 추가하거나 애니메이션을 구독하여 시작하세요"
 
 #: src/pages/DownloadsPage.tsx:931
 msgid "autoDownload.emptyTitle"
-msgstr ""
+msgstr "구독이 없습니다"
 
 #: src/pages/DownloadsPage.tsx:732
 msgid "autoDownload.library"
-msgstr ""
+msgstr "라이브러리"
 
 #: src/pages/DownloadsPage.tsx:1066
 msgid "autoDownload.manualDownloads"
-msgstr ""
+msgstr "수동 다운로드"
 
 #: src/pages/DownloadsPage.tsx:723
 msgid "autoDownload.matchesCount"
-msgstr ""
+msgstr "일치"
 
 #: src/pages/DownloadsPage.tsx:1052
 msgid "autoDownload.noDownloadsYet"
-msgstr ""
+msgstr "아직 다운로드가 없습니다"
 
 #: src/pages/DownloadsPage.tsx:612
 msgid "autoDownload.noFilteredResults"
-msgstr ""
+msgstr "필터와 일치하는 결과 없음"
 
 #: src/pages/DownloadsPage.tsx:745
 msgid "autoDownload.noLibrary"
-msgstr ""
+msgstr "없음"
 
 #: src/pages/DownloadsPage.tsx:338
 msgid "autoDownload.noResults"
-msgstr ""
+msgstr "결과를 찾을 수 없음"
 
 #: src/pages/DownloadsPage.tsx:617
 msgid "autoDownload.noTorrents"
-msgstr ""
+msgstr "토렌트를 찾을 수 없음"
 
 #: src/pages/DownloadsPage.tsx:898
 msgid "autoDownload.pasteUrl"
-msgstr ""
+msgstr "토렌트 또는 마그넷 URL 붙여넣기..."
 
 #: src/pages/DownloadsPage.tsx:1174
 msgid "autoDownload.pause"
-msgstr ""
+msgstr "일시정지"
 
 #: src/pages/DownloadsPage.tsx:1011
 msgid "autoDownload.refresh"
-msgstr ""
+msgstr "새로고침"
 
 #: src/pages/DownloadsPage.tsx:817
 msgid "autoDownload.refreshed"
-msgstr ""
+msgstr "구독이 새로고침되었습니다"
 
 #: src/pages/DownloadsPage.tsx:500
 msgid "autoDownload.resolution"
-msgstr ""
+msgstr "해상도"
 
 #: src/pages/DownloadsPage.tsx:1184
 msgid "autoDownload.resume"
-msgstr ""
+msgstr "재개"
 
 #: src/pages/DownloadsPage.tsx:266
 msgid "autoDownload.searchAnime"
-msgstr ""
+msgstr "애니메이션 검색..."
 
 #: src/pages/DownloadsPage.tsx:351
 msgid "autoDownload.searchHint"
-msgstr ""
+msgstr "애니메이션을 선택하여 토렌트 탐색"
 
 #: src/pages/DownloadsPage.tsx:476
 msgid "autoDownload.source"
-msgstr ""
+msgstr "소스"
 
 #: src/pages/DownloadsPage.tsx:525
 msgid "autoDownload.subgroup"
-msgstr ""
+msgstr "자막 그룹"
 
 #: src/pages/DownloadsPage.tsx:467
 msgid "autoDownload.subscribe"
-msgstr ""
+msgstr "구독"
 
 #: src/pages/DownloadsPage.tsx:667
 msgid "autoDownload.subscribeSuccess"
-msgstr ""
+msgstr "구독이 생성되었습니다"
 
 #: src/pages/DownloadsPage.tsx:704
 msgid "autoDownload.subscribeTitle"
-msgstr ""
+msgstr "구독 확인"
 
 #: src/pages/DownloadsPage.tsx:943
 msgid "autoDownload.subscriptions"
-msgstr ""
+msgstr "구독"
 
 #: src/pages/DownloadsPage.tsx:132
 msgid "autoDownload.tab.manage"
-msgstr ""
+msgstr "관리"
 
 #: src/pages/DownloadsPage.tsx:131
 msgid "autoDownload.tab.search"
-msgstr ""
+msgstr "검색"
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1738,7 +1738,7 @@ msgstr "매칭 완료"
 #: src/components/AppSidebar.tsx:31
 #: src/pages/DownloadsPage.tsx:157
 msgid "nav.autoDownload"
-msgstr ""
+msgstr "자동 다운로드"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"

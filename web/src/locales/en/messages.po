@@ -475,141 +475,141 @@ msgstr "Username"
 
 #: src/pages/DownloadsPage.tsx:907
 msgid "autoDownload.add"
-msgstr "autoDownload.add"
+msgstr "Add"
 
 #: src/pages/DownloadsPage.tsx:532
 msgid "autoDownload.allSubgroups"
-msgstr "autoDownload.allSubgroups"
+msgstr "All subgroups"
 
 #: src/pages/DownloadsPage.tsx:769
 msgid "autoDownload.cancel"
-msgstr "autoDownload.cancel"
+msgstr "Cancel"
 
 #: src/pages/DownloadsPage.tsx:778
 msgid "autoDownload.confirm"
-msgstr "autoDownload.confirm"
+msgstr "Confirm Subscribe"
 
 #: src/pages/DownloadsPage.tsx:1020
 #: src/pages/DownloadsPage.tsx:1193
 msgid "autoDownload.delete"
-msgstr "autoDownload.delete"
+msgstr "Delete"
 
 #: src/pages/DownloadsPage.tsx:831
 msgid "autoDownload.deleted"
-msgstr "autoDownload.deleted"
+msgstr "Subscription deleted"
 
 #: src/pages/DownloadsPage.tsx:602
 msgid "autoDownload.download"
-msgstr "autoDownload.download"
+msgstr "Download"
 
 #: src/pages/DownloadsPage.tsx:411
 #: src/pages/DownloadsPage.tsx:841
 msgid "autoDownload.downloadAdded"
-msgstr "autoDownload.downloadAdded"
+msgstr "Download added"
 
 #: src/pages/DownloadsPage.tsx:934
 msgid "autoDownload.emptyHint"
-msgstr "autoDownload.emptyHint"
+msgstr "Add a URL or subscribe to an anime to get started"
 
 #: src/pages/DownloadsPage.tsx:931
 msgid "autoDownload.emptyTitle"
-msgstr "autoDownload.emptyTitle"
+msgstr "No subscriptions yet"
 
 #: src/pages/DownloadsPage.tsx:732
 msgid "autoDownload.library"
-msgstr "autoDownload.library"
+msgstr "Library"
 
 #: src/pages/DownloadsPage.tsx:1066
 msgid "autoDownload.manualDownloads"
-msgstr "autoDownload.manualDownloads"
+msgstr "Manual Downloads"
 
 #: src/pages/DownloadsPage.tsx:723
 msgid "autoDownload.matchesCount"
-msgstr "autoDownload.matchesCount"
+msgstr "Matches"
 
 #: src/pages/DownloadsPage.tsx:1052
 msgid "autoDownload.noDownloadsYet"
-msgstr "autoDownload.noDownloadsYet"
+msgstr "No downloads yet"
 
 #: src/pages/DownloadsPage.tsx:612
 msgid "autoDownload.noFilteredResults"
-msgstr "autoDownload.noFilteredResults"
+msgstr "No results match filters"
 
 #: src/pages/DownloadsPage.tsx:745
 msgid "autoDownload.noLibrary"
-msgstr "autoDownload.noLibrary"
+msgstr "None"
 
 #: src/pages/DownloadsPage.tsx:338
 msgid "autoDownload.noResults"
-msgstr "autoDownload.noResults"
+msgstr "No results found"
 
 #: src/pages/DownloadsPage.tsx:617
 msgid "autoDownload.noTorrents"
-msgstr "autoDownload.noTorrents"
+msgstr "No torrents found"
 
 #: src/pages/DownloadsPage.tsx:898
 msgid "autoDownload.pasteUrl"
-msgstr "autoDownload.pasteUrl"
+msgstr "Paste torrent or magnet URL..."
 
 #: src/pages/DownloadsPage.tsx:1174
 msgid "autoDownload.pause"
-msgstr "autoDownload.pause"
+msgstr "Pause"
 
 #: src/pages/DownloadsPage.tsx:1011
 msgid "autoDownload.refresh"
-msgstr "autoDownload.refresh"
+msgstr "Refresh"
 
 #: src/pages/DownloadsPage.tsx:817
 msgid "autoDownload.refreshed"
-msgstr "autoDownload.refreshed"
+msgstr "Subscription refreshed"
 
 #: src/pages/DownloadsPage.tsx:500
 msgid "autoDownload.resolution"
-msgstr "autoDownload.resolution"
+msgstr "Resolution"
 
 #: src/pages/DownloadsPage.tsx:1184
 msgid "autoDownload.resume"
-msgstr "autoDownload.resume"
+msgstr "Resume"
 
 #: src/pages/DownloadsPage.tsx:266
 msgid "autoDownload.searchAnime"
-msgstr "autoDownload.searchAnime"
+msgstr "Search anime..."
 
 #: src/pages/DownloadsPage.tsx:351
 msgid "autoDownload.searchHint"
-msgstr "autoDownload.searchHint"
+msgstr "Select an anime to browse torrents"
 
 #: src/pages/DownloadsPage.tsx:476
 msgid "autoDownload.source"
-msgstr "autoDownload.source"
+msgstr "Source"
 
 #: src/pages/DownloadsPage.tsx:525
 msgid "autoDownload.subgroup"
-msgstr "autoDownload.subgroup"
+msgstr "Subgroup"
 
 #: src/pages/DownloadsPage.tsx:467
 msgid "autoDownload.subscribe"
-msgstr "autoDownload.subscribe"
+msgstr "Subscribe"
 
 #: src/pages/DownloadsPage.tsx:667
 msgid "autoDownload.subscribeSuccess"
-msgstr "autoDownload.subscribeSuccess"
+msgstr "Subscription created"
 
 #: src/pages/DownloadsPage.tsx:704
 msgid "autoDownload.subscribeTitle"
-msgstr "autoDownload.subscribeTitle"
+msgstr "Subscribe Confirmation"
 
 #: src/pages/DownloadsPage.tsx:943
 msgid "autoDownload.subscriptions"
-msgstr "autoDownload.subscriptions"
+msgstr "Subscriptions"
 
 #: src/pages/DownloadsPage.tsx:132
 msgid "autoDownload.tab.manage"
-msgstr "autoDownload.tab.manage"
+msgstr "Manage"
 
 #: src/pages/DownloadsPage.tsx:131
 msgid "autoDownload.tab.search"
-msgstr "autoDownload.tab.search"
+msgstr "Search"
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1738,7 +1738,7 @@ msgstr "Matching completed"
 #: src/components/AppSidebar.tsx:31
 #: src/pages/DownloadsPage.tsx:157
 msgid "nav.autoDownload"
-msgstr "nav.autoDownload"
+msgstr "Auto-Download"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"
