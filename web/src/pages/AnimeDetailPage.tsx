@@ -576,11 +576,7 @@ export function AnimeDetailPage() {
                             >
                               <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
                             </motion.svg>
-                            {statusMutation.isPending
-                              ? '...'
-                              : isBookmarked
-                                ? i18n._(msg`anime.inCollection`)
-                                : i18n._(msg`anime.addToCollection`)}
+                            {i18n._(msg`anime.addToCollection`)}
                           </motion.button>
                         );
                       })()}
