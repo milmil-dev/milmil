@@ -120,8 +120,21 @@ const STATUS_COLOR: Record<string, string> = {
   removed: 'bg-white/5 text-white/30',
 };
 
-const TORRENT_SOURCES = ['all', 'nyaa', 'mikan', 'dmhy', 'dandanplay'] as const;
+const ALL_TORRENT_SOURCES = ['all', 'nyaa', 'mikan', 'dmhy', 'dandanplay', 'bangumi.moe', 'acg.rip'] as const;
+const CJK_SOURCES = ['all', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip', 'dandanplay', 'nyaa'] as const;
+const EN_SOURCES = ['all', 'nyaa', 'dandanplay', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip'] as const;
 const RESOLUTIONS = ['Any', '1080p', '720p', '4K'] as const;
+
+function isCJK(text: string): boolean {
+  return /[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff]/.test(text);
+}
+
+/** Return source list ordered by relevance for the anime's title language. */
+function getRelevantSources(anime: { title: string; title_en?: string }): readonly string[] {
+  if (isCJK(anime.title)) return CJK_SOURCES;
+  if (anime.title_en) return EN_SOURCES;
+  return ALL_TORRENT_SOURCES;
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
@@ -371,6 +384,8 @@ function AnimeTorrentView({
   const [subgroup, setSubgroup] = useState<string>('all');
   const [showSubscribe, setShowSubscribe] = useState(false);
 
+  const relevantSources = getRelevantSources(anime);
+
   const { data: torrentData, isLoading } = useQuery({
     queryKey: discoverKeys.animeTorrents(anime.bangumi_id, source),
     queryFn: () => discoverApi.animeTorrents(anime.bangumi_id, source === 'all' ? undefined : source),
@@ -476,7 +491,7 @@ function AnimeTorrentView({
             {i18n._(msg`autoDownload.source`)}
           </span>
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            {TORRENT_SOURCES.map((s) => (
+            {relevantSources.map((s) => (
               <button
                 key={s}
                 type="button"
@@ -983,6 +998,21 @@ function ManageTab() {
                           {rule.subgroup_filter}
                         </span>
                       )}
+                      {group && group.total_count > 0 && (
+                        <span className="text-[10px] text-white/25">
+                          {group.complete_count}/{group.total_count}
+                        </span>
+                      )}
+                      {group && group.active_count > 0 && (() => {
+                        const totalSpeed = group.downloads
+                          .filter((d) => d.status === 'active')
+                          .reduce((sum, d) => sum + d.speed_bytes, 0);
+                        return totalSpeed > 0 ? (
+                          <span className="text-[10px] text-green-400/70">
+                            {formatSpeed(totalSpeed)}
+                          </span>
+                        ) : null;
+                      })()}
                       {feed && (
                         <span className="text-[10px] text-white/15">
                           {feed.fetch_interval_minutes}min
@@ -1023,6 +1053,25 @@ function ManageTab() {
                     </button>
                   </div>
                 </div>
+
+                {/* Aggregate progress bar for active downloads */}
+                {group && group.active_count > 0 && (() => {
+                  const activeDownloads = group.downloads.filter((d) => d.status === 'active' || d.status === 'paused');
+                  const totalBytes = activeDownloads.reduce((s, d) => s + d.total_bytes, 0);
+                  const completedBytes = activeDownloads.reduce((s, d) => s + d.completed_bytes, 0);
+                  const pct = totalBytes > 0 ? Math.min(100, (completedBytes / totalBytes) * 100) : 0;
+                  return totalBytes > 0 ? (
+                    <div className="px-4 pb-2">
+                      <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                        <motion.div className="h-full rounded-full bg-mm-accent" animate={{ width: `${pct}%` }} />
+                      </div>
+                      <div className="flex justify-between mt-1 text-[10px] text-white/20">
+                        <span>{formatBytes(completedBytes)} / {formatBytes(totalBytes)}</span>
+                        <span>{pct.toFixed(0)}%</span>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
 
                 {/* Nested downloads */}
                 {isExpanded && group && group.downloads.length > 0 && (
