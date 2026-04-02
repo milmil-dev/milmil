@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
@@ -612,8 +612,15 @@ export function AnimeDetailPage() {
                     </motion.div>
 
                     {/* Collection watch status + personal score — inline when in collection */}
+                    <AnimatePresence>
                     {playableData?.watch_status && playableData.watch_status !== 'none' && (
-                      <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
+                      <motion.div
+                        initial={{ opacity: 0, height: 0, y: -4 }}
+                        animate={{ opacity: 1, height: 'auto', y: 0 }}
+                        exit={{ opacity: 0, height: 0, y: -4 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="flex items-center justify-center sm:justify-start gap-3 flex-wrap"
+                      >
                         <select
                           value={playableData.watch_status}
                           onChange={(e) => statusMutation.mutate(e.target.value)}
@@ -646,8 +653,9 @@ export function AnimeDetailPage() {
                             disabled={scoreMutation.isPending}
                           />
                         </div>
-                      </div>
+                      </motion.div>
                     )}
+                    </AnimatePresence>
 
                     {/* Synopsis — expandable */}
                     {anime.synopsis && <SynopsisBlock text={anime.synopsis} />}
