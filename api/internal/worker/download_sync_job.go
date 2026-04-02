@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
 	"github.com/riverqueue/river"
@@ -19,9 +20,10 @@ func (DownloadSyncArgs) Kind() string { return "download_sync" }
 // DownloadSyncWorker polls Aria2 for status updates and triggers library scans on completion.
 type DownloadSyncWorker struct {
 	river.WorkerDefaults[DownloadSyncArgs]
-	queries *store.Queries
-	aria2   aria2.Client
-	scanner *scanner.Scanner
+	queries  *store.Queries
+	aria2    aria2.Client
+	scanner  *scanner.Scanner
+	notifier *notification.Service
 }
 
 func (w *DownloadSyncWorker) Work(ctx context.Context, _ *river.Job[DownloadSyncArgs]) error {
@@ -57,6 +59,16 @@ func (w *DownloadSyncWorker) Work(ctx context.Context, _ *river.Job[DownloadSync
 			SpeedBytes:     speed,
 			Gid:            dl.Gid,
 		})
+
+		// Emit notifications on state transitions
+		if newStatus == "complete" && dl.Status != "complete" {
+			w.notifier.Send(ctx, "download.completed", "Download Complete", dl.Name, "success",
+				map[string]any{"download_id": dl.ID, "gid": dl.Gid})
+		}
+		if newStatus == "error" && dl.Status != "error" {
+			w.notifier.Send(ctx, "download.failed", "Download Failed", dl.Name, "error",
+				map[string]any{"download_id": dl.ID, "gid": dl.Gid})
+		}
 
 		// Trigger library scan when download completes
 		if newStatus == "complete" && dl.Status != "complete" && dl.LibraryID.Valid {

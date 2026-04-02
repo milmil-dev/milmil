@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
 	"github.com/riverqueue/river"
@@ -22,8 +23,9 @@ func (RSSRefreshArgs) Kind() string { return "rss_refresh" }
 // RSSRefreshWorker processes RSS feeds that are due for a refresh.
 type RSSRefreshWorker struct {
 	river.WorkerDefaults[RSSRefreshArgs]
-	queries *store.Queries
-	aria2   aria2.Client
+	queries  *store.Queries
+	aria2    aria2.Client
+	notifier *notification.Service
 }
 
 func (w *RSSRefreshWorker) Work(ctx context.Context, _ *river.Job[RSSRefreshArgs]) error {
@@ -107,6 +109,10 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 			}
 
 			_ = w.queries.UpdateDownloadRuleTriggered(ctx, rule.ID)
+
+			w.notifier.Send(ctx, "download.started", "New Episode", item.Title, "info",
+				map[string]any{"rule_id": rule.ID, "rule_name": rule.Name})
+
 			added++
 			break
 		}

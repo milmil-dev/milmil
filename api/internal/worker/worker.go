@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
 	"github.com/riverqueue/river"
@@ -19,9 +20,10 @@ import (
 var Workers = river.NewWorkers()
 
 // RegisterWorkers adds all background job workers.
-func RegisterWorkers(queries *store.Queries, aria2Client aria2.Client, sc *scanner.Scanner) {
-	river.AddWorker(Workers, &RSSRefreshWorker{queries: queries, aria2: aria2Client})
-	river.AddWorker(Workers, &DownloadSyncWorker{queries: queries, aria2: aria2Client, scanner: sc})
+func RegisterWorkers(queries *store.Queries, aria2Client aria2.Client, sc *scanner.Scanner, notifier *notification.Service) {
+	river.AddWorker(Workers, &RSSRefreshWorker{queries: queries, aria2: aria2Client, notifier: notifier})
+	river.AddWorker(Workers, &DownloadSyncWorker{queries: queries, aria2: aria2Client, scanner: sc, notifier: notifier})
+	river.AddWorker(Workers, &NotificationCleanupWorker{notifier: notifier})
 }
 
 // NewClient creates a River client with periodic RSS refresh scheduling.
@@ -49,6 +51,13 @@ func NewClient(_ context.Context, db *sql.DB, databaseURL string) (*river.Client
 					return DownloadSyncArgs{}, nil
 				},
 				&river.PeriodicJobOpts{RunOnStart: true},
+			),
+			river.NewPeriodicJob(
+				river.PeriodicInterval(24*time.Hour),
+				func() (river.JobArgs, *river.InsertOpts) {
+					return NotificationCleanupArgs{}, nil
+				},
+				nil,
 			),
 		},
 		Logger: slog.Default(),
