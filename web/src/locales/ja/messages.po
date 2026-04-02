@@ -576,7 +576,7 @@ msgstr "フィルターなし"
 
 #: src/pages/DownloadsPage.tsx:839
 msgid "autoDownload.noLibrary"
-msgstr "なし"
+msgstr "デフォルトフォルダ"
 
 #: src/pages/DownloadsPage.tsx:375
 msgid "autoDownload.noResults"

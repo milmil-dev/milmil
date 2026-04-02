@@ -574,7 +574,7 @@ msgstr "无筛选"
 
 #: src/pages/DownloadsPage.tsx:839
 msgid "autoDownload.noLibrary"
-msgstr "无"
+msgstr "默认目录"
 
 #: src/pages/DownloadsPage.tsx:375
 msgid "autoDownload.noResults"

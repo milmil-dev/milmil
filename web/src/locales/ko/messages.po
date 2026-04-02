@@ -576,7 +576,7 @@ msgstr "필터 없음"
 
 #: src/pages/DownloadsPage.tsx:839
 msgid "autoDownload.noLibrary"
-msgstr "없음"
+msgstr "기본 폴더"
 
 #: src/pages/DownloadsPage.tsx:375
 msgid "autoDownload.noResults"

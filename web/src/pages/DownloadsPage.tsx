@@ -499,14 +499,16 @@ function AnimeTorrentView({
             )}
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowSubscribe(true)}
-          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
-        >
-          <HugeiconsIcon icon={RssIcon} size={14} />
-          {i18n._(msg`autoDownload.subscribe`)}
-        </button>
+        {results.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowSubscribe(true)}
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
+          >
+            <HugeiconsIcon icon={RssIcon} size={14} />
+            {i18n._(msg`autoDownload.subscribe`)}
+          </button>
+        )}
       </div>
 
       {/* Filter chips */}
