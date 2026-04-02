@@ -290,24 +290,24 @@ msgstr "비밀번호 업데이트"
 msgid "account.updating"
 msgstr "업데이트 중..."
 
-#: src/pages/AnimeDetailPage.tsx:745
+#: src/pages/AnimeDetailPage.tsx:757
 msgid "anime.characters"
 msgstr "캐릭터"
 
-#: src/pages/AnimeDetailPage.tsx:858
+#: src/pages/AnimeDetailPage.tsx:870
 msgid "anime.comments"
 msgstr "댓글"
 
-#: src/pages/AnimeDetailPage.tsx:614
+#: src/pages/AnimeDetailPage.tsx:626
 msgid "anime.continueWatching"
 msgstr "이어보기"
 
-#: src/pages/AnimeDetailPage.tsx:618
+#: src/pages/AnimeDetailPage.tsx:630
 msgid "anime.episode"
 msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:669
+#: src/pages/AnimeDetailPage.tsx:681
 msgid "anime.episodes"
 msgstr "에피소드"
 
@@ -327,21 +327,25 @@ msgstr "애니메이션을 찾을 수 없습니다"
 msgid "anime.ratings"
 msgstr "평점"
 
-#: src/pages/AnimeDetailPage.tsx:792
+#: src/pages/AnimeDetailPage.tsx:804
 msgid "anime.recommendations"
 msgstr "추천"
 
-#: src/pages/AnimeDetailPage.tsx:766
+#: src/pages/AnimeDetailPage.tsx:778
 msgid "anime.relations"
 msgstr "관련 작품"
 
-#: src/pages/AnimeDetailPage.tsx:810
+#: src/pages/AnimeDetailPage.tsx:822
 msgid "anime.reviews"
 msgstr "리뷰"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
 #~ msgstr "pts"
+
+#: src/pages/AnimeDetailPage.tsx:550
+msgid "anime.searchResources"
+msgstr "리소스 검색"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
@@ -351,11 +355,11 @@ msgstr "리뷰"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:715
+#: src/pages/AnimeDetailPage.tsx:727
 msgid "anime.trailer"
 msgstr "예고편"
 
-#: src/pages/AnimeDetailPage.tsx:751
+#: src/pages/AnimeDetailPage.tsx:763
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -473,48 +477,48 @@ msgstr "milmil에 오신 것을 환영합니다"
 msgid "auth.setup.username"
 msgstr "사용자 이름"
 
-#: src/pages/DownloadsPage.tsx:1369
+#: src/pages/DownloadsPage.tsx:1384
 msgid "autoDownload.add"
 msgstr "추가"
 
-#: src/pages/DownloadsPage.tsx:549
+#: src/pages/DownloadsPage.tsx:564
 msgid "autoDownload.allSubgroups"
 msgstr "모든 그룹"
 
-#: src/pages/DownloadsPage.tsx:786
+#: src/pages/DownloadsPage.tsx:801
 msgid "autoDownload.cancel"
 msgstr "취소"
 
-#: src/pages/DownloadsPage.tsx:1481
+#: src/pages/DownloadsPage.tsx:1496
 msgid "autoDownload.clearAll"
 msgstr "모두 지우기"
 
-#: src/pages/DownloadsPage.tsx:795
+#: src/pages/DownloadsPage.tsx:810
 msgid "autoDownload.confirm"
 msgstr "구독 확인"
 
-#: src/pages/DownloadsPage.tsx:1597
+#: src/pages/DownloadsPage.tsx:1612
 msgid "autoDownload.connecting"
 msgstr "연결 중..."
 
-#: src/pages/DownloadsPage.tsx:1167
+#: src/pages/DownloadsPage.tsx:1182
 msgid "autoDownload.delete"
 msgstr "삭제"
 
-#: src/pages/DownloadsPage.tsx:1016
+#: src/pages/DownloadsPage.tsx:1031
 msgid "autoDownload.deleted"
 msgstr "구독이 삭제되었습니다"
 
-#: src/pages/DownloadsPage.tsx:619
+#: src/pages/DownloadsPage.tsx:634
 msgid "autoDownload.download"
 msgstr "다운로드"
 
-#: src/pages/DownloadsPage.tsx:428
-#: src/pages/DownloadsPage.tsx:1262
+#: src/pages/DownloadsPage.tsx:443
+#: src/pages/DownloadsPage.tsx:1277
 msgid "autoDownload.downloadAdded"
 msgstr "다운로드 추가됨"
 
-#: src/pages/DownloadsPage.tsx:1324
+#: src/pages/DownloadsPage.tsx:1339
 msgid "autoDownload.downloading"
 msgstr "다운로드 중"
 
@@ -526,11 +530,11 @@ msgstr "다운로드 중"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "구독이 없습니다"
 
-#: src/pages/DownloadsPage.tsx:1087
+#: src/pages/DownloadsPage.tsx:1102
 msgid "autoDownload.goToSearch"
 msgstr "검색으로 이동"
 
-#: src/pages/DownloadsPage.tsx:749
+#: src/pages/DownloadsPage.tsx:764
 msgid "autoDownload.library"
 msgstr "라이브러리"
 
@@ -538,99 +542,99 @@ msgstr "라이브러리"
 #~ msgid "autoDownload.manualDownloads"
 #~ msgstr "수동 다운로드"
 
-#: src/pages/DownloadsPage.tsx:740
+#: src/pages/DownloadsPage.tsx:755
 msgid "autoDownload.matchesCount"
 msgstr "일치"
 
-#: src/pages/DownloadsPage.tsx:1399
+#: src/pages/DownloadsPage.tsx:1414
 msgid "autoDownload.noActiveDownloads"
 msgstr "활성 다운로드 없음"
 
-#: src/pages/DownloadsPage.tsx:1463
+#: src/pages/DownloadsPage.tsx:1478
 msgid "autoDownload.noCompletedDownloads"
 msgstr "완료된 다운로드 없음"
 
-#: src/pages/DownloadsPage.tsx:1199
+#: src/pages/DownloadsPage.tsx:1214
 msgid "autoDownload.noDownloadsYet"
 msgstr "아직 다운로드가 없습니다"
 
-#: src/pages/DownloadsPage.tsx:629
+#: src/pages/DownloadsPage.tsx:644
 msgid "autoDownload.noFilteredResults"
 msgstr "필터와 일치하는 결과 없음"
 
-#: src/pages/DownloadsPage.tsx:762
+#: src/pages/DownloadsPage.tsx:777
 msgid "autoDownload.noLibrary"
 msgstr "없음"
 
-#: src/pages/DownloadsPage.tsx:353
+#: src/pages/DownloadsPage.tsx:368
 msgid "autoDownload.noResults"
 msgstr "결과를 찾을 수 없음"
 
-#: src/pages/DownloadsPage.tsx:1076
+#: src/pages/DownloadsPage.tsx:1091
 msgid "autoDownload.noSubscriptions"
 msgstr "아직 구독이 없습니다"
 
-#: src/pages/DownloadsPage.tsx:1079
+#: src/pages/DownloadsPage.tsx:1094
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "검색 탭에서 애니메이션을 검색하여 자동 다운로드 구독을 만드세요."
 
-#: src/pages/DownloadsPage.tsx:634
+#: src/pages/DownloadsPage.tsx:649
 msgid "autoDownload.noTorrents"
 msgstr "토렌트를 찾을 수 없음"
 
-#: src/pages/DownloadsPage.tsx:1360
+#: src/pages/DownloadsPage.tsx:1375
 msgid "autoDownload.pasteUrl"
 msgstr "토렌트 또는 마그넷 URL 붙여넣기..."
 
-#: src/pages/DownloadsPage.tsx:1620
+#: src/pages/DownloadsPage.tsx:1635
 msgid "autoDownload.pause"
 msgstr "일시정지"
 
-#: src/pages/DownloadsPage.tsx:1343
+#: src/pages/DownloadsPage.tsx:1358
 msgid "autoDownload.pauseAll"
 msgstr "모두 일시정지"
 
-#: src/pages/DownloadsPage.tsx:1158
+#: src/pages/DownloadsPage.tsx:1173
 msgid "autoDownload.refresh"
 msgstr "새로고침"
 
-#: src/pages/DownloadsPage.tsx:1002
+#: src/pages/DownloadsPage.tsx:1017
 msgid "autoDownload.refreshed"
 msgstr "구독이 새로고침되었습니다"
 
-#: src/pages/DownloadsPage.tsx:517
+#: src/pages/DownloadsPage.tsx:532
 msgid "autoDownload.resolution"
 msgstr "해상도"
 
-#: src/pages/DownloadsPage.tsx:1630
+#: src/pages/DownloadsPage.tsx:1645
 msgid "autoDownload.resume"
 msgstr "재개"
 
-#: src/pages/DownloadsPage.tsx:281
+#: src/pages/DownloadsPage.tsx:296
 msgid "autoDownload.searchAnime"
 msgstr "애니메이션 검색..."
 
-#: src/pages/DownloadsPage.tsx:366
+#: src/pages/DownloadsPage.tsx:381
 msgid "autoDownload.searchHint"
 msgstr "애니메이션을 선택하여 토렌트 탐색"
 
-#: src/pages/DownloadsPage.tsx:493
+#: src/pages/DownloadsPage.tsx:508
 msgid "autoDownload.source"
 msgstr "소스"
 
-#: src/pages/DownloadsPage.tsx:542
+#: src/pages/DownloadsPage.tsx:557
 msgid "autoDownload.subgroup"
 msgstr "자막 그룹"
 
-#: src/pages/DownloadsPage.tsx:484
+#: src/pages/DownloadsPage.tsx:499
 msgid "autoDownload.subscribe"
 msgstr "구독"
 
-#: src/pages/DownloadsPage.tsx:684
+#: src/pages/DownloadsPage.tsx:699
 msgid "autoDownload.subscribeSuccess"
 msgstr "구독이 생성되었습니다"
 
-#: src/pages/DownloadsPage.tsx:721
+#: src/pages/DownloadsPage.tsx:736
 msgid "autoDownload.subscribeTitle"
 msgstr "구독 확인"
 
@@ -638,15 +642,15 @@ msgstr "구독 확인"
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "구독"
 
-#: src/pages/DownloadsPage.tsx:912
+#: src/pages/DownloadsPage.tsx:927
 msgid "autoDownload.subtab.completed"
 msgstr "완료"
 
-#: src/pages/DownloadsPage.tsx:907
+#: src/pages/DownloadsPage.tsx:922
 msgid "autoDownload.subtab.downloads"
 msgstr "다운로드"
 
-#: src/pages/DownloadsPage.tsx:904
+#: src/pages/DownloadsPage.tsx:919
 msgid "autoDownload.subtab.subscriptions"
 msgstr "구독"
 
@@ -658,7 +662,7 @@ msgstr "관리"
 msgid "autoDownload.tab.search"
 msgstr "검색"
 
-#: src/pages/DownloadsPage.tsx:1596
+#: src/pages/DownloadsPage.tsx:1611
 msgid "autoDownload.waiting"
 msgstr "대기 중..."
 
@@ -782,7 +786,7 @@ msgstr "복사됨"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:671
+#: src/pages/AnimeDetailPage.tsx:683
 msgid "common.ep"
 msgstr "화"
 
@@ -1787,7 +1791,7 @@ msgid "match.completed"
 msgstr "매칭 완료"
 
 #: src/components/AppSidebar.tsx:31
-#: src/pages/DownloadsPage.tsx:172
+#: src/pages/DownloadsPage.tsx:173
 msgid "nav.autoDownload"
 msgstr "자동 다운로드"
 
@@ -2214,7 +2218,7 @@ msgstr "컬렉션"
 msgid "settings.download.aria2"
 msgstr "Aria2 연결 설정"
 
-#: src/pages/DownloadsPage.tsx:191
+#: src/pages/DownloadsPage.tsx:192
 #: src/pages/settings/DownloadPanel.tsx:87
 msgid "settings.download.disconnected"
 msgstr "연결 안 됨"
@@ -2478,7 +2482,7 @@ msgstr "트랜스코딩된 비디오 파일이 임시 디렉토리에 저장됩�
 #~ msgid "subscribe.animeNameHint"
 #~ msgstr "예: 장송의 프리렌 S2"
 
-#: src/pages/DownloadsPage.tsx:201
+#: src/pages/DownloadsPage.tsx:202
 msgid "subscribe.aria2Warning"
 msgstr "Aria2에 연결되지 않았습니다. 설정 → 다운로드에서 연결을 구성하세요."
 

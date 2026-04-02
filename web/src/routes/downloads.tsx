@@ -7,4 +7,7 @@ const DownloadsPage = lazy(() =>
 
 export const Route = createFileRoute('/downloads')({
   component: DownloadsPage,
+  validateSearch: (search: Record<string, unknown>) => ({
+    anime: (search.anime as string) || undefined,
+  }),
 });

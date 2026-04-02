@@ -539,6 +539,18 @@ export function AnimeDetailPage() {
                       </div>
                     )}
 
+                    {/* Search resources button */}
+                    <div className="flex items-center gap-2">
+                      <Link
+                        to="/downloads"
+                        search={{ anime: String(anime.bangumi_id) }}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-3.5"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
+                        {i18n._(msg`anime.searchResources`)}
+                      </Link>
+                    </div>
+
                     {/* Synopsis — hidden on small mobile, visible sm+ */}
                     {anime.synopsis && (
                       <p

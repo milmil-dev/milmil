@@ -35,6 +35,7 @@ import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi } from '../lib/api/torrent';
 import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
+import { Route } from '../routes/downloads';
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -148,6 +149,7 @@ const TABS: { key: Tab; labelKey: ReturnType<typeof msg>; icon: typeof Search01I
 
 export function DownloadsPage() {
   const { i18n } = useLingui();
+  const { anime: animeParam } = Route.useSearch();
   const [tab, setTab] = useState<Tab>('search');
 
   // Aria2 connection status
@@ -230,7 +232,7 @@ export function DownloadsPage() {
 
         {/* Tab content */}
         <div className="px-8 pb-16">
-          {tab === 'search' && <SearchTab />}
+          {tab === 'search' && <SearchTab initialAnimeId={animeParam} />}
           {tab === 'manage' && <ManageTab onSwitchToSearch={() => setTab('search')} />}
         </div>
       </div>
@@ -242,11 +244,25 @@ export function DownloadsPage() {
 // SEARCH TAB — Anime-first flow
 // ═══════════════════════════════════════════════════════════════════════════
 
-function SearchTab() {
+function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
   const { i18n } = useLingui();
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
+
+  // Auto-select anime from URL param (e.g. from anime detail page)
+  const numericAnimeId = initialAnimeId ? Number(initialAnimeId) : undefined;
+  const { data: linkedAnime } = useQuery({
+    queryKey: discoverKeys.detail(numericAnimeId!),
+    queryFn: () => discoverApi.detail(numericAnimeId!),
+    enabled: !!numericAnimeId && !selectedAnime,
+  });
+
+  useEffect(() => {
+    if (linkedAnime && !selectedAnime) {
+      setSelectedAnime(linkedAnime);
+    }
+  }, [linkedAnime, selectedAnime]);
 
   // 500ms debounce
   useEffect(() => {
