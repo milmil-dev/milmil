@@ -97,6 +97,7 @@ func toRecentAnime(row store.ListRecentlyMatchedAnimeRow) recentAnimeResponse {
 }
 
 var validWatchStatuses = map[string]struct{}{
+	"none":      {},
 	"watching":  {},
 	"planning":  {},
 	"completed": {},

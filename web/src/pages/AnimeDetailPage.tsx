@@ -251,7 +251,7 @@ export function AnimeDetailPage() {
   const queryClient = useQueryClient();
   const statusMutation = useMutation({
     mutationFn: (status: string) => collectionApi.updateStatus(numericId, status),
-    onSuccess: (_data, status) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) });
       queryClient.invalidateQueries({ queryKey: collectionKeys.all });
       toast.success(i18n._(msg`anime.collectionUpdated`));
@@ -551,18 +551,44 @@ export function AnimeDetailPage() {
 
                     {/* Action buttons — grouped in a single row */}
                     <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                      {/* Bookmark / Add to collection */}
-                      {isAuthenticated && (!playableData?.watch_status || playableData.watch_status === 'none') && (
-                        <button
-                          type="button"
-                          onClick={() => statusMutation.mutate('planning')}
-                          disabled={statusMutation.isPending}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-                          {statusMutation.isPending ? '...' : i18n._(msg`anime.addToCollection`)}
-                        </button>
-                      )}
+                      {/* Bookmark toggle */}
+                      {isAuthenticated && (() => {
+                        const isBookmarked = playableData?.watch_status && playableData.watch_status !== 'none';
+                        return (
+                          <motion.button
+                            type="button"
+                            onClick={() => statusMutation.mutate(isBookmarked ? 'none' : 'planning')}
+                            disabled={statusMutation.isPending}
+                            whileTap={{ scale: 0.92 }}
+                            className={cn(
+                              'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer',
+                              isBookmarked
+                                ? 'bg-mm-accent/15 text-mm-accent hover:bg-mm-accent/25'
+                                : 'bg-white/[0.08] text-white/70 hover:bg-white/[0.14] hover:text-white'
+                            )}
+                          >
+                            <motion.svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill={isBookmarked ? 'currentColor' : 'none'}
+                              stroke="currentColor"
+                              strokeWidth={2}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="size-4"
+                              animate={isBookmarked ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+                            </motion.svg>
+                            {statusMutation.isPending
+                              ? '...'
+                              : isBookmarked
+                                ? i18n._(msg`anime.inCollection`)
+                                : i18n._(msg`anime.addToCollection`)}
+                          </motion.button>
+                        );
+                      })()}
 
                       {/* Search resources */}
                       <Link

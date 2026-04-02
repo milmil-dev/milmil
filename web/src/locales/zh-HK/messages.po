@@ -288,11 +288,11 @@ msgstr "更新密碼"
 msgid "account.updating"
 msgstr "更新緊..."
 
-#: src/pages/AnimeDetailPage.tsx:563
+#: src/pages/AnimeDetailPage.tsx:588
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:802
+#: src/pages/AnimeDetailPage.tsx:828
 msgid "anime.characters"
 msgstr "角色"
 
@@ -300,24 +300,28 @@ msgstr "角色"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:915
+#: src/pages/AnimeDetailPage.tsx:941
 msgid "anime.comments"
 msgstr "評論"
 
-#: src/pages/AnimeDetailPage.tsx:671
+#: src/pages/AnimeDetailPage.tsx:697
 msgid "anime.continueWatching"
 msgstr "繼續觀看"
 
-#: src/pages/AnimeDetailPage.tsx:675
+#: src/pages/AnimeDetailPage.tsx:701
 msgid "anime.episode"
 msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:726
+#: src/pages/AnimeDetailPage.tsx:752
 msgid "anime.episodes"
 msgstr "集數"
 
-#: src/pages/AnimeDetailPage.tsx:605
+#: src/pages/AnimeDetailPage.tsx:587
+msgid "anime.inCollection"
+msgstr ""
+
+#: src/pages/AnimeDetailPage.tsx:631
 msgid "anime.myScore"
 msgstr "我的評分"
 
@@ -337,15 +341,15 @@ msgstr "找不到動畫"
 msgid "anime.ratings"
 msgstr "評分"
 
-#: src/pages/AnimeDetailPage.tsx:849
+#: src/pages/AnimeDetailPage.tsx:875
 msgid "anime.recommendations"
 msgstr "推薦"
 
-#: src/pages/AnimeDetailPage.tsx:823
+#: src/pages/AnimeDetailPage.tsx:849
 msgid "anime.relations"
 msgstr "相關作品"
 
-#: src/pages/AnimeDetailPage.tsx:867
+#: src/pages/AnimeDetailPage.tsx:893
 msgid "anime.reviews"
 msgstr "評論"
 
@@ -353,7 +357,7 @@ msgstr "評論"
 #~ msgid "anime.score"
 #~ msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:574
+#: src/pages/AnimeDetailPage.tsx:600
 msgid "anime.searchResources"
 msgstr "搜尋資源"
 
@@ -365,11 +369,11 @@ msgstr "搜尋資源"
 #~ msgstr "簡介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:772
+#: src/pages/AnimeDetailPage.tsx:798
 msgid "anime.trailer"
 msgstr "預告片"
 
-#: src/pages/AnimeDetailPage.tsx:808
+#: src/pages/AnimeDetailPage.tsx:834
 msgid "anime.voiceActor"
 msgstr "聲優"
 
@@ -715,14 +719,14 @@ msgstr "全部"
 #~ msgstr "改狀態"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:594
+#: src/pages/AnimeDetailPage.tsx:620
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "睇完"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:600
+#: src/pages/AnimeDetailPage.tsx:626
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -744,14 +748,14 @@ msgid "collection.goToLibraries"
 msgstr "去媒體庫"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:597
+#: src/pages/AnimeDetailPage.tsx:623
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暫停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:591
+#: src/pages/AnimeDetailPage.tsx:617
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -787,7 +791,7 @@ msgid "collection.viewAll"
 msgstr "睇晒"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:588
+#: src/pages/AnimeDetailPage.tsx:614
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -822,7 +826,7 @@ msgstr "複製咗"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:488
-#: src/pages/AnimeDetailPage.tsx:728
+#: src/pages/AnimeDetailPage.tsx:754
 #: src/pages/DownloadsPage.tsx:528
 msgid "common.ep"
 msgstr "集"

@@ -290,11 +290,11 @@ msgstr "パスワードを更新"
 msgid "account.updating"
 msgstr "更新中..."
 
-#: src/pages/AnimeDetailPage.tsx:563
+#: src/pages/AnimeDetailPage.tsx:588
 msgid "anime.addToCollection"
 msgstr "コレクションに追加"
 
-#: src/pages/AnimeDetailPage.tsx:802
+#: src/pages/AnimeDetailPage.tsx:828
 msgid "anime.characters"
 msgstr "キャラクター"
 
@@ -302,24 +302,28 @@ msgstr "キャラクター"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:915
+#: src/pages/AnimeDetailPage.tsx:941
 msgid "anime.comments"
 msgstr "コメント"
 
-#: src/pages/AnimeDetailPage.tsx:671
+#: src/pages/AnimeDetailPage.tsx:697
 msgid "anime.continueWatching"
 msgstr "視聴を続ける"
 
-#: src/pages/AnimeDetailPage.tsx:675
+#: src/pages/AnimeDetailPage.tsx:701
 msgid "anime.episode"
 msgstr "話"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:726
+#: src/pages/AnimeDetailPage.tsx:752
 msgid "anime.episodes"
 msgstr "エピソード"
 
-#: src/pages/AnimeDetailPage.tsx:605
+#: src/pages/AnimeDetailPage.tsx:587
+msgid "anime.inCollection"
+msgstr ""
+
+#: src/pages/AnimeDetailPage.tsx:631
 msgid "anime.myScore"
 msgstr "マイスコア"
 
@@ -339,15 +343,15 @@ msgstr "アニメが見つかりません"
 msgid "anime.ratings"
 msgstr "評価"
 
-#: src/pages/AnimeDetailPage.tsx:849
+#: src/pages/AnimeDetailPage.tsx:875
 msgid "anime.recommendations"
 msgstr "おすすめ"
 
-#: src/pages/AnimeDetailPage.tsx:823
+#: src/pages/AnimeDetailPage.tsx:849
 msgid "anime.relations"
 msgstr "関連作品"
 
-#: src/pages/AnimeDetailPage.tsx:867
+#: src/pages/AnimeDetailPage.tsx:893
 msgid "anime.reviews"
 msgstr "レビュー"
 
@@ -355,7 +359,7 @@ msgstr "レビュー"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:574
+#: src/pages/AnimeDetailPage.tsx:600
 msgid "anime.searchResources"
 msgstr "リソースを検索"
 
@@ -367,11 +371,11 @@ msgstr "リソースを検索"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:772
+#: src/pages/AnimeDetailPage.tsx:798
 msgid "anime.trailer"
 msgstr "予告編"
 
-#: src/pages/AnimeDetailPage.tsx:808
+#: src/pages/AnimeDetailPage.tsx:834
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -717,14 +721,14 @@ msgstr "すべて"
 #~ msgstr "ステータスを変更"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:594
+#: src/pages/AnimeDetailPage.tsx:620
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "視聴済み"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:600
+#: src/pages/AnimeDetailPage.tsx:626
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -746,14 +750,14 @@ msgid "collection.goToLibraries"
 msgstr "ライブラリへ"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:597
+#: src/pages/AnimeDetailPage.tsx:623
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "一時停止"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:591
+#: src/pages/AnimeDetailPage.tsx:617
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -789,7 +793,7 @@ msgid "collection.viewAll"
 msgstr "すべて表示"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:588
+#: src/pages/AnimeDetailPage.tsx:614
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -824,7 +828,7 @@ msgstr "コピーしました"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:488
-#: src/pages/AnimeDetailPage.tsx:728
+#: src/pages/AnimeDetailPage.tsx:754
 #: src/pages/DownloadsPage.tsx:528
 msgid "common.ep"
 msgstr "話"
