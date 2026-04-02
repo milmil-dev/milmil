@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -42,8 +43,11 @@ func prettyLogger() echo.MiddlewareFunc {
 			start := time.Now()
 			req := c.Request()
 
-			// Skip noisy OPTIONS preflight
+			// Skip OPTIONS preflight and WebSocket upgrades
 			if req.Method == http.MethodOptions {
+				return next(c)
+			}
+			if strings.EqualFold(req.Header.Get("Upgrade"), "websocket") {
 				return next(c)
 			}
 
