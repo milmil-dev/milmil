@@ -33,9 +33,10 @@ import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discove
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi } from '../lib/api/torrent';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
-import { Route } from '../routes/downloads';
+import type { DownloadsSearch } from '../routes/downloads';
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -149,8 +150,14 @@ const TABS: { key: Tab; labelKey: ReturnType<typeof msg>; icon: typeof Search01I
 
 export function DownloadsPage() {
   const { i18n } = useLingui();
-  const { anime: animeParam } = Route.useSearch();
-  const [tab, setTab] = useState<Tab>('search');
+  const search = useSearch({ strict: false }) as DownloadsSearch;
+  const navigate = useNavigate();
+  const tab: Tab = search.tab || 'search';
+  const animeParam = search.anime;
+
+  const setTab = (t: Tab) => {
+    navigate({ to: '/downloads', search: { tab: t, anime: animeParam }, replace: true });
+  };
 
   // Aria2 connection status
   const { data: aria2Status } = useQuery({
