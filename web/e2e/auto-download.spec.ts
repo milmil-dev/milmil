@@ -209,8 +209,8 @@ test.describe('Auto-Download Page', () => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    // Should have search and manage tab buttons
-    const tabs = page.locator('button').filter({ hasText: /search|manage/i });
+    // Should have search and manage tab buttons in the tab bar
+    const tabs = page.locator('[class*="border-b"] button');
     await expect(tabs).toHaveCount(2);
   });
 
@@ -529,11 +529,11 @@ test.describe('Auto-Download Page', () => {
     await page.waitForTimeout(500);
 
     // Switch to Manage
-    await page.locator('button', { hasText: /manage/i }).click();
+    await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
     await page.waitForTimeout(300);
 
     // Switch back to Search
-    await page.locator('button', { hasText: /search/i }).click();
+    await page.locator('[class*="border-b"] button', { hasText: /search/i }).click();
     await page.waitForTimeout(300);
 
     // Search should still work after tab switch
@@ -588,9 +588,9 @@ test.describe('Auto-Download Page', () => {
     }
 
     // Switch tabs
-    await page.locator('button', { hasText: /manage/i }).click();
+    await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
     await page.waitForTimeout(300);
-    await page.locator('button', { hasText: /search/i }).click();
+    await page.locator('[class*="border-b"] button', { hasText: /search/i }).click();
     await page.waitForTimeout(300);
 
     expect(errors).toEqual([]);

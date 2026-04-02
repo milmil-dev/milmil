@@ -230,7 +230,7 @@ export function DownloadsPage() {
         {/* Tab content */}
         <div className="px-8 pb-16">
           {tab === 'search' && <SearchTab />}
-          {tab === 'manage' && <ManageTab />}
+          {tab === 'manage' && <ManageTab onSwitchToSearch={() => setTab('search')} />}
         </div>
       </div>
     </PageTransition>
@@ -802,7 +802,7 @@ function SubscribePanel({
 // MANAGE TAB
 // ═══════════════════════════════════════════════════════════════════════════
 
-function ManageTab() {
+function ManageTab({ onSwitchToSearch }: { onSwitchToSearch: () => void }) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
@@ -938,16 +938,29 @@ function ManageTab() {
         </div>
       )}
 
-      {/* Empty state */}
-      {!groupsLoading && !hasContent && (
-        <div className="text-center py-16">
-          <HugeiconsIcon icon={RssIcon} size={32} className="mx-auto mb-4 text-white/10" />
-          <p className="text-white/25 text-sm mb-2">
-            {i18n._(msg`autoDownload.emptyTitle`)}
-          </p>
-          <p className="text-white/15 text-xs max-w-[300px] mx-auto">
-            {i18n._(msg`autoDownload.emptyHint`)}
-          </p>
+      {/* No subscriptions hint — always show when there are no subscription rules */}
+      {!groupsLoading && rules.length === 0 && (
+        <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.015] p-6 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-lg bg-white/[0.04]">
+              <HugeiconsIcon icon={RssIcon} size={24} className="text-white/15" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-white/50 mb-1">
+                {i18n._(msg`autoDownload.noSubscriptions`)}
+              </p>
+              <p className="text-[12px] text-white/25">
+                {i18n._(msg`autoDownload.noSubscriptionsHint`)}
+              </p>
+            </div>
+            <Button
+              onClick={onSwitchToSearch}
+              variant="outline"
+              className="shrink-0 text-[12px]"
+            >
+              {i18n._(msg`autoDownload.goToSearch`)}
+            </Button>
+          </div>
         </div>
       )}
 
@@ -1219,43 +1232,50 @@ function DownloadRow({
             <button
               type="button"
               onClick={onPause}
-              className="p-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer"
-              title={i18n._(msg`autoDownload.pause`)}
+              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer text-[11px]"
             >
               <HugeiconsIcon icon={PauseIcon} size={12} />
+              {i18n._(msg`autoDownload.pause`)}
             </button>
           )}
           {dl.status === 'paused' && (
             <button
               type="button"
               onClick={onResume}
-              className="p-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer"
-              title={i18n._(msg`autoDownload.resume`)}
+              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.06] text-white/30 hover:text-white/60 cursor-pointer text-[11px]"
             >
               <HugeiconsIcon icon={PlayIcon} size={12} />
+              {i18n._(msg`autoDownload.resume`)}
             </button>
           )}
           <button
             type="button"
             onClick={onDelete}
-            className="p-1 rounded hover:bg-red-500/10 text-red-400/40 hover:text-red-400 cursor-pointer"
-            title={i18n._(msg`autoDownload.delete`)}
+            className="flex items-center gap-1 px-2 py-1 rounded hover:bg-red-500/10 text-red-400/40 hover:text-red-400 cursor-pointer text-[11px]"
           >
             <HugeiconsIcon icon={Cancel01Icon} size={12} />
           </button>
         </div>
       </div>
-      {(dl.status === 'active' || dl.status === 'paused') && dl.total_bytes > 0 && (
+      {(dl.status === 'active' || dl.status === 'paused' || dl.status === 'waiting') && (
         <div className="mt-3">
           <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-            <motion.div
-              className="h-full rounded-full bg-mm-accent"
-              animate={{ width: `${pct}%` }}
-            />
+            {dl.total_bytes > 0 ? (
+              <motion.div
+                className="h-full rounded-full bg-mm-accent"
+                animate={{ width: `${pct}%` }}
+              />
+            ) : (
+              <div className="h-full w-full bg-mm-accent/30 animate-pulse rounded-full" />
+            )}
           </div>
           <div className="flex justify-between mt-1.5 text-[10px] text-white/25">
             <span>
-              {formatBytes(dl.completed_bytes)} / {formatBytes(dl.total_bytes)}
+              {dl.total_bytes > 0
+                ? `${formatBytes(dl.completed_bytes)} / ${formatBytes(dl.total_bytes)}`
+                : dl.status === 'waiting'
+                  ? i18n._(msg`autoDownload.waiting`)
+                  : i18n._(msg`autoDownload.connecting`)}
             </span>
             <span>{formatSpeed(dl.speed_bytes)}</span>
           </div>
