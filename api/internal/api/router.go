@@ -11,6 +11,7 @@ import (
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/torrent"
@@ -30,11 +31,12 @@ type handler struct {
 	wsHub           *ws.Hub
 	tmdb            tmdb.Client
 	torrentRegistry *torrent.Registry
+	notifier        *notification.Service
 	encryptionKey   []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -52,6 +54,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		wsHub:           wsHub,
 		tmdb:            tmdbClient,
 		torrentRegistry: torrentReg,
+		notifier:        notifier,
 		encryptionKey:   cfg.EncryptionKey,
 	}
 
@@ -214,6 +217,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	intGroup.GET("/anilist/callback", h.handleAniListCallback)
 	intGroup.DELETE("/anilist", h.handleAniListDisconnect)
 	intGroup.POST("/anilist/sync", h.handleAniListSync)
+
+	// Notifications — protected
+	notifGroup := v1.Group("/notifications", jwtMiddleware(cfg.JWTSecret))
+	notifGroup.GET("", h.handleListNotifications)
+	notifGroup.GET("/unread-count", h.handleUnreadCount)
+	notifGroup.PATCH("/:id/read", h.handleMarkNotificationRead)
+	notifGroup.POST("/mark-all-read", h.handleMarkAllRead)
+	notifGroup.DELETE("", h.handleClearNotifications)
 
 	// System — protected
 	systemGroup := v1.Group("/system", jwtMiddleware(cfg.JWTSecret))

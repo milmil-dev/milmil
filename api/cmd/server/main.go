@@ -27,6 +27,7 @@ import (
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/scanner"
@@ -221,7 +222,8 @@ func main() {
 	// HTTP server
 	step = time.Now()
 	slog.Debug("boot: initializing router")
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient, torrentReg)
+	notifier := notification.NewService(store.New(database), wsHub)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient, torrentReg, notifier)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	slog.Info("boot: ready", "total", time.Since(bootStart))

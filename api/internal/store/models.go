@@ -135,6 +135,17 @@ type MediaFile struct {
 	BangumiEpisodeID    sql.NullInt64  `json:"bangumi_episode_id"`
 }
 
+type Notification struct {
+	ID        string         `json:"id"`
+	Type      string         `json:"type"`
+	Title     string         `json:"title"`
+	Message   string         `json:"message"`
+	Severity  string         `json:"severity"`
+	Read      int64          `json:"read"`
+	Metadata  sql.NullString `json:"metadata"`
+	CreatedAt string         `json:"created_at"`
+}
+
 type Playlist struct {
 	ID            string         `json:"id"`
 	Name          string         `json:"name"`

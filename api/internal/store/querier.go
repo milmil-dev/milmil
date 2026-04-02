@@ -15,21 +15,25 @@ type Querier interface {
 	CountCollectionByStatus(ctx context.Context) ([]CountCollectionByStatusRow, error)
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
 	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
+	CountUnreadNotifications(ctx context.Context) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime, error)
 	CreateDownload(ctx context.Context, arg CreateDownloadParams) (Download, error)
 	CreateDownloadRule(ctx context.Context, arg CreateDownloadRuleParams) (DownloadRule, error)
 	CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (Episode, error)
 	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
+	CreateNotification(ctx context.Context, arg CreateNotificationParams) (Notification, error)
 	CreateRSSFeed(ctx context.Context, arg CreateRSSFeedParams) (RssFeed, error)
 	CreateScanSummary(ctx context.Context, arg CreateScanSummaryParams) (ScanSummary, error)
 	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteAllNotifications(ctx context.Context) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
+	DeleteOldReadNotifications(ctx context.Context, createdAt string) error
 	DeleteRSSFeed(ctx context.Context, id string) error
 	DeleteSetting(ctx context.Context, key string) error
 	DeleteSubtitleFile(ctx context.Context, id string) error
@@ -75,6 +79,8 @@ type Querier interface {
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
 	ListMediaFileTreeByLibrary(ctx context.Context, libraryID string) ([]ListMediaFileTreeByLibraryRow, error)
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
+	ListNotifications(ctx context.Context, arg ListNotificationsParams) ([]Notification, error)
+	ListNotificationsByType(ctx context.Context, arg ListNotificationsByTypeParams) ([]Notification, error)
 	ListPlayableEpisodes(ctx context.Context, animeID string) ([]ListPlayableEpisodesRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
 	ListRSSFeedsDue(ctx context.Context) ([]RssFeed, error)
@@ -87,6 +93,8 @@ type Querier interface {
 	ListTranscodeSessionsByFile(ctx context.Context, mediaFileID string) ([]TranscodeSession, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
+	MarkAllNotificationsRead(ctx context.Context) error
+	MarkNotificationRead(ctx context.Context, id string) error
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
