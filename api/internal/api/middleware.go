@@ -21,7 +21,7 @@ func attachMiddleware(e *echo.Echo) {
 			echo.HeaderAuthorization,
 		},
 		AllowMethods: []string{
-			http.MethodGet, http.MethodPost, http.MethodPut,
+			http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch,
 			http.MethodDelete, http.MethodOptions,
 		},
 	}))
