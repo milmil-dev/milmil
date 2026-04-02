@@ -28,7 +28,7 @@ const mainNav = [
 ] as const;
 
 const bottomNav = [
-  { to: '/downloads', msgKey: msg`nav.subscribe`, icon: Download04Icon },
+  { to: '/downloads', msgKey: msg`nav.autoDownload`, icon: Download04Icon },
   { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
   { to: '/collection', msgKey: msg`collection.title`, icon: Bookmark01Icon },
   { to: '/settings', msgKey: msg`nav.settings`, icon: Setting07Icon },

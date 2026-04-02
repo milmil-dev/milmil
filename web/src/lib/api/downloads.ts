@@ -45,7 +45,7 @@ export interface DownloadRule {
 export interface SubscribeInput {
   anime_name: string;
   source: 'mikan' | 'nyaa' | 'dmhy';
-  query: string;
+  query?: string;
   mikan_bangumi_id?: string;
   sub_group?: string;
   resolution?: string;
