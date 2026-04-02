@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { EpisodeListItem } from '../components/EpisodeListItem';
 import { MediaRail } from '../components/MediaRail';
@@ -96,6 +96,34 @@ function buildSeasonChain(
   }
 
   return chain;
+}
+
+function SynopsisBlock({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const needsExpand = text.length > 200;
+
+  return (
+    <div className="max-w-[660px]">
+      <p
+        className={cn(
+          'text-[13px] sm:text-[14px] text-gray-200 leading-relaxed',
+          !expanded && needsExpand && 'line-clamp-3'
+        )}
+        style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
+      >
+        {text}
+      </p>
+      {needsExpand && (
+        <button
+          type="button"
+          onClick={() => setExpanded(!expanded)}
+          className="text-[12px] text-white/40 hover:text-white/70 mt-1 cursor-pointer transition-colors"
+        >
+          {expanded ? '▲ 收起' : '▼ 展開更多'}
+        </button>
+      )}
+    </div>
+  );
 }
 
 function ScoreSelector({
@@ -426,65 +454,65 @@ export function AnimeDetailPage() {
                     )}
                   </motion.div>
 
-                  <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left sm:pt-2">
+                  <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left sm:pt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)' }}>
                     {/* Title */}
                     <div>
                       <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight leading-7 sm:leading-8 line-clamp-2">
                         {anime.title}
                       </h1>
                       {anime.title_original && anime.title_original !== anime.title && (
-                        <p className="text-[13px] text-white/35 mt-1 truncate">{anime.title_original}</p>
+                        <p className="text-[13px] text-white/60 mt-1 truncate">{anime.title_original}</p>
                       )}
                     </div>
 
                     {/* Meta line: score · episodes · year · ratings — compact single row */}
-                    <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                    <div className="flex items-center justify-center sm:justify-start gap-2.5 flex-wrap">
                       {anime.score > 0 && (
-                        <span className="text-[15px] font-bold text-mm-accent tabular-nums">
+                        <span className="text-[16px] font-bold text-mm-accent tabular-nums">
                           ♡ {anime.score.toFixed(1)}
                         </span>
                       )}
                       {anime.score > 0 && (anime.episode_count > 0 || anime.air_date) && (
-                        <span className="text-white/15">·</span>
+                        <span className="text-white/25">·</span>
                       )}
                       {anime.media_type && (
-                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-white/[0.08] text-white/50 font-medium">
+                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-white/[0.12] text-white/70 font-semibold">
                           {anime.media_type}
                         </span>
                       )}
                       {anime.episode_count > 0 && (
-                        <span className="text-[12px] text-white/40">
+                        <span className="text-[13px] text-white/70 font-medium">
                           {anime.episode_count} {i18n._(msg`common.ep`)}
                         </span>
                       )}
                       {anime.air_date && (
-                        <span className="text-[12px] text-white/40">
+                        <span className="text-[13px] text-white/70 font-medium">
                           {anime.air_date.slice(0, 7)}
                         </span>
                       )}
                       {anime.rating && anime.rating.total > 0 && (
-                        <span className="text-[11px] text-white/25">
+                        <span className="text-[12px] text-white/45">
                           {anime.rating.total} {i18n._(msg`anime.ratings`)}
                         </span>
                       )}
                       {/* Not yet aired inline badge */}
                       {anime.air_date && new Date(anime.air_date) > new Date() && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 text-[11px] font-medium">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-semibold">
                           <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
                           {i18n._(msg`anime.notAired`)}
                         </span>
                       )}
                     </div>
 
-                    {/* Tags — smaller, more subtle */}
+                    {/* Tags */}
                     {anime.tags?.length > 0 && (
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-1">
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-1.5">
                         {anime.tags.slice(0, 6).map((tag) => (
                           <Link
                             key={tag}
                             to="/search"
                             search={{ genre: tag }}
-                            className="text-[11px] font-medium px-2 py-0.5 rounded bg-white/[0.05] text-white/40 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
+                            className="text-[11px] font-semibold px-2 py-0.5 rounded bg-white/[0.08] text-white/60 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
                           >
                             {translateGenre(tag, i18n.locale)}
                           </Link>
@@ -582,27 +610,10 @@ export function AnimeDetailPage() {
                       </div>
                     )}
 
-                    {/* Synopsis — hidden on small mobile, visible sm+ */}
-                    {anime.synopsis && (
-                      <p
-                        className="hidden sm:block text-[14px] sm:text-[15px] text-gray-200 max-w-[660px] leading-relaxed line-clamp-4"
-                        style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
-                      >
-                        {anime.synopsis}
-                      </p>
-                    )}
+                    {/* Synopsis — expandable */}
+                    {anime.synopsis && <SynopsisBlock text={anime.synopsis} />}
                   </div>
                 </div>
-
-                {/* Synopsis — below poster on mobile only */}
-                {anime.synopsis && (
-                  <p
-                    className="sm:hidden mt-4 text-[13px] text-gray-300 leading-relaxed line-clamp-5"
-                    style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
-                  >
-                    {anime.synopsis}
-                  </p>
-                )}
               </motion.div>
             </div>
           </div>
