@@ -459,17 +459,26 @@ export function AnimeDetailPage() {
 
                   <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left sm:pt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)' }}>
                     {/* Title */}
-                    <div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15, duration: 0.4 }}
+                    >
                       <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight leading-7 sm:leading-8 line-clamp-2">
                         {anime.title}
                       </h1>
                       {anime.title_original && anime.title_original !== anime.title && (
                         <p className="text-[13px] text-white/60 mt-1 truncate">{anime.title_original}</p>
                       )}
-                    </div>
+                    </motion.div>
 
                     {/* Meta line: score · episodes · year · ratings — compact single row */}
-                    <div className="flex items-center justify-center sm:justify-start gap-2.5 flex-wrap">
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25, duration: 0.4 }}
+                      className="flex items-center justify-center sm:justify-start gap-2.5 flex-wrap"
+                    >
                       {anime.score > 0 && (
                         <span className="text-[16px] font-bold text-mm-accent tabular-nums">
                           ♡ {anime.score.toFixed(1)}
@@ -505,11 +514,16 @@ export function AnimeDetailPage() {
                           {i18n._(msg`anime.notAired`)}
                         </span>
                       )}
-                    </div>
+                    </motion.div>
 
                     {/* Tags */}
                     {anime.tags?.length > 0 && (
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-1.5">
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35, duration: 0.4 }}
+                        className="flex flex-wrap justify-center sm:justify-start gap-1.5"
+                      >
                         {anime.tags.slice(0, 6).map((tag) => (
                           <Link
                             key={tag}
@@ -520,7 +534,7 @@ export function AnimeDetailPage() {
                             {translateGenre(tag, i18n.locale)}
                           </Link>
                         ))}
-                      </div>
+                      </motion.div>
                     )}
 
                     {/* Season tabs */}
@@ -550,7 +564,12 @@ export function AnimeDetailPage() {
                     })()}
 
                     {/* Action buttons — grouped in a single row */}
-                    <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.45, duration: 0.4 }}
+                      className="flex items-center justify-center sm:justify-start gap-2 flex-wrap"
+                    >
                       {/* Bookmark toggle */}
                       {isAuthenticated && (() => {
                         const isBookmarked = playableData?.watch_status && playableData.watch_status !== 'none';
@@ -590,7 +609,7 @@ export function AnimeDetailPage() {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
                         {i18n._(msg`anime.searchResources`)}
                       </Link>
-                    </div>
+                    </motion.div>
 
                     {/* Collection watch status + personal score — inline when in collection */}
                     {playableData?.watch_status && playableData.watch_status !== 'none' && (
