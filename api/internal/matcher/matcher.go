@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/milmil/api/internal/cache"
@@ -61,6 +63,83 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 	// Track which files are still unmatched after each pass.
 	matched := make(map[string]bool, total)
 	processed := 0
+
+	// --- Pass 0: match via download rules (download knows bangumi_id) ---
+	// Build a lookup from filename → download rule bangumi_id
+	downloads, _ := m.queries.ListDownloadsByLibraryID(ctx, sql.NullString{String: libraryID, Valid: true})
+	dlBangumiByName := make(map[string]int64) // filename suffix → bangumi_id
+	for _, dl := range downloads {
+		if !dl.BangumiID.Valid {
+			// Download itself doesn't have bangumi_id, check the rule
+			if dl.RuleID.Valid {
+				if rule, ruleErr := m.queries.GetDownloadRule(ctx, dl.RuleID.String); ruleErr == nil && rule.BangumiID.Valid {
+					dlBangumiByName[dl.Name] = rule.BangumiID.Int64
+				}
+			}
+		} else {
+			dlBangumiByName[dl.Name] = dl.BangumiID.Int64
+		}
+	}
+
+	if len(dlBangumiByName) > 0 && m.bangumi != nil {
+		for _, f := range files {
+			// Try to find a download whose name contains this media file's filename
+			var bangumiID int64
+			for dlName, bid := range dlBangumiByName {
+				if strings.Contains(dlName, strings.TrimSuffix(f.Filename, filepath.Ext(f.Filename))) ||
+					strings.Contains(f.Filename, strings.TrimSuffix(filepath.Base(dlName), filepath.Ext(dlName))) {
+					bangumiID = bid
+					break
+				}
+			}
+			if bangumiID == 0 {
+				continue
+			}
+
+			parsed := fileparse.Parse(f.Filename)
+			if parsed.EpisodeNumber == 0 {
+				continue
+			}
+
+			// Fetch episodes for this bangumi and match by episode number
+			epCacheKey := fmt.Sprintf("bgm:episodes:subject:%d", bangumiID)
+			var episodes []bangumi.Episode
+			if data, cacheErr := m.cache.Get(ctx, epCacheKey); cacheErr == nil {
+				_ = json.Unmarshal(data, &episodes)
+			}
+			if len(episodes) == 0 {
+				episodes, err = m.bangumi.GetSubjectEpisodes(ctx, int(bangumiID))
+				if err == nil && len(episodes) > 0 {
+					if data, marshalErr := json.Marshal(episodes); marshalErr == nil {
+						_ = m.cache.Set(ctx, epCacheKey, data, 7*24*time.Hour)
+					}
+				}
+			}
+
+			for _, ep := range episodes {
+				if int(ep.Sort) == parsed.EpisodeNumber {
+					summary.Matched++
+					summary.ByBangumi++
+					matched[f.ID] = true
+					_ = m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
+						BangumiSubjectID: sql.NullInt64{Int64: bangumiID, Valid: true},
+						BangumiEpisodeID: sql.NullInt64{Int64: int64(ep.ID), Valid: true},
+						ID:               f.ID,
+					})
+					break
+				}
+			}
+
+			processed++
+			emit(scanner.ProgressEvent{
+				Type:         "match:progress",
+				LibraryID:    libraryID,
+				FilesMatched: summary.Matched,
+				FilesTotal:   total,
+				CurrentFile:  f.Filename,
+			})
+		}
+	}
 
 	// --- Pass 1: dandanplay hash matching ---
 	for _, f := range files {

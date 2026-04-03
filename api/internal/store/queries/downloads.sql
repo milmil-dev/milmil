@@ -26,3 +26,9 @@ SELECT * FROM downloads WHERE status IN ('active', 'waiting', 'paused') ORDER BY
 
 -- name: ListCompletedDownloads :many
 SELECT * FROM downloads WHERE status = 'complete' ORDER BY updated_at DESC LIMIT 50;
+
+-- name: ListDownloadsByLibraryID :many
+SELECT * FROM downloads WHERE library_id = ? ORDER BY created_at DESC;
+
+-- name: UnlinkDownloadsByRuleID :exec
+UPDATE downloads SET rule_id = NULL WHERE rule_id = ?;
