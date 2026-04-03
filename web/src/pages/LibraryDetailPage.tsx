@@ -1,5 +1,4 @@
 import {
-  ArrowReloadHorizontalIcon,
   Cancel01Icon,
   Copy01Icon,
   Folder01Icon,
@@ -11,6 +10,7 @@ import {
   ScanIcon,
   Settings01Icon,
   ShuffleIcon,
+  SparklesIcon,
   ViewIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -324,7 +324,7 @@ function FileTable({
             const content = (
               <div
                 className={cn(
-                  'inline-flex items-center gap-2 min-w-0 px-2 py-1 rounded-md transition-colors',
+                  'flex items-center gap-2 min-w-0 max-w-full px-2 py-1 rounded-md transition-colors overflow-hidden',
                   hasBangumiLink && 'hover:bg-white/[0.06] group cursor-pointer'
                 )}
               >
@@ -375,6 +375,7 @@ function FileTable({
       {
         accessorKey: 'match_status',
         header: () => i18n._(msg`library.detail.col.status`),
+        meta: { width: 80 },
         cell: ({ row }) => <StatusBadge status={row.original.match_status} />,
       },
       {
@@ -998,12 +999,14 @@ function SettingsModal({
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
   const [name, setName] = useState(library.name);
+  const [path, setPath] = useState(library.path);
   const [scanInterval, setScanInterval] = useState(library.scan_interval_minutes);
   const [enabled, setEnabled] = useState(!!library.enabled);
 
   useEffect(() => {
     if (open) {
       setName(library.name);
+      setPath(library.path);
       setScanInterval(library.scan_interval_minutes);
       setEnabled(!!library.enabled);
     }
@@ -1013,7 +1016,7 @@ function SettingsModal({
     mutationFn: () =>
       libraryApi.update(libraryId, {
         name,
-        path: library.path,
+        path,
         enabled: enabled,
         scan_interval_minutes: scanInterval,
         source_type: library.source_type,
@@ -1043,6 +1046,20 @@ function SettingsModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+          />
+        </div>
+
+        {/* Path */}
+        <div>
+          <label className="block text-xs font-medium text-white/50 mb-1.5">
+            {i18n._(msg`library.path`)}
+          </label>
+          <input
+            type="text"
+            value={path}
+            onChange={(e) => setPath(e.target.value)}
+            placeholder="/path/to/anime"
+            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15] font-mono"
           />
         </div>
 
@@ -1296,7 +1313,7 @@ export function LibraryDetailPage() {
                     disabled={isScanning || matchMutation.isPending}
                     className="gap-2"
                   >
-                    <HugeiconsIcon icon={ArrowReloadHorizontalIcon} size={15} />
+                    <HugeiconsIcon icon={SparklesIcon} size={15} />
                     {isScanning && scanProgress?.phase === 'matching'
                       ? i18n._(msg`library.matching`)
                       : i18n._(msg`library.detail.autoMatch`)}
