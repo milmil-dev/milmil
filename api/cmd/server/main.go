@@ -21,7 +21,7 @@ import (
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/integration/anilist"
-	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/tmdb"
@@ -32,6 +32,7 @@ import (
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
+	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/migrations"
 )
@@ -191,11 +192,24 @@ func main() {
 	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
 	slog.Debug("boot: matcher + resolver ready", "took", time.Since(step))
 
-	// Aria2 client
+	// Download engine (built-in torrent + HTTP)
 	step = time.Now()
-	slog.Debug("boot: creating aria2 client")
-	aria2Client := aria2.NewClient(&http.Client{Timeout: 10 * time.Second}, cfg.Aria2RPCURL, cfg.Aria2RPCSecret)
-	slog.Debug("boot: aria2 client ready", "took", time.Since(step))
+	slog.Debug("boot: creating download engine")
+	dlEngine, err := downloader.NewEngine(downloader.Config{
+		DataDir:           cfg.DataDir,
+		TorrentListenPort: cfg.TorrentListenPort,
+		SeedRatio:         cfg.SeedRatio,
+		SeedTime:          time.Duration(cfg.SeedTimeMinutes) * time.Minute,
+	}, store.New(database))
+	if err != nil {
+		slog.Error("download engine", "err", err)
+		os.Exit(1)
+	}
+	if err := dlEngine.Start(context.Background()); err != nil {
+		slog.Error("download engine start", "err", err)
+		os.Exit(1)
+	}
+	slog.Debug("boot: download engine ready", "took", time.Since(step))
 
 	// WebSocket hub
 	wsHub := ws.NewHub()
@@ -214,17 +228,19 @@ func main() {
 	// Scanner for post-download library scan
 	sc := scanner.New(store.New(database))
 
-	// Background job scheduler (River) — disabled until River SQLite migration is resolved
-	// River requires its own tables (river_queue, river_leader, etc.) which need
-	// manual migration. For now, RSS refresh runs on manual trigger only.
-	_ = sc
-
 	// HTTP server
 	step = time.Now()
 	slog.Debug("boot: initializing router")
 	notifier := notification.NewService(store.New(database), wsHub)
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, aria2Client, wsHub, tmdbClient, torrentReg, notifier)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
+
+	// Background job scheduler — goroutine-based tickers
+	sched := worker.NewScheduler(
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier,
+	)
+	sched.Start()
+	slog.Info("boot: scheduler started")
 
 	slog.Info("boot: ready", "total", time.Since(bootStart))
 
@@ -233,6 +249,10 @@ func main() {
 
 	go func() {
 		<-quit
+		sched.Stop()
+		if err := dlEngine.Stop(); err != nil {
+			slog.Error("download engine stop", "err", err)
+		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 

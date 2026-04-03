@@ -1,12 +1,14 @@
 package api
 
 import (
-	"database/sql"
-	"errors"
+	"log/slog"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/ws"
 )
@@ -34,14 +36,12 @@ func (h *handler) handleAddDownload(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "url is required")
 	}
 
-	opts := map[string]string{}
-	if req.SaveDir != "" {
-		opts["dir"] = req.SaveDir
-	}
-
-	gid, err := h.aria2.AddURI(c.Request().Context(), []string{req.URL}, opts)
+	gid, err := h.downloader.Add(c.Request().Context(), req.URL, downloader.AddOptions{
+		SaveDir: req.SaveDir,
+		Name:    req.Name,
+	})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, "aria2 error: "+err.Error())
+		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
 	}
 
 	name := req.Name
@@ -68,8 +68,8 @@ func (h *handler) handleAddDownload(c echo.Context) error {
 
 func (h *handler) handlePauseDownload(c echo.Context) error {
 	gid := c.Param("gid")
-	if err := h.aria2.Pause(c.Request().Context(), gid); err != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, "aria2 error: "+err.Error())
+	if err := h.downloader.Pause(c.Request().Context(), gid); err != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
 	}
 	if err := h.queries.UpdateDownloadStatus(c.Request().Context(), store.UpdateDownloadStatusParams{
 		Gid:    gid,
@@ -82,8 +82,8 @@ func (h *handler) handlePauseDownload(c echo.Context) error {
 
 func (h *handler) handleResumeDownload(c echo.Context) error {
 	gid := c.Param("gid")
-	if err := h.aria2.Resume(c.Request().Context(), gid); err != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, "aria2 error: "+err.Error())
+	if err := h.downloader.Resume(c.Request().Context(), gid); err != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
 	}
 	if err := h.queries.UpdateDownloadStatus(c.Request().Context(), store.UpdateDownloadStatusParams{
 		Gid:    gid,
@@ -96,21 +96,83 @@ func (h *handler) handleResumeDownload(c echo.Context) error {
 
 func (h *handler) handleDeleteDownload(c echo.Context) error {
 	gid := c.Param("gid")
+	deleteFiles := c.QueryParam("delete_files") == "true"
+	ctx := c.Request().Context()
 
-	// Try to remove from aria2 (ignore error if already removed)
-	_ = h.aria2.Remove(c.Request().Context(), gid)
+	// Remove from download engine (handles file deletion if requested)
+	_ = h.downloader.Remove(ctx, gid, deleteFiles)
 
-	// Check if download exists before deleting
-	_, err := h.queries.GetDownloadByGID(c.Request().Context(), gid)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return echo.ErrNotFound
+	// Fallback: if delete_files requested, also try manual file removal
+	// in case the engine didn't have the download tracked
+	if deleteFiles {
+		dl, err := h.queries.GetDownloadByGID(ctx, gid)
+		if err == nil {
+			h.deleteDownloadFiles(dl)
 		}
-		return echo.ErrInternalServerError
 	}
 
-	if err := h.queries.DeleteDownload(c.Request().Context(), gid); err != nil {
+	if err := h.queries.DeleteDownload(ctx, gid); err != nil {
 		return echo.ErrInternalServerError
 	}
 	return c.NoContent(http.StatusNoContent)
+}
+
+// handleBatchDeleteDownloads removes all downloads, optionally deleting files.
+// DELETE /downloads/batch?delete_files=true
+func (h *handler) handleBatchDeleteDownloads(c echo.Context) error {
+	deleteFiles := c.QueryParam("delete_files") == "true"
+	ctx := c.Request().Context()
+
+	downloads, err := h.queries.ListDownloads(ctx)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	deleted := 0
+	for _, dl := range downloads {
+		_ = h.downloader.Remove(ctx, dl.Gid, deleteFiles)
+		if deleteFiles {
+			h.deleteDownloadFiles(dl)
+		}
+		if err := h.queries.DeleteDownload(ctx, dl.Gid); err != nil {
+			slog.Error("batch_delete: delete download", "gid", dl.Gid, "err", err)
+			continue
+		}
+		deleted++
+	}
+
+	return c.JSON(http.StatusOK, map[string]int{"deleted": deleted})
+}
+
+// deleteDownloadFiles removes downloaded files from disk using save_dir + name.
+func (h *handler) deleteDownloadFiles(dl store.Download) {
+	if dl.SaveDir == "" || dl.Name == "" {
+		return
+	}
+	path := filepath.Join(dl.SaveDir, dl.Name)
+	info, err := os.Stat(path)
+	if err != nil {
+		return
+	}
+	if info.IsDir() {
+		if err := os.RemoveAll(path); err != nil {
+			slog.Error("delete_files: remove dir", "path", path, "err", err)
+		} else {
+			slog.Info("delete_files: removed dir", "path", path)
+		}
+	} else {
+		if err := os.Remove(path); err != nil {
+			slog.Error("delete_files: remove file", "path", path, "err", err)
+		} else {
+			slog.Info("delete_files: removed", "path", path)
+		}
+	}
+}
+
+// handleDownloaderStatus returns the health status of the builtin download engine.
+func (h *handler) handleDownloaderStatus(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]any{
+		"engine":  "builtin",
+		"healthy": h.downloader.Healthy(),
+	})
 }
