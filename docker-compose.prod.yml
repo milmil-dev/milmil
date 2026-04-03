@@ -35,7 +35,6 @@ services:
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-milmil}:${POSTGRES_PASSWORD:-milmil}@postgres:5432/${POSTGRES_DB:-milmil}?sslmode=disable
       REDIS_URL: redis://redis:6379
-      ARIA2_RPC_URL: http://aria2:6800/jsonrpc
     volumes:
       - ./data:/app/data
       - ./media:/media
@@ -46,8 +45,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      aria2:
-        condition: service_started
 
   milmil-web:
     build:

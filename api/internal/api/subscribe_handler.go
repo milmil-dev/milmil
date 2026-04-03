@@ -1,8 +1,11 @@
 package api
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -10,6 +13,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/downloader"
+	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -163,6 +168,9 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 		MinSeeders:       0,
 		LibraryID:        sql.NullString{String: req.LibraryID, Valid: req.LibraryID != ""},
 		BangumiID:        sql.NullInt64{Int64: int64(req.BangumiID), Valid: req.BangumiID != 0},
+		MatchMode:        "fuzzy",
+		EpisodeFilter:    "all",
+		EpisodeRange:     "",
 	})
 	if err != nil {
 		// Clean up feed if rule creation fails
@@ -170,10 +178,99 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	// Trigger immediate RSS refresh so downloads start right away
+	go h.refreshNewSubscription(feed, rule)
+
 	return c.JSON(http.StatusCreated, subscribeResponse{
 		Feed: &feed,
 		Rule: &rule,
 	})
+}
+
+// refreshNewSubscription fetches the RSS feed and starts matching downloads immediately.
+func (h *handler) refreshNewSubscription(feed store.RssFeed, rule store.DownloadRule) {
+	ctx := context.Background()
+
+	items, err := rss.ParseFeed(ctx, feed.Url)
+	if err != nil {
+		slog.Warn("subscribe: initial feed parse failed", "feed", feed.Name, "err", err)
+		return
+	}
+
+	added := 0
+	for _, item := range items {
+		if !rss.MatchRule(item.Title, rule.FilterRegex, rule.ExcludeRegex) {
+			continue
+		}
+		if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+			continue
+		}
+		// Multi-subgroup matching (comma-separated)
+		if rule.SubgroupFilter != "" {
+			matched := false
+			for _, sg := range strings.Split(rule.SubgroupFilter, ",") {
+				if strings.Contains(item.Title, strings.TrimSpace(sg)) {
+					matched = true
+					break
+				}
+			}
+			if !matched {
+				continue
+			}
+		}
+		// Episode filtering
+		if rule.EpisodeFilter == "range" && rule.EpisodeRange != "" {
+			ep := rss.ParseEpisode(item.Title)
+			if ep != "" && !rss.InEpisodeRange(ep, rule.EpisodeRange) {
+				continue
+			}
+		}
+
+		// Deduplicate
+		_, err := h.queries.GetDownloadByURL(ctx, item.Link)
+		if err == nil {
+			continue
+		}
+		if !errors.Is(err, sql.ErrNoRows) {
+			continue
+		}
+
+		gid, err := h.downloader.Add(ctx, item.Link, downloader.AddOptions{
+			SaveDir: rule.SaveDir,
+			Name:    item.Title,
+		})
+		if err != nil {
+			slog.Warn("subscribe: download add", "err", err, "title", item.Title)
+			continue
+		}
+
+		_, err = h.queries.CreateDownload(ctx, store.CreateDownloadParams{
+			ID:        uuid.NewString(),
+			Gid:       gid,
+			Url:       item.Link,
+			Name:      item.Title,
+			Status:    "active",
+			SaveDir:   rule.SaveDir,
+			RuleID:    sql.NullString{String: rule.ID, Valid: true},
+			BangumiID: rule.BangumiID,
+			LibraryID: rule.LibraryID,
+		})
+		if err != nil {
+			slog.Error("subscribe: create download", "err", err)
+			continue
+		}
+
+		_ = h.queries.UpdateDownloadRuleTriggered(ctx, rule.ID)
+		added++
+	}
+
+	if err := h.queries.UpdateRSSFeedLastFetched(ctx, feed.ID); err != nil {
+		slog.Error("subscribe: update last_fetched_at", "err", err)
+	}
+
+	if added > 0 {
+		slog.Info("subscribe: initial downloads started", "feed", feed.Name, "added", added)
+	}
 }
 
 // splitQueryParts splits a query into meaningful parts for regex matching.

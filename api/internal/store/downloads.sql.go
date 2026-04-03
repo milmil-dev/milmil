@@ -253,6 +253,48 @@ func (q *Queries) ListDownloads(ctx context.Context) ([]Download, error) {
 	return items, nil
 }
 
+const listDownloadsByLibraryID = `-- name: ListDownloadsByLibraryID :many
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE library_id = ? ORDER BY created_at DESC
+`
+
+func (q *Queries) ListDownloadsByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Download, error) {
+	rows, err := q.db.QueryContext(ctx, listDownloadsByLibraryID, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Download{}
+	for rows.Next() {
+		var i Download
+		if err := rows.Scan(
+			&i.ID,
+			&i.Gid,
+			&i.Url,
+			&i.Name,
+			&i.Status,
+			&i.TotalBytes,
+			&i.CompletedBytes,
+			&i.SpeedBytes,
+			&i.SaveDir,
+			&i.RuleID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.BangumiID,
+			&i.LibraryID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listDownloadsByRuleID = `-- name: ListDownloadsByRuleID :many
 SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE rule_id = ? ORDER BY created_at DESC
 `
@@ -293,6 +335,15 @@ func (q *Queries) ListDownloadsByRuleID(ctx context.Context, ruleID sql.NullStri
 		return nil, err
 	}
 	return items, nil
+}
+
+const unlinkDownloadsByRuleID = `-- name: UnlinkDownloadsByRuleID :exec
+UPDATE downloads SET rule_id = NULL WHERE rule_id = ?
+`
+
+func (q *Queries) UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error {
+	_, err := q.db.ExecContext(ctx, unlinkDownloadsByRuleID, ruleID)
+	return err
 }
 
 const updateDownloadStatus = `-- name: UpdateDownloadStatus :exec

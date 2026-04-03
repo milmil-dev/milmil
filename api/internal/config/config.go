@@ -19,8 +19,9 @@ type Config struct {
 	EncryptionKey       []byte // 32-byte AES-256 key for encrypting storage credentials
 	APIPort             int
 	DataDir             string
-	Aria2RPCURL         string
-	Aria2RPCSecret      string
+	TorrentListenPort   int
+	SeedRatio           float64
+	SeedTimeMinutes     int
 	DandanPlayAppID     string
 	DandanPlayAppSecret string
 }
@@ -42,9 +43,10 @@ func Load() (*Config, error) {
 		"API_PORT":         8080,
 		"DATA_DIR":         "./data",
 		"DATABASE_URL":     "sqlite://data/milmil.db",
-		"ARIA2_RPC_URL":    "http://localhost:6800/jsonrpc",
-		"ARIA2_RPC_SECRET": "",
-		"REDIS_URL":        "",
+		"TORRENT_LISTEN_PORT": 42069,
+		"SEED_RATIO":         1.0,
+		"SEED_TIME_MINUTES":  60,
+		"REDIS_URL":          "",
 		"REDIS_FAIL_FAST":  false,
 		"DEBUG":            false,
 	}
@@ -65,8 +67,9 @@ func Load() (*Config, error) {
 		JWTSecret:           k.String("JWT_SECRET"),
 		APIPort:             k.Int("API_PORT"),
 		DataDir:             k.String("DATA_DIR"),
-		Aria2RPCURL:         k.String("ARIA2_RPC_URL"),
-		Aria2RPCSecret:      k.String("ARIA2_RPC_SECRET"),
+		TorrentListenPort:   k.Int("TORRENT_LISTEN_PORT"),
+		SeedRatio:           k.Float64("SEED_RATIO"),
+		SeedTimeMinutes:     k.Int("SEED_TIME_MINUTES"),
 		DandanPlayAppID:     k.String("DANDANPLAY_APP_ID"),
 		DandanPlayAppSecret: k.String("DANDANPLAY_APP_SECRET"),
 	}

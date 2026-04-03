@@ -1,13 +1,16 @@
 -- name: ListDownloadRules :many
 SELECT * FROM download_rules ORDER BY name;
 
+-- name: GetDownloadRule :one
+SELECT * FROM download_rules WHERE id = ? LIMIT 1;
+
 -- name: CreateDownloadRule :one
-INSERT INTO download_rules (id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, created_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+INSERT INTO download_rules (id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
 RETURNING *;
 
 -- name: UpdateDownloadRule :exec
-UPDATE download_rules SET name = ?, enabled = ?, rss_feed_id = ?, filter_regex = ?, exclude_regex = ?, save_dir = ?, episode_offset = ?, resolution_filter = ?, subgroup_filter = ?, min_seeders = ?, library_id = ?, bangumi_id = ? WHERE id = ?;
+UPDATE download_rules SET name = ?, enabled = ?, rss_feed_id = ?, filter_regex = ?, exclude_regex = ?, save_dir = ?, episode_offset = ?, resolution_filter = ?, subgroup_filter = ?, min_seeders = ?, library_id = ?, bangumi_id = ?, match_mode = ?, episode_filter = ?, episode_range = ? WHERE id = ?;
 
 -- name: DeleteDownloadRule :exec
 DELETE FROM download_rules WHERE id = ?;

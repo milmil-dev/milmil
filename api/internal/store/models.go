@@ -69,6 +69,9 @@ type DownloadRule struct {
 	MinSeeders       int64          `json:"min_seeders"`
 	LibraryID        sql.NullString `json:"library_id"`
 	BangumiID        sql.NullInt64  `json:"bangumi_id"`
+	MatchMode        string         `json:"match_mode"`
+	EpisodeFilter    string         `json:"episode_filter"`
+	EpisodeRange     string         `json:"episode_range"`
 }
 
 type Episode struct {

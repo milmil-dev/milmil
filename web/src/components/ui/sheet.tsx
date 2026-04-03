@@ -53,11 +53,11 @@ function SheetContent({
       <DialogPrimitive.Popup
         data-slot="sheet-content"
         style={{
-          backgroundColor: 'oklch(12% 0.01 260 / 0.72)',
-          backdropFilter: 'blur(40px) saturate(1.5)',
-          WebkitBackdropFilter: 'blur(40px) saturate(1.5)',
-          borderLeft: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: '0 24px 80px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.05) inset',
+          backgroundColor: 'var(--mm-glass)',
+          backdropFilter: 'blur(48px) saturate(1.4)',
+          WebkitBackdropFilter: 'blur(48px) saturate(1.4)',
+          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.06) inset',
         }}
         className={cn(
           'fixed z-50 flex flex-col gap-4 shadow-lg transition-all duration-300',

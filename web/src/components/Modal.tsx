@@ -26,12 +26,17 @@ export function Modal({
   fixedBg,
   onScroll,
 }: ModalProps) {
-  // Lock body scroll when open
+  // Lock body scroll when open — compensate for scrollbar width to prevent layout shift
   useEffect(() => {
     if (open) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
       return () => {
         document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
       };
     }
   }, [open]);
@@ -60,29 +65,29 @@ export function Modal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center"
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4"
         >
-          {/* Backdrop */}
+          {/* Backdrop — HeroUI-style opaque gradient */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-[var(--mm-overlay)] backdrop-blur-[12px]"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
 
-          {/* Panel */}
+          {/* Dialog */}
           <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.97 }}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 35 }}
             className={cn(
               'relative z-10 w-full max-h-[85vh] rounded-t-2xl md:rounded-2xl overflow-hidden',
-              'bg-[var(--mm-glass)] backdrop-blur-[48px] backdrop-saturate-[1.4]',
-              'shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_0.5px_rgba(255,255,255,0.06)_inset]',
+              'bg-[var(--mm-bg-elevated)] border border-white/[0.06]',
+              'shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]',
               sizeClasses[size],
               className
             )}
@@ -104,20 +109,21 @@ export function Modal({
             <div className="relative z-[1] overflow-y-auto max-h-[85vh]" onScroll={onScroll}>
               {/* Header */}
               {title && (
-                <div className="sticky top-0 z-10 flex items-center justify-between px-8 py-5">
-                  <h2 className="text-[15px] font-bold text-mm-text-primary">{title}</h2>
+                <div className="flex items-center justify-between px-6 pt-6 pb-2">
+                  <h2 className="text-base font-semibold text-white">{title}</h2>
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-7 h-7 rounded-full flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.1] transition-colors text-mm-text-secondary"
+                    className="w-7 h-7 rounded-full flex items-center justify-center bg-white/[0.05] hover:bg-white/[0.1] transition-colors text-white/40 hover:text-white/60 cursor-pointer"
                   >
                     <svg
-                      width="14"
-                      height="14"
+                      width="12"
+                      height="12"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
                     >
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
@@ -125,8 +131,8 @@ export function Modal({
                 </div>
               )}
 
-              {/* Content */}
-              <div className={cn('px-8 pb-8', !title && 'pt-6')}>{children}</div>
+              {/* Body */}
+              <div className={cn('px-6 pb-6', !title && 'pt-6', title && 'pt-2')}>{children}</div>
             </div>
           </motion.div>
         </motion.div>

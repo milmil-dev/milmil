@@ -133,7 +133,44 @@ export function WatchPage() {
     queryKey: animeKeys.playableEpisodes(bangumiId),
     queryFn: () => animeApi.playableEpisodes(bangumiId),
     enabled: !Number.isNaN(bangumiId),
+    retry: false, // Don't retry on 404 (anime not in local DB)
   });
+
+  // Fetch metadata episodes as fallback when local DB has none
+  const { data: metadataEpisodes, isLoading: metaEpisodesLoading } = useQuery({
+    queryKey: discoverKeys.episodes(bangumiId),
+    queryFn: () => discoverApi.episodes(bangumiId),
+    enabled: !Number.isNaN(bangumiId),
+  });
+
+  // Merge: use playable episodes if available, fill gaps from metadata
+  const mergedEpisodes: PlayableEpisode[] = useMemo(() => {
+    const playable = episodesData?.episodes ?? [];
+    const meta = metadataEpisodes ?? [];
+    if (playable.length > 0 && playable.length >= meta.length) return playable;
+
+    // Build lookup of playable episodes by sort number
+    const playableMap = new Map(playable.map((ep) => [ep.sort, ep]));
+
+    // Create merged list from metadata, using playable data when available
+    return meta.map((mep) => {
+      const existing = playableMap.get(mep.sort);
+      if (existing) return existing;
+      // Create stub episode from metadata — no media file
+      return {
+        episode_id: `meta-${mep.bangumi_episode_id}`,
+        sort: mep.sort,
+        title: mep.title || null,
+        title_zh: mep.title_original || null,
+        air_date: mep.air_date || null,
+        synopsis: mep.synopsis || null,
+        synopsis_zh: null,
+        image: mep.image || null,
+        media_file: null,
+        progress: null,
+      } satisfies PlayableEpisode;
+    });
+  }, [episodesData, metadataEpisodes]);
 
   const { data: commentsData, isLoading: commentsLoading } = useQuery({
     queryKey: discoverKeys.comments(bangumiId),
@@ -143,8 +180,8 @@ export function WatchPage() {
 
   // --------------- Episode resolution ---------------
   const currentEpisode = useMemo(
-    () => resolveEpisode(episodesData?.episodes ?? [], ep),
-    [episodesData, ep]
+    () => resolveEpisode(mergedEpisodes, ep),
+    [mergedEpisodes, ep]
   );
   const fileId = currentEpisode?.media_file?.id ?? null;
 
@@ -397,7 +434,7 @@ export function WatchPage() {
   }, []);
 
   // --------------- Loading skeleton ---------------
-  if (detailLoading || episodesLoading) {
+  if (detailLoading || (episodesLoading && metaEpisodesLoading)) {
     return (
       <PageTransition>
         <div className="min-h-screen bg-black/20">
@@ -428,7 +465,7 @@ export function WatchPage() {
   }
 
   // --------------- Not found ---------------
-  if (!animeDetail || !episodesData) {
+  if (!animeDetail || mergedEpisodes.length === 0) {
     return (
       <PageTransition>
         <div className="min-h-screen bg-black/20 flex items-center justify-center">
@@ -444,7 +481,7 @@ export function WatchPage() {
       <div className="min-h-screen bg-black/20">
         <div className="max-w-[1400px] mx-auto px-3 lg:px-6 py-3 lg:py-4">
           {/* Title bar */}
-          <WatchTitleBar anime={animeDetail} episodesData={episodesData} bangumiId={bangumiId} />
+          <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
 
           <div className="flex flex-col lg:flex-row gap-3">
             {/* LEFT COLUMN */}
@@ -483,7 +520,7 @@ export function WatchPage() {
               {/* Mobile only: sidebar content */}
               <div className="lg:hidden mt-4">
                 <EpisodeSidebar
-                  episodes={episodesData.episodes}
+                  episodes={mergedEpisodes}
                   currentSort={currentEpisode?.sort}
                   onSelectEpisode={handleSelectEpisode}
                   danmakuComments={danmakuComments}
@@ -503,7 +540,7 @@ export function WatchPage() {
             <div className="hidden lg:block w-[280px] shrink-0">
               <div className="sticky top-4">
                 <EpisodeSidebar
-                  episodes={episodesData.episodes}
+                  episodes={mergedEpisodes}
                   currentSort={currentEpisode?.sort}
                   onSelectEpisode={handleSelectEpisode}
                   danmakuComments={danmakuComments}

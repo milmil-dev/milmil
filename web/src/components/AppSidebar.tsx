@@ -7,7 +7,6 @@ import {
   HouseIcon,
   Logout01Icon,
   Menu01Icon,
-  Notification03Icon,
   Search01Icon,
   Setting07Icon,
 } from '@hugeicons/core-free-icons';
@@ -33,7 +32,6 @@ const bottomNav = [
   { to: '/downloads', msgKey: msg`nav.autoDownload`, icon: Download04Icon },
   { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
   { to: '/collection', msgKey: msg`collection.title`, icon: Bookmark01Icon },
-  { to: '/notifications', msgKey: msg`nav.notifications`, icon: Notification03Icon },
   { to: '/settings', msgKey: msg`nav.settings`, icon: Setting07Icon },
 ] as const;
 

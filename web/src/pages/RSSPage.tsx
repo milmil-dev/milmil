@@ -276,6 +276,11 @@ interface RuleFormValues {
   resolution_filter: string;
   subgroup_filter: string;
   min_seeders: number;
+  library_id: string | null;
+  bangumi_id: number | null;
+  match_mode: string;
+  episode_filter: string;
+  episode_range: string;
 }
 
 function RuleForm({
@@ -773,6 +778,11 @@ export function RSSPage() {
                 resolution_filter: '',
                 subgroup_filter: '',
                 min_seeders: 0,
+                library_id: null,
+                bangumi_id: null,
+                match_mode: 'fuzzy',
+                episode_filter: 'all',
+                episode_range: '',
               }}
               feeds={feeds}
               submitLabel="Add Rule"
@@ -795,6 +805,11 @@ export function RSSPage() {
                 resolution_filter: drawer.rule.resolution_filter ?? '',
                 subgroup_filter: drawer.rule.subgroup_filter ?? '',
                 min_seeders: drawer.rule.min_seeders ?? 0,
+                library_id: drawer.rule.library_id ?? null,
+                bangumi_id: drawer.rule.bangumi_id ?? null,
+                match_mode: drawer.rule.match_mode ?? 'fuzzy',
+                episode_filter: drawer.rule.episode_filter ?? 'all',
+                episode_range: drawer.rule.episode_range ?? '',
               }}
               feeds={feeds}
               submitLabel="Save Changes"

@@ -9,9 +9,116 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
 )
+
+type previewItem struct {
+	Title             string `json:"title"`
+	Link              string `json:"link"`
+	Episode           string `json:"episode"`
+	Subgroup          string `json:"subgroup"`
+	Size              string `json:"size"`
+	PublishDate       string `json:"publish_date"`
+	AlreadyDownloaded bool   `json:"already_downloaded"`
+}
+
+type previewResponse struct {
+	Items   []previewItem `json:"items"`
+	Total   int           `json:"total"`
+	Matched int           `json:"matched"`
+}
+
+func (h *handler) handlePreviewRSSFeed(c echo.Context) error {
+	feedID := c.Param("id")
+	ruleID := c.QueryParam("rule_id")
+	ctx := c.Request().Context()
+
+	// Get feed
+	feed, err := h.queries.GetRSSFeed(ctx, feedID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.ErrNotFound
+		}
+		return echo.ErrInternalServerError
+	}
+
+	// Parse RSS feed
+	items, err := rss.ParseFeed(ctx, feed.Url)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, "failed to parse feed: "+err.Error())
+	}
+
+	// Get rule if specified
+	var rule *store.DownloadRule
+	if ruleID != "" {
+		r, err := h.queries.GetDownloadRule(ctx, ruleID)
+		if err == nil {
+			rule = &r
+		}
+	}
+
+	// Build preview
+	resp := previewResponse{Total: len(items), Items: []previewItem{}}
+	for _, item := range items {
+		// Apply rule filters if rule provided
+		if rule != nil {
+			if !rss.MatchRule(item.Title, rule.FilterRegex, rule.ExcludeRegex) {
+				continue
+			}
+			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+				continue
+			}
+			// Subgroup filter — support comma-separated
+			if rule.SubgroupFilter != "" {
+				matched := false
+				for _, sg := range strings.Split(rule.SubgroupFilter, ",") {
+					if strings.Contains(item.Title, strings.TrimSpace(sg)) {
+						matched = true
+						break
+					}
+				}
+				if !matched {
+					continue
+				}
+			}
+			// Episode range filter
+			if rule.EpisodeFilter == "range" && rule.EpisodeRange != "" {
+				ep := rss.ParseEpisode(item.Title)
+				if ep != "" && !rss.InEpisodeRange(ep, rule.EpisodeRange) {
+					continue
+				}
+			}
+		}
+
+		// Parse subgroup and episode from title
+		subgroup := rss.ParseSubgroup(item.Title)
+		episode := rss.ParseEpisode(item.Title)
+
+		// Check if already downloaded
+		_, dlErr := h.queries.GetDownloadByURL(ctx, item.Link)
+		alreadyDownloaded := dlErr == nil
+
+		pubDate := ""
+		if !item.PubDate.IsZero() {
+			pubDate = item.PubDate.Format("2006-01-02T15:04:05Z")
+		}
+
+		resp.Items = append(resp.Items, previewItem{
+			Title:             item.Title,
+			Link:              item.Link,
+			Episode:           episode,
+			Subgroup:          subgroup,
+			Size:              item.Size,
+			PublishDate:       pubDate,
+			AlreadyDownloaded: alreadyDownloaded,
+		})
+	}
+	resp.Matched = len(resp.Items)
+
+	return c.JSON(http.StatusOK, resp)
+}
 
 type createRSSFeedRequest struct {
 	Name                 string `json:"name"`
@@ -155,12 +262,28 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
 				continue
 			}
-			// Apply subgroup filter
-			if rule.SubgroupFilter != "" && !strings.Contains(item.Title, rule.SubgroupFilter) {
-				continue
+			// Apply subgroup filter — support comma-separated
+			if rule.SubgroupFilter != "" {
+				matched := false
+				for _, sg := range strings.Split(rule.SubgroupFilter, ",") {
+					if strings.Contains(item.Title, strings.TrimSpace(sg)) {
+						matched = true
+						break
+					}
+				}
+				if !matched {
+					continue
+				}
+			}
+			// Episode range filter
+			if rule.EpisodeFilter == "range" && rule.EpisodeRange != "" {
+				ep := rss.ParseEpisode(item.Title)
+				if ep != "" && !rss.InEpisodeRange(ep, rule.EpisodeRange) {
+					continue
+				}
 			}
 
-			// 5. If match AND GetDownloadByURL returns no rows -> aria2.AddURI + CreateDownload
+			// 5. If match AND GetDownloadByURL returns no rows -> downloader.Add + CreateDownload
 			_, err := h.queries.GetDownloadByURL(ctx, item.Link)
 			if err == nil {
 				// Already downloaded
@@ -171,14 +294,12 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 				continue
 			}
 
-			opts := map[string]string{}
-			if rule.SaveDir != "" {
-				opts["dir"] = rule.SaveDir
-			}
-
-			gid, err := h.aria2.AddURI(ctx, []string{item.Link}, opts)
+			gid, err := h.downloader.Add(ctx, item.Link, downloader.AddOptions{
+				SaveDir: rule.SaveDir,
+				Name:    item.Title,
+			})
 			if err != nil {
-				slog.Error("aria2 add", "err", err, "url", item.Link)
+				slog.Error("download add", "err", err, "url", item.Link)
 				continue
 			}
 

@@ -22,26 +22,6 @@ services:
       retries: 5
     restart: unless-stopped
 
-  aria2:
-    image: p3terx/aria2-pro
-    container_name: milmil-aria2
-    ports:
-      - "6800:6800"
-      - "6888:6888"
-      - "6888:6888/udp"
-    environment:
-      RPC_SECRET: milmil_aria2_dev
-      RPC_PORT: 6800
-      LISTEN_PORT: 6888
-      DISK_CACHE: 64M
-      IPV6_MODE: "false"
-      UPDATE_TRACKERS: "true"
-      CUSTOM_TRACKER_URL: ""
-    volumes:
-      - ${DOWNLOAD_DIR:-./downloads}:/downloads
-      - ./aria2-config:/config
-    restart: unless-stopped
-
 volumes:
   redis_data:
     driver: local

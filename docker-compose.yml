@@ -14,11 +14,7 @@ services:
     environment:
       - DATA_DIR=/data
       - DATABASE_URL=sqlite:///data/milmil.db
-      - ARIA2_RPC_URL=http://aria2:6800/jsonrpc
-      - ARIA2_RPC_SECRET=${ARIA2_RPC_SECRET:-milmil_secret}
       - API_PORT=8080
-    depends_on:
-      - aria2
 
   web:
     build:
@@ -31,21 +27,6 @@ services:
       - VITE_API_URL=http://localhost:${API_PORT:-8080}
     depends_on:
       - api
-
-  aria2:
-    image: p3terx/aria2-pro
-    restart: unless-stopped
-    environment:
-      RPC_SECRET: ${ARIA2_RPC_SECRET:-milmil_secret}
-      RPC_PORT: 6800
-      LISTEN_PORT: 6888
-    volumes:
-      - ${DOWNLOAD_DIR:-./downloads}:/downloads
-      - ./data/aria2:/config
-    ports:
-      - "6800:6800"
-      - "6888:6888"
-      - "6888:6888/udp"
 
   redis:
     image: redis:7-alpine

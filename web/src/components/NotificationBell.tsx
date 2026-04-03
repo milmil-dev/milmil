@@ -111,7 +111,7 @@ export function NotificationBell() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-[calc(100%+8px)] top-0 w-80 rounded-lg border border-white/[0.08] bg-[#111] shadow-xl shadow-black/50 overflow-hidden z-50"
+            className="absolute left-[calc(100%+8px)] bottom-0 w-80 rounded-lg border border-white/[0.08] bg-[#111] shadow-xl shadow-black/50 overflow-hidden z-50"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.06]">

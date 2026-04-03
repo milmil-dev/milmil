@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
-	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
@@ -27,7 +27,7 @@ type handler struct {
 	matcher         *matcher.Matcher
 	dandanplay      dandanplay.Client
 	resolver        *resolver.Resolver
-	aria2           aria2.Client
+	downloader      downloader.Manager
 	wsHub           *ws.Hub
 	tmdb            tmdb.Client
 	torrentRegistry *torrent.Registry
@@ -36,7 +36,7 @@ type handler struct {
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, aria2Client aria2.Client, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -50,7 +50,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		matcher:         matcherSvc,
 		dandanplay:      ddpClient,
 		resolver:        resolverSvc,
-		aria2:           aria2Client,
+		downloader:      dlManager,
 		wsHub:           wsHub,
 		tmdb:            tmdbClient,
 		torrentRegistry: torrentReg,
@@ -169,6 +169,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	dlGroup.POST("/:gid/pause", h.handlePauseDownload)
 	dlGroup.POST("/:gid/resume", h.handleResumeDownload)
 	dlGroup.DELETE("/:gid", h.handleDeleteDownload)
+	dlGroup.DELETE("", h.handleBatchDeleteDownloads)
 
 	// RSS Feeds — protected
 	rssGroup := v1.Group("/rss-feeds", jwtMiddleware(cfg.JWTSecret))
@@ -176,6 +177,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	rssGroup.POST("", h.handleCreateRSSFeed)
 	rssGroup.PUT("/:id", h.handleUpdateRSSFeed)
 	rssGroup.DELETE("/:id", h.handleDeleteRSSFeed)
+	rssGroup.GET("/:id/preview", h.handlePreviewRSSFeed)
 	rssGroup.POST("/:id/refresh", h.handleRefreshRSSFeed)
 
 	// Watch Progress — protected
@@ -231,7 +233,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	systemGroup.GET("/info", h.handleSystemInfo)
 	systemGroup.GET("/storage", h.handleStorageStats)
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
-	systemGroup.GET("/aria2-status", h.handleAria2Status)
+	systemGroup.GET("/downloader-status", h.handleDownloaderStatus)
 
 	return e
 }

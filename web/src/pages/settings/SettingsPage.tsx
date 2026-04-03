@@ -3,6 +3,7 @@ import { msg } from '@lingui/core/macro';
 import { motion } from 'motion/react';
 import { useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { useSearch } from '@tanstack/react-router';
 import {
   Settings02Icon,
   Link04Icon,
@@ -45,9 +46,13 @@ const PANELS: Record<TabId, React.FC> = {
   about: AboutPanel,
 };
 
+const TAB_IDS: Set<string> = new Set(TABS.map((t) => t.id));
+
 export function SettingsPage() {
   const { i18n } = useLingui();
-  const [activeTab, setActiveTab] = useState<TabId>('general');
+  const search = useSearch({ strict: false }) as { tab?: string };
+  const initialTab: TabId = search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
 
   const ActivePanel = PANELS[activeTab];
 

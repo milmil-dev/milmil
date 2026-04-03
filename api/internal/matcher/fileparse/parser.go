@@ -15,14 +15,15 @@ type ParsedFilename struct {
 }
 
 var (
-	reLeadingGroup = regexp.MustCompile(`^\[([^\]]+)\]\s*`)
-	reTrailingTags = regexp.MustCompile(`\s*\[[^\]]*\]\s*$`)
-	reSxxExx       = regexp.MustCompile(`(?i)\bS(\d{1,2})E(\d{1,3})\b`)
-	reEP           = regexp.MustCompile(`(?i)\bEP\s*(\d{1,3})\b`)
-	reDashEp       = regexp.MustCompile(`\s+-\s+(\d{1,3})(?:v\d+)?\s*$`)
-	reChinese      = regexp.MustCompile(`第(\d{1,3})[話集话]`)
-	reBracketEp    = regexp.MustCompile(`\[(\d{1,3})\]`)
-	reBareNumber   = regexp.MustCompile(`^(\d{1,3})$`)
+	reLeadingGroup  = regexp.MustCompile(`^\[([^\]]+)\]\s*`)
+	reTrailingTags  = regexp.MustCompile(`\s*\[[^\]]*\]\s*$`)
+	reTrailingParen = regexp.MustCompile(`\s*\([^)]*\)\s*$`)
+	reSxxExx        = regexp.MustCompile(`(?i)\bS(\d{1,2})E(\d{1,3})\b`)
+	reEP            = regexp.MustCompile(`(?i)\bEP\s*(\d{1,3})\b`)
+	reDashEp        = regexp.MustCompile(`\s+-\s+(\d{1,3})(?:v\d+)?\s*$`)
+	reChinese       = regexp.MustCompile(`第(\d{1,3})[話集话]`)
+	reBracketEp     = regexp.MustCompile(`\[(\d{1,3})\]`)
+	reBareNumber    = regexp.MustCompile(`^(\d{1,3})$`)
 )
 
 func Parse(filename string) ParsedFilename {
@@ -34,8 +35,9 @@ func Parse(filename string) ParsedFilename {
 		name = name[len(m[0]):]
 	}
 
-	for reTrailingTags.MatchString(name) {
+	for reTrailingTags.MatchString(name) || reTrailingParen.MatchString(name) {
 		name = reTrailingTags.ReplaceAllString(name, "")
+		name = reTrailingParen.ReplaceAllString(name, "")
 	}
 	name = strings.TrimSpace(name)
 

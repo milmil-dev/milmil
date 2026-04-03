@@ -3,64 +3,67 @@ package worker
 import (
 	"context"
 	"log/slog"
-	"strconv"
 
-	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/cache"
+	"github.com/milmil/api/internal/downloader"
+	"github.com/milmil/api/internal/integration/tmdb"
+	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/notification"
+	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
-	"github.com/riverqueue/river"
 )
 
-// DownloadSyncArgs is the job payload for syncing download status with Aria2.
-type DownloadSyncArgs struct{}
-
-func (DownloadSyncArgs) Kind() string { return "download_sync" }
-
-// DownloadSyncWorker polls Aria2 for status updates and triggers library scans on completion.
+// DownloadSyncWorker polls the download engine for status updates and triggers
+// the full scan -> match -> resolve chain on completion.
 type DownloadSyncWorker struct {
-	river.WorkerDefaults[DownloadSyncArgs]
-	queries  *store.Queries
-	aria2    aria2.Client
-	scanner  *scanner.Scanner
-	notifier *notification.Service
+	queries    *store.Queries
+	downloader downloader.Manager
+	scanner    *scanner.Scanner
+	matcher    *matcher.Matcher
+	resolver   *resolver.Resolver
+	tmdb       tmdb.Client
+	cache      cache.Cache
+	notifier   *notification.Service
 }
 
-func (w *DownloadSyncWorker) Work(ctx context.Context, _ *river.Job[DownloadSyncArgs]) error {
-	// Get all non-terminal downloads from DB
+func (w *DownloadSyncWorker) Run(ctx context.Context) {
 	downloads, err := w.queries.ListActiveDownloads(ctx)
 	if err != nil {
 		slog.Error("download_sync: list active", "err", err)
-		return nil
+		return
 	}
 	if len(downloads) == 0 {
-		return nil
+		return
 	}
 
 	for _, dl := range downloads {
-		status, err := w.aria2.GetStatus(ctx, dl.Gid)
+		status, err := w.downloader.Status(ctx, dl.Gid)
 		if err != nil {
+			// GID no longer exists in engine — mark as removed
+			_ = w.queries.UpdateDownloadStatus(ctx, store.UpdateDownloadStatusParams{
+				Status:         "removed",
+				TotalBytes:     dl.TotalBytes,
+				CompletedBytes: dl.CompletedBytes,
+				SpeedBytes:     0,
+				Gid:            dl.Gid,
+			})
 			continue
 		}
 
-		total, _ := strconv.ParseInt(status.TotalLength, 10, 64)
-		completed, _ := strconv.ParseInt(status.CompletedLength, 10, 64)
-		speed, _ := strconv.ParseInt(status.DownloadSpeed, 10, 64)
-
-		newStatus := mapAria2Status(status.Status)
-		if newStatus == dl.Status && total == dl.TotalBytes && completed == dl.CompletedBytes {
-			continue // No change
+		newStatus := status.Status
+		if newStatus == dl.Status && status.TotalBytes == dl.TotalBytes && status.CompletedBytes == dl.CompletedBytes {
+			continue
 		}
 
 		_ = w.queries.UpdateDownloadStatus(ctx, store.UpdateDownloadStatusParams{
 			Status:         newStatus,
-			TotalBytes:     total,
-			CompletedBytes: completed,
-			SpeedBytes:     speed,
+			TotalBytes:     status.TotalBytes,
+			CompletedBytes: status.CompletedBytes,
+			SpeedBytes:     status.SpeedBytes,
 			Gid:            dl.Gid,
 		})
 
-		// Emit notifications on state transitions
 		if newStatus == "complete" && dl.Status != "complete" {
 			w.notifier.Send(ctx, "download.completed", "Download Complete", dl.Name, "success",
 				map[string]any{"download_id": dl.ID, "gid": dl.Gid})
@@ -70,52 +73,80 @@ func (w *DownloadSyncWorker) Work(ctx context.Context, _ *river.Job[DownloadSync
 				map[string]any{"download_id": dl.ID, "gid": dl.Gid})
 		}
 
-		// Trigger library scan when download completes
-		if newStatus == "complete" && dl.Status != "complete" && dl.LibraryID.Valid {
-			slog.Info("download_sync: download complete, triggering scan",
-				"name", dl.Name, "library_id", dl.LibraryID.String)
-			go w.triggerLibraryScan(ctx, dl.LibraryID.String)
+		// Trigger full scan -> match -> resolve chain when download completes
+		if newStatus == "complete" && dl.Status != "complete" {
+			libraryID := dl.LibraryID
+			// Fall back to rule's library_id if download doesn't have one directly
+			if !libraryID.Valid && dl.RuleID.Valid {
+				if rule, ruleErr := w.queries.GetDownloadRule(ctx, dl.RuleID.String); ruleErr == nil && rule.LibraryID.Valid {
+					libraryID = rule.LibraryID
+				}
+			}
+			if libraryID.Valid {
+				slog.Info("download_sync: download complete, triggering full pipeline",
+					"name", dl.Name, "library_id", libraryID.String)
+				go w.triggerFullPipeline(libraryID.String)
+			}
 		}
 	}
-
-	return nil
 }
 
-func (w *DownloadSyncWorker) triggerLibraryScan(ctx context.Context, libraryID string) {
+// triggerFullPipeline runs scan -> match -> resolve -> enrich for a library.
+func (w *DownloadSyncWorker) triggerFullPipeline(libraryID string) {
+	ctx := context.Background()
+
 	lib, err := w.queries.GetLibrary(ctx, libraryID)
 	if err != nil {
-		slog.Error("download_sync: get library for scan", "err", err)
+		slog.Error("download_sync: get library", "err", err)
 		return
 	}
 
-	// Get source config for the library
+	// Step 1: Scan — discover new files on disk
 	configJSON := "{}"
-	if lib.SourceType == "local" {
-		configJSON = "{}"
-	}
-
 	if err := w.scanner.ScanLibrary(ctx, lib, configJSON); err != nil {
 		slog.Error("download_sync: scan library", "library", lib.Name, "err", err)
-	} else {
-		slog.Info("download_sync: library scan complete", "library", lib.Name)
+		return
 	}
-}
+	slog.Info("download_sync: scan complete", "library", lib.Name)
 
-func mapAria2Status(s string) string {
-	switch s {
-	case "active":
-		return "active"
-	case "waiting":
-		return "waiting"
-	case "paused":
-		return "paused"
-	case "complete":
-		return "complete"
-	case "error":
-		return "error"
-	case "removed":
-		return "removed"
-	default:
-		return s
+	// Step 2: Match — identify anime/episode for each file
+	if w.matcher != nil {
+		summary, err := w.matcher.MatchLibrary(ctx, libraryID)
+		if err != nil {
+			slog.Error("download_sync: match failed", "library", lib.Name, "err", err)
+		} else {
+			slog.Info("download_sync: match complete", "library", lib.Name,
+				"matched", summary.Matched, "unmatched", summary.Unmatched,
+				"by_dandanplay", summary.ByDandanplay, "by_bangumi", summary.ByBangumi, "by_tmdb", summary.ByTMDB)
+		}
 	}
+
+	// Step 3: Resolve — create anime/episode records and link files
+	if w.resolver != nil {
+		if rs, err := w.resolver.ResolveLibrary(ctx, libraryID); err != nil {
+			slog.Error("download_sync: ResolveLibrary failed", "library", lib.Name, "err", err)
+		} else {
+			slog.Info("download_sync: ResolveLibrary done", "library", lib.Name,
+				"anime_created", rs.AnimeCreated, "episodes_created", rs.EpisodesCreated, "files_linked", rs.FilesLinked)
+		}
+
+		if rs, err := w.resolver.ResolveBangumiMatched(ctx, libraryID); err != nil {
+			slog.Error("download_sync: ResolveBangumiMatched failed", "library", lib.Name, "err", err)
+		} else {
+			slog.Info("download_sync: ResolveBangumiMatched done", "library", lib.Name,
+				"anime_created", rs.AnimeCreated, "episodes_created", rs.EpisodesCreated, "files_linked", rs.FilesLinked)
+		}
+	}
+
+	// Step 4: Enrich — add Chinese metadata from TMDB
+	if w.tmdb != nil && w.cache != nil {
+		enriched, err := matcher.EnrichEpisodesFromTMDB(ctx, w.queries, w.tmdb, w.cache, libraryID)
+		if err != nil {
+			slog.Error("download_sync: TMDB enrichment failed", "library", lib.Name, "err", err)
+		} else if enriched > 0 {
+			slog.Info("download_sync: TMDB enrichment done", "library", lib.Name, "episodes_enriched", enriched)
+		}
+	}
+
+	slog.Info("download_sync: full pipeline complete", "library", lib.Name)
 }

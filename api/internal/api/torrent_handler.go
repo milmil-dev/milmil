@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/torrent"
 )
@@ -57,9 +58,9 @@ func (h *handler) handleTorrentSearchAdd(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "url is required")
 	}
 
-	gid, err := h.aria2.AddURI(c.Request().Context(), []string{req.URL}, map[string]string{})
+	gid, err := h.downloader.Add(c.Request().Context(), req.URL, downloader.AddOptions{Name: req.Name})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, "aria2 error: "+err.Error())
+		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
 	}
 
 	name := req.Name

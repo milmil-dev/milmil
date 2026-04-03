@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -147,12 +146,19 @@ func (h *handler) handleDownloadsGrouped(c echo.Context) error {
 	return c.JSON(http.StatusOK, groups)
 }
 
-// handleDownloadFiles returns the file list for a specific Aria2 download.
+// handleDownloadFiles returns the file list for a specific download.
 func (h *handler) handleDownloadFiles(c echo.Context) error {
 	gid := c.Param("gid")
-	status, err := h.aria2.GetStatus(c.Request().Context(), gid)
+	ctx := c.Request().Context()
+
+	status, err := h.downloader.Status(ctx, gid)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, "aria2 error: "+err.Error())
+		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
+	}
+
+	dlFiles, err := h.downloader.Files(ctx, gid)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
 	}
 
 	type fileInfo struct {
@@ -162,28 +168,21 @@ func (h *handler) handleDownloadFiles(c echo.Context) error {
 		Selected bool   `json:"selected"`
 	}
 
-	files := make([]fileInfo, 0, len(status.Files))
-	for _, f := range status.Files {
-		size, _ := strconv.ParseInt(f.Length, 10, 64)
-		complete, _ := strconv.ParseInt(f.CompletedLength, 10, 64)
+	files := make([]fileInfo, 0, len(dlFiles))
+	for _, f := range dlFiles {
 		files = append(files, fileInfo{
 			Path:     f.Path,
-			Size:     size,
-			Complete: complete,
-			Selected: f.Selected == "true",
+			Size:     f.Size,
+			Complete: f.Complete,
+			Selected: true,
 		})
-	}
-
-	name := ""
-	if status.BitTorrent != nil {
-		name = status.BitTorrent.Info.Name
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
 		"gid":    gid,
-		"name":   name,
+		"name":   status.Name,
 		"status": status.Status,
-		"dir":    status.Dir,
+		"dir":    status.SaveDir,
 		"files":  files,
 	})
 }

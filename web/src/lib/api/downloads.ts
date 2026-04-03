@@ -38,8 +38,13 @@ export interface DownloadRule {
   resolution_filter: string;
   subgroup_filter: string;
   min_seeders: number;
+  match_mode: string;
+  episode_filter: string;
+  episode_range: string;
   last_triggered_at: string | null;
   created_at: string;
+  library_id: string | null;
+  bangumi_id: number | null;
 }
 
 export interface SubscribeInput {
@@ -67,7 +72,26 @@ export const downloadApi = {
   pause: (gid: string) => api.post<void>(`/api/v1/downloads/${gid}/pause`),
   resume: (gid: string) => api.post<void>(`/api/v1/downloads/${gid}/resume`),
   delete: (gid: string) => api.delete<void>(`/api/v1/downloads/${gid}`),
+  deleteWithFiles: (gid: string) => api.delete<void>(`/api/v1/downloads/${gid}?delete_files=true`),
+  batchDelete: (deleteFiles: boolean) =>
+    api.delete<{ deleted: number }>(`/api/v1/downloads${deleteFiles ? '?delete_files=true' : ''}`),
 };
+
+export interface PreviewItem {
+  title: string;
+  link: string;
+  episode: string;
+  subgroup: string;
+  size: string;
+  publish_date: string;
+  already_downloaded: boolean;
+}
+
+export interface PreviewResponse {
+  items: PreviewItem[];
+  total: number;
+  matched: number;
+}
 
 export const rssFeedApi = {
   list: () => api.get<RSSFeed[]>('/api/v1/rss-feeds'),
@@ -76,6 +100,10 @@ export const rssFeedApi = {
   update: (id: string, data: Partial<RSSFeed>) => api.put<void>(`/api/v1/rss-feeds/${id}`, data),
   delete: (id: string) => api.delete<void>(`/api/v1/rss-feeds/${id}`),
   refresh: (id: string) => api.post<void>(`/api/v1/rss-feeds/${id}/refresh`),
+  preview: (feedId: string, ruleId?: string) =>
+    api.get<PreviewResponse>(
+      `/api/v1/rss-feeds/${feedId}/preview${ruleId ? `?rule_id=${ruleId}` : ''}`
+    ),
 };
 
 export const ruleApi = {

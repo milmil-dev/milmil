@@ -11,9 +11,9 @@ import (
 )
 
 const createDownloadRule = `-- name: CreateDownloadRule :one
-INSERT INTO download_rules (id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, created_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
-RETURNING id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id
+INSERT INTO download_rules (id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+RETURNING id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range
 `
 
 type CreateDownloadRuleParams struct {
@@ -30,6 +30,9 @@ type CreateDownloadRuleParams struct {
 	MinSeeders       int64          `json:"min_seeders"`
 	LibraryID        sql.NullString `json:"library_id"`
 	BangumiID        sql.NullInt64  `json:"bangumi_id"`
+	MatchMode        string         `json:"match_mode"`
+	EpisodeFilter    string         `json:"episode_filter"`
+	EpisodeRange     string         `json:"episode_range"`
 }
 
 func (q *Queries) CreateDownloadRule(ctx context.Context, arg CreateDownloadRuleParams) (DownloadRule, error) {
@@ -47,6 +50,9 @@ func (q *Queries) CreateDownloadRule(ctx context.Context, arg CreateDownloadRule
 		arg.MinSeeders,
 		arg.LibraryID,
 		arg.BangumiID,
+		arg.MatchMode,
+		arg.EpisodeFilter,
+		arg.EpisodeRange,
 	)
 	var i DownloadRule
 	err := row.Scan(
@@ -65,6 +71,9 @@ func (q *Queries) CreateDownloadRule(ctx context.Context, arg CreateDownloadRule
 		&i.MinSeeders,
 		&i.LibraryID,
 		&i.BangumiID,
+		&i.MatchMode,
+		&i.EpisodeFilter,
+		&i.EpisodeRange,
 	)
 	return i, err
 }
@@ -78,8 +87,38 @@ func (q *Queries) DeleteDownloadRule(ctx context.Context, id string) error {
 	return err
 }
 
+const getDownloadRule = `-- name: GetDownloadRule :one
+SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range FROM download_rules WHERE id = ? LIMIT 1
+`
+
+func (q *Queries) GetDownloadRule(ctx context.Context, id string) (DownloadRule, error) {
+	row := q.db.QueryRowContext(ctx, getDownloadRule, id)
+	var i DownloadRule
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Enabled,
+		&i.RssFeedID,
+		&i.FilterRegex,
+		&i.ExcludeRegex,
+		&i.SaveDir,
+		&i.EpisodeOffset,
+		&i.LastTriggeredAt,
+		&i.CreatedAt,
+		&i.ResolutionFilter,
+		&i.SubgroupFilter,
+		&i.MinSeeders,
+		&i.LibraryID,
+		&i.BangumiID,
+		&i.MatchMode,
+		&i.EpisodeFilter,
+		&i.EpisodeRange,
+	)
+	return i, err
+}
+
 const listDownloadRules = `-- name: ListDownloadRules :many
-SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id FROM download_rules ORDER BY name
+SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range FROM download_rules ORDER BY name
 `
 
 func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error) {
@@ -107,6 +146,9 @@ func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 			&i.MinSeeders,
 			&i.LibraryID,
 			&i.BangumiID,
+			&i.MatchMode,
+			&i.EpisodeFilter,
+			&i.EpisodeRange,
 		); err != nil {
 			return nil, err
 		}
@@ -122,7 +164,7 @@ func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 }
 
 const listDownloadRulesByFeedID = `-- name: ListDownloadRulesByFeedID :many
-SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id FROM download_rules WHERE rss_feed_id = ? AND enabled = 1
+SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range FROM download_rules WHERE rss_feed_id = ? AND enabled = 1
 `
 
 func (q *Queries) ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error) {
@@ -150,6 +192,9 @@ func (q *Queries) ListDownloadRulesByFeedID(ctx context.Context, rssFeedID strin
 			&i.MinSeeders,
 			&i.LibraryID,
 			&i.BangumiID,
+			&i.MatchMode,
+			&i.EpisodeFilter,
+			&i.EpisodeRange,
 		); err != nil {
 			return nil, err
 		}
@@ -165,7 +210,7 @@ func (q *Queries) ListDownloadRulesByFeedID(ctx context.Context, rssFeedID strin
 }
 
 const updateDownloadRule = `-- name: UpdateDownloadRule :exec
-UPDATE download_rules SET name = ?, enabled = ?, rss_feed_id = ?, filter_regex = ?, exclude_regex = ?, save_dir = ?, episode_offset = ?, resolution_filter = ?, subgroup_filter = ?, min_seeders = ?, library_id = ?, bangumi_id = ? WHERE id = ?
+UPDATE download_rules SET name = ?, enabled = ?, rss_feed_id = ?, filter_regex = ?, exclude_regex = ?, save_dir = ?, episode_offset = ?, resolution_filter = ?, subgroup_filter = ?, min_seeders = ?, library_id = ?, bangumi_id = ?, match_mode = ?, episode_filter = ?, episode_range = ? WHERE id = ?
 `
 
 type UpdateDownloadRuleParams struct {
@@ -181,6 +226,9 @@ type UpdateDownloadRuleParams struct {
 	MinSeeders       int64          `json:"min_seeders"`
 	LibraryID        sql.NullString `json:"library_id"`
 	BangumiID        sql.NullInt64  `json:"bangumi_id"`
+	MatchMode        string         `json:"match_mode"`
+	EpisodeFilter    string         `json:"episode_filter"`
+	EpisodeRange     string         `json:"episode_range"`
 	ID               string         `json:"id"`
 }
 
@@ -198,6 +246,9 @@ func (q *Queries) UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRule
 		arg.MinSeeders,
 		arg.LibraryID,
 		arg.BangumiID,
+		arg.MatchMode,
+		arg.EpisodeFilter,
+		arg.EpisodeRange,
 		arg.ID,
 	)
 	return err
