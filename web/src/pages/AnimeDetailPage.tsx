@@ -1,7 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useParams } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
@@ -198,6 +198,7 @@ export function AnimeDetailPage() {
   const { i18n } = useLingui();
   const { id } = useParams({ strict: false });
   const numericId = Number(id);
+  const navigate = useNavigate();
   const setImage = useBgStore((s) => s.setImage);
 
   const {
@@ -334,7 +335,7 @@ export function AnimeDetailPage() {
 
   // Build episode list: merge playable data (local files + progress) with discover images
   const episodeList: PlayableEpisode[] = useMemo(() => {
-    if (playableData?.episodes) {
+    if (playableData?.episodes?.length) {
       // Merge discover episode images into playable episodes (local DB may lack thumbnails)
       const discoverImageMap = new Map(episodes?.map((e) => [e.sort, e.image]) ?? []);
       return playableData.episodes.map((ep) => ({
@@ -909,7 +910,27 @@ export function AnimeDetailPage() {
             </h2>
             <div className="grid grid-cols-2 min-[768px]:grid-cols-4 min-[1080px]:grid-cols-5 min-[1320px]:grid-cols-6 gap-4">
               {anime.recommendations.slice(0, 6).map((rec) => (
-                <AnimeCard key={rec.anilist_id} anime={rec} />
+                <AnimeCard
+                  key={rec.anilist_id ?? rec.bangumi_id}
+                  anime={rec}
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    if (rec.bangumi_id > 0) {
+                      navigate({ to: `/anime/${rec.bangumi_id}` as string });
+                      return;
+                    }
+                    if (rec.anilist_id) {
+                      try {
+                        const resolved = await discoverApi.resolve(rec.anilist_id);
+                        if (resolved.bangumi_id > 0) {
+                          navigate({ to: `/anime/${resolved.bangumi_id}` as string });
+                        }
+                      } catch {
+                        // no bangumi match found
+                      }
+                    }
+                  }}
+                />
               ))}
             </div>
           </motion.div>

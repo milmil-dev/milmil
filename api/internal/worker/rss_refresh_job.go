@@ -8,34 +8,27 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/milmil/api/internal/integration/aria2"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
-	"github.com/riverqueue/river"
 )
-
-// RSSRefreshArgs is the job payload for periodic RSS feed refresh.
-type RSSRefreshArgs struct{}
-
-func (RSSRefreshArgs) Kind() string { return "rss_refresh" }
 
 // RSSRefreshWorker processes RSS feeds that are due for a refresh.
 type RSSRefreshWorker struct {
-	river.WorkerDefaults[RSSRefreshArgs]
-	queries  *store.Queries
-	aria2    aria2.Client
-	notifier *notification.Service
+	queries    *store.Queries
+	downloader downloader.Manager
+	notifier   *notification.Service
 }
 
-func (w *RSSRefreshWorker) Work(ctx context.Context, _ *river.Job[RSSRefreshArgs]) error {
+func (w *RSSRefreshWorker) Run(ctx context.Context) {
 	feeds, err := w.queries.ListRSSFeedsDue(ctx)
 	if err != nil {
 		slog.Error("rss_refresh: list due feeds", "err", err)
-		return nil // Don't retry — will pick up on next tick
+		return
 	}
 	if len(feeds) == 0 {
-		return nil
+		return
 	}
 
 	slog.Info("rss_refresh: checking feeds", "count", len(feeds))
@@ -43,7 +36,6 @@ func (w *RSSRefreshWorker) Work(ctx context.Context, _ *river.Job[RSSRefreshArgs
 	for _, feed := range feeds {
 		w.refreshFeed(ctx, feed)
 	}
-	return nil
 }
 
 func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) {
@@ -68,11 +60,27 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
 				continue
 			}
-			if rule.SubgroupFilter != "" && !strings.Contains(item.Title, rule.SubgroupFilter) {
-				continue
+			// Multi-subgroup matching (comma-separated)
+			if rule.SubgroupFilter != "" {
+				matched := false
+				for _, sg := range strings.Split(rule.SubgroupFilter, ",") {
+					if strings.Contains(item.Title, strings.TrimSpace(sg)) {
+						matched = true
+						break
+					}
+				}
+				if !matched {
+					continue
+				}
+			}
+			// Episode range filter
+			if rule.EpisodeFilter == "range" && rule.EpisodeRange != "" {
+				ep := rss.ParseEpisode(item.Title)
+				if ep != "" && !rss.InEpisodeRange(ep, rule.EpisodeRange) {
+					continue
+				}
 			}
 
-			// Deduplicate: skip if already downloaded
 			_, err := w.queries.GetDownloadByURL(ctx, item.Link)
 			if err == nil {
 				continue
@@ -81,14 +89,12 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 				continue
 			}
 
-			opts := map[string]string{}
-			if rule.SaveDir != "" {
-				opts["dir"] = rule.SaveDir
-			}
-
-			gid, err := w.aria2.AddURI(ctx, []string{item.Link}, opts)
+			gid, err := w.downloader.Add(ctx, item.Link, downloader.AddOptions{
+				SaveDir: rule.SaveDir,
+				Name:    item.Title,
+			})
 			if err != nil {
-				slog.Warn("rss_refresh: aria2 add", "err", err, "title", item.Title)
+				slog.Warn("rss_refresh: download add", "err", err, "title", item.Title)
 				continue
 			}
 

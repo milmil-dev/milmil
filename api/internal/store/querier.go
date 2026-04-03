@@ -44,6 +44,7 @@ type Querier interface {
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
+	GetDownloadRule(ctx context.Context, id string) (DownloadRule, error)
 	GetEpisode(ctx context.Context, id string) (Episode, error)
 	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
@@ -69,6 +70,7 @@ type Querier interface {
 	ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
 	ListDownloads(ctx context.Context) ([]Download, error)
+	ListDownloadsByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Download, error)
 	ListDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) ([]Download, error)
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListHotTags(ctx context.Context) ([]HotTag, error)
@@ -97,6 +99,7 @@ type Querier interface {
 	MarkNotificationRead(ctx context.Context, id string) error
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
+	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
