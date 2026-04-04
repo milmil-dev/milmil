@@ -25,6 +25,7 @@ type Querier interface {
 	CreateNotification(ctx context.Context, arg CreateNotificationParams) (Notification, error)
 	CreateRSSFeed(ctx context.Context, arg CreateRSSFeedParams) (RssFeed, error)
 	CreateScanSummary(ctx context.Context, arg CreateScanSummaryParams) (ScanSummary, error)
+	CreateSegmentMark(ctx context.Context, arg CreateSegmentMarkParams) (SegmentMark, error)
 	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
@@ -35,13 +36,17 @@ type Querier interface {
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteOldReadNotifications(ctx context.Context, createdAt string) error
 	DeleteRSSFeed(ctx context.Context, id string) error
+	DeleteSegmentMark(ctx context.Context, id string) error
 	DeleteSetting(ctx context.Context, key string) error
 	DeleteSubtitleFile(ctx context.Context, id string) error
 	DeleteTranscodeSession(ctx context.Context, sessionToken string) error
+	DeleteUserPreference(ctx context.Context, arg DeleteUserPreferenceParams) error
 	DisableTwoFactor(ctx context.Context, id string) error
 	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
+	GetAllUserPreferences(ctx context.Context, userID string) ([]UserPreference, error)
 	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
+	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
 	GetDownloadRule(ctx context.Context, id string) (DownloadRule, error)
@@ -57,12 +62,14 @@ type Querier interface {
 	GetTranscodeSession(ctx context.Context, sessionToken string) (TranscodeSession, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	GetUserPreference(ctx context.Context, arg GetUserPreferenceParams) (UserPreference, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
 	ListActiveDownloads(ctx context.Context) ([]Download, error)
 	ListAllUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
+	ListBackupConfigs(ctx context.Context, userID string) ([]BackupConfig, error)
 	ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListCollectionAnime(ctx context.Context, arg ListCollectionAnimeParams) ([]ListCollectionAnimeRow, error)
 	ListCompletedDownloads(ctx context.Context) ([]Download, error)
@@ -89,11 +96,13 @@ type Querier interface {
 	ListRecentProgressWithAnime(ctx context.Context, userID string) ([]ListRecentProgressWithAnimeRow, error)
 	ListRecentlyMatchedAnime(ctx context.Context) ([]ListRecentlyMatchedAnimeRow, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
+	ListSegmentMarks(ctx context.Context, mediaFileID string) ([]SegmentMark, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
 	ListSubtitlePathsByMediaFile(ctx context.Context, mediaFileID string) ([]string, error)
 	ListSubtitlesByMediaFile(ctx context.Context, mediaFileID string) ([]SubtitleFile, error)
 	ListTranscodeSessionsByFile(ctx context.Context, mediaFileID string) ([]TranscodeSession, error)
 	ListUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
+	ListUserPreferences(ctx context.Context, arg ListUserPreferencesParams) ([]UserPreference, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	MarkAllNotificationsRead(ctx context.Context) error
 	MarkNotificationRead(ctx context.Context, id string) error
@@ -120,8 +129,10 @@ type Querier interface {
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
 	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error
+	UpsertBackupConfig(ctx context.Context, arg UpsertBackupConfigParams) (BackupConfig, error)
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
+	UpsertUserPreference(ctx context.Context, arg UpsertUserPreferenceParams) (UserPreference, error)
 	UpsertWatchProgress(ctx context.Context, arg UpsertWatchProgressParams) (WatchProgress, error)
 }
 
