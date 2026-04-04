@@ -11,6 +11,7 @@ import type { VideoFilterState } from '@/plugins/media-settings/VideoFilter';
 interface Props {
   subtitlePlugin: SubtitlePluginAPI | null;
   mediaPlugin: MediaSettingsPluginAPI | null;
+  videoEl: HTMLVideoElement | null;
   onClose: () => void;
 }
 
@@ -20,7 +21,7 @@ type View =
   | 'subtitles' | 'subtitle-style' | 'sub-preset' | 'sub-font' | 'sub-fontSize'
   | 'sub-color' | 'sub-bgOpacity' | 'sub-border' | 'sub-position' | 'sub-timing'
   // Media views
-  | 'brightness' | 'contrast' | 'saturation' | 'warmth' | 'volumeBoost' | 'audioTrack';
+  | 'speed' | 'brightness' | 'contrast' | 'saturation' | 'warmth' | 'volumeBoost' | 'audioTrack';
 
 /* ─── Constants ──────────────────────────────────────────────────── */
 
@@ -147,7 +148,9 @@ function SliderControl({ label, value, min, max, step, display, defaultVal, onCh
 
 /* ─── Main Component ─────────────────────────────────────────────── */
 
-export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, onClose }: Props) {
+const SPEED_PRESETS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0];
+
+export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onClose }: Props) {
   const [view, setView] = useState<View>('main');
   const [subStyle, setSubStyle] = useState<Partial<SubtitleStyleConfig>>({});
   const [, setTick] = useState(0);
@@ -287,6 +290,56 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, onClose }: P
             onChange={(v) => { subtitlePlugin?.setDelay(v); refresh(); }} />
         </>);
 
+      // ── Speed ──
+      case 'speed': {
+        const currentSpeed = videoEl?.playbackRate ?? 1;
+        const setSpeed = (v: number) => { if (videoEl) videoEl.playbackRate = v; refresh(); };
+        return (<>
+          <BackHeader title="Playback Speed" onBack={() => back('main')} />
+          <div className="px-3.5 py-3 space-y-4">
+            {/* Current speed display */}
+            <div className="text-center text-[18px] font-medium text-white/90 tabular-nums">
+              {currentSpeed.toFixed(2)}x
+            </div>
+            {/* Slider with +/- buttons */}
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={() => setSpeed(Math.max(0.25, currentSpeed - 0.25))}
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-white/[0.08] text-white/60 hover:bg-white/[0.12] active:scale-95 transition-all text-sm font-medium">
+                −
+              </button>
+              <input type="range" min={0.25} max={4} step={0.25} value={currentSpeed}
+                onChange={(e) => setSpeed(Number(e.target.value))}
+                className="flex-1 h-[3px] bg-white/10 rounded-full appearance-none
+                  [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/80
+                  [&::-webkit-slider-thumb]:cursor-pointer" />
+              <button type="button" onClick={() => setSpeed(Math.min(4, currentSpeed + 0.25))}
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-white/[0.08] text-white/60 hover:bg-white/[0.12] active:scale-95 transition-all text-sm font-medium">
+                +
+              </button>
+            </div>
+            {/* Preset buttons */}
+            <div className="flex gap-1.5 flex-wrap">
+              {SPEED_PRESETS.map(s => (
+                <button key={s} type="button" onClick={() => setSpeed(s)}
+                  className={cn(
+                    'px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all active:scale-95',
+                    Math.abs(currentSpeed - s) < 0.01
+                      ? 'bg-white/15 text-white'
+                      : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10]',
+                  )}>
+                  {s === 1 ? '1.0' : s.toString()}
+                </button>
+              ))}
+            </div>
+            {/* Normal label */}
+            {Math.abs(currentSpeed - 1) < 0.01 && (
+              <div className="text-center text-[10px] text-white/30">Normal</div>
+            )}
+          </div>
+        </>);
+      }
+
       // ── Media sub-views ──
       case 'brightness':
         return (<>
@@ -342,7 +395,12 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, onClose }: P
                 onClick={() => go('sub-timing')} />
             </>
           )}
-          {subtitlePlugin && mediaPlugin && <Divider />}
+          <Divider />
+          {/* Playback speed */}
+          <MenuRow icon={<IconSpeed />} label="Playback Speed"
+            value={videoEl && videoEl.playbackRate !== 1 ? `${videoEl.playbackRate}x` : 'Normal'}
+            onClick={() => go('speed')} />
+          {mediaPlugin && <Divider />}
           {/* Media section */}
           {mediaPlugin && (
             <>
@@ -411,3 +469,4 @@ function IconSaturation() { return <svg viewBox="0 0 24 24" fill="currentColor" 
 function IconNight() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54 0 4.48-2.94 8.27-7 9.54.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z"/></svg>; }
 function IconVolume() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>; }
 function IconAudio() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>; }
+function IconSpeed() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M20.38 8.57l-1.23 1.85a8 8 0 01-.22 7.58H5.07A8 8 0 0115.58 6.85l1.85-1.23A10 10 0 003.35 19a2 2 0 001.72 1h13.85a2 2 0 001.74-1 10 10 0 00-.27-10.44zm-9.79 6.84a2 2 0 002.83 0l5.66-8.49-8.49 5.66a2 2 0 000 2.83z"/></svg>; }

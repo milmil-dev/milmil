@@ -6,6 +6,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ── VideoJS player overrides ── */
+.media-slider__fill {
+  background-color: var(--mm-accent) !important;
+}
+.media-slider__thumb {
+  background-color: var(--mm-accent) !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

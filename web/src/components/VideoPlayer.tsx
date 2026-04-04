@@ -176,15 +176,7 @@ function CustomVideoSkin({
 
             {/* ── Right group ── */}
             <div className="flex items-center">
-              {/* Playback rate */}
-              <Tooltip.Root side="top">
-                <Tooltip.Trigger
-                  render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
-                />
-                <Tooltip.Popup className="media-surface media-tooltip">Playback speed</Tooltip.Popup>
-              </Tooltip.Root>
-
-              {/* Custom extra buttons (subtitle, media settings, tech info) */}
+              {/* Custom extra buttons (settings gear) */}
               {controlBarExtra}
 
               {/* PiP */}
