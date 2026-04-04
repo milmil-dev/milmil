@@ -43,12 +43,12 @@ import type { KeyboardPluginAPI } from '@/plugins/keyboard/KeyboardPlugin';
 import { createKeyboardPlugin } from '@/plugins/keyboard/KeyboardPlugin';
 import type { MediaSettingsPluginAPI } from '@/plugins/media-settings/MediaSettingsPlugin';
 import { createMediaSettingsPlugin } from '@/plugins/media-settings/MediaSettingsPlugin';
-import { MediaSettingsPanel } from '@/plugins/media-settings/MediaSettingsPanel';
+import { UnifiedSettingsPanel } from '@/components/watch/UnifiedSettingsPanel';
 import type { PlaybackPluginAPI } from '@/plugins/playback/PlaybackPlugin';
 import { createPlaybackPlugin } from '@/plugins/playback/PlaybackPlugin';
 import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
 import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
-import { SubtitleSettingsPanel } from '@/plugins/subtitle/SubtitleSettingsPanel';
+// SubtitleSettingsPanel replaced by UnifiedSettingsPanel
 import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { usePlayerStore } from '@/store/player-store';
 import { usePreferencesStore } from '@/store/preferences-store';
@@ -333,8 +333,7 @@ export function WatchPage() {
 
   // --------------- Video element state ---------------
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
-  const [subtitlePanelOpen, setSubtitlePanelOpen] = useState(false);
-  const [mediaSettingsPanelOpen, setMediaSettingsPanelOpen] = useState(false);
+  const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
 
   // --------------- Progress saving ---------------
   const saveProgress = useCallback(() => {
@@ -642,55 +641,31 @@ export function WatchPage() {
                       className="absolute inset-0 w-full h-full"
                       controlBarExtra={
                         <>
-                          <SkinButton
-                            onClick={() => setSubtitlePanelOpen((v) => !v)}
-                            aria-label="Subtitle settings"
-                          >
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="media-icon"
-                              style={{ width: 18, height: 18 }}
-                            >
-                              <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6v-2zm0 4h8v2H6v-2zm10 0h2v2h-2v-2zm-6-4h8v2h-8v-2z" />
-                            </svg>
-                          </SkinButton>
-                          <SkinButton
-                            onClick={() => setMediaSettingsPanelOpen((v) => !v)}
-                            aria-label="Media settings"
-                          >
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="media-icon"
-                              style={{ width: 18, height: 18 }}
-                            >
-                              <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
-                            </svg>
-                          </SkinButton>
                           <TechInfoPopover
                             mediaInfo={mediaInfo}
                             subtitles={subtitles}
                             transcodeStatus={transcodeStatus}
                           />
+                          {/* Single settings gear — YouTube style */}
+                          <SkinButton
+                            onClick={() => setSettingsPanelOpen((v) => !v)}
+                            aria-label="Settings"
+                          >
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
+                              <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                            </svg>
+                          </SkinButton>
                         </>
                       }
                     />
 
-                    {/* Right-side slide-in panels */}
+                    {/* Unified settings panel */}
                     <AnimatePresence>
-                      {subtitlePanelOpen && subtitlePluginRef.current && (
-                        <SubtitleSettingsPanel
-                          plugin={subtitlePluginRef.current}
-                          onClose={() => setSubtitlePanelOpen(false)}
-                        />
-                      )}
-                    </AnimatePresence>
-                    <AnimatePresence>
-                      {mediaSettingsPanelOpen && (
-                        <MediaSettingsPanel
-                          plugin={mediaSettingsPluginRef.current}
-                          onClose={() => setMediaSettingsPanelOpen(false)}
+                      {settingsPanelOpen && (
+                        <UnifiedSettingsPanel
+                          subtitlePlugin={subtitlePluginRef.current}
+                          mediaPlugin={mediaSettingsPluginRef.current}
+                          onClose={() => setSettingsPanelOpen(false)}
                         />
                       )}
                     </AnimatePresence>
