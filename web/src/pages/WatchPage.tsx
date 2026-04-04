@@ -9,7 +9,7 @@ import { PageTransition } from '@/components/PageTransition';
 import { Skeleton } from '@/components/Skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import type { VideoPlayerAPI } from '@/components/VideoPlayer';
-import { VideoPlayer } from '@/components/VideoPlayer';
+import { SkinButton, VideoPlayer } from '@/components/VideoPlayer';
 import { AnimeInfoSection } from '@/components/watch/AnimeInfoSection';
 import { BangumiComments } from '@/components/watch/BangumiComments';
 import { DanmakuBar } from '@/components/watch/DanmakuBar';
@@ -333,6 +333,8 @@ export function WatchPage() {
 
   // --------------- Video element state ---------------
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
+  const [subtitlePanelOpen, setSubtitlePanelOpen] = useState(false);
+  const [mediaSettingsPanelOpen, setMediaSettingsPanelOpen] = useState(false);
 
   // --------------- Progress saving ---------------
   const saveProgress = useCallback(() => {
@@ -640,10 +642,32 @@ export function WatchPage() {
                       className="absolute inset-0 w-full h-full"
                       controlBarExtra={
                         <>
-                          {subtitlePluginRef.current && (
-                            <SubtitleSettingsPanel plugin={subtitlePluginRef.current} />
-                          )}
-                          <MediaSettingsPanel plugin={mediaSettingsPluginRef.current} />
+                          <SkinButton
+                            onClick={() => setSubtitlePanelOpen((v) => !v)}
+                            aria-label="Subtitle settings"
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="media-icon"
+                              style={{ width: 18, height: 18 }}
+                            >
+                              <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6v-2zm0 4h8v2H6v-2zm10 0h2v2h-2v-2zm-6-4h8v2h-8v-2z" />
+                            </svg>
+                          </SkinButton>
+                          <SkinButton
+                            onClick={() => setMediaSettingsPanelOpen((v) => !v)}
+                            aria-label="Media settings"
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="media-icon"
+                              style={{ width: 18, height: 18 }}
+                            >
+                              <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
+                            </svg>
+                          </SkinButton>
                           <TechInfoPopover
                             mediaInfo={mediaInfo}
                             subtitles={subtitles}
@@ -652,6 +676,25 @@ export function WatchPage() {
                         </>
                       }
                     />
+
+                    {/* Right-side slide-in panels */}
+                    <AnimatePresence>
+                      {subtitlePanelOpen && subtitlePluginRef.current && (
+                        <SubtitleSettingsPanel
+                          plugin={subtitlePluginRef.current}
+                          onClose={() => setSubtitlePanelOpen(false)}
+                        />
+                      )}
+                    </AnimatePresence>
+                    <AnimatePresence>
+                      {mediaSettingsPanelOpen && (
+                        <MediaSettingsPanel
+                          plugin={mediaSettingsPluginRef.current}
+                          onClose={() => setMediaSettingsPanelOpen(false)}
+                        />
+                      )}
+                    </AnimatePresence>
+
                     <DanmakuOverlay videoElement={videoEl} comments={danmakuComments} />
                     <EpisodeTitleOverlay episode={currentEpisode} />
                     <ResumeOverlay seconds={resumeFrom} onDone={() => setResumeFrom(null)} />

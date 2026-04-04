@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { MediaSettingsPluginAPI } from './MediaSettingsPlugin';
@@ -8,6 +8,7 @@ import type { VideoFilterState } from './VideoFilter';
 
 interface MediaSettingsPanelProps {
   plugin: MediaSettingsPluginAPI | null;
+  onClose: () => void;
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
@@ -81,22 +82,18 @@ function usePluginState(plugin: MediaSettingsPluginAPI) {
 
 /* ─── Main Component ─────────────────────────────────────────────── */
 
-export function MediaSettingsPanel({ plugin }: MediaSettingsPanelProps) {
-  const [open, setOpen] = useState(false);
-
+export function MediaSettingsPanel({ plugin, onClose }: MediaSettingsPanelProps) {
   if (!plugin) return null;
 
-  return <MediaSettingsPanelInner plugin={plugin} open={open} setOpen={setOpen} />;
+  return <MediaSettingsPanelInner plugin={plugin} onClose={onClose} />;
 }
 
 function MediaSettingsPanelInner({
   plugin,
-  open,
-  setOpen,
+  onClose,
 }: {
   plugin: MediaSettingsPluginAPI;
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }) {
   const state = usePluginState(plugin);
 
@@ -142,149 +139,135 @@ function MediaSettingsPanelInner({
     state.filters.warmth !== 0;
 
   return (
-    <div className="relative">
+    <>
       {/* Click-away backdrop */}
-      {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />}
+      <div className="absolute inset-0 z-[100]" onClick={onClose} />
 
-      {/* Trigger button — equalizer icon */}
-      <button
-        type="button"
-        onClick={() => {
-          setOpen((v) => !v);
-          state.refresh();
-        }}
-        className="media-button media-button--subtle media-button--icon relative z-40"
-        aria-label="Media settings"
+      {/* Slide-in panel from right */}
+      <motion.div
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="absolute top-0 right-0 bottom-0 z-[101] w-[280px]
+          bg-black/80 backdrop-blur-xl border-l border-white/10
+          overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="media-icon"
-          style={{ width: 18, height: 18 }}
-        >
-          <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
-        </svg>
-      </button>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+          <h3 className="text-sm font-medium text-white/80">Media Settings</h3>
+          <button type="button" onClick={onClose} className="text-white/40 hover:text-white/70">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+        </div>
 
-      {/* Panel popover — opens upward from control bar */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 6, scale: 0.97 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute right-0 bottom-full z-40 mb-2 w-72 max-h-[70vh] overflow-y-auto
-              rounded-2xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-2xl
-              scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10"
-          >
-            <div className="p-3.5 space-y-3">
-              {/* ── Video Filters ─────────────────────────────── */}
-              <section className="space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <SectionLabel>Video Filters</SectionLabel>
-                  {hasNonDefaultFilters && (
-                    <button
-                      type="button"
-                      onClick={resetFilters}
-                      className="shrink-0 px-2 py-0.5 text-[10px] text-white/40 bg-white/[0.06]
-                        rounded hover:bg-white/10 hover:text-white/60 transition-colors"
-                    >
-                      Reset
-                    </button>
-                  )}
-                </div>
-
-                <RangeSlider
-                  label="Brightness"
-                  value={state.filters.brightness}
-                  min={0}
-                  max={200}
-                  step={1}
-                  displayValue={`${state.filters.brightness}%`}
-                  onChange={(v) => updateFilter('brightness', v)}
-                />
-
-                <RangeSlider
-                  label="Contrast"
-                  value={state.filters.contrast}
-                  min={0}
-                  max={200}
-                  step={1}
-                  displayValue={`${state.filters.contrast}%`}
-                  onChange={(v) => updateFilter('contrast', v)}
-                />
-
-                <RangeSlider
-                  label="Saturation"
-                  value={state.filters.saturation}
-                  min={0}
-                  max={200}
-                  step={1}
-                  displayValue={`${state.filters.saturation}%`}
-                  onChange={(v) => updateFilter('saturation', v)}
-                />
-
-                <RangeSlider
-                  label="Warmth / Night Mode"
-                  value={state.filters.warmth}
-                  min={0}
-                  max={100}
-                  step={1}
-                  displayValue={`${state.filters.warmth}%`}
-                  onChange={(v) => updateFilter('warmth', v)}
-                />
-              </section>
-
-              <Divider />
-
-              {/* ── Audio ─────────────────────────────────────── */}
-              <section className="space-y-2.5">
-                <SectionLabel>Audio</SectionLabel>
-
-                <RangeSlider
-                  label="Volume Boost"
-                  value={state.volume}
-                  min={0}
-                  max={200}
-                  step={1}
-                  displayValue={`${state.volume}%`}
-                  onChange={setVolume}
-                />
-
-                {/* Audio Track selector */}
-                {state.audioTracks.length > 0 && (
-                  <div>
-                    <span className="text-[10px] text-white/40 block mb-1">Audio Track</span>
-                    <div className="space-y-1">
-                      {state.audioTracks.map((track) => (
-                        <button
-                          key={track.index}
-                          type="button"
-                          onClick={() => selectAudioTrack(track.index)}
-                          className={cn(
-                            'w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-colors',
-                            track.enabled
-                              ? 'bg-white/10 text-white'
-                              : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70',
-                          )}
-                        >
-                          <span className="flex-1 truncate">{track.label}</span>
-                          {track.language && (
-                            <span className="shrink-0 px-1.5 py-0.5 text-[8px] font-medium rounded bg-white/[0.08] text-white/40">
-                              {track.language}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </section>
+        <div className="p-3.5 space-y-3">
+          {/* ── Video Filters ─────────────────────────────── */}
+          <section className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <SectionLabel>Video Filters</SectionLabel>
+              {hasNonDefaultFilters && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="shrink-0 px-2 py-0.5 text-[10px] text-white/40 bg-white/[0.06]
+                    rounded hover:bg-white/10 hover:text-white/60 transition-colors"
+                >
+                  Reset
+                </button>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+
+            <RangeSlider
+              label="Brightness"
+              value={state.filters.brightness}
+              min={0}
+              max={200}
+              step={1}
+              displayValue={`${state.filters.brightness}%`}
+              onChange={(v) => updateFilter('brightness', v)}
+            />
+
+            <RangeSlider
+              label="Contrast"
+              value={state.filters.contrast}
+              min={0}
+              max={200}
+              step={1}
+              displayValue={`${state.filters.contrast}%`}
+              onChange={(v) => updateFilter('contrast', v)}
+            />
+
+            <RangeSlider
+              label="Saturation"
+              value={state.filters.saturation}
+              min={0}
+              max={200}
+              step={1}
+              displayValue={`${state.filters.saturation}%`}
+              onChange={(v) => updateFilter('saturation', v)}
+            />
+
+            <RangeSlider
+              label="Warmth / Night Mode"
+              value={state.filters.warmth}
+              min={0}
+              max={100}
+              step={1}
+              displayValue={`${state.filters.warmth}%`}
+              onChange={(v) => updateFilter('warmth', v)}
+            />
+          </section>
+
+          <Divider />
+
+          {/* ── Audio ─────────────────────────────────────── */}
+          <section className="space-y-2.5">
+            <SectionLabel>Audio</SectionLabel>
+
+            <RangeSlider
+              label="Volume Boost"
+              value={state.volume}
+              min={0}
+              max={200}
+              step={1}
+              displayValue={`${state.volume}%`}
+              onChange={setVolume}
+            />
+
+            {/* Audio Track selector */}
+            {state.audioTracks.length > 0 && (
+              <div>
+                <span className="text-[10px] text-white/40 block mb-1">Audio Track</span>
+                <div className="space-y-1">
+                  {state.audioTracks.map((track) => (
+                    <button
+                      key={track.index}
+                      type="button"
+                      onClick={() => selectAudioTrack(track.index)}
+                      className={cn(
+                        'w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-colors',
+                        track.enabled
+                          ? 'bg-white/10 text-white'
+                          : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70',
+                      )}
+                    >
+                      <span className="flex-1 truncate">{track.label}</span>
+                      {track.language && (
+                        <span className="shrink-0 px-1.5 py-0.5 text-[8px] font-medium rounded bg-white/[0.08] text-white/40">
+                          {track.language}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
+      </motion.div>
+    </>
   );
 }

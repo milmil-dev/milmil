@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { SubtitlePluginAPI } from './SubtitlePlugin';
@@ -8,6 +8,7 @@ import type { SubtitleStyleConfig, SubtitleTrack } from './types';
 
 interface SubtitleSettingsPanelProps {
   plugin: SubtitlePluginAPI;
+  onClose: () => void;
 }
 
 /* ─── Constants ──────────────────────────────────────────────────── */
@@ -171,8 +172,7 @@ function usePluginState(plugin: SubtitlePluginAPI) {
 
 /* ─── Main Component ─────────────────────────────────────────────── */
 
-export function SubtitleSettingsPanel({ plugin }: SubtitleSettingsPanelProps) {
-  const [open, setOpen] = useState(false);
+export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanelProps) {
   const state = usePluginState(plugin);
 
   // Style overrides — we track local state and push to plugin
@@ -220,314 +220,300 @@ export function SubtitleSettingsPanel({ plugin }: SubtitleSettingsPanelProps) {
   );
 
   return (
-    <div className="relative">
+    <>
       {/* Click-away backdrop */}
-      {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />}
+      <div className="absolute inset-0 z-[100]" onClick={onClose} />
 
-      {/* Trigger button — styled like other control bar buttons */}
-      <button
-        type="button"
-        onClick={() => {
-          setOpen((v) => !v);
-          state.refresh();
-        }}
-        className="media-button media-button--subtle media-button--icon relative z-40"
-        aria-label="Subtitle settings"
+      {/* Slide-in panel from right */}
+      <motion.div
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="absolute top-0 right-0 bottom-0 z-[101] w-[280px]
+          bg-black/80 backdrop-blur-xl border-l border-white/10
+          overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="media-icon"
-          style={{ width: 18, height: 18 }}
-        >
-          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6v-2zm0 4h8v2H6v-2zm10 0h2v2h-2v-2zm-6-4h8v2h-8v-2z" />
-        </svg>
-      </button>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+          <h3 className="text-sm font-medium text-white/80">Subtitles</h3>
+          <button type="button" onClick={onClose} className="text-white/40 hover:text-white/70">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+        </div>
 
-      {/* Panel popover — opens upward from control bar */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 6, scale: 0.97 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute right-0 bottom-full z-40 mb-2 w-72 max-h-[70vh] overflow-y-auto
-              rounded-2xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-2xl
-              scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10"
-          >
-            <div className="p-3.5 space-y-3">
-              {/* ── Track List ──────────────────────────────────── */}
-              <section>
-                <SectionLabel>Tracks</SectionLabel>
-                {state.tracks.length === 0 ? (
-                  <p className="text-[11px] text-white/30 italic">No subtitles loaded</p>
-                ) : (
-                  <div className="space-y-1">
-                    {/* "Off" option */}
-                    <button
-                      type="button"
-                      onClick={() => selectPrimary(-1)}
-                      className={cn(
-                        'w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-colors',
-                        !state.primaryTrack
-                          ? 'bg-white/10 text-white'
-                          : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70',
-                      )}
-                    >
-                      <span className="flex-1">Off</span>
-                    </button>
-
-                    {state.tracks.map((track, i) => {
-                      const isPrimary = state.primaryTrack?.id === track.id;
-                      const isSecondary = state.secondaryTrack?.id === track.id;
-                      const badge = SOURCE_BADGE[track.source];
-
-                      return (
-                        <div key={track.id} className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => selectPrimary(i)}
-                            className={cn(
-                              'flex-1 flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-colors',
-                              isPrimary
-                                ? 'bg-white/10 text-white'
-                                : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70',
-                            )}
-                          >
-                            <span className="flex-1 truncate">{track.label}</span>
-                            <span
-                              className={cn(
-                                'shrink-0 px-1.5 py-0.5 text-[8px] font-medium rounded',
-                                badge.className,
-                              )}
-                            >
-                              {badge.label}
-                            </span>
-                            {isPrimary && (
-                              <span className="shrink-0 text-[8px] text-white/30">P</span>
-                            )}
-                          </button>
-                          {/* Secondary toggle */}
-                          <button
-                            type="button"
-                            onClick={() => selectSecondary(isSecondary ? -1 : i)}
-                            title={isSecondary ? 'Remove secondary' : 'Set as secondary'}
-                            className={cn(
-                              'shrink-0 w-6 h-6 flex items-center justify-center rounded text-[8px] font-medium transition-colors',
-                              isSecondary
-                                ? 'bg-white/15 text-white'
-                                : 'text-white/20 hover:text-white/50 hover:bg-white/[0.06]',
-                            )}
-                          >
-                            S
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </section>
-
-              <Divider />
-
-              {/* ── Presets ─────────────────────────────────────── */}
-              <section>
-                <SectionLabel>Style Preset</SectionLabel>
-                <ButtonGroup
-                  options={state.presetNames.map((name) => ({
-                    value: name,
-                    label: PRESET_LABELS[name] ?? name,
-                  }))}
-                  value={state.presetName}
-                  onChange={selectPreset}
-                />
-              </section>
-
-              <Divider />
-
-              {/* ── Style Controls ──────────────────────────────── */}
-              <section className="space-y-2.5">
-                <SectionLabel>Appearance</SectionLabel>
-
-                {/* Font family */}
-                <div>
-                  <span className="text-[10px] text-white/40 block mb-1">Font</span>
-                  <select
-                    value={style.fontFamily ?? ''}
-                    onChange={(e) => updateStyle({ fontFamily: e.target.value })}
-                    className="w-full bg-white/[0.06] border border-white/[0.08] rounded-lg px-2 py-1.5
-                      text-[11px] text-white/80 appearance-none cursor-pointer
-                      focus:outline-none focus:border-white/20"
-                  >
-                    <option value="" className="bg-neutral-900">
-                      Preset default
-                    </option>
-                    {FONT_FAMILIES.map((f) => (
-                      <option key={f} value={f} className="bg-neutral-900">
-                        {FONT_FAMILY_LABELS[f] ?? f}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Font size */}
-                <RangeSlider
-                  label="Font Size"
-                  value={style.fontSize ?? 24}
-                  min={12}
-                  max={48}
-                  step={1}
-                  displayValue={`${style.fontSize ?? 24}px`}
-                  onChange={(v) => updateStyle({ fontSize: v })}
-                />
-
-                {/* Text color */}
-                <div>
-                  <span className="text-[10px] text-white/40 block mb-1">Text Color</span>
-                  <div className="flex gap-1.5">
-                    {TEXT_COLORS.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => updateStyle({ color: c })}
-                        className={cn(
-                          'w-5 h-5 rounded-full border-2 transition-all',
-                          (style.color ?? '#FFFFFF') === c
-                            ? 'border-white/60 scale-110'
-                            : 'border-white/10 hover:border-white/30',
-                        )}
-                        style={{ backgroundColor: c }}
-                        title={c}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Background opacity */}
-                <RangeSlider
-                  label="Background Opacity"
-                  value={style.backgroundOpacity ?? 0.75}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  displayValue={`${Math.round((style.backgroundOpacity ?? 0.75) * 100)}%`}
-                  onChange={(v) => updateStyle({ backgroundOpacity: v })}
-                />
-
-                {/* Border style */}
-                <div>
-                  <span className="text-[10px] text-white/40 block mb-1">Border Style</span>
-                  <ButtonGroup
-                    options={SHADOW_TYPES}
-                    value={style.shadowType ?? 'none'}
-                    onChange={(v) => updateStyle({ shadowType: v })}
-                  />
-                </div>
-
-                {/* Stroke width — only when shadow type is not none */}
-                {(style.shadowType ?? 'none') !== 'none' && (
-                  <RangeSlider
-                    label="Stroke Width"
-                    value={style.strokeWidth ?? 2}
-                    min={0}
-                    max={6}
-                    step={0.5}
-                    displayValue={`${style.strokeWidth ?? 2}px`}
-                    onChange={(v) => updateStyle({ strokeWidth: v })}
-                  />
-                )}
-
-                {/* Position */}
-                <div>
-                  <span className="text-[10px] text-white/40 block mb-1">Position</span>
-                  <ButtonGroup
-                    options={POSITIONS}
-                    value={style.position ?? 'bottom'}
-                    onChange={(v) => updateStyle({ position: v })}
-                  />
-                </div>
-
-                {/* Safe margin */}
-                <RangeSlider
-                  label="Safe Margin"
-                  value={style.safeMargin ?? 5}
-                  min={0}
-                  max={20}
-                  step={1}
-                  displayValue={`${style.safeMargin ?? 5}%`}
-                  onChange={(v) => updateStyle({ safeMargin: v })}
-                />
-              </section>
-
-              <Divider />
-
-              {/* ── Timing ──────────────────────────────────────── */}
-              <section className="space-y-2.5">
-                <SectionLabel>Timing</SectionLabel>
-                <div className="flex items-end gap-2">
-                  <div className="flex-1">
-                    <RangeSlider
-                      label="Delay"
-                      value={state.delay}
-                      min={-10}
-                      max={10}
-                      step={0.1}
-                      displayValue={`${state.delay >= 0 ? '+' : ''}${state.delay.toFixed(1)}s`}
-                      onChange={setDelay}
-                    />
-                  </div>
-                  {state.delay !== 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setDelay(0)}
-                      className="shrink-0 px-2 py-1 text-[10px] text-white/40 bg-white/[0.06]
-                        rounded hover:bg-white/10 hover:text-white/60 transition-colors mb-0.5"
-                    >
-                      Reset
-                    </button>
+        <div className="p-3.5 space-y-3">
+          {/* ── Track List ──────────────────────────────────── */}
+          <section>
+            <SectionLabel>Tracks</SectionLabel>
+            {state.tracks.length === 0 ? (
+              <p className="text-[11px] text-white/30 italic">No subtitles loaded</p>
+            ) : (
+              <div className="space-y-1">
+                {/* "Off" option */}
+                <button
+                  type="button"
+                  onClick={() => selectPrimary(-1)}
+                  className={cn(
+                    'w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-colors',
+                    !state.primaryTrack
+                      ? 'bg-white/10 text-white'
+                      : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70',
                   )}
-                </div>
-              </section>
+                >
+                  <span className="flex-1">Off</span>
+                </button>
 
-              <Divider />
+                {state.tracks.map((track, i) => {
+                  const isPrimary = state.primaryTrack?.id === track.id;
+                  const isSecondary = state.secondaryTrack?.id === track.id;
+                  const badge = SOURCE_BADGE[track.source];
 
-              {/* ── ASS Style Toggle ────────────────────────────── */}
-              <section>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] text-white/70 block">Respect ASS Styles</span>
-                    <span className="text-[9px] text-white/30 block mt-0.5">
-                      Use original positioning &amp; formatting
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      updateStyle({
-                        respectAssStyle: !(style.respectAssStyle ?? true),
-                      })
-                    }
-                    className={cn(
-                      'relative w-8 h-[18px] rounded-full transition-colors',
-                      (style.respectAssStyle ?? true)
-                        ? 'bg-white/25'
-                        : 'bg-white/[0.08]',
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        'absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white transition-all',
-                        (style.respectAssStyle ?? true) ? 'left-[15px]' : 'left-0.5',
-                      )}
-                    />
-                  </button>
-                </div>
-              </section>
+                  return (
+                    <div key={track.id} className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => selectPrimary(i)}
+                        className={cn(
+                          'flex-1 flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-[11px] transition-colors',
+                          isPrimary
+                            ? 'bg-white/10 text-white'
+                            : 'text-white/50 hover:bg-white/[0.06] hover:text-white/70',
+                        )}
+                      >
+                        <span className="flex-1 truncate">{track.label}</span>
+                        <span
+                          className={cn(
+                            'shrink-0 px-1.5 py-0.5 text-[8px] font-medium rounded',
+                            badge.className,
+                          )}
+                        >
+                          {badge.label}
+                        </span>
+                        {isPrimary && (
+                          <span className="shrink-0 text-[8px] text-white/30">P</span>
+                        )}
+                      </button>
+                      {/* Secondary toggle */}
+                      <button
+                        type="button"
+                        onClick={() => selectSecondary(isSecondary ? -1 : i)}
+                        title={isSecondary ? 'Remove secondary' : 'Set as secondary'}
+                        className={cn(
+                          'shrink-0 w-6 h-6 flex items-center justify-center rounded text-[8px] font-medium transition-colors',
+                          isSecondary
+                            ? 'bg-white/15 text-white'
+                            : 'text-white/20 hover:text-white/50 hover:bg-white/[0.06]',
+                        )}
+                      >
+                        S
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          <Divider />
+
+          {/* ── Presets ─────────────────────────────────────── */}
+          <section>
+            <SectionLabel>Style Preset</SectionLabel>
+            <ButtonGroup
+              options={state.presetNames.map((name) => ({
+                value: name,
+                label: PRESET_LABELS[name] ?? name,
+              }))}
+              value={state.presetName}
+              onChange={selectPreset}
+            />
+          </section>
+
+          <Divider />
+
+          {/* ── Style Controls ──────────────────────────────── */}
+          <section className="space-y-2.5">
+            <SectionLabel>Appearance</SectionLabel>
+
+            {/* Font family */}
+            <div>
+              <span className="text-[10px] text-white/40 block mb-1">Font</span>
+              <select
+                value={style.fontFamily ?? ''}
+                onChange={(e) => updateStyle({ fontFamily: e.target.value })}
+                className="w-full bg-white/[0.06] border border-white/[0.08] rounded-lg px-2 py-1.5
+                  text-[11px] text-white/80 appearance-none cursor-pointer
+                  focus:outline-none focus:border-white/20"
+              >
+                <option value="" className="bg-neutral-900">
+                  Preset default
+                </option>
+                {FONT_FAMILIES.map((f) => (
+                  <option key={f} value={f} className="bg-neutral-900">
+                    {FONT_FAMILY_LABELS[f] ?? f}
+                  </option>
+                ))}
+              </select>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+
+            {/* Font size */}
+            <RangeSlider
+              label="Font Size"
+              value={style.fontSize ?? 24}
+              min={12}
+              max={48}
+              step={1}
+              displayValue={`${style.fontSize ?? 24}px`}
+              onChange={(v) => updateStyle({ fontSize: v })}
+            />
+
+            {/* Text color */}
+            <div>
+              <span className="text-[10px] text-white/40 block mb-1">Text Color</span>
+              <div className="flex gap-1.5">
+                {TEXT_COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => updateStyle({ color: c })}
+                    className={cn(
+                      'w-5 h-5 rounded-full border-2 transition-all',
+                      (style.color ?? '#FFFFFF') === c
+                        ? 'border-white/60 scale-110'
+                        : 'border-white/10 hover:border-white/30',
+                    )}
+                    style={{ backgroundColor: c }}
+                    title={c}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Background opacity */}
+            <RangeSlider
+              label="Background Opacity"
+              value={style.backgroundOpacity ?? 0.75}
+              min={0}
+              max={1}
+              step={0.05}
+              displayValue={`${Math.round((style.backgroundOpacity ?? 0.75) * 100)}%`}
+              onChange={(v) => updateStyle({ backgroundOpacity: v })}
+            />
+
+            {/* Border style */}
+            <div>
+              <span className="text-[10px] text-white/40 block mb-1">Border Style</span>
+              <ButtonGroup
+                options={SHADOW_TYPES}
+                value={style.shadowType ?? 'none'}
+                onChange={(v) => updateStyle({ shadowType: v })}
+              />
+            </div>
+
+            {/* Stroke width — only when shadow type is not none */}
+            {(style.shadowType ?? 'none') !== 'none' && (
+              <RangeSlider
+                label="Stroke Width"
+                value={style.strokeWidth ?? 2}
+                min={0}
+                max={6}
+                step={0.5}
+                displayValue={`${style.strokeWidth ?? 2}px`}
+                onChange={(v) => updateStyle({ strokeWidth: v })}
+              />
+            )}
+
+            {/* Position */}
+            <div>
+              <span className="text-[10px] text-white/40 block mb-1">Position</span>
+              <ButtonGroup
+                options={POSITIONS}
+                value={style.position ?? 'bottom'}
+                onChange={(v) => updateStyle({ position: v })}
+              />
+            </div>
+
+            {/* Safe margin */}
+            <RangeSlider
+              label="Safe Margin"
+              value={style.safeMargin ?? 5}
+              min={0}
+              max={20}
+              step={1}
+              displayValue={`${style.safeMargin ?? 5}%`}
+              onChange={(v) => updateStyle({ safeMargin: v })}
+            />
+          </section>
+
+          <Divider />
+
+          {/* ── Timing ──────────────────────────────────────── */}
+          <section className="space-y-2.5">
+            <SectionLabel>Timing</SectionLabel>
+            <div className="flex items-end gap-2">
+              <div className="flex-1">
+                <RangeSlider
+                  label="Delay"
+                  value={state.delay}
+                  min={-10}
+                  max={10}
+                  step={0.1}
+                  displayValue={`${state.delay >= 0 ? '+' : ''}${state.delay.toFixed(1)}s`}
+                  onChange={setDelay}
+                />
+              </div>
+              {state.delay !== 0 && (
+                <button
+                  type="button"
+                  onClick={() => setDelay(0)}
+                  className="shrink-0 px-2 py-1 text-[10px] text-white/40 bg-white/[0.06]
+                    rounded hover:bg-white/10 hover:text-white/60 transition-colors mb-0.5"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+          </section>
+
+          <Divider />
+
+          {/* ── ASS Style Toggle ────────────────────────────── */}
+          <section>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[11px] text-white/70 block">Respect ASS Styles</span>
+                <span className="text-[9px] text-white/30 block mt-0.5">
+                  Use original positioning &amp; formatting
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  updateStyle({
+                    respectAssStyle: !(style.respectAssStyle ?? true),
+                  })
+                }
+                className={cn(
+                  'relative w-8 h-[18px] rounded-full transition-colors',
+                  (style.respectAssStyle ?? true)
+                    ? 'bg-white/25'
+                    : 'bg-white/[0.08]',
+                )}
+              >
+                <span
+                  className={cn(
+                    'absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white transition-all',
+                    (style.respectAssStyle ?? true) ? 'left-[15px]' : 'left-0.5',
+                  )}
+                />
+              </button>
+            </div>
+          </section>
+        </div>
+      </motion.div>
+    </>
   );
 }

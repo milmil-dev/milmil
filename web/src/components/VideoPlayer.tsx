@@ -48,7 +48,7 @@ export interface VideoPlayerAPI {
 }
 
 // Reusable button matching the VideoJS skin style
-const SkinButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+export const SkinButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className, ...props }, ref) => (
     <button
       ref={ref}
@@ -122,119 +122,140 @@ function CustomVideoSkin({
           </div>
         )}
       />
-      <Controls.Root className="media-surface media-controls">
-        <Tooltip.Provider>
-          {/* Play */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <PlayButton className="media-button--play" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--restart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                  <svg className="media-icon media-icon--play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  <svg className="media-icon media-icon--pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                </PlayButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <PlayLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
 
-          {/* Seek backward */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <SeekButton seconds={-SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
-                  <span className="media-icon__container">
-                    <svg className="media-icon media-icon--seek media-icon--flipped" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
-                    <span className="media-icon__label">{SEEK_TIME}</span>
-                  </span>
-                </SeekButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              Seek backward {SEEK_TIME} seconds
-            </Tooltip.Popup>
-          </Tooltip.Root>
+      {/* Gradient fade behind controls (IINA style) */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
 
-          {/* Seek forward */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <SeekButton seconds={SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
-                  <span className="media-icon__container">
-                    <svg className="media-icon media-icon--seek" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
-                    <span className="media-icon__label">{SEEK_TIME}</span>
-                  </span>
-                </SeekButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              Seek forward {SEEK_TIME} seconds
-            </Tooltip.Popup>
-          </Tooltip.Root>
+      <Controls.Root className="media-surface media-controls flex flex-col">
+        {/* Row 1: Progress bar — full width */}
+        <div className="w-full px-3">
+          <TimeSlider.Root className="media-slider">
+            <Slider.Track className="media-slider__track">
+              <Slider.Fill className="media-slider__fill" />
+              <Slider.Buffer className="media-slider__buffer" />
+            </Slider.Track>
+            <Slider.Thumb className="media-slider__thumb" />
+            <div className="media-surface media-preview media-slider__preview">
+              <Slider.Thumbnail className="media-preview__thumbnail" />
+              <Slider.Value type="pointer" className="media-preview__timestamp" />
+            </div>
+          </TimeSlider.Root>
+        </div>
 
-          {/* Time + slider */}
-          <Time.Group className="media-time">
-            <Time.Value type="current" className="media-time__value" />
-            <TimeSlider.Root className="media-slider">
-              <Slider.Track className="media-slider__track">
-                <Slider.Fill className="media-slider__fill" />
-                <Slider.Buffer className="media-slider__buffer" />
-              </Slider.Track>
-              <Slider.Thumb className="media-slider__thumb" />
-              <div className="media-surface media-preview media-slider__preview">
-                <Slider.Thumbnail className="media-preview__thumbnail" />
-                <Slider.Value type="pointer" className="media-preview__timestamp" />
-              </div>
-            </TimeSlider.Root>
-            <Time.Value type="duration" className="media-time__value" />
-          </Time.Group>
+        {/* Row 2: Control buttons */}
+        <div className="flex items-center w-full px-1">
+          <Tooltip.Provider>
+            {/* Left group: play, seek, time */}
+            <div className="flex items-center gap-0.5">
+              {/* Play */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <PlayButton className="media-button--play" render={<SkinButton />}>
+                      <svg className="media-icon media-icon--restart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                      <svg className="media-icon media-icon--play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      <svg className="media-icon media-icon--pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </PlayButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  <PlayLabel />
+                </Tooltip.Popup>
+              </Tooltip.Root>
 
-          {/* Playback rate */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">Toggle playback rate</Tooltip.Popup>
-          </Tooltip.Root>
+              {/* Seek backward */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <SeekButton seconds={-SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
+                      <span className="media-icon__container">
+                        <svg className="media-icon media-icon--seek media-icon--flipped" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
+                        <span className="media-icon__label">{SEEK_TIME}</span>
+                      </span>
+                    </SeekButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  Seek backward {SEEK_TIME} seconds
+                </Tooltip.Popup>
+              </Tooltip.Root>
 
-          {/* Volume */}
-          <VolumePopoverControl />
+              {/* Seek forward */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <SeekButton seconds={SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
+                      <span className="media-icon__container">
+                        <svg className="media-icon media-icon--seek" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
+                        <span className="media-icon__label">{SEEK_TIME}</span>
+                      </span>
+                    </SeekButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  Seek forward {SEEK_TIME} seconds
+                </Tooltip.Popup>
+              </Tooltip.Root>
 
-          {/* PiP */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <PiPButton className="media-button--pip" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--pip-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
-                  <svg className="media-icon media-icon--pip-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
-                </PiPButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <PiPLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
+              {/* Time display */}
+              <Time.Group className="media-time">
+                <Time.Value type="current" className="media-time__value" />
+                <span className="text-white/40 text-xs mx-1">/</span>
+                <Time.Value type="duration" className="media-time__value" />
+              </Time.Group>
+            </div>
 
-          {/* Custom extra buttons (e.g. settings gear) */}
-          {controlBarExtra}
+            {/* Spacer */}
+            <div className="flex-1" />
 
-          {/* Fullscreen */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <FullscreenButton className="media-button--fullscreen" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--fullscreen-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                  <svg className="media-icon media-icon--fullscreen-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
-                </FullscreenButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <FullscreenLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
-        </Tooltip.Provider>
+            {/* Right group: rate, volume, pip, panels, fullscreen */}
+            <div className="flex items-center gap-0.5">
+              {/* Playback rate */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">Toggle playback rate</Tooltip.Popup>
+              </Tooltip.Root>
+
+              {/* Volume */}
+              <VolumePopoverControl />
+
+              {/* PiP */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <PiPButton className="media-button--pip" render={<SkinButton />}>
+                      <svg className="media-icon media-icon--pip-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+                      <svg className="media-icon media-icon--pip-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
+                    </PiPButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  <PiPLabel />
+                </Tooltip.Popup>
+              </Tooltip.Root>
+
+              {/* Custom extra buttons (e.g. settings triggers) */}
+              {controlBarExtra}
+
+              {/* Fullscreen */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <FullscreenButton className="media-button--fullscreen" render={<SkinButton />}>
+                      <svg className="media-icon media-icon--fullscreen-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                      <svg className="media-icon media-icon--fullscreen-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+                    </FullscreenButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  <FullscreenLabel />
+                </Tooltip.Popup>
+              </Tooltip.Root>
+            </div>
+          </Tooltip.Provider>
+        </div>
       </Controls.Root>
       <div className="media-overlay" />
     </Container>
