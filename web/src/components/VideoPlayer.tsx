@@ -122,7 +122,7 @@ function CustomVideoSkin({
         )}
       />
 
-      <Controls.Root className="media-surface media-controls media-controls--custom flex flex-col gap-0">
+      <Controls.Root className="media-controls flex flex-col gap-0">
         {/* Progress bar — full width, no side padding (YouTube style) */}
         <div className="w-full">
           <TimeSlider.Root className="media-slider">
