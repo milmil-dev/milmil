@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -153,6 +155,7 @@ function SliderControl({ label, value, min, max, step, display, defaultVal, onCh
 const SPEED_PRESETS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0];
 
 export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onClose }: Props) {
+  const { i18n } = useLingui();
   const [view, setView] = useState<View>('main');
   const [subStyle, setSubStyle] = useState<Partial<SubtitleStyleConfig>>({});
   const [, setTick] = useState(0);
@@ -172,7 +175,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
   const subPrimary = subtitlePlugin?.getPrimaryTrack();
   const subPreset = subtitlePlugin?.getPresetName() ?? 'default';
   const subDelay = subtitlePlugin?.getDelay() ?? 0;
-  const subTrackLabel = subPrimary?.label ?? 'Off';
+  const subTrackLabel = subPrimary?.label ?? i18n._(msg`settings.off`);
   const presetLabel = PRESET_OPTIONS.find((p) => p.value === subPreset)?.label ?? subPreset;
 
   // Media state
@@ -194,8 +197,8 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
       // ── Subtitle sub-views ──
       case 'subtitles':
         return (<>
-          <BackHeader title="Subtitles" onBack={() => back('main')} />
-          <OptionRow label="Off" selected={!subPrimary}
+          <BackHeader title={i18n._(msg`settings.subtitles`)} onBack={() => back('main')} />
+          <OptionRow label={i18n._(msg`settings.off`)} selected={!subPrimary}
             onClick={() => { subtitlePlugin?.setPrimary(-1); refresh(); back('main'); }} />
           {subTracks.map((t, i) => (
             <OptionRow key={t.id} label={`${t.label} (${SOURCE_BADGE[t.source]})`}
@@ -206,17 +209,17 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
 
       case 'subtitle-style':
         return (<>
-          <BackHeader title="Subtitle Style" onBack={() => back('main')} />
-          <MenuRow label="Preset" value={presetLabel} onClick={() => go('sub-preset')} />
-          <MenuRow label="Font" value={FONT_OPTIONS.find(f => f.value === (subStyle.fontFamily ?? ''))?.label ?? 'Default'} onClick={() => go('sub-font')} />
-          <MenuRow label="Size" value={`${subStyle.fontSize ?? 24}px`} onClick={() => go('sub-fontSize')} />
-          <MenuRow label="Color" value={COLOR_OPTIONS.find(c => c.value === (subStyle.color ?? '#FFFFFF'))?.label} onClick={() => go('sub-color')} />
-          <MenuRow label="Background" value={`${Math.round((subStyle.backgroundOpacity ?? 0.75) * 100)}%`} onClick={() => go('sub-bgOpacity')} />
-          <MenuRow label="Border" value={SHADOW_OPTIONS.find(s => s.value === (subStyle.shadowType ?? 'none'))?.label} onClick={() => go('sub-border')} />
-          <MenuRow label="Position" value={POSITION_OPTIONS.find(p => p.value === (subStyle.position ?? 'bottom'))?.label} onClick={() => go('sub-position')} />
+          <BackHeader title={i18n._(msg`settings.subtitleStyle`)} onBack={() => back('main')} />
+          <MenuRow label={i18n._(msg`settings.preset`)} value={presetLabel} onClick={() => go('sub-preset')} />
+          <MenuRow label={i18n._(msg`settings.font`)} value={FONT_OPTIONS.find(f => f.value === (subStyle.fontFamily ?? ''))?.label ?? i18n._(msg`settings.default`)} onClick={() => go('sub-font')} />
+          <MenuRow label={i18n._(msg`settings.fontSize`)} value={`${subStyle.fontSize ?? 24}px`} onClick={() => go('sub-fontSize')} />
+          <MenuRow label={i18n._(msg`settings.textColor`)} value={COLOR_OPTIONS.find(c => c.value === (subStyle.color ?? '#FFFFFF'))?.label} onClick={() => go('sub-color')} />
+          <MenuRow label={i18n._(msg`settings.background`)} value={`${Math.round((subStyle.backgroundOpacity ?? 0.75) * 100)}%`} onClick={() => go('sub-bgOpacity')} />
+          <MenuRow label={i18n._(msg`settings.border`)} value={SHADOW_OPTIONS.find(s => s.value === (subStyle.shadowType ?? 'none'))?.label} onClick={() => go('sub-border')} />
+          <MenuRow label={i18n._(msg`settings.position`)} value={POSITION_OPTIONS.find(p => p.value === (subStyle.position ?? 'bottom'))?.label} onClick={() => go('sub-position')} />
           <Divider />
           <div className="flex items-center gap-2.5 mx-2 px-2.5 py-2">
-            <span className="flex-1 text-xs text-white/70">Respect ASS Styles</span>
+            <span className="flex-1 text-xs text-white/70">{i18n._(msg`settings.respectAssStyles`)}</span>
             <button type="button" onClick={() => updateSubStyle({ respectAssStyle: !(subStyle.respectAssStyle ?? true) })}
               className={cn('relative w-9 h-5 rounded-full transition-colors',
                 (subStyle.respectAssStyle ?? true) ? 'bg-white/30' : 'bg-white/10')}>
@@ -228,7 +231,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
 
       case 'sub-preset':
         return (<>
-          <BackHeader title="Preset" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.preset`)} onBack={() => back('subtitle-style')} />
           {PRESET_OPTIONS.map(o => (
             <OptionRow key={o.value} label={o.label} selected={subPreset === o.value}
               onClick={() => { subtitlePlugin?.setPreset(o.value); setSubStyle({}); refresh(); back('subtitle-style'); }} />
@@ -236,7 +239,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         </>);
       case 'sub-font':
         return (<>
-          <BackHeader title="Font" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.font`)} onBack={() => back('subtitle-style')} />
           {FONT_OPTIONS.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.fontFamily ?? '') === o.value}
               onClick={() => { updateSubStyle({ fontFamily: o.value || undefined }); back('subtitle-style'); }} />
@@ -244,7 +247,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         </>);
       case 'sub-fontSize':
         return (<>
-          <BackHeader title="Font Size" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.fontSize`)} onBack={() => back('subtitle-style')} />
           {SIZE_OPTIONS.map(s => (
             <OptionRow key={s} label={`${s}px${s === 24 ? ' (Default)' : ''}`} selected={(subStyle.fontSize ?? 24) === s}
               onClick={() => { updateSubStyle({ fontSize: s }); back('subtitle-style'); }} />
@@ -252,7 +255,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         </>);
       case 'sub-color':
         return (<>
-          <BackHeader title="Text Color" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.textColor`)} onBack={() => back('subtitle-style')} />
           {COLOR_OPTIONS.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.color ?? '#FFFFFF') === o.value}
               swatch={o.value} onClick={() => { updateSubStyle({ color: o.value }); back('subtitle-style'); }} />
@@ -260,7 +263,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         </>);
       case 'sub-bgOpacity':
         return (<>
-          <BackHeader title="Background" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.background`)} onBack={() => back('subtitle-style')} />
           {OPACITY_OPTIONS.map(o => (
             <OptionRow key={o} label={`${Math.round(o * 100)}%${o === 0.75 ? ' (Default)' : ''}`}
               selected={(subStyle.backgroundOpacity ?? 0.75) === o}
@@ -269,7 +272,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         </>);
       case 'sub-border':
         return (<>
-          <BackHeader title="Border Style" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.borderStyle`)} onBack={() => back('subtitle-style')} />
           {SHADOW_OPTIONS.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.shadowType ?? 'none') === o.value}
               onClick={() => { updateSubStyle({ shadowType: o.value }); back('subtitle-style'); }} />
@@ -277,7 +280,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         </>);
       case 'sub-position':
         return (<>
-          <BackHeader title="Position" onBack={() => back('subtitle-style')} />
+          <BackHeader title={i18n._(msg`settings.position`)} onBack={() => back('subtitle-style')} />
           {POSITION_OPTIONS.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.position ?? 'bottom') === o.value}
               onClick={() => { updateSubStyle({ position: o.value }); back('subtitle-style'); }} />
@@ -286,7 +289,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
 
       case 'sub-timing':
         return (<>
-          <BackHeader title="Timing" onBack={() => back('main')} />
+          <BackHeader title={i18n._(msg`settings.subtitleTiming`)} onBack={() => back('main')} />
           <SliderControl label="Delay" value={subDelay} min={-10} max={10} step={0.1}
             display={`${subDelay >= 0 ? '+' : ''}${subDelay.toFixed(1)}s`} defaultVal={0}
             onChange={(v) => { subtitlePlugin?.setDelay(v); refresh(); }} />
@@ -297,7 +300,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         const currentSpeed = videoEl?.playbackRate ?? 1;
         const setSpeed = (v: number) => { if (videoEl) videoEl.playbackRate = v; refresh(); };
         return (<>
-          <BackHeader title="Playback Speed" onBack={() => back('main')} />
+          <BackHeader title={i18n._(msg`settings.playbackSpeed`)} onBack={() => back('main')} />
           <div className="px-3.5 py-3 space-y-4">
             {/* Current speed display */}
             <div className="text-center text-lg font-medium text-white/90 tabular-nums">
@@ -336,7 +339,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
             </div>
             {/* Normal label */}
             {Math.abs(currentSpeed - 1) < 0.01 && (
-              <div className="text-center text-[10px] text-white/30">Normal</div>
+              <div className="text-center text-[10px] text-white/30">{i18n._(msg`settings.normal`)}</div>
             )}
           </div>
         </>);
@@ -345,38 +348,38 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
       // ── Media sub-views ──
       case 'brightness':
         return (<>
-          <BackHeader title="Brightness" onBack={() => back('main')} />
-          <SliderControl label="Brightness" value={filters.brightness} min={0} max={200} step={5}
+          <BackHeader title={i18n._(msg`settings.brightness`)} onBack={() => back('main')} />
+          <SliderControl label={i18n._(msg`settings.brightness`)} value={filters.brightness} min={0} max={200} step={5}
             display={`${filters.brightness}%`} defaultVal={100} onChange={(v) => updateFilter('brightness', v)} />
         </>);
       case 'contrast':
         return (<>
-          <BackHeader title="Contrast" onBack={() => back('main')} />
-          <SliderControl label="Contrast" value={filters.contrast} min={0} max={200} step={5}
+          <BackHeader title={i18n._(msg`settings.contrast`)} onBack={() => back('main')} />
+          <SliderControl label={i18n._(msg`settings.contrast`)} value={filters.contrast} min={0} max={200} step={5}
             display={`${filters.contrast}%`} defaultVal={100} onChange={(v) => updateFilter('contrast', v)} />
         </>);
       case 'saturation':
         return (<>
-          <BackHeader title="Saturation" onBack={() => back('main')} />
-          <SliderControl label="Saturation" value={filters.saturation} min={0} max={200} step={5}
+          <BackHeader title={i18n._(msg`settings.saturation`)} onBack={() => back('main')} />
+          <SliderControl label={i18n._(msg`settings.saturation`)} value={filters.saturation} min={0} max={200} step={5}
             display={`${filters.saturation}%`} defaultVal={100} onChange={(v) => updateFilter('saturation', v)} />
         </>);
       case 'warmth':
         return (<>
-          <BackHeader title="Night Mode" onBack={() => back('main')} />
+          <BackHeader title={i18n._(msg`settings.nightMode`)} onBack={() => back('main')} />
           <SliderControl label="Warmth" value={filters.warmth} min={0} max={100} step={5}
             display={`${filters.warmth}%`} defaultVal={0} onChange={(v) => updateFilter('warmth', v)} />
         </>);
       case 'volumeBoost':
         return (<>
-          <BackHeader title="Volume Boost" onBack={() => back('main')} />
+          <BackHeader title={i18n._(msg`settings.volumeBoost`)} onBack={() => back('main')} />
           <SliderControl label="Volume" value={volume} min={0} max={200} step={5}
             display={`${volume}%`} defaultVal={100}
             onChange={(v) => { mediaPlugin?.setVolume(v); refresh(); }} />
         </>);
       case 'audioTrack':
         return (<>
-          <BackHeader title="Audio Track" onBack={() => back('main')} />
+          <BackHeader title={i18n._(msg`settings.audioTrack`)} onBack={() => back('main')} />
           {audioTracks.map(t => (
             <OptionRow key={t.index} label={`${t.label}${t.language ? ` (${t.language})` : ''}`}
               selected={t.enabled}
@@ -390,35 +393,35 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
           {/* Subtitle section */}
           {subtitlePlugin && (
             <>
-              <MenuRow icon={<IconSub />} label="Subtitles" value={subTrackLabel} onClick={() => go('subtitles')} />
-              <MenuRow icon={<IconStyle />} label="Subtitle Style" value={presetLabel} onClick={() => go('subtitle-style')} />
-              <MenuRow icon={<IconTimer />} label="Subtitle Timing"
+              <MenuRow icon={<IconSub />} label={i18n._(msg`settings.subtitles`)} value={subTrackLabel} onClick={() => go('subtitles')} />
+              <MenuRow icon={<IconStyle />} label={i18n._(msg`settings.subtitleStyle`)} value={presetLabel} onClick={() => go('subtitle-style')} />
+              <MenuRow icon={<IconTimer />} label={i18n._(msg`settings.subtitleTiming`)}
                 value={subDelay !== 0 ? `${subDelay >= 0 ? '+' : ''}${subDelay.toFixed(1)}s` : undefined}
                 onClick={() => go('sub-timing')} />
             </>
           )}
           <Divider />
           {/* Playback speed */}
-          <MenuRow icon={<IconSpeed />} label="Playback Speed"
-            value={videoEl && videoEl.playbackRate !== 1 ? `${videoEl.playbackRate}x` : 'Normal'}
+          <MenuRow icon={<IconSpeed />} label={i18n._(msg`settings.playbackSpeed`)}
+            value={videoEl && videoEl.playbackRate !== 1 ? `${videoEl.playbackRate}x` : i18n._(msg`settings.normal`)}
             onClick={() => go('speed')} />
           {mediaPlugin && <Divider />}
           {/* Media section */}
           {mediaPlugin && (
             <>
-              <MenuRow icon={<IconBrightness />} label="Brightness"
+              <MenuRow icon={<IconBrightness />} label={i18n._(msg`settings.brightness`)}
                 value={filters.brightness !== 100 ? `${filters.brightness}%` : undefined} onClick={() => go('brightness')} />
-              <MenuRow icon={<IconContrast />} label="Contrast"
+              <MenuRow icon={<IconContrast />} label={i18n._(msg`settings.contrast`)}
                 value={filters.contrast !== 100 ? `${filters.contrast}%` : undefined} onClick={() => go('contrast')} />
-              <MenuRow icon={<IconSaturation />} label="Saturation"
+              <MenuRow icon={<IconSaturation />} label={i18n._(msg`settings.saturation`)}
                 value={filters.saturation !== 100 ? `${filters.saturation}%` : undefined} onClick={() => go('saturation')} />
-              <MenuRow icon={<IconNight />} label="Night Mode"
+              <MenuRow icon={<IconNight />} label={i18n._(msg`settings.nightMode`)}
                 value={filters.warmth > 0 ? `${filters.warmth}%` : undefined} onClick={() => go('warmth')} />
               <Divider />
-              <MenuRow icon={<IconVolume />} label="Volume Boost"
+              <MenuRow icon={<IconVolume />} label={i18n._(msg`settings.volumeBoost`)}
                 value={volume !== 100 ? `${volume}%` : undefined} onClick={() => go('volumeBoost')} />
               {audioTracks.length > 1 && (
-                <MenuRow icon={<IconAudio />} label="Audio Track"
+                <MenuRow icon={<IconAudio />} label={i18n._(msg`settings.audioTrack`)}
                   value={audioTracks.find(t => t.enabled)?.label} onClick={() => go('audioTrack')} />
               )}
             </>
