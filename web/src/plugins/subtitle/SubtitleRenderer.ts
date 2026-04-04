@@ -29,19 +29,20 @@ export class SubtitleRenderer {
       overflow: 'hidden',
     });
 
-    // Secondary subtitle container (TOP area)
-    this.secondaryContainer = this.createCueContainer('top');
+    // Secondary subtitle container (opposite end from primary)
+    this.secondaryContainer = this.createCueContainer('secondary');
 
-    // Primary subtitle container (BOTTOM area)
-    this.primaryContainer = this.createCueContainer('bottom');
+    // Primary subtitle container (follows position setting)
+    this.primaryContainer = this.createCueContainer('primary');
 
     this.overlay.appendChild(this.secondaryContainer);
     this.overlay.appendChild(this.primaryContainer);
     this.containerEl.appendChild(this.overlay);
   }
 
-  private createCueContainer(position: 'top' | 'bottom'): HTMLDivElement {
+  private createCueContainer(role: 'primary' | 'secondary'): HTMLDivElement {
     const el = document.createElement('div');
+    const s = this.styleConfig;
     Object.assign(el.style, {
       position: 'absolute',
       left: '0',
@@ -49,14 +50,29 @@ export class SubtitleRenderer {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      padding: `0 ${this.styleConfig.safeMargin}%`,
-      ...(position === 'bottom'
-        ? { bottom: `${this.styleConfig.positionOffset}%` }
-        : { top: `${this.styleConfig.positionOffset}%` }),
-      transition: this.styleConfig.fadeAnimation
-        ? 'opacity 150ms ease-out'
-        : 'none',
+      padding: `0 ${s.safeMargin}%`,
+      transition: s.fadeAnimation ? 'opacity 150ms ease-out' : 'none',
     });
+
+    if (role === 'primary') {
+      // Primary follows the user's position setting
+      if (s.position === 'top') {
+        el.style.top = `${s.positionOffset}%`;
+      } else if (s.position === 'center') {
+        el.style.top = '50%';
+        el.style.transform = 'translateY(-50%)';
+      } else {
+        el.style.bottom = `${s.positionOffset}%`;
+      }
+    } else {
+      // Secondary sits at the opposite end
+      if (s.position === 'top') {
+        el.style.bottom = `${s.positionOffset}%`;
+      } else {
+        el.style.top = `${s.positionOffset}%`;
+      }
+    }
+
     return el;
   }
 
@@ -165,10 +181,78 @@ export class SubtitleRenderer {
   }
 
   private applyAssStyle(el: HTMLSpanElement, cue: SubtitleCue) {
-    // Apply ASS-specific styles from cue.style map
-    // This will be fully implemented in Task 7
-    // For now, fall back to default style
-    this.applyStyle(el, { ...cue, style: undefined }, false);
+    const s = cue.style!;
+
+    // Base styles for ASS cues
+    Object.assign(el.style, {
+      fontFamily: s.fontFamily || this.styleConfig.fontFamily,
+      fontSize: s.fontSize || `${this.styleConfig.fontSize}px`,
+      color: s.color || this.styleConfig.color,
+      lineHeight: '1.4',
+      textAlign: 'center' as const,
+      whiteSpace: 'pre-wrap',
+      maxWidth: '80%',
+      wordBreak: 'break-word',
+      display: 'inline-block',
+      marginBottom: '4px',
+      paintOrder: 'stroke fill',
+    });
+
+    // Font weight / style / decoration
+    if (s.fontWeight) el.style.fontWeight = s.fontWeight;
+    if (s.fontStyle) el.style.fontStyle = s.fontStyle;
+    if (s.textDecoration) el.style.textDecoration = s.textDecoration;
+
+    // Outline and shadow via textShadow
+    if (s.textShadow) el.style.textShadow = s.textShadow;
+    if (s.webkitTextStroke) {
+      (el.style as CSSStyleDeclaration & { webkitTextStroke: string }).webkitTextStroke = s.webkitTextStroke;
+    }
+
+    // Opaque box background (BorderStyle 3)
+    if (s.backgroundColor) {
+      el.style.backgroundColor = s.backgroundColor;
+      el.style.padding = s.padding || '2px 4px';
+      el.style.borderRadius = '2px';
+    }
+
+    // ASS-specific absolute positioning when cue has position data
+    if (cue.position) {
+      const container = el.parentElement;
+      if (container) {
+        // Override container's default flex positioning to allow absolute placement
+        container.style.position = 'absolute';
+        container.style.inset = '0';
+        container.style.display = 'flex';
+        container.style.justifyContent = 'center';
+        container.style.alignItems = 'flex-end';
+
+        // Map position percentages to alignment
+        const { x, y } = cue.position;
+
+        // Horizontal alignment
+        if (x <= 25) {
+          container.style.justifyContent = 'flex-start';
+          container.style.paddingLeft = `${this.styleConfig.safeMargin}%`;
+        } else if (x >= 75) {
+          container.style.justifyContent = 'flex-end';
+          container.style.paddingRight = `${this.styleConfig.safeMargin}%`;
+        } else {
+          container.style.justifyContent = 'center';
+        }
+
+        // Vertical alignment
+        if (y <= 25) {
+          container.style.alignItems = 'flex-start';
+          container.style.paddingTop = `${this.styleConfig.positionOffset}%`;
+        } else if (y >= 75) {
+          container.style.alignItems = 'flex-end';
+          container.style.paddingBottom = `${this.styleConfig.positionOffset}%`;
+        } else {
+          container.style.alignItems = 'center';
+        }
+      }
+    }
   }
 
   /** Sanitize text — allow basic tags (<i>, <b>, <u>), strip everything else */
@@ -193,13 +277,41 @@ export class SubtitleRenderer {
   }
 
   /** Update style config (called when user changes settings) */
-  updateStyle(config: Partial<SubtitleStyleConfig>) {
-    this.styleConfig = { ...this.styleConfig, ...config };
-    // Re-apply positions based on new safeMargin/positionOffset
+  updateStyle(config: SubtitleStyleConfig) {
+    this.styleConfig = config;
+
+    // Rebuild primary container position — clear both top/bottom, then set the correct one
+    this.primaryContainer.style.top = '';
+    this.primaryContainer.style.bottom = '';
+    switch (this.styleConfig.position) {
+      case 'top':
+        this.primaryContainer.style.top = `${this.styleConfig.positionOffset}%`;
+        break;
+      case 'center':
+        this.primaryContainer.style.top = '50%';
+        this.primaryContainer.style.transform = 'translateY(-50%)';
+        break;
+      case 'bottom':
+      default:
+        this.primaryContainer.style.bottom = `${this.styleConfig.positionOffset}%`;
+        this.primaryContainer.style.transform = '';
+        break;
+    }
     this.primaryContainer.style.padding = `0 ${this.styleConfig.safeMargin}%`;
-    this.primaryContainer.style.bottom = `${this.styleConfig.positionOffset}%`;
+    this.primaryContainer.style.transition = this.styleConfig.fadeAnimation
+      ? 'opacity 150ms ease-out'
+      : 'none';
+
+    // Secondary container always stays at the opposite end
+    this.secondaryContainer.style.top = '';
+    this.secondaryContainer.style.bottom = '';
+    if (this.styleConfig.position === 'top') {
+      this.secondaryContainer.style.bottom = `${this.styleConfig.positionOffset}%`;
+    } else {
+      this.secondaryContainer.style.top = `${this.styleConfig.positionOffset}%`;
+    }
     this.secondaryContainer.style.padding = `0 ${this.styleConfig.safeMargin}%`;
-    this.secondaryContainer.style.top = `${this.styleConfig.positionOffset}%`;
+
     // Re-render current cues with new style
     this.renderCues(this.primaryContainer, this.currentPrimaryCues, false);
     this.renderCues(this.secondaryContainer, this.currentSecondaryCues, true);
