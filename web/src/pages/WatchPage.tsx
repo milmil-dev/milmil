@@ -35,11 +35,23 @@ import {
   streamApi,
 } from '@/lib/api/stream';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
+import type { CapturePluginAPI } from '@/plugins/capture/CapturePlugin';
+import { createCapturePlugin } from '@/plugins/capture/CapturePlugin';
+import type { GesturePluginAPI } from '@/plugins/gesture/GesturePlugin';
+import { createGesturePlugin } from '@/plugins/gesture/GesturePlugin';
+import type { KeyboardPluginAPI } from '@/plugins/keyboard/KeyboardPlugin';
+import { createKeyboardPlugin } from '@/plugins/keyboard/KeyboardPlugin';
+import type { MediaSettingsPluginAPI } from '@/plugins/media-settings/MediaSettingsPlugin';
+import { createMediaSettingsPlugin } from '@/plugins/media-settings/MediaSettingsPlugin';
+import { MediaSettingsPanel } from '@/plugins/media-settings/MediaSettingsPanel';
+import type { PlaybackPluginAPI } from '@/plugins/playback/PlaybackPlugin';
+import { createPlaybackPlugin } from '@/plugins/playback/PlaybackPlugin';
 import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
 import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
 import { SubtitleSettingsPanel } from '@/plugins/subtitle/SubtitleSettingsPanel';
 import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { usePlayerStore } from '@/store/player-store';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 const SAVE_INTERVAL_MS = 10_000;
@@ -110,6 +122,12 @@ export function WatchPage() {
   const videoElRef = useRef<HTMLVideoElement | null>(null);
   const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const subtitlePluginRef = useRef<SubtitlePluginAPI | null>(null);
+  const keyboardPluginRef = useRef<KeyboardPluginAPI | null>(null);
+  const mediaSettingsPluginRef = useRef<MediaSettingsPluginAPI | null>(null);
+  const playbackPluginRef = useRef<PlaybackPluginAPI | null>(null);
+  const gesturePluginRef = useRef<GesturePluginAPI | null>(null);
+  const capturePluginRef = useRef<CapturePluginAPI | null>(null);
+  const navigateToNextEpisodeRef = useRef<() => void>(() => {});
 
   // --------------- Transcode state ---------------
   const [transcodeStatus, setTranscodeStatus] = useState<'idle' | 'processing' | 'ready' | 'error'>(
@@ -357,10 +375,15 @@ export function WatchPage() {
     };
   }, [saveProgress]);
 
-  // Dispose subtitle plugin on unmount
+  // Dispose all plugins on unmount
   useEffect(() => {
     return () => {
       subtitlePluginRef.current?.dispose();
+      keyboardPluginRef.current?.dispose();
+      mediaSettingsPluginRef.current?.dispose();
+      playbackPluginRef.current?.dispose();
+      gesturePluginRef.current?.dispose();
+      capturePluginRef.current?.dispose();
     };
   }, []);
 
@@ -372,28 +395,72 @@ export function WatchPage() {
       videoElRef.current = el;
       setVideoEl(el);
 
-      // Initialize subtitle plugin
+      // Initialize all plugins
       const containerEl = api.containerElement();
       if (el && containerEl) {
-        // Dispose previous plugin if any
+        const prefs = usePreferencesStore.getState();
+
+        // --- Subtitle plugin ---
         subtitlePluginRef.current?.dispose();
         const appLocale = i18n.locale ?? 'zh-TW';
-        const plugin = createSubtitlePlugin(el, containerEl, appLocale);
-        subtitlePluginRef.current = plugin;
+        const subtitlePlugin = createSubtitlePlugin(el, containerEl, appLocale);
+        subtitlePluginRef.current = subtitlePlugin;
 
         // Load tracks if subtitles are already available
         if (subtitles && subtitles.length > 0) {
-          plugin.loadTracks(
+          subtitlePlugin.loadTracks(
             subtitles.map((s) => ({
               id: s.id,
               label: s.language,
               language: s.language,
               source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
-              format: (s.format || 'vtt') as SubtitleTrack['format'],
+              format: 'vtt' as SubtitleTrack['format'], // backend always converts to VTT
               url: getSubtitleUrl(s.id),
             }))
           );
         }
+
+        // --- Keyboard plugin ---
+        keyboardPluginRef.current?.dispose();
+        keyboardPluginRef.current = createKeyboardPlugin(el, containerEl, {
+          customBindings: prefs.keyboardBindings,
+          onNextEpisode: () => navigateToNextEpisodeRef.current(),
+        });
+
+        // --- Media Settings plugin ---
+        mediaSettingsPluginRef.current?.dispose();
+        mediaSettingsPluginRef.current = createMediaSettingsPlugin(el, containerEl);
+
+        // --- Playback plugin ---
+        playbackPluginRef.current?.dispose();
+        const playbackPlugin = createPlaybackPlugin(el, containerEl);
+        playbackPlugin.onNextEpisode(() => navigateToNextEpisodeRef.current());
+        playbackPlugin.setAutoNext(prefs.autoNext);
+        playbackPlugin.setAutoSkip(prefs.autoSkipOp, prefs.autoSkipEd);
+        playbackPluginRef.current = playbackPlugin;
+
+        // --- Gesture plugin ---
+        gesturePluginRef.current?.dispose();
+        gesturePluginRef.current = createGesturePlugin(el, containerEl, {
+          enabled: prefs.gestureEnabled,
+          sensitivity: prefs.gestureSensitivity,
+        });
+
+        // --- Capture plugin ---
+        capturePluginRef.current?.dispose();
+        capturePluginRef.current = createCapturePlugin(el, containerEl);
+
+        // --- Inter-plugin communication: keyboard -> subtitle ---
+        containerEl.addEventListener('plugin-action', ((e: CustomEvent) => {
+          const sp = subtitlePluginRef.current;
+          if (!sp) return;
+          switch (e.detail.action) {
+            case 'subtitle:toggle': sp.toggle(); break;
+            case 'subtitle:next-track': sp.nextTrack(); break;
+            case 'subtitle:delay-decrease': sp.adjustDelay(-0.1); break;
+            case 'subtitle:delay-increase': sp.adjustDelay(0.1); break;
+          }
+        }) as EventListener);
       }
 
       // Restore progress and show resume overlay
@@ -435,7 +502,7 @@ export function WatchPage() {
         label: s.language,
         language: s.language,
         source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
-        format: (s.format || 'vtt') as SubtitleTrack['format'],
+        format: 'vtt' as SubtitleTrack['format'], // backend always converts to VTT
         url: getSubtitleUrl(s.id),
       }))
     );
@@ -453,8 +520,21 @@ export function WatchPage() {
       setTranscodeToken(null);
       setResumeFrom(null);
       setVideoEl(null);
+
+      // Dispose all plugins
       subtitlePluginRef.current?.dispose();
       subtitlePluginRef.current = null;
+      keyboardPluginRef.current?.dispose();
+      keyboardPluginRef.current = null;
+      mediaSettingsPluginRef.current?.dispose();
+      mediaSettingsPluginRef.current = null;
+      playbackPluginRef.current?.dispose();
+      playbackPluginRef.current = null;
+      gesturePluginRef.current?.dispose();
+      gesturePluginRef.current = null;
+      capturePluginRef.current?.dispose();
+      capturePluginRef.current = null;
+
       playerRef.current = null;
       videoElRef.current = null;
 
@@ -467,6 +547,29 @@ export function WatchPage() {
     },
     [saveProgress, navigate, bangumiId]
   );
+
+  // --------------- Navigate to next episode ---------------
+  const navigateToNextEpisode = useCallback(() => {
+    if (!currentEpisode) return;
+    const currentIdx = mergedEpisodes.findIndex((e) => e.sort === currentEpisode.sort);
+    const nextEp = mergedEpisodes[currentIdx + 1];
+    if (nextEp?.media_file) {
+      handleSelectEpisode(nextEp.sort);
+    }
+  }, [currentEpisode, mergedEpisodes, handleSelectEpisode]);
+  navigateToNextEpisodeRef.current = navigateToNextEpisode;
+
+  // --------------- Sync preferences to plugins ---------------
+  useEffect(() => {
+    const unsub = usePreferencesStore.subscribe((state) => {
+      keyboardPluginRef.current?.updateBindings(state.keyboardBindings);
+      gesturePluginRef.current?.setEnabled(state.gestureEnabled);
+      gesturePluginRef.current?.setSensitivity(state.gestureSensitivity);
+      playbackPluginRef.current?.setAutoNext(state.autoNext);
+      playbackPluginRef.current?.setAutoSkip(state.autoSkipOp, state.autoSkipEd);
+    });
+    return unsub;
+  }, []);
 
   // --------------- Danmaku seek ---------------
   const handleSeekDanmaku = useCallback((time: number) => {
@@ -540,6 +643,7 @@ export function WatchPage() {
                           {subtitlePluginRef.current && (
                             <SubtitleSettingsPanel plugin={subtitlePluginRef.current} />
                           )}
+                          <MediaSettingsPanel plugin={mediaSettingsPluginRef.current} />
                           <TechInfoPopover
                             mediaInfo={mediaInfo}
                             subtitles={subtitles}
