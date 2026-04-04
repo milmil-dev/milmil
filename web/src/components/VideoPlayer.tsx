@@ -249,32 +249,37 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
 
   useEffect(() => {
     if (!player || readyFired.current) return;
-
-    const findVideo = (): HTMLVideoElement | null => {
-      if (videoRef.current) return videoRef.current;
-      const el = containerRef.current?.querySelector('video') as HTMLVideoElement | null;
-      videoRef.current = el;
-      return el;
-    };
-
-    const api: VideoPlayerAPI = {
-      currentTime: (t?: number) => {
-        const video = findVideo();
-        if (!video) return 0;
-        if (t !== undefined) video.currentTime = t;
-        return video.currentTime;
-      },
-      duration: () => findVideo()?.duration ?? 0,
-      isDisposed: () => !findVideo(),
-      on: (event: string, handler: () => void) => {
-        findVideo()?.addEventListener(event, handler);
-      },
-      videoElement: () => findVideo(),
-      containerElement: () => containerRef.current,
-    };
-
     readyFired.current = true;
-    onReady?.(api);
+
+    // Defer to next frame so containerRef is attached to the DOM
+    const rafId = requestAnimationFrame(() => {
+      const findVideo = (): HTMLVideoElement | null => {
+        if (videoRef.current) return videoRef.current;
+        const el = containerRef.current?.querySelector('video') as HTMLVideoElement | null;
+        videoRef.current = el;
+        return el;
+      };
+
+      const api: VideoPlayerAPI = {
+        currentTime: (t?: number) => {
+          const video = findVideo();
+          if (!video) return 0;
+          if (t !== undefined) video.currentTime = t;
+          return video.currentTime;
+        },
+        duration: () => findVideo()?.duration ?? 0,
+        isDisposed: () => !findVideo(),
+        on: (event: string, handler: () => void) => {
+          findVideo()?.addEventListener(event, handler);
+        },
+        videoElement: () => findVideo(),
+        containerElement: () => containerRef.current,
+      };
+
+      onReady?.(api);
+    });
+
+    return () => cancelAnimationFrame(rafId);
   }, [player, onReady]);
 
   const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
