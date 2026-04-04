@@ -14,17 +14,19 @@
   background-color: var(--mm-accent) !important;
 }
 
-/* Custom controls: no background, fade transition */
+/* Custom controls: no background */
 .media-controls--custom {
   background: transparent !important;
-  transition: opacity 0.3s ease !important;
 }
 
-/* Hide controls when container has data-idle */
-[data-videojs][data-idle] .media-controls--custom,
-[data-videojs][data-idle] .media-overlay {
+/* Hide ALL player chrome when idle (override VideoJS media-surface) */
+[data-videojs][data-idle] .media-default-skin > * {
   opacity: 0 !important;
   pointer-events: none !important;
+  transition: opacity 0.3s ease !important;
+}
+[data-videojs]:not([data-idle]) .media-default-skin > * {
+  transition: opacity 0.3s ease !important;
 }
 [data-videojs][data-idle] {
   cursor: none;
