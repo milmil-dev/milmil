@@ -69,12 +69,13 @@ function MenuRow({ icon, label, value, onClick }: {
 }) {
   return (
     <button type="button" onClick={onClick}
-      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left text-xs
-        text-mm-text-primary hover:bg-mm-surface-hover active:scale-[0.99] transition-all duration-100">
-      {icon && <span className="shrink-0 w-4 h-4 text-mm-text-tertiary">{icon}</span>}
+      className="w-full flex items-center gap-2.5 mx-2 my-0.5 px-2.5 py-2 text-left text-xs
+        rounded-lg text-white/90 hover:bg-white/[0.08] active:scale-[0.99] transition-all duration-100"
+      style={{ width: 'calc(100% - 16px)' }}>
+      {icon && <span className="shrink-0 w-4 h-4 text-white/50">{icon}</span>}
       <span className="flex-1 truncate">{label}</span>
-      {value && <span className="shrink-0 text-mm-text-tertiary text-[11px]">{value}</span>}
-      <svg viewBox="0 0 24 24" fill="currentColor" className="shrink-0 w-3.5 h-3.5 text-mm-text-muted">
+      {value && <span className="shrink-0 text-white/50 text-[11px]">{value}</span>}
+      <svg viewBox="0 0 24 24" fill="currentColor" className="shrink-0 w-3.5 h-3.5 text-white/25">
         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
       </svg>
     </button>
@@ -87,14 +88,15 @@ function OptionRow({ label, selected, onClick, swatch }: {
   return (
     <button type="button" onClick={onClick}
       className={cn(
-        'w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left text-xs transition-all duration-100 active:scale-[0.99]',
-        selected ? 'text-mm-text-primary bg-mm-surface-hover' : 'text-mm-text-secondary hover:bg-mm-surface-hover',
-      )}>
+        'w-full flex items-center gap-2.5 mx-2 my-0.5 px-2.5 py-2 text-left text-xs rounded-lg transition-all duration-100 active:scale-[0.99]',
+        selected ? 'text-white bg-white/[0.1]' : 'text-white/60 hover:bg-white/[0.08]',
+      )}
+      style={{ width: 'calc(100% - 16px)' }}>
       <span className="shrink-0 w-4 h-4 flex items-center justify-center">
         {selected ? (
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-mm-accent"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
         ) : swatch ? (
-          <span className="w-3 h-3 rounded-full border border-mm-border" style={{ backgroundColor: swatch }} />
+          <span className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: swatch }} />
         ) : null}
       </span>
       <span className="flex-1">{label}</span>
@@ -105,9 +107,9 @@ function OptionRow({ label, selected, onClick, swatch }: {
 function BackHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <button type="button" onClick={onBack}
-      className="w-full flex items-center gap-2 px-3.5 py-2.5 text-left text-xs font-medium
-        text-mm-text-primary border-b border-mm-border-subtle hover:bg-mm-surface-hover transition-colors">
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-mm-text-tertiary">
+      className="w-full flex items-center gap-2 px-4 py-2.5 text-left text-xs font-medium
+        text-white/90 border-b border-white/[0.06] hover:bg-white/[0.06] transition-colors">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-white/40">
         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
       </svg>
       {title}
@@ -116,7 +118,7 @@ function BackHeader({ title, onBack }: { title: string; onBack: () => void }) {
 }
 
 function Divider() {
-  return <div className="border-t border-mm-border-subtle my-0.5" />;
+  return <div className="border-t border-white/[0.06] mx-2 my-1" />;
 }
 
 function SliderControl({ label, value, min, max, step, display, defaultVal, onChange }: {
@@ -124,21 +126,21 @@ function SliderControl({ label, value, min, max, step, display, defaultVal, onCh
   display: string; defaultVal: number; onChange: (v: number) => void;
 }) {
   return (
-    <div className="px-3.5 py-3 space-y-2.5">
+    <div className="px-4 py-3 space-y-2.5">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-mm-text-tertiary">{label}</span>
-        <span className="text-[11px] text-mm-text-secondary tabular-nums">{display}</span>
+        <span className="text-[11px] text-white/50">{label}</span>
+        <span className="text-[11px] text-white/60 tabular-nums">{display}</span>
       </div>
       <input type="range" min={min} max={max} step={step} value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1 bg-mm-border rounded-full appearance-none
+        className="w-full h-1 bg-white/15 rounded-full appearance-none
           [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
-          [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-mm-text-primary
+          [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
           [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform
           [&::-webkit-slider-thumb]:hover:scale-110" />
       {value !== defaultVal && (
         <button type="button" onClick={() => onChange(defaultVal)}
-          className="text-[11px] text-mm-text-tertiary hover:text-mm-text-secondary transition-colors">
+          className="text-[11px] text-white/40 hover:text-white/60 transition-colors">
           Reset
         </button>
       )}
@@ -213,13 +215,13 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
           <MenuRow label="Border" value={SHADOW_OPTIONS.find(s => s.value === (subStyle.shadowType ?? 'none'))?.label} onClick={() => go('sub-border')} />
           <MenuRow label="Position" value={POSITION_OPTIONS.find(p => p.value === (subStyle.position ?? 'bottom'))?.label} onClick={() => go('sub-position')} />
           <Divider />
-          <div className="flex items-center gap-2.5 px-3.5 py-2.5">
-            <span className="flex-1 text-xs text-mm-text-secondary">Respect ASS Styles</span>
+          <div className="flex items-center gap-2.5 mx-2 px-2.5 py-2">
+            <span className="flex-1 text-xs text-white/70">Respect ASS Styles</span>
             <button type="button" onClick={() => updateSubStyle({ respectAssStyle: !(subStyle.respectAssStyle ?? true) })}
               className={cn('relative w-9 h-5 rounded-full transition-colors',
-                (subStyle.respectAssStyle ?? true) ? 'bg-mm-accent/40' : 'bg-mm-border')}>
-              <span className={cn('absolute top-0.5 w-4 h-4 rounded-full transition-transform',
-                (subStyle.respectAssStyle ?? true) ? 'translate-x-[18px] bg-mm-accent' : 'translate-x-0.5 bg-mm-text-tertiary')} />
+                (subStyle.respectAssStyle ?? true) ? 'bg-white/30' : 'bg-white/10')}>
+              <span className={cn('absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform',
+                (subStyle.respectAssStyle ?? true) ? 'translate-x-[18px]' : 'translate-x-0.5')} />
             </button>
           </div>
         </>);
@@ -298,23 +300,23 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
           <BackHeader title="Playback Speed" onBack={() => back('main')} />
           <div className="px-3.5 py-3 space-y-4">
             {/* Current speed display */}
-            <div className="text-center text-lg font-medium text-mm-text-primary tabular-nums">
+            <div className="text-center text-lg font-medium text-white/90 tabular-nums">
               {currentSpeed.toFixed(2)}x
             </div>
             {/* Slider with +/- buttons */}
             <div className="flex items-center gap-2.5">
               <button type="button" onClick={() => setSpeed(Math.max(0.25, currentSpeed - 0.25))}
-                className="w-7 h-7 flex items-center justify-center rounded-full bg-mm-surface-hover text-mm-text-secondary hover:bg-mm-border active:scale-95 transition-all text-sm font-medium">
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-white/[0.08] text-white/60 hover:bg-white/[0.12] active:scale-95 transition-all text-sm font-medium">
                 −
               </button>
               <input type="range" min={0.25} max={4} step={0.25} value={currentSpeed}
                 onChange={(e) => setSpeed(Number(e.target.value))}
-                className="flex-1 h-1 bg-mm-border rounded-full appearance-none
+                className="flex-1 h-1 bg-white/15 rounded-full appearance-none
                   [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
-                  [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-mm-text-primary
+                  [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
                   [&::-webkit-slider-thumb]:cursor-pointer" />
               <button type="button" onClick={() => setSpeed(Math.min(4, currentSpeed + 0.25))}
-                className="w-7 h-7 flex items-center justify-center rounded-full bg-mm-surface-hover text-mm-text-secondary hover:bg-mm-border active:scale-95 transition-all text-sm font-medium">
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-white/[0.08] text-white/60 hover:bg-white/[0.12] active:scale-95 transition-all text-sm font-medium">
                 +
               </button>
             </div>
@@ -325,8 +327,8 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
                   className={cn(
                     'px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all active:scale-95',
                     Math.abs(currentSpeed - s) < 0.01
-                      ? 'bg-mm-surface-hover text-mm-text-primary'
-                      : 'bg-mm-border-subtle text-mm-text-tertiary hover:bg-mm-surface-hover',
+                      ? 'bg-white/[0.12] text-white'
+                      : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10]',
                   )}>
                   {s === 1 ? '1.0' : s.toString()}
                 </button>
@@ -334,7 +336,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
             </div>
             {/* Normal label */}
             {Math.abs(currentSpeed - 1) < 0.01 && (
-              <div className="text-center text-[10px] text-mm-text-muted">Normal</div>
+              <div className="text-center text-[10px] text-white/30">Normal</div>
             )}
           </div>
         </>);
@@ -436,8 +438,9 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         exit={{ opacity: 0, scale: 0.96, y: 6 }}
         transition={{ duration: 0.12, ease: [0.2, 0, 0, 1] }}
         className="absolute right-2 bottom-12 z-[101] w-[260px] max-h-[65vh]
-          rounded-lg border border-mm-border bg-black/90 backdrop-blur-md
-          shadow-[0_4px_24px_rgba(0,0,0,0.5)] overflow-hidden"
+          rounded-2xl bg-[rgba(40,40,40,0.55)] backdrop-blur-[40px] backdrop-saturate-[1.8]
+          border border-white/[0.12]
+          shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_0.5px_0_rgba(255,255,255,0.08)] overflow-hidden"
       >
         <AnimatePresence mode="popLayout" initial={false} custom={dirRef.current}>
           <motion.div
