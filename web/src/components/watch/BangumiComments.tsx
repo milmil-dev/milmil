@@ -39,7 +39,7 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
 
   return (
     <div className="mt-4">
-      <h3 className="text-sm font-semibold text-white/70 mb-3">
+      <h3 className="text-sm font-semibold text-mm-text-primary mb-3">
         {i18n._(msg`watch.comments`)} ({comments.length})
       </h3>
       <div className="space-y-3">
@@ -51,11 +51,11 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
               <div className="w-7 h-7 rounded-full bg-white/[0.08] shrink-0" />
             )}
             <div className="min-w-0">
-              <div className="text-[11px] text-white/50">
+              <div className="text-[11px] text-mm-text-secondary">
                 {c.nickname || c.username}
                 {c.rate > 0 && <span className="ml-1.5 text-amber-400">★ {c.rate}</span>}
               </div>
-              <p className="text-xs text-white/40 mt-0.5 line-clamp-3 leading-relaxed">
+              <p className="text-xs text-mm-text-secondary mt-0.5 line-clamp-3 leading-relaxed">
                 {c.comment}
               </p>
             </div>
@@ -66,7 +66,7 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="mt-2 text-xs text-white/30 hover:text-white/50 transition-colors w-full text-center py-1"
+          className="mt-2 text-xs text-mm-text-tertiary hover:text-mm-text-secondary transition-colors w-full text-center py-1"
         >
           {expanded ? i18n._(msg`watch.showLess`) : i18n._(msg`watch.showMore`)}
         </button>
