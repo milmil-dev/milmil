@@ -214,7 +214,23 @@ function CustomVideoSkin({
         </div>
       </Controls.Root>
       <div className="media-overlay" />
+      <PauseIndicator />
     </Container>
+  );
+}
+
+/** Shows a small pause icon in the bottom-right when paused and controls are hidden (idle) */
+function PauseIndicator() {
+  const paused = usePlayer((s) => Boolean(s.paused));
+  const ended = usePlayer((s) => Boolean(s.ended));
+  if (!paused || ended) return null;
+  return (
+    <div className="pause-indicator absolute bottom-4 right-4 pointer-events-none
+      opacity-0 transition-opacity duration-300 text-white/40">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+      </svg>
+    </div>
   );
 }
 

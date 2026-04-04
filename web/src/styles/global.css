@@ -44,6 +44,10 @@
 [data-videojs][data-idle] .media-overlay {
   opacity: 0 !important;
 }
+/* Show pause indicator only when controls are hidden */
+[data-videojs][data-idle] .pause-indicator {
+  opacity: 1 !important;
+}
 
 @layer base {
   * {
