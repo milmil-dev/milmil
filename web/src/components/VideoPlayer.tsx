@@ -122,10 +122,11 @@ function CustomVideoSkin({
         )}
       />
 
-      {/* Gradient fade behind controls (YouTube style — subtle) */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+      {/* Gradient fade behind controls — shares media-surface for auto-hide */}
+      <div className="media-surface absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2) 60%, transparent)' }} />
 
-      <Controls.Root className="media-controls flex flex-col gap-0">
+      <Controls.Root className="media-surface media-controls flex flex-col gap-0" style={{ background: 'transparent' }}>
         {/* Progress bar — full width, no side padding (YouTube style) */}
         <div className="w-full">
           <TimeSlider.Root className="media-slider">
