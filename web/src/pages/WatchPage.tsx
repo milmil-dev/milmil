@@ -583,7 +583,7 @@ export function WatchPage() {
     return (
       <PageTransition>
         <div className="min-h-screen bg-black/20">
-          <div className="max-w-[1400px] mx-auto px-3 lg:px-6 py-3 lg:py-4">
+          <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
             {/* Title bar skeleton */}
             <Skeleton className="h-6 w-1/3 mb-2" />
             <Skeleton className="h-4 w-1/5 mb-3" />
@@ -624,7 +624,7 @@ export function WatchPage() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-black/20">
-        <div className="max-w-[1400px] mx-auto px-3 lg:px-6 py-3 lg:py-4">
+        <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
           {/* Title bar */}
           <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
 
