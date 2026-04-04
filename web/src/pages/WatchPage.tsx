@@ -371,21 +371,6 @@ export function WatchPage() {
         setResumeFrom(pos);
       }
 
-      // Add subtitle tracks
-      if (subtitles && subtitles.length > 0) {
-        for (const sub of subtitles) {
-          api.addRemoteTextTrack(
-            {
-              kind: 'subtitles',
-              src: getSubtitleUrl(sub.id),
-              srclang: sub.language,
-              label: sub.language,
-            },
-            true
-          );
-        }
-      }
-
       // Event handlers for progress saving
       api.on('pause', () => saveProgress());
       api.on('ended', () => {
@@ -400,8 +385,26 @@ export function WatchPage() {
         queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(bangumiId) });
       });
     },
-    [currentEpisode, subtitles, saveProgress, fileId, bangumiId, queryClient]
+    [currentEpisode, saveProgress, fileId, bangumiId, queryClient]
   );
+
+  // --------------- Subtitle tracks (loaded independently of player ready) ---------------
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || player.isDisposed() || !subtitles || subtitles.length === 0) return;
+
+    for (const sub of subtitles) {
+      player.addRemoteTextTrack(
+        {
+          kind: 'subtitles',
+          src: getSubtitleUrl(sub.id),
+          srclang: sub.language,
+          label: sub.language,
+        },
+        true
+      );
+    }
+  }, [subtitles]);
 
   // --------------- Episode switching ---------------
   const handleSelectEpisode = useCallback(
