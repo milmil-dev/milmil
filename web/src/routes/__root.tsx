@@ -72,15 +72,19 @@ function BannerImage({ src, position }: { src: string | null; position: 'top' | 
       )}
       style={{ left: 0, right: 0 }}
     >
-      {/* Bottom bleed — prevents hard edge below banner */}
+      {/* Edge bleed — prevents hard edge at the far end of banner */}
       <div
-        className="w-full z-[2] absolute -bottom-[5rem] h-[5rem]"
-        style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+        className={cn('w-full z-[2] absolute h-[5rem]', isBottom ? '-top-[5rem]' : '-bottom-[5rem]')}
+        style={{ background: isBottom
+          ? 'linear-gradient(to top, var(--mm-bg), transparent)'
+          : 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
       />
-      {/* Top fade — Seanime: h-[10rem] opacity-50 */}
+      {/* Inner fade — soft transition at content-facing edge */}
       <div
-        className="w-full absolute z-[2] top-0 h-[10rem] opacity-50"
-        style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+        className={cn('w-full absolute z-[2] h-[10rem] opacity-50', isBottom ? 'bottom-0' : 'top-0')}
+        style={{ background: isBottom
+          ? 'linear-gradient(to top, var(--mm-bg), transparent)'
+          : 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
       />
 
       {/* The image — z-[1] so gradients at z-[2] overlay it */}
@@ -127,11 +131,13 @@ function BannerImage({ src, position }: { src: string | null; position: 'top' | 
           background: 'linear-gradient(to right, var(--mm-bg), transparent)',
         }}
       />
-      {/* Bottom gradient — gentle fade at very bottom */}
+      {/* Content-facing gradient — gentle fade toward page content */}
       <div
-        className="w-full z-[2] absolute bottom-0 h-[8rem]"
+        className={cn('w-full z-[2] absolute h-[8rem]', isBottom ? 'top-0' : 'bottom-0')}
         style={{
-          background: 'linear-gradient(to top, var(--mm-bg), transparent)',
+          background: isBottom
+            ? 'linear-gradient(to bottom, var(--mm-bg), transparent)'
+            : 'linear-gradient(to top, var(--mm-bg), transparent)',
         }}
       />
     </div>
