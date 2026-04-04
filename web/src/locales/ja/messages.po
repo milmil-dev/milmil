@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:88
+#: src/pages/WatchPage.tsx:105
 msgid "watch.resumeFrom"
 msgstr "ここから再開"
 
@@ -420,12 +420,12 @@ msgid "auth.error.setupFailed"
 msgstr "セットアップに失敗しました"
 
 #: src/pages/LibrariesPage.tsx:3159
-#: src/pages/LibraryDetailPage.tsx:1192
+#: src/pages/LibraryDetailPage.tsx:1209
 msgid "auth.libraries.signInSubtitle"
 msgstr "ライブラリにアクセスするにはログインしてください"
 
 #: src/pages/LibrariesPage.tsx:3156
-#: src/pages/LibraryDetailPage.tsx:1189
+#: src/pages/LibraryDetailPage.tsx:1206
 msgid "auth.libraries.signInTitle"
 msgstr "ログインが必要です"
 
@@ -440,7 +440,7 @@ msgstr "パスワード"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3166
-#: src/pages/LibraryDetailPage.tsx:1195
+#: src/pages/LibraryDetailPage.tsx:1212
 #: src/pages/LoginPage.tsx:405
 msgid "auth.login.submit"
 msgstr "ログイン"
@@ -501,20 +501,20 @@ msgstr "milmil へようこそ"
 msgid "auth.setup.username"
 msgstr "ユーザー名"
 
-#: src/pages/DownloadsPage.tsx:1366
+#: src/pages/DownloadsPage.tsx:1372
 msgid "autoDownload.active"
 msgstr "有効"
 
-#: src/pages/DownloadsPage.tsx:1712
+#: src/pages/DownloadsPage.tsx:1718
 msgid "autoDownload.add"
 msgstr "追加"
 
-#: src/pages/DownloadsPage.tsx:1711
+#: src/pages/DownloadsPage.tsx:1717
 msgid "autoDownload.adding"
 msgstr ""
 
 #: src/pages/DownloadsPage.tsx:315
-#: src/pages/DownloadsPage.tsx:1681
+#: src/pages/DownloadsPage.tsx:1687
 msgid "autoDownload.addUrl"
 msgstr ""
 
@@ -523,8 +523,8 @@ msgstr ""
 msgid "autoDownload.allSubgroups"
 msgstr "すべてのグループ"
 
-#: src/pages/DownloadsPage.tsx:2191
-#: src/pages/DownloadsPage.tsx:2234
+#: src/pages/DownloadsPage.tsx:2197
+#: src/pages/DownloadsPage.tsx:2240
 msgid "autoDownload.alsoDeleteFiles"
 msgstr ""
 
@@ -532,102 +532,102 @@ msgstr ""
 msgid "autoDownload.anyResolution"
 msgstr "すべての解像度"
 
-#: src/pages/DownloadsPage.tsx:1029
-#: src/pages/DownloadsPage.tsx:1703
-#: src/pages/DownloadsPage.tsx:2201
-#: src/pages/DownloadsPage.tsx:2244
+#: src/pages/DownloadsPage.tsx:1035
+#: src/pages/DownloadsPage.tsx:1709
+#: src/pages/DownloadsPage.tsx:2207
+#: src/pages/DownloadsPage.tsx:2250
 msgid "autoDownload.cancel"
 msgstr "キャンセル"
 
-#: src/pages/DownloadsPage.tsx:2724
+#: src/pages/DownloadsPage.tsx:2735
 msgid "autoDownload.clearAll"
 msgstr "すべてクリア"
 
-#: src/pages/DownloadsPage.tsx:2686
+#: src/pages/DownloadsPage.tsx:2697
 msgid "autoDownload.completed.grouped"
 msgstr "グループ"
 
-#: src/pages/DownloadsPage.tsx:2714
+#: src/pages/DownloadsPage.tsx:2725
 msgid "autoDownload.completed.selectAll"
 msgstr "すべて選択"
 
-#: src/pages/DownloadsPage.tsx:2698
+#: src/pages/DownloadsPage.tsx:2709
 msgid "autoDownload.completed.timeline"
 msgstr "タイムライン"
 
-#: src/pages/DownloadsPage.tsx:1038
+#: src/pages/DownloadsPage.tsx:1044
 msgid "autoDownload.confirm"
 msgstr "購読を確認"
 
-#: src/pages/DownloadsPage.tsx:2216
-#: src/pages/DownloadsPage.tsx:2259
+#: src/pages/DownloadsPage.tsx:2222
+#: src/pages/DownloadsPage.tsx:2265
 msgid "autoDownload.confirmDelete"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:3384
+#: src/pages/DownloadsPage.tsx:3414
 msgid "autoDownload.connecting"
 msgstr "接続中..."
 
-#: src/pages/DownloadsPage.tsx:2156
-#: src/pages/DownloadsPage.tsx:3449
+#: src/pages/DownloadsPage.tsx:2162
+#: src/pages/DownloadsPage.tsx:3479
 msgid "autoDownload.delete"
 msgstr "削除"
 
-#: src/pages/DownloadsPage.tsx:2085
-#: src/pages/DownloadsPage.tsx:2180
+#: src/pages/DownloadsPage.tsx:2091
+#: src/pages/DownloadsPage.tsx:2186
 msgid "autoDownload.deleteAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2186
+#: src/pages/DownloadsPage.tsx:2192
 msgid "autoDownload.deleteAllDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1250
+#: src/pages/DownloadsPage.tsx:1256
 msgid "autoDownload.deleted"
 msgstr "購読を削除しました"
 
-#: src/pages/DownloadsPage.tsx:1894
+#: src/pages/DownloadsPage.tsx:1900
 msgid "autoDownload.deletedAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2225
+#: src/pages/DownloadsPage.tsx:2231
 msgid "autoDownload.deleteItem"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2179
+#: src/pages/DownloadsPage.tsx:2185
 msgid "autoDownload.deleteSelected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2185
+#: src/pages/DownloadsPage.tsx:2191
 msgid "autoDownload.deleteSelectedDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2215
-#: src/pages/DownloadsPage.tsx:2258
+#: src/pages/DownloadsPage.tsx:2221
+#: src/pages/DownloadsPage.tsx:2264
 msgid "autoDownload.deleting"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2117
+#: src/pages/DownloadsPage.tsx:2123
 msgid "autoDownload.deselectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2455
+#: src/pages/DownloadsPage.tsx:2461
 msgid "autoDownload.detail.created"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2471
+#: src/pages/DownloadsPage.tsx:2477
 msgid "autoDownload.detail.files"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2450
+#: src/pages/DownloadsPage.tsx:2456
 msgid "autoDownload.detail.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2452
+#: src/pages/DownloadsPage.tsx:2458
 msgid "autoDownload.detail.rule"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2457
+#: src/pages/DownloadsPage.tsx:2463
 msgid "autoDownload.detail.saveDir"
 msgstr ""
 
@@ -635,7 +635,7 @@ msgstr ""
 #~ msgid "autoDownload.detail.size"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2434
+#: src/pages/DownloadsPage.tsx:2440
 msgid "autoDownload.detail.speed"
 msgstr ""
 
@@ -648,11 +648,11 @@ msgid "autoDownload.download"
 msgstr "ダウンロード"
 
 #: src/pages/DownloadsPage.tsx:553
-#: src/pages/DownloadsPage.tsx:1672
+#: src/pages/DownloadsPage.tsx:1678
 msgid "autoDownload.downloadAdded"
 msgstr "ダウンロードを追加しました"
 
-#: src/pages/DownloadsPage.tsx:2001
+#: src/pages/DownloadsPage.tsx:2007
 msgid "autoDownload.downloading"
 msgstr "ダウンロード中"
 
@@ -664,11 +664,11 @@ msgstr "ダウンロード中"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "購読がありません"
 
-#: src/pages/DownloadsPage.tsx:1390
+#: src/pages/DownloadsPage.tsx:1396
 msgid "autoDownload.episodes"
 msgstr "エピソード"
 
-#: src/pages/DownloadsPage.tsx:1608
+#: src/pages/DownloadsPage.tsx:1614
 msgid "autoDownload.goToSearch"
 msgstr "検索へ"
 
@@ -676,19 +676,19 @@ msgstr "検索へ"
 #~ msgid "autoDownload.goToSettings"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1414
+#: src/pages/DownloadsPage.tsx:1420
 msgid "autoDownload.interval"
 msgstr "更新間隔"
 
-#: src/pages/DownloadsPage.tsx:2016
+#: src/pages/DownloadsPage.tsx:2022
 msgid "autoDownload.items"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1421
+#: src/pages/DownloadsPage.tsx:1427
 msgid "autoDownload.lastTriggered"
 msgstr "最終トリガー"
 
-#: src/pages/DownloadsPage.tsx:991
+#: src/pages/DownloadsPage.tsx:997
 msgid "autoDownload.library"
 msgstr "ライブラリ"
 
@@ -700,15 +700,15 @@ msgstr "ライブラリ"
 #~ msgid "autoDownload.matchesCount"
 #~ msgstr "一致"
 
-#: src/pages/DownloadsPage.tsx:2300
+#: src/pages/DownloadsPage.tsx:2306
 msgid "autoDownload.noActiveDownloads"
 msgstr "アクティブなダウンロードなし"
 
-#: src/pages/DownloadsPage.tsx:3122
+#: src/pages/DownloadsPage.tsx:3152
 msgid "autoDownload.noCompletedDownloads"
 msgstr "完了したダウンロードなし"
 
-#: src/pages/DownloadsPage.tsx:1508
+#: src/pages/DownloadsPage.tsx:1514
 msgid "autoDownload.noDownloadsYet"
 msgstr "ダウンロードはまだありません"
 
@@ -716,24 +716,24 @@ msgstr "ダウンロードはまだありません"
 msgid "autoDownload.noFilteredResults"
 msgstr "フィルターに一致する結果なし"
 
-#: src/pages/DownloadsPage.tsx:983
+#: src/pages/DownloadsPage.tsx:989
 msgid "autoDownload.noFilters"
 msgstr "フィルターなし"
 
-#: src/pages/DownloadsPage.tsx:1004
+#: src/pages/DownloadsPage.tsx:1010
 msgid "autoDownload.noLibrary"
 msgstr "デフォルトフォルダ"
 
 #: src/pages/DownloadsPage.tsx:478
-#: src/pages/DownloadsPage.tsx:2289
+#: src/pages/DownloadsPage.tsx:2295
 msgid "autoDownload.noResults"
 msgstr "結果が見つかりません"
 
-#: src/pages/DownloadsPage.tsx:1597
+#: src/pages/DownloadsPage.tsx:1603
 msgid "autoDownload.noSubscriptions"
 msgstr "まだ購読がありません"
 
-#: src/pages/DownloadsPage.tsx:1600
+#: src/pages/DownloadsPage.tsx:1606
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "検索タブでアニメを検索して、自動ダウンロードの購読を作成してください。"
 
@@ -741,33 +741,33 @@ msgstr "検索タブでアニメを検索して、自動ダウンロードの購
 msgid "autoDownload.noTorrents"
 msgstr "トレントが見つかりません"
 
-#: src/pages/DownloadsPage.tsx:1692
+#: src/pages/DownloadsPage.tsx:1698
 msgid "autoDownload.pasteUrl"
 msgstr "トレントまたはマグネットURLを貼り付け..."
 
-#: src/pages/DownloadsPage.tsx:2144
-#: src/pages/DownloadsPage.tsx:2516
-#: src/pages/DownloadsPage.tsx:3426
+#: src/pages/DownloadsPage.tsx:2150
+#: src/pages/DownloadsPage.tsx:2522
+#: src/pages/DownloadsPage.tsx:3456
 msgid "autoDownload.pause"
 msgstr "一時停止"
 
-#: src/pages/DownloadsPage.tsx:2048
+#: src/pages/DownloadsPage.tsx:2054
 msgid "autoDownload.pauseAll"
 msgstr "すべて一時停止"
 
-#: src/pages/DownloadsPage.tsx:1366
+#: src/pages/DownloadsPage.tsx:1372
 msgid "autoDownload.paused"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1458
+#: src/pages/DownloadsPage.tsx:1464
 msgid "autoDownload.refresh"
 msgstr "更新"
 
-#: src/pages/DownloadsPage.tsx:2061
+#: src/pages/DownloadsPage.tsx:2067
 msgid "autoDownload.refreshAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1235
+#: src/pages/DownloadsPage.tsx:1241
 msgid "autoDownload.refreshed"
 msgstr "購読を更新しました"
 
@@ -775,17 +775,17 @@ msgstr "購読を更新しました"
 msgid "autoDownload.resolution"
 msgstr "解像度"
 
-#: src/pages/DownloadsPage.tsx:2131
-#: src/pages/DownloadsPage.tsx:2527
-#: src/pages/DownloadsPage.tsx:3438
+#: src/pages/DownloadsPage.tsx:2137
+#: src/pages/DownloadsPage.tsx:2533
+#: src/pages/DownloadsPage.tsx:3468
 msgid "autoDownload.resume"
 msgstr "再開"
 
-#: src/pages/DownloadsPage.tsx:2033
+#: src/pages/DownloadsPage.tsx:2039
 msgid "autoDownload.resumeAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:949
+#: src/pages/DownloadsPage.tsx:955
 msgid "autoDownload.rssSource"
 msgstr "RSSソース"
 
@@ -793,7 +793,7 @@ msgstr "RSSソース"
 msgid "autoDownload.searchAnime"
 msgstr "アニメを検索..."
 
-#: src/pages/DownloadsPage.tsx:1948
+#: src/pages/DownloadsPage.tsx:1954
 msgid "autoDownload.searchDownloads"
 msgstr ""
 
@@ -801,15 +801,15 @@ msgstr ""
 msgid "autoDownload.searchHint"
 msgstr "アニメを選択してトレントを閲覧"
 
-#: src/pages/DownloadsPage.tsx:2073
+#: src/pages/DownloadsPage.tsx:2079
 msgid "autoDownload.select"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2117
+#: src/pages/DownloadsPage.tsx:2123
 msgid "autoDownload.selectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2110
+#: src/pages/DownloadsPage.tsx:2116
 msgid "autoDownload.selected"
 msgstr ""
 
@@ -817,19 +817,19 @@ msgstr ""
 msgid "autoDownload.selectSourceToSubscribe"
 msgstr "購読するには特定のソース（Mikan、Nyaa、DMHY）を選択してください"
 
-#: src/pages/DownloadsPage.tsx:1934
+#: src/pages/DownloadsPage.tsx:1940
 msgid "autoDownload.sort.date"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1932
+#: src/pages/DownloadsPage.tsx:1938
 msgid "autoDownload.sort.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1933
+#: src/pages/DownloadsPage.tsx:1939
 msgid "autoDownload.sort.size"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1931
+#: src/pages/DownloadsPage.tsx:1937
 msgid "autoDownload.sort.status"
 msgstr ""
 
@@ -849,7 +849,7 @@ msgstr "字幕グループ"
 msgid "autoDownload.subscribeFilter"
 msgstr "このフィルターを購読"
 
-#: src/pages/DownloadsPage.tsx:881
+#: src/pages/DownloadsPage.tsx:887
 msgid "autoDownload.subscribeSuccess"
 msgstr "購読を作成しました"
 
@@ -866,7 +866,7 @@ msgid "autoDownload.subtab.completed"
 msgstr "完了"
 
 #: src/pages/DownloadsPage.tsx:226
-#: src/pages/DownloadsPage.tsx:1480
+#: src/pages/DownloadsPage.tsx:1486
 msgid "autoDownload.subtab.downloads"
 msgstr "ダウンロード中"
 
@@ -883,17 +883,149 @@ msgid "autoDownload.tab.search"
 msgstr "検索"
 
 #: src/pages/DownloadsPage.tsx:650
-#: src/pages/DownloadsPage.tsx:938
+#: src/pages/DownloadsPage.tsx:944
 msgid "autoDownload.torrentsFound"
 msgstr "件のトレント"
 
-#: src/pages/DownloadsPage.tsx:1444
+#: src/pages/DownloadsPage.tsx:1450
 msgid "autoDownload.viewAnime"
 msgstr "アニメを見る"
 
-#: src/pages/DownloadsPage.tsx:3383
+#: src/pages/DownloadsPage.tsx:3413
 msgid "autoDownload.waiting"
 msgstr "待機中..."
+
+#: src/pages/settings/BackupPanel.tsx:233
+#: src/pages/settings/BackupPanel.tsx:433
+msgid "backup.configDeleted"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:224
+#: src/pages/settings/BackupPanel.tsx:227
+#: src/pages/settings/BackupPanel.tsx:424
+#: src/pages/settings/BackupPanel.tsx:427
+msgid "backup.connectionFailed"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:222
+#: src/pages/settings/BackupPanel.tsx:422
+msgid "backup.connectionOk"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:332
+#: src/pages/settings/BackupPanel.tsx:568
+msgid "backup.delete"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:238
+#: src/pages/settings/BackupPanel.tsx:445
+msgid "backup.deleteFailed"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:681
+msgid "backup.description"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:303
+#: src/pages/settings/BackupPanel.tsx:539
+msgid "backup.enabled"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:128
+msgid "backup.export"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:80
+msgid "backup.exportFailed"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:78
+msgid "backup.exportSuccess"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:138
+msgid "backup.import"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:88
+msgid "backup.importFailed"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:86
+msgid "backup.importSuccess"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:100
+#: src/pages/settings/BackupPanel.tsx:105
+msgid "backup.invalidFile"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:117
+msgid "backup.jsonDescription"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:115
+msgid "backup.jsonExportImport"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:618
+msgid "backup.neverSynced"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:648
+msgid "backup.noTargets"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:286
+#: src/pages/settings/BackupPanel.tsx:292
+msgid "backup.password"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:521
+msgid "backup.region"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:530
+msgid "backup.regionOptional"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:449
+msgid "backup.s3Compatible"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:623
+msgid "backup.syncControls"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:612
+msgid "backup.syncFailed"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:660
+msgid "backup.syncing"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:661
+msgid "backup.syncNow"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:603
+msgid "backup.syncSuccess"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:321
+#: src/pages/settings/BackupPanel.tsx:557
+msgid "backup.testConnection"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:678
+msgid "backup.title"
+msgstr ""
+
+#: src/pages/settings/BackupPanel.tsx:269
+#: src/pages/settings/BackupPanel.tsx:275
+msgid "backup.username"
+msgstr ""
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1017,12 +1149,12 @@ msgstr "コピーしました"
 #: src/pages/AnimeDetailPage.tsx:489
 #: src/pages/AnimeDetailPage.tsx:788
 #: src/pages/DownloadsPage.tsx:630
-#: src/pages/DownloadsPage.tsx:1341
+#: src/pages/DownloadsPage.tsx:1347
 msgid "common.ep"
 msgstr "話"
 
 #: src/pages/AnimeDetailPage.tsx:312
-#: src/pages/LibraryDetailPage.tsx:1216
+#: src/pages/LibraryDetailPage.tsx:1233
 msgid "common.loadFailed"
 msgstr "読み込みに失敗しました"
 
@@ -1208,20 +1340,20 @@ msgstr "削除"
 msgid "library.deleteConfirm"
 msgstr "すべてのメディアファイル記録が削除されます。ディスク上のファイルには影響しません。"
 
-#: src/pages/LibraryDetailPage.tsx:547
+#: src/pages/LibraryDetailPage.tsx:548
 msgid "library.detail.allMatched"
 msgstr "すべてのファイルがマッチ済み"
 
-#: src/pages/LibraryDetailPage.tsx:1302
+#: src/pages/LibraryDetailPage.tsx:1319
 msgid "library.detail.autoMatch"
 msgstr "自動マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1306
+#: src/pages/LibraryDetailPage.tsx:1323
 msgid "library.detail.autoMatchTooltip"
 msgstr "未マッチのファイルをすべて自動マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1222
-#: src/pages/LibraryDetailPage.tsx:1253
+#: src/pages/LibraryDetailPage.tsx:1239
+#: src/pages/LibraryDetailPage.tsx:1270
 msgid "library.detail.backToLibraries"
 msgstr "ライブラリ"
 
@@ -1237,7 +1369,7 @@ msgstr "マッチしたアニメ"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:389
+#: src/pages/LibraryDetailPage.tsx:390
 msgid "library.detail.col.size"
 msgstr "サイズ"
 
@@ -1245,7 +1377,7 @@ msgstr "サイズ"
 msgid "library.detail.col.status"
 msgstr "ステータス"
 
-#: src/pages/LibraryDetailPage.tsx:382
+#: src/pages/LibraryDetailPage.tsx:383
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
@@ -1257,7 +1389,7 @@ msgstr "パスをコピー"
 msgid "library.detail.editMatch"
 msgstr "編集"
 
-#: src/pages/LibraryDetailPage.tsx:956
+#: src/pages/LibraryDetailPage.tsx:957
 msgid "library.detail.errors"
 msgstr "エラー"
 
@@ -1268,11 +1400,11 @@ msgstr "ファイル情報"
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:942
+#: src/pages/LibraryDetailPage.tsx:943
 msgid "library.detail.found"
 msgstr "発見"
 
-#: src/pages/LibraryDetailPage.tsx:937
+#: src/pages/LibraryDetailPage.tsx:938
 msgid "library.detail.inProgress"
 msgstr "進行中"
 
@@ -1280,12 +1412,12 @@ msgstr "進行中"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:429
+#: src/pages/LibraryDetailPage.tsx:430
 msgid "library.detail.match"
 msgstr "マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:504
-#: src/pages/LibraryDetailPage.tsx:945
+#: src/pages/LibraryDetailPage.tsx:505
+#: src/pages/LibraryDetailPage.tsx:946
 msgid "library.detail.matched"
 msgstr "マッチ済み"
 
@@ -1345,26 +1477,26 @@ msgstr "ファイルをマッチ"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "このファイルをアニメエピソードにマッチ"
 
-#: src/pages/LibraryDetailPage.tsx:463
-#: src/pages/LibraryDetailPage.tsx:552
-#: src/pages/LibraryDetailPage.tsx:622
-#: src/pages/LibraryDetailPage.tsx:821
+#: src/pages/LibraryDetailPage.tsx:464
+#: src/pages/LibraryDetailPage.tsx:553
+#: src/pages/LibraryDetailPage.tsx:623
+#: src/pages/LibraryDetailPage.tsx:822
 msgid "library.detail.noFiles"
 msgstr "ファイルが見つかりません"
 
-#: src/pages/LibraryDetailPage.tsx:466
+#: src/pages/LibraryDetailPage.tsx:467
 msgid "library.detail.noFilesHint"
 msgstr "スキャンを実行してこのライブラリのメディアファイルを検出"
 
-#: src/pages/LibraryDetailPage.tsx:893
+#: src/pages/LibraryDetailPage.tsx:894
 msgid "library.detail.noScans"
 msgstr "まだスキャンされていません"
 
-#: src/pages/LibraryDetailPage.tsx:896
+#: src/pages/LibraryDetailPage.tsx:897
 msgid "library.detail.noScansHint"
 msgstr "最初のスキャンを実行して履歴を確認"
 
-#: src/pages/LibraryDetailPage.tsx:1216
+#: src/pages/LibraryDetailPage.tsx:1233
 msgid "library.detail.notFound"
 msgstr "ライブラリが見つかりません"
 
@@ -1372,7 +1504,7 @@ msgstr "ライブラリが見つかりません"
 msgid "library.detail.pathCopied"
 msgstr "パスをコピーしました"
 
-#: src/pages/LibraryDetailPage.tsx:410
+#: src/pages/LibraryDetailPage.tsx:411
 msgid "library.detail.play"
 msgstr "再生"
 
@@ -1398,46 +1530,46 @@ msgstr "再生"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:1322
+#: src/pages/LibraryDetailPage.tsx:1339
 msgid "library.detail.scanNow"
 msgstr "今すぐスキャン"
 
-#: src/pages/LibraryDetailPage.tsx:1326
+#: src/pages/LibraryDetailPage.tsx:1343
 msgid "library.detail.scanNowTooltip"
 msgstr "ライブラリ内の新しいファイルをスキャン"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:495
+#: src/pages/LibraryDetailPage.tsx:496
 msgid "library.detail.searchFiles"
 msgstr "ファイルを検索…"
 
-#: src/pages/LibraryDetailPage.tsx:1034
-#: src/pages/LibraryDetailPage.tsx:1339
+#: src/pages/LibraryDetailPage.tsx:1037
+#: src/pages/LibraryDetailPage.tsx:1356
 msgid "library.detail.settings"
 msgstr "設定"
 
-#: src/pages/LibraryDetailPage.tsx:1343
+#: src/pages/LibraryDetailPage.tsx:1360
 msgid "library.detail.settingsTooltip"
 msgstr "ライブラリ設定"
 
 #~ msgid "library.detail.size"
 #~ msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:1421
+#: src/pages/LibraryDetailPage.tsx:1438
 msgid "library.detail.stats.files"
 msgstr "ファイル"
 
-#: src/pages/LibraryDetailPage.tsx:1438
+#: src/pages/LibraryDetailPage.tsx:1455
 msgid "library.detail.stats.matched"
 msgstr "マッチ済み"
 
-#: src/pages/LibraryDetailPage.tsx:1458
+#: src/pages/LibraryDetailPage.tsx:1475
 msgid "library.detail.stats.size"
 msgstr "サイズ"
 
-#: src/pages/LibraryDetailPage.tsx:1450
+#: src/pages/LibraryDetailPage.tsx:1467
 msgid "library.detail.stats.unmatched"
 msgstr "未マッチ"
 
@@ -1451,7 +1583,7 @@ msgstr "未マッチ"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:1160
+#: src/pages/LibraryDetailPage.tsx:1177
 msgid "library.detail.tab.files"
 msgstr "ファイル"
 
@@ -1459,7 +1591,7 @@ msgstr "ファイル"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "Matched"
 
-#: src/pages/LibraryDetailPage.tsx:1161
+#: src/pages/LibraryDetailPage.tsx:1178
 msgid "library.detail.tab.scanHistory"
 msgstr "スキャン履歴"
 
@@ -1483,16 +1615,16 @@ msgstr "Unmatch"
 msgid "library.detail.unmatched"
 msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:508
-#: src/pages/LibraryDetailPage.tsx:948
+#: src/pages/LibraryDetailPage.tsx:509
+#: src/pages/LibraryDetailPage.tsx:949
 msgid "library.detail.unmatchedShort"
 msgstr "未マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1516
+#: src/pages/LibraryDetailPage.tsx:1533
 msgid "library.detail.viewTable"
 msgstr "テーブル表示"
 
-#: src/pages/LibraryDetailPage.tsx:1535
+#: src/pages/LibraryDetailPage.tsx:1552
 msgid "library.detail.viewTree"
 msgstr "ツリー表示"
 
@@ -1530,7 +1662,7 @@ msgstr "ライブラリを編集"
 
 #: src/pages/LibrariesPage.tsx:1029
 #: src/pages/LibrariesPage.tsx:2809
-#: src/pages/LibraryDetailPage.tsx:1064
+#: src/pages/LibraryDetailPage.tsx:1081
 msgid "library.enabled"
 msgstr "有効"
 
@@ -1572,14 +1704,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:235
-#: src/pages/LibraryDetailPage.tsx:1301
+#: src/pages/LibraryDetailPage.tsx:1318
 msgid "library.matching"
 msgstr "マッチ中…"
 
 #: src/pages/LibrariesPage.tsx:999
 #: src/pages/LibrariesPage.tsx:1922
 #: src/pages/LibrariesPage.tsx:2301
-#: src/pages/LibraryDetailPage.tsx:1039
+#: src/pages/LibraryDetailPage.tsx:1042
 msgid "library.name"
 msgstr "名前"
 
@@ -1589,7 +1721,7 @@ msgstr "名前"
 msgid "library.nameRequired"
 msgstr "名前は必須です"
 
-#: src/pages/LibraryDetailPage.tsx:1236
+#: src/pages/LibraryDetailPage.tsx:1253
 msgid "library.neverScanned"
 msgstr "未実行"
 
@@ -1618,6 +1750,7 @@ msgstr "マイライブラリ"
 
 #: src/pages/LibrariesPage.tsx:1489
 #: src/pages/LibrariesPage.tsx:2716
+#: src/pages/LibraryDetailPage.tsx:1055
 msgid "library.path"
 msgstr "パス"
 
@@ -1665,14 +1798,14 @@ msgid "library.s3.secretKey"
 msgstr "シークレットキー"
 
 #: src/pages/LibrariesPage.tsx:3366
-#: src/pages/LibraryDetailPage.tsx:1092
+#: src/pages/LibraryDetailPage.tsx:1109
 msgid "library.saveChanges"
 msgstr "変更を保存"
 
 #: src/pages/LibrariesPage.tsx:1562
 #: src/pages/LibrariesPage.tsx:2334
 #: src/pages/LibrariesPage.tsx:2834
-#: src/pages/LibraryDetailPage.tsx:1091
+#: src/pages/LibraryDetailPage.tsx:1108
 msgid "library.saving"
 msgstr "保存中…"
 
@@ -1682,12 +1815,12 @@ msgstr "保存中…"
 
 #: src/pages/LibrariesPage.tsx:1536
 #: src/pages/LibrariesPage.tsx:2795
-#: src/pages/LibraryDetailPage.tsx:1052
+#: src/pages/LibraryDetailPage.tsx:1069
 msgid "library.scanInterval"
 msgstr "スキャン間隔"
 
 #: src/pages/LibrariesPage.tsx:233
-#: src/pages/LibraryDetailPage.tsx:1321
+#: src/pages/LibraryDetailPage.tsx:1338
 msgid "library.scanning"
 msgstr "スキャン中"
 
@@ -1813,11 +1946,11 @@ msgstr "ライブラリを追加しました"
 msgid "library.toast.deleted"
 msgstr "ライブラリを削除しました"
 
-#: src/pages/LibraryDetailPage.tsx:1155
+#: src/pages/LibraryDetailPage.tsx:1172
 msgid "library.toast.matchFailed"
 msgstr "自動マッチに失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:1152
+#: src/pages/LibraryDetailPage.tsx:1169
 msgid "library.toast.matchStarted"
 msgstr "自動マッチを開始しました"
 
@@ -1826,16 +1959,16 @@ msgstr "自動マッチを開始しました"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "Scan complete"
 
-#: src/pages/LibraryDetailPage.tsx:1145
+#: src/pages/LibraryDetailPage.tsx:1162
 msgid "library.toast.scanFailed"
 msgstr "スキャンに失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:1142
+#: src/pages/LibraryDetailPage.tsx:1159
 msgid "library.toast.scanStarted"
 msgstr "スキャンを開始しました"
 
 #: src/pages/LibrariesPage.tsx:3066
-#: src/pages/LibraryDetailPage.tsx:1025
+#: src/pages/LibraryDetailPage.tsx:1028
 msgid "library.toast.updated"
 msgstr "ライブラリを更新しました"
 
@@ -2017,7 +2150,7 @@ msgstr "WebDAV サーバーに接続"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:149
+#: src/routes/__root.tsx:175
 msgid "match.completed"
 msgstr "マッチング完了"
 
@@ -2048,7 +2181,7 @@ msgstr "ホーム"
 #: src/components/AppSidebar.tsx:33
 #: src/components/AppSidebar.tsx:229
 #: src/pages/LibrariesPage.tsx:3025
-#: src/pages/LibraryDetailPage.tsx:1103
+#: src/pages/LibraryDetailPage.tsx:1120
 msgid "nav.libraries"
 msgstr "ライブラリ"
 
@@ -2192,184 +2325,180 @@ msgstr "前のページ"
 msgid "pagination.rows"
 msgstr "行"
 
-#: src/components/RuleEditorModal.tsx:440
+#: src/components/RuleEditorModal.tsx:381
 msgid "ruleEditor.addGroup"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:366
+#: src/components/RuleEditorModal.tsx:307
 msgid "ruleEditor.allEpisodes"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:598
+#: src/components/RuleEditorModal.tsx:419
 msgid "ruleEditor.cancel"
 msgstr ""
 
 #: src/components/RuleEditorModal.tsx:543
-msgid "ruleEditor.colDate"
-msgstr ""
+#~ msgid "ruleEditor.colDate"
+#~ msgstr ""
 
 #: src/components/RuleEditorModal.tsx:540
-msgid "ruleEditor.colEp"
-msgstr ""
+#~ msgid "ruleEditor.colEp"
+#~ msgstr ""
 
 #: src/components/RuleEditorModal.tsx:541
-msgid "ruleEditor.colGroup"
-msgstr ""
+#~ msgid "ruleEditor.colGroup"
+#~ msgstr ""
 
 #: src/components/RuleEditorModal.tsx:542
-msgid "ruleEditor.colSize"
-msgstr ""
+#~ msgid "ruleEditor.colSize"
+#~ msgstr ""
 
 #: src/components/RuleEditorModal.tsx:539
-msgid "ruleEditor.colTitle"
-msgstr ""
+#~ msgid "ruleEditor.colTitle"
+#~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:207
+#: src/components/RuleEditorModal.tsx:205
 msgid "ruleEditor.createTitle"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:299
+#: src/components/RuleEditorModal.tsx:240
 msgid "ruleEditor.destination"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:213
+#: src/components/RuleEditorModal.tsx:211
 msgid "ruleEditor.disabled"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:212
+#: src/components/RuleEditorModal.tsx:210
 msgid "ruleEditor.enabled"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:361
+#: src/components/RuleEditorModal.tsx:302
 msgid "ruleEditor.episodes"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:347
+#: src/components/RuleEditorModal.tsx:288
 msgid "ruleEditor.exact"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:348
+#: src/components/RuleEditorModal.tsx:289
 msgid "ruleEditor.exactDesc"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:285
-#: src/components/RuleEditorModal.tsx:354
+#: src/components/RuleEditorModal.tsx:295
 msgid "ruleEditor.filterRegex"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:341
+#: src/components/RuleEditorModal.tsx:282
 msgid "ruleEditor.fuzzy"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:342
+#: src/components/RuleEditorModal.tsx:283
 msgid "ruleEditor.fuzzyDesc"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:444
+#: src/components/RuleEditorModal.tsx:385
 msgid "ruleEditor.groupHint"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:513
+#: src/components/RuleEditorModal.tsx:452
 msgid "ruleEditor.hideDownloaded"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:195
+#: src/components/RuleEditorModal.tsx:191
 msgid "ruleEditor.justNow"
 msgstr ""
 
 #: src/components/RuleEditorModal.tsx:488
-msgid "ruleEditor.matched"
-msgstr ""
+#~ msgid "ruleEditor.matched"
+#~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:371
+#: src/components/RuleEditorModal.tsx:312
 msgid "ruleEditor.newOnly"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1626
+#: src/pages/DownloadsPage.tsx:1632
 msgid "ruleEditor.newRule"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:314
+#: src/components/RuleEditorModal.tsx:255
 msgid "ruleEditor.noLibrary"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:580
+#: src/components/RuleEditorModal.tsx:498
 msgid "ruleEditor.noPreviewItems"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:484
+#: src/components/RuleEditorModal.tsx:439
 msgid "ruleEditor.preview"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:376
+#: src/components/RuleEditorModal.tsx:317
 msgid "ruleEditor.range"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:521
+#: src/components/RuleEditorModal.tsx:459
 msgid "ruleEditor.refreshPreview"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:400
+#: src/components/RuleEditorModal.tsx:341
 msgid "ruleEditor.releaseGroups"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:450
+#: src/components/RuleEditorModal.tsx:391
 msgid "ruleEditor.resolution"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:247
-#: src/components/RuleEditorModal.tsx:269
+#: src/components/RuleEditorModal.tsx:220
 msgid "ruleEditor.rssUrl"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:255
-#: src/components/RuleEditorModal.tsx:277
+#: src/components/RuleEditorModal.tsx:228
 msgid "ruleEditor.ruleName"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:259
-#: src/components/RuleEditorModal.tsx:281
+#: src/components/RuleEditorModal.tsx:232
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:608
+#: src/components/RuleEditorModal.tsx:429
 msgid "ruleEditor.save"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:136
-#: src/components/RuleEditorModal.tsx:159
+#: src/components/RuleEditorModal.tsx:132
+#: src/components/RuleEditorModal.tsx:155
 msgid "ruleEditor.saved"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:607
+#: src/components/RuleEditorModal.tsx:428
 msgid "ruleEditor.saving"
 msgstr ""
 
 #: src/components/RuleEditorModal.tsx:223
-msgid "ruleEditor.tabCustom"
-msgstr ""
+#~ msgid "ruleEditor.tabCustom"
+#~ msgstr ""
 
 #: src/components/RuleEditorModal.tsx:223
-msgid "ruleEditor.tabRss"
-msgstr ""
+#~ msgid "ruleEditor.tabRss"
+#~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:336
+#: src/components/RuleEditorModal.tsx:277
 msgid "ruleEditor.titleMatch"
 msgstr ""
 
-#: src/routes/__root.tsx:145
+#: src/routes/__root.tsx:171
 msgid "scan.completed"
 msgstr "スキャン完了"
 
-#: src/pages/LibraryDetailPage.tsx:1359
+#: src/pages/LibraryDetailPage.tsx:1376
 msgid "scan.phase.hashing"
 msgstr "ハッシュ中"
 
-#: src/pages/LibraryDetailPage.tsx:1360
+#: src/pages/LibraryDetailPage.tsx:1377
 msgid "scan.phase.matching"
 msgstr "マッチ中"
 
-#: src/pages/LibraryDetailPage.tsx:1357
+#: src/pages/LibraryDetailPage.tsx:1374
 msgid "scan.phase.scanning"
 msgstr "スキャン中"
 
@@ -2406,7 +2535,7 @@ msgstr "無効"
 msgid "scanInterval.weekly"
 msgstr "毎週"
 
-#: src/pages/LibraryDetailPage.tsx:501
+#: src/pages/LibraryDetailPage.tsx:502
 #: src/pages/SchedulePage.tsx:213
 msgid "schedule.all"
 msgstr "すべて"
@@ -2658,6 +2787,11 @@ msgstr "言語"
 #~ msgid "settings.appearance.title"
 #~ msgstr "Appearance"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:382
+#: src/components/watch/UnifiedSettingsPanel.tsx:424
+msgid "settings.audioTrack"
+msgstr "音声トラック"
+
 #: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.autoAddToCollection"
 msgstr "自動でコレクションに追加"
@@ -2666,13 +2800,42 @@ msgstr "自動でコレクションに追加"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新しくマッチしたアニメを自動的にコレクションに追加"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:217
+#: src/components/watch/UnifiedSettingsPanel.tsx:266
+msgid "settings.background"
+msgstr "背景"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:218
+msgid "settings.border"
+msgstr "ボーダー"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:275
+msgid "settings.borderStyle"
+msgstr "ボーダースタイル"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:351
+#: src/components/watch/UnifiedSettingsPanel.tsx:352
+#: src/components/watch/UnifiedSettingsPanel.tsx:412
+msgid "settings.brightness"
+msgstr "明るさ"
+
 #: src/pages/settings/GeneralPanel.tsx:69
 msgid "settings.collection"
 msgstr "コレクション"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:357
+#: src/components/watch/UnifiedSettingsPanel.tsx:358
+#: src/components/watch/UnifiedSettingsPanel.tsx:414
+msgid "settings.contrast"
+msgstr "コントラスト"
+
 #: src/pages/SettingsPage.tsx:115
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay Settings"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:214
+msgid "settings.default"
+msgstr "デフォルト"
 
 #: src/pages/settings/DownloadPanel.tsx:83
 #~ msgid "settings.download.aria2"
@@ -2680,7 +2843,7 @@ msgstr "コレクション"
 
 #: src/pages/settings/DownloadPanel.tsx:82
 msgid "settings.download.autoDeleteFiles"
-msgstr ""
+msgstr "ファイルの自動削除"
 
 #: src/pages/settings/DownloadPanel.tsx:201
 #~ msgid "settings.download.autoDeleteFilesDesc"
@@ -2688,11 +2851,11 @@ msgstr ""
 
 #: src/pages/settings/DownloadPanel.tsx:30
 msgid "settings.download.builtin"
-msgstr ""
+msgstr "内蔵"
 
 #: src/pages/settings/DownloadPanel.tsx:35
 msgid "settings.download.builtinDesc"
-msgstr ""
+msgstr "内蔵ダウンロードエンジンを使用"
 
 #: src/pages/DownloadsPage.tsx:267
 #: src/pages/settings/DownloadPanel.tsx:31
@@ -2701,7 +2864,7 @@ msgstr "未接続"
 
 #: src/pages/settings/DownloadPanel.tsx:26
 msgid "settings.download.engine"
-msgstr ""
+msgstr "ダウンロードエンジン"
 
 #: src/pages/settings/DownloadPanel.tsx:174
 #~ msgid "settings.download.guide.1"
@@ -2721,7 +2884,7 @@ msgstr ""
 
 #: src/pages/settings/DownloadPanel.tsx:40
 msgid "settings.download.preferences"
-msgstr ""
+msgstr "ダウンロード設定"
 
 #: src/pages/settings/DownloadPanel.tsx:128
 #~ msgid "settings.download.rpcSecret"
@@ -2738,6 +2901,16 @@ msgstr ""
 #: src/pages/settings/DownloadPanel.tsx:97
 #~ msgid "settings.download.test"
 #~ msgstr "テスト"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:214
+#: src/components/watch/UnifiedSettingsPanel.tsx:242
+msgid "settings.font"
+msgstr "フォント"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:215
+#: src/components/watch/UnifiedSettingsPanel.tsx:250
+msgid "settings.fontSize"
+msgstr "フォントサイズ"
 
 #: src/pages/settings/GeneralPanel.tsx:57
 msgid "settings.general.subtitle"
@@ -2808,103 +2981,239 @@ msgid "settings.integrations.description"
 msgstr "外部サービスを接続してデータを同期"
 
 #: src/pages/settings/AboutPanel.tsx:109
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.about"
 msgstr "このアプリについて"
 
 #: src/pages/settings/AccountPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:32
+#: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.account"
 msgstr "アカウント"
 
-#: src/pages/settings/SettingsPage.tsx:30
+#: src/pages/settings/SettingsPage.tsx:35
+msgid "settings.nav.backup"
+msgstr "バックアップ"
+
+#: src/pages/settings/SettingsPage.tsx:32
 msgid "settings.nav.download"
 msgstr "ダウンロード"
 
 #: src/pages/settings/GeneralPanel.tsx:54
-#: src/pages/settings/SettingsPage.tsx:28
+#: src/pages/settings/SettingsPage.tsx:30
 msgid "settings.nav.general"
 msgstr "一般"
 
 #: src/pages/settings/IntegrationsPanel.tsx:330
-#: src/pages/settings/SettingsPage.tsx:29
+#: src/pages/settings/SettingsPage.tsx:31
 msgid "settings.nav.integrations"
 msgstr "連携"
 
-#: src/pages/settings/PlayerPanel.tsx:72
-#: src/pages/settings/SettingsPage.tsx:31
+#: src/pages/settings/PlayerPanel.tsx:240
+#: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.player"
 msgstr "プレーヤー"
 
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/SettingsPage.tsx:36
 #: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "ストレージ"
 
-#: src/pages/settings/SettingsPage.tsx:66
+#: src/components/watch/UnifiedSettingsPanel.tsx:369
+#: src/components/watch/UnifiedSettingsPanel.tsx:418
+msgid "settings.nightMode"
+msgstr "ナイトモード"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:342
+#: src/components/watch/UnifiedSettingsPanel.tsx:406
+msgid "settings.normal"
+msgstr "通常"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:178
+#: src/components/watch/UnifiedSettingsPanel.tsx:201
+msgid "settings.off"
+msgstr "オフ"
+
+#: src/pages/settings/SettingsPage.tsx:70
 msgid "settings.pageTitle"
 msgstr "設定"
 
-#: src/pages/settings/PlayerPanel.tsx:76
+#: src/components/watch/UnifiedSettingsPanel.tsx:303
+#: src/components/watch/UnifiedSettingsPanel.tsx:405
+msgid "settings.playbackSpeed"
+msgstr "再生速度"
+
+#: src/pages/settings/PlayerPanel.tsx:562
+msgid "settings.player.autoNext"
+msgstr "次のエピソードを自動再生"
+
+#: src/pages/settings/PlayerPanel.tsx:582
+msgid "settings.player.autoSkipEd"
+msgstr "エンディングを自動スキップ"
+
+#: src/pages/settings/PlayerPanel.tsx:572
+msgid "settings.player.autoSkipOp"
+msgstr "オープニングを自動スキップ"
+
+#: src/pages/settings/PlayerPanel.tsx:594
+msgid "settings.player.backupNote"
+msgstr "プレーヤー設定は自動的にバックアップされます"
+
+#: src/pages/settings/PlayerPanel.tsx:245
 msgid "settings.player.danmaku"
 msgstr "弾幕"
 
-#: src/pages/settings/PlayerPanel.tsx:81
+#: src/pages/settings/PlayerPanel.tsx:250
 msgid "settings.player.danmakuEnabled"
 msgstr "弾幕を表示"
 
-#: src/pages/settings/PlayerPanel.tsx:121
+#: src/pages/settings/PlayerPanel.tsx:290
 msgid "settings.player.danmakuFontSize"
 msgstr "フォントサイズ"
 
-#: src/pages/settings/PlayerPanel.tsx:95
+#: src/pages/settings/PlayerPanel.tsx:264
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:133
+#: src/pages/settings/PlayerPanel.tsx:302
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:27
+#: src/pages/settings/PlayerPanel.tsx:530
+msgid "settings.player.gestureEnabled"
+msgstr "ジェスチャーを有効にする"
+
+#: src/pages/settings/PlayerPanel.tsx:526
+msgid "settings.player.gestures"
+msgstr "ジェスチャー"
+
+#: src/pages/settings/PlayerPanel.tsx:541
+msgid "settings.player.gestureSensitivity"
+msgstr "ジェスチャー感度"
+
+#: src/pages/settings/PlayerPanel.tsx:558
+msgid "settings.player.playbackDefaults"
+msgstr "再生デフォルト"
+
+#: src/pages/settings/PlayerPanel.tsx:159
 msgid "settings.player.speed.fast"
 msgstr "速い"
 
-#: src/pages/settings/PlayerPanel.tsx:26
+#: src/pages/settings/PlayerPanel.tsx:158
 msgid "settings.player.speed.normal"
 msgstr "普通"
 
-#: src/pages/settings/PlayerPanel.tsx:25
+#: src/pages/settings/PlayerPanel.tsx:157
 msgid "settings.player.speed.slow"
 msgstr "遅い"
 
-#: src/pages/settings/PlayerPanel.tsx:73
+#: src/pages/settings/PlayerPanel.tsx:241
 msgid "settings.player.subtitle"
 msgstr "弾幕と再生の設定"
+
+#: src/pages/settings/PlayerPanel.tsx:416
+msgid "settings.player.subtitleBgOpacity"
+msgstr "字幕背景の透明度"
+
+#: src/pages/settings/PlayerPanel.tsx:433
+msgid "settings.player.subtitleBorder"
+msgstr "字幕ボーダー"
+
+#: src/pages/settings/PlayerPanel.tsx:370
+msgid "settings.player.subtitleColor"
+msgstr "字幕色"
+
+#: src/pages/settings/PlayerPanel.tsx:496
+msgid "settings.player.subtitleFade"
+msgstr "字幕フェード"
+
+#: src/pages/settings/PlayerPanel.tsx:334
+msgid "settings.player.subtitleFont"
+msgstr "字幕フォント"
+
+#: src/pages/settings/PlayerPanel.tsx:353
+msgid "settings.player.subtitleFontSize"
+msgstr "字幕フォントサイズ"
+
+#: src/pages/settings/PlayerPanel.tsx:466
+msgid "settings.player.subtitlePosition"
+msgstr "字幕位置"
+
+#: src/pages/settings/PlayerPanel.tsx:322
+msgid "settings.player.subtitlePreset"
+msgstr "字幕プリセット"
+
+#: src/pages/settings/PlayerPanel.tsx:518
+msgid "settings.player.subtitlePreview"
+msgstr "字幕プレビュー"
+
+#: src/pages/settings/PlayerPanel.tsx:507
+msgid "settings.player.subtitleRespectAss"
+msgstr "ASSスタイルを維持"
+
+#: src/pages/settings/PlayerPanel.tsx:479
+msgid "settings.player.subtitleSafeMargin"
+msgstr "セーフマージン"
+
+#: src/pages/settings/PlayerPanel.tsx:447
+msgid "settings.player.subtitleStrokeWidth"
+msgstr "ストローク幅"
+
+#: src/pages/settings/PlayerPanel.tsx:317
+msgid "settings.player.subtitleStyle"
+msgstr "字幕スタイル"
 
 #: src/pages/SettingsPage.tsx:252
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:219
+#: src/components/watch/UnifiedSettingsPanel.tsx:283
+msgid "settings.position"
+msgstr "位置"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:213
+#: src/components/watch/UnifiedSettingsPanel.tsx:234
+msgid "settings.preset"
+msgstr "プリセット"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:222
+msgid "settings.respectAssStyles"
+msgstr "ASSスタイルを維持"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:363
+#: src/components/watch/UnifiedSettingsPanel.tsx:364
+#: src/components/watch/UnifiedSettingsPanel.tsx:416
+msgid "settings.saturation"
+msgstr "彩度"
+
+#: src/pages/settings/BackupPanel.tsx:341
+#: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
 msgid "settings.save"
 msgstr "保存"
 
+#: src/pages/settings/BackupPanel.tsx:201
+#: src/pages/settings/BackupPanel.tsx:399
 #: src/pages/settings/GeneralPanel.tsx:38
 #: src/pages/settings/GeneralPanel.tsx:48
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
-#: src/pages/settings/PlayerPanel.tsx:49
+#: src/pages/settings/PlayerPanel.tsx:196
 msgid "settings.saved"
 msgstr "保存しました"
 
+#: src/pages/settings/BackupPanel.tsx:205
+#: src/pages/settings/BackupPanel.tsx:403
 #: src/pages/settings/GeneralPanel.tsx:41
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
-#: src/pages/settings/PlayerPanel.tsx:52
+#: src/pages/settings/PlayerPanel.tsx:199
 msgid "settings.saveFailed"
 msgstr "保存に失敗しました"
 
+#: src/pages/settings/BackupPanel.tsx:340
+#: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
 msgid "settings.saving"
@@ -2954,6 +3263,31 @@ msgstr "トランスコードファイルとキャッシュの管理"
 #: src/pages/settings/StoragePanel.tsx:84
 msgid "settings.storage.transcodeDesc"
 msgstr "トランスコード済みビデオファイルは一時ディレクトリに保存されます"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:200
+#: src/components/watch/UnifiedSettingsPanel.tsx:396
+msgid "settings.subtitles"
+msgstr "字幕"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:212
+#: src/components/watch/UnifiedSettingsPanel.tsx:397
+msgid "settings.subtitleStyle"
+msgstr "字幕スタイル"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:292
+#: src/components/watch/UnifiedSettingsPanel.tsx:398
+msgid "settings.subtitleTiming"
+msgstr "字幕タイミング"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:216
+#: src/components/watch/UnifiedSettingsPanel.tsx:258
+msgid "settings.textColor"
+msgstr "テキスト色"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:375
+#: src/components/watch/UnifiedSettingsPanel.tsx:421
+msgid "settings.volumeBoost"
+msgstr "音量ブースト"
 
 #~ msgid "subscribe.add"
 #~ msgstr "追加"
@@ -3182,7 +3516,7 @@ msgstr "視聴中"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:435
+#: src/pages/WatchPage.tsx:627
 msgid "watch.notFound"
 msgstr "アニメが見つかりません"
 
