@@ -44,8 +44,17 @@ function BannerImage({ src, position }: { src: string | null; position: 'top' | 
   const isBottom = position === 'bottom';
 
   useEffect(() => {
-    if (isBottom) { setDimmed(false); return; }
-    const onScroll = () => setDimmed(window.scrollY > 100);
+    const onScroll = () => {
+      if (isBottom) {
+        // Bottom banner: dim when scrolled near top, visible near bottom
+        const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+        setDimmed(scrollBottom > 100);
+      } else {
+        // Top banner: dim when scrolled past top
+        setDimmed(window.scrollY > 100);
+      }
+    };
+    onScroll(); // initial check
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [isBottom]);
