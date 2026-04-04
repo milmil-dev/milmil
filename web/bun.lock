@@ -25,6 +25,7 @@
         "@tanstack/react-virtual": "^3.13.23",
         "@tanstack/zod-form-adapter": "^0.42.1",
         "@videojs/react": "10.0.0-beta.11",
+        "ass-compiler": "^0.1.16",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
@@ -875,6 +876,8 @@
     "aria-query": ["aria-query@5.3.2", "", {}, "sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw=="],
 
     "array-ify": ["array-ify@1.0.0", "", {}, "sha512-c5AMf34bKdvPhQ7tBGhqkgKNUzMr4WUs+WDtC2ZUGOUncbxKMTvqxYctiseW3+L4bA8ec+GcZ6/A/FW4m8ukng=="],
+
+    "ass-compiler": ["ass-compiler@0.1.16", "", {}, "sha512-t6RvH8ebL47t5a62XcrxMwxh1JQoOykydpT5bSVqqf9HA9/rbFl+9JgckBVTA5QdvfwuhYD5yrSc2n3u1tsjhA=="],
 
     "assertion-error": ["assertion-error@2.0.1", "", {}, "sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA=="],
 

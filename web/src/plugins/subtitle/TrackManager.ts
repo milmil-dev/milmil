@@ -1,4 +1,5 @@
 import { Disposables } from '../shared';
+import { parseAss, parseSrt } from './parsers';
 import type { SubtitleCue, SubtitleTrack } from './types';
 
 /**
@@ -196,10 +197,10 @@ export class TrackManager {
         break;
       case 'ass':
       case 'ssa':
+        cues = parseAss(content);
+        break;
       case 'srt':
-        // ASS/SSA/SRT parsers will be added in Task 7.
-        // For now, attempt VTT parsing as the server converts to VTT on serve.
-        cues = parseVTTCues(content);
+        cues = parseSrt(content);
         break;
       default:
         cues = [];
