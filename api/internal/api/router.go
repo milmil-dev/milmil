@@ -180,6 +180,20 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	rssGroup.GET("/:id/preview", h.handlePreviewRSSFeed)
 	rssGroup.POST("/:id/refresh", h.handleRefreshRSSFeed)
 
+	// User Preferences — protected
+	prefsGroup := v1.Group("/user/preferences", jwtMiddleware(cfg.JWTSecret))
+	prefsGroup.GET("", h.handleGetGlobalPreferences)
+	prefsGroup.PUT("", h.handleUpsertGlobalPreferences)
+	prefsGroup.GET("/series/:seriesId", h.handleGetSeriesPreferences)
+	prefsGroup.PUT("/series/:seriesId", h.handleUpsertSeriesPreferences)
+	prefsGroup.POST("/export", h.handleExportPreferences)
+	prefsGroup.POST("/import", h.handleImportPreferences)
+
+	// Segment Marks — protected
+	v1.POST("/media/:fileId/segments", h.handleCreateSegmentMark, jwtMiddleware(cfg.JWTSecret))
+	v1.GET("/media/:fileId/segments", h.handleListSegmentMarks, jwtMiddleware(cfg.JWTSecret))
+	v1.DELETE("/media/:fileId/segments/:segmentId", h.handleDeleteSegmentMark, jwtMiddleware(cfg.JWTSecret))
+
 	// Watch Progress — protected
 	progressGroup := v1.Group("/progress", jwtMiddleware(cfg.JWTSecret))
 	progressGroup.POST("", h.handleSaveProgress)
