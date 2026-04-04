@@ -35,6 +35,10 @@ import {
   streamApi,
 } from '@/lib/api/stream';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
+import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
+import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
+import { SubtitleSettingsPanel } from '@/plugins/subtitle/SubtitleSettingsPanel';
+import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { usePlayerStore } from '@/store/player-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
@@ -105,6 +109,7 @@ export function WatchPage() {
   const playerRef = useRef<VideoPlayerAPI | null>(null);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
   const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const subtitlePluginRef = useRef<SubtitlePluginAPI | null>(null);
 
   // --------------- Transcode state ---------------
   const [transcodeStatus, setTranscodeStatus] = useState<'idle' | 'processing' | 'ready' | 'error'>(
@@ -352,6 +357,13 @@ export function WatchPage() {
     };
   }, [saveProgress]);
 
+  // Dispose subtitle plugin on unmount
+  useEffect(() => {
+    return () => {
+      subtitlePluginRef.current?.dispose();
+    };
+  }, []);
+
   // --------------- Player ready handler ---------------
   const handlePlayerReady = useCallback(
     (api: VideoPlayerAPI) => {
@@ -359,6 +371,30 @@ export function WatchPage() {
       const el = api.videoElement();
       videoElRef.current = el;
       setVideoEl(el);
+
+      // Initialize subtitle plugin
+      const containerEl = api.containerElement();
+      if (el && containerEl) {
+        // Dispose previous plugin if any
+        subtitlePluginRef.current?.dispose();
+        const appLocale = i18n.locale ?? 'zh-TW';
+        const plugin = createSubtitlePlugin(el, containerEl, appLocale);
+        subtitlePluginRef.current = plugin;
+
+        // Load tracks if subtitles are already available
+        if (subtitles && subtitles.length > 0) {
+          plugin.loadTracks(
+            subtitles.map((s) => ({
+              id: s.id,
+              label: s.language,
+              language: s.language,
+              source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
+              format: (s.format || 'vtt') as SubtitleTrack['format'],
+              url: getSubtitleUrl(s.id),
+            }))
+          );
+        }
+      }
 
       // Restore progress and show resume overlay
       if (
@@ -385,62 +421,24 @@ export function WatchPage() {
         queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(bangumiId) });
       });
     },
-    [currentEpisode, saveProgress, fileId, bangumiId, queryClient]
+    [currentEpisode, saveProgress, fileId, bangumiId, queryClient, subtitles, i18n.locale]
   );
 
-  // --------------- Subtitle tracks (loaded independently of player ready) ---------------
+  // --------------- Subtitle tracks (reload when subtitles query updates) ---------------
   useEffect(() => {
-    const player = playerRef.current;
-    if (!player || player.isDisposed() || !subtitles || subtitles.length === 0) return;
+    const plugin = subtitlePluginRef.current;
+    if (!plugin || !subtitles || subtitles.length === 0) return;
 
-    // Find the best subtitle match for the user's app language
-    const appLocale = i18n.locale ?? 'zh-TW';
-    const localeLower = appLocale.toLowerCase();
-    const localeBase = localeLower.split('-')[0] ?? localeLower; // "zh", "en", "ja"
-
-    // Language matching priority: exact locale → base language → first available
-    const langMatch = (subLang: string): number => {
-      const sl = subLang.toLowerCase();
-      if (sl === localeLower) return 3; // exact: "en" === "en"
-      if (sl.startsWith(localeBase)) return 2; // base: "zh-Hans" starts with "zh"
-      // Common mappings: "eng" → "en", "jpn" → "ja", "kor" → "ko", "chi"/"zho" → "zh"
-      const isoMap: Record<string, string> = { eng: 'en', jpn: 'ja', kor: 'ko', chi: 'zh', zho: 'zh', tha: 'th', ind: 'id' };
-      if (isoMap[sl] === localeBase) return 2;
-      return 0;
-    };
-
-    let bestIdx = 0;
-    let bestScore = 0;
-    for (let idx = 0; idx < subtitles.length; idx++) {
-      const score = langMatch(subtitles[idx]!.language);
-      if (score > bestScore) {
-        bestScore = score;
-        bestIdx = idx;
-      }
-    }
-
-    for (let idx = 0; idx < subtitles.length; idx++) {
-      const sub = subtitles[idx]!;
-      player.addRemoteTextTrack(
-        {
-          kind: 'subtitles',
-          src: getSubtitleUrl(sub.id),
-          srclang: sub.language,
-          label: sub.language,
-          default: idx === bestIdx,
-        },
-        true
-      );
-    }
-
-    // Ensure only the default track is showing
-    const video = player.videoElement();
-    if (video) {
-      for (let t = 0; t < video.textTracks.length; t++) {
-        const track = video.textTracks[t];
-        if (track) track.mode = t === bestIdx ? 'showing' : 'disabled';
-      }
-    }
+    plugin.loadTracks(
+      subtitles.map((s) => ({
+        id: s.id,
+        label: s.language,
+        language: s.language,
+        source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
+        format: (s.format || 'vtt') as SubtitleTrack['format'],
+        url: getSubtitleUrl(s.id),
+      }))
+    );
   }, [subtitles]);
 
   // --------------- Episode switching ---------------
@@ -455,6 +453,8 @@ export function WatchPage() {
       setTranscodeToken(null);
       setResumeFrom(null);
       setVideoEl(null);
+      subtitlePluginRef.current?.dispose();
+      subtitlePluginRef.current = null;
       playerRef.current = null;
       videoElRef.current = null;
 
@@ -536,11 +536,16 @@ export function WatchPage() {
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
                       controlBarExtra={
-                        <TechInfoPopover
-                          mediaInfo={mediaInfo}
-                          subtitles={subtitles}
-                          transcodeStatus={transcodeStatus}
-                        />
+                        <>
+                          {subtitlePluginRef.current && (
+                            <SubtitleSettingsPanel plugin={subtitlePluginRef.current} />
+                          )}
+                          <TechInfoPopover
+                            mediaInfo={mediaInfo}
+                            subtitles={subtitles}
+                            transcodeStatus={transcodeStatus}
+                          />
+                        </>
                       }
                     />
                     <DanmakuOverlay videoElement={videoEl} comments={danmakuComments} />

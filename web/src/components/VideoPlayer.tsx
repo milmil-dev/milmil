@@ -1,7 +1,6 @@
 import '@videojs/react/video/skin.css';
 import {
   BufferingIndicator,
-  CaptionsButton,
   Container,
   Controls,
   FullscreenButton,
@@ -44,17 +43,8 @@ export interface VideoPlayerAPI {
   duration: () => number;
   isDisposed: () => boolean;
   on: (event: string, handler: () => void) => void;
-  addRemoteTextTrack: (
-    opts: {
-      kind: string;
-      src: string;
-      srclang: string;
-      label: string;
-      default?: boolean;
-    },
-    manualCleanup: boolean
-  ) => void;
   videoElement: () => HTMLVideoElement | null;
+  containerElement: () => HTMLElement | null;
 }
 
 // Reusable button matching the VideoJS skin style
@@ -73,10 +63,6 @@ function PlayLabel() {
   const paused = usePlayer((s) => Boolean(s.paused));
   if (usePlayer((s) => Boolean(s.ended))) return 'Replay';
   return paused ? 'Play' : 'Pause';
-}
-
-function CaptionsLabel() {
-  return usePlayer((s) => Boolean(s.subtitlesShowing)) ? 'Disable captions' : 'Enable captions';
 }
 
 function PiPLabel() {
@@ -216,21 +202,6 @@ function CustomVideoSkin({
           {/* Volume */}
           <VolumePopoverControl />
 
-          {/* Captions */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <CaptionsButton className="media-button--captions" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--captions-off" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg>
-                  <svg className="media-icon media-icon--captions-on" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg>
-                </CaptionsButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <CaptionsLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
-
           {/* PiP */}
           <Tooltip.Root side="top">
             <Tooltip.Trigger
@@ -274,13 +245,14 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
   const player = usePlayer();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!player || readyFired.current) return;
 
     const findVideo = (): HTMLVideoElement | null => {
       if (videoRef.current) return videoRef.current;
-      const el = document.querySelector('[data-videojs] video') as HTMLVideoElement | null;
+      const el = containerRef.current?.querySelector('video') as HTMLVideoElement | null;
       videoRef.current = el;
       return el;
     };
@@ -297,18 +269,8 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
       on: (event: string, handler: () => void) => {
         findVideo()?.addEventListener(event, handler);
       },
-      addRemoteTextTrack: (opts, _manualCleanup) => {
-        const video = findVideo();
-        if (!video) return;
-        const track = document.createElement('track');
-        track.kind = opts.kind;
-        track.src = opts.src;
-        track.srclang = opts.srclang;
-        track.label = opts.label;
-        if (opts.default) track.default = true;
-        video.appendChild(track);
-      },
       videoElement: () => findVideo(),
+      containerElement: () => containerRef.current,
     };
 
     readyFired.current = true;
@@ -318,7 +280,7 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
   const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
 
   return (
-    <div className={className} data-videojs>
+    <div ref={containerRef} className={className} data-videojs>
       <CustomVideoSkin controlBarExtra={controlBarExtra}>
         {isHLS ? <HlsVideo src={src} playsInline crossOrigin="anonymous" /> : <Video src={src} playsInline crossOrigin="anonymous" />}
       </CustomVideoSkin>
