@@ -12,6 +12,7 @@ import {
   HardDriveIcon,
   InformationCircleIcon,
   Download04Icon,
+  CloudIcon,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { PageAtmosphere } from '@/components/PageAtmosphere';
@@ -22,6 +23,7 @@ import { PlayerPanel } from './PlayerPanel';
 import { AccountPanel } from './AccountPanel';
 import { StoragePanel } from './StoragePanel';
 import { AboutPanel } from './AboutPanel';
+import { BackupPanel } from './BackupPanel';
 import { DownloadPanel } from './DownloadPanel';
 
 const TABS = [
@@ -30,6 +32,7 @@ const TABS = [
   { id: 'download', labelKey: msg`settings.nav.download`, icon: Download04Icon },
   { id: 'player', labelKey: msg`settings.nav.player`, icon: PlayIcon },
   { id: 'account', labelKey: msg`settings.nav.account`, icon: UserIcon },
+  { id: 'backup', labelKey: msg`settings.nav.backup`, icon: CloudIcon },
   { id: 'storage', labelKey: msg`settings.nav.storage`, icon: HardDriveIcon },
   { id: 'about', labelKey: msg`settings.nav.about`, icon: InformationCircleIcon },
 ] as const;
@@ -41,6 +44,7 @@ const PANELS: Record<TabId, React.FC> = {
   integrations: IntegrationsPanel,
   download: DownloadPanel,
   player: PlayerPanel,
+  backup: BackupPanel,
   account: AccountPanel,
   storage: StoragePanel,
   about: AboutPanel,
