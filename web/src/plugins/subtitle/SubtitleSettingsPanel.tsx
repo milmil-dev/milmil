@@ -1,5 +1,5 @@
-import { motion } from 'motion/react';
-import { useCallback, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { SubtitlePluginAPI } from './SubtitlePlugin';
 import type { SubtitleStyleConfig, SubtitleTrack } from './types';
@@ -193,6 +193,10 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
   const [view, setView] = useState<PanelView>('main');
   const [styleSubView, setStyleSubView] = useState<StyleSubView>(null);
   const [style, setStyle] = useState<Partial<SubtitleStyleConfig>>({});
+  const directionRef = useRef(1); // 1 = forward (slide left), -1 = back (slide right)
+
+  // Compute a unique key for AnimatePresence
+  const viewKey = view === 'style' && styleSubView ? `style-${styleSubView}` : view;
 
   const updateStyle = useCallback(
     (patch: Partial<SubtitleStyleConfig>) => {
@@ -252,13 +256,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'preset':
           return (
             <>
-              <SubMenuHeader title="Style Preset" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Style Preset" onBack={() => navigateStyleBack()} />
               {PRESET_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={state.presetName === opt.value}
-                  onClick={() => { selectPreset(opt.value); setStyleSubView(null); }}
+                  onClick={() => { selectPreset(opt.value); navigateStyleBack(); }}
                 />
               ))}
             </>
@@ -266,13 +270,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'font':
           return (
             <>
-              <SubMenuHeader title="Font" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Font" onBack={() => navigateStyleBack()} />
               {FONT_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={(style.fontFamily ?? '') === opt.value}
-                  onClick={() => { updateStyle({ fontFamily: opt.value || undefined }); setStyleSubView(null); }}
+                  onClick={() => { updateStyle({ fontFamily: opt.value || undefined }); navigateStyleBack(); }}
                 />
               ))}
             </>
@@ -280,13 +284,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'fontSize':
           return (
             <>
-              <SubMenuHeader title="Font Size" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Font Size" onBack={() => navigateStyleBack()} />
               {FONT_SIZE_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={currentFontSize === opt.value}
-                  onClick={() => { updateStyle({ fontSize: opt.value }); setStyleSubView(null); }}
+                  onClick={() => { updateStyle({ fontSize: opt.value }); navigateStyleBack(); }}
                 />
               ))}
             </>
@@ -294,13 +298,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'color':
           return (
             <>
-              <SubMenuHeader title="Text Color" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Text Color" onBack={() => navigateStyleBack()} />
               {COLOR_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={currentColor === opt.value}
-                  onClick={() => { updateStyle({ color: opt.value }); setStyleSubView(null); }}
+                  onClick={() => { updateStyle({ color: opt.value }); navigateStyleBack(); }}
                   colorSwatch={opt.value}
                 />
               ))}
@@ -309,13 +313,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'bgOpacity':
           return (
             <>
-              <SubMenuHeader title="Background Opacity" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Background Opacity" onBack={() => navigateStyleBack()} />
               {OPACITY_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={currentBgOpacity === opt.value}
-                  onClick={() => { updateStyle({ backgroundOpacity: opt.value }); setStyleSubView(null); }}
+                  onClick={() => { updateStyle({ backgroundOpacity: opt.value }); navigateStyleBack(); }}
                 />
               ))}
             </>
@@ -323,13 +327,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'borderStyle':
           return (
             <>
-              <SubMenuHeader title="Border Style" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Border Style" onBack={() => navigateStyleBack()} />
               {SHADOW_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={currentShadow === opt.value}
-                  onClick={() => { updateStyle({ shadowType: opt.value }); setStyleSubView(null); }}
+                  onClick={() => { updateStyle({ shadowType: opt.value }); navigateStyleBack(); }}
                 />
               ))}
             </>
@@ -337,13 +341,13 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
         case 'position':
           return (
             <>
-              <SubMenuHeader title="Position" onBack={() => setStyleSubView(null)} />
+              <SubMenuHeader title="Position" onBack={() => navigateStyleBack()} />
               {POSITION_OPTIONS.map((opt) => (
                 <OptionRow
                   key={opt.value}
                   label={opt.label}
                   selected={currentPosition === opt.value}
-                  onClick={() => { updateStyle({ position: opt.value }); setStyleSubView(null); }}
+                  onClick={() => { updateStyle({ position: opt.value }); navigateStyleBack(); }}
                 />
               ))}
             </>
@@ -355,48 +359,48 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
     if (view === 'style') {
       return (
         <>
-          <SubMenuHeader title="Subtitle Style" onBack={() => setView('main')} />
+          <SubMenuHeader title="Subtitle Style" onBack={() => navigateBack('main')} />
           <MenuRow
             icon={<IconPalette />}
             label="Preset"
             value={currentPresetLabel}
-            onClick={() => setStyleSubView('preset')}
+            onClick={() => navigateStyleTo('preset')}
           />
           <MenuRow
             icon={<IconFont />}
             label="Font"
             value={currentFontLabel}
-            onClick={() => setStyleSubView('font')}
+            onClick={() => navigateStyleTo('font')}
           />
           <MenuRow
             icon={<IconTextSize />}
             label="Font Size"
             value={`${currentFontSize}px`}
-            onClick={() => setStyleSubView('fontSize')}
+            onClick={() => navigateStyleTo('fontSize')}
           />
           <MenuRow
             icon={<IconColor />}
             label="Text Color"
             value={currentColorLabel}
-            onClick={() => setStyleSubView('color')}
+            onClick={() => navigateStyleTo('color')}
           />
           <MenuRow
             icon={<IconOpacity />}
             label="Background"
             value={currentBgLabel}
-            onClick={() => setStyleSubView('bgOpacity')}
+            onClick={() => navigateStyleTo('bgOpacity')}
           />
           <MenuRow
             icon={<IconBorder />}
             label="Border Style"
             value={currentShadowLabel}
-            onClick={() => setStyleSubView('borderStyle')}
+            onClick={() => navigateStyleTo('borderStyle')}
           />
           <MenuRow
             icon={<IconPosition />}
             label="Position"
             value={currentPositionLabel}
-            onClick={() => setStyleSubView('position')}
+            onClick={() => navigateStyleTo('position')}
           />
           {/* ASS toggle */}
           <div className="flex items-center gap-3 px-4 py-2.5">
@@ -428,7 +432,7 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
     if (view === 'tracks') {
       return (
         <>
-          <SubMenuHeader title="Subtitles" onBack={() => setView('main')} />
+          <SubMenuHeader title="Subtitles" onBack={() => navigateBack('main')} />
           <OptionRow
             label="Off"
             selected={!state.primaryTrack}
@@ -450,7 +454,7 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
     if (view === 'timing') {
       return (
         <>
-          <SubMenuHeader title="Subtitle Timing" onBack={() => setView('main')} />
+          <SubMenuHeader title="Subtitle Timing" onBack={() => navigateBack('main')} />
           <div className="px-4 py-3 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[13px] text-white/80">Delay</span>
@@ -490,23 +494,29 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
           icon={<IconSubtitle />}
           label="Subtitles"
           value={currentTrackLabel}
-          onClick={() => setView('tracks')}
+          onClick={() => navigateTo('tracks')}
         />
         <MenuRow
           icon={<IconStyle />}
           label="Subtitle Style"
           value={currentPresetLabel}
-          onClick={() => setView('style')}
+          onClick={() => navigateTo('style')}
         />
         <MenuRow
           icon={<IconTimer />}
           label="Timing"
           value={delayLabel}
-          onClick={() => setView('timing')}
+          onClick={() => navigateTo('timing')}
         />
       </>
     );
   };
+
+  // Navigation helpers with direction tracking
+  const navigateTo = (v: PanelView) => { directionRef.current = 1; setView(v); };
+  const navigateBack = (v: PanelView) => { directionRef.current = -1; setView(v); };
+  const navigateStyleTo = (v: StyleSubView) => { directionRef.current = 1; setStyleSubView(v); };
+  const navigateStyleBack = () => { directionRef.current = -1; navigateStyleBack(); };
 
   return (
     <>
@@ -523,9 +533,19 @@ export function SubtitleSettingsPanel({ plugin, onClose }: SubtitleSettingsPanel
           rounded-xl bg-neutral-900/95 backdrop-blur-md overflow-hidden
           shadow-[0_0_20px_rgba(0,0,0,0.5)]"
       >
-        <div className="overflow-y-auto max-h-[70vh] py-1">
-          {renderContent()}
-        </div>
+        <AnimatePresence mode="popLayout" initial={false} custom={directionRef.current}>
+          <motion.div
+            key={viewKey}
+            custom={directionRef.current}
+            initial={(d: number) => ({ x: `${(d as number) * 100}%`, opacity: 0 })}
+            animate={{ x: 0, opacity: 1 }}
+            exit={(d: number) => ({ x: `${(d as number) * -100}%`, opacity: 0 })}
+            transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+            className="overflow-y-auto max-h-[70vh] py-1"
+          >
+            {renderContent()}
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
     </>
   );
