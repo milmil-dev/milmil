@@ -14,6 +14,11 @@
   background-color: var(--mm-accent) !important;
 }
 
+/* Custom controls: transparent bg + bottom gradient */
+.media-controls--custom {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%) !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
