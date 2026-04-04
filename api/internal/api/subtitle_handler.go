@@ -5,18 +5,11 @@ import (
 	"errors"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/subtitle"
 )
-
-var subtitleMimeTypes = map[string]string{
-	".vtt": "text/vtt",
-	".srt": "application/x-subrip",
-	".ass": "text/x-ssa",
-	".ssa": "text/x-ssa",
-}
 
 func (h *handler) handleListSubtitles(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -47,18 +40,19 @@ func (h *handler) handleSubtitleContent(c echo.Context) error {
 	}
 	defer f.Close()
 
+	// Always serve as WebVTT — convert ASS/SRT on the fly
+	format := strings.ToLower(sub.Format)
+	if format == "ass" || format == "ssa" || format == "srt" || format == "subrip" {
+		vtt := subtitle.ToVTT(f, format)
+		return c.Blob(http.StatusOK, "text/vtt", []byte(vtt))
+	}
+
+	// VTT or unknown — serve as-is
 	stat, err := f.Stat()
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-
-	ext := strings.ToLower(filepath.Ext(sub.Path))
-	contentType := subtitleMimeTypes[ext]
-	if contentType == "" {
-		contentType = "text/plain"
-	}
-
-	c.Response().Header().Set("Content-Type", contentType)
-	http.ServeContent(c.Response(), c.Request(), filepath.Base(sub.Path), stat.ModTime(), f)
+	c.Response().Header().Set("Content-Type", "text/vtt")
+	http.ServeContent(c.Response(), c.Request(), "subtitle.vtt", stat.ModTime(), f)
 	return nil
 }
