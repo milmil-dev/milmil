@@ -227,7 +227,7 @@ function PauseIndicator() {
   return (
     <div className="pause-indicator absolute bottom-4 right-4 pointer-events-none
       opacity-0 transition-opacity duration-300 text-white/40">
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
       </svg>
     </div>

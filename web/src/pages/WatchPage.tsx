@@ -50,6 +50,7 @@ import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
 import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
 // SubtitleSettingsPanel replaced by UnifiedSettingsPanel
 import type { SubtitleTrack } from '@/plugins/subtitle/types';
+import { useBgStore } from '@/store/bg-store';
 import { usePlayerStore } from '@/store/player-store';
 import { usePreferencesStore } from '@/store/preferences-store';
 
@@ -151,6 +152,16 @@ export function WatchPage() {
       : animeDetail.title
     : undefined;
   useDocumentTitle(watchTitle);
+
+  // Set full-screen background image (Seanime style)
+  const setImage = useBgStore((s) => s.setImage);
+  useEffect(() => {
+    const img = animeDetail?.banner_image || animeDetail?.cover_image;
+    if (img?.startsWith('http')) {
+      setImage(img);
+    }
+    return () => setImage(null);
+  }, [animeDetail?.banner_image, animeDetail?.cover_image, setImage]);
 
   const { data: episodesData, isLoading: episodesLoading } = useQuery({
     queryKey: animeKeys.playableEpisodes(bangumiId),
