@@ -14,9 +14,14 @@
   background-color: var(--mm-accent) !important;
 }
 
-/* Custom controls: no background */
-.media-controls--custom {
+/* Strip all backgrounds from player controls */
+.media-controls--custom,
+.media-controls--custom.media-surface,
+.media-default-skin .media-controls,
+.media-default-skin .media-controls.media-surface {
   background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 /* Hide ALL player chrome when idle (override VideoJS media-surface) */
