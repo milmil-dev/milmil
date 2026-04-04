@@ -1,4 +1,5 @@
 import { Disposables, OSDFeedback } from '../shared';
+import { DragDropLoader } from './DragDropLoader';
 import { StyleEngine } from './StyleEngine';
 import { SubtitleRenderer } from './SubtitleRenderer';
 import { TrackManager } from './TrackManager';
@@ -54,9 +55,19 @@ export function createSubtitlePlugin(
     renderer.setSecondaryCues(secondaryCues);
   };
 
+  // Drag & drop subtitle file loading
+  const dragDropLoader = new DragDropLoader(containerEl, (track) => {
+    trackManager.addTrack(track);
+    // Auto-select the dropped track as primary
+    const tracks = trackManager.getTracks();
+    trackManager.setPrimary(tracks.length - 1);
+    osd.show({ text: `Loaded: ${track.label}` });
+  });
+
   disposables.add(() => osd.dispose());
   disposables.add(() => trackManager.dispose());
   disposables.add(() => renderer.dispose());
+  disposables.add(() => dragDropLoader.dispose());
 
   let visible = true;
 
