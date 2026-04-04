@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
+import { KeyBindingPanel } from '@/plugins/keyboard/KeyBindingPanel';
 import { usePlayerStore } from '@/store/player-store';
 
 const FONT_SIZE_OPTIONS = [
@@ -141,6 +142,8 @@ export function PlayerPanel() {
             </div>
           </div>
         </SettingsCard>
+
+        <KeyBindingPanel />
       </div>
     </div>
   );
