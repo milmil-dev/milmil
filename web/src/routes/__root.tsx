@@ -102,6 +102,12 @@ function BannerImage({ src, position }: { src: string | null; position: 'top' | 
             src={src}
             alt=""
             className="w-full h-full object-cover object-center brightness-[0.6]"
+            style={isBottom ? {
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+              maskComposite: 'intersect',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+              WebkitMaskComposite: 'source-in',
+            } : undefined}
           />
         </motion.div>
       </AnimatePresence>
