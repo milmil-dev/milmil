@@ -1,6 +1,7 @@
 import type { KeyBinding } from '@/lib/api/preferences';
 
 import { Disposables, OSDFeedback } from '../shared';
+import { HelpOverlay } from './HelpOverlay';
 import { KeyBindingManager } from './KeyBindingManager';
 
 export interface KeyboardPluginAPI {
@@ -23,8 +24,22 @@ export function createKeyboardPlugin(
   const disposables = new Disposables();
   const osd = new OSDFeedback(containerEl);
   const manager = new KeyBindingManager(containerEl, options?.customBindings);
+  const helpOverlay = new HelpOverlay(
+    containerEl,
+    () => manager.getBindings(),
+    (b) => manager.bindingToString(b),
+  );
   disposables.add(() => osd.dispose());
   disposables.add(() => manager.dispose());
+  disposables.add(() => helpOverlay.dispose());
+
+  // Close help overlay on Escape
+  disposables.addEventListener(containerEl, 'keydown', (e: Event) => {
+    if ((e as KeyboardEvent).key === 'Escape' && helpOverlay.isVisible()) {
+      (e as KeyboardEvent).preventDefault();
+      helpOverlay.hide();
+    }
+  });
 
   let savedSpeed = 1;
 
@@ -134,7 +149,10 @@ export function createKeyboardPlugin(
   });
 
   manager.on('ui:next-episode', () => options?.onNextEpisode?.());
-  manager.on('ui:help', () => options?.onToggleHelp?.());
+  manager.on('ui:help', () => {
+    helpOverlay.toggle();
+    options?.onToggleHelp?.();
+  });
   manager.on('ui:tech-info', () => options?.onToggleTechInfo?.());
 
   // Subtitle and capture actions emit custom events on the container
