@@ -251,6 +251,34 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
     return () => cancelAnimationFrame(rafId);
   }, [player, onReady]);
 
+  // Auto-hide controls after 3s idle (works even when paused, like YouTube)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let timer: ReturnType<typeof setTimeout>;
+    const IDLE_MS = 3000;
+
+    const resetIdle = () => {
+      el.removeAttribute('data-idle');
+      clearTimeout(timer);
+      timer = setTimeout(() => el.setAttribute('data-idle', ''), IDLE_MS);
+    };
+
+    el.addEventListener('mousemove', resetIdle);
+    el.addEventListener('mousedown', resetIdle);
+    el.addEventListener('keydown', resetIdle);
+    // Start the idle timer
+    timer = setTimeout(() => el.setAttribute('data-idle', ''), IDLE_MS);
+
+    return () => {
+      clearTimeout(timer);
+      el.removeEventListener('mousemove', resetIdle);
+      el.removeEventListener('mousedown', resetIdle);
+      el.removeEventListener('keydown', resetIdle);
+    };
+  }, []);
+
   const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
 
   return (
