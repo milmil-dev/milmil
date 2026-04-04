@@ -39,13 +39,13 @@ function isPublicRoute(pathname: string): boolean {
  * - Scroll dimming: fades to opacity-5 when scrolled past 100px
  * - Transition overlay: bg-color fades in during image switches
  */
-function BannerImage({ src, position }: { src: string | null; position: 'top' | 'bottom' }) {
-  const [dimmed, setDimmed] = useState(false);
+function BannerImage({ src, position, dimMode }: { src: string | null; position: 'top' | 'bottom'; dimMode: 'scroll-down' | 'scroll-up' }) {
+  const [dimmed, setDimmed] = useState(dimMode === 'scroll-up');
   const isBottom = position === 'bottom';
 
   useEffect(() => {
-    if (isBottom) {
-      // Bottom banner: always start dimmed, un-dim only when scrolled near bottom
+    if (dimMode === 'scroll-up') {
+      // Start dimmed, un-dim when scrolled near bottom
       setDimmed(true);
       const onScroll = () => {
         const distFromBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
@@ -54,11 +54,11 @@ function BannerImage({ src, position }: { src: string | null; position: 'top' | 
       window.addEventListener('scroll', onScroll, { passive: true });
       return () => window.removeEventListener('scroll', onScroll);
     }
-    // Top banner: dim when scrolled past top
+    // Default: dim when scrolled past top
     const onScroll = () => setDimmed(window.scrollY > 100);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [isBottom]);
+  }, [dimMode]);
 
   if (!src) {
     return null;
@@ -68,7 +68,7 @@ function BannerImage({ src, position }: { src: string | null; position: 'top' | 
     <div
       className={cn(
         'fixed z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
-        isBottom ? 'top-[55%] -translate-y-1/2' : 'top-0',
+        isBottom ? 'top-[55%] -translate-y-1/2' : 'top-8',
         dimmed && 'opacity-[0.05]'
       )}
       style={{ left: 0, right: 0 }}
@@ -156,6 +156,7 @@ function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const bgImage = useBgStore((s) => s.image);
   const bgPosition = useBgStore((s) => s.position);
+  const bgDimMode = useBgStore((s) => s.dimMode);
   const queryClient = useQueryClient();
   // Connect WebSocket (routes scan events to Zustand store)
   useMillilWebSocket();
@@ -190,7 +191,7 @@ function RootLayout() {
   return (
     <div className="relative min-h-screen">
       {/* Banner image — Seanime pattern: fixed, h-[35rem], extends behind sidebar */}
-      <BannerImage src={bgImage} position={bgPosition} />
+      <BannerImage src={bgImage} position={bgPosition} dimMode={bgDimMode} />
 
       {/* Sidebar */}
       <AppSidebar />

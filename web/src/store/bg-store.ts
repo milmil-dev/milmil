@@ -3,11 +3,17 @@ import { create } from 'zustand';
 interface BgState {
   image: string | null;
   position: 'top' | 'bottom';
-  setImage: (url: string | null, position?: 'top' | 'bottom') => void;
+  dimMode: 'scroll-down' | 'scroll-up';
+  setImage: (url: string | null, opts?: { position?: 'top' | 'bottom'; dimMode?: 'scroll-down' | 'scroll-up' }) => void;
 }
 
 export const useBgStore = create<BgState>()((set) => ({
   image: null,
   position: 'top',
-  setImage: (url, position = 'top') => set({ image: url, position }),
+  dimMode: 'scroll-down',
+  setImage: (url, opts) => set({
+    image: url,
+    position: opts?.position ?? 'top',
+    dimMode: opts?.dimMode ?? 'scroll-down',
+  }),
 }));
