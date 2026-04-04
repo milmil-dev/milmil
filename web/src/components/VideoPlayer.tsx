@@ -9,7 +9,6 @@ import {
   PlayButton,
   PlaybackRateButton,
   Popover,
-SeekButton,
   Slider,
   Time,
   TimeSlider,
@@ -26,7 +25,7 @@ import { forwardRef, useEffect, useRef } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
 
-const SEEK_TIME = 10;
+
 
 interface VideoPlayerProps {
   src: string;
@@ -123,12 +122,12 @@ function CustomVideoSkin({
         )}
       />
 
-      {/* Gradient fade behind controls (IINA style) */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+      {/* Gradient fade behind controls (YouTube style — subtle) */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
-      <Controls.Root className="media-surface media-controls flex flex-col">
-        {/* Row 1: Progress bar — full width */}
-        <div className="w-full px-3">
+      <Controls.Root className="media-surface media-controls flex flex-col gap-0">
+        {/* Progress bar — full width, no side padding (YouTube style) */}
+        <div className="w-full">
           <TimeSlider.Root className="media-slider">
             <Slider.Track className="media-slider__track">
               <Slider.Fill className="media-slider__fill" />
@@ -142,12 +141,12 @@ function CustomVideoSkin({
           </TimeSlider.Root>
         </div>
 
-        {/* Row 2: Control buttons */}
+        {/* Controls row (YouTube layout: play+vol+time ... buttons+fullscreen) */}
         <div className="flex items-center w-full px-1">
           <Tooltip.Provider>
-            {/* Left group: play, seek, time */}
-            <div className="flex items-center gap-0.5">
-              {/* Play */}
+            {/* ── Left group ── */}
+            <div className="flex items-center">
+              {/* Play / Pause */}
               <Tooltip.Root side="top">
                 <Tooltip.Trigger
                   render={
@@ -158,68 +157,35 @@ function CustomVideoSkin({
                     </PlayButton>
                   }
                 />
-                <Tooltip.Popup className="media-surface media-tooltip">
-                  <PlayLabel />
-                </Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip"><PlayLabel /></Tooltip.Popup>
               </Tooltip.Root>
 
-              {/* Seek backward */}
-              <Tooltip.Root side="top">
-                <Tooltip.Trigger
-                  render={
-                    <SeekButton seconds={-SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
-                      <span className="media-icon__container">
-                        <svg className="media-icon media-icon--seek media-icon--flipped" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
-                        <span className="media-icon__label">{SEEK_TIME}</span>
-                      </span>
-                    </SeekButton>
-                  }
-                />
-                <Tooltip.Popup className="media-surface media-tooltip">
-                  Seek backward {SEEK_TIME} seconds
-                </Tooltip.Popup>
-              </Tooltip.Root>
+              {/* Volume (YouTube: right next to play) */}
+              <VolumePopoverControl />
 
-              {/* Seek forward */}
-              <Tooltip.Root side="top">
-                <Tooltip.Trigger
-                  render={
-                    <SeekButton seconds={SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
-                      <span className="media-icon__container">
-                        <svg className="media-icon media-icon--seek" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
-                        <span className="media-icon__label">{SEEK_TIME}</span>
-                      </span>
-                    </SeekButton>
-                  }
-                />
-                <Tooltip.Popup className="media-surface media-tooltip">
-                  Seek forward {SEEK_TIME} seconds
-                </Tooltip.Popup>
-              </Tooltip.Root>
-
-              {/* Time display */}
-              <Time.Group className="media-time">
+              {/* Time: 00:59 / 23:40 */}
+              <Time.Group className="media-time ml-1">
                 <Time.Value type="current" className="media-time__value" />
-                <span className="text-white/40 text-xs mx-1">/</span>
+                <span className="text-white/50 text-xs mx-0.5">/</span>
                 <Time.Value type="duration" className="media-time__value" />
               </Time.Group>
             </div>
 
-            {/* Spacer */}
+            {/* ── Spacer ── */}
             <div className="flex-1" />
 
-            {/* Right group: rate, volume, pip, panels, fullscreen */}
-            <div className="flex items-center gap-0.5">
+            {/* ── Right group ── */}
+            <div className="flex items-center">
               {/* Playback rate */}
               <Tooltip.Root side="top">
                 <Tooltip.Trigger
                   render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
                 />
-                <Tooltip.Popup className="media-surface media-tooltip">Toggle playback rate</Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip">Playback speed</Tooltip.Popup>
               </Tooltip.Root>
 
-              {/* Volume */}
-              <VolumePopoverControl />
+              {/* Custom extra buttons (subtitle, media settings, tech info) */}
+              {controlBarExtra}
 
               {/* PiP */}
               <Tooltip.Root side="top">
@@ -231,13 +197,8 @@ function CustomVideoSkin({
                     </PiPButton>
                   }
                 />
-                <Tooltip.Popup className="media-surface media-tooltip">
-                  <PiPLabel />
-                </Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip"><PiPLabel /></Tooltip.Popup>
               </Tooltip.Root>
-
-              {/* Custom extra buttons (e.g. settings triggers) */}
-              {controlBarExtra}
 
               {/* Fullscreen */}
               <Tooltip.Root side="top">
@@ -249,9 +210,7 @@ function CustomVideoSkin({
                     </FullscreenButton>
                   }
                 />
-                <Tooltip.Popup className="media-surface media-tooltip">
-                  <FullscreenLabel />
-                </Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip"><FullscreenLabel /></Tooltip.Popup>
               </Tooltip.Root>
             </div>
           </Tooltip.Provider>
