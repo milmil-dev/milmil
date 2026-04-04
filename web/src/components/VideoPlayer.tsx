@@ -318,7 +318,7 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
   return (
     <div className={className} data-videojs>
       <CustomVideoSkin controlBarExtra={controlBarExtra}>
-        {isHLS ? <HlsVideo src={src} playsInline /> : <Video src={src} playsInline />}
+        {isHLS ? <HlsVideo src={src} playsInline crossOrigin="anonymous" /> : <Video src={src} playsInline crossOrigin="anonymous" />}
       </CustomVideoSkin>
     </div>
   );

@@ -40,6 +40,14 @@ func (h *handler) handleSubtitleContent(c echo.Context) error {
 	}
 	defer f.Close()
 
+	// Allow cross-origin loading for <track> elements in dev (different ports)
+	origin := c.Request().Header.Get("Origin")
+	if origin != "" {
+		c.Response().Header().Set("Access-Control-Allow-Origin", origin)
+	} else {
+		c.Response().Header().Set("Access-Control-Allow-Origin", "*")
+	}
+
 	// Always serve as WebVTT — convert ASS/SRT on the fly
 	format := strings.ToLower(sub.Format)
 	if format == "ass" || format == "ssa" || format == "srt" || format == "subrip" {
