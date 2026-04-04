@@ -49,6 +49,21 @@ func (q *Queries) CreateSegmentMark(ctx context.Context, arg CreateSegmentMarkPa
 	return i, err
 }
 
+const deleteBackupConfig = `-- name: DeleteBackupConfig :exec
+DELETE FROM backup_configs
+WHERE user_id = ? AND type = ?
+`
+
+type DeleteBackupConfigParams struct {
+	UserID string `json:"user_id"`
+	Type   string `json:"type"`
+}
+
+func (q *Queries) DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error {
+	_, err := q.db.ExecContext(ctx, deleteBackupConfig, arg.UserID, arg.Type)
+	return err
+}
+
 const deleteSegmentMark = `-- name: DeleteSegmentMark :exec
 DELETE FROM segment_marks WHERE id = ?
 `
@@ -272,6 +287,22 @@ func (q *Queries) ListUserPreferences(ctx context.Context, arg ListUserPreferenc
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateBackupSyncTime = `-- name: UpdateBackupSyncTime :exec
+UPDATE backup_configs
+SET last_sync_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE user_id = ? AND type = ?
+`
+
+type UpdateBackupSyncTimeParams struct {
+	UserID string `json:"user_id"`
+	Type   string `json:"type"`
+}
+
+func (q *Queries) UpdateBackupSyncTime(ctx context.Context, arg UpdateBackupSyncTimeParams) error {
+	_, err := q.db.ExecContext(ctx, updateBackupSyncTime, arg.UserID, arg.Type)
+	return err
 }
 
 const upsertBackupConfig = `-- name: UpsertBackupConfig :one

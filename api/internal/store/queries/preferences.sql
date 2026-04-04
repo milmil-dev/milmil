@@ -57,3 +57,12 @@ LIMIT 1;
 -- name: ListBackupConfigs :many
 SELECT * FROM backup_configs
 WHERE user_id = ?;
+
+-- name: UpdateBackupSyncTime :exec
+UPDATE backup_configs
+SET last_sync_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE user_id = ? AND type = ?;
+
+-- name: DeleteBackupConfig :exec
+DELETE FROM backup_configs
+WHERE user_id = ? AND type = ?;

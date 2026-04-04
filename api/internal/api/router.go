@@ -188,6 +188,12 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	prefsGroup.PUT("/series/:seriesId", h.handleUpsertSeriesPreferences)
 	prefsGroup.POST("/export", h.handleExportPreferences)
 	prefsGroup.POST("/import", h.handleImportPreferences)
+	prefsGroup.PUT("/backup-config", h.handleUpsertBackupConfig)
+	prefsGroup.GET("/backup-config", h.handleListBackupConfigs)
+	prefsGroup.DELETE("/backup-config/:type", h.handleDeleteBackupConfig)
+	prefsGroup.POST("/backup-config/test", h.handleTestBackupConnection)
+	prefsGroup.POST("/sync", h.handleTriggerSync)
+	prefsGroup.GET("/sync/status", h.handleSyncStatus)
 
 	// Segment Marks — protected
 	v1.POST("/media/:fileId/segments", h.handleCreateSegmentMark, jwtMiddleware(cfg.JWTSecret))

@@ -30,6 +30,7 @@ type Querier interface {
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAllNotifications(ctx context.Context) error
+	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteLibrary(ctx context.Context, id string) error
@@ -113,6 +114,7 @@ type Querier interface {
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
+	UpdateBackupSyncTime(ctx context.Context, arg UpdateBackupSyncTimeParams) error
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
 	UpdateDownloadRuleTriggered(ctx context.Context, id string) error
 	UpdateDownloadStatus(ctx context.Context, arg UpdateDownloadStatusParams) error
