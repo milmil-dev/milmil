@@ -393,16 +393,53 @@ export function WatchPage() {
     const player = playerRef.current;
     if (!player || player.isDisposed() || !subtitles || subtitles.length === 0) return;
 
-    for (const sub of subtitles) {
+    // Find the best subtitle match for the user's app language
+    const appLocale = i18n.locale ?? 'zh-TW';
+    const localeLower = appLocale.toLowerCase();
+    const localeBase = localeLower.split('-')[0] ?? localeLower; // "zh", "en", "ja"
+
+    // Language matching priority: exact locale → base language → first available
+    const langMatch = (subLang: string): number => {
+      const sl = subLang.toLowerCase();
+      if (sl === localeLower) return 3; // exact: "en" === "en"
+      if (sl.startsWith(localeBase)) return 2; // base: "zh-Hans" starts with "zh"
+      // Common mappings: "eng" → "en", "jpn" → "ja", "kor" → "ko", "chi"/"zho" → "zh"
+      const isoMap: Record<string, string> = { eng: 'en', jpn: 'ja', kor: 'ko', chi: 'zh', zho: 'zh', tha: 'th', ind: 'id' };
+      if (isoMap[sl] === localeBase) return 2;
+      return 0;
+    };
+
+    let bestIdx = 0;
+    let bestScore = 0;
+    for (let idx = 0; idx < subtitles.length; idx++) {
+      const score = langMatch(subtitles[idx]!.language);
+      if (score > bestScore) {
+        bestScore = score;
+        bestIdx = idx;
+      }
+    }
+
+    for (let idx = 0; idx < subtitles.length; idx++) {
+      const sub = subtitles[idx]!;
       player.addRemoteTextTrack(
         {
           kind: 'subtitles',
           src: getSubtitleUrl(sub.id),
           srclang: sub.language,
           label: sub.language,
+          default: idx === bestIdx,
         },
         true
       );
+    }
+
+    // Ensure only the default track is showing
+    const video = player.videoElement();
+    if (video) {
+      for (let t = 0; t < video.textTracks.length; t++) {
+        const track = video.textTracks[t];
+        if (track) track.mode = t === bestIdx ? 'showing' : 'disabled';
+      }
     }
   }, [subtitles]);
 

@@ -50,6 +50,7 @@ export interface VideoPlayerAPI {
       src: string;
       srclang: string;
       label: string;
+      default?: boolean;
     },
     manualCleanup: boolean
   ) => void;
@@ -304,6 +305,7 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
         track.src = opts.src;
         track.srclang = opts.srclang;
         track.label = opts.label;
+        if (opts.default) track.default = true;
         video.appendChild(track);
       },
       videoElement: () => findVideo(),
