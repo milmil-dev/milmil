@@ -39,24 +39,26 @@ function isPublicRoute(pathname: string): boolean {
  * - Scroll dimming: fades to opacity-5 when scrolled past 100px
  * - Transition overlay: bg-color fades in during image switches
  */
-function BannerImage({ src }: { src: string | null }) {
+function BannerImage({ src, position }: { src: string | null; position: 'top' | 'bottom' }) {
   const [dimmed, setDimmed] = useState(false);
+  const isBottom = position === 'bottom';
 
   useEffect(() => {
+    if (isBottom) { setDimmed(false); return; }
     const onScroll = () => setDimmed(window.scrollY > 100);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [isBottom]);
 
   if (!src) {
-    // No banner image — return nothing; pages provide their own atmospheric glows
     return null;
   }
 
   return (
     <div
       className={cn(
-        'fixed top-0 z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
+        'fixed z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
+        isBottom ? 'bottom-0' : 'top-0',
         dimmed && 'opacity-[0.05]'
       )}
       style={{ left: 0, right: 0 }}
@@ -131,6 +133,7 @@ function RootLayout() {
   const { i18n } = useLingui();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const bgImage = useBgStore((s) => s.image);
+  const bgPosition = useBgStore((s) => s.position);
   const queryClient = useQueryClient();
   // Connect WebSocket (routes scan events to Zustand store)
   useMillilWebSocket();
@@ -165,7 +168,7 @@ function RootLayout() {
   return (
     <div className="relative min-h-screen">
       {/* Banner image — Seanime pattern: fixed, h-[35rem], extends behind sidebar */}
-      <BannerImage src={bgImage} />
+      <BannerImage src={bgImage} position={bgPosition} />
 
       {/* Sidebar */}
       <AppSidebar />

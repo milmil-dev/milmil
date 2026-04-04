@@ -158,7 +158,7 @@ export function WatchPage() {
   useEffect(() => {
     const img = animeDetail?.banner_image || animeDetail?.cover_image;
     if (img?.startsWith('http')) {
-      setImage(img);
+      setImage(img, 'bottom');
     }
     return () => setImage(null);
   }, [animeDetail?.banner_image, animeDetail?.cover_image, setImage]);
