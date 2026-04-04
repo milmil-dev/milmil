@@ -592,7 +592,7 @@ export function WatchPage() {
   if (detailLoading || (episodesLoading && metaEpisodesLoading)) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-black/20">
+        <div className="min-h-screen">
           <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
             {/* Title bar skeleton */}
             <Skeleton className="h-6 w-1/3 mb-2" />
@@ -623,7 +623,7 @@ export function WatchPage() {
   if (!animeDetail || mergedEpisodes.length === 0) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-black/20 flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center">
           <p className="text-white/50 text-sm">{i18n._(msg`watch.notFound`)}</p>
         </div>
       </PageTransition>
@@ -633,7 +633,7 @@ export function WatchPage() {
   // --------------- Main render ---------------
   return (
     <PageTransition>
-      <div className="min-h-screen bg-black/20">
+      <div className="min-h-screen">
         <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
           {/* Title bar */}
           <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
