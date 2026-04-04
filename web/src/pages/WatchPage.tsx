@@ -642,7 +642,7 @@ export function WatchPage() {
             {/* LEFT COLUMN */}
             <div className="flex-1 min-w-0">
               {/* Player container */}
-              <div className="relative aspect-video overflow-hidden border-0 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+              <div className="relative aspect-video overflow-hidden border-0">
                 {streamUrl ? (
                   <>
                     <VideoPlayer
