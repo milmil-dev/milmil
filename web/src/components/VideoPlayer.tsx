@@ -134,7 +134,7 @@ function CustomVideoSkin({
               <Slider.Buffer className="media-slider__buffer" />
             </Slider.Track>
             <Slider.Thumb className="media-slider__thumb" />
-            <div className="media-surface media-preview media-slider__preview">
+            <div className="media-preview media-slider__preview">
               <Slider.Thumbnail className="media-preview__thumbnail" />
               <Slider.Value type="pointer" className="media-preview__timestamp" />
             </div>
@@ -164,10 +164,10 @@ function CustomVideoSkin({
               <VolumePopoverControl />
 
               {/* Time: 00:59 / 23:40 */}
-              <Time.Group className="media-time ml-1">
-                <Time.Value type="current" className="media-time__value" />
-                <span className="text-white/50 text-xs mx-0.5">/</span>
-                <Time.Value type="duration" className="media-time__value" />
+              <Time.Group className="ml-2 flex items-center text-[13px] text-white/90 tabular-nums select-none">
+                <Time.Value type="current" />
+                <span className="text-white/40 mx-1">/</span>
+                <Time.Value type="duration" />
               </Time.Group>
             </div>
 
