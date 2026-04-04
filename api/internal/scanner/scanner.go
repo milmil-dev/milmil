@@ -3,12 +3,15 @@ package scanner
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/milmil/api/internal/ffmpeg"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 )
@@ -162,6 +165,9 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 		return err
 	}
 
+	// Extract embedded subtitles from video containers
+	s.extractEmbeddedSubtitles(ctx, scannedPaths)
+
 	// Remove media files that no longer exist on disk
 	existingPaths, err := s.queries.ListMediaFilePathsByLibrary(ctx, library.ID)
 	if err != nil {
@@ -235,6 +241,78 @@ func (s *Scanner) scanSubtitles(ctx context.Context, scannedPaths map[string]str
 		}
 	}
 	return nil
+}
+
+// extractEmbeddedSubtitles probes video files for embedded subtitle streams
+// and extracts them to external files so the player can load them.
+func (s *Scanner) extractEmbeddedSubtitles(ctx context.Context, scannedPaths map[string]string) {
+	// Codec → file extension mapping
+	codecExt := map[string]string{
+		"ass": ".ass", "ssa": ".ssa", "subrip": ".srt", "srt": ".srt",
+		"webvtt": ".vtt", "mov_text": ".srt",
+	}
+
+	for videoPath, mediaFileID := range scannedPaths {
+		// Check if we already have embedded subtitles for this file
+		existing, _ := s.queries.ListSubtitlePathsByMediaFile(ctx, mediaFileID)
+		hasEmbedded := false
+		for _, p := range existing {
+			if strings.Contains(p, ".embedded.") {
+				hasEmbedded = true
+				break
+			}
+		}
+		if hasEmbedded {
+			continue
+		}
+
+		// Probe for embedded subtitle streams
+		subs, err := ffmpeg.ProbeSubtitles(ctx, videoPath)
+		if err != nil || len(subs) == 0 {
+			continue
+		}
+
+		dir := filepath.Dir(videoPath)
+		videoBase := strings.TrimSuffix(filepath.Base(videoPath), filepath.Ext(videoPath))
+
+		for i, sub := range subs {
+			ext, ok := codecExt[sub.Codec]
+			if !ok {
+				ext = ".srt" // fallback
+			}
+
+			lang := sub.Language
+			if lang == "" {
+				lang = "und"
+			}
+
+			// Build output path: video.embedded.0.eng.ass
+			outName := fmt.Sprintf("%s.embedded.%d.%s%s", videoBase, i, lang, ext)
+			outPath := filepath.Join(dir, outName)
+
+			if err := ffmpeg.ExtractSubtitle(ctx, videoPath, sub.Index, outPath); err != nil {
+				slog.Warn("scanner: failed to extract subtitle",
+					"file", videoPath, "stream", sub.Index, "err", err)
+				continue
+			}
+
+			// Determine display label
+			label := lang
+			if sub.Title != "" {
+				label = sub.Title
+			}
+
+			format := strings.TrimPrefix(ext, ".")
+			_, _ = s.queries.CreateSubtitleFile(ctx, store.CreateSubtitleFileParams{
+				ID:          uuid.NewString(),
+				MediaFileID: mediaFileID,
+				Path:        outPath,
+				Language:    label,
+				Format:      format,
+				Source:      "embedded",
+			})
+		}
+	}
 }
 
 // detectLanguage extracts the language tag from a subtitle filename.

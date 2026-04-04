@@ -2,6 +2,8 @@ package ffmpeg
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -69,5 +71,57 @@ func Transcode(ctx context.Context, opts TranscodeOptions) error {
 	}
 
 	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	return cmd.Run()
+}
+
+// EmbeddedSubtitle describes a subtitle stream inside a container.
+type EmbeddedSubtitle struct {
+	Index    int
+	Codec    string
+	Language string
+	Title    string
+}
+
+// ProbeSubtitles returns embedded subtitle streams from a media file.
+func ProbeSubtitles(ctx context.Context, inputPath string) ([]EmbeddedSubtitle, error) {
+	cmd := exec.CommandContext(ctx, "ffprobe",
+		"-v", "quiet", "-print_format", "json",
+		"-show_streams", "-select_streams", "s",
+		inputPath,
+	)
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, err
+	}
+	var result struct {
+		Streams []struct {
+			Index     int               `json:"index"`
+			CodecName string            `json:"codec_name"`
+			Tags      map[string]string `json:"tags"`
+		} `json:"streams"`
+	}
+	if err := json.Unmarshal(out, &result); err != nil {
+		return nil, err
+	}
+	subs := make([]EmbeddedSubtitle, 0, len(result.Streams))
+	for _, s := range result.Streams {
+		subs = append(subs, EmbeddedSubtitle{
+			Index: s.Index, Codec: s.CodecName,
+			Language: s.Tags["language"], Title: s.Tags["title"],
+		})
+	}
+	return subs, nil
+}
+
+// ExtractSubtitle extracts a single subtitle stream to an external file.
+func ExtractSubtitle(ctx context.Context, inputPath string, streamIndex int, outputPath string) error {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+		return err
+	}
+	cmd := exec.CommandContext(ctx, "ffmpeg",
+		"-i", inputPath,
+		"-map", fmt.Sprintf("0:%d", streamIndex),
+		"-c:s", "copy", "-y", outputPath,
+	)
 	return cmd.Run()
 }
