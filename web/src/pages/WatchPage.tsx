@@ -9,7 +9,7 @@ import { PageTransition } from '@/components/PageTransition';
 import { Skeleton } from '@/components/Skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import type { VideoPlayerAPI } from '@/components/VideoPlayer';
-import { VideoPlayer } from '@/components/VideoPlayer';
+import { SkinButton, VideoPlayer } from '@/components/VideoPlayer';
 import { AnimeInfoSection } from '@/components/watch/AnimeInfoSection';
 import { BangumiComments } from '@/components/watch/BangumiComments';
 import { DanmakuBar } from '@/components/watch/DanmakuBar';
@@ -35,7 +35,24 @@ import {
   streamApi,
 } from '@/lib/api/stream';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
+import type { CapturePluginAPI } from '@/plugins/capture/CapturePlugin';
+import { createCapturePlugin } from '@/plugins/capture/CapturePlugin';
+import type { GesturePluginAPI } from '@/plugins/gesture/GesturePlugin';
+import { createGesturePlugin } from '@/plugins/gesture/GesturePlugin';
+import type { KeyboardPluginAPI } from '@/plugins/keyboard/KeyboardPlugin';
+import { createKeyboardPlugin } from '@/plugins/keyboard/KeyboardPlugin';
+import type { MediaSettingsPluginAPI } from '@/plugins/media-settings/MediaSettingsPlugin';
+import { createMediaSettingsPlugin } from '@/plugins/media-settings/MediaSettingsPlugin';
+import { UnifiedSettingsPanel } from '@/components/watch/UnifiedSettingsPanel';
+import type { PlaybackPluginAPI } from '@/plugins/playback/PlaybackPlugin';
+import { createPlaybackPlugin } from '@/plugins/playback/PlaybackPlugin';
+import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
+import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
+// SubtitleSettingsPanel replaced by UnifiedSettingsPanel
+import type { SubtitleTrack } from '@/plugins/subtitle/types';
+import { useBgStore } from '@/store/bg-store';
 import { usePlayerStore } from '@/store/player-store';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 const SAVE_INTERVAL_MS = 10_000;
@@ -105,6 +122,13 @@ export function WatchPage() {
   const playerRef = useRef<VideoPlayerAPI | null>(null);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
   const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const subtitlePluginRef = useRef<SubtitlePluginAPI | null>(null);
+  const keyboardPluginRef = useRef<KeyboardPluginAPI | null>(null);
+  const mediaSettingsPluginRef = useRef<MediaSettingsPluginAPI | null>(null);
+  const playbackPluginRef = useRef<PlaybackPluginAPI | null>(null);
+  const gesturePluginRef = useRef<GesturePluginAPI | null>(null);
+  const capturePluginRef = useRef<CapturePluginAPI | null>(null);
+  const navigateToNextEpisodeRef = useRef<() => void>(() => {});
 
   // --------------- Transcode state ---------------
   const [transcodeStatus, setTranscodeStatus] = useState<'idle' | 'processing' | 'ready' | 'error'>(
@@ -128,6 +152,16 @@ export function WatchPage() {
       : animeDetail.title
     : undefined;
   useDocumentTitle(watchTitle);
+
+  // Set full-screen background image (Seanime style)
+  const setImage = useBgStore((s) => s.setImage);
+  useEffect(() => {
+    const img = animeDetail?.banner_image || animeDetail?.cover_image;
+    if (img?.startsWith('http')) {
+      setImage(img, { dimMode: 'scroll-up' });
+    }
+    return () => setImage(null);
+  }, [animeDetail?.banner_image, animeDetail?.cover_image, setImage]);
 
   const { data: episodesData, isLoading: episodesLoading } = useQuery({
     queryKey: animeKeys.playableEpisodes(bangumiId),
@@ -310,6 +344,7 @@ export function WatchPage() {
 
   // --------------- Video element state ---------------
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
+  const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
 
   // --------------- Progress saving ---------------
   const saveProgress = useCallback(() => {
@@ -352,6 +387,18 @@ export function WatchPage() {
     };
   }, [saveProgress]);
 
+  // Dispose all plugins on unmount
+  useEffect(() => {
+    return () => {
+      subtitlePluginRef.current?.dispose();
+      keyboardPluginRef.current?.dispose();
+      mediaSettingsPluginRef.current?.dispose();
+      playbackPluginRef.current?.dispose();
+      gesturePluginRef.current?.dispose();
+      capturePluginRef.current?.dispose();
+    };
+  }, []);
+
   // --------------- Player ready handler ---------------
   const handlePlayerReady = useCallback(
     (api: VideoPlayerAPI) => {
@@ -359,6 +406,74 @@ export function WatchPage() {
       const el = api.videoElement();
       videoElRef.current = el;
       setVideoEl(el);
+
+      // Initialize all plugins
+      const containerEl = api.containerElement();
+      if (el && containerEl) {
+        const prefs = usePreferencesStore.getState();
+
+        // --- Subtitle plugin ---
+        subtitlePluginRef.current?.dispose();
+        const appLocale = i18n.locale ?? 'zh-TW';
+        const subtitlePlugin = createSubtitlePlugin(el, containerEl, appLocale);
+        subtitlePluginRef.current = subtitlePlugin;
+
+        // Load tracks if subtitles are already available
+        if (subtitles && subtitles.length > 0) {
+          subtitlePlugin.loadTracks(
+            subtitles.map((s) => ({
+              id: s.id,
+              label: s.language,
+              language: s.language,
+              source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
+              format: 'vtt' as SubtitleTrack['format'], // backend always converts to VTT
+              url: getSubtitleUrl(s.id),
+            }))
+          );
+        }
+
+        // --- Keyboard plugin ---
+        keyboardPluginRef.current?.dispose();
+        keyboardPluginRef.current = createKeyboardPlugin(el, containerEl, {
+          customBindings: prefs.keyboardBindings,
+          onNextEpisode: () => navigateToNextEpisodeRef.current(),
+        });
+
+        // --- Media Settings plugin ---
+        mediaSettingsPluginRef.current?.dispose();
+        mediaSettingsPluginRef.current = createMediaSettingsPlugin(el, containerEl);
+
+        // --- Playback plugin ---
+        playbackPluginRef.current?.dispose();
+        const playbackPlugin = createPlaybackPlugin(el, containerEl);
+        playbackPlugin.onNextEpisode(() => navigateToNextEpisodeRef.current());
+        playbackPlugin.setAutoNext(prefs.autoNext);
+        playbackPlugin.setAutoSkip(prefs.autoSkipOp, prefs.autoSkipEd);
+        playbackPluginRef.current = playbackPlugin;
+
+        // --- Gesture plugin ---
+        gesturePluginRef.current?.dispose();
+        gesturePluginRef.current = createGesturePlugin(el, containerEl, {
+          enabled: prefs.gestureEnabled,
+          sensitivity: prefs.gestureSensitivity,
+        });
+
+        // --- Capture plugin ---
+        capturePluginRef.current?.dispose();
+        capturePluginRef.current = createCapturePlugin(el, containerEl);
+
+        // --- Inter-plugin communication: keyboard -> subtitle ---
+        containerEl.addEventListener('plugin-action', ((e: CustomEvent) => {
+          const sp = subtitlePluginRef.current;
+          if (!sp) return;
+          switch (e.detail.action) {
+            case 'subtitle:toggle': sp.toggle(); break;
+            case 'subtitle:next-track': sp.nextTrack(); break;
+            case 'subtitle:delay-decrease': sp.adjustDelay(-0.1); break;
+            case 'subtitle:delay-increase': sp.adjustDelay(0.1); break;
+          }
+        }) as EventListener);
+      }
 
       // Restore progress and show resume overlay
       if (
@@ -385,62 +500,24 @@ export function WatchPage() {
         queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(bangumiId) });
       });
     },
-    [currentEpisode, saveProgress, fileId, bangumiId, queryClient]
+    [currentEpisode, saveProgress, fileId, bangumiId, queryClient, subtitles, i18n.locale]
   );
 
-  // --------------- Subtitle tracks (loaded independently of player ready) ---------------
+  // --------------- Subtitle tracks (reload when subtitles query updates) ---------------
   useEffect(() => {
-    const player = playerRef.current;
-    if (!player || player.isDisposed() || !subtitles || subtitles.length === 0) return;
+    const plugin = subtitlePluginRef.current;
+    if (!plugin || !subtitles || subtitles.length === 0) return;
 
-    // Find the best subtitle match for the user's app language
-    const appLocale = i18n.locale ?? 'zh-TW';
-    const localeLower = appLocale.toLowerCase();
-    const localeBase = localeLower.split('-')[0] ?? localeLower; // "zh", "en", "ja"
-
-    // Language matching priority: exact locale → base language → first available
-    const langMatch = (subLang: string): number => {
-      const sl = subLang.toLowerCase();
-      if (sl === localeLower) return 3; // exact: "en" === "en"
-      if (sl.startsWith(localeBase)) return 2; // base: "zh-Hans" starts with "zh"
-      // Common mappings: "eng" → "en", "jpn" → "ja", "kor" → "ko", "chi"/"zho" → "zh"
-      const isoMap: Record<string, string> = { eng: 'en', jpn: 'ja', kor: 'ko', chi: 'zh', zho: 'zh', tha: 'th', ind: 'id' };
-      if (isoMap[sl] === localeBase) return 2;
-      return 0;
-    };
-
-    let bestIdx = 0;
-    let bestScore = 0;
-    for (let idx = 0; idx < subtitles.length; idx++) {
-      const score = langMatch(subtitles[idx]!.language);
-      if (score > bestScore) {
-        bestScore = score;
-        bestIdx = idx;
-      }
-    }
-
-    for (let idx = 0; idx < subtitles.length; idx++) {
-      const sub = subtitles[idx]!;
-      player.addRemoteTextTrack(
-        {
-          kind: 'subtitles',
-          src: getSubtitleUrl(sub.id),
-          srclang: sub.language,
-          label: sub.language,
-          default: idx === bestIdx,
-        },
-        true
-      );
-    }
-
-    // Ensure only the default track is showing
-    const video = player.videoElement();
-    if (video) {
-      for (let t = 0; t < video.textTracks.length; t++) {
-        const track = video.textTracks[t];
-        if (track) track.mode = t === bestIdx ? 'showing' : 'disabled';
-      }
-    }
+    plugin.loadTracks(
+      subtitles.map((s) => ({
+        id: s.id,
+        label: s.language,
+        language: s.language,
+        source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
+        format: 'vtt' as SubtitleTrack['format'], // backend always converts to VTT
+        url: getSubtitleUrl(s.id),
+      }))
+    );
   }, [subtitles]);
 
   // --------------- Episode switching ---------------
@@ -455,6 +532,21 @@ export function WatchPage() {
       setTranscodeToken(null);
       setResumeFrom(null);
       setVideoEl(null);
+
+      // Dispose all plugins
+      subtitlePluginRef.current?.dispose();
+      subtitlePluginRef.current = null;
+      keyboardPluginRef.current?.dispose();
+      keyboardPluginRef.current = null;
+      mediaSettingsPluginRef.current?.dispose();
+      mediaSettingsPluginRef.current = null;
+      playbackPluginRef.current?.dispose();
+      playbackPluginRef.current = null;
+      gesturePluginRef.current?.dispose();
+      gesturePluginRef.current = null;
+      capturePluginRef.current?.dispose();
+      capturePluginRef.current = null;
+
       playerRef.current = null;
       videoElRef.current = null;
 
@@ -468,6 +560,29 @@ export function WatchPage() {
     [saveProgress, navigate, bangumiId]
   );
 
+  // --------------- Navigate to next episode ---------------
+  const navigateToNextEpisode = useCallback(() => {
+    if (!currentEpisode) return;
+    const currentIdx = mergedEpisodes.findIndex((e) => e.sort === currentEpisode.sort);
+    const nextEp = mergedEpisodes[currentIdx + 1];
+    if (nextEp?.media_file) {
+      handleSelectEpisode(nextEp.sort);
+    }
+  }, [currentEpisode, mergedEpisodes, handleSelectEpisode]);
+  navigateToNextEpisodeRef.current = navigateToNextEpisode;
+
+  // --------------- Sync preferences to plugins ---------------
+  useEffect(() => {
+    const unsub = usePreferencesStore.subscribe((state) => {
+      keyboardPluginRef.current?.updateBindings(state.keyboardBindings);
+      gesturePluginRef.current?.setEnabled(state.gestureEnabled);
+      gesturePluginRef.current?.setSensitivity(state.gestureSensitivity);
+      playbackPluginRef.current?.setAutoNext(state.autoNext);
+      playbackPluginRef.current?.setAutoSkip(state.autoSkipOp, state.autoSkipEd);
+    });
+    return unsub;
+  }, []);
+
   // --------------- Danmaku seek ---------------
   const handleSeekDanmaku = useCallback((time: number) => {
     playerRef.current?.currentTime(time);
@@ -477,8 +592,8 @@ export function WatchPage() {
   if (detailLoading || (episodesLoading && metaEpisodesLoading)) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-black/20">
-          <div className="max-w-[1400px] mx-auto px-3 lg:px-6 py-3 lg:py-4">
+        <div className="min-h-screen">
+          <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
             {/* Title bar skeleton */}
             <Skeleton className="h-6 w-1/3 mb-2" />
             <Skeleton className="h-4 w-1/5 mb-3" />
@@ -508,7 +623,7 @@ export function WatchPage() {
   if (!animeDetail || mergedEpisodes.length === 0) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-black/20 flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center">
           <p className="text-white/50 text-sm">{i18n._(msg`watch.notFound`)}</p>
         </div>
       </PageTransition>
@@ -518,8 +633,8 @@ export function WatchPage() {
   // --------------- Main render ---------------
   return (
     <PageTransition>
-      <div className="min-h-screen bg-black/20">
-        <div className="max-w-[1400px] mx-auto px-3 lg:px-6 py-3 lg:py-4">
+      <div className="min-h-screen">
+        <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
           {/* Title bar */}
           <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
 
@@ -527,7 +642,7 @@ export function WatchPage() {
             {/* LEFT COLUMN */}
             <div className="flex-1 min-w-0">
               {/* Player container */}
-              <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+              <div className="relative aspect-video overflow-hidden border-0">
                 {streamUrl ? (
                   <>
                     <VideoPlayer
@@ -536,13 +651,29 @@ export function WatchPage() {
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
                       controlBarExtra={
-                        <TechInfoPopover
-                          mediaInfo={mediaInfo}
-                          subtitles={subtitles}
-                          transcodeStatus={transcodeStatus}
-                        />
+                        <SkinButton
+                          onClick={() => setSettingsPanelOpen((v) => !v)}
+                          aria-label="Settings"
+                        >
+                          <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
+                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                          </svg>
+                        </SkinButton>
                       }
                     />
+
+                    {/* Unified settings panel */}
+                    <AnimatePresence>
+                      {settingsPanelOpen && (
+                        <UnifiedSettingsPanel
+                          subtitlePlugin={subtitlePluginRef.current}
+                          mediaPlugin={mediaSettingsPluginRef.current}
+                          videoEl={videoEl}
+                          onClose={() => setSettingsPanelOpen(false)}
+                        />
+                      )}
+                    </AnimatePresence>
+
                     <DanmakuOverlay videoElement={videoEl} comments={danmakuComments} />
                     <EpisodeTitleOverlay episode={currentEpisode} />
                     <ResumeOverlay seconds={resumeFrom} onDone={() => setResumeFrom(null)} />

@@ -39,37 +39,53 @@ function isPublicRoute(pathname: string): boolean {
  * - Scroll dimming: fades to opacity-5 when scrolled past 100px
  * - Transition overlay: bg-color fades in during image switches
  */
-function BannerImage({ src }: { src: string | null }) {
-  const [dimmed, setDimmed] = useState(false);
+function BannerImage({ src, position, dimMode }: { src: string | null; position: 'top' | 'bottom'; dimMode: 'scroll-down' | 'scroll-up' }) {
+  const [dimmed, setDimmed] = useState(dimMode === 'scroll-up');
+  const isBottom = position === 'bottom';
 
   useEffect(() => {
+    if (dimMode === 'scroll-up') {
+      // Start dimmed, un-dim when scrolled near bottom
+      setDimmed(true);
+      const onScroll = () => {
+        const distFromBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+        setDimmed(distFromBottom > 200);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      return () => window.removeEventListener('scroll', onScroll);
+    }
+    // Default: dim when scrolled past top
     const onScroll = () => setDimmed(window.scrollY > 100);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [dimMode]);
 
   if (!src) {
-    // No banner image — return nothing; pages provide their own atmospheric glows
     return null;
   }
 
   return (
     <div
       className={cn(
-        'fixed top-0 z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
+        'fixed z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
+        isBottom ? 'top-[55%] -translate-y-1/2' : 'top-8',
         dimmed && 'opacity-[0.05]'
       )}
       style={{ left: 0, right: 0 }}
     >
-      {/* Bottom bleed — prevents hard edge below banner */}
+      {/* Edge bleed — prevents hard edge at the far end of banner */}
       <div
-        className="w-full z-[2] absolute -bottom-[5rem] h-[5rem]"
-        style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+        className={cn('w-full z-[2] absolute h-[5rem]', isBottom ? '-top-[5rem]' : '-bottom-[5rem]')}
+        style={{ background: isBottom
+          ? 'linear-gradient(to top, var(--mm-bg), transparent)'
+          : 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
       />
-      {/* Top fade — Seanime: h-[10rem] opacity-50 */}
+      {/* Inner fade — soft transition at content-facing edge */}
       <div
-        className="w-full absolute z-[2] top-0 h-[10rem] opacity-50"
-        style={{ background: 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+        className={cn('w-full absolute z-[2] h-[10rem] opacity-50', isBottom ? 'bottom-0' : 'top-0')}
+        style={{ background: isBottom
+          ? 'linear-gradient(to top, var(--mm-bg), transparent)'
+          : 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
       />
 
       {/* The image — z-[1] so gradients at z-[2] overlay it */}
@@ -86,6 +102,12 @@ function BannerImage({ src }: { src: string | null }) {
             src={src}
             alt=""
             className="w-full h-full object-cover object-center brightness-[0.6]"
+            style={isBottom ? {
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+              maskComposite: 'intersect',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+              WebkitMaskComposite: 'source-in',
+            } : undefined}
           />
         </motion.div>
       </AnimatePresence>
@@ -116,11 +138,13 @@ function BannerImage({ src }: { src: string | null }) {
           background: 'linear-gradient(to right, var(--mm-bg), transparent)',
         }}
       />
-      {/* Bottom gradient — gentle fade at very bottom */}
+      {/* Content-facing gradient — gentle fade toward page content */}
       <div
-        className="w-full z-[2] absolute bottom-0 h-[8rem]"
+        className={cn('w-full z-[2] absolute h-[8rem]', isBottom ? 'top-0' : 'bottom-0')}
         style={{
-          background: 'linear-gradient(to top, var(--mm-bg), transparent)',
+          background: isBottom
+            ? 'linear-gradient(to bottom, var(--mm-bg), transparent)'
+            : 'linear-gradient(to top, var(--mm-bg), transparent)',
         }}
       />
     </div>
@@ -131,6 +155,8 @@ function RootLayout() {
   const { i18n } = useLingui();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const bgImage = useBgStore((s) => s.image);
+  const bgPosition = useBgStore((s) => s.position);
+  const bgDimMode = useBgStore((s) => s.dimMode);
   const queryClient = useQueryClient();
   // Connect WebSocket (routes scan events to Zustand store)
   useMillilWebSocket();
@@ -165,7 +191,7 @@ function RootLayout() {
   return (
     <div className="relative min-h-screen">
       {/* Banner image — Seanime pattern: fixed, h-[35rem], extends behind sidebar */}
-      <BannerImage src={bgImage} />
+      <BannerImage src={bgImage} position={bgPosition} dimMode={bgDimMode} />
 
       {/* Sidebar */}
       <AppSidebar />

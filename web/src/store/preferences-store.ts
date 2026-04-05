@@ -1,0 +1,141 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import {
+  preferencesApi,
+  type GlobalPreferences,
+  type SubtitleStyle,
+} from '../lib/api/preferences';
+
+// Default values
+export const DEFAULT_SUBTITLE_STYLE: SubtitleStyle = {
+  fontFamily: 'Noto Sans CJK',
+  fontSize: 24,
+  color: '#FFFFFF',
+  backgroundColor: '#000000',
+  backgroundOpacity: 0.75,
+  strokeWidth: 2,
+  strokeColor: '#000000',
+  shadowType: 'outline',
+  position: 'bottom',
+  positionOffset: 10,
+  safeMargin: 5,
+  fadeAnimation: true,
+  respectAssStyle: true,
+};
+
+interface PreferencesState extends GlobalPreferences {
+  // Actions
+  updateSubtitleStyle: (style: Partial<SubtitleStyle>) => void;
+  updatePreference: <K extends keyof GlobalPreferences>(
+    key: K,
+    value: GlobalPreferences[K],
+  ) => void;
+  syncFromBackend: () => Promise<void>;
+  resetToDefaults: () => void;
+}
+
+// Debounced sync helper
+let syncTimeout: ReturnType<typeof setTimeout> | null = null;
+const debouncedSync = (state: GlobalPreferences) => {
+  if (syncTimeout) clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(() => {
+    preferencesApi.putGlobal(state).catch(console.error);
+  }, 2000);
+};
+
+// Helper to extract preferences from full state (excluding actions)
+function extractPrefs(state: PreferencesState): GlobalPreferences {
+  return {
+    subtitleStyle: state.subtitleStyle,
+    subtitlePreset: state.subtitlePreset,
+    keyboardBindings: state.keyboardBindings,
+    gestureEnabled: state.gestureEnabled,
+    gestureSensitivity: state.gestureSensitivity,
+    autoNext: state.autoNext,
+    autoSkipOp: state.autoSkipOp,
+    autoSkipEd: state.autoSkipEd,
+    danmakuEnabled: state.danmakuEnabled,
+    danmakuOpacity: state.danmakuOpacity,
+    danmakuFontSize: state.danmakuFontSize,
+    danmakuSpeed: state.danmakuSpeed,
+  };
+}
+
+export const usePreferencesStore = create<PreferencesState>()(
+  persist(
+    (set, get) => ({
+      // Defaults
+      subtitleStyle: DEFAULT_SUBTITLE_STYLE,
+      subtitlePreset: 'default',
+      keyboardBindings: [],
+      gestureEnabled: true,
+      gestureSensitivity: 50,
+      autoNext: true,
+      autoSkipOp: false,
+      autoSkipEd: false,
+      danmakuEnabled: true,
+      danmakuOpacity: 1,
+      danmakuFontSize: 20,
+      danmakuSpeed: 144,
+
+      // Actions
+      updateSubtitleStyle: (style) => {
+        set((s) => ({
+          subtitleStyle: { ...s.subtitleStyle, ...style },
+        }));
+        debouncedSync(extractPrefs(get()));
+      },
+
+      updatePreference: (key, value) => {
+        set({ [key]: value } as Partial<PreferencesState>);
+        debouncedSync(extractPrefs(get()));
+      },
+
+      syncFromBackend: async () => {
+        try {
+          const prefs = await preferencesApi.getGlobal();
+          if (prefs && Object.keys(prefs).length > 0) {
+            set(prefs as Partial<PreferencesState>);
+          }
+        } catch {
+          // Silently fail — localStorage has the data
+        }
+      },
+
+      resetToDefaults: () => {
+        set({
+          subtitleStyle: DEFAULT_SUBTITLE_STYLE,
+          subtitlePreset: 'default',
+          keyboardBindings: [],
+          gestureEnabled: true,
+          gestureSensitivity: 50,
+          autoNext: true,
+          autoSkipOp: false,
+          autoSkipEd: false,
+          danmakuEnabled: true,
+          danmakuOpacity: 1,
+          danmakuFontSize: 20,
+          danmakuSpeed: 144,
+        });
+        debouncedSync(extractPrefs(get()));
+      },
+    }),
+    {
+      name: 'milmil-preferences',
+      partialize: (state) => ({
+        subtitleStyle: state.subtitleStyle,
+        subtitlePreset: state.subtitlePreset,
+        keyboardBindings: state.keyboardBindings,
+        gestureEnabled: state.gestureEnabled,
+        gestureSensitivity: state.gestureSensitivity,
+        autoNext: state.autoNext,
+        autoSkipOp: state.autoSkipOp,
+        autoSkipEd: state.autoSkipEd,
+        danmakuEnabled: state.danmakuEnabled,
+        danmakuOpacity: state.danmakuOpacity,
+        danmakuFontSize: state.danmakuFontSize,
+        danmakuSpeed: state.danmakuSpeed,
+      }),
+    },
+  ),
+);

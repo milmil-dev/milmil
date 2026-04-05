@@ -6,6 +6,49 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ── VideoJS player overrides ── */
+.media-slider__fill {
+  background-color: var(--mm-accent) !important;
+}
+.media-slider__thumb {
+  background-color: var(--mm-accent) !important;
+}
+
+/* ── YouTube-style player: no backgrounds, no surfaces ── */
+.media-default-skin--video {
+  /* Kill the surface background/blur on all popups & controls */
+  --media-surface-background-color: transparent;
+  --media-surface-backdrop-filter: none;
+  --media-surface-inner-border-color: transparent;
+  --media-surface-outer-border-color: transparent;
+  --media-surface-shadow-color: transparent;
+}
+/* Remove the built-in gradient on controls */
+.media-default-skin--video .media-controls {
+  background-image: none !important;
+}
+/* Remove overlay gradient too */
+.media-default-skin--video .media-overlay {
+  background-image: none !important;
+}
+
+/* Force hide when idle (paused or playing) via our custom data-idle attr */
+[data-videojs][data-idle] {
+  cursor: none;
+}
+[data-videojs][data-idle] .media-controls {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease !important;
+}
+[data-videojs][data-idle] .media-overlay {
+  opacity: 0 !important;
+}
+/* Show pause indicator only when controls are hidden */
+[data-videojs][data-idle] .pause-indicator {
+  opacity: 1 !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

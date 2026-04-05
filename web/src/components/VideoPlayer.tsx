@@ -1,7 +1,6 @@
 import '@videojs/react/video/skin.css';
 import {
   BufferingIndicator,
-  CaptionsButton,
   Container,
   Controls,
   FullscreenButton,
@@ -10,7 +9,6 @@ import {
   PlayButton,
   PlaybackRateButton,
   Popover,
-SeekButton,
   Slider,
   Time,
   TimeSlider,
@@ -27,7 +25,7 @@ import { forwardRef, useEffect, useRef } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
 
-const SEEK_TIME = 10;
+
 
 interface VideoPlayerProps {
   src: string;
@@ -44,21 +42,12 @@ export interface VideoPlayerAPI {
   duration: () => number;
   isDisposed: () => boolean;
   on: (event: string, handler: () => void) => void;
-  addRemoteTextTrack: (
-    opts: {
-      kind: string;
-      src: string;
-      srclang: string;
-      label: string;
-      default?: boolean;
-    },
-    manualCleanup: boolean
-  ) => void;
   videoElement: () => HTMLVideoElement | null;
+  containerElement: () => HTMLElement | null;
 }
 
 // Reusable button matching the VideoJS skin style
-const SkinButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+export const SkinButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className, ...props }, ref) => (
     <button
       ref={ref}
@@ -73,10 +62,6 @@ function PlayLabel() {
   const paused = usePlayer((s) => Boolean(s.paused));
   if (usePlayer((s) => Boolean(s.ended))) return 'Replay';
   return paused ? 'Play' : 'Pause';
-}
-
-function CaptionsLabel() {
-  return usePlayer((s) => Boolean(s.subtitlesShowing)) ? 'Disable captions' : 'Enable captions';
 }
 
 function PiPLabel() {
@@ -136,137 +121,116 @@ function CustomVideoSkin({
           </div>
         )}
       />
-      <Controls.Root className="media-surface media-controls">
-        <Tooltip.Provider>
-          {/* Play */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <PlayButton className="media-button--play" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--restart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                  <svg className="media-icon media-icon--play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  <svg className="media-icon media-icon--pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                </PlayButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <PlayLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
 
-          {/* Seek backward */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <SeekButton seconds={-SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
-                  <span className="media-icon__container">
-                    <svg className="media-icon media-icon--seek media-icon--flipped" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
-                    <span className="media-icon__label">{SEEK_TIME}</span>
-                  </span>
-                </SeekButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              Seek backward {SEEK_TIME} seconds
-            </Tooltip.Popup>
-          </Tooltip.Root>
+      <Controls.Root className="media-controls flex flex-col gap-0">
+        {/* Progress bar — full width, no side padding (YouTube style) */}
+        <div className="w-full">
+          <TimeSlider.Root className="media-slider">
+            <Slider.Track className="media-slider__track">
+              <Slider.Fill className="media-slider__fill" />
+              <Slider.Buffer className="media-slider__buffer" />
+            </Slider.Track>
+            <Slider.Thumb className="media-slider__thumb" />
+            <div className="media-preview media-slider__preview">
+              <Slider.Thumbnail className="media-preview__thumbnail" />
+              <Slider.Value type="pointer" className="media-preview__timestamp" />
+            </div>
+          </TimeSlider.Root>
+        </div>
 
-          {/* Seek forward */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <SeekButton seconds={SEEK_TIME} className="media-button--seek" render={<SkinButton />}>
-                  <span className="media-icon__container">
-                    <svg className="media-icon media-icon--seek" viewBox="0 0 24 24" fill="currentColor"><path d="M18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6v4l5-5-5-5v4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8h-2z"/></svg>
-                    <span className="media-icon__label">{SEEK_TIME}</span>
-                  </span>
-                </SeekButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              Seek forward {SEEK_TIME} seconds
-            </Tooltip.Popup>
-          </Tooltip.Root>
+        {/* Controls row (YouTube layout: play+vol+time ... buttons+fullscreen) */}
+        <div className="flex items-center w-full px-1">
+          <Tooltip.Provider>
+            {/* ── Left group ── */}
+            <div className="flex items-center">
+              {/* Play / Pause */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <PlayButton className="media-button--play" render={<SkinButton />}>
+                      <svg className="media-icon media-icon--restart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                      <svg className="media-icon media-icon--play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      <svg className="media-icon media-icon--pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </PlayButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip"><PlayLabel /></Tooltip.Popup>
+              </Tooltip.Root>
 
-          {/* Time + slider */}
-          <Time.Group className="media-time">
-            <Time.Value type="current" className="media-time__value" />
-            <TimeSlider.Root className="media-slider">
-              <Slider.Track className="media-slider__track">
-                <Slider.Fill className="media-slider__fill" />
-                <Slider.Buffer className="media-slider__buffer" />
-              </Slider.Track>
-              <Slider.Thumb className="media-slider__thumb" />
-              <div className="media-surface media-preview media-slider__preview">
-                <Slider.Thumbnail className="media-preview__thumbnail" />
-                <Slider.Value type="pointer" className="media-preview__timestamp" />
-              </div>
-            </TimeSlider.Root>
-            <Time.Value type="duration" className="media-time__value" />
-          </Time.Group>
+              {/* Volume (YouTube: right next to play) */}
+              <VolumePopoverControl />
 
-          {/* Playback rate */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">Toggle playback rate</Tooltip.Popup>
-          </Tooltip.Root>
+              {/* Time: 00:59 / 23:40 */}
+              <Time.Group className="ml-2 flex items-center text-[13px] text-white/90 tabular-nums select-none">
+                <Time.Value type="current" />
+                <span className="text-white/40 mx-1">/</span>
+                <Time.Value type="duration" />
+              </Time.Group>
+            </div>
 
-          {/* Volume */}
-          <VolumePopoverControl />
+            {/* ── Spacer ── */}
+            <div className="flex-1" />
 
-          {/* Captions */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <CaptionsButton className="media-button--captions" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--captions-off" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg>
-                  <svg className="media-icon media-icon--captions-on" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg>
-                </CaptionsButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <CaptionsLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
+            {/* ── Right group ── */}
+            <div className="flex items-center">
+              {/* Playback speed */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
+                />
+                <Tooltip.Popup className="media-surface media-tooltip">Playback speed</Tooltip.Popup>
+              </Tooltip.Root>
 
-          {/* PiP */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <PiPButton className="media-button--pip" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--pip-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
-                  <svg className="media-icon media-icon--pip-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
-                </PiPButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <PiPLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
+              {/* Custom extra buttons (settings gear) */}
+              {controlBarExtra}
 
-          {/* Custom extra buttons (e.g. settings gear) */}
-          {controlBarExtra}
+              {/* PiP */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <PiPButton className="media-button--pip" render={<SkinButton />}>
+                      <svg className="media-icon media-icon--pip-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+                      <svg className="media-icon media-icon--pip-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
+                    </PiPButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip"><PiPLabel /></Tooltip.Popup>
+              </Tooltip.Root>
 
-          {/* Fullscreen */}
-          <Tooltip.Root side="top">
-            <Tooltip.Trigger
-              render={
-                <FullscreenButton className="media-button--fullscreen" render={<SkinButton />}>
-                  <svg className="media-icon media-icon--fullscreen-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                  <svg className="media-icon media-icon--fullscreen-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
-                </FullscreenButton>
-              }
-            />
-            <Tooltip.Popup className="media-surface media-tooltip">
-              <FullscreenLabel />
-            </Tooltip.Popup>
-          </Tooltip.Root>
-        </Tooltip.Provider>
+              {/* Fullscreen */}
+              <Tooltip.Root side="top">
+                <Tooltip.Trigger
+                  render={
+                    <FullscreenButton className="media-button--fullscreen" render={<SkinButton />}>
+                      <svg className="media-icon media-icon--fullscreen-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                      <svg className="media-icon media-icon--fullscreen-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+                    </FullscreenButton>
+                  }
+                />
+                <Tooltip.Popup className="media-surface media-tooltip"><FullscreenLabel /></Tooltip.Popup>
+              </Tooltip.Root>
+            </div>
+          </Tooltip.Provider>
+        </div>
       </Controls.Root>
       <div className="media-overlay" />
+      <PauseIndicator />
     </Container>
+  );
+}
+
+/** Shows a small pause icon in the bottom-right when paused and controls are hidden (idle) */
+function PauseIndicator() {
+  const paused = usePlayer((s) => Boolean(s.paused));
+  const ended = usePlayer((s) => Boolean(s.ended));
+  if (!paused || ended) return null;
+  return (
+    <div className="pause-indicator absolute bottom-4 right-4 pointer-events-none
+      opacity-0 transition-opacity duration-300 text-white/40">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+      </svg>
+    </div>
   );
 }
 
@@ -274,51 +238,75 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
   const player = usePlayer();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!player || readyFired.current) return;
-
-    const findVideo = (): HTMLVideoElement | null => {
-      if (videoRef.current) return videoRef.current;
-      const el = document.querySelector('[data-videojs] video') as HTMLVideoElement | null;
-      videoRef.current = el;
-      return el;
-    };
-
-    const api: VideoPlayerAPI = {
-      currentTime: (t?: number) => {
-        const video = findVideo();
-        if (!video) return 0;
-        if (t !== undefined) video.currentTime = t;
-        return video.currentTime;
-      },
-      duration: () => findVideo()?.duration ?? 0,
-      isDisposed: () => !findVideo(),
-      on: (event: string, handler: () => void) => {
-        findVideo()?.addEventListener(event, handler);
-      },
-      addRemoteTextTrack: (opts, _manualCleanup) => {
-        const video = findVideo();
-        if (!video) return;
-        const track = document.createElement('track');
-        track.kind = opts.kind;
-        track.src = opts.src;
-        track.srclang = opts.srclang;
-        track.label = opts.label;
-        if (opts.default) track.default = true;
-        video.appendChild(track);
-      },
-      videoElement: () => findVideo(),
-    };
-
     readyFired.current = true;
-    onReady?.(api);
+
+    // Defer to next frame so containerRef is attached to the DOM
+    const rafId = requestAnimationFrame(() => {
+      const findVideo = (): HTMLVideoElement | null => {
+        if (videoRef.current) return videoRef.current;
+        const el = containerRef.current?.querySelector('video') as HTMLVideoElement | null;
+        videoRef.current = el;
+        return el;
+      };
+
+      const api: VideoPlayerAPI = {
+        currentTime: (t?: number) => {
+          const video = findVideo();
+          if (!video) return 0;
+          if (t !== undefined) video.currentTime = t;
+          return video.currentTime;
+        },
+        duration: () => findVideo()?.duration ?? 0,
+        isDisposed: () => !findVideo(),
+        on: (event: string, handler: () => void) => {
+          findVideo()?.addEventListener(event, handler);
+        },
+        videoElement: () => findVideo(),
+        containerElement: () => containerRef.current,
+      };
+
+      onReady?.(api);
+    });
+
+    return () => cancelAnimationFrame(rafId);
   }, [player, onReady]);
+
+  // Auto-hide controls after 3s idle (works even when paused, like YouTube)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let timer: ReturnType<typeof setTimeout>;
+    const IDLE_MS = 3000;
+
+    const resetIdle = () => {
+      el.removeAttribute('data-idle');
+      clearTimeout(timer);
+      timer = setTimeout(() => el.setAttribute('data-idle', ''), IDLE_MS);
+    };
+
+    el.addEventListener('mousemove', resetIdle);
+    el.addEventListener('mousedown', resetIdle);
+    el.addEventListener('keydown', resetIdle);
+    // Start the idle timer
+    timer = setTimeout(() => el.setAttribute('data-idle', ''), IDLE_MS);
+
+    return () => {
+      clearTimeout(timer);
+      el.removeEventListener('mousemove', resetIdle);
+      el.removeEventListener('mousedown', resetIdle);
+      el.removeEventListener('keydown', resetIdle);
+    };
+  }, []);
 
   const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
 
   return (
-    <div className={className} data-videojs>
+    <div ref={containerRef} className={className} data-videojs>
       <CustomVideoSkin controlBarExtra={controlBarExtra}>
         {isHLS ? <HlsVideo src={src} playsInline crossOrigin="anonymous" /> : <Video src={src} playsInline crossOrigin="anonymous" />}
       </CustomVideoSkin>

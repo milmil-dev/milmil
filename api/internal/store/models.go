@@ -36,6 +36,15 @@ type Anime struct {
 	Score                float64        `json:"score"`
 }
 
+type BackupConfig struct {
+	ID         string         `json:"id"`
+	UserID     string         `json:"user_id"`
+	Type       string         `json:"type"`
+	Config     string         `json:"config"`
+	Enabled    int64          `json:"enabled"`
+	LastSyncAt sql.NullString `json:"last_sync_at"`
+}
+
 type Download struct {
 	ID             string         `json:"id"`
 	Gid            string         `json:"gid"`
@@ -188,6 +197,16 @@ type ScanSummary struct {
 	Errors         string         `json:"errors"`
 }
 
+type SegmentMark struct {
+	ID          string  `json:"id"`
+	MediaFileID string  `json:"media_file_id"`
+	Type        string  `json:"type"`
+	StartTime   float64 `json:"start_time"`
+	EndTime     float64 `json:"end_time"`
+	Source      string  `json:"source"`
+	CreatedAt   string  `json:"created_at"`
+}
+
 type Setting struct {
 	Key       string `json:"key"`
 	Value     string `json:"value"`
@@ -225,6 +244,15 @@ type User struct {
 	UpdatedAt        string `json:"updated_at"`
 	TotpSecret       string `json:"totp_secret"`
 	TwoFactorEnabled int64  `json:"two_factor_enabled"`
+}
+
+type UserPreference struct {
+	ID        string `json:"id"`
+	UserID    string `json:"user_id"`
+	Scope     string `json:"scope"`
+	ScopeID   string `json:"scope_id"`
+	Data      string `json:"data"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 type WatchProgress struct {

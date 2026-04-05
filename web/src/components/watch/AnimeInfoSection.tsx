@@ -13,7 +13,7 @@ export function AnimeInfoSection({ anime }: AnimeInfoSectionProps) {
         )}
         <div className="min-w-0">
           {anime.synopsis && (
-            <p className="text-xs text-white/50 line-clamp-4 leading-relaxed">
+            <p className="text-xs text-mm-text-secondary line-clamp-4 leading-relaxed">
               {anime.synopsis.replace(/<[^>]+>/g, '')}
             </p>
           )}
@@ -22,7 +22,7 @@ export function AnimeInfoSection({ anime }: AnimeInfoSectionProps) {
               {anime.genres.map((g) => (
                 <span
                   key={g}
-                  className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40"
+                  className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.06] text-mm-text-tertiary"
                 >
                   {g}
                 </span>
