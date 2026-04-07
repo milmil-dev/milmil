@@ -23,3 +23,6 @@ DELETE FROM notifications WHERE read = 1 AND created_at < ?;
 
 -- name: DeleteAllNotifications :exec
 DELETE FROM notifications;
+
+-- name: GetNotification :one
+SELECT * FROM notifications WHERE id = ?;
