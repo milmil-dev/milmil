@@ -10,6 +10,65 @@
 
 ---
 
+## Design Decisions (from /plan-design-review)
+
+### Provider Cards
+- Each provider card uses `SettingsCard` component with brand-colored icon accent:
+  - Discord: #5865F2, Telegram: #26A5E4, Webhook: white/50%
+- **Toggle**: Use shadcn `Switch` component (install via `bunx shadcn@latest add switch`) for provider enable/disable. NOT raw HTML checkbox.
+- **Status badge**: Reuse `ConnectionBadge` pattern from IntegrationsPanel. Show provider health:
+  - Unconfigured: gray "Not configured"
+  - Connected: green "Connected — last sent 2h ago"
+  - Error: red "Error — last 3 deliveries failed"
+  - Data source: new API endpoint `GET /api/v1/settings/notifications/status` returns `{ discord: { status, last_sent_at, last_error }, ... }` by querying `notification_deliveries` table
+- **Credential fields**: expand below toggle with smooth height animation when enabled
+- **Secret display**: When a secret is already set, show non-editable placeholder "Secret is set" with a "Change" button that reveals an empty input. Do NOT show masked values in editable inputs.
+- **Test button**: outline variant, small. Result shows **inline** below button (NOT toast):
+  - Loading: spinner replaces button text
+  - Success: green checkmark + "Sent!" text, fades after 5s
+  - Failure: red text with full error message, persists until dismissed
+
+### Event Routing Matrix
+- **Desktop (lg+)**: Table layout with rows = events, columns = enabled providers, styled checkboxes at intersections
+- **Mobile (<lg)**: Card-per-event layout. Each event name as a small card with provider switches inline below it. No horizontal scrolling tables.
+- **Event descriptions**: Each event row includes a one-line description in white/40%:
+  - Download Started: "When an RSS rule triggers a new download"
+  - Download Completed: "When a download finishes successfully"
+  - Download Failed: "When a download encounters an error"
+  - Library Scan Complete: "When a library scan finishes processing"
+  - System Error: "When a background job fails unexpectedly"
+- **Empty state**: When no providers are enabled, show: "Enable a provider above to configure event routing"
+
+### Empty/First-Time State
+- When no providers are configured, show intro text above provider cards:
+  "Get notified on Discord, Telegram, or any webhook when downloads finish, new episodes arrive, or something goes wrong."
+- Styled in white/50%, centered, with subtle spacing
+
+### Interaction States
+| Feature | Loading | Empty | Error | Success |
+|---|---|---|---|---|
+| Settings fetch | 3 skeleton cards | Intro text + unconfigured cards | Toast + retry | Form renders |
+| Provider toggle | N/A | Fields collapsed | N/A | Fields expand (animated) |
+| Credentials | N/A | Placeholder text | Red border + field error | Normal |
+| Test notification | Spinner in button | N/A | Red inline error (persists) | Green inline "Sent!" (5s) |
+| Save | "Saving..." + spinner | Disabled until changes | Toast error | Toast "Saved" |
+| Status badge | Skeleton pill | "Not configured" | "Error — last 3 failed" | "Connected — 2h ago" |
+| Event matrix | N/A | "Enable a provider above" | N/A | Checkboxes active |
+
+### Accessibility
+- shadcn Switch has built-in ARIA for provider toggles
+- Matrix checkboxes: `aria-label="Send {event} to {provider}"`
+- Keyboard: Tab navigates between providers, within matrix use arrow keys
+- Touch targets: checkboxes wrapped in 44px min tap area
+- Focus visible: mm-accent ring on focus (matches existing pattern)
+
+### Responsive
+- Provider cards: full width, stack naturally on all viewports
+- Event matrix: table on lg+, card-per-event below lg
+- Save button: full width on mobile, right-aligned on desktop
+
+---
+
 ### Task 1: Database Migration — notification_deliveries table
 
 **Files:**
@@ -1870,6 +1929,74 @@ notifSettingsGroup := v1.Group("/settings/notifications", jwtMiddleware(cfg.JWTS
 notifSettingsGroup.GET("", h.handleGetNotificationSettings)
 notifSettingsGroup.PUT("", h.handleUpdateNotificationSettings)
 notifSettingsGroup.POST("/test", h.handleTestNotification)
+notifSettingsGroup.GET("/status", h.handleNotificationProviderStatus)
+```
+
+- [ ] **Step 2.5: Add provider status handler**
+
+Add to `notification_settings_handler.go`:
+
+```go
+func (h *handler) handleNotificationProviderStatus(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	type providerStatus struct {
+		Status     string  `json:"status"`      // "ok", "error", "unconfigured"
+		LastSentAt *string `json:"last_sent_at"` // ISO 8601 or null
+		LastError  *string `json:"last_error"`   // null if ok
+	}
+
+	cfg, err := notification.LoadNotificationConfig(ctx, h.queries)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	result := map[string]providerStatus{}
+	for _, name := range []string{"discord", "telegram", "webhook"} {
+		ps := providerStatus{Status: "unconfigured"}
+
+		var enabled bool
+		switch name {
+		case "discord":
+			enabled = cfg.Providers.Discord.Enabled && cfg.Providers.Discord.WebhookURL != ""
+		case "telegram":
+			enabled = cfg.Providers.Telegram.Enabled && cfg.Providers.Telegram.BotToken != ""
+		case "webhook":
+			enabled = cfg.Providers.Webhook.Enabled && cfg.Providers.Webhook.URL != ""
+		}
+
+		if enabled {
+			// Query last delivery for this provider
+			delivery, err := h.queries.GetLastDeliveryByProvider(ctx, name)
+			if err == nil {
+				ps.LastSentAt = &delivery.UpdatedAt
+				if delivery.Status == "failed" {
+					ps.Status = "error"
+					if delivery.LastError.Valid {
+						ps.LastError = &delivery.LastError.String
+					}
+				} else {
+					ps.Status = "ok"
+				}
+			} else {
+				ps.Status = "ok" // configured but no deliveries yet
+			}
+		}
+
+		result[name] = ps
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+```
+
+Note: Requires new sqlc query `GetLastDeliveryByProvider` — add to Task 2's queries:
+
+```sql
+-- name: GetLastDeliveryByProvider :one
+SELECT * FROM notification_deliveries
+WHERE provider = ? AND status IN ('sent', 'failed')
+ORDER BY updated_at DESC LIMIT 1;
 ```
 
 - [ ] **Step 3: Verify build**
@@ -2489,3 +2616,21 @@ Ask user to run the app and test:
 git add -A
 git commit -m "fix(notifications): address E2E test findings"
 ```
+
+## GSTACK REVIEW REPORT
+
+| Review | Trigger | Why | Runs | Status | Findings |
+|--------|---------|-----|------|--------|----------|
+| CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
+| Codex Review | `/codex review` | Independent 2nd opinion | 0 | — | — |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 0 | — | — |
+| Design Review | `/plan-design-review` | UI/UX gaps | 1 | ISSUES_FIXED | score: 5/10 → 8/10, 5 decisions made |
+| DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
+
+**DESIGN REVIEW SUMMARY:**
+- Initial score: 5/10 → Final score: 8/10
+- 5 design decisions made: status badges, inline test feedback, shadcn Switch, card-per-event mobile, placeholder secrets
+- 1 deferred: DESIGN.md creation (tracked in TODOS.md)
+- 0 unresolved
+
+**VERDICT:** DESIGN REVIEWED — eng review required before implementation.
