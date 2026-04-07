@@ -175,6 +175,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	rssGroup := v1.Group("/rss-feeds", jwtMiddleware(cfg.JWTSecret))
 	rssGroup.GET("", h.handleListRSSFeeds)
 	rssGroup.POST("", h.handleCreateRSSFeed)
+	rssGroup.POST("/preview-url", h.handlePreviewRSSFeedURL)
 	rssGroup.PUT("/:id", h.handleUpdateRSSFeed)
 	rssGroup.DELETE("/:id", h.handleDeleteRSSFeed)
 	rssGroup.GET("/:id/preview", h.handlePreviewRSSFeed)
@@ -247,6 +248,13 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	notifGroup.PATCH("/:id/read", h.handleMarkNotificationRead)
 	notifGroup.POST("/mark-all-read", h.handleMarkAllRead)
 	notifGroup.DELETE("", h.handleClearNotifications)
+
+	// Notification Settings — protected
+	notifSettingsGroup := v1.Group("/settings/notifications", jwtMiddleware(cfg.JWTSecret))
+	notifSettingsGroup.GET("", h.handleGetNotificationSettings)
+	notifSettingsGroup.PUT("", h.handleUpdateNotificationSettings)
+	notifSettingsGroup.POST("/test", h.handleTestNotification)
+	notifSettingsGroup.GET("/status", h.handleNotificationProviderStatus)
 
 	// System — protected
 	systemGroup := v1.Group("/system", jwtMiddleware(cfg.JWTSecret))

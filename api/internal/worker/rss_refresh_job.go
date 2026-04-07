@@ -25,6 +25,8 @@ func (w *RSSRefreshWorker) Run(ctx context.Context) {
 	feeds, err := w.queries.ListRSSFeedsDue(ctx)
 	if err != nil {
 		slog.Error("rss_refresh: list due feeds", "err", err)
+		w.notifier.Send(ctx, "system.error", "RSS Refresh Failed", err.Error(), "error",
+			map[string]any{"worker": "rss_refresh"})
 		return
 	}
 	if len(feeds) == 0 {
