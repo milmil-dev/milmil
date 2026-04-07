@@ -97,6 +97,185 @@ function ScheduleAnimeCard({ anime, index }: { anime: AnimeSummary; index: numbe
   );
 }
 
+/* ── Build grouped timeline: group anime by air_time ────────── */
+
+function groupByTime(items: AnimeSummary[]): { time: string; animes: AnimeSummary[] }[] {
+  const sorted = [...items].sort((a, b) => {
+    const ta = a.air_time || '00:00';
+    const tb = b.air_time || '00:00';
+    return ta.localeCompare(tb);
+  });
+
+  const groups: { time: string; animes: AnimeSummary[] }[] = [];
+  for (const anime of sorted) {
+    const time = anime.air_time || '00:00';
+    const last = groups[groups.length - 1];
+    if (last && last.time === time) {
+      last.animes.push(anime);
+    } else {
+      groups.push({ time, animes: [anime] });
+    }
+  }
+  return groups;
+}
+
+function useTimelinePath(
+  containerRef: React.RefObject<HTMLDivElement | null>,
+  dotRefs: React.MutableRefObject<(HTMLDivElement | null)[]>,
+  count: number
+) {
+  const [path, setPath] = useState('');
+  const [size, setSize] = useState({ w: 0, h: 0 });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || count === 0) return;
+
+    const compute = () => {
+      const rect = container.getBoundingClientRect();
+      const points: { x: number; y: number }[] = [];
+      for (const dot of dotRefs.current) {
+        if (!dot) continue;
+        const dr = dot.getBoundingClientRect();
+        points.push({
+          x: dr.left - rect.left + dr.width / 2,
+          y: dr.top - rect.top + dr.height / 2,
+        });
+      }
+      if (points.length < 2) {
+        setPath('');
+        setSize({ w: rect.width, h: rect.height });
+        return;
+      }
+
+      const edgeR = rect.width - 4;
+      const edgeL = 4;
+
+      // Group points by row (same Y ± threshold)
+      const rows: { x: number; y: number }[][] = [];
+      for (const pt of points) {
+        const lastRow = rows[rows.length - 1];
+        if (lastRow && Math.abs(lastRow[0]!.y - pt.y) < 20) {
+          lastRow.push(pt);
+        } else {
+          rows.push([pt]);
+        }
+      }
+
+      // Draw each row left-to-right, with vertical drop between rows
+      const segments: string[] = [];
+      for (let ri = 0; ri < rows.length; ri++) {
+        const row = rows[ri]!;
+        const y = row[0]!.y;
+        const firstX = row[0]!.x;
+        const lastX = row[row.length - 1]!.x;
+
+        // Row line: left edge → through all dots → right edge
+        segments.push(`M ${edgeL} ${y} L ${edgeR} ${y}`);
+
+      }
+
+      setPath(segments.join(' '));
+      setSize({ w: rect.width, h: rect.height });
+    };
+
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [containerRef, dotRefs, count]);
+
+  return { path, size };
+}
+
+function TimelineView({ items }: { items: AnimeSummary[] }) {
+  const { i18n } = useLingui();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  if (items.length === 0) {
+    return (
+      <div className="py-12 text-center">
+        <p className="text-[13px] text-mm-text-muted">{i18n._(msg`schedule.noShows`)}</p>
+      </div>
+    );
+  }
+
+  const groups = groupByTime(items);
+  let cardIdx = 0;
+  dotRefs.current = [];
+
+  const { path, size } = useTimelinePath(containerRef, dotRefs, groups.length);
+
+  return (
+    <div ref={containerRef} className="w-full flex flex-wrap gap-x-0 gap-y-5 sm:gap-y-6 items-start relative">
+      {/* SVG timeline path */}
+      {path && (
+        <svg
+          className="absolute inset-0 pointer-events-none z-0"
+          width={size.w}
+          height={size.h}
+          fill="none"
+        >
+          {/* Glow layer */}
+          <path
+            d={path}
+            stroke="var(--mm-accent, #c8a0ff)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            opacity="0.1"
+            filter="blur(4px)"
+          />
+          {/* Main line */}
+          <path
+            d={path}
+            stroke="white"
+            strokeWidth="1"
+            strokeLinecap="round"
+            opacity="0.12"
+          />
+        </svg>
+      )}
+
+      {groups.map((group, gi) => {
+        const cards = group.animes.map((anime) => {
+          const idx = cardIdx++;
+          return (
+            <div key={anime.bangumi_id} className="w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]">
+              <ScheduleAnimeCard anime={anime} index={idx} />
+            </div>
+          );
+        });
+
+        return (
+          <div key={group.time || `g-${gi}`} className="flex flex-col items-start">
+            {/* ── Time marker ── */}
+            <div className="relative flex items-center w-full h-7 sm:h-8 mb-1.5 sm:mb-2">
+              <div className="relative z-10 flex items-center gap-1.5 sm:gap-2 mx-1.5 sm:mx-2">
+                {/* Dot — measured by SVG hook */}
+                <div
+                  ref={(el) => { dotRefs.current[gi] = el; }}
+                  className="relative shrink-0"
+                >
+                  <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
+                  <div className="relative w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
+                </div>
+                <span className="px-2 sm:px-2.5 py-0.5 rounded-md bg-white/[0.06] backdrop-blur-sm border border-white/[0.06] text-mm-accent text-[10px] sm:text-[11px] font-bold tabular-nums whitespace-nowrap shadow-sm">
+                  {group.time || '—'}
+                </span>
+              </div>
+            </div>
+            {/* ── Cards ── */}
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 px-1.5 sm:px-2">
+              {cards}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ── Skeleton loaders ─────────────────────────────────────── */
 
 function CalendarSkeleton() {
@@ -288,19 +467,7 @@ function CalendarView() {
                     </span>
                   )}
                 </div>
-                {activeCalendar.items.length > 0 ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
-                    {activeCalendar.items.map((anime, i) => (
-                      <ScheduleAnimeCard key={anime.bangumi_id} anime={anime} index={i} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="py-12 text-center">
-                    <p className="text-[13px] text-mm-text-muted">
-                      {i18n._(msg`schedule.noShows`)}
-                    </p>
-                  </div>
-                )}
+                <TimelineView items={activeCalendar.items} />
               </motion.div>
             );
           })()
@@ -332,15 +499,7 @@ function CalendarView() {
                     </span>
                   )}
                 </div>
-                {day.items.length > 0 ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
-                    {day.items.map((anime, i) => (
-                      <ScheduleAnimeCard key={anime.bangumi_id} anime={anime} index={i} />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-[12px] text-mm-text-muted py-4">—</p>
-                )}
+                <TimelineView items={day.items} />
               </div>
             ))}
           </motion.div>

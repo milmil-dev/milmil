@@ -2288,6 +2288,30 @@ msgstr "View all"
 msgid "notifications.yesterday"
 msgstr "Yesterday"
 
+#: src/pages/NotificationsPage.tsx
+#: src/components/NotificationBell.tsx
+#. placeholder {0}: seconds
+msgid "time.secondsAgo {0}"
+msgstr "{0}s ago"
+
+#: src/pages/NotificationsPage.tsx
+#: src/components/NotificationBell.tsx
+#. placeholder {0}: minutes
+msgid "time.minutesAgo {0}"
+msgstr "{0}m ago"
+
+#: src/pages/NotificationsPage.tsx
+#: src/components/NotificationBell.tsx
+#. placeholder {0}: hours
+msgid "time.hoursAgo {0}"
+msgstr "{0}h ago"
+
+#: src/pages/NotificationsPage.tsx
+#: src/components/NotificationBell.tsx
+#. placeholder {0}: days
+msgid "time.daysAgo {0}"
+msgstr "{0}d ago"
+
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
 #~ msgstr "First page"

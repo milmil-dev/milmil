@@ -15,16 +15,16 @@ import { cn } from '../lib/utils';
 
 /* ── Relative time helper ─────────────────────────────────── */
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, i18n: { _: (descriptor: any) => string }): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return `${seconds}秒前`;
+  if (seconds < 60) return i18n._(msg`time.secondsAgo ${seconds}`);
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}分前`;
+  if (minutes < 60) return i18n._(msg`time.minutesAgo ${minutes}`);
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}時間前`;
+  if (hours < 24) return i18n._(msg`time.hoursAgo ${hours}`);
   const days = Math.floor(hours / 24);
-  return `${days}日前`;
+  return i18n._(msg`time.daysAgo ${days}`);
 }
 
 /* ── Severity color ───────────────────────────────────────── */
@@ -180,6 +180,7 @@ function NotificationItem({
   notification: Notification;
   onMarkRead: () => void;
 }) {
+  const { i18n } = useLingui();
   const severity = notification.severity ?? 'info';
 
   return (
@@ -201,7 +202,7 @@ function NotificationItem({
           </span>
         </div>
         <p className="text-xs text-white/40 mt-0.5 line-clamp-2">{notification.message}</p>
-        <p className="text-[10px] text-white/25 mt-1">{timeAgo(notification.created_at)}</p>
+        <p className="text-[10px] text-white/25 mt-1">{timeAgo(notification.created_at, i18n)}</p>
       </div>
     </button>
   );

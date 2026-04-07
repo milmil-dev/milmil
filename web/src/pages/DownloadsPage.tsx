@@ -53,6 +53,22 @@ import { cn } from '../lib/utils';
 import { RuleEditorModal } from '../components/RuleEditorModal';
 import type { DownloadsSearch } from '../routes/downloads';
 
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
+function formatPublishDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHrs = Math.floor(diffMin / 60);
+  if (diffHrs < 24) return `${diffHrs}h ago`;
+  const diffDays = Math.floor(diffHrs / 24);
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
 // ── Types ───────────────────────────────────────────────────────────────────
 
 interface DownloaderStatus {
@@ -273,7 +289,7 @@ export function DownloadsPage() {
 
         {/* Tabs */}
         <div className="px-8 mb-6">
-          <div className="flex items-center border-b border-white/[0.06] pb-px">
+          <div className="flex items-center pb-px">
             <div className="flex gap-1 flex-1">
               {tabs.map((t) => (
                 <button
@@ -359,6 +375,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
+  const [createRuleOpen, setCreateRuleOpen] = useState(false);
 
   // Auto-select anime from URL param (e.g. from anime detail page)
   const numericAnimeId = initialAnimeId ? Number(initialAnimeId) : undefined;
@@ -401,13 +418,24 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
 
   return (
     <>
-      {/* Search input */}
-      <Input
-        placeholder={i18n._(msg`autoDownload.searchAnime`)}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        className="bg-white/[0.03] border-white/[0.06] text-white placeholder:text-white/25 mb-5"
-      />
+      {/* Search input + New Rule */}
+      <div className="flex items-center gap-2 mb-5">
+        <Input
+          placeholder={i18n._(msg`autoDownload.searchAnime`)}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="bg-white/[0.03] border-transparent text-white placeholder:text-white/25 flex-1"
+        />
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setCreateRuleOpen(true)}
+          className="shrink-0 text-[11px] text-white/50 hover:bg-white/[0.04]"
+        >
+          <HugeiconsIcon icon={Add01Icon} size={12} />
+          {i18n._(msg`ruleEditor.newRule`)}
+        </Button>
+      </div>
 
       {/* Loading skeleton */}
       {isSearching && query && (
@@ -492,6 +520,12 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
           </p>
         </div>
       )}
+
+      {/* Rule editor modal (create new) */}
+      <RuleEditorModal
+        open={createRuleOpen}
+        onClose={() => setCreateRuleOpen(false)}
+      />
     </>
   );
 }
@@ -572,7 +606,7 @@ function AnimeTorrentView({
   return (
     <>
       {/* Anime context header */}
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 mb-6 relative overflow-hidden [&_a]:no-underline [&_a:hover]:no-underline">
+      <div className="rounded-xl bg-white/[0.02] p-4 mb-6 relative overflow-hidden [&_a]:no-underline [&_a:hover]:no-underline">
         {/* Blurred background from cover */}
         {anime.cover_image && (
           <div className="absolute inset-0 opacity-[0.07]" style={{
@@ -588,16 +622,16 @@ function AnimeTorrentView({
           <button
             type="button"
             onClick={onBack}
-            className="absolute -left-1 -top-1 p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 transition-colors cursor-pointer z-10"
+            className="shrink-0 self-center p-1.5 -ml-1 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
           >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
           </button>
 
           {/* Cover — clickable to anime detail */}
           <Link
             to="/anime/$id"
             params={{ id: String(anime.bangumi_id) }}
-            className="shrink-0 ml-5 hover:opacity-90 transition-opacity no-underline"
+            className="shrink-0 hover:opacity-90 transition-opacity no-underline"
             style={{ textDecoration: 'none' }}
           >
             <img
@@ -713,7 +747,7 @@ function AnimeTorrentView({
             <select
               value={subgroup}
               onChange={(e) => setSubgroup(e.target.value)}
-              className="bg-white/[0.04] border border-white/[0.08] rounded-md text-[12px] text-white/70 px-2.5 py-1.5 outline-none cursor-pointer"
+              className="bg-white/[0.04] rounded-md text-[12px] text-white/70 px-2.5 py-1.5 outline-none cursor-pointer"
             >
               <option value="all">{i18n._(msg`autoDownload.allSubgroups`)}</option>
               {subgroups.map((sg) => (
@@ -727,7 +761,7 @@ function AnimeTorrentView({
 
         {/* Subscribe action — only when a specific RSS source is selected */}
         {filteredResults.length > 0 && source !== 'all' && RSS_SOURCES.includes(source as 'mikan' | 'nyaa' | 'dmhy') && (
-          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/[0.04]">
+          <div className="flex items-center gap-3 mt-3 pt-3">
             <button
               type="button"
               onClick={() => setShowSubscribe(true)}
@@ -742,7 +776,7 @@ function AnimeTorrentView({
           </div>
         )}
         {filteredResults.length > 0 && source === 'all' && (
-          <p className="text-[11px] text-white/20 mt-3 pt-3 border-t border-white/[0.04]">
+          <p className="text-[11px] text-white/20 mt-3 pt-3">
             {i18n._(msg`autoDownload.selectSourceToSubscribe`)}
           </p>
         )}
@@ -794,18 +828,18 @@ function AnimeTorrentView({
                     </span>
                   )}
                   {item.publish_date && (
-                    <span className="text-[10px] text-white/15">{item.publish_date}</span>
+                    <span className="text-[10px] text-white/25">{formatPublishDate(item.publish_date)}</span>
                   )}
                 </div>
               </div>
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 disabled={pendingDownloads.has(downloadURL(item)) || !downloadURL(item)}
                 onClick={() =>
                   addMutation.mutate({ url: downloadURL(item), name: item.title })
                 }
-                className="shrink-0 text-[11px]"
+                className="shrink-0 text-[11px] text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
               >
                 {i18n._(msg`autoDownload.download`)}
               </Button>
@@ -917,7 +951,7 @@ function SubscribePanel({
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md mx-4 rounded-xl border border-white/[0.08] bg-zinc-900 p-6 shadow-2xl"
+        className="w-full max-w-md mx-4 rounded-xl bg-zinc-900 p-6 shadow-2xl"
       >
         {/* Header with anime cover */}
         <div className="flex gap-3 mb-5">
@@ -1031,7 +1065,7 @@ function SubscribePanel({
 
         {/* Actions */}
         <div className="flex gap-2 justify-end mt-6">
-          <Button variant="outline" onClick={onClose} className="text-[13px]">
+          <Button variant="ghost" onClick={onClose} className="text-[13px]">
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
           <Button
@@ -1476,7 +1510,7 @@ function SubscriptionDetailContent({
 
       {/* ── Downloads ── */}
       <motion.div
-        className="border-t border-white/[0.06] pt-4"
+        className="pt-4"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -1566,7 +1600,6 @@ function SubscriptionsSubTab({
 }) {
   const { i18n } = useLingui();
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
-  const [createRuleOpen, setCreateRuleOpen] = useState(false);
 
   const feedMap = new Map(feeds.map((f) => [f.id, f]));
   const ruleGroupMap = new Map<string, DownloadGroup>();
@@ -1593,7 +1626,7 @@ function SubscriptionsSubTab({
   // Empty state
   if (rules.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.015] p-6">
+      <div className="rounded-xl bg-white/[0.02] p-6">
         <div className="flex items-center gap-4">
           <div className="p-3 rounded-lg bg-white/[0.04]">
             <HugeiconsIcon icon={RssIcon} size={24} className="text-white/15" />
@@ -1608,7 +1641,7 @@ function SubscriptionsSubTab({
           </div>
           <Button
             onClick={onSwitchToSearch}
-            variant="outline"
+            variant="ghost"
             className="shrink-0 text-[12px]"
           >
             {i18n._(msg`autoDownload.goToSearch`)}
@@ -1620,19 +1653,6 @@ function SubscriptionsSubTab({
 
   return (
     <>
-      {/* Header with New Rule button */}
-      <div className="flex items-center justify-end mb-4">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => setCreateRuleOpen(true)}
-          className="text-[11px] text-white/50 border-white/[0.08] hover:bg-white/[0.04]"
-        >
-          <HugeiconsIcon icon={Add01Icon} size={12} />
-          {i18n._(msg`ruleEditor.newRule`)}
-        </Button>
-      </div>
-
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
         {rules.map((rule, i) => (
           <SubscriptionAnimeCard
@@ -1655,12 +1675,6 @@ function SubscriptionsSubTab({
           onClose={() => setSelectedRuleId(null)}
         />
       )}
-
-      {/* Rule editor modal (create new) */}
-      <RuleEditorModal
-        open={createRuleOpen}
-        onClose={() => setCreateRuleOpen(false)}
-      />
     </>
   );
 }
@@ -1696,15 +1710,15 @@ function AddUrlDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
           placeholder={i18n._(msg`autoDownload.pasteUrl`)}
-          className="font-mono text-sm bg-white/[0.03] border-white/[0.06] text-white placeholder:text-white/25"
+          className="font-mono text-sm bg-white/[0.03] border-transparent text-white placeholder:text-white/25"
           autoFocus
         />
         <div className="flex justify-end gap-2">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="text-[12px] text-white/50 border-white/[0.08] hover:bg-white/[0.04]"
+            className="text-[12px] text-white/50 hover:bg-white/[0.04]"
           >
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
@@ -1952,7 +1966,7 @@ function DownloadsSubTab({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={i18n._(msg`autoDownload.searchDownloads`)}
-              className="w-full pl-8 pr-3 py-1.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-[12px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/[0.12] transition-colors"
+              className="w-full pl-8 pr-3 py-1.5 rounded-md bg-white/[0.03] text-[12px] text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.05] transition-colors"
             />
             {searchQuery && (
               <button
@@ -1968,7 +1982,7 @@ function DownloadsSubTab({
             <button
               type="button"
               onClick={() => setSortMenuOpen((p) => !p)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-[11px] font-medium text-white/40 hover:text-white/60 hover:border-white/[0.12] transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-white/[0.03] text-[11px] font-medium text-white/40 hover:text-white/60 hover:bg-white/[0.06] transition-colors cursor-pointer"
             >
               <HugeiconsIcon icon={ArrowUpDownIcon} size={12} />
               {sortLabels[sortBy]}
@@ -1976,7 +1990,7 @@ function DownloadsSubTab({
             {sortMenuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setSortMenuOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 z-50 min-w-[120px] rounded-lg bg-[#1a1a1e] border border-white/[0.08] py-1 shadow-xl">
+                <div className="absolute right-0 top-full mt-1 z-50 min-w-[120px] rounded-lg bg-[#1a1a1e] py-1 shadow-xl">
                   {(Object.keys(sortLabels) as (typeof sortBy)[]).map((key) => (
                     <button
                       key={key}
@@ -2200,9 +2214,9 @@ function DownloadsSubTab({
         <div className="flex justify-end gap-2 pt-3">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() => { setDeleteDialogOpen(false); setDeleteFiles(false); }}
-            className="text-[12px] text-white/50 border-white/[0.08] hover:bg-white/[0.04]"
+            className="text-[12px] text-white/50 hover:bg-white/[0.04]"
           >
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
@@ -2243,9 +2257,9 @@ function DownloadsSubTab({
         <div className="flex justify-end gap-2 pt-3">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() => setDeleteTargetGid(null)}
-            className="text-[12px] text-white/50 border-white/[0.08] hover:bg-white/[0.04]"
+            className="text-[12px] text-white/50 hover:bg-white/[0.04]"
           >
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
@@ -2513,10 +2527,10 @@ function DownloadDetailModal({
               {d.status === 'active' ? (
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => pauseMutation.mutate(d.gid)}
                   disabled={pauseMutation.isPending}
-                  className="text-[11px] border-white/[0.08] text-white/50 hover:text-white/80"
+                  className="text-[11px] text-white/50 hover:text-white/80"
                 >
                   <HugeiconsIcon icon={PauseIcon} size={12} />
                   {i18n._(msg`autoDownload.pause`)}
@@ -2524,10 +2538,10 @@ function DownloadDetailModal({
               ) : (
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => resumeMutation.mutate(d.gid)}
                   disabled={resumeMutation.isPending}
-                  className="text-[11px] border-white/[0.08] text-white/50 hover:text-white/80"
+                  className="text-[11px] text-white/50 hover:text-white/80"
                 >
                   <HugeiconsIcon icon={PlayIcon} size={12} />
                   {i18n._(msg`autoDownload.resume`)}
@@ -2718,7 +2732,7 @@ function CompletedToolbar({
       <div className="flex items-center gap-2">
         <Button
           size="sm"
-          variant="outline"
+          variant="ghost"
           onClick={onSelectAll}
           className="text-[11px] h-7 text-white/40 hover:text-white/60"
         >
@@ -2726,10 +2740,10 @@ function CompletedToolbar({
         </Button>
         <Button
           size="sm"
-          variant="outline"
+          variant="ghost"
           onClick={onClearAll}
           disabled={isClearingAll}
-          className="text-[11px] h-7 text-red-400/50 hover:text-red-400 border-red-500/10 hover:border-red-500/20"
+          className="text-[11px] h-7 text-red-400/50 hover:text-red-400"
         >
           <HugeiconsIcon icon={Delete02Icon} size={12} />
           {i18n._(msg`autoDownload.clearAll`)}
@@ -2901,7 +2915,7 @@ function CompletedGroupCard({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.12 } }}
-      className="border border-white/[0.06] rounded-[10px] overflow-hidden"
+      className="rounded-[10px] overflow-hidden bg-white/[0.02]"
     >
       <div
         className="w-full flex gap-3 items-start p-3 bg-white/[0.015] hover:bg-white/[0.03] transition-colors cursor-pointer text-left"
@@ -2969,7 +2983,7 @@ function CompletedGroupCard({
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="border-t border-white/[0.04] px-2 pt-1 pb-2">
+            <div className="px-2 pt-1 pb-2">
               <AnimatePresence mode="popLayout">
                 {group.episodes.map((ep) => (
                   <CompletedEpisodeRow
@@ -2982,7 +2996,7 @@ function CompletedGroupCard({
                 ))}
               </AnimatePresence>
 
-              <div className="flex items-center justify-between pt-2 mt-1 mx-2 border-t border-white/[0.03]">
+              <div className="flex items-center justify-between pt-2 mt-1 mx-2">
                 <div className="flex gap-1.5">
                   {effectiveBangumiId && (
                     <button
@@ -3052,7 +3066,7 @@ function CompletedTimelineView({
     <div className="space-y-4">
       {sections.map((section) => (
         <div key={section.label}>
-          <div className="text-[10px] font-semibold text-white/25 uppercase tracking-wider pb-2 mb-1 border-b border-white/[0.04]">
+          <div className="text-[10px] font-semibold text-white/25 uppercase tracking-wider pb-2 mb-1">
             {section.label}
           </div>
           <AnimatePresence mode="popLayout">
@@ -3127,7 +3141,7 @@ function CompletedSubTab({
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="flex gap-3 p-3 rounded-[10px] bg-white/[0.02] animate-pulse border border-white/[0.06]"
+            className="flex gap-3 p-3 rounded-[10px] bg-white/[0.02] animate-pulse"
           >
             <div className="w-[52px] h-[72px] rounded-md bg-white/[0.06] shrink-0" />
             <div className="flex-1 space-y-2 py-1">

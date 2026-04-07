@@ -2283,6 +2283,18 @@ msgstr "查看全部"
 msgid "notifications.yesterday"
 msgstr "昨天"
 
+msgid "time.secondsAgo {0}"
+msgstr "{0} 秒前"
+
+msgid "time.minutesAgo {0}"
+msgstr "{0} 分鐘前"
+
+msgid "time.hoursAgo {0}"
+msgstr "{0} 小時前"
+
+msgid "time.daysAgo {0}"
+msgstr "{0} 天前"
+
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
 #~ msgstr "第一頁"

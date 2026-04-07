@@ -28,16 +28,16 @@ function getTimeGroup(dateStr: string): 'today' | 'yesterday' | 'earlier' {
   return 'earlier';
 }
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, i18n: { _: (descriptor: any) => string }): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return `${seconds}秒前`;
+  if (seconds < 60) return i18n._(msg`time.secondsAgo ${seconds}`);
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}分前`;
+  if (minutes < 60) return i18n._(msg`time.minutesAgo ${minutes}`);
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}時間前`;
+  if (hours < 24) return i18n._(msg`time.hoursAgo ${hours}`);
   const days = Math.floor(hours / 24);
-  return `${days}日前`;
+  return i18n._(msg`time.daysAgo ${days}`);
 }
 
 /* ── Filter tabs ──────────────────────────────────────────── */
@@ -59,6 +59,12 @@ const TYPE_BADGE: Record<string, string> = {
   download: 'bg-blue-500/15 text-blue-400',
   library: 'bg-green-500/15 text-green-400',
   system: 'bg-amber-500/15 text-amber-400',
+};
+
+const TYPE_LABEL_KEYS: Record<string, ReturnType<typeof msg>> = {
+  download: msg`notifications.filter.downloads`,
+  library: msg`notifications.filter.library`,
+  system: msg`notifications.filter.system`,
 };
 
 /* ── Time group label mapping ─────────────────────────────── */
@@ -252,6 +258,7 @@ function NotificationCard({
   notification: Notification;
   onMarkRead: () => void;
 }) {
+  const { i18n } = useLingui();
   const severity = notification.severity ?? 'info';
   const typePrefix = notification.type?.split(':')[0] ?? 'system';
 
@@ -276,11 +283,13 @@ function NotificationCard({
               TYPE_BADGE[typePrefix] ?? 'bg-white/[0.06] text-white/40'
             )}
           >
-            {typePrefix}
+            {TYPE_LABEL_KEYS[typePrefix]
+              ? i18n._(TYPE_LABEL_KEYS[typePrefix])
+              : typePrefix}
           </span>
         </div>
         <p className="text-xs text-white/40 mt-1 line-clamp-2">{notification.message}</p>
-        <p className="text-[10px] text-white/25 mt-1.5">{timeAgo(notification.created_at)}</p>
+        <p className="text-[10px] text-white/25 mt-1.5">{timeAgo(notification.created_at, i18n)}</p>
       </div>
     </button>
   );
