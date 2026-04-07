@@ -6,9 +6,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/milmil/api/internal/notification"
 )
+
+func init() {
+	notification.RegisterProviderFactory("discord", func(fields map[string]string) notification.Provider {
+		return NewDiscordProvider(fields["webhook_url"], &http.Client{Timeout: 10 * time.Second})
+	})
+}
 
 type discordEmbed struct {
 	Title       string         `json:"title"`

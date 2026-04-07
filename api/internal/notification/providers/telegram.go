@@ -7,9 +7,16 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/milmil/api/internal/notification"
 )
+
+func init() {
+	notification.RegisterProviderFactory("telegram", func(fields map[string]string) notification.Provider {
+		return NewTelegramProvider(fields["bot_token"], fields["chat_id"], &http.Client{Timeout: 10 * time.Second})
+	})
+}
 
 var severityEmoji = map[string]string{
 	"success": "\u2705",

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"time"
 
@@ -48,6 +49,8 @@ func (s *Service) Send(ctx context.Context, notifType, title, message, severity 
 			Data: notif,
 		})
 	}
+
+	go s.dispatchExternal(notifType, title, message, severity, metadata, notif.ID)
 }
 
 func (s *Service) UnreadCount(ctx context.Context) (int64, error) {
@@ -83,4 +86,65 @@ func (s *Service) Clear(ctx context.Context) error {
 func (s *Service) CleanupOld(ctx context.Context, days int) error {
 	cutoff := time.Now().AddDate(0, 0, -days).Format(time.RFC3339)
 	return s.queries.DeleteOldReadNotifications(ctx, cutoff)
+}
+
+// dispatchExternal sends the notification to all enabled external providers
+// for the given event type. Failures are recorded as pending deliveries for
+// the retry worker to pick up.
+func (s *Service) dispatchExternal(notifType, title, message, severity string, metadata map[string]any, notifID string) {
+	ctx := context.Background()
+
+	cfg, err := LoadNotificationConfig(ctx, s.queries)
+	if err != nil {
+		slog.Error("notification: load config for dispatch", "err", err)
+		return
+	}
+
+	providerNames := cfg.EnabledProvidersForEvent(notifType)
+	if len(providerNames) == 0 {
+		return
+	}
+
+	strMeta := make(map[string]string, len(metadata))
+	for k, v := range metadata {
+		strMeta[k] = fmt.Sprintf("%v", v)
+	}
+
+	event := NotificationEvent{
+		Type:     notifType,
+		Title:    title,
+		Message:  message,
+		Severity: severity,
+		Metadata: strMeta,
+	}
+
+	for _, name := range providerNames {
+		deliveryID := uuid.NewString()
+		_, err := s.queries.CreateNotificationDelivery(ctx, store.CreateNotificationDeliveryParams{
+			ID:             deliveryID,
+			NotificationID: notifID,
+			Provider:       name,
+		})
+		if err != nil {
+			slog.Error("notification: create delivery", "provider", name, "err", err)
+			continue
+		}
+
+		provider := BuildProvider(name, &cfg)
+		if provider == nil {
+			continue
+		}
+
+		if sendErr := provider.Send(ctx, event); sendErr != nil {
+			nextRetry := time.Now().Add(1 * time.Minute).Format(time.RFC3339)
+			_ = s.queries.UpdateDeliveryFailure(ctx, store.UpdateDeliveryFailureParams{
+				LastError:   sql.NullString{String: sendErr.Error(), Valid: true},
+				NextRetryAt: sql.NullString{String: nextRetry, Valid: true},
+				ID:          deliveryID,
+			})
+			slog.Warn("notification: delivery failed, will retry", "provider", name, "err", sendErr)
+		} else {
+			_ = s.queries.UpdateDeliverySuccess(ctx, deliveryID)
+		}
+	}
 }

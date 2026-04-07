@@ -9,9 +9,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/milmil/api/internal/notification"
 )
+
+func init() {
+	notification.RegisterProviderFactory("webhook", func(fields map[string]string) notification.Provider {
+		return NewWebhookProvider(fields["url"], fields["secret"], &http.Client{Timeout: 10 * time.Second})
+	})
+}
 
 // WebhookProvider sends notification events as JSON POST requests to a
 // user-defined URL. When a secret is configured the request body is signed

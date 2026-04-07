@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -28,6 +29,7 @@ import (
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/notification"
+	_ "github.com/milmil/api/internal/notification/providers" // register provider factories
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/scanner"
@@ -237,7 +239,7 @@ func main() {
 
 	// Background job scheduler — goroutine-based tickers
 	sched := worker.NewScheduler(
-		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier,
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, wsHub,
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")
@@ -249,16 +251,45 @@ func main() {
 
 	go func() {
 		<-quit
-		sched.Stop()
-		if err := dlEngine.Stop(); err != nil {
-			slog.Error("download engine stop", "err", err)
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
+		slog.Info("shutting down...")
 
-		if err := e.Shutdown(ctx); err != nil {
-			slog.Error("shutdown", "err", err)
-		}
+		// Hard deadline: force exit after 8 seconds no matter what
+		go func() {
+			time.Sleep(8 * time.Second)
+			slog.Warn("shutdown deadline exceeded, forcing exit")
+			os.Exit(1)
+		}()
+
+		// Stop all components in parallel
+		done := make(chan struct{})
+		go func() {
+			var wg sync.WaitGroup
+			wg.Add(3)
+			go func() {
+				defer wg.Done()
+				sched.Stop()
+			}()
+			go func() {
+				defer wg.Done()
+				if err := dlEngine.Stop(); err != nil {
+					slog.Error("download engine stop", "err", err)
+				}
+			}()
+			go func() {
+				defer wg.Done()
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
+				if err := e.Shutdown(ctx); err != nil {
+					slog.Error("http shutdown", "err", err)
+				}
+			}()
+			wg.Wait()
+			close(done)
+		}()
+
+		<-done
+		slog.Info("shutdown complete")
+		os.Exit(0)
 	}()
 
 	addr := fmt.Sprintf(":%d", cfg.APIPort)

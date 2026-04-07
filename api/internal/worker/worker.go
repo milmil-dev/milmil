@@ -13,6 +13,7 @@ import (
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/ws"
 )
 
 // Scheduler runs background jobs on simple goroutine tickers,
@@ -26,6 +27,7 @@ type Scheduler struct {
 	tmdb       tmdb.Client
 	cache      cache.Cache
 	notifier   *notification.Service
+	wsHub      *ws.Hub
 	cancel     context.CancelFunc
 }
 
@@ -39,6 +41,7 @@ func NewScheduler(
 	tmdbClient tmdb.Client,
 	cacheClient cache.Cache,
 	notifier *notification.Service,
+	wsHub *ws.Hub,
 ) *Scheduler {
 	return &Scheduler{
 		queries:    queries,
@@ -49,6 +52,7 @@ func NewScheduler(
 		tmdb:       tmdbClient,
 		cache:      cacheClient,
 		notifier:   notifier,
+		wsHub:      wsHub,
 	}
 }
 
@@ -65,8 +69,8 @@ func (s *Scheduler) Start() {
 		w.Run(ctx)
 	})
 
-	// Download sync — every 30 seconds, run immediately on start
-	go s.runTicker(ctx, "download_sync", 30*time.Second, true, func(ctx context.Context) {
+	// Download sync — every 5 seconds, run immediately on start
+	go s.runTicker(ctx, "download_sync", 3*time.Second, true, func(ctx context.Context) {
 		w := &DownloadSyncWorker{
 			queries:    s.queries,
 			downloader: s.downloader,
@@ -76,7 +80,14 @@ func (s *Scheduler) Start() {
 			tmdb:       s.tmdb,
 			cache:      s.cache,
 			notifier:   s.notifier,
+			wsHub:      s.wsHub,
 		}
+		w.Run(ctx)
+	})
+
+	// Notification delivery retry — every 60 seconds
+	go s.runTicker(ctx, "notification_delivery", 60*time.Second, false, func(ctx context.Context) {
+		w := &NotificationDeliveryWorker{queries: s.queries}
 		w.Run(ctx)
 	})
 
@@ -84,6 +95,10 @@ func (s *Scheduler) Start() {
 	go s.runTicker(ctx, "notification_cleanup", 24*time.Hour, false, func(ctx context.Context) {
 		if err := s.notifier.CleanupOld(ctx, 30); err != nil {
 			slog.Error("notification_cleanup: failed", "err", err)
+		}
+		cutoff := time.Now().AddDate(0, 0, -30).Format(time.RFC3339)
+		if err := s.queries.DeleteOldDeliveries(ctx, cutoff); err != nil {
+			slog.Error("notification_cleanup: deliveries failed", "err", err)
 		}
 	})
 }
