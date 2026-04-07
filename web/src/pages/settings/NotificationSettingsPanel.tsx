@@ -518,7 +518,11 @@ export function NotificationSettingsPanel() {
   // Sync server data into local state when it arrives
   useEffect(() => {
     if (serverSettings && !isDirty) {
-      setLocal(serverSettings);
+      const defaults = defaultSettings();
+      setLocal({
+        providers: { ...defaults.providers, ...serverSettings.providers },
+        events: serverSettings.events ?? {},
+      });
     }
   }, [serverSettings, isDirty]);
 
@@ -601,7 +605,7 @@ export function NotificationSettingsPanel() {
 
       {/* Event Routing */}
       <EventRoutingMatrix
-        events={settings.events}
+        events={settings.events ?? {}}
         enabledProviders={enabledProviders}
         onChange={updateEvents}
       />
