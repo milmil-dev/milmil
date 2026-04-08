@@ -222,6 +222,7 @@ export function DownloadsPage() {
   const tab: Tab = search.tab || 'search';
   const animeParam = search.anime;
 
+  const queryClient = useQueryClient();
   const [addUrlOpen, setAddUrlOpen] = useState(false);
 
   const setTab = (t: Tab) => {
