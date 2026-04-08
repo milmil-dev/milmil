@@ -503,133 +503,134 @@ msgstr "milmil에 오신 것을 환영합니다"
 msgid "auth.setup.username"
 msgstr "사용자 이름"
 
-#: src/pages/DownloadsPage.tsx:1546
+#: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.active"
 msgstr "활성"
 
-#: src/pages/DownloadsPage.tsx:2162
+#: src/pages/DownloadsPage.tsx:2215
 msgid "autoDownload.add"
 msgstr "추가"
 
-#: src/pages/DownloadsPage.tsx:2161
+#: src/pages/DownloadsPage.tsx:2214
 msgid "autoDownload.adding"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:417
-#: src/pages/DownloadsPage.tsx:2131
+#: src/pages/DownloadsPage.tsx:418
+#: src/pages/DownloadsPage.tsx:2184
 msgid "autoDownload.addUrl"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:892
-#: src/pages/DownloadsPage.tsx:914
+#: src/pages/DownloadsPage.tsx:893
+#: src/pages/DownloadsPage.tsx:915
+#: src/pages/DownloadsPage.tsx:1190
 msgid "autoDownload.allSubgroups"
 msgstr "모든 그룹"
 
-#: src/pages/DownloadsPage.tsx:2641
-#: src/pages/DownloadsPage.tsx:2684
+#: src/pages/DownloadsPage.tsx:2694
+#: src/pages/DownloadsPage.tsx:2737
 msgid "autoDownload.alsoDeleteFiles"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:914
+#: src/pages/DownloadsPage.tsx:915
 msgid "autoDownload.anyResolution"
 msgstr "모든 해상도"
 
-#: src/pages/DownloadsPage.tsx:1209
-#: src/pages/DownloadsPage.tsx:2153
-#: src/pages/DownloadsPage.tsx:2651
-#: src/pages/DownloadsPage.tsx:2694
+#: src/pages/DownloadsPage.tsx:1262
+#: src/pages/DownloadsPage.tsx:2206
+#: src/pages/DownloadsPage.tsx:2704
+#: src/pages/DownloadsPage.tsx:2747
 msgid "autoDownload.cancel"
 msgstr "취소"
 
-#: src/pages/DownloadsPage.tsx:3179
+#: src/pages/DownloadsPage.tsx:3232
 msgid "autoDownload.clearAll"
 msgstr "모두 지우기"
 
-#: src/pages/DownloadsPage.tsx:3141
+#: src/pages/DownloadsPage.tsx:3194
 msgid "autoDownload.completed.grouped"
 msgstr "그룹별"
 
-#: src/pages/DownloadsPage.tsx:3169
+#: src/pages/DownloadsPage.tsx:3222
 msgid "autoDownload.completed.selectAll"
 msgstr "모두 선택"
 
-#: src/pages/DownloadsPage.tsx:3153
+#: src/pages/DownloadsPage.tsx:3206
 msgid "autoDownload.completed.timeline"
 msgstr "타임라인"
 
-#: src/pages/DownloadsPage.tsx:1218
+#: src/pages/DownloadsPage.tsx:1271
 msgid "autoDownload.confirm"
 msgstr "구독 확인"
 
-#: src/pages/DownloadsPage.tsx:2666
-#: src/pages/DownloadsPage.tsx:2709
+#: src/pages/DownloadsPage.tsx:2719
+#: src/pages/DownloadsPage.tsx:2762
 msgid "autoDownload.confirmDelete"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:3859
+#: src/pages/DownloadsPage.tsx:3912
 msgid "autoDownload.connecting"
 msgstr "연결 중..."
 
-#: src/pages/DownloadsPage.tsx:2606
-#: src/pages/DownloadsPage.tsx:3949
+#: src/pages/DownloadsPage.tsx:2659
+#: src/pages/DownloadsPage.tsx:4002
 msgid "autoDownload.delete"
 msgstr "삭제"
 
-#: src/pages/DownloadsPage.tsx:2535
-#: src/pages/DownloadsPage.tsx:2630
+#: src/pages/DownloadsPage.tsx:2588
+#: src/pages/DownloadsPage.tsx:2683
 msgid "autoDownload.deleteAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2636
+#: src/pages/DownloadsPage.tsx:2689
 msgid "autoDownload.deleteAllDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1430
+#: src/pages/DownloadsPage.tsx:1483
 msgid "autoDownload.deleted"
 msgstr "구독이 삭제되었습니다"
 
-#: src/pages/DownloadsPage.tsx:2344
+#: src/pages/DownloadsPage.tsx:2397
 msgid "autoDownload.deletedAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2675
+#: src/pages/DownloadsPage.tsx:2728
 msgid "autoDownload.deleteItem"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2629
+#: src/pages/DownloadsPage.tsx:2682
 msgid "autoDownload.deleteSelected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2635
+#: src/pages/DownloadsPage.tsx:2688
 msgid "autoDownload.deleteSelectedDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2665
-#: src/pages/DownloadsPage.tsx:2708
+#: src/pages/DownloadsPage.tsx:2718
+#: src/pages/DownloadsPage.tsx:2761
 msgid "autoDownload.deleting"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2567
+#: src/pages/DownloadsPage.tsx:2620
 msgid "autoDownload.deselectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2905
+#: src/pages/DownloadsPage.tsx:2958
 msgid "autoDownload.detail.created"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2921
+#: src/pages/DownloadsPage.tsx:2974
 msgid "autoDownload.detail.files"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2900
+#: src/pages/DownloadsPage.tsx:2953
 msgid "autoDownload.detail.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2902
+#: src/pages/DownloadsPage.tsx:2955
 msgid "autoDownload.detail.rule"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2907
+#: src/pages/DownloadsPage.tsx:2960
 msgid "autoDownload.detail.saveDir"
 msgstr ""
 
@@ -637,7 +638,7 @@ msgstr ""
 #~ msgid "autoDownload.detail.size"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2884
+#: src/pages/DownloadsPage.tsx:2937
 msgid "autoDownload.detail.speed"
 msgstr ""
 
@@ -645,16 +646,16 @@ msgstr ""
 #~ msgid "autoDownload.detail.status"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:984
+#: src/pages/DownloadsPage.tsx:985
 msgid "autoDownload.download"
 msgstr "다운로드"
 
-#: src/pages/DownloadsPage.tsx:727
-#: src/pages/DownloadsPage.tsx:2122
+#: src/pages/DownloadsPage.tsx:728
+#: src/pages/DownloadsPage.tsx:2175
 msgid "autoDownload.downloadAdded"
 msgstr "다운로드 추가됨"
 
-#: src/pages/DownloadsPage.tsx:2451
+#: src/pages/DownloadsPage.tsx:2504
 msgid "autoDownload.downloading"
 msgstr "다운로드 중"
 
@@ -666,11 +667,11 @@ msgstr "다운로드 중"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "구독이 없습니다"
 
-#: src/pages/DownloadsPage.tsx:1570
+#: src/pages/DownloadsPage.tsx:1623
 msgid "autoDownload.episodes"
 msgstr "에피소드"
 
-#: src/pages/DownloadsPage.tsx:1787
+#: src/pages/DownloadsPage.tsx:1840
 msgid "autoDownload.goToSearch"
 msgstr "검색으로 이동"
 
@@ -678,19 +679,19 @@ msgstr "검색으로 이동"
 #~ msgid "autoDownload.goToSettings"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1594
+#: src/pages/DownloadsPage.tsx:1647
 msgid "autoDownload.interval"
 msgstr "갱신 간격"
 
-#: src/pages/DownloadsPage.tsx:2466
+#: src/pages/DownloadsPage.tsx:2519
 msgid "autoDownload.items"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1601
+#: src/pages/DownloadsPage.tsx:1654
 msgid "autoDownload.lastTriggered"
 msgstr "마지막 트리거"
 
-#: src/pages/DownloadsPage.tsx:1171
+#: src/pages/DownloadsPage.tsx:1224
 msgid "autoDownload.library"
 msgstr "라이브러리"
 
@@ -702,144 +703,145 @@ msgstr "라이브러리"
 #~ msgid "autoDownload.matchesCount"
 #~ msgstr "일치"
 
-#: src/pages/DownloadsPage.tsx:2750
+#: src/pages/DownloadsPage.tsx:2803
 msgid "autoDownload.noActiveDownloads"
 msgstr "활성 다운로드 없음"
 
-#: src/pages/DownloadsPage.tsx:3596
+#: src/pages/DownloadsPage.tsx:3649
 msgid "autoDownload.noCompletedDownloads"
 msgstr "완료된 다운로드 없음"
 
-#: src/pages/DownloadsPage.tsx:1688
+#: src/pages/DownloadsPage.tsx:1741
 msgid "autoDownload.noDownloadsYet"
 msgstr "아직 다운로드가 없습니다"
 
-#: src/pages/DownloadsPage.tsx:994
+#: src/pages/DownloadsPage.tsx:995
 msgid "autoDownload.noFilteredResults"
 msgstr "필터와 일치하는 결과 없음"
 
 #: src/pages/DownloadsPage.tsx:1163
-msgid "autoDownload.noFilters"
-msgstr "필터 없음"
+#~ msgid "autoDownload.noFilters"
+#~ msgstr "필터 없음"
 
-#: src/pages/DownloadsPage.tsx:1184
+#: src/pages/DownloadsPage.tsx:1237
 msgid "autoDownload.noLibrary"
 msgstr "기본 폴더"
 
-#: src/pages/DownloadsPage.tsx:636
-#: src/pages/DownloadsPage.tsx:2739
+#: src/pages/DownloadsPage.tsx:637
+#: src/pages/DownloadsPage.tsx:2792
 msgid "autoDownload.noResults"
 msgstr "결과를 찾을 수 없음"
 
-#: src/pages/DownloadsPage.tsx:1776
+#: src/pages/DownloadsPage.tsx:1829
 msgid "autoDownload.noSubscriptions"
 msgstr "아직 구독이 없습니다"
 
-#: src/pages/DownloadsPage.tsx:1779
+#: src/pages/DownloadsPage.tsx:1832
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "검색 탭에서 애니메이션을 검색하여 자동 다운로드 구독을 만드세요."
 
-#: src/pages/DownloadsPage.tsx:999
+#: src/pages/DownloadsPage.tsx:1000
 msgid "autoDownload.noTorrents"
 msgstr "토렌트를 찾을 수 없음"
 
-#: src/pages/DownloadsPage.tsx:2142
+#: src/pages/DownloadsPage.tsx:2195
 msgid "autoDownload.pasteUrl"
 msgstr "토렌트 또는 마그넷 URL 붙여넣기..."
 
-#: src/pages/DownloadsPage.tsx:2594
-#: src/pages/DownloadsPage.tsx:2966
-#: src/pages/DownloadsPage.tsx:3926
+#: src/pages/DownloadsPage.tsx:2647
+#: src/pages/DownloadsPage.tsx:3019
+#: src/pages/DownloadsPage.tsx:3979
 msgid "autoDownload.pause"
 msgstr "일시정지"
 
-#: src/pages/DownloadsPage.tsx:2498
+#: src/pages/DownloadsPage.tsx:2551
 msgid "autoDownload.pauseAll"
 msgstr "모두 일시정지"
 
-#: src/pages/DownloadsPage.tsx:1546
+#: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.paused"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1638
+#: src/pages/DownloadsPage.tsx:1691
 msgid "autoDownload.refresh"
 msgstr "새로고침"
 
-#: src/pages/DownloadsPage.tsx:2511
+#: src/pages/DownloadsPage.tsx:2564
 msgid "autoDownload.refreshAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1415
+#: src/pages/DownloadsPage.tsx:1468
 msgid "autoDownload.refreshed"
 msgstr "구독이 새로고침되었습니다"
 
-#: src/pages/DownloadsPage.tsx:860
+#: src/pages/DownloadsPage.tsx:861
 msgid "autoDownload.resolution"
 msgstr "해상도"
 
-#: src/pages/DownloadsPage.tsx:2581
-#: src/pages/DownloadsPage.tsx:2977
-#: src/pages/DownloadsPage.tsx:3938
+#: src/pages/DownloadsPage.tsx:2634
+#: src/pages/DownloadsPage.tsx:3030
+#: src/pages/DownloadsPage.tsx:3991
 msgid "autoDownload.resume"
 msgstr "재개"
 
-#: src/pages/DownloadsPage.tsx:2483
+#: src/pages/DownloadsPage.tsx:2536
 msgid "autoDownload.resumeAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1129
+#: src/pages/DownloadsPage.tsx:1152
 msgid "autoDownload.rssSource"
 msgstr "RSS 소스"
 
-#: src/pages/DownloadsPage.tsx:541
+#: src/pages/DownloadsPage.tsx:542
 msgid "autoDownload.searchAnime"
 msgstr "애니메이션 검색..."
 
-#: src/pages/DownloadsPage.tsx:2398
+#: src/pages/DownloadsPage.tsx:2451
 msgid "autoDownload.searchDownloads"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:649
+#: src/pages/DownloadsPage.tsx:650
 msgid "autoDownload.searchHint"
 msgstr "애니메이션을 선택하여 토렌트 탐색"
 
-#: src/pages/DownloadsPage.tsx:2523
+#: src/pages/DownloadsPage.tsx:2576
 msgid "autoDownload.select"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2567
+#: src/pages/DownloadsPage.tsx:2620
 msgid "autoDownload.selectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2560
+#: src/pages/DownloadsPage.tsx:2613
 msgid "autoDownload.selected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:920
+#: src/pages/DownloadsPage.tsx:921
 msgid "autoDownload.selectSourceToSubscribe"
 msgstr "구독하려면 특정 소스(Mikan, Nyaa, DMHY)를 선택하세요"
 
-#: src/pages/DownloadsPage.tsx:2384
+#: src/pages/DownloadsPage.tsx:2437
 msgid "autoDownload.sort.date"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2382
+#: src/pages/DownloadsPage.tsx:2435
 msgid "autoDownload.sort.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2383
+#: src/pages/DownloadsPage.tsx:2436
 msgid "autoDownload.sort.size"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2381
+#: src/pages/DownloadsPage.tsx:2434
 msgid "autoDownload.sort.status"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:836
+#: src/pages/DownloadsPage.tsx:837
 msgid "autoDownload.source"
 msgstr "소스"
 
-#: src/pages/DownloadsPage.tsx:885
+#: src/pages/DownloadsPage.tsx:886
+#: src/pages/DownloadsPage.tsx:1177
 msgid "autoDownload.subgroup"
 msgstr "자막 그룹"
 
@@ -847,11 +849,11 @@ msgstr "자막 그룹"
 #~ msgid "autoDownload.subscribe"
 #~ msgstr "구독"
 
-#: src/pages/DownloadsPage.tsx:911
+#: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subscribeFilter"
 msgstr "이 필터 구독"
 
-#: src/pages/DownloadsPage.tsx:1061
+#: src/pages/DownloadsPage.tsx:1084
 msgid "autoDownload.subscribeSuccess"
 msgstr "구독이 생성되었습니다"
 
@@ -863,16 +865,16 @@ msgstr "구독이 생성되었습니다"
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "구독"
 
-#: src/pages/DownloadsPage.tsx:329
+#: src/pages/DownloadsPage.tsx:330
 msgid "autoDownload.subtab.completed"
 msgstr "완료"
 
-#: src/pages/DownloadsPage.tsx:328
-#: src/pages/DownloadsPage.tsx:1660
+#: src/pages/DownloadsPage.tsx:329
+#: src/pages/DownloadsPage.tsx:1713
 msgid "autoDownload.subtab.downloads"
 msgstr "다운로드 중"
 
-#: src/pages/DownloadsPage.tsx:327
+#: src/pages/DownloadsPage.tsx:328
 msgid "autoDownload.subtab.subscriptions"
 msgstr "구독"
 
@@ -880,20 +882,20 @@ msgstr "구독"
 #~ msgid "autoDownload.tab.manage"
 #~ msgstr "관리"
 
-#: src/pages/DownloadsPage.tsx:326
+#: src/pages/DownloadsPage.tsx:327
 msgid "autoDownload.tab.search"
 msgstr "검색"
 
-#: src/pages/DownloadsPage.tsx:824
-#: src/pages/DownloadsPage.tsx:1118
+#: src/pages/DownloadsPage.tsx:825
+#: src/pages/DownloadsPage.tsx:1141
 msgid "autoDownload.torrentsFound"
 msgstr "개 토렌트"
 
-#: src/pages/DownloadsPage.tsx:1624
+#: src/pages/DownloadsPage.tsx:1677
 msgid "autoDownload.viewAnime"
 msgstr "애니메이션 보기"
 
-#: src/pages/DownloadsPage.tsx:3858
+#: src/pages/DownloadsPage.tsx:3911
 msgid "autoDownload.waiting"
 msgstr "대기 중..."
 
@@ -1150,8 +1152,8 @@ msgstr "복사됨"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
 #: src/pages/AnimeDetailPage.tsx:788
-#: src/pages/DownloadsPage.tsx:804
-#: src/pages/DownloadsPage.tsx:1521
+#: src/pages/DownloadsPage.tsx:805
+#: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
 msgstr "화"
 
@@ -2158,7 +2160,7 @@ msgstr "매칭 완료"
 
 #: src/components/AppSidebar.tsx:32
 #: src/pages/DownloadsPage.tsx:219
-#: src/pages/DownloadsPage.tsx:343
+#: src/pages/DownloadsPage.tsx:344
 msgid "nav.autoDownload"
 msgstr "자동 다운로드"
 
@@ -2229,7 +2231,7 @@ msgstr "설정"
 #~ msgid "nav.trending"
 #~ msgstr "인기"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:343
+#: src/pages/settings/NotificationSettingsPanel.tsx:339
 msgid "notifications.change"
 msgstr "변경"
 
@@ -2250,11 +2252,11 @@ msgstr "알림 없음"
 msgid "notifications.emptyHint"
 msgstr "다운로드 완료 또는 새 에피소드 발견 시 알림이 표시됩니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:390
+#: src/pages/settings/NotificationSettingsPanel.tsx:386
 msgid "notifications.enableProviderAbove"
 msgstr "이벤트 라우팅을 설정하려면 위에서 제공자를 활성화하세요"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:408
+#: src/pages/settings/NotificationSettingsPanel.tsx:404
 msgid "notifications.event"
 msgstr "이벤트"
 
@@ -2298,7 +2300,7 @@ msgstr "시스템 오류"
 msgid "notifications.event.systemError.desc"
 msgstr "백그라운드 작업이 예기치 않게 실패했을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:399
+#: src/pages/settings/NotificationSettingsPanel.tsx:395
 msgid "notifications.eventRouting"
 msgstr "이벤트 라우팅"
 
@@ -2347,11 +2349,11 @@ msgstr "연결됨"
 msgid "notifications.providerStatus.unconfigured"
 msgstr "미설정"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:332
+#: src/pages/settings/NotificationSettingsPanel.tsx:328
 msgid "notifications.secretIsSet"
 msgstr "시크릿 설정됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:327
+#: src/pages/settings/NotificationSettingsPanel.tsx:323
 msgid "notifications.secretPlaceholder"
 msgstr "서명 시크릿 (선택 사항)"
 
@@ -2425,15 +2427,19 @@ msgstr "이전 페이지"
 msgid "pagination.rows"
 msgstr "행"
 
-#: src/components/RuleEditorModal.tsx:591
+#: src/components/RuleEditorModal.tsx:624
 msgid "ruleEditor.addGroup"
 msgstr "그룹 추가..."
 
-#: src/components/RuleEditorModal.tsx:517
+#: src/components/RuleEditorModal.tsx:624
+msgid "ruleEditor.addGroupManual"
+msgstr "다른 그룹 추가..."
+
+#: src/components/RuleEditorModal.tsx:526
 msgid "ruleEditor.allEpisodes"
 msgstr "전체"
 
-#: src/components/RuleEditorModal.tsx:642
+#: src/components/RuleEditorModal.tsx:677
 msgid "ruleEditor.cancel"
 msgstr "취소"
 
@@ -2457,64 +2463,64 @@ msgstr "취소"
 #~ msgid "ruleEditor.colTitle"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:298
+#: src/components/RuleEditorModal.tsx:307
 msgid "ruleEditor.createTitle"
 msgstr "새 규칙"
 
-#: src/components/RuleEditorModal.tsx:632
+#: src/components/RuleEditorModal.tsx:667
 msgid "ruleEditor.delete"
 msgstr "삭제"
 
-#: src/components/RuleEditorModal.tsx:246
+#: src/components/RuleEditorModal.tsx:255
 msgid "ruleEditor.deleted"
 msgstr "구독이 삭제되었습니다"
 
-#: src/components/RuleEditorModal.tsx:450
-#: src/pages/DownloadsPage.tsx:2010
+#: src/components/RuleEditorModal.tsx:459
+#: src/pages/DownloadsPage.tsx:2063
 msgid "ruleEditor.destination"
 msgstr "저장 위치"
 
-#: src/components/RuleEditorModal.tsx:315
+#: src/components/RuleEditorModal.tsx:324
 msgid "ruleEditor.disabled"
 msgstr "비활성"
 
-#: src/components/RuleEditorModal.tsx:715
+#: src/components/RuleEditorModal.tsx:750
 msgid "ruleEditor.downloaded"
 msgstr "다운로드됨"
 
-#: src/components/RuleEditorModal.tsx:314
+#: src/components/RuleEditorModal.tsx:323
 msgid "ruleEditor.enabled"
 msgstr "활성"
 
-#: src/components/RuleEditorModal.tsx:512
+#: src/components/RuleEditorModal.tsx:521
 msgid "ruleEditor.episodes"
 msgstr "에피소드"
 
-#: src/components/RuleEditorModal.tsx:498
+#: src/components/RuleEditorModal.tsx:507
 msgid "ruleEditor.exact"
 msgstr "정확"
 
-#: src/components/RuleEditorModal.tsx:499
+#: src/components/RuleEditorModal.tsx:508
 msgid "ruleEditor.exactDesc"
 msgstr "제목에 키워드 포함 (대소문자 구분 없음)"
 
-#: src/components/RuleEditorModal.tsx:332
+#: src/components/RuleEditorModal.tsx:341
 msgid "ruleEditor.feedType"
 msgstr "피드 유형"
 
-#: src/components/RuleEditorModal.tsx:505
+#: src/components/RuleEditorModal.tsx:514
 msgid "ruleEditor.filterRegex"
 msgstr "필터 패턴"
 
-#: src/components/RuleEditorModal.tsx:492
+#: src/components/RuleEditorModal.tsx:501
 msgid "ruleEditor.fuzzy"
 msgstr "퍼지"
 
-#: src/components/RuleEditorModal.tsx:493
+#: src/components/RuleEditorModal.tsx:502
 msgid "ruleEditor.fuzzyDesc"
 msgstr "비교 알고리즘으로 분석"
 
-#: src/components/RuleEditorModal.tsx:595
+#: src/components/RuleEditorModal.tsx:629
 msgid "ruleEditor.groupHint"
 msgstr "모든 그룹 허용"
 
@@ -2522,25 +2528,25 @@ msgstr "모든 그룹 허용"
 #~ msgid "ruleEditor.hideDownloaded"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2087
+#: src/pages/DownloadsPage.tsx:2140
 msgid "ruleEditor.items"
 msgstr "개"
 
-#: src/components/RuleEditorModal.tsx:283
+#: src/components/RuleEditorModal.tsx:292
 msgid "ruleEditor.justNow"
 msgstr "방금"
 
-#: src/pages/DownloadsPage.tsx:510
-#: src/pages/DownloadsPage.tsx:524
+#: src/pages/DownloadsPage.tsx:511
+#: src/pages/DownloadsPage.tsx:525
 msgid "ruleEditor.keywordMode"
 msgstr "키워드"
 
-#: src/components/RuleEditorModal.tsx:365
-#: src/pages/DownloadsPage.tsx:1928
+#: src/components/RuleEditorModal.tsx:374
+#: src/pages/DownloadsPage.tsx:1981
 msgid "ruleEditor.linkedAnime"
 msgstr "연결된 애니메"
 
-#: src/pages/DownloadsPage.tsx:2055
+#: src/pages/DownloadsPage.tsx:2108
 msgid "ruleEditor.loading"
 msgstr "로딩 중..."
 
@@ -2548,7 +2554,7 @@ msgstr "로딩 중..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:522
+#: src/components/RuleEditorModal.tsx:531
 msgid "ruleEditor.newOnly"
 msgstr "새 에피소드만"
 
@@ -2556,75 +2562,75 @@ msgstr "새 에피소드만"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:465
-#: src/pages/DownloadsPage.tsx:2024
+#: src/components/RuleEditorModal.tsx:474
+#: src/pages/DownloadsPage.tsx:2077
 msgid "ruleEditor.noLibrary"
 msgstr "라이브러리 없음"
 
-#: src/components/RuleEditorModal.tsx:725
+#: src/components/RuleEditorModal.tsx:760
 msgid "ruleEditor.noPreviewItems"
 msgstr "현재 필터에 일치하는 항목이 없습니다"
 
-#: src/components/RuleEditorModal.tsx:662
-#: src/pages/DownloadsPage.tsx:2056
-#: src/pages/DownloadsPage.tsx:2084
+#: src/components/RuleEditorModal.tsx:697
+#: src/pages/DownloadsPage.tsx:2109
+#: src/pages/DownloadsPage.tsx:2137
 msgid "ruleEditor.preview"
 msgstr "미리보기"
 
-#: src/components/RuleEditorModal.tsx:527
+#: src/components/RuleEditorModal.tsx:536
 msgid "ruleEditor.range"
 msgstr "범위"
 
-#: src/components/RuleEditorModal.tsx:678
+#: src/components/RuleEditorModal.tsx:713
 msgid "ruleEditor.refreshPreview"
 msgstr "새로고침"
 
-#: src/components/RuleEditorModal.tsx:551
+#: src/components/RuleEditorModal.tsx:560
 msgid "ruleEditor.releaseGroups"
 msgstr "자막 그룹"
 
-#: src/components/RuleEditorModal.tsx:601
+#: src/components/RuleEditorModal.tsx:636
 msgid "ruleEditor.resolution"
 msgstr "해상도"
 
-#: src/components/RuleEditorModal.tsx:322
+#: src/components/RuleEditorModal.tsx:331
 msgid "ruleEditor.rssUrl"
 msgstr "RSS 피드 URL"
 
-#: src/pages/DownloadsPage.tsx:510
-#: src/pages/DownloadsPage.tsx:535
+#: src/pages/DownloadsPage.tsx:511
+#: src/pages/DownloadsPage.tsx:536
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
-#: src/components/RuleEditorModal.tsx:354
-#: src/pages/DownloadsPage.tsx:2000
+#: src/components/RuleEditorModal.tsx:363
+#: src/pages/DownloadsPage.tsx:2053
 msgid "ruleEditor.ruleName"
 msgstr "규칙 이름"
 
-#: src/components/RuleEditorModal.tsx:306
-#: src/components/RuleEditorModal.tsx:358
-#: src/pages/DownloadsPage.tsx:2004
+#: src/components/RuleEditorModal.tsx:315
+#: src/components/RuleEditorModal.tsx:367
+#: src/pages/DownloadsPage.tsx:2057
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "예: 애니메이션 이름 시즌 1"
 
-#: src/components/RuleEditorModal.tsx:652
-#: src/pages/DownloadsPage.tsx:2067
+#: src/components/RuleEditorModal.tsx:687
+#: src/pages/DownloadsPage.tsx:2120
 msgid "ruleEditor.save"
 msgstr "저장"
 
-#: src/components/RuleEditorModal.tsx:196
-#: src/components/RuleEditorModal.tsx:231
-#: src/pages/DownloadsPage.tsx:1906
+#: src/components/RuleEditorModal.tsx:205
+#: src/components/RuleEditorModal.tsx:240
+#: src/pages/DownloadsPage.tsx:1959
 msgid "ruleEditor.saved"
 msgstr "규칙이 업데이트되었습니다"
 
-#: src/components/RuleEditorModal.tsx:651
-#: src/pages/DownloadsPage.tsx:2066
+#: src/components/RuleEditorModal.tsx:686
+#: src/pages/DownloadsPage.tsx:2119
 msgid "ruleEditor.saving"
 msgstr "저장 중..."
 
-#: src/components/RuleEditorModal.tsx:402
-#: src/pages/DownloadsPage.tsx:1954
+#: src/components/RuleEditorModal.tsx:411
+#: src/pages/DownloadsPage.tsx:2007
 msgid "ruleEditor.searchAnime"
 msgstr "애니메 검색하여 연결..."
 
@@ -2636,7 +2642,7 @@ msgstr "애니메 검색하여 연결..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:487
+#: src/components/RuleEditorModal.tsx:496
 msgid "ruleEditor.titleMatch"
 msgstr "제목 매칭"
 
@@ -3011,7 +3017,7 @@ msgstr "내장"
 msgid "settings.download.builtinDesc"
 msgstr "내장 다운로드 엔진 사용"
 
-#: src/pages/DownloadsPage.tsx:369
+#: src/pages/DownloadsPage.tsx:370
 #: src/pages/settings/DownloadPanel.tsx:31
 msgid "settings.download.disconnected"
 msgstr "연결 안 됨"

@@ -503,133 +503,134 @@ msgstr "milmil へようこそ"
 msgid "auth.setup.username"
 msgstr "ユーザー名"
 
-#: src/pages/DownloadsPage.tsx:1546
+#: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.active"
 msgstr "有効"
 
-#: src/pages/DownloadsPage.tsx:2162
+#: src/pages/DownloadsPage.tsx:2215
 msgid "autoDownload.add"
 msgstr "追加"
 
-#: src/pages/DownloadsPage.tsx:2161
+#: src/pages/DownloadsPage.tsx:2214
 msgid "autoDownload.adding"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:417
-#: src/pages/DownloadsPage.tsx:2131
+#: src/pages/DownloadsPage.tsx:418
+#: src/pages/DownloadsPage.tsx:2184
 msgid "autoDownload.addUrl"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:892
-#: src/pages/DownloadsPage.tsx:914
+#: src/pages/DownloadsPage.tsx:893
+#: src/pages/DownloadsPage.tsx:915
+#: src/pages/DownloadsPage.tsx:1190
 msgid "autoDownload.allSubgroups"
 msgstr "すべてのグループ"
 
-#: src/pages/DownloadsPage.tsx:2641
-#: src/pages/DownloadsPage.tsx:2684
+#: src/pages/DownloadsPage.tsx:2694
+#: src/pages/DownloadsPage.tsx:2737
 msgid "autoDownload.alsoDeleteFiles"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:914
+#: src/pages/DownloadsPage.tsx:915
 msgid "autoDownload.anyResolution"
 msgstr "すべての解像度"
 
-#: src/pages/DownloadsPage.tsx:1209
-#: src/pages/DownloadsPage.tsx:2153
-#: src/pages/DownloadsPage.tsx:2651
-#: src/pages/DownloadsPage.tsx:2694
+#: src/pages/DownloadsPage.tsx:1262
+#: src/pages/DownloadsPage.tsx:2206
+#: src/pages/DownloadsPage.tsx:2704
+#: src/pages/DownloadsPage.tsx:2747
 msgid "autoDownload.cancel"
 msgstr "キャンセル"
 
-#: src/pages/DownloadsPage.tsx:3179
+#: src/pages/DownloadsPage.tsx:3232
 msgid "autoDownload.clearAll"
 msgstr "すべてクリア"
 
-#: src/pages/DownloadsPage.tsx:3141
+#: src/pages/DownloadsPage.tsx:3194
 msgid "autoDownload.completed.grouped"
 msgstr "グループ"
 
-#: src/pages/DownloadsPage.tsx:3169
+#: src/pages/DownloadsPage.tsx:3222
 msgid "autoDownload.completed.selectAll"
 msgstr "すべて選択"
 
-#: src/pages/DownloadsPage.tsx:3153
+#: src/pages/DownloadsPage.tsx:3206
 msgid "autoDownload.completed.timeline"
 msgstr "タイムライン"
 
-#: src/pages/DownloadsPage.tsx:1218
+#: src/pages/DownloadsPage.tsx:1271
 msgid "autoDownload.confirm"
 msgstr "購読を確認"
 
-#: src/pages/DownloadsPage.tsx:2666
-#: src/pages/DownloadsPage.tsx:2709
+#: src/pages/DownloadsPage.tsx:2719
+#: src/pages/DownloadsPage.tsx:2762
 msgid "autoDownload.confirmDelete"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:3859
+#: src/pages/DownloadsPage.tsx:3912
 msgid "autoDownload.connecting"
 msgstr "接続中..."
 
-#: src/pages/DownloadsPage.tsx:2606
-#: src/pages/DownloadsPage.tsx:3949
+#: src/pages/DownloadsPage.tsx:2659
+#: src/pages/DownloadsPage.tsx:4002
 msgid "autoDownload.delete"
 msgstr "削除"
 
-#: src/pages/DownloadsPage.tsx:2535
-#: src/pages/DownloadsPage.tsx:2630
+#: src/pages/DownloadsPage.tsx:2588
+#: src/pages/DownloadsPage.tsx:2683
 msgid "autoDownload.deleteAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2636
+#: src/pages/DownloadsPage.tsx:2689
 msgid "autoDownload.deleteAllDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1430
+#: src/pages/DownloadsPage.tsx:1483
 msgid "autoDownload.deleted"
 msgstr "購読を削除しました"
 
-#: src/pages/DownloadsPage.tsx:2344
+#: src/pages/DownloadsPage.tsx:2397
 msgid "autoDownload.deletedAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2675
+#: src/pages/DownloadsPage.tsx:2728
 msgid "autoDownload.deleteItem"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2629
+#: src/pages/DownloadsPage.tsx:2682
 msgid "autoDownload.deleteSelected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2635
+#: src/pages/DownloadsPage.tsx:2688
 msgid "autoDownload.deleteSelectedDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2665
-#: src/pages/DownloadsPage.tsx:2708
+#: src/pages/DownloadsPage.tsx:2718
+#: src/pages/DownloadsPage.tsx:2761
 msgid "autoDownload.deleting"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2567
+#: src/pages/DownloadsPage.tsx:2620
 msgid "autoDownload.deselectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2905
+#: src/pages/DownloadsPage.tsx:2958
 msgid "autoDownload.detail.created"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2921
+#: src/pages/DownloadsPage.tsx:2974
 msgid "autoDownload.detail.files"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2900
+#: src/pages/DownloadsPage.tsx:2953
 msgid "autoDownload.detail.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2902
+#: src/pages/DownloadsPage.tsx:2955
 msgid "autoDownload.detail.rule"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2907
+#: src/pages/DownloadsPage.tsx:2960
 msgid "autoDownload.detail.saveDir"
 msgstr ""
 
@@ -637,7 +638,7 @@ msgstr ""
 #~ msgid "autoDownload.detail.size"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2884
+#: src/pages/DownloadsPage.tsx:2937
 msgid "autoDownload.detail.speed"
 msgstr ""
 
@@ -645,16 +646,16 @@ msgstr ""
 #~ msgid "autoDownload.detail.status"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:984
+#: src/pages/DownloadsPage.tsx:985
 msgid "autoDownload.download"
 msgstr "ダウンロード"
 
-#: src/pages/DownloadsPage.tsx:727
-#: src/pages/DownloadsPage.tsx:2122
+#: src/pages/DownloadsPage.tsx:728
+#: src/pages/DownloadsPage.tsx:2175
 msgid "autoDownload.downloadAdded"
 msgstr "ダウンロードを追加しました"
 
-#: src/pages/DownloadsPage.tsx:2451
+#: src/pages/DownloadsPage.tsx:2504
 msgid "autoDownload.downloading"
 msgstr "ダウンロード中"
 
@@ -666,11 +667,11 @@ msgstr "ダウンロード中"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "購読がありません"
 
-#: src/pages/DownloadsPage.tsx:1570
+#: src/pages/DownloadsPage.tsx:1623
 msgid "autoDownload.episodes"
 msgstr "エピソード"
 
-#: src/pages/DownloadsPage.tsx:1787
+#: src/pages/DownloadsPage.tsx:1840
 msgid "autoDownload.goToSearch"
 msgstr "検索へ"
 
@@ -678,19 +679,19 @@ msgstr "検索へ"
 #~ msgid "autoDownload.goToSettings"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1594
+#: src/pages/DownloadsPage.tsx:1647
 msgid "autoDownload.interval"
 msgstr "更新間隔"
 
-#: src/pages/DownloadsPage.tsx:2466
+#: src/pages/DownloadsPage.tsx:2519
 msgid "autoDownload.items"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1601
+#: src/pages/DownloadsPage.tsx:1654
 msgid "autoDownload.lastTriggered"
 msgstr "最終トリガー"
 
-#: src/pages/DownloadsPage.tsx:1171
+#: src/pages/DownloadsPage.tsx:1224
 msgid "autoDownload.library"
 msgstr "ライブラリ"
 
@@ -702,144 +703,145 @@ msgstr "ライブラリ"
 #~ msgid "autoDownload.matchesCount"
 #~ msgstr "一致"
 
-#: src/pages/DownloadsPage.tsx:2750
+#: src/pages/DownloadsPage.tsx:2803
 msgid "autoDownload.noActiveDownloads"
 msgstr "アクティブなダウンロードなし"
 
-#: src/pages/DownloadsPage.tsx:3596
+#: src/pages/DownloadsPage.tsx:3649
 msgid "autoDownload.noCompletedDownloads"
 msgstr "完了したダウンロードなし"
 
-#: src/pages/DownloadsPage.tsx:1688
+#: src/pages/DownloadsPage.tsx:1741
 msgid "autoDownload.noDownloadsYet"
 msgstr "ダウンロードはまだありません"
 
-#: src/pages/DownloadsPage.tsx:994
+#: src/pages/DownloadsPage.tsx:995
 msgid "autoDownload.noFilteredResults"
 msgstr "フィルターに一致する結果なし"
 
 #: src/pages/DownloadsPage.tsx:1163
-msgid "autoDownload.noFilters"
-msgstr "フィルターなし"
+#~ msgid "autoDownload.noFilters"
+#~ msgstr "フィルターなし"
 
-#: src/pages/DownloadsPage.tsx:1184
+#: src/pages/DownloadsPage.tsx:1237
 msgid "autoDownload.noLibrary"
 msgstr "デフォルトフォルダ"
 
-#: src/pages/DownloadsPage.tsx:636
-#: src/pages/DownloadsPage.tsx:2739
+#: src/pages/DownloadsPage.tsx:637
+#: src/pages/DownloadsPage.tsx:2792
 msgid "autoDownload.noResults"
 msgstr "結果が見つかりません"
 
-#: src/pages/DownloadsPage.tsx:1776
+#: src/pages/DownloadsPage.tsx:1829
 msgid "autoDownload.noSubscriptions"
 msgstr "まだ購読がありません"
 
-#: src/pages/DownloadsPage.tsx:1779
+#: src/pages/DownloadsPage.tsx:1832
 msgid "autoDownload.noSubscriptionsHint"
 msgstr "検索タブでアニメを検索して、自動ダウンロードの購読を作成してください。"
 
-#: src/pages/DownloadsPage.tsx:999
+#: src/pages/DownloadsPage.tsx:1000
 msgid "autoDownload.noTorrents"
 msgstr "トレントが見つかりません"
 
-#: src/pages/DownloadsPage.tsx:2142
+#: src/pages/DownloadsPage.tsx:2195
 msgid "autoDownload.pasteUrl"
 msgstr "トレントまたはマグネットURLを貼り付け..."
 
-#: src/pages/DownloadsPage.tsx:2594
-#: src/pages/DownloadsPage.tsx:2966
-#: src/pages/DownloadsPage.tsx:3926
+#: src/pages/DownloadsPage.tsx:2647
+#: src/pages/DownloadsPage.tsx:3019
+#: src/pages/DownloadsPage.tsx:3979
 msgid "autoDownload.pause"
 msgstr "一時停止"
 
-#: src/pages/DownloadsPage.tsx:2498
+#: src/pages/DownloadsPage.tsx:2551
 msgid "autoDownload.pauseAll"
 msgstr "すべて一時停止"
 
-#: src/pages/DownloadsPage.tsx:1546
+#: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.paused"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1638
+#: src/pages/DownloadsPage.tsx:1691
 msgid "autoDownload.refresh"
 msgstr "更新"
 
-#: src/pages/DownloadsPage.tsx:2511
+#: src/pages/DownloadsPage.tsx:2564
 msgid "autoDownload.refreshAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1415
+#: src/pages/DownloadsPage.tsx:1468
 msgid "autoDownload.refreshed"
 msgstr "購読を更新しました"
 
-#: src/pages/DownloadsPage.tsx:860
+#: src/pages/DownloadsPage.tsx:861
 msgid "autoDownload.resolution"
 msgstr "解像度"
 
-#: src/pages/DownloadsPage.tsx:2581
-#: src/pages/DownloadsPage.tsx:2977
-#: src/pages/DownloadsPage.tsx:3938
+#: src/pages/DownloadsPage.tsx:2634
+#: src/pages/DownloadsPage.tsx:3030
+#: src/pages/DownloadsPage.tsx:3991
 msgid "autoDownload.resume"
 msgstr "再開"
 
-#: src/pages/DownloadsPage.tsx:2483
+#: src/pages/DownloadsPage.tsx:2536
 msgid "autoDownload.resumeAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1129
+#: src/pages/DownloadsPage.tsx:1152
 msgid "autoDownload.rssSource"
 msgstr "RSSソース"
 
-#: src/pages/DownloadsPage.tsx:541
+#: src/pages/DownloadsPage.tsx:542
 msgid "autoDownload.searchAnime"
 msgstr "アニメを検索..."
 
-#: src/pages/DownloadsPage.tsx:2398
+#: src/pages/DownloadsPage.tsx:2451
 msgid "autoDownload.searchDownloads"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:649
+#: src/pages/DownloadsPage.tsx:650
 msgid "autoDownload.searchHint"
 msgstr "アニメを選択してトレントを閲覧"
 
-#: src/pages/DownloadsPage.tsx:2523
+#: src/pages/DownloadsPage.tsx:2576
 msgid "autoDownload.select"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2567
+#: src/pages/DownloadsPage.tsx:2620
 msgid "autoDownload.selectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2560
+#: src/pages/DownloadsPage.tsx:2613
 msgid "autoDownload.selected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:920
+#: src/pages/DownloadsPage.tsx:921
 msgid "autoDownload.selectSourceToSubscribe"
 msgstr "購読するには特定のソース（Mikan、Nyaa、DMHY）を選択してください"
 
-#: src/pages/DownloadsPage.tsx:2384
+#: src/pages/DownloadsPage.tsx:2437
 msgid "autoDownload.sort.date"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2382
+#: src/pages/DownloadsPage.tsx:2435
 msgid "autoDownload.sort.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2383
+#: src/pages/DownloadsPage.tsx:2436
 msgid "autoDownload.sort.size"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2381
+#: src/pages/DownloadsPage.tsx:2434
 msgid "autoDownload.sort.status"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:836
+#: src/pages/DownloadsPage.tsx:837
 msgid "autoDownload.source"
 msgstr "ソース"
 
-#: src/pages/DownloadsPage.tsx:885
+#: src/pages/DownloadsPage.tsx:886
+#: src/pages/DownloadsPage.tsx:1177
 msgid "autoDownload.subgroup"
 msgstr "字幕グループ"
 
@@ -847,11 +849,11 @@ msgstr "字幕グループ"
 #~ msgid "autoDownload.subscribe"
 #~ msgstr "購読"
 
-#: src/pages/DownloadsPage.tsx:911
+#: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subscribeFilter"
 msgstr "このフィルターを購読"
 
-#: src/pages/DownloadsPage.tsx:1061
+#: src/pages/DownloadsPage.tsx:1084
 msgid "autoDownload.subscribeSuccess"
 msgstr "購読を作成しました"
 
@@ -863,16 +865,16 @@ msgstr "購読を作成しました"
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "購読"
 
-#: src/pages/DownloadsPage.tsx:329
+#: src/pages/DownloadsPage.tsx:330
 msgid "autoDownload.subtab.completed"
 msgstr "完了"
 
-#: src/pages/DownloadsPage.tsx:328
-#: src/pages/DownloadsPage.tsx:1660
+#: src/pages/DownloadsPage.tsx:329
+#: src/pages/DownloadsPage.tsx:1713
 msgid "autoDownload.subtab.downloads"
 msgstr "ダウンロード中"
 
-#: src/pages/DownloadsPage.tsx:327
+#: src/pages/DownloadsPage.tsx:328
 msgid "autoDownload.subtab.subscriptions"
 msgstr "購読"
 
@@ -880,20 +882,20 @@ msgstr "購読"
 #~ msgid "autoDownload.tab.manage"
 #~ msgstr "管理"
 
-#: src/pages/DownloadsPage.tsx:326
+#: src/pages/DownloadsPage.tsx:327
 msgid "autoDownload.tab.search"
 msgstr "検索"
 
-#: src/pages/DownloadsPage.tsx:824
-#: src/pages/DownloadsPage.tsx:1118
+#: src/pages/DownloadsPage.tsx:825
+#: src/pages/DownloadsPage.tsx:1141
 msgid "autoDownload.torrentsFound"
 msgstr "件のトレント"
 
-#: src/pages/DownloadsPage.tsx:1624
+#: src/pages/DownloadsPage.tsx:1677
 msgid "autoDownload.viewAnime"
 msgstr "アニメを見る"
 
-#: src/pages/DownloadsPage.tsx:3858
+#: src/pages/DownloadsPage.tsx:3911
 msgid "autoDownload.waiting"
 msgstr "待機中..."
 
@@ -1150,8 +1152,8 @@ msgstr "コピーしました"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
 #: src/pages/AnimeDetailPage.tsx:788
-#: src/pages/DownloadsPage.tsx:804
-#: src/pages/DownloadsPage.tsx:1521
+#: src/pages/DownloadsPage.tsx:805
+#: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
 msgstr "話"
 
@@ -2158,7 +2160,7 @@ msgstr "マッチング完了"
 
 #: src/components/AppSidebar.tsx:32
 #: src/pages/DownloadsPage.tsx:219
-#: src/pages/DownloadsPage.tsx:343
+#: src/pages/DownloadsPage.tsx:344
 msgid "nav.autoDownload"
 msgstr "自動ダウンロード"
 
@@ -2229,7 +2231,7 @@ msgstr "設定"
 #~ msgid "nav.trending"
 #~ msgstr "トレンド"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:343
+#: src/pages/settings/NotificationSettingsPanel.tsx:339
 msgid "notifications.change"
 msgstr "変更"
 
@@ -2250,11 +2252,11 @@ msgstr "通知なし"
 msgid "notifications.emptyHint"
 msgstr "ダウンロード完了や新エピソード発見時に通知が表示されます。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:390
+#: src/pages/settings/NotificationSettingsPanel.tsx:386
 msgid "notifications.enableProviderAbove"
 msgstr "上でプロバイダを有効にしてイベントルーティングを設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:408
+#: src/pages/settings/NotificationSettingsPanel.tsx:404
 msgid "notifications.event"
 msgstr "イベント"
 
@@ -2298,7 +2300,7 @@ msgstr "システムエラー"
 msgid "notifications.event.systemError.desc"
 msgstr "バックグラウンドジョブが予期せず失敗したとき"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:399
+#: src/pages/settings/NotificationSettingsPanel.tsx:395
 msgid "notifications.eventRouting"
 msgstr "イベントルーティング"
 
@@ -2347,11 +2349,11 @@ msgstr "接続済み"
 msgid "notifications.providerStatus.unconfigured"
 msgstr "未設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:332
+#: src/pages/settings/NotificationSettingsPanel.tsx:328
 msgid "notifications.secretIsSet"
 msgstr "シークレット設定済み"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:327
+#: src/pages/settings/NotificationSettingsPanel.tsx:323
 msgid "notifications.secretPlaceholder"
 msgstr "署名シークレット（オプション）"
 
@@ -2425,15 +2427,19 @@ msgstr "前のページ"
 msgid "pagination.rows"
 msgstr "行"
 
-#: src/components/RuleEditorModal.tsx:591
+#: src/components/RuleEditorModal.tsx:624
 msgid "ruleEditor.addGroup"
 msgstr "グループを追加..."
 
-#: src/components/RuleEditorModal.tsx:517
+#: src/components/RuleEditorModal.tsx:624
+msgid "ruleEditor.addGroupManual"
+msgstr "他のグループを追加..."
+
+#: src/components/RuleEditorModal.tsx:526
 msgid "ruleEditor.allEpisodes"
 msgstr "すべて"
 
-#: src/components/RuleEditorModal.tsx:642
+#: src/components/RuleEditorModal.tsx:677
 msgid "ruleEditor.cancel"
 msgstr "キャンセル"
 
@@ -2457,64 +2463,64 @@ msgstr "キャンセル"
 #~ msgid "ruleEditor.colTitle"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:298
+#: src/components/RuleEditorModal.tsx:307
 msgid "ruleEditor.createTitle"
 msgstr "新規ルール"
 
-#: src/components/RuleEditorModal.tsx:632
+#: src/components/RuleEditorModal.tsx:667
 msgid "ruleEditor.delete"
 msgstr "削除"
 
-#: src/components/RuleEditorModal.tsx:246
+#: src/components/RuleEditorModal.tsx:255
 msgid "ruleEditor.deleted"
 msgstr "サブスクリプションを削除しました"
 
-#: src/components/RuleEditorModal.tsx:450
-#: src/pages/DownloadsPage.tsx:2010
+#: src/components/RuleEditorModal.tsx:459
+#: src/pages/DownloadsPage.tsx:2063
 msgid "ruleEditor.destination"
 msgstr "保存先"
 
-#: src/components/RuleEditorModal.tsx:315
+#: src/components/RuleEditorModal.tsx:324
 msgid "ruleEditor.disabled"
 msgstr "無効"
 
-#: src/components/RuleEditorModal.tsx:715
+#: src/components/RuleEditorModal.tsx:750
 msgid "ruleEditor.downloaded"
 msgstr "ダウンロード済み"
 
-#: src/components/RuleEditorModal.tsx:314
+#: src/components/RuleEditorModal.tsx:323
 msgid "ruleEditor.enabled"
 msgstr "有効"
 
-#: src/components/RuleEditorModal.tsx:512
+#: src/components/RuleEditorModal.tsx:521
 msgid "ruleEditor.episodes"
 msgstr "エピソード"
 
-#: src/components/RuleEditorModal.tsx:498
+#: src/components/RuleEditorModal.tsx:507
 msgid "ruleEditor.exact"
 msgstr "完全一致"
 
-#: src/components/RuleEditorModal.tsx:499
+#: src/components/RuleEditorModal.tsx:508
 msgid "ruleEditor.exactDesc"
 msgstr "タイトルにキーワードを含む（大文字小文字区別なし）"
 
-#: src/components/RuleEditorModal.tsx:332
+#: src/components/RuleEditorModal.tsx:341
 msgid "ruleEditor.feedType"
 msgstr "フィードタイプ"
 
-#: src/components/RuleEditorModal.tsx:505
+#: src/components/RuleEditorModal.tsx:514
 msgid "ruleEditor.filterRegex"
 msgstr "フィルターパターン"
 
-#: src/components/RuleEditorModal.tsx:492
+#: src/components/RuleEditorModal.tsx:501
 msgid "ruleEditor.fuzzy"
 msgstr "あいまい"
 
-#: src/components/RuleEditorModal.tsx:493
+#: src/components/RuleEditorModal.tsx:502
 msgid "ruleEditor.fuzzyDesc"
 msgstr "比較アルゴリズムで解析"
 
-#: src/components/RuleEditorModal.tsx:595
+#: src/components/RuleEditorModal.tsx:629
 msgid "ruleEditor.groupHint"
 msgstr "すべてのグループを許可"
 
@@ -2522,25 +2528,25 @@ msgstr "すべてのグループを許可"
 #~ msgid "ruleEditor.hideDownloaded"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2087
+#: src/pages/DownloadsPage.tsx:2140
 msgid "ruleEditor.items"
 msgstr "件"
 
-#: src/components/RuleEditorModal.tsx:283
+#: src/components/RuleEditorModal.tsx:292
 msgid "ruleEditor.justNow"
 msgstr "たった今"
 
-#: src/pages/DownloadsPage.tsx:510
-#: src/pages/DownloadsPage.tsx:524
+#: src/pages/DownloadsPage.tsx:511
+#: src/pages/DownloadsPage.tsx:525
 msgid "ruleEditor.keywordMode"
 msgstr "キーワード"
 
-#: src/components/RuleEditorModal.tsx:365
-#: src/pages/DownloadsPage.tsx:1928
+#: src/components/RuleEditorModal.tsx:374
+#: src/pages/DownloadsPage.tsx:1981
 msgid "ruleEditor.linkedAnime"
 msgstr "紐付けアニメ"
 
-#: src/pages/DownloadsPage.tsx:2055
+#: src/pages/DownloadsPage.tsx:2108
 msgid "ruleEditor.loading"
 msgstr "読み込み中..."
 
@@ -2548,7 +2554,7 @@ msgstr "読み込み中..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:522
+#: src/components/RuleEditorModal.tsx:531
 msgid "ruleEditor.newOnly"
 msgstr "新着のみ"
 
@@ -2556,75 +2562,75 @@ msgstr "新着のみ"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:465
-#: src/pages/DownloadsPage.tsx:2024
+#: src/components/RuleEditorModal.tsx:474
+#: src/pages/DownloadsPage.tsx:2077
 msgid "ruleEditor.noLibrary"
 msgstr "ライブラリなし"
 
-#: src/components/RuleEditorModal.tsx:725
+#: src/components/RuleEditorModal.tsx:760
 msgid "ruleEditor.noPreviewItems"
 msgstr "現在のフィルターに一致する項目がありません"
 
-#: src/components/RuleEditorModal.tsx:662
-#: src/pages/DownloadsPage.tsx:2056
-#: src/pages/DownloadsPage.tsx:2084
+#: src/components/RuleEditorModal.tsx:697
+#: src/pages/DownloadsPage.tsx:2109
+#: src/pages/DownloadsPage.tsx:2137
 msgid "ruleEditor.preview"
 msgstr "プレビュー"
 
-#: src/components/RuleEditorModal.tsx:527
+#: src/components/RuleEditorModal.tsx:536
 msgid "ruleEditor.range"
 msgstr "範囲"
 
-#: src/components/RuleEditorModal.tsx:678
+#: src/components/RuleEditorModal.tsx:713
 msgid "ruleEditor.refreshPreview"
 msgstr "更新"
 
-#: src/components/RuleEditorModal.tsx:551
+#: src/components/RuleEditorModal.tsx:560
 msgid "ruleEditor.releaseGroups"
 msgstr "字幕グループ"
 
-#: src/components/RuleEditorModal.tsx:601
+#: src/components/RuleEditorModal.tsx:636
 msgid "ruleEditor.resolution"
 msgstr "解像度"
 
-#: src/components/RuleEditorModal.tsx:322
+#: src/components/RuleEditorModal.tsx:331
 msgid "ruleEditor.rssUrl"
 msgstr "RSSフィードURL"
 
-#: src/pages/DownloadsPage.tsx:510
-#: src/pages/DownloadsPage.tsx:535
+#: src/pages/DownloadsPage.tsx:511
+#: src/pages/DownloadsPage.tsx:536
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
-#: src/components/RuleEditorModal.tsx:354
-#: src/pages/DownloadsPage.tsx:2000
+#: src/components/RuleEditorModal.tsx:363
+#: src/pages/DownloadsPage.tsx:2053
 msgid "ruleEditor.ruleName"
 msgstr "ルール名"
 
-#: src/components/RuleEditorModal.tsx:306
-#: src/components/RuleEditorModal.tsx:358
-#: src/pages/DownloadsPage.tsx:2004
+#: src/components/RuleEditorModal.tsx:315
+#: src/components/RuleEditorModal.tsx:367
+#: src/pages/DownloadsPage.tsx:2057
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "例：アニメ名 シーズン1"
 
-#: src/components/RuleEditorModal.tsx:652
-#: src/pages/DownloadsPage.tsx:2067
+#: src/components/RuleEditorModal.tsx:687
+#: src/pages/DownloadsPage.tsx:2120
 msgid "ruleEditor.save"
 msgstr "保存"
 
-#: src/components/RuleEditorModal.tsx:196
-#: src/components/RuleEditorModal.tsx:231
-#: src/pages/DownloadsPage.tsx:1906
+#: src/components/RuleEditorModal.tsx:205
+#: src/components/RuleEditorModal.tsx:240
+#: src/pages/DownloadsPage.tsx:1959
 msgid "ruleEditor.saved"
 msgstr "ルールを更新しました"
 
-#: src/components/RuleEditorModal.tsx:651
-#: src/pages/DownloadsPage.tsx:2066
+#: src/components/RuleEditorModal.tsx:686
+#: src/pages/DownloadsPage.tsx:2119
 msgid "ruleEditor.saving"
 msgstr "保存中..."
 
-#: src/components/RuleEditorModal.tsx:402
-#: src/pages/DownloadsPage.tsx:1954
+#: src/components/RuleEditorModal.tsx:411
+#: src/pages/DownloadsPage.tsx:2007
 msgid "ruleEditor.searchAnime"
 msgstr "アニメを検索して紐付け..."
 
@@ -2636,7 +2642,7 @@ msgstr "アニメを検索して紐付け..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:487
+#: src/components/RuleEditorModal.tsx:496
 msgid "ruleEditor.titleMatch"
 msgstr "タイトルマッチ"
 
@@ -3011,7 +3017,7 @@ msgstr "内蔵"
 msgid "settings.download.builtinDesc"
 msgstr "内蔵ダウンロードエンジンを使用"
 
-#: src/pages/DownloadsPage.tsx:369
+#: src/pages/DownloadsPage.tsx:370
 #: src/pages/settings/DownloadPanel.tsx:31
 msgid "settings.download.disconnected"
 msgstr "未接続"
