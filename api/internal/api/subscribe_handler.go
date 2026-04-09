@@ -235,8 +235,16 @@ func (h *handler) refreshNewSubscription(feed store.RssFeed, rule store.Download
 			continue
 		}
 
+		// Resolve save dir from library path (authoritative) with rule fallback
+		saveDir := rule.SaveDir
+		if rule.LibraryID.Valid {
+			if lib, libErr := h.queries.GetLibrary(ctx, rule.LibraryID.String); libErr == nil {
+				saveDir = lib.Path
+			}
+		}
+
 		gid, err := h.downloader.Add(ctx, item.Link, downloader.AddOptions{
-			SaveDir: rule.SaveDir,
+			SaveDir: saveDir,
 			Name:    item.Title,
 		})
 		if err != nil {
@@ -250,7 +258,7 @@ func (h *handler) refreshNewSubscription(feed store.RssFeed, rule store.Download
 			Url:       item.Link,
 			Name:      item.Title,
 			Status:    "active",
-			SaveDir:   rule.SaveDir,
+			SaveDir:   saveDir,
 			RuleID:    sql.NullString{String: rule.ID, Valid: true},
 			BangumiID: rule.BangumiID,
 			LibraryID: rule.LibraryID,
