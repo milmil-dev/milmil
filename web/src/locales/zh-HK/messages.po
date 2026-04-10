@@ -2152,7 +2152,7 @@ msgstr "連接到 WebDAV 伺服器"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:175
+#: src/routes/__root.tsx:176
 msgid "match.completed"
 msgstr "匹配完成"
 
@@ -2208,7 +2208,7 @@ msgstr "時刻表"
 
 #: src/components/AppSidebar.tsx:27
 #: src/components/AppSidebar.tsx:228
-#: src/pages/SearchPage.tsx:130
+#: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "搜尋"
 
@@ -2229,76 +2229,127 @@ msgstr "設定"
 #~ msgid "nav.trending"
 #~ msgstr "熱門"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:339
+#: src/pages/settings/NotificationSettingsPanel.tsx:468
+msgid "notifications.bot.allowedChatIds"
+msgstr "允許嘅聊天 ID"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:478
+msgid "notifications.bot.allowedChatIdsHelp"
+msgstr "用逗號分隔。留空則允許任何聊天。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:583
+msgid "notifications.bot.allowedGuildIds"
+msgstr "允許嘅伺服器 ID"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:593
+msgid "notifications.bot.allowedGuildIdsHelp"
+msgstr "用逗號分隔。留空則允許任何伺服器。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:571
+msgid "notifications.bot.applicationId"
+msgstr "應用程式 ID"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:422
+#: src/pages/settings/NotificationSettingsPanel.tsx:540
+msgid "notifications.bot.botToken"
+msgstr "機械人權杖"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:520
+msgid "notifications.bot.discord"
+msgstr "Discord 機械人"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:402
+msgid "notifications.bot.telegram"
+msgstr "Telegram 機械人"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:453
+msgid "notifications.bot.webhookUrl"
+msgstr "Webhook URL"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:463
+msgid "notifications.bot.webhookUrlHelp"
+msgstr "可選。留空則使用長輪詢。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:888
+msgid "notifications.botCommands"
+msgstr "機械人指令"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:891
+msgid "notifications.botCommands.desc"
+msgstr "喺 Telegram 或 Discord 啟用互動機械人指令"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:345
+#: src/pages/settings/NotificationSettingsPanel.tsx:438
+#: src/pages/settings/NotificationSettingsPanel.tsx:556
 msgid "notifications.change"
 msgstr "更改"
 
-#: src/pages/NotificationsPage.tsx:146
+#: src/pages/NotificationsPage.tsx:155
 msgid "notifications.clearAll"
 msgstr "清除全部"
 
-#: src/pages/NotificationsPage.tsx:75
+#: src/pages/NotificationsPage.tsx:84
 msgid "notifications.earlier"
 msgstr "更早"
 
 #: src/components/NotificationBell.tsx:152
-#: src/pages/NotificationsPage.tsx:240
+#: src/pages/NotificationsPage.tsx:249
 msgid "notifications.empty"
 msgstr "暫無通知"
 
-#: src/pages/NotificationsPage.tsx:243
+#: src/pages/NotificationsPage.tsx:252
 msgid "notifications.emptyHint"
 msgstr "下載完成或發現新劇集時，通知會顯示在這裡。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:386
+#: src/pages/settings/NotificationSettingsPanel.tsx:629
 msgid "notifications.enableProviderAbove"
 msgstr "啟用上方的提供者以設定事件路由"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:404
+#: src/pages/settings/NotificationSettingsPanel.tsx:647
 msgid "notifications.event"
 msgstr "事件"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:44
+#: src/pages/settings/NotificationSettingsPanel.tsx:46
 msgid "notifications.event.downloadCompleted"
 msgstr "下載完成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:45
+#: src/pages/settings/NotificationSettingsPanel.tsx:47
 msgid "notifications.event.downloadCompleted.desc"
 msgstr "下載成功完成時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:48
+#: src/pages/settings/NotificationSettingsPanel.tsx:50
 msgid "notifications.event.downloadFailed"
 msgstr "下載失敗"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:49
+#: src/pages/settings/NotificationSettingsPanel.tsx:51
 msgid "notifications.event.downloadFailed.desc"
 msgstr "下載遇到錯誤時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:40
+#: src/pages/settings/NotificationSettingsPanel.tsx:42
 msgid "notifications.event.downloadStarted"
 msgstr "下載開始"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:41
+#: src/pages/settings/NotificationSettingsPanel.tsx:43
 msgid "notifications.event.downloadStarted.desc"
 msgstr "當RSS規則觸發新下載時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:52
+#: src/pages/settings/NotificationSettingsPanel.tsx:54
 msgid "notifications.event.libraryScanComplete"
 msgstr "媒體庫掃描完成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:53
+#: src/pages/settings/NotificationSettingsPanel.tsx:55
 msgid "notifications.event.libraryScanComplete.desc"
 msgstr "媒體庫掃描處理完成時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:56
+#: src/pages/settings/NotificationSettingsPanel.tsx:58
 msgid "notifications.event.systemError"
 msgstr "系統錯誤"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:57
+#: src/pages/settings/NotificationSettingsPanel.tsx:59
 msgid "notifications.event.systemError.desc"
 msgstr "背景工作意外失敗時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:395
+#: src/pages/settings/NotificationSettingsPanel.tsx:638
 msgid "notifications.eventRouting"
 msgstr "事件路由"
 
@@ -2321,67 +2372,89 @@ msgstr "媒體庫"
 msgid "notifications.filter.system"
 msgstr "系統"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:568
-#: src/pages/settings/NotificationSettingsPanel.tsx:583
+#: src/pages/settings/NotificationSettingsPanel.tsx:839
+#: src/pages/settings/NotificationSettingsPanel.tsx:854
 msgid "notifications.intro"
 msgstr "當下載完成或出現問題時，透過Discord、Telegram或Webhook接收通知。"
 
-#: src/pages/NotificationsPage.tsx:223
+#: src/pages/NotificationsPage.tsx:232
 msgid "notifications.loadMore"
 msgstr "載入更多"
 
 #: src/components/NotificationBell.tsx:127
-#: src/pages/NotificationsPage.tsx:138
+#: src/pages/NotificationsPage.tsx:147
 msgid "notifications.markAllRead"
 msgstr "全部已讀"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:87
+#: src/pages/settings/NotificationSettingsPanel.tsx:93
 msgid "notifications.providerStatus.error"
 msgstr "錯誤"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:86
+#: src/pages/settings/NotificationSettingsPanel.tsx:92
 msgid "notifications.providerStatus.ok"
 msgstr "已連接"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:91
+#: src/pages/settings/NotificationSettingsPanel.tsx:97
 msgid "notifications.providerStatus.unconfigured"
 msgstr "未設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:328
+#: src/pages/settings/NotificationSettingsPanel.tsx:334
+#: src/pages/settings/NotificationSettingsPanel.tsx:427
+#: src/pages/settings/NotificationSettingsPanel.tsx:545
 msgid "notifications.secretIsSet"
 msgstr "密鑰已設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:323
+#: src/pages/settings/NotificationSettingsPanel.tsx:329
 msgid "notifications.secretPlaceholder"
 msgstr "可選簽名密鑰"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:138
+#: src/pages/settings/NotificationSettingsPanel.tsx:144
 msgid "notifications.test"
 msgstr "測試"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:151
+#: src/pages/settings/NotificationSettingsPanel.tsx:157
 msgid "notifications.testFailed"
 msgstr "測試失敗"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:150
+#: src/pages/settings/NotificationSettingsPanel.tsx:156
 msgid "notifications.testSuccess"
 msgstr "已發送！"
 
 #: src/components/NotificationBell.tsx:119
-#: src/pages/NotificationsPage.tsx:88
-#: src/pages/NotificationsPage.tsx:129
+#: src/pages/NotificationsPage.tsx:97
+#: src/pages/NotificationsPage.tsx:138
 msgid "notifications.title"
 msgstr "通知"
 
-#: src/pages/NotificationsPage.tsx:73
+#: src/pages/NotificationsPage.tsx:82
 msgid "notifications.today"
 msgstr "今天"
+
+#: src/pages/NotificationsPage.tsx:73
+msgid "notifications.type.downloadComplete"
+msgstr "下載完成"
+
+#: src/pages/NotificationsPage.tsx:74
+msgid "notifications.type.downloadFailed"
+msgstr "下載失敗"
+
+#: src/pages/NotificationsPage.tsx:75
+msgid "notifications.type.libraryScanComplete"
+msgstr "媒體庫掃描完成"
+
+#: src/pages/NotificationsPage.tsx:72
+msgid "notifications.type.newEpisode"
+msgstr "新集數"
+
+#: src/pages/NotificationsPage.tsx:76
+msgid "notifications.type.systemError"
+msgstr "系統錯誤"
 
 #: src/components/NotificationBell.tsx:164
 msgid "notifications.viewAll"
 msgstr "查看全部"
 
-#: src/pages/NotificationsPage.tsx:74
+#: src/pages/NotificationsPage.tsx:83
 msgid "notifications.yesterday"
 msgstr "昨天"
 
@@ -2644,7 +2717,7 @@ msgstr "搜尋動畫以關聯..."
 msgid "ruleEditor.titleMatch"
 msgstr "標題匹配"
 
-#: src/routes/__root.tsx:171
+#: src/routes/__root.tsx:172
 msgid "scan.completed"
 msgstr "掃描完成"
 
@@ -2751,11 +2824,11 @@ msgstr "今天"
 msgid "schedule.totalShows"
 msgstr "部本週節目"
 
-#: src/pages/SearchPage.tsx:515
+#: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
 msgstr "瀏覽結果"
 
-#: src/pages/SearchPage.tsx:535
+#: src/pages/SearchPage.tsx:553
 msgid "search.emptyHint"
 msgstr "搜尋你鍾意嘅動畫"
 
@@ -2763,11 +2836,11 @@ msgstr "搜尋你鍾意嘅動畫"
 msgid "search.filter.addCustomTag"
 msgstr "新增標籤"
 
-#: src/pages/SearchPage.tsx:582
+#: src/pages/SearchPage.tsx:600
 msgid "search.filter.applied"
 msgstr "目前篩選條件"
 
-#: src/pages/SearchPage.tsx:453
+#: src/pages/SearchPage.tsx:471
 msgid "search.filter.clear"
 msgstr "清除篩選"
 
@@ -2775,19 +2848,19 @@ msgstr "清除篩選"
 msgid "search.filter.noTags"
 msgstr "沒有符合的標籤"
 
-#: src/pages/SearchPage.tsx:410
+#: src/pages/SearchPage.tsx:414
 msgid "search.filter.rating"
 msgstr "評分"
 
-#: src/pages/SearchPage.tsx:390
+#: src/pages/SearchPage.tsx:394
 msgid "search.filter.season"
 msgstr "季度"
 
-#: src/pages/SearchPage.tsx:350
+#: src/pages/SearchPage.tsx:354
 msgid "search.filter.sort"
 msgstr "排序"
 
-#: src/pages/SearchPage.tsx:430
+#: src/pages/SearchPage.tsx:434
 msgid "search.filter.status"
 msgstr "狀態"
 
@@ -2800,11 +2873,11 @@ msgstr "標籤"
 msgid "search.filter.tagSearch"
 msgstr "搜尋或新增標籤…"
 
-#: src/pages/SearchPage.tsx:370
+#: src/pages/SearchPage.tsx:374
 msgid "search.filter.year"
 msgstr "年份"
 
-#: src/pages/SearchPage.tsx:488
+#: src/pages/SearchPage.tsx:506
 msgid "search.inputPlaceholder"
 msgstr "搜尋動畫名稱或標籤…"
 
@@ -2820,8 +2893,8 @@ msgstr "載入更多"
 msgid "search.noResults"
 msgstr "搵唔到"
 
-#: src/pages/SearchPage.tsx:582
-#: src/pages/SearchPage.tsx:583
+#: src/pages/SearchPage.tsx:600
+#: src/pages/SearchPage.tsx:601
 msgid "search.noResultsFor"
 msgstr "搵唔到相關結果："
 
@@ -2842,7 +2915,7 @@ msgid "search.rating.9plus"
 msgstr "9分以上"
 
 #. placeholder {0}: urlSeason.toLowerCase()
-#: src/pages/SearchPage.tsx:519
+#: src/pages/SearchPage.tsx:537
 msgid "search.season.{0}"
 msgstr "{0}"
 
@@ -3166,8 +3239,8 @@ msgstr "一般"
 msgid "settings.nav.integrations"
 msgstr "整合"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:565
-#: src/pages/settings/NotificationSettingsPanel.tsx:580
+#: src/pages/settings/NotificationSettingsPanel.tsx:836
+#: src/pages/settings/NotificationSettingsPanel.tsx:851
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3354,7 +3427,7 @@ msgstr "飽和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:622
+#: src/pages/settings/NotificationSettingsPanel.tsx:913
 msgid "settings.save"
 msgstr "儲存"
 
@@ -3381,7 +3454,7 @@ msgstr "儲存唔到"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:621
+#: src/pages/settings/NotificationSettingsPanel.tsx:912
 msgid "settings.saving"
 msgstr "儲存緊…"
 

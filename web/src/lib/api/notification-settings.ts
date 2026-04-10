@@ -23,9 +23,29 @@ export interface ProvidersConfig {
   webhook: WebhookConfig;
 }
 
+export interface TelegramBotConfig {
+  enabled: boolean;
+  bot_token: string;
+  webhook_url: string;
+  allowed_chat_ids: number[];
+}
+
+export interface DiscordBotConfig {
+  enabled: boolean;
+  bot_token: string;
+  application_id: string;
+  allowed_guild_ids: string[];
+}
+
+export interface BotConfig {
+  telegram: TelegramBotConfig;
+  discord: DiscordBotConfig;
+}
+
 export interface NotificationSettings {
   providers: ProvidersConfig;
   events: Record<string, string[]>;
+  bot: BotConfig;
 }
 
 export interface ProviderStatus {
