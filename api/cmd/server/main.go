@@ -18,6 +18,10 @@ import (
 	slogzerolog "github.com/samber/slog-zerolog/v2"
 
 	"github.com/milmil/api/internal/api"
+	"github.com/milmil/api/internal/bot"
+	"github.com/milmil/api/internal/bot/commands"
+	dcadapter "github.com/milmil/api/internal/bot/discord"
+	tgadapter "github.com/milmil/api/internal/bot/telegram"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
@@ -233,7 +237,7 @@ func main() {
 	// HTTP server
 	step = time.Now()
 	slog.Debug("boot: initializing router")
-	notifier := notification.NewService(store.New(database), wsHub)
+	notifier := notification.NewService(store.New(database), wsHub, metadataSvc)
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
@@ -243,6 +247,45 @@ func main() {
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")
+
+	// Bot engine
+	botRouter := bot.NewRouter()
+	botSvc := &commands.Services{
+		Queries:    store.New(database),
+		Metadata:   metadataSvc,
+		Downloader: dlEngine,
+	}
+
+	// Register commands
+	botRouter.RegisterCommand("start", commands.StartHandler(botSvc))
+	botRouter.RegisterCommand("schedule", commands.ScheduleHandler(botSvc))
+	botRouter.RegisterCommand("search", commands.SearchHandler(botSvc))
+	botRouter.RegisterCommand("detail", commands.DetailHandler(botSvc))
+	botRouter.RegisterCommand("downloads", commands.DownloadsHandler(botSvc))
+	botRouter.RegisterCommand("subscribe", commands.SubscribeHandler(botSvc))
+	botRouter.RegisterCommand("status", commands.StatusHandler(botSvc))
+	botRouter.RegisterCommand("mylist", commands.MyListHandler(botSvc))
+	botRouter.RegisterCommand("continue", commands.ContinueHandler(botSvc))
+
+	// Register callbacks (one handler per prefix)
+	botRouter.RegisterCallback("detail", commands.DetailCallback(botSvc))
+	botRouter.RegisterCallback("sub_pick", commands.SubscribePickCallback(botSvc))
+	botRouter.RegisterCallback("sub_do", commands.SubscribeDoCallback(botSvc))
+	botRouter.RegisterCallback("dl_pause", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("dl_resume", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("dl_cancel", commands.DownloadControlCallback(botSvc))
+
+	botEngine := bot.NewEngine(botRouter)
+	notifCfg, _ := notification.LoadNotificationConfig(context.Background(), store.New(database))
+	botEngine.Start(context.Background(), notifCfg,
+		func(cfg notification.TelegramBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
+			return tgadapter.New(cfg, r)
+		},
+		func(cfg notification.DiscordBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
+			return dcadapter.New(cfg, r)
+		},
+	)
+	slog.Info("boot: bot engine started")
 
 	slog.Info("boot: ready", "total", time.Since(bootStart))
 
@@ -264,10 +307,14 @@ func main() {
 		done := make(chan struct{})
 		go func() {
 			var wg sync.WaitGroup
-			wg.Add(3)
+			wg.Add(4)
 			go func() {
 				defer wg.Done()
 				sched.Stop()
+			}()
+			go func() {
+				defer wg.Done()
+				botEngine.Stop()
 			}()
 			go func() {
 				defer wg.Done()

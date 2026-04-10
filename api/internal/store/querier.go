@@ -51,6 +51,7 @@ type Querier interface {
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
+	GetDownloadByID(ctx context.Context, id string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
 	GetDownloadRule(ctx context.Context, id string) (DownloadRule, error)
 	GetEpisode(ctx context.Context, id string) (Episode, error)

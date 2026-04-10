@@ -6,20 +6,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/ws"
 )
 
-type Service struct {
-	queries *store.Queries
-	wsHub   *ws.Hub
+// MetadataLookup is the subset of metadata.Service needed for enrichment.
+type MetadataLookup interface {
+	GetAnimeDetail(ctx context.Context, bangumiID int) (*metadata.AnimeDetail, error)
 }
 
-func NewService(queries *store.Queries, wsHub *ws.Hub) *Service {
-	return &Service{queries: queries, wsHub: wsHub}
+type Service struct {
+	queries  *store.Queries
+	wsHub    *ws.Hub
+	metadata MetadataLookup
+}
+
+func NewService(queries *store.Queries, wsHub *ws.Hub, lookups ...MetadataLookup) *Service {
+	s := &Service{queries: queries, wsHub: wsHub}
+	if len(lookups) > 0 {
+		s.metadata = lookups[0]
+	}
+	return s
 }
 
 func (s *Service) Send(ctx context.Context, notifType, title, message, severity string, metadata map[string]any) {
@@ -103,6 +116,45 @@ func (s *Service) dispatchExternal(notifType, title, message, severity string, m
 	providerNames := cfg.EnabledProvidersForEvent(notifType)
 	if len(providerNames) == 0 {
 		return
+	}
+
+	// Enrich download events with anime metadata when possible.
+	if metadata == nil {
+		metadata = make(map[string]any)
+	}
+	if strings.HasPrefix(notifType, "download.") && s.metadata != nil {
+		if rawID, ok := metadata["download_id"]; ok {
+			downloadID := fmt.Sprintf("%v", rawID)
+			if downloadID != "" {
+				dl, err := s.queries.GetDownloadByID(ctx, downloadID)
+				if err == nil {
+					if ep := rss.ParseEpisode(dl.Name); ep != "" {
+						metadata["episode"] = ep
+					}
+					if sg := rss.ParseSubgroup(dl.Name); sg != "" {
+						metadata["subgroup"] = sg
+					}
+					if dl.BangumiID.Valid {
+						if detail, derr := s.metadata.GetAnimeDetail(ctx, int(dl.BangumiID.Int64)); derr == nil && detail != nil {
+							metadata["anime_name"] = detail.Title
+							metadata["cover_image"] = detail.CoverImage
+							if name, _ := metadata["anime_name"].(string); name != "" {
+								if ep, _ := metadata["episode"].(string); ep != "" {
+									title = fmt.Sprintf("%s - %s", name, ep)
+								} else {
+									title = name
+								}
+								message = fmt.Sprintf("%s: %s", title, dl.Status)
+							}
+						} else if derr != nil {
+							slog.Debug("notification: enrich metadata lookup failed", "err", derr)
+						}
+					}
+				} else {
+					slog.Debug("notification: enrich download lookup failed", "id", downloadID, "err", err)
+				}
+			}
+		}
 	}
 
 	strMeta := make(map[string]string, len(metadata))

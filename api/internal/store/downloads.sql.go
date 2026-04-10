@@ -101,6 +101,32 @@ func (q *Queries) GetDownloadByGID(ctx context.Context, gid string) (Download, e
 	return i, err
 }
 
+const getDownloadByID = `-- name: GetDownloadByID :one
+SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE id = ? LIMIT 1
+`
+
+func (q *Queries) GetDownloadByID(ctx context.Context, id string) (Download, error) {
+	row := q.db.QueryRowContext(ctx, getDownloadByID, id)
+	var i Download
+	err := row.Scan(
+		&i.ID,
+		&i.Gid,
+		&i.Url,
+		&i.Name,
+		&i.Status,
+		&i.TotalBytes,
+		&i.CompletedBytes,
+		&i.SpeedBytes,
+		&i.SaveDir,
+		&i.RuleID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.BangumiID,
+		&i.LibraryID,
+	)
+	return i, err
+}
+
 const getDownloadByURL = `-- name: GetDownloadByURL :one
 SELECT id, gid, url, name, status, total_bytes, completed_bytes, speed_bytes, save_dir, rule_id, created_at, updated_at, bangumi_id, library_id FROM downloads WHERE url = ? LIMIT 1
 `
