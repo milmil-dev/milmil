@@ -41,6 +41,29 @@ type ProvidersConfig struct {
 type NotificationConfig struct {
 	Providers ProvidersConfig     `json:"providers"`
 	Events    map[string][]string `json:"events"`
+	Bot       BotConfig           `json:"bot"`
+}
+
+// TelegramBotConfig holds interactive Telegram bot settings.
+type TelegramBotConfig struct {
+	Enabled        bool    `json:"enabled"`
+	BotToken       string  `json:"bot_token"`
+	WebhookURL     string  `json:"webhook_url"`
+	AllowedChatIDs []int64 `json:"allowed_chat_ids"`
+}
+
+// DiscordBotConfig holds interactive Discord bot settings.
+type DiscordBotConfig struct {
+	Enabled         bool     `json:"enabled"`
+	BotToken        string   `json:"bot_token"`
+	ApplicationID   string   `json:"application_id"`
+	AllowedGuildIDs []string `json:"allowed_guild_ids"`
+}
+
+// BotConfig groups all interactive bot settings.
+type BotConfig struct {
+	Telegram TelegramBotConfig `json:"telegram"`
+	Discord  DiscordBotConfig  `json:"discord"`
 }
 
 // ProvidersForEvent returns the provider names subscribed to eventType.
