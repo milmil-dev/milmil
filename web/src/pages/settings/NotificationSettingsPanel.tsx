@@ -377,10 +377,12 @@ function TelegramBotCard({
   const [showTokenField, setShowTokenField] = useState(
     !config.bot_token || !config.bot_token.includes('••••'),
   );
-  const [chatIdsRaw, setChatIdsRaw] = useState(config.allowed_chat_ids.join(', '));
+  const [chatIdsRaw, setChatIdsRaw] = useState(
+    (config.allowed_chat_ids ?? []).join(', '),
+  );
 
   useEffect(() => {
-    setChatIdsRaw(config.allowed_chat_ids.join(', '));
+    setChatIdsRaw((config.allowed_chat_ids ?? []).join(', '));
   }, [config.allowed_chat_ids]);
 
   const handleChatIdsChange = (value: string) => {
@@ -497,10 +499,12 @@ function DiscordBotCard({
   const [showTokenField, setShowTokenField] = useState(
     !config.bot_token || !config.bot_token.includes('••••'),
   );
-  const [guildIdsRaw, setGuildIdsRaw] = useState(config.allowed_guild_ids.join(', '));
+  const [guildIdsRaw, setGuildIdsRaw] = useState(
+    (config.allowed_guild_ids ?? []).join(', '),
+  );
 
   useEffect(() => {
-    setGuildIdsRaw(config.allowed_guild_ids.join(', '));
+    setGuildIdsRaw((config.allowed_guild_ids ?? []).join(', '));
   }, [config.allowed_guild_ids]);
 
   const handleGuildIdsChange = (value: string) => {
@@ -762,12 +766,22 @@ export function NotificationSettingsPanel() {
   useEffect(() => {
     if (serverSettings && !isDirty) {
       const defaults = defaultSettings();
+      const srvTelegram = serverSettings.bot?.telegram ?? {};
+      const srvDiscord = serverSettings.bot?.discord ?? {};
       setLocal({
         providers: { ...defaults.providers, ...serverSettings.providers },
         events: serverSettings.events ?? {},
         bot: {
-          telegram: { ...defaults.bot.telegram, ...(serverSettings.bot?.telegram ?? {}) },
-          discord: { ...defaults.bot.discord, ...(serverSettings.bot?.discord ?? {}) },
+          telegram: {
+            ...defaults.bot.telegram,
+            ...srvTelegram,
+            allowed_chat_ids: srvTelegram.allowed_chat_ids ?? [],
+          },
+          discord: {
+            ...defaults.bot.discord,
+            ...srvDiscord,
+            allowed_guild_ids: srvDiscord.allowed_guild_ids ?? [],
+          },
         },
       });
     }
