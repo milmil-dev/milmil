@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Loading03Icon } from '@hugeicons/core-free-icons';
 
@@ -854,6 +854,7 @@ export function NotificationSettingsPanel() {
 
   const [local, setLocal] = useState<NotificationSettings | null>(null);
   const [isDirty, setIsDirty] = useState(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync server data into local state when it arrives
   useEffect(() => {
@@ -888,6 +889,18 @@ export function NotificationSettingsPanel() {
       queryClient.invalidateQueries({ queryKey: notificationSettingsKeys.status() });
     },
   });
+
+  // Auto-save: debounce 800ms after any change
+  useEffect(() => {
+    if (!isDirty || !local) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      saveMutation.mutate(local);
+    }, 800);
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [local, isDirty]);
 
   const settings = local ?? defaultSettings();
 
@@ -1003,18 +1016,12 @@ export function NotificationSettingsPanel() {
         onChange={updateEvents}
       />
 
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button
-          type="button"
-          disabled={!isDirty || saveMutation.isPending}
-          onClick={() => saveMutation.mutate(settings)}
-        >
-          {saveMutation.isPending
-            ? i18n._(msg`settings.saving`)
-            : i18n._(msg`settings.save`)}
-        </Button>
-      </div>
+      {/* Auto-save indicator */}
+      {saveMutation.isPending && (
+        <div className="flex justify-end">
+          <span className="text-[11px] text-white/20">{i18n._(msg`settings.saving`)}</span>
+        </div>
+      )}
     </div>
   );
 }
