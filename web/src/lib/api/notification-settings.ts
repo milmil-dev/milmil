@@ -80,6 +80,7 @@ export const NOTIFICATION_EVENTS = [
   { id: 'download.failed', labelKey: 'notifications.event.downloadFailed' },
   { id: 'library.scan_complete', labelKey: 'notifications.event.libraryScanComplete' },
   { id: 'system.error', labelKey: 'notifications.event.systemError' },
+  { id: 'auth.login', labelKey: 'notifications.event.authLogin' },
 ] as const;
 
 export const PROVIDERS = ['discord', 'telegram', 'webhook'] as const;

@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/tmdb"
@@ -28,6 +29,7 @@ type Scheduler struct {
 	cache      cache.Cache
 	notifier   *notification.Service
 	wsHub      *ws.Hub
+	botEngine  *bot.Engine
 	cancel     context.CancelFunc
 }
 
@@ -42,6 +44,7 @@ func NewScheduler(
 	cacheClient cache.Cache,
 	notifier *notification.Service,
 	wsHub *ws.Hub,
+	botEngine *bot.Engine,
 ) *Scheduler {
 	return &Scheduler{
 		queries:    queries,
@@ -53,6 +56,7 @@ func NewScheduler(
 		cache:      cacheClient,
 		notifier:   notifier,
 		wsHub:      wsHub,
+		botEngine:  botEngine,
 	}
 }
 
@@ -90,6 +94,21 @@ func (s *Scheduler) Start() {
 		w := &NotificationDeliveryWorker{queries: s.queries}
 		w.Run(ctx)
 	})
+
+	// Bot report — check every 60 seconds if a report is due
+	if s.botEngine != nil {
+		reportWorker := NewBotReportWorker(s.queries, func(resp *bot.BotResponse) {
+			cfg, err := notification.LoadNotificationConfig(context.Background(), s.queries)
+			if err != nil {
+				slog.Error("bot_report: load config for broadcast", "err", err)
+				return
+			}
+			s.botEngine.BroadcastToAll(cfg, resp)
+		})
+		go s.runTicker(ctx, "bot_report", 60*time.Second, false, func(ctx context.Context) {
+			reportWorker.Run(ctx)
+		})
+	}
 
 	// Notification cleanup — every 24 hours
 	go s.runTicker(ctx, "notification_cleanup", 24*time.Hour, false, func(ctx context.Context) {

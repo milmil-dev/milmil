@@ -46,6 +46,7 @@ func New(cfg notification.TelegramBotConfig, router *bot.Router) (*Adapter, erro
 		{Command: "status", Description: "System overview"},
 		{Command: "mylist", Description: "Your collection"},
 		{Command: "continue", Description: "Continue watching"},
+		{Command: "id", Description: "Show your chat ID"},
 	}
 	cmdCfg := tgbotapi.NewSetMyCommands(commands...)
 	if _, err := api.Request(cmdCfg); err != nil {
@@ -175,6 +176,14 @@ func (a *Adapter) handleCallback(ctx context.Context, cq *tgbotapi.CallbackQuery
 			slog.Error("telegram: fallback send failed", "err", err)
 		}
 	}
+}
+
+// SendToChat sends a BotResponse to a specific chat ID. Used for proactive
+// messages like scheduled reports.
+func (a *Adapter) SendToChat(chatID int64, resp *bot.BotResponse) error {
+	out := RenderMessage(chatID, resp)
+	_, err := a.api.Send(out)
+	return err
 }
 
 func (a *Adapter) isAllowed(chatID int64) bool {

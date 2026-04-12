@@ -3,7 +3,9 @@ package api
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -120,6 +122,9 @@ func (h *handler) handleAuthLogin(c echo.Context) error {
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
+
+	h.sendLoginNotification(c, user.Username)
+
 	return c.JSON(http.StatusOK, authLoginResponse{
 		Token: token,
 		User:  authUserDTO{ID: user.ID, Username: user.Username},
@@ -154,6 +159,9 @@ func (h *handler) handleAuthLogin2FA(c echo.Context) error {
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
+
+	h.sendLoginNotification(c, user.Username)
+
 	return c.JSON(http.StatusOK, authLoginResponse{
 		Token: token,
 		User:  authUserDTO{ID: user.ID, Username: user.Username},
@@ -178,6 +186,18 @@ func (h *handler) handleAuthMe(c echo.Context) error {
 type changePasswordRequest struct {
 	CurrentPassword string `json:"current_password"`
 	NewPassword     string `json:"new_password"`
+}
+
+// sendLoginNotification fires an auth.login notification via the notification service.
+func (h *handler) sendLoginNotification(c echo.Context, username string) {
+	h.notifier.Send(c.Request().Context(), "auth.login", "Login Alert",
+		fmt.Sprintf("Login from %s", c.RealIP()), "info",
+		map[string]any{
+			"ip":         c.RealIP(),
+			"user_agent": c.Request().UserAgent(),
+			"username":   username,
+			"time":       time.Now().Format("2006-01-02 15:04:05"),
+		})
 }
 
 func (h *handler) handleChangePassword(c echo.Context) error {

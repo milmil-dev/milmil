@@ -59,6 +59,10 @@ const EVENT_LABEL_KEYS: Record<string, { label: ReturnType<typeof msg>; desc: Re
     label: msg`notifications.event.systemError`,
     desc: msg`notifications.event.systemError.desc`,
   },
+  'auth.login': {
+    label: msg`notifications.event.authLogin`,
+    desc: msg`notifications.event.authLogin.desc`,
+  },
 };
 
 // ─── Default empty settings ─────────────────────────────────────────────────

@@ -50,6 +50,7 @@ type TelegramBotConfig struct {
 	BotToken       string  `json:"bot_token"`
 	WebhookURL     string  `json:"webhook_url"`
 	AllowedChatIDs []int64 `json:"allowed_chat_ids"`
+	ReportInterval string  `json:"report_interval"` // e.g. "24h", "12h"; empty = disabled
 }
 
 // DiscordBotConfig holds interactive Discord bot settings.
@@ -58,6 +59,7 @@ type DiscordBotConfig struct {
 	BotToken        string   `json:"bot_token"`
 	ApplicationID   string   `json:"application_id"`
 	AllowedGuildIDs []string `json:"allowed_guild_ids"`
+	ReportInterval  string   `json:"report_interval"` // e.g. "24h", "12h"; empty = disabled
 }
 
 // BotConfig groups all interactive bot settings.

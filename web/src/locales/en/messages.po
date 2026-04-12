@@ -2318,6 +2318,12 @@ msgid "notifications.event"
 msgstr "Event"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:47
+msgid "notifications.event.authLogin"
+msgstr "Login Alert"
+
+msgid "notifications.event.authLogin.desc"
+msgstr "When someone logs into the web panel"
+
 msgid "notifications.event.downloadCompleted"
 msgstr "Download Completed"
 

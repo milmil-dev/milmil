@@ -75,6 +75,24 @@ func (e *Engine) Start(ctx context.Context, cfg notification.NotificationConfig,
 	}
 }
 
+// MessageSender can push a BotResponse to a specific chat.
+type MessageSender interface {
+	SendToChat(chatID int64, resp *BotResponse) error
+}
+
+// BroadcastToAll sends a BotResponse to all configured bot channels.
+// Used by the report worker and other proactive notification features.
+func (e *Engine) BroadcastToAll(cfg notification.NotificationConfig, resp *BotResponse) {
+	if sender, ok := e.telegram.(MessageSender); ok && e.telegram != nil {
+		for _, chatID := range cfg.Bot.Telegram.AllowedChatIDs {
+			if err := sender.SendToChat(chatID, resp); err != nil {
+				slog.Error("bot: broadcast telegram failed", "chat_id", chatID, "err", err)
+			}
+		}
+	}
+	// Discord broadcast could be added here when the Discord adapter supports it.
+}
+
 // Stop shuts down all adapters.
 func (e *Engine) Stop() {
 	if e.cancel != nil {

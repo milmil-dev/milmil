@@ -241,13 +241,6 @@ func main() {
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
-	// Background job scheduler — goroutine-based tickers
-	sched := worker.NewScheduler(
-		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, wsHub,
-	)
-	sched.Start()
-	slog.Info("boot: scheduler started")
-
 	// Bot engine
 	botRouter := bot.NewRouter()
 	botSvc := &commands.Services{
@@ -266,6 +259,7 @@ func main() {
 	botRouter.RegisterCommand("status", commands.StatusHandler(botSvc))
 	botRouter.RegisterCommand("mylist", commands.MyListHandler(botSvc))
 	botRouter.RegisterCommand("continue", commands.ContinueHandler(botSvc))
+	botRouter.RegisterCommand("id", commands.IDHandler(botSvc))
 
 	// Register callbacks (one handler per prefix)
 	botRouter.RegisterCallback("detail", commands.DetailCallback(botSvc))
@@ -274,6 +268,8 @@ func main() {
 	botRouter.RegisterCallback("dl_pause", commands.DownloadControlCallback(botSvc))
 	botRouter.RegisterCallback("dl_resume", commands.DownloadControlCallback(botSvc))
 	botRouter.RegisterCallback("dl_cancel", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("menu", commands.MenuCallback(botSvc))
+	botRouter.RegisterCallback("cmd", commands.CmdCallback(botSvc, botRouter))
 
 	botEngine := bot.NewEngine(botRouter)
 	notifCfg, _ := notification.LoadNotificationConfig(context.Background(), store.New(database))
@@ -286,6 +282,13 @@ func main() {
 		},
 	)
 	slog.Info("boot: bot engine started")
+
+	// Background job scheduler — goroutine-based tickers
+	sched := worker.NewScheduler(
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, wsHub, botEngine,
+	)
+	sched.Start()
+	slog.Info("boot: scheduler started")
 
 	slog.Info("boot: ready", "total", time.Since(bootStart))
 

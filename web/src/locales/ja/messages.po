@@ -2315,6 +2315,12 @@ msgid "notifications.event"
 msgstr "イベント"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:47
+msgid "notifications.event.authLogin"
+msgstr "ログイン通知"
+
+msgid "notifications.event.authLogin.desc"
+msgstr "Webパネルにログインがあった時"
+
 msgid "notifications.event.downloadCompleted"
 msgstr "ダウンロード完了"
 
