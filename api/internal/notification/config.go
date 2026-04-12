@@ -51,6 +51,7 @@ type TelegramBotConfig struct {
 	WebhookURL     string  `json:"webhook_url"`
 	AllowedChatIDs []int64 `json:"allowed_chat_ids"`
 	ReportInterval string  `json:"report_interval"` // e.g. "24h", "12h"; empty = disabled
+	Language       string  `json:"language"`         // bot response language; empty = follow system
 }
 
 // DiscordBotConfig holds interactive Discord bot settings.

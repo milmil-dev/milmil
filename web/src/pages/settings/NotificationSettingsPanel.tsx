@@ -29,6 +29,15 @@ import {
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
+const BOT_LANGUAGES = [
+  { code: 'zh-HK', label: '粵語' },
+  { code: 'zh-TW', label: '繁體中文' },
+  { code: 'zh-CN', label: '简体中文' },
+  { code: 'en', label: 'English' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+];
+
 const PROVIDER_META: Record<
   ProviderName,
   { label: string; color: string; colorClass: string }
@@ -76,7 +85,7 @@ function defaultSettings(): NotificationSettings {
     },
     events: {},
     bot: {
-      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [] },
+      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [], report_interval: '', language: '' },
       discord: { enabled: false, bot_token: '', application_id: '', allowed_guild_ids: [] },
     },
   };
@@ -478,21 +487,43 @@ function TelegramCard({
             className="overflow-hidden"
           >
             <div className="mt-3 space-y-3 pl-3 border-l-2 border-white/[0.06]">
+              {/* Bot Language */}
               <Field>
-                <FieldLabel htmlFor="telegram-bot-webhook-url">
-                  {i18n._(msg`notifications.bot.webhookUrl`)}
+                <FieldLabel htmlFor="telegram-bot-lang">
+                  {i18n._(msg`notifications.bot.language`)}
                 </FieldLabel>
-                <Input
-                  id="telegram-bot-webhook-url"
-                  value={botConfig.webhook_url}
-                  onChange={(e) => onBotChange({ webhook_url: e.target.value })}
-                  placeholder="https://example.com/telegram/webhook"
-                  className={INPUT_CLASS}
-                />
-                <p className="mt-1 text-xs text-white/30">
-                  {i18n._(msg`notifications.bot.webhookUrlHelp`)}
-                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => onBotChange({ language: '' })}
+                    className={cn(
+                      'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                      !botConfig.language
+                        ? 'bg-white/[0.12] text-white'
+                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                    )}
+                  >
+                    {i18n._(msg`notifications.bot.language.system`)}
+                  </button>
+                  {BOT_LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      onClick={() => onBotChange({ language: lang.code })}
+                      className={cn(
+                        'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                        botConfig.language === lang.code
+                          ? 'bg-white/[0.12] text-white'
+                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      )}
+                    >
+                      {lang.label}
+                    </button>
+                  ))}
+                </div>
               </Field>
+
+              {/* Allowed Chat IDs */}
               <Field>
                 <FieldLabel htmlFor="telegram-bot-chat-ids">
                   {i18n._(msg`notifications.bot.allowedChatIds`)}
@@ -508,7 +539,32 @@ function TelegramCard({
                   {i18n._(msg`notifications.bot.allowedChatIdsHelp`)}
                 </p>
               </Field>
+
               <TestBotButton platform="telegram" />
+
+              {/* Advanced: Webhook URL (collapsed by default) */}
+              <details className="group">
+                <summary className="text-[11px] text-white/25 cursor-pointer hover:text-white/40 transition-colors select-none">
+                  {i18n._(msg`notifications.bot.advanced`)}
+                </summary>
+                <div className="mt-2 space-y-3">
+                  <Field>
+                    <FieldLabel htmlFor="telegram-bot-webhook-url">
+                      {i18n._(msg`notifications.bot.webhookUrl`)}
+                    </FieldLabel>
+                    <Input
+                      id="telegram-bot-webhook-url"
+                      value={botConfig.webhook_url}
+                      onChange={(e) => onBotChange({ webhook_url: e.target.value })}
+                      placeholder="https://your-server.com/api/v1/bot/telegram/webhook"
+                      className={INPUT_CLASS}
+                    />
+                    <p className="mt-1 text-xs text-white/20">
+                      {i18n._(msg`notifications.bot.webhookUrlHelp`)}
+                    </p>
+                  </Field>
+                </div>
+              </details>
             </div>
           </motion.div>
         )}

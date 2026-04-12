@@ -28,6 +28,8 @@ export interface TelegramBotConfig {
   bot_token: string;
   webhook_url: string;
   allowed_chat_ids: number[];
+  report_interval: string;
+  language: string;
 }
 
 export interface DiscordBotConfig {
