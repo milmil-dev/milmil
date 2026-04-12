@@ -112,10 +112,17 @@ func (h *handler) handleTestNotification(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "provider not configured or missing credentials"})
 	}
 
+	// Use bot language for test message
+	lang := cfg.Bot.Telegram.Language
+	if body.Provider == "discord" {
+		lang = "" // Discord bot has no language setting yet
+	}
+	title, message := testNotificationText(lang)
+
 	testEvent := notification.NotificationEvent{
 		Type:     "test",
-		Title:    "Test Notification",
-		Message:  "This is a test notification from milmil.",
+		Title:    title,
+		Message:  message,
 		Severity: "info",
 	}
 
@@ -245,4 +252,21 @@ func (h *handler) handleNotificationProviderStatus(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, result)
+}
+
+func testNotificationText(lang string) (title, message string) {
+	switch {
+	case strings.HasPrefix(lang, "zh-HK"):
+		return "測試通知", "呢個係 milmil 嘅測試通知。"
+	case strings.HasPrefix(lang, "zh-TW"):
+		return "測試通知", "這是來自 milmil 的測試通知。"
+	case strings.HasPrefix(lang, "zh"):
+		return "测试通知", "这是来自 milmil 的测试通知。"
+	case strings.HasPrefix(lang, "ja"):
+		return "テスト通知", "milmil からのテスト通知です。"
+	case strings.HasPrefix(lang, "ko"):
+		return "테스트 알림", "milmil 테스트 알림입니다."
+	default:
+		return "Test Notification", "This is a test notification from milmil."
+	}
 }
