@@ -10,6 +10,9 @@ function PasswordInput({ className, type, ...props }: React.ComponentProps<'inpu
     <div className="relative w-full">
       <input
         type={showPassword ? 'text' : 'password'}
+        autoComplete="off"
+        data-1p-ignore=""
+        data-lpignore="true"
         data-slot="input"
         className={cn(
           'h-9 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 py-1 pr-10 text-base shadow-xs transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
