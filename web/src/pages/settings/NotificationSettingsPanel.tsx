@@ -752,41 +752,40 @@ export function NotificationSettingsPanel() {
     provider: K,
     config: NotificationSettings['providers'][K],
   ) => {
-    const next = {
-      ...settings,
-      providers: { ...settings.providers, [provider]: config },
-    };
-    setLocal(next);
+    setLocal((prev) => {
+      const base = prev ?? defaultSettings();
+      return { ...base, providers: { ...base.providers, [provider]: config } };
+    });
     setIsDirty(true);
   };
 
   const updateTelegramBot = (updates: Partial<TelegramBotConfig>) => {
-    const next = {
-      ...settings,
-      bot: {
-        ...settings.bot,
-        telegram: { ...settings.bot.telegram, ...updates },
-      },
-    };
-    setLocal(next);
+    setLocal((prev) => {
+      const base = prev ?? defaultSettings();
+      return {
+        ...base,
+        bot: { ...base.bot, telegram: { ...base.bot.telegram, ...updates } },
+      };
+    });
     setIsDirty(true);
   };
 
   const updateDiscordBot = (updates: Partial<DiscordBotConfig>) => {
-    const next = {
-      ...settings,
-      bot: {
-        ...settings.bot,
-        discord: { ...settings.bot.discord, ...updates },
-      },
-    };
-    setLocal(next);
+    setLocal((prev) => {
+      const base = prev ?? defaultSettings();
+      return {
+        ...base,
+        bot: { ...base.bot, discord: { ...base.bot.discord, ...updates } },
+      };
+    });
     setIsDirty(true);
   };
 
   const updateEvents = (events: Record<string, string[]>) => {
-    const next = { ...settings, events };
-    setLocal(next);
+    setLocal((prev) => {
+      const base = prev ?? defaultSettings();
+      return { ...base, events };
+    });
     setIsDirty(true);
   };
 
