@@ -802,13 +802,23 @@ export function NotificationSettingsPanel() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">
-          {i18n._(msg`settings.nav.notifications`)}
-        </h2>
-        <p className="mt-1 text-sm text-white/40">
-          {i18n._(msg`notifications.intro`)}
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-white">
+            {i18n._(msg`settings.nav.notifications`)}
+          </h2>
+          <p className="mt-1 text-sm text-white/40">
+            {i18n._(msg`notifications.intro`)}
+          </p>
+        </div>
+        <a
+          href="https://milmil.org/docs/configuration/notifications"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 text-xs text-white/30 hover:text-white/60 transition-colors mt-1"
+        >
+          {i18n._(msg`notifications.setupGuide`)} ↗
+        </a>
       </div>
 
       {/* Platform Cards (push + bot unified per platform) */}

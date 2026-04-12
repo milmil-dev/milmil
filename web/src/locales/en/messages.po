@@ -2381,7 +2381,7 @@ msgid "notifications.filter.system"
 msgstr "System"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:795
-#: src/pages/settings/NotificationSettingsPanel.tsx:810
+#: src/pages/settings/NotificationSettingsPanel.tsx:811
 msgid "notifications.intro"
 msgstr "Get notified on Discord, Telegram, or any webhook when downloads finish or something goes wrong."
 
@@ -2423,6 +2423,10 @@ msgstr "Secret is set"
 #: src/pages/settings/NotificationSettingsPanel.tsx:512
 msgid "notifications.secretPlaceholder"
 msgstr "Optional signing secret"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:820
+msgid "notifications.setupGuide"
+msgstr "Setup Guide"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:144
 msgid "notifications.test"
@@ -3256,7 +3260,7 @@ msgid "settings.nav.integrations"
 msgstr "Integrations"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:792
-#: src/pages/settings/NotificationSettingsPanel.tsx:807
+#: src/pages/settings/NotificationSettingsPanel.tsx:808
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "Notifications"
@@ -3443,7 +3447,7 @@ msgstr "settings.saturation"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:853
+#: src/pages/settings/NotificationSettingsPanel.tsx:863
 msgid "settings.save"
 msgstr "Save"
 
@@ -3470,7 +3474,7 @@ msgstr "Save failed"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:852
+#: src/pages/settings/NotificationSettingsPanel.tsx:862
 msgid "settings.saving"
 msgstr "Saving…"
 

@@ -2378,7 +2378,7 @@ msgid "notifications.filter.system"
 msgstr "システム"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:795
-#: src/pages/settings/NotificationSettingsPanel.tsx:810
+#: src/pages/settings/NotificationSettingsPanel.tsx:811
 msgid "notifications.intro"
 msgstr "ダウンロード完了やエラー発生時にDiscord、Telegram、またはWebhookで通知を受け取ります。"
 
@@ -2420,6 +2420,10 @@ msgstr "シークレット設定済み"
 #: src/pages/settings/NotificationSettingsPanel.tsx:512
 msgid "notifications.secretPlaceholder"
 msgstr "署名シークレット（オプション）"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:820
+msgid "notifications.setupGuide"
+msgstr "設定ガイド"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:144
 msgid "notifications.test"
@@ -3253,7 +3257,7 @@ msgid "settings.nav.integrations"
 msgstr "連携"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:792
-#: src/pages/settings/NotificationSettingsPanel.tsx:807
+#: src/pages/settings/NotificationSettingsPanel.tsx:808
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3440,7 +3444,7 @@ msgstr "彩度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:853
+#: src/pages/settings/NotificationSettingsPanel.tsx:863
 msgid "settings.save"
 msgstr "保存"
 
@@ -3467,7 +3471,7 @@ msgstr "保存に失敗しました"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:852
+#: src/pages/settings/NotificationSettingsPanel.tsx:862
 msgid "settings.saving"
 msgstr "保存中…"
 

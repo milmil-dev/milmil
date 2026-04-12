@@ -2376,7 +2376,7 @@ msgid "notifications.filter.system"
 msgstr "系统"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:795
-#: src/pages/settings/NotificationSettingsPanel.tsx:810
+#: src/pages/settings/NotificationSettingsPanel.tsx:811
 msgid "notifications.intro"
 msgstr "当下载完成或出现问题时，通过Discord、Telegram或Webhook接收通知。"
 
@@ -2418,6 +2418,10 @@ msgstr "密钥已设置"
 #: src/pages/settings/NotificationSettingsPanel.tsx:512
 msgid "notifications.secretPlaceholder"
 msgstr "可选签名密钥"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:820
+msgid "notifications.setupGuide"
+msgstr "设置指南"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:144
 msgid "notifications.test"
@@ -3251,7 +3255,7 @@ msgid "settings.nav.integrations"
 msgstr "集成"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:792
-#: src/pages/settings/NotificationSettingsPanel.tsx:807
+#: src/pages/settings/NotificationSettingsPanel.tsx:808
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3438,7 +3442,7 @@ msgstr "饱和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:853
+#: src/pages/settings/NotificationSettingsPanel.tsx:863
 msgid "settings.save"
 msgstr "保存"
 
@@ -3465,7 +3469,7 @@ msgstr "保存失败"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:852
+#: src/pages/settings/NotificationSettingsPanel.tsx:862
 msgid "settings.saving"
 msgstr "保存中…"
 
