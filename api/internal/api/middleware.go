@@ -108,7 +108,7 @@ func prettyLogger() echo.MiddlewareFunc {
 			case status >= 400:
 				slog.Warn("request", attrs...)
 			default:
-				slog.Debug("request", attrs...)
+				slog.Info("request", attrs...)
 			}
 
 			return nil
