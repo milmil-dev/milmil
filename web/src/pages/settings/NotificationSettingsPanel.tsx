@@ -270,14 +270,16 @@ function DiscordCard({
       <div className="mt-4 space-y-3">
         {/* Push notifications section */}
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.pushNotifications`)}</div>
             <div className="text-[11px] text-white/30">{i18n._(msg`notifications.pushNotifications.desc`)}</div>
           </div>
-          <Switch
-            checked={config.enabled}
-            onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
-          />
+          <div className="flex items-center gap-2 shrink-0">
+            <Switch
+              checked={config.enabled}
+              onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
+            />
+          </div>
         </div>
         <AnimatePresence>
           {config.enabled && (
@@ -307,14 +309,17 @@ function DiscordCard({
 
         {/* Bot commands section */}
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.botCommands`)}</div>
             <div className="text-[11px] text-white/30">{i18n._(msg`notifications.botCommands.shortDesc`)}</div>
           </div>
-          <Switch
-            checked={botConfig.enabled}
-            onCheckedChange={(checked) => onBotChange({ enabled: checked })}
-          />
+          <div className="flex items-center gap-2 shrink-0">
+            {botConfig.enabled && <TestBotButton platform="discord" />}
+            <Switch
+              checked={botConfig.enabled}
+              onCheckedChange={(checked) => onBotChange({ enabled: checked })}
+            />
+          </div>
         </div>
         <AnimatePresence>
           {botConfig.enabled && (
@@ -365,7 +370,6 @@ function DiscordCard({
                     {i18n._(msg`notifications.bot.allowedGuildIdsHelp`)}
                   </p>
                 </Field>
-                <TestBotButton platform="discord" />
               </div>
             </motion.div>
           )}
@@ -449,30 +453,31 @@ function TelegramCard({
       {/* Feature toggles */}
       <div className="mt-5 space-y-3">
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.pushNotifications`)}</div>
             <div className="text-[11px] text-white/30">{i18n._(msg`notifications.pushNotifications.desc`)}</div>
           </div>
-          <Switch
-            checked={config.enabled}
-            onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
-          />
-        </div>
-        {config.enabled && (
-          <div className="pl-3">
-            <TestButton provider="telegram" />
+          <div className="flex items-center gap-2 shrink-0">
+            {config.enabled && <TestButton provider="telegram" />}
+            <Switch
+              checked={config.enabled}
+              onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
+            />
           </div>
-        )}
+        </div>
 
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.botCommands`)}</div>
             <div className="text-[11px] text-white/30">{i18n._(msg`notifications.botCommands.shortDesc`)}</div>
           </div>
-          <Switch
-            checked={botConfig.enabled}
-            onCheckedChange={(checked) => onBotChange({ enabled: checked, bot_token: sharedToken })}
-          />
+          <div className="flex items-center gap-2 shrink-0">
+            {botConfig.enabled && <TestBotButton platform="telegram" />}
+            <Switch
+              checked={botConfig.enabled}
+              onCheckedChange={(checked) => onBotChange({ enabled: checked, bot_token: sharedToken })}
+            />
+          </div>
         </div>
       </div>
 
@@ -539,8 +544,6 @@ function TelegramCard({
                   {i18n._(msg`notifications.bot.allowedChatIdsHelp`)}
                 </p>
               </Field>
-
-              <TestBotButton platform="telegram" />
 
               {/* Advanced: Webhook URL (collapsed by default) */}
               <details className="group">

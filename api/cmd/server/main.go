@@ -247,6 +247,7 @@ func main() {
 		Queries:    store.New(database),
 		Metadata:   metadataSvc,
 		Downloader: dlEngine,
+		Scanner:    sc,
 	}
 
 	// Register commands
@@ -260,6 +261,8 @@ func main() {
 	botRouter.RegisterCommand("mylist", commands.MyListHandler(botSvc))
 	botRouter.RegisterCommand("continue", commands.ContinueHandler(botSvc))
 	botRouter.RegisterCommand("id", commands.IDHandler(botSvc))
+	botRouter.RegisterCommand("library", commands.LibraryHandler(botSvc))
+	botRouter.RegisterCommand("scan", commands.ScanHandler(botSvc))
 
 	// Register callbacks (one handler per prefix)
 	botRouter.RegisterCallback("detail", commands.DetailCallback(botSvc))
@@ -268,6 +271,7 @@ func main() {
 	botRouter.RegisterCallback("dl_pause", commands.DownloadControlCallback(botSvc))
 	botRouter.RegisterCallback("dl_resume", commands.DownloadControlCallback(botSvc))
 	botRouter.RegisterCallback("dl_cancel", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("scan", commands.ScanCallback(botSvc))
 	botRouter.RegisterCallback("menu", commands.MenuCallback(botSvc))
 	botRouter.RegisterCallback("cmd", commands.CmdCallback(botSvc, botRouter))
 

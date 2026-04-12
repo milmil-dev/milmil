@@ -51,6 +51,8 @@ func buildStartMenu(ctx context.Context, svc *Services) (*bot.BotResponse, error
 				{Label: "▶ Continue", Data: "cmd:continue"},
 			},
 			{
+				{Label: "📁 Library", Data: "cmd:library"},
+				{Label: "🔄 Scan", Data: "cmd:scan"},
 				{Label: "🆔 My ID", Data: "cmd:id"},
 			},
 		},

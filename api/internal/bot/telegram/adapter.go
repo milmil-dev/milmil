@@ -46,6 +46,8 @@ func New(cfg notification.TelegramBotConfig, router *bot.Router) (*Adapter, erro
 		{Command: "status", Description: "System overview"},
 		{Command: "mylist", Description: "Your collection"},
 		{Command: "continue", Description: "Continue watching"},
+		{Command: "library", Description: "List libraries"},
+		{Command: "scan", Description: "Scan a library"},
 		{Command: "id", Description: "Show your chat ID"},
 	}
 	cmdCfg := tgbotapi.NewSetMyCommands(commands...)
