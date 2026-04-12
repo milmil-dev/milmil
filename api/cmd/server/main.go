@@ -263,6 +263,11 @@ func main() {
 	botRouter.RegisterCommand("id", commands.IDHandler(botSvc))
 	botRouter.RegisterCommand("library", commands.LibraryHandler(botSvc))
 	botRouter.RegisterCommand("scan", commands.ScanHandler(botSvc))
+	botRouter.RegisterCommand("recent", commands.RecentHandler(botSvc))
+	botRouter.RegisterCommand("watching", commands.WatchingHandler(botSvc))
+	botRouter.RegisterCommand("stats", commands.StatsHandler(botSvc))
+	botRouter.RegisterCommand("rules", commands.RulesHandler(botSvc))
+	botRouter.RegisterCommand("trending", commands.TrendingHandler(botSvc))
 
 	// Register callbacks (one handler per prefix)
 	botRouter.RegisterCallback("detail", commands.DetailCallback(botSvc))
@@ -274,6 +279,7 @@ func main() {
 	botRouter.RegisterCallback("scan", commands.ScanCallback(botSvc))
 	botRouter.RegisterCallback("sched", commands.ScheduleCallback(botSvc))
 	botRouter.RegisterCallback("menu", commands.MenuCallback(botSvc))
+	botRouter.RegisterCallback("rule_disable", commands.RuleDisableCallback(botSvc))
 	botRouter.RegisterCallback("cmd", commands.CmdCallback(botSvc, botRouter))
 
 	botEngine := bot.NewEngine(botRouter)

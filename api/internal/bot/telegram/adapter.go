@@ -48,6 +48,11 @@ func New(cfg notification.TelegramBotConfig, router *bot.Router) (*Adapter, erro
 		{Command: "continue", Description: "Continue watching"},
 		{Command: "library", Description: "List libraries"},
 		{Command: "scan", Description: "Scan a library"},
+		{Command: "recent", Description: "Recent downloads"},
+		{Command: "watching", Description: "Currently watching"},
+		{Command: "stats", Description: "Collection stats"},
+		{Command: "rules", Description: "Download rules"},
+		{Command: "trending", Description: "Trending anime"},
 		{Command: "id", Description: "Show your chat ID"},
 	}
 	cmdCfg := tgbotapi.NewSetMyCommands(commands...)
