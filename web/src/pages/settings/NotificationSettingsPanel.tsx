@@ -153,7 +153,7 @@ function TestButton({ provider }: { provider: ProviderName }) {
           setResult(null);
           testMutation.mutate();
         }}
-        className="text-[11px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-40 cursor-pointer"
+        className="text-[11px] text-white/30 hover:text-white/60 hover:bg-white/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
           <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
@@ -201,7 +201,7 @@ function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
         type="button"
         disabled={testMutation.isPending}
         onClick={() => { setResult(null); testMutation.mutate(); }}
-        className="text-[11px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-40 cursor-pointer"
+        className="text-[11px] text-white/30 hover:text-white/60 hover:bg-white/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
           <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
