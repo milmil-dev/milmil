@@ -1,9 +1,8 @@
 import { useLingui } from '@lingui/react';
 import { msg } from '@lingui/core/macro';
 import { motion } from 'motion/react';
-import { useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
   Settings02Icon,
   Link04Icon,
@@ -61,8 +60,12 @@ export function SettingsPage() {
   const { i18n } = useLingui();
   useDocumentTitle(i18n._(msg`nav.settings`));
   const search = useSearch({ strict: false }) as { tab?: string };
-  const initialTab: TabId = search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const navigate = useNavigate();
+  const activeTab: TabId = search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
+
+  const setActiveTab = (tab: TabId) => {
+    navigate({ to: '/settings', search: { tab }, replace: true });
+  };
 
   const ActivePanel = PANELS[activeTab];
 
