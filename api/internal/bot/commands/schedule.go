@@ -220,19 +220,19 @@ func buildDaySchedule(ctx context.Context, svc *Services, dayArg string) (*bot.B
 
 func weekdayIndex(name string) int {
 	switch strings.ToLower(name) {
-	case "monday":
+	case "monday", "mon":
 		return 1
-	case "tuesday":
+	case "tuesday", "tue":
 		return 2
-	case "wednesday":
+	case "wednesday", "wed":
 		return 3
-	case "thursday":
+	case "thursday", "thu":
 		return 4
-	case "friday":
+	case "friday", "fri":
 		return 5
-	case "saturday":
+	case "saturday", "sat":
 		return 6
-	case "sunday":
+	case "sunday", "sun":
 		return 7
 	default:
 		return 0
