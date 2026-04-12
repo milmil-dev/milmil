@@ -8,10 +8,19 @@ package telegram
 import (
 	"fmt"
 	"strings"
+	"unicode/utf8"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/milmil/api/internal/bot"
 )
+
+// sanitizeUTF8 removes invalid UTF-8 bytes from a string.
+func sanitizeUTF8(s string) string {
+	if utf8.ValidString(s) {
+		return s
+	}
+	return strings.ToValidUTF8(s, "")
+}
 
 // RenderMessage converts a BotResponse into a Telegram message config suitable
 // for sending a brand new message. When the response includes an ImageURL a
@@ -80,7 +89,7 @@ func buildText(resp *bot.BotResponse) string {
 		}
 	}
 
-	return sb.String()
+	return sanitizeUTF8(sb.String())
 }
 
 // buildKeyboard converts the explicit Buttons rows and any per-list-item
