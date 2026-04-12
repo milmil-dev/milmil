@@ -168,11 +168,30 @@ function DiscordCard({
   config,
   onChange,
   status,
+  botConfig,
+  onBotChange,
 }: {
   config: NotificationSettings['providers']['discord'];
   onChange: (c: NotificationSettings['providers']['discord']) => void;
   status: ProviderStatus | undefined;
+  botConfig: DiscordBotConfig;
+  onBotChange: (updates: Partial<DiscordBotConfig>) => void;
 }) {
+  const { i18n } = useLingui();
+
+  const [guildIdsRaw, setGuildIdsRaw] = useState(
+    (botConfig.allowed_guild_ids ?? []).join(', '),
+  );
+  useEffect(() => {
+    setGuildIdsRaw((botConfig.allowed_guild_ids ?? []).join(', '));
+  }, [botConfig.allowed_guild_ids]);
+
+  const handleGuildIdsChange = (value: string) => {
+    setGuildIdsRaw(value);
+    const parsed = value.split(',').map((s) => s.trim()).filter((s) => s.length > 0);
+    onBotChange({ allowed_guild_ids: parsed });
+  };
+
   return (
     <SettingsCard>
       <div className="flex items-center justify-between">
@@ -182,36 +201,112 @@ function DiscordCard({
           </span>
           <ProviderStatusBadge status={status} />
         </div>
-        <Switch
-          checked={config.enabled}
-          onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
-        />
       </div>
-      <AnimatePresence>
-        {config.enabled && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="overflow-hidden"
-          >
-            <div className="mt-4 space-y-4">
-              <Field>
-                <FieldLabel htmlFor="discord-webhook-url">Webhook URL</FieldLabel>
-                <PasswordInput
-                  id="discord-webhook-url"
-                  value={config.webhook_url}
-                  onChange={(e) => onChange({ ...config, webhook_url: e.target.value })}
-                  placeholder="https://discord.com/api/webhooks/..."
-                  className={INPUT_CLASS}
-                />
-              </Field>
-              <TestButton provider="discord" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+      {/* Feature toggles */}
+      <div className="mt-4 space-y-3">
+        {/* Push notifications section */}
+        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+          <div>
+            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.pushNotifications`)}</div>
+            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.pushNotifications.desc`)}</div>
+          </div>
+          <Switch
+            checked={config.enabled}
+            onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
+          />
+        </div>
+        <AnimatePresence>
+          {config.enabled && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-3 pl-3 border-l-2 border-white/[0.06]">
+                <Field>
+                  <FieldLabel htmlFor="discord-webhook-url">Webhook URL</FieldLabel>
+                  <PasswordInput
+                    id="discord-webhook-url"
+                    value={config.webhook_url}
+                    onChange={(e) => onChange({ ...config, webhook_url: e.target.value })}
+                    placeholder="https://discord.com/api/webhooks/..."
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <TestButton provider="discord" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Bot commands section */}
+        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+          <div>
+            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.botCommands`)}</div>
+            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.botCommands.shortDesc`)}</div>
+          </div>
+          <Switch
+            checked={botConfig.enabled}
+            onCheckedChange={(checked) => onBotChange({ enabled: checked })}
+          />
+        </div>
+        <AnimatePresence>
+          {botConfig.enabled && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-3 pl-3 border-l-2 border-white/[0.06]">
+                <Field>
+                  <FieldLabel htmlFor="discord-bot-token">
+                    {i18n._(msg`notifications.bot.botToken`)}
+                  </FieldLabel>
+                  <PasswordInput
+                    id="discord-bot-token"
+                    value={botConfig.bot_token}
+                    onChange={(e) => onBotChange({ bot_token: e.target.value })}
+                    placeholder="Bot token"
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="discord-bot-app-id">
+                    {i18n._(msg`notifications.bot.applicationId`)}
+                  </FieldLabel>
+                  <Input
+                    id="discord-bot-app-id"
+                    value={botConfig.application_id}
+                    onChange={(e) => onBotChange({ application_id: e.target.value })}
+                    placeholder="123456789012345678"
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="discord-bot-guild-ids">
+                    {i18n._(msg`notifications.bot.allowedGuildIds`)}
+                  </FieldLabel>
+                  <Input
+                    id="discord-bot-guild-ids"
+                    value={guildIdsRaw}
+                    onChange={(e) => handleGuildIdsChange(e.target.value)}
+                    placeholder="123456789012345678"
+                    className={INPUT_CLASS}
+                  />
+                  <p className="mt-1 text-xs text-white/30">
+                    {i18n._(msg`notifications.bot.allowedGuildIdsHelp`)}
+                  </p>
+                </Field>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </SettingsCard>
   );
 }
@@ -220,11 +315,35 @@ function TelegramCard({
   config,
   onChange,
   status,
+  botConfig,
+  onBotChange,
 }: {
   config: NotificationSettings['providers']['telegram'];
   onChange: (c: NotificationSettings['providers']['telegram']) => void;
   status: ProviderStatus | undefined;
+  botConfig: TelegramBotConfig;
+  onBotChange: (updates: Partial<TelegramBotConfig>) => void;
 }) {
+  const { i18n } = useLingui();
+  const isActive = config.enabled || botConfig.enabled;
+
+  const [chatIdsRaw, setChatIdsRaw] = useState(
+    (botConfig.allowed_chat_ids ?? []).join(', '),
+  );
+  useEffect(() => {
+    setChatIdsRaw((botConfig.allowed_chat_ids ?? []).join(', '));
+  }, [botConfig.allowed_chat_ids]);
+
+  const handleChatIdsChange = (value: string) => {
+    setChatIdsRaw(value);
+    const parsed = value.split(',').map((s) => s.trim()).filter((s) => s.length > 0)
+      .map((s) => Number(s)).filter((n) => Number.isFinite(n));
+    onBotChange({ allowed_chat_ids: parsed });
+  };
+
+  // Sync bot_token from push config → bot config when they share a token
+  const sharedToken = config.bot_token;
+
   return (
     <SettingsCard>
       <div className="flex items-center justify-between">
@@ -234,13 +353,68 @@ function TelegramCard({
           </span>
           <ProviderStatusBadge status={status} />
         </div>
-        <Switch
-          checked={config.enabled}
-          onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
-        />
       </div>
-      <AnimatePresence>
+
+      {/* Shared credentials */}
+      <div className="mt-4 space-y-4">
+        <Field>
+          <FieldLabel htmlFor="telegram-bot-token">Bot Token</FieldLabel>
+          <PasswordInput
+            id="telegram-bot-token"
+            value={config.bot_token}
+            onChange={(e) => {
+              onChange({ ...config, bot_token: e.target.value });
+              onBotChange({ bot_token: e.target.value });
+            }}
+            placeholder="123456:ABC-DEF1234..."
+            className={INPUT_CLASS}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="telegram-chat-id">Chat ID</FieldLabel>
+          <Input
+            id="telegram-chat-id"
+            value={config.chat_id}
+            onChange={(e) => onChange({ ...config, chat_id: e.target.value })}
+            placeholder="-1001234567890"
+            className={INPUT_CLASS}
+          />
+        </Field>
+      </div>
+
+      {/* Feature toggles */}
+      <div className="mt-5 space-y-3">
+        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+          <div>
+            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.pushNotifications`)}</div>
+            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.pushNotifications.desc`)}</div>
+          </div>
+          <Switch
+            checked={config.enabled}
+            onCheckedChange={(checked) => onChange({ ...config, enabled: checked })}
+          />
+        </div>
         {config.enabled && (
+          <div className="pl-3">
+            <TestButton provider="telegram" />
+          </div>
+        )}
+
+        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+          <div>
+            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.botCommands`)}</div>
+            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.botCommands.shortDesc`)}</div>
+          </div>
+          <Switch
+            checked={botConfig.enabled}
+            onCheckedChange={(checked) => onBotChange({ enabled: checked, bot_token: sharedToken })}
+          />
+        </div>
+      </div>
+
+      {/* Bot-specific settings */}
+      <AnimatePresence>
+        {botConfig.enabled && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -248,28 +422,37 @@ function TelegramCard({
             transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="overflow-hidden"
           >
-            <div className="mt-4 space-y-4">
+            <div className="mt-3 space-y-3 pl-3 border-l-2 border-white/[0.06]">
               <Field>
-                <FieldLabel htmlFor="telegram-bot-token">Bot Token</FieldLabel>
-                <PasswordInput
-                  id="telegram-bot-token"
-                  value={config.bot_token}
-                  onChange={(e) => onChange({ ...config, bot_token: e.target.value })}
-                  placeholder="123456:ABC-DEF1234..."
-                  className={INPUT_CLASS}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="telegram-chat-id">Chat ID</FieldLabel>
+                <FieldLabel htmlFor="telegram-bot-webhook-url">
+                  {i18n._(msg`notifications.bot.webhookUrl`)}
+                </FieldLabel>
                 <Input
-                  id="telegram-chat-id"
-                  value={config.chat_id}
-                  onChange={(e) => onChange({ ...config, chat_id: e.target.value })}
-                  placeholder="-1001234567890"
+                  id="telegram-bot-webhook-url"
+                  value={botConfig.webhook_url}
+                  onChange={(e) => onBotChange({ webhook_url: e.target.value })}
+                  placeholder="https://example.com/telegram/webhook"
                   className={INPUT_CLASS}
                 />
+                <p className="mt-1 text-xs text-white/30">
+                  {i18n._(msg`notifications.bot.webhookUrlHelp`)}
+                </p>
               </Field>
-              <TestButton provider="telegram" />
+              <Field>
+                <FieldLabel htmlFor="telegram-bot-chat-ids">
+                  {i18n._(msg`notifications.bot.allowedChatIds`)}
+                </FieldLabel>
+                <Input
+                  id="telegram-bot-chat-ids"
+                  value={chatIdsRaw}
+                  onChange={(e) => handleChatIdsChange(e.target.value)}
+                  placeholder="123456789, -1001234567890"
+                  className={INPUT_CLASS}
+                />
+                <p className="mt-1 text-xs text-white/30">
+                  {i18n._(msg`notifications.bot.allowedChatIdsHelp`)}
+                </p>
+              </Field>
             </div>
           </motion.div>
         )}
@@ -356,247 +539,6 @@ function WebhookCard({
                 )}
               </Field>
               <TestButton provider="webhook" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </SettingsCard>
-  );
-}
-
-// ─── Bot Command Cards ──────────────────────────────────────────────────────
-
-function TelegramBotCard({
-  config,
-  onChange,
-}: {
-  config: TelegramBotConfig;
-  onChange: (updates: Partial<TelegramBotConfig>) => void;
-}) {
-  const { i18n } = useLingui();
-  const [showTokenField, setShowTokenField] = useState(
-    !config.bot_token || !config.bot_token.includes('••••'),
-  );
-  const [chatIdsRaw, setChatIdsRaw] = useState(
-    (config.allowed_chat_ids ?? []).join(', '),
-  );
-
-  useEffect(() => {
-    setChatIdsRaw((config.allowed_chat_ids ?? []).join(', '));
-  }, [config.allowed_chat_ids]);
-
-  const handleChatIdsChange = (value: string) => {
-    setChatIdsRaw(value);
-    const parsed = value
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0)
-      .map((s) => Number(s))
-      .filter((n) => Number.isFinite(n));
-    onChange({ allowed_chat_ids: parsed });
-  };
-
-  return (
-    <SettingsCard>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className={cn('text-sm font-semibold', PROVIDER_META.telegram.colorClass)}>
-            {i18n._(msg`notifications.bot.telegram`)}
-          </span>
-        </div>
-        <Switch
-          checked={config.enabled}
-          onCheckedChange={(checked) => onChange({ enabled: checked })}
-        />
-      </div>
-      <AnimatePresence>
-        {config.enabled && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="overflow-hidden"
-          >
-            <div className="mt-4 space-y-4">
-              <Field>
-                <FieldLabel htmlFor="telegram-bot-cmd-token">
-                  {i18n._(msg`notifications.bot.botToken`)}
-                </FieldLabel>
-                {!showTokenField && config.bot_token?.includes('••••') ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-white/40">
-                      {i18n._(msg`notifications.secretIsSet`)}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setShowTokenField(true);
-                        onChange({ bot_token: '' });
-                      }}
-                    >
-                      {i18n._(msg`notifications.change`)}
-                    </Button>
-                  </div>
-                ) : (
-                  <PasswordInput
-                    id="telegram-bot-cmd-token"
-                    value={config.bot_token}
-                    onChange={(e) => onChange({ bot_token: e.target.value })}
-                    placeholder="123456:ABC-DEF1234..."
-                    className={INPUT_CLASS}
-                  />
-                )}
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="telegram-bot-webhook-url">
-                  {i18n._(msg`notifications.bot.webhookUrl`)}
-                </FieldLabel>
-                <Input
-                  id="telegram-bot-webhook-url"
-                  value={config.webhook_url}
-                  onChange={(e) => onChange({ webhook_url: e.target.value })}
-                  placeholder="https://example.com/telegram/webhook"
-                  className={INPUT_CLASS}
-                />
-                <p className="mt-1 text-xs text-white/40">
-                  {i18n._(msg`notifications.bot.webhookUrlHelp`)}
-                </p>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="telegram-bot-chat-ids">
-                  {i18n._(msg`notifications.bot.allowedChatIds`)}
-                </FieldLabel>
-                <Input
-                  id="telegram-bot-chat-ids"
-                  value={chatIdsRaw}
-                  onChange={(e) => handleChatIdsChange(e.target.value)}
-                  placeholder="123456789, -1001234567890"
-                  className={INPUT_CLASS}
-                />
-                <p className="mt-1 text-xs text-white/40">
-                  {i18n._(msg`notifications.bot.allowedChatIdsHelp`)}
-                </p>
-              </Field>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </SettingsCard>
-  );
-}
-
-function DiscordBotCard({
-  config,
-  onChange,
-}: {
-  config: DiscordBotConfig;
-  onChange: (updates: Partial<DiscordBotConfig>) => void;
-}) {
-  const { i18n } = useLingui();
-  const [showTokenField, setShowTokenField] = useState(
-    !config.bot_token || !config.bot_token.includes('••••'),
-  );
-  const [guildIdsRaw, setGuildIdsRaw] = useState(
-    (config.allowed_guild_ids ?? []).join(', '),
-  );
-
-  useEffect(() => {
-    setGuildIdsRaw((config.allowed_guild_ids ?? []).join(', '));
-  }, [config.allowed_guild_ids]);
-
-  const handleGuildIdsChange = (value: string) => {
-    setGuildIdsRaw(value);
-    const parsed = value
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-    onChange({ allowed_guild_ids: parsed });
-  };
-
-  return (
-    <SettingsCard>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className={cn('text-sm font-semibold', PROVIDER_META.discord.colorClass)}>
-            {i18n._(msg`notifications.bot.discord`)}
-          </span>
-        </div>
-        <Switch
-          checked={config.enabled}
-          onCheckedChange={(checked) => onChange({ enabled: checked })}
-        />
-      </div>
-      <AnimatePresence>
-        {config.enabled && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="overflow-hidden"
-          >
-            <div className="mt-4 space-y-4">
-              <Field>
-                <FieldLabel htmlFor="discord-bot-cmd-token">
-                  {i18n._(msg`notifications.bot.botToken`)}
-                </FieldLabel>
-                {!showTokenField && config.bot_token?.includes('••••') ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-white/40">
-                      {i18n._(msg`notifications.secretIsSet`)}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setShowTokenField(true);
-                        onChange({ bot_token: '' });
-                      }}
-                    >
-                      {i18n._(msg`notifications.change`)}
-                    </Button>
-                  </div>
-                ) : (
-                  <PasswordInput
-                    id="discord-bot-cmd-token"
-                    value={config.bot_token}
-                    onChange={(e) => onChange({ bot_token: e.target.value })}
-                    placeholder="Bot token"
-                    className={INPUT_CLASS}
-                  />
-                )}
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="discord-bot-app-id">
-                  {i18n._(msg`notifications.bot.applicationId`)}
-                </FieldLabel>
-                <Input
-                  id="discord-bot-app-id"
-                  value={config.application_id}
-                  onChange={(e) => onChange({ application_id: e.target.value })}
-                  placeholder="123456789012345678"
-                  className={INPUT_CLASS}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="discord-bot-guild-ids">
-                  {i18n._(msg`notifications.bot.allowedGuildIds`)}
-                </FieldLabel>
-                <Input
-                  id="discord-bot-guild-ids"
-                  value={guildIdsRaw}
-                  onChange={(e) => handleGuildIdsChange(e.target.value)}
-                  placeholder="123456789012345678, 987654321098765432"
-                  className={INPUT_CLASS}
-                />
-                <p className="mt-1 text-xs text-white/40">
-                  {i18n._(msg`notifications.bot.allowedGuildIdsHelp`)}
-                </p>
-              </Field>
             </div>
           </motion.div>
         )}
@@ -869,17 +811,21 @@ export function NotificationSettingsPanel() {
         </p>
       </div>
 
-      {/* Provider Cards */}
+      {/* Platform Cards (push + bot unified per platform) */}
       <div className="space-y-4">
-        <DiscordCard
-          config={settings.providers.discord}
-          onChange={(c) => updateProvider('discord', c)}
-          status={statuses?.discord}
-        />
         <TelegramCard
           config={settings.providers.telegram}
           onChange={(c) => updateProvider('telegram', c)}
           status={statuses?.telegram}
+          botConfig={settings.bot.telegram}
+          onBotChange={updateTelegramBot}
+        />
+        <DiscordCard
+          config={settings.providers.discord}
+          onChange={(c) => updateProvider('discord', c)}
+          status={statuses?.discord}
+          botConfig={settings.bot.discord}
+          onBotChange={updateDiscordBot}
         />
         <WebhookCard
           config={settings.providers.webhook}
@@ -894,26 +840,6 @@ export function NotificationSettingsPanel() {
         enabledProviders={enabledProviders}
         onChange={updateEvents}
       />
-
-      {/* Bot Commands */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-sm font-semibold text-white">
-            {i18n._(msg`notifications.botCommands`)}
-          </h3>
-          <p className="mt-1 text-xs text-white/40">
-            {i18n._(msg`notifications.botCommands.desc`)}
-          </p>
-        </div>
-        <TelegramBotCard
-          config={settings.bot.telegram}
-          onChange={updateTelegramBot}
-        />
-        <DiscordBotCard
-          config={settings.bot.discord}
-          onChange={updateDiscordBot}
-        />
-      </div>
 
       {/* Save Button */}
       <div className="flex justify-end">
