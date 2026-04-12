@@ -103,14 +103,15 @@ func buildKeyboard(resp *bot.BotResponse) *tgbotapi.InlineKeyboardMarkup {
 		}
 	}
 
-	for _, item := range resp.List {
+	for i, item := range resp.List {
 		if len(item.Buttons) == 0 {
 			continue
 		}
 		var tgRow []tgbotapi.InlineKeyboardButton
 		for _, btn := range item.Buttons {
+			label := fmt.Sprintf("%d. %s", i+1, btn.Label)
 			if btn.URL != "" {
-				tgRow = append(tgRow, tgbotapi.NewInlineKeyboardButtonURL(btn.Label, btn.URL))
+				tgRow = append(tgRow, tgbotapi.NewInlineKeyboardButtonURL(label, btn.URL))
 			} else if btn.Data != "" {
 				tgRow = append(tgRow, tgbotapi.NewInlineKeyboardButtonData(btn.Label, btn.Data))
 			}
