@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/notification"
@@ -122,6 +124,73 @@ func (h *handler) handleTestNotification(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{"success": true})
+}
+
+func (h *handler) handleTestBot(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var body struct {
+		Platform string `json:"platform"` // "telegram" or "discord"
+	}
+	if err := c.Bind(&body); err != nil || body.Platform == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "platform is required")
+	}
+
+	cfg, err := notification.LoadNotificationConfig(ctx, h.queries)
+	if err != nil {
+		return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "failed to load config"})
+	}
+
+	client := &http.Client{Timeout: 10 * time.Second}
+
+	switch body.Platform {
+	case "telegram":
+		token := cfg.Bot.Telegram.BotToken
+		if token == "" {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "bot token not configured"})
+		}
+		resp, err := client.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getMe", token))
+		if err != nil {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": err.Error()})
+		}
+		defer resp.Body.Close()
+		var result struct {
+			OK          bool `json:"ok"`
+			Description string `json:"description"`
+			Result      struct {
+				Username string `json:"username"`
+			} `json:"result"`
+		}
+		json.NewDecoder(resp.Body).Decode(&result)
+		if !result.OK {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": result.Description})
+		}
+		return c.JSON(http.StatusOK, map[string]any{"success": true, "bot_username": result.Result.Username})
+
+	case "discord":
+		token := cfg.Bot.Discord.BotToken
+		if token == "" {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "bot token not configured"})
+		}
+		req, _ := http.NewRequestWithContext(ctx, "GET", "https://discord.com/api/v10/users/@me", nil)
+		req.Header.Set("Authorization", "Bot "+token)
+		resp, err := client.Do(req)
+		if err != nil {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": err.Error()})
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != 200 {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": fmt.Sprintf("HTTP %d", resp.StatusCode)})
+		}
+		var result struct {
+			Username string `json:"username"`
+		}
+		json.NewDecoder(resp.Body).Decode(&result)
+		return c.JSON(http.StatusOK, map[string]any{"success": true, "bot_username": result.Username})
+
+	default:
+		return echo.NewHTTPError(http.StatusBadRequest, "unsupported platform")
+	}
 }
 
 type providerStatus struct {

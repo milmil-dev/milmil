@@ -163,6 +163,55 @@ function TestButton({ provider }: { provider: ProviderName }) {
   );
 }
 
+function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
+  const { i18n } = useLingui();
+  const [result, setResult] = useState<{ success: boolean; error?: string; bot_username?: string } | null>(null);
+
+  const testMutation = useMutation({
+    mutationFn: () => notificationSettingsApi.testBot(platform),
+    onSuccess: (data) => {
+      setResult(data);
+      if (data.success) setTimeout(() => setResult(null), 8000);
+    },
+    onError: (err) => {
+      setResult({ success: false, error: String(err) });
+      setTimeout(() => setResult(null), 5000);
+    },
+  });
+
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        disabled={testMutation.isPending}
+        onClick={() => { setResult(null); testMutation.mutate(); }}
+      >
+        {testMutation.isPending ? (
+          <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
+        ) : (
+          i18n._(msg`notifications.testBot`)
+        )}
+      </Button>
+      <AnimatePresence>
+        {result && (
+          <motion.span
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            className={cn('text-xs font-medium', result.success ? 'text-green-400' : 'text-red-400')}
+          >
+            {result.success
+              ? `@${result.bot_username}`
+              : `${i18n._(msg`notifications.testFailed`)}: ${result.error ?? ''}`}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ─── Provider Cards ─────────────────────────────────────────────────────────
 
 function DiscordCard({
@@ -303,6 +352,7 @@ function DiscordCard({
                     {i18n._(msg`notifications.bot.allowedGuildIdsHelp`)}
                   </p>
                 </Field>
+                <TestBotButton platform="discord" />
               </div>
             </motion.div>
           )}
@@ -454,6 +504,7 @@ function TelegramCard({
                   {i18n._(msg`notifications.bot.allowedChatIdsHelp`)}
                 </p>
               </Field>
+              <TestBotButton platform="telegram" />
             </div>
           </motion.div>
         )}
