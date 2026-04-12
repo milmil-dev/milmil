@@ -112,10 +112,13 @@ func (h *handler) handleTestNotification(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "provider not configured or missing credentials"})
 	}
 
-	// Use bot language for test message
+	// Use bot language for test message, fall back to Accept-Language header
 	lang := cfg.Bot.Telegram.Language
 	if body.Provider == "discord" {
-		lang = "" // Discord bot has no language setting yet
+		lang = ""
+	}
+	if lang == "" {
+		lang = c.Request().Header.Get("Accept-Language")
 	}
 	title, message := testNotificationText(lang)
 
@@ -255,16 +258,22 @@ func (h *handler) handleNotificationProviderStatus(c echo.Context) error {
 }
 
 func testNotificationText(lang string) (title, message string) {
+	// Normalize: take the first language tag from Accept-Language style strings
+	lang = strings.ToLower(strings.TrimSpace(lang))
+	if i := strings.IndexAny(lang, ",;"); i > 0 {
+		lang = lang[:i]
+	}
+
 	switch {
-	case strings.HasPrefix(lang, "zh-HK"):
+	case strings.Contains(lang, "zh-hk"):
 		return "測試通知", "呢個係 milmil 嘅測試通知。"
-	case strings.HasPrefix(lang, "zh-TW"):
+	case strings.Contains(lang, "zh-tw"):
 		return "測試通知", "這是來自 milmil 的測試通知。"
-	case strings.HasPrefix(lang, "zh"):
+	case strings.Contains(lang, "zh"):
 		return "测试通知", "这是来自 milmil 的测试通知。"
-	case strings.HasPrefix(lang, "ja"):
+	case strings.Contains(lang, "ja"):
 		return "テスト通知", "milmil からのテスト通知です。"
-	case strings.HasPrefix(lang, "ko"):
+	case strings.Contains(lang, "ko"):
 		return "테스트 알림", "milmil 테스트 알림입니다."
 	default:
 		return "Test Notification", "This is a test notification from milmil."
