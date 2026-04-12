@@ -146,22 +146,21 @@ function TestButton({ provider }: { provider: ProviderName }) {
 
   return (
     <div className="flex items-center gap-2">
-      <Button
+      <button
         type="button"
-        variant="outline"
-        size="sm"
         disabled={testMutation.isPending}
         onClick={() => {
           setResult(null);
           testMutation.mutate();
         }}
+        className="text-[11px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
           <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
         ) : (
           i18n._(msg`notifications.test`)
         )}
-      </Button>
+      </button>
       <AnimatePresence>
         {result && (
           <motion.span
@@ -198,19 +197,18 @@ function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
 
   return (
     <div className="flex items-center gap-2">
-      <Button
+      <button
         type="button"
-        variant="outline"
-        size="sm"
         disabled={testMutation.isPending}
         onClick={() => { setResult(null); testMutation.mutate(); }}
+        className="text-[11px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
           <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
         ) : (
           i18n._(msg`notifications.testBot`)
         )}
-      </Button>
+      </button>
       <AnimatePresence>
         {result && (
           <motion.span
