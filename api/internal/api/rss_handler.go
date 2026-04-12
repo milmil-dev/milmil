@@ -384,7 +384,9 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 				continue
 			}
 
-			_ = h.queries.UpdateDownloadRuleTriggered(ctx, rule.ID)
+			if err := h.queries.UpdateDownloadRuleTriggered(ctx, rule.ID); err != nil {
+				slog.Warn("rss: update rule triggered time", "ruleID", rule.ID, "err", err)
+			}
 			added++
 			break // One rule matched this item, move to next item
 		}

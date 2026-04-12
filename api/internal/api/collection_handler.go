@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"sort"
 	"strconv"
@@ -200,7 +201,7 @@ func (h *handler) handleUpdateWatchStatus(c echo.Context) error {
 				}
 			}
 
-			_, _ = h.queries.CreateAnime(ctx, store.CreateAnimeParams{
+			if _, createErr := h.queries.CreateAnime(ctx, store.CreateAnimeParams{
 				ID:            uuid.NewString(),
 				Title:         detail.TitleOriginal,
 				TitleZh:       sql.NullString{String: detail.Title, Valid: detail.Title != ""},
@@ -216,7 +217,9 @@ func (h *handler) handleUpdateWatchStatus(c echo.Context) error {
 				BangumiID:     sql.NullInt64{Int64: bangumiID, Valid: true},
 				WatchStatus:   req.Status,
 				Score:         detail.Score,
-			})
+			}); createErr != nil {
+				slog.Warn("collection: create anime from bangumi", "bangumiID", bangumiID, "err", createErr)
+			}
 		}
 	}
 

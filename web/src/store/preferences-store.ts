@@ -32,6 +32,10 @@ interface PreferencesState extends GlobalPreferences {
   ) => void;
   syncFromBackend: () => Promise<void>;
   resetToDefaults: () => void;
+  toggleDanmaku: () => void;
+  setDanmakuOpacity: (v: number) => void;
+  setDanmakuFontSize: (v: number) => void;
+  setDanmakuSpeed: (v: number) => void;
 }
 
 // Debounced sync helper
@@ -100,6 +104,23 @@ export const usePreferencesStore = create<PreferencesState>()(
         } catch {
           // Silently fail — localStorage has the data
         }
+      },
+
+      toggleDanmaku: () => {
+        set((s) => ({ danmakuEnabled: !s.danmakuEnabled }));
+        debouncedSync(extractPrefs(get()));
+      },
+      setDanmakuOpacity: (v) => {
+        set({ danmakuOpacity: v });
+        debouncedSync(extractPrefs(get()));
+      },
+      setDanmakuFontSize: (v) => {
+        set({ danmakuFontSize: v });
+        debouncedSync(extractPrefs(get()));
+      },
+      setDanmakuSpeed: (v) => {
+        set({ danmakuSpeed: v });
+        debouncedSync(extractPrefs(get()));
       },
 
       resetToDefaults: () => {

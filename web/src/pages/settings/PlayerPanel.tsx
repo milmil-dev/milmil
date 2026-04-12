@@ -10,7 +10,6 @@ import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { KeyBindingPanel } from '@/plugins/keyboard/KeyBindingPanel';
-import { usePlayerStore } from '@/store/player-store';
 import { usePreferencesStore } from '@/store/preferences-store';
 import { SUBTITLE_PRESETS } from '@/plugins/subtitle/StyleEngine';
 import type { SubtitleStyle } from '@/lib/api/preferences';
@@ -159,10 +158,10 @@ export function PlayerPanel() {
     { label: i18n._(msg`settings.player.speed.fast`), value: 200 },
   ];
 
-  const danmakuEnabled = usePlayerStore((s) => s.danmakuEnabled);
-  const danmakuOpacity = usePlayerStore((s) => s.danmakuOpacity);
-  const danmakuFontSize = usePlayerStore((s) => s.danmakuFontSize);
-  const danmakuSpeed = usePlayerStore((s) => s.danmakuSpeed);
+  const danmakuEnabled = usePreferencesStore((s) => s.danmakuEnabled);
+  const danmakuOpacity = usePreferencesStore((s) => s.danmakuOpacity);
+  const danmakuFontSize = usePreferencesStore((s) => s.danmakuFontSize);
+  const danmakuSpeed = usePreferencesStore((s) => s.danmakuSpeed);
 
   // Subtitle preferences
   const subtitleStyle = usePreferencesStore((s) => s.subtitleStyle);
@@ -187,7 +186,7 @@ export function PlayerPanel() {
       danmaku_speed: number;
     }) => api.put('/api/v1/settings/player', data),
     onSuccess: (_data, variables) => {
-      const store = usePlayerStore.getState();
+      const store = usePreferencesStore.getState();
       if (variables.danmaku_enabled !== store.danmakuEnabled) store.toggleDanmaku();
       store.setDanmakuOpacity(variables.danmaku_opacity);
       store.setDanmakuFontSize(variables.danmaku_font_size);
@@ -205,7 +204,7 @@ export function PlayerPanel() {
     fontSize: number;
     speed: number;
   }>) => {
-    const store = usePlayerStore.getState();
+    const store = usePreferencesStore.getState();
     saveMutation.mutate({
       danmaku_enabled: overrides.enabled ?? store.danmakuEnabled,
       danmaku_opacity: overrides.opacity != null ? overrides.opacity / 100 : store.danmakuOpacity,
@@ -273,7 +272,7 @@ export function PlayerPanel() {
                   max={100}
                   value={Math.round(danmakuOpacity * 100)}
                   onChange={(e) => {
-                    usePlayerStore.getState().setDanmakuOpacity(Number(e.target.value) / 100);
+                    usePreferencesStore.getState().setDanmakuOpacity(Number(e.target.value) / 100);
                   }}
                   onMouseUp={(e) => save({ opacity: Number((e.target as HTMLInputElement).value) })}
                   onTouchEnd={(e) => save({ opacity: Number((e.target as HTMLInputElement).value) })}

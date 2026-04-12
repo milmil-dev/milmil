@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"log/slog"
+
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
@@ -121,11 +123,13 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 					summary.Matched++
 					summary.ByBangumi++
 					matched[f.ID] = true
-					_ = m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
+					if err := m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
 						BangumiSubjectID: sql.NullInt64{Int64: bangumiID, Valid: true},
 						BangumiEpisodeID: sql.NullInt64{Int64: int64(ep.ID), Valid: true},
 						ID:               f.ID,
-					})
+					}); err != nil {
+						slog.Warn("matcher: update media file failed", "file", f.ID, "err", err)
+					}
 					break
 				}
 			}
@@ -156,11 +160,13 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 			summary.Matched++
 			summary.ByDandanplay++
 			matched[f.ID] = true
-			_ = m.queries.UpdateMediaFileDandanplayIDs(ctx, store.UpdateMediaFileDandanplayIDsParams{
+			if err := m.queries.UpdateMediaFileDandanplayIDs(ctx, store.UpdateMediaFileDandanplayIDsParams{
 				DandanplayEpisodeID: sql.NullInt64{Int64: episodeID, Valid: true},
 				DandanplayAnimeID:   sql.NullInt64{Int64: animeID, Valid: true},
 				ID:                  f.ID,
-			})
+			}); err != nil {
+				slog.Warn("matcher: update media file failed", "file", f.ID, "err", err)
+			}
 		}
 
 		processed++
@@ -194,11 +200,13 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 				summary.Matched++
 				summary.ByBangumi++
 				matched[f.ID] = true
-				_ = m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
+				if err := m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
 					BangumiSubjectID: sql.NullInt64{Int64: int64(subjectID), Valid: true},
 					BangumiEpisodeID: sql.NullInt64{Int64: int64(episodeID), Valid: true},
 					ID:               f.ID,
-				})
+				}); err != nil {
+					slog.Warn("matcher: update media file failed", "file", f.ID, "err", err)
+				}
 			}
 
 			processed++
@@ -233,11 +241,13 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 				summary.Matched++
 				summary.ByTMDB++
 				matched[f.ID] = true
-				_ = m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
+				if err := m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
 					BangumiSubjectID: sql.NullInt64{Int64: int64(subjectID), Valid: true},
 					BangumiEpisodeID: sql.NullInt64{Int64: int64(episodeID), Valid: true},
 					ID:               f.ID,
-				})
+				}); err != nil {
+					slog.Warn("matcher: update media file failed", "file", f.ID, "err", err)
+				}
 			}
 
 			processed++

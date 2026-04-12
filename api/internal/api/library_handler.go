@@ -365,21 +365,29 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 
 		// Auto-match after scan (non-fatal if matcher is nil or fails)
 		if h.matcher != nil {
-			_, _ = h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress)
+			if _, matchErr := h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress); matchErr != nil {
+				slog.Warn("library: background match failed", "libraryID", lib.ID, "err", matchErr)
+			}
 		}
 		// Resolve anime metadata after matching (non-fatal if resolver is nil or fails)
 		if h.resolver != nil {
-			_, _ = h.resolver.ResolveLibrary(context.Background(), lib.ID)
+			if _, resolveErr := h.resolver.ResolveLibrary(context.Background(), lib.ID); resolveErr != nil {
+				slog.Warn("library: background resolve failed", "libraryID", lib.ID, "err", resolveErr)
+			}
 		}
 
 		// Resolve Bangumi-matched files
 		if h.resolver != nil {
-			_, _ = h.resolver.ResolveBangumiMatched(context.Background(), lib.ID)
+			if _, resolveErr := h.resolver.ResolveBangumiMatched(context.Background(), lib.ID); resolveErr != nil {
+				slog.Warn("library: background resolve bangumi failed", "libraryID", lib.ID, "err", resolveErr)
+			}
 		}
 
 		// Enrich episodes with TMDB Chinese metadata
 		if h.tmdb != nil {
-			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+			if _, enrichErr := matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID); enrichErr != nil {
+				slog.Warn("library: background TMDB enrich failed", "libraryID", lib.ID, "err", enrichErr)
+			}
 		}
 
 		onProgress(scanner.ProgressEvent{Type: "scan:completed", LibraryID: lib.ID})

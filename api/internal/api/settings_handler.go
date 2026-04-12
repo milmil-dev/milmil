@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -106,10 +107,12 @@ func (h *handler) handleImportSettings(c echo.Context) error {
 func (h *handler) handleResetSettings(c echo.Context) error {
 	ctx := c.Request().Context()
 	for _, key := range settingsKeys {
-		_, _ = h.queries.UpsertSetting(ctx, store.UpsertSettingParams{
+		if _, upsertErr := h.queries.UpsertSetting(ctx, store.UpsertSettingParams{
 			Key:   key,
 			Value: "{}",
-		})
+		}); upsertErr != nil {
+			slog.Warn("settings: reset key", "key", key, "err", upsertErr)
+		}
 	}
 	return c.NoContent(http.StatusNoContent)
 }

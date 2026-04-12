@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/milmil/api/internal/cache"
@@ -40,10 +41,12 @@ func EnrichEpisodesFromTMDB(ctx context.Context, q *store.Queries, tmdbClient tm
 				continue
 			}
 			tmdbID = shows[0].ID
-			_ = q.UpdateAnimeTMDBID(ctx, store.UpdateAnimeTMDBIDParams{
+			if err := q.UpdateAnimeTMDBID(ctx, store.UpdateAnimeTMDBIDParams{
 				TmdbID: sql.NullInt64{Int64: int64(tmdbID), Valid: true},
 				ID:     anime.ID,
-			})
+			}); err != nil {
+				slog.Warn("enrichment: update anime TMDB ID failed", "err", err)
+			}
 		}
 
 		// Fetch season 1 episodes with Chinese language (cached)

@@ -100,7 +100,9 @@ func (h *handler) handleDeleteDownload(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	// Remove from download engine (handles file deletion if requested)
-	_ = h.downloader.Remove(ctx, gid, deleteFiles)
+	if err := h.downloader.Remove(ctx, gid, deleteFiles); err != nil {
+		slog.Warn("download: remove from engine", "gid", gid, "err", err)
+	}
 
 	// Fallback: if delete_files requested, also try manual file removal
 	// in case the engine didn't have the download tracked
@@ -130,7 +132,9 @@ func (h *handler) handleBatchDeleteDownloads(c echo.Context) error {
 
 	deleted := 0
 	for _, dl := range downloads {
-		_ = h.downloader.Remove(ctx, dl.Gid, deleteFiles)
+		if err := h.downloader.Remove(ctx, dl.Gid, deleteFiles); err != nil {
+			slog.Warn("batch_delete: remove from engine", "gid", dl.Gid, "err", err)
+		}
 		if deleteFiles {
 			h.deleteDownloadFiles(dl)
 		}

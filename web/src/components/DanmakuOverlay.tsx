@@ -2,7 +2,7 @@
 import DanmakuEngine from 'danmaku';
 import { useEffect, useRef } from 'react';
 import type { DanmakuComment } from '@/lib/api/stream';
-import { usePlayerStore } from '@/store/player-store';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 interface DanmakuOverlayProps {
   videoElement: HTMLVideoElement | null;
@@ -12,8 +12,8 @@ interface DanmakuOverlayProps {
 export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const danmakuRef = useRef<DanmakuEngine | null>(null);
-  const enabled = usePlayerStore((s) => s.danmakuEnabled);
-  const speed = usePlayerStore((s) => s.danmakuSpeed);
+  const enabled = usePreferencesStore((s) => s.danmakuEnabled);
+  const speed = usePreferencesStore((s) => s.danmakuSpeed);
 
   // Init danmaku engine
   useEffect(() => {

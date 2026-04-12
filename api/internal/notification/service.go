@@ -189,14 +189,18 @@ func (s *Service) dispatchExternal(notifType, title, message, severity string, m
 
 		if sendErr := provider.Send(ctx, event); sendErr != nil {
 			nextRetry := time.Now().Add(1 * time.Minute).Format(time.RFC3339)
-			_ = s.queries.UpdateDeliveryFailure(ctx, store.UpdateDeliveryFailureParams{
+			if dbErr := s.queries.UpdateDeliveryFailure(ctx, store.UpdateDeliveryFailureParams{
 				LastError:   sql.NullString{String: sendErr.Error(), Valid: true},
 				NextRetryAt: sql.NullString{String: nextRetry, Valid: true},
 				ID:          deliveryID,
-			})
+			}); dbErr != nil {
+				slog.Error("notification: record delivery failure failed", "provider", name, "deliveryID", deliveryID, "err", dbErr)
+			}
 			slog.Warn("notification: delivery failed, will retry", "provider", name, "err", sendErr)
 		} else {
-			_ = s.queries.UpdateDeliverySuccess(ctx, deliveryID)
+			if dbErr := s.queries.UpdateDeliverySuccess(ctx, deliveryID); dbErr != nil {
+				slog.Error("notification: record delivery success failed", "provider", name, "deliveryID", deliveryID, "err", dbErr)
+			}
 		}
 	}
 }

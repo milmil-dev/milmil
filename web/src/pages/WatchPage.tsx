@@ -51,7 +51,6 @@ import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
 // SubtitleSettingsPanel replaced by UnifiedSettingsPanel
 import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { useBgStore } from '@/store/bg-store';
-import { usePlayerStore } from '@/store/player-store';
 import { usePreferencesStore } from '@/store/preferences-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
@@ -258,8 +257,8 @@ export function WatchPage() {
   });
 
   // --------------- Danmaku parsing ---------------
-  const danmakuFontSize = usePlayerStore((s) => s.danmakuFontSize);
-  const danmakuOpacity = usePlayerStore((s) => s.danmakuOpacity);
+  const danmakuFontSize = usePreferencesStore((s) => s.danmakuFontSize);
+  const danmakuOpacity = usePreferencesStore((s) => s.danmakuOpacity);
 
   const danmakuComments: DanmakuComment[] = useMemo(
     () =>
@@ -642,7 +641,7 @@ export function WatchPage() {
             {/* LEFT COLUMN */}
             <div className="flex-1 min-w-0">
               {/* Player container */}
-              <div className="relative aspect-video overflow-hidden border-0">
+              <div className="relative aspect-video overflow-hidden border-0 rounded-lg bg-black">
                 {streamUrl ? (
                   <>
                     <VideoPlayer
@@ -680,7 +679,7 @@ export function WatchPage() {
                   </>
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Spinner size={24} className="text-white/40" />
+                    <Spinner size={32} className="text-white/50" />
                   </div>
                 )}
               </div>

@@ -4,21 +4,21 @@ import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { usePlayerStore } from '@/store/player-store';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 const FONT_SIZES = [16, 20, 24] as const;
 
 export function DanmakuSettings() {
   const { i18n } = useLingui();
   const [open, setOpen] = useState(false);
-  const enabled = usePlayerStore((s) => s.danmakuEnabled);
-  const opacity = usePlayerStore((s) => s.danmakuOpacity);
-  const fontSize = usePlayerStore((s) => s.danmakuFontSize);
-  const speed = usePlayerStore((s) => s.danmakuSpeed);
-  const toggleDanmaku = usePlayerStore((s) => s.toggleDanmaku);
-  const setOpacity = usePlayerStore((s) => s.setDanmakuOpacity);
-  const setFontSize = usePlayerStore((s) => s.setDanmakuFontSize);
-  const setSpeed = usePlayerStore((s) => s.setDanmakuSpeed);
+  const enabled = usePreferencesStore((s) => s.danmakuEnabled);
+  const opacity = usePreferencesStore((s) => s.danmakuOpacity);
+  const fontSize = usePreferencesStore((s) => s.danmakuFontSize);
+  const speed = usePreferencesStore((s) => s.danmakuSpeed);
+  const toggleDanmaku = usePreferencesStore((s) => s.toggleDanmaku);
+  const setOpacity = usePreferencesStore((s) => s.setDanmakuOpacity);
+  const setFontSize = usePreferencesStore((s) => s.setDanmakuFontSize);
+  const setSpeed = usePreferencesStore((s) => s.setDanmakuSpeed);
 
   return (
     <div className="absolute top-3 right-3 z-20">
@@ -138,14 +138,14 @@ export function DanmakuSettings() {
 /** Standalone settings controls without positioning wrapper — for use in DanmakuBar popover */
 export function DanmakuSettingsControls() {
   const { i18n } = useLingui();
-  const enabled = usePlayerStore((s) => s.danmakuEnabled);
-  const opacity = usePlayerStore((s) => s.danmakuOpacity);
-  const fontSize = usePlayerStore((s) => s.danmakuFontSize);
-  const speed = usePlayerStore((s) => s.danmakuSpeed);
-  const toggleDanmaku = usePlayerStore((s) => s.toggleDanmaku);
-  const setOpacity = usePlayerStore((s) => s.setDanmakuOpacity);
-  const setFontSize = usePlayerStore((s) => s.setDanmakuFontSize);
-  const setSpeed = usePlayerStore((s) => s.setDanmakuSpeed);
+  const enabled = usePreferencesStore((s) => s.danmakuEnabled);
+  const opacity = usePreferencesStore((s) => s.danmakuOpacity);
+  const fontSize = usePreferencesStore((s) => s.danmakuFontSize);
+  const speed = usePreferencesStore((s) => s.danmakuSpeed);
+  const toggleDanmaku = usePreferencesStore((s) => s.toggleDanmaku);
+  const setOpacity = usePreferencesStore((s) => s.setDanmakuOpacity);
+  const setFontSize = usePreferencesStore((s) => s.setDanmakuFontSize);
+  const setSpeed = usePreferencesStore((s) => s.setDanmakuSpeed);
 
   return (
     <div className="space-y-3">

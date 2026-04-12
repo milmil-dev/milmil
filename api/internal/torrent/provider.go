@@ -37,6 +37,7 @@ type Provider interface {
 
 // Registry holds all registered torrent providers and dispatches searches.
 type Registry struct {
+	mu        sync.RWMutex
 	providers map[string]Provider
 }
 
@@ -45,10 +46,14 @@ func NewRegistry() *Registry {
 }
 
 func (r *Registry) Register(p Provider) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	r.providers[p.Name()] = p
 }
 
 func (r *Registry) Names() []string {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 	names := make([]string, 0, len(r.providers))
 	for name := range r.providers {
 		names = append(names, name)
@@ -58,7 +63,9 @@ func (r *Registry) Names() []string {
 
 // Search queries a single provider by name.
 func (r *Registry) Search(ctx context.Context, source, query string) ([]SearchResult, error) {
+	r.mu.RLock()
 	p, ok := r.providers[source]
+	r.mu.RUnlock()
 	if !ok {
 		return nil, nil
 	}
@@ -67,12 +74,19 @@ func (r *Registry) Search(ctx context.Context, source, query string) ([]SearchRe
 
 // SearchAll queries all providers concurrently and merges results.
 func (r *Registry) SearchAll(ctx context.Context, query string) []SearchResult {
+	r.mu.RLock()
+	snapshot := make([]Provider, 0, len(r.providers))
+	for _, p := range r.providers {
+		snapshot = append(snapshot, p)
+	}
+	r.mu.RUnlock()
+
 	var (
 		mu      sync.Mutex
 		results []SearchResult
 		wg      sync.WaitGroup
 	)
-	for _, p := range r.providers {
+	for _, p := range snapshot {
 		wg.Add(1)
 		go func(p Provider) {
 			defer wg.Done()

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -236,10 +237,12 @@ func (h *handler) handleTriggerSync(c echo.Context) error {
 		}
 
 		// Update last_sync_at.
-		_ = h.queries.UpdateBackupSyncTime(ctx, store.UpdateBackupSyncTimeParams{
+		if err := h.queries.UpdateBackupSyncTime(ctx, store.UpdateBackupSyncTimeParams{
 			UserID: userID,
 			Type:   row.Type,
-		})
+		}); err != nil {
+			slog.Warn("backup: update sync time", "type", row.Type, "err", err)
+		}
 
 		results = append(results, syncResult{
 			Type:   row.Type,

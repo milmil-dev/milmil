@@ -77,8 +77,8 @@ vi.mock('@/components/DanmakuSettings', () => ({
   DanmakuSettings: () => <div data-testid="danmaku-settings" />,
 }));
 
-vi.mock('@/store/player-store', () => ({
-  usePlayerStore: (selector: (s: Record<string, unknown>) => unknown) =>
+vi.mock('@/store/preferences-store', () => ({
+  usePreferencesStore: (selector: (s: Record<string, unknown>) => unknown) =>
     selector({ danmakuOpacity: 1, danmakuFontSize: 24 }),
 }));
 

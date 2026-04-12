@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -71,11 +72,13 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 	// Start FFmpeg in background
 	go func() {
 		bgCtx := context.Background()
-		_ = h.queries.UpdateTranscodeSessionStatus(bgCtx, store.UpdateTranscodeSessionStatusParams{
+		if err := h.queries.UpdateTranscodeSessionStatus(bgCtx, store.UpdateTranscodeSessionStatusParams{
 			Status:       "running",
 			Progress:     0,
 			SessionToken: token,
-		})
+		}); err != nil {
+			slog.Warn("transcode: set session status running", "token", token, "err", err)
+		}
 
 		// For remote storage backends, copy the file to a local temp path before transcoding.
 		inputPath := file.Path
@@ -93,7 +96,9 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 				rc, openErr := provider.Open(file.Path)
 				if openErr == nil {
 					tmpDir := filepath.Join(os.TempDir(), "milmil", "transcode-input", token)
-					_ = os.MkdirAll(tmpDir, 0o700)
+					if mkdirErr := os.MkdirAll(tmpDir, 0o700); mkdirErr != nil {
+						slog.Warn("transcode: create temp dir", "dir", tmpDir, "err", mkdirErr)
+					}
 					tmpPath := filepath.Join(tmpDir, file.Filename)
 					if f, createErr := os.Create(tmpPath); createErr == nil {
 						if _, copyErr := io.Copy(f, rc); copyErr == nil {
@@ -108,7 +113,9 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 		}
 		defer func() {
 			if tempFile != "" {
-				_ = os.Remove(tempFile)
+				if removeErr := os.Remove(tempFile); removeErr != nil {
+					slog.Warn("transcode: remove temp file", "path", tempFile, "err", removeErr)
+				}
 			}
 		}()
 
@@ -125,11 +132,13 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 			status = "error"
 			progress = 0
 		}
-		_ = h.queries.UpdateTranscodeSessionStatus(bgCtx, store.UpdateTranscodeSessionStatusParams{
+		if err := h.queries.UpdateTranscodeSessionStatus(bgCtx, store.UpdateTranscodeSessionStatusParams{
 			Status:       status,
 			Progress:     progress,
 			SessionToken: token,
-		})
+		}); err != nil {
+			slog.Warn("transcode: set session final status", "token", token, "status", status, "err", err)
+		}
 
 		if h.wsHub != nil {
 			h.wsHub.Broadcast(ws2.Event{

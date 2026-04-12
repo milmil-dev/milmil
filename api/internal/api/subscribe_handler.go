@@ -174,7 +174,9 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 	})
 	if err != nil {
 		// Clean up feed if rule creation fails
-		_ = h.queries.DeleteRSSFeed(ctx, feed.ID)
+		if delErr := h.queries.DeleteRSSFeed(ctx, feed.ID); delErr != nil {
+			slog.Warn("subscribe: cleanup feed after rule creation failure", "feedID", feed.ID, "err", delErr)
+		}
 		return echo.ErrInternalServerError
 	}
 
@@ -268,7 +270,9 @@ func (h *handler) refreshNewSubscription(feed store.RssFeed, rule store.Download
 			continue
 		}
 
-		_ = h.queries.UpdateDownloadRuleTriggered(ctx, rule.ID)
+		if err := h.queries.UpdateDownloadRuleTriggered(ctx, rule.ID); err != nil {
+			slog.Warn("subscribe: update rule triggered time", "ruleID", rule.ID, "err", err)
+		}
 		added++
 	}
 

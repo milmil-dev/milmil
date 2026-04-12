@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"log/slog"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -11,7 +12,7 @@ import (
 
 type createDownloadRuleRequest struct {
 	Name             string `json:"name"`
-	Enabled          bool   `json:"enabled"`
+	Enabled          int64  `json:"enabled"`
 	RSSFeedID        string `json:"rss_feed_id"`
 	FilterRegex      string `json:"filter_regex"`
 	ExcludeRegex     string `json:"exclude_regex"`
@@ -21,7 +22,7 @@ type createDownloadRuleRequest struct {
 	SubGroupFilter   string `json:"subgroup_filter"`
 	MinSeeders       int64  `json:"min_seeders"`
 	LibraryID        string `json:"library_id"`
-	BangumiID        int64  `json:"bangumi_id"`
+	BangumiID        *int64 `json:"bangumi_id"`
 	MatchMode        string `json:"match_mode"`
 	EpisodeFilter    string `json:"episode_filter"`
 	EpisodeRange     string `json:"episode_range"`
@@ -29,7 +30,7 @@ type createDownloadRuleRequest struct {
 
 type updateDownloadRuleRequest struct {
 	Name             string `json:"name"`
-	Enabled          bool   `json:"enabled"`
+	Enabled          int64  `json:"enabled"`
 	RSSFeedID        string `json:"rss_feed_id"`
 	FilterRegex      string `json:"filter_regex"`
 	ExcludeRegex     string `json:"exclude_regex"`
@@ -39,7 +40,7 @@ type updateDownloadRuleRequest struct {
 	SubGroupFilter   string `json:"subgroup_filter"`
 	MinSeeders       int64  `json:"min_seeders"`
 	LibraryID        string `json:"library_id"`
-	BangumiID        int64  `json:"bangumi_id"`
+	BangumiID        *int64 `json:"bangumi_id"`
 	MatchMode        string `json:"match_mode"`
 	EpisodeFilter    string `json:"episode_filter"`
 	EpisodeRange     string `json:"episode_range"`
@@ -115,12 +116,8 @@ func (h *handler) handleCreateDownloadRule(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
 	}
-	if req.Name == "" || req.RSSFeedID == "" || req.FilterRegex == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "name, rss_feed_id, and filter_regex are required")
-	}
-	enabled := int64(0)
-	if req.Enabled {
-		enabled = 1
+	if req.Name == "" || req.RSSFeedID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "name and rss_feed_id are required")
 	}
 	matchMode := req.MatchMode
 	if matchMode == "" {
@@ -133,7 +130,7 @@ func (h *handler) handleCreateDownloadRule(c echo.Context) error {
 	rule, err := h.queries.CreateDownloadRule(c.Request().Context(), store.CreateDownloadRuleParams{
 		ID:               uuid.NewString(),
 		Name:             req.Name,
-		Enabled:          enabled,
+		Enabled:          req.Enabled,
 		RssFeedID:        req.RSSFeedID,
 		FilterRegex:      req.FilterRegex,
 		ExcludeRegex:     req.ExcludeRegex,
@@ -143,7 +140,7 @@ func (h *handler) handleCreateDownloadRule(c echo.Context) error {
 		SubgroupFilter:   req.SubGroupFilter,
 		MinSeeders:       req.MinSeeders,
 		LibraryID:        sql.NullString{String: req.LibraryID, Valid: req.LibraryID != ""},
-		BangumiID:        sql.NullInt64{Int64: req.BangumiID, Valid: req.BangumiID != 0},
+		BangumiID:        sql.NullInt64{Int64: derefInt64(req.BangumiID), Valid: req.BangumiID != nil && *req.BangumiID != 0},
 		MatchMode:        matchMode,
 		EpisodeFilter:    episodeFilter,
 		EpisodeRange:     req.EpisodeRange,
@@ -159,12 +156,8 @@ func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
 	}
-	if req.Name == "" || req.RSSFeedID == "" || req.FilterRegex == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "name, rss_feed_id, and filter_regex are required")
-	}
-	enabled := int64(0)
-	if req.Enabled {
-		enabled = 1
+	if req.Name == "" || req.RSSFeedID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "name and rss_feed_id are required")
 	}
 	updateMatchMode := req.MatchMode
 	if updateMatchMode == "" {
@@ -177,7 +170,7 @@ func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
 	if err := h.queries.UpdateDownloadRule(c.Request().Context(), store.UpdateDownloadRuleParams{
 		ID:               c.Param("id"),
 		Name:             req.Name,
-		Enabled:          enabled,
+		Enabled:          req.Enabled,
 		RssFeedID:        req.RSSFeedID,
 		FilterRegex:      req.FilterRegex,
 		ExcludeRegex:     req.ExcludeRegex,
@@ -187,7 +180,7 @@ func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
 		SubgroupFilter:   req.SubGroupFilter,
 		MinSeeders:       req.MinSeeders,
 		LibraryID:        sql.NullString{String: req.LibraryID, Valid: req.LibraryID != ""},
-		BangumiID:        sql.NullInt64{Int64: req.BangumiID, Valid: req.BangumiID != 0},
+		BangumiID:        sql.NullInt64{Int64: derefInt64(req.BangumiID), Valid: req.BangumiID != nil && *req.BangumiID != 0},
 		MatchMode:        updateMatchMode,
 		EpisodeFilter:    updateEpisodeFilter,
 		EpisodeRange:     req.EpisodeRange,
@@ -201,7 +194,9 @@ func (h *handler) handleDeleteDownloadRule(c echo.Context) error {
 	ctx := c.Request().Context()
 	ruleID := c.Param("id")
 	// Unlink downloads so they don't become orphans
-	_ = h.queries.UnlinkDownloadsByRuleID(ctx, sql.NullString{String: ruleID, Valid: true})
+	if err := h.queries.UnlinkDownloadsByRuleID(ctx, sql.NullString{String: ruleID, Valid: true}); err != nil {
+		slog.Warn("rule: unlink downloads by rule", "ruleID", ruleID, "err", err)
+	}
 	if err := h.queries.DeleteDownloadRule(ctx, ruleID); err != nil {
 		return echo.ErrInternalServerError
 	}
