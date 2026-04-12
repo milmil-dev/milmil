@@ -440,7 +440,7 @@ function TelegramCard({
             id="telegram-chat-id"
             value={config.chat_id}
             onChange={(e) => onChange({ ...config, chat_id: e.target.value })}
-            placeholder="-1001234567890"
+            placeholder="123456789"
             className={INPUT_CLASS}
           />
         </Field>
@@ -532,7 +532,7 @@ function TelegramCard({
                   id="telegram-bot-chat-ids"
                   value={chatIdsRaw}
                   onChange={(e) => handleChatIdsChange(e.target.value)}
-                  placeholder="123456789, -1001234567890"
+                  placeholder="123456789, 987654321"
                   className={INPUT_CLASS}
                 />
                 <p className="mt-1 text-xs text-white/30">
