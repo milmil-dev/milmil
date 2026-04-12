@@ -30,6 +30,7 @@ export interface TelegramBotConfig {
   allowed_chat_ids: number[];
   report_interval: string;
   language: string;
+  airing_reminder_minutes: number;
 }
 
 export interface DiscordBotConfig {
@@ -83,6 +84,7 @@ export const NOTIFICATION_EVENTS = [
   { id: 'library.scan_complete', labelKey: 'notifications.event.libraryScanComplete' },
   { id: 'system.error', labelKey: 'notifications.event.systemError' },
   { id: 'auth.login', labelKey: 'notifications.event.authLogin' },
+  { id: 'anime.airing', labelKey: 'notifications.event.animeAiring' },
 ] as const;
 
 export const PROVIDERS = ['discord', 'telegram', 'webhook'] as const;

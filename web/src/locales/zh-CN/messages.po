@@ -2229,31 +2229,31 @@ msgstr "设置"
 #~ msgid "nav.trending"
 #~ msgstr "热门"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:548
+#: src/pages/settings/NotificationSettingsPanel.tsx:555
 msgid "notifications.bot.advanced"
 msgstr "高级设置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:529
+#: src/pages/settings/NotificationSettingsPanel.tsx:538
 msgid "notifications.bot.allowedChatIds"
 msgstr "允许的聊天 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:539
+#: src/pages/settings/NotificationSettingsPanel.tsx:548
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "用逗号分隔。留空则允许任何聊天。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:355
+#: src/pages/settings/NotificationSettingsPanel.tsx:364
 msgid "notifications.bot.allowedGuildIds"
 msgstr "允许的服务器 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:365
+#: src/pages/settings/NotificationSettingsPanel.tsx:374
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "用逗号分隔。留空则允许任何服务器。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:343
+#: src/pages/settings/NotificationSettingsPanel.tsx:352
 msgid "notifications.bot.applicationId"
 msgstr "应用程序 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:331
+#: src/pages/settings/NotificationSettingsPanel.tsx:340
 msgid "notifications.bot.botToken"
 msgstr "机器人令牌"
 
@@ -2261,11 +2261,11 @@ msgstr "机器人令牌"
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord 机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:493
+#: src/pages/settings/NotificationSettingsPanel.tsx:502
 msgid "notifications.bot.language"
 msgstr "机器人语言"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:506
+#: src/pages/settings/NotificationSettingsPanel.tsx:515
 msgid "notifications.bot.language.system"
 msgstr "跟随系统"
 
@@ -2273,16 +2273,16 @@ msgstr "跟随系统"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:553
+#: src/pages/settings/NotificationSettingsPanel.tsx:560
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:563
+#: src/pages/settings/NotificationSettingsPanel.tsx:570
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "可选。留空以使用长轮询。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:311
-#: src/pages/settings/NotificationSettingsPanel.tsx:469
+#: src/pages/settings/NotificationSettingsPanel.tsx:317
+#: src/pages/settings/NotificationSettingsPanel.tsx:475
 msgid "notifications.botCommands"
 msgstr "机器人命令"
 
@@ -2290,12 +2290,12 @@ msgstr "机器人命令"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "在 Telegram 或 Discord 中启用交互式机器人命令"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:312
-#: src/pages/settings/NotificationSettingsPanel.tsx:470
+#: src/pages/settings/NotificationSettingsPanel.tsx:318
+#: src/pages/settings/NotificationSettingsPanel.tsx:476
 msgid "notifications.botCommands.shortDesc"
 msgstr "通过 /search、/schedule 等命令互动"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:640
+#: src/pages/settings/NotificationSettingsPanel.tsx:647
 msgid "notifications.change"
 msgstr "更改"
 
@@ -2316,13 +2316,21 @@ msgstr "暂无通知"
 msgid "notifications.emptyHint"
 msgstr "下载完成或发现新剧集时，通知会显示在这里。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:687
+#: src/pages/settings/NotificationSettingsPanel.tsx:694
 msgid "notifications.enableProviderAbove"
 msgstr "启用上方的提供商以配置事件路由"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:705
+#: src/pages/settings/NotificationSettingsPanel.tsx:712
 msgid "notifications.event"
 msgstr "事件"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:76
+msgid "notifications.event.animeAiring"
+msgstr "番剧放送提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:77
+msgid "notifications.event.animeAiring.desc"
+msgstr "关注的番剧放送前提醒"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:72
 msgid "notifications.event.authLogin"
@@ -2372,7 +2380,7 @@ msgstr "系统错误"
 msgid "notifications.event.systemError.desc"
 msgstr "后台任务意外失败时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:696
+#: src/pages/settings/NotificationSettingsPanel.tsx:703
 msgid "notifications.eventRouting"
 msgstr "事件路由"
 
@@ -2395,8 +2403,8 @@ msgstr "媒体库"
 msgid "notifications.filter.system"
 msgstr "系统"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:913
-#: src/pages/settings/NotificationSettingsPanel.tsx:929
+#: src/pages/settings/NotificationSettingsPanel.tsx:920
+#: src/pages/settings/NotificationSettingsPanel.tsx:936
 msgid "notifications.intro"
 msgstr "当下载完成或出现问题时，通过Discord、Telegram或Webhook接收通知。"
 
@@ -2409,54 +2417,54 @@ msgstr "加载更多"
 msgid "notifications.markAllRead"
 msgstr "全部已读"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:107
+#: src/pages/settings/NotificationSettingsPanel.tsx:111
 msgid "notifications.providerStatus.error"
 msgstr "错误"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:106
+#: src/pages/settings/NotificationSettingsPanel.tsx:110
 msgid "notifications.providerStatus.ok"
 msgstr "已连接"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:111
+#: src/pages/settings/NotificationSettingsPanel.tsx:115
 msgid "notifications.providerStatus.unconfigured"
 msgstr "未配置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:274
-#: src/pages/settings/NotificationSettingsPanel.tsx:453
+#: src/pages/settings/NotificationSettingsPanel.tsx:278
+#: src/pages/settings/NotificationSettingsPanel.tsx:461
 msgid "notifications.pushNotifications"
 msgstr "推送通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:275
-#: src/pages/settings/NotificationSettingsPanel.tsx:454
+#: src/pages/settings/NotificationSettingsPanel.tsx:279
+#: src/pages/settings/NotificationSettingsPanel.tsx:462
 msgid "notifications.pushNotifications.desc"
 msgstr "接收下载和系统事件的通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:629
+#: src/pages/settings/NotificationSettingsPanel.tsx:636
 msgid "notifications.secretIsSet"
 msgstr "密钥已设置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:624
+#: src/pages/settings/NotificationSettingsPanel.tsx:631
 msgid "notifications.secretPlaceholder"
 msgstr "可选签名密钥"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:939
+#: src/pages/settings/NotificationSettingsPanel.tsx:946
 msgid "notifications.setupGuide"
 msgstr "设置指南"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:158
+#: src/pages/settings/NotificationSettingsPanel.tsx:162
 msgid "notifications.test"
 msgstr "测试"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:207
+#: src/pages/settings/NotificationSettingsPanel.tsx:211
 msgid "notifications.testBot"
 msgstr "测试机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:171
-#: src/pages/settings/NotificationSettingsPanel.tsx:220
+#: src/pages/settings/NotificationSettingsPanel.tsx:175
+#: src/pages/settings/NotificationSettingsPanel.tsx:224
 msgid "notifications.testFailed"
 msgstr "测试失败"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:170
+#: src/pages/settings/NotificationSettingsPanel.tsx:174
 msgid "notifications.testSuccess"
 msgstr "已发送！"
 
@@ -3291,8 +3299,8 @@ msgstr "通用"
 msgid "settings.nav.integrations"
 msgstr "集成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:910
-#: src/pages/settings/NotificationSettingsPanel.tsx:926
+#: src/pages/settings/NotificationSettingsPanel.tsx:917
+#: src/pages/settings/NotificationSettingsPanel.tsx:933
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3479,7 +3487,7 @@ msgstr "饱和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:983
+#: src/pages/settings/NotificationSettingsPanel.tsx:990
 msgid "settings.save"
 msgstr "保存"
 
@@ -3508,7 +3516,7 @@ msgstr "保存失败"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:982
+#: src/pages/settings/NotificationSettingsPanel.tsx:989
 msgid "settings.saving"
 msgstr "保存中…"
 

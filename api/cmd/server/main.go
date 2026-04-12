@@ -289,7 +289,7 @@ func main() {
 
 	// Background job scheduler — goroutine-based tickers
 	sched := worker.NewScheduler(
-		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, wsHub, botEngine,
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, wsHub, botEngine,
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")

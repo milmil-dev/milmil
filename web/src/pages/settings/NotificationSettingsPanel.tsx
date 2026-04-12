@@ -72,6 +72,10 @@ const EVENT_LABEL_KEYS: Record<string, { label: ReturnType<typeof msg>; desc: Re
     label: msg`notifications.event.authLogin`,
     desc: msg`notifications.event.authLogin.desc`,
   },
+  'anime.airing': {
+    label: msg`notifications.event.animeAiring`,
+    desc: msg`notifications.event.animeAiring.desc`,
+  },
 };
 
 // ─── Default empty settings ─────────────────────────────────────────────────
@@ -85,7 +89,7 @@ function defaultSettings(): NotificationSettings {
     },
     events: {},
     bot: {
-      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [], report_interval: '', language: '' },
+      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [], report_interval: '', language: '', airing_reminder_minutes: 0 },
       discord: { enabled: false, bot_token: '', application_id: '', allowed_guild_ids: [] },
     },
   };

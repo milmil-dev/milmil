@@ -10,6 +10,7 @@ import (
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
+	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/scanner"
@@ -28,6 +29,7 @@ type Scheduler struct {
 	tmdb       tmdb.Client
 	cache      cache.Cache
 	notifier   *notification.Service
+	metadata   *metadata.Service
 	wsHub      *ws.Hub
 	botEngine  *bot.Engine
 	cancel     context.CancelFunc
@@ -43,6 +45,7 @@ func NewScheduler(
 	tmdbClient tmdb.Client,
 	cacheClient cache.Cache,
 	notifier *notification.Service,
+	metadataSvc *metadata.Service,
 	wsHub *ws.Hub,
 	botEngine *bot.Engine,
 ) *Scheduler {
@@ -55,6 +58,7 @@ func NewScheduler(
 		tmdb:       tmdbClient,
 		cache:      cacheClient,
 		notifier:   notifier,
+		metadata:   metadataSvc,
 		wsHub:      wsHub,
 		botEngine:  botEngine,
 	}
@@ -109,6 +113,12 @@ func (s *Scheduler) Start() {
 			reportWorker.Run(ctx)
 		})
 	}
+
+	// Airing reminder — every 5 minutes, checks if watched anime is about to air
+	airingWorker := NewAiringReminderWorker(s.queries, s.metadata, s.notifier)
+	go s.runTicker(ctx, "airing_reminder", 5*time.Minute, false, func(ctx context.Context) {
+		airingWorker.Run(ctx)
+	})
 
 	// Notification cleanup — every 24 hours
 	go s.runTicker(ctx, "notification_cleanup", 24*time.Hour, false, func(ctx context.Context) {

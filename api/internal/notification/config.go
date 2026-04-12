@@ -46,12 +46,13 @@ type NotificationConfig struct {
 
 // TelegramBotConfig holds interactive Telegram bot settings.
 type TelegramBotConfig struct {
-	Enabled        bool    `json:"enabled"`
-	BotToken       string  `json:"bot_token"`
-	WebhookURL     string  `json:"webhook_url"`
-	AllowedChatIDs []int64 `json:"allowed_chat_ids"`
-	ReportInterval string  `json:"report_interval"` // e.g. "24h", "12h"; empty = disabled
-	Language       string  `json:"language"`         // bot response language; empty = follow system
+	Enabled               bool    `json:"enabled"`
+	BotToken              string  `json:"bot_token"`
+	WebhookURL            string  `json:"webhook_url"`
+	AllowedChatIDs        []int64 `json:"allowed_chat_ids"`
+	ReportInterval        string  `json:"report_interval"`         // e.g. "24h", "12h"; empty = disabled
+	Language              string  `json:"language"`                // bot response language; empty = follow system
+	AiringReminderMinutes int     `json:"airing_reminder_minutes"` // 0 = disabled, e.g. 30 = remind 30min before
 }
 
 // DiscordBotConfig holds interactive Discord bot settings.
