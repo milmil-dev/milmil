@@ -272,6 +272,7 @@ func main() {
 	botRouter.RegisterCallback("dl_resume", commands.DownloadControlCallback(botSvc))
 	botRouter.RegisterCallback("dl_cancel", commands.DownloadControlCallback(botSvc))
 	botRouter.RegisterCallback("scan", commands.ScanCallback(botSvc))
+	botRouter.RegisterCallback("sched", commands.ScheduleCallback(botSvc))
 	botRouter.RegisterCallback("menu", commands.MenuCallback(botSvc))
 	botRouter.RegisterCallback("cmd", commands.CmdCallback(botSvc, botRouter))
 
