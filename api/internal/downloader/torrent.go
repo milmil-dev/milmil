@@ -51,11 +51,18 @@ func newTorrentEngine(dataDir string, listenPort int, seedRatio float64, seedTim
 	cfg.ListenPort = listenPort
 	cfg.DataDir = dataDir
 	cfg.DefaultStorage = storage.NewFileByInfoHash(dataDir)
+	// Filter anacrolix torrent logs — only errors reach the main log.
+	// Prevents peer/tracker debug chatter from flooding the API log.
+	cfg.Slogger = slog.New(&levelFilterHandler{
+		level:   slog.LevelError,
+		handler: slog.Default().With("component", "torrent").Handler(),
+	})
 
 	client, err := torrent.NewClient(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("torrent client: %w", err)
 	}
+	slog.Info("torrent engine started", "port", listenPort)
 
 	return &torrentEngine{
 		client:    client,
@@ -304,5 +311,47 @@ func (e *torrentEngine) checkSeeding() {
 
 func (e *torrentEngine) stop() {
 	close(e.stopCh)
-	e.client.Close()
+
+	// Drop all torrents first to speed up client.Close().
+	e.mu.Lock()
+	for _, entry := range e.entries {
+		entry.t.Drop()
+	}
+	e.entries = make(map[string]*torrentEntry)
+	e.mu.Unlock()
+
+	done := make(chan struct{})
+	go func() {
+		e.client.Close()
+		close(done)
+	}()
+	select {
+	case <-done:
+		slog.Info("torrent engine stopped")
+	case <-time.After(3 * time.Second):
+		slog.Warn("torrent engine stop timed out, forcing exit")
+	}
+	e.client = nil
+}
+
+// levelFilterHandler wraps an slog.Handler and drops records below the given level.
+type levelFilterHandler struct {
+	level   slog.Level
+	handler slog.Handler
+}
+
+func (h *levelFilterHandler) Enabled(_ context.Context, level slog.Level) bool {
+	return level >= h.level
+}
+
+func (h *levelFilterHandler) Handle(ctx context.Context, r slog.Record) error {
+	return h.handler.Handle(ctx, r)
+}
+
+func (h *levelFilterHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &levelFilterHandler{level: h.level, handler: h.handler.WithAttrs(attrs)}
+}
+
+func (h *levelFilterHandler) WithGroup(name string) slog.Handler {
+	return &levelFilterHandler{level: h.level, handler: h.handler.WithGroup(name)}
 }
