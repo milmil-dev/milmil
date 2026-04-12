@@ -2234,15 +2234,27 @@ msgstr "Settings"
 #~ msgid "nav.trending"
 #~ msgstr "Trending"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:555
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
 msgid "notifications.bot.advanced"
 msgstr "Advanced Settings"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:538
+msgid "notifications.bot.airingReminder"
+msgstr "Airing Reminder"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:558
+msgid "notifications.bot.airingReminder.desc"
+msgstr "Get notified before a watched anime airs"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:553
+msgid "notifications.bot.airingReminder.off"
+msgstr "Off"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:565
 msgid "notifications.bot.allowedChatIds"
 msgstr "Allowed Chat IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:548
+#: src/pages/settings/NotificationSettingsPanel.tsx:575
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any chat."
 
@@ -2278,11 +2290,11 @@ msgstr "Follow System"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:560
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:570
+#: src/pages/settings/NotificationSettingsPanel.tsx:597
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "Optional. Leave blank to use long polling."
 
@@ -2300,7 +2312,7 @@ msgstr "Bot Commands"
 msgid "notifications.botCommands.shortDesc"
 msgstr "Interactive commands via /search, /schedule, etc."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:647
+#: src/pages/settings/NotificationSettingsPanel.tsx:674
 msgid "notifications.change"
 msgstr "Change"
 
@@ -2321,11 +2333,11 @@ msgstr "No notifications"
 msgid "notifications.emptyHint"
 msgstr "Notifications appear here..."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:694
+#: src/pages/settings/NotificationSettingsPanel.tsx:721
 msgid "notifications.enableProviderAbove"
 msgstr "Enable a provider above to configure event routing"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:712
+#: src/pages/settings/NotificationSettingsPanel.tsx:739
 msgid "notifications.event"
 msgstr "Event"
 
@@ -2385,7 +2397,7 @@ msgstr "System Error"
 msgid "notifications.event.systemError.desc"
 msgstr "When a background job fails unexpectedly"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:703
+#: src/pages/settings/NotificationSettingsPanel.tsx:730
 msgid "notifications.eventRouting"
 msgstr "Event Routing"
 
@@ -2408,8 +2420,8 @@ msgstr "Library"
 msgid "notifications.filter.system"
 msgstr "System"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:920
-#: src/pages/settings/NotificationSettingsPanel.tsx:936
+#: src/pages/settings/NotificationSettingsPanel.tsx:947
+#: src/pages/settings/NotificationSettingsPanel.tsx:963
 msgid "notifications.intro"
 msgstr "Get notified on Discord, Telegram, or any webhook when downloads finish or something goes wrong."
 
@@ -2444,15 +2456,15 @@ msgstr "Push Notifications"
 msgid "notifications.pushNotifications.desc"
 msgstr "Receive alerts for downloads and system events"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:636
+#: src/pages/settings/NotificationSettingsPanel.tsx:663
 msgid "notifications.secretIsSet"
 msgstr "Secret is set"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:631
+#: src/pages/settings/NotificationSettingsPanel.tsx:658
 msgid "notifications.secretPlaceholder"
 msgstr "Optional signing secret"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:946
+#: src/pages/settings/NotificationSettingsPanel.tsx:973
 msgid "notifications.setupGuide"
 msgstr "Setup Guide"
 
@@ -3304,8 +3316,8 @@ msgstr "General"
 msgid "settings.nav.integrations"
 msgstr "Integrations"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:917
-#: src/pages/settings/NotificationSettingsPanel.tsx:933
+#: src/pages/settings/NotificationSettingsPanel.tsx:944
+#: src/pages/settings/NotificationSettingsPanel.tsx:960
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "Notifications"
@@ -3492,7 +3504,7 @@ msgstr "settings.saturation"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:990
+#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "Save"
 
@@ -3521,7 +3533,7 @@ msgstr "Save failed"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1016
 msgid "settings.saving"
 msgstr "Saving…"
 

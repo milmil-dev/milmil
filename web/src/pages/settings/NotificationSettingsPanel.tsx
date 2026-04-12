@@ -532,6 +532,33 @@ function TelegramCard({
                 </div>
               </Field>
 
+              {/* Airing Reminder */}
+              <Field>
+                <FieldLabel htmlFor="telegram-airing-reminder">
+                  {i18n._(msg`notifications.bot.airingReminder`)}
+                </FieldLabel>
+                <div className="flex flex-wrap gap-1.5">
+                  {[0, 15, 30, 60].map((mins) => (
+                    <button
+                      key={mins}
+                      type="button"
+                      onClick={() => onBotChange({ airing_reminder_minutes: mins })}
+                      className={cn(
+                        'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                        (botConfig.airing_reminder_minutes ?? 0) === mins
+                          ? 'bg-white/[0.12] text-white'
+                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      )}
+                    >
+                      {mins === 0 ? i18n._(msg`notifications.bot.airingReminder.off`) : `${mins} min`}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1 text-xs text-white/30">
+                  {i18n._(msg`notifications.bot.airingReminder.desc`)}
+                </p>
+              </Field>
+
               {/* Allowed Chat IDs */}
               <Field>
                 <FieldLabel htmlFor="telegram-bot-chat-ids">

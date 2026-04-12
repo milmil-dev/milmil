@@ -2231,15 +2231,27 @@ msgstr "設定"
 #~ msgid "nav.trending"
 #~ msgstr "トレンド"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:555
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
 msgid "notifications.bot.advanced"
 msgstr "詳細設定"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:538
+msgid "notifications.bot.airingReminder"
+msgstr "放送リマインダー"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:558
+msgid "notifications.bot.airingReminder.desc"
+msgstr "視聴中のアニメ放送前に通知"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:553
+msgid "notifications.bot.airingReminder.off"
+msgstr "オフ"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:565
 msgid "notifications.bot.allowedChatIds"
 msgstr "許可するチャット ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:548
+#: src/pages/settings/NotificationSettingsPanel.tsx:575
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "カンマ区切り。空欄の場合はすべてのチャットを許可します。"
 
@@ -2275,11 +2287,11 @@ msgstr "システムに従う"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram ボット"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:560
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:570
+#: src/pages/settings/NotificationSettingsPanel.tsx:597
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "任意。空欄の場合はロングポーリングを使用します。"
 
@@ -2297,7 +2309,7 @@ msgstr "ボットコマンド"
 msgid "notifications.botCommands.shortDesc"
 msgstr "/search、/schedule などのコマンドで操作"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:647
+#: src/pages/settings/NotificationSettingsPanel.tsx:674
 msgid "notifications.change"
 msgstr "変更"
 
@@ -2318,11 +2330,11 @@ msgstr "通知なし"
 msgid "notifications.emptyHint"
 msgstr "ダウンロード完了や新エピソード発見時に通知が表示されます。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:694
+#: src/pages/settings/NotificationSettingsPanel.tsx:721
 msgid "notifications.enableProviderAbove"
 msgstr "上でプロバイダを有効にしてイベントルーティングを設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:712
+#: src/pages/settings/NotificationSettingsPanel.tsx:739
 msgid "notifications.event"
 msgstr "イベント"
 
@@ -2382,7 +2394,7 @@ msgstr "システムエラー"
 msgid "notifications.event.systemError.desc"
 msgstr "バックグラウンドジョブが予期せず失敗したとき"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:703
+#: src/pages/settings/NotificationSettingsPanel.tsx:730
 msgid "notifications.eventRouting"
 msgstr "イベントルーティング"
 
@@ -2405,8 +2417,8 @@ msgstr "ライブラリ"
 msgid "notifications.filter.system"
 msgstr "システム"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:920
-#: src/pages/settings/NotificationSettingsPanel.tsx:936
+#: src/pages/settings/NotificationSettingsPanel.tsx:947
+#: src/pages/settings/NotificationSettingsPanel.tsx:963
 msgid "notifications.intro"
 msgstr "ダウンロード完了やエラー発生時にDiscord、Telegram、またはWebhookで通知を受け取ります。"
 
@@ -2441,15 +2453,15 @@ msgstr "プッシュ通知"
 msgid "notifications.pushNotifications.desc"
 msgstr "ダウンロードやシステムイベントの通知を受け取る"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:636
+#: src/pages/settings/NotificationSettingsPanel.tsx:663
 msgid "notifications.secretIsSet"
 msgstr "シークレット設定済み"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:631
+#: src/pages/settings/NotificationSettingsPanel.tsx:658
 msgid "notifications.secretPlaceholder"
 msgstr "署名シークレット（オプション）"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:946
+#: src/pages/settings/NotificationSettingsPanel.tsx:973
 msgid "notifications.setupGuide"
 msgstr "設定ガイド"
 
@@ -3301,8 +3313,8 @@ msgstr "一般"
 msgid "settings.nav.integrations"
 msgstr "連携"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:917
-#: src/pages/settings/NotificationSettingsPanel.tsx:933
+#: src/pages/settings/NotificationSettingsPanel.tsx:944
+#: src/pages/settings/NotificationSettingsPanel.tsx:960
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3489,7 +3501,7 @@ msgstr "彩度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:990
+#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "保存"
 
@@ -3518,7 +3530,7 @@ msgstr "保存に失敗しました"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1016
 msgid "settings.saving"
 msgstr "保存中…"
 

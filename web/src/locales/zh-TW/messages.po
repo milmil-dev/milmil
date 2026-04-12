@@ -2229,15 +2229,27 @@ msgstr "設定"
 #~ msgid "nav.trending"
 #~ msgstr "熱門"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:555
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
 msgid "notifications.bot.advanced"
 msgstr "進階設定"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:538
+msgid "notifications.bot.airingReminder"
+msgstr "播出提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:558
+msgid "notifications.bot.airingReminder.desc"
+msgstr "追蹤的新番播出前推送提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:553
+msgid "notifications.bot.airingReminder.off"
+msgstr "關閉"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:565
 msgid "notifications.bot.allowedChatIds"
 msgstr "允許的聊天 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:548
+#: src/pages/settings/NotificationSettingsPanel.tsx:575
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "以逗號分隔。留空則允許任何聊天。"
 
@@ -2273,11 +2285,11 @@ msgstr "跟隨系統"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 機器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:560
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:570
+#: src/pages/settings/NotificationSettingsPanel.tsx:597
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "可選。留空則使用長輪詢。"
 
@@ -2295,7 +2307,7 @@ msgstr "機器人指令"
 msgid "notifications.botCommands.shortDesc"
 msgstr "透過 /search、/schedule 等指令互動"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:647
+#: src/pages/settings/NotificationSettingsPanel.tsx:674
 msgid "notifications.change"
 msgstr "更改"
 
@@ -2316,11 +2328,11 @@ msgstr "暫無通知"
 msgid "notifications.emptyHint"
 msgstr "下載完成或發現新劇集時，通知會顯示在這裡。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:694
+#: src/pages/settings/NotificationSettingsPanel.tsx:721
 msgid "notifications.enableProviderAbove"
 msgstr "啟用上方的提供者以設定事件路由"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:712
+#: src/pages/settings/NotificationSettingsPanel.tsx:739
 msgid "notifications.event"
 msgstr "事件"
 
@@ -2380,7 +2392,7 @@ msgstr "系統錯誤"
 msgid "notifications.event.systemError.desc"
 msgstr "背景工作意外失敗時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:703
+#: src/pages/settings/NotificationSettingsPanel.tsx:730
 msgid "notifications.eventRouting"
 msgstr "事件路由"
 
@@ -2403,8 +2415,8 @@ msgstr "媒體庫"
 msgid "notifications.filter.system"
 msgstr "系統"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:920
-#: src/pages/settings/NotificationSettingsPanel.tsx:936
+#: src/pages/settings/NotificationSettingsPanel.tsx:947
+#: src/pages/settings/NotificationSettingsPanel.tsx:963
 msgid "notifications.intro"
 msgstr "當下載完成或出現問題時，透過Discord、Telegram或Webhook接收通知。"
 
@@ -2439,15 +2451,15 @@ msgstr "推送通知"
 msgid "notifications.pushNotifications.desc"
 msgstr "接收下載和系統事件的通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:636
+#: src/pages/settings/NotificationSettingsPanel.tsx:663
 msgid "notifications.secretIsSet"
 msgstr "密鑰已設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:631
+#: src/pages/settings/NotificationSettingsPanel.tsx:658
 msgid "notifications.secretPlaceholder"
 msgstr "可選簽名密鑰"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:946
+#: src/pages/settings/NotificationSettingsPanel.tsx:973
 msgid "notifications.setupGuide"
 msgstr "設定指南"
 
@@ -3299,8 +3311,8 @@ msgstr "一般"
 msgid "settings.nav.integrations"
 msgstr "整合"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:917
-#: src/pages/settings/NotificationSettingsPanel.tsx:933
+#: src/pages/settings/NotificationSettingsPanel.tsx:944
+#: src/pages/settings/NotificationSettingsPanel.tsx:960
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3487,7 +3499,7 @@ msgstr "飽和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:990
+#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "儲存"
 
@@ -3516,7 +3528,7 @@ msgstr "儲存失敗"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1016
 msgid "settings.saving"
 msgstr "儲存中…"
 
