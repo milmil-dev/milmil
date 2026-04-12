@@ -158,6 +158,18 @@ type Notification struct {
 	CreatedAt string         `json:"created_at"`
 }
 
+type NotificationDelivery struct {
+	ID             string         `json:"id"`
+	NotificationID string         `json:"notification_id"`
+	Provider       string         `json:"provider"`
+	Status         string         `json:"status"`
+	Attempts       int64          `json:"attempts"`
+	LastError      sql.NullString `json:"last_error"`
+	NextRetryAt    sql.NullString `json:"next_retry_at"`
+	CreatedAt      string         `json:"created_at"`
+	UpdatedAt      string         `json:"updated_at"`
+}
+
 type Playlist struct {
 	ID            string         `json:"id"`
 	Name          string         `json:"name"`

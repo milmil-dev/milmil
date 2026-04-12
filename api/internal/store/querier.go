@@ -23,6 +23,7 @@ type Querier interface {
 	CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (Episode, error)
 	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
 	CreateNotification(ctx context.Context, arg CreateNotificationParams) (Notification, error)
+	CreateNotificationDelivery(ctx context.Context, arg CreateNotificationDeliveryParams) (NotificationDelivery, error)
 	CreateRSSFeed(ctx context.Context, arg CreateRSSFeedParams) (RssFeed, error)
 	CreateScanSummary(ctx context.Context, arg CreateScanSummaryParams) (ScanSummary, error)
 	CreateSegmentMark(ctx context.Context, arg CreateSegmentMarkParams) (SegmentMark, error)
@@ -35,6 +36,7 @@ type Querier interface {
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
+	DeleteOldDeliveries(ctx context.Context, createdAt string) error
 	DeleteOldReadNotifications(ctx context.Context, createdAt string) error
 	DeleteRSSFeed(ctx context.Context, id string) error
 	DeleteSegmentMark(ctx context.Context, id string) error
@@ -49,14 +51,17 @@ type Querier interface {
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
+	GetDownloadByID(ctx context.Context, id string) (Download, error)
 	GetDownloadByURL(ctx context.Context, url string) (Download, error)
 	GetDownloadRule(ctx context.Context, id string) (DownloadRule, error)
 	GetEpisode(ctx context.Context, id string) (Episode, error)
 	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
+	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
+	GetNotification(ctx context.Context, id string) (Notification, error)
 	GetRSSFeed(ctx context.Context, id string) (RssFeed, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetSubtitleFile(ctx context.Context, id string) (SubtitleFile, error)
@@ -91,6 +96,7 @@ type Querier interface {
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListNotifications(ctx context.Context, arg ListNotificationsParams) ([]Notification, error)
 	ListNotificationsByType(ctx context.Context, arg ListNotificationsByTypeParams) ([]Notification, error)
+	ListPendingDeliveries(ctx context.Context, nextRetryAt sql.NullString) ([]NotificationDelivery, error)
 	ListPlayableEpisodes(ctx context.Context, animeID string) ([]ListPlayableEpisodesRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
 	ListRSSFeedsDue(ctx context.Context) ([]RssFeed, error)
@@ -115,6 +121,8 @@ type Querier interface {
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
 	UpdateBackupSyncTime(ctx context.Context, arg UpdateBackupSyncTimeParams) error
+	UpdateDeliveryFailure(ctx context.Context, arg UpdateDeliveryFailureParams) error
+	UpdateDeliverySuccess(ctx context.Context, id string) error
 	UpdateDownloadRule(ctx context.Context, arg UpdateDownloadRuleParams) error
 	UpdateDownloadRuleTriggered(ctx context.Context, id string) error
 	UpdateDownloadStatus(ctx context.Context, arg UpdateDownloadStatusParams) error

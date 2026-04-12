@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -17,6 +18,10 @@ import (
 	slogzerolog "github.com/samber/slog-zerolog/v2"
 
 	"github.com/milmil/api/internal/api"
+	"github.com/milmil/api/internal/bot"
+	"github.com/milmil/api/internal/bot/commands"
+	dcadapter "github.com/milmil/api/internal/bot/discord"
+	tgadapter "github.com/milmil/api/internal/bot/telegram"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
@@ -28,6 +33,7 @@ import (
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/notification"
+	_ "github.com/milmil/api/internal/notification/providers" // register provider factories
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/scanner"
@@ -231,13 +237,66 @@ func main() {
 	// HTTP server
 	step = time.Now()
 	slog.Debug("boot: initializing router")
-	notifier := notification.NewService(store.New(database), wsHub)
+	notifier := notification.NewService(store.New(database), wsHub, metadataSvc)
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
+	// Bot engine
+	botRouter := bot.NewRouter()
+	botSvc := &commands.Services{
+		Queries:    store.New(database),
+		Metadata:   metadataSvc,
+		Downloader: dlEngine,
+		Scanner:    sc,
+	}
+
+	// Register commands
+	botRouter.RegisterCommand("start", commands.StartHandler(botSvc))
+	botRouter.RegisterCommand("schedule", commands.ScheduleHandler(botSvc))
+	botRouter.RegisterCommand("search", commands.SearchHandler(botSvc))
+	botRouter.RegisterCommand("detail", commands.DetailHandler(botSvc))
+	botRouter.RegisterCommand("downloads", commands.DownloadsHandler(botSvc))
+	botRouter.RegisterCommand("subscribe", commands.SubscribeHandler(botSvc))
+	botRouter.RegisterCommand("status", commands.StatusHandler(botSvc))
+	botRouter.RegisterCommand("mylist", commands.MyListHandler(botSvc))
+	botRouter.RegisterCommand("continue", commands.ContinueHandler(botSvc))
+	botRouter.RegisterCommand("id", commands.IDHandler(botSvc))
+	botRouter.RegisterCommand("library", commands.LibraryHandler(botSvc))
+	botRouter.RegisterCommand("scan", commands.ScanHandler(botSvc))
+	botRouter.RegisterCommand("recent", commands.RecentHandler(botSvc))
+	botRouter.RegisterCommand("watching", commands.WatchingHandler(botSvc))
+	botRouter.RegisterCommand("stats", commands.StatsHandler(botSvc))
+	botRouter.RegisterCommand("rules", commands.RulesHandler(botSvc))
+	botRouter.RegisterCommand("trending", commands.TrendingHandler(botSvc))
+
+	// Register callbacks (one handler per prefix)
+	botRouter.RegisterCallback("detail", commands.DetailCallback(botSvc))
+	botRouter.RegisterCallback("sub_pick", commands.SubscribePickCallback(botSvc))
+	botRouter.RegisterCallback("sub_do", commands.SubscribeDoCallback(botSvc))
+	botRouter.RegisterCallback("dl_pause", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("dl_resume", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("dl_cancel", commands.DownloadControlCallback(botSvc))
+	botRouter.RegisterCallback("scan", commands.ScanCallback(botSvc))
+	botRouter.RegisterCallback("sched", commands.ScheduleCallback(botSvc))
+	botRouter.RegisterCallback("menu", commands.MenuCallback(botSvc))
+	botRouter.RegisterCallback("rule_disable", commands.RuleDisableCallback(botSvc))
+	botRouter.RegisterCallback("cmd", commands.CmdCallback(botSvc, botRouter))
+
+	botEngine := bot.NewEngine(botRouter)
+	notifCfg, _ := notification.LoadNotificationConfig(context.Background(), store.New(database))
+	botEngine.Start(context.Background(), notifCfg,
+		func(cfg notification.TelegramBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
+			return tgadapter.New(cfg, r)
+		},
+		func(cfg notification.DiscordBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
+			return dcadapter.New(cfg, r)
+		},
+	)
+	slog.Info("boot: bot engine started")
+
 	// Background job scheduler — goroutine-based tickers
 	sched := worker.NewScheduler(
-		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier,
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, wsHub, botEngine,
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")
@@ -249,16 +308,49 @@ func main() {
 
 	go func() {
 		<-quit
-		sched.Stop()
-		if err := dlEngine.Stop(); err != nil {
-			slog.Error("download engine stop", "err", err)
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
+		slog.Info("shutting down...")
 
-		if err := e.Shutdown(ctx); err != nil {
-			slog.Error("shutdown", "err", err)
-		}
+		// Hard deadline: force exit after 8 seconds no matter what
+		go func() {
+			time.Sleep(8 * time.Second)
+			slog.Warn("shutdown deadline exceeded, forcing exit")
+			os.Exit(1)
+		}()
+
+		// Stop all components in parallel
+		done := make(chan struct{})
+		go func() {
+			var wg sync.WaitGroup
+			wg.Add(4)
+			go func() {
+				defer wg.Done()
+				sched.Stop()
+			}()
+			go func() {
+				defer wg.Done()
+				botEngine.Stop()
+			}()
+			go func() {
+				defer wg.Done()
+				if err := dlEngine.Stop(); err != nil {
+					slog.Error("download engine stop", "err", err)
+				}
+			}()
+			go func() {
+				defer wg.Done()
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
+				if err := e.Shutdown(ctx); err != nil {
+					slog.Error("http shutdown", "err", err)
+				}
+			}()
+			wg.Wait()
+			close(done)
+		}()
+
+		<-done
+		slog.Info("shutdown complete")
+		os.Exit(0)
 	}()
 
 	addr := fmt.Sprintf(":%d", cfg.APIPort)

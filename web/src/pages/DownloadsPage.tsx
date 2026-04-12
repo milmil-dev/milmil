@@ -14,11 +14,16 @@ import {
   Refresh03Icon,
   RssIcon,
   Search01Icon,
+  TextIcon,
+  Link01Icon,
+  EyeIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useDocumentTitle } from '../hooks/use-document-title';
+import { useWSEvent } from '../hooks/use-websocket';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -29,6 +34,7 @@ import { Button } from '../components/ui/button';
 import { Checkbox } from '../components/ui/checkbox';
 import { Input } from '../components/ui/input';
 import { Modal } from '../components/Modal';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { Drawer, DrawerContent } from '../components/ui/drawer';
 import { Sheet, SheetContent } from '../components/ui/sheet';
@@ -161,17 +167,62 @@ function getRelevantSources(anime: { title: string; title_en?: string }): readon
   return ALL_TORRENT_SOURCES;
 }
 
+// ── Shared preview item row (reuses torrent result row style) ────────────
+
+function detectSourceFromUrl(url: string): string {
+  if (url.includes('mikan')) return 'mikan';
+  if (url.includes('nyaa')) return 'nyaa';
+  if (url.includes('dmhy')) return 'dmhy';
+  if (url.includes('dandanplay')) return 'dandanplay';
+  return '';
+}
+
+function PreviewItemRow({ item, index, source }: {
+  item: import('../lib/api/downloads').PreviewItem;
+  index: number;
+  source?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.02, 0.5) }}
+      className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-colors"
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-medium text-white break-words leading-relaxed">
+          {item.title}
+        </p>
+        <div className="flex flex-wrap items-center gap-2 mt-1.5">
+          {source && <SourceBadge source={source} />}
+          {item.subgroup && (
+            <span className="text-[10px] text-orange-400/60 font-medium">{item.subgroup}</span>
+          )}
+          {item.size && (
+            <span className="text-[10px] text-white/25">{item.size}</span>
+          )}
+          {item.publish_date && (
+            <span className="text-[10px] text-white/25">{formatPublishDate(item.publish_date)}</span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function DownloadsPage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.autoDownload`));
   const search = useSearch({ strict: false }) as DownloadsSearch;
   const navigate = useNavigate();
   const tab: Tab = search.tab || 'search';
   const animeParam = search.anime;
 
+  const queryClient = useQueryClient();
   const [addUrlOpen, setAddUrlOpen] = useState(false);
 
   const setTab = (t: Tab) => {
@@ -199,7 +250,43 @@ export function DownloadsPage() {
   const { data: groups = [], isLoading: groupsLoading } = useQuery({
     queryKey: ['downloads', 'grouped'],
     queryFn: () => downloadApi.grouped(),
-    refetchInterval: 5000,
+    refetchInterval: 30_000, // Slow fallback; real-time updates come via WebSocket
+  });
+
+  // Real-time download progress via WebSocket
+  useWSEvent((event) => {
+    if (event.type !== 'download:progress') return;
+    const batch = event.data as unknown as {
+      gid: string; status: string; total_bytes: number;
+      completed_bytes: number; speed_bytes: number;
+    }[];
+    if (!Array.isArray(batch) || batch.length === 0) return;
+
+    const progressMap = new Map(batch.map((p) => [p.gid, p]));
+
+    queryClient.setQueryData<DownloadGroup[]>(['downloads', 'grouped'], (old) => {
+      if (!old) return old;
+      let changed = false;
+      const updated = old.map((group) => {
+        const newDownloads = group.downloads.map((dl) => {
+          const p = progressMap.get(dl.gid);
+          if (!p) return dl;
+          if (p.status === dl.status && p.completed_bytes === dl.completed_bytes && p.speed_bytes === dl.speed_bytes) return dl;
+          changed = true;
+          return { ...dl, status: p.status, total_bytes: p.total_bytes, completed_bytes: p.completed_bytes, speed_bytes: p.speed_bytes };
+        });
+        if (newDownloads === group.downloads) return group;
+        const activeCount = newDownloads.filter((d) => d.status === 'active' || d.status === 'waiting').length;
+        const completeCount = newDownloads.filter((d) => d.status === 'complete').length;
+        return { ...group, downloads: newDownloads, active_count: activeCount, complete_count: completeCount };
+      });
+      return changed ? updated : old;
+    });
+
+    // If any download status changed to complete/error, do a full refetch for accurate grouping
+    if (batch.some((p) => p.status === 'complete' || p.status === 'error')) {
+      queryClient.invalidateQueries({ queryKey: ['downloads', 'grouped'] });
+    }
   });
 
   const allDownloads = useMemo(() => {
@@ -375,7 +462,9 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
-  const [createRuleOpen, setCreateRuleOpen] = useState(false);
+  const [newRuleMenuOpen, setNewRuleMenuOpen] = useState(false);
+  const [ruleMode, setRuleMode] = useState<'keyword' | 'rss'>('keyword');
+  const [rssUrl, setRssUrl] = useState('');
 
   // Auto-select anime from URL param (e.g. from anime detail page)
   const numericAnimeId = initialAnimeId ? Number(initialAnimeId) : undefined;
@@ -407,125 +496,177 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
     enabled: query.length > 0,
   });
 
-  if (selectedAnime) {
-    return (
-      <AnimeTorrentView
-        anime={selectedAnime}
-        onBack={() => setSelectedAnime(null)}
-      />
-    );
-  }
-
   return (
     <>
-      {/* Search input + New Rule */}
+      {/* New Rule dropdown + Search input */}
       <div className="flex items-center gap-2 mb-5">
-        <Input
-          placeholder={i18n._(msg`autoDownload.searchAnime`)}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="bg-white/[0.03] border-transparent text-white placeholder:text-white/25 flex-1"
-        />
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => setCreateRuleOpen(true)}
-          className="shrink-0 text-[11px] text-white/50 hover:bg-white/[0.04]"
-        >
-          <HugeiconsIcon icon={Add01Icon} size={12} />
-          {i18n._(msg`ruleEditor.newRule`)}
-        </Button>
+        <Popover open={newRuleMenuOpen} onOpenChange={setNewRuleMenuOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="shrink-0 text-[11px] text-white/50 bg-white/[0.03] hover:bg-white/[0.06]"
+            >
+              <HugeiconsIcon icon={ruleMode === 'keyword' ? TextIcon : Link01Icon} size={13} />
+              {ruleMode === 'keyword' ? i18n._(msg`ruleEditor.keywordMode`) : i18n._(msg`ruleEditor.rssUrlMode`)}
+              <HugeiconsIcon icon={ArrowDown01Icon} size={10} className="ml-0.5 opacity-40" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start" className="w-44 p-1.5 border border-white/[0.08] bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-150 rounded-xl shadow-lg shadow-black/40 space-y-0.5">
+            <button
+              type="button"
+              onClick={() => { setRuleMode('keyword'); setNewRuleMenuOpen(false); }}
+              className={cn(
+                'flex items-center gap-2.5 w-full px-3 py-2 text-[12px] rounded-lg transition-colors cursor-pointer',
+                ruleMode === 'keyword' ? 'text-white bg-white/[0.1]' : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
+              )}
+            >
+              <HugeiconsIcon icon={TextIcon} size={13} className={ruleMode === 'keyword' ? 'text-white/70' : 'text-white/30'} />
+              {i18n._(msg`ruleEditor.keywordMode`)}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setRuleMode('rss'); setNewRuleMenuOpen(false); }}
+              className={cn(
+                'flex items-center gap-2.5 w-full px-3 py-2 text-[12px] rounded-lg transition-colors cursor-pointer',
+                ruleMode === 'rss' ? 'text-white bg-white/[0.1]' : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
+              )}
+            >
+              <HugeiconsIcon icon={Link01Icon} size={13} className={ruleMode === 'rss' ? 'text-white/70' : 'text-white/30'} />
+              {i18n._(msg`ruleEditor.rssUrlMode`)}
+            </button>
+          </PopoverContent>
+        </Popover>
+        {ruleMode === 'keyword' ? (
+          <Input
+            placeholder={i18n._(msg`autoDownload.searchAnime`)}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="bg-white/[0.03] border-transparent text-white placeholder:text-white/25 flex-1"
+          />
+        ) : (
+          <Input
+            placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
+            value={rssUrl}
+            onChange={(e) => setRssUrl(e.target.value)}
+            className="bg-white/[0.03] border-transparent text-white placeholder:text-white/20 flex-1 text-[13px]"
+          />
+        )}
       </div>
 
-      {/* Loading skeleton */}
-      {isSearching && query && (
-        <div className="space-y-2">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex gap-3 p-3 rounded-lg bg-white/[0.03] animate-pulse">
-              <div className="w-12 h-16 rounded bg-white/[0.06] shrink-0" />
-              <div className="flex-1 space-y-2 py-1">
-                <div className="h-3 rounded bg-white/[0.06] w-[60%]" />
-                <div className="h-2.5 rounded bg-white/[0.04] w-[40%]" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Results */}
-      {!isSearching && animeResults.length > 0 && (
-        <div className="space-y-1.5">
-          {animeResults.map((anime, i) => (
-            <motion.button
-              key={anime.bangumi_id}
-              type="button"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(i * 0.03, 0.4) }}
-              onClick={() => setSelectedAnime(anime)}
-              className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
-            >
-              {/* Cover thumbnail */}
-              <img
-                src={anime.cover_image}
-                alt=""
-                className="w-12 h-auto rounded object-cover shrink-0"
-                style={{ aspectRatio: '3/4' }}
-                loading="lazy"
+      <AnimatePresence mode="wait">
+        {ruleMode === 'keyword' ? (
+          <motion.div
+            key="keyword"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
+            {selectedAnime ? (
+              <AnimeTorrentView
+                anime={selectedAnime}
+                onBack={() => setSelectedAnime(null)}
               />
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-white truncate">
-                  {anime.title}
-                </p>
-                <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                  {anime.media_type && <MediaTypeBadge type={anime.media_type} />}
-                  {anime.score > 0 && (
-                    <span className="text-[11px] text-yellow-400/80">
-                      ★ {anime.score.toFixed(1)}
-                    </span>
-                  )}
-                  {anime.episode_count > 0 && (
-                    <span className="text-[11px] text-white/30">
-                      {anime.episode_count} eps
-                    </span>
-                  )}
-                  {anime.air_date && (
-                    <span className="text-[11px] text-white/20">{anime.air_date}</span>
-                  )}
-                </div>
-              </div>
-            </motion.button>
-          ))}
-        </div>
-      )}
+            ) : (
+              <>
+                {/* Loading skeleton */}
+                {isSearching && query && (
+                  <div className="space-y-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="flex gap-3 p-3 rounded-lg bg-white/[0.03] animate-pulse">
+                        <div className="w-12 h-16 rounded bg-white/[0.06] shrink-0" />
+                        <div className="flex-1 space-y-2 py-1">
+                          <div className="h-3 rounded bg-white/[0.06] w-[60%]" />
+                          <div className="h-2.5 rounded bg-white/[0.04] w-[40%]" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-      {/* No results */}
-      {query && !isSearching && animeResults.length === 0 && (
-        <p className="text-sm text-white/40 text-center py-8">
-          {i18n._(msg`autoDownload.noResults`)}
-        </p>
-      )}
+                {/* Results */}
+                {!isSearching && animeResults.length > 0 && (
+                  <div className="space-y-1.5">
+                    {animeResults.map((anime, i) => (
+                      <motion.button
+                        key={anime.bangumi_id}
+                        type="button"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: Math.min(i * 0.03, 0.4) }}
+                        onClick={() => setSelectedAnime(anime)}
+                        className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
+                      >
+                        <img
+                          src={anime.cover_image}
+                          alt=""
+                          className="w-12 h-auto rounded object-cover shrink-0"
+                          style={{ aspectRatio: '3/4' }}
+                          loading="lazy"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-medium text-white truncate">
+                            {anime.title}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                            {anime.media_type && <MediaTypeBadge type={anime.media_type} />}
+                            {anime.score > 0 && (
+                              <span className="text-[11px] text-yellow-400/80">
+                                ★ {anime.score.toFixed(1)}
+                              </span>
+                            )}
+                            {anime.episode_count > 0 && (
+                              <span className="text-[11px] text-white/30">
+                                {anime.episode_count} eps
+                              </span>
+                            )}
+                            {anime.air_date && (
+                              <span className="text-[11px] text-white/20">{anime.air_date}</span>
+                            )}
+                          </div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
 
-      {/* Empty state */}
-      {!query && (
-        <div className="text-center py-16">
-          <HugeiconsIcon
-            icon={Search01Icon}
-            size={32}
-            className="mx-auto mb-4 text-white/10"
-          />
-          <p className="text-white/25 text-sm">
-            {i18n._(msg`autoDownload.searchHint`)}
-          </p>
-        </div>
-      )}
+                {/* No results */}
+                {query && !isSearching && animeResults.length === 0 && (
+                  <p className="text-sm text-white/40 text-center py-8">
+                    {i18n._(msg`autoDownload.noResults`)}
+                  </p>
+                )}
 
-      {/* Rule editor modal (create new) */}
-      <RuleEditorModal
-        open={createRuleOpen}
-        onClose={() => setCreateRuleOpen(false)}
-      />
+                {/* Empty state */}
+                {!query && (
+                  <div className="text-center py-16">
+                    <HugeiconsIcon
+                      icon={Search01Icon}
+                      size={32}
+                      className="mx-auto mb-4 text-white/10"
+                    />
+                    <p className="text-white/25 text-sm">
+                      {i18n._(msg`autoDownload.searchHint`)}
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="rss"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
+            <InlineRuleEditor rssUrl={rssUrl} onCreated={() => setRssUrl('')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </>
   );
 }
@@ -883,7 +1024,7 @@ function SubscribePanel({
   anime,
   source,
   resolution,
-  subgroup,
+  subgroup: initialSubgroup,
   matchCount,
   onClose,
 }: {
@@ -902,10 +1043,32 @@ function SubscribePanel({
     ? (source as 'mikan' | 'nyaa' | 'dmhy')
     : 'mikan';
   const [rssSource, setRssSource] = useState<'mikan' | 'nyaa' | 'dmhy'>(defaultSource);
+  const [selectedSubgroup, setSelectedSubgroup] = useState<string>(initialSubgroup);
   const { data: libraries = [] } = useQuery({
     queryKey: libraryKeys.list(),
     queryFn: () => libraryApi.list(),
   });
+
+  // Fetch torrent results for the selected RSS source to get valid subgroups
+  const { data: sourceData } = useQuery({
+    queryKey: discoverKeys.animeTorrents(anime.bangumi_id, rssSource),
+    queryFn: () => discoverApi.animeTorrents(anime.bangumi_id, rssSource),
+  });
+
+  const sourceSubgroups = useMemo(() => {
+    const groups = new Set<string>();
+    for (const r of sourceData?.results ?? []) {
+      if (r.sub_group) groups.add(r.sub_group);
+    }
+    return Array.from(groups).sort();
+  }, [sourceData]);
+
+  // Reset subgroup when RSS source changes and current selection is invalid
+  useEffect(() => {
+    if (selectedSubgroup !== 'all' && sourceSubgroups.length > 0 && !sourceSubgroups.includes(selectedSubgroup)) {
+      setSelectedSubgroup('all');
+    }
+  }, [rssSource, sourceSubgroups, selectedSubgroup]);
 
   // Default to first library so downloads auto-trigger the scan pipeline
   const [libraryId, setLibraryId] = useState<string>('');
@@ -931,7 +1094,7 @@ function SubscribePanel({
       anime_name: anime.title,
       source: rssSource,
       bangumi_id: anime.bangumi_id,
-      sub_group: subgroup !== 'all' ? subgroup : undefined,
+      sub_group: selectedSubgroup !== 'all' ? selectedSubgroup : undefined,
       resolution: resolution !== 'Any' ? resolution : undefined,
       library_id: libraryId || undefined,
     });
@@ -1007,22 +1170,52 @@ function SubscribePanel({
             </div>
           </div>
 
-          {/* Current filters summary */}
-          <div className="flex flex-wrap items-center gap-2">
-            {subgroup !== 'all' && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/70">
-                {subgroup}
-              </span>
-            )}
-            {resolution !== 'Any' && (
+          {/* Subgroup picker — only subgroups available in this RSS source */}
+          {sourceSubgroups.length > 0 && (
+            <div>
+              <label className="text-[11px] text-white/40 mb-1.5 block">
+                {i18n._(msg`autoDownload.subgroup`)}
+              </label>
+              <div className="flex gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setSelectedSubgroup('all')}
+                  className={cn(
+                    'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                    selectedSubgroup === 'all'
+                      ? 'bg-white/[0.12] text-white'
+                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                  )}
+                >
+                  {i18n._(msg`autoDownload.allSubgroups`)}
+                </button>
+                {sourceSubgroups.map((sg) => (
+                  <button
+                    key={sg}
+                    type="button"
+                    onClick={() => setSelectedSubgroup(sg)}
+                    className={cn(
+                      'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                      selectedSubgroup === sg
+                        ? 'bg-orange-500/20 text-orange-400'
+                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                    )}
+                  >
+                    {sg}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Resolution filter summary */}
+          {resolution !== 'Any' && (
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400/70">
                 {resolution}
               </span>
-            )}
-            {subgroup === 'all' && resolution === 'Any' && (
-              <span className="text-[10px] text-white/25">{i18n._(msg`autoDownload.noFilters`)}</span>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Library picker */}
           {libraries.length > 0 && (
@@ -1676,6 +1869,296 @@ function SubscriptionsSubTab({
         />
       )}
     </>
+  );
+}
+
+// ── Inline Rule Editor (RSS URL mode) ─────────────────────────────────
+
+function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: () => void }) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+
+  const [ruleName, setRuleName] = useState('');
+  const [libraryId, setLibraryId] = useState('');
+  const [previewItems, setPreviewItems] = useState<import('../lib/api/downloads').PreviewItem[]>([]);
+
+  // ── Linked anime ──
+  const [bangumiId, setBangumiId] = useState<number | null>(null);
+  const [animeSearchInput, setAnimeSearchInput] = useState('');
+  const [animeSearchQuery, setAnimeSearchQuery] = useState('');
+  const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
+  const [animePickerOpen, setAnimePickerOpen] = useState(false);
+  const animePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!animeSearchInput.trim()) { setAnimeSearchQuery(''); return; }
+    const timer = setTimeout(() => setAnimeSearchQuery(animeSearchInput.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [animeSearchInput]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (animePickerRef.current && !animePickerRef.current.contains(e.target as Node)) {
+        setAnimePickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const { data: animeResults = [] } = useQuery({
+    queryKey: discoverKeys.search(animeSearchQuery),
+    queryFn: () => discoverApi.search(animeSearchQuery),
+    enabled: animeSearchQuery.length > 0,
+  });
+
+  const { data: libraries = [] } = useQuery({
+    queryKey: libraryKeys.list(),
+    queryFn: () => libraryApi.list(),
+  });
+
+  const selectedLibrary = libraries.find((l) => l.id === libraryId);
+  const savePath = selectedLibrary?.path || '';
+
+  const canCreate = !!(rssUrl.trim() && ruleName.trim() && libraryId && bangumiId);
+  const creatingRef = useRef(false);
+
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      if (creatingRef.current) return;
+      creatingRef.current = true;
+      if (!ruleName.trim() || !libraryId || !bangumiId) throw new Error('All fields are required');
+      const feed = await rssFeedApi.create({ name: ruleName, url: rssUrl, type: 'mikan' });
+      try {
+        await ruleApi.create({
+          name: ruleName,
+          enabled: 1,
+          rss_feed_id: feed.id,
+          filter_regex: '',
+          exclude_regex: '',
+          save_dir: savePath,
+          episode_offset: 0,
+          resolution_filter: '',
+          subgroup_filter: '',
+          min_seeders: 0,
+          library_id: libraryId || null,
+          bangumi_id: bangumiId,
+          match_mode: 'fuzzy',
+          episode_filter: 'all',
+          episode_range: '',
+        });
+      } catch (err) {
+        // Clean up orphaned feed if rule creation fails
+        await rssFeedApi.delete(feed.id).catch(() => {});
+        throw err;
+      }
+      await rssFeedApi.refresh(feed.id);
+    },
+    onSuccess: () => {
+      creatingRef.current = false;
+      toast.success(i18n._(msg`ruleEditor.saved`));
+      queryClient.invalidateQueries({ queryKey: downloadKeys.rules() });
+      queryClient.invalidateQueries({ queryKey: downloadKeys.feeds() });
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+      setRuleName('');
+      setLibraryId('');
+      setBangumiId(null);
+      setSelectedAnime(null);
+      onCreated();
+    },
+    onError: (err: Error) => { creatingRef.current = false; toast.error(err.message); },
+  });
+
+  const previewMutation = useMutation({
+    mutationFn: () => rssFeedApi.previewUrl(rssUrl),
+    onSuccess: (data) => setPreviewItems(data.items),
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  return (
+    <div className="space-y-5">
+      {/* Linked Anime */}
+      <InlineSection label={i18n._(msg`ruleEditor.linkedAnime`)}>
+        <div ref={animePickerRef} className="relative">
+          {bangumiId && selectedAnime ? (
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white/[0.04]">
+              <img
+                src={selectedAnime.cover_image}
+                alt=""
+                className="w-8 h-11 rounded object-cover shrink-0"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] text-white/90 font-medium truncate">{selectedAnime.title || selectedAnime.title_original}</p>
+                <p className="text-[10px] text-white/30">Bangumi #{bangumiId}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setBangumiId(null); setSelectedAnime(null); }}
+                className="text-white/25 hover:text-white/50 transition-colors cursor-pointer shrink-0"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={12} />
+              </button>
+            </div>
+          ) : (
+            <Input
+              value={animeSearchInput}
+              onChange={(e) => { setAnimeSearchInput(e.target.value); setAnimePickerOpen(true); }}
+              onFocus={() => { if (animeSearchQuery) setAnimePickerOpen(true); }}
+              placeholder={i18n._(msg`ruleEditor.searchAnime`)}
+              className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+            />
+          )}
+          <AnimatePresence>
+            {animePickerOpen && animeResults.length > 0 && !bangumiId && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.12 }}
+                className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-zinc-900 shadow-xl shadow-black/40"
+              >
+                {animeResults.slice(0, 8).map((anime) => (
+                  <button
+                    key={anime.bangumi_id}
+                    type="button"
+                    onClick={() => {
+                      setBangumiId(anime.bangumi_id);
+                      setSelectedAnime(anime);
+                      setAnimePickerOpen(false);
+                      setAnimeSearchInput('');
+                      setRuleName(anime.title || anime.title_original);
+                    }}
+                    className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+                  >
+                    <img
+                      src={anime.cover_image}
+                      alt=""
+                      className="w-7 h-10 rounded object-cover shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[12px] text-white/80 truncate">{anime.title || anime.title_original}</p>
+                      {anime.air_date && (
+                        <p className="text-[10px] text-white/25">{anime.air_date.slice(0, 4)}</p>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </InlineSection>
+
+      {/* Rule Name */}
+      <InlineSection label={i18n._(msg`ruleEditor.ruleName`)}>
+        <Input
+          value={ruleName}
+          onChange={(e) => setRuleName(e.target.value)}
+          placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
+          className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+        />
+      </InlineSection>
+
+      {/* Destination */}
+      <InlineSection label={i18n._(msg`ruleEditor.destination`)}>
+        <div className="space-y-2">
+          <div className="relative">
+            <select
+              value={libraryId}
+              onChange={(e) => setLibraryId(e.target.value)}
+              className={cn(
+                'w-full appearance-none rounded-lg px-3 py-2 pr-8 text-[13px] font-medium',
+                'bg-white/[0.04] border border-white/[0.06] text-white/90',
+                'focus:outline-none focus:ring-1 focus:ring-white/10',
+                'cursor-pointer'
+              )}
+            >
+              <option value="" className="bg-zinc-900">
+                {i18n._(msg`ruleEditor.noLibrary`)}
+              </option>
+              {libraries.map((lib) => (
+                <option key={lib.id} value={lib.id} className="bg-zinc-900">
+                  {lib.name}
+                </option>
+              ))}
+            </select>
+            <HugeiconsIcon
+              icon={ArrowDown01Icon}
+              size={14}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+            />
+          </div>
+          {savePath && (
+            <p className="text-[11px] text-white/30 font-mono truncate px-1">{savePath}</p>
+          )}
+        </div>
+      </InlineSection>
+
+      {/* Preview + Save */}
+      <div className="flex items-center justify-end gap-2 pt-2">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => previewMutation.mutate()}
+          disabled={!rssUrl.trim() || previewMutation.isPending}
+          className="text-[11px] text-white/50 hover:text-white/80 hover:bg-white/[0.06] disabled:opacity-40"
+        >
+          <HugeiconsIcon icon={EyeIcon} size={13} />
+          {previewMutation.isPending
+            ? i18n._(msg`ruleEditor.loading`)
+            : i18n._(msg`ruleEditor.preview`)}
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => createMutation.mutate()}
+          disabled={!canCreate || createMutation.isPending}
+          className="text-[11px]"
+        >
+          {createMutation.isPending
+            ? i18n._(msg`ruleEditor.saving`)
+            : i18n._(msg`ruleEditor.save`)}
+        </Button>
+      </div>
+
+      {/* Preview results */}
+      <AnimatePresence>
+        {previewItems.length > 0 && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/25">
+                  {i18n._(msg`ruleEditor.preview`)}
+                </span>
+                <span className="text-[10px] text-white/25 tabular-nums">
+                  {previewItems.length} {i18n._(msg`ruleEditor.items`)}
+                </span>
+              </div>
+              <div className="space-y-1.5 max-h-[400px] overflow-y-auto">
+                {previewItems.map((item, i) => (
+                  <PreviewItemRow key={item.link} item={item} index={i} source={detectSourceFromUrl(rssUrl)} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function InlineSection({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/25">{label}</h3>
+      {children}
+    </div>
   );
 }
 
@@ -3321,179 +3804,207 @@ function DownloadCard({
       exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.15 } }}
       transition={{ type: 'spring', stiffness: 500, damping: 40 }}
       className={cn(
-        'group/dl relative flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/[0.03] transition-colors',
-        selected && 'bg-white/[0.04]',
+        'group/dl relative rounded-xl overflow-hidden transition-colors',
+        selected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.03]',
         onClick && 'cursor-pointer'
       )}
       onClick={onClick}
     >
-      {/* Checkbox */}
-      {onSelect && (
-        <div
-          className="shrink-0"
-          onClick={(e) => { e.stopPropagation(); onSelect(e as unknown as React.MouseEvent); }}
-        >
-          <Checkbox checked={selected} size={18} />
+      {/* Full-width progress bar at top — subtle colored strip */}
+      {isActive && dl.total_bytes > 0 && (
+        <div className="relative h-[2px] w-full bg-white/[0.04]">
+          <motion.div
+            className="absolute inset-y-0 left-0"
+            animate={{
+              width: `${pct}%`,
+              backgroundColor: dl.status === 'active'
+                ? 'rgba(74,222,128,0.7)'
+                : dl.status === 'paused'
+                  ? 'rgba(250,204,21,0.5)'
+                  : 'rgba(255,255,255,0.12)',
+            }}
+            transition={{ type: 'spring', stiffness: 120, damping: 25 }}
+          />
+          {dl.status === 'active' && dl.speed_bytes > 0 && (
+            <motion.div
+              className="absolute inset-y-0 w-[40%]"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+              }}
+              animate={{ x: ['-100%', '300%'] }}
+              transition={{ duration: 1.8, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
+            />
+          )}
+        </div>
+      )}
+      {isActive && dl.total_bytes === 0 && (
+        <div className="relative h-[2px] w-full bg-white/[0.04] overflow-hidden">
+          <motion.div
+            className="absolute inset-y-0 w-[30%] bg-white/[0.08] rounded-full"
+            animate={{ x: ['-100%', '450%'] }}
+            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
+          />
         </div>
       )}
 
+      <div className="flex items-center gap-3 px-4 py-3">
+        {/* Checkbox */}
+        {onSelect && (
+          <div
+            className="shrink-0"
+            onClick={(e) => { e.stopPropagation(); onSelect(e as unknown as React.MouseEvent); }}
+          >
+            <Checkbox checked={selected} size={18} />
+          </div>
+        )}
 
-      {/* Main content */}
-      <div className="flex-1 min-w-0">
-        {/* Title row */}
-        <div className="flex items-center gap-2 min-w-0">
-          <p className="text-[13px] font-medium text-white/90 truncate">
-            {parsed.title}
-          </p>
-          {parsed.episode && (
-            <motion.span
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-[12px] font-semibold text-mm-accent tabular-nums shrink-0"
-            >
-              EP {parsed.episode}
-            </motion.span>
-          )}
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {/* Title row */}
+          <div className="flex items-baseline gap-2 min-w-0">
+            <p className="text-[13px] font-medium text-white/90 truncate">
+              {parsed.title}
+            </p>
+            {parsed.episode && (
+              <span className="text-[12px] font-bold text-green-400/80 tabular-nums shrink-0">
+                EP {parsed.episode}
+              </span>
+            )}
+          </div>
+
+          {/* Meta row — tags + transfer stats unified */}
+          <div className="flex items-center gap-1.5 mt-1">
+            {parsed.subgroup && (
+              <span className="text-[10px] text-white/30 truncate max-w-[120px]">
+                {parsed.subgroup}
+              </span>
+            )}
+            {parsed.subgroup && parsed.tags.length > 0 && (
+              <span className="text-white/10 text-[10px]">/</span>
+            )}
+            {parsed.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="text-[9px] px-1 py-px rounded bg-white/[0.04] text-white/25 font-medium uppercase tracking-wide"
+              >
+                {tag}
+              </span>
+            ))}
+            {!parsed.subgroup && parsed.tags.length === 0 && hasRuleName && (
+              <span className="text-[10px] text-white/25 truncate">{ruleName}</span>
+            )}
+
+            {/* Spacer pushes transfer stats to the right */}
+            <span className="flex-1" />
+
+            {/* Transfer stats inline */}
+            {isActive && dl.total_bytes > 0 && (
+              <span className="text-[10px] tabular-nums text-white/25 shrink-0">
+                {formatBytes(dl.completed_bytes)}
+                <span className="text-white/10"> / </span>
+                {formatBytes(dl.total_bytes)}
+              </span>
+            )}
+            {isActive && dl.total_bytes === 0 && (
+              <span className="text-[10px] text-white/20 shrink-0">
+                {dl.status === 'waiting'
+                  ? i18n._(msg`autoDownload.waiting`)
+                  : i18n._(msg`autoDownload.connecting`)}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Meta row */}
-        <div className="flex items-center gap-1.5 mt-0.5">
-          {parsed.subgroup && (
-            <span className="text-[10px] text-white/30 truncate max-w-[120px]">
-              {parsed.subgroup}
-            </span>
-          )}
-          {parsed.subgroup && parsed.tags.length > 0 && (
-            <span className="text-white/10 text-[10px]">/</span>
-          )}
-          {parsed.tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="text-[9px] px-1 py-px rounded bg-white/[0.04] text-white/25 font-medium uppercase tracking-wide"
-            >
-              {tag}
-            </span>
-          ))}
-          {!parsed.subgroup && parsed.tags.length === 0 && hasRuleName && (
-            <span className="text-[10px] text-white/25 truncate">{ruleName}</span>
-          )}
-        </div>
-
-        {/* Progress bar with inline stats */}
-        {isActive && dl.total_bytes > 0 && (
-          <div className="mt-1.5 flex items-center gap-2.5">
-            <div className="relative flex-1 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 left-0 rounded-full"
-                animate={{
-                  width: `${pct}%`,
-                  backgroundColor: dl.status === 'active' ? 'rgba(74,222,128,0.8)' : 'rgba(255,255,255,0.15)',
-                }}
-                transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-              />
-              {/* Shimmer on active downloads */}
-              {dl.status === 'active' && dl.speed_bytes > 0 && (
-                <motion.div
-                  className="absolute inset-y-0 w-[60%] rounded-full"
-                  style={{
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-                  }}
-                  animate={{ x: ['-100%', '200%'] }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
-                />
+        {/* Right side — speed/pct/actions */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Speed + ETA */}
+          {isActive && dl.status === 'active' && dl.total_bytes > 0 && dl.speed_bytes > 0 && (
+            <div className="hidden sm:flex flex-col items-end">
+              <span className="text-[11px] tabular-nums text-white/40 font-medium">
+                {formatSpeed(dl.speed_bytes)}
+              </span>
+              {dlEta > 0 && (
+                <span className="text-[9px] tabular-nums text-white/20">
+                  {formatETA(dlEta)}
+                </span>
               )}
             </div>
-            <motion.span
-              className="text-[10px] tabular-nums text-white/30 shrink-0"
-              key={formatBytes(dl.completed_bytes)}
-            >
-              {formatBytes(dl.completed_bytes)}
-              <span className="text-white/15"> / </span>
-              {formatBytes(dl.total_bytes)}
-            </motion.span>
-          </div>
-        )}
-        {isActive && dl.total_bytes === 0 && (
-          <div className="mt-1.5 flex items-center gap-2.5">
-            <div className="relative flex-1 h-[3px] rounded-full bg-white/[0.06] overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 w-[40%] rounded-full bg-white/[0.08]"
-                animate={{ x: ['-100%', '350%'] }}
-                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
-              />
+          )}
+
+          {/* Percentage — circular style */}
+          {isActive && dl.total_bytes > 0 && (
+            <div className="relative w-9 h-9 shrink-0">
+              <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                <circle
+                  cx="18" cy="18" r="15"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeWidth="2.5"
+                />
+                <motion.circle
+                  cx="18" cy="18" r="15"
+                  fill="none"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray={`${2 * Math.PI * 15}`}
+                  animate={{
+                    strokeDashoffset: `${2 * Math.PI * 15 * (1 - pct / 100)}`,
+                    stroke: dl.status === 'active'
+                      ? 'rgba(74,222,128,0.8)'
+                      : dl.status === 'paused'
+                        ? 'rgba(250,204,21,0.5)'
+                        : 'rgba(255,255,255,0.15)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+                />
+              </svg>
+              <span className={cn(
+                'absolute inset-0 flex items-center justify-center text-[9px] font-bold tabular-nums',
+                pct >= 100 ? 'text-green-400/80' : 'text-white/50'
+              )}>
+                {Math.round(pct)}
+              </span>
             </div>
-            <span className="text-[10px] text-white/20 shrink-0">
-              {dl.status === 'waiting'
-                ? i18n._(msg`autoDownload.waiting`)
-                : i18n._(msg`autoDownload.connecting`)}
-            </span>
-          </div>
-        )}
-      </div>
+          )}
 
-      {/* Right side */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        {/* Speed + ETA — only when we have size info */}
-        {isActive && dl.status === 'active' && dl.total_bytes > 0 && (
-          <motion.span
-            className="text-[11px] tabular-nums text-white/30 hidden sm:inline"
-            animate={{ opacity: dl.speed_bytes > 0 ? 1 : 0.5 }}
-          >
-            {formatSpeed(dl.speed_bytes)}
-            {dlEta > 0 && <span className="text-white/15"> · {formatETA(dlEta)}</span>}
-          </motion.span>
-        )}
-
-        {/* Percentage */}
-        {isActive && dl.total_bytes > 0 && (
-          <motion.span
-            className={cn(
-              'text-[11px] font-medium tabular-nums min-w-[32px] text-right',
-              pct >= 100 ? 'text-green-400/60' : 'text-white/40'
+          {/* Action icons */}
+          <div className="flex items-center gap-0.5 opacity-0 group-hover/dl:opacity-100 transition-opacity">
+            {dl.status === 'active' && (
+              <motion.button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onPause(); }}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 cursor-pointer transition-colors"
+                title={i18n._(msg`autoDownload.pause`)}
+              >
+                <HugeiconsIcon icon={PauseIcon} size={14} />
+              </motion.button>
             )}
-            animate={pct >= 100 ? { scale: [1, 1.1, 1] } : undefined}
-            transition={{ duration: 0.3 }}
-          >
-            {Math.round(pct)}%
-          </motion.span>
-        )}
-
-
-        {/* Action icons */}
-        {dl.status === 'active' && (
-          <motion.button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onPause(); }}
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 cursor-pointer transition-colors"
-            title={i18n._(msg`autoDownload.pause`)}
-          >
-            <HugeiconsIcon icon={PauseIcon} size={14} />
-          </motion.button>
-        )}
-        {(dl.status === 'paused' || dl.status === 'waiting') && (
-          <motion.button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onResume(); }}
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 cursor-pointer transition-colors"
-            title={i18n._(msg`autoDownload.resume`)}
-          >
-            <HugeiconsIcon icon={PlayIcon} size={14} />
-          </motion.button>
-        )}
-        <motion.button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          whileHover={{ scale: 1.15 }}
-          whileTap={{ scale: 0.9 }}
-          className="p-1.5 rounded-md hover:bg-red-500/10 text-white/25 hover:text-red-400/80 cursor-pointer transition-colors"
-          title={i18n._(msg`autoDownload.delete`)}
-        >
-          <HugeiconsIcon icon={Cancel01Icon} size={14} />
-        </motion.button>
+            {(dl.status === 'paused' || dl.status === 'waiting') && (
+              <motion.button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onResume(); }}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 cursor-pointer transition-colors"
+                title={i18n._(msg`autoDownload.resume`)}
+              >
+                <HugeiconsIcon icon={PlayIcon} size={14} />
+              </motion.button>
+            )}
+            <motion.button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.9 }}
+              className="p-1.5 rounded-md hover:bg-red-500/10 text-white/25 hover:text-red-400/80 cursor-pointer transition-colors"
+              title={i18n._(msg`autoDownload.delete`)}
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={14} />
+            </motion.button>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import { SelectorGroup } from '@/components/settings/SelectorGroup';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Switch } from '@/components/ui/switch';
@@ -24,16 +26,30 @@ export function GeneralPanel() {
   });
 
   const [autoAdd, setAutoAdd] = useState(true);
+  const [docsUrl, setDocsUrl] = useState('');
 
   useEffect(() => {
     if (settings?.collection) {
       setAutoAdd(settings.collection.auto_add_to_collection ?? true);
     }
-  }, [settings?.collection]);
+    if (settings?.general) {
+      setDocsUrl(settings.general.docs_url ?? '');
+    }
+  }, [settings?.collection, settings?.general]);
 
   const updateCollectionSettings = useMutation({
     mutationFn: (data: { auto_add_to_collection: boolean }) =>
       api.put('/api/v1/settings/collection', data),
+    onSuccess: () => {
+      toast.success(i18n._(msg`settings.saved`));
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    },
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
+  });
+
+  const updateGeneralSettings = useMutation({
+    mutationFn: (data: { docs_url: string }) =>
+      api.put('/api/v1/settings/general', data),
     onSuccess: () => {
       toast.success(i18n._(msg`settings.saved`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
@@ -84,6 +100,23 @@ export function GeneralPanel() {
               }}
             />
           </div>
+        </SettingsCard>
+
+        <SettingsCard label={i18n._(msg`settings.docsUrl`)}>
+          <Field>
+            <FieldLabel htmlFor="docs-url">{i18n._(msg`settings.docsUrl.label`)}</FieldLabel>
+            <Input
+              id="docs-url"
+              value={docsUrl}
+              onChange={(e) => setDocsUrl(e.target.value)}
+              onBlur={() => updateGeneralSettings.mutate({ docs_url: docsUrl })}
+              placeholder="https://milmil.org"
+              className="bg-transparent border-white/[0.08] focus:border-mm-accent text-white"
+            />
+            <p className="mt-1 text-[11px] text-white/30">
+              {i18n._(msg`settings.docsUrl.desc`)}
+            </p>
+          </Field>
         </SettingsCard>
       </div>
     </div>

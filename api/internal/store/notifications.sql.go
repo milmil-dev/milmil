@@ -77,6 +77,26 @@ func (q *Queries) DeleteOldReadNotifications(ctx context.Context, createdAt stri
 	return err
 }
 
+const getNotification = `-- name: GetNotification :one
+SELECT id, type, title, message, severity, read, metadata, created_at FROM notifications WHERE id = ?
+`
+
+func (q *Queries) GetNotification(ctx context.Context, id string) (Notification, error) {
+	row := q.db.QueryRowContext(ctx, getNotification, id)
+	var i Notification
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.Title,
+		&i.Message,
+		&i.Severity,
+		&i.Read,
+		&i.Metadata,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listNotifications = `-- name: ListNotifications :many
 SELECT id, type, title, message, severity, read, metadata, created_at FROM notifications ORDER BY created_at DESC LIMIT ? OFFSET ?
 `

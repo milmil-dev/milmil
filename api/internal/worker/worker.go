@@ -5,14 +5,17 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
+	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/internal/ws"
 )
 
 // Scheduler runs background jobs on simple goroutine tickers,
@@ -26,6 +29,9 @@ type Scheduler struct {
 	tmdb       tmdb.Client
 	cache      cache.Cache
 	notifier   *notification.Service
+	metadata   *metadata.Service
+	wsHub      *ws.Hub
+	botEngine  *bot.Engine
 	cancel     context.CancelFunc
 }
 
@@ -39,6 +45,9 @@ func NewScheduler(
 	tmdbClient tmdb.Client,
 	cacheClient cache.Cache,
 	notifier *notification.Service,
+	metadataSvc *metadata.Service,
+	wsHub *ws.Hub,
+	botEngine *bot.Engine,
 ) *Scheduler {
 	return &Scheduler{
 		queries:    queries,
@@ -49,6 +58,9 @@ func NewScheduler(
 		tmdb:       tmdbClient,
 		cache:      cacheClient,
 		notifier:   notifier,
+		metadata:   metadataSvc,
+		wsHub:      wsHub,
+		botEngine:  botEngine,
 	}
 }
 
@@ -65,8 +77,8 @@ func (s *Scheduler) Start() {
 		w.Run(ctx)
 	})
 
-	// Download sync — every 30 seconds, run immediately on start
-	go s.runTicker(ctx, "download_sync", 30*time.Second, true, func(ctx context.Context) {
+	// Download sync — every 5 seconds, run immediately on start
+	go s.runTicker(ctx, "download_sync", 3*time.Second, true, func(ctx context.Context) {
 		w := &DownloadSyncWorker{
 			queries:    s.queries,
 			downloader: s.downloader,
@@ -76,14 +88,46 @@ func (s *Scheduler) Start() {
 			tmdb:       s.tmdb,
 			cache:      s.cache,
 			notifier:   s.notifier,
+			wsHub:      s.wsHub,
 		}
 		w.Run(ctx)
+	})
+
+	// Notification delivery retry — every 60 seconds
+	go s.runTicker(ctx, "notification_delivery", 60*time.Second, false, func(ctx context.Context) {
+		w := &NotificationDeliveryWorker{queries: s.queries}
+		w.Run(ctx)
+	})
+
+	// Bot report — check every 60 seconds if a report is due
+	if s.botEngine != nil {
+		reportWorker := NewBotReportWorker(s.queries, func(resp *bot.BotResponse) {
+			cfg, err := notification.LoadNotificationConfig(context.Background(), s.queries)
+			if err != nil {
+				slog.Error("bot_report: load config for broadcast", "err", err)
+				return
+			}
+			s.botEngine.BroadcastToAll(cfg, resp)
+		})
+		go s.runTicker(ctx, "bot_report", 60*time.Second, false, func(ctx context.Context) {
+			reportWorker.Run(ctx)
+		})
+	}
+
+	// Airing reminder — every 5 minutes, checks if watched anime is about to air
+	airingWorker := NewAiringReminderWorker(s.queries, s.metadata, s.notifier)
+	go s.runTicker(ctx, "airing_reminder", 5*time.Minute, false, func(ctx context.Context) {
+		airingWorker.Run(ctx)
 	})
 
 	// Notification cleanup — every 24 hours
 	go s.runTicker(ctx, "notification_cleanup", 24*time.Hour, false, func(ctx context.Context) {
 		if err := s.notifier.CleanupOld(ctx, 30); err != nil {
 			slog.Error("notification_cleanup: failed", "err", err)
+		}
+		cutoff := time.Now().AddDate(0, 0, -30).Format(time.RFC3339)
+		if err := s.queries.DeleteOldDeliveries(ctx, cutoff); err != nil {
+			slog.Error("notification_cleanup: deliveries failed", "err", err)
 		}
 	})
 }

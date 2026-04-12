@@ -1,9 +1,8 @@
 import { useLingui } from '@lingui/react';
 import { msg } from '@lingui/core/macro';
 import { motion } from 'motion/react';
-import { useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
   Settings02Icon,
   Link04Icon,
@@ -13,6 +12,7 @@ import {
   InformationCircleIcon,
   Download04Icon,
   CloudIcon,
+  Notification03Icon,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { PageAtmosphere } from '@/components/PageAtmosphere';
@@ -25,10 +25,13 @@ import { StoragePanel } from './StoragePanel';
 import { AboutPanel } from './AboutPanel';
 import { BackupPanel } from './BackupPanel';
 import { DownloadPanel } from './DownloadPanel';
+import { NotificationSettingsPanel } from './NotificationSettingsPanel';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 const TABS = [
   { id: 'general', labelKey: msg`settings.nav.general`, icon: Settings02Icon },
   { id: 'integrations', labelKey: msg`settings.nav.integrations`, icon: Link04Icon },
+  { id: 'notifications', labelKey: msg`settings.nav.notifications`, icon: Notification03Icon },
   { id: 'download', labelKey: msg`settings.nav.download`, icon: Download04Icon },
   { id: 'player', labelKey: msg`settings.nav.player`, icon: PlayIcon },
   { id: 'account', labelKey: msg`settings.nav.account`, icon: UserIcon },
@@ -42,6 +45,7 @@ type TabId = (typeof TABS)[number]['id'];
 const PANELS: Record<TabId, React.FC> = {
   general: GeneralPanel,
   integrations: IntegrationsPanel,
+  notifications: NotificationSettingsPanel,
   download: DownloadPanel,
   player: PlayerPanel,
   backup: BackupPanel,
@@ -54,9 +58,14 @@ const TAB_IDS: Set<string> = new Set(TABS.map((t) => t.id));
 
 export function SettingsPage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`nav.settings`));
   const search = useSearch({ strict: false }) as { tab?: string };
-  const initialTab: TabId = search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const navigate = useNavigate();
+  const activeTab: TabId = search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
+
+  const setActiveTab = (tab: TabId) => {
+    navigate({ to: '/settings', search: { tab }, replace: true });
+  };
 
   const ActivePanel = PANELS[activeTab];
 

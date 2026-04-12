@@ -93,13 +93,15 @@ func prettyLogger() echo.MiddlewareFunc {
 				attrs = append(attrs, "req_body", reqBody)
 			}
 
-			// Add response body for 4xx/5xx errors
-			if status >= 400 && resBodyBuf.Len() > 0 {
-				resBody := resBodyBuf.String()
-				if len(resBody) > 512 {
-					resBody = resBody[:512] + "...(truncated)"
+			// Add response body for errors (always) and all requests (debug mode)
+			if resBodyBuf.Len() > 0 {
+				if status >= 400 || slog.Default().Enabled(c.Request().Context(), slog.LevelDebug) {
+					resBody := resBodyBuf.String()
+					if len(resBody) > 512 {
+						resBody = resBody[:512] + "...(truncated)"
+					}
+					attrs = append(attrs, "res_body", resBody)
 				}
-				attrs = append(attrs, "res_body", resBody)
 			}
 
 			switch {
@@ -108,7 +110,7 @@ func prettyLogger() echo.MiddlewareFunc {
 			case status >= 400:
 				slog.Warn("request", attrs...)
 			default:
-				slog.Debug("request", attrs...)
+				slog.Info("request", attrs...)
 			}
 
 			return nil

@@ -25,6 +25,8 @@ func (w *RSSRefreshWorker) Run(ctx context.Context) {
 	feeds, err := w.queries.ListRSSFeedsDue(ctx)
 	if err != nil {
 		slog.Error("rss_refresh: list due feeds", "err", err)
+		w.notifier.Send(ctx, "system.error", "RSS Refresh Failed", err.Error(), "error",
+			map[string]any{"worker": "rss_refresh"})
 		return
 	}
 	if len(feeds) == 0 {
@@ -89,8 +91,16 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 				continue
 			}
 
+			// Resolve save dir from library path (authoritative) with rule fallback
+			saveDir := rule.SaveDir
+			if rule.LibraryID.Valid {
+				if lib, libErr := w.queries.GetLibrary(ctx, rule.LibraryID.String); libErr == nil {
+					saveDir = lib.Path
+				}
+			}
+
 			gid, err := w.downloader.Add(ctx, item.Link, downloader.AddOptions{
-				SaveDir: rule.SaveDir,
+				SaveDir: saveDir,
 				Name:    item.Title,
 			})
 			if err != nil {
@@ -104,7 +114,7 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 				Url:       item.Link,
 				Name:      item.Title,
 				Status:    "active",
-				SaveDir:   rule.SaveDir,
+				SaveDir:   saveDir,
 				RuleID:    sql.NullString{String: rule.ID, Valid: true},
 				BangumiID: rule.BangumiID,
 				LibraryID: rule.LibraryID,

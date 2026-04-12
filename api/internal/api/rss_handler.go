@@ -3,8 +3,10 @@ package api
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/google/uuid"
@@ -13,6 +15,26 @@ import (
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
 )
+
+func formatSize(raw string) string {
+	if raw == "" {
+		return ""
+	}
+	bytes, err := strconv.ParseFloat(raw, 64)
+	if err != nil {
+		return raw
+	}
+	switch {
+	case bytes >= 1<<30:
+		return fmt.Sprintf("%.1f GB", bytes/float64(1<<30))
+	case bytes >= 1<<20:
+		return fmt.Sprintf("%.1f MB", bytes/float64(1<<20))
+	case bytes >= 1<<10:
+		return fmt.Sprintf("%.1f KB", bytes/float64(1<<10))
+	default:
+		return fmt.Sprintf("%.0f B", bytes)
+	}
+}
 
 type previewItem struct {
 	Title             string `json:"title"`
@@ -96,9 +118,11 @@ func (h *handler) handlePreviewRSSFeed(c echo.Context) error {
 		subgroup := rss.ParseSubgroup(item.Title)
 		episode := rss.ParseEpisode(item.Title)
 
-		// Check if already downloaded
-		_, dlErr := h.queries.GetDownloadByURL(ctx, item.Link)
-		alreadyDownloaded := dlErr == nil
+		// Check if already downloaded (only count completed downloads)
+		alreadyDownloaded := false
+		if dl, dlErr := h.queries.GetDownloadByURL(ctx, item.Link); dlErr == nil {
+			alreadyDownloaded = dl.Status == "complete"
+		}
 
 		pubDate := ""
 		if !item.PubDate.IsZero() {
@@ -110,9 +134,50 @@ func (h *handler) handlePreviewRSSFeed(c echo.Context) error {
 			Link:              item.Link,
 			Episode:           episode,
 			Subgroup:          subgroup,
-			Size:              item.Size,
+			Size:              formatSize(item.Size),
 			PublishDate:       pubDate,
 			AlreadyDownloaded: alreadyDownloaded,
+		})
+	}
+	resp.Matched = len(resp.Items)
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+type previewURLRequest struct {
+	URL string `json:"url"`
+}
+
+func (h *handler) handlePreviewRSSFeedURL(c echo.Context) error {
+	var req previewURLRequest
+	if err := c.Bind(&req); err != nil || req.URL == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "url is required")
+	}
+
+	ctx := c.Request().Context()
+	items, err := rss.ParseFeed(ctx, req.URL)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, "failed to parse feed: "+err.Error())
+	}
+
+	resp := previewResponse{Total: len(items), Items: []previewItem{}}
+	for _, item := range items {
+		subgroup := rss.ParseSubgroup(item.Title)
+		episode := rss.ParseEpisode(item.Title)
+
+		pubDate := ""
+		if !item.PubDate.IsZero() {
+			pubDate = item.PubDate.Format("2006-01-02T15:04:05Z")
+		}
+
+		resp.Items = append(resp.Items, previewItem{
+			Title:             item.Title,
+			Link:              item.Link,
+			Episode:           episode,
+			Subgroup:          subgroup,
+			Size:              formatSize(item.Size),
+			PublishDate:       pubDate,
+			AlreadyDownloaded: false,
 		})
 	}
 	resp.Matched = len(resp.Items)

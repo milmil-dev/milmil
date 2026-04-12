@@ -14,7 +14,7 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:105
 msgid "watch.resumeFrom"
-msgstr "從此處繼續"
+msgstr "由呢度繼續"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"
@@ -30,7 +30,7 @@ msgstr "從此處繼續"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.noTags"
-#~ msgstr "沒有符合的標籤"
+#~ msgstr "冇符合嘅標籤"
 
 #. js-lingui-explicit-id
 #~ msgid "search.tag.genre"
@@ -82,7 +82,7 @@ msgstr "導出設定"
 
 #: src/pages/settings/AboutPanel.tsx:143
 msgid "about.exportSettingsDesc"
-msgstr "將設定下載為 JSON 文件"
+msgstr "將設定下載做 JSON 文件"
 
 #: src/pages/settings/AboutPanel.tsx:60
 msgid "about.exportSuccess"
@@ -111,7 +111,7 @@ msgstr "導入設定"
 
 #: src/pages/settings/AboutPanel.tsx:160
 msgid "about.importSettingsDesc"
-msgstr "從 JSON 文件還原設定"
+msgstr "由 JSON 文件還原設定"
 
 #: src/pages/settings/AboutPanel.tsx:82
 msgid "about.importSuccess"
@@ -148,7 +148,7 @@ msgstr "重設為預設值"
 
 #: src/pages/settings/AboutPanel.tsx:188
 msgid "about.resetToDefaultsDesc"
-msgstr "將所有設定還原為預設值"
+msgstr "將所有設定還原做預設值"
 
 #: src/pages/settings/AboutPanel.tsx:135
 msgid "about.settingsManagement"
@@ -164,19 +164,19 @@ msgstr "系統信息"
 
 #: src/pages/settings/AccountPanel.tsx:371
 msgid "account.2fa.activeMessage"
-msgstr "雙重驗證已經開咗。撳關閉就可以停用。"
+msgstr "雙重驗證已經開咗。撳閂就可以停用。"
 
 #: src/pages/settings/AccountPanel.tsx:276
 msgid "account.2fa.description"
-msgstr "登入時要求輸入 TOTP 驗證碼，幫你嘅帳號加多一重保障。"
+msgstr "登入時要入 TOTP 驗證碼，幫你嘅帳號加多一重保障。"
 
 #: src/pages/settings/AccountPanel.tsx:257
 msgid "account.2fa.disabled"
-msgstr "關咗 2FA"
+msgstr "閂咗 2FA"
 
 #: src/pages/settings/AccountPanel.tsx:262
 msgid "account.2fa.disableFailed"
-msgstr "關閉 2FA 失敗咗"
+msgstr "閂 2FA 失敗咗"
 
 #: src/pages/settings/AccountPanel.tsx:246
 msgid "account.2fa.enabled"
@@ -188,11 +188,11 @@ msgstr "驗證碼唔啱"
 
 #: src/pages/settings/AccountPanel.tsx:314
 msgid "account.2fa.manualEntry"
-msgstr "手動輸入"
+msgstr "手動入"
 
 #: src/pages/settings/AccountPanel.tsx:300
 msgid "account.2fa.scanInstructions"
-msgstr "用驗證器 App 掃描呢個 QR 碼，然後輸入 6 位數驗證碼嚟驗證。"
+msgstr "用驗證器 App 掃呢個 QR 碼，然後入 6 位數驗證碼嚟驗證。"
 
 #: src/pages/settings/AccountPanel.tsx:240
 msgid "account.2fa.setupFailed"
@@ -200,11 +200,11 @@ msgstr "設定 2FA 失敗咗"
 
 #: src/pages/settings/AccountPanel.tsx:286
 msgid "account.2fa.statusDisabled"
-msgstr "已關閉"
+msgstr "閂咗"
 
 #: src/pages/settings/AccountPanel.tsx:283
 msgid "account.2fa.statusEnabled"
-msgstr "已開啟"
+msgstr "開咗"
 
 #: src/pages/settings/AccountPanel.tsx:285
 msgid "account.2fa.statusPending"
@@ -262,7 +262,7 @@ msgstr "密碼最少要 8 個字元"
 
 #: src/pages/settings/AccountPanel.tsx:164
 msgid "account.passwordMismatch"
-msgstr "兩次密碼唔一樣"
+msgstr "兩次密碼唔同"
 
 #: src/pages/settings/AccountPanel.tsx:47
 msgid "account.passwordUpdated"
@@ -306,7 +306,7 @@ msgstr "評論"
 
 #: src/pages/AnimeDetailPage.tsx:731
 msgid "anime.continueWatching"
-msgstr "繼續觀看"
+msgstr "繼續睇"
 
 #: src/pages/AnimeDetailPage.tsx:735
 msgid "anime.episode"
@@ -330,15 +330,15 @@ msgstr "我的評分"
 
 #: src/pages/AnimeDetailPage.tsx:506
 msgid "anime.notAired"
-msgstr "尚未播出"
+msgstr "未播"
 
 #: src/pages/AnimeDetailPage.tsx:312
 msgid "anime.notFound"
-msgstr "找不到動畫"
+msgstr "搵唔到動畫"
 
 #: src/pages/AnimeDetailPage.tsx:528
 msgid "anime.playableEps"
-msgstr ""
+msgstr "集可播放"
 
 #: src/components/PreviewModal.tsx:221
 #: src/pages/AnimeDetailPage.tsx:499
@@ -363,14 +363,14 @@ msgstr "評論"
 
 #: src/pages/AnimeDetailPage.tsx:625
 msgid "anime.searchResources"
-msgstr "搜尋資源"
+msgstr "搵資源"
 
 #~ msgid "anime.season"
 #~ msgstr "季"
 
 #: src/pages/AnimeDetailPage.tsx:522
 msgid "anime.subscribed"
-msgstr ""
+msgstr "訂閱咗"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -385,19 +385,19 @@ msgstr "預告片"
 msgid "anime.voiceActor"
 msgstr "聲優"
 
-#: src/pages/LoginPage.tsx:190
+#: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
 msgstr "驗證碼"
 
-#: src/pages/LoginPage.tsx:185
+#: src/pages/LoginPage.tsx:187
 msgid "auth.2fa.subtitle"
-msgstr "輸入你驗證器 App 入面嘅 6 位數驗證碼"
+msgstr "入你驗證器 App 入面嘅 6 位數驗證碼"
 
-#: src/pages/LoginPage.tsx:183
+#: src/pages/LoginPage.tsx:185
 msgid "auth.2fa.title"
 msgstr "雙重驗證"
 
-#: src/pages/LoginPage.tsx:259
+#: src/pages/LoginPage.tsx:261
 msgid "auth.2fa.verify"
 msgstr "驗證"
 
@@ -420,7 +420,7 @@ msgstr "設定失敗"
 #: src/pages/LibrariesPage.tsx:3159
 #: src/pages/LibraryDetailPage.tsx:1209
 msgid "auth.libraries.signInSubtitle"
-msgstr "登入以訪問你的媒體庫"
+msgstr "登入先可以睇你嘅媒體庫"
 
 #: src/pages/LibrariesPage.tsx:3156
 #: src/pages/LibraryDetailPage.tsx:1206
@@ -432,200 +432,203 @@ msgstr "需要登入"
 #~ msgstr "登入緊..."
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LoginPage.tsx:346
+#: src/pages/LoginPage.tsx:348
 msgid "auth.login.password"
 msgstr "密碼"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3166
 #: src/pages/LibraryDetailPage.tsx:1212
-#: src/pages/LoginPage.tsx:405
+#: src/pages/LoginPage.tsx:407
 msgid "auth.login.submit"
 msgstr "登入"
 
-#: src/pages/LoginPage.tsx:168
+#: src/pages/LoginPage.tsx:170
 msgid "auth.login.subtitle"
 msgstr "你嘅私人動畫媒體伺服器"
 
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
-#: src/pages/LoginPage.tsx:278
-#: src/pages/LoginPage.tsx:296
+#: src/pages/LoginPage.tsx:89
+#: src/pages/LoginPage.tsx:280
+#: src/pages/LoginPage.tsx:298
 msgid "auth.login.title"
 msgstr "登入 milmil"
 
 #: src/components/LoginModal.tsx:127
-#: src/pages/LoginPage.tsx:319
+#: src/pages/LoginPage.tsx:321
 msgid "auth.login.username"
 msgstr "用戶名"
 
-#: src/pages/SetupPage.tsx:40
+#: src/pages/SetupPage.tsx:42
 msgid "auth.setup.error"
 msgstr "設定失敗，請重試。"
 
-#: src/pages/SetupPage.tsx:110
+#: src/pages/SetupPage.tsx:112
 msgid "auth.setup.loading"
 msgstr "開緊賬號…"
 
-#: src/pages/SetupPage.tsx:88
+#: src/pages/SetupPage.tsx:90
 msgid "auth.setup.password"
 msgstr "密碼"
 
 #: src/components/LoginModal.tsx:41
-#: src/pages/LoginPage.tsx:108
-#: src/pages/SetupPage.tsx:29
+#: src/pages/LoginPage.tsx:110
+#: src/pages/SetupPage.tsx:31
 msgid "auth.setup.passwordTooShort"
 msgstr "密碼最少要 8 個字"
 
 #: src/components/LoginModal.tsx:176
-#: src/pages/LoginPage.tsx:406
-#: src/pages/SetupPage.tsx:110
+#: src/pages/LoginPage.tsx:408
+#: src/pages/SetupPage.tsx:112
 msgid "auth.setup.submit"
 msgstr "建立賬號"
 
 #: src/components/LoginModal.tsx:112
-#: src/pages/LoginPage.tsx:301
-#: src/pages/SetupPage.tsx:51
+#: src/pages/LoginPage.tsx:303
+#: src/pages/SetupPage.tsx:53
 msgid "auth.setup.subtitle"
 msgstr "開個管理員賬號先啦。"
 
 #: src/components/LoginModal.tsx:104
-#: src/pages/LoginPage.tsx:289
-#: src/pages/SetupPage.tsx:49
+#: src/pages/LoginPage.tsx:291
+#: src/pages/SetupPage.tsx:21
+#: src/pages/SetupPage.tsx:51
 msgid "auth.setup.title"
 msgstr "歡迎用 milmil"
 
-#: src/pages/SetupPage.tsx:65
+#: src/pages/SetupPage.tsx:67
 msgid "auth.setup.username"
 msgstr "用戶名"
 
-#: src/pages/DownloadsPage.tsx:1372
+#: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.active"
-msgstr "啟用中"
+msgstr "開緊"
 
-#: src/pages/DownloadsPage.tsx:1718
+#: src/pages/DownloadsPage.tsx:2215
 msgid "autoDownload.add"
 msgstr "新增"
 
-#: src/pages/DownloadsPage.tsx:1717
+#: src/pages/DownloadsPage.tsx:2214
 msgid "autoDownload.adding"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:315
-#: src/pages/DownloadsPage.tsx:1687
+#: src/pages/DownloadsPage.tsx:418
+#: src/pages/DownloadsPage.tsx:2184
 msgid "autoDownload.addUrl"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:718
-#: src/pages/DownloadsPage.tsx:740
+#: src/pages/DownloadsPage.tsx:893
+#: src/pages/DownloadsPage.tsx:915
+#: src/pages/DownloadsPage.tsx:1190
 msgid "autoDownload.allSubgroups"
 msgstr "全部字幕組"
 
-#: src/pages/DownloadsPage.tsx:2197
-#: src/pages/DownloadsPage.tsx:2240
+#: src/pages/DownloadsPage.tsx:2694
+#: src/pages/DownloadsPage.tsx:2737
 msgid "autoDownload.alsoDeleteFiles"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:740
+#: src/pages/DownloadsPage.tsx:915
 msgid "autoDownload.anyResolution"
 msgstr "任意解析度"
 
-#: src/pages/DownloadsPage.tsx:1035
-#: src/pages/DownloadsPage.tsx:1709
-#: src/pages/DownloadsPage.tsx:2207
-#: src/pages/DownloadsPage.tsx:2250
+#: src/pages/DownloadsPage.tsx:1262
+#: src/pages/DownloadsPage.tsx:2206
+#: src/pages/DownloadsPage.tsx:2704
+#: src/pages/DownloadsPage.tsx:2747
 msgid "autoDownload.cancel"
 msgstr "取消"
 
-#: src/pages/DownloadsPage.tsx:2735
+#: src/pages/DownloadsPage.tsx:3232
 msgid "autoDownload.clearAll"
 msgstr "清除全部"
 
-#: src/pages/DownloadsPage.tsx:2697
+#: src/pages/DownloadsPage.tsx:3194
 msgid "autoDownload.completed.grouped"
 msgstr "按作品"
 
-#: src/pages/DownloadsPage.tsx:2725
+#: src/pages/DownloadsPage.tsx:3222
 msgid "autoDownload.completed.selectAll"
 msgstr "全選"
 
-#: src/pages/DownloadsPage.tsx:2709
+#: src/pages/DownloadsPage.tsx:3206
 msgid "autoDownload.completed.timeline"
 msgstr "時間線"
 
-#: src/pages/DownloadsPage.tsx:1044
+#: src/pages/DownloadsPage.tsx:1271
 msgid "autoDownload.confirm"
 msgstr "確認訂閱"
 
-#: src/pages/DownloadsPage.tsx:2222
-#: src/pages/DownloadsPage.tsx:2265
+#: src/pages/DownloadsPage.tsx:2719
+#: src/pages/DownloadsPage.tsx:2762
 msgid "autoDownload.confirmDelete"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:3414
+#: src/pages/DownloadsPage.tsx:3912
 msgid "autoDownload.connecting"
-msgstr "連線中..."
+msgstr "連緊線..."
 
-#: src/pages/DownloadsPage.tsx:2162
-#: src/pages/DownloadsPage.tsx:3479
+#: src/pages/DownloadsPage.tsx:2659
+#: src/pages/DownloadsPage.tsx:4002
 msgid "autoDownload.delete"
 msgstr "刪除"
 
-#: src/pages/DownloadsPage.tsx:2091
-#: src/pages/DownloadsPage.tsx:2186
+#: src/pages/DownloadsPage.tsx:2588
+#: src/pages/DownloadsPage.tsx:2683
 msgid "autoDownload.deleteAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2192
+#: src/pages/DownloadsPage.tsx:2689
 msgid "autoDownload.deleteAllDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1256
+#: src/pages/DownloadsPage.tsx:1483
 msgid "autoDownload.deleted"
-msgstr "訂閱已刪除"
+msgstr "訂閱刪咗"
 
-#: src/pages/DownloadsPage.tsx:1900
+#: src/pages/DownloadsPage.tsx:2397
 msgid "autoDownload.deletedAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2231
+#: src/pages/DownloadsPage.tsx:2728
 msgid "autoDownload.deleteItem"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2185
+#: src/pages/DownloadsPage.tsx:2682
 msgid "autoDownload.deleteSelected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2191
+#: src/pages/DownloadsPage.tsx:2688
 msgid "autoDownload.deleteSelectedDesc"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2221
-#: src/pages/DownloadsPage.tsx:2264
+#: src/pages/DownloadsPage.tsx:2718
+#: src/pages/DownloadsPage.tsx:2761
 msgid "autoDownload.deleting"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2123
+#: src/pages/DownloadsPage.tsx:2620
 msgid "autoDownload.deselectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2461
+#: src/pages/DownloadsPage.tsx:2958
 msgid "autoDownload.detail.created"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2477
+#: src/pages/DownloadsPage.tsx:2974
 msgid "autoDownload.detail.files"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2456
+#: src/pages/DownloadsPage.tsx:2953
 msgid "autoDownload.detail.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2458
+#: src/pages/DownloadsPage.tsx:2955
 msgid "autoDownload.detail.rule"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2463
+#: src/pages/DownloadsPage.tsx:2960
 msgid "autoDownload.detail.saveDir"
 msgstr ""
 
@@ -633,7 +636,7 @@ msgstr ""
 #~ msgid "autoDownload.detail.size"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2440
+#: src/pages/DownloadsPage.tsx:2937
 msgid "autoDownload.detail.speed"
 msgstr ""
 
@@ -641,18 +644,18 @@ msgstr ""
 #~ msgid "autoDownload.detail.status"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:810
+#: src/pages/DownloadsPage.tsx:985
 msgid "autoDownload.download"
 msgstr "下載"
 
-#: src/pages/DownloadsPage.tsx:553
-#: src/pages/DownloadsPage.tsx:1678
+#: src/pages/DownloadsPage.tsx:728
+#: src/pages/DownloadsPage.tsx:2175
 msgid "autoDownload.downloadAdded"
-msgstr "已新增下載"
+msgstr "加咗下載"
 
-#: src/pages/DownloadsPage.tsx:2007
+#: src/pages/DownloadsPage.tsx:2504
 msgid "autoDownload.downloading"
-msgstr "下載中"
+msgstr "下載緊"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -662,31 +665,31 @@ msgstr "下載中"
 #~ msgid "autoDownload.emptyTitle"
 #~ msgstr "尚無訂閱"
 
-#: src/pages/DownloadsPage.tsx:1396
+#: src/pages/DownloadsPage.tsx:1623
 msgid "autoDownload.episodes"
 msgstr "集數"
 
-#: src/pages/DownloadsPage.tsx:1614
+#: src/pages/DownloadsPage.tsx:1840
 msgid "autoDownload.goToSearch"
-msgstr "前往搜尋"
+msgstr "去搵"
 
 #: src/pages/DownloadsPage.tsx:286
 #~ msgid "autoDownload.goToSettings"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1420
+#: src/pages/DownloadsPage.tsx:1647
 msgid "autoDownload.interval"
 msgstr "更新間隔"
 
-#: src/pages/DownloadsPage.tsx:2022
+#: src/pages/DownloadsPage.tsx:2519
 msgid "autoDownload.items"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1427
+#: src/pages/DownloadsPage.tsx:1654
 msgid "autoDownload.lastTriggered"
 msgstr "上次觸發"
 
-#: src/pages/DownloadsPage.tsx:997
+#: src/pages/DownloadsPage.tsx:1224
 msgid "autoDownload.library"
 msgstr "媒體庫"
 
@@ -698,144 +701,145 @@ msgstr "媒體庫"
 #~ msgid "autoDownload.matchesCount"
 #~ msgstr "匹配"
 
-#: src/pages/DownloadsPage.tsx:2306
+#: src/pages/DownloadsPage.tsx:2803
 msgid "autoDownload.noActiveDownloads"
-msgstr "無進行中的下載"
+msgstr "冇進行中嘅下載"
 
-#: src/pages/DownloadsPage.tsx:3152
+#: src/pages/DownloadsPage.tsx:3649
 msgid "autoDownload.noCompletedDownloads"
-msgstr "無已完成的下載"
+msgstr "冇已完成嘅下載"
 
-#: src/pages/DownloadsPage.tsx:1514
+#: src/pages/DownloadsPage.tsx:1741
 msgid "autoDownload.noDownloadsYet"
-msgstr "尚無下載"
+msgstr "未有下載"
 
-#: src/pages/DownloadsPage.tsx:820
+#: src/pages/DownloadsPage.tsx:995
 msgid "autoDownload.noFilteredResults"
-msgstr "無匹配結果"
+msgstr "冇匹配結果"
 
-#: src/pages/DownloadsPage.tsx:989
-msgid "autoDownload.noFilters"
-msgstr "無篩選"
+#: src/pages/DownloadsPage.tsx:1163
+#~ msgid "autoDownload.noFilters"
+#~ msgstr "無篩選"
 
-#: src/pages/DownloadsPage.tsx:1010
+#: src/pages/DownloadsPage.tsx:1237
 msgid "autoDownload.noLibrary"
 msgstr "預設目錄"
 
-#: src/pages/DownloadsPage.tsx:478
-#: src/pages/DownloadsPage.tsx:2295
+#: src/pages/DownloadsPage.tsx:637
+#: src/pages/DownloadsPage.tsx:2792
 msgid "autoDownload.noResults"
-msgstr "未找到結果"
+msgstr "搵唔到結果"
 
-#: src/pages/DownloadsPage.tsx:1603
+#: src/pages/DownloadsPage.tsx:1829
 msgid "autoDownload.noSubscriptions"
-msgstr "尚無訂閱"
+msgstr "未有訂閱"
 
-#: src/pages/DownloadsPage.tsx:1606
+#: src/pages/DownloadsPage.tsx:1832
 msgid "autoDownload.noSubscriptionsHint"
-msgstr "在搜尋標籤頁中搜尋動畫，建立自動下載訂閱。"
+msgstr "喺搜尋標籤頁搵動畫，建立自動下載訂閱。"
 
-#: src/pages/DownloadsPage.tsx:825
+#: src/pages/DownloadsPage.tsx:1000
 msgid "autoDownload.noTorrents"
-msgstr "未找到種子"
+msgstr "搵唔到種子"
 
-#: src/pages/DownloadsPage.tsx:1698
+#: src/pages/DownloadsPage.tsx:2195
 msgid "autoDownload.pasteUrl"
 msgstr "貼上種子或磁力連結..."
 
-#: src/pages/DownloadsPage.tsx:2150
-#: src/pages/DownloadsPage.tsx:2522
-#: src/pages/DownloadsPage.tsx:3456
+#: src/pages/DownloadsPage.tsx:2647
+#: src/pages/DownloadsPage.tsx:3019
+#: src/pages/DownloadsPage.tsx:3979
 msgid "autoDownload.pause"
 msgstr "暫停"
 
-#: src/pages/DownloadsPage.tsx:2054
+#: src/pages/DownloadsPage.tsx:2551
 msgid "autoDownload.pauseAll"
 msgstr "全部暫停"
 
-#: src/pages/DownloadsPage.tsx:1372
+#: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.paused"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1464
+#: src/pages/DownloadsPage.tsx:1691
 msgid "autoDownload.refresh"
 msgstr "重新整理"
 
-#: src/pages/DownloadsPage.tsx:2067
+#: src/pages/DownloadsPage.tsx:2564
 msgid "autoDownload.refreshAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1241
+#: src/pages/DownloadsPage.tsx:1468
 msgid "autoDownload.refreshed"
-msgstr "訂閱已重新整理"
+msgstr "訂閱重新整理咗"
 
-#: src/pages/DownloadsPage.tsx:686
+#: src/pages/DownloadsPage.tsx:861
 msgid "autoDownload.resolution"
 msgstr "解析度"
 
-#: src/pages/DownloadsPage.tsx:2137
-#: src/pages/DownloadsPage.tsx:2533
-#: src/pages/DownloadsPage.tsx:3468
+#: src/pages/DownloadsPage.tsx:2634
+#: src/pages/DownloadsPage.tsx:3030
+#: src/pages/DownloadsPage.tsx:3991
 msgid "autoDownload.resume"
 msgstr "恢復"
 
-#: src/pages/DownloadsPage.tsx:2039
+#: src/pages/DownloadsPage.tsx:2536
 msgid "autoDownload.resumeAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:955
+#: src/pages/DownloadsPage.tsx:1152
 msgid "autoDownload.rssSource"
 msgstr "RSS 來源"
 
-#: src/pages/DownloadsPage.tsx:406
+#: src/pages/DownloadsPage.tsx:542
 msgid "autoDownload.searchAnime"
-msgstr "搜尋動畫..."
+msgstr "搵動畫..."
 
-#: src/pages/DownloadsPage.tsx:1954
+#: src/pages/DownloadsPage.tsx:2451
 msgid "autoDownload.searchDownloads"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:491
+#: src/pages/DownloadsPage.tsx:650
 msgid "autoDownload.searchHint"
-msgstr "選擇動畫瀏覽種子"
+msgstr "揀動畫睇種子"
 
-#: src/pages/DownloadsPage.tsx:2079
+#: src/pages/DownloadsPage.tsx:2576
 msgid "autoDownload.select"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2123
+#: src/pages/DownloadsPage.tsx:2620
 msgid "autoDownload.selectAll"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2116
+#: src/pages/DownloadsPage.tsx:2613
 msgid "autoDownload.selected"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:746
+#: src/pages/DownloadsPage.tsx:921
 msgid "autoDownload.selectSourceToSubscribe"
-msgstr "選擇具體來源（Mikan、Nyaa 或 DMHY）即可訂閱"
+msgstr "揀具體來源（Mikan、Nyaa 或 DMHY）就可以訂閱"
 
-#: src/pages/DownloadsPage.tsx:1940
+#: src/pages/DownloadsPage.tsx:2437
 msgid "autoDownload.sort.date"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1938
+#: src/pages/DownloadsPage.tsx:2435
 msgid "autoDownload.sort.name"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1939
+#: src/pages/DownloadsPage.tsx:2436
 msgid "autoDownload.sort.size"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1937
+#: src/pages/DownloadsPage.tsx:2434
 msgid "autoDownload.sort.status"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:662
+#: src/pages/DownloadsPage.tsx:837
 msgid "autoDownload.source"
 msgstr "來源"
 
-#: src/pages/DownloadsPage.tsx:711
+#: src/pages/DownloadsPage.tsx:886
+#: src/pages/DownloadsPage.tsx:1177
 msgid "autoDownload.subgroup"
 msgstr "字幕組"
 
@@ -843,13 +847,13 @@ msgstr "字幕組"
 #~ msgid "autoDownload.subscribe"
 #~ msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:737
+#: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subscribeFilter"
-msgstr "訂閱此篩選"
+msgstr "訂閱呢個篩選"
 
-#: src/pages/DownloadsPage.tsx:887
+#: src/pages/DownloadsPage.tsx:1084
 msgid "autoDownload.subscribeSuccess"
-msgstr "訂閱已建立"
+msgstr "訂閱建立咗"
 
 #: src/pages/DownloadsPage.tsx:743
 #~ msgid "autoDownload.subscribeTitle"
@@ -859,39 +863,39 @@ msgstr "訂閱已建立"
 #~ msgid "autoDownload.subscriptions"
 #~ msgstr "訂閱"
 
-#: src/pages/DownloadsPage.tsx:227
+#: src/pages/DownloadsPage.tsx:330
 msgid "autoDownload.subtab.completed"
 msgstr "已完成"
 
-#: src/pages/DownloadsPage.tsx:226
-#: src/pages/DownloadsPage.tsx:1486
+#: src/pages/DownloadsPage.tsx:329
+#: src/pages/DownloadsPage.tsx:1713
 msgid "autoDownload.subtab.downloads"
-msgstr "下載中"
+msgstr "下載緊"
 
-#: src/pages/DownloadsPage.tsx:225
+#: src/pages/DownloadsPage.tsx:328
 msgid "autoDownload.subtab.subscriptions"
-msgstr "訂閱"
+msgstr "已訂閱"
 
 #: src/pages/DownloadsPage.tsx:158
 #~ msgid "autoDownload.tab.manage"
 #~ msgstr "管理"
 
-#: src/pages/DownloadsPage.tsx:224
+#: src/pages/DownloadsPage.tsx:327
 msgid "autoDownload.tab.search"
 msgstr "搜尋"
 
-#: src/pages/DownloadsPage.tsx:650
-#: src/pages/DownloadsPage.tsx:944
+#: src/pages/DownloadsPage.tsx:825
+#: src/pages/DownloadsPage.tsx:1141
 msgid "autoDownload.torrentsFound"
 msgstr "個種子"
 
-#: src/pages/DownloadsPage.tsx:1450
+#: src/pages/DownloadsPage.tsx:1677
 msgid "autoDownload.viewAnime"
 msgstr "查看動畫"
 
-#: src/pages/DownloadsPage.tsx:3413
+#: src/pages/DownloadsPage.tsx:3911
 msgid "autoDownload.waiting"
-msgstr "等待中..."
+msgstr "等緊..."
 
 #: src/pages/settings/BackupPanel.tsx:233
 #: src/pages/settings/BackupPanel.tsx:433
@@ -1053,7 +1057,7 @@ msgstr "棄咗"
 
 #: src/pages/CollectionPage.tsx:371
 msgid "collection.empty"
-msgstr "收藏中還沒有動畫"
+msgstr "收藏入面仲未有動畫"
 
 #: src/pages/CollectionPage.tsx:374
 msgid "collection.emptyDesc"
@@ -1116,7 +1120,7 @@ msgstr "睇晒"
 msgid "collection.watching"
 msgstr "睇緊"
 
-#: src/pages/LoginPage.tsx:239
+#: src/pages/LoginPage.tsx:241
 msgid "common.back"
 msgstr "返回"
 
@@ -1146,8 +1150,8 @@ msgstr "複製咗"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
 #: src/pages/AnimeDetailPage.tsx:788
-#: src/pages/DownloadsPage.tsx:630
-#: src/pages/DownloadsPage.tsx:1347
+#: src/pages/DownloadsPage.tsx:805
+#: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
 msgstr "集"
 
@@ -1158,8 +1162,8 @@ msgstr "載入唔到"
 
 #: src/components/LoginModal.tsx:173
 #: src/components/MatchModal.tsx:415
-#: src/pages/LoginPage.tsx:256
-#: src/pages/LoginPage.tsx:393
+#: src/pages/LoginPage.tsx:258
+#: src/pages/LoginPage.tsx:395
 msgid "common.loading"
 msgstr "載入緊…"
 
@@ -1168,14 +1172,14 @@ msgid "common.minuteShort"
 msgstr "分鐘"
 
 #: src/pages/AnimeDetailPage.tsx:321
-#: src/pages/SchedulePage.tsx:187
-#: src/pages/SchedulePage.tsx:435
+#: src/pages/SchedulePage.tsx:366
+#: src/pages/SchedulePage.tsx:594
 msgid "common.retry"
 msgstr "再試"
 
 #: src/pages/LibrariesPage.tsx:222
 msgid "connection.checking"
-msgstr "檢查中"
+msgstr "檢查緊"
 
 #: src/pages/LibrariesPage.tsx:225
 msgid "connection.offline"
@@ -1183,11 +1187,11 @@ msgstr "離線"
 
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.online"
-msgstr "在線"
+msgstr "喺線"
 
 #: src/pages/DiscoverPage.tsx:114
 msgid "discover.airedRecently"
-msgstr "最近播出"
+msgstr "最近播"
 
 #: src/pages/DiscoverPage.tsx:102
 msgid "discover.bestLastSeason"
@@ -1260,17 +1264,17 @@ msgstr "預覽"
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
-msgstr "繼續觀看"
+msgstr "繼續睇"
 
 #: src/components/LibraryEmptyState.tsx:23
 #: src/pages/LibrariesPage.tsx:321
 msgid "home.library.empty.subtitle"
-msgstr "加個文件夾開始掃描"
+msgstr "加個文件夾就可以開始掃描"
 
 #: src/components/LibraryEmptyState.tsx:21
 #: src/pages/LibrariesPage.tsx:319
 msgid "home.library.empty.title"
-msgstr "尚未新增媒體庫"
+msgstr "未加媒體庫"
 
 #: src/pages/HomePage.tsx:208
 #: src/pages/HomePage.tsx:228
@@ -1305,7 +1309,7 @@ msgstr "瀏覽文件夾"
 
 #: src/pages/LibrariesPage.tsx:619
 msgid "library.browse.noSubdirectories"
-msgstr "找不到子目錄"
+msgstr "搵唔到子目錄"
 
 #: src/pages/LibrariesPage.tsx:728
 msgid "library.browse.select"
@@ -1315,7 +1319,7 @@ msgstr "揀"
 #: src/pages/LibrariesPage.tsx:880
 #: src/pages/LibrariesPage.tsx:898
 msgid "library.browse.selected"
-msgstr "已選擇"
+msgstr "揀咗"
 
 #: src/pages/LibrariesPage.tsx:3401
 msgid "library.cancel"
@@ -1336,11 +1340,11 @@ msgstr "刪除"
 
 #: src/pages/LibrariesPage.tsx:3393
 msgid "library.deleteConfirm"
-msgstr "所有媒體檔案記錄將被移除，磁碟上的檔案不受影響。"
+msgstr "所有媒體檔案記錄會被移除，磁碟上嘅檔案唔會受影響。"
 
 #: src/pages/LibraryDetailPage.tsx:548
 msgid "library.detail.allMatched"
-msgstr "所有檔案已匹配"
+msgstr "所有檔案匹配晒"
 
 #: src/pages/LibraryDetailPage.tsx:1319
 msgid "library.detail.autoMatch"
@@ -1348,7 +1352,7 @@ msgstr "自動匹配"
 
 #: src/pages/LibraryDetailPage.tsx:1323
 msgid "library.detail.autoMatchTooltip"
-msgstr "自動匹配所有未匹配檔案"
+msgstr "自動匹配晒所有未匹配嘅檔案"
 
 #: src/pages/LibraryDetailPage.tsx:1239
 #: src/pages/LibraryDetailPage.tsx:1270
@@ -1361,7 +1365,7 @@ msgstr "檔案名稱"
 
 #: src/pages/LibraryDetailPage.tsx:318
 msgid "library.detail.col.matchedAnime"
-msgstr "匹配的動畫"
+msgstr "匹配嘅動畫"
 
 #: src/pages/LibraryDetailPage.tsx:279
 #~ msgid "library.detail.col.matchedTo"
@@ -1435,11 +1439,11 @@ msgstr "確認匹配"
 
 #: src/components/MatchModal.tsx:70
 msgid "library.detail.matchModal.matched"
-msgstr "檔案已匹配"
+msgstr "檔案匹配咗"
 
 #: src/components/MatchModal.tsx:398
 msgid "library.detail.matchModal.noEpisodes"
-msgstr "找不到集數"
+msgstr "搵唔到集數"
 
 #: src/components/MatchModal.tsx:214
 msgid "library.detail.matchModal.noResults"
@@ -1453,7 +1457,7 @@ msgstr "搵唔到"
 
 #: src/components/MatchModal.tsx:196
 msgid "library.detail.matchModal.searchHint"
-msgstr "搜尋動畫以匹配此檔案"
+msgstr "搵動畫嚟匹配呢個檔案"
 
 #: src/components/MatchModal.tsx:182
 msgid "library.detail.matchModal.searchPlaceholder"
@@ -1461,11 +1465,11 @@ msgstr "搜尋動畫…"
 
 #: src/components/MatchModal.tsx:151
 msgid "library.detail.matchModal.stepEpisode"
-msgstr "選擇集數"
+msgstr "揀集數"
 
 #: src/components/MatchModal.tsx:150
 msgid "library.detail.matchModal.stepSearch"
-msgstr "搜尋動畫"
+msgstr "搵動畫"
 
 #: src/components/MatchModal.tsx:99
 msgid "library.detail.matchModal.title"
@@ -1480,27 +1484,27 @@ msgstr "匹配檔案"
 #: src/pages/LibraryDetailPage.tsx:623
 #: src/pages/LibraryDetailPage.tsx:822
 msgid "library.detail.noFiles"
-msgstr "找不到檔案"
+msgstr "搵唔到檔案"
 
 #: src/pages/LibraryDetailPage.tsx:467
 msgid "library.detail.noFilesHint"
-msgstr "掃一掃發現媒體文件"
+msgstr "掃一掃搵媒體文件"
 
 #: src/pages/LibraryDetailPage.tsx:894
 msgid "library.detail.noScans"
-msgstr "尚未掃描"
+msgstr "未掃過"
 
 #: src/pages/LibraryDetailPage.tsx:897
 msgid "library.detail.noScansHint"
-msgstr "掃一次先睇到記錄"
+msgstr "掃一次先會有記錄"
 
 #: src/pages/LibraryDetailPage.tsx:1233
 msgid "library.detail.notFound"
-msgstr "找不到媒體庫"
+msgstr "搵唔到媒體庫"
 
 #: src/pages/LibraryDetailPage.tsx:188
 msgid "library.detail.pathCopied"
-msgstr "路徑已複製"
+msgstr "路徑複製咗"
 
 #: src/pages/LibraryDetailPage.tsx:411
 msgid "library.detail.play"
@@ -1534,7 +1538,7 @@ msgstr "立即掃描"
 
 #: src/pages/LibraryDetailPage.tsx:1343
 msgid "library.detail.scanNowTooltip"
-msgstr "掃描此媒體庫中的新檔案"
+msgstr "掃呢個媒體庫入面嘅新檔案"
 
 #~ msgid "library.detail.search"
 #~ msgstr "搜尋檔案..."
@@ -1633,11 +1637,11 @@ msgstr "瀏覽網路"
 
 #: src/pages/LibrariesPage.tsx:796
 msgid "library.discover.noHosts"
-msgstr "找不到主機"
+msgstr "搵唔到主機"
 
 #: src/pages/LibrariesPage.tsx:892
 msgid "library.discover.noShares"
-msgstr "搵唔到共享文件夾 — 可能要認證信息"
+msgstr "搵唔到共享文件夾 — 可能要認證資料"
 
 #: src/pages/LibrariesPage.tsx:785
 msgid "library.discover.scanning"
@@ -1648,7 +1652,7 @@ msgstr "掃緊網路…"
 
 #: src/pages/LibrariesPage.tsx:902
 msgid "library.discover.useThisHost"
-msgstr "使用此主機"
+msgstr "用呢個主機"
 
 #: src/pages/LibrariesPage.tsx:253
 #~ msgid "library.edit"
@@ -1662,7 +1666,7 @@ msgstr "改媒體庫"
 #: src/pages/LibrariesPage.tsx:2809
 #: src/pages/LibraryDetailPage.tsx:1081
 msgid "library.enabled"
-msgstr "已啟用"
+msgstr "開咗"
 
 #~ msgid "library.files"
 #~ msgstr "個檔案"
@@ -1721,7 +1725,7 @@ msgstr "名稱為必填"
 
 #: src/pages/LibraryDetailPage.tsx:1253
 msgid "library.neverScanned"
-msgstr "從未"
+msgstr "未掃過"
 
 #: src/pages/LibrariesPage.tsx:3008
 #: src/pages/LibrariesPage.tsx:3013
@@ -1736,7 +1740,7 @@ msgstr "即將掃描"
 
 #: src/pages/LibrariesPage.tsx:195
 msgid "library.off"
-msgstr "關閉"
+msgstr "閂咗"
 
 #: src/pages/LibrariesPage.tsx:132
 #~ msgid "library.on"
@@ -1759,11 +1763,11 @@ msgstr "路徑為必填"
 
 #: src/pages/LibrariesPage.tsx:1590
 msgid "library.rclone.availableRemotes"
-msgstr "可用的遠端"
+msgstr "可以用嘅遠端"
 
 #: src/pages/LibrariesPage.tsx:1600
 msgid "library.rclone.noRemotes"
-msgstr "找不到遠端"
+msgstr "搵唔到遠端"
 
 #: src/pages/LibrariesPage.tsx:1458
 #: src/pages/LibrariesPage.tsx:2683
@@ -1922,7 +1926,7 @@ msgstr "已匹配"
 
 #: src/pages/LibrariesPage.tsx:405
 msgid "library.testConnection"
-msgstr "測試連接"
+msgstr "試吓連接"
 
 #: src/pages/LibrariesPage.tsx:411
 msgid "library.testConnection.failed"
@@ -1934,7 +1938,7 @@ msgstr "連咗"
 
 #: src/pages/LibrariesPage.tsx:404
 msgid "library.testConnection.testing"
-msgstr "測試緊…"
+msgstr "試緊…"
 
 #: src/pages/LibrariesPage.tsx:3052
 msgid "library.toast.added"
@@ -1963,7 +1967,7 @@ msgstr "掃描失敗"
 
 #: src/pages/LibraryDetailPage.tsx:1159
 msgid "library.toast.scanStarted"
-msgstr "掃描已開始"
+msgstr "掃描開始咗"
 
 #: src/pages/LibrariesPage.tsx:3066
 #: src/pages/LibraryDetailPage.tsx:1028
@@ -2009,7 +2013,7 @@ msgstr "揀來源類型"
 
 #: src/pages/LibrariesPage.tsx:1794
 msgid "library.wizard.dropbox.desc"
-msgstr "從 Dropbox 訪問檔案"
+msgstr "由 Dropbox 讀取檔案"
 
 #: src/pages/LibrariesPage.tsx:940
 #: src/pages/LibrariesPage.tsx:1793
@@ -2018,7 +2022,7 @@ msgstr "Dropbox"
 
 #: src/pages/LibrariesPage.tsx:1748
 msgid "library.wizard.ftp.desc"
-msgstr "透過 FTP 檔案傳輸連線"
+msgstr "用 FTP 檔案傳輸連線"
 
 #: src/pages/LibrariesPage.tsx:934
 #: src/pages/LibrariesPage.tsx:1747
@@ -2027,7 +2031,7 @@ msgstr "FTP"
 
 #: src/pages/LibrariesPage.tsx:1782
 msgid "library.wizard.gdrive.desc"
-msgstr "從 Google Drive 訪問檔案"
+msgstr "由 Google Drive 讀取檔案"
 
 #: src/pages/LibrariesPage.tsx:938
 #: src/pages/LibrariesPage.tsx:1781
@@ -2040,7 +2044,7 @@ msgstr "Google Drive"
 
 #: src/pages/LibrariesPage.tsx:1754
 msgid "library.wizard.http.desc"
-msgstr "從網頁伺服器串流"
+msgstr "由網頁伺服器串流"
 
 #: src/pages/LibrariesPage.tsx:935
 #: src/pages/LibrariesPage.tsx:1753
@@ -2049,11 +2053,11 @@ msgstr "HTTP"
 
 #: src/pages/LibrariesPage.tsx:1730
 msgid "library.wizard.local.desc"
-msgstr "掃描此伺服器上的文件夾"
+msgstr "掃呢個伺服器上面嘅文件夾"
 
 #: src/pages/LibrariesPage.tsx:1788
 msgid "library.wizard.onedrive.desc"
-msgstr "從 OneDrive 訪問檔案"
+msgstr "由 OneDrive 讀取檔案"
 
 #: src/pages/LibrariesPage.tsx:939
 #: src/pages/LibrariesPage.tsx:1787
@@ -2070,7 +2074,7 @@ msgstr "選填"
 
 #: src/pages/LibrariesPage.tsx:1771
 msgid "library.wizard.s3.desc"
-msgstr "Amazon S3 或兼容的存儲服務"
+msgstr "Amazon S3 或兼容嘅存儲服務"
 
 #: src/pages/LibrariesPage.tsx:937
 #: src/pages/LibrariesPage.tsx:1770
@@ -2079,11 +2083,11 @@ msgstr "S3"
 
 #: src/pages/LibrariesPage.tsx:1760
 msgid "library.wizard.section.cloud"
-msgstr "雲端與 WebDAV"
+msgstr "雲端同 WebDAV"
 
 #: src/pages/LibrariesPage.tsx:1777
 msgid "library.wizard.section.rclone"
-msgstr "從 Rclone 導入"
+msgstr "由 Rclone 導入"
 
 #: src/pages/LibrariesPage.tsx:1725
 msgid "library.wizard.section.storage"
@@ -2091,7 +2095,7 @@ msgstr "存儲"
 
 #: src/pages/LibrariesPage.tsx:1742
 msgid "library.wizard.sftp.desc"
-msgstr "透過 SSH 檔案傳輸連線"
+msgstr "用 SSH 檔案傳輸連線"
 
 #: src/pages/LibrariesPage.tsx:2236
 msgid "library.wizard.smb.asUser"
@@ -2121,7 +2125,7 @@ msgstr "連接到 Windows 或 NAS 共享"
 
 #: src/pages/LibrariesPage.tsx:2034
 msgid "library.wizard.smb.enterManually"
-msgstr "手動輸入伺服器位址"
+msgstr "手動入伺服器位址"
 
 #: src/pages/LibrariesPage.tsx:1958
 msgid "library.wizard.smb.folder"
@@ -2129,7 +2133,7 @@ msgstr "文件夾"
 
 #: src/pages/LibrariesPage.tsx:2303
 msgid "library.wizard.smb.nameHint"
-msgstr "在媒體庫清單中顯示的名稱"
+msgstr "喺媒體庫清單度顯示嘅名稱"
 
 #: src/pages/LibrariesPage.tsx:2061
 msgid "library.wizard.smb.next"
@@ -2148,12 +2152,13 @@ msgstr "連接到 WebDAV 伺服器"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:175
+#: src/routes/__root.tsx:176
 msgid "match.completed"
 msgstr "匹配完成"
 
 #: src/components/AppSidebar.tsx:32
-#: src/pages/DownloadsPage.tsx:241
+#: src/pages/DownloadsPage.tsx:219
+#: src/pages/DownloadsPage.tsx:344
 msgid "nav.autoDownload"
 msgstr "自動下載"
 
@@ -2197,18 +2202,19 @@ msgstr "通知"
 
 #: src/components/AppSidebar.tsx:26
 #: src/components/AppSidebar.tsx:227
-#: src/pages/SchedulePage.tsx:474
+#: src/pages/SchedulePage.tsx:633
 msgid "nav.schedule"
 msgstr "時刻表"
 
 #: src/components/AppSidebar.tsx:27
 #: src/components/AppSidebar.tsx:228
-#: src/pages/SearchPage.tsx:130
+#: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "搜尋"
 
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:156
+#: src/pages/settings/SettingsPage.tsx:62
 msgid "nav.settings"
 msgstr "設定"
 
@@ -2223,77 +2229,294 @@ msgstr "設定"
 #~ msgid "nav.trending"
 #~ msgstr "熱門"
 
-#: src/pages/NotificationsPage.tsx:140
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
+msgid "notifications.bot.advanced"
+msgstr "進階設定"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:538
+msgid "notifications.bot.airingReminder"
+msgstr "播出提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:558
+msgid "notifications.bot.airingReminder.desc"
+msgstr "追緊嘅新番播之前推送提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:553
+msgid "notifications.bot.airingReminder.off"
+msgstr "閂咗"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:565
+msgid "notifications.bot.allowedChatIds"
+msgstr "允許嘅聊天 ID"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:575
+msgid "notifications.bot.allowedChatIdsHelp"
+msgstr "用逗號隔開。留空就乜聊天都得。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:364
+msgid "notifications.bot.allowedGuildIds"
+msgstr "允許嘅伺服器 ID"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:374
+msgid "notifications.bot.allowedGuildIdsHelp"
+msgstr "用逗號隔開。留空就乜伺服器都得。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:352
+msgid "notifications.bot.applicationId"
+msgstr "應用程式 ID"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:340
+msgid "notifications.bot.botToken"
+msgstr "機械人權杖"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:520
+#~ msgid "notifications.bot.discord"
+#~ msgstr "Discord 機械人"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:502
+msgid "notifications.bot.language"
+msgstr "機械人語言"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:515
+msgid "notifications.bot.language.system"
+msgstr "跟返系統"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:402
+#~ msgid "notifications.bot.telegram"
+#~ msgstr "Telegram 機械人"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
+msgid "notifications.bot.webhookUrl"
+msgstr "Webhook URL"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:597
+msgid "notifications.bot.webhookUrlHelp"
+msgstr "可以唔填。留空就用長輪詢。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:317
+#: src/pages/settings/NotificationSettingsPanel.tsx:475
+msgid "notifications.botCommands"
+msgstr "機械人指令"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:891
+#~ msgid "notifications.botCommands.desc"
+#~ msgstr "喺 Telegram 或 Discord 啟用互動機械人指令"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:318
+#: src/pages/settings/NotificationSettingsPanel.tsx:476
+msgid "notifications.botCommands.shortDesc"
+msgstr "用 /search、/schedule 呢啲指令互動"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:674
+msgid "notifications.change"
+msgstr "更改"
+
+#: src/pages/NotificationsPage.tsx:155
 msgid "notifications.clearAll"
 msgstr "清除全部"
 
-#: src/pages/NotificationsPage.tsx:69
+#: src/pages/NotificationsPage.tsx:84
 msgid "notifications.earlier"
 msgstr "更早"
 
 #: src/components/NotificationBell.tsx:152
-#: src/pages/NotificationsPage.tsx:234
+#: src/pages/NotificationsPage.tsx:249
 msgid "notifications.empty"
 msgstr "暫無通知"
 
-#: src/pages/NotificationsPage.tsx:237
+#: src/pages/NotificationsPage.tsx:252
 msgid "notifications.emptyHint"
-msgstr "下載完成或發現新劇集時，通知會顯示在這裡。"
+msgstr "下載搞掂或者發現新劇集嗰陣，通知會喺呢度顯示。"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:721
+msgid "notifications.enableProviderAbove"
+msgstr "開上面嘅提供者先可以設定事件路由"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:739
+msgid "notifications.event"
+msgstr "事件"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:76
+msgid "notifications.event.animeAiring"
+msgstr "新番播提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:77
+msgid "notifications.event.animeAiring.desc"
+msgstr "追緊嘅番播之前提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:72
+msgid "notifications.event.authLogin"
+msgstr "登入提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:73
+msgid "notifications.event.authLogin.desc"
+msgstr "有人登入 Web 面板嗰陣"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:56
+msgid "notifications.event.downloadCompleted"
+msgstr "下載完成"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:57
+msgid "notifications.event.downloadCompleted.desc"
+msgstr "下載搞掂嗰陣"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:60
+msgid "notifications.event.downloadFailed"
+msgstr "下載失敗"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:61
+msgid "notifications.event.downloadFailed.desc"
+msgstr "下載出錯嗰陣"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:52
+msgid "notifications.event.downloadStarted"
+msgstr "下載開始"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:53
+msgid "notifications.event.downloadStarted.desc"
+msgstr "RSS 規則觸發新下載嗰陣"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:64
+msgid "notifications.event.libraryScanComplete"
+msgstr "媒體庫掃描完成"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:65
+msgid "notifications.event.libraryScanComplete.desc"
+msgstr "媒體庫掃描搞掂嗰陣"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:68
+msgid "notifications.event.systemError"
+msgstr "系統錯誤"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:69
+msgid "notifications.event.systemError.desc"
+msgstr "背景工作意外失敗嗰陣"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:730
+msgid "notifications.eventRouting"
+msgstr "事件路由"
 
 #: src/pages/NotificationsPage.tsx:46
 msgid "notifications.filter.all"
 msgstr "全部"
 
 #: src/pages/NotificationsPage.tsx:47
+#: src/pages/NotificationsPage.tsx:65
 msgid "notifications.filter.downloads"
 msgstr "下載"
 
 #: src/pages/NotificationsPage.tsx:48
+#: src/pages/NotificationsPage.tsx:66
 msgid "notifications.filter.library"
 msgstr "媒體庫"
 
 #: src/pages/NotificationsPage.tsx:49
+#: src/pages/NotificationsPage.tsx:67
 msgid "notifications.filter.system"
 msgstr "系統"
 
-#: src/pages/NotificationsPage.tsx:217
+#: src/pages/settings/NotificationSettingsPanel.tsx:947
+#: src/pages/settings/NotificationSettingsPanel.tsx:963
+msgid "notifications.intro"
+msgstr "下載搞掂或者出問題嗰陣，透過 Discord、Telegram 或 Webhook 收通知。"
+
+#: src/pages/NotificationsPage.tsx:232
 msgid "notifications.loadMore"
 msgstr "載入更多"
 
 #: src/components/NotificationBell.tsx:127
-#: src/pages/NotificationsPage.tsx:132
+#: src/pages/NotificationsPage.tsx:147
 msgid "notifications.markAllRead"
 msgstr "全部已讀"
 
+#: src/pages/settings/NotificationSettingsPanel.tsx:111
+msgid "notifications.providerStatus.error"
+msgstr "錯誤"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:110
+msgid "notifications.providerStatus.ok"
+msgstr "連咗"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:115
+msgid "notifications.providerStatus.unconfigured"
+msgstr "未設定"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:278
+#: src/pages/settings/NotificationSettingsPanel.tsx:461
+msgid "notifications.pushNotifications"
+msgstr "推送通知"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:279
+#: src/pages/settings/NotificationSettingsPanel.tsx:462
+msgid "notifications.pushNotifications.desc"
+msgstr "收下載同系統事件嘅通知"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:663
+msgid "notifications.secretIsSet"
+msgstr "密鑰設定咗"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:658
+msgid "notifications.secretPlaceholder"
+msgstr "可選簽名密鑰"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:973
+msgid "notifications.setupGuide"
+msgstr "設定指南"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:162
+msgid "notifications.test"
+msgstr "試吓"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:211
+msgid "notifications.testBot"
+msgstr "試吓機械人"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:175
+#: src/pages/settings/NotificationSettingsPanel.tsx:224
+msgid "notifications.testFailed"
+msgstr "試吓失敗"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:174
+msgid "notifications.testSuccess"
+msgstr "發送咗！"
+
 #: src/components/NotificationBell.tsx:119
-#: src/pages/NotificationsPage.tsx:82
-#: src/pages/NotificationsPage.tsx:123
+#: src/pages/NotificationsPage.tsx:97
+#: src/pages/NotificationsPage.tsx:138
 msgid "notifications.title"
 msgstr "通知"
 
-#: src/pages/NotificationsPage.tsx:67
+#: src/pages/NotificationsPage.tsx:82
 msgid "notifications.today"
 msgstr "今天"
 
+#: src/pages/NotificationsPage.tsx:73
+msgid "notifications.type.downloadComplete"
+msgstr "下載完成"
+
+#: src/pages/NotificationsPage.tsx:74
+msgid "notifications.type.downloadFailed"
+msgstr "下載失敗"
+
+#: src/pages/NotificationsPage.tsx:75
+msgid "notifications.type.libraryScanComplete"
+msgstr "媒體庫掃描完成"
+
+#: src/pages/NotificationsPage.tsx:72
+msgid "notifications.type.newEpisode"
+msgstr "新集數"
+
+#: src/pages/NotificationsPage.tsx:76
+msgid "notifications.type.systemError"
+msgstr "系統錯誤"
+
 #: src/components/NotificationBell.tsx:164
 msgid "notifications.viewAll"
-msgstr "查看全部"
+msgstr "睇晒"
 
-#: src/pages/NotificationsPage.tsx:68
+#: src/pages/NotificationsPage.tsx:83
 msgid "notifications.yesterday"
 msgstr "昨天"
-
-msgid "time.secondsAgo {0}"
-msgstr "{0} 秒前"
-
-msgid "time.minutesAgo {0}"
-msgstr "{0} 分鐘前"
-
-msgid "time.hoursAgo {0}"
-msgstr "{0} 小時前"
-
-msgid "time.daysAgo {0}"
-msgstr "{0} 日前"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
@@ -2335,17 +2558,21 @@ msgstr "上一頁"
 msgid "pagination.rows"
 msgstr "列"
 
-#: src/components/RuleEditorModal.tsx:381
+#: src/components/RuleEditorModal.tsx:624
 msgid "ruleEditor.addGroup"
-msgstr ""
+msgstr "新增字幕組..."
 
-#: src/components/RuleEditorModal.tsx:307
+#: src/components/RuleEditorModal.tsx:624
+msgid "ruleEditor.addGroupManual"
+msgstr "加其他字幕組..."
+
+#: src/components/RuleEditorModal.tsx:526
 msgid "ruleEditor.allEpisodes"
-msgstr ""
+msgstr "全部"
 
-#: src/components/RuleEditorModal.tsx:419
+#: src/components/RuleEditorModal.tsx:677
 msgid "ruleEditor.cancel"
-msgstr ""
+msgstr "取消"
 
 #: src/components/RuleEditorModal.tsx:543
 #~ msgid "ruleEditor.colDate"
@@ -2367,122 +2594,176 @@ msgstr ""
 #~ msgid "ruleEditor.colTitle"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:205
+#: src/components/RuleEditorModal.tsx:307
 msgid "ruleEditor.createTitle"
-msgstr ""
+msgstr "新增規則"
 
-#: src/components/RuleEditorModal.tsx:240
+#: src/components/RuleEditorModal.tsx:667
+msgid "ruleEditor.delete"
+msgstr "刪除"
+
+#: src/components/RuleEditorModal.tsx:255
+msgid "ruleEditor.deleted"
+msgstr "刪咗訂閱"
+
+#: src/components/RuleEditorModal.tsx:459
+#: src/pages/DownloadsPage.tsx:2063
 msgid "ruleEditor.destination"
-msgstr ""
+msgstr "儲存位置"
 
-#: src/components/RuleEditorModal.tsx:211
+#: src/components/RuleEditorModal.tsx:324
 msgid "ruleEditor.disabled"
-msgstr ""
+msgstr "停咗用"
 
-#: src/components/RuleEditorModal.tsx:210
+#: src/components/RuleEditorModal.tsx:750
+msgid "ruleEditor.downloaded"
+msgstr "下載咗"
+
+#: src/components/RuleEditorModal.tsx:323
 msgid "ruleEditor.enabled"
-msgstr ""
+msgstr "開咗"
 
-#: src/components/RuleEditorModal.tsx:302
+#: src/components/RuleEditorModal.tsx:521
 msgid "ruleEditor.episodes"
-msgstr ""
+msgstr "劇集"
 
-#: src/components/RuleEditorModal.tsx:288
+#: src/components/RuleEditorModal.tsx:507
 msgid "ruleEditor.exact"
-msgstr ""
+msgstr "精確"
 
-#: src/components/RuleEditorModal.tsx:289
+#: src/components/RuleEditorModal.tsx:508
 msgid "ruleEditor.exactDesc"
-msgstr ""
+msgstr "標題一定要有關鍵詞（唔分大小寫）"
 
-#: src/components/RuleEditorModal.tsx:295
+#: src/components/RuleEditorModal.tsx:341
+msgid "ruleEditor.feedType"
+msgstr "來源類型"
+
+#: src/components/RuleEditorModal.tsx:514
 msgid "ruleEditor.filterRegex"
-msgstr ""
+msgstr "過濾規則"
 
-#: src/components/RuleEditorModal.tsx:282
+#: src/components/RuleEditorModal.tsx:501
 msgid "ruleEditor.fuzzy"
-msgstr ""
+msgstr "模糊"
 
-#: src/components/RuleEditorModal.tsx:283
+#: src/components/RuleEditorModal.tsx:502
 msgid "ruleEditor.fuzzyDesc"
-msgstr ""
+msgstr "用比較演算法解析"
 
-#: src/components/RuleEditorModal.tsx:385
+#: src/components/RuleEditorModal.tsx:629
 msgid "ruleEditor.groupHint"
-msgstr ""
+msgstr "乜字幕組都得"
 
-#: src/components/RuleEditorModal.tsx:452
-msgid "ruleEditor.hideDownloaded"
-msgstr ""
+#: src/components/RuleEditorModal.tsx:618
+#~ msgid "ruleEditor.hideDownloaded"
+#~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:191
+#: src/pages/DownloadsPage.tsx:2140
+msgid "ruleEditor.items"
+msgstr "筆"
+
+#: src/components/RuleEditorModal.tsx:292
 msgid "ruleEditor.justNow"
-msgstr ""
+msgstr "剛剛"
+
+#: src/pages/DownloadsPage.tsx:511
+#: src/pages/DownloadsPage.tsx:525
+msgid "ruleEditor.keywordMode"
+msgstr "關鍵字"
+
+#: src/components/RuleEditorModal.tsx:374
+#: src/pages/DownloadsPage.tsx:1981
+msgid "ruleEditor.linkedAnime"
+msgstr "關聯動畫"
+
+#: src/pages/DownloadsPage.tsx:2108
+msgid "ruleEditor.loading"
+msgstr "載入緊..."
 
 #: src/components/RuleEditorModal.tsx:488
 #~ msgid "ruleEditor.matched"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:312
+#: src/components/RuleEditorModal.tsx:531
 msgid "ruleEditor.newOnly"
-msgstr ""
+msgstr "僅新集"
 
-#: src/pages/DownloadsPage.tsx:1632
-msgid "ruleEditor.newRule"
-msgstr ""
+#: src/pages/DownloadsPage.tsx:434
+#~ msgid "ruleEditor.newRule"
+#~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:255
+#: src/components/RuleEditorModal.tsx:474
+#: src/pages/DownloadsPage.tsx:2077
 msgid "ruleEditor.noLibrary"
-msgstr ""
+msgstr "冇媒體庫"
 
-#: src/components/RuleEditorModal.tsx:498
+#: src/components/RuleEditorModal.tsx:760
 msgid "ruleEditor.noPreviewItems"
-msgstr ""
+msgstr "冇匹配而家過濾條件嘅項目"
 
-#: src/components/RuleEditorModal.tsx:439
+#: src/components/RuleEditorModal.tsx:697
+#: src/pages/DownloadsPage.tsx:2109
+#: src/pages/DownloadsPage.tsx:2137
 msgid "ruleEditor.preview"
-msgstr ""
+msgstr "預覽"
 
-#: src/components/RuleEditorModal.tsx:317
+#: src/components/RuleEditorModal.tsx:536
 msgid "ruleEditor.range"
-msgstr ""
+msgstr "範圍"
 
-#: src/components/RuleEditorModal.tsx:459
+#: src/components/RuleEditorModal.tsx:713
 msgid "ruleEditor.refreshPreview"
-msgstr ""
+msgstr "重新整理"
 
-#: src/components/RuleEditorModal.tsx:341
+#: src/components/RuleEditorModal.tsx:560
 msgid "ruleEditor.releaseGroups"
-msgstr ""
+msgstr "字幕組"
 
-#: src/components/RuleEditorModal.tsx:391
+#: src/components/RuleEditorModal.tsx:636
 msgid "ruleEditor.resolution"
-msgstr ""
+msgstr "解像度"
 
-#: src/components/RuleEditorModal.tsx:220
+#: src/components/RuleEditorModal.tsx:331
 msgid "ruleEditor.rssUrl"
-msgstr ""
+msgstr "RSS 訂閱連結"
 
-#: src/components/RuleEditorModal.tsx:228
+#: src/pages/DownloadsPage.tsx:511
+#: src/pages/DownloadsPage.tsx:536
+msgid "ruleEditor.rssUrlMode"
+msgstr "RSS 網址"
+
+#: src/components/RuleEditorModal.tsx:363
+#: src/pages/DownloadsPage.tsx:2053
 msgid "ruleEditor.ruleName"
-msgstr ""
+msgstr "規則名稱"
 
-#: src/components/RuleEditorModal.tsx:232
+#: src/components/RuleEditorModal.tsx:315
+#: src/components/RuleEditorModal.tsx:367
+#: src/pages/DownloadsPage.tsx:2057
 msgid "ruleEditor.ruleNamePlaceholder"
-msgstr ""
+msgstr "例如：動畫名稱 第一季"
 
-#: src/components/RuleEditorModal.tsx:429
+#: src/components/RuleEditorModal.tsx:687
+#: src/pages/DownloadsPage.tsx:2120
 msgid "ruleEditor.save"
-msgstr ""
+msgstr "儲存"
 
-#: src/components/RuleEditorModal.tsx:132
-#: src/components/RuleEditorModal.tsx:155
+#: src/components/RuleEditorModal.tsx:205
+#: src/components/RuleEditorModal.tsx:240
+#: src/pages/DownloadsPage.tsx:1959
 msgid "ruleEditor.saved"
-msgstr ""
+msgstr "規則更新咗"
 
-#: src/components/RuleEditorModal.tsx:428
+#: src/components/RuleEditorModal.tsx:686
+#: src/pages/DownloadsPage.tsx:2119
 msgid "ruleEditor.saving"
-msgstr ""
+msgstr "儲存緊..."
+
+#: src/components/RuleEditorModal.tsx:411
+#: src/pages/DownloadsPage.tsx:2007
+msgid "ruleEditor.searchAnime"
+msgstr "搵動畫嚟關聯..."
 
 #: src/components/RuleEditorModal.tsx:223
 #~ msgid "ruleEditor.tabCustom"
@@ -2492,11 +2773,11 @@ msgstr ""
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:277
+#: src/components/RuleEditorModal.tsx:496
 msgid "ruleEditor.titleMatch"
-msgstr ""
+msgstr "標題匹配"
 
-#: src/routes/__root.tsx:171
+#: src/routes/__root.tsx:172
 msgid "scan.completed"
 msgstr "掃描完成"
 
@@ -2546,26 +2827,26 @@ msgid "scanInterval.weekly"
 msgstr "每週"
 
 #: src/pages/LibraryDetailPage.tsx:502
-#: src/pages/SchedulePage.tsx:213
+#: src/pages/SchedulePage.tsx:392
 msgid "schedule.all"
 msgstr "全部"
 
-#: src/pages/SchedulePage.tsx:565
+#: src/pages/SchedulePage.tsx:724
 msgid "schedule.backToCurrent"
 msgstr "返回當季"
 
-#: src/pages/SchedulePage.tsx:181
-#: src/pages/SchedulePage.tsx:429
+#: src/pages/SchedulePage.tsx:360
+#: src/pages/SchedulePage.tsx:588
 msgid "schedule.loadFailed"
 msgstr "載入日曆唔到"
 
 #~ msgid "schedule.next"
 #~ msgstr "下一頁"
 
-#: src/pages/SchedulePage.tsx:300
-#: src/pages/SchedulePage.tsx:444
+#: src/pages/SchedulePage.tsx:199
+#: src/pages/SchedulePage.tsx:603
 msgid "schedule.noShows"
-msgstr "沒有排定的節目"
+msgstr "冇排定嘅節目"
 
 #~ msgid "schedule.page"
 #~ msgstr "頁"
@@ -2593,21 +2874,21 @@ msgstr "夏季"
 msgid "schedule.season.winter"
 msgstr "冬季"
 
-#: src/pages/SchedulePage.tsx:287
-#: src/pages/SchedulePage.tsx:331
+#: src/pages/SchedulePage.tsx:466
+#: src/pages/SchedulePage.tsx:498
 msgid "schedule.today"
 msgstr "今天"
 
-#: src/pages/SchedulePage.tsx:282
-#: src/pages/SchedulePage.tsx:326
+#: src/pages/SchedulePage.tsx:461
+#: src/pages/SchedulePage.tsx:493
 msgid "schedule.totalShows"
 msgstr "部本週節目"
 
-#: src/pages/SearchPage.tsx:515
+#: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
 msgstr "瀏覽結果"
 
-#: src/pages/SearchPage.tsx:535
+#: src/pages/SearchPage.tsx:553
 msgid "search.emptyHint"
 msgstr "搜尋你鍾意嘅動畫"
 
@@ -2615,31 +2896,31 @@ msgstr "搜尋你鍾意嘅動畫"
 msgid "search.filter.addCustomTag"
 msgstr "新增標籤"
 
-#: src/pages/SearchPage.tsx:582
+#: src/pages/SearchPage.tsx:600
 msgid "search.filter.applied"
 msgstr "目前篩選條件"
 
-#: src/pages/SearchPage.tsx:453
+#: src/pages/SearchPage.tsx:471
 msgid "search.filter.clear"
 msgstr "清除篩選"
 
 #: src/components/TagMultiSelect.tsx:174
 msgid "search.filter.noTags"
-msgstr "沒有符合的標籤"
+msgstr "冇符合嘅標籤"
 
-#: src/pages/SearchPage.tsx:410
+#: src/pages/SearchPage.tsx:414
 msgid "search.filter.rating"
 msgstr "評分"
 
-#: src/pages/SearchPage.tsx:390
+#: src/pages/SearchPage.tsx:394
 msgid "search.filter.season"
 msgstr "季度"
 
-#: src/pages/SearchPage.tsx:350
+#: src/pages/SearchPage.tsx:354
 msgid "search.filter.sort"
 msgstr "排序"
 
-#: src/pages/SearchPage.tsx:430
+#: src/pages/SearchPage.tsx:434
 msgid "search.filter.status"
 msgstr "狀態"
 
@@ -2652,11 +2933,11 @@ msgstr "標籤"
 msgid "search.filter.tagSearch"
 msgstr "搜尋或新增標籤…"
 
-#: src/pages/SearchPage.tsx:370
+#: src/pages/SearchPage.tsx:374
 msgid "search.filter.year"
 msgstr "年份"
 
-#: src/pages/SearchPage.tsx:488
+#: src/pages/SearchPage.tsx:506
 msgid "search.inputPlaceholder"
 msgstr "搜尋動畫名稱或標籤…"
 
@@ -2672,8 +2953,8 @@ msgstr "載入更多"
 msgid "search.noResults"
 msgstr "搵唔到"
 
-#: src/pages/SearchPage.tsx:582
-#: src/pages/SearchPage.tsx:583
+#: src/pages/SearchPage.tsx:600
+#: src/pages/SearchPage.tsx:601
 msgid "search.noResultsFor"
 msgstr "搵唔到相關結果："
 
@@ -2694,7 +2975,7 @@ msgid "search.rating.9plus"
 msgstr "9分以上"
 
 #. placeholder {0}: urlSeason.toLowerCase()
-#: src/pages/SearchPage.tsx:519
+#: src/pages/SearchPage.tsx:537
 msgid "search.season.{0}"
 msgstr "{0}"
 
@@ -2744,7 +3025,7 @@ msgstr "已完結"
 
 #: src/pages/SearchPage.tsx:85
 msgid "search.status.upcoming"
-msgstr "即將播出"
+msgstr "快播"
 
 #: src/components/TagMultiSelect.tsx:23
 msgid "search.tag.activity"
@@ -2789,7 +3070,7 @@ msgstr ""
 #~ msgid "search.title"
 #~ msgstr "搜尋"
 
-#: src/pages/settings/GeneralPanel.tsx:61
+#: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
 msgstr "語言"
 
@@ -2802,13 +3083,13 @@ msgstr "語言"
 msgid "settings.audioTrack"
 msgstr "音軌"
 
-#: src/pages/settings/GeneralPanel.tsx:73
+#: src/pages/settings/GeneralPanel.tsx:89
 msgid "settings.autoAddToCollection"
 msgstr "自動加入收藏"
 
-#: src/pages/settings/GeneralPanel.tsx:76
+#: src/pages/settings/GeneralPanel.tsx:92
 msgid "settings.autoAddToCollectionDesc"
-msgstr "新匹配的動畫自動加入收藏"
+msgstr "新匹配嘅動畫自動加入收藏"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:217
 #: src/components/watch/UnifiedSettingsPanel.tsx:266
@@ -2829,7 +3110,7 @@ msgstr "邊框樣式"
 msgid "settings.brightness"
 msgstr "亮度"
 
-#: src/pages/settings/GeneralPanel.tsx:69
+#: src/pages/settings/GeneralPanel.tsx:85
 msgid "settings.collection"
 msgstr "收藏"
 
@@ -2846,6 +3127,18 @@ msgstr "對比度"
 #: src/components/watch/UnifiedSettingsPanel.tsx:214
 msgid "settings.default"
 msgstr "預設"
+
+#: src/pages/settings/GeneralPanel.tsx:105
+msgid "settings.docsUrl"
+msgstr "文檔"
+
+#: src/pages/settings/GeneralPanel.tsx:117
+msgid "settings.docsUrl.desc"
+msgstr "應用入面文檔連結嘅基礎 URL"
+
+#: src/pages/settings/GeneralPanel.tsx:107
+msgid "settings.docsUrl.label"
+msgstr "文檔網站 URL"
 
 #: src/pages/settings/DownloadPanel.tsx:83
 #~ msgid "settings.download.aria2"
@@ -2865,9 +3158,9 @@ msgstr "內建"
 
 #: src/pages/settings/DownloadPanel.tsx:35
 msgid "settings.download.builtinDesc"
-msgstr "使用內建下載引擎"
+msgstr "用內建下載引擎"
 
-#: src/pages/DownloadsPage.tsx:267
+#: src/pages/DownloadsPage.tsx:370
 #: src/pages/settings/DownloadPanel.tsx:31
 msgid "settings.download.disconnected"
 msgstr "未連線"
@@ -2922,13 +3215,13 @@ msgstr "字體"
 msgid "settings.fontSize"
 msgstr "字體大小"
 
-#: src/pages/settings/GeneralPanel.tsx:57
+#: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.general.subtitle"
-msgstr "語言、收藏與應用程式偏好設定"
+msgstr "語言、收藏同應用程式偏好設定"
 
 #: src/pages/settings/IntegrationsPanel.tsx:182
 msgid "settings.integration.authUrlFailed"
-msgstr "取得授權連結失敗"
+msgstr "攞授權連結失敗"
 
 #: src/pages/settings/IntegrationsPanel.tsx:287
 msgid "settings.integration.connect"
@@ -2988,42 +3281,48 @@ msgstr "同步緊…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:333
 msgid "settings.integrations.description"
-msgstr "鏈接外部服務並同步資料"
+msgstr "鏈接外部服務同埋同步資料"
 
 #: src/pages/settings/AboutPanel.tsx:109
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/SettingsPage.tsx:41
 msgid "settings.nav.about"
 msgstr "關於"
 
 #: src/pages/settings/AccountPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.account"
 msgstr "賬號"
 
-#: src/pages/settings/SettingsPage.tsx:35
+#: src/pages/settings/SettingsPage.tsx:39
 msgid "settings.nav.backup"
 msgstr "備份"
 
-#: src/pages/settings/SettingsPage.tsx:32
+#: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.download"
 msgstr "下載"
 
-#: src/pages/settings/GeneralPanel.tsx:54
-#: src/pages/settings/SettingsPage.tsx:30
+#: src/pages/settings/GeneralPanel.tsx:70
+#: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.general"
 msgstr "一般"
 
 #: src/pages/settings/IntegrationsPanel.tsx:330
-#: src/pages/settings/SettingsPage.tsx:31
+#: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.integrations"
 msgstr "整合"
 
+#: src/pages/settings/NotificationSettingsPanel.tsx:944
+#: src/pages/settings/NotificationSettingsPanel.tsx:960
+#: src/pages/settings/SettingsPage.tsx:35
+msgid "settings.nav.notifications"
+msgstr "通知"
+
 #: src/pages/settings/PlayerPanel.tsx:240
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.player"
 msgstr "播放器"
 
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/SettingsPage.tsx:40
 #: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "存儲空間"
@@ -3041,9 +3340,9 @@ msgstr "正常"
 #: src/components/watch/UnifiedSettingsPanel.tsx:178
 #: src/components/watch/UnifiedSettingsPanel.tsx:201
 msgid "settings.off"
-msgstr "關閉"
+msgstr "閂"
 
-#: src/pages/settings/SettingsPage.tsx:70
+#: src/pages/settings/SettingsPage.tsx:76
 msgid "settings.pageTitle"
 msgstr "設定"
 
@@ -3090,7 +3389,7 @@ msgstr "速度"
 
 #: src/pages/settings/PlayerPanel.tsx:530
 msgid "settings.player.gestureEnabled"
-msgstr "啟用手勢"
+msgstr "開手勢"
 
 #: src/pages/settings/PlayerPanel.tsx:526
 msgid "settings.player.gestures"
@@ -3118,7 +3417,7 @@ msgstr "慢"
 
 #: src/pages/settings/PlayerPanel.tsx:241
 msgid "settings.player.subtitle"
-msgstr "彈幕與播放偏好設定"
+msgstr "彈幕同播放偏好設定"
 
 #: src/pages/settings/PlayerPanel.tsx:416
 msgid "settings.player.subtitleBgOpacity"
@@ -3200,13 +3499,15 @@ msgstr "飽和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
+#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "儲存"
 
 #: src/pages/settings/BackupPanel.tsx:201
 #: src/pages/settings/BackupPanel.tsx:399
-#: src/pages/settings/GeneralPanel.tsx:38
-#: src/pages/settings/GeneralPanel.tsx:48
+#: src/pages/settings/GeneralPanel.tsx:44
+#: src/pages/settings/GeneralPanel.tsx:54
+#: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
 #: src/pages/settings/PlayerPanel.tsx:196
@@ -3215,7 +3516,8 @@ msgstr "儲存咗"
 
 #: src/pages/settings/BackupPanel.tsx:205
 #: src/pages/settings/BackupPanel.tsx:403
-#: src/pages/settings/GeneralPanel.tsx:41
+#: src/pages/settings/GeneralPanel.tsx:47
+#: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
 #: src/pages/settings/PlayerPanel.tsx:199
@@ -3226,6 +3528,7 @@ msgstr "儲存唔到"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
+#: src/pages/settings/NotificationSettingsPanel.tsx:1016
 msgid "settings.saving"
 msgstr "儲存緊…"
 
@@ -3268,11 +3571,11 @@ msgstr "個檔案"
 
 #: src/pages/settings/StoragePanel.tsx:63
 msgid "settings.storage.subtitle"
-msgstr "管理轉碼文件與緩存"
+msgstr "管理轉碼文件同緩存"
 
 #: src/pages/settings/StoragePanel.tsx:84
 msgid "settings.storage.transcodeDesc"
-msgstr "轉碼影片文件儲存在臨時目錄"
+msgstr "轉碼影片文件儲存喺臨時目錄"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:200
 #: src/components/watch/UnifiedSettingsPanel.tsx:396
@@ -3396,6 +3699,38 @@ msgstr "音量增強"
 #~ msgid "subscribe.success"
 #~ msgstr "訂閱成功！新集數將自動下載。"
 
+#~ msgid "time.daysAgo {0}"
+#~ msgstr "{0} 日前"
+
+#: src/components/NotificationBell.tsx:27
+#: src/pages/NotificationsPage.tsx:40
+msgid "time.daysAgo {days}"
+msgstr "{days} 天前"
+
+#~ msgid "time.hoursAgo {0}"
+#~ msgstr "{0} 小時前"
+
+#: src/components/NotificationBell.tsx:25
+#: src/pages/NotificationsPage.tsx:38
+msgid "time.hoursAgo {hours}"
+msgstr "{hours} 小時前"
+
+#~ msgid "time.minutesAgo {0}"
+#~ msgstr "{0} 分鐘前"
+
+#: src/components/NotificationBell.tsx:23
+#: src/pages/NotificationsPage.tsx:36
+msgid "time.minutesAgo {minutes}"
+msgstr "{minutes} 分鐘前"
+
+#~ msgid "time.secondsAgo {0}"
+#~ msgstr "{0} 秒前"
+
+#: src/components/NotificationBell.tsx:21
+#: src/pages/NotificationsPage.tsx:34
+msgid "time.secondsAgo {seconds}"
+msgstr "{seconds} 秒前"
+
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
 #~ msgstr "全部"
@@ -3421,7 +3756,7 @@ msgstr "收藏"
 
 #: src/components/watch/WatchTitleBar.tsx:116
 msgid "watch.collected"
-msgstr "已收藏"
+msgstr "收藏咗"
 
 #: src/components/watch/BangumiComments.tsx:43
 msgid "watch.comments"
@@ -3454,7 +3789,7 @@ msgstr "字型大小"
 
 #: src/components/watch/DanmakuList.tsx:40
 msgid "watch.danmaku.noData"
-msgstr "沒有彈幕資料"
+msgstr "冇彈幕資料"
 
 #: src/components/DanmakuSettings.tsx:112
 #: src/components/DanmakuSettings.tsx:213
@@ -3528,7 +3863,7 @@ msgstr "睇緊"
 
 #: src/pages/WatchPage.tsx:627
 msgid "watch.notFound"
-msgstr "找不到動畫"
+msgstr "搵唔到動畫"
 
 #: src/components/watch/TechInfoPopover.tsx:44
 #: src/components/watch/TechInfoPopover.tsx:74
