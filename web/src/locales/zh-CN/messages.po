@@ -2229,27 +2229,27 @@ msgstr "设置"
 #~ msgid "nav.trending"
 #~ msgstr "热门"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:443
+#: src/pages/settings/NotificationSettingsPanel.tsx:444
 msgid "notifications.bot.allowedChatIds"
 msgstr "允许的聊天 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:453
+#: src/pages/settings/NotificationSettingsPanel.tsx:454
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "用逗号分隔。留空则允许任何聊天。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:292
+#: src/pages/settings/NotificationSettingsPanel.tsx:293
 msgid "notifications.bot.allowedGuildIds"
 msgstr "允许的服务器 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:302
+#: src/pages/settings/NotificationSettingsPanel.tsx:303
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "用逗号分隔。留空则允许任何服务器。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:280
+#: src/pages/settings/NotificationSettingsPanel.tsx:281
 msgid "notifications.bot.applicationId"
 msgstr "应用程序 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:268
+#: src/pages/settings/NotificationSettingsPanel.tsx:269
 msgid "notifications.bot.botToken"
 msgstr "机器人令牌"
 
@@ -2261,16 +2261,16 @@ msgstr "机器人令牌"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:428
+#: src/pages/settings/NotificationSettingsPanel.tsx:429
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:438
+#: src/pages/settings/NotificationSettingsPanel.tsx:439
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "可选。留空以使用长轮询。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:248
-#: src/pages/settings/NotificationSettingsPanel.tsx:405
+#: src/pages/settings/NotificationSettingsPanel.tsx:249
+#: src/pages/settings/NotificationSettingsPanel.tsx:406
 msgid "notifications.botCommands"
 msgstr "机器人命令"
 
@@ -2278,12 +2278,12 @@ msgstr "机器人命令"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "在 Telegram 或 Discord 中启用交互式机器人命令"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:249
-#: src/pages/settings/NotificationSettingsPanel.tsx:406
+#: src/pages/settings/NotificationSettingsPanel.tsx:250
+#: src/pages/settings/NotificationSettingsPanel.tsx:407
 msgid "notifications.botCommands.shortDesc"
 msgstr "通过 /search、/schedule 等命令互动"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:528
+#: src/pages/settings/NotificationSettingsPanel.tsx:529
 msgid "notifications.change"
 msgstr "更改"
 
@@ -2304,55 +2304,55 @@ msgstr "暂无通知"
 msgid "notifications.emptyHint"
 msgstr "下载完成或发现新剧集时，通知会显示在这里。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:575
+#: src/pages/settings/NotificationSettingsPanel.tsx:576
 msgid "notifications.enableProviderAbove"
 msgstr "启用上方的提供商以配置事件路由"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:593
+#: src/pages/settings/NotificationSettingsPanel.tsx:594
 msgid "notifications.event"
 msgstr "事件"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:46
+#: src/pages/settings/NotificationSettingsPanel.tsx:47
 msgid "notifications.event.downloadCompleted"
 msgstr "下载完成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:47
+#: src/pages/settings/NotificationSettingsPanel.tsx:48
 msgid "notifications.event.downloadCompleted.desc"
 msgstr "下载成功完成时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:50
+#: src/pages/settings/NotificationSettingsPanel.tsx:51
 msgid "notifications.event.downloadFailed"
 msgstr "下载失败"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:51
+#: src/pages/settings/NotificationSettingsPanel.tsx:52
 msgid "notifications.event.downloadFailed.desc"
 msgstr "下载遇到错误时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:42
+#: src/pages/settings/NotificationSettingsPanel.tsx:43
 msgid "notifications.event.downloadStarted"
 msgstr "下载开始"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:43
+#: src/pages/settings/NotificationSettingsPanel.tsx:44
 msgid "notifications.event.downloadStarted.desc"
 msgstr "当RSS规则触发新下载时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:54
+#: src/pages/settings/NotificationSettingsPanel.tsx:55
 msgid "notifications.event.libraryScanComplete"
 msgstr "媒体库扫描完成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:55
+#: src/pages/settings/NotificationSettingsPanel.tsx:56
 msgid "notifications.event.libraryScanComplete.desc"
 msgstr "媒体库扫描处理完成时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:58
+#: src/pages/settings/NotificationSettingsPanel.tsx:59
 msgid "notifications.event.systemError"
 msgstr "系统错误"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:59
+#: src/pages/settings/NotificationSettingsPanel.tsx:60
 msgid "notifications.event.systemError.desc"
 msgstr "后台任务意外失败时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:584
+#: src/pages/settings/NotificationSettingsPanel.tsx:585
 msgid "notifications.eventRouting"
 msgstr "事件路由"
 
@@ -2375,8 +2375,8 @@ msgstr "媒体库"
 msgid "notifications.filter.system"
 msgstr "系统"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:795
-#: src/pages/settings/NotificationSettingsPanel.tsx:811
+#: src/pages/settings/NotificationSettingsPanel.tsx:803
+#: src/pages/settings/NotificationSettingsPanel.tsx:819
 msgid "notifications.intro"
 msgstr "当下载完成或出现问题时，通过Discord、Telegram或Webhook接收通知。"
 
@@ -2389,49 +2389,49 @@ msgstr "加载更多"
 msgid "notifications.markAllRead"
 msgstr "全部已读"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:93
+#: src/pages/settings/NotificationSettingsPanel.tsx:94
 msgid "notifications.providerStatus.error"
 msgstr "错误"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:92
+#: src/pages/settings/NotificationSettingsPanel.tsx:93
 msgid "notifications.providerStatus.ok"
 msgstr "已连接"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:97
+#: src/pages/settings/NotificationSettingsPanel.tsx:98
 msgid "notifications.providerStatus.unconfigured"
 msgstr "未配置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:211
-#: src/pages/settings/NotificationSettingsPanel.tsx:389
+#: src/pages/settings/NotificationSettingsPanel.tsx:212
+#: src/pages/settings/NotificationSettingsPanel.tsx:390
 msgid "notifications.pushNotifications"
 msgstr "推送通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:212
-#: src/pages/settings/NotificationSettingsPanel.tsx:390
+#: src/pages/settings/NotificationSettingsPanel.tsx:213
+#: src/pages/settings/NotificationSettingsPanel.tsx:391
 msgid "notifications.pushNotifications.desc"
 msgstr "接收下载和系统事件的通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:517
+#: src/pages/settings/NotificationSettingsPanel.tsx:518
 msgid "notifications.secretIsSet"
 msgstr "密钥已设置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:512
+#: src/pages/settings/NotificationSettingsPanel.tsx:513
 msgid "notifications.secretPlaceholder"
 msgstr "可选签名密钥"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:820
+#: src/pages/settings/NotificationSettingsPanel.tsx:829
 msgid "notifications.setupGuide"
 msgstr "设置指南"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:144
+#: src/pages/settings/NotificationSettingsPanel.tsx:145
 msgid "notifications.test"
 msgstr "测试"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:157
+#: src/pages/settings/NotificationSettingsPanel.tsx:158
 msgid "notifications.testFailed"
 msgstr "测试失败"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:156
+#: src/pages/settings/NotificationSettingsPanel.tsx:157
 msgid "notifications.testSuccess"
 msgstr "已发送！"
 
@@ -3025,7 +3025,7 @@ msgstr ""
 #~ msgid "search.title"
 #~ msgstr "搜索"
 
-#: src/pages/settings/GeneralPanel.tsx:61
+#: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
 msgstr "语言"
 
@@ -3038,11 +3038,11 @@ msgstr "语言"
 msgid "settings.audioTrack"
 msgstr "音轨"
 
-#: src/pages/settings/GeneralPanel.tsx:73
+#: src/pages/settings/GeneralPanel.tsx:89
 msgid "settings.autoAddToCollection"
 msgstr "自动加入收藏"
 
-#: src/pages/settings/GeneralPanel.tsx:76
+#: src/pages/settings/GeneralPanel.tsx:92
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配的动画自动加入收藏"
 
@@ -3065,7 +3065,7 @@ msgstr "边框样式"
 msgid "settings.brightness"
 msgstr "亮度"
 
-#: src/pages/settings/GeneralPanel.tsx:69
+#: src/pages/settings/GeneralPanel.tsx:85
 msgid "settings.collection"
 msgstr "收藏"
 
@@ -3082,6 +3082,18 @@ msgstr "对比度"
 #: src/components/watch/UnifiedSettingsPanel.tsx:214
 msgid "settings.default"
 msgstr "默认"
+
+#: src/pages/settings/GeneralPanel.tsx:105
+msgid "settings.docsUrl"
+msgstr "文档"
+
+#: src/pages/settings/GeneralPanel.tsx:117
+msgid "settings.docsUrl.desc"
+msgstr "应用内文档链接的基础 URL"
+
+#: src/pages/settings/GeneralPanel.tsx:107
+msgid "settings.docsUrl.label"
+msgstr "文档网站 URL"
 
 #: src/pages/settings/DownloadPanel.tsx:83
 #~ msgid "settings.download.aria2"
@@ -3158,7 +3170,7 @@ msgstr "字体"
 msgid "settings.fontSize"
 msgstr "字体大小"
 
-#: src/pages/settings/GeneralPanel.tsx:57
+#: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.general.subtitle"
 msgstr "语言、收藏与应用偏好设置"
 
@@ -3244,7 +3256,7 @@ msgstr "备份"
 msgid "settings.nav.download"
 msgstr "下载"
 
-#: src/pages/settings/GeneralPanel.tsx:54
+#: src/pages/settings/GeneralPanel.tsx:70
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.general"
 msgstr "通用"
@@ -3254,8 +3266,8 @@ msgstr "通用"
 msgid "settings.nav.integrations"
 msgstr "集成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:792
-#: src/pages/settings/NotificationSettingsPanel.tsx:808
+#: src/pages/settings/NotificationSettingsPanel.tsx:800
+#: src/pages/settings/NotificationSettingsPanel.tsx:816
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "通知"
@@ -3442,14 +3454,15 @@ msgstr "饱和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:863
+#: src/pages/settings/NotificationSettingsPanel.tsx:873
 msgid "settings.save"
 msgstr "保存"
 
 #: src/pages/settings/BackupPanel.tsx:201
 #: src/pages/settings/BackupPanel.tsx:399
-#: src/pages/settings/GeneralPanel.tsx:38
-#: src/pages/settings/GeneralPanel.tsx:48
+#: src/pages/settings/GeneralPanel.tsx:44
+#: src/pages/settings/GeneralPanel.tsx:54
+#: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
 #: src/pages/settings/PlayerPanel.tsx:196
@@ -3458,7 +3471,8 @@ msgstr "已保存"
 
 #: src/pages/settings/BackupPanel.tsx:205
 #: src/pages/settings/BackupPanel.tsx:403
-#: src/pages/settings/GeneralPanel.tsx:41
+#: src/pages/settings/GeneralPanel.tsx:47
+#: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
 #: src/pages/settings/PlayerPanel.tsx:199
@@ -3469,7 +3483,7 @@ msgstr "保存失败"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:862
+#: src/pages/settings/NotificationSettingsPanel.tsx:872
 msgid "settings.saving"
 msgstr "保存中…"
 

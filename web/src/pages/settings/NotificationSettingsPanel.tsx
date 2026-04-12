@@ -13,6 +13,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Switch } from '@/components/ui/switch';
+import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import {
   type DiscordBotConfig,
@@ -701,6 +702,13 @@ export function NotificationSettingsPanel() {
     refetchInterval: 30_000,
   });
 
+  const { data: globalSettings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get<Record<string, any>>('/api/v1/settings'),
+    staleTime: 60_000,
+  });
+  const docsUrl = (globalSettings?.general?.docs_url as string) || '';
+
   const [local, setLocal] = useState<NotificationSettings | null>(null);
   const [isDirty, setIsDirty] = useState(false);
 
@@ -811,14 +819,16 @@ export function NotificationSettingsPanel() {
             {i18n._(msg`notifications.intro`)}
           </p>
         </div>
-        <a
-          href="https://milmil.org/docs/configuration/notifications"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 text-xs text-white/30 hover:text-white/60 transition-colors mt-1"
-        >
-          {i18n._(msg`notifications.setupGuide`)} ↗
-        </a>
+        {docsUrl && (
+          <a
+            href={`${docsUrl}/docs/configuration/notifications`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 text-xs text-white/30 hover:text-white/60 transition-colors mt-1"
+          >
+            {i18n._(msg`notifications.setupGuide`)} ↗
+          </a>
+        )}
       </div>
 
       {/* Platform Cards (push + bot unified per platform) */}

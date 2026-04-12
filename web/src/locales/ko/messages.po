@@ -2231,27 +2231,27 @@ msgstr "설정"
 #~ msgid "nav.trending"
 #~ msgstr "인기"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:443
+#: src/pages/settings/NotificationSettingsPanel.tsx:444
 msgid "notifications.bot.allowedChatIds"
 msgstr "허용된 채팅 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:453
+#: src/pages/settings/NotificationSettingsPanel.tsx:454
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "쉼표로 구분합니다. 비워 두면 모든 채팅을 허용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:292
+#: src/pages/settings/NotificationSettingsPanel.tsx:293
 msgid "notifications.bot.allowedGuildIds"
 msgstr "허용된 길드 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:302
+#: src/pages/settings/NotificationSettingsPanel.tsx:303
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "쉼표로 구분합니다. 비워 두면 모든 길드를 허용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:280
+#: src/pages/settings/NotificationSettingsPanel.tsx:281
 msgid "notifications.bot.applicationId"
 msgstr "애플리케이션 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:268
+#: src/pages/settings/NotificationSettingsPanel.tsx:269
 msgid "notifications.bot.botToken"
 msgstr "봇 토큰"
 
@@ -2263,16 +2263,16 @@ msgstr "봇 토큰"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 봇"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:428
+#: src/pages/settings/NotificationSettingsPanel.tsx:429
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:438
+#: src/pages/settings/NotificationSettingsPanel.tsx:439
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "선택 사항입니다. 비워 두면 롱 폴링을 사용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:248
-#: src/pages/settings/NotificationSettingsPanel.tsx:405
+#: src/pages/settings/NotificationSettingsPanel.tsx:249
+#: src/pages/settings/NotificationSettingsPanel.tsx:406
 msgid "notifications.botCommands"
 msgstr "봇 명령"
 
@@ -2280,12 +2280,12 @@ msgstr "봇 명령"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Telegram 또는 Discord에서 대화형 봇 명령을 활성화합니다"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:249
-#: src/pages/settings/NotificationSettingsPanel.tsx:406
+#: src/pages/settings/NotificationSettingsPanel.tsx:250
+#: src/pages/settings/NotificationSettingsPanel.tsx:407
 msgid "notifications.botCommands.shortDesc"
 msgstr "/search, /schedule 등 대화형 명령"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:528
+#: src/pages/settings/NotificationSettingsPanel.tsx:529
 msgid "notifications.change"
 msgstr "변경"
 
@@ -2306,55 +2306,55 @@ msgstr "알림 없음"
 msgid "notifications.emptyHint"
 msgstr "다운로드 완료 또는 새 에피소드 발견 시 알림이 표시됩니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:575
+#: src/pages/settings/NotificationSettingsPanel.tsx:576
 msgid "notifications.enableProviderAbove"
 msgstr "이벤트 라우팅을 설정하려면 위에서 제공자를 활성화하세요"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:593
+#: src/pages/settings/NotificationSettingsPanel.tsx:594
 msgid "notifications.event"
 msgstr "이벤트"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:46
+#: src/pages/settings/NotificationSettingsPanel.tsx:47
 msgid "notifications.event.downloadCompleted"
 msgstr "다운로드 완료"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:47
+#: src/pages/settings/NotificationSettingsPanel.tsx:48
 msgid "notifications.event.downloadCompleted.desc"
 msgstr "다운로드가 성공적으로 완료되었을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:50
+#: src/pages/settings/NotificationSettingsPanel.tsx:51
 msgid "notifications.event.downloadFailed"
 msgstr "다운로드 실패"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:51
+#: src/pages/settings/NotificationSettingsPanel.tsx:52
 msgid "notifications.event.downloadFailed.desc"
 msgstr "다운로드에서 오류가 발생했을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:42
+#: src/pages/settings/NotificationSettingsPanel.tsx:43
 msgid "notifications.event.downloadStarted"
 msgstr "다운로드 시작"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:43
+#: src/pages/settings/NotificationSettingsPanel.tsx:44
 msgid "notifications.event.downloadStarted.desc"
 msgstr "RSS 규칙이 새 다운로드를 트리거했을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:54
+#: src/pages/settings/NotificationSettingsPanel.tsx:55
 msgid "notifications.event.libraryScanComplete"
 msgstr "라이브러리 스캔 완료"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:55
+#: src/pages/settings/NotificationSettingsPanel.tsx:56
 msgid "notifications.event.libraryScanComplete.desc"
 msgstr "라이브러리 스캔 처리가 완료되었을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:58
+#: src/pages/settings/NotificationSettingsPanel.tsx:59
 msgid "notifications.event.systemError"
 msgstr "시스템 오류"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:59
+#: src/pages/settings/NotificationSettingsPanel.tsx:60
 msgid "notifications.event.systemError.desc"
 msgstr "백그라운드 작업이 예기치 않게 실패했을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:584
+#: src/pages/settings/NotificationSettingsPanel.tsx:585
 msgid "notifications.eventRouting"
 msgstr "이벤트 라우팅"
 
@@ -2377,8 +2377,8 @@ msgstr "라이브러리"
 msgid "notifications.filter.system"
 msgstr "시스템"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:795
-#: src/pages/settings/NotificationSettingsPanel.tsx:811
+#: src/pages/settings/NotificationSettingsPanel.tsx:803
+#: src/pages/settings/NotificationSettingsPanel.tsx:819
 msgid "notifications.intro"
 msgstr "다운로드 완료 또는 오류 발생 시 Discord, Telegram 또는 웹훅으로 알림을 받으세요."
 
@@ -2391,49 +2391,49 @@ msgstr "더 불러오기"
 msgid "notifications.markAllRead"
 msgstr "모두 읽음"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:93
+#: src/pages/settings/NotificationSettingsPanel.tsx:94
 msgid "notifications.providerStatus.error"
 msgstr "오류"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:92
+#: src/pages/settings/NotificationSettingsPanel.tsx:93
 msgid "notifications.providerStatus.ok"
 msgstr "연결됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:97
+#: src/pages/settings/NotificationSettingsPanel.tsx:98
 msgid "notifications.providerStatus.unconfigured"
 msgstr "미설정"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:211
-#: src/pages/settings/NotificationSettingsPanel.tsx:389
+#: src/pages/settings/NotificationSettingsPanel.tsx:212
+#: src/pages/settings/NotificationSettingsPanel.tsx:390
 msgid "notifications.pushNotifications"
 msgstr "푸시 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:212
-#: src/pages/settings/NotificationSettingsPanel.tsx:390
+#: src/pages/settings/NotificationSettingsPanel.tsx:213
+#: src/pages/settings/NotificationSettingsPanel.tsx:391
 msgid "notifications.pushNotifications.desc"
 msgstr "다운로드 및 시스템 이벤트 알림 수신"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:517
+#: src/pages/settings/NotificationSettingsPanel.tsx:518
 msgid "notifications.secretIsSet"
 msgstr "시크릿 설정됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:512
+#: src/pages/settings/NotificationSettingsPanel.tsx:513
 msgid "notifications.secretPlaceholder"
 msgstr "서명 시크릿 (선택 사항)"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:820
+#: src/pages/settings/NotificationSettingsPanel.tsx:829
 msgid "notifications.setupGuide"
 msgstr "설정 가이드"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:144
+#: src/pages/settings/NotificationSettingsPanel.tsx:145
 msgid "notifications.test"
 msgstr "테스트"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:157
+#: src/pages/settings/NotificationSettingsPanel.tsx:158
 msgid "notifications.testFailed"
 msgstr "테스트 실패"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:156
+#: src/pages/settings/NotificationSettingsPanel.tsx:157
 msgid "notifications.testSuccess"
 msgstr "전송됨!"
 
@@ -3027,7 +3027,7 @@ msgstr ""
 #~ msgid "search.title"
 #~ msgstr "검색"
 
-#: src/pages/settings/GeneralPanel.tsx:61
+#: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
 msgstr "언어"
 
@@ -3040,11 +3040,11 @@ msgstr "언어"
 msgid "settings.audioTrack"
 msgstr "오디오 트랙"
 
-#: src/pages/settings/GeneralPanel.tsx:73
+#: src/pages/settings/GeneralPanel.tsx:89
 msgid "settings.autoAddToCollection"
 msgstr "자동으로 컬렉션에 추가"
 
-#: src/pages/settings/GeneralPanel.tsx:76
+#: src/pages/settings/GeneralPanel.tsx:92
 msgid "settings.autoAddToCollectionDesc"
 msgstr "새로 매치된 애니메이션을 자동으로 컬렉션에 추가"
 
@@ -3067,7 +3067,7 @@ msgstr "테두리 스타일"
 msgid "settings.brightness"
 msgstr "밝기"
 
-#: src/pages/settings/GeneralPanel.tsx:69
+#: src/pages/settings/GeneralPanel.tsx:85
 msgid "settings.collection"
 msgstr "컬렉션"
 
@@ -3084,6 +3084,18 @@ msgstr "대비"
 #: src/components/watch/UnifiedSettingsPanel.tsx:214
 msgid "settings.default"
 msgstr "기본값"
+
+#: src/pages/settings/GeneralPanel.tsx:105
+msgid "settings.docsUrl"
+msgstr "문서"
+
+#: src/pages/settings/GeneralPanel.tsx:117
+msgid "settings.docsUrl.desc"
+msgstr "앱 전체 문서 링크의 기본 URL"
+
+#: src/pages/settings/GeneralPanel.tsx:107
+msgid "settings.docsUrl.label"
+msgstr "문서 웹사이트 URL"
 
 #: src/pages/settings/DownloadPanel.tsx:83
 #~ msgid "settings.download.aria2"
@@ -3160,7 +3172,7 @@ msgstr "글꼴"
 msgid "settings.fontSize"
 msgstr "글꼴 크기"
 
-#: src/pages/settings/GeneralPanel.tsx:57
+#: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.general.subtitle"
 msgstr "언어, 컬렉션 및 앱 환경설정"
 
@@ -3246,7 +3258,7 @@ msgstr "백업"
 msgid "settings.nav.download"
 msgstr "다운로드"
 
-#: src/pages/settings/GeneralPanel.tsx:54
+#: src/pages/settings/GeneralPanel.tsx:70
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.general"
 msgstr "일반"
@@ -3256,8 +3268,8 @@ msgstr "일반"
 msgid "settings.nav.integrations"
 msgstr "연동"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:792
-#: src/pages/settings/NotificationSettingsPanel.tsx:808
+#: src/pages/settings/NotificationSettingsPanel.tsx:800
+#: src/pages/settings/NotificationSettingsPanel.tsx:816
 #: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.notifications"
 msgstr "알림"
@@ -3444,14 +3456,15 @@ msgstr "채도"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:863
+#: src/pages/settings/NotificationSettingsPanel.tsx:873
 msgid "settings.save"
 msgstr "저장"
 
 #: src/pages/settings/BackupPanel.tsx:201
 #: src/pages/settings/BackupPanel.tsx:399
-#: src/pages/settings/GeneralPanel.tsx:38
-#: src/pages/settings/GeneralPanel.tsx:48
+#: src/pages/settings/GeneralPanel.tsx:44
+#: src/pages/settings/GeneralPanel.tsx:54
+#: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
 #: src/pages/settings/PlayerPanel.tsx:196
@@ -3460,7 +3473,8 @@ msgstr "저장됨"
 
 #: src/pages/settings/BackupPanel.tsx:205
 #: src/pages/settings/BackupPanel.tsx:403
-#: src/pages/settings/GeneralPanel.tsx:41
+#: src/pages/settings/GeneralPanel.tsx:47
+#: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
 #: src/pages/settings/PlayerPanel.tsx:199
@@ -3471,7 +3485,7 @@ msgstr "저장 실패"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:862
+#: src/pages/settings/NotificationSettingsPanel.tsx:872
 msgid "settings.saving"
 msgstr "저장 중…"
 
