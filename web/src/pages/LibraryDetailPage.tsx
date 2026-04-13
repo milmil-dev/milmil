@@ -1167,8 +1167,8 @@ export function LibraryDetailPage() {
   const { id: rawId } = useParams({ strict: false }) as { id?: string };
   const id = rawId ?? '';
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<string>('files');
-  const [viewMode, setViewMode] = useState<'table' | 'tree' | 'anime'>('anime');
+  const [activeTab, setActiveTab] = useState<string>('anime');
+  const [viewMode, setViewMode] = useState<'table' | 'tree'>('table');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const scanProgress = useScanStore((s) => s.getProgress(id));
@@ -1218,6 +1218,7 @@ export function LibraryDetailPage() {
   });
 
   const tabs = [
+    { key: 'anime', label: i18n._(msg`library.detail.tab.anime`) },
     { key: 'files', label: i18n._(msg`library.detail.tab.files`) },
     { key: 'history', label: i18n._(msg`library.detail.tab.scanHistory`) },
   ];
@@ -1562,25 +1563,6 @@ export function LibraryDetailPage() {
                     <TooltipTrigger asChild>
                       <button
                         type="button"
-                        onClick={() => setViewMode('anime')}
-                        className={cn(
-                          'p-1.5 rounded-md transition-colors cursor-pointer',
-                          viewMode === 'anime'
-                            ? 'text-white bg-white/[0.08]'
-                            : 'text-white/25 hover:text-white/50'
-                        )}
-                      >
-                        <HugeiconsIcon icon={SparklesIcon} size={15} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      {i18n._(msg`library.detail.viewAnime`)}
-                    </TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
                         onClick={() => setViewMode('table')}
                         className={cn(
                           'p-1.5 rounded-md transition-colors cursor-pointer',
@@ -1622,6 +1604,17 @@ export function LibraryDetailPage() {
 
           {/* Tab content */}
           <AnimatePresence mode="wait">
+            {activeTab === 'anime' && (
+              <motion.div
+                key="anime"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <LibraryAnimeGrid libraryId={id} />
+              </motion.div>
+            )}
             {activeTab === 'files' && (
               <motion.div
                 key={`files-${viewMode}`}
@@ -1630,9 +1623,7 @@ export function LibraryDetailPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                {viewMode === 'anime' ? (
-                  <LibraryAnimeGrid libraryId={id} />
-                ) : viewMode === 'table' ? (
+                {viewMode === 'table' ? (
                   <FileTable libraryId={id} onMatch={setMatchingFile} />
                 ) : (
                   <FileTreeView libraryId={id} onMatch={setMatchingFile} />
