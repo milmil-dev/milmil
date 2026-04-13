@@ -1,6 +1,8 @@
 package jellyfin
 
 import (
+	"strings"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/jellyfin/imagecache"
@@ -25,7 +27,7 @@ func NewHandler(queries *store.Queries, jwtSecret string, imageCacheDir string, 
 	return &Handler{
 		queries:       queries,
 		jwtSecret:     jwtSecret,
-		serverID:      uuid.NewString(),
+		serverID:      strings.ReplaceAll(uuid.NewString(), "-", ""),
 		imageCache:    cache,
 		encryptionKey: encryptionKey,
 	}, nil
