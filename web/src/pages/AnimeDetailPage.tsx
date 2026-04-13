@@ -680,91 +680,87 @@ export function AnimeDetailPage() {
               </motion.div>
             </div>
           </div>
-        </div>
 
-        {/* Continue Watching — floating card (matches HeroBanner ResumeCard) */}
-        {continueEpisode &&
-          continueEpisode.media_file &&
-          (() => {
-            const prog = continueEpisode.progress;
-            const progress =
-              prog && prog.duration_seconds > 0 ? prog.position_seconds / prog.duration_seconds : 0;
-            const timeLeft =
-              prog && !prog.completed ? prog.duration_seconds - prog.position_seconds : 0;
-            const epNum = continueEpisode.sort % 1 === 0
-              ? Math.floor(continueEpisode.sort)
-              : continueEpisode.sort;
+          {/* Continue Watching — floating card (matches HeroBanner ResumeCard) */}
+          {continueEpisode &&
+            continueEpisode.media_file &&
+            (() => {
+              const prog = continueEpisode.progress;
+              const progress =
+                prog && prog.duration_seconds > 0 ? prog.position_seconds / prog.duration_seconds : 0;
+              const timeLeft =
+                prog && !prog.completed ? prog.duration_seconds - prog.position_seconds : 0;
+              const epNum = continueEpisode.sort % 1 === 0
+                ? Math.floor(continueEpisode.sort)
+                : continueEpisode.sort;
 
-            const coverSrc = anime.cover_image;
-            const hasCoverImg = coverSrc?.startsWith('http');
+              const coverSrc = anime.cover_image;
+              const hasCoverImg = coverSrc?.startsWith('http');
 
-            // SVG progress ring
-            const radius = 28;
-            const circumference = 2 * Math.PI * radius;
-            const strokeDashoffset = circumference * (1 - progress);
+              const radius = 28;
+              const circumference = 2 * Math.PI * radius;
+              const strokeDashoffset = circumference * (1 - progress);
 
-            return (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="hidden lg:block mb-6 px-4 md:px-8 flex justify-end"
-              >
-                <Link
-                  to="/watch/$animeId"
-                  params={{ animeId: String(numericId) }}
-                  search={{ ep: epNum }}
-                  className="group flex items-center gap-4 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-1.5 pr-5 py-1.5 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02] ml-auto"
-                  style={{
-                    backgroundColor: 'rgba(7,7,7,0.65)',
-                    backdropFilter: 'blur(20px) saturate(1.4)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
-                    transform: 'scale(1.15)',
-                    transformOrigin: 'right center',
-                  }}
+              return (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                  className="absolute right-6 bottom-8 z-[3] hidden lg:block"
+                  style={{ transform: 'scale(1.15)', transformOrigin: 'right bottom' }}
                 >
-                  {/* Cover with progress ring overlay */}
-                  <div className="relative shrink-0 w-[72px] h-[96px] rounded-lg overflow-hidden">
-                    <div
-                      className="w-full h-full"
-                      style={hasCoverImg ? undefined : { background: animeGradient(anime.title) }}
-                    >
-                      {hasCoverImg && (
-                        <img src={coverSrc} alt={anime.title} className="w-full h-full object-cover" />
-                      )}
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
-                      <div className="relative w-[64px] h-[64px] flex items-center justify-center">
-                        <svg className="absolute inset-0 -rotate-90" width="64" height="64" viewBox="0 0 64 64">
-                          <circle cx="32" cy="32" r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2.5" />
-                          <circle cx="32" cy="32" r={radius} fill="none" stroke="var(--mm-accent)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} className="transition-all duration-500" style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }} />
-                        </svg>
-                        <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z" /></svg>
+                  <Link
+                    to="/watch/$animeId"
+                    params={{ animeId: String(numericId) }}
+                    search={{ ep: epNum }}
+                    className="group flex items-center gap-4 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-1.5 pr-5 py-1.5 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02]"
+                    style={{
+                      backgroundColor: 'rgba(7,7,7,0.65)',
+                      backdropFilter: 'blur(20px) saturate(1.4)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
+                    }}
+                  >
+                    <div className="relative shrink-0 w-[72px] h-[96px] rounded-lg overflow-hidden">
+                      <div
+                        className="w-full h-full"
+                        style={hasCoverImg ? undefined : { background: animeGradient(anime.title) }}
+                      >
+                        {hasCoverImg && (
+                          <img src={coverSrc} alt={anime.title} className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
+                        <div className="relative w-[64px] h-[64px] flex items-center justify-center">
+                          <svg className="absolute inset-0 -rotate-90" width="64" height="64" viewBox="0 0 64 64">
+                            <circle cx="32" cy="32" r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2.5" />
+                            <circle cx="32" cy="32" r={radius} fill="none" stroke="var(--mm-accent)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} className="transition-all duration-500" style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }} />
+                          </svg>
+                          <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z" /></svg>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Info */}
-                  <div className="min-w-0 py-0.5">
-                    <p className="text-[13px] font-semibold text-white truncate max-w-[180px]">
-                      {anime.title}
-                    </p>
-                    <p className="text-[11px] text-white/45 mt-1 font-medium">
-                      EP {epNum} · {prog ? formatTime(prog.position_seconds) : '0:00'}
-                      {prog?.duration_seconds ? ` / ${formatTime(prog.duration_seconds)}` : ''}
-                    </p>
-                    {timeLeft > 0 && (
-                      <p className="text-[10px] text-white/30 mt-1.5 font-medium tracking-wide">
-                        {formatTime(timeLeft)} remaining
+                    <div className="min-w-0 py-0.5">
+                      <p className="text-[13px] font-semibold text-white truncate max-w-[180px]">
+                        {anime.title}
                       </p>
-                    )}
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })()}
+                      <p className="text-[11px] text-white/45 mt-1 font-medium">
+                        EP {epNum} · {prog ? formatTime(prog.position_seconds) : '0:00'}
+                        {prog?.duration_seconds ? ` / ${formatTime(prog.duration_seconds)}` : ''}
+                      </p>
+                      {timeLeft > 0 && (
+                        <p className="text-[10px] text-white/30 mt-1.5 font-medium tracking-wide">
+                          {formatTime(timeLeft)} remaining
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })()}
+        </div>
 
         {/* Trailer + Episodes */}
         {(episodeList.length > 0 || anime.trailer_url) && (
