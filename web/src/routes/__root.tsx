@@ -24,6 +24,29 @@ interface UserResponse {
 
 const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS === 'true';
 
+function ServerUnavailable() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/40">
+          <path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <div>
+        <p className="text-[15px] font-medium text-white/70">無法連接伺服器</p>
+        <p className="text-[13px] text-white/30 mt-1">Server is unreachable</p>
+      </div>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="mt-2 px-4 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-[13px] text-white/60 hover:text-white/80 transition-colors cursor-pointer"
+      >
+        重試
+      </button>
+    </div>
+  );
+}
+
 function isPublicRoute(pathname: string): boolean {
   const publicExact = ['/login', '/setup', '/schedule', '/discover', '/search'];
   if (publicExact.includes(pathname)) return true;
@@ -217,9 +240,14 @@ export const Route = createRootRoute({
     if (!token) {
       let isInitialized = initialized;
       if (isInitialized === null) {
-        const status = await api.get<StatusResponse>('/api/v1/auth/status');
-        isInitialized = status.initialized;
-        setInitialized(isInitialized);
+        try {
+          const status = await api.get<StatusResponse>('/api/v1/auth/status');
+          isInitialized = status.initialized;
+          setInitialized(isInitialized);
+        } catch {
+          // Server unreachable — let the page render with offline state
+          return;
+        }
       }
       if (!isInitialized) throw redirect({ to: '/setup' });
       throw redirect({ to: '/login' });
@@ -230,11 +258,11 @@ export const Route = createRootRoute({
         const me = await api.get<UserResponse>('/api/v1/auth/me');
         useAuthStore.getState().login(token, me);
       } catch {
-        useAuthStore.getState().logout();
-        throw redirect({ to: '/login' });
+        // Network error or invalid token — don't redirect, page will handle
       }
     }
   },
   pendingComponent: SplashScreen,
+  errorComponent: ServerUnavailable,
   component: RootLayout,
 });
