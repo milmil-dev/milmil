@@ -79,13 +79,31 @@ func buildDetailResponse(ctx context.Context, svc *Services, bangumiID int) (*bo
 		text += fmt.Sprintf("\n\n%s", synopsis)
 	}
 
+	// Check if already subscribed (has a download rule with this bangumi_id)
+	subscribed := false
+	if rules, err := svc.Queries.ListDownloadRules(ctx); err == nil {
+		for _, rule := range rules {
+			if rule.Enabled == 1 && rule.BangumiID.Valid && int(rule.BangumiID.Int64) == bangumiID {
+				subscribed = true
+				break
+			}
+		}
+	}
+
+	var actionBtn bot.BotButton
+	if subscribed {
+		actionBtn = bot.BotButton{Label: "✅ Subscribed", Data: fmt.Sprintf("detail:%d", bangumiID)}
+	} else {
+		actionBtn = bot.BotButton{Label: "➕ Subscribe", Data: fmt.Sprintf("sub_pick:%d", bangumiID)}
+	}
+
 	return &bot.BotResponse{
 		Text:     text,
 		ImageURL: detail.CoverImage,
 		Fields:   fields,
 		Buttons: [][]bot.BotButton{
 			{
-				{Label: "Subscribe", Data: fmt.Sprintf("sub_pick:%d", bangumiID)},
+				actionBtn,
 				{Label: "Bangumi", URL: fmt.Sprintf("https://bgm.tv/subject/%d", bangumiID)},
 			},
 		},
