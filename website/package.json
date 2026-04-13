@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "generate:api": "node scripts/generate-api-docs.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4",
