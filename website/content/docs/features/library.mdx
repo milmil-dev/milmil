@@ -23,12 +23,32 @@ milmil's library system lets you organize and manage anime files from multiple s
 
 When you scan a library, milmil:
 
-1. Walks the directory tree to discover media files
-2. Extracts metadata using FFmpeg (codec, resolution, duration, subtitles)
-3. Matches files to anime entries using multiple providers
-4. Enriches episodes with cover images, titles, and descriptions
+<Steps>
+<Step>
+### Discover files
 
-Scans can be triggered manually or configured to run automatically.
+Walks the directory tree to discover media files.
+</Step>
+<Step>
+### Extract metadata
+
+Extracts metadata using FFmpeg (codec, resolution, duration, subtitles).
+</Step>
+<Step>
+### Match anime
+
+Matches files to anime entries using multiple providers.
+</Step>
+<Step>
+### Enrich episodes
+
+Enriches episodes with cover images, titles, and descriptions.
+</Step>
+</Steps>
+
+<Callout type="info">
+Scans can be triggered manually or configured to run automatically on a schedule.
+</Callout>
 
 ## Metadata Matching
 
@@ -39,7 +59,25 @@ milmil uses a multi-provider matching pipeline:
 3. **AniList** — Alternative title matching
 4. **TMDB** — Fallback cross-reference
 
+<Callout type="info">
 Unmatched files can be manually matched from the library detail page.
+</Callout>
+
+## Expected Library Structure
+
+<Files>
+  <Folder name="anime" defaultOpen>
+    <Folder name="Frieren" defaultOpen>
+      <File name="[SubGroup] Frieren S01E01.mkv" />
+      <File name="[SubGroup] Frieren S01E02.mkv" />
+      <File name="[SubGroup] Frieren S01E03.mkv" />
+    </Folder>
+    <Folder name="Bocchi the Rock">
+      <File name="[SubGroup] Bocchi the Rock - 01.mkv" />
+      <File name="[SubGroup] Bocchi the Rock - 02.mkv" />
+    </Folder>
+  </Folder>
+</Files>
 
 ## File Browser
 

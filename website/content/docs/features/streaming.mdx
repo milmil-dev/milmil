@@ -7,15 +7,24 @@ description: Stream anime with danmaku overlay, subtitle support, and watch prog
 
 milmil supports three streaming modes, automatically selecting the best option:
 
-### Direct Play
+<Tabs items={["Direct Play", "Container Remux", "HLS Transcoding"]}>
+<Tab value="Direct Play">
 
 Serves the original file directly with byte-range requests. Zero transcoding overhead — best quality and performance.
 
-### Container Remux
+<Callout type="info">
+Direct play works when the source format is natively supported by the browser (MP4 with H.264/H.265).
+</Callout>
+</Tab>
+<Tab value="Container Remux">
 
 Remuxes MKV containers to MP4 on-the-fly without re-encoding video or audio. This enables playback in browsers that don't support MKV natively.
 
-### HLS Transcoding
+<Callout type="info">
+Remuxing is very fast and uses minimal CPU since it only changes the container format, not the video/audio streams.
+</Callout>
+</Tab>
+<Tab value="HLS Transcoding">
 
 Full FFmpeg transcoding to HLS (HTTP Live Streaming) when the source format isn't browser-compatible. Includes:
 
@@ -23,11 +32,19 @@ Full FFmpeg transcoding to HLS (HTTP Live Streaming) when the source format isn'
 - Session-based caching for fast seeking
 - Configurable quality presets
 
+<Callout type="warn">
+HLS transcoding requires significant CPU resources. Consider enabling hardware acceleration for better performance. See [Performance Tuning](/docs/configuration/performance).
+</Callout>
+</Tab>
+</Tabs>
+
 ## Danmaku (Bullet Comments)
 
 Real-time bullet comments overlaid on video, sourced from DandanPlay. Comments scroll across the screen during playback, creating a shared viewing experience.
 
-Configure danmaku density, opacity, and font size in the player settings.
+<Callout type="info">
+Configure danmaku density, opacity, and font size in the player settings. Requires [DandanPlay integration](/docs/configuration/integrations).
+</Callout>
 
 ## Subtitles
 

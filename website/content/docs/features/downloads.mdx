@@ -24,31 +24,39 @@ milmil includes a built-in torrent client with:
 
 Search across multiple torrent providers from a single interface:
 
-- **Nyaa** — Largest anime torrent tracker
-- **DMHY** — Chinese anime torrents
-- **Mikan** — Mikan Project aggregator
-- **Bangumi.moe** — Bangumi torrent tracker
-- **ACG.rip** — ACG resource tracker
+| Provider | Description |
+|----------|-------------|
+| **Nyaa** | Largest anime torrent tracker |
+| **DMHY** | Chinese anime torrents |
+| **Mikan** | Mikan Project aggregator |
+| **Bangumi.moe** | Bangumi torrent tracker |
+| **ACG.rip** | ACG resource tracker |
 
 Filter results by resolution, subgroup, and file type.
 
 ## RSS Auto-Download
 
-Subscribe to RSS feeds for automatic episode downloads:
+<Steps>
+<Step>
+### Add RSS feed
 
-1. Add an RSS feed URL
-2. Configure filters (regex patterns, resolution, subgroup preferences)
-3. milmil checks the feed periodically and downloads matching episodes
-4. Downloaded files are automatically scanned and matched
+Add an RSS feed URL from your preferred torrent tracker.
+</Step>
+<Step>
+### Configure filters
 
-### Post-Download Pipeline
+Set up regex patterns, resolution preferences, and subgroup filters.
+</Step>
+<Step>
+### Automatic processing
 
-After a download completes, milmil automatically:
+milmil checks the feed periodically and downloads matching episodes.
+</Step>
+</Steps>
 
-1. Scans the downloaded file
-2. Matches it to the correct anime and episode
-3. Enriches metadata from providers
-4. Sends a notification
+<Callout type="info">
+After a download completes, milmil automatically scans the file, matches it to the correct anime and episode, enriches metadata, and sends a notification.
+</Callout>
 
 ## HTTP Downloads
 
