@@ -292,7 +292,7 @@ msgstr "更新中..."
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:846
+#: src/pages/AnimeDetailPage.tsx:853
 msgid "anime.characters"
 msgstr "角色"
 
@@ -300,20 +300,20 @@ msgstr "角色"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:979
+#: src/pages/AnimeDetailPage.tsx:986
 msgid "anime.comments"
 msgstr "評論"
 
 #: src/pages/AnimeDetailPage.tsx:724
-msgid "anime.continueWatching"
-msgstr "繼續觀看"
+#~ msgid "anime.continueWatching"
+#~ msgstr "繼續觀看"
 
 #: src/pages/AnimeDetailPage.tsx:727
-msgid "anime.episode"
-msgstr "集"
+#~ msgid "anime.episode"
+#~ msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:770
+#: src/pages/AnimeDetailPage.tsx:777
 msgid "anime.episodes"
 msgstr "集數"
 
@@ -345,15 +345,15 @@ msgstr "集可播放"
 msgid "anime.ratings"
 msgstr "評分"
 
-#: src/pages/AnimeDetailPage.tsx:893
+#: src/pages/AnimeDetailPage.tsx:900
 msgid "anime.recommendations"
 msgstr "推薦"
 
-#: src/pages/AnimeDetailPage.tsx:867
+#: src/pages/AnimeDetailPage.tsx:874
 msgid "anime.relations"
 msgstr "相關作品"
 
-#: src/pages/AnimeDetailPage.tsx:931
+#: src/pages/AnimeDetailPage.tsx:938
 msgid "anime.reviews"
 msgstr "評論"
 
@@ -377,11 +377,11 @@ msgstr "已追番"
 #~ msgstr "簡介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:816
+#: src/pages/AnimeDetailPage.tsx:823
 msgid "anime.trailer"
 msgstr "預告片"
 
-#: src/pages/AnimeDetailPage.tsx:852
+#: src/pages/AnimeDetailPage.tsx:859
 msgid "anime.voiceActor"
 msgstr "聲優"
 
@@ -1149,7 +1149,7 @@ msgstr "已複製"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:772
+#: src/pages/AnimeDetailPage.tsx:779
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
@@ -2587,6 +2587,11 @@ msgstr "上一頁"
 #: src/components/DataPagination.tsx:75
 msgid "pagination.rows"
 msgstr "列"
+
+#: src/components/HeroBanner.tsx:203
+#: src/pages/AnimeDetailPage.tsx:754
+msgid "player.remaining"
+msgstr "剩餘"
 
 #: src/components/RuleEditorModal.tsx:624
 msgid "ruleEditor.addGroup"

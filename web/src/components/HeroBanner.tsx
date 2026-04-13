@@ -200,7 +200,7 @@ export function HeroBanner({
         {/* Resume watching card — only when featured anime has watch progress */}
         <AnimatePresence>
           {matchedWatch && (
-            <ResumeCard key={matchedWatch.id} item={matchedWatch} locale={i18n.locale} />
+            <ResumeCard key={matchedWatch.id} item={matchedWatch} locale={i18n.locale} remainingLabel={i18n._(msg`player.remaining`)} />
           )}
         </AnimatePresence>
       </div>
@@ -259,7 +259,7 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-function ResumeCard({ item, locale }: { item: WatchProgress; locale: string }) {
+function ResumeCard({ item, locale, remainingLabel }: { item: WatchProgress; locale: string; remainingLabel: string }) {
   const title = (locale.startsWith('zh')
     ? item.anime_title_zh || item.anime_title
     : item.anime_title) || 'Unknown';
@@ -278,8 +278,7 @@ function ResumeCard({ item, locale }: { item: WatchProgress; locale: string }) {
     ? item.duration_seconds - item.position_seconds
     : 0;
 
-  // SVG progress ring
-  const radius = 28;
+  const radius = 34;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference * (1 - progress);
 
@@ -294,77 +293,46 @@ function ResumeCard({ item, locale }: { item: WatchProgress; locale: string }) {
         to="/watch/$animeId"
         params={{ animeId: item.anime_id }}
         search={{ ep: item.episode_number }}
-        className="group flex items-center gap-4 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-1.5 pr-5 py-1.5 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02]"
+        className="group flex items-center gap-5 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-2 pr-6 py-2 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02]"
         style={{
           backgroundColor: 'rgba(7,7,7,0.65)',
           backdropFilter: 'blur(20px) saturate(1.4)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
         }}
       >
-        {/* Cover with progress ring overlay */}
-        <div className="relative shrink-0 w-[72px] h-[96px] rounded-lg overflow-hidden">
+        <div className="relative shrink-0 w-[86px] h-[115px] rounded-lg overflow-hidden">
           <div
             className="w-full h-full"
             style={hasCover ? undefined : { background: animeGradient(title) }}
           >
             {hasCover && (
-              <img
-                src={item.anime_cover_image!}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
+              <img src={item.anime_cover_image!} alt={title} className="w-full h-full object-cover" />
             )}
           </div>
-          {/* Play icon with progress ring */}
           <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
-            <div className="relative w-[64px] h-[64px] flex items-center justify-center">
-              {/* Progress ring */}
-              <svg
-                className="absolute inset-0 -rotate-90"
-                width="64"
-                height="64"
-                viewBox="0 0 64 64"
-              >
-                <circle
-                  cx="32" cy="32" r={radius}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.12)"
-                  strokeWidth="2.5"
-                />
-                <circle
-                  cx="32" cy="32" r={radius}
-                  fill="none"
-                  stroke="var(--mm-accent)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  className="transition-all duration-500"
-                  style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }}
-                />
+            <div className="relative w-[76px] h-[76px] flex items-center justify-center">
+              <svg className="absolute inset-0 -rotate-90" width="76" height="76" viewBox="0 0 76 76">
+                <circle cx="38" cy="38" r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2.5" />
+                <circle cx="38" cy="38" r={radius} fill="none" stroke="var(--mm-accent)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} className="transition-all duration-500" style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }} />
               </svg>
-              {/* Play button */}
-              <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="black">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
+              <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z" /></svg>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Info */}
         <div className="min-w-0 py-0.5">
-          <p className="text-[13px] font-semibold text-white truncate max-w-[180px]">
+          <p className="text-[15px] font-semibold text-white truncate max-w-[210px]">
             {title}
           </p>
-          <p className="text-[11px] text-white/45 mt-1 font-medium">
+          <p className="text-[13px] text-white/45 mt-1.5 font-medium">
             EP {epNum} · {formatTime(item.position_seconds)}
             {item.duration_seconds ? ` / ${formatTime(item.duration_seconds)}` : ''}
           </p>
           {timeLeft > 0 && (
-            <p className="text-[10px] text-mm-accent/70 mt-1.5 font-medium tracking-wide">
-              {formatTime(timeLeft)} remaining
+            <p className="text-[11px] text-white/30 mt-2 font-medium tracking-wide">
+              {formatTime(timeLeft)} {remainingLabel}
             </p>
           )}
         </div>

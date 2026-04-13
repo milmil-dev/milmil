@@ -751,7 +751,7 @@ export function AnimeDetailPage() {
                       </p>
                       {timeLeft > 0 && (
                         <p className="text-[11px] text-white/30 mt-2 font-medium tracking-wide">
-                          {formatTime(timeLeft)} remaining
+                          {formatTime(timeLeft)} {i18n._(msg`player.remaining`)}
                         </p>
                       )}
                     </div>
