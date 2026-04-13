@@ -20,8 +20,9 @@ type authSetupRequest struct {
 }
 
 type authLoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	DeviceName string `json:"device_name,omitempty"`
 }
 
 type authUserDTO struct {
@@ -111,20 +112,23 @@ func (h *handler) handleAuthLogin(c echo.Context) error {
 	}
 
 	if user.TwoFactorEnabled == 1 {
-		// Don't issue token yet — return a partial response indicating 2FA is needed
 		return c.JSON(http.StatusOK, map[string]any{
 			"requires_2fa": true,
 			"user_id":      user.ID,
+			"device_name":  req.DeviceName,
 		})
+	}
+
+	h.sendLoginNotification(c, user.Username)
+
+	if req.DeviceName != "" {
+		return h.issueAPIToken(c, user.ID, user.Username, req.DeviceName)
 	}
 
 	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-
-	h.sendLoginNotification(c, user.Username)
-
 	return c.JSON(http.StatusOK, authLoginResponse{
 		Token: token,
 		User:  authUserDTO{ID: user.ID, Username: user.Username},
@@ -132,8 +136,9 @@ func (h *handler) handleAuthLogin(c echo.Context) error {
 }
 
 type authLogin2FARequest struct {
-	UserID string `json:"user_id"`
-	Code   string `json:"code"`
+	UserID     string `json:"user_id"`
+	Code       string `json:"code"`
+	DeviceName string `json:"device_name,omitempty"`
 }
 
 func (h *handler) handleAuthLogin2FA(c echo.Context) error {
@@ -155,13 +160,16 @@ func (h *handler) handleAuthLogin2FA(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid 2FA code")
 	}
 
+	h.sendLoginNotification(c, user.Username)
+
+	if req.DeviceName != "" {
+		return h.issueAPIToken(c, user.ID, user.Username, req.DeviceName)
+	}
+
 	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-
-	h.sendLoginNotification(c, user.Username)
-
 	return c.JSON(http.StatusOK, authLoginResponse{
 		Token: token,
 		User:  authUserDTO{ID: user.ID, Username: user.Username},
@@ -198,6 +206,28 @@ func (h *handler) sendLoginNotification(c echo.Context, username string) {
 			"username":   username,
 			"time":       time.Now().Format("2006-01-02 15:04:05"),
 		})
+}
+
+// issueAPIToken creates a new API token for the device and returns it in the login response.
+func (h *handler) issueAPIToken(c echo.Context, userID, username, deviceName string) error {
+	plaintext, hash, prefix, err := auth.GenerateAPIToken()
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	_, err = h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
+		ID:          uuid.NewString(),
+		Name:        deviceName,
+		TokenHash:   hash,
+		TokenPrefix: prefix,
+		UserID:      userID,
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, authLoginResponse{
+		Token: plaintext,
+		User:  authUserDTO{ID: userID, Username: username},
+	})
 }
 
 func (h *handler) handleChangePassword(c echo.Context) error {
