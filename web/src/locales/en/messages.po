@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:105
+#: src/pages/WatchPage.tsx:104
 msgid "watch.resumeFrom"
 msgstr "Resume from"
 
@@ -294,7 +294,7 @@ msgstr "Updating..."
 msgid "anime.addToCollection"
 msgstr "Add to Collection"
 
-#: src/pages/AnimeDetailPage.tsx:862
+#: src/pages/AnimeDetailPage.tsx:846
 msgid "anime.characters"
 msgstr "Characters"
 
@@ -302,20 +302,20 @@ msgstr "Characters"
 msgid "anime.collectionUpdated"
 msgstr "Collection updated"
 
-#: src/pages/AnimeDetailPage.tsx:995
+#: src/pages/AnimeDetailPage.tsx:979
 msgid "anime.comments"
 msgstr "Comments"
 
-#: src/pages/AnimeDetailPage.tsx:731
+#: src/pages/AnimeDetailPage.tsx:724
 msgid "anime.continueWatching"
 msgstr "Continue Watching"
 
-#: src/pages/AnimeDetailPage.tsx:735
+#: src/pages/AnimeDetailPage.tsx:727
 msgid "anime.episode"
 msgstr "Episode"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:786
+#: src/pages/AnimeDetailPage.tsx:770
 msgid "anime.episodes"
 msgstr "Episodes"
 
@@ -347,15 +347,15 @@ msgstr "playable eps"
 msgid "anime.ratings"
 msgstr "ratings"
 
-#: src/pages/AnimeDetailPage.tsx:909
+#: src/pages/AnimeDetailPage.tsx:893
 msgid "anime.recommendations"
 msgstr "Recommended"
 
-#: src/pages/AnimeDetailPage.tsx:883
+#: src/pages/AnimeDetailPage.tsx:867
 msgid "anime.relations"
 msgstr "Related"
 
-#: src/pages/AnimeDetailPage.tsx:947
+#: src/pages/AnimeDetailPage.tsx:931
 msgid "anime.reviews"
 msgstr "Reviews"
 
@@ -379,11 +379,11 @@ msgstr "Following"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:832
+#: src/pages/AnimeDetailPage.tsx:816
 msgid "anime.trailer"
 msgstr "Trailer"
 
-#: src/pages/AnimeDetailPage.tsx:868
+#: src/pages/AnimeDetailPage.tsx:852
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -1154,7 +1154,7 @@ msgstr "common.copied"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:788
+#: src/pages/AnimeDetailPage.tsx:772
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
@@ -1162,6 +1162,7 @@ msgstr "ep"
 
 #: src/pages/AnimeDetailPage.tsx:312
 #: src/pages/LibraryDetailPage.tsx:1233
+#: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "Failed to load"
 
@@ -1179,6 +1180,7 @@ msgstr "min"
 #: src/pages/AnimeDetailPage.tsx:321
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
+#: src/routes/__root.tsx:60
 msgid "common.retry"
 msgstr "Retry"
 
@@ -1256,6 +1258,14 @@ msgstr "Episode "
 #: src/components/EpisodeListItem.tsx:256
 msgid "episode.suffix"
 msgstr ""
+
+#: src/routes/__root.tsx:45
+msgid "error.serverUnavailable"
+msgstr "Server Unavailable"
+
+#: src/routes/__root.tsx:50
+msgid "error.serverUnavailableHint"
+msgstr "Please check if the server is running and try again"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -2157,7 +2167,7 @@ msgstr "Connect to a WebDAV server"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:176
+#: src/routes/__root.tsx:215
 msgid "match.completed"
 msgstr "Matching completed"
 
@@ -2219,7 +2229,7 @@ msgstr "Search"
 
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:156
-#: src/pages/settings/SettingsPage.tsx:62
+#: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "Settings"
 
@@ -2234,55 +2244,67 @@ msgstr "Settings"
 #~ msgid "nav.trending"
 #~ msgstr "Trending"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:582
+#: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"
 msgstr "Advanced Settings"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:538
+#: src/pages/settings/NotificationSettingsPanel.tsx:540
 msgid "notifications.bot.airingReminder"
 msgstr "Airing Reminder"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:558
+#: src/pages/settings/NotificationSettingsPanel.tsx:560
 msgid "notifications.bot.airingReminder.desc"
 msgstr "Get notified before a watched anime airs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:553
+#: src/pages/settings/NotificationSettingsPanel.tsx:555
 msgid "notifications.bot.airingReminder.off"
 msgstr "Off"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:565
+#: src/pages/settings/NotificationSettingsPanel.tsx:594
 msgid "notifications.bot.allowedChatIds"
 msgstr "Allowed Chat IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:575
+#: src/pages/settings/NotificationSettingsPanel.tsx:604
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any chat."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:364
+#: src/pages/settings/NotificationSettingsPanel.tsx:366
 msgid "notifications.bot.allowedGuildIds"
 msgstr "Allowed Guild IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:374
+#: src/pages/settings/NotificationSettingsPanel.tsx:376
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any guild."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:352
+#: src/pages/settings/NotificationSettingsPanel.tsx:354
 msgid "notifications.bot.applicationId"
 msgstr "Application ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:340
+#: src/pages/settings/NotificationSettingsPanel.tsx:342
 msgid "notifications.bot.botToken"
 msgstr "Bot Token"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:567
+msgid "notifications.bot.dailyDigest"
+msgstr "notifications.bot.dailyDigest"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
+msgid "notifications.bot.dailyDigest.desc"
+msgstr "notifications.bot.dailyDigest.desc"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
+msgid "notifications.bot.dailyDigest.off"
+msgstr "notifications.bot.dailyDigest.off"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:502
+#: src/pages/settings/NotificationSettingsPanel.tsx:504
 msgid "notifications.bot.language"
 msgstr "Bot Language"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:515
+#: src/pages/settings/NotificationSettingsPanel.tsx:517
 msgid "notifications.bot.language.system"
 msgstr "Follow System"
 
@@ -2290,16 +2312,16 @@ msgstr "Follow System"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:616
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:597
+#: src/pages/settings/NotificationSettingsPanel.tsx:626
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "Optional. Leave blank to use long polling."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:317
-#: src/pages/settings/NotificationSettingsPanel.tsx:475
+#: src/pages/settings/NotificationSettingsPanel.tsx:319
+#: src/pages/settings/NotificationSettingsPanel.tsx:477
 msgid "notifications.botCommands"
 msgstr "Bot Commands"
 
@@ -2307,12 +2329,12 @@ msgstr "Bot Commands"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Enable interactive bot commands in Telegram or Discord"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:318
-#: src/pages/settings/NotificationSettingsPanel.tsx:476
+#: src/pages/settings/NotificationSettingsPanel.tsx:320
+#: src/pages/settings/NotificationSettingsPanel.tsx:478
 msgid "notifications.botCommands.shortDesc"
 msgstr "Interactive commands via /search, /schedule, etc."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:674
+#: src/pages/settings/NotificationSettingsPanel.tsx:703
 msgid "notifications.change"
 msgstr "Change"
 
@@ -2333,27 +2355,29 @@ msgstr "No notifications"
 msgid "notifications.emptyHint"
 msgstr "Notifications appear here..."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:721
+#: src/pages/settings/NotificationSettingsPanel.tsx:750
 msgid "notifications.enableProviderAbove"
 msgstr "Enable a provider above to configure event routing"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:739
+#: src/pages/settings/NotificationSettingsPanel.tsx:768
 msgid "notifications.event"
 msgstr "Event"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
-msgid "notifications.event.animeDailyDigest"
-msgstr "Daily Digest"
-
-msgid "notifications.event.animeDailyDigest.desc"
-msgstr "Daily summary of airing anime and recent downloads"
-
 msgid "notifications.event.animeAiring"
 msgstr "Anime Airing Reminder"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:77
 msgid "notifications.event.animeAiring.desc"
 msgstr "Reminder before a watched anime airs"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:80
+msgid "notifications.event.animeDailyDigest"
+msgstr "Daily Digest"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:81
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "Daily summary of airing anime and recent downloads"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:72
 msgid "notifications.event.authLogin"
@@ -2403,7 +2427,7 @@ msgstr "System Error"
 msgid "notifications.event.systemError.desc"
 msgstr "When a background job fails unexpectedly"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:730
+#: src/pages/settings/NotificationSettingsPanel.tsx:759
 msgid "notifications.eventRouting"
 msgstr "Event Routing"
 
@@ -2426,8 +2450,8 @@ msgstr "Library"
 msgid "notifications.filter.system"
 msgstr "System"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:947
-#: src/pages/settings/NotificationSettingsPanel.tsx:963
+#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1005
 msgid "notifications.intro"
 msgstr "Get notified on Discord, Telegram, or any webhook when downloads finish or something goes wrong."
 
@@ -2440,54 +2464,54 @@ msgstr "Load more"
 msgid "notifications.markAllRead"
 msgstr "Mark all read"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:111
+#: src/pages/settings/NotificationSettingsPanel.tsx:115
 msgid "notifications.providerStatus.error"
 msgstr "Error"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:110
+#: src/pages/settings/NotificationSettingsPanel.tsx:114
 msgid "notifications.providerStatus.ok"
 msgstr "Connected"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:115
+#: src/pages/settings/NotificationSettingsPanel.tsx:119
 msgid "notifications.providerStatus.unconfigured"
 msgstr "Not configured"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:278
-#: src/pages/settings/NotificationSettingsPanel.tsx:461
+#: src/pages/settings/NotificationSettingsPanel.tsx:280
+#: src/pages/settings/NotificationSettingsPanel.tsx:463
 msgid "notifications.pushNotifications"
 msgstr "Push Notifications"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:279
-#: src/pages/settings/NotificationSettingsPanel.tsx:462
+#: src/pages/settings/NotificationSettingsPanel.tsx:281
+#: src/pages/settings/NotificationSettingsPanel.tsx:464
 msgid "notifications.pushNotifications.desc"
 msgstr "Receive alerts for downloads and system events"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:663
+#: src/pages/settings/NotificationSettingsPanel.tsx:692
 msgid "notifications.secretIsSet"
 msgstr "Secret is set"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:658
+#: src/pages/settings/NotificationSettingsPanel.tsx:687
 msgid "notifications.secretPlaceholder"
 msgstr "Optional signing secret"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:973
+#: src/pages/settings/NotificationSettingsPanel.tsx:1015
 msgid "notifications.setupGuide"
 msgstr "Setup Guide"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:162
+#: src/pages/settings/NotificationSettingsPanel.tsx:165
 msgid "notifications.test"
 msgstr "Test"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:211
+#: src/pages/settings/NotificationSettingsPanel.tsx:213
 msgid "notifications.testBot"
 msgstr "Test Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:175
-#: src/pages/settings/NotificationSettingsPanel.tsx:224
+#: src/pages/settings/NotificationSettingsPanel.tsx:178
+#: src/pages/settings/NotificationSettingsPanel.tsx:226
 msgid "notifications.testFailed"
 msgstr "Test failed"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:174
+#: src/pages/settings/NotificationSettingsPanel.tsx:177
 msgid "notifications.testSuccess"
 msgstr "Sent!"
 
@@ -2788,7 +2812,7 @@ msgstr "Search anime to link..."
 msgid "ruleEditor.titleMatch"
 msgstr "Title Match"
 
-#: src/routes/__root.tsx:172
+#: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "Scan completed"
 
@@ -3295,45 +3319,45 @@ msgid "settings.integrations.description"
 msgstr "Connect external services and sync your data"
 
 #: src/pages/settings/AboutPanel.tsx:109
-#: src/pages/settings/SettingsPage.tsx:41
+#: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "About"
 
 #: src/pages/settings/AccountPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:38
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "Account"
 
-#: src/pages/settings/SettingsPage.tsx:39
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.backup"
 msgstr "settings.nav.backup"
 
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.download"
 msgstr "Download"
 
 #: src/pages/settings/GeneralPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/SettingsPage.tsx:32
 msgid "settings.nav.general"
 msgstr "General"
 
 #: src/pages/settings/IntegrationsPanel.tsx:330
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "Integrations"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:944
-#: src/pages/settings/NotificationSettingsPanel.tsx:960
-#: src/pages/settings/SettingsPage.tsx:35
+#: src/pages/settings/NotificationSettingsPanel.tsx:986
+#: src/pages/settings/NotificationSettingsPanel.tsx:1002
+#: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.notifications"
 msgstr "Notifications"
 
-#: src/pages/settings/PlayerPanel.tsx:240
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "Player"
 
-#: src/pages/settings/SettingsPage.tsx:40
+#: src/pages/settings/SettingsPage.tsx:39
 #: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "Storage"
@@ -3353,7 +3377,7 @@ msgstr "settings.normal"
 msgid "settings.off"
 msgstr "settings.off"
 
-#: src/pages/settings/SettingsPage.tsx:76
+#: src/pages/settings/SettingsPage.tsx:79
 msgid "settings.pageTitle"
 msgstr "Settings"
 
@@ -3362,123 +3386,123 @@ msgstr "Settings"
 msgid "settings.playbackSpeed"
 msgstr "settings.playbackSpeed"
 
-#: src/pages/settings/PlayerPanel.tsx:562
+#: src/pages/settings/PlayerPanel.tsx:561
 msgid "settings.player.autoNext"
 msgstr "settings.player.autoNext"
 
-#: src/pages/settings/PlayerPanel.tsx:582
+#: src/pages/settings/PlayerPanel.tsx:581
 msgid "settings.player.autoSkipEd"
 msgstr "settings.player.autoSkipEd"
 
-#: src/pages/settings/PlayerPanel.tsx:572
+#: src/pages/settings/PlayerPanel.tsx:571
 msgid "settings.player.autoSkipOp"
 msgstr "settings.player.autoSkipOp"
 
-#: src/pages/settings/PlayerPanel.tsx:594
+#: src/pages/settings/PlayerPanel.tsx:593
 msgid "settings.player.backupNote"
 msgstr "settings.player.backupNote"
 
-#: src/pages/settings/PlayerPanel.tsx:245
+#: src/pages/settings/PlayerPanel.tsx:244
 msgid "settings.player.danmaku"
 msgstr "Danmaku"
 
-#: src/pages/settings/PlayerPanel.tsx:250
+#: src/pages/settings/PlayerPanel.tsx:249
 msgid "settings.player.danmakuEnabled"
 msgstr "Danmaku enabled by default"
 
-#: src/pages/settings/PlayerPanel.tsx:290
+#: src/pages/settings/PlayerPanel.tsx:289
 msgid "settings.player.danmakuFontSize"
 msgstr "Danmaku font size"
 
-#: src/pages/settings/PlayerPanel.tsx:264
+#: src/pages/settings/PlayerPanel.tsx:263
 msgid "settings.player.danmakuOpacity"
 msgstr "Danmaku opacity"
 
-#: src/pages/settings/PlayerPanel.tsx:302
+#: src/pages/settings/PlayerPanel.tsx:301
 msgid "settings.player.danmakuSpeed"
 msgstr "Danmaku speed"
 
-#: src/pages/settings/PlayerPanel.tsx:530
+#: src/pages/settings/PlayerPanel.tsx:529
 msgid "settings.player.gestureEnabled"
 msgstr "settings.player.gestureEnabled"
 
-#: src/pages/settings/PlayerPanel.tsx:526
+#: src/pages/settings/PlayerPanel.tsx:525
 msgid "settings.player.gestures"
 msgstr "settings.player.gestures"
 
-#: src/pages/settings/PlayerPanel.tsx:541
+#: src/pages/settings/PlayerPanel.tsx:540
 msgid "settings.player.gestureSensitivity"
 msgstr "settings.player.gestureSensitivity"
 
-#: src/pages/settings/PlayerPanel.tsx:558
+#: src/pages/settings/PlayerPanel.tsx:557
 msgid "settings.player.playbackDefaults"
 msgstr "settings.player.playbackDefaults"
 
-#: src/pages/settings/PlayerPanel.tsx:159
+#: src/pages/settings/PlayerPanel.tsx:158
 msgid "settings.player.speed.fast"
 msgstr "Fast"
 
-#: src/pages/settings/PlayerPanel.tsx:158
+#: src/pages/settings/PlayerPanel.tsx:157
 msgid "settings.player.speed.normal"
 msgstr "Normal"
 
-#: src/pages/settings/PlayerPanel.tsx:157
+#: src/pages/settings/PlayerPanel.tsx:156
 msgid "settings.player.speed.slow"
 msgstr "Slow"
 
-#: src/pages/settings/PlayerPanel.tsx:241
+#: src/pages/settings/PlayerPanel.tsx:240
 msgid "settings.player.subtitle"
 msgstr "Danmaku and playback preferences"
 
-#: src/pages/settings/PlayerPanel.tsx:416
+#: src/pages/settings/PlayerPanel.tsx:415
 msgid "settings.player.subtitleBgOpacity"
 msgstr "settings.player.subtitleBgOpacity"
 
-#: src/pages/settings/PlayerPanel.tsx:433
+#: src/pages/settings/PlayerPanel.tsx:432
 msgid "settings.player.subtitleBorder"
 msgstr "settings.player.subtitleBorder"
 
-#: src/pages/settings/PlayerPanel.tsx:370
+#: src/pages/settings/PlayerPanel.tsx:369
 msgid "settings.player.subtitleColor"
 msgstr "settings.player.subtitleColor"
 
-#: src/pages/settings/PlayerPanel.tsx:496
+#: src/pages/settings/PlayerPanel.tsx:495
 msgid "settings.player.subtitleFade"
 msgstr "settings.player.subtitleFade"
 
-#: src/pages/settings/PlayerPanel.tsx:334
+#: src/pages/settings/PlayerPanel.tsx:333
 msgid "settings.player.subtitleFont"
 msgstr "settings.player.subtitleFont"
 
-#: src/pages/settings/PlayerPanel.tsx:353
+#: src/pages/settings/PlayerPanel.tsx:352
 msgid "settings.player.subtitleFontSize"
 msgstr "settings.player.subtitleFontSize"
 
-#: src/pages/settings/PlayerPanel.tsx:466
+#: src/pages/settings/PlayerPanel.tsx:465
 msgid "settings.player.subtitlePosition"
 msgstr "settings.player.subtitlePosition"
 
-#: src/pages/settings/PlayerPanel.tsx:322
+#: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.subtitlePreset"
 msgstr "settings.player.subtitlePreset"
 
-#: src/pages/settings/PlayerPanel.tsx:518
+#: src/pages/settings/PlayerPanel.tsx:517
 msgid "settings.player.subtitlePreview"
 msgstr "settings.player.subtitlePreview"
 
-#: src/pages/settings/PlayerPanel.tsx:507
+#: src/pages/settings/PlayerPanel.tsx:506
 msgid "settings.player.subtitleRespectAss"
 msgstr "settings.player.subtitleRespectAss"
 
-#: src/pages/settings/PlayerPanel.tsx:479
+#: src/pages/settings/PlayerPanel.tsx:478
 msgid "settings.player.subtitleSafeMargin"
 msgstr "settings.player.subtitleSafeMargin"
 
-#: src/pages/settings/PlayerPanel.tsx:447
+#: src/pages/settings/PlayerPanel.tsx:446
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "settings.player.subtitleStrokeWidth"
 
-#: src/pages/settings/PlayerPanel.tsx:317
+#: src/pages/settings/PlayerPanel.tsx:316
 msgid "settings.player.subtitleStyle"
 msgstr "settings.player.subtitleStyle"
 
@@ -3510,7 +3534,6 @@ msgstr "settings.saturation"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "Save"
 
@@ -3521,7 +3544,7 @@ msgstr "Save"
 #: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
-#: src/pages/settings/PlayerPanel.tsx:196
+#: src/pages/settings/PlayerPanel.tsx:195
 msgid "settings.saved"
 msgstr "Saved"
 
@@ -3531,7 +3554,7 @@ msgstr "Saved"
 #: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
-#: src/pages/settings/PlayerPanel.tsx:199
+#: src/pages/settings/PlayerPanel.tsx:198
 msgid "settings.saveFailed"
 msgstr "Save failed"
 
@@ -3539,7 +3562,7 @@ msgstr "Save failed"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:1016
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "Saving…"
 
@@ -3880,7 +3903,7 @@ msgstr "In progress"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:627
+#: src/pages/WatchPage.tsx:626
 msgid "watch.notFound"
 msgstr "Anime not found"
 

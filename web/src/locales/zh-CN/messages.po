@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:105
+#: src/pages/WatchPage.tsx:104
 msgid "watch.resumeFrom"
 msgstr "从此处继续"
 
@@ -292,7 +292,7 @@ msgstr "更新中..."
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:862
+#: src/pages/AnimeDetailPage.tsx:846
 msgid "anime.characters"
 msgstr "角色"
 
@@ -300,20 +300,20 @@ msgstr "角色"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:995
+#: src/pages/AnimeDetailPage.tsx:979
 msgid "anime.comments"
 msgstr "评论"
 
-#: src/pages/AnimeDetailPage.tsx:731
+#: src/pages/AnimeDetailPage.tsx:724
 msgid "anime.continueWatching"
 msgstr "继续观看"
 
-#: src/pages/AnimeDetailPage.tsx:735
+#: src/pages/AnimeDetailPage.tsx:727
 msgid "anime.episode"
 msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:786
+#: src/pages/AnimeDetailPage.tsx:770
 msgid "anime.episodes"
 msgstr "集数"
 
@@ -345,15 +345,15 @@ msgstr "集可播放"
 msgid "anime.ratings"
 msgstr "评分"
 
-#: src/pages/AnimeDetailPage.tsx:909
+#: src/pages/AnimeDetailPage.tsx:893
 msgid "anime.recommendations"
 msgstr "推荐"
 
-#: src/pages/AnimeDetailPage.tsx:883
+#: src/pages/AnimeDetailPage.tsx:867
 msgid "anime.relations"
 msgstr "相关作品"
 
-#: src/pages/AnimeDetailPage.tsx:947
+#: src/pages/AnimeDetailPage.tsx:931
 msgid "anime.reviews"
 msgstr "评论"
 
@@ -377,11 +377,11 @@ msgstr "已追番"
 #~ msgstr "简介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:832
+#: src/pages/AnimeDetailPage.tsx:816
 msgid "anime.trailer"
 msgstr "预告片"
 
-#: src/pages/AnimeDetailPage.tsx:868
+#: src/pages/AnimeDetailPage.tsx:852
 msgid "anime.voiceActor"
 msgstr "声优"
 
@@ -1149,7 +1149,7 @@ msgstr "已复制"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:788
+#: src/pages/AnimeDetailPage.tsx:772
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
@@ -1157,6 +1157,7 @@ msgstr "集"
 
 #: src/pages/AnimeDetailPage.tsx:312
 #: src/pages/LibraryDetailPage.tsx:1233
+#: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "加载失败"
 
@@ -1174,6 +1175,7 @@ msgstr "分钟"
 #: src/pages/AnimeDetailPage.tsx:321
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
+#: src/routes/__root.tsx:60
 msgid "common.retry"
 msgstr "重试"
 
@@ -1251,6 +1253,14 @@ msgstr "第 "
 #: src/components/EpisodeListItem.tsx:256
 msgid "episode.suffix"
 msgstr " 集"
+
+#: src/routes/__root.tsx:45
+msgid "error.serverUnavailable"
+msgstr "无法连接服务器"
+
+#: src/routes/__root.tsx:50
+msgid "error.serverUnavailableHint"
+msgstr "请检查服务器是否运行并重试"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -2152,7 +2162,7 @@ msgstr "连接到 WebDAV 服务器"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:176
+#: src/routes/__root.tsx:215
 msgid "match.completed"
 msgstr "匹配完成"
 
@@ -2214,7 +2224,7 @@ msgstr "搜索"
 
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:156
-#: src/pages/settings/SettingsPage.tsx:62
+#: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "设置"
 
@@ -2229,55 +2239,67 @@ msgstr "设置"
 #~ msgid "nav.trending"
 #~ msgstr "热门"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:582
+#: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"
 msgstr "高级设置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:538
+#: src/pages/settings/NotificationSettingsPanel.tsx:540
 msgid "notifications.bot.airingReminder"
 msgstr "播出提醒"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:558
+#: src/pages/settings/NotificationSettingsPanel.tsx:560
 msgid "notifications.bot.airingReminder.desc"
 msgstr "关注的番剧播出前推送提醒"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:553
+#: src/pages/settings/NotificationSettingsPanel.tsx:555
 msgid "notifications.bot.airingReminder.off"
 msgstr "关闭"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:565
+#: src/pages/settings/NotificationSettingsPanel.tsx:594
 msgid "notifications.bot.allowedChatIds"
 msgstr "允许的聊天 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:575
+#: src/pages/settings/NotificationSettingsPanel.tsx:604
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "用逗号分隔。留空则允许任何聊天。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:364
+#: src/pages/settings/NotificationSettingsPanel.tsx:366
 msgid "notifications.bot.allowedGuildIds"
 msgstr "允许的服务器 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:374
+#: src/pages/settings/NotificationSettingsPanel.tsx:376
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "用逗号分隔。留空则允许任何服务器。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:352
+#: src/pages/settings/NotificationSettingsPanel.tsx:354
 msgid "notifications.bot.applicationId"
 msgstr "应用程序 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:340
+#: src/pages/settings/NotificationSettingsPanel.tsx:342
 msgid "notifications.bot.botToken"
 msgstr "机器人令牌"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:567
+msgid "notifications.bot.dailyDigest"
+msgstr ""
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
+msgid "notifications.bot.dailyDigest.desc"
+msgstr ""
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
+msgid "notifications.bot.dailyDigest.off"
+msgstr ""
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord 机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:502
+#: src/pages/settings/NotificationSettingsPanel.tsx:504
 msgid "notifications.bot.language"
 msgstr "机器人语言"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:515
+#: src/pages/settings/NotificationSettingsPanel.tsx:517
 msgid "notifications.bot.language.system"
 msgstr "跟随系统"
 
@@ -2285,16 +2307,16 @@ msgstr "跟随系统"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:616
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:597
+#: src/pages/settings/NotificationSettingsPanel.tsx:626
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "可选。留空以使用长轮询。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:317
-#: src/pages/settings/NotificationSettingsPanel.tsx:475
+#: src/pages/settings/NotificationSettingsPanel.tsx:319
+#: src/pages/settings/NotificationSettingsPanel.tsx:477
 msgid "notifications.botCommands"
 msgstr "机器人命令"
 
@@ -2302,12 +2324,12 @@ msgstr "机器人命令"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "在 Telegram 或 Discord 中启用交互式机器人命令"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:318
-#: src/pages/settings/NotificationSettingsPanel.tsx:476
+#: src/pages/settings/NotificationSettingsPanel.tsx:320
+#: src/pages/settings/NotificationSettingsPanel.tsx:478
 msgid "notifications.botCommands.shortDesc"
 msgstr "通过 /search、/schedule 等命令互动"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:674
+#: src/pages/settings/NotificationSettingsPanel.tsx:703
 msgid "notifications.change"
 msgstr "更改"
 
@@ -2328,27 +2350,29 @@ msgstr "暂无通知"
 msgid "notifications.emptyHint"
 msgstr "下载完成或发现新剧集时，通知会显示在这里。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:721
+#: src/pages/settings/NotificationSettingsPanel.tsx:750
 msgid "notifications.enableProviderAbove"
 msgstr "启用上方的提供商以配置事件路由"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:739
+#: src/pages/settings/NotificationSettingsPanel.tsx:768
 msgid "notifications.event"
 msgstr "事件"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
-msgid "notifications.event.animeDailyDigest"
-msgstr "每日摘要"
-
-msgid "notifications.event.animeDailyDigest.desc"
-msgstr "每日放送动画和近期下载的汇总"
-
 msgid "notifications.event.animeAiring"
 msgstr "番剧放送提醒"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:77
 msgid "notifications.event.animeAiring.desc"
 msgstr "关注的番剧放送前提醒"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:80
+msgid "notifications.event.animeDailyDigest"
+msgstr "每日摘要"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:81
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "每日放送动画和近期下载的汇总"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:72
 msgid "notifications.event.authLogin"
@@ -2398,7 +2422,7 @@ msgstr "系统错误"
 msgid "notifications.event.systemError.desc"
 msgstr "后台任务意外失败时"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:730
+#: src/pages/settings/NotificationSettingsPanel.tsx:759
 msgid "notifications.eventRouting"
 msgstr "事件路由"
 
@@ -2421,8 +2445,8 @@ msgstr "媒体库"
 msgid "notifications.filter.system"
 msgstr "系统"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:947
-#: src/pages/settings/NotificationSettingsPanel.tsx:963
+#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1005
 msgid "notifications.intro"
 msgstr "当下载完成或出现问题时，通过Discord、Telegram或Webhook接收通知。"
 
@@ -2435,54 +2459,54 @@ msgstr "加载更多"
 msgid "notifications.markAllRead"
 msgstr "全部已读"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:111
+#: src/pages/settings/NotificationSettingsPanel.tsx:115
 msgid "notifications.providerStatus.error"
 msgstr "错误"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:110
+#: src/pages/settings/NotificationSettingsPanel.tsx:114
 msgid "notifications.providerStatus.ok"
 msgstr "已连接"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:115
+#: src/pages/settings/NotificationSettingsPanel.tsx:119
 msgid "notifications.providerStatus.unconfigured"
 msgstr "未配置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:278
-#: src/pages/settings/NotificationSettingsPanel.tsx:461
+#: src/pages/settings/NotificationSettingsPanel.tsx:280
+#: src/pages/settings/NotificationSettingsPanel.tsx:463
 msgid "notifications.pushNotifications"
 msgstr "推送通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:279
-#: src/pages/settings/NotificationSettingsPanel.tsx:462
+#: src/pages/settings/NotificationSettingsPanel.tsx:281
+#: src/pages/settings/NotificationSettingsPanel.tsx:464
 msgid "notifications.pushNotifications.desc"
 msgstr "接收下载和系统事件的通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:663
+#: src/pages/settings/NotificationSettingsPanel.tsx:692
 msgid "notifications.secretIsSet"
 msgstr "密钥已设置"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:658
+#: src/pages/settings/NotificationSettingsPanel.tsx:687
 msgid "notifications.secretPlaceholder"
 msgstr "可选签名密钥"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:973
+#: src/pages/settings/NotificationSettingsPanel.tsx:1015
 msgid "notifications.setupGuide"
 msgstr "设置指南"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:162
+#: src/pages/settings/NotificationSettingsPanel.tsx:165
 msgid "notifications.test"
 msgstr "测试"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:211
+#: src/pages/settings/NotificationSettingsPanel.tsx:213
 msgid "notifications.testBot"
 msgstr "测试机器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:175
-#: src/pages/settings/NotificationSettingsPanel.tsx:224
+#: src/pages/settings/NotificationSettingsPanel.tsx:178
+#: src/pages/settings/NotificationSettingsPanel.tsx:226
 msgid "notifications.testFailed"
 msgstr "测试失败"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:174
+#: src/pages/settings/NotificationSettingsPanel.tsx:177
 msgid "notifications.testSuccess"
 msgstr "已发送！"
 
@@ -2783,7 +2807,7 @@ msgstr "搜索动画以关联..."
 msgid "ruleEditor.titleMatch"
 msgstr "标题匹配"
 
-#: src/routes/__root.tsx:172
+#: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "扫描完成"
 
@@ -3290,45 +3314,45 @@ msgid "settings.integrations.description"
 msgstr "连接外部服务并同步数据"
 
 #: src/pages/settings/AboutPanel.tsx:109
-#: src/pages/settings/SettingsPage.tsx:41
+#: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "关于"
 
 #: src/pages/settings/AccountPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:38
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "账号"
 
-#: src/pages/settings/SettingsPage.tsx:39
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.backup"
 msgstr "备份"
 
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.download"
 msgstr "下载"
 
 #: src/pages/settings/GeneralPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/SettingsPage.tsx:32
 msgid "settings.nav.general"
 msgstr "通用"
 
 #: src/pages/settings/IntegrationsPanel.tsx:330
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "集成"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:944
-#: src/pages/settings/NotificationSettingsPanel.tsx:960
-#: src/pages/settings/SettingsPage.tsx:35
+#: src/pages/settings/NotificationSettingsPanel.tsx:986
+#: src/pages/settings/NotificationSettingsPanel.tsx:1002
+#: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.notifications"
 msgstr "通知"
 
-#: src/pages/settings/PlayerPanel.tsx:240
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "播放器"
 
-#: src/pages/settings/SettingsPage.tsx:40
+#: src/pages/settings/SettingsPage.tsx:39
 #: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "存储空间"
@@ -3348,7 +3372,7 @@ msgstr "正常"
 msgid "settings.off"
 msgstr "关闭"
 
-#: src/pages/settings/SettingsPage.tsx:76
+#: src/pages/settings/SettingsPage.tsx:79
 msgid "settings.pageTitle"
 msgstr "设置"
 
@@ -3357,123 +3381,123 @@ msgstr "设置"
 msgid "settings.playbackSpeed"
 msgstr "播放速度"
 
-#: src/pages/settings/PlayerPanel.tsx:562
+#: src/pages/settings/PlayerPanel.tsx:561
 msgid "settings.player.autoNext"
 msgstr "自动播放下一集"
 
-#: src/pages/settings/PlayerPanel.tsx:582
+#: src/pages/settings/PlayerPanel.tsx:581
 msgid "settings.player.autoSkipEd"
 msgstr "自动跳过片尾"
 
-#: src/pages/settings/PlayerPanel.tsx:572
+#: src/pages/settings/PlayerPanel.tsx:571
 msgid "settings.player.autoSkipOp"
 msgstr "自动跳过片头"
 
-#: src/pages/settings/PlayerPanel.tsx:594
+#: src/pages/settings/PlayerPanel.tsx:593
 msgid "settings.player.backupNote"
 msgstr "播放器设置会自动备份"
 
-#: src/pages/settings/PlayerPanel.tsx:245
+#: src/pages/settings/PlayerPanel.tsx:244
 msgid "settings.player.danmaku"
 msgstr "弹幕"
 
-#: src/pages/settings/PlayerPanel.tsx:250
+#: src/pages/settings/PlayerPanel.tsx:249
 msgid "settings.player.danmakuEnabled"
 msgstr "显示弹幕"
 
-#: src/pages/settings/PlayerPanel.tsx:290
+#: src/pages/settings/PlayerPanel.tsx:289
 msgid "settings.player.danmakuFontSize"
 msgstr "字体大小"
 
-#: src/pages/settings/PlayerPanel.tsx:264
+#: src/pages/settings/PlayerPanel.tsx:263
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:302
+#: src/pages/settings/PlayerPanel.tsx:301
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:530
+#: src/pages/settings/PlayerPanel.tsx:529
 msgid "settings.player.gestureEnabled"
 msgstr "启用手势"
 
-#: src/pages/settings/PlayerPanel.tsx:526
+#: src/pages/settings/PlayerPanel.tsx:525
 msgid "settings.player.gestures"
 msgstr "手势"
 
-#: src/pages/settings/PlayerPanel.tsx:541
+#: src/pages/settings/PlayerPanel.tsx:540
 msgid "settings.player.gestureSensitivity"
 msgstr "手势灵敏度"
 
-#: src/pages/settings/PlayerPanel.tsx:558
+#: src/pages/settings/PlayerPanel.tsx:557
 msgid "settings.player.playbackDefaults"
 msgstr "播放默认值"
 
-#: src/pages/settings/PlayerPanel.tsx:159
+#: src/pages/settings/PlayerPanel.tsx:158
 msgid "settings.player.speed.fast"
 msgstr "快"
 
-#: src/pages/settings/PlayerPanel.tsx:158
+#: src/pages/settings/PlayerPanel.tsx:157
 msgid "settings.player.speed.normal"
 msgstr "正常"
 
-#: src/pages/settings/PlayerPanel.tsx:157
+#: src/pages/settings/PlayerPanel.tsx:156
 msgid "settings.player.speed.slow"
 msgstr "慢"
 
-#: src/pages/settings/PlayerPanel.tsx:241
+#: src/pages/settings/PlayerPanel.tsx:240
 msgid "settings.player.subtitle"
 msgstr "弹幕与播放偏好设置"
 
-#: src/pages/settings/PlayerPanel.tsx:416
+#: src/pages/settings/PlayerPanel.tsx:415
 msgid "settings.player.subtitleBgOpacity"
 msgstr "字幕背景透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:433
+#: src/pages/settings/PlayerPanel.tsx:432
 msgid "settings.player.subtitleBorder"
 msgstr "字幕边框"
 
-#: src/pages/settings/PlayerPanel.tsx:370
+#: src/pages/settings/PlayerPanel.tsx:369
 msgid "settings.player.subtitleColor"
 msgstr "字幕颜色"
 
-#: src/pages/settings/PlayerPanel.tsx:496
+#: src/pages/settings/PlayerPanel.tsx:495
 msgid "settings.player.subtitleFade"
 msgstr "字幕淡入淡出"
 
-#: src/pages/settings/PlayerPanel.tsx:334
+#: src/pages/settings/PlayerPanel.tsx:333
 msgid "settings.player.subtitleFont"
 msgstr "字幕字体"
 
-#: src/pages/settings/PlayerPanel.tsx:353
+#: src/pages/settings/PlayerPanel.tsx:352
 msgid "settings.player.subtitleFontSize"
 msgstr "字幕字体大小"
 
-#: src/pages/settings/PlayerPanel.tsx:466
+#: src/pages/settings/PlayerPanel.tsx:465
 msgid "settings.player.subtitlePosition"
 msgstr "字幕位置"
 
-#: src/pages/settings/PlayerPanel.tsx:322
+#: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.subtitlePreset"
 msgstr "字幕预设"
 
-#: src/pages/settings/PlayerPanel.tsx:518
+#: src/pages/settings/PlayerPanel.tsx:517
 msgid "settings.player.subtitlePreview"
 msgstr "字幕预览"
 
-#: src/pages/settings/PlayerPanel.tsx:507
+#: src/pages/settings/PlayerPanel.tsx:506
 msgid "settings.player.subtitleRespectAss"
 msgstr "保留 ASS 样式"
 
-#: src/pages/settings/PlayerPanel.tsx:479
+#: src/pages/settings/PlayerPanel.tsx:478
 msgid "settings.player.subtitleSafeMargin"
 msgstr "安全边距"
 
-#: src/pages/settings/PlayerPanel.tsx:447
+#: src/pages/settings/PlayerPanel.tsx:446
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "描边宽度"
 
-#: src/pages/settings/PlayerPanel.tsx:317
+#: src/pages/settings/PlayerPanel.tsx:316
 msgid "settings.player.subtitleStyle"
 msgstr "字幕样式"
 
@@ -3505,7 +3529,6 @@ msgstr "饱和度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "保存"
 
@@ -3516,7 +3539,7 @@ msgstr "保存"
 #: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
-#: src/pages/settings/PlayerPanel.tsx:196
+#: src/pages/settings/PlayerPanel.tsx:195
 msgid "settings.saved"
 msgstr "已保存"
 
@@ -3526,7 +3549,7 @@ msgstr "已保存"
 #: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
-#: src/pages/settings/PlayerPanel.tsx:199
+#: src/pages/settings/PlayerPanel.tsx:198
 msgid "settings.saveFailed"
 msgstr "保存失败"
 
@@ -3534,7 +3557,7 @@ msgstr "保存失败"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:1016
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "保存中…"
 
@@ -3867,7 +3890,7 @@ msgstr "观看中"
 #~ msgid "watch.mediaFile"
 #~ msgstr "媒体文件"
 
-#: src/pages/WatchPage.tsx:627
+#: src/pages/WatchPage.tsx:626
 msgid "watch.notFound"
 msgstr "找不到动画"
 

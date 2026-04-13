@@ -24,25 +24,42 @@ interface UserResponse {
 
 const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS === 'true';
 
-function ServerUnavailable() {
+function RootErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  const { i18n } = useLingui();
+  const isNetworkError = error.message === 'Failed to fetch' || error.name === 'TypeError';
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
       <div className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/40">
-          <path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" strokeLinecap="round" strokeLinejoin="round" />
+          {isNetworkError ? (
+            <path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" strokeLinecap="round" strokeLinejoin="round" />
+          ) : (
+            <path d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" strokeLinecap="round" strokeLinejoin="round" />
+          )}
         </svg>
       </div>
       <div>
-        <p className="text-[15px] font-medium text-white/70">無法連接伺服器</p>
-        <p className="text-[13px] text-white/30 mt-1">Server is unreachable</p>
+        <p className="text-[15px] font-medium text-white/70">
+          {isNetworkError
+            ? i18n._(msg`error.serverUnavailable`)
+            : i18n._(msg`common.loadFailed`)}
+        </p>
+        {isNetworkError && (
+          <p className="text-[13px] text-white/30 mt-1">
+            {i18n._(msg`error.serverUnavailableHint`)}
+          </p>
+        )}
       </div>
-      <button
-        type="button"
-        onClick={() => window.location.reload()}
-        className="mt-2 px-4 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-[13px] text-white/60 hover:text-white/80 transition-colors cursor-pointer"
-      >
-        重試
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={reset}
+          className="px-4 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-[13px] text-white/60 hover:text-white/80 transition-colors cursor-pointer"
+        >
+          {i18n._(msg`common.retry`)}
+        </button>
+      </div>
     </div>
   );
 }
@@ -263,6 +280,6 @@ export const Route = createRootRoute({
     }
   },
   pendingComponent: SplashScreen,
-  errorComponent: ServerUnavailable,
+  errorComponent: RootErrorComponent,
   component: RootLayout,
 });

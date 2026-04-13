@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:105
+#: src/pages/WatchPage.tsx:104
 msgid "watch.resumeFrom"
 msgstr "ここから再開"
 
@@ -294,7 +294,7 @@ msgstr "更新中..."
 msgid "anime.addToCollection"
 msgstr "コレクションに追加"
 
-#: src/pages/AnimeDetailPage.tsx:862
+#: src/pages/AnimeDetailPage.tsx:846
 msgid "anime.characters"
 msgstr "キャラクター"
 
@@ -302,20 +302,20 @@ msgstr "キャラクター"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:995
+#: src/pages/AnimeDetailPage.tsx:979
 msgid "anime.comments"
 msgstr "コメント"
 
-#: src/pages/AnimeDetailPage.tsx:731
+#: src/pages/AnimeDetailPage.tsx:724
 msgid "anime.continueWatching"
 msgstr "視聴を続ける"
 
-#: src/pages/AnimeDetailPage.tsx:735
+#: src/pages/AnimeDetailPage.tsx:727
 msgid "anime.episode"
 msgstr "話"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:786
+#: src/pages/AnimeDetailPage.tsx:770
 msgid "anime.episodes"
 msgstr "エピソード"
 
@@ -347,15 +347,15 @@ msgstr "話再生可能"
 msgid "anime.ratings"
 msgstr "評価"
 
-#: src/pages/AnimeDetailPage.tsx:909
+#: src/pages/AnimeDetailPage.tsx:893
 msgid "anime.recommendations"
 msgstr "おすすめ"
 
-#: src/pages/AnimeDetailPage.tsx:883
+#: src/pages/AnimeDetailPage.tsx:867
 msgid "anime.relations"
 msgstr "関連作品"
 
-#: src/pages/AnimeDetailPage.tsx:947
+#: src/pages/AnimeDetailPage.tsx:931
 msgid "anime.reviews"
 msgstr "レビュー"
 
@@ -379,11 +379,11 @@ msgstr "追跡中"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:832
+#: src/pages/AnimeDetailPage.tsx:816
 msgid "anime.trailer"
 msgstr "予告編"
 
-#: src/pages/AnimeDetailPage.tsx:868
+#: src/pages/AnimeDetailPage.tsx:852
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -1151,7 +1151,7 @@ msgstr "コピーしました"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:788
+#: src/pages/AnimeDetailPage.tsx:772
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
@@ -1159,6 +1159,7 @@ msgstr "話"
 
 #: src/pages/AnimeDetailPage.tsx:312
 #: src/pages/LibraryDetailPage.tsx:1233
+#: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "読み込みに失敗しました"
 
@@ -1176,6 +1177,7 @@ msgstr "分"
 #: src/pages/AnimeDetailPage.tsx:321
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
+#: src/routes/__root.tsx:60
 msgid "common.retry"
 msgstr "リトライ"
 
@@ -1253,6 +1255,14 @@ msgstr "第"
 #: src/components/EpisodeListItem.tsx:256
 msgid "episode.suffix"
 msgstr "話"
+
+#: src/routes/__root.tsx:45
+msgid "error.serverUnavailable"
+msgstr "サーバーに接続できません"
+
+#: src/routes/__root.tsx:50
+msgid "error.serverUnavailableHint"
+msgstr "サーバーが起動しているか確認してください"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -2154,7 +2164,7 @@ msgstr "WebDAV サーバーに接続"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:176
+#: src/routes/__root.tsx:215
 msgid "match.completed"
 msgstr "マッチング完了"
 
@@ -2216,7 +2226,7 @@ msgstr "検索"
 
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:156
-#: src/pages/settings/SettingsPage.tsx:62
+#: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "設定"
 
@@ -2231,55 +2241,67 @@ msgstr "設定"
 #~ msgid "nav.trending"
 #~ msgstr "トレンド"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:582
+#: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"
 msgstr "詳細設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:538
+#: src/pages/settings/NotificationSettingsPanel.tsx:540
 msgid "notifications.bot.airingReminder"
 msgstr "放送リマインダー"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:558
+#: src/pages/settings/NotificationSettingsPanel.tsx:560
 msgid "notifications.bot.airingReminder.desc"
 msgstr "視聴中のアニメ放送前に通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:553
+#: src/pages/settings/NotificationSettingsPanel.tsx:555
 msgid "notifications.bot.airingReminder.off"
 msgstr "オフ"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:565
+#: src/pages/settings/NotificationSettingsPanel.tsx:594
 msgid "notifications.bot.allowedChatIds"
 msgstr "許可するチャット ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:575
+#: src/pages/settings/NotificationSettingsPanel.tsx:604
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "カンマ区切り。空欄の場合はすべてのチャットを許可します。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:364
+#: src/pages/settings/NotificationSettingsPanel.tsx:366
 msgid "notifications.bot.allowedGuildIds"
 msgstr "許可するギルド ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:374
+#: src/pages/settings/NotificationSettingsPanel.tsx:376
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "カンマ区切り。空欄の場合はすべてのギルドを許可します。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:352
+#: src/pages/settings/NotificationSettingsPanel.tsx:354
 msgid "notifications.bot.applicationId"
 msgstr "アプリケーション ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:340
+#: src/pages/settings/NotificationSettingsPanel.tsx:342
 msgid "notifications.bot.botToken"
 msgstr "ボットトークン"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:567
+msgid "notifications.bot.dailyDigest"
+msgstr ""
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
+msgid "notifications.bot.dailyDigest.desc"
+msgstr ""
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
+msgid "notifications.bot.dailyDigest.off"
+msgstr ""
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord ボット"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:502
+#: src/pages/settings/NotificationSettingsPanel.tsx:504
 msgid "notifications.bot.language"
 msgstr "ボットの言語"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:515
+#: src/pages/settings/NotificationSettingsPanel.tsx:517
 msgid "notifications.bot.language.system"
 msgstr "システムに従う"
 
@@ -2287,16 +2309,16 @@ msgstr "システムに従う"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram ボット"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:616
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:597
+#: src/pages/settings/NotificationSettingsPanel.tsx:626
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "任意。空欄の場合はロングポーリングを使用します。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:317
-#: src/pages/settings/NotificationSettingsPanel.tsx:475
+#: src/pages/settings/NotificationSettingsPanel.tsx:319
+#: src/pages/settings/NotificationSettingsPanel.tsx:477
 msgid "notifications.botCommands"
 msgstr "ボットコマンド"
 
@@ -2304,12 +2326,12 @@ msgstr "ボットコマンド"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Telegram または Discord でインタラクティブなボットコマンドを有効にします"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:318
-#: src/pages/settings/NotificationSettingsPanel.tsx:476
+#: src/pages/settings/NotificationSettingsPanel.tsx:320
+#: src/pages/settings/NotificationSettingsPanel.tsx:478
 msgid "notifications.botCommands.shortDesc"
 msgstr "/search、/schedule などのコマンドで操作"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:674
+#: src/pages/settings/NotificationSettingsPanel.tsx:703
 msgid "notifications.change"
 msgstr "変更"
 
@@ -2330,27 +2352,29 @@ msgstr "通知なし"
 msgid "notifications.emptyHint"
 msgstr "ダウンロード完了や新エピソード発見時に通知が表示されます。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:721
+#: src/pages/settings/NotificationSettingsPanel.tsx:750
 msgid "notifications.enableProviderAbove"
 msgstr "上でプロバイダを有効にしてイベントルーティングを設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:739
+#: src/pages/settings/NotificationSettingsPanel.tsx:768
 msgid "notifications.event"
 msgstr "イベント"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
-msgid "notifications.event.animeDailyDigest"
-msgstr "デイリーダイジェスト"
-
-msgid "notifications.event.animeDailyDigest.desc"
-msgstr "放送中のアニメと最近のダウンロードの日次まとめ"
-
 msgid "notifications.event.animeAiring"
 msgstr "放送リマインダー"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:77
 msgid "notifications.event.animeAiring.desc"
 msgstr "視聴中のアニメ放送前にリマインダー"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:80
+msgid "notifications.event.animeDailyDigest"
+msgstr "デイリーダイジェスト"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:81
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "放送中のアニメと最近のダウンロードの日次まとめ"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:72
 msgid "notifications.event.authLogin"
@@ -2400,7 +2424,7 @@ msgstr "システムエラー"
 msgid "notifications.event.systemError.desc"
 msgstr "バックグラウンドジョブが予期せず失敗したとき"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:730
+#: src/pages/settings/NotificationSettingsPanel.tsx:759
 msgid "notifications.eventRouting"
 msgstr "イベントルーティング"
 
@@ -2423,8 +2447,8 @@ msgstr "ライブラリ"
 msgid "notifications.filter.system"
 msgstr "システム"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:947
-#: src/pages/settings/NotificationSettingsPanel.tsx:963
+#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1005
 msgid "notifications.intro"
 msgstr "ダウンロード完了やエラー発生時にDiscord、Telegram、またはWebhookで通知を受け取ります。"
 
@@ -2437,54 +2461,54 @@ msgstr "もっと読み込む"
 msgid "notifications.markAllRead"
 msgstr "すべて既読"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:111
+#: src/pages/settings/NotificationSettingsPanel.tsx:115
 msgid "notifications.providerStatus.error"
 msgstr "エラー"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:110
+#: src/pages/settings/NotificationSettingsPanel.tsx:114
 msgid "notifications.providerStatus.ok"
 msgstr "接続済み"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:115
+#: src/pages/settings/NotificationSettingsPanel.tsx:119
 msgid "notifications.providerStatus.unconfigured"
 msgstr "未設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:278
-#: src/pages/settings/NotificationSettingsPanel.tsx:461
+#: src/pages/settings/NotificationSettingsPanel.tsx:280
+#: src/pages/settings/NotificationSettingsPanel.tsx:463
 msgid "notifications.pushNotifications"
 msgstr "プッシュ通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:279
-#: src/pages/settings/NotificationSettingsPanel.tsx:462
+#: src/pages/settings/NotificationSettingsPanel.tsx:281
+#: src/pages/settings/NotificationSettingsPanel.tsx:464
 msgid "notifications.pushNotifications.desc"
 msgstr "ダウンロードやシステムイベントの通知を受け取る"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:663
+#: src/pages/settings/NotificationSettingsPanel.tsx:692
 msgid "notifications.secretIsSet"
 msgstr "シークレット設定済み"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:658
+#: src/pages/settings/NotificationSettingsPanel.tsx:687
 msgid "notifications.secretPlaceholder"
 msgstr "署名シークレット（オプション）"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:973
+#: src/pages/settings/NotificationSettingsPanel.tsx:1015
 msgid "notifications.setupGuide"
 msgstr "設定ガイド"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:162
+#: src/pages/settings/NotificationSettingsPanel.tsx:165
 msgid "notifications.test"
 msgstr "テスト"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:211
+#: src/pages/settings/NotificationSettingsPanel.tsx:213
 msgid "notifications.testBot"
 msgstr "ボットをテスト"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:175
-#: src/pages/settings/NotificationSettingsPanel.tsx:224
+#: src/pages/settings/NotificationSettingsPanel.tsx:178
+#: src/pages/settings/NotificationSettingsPanel.tsx:226
 msgid "notifications.testFailed"
 msgstr "テスト失敗"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:174
+#: src/pages/settings/NotificationSettingsPanel.tsx:177
 msgid "notifications.testSuccess"
 msgstr "送信しました！"
 
@@ -2785,7 +2809,7 @@ msgstr "アニメを検索して紐付け..."
 msgid "ruleEditor.titleMatch"
 msgstr "タイトルマッチ"
 
-#: src/routes/__root.tsx:172
+#: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "スキャン完了"
 
@@ -3292,45 +3316,45 @@ msgid "settings.integrations.description"
 msgstr "外部サービスを接続してデータを同期"
 
 #: src/pages/settings/AboutPanel.tsx:109
-#: src/pages/settings/SettingsPage.tsx:41
+#: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "このアプリについて"
 
 #: src/pages/settings/AccountPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:38
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "アカウント"
 
-#: src/pages/settings/SettingsPage.tsx:39
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.backup"
 msgstr "バックアップ"
 
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.download"
 msgstr "ダウンロード"
 
 #: src/pages/settings/GeneralPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/SettingsPage.tsx:32
 msgid "settings.nav.general"
 msgstr "一般"
 
 #: src/pages/settings/IntegrationsPanel.tsx:330
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "連携"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:944
-#: src/pages/settings/NotificationSettingsPanel.tsx:960
-#: src/pages/settings/SettingsPage.tsx:35
+#: src/pages/settings/NotificationSettingsPanel.tsx:986
+#: src/pages/settings/NotificationSettingsPanel.tsx:1002
+#: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.notifications"
 msgstr "通知"
 
-#: src/pages/settings/PlayerPanel.tsx:240
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "プレーヤー"
 
-#: src/pages/settings/SettingsPage.tsx:40
+#: src/pages/settings/SettingsPage.tsx:39
 #: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "ストレージ"
@@ -3350,7 +3374,7 @@ msgstr "通常"
 msgid "settings.off"
 msgstr "オフ"
 
-#: src/pages/settings/SettingsPage.tsx:76
+#: src/pages/settings/SettingsPage.tsx:79
 msgid "settings.pageTitle"
 msgstr "設定"
 
@@ -3359,123 +3383,123 @@ msgstr "設定"
 msgid "settings.playbackSpeed"
 msgstr "再生速度"
 
-#: src/pages/settings/PlayerPanel.tsx:562
+#: src/pages/settings/PlayerPanel.tsx:561
 msgid "settings.player.autoNext"
 msgstr "次のエピソードを自動再生"
 
-#: src/pages/settings/PlayerPanel.tsx:582
+#: src/pages/settings/PlayerPanel.tsx:581
 msgid "settings.player.autoSkipEd"
 msgstr "エンディングを自動スキップ"
 
-#: src/pages/settings/PlayerPanel.tsx:572
+#: src/pages/settings/PlayerPanel.tsx:571
 msgid "settings.player.autoSkipOp"
 msgstr "オープニングを自動スキップ"
 
-#: src/pages/settings/PlayerPanel.tsx:594
+#: src/pages/settings/PlayerPanel.tsx:593
 msgid "settings.player.backupNote"
 msgstr "プレーヤー設定は自動的にバックアップされます"
 
-#: src/pages/settings/PlayerPanel.tsx:245
+#: src/pages/settings/PlayerPanel.tsx:244
 msgid "settings.player.danmaku"
 msgstr "弾幕"
 
-#: src/pages/settings/PlayerPanel.tsx:250
+#: src/pages/settings/PlayerPanel.tsx:249
 msgid "settings.player.danmakuEnabled"
 msgstr "弾幕を表示"
 
-#: src/pages/settings/PlayerPanel.tsx:290
+#: src/pages/settings/PlayerPanel.tsx:289
 msgid "settings.player.danmakuFontSize"
 msgstr "フォントサイズ"
 
-#: src/pages/settings/PlayerPanel.tsx:264
+#: src/pages/settings/PlayerPanel.tsx:263
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:302
+#: src/pages/settings/PlayerPanel.tsx:301
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:530
+#: src/pages/settings/PlayerPanel.tsx:529
 msgid "settings.player.gestureEnabled"
 msgstr "ジェスチャーを有効にする"
 
-#: src/pages/settings/PlayerPanel.tsx:526
+#: src/pages/settings/PlayerPanel.tsx:525
 msgid "settings.player.gestures"
 msgstr "ジェスチャー"
 
-#: src/pages/settings/PlayerPanel.tsx:541
+#: src/pages/settings/PlayerPanel.tsx:540
 msgid "settings.player.gestureSensitivity"
 msgstr "ジェスチャー感度"
 
-#: src/pages/settings/PlayerPanel.tsx:558
+#: src/pages/settings/PlayerPanel.tsx:557
 msgid "settings.player.playbackDefaults"
 msgstr "再生デフォルト"
 
-#: src/pages/settings/PlayerPanel.tsx:159
+#: src/pages/settings/PlayerPanel.tsx:158
 msgid "settings.player.speed.fast"
 msgstr "速い"
 
-#: src/pages/settings/PlayerPanel.tsx:158
+#: src/pages/settings/PlayerPanel.tsx:157
 msgid "settings.player.speed.normal"
 msgstr "普通"
 
-#: src/pages/settings/PlayerPanel.tsx:157
+#: src/pages/settings/PlayerPanel.tsx:156
 msgid "settings.player.speed.slow"
 msgstr "遅い"
 
-#: src/pages/settings/PlayerPanel.tsx:241
+#: src/pages/settings/PlayerPanel.tsx:240
 msgid "settings.player.subtitle"
 msgstr "弾幕と再生の設定"
 
-#: src/pages/settings/PlayerPanel.tsx:416
+#: src/pages/settings/PlayerPanel.tsx:415
 msgid "settings.player.subtitleBgOpacity"
 msgstr "字幕背景の透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:433
+#: src/pages/settings/PlayerPanel.tsx:432
 msgid "settings.player.subtitleBorder"
 msgstr "字幕ボーダー"
 
-#: src/pages/settings/PlayerPanel.tsx:370
+#: src/pages/settings/PlayerPanel.tsx:369
 msgid "settings.player.subtitleColor"
 msgstr "字幕色"
 
-#: src/pages/settings/PlayerPanel.tsx:496
+#: src/pages/settings/PlayerPanel.tsx:495
 msgid "settings.player.subtitleFade"
 msgstr "字幕フェード"
 
-#: src/pages/settings/PlayerPanel.tsx:334
+#: src/pages/settings/PlayerPanel.tsx:333
 msgid "settings.player.subtitleFont"
 msgstr "字幕フォント"
 
-#: src/pages/settings/PlayerPanel.tsx:353
+#: src/pages/settings/PlayerPanel.tsx:352
 msgid "settings.player.subtitleFontSize"
 msgstr "字幕フォントサイズ"
 
-#: src/pages/settings/PlayerPanel.tsx:466
+#: src/pages/settings/PlayerPanel.tsx:465
 msgid "settings.player.subtitlePosition"
 msgstr "字幕位置"
 
-#: src/pages/settings/PlayerPanel.tsx:322
+#: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.subtitlePreset"
 msgstr "字幕プリセット"
 
-#: src/pages/settings/PlayerPanel.tsx:518
+#: src/pages/settings/PlayerPanel.tsx:517
 msgid "settings.player.subtitlePreview"
 msgstr "字幕プレビュー"
 
-#: src/pages/settings/PlayerPanel.tsx:507
+#: src/pages/settings/PlayerPanel.tsx:506
 msgid "settings.player.subtitleRespectAss"
 msgstr "ASSスタイルを維持"
 
-#: src/pages/settings/PlayerPanel.tsx:479
+#: src/pages/settings/PlayerPanel.tsx:478
 msgid "settings.player.subtitleSafeMargin"
 msgstr "セーフマージン"
 
-#: src/pages/settings/PlayerPanel.tsx:447
+#: src/pages/settings/PlayerPanel.tsx:446
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "ストローク幅"
 
-#: src/pages/settings/PlayerPanel.tsx:317
+#: src/pages/settings/PlayerPanel.tsx:316
 msgid "settings.player.subtitleStyle"
 msgstr "字幕スタイル"
 
@@ -3507,7 +3531,6 @@ msgstr "彩度"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "保存"
 
@@ -3518,7 +3541,7 @@ msgstr "保存"
 #: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
-#: src/pages/settings/PlayerPanel.tsx:196
+#: src/pages/settings/PlayerPanel.tsx:195
 msgid "settings.saved"
 msgstr "保存しました"
 
@@ -3528,7 +3551,7 @@ msgstr "保存しました"
 #: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
-#: src/pages/settings/PlayerPanel.tsx:199
+#: src/pages/settings/PlayerPanel.tsx:198
 msgid "settings.saveFailed"
 msgstr "保存に失敗しました"
 
@@ -3536,7 +3559,7 @@ msgstr "保存に失敗しました"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:1016
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "保存中…"
 
@@ -3869,7 +3892,7 @@ msgstr "視聴中"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:627
+#: src/pages/WatchPage.tsx:626
 msgid "watch.notFound"
 msgstr "アニメが見つかりません"
 

@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:105
+#: src/pages/WatchPage.tsx:104
 msgid "watch.resumeFrom"
 msgstr "여기서 이어보기"
 
@@ -294,7 +294,7 @@ msgstr "업데이트 중..."
 msgid "anime.addToCollection"
 msgstr "컬렉션에 추가"
 
-#: src/pages/AnimeDetailPage.tsx:862
+#: src/pages/AnimeDetailPage.tsx:846
 msgid "anime.characters"
 msgstr "캐릭터"
 
@@ -302,20 +302,20 @@ msgstr "캐릭터"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:995
+#: src/pages/AnimeDetailPage.tsx:979
 msgid "anime.comments"
 msgstr "댓글"
 
-#: src/pages/AnimeDetailPage.tsx:731
+#: src/pages/AnimeDetailPage.tsx:724
 msgid "anime.continueWatching"
 msgstr "이어보기"
 
-#: src/pages/AnimeDetailPage.tsx:735
+#: src/pages/AnimeDetailPage.tsx:727
 msgid "anime.episode"
 msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:786
+#: src/pages/AnimeDetailPage.tsx:770
 msgid "anime.episodes"
 msgstr "에피소드"
 
@@ -347,15 +347,15 @@ msgstr "편 재생 가능"
 msgid "anime.ratings"
 msgstr "평점"
 
-#: src/pages/AnimeDetailPage.tsx:909
+#: src/pages/AnimeDetailPage.tsx:893
 msgid "anime.recommendations"
 msgstr "추천"
 
-#: src/pages/AnimeDetailPage.tsx:883
+#: src/pages/AnimeDetailPage.tsx:867
 msgid "anime.relations"
 msgstr "관련 작품"
 
-#: src/pages/AnimeDetailPage.tsx:947
+#: src/pages/AnimeDetailPage.tsx:931
 msgid "anime.reviews"
 msgstr "리뷰"
 
@@ -379,11 +379,11 @@ msgstr "추적 중"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:832
+#: src/pages/AnimeDetailPage.tsx:816
 msgid "anime.trailer"
 msgstr "예고편"
 
-#: src/pages/AnimeDetailPage.tsx:868
+#: src/pages/AnimeDetailPage.tsx:852
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -1151,7 +1151,7 @@ msgstr "복사됨"
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:788
+#: src/pages/AnimeDetailPage.tsx:772
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 msgid "common.ep"
@@ -1159,6 +1159,7 @@ msgstr "화"
 
 #: src/pages/AnimeDetailPage.tsx:312
 #: src/pages/LibraryDetailPage.tsx:1233
+#: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "불러오기 실패"
 
@@ -1176,6 +1177,7 @@ msgstr "분"
 #: src/pages/AnimeDetailPage.tsx:321
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
+#: src/routes/__root.tsx:60
 msgid "common.retry"
 msgstr "다시 시도"
 
@@ -1253,6 +1255,14 @@ msgstr "제"
 #: src/components/EpisodeListItem.tsx:256
 msgid "episode.suffix"
 msgstr "화"
+
+#: src/routes/__root.tsx:45
+msgid "error.serverUnavailable"
+msgstr "서버에 연결할 수 없습니다"
+
+#: src/routes/__root.tsx:50
+msgid "error.serverUnavailableHint"
+msgstr "서버가 실행 중인지 확인하고 다시 시도하세요"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -2154,7 +2164,7 @@ msgstr "WebDAV 서버에 연결"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:176
+#: src/routes/__root.tsx:215
 msgid "match.completed"
 msgstr "매칭 완료"
 
@@ -2216,7 +2226,7 @@ msgstr "검색"
 
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:156
-#: src/pages/settings/SettingsPage.tsx:62
+#: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "설정"
 
@@ -2231,55 +2241,67 @@ msgstr "설정"
 #~ msgid "nav.trending"
 #~ msgstr "인기"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:582
+#: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"
 msgstr "고급 설정"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:538
+#: src/pages/settings/NotificationSettingsPanel.tsx:540
 msgid "notifications.bot.airingReminder"
 msgstr "방영 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:558
+#: src/pages/settings/NotificationSettingsPanel.tsx:560
 msgid "notifications.bot.airingReminder.desc"
 msgstr "시청 중인 애니 방영 전 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:553
+#: src/pages/settings/NotificationSettingsPanel.tsx:555
 msgid "notifications.bot.airingReminder.off"
 msgstr "끄기"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:565
+#: src/pages/settings/NotificationSettingsPanel.tsx:594
 msgid "notifications.bot.allowedChatIds"
 msgstr "허용된 채팅 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:575
+#: src/pages/settings/NotificationSettingsPanel.tsx:604
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "쉼표로 구분합니다. 비워 두면 모든 채팅을 허용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:364
+#: src/pages/settings/NotificationSettingsPanel.tsx:366
 msgid "notifications.bot.allowedGuildIds"
 msgstr "허용된 길드 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:374
+#: src/pages/settings/NotificationSettingsPanel.tsx:376
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "쉼표로 구분합니다. 비워 두면 모든 길드를 허용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:352
+#: src/pages/settings/NotificationSettingsPanel.tsx:354
 msgid "notifications.bot.applicationId"
 msgstr "애플리케이션 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:340
+#: src/pages/settings/NotificationSettingsPanel.tsx:342
 msgid "notifications.bot.botToken"
 msgstr "봇 토큰"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:567
+msgid "notifications.bot.dailyDigest"
+msgstr ""
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
+msgid "notifications.bot.dailyDigest.desc"
+msgstr ""
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:582
+msgid "notifications.bot.dailyDigest.off"
+msgstr ""
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord 봇"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:502
+#: src/pages/settings/NotificationSettingsPanel.tsx:504
 msgid "notifications.bot.language"
 msgstr "봇 언어"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:515
+#: src/pages/settings/NotificationSettingsPanel.tsx:517
 msgid "notifications.bot.language.system"
 msgstr "시스템 따르기"
 
@@ -2287,16 +2309,16 @@ msgstr "시스템 따르기"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 봇"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:616
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:597
+#: src/pages/settings/NotificationSettingsPanel.tsx:626
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "선택 사항입니다. 비워 두면 롱 폴링을 사용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:317
-#: src/pages/settings/NotificationSettingsPanel.tsx:475
+#: src/pages/settings/NotificationSettingsPanel.tsx:319
+#: src/pages/settings/NotificationSettingsPanel.tsx:477
 msgid "notifications.botCommands"
 msgstr "봇 명령"
 
@@ -2304,12 +2326,12 @@ msgstr "봇 명령"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Telegram 또는 Discord에서 대화형 봇 명령을 활성화합니다"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:318
-#: src/pages/settings/NotificationSettingsPanel.tsx:476
+#: src/pages/settings/NotificationSettingsPanel.tsx:320
+#: src/pages/settings/NotificationSettingsPanel.tsx:478
 msgid "notifications.botCommands.shortDesc"
 msgstr "/search, /schedule 등 대화형 명령"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:674
+#: src/pages/settings/NotificationSettingsPanel.tsx:703
 msgid "notifications.change"
 msgstr "변경"
 
@@ -2330,27 +2352,29 @@ msgstr "알림 없음"
 msgid "notifications.emptyHint"
 msgstr "다운로드 완료 또는 새 에피소드 발견 시 알림이 표시됩니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:721
+#: src/pages/settings/NotificationSettingsPanel.tsx:750
 msgid "notifications.enableProviderAbove"
 msgstr "이벤트 라우팅을 설정하려면 위에서 제공자를 활성화하세요"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:739
+#: src/pages/settings/NotificationSettingsPanel.tsx:768
 msgid "notifications.event"
 msgstr "이벤트"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
-msgid "notifications.event.animeDailyDigest"
-msgstr "일일 요약"
-
-msgid "notifications.event.animeDailyDigest.desc"
-msgstr "방영 중인 애니메이션과 최근 다운로드 일일 요약"
-
 msgid "notifications.event.animeAiring"
 msgstr "방영 알림"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:77
 msgid "notifications.event.animeAiring.desc"
 msgstr "시청 중인 애니 방영 전 알림"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:80
+msgid "notifications.event.animeDailyDigest"
+msgstr "일일 요약"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:81
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "방영 중인 애니메이션과 최근 다운로드 일일 요약"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:72
 msgid "notifications.event.authLogin"
@@ -2400,7 +2424,7 @@ msgstr "시스템 오류"
 msgid "notifications.event.systemError.desc"
 msgstr "백그라운드 작업이 예기치 않게 실패했을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:730
+#: src/pages/settings/NotificationSettingsPanel.tsx:759
 msgid "notifications.eventRouting"
 msgstr "이벤트 라우팅"
 
@@ -2423,8 +2447,8 @@ msgstr "라이브러리"
 msgid "notifications.filter.system"
 msgstr "시스템"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:947
-#: src/pages/settings/NotificationSettingsPanel.tsx:963
+#: src/pages/settings/NotificationSettingsPanel.tsx:989
+#: src/pages/settings/NotificationSettingsPanel.tsx:1005
 msgid "notifications.intro"
 msgstr "다운로드 완료 또는 오류 발생 시 Discord, Telegram 또는 웹훅으로 알림을 받으세요."
 
@@ -2437,54 +2461,54 @@ msgstr "더 불러오기"
 msgid "notifications.markAllRead"
 msgstr "모두 읽음"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:111
+#: src/pages/settings/NotificationSettingsPanel.tsx:115
 msgid "notifications.providerStatus.error"
 msgstr "오류"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:110
+#: src/pages/settings/NotificationSettingsPanel.tsx:114
 msgid "notifications.providerStatus.ok"
 msgstr "연결됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:115
+#: src/pages/settings/NotificationSettingsPanel.tsx:119
 msgid "notifications.providerStatus.unconfigured"
 msgstr "미설정"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:278
-#: src/pages/settings/NotificationSettingsPanel.tsx:461
+#: src/pages/settings/NotificationSettingsPanel.tsx:280
+#: src/pages/settings/NotificationSettingsPanel.tsx:463
 msgid "notifications.pushNotifications"
 msgstr "푸시 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:279
-#: src/pages/settings/NotificationSettingsPanel.tsx:462
+#: src/pages/settings/NotificationSettingsPanel.tsx:281
+#: src/pages/settings/NotificationSettingsPanel.tsx:464
 msgid "notifications.pushNotifications.desc"
 msgstr "다운로드 및 시스템 이벤트 알림 수신"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:663
+#: src/pages/settings/NotificationSettingsPanel.tsx:692
 msgid "notifications.secretIsSet"
 msgstr "시크릿 설정됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:658
+#: src/pages/settings/NotificationSettingsPanel.tsx:687
 msgid "notifications.secretPlaceholder"
 msgstr "서명 시크릿 (선택 사항)"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:973
+#: src/pages/settings/NotificationSettingsPanel.tsx:1015
 msgid "notifications.setupGuide"
 msgstr "설정 가이드"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:162
+#: src/pages/settings/NotificationSettingsPanel.tsx:165
 msgid "notifications.test"
 msgstr "테스트"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:211
+#: src/pages/settings/NotificationSettingsPanel.tsx:213
 msgid "notifications.testBot"
 msgstr "봇 테스트"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:175
-#: src/pages/settings/NotificationSettingsPanel.tsx:224
+#: src/pages/settings/NotificationSettingsPanel.tsx:178
+#: src/pages/settings/NotificationSettingsPanel.tsx:226
 msgid "notifications.testFailed"
 msgstr "테스트 실패"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:174
+#: src/pages/settings/NotificationSettingsPanel.tsx:177
 msgid "notifications.testSuccess"
 msgstr "전송됨!"
 
@@ -2785,7 +2809,7 @@ msgstr "애니메 검색하여 연결..."
 msgid "ruleEditor.titleMatch"
 msgstr "제목 매칭"
 
-#: src/routes/__root.tsx:172
+#: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "스캔 완료"
 
@@ -3292,45 +3316,45 @@ msgid "settings.integrations.description"
 msgstr "외부 서비스를 연결하고 데이터를 동기화"
 
 #: src/pages/settings/AboutPanel.tsx:109
-#: src/pages/settings/SettingsPage.tsx:41
+#: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "정보"
 
 #: src/pages/settings/AccountPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:38
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "계정"
 
-#: src/pages/settings/SettingsPage.tsx:39
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.backup"
 msgstr "백업"
 
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/SettingsPage.tsx:35
 msgid "settings.nav.download"
 msgstr "다운로드"
 
 #: src/pages/settings/GeneralPanel.tsx:70
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/SettingsPage.tsx:32
 msgid "settings.nav.general"
 msgstr "일반"
 
 #: src/pages/settings/IntegrationsPanel.tsx:330
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "연동"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:944
-#: src/pages/settings/NotificationSettingsPanel.tsx:960
-#: src/pages/settings/SettingsPage.tsx:35
+#: src/pages/settings/NotificationSettingsPanel.tsx:986
+#: src/pages/settings/NotificationSettingsPanel.tsx:1002
+#: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.notifications"
 msgstr "알림"
 
-#: src/pages/settings/PlayerPanel.tsx:240
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "플레이어"
 
-#: src/pages/settings/SettingsPage.tsx:40
+#: src/pages/settings/SettingsPage.tsx:39
 #: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.nav.storage"
 msgstr "저장소"
@@ -3350,7 +3374,7 @@ msgstr "일반"
 msgid "settings.off"
 msgstr "끄기"
 
-#: src/pages/settings/SettingsPage.tsx:76
+#: src/pages/settings/SettingsPage.tsx:79
 msgid "settings.pageTitle"
 msgstr "설정"
 
@@ -3359,123 +3383,123 @@ msgstr "설정"
 msgid "settings.playbackSpeed"
 msgstr "재생 속도"
 
-#: src/pages/settings/PlayerPanel.tsx:562
+#: src/pages/settings/PlayerPanel.tsx:561
 msgid "settings.player.autoNext"
 msgstr "다음 에피소드 자동 재생"
 
-#: src/pages/settings/PlayerPanel.tsx:582
+#: src/pages/settings/PlayerPanel.tsx:581
 msgid "settings.player.autoSkipEd"
 msgstr "엔딩 자동 건너뛰기"
 
-#: src/pages/settings/PlayerPanel.tsx:572
+#: src/pages/settings/PlayerPanel.tsx:571
 msgid "settings.player.autoSkipOp"
 msgstr "오프닝 자동 건너뛰기"
 
-#: src/pages/settings/PlayerPanel.tsx:594
+#: src/pages/settings/PlayerPanel.tsx:593
 msgid "settings.player.backupNote"
 msgstr "플레이어 설정은 자동으로 백업됩니다"
 
-#: src/pages/settings/PlayerPanel.tsx:245
+#: src/pages/settings/PlayerPanel.tsx:244
 msgid "settings.player.danmaku"
 msgstr "탄막"
 
-#: src/pages/settings/PlayerPanel.tsx:250
+#: src/pages/settings/PlayerPanel.tsx:249
 msgid "settings.player.danmakuEnabled"
 msgstr "탄막 표시"
 
-#: src/pages/settings/PlayerPanel.tsx:290
+#: src/pages/settings/PlayerPanel.tsx:289
 msgid "settings.player.danmakuFontSize"
 msgstr "글꼴 크기"
 
-#: src/pages/settings/PlayerPanel.tsx:264
+#: src/pages/settings/PlayerPanel.tsx:263
 msgid "settings.player.danmakuOpacity"
 msgstr "불투명도"
 
-#: src/pages/settings/PlayerPanel.tsx:302
+#: src/pages/settings/PlayerPanel.tsx:301
 msgid "settings.player.danmakuSpeed"
 msgstr "속도"
 
-#: src/pages/settings/PlayerPanel.tsx:530
+#: src/pages/settings/PlayerPanel.tsx:529
 msgid "settings.player.gestureEnabled"
 msgstr "제스처 활성화"
 
-#: src/pages/settings/PlayerPanel.tsx:526
+#: src/pages/settings/PlayerPanel.tsx:525
 msgid "settings.player.gestures"
 msgstr "제스처"
 
-#: src/pages/settings/PlayerPanel.tsx:541
+#: src/pages/settings/PlayerPanel.tsx:540
 msgid "settings.player.gestureSensitivity"
 msgstr "제스처 감도"
 
-#: src/pages/settings/PlayerPanel.tsx:558
+#: src/pages/settings/PlayerPanel.tsx:557
 msgid "settings.player.playbackDefaults"
 msgstr "재생 기본값"
 
-#: src/pages/settings/PlayerPanel.tsx:159
+#: src/pages/settings/PlayerPanel.tsx:158
 msgid "settings.player.speed.fast"
 msgstr "빠름"
 
-#: src/pages/settings/PlayerPanel.tsx:158
+#: src/pages/settings/PlayerPanel.tsx:157
 msgid "settings.player.speed.normal"
 msgstr "보통"
 
-#: src/pages/settings/PlayerPanel.tsx:157
+#: src/pages/settings/PlayerPanel.tsx:156
 msgid "settings.player.speed.slow"
 msgstr "느림"
 
-#: src/pages/settings/PlayerPanel.tsx:241
+#: src/pages/settings/PlayerPanel.tsx:240
 msgid "settings.player.subtitle"
 msgstr "탄막 및 재생 환경설정"
 
-#: src/pages/settings/PlayerPanel.tsx:416
+#: src/pages/settings/PlayerPanel.tsx:415
 msgid "settings.player.subtitleBgOpacity"
 msgstr "자막 배경 불투명도"
 
-#: src/pages/settings/PlayerPanel.tsx:433
+#: src/pages/settings/PlayerPanel.tsx:432
 msgid "settings.player.subtitleBorder"
 msgstr "자막 테두리"
 
-#: src/pages/settings/PlayerPanel.tsx:370
+#: src/pages/settings/PlayerPanel.tsx:369
 msgid "settings.player.subtitleColor"
 msgstr "자막 색상"
 
-#: src/pages/settings/PlayerPanel.tsx:496
+#: src/pages/settings/PlayerPanel.tsx:495
 msgid "settings.player.subtitleFade"
 msgstr "자막 페이드"
 
-#: src/pages/settings/PlayerPanel.tsx:334
+#: src/pages/settings/PlayerPanel.tsx:333
 msgid "settings.player.subtitleFont"
 msgstr "자막 글꼴"
 
-#: src/pages/settings/PlayerPanel.tsx:353
+#: src/pages/settings/PlayerPanel.tsx:352
 msgid "settings.player.subtitleFontSize"
 msgstr "자막 글꼴 크기"
 
-#: src/pages/settings/PlayerPanel.tsx:466
+#: src/pages/settings/PlayerPanel.tsx:465
 msgid "settings.player.subtitlePosition"
 msgstr "자막 위치"
 
-#: src/pages/settings/PlayerPanel.tsx:322
+#: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.subtitlePreset"
 msgstr "자막 프리셋"
 
-#: src/pages/settings/PlayerPanel.tsx:518
+#: src/pages/settings/PlayerPanel.tsx:517
 msgid "settings.player.subtitlePreview"
 msgstr "자막 미리보기"
 
-#: src/pages/settings/PlayerPanel.tsx:507
+#: src/pages/settings/PlayerPanel.tsx:506
 msgid "settings.player.subtitleRespectAss"
 msgstr "ASS 스타일 유지"
 
-#: src/pages/settings/PlayerPanel.tsx:479
+#: src/pages/settings/PlayerPanel.tsx:478
 msgid "settings.player.subtitleSafeMargin"
 msgstr "안전 여백"
 
-#: src/pages/settings/PlayerPanel.tsx:447
+#: src/pages/settings/PlayerPanel.tsx:446
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "테두리 두께"
 
-#: src/pages/settings/PlayerPanel.tsx:317
+#: src/pages/settings/PlayerPanel.tsx:316
 msgid "settings.player.subtitleStyle"
 msgstr "자막 스타일"
 
@@ -3507,7 +3531,6 @@ msgstr "채도"
 #: src/pages/settings/BackupPanel.tsx:577
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:273
-#: src/pages/settings/NotificationSettingsPanel.tsx:1017
 msgid "settings.save"
 msgstr "저장"
 
@@ -3518,7 +3541,7 @@ msgstr "저장"
 #: src/pages/settings/GeneralPanel.tsx:64
 #: src/pages/settings/IntegrationsPanel.tsx:52
 #: src/pages/settings/IntegrationsPanel.tsx:171
-#: src/pages/settings/PlayerPanel.tsx:196
+#: src/pages/settings/PlayerPanel.tsx:195
 msgid "settings.saved"
 msgstr "저장됨"
 
@@ -3528,7 +3551,7 @@ msgstr "저장됨"
 #: src/pages/settings/GeneralPanel.tsx:57
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:174
-#: src/pages/settings/PlayerPanel.tsx:199
+#: src/pages/settings/PlayerPanel.tsx:198
 msgid "settings.saveFailed"
 msgstr "저장 실패"
 
@@ -3536,7 +3559,7 @@ msgstr "저장 실패"
 #: src/pages/settings/BackupPanel.tsx:576
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:272
-#: src/pages/settings/NotificationSettingsPanel.tsx:1016
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "저장 중…"
 
@@ -3869,7 +3892,7 @@ msgstr "시청 중"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:627
+#: src/pages/WatchPage.tsx:626
 msgid "watch.notFound"
 msgstr "애니메이션을 찾을 수 없습니다"
 
