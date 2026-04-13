@@ -52,6 +52,18 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	// Users
 	auth.GET("/Users/:userId", h.handleGetUser)
 	auth.GET("/Users/:userId/Views", h.handleGetUserViews)
+	auth.GET("/Users/:userId/GroupingOptions", h.handleGroupingOptions)
+	auth.GET("/Users/:userId/Items/Resume", h.handleItemsResume)
+	auth.GET("/Users/:userId/Items/Latest", h.handleItemsLatest)
+	auth.GET("/Users/:userId/Items/:itemId", h.handleGetItem)
+	auth.GET("/Users/:userId/Items", h.handleGetItems)
+
+	// Shows
+	auth.GET("/Shows/NextUp", h.handleNextUp)
+	auth.GET("/Shows/:seriesId/Seasons", h.handleGetSeasons)
+
+	// Display preferences
+	auth.GET("/DisplayPreferences/:displayPreferencesId", h.handleDisplayPreferences)
 
 	// Library
 	auth.GET("/Library/VirtualFolders", h.handleVirtualFolders)

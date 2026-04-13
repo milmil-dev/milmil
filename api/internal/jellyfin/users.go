@@ -1,6 +1,7 @@
 package jellyfin
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -24,6 +25,54 @@ func (h *Handler) handleGetUser(c echo.Context) error {
 		ID:                    userIDEncoded,
 		HasPassword:           true,
 		HasConfiguredPassword: true,
+	})
+}
+
+func (h *Handler) handleGroupingOptions(c echo.Context) error {
+	return c.JSON(http.StatusOK, []any{})
+}
+
+func (h *Handler) handleItemsResume(c echo.Context) error {
+	return c.JSON(http.StatusOK, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+}
+
+func (h *Handler) handleItemsLatest(c echo.Context) error {
+	ctx := c.Request().Context()
+	parentID := c.QueryParam("parentId")
+
+	if parentID != "" {
+		typ, id, err := DecodeItemID(parentID)
+		if err == nil && typ == "library" {
+			animeList, err := h.queries.ListAnimeByLibrary(ctx, sql.NullString{String: id, Valid: true})
+			if err == nil {
+				limit := 20
+				if len(animeList) > limit {
+					animeList = animeList[:limit]
+				}
+				items := make([]ItemDTO, 0, len(animeList))
+				for _, a := range animeList {
+					items = append(items, h.animeToItemDTO(a))
+				}
+				return c.JSON(http.StatusOK, items)
+			}
+		}
+	}
+	return c.JSON(http.StatusOK, []ItemDTO{})
+}
+
+func (h *Handler) handleNextUp(c echo.Context) error {
+	return c.JSON(http.StatusOK, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+}
+
+func (h *Handler) handleDisplayPreferences(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]any{
+		"Id":               c.Param("displayPreferencesId"),
+		"SortBy":           "SortName",
+		"SortOrder":        "Ascending",
+		"RememberIndexing": false,
+		"RememberSorting":  false,
+		"CustomPrefs":      map[string]any{},
+		"Client":           c.QueryParam("client"),
 	})
 }
 

@@ -76,6 +76,10 @@ const EVENT_LABEL_KEYS: Record<string, { label: ReturnType<typeof msg>; desc: Re
     label: msg`notifications.event.animeAiring`,
     desc: msg`notifications.event.animeAiring.desc`,
   },
+  'anime.daily_digest': {
+    label: msg`notifications.event.animeDailyDigest`,
+    desc: msg`notifications.event.animeDailyDigest.desc`,
+  },
 };
 
 // ─── Default empty settings ─────────────────────────────────────────────────

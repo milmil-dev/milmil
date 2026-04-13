@@ -13,7 +13,7 @@ import (
 
 func (h *Handler) handleGetItems(c echo.Context) error {
 	ctx := c.Request().Context()
-	parentID := c.QueryParam("ParentId")
+	parentID := c.QueryParam("parentId")
 
 	if parentID != "" {
 		typ, id, err := DecodeItemID(parentID)
@@ -25,7 +25,10 @@ func (h *Handler) handleGetItems(c echo.Context) error {
 		}
 	}
 
-	searchTerm := c.QueryParam("SearchTerm")
+	searchTerm := c.QueryParam("searchTerm")
+	if searchTerm == "" {
+		searchTerm = c.QueryParam("SearchTerm")
+	}
 	if searchTerm != "" {
 		return h.searchItems(c, searchTerm)
 	}
@@ -49,8 +52,8 @@ func (h *Handler) handleGetItems(c echo.Context) error {
 		}
 	}
 
-	startIndex, _ := strconv.Atoi(c.QueryParam("StartIndex"))
-	limit, _ := strconv.Atoi(c.QueryParam("Limit"))
+	startIndex, _ := strconv.Atoi(queryParam(c, "startIndex"))
+	limit, _ := strconv.Atoi(queryParam(c, "limit"))
 	total := len(items)
 	if startIndex > 0 && startIndex < len(items) {
 		items = items[startIndex:]

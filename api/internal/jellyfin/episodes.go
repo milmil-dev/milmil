@@ -6,6 +6,23 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func (h *Handler) handleGetSeasons(c echo.Context) error {
+	seriesIDEncoded := c.Param("seriesId")
+	season1 := 1
+	return c.JSON(http.StatusOK, ItemsResponse{
+		Items: []ItemDTO{{
+			Name:        "Season 1",
+			ServerID:    h.serverID,
+			ID:          seriesIDEncoded,
+			Type:        "Season",
+			IndexNumber: &season1,
+			ParentID:    seriesIDEncoded,
+			IsFolder:    true,
+		}},
+		TotalRecordCount: 1,
+	})
+}
+
 func (h *Handler) handleGetEpisodes(c echo.Context) error {
 	seriesIDEncoded := c.Param("seriesId")
 	typ, animeID, err := DecodeItemID(seriesIDEncoded)
@@ -21,6 +38,7 @@ func (h *Handler) handleGetEpisodes(c echo.Context) error {
 	items := make([]ItemDTO, 0, len(episodes))
 	for _, ep := range episodes {
 		dto := h.episodeToItemDTO(ep)
+		dto.MediaSources = h.getMediaSourcesForEpisode(c, ep.ID)
 		items = append(items, dto)
 	}
 
