@@ -1,24 +1,27 @@
 package api
 
 import (
+	"log/slog"
 	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/auth"
+	"github.com/milmil/api/internal/store"
 )
 
 const contextKeyUserID = "userID"
 
-// jwtMiddleware validates Bearer tokens and sets the userID in the context.
-func jwtMiddleware(secret string) echo.MiddlewareFunc {
+// authMiddleware validates Bearer tokens (JWT or API token) and sets the userID in context.
+func authMiddleware(secret string, queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			header := c.Request().Header.Get("Authorization")
 			if !strings.HasPrefix(header, "Bearer ") {
 				return echo.NewHTTPError(http.StatusUnauthorized, "missing token")
 			}
-			userID, err := auth.VerifyToken(secret, strings.TrimPrefix(header, "Bearer "))
+			token := strings.TrimPrefix(header, "Bearer ")
+			userID, err := resolveToken(c, secret, queries, token)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
 			}
@@ -28,25 +31,22 @@ func jwtMiddleware(secret string) echo.MiddlewareFunc {
 	}
 }
 
-// jwtMiddlewareWithQueryParam is like jwtMiddleware but also accepts ?token=JWT as fallback.
-// Used for stream endpoints where <video src> cannot set custom headers.
-func jwtMiddlewareWithQueryParam(secret string) echo.MiddlewareFunc {
+// authMiddlewareWithQueryParam is like authMiddleware but also accepts ?token= as fallback.
+func authMiddlewareWithQueryParam(secret string, queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			// Try Authorization header first
 			header := c.Request().Header.Get("Authorization")
 			token := ""
 			if strings.HasPrefix(header, "Bearer ") {
 				token = strings.TrimPrefix(header, "Bearer ")
 			}
-			// Fallback to ?token query param
 			if token == "" {
 				token = c.QueryParam("token")
 			}
 			if token == "" {
 				return echo.NewHTTPError(http.StatusUnauthorized, "missing token")
 			}
-			userID, err := auth.VerifyToken(secret, token)
+			userID, err := resolveToken(c, secret, queries, token)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
 			}
@@ -54,6 +54,25 @@ func jwtMiddlewareWithQueryParam(secret string) echo.MiddlewareFunc {
 			return next(c)
 		}
 	}
+}
+
+// resolveToken checks if the token is an API token (mlml_ prefix) or JWT, and returns the userID.
+func resolveToken(c echo.Context, jwtSecret string, queries *store.Queries, token string) (string, error) {
+	if auth.IsAPIToken(token) {
+		hash := auth.HashAPIToken(token)
+		apiToken, err := queries.GetAPITokenByHash(c.Request().Context(), hash)
+		if err != nil {
+			return "", err
+		}
+		// Fire-and-forget last_used_at update
+		go func() {
+			if err := queries.UpdateAPITokenLastUsed(c.Request().Context(), apiToken.ID); err != nil {
+				slog.Debug("failed to update api token last_used_at", "err", err)
+			}
+		}()
+		return apiToken.UserID, nil
+	}
+	return auth.VerifyToken(jwtSecret, token)
 }
 
 // getUserID extracts the authenticated user ID from the Echo context.

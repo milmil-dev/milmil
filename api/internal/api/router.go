@@ -80,7 +80,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authGroup.POST("/login/2fa", h.handleAuthLogin2FA)
 
 	// Auth — protected
-	authProtected := v1.Group("/auth", jwtMiddleware(cfg.JWTSecret))
+	authProtected := v1.Group("/auth", authMiddleware(cfg.JWTSecret, h.queries))
 	authProtected.POST("/logout", h.handleAuthLogout)
 	authProtected.GET("/me", h.handleAuthMe)
 	authProtected.PUT("/password", h.handleChangePassword)
@@ -90,7 +90,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authProtected.GET("/2fa/status", h.handleTwoFactorStatus)
 
 	// Libraries — protected
-	libGroup := v1.Group("/libraries", jwtMiddleware(cfg.JWTSecret))
+	libGroup := v1.Group("/libraries", authMiddleware(cfg.JWTSecret, h.queries))
 	libGroup.GET("", h.handleListLibraries)
 	libGroup.POST("", h.handleCreateLibrary)
 	libGroup.GET("/discover-network", h.handleDiscoverNetwork)
@@ -112,7 +112,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
 
 	// Media files — protected
-	mediaGroup := v1.Group("/media-files", jwtMiddleware(cfg.JWTSecret))
+	mediaGroup := v1.Group("/media-files", authMiddleware(cfg.JWTSecret, h.queries))
 	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)
 	mediaGroup.DELETE("/:id/match", h.handleUnmatchMediaFile)
 	mediaGroup.GET("/:id/info", h.handleMediaInfo)
@@ -129,15 +129,15 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	discoverGroup.GET("/anime/:id", h.handleAnimeDetail)
 	discoverGroup.GET("/anime/:id/episodes", h.handleAnimeEpisodes)
 	discoverGroup.GET("/anime/:id/comments", h.handleAnimeComments)
-	discoverGroup.GET("/anime/:id/torrents", h.handleAnimeTorrents, jwtMiddleware(cfg.JWTSecret))
+	discoverGroup.GET("/anime/:id/torrents", h.handleAnimeTorrents, authMiddleware(cfg.JWTSecret, h.queries))
 
 	// Danmaku — protected
-	danmakuGroup := v1.Group("/danmaku", jwtMiddleware(cfg.JWTSecret))
+	danmakuGroup := v1.Group("/danmaku", authMiddleware(cfg.JWTSecret, h.queries))
 	danmakuGroup.GET("/:mediaFileId", h.handleGetDanmaku)
 	danmakuGroup.POST("/:mediaFileId", h.handlePostDanmaku)
 
 	// Stream — protected (with query param token fallback for <video src>)
-	streamGroup := v1.Group("/stream", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
+	streamGroup := v1.Group("/stream", authMiddlewareWithQueryParam(cfg.JWTSecret, h.queries))
 	streamGroup.GET("/:fileId/direct", h.handleStreamDirect)
 	streamGroup.GET("/:fileId/remux", h.handleStreamRemux)
 	streamGroup.POST("/:fileId/transcode", h.handleStartTranscode)
@@ -147,7 +147,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	e.GET("/api/v1/stream/hls/:token/:segment", h.handleHLSSegment)
 
 	// Settings — protected
-	settingsGroup := v1.Group("/settings", jwtMiddleware(cfg.JWTSecret))
+	settingsGroup := v1.Group("/settings", authMiddleware(cfg.JWTSecret, h.queries))
 	settingsGroup.GET("", h.handleGetSettings)
 	settingsGroup.GET("/export", h.handleExportSettings)
 	settingsGroup.POST("/import", h.handleImportSettings)
@@ -155,19 +155,19 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	settingsGroup.PUT("/:section", h.handleUpdateSettings)
 
 	// Collection — protected
-	collectionGroup := v1.Group("/collection", jwtMiddleware(cfg.JWTSecret))
+	collectionGroup := v1.Group("/collection", authMiddleware(cfg.JWTSecret, h.queries))
 	collectionGroup.GET("", h.handleListCollection)
 	collectionGroup.GET("/recent", h.handleListRecentCollection)
 	collectionGroup.GET("/status-counts", h.handleCollectionStatusCounts)
 	collectionGroup.PATCH("/:bangumiId/status", h.handleUpdateWatchStatus)
 
 	// Anime — protected
-	animeGroup := v1.Group("/anime", jwtMiddleware(cfg.JWTSecret))
+	animeGroup := v1.Group("/anime", authMiddleware(cfg.JWTSecret, h.queries))
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 
 	// Downloads — protected
-	dlGroup := v1.Group("/downloads", jwtMiddleware(cfg.JWTSecret))
+	dlGroup := v1.Group("/downloads", authMiddleware(cfg.JWTSecret, h.queries))
 	dlGroup.GET("", h.handleListDownloads)
 	dlGroup.GET("/grouped", h.handleDownloadsGrouped)
 	dlGroup.GET("/:gid/files", h.handleDownloadFiles)
@@ -178,7 +178,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	dlGroup.DELETE("", h.handleBatchDeleteDownloads)
 
 	// RSS Feeds — protected
-	rssGroup := v1.Group("/rss-feeds", jwtMiddleware(cfg.JWTSecret))
+	rssGroup := v1.Group("/rss-feeds", authMiddleware(cfg.JWTSecret, h.queries))
 	rssGroup.GET("", h.handleListRSSFeeds)
 	rssGroup.POST("", h.handleCreateRSSFeed)
 	rssGroup.POST("/preview-url", h.handlePreviewRSSFeedURL)
@@ -188,7 +188,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	rssGroup.POST("/:id/refresh", h.handleRefreshRSSFeed)
 
 	// User Preferences — protected
-	prefsGroup := v1.Group("/user/preferences", jwtMiddleware(cfg.JWTSecret))
+	prefsGroup := v1.Group("/user/preferences", authMiddleware(cfg.JWTSecret, h.queries))
 	prefsGroup.GET("", h.handleGetGlobalPreferences)
 	prefsGroup.PUT("", h.handleUpsertGlobalPreferences)
 	prefsGroup.GET("/series/:seriesId", h.handleGetSeriesPreferences)
@@ -203,39 +203,39 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	prefsGroup.GET("/sync/status", h.handleSyncStatus)
 
 	// Segment Marks — protected
-	v1.POST("/media/:fileId/segments", h.handleCreateSegmentMark, jwtMiddleware(cfg.JWTSecret))
-	v1.GET("/media/:fileId/segments", h.handleListSegmentMarks, jwtMiddleware(cfg.JWTSecret))
-	v1.DELETE("/media/:fileId/segments/:segmentId", h.handleDeleteSegmentMark, jwtMiddleware(cfg.JWTSecret))
+	v1.POST("/media/:fileId/segments", h.handleCreateSegmentMark, authMiddleware(cfg.JWTSecret, h.queries))
+	v1.GET("/media/:fileId/segments", h.handleListSegmentMarks, authMiddleware(cfg.JWTSecret, h.queries))
+	v1.DELETE("/media/:fileId/segments/:segmentId", h.handleDeleteSegmentMark, authMiddleware(cfg.JWTSecret, h.queries))
 
 	// Watch Progress — protected
-	progressGroup := v1.Group("/progress", jwtMiddleware(cfg.JWTSecret))
+	progressGroup := v1.Group("/progress", authMiddleware(cfg.JWTSecret, h.queries))
 	progressGroup.POST("", h.handleSaveProgress)
 	progressGroup.GET("/recent", h.handleListRecentProgress)
 	progressGroup.GET("/file/:fileId", h.handleGetProgressByFile)
 
 	// Torrent Search — protected
-	searchGroup := v1.Group("/torrent-search", jwtMiddleware(cfg.JWTSecret))
+	searchGroup := v1.Group("/torrent-search", authMiddleware(cfg.JWTSecret, h.queries))
 	searchGroup.GET("", h.handleTorrentSearch)
 	searchGroup.GET("/providers", h.handleTorrentProviders)
 	searchGroup.POST("/add", h.handleTorrentSearchAdd)
 
 	// Auto-download subscription — protected
-	v1.POST("/subscribe", h.handleSubscribe, jwtMiddleware(cfg.JWTSecret))
+	v1.POST("/subscribe", h.handleSubscribe, authMiddleware(cfg.JWTSecret, h.queries))
 
 	// Subtitles — protected (with query param token fallback for <track src>)
-	subGroup := v1.Group("/subtitles", jwtMiddlewareWithQueryParam(cfg.JWTSecret))
+	subGroup := v1.Group("/subtitles", authMiddlewareWithQueryParam(cfg.JWTSecret, h.queries))
 	subGroup.GET("/media/:fileId", h.handleListSubtitles)
 	subGroup.GET("/:id/content", h.handleSubtitleContent)
 
 	// Download Rules — protected
-	ruleGroup := v1.Group("/download-rules", jwtMiddleware(cfg.JWTSecret))
+	ruleGroup := v1.Group("/download-rules", authMiddleware(cfg.JWTSecret, h.queries))
 	ruleGroup.GET("", h.handleListDownloadRules)
 	ruleGroup.POST("", h.handleCreateDownloadRule)
 	ruleGroup.PUT("/:id", h.handleUpdateDownloadRule)
 	ruleGroup.DELETE("/:id", h.handleDeleteDownloadRule)
 
 	// Integrations — protected
-	intGroup := v1.Group("/integrations", jwtMiddleware(cfg.JWTSecret))
+	intGroup := v1.Group("/integrations", authMiddleware(cfg.JWTSecret, h.queries))
 	// Bangumi
 	intGroup.GET("/bangumi/auth-url", h.handleBangumiAuthURL)
 	intGroup.GET("/bangumi/callback", h.handleBangumiCallback)
@@ -248,7 +248,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	intGroup.POST("/anilist/sync", h.handleAniListSync)
 
 	// Notifications — protected
-	notifGroup := v1.Group("/notifications", jwtMiddleware(cfg.JWTSecret))
+	notifGroup := v1.Group("/notifications", authMiddleware(cfg.JWTSecret, h.queries))
 	notifGroup.GET("", h.handleListNotifications)
 	notifGroup.GET("/unread-count", h.handleUnreadCount)
 	notifGroup.PATCH("/:id/read", h.handleMarkNotificationRead)
@@ -256,14 +256,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	notifGroup.DELETE("", h.handleClearNotifications)
 
 	// Notification Settings — protected
-	notifSettingsGroup := v1.Group("/settings/notifications", jwtMiddleware(cfg.JWTSecret))
+	notifSettingsGroup := v1.Group("/settings/notifications", authMiddleware(cfg.JWTSecret, h.queries))
 	notifSettingsGroup.GET("", h.handleGetNotificationSettings)
 	notifSettingsGroup.PUT("", h.handleUpdateNotificationSettings)
 	notifSettingsGroup.POST("/test", h.handleTestNotification)
 	notifSettingsGroup.GET("/status", h.handleNotificationProviderStatus)
 
 	// System — protected
-	systemGroup := v1.Group("/system", jwtMiddleware(cfg.JWTSecret))
+	systemGroup := v1.Group("/system", authMiddleware(cfg.JWTSecret, h.queries))
 	systemGroup.GET("/info", h.handleSystemInfo)
 	systemGroup.GET("/storage", h.handleStorageStats)
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
