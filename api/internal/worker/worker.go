@@ -122,7 +122,7 @@ func (s *Scheduler) Start() {
 
 	// Daily digest — every 5 minutes, sends once per day at configured time
 	digestWorker := NewDailyDigestWorker(s.queries, s.metadata, s.notifier)
-	go s.runTicker(ctx, "daily_digest", 5*time.Minute, false, func(ctx context.Context) {
+	go s.runTicker(ctx, "daily_digest", 5*time.Minute, true, func(ctx context.Context) {
 		digestWorker.Run(ctx)
 	})
 

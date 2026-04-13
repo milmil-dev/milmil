@@ -83,7 +83,6 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 	calendar, err := w.metadata.GetCalendar(ctx)
 	if err != nil {
 		slog.Error("daily_digest: get calendar", "err", err)
-		// Reset so we retry next tick
 		_ = w.queries.DeleteSetting(ctx, digestSentKey)
 		return
 	}
