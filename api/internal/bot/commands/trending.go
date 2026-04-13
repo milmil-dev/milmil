@@ -52,7 +52,7 @@ func TrendingHandler(svc *Services) bot.CommandHandler {
 				ImageURL: r.CoverImage,
 				Buttons: []bot.BotButton{
 					{Label: "Detail", Data: fmt.Sprintf("detail:%d", r.BangumiID)},
-					{Label: "Subscribe", Data: fmt.Sprintf("sub_pick:%d", r.BangumiID)},
+					{Label: "➕ 追番", Data: fmt.Sprintf("sub_pick:%d", r.BangumiID)},
 				},
 			})
 		}

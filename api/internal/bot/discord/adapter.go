@@ -59,7 +59,7 @@ func New(cfg notification.DiscordBotConfig, router *bot.Router) (*Adapter, error
 		{Name: "downloads", Description: "Active downloads"},
 		{
 			Name:        "subscribe",
-			Description: "Auto-download subscription",
+			Description: "追番 — 自動下載新集數",
 			Options: []*discordgo.ApplicationCommandOption{
 				{Type: discordgo.ApplicationCommandOptionString, Name: "anime", Description: "Anime name", Required: true},
 			},

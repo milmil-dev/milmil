@@ -42,7 +42,7 @@ func New(cfg notification.TelegramBotConfig, router *bot.Router) (*Adapter, erro
 		{Command: "search", Description: "Search anime"},
 		{Command: "detail", Description: "Anime details"},
 		{Command: "downloads", Description: "Active downloads"},
-		{Command: "subscribe", Description: "Auto-download subscription"},
+		{Command: "subscribe", Description: "追番 — 自動下載新集數"},
 		{Command: "status", Description: "System overview"},
 		{Command: "mylist", Description: "Your collection"},
 		{Command: "continue", Description: "Continue watching"},

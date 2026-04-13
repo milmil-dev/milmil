@@ -31,7 +31,7 @@ func buildStartMenu(ctx context.Context, svc *Services) (*bot.BotResponse, error
 		"<b>milmil</b> — Anime Media Server\n\n"+
 			"📥 <b>%d</b> active downloads\n"+
 			"📡 <b>%d</b> RSS feeds\n"+
-			"📋 <b>%d</b> subscription rules",
+			"📋 <b>%d</b> 追番規則",
 		len(downloads), len(feeds), len(rules),
 	)
 

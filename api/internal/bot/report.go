@@ -38,7 +38,7 @@ func (r *ReportGenerator) GenerateDailyReport(ctx context.Context) (*BotResponse
 	}
 	text += fmt.Sprintf("✅ Completed (24h): <b>%d</b>\n", len(recentComplete))
 	text += fmt.Sprintf("📡 RSS feeds: <b>%d</b>\n", len(feeds))
-	text += fmt.Sprintf("📋 Subscription rules: <b>%d</b>\n", len(rules))
+	text += fmt.Sprintf("📋 追番規則：<b>%d</b>\n", len(rules))
 
 	if len(recentComplete) > 0 {
 		text += "\n<b>Recent Downloads:</b>\n"

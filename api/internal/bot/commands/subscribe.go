@@ -18,7 +18,7 @@ func SubscribeHandler(svc *Services) bot.CommandHandler {
 	return func(ctx context.Context, cmd bot.CommandContext) (*bot.BotResponse, error) {
 		query := strings.TrimSpace(cmd.Args)
 		if query == "" {
-			return &bot.BotResponse{Text: "Usage: /subscribe &lt;anime name&gt;"}, nil
+			return &bot.BotResponse{Text: "用法：/subscribe &lt;番名&gt;"}, nil
 		}
 
 		results, err := svc.Metadata.Search(ctx, query, false)
