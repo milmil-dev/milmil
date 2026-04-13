@@ -27,7 +27,7 @@ type stubBangumi struct {
 	episodesFn func(ctx context.Context, id int) ([]bangumi.Episode, error)
 }
 
-func (m *stubBangumi) SearchSubjects(ctx context.Context, q string) ([]bangumi.Subject, error) {
+func (m *stubBangumi) SearchSubjects(ctx context.Context, q string, opts ...bangumi.SearchOption) ([]bangumi.Subject, error) {
 	if m.searchFn != nil {
 		return m.searchFn(ctx, q)
 	}
@@ -54,6 +54,9 @@ func (m *stubBangumi) GetSubjectEpisodes(ctx context.Context, id int) ([]bangumi
 func (m *stubBangumi) GetSubjectComments(ctx context.Context, subjectID int, limit int) ([]bangumi.SubjectComment, error) {
 	return nil, nil
 }
+func (m *stubBangumi) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error) {
+	return nil, 0, nil
+}
 
 type stubAniList struct {
 	searchFn   func(ctx context.Context, query string) ([]anilist.Media, error)
@@ -61,7 +64,7 @@ type stubAniList struct {
 	trendingFn func(ctx context.Context, page, perPage int) ([]anilist.Media, error)
 }
 
-func (m *stubAniList) SearchMedia(ctx context.Context, q string) ([]anilist.Media, error) {
+func (m *stubAniList) SearchMedia(ctx context.Context, q string, isAdult bool) ([]anilist.Media, error) {
 	if m.searchFn != nil {
 		return m.searchFn(ctx, q)
 	}
@@ -80,6 +83,12 @@ func (m *stubAniList) GetTrending(ctx context.Context, p, pp int) ([]anilist.Med
 	return nil, nil
 }
 func (m *stubAniList) BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]anilist.Media, error) {
+	return nil, nil
+}
+func (m *stubAniList) Browse(ctx context.Context, filter anilist.BrowseFilter, page, perPage int) ([]anilist.Media, error) {
+	return nil, nil
+}
+func (m *stubAniList) GetAiringSchedule(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
 	return nil, nil
 }
 
