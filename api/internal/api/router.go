@@ -2,6 +2,9 @@ package api
 
 import (
 	"database/sql"
+	"log/slog"
+	"os"
+	"path/filepath"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/cache"
@@ -9,6 +12,7 @@ import (
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/tmdb"
+	"github.com/milmil/api/internal/jellyfin"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/notification"
@@ -263,6 +267,16 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	systemGroup.GET("/storage", h.handleStorageStats)
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
 	systemGroup.GET("/downloader-status", h.handleDownloaderStatus)
+
+	// Jellyfin-compatible API for external players (Infuse, VLC, Kodi)
+	jellyfinCacheDir := filepath.Join(os.TempDir(), "milmil", "jellyfin-images")
+	jellyfinHandler, err := jellyfin.NewHandler(store.New(db), cfg.JWTSecret, jellyfinCacheDir, cfg.EncryptionKey)
+	if err != nil {
+		slog.Warn("jellyfin: failed to initialize", "err", err)
+	} else {
+		jellyfinHandler.RegisterRoutes(e)
+		slog.Info("Jellyfin API enabled")
+	}
 
 	return e
 }
