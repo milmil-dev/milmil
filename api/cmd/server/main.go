@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"net"
 	"os/signal"
 	"strings"
 	"sync"
@@ -18,6 +19,7 @@ import (
 	slogzerolog "github.com/samber/slog-zerolog/v2"
 
 	"github.com/milmil/api/internal/api"
+	"github.com/milmil/api/internal/jellyfin"
 	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/bot/commands"
 	dcadapter "github.com/milmil/api/internal/bot/discord"
@@ -353,10 +355,34 @@ func main() {
 		os.Exit(0)
 	}()
 
+	// Start Jellyfin LAN discovery (UDP 7359)
 	addr := fmt.Sprintf(":%d", cfg.APIPort)
+	discoveryAddr := fmt.Sprintf("http://%s%s", localIP(), addr)
+	stopDiscovery, discErr := jellyfin.StartDiscoveryServer("milmil", "milmil", discoveryAddr)
+	if discErr != nil {
+		slog.Warn("jellyfin discovery: failed to start", "err", discErr)
+	} else {
+		defer stopDiscovery()
+		slog.Info("Jellyfin LAN discovery enabled", "port", 7359)
+	}
+
 	slog.Info("milmil-api starting", "addr", addr, "db", cfg.DatabaseURL)
 	if err := e.Start(addr); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		slog.Error("server start failed", "err", err)
 		os.Exit(1)
 	}
+}
+
+// localIP returns the first non-loopback IPv4 address found on the machine.
+func localIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return "127.0.0.1"
+	}
+	for _, a := range addrs {
+		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+			return ipnet.IP.String()
+		}
+	}
+	return "127.0.0.1"
 }
