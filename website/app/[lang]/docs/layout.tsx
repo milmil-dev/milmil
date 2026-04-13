@@ -17,7 +17,7 @@ function baseOptions(locale: string): BaseLayoutProps {
       },
       {
         text: 'GitHub',
-        url: 'https://github.com/milmil-org/milmil',
+        url: 'https://github.com/milmil-dev/milmil',
         external: true,
       },
     ],

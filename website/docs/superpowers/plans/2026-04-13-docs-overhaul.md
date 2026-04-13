@@ -525,7 +525,7 @@ milmil requires **FFmpeg** for media info extraction and transcoding. Make sure 
 ### Clone the repository
 
 ```bash
-git clone https://github.com/milmil-org/milmil.git
+git clone https://github.com/milmil-dev/milmil.git
 cd milmil
 ```
 </Step>
@@ -641,7 +641,7 @@ docker run -d \
   --env-file .env \
   -v milmil-data:/data \
   -v /path/to/anime:/media/anime \
-  ghcr.io/milmil-org/milmil:latest
+  ghcr.io/milmil-dev/milmil:latest
 ```
 </Tab>
 </Tabs>
@@ -1784,7 +1784,7 @@ Log out and back in for group changes to take effect.
 ### Clone and start
 
 ```bash
-git clone https://github.com/milmil-org/milmil.git
+git clone https://github.com/milmil-dev/milmil.git
 cd milmil
 docker compose up -d
 ```
@@ -2505,7 +2505,7 @@ description: Set up a local development environment for milmil.
 ### Clone the repository
 
 ```bash
-git clone https://github.com/milmil-org/milmil.git
+git clone https://github.com/milmil-dev/milmil.git
 cd milmil
 ```
 </Step>
@@ -2626,7 +2626,7 @@ description: How to report bugs and request features.
 <Step>
 ### Search existing issues
 
-Before filing a new bug, check [GitHub Issues](https://github.com/milmil-org/milmil/issues) to see if it's already reported.
+Before filing a new bug, check [GitHub Issues](https://github.com/milmil-dev/milmil/issues) to see if it's already reported.
 </Step>
 <Step>
 ### Gather information
@@ -2642,7 +2642,7 @@ Include in your report:
 <Step>
 ### File the issue
 
-Open a [new issue](https://github.com/milmil-org/milmil/issues/new) with a clear title and detailed description. Include steps to reproduce the bug.
+Open a [new issue](https://github.com/milmil-dev/milmil/issues/new) with a clear title and detailed description. Include steps to reproduce the bug.
 </Step>
 </Steps>
 
@@ -2652,7 +2652,7 @@ Include relevant log output from `docker logs milmil-api` for backend issues. Fo
 
 ## Feature Requests
 
-Open a [GitHub Discussion](https://github.com/milmil-org/milmil/discussions) for feature ideas. Describe:
+Open a [GitHub Discussion](https://github.com/milmil-dev/milmil/discussions) for feature ideas. Describe:
 
 - **What** you want to achieve
 - **Why** it would be useful
@@ -2660,7 +2660,7 @@ Open a [GitHub Discussion](https://github.com/milmil-org/milmil/discussions) for
 
 ## Questions & Help
 
-For general questions, use [GitHub Discussions](https://github.com/milmil-org/milmil/discussions) rather than filing an issue. Issues are reserved for confirmed bugs and tracked work items.
+For general questions, use [GitHub Discussions](https://github.com/milmil-dev/milmil/discussions) rather than filing an issue. Issues are reserved for confirmed bugs and tracked work items.
 ```
 
 - [ ] **Step 4: Verify build succeeds**

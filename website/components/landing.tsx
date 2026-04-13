@@ -141,7 +141,7 @@ export function LandingPage({ lang }: { lang: string }) {
             <a href={`/${lang}/docs`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(232,143,170,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(232,143,170,0.35)] transition-all">
               {i18n._(msg`landing.getStarted`)}
             </a>
-            <a href="https://github.com/milmil-org/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
+            <a href="https://github.com/milmil-dev/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
               {i18n._(msg`landing.viewGithub`)}
             </a>
           </motion.div>
@@ -198,7 +198,7 @@ export function LandingPage({ lang }: { lang: string }) {
               <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" /><div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" /><div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
             </div>
             <div className="p-5 font-mono text-[13px] leading-8">
-              <div><span className="text-[--mm-accent]">$</span> <span className="text-white/80">git clone https://github.com/milmil-org/milmil</span></div>
+              <div><span className="text-[--mm-accent]">$</span> <span className="text-white/80">git clone https://github.com/milmil-dev/milmil</span></div>
               <div><span className="text-[--mm-accent]">$</span> <span className="text-white/80">cd milmil</span></div>
               <div><span className="text-[--mm-accent]">$</span> <span className="text-white/80">docker compose up -d</span></div>
               <div><span className="text-white/30">Creating milmil-postgres ... </span><span className="text-emerald-400">done</span></div>
@@ -241,7 +241,7 @@ export function LandingPage({ lang }: { lang: string }) {
             <a href={`/${lang}/docs/getting-started/installation`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(232,143,170,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(232,143,170,0.35)] transition-all">
               {i18n._(msg`landing.readDocs`)}
             </a>
-            <a href="https://github.com/milmil-org/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
+            <a href="https://github.com/milmil-dev/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
               {i18n._(msg`landing.viewGithub`)}
             </a>
           </div>
@@ -251,7 +251,7 @@ export function LandingPage({ lang }: { lang: string }) {
       <footer className="px-6 py-8 text-center border-t border-white/5">
         <div className="flex justify-center gap-6 mb-3">
           <a href={`/${lang}/docs`} className="text-xs text-white/35 no-underline hover:text-white/60 transition-colors">Docs</a>
-          <a href="https://github.com/milmil-org/milmil" className="text-xs text-white/35 no-underline hover:text-white/60 transition-colors">GitHub</a>
+          <a href="https://github.com/milmil-dev/milmil" className="text-xs text-white/35 no-underline hover:text-white/60 transition-colors">GitHub</a>
         </div>
         <p className="text-xs text-white/20">milmil — Self-hosted Anime Media Server</p>
       </footer>
