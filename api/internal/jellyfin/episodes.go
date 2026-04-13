@@ -17,21 +17,28 @@ func (h *Handler) handleGetSeasons(c echo.Context) error {
 	episodes, _ := h.queries.ListEpisodesByAnimeID(c.Request().Context(), animeID)
 	epCount := len(episodes)
 
+	// Get anime title for SeriesName
+	var seriesName string
+	if anime, err := h.queries.GetAnime(c.Request().Context(), animeID); err == nil {
+		seriesName = anime.Title
+	}
+
 	season1 := 1
 	seasonID := EncodeItemID("season", animeID)
 	return c.JSON(http.StatusOK, ItemsResponse{
 		Items: []ItemDTO{{
-			Name:        "Season 1",
-			ServerID:    h.serverID,
-			ID:          seasonID,
-			Type:        "Season",
-			IndexNumber: &season1,
-			ParentID:    seriesIDEncoded,
-			SeriesID:    seriesIDEncoded,
-			SeriesName:  "",
-			IsFolder:    true,
-			ChildCount:  &epCount,
+			Name:         "Season 1",
+			ServerID:     h.serverID,
+			ID:           seasonID,
+			Type:         "Season",
+			IndexNumber:  &season1,
+			ParentID:     seriesIDEncoded,
+			SeriesID:     seriesIDEncoded,
+			SeriesName:   seriesName,
+			IsFolder:     true,
+			ChildCount:   &epCount,
 			LocationType: "FileSystem",
+			UserData:     &UserItemData{Key: seasonID},
 		}},
 		TotalRecordCount: 1,
 	})

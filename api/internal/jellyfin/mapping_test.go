@@ -1,6 +1,9 @@
 package jellyfin
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestEncodeDecodeItemID(t *testing.T) {
 	tests := []struct {
@@ -28,12 +31,22 @@ func TestEncodeDecodeItemID(t *testing.T) {
 }
 
 func TestDecodeItemID_Invalid(t *testing.T) {
-	_, _, err := DecodeItemID("not-valid-base64!!!")
+	_, _, err := DecodeItemID("not-valid-hex!!!")
 	if err == nil {
-		t.Fatal("expected error for invalid base64")
+		t.Fatal("expected error for invalid hex")
 	}
-	_, _, err = DecodeItemID("bm9jb2xvbg==") // "nocolon" — no colon separator
+	_, _, err = DecodeItemID(fmt.Sprintf("%x", "nocolon")) // no colon separator
 	if err == nil {
 		t.Fatal("expected error for missing colon separator")
+	}
+}
+
+func TestEncodeItemID_ProducesHex(t *testing.T) {
+	encoded := EncodeItemID("anime", "abc123")
+	// Should be valid hex, no base64 chars like = or /
+	for _, c := range encoded {
+		if !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')) {
+			t.Fatalf("encoded ID contains non-hex char: %c in %s", c, encoded)
+		}
 	}
 }

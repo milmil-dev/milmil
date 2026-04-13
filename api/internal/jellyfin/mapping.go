@@ -1,7 +1,7 @@
 package jellyfin
 
 import (
-	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -9,14 +9,14 @@ import (
 )
 
 // EncodeItemID encodes a milmil type+id pair into a Jellyfin-compatible item ID.
-// Format: base64url("type:id")
+// Format: hex("type:id") — produces a string of hex characters that looks like a GUID to clients.
 func EncodeItemID(typ, id string) string {
-	return base64.URLEncoding.EncodeToString([]byte(typ + ":" + id))
+	return hex.EncodeToString([]byte(typ + ":" + id))
 }
 
 // DecodeItemID decodes a Jellyfin item ID back into type and milmil id.
 func DecodeItemID(encoded string) (typ, id string, err error) {
-	b, err := base64.URLEncoding.DecodeString(encoded)
+	b, err := hex.DecodeString(encoded)
 	if err != nil {
 		return "", "", fmt.Errorf("decode item id: %w", err)
 	}

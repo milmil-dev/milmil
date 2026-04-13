@@ -62,6 +62,7 @@ type ItemDTO struct {
 type ItemsResponse struct {
 	Items            []ItemDTO `json:"Items"`
 	TotalRecordCount int       `json:"TotalRecordCount"`
+	StartIndex       int       `json:"StartIndex"`
 }
 
 // MediaSource describes a playable media file.
