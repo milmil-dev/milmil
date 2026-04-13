@@ -14,7 +14,10 @@ interface ApiTokenDTO {
   name: string;
   token_prefix: string;
   last_used_at: string | null;
+  last_ip: string;
+  last_user_agent: string;
   created_at: string;
+  is_current: boolean;
 }
 
 interface ApiTokenCreateResponse {
@@ -127,8 +130,11 @@ export function ApiTokensCard() {
                   <p className="text-[13px] font-medium text-white truncate">
                     {token.name}
                   </p>
-                  <p className="text-[11px] text-white/25 font-mono">
-                    mlml_{token.token_prefix}...
+                  <p className="text-[11px] text-white/25">
+                    <span className="font-mono">mlml_{token.token_prefix}...</span>
+                    <span className="ml-2 font-sans">
+                      · {i18n._(msg`apiTokens.created`)} {formatDate(token.created_at)}
+                    </span>
                     {token.last_used_at && (
                       <span className="ml-2 font-sans">
                         · {i18n._(msg`apiTokens.lastUsed`)} {formatDate(token.last_used_at)}

@@ -164,85 +164,85 @@ msgstr "milmil 정보"
 msgid "about.systemInfo"
 msgstr "시스템 정보"
 
-#: src/pages/settings/AccountPanel.tsx:375
+#: src/pages/settings/AccountPanel.tsx:405
 msgid "account.2fa.activeMessage"
 msgstr "2단계 인증이 활성화되어 있습니다. 토글을 끄면 비활성화됩니다."
 
-#: src/pages/settings/AccountPanel.tsx:280
+#: src/pages/settings/AccountPanel.tsx:310
 msgid "account.2fa.description"
 msgstr "로그인 시 TOTP 코드를 요구하여 보안을 강화합니다."
 
-#: src/pages/settings/AccountPanel.tsx:261
+#: src/pages/settings/AccountPanel.tsx:291
 msgid "account.2fa.disabled"
 msgstr "2단계 인증이 비활성화되었습니다"
 
-#: src/pages/settings/AccountPanel.tsx:266
+#: src/pages/settings/AccountPanel.tsx:296
 msgid "account.2fa.disableFailed"
 msgstr "2단계 인증 비활성화에 실패했습니다"
 
-#: src/pages/settings/AccountPanel.tsx:250
+#: src/pages/settings/AccountPanel.tsx:280
 msgid "account.2fa.enabled"
 msgstr "2단계 인증이 활성화되었습니다"
 
-#: src/pages/settings/AccountPanel.tsx:255
+#: src/pages/settings/AccountPanel.tsx:285
 msgid "account.2fa.invalidCode"
 msgstr "유효하지 않은 코드입니다"
 
-#: src/pages/settings/AccountPanel.tsx:318
+#: src/pages/settings/AccountPanel.tsx:348
 msgid "account.2fa.manualEntry"
 msgstr "수동 입력"
 
-#: src/pages/settings/AccountPanel.tsx:304
+#: src/pages/settings/AccountPanel.tsx:334
 msgid "account.2fa.scanInstructions"
 msgstr "인증 앱으로 이 QR 코드를 스캔한 후, 6자리 인증 코드를 입력하여 확인하세요."
 
-#: src/pages/settings/AccountPanel.tsx:244
+#: src/pages/settings/AccountPanel.tsx:274
 msgid "account.2fa.setupFailed"
 msgstr "2단계 인증 설정에 실패했습니다"
 
-#: src/pages/settings/AccountPanel.tsx:290
+#: src/pages/settings/AccountPanel.tsx:320
 msgid "account.2fa.statusDisabled"
 msgstr "비활성화됨"
 
-#: src/pages/settings/AccountPanel.tsx:287
+#: src/pages/settings/AccountPanel.tsx:317
 msgid "account.2fa.statusEnabled"
 msgstr "활성화됨"
 
-#: src/pages/settings/AccountPanel.tsx:289
+#: src/pages/settings/AccountPanel.tsx:319
 msgid "account.2fa.statusPending"
 msgstr "인증 대기 중"
 
-#: src/pages/settings/AccountPanel.tsx:278
+#: src/pages/settings/AccountPanel.tsx:308
 msgid "account.2fa.title"
 msgstr "2단계 인증"
 
-#: src/pages/settings/AccountPanel.tsx:337
+#: src/pages/settings/AccountPanel.tsx:367
 msgid "account.2fa.verificationCode"
 msgstr "인증 코드"
 
-#: src/pages/settings/AccountPanel.tsx:364
+#: src/pages/settings/AccountPanel.tsx:394
 msgid "account.2fa.verifyEnable"
 msgstr "인증 후 활성화"
 
-#: src/pages/settings/AccountPanel.tsx:363
+#: src/pages/settings/AccountPanel.tsx:393
 msgid "account.2fa.verifying"
 msgstr "인증 중..."
 
-#: src/pages/settings/AccountPanel.tsx:92
+#: src/pages/settings/AccountPanel.tsx:121
 msgid "account.changePassword"
 msgstr "비밀번호 변경"
 
-#: src/pages/settings/AccountPanel.tsx:173
+#: src/pages/settings/AccountPanel.tsx:202
 msgid "account.confirmPassword"
 msgstr "새 비밀번호 확인"
 
-#: src/pages/settings/AccountPanel.tsx:110
+#: src/pages/settings/AccountPanel.tsx:139
 msgid "account.currentPassword"
 msgstr "현재 비밀번호"
 
-#: src/pages/settings/AccountPanel.tsx:104
-#: src/pages/settings/AccountPanel.tsx:132
-#: src/pages/settings/AccountPanel.tsx:163
+#: src/pages/settings/AccountPanel.tsx:133
+#: src/pages/settings/AccountPanel.tsx:161
+#: src/pages/settings/AccountPanel.tsx:192
 msgid "account.fieldRequired"
 msgstr "필수 항목입니다"
 
@@ -254,39 +254,51 @@ msgstr "로컬 계정"
 msgid "account.logout"
 msgstr "로그아웃"
 
-#: src/pages/settings/AccountPanel.tsx:141
+#: src/pages/settings/AccountPanel.tsx:170
 msgid "account.newPassword"
 msgstr "새 비밀번호"
 
-#: src/pages/settings/AccountPanel.tsx:133
+#: src/pages/settings/AccountPanel.tsx:162
 msgid "account.passwordMinLength"
 msgstr "비밀번호는 8자 이상이어야 합니다"
 
-#: src/pages/settings/AccountPanel.tsx:165
+#: src/pages/settings/AccountPanel.tsx:194
 msgid "account.passwordMismatch"
 msgstr "비밀번호가 일치하지 않습니다"
 
-#: src/pages/settings/AccountPanel.tsx:48
+#: src/pages/settings/AccountPanel.tsx:57
 msgid "account.passwordUpdated"
 msgstr "비밀번호가 업데이트되었습니다"
 
-#: src/pages/settings/AccountPanel.tsx:51
+#: src/pages/settings/AccountPanel.tsx:60
 msgid "account.passwordUpdateFailed"
 msgstr "비밀번호 업데이트에 실패했습니다"
 
-#: src/pages/settings/AccountPanel.tsx:79
+#: src/pages/settings/AccountPanel.tsx:108
 msgid "account.profile"
 msgstr "프로필"
 
-#: src/pages/settings/AccountPanel.tsx:74
+#: src/pages/settings/AccountPanel.tsx:83
 msgid "account.subtitle"
 msgstr "프로필 및 보안 설정 관리"
 
-#: src/pages/settings/AccountPanel.tsx:197
+#: src/pages/settings/AccountPanel.tsx:41
+msgid "account.tab.account"
+msgstr ""
+
+#: src/pages/settings/AccountPanel.tsx:43
+msgid "account.tab.sessions"
+msgstr ""
+
+#: src/pages/settings/AccountPanel.tsx:42
+msgid "account.tab.tokens"
+msgstr ""
+
+#: src/pages/settings/AccountPanel.tsx:226
 msgid "account.updatePassword"
 msgstr "비밀번호 업데이트"
 
-#: src/pages/settings/AccountPanel.tsx:196
+#: src/pages/settings/AccountPanel.tsx:225
 msgid "account.updating"
 msgstr "업데이트 중..."
 
@@ -387,51 +399,55 @@ msgstr "예고편"
 msgid "anime.voiceActor"
 msgstr "CV"
 
-#: src/pages/settings/ApiTokensCard.tsx:179
+#: src/pages/settings/ApiTokensCard.tsx:185
 msgid "apiTokens.create"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:86
+#: src/pages/settings/ApiTokensCard.tsx:136
+msgid "apiTokens.created"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:89
 msgid "apiTokens.createdWarning"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:49
+#: src/pages/settings/ApiTokensCard.tsx:52
 msgid "apiTokens.createFailed"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:79
+#: src/pages/settings/ApiTokensCard.tsx:82
 msgid "apiTokens.description"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:107
+#: src/pages/settings/ApiTokensCard.tsx:110
 msgid "apiTokens.dismiss"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:134
+#: src/pages/settings/ApiTokensCard.tsx:140
 msgid "apiTokens.lastUsed"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:162
+#: src/pages/settings/ApiTokensCard.tsx:168
 msgid "apiTokens.namePlaceholder"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:149
+#: src/pages/settings/ApiTokensCard.tsx:155
 msgid "apiTokens.revoke"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:143
+#: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revokeConfirm"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:55
+#: src/pages/settings/ApiTokensCard.tsx:58
 msgid "apiTokens.revoked"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:58
+#: src/pages/settings/ApiTokensCard.tsx:61
 msgid "apiTokens.revokeFailed"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:77
+#: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
 msgstr ""
 
@@ -1184,12 +1200,12 @@ msgstr "홈으로 돌아가기"
 msgid "common.cancel"
 msgstr "취소"
 
-#: src/pages/settings/AccountPanel.tsx:327
+#: src/pages/settings/AccountPanel.tsx:357
 msgid "common.clickToCopy"
 msgstr "클릭하여 복사"
 
-#: src/pages/settings/AccountPanel.tsx:325
-#: src/pages/settings/ApiTokensCard.tsx:64
+#: src/pages/settings/AccountPanel.tsx:355
+#: src/pages/settings/ApiTokensCard.tsx:67
 msgid "common.copied"
 msgstr "복사됨"
 
@@ -3176,6 +3192,51 @@ msgstr ""
 #~ msgid "search.title"
 #~ msgstr "검색"
 
+#: src/pages/settings/SessionsTab.tsx:48
+msgid "sessions.allOthersRevoked"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:96
+msgid "sessions.current"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:74
+msgid "sessions.description"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:57
+msgid "sessions.justNow"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:120
+msgid "sessions.revoke"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:137
+msgid "sessions.revokeAllConfirm"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:144
+msgid "sessions.revokeAllOthers"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:114
+msgid "sessions.revokeConfirm"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:39
+msgid "sessions.revoked"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:42
+#: src/pages/settings/SessionsTab.tsx:51
+msgid "sessions.revokeFailed"
+msgstr ""
+
+#: src/pages/settings/SessionsTab.tsx:72
+msgid "sessions.title"
+msgstr ""
+
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
 msgstr "언어"
@@ -3394,7 +3455,7 @@ msgstr "외부 서비스를 연결하고 데이터를 동기화"
 msgid "settings.nav.about"
 msgstr "정보"
 
-#: src/pages/settings/AccountPanel.tsx:71
+#: src/pages/settings/AccountPanel.tsx:80
 #: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "계정"

@@ -13,7 +13,9 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { PasswordInput } from '@/components/ui/password-input';
 import { api } from '@/lib/api-client';
 import { useAuthStore } from '@/store/auth-store';
+import { cn } from '@/lib/utils';
 import { ApiTokensCard } from './ApiTokensCard';
+import { SessionsTab } from './SessionsTab';
 
 const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
@@ -33,6 +35,13 @@ export function AccountPanel() {
   const queryClient = useQueryClient();
   const [totpCode, setTotpCode] = useState('');
   const [setupData, setSetupData] = useState<TwoFactorSetupResponse | null>(null);
+  const [activeTab, setActiveTab] = useState<'account' | 'tokens' | 'sessions'>('account');
+
+  const INNER_TABS = [
+    { id: 'account' as const, label: i18n._(msg`account.tab.account`) },
+    { id: 'tokens' as const, label: i18n._(msg`account.tab.tokens`) },
+    { id: 'sessions' as const, label: i18n._(msg`account.tab.sessions`) },
+  ];
 
   const { data: twoFactorStatus } = useQuery({
     queryKey: ['2fa', 'status'],
@@ -74,147 +83,168 @@ export function AccountPanel() {
         {i18n._(msg`account.subtitle`)}
       </p>
 
-      <div className="space-y-3">
-        {/* Profile */}
-        <SettingsCard label={i18n._(msg`account.profile`)}>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mm-accent/15 text-sm font-semibold text-mm-accent ring-1 ring-mm-accent/25">
-              {user?.username?.charAt(0).toUpperCase() ?? '?'}
-            </div>
-            <div>
-              <p className="text-sm font-medium text-white">{user?.username ?? '—'}</p>
-              <p className="text-xs text-white/30">ID: {user?.id ?? '—'}</p>
-            </div>
-          </div>
-        </SettingsCard>
-
-        {/* Change Password */}
-        <SettingsCard label={i18n._(msg`account.changePassword`)}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
-            }}
-            className="space-y-4"
+      {/* Inner tab bar */}
+      <div className="mb-6 flex gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+        {INNER_TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              'flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200',
+              activeTab === tab.id
+                ? 'bg-white/[0.08] text-white'
+                : 'text-white/35 hover:text-white/60'
+            )}
           >
-            <form.Field
-              name="current_password"
-              validators={{
-                onSubmit: ({ value }) =>
-                  !value ? i18n._(msg`account.fieldRequired`) : undefined,
-              }}
-            >
-              {(field) => (
-                <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-                  <FieldLabel htmlFor={field.name}>
-                    {i18n._(msg`account.currentPassword`)}
-                  </FieldLabel>
-                  <PasswordInput
-                    id={field.name}
-                    autoComplete="current-password"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className={inputClass}
-                  />
-                  <FieldError>
-                    {field.state.meta.isTouched && field.state.meta.errors[0]
-                      ? String(field.state.meta.errors[0])
-                      : null}
-                  </FieldError>
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field
-              name="new_password"
-              validators={{
-                onSubmit: ({ value }) => {
-                  if (!value) return i18n._(msg`account.fieldRequired`);
-                  if (value.length < 8) return i18n._(msg`account.passwordMinLength`);
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-                  <FieldLabel htmlFor={field.name}>
-                    {i18n._(msg`account.newPassword`)}
-                  </FieldLabel>
-                  <PasswordInput
-                    id={field.name}
-                    autoComplete="new-password"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className={inputClass}
-                  />
-                  <FieldError>
-                    {field.state.meta.isTouched && field.state.meta.errors[0]
-                      ? String(field.state.meta.errors[0])
-                      : null}
-                  </FieldError>
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field
-              name="confirm_password"
-              validators={{
-                onSubmit: ({ value, fieldApi }) => {
-                  if (!value) return i18n._(msg`account.fieldRequired`);
-                  if (value !== fieldApi.form.getFieldValue('new_password'))
-                    return i18n._(msg`account.passwordMismatch`);
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-                  <FieldLabel htmlFor={field.name}>
-                    {i18n._(msg`account.confirmPassword`)}
-                  </FieldLabel>
-                  <PasswordInput
-                    id={field.name}
-                    autoComplete="new-password"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className={inputClass}
-                  />
-                  <FieldError>
-                    {field.state.meta.isTouched && field.state.meta.errors[0]
-                      ? String(field.state.meta.errors[0])
-                      : null}
-                  </FieldError>
-                </Field>
-              )}
-            </form.Field>
-
-            <div className="flex justify-end">
-              <form.Subscribe selector={(s) => s.isSubmitting}>
-                {(isSubmitting) => (
-                  <Button type="submit" disabled={isSubmitting || changePassword.isPending}>
-                    {isSubmitting || changePassword.isPending
-                      ? i18n._(msg`account.updating`)
-                      : i18n._(msg`account.updatePassword`)}
-                  </Button>
-                )}
-              </form.Subscribe>
-            </div>
-          </form>
-        </SettingsCard>
-
-        {/* 2FA */}
-        <TwoFactorCard
-          enabled={twoFactorEnabled}
-          setupData={setupData}
-          setSetupData={setSetupData}
-          totpCode={totpCode}
-          setTotpCode={setTotpCode}
-          queryClient={queryClient}
-        />
-
-        {/* API Tokens */}
-        <ApiTokensCard />
+            {tab.label}
+          </button>
+        ))}
       </div>
+
+      {activeTab === 'account' && (
+        <div className="space-y-3">
+          {/* Profile */}
+          <SettingsCard label={i18n._(msg`account.profile`)}>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mm-accent/15 text-sm font-semibold text-mm-accent ring-1 ring-mm-accent/25">
+                {user?.username?.charAt(0).toUpperCase() ?? '?'}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">{user?.username ?? '—'}</p>
+                <p className="text-xs text-white/30">ID: {user?.id ?? '—'}</p>
+              </div>
+            </div>
+          </SettingsCard>
+
+          {/* Change Password */}
+          <SettingsCard label={i18n._(msg`account.changePassword`)}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+              className="space-y-4"
+            >
+              <form.Field
+                name="current_password"
+                validators={{
+                  onSubmit: ({ value }) =>
+                    !value ? i18n._(msg`account.fieldRequired`) : undefined,
+                }}
+              >
+                {(field) => (
+                  <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                    <FieldLabel htmlFor={field.name}>
+                      {i18n._(msg`account.currentPassword`)}
+                    </FieldLabel>
+                    <PasswordInput
+                      id={field.name}
+                      autoComplete="current-password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className={inputClass}
+                    />
+                    <FieldError>
+                      {field.state.meta.isTouched && field.state.meta.errors[0]
+                        ? String(field.state.meta.errors[0])
+                        : null}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+
+              <form.Field
+                name="new_password"
+                validators={{
+                  onSubmit: ({ value }) => {
+                    if (!value) return i18n._(msg`account.fieldRequired`);
+                    if (value.length < 8) return i18n._(msg`account.passwordMinLength`);
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                    <FieldLabel htmlFor={field.name}>
+                      {i18n._(msg`account.newPassword`)}
+                    </FieldLabel>
+                    <PasswordInput
+                      id={field.name}
+                      autoComplete="new-password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className={inputClass}
+                    />
+                    <FieldError>
+                      {field.state.meta.isTouched && field.state.meta.errors[0]
+                        ? String(field.state.meta.errors[0])
+                        : null}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+
+              <form.Field
+                name="confirm_password"
+                validators={{
+                  onSubmit: ({ value, fieldApi }) => {
+                    if (!value) return i18n._(msg`account.fieldRequired`);
+                    if (value !== fieldApi.form.getFieldValue('new_password'))
+                      return i18n._(msg`account.passwordMismatch`);
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                    <FieldLabel htmlFor={field.name}>
+                      {i18n._(msg`account.confirmPassword`)}
+                    </FieldLabel>
+                    <PasswordInput
+                      id={field.name}
+                      autoComplete="new-password"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className={inputClass}
+                    />
+                    <FieldError>
+                      {field.state.meta.isTouched && field.state.meta.errors[0]
+                        ? String(field.state.meta.errors[0])
+                        : null}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+
+              <div className="flex justify-end">
+                <form.Subscribe selector={(s) => s.isSubmitting}>
+                  {(isSubmitting) => (
+                    <Button type="submit" disabled={isSubmitting || changePassword.isPending}>
+                      {isSubmitting || changePassword.isPending
+                        ? i18n._(msg`account.updating`)
+                        : i18n._(msg`account.updatePassword`)}
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </form>
+          </SettingsCard>
+
+          {/* 2FA */}
+          <TwoFactorCard
+            enabled={twoFactorEnabled}
+            setupData={setupData}
+            setSetupData={setSetupData}
+            totpCode={totpCode}
+            setTotpCode={setTotpCode}
+            queryClient={queryClient}
+          />
+        </div>
+      )}
+
+      {activeTab === 'tokens' && <ApiTokensCard />}
+      {activeTab === 'sessions' && <SessionsTab />}
     </div>
   );
 }
