@@ -5,13 +5,9 @@ description: Deploy milmil with Docker Compose for production use.
 
 ## Production Setup
 
-Use the production compose file for a complete deployment:
-
-```bash
-docker compose -f docker-compose.prod.yml up -d
-```
-
-### Required Environment Variables
+<Steps>
+<Step>
+### Create environment file
 
 Create a `.env` file in the project root:
 
@@ -21,9 +17,35 @@ MILMIL_ENCRYPTION_KEY=your-aes-256-encryption-key
 DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
 ```
 
-### Services
+<Callout type="warn">
+Generate strong random keys for production. You can use `openssl rand -hex 32` to generate a 64-character hex key.
+</Callout>
+</Step>
+<Step>
+### Start the stack
 
-The production stack includes:
+<Tabs items={["docker compose", "docker run"]}>
+<Tab value="docker compose">
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+</Tab>
+<Tab value="docker run">
+```bash
+docker run -d \
+  --name milmil-api \
+  -p 8080:8080 \
+  --env-file .env \
+  -v milmil-data:/data \
+  -v /path/to/anime:/media/anime \
+  ghcr.io/milmil-org/milmil:latest
+```
+</Tab>
+</Tabs>
+</Step>
+</Steps>
+
+## Services
 
 | Service | Port | Description |
 |---------|------|-------------|
@@ -32,9 +54,61 @@ The production stack includes:
 | `postgres` | 5432 | PostgreSQL 16 |
 | `redis` | 6379 | Redis 7 cache |
 
-### Reverse Proxy
+## Volume Mounts
 
-Place milmil behind Nginx or Caddy for HTTPS. Example Nginx config:
+Map your media directories into the container:
+
+```yaml
+volumes:
+  - /path/to/anime:/media/anime
+  - milmil-data:/data
+```
+
+<Callout type="info">
+The `/data` volume stores downloads, transcode cache, and SQLite database (if used). Make sure it has enough space.
+</Callout>
+
+## Expected File Layout
+
+<Files>
+  <Folder name="milmil" defaultOpen>
+    <File name=".env" />
+    <File name="docker-compose.yml" />
+    <File name="docker-compose.prod.yml" />
+    <Folder name="data">
+      <File name="milmil.db" />
+      <Folder name="downloads" />
+      <Folder name="transcode" />
+    </Folder>
+  </Folder>
+</Files>
+
+## Database
+
+<Tabs items={["SQLite", "PostgreSQL"]}>
+<Tab value="SQLite">
+Zero configuration — great for development and small setups. Data stored in `data/milmil.db`.
+
+```bash
+DATABASE_URL=sqlite://data/milmil.db
+```
+</Tab>
+<Tab value="PostgreSQL">
+Recommended for production deployments. Migrations are auto-applied on startup.
+
+```bash
+DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
+```
+</Tab>
+</Tabs>
+
+## Reverse Proxy
+
+<Callout type="info">
+See the dedicated [Reverse Proxy](/docs/configuration/reverse-proxy) guide for full Nginx, Caddy, and Traefik configurations.
+</Callout>
+
+Place milmil behind a reverse proxy for HTTPS. Example Nginx config:
 
 ```nginx
 server {
@@ -60,19 +134,3 @@ server {
     }
 }
 ```
-
-### Volume Mounts
-
-Map your media directories into the container:
-
-```yaml
-volumes:
-  - /path/to/anime:/media/anime
-  - milmil-data:/data
-```
-
-### Database
-
-- **Development**: SQLite (zero configuration)
-- **Production**: PostgreSQL 16+ recommended
-- Migrations are auto-applied on startup via golang-migrate
