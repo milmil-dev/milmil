@@ -1,0 +1,4 @@
+{
+  "title": "Configuration",
+  "pages": ["environment", "integrations", "notifications", "reverse-proxy", "performance"]
+}

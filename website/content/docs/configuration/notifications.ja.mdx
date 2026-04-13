@@ -1,0 +1,133 @@
+---
+title: 通知とボット
+description: Telegram、Discord、または Webhook でプッシュ通知とインタラクティブなボットコマンドを設定します。
+---
+
+## 概要
+
+milmil は Telegram、Discord、汎用 Webhook を通じてプッシュ通知の送信とインタラクティブなボットコマンドの受信ができます。両方の機能は **設定 > 通知** で設定します。
+
+各プラットフォームカードには 2 つの独立したトグルがあります：
+- **プッシュ通知** — ダウンロード、エラー、システムイベントの一方向アラート
+- **ボットコマンド** — `/schedule`、`/search`、`/downloads` などのインタラクティブコマンド
+
+プラットフォームごとに片方または両方を有効にできます。
+
+## Telegram セットアップ
+
+### 1. ボットを作成
+
+1. Telegram を開いて **@BotFather** を検索
+2. `/newbot` を送信
+3. 表示名を入力（例：`milmil`）
+4. `bot` で終わるユーザー名を入力（例：`milmil_media_bot`）
+5. BotFather が **Bot Token** を返信します — コピーしてください
+
+### 2. Chat ID を取得
+
+1. 新しいボットにメッセージを送信
+2. ブラウザで開く：`https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
+3. `"chat":{"id": 123456789}` を見つけます — その数字が Chat ID です
+
+### 3. milmil で設定
+
+1. **設定 > 通知 > Telegram** に移動
+2. **Bot Token** を貼り付け
+3. **Chat ID** を入力
+4. **プッシュ通知** と/または **ボットコマンド** を有効化
+5. **保存** をクリック
+
+### Webhook モード（オプション）
+
+デフォルトではボットはロングポーリングを使用します（NAT/ファイアウォールの背後でも動作）。サーバーにパブリック URL がある場合、Webhook モードに切り替えてレイテンシを削減できます：
+
+1. **Webhook URL** を入力（例：`https://your-domain.com/api/v1/bot/telegram/webhook`）
+2. ボットが自動的に Telegram に Webhook を登録します
+
+空欄のままにするとポーリングを使用します。
+
+### 許可する Chat ID
+
+ボットにコマンドを送信できる Telegram チャットを制限します。カンマ区切りの Chat ID を入力してください。空欄にすると、設定済みの Chat ID のみ許可されます。
+
+## Discord セットアップ
+
+### プッシュ通知（Webhook）
+
+1. Discord サーバーで **サーバー設定 > 連携 > Webhooks** に移動
+2. **新しい Webhook** をクリック、名前を設定（例：`milmil`）、チャンネルを選択
+3. **Webhook URL をコピー** をクリック
+4. milmil で：**設定 > 通知 > Discord**、**プッシュ通知** を有効化
+5. Webhook URL を貼り付けて保存
+
+### ボットコマンド（スラッシュコマンド）
+
+1. [Discord Developer Portal](https://discord.com/developers/applications) に移動
+2. **New Application** をクリック、`milmil` と名付ける
+3. **Bot** タブに移動、**Add Bot** をクリック
+4. **Bot Token** をコピー
+5. **OAuth2 > URL Generator** に移動、スコープを選択：`bot`、`applications.commands`
+6. 権限を選択：`Send Messages`、`Embed Links`、`Use Slash Commands`
+7. 生成された URL をコピーして開き、ボットをサーバーに招待
+8. General Information タブから **Application ID** をコピー
+9. milmil で：**設定 > 通知 > Discord**、**ボットコマンド** を有効化
+10. **Bot Token** と **Application ID** を貼り付けて保存
+
+### 許可する Guild ID
+
+ボットを使用できる Discord サーバーを制限します。カンマ区切りのサーバー ID を入力してください。空欄にするとすべてのサーバーが許可されます。
+
+## Webhook（汎用）
+
+カスタム連携（Slack、ntfy、Gotify、Pushover など）向け：
+
+1. 設定で **Webhook** を有効化
+2. ターゲット **URL** を入力
+3. オプションで署名検証用の **HMAC Secret** を設定
+4. イベントは `X-Signature-256` ヘッダー付きの JSON POST で送信されます
+
+### ペイロード形式
+
+```json
+{
+  "type": "download.completed",
+  "title": "Download Complete",
+  "message": "Frieren S2E03",
+  "severity": "success",
+  "metadata": {
+    "anime_name": "Frieren",
+    "episode": "03",
+    "subgroup": "LoliHouse"
+  }
+}
+```
+
+## イベントルーティング
+
+プラットフォームカードの下にあるイベントルーティングマトリクスで、どのイベントをどのプラットフォームに送信するかを設定します。
+
+| イベント | 説明 |
+|---|---|
+| ダウンロード開始 | RSS ルールが新しいダウンロードをトリガー |
+| ダウンロード完了 | ダウンロードが正常に完了 |
+| ダウンロード失敗 | ダウンロードでエラーが発生 |
+| ライブラリスキャン完了 | ライブラリスキャンの処理が完了 |
+| システムエラー | バックグラウンドジョブが予期せず失敗 |
+
+## ボットコマンド
+
+ボットコマンドを有効にすると、以下のコマンドが使用できます：
+
+| コマンド | 説明 |
+|---|---|
+| `/start` | ウェルカムメッセージとコマンド一覧 |
+| `/schedule` | 週間放送スケジュール |
+| `/search <query>` | アニメを検索 |
+| `/detail <id>` | カバーとスコア付きのアニメ詳細 |
+| `/downloads` | アクティブなダウンロードと進捗 |
+| `/subscribe <anime>` | 自動ダウンロードサブスクリプションを設定 |
+| `/status` | システム概要 |
+| `/mylist [status]` | あなたのアニメコレクション |
+| `/continue` | 最近視聴、視聴を再開 |
+
+コマンドはインラインボタンに対応しており、サブスクリプション、ダウンロードの一時停止、詳細の表示などのクイックアクションが可能です。

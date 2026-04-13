@@ -1,0 +1,46 @@
+---
+title: Streaming & Playback
+description: Stream anime with danmaku overlay, subtitle support, and watch progress tracking.
+---
+
+## Playback Modes
+
+milmil supports three streaming modes, automatically selecting the best option:
+
+### Direct Play
+
+Serves the original file directly with byte-range requests. Zero transcoding overhead — best quality and performance.
+
+### Container Remux
+
+Remuxes MKV containers to MP4 on-the-fly without re-encoding video or audio. This enables playback in browsers that don't support MKV natively.
+
+### HLS Transcoding
+
+Full FFmpeg transcoding to HLS (HTTP Live Streaming) when the source format isn't browser-compatible. Includes:
+
+- Adaptive bitrate streaming
+- Session-based caching for fast seeking
+- Configurable quality presets
+
+## Danmaku (Bullet Comments)
+
+Real-time bullet comments overlaid on video, sourced from DandanPlay. Comments scroll across the screen during playback, creating a shared viewing experience.
+
+Configure danmaku density, opacity, and font size in the player settings.
+
+## Subtitles
+
+milmil supports:
+
+- **Embedded subtitles** — Extracted from MKV/MP4 containers (ASS, SRT, etc.)
+- **External subtitles** — `.srt`, `.ass`, `.vtt` files alongside the video
+- Multiple subtitle tracks with language selection
+
+## Watch Progress
+
+Your watch progress is automatically saved and synced:
+
+- Resume from where you left off on any device
+- Continue watching section on the home page
+- Progress sync with Bangumi and AniList (when connected)

@@ -1,0 +1,54 @@
+---
+title: Environment Variables
+description: All configurable environment variables for milmil.
+---
+
+## Core Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite://data/milmil.db` | Database connection (SQLite or PostgreSQL) |
+| `JWT_SECRET` | *required* | JWT signing key (min 32 chars) |
+| `MILMIL_ENCRYPTION_KEY` | *required* | AES-256 key for storage credentials |
+| `API_PORT` | `8080` | API server port |
+| `DATA_DIR` | `./data` | Downloads and transcode cache |
+| `DEBUG` | `0` | Enable debug logging |
+| `REDIS_URL` | — | Redis connection URL (in-memory fallback if not set) |
+
+## Torrent Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT/peer port |
+| `SEED_RATIO` | `1.0` | Seed ratio target before stopping |
+| `SEED_TIME_MINUTES` | `60` | Minimum seed duration in minutes |
+
+## Integration Keys
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DANDANPLAY_APP_ID` | — | DandanPlay API app ID |
+| `DANDANPLAY_APP_SECRET` | — | DandanPlay API app secret |
+
+## Database
+
+milmil supports two database backends:
+
+- **SQLite** — Zero configuration, great for development and small setups
+- **PostgreSQL 16+** — Recommended for production deployments
+
+```bash
+# SQLite (default)
+DATABASE_URL=sqlite://data/milmil.db
+
+# PostgreSQL
+DATABASE_URL=postgres://user:password@localhost:5432/milmil?sslmode=disable
+```
+
+## Redis
+
+Redis is optional but recommended for production. Without Redis, milmil uses an in-memory cache that doesn't persist across restarts.
+
+```bash
+REDIS_URL=redis://localhost:6379
+```

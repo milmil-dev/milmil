@@ -1,0 +1,13 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "getting-started",
+    "features",
+    "configuration",
+    "troubleshooting",
+    "contributing",
+    "migration",
+    "architecture"
+  ]
+}

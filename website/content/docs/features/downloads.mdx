@@ -1,0 +1,55 @@
+---
+title: Downloads
+description: Built-in torrent client, RSS auto-download, and aggregated torrent search.
+---
+
+## Torrent Client
+
+milmil includes a built-in torrent client with:
+
+- Configurable seed ratio and time limits
+- DHT and peer exchange support
+- Download progress tracking
+- Pause/resume controls
+
+### Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `TORRENT_LISTEN_PORT` | `42069` | DHT/peer port |
+| `SEED_RATIO` | `1.0` | Target seed ratio |
+| `SEED_TIME_MINUTES` | `60` | Minimum seed time |
+
+## Torrent Search
+
+Search across multiple torrent providers from a single interface:
+
+- **Nyaa** — Largest anime torrent tracker
+- **DMHY** — Chinese anime torrents
+- **Mikan** — Mikan Project aggregator
+- **Bangumi.moe** — Bangumi torrent tracker
+- **ACG.rip** — ACG resource tracker
+
+Filter results by resolution, subgroup, and file type.
+
+## RSS Auto-Download
+
+Subscribe to RSS feeds for automatic episode downloads:
+
+1. Add an RSS feed URL
+2. Configure filters (regex patterns, resolution, subgroup preferences)
+3. milmil checks the feed periodically and downloads matching episodes
+4. Downloaded files are automatically scanned and matched
+
+### Post-Download Pipeline
+
+After a download completes, milmil automatically:
+
+1. Scans the downloaded file
+2. Matches it to the correct anime and episode
+3. Enriches metadata from providers
+4. Sends a notification
+
+## HTTP Downloads
+
+milmil also supports direct HTTP downloads with resume capability.

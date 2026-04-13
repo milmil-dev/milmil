@@ -1,0 +1,54 @@
+---
+title: 環境變數
+description: milmil 的所有可設定環境變數。
+---
+
+## 核心設定
+
+| 變數 | 預設值 | 說明 |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite://data/milmil.db` | 資料庫連線（SQLite 或 PostgreSQL） |
+| `JWT_SECRET` | *必填* | JWT 簽章金鑰（至少 32 個字元） |
+| `MILMIL_ENCRYPTION_KEY` | *必填* | AES-256 金鑰，用於加密儲存憑證 |
+| `API_PORT` | `8080` | API 伺服器連接埠 |
+| `DATA_DIR` | `./data` | 下載和轉碼快取目錄 |
+| `DEBUG` | `0` | 啟用偵錯日誌 |
+| `REDIS_URL` | — | Redis 連線 URL（未設定時使用記憶體快取） |
+
+## 種子設定
+
+| 變數 | 預設值 | 說明 |
+|----------|---------|-------------|
+| `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT/對等連接埠 |
+| `SEED_RATIO` | `1.0` | 停止前的目標做種比率 |
+| `SEED_TIME_MINUTES` | `60` | 最短做種時間（分鐘） |
+
+## 整合金鑰
+
+| 變數 | 預設值 | 說明 |
+|----------|---------|-------------|
+| `DANDANPLAY_APP_ID` | — | DandanPlay API 應用程式 ID |
+| `DANDANPLAY_APP_SECRET` | — | DandanPlay API 應用程式密鑰 |
+
+## 資料庫
+
+milmil 支援兩種資料庫後端：
+
+- **SQLite** — 零設定，適合開發和小型部署
+- **PostgreSQL 16+** — 推薦用於正式環境部署
+
+```bash
+# SQLite（預設）
+DATABASE_URL=sqlite://data/milmil.db
+
+# PostgreSQL
+DATABASE_URL=postgres://user:password@localhost:5432/milmil?sslmode=disable
+```
+
+## Redis
+
+Redis 是選用的，但推薦用於正式環境。沒有 Redis 時，milmil 使用記憶體快取，重新啟動後不會持久化。
+
+```bash
+REDIS_URL=redis://localhost:6379
+```

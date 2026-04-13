@@ -1,0 +1,61 @@
+---
+title: Installation
+description: How to install and run milmil on your server.
+---
+
+## Prerequisites
+
+- **Docker** (recommended) or Go 1.26+ and Bun 1.3+
+- **FFmpeg** — Required for transcoding and media info extraction
+- **Redis** — Optional but recommended for production deployments
+
+## Docker (Recommended)
+
+The easiest way to run milmil is with Docker Compose:
+
+```bash
+git clone https://github.com/milmil-org/milmil.git
+cd milmil
+docker compose up -d
+```
+
+This starts all services:
+- **PostgreSQL 16** — Database
+- **Redis 7** — Cache
+- **milmil-api** — Go backend (port 8080)
+- **milmil-web** — React frontend via Nginx (port 3000)
+
+See [Docker Deployment](/docs/getting-started/docker) for advanced configuration.
+
+## Manual Installation
+
+### Backend (Go API)
+
+```bash
+cd api
+go mod download
+make build
+./server
+```
+
+### Frontend (React SPA)
+
+```bash
+cd web
+bun install
+bun run build
+```
+
+Serve the built files from `web/dist` with any static file server or Nginx.
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite://data/milmil.db` | Database connection string |
+| `JWT_SECRET` | *required* | JWT signing key (min 32 chars) |
+| `MILMIL_ENCRYPTION_KEY` | *required* | AES-256 key for storage credentials |
+| `API_PORT` | `8080` | API server port |
+| `DATA_DIR` | `./data` | Downloads and transcode cache |
+
+See [Configuration](/docs/configuration/environment) for all options.

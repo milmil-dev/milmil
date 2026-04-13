@@ -1,0 +1,54 @@
+---
+title: 환경 변수
+description: milmil의 모든 설정 가능한 환경 변수.
+---
+
+## 핵심 설정
+
+| 변수 | 기본값 | 설명 |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite://data/milmil.db` | 데이터베이스 연결 (SQLite 또는 PostgreSQL) |
+| `JWT_SECRET` | *필수* | JWT 서명 키 (최소 32자) |
+| `MILMIL_ENCRYPTION_KEY` | *필수* | 스토리지 자격 증명용 AES-256 키 |
+| `API_PORT` | `8080` | API 서버 포트 |
+| `DATA_DIR` | `./data` | 다운로드 및 트랜스코드 캐시 |
+| `DEBUG` | `0` | 디버그 로깅 활성화 |
+| `REDIS_URL` | — | Redis 연결 URL (미설정 시 인메모리 캐시 사용) |
+
+## 토렌트 설정
+
+| 변수 | 기본값 | 설명 |
+|----------|---------|-------------|
+| `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT/피어 포트 |
+| `SEED_RATIO` | `1.0` | 중지 전 목표 시드 비율 |
+| `SEED_TIME_MINUTES` | `60` | 최소 시드 시간 (분) |
+
+## 연동 키
+
+| 변수 | 기본값 | 설명 |
+|----------|---------|-------------|
+| `DANDANPLAY_APP_ID` | — | DandanPlay API 앱 ID |
+| `DANDANPLAY_APP_SECRET` | — | DandanPlay API 앱 시크릿 |
+
+## 데이터베이스
+
+milmil은 두 가지 데이터베이스 백엔드를 지원합니다:
+
+- **SQLite** — 설정 불필요, 개발 및 소규모 환경에 적합
+- **PostgreSQL 16+** — 프로덕션 배포에 권장
+
+```bash
+# SQLite (기본값)
+DATABASE_URL=sqlite://data/milmil.db
+
+# PostgreSQL
+DATABASE_URL=postgres://user:password@localhost:5432/milmil?sslmode=disable
+```
+
+## Redis
+
+Redis는 선택 사항이지만 프로덕션 환경에서 권장됩니다. Redis가 없으면 milmil은 인메모리 캐시를 사용하며, 재시작 후 데이터가 유지되지 않습니다.
+
+```bash
+REDIS_URL=redis://localhost:6379
+```

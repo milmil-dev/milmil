@@ -1,0 +1,46 @@
+---
+title: First-time Setup
+description: Configure milmil after installation.
+---
+
+## Setup Wizard
+
+When you first open milmil, you'll be guided through the setup wizard:
+
+1. **Create Admin Account** — Set your username and password
+2. **Add Library** — Point to your anime media directory
+3. **Scan Library** — milmil scans and matches your files automatically
+
+## Adding a Library
+
+milmil supports multiple storage backends:
+
+| Type | Description |
+|------|-------------|
+| **Local** | Directories on the host filesystem |
+| **SMB/CIFS** | Windows network shares |
+| **SFTP** | SSH file transfer |
+| **WebDAV** | Cloud storage (Nextcloud, etc.) |
+| **Rclone** | 40+ cloud providers (Google Drive, OneDrive, Dropbox, S3, etc.) |
+
+### Local Directory
+
+The simplest setup — just provide the path to your anime folder:
+
+```
+/media/anime
+```
+
+### Network Storage
+
+For SMB, SFTP, or WebDAV, provide the connection details in the library settings. Credentials are encrypted with AES-256.
+
+## Metadata Matching
+
+After scanning, milmil automatically matches your files to anime entries using:
+
+1. **DandanPlay** — File hash matching (most accurate)
+2. **Bangumi** — Title-based matching
+3. **AniList** — Alternative metadata source
+
+Unmatched files can be manually matched from the library detail page.

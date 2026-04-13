@@ -1,0 +1,133 @@
+---
+title: 알림 및 봇
+description: Telegram, Discord 또는 Webhook을 통해 푸시 알림과 대화형 봇 명령을 설정합니다.
+---
+
+## 개요
+
+milmil은 Telegram, Discord 및 범용 Webhook을 통해 푸시 알림을 보내고 대화형 봇 명령을 수신할 수 있습니다. 두 기능 모두 **설정 > 알림**에서 구성합니다.
+
+각 플랫폼 카드에는 두 개의 독립 토글이 있습니다:
+- **푸시 알림** — 다운로드, 오류 및 시스템 이벤트에 대한 단방향 알림
+- **봇 명령** — `/schedule`, `/search`, `/downloads` 등의 대화형 명령
+
+플랫폼별로 하나 또는 둘 다 활성화할 수 있습니다.
+
+## Telegram 설정
+
+### 1. 봇 생성
+
+1. Telegram을 열고 **@BotFather** 검색
+2. `/newbot` 전송
+3. 표시 이름 입력 (예: `milmil`)
+4. `bot`으로 끝나는 사용자 이름 입력 (예: `milmil_media_bot`)
+5. BotFather가 **Bot Token**을 회신합니다 — 복사하세요
+
+### 2. Chat ID 확인
+
+1. 새 봇에 아무 메시지나 전송
+2. 브라우저에서 열기: `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
+3. `"chat":{"id": 123456789}` 찾기 — 해당 숫자가 Chat ID입니다
+
+### 3. milmil에서 구성
+
+1. **설정 > 알림 > Telegram**으로 이동
+2. **Bot Token** 붙여넣기
+3. **Chat ID** 입력
+4. **푸시 알림** 및/또는 **봇 명령** 활성화
+5. **저장** 클릭
+
+### Webhook 모드 (선택 사항)
+
+기본적으로 봇은 롱 폴링을 사용합니다 (NAT/방화벽 뒤에서도 작동). 서버에 공개 URL이 있는 경우 Webhook 모드로 전환하여 지연 시간을 줄일 수 있습니다:
+
+1. **Webhook URL** 입력 (예: `https://your-domain.com/api/v1/bot/telegram/webhook`)
+2. 봇이 자동으로 Telegram에 Webhook을 등록합니다
+
+비워두면 폴링을 사용합니다.
+
+### 허용된 Chat ID
+
+봇에 명령을 보낼 수 있는 Telegram 채팅을 제한합니다. 쉼표로 구분된 Chat ID를 입력하세요. 비워두면 구성된 Chat ID만 허용됩니다.
+
+## Discord 설정
+
+### 푸시 알림 (Webhook)
+
+1. Discord 서버에서 **서버 설정 > 연동 > Webhooks**로 이동
+2. **새 Webhook** 클릭, 이름 지정 (예: `milmil`), 채널 선택
+3. **Webhook URL 복사** 클릭
+4. milmil에서: **설정 > 알림 > Discord**, **푸시 알림** 활성화
+5. Webhook URL 붙여넣기, 저장
+
+### 봇 명령 (슬래시 명령)
+
+1. [Discord Developer Portal](https://discord.com/developers/applications)로 이동
+2. **New Application** 클릭, `milmil`로 이름 지정
+3. **Bot** 탭으로 이동, **Add Bot** 클릭
+4. **Bot Token** 복사
+5. **OAuth2 > URL Generator**로 이동, 스코프 선택: `bot`, `applications.commands`
+6. 권한 선택: `Send Messages`, `Embed Links`, `Use Slash Commands`
+7. 생성된 URL을 복사하고 열어서 봇을 서버에 초대
+8. General Information 탭에서 **Application ID** 복사
+9. milmil에서: **설정 > 알림 > Discord**, **봇 명령** 활성화
+10. **Bot Token**과 **Application ID** 붙여넣기, 저장
+
+### 허용된 Guild ID
+
+봇을 사용할 수 있는 Discord 서버를 제한합니다. 쉼표로 구분된 서버 ID를 입력하세요. 비워두면 모든 서버가 허용됩니다.
+
+## Webhook (범용)
+
+사용자 정의 연동 (Slack, ntfy, Gotify, Pushover 등)용:
+
+1. 설정에서 **Webhook** 활성화
+2. 대상 **URL** 입력
+3. 선택적으로 서명 검증을 위한 **HMAC Secret** 설정
+4. 이벤트는 `X-Signature-256` 헤더와 함께 JSON POST로 전송됩니다
+
+### 페이로드 형식
+
+```json
+{
+  "type": "download.completed",
+  "title": "Download Complete",
+  "message": "Frieren S2E03",
+  "severity": "success",
+  "metadata": {
+    "anime_name": "Frieren",
+    "episode": "03",
+    "subgroup": "LoliHouse"
+  }
+}
+```
+
+## 이벤트 라우팅
+
+플랫폼 카드 아래의 이벤트 라우팅 매트릭스로 어떤 이벤트를 어떤 플랫폼에 보낼지 구성합니다.
+
+| 이벤트 | 설명 |
+|---|---|
+| 다운로드 시작 | RSS 규칙이 새 다운로드 트리거 |
+| 다운로드 완료 | 다운로드가 성공적으로 완료 |
+| 다운로드 실패 | 다운로드에서 오류 발생 |
+| 라이브러리 스캔 완료 | 라이브러리 스캔 처리 완료 |
+| 시스템 오류 | 백그라운드 작업이 예기치 않게 실패 |
+
+## 봇 명령
+
+봇 명령을 활성화하면 다음 명령을 사용할 수 있습니다:
+
+| 명령 | 설명 |
+|---|---|
+| `/start` | 환영 메시지 및 명령 목록 |
+| `/schedule` | 주간 방영 일정 |
+| `/search <query>` | 애니메이션 검색 |
+| `/detail <id>` | 커버와 평점이 포함된 애니메이션 상세 |
+| `/downloads` | 활성 다운로드 및 진행률 |
+| `/subscribe <anime>` | 자동 다운로드 구독 설정 |
+| `/status` | 시스템 개요 |
+| `/mylist [status]` | 내 애니메이션 컬렉션 |
+| `/continue` | 최근 시청, 이어서 보기 |
+
+명령은 인라인 버튼을 지원하여 구독, 다운로드 일시정지, 상세 보기 등의 빠른 작업이 가능합니다.

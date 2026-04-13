@@ -1,0 +1,78 @@
+---
+title: Docker Deployment
+description: Deploy milmil with Docker Compose for production use.
+---
+
+## Production Setup
+
+Use the production compose file for a complete deployment:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+### Required Environment Variables
+
+Create a `.env` file in the project root:
+
+```bash
+JWT_SECRET=your-secret-key-at-least-32-characters
+MILMIL_ENCRYPTION_KEY=your-aes-256-encryption-key
+DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
+```
+
+### Services
+
+The production stack includes:
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `milmil-api` | 8080 | Go backend API |
+| `milmil-web` | 3000 | React frontend |
+| `postgres` | 5432 | PostgreSQL 16 |
+| `redis` | 6379 | Redis 7 cache |
+
+### Reverse Proxy
+
+Place milmil behind Nginx or Caddy for HTTPS. Example Nginx config:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name milmil.example.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    location /ws {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+### Volume Mounts
+
+Map your media directories into the container:
+
+```yaml
+volumes:
+  - /path/to/anime:/media/anime
+  - milmil-data:/data
+```
+
+### Database
+
+- **Development**: SQLite (zero configuration)
+- **Production**: PostgreSQL 16+ recommended
+- Migrations are auto-applied on startup via golang-migrate
