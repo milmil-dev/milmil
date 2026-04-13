@@ -13,6 +13,7 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { PasswordInput } from '@/components/ui/password-input';
 import { api } from '@/lib/api-client';
 import { useAuthStore } from '@/store/auth-store';
+import { ApiTokensCard } from './ApiTokensCard';
 
 const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
@@ -210,6 +211,9 @@ export function AccountPanel() {
           setTotpCode={setTotpCode}
           queryClient={queryClient}
         />
+
+        {/* API Tokens */}
+        <ApiTokensCard />
       </div>
     </div>
   );

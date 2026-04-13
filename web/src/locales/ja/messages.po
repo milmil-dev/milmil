@@ -164,85 +164,85 @@ msgstr "milmil について"
 msgid "about.systemInfo"
 msgstr "システム情報"
 
-#: src/pages/settings/AccountPanel.tsx:371
+#: src/pages/settings/AccountPanel.tsx:375
 msgid "account.2fa.activeMessage"
 msgstr "二要素認証は有効です。オフに切り替えると無効になります。"
 
-#: src/pages/settings/AccountPanel.tsx:276
+#: src/pages/settings/AccountPanel.tsx:280
 msgid "account.2fa.description"
 msgstr "サインイン時に TOTP コードを要求することで、セキュリティを強化します。"
 
-#: src/pages/settings/AccountPanel.tsx:257
+#: src/pages/settings/AccountPanel.tsx:261
 msgid "account.2fa.disabled"
 msgstr "二要素認証が無効になりました"
 
-#: src/pages/settings/AccountPanel.tsx:262
+#: src/pages/settings/AccountPanel.tsx:266
 msgid "account.2fa.disableFailed"
 msgstr "二要素認証の無効化に失敗しました"
 
-#: src/pages/settings/AccountPanel.tsx:246
+#: src/pages/settings/AccountPanel.tsx:250
 msgid "account.2fa.enabled"
 msgstr "二要素認証が有効になりました"
 
-#: src/pages/settings/AccountPanel.tsx:251
+#: src/pages/settings/AccountPanel.tsx:255
 msgid "account.2fa.invalidCode"
 msgstr "無効なコードです"
 
-#: src/pages/settings/AccountPanel.tsx:314
+#: src/pages/settings/AccountPanel.tsx:318
 msgid "account.2fa.manualEntry"
 msgstr "手動入力"
 
-#: src/pages/settings/AccountPanel.tsx:300
+#: src/pages/settings/AccountPanel.tsx:304
 msgid "account.2fa.scanInstructions"
 msgstr "認証アプリでこの QR コードをスキャンし、6桁の認証コードを入力して検証してください。"
 
-#: src/pages/settings/AccountPanel.tsx:240
+#: src/pages/settings/AccountPanel.tsx:244
 msgid "account.2fa.setupFailed"
 msgstr "二要素認証の設定に失敗しました"
 
-#: src/pages/settings/AccountPanel.tsx:286
+#: src/pages/settings/AccountPanel.tsx:290
 msgid "account.2fa.statusDisabled"
 msgstr "無効"
 
-#: src/pages/settings/AccountPanel.tsx:283
+#: src/pages/settings/AccountPanel.tsx:287
 msgid "account.2fa.statusEnabled"
 msgstr "有効"
 
-#: src/pages/settings/AccountPanel.tsx:285
+#: src/pages/settings/AccountPanel.tsx:289
 msgid "account.2fa.statusPending"
 msgstr "検証待ち"
 
-#: src/pages/settings/AccountPanel.tsx:274
+#: src/pages/settings/AccountPanel.tsx:278
 msgid "account.2fa.title"
 msgstr "二要素認証"
 
-#: src/pages/settings/AccountPanel.tsx:333
+#: src/pages/settings/AccountPanel.tsx:337
 msgid "account.2fa.verificationCode"
 msgstr "認証コード"
 
-#: src/pages/settings/AccountPanel.tsx:360
+#: src/pages/settings/AccountPanel.tsx:364
 msgid "account.2fa.verifyEnable"
 msgstr "検証して有効化"
 
-#: src/pages/settings/AccountPanel.tsx:359
+#: src/pages/settings/AccountPanel.tsx:363
 msgid "account.2fa.verifying"
 msgstr "検証中..."
 
-#: src/pages/settings/AccountPanel.tsx:91
+#: src/pages/settings/AccountPanel.tsx:92
 msgid "account.changePassword"
 msgstr "パスワード変更"
 
-#: src/pages/settings/AccountPanel.tsx:172
+#: src/pages/settings/AccountPanel.tsx:173
 msgid "account.confirmPassword"
 msgstr "新しいパスワードの確認"
 
-#: src/pages/settings/AccountPanel.tsx:109
+#: src/pages/settings/AccountPanel.tsx:110
 msgid "account.currentPassword"
 msgstr "現在のパスワード"
 
-#: src/pages/settings/AccountPanel.tsx:103
-#: src/pages/settings/AccountPanel.tsx:131
-#: src/pages/settings/AccountPanel.tsx:162
+#: src/pages/settings/AccountPanel.tsx:104
+#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:163
 msgid "account.fieldRequired"
 msgstr "この項目は必須です"
 
@@ -254,39 +254,39 @@ msgstr "ローカルアカウント"
 msgid "account.logout"
 msgstr "ログアウト"
 
-#: src/pages/settings/AccountPanel.tsx:140
+#: src/pages/settings/AccountPanel.tsx:141
 msgid "account.newPassword"
 msgstr "新しいパスワード"
 
-#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:133
 msgid "account.passwordMinLength"
 msgstr "パスワードは8文字以上である必要があります"
 
-#: src/pages/settings/AccountPanel.tsx:164
+#: src/pages/settings/AccountPanel.tsx:165
 msgid "account.passwordMismatch"
 msgstr "パスワードが一致しません"
 
-#: src/pages/settings/AccountPanel.tsx:47
+#: src/pages/settings/AccountPanel.tsx:48
 msgid "account.passwordUpdated"
 msgstr "パスワードを更新しました"
 
-#: src/pages/settings/AccountPanel.tsx:50
+#: src/pages/settings/AccountPanel.tsx:51
 msgid "account.passwordUpdateFailed"
 msgstr "パスワードの更新に失敗しました"
 
-#: src/pages/settings/AccountPanel.tsx:78
+#: src/pages/settings/AccountPanel.tsx:79
 msgid "account.profile"
 msgstr "プロフィール"
 
-#: src/pages/settings/AccountPanel.tsx:73
+#: src/pages/settings/AccountPanel.tsx:74
 msgid "account.subtitle"
 msgstr "プロフィールとセキュリティの管理"
 
-#: src/pages/settings/AccountPanel.tsx:196
+#: src/pages/settings/AccountPanel.tsx:197
 msgid "account.updatePassword"
 msgstr "パスワードを更新"
 
-#: src/pages/settings/AccountPanel.tsx:195
+#: src/pages/settings/AccountPanel.tsx:196
 msgid "account.updating"
 msgstr "更新中..."
 
@@ -386,6 +386,50 @@ msgstr "予告編"
 #: src/pages/AnimeDetailPage.tsx:859
 msgid "anime.voiceActor"
 msgstr "CV"
+
+#: src/pages/settings/ApiTokensCard.tsx:175
+msgid "apiTokens.create"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:86
+msgid "apiTokens.createdWarning"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:49
+msgid "apiTokens.createFailed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:79
+msgid "apiTokens.description"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:107
+msgid "apiTokens.dismiss"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:134
+msgid "apiTokens.lastUsed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:158
+msgid "apiTokens.namePlaceholder"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:145
+msgid "apiTokens.revoke"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:55
+msgid "apiTokens.revoked"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:58
+msgid "apiTokens.revokeFailed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:77
+msgid "apiTokens.title"
+msgstr ""
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -1136,11 +1180,12 @@ msgstr "ホームに戻る"
 msgid "common.cancel"
 msgstr "キャンセル"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:327
 msgid "common.clickToCopy"
 msgstr "クリックしてコピー"
 
-#: src/pages/settings/AccountPanel.tsx:321
+#: src/pages/settings/AccountPanel.tsx:325
+#: src/pages/settings/ApiTokensCard.tsx:64
 msgid "common.copied"
 msgstr "コピーしました"
 
@@ -3345,7 +3390,7 @@ msgstr "外部サービスを接続してデータを同期"
 msgid "settings.nav.about"
 msgstr "このアプリについて"
 
-#: src/pages/settings/AccountPanel.tsx:70
+#: src/pages/settings/AccountPanel.tsx:71
 #: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "アカウント"

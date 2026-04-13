@@ -162,85 +162,85 @@ msgstr "关于 milmil"
 msgid "about.systemInfo"
 msgstr "系统信息"
 
-#: src/pages/settings/AccountPanel.tsx:371
+#: src/pages/settings/AccountPanel.tsx:375
 msgid "account.2fa.activeMessage"
 msgstr "双重认证已启用。关闭开关即可停用。"
 
-#: src/pages/settings/AccountPanel.tsx:276
+#: src/pages/settings/AccountPanel.tsx:280
 msgid "account.2fa.description"
 msgstr "通过在登录时要求输入 TOTP 验证码，为您的账号增加额外的安全保护。"
 
-#: src/pages/settings/AccountPanel.tsx:257
+#: src/pages/settings/AccountPanel.tsx:261
 msgid "account.2fa.disabled"
 msgstr "已停用双重认证"
 
-#: src/pages/settings/AccountPanel.tsx:262
+#: src/pages/settings/AccountPanel.tsx:266
 msgid "account.2fa.disableFailed"
 msgstr "停用双重认证失败"
 
-#: src/pages/settings/AccountPanel.tsx:246
+#: src/pages/settings/AccountPanel.tsx:250
 msgid "account.2fa.enabled"
 msgstr "已启用双重认证"
 
-#: src/pages/settings/AccountPanel.tsx:251
+#: src/pages/settings/AccountPanel.tsx:255
 msgid "account.2fa.invalidCode"
 msgstr "验证码无效"
 
-#: src/pages/settings/AccountPanel.tsx:314
+#: src/pages/settings/AccountPanel.tsx:318
 msgid "account.2fa.manualEntry"
 msgstr "手动输入"
 
-#: src/pages/settings/AccountPanel.tsx:300
+#: src/pages/settings/AccountPanel.tsx:304
 msgid "account.2fa.scanInstructions"
 msgstr "使用身份验证器应用扫描此二维码，然后输入 6 位验证码进行验证。"
 
-#: src/pages/settings/AccountPanel.tsx:240
+#: src/pages/settings/AccountPanel.tsx:244
 msgid "account.2fa.setupFailed"
 msgstr "双重认证设置失败"
 
-#: src/pages/settings/AccountPanel.tsx:286
+#: src/pages/settings/AccountPanel.tsx:290
 msgid "account.2fa.statusDisabled"
 msgstr "已停用"
 
-#: src/pages/settings/AccountPanel.tsx:283
+#: src/pages/settings/AccountPanel.tsx:287
 msgid "account.2fa.statusEnabled"
 msgstr "已启用"
 
-#: src/pages/settings/AccountPanel.tsx:285
+#: src/pages/settings/AccountPanel.tsx:289
 msgid "account.2fa.statusPending"
 msgstr "待验证"
 
-#: src/pages/settings/AccountPanel.tsx:274
+#: src/pages/settings/AccountPanel.tsx:278
 msgid "account.2fa.title"
 msgstr "双重认证"
 
-#: src/pages/settings/AccountPanel.tsx:333
+#: src/pages/settings/AccountPanel.tsx:337
 msgid "account.2fa.verificationCode"
 msgstr "验证码"
 
-#: src/pages/settings/AccountPanel.tsx:360
+#: src/pages/settings/AccountPanel.tsx:364
 msgid "account.2fa.verifyEnable"
 msgstr "验证并启用"
 
-#: src/pages/settings/AccountPanel.tsx:359
+#: src/pages/settings/AccountPanel.tsx:363
 msgid "account.2fa.verifying"
 msgstr "验证中..."
 
-#: src/pages/settings/AccountPanel.tsx:91
+#: src/pages/settings/AccountPanel.tsx:92
 msgid "account.changePassword"
 msgstr "修改密码"
 
-#: src/pages/settings/AccountPanel.tsx:172
+#: src/pages/settings/AccountPanel.tsx:173
 msgid "account.confirmPassword"
 msgstr "确认新密码"
 
-#: src/pages/settings/AccountPanel.tsx:109
+#: src/pages/settings/AccountPanel.tsx:110
 msgid "account.currentPassword"
 msgstr "当前密码"
 
-#: src/pages/settings/AccountPanel.tsx:103
-#: src/pages/settings/AccountPanel.tsx:131
-#: src/pages/settings/AccountPanel.tsx:162
+#: src/pages/settings/AccountPanel.tsx:104
+#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:163
 msgid "account.fieldRequired"
 msgstr "此字段为必填项"
 
@@ -252,39 +252,39 @@ msgstr "本地账号"
 msgid "account.logout"
 msgstr "退出登录"
 
-#: src/pages/settings/AccountPanel.tsx:140
+#: src/pages/settings/AccountPanel.tsx:141
 msgid "account.newPassword"
 msgstr "新密码"
 
-#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:133
 msgid "account.passwordMinLength"
 msgstr "密码至少需要 8 个字符"
 
-#: src/pages/settings/AccountPanel.tsx:164
+#: src/pages/settings/AccountPanel.tsx:165
 msgid "account.passwordMismatch"
 msgstr "两次密码不一致"
 
-#: src/pages/settings/AccountPanel.tsx:47
+#: src/pages/settings/AccountPanel.tsx:48
 msgid "account.passwordUpdated"
 msgstr "密码已更新"
 
-#: src/pages/settings/AccountPanel.tsx:50
+#: src/pages/settings/AccountPanel.tsx:51
 msgid "account.passwordUpdateFailed"
 msgstr "密码更新失败"
 
-#: src/pages/settings/AccountPanel.tsx:78
+#: src/pages/settings/AccountPanel.tsx:79
 msgid "account.profile"
 msgstr "个人资料"
 
-#: src/pages/settings/AccountPanel.tsx:73
+#: src/pages/settings/AccountPanel.tsx:74
 msgid "account.subtitle"
 msgstr "管理您的个人资料与安全设置"
 
-#: src/pages/settings/AccountPanel.tsx:196
+#: src/pages/settings/AccountPanel.tsx:197
 msgid "account.updatePassword"
 msgstr "更新密码"
 
-#: src/pages/settings/AccountPanel.tsx:195
+#: src/pages/settings/AccountPanel.tsx:196
 msgid "account.updating"
 msgstr "更新中..."
 
@@ -384,6 +384,50 @@ msgstr "预告片"
 #: src/pages/AnimeDetailPage.tsx:859
 msgid "anime.voiceActor"
 msgstr "声优"
+
+#: src/pages/settings/ApiTokensCard.tsx:175
+msgid "apiTokens.create"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:86
+msgid "apiTokens.createdWarning"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:49
+msgid "apiTokens.createFailed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:79
+msgid "apiTokens.description"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:107
+msgid "apiTokens.dismiss"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:134
+msgid "apiTokens.lastUsed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:158
+msgid "apiTokens.namePlaceholder"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:145
+msgid "apiTokens.revoke"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:55
+msgid "apiTokens.revoked"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:58
+msgid "apiTokens.revokeFailed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:77
+msgid "apiTokens.title"
+msgstr ""
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -1134,11 +1178,12 @@ msgstr "返回首页"
 msgid "common.cancel"
 msgstr "取消"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:327
 msgid "common.clickToCopy"
 msgstr "点击复制"
 
-#: src/pages/settings/AccountPanel.tsx:321
+#: src/pages/settings/AccountPanel.tsx:325
+#: src/pages/settings/ApiTokensCard.tsx:64
 msgid "common.copied"
 msgstr "已复制"
 
@@ -3343,7 +3388,7 @@ msgstr "连接外部服务并同步数据"
 msgid "settings.nav.about"
 msgstr "关于"
 
-#: src/pages/settings/AccountPanel.tsx:70
+#: src/pages/settings/AccountPanel.tsx:71
 #: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "账号"

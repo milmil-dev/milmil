@@ -164,85 +164,85 @@ msgstr "About milmil"
 msgid "about.systemInfo"
 msgstr "System Information"
 
-#: src/pages/settings/AccountPanel.tsx:371
+#: src/pages/settings/AccountPanel.tsx:375
 msgid "account.2fa.activeMessage"
 msgstr "Two-factor authentication is active. Toggle off to disable."
 
-#: src/pages/settings/AccountPanel.tsx:276
+#: src/pages/settings/AccountPanel.tsx:280
 msgid "account.2fa.description"
 msgstr "Add an extra layer of security by requiring a TOTP code when signing in."
 
-#: src/pages/settings/AccountPanel.tsx:257
+#: src/pages/settings/AccountPanel.tsx:261
 msgid "account.2fa.disabled"
 msgstr "2FA disabled"
 
-#: src/pages/settings/AccountPanel.tsx:262
+#: src/pages/settings/AccountPanel.tsx:266
 msgid "account.2fa.disableFailed"
 msgstr "Failed to disable 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:246
+#: src/pages/settings/AccountPanel.tsx:250
 msgid "account.2fa.enabled"
 msgstr "2FA enabled"
 
-#: src/pages/settings/AccountPanel.tsx:251
+#: src/pages/settings/AccountPanel.tsx:255
 msgid "account.2fa.invalidCode"
 msgstr "Invalid code"
 
-#: src/pages/settings/AccountPanel.tsx:314
+#: src/pages/settings/AccountPanel.tsx:318
 msgid "account.2fa.manualEntry"
 msgstr "Manual entry"
 
-#: src/pages/settings/AccountPanel.tsx:300
+#: src/pages/settings/AccountPanel.tsx:304
 msgid "account.2fa.scanInstructions"
 msgstr "Scan this QR code with your authenticator app, then enter the 6-digit code to verify."
 
-#: src/pages/settings/AccountPanel.tsx:240
+#: src/pages/settings/AccountPanel.tsx:244
 msgid "account.2fa.setupFailed"
 msgstr "Failed to set up 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:286
+#: src/pages/settings/AccountPanel.tsx:290
 msgid "account.2fa.statusDisabled"
 msgstr "Disabled"
 
-#: src/pages/settings/AccountPanel.tsx:283
+#: src/pages/settings/AccountPanel.tsx:287
 msgid "account.2fa.statusEnabled"
 msgstr "Enabled"
 
-#: src/pages/settings/AccountPanel.tsx:285
+#: src/pages/settings/AccountPanel.tsx:289
 msgid "account.2fa.statusPending"
 msgstr "Pending verification"
 
-#: src/pages/settings/AccountPanel.tsx:274
+#: src/pages/settings/AccountPanel.tsx:278
 msgid "account.2fa.title"
 msgstr "Two-Factor Authentication"
 
-#: src/pages/settings/AccountPanel.tsx:333
+#: src/pages/settings/AccountPanel.tsx:337
 msgid "account.2fa.verificationCode"
 msgstr "Verification Code"
 
-#: src/pages/settings/AccountPanel.tsx:360
+#: src/pages/settings/AccountPanel.tsx:364
 msgid "account.2fa.verifyEnable"
 msgstr "Verify & Enable"
 
-#: src/pages/settings/AccountPanel.tsx:359
+#: src/pages/settings/AccountPanel.tsx:363
 msgid "account.2fa.verifying"
 msgstr "Verifying..."
 
-#: src/pages/settings/AccountPanel.tsx:91
+#: src/pages/settings/AccountPanel.tsx:92
 msgid "account.changePassword"
 msgstr "Change Password"
 
-#: src/pages/settings/AccountPanel.tsx:172
+#: src/pages/settings/AccountPanel.tsx:173
 msgid "account.confirmPassword"
 msgstr "Confirm New Password"
 
-#: src/pages/settings/AccountPanel.tsx:109
+#: src/pages/settings/AccountPanel.tsx:110
 msgid "account.currentPassword"
 msgstr "Current Password"
 
-#: src/pages/settings/AccountPanel.tsx:103
-#: src/pages/settings/AccountPanel.tsx:131
-#: src/pages/settings/AccountPanel.tsx:162
+#: src/pages/settings/AccountPanel.tsx:104
+#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:163
 msgid "account.fieldRequired"
 msgstr "This field is required"
 
@@ -254,39 +254,39 @@ msgstr "Local account"
 msgid "account.logout"
 msgstr "Log out"
 
-#: src/pages/settings/AccountPanel.tsx:140
+#: src/pages/settings/AccountPanel.tsx:141
 msgid "account.newPassword"
 msgstr "New Password"
 
-#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:133
 msgid "account.passwordMinLength"
 msgstr "Password must be at least 8 characters"
 
-#: src/pages/settings/AccountPanel.tsx:164
+#: src/pages/settings/AccountPanel.tsx:165
 msgid "account.passwordMismatch"
 msgstr "Passwords do not match"
 
-#: src/pages/settings/AccountPanel.tsx:47
+#: src/pages/settings/AccountPanel.tsx:48
 msgid "account.passwordUpdated"
 msgstr "Password updated"
 
-#: src/pages/settings/AccountPanel.tsx:50
+#: src/pages/settings/AccountPanel.tsx:51
 msgid "account.passwordUpdateFailed"
 msgstr "Failed to update password"
 
-#: src/pages/settings/AccountPanel.tsx:78
+#: src/pages/settings/AccountPanel.tsx:79
 msgid "account.profile"
 msgstr "Profile"
 
-#: src/pages/settings/AccountPanel.tsx:73
+#: src/pages/settings/AccountPanel.tsx:74
 msgid "account.subtitle"
 msgstr "Manage your profile and security"
 
-#: src/pages/settings/AccountPanel.tsx:196
+#: src/pages/settings/AccountPanel.tsx:197
 msgid "account.updatePassword"
 msgstr "Update Password"
 
-#: src/pages/settings/AccountPanel.tsx:195
+#: src/pages/settings/AccountPanel.tsx:196
 msgid "account.updating"
 msgstr "Updating..."
 
@@ -386,6 +386,50 @@ msgstr "Trailer"
 #: src/pages/AnimeDetailPage.tsx:859
 msgid "anime.voiceActor"
 msgstr "CV"
+
+#: src/pages/settings/ApiTokensCard.tsx:175
+msgid "apiTokens.create"
+msgstr "Create"
+
+#: src/pages/settings/ApiTokensCard.tsx:86
+msgid "apiTokens.createdWarning"
+msgstr "Copy this token now — it won't be shown again."
+
+#: src/pages/settings/ApiTokensCard.tsx:49
+msgid "apiTokens.createFailed"
+msgstr "Failed to create token"
+
+#: src/pages/settings/ApiTokensCard.tsx:79
+msgid "apiTokens.description"
+msgstr "Create tokens for mobile apps and external tools to access your milmil server."
+
+#: src/pages/settings/ApiTokensCard.tsx:107
+msgid "apiTokens.dismiss"
+msgstr "Dismiss"
+
+#: src/pages/settings/ApiTokensCard.tsx:134
+msgid "apiTokens.lastUsed"
+msgstr "Last used"
+
+#: src/pages/settings/ApiTokensCard.tsx:158
+msgid "apiTokens.namePlaceholder"
+msgstr "Device name (e.g. iPhone)"
+
+#: src/pages/settings/ApiTokensCard.tsx:145
+msgid "apiTokens.revoke"
+msgstr "Revoke"
+
+#: src/pages/settings/ApiTokensCard.tsx:55
+msgid "apiTokens.revoked"
+msgstr "Token revoked"
+
+#: src/pages/settings/ApiTokensCard.tsx:58
+msgid "apiTokens.revokeFailed"
+msgstr "Failed to revoke token"
+
+#: src/pages/settings/ApiTokensCard.tsx:77
+msgid "apiTokens.title"
+msgstr "API Tokens"
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -1139,11 +1183,12 @@ msgstr "Back to Home"
 msgid "common.cancel"
 msgstr "Cancel"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:327
 msgid "common.clickToCopy"
 msgstr "common.clickToCopy"
 
-#: src/pages/settings/AccountPanel.tsx:321
+#: src/pages/settings/AccountPanel.tsx:325
+#: src/pages/settings/ApiTokensCard.tsx:64
 msgid "common.copied"
 msgstr "common.copied"
 
@@ -3348,7 +3393,7 @@ msgstr "Connect external services and sync your data"
 msgid "settings.nav.about"
 msgstr "About"
 
-#: src/pages/settings/AccountPanel.tsx:70
+#: src/pages/settings/AccountPanel.tsx:71
 #: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "Account"

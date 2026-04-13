@@ -162,85 +162,85 @@ msgstr "關於 milmil"
 msgid "about.systemInfo"
 msgstr "系統資訊"
 
-#: src/pages/settings/AccountPanel.tsx:371
+#: src/pages/settings/AccountPanel.tsx:375
 msgid "account.2fa.activeMessage"
 msgstr "雙重驗證已啟用。關閉開關即可停用。"
 
-#: src/pages/settings/AccountPanel.tsx:276
+#: src/pages/settings/AccountPanel.tsx:280
 msgid "account.2fa.description"
 msgstr "透過在登入時要求 TOTP 驗證碼，為您的帳號增加額外的安全防護。"
 
-#: src/pages/settings/AccountPanel.tsx:257
+#: src/pages/settings/AccountPanel.tsx:261
 msgid "account.2fa.disabled"
 msgstr "已停用雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:262
+#: src/pages/settings/AccountPanel.tsx:266
 msgid "account.2fa.disableFailed"
 msgstr "停用雙重驗證失敗"
 
-#: src/pages/settings/AccountPanel.tsx:246
+#: src/pages/settings/AccountPanel.tsx:250
 msgid "account.2fa.enabled"
 msgstr "已啟用雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:251
+#: src/pages/settings/AccountPanel.tsx:255
 msgid "account.2fa.invalidCode"
 msgstr "驗證碼無效"
 
-#: src/pages/settings/AccountPanel.tsx:314
+#: src/pages/settings/AccountPanel.tsx:318
 msgid "account.2fa.manualEntry"
 msgstr "手動輸入"
 
-#: src/pages/settings/AccountPanel.tsx:300
+#: src/pages/settings/AccountPanel.tsx:304
 msgid "account.2fa.scanInstructions"
 msgstr "使用驗證器應用程式掃描此 QR 碼，然後輸入 6 位數驗證碼進行驗證。"
 
-#: src/pages/settings/AccountPanel.tsx:240
+#: src/pages/settings/AccountPanel.tsx:244
 msgid "account.2fa.setupFailed"
 msgstr "雙重驗證設定失敗"
 
-#: src/pages/settings/AccountPanel.tsx:286
+#: src/pages/settings/AccountPanel.tsx:290
 msgid "account.2fa.statusDisabled"
 msgstr "已停用"
 
-#: src/pages/settings/AccountPanel.tsx:283
+#: src/pages/settings/AccountPanel.tsx:287
 msgid "account.2fa.statusEnabled"
 msgstr "已啟用"
 
-#: src/pages/settings/AccountPanel.tsx:285
+#: src/pages/settings/AccountPanel.tsx:289
 msgid "account.2fa.statusPending"
 msgstr "待驗證"
 
-#: src/pages/settings/AccountPanel.tsx:274
+#: src/pages/settings/AccountPanel.tsx:278
 msgid "account.2fa.title"
 msgstr "雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:333
+#: src/pages/settings/AccountPanel.tsx:337
 msgid "account.2fa.verificationCode"
 msgstr "驗證碼"
 
-#: src/pages/settings/AccountPanel.tsx:360
+#: src/pages/settings/AccountPanel.tsx:364
 msgid "account.2fa.verifyEnable"
 msgstr "驗證並啟用"
 
-#: src/pages/settings/AccountPanel.tsx:359
+#: src/pages/settings/AccountPanel.tsx:363
 msgid "account.2fa.verifying"
 msgstr "驗證中..."
 
-#: src/pages/settings/AccountPanel.tsx:91
+#: src/pages/settings/AccountPanel.tsx:92
 msgid "account.changePassword"
 msgstr "變更密碼"
 
-#: src/pages/settings/AccountPanel.tsx:172
+#: src/pages/settings/AccountPanel.tsx:173
 msgid "account.confirmPassword"
 msgstr "確認新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:109
+#: src/pages/settings/AccountPanel.tsx:110
 msgid "account.currentPassword"
 msgstr "目前密碼"
 
-#: src/pages/settings/AccountPanel.tsx:103
-#: src/pages/settings/AccountPanel.tsx:131
-#: src/pages/settings/AccountPanel.tsx:162
+#: src/pages/settings/AccountPanel.tsx:104
+#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:163
 msgid "account.fieldRequired"
 msgstr "此欄位為必填"
 
@@ -252,39 +252,39 @@ msgstr "本機帳號"
 msgid "account.logout"
 msgstr "登出"
 
-#: src/pages/settings/AccountPanel.tsx:140
+#: src/pages/settings/AccountPanel.tsx:141
 msgid "account.newPassword"
 msgstr "新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:132
+#: src/pages/settings/AccountPanel.tsx:133
 msgid "account.passwordMinLength"
 msgstr "密碼至少需要 8 個字元"
 
-#: src/pages/settings/AccountPanel.tsx:164
+#: src/pages/settings/AccountPanel.tsx:165
 msgid "account.passwordMismatch"
 msgstr "密碼不一致"
 
-#: src/pages/settings/AccountPanel.tsx:47
+#: src/pages/settings/AccountPanel.tsx:48
 msgid "account.passwordUpdated"
 msgstr "密碼已更新"
 
-#: src/pages/settings/AccountPanel.tsx:50
+#: src/pages/settings/AccountPanel.tsx:51
 msgid "account.passwordUpdateFailed"
 msgstr "密碼更新失敗"
 
-#: src/pages/settings/AccountPanel.tsx:78
+#: src/pages/settings/AccountPanel.tsx:79
 msgid "account.profile"
 msgstr "個人資料"
 
-#: src/pages/settings/AccountPanel.tsx:73
+#: src/pages/settings/AccountPanel.tsx:74
 msgid "account.subtitle"
 msgstr "管理您的個人資料與安全設定"
 
-#: src/pages/settings/AccountPanel.tsx:196
+#: src/pages/settings/AccountPanel.tsx:197
 msgid "account.updatePassword"
 msgstr "更新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:195
+#: src/pages/settings/AccountPanel.tsx:196
 msgid "account.updating"
 msgstr "更新中..."
 
@@ -384,6 +384,50 @@ msgstr "預告片"
 #: src/pages/AnimeDetailPage.tsx:859
 msgid "anime.voiceActor"
 msgstr "聲優"
+
+#: src/pages/settings/ApiTokensCard.tsx:175
+msgid "apiTokens.create"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:86
+msgid "apiTokens.createdWarning"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:49
+msgid "apiTokens.createFailed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:79
+msgid "apiTokens.description"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:107
+msgid "apiTokens.dismiss"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:134
+msgid "apiTokens.lastUsed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:158
+msgid "apiTokens.namePlaceholder"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:145
+msgid "apiTokens.revoke"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:55
+msgid "apiTokens.revoked"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:58
+msgid "apiTokens.revokeFailed"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:77
+msgid "apiTokens.title"
+msgstr ""
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -1134,11 +1178,12 @@ msgstr "返回首頁"
 msgid "common.cancel"
 msgstr "取消"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:327
 msgid "common.clickToCopy"
 msgstr "點擊複製"
 
-#: src/pages/settings/AccountPanel.tsx:321
+#: src/pages/settings/AccountPanel.tsx:325
+#: src/pages/settings/ApiTokensCard.tsx:64
 msgid "common.copied"
 msgstr "已複製"
 
@@ -3343,7 +3388,7 @@ msgstr "連結外部服務並同步資料"
 msgid "settings.nav.about"
 msgstr "關於"
 
-#: src/pages/settings/AccountPanel.tsx:70
+#: src/pages/settings/AccountPanel.tsx:71
 #: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "帳號"
