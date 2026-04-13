@@ -270,6 +270,7 @@ func main() {
 	botRouter.RegisterCommand("stats", commands.StatsHandler(botSvc))
 	botRouter.RegisterCommand("rules", commands.RulesHandler(botSvc))
 	botRouter.RegisterCommand("trending", commands.TrendingHandler(botSvc))
+	botRouter.RegisterCommand("today", commands.TodayHandler(botSvc))
 
 	// Register callbacks (one handler per prefix)
 	botRouter.RegisterCallback("detail", commands.DetailCallback(botSvc))
