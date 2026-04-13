@@ -53,6 +53,7 @@ type TelegramBotConfig struct {
 	ReportInterval        string  `json:"report_interval"`         // e.g. "24h", "12h"; empty = disabled
 	Language              string  `json:"language"`                // bot response language; empty = follow system
 	AiringReminderMinutes int     `json:"airing_reminder_minutes"` // 0 = disabled, e.g. 30 = remind 30min before
+	DailyDigestTime       string  `json:"daily_digest_time"`       // HH:mm in user local time, empty = disabled
 }
 
 // DiscordBotConfig holds interactive Discord bot settings.

@@ -120,6 +120,12 @@ func (s *Scheduler) Start() {
 		airingWorker.Run(ctx)
 	})
 
+	// Daily digest — every 5 minutes, sends once per day at configured time
+	digestWorker := NewDailyDigestWorker(s.queries, s.metadata, s.notifier)
+	go s.runTicker(ctx, "daily_digest", 5*time.Minute, false, func(ctx context.Context) {
+		digestWorker.Run(ctx)
+	})
+
 	// Notification cleanup — every 24 hours
 	go s.runTicker(ctx, "notification_cleanup", 24*time.Hour, false, func(ctx context.Context) {
 		if err := s.notifier.CleanupOld(ctx, 30); err != nil {

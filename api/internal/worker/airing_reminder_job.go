@@ -88,7 +88,7 @@ func (w *AiringReminderWorker) Run(ctx context.Context) {
 	}
 
 	// Build set of Bangumi IDs the user is watching or has rules for
-	watchingIDs := w.buildWatchingSet(ctx)
+	watchingIDs := buildWatchingSet(ctx, w.queries)
 	if len(watchingIDs) == 0 {
 		return
 	}
@@ -167,37 +167,6 @@ func (w *AiringReminderWorker) Run(ctx context.Context) {
 				"time_until", timeUntilStr)
 		}
 	}
-}
-
-// buildWatchingSet returns a set of Bangumi IDs that the user is watching
-// (from collection) or has download rules for.
-func (w *AiringReminderWorker) buildWatchingSet(ctx context.Context) map[int]bool {
-	ids := make(map[int]bool)
-
-	// From collection: anime with watch_status = "watching"
-	collection, err := w.queries.ListCollectionAnime(ctx, store.ListCollectionAnimeParams{
-		StatusFilter: "watching",
-		SearchQuery:  "",
-	})
-	if err == nil {
-		for _, item := range collection {
-			if item.BangumiID.Valid && item.BangumiID.Int64 > 0 {
-				ids[int(item.BangumiID.Int64)] = true
-			}
-		}
-	}
-
-	// From download rules: enabled rules with a bangumi_id
-	rules, err := w.queries.ListDownloadRules(ctx)
-	if err == nil {
-		for _, rule := range rules {
-			if rule.Enabled == 1 && rule.BangumiID.Valid && rule.BangumiID.Int64 > 0 {
-				ids[int(rule.BangumiID.Int64)] = true
-			}
-		}
-	}
-
-	return ids
 }
 
 // matchesWeekday checks if an English weekday name matches a time.Weekday.

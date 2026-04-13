@@ -89,7 +89,7 @@ function defaultSettings(): NotificationSettings {
     },
     events: {},
     bot: {
-      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [], report_interval: '', language: '', airing_reminder_minutes: 0 },
+      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [], report_interval: '', language: '', airing_reminder_minutes: 0, daily_digest_time: '' },
       discord: { enabled: false, bot_token: '', application_id: '', allowed_guild_ids: [] },
     },
   };
@@ -554,6 +554,33 @@ function TelegramCard({
                 </div>
                 <p className="mt-1 text-xs text-white/30">
                   {i18n._(msg`notifications.bot.airingReminder.desc`)}
+                </p>
+              </Field>
+
+              {/* Daily Digest */}
+              <Field>
+                <FieldLabel htmlFor="telegram-daily-digest">
+                  {i18n._(msg`notifications.bot.dailyDigest`)}
+                </FieldLabel>
+                <div className="flex flex-wrap gap-1.5">
+                  {['', '08:00', '09:00', '10:00', '12:00'].map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => onBotChange({ daily_digest_time: t })}
+                      className={cn(
+                        'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
+                        (botConfig.daily_digest_time ?? '') === t
+                          ? 'bg-white/[0.12] text-white'
+                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      )}
+                    >
+                      {t === '' ? i18n._(msg`notifications.bot.dailyDigest.off`) : t}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1 text-xs text-white/30">
+                  {i18n._(msg`notifications.bot.dailyDigest.desc`)}
                 </p>
               </Field>
 
