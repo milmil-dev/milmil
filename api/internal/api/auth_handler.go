@@ -80,12 +80,25 @@ func (h *handler) handleAuthSetup(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)
+	deviceName := auth.ParseUserAgent(c.Request().UserAgent())
+	plaintext, hash, prefix, err := auth.GenerateAPIToken()
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	_, err = h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
+		ID:            uuid.NewString(),
+		Name:          deviceName,
+		TokenHash:     hash,
+		TokenPrefix:   prefix,
+		UserID:        user.ID,
+		LastIp:        c.RealIP(),
+		LastUserAgent: c.Request().UserAgent(),
+	})
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
 	return c.JSON(http.StatusCreated, authLoginResponse{
-		Token: token,
+		Token: plaintext,
 		User:  authUserDTO{ID: user.ID, Username: user.Username},
 	})
 }
@@ -115,24 +128,16 @@ func (h *handler) handleAuthLogin(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]any{
 			"requires_2fa": true,
 			"user_id":      user.ID,
-			"device_name":  req.DeviceName,
 		})
 	}
 
 	h.sendLoginNotification(c, user.Username)
 
-	if req.DeviceName != "" {
-		return h.issueAPIToken(c, user.ID, user.Username, req.DeviceName)
+	deviceName := req.DeviceName
+	if deviceName == "" {
+		deviceName = auth.ParseUserAgent(c.Request().UserAgent())
 	}
-
-	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	return c.JSON(http.StatusOK, authLoginResponse{
-		Token: token,
-		User:  authUserDTO{ID: user.ID, Username: user.Username},
-	})
+	return h.issueAPIToken(c, user.ID, user.Username, deviceName)
 }
 
 type authLogin2FARequest struct {
@@ -162,18 +167,11 @@ func (h *handler) handleAuthLogin2FA(c echo.Context) error {
 
 	h.sendLoginNotification(c, user.Username)
 
-	if req.DeviceName != "" {
-		return h.issueAPIToken(c, user.ID, user.Username, req.DeviceName)
+	deviceName := req.DeviceName
+	if deviceName == "" {
+		deviceName = auth.ParseUserAgent(c.Request().UserAgent())
 	}
-
-	token, err := auth.SignToken(h.cfg.JWTSecret, user.ID)
-	if err != nil {
-		return echo.ErrInternalServerError
-	}
-	return c.JSON(http.StatusOK, authLoginResponse{
-		Token: token,
-		User:  authUserDTO{ID: user.ID, Username: user.Username},
-	})
+	return h.issueAPIToken(c, user.ID, user.Username, deviceName)
 }
 
 func (h *handler) handleAuthLogout(c echo.Context) error {
@@ -218,11 +216,13 @@ func (h *handler) issueAPIToken(c echo.Context, userID, username, deviceName str
 		return echo.ErrInternalServerError
 	}
 	_, err = h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
-		ID:          uuid.NewString(),
-		Name:        deviceName,
-		TokenHash:   hash,
-		TokenPrefix: prefix,
-		UserID:      userID,
+		ID:            uuid.NewString(),
+		Name:          deviceName,
+		TokenHash:     hash,
+		TokenPrefix:   prefix,
+		UserID:        userID,
+		LastIp:        c.RealIP(),
+		LastUserAgent: c.Request().UserAgent(),
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
