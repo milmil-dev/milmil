@@ -196,6 +196,9 @@ type changePasswordRequest struct {
 
 // sendLoginNotification fires an auth.login notification via the notification service.
 func (h *handler) sendLoginNotification(c echo.Context, username string) {
+	if h.notifier == nil {
+		return
+	}
 	h.notifier.Send(c.Request().Context(), "auth.login", "Login Alert",
 		fmt.Sprintf("Login from %s", c.RealIP()), "info",
 		map[string]any{
