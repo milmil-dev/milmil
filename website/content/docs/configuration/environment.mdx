@@ -5,49 +5,108 @@ description: All configurable environment variables for milmil.
 
 ## Core Settings
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | `sqlite://data/milmil.db` | Database connection (SQLite or PostgreSQL) |
-| `JWT_SECRET` | *required* | JWT signing key (min 32 chars) |
-| `MILMIL_ENCRYPTION_KEY` | *required* | AES-256 key for storage credentials |
-| `API_PORT` | `8080` | API server port |
-| `DATA_DIR` | `./data` | Downloads and transcode cache |
-| `DEBUG` | `0` | Enable debug logging |
-| `REDIS_URL` | — | Redis connection URL (in-memory fallback if not set) |
+<Callout type="warn">
+Variables marked as **required** must be set before starting the server.
+</Callout>
+
+<TypeTable
+  type={{
+    DATABASE_URL: {
+      type: 'string',
+      description: 'Database connection (SQLite or PostgreSQL)',
+      default: 'sqlite://data/milmil.db',
+    },
+    JWT_SECRET: {
+      type: 'string',
+      description: 'JWT signing key (min 32 chars). Required.',
+    },
+    MILMIL_ENCRYPTION_KEY: {
+      type: 'string',
+      description: 'AES-256 key for storage credentials. Required.',
+    },
+    API_PORT: {
+      type: 'number',
+      description: 'API server port',
+      default: '8080',
+    },
+    DATA_DIR: {
+      type: 'string',
+      description: 'Downloads and transcode cache directory',
+      default: './data',
+    },
+    DEBUG: {
+      type: 'boolean',
+      description: 'Enable debug logging',
+      default: '0',
+    },
+    REDIS_URL: {
+      type: 'string',
+      description: 'Redis connection URL. In-memory fallback if not set.',
+    },
+  }}
+/>
 
 ## Torrent Settings
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT/peer port |
-| `SEED_RATIO` | `1.0` | Seed ratio target before stopping |
-| `SEED_TIME_MINUTES` | `60` | Minimum seed duration in minutes |
+<TypeTable
+  type={{
+    TORRENT_LISTEN_PORT: {
+      type: 'number',
+      description: 'Torrent DHT/peer port',
+      default: '42069',
+    },
+    SEED_RATIO: {
+      type: 'number',
+      description: 'Seed ratio target before stopping',
+      default: '1.0',
+    },
+    SEED_TIME_MINUTES: {
+      type: 'number',
+      description: 'Minimum seed duration in minutes',
+      default: '60',
+    },
+  }}
+/>
 
 ## Integration Keys
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DANDANPLAY_APP_ID` | — | DandanPlay API app ID |
-| `DANDANPLAY_APP_SECRET` | — | DandanPlay API app secret |
+<TypeTable
+  type={{
+    DANDANPLAY_APP_ID: {
+      type: 'string',
+      description: 'DandanPlay API app ID',
+    },
+    DANDANPLAY_APP_SECRET: {
+      type: 'string',
+      description: 'DandanPlay API app secret',
+    },
+  }}
+/>
 
 ## Database
 
-milmil supports two database backends:
-
-- **SQLite** — Zero configuration, great for development and small setups
-- **PostgreSQL 16+** — Recommended for production deployments
+<Tabs items={["SQLite", "PostgreSQL"]}>
+<Tab value="SQLite">
+Zero configuration, great for development and small setups.
 
 ```bash
-# SQLite (default)
 DATABASE_URL=sqlite://data/milmil.db
+```
+</Tab>
+<Tab value="PostgreSQL">
+Recommended for production deployments.
 
-# PostgreSQL
+```bash
 DATABASE_URL=postgres://user:password@localhost:5432/milmil?sslmode=disable
 ```
+</Tab>
+</Tabs>
 
 ## Redis
 
+<Callout type="info">
 Redis is optional but recommended for production. Without Redis, milmil uses an in-memory cache that doesn't persist across restarts.
+</Callout>
 
 ```bash
 REDIS_URL=redis://localhost:6379

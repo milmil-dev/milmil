@@ -11,82 +11,114 @@ Each platform card has two independent toggles:
 - **Push Notifications** — one-way alerts for downloads, errors, and system events
 - **Bot Commands** — interactive commands like `/schedule`, `/search`, `/downloads`
 
-You can enable one or both per platform.
+<Tabs items={["Telegram", "Discord", "Webhook"]}>
+<Tab value="Telegram">
 
 ## Telegram Setup
 
-### 1. Create a Bot
+<Steps>
+<Step>
+### Create a Bot
 
 1. Open Telegram and search for **@BotFather**
 2. Send `/newbot`
 3. Enter a display name (e.g. `milmil`)
 4. Enter a username ending in `bot` (e.g. `milmil_media_bot`)
 5. BotFather replies with a **Bot Token** — copy it
-
-### 2. Get Your Chat ID
+</Step>
+<Step>
+### Get Your Chat ID
 
 1. Send any message to your new bot
 2. Open in browser: `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
 3. Find `"chat":{"id": 123456789}` — that number is your Chat ID
-
-### 3. Configure in milmil
+</Step>
+<Step>
+### Configure in milmil
 
 1. Go to **Settings > Notifications > Telegram**
 2. Paste the **Bot Token**
 3. Enter the **Chat ID**
 4. Enable **Push Notifications** and/or **Bot Commands**
 5. Click **Save**
+</Step>
+</Steps>
 
 ### Webhook Mode (Optional)
 
-By default the bot uses long polling (works behind NAT/firewalls). If your server has a public URL, you can switch to webhook mode for lower latency:
+<Callout type="info">
+By default the bot uses long polling (works behind NAT/firewalls). If your server has a public URL, you can switch to webhook mode for lower latency.
+</Callout>
 
-1. Enter a **Webhook URL** (e.g. `https://your-domain.com/api/v1/bot/telegram/webhook`)
-2. The bot will automatically register the webhook with Telegram
-
-Leave the field blank to use polling.
+Enter a **Webhook URL** (e.g. `https://your-domain.com/api/v1/bot/telegram/webhook`). Leave blank to use polling.
 
 ### Allowed Chat IDs
 
 Restrict which Telegram chats can send commands to the bot. Enter comma-separated chat IDs. Leave blank to allow only the configured Chat ID.
 
+</Tab>
+<Tab value="Discord">
+
 ## Discord Setup
 
 ### Push Notifications (Webhook)
 
-1. In your Discord server, go to **Server Settings > Integrations > Webhooks**
-2. Click **New Webhook**, name it (e.g. `milmil`), choose a channel
-3. Click **Copy Webhook URL**
-4. In milmil: **Settings > Notifications > Discord**, enable **Push Notifications**
-5. Paste the Webhook URL, save
+<Steps>
+<Step>
+In your Discord server, go to **Server Settings > Integrations > Webhooks**.
+</Step>
+<Step>
+Click **New Webhook**, name it (e.g. `milmil`), choose a channel. Click **Copy Webhook URL**.
+</Step>
+<Step>
+In milmil: **Settings > Notifications > Discord**, enable **Push Notifications**. Paste the Webhook URL, save.
+</Step>
+</Steps>
 
 ### Bot Commands (Slash Commands)
 
-1. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click **New Application**, name it `milmil`
-3. Go to **Bot** tab, click **Add Bot**
-4. Copy the **Bot Token**
-5. Go to **OAuth2 > URL Generator**, select scopes: `bot`, `applications.commands`
-6. Select permissions: `Send Messages`, `Embed Links`, `Use Slash Commands`
-7. Copy the generated URL and open it to invite the bot to your server
-8. Copy the **Application ID** from the General Information tab
-9. In milmil: **Settings > Notifications > Discord**, enable **Bot Commands**
-10. Paste the **Bot Token** and **Application ID**, save
+<Steps>
+<Step>
+Go to the [Discord Developer Portal](https://discord.com/developers/applications). Click **New Application**, name it `milmil`.
+</Step>
+<Step>
+Go to **Bot** tab, click **Add Bot**. Copy the **Bot Token**.
+</Step>
+<Step>
+Go to **OAuth2 > URL Generator**, select scopes: `bot`, `applications.commands`. Select permissions: `Send Messages`, `Embed Links`, `Use Slash Commands`.
+</Step>
+<Step>
+Copy the generated URL and open it to invite the bot to your server.
+</Step>
+<Step>
+Copy the **Application ID** from the General Information tab. In milmil: **Settings > Notifications > Discord**, enable **Bot Commands**. Paste the **Bot Token** and **Application ID**, save.
+</Step>
+</Steps>
 
 ### Allowed Guild IDs
 
 Restrict which Discord servers can use the bot. Enter comma-separated server IDs. Leave blank to allow all servers.
 
+</Tab>
+<Tab value="Webhook">
+
 ## Webhook (Generic)
 
 For custom integrations (Slack, ntfy, Gotify, Pushover, etc.):
 
-1. Enable **Webhook** in Settings
-2. Enter the target **URL**
-3. Optionally set an **HMAC Secret** for signature verification
-4. Events are sent as JSON POST with an `X-Signature-256` header
+<Steps>
+<Step>
+Enable **Webhook** in Settings.
+</Step>
+<Step>
+Enter the target **URL**.
+</Step>
+<Step>
+Optionally set an **HMAC Secret** for signature verification.
+</Step>
+</Steps>
 
-### Payload Format
+Events are sent as JSON POST with an `X-Signature-256` header:
 
 ```json
 {
@@ -102,6 +134,9 @@ For custom integrations (Slack, ntfy, Gotify, Pushover, etc.):
 }
 ```
 
+</Tab>
+</Tabs>
+
 ## Event Routing
 
 Configure which events go to which platforms using the event routing matrix below the platform cards.
@@ -115,8 +150,6 @@ Configure which events go to which platforms using the event routing matrix belo
 | System Error | Background job fails unexpectedly |
 
 ## Bot Commands
-
-Once bot commands are enabled, these commands are available:
 
 | Command | Description |
 |---|---|
