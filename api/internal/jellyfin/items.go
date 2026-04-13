@@ -122,6 +122,18 @@ func (h *Handler) handleGetItem(c echo.Context) error {
 			return c.JSON(http.StatusNotFound, JellyfinError{Message: "Item not found"})
 		}
 		return c.JSON(http.StatusOK, h.episodeToItemDTO(ep))
+	case "season":
+		// Season ID encodes the anime ID — return season metadata
+		episodes, _ := h.queries.ListEpisodesByAnimeID(ctx, id)
+		epCount := len(episodes)
+		season1 := 1
+		seriesID := EncodeItemID("anime", id)
+		return c.JSON(http.StatusOK, ItemDTO{
+			Name: "Season 1", ServerID: h.serverID, ID: itemIDEncoded,
+			Type: "Season", IndexNumber: &season1, ParentID: seriesID,
+			SeriesID: seriesID, IsFolder: true, ChildCount: &epCount,
+			LocationType: "FileSystem",
+		})
 	case "library":
 		lib, err := h.queries.GetLibrary(ctx, id)
 		if err != nil {

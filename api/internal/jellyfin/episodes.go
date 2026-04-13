@@ -8,16 +8,30 @@ import (
 
 func (h *Handler) handleGetSeasons(c echo.Context) error {
 	seriesIDEncoded := c.Param("seriesId")
+	typ, animeID, err := DecodeItemID(seriesIDEncoded)
+	if err != nil || typ != "anime" {
+		return c.JSON(http.StatusNotFound, JellyfinError{Message: "Series not found"})
+	}
+
+	// Count episodes for ChildCount
+	episodes, _ := h.queries.ListEpisodesByAnimeID(c.Request().Context(), animeID)
+	epCount := len(episodes)
+
 	season1 := 1
+	seasonID := EncodeItemID("season", animeID)
 	return c.JSON(http.StatusOK, ItemsResponse{
 		Items: []ItemDTO{{
 			Name:        "Season 1",
 			ServerID:    h.serverID,
-			ID:          seriesIDEncoded,
+			ID:          seasonID,
 			Type:        "Season",
 			IndexNumber: &season1,
 			ParentID:    seriesIDEncoded,
+			SeriesID:    seriesIDEncoded,
+			SeriesName:  "",
 			IsFolder:    true,
+			ChildCount:  &epCount,
+			LocationType: "FileSystem",
 		}},
 		TotalRecordCount: 1,
 	})
