@@ -210,6 +210,9 @@ func (h *handler) sendLoginNotification(c echo.Context, username string) {
 
 // issueAPIToken creates a new API token for the device and returns it in the login response.
 func (h *handler) issueAPIToken(c echo.Context, userID, username, deviceName string) error {
+	if len(deviceName) > 100 {
+		deviceName = deviceName[:100]
+	}
 	plaintext, hash, prefix, err := auth.GenerateAPIToken()
 	if err != nil {
 		return echo.ErrInternalServerError

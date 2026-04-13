@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -64,9 +65,9 @@ func resolveToken(c echo.Context, jwtSecret string, queries *store.Queries, toke
 		if err != nil {
 			return "", err
 		}
-		// Fire-and-forget last_used_at update
+		// Fire-and-forget last_used_at update (use background context since request ctx will be cancelled)
 		go func() {
-			if err := queries.UpdateAPITokenLastUsed(c.Request().Context(), apiToken.ID); err != nil {
+			if err := queries.UpdateAPITokenLastUsed(context.Background(), apiToken.ID); err != nil {
 				slog.Debug("failed to update api token last_used_at", "err", err)
 			}
 		}()
