@@ -41,6 +41,7 @@
 - **Danmaku** — bullet comment overlay from DandanPlay
 - **Subtitle support** — embedded and external subtitle tracks
 - **Watch progress** — automatic position saving and resume
+- **External player support** — connect Infuse, VLC, Kodi, and mpv via Jellyfin-compatible API with LAN auto-discovery
 
 ### Downloads
 - **Built-in torrent client** — anacrolix/torrent with configurable seeding
