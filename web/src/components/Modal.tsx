@@ -9,7 +9,7 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Fixed background element that stays in place while content scrolls */
   fixedBg?: React.ReactNode;
   /** Scroll handler for the scrollable content area */
@@ -55,6 +55,7 @@ export function Modal({
     sm: 'max-w-sm',
     md: 'max-w-lg',
     lg: 'max-w-3xl',
+    xl: 'max-w-5xl',
   };
 
   return createPortal(

@@ -94,6 +94,7 @@ interface SearchParams {
   season?: string;
   min_score?: string;
   status?: string;
+  adult?: string;
 }
 
 function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible: () => void }) {
@@ -139,6 +140,7 @@ export function SearchPage() {
     season: urlSeason,
     min_score: urlMinScore,
     status: urlStatus,
+    adult: urlAdult,
   } = searchParams;
 
   const [query, setQuery] = useState(urlQuery ?? '');
@@ -182,8 +184,9 @@ export function SearchPage() {
       season: urlSeason,
       min_score: urlMinScore ? Number(urlMinScore) : undefined,
       status: urlStatus,
+      adult: urlAdult === 'true' ? true : undefined,
     }),
-    [urlGenre, urlSort, urlYear, urlSeason, urlMinScore, urlStatus]
+    [urlGenre, urlSort, urlYear, urlSeason, urlMinScore, urlStatus, urlAdult]
   );
 
   const isTagMode = selectedTags.length > 0;
@@ -224,9 +227,10 @@ export function SearchPage() {
   };
 
   // Text search (single page)
+  const isAdult = urlAdult === 'true';
   const { data: searchResults = [], isLoading: searchLoading } = useQuery({
-    queryKey: discoverKeys.search(debouncedQuery),
-    queryFn: () => discoverApi.search(debouncedQuery),
+    queryKey: [...discoverKeys.search(debouncedQuery), isAdult],
+    queryFn: () => discoverApi.search(debouncedQuery, isAdult),
     enabled: debouncedQuery.length > 0 && !isFilterActive,
   });
 
@@ -440,6 +444,20 @@ export function SearchPage() {
 
             {/* Tag filter */}
             <TagMultiSelect selected={selectedTags} onAdd={addTag} onRemove={removeTag} />
+
+            {/* NSFW toggle */}
+            <button
+              type="button"
+              onClick={() => updateFilter('adult', urlAdult === 'true' ? undefined : 'true')}
+              className={cn(
+                'text-[12px] font-semibold px-3 py-1.5 rounded-md transition-colors',
+                urlAdult === 'true'
+                  ? 'bg-red-500/15 text-red-400'
+                  : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/60'
+              )}
+            >
+              NSFW
+            </button>
 
             {/* Clear filters */}
             {isFilterActive && (

@@ -102,6 +102,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.GET("/:id/scan-summaries", h.handleListScanSummaries)
 	libGroup.GET("/:id/media-files", h.handleListMediaFiles)
 	libGroup.GET("/:id/anime", h.handleListLibraryAnime)
+	libGroup.DELETE("/:id/anime/:animeId", h.handleDeleteAnime)
 	libGroup.GET("/:id/file-tree", h.handleFileTree)
 	libGroup.GET("/:id/connection-status", h.handleGetLibraryConnectionStatus)
 	libGroup.POST("/test-connection", h.handleTestConnection)

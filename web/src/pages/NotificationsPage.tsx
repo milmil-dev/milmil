@@ -67,6 +67,15 @@ const TYPE_LABEL_KEYS: Record<string, ReturnType<typeof msg>> = {
   system: msg`notifications.filter.system`,
 };
 
+/* Map backend notification type -> translated title */
+const NOTIFICATION_TITLE_KEYS: Record<string, ReturnType<typeof msg>> = {
+  'download.started': msg`notifications.type.newEpisode`,
+  'download.completed': msg`notifications.type.downloadComplete`,
+  'download.failed': msg`notifications.type.downloadFailed`,
+  'library.scan_complete': msg`notifications.type.libraryScanComplete`,
+  'system.error': msg`notifications.type.systemError`,
+};
+
 /* ── Time group label mapping ─────────────────────────────── */
 
 const TIME_GROUP_KEYS = {
@@ -260,7 +269,9 @@ function NotificationCard({
 }) {
   const { i18n } = useLingui();
   const severity = notification.severity ?? 'info';
-  const typePrefix = notification.type?.split(':')[0] ?? 'system';
+  const typePrefix = notification.type?.split('.')[0] ?? 'system';
+  const titleKey = notification.type ? NOTIFICATION_TITLE_KEYS[notification.type] : undefined;
+  const displayTitle = titleKey ? i18n._(titleKey) : notification.title;
 
   return (
     <button
@@ -276,7 +287,7 @@ function NotificationCard({
           {!notification.read && (
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
           )}
-          <span className="text-sm font-medium text-white">{notification.title}</span>
+          <span className="text-sm font-medium text-white">{displayTitle}</span>
           <span
             className={cn(
               'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium',

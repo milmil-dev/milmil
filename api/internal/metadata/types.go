@@ -14,6 +14,7 @@ type AnimeSummary struct {
 	EpisodeCount  int      `json:"episode_count"`
 	Score         float64  `json:"score"`
 	NextEpisode   int      `json:"next_episode,omitempty"`
+	AirTime       string   `json:"air_time,omitempty"` // HH:mm (Asia/Tokyo)
 	MediaType     string   `json:"media_type,omitempty"` // TV, MOVIE, OVA, ONA, SPECIAL
 }
 

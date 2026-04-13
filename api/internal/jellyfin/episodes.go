@@ -30,7 +30,15 @@ func (h *Handler) handleGetEpisodes(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, JellyfinError{Message: "Series not found"})
 	}
 
-	episodes, err := h.queries.ListEpisodesByAnimeID(c.Request().Context(), animeID)
+	ctx := c.Request().Context()
+
+	// Get anime title for SeriesName
+	var seriesName string
+	if anime, err := h.queries.GetAnime(ctx, animeID); err == nil {
+		seriesName = anime.Title
+	}
+
+	episodes, err := h.queries.ListEpisodesByAnimeID(ctx, animeID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, JellyfinError{Message: "Failed to list episodes"})
 	}
@@ -38,6 +46,7 @@ func (h *Handler) handleGetEpisodes(c echo.Context) error {
 	items := make([]ItemDTO, 0, len(episodes))
 	for _, ep := range episodes {
 		dto := h.episodeToItemDTO(ep)
+		dto.SeriesName = seriesName
 		dto.MediaSources = h.getMediaSourcesForEpisode(c, ep.ID)
 		items = append(items, dto)
 	}

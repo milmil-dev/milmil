@@ -26,7 +26,7 @@ const mediaFields = `
 	bannerImage
 	trailer { id site }
 	popularity averageScore episodes status season seasonYear format
-	genres
+	isAdult genres
 `
 
 const mediaFieldsWithRelations = mediaFields + `
@@ -74,14 +74,16 @@ type BrowseFilter struct {
 	MinScore int      // averageScore_greater (0-100 scale)
 	Status   string   // AniList MediaStatus enum (FINISHED, RELEASING, NOT_YET_RELEASED)
 	Format   string   // AniList MediaFormat enum (TV, MOVIE, OVA, ONA, SPECIAL, TV_SHORT)
+	IsAdult  bool     // Include adult content
 }
 
 type Client interface {
-	SearchMedia(ctx context.Context, query string) ([]Media, error)
+	SearchMedia(ctx context.Context, query string, isAdult bool) ([]Media, error)
 	GetMedia(ctx context.Context, id int) (*Media, error)
 	GetTrending(ctx context.Context, page, perPage int) ([]Media, error)
 	BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]Media, error)
 	Browse(ctx context.Context, filter BrowseFilter, page, perPage int) ([]Media, error)
+	GetAiringSchedule(ctx context.Context, from, to int64) ([]AiringSchedule, error)
 }
 
 type graphqlClient struct {
@@ -147,18 +149,26 @@ func (c *graphqlClient) query(ctx context.Context, q string, vars map[string]any
 	return json.Unmarshal(gqlResp.Data, target)
 }
 
-func (c *graphqlClient) SearchMedia(ctx context.Context, search string) ([]Media, error) {
-	q := `query ($search: String) {
+func (c *graphqlClient) SearchMedia(ctx context.Context, search string, isAdult bool) ([]Media, error) {
+	varDefs := "$search: String"
+	mediaArgs := "search: $search, type: ANIME, sort: SEARCH_MATCH"
+	vars := map[string]any{"search": search}
+	if isAdult {
+		varDefs += ", $isAdult: Boolean"
+		mediaArgs += ", isAdult: $isAdult"
+		vars["isAdult"] = true
+	}
+	q := fmt.Sprintf(`query (%s) {
 		Page(perPage: 20) {
-			media(search: $search, type: ANIME, sort: SEARCH_MATCH) {` + mediaFields + `}
+			media(%s) {`+mediaFields+`}
 		}
-	}`
+	}`, varDefs, mediaArgs)
 	var result struct {
 		Page struct {
 			Media []Media `json:"media"`
 		} `json:"Page"`
 	}
-	if err := c.query(ctx, q, map[string]any{"search": search}, &result); err != nil {
+	if err := c.query(ctx, q, vars, &result); err != nil {
 		return nil, err
 	}
 	return result.Page.Media, nil
@@ -238,6 +248,11 @@ func (c *graphqlClient) Browse(ctx context.Context, filter BrowseFilter, page, p
 		mediaArgs += ", format: $format"
 		vars["format"] = filter.Format
 	}
+	if filter.IsAdult {
+		varDefs += ", $isAdult: Boolean"
+		mediaArgs += ", isAdult: $isAdult"
+		vars["isAdult"] = true
+	}
 
 	// Default sort
 	sort := "POPULARITY_DESC"
@@ -278,4 +293,34 @@ func (c *graphqlClient) GetTrending(ctx context.Context, page, perPage int) ([]M
 		return nil, err
 	}
 	return result.Page.Media, nil
+}
+
+func (c *graphqlClient) GetAiringSchedule(ctx context.Context, from, to int64) ([]AiringSchedule, error) {
+	var all []AiringSchedule
+	for page := 1; page <= 3; page++ {
+		q := `query ($from: Int, $to: Int, $page: Int) {
+			Page(page: $page, perPage: 50) {
+				airingSchedules(airingAt_greater: $from, airingAt_lesser: $to, sort: TIME) {
+					airingAt episode
+					media { id title { romaji english native } }
+				}
+			}
+		}`
+		var result struct {
+			Page struct {
+				AiringSchedules []AiringSchedule `json:"airingSchedules"`
+			} `json:"Page"`
+		}
+		if err := c.query(ctx, q, map[string]any{"from": from, "to": to, "page": page}, &result); err != nil {
+			if len(all) > 0 {
+				break // return partial results
+			}
+			return nil, err
+		}
+		all = append(all, result.Page.AiringSchedules...)
+		if len(result.Page.AiringSchedules) < 50 {
+			break
+		}
+	}
+	return all, nil
 }

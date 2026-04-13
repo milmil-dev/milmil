@@ -248,9 +248,23 @@ function FileActionMenu({
 }
 
 function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
   const { data: animeList, isLoading } = useQuery({
     queryKey: [...libraryKeys.detail(libraryId), 'anime'],
     queryFn: () => libraryApi.anime(libraryId),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (animeId: string) => libraryApi.deleteAnime(libraryId, animeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...libraryKeys.detail(libraryId), 'anime'] });
+      queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
+      toast.success(i18n._(msg`library.anime.deleted`));
+    },
+    onError: () => {
+      toast.error(i18n._(msg`library.anime.deleteFailed`));
+    },
   });
 
   if (isLoading) {
@@ -270,7 +284,7 @@ function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-white/30">
         <HugeiconsIcon icon={SparklesIcon} size={40} className="mb-3 opacity-50" />
-        <p className="text-sm">No matched anime in this library</p>
+        <p className="text-sm">{i18n._(msg`library.anime.empty`)}</p>
       </div>
     );
   }
@@ -279,12 +293,26 @@ function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
       {animeList.map((a) => (
         <AnimeCard
-          key={a.bangumi_id || a.title}
+          key={a.id}
           anime={{
             ...a,
             cover_image: a.cover_image,
           }}
-        />
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (confirm(i18n._(msg`library.anime.confirmDelete`))) {
+                deleteMutation.mutate(a.id);
+              }
+            }}
+            className="absolute top-1.5 left-1.5 p-1 rounded bg-black/60 text-white/50 hover:text-red-400 hover:bg-black/80 backdrop-blur-sm transition-colors opacity-0 group-hover/media-entry-card:opacity-100"
+          >
+            <HugeiconsIcon icon={Cancel01Icon} size={12} />
+          </button>
+        </AnimeCard>
       ))}
     </div>
   );

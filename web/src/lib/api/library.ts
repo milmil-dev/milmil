@@ -158,10 +158,13 @@ export const libraryApi = {
     const qs = searchParams.toString();
     return api.get<MediaFilesResponse>(`/api/v1/libraries/${id}/media-files${qs ? `?${qs}` : ''}`);
   },
+  deleteAnime: (libraryId: string, animeId: string) =>
+    api.delete<void>(`/api/v1/libraries/${libraryId}/anime/${animeId}`),
   fileTree: (id: string) => api.get<FileTreeNode>(`/api/v1/libraries/${id}/file-tree`),
   anime: (id: string) =>
     api.get<
       Array<{
+        id: string;
         bangumi_id: number;
         anilist_id?: number;
         title: string;

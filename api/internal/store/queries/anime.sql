@@ -20,6 +20,16 @@ SELECT * FROM anime WHERE library_id = ? ORDER BY title;
 -- name: ListAnimeByLibrary :many
 SELECT * FROM anime WHERE library_id = ?;
 
+-- name: DeleteAnime :exec
+DELETE FROM anime WHERE id = ?;
+
+-- name: DeleteEpisodesByAnimeID :exec
+DELETE FROM episodes WHERE anime_id = ?;
+
+-- name: UnlinkMediaFilesByAnimeID :exec
+UPDATE media_files SET episode_id = NULL, match_status = 'unmatched'
+WHERE episode_id IN (SELECT id FROM episodes WHERE anime_id = ?);
+
 -- name: UpdateAnimeLibraryID :exec
 UPDATE anime SET library_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
 

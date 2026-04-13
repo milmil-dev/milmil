@@ -15,6 +15,7 @@ import {
   rssFeedApi,
   ruleApi,
 } from '../lib/api/downloads';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { cn } from '../lib/utils';
 
 // ─── Feed type badge ──────────────────────────────────────────────────────────
@@ -490,6 +491,7 @@ type DrawerMode =
 type DeleteTarget = { kind: 'feed'; feed: RSSFeed } | { kind: 'rule'; rule: DownloadRule } | null;
 
 export function RSSPage() {
+  useDocumentTitle('RSS Feeds & Rules');
   const queryClient = useQueryClient();
   const [drawer, setDrawer] = useState<DrawerMode>(null);
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null);

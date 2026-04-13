@@ -22,7 +22,7 @@ const defaultBaseURL = "https://api.bgm.tv"
 const nextBaseURL = "https://next.bgm.tv"
 
 type Client interface {
-	SearchSubjects(ctx context.Context, query string) ([]Subject, error)
+	SearchSubjects(ctx context.Context, query string, opts ...SearchOption) ([]Subject, error)
 	SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]Subject, int, error)
 	GetCalendar(ctx context.Context) ([]CalendarDay, error)
 	GetSubject(ctx context.Context, id int) (*Subject, error)
@@ -78,11 +78,26 @@ func (c *httpClient) do(ctx context.Context, method, path string, body io.Reader
 	}
 }
 
-func (c *httpClient) SearchSubjects(ctx context.Context, query string) ([]Subject, error) {
-	reqBody, _ := json.Marshal(map[string]any{
+// SearchOption configures optional search behaviour.
+type SearchOption func(m map[string]any)
+
+// WithNSFW includes NSFW subjects in the search results.
+func WithNSFW() SearchOption {
+	return func(m map[string]any) {
+		filter := m["filter"].(map[string]any)
+		filter["nsfw"] = true
+	}
+}
+
+func (c *httpClient) SearchSubjects(ctx context.Context, query string, opts ...SearchOption) ([]Subject, error) {
+	body := map[string]any{
 		"keyword": query,
 		"filter":  map[string]any{"type": []int{2}},
-	})
+	}
+	for _, opt := range opts {
+		opt(body)
+	}
+	reqBody, _ := json.Marshal(body)
 	data, err := c.do(ctx, http.MethodPost, "/v0/search/subjects", bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, err

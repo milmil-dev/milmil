@@ -92,6 +92,24 @@ func (q *Queries) CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime
 	return i, err
 }
 
+const deleteAnime = `-- name: DeleteAnime :exec
+DELETE FROM anime WHERE id = ?
+`
+
+func (q *Queries) DeleteAnime(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, deleteAnime, id)
+	return err
+}
+
+const deleteEpisodesByAnimeID = `-- name: DeleteEpisodesByAnimeID :exec
+DELETE FROM episodes WHERE anime_id = ?
+`
+
+func (q *Queries) DeleteEpisodesByAnimeID(ctx context.Context, animeID string) error {
+	_, err := q.db.ExecContext(ctx, deleteEpisodesByAnimeID, animeID)
+	return err
+}
+
 const getAnime = `-- name: GetAnime :one
 SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score FROM anime WHERE id = ? LIMIT 1
 `
@@ -270,6 +288,16 @@ func (q *Queries) ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullSt
 		return nil, err
 	}
 	return items, nil
+}
+
+const unlinkMediaFilesByAnimeID = `-- name: UnlinkMediaFilesByAnimeID :exec
+UPDATE media_files SET episode_id = NULL, match_status = 'unmatched'
+WHERE episode_id IN (SELECT id FROM episodes WHERE anime_id = ?)
+`
+
+func (q *Queries) UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error {
+	_, err := q.db.ExecContext(ctx, unlinkMediaFilesByAnimeID, animeID)
+	return err
 }
 
 const updateAnimeLibraryID = `-- name: UpdateAnimeLibraryID :exec

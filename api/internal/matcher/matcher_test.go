@@ -215,7 +215,7 @@ type mockBangumi struct {
 	episodesErr   error
 }
 
-func (m *mockBangumi) SearchSubjects(_ context.Context, _ string) ([]bangumi.Subject, error) {
+func (m *mockBangumi) SearchSubjects(_ context.Context, _ string, _ ...bangumi.SearchOption) ([]bangumi.Subject, error) {
 	return m.searchResult, m.searchErr
 }
 

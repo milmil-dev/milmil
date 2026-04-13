@@ -115,7 +115,7 @@ type mockBangumi struct {
 	episodesErr error
 }
 
-func (m *mockBangumi) SearchSubjects(_ context.Context, _ string) ([]bangumi.Subject, error) {
+func (m *mockBangumi) SearchSubjects(_ context.Context, _ string, _ ...bangumi.SearchOption) ([]bangumi.Subject, error) {
 	return nil, nil
 }
 func (m *mockBangumi) GetCalendar(_ context.Context) ([]bangumi.CalendarDay, error) {

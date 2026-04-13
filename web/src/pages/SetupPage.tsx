@@ -8,6 +8,7 @@ import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { PasswordInput } from '../components/ui/password-input';
 import { api } from '../lib/api-client';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { useAuthStore } from '../store/auth-store';
 
 interface SetupResponse {
@@ -17,6 +18,7 @@ interface SetupResponse {
 
 export function SetupPage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`auth.setup.title`));
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
   const [error, setError] = useState('');

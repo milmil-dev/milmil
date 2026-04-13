@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 	"unicode"
 
@@ -155,15 +156,113 @@ func (s *Service) GetCalendar(ctx context.Context) ([]CalendarDay, error) {
 	}
 	_ = g.Wait()
 
+	// Enrich with air times from AniList airing schedule
+	s.enrichCalendarAirTimes(ctx, result)
+
 	s.setCache(ctx, cacheKey, result, 2*time.Hour)
 	return result, nil
 }
 
-func (s *Service) Search(ctx context.Context, query string) ([]AnimeSummary, error) {
-	cacheKey := fmt.Sprintf("meta:search:%s", query)
+// enrichCalendarAirTimes fetches the week's airing schedule from AniList and
+// matches entries to Bangumi calendar items by native (Japanese) title.
+func (s *Service) enrichCalendarAirTimes(ctx context.Context, days []CalendarDay) {
+	now := time.Now()
+	from := now.Add(-24 * time.Hour).Unix()
+	to := now.Add(7 * 24 * time.Hour).Unix()
+
+	schedules, err := s.anilist.GetAiringSchedule(ctx, from, to)
+	if err != nil || len(schedules) == 0 {
+		return
+	}
+
+	// Build lookup: normalized title → air time string (HH:mm JST)
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	type airInfo struct {
+		time string
+	}
+	lookup := make(map[string]airInfo, len(schedules))
+	for _, s := range schedules {
+		t := time.Unix(int64(s.AiringAt), 0).In(jst)
+		info := airInfo{time: t.Format("15:04")}
+		if s.Media.Title.Native != "" {
+			lookup[normalizeTitle(s.Media.Title.Native)] = info
+		}
+		if s.Media.Title.Romaji != "" {
+			lookup[normalizeTitle(s.Media.Title.Romaji)] = info
+		}
+	}
+
+	// Match against Bangumi items
+	for di := range days {
+		for ii := range days[di].Items {
+			item := &days[di].Items[ii]
+			if info, ok := lookup[normalizeTitle(item.TitleOriginal)]; ok {
+				item.AirTime = info.time
+			} else if info, ok := lookup[normalizeTitle(item.Title)]; ok {
+				item.AirTime = info.time
+			}
+		}
+	}
+}
+
+func normalizeTitle(s string) string {
+	s = strings.TrimSpace(s)
+	s = strings.ToLower(s)
+	// Remove common punctuation differences
+	s = strings.Map(func(r rune) rune {
+		switch r {
+		case '　', ' ', '-', '–', '—', '~', '〜', '・', ':', '：', '!', '！', '?', '？', ',', '、', '.', '。':
+			return -1
+		}
+		return r
+	}, s)
+	return s
+}
+
+func (s *Service) Search(ctx context.Context, query string, isAdult bool) ([]AnimeSummary, error) {
+	cacheKey := fmt.Sprintf("meta:search:%s:%v", query, isAdult)
 	var cached []AnimeSummary
 	if s.getCache(ctx, cacheKey, &cached) {
 		return cached, nil
+	}
+
+	if isAdult {
+		// Search Bangumi (with nsfw flag) and AniList adult in parallel
+		g, gctx := errgroup.WithContext(ctx)
+		var subjects []bangumi.Subject
+		var adultMedia []anilist.Media
+		g.Go(func() error {
+			var err error
+			subjects, err = s.bangumi.SearchSubjects(gctx, query, bangumi.WithNSFW())
+			return err
+		})
+		g.Go(func() error {
+			var err error
+			adultMedia, err = s.anilist.SearchMedia(gctx, query, true)
+			return err
+		})
+		if err := g.Wait(); err != nil {
+			return nil, err
+		}
+
+		// If AniList adult search returned nothing (e.g. Chinese query),
+		// fall back to popular adult anime so the toggle always shows adult content.
+		if len(adultMedia) == 0 {
+			fallback, err := s.anilist.Browse(ctx, anilist.BrowseFilter{IsAdult: true, Sort: "POPULARITY_DESC"}, 1, 20)
+			if err == nil {
+				adultMedia = fallback
+			}
+		}
+
+		result := make([]AnimeSummary, 0, len(subjects)+len(adultMedia))
+		for _, sub := range subjects {
+			result = append(result, subjectToSummary(sub))
+		}
+		for _, m := range adultMedia {
+			result = append(result, anilistMediaToSummary(m))
+		}
+		s.setCache(ctx, cacheKey, result, 1*time.Hour)
+		return result, nil
 	}
 
 	subjects, err := s.bangumi.SearchSubjects(ctx, query)
@@ -479,6 +578,7 @@ type BrowseFilter struct {
 	MinScore int
 	Status   string
 	Format   string
+	IsAdult  bool
 }
 
 func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]AnimeSummary, error) {
@@ -486,8 +586,8 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 	if len(filter.Genres) > 0 {
 		genreKey = fmt.Sprintf("%v", filter.Genres)
 	}
-	cacheKey := fmt.Sprintf("meta:browse:%s:%s:%d:%s:%d:%s:%s:%d",
-		genreKey, filter.Sort, filter.Year, filter.Season, filter.MinScore, filter.Status, filter.Format, page)
+	cacheKey := fmt.Sprintf("meta:browse:%s:%s:%d:%s:%d:%s:%s:%v:%d",
+		genreKey, filter.Sort, filter.Year, filter.Season, filter.MinScore, filter.Status, filter.Format, filter.IsAdult, page)
 	var cached []AnimeSummary
 	if s.getCache(ctx, cacheKey, &cached) {
 		return cached, nil
@@ -503,9 +603,39 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 		Status:   filter.Status,
 		Format:   filter.Format,
 	}
-	media, err := s.anilist.Browse(ctx, alFilter, page, 50)
-	if err != nil {
-		return nil, err
+
+	var media []anilist.Media
+	if filter.IsAdult {
+		// Fetch both normal and adult results in parallel
+		bg, bgctx := errgroup.WithContext(ctx)
+		var normalMedia, adultMedia []anilist.Media
+		bg.Go(func() error {
+			var err error
+			normalMedia, err = s.anilist.Browse(bgctx, alFilter, page, 50)
+			return err
+		})
+		adultFilter := alFilter
+		adultFilter.IsAdult = true
+		bg.Go(func() error {
+			var err error
+			adultMedia, err = s.anilist.Browse(bgctx, adultFilter, page, 50)
+			return err
+		})
+		if err := bg.Wait(); err != nil {
+			return nil, err
+		}
+		// Deduplicate by ID: normal first, then adult
+		seen := make(map[int]bool, len(normalMedia))
+		for _, m := range normalMedia {
+			seen[m.ID] = true
+		}
+		media = append(normalMedia, filterUnseen(adultMedia, seen)...)
+	} else {
+		var err error
+		media, err = s.anilist.Browse(ctx, alFilter, page, 50)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	result := make([]AnimeSummary, len(media))
@@ -548,6 +678,16 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 	return result, nil
 }
 
+func filterUnseen(media []anilist.Media, seen map[int]bool) []anilist.Media {
+	out := make([]anilist.Media, 0, len(media))
+	for _, m := range media {
+		if !seen[m.ID] {
+			out = append(out, m)
+		}
+	}
+	return out
+}
+
 func (s *Service) BrowseByTag(ctx context.Context, tags []string, sort string, page int) ([]AnimeSummary, error) {
 	cacheKey := fmt.Sprintf("meta:tag:%v:%s:%d", tags, sort, page)
 	var cached []AnimeSummary
@@ -576,7 +716,7 @@ func (s *Service) findAniListID(ctx context.Context, bangumiID int, title string
 		return alID
 	}
 
-	results, err := s.anilist.SearchMedia(ctx, title)
+	results, err := s.anilist.SearchMedia(ctx, title, false)
 	if err != nil || len(results) == 0 {
 		return 0
 	}

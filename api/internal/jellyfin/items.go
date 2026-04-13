@@ -176,15 +176,19 @@ func (h *Handler) animeToItemDTO(a store.Anime) ItemDTO {
 func (h *Handler) episodeToItemDTO(ep store.Episode) ItemDTO {
 	epNum := int(ep.EpisodeNumber)
 	season := 1
+	seriesID := EncodeItemID("anime", ep.AnimeID)
 	dto := ItemDTO{
 		Name:              "",
 		ServerID:          h.serverID,
 		ID:                EncodeItemID("episode", ep.ID),
 		Type:              "Episode",
 		IndexNumber:       &epNum,
-		ParentID:          EncodeItemID("anime", ep.AnimeID),
+		ParentID:          seriesID,
 		MediaType:         "Video",
 		ParentIndexNumber: &season,
+		SeriesID:          seriesID,
+		SeasonID:          seriesID,
+		SeasonName:        "Season 1",
 	}
 	if ep.TitleZh.Valid && ep.TitleZh.String != "" {
 		dto.Name = ep.TitleZh.String

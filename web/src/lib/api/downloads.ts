@@ -104,6 +104,8 @@ export const rssFeedApi = {
     api.get<PreviewResponse>(
       `/api/v1/rss-feeds/${feedId}/preview${ruleId ? `?rule_id=${ruleId}` : ''}`
     ),
+  previewUrl: (url: string) =>
+    api.post<PreviewResponse>('/api/v1/rss-feeds/preview-url', { url }),
 };
 
 export const ruleApi = {

@@ -17,7 +17,7 @@ func TestSearchMedia_Success(t *testing.T) {
 	defer srv.Close()
 
 	c := anilist.NewClientWithURL(srv.Client(), srv.URL)
-	media, err := c.SearchMedia(context.Background(), "Frieren")
+	media, err := c.SearchMedia(context.Background(), "Frieren", false)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -67,7 +67,7 @@ func TestSearchMedia_GraphQLError(t *testing.T) {
 	defer srv.Close()
 
 	c := anilist.NewClientWithURL(srv.Client(), srv.URL)
-	_, err := c.SearchMedia(context.Background(), "test")
+	_, err := c.SearchMedia(context.Background(), "test", false)
 	if err == nil {
 		t.Fatal("expected error for GraphQL error response")
 	}

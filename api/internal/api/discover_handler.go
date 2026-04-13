@@ -40,7 +40,8 @@ func (h *handler) handleSearch(c echo.Context) error {
 	if q == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "q parameter required")
 	}
-	results, err := h.metadata.Search(c.Request().Context(), q)
+	isAdult := c.QueryParam("adult") == "true"
+	results, err := h.metadata.Search(c.Request().Context(), q, isAdult)
 	if err != nil {
 		return mapMetadataError(err)
 	}
@@ -82,8 +83,9 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 	}
 
 	format := c.QueryParam("format")
+	isAdult := c.QueryParam("adult") == "true"
 
-	hasAdvanced := sort != "" || yearStr != "" || season != "" || minScoreStr != "" || status != "" || format != "" || len(genres) > 1
+	hasAdvanced := sort != "" || yearStr != "" || season != "" || minScoreStr != "" || status != "" || format != "" || isAdult || len(genres) > 1
 
 	if !hasAdvanced && len(genres) == 1 {
 		// Legacy path: single genre browse
@@ -115,6 +117,7 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 		MinScore: minScore,
 		Status:   status,
 		Format:   format,
+		IsAdult:  isAdult,
 	}
 	results, err := h.metadata.Browse(c.Request().Context(), filter, page)
 	if err != nil {

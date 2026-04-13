@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi, torrentKeys } from '../lib/api/torrent';
 
@@ -39,6 +40,7 @@ function SourceBadge({ source }: { source: string }) {
 }
 
 export function TorrentSearchPage() {
+  useDocumentTitle('Torrent Search');
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const [source, setSource] = useState('all');

@@ -17,6 +17,7 @@ import {
 import { PasswordInput } from '../components/ui/password-input';
 import { Spinner } from '../components/ui/spinner';
 import { useAuth } from '../hooks/use-auth';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { api } from '../lib/api-client';
 
@@ -85,6 +86,7 @@ function PosterCollage() {
 
 export function LoginPage() {
   const { i18n } = useLingui();
+  useDocumentTitle(i18n._(msg`auth.login.title`));
   const navigate = useNavigate();
   const { login, setup, verify2FA, cancel2FA, pending2FA, loading, error, clearError } = useAuth();
   const [totpCode, setTotpCode] = useState('');

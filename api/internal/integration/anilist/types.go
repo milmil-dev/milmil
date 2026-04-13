@@ -14,6 +14,7 @@ type Media struct {
 	Season          string               `json:"season"`
 	SeasonYear      int                  `json:"seasonYear"`
 	Format          string               `json:"format"`
+	IsAdult         bool                 `json:"isAdult"`
 	Genres          []string             `json:"genres"`
 	Relations       *MediaConnection     `json:"relations,omitempty"`
 	Recommendations *RecConnection       `json:"recommendations,omitempty"`
@@ -116,4 +117,10 @@ type UserAvatar struct {
 
 type ReviewConnection struct {
 	Nodes []Review `json:"nodes"`
+}
+
+type AiringSchedule struct {
+	AiringAt int   `json:"airingAt"`
+	Episode  int   `json:"episode"`
+	Media    Media `json:"media"`
 }

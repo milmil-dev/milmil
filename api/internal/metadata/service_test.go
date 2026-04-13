@@ -19,7 +19,7 @@ type mockBangumi struct {
 	episodesFn func(ctx context.Context, id int) ([]bangumi.Episode, error)
 }
 
-func (m *mockBangumi) SearchSubjects(ctx context.Context, query string) ([]bangumi.Subject, error) {
+func (m *mockBangumi) SearchSubjects(ctx context.Context, query string, opts ...bangumi.SearchOption) ([]bangumi.Subject, error) {
 	if m.searchFn != nil {
 		return m.searchFn(ctx, query)
 	}
@@ -58,14 +58,14 @@ func (m *mockBangumi) SearchByTag(ctx context.Context, tags []string, sort strin
 // ─── Mock AniList Client ──────────────────────────────────────────────────────
 
 type mockAniList struct {
-	searchFn   func(ctx context.Context, query string) ([]anilist.Media, error)
+	searchFn   func(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error)
 	mediaFn    func(ctx context.Context, id int) (*anilist.Media, error)
 	trendingFn func(ctx context.Context, page, perPage int) ([]anilist.Media, error)
 }
 
-func (m *mockAniList) SearchMedia(ctx context.Context, query string) ([]anilist.Media, error) {
+func (m *mockAniList) SearchMedia(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error) {
 	if m.searchFn != nil {
-		return m.searchFn(ctx, query)
+		return m.searchFn(ctx, query, isAdult)
 	}
 	return nil, nil
 }
@@ -89,6 +89,10 @@ func (m *mockAniList) BrowseByGenre(ctx context.Context, genre string, page, per
 }
 
 func (m *mockAniList) Browse(ctx context.Context, filter anilist.BrowseFilter, page, perPage int) ([]anilist.Media, error) {
+	return nil, nil
+}
+
+func (m *mockAniList) GetAiringSchedule(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
 	return nil, nil
 }
 
@@ -152,7 +156,7 @@ func TestSearch_ReturnsBangumiResults(t *testing.T) {
 	}
 	svc := metadata.New(bgm, &mockAniList{}, cache.New(""))
 
-	results, err := svc.Search(context.Background(), "Frieren")
+	results, err := svc.Search(context.Background(), "Frieren", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +180,7 @@ func TestGetAnimeDetail_EnrichesWithAniList(t *testing.T) {
 		},
 	}
 	al := &mockAniList{
-		searchFn: func(ctx context.Context, query string) ([]anilist.Media, error) {
+		searchFn: func(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error) {
 			return []anilist.Media{{
 				ID:          154587,
 				Title:       anilist.MediaTitle{English: "Frieren: Beyond Journey's End"},

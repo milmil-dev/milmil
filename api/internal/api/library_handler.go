@@ -326,6 +326,29 @@ func (h *handler) handleDeleteLibrary(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+func (h *handler) handleDeleteAnime(c echo.Context) error {
+	animeID := c.Param("animeId")
+	ctx := c.Request().Context()
+
+	// Unlink media files first (set them back to unmatched)
+	if err := h.queries.UnlinkMediaFilesByAnimeID(ctx, animeID); err != nil {
+		slog.Error("delete anime: unlink media files", "anime_id", animeID, "err", err)
+	}
+	// Delete episodes
+	if err := h.queries.DeleteEpisodesByAnimeID(ctx, animeID); err != nil {
+		slog.Error("delete anime: delete episodes", "anime_id", animeID, "err", err)
+	}
+	// Delete anime
+	if err := h.queries.DeleteAnime(ctx, animeID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.ErrNotFound
+		}
+		return echo.ErrInternalServerError
+	}
+
+	return c.NoContent(http.StatusNoContent)
+}
+
 func (h *handler) handleListLibraryAnime(c echo.Context) error {
 	libraryID := c.Param("id")
 	animeList, err := h.queries.ListAnimeByLibrary(c.Request().Context(), sql.NullString{String: libraryID, Valid: true})
@@ -334,15 +357,16 @@ func (h *handler) handleListLibraryAnime(c echo.Context) error {
 	}
 
 	type animeSummary struct {
-		BangumiID    int64    `json:"bangumi_id"`
-		AnilistID    int64    `json:"anilist_id,omitempty"`
-		Title        string   `json:"title"`
-		TitleOriginal string  `json:"title_original"`
-		CoverImage   string   `json:"cover_image"`
-		Genres       []string `json:"genres"`
-		AirDate      string   `json:"air_date,omitempty"`
-		EpisodeCount int      `json:"episode_count"`
-		Score        float64  `json:"score"`
+		ID            string   `json:"id"`
+		BangumiID     int64    `json:"bangumi_id"`
+		AnilistID     int64    `json:"anilist_id,omitempty"`
+		Title         string   `json:"title"`
+		TitleOriginal string   `json:"title_original"`
+		CoverImage    string   `json:"cover_image"`
+		Genres        []string `json:"genres"`
+		AirDate       string   `json:"air_date,omitempty"`
+		EpisodeCount  int      `json:"episode_count"`
+		Score         float64  `json:"score"`
 	}
 
 	result := make([]animeSummary, 0, len(animeList))
@@ -379,6 +403,7 @@ func (h *handler) handleListLibraryAnime(c echo.Context) error {
 			airDate = a.AirDate.String
 		}
 		result = append(result, animeSummary{
+			ID:            a.ID,
 			BangumiID:     bangumiID,
 			AnilistID:     anilistID,
 			Title:         title,

@@ -9,6 +9,8 @@ env_files = [".env"]
   exclude_dir = ["tmp", "vendor", "testdata", "internal/store"]
   delay = 1000
   stop_on_error = true
+  send_interrupt = true
+  kill_delay = "10s"
 
 [log]
   time = false

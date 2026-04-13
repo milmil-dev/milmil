@@ -15,6 +15,7 @@ export interface AnimeSummary {
   episode_count: number;
   score: number;
   next_episode?: number;
+  air_time?: string; // HH:mm (JST)
   media_type?: string; // TV, MOVIE, OVA, ONA, SPECIAL
 }
 
@@ -92,6 +93,7 @@ export interface BrowseParams {
   min_score?: number;
   status?: string;
   format?: string;
+  adult?: boolean;
   page?: number;
 }
 
@@ -109,8 +111,11 @@ export const discoverApi = {
   },
   calendar: () => api.get<CalendarDay[]>('/api/v1/discover/calendar'),
   trending: (page: number) => api.get<AnimeSummary[]>(`/api/v1/discover/trending?page=${page}`),
-  search: (q: string) =>
-    api.get<AnimeSummary[]>(`/api/v1/discover/search?q=${encodeURIComponent(q)}`),
+  search: (q: string, adult?: boolean) => {
+    const qs = new URLSearchParams({ q });
+    if (adult) qs.set('adult', 'true');
+    return api.get<AnimeSummary[]>(`/api/v1/discover/search?${qs.toString()}`);
+  },
   browseByTag: (tags: string[], sort?: string, page?: number) => {
     const qs = new URLSearchParams();
     qs.set('tag', tags.join(','));
@@ -127,6 +132,7 @@ export const discoverApi = {
     if (params.min_score) qs.set('min_score', String(params.min_score));
     if (params.status) qs.set('status', params.status);
     if (params.format) qs.set('format', params.format);
+    if (params.adult) qs.set('adult', 'true');
     if (params.page) qs.set('page', String(params.page));
     return api.get<AnimeSummary[]>(`/api/v1/discover/browse?${qs.toString()}`);
   },

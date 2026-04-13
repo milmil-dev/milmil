@@ -31,9 +31,11 @@ type Querier interface {
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAllNotifications(ctx context.Context) error
+	DeleteAnime(ctx context.Context, id string) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
+	DeleteEpisodesByAnimeID(ctx context.Context, animeID string) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteOldDeliveries(ctx context.Context, createdAt string) error
@@ -116,6 +118,7 @@ type Querier interface {
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
+	UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error
 	UpdateAnimeLibraryID(ctx context.Context, arg UpdateAnimeLibraryIDParams) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error

@@ -52,6 +52,10 @@ type ItemDTO struct {
 	LocationType      string            `json:"LocationType,omitempty"`
 	IsFolder          bool              `json:"IsFolder,omitempty"`
 	ParentIndexNumber *int              `json:"ParentIndexNumber,omitempty"`
+	SeriesID          string            `json:"SeriesId,omitempty"`
+	SeriesName        string            `json:"SeriesName,omitempty"`
+	SeasonID          string            `json:"SeasonId,omitempty"`
+	SeasonName        string            `json:"SeasonName,omitempty"`
 }
 
 // ItemsResponse wraps a list of items with total count.
