@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/milmil/api/internal/metadata"
@@ -14,16 +13,16 @@ import (
 	"github.com/milmil/api/internal/store"
 )
 
+const digestSentKey = "daily_digest_last_sent"
+
 // DailyDigestWorker sends a single daily summary of today's airing anime
 // that the user is watching. Runs every 5 minutes, sends once per day
-// when the configured time is reached.
+// when the configured time is reached. Uses the settings table for
+// persistence so it survives server restarts without double-sending.
 type DailyDigestWorker struct {
 	queries  *store.Queries
 	metadata *metadata.Service
 	notifier *notification.Service
-
-	mu       sync.Mutex
-	sentDate string // YYYY-MM-DD, tracks whether today's digest was already sent
 }
 
 func NewDailyDigestWorker(
@@ -50,25 +49,22 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		return
 	}
 
-	// Parse configured time (HH:mm)
 	targetHour, targetMin, ok := parseHHMM(digestTime)
 	if !ok {
 		slog.Warn("daily_digest: invalid time format", "time", digestTime)
 		return
 	}
 
-	// Use Asia/Hong_Kong since user's language is zh-HK
 	loc := time.FixedZone("Asia/HongKong", 8*60*60)
 	now := time.Now().In(loc)
 	todayStr := now.Format("2006-01-02")
 
-	// Check if already sent today
-	w.mu.Lock()
-	if w.sentDate == todayStr {
-		w.mu.Unlock()
-		return
+	// Check DB for last sent date (survives restarts)
+	if setting, err := w.queries.GetSetting(ctx, digestSentKey); err == nil {
+		if setting.Value == todayStr {
+			return // already sent today
+		}
 	}
-	w.mu.Unlock()
 
 	// Check if current time has passed the target time
 	target := time.Date(now.Year(), now.Month(), now.Day(), targetHour, targetMin, 0, 0, loc)
@@ -76,27 +72,23 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		return
 	}
 
-	// Mark as sent before doing work (prevent double-send)
-	w.mu.Lock()
-	if w.sentDate == todayStr {
-		w.mu.Unlock()
+	// Mark as sent in DB before doing work (prevent double-send on concurrent ticks)
+	if _, err := w.queries.UpsertSetting(ctx, store.UpsertSettingParams{
+		Key: digestSentKey, Value: todayStr,
+	}); err != nil {
+		slog.Error("daily_digest: persist sent date", "err", err)
 		return
 	}
-	w.sentDate = todayStr
-	w.mu.Unlock()
 
-	// Get calendar
 	calendar, err := w.metadata.GetCalendar(ctx)
 	if err != nil {
 		slog.Error("daily_digest: get calendar", "err", err)
 		// Reset so we retry next tick
-		w.mu.Lock()
-		w.sentDate = ""
-		w.mu.Unlock()
+		_ = w.queries.DeleteSetting(ctx, digestSentKey)
 		return
 	}
 
-	// Find today's anime (use JST weekday since Bangumi uses JST)
+	// Use JST weekday since Bangumi calendar is JST-based
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	todayWeekday := time.Now().In(jst).Weekday()
 	var todayItems []metadata.AnimeSummary
@@ -112,7 +104,6 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		return
 	}
 
-	// Filter to anime the user watches
 	watchingIDs := buildWatchingSet(ctx, w.queries)
 	if len(watchingIDs) == 0 {
 		return
@@ -130,12 +121,10 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		return
 	}
 
-	// Sort by air time
 	sort.Slice(watchingToday, func(i, j int) bool {
 		return watchingToday[i].AirTime < watchingToday[j].AirTime
 	})
 
-	// Build message
 	var sb strings.Builder
 	for _, item := range watchingToday {
 		title := item.Title
@@ -200,3 +189,4 @@ func parseHHMM(s string) (hour, min int, ok bool) {
 	}
 	return hour, min, true
 }
+
