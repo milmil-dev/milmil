@@ -10,11 +10,14 @@ import (
 )
 
 type apiTokenDTO struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	TokenPrefix string  `json:"token_prefix"`
-	LastUsedAt  *string `json:"last_used_at"`
-	CreatedAt   string  `json:"created_at"`
+	ID            string  `json:"id"`
+	Name          string  `json:"name"`
+	TokenPrefix   string  `json:"token_prefix"`
+	LastUsedAt    *string `json:"last_used_at"`
+	LastIP        string  `json:"last_ip"`
+	LastUserAgent string  `json:"last_user_agent"`
+	CreatedAt     string  `json:"created_at"`
+	IsCurrent     bool    `json:"is_current"`
 }
 
 type apiTokenCreateRequest struct {
@@ -34,13 +37,17 @@ func (h *handler) handleListAPITokens(c echo.Context) error {
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
+	currentTokenID := getTokenID(c)
 	dtos := make([]apiTokenDTO, len(tokens))
 	for i, t := range tokens {
 		dto := apiTokenDTO{
-			ID:          t.ID,
-			Name:        t.Name,
-			TokenPrefix: t.TokenPrefix,
-			CreatedAt:   t.CreatedAt,
+			ID:            t.ID,
+			Name:          t.Name,
+			TokenPrefix:   t.TokenPrefix,
+			LastIP:        t.LastIp,
+			LastUserAgent: t.LastUserAgent,
+			CreatedAt:     t.CreatedAt,
+			IsCurrent:     t.ID == currentTokenID,
 		}
 		if t.LastUsedAt.Valid {
 			dto.LastUsedAt = &t.LastUsedAt.String
@@ -62,12 +69,11 @@ func (h *handler) handleCreateAPIToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "name must be 100 characters or fewer")
 	}
 
-	// Limit tokens per user
-	existing, err := h.queries.ListAPITokensByUser(c.Request().Context(), getUserID(c))
+	count, err := h.queries.CountAPITokensByUser(c.Request().Context(), getUserID(c))
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-	if len(existing) >= 25 {
+	if count >= 25 {
 		return echo.NewHTTPError(http.StatusBadRequest, "maximum of 25 API tokens reached")
 	}
 
@@ -77,11 +83,13 @@ func (h *handler) handleCreateAPIToken(c echo.Context) error {
 	}
 
 	token, err := h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
-		ID:          uuid.NewString(),
-		Name:        req.Name,
-		TokenHash:   hash,
-		TokenPrefix: prefix,
-		UserID:      getUserID(c),
+		ID:            uuid.NewString(),
+		Name:          req.Name,
+		TokenHash:     hash,
+		TokenPrefix:   prefix,
+		UserID:        getUserID(c),
+		LastIp:        c.RealIP(),
+		LastUserAgent: c.Request().UserAgent(),
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -101,6 +109,41 @@ func (h *handler) handleDeleteAPIToken(c echo.Context) error {
 	if err := h.queries.DeleteAPIToken(c.Request().Context(), store.DeleteAPITokenParams{
 		ID:     id,
 		UserID: getUserID(c),
+	}); err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.NoContent(http.StatusNoContent)
+}
+
+func (h *handler) handleGetCurrentToken(c echo.Context) error {
+	tokenID := getTokenID(c)
+	token, err := h.queries.GetAPITokenByID(c.Request().Context(), store.GetAPITokenByIDParams{
+		ID:     tokenID,
+		UserID: getUserID(c),
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	dto := apiTokenDTO{
+		ID:            token.ID,
+		Name:          token.Name,
+		TokenPrefix:   token.TokenPrefix,
+		LastIP:        token.LastIp,
+		LastUserAgent: token.LastUserAgent,
+		CreatedAt:     token.CreatedAt,
+		IsCurrent:     true,
+	}
+	if token.LastUsedAt.Valid {
+		dto.LastUsedAt = &token.LastUsedAt.String
+	}
+	return c.JSON(http.StatusOK, dto)
+}
+
+func (h *handler) handleDeleteOtherTokens(c echo.Context) error {
+	tokenID := getTokenID(c)
+	if err := h.queries.DeleteOtherAPITokens(c.Request().Context(), store.DeleteOtherAPITokensParams{
+		UserID: getUserID(c),
+		ID:     tokenID,
 	}); err != nil {
 		return echo.ErrInternalServerError
 	}

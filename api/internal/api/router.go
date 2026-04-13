@@ -93,6 +93,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	tokenGroup := v1.Group("/api-tokens", authMiddleware(h.queries))
 	tokenGroup.GET("", h.handleListAPITokens)
 	tokenGroup.POST("", h.handleCreateAPIToken)
+	tokenGroup.GET("/current", h.handleGetCurrentToken)
+	tokenGroup.DELETE("/others", h.handleDeleteOtherTokens)
 	tokenGroup.DELETE("/:id", h.handleDeleteAPIToken)
 
 	// Libraries — protected
