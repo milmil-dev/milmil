@@ -1,0 +1,2 @@
+ALTER TABLE api_tokens ADD COLUMN last_ip TEXT NOT NULL DEFAULT '';
+ALTER TABLE api_tokens ADD COLUMN last_user_agent TEXT NOT NULL DEFAULT '';
