@@ -95,8 +95,19 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	// User data (bidirectional progress sync)
 	auth.GET("/Users/:userId/Items/:itemId/UserData", h.handleGetUserData)
 
-	// Catch-all for unimplemented endpoints
+	// Stubs that Infuse expects (return empty results, not errors)
+	emptyArray := func(c echo.Context) error { return c.JSON(200, []any{}) }
+	emptyItems := func(c echo.Context) error {
+		return c.JSON(200, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+	}
+	auth.GET("/Items/:itemId/LocalTrailers", emptyArray)
+	auth.GET("/Items/:itemId/SpecialFeatures", emptyArray)
+	auth.GET("/MediaSegments/:itemId", emptyArray)
+	auth.GET("/UserItems/Resume", emptyItems)
+
+	// Catch-all for unimplemented endpoints — return 404 (not 501)
+	// Infuse treats 501 as fatal but ignores 404 gracefully
 	jf.Any("/*", func(c echo.Context) error {
-		return c.JSON(501, JellyfinError{Message: "Not implemented"})
+		return c.JSON(404, JellyfinError{Message: "Not found"})
 	})
 }
