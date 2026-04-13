@@ -37,14 +37,16 @@ type Anime struct {
 }
 
 type ApiToken struct {
-	ID          string         `json:"id"`
-	Name        string         `json:"name"`
-	TokenHash   string         `json:"token_hash"`
-	TokenPrefix string         `json:"token_prefix"`
-	UserID      string         `json:"user_id"`
-	LastUsedAt  sql.NullString `json:"last_used_at"`
-	CreatedAt   string         `json:"created_at"`
-	UpdatedAt   string         `json:"updated_at"`
+	ID            string         `json:"id"`
+	Name          string         `json:"name"`
+	TokenHash     string         `json:"token_hash"`
+	TokenPrefix   string         `json:"token_prefix"`
+	UserID        string         `json:"user_id"`
+	LastUsedAt    sql.NullString `json:"last_used_at"`
+	CreatedAt     string         `json:"created_at"`
+	UpdatedAt     string         `json:"updated_at"`
+	LastIp        string         `json:"last_ip"`
+	LastUserAgent string         `json:"last_user_agent"`
 }
 
 type BackupConfig struct {

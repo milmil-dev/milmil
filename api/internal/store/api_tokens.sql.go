@@ -10,18 +10,31 @@ import (
 	"database/sql"
 )
 
+const countAPITokensByUser = `-- name: CountAPITokensByUser :one
+SELECT COUNT(*) FROM api_tokens WHERE user_id = ?
+`
+
+func (q *Queries) CountAPITokensByUser(ctx context.Context, userID string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAPITokensByUser, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAPIToken = `-- name: CreateAPIToken :one
-INSERT INTO api_tokens (id, name, token_hash, token_prefix, user_id, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, name, token_hash, token_prefix, user_id, last_used_at, created_at, updated_at
+INSERT INTO api_tokens (id, name, token_hash, token_prefix, user_id, last_ip, last_user_agent, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+RETURNING id, name, token_hash, token_prefix, user_id, last_used_at, created_at, updated_at, last_ip, last_user_agent
 `
 
 type CreateAPITokenParams struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	TokenHash   string `json:"token_hash"`
-	TokenPrefix string `json:"token_prefix"`
-	UserID      string `json:"user_id"`
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	TokenHash     string `json:"token_hash"`
+	TokenPrefix   string `json:"token_prefix"`
+	UserID        string `json:"user_id"`
+	LastIp        string `json:"last_ip"`
+	LastUserAgent string `json:"last_user_agent"`
 }
 
 func (q *Queries) CreateAPIToken(ctx context.Context, arg CreateAPITokenParams) (ApiToken, error) {
@@ -31,6 +44,8 @@ func (q *Queries) CreateAPIToken(ctx context.Context, arg CreateAPITokenParams) 
 		arg.TokenHash,
 		arg.TokenPrefix,
 		arg.UserID,
+		arg.LastIp,
+		arg.LastUserAgent,
 	)
 	var i ApiToken
 	err := row.Scan(
@@ -42,6 +57,8 @@ func (q *Queries) CreateAPIToken(ctx context.Context, arg CreateAPITokenParams) 
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.LastIp,
+		&i.LastUserAgent,
 	)
 	return i, err
 }
@@ -60,8 +77,22 @@ func (q *Queries) DeleteAPIToken(ctx context.Context, arg DeleteAPITokenParams) 
 	return err
 }
 
+const deleteOtherAPITokens = `-- name: DeleteOtherAPITokens :exec
+DELETE FROM api_tokens WHERE user_id = ? AND id != ?
+`
+
+type DeleteOtherAPITokensParams struct {
+	UserID string `json:"user_id"`
+	ID     string `json:"id"`
+}
+
+func (q *Queries) DeleteOtherAPITokens(ctx context.Context, arg DeleteOtherAPITokensParams) error {
+	_, err := q.db.ExecContext(ctx, deleteOtherAPITokens, arg.UserID, arg.ID)
+	return err
+}
+
 const getAPITokenByHash = `-- name: GetAPITokenByHash :one
-SELECT id, name, token_hash, token_prefix, user_id, last_used_at, created_at, updated_at FROM api_tokens WHERE token_hash = ? LIMIT 1
+SELECT id, name, token_hash, token_prefix, user_id, last_used_at, created_at, updated_at, last_ip, last_user_agent FROM api_tokens WHERE token_hash = ? LIMIT 1
 `
 
 func (q *Queries) GetAPITokenByHash(ctx context.Context, tokenHash string) (ApiToken, error) {
@@ -76,23 +107,54 @@ func (q *Queries) GetAPITokenByHash(ctx context.Context, tokenHash string) (ApiT
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.LastIp,
+		&i.LastUserAgent,
+	)
+	return i, err
+}
+
+const getAPITokenByID = `-- name: GetAPITokenByID :one
+SELECT id, name, token_hash, token_prefix, user_id, last_used_at, created_at, updated_at, last_ip, last_user_agent FROM api_tokens WHERE id = ? AND user_id = ? LIMIT 1
+`
+
+type GetAPITokenByIDParams struct {
+	ID     string `json:"id"`
+	UserID string `json:"user_id"`
+}
+
+func (q *Queries) GetAPITokenByID(ctx context.Context, arg GetAPITokenByIDParams) (ApiToken, error) {
+	row := q.db.QueryRowContext(ctx, getAPITokenByID, arg.ID, arg.UserID)
+	var i ApiToken
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.TokenHash,
+		&i.TokenPrefix,
+		&i.UserID,
+		&i.LastUsedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.LastIp,
+		&i.LastUserAgent,
 	)
 	return i, err
 }
 
 const listAPITokensByUser = `-- name: ListAPITokensByUser :many
-SELECT id, name, token_prefix, user_id, last_used_at, created_at, updated_at
+SELECT id, name, token_prefix, user_id, last_used_at, last_ip, last_user_agent, created_at, updated_at
 FROM api_tokens WHERE user_id = ? ORDER BY created_at DESC
 `
 
 type ListAPITokensByUserRow struct {
-	ID          string         `json:"id"`
-	Name        string         `json:"name"`
-	TokenPrefix string         `json:"token_prefix"`
-	UserID      string         `json:"user_id"`
-	LastUsedAt  sql.NullString `json:"last_used_at"`
-	CreatedAt   string         `json:"created_at"`
-	UpdatedAt   string         `json:"updated_at"`
+	ID            string         `json:"id"`
+	Name          string         `json:"name"`
+	TokenPrefix   string         `json:"token_prefix"`
+	UserID        string         `json:"user_id"`
+	LastUsedAt    sql.NullString `json:"last_used_at"`
+	LastIp        string         `json:"last_ip"`
+	LastUserAgent string         `json:"last_user_agent"`
+	CreatedAt     string         `json:"created_at"`
+	UpdatedAt     string         `json:"updated_at"`
 }
 
 func (q *Queries) ListAPITokensByUser(ctx context.Context, userID string) ([]ListAPITokensByUserRow, error) {
@@ -110,6 +172,8 @@ func (q *Queries) ListAPITokensByUser(ctx context.Context, userID string) ([]Lis
 			&i.TokenPrefix,
 			&i.UserID,
 			&i.LastUsedAt,
+			&i.LastIp,
+			&i.LastUserAgent,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -126,11 +190,21 @@ func (q *Queries) ListAPITokensByUser(ctx context.Context, userID string) ([]Lis
 	return items, nil
 }
 
-const updateAPITokenLastUsed = `-- name: UpdateAPITokenLastUsed :exec
-UPDATE api_tokens SET last_used_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+const updateAPITokenActivity = `-- name: UpdateAPITokenActivity :exec
+UPDATE api_tokens
+SET last_used_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
+    last_ip = ?,
+    last_user_agent = ?
+WHERE id = ?
 `
 
-func (q *Queries) UpdateAPITokenLastUsed(ctx context.Context, id string) error {
-	_, err := q.db.ExecContext(ctx, updateAPITokenLastUsed, id)
+type UpdateAPITokenActivityParams struct {
+	LastIp        string `json:"last_ip"`
+	LastUserAgent string `json:"last_user_agent"`
+	ID            string `json:"id"`
+}
+
+func (q *Queries) UpdateAPITokenActivity(ctx context.Context, arg UpdateAPITokenActivityParams) error {
+	_, err := q.db.ExecContext(ctx, updateAPITokenActivity, arg.LastIp, arg.LastUserAgent, arg.ID)
 	return err
 }

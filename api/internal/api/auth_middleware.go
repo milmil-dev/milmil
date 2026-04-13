@@ -65,10 +65,19 @@ func resolveToken(c echo.Context, jwtSecret string, queries *store.Queries, toke
 		if err != nil {
 			return "", err
 		}
-		// Fire-and-forget last_used_at update (use background context since request ctx will be cancelled)
+		// Fire-and-forget activity update (use background context since request ctx will be cancelled)
 		go func() {
-			if err := queries.UpdateAPITokenLastUsed(context.Background(), apiToken.ID); err != nil {
-				slog.Debug("failed to update api token last_used_at", "err", err)
+			ip := c.Request().Header.Get("X-Forwarded-For")
+			if ip == "" {
+				ip = c.Request().RemoteAddr
+			}
+			userAgent := c.Request().Header.Get("User-Agent")
+			if err := queries.UpdateAPITokenActivity(context.Background(), store.UpdateAPITokenActivityParams{
+				ID:            apiToken.ID,
+				LastIp:        ip,
+				LastUserAgent: userAgent,
+			}); err != nil {
+				slog.Debug("failed to update api token activity", "err", err)
 			}
 		}()
 		return apiToken.UserID, nil

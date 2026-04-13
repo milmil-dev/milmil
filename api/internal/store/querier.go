@@ -12,6 +12,7 @@ import (
 type Querier interface {
 	ClearMediaFileMatch(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
+	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
 	CountCollectionByStatus(ctx context.Context) ([]CountCollectionByStatusRow, error)
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
 	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
@@ -42,6 +43,7 @@ type Querier interface {
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteOldDeliveries(ctx context.Context, createdAt string) error
 	DeleteOldReadNotifications(ctx context.Context, createdAt string) error
+	DeleteOtherAPITokens(ctx context.Context, arg DeleteOtherAPITokensParams) error
 	DeleteRSSFeed(ctx context.Context, id string) error
 	DeleteSegmentMark(ctx context.Context, id string) error
 	DeleteSetting(ctx context.Context, key string) error
@@ -51,6 +53,7 @@ type Querier interface {
 	DisableTwoFactor(ctx context.Context, id string) error
 	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
 	GetAPITokenByHash(ctx context.Context, tokenHash string) (ApiToken, error)
+	GetAPITokenByID(ctx context.Context, arg GetAPITokenByIDParams) (ApiToken, error)
 	GetAllUserPreferences(ctx context.Context, userID string) ([]UserPreference, error)
 	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
@@ -123,7 +126,7 @@ type Querier interface {
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
 	UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error
-	UpdateAPITokenLastUsed(ctx context.Context, id string) error
+	UpdateAPITokenActivity(ctx context.Context, arg UpdateAPITokenActivityParams) error
 	UpdateAnimeLibraryID(ctx context.Context, arg UpdateAnimeLibraryIDParams) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error

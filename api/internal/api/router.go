@@ -89,6 +89,12 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authProtected.DELETE("/2fa", h.handleTwoFactorDisable)
 	authProtected.GET("/2fa/status", h.handleTwoFactorStatus)
 
+	// API Tokens — protected
+	tokenGroup := v1.Group("/api-tokens", authMiddleware(cfg.JWTSecret, h.queries))
+	tokenGroup.GET("", h.handleListAPITokens)
+	tokenGroup.POST("", h.handleCreateAPIToken)
+	tokenGroup.DELETE("/:id", h.handleDeleteAPIToken)
+
 	// Libraries — protected
 	libGroup := v1.Group("/libraries", authMiddleware(cfg.JWTSecret, h.queries))
 	libGroup.GET("", h.handleListLibraries)
