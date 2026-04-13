@@ -56,6 +56,11 @@ type ItemDTO struct {
 	SeriesName        string            `json:"SeriesName,omitempty"`
 	SeasonID          string            `json:"SeasonId,omitempty"`
 	SeasonName        string            `json:"SeasonName,omitempty"`
+	ProviderIds       map[string]string `json:"ProviderIds,omitempty"`
+	SortName          string            `json:"SortName,omitempty"`
+	DateCreated       string            `json:"DateCreated,omitempty"`
+	Etag              string            `json:"Etag,omitempty"`
+	ChannelId         *string           `json:"ChannelId"`
 }
 
 // ItemsResponse wraps a list of items with total count.

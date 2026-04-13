@@ -3,6 +3,7 @@ package jellyfin
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -149,12 +150,17 @@ func (h *Handler) handleGetItem(c echo.Context) error {
 }
 
 func (h *Handler) animeToItemDTO(a store.Anime) ItemDTO {
+	itemID := EncodeItemID("anime", a.ID)
 	dto := ItemDTO{
-		Name:     a.Title,
-		ServerID: h.serverID,
-		ID:       EncodeItemID("anime", a.ID),
-		Type:     "Series",
-		IsFolder: true,
+		Name:         a.Title,
+		ServerID:     h.serverID,
+		ID:           itemID,
+		Type:         "Series",
+		IsFolder:     true,
+		LocationType: "FileSystem",
+		MediaType:    "Unknown",
+		UserData:     &UserItemData{Key: itemID},
+		ProviderIds:  map[string]string{},
 	}
 	if a.Synopsis.Valid {
 		dto.Overview = a.Synopsis.String
@@ -181,6 +187,12 @@ func (h *Handler) animeToItemDTO(a store.Anime) ItemDTO {
 	}
 	if a.LibraryID.Valid {
 		dto.ParentID = EncodeItemID("library", a.LibraryID.String)
+	}
+	if a.AirDate.Valid {
+		dto.PremiereDate = a.AirDate.String
+	}
+	if a.BangumiID.Valid {
+		dto.ProviderIds["bangumi"] = fmt.Sprintf("%d", a.BangumiID.Int64)
 	}
 	return dto
 }
