@@ -707,7 +707,7 @@ export function AnimeDetailPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
                   className="absolute right-6 bottom-8 z-[3] hidden lg:block"
-                  style={{ transform: 'scale(1.15)', transformOrigin: 'right bottom' }}
+                  style={{ transform: 'scale(1.2)', transformOrigin: 'right bottom' }}
                 >
                   <Link
                     to="/watch/$animeId"
