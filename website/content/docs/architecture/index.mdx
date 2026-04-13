@@ -3,6 +3,130 @@ title: Architecture
 description: milmil system architecture and internals.
 ---
 
-## Architecture
+## System Overview
 
-Coming soon.
+milmil is a monolithic Go backend with a React SPA frontend, designed for self-hosted deployment.
+
+```
+┌─────────────────────────────────────────────────┐
+│                   Clients                       │
+│         Browser (PWA)  │  Telegram/Discord Bot  │
+└───────────┬─────────────────────┬───────────────┘
+            │ HTTP/WS             │ Bot API
+┌───────────▼─────────────────────▼───────────────┐
+│                milmil-api (Go)                  │
+│  ┌──────────┐ ┌──────────┐ ┌──────────────────┐│
+│  │ REST API │ │WebSocket │ │ Bot Engine       ││
+│  └────┬─────┘ └────┬─────┘ └───────┬──────────┘│
+│       │             │               │           │
+│  ┌────▼─────────────▼───────────────▼──────────┐│
+│  │              Service Layer                  ││
+│  │  Library │ Stream │ Download │ Discover     ││
+│  │  Collection │ Auth │ Notification           ││
+│  └────┬────────────────────────────────────────┘│
+│       │                                         │
+│  ┌────▼────────────────────────────────────────┐│
+│  │           Infrastructure Layer              ││
+│  │  PostgreSQL/SQLite │ Redis │ FFmpeg │ Rclone││
+│  └─────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────┐
+│              milmil-web (React SPA)             │
+│  Served via Nginx or dev server                 │
+└─────────────────────────────────────────────────┘
+```
+
+## Component Overview
+
+| Component | Description |
+|---|---|
+| **REST API** | Chi router serving JSON endpoints. Handles auth, CRUD, streaming, and search. |
+| **WebSocket** | Real-time event push for danmaku, notifications, and scan progress. |
+| **Bot Engine** | Platform-agnostic bot with adapters for Telegram and Discord. |
+| **Service Layer** | Business logic for library scanning, metadata matching, download management, and collection sync. |
+| **FFmpeg** | Media probing, container remuxing, and HLS transcoding. |
+| **Rclone** | Cloud storage abstraction for 40+ providers. |
+
+## Data Flow: Library Scan
+
+<Steps>
+<Step>
+### File Discovery
+
+Walk the storage backend (local, SMB, rclone, etc.) to enumerate all media files.
+</Step>
+<Step>
+### Media Probing
+
+FFmpeg probes each file for codec info, resolution, duration, embedded subtitles, and audio tracks.
+</Step>
+<Step>
+### Metadata Matching
+
+Match files to anime entries using the provider pipeline: DandanPlay (hash) → Bangumi (title) → AniList (title) → TMDB (fallback).
+</Step>
+<Step>
+### Enrichment
+
+Fetch cover images, episode titles, descriptions, and ratings from matched providers.
+</Step>
+<Step>
+### Persistence
+
+Store all metadata in the database. Send scan completion notification.
+</Step>
+</Steps>
+
+## Data Flow: Streaming
+
+```
+Client request
+    │
+    ▼
+┌─────────────────┐
+│ Codec supported? │──yes──▶ Direct Play (byte-range)
+└────────┬────────┘
+         │ no
+         ▼
+┌─────────────────┐
+│ Container only?  │──yes──▶ Remux (MKV→MP4, no re-encode)
+└────────┬────────┘
+         │ no
+         ▼
+    HLS Transcode (FFmpeg)
+```
+
+## Technology Stack
+
+| Technology | Description |
+|---|---|
+| **Backend** | Go — Chi router, sqlc, golang-migrate, anacrolix/torrent |
+| **Frontend** | React — Vite, TanStack Router, TanStack Query, Tailwind CSS |
+| **Database** | PostgreSQL/SQLite — Schema managed with golang-migrate |
+| **Cache** | Redis — Optional, in-memory fallback available |
+| **Media** | FFmpeg — Probing, remuxing, HLS transcoding |
+| **Storage** | Rclone — 40+ cloud provider backends |
+| **Docs** | Fumadocs — Next.js-based documentation with i18n |
+
+## Repository Structure
+
+<Files>
+  <Folder name="milmil" defaultOpen>
+    <Folder name="api" defaultOpen>
+      <Folder name="internal" defaultOpen>
+        <Folder name="api">api routes, middleware, OpenAPI spec</Folder>
+        <Folder name="bot">bot engine, adapters (Telegram, Discord)</Folder>
+        <Folder name="domain">entities, repository interfaces</Folder>
+        <Folder name="infra">database, redis, FFmpeg, rclone implementations</Folder>
+        <Folder name="service">business logic (library, stream, download, etc.)</Folder>
+      </Folder>
+      <File name="go.mod" />
+      <File name="Makefile" />
+    </Folder>
+    <Folder name="web">React SPA frontend</Folder>
+    <Folder name="website">documentation site (this site)</Folder>
+    <File name="docker-compose.yml" />
+    <File name="Makefile" />
+  </Folder>
+</Files>

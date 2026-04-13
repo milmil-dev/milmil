@@ -5,9 +5,10 @@ export default defineConfig({
   fullyParallel: true,
   retries: 0,
   workers: 1,
-  reporter: 'html',
+  reporter: 'list',
+  timeout: 30000,
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
   },
   projects: [
@@ -17,9 +18,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'bun dev',
-    url: 'http://localhost:5173',
+    command: 'bun run start',
+    url: 'http://localhost:3000',
     reuseExistingServer: true,
-    timeout: 30_000,
+    timeout: 60000,
   },
 });

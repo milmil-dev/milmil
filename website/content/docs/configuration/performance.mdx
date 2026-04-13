@@ -3,6 +3,92 @@ title: Performance Tuning
 description: Optimize milmil for production workloads.
 ---
 
-## Performance Tuning
+## Redis Cache
 
-Coming soon.
+<Callout type="info">
+Redis is optional but strongly recommended for production. Without Redis, milmil uses an in-memory cache that doesn't persist across restarts.
+</Callout>
+
+```bash
+REDIS_URL=redis://localhost:6379
+```
+
+### Sizing Recommendations
+
+| Library Size | Recommended Redis Memory |
+|---|---|
+| < 500 anime | 64 MB |
+| 500–2000 anime | 256 MB |
+| 2000+ anime | 512 MB+ |
+
+## Transcoding
+
+### Hardware Acceleration
+
+<Callout type="warn">
+Hardware acceleration significantly reduces CPU usage during transcoding. Without it, a single 1080p transcode stream can use 100% of a CPU core.
+</Callout>
+
+milmil supports FFmpeg hardware acceleration backends:
+
+| Backend | Description |
+|---|---|
+| **VAAPI** | Video Acceleration API (Intel, AMD on Linux) |
+| **NVENC** | NVIDIA GPU encoding |
+| **QSV** | Intel Quick Sync Video |
+| **VideoToolbox** | macOS hardware acceleration |
+
+For Docker, pass through the GPU device:
+
+```yaml
+# NVIDIA
+devices:
+  - /dev/nvidia0:/dev/nvidia0
+  - /dev/nvidiactl:/dev/nvidiactl
+
+# Intel VAAPI
+devices:
+  - /dev/dri:/dev/dri
+```
+
+### Quality Presets
+
+| Preset | Use Case | CPU Usage |
+|---|---|---|
+| `ultrafast` | Low-power devices (RPi) | Minimal |
+| `fast` | Balanced quality/speed | Moderate |
+| `medium` | Default — good quality | High |
+
+## Database Tuning
+
+<Tabs items={["PostgreSQL", "SQLite"]}>
+<Tab value="PostgreSQL">
+
+For large libraries, tune PostgreSQL:
+
+```sql
+-- Connection pool (set in DATABASE_URL)
+-- ?pool_max_conns=20&pool_min_conns=5
+
+-- Recommended postgresql.conf tweaks
+shared_buffers = 256MB
+effective_cache_size = 1GB
+work_mem = 16MB
+```
+
+</Tab>
+<Tab value="SQLite">
+
+SQLite works well for small to medium libraries. Enable WAL mode for better concurrent read performance (milmil enables this automatically):
+
+```sql
+PRAGMA journal_mode=WAL;
+PRAGMA busy_timeout=5000;
+```
+
+<Callout type="warn">
+SQLite has limited write concurrency. If you're running frequent scans or downloads simultaneously, consider switching to PostgreSQL.
+</Callout>
+
+</Tab>
+</Tabs>

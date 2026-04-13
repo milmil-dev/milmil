@@ -1,0 +1,14 @@
+import type { LinguiConfig } from '@lingui/conf';
+
+const config: LinguiConfig = {
+  locales: ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ja', 'ko'],
+  sourceLocale: 'en',
+  catalogs: [
+    {
+      path: 'locales/{locale}/messages',
+      include: ['app/**', 'components/**', 'lib/**'],
+    },
+  ],
+};
+
+export default config;

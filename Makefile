@@ -1,6 +1,6 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
-.PHONY: dev dev-api dev-web build test lint setup
+.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -17,8 +17,14 @@ dev-api:
 dev-web:
 	cd web && bun dev
 
+dev-docs:
+	cd website && bun dev
+
 build:
 	cd web && bun run i18n:compile && bun run build
+
+build-docs:
+	cd website && bun run build
 
 test:
 	@echo "--- Go unit tests ---"
@@ -27,6 +33,10 @@ test:
 	cd api && go test -tags=integration ./...
 	@echo "--- Frontend tests ---"
 	cd web && bun run test:run
+
+test-e2e:
+	@echo "--- Playwright E2E tests ---"
+	cd web && bun run test:e2e
 
 lint:
 	cd api && go vet ./...

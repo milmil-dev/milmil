@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-04-12 19:06+0800\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ko\n"
+
+#: components/landing.tsx:239
+msgid "landing.ctaDesc"
+msgstr "몇 분 만에 milmil을 배포하세요."
+
+#: components/landing.tsx:238
+msgid "landing.ctaTitle"
+msgstr "시작할 준비가 되셨나요?"
+
+#: components/landing.tsx:16
+msgid "landing.d1"
+msgstr "다중 저장소, 자동 스캔 및 메타데이터 매칭."
+
+#: components/landing.tsx:17
+msgid "landing.d2"
+msgstr "직접 재생, MKV→MP4 리먹싱, FFmpeg HLS 트랜스코딩."
+
+#: components/landing.tsx:18
+msgid "landing.d3"
+msgstr "DandanPlay 실시간 탄막."
+
+#: components/landing.tsx:19
+msgid "landing.d4"
+msgstr "내장 토렌트, RSS, 통합 검색."
+
+#: components/landing.tsx:20
+msgid "landing.d5"
+msgstr "시즌 캘린더, 트렌딩, 전체 텍스트 검색."
+
+#: components/landing.tsx:21
+msgid "landing.d6"
+msgstr "시청 진행을 Bangumi·AniList와 동기화."
+
+#: components/landing.tsx:195
+msgid "landing.deployDesc"
+msgstr "명령어 하나. 모든 서비스 포함."
+
+#: components/landing.tsx:194
+msgid "landing.deployTitle"
+msgstr "초 단위 배포"
+
+#: components/landing.tsx:138
+msgid "landing.desc"
+msgstr "단막, 자동 다운로드, 멀티 프로바이더 메타데이터 매칭으로 애니메이션 컬렉션을 관리."
+
+#: components/landing.tsx:185
+msgid "landing.detail"
+msgstr "애니 상세"
+
+#: components/landing.tsx:185
+msgid "landing.detailCaption"
+msgstr "메타데이터, 에피소드, 장르, 평점."
+
+#: components/landing.tsx:16
+msgid "landing.f1"
+msgstr "라이브러리 관리"
+
+#: components/landing.tsx:17
+msgid "landing.f2"
+msgstr "스트리밍"
+
+#: components/landing.tsx:18
+msgid "landing.f3"
+msgstr "단막"
+
+#: components/landing.tsx:19
+msgid "landing.f4"
+msgstr "자동 다운로드"
+
+#: components/landing.tsx:20
+msgid "landing.f5"
+msgstr "탐색"
+
+#: components/landing.tsx:21
+msgid "landing.f6"
+msgstr "동기화"
+
+#: components/landing.tsx:160
+msgid "landing.featuresDesc"
+msgstr "애니메이션 팬을 위한 완전한 미디어 서버."
+
+#: components/landing.tsx:159
+msgid "landing.featuresTitle"
+msgstr "모든 기능"
+
+#: components/landing.tsx:142
+msgid "landing.getStarted"
+msgstr "시작하기"
+
+#: components/landing.tsx:184
+msgid "landing.home"
+msgstr "홈"
+
+#: components/landing.tsx:184
+msgid "landing.homeCaption"
+msgstr "트렌딩, 계속 보기, 오늘의 업데이트."
+
+#: components/landing.tsx:219
+msgid "landing.integrationsDesc"
+msgstr "이미 사용 중인 서비스와 연결."
+
+#: components/landing.tsx:218
+msgid "landing.integrationsTitle"
+msgstr "통합 서비스"
+
+#: components/landing.tsx:186
+msgid "landing.player"
+msgstr "플레이어 + 단막"
+
+#: components/landing.tsx:186
+msgid "landing.playerCaption"
+msgstr "실시간 탄막 스트리밍."
+
+#: components/landing.tsx:242
+msgid "landing.readDocs"
+msgstr "문서 읽기"
+
+#: components/landing.tsx:181
+msgid "landing.screenshotsDesc"
+msgstr "최고의 미디어 서버에서 영감을 받은 인터페이스."
+
+#: components/landing.tsx:180
+msgid "landing.screenshotsTitle"
+msgstr "미리보기"
+
+#: components/landing.tsx:135
+msgid "landing.tagline"
+msgstr "셀프 호스팅 애니메이션 미디어 서버"
+
+#: components/landing.tsx:145
+#: components/landing.tsx:245
+msgid "landing.viewGithub"
+msgstr "GitHub에서 보기"
