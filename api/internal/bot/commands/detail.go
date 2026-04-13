@@ -92,9 +92,9 @@ func buildDetailResponse(ctx context.Context, svc *Services, bangumiID int) (*bo
 
 	var actionBtn bot.BotButton
 	if subscribed {
-		actionBtn = bot.BotButton{Label: "✅ Subscribed", Data: fmt.Sprintf("detail:%d", bangumiID)}
+		actionBtn = bot.BotButton{Label: "✅ 已追番", Data: fmt.Sprintf("detail:%d", bangumiID)}
 	} else {
-		actionBtn = bot.BotButton{Label: "➕ Subscribe", Data: fmt.Sprintf("sub_pick:%d", bangumiID)}
+		actionBtn = bot.BotButton{Label: "➕ 追番", Data: fmt.Sprintf("sub_pick:%d", bangumiID)}
 	}
 
 	return &bot.BotResponse{

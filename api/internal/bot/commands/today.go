@@ -135,7 +135,7 @@ func TodayHandler(svc *Services) bot.CommandHandler {
 					shortTitle = shortTitle[:18] + ".."
 				}
 				buttons = append(buttons, []bot.BotButton{
-					{Label: fmt.Sprintf("➕ %s", shortTitle), Data: fmt.Sprintf("sub_pick:%d", item.id)},
+					{Label: fmt.Sprintf("➕ 追番 %s", shortTitle), Data: fmt.Sprintf("sub_pick:%d", item.id)},
 				})
 				subCount++
 			}

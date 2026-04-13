@@ -33,7 +33,7 @@ func SubscribeHandler(svc *Services) bot.CommandHandler {
 		}
 
 		return &bot.BotResponse{
-			Text:     fmt.Sprintf("Subscribe to <b>%s</b>?\nPick an RSS source:", title),
+			Text:     fmt.Sprintf("追番 <b>%s</b>\n選擇 RSS 來源：", title),
 			ImageURL: anime.CoverImage,
 			Buttons: [][]bot.BotButton{
 				{
@@ -68,7 +68,7 @@ func SubscribePickCallback(svc *Services) bot.CallbackHandler {
 		}
 
 		return &bot.BotResponse{
-			Text: fmt.Sprintf("Subscribe to <b>%s</b>?\nPick an RSS source:", title),
+			Text: fmt.Sprintf("追番 <b>%s</b>\n選擇 RSS 來源：", title),
 			Buttons: [][]bot.BotButton{
 				{
 					{Label: "Mikan", Data: fmt.Sprintf("sub_do:%d:mikan", id)},
@@ -168,7 +168,7 @@ func SubscribeDoCallback(svc *Services) bot.CallbackHandler {
 		}
 
 		return &bot.BotResponse{
-			Text: fmt.Sprintf("Subscribed to <b>%s</b>\nSource: %s\nNew episodes will download automatically.", title, source),
+			Text: fmt.Sprintf("✅ 已追番 <b>%s</b>\n來源：%s\n新集數將自動下載", title, source),
 		}, nil
 	}
 }
