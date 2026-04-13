@@ -1,7 +1,7 @@
 package api_test
 
 import (
-	"encoding/hex"
+	"github.com/milmil/api/internal/jellyfin"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -230,7 +230,7 @@ func TestJellyfin_StreamDirect(t *testing.T) {
 	}
 
 	// Encode the file ID as Jellyfin item ID: base64url("file:<fileID>")
-	encodedID := hex.EncodeToString([]byte("file:" + fileID))
+	encodedID := jellyfin.EncodeItemID("file", fileID)
 
 	req := httptest.NewRequest(http.MethodGet, "/jellyfin/Videos/"+encodedID+"/stream", nil)
 	req.Header.Set("X-Emby-Authorization", jellyfinAuthHeader(token))

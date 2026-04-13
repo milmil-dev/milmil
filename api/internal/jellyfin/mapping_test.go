@@ -1,9 +1,6 @@
 package jellyfin
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
 
 func TestEncodeDecodeItemID(t *testing.T) {
 	tests := []struct {
@@ -31,22 +28,29 @@ func TestEncodeDecodeItemID(t *testing.T) {
 }
 
 func TestDecodeItemID_Invalid(t *testing.T) {
-	_, _, err := DecodeItemID("not-valid-hex!!!")
+	_, _, err := DecodeItemID("unknown_id_that_was_never_encoded")
 	if err == nil {
-		t.Fatal("expected error for invalid hex")
-	}
-	_, _, err = DecodeItemID(fmt.Sprintf("%x", "nocolon")) // no colon separator
-	if err == nil {
-		t.Fatal("expected error for missing colon separator")
+		t.Fatal("expected error for unknown id")
 	}
 }
 
-func TestEncodeItemID_ProducesHex(t *testing.T) {
+func TestEncodeItemID_FixedLength32(t *testing.T) {
 	encoded := EncodeItemID("anime", "abc123")
-	// Should be valid hex, no base64 chars like = or /
+	if len(encoded) != 32 {
+		t.Fatalf("encoded ID length = %d, want 32 (GUID format). Value: %s", len(encoded), encoded)
+	}
+	// Should be valid hex
 	for _, c := range encoded {
 		if !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')) {
 			t.Fatalf("encoded ID contains non-hex char: %c in %s", c, encoded)
 		}
+	}
+}
+
+func TestEncodeItemID_Deterministic(t *testing.T) {
+	a := EncodeItemID("anime", "test-id")
+	b := EncodeItemID("anime", "test-id")
+	if a != b {
+		t.Fatalf("encoding not deterministic: %s != %s", a, b)
 	}
 }
