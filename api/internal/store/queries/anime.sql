@@ -20,6 +20,9 @@ SELECT * FROM anime WHERE library_id = ? ORDER BY title;
 -- name: ListAnimeByLibrary :many
 SELECT * FROM anime WHERE library_id = ?;
 
+-- name: UpdateAnimeLibraryID :exec
+UPDATE anime SET library_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
 -- name: UpdateAnimeTMDBID :exec
 UPDATE anime SET tmdb_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
 

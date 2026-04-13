@@ -23,6 +23,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { AnimeCard } from '../components/AnimeCard';
 import { DataPagination } from '../components/DataPagination';
 import { LoginModal } from '../components/LoginModal';
 import { MatchModal } from '../components/MatchModal';
@@ -243,6 +244,49 @@ function FileActionMenu({
         </button>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
+  const { data: animeList, isLoading } = useQuery({
+    queryKey: [...libraryKeys.detail(libraryId), 'anime'],
+    queryFn: () => libraryApi.anime(libraryId),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton className="aspect-[6/8] rounded-md" />
+            <Skeleton className="h-4 w-3/4 mx-auto" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!animeList || animeList.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-white/30">
+        <HugeiconsIcon icon={SparklesIcon} size={40} className="mb-3 opacity-50" />
+        <p className="text-sm">No matched anime in this library</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+      {animeList.map((a) => (
+        <AnimeCard
+          key={a.bangumi_id || a.title}
+          anime={{
+            ...a,
+            cover_image: a.cover_image,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -1124,7 +1168,7 @@ export function LibraryDetailPage() {
   const id = rawId ?? '';
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('files');
-  const [viewMode, setViewMode] = useState<'table' | 'tree'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'tree' | 'anime'>('anime');
   const [matchingFile, setMatchingFile] = useState<MediaFileEntry | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const scanProgress = useScanStore((s) => s.getProgress(id));
@@ -1518,6 +1562,25 @@ export function LibraryDetailPage() {
                     <TooltipTrigger asChild>
                       <button
                         type="button"
+                        onClick={() => setViewMode('anime')}
+                        className={cn(
+                          'p-1.5 rounded-md transition-colors cursor-pointer',
+                          viewMode === 'anime'
+                            ? 'text-white bg-white/[0.08]'
+                            : 'text-white/25 hover:text-white/50'
+                        )}
+                      >
+                        <HugeiconsIcon icon={SparklesIcon} size={15} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {i18n._(msg`library.detail.viewAnime`)}
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
                         onClick={() => setViewMode('table')}
                         className={cn(
                           'p-1.5 rounded-md transition-colors cursor-pointer',
@@ -1567,7 +1630,9 @@ export function LibraryDetailPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                {viewMode === 'table' ? (
+                {viewMode === 'anime' ? (
+                  <LibraryAnimeGrid libraryId={id} />
+                ) : viewMode === 'table' ? (
                   <FileTable libraryId={id} onMatch={setMatchingFile} />
                 ) : (
                   <FileTreeView libraryId={id} onMatch={setMatchingFile} />

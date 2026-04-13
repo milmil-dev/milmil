@@ -68,7 +68,7 @@ func (h *Handler) mediaFileToSource(f store.MediaFile) MediaSource {
 		container = f.ContainerFormat.String
 	}
 
-	var streams []MediaStream
+	streams := make([]MediaStream, 0)
 	if f.VideoCodec.Valid {
 		ms := MediaStream{Codec: f.VideoCodec.String, Type: "Video", Index: 0}
 		if f.Width.Valid {

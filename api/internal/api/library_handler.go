@@ -326,6 +326,74 @@ func (h *handler) handleDeleteLibrary(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+func (h *handler) handleListLibraryAnime(c echo.Context) error {
+	libraryID := c.Param("id")
+	animeList, err := h.queries.ListAnimeByLibrary(c.Request().Context(), sql.NullString{String: libraryID, Valid: true})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	type animeSummary struct {
+		BangumiID    int64    `json:"bangumi_id"`
+		AnilistID    int64    `json:"anilist_id,omitempty"`
+		Title        string   `json:"title"`
+		TitleOriginal string  `json:"title_original"`
+		CoverImage   string   `json:"cover_image"`
+		Genres       []string `json:"genres"`
+		AirDate      string   `json:"air_date,omitempty"`
+		EpisodeCount int      `json:"episode_count"`
+		Score        float64  `json:"score"`
+	}
+
+	result := make([]animeSummary, 0, len(animeList))
+	for _, a := range animeList {
+		var genres []string
+		if a.Genres != "" {
+			json.Unmarshal([]byte(a.Genres), &genres)
+		}
+		if genres == nil {
+			genres = []string{}
+		}
+		cover := ""
+		if a.CoverImageUrl.Valid {
+			cover = a.CoverImageUrl.String
+		}
+		titleOriginal := a.Title
+		title := a.Title
+		if a.TitleZh.Valid && a.TitleZh.String != "" {
+			title = a.TitleZh.String
+		}
+		var bangumiID, anilistID int64
+		if a.BangumiID.Valid {
+			bangumiID = a.BangumiID.Int64
+		}
+		if a.AnilistID.Valid {
+			anilistID = a.AnilistID.Int64
+		}
+		epCount := 0
+		if a.TotalEpisodes.Valid {
+			epCount = int(a.TotalEpisodes.Int64)
+		}
+		airDate := ""
+		if a.AirDate.Valid {
+			airDate = a.AirDate.String
+		}
+		result = append(result, animeSummary{
+			BangumiID:     bangumiID,
+			AnilistID:     anilistID,
+			Title:         title,
+			TitleOriginal: titleOriginal,
+			CoverImage:    cover,
+			Genres:        genres,
+			AirDate:       airDate,
+			EpisodeCount:  epCount,
+			Score:         a.Score,
+		})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
 func (h *handler) handleScanLibrary(c echo.Context) error {
 	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
 	if err != nil {
@@ -365,29 +433,21 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 
 		// Auto-match after scan (non-fatal if matcher is nil or fails)
 		if h.matcher != nil {
-			if _, matchErr := h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress); matchErr != nil {
-				slog.Warn("library: background match failed", "libraryID", lib.ID, "err", matchErr)
-			}
+			_, _ = h.matcher.MatchLibrary(context.Background(), lib.ID, onProgress)
 		}
 		// Resolve anime metadata after matching (non-fatal if resolver is nil or fails)
 		if h.resolver != nil {
-			if _, resolveErr := h.resolver.ResolveLibrary(context.Background(), lib.ID); resolveErr != nil {
-				slog.Warn("library: background resolve failed", "libraryID", lib.ID, "err", resolveErr)
-			}
+			_, _ = h.resolver.ResolveLibrary(context.Background(), lib.ID)
 		}
 
 		// Resolve Bangumi-matched files
 		if h.resolver != nil {
-			if _, resolveErr := h.resolver.ResolveBangumiMatched(context.Background(), lib.ID); resolveErr != nil {
-				slog.Warn("library: background resolve bangumi failed", "libraryID", lib.ID, "err", resolveErr)
-			}
+			_, _ = h.resolver.ResolveBangumiMatched(context.Background(), lib.ID)
 		}
 
 		// Enrich episodes with TMDB Chinese metadata
 		if h.tmdb != nil {
-			if _, enrichErr := matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID); enrichErr != nil {
-				slog.Warn("library: background TMDB enrich failed", "libraryID", lib.ID, "err", enrichErr)
-			}
+			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
 		}
 
 		onProgress(scanner.ProgressEvent{Type: "scan:completed", LibraryID: lib.ID})

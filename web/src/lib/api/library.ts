@@ -159,6 +159,20 @@ export const libraryApi = {
     return api.get<MediaFilesResponse>(`/api/v1/libraries/${id}/media-files${qs ? `?${qs}` : ''}`);
   },
   fileTree: (id: string) => api.get<FileTreeNode>(`/api/v1/libraries/${id}/file-tree`),
+  anime: (id: string) =>
+    api.get<
+      Array<{
+        bangumi_id: number;
+        anilist_id?: number;
+        title: string;
+        title_original: string;
+        cover_image: string;
+        genres: string[];
+        air_date?: string;
+        episode_count: number;
+        score: number;
+      }>
+    >(`/api/v1/libraries/${id}/anime`),
   matchFile: (fileId: string, body: { bangumi_id: number; episode_id: number }) =>
     api.put<MediaFileEntry>(`/api/v1/media-files/${fileId}/match`, body),
   unmatchFile: (fileId: string) => api.delete<void>(`/api/v1/media-files/${fileId}/match`),
