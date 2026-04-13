@@ -67,21 +67,75 @@ api/internal/
 所有 Jellyfin 兼容 API 掛在 `/jellyfin/*`：
 
 ```
-/jellyfin/System/Info/Public          → 伺服器資訊
+# 系統
+/jellyfin/System/Info/Public          → 伺服器資訊（含轉碼能力、GPU 狀態、已連接客戶端數）
+/jellyfin/System/Info                 → 完整系統資訊（需認證）
+/jellyfin/System/Ping                 → 心跳檢測
+
+# 認證
 /jellyfin/Users/AuthenticateByName   → 登入
 /jellyfin/Users/{userId}             → 用戶資訊
+/jellyfin/Users/{userId}/Views       → 首頁佈局（Infuse 首頁需要）
+
+# 媒體庫
 /jellyfin/Library/VirtualFolders     → 媒體庫列表
 /jellyfin/Items                      → 瀏覽/搜尋
 /jellyfin/Items/{itemId}             → 單個項目詳情
-/jellyfin/Items/{itemId}/Images/*    → 封面圖
+/jellyfin/Items/{itemId}/Images/*    → 封面圖（代理外部 URL，本地快取 7 天）
+/jellyfin/Items/{itemId}/PlaybackInfo → 編解碼協商（Direct Play / Remux / Transcode 決策）
 /jellyfin/Shows/{id}/Episodes        → 劇集列表
+
+# 串流
 /jellyfin/Videos/{itemId}/stream     → 直接串流
 /jellyfin/Videos/{itemId}/master.m3u8 → HLS 串流
+/jellyfin/Videos/{itemId}/{sourceId}/Subtitles/{index} → 字幕下載
+
+# 播放狀態（雙向同步）
 /jellyfin/Sessions/Playing           → 回報播放狀態
 /jellyfin/Sessions/Playing/Progress  → 回報進度
 /jellyfin/Sessions/Playing/Stopped   → 回報停止
-/jellyfin/Users/{userId}/Items/{itemId}/UserData → 觀看進度/收藏
+/jellyfin/Users/{userId}/Items/{itemId}/UserData → 觀看進度/收藏（返回 PlaybackPositionTicks + Played）
 ```
+
+### LAN 自動發現
+
+實作 Jellyfin 的 UDP 發現協議，讓 Infuse/VLC 自動找到 milmil：
+
+```
+監聽 UDP port 7359
+收到 "Who is JellyfinServer?" →
+回覆 JSON: {
+  "Address": "http://192.168.1.50:8080",
+  "Id": "<server-uuid>",
+  "Name": "milmil"
+}
+```
+
+### 錯誤處理
+
+- 未實作的 endpoint → 返回 `501` + Jellyfin 格式錯誤 JSON `{"Message": "Not implemented"}`
+- 認證失敗 → 返回 `401` + `{"Message": "Invalid username or password"}`（Infuse 會顯示此訊息）
+- 空媒體庫 → 返回空陣列 `[]`，不返回錯誤
+
+### 圖片代理與快取
+
+`images.go` 代理外部 URL（AniList CDN、Bangumi CDN）為 Jellyfin 圖片 API：
+- 動畫封面 → `/Items/{id}/Images/Primary`
+- 劇集縮圖 → `/Items/{id}/Images/Primary`
+- 本地磁碟快取，TTL 7 天
+- 支援 Jellyfin 的 `maxWidth`/`maxHeight` 參數進行縮放
+
+### 觀看進度雙向同步
+
+- **Infuse → milmil：** `/Sessions/Playing/Progress` 寫入 `watch_progress` 表
+- **milmil → Infuse：** `/Users/{userId}/Items/{itemId}/UserData` 從 `watch_progress` 讀取，返回 `PlaybackPositionTicks`（秒×10000000）和 `Played`（completed=1 時為 true）
+- 兩個方向共用同一張 `watch_progress` 表，無同步衝突
+
+### 結構化日誌
+
+- 所有 `/jellyfin/*` 請求記錄 INFO：客戶端名稱、endpoint、回應時間
+- 未識別的 endpoint 記錄 WARN：完整請求路徑
+- GPU 加速 fallback 記錄 WARN + 發送通知
 
 ### ID 映射
 
@@ -402,3 +456,96 @@ GET    /api/v1/sessions/stats        → 統計
 | **5** | 統一 Session 管理 | playback session、心跳、Dashboard、管理員控制 |
 
 每個 phase 獨立可用。Phase 1 完成後外部播放器即可使用（Direct Play），後續 phase 逐步提升體驗。
+
+### 升級相容性
+
+- **Phase 1 → 2：** 現有 Infuse 連接不受影響。新增的硬體轉碼能力會透過 `/System/Info` 自動回報給客戶端，下次 sync 時生效。
+- **Phase 2 → 3：** 無變更。ABR 多碼率是轉碼的增強，客戶端自動選擇最佳 variant。
+- **Phase 3 → 4：** DB 遷移 000030 新增 `color_transfer`、`color_space` 欄位，自動執行。現有檔案需跑一次 backfill scan。
+- **Phase 4 → 5：** DB 遷移 000031 新增 `playback_sessions` 表，自動執行。現有客戶端無需重新連接。
+
+### DB 遷移編號
+
+| Phase | 遷移編號 | 內容 |
+|---|---|---|
+| 1 | 無需遷移 | Jellyfin 兼容層只讀取現有表 |
+| 4 | 000030 | `media_files` 新增 `color_transfer`, `color_space` |
+| 5 | 000031 | 新增 `playback_sessions` 表 |
+
+---
+
+## 文件交付
+
+每個 Phase 需同時交付對應文件：
+
+| Phase | 文件 |
+|---|---|
+| 1 | README 新增「External Player Support」section、Infuse/VLC/Kodi 各自的連接指南 |
+| 2 | GPU 轉碼設置指南、`docker-compose.gpu.yml` 範例檔 |
+| 3 | 無額外文件（ABR 對用戶透明） |
+| 5 | Session Dashboard 使用說明 |
+
+### docker-compose.gpu.yml
+
+Phase 2 須提供完整的 GPU docker-compose 範例，包含 NVIDIA 和 Intel 兩個版本。啟動時 log 輸出偵測到的加速器：
+```
+INFO milmil started (v1.x)
+INFO Jellyfin API enabled, discoverable on LAN (UDP 7359)
+INFO GPU detected: NVENC (NVIDIA GeForce RTX 3060)
+```
+
+或無 GPU 時：
+```
+INFO GPU: none detected, using software encoding (libx264)
+```
+
+---
+
+## 測試策略
+
+### Jellyfin API 一致性測試
+
+從真實 Jellyfin server 擷取 Infuse/VLC 的 HTTP 請求序列，建立 Go integration tests：
+
+1. **連接流程測試** — `System/Info/Public` → `AuthenticateByName` → `Users/{id}/Views` → `Items`
+2. **播放流程測試** — `Items/{id}` → `PlaybackInfo` → `Videos/{id}/stream` → `Sessions/Playing`
+3. **進度同步測試** — 寫入 → 讀取 → 確認 `PlaybackPositionTicks` 正確轉換
+4. **錯誤格式測試** — 確認 401/404/501 回傳 Jellyfin 格式 JSON
+
+每個 Phase 的 PR 需包含對應的一致性測試。
+
+### 手動驗收
+
+每次 release 前用真實 Infuse 測試：連接 → 瀏覽 → 播放 → 進度同步 → 字幕。
+
+---
+
+## DX 附註
+
+### 目標用戶
+
+動畫自架用戶 — 運行 Synology/Unraid/Proxmox，用過 Jellyfin/Plex，熟悉 Docker 但非開發者。設置容忍度 30 分鐘，連接外部播放器容忍度 5 分鐘。
+
+### Settings UI：外部播放器
+
+Phase 1 在設定頁新增「外部播放器」卡片：
+- 顯示 milmil 的 Jellyfin 兼容 URL
+- 已連接的客戶端列表（名稱、設備、最後活躍時間）
+- 連接狀態指示
+
+### GPU fallback 通知
+
+當硬體轉碼失敗自動降級為軟體編碼時：
+- WARN 日誌記錄原因
+- 透過 milmil 通知系統發送通知
+- Session Dashboard 顯示「Software (GPU fallback)」
+
+---
+
+## TODO（未來改進）
+
+- 社群推廣：在 r/selfhosted、r/anime、Jellyfin 論壇公告 milmil 的 Jellyfin 兼容功能
+- GitHub Discussions 作為社群支援頻道
+- InfuseSync 插件支援（優化大型媒體庫的同步速度）
+- DLNA/UPnP 支援（覆蓋舊型電視）
+- Remote access 指南（reverse proxy + HTTPS）
