@@ -291,7 +291,7 @@ function ResumeCard({ item, locale, remainingLabel }: { item: WatchProgress; loc
     >
       <Link
         to="/watch/$animeId"
-        params={{ animeId: item.anime_id }}
+        params={{ animeId: String(item.anime_bangumi_id ?? item.anime_id) }}
         search={{ ep: item.episode_number }}
         className="group flex items-center gap-5 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-2 pr-6 py-2 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02]"
         style={{

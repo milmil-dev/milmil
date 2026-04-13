@@ -130,7 +130,7 @@ export function HomePage() {
                           episodeLabel={`EP ${epNum} · ${Math.round(progress * 100)}%`}
                           progress={progress}
                           coverImage={item.anime_cover_image ?? ''}
-                          href={`/watch/${item.anime_id}?ep=${item.episode_number}`}
+                          href={`/watch/${item.anime_bangumi_id ?? item.anime_id}?ep=${item.episode_number}`}
                         />
                       </div>
                     );
