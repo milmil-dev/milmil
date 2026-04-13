@@ -68,7 +68,7 @@ function BannerImage({ src, position, dimMode }: { src: string | null; position:
     <div
       className={cn(
         'fixed z-0 h-[40rem] bg-[--mm-bg] transition-opacity duration-1000',
-        isBottom ? 'top-[55%] -translate-y-1/2' : 'top-8',
+        isBottom ? 'top-[55%] -translate-y-1/2' : 'top-0',
         dimmed && 'opacity-[0.05]'
       )}
       style={{ left: 0, right: 0 }}
