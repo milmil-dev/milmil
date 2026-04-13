@@ -57,11 +57,20 @@ func (h *Handler) handleGetEpisodes(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, JellyfinError{Message: "Failed to list episodes"})
 	}
 
+	seasonID := EncodeItemID("season", animeID)
 	items := make([]ItemDTO, 0, len(episodes))
 	for _, ep := range episodes {
 		dto := h.episodeToItemDTO(ep)
 		dto.SeriesName = seriesName
+		dto.SeasonID = seasonID
 		dto.MediaSources = h.getMediaSourcesForEpisode(c, ep.ID)
+		// Set RunTimeTicks from first MediaSource
+		if len(dto.MediaSources) > 0 && dto.MediaSources[0].RunTimeTicks != nil {
+			dto.RunTimeTicks = dto.MediaSources[0].RunTimeTicks
+		}
+		// Add empty UserData so Infuse doesn't error
+		epID := EncodeItemID("episode", ep.ID)
+		dto.UserData = &UserItemData{Key: epID}
 		items = append(items, dto)
 	}
 

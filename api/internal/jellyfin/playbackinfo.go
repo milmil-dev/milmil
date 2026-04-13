@@ -2,6 +2,8 @@ package jellyfin
 
 import (
 	"net/http"
+	"path/filepath"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -63,24 +65,69 @@ func (h *Handler) getMediaSourcesForEpisode(c echo.Context, episodeID string) []
 
 // mediaFileToSource converts a milmil MediaFile to a Jellyfin MediaSource.
 func (h *Handler) mediaFileToSource(f store.MediaFile) MediaSource {
-	container := "mkv"
-	if f.ContainerFormat.Valid {
+	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(f.Filename)), ".")
+	container := ext
+	if container == "" {
+		container = "mkv"
+	}
+	if f.ContainerFormat.Valid && f.ContainerFormat.String != "" {
 		container = f.ContainerFormat.String
 	}
 
 	streams := make([]MediaStream, 0)
-	if f.VideoCodec.Valid {
-		ms := MediaStream{Codec: f.VideoCodec.String, Type: "Video", Index: 0}
-		if f.Width.Valid {
-			ms.Width = int(f.Width.Int64)
+
+	// Use DB codec info if available, otherwise infer from filename
+	videoCodec := ""
+	audioCodec := ""
+	width, height := 0, 0
+
+	if f.VideoCodec.Valid && f.VideoCodec.String != "" {
+		videoCodec = f.VideoCodec.String
+	} else {
+		// Infer from filename
+		nameLower := strings.ToLower(f.Filename)
+		if strings.Contains(nameLower, "hevc") || strings.Contains(nameLower, "x265") || strings.Contains(nameLower, "h265") {
+			videoCodec = "hevc"
+		} else if strings.Contains(nameLower, "h264") || strings.Contains(nameLower, "x264") || strings.Contains(nameLower, "avc") {
+			videoCodec = "h264"
 		}
-		if f.Height.Valid {
-			ms.Height = int(f.Height.Int64)
-		}
-		streams = append(streams, ms)
 	}
-	if f.AudioCodec.Valid {
-		streams = append(streams, MediaStream{Codec: f.AudioCodec.String, Type: "Audio", Index: 1, IsDefault: true})
+	if f.AudioCodec.Valid && f.AudioCodec.String != "" {
+		audioCodec = f.AudioCodec.String
+	} else {
+		nameLower := strings.ToLower(f.Filename)
+		if strings.Contains(nameLower, "flac") {
+			audioCodec = "flac"
+		} else if strings.Contains(nameLower, "aac") {
+			audioCodec = "aac"
+		}
+	}
+	if f.Width.Valid {
+		width = int(f.Width.Int64)
+	}
+	if f.Height.Valid {
+		height = int(f.Height.Int64)
+	}
+	// Infer resolution from filename if not in DB
+	if width == 0 {
+		nameLower := strings.ToLower(f.Filename)
+		if strings.Contains(nameLower, "1920x1080") || strings.Contains(nameLower, "1080p") {
+			width, height = 1920, 1080
+		} else if strings.Contains(nameLower, "1280x720") || strings.Contains(nameLower, "720p") {
+			width, height = 1280, 720
+		}
+	}
+
+	if videoCodec != "" {
+		streams = append(streams, MediaStream{
+			Codec: videoCodec, Type: "Video", Index: 0,
+			Width: width, Height: height, IsDefault: true,
+		})
+	}
+	if audioCodec != "" {
+		streams = append(streams, MediaStream{
+			Codec: audioCodec, Type: "Audio", Index: 1, IsDefault: true,
+		})
 	}
 
 	var runtimeTicks *int64
@@ -97,9 +144,13 @@ func (h *Handler) mediaFileToSource(f store.MediaFile) MediaSource {
 		Size:                 f.SizeBytes,
 		Name:                 f.Filename,
 		RunTimeTicks:         runtimeTicks,
+		Protocol:             "File",
+		Type:                 "Default",
+		IsRemote:             false,
 		SupportsDirectPlay:   true,
 		SupportsDirectStream: true,
 		SupportsTranscoding:  true,
+		SupportsProbing:      true,
 		VideoType:            "VideoFile",
 		MediaStreams:          streams,
 	}

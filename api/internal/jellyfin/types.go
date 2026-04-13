@@ -72,11 +72,17 @@ type MediaSource struct {
 	Size                 int64         `json:"Size"`
 	Name                 string        `json:"Name"`
 	RunTimeTicks         *int64        `json:"RunTimeTicks,omitempty"`
+	Protocol             string        `json:"Protocol"`
+	Type                 string        `json:"Type"`
+	IsRemote             bool          `json:"IsRemote"`
+	IsInfiniteStream     bool          `json:"IsInfiniteStream"`
+	Bitrate              int           `json:"Bitrate,omitempty"`
 	SupportsDirectPlay   bool          `json:"SupportsDirectPlay"`
 	SupportsDirectStream bool          `json:"SupportsDirectStream"`
 	SupportsTranscoding  bool          `json:"SupportsTranscoding"`
+	SupportsProbing      bool          `json:"SupportsProbing"`
 	VideoType            string        `json:"VideoType"`
-	MediaStreams         []MediaStream `json:"MediaStreams"`
+	MediaStreams          []MediaStream `json:"MediaStreams"`
 	DirectStreamURL      string        `json:"DirectStreamUrl,omitempty"`
 	TranscodingURL       string        `json:"TranscodingUrl,omitempty"`
 }
