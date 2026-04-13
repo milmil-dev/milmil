@@ -113,7 +113,7 @@ func TodayHandler(svc *Services) bot.CommandHandler {
 			}
 		}
 
-		// Detail buttons for watching anime
+		// Buttons: detail for watching, subscribe for unwatched
 		var buttons [][]bot.BotButton
 		for _, item := range watching {
 			if item.id > 0 {
@@ -124,6 +124,20 @@ func TodayHandler(svc *Services) bot.CommandHandler {
 				buttons = append(buttons, []bot.BotButton{
 					{Label: fmt.Sprintf("⭐ %s", shortTitle), Data: fmt.Sprintf("detail:%d", item.id)},
 				})
+			}
+		}
+		// Show subscribe buttons for unwatched anime (up to 5)
+		subCount := 0
+		for _, item := range other {
+			if item.id > 0 && subCount < 5 {
+				shortTitle := item.title
+				if len(shortTitle) > 18 {
+					shortTitle = shortTitle[:18] + ".."
+				}
+				buttons = append(buttons, []bot.BotButton{
+					{Label: fmt.Sprintf("➕ %s", shortTitle), Data: fmt.Sprintf("sub_pick:%d", item.id)},
+				})
+				subCount++
 			}
 		}
 		buttons = append(buttons, []bot.BotButton{

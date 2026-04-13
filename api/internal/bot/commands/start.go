@@ -53,6 +53,9 @@ func buildStartMenu(ctx context.Context, svc *Services) (*bot.BotResponse, error
 			{
 				{Label: "📅 Today", Data: "cmd:today"},
 				{Label: "🆕 Recent", Data: "cmd:recent"},
+			},
+			{
+				{Label: "👀 Watching", Data: "cmd:watching"},
 				{Label: "📈 Trending", Data: "cmd:trending"},
 			},
 			{
