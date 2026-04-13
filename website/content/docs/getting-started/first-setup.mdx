@@ -1,0 +1,81 @@
+---
+title: First-time Setup
+description: Configure milmil after installation.
+---
+
+## Setup Wizard
+
+When you first open milmil, you'll be guided through the setup wizard:
+
+<Steps>
+<Step>
+### Create Admin Account
+
+Set your username and password. This is the only admin account — you can create additional users later.
+
+<Callout type="warn">
+Choose a strong password. There is no password recovery without database access.
+</Callout>
+</Step>
+<Step>
+### Add Library
+
+Point to your anime media directory. milmil supports multiple storage backends:
+
+<Tabs items={["Local", "Network Storage", "Cloud (Rclone)"]}>
+<Tab value="Local">
+The simplest setup — provide the path to your anime folder:
+
+```
+/media/anime
+```
+
+<Callout type="info">
+If using Docker, this path must match your container volume mount (e.g. `/media/anime` if you mounted `-v /path/to/anime:/media/anime`).
+</Callout>
+</Tab>
+<Tab value="Network Storage">
+For SMB, SFTP, or WebDAV, provide the connection details in the library settings. Supported protocols:
+
+| Type | Example |
+|------|---------|
+| **SMB/CIFS** | `\\server\anime` |
+| **SFTP** | `sftp://user@host/path` |
+| **WebDAV** | `https://cloud.example.com/dav/anime` |
+| **FTP** | `ftp://host/anime` |
+
+Credentials are encrypted with AES-256.
+</Tab>
+<Tab value="Cloud (Rclone)">
+milmil supports 40+ cloud providers via rclone integration: Google Drive, OneDrive, Dropbox, S3, and more.
+
+Configure your rclone remote first, then add it as a library source in milmil.
+</Tab>
+</Tabs>
+</Step>
+<Step>
+### Scan Library
+
+milmil scans and matches your files automatically. The scan process:
+
+1. Walks the directory tree to discover media files
+2. Extracts metadata using FFmpeg (codec, resolution, duration, subtitles)
+3. Matches files to anime entries using DandanPlay, Bangumi, and AniList
+4. Enriches episodes with cover images, titles, and descriptions
+
+<Callout type="info">
+Initial scans can take several minutes for large libraries. Progress is shown in the UI.
+</Callout>
+</Step>
+</Steps>
+
+## Metadata Matching
+
+milmil uses a multi-provider matching pipeline:
+
+1. **DandanPlay Hash** — Most accurate, matches by file hash
+2. **Bangumi** — Title-based matching against the Bangumi database
+3. **AniList** — Alternative title matching
+4. **TMDB** — Fallback cross-reference
+
+Unmatched files can be manually matched from the library detail page.

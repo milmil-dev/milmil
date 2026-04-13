@@ -1,0 +1,62 @@
+---
+title: Bot & Notifications
+description: Set up Discord and Telegram bots with interactive commands and push notifications.
+---
+
+## Overview
+
+milmil supports interactive bot commands and push notifications through Telegram, Discord, and generic webhooks. Bots are first-class citizens — they can search anime, manage downloads, show schedules, and control subscriptions.
+
+<Cards>
+  <Card title="Setup Guide" href="/docs/configuration/notifications">
+    Step-by-step setup for Telegram, Discord, and webhooks.
+  </Card>
+</Cards>
+
+## Bot Commands
+
+Both Telegram and Discord bots support the same command set:
+
+| Command | Description |
+|---|---|
+| `/start` | Welcome message and command list |
+| `/schedule` | Weekly airing schedule with day-of-week grouping |
+| `/search <query>` | Search anime by title |
+| `/detail <id>` | Anime details with cover image and score |
+| `/downloads` | Active downloads with progress bars |
+| `/subscribe <anime>` | Set up auto-download for new episodes |
+| `/status` | System overview (uptime, disk, active streams) |
+| `/mylist [status]` | Your anime collection filtered by status |
+| `/continue` | Recently watched with resume links |
+
+## Interactive Features
+
+Commands support inline buttons for quick actions:
+
+- **Search results** — Buttons to view details, subscribe, or download
+- **Download list** — Pause, resume, or cancel buttons
+- **Anime detail** — Subscribe, add to collection, or start playback
+
+<Callout type="info">
+Discord uses slash commands with autocomplete. Telegram uses inline keyboards and callback buttons.
+</Callout>
+
+## Push Notifications
+
+Configure which events trigger notifications:
+
+| Event | Description |
+|---|---|
+| Download Started | RSS rule triggers a new download |
+| Download Completed | Download finishes successfully |
+| Download Failed | Download encounters an error |
+| Library Scan Complete | Library scan finishes processing |
+| System Error | Background job fails unexpectedly |
+
+Notifications include rich embeds (Discord) or formatted messages (Telegram) with anime cover images and metadata.
+
+## Security
+
+<Callout type="warn">
+Always configure **Allowed Chat IDs** (Telegram) or **Allowed Guild IDs** (Discord) to restrict who can interact with your bot. Without these restrictions, anyone who discovers your bot can control your milmil instance.
+</Callout>

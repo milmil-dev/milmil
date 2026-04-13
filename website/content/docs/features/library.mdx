@@ -1,0 +1,89 @@
+---
+title: Library Management
+description: Manage your anime collection with multi-source storage and automatic metadata matching.
+---
+
+## Overview
+
+milmil's library system lets you organize and manage anime files from multiple storage backends. Files are automatically scanned, identified, and matched to anime entries with metadata from Bangumi, AniList, and DandanPlay.
+
+## Storage Backends
+
+| Backend | Description |
+|---------|-------------|
+| **Local** | Directories on the host filesystem |
+| **SMB/CIFS** | Windows network shares |
+| **SFTP** | SSH file transfer |
+| **FTP** | Standard FTP |
+| **WebDAV** | Cloud storage (Nextcloud, etc.) |
+| **HTTP** | Direct HTTP file access |
+| **Rclone** | 40+ cloud providers (Google Drive, OneDrive, Dropbox, S3, etc.) |
+
+## Scanning
+
+When you scan a library, milmil:
+
+<Steps>
+<Step>
+### Discover files
+
+Walks the directory tree to discover media files.
+</Step>
+<Step>
+### Extract metadata
+
+Extracts metadata using FFmpeg (codec, resolution, duration, subtitles).
+</Step>
+<Step>
+### Match anime
+
+Matches files to anime entries using multiple providers.
+</Step>
+<Step>
+### Enrich episodes
+
+Enriches episodes with cover images, titles, and descriptions.
+</Step>
+</Steps>
+
+<Callout type="info">
+Scans can be triggered manually or configured to run automatically on a schedule.
+</Callout>
+
+## Metadata Matching
+
+milmil uses a multi-provider matching pipeline:
+
+1. **DandanPlay Hash** — Most accurate, matches by file hash
+2. **Bangumi** — Title-based matching against the Bangumi database
+3. **AniList** — Alternative title matching
+4. **TMDB** — Fallback cross-reference
+
+<Callout type="info">
+Unmatched files can be manually matched from the library detail page.
+</Callout>
+
+## Expected Library Structure
+
+<Files>
+  <Folder name="anime" defaultOpen>
+    <Folder name="Frieren" defaultOpen>
+      <File name="[SubGroup] Frieren S01E01.mkv" />
+      <File name="[SubGroup] Frieren S01E02.mkv" />
+      <File name="[SubGroup] Frieren S01E03.mkv" />
+    </Folder>
+    <Folder name="Bocchi the Rock">
+      <File name="[SubGroup] Bocchi the Rock - 01.mkv" />
+      <File name="[SubGroup] Bocchi the Rock - 02.mkv" />
+    </Folder>
+  </Folder>
+</Files>
+
+## File Browser
+
+The library detail page includes a file browser that shows:
+
+- Directory tree with file counts
+- Media file details (codec, resolution, size)
+- Match status for each file
+- Bulk match/unmatch operations

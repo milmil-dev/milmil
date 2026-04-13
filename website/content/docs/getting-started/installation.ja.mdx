@@ -1,0 +1,61 @@
+---
+title: インストール
+description: サーバーに milmil をインストールして実行する方法。
+---
+
+## 前提条件
+
+- **Docker**（推奨）または Go 1.26+ および Bun 1.3+
+- **FFmpeg** — トランスコードとメディア情報抽出に必要
+- **Redis** — オプションですが、本番環境では推奨
+
+## Docker（推奨）
+
+Docker Compose で milmil を実行するのが最も簡単です：
+
+```bash
+git clone https://github.com/milmil-org/milmil.git
+cd milmil
+docker compose up -d
+```
+
+以下のすべてのサービスが起動します：
+- **PostgreSQL 16** — データベース
+- **Redis 7** — キャッシュ
+- **milmil-api** — Go バックエンド（ポート 8080）
+- **milmil-web** — Nginx 経由の React フロントエンド（ポート 3000）
+
+高度な設定については [Docker デプロイ](/docs/getting-started/docker) を参照してください。
+
+## 手動インストール
+
+### バックエンド（Go API）
+
+```bash
+cd api
+go mod download
+make build
+./server
+```
+
+### フロントエンド（React SPA）
+
+```bash
+cd web
+bun install
+bun run build
+```
+
+`web/dist` のビルド成果物を任意の静的ファイルサーバーまたは Nginx でホストします。
+
+## 環境変数
+
+| 変数 | デフォルト | 説明 |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite://data/milmil.db` | データベース接続文字列 |
+| `JWT_SECRET` | *必須* | JWT 署名キー（最低 32 文字） |
+| `MILMIL_ENCRYPTION_KEY` | *必須* | ストレージ認証情報用 AES-256 キー |
+| `API_PORT` | `8080` | API サーバーポート |
+| `DATA_DIR` | `./data` | ダウンロードとトランスコードキャッシュ |
+
+すべてのオプションは [設定](/docs/configuration/environment) を参照してください。

@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-04-12 19:06+0800\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+
+#: components/landing.tsx:239
+msgid "landing.ctaDesc"
+msgstr "landing.ctaDesc"
+
+#: components/landing.tsx:238
+msgid "landing.ctaTitle"
+msgstr "landing.ctaTitle"
+
+#: components/landing.tsx:16
+msgid "landing.d1"
+msgstr "landing.d1"
+
+#: components/landing.tsx:17
+msgid "landing.d2"
+msgstr "landing.d2"
+
+#: components/landing.tsx:18
+msgid "landing.d3"
+msgstr "landing.d3"
+
+#: components/landing.tsx:19
+msgid "landing.d4"
+msgstr "landing.d4"
+
+#: components/landing.tsx:20
+msgid "landing.d5"
+msgstr "landing.d5"
+
+#: components/landing.tsx:21
+msgid "landing.d6"
+msgstr "landing.d6"
+
+#: components/landing.tsx:195
+msgid "landing.deployDesc"
+msgstr "landing.deployDesc"
+
+#: components/landing.tsx:194
+msgid "landing.deployTitle"
+msgstr "landing.deployTitle"
+
+#: components/landing.tsx:138
+msgid "landing.desc"
+msgstr "landing.desc"
+
+#: components/landing.tsx:185
+msgid "landing.detail"
+msgstr "landing.detail"
+
+#: components/landing.tsx:185
+msgid "landing.detailCaption"
+msgstr "landing.detailCaption"
+
+#: components/landing.tsx:16
+msgid "landing.f1"
+msgstr "landing.f1"
+
+#: components/landing.tsx:17
+msgid "landing.f2"
+msgstr "landing.f2"
+
+#: components/landing.tsx:18
+msgid "landing.f3"
+msgstr "landing.f3"
+
+#: components/landing.tsx:19
+msgid "landing.f4"
+msgstr "landing.f4"
+
+#: components/landing.tsx:20
+msgid "landing.f5"
+msgstr "landing.f5"
+
+#: components/landing.tsx:21
+msgid "landing.f6"
+msgstr "landing.f6"
+
+#: components/landing.tsx:160
+msgid "landing.featuresDesc"
+msgstr "landing.featuresDesc"
+
+#: components/landing.tsx:159
+msgid "landing.featuresTitle"
+msgstr "landing.featuresTitle"
+
+#: components/landing.tsx:142
+msgid "landing.getStarted"
+msgstr "landing.getStarted"
+
+#: components/landing.tsx:184
+msgid "landing.home"
+msgstr "landing.home"
+
+#: components/landing.tsx:184
+msgid "landing.homeCaption"
+msgstr "landing.homeCaption"
+
+#: components/landing.tsx:219
+msgid "landing.integrationsDesc"
+msgstr "landing.integrationsDesc"
+
+#: components/landing.tsx:218
+msgid "landing.integrationsTitle"
+msgstr "landing.integrationsTitle"
+
+#: components/landing.tsx:186
+msgid "landing.player"
+msgstr "landing.player"
+
+#: components/landing.tsx:186
+msgid "landing.playerCaption"
+msgstr "landing.playerCaption"
+
+#: components/landing.tsx:242
+msgid "landing.readDocs"
+msgstr "landing.readDocs"
+
+#: components/landing.tsx:181
+msgid "landing.screenshotsDesc"
+msgstr "landing.screenshotsDesc"
+
+#: components/landing.tsx:180
+msgid "landing.screenshotsTitle"
+msgstr "landing.screenshotsTitle"
+
+#: components/landing.tsx:135
+msgid "landing.tagline"
+msgstr "landing.tagline"
+
+#: components/landing.tsx:145
+#: components/landing.tsx:245
+msgid "landing.viewGithub"
+msgstr "landing.viewGithub"

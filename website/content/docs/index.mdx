@@ -1,0 +1,48 @@
+---
+title: Introduction
+description: milmil is a self-hosted anime media server for managing, discovering, and streaming anime.
+---
+
+## What is milmil?
+
+milmil is a self-hosted anime media server that lets you manage, discover, and stream your anime collection. It combines library management with advanced features like danmaku (bullet comments), automatic downloads, and multi-provider metadata matching.
+
+## Explore
+
+<Cards>
+  <Card title="Installation" href="/docs/getting-started/installation">
+    Install milmil with Docker or from source.
+  </Card>
+  <Card title="First Setup" href="/docs/getting-started/first-setup">
+    Configure your first library and start watching.
+  </Card>
+  <Card title="Features" href="/docs/features/library">
+    Explore library management, streaming, downloads, and more.
+  </Card>
+  <Card title="Configuration" href="/docs/configuration/environment">
+    Environment variables, integrations, and notifications.
+  </Card>
+  <Card title="Troubleshooting" href="/docs/troubleshooting">
+    FAQ and solutions for common issues.
+  </Card>
+</Cards>
+
+## Quick Start
+
+```bash
+docker compose up -d
+```
+
+Then open `http://localhost:3000` and follow the setup wizard.
+
+## Key Features
+
+- **Library Management** — Multi-source storage (local, SMB, SFTP, 40+ cloud backends via rclone) with automatic scanning and metadata matching
+- **Streaming** — Direct playback, container remuxing (MKV to MP4), HLS transcoding with FFmpeg
+- **Danmaku** — Real-time bullet comment overlay from DandanPlay
+- **Auto Downloads** — Built-in torrent client, RSS subscriptions, aggregated torrent search (Nyaa, DMHY, Mikan, etc.)
+- **Discovery** — Seasonal calendar, trending rankings, full-text search with genre/tag filtering
+- **Collection** — Watch status tracking, personal ratings, progress sync with Bangumi and AniList
+- **Multi-language** — Full i18n support for English, Japanese, Korean, Simplified Chinese, Traditional Chinese
+- **PWA** — Installable progressive web app with offline support
+

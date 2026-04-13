@@ -1,0 +1,136 @@
+---
+title: Docker Deployment
+description: Deploy milmil with Docker Compose for production use.
+---
+
+## Production Setup
+
+<Steps>
+<Step>
+### Create environment file
+
+Create a `.env` file in the project root:
+
+```bash
+JWT_SECRET=your-secret-key-at-least-32-characters
+MILMIL_ENCRYPTION_KEY=your-aes-256-encryption-key
+DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
+```
+
+<Callout type="warn">
+Generate strong random keys for production. You can use `openssl rand -hex 32` to generate a 64-character hex key.
+</Callout>
+</Step>
+<Step>
+### Start the stack
+
+<Tabs items={["docker compose", "docker run"]}>
+<Tab value="docker compose">
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+</Tab>
+<Tab value="docker run">
+```bash
+docker run -d \
+  --name milmil-api \
+  -p 8080:8080 \
+  --env-file .env \
+  -v milmil-data:/data \
+  -v /path/to/anime:/media/anime \
+  ghcr.io/milmil-org/milmil:latest
+```
+</Tab>
+</Tabs>
+</Step>
+</Steps>
+
+## Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `milmil-api` | 8080 | Go backend API |
+| `milmil-web` | 3000 | React frontend |
+| `postgres` | 5432 | PostgreSQL 16 |
+| `redis` | 6379 | Redis 7 cache |
+
+## Volume Mounts
+
+Map your media directories into the container:
+
+```yaml
+volumes:
+  - /path/to/anime:/media/anime
+  - milmil-data:/data
+```
+
+<Callout type="info">
+The `/data` volume stores downloads, transcode cache, and SQLite database (if used). Make sure it has enough space.
+</Callout>
+
+## Expected File Layout
+
+<Files>
+  <Folder name="milmil" defaultOpen>
+    <File name=".env" />
+    <File name="docker-compose.yml" />
+    <File name="docker-compose.prod.yml" />
+    <Folder name="data">
+      <File name="milmil.db" />
+      <Folder name="downloads" />
+      <Folder name="transcode" />
+    </Folder>
+  </Folder>
+</Files>
+
+## Database
+
+<Tabs items={["SQLite", "PostgreSQL"]}>
+<Tab value="SQLite">
+Zero configuration — great for development and small setups. Data stored in `data/milmil.db`.
+
+```bash
+DATABASE_URL=sqlite://data/milmil.db
+```
+</Tab>
+<Tab value="PostgreSQL">
+Recommended for production deployments. Migrations are auto-applied on startup.
+
+```bash
+DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
+```
+</Tab>
+</Tabs>
+
+## Reverse Proxy
+
+<Callout type="info">
+See the dedicated [Reverse Proxy](/docs/configuration/reverse-proxy) guide for full Nginx, Caddy, and Traefik configurations.
+</Callout>
+
+Place milmil behind a reverse proxy for HTTPS. Example Nginx config:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name milmil.example.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    location /ws {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```

@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-04-12 19:06+0800\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ja\n"
+
+#: components/landing.tsx:239
+msgid "landing.ctaDesc"
+msgstr "数分でmilmilをデプロイしましょう。"
+
+#: components/landing.tsx:238
+msgid "landing.ctaTitle"
+msgstr "始めましょう"
+
+#: components/landing.tsx:16
+msgid "landing.d1"
+msgstr "マルチソースストレージ、自動スキャンとメタデータマッチング。"
+
+#: components/landing.tsx:17
+msgid "landing.d2"
+msgstr "ダイレクト再生、MKV→MP4リマックス、FFmpeg HLSトランスコード。"
+
+#: components/landing.tsx:18
+msgid "landing.d3"
+msgstr "DandanPlayからのリアルタイム弾幕。"
+
+#: components/landing.tsx:19
+msgid "landing.d4"
+msgstr "内蔵トレントクライアント、RSS、統合検索。"
+
+#: components/landing.tsx:20
+msgid "landing.d5"
+msgstr "シーズンカレンダー、トレンド、フルテキスト検索。"
+
+#: components/landing.tsx:21
+msgid "landing.d6"
+msgstr "視聴進捗をBangumi・AniListと同期。"
+
+#: components/landing.tsx:195
+msgid "landing.deployDesc"
+msgstr "コマンド一つ。すべてのサービスが含まれています。"
+
+#: components/landing.tsx:194
+msgid "landing.deployTitle"
+msgstr "数秒でデプロイ"
+
+#: components/landing.tsx:138
+msgid "landing.desc"
+msgstr "弾幕、自動ダウンロード、マルチプロバイダーメタデータマッチングでアニメを管理・発見・ストリーミング。"
+
+#: components/landing.tsx:185
+msgid "landing.detail"
+msgstr "アニメ詳細"
+
+#: components/landing.tsx:185
+msgid "landing.detailCaption"
+msgstr "メタデータ、エピソード、ジャンル、評価。"
+
+#: components/landing.tsx:16
+msgid "landing.f1"
+msgstr "ライブラリ管理"
+
+#: components/landing.tsx:17
+msgid "landing.f2"
+msgstr "ストリーミング"
+
+#: components/landing.tsx:18
+msgid "landing.f3"
+msgstr "弾幕"
+
+#: components/landing.tsx:19
+msgid "landing.f4"
+msgstr "自動ダウンロード"
+
+#: components/landing.tsx:20
+msgid "landing.f5"
+msgstr "発見"
+
+#: components/landing.tsx:21
+msgid "landing.f6"
+msgstr "同期・追跡"
+
+#: components/landing.tsx:160
+msgid "landing.featuresDesc"
+msgstr "アニメ愛好家のための完全なメディアサーバー。"
+
+#: components/landing.tsx:159
+msgid "landing.featuresTitle"
+msgstr "すべての機能"
+
+#: components/landing.tsx:142
+msgid "landing.getStarted"
+msgstr "はじめる"
+
+#: components/landing.tsx:184
+msgid "landing.home"
+msgstr "ホーム"
+
+#: components/landing.tsx:184
+msgid "landing.homeCaption"
+msgstr "トレンドカルーセル、視聴継続、今日の更新。"
+
+#: components/landing.tsx:219
+msgid "landing.integrationsDesc"
+msgstr "お使いのサービスと接続。"
+
+#: components/landing.tsx:218
+msgid "landing.integrationsTitle"
+msgstr "連携サービス"
+
+#: components/landing.tsx:186
+msgid "landing.player"
+msgstr "プレーヤー + 弾幕"
+
+#: components/landing.tsx:186
+msgid "landing.playerCaption"
+msgstr "リアルタイム弾幕付きストリーミング。"
+
+#: components/landing.tsx:242
+msgid "landing.readDocs"
+msgstr "ドキュメントを読む"
+
+#: components/landing.tsx:181
+msgid "landing.screenshotsDesc"
+msgstr "最高のメディアサーバーにインスパイアされたインターフェース。"
+
+#: components/landing.tsx:180
+msgid "landing.screenshotsTitle"
+msgstr "実際の画面"
+
+#: components/landing.tsx:135
+msgid "landing.tagline"
+msgstr "セルフホスト型アニメメディアサーバー"
+
+#: components/landing.tsx:145
+#: components/landing.tsx:245
+msgid "landing.viewGithub"
+msgstr "GitHubで見る"

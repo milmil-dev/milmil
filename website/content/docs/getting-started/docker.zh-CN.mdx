@@ -1,0 +1,78 @@
+---
+title: Docker 部署
+description: 使用 Docker Compose 部署 milmil 到生产环境。
+---
+
+## 生产环境设置
+
+使用生产环境的 compose 文件进行完整部署：
+
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+### 必需的环境变量
+
+在项目根目录创建 `.env` 文件：
+
+```bash
+JWT_SECRET=your-secret-key-at-least-32-characters
+MILMIL_ENCRYPTION_KEY=your-aes-256-encryption-key
+DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
+```
+
+### 服务
+
+生产环境包含以下服务：
+
+| 服务 | 端口 | 说明 |
+|---------|------|-------------|
+| `milmil-api` | 8080 | Go 后端 API |
+| `milmil-web` | 3000 | React 前端 |
+| `postgres` | 5432 | PostgreSQL 16 |
+| `redis` | 6379 | Redis 7 缓存 |
+
+### 反向代理
+
+将 milmil 置于 Nginx 或 Caddy 之后以启用 HTTPS。Nginx 配置示例：
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name milmil.example.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    location /ws {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+### 卷挂载
+
+将媒体目录映射到容器中：
+
+```yaml
+volumes:
+  - /path/to/anime:/media/anime
+  - milmil-data:/data
+```
+
+### 数据库
+
+- **开发环境**：SQLite（零配置）
+- **生产环境**：推荐使用 PostgreSQL 16+
+- 启动时通过 golang-migrate 自动应用迁移

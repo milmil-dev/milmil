@@ -1,0 +1,155 @@
+---
+title: Platform Guides
+description: Platform-specific installation guides for Synology, Unraid, TrueNAS, and Raspberry Pi.
+---
+
+<Tabs items={["Synology", "Unraid", "TrueNAS", "Raspberry Pi"]}>
+<Tab value="Synology">
+
+## Synology NAS (DSM 7+)
+
+<Steps>
+<Step>
+### Install Container Manager
+
+Open **Package Center** and install **Container Manager** (formerly Docker).
+</Step>
+<Step>
+### Create project directory
+
+SSH into your NAS or use File Station to create `/docker/milmil/`.
+
+<Files>
+  <Folder name="docker" defaultOpen>
+    <Folder name="milmil" defaultOpen>
+      <File name=".env" />
+      <File name="docker-compose.yml" />
+      <Folder name="data" />
+    </Folder>
+  </Folder>
+</Files>
+</Step>
+<Step>
+### Upload docker-compose.yml and .env
+
+Copy the production compose file and environment variables. See [Docker Deployment](/docs/getting-started/docker).
+</Step>
+<Step>
+### Start via Container Manager
+
+In Container Manager, go to **Project > Create**. Select the `docker-compose.yml` file and start the project.
+</Step>
+</Steps>
+
+<Callout type="warn">
+**Permissions:** Synology containers run as root by default. Ensure your shared folder permissions allow read access to your anime library directory. Set the volume mount to the shared folder path (e.g. `/volume1/media/anime`).
+</Callout>
+
+</Tab>
+<Tab value="Unraid">
+
+## Unraid
+
+<Steps>
+<Step>
+### Install Docker Compose Manager
+
+In the Unraid **Community Applications** store, install the **Docker Compose Manager** plugin.
+</Step>
+<Step>
+### Create compose stack
+
+Add a new stack with the milmil `docker-compose.yml` and `.env` file. See [Docker Deployment](/docs/getting-started/docker).
+</Step>
+<Step>
+### Configure paths
+
+Map your media share:
+
+```yaml
+volumes:
+  - /mnt/user/media/anime:/media/anime
+  - /mnt/user/appdata/milmil:/data
+```
+</Step>
+<Step>
+### Start the stack
+
+Apply the compose stack from the Docker Compose Manager UI.
+</Step>
+</Steps>
+
+<Callout type="info">
+Use `/mnt/user/appdata/milmil` for persistent data to follow Unraid conventions.
+</Callout>
+
+</Tab>
+<Tab value="TrueNAS">
+
+## TrueNAS SCALE
+
+<Steps>
+<Step>
+### Navigate to Apps
+
+In the TrueNAS SCALE web UI, go to **Apps > Discover Apps**.
+</Step>
+<Step>
+### Custom App
+
+Click **Custom App** and configure a Docker Compose deployment with the milmil compose file.
+</Step>
+<Step>
+### Configure storage
+
+Map your dataset paths:
+
+```yaml
+volumes:
+  - /mnt/pool/media/anime:/media/anime
+  - /mnt/pool/apps/milmil:/data
+```
+</Step>
+</Steps>
+
+<Callout type="warn">
+TrueNAS SCALE uses Kubernetes under the hood for custom apps. Make sure your pool paths are correct and accessible.
+</Callout>
+
+</Tab>
+<Tab value="Raspberry Pi">
+
+## Raspberry Pi (4/5)
+
+<Callout type="warn">
+Raspberry Pi has limited CPU for transcoding. Direct play and container remux work well, but HLS transcoding will be slow. Use pre-encoded MP4 files for best results.
+</Callout>
+
+<Steps>
+<Step>
+### Install Docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+```
+
+Log out and back in for group changes to take effect.
+</Step>
+<Step>
+### Clone and start
+
+```bash
+git clone https://github.com/milmil-org/milmil.git
+cd milmil
+docker compose up -d
+```
+</Step>
+</Steps>
+
+<Callout type="info">
+Use an SSD (via USB 3.0) instead of an SD card for the data volume — SD cards have limited write endurance and are slow for database operations.
+</Callout>
+
+</Tab>
+</Tabs>

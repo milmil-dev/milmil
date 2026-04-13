@@ -1,0 +1,125 @@
+---
+title: Development Setup
+description: Set up a local development environment for milmil.
+---
+
+## Prerequisites
+
+- **Go 1.26+** — Backend API
+- **Bun 1.3+** — Frontend build tool
+- **FFmpeg** — Media processing
+- **Docker** — For PostgreSQL and Redis (or install locally)
+
+## Getting Started
+
+<Tabs items={["Full Stack", "Backend Only", "Frontend Only"]}>
+<Tab value="Full Stack">
+
+<Steps>
+<Step>
+### Clone the repository
+
+```bash
+git clone https://github.com/milmil-org/milmil.git
+cd milmil
+```
+</Step>
+<Step>
+### Start infrastructure
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+This starts PostgreSQL and Redis for development.
+</Step>
+<Step>
+### Start the backend
+
+```bash
+cd api
+cp .env.example .env
+go mod download
+make dev
+```
+
+The API server starts at `http://localhost:8080` with hot reload.
+</Step>
+<Step>
+### Start the frontend
+
+```bash
+cd web
+bun install
+bun run dev
+```
+
+The dev server starts at `http://localhost:5173` with HMR.
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="Backend Only">
+
+```bash
+cd api
+cp .env.example .env
+go mod download
+make dev
+```
+
+The API server starts at `http://localhost:8080` with hot reload.
+
+</Tab>
+<Tab value="Frontend Only">
+
+```bash
+cd web
+bun install
+bun run dev
+```
+
+The dev server starts at `http://localhost:5173`. Configure `VITE_API_URL=http://localhost:8080` to point at a running backend.
+
+</Tab>
+</Tabs>
+
+## Repository Structure
+
+<Files>
+  <Folder name="milmil" defaultOpen>
+    <Folder name="api" defaultOpen>
+      <Folder name="internal">
+        <Folder name="api" />
+        <Folder name="bot" />
+        <Folder name="domain" />
+        <Folder name="infra" />
+        <Folder name="service" />
+      </Folder>
+      <File name="go.mod" />
+      <File name="Makefile" />
+    </Folder>
+    <Folder name="web" defaultOpen>
+      <Folder name="src">
+        <Folder name="components" />
+        <Folder name="features" />
+        <Folder name="pages" />
+      </Folder>
+      <File name="package.json" />
+    </Folder>
+    <Folder name="website">
+      <Folder name="content" />
+      <File name="package.json" />
+    </Folder>
+    <File name="docker-compose.yml" />
+    <File name="Makefile" />
+  </Folder>
+</Files>
+
+## Pull Request Guidelines
+
+1. Fork the repository and create a feature branch
+2. Write tests for new functionality
+3. Ensure `make lint` and `make test` pass
+4. Keep PRs focused — one feature or fix per PR
+5. Write clear commit messages describing the change

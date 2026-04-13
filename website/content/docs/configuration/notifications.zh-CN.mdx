@@ -1,0 +1,133 @@
+---
+title: 通知与机器人
+description: 通过 Telegram、Discord 或 Webhook 设置推送通知和交互式机器人命令。
+---
+
+## 概览
+
+milmil 可以通过 Telegram、Discord 和通用 Webhook 发送推送通知并接受交互式机器人命令。两项功能均在 **设置 > 通知** 中配置。
+
+每个平台卡片有两个独立开关：
+- **推送通知** — 下载、错误和系统事件的单向提醒
+- **机器人命令** — 交互式命令，如 `/schedule`、`/search`、`/downloads`
+
+你可以为每个平台启用其中一个或两个。
+
+## Telegram 设置
+
+### 1. 创建机器人
+
+1. 打开 Telegram 搜索 **@BotFather**
+2. 发送 `/newbot`
+3. 输入显示名称（如 `milmil`）
+4. 输入以 `bot` 结尾的用户名（如 `milmil_media_bot`）
+5. BotFather 会回复一个 **Bot Token** — 复制它
+
+### 2. 获取你的 Chat ID
+
+1. 向你的新机器人发送任意消息
+2. 在浏览器中打开：`https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
+3. 找到 `"chat":{"id": 123456789}` — 那个数字就是你的 Chat ID
+
+### 3. 在 milmil 中配置
+
+1. 前往 **设置 > 通知 > Telegram**
+2. 粘贴 **Bot Token**
+3. 输入 **Chat ID**
+4. 启用 **推送通知** 和/或 **机器人命令**
+5. 点击 **保存**
+
+### Webhook 模式（可选）
+
+默认情况下机器人使用长轮询（在 NAT/防火墙后也能工作）。如果你的服务器有公网 URL，可以切换到 Webhook 模式以获得更低延迟：
+
+1. 输入 **Webhook URL**（如 `https://your-domain.com/api/v1/bot/telegram/webhook`）
+2. 机器人会自动向 Telegram 注册 Webhook
+
+留空则使用轮询。
+
+### 允许的 Chat ID
+
+限制哪些 Telegram 聊天可以向机器人发送命令。输入逗号分隔的 Chat ID。留空则仅允许已配置的 Chat ID。
+
+## Discord 设置
+
+### 推送通知（Webhook）
+
+1. 在你的 Discord 服务器中，前往 **服务器设置 > 集成 > Webhooks**
+2. 点击 **新建 Webhook**，命名（如 `milmil`），选择频道
+3. 点击 **复制 Webhook URL**
+4. 在 milmil 中：**设置 > 通知 > Discord**，启用 **推送通知**
+5. 粘贴 Webhook URL，保存
+
+### 机器人命令（斜杠命令）
+
+1. 前往 [Discord 开发者门户](https://discord.com/developers/applications)
+2. 点击 **新建应用**，命名为 `milmil`
+3. 前往 **Bot** 标签页，点击 **添加 Bot**
+4. 复制 **Bot Token**
+5. 前往 **OAuth2 > URL Generator**，选择范围：`bot`、`applications.commands`
+6. 选择权限：`Send Messages`、`Embed Links`、`Use Slash Commands`
+7. 复制生成的 URL 并打开它，将机器人邀请到你的服务器
+8. 从 General Information 标签页复制 **Application ID**
+9. 在 milmil 中：**设置 > 通知 > Discord**，启用 **机器人命令**
+10. 粘贴 **Bot Token** 和 **Application ID**，保存
+
+### 允许的 Guild ID
+
+限制哪些 Discord 服务器可以使用机器人。输入逗号分隔的服务器 ID。留空则允许所有服务器。
+
+## Webhook（通用）
+
+用于自定义集成（Slack、ntfy、Gotify、Pushover 等）：
+
+1. 在设置中启用 **Webhook**
+2. 输入目标 **URL**
+3. 可选设置 **HMAC Secret** 用于签名验证
+4. 事件以 JSON POST 方式发送，附带 `X-Signature-256` 头
+
+### 负载格式
+
+```json
+{
+  "type": "download.completed",
+  "title": "Download Complete",
+  "message": "Frieren S2E03",
+  "severity": "success",
+  "metadata": {
+    "anime_name": "Frieren",
+    "episode": "03",
+    "subgroup": "LoliHouse"
+  }
+}
+```
+
+## 事件路由
+
+使用平台卡片下方的事件路由矩阵配置哪些事件发送到哪些平台。
+
+| 事件 | 说明 |
+|---|---|
+| 下载开始 | RSS 规则触发新下载 |
+| 下载完成 | 下载成功完成 |
+| 下载失败 | 下载遇到错误 |
+| 媒体库扫描完成 | 媒体库扫描处理完毕 |
+| 系统错误 | 后台任务意外失败 |
+
+## 机器人命令
+
+启用机器人命令后，以下命令可用：
+
+| 命令 | 说明 |
+|---|---|
+| `/start` | 欢迎消息和命令列表 |
+| `/schedule` | 每周播出时间表 |
+| `/search <query>` | 搜索动画 |
+| `/detail <id>` | 动画详情，包含封面和评分 |
+| `/downloads` | 活跃下载及进度 |
+| `/subscribe <anime>` | 设置自动下载订阅 |
+| `/status` | 系统概览 |
+| `/mylist [status]` | 你的动画收藏 |
+| `/continue` | 最近观看，继续观看 |
+
+命令支持内联按钮，可快速执行订阅、暂停下载和查看详情等操作。

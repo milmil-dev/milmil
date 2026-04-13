@@ -1,0 +1,133 @@
+---
+title: 通知與機器人
+description: 透過 Telegram、Discord 或 Webhook 設定推播通知和互動式機器人指令。
+---
+
+## 概覽
+
+milmil 可以透過 Telegram、Discord 和通用 Webhook 傳送推播通知並接受互動式機器人指令。兩項功能均在 **設定 > 通知** 中設定。
+
+每個平台卡片有兩個獨立開關：
+- **推播通知** — 下載、錯誤和系統事件的單向提醒
+- **機器人指令** — 互動式指令，如 `/schedule`、`/search`、`/downloads`
+
+你可以為每個平台啟用其中一個或兩個。
+
+## Telegram 設定
+
+### 1. 建立機器人
+
+1. 開啟 Telegram 搜尋 **@BotFather**
+2. 傳送 `/newbot`
+3. 輸入顯示名稱（如 `milmil`）
+4. 輸入以 `bot` 結尾的使用者名稱（如 `milmil_media_bot`）
+5. BotFather 會回覆一個 **Bot Token** — 複製它
+
+### 2. 取得你的 Chat ID
+
+1. 向你的新機器人傳送任意訊息
+2. 在瀏覽器中開啟：`https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
+3. 找到 `"chat":{"id": 123456789}` — 那個數字就是你的 Chat ID
+
+### 3. 在 milmil 中設定
+
+1. 前往 **設定 > 通知 > Telegram**
+2. 貼上 **Bot Token**
+3. 輸入 **Chat ID**
+4. 啟用 **推播通知** 和/或 **機器人指令**
+5. 點選 **儲存**
+
+### Webhook 模式（選用）
+
+預設情況下機器人使用長輪詢（在 NAT/防火牆後也能運作）。如果你的伺服器有公開 URL，可以切換到 Webhook 模式以取得更低延遲：
+
+1. 輸入 **Webhook URL**（如 `https://your-domain.com/api/v1/bot/telegram/webhook`）
+2. 機器人會自動向 Telegram 註冊 Webhook
+
+留空則使用輪詢。
+
+### 允許的 Chat ID
+
+限制哪些 Telegram 聊天可以向機器人傳送指令。輸入逗號分隔的 Chat ID。留空則僅允許已設定的 Chat ID。
+
+## Discord 設定
+
+### 推播通知（Webhook）
+
+1. 在你的 Discord 伺服器中，前往 **伺服器設定 > 整合 > Webhooks**
+2. 點選 **新建 Webhook**，命名（如 `milmil`），選擇頻道
+3. 點選 **複製 Webhook URL**
+4. 在 milmil 中：**設定 > 通知 > Discord**，啟用 **推播通知**
+5. 貼上 Webhook URL，儲存
+
+### 機器人指令（斜線指令）
+
+1. 前往 [Discord 開發者入口網站](https://discord.com/developers/applications)
+2. 點選 **新建應用程式**，命名為 `milmil`
+3. 前往 **Bot** 分頁，點選 **新增 Bot**
+4. 複製 **Bot Token**
+5. 前往 **OAuth2 > URL Generator**，選擇範圍：`bot`、`applications.commands`
+6. 選擇權限：`Send Messages`、`Embed Links`、`Use Slash Commands`
+7. 複製產生的 URL 並開啟它，將機器人邀請到你的伺服器
+8. 從 General Information 分頁複製 **Application ID**
+9. 在 milmil 中：**設定 > 通知 > Discord**，啟用 **機器人指令**
+10. 貼上 **Bot Token** 和 **Application ID**，儲存
+
+### 允許的 Guild ID
+
+限制哪些 Discord 伺服器可以使用機器人。輸入逗號分隔的伺服器 ID。留空則允許所有伺服器。
+
+## Webhook（通用）
+
+用於自訂整合（Slack、ntfy、Gotify、Pushover 等）：
+
+1. 在設定中啟用 **Webhook**
+2. 輸入目標 **URL**
+3. 可選設定 **HMAC Secret** 用於簽章驗證
+4. 事件以 JSON POST 方式傳送，附帶 `X-Signature-256` 標頭
+
+### 酬載格式
+
+```json
+{
+  "type": "download.completed",
+  "title": "Download Complete",
+  "message": "Frieren S2E03",
+  "severity": "success",
+  "metadata": {
+    "anime_name": "Frieren",
+    "episode": "03",
+    "subgroup": "LoliHouse"
+  }
+}
+```
+
+## 事件路由
+
+使用平台卡片下方的事件路由矩陣設定哪些事件傳送到哪些平台。
+
+| 事件 | 說明 |
+|---|---|
+| 下載開始 | RSS 規則觸發新下載 |
+| 下載完成 | 下載成功完成 |
+| 下載失敗 | 下載遇到錯誤 |
+| 媒體庫掃描完成 | 媒體庫掃描處理完畢 |
+| 系統錯誤 | 背景工作意外失敗 |
+
+## 機器人指令
+
+啟用機器人指令後，以下指令可用：
+
+| 指令 | 說明 |
+|---|---|
+| `/start` | 歡迎訊息和指令列表 |
+| `/schedule` | 每週播出時間表 |
+| `/search <query>` | 搜尋動畫 |
+| `/detail <id>` | 動畫詳情，包含封面和評分 |
+| `/downloads` | 進行中的下載及進度 |
+| `/subscribe <anime>` | 設定自動下載訂閱 |
+| `/status` | 系統概覽 |
+| `/mylist [status]` | 你的動畫收藏 |
+| `/continue` | 最近觀看，繼續觀看 |
+
+指令支援內嵌按鈕，可快速執行訂閱、暫停下載和檢視詳情等操作。

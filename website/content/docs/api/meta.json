@@ -1,0 +1,22 @@
+{
+  "pages": [
+    "getHealth",
+    "getAuthStatus",
+    "postAuthSetup",
+    "postAuthLogin",
+    "postAuthLogout",
+    "getAuthMe",
+    "listLibraries",
+    "createLibrary",
+    "getLibrary",
+    "deleteLibrary",
+    "updateLibrary",
+    "scanLibrary",
+    "listScanSummaries",
+    "getCalendar",
+    "getTrending",
+    "searchAnime",
+    "getAnimeDetail",
+    "getAnimeEpisodes"
+  ]
+}

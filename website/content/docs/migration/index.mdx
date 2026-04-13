@@ -1,0 +1,111 @@
+---
+title: Migration Guide
+description: Migrate to milmil from other anime media servers.
+---
+
+<Callout type="info">
+milmil does not have automated migration tools yet. The guides below describe what can be manually transferred and what requires re-setup.
+</Callout>
+
+<Tabs items={["From Jellyfin", "From Plex", "From Seanime"]}>
+<Tab value="From Jellyfin">
+
+## Migrating from Jellyfin
+
+### What transfers
+- **Media files** — Point milmil at the same media directory. No need to move files.
+- **File organization** — milmil supports the same folder-per-show structure.
+
+### What needs re-setup
+- **Metadata** — milmil uses different metadata providers (Bangumi, AniList, DandanPlay instead of TheTVDB/TMDb). All metadata will be re-matched during the first scan.
+- **Watch progress** — Not transferable. Start fresh or manually mark watched episodes.
+- **User accounts** — Create new accounts in milmil.
+
+<Callout type="warn">
+milmil's metadata matching is optimized for anime specifically. Shows that were difficult to match in Jellyfin may match more accurately in milmil due to anime-specific providers like DandanPlay and Bangumi.
+</Callout>
+
+### Steps
+
+<Steps>
+<Step>
+Install milmil alongside Jellyfin (they can coexist).
+</Step>
+<Step>
+Point milmil at the same media directory Jellyfin uses.
+</Step>
+<Step>
+Run a full library scan in milmil.
+</Step>
+<Step>
+Verify metadata matches, manually correct any mismatches.
+</Step>
+<Step>
+Connect Bangumi/AniList if you want collection sync.
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="From Plex">
+
+## Migrating from Plex
+
+### What transfers
+- **Media files** — Point milmil at the same media directory.
+
+### What needs re-setup
+- **Metadata** — All re-matched from anime-specific providers.
+- **Watch progress** — Not transferable.
+- **Playlists/Collections** — Not transferable.
+- **User accounts** — Create new accounts.
+
+### Steps
+
+<Steps>
+<Step>
+Install milmil alongside Plex.
+</Step>
+<Step>
+Point milmil at the same media library path.
+</Step>
+<Step>
+Run a full library scan.
+</Step>
+<Step>
+Review and correct metadata matches.
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="From Seanime">
+
+## Migrating from Seanime
+
+### What transfers
+- **Media files** — Same directory structure.
+- **AniList data** — If you used AniList with Seanime, connect the same AniList account in milmil to sync your collection.
+
+### What needs re-setup
+- **Local metadata** — Re-scanned and re-matched.
+- **Download rules** — RSS subscriptions need to be recreated.
+- **Settings** — All application settings.
+
+### Steps
+
+<Steps>
+<Step>
+Install milmil and point it at your anime directory.
+</Step>
+<Step>
+Connect your AniList account to recover collection data.
+</Step>
+<Step>
+Run a full library scan.
+</Step>
+<Step>
+Re-create any RSS subscriptions or download rules.
+</Step>
+</Steps>
+
+</Tab>
+</Tabs>

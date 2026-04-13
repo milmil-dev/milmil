@@ -1,0 +1,61 @@
+---
+title: 安装
+description: 如何在服务器上安装和运行 milmil。
+---
+
+## 前提条件
+
+- **Docker**（推荐）或 Go 1.26+ 和 Bun 1.3+
+- **FFmpeg** — 用于转码和媒体信息提取
+- **Redis** — 可选，但推荐用于生产环境部署
+
+## Docker（推荐）
+
+使用 Docker Compose 运行 milmil 是最简单的方式：
+
+```bash
+git clone https://github.com/milmil-org/milmil.git
+cd milmil
+docker compose up -d
+```
+
+这将启动所有服务：
+- **PostgreSQL 16** — 数据库
+- **Redis 7** — 缓存
+- **milmil-api** — Go 后端（端口 8080）
+- **milmil-web** — React 前端，通过 Nginx 提供服务（端口 3000）
+
+更多高级配置请参阅 [Docker 部署](/docs/getting-started/docker)。
+
+## 手动安装
+
+### 后端（Go API）
+
+```bash
+cd api
+go mod download
+make build
+./server
+```
+
+### 前端（React SPA）
+
+```bash
+cd web
+bun install
+bun run build
+```
+
+使用任意静态文件服务器或 Nginx 托管 `web/dist` 目录下的构建产物。
+
+## 环境变量
+
+| 变量 | 默认值 | 说明 |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite://data/milmil.db` | 数据库连接字符串 |
+| `JWT_SECRET` | *必填* | JWT 签名密钥（至少 32 个字符） |
+| `MILMIL_ENCRYPTION_KEY` | *必填* | AES-256 密钥，用于加密存储凭据 |
+| `API_PORT` | `8080` | API 服务器端口 |
+| `DATA_DIR` | `./data` | 下载和转码缓存目录 |
+
+所有选项请参阅 [配置](/docs/configuration/environment)。

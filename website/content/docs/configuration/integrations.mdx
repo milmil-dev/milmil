@@ -1,0 +1,104 @@
+---
+title: Integrations
+description: Connect milmil with external services for metadata, sync, and danmaku.
+---
+
+<Tabs items={["Bangumi", "AniList", "DandanPlay", "TMDB"]}>
+<Tab value="Bangumi">
+
+## Bangumi
+
+[Bangumi](https://bangumi.tv) provides anime metadata, ratings, and collection sync.
+
+<Steps>
+<Step>
+### Navigate to Settings
+
+Go to **Settings > Integrations** in the milmil web UI.
+</Step>
+<Step>
+### Connect Bangumi
+
+Click **Connect Bangumi** and authorize milmil in the Bangumi OAuth flow.
+</Step>
+<Step>
+### Verify sync
+
+Your Bangumi collection will begin syncing automatically. Check the integration status indicator.
+</Step>
+</Steps>
+
+### Features
+
+- Anime metadata (title, description, score, episodes)
+- Watch status sync (planning, watching, completed, etc.)
+- Score sync
+
+</Tab>
+<Tab value="AniList">
+
+## AniList
+
+[AniList](https://anilist.co) is an alternative metadata and tracking service.
+
+<Steps>
+<Step>
+### Navigate to Settings
+
+Go to **Settings > Integrations** in the milmil web UI.
+</Step>
+<Step>
+### Connect AniList
+
+Click **Connect AniList** and authorize milmil in the AniList OAuth flow.
+</Step>
+</Steps>
+
+### Features
+
+- Anime metadata and cover images
+- Watch progress sync
+- Score sync
+
+</Tab>
+<Tab value="DandanPlay">
+
+## DandanPlay
+
+[DandanPlay](https://www.dandanplay.com) provides file-hash based matching and danmaku (bullet comments).
+
+<Steps>
+<Step>
+### Get API credentials
+
+Register for API credentials at the DandanPlay developer portal.
+</Step>
+<Step>
+### Set environment variables
+
+```bash
+DANDANPLAY_APP_ID=your_app_id
+DANDANPLAY_APP_SECRET=your_app_secret
+```
+</Step>
+</Steps>
+
+### Features
+
+- File hash matching — most accurate episode identification
+- Danmaku overlay during playback
+- Episode metadata
+
+</Tab>
+<Tab value="TMDB">
+
+## TMDB
+
+[TMDB](https://www.themoviedb.org) is used as a fallback for cross-referencing TV show metadata.
+
+<Callout type="info">
+No configuration required. TMDB is used automatically as a fallback source.
+</Callout>
+
+</Tab>
+</Tabs>

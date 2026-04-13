@@ -1,0 +1,60 @@
+---
+title: 集成
+description: 将 milmil 与外部服务连接，获取元数据、同步和弹幕功能。
+---
+
+## Bangumi
+
+[Bangumi](https://bangumi.tv) 提供动画元数据、评分和收藏同步。
+
+### 设置
+
+1. 前往 **设置 > 集成**
+2. 点击 **连接 Bangumi**
+3. 在 Bangumi OAuth 流程中授权 milmil
+4. 你的收藏将自动同步
+
+### 功能
+
+- 动画元数据（标题、简介、评分、集数）
+- 观看状态同步（计划看、在看、看过等）
+- 评分同步
+
+## AniList
+
+[AniList](https://anilist.co) 是一个替代的元数据和追踪服务。
+
+### 设置
+
+1. 前往 **设置 > 集成**
+2. 点击 **连接 AniList**
+3. 在 AniList OAuth 流程中授权 milmil
+
+### 功能
+
+- 动画元数据和封面图片
+- 观看进度同步
+- 评分同步
+
+## DandanPlay
+
+[DandanPlay](https://www.dandanplay.com) 提供基于文件哈希的匹配和弹幕（弹幕评论）。
+
+### 设置
+
+在 DandanPlay 开发者门户注册 API 凭据，然后设置环境变量：
+
+```bash
+DANDANPLAY_APP_ID=your_app_id
+DANDANPLAY_APP_SECRET=your_app_secret
+```
+
+### 功能
+
+- 文件哈希匹配 — 最精确的剧集识别
+- 播放时弹幕叠加
+- 剧集元数据
+
+## TMDB
+
+[TMDB](https://www.themoviedb.org) 用作交叉引用电视节目元数据的后备来源。无需配置。
