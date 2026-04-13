@@ -118,6 +118,14 @@ func (h *Handler) mediaFileToSource(f store.MediaFile) MediaSource {
 		}
 	}
 
+	// Fallback: if no codec detected, assume h264+aac (most common)
+	if videoCodec == "" {
+		videoCodec = "h264"
+	}
+	if audioCodec == "" {
+		audioCodec = "aac"
+	}
+
 	if videoCodec != "" {
 		streams = append(streams, MediaStream{
 			Codec: videoCodec, Type: "Video", Index: 0,
