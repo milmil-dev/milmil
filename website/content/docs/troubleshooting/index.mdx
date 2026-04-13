@@ -3,6 +3,46 @@ title: FAQ
 description: Frequently asked questions and common solutions.
 ---
 
-## FAQ
+## General
 
-Coming soon.
+<Accordions>
+<Accordion title="What are the minimum system requirements?">
+- **CPU:** 2 cores (4+ recommended for transcoding)
+- **RAM:** 1 GB minimum, 2 GB+ recommended
+- **Storage:** Depends on your media library. milmil itself uses < 500 MB for the application and database.
+- **FFmpeg:** Required for media info extraction and transcoding
+</Accordion>
+<Accordion title="Does milmil support multiple users?">
+Yes. Create additional user accounts from **Settings > Users**. Each user has their own collection, watch progress, and preferences.
+</Accordion>
+<Accordion title="Can I access milmil from outside my network?">
+Yes, but you need to set up a reverse proxy with HTTPS. See the [Reverse Proxy](/docs/configuration/reverse-proxy) guide. Do not expose milmil directly to the internet without HTTPS.
+</Accordion>
+<Accordion title="Which video formats are supported?">
+milmil can play any format FFmpeg supports. For direct play, the browser must support the codec (typically H.264/H.265 in MP4). Other formats are automatically remuxed or transcoded.
+</Accordion>
+<Accordion title="How do I update milmil?">
+Pull the latest Docker image and restart:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+Database migrations are applied automatically on startup.
+</Accordion>
+</Accordions>
+
+## Specific Issues
+
+<Cards>
+  <Card title="Playback Issues" href="/docs/troubleshooting/playback">
+    Streaming, transcoding, danmaku, and subtitle problems.
+  </Card>
+  <Card title="Scanning Issues" href="/docs/troubleshooting/scanning">
+    Library scanning, metadata matching, and file detection.
+  </Card>
+  <Card title="Networking Issues" href="/docs/troubleshooting/networking">
+    Connectivity, reverse proxy, WebSocket, and CORS problems.
+  </Card>
+</Cards>

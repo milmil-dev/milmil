@@ -3,6 +3,47 @@ title: Scanning Issues
 description: Troubleshoot library scanning and metadata matching problems.
 ---
 
-## Scanning Issues
+<Accordions>
+<Accordion title="Files not detected during scan">
+**Common causes:**
 
-Coming soon.
+1. **Wrong path:** Ensure the library path matches your volume mount. In Docker, use the container-side path (e.g. `/media/anime`, not `/path/on/host/anime`)
+2. **Permissions:** The milmil process must have read access to the media directory
+3. **File extensions:** milmil scans for common video extensions (`.mkv`, `.mp4`, `.avi`, `.webm`, etc.). Non-standard extensions are skipped
+4. **Hidden files:** Files starting with `.` are ignored by default
+</Accordion>
+
+<Accordion title="Anime matched to wrong entry">
+**Solution:**
+
+1. Go to the library detail page
+2. Click the mismatched anime entry
+3. Click **Unmatch** to remove the incorrect match
+4. Click **Manual Match** and search for the correct anime
+5. Select the correct entry from the search results
+
+<Callout type="info">
+Tip: DandanPlay file hash matching is the most accurate method. If your files have standard fansub naming (e.g. `[SubGroup] Title - 01.mkv`), matching accuracy is high.
+</Callout>
+</Accordion>
+
+<Accordion title="Scan stuck or very slow">
+**Common causes:**
+
+1. **Network storage latency:** Scanning remote backends (SMB, SFTP, rclone) is slower than local storage
+2. **Large library:** First scans of large libraries (10,000+ files) can take several minutes
+3. **FFmpeg probing:** Each file is probed for codec info — this adds time per file
+4. **API rate limits:** Metadata providers may rate-limit requests for large batch matches
+
+**Solution:** Check scan progress in the UI. If truly stuck, restart milmil and try scanning a smaller subset first.
+</Accordion>
+
+<Accordion title="Rclone backend not connecting">
+**Solution:**
+
+1. Verify your rclone remote works independently: `rclone ls remote:path`
+2. Check that the rclone config is accessible to the milmil process
+3. For Docker, mount your rclone config into the container
+4. Ensure the cloud provider credentials haven't expired (OAuth tokens need periodic refresh)
+</Accordion>
+</Accordions>

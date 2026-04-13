@@ -3,6 +3,47 @@ title: Playback Issues
 description: Troubleshoot streaming, transcoding, and danmaku problems.
 ---
 
-## Playback Issues
+<Accordions>
+<Accordion title="Video won't play / black screen">
+**Cause:** The video codec isn't supported for direct play in your browser.
 
-Coming soon.
+**Solution:**
+1. Check the file's codec in the library file browser (e.g. HEVC, AV1)
+2. milmil should automatically fall back to remux or transcode — check that FFmpeg is installed and accessible
+3. Try a different browser (Chrome has the best codec support)
+</Accordion>
+
+<Accordion title="Transcoding is very slow">
+**Cause:** Software transcoding uses CPU, which is slow for HD/4K content.
+
+**Solution:**
+1. Enable hardware acceleration — see [Performance Tuning](/docs/configuration/performance)
+2. Use the `ultrafast` or `fast` preset for lower-power devices
+3. Pre-encode your files to H.264 MP4 for direct play (no transcoding needed)
+</Accordion>
+
+<Accordion title="Danmaku (bullet comments) not showing">
+**Cause:** DandanPlay integration not configured or no comments available for this episode.
+
+**Solution:**
+1. Verify DandanPlay credentials are set — see [Integrations](/docs/configuration/integrations)
+2. Check that the episode was matched via DandanPlay (file hash match)
+3. Some episodes may have few or no comments available
+4. If behind a reverse proxy, ensure WebSocket connections work — see [Reverse Proxy](/docs/configuration/reverse-proxy)
+</Accordion>
+
+<Accordion title="Subtitles not appearing">
+**Solution:**
+1. Check that the subtitle track is selected in the player controls
+2. For embedded subtitles, milmil extracts them from MKV/MP4 containers automatically
+3. For external subtitles, ensure the `.srt`/`.ass`/`.vtt` file is in the same directory as the video with the same base filename
+4. ASS subtitles with complex styling may not render perfectly in the web player
+</Accordion>
+
+<Accordion title="Video buffering / seeking is slow">
+**Solution:**
+1. If using HLS transcoding, previously seeked segments are cached — subsequent seeks will be faster
+2. Check your network bandwidth between the server and client
+3. For remote access, ensure your reverse proxy doesn't buffer the stream — see [Reverse Proxy](/docs/configuration/reverse-proxy)
+</Accordion>
+</Accordions>
