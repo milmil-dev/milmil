@@ -12,9 +12,10 @@ import (
 )
 
 const contextKeyUserID = "userID"
+const contextKeyTokenID = "tokenID"
 
-// authMiddleware validates Bearer tokens (JWT or API token) and sets the userID in context.
-func authMiddleware(secret string, queries *store.Queries) echo.MiddlewareFunc {
+// authMiddleware validates API tokens and sets the userID in context.
+func authMiddleware(queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			header := c.Request().Header.Get("Authorization")
@@ -22,18 +23,20 @@ func authMiddleware(secret string, queries *store.Queries) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusUnauthorized, "missing token")
 			}
 			token := strings.TrimPrefix(header, "Bearer ")
-			userID, err := resolveToken(c, secret, queries, token)
+			apiToken, err := resolveToken(c, queries, token)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
 			}
-			c.Set(contextKeyUserID, userID)
+			c.Set(contextKeyUserID, apiToken.UserID)
+			c.Set(contextKeyTokenID, apiToken.ID)
+			go updateTokenActivity(queries, apiToken.ID, c.RealIP(), c.Request().UserAgent())
 			return next(c)
 		}
 	}
 }
 
 // authMiddlewareWithQueryParam is like authMiddleware but also accepts ?token= as fallback.
-func authMiddlewareWithQueryParam(secret string, queries *store.Queries) echo.MiddlewareFunc {
+func authMiddlewareWithQueryParam(queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			header := c.Request().Header.Get("Authorization")
@@ -47,46 +50,46 @@ func authMiddlewareWithQueryParam(secret string, queries *store.Queries) echo.Mi
 			if token == "" {
 				return echo.NewHTTPError(http.StatusUnauthorized, "missing token")
 			}
-			userID, err := resolveToken(c, secret, queries, token)
+			apiToken, err := resolveToken(c, queries, token)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
 			}
-			c.Set(contextKeyUserID, userID)
+			c.Set(contextKeyUserID, apiToken.UserID)
+			c.Set(contextKeyTokenID, apiToken.ID)
+			go updateTokenActivity(queries, apiToken.ID, c.RealIP(), c.Request().UserAgent())
 			return next(c)
 		}
 	}
 }
 
-// resolveToken checks if the token is an API token (mlml_ prefix) or JWT, and returns the userID.
-func resolveToken(c echo.Context, jwtSecret string, queries *store.Queries, token string) (string, error) {
-	if auth.IsAPIToken(token) {
-		hash := auth.HashAPIToken(token)
-		apiToken, err := queries.GetAPITokenByHash(c.Request().Context(), hash)
-		if err != nil {
-			return "", err
-		}
-		// Fire-and-forget activity update (use background context since request ctx will be cancelled)
-		go func() {
-			ip := c.Request().Header.Get("X-Forwarded-For")
-			if ip == "" {
-				ip = c.Request().RemoteAddr
-			}
-			userAgent := c.Request().Header.Get("User-Agent")
-			if err := queries.UpdateAPITokenActivity(context.Background(), store.UpdateAPITokenActivityParams{
-				ID:            apiToken.ID,
-				LastIp:        ip,
-				LastUserAgent: userAgent,
-			}); err != nil {
-				slog.Debug("failed to update api token activity", "err", err)
-			}
-		}()
-		return apiToken.UserID, nil
+// resolveToken validates an API token by hash lookup.
+func resolveToken(c echo.Context, queries *store.Queries, token string) (store.ApiToken, error) {
+	if !auth.IsAPIToken(token) {
+		return store.ApiToken{}, echo.NewHTTPError(http.StatusUnauthorized, "invalid token format")
 	}
-	return auth.VerifyToken(jwtSecret, token)
+	hash := auth.HashAPIToken(token)
+	return queries.GetAPITokenByHash(c.Request().Context(), hash)
+}
+
+// updateTokenActivity updates last_used_at, last_ip, and last_user_agent.
+func updateTokenActivity(queries *store.Queries, tokenID, ip, userAgent string) {
+	if err := queries.UpdateAPITokenActivity(context.Background(), store.UpdateAPITokenActivityParams{
+		LastIp:        ip,
+		LastUserAgent: userAgent,
+		ID:            tokenID,
+	}); err != nil {
+		slog.Debug("failed to update api token activity", "err", err)
+	}
 }
 
 // getUserID extracts the authenticated user ID from the Echo context.
 func getUserID(c echo.Context) string {
 	id, _ := c.Get(contextKeyUserID).(string)
+	return id
+}
+
+// getTokenID extracts the current API token ID from the Echo context.
+func getTokenID(c echo.Context) string {
+	id, _ := c.Get(contextKeyTokenID).(string)
 	return id
 }
