@@ -36,6 +36,17 @@ type Anime struct {
 	Score                float64        `json:"score"`
 }
 
+type ApiToken struct {
+	ID          string         `json:"id"`
+	Name        string         `json:"name"`
+	TokenHash   string         `json:"token_hash"`
+	TokenPrefix string         `json:"token_prefix"`
+	UserID      string         `json:"user_id"`
+	LastUsedAt  sql.NullString `json:"last_used_at"`
+	CreatedAt   string         `json:"created_at"`
+	UpdatedAt   string         `json:"updated_at"`
+}
+
 type BackupConfig struct {
 	ID         string         `json:"id"`
 	UserID     string         `json:"user_id"`

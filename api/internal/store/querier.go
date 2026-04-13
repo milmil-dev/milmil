@@ -17,6 +17,7 @@ type Querier interface {
 	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
 	CountUnreadNotifications(ctx context.Context) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
+	CreateAPIToken(ctx context.Context, arg CreateAPITokenParams) (ApiToken, error)
 	CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime, error)
 	CreateDownload(ctx context.Context, arg CreateDownloadParams) (Download, error)
 	CreateDownloadRule(ctx context.Context, arg CreateDownloadRuleParams) (DownloadRule, error)
@@ -30,6 +31,7 @@ type Querier interface {
 	CreateSubtitleFile(ctx context.Context, arg CreateSubtitleFileParams) (SubtitleFile, error)
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteAPIToken(ctx context.Context, arg DeleteAPITokenParams) error
 	DeleteAllNotifications(ctx context.Context) error
 	DeleteAnime(ctx context.Context, id string) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
@@ -48,6 +50,7 @@ type Querier interface {
 	DeleteUserPreference(ctx context.Context, arg DeleteUserPreferenceParams) error
 	DisableTwoFactor(ctx context.Context, id string) error
 	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
+	GetAPITokenByHash(ctx context.Context, tokenHash string) (ApiToken, error)
 	GetAllUserPreferences(ctx context.Context, userID string) ([]UserPreference, error)
 	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
@@ -73,6 +76,7 @@ type Querier interface {
 	GetUserPreference(ctx context.Context, arg GetUserPreferenceParams) (UserPreference, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
+	ListAPITokensByUser(ctx context.Context, userID string) ([]ListAPITokensByUserRow, error)
 	ListActiveDownloads(ctx context.Context) ([]Download, error)
 	ListAllUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
@@ -119,6 +123,7 @@ type Querier interface {
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
 	UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error
+	UpdateAPITokenLastUsed(ctx context.Context, id string) error
 	UpdateAnimeLibraryID(ctx context.Context, arg UpdateAnimeLibraryIDParams) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
