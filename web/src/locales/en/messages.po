@@ -387,7 +387,7 @@ msgstr "Trailer"
 msgid "anime.voiceActor"
 msgstr "CV"
 
-#: src/pages/settings/ApiTokensCard.tsx:175
+#: src/pages/settings/ApiTokensCard.tsx:179
 msgid "apiTokens.create"
 msgstr "Create"
 
@@ -411,13 +411,17 @@ msgstr "Dismiss"
 msgid "apiTokens.lastUsed"
 msgstr "Last used"
 
-#: src/pages/settings/ApiTokensCard.tsx:158
+#: src/pages/settings/ApiTokensCard.tsx:162
 msgid "apiTokens.namePlaceholder"
 msgstr "Device name (e.g. iPhone)"
 
-#: src/pages/settings/ApiTokensCard.tsx:145
+#: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revoke"
 msgstr "Revoke"
+
+#: src/pages/settings/ApiTokensCard.tsx:143
+msgid "apiTokens.revokeConfirm"
+msgstr "Revoke this token? The device using it will lose access."
 
 #: src/pages/settings/ApiTokensCard.tsx:55
 msgid "apiTokens.revoked"

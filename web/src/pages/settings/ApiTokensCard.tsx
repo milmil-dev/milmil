@@ -139,7 +139,11 @@ export function ApiTokensCard() {
               </div>
               <button
                 type="button"
-                onClick={() => deleteToken.mutate(token.id)}
+                onClick={() => {
+                  if (confirm(i18n._(msg`apiTokens.revokeConfirm`))) {
+                    deleteToken.mutate(token.id);
+                  }
+                }}
                 disabled={deleteToken.isPending}
                 className="shrink-0 rounded-md p-1.5 text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors"
                 title={i18n._(msg`apiTokens.revoke`)}

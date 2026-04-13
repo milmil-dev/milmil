@@ -387,7 +387,7 @@ msgstr "予告編"
 msgid "anime.voiceActor"
 msgstr "CV"
 
-#: src/pages/settings/ApiTokensCard.tsx:175
+#: src/pages/settings/ApiTokensCard.tsx:179
 msgid "apiTokens.create"
 msgstr ""
 
@@ -411,12 +411,16 @@ msgstr ""
 msgid "apiTokens.lastUsed"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:158
+#: src/pages/settings/ApiTokensCard.tsx:162
 msgid "apiTokens.namePlaceholder"
 msgstr ""
 
-#: src/pages/settings/ApiTokensCard.tsx:145
+#: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revoke"
+msgstr ""
+
+#: src/pages/settings/ApiTokensCard.tsx:143
+msgid "apiTokens.revokeConfirm"
 msgstr ""
 
 #: src/pages/settings/ApiTokensCard.tsx:55
