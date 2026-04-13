@@ -372,7 +372,7 @@ msgstr "Search Resources"
 
 #: src/pages/AnimeDetailPage.tsx:522
 msgid "anime.subscribed"
-msgstr "Subscribed"
+msgstr "Following"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -560,7 +560,7 @@ msgstr "Timeline"
 
 #: src/pages/DownloadsPage.tsx:1271
 msgid "autoDownload.confirm"
-msgstr "Confirm Subscribe"
+msgstr "Confirm Follow"
 
 #: src/pages/DownloadsPage.tsx:2719
 #: src/pages/DownloadsPage.tsx:2762
@@ -587,7 +587,7 @@ msgstr "This will remove all downloads from the list and stop any active transfe
 
 #: src/pages/DownloadsPage.tsx:1483
 msgid "autoDownload.deleted"
-msgstr "Subscription deleted"
+msgstr "Unfollowed"
 
 #: src/pages/DownloadsPage.tsx:2397
 msgid "autoDownload.deletedAll"
@@ -665,7 +665,7 @@ msgstr "downloading"
 
 #: src/pages/DownloadsPage.tsx:931
 #~ msgid "autoDownload.emptyTitle"
-#~ msgstr "No subscriptions yet"
+#~ msgstr "Not following any anime yet"
 
 #: src/pages/DownloadsPage.tsx:1623
 msgid "autoDownload.episodes"
@@ -734,11 +734,11 @@ msgstr "No results found"
 
 #: src/pages/DownloadsPage.tsx:1829
 msgid "autoDownload.noSubscriptions"
-msgstr "No subscriptions yet"
+msgstr "Not following any anime yet"
 
 #: src/pages/DownloadsPage.tsx:1832
 msgid "autoDownload.noSubscriptionsHint"
-msgstr "Search for an anime in the Search tab to create auto-download subscriptions."
+msgstr "Search for an anime in the Search tab to create auto-download rules."
 
 #: src/pages/DownloadsPage.tsx:1000
 msgid "autoDownload.noTorrents"
@@ -772,7 +772,7 @@ msgstr "Refresh"
 
 #: src/pages/DownloadsPage.tsx:1468
 msgid "autoDownload.refreshed"
-msgstr "Subscription refreshed"
+msgstr "Follow refreshed"
 
 #: src/pages/DownloadsPage.tsx:861
 msgid "autoDownload.resolution"
@@ -818,7 +818,7 @@ msgstr "selected"
 
 #: src/pages/DownloadsPage.tsx:921
 msgid "autoDownload.selectSourceToSubscribe"
-msgstr "Select a specific source (Mikan, Nyaa, or DMHY) to enable subscription"
+msgstr "Select a specific source (Mikan, Nyaa, or DMHY) to follow"
 
 #~ msgid "autoDownload.settings"
 #~ msgstr "Settings"
@@ -854,11 +854,11 @@ msgstr "Subgroup"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subscribeFilter"
-msgstr "Subscribe to this filter"
+msgstr "Follow this filter"
 
 #: src/pages/DownloadsPage.tsx:1084
 msgid "autoDownload.subscribeSuccess"
-msgstr "Subscription created"
+msgstr "Now following"
 
 #: src/pages/DownloadsPage.tsx:743
 #~ msgid "autoDownload.subscribeTitle"
@@ -866,7 +866,7 @@ msgstr "Subscription created"
 
 #: src/pages/DownloadsPage.tsx:971
 #~ msgid "autoDownload.subscriptions"
-#~ msgstr "Subscriptions"
+#~ msgstr "Following"
 
 #: src/pages/DownloadsPage.tsx:330
 msgid "autoDownload.subtab.completed"
@@ -879,7 +879,7 @@ msgstr "Downloading"
 
 #: src/pages/DownloadsPage.tsx:328
 msgid "autoDownload.subtab.subscriptions"
-msgstr "Subscriptions"
+msgstr "Following"
 
 #: src/pages/DownloadsPage.tsx:158
 #~ msgid "autoDownload.tab.manage"
@@ -2342,6 +2342,12 @@ msgid "notifications.event"
 msgstr "Event"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
+msgid "notifications.event.animeDailyDigest"
+msgstr "Daily Digest"
+
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "Daily summary of airing anime and recent downloads"
+
 msgid "notifications.event.animeAiring"
 msgstr "Anime Airing Reminder"
 
@@ -2609,7 +2615,7 @@ msgstr "Delete"
 
 #: src/components/RuleEditorModal.tsx:255
 msgid "ruleEditor.deleted"
-msgstr "Subscription deleted"
+msgstr "Unfollowed"
 
 #: src/components/RuleEditorModal.tsx:459
 #: src/pages/DownloadsPage.tsx:2063
@@ -3627,7 +3633,7 @@ msgstr "settings.volumeBoost"
 #~ msgstr "Delete"
 
 #~ msgid "subscribe.deleted"
-#~ msgstr "Subscription deleted"
+#~ msgstr "Unfollowed"
 
 #~ msgid "subscribe.download"
 #~ msgstr "Download"
@@ -3639,7 +3645,7 @@ msgstr "settings.volumeBoost"
 #~ msgstr "Use the Quick Subscribe form in the Search tab to auto-download new anime episodes."
 
 #~ msgid "subscribe.emptyTitle"
-#~ msgstr "No subscriptions yet"
+#~ msgstr "Not following any anime yet"
 
 #~ msgid "subscribe.every"
 #~ msgstr "Every "

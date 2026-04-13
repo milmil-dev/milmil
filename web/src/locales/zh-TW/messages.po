@@ -370,7 +370,7 @@ msgstr "搜尋資源"
 
 #: src/pages/AnimeDetailPage.tsx:522
 msgid "anime.subscribed"
-msgstr "已訂閱"
+msgstr "已追番"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -558,7 +558,7 @@ msgstr "時間線"
 
 #: src/pages/DownloadsPage.tsx:1271
 msgid "autoDownload.confirm"
-msgstr "確認訂閱"
+msgstr "確認追番"
 
 #: src/pages/DownloadsPage.tsx:2719
 #: src/pages/DownloadsPage.tsx:2762
@@ -585,7 +585,7 @@ msgstr "確定要刪除所有下載任務嗎？"
 
 #: src/pages/DownloadsPage.tsx:1483
 msgid "autoDownload.deleted"
-msgstr "訂閱已刪除"
+msgstr "追番已刪除"
 
 #: src/pages/DownloadsPage.tsx:2397
 msgid "autoDownload.deletedAll"
@@ -663,7 +663,7 @@ msgstr "下載中"
 
 #: src/pages/DownloadsPage.tsx:931
 #~ msgid "autoDownload.emptyTitle"
-#~ msgstr "尚無訂閱"
+#~ msgstr "未有追番"
 
 #: src/pages/DownloadsPage.tsx:1623
 msgid "autoDownload.episodes"
@@ -732,11 +732,11 @@ msgstr "未找到結果"
 
 #: src/pages/DownloadsPage.tsx:1829
 msgid "autoDownload.noSubscriptions"
-msgstr "尚無訂閱"
+msgstr "未有追番"
 
 #: src/pages/DownloadsPage.tsx:1832
 msgid "autoDownload.noSubscriptionsHint"
-msgstr "在搜尋標籤頁中搜尋動畫，建立自動下載訂閱。"
+msgstr "在搜尋標籤頁中搜尋動畫，建立自動追番。"
 
 #: src/pages/DownloadsPage.tsx:1000
 msgid "autoDownload.noTorrents"
@@ -770,7 +770,7 @@ msgstr "重新整理"
 
 #: src/pages/DownloadsPage.tsx:1468
 msgid "autoDownload.refreshed"
-msgstr "訂閱已重新整理"
+msgstr "追番已重新整理"
 
 #: src/pages/DownloadsPage.tsx:861
 msgid "autoDownload.resolution"
@@ -816,7 +816,7 @@ msgstr "已選擇"
 
 #: src/pages/DownloadsPage.tsx:921
 msgid "autoDownload.selectSourceToSubscribe"
-msgstr "選擇具體來源（Mikan、Nyaa 或 DMHY）即可訂閱"
+msgstr "選擇具體來源（Mikan、Nyaa 或 DMHY）即可追番"
 
 #: src/pages/DownloadsPage.tsx:2437
 msgid "autoDownload.sort.date"
@@ -849,15 +849,15 @@ msgstr "字幕組"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subscribeFilter"
-msgstr "訂閱此篩選"
+msgstr "追番此篩選"
 
 #: src/pages/DownloadsPage.tsx:1084
 msgid "autoDownload.subscribeSuccess"
-msgstr "訂閱已建立"
+msgstr "追番已建立"
 
 #: src/pages/DownloadsPage.tsx:743
 #~ msgid "autoDownload.subscribeTitle"
-#~ msgstr "確認訂閱"
+#~ msgstr "確認追番"
 
 #: src/pages/DownloadsPage.tsx:971
 #~ msgid "autoDownload.subscriptions"
@@ -874,7 +874,7 @@ msgstr "下載中"
 
 #: src/pages/DownloadsPage.tsx:328
 msgid "autoDownload.subtab.subscriptions"
-msgstr "已訂閱"
+msgstr "已追番"
 
 #: src/pages/DownloadsPage.tsx:158
 #~ msgid "autoDownload.tab.manage"
@@ -2337,6 +2337,12 @@ msgid "notifications.event"
 msgstr "事件"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
+msgid "notifications.event.animeDailyDigest"
+msgstr "每日摘要"
+
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "每日播出動畫和近期下載的匯總"
+
 msgid "notifications.event.animeAiring"
 msgstr "新番播出提醒"
 
@@ -2604,7 +2610,7 @@ msgstr "刪除"
 
 #: src/components/RuleEditorModal.tsx:255
 msgid "ruleEditor.deleted"
-msgstr "已刪除訂閱"
+msgstr "已刪除追番"
 
 #: src/components/RuleEditorModal.tsx:459
 #: src/pages/DownloadsPage.tsx:2063
@@ -3622,7 +3628,7 @@ msgstr "音量增強"
 #~ msgstr "刪除"
 
 #~ msgid "subscribe.deleted"
-#~ msgstr "已刪除訂閱"
+#~ msgstr "已刪除追番"
 
 #~ msgid "subscribe.download"
 #~ msgstr "下載"
@@ -3634,7 +3640,7 @@ msgstr "音量增強"
 #~ msgstr "在「搜尋」分頁使用快速訂閱表單，自動下載新番集數。"
 
 #~ msgid "subscribe.emptyTitle"
-#~ msgstr "尚無訂閱"
+#~ msgstr "未有追番"
 
 #~ msgid "subscribe.every"
 #~ msgstr "每 "

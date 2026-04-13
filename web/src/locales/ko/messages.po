@@ -372,7 +372,7 @@ msgstr "리소스 검색"
 
 #: src/pages/AnimeDetailPage.tsx:522
 msgid "anime.subscribed"
-msgstr "구독 중"
+msgstr "추적 중"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -560,7 +560,7 @@ msgstr "타임라인"
 
 #: src/pages/DownloadsPage.tsx:1271
 msgid "autoDownload.confirm"
-msgstr "구독 확인"
+msgstr "추적 확인"
 
 #: src/pages/DownloadsPage.tsx:2719
 #: src/pages/DownloadsPage.tsx:2762
@@ -587,7 +587,7 @@ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1483
 msgid "autoDownload.deleted"
-msgstr "구독이 삭제되었습니다"
+msgstr "추적이 삭제되었습니다"
 
 #: src/pages/DownloadsPage.tsx:2397
 msgid "autoDownload.deletedAll"
@@ -734,11 +734,11 @@ msgstr "결과를 찾을 수 없음"
 
 #: src/pages/DownloadsPage.tsx:1829
 msgid "autoDownload.noSubscriptions"
-msgstr "아직 구독이 없습니다"
+msgstr "아직 추적 중인 애니메이션이 없습니다"
 
 #: src/pages/DownloadsPage.tsx:1832
 msgid "autoDownload.noSubscriptionsHint"
-msgstr "검색 탭에서 애니메이션을 검색하여 자동 다운로드 구독을 만드세요."
+msgstr "검색 탭에서 애니메이션을 검색하여 자동 다운로드 추적을 만드세요."
 
 #: src/pages/DownloadsPage.tsx:1000
 msgid "autoDownload.noTorrents"
@@ -772,7 +772,7 @@ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1468
 msgid "autoDownload.refreshed"
-msgstr "구독이 새로고침되었습니다"
+msgstr "추적이 새로고침되었습니다"
 
 #: src/pages/DownloadsPage.tsx:861
 msgid "autoDownload.resolution"
@@ -818,7 +818,7 @@ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:921
 msgid "autoDownload.selectSourceToSubscribe"
-msgstr "구독하려면 특정 소스(Mikan, Nyaa, DMHY)를 선택하세요"
+msgstr "추적하려면 특정 소스(Mikan, Nyaa, DMHY)를 선택하세요"
 
 #: src/pages/DownloadsPage.tsx:2437
 msgid "autoDownload.sort.date"
@@ -847,23 +847,23 @@ msgstr "자막 그룹"
 
 #: src/pages/DownloadsPage.tsx:508
 #~ msgid "autoDownload.subscribe"
-#~ msgstr "구독"
+#~ msgstr "추적 중"
 
 #: src/pages/DownloadsPage.tsx:912
 msgid "autoDownload.subscribeFilter"
-msgstr "이 필터 구독"
+msgstr "이 필터 추적"
 
 #: src/pages/DownloadsPage.tsx:1084
 msgid "autoDownload.subscribeSuccess"
-msgstr "구독이 생성되었습니다"
+msgstr "추적이 생성되었습니다"
 
 #: src/pages/DownloadsPage.tsx:743
 #~ msgid "autoDownload.subscribeTitle"
-#~ msgstr "구독 확인"
+#~ msgstr "추적 확인"
 
 #: src/pages/DownloadsPage.tsx:971
 #~ msgid "autoDownload.subscriptions"
-#~ msgstr "구독"
+#~ msgstr "추적 중"
 
 #: src/pages/DownloadsPage.tsx:330
 msgid "autoDownload.subtab.completed"
@@ -876,7 +876,7 @@ msgstr "다운로드 중"
 
 #: src/pages/DownloadsPage.tsx:328
 msgid "autoDownload.subtab.subscriptions"
-msgstr "구독"
+msgstr "추적 중"
 
 #: src/pages/DownloadsPage.tsx:158
 #~ msgid "autoDownload.tab.manage"
@@ -2221,7 +2221,7 @@ msgid "nav.settings"
 msgstr "설정"
 
 #~ msgid "nav.subscribe"
-#~ msgstr "구독"
+#~ msgstr "추적 중"
 
 #: src/components/AppSidebar.tsx:34
 #~ msgid "nav.torrent"
@@ -2339,6 +2339,12 @@ msgid "notifications.event"
 msgstr "이벤트"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:76
+msgid "notifications.event.animeDailyDigest"
+msgstr "일일 요약"
+
+msgid "notifications.event.animeDailyDigest.desc"
+msgstr "방영 중인 애니메이션과 최근 다운로드 일일 요약"
+
 msgid "notifications.event.animeAiring"
 msgstr "방영 알림"
 
@@ -2606,7 +2612,7 @@ msgstr "삭제"
 
 #: src/components/RuleEditorModal.tsx:255
 msgid "ruleEditor.deleted"
-msgstr "구독이 삭제되었습니다"
+msgstr "추적이 삭제되었습니다"
 
 #: src/components/RuleEditorModal.tsx:459
 #: src/pages/DownloadsPage.tsx:2063
@@ -3618,7 +3624,7 @@ msgstr "음량 부스트"
 #~ msgstr "Aria2에 연결되지 않았습니다. 설정 → 다운로드에서 연결을 구성하세요."
 
 #~ msgid "subscribe.button"
-#~ msgstr "구독"
+#~ msgstr "추적 중"
 
 #~ msgid "subscribe.delete"
 #~ msgstr "삭제"
@@ -3636,7 +3642,7 @@ msgstr "음량 부스트"
 #~ msgstr "'검색' 탭의 빠른 구독 양식으로 새 애니메이션 에피소드를 자동 다운로드하세요."
 
 #~ msgid "subscribe.emptyTitle"
-#~ msgstr "아직 구독이 없습니다"
+#~ msgstr "아직 추적 중인 애니메이션이 없습니다"
 
 #~ msgid "subscribe.every"
 #~ msgstr ""
@@ -3699,7 +3705,7 @@ msgstr "음량 부스트"
 #~ msgstr "예: 桜都字幕组"
 
 #~ msgid "subscribe.success"
-#~ msgstr "구독이 생성되었습니다! 새 에피소드가 자동 다운로드됩니다."
+#~ msgstr "추적이 생성되었습니다! 새 에피소드가 자동 다운로드됩니다."
 
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0}일 전"
