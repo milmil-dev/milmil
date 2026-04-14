@@ -3200,13 +3200,25 @@ msgstr "다른 모든 세션이 취소되었습니다"
 msgid "sessions.current"
 msgstr "현재"
 
+#: src/pages/settings/SessionsTab.tsx:62
+msgid "sessions.daysAgo"
+msgstr "{count}일 전"
+
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
 msgstr "milmil 서버에 현재 로그인된 기기입니다."
 
+#: src/pages/settings/SessionsTab.tsx:60
+msgid "sessions.hoursAgo"
+msgstr "{count}시간 전"
+
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
 msgstr "방금"
+
+#: src/pages/settings/SessionsTab.tsx:58
+msgid "sessions.minutesAgo"
+msgstr "{count}분 전"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"

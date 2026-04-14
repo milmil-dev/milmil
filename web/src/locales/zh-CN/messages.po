@@ -3198,13 +3198,25 @@ msgstr "已撤销所有其他会话"
 msgid "sessions.current"
 msgstr "当前"
 
+#: src/pages/settings/SessionsTab.tsx:62
+msgid "sessions.daysAgo"
+msgstr "{count} 天前"
+
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
 msgstr "当前已登录到你的 milmil 服务器的设备。"
 
+#: src/pages/settings/SessionsTab.tsx:60
+msgid "sessions.hoursAgo"
+msgstr "{count} 小时前"
+
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
 msgstr "刚刚"
+
+#: src/pages/settings/SessionsTab.tsx:58
+msgid "sessions.minutesAgo"
+msgstr "{count} 分钟前"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"

@@ -3198,13 +3198,25 @@ msgstr "已撤銷所有其他工作階段"
 msgid "sessions.current"
 msgstr "目前"
 
+#: src/pages/settings/SessionsTab.tsx:62
+msgid "sessions.daysAgo"
+msgstr "{count} 天前"
+
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
 msgstr "目前已登入你的 milmil 伺服器的裝置。"
 
+#: src/pages/settings/SessionsTab.tsx:60
+msgid "sessions.hoursAgo"
+msgstr "{count} 小時前"
+
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
 msgstr "剛剛"
+
+#: src/pages/settings/SessionsTab.tsx:58
+msgid "sessions.minutesAgo"
+msgstr "{count} 分鐘前"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"

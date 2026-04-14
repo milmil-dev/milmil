@@ -3203,13 +3203,25 @@ msgstr "All other sessions revoked"
 msgid "sessions.current"
 msgstr "Current"
 
+#: src/pages/settings/SessionsTab.tsx:62
+msgid "sessions.daysAgo"
+msgstr "{count}d ago"
+
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
 msgstr "Devices currently signed in to your milmil server."
 
+#: src/pages/settings/SessionsTab.tsx:60
+msgid "sessions.hoursAgo"
+msgstr "{count}h ago"
+
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
 msgstr "Just now"
+
+#: src/pages/settings/SessionsTab.tsx:58
+msgid "sessions.minutesAgo"
+msgstr "{count}m ago"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"

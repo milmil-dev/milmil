@@ -3200,13 +3200,25 @@ msgstr "他のすべてのセッションを取り消しました"
 msgid "sessions.current"
 msgstr "現在"
 
+#: src/pages/settings/SessionsTab.tsx:62
+msgid "sessions.daysAgo"
+msgstr "{count}日前"
+
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
 msgstr "milmilサーバーに現在ログインしているデバイス。"
 
+#: src/pages/settings/SessionsTab.tsx:60
+msgid "sessions.hoursAgo"
+msgstr "{count}時間前"
+
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
 msgstr "たった今"
+
+#: src/pages/settings/SessionsTab.tsx:58
+msgid "sessions.minutesAgo"
+msgstr "{count}分前"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"

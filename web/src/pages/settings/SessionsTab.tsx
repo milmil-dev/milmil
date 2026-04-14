@@ -55,11 +55,11 @@ export function SessionsTab() {
     const diff = Date.now() - new Date(dateStr).getTime();
     const minutes = Math.floor(diff / 60000);
     if (minutes < 1) return i18n._(msg`sessions.justNow`);
-    if (minutes < 60) return `${minutes}m ago`;
+    if (minutes < 60) return i18n._(msg`sessions.minutesAgo`, { count: minutes });
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return i18n._(msg`sessions.hoursAgo`, { count: hours });
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return i18n._(msg`sessions.daysAgo`, { count: days });
   };
 
   const isMobile = (ua: string) =>
