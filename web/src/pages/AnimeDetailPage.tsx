@@ -422,6 +422,17 @@ export function AnimeDetailPage() {
                 </svg>
               </a>
             )}
+            {playableData?.anidb_id && playableData.anidb_id > 0 && (
+              <a
+                href={`https://anidb.net/anime/${playableData.anidb_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors text-[9px] font-bold tracking-tight"
+                title="AniDB"
+              >
+                AniDB
+              </a>
+            )}
           </div>
           <div className="relative z-[2] h-full flex">
             <div className="flex-1 flex flex-col justify-start p-4 pt-6 md:p-8 md:pt-12 min-w-0 max-w-[700px]">
