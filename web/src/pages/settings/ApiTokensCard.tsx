@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Delete02Icon, SmartPhone01Icon, Add01Icon, Copy01Icon } from '@hugeicons/core-free-icons';
+import { QRCodeSVG } from 'qrcode.react';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api-client';
@@ -101,6 +102,11 @@ export function ApiTokensCard() {
             >
               <HugeiconsIcon icon={Copy01Icon} size={14} />
             </Button>
+          </div>
+          <div className="mt-3 flex justify-center">
+            <div className="rounded-lg bg-white p-2.5">
+              <QRCodeSVG value={createdToken} size={128} />
+            </div>
           </div>
           <button
             type="button"
