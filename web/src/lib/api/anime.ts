@@ -33,6 +33,7 @@ export interface PlayableEpisodesResponse {
   watch_status: string;
   mal_id: number | null;
   tmdb_id: number | null;
+  anidb_id: number | null;
   episodes: PlayableEpisode[];
 }
 
