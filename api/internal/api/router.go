@@ -121,6 +121,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 
 	// Media files — protected
 	mediaGroup := v1.Group("/media-files", authMiddleware(h.queries))
+	mediaGroup.POST("/bulk-match", h.handleBulkMatchMediaFiles)
+	mediaGroup.POST("/bulk-unmatch", h.handleBulkUnmatchMediaFiles)
 	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)
 	mediaGroup.DELETE("/:id/match", h.handleUnmatchMediaFile)
 	mediaGroup.GET("/:id/info", h.handleMediaInfo)

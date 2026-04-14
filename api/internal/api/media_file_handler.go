@@ -329,3 +329,101 @@ func (h *handler) handleUnmatchMediaFile(c echo.Context) error {
 
 	return c.NoContent(http.StatusNoContent)
 }
+
+type bulkMatchRequest struct {
+	FileIDs      []string `json:"file_ids"`
+	BangumiID    int64    `json:"bangumi_id"`
+	EpisodeStart int64    `json:"episode_start"`
+}
+
+func (h *handler) handleBulkMatchMediaFiles(c echo.Context) error {
+	var req bulkMatchRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+	if len(req.FileIDs) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "file_ids must not be empty")
+	}
+	if req.BangumiID == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "bangumi_id must be non-zero")
+	}
+	if len(req.FileIDs) > 500 {
+		return echo.NewHTTPError(http.StatusBadRequest, "file_ids must not exceed 500 entries")
+	}
+
+	ctx := c.Request().Context()
+
+	// Look up anime by bangumi ID
+	anime, err := h.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: req.BangumiID, Valid: true})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.NewHTTPError(http.StatusNotFound, "anime not found for the given bangumi_id")
+		}
+		return echo.ErrInternalServerError
+	}
+
+	matched := 0
+	for i, fileID := range req.FileIDs {
+		episodeSort := req.EpisodeStart + int64(i)
+
+		// Look up episode by anime and number
+		episode, err := h.queries.GetEpisodeByAnimeAndNumber(ctx, store.GetEpisodeByAnimeAndNumberParams{
+			AnimeID:       anime.ID,
+			EpisodeNumber: float64(episodeSort),
+		})
+		if err != nil {
+			// Skip files where episode doesn't exist
+			continue
+		}
+
+		// Set dandanplay match metadata
+		if err := h.queries.UpdateMediaFileMatch(ctx, store.UpdateMediaFileMatchParams{
+			DandanplayAnimeID:   sql.NullInt64{Int64: req.BangumiID, Valid: true},
+			DandanplayEpisodeID: sql.NullInt64{Int64: 0, Valid: false},
+			ID:                  fileID,
+		}); err != nil {
+			continue
+		}
+
+		// Link to the resolved episode
+		if err := h.queries.UpdateMediaFileEpisodeID(ctx, store.UpdateMediaFileEpisodeIDParams{
+			EpisodeID: sql.NullString{String: episode.ID, Valid: true},
+			ID:        fileID,
+		}); err != nil {
+			continue
+		}
+
+		matched++
+	}
+
+	return c.JSON(http.StatusOK, map[string]int{"matched": matched})
+}
+
+type bulkUnmatchRequest struct {
+	FileIDs []string `json:"file_ids"`
+}
+
+func (h *handler) handleBulkUnmatchMediaFiles(c echo.Context) error {
+	var req bulkUnmatchRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+	if len(req.FileIDs) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "file_ids must not be empty")
+	}
+	if len(req.FileIDs) > 500 {
+		return echo.NewHTTPError(http.StatusBadRequest, "file_ids must not exceed 500 entries")
+	}
+
+	ctx := c.Request().Context()
+
+	cleared := 0
+	for _, fileID := range req.FileIDs {
+		if err := h.queries.ClearMediaFileMatch(ctx, fileID); err != nil {
+			continue
+		}
+		cleared++
+	}
+
+	return c.JSON(http.StatusOK, map[string]int{"cleared": cleared})
+}
