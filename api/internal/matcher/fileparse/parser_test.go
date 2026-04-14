@@ -106,3 +106,23 @@ func TestParse(t *testing.T) {
 		})
 	}
 }
+
+func TestParseExtractsYearFromBracket(t *testing.T) {
+	cases := []struct {
+		in       string
+		wantYear int
+	}{
+		{"[SubGroup] Some Anime (2023) - 01 [1080p].mkv", 2023},
+		{"[Group] Title [2019] - 05.mkv", 2019},
+		{"Show Name S02E03 (1999).mp4", 1999},
+		{"No Year Show - 01.mkv", 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.in, func(t *testing.T) {
+			p := Parse(tc.in)
+			if p.Year != tc.wantYear {
+				t.Errorf("got %d want %d", p.Year, tc.wantYear)
+			}
+		})
+	}
+}

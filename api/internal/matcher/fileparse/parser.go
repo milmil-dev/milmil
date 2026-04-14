@@ -12,9 +12,11 @@ type ParsedFilename struct {
 	EpisodeNumber int
 	Season        int
 	SubGroup      string
+	Year          int
 }
 
 var (
+	reYear          = regexp.MustCompile(`[\(\[](19\d{2}|20\d{2})[\)\]]`)
 	reLeadingGroup  = regexp.MustCompile(`^\[([^\]]+)\]\s*`)
 	reTrailingTags  = regexp.MustCompile(`\s*\[[^\]]*\]\s*$`)
 	reTrailingParen = regexp.MustCompile(`\s*\([^)]*\)\s*$`)
@@ -33,6 +35,12 @@ func Parse(filename string) ParsedFilename {
 	if m := reLeadingGroup.FindStringSubmatch(name); m != nil {
 		result.SubGroup = m[1]
 		name = name[len(m[0]):]
+	}
+
+	if m := reYear.FindStringSubmatch(name); m != nil {
+		if y, err := strconv.Atoi(m[1]); err == nil {
+			result.Year = y
+		}
 	}
 
 	for reTrailingTags.MatchString(name) || reTrailingParen.MatchString(name) {
