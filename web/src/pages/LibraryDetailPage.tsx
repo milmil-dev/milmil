@@ -34,6 +34,7 @@ import { PageTransition } from '../components/PageTransition';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
+import { Checkbox } from '../components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { useAuth } from '../hooks/use-auth';
@@ -42,9 +43,11 @@ import {
   type FileTreeNode,
   libraryApi,
   libraryKeys,
+  mediaFileApi,
   type MediaFileEntry,
   type MediaFilesResponse,
 } from '../lib/api/library';
+import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
 
@@ -333,6 +336,7 @@ function FileTable({
   const [perPage, setPerPage] = useState(10);
   const [sortBy, setSortBy] = useState<'filename' | 'size_bytes' | 'match_status' | 'subtitle_count'>('filename');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -342,10 +346,15 @@ function FileTable({
     return () => clearTimeout(timer);
   }, [search]);
 
+  useEffect(() => {
+    setRowSelection({});
+  }, [page, debouncedSearch]);
+
   // Reset pagination when filter changes
   const handleFilterChange = (f: 'all' | 'matched' | 'unmatched') => {
     setStatusFilter(f);
     setPage(1);
+    setRowSelection({});
   };
 
   const handleSort = (column: string) => {
@@ -390,6 +399,47 @@ function FileTable({
   const showOverlay = isFetching && files.length > 0;
   const columns = React.useMemo<ColumnDef<MediaFileEntry>[]>(
     () => [
+      {
+        id: 'select',
+        meta: { width: 40 },
+        header: () => {
+          const allSelected = files.length > 0 && files.every((f) => rowSelection[f.id]);
+          const someSelected = files.some((f) => rowSelection[f.id]) && !allSelected;
+          return (
+            <Checkbox
+              checked={allSelected}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  const next: Record<string, boolean> = {};
+                  for (const f of files) next[f.id] = true;
+                  setRowSelection(next);
+                } else {
+                  setRowSelection({});
+                }
+              }}
+              size={15}
+              className={someSelected ? 'opacity-60' : ''}
+            />
+          );
+        },
+        cell: ({ row }: { row: { original: MediaFileEntry } }) => (
+          <Checkbox
+            checked={!!rowSelection[row.original.id]}
+            onCheckedChange={(checked) => {
+              setRowSelection((prev) => {
+                const next = { ...prev };
+                if (checked) {
+                  next[row.original.id] = true;
+                } else {
+                  delete next[row.original.id];
+                }
+                return next;
+              });
+            }}
+            size={15}
+          />
+        ),
+      } satisfies ColumnDef<MediaFileEntry>,
       {
         accessorKey: 'filename',
         header: () => i18n._(msg`library.detail.col.filename`),
@@ -532,13 +582,14 @@ function FileTable({
           ]
         : []),
     ],
-    [i18n, onMatch]
+    [i18n, onMatch, files, rowSelection]
   );
 
   const table = useReactTable({
     data: files,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row.id,
   });
 
   // Only show full-page empty state when no filters/search applied and truly no files
@@ -563,6 +614,23 @@ function FileTable({
   }
 
   const showEmptyFiltered = !isLoading && files.length === 0;
+
+  const selectedIds = Object.keys(rowSelection).filter((id) => rowSelection[id]);
+  const selectedCount = selectedIds.length;
+  const queryClient = useQueryClient();
+
+  const bulkUnmatchMutation = useMutation({
+    mutationFn: (fileIds: string[]) => mediaFileApi.bulkUnmatch({ file_ids: fileIds }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['media-files', libraryId] });
+      setRowSelection({});
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
+  });
+
+  const [bulkMatchOpen, setBulkMatchOpen] = useState(false);
 
   return (
     <div>
@@ -674,7 +742,392 @@ function FileTable({
         onPageChange={setPage}
         onPerPageChange={setPerPage}
       />
+
+      <AnimatePresence>
+        {selectedCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.15 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.08] backdrop-blur-xl border border-white/[0.06] shadow-2xl"
+          >
+            <span className="text-sm text-white/70 tabular-nums">
+              {selectedCount} {i18n._(msg`library.detail.selected`)}
+            </span>
+            <div className="w-px h-5 bg-white/10" />
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setBulkMatchOpen(true)}
+            >
+              {i18n._(msg`library.detail.bulkMatch`)}
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                if (confirm(i18n._(msg`library.detail.bulkUnmatchConfirm`))) {
+                  bulkUnmatchMutation.mutate(selectedIds);
+                }
+              }}
+              disabled={bulkUnmatchMutation.isPending}
+            >
+              {i18n._(msg`library.detail.bulkUnmatch`)}
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {bulkMatchOpen && (
+        <BulkMatchModal
+          fileIds={selectedIds}
+          onClose={() => {
+            setBulkMatchOpen(false);
+            setRowSelection({});
+          }}
+          libraryId={libraryId}
+        />
+      )}
     </div>
+  );
+}
+
+/* -- BulkMatchModal --------------------------------------------------------- */
+
+interface BulkMatchModalProps {
+  fileIds: string[];
+  libraryId: string;
+  onClose: () => void;
+}
+
+function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [step, setStep] = useState<1 | 2>(1);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedAnime, setSelectedAnime] = useState<AnimeSummary | null>(null);
+  const [episodeStart, setEpisodeStart] = useState<number>(1);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const { data: searchResults, isLoading: isSearching } = useQuery({
+    queryKey: discoverKeys.search(debouncedSearch),
+    queryFn: () => discoverApi.search(debouncedSearch),
+    enabled: debouncedSearch.length > 0,
+  });
+
+  const bulkMatchMutation = useMutation({
+    mutationFn: () => {
+      if (!selectedAnime) throw new Error('No anime selected');
+      return mediaFileApi.bulkMatch({
+        file_ids: fileIds,
+        bangumi_id: selectedAnime.bangumi_id,
+        episode_start: episodeStart,
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`${data.matched} ${i18n._(msg`library.detail.bulkMatchSuccess`)}`);
+      queryClient.invalidateQueries({ queryKey: ['media-files', libraryId] });
+      onClose();
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
+  });
+
+  const handleSelectAnime = (anime: AnimeSummary) => {
+    setSelectedAnime(anime);
+    setEpisodeStart(1);
+    setStep(2);
+  };
+
+  return (
+    <Modal
+      open={true}
+      onClose={onClose}
+      title={i18n._(msg`library.detail.bulkMatchModal.title`)}
+      size="lg"
+    >
+      {/* File count banner */}
+      <motion.div
+        className="mb-5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-4 py-2.5"
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, delay: 0.1 }}
+      >
+        <p className="text-xs text-white/50">
+          {fileIds.length} {i18n._(msg`library.detail.bulkMatchModal.filesSelected`)}
+        </p>
+      </motion.div>
+
+      {/* Step indicator */}
+      <motion.div
+        className="flex items-center gap-2 mb-5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15 }}
+      >
+        <div className="flex items-center gap-1.5">
+          <motion.div
+            className="w-1.5 h-1.5 rounded-full"
+            animate={{
+              backgroundColor: step === 1 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
+              scale: step === 1 ? 1.2 : 1,
+            }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          />
+          <motion.div
+            className="w-6 h-px"
+            animate={{
+              backgroundColor: step === 2 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.06)',
+            }}
+            transition={{ duration: 0.3 }}
+          />
+          <motion.div
+            className="w-1.5 h-1.5 rounded-full"
+            animate={{
+              backgroundColor: step === 2 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
+              scale: step === 2 ? 1.2 : 1,
+            }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          />
+        </div>
+        <span className="text-[11px] text-white/25 ml-1">
+          {step === 1
+            ? i18n._(msg`library.detail.matchModal.stepSearch`)
+            : i18n._(msg`library.detail.bulkMatchModal.stepEpisodeStart`)}
+        </span>
+      </motion.div>
+
+      <AnimatePresence mode="wait">
+        {step === 1 && (
+          <motion.div
+            key="step-search"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+            {/* Search input */}
+            <div className="relative mb-4">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder={i18n._(msg`library.detail.matchModal.searchPlaceholder`)}
+                className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/[0.12] transition-colors"
+                autoFocus
+              />
+            </div>
+
+            {!debouncedSearch && (
+              <motion.p
+                className="text-center text-[13px] text-white/20 py-12"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {i18n._(msg`library.detail.matchModal.searchHint`)}
+              </motion.p>
+            )}
+
+            {isSearching && (
+              <div className="space-y-2 py-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-[72px] w-full rounded-lg" />
+                ))}
+              </div>
+            )}
+
+            {debouncedSearch && !isSearching && searchResults && searchResults.length === 0 && (
+              <motion.p
+                className="text-center text-[13px] text-white/20 py-12"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                {i18n._(msg`library.detail.matchModal.noResults`)}
+              </motion.p>
+            )}
+
+            {searchResults && searchResults.length > 0 && (
+              <div className="space-y-1 max-h-[45vh] overflow-y-auto pr-1">
+                {searchResults.map((anime, index) => (
+                  <motion.button
+                    key={anime.bangumi_id}
+                    type="button"
+                    onClick={() => handleSelectAnime(anime)}
+                    className="w-full flex items-center gap-3 p-2.5 rounded-lg cursor-pointer text-left group"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.25,
+                      delay: Math.min(index * 0.04, 0.4),
+                      ease: 'easeOut',
+                    }}
+                    whileHover={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <img
+                      src={anime.cover_image}
+                      alt={anime.title}
+                      className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-white/[0.06]"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-white/80 group-hover:text-white truncate transition-colors">
+                        {anime.title}
+                      </p>
+                      <div className="flex items-center gap-2 text-[11px] text-white/30 mt-1">
+                        <span>
+                          {anime.episode_count} {i18n._(msg`common.ep`)}
+                        </span>
+                        {anime.score > 0 && (
+                          <span className="text-amber-400/60">{anime.score.toFixed(1)}</span>
+                        )}
+                      </div>
+                    </div>
+                    <svg
+                      className="w-4 h-4 text-white/10 group-hover:text-white/30 transition-colors shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </motion.button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {step === 2 && selectedAnime && (
+          <motion.div
+            key="step-episode-start"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+            {/* Selected anime header */}
+            <motion.div
+              className="flex items-center gap-3 mb-5 pb-4 border-b border-white/[0.06]"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <img
+                src={selectedAnime.cover_image}
+                alt={selectedAnime.title}
+                className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-white/[0.06]"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-white truncate">{selectedAnime.title}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep(1);
+                    setSelectedAnime(null);
+                  }}
+                  className="flex items-center gap-1 text-[12px] text-white/30 hover:text-white/60 transition-colors mt-1 cursor-pointer"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                  {i18n._(msg`library.detail.matchModal.change`)}
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Episode start picker */}
+            <motion.div
+              className="mb-6"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+            >
+              <label className="block text-xs text-white/40 mb-2">
+                {i18n._(msg`library.detail.bulkMatchModal.episodeStartLabel`)}
+              </label>
+              <p className="text-[11px] text-white/25 mb-3">
+                {i18n._(msg`library.detail.bulkMatchModal.episodeStartHint`)}
+              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEpisodeStart((n) => Math.max(1, n - 1))}
+                  className="w-8 h-8 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                    <path d="M5 12h14" />
+                  </svg>
+                </button>
+                <input
+                  type="number"
+                  min={1}
+                  value={episodeStart}
+                  onChange={(e) => setEpisodeStart(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-20 text-center bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-white/[0.18] transition-colors tabular-nums"
+                />
+                <button
+                  type="button"
+                  onClick={() => setEpisodeStart((n) => n + 1)}
+                  className="w-8 h-8 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </button>
+                <span className="text-xs text-white/30 ml-1">
+                  EP {String(episodeStart).padStart(2, '0')} → EP {String(episodeStart + fileIds.length - 1).padStart(2, '0')}
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Confirm */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+            >
+              <Button
+                type="button"
+                onClick={() => bulkMatchMutation.mutate()}
+                disabled={bulkMatchMutation.isPending}
+                className="w-full"
+              >
+                {bulkMatchMutation.isPending
+                  ? i18n._(msg`common.loading`)
+                  : `${i18n._(msg`library.detail.bulkMatchModal.confirm`)} (${fileIds.length})`}
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Modal>
   );
 }
 
