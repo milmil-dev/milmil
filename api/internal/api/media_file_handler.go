@@ -1,8 +1,10 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -11,6 +13,80 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/store"
 )
+
+var validSortColumns = map[string]string{
+	"filename":       "mf.filename",
+	"size_bytes":     "mf.size_bytes",
+	"match_status":   "mf.match_status",
+	"subtitle_count": "subtitle_count",
+}
+
+type mediaFileRow struct {
+	ID                 string  `json:"id"`
+	LibraryID          string  `json:"library_id"`
+	Path               string  `json:"path"`
+	Filename           string  `json:"filename"`
+	SizeBytes          int64   `json:"size_bytes"`
+	MatchStatus        string  `json:"match_status"`
+	CreatedAt          string  `json:"created_at"`
+	MatchedAnimeTitle  string  `json:"matched_anime_title"`
+	MatchedEpisodeSort float64 `json:"matched_episode_sort"`
+	MatchedBangumiID   int64   `json:"matched_bangumi_id"`
+	SubtitleCount      int64   `json:"subtitle_count"`
+}
+
+func (h *handler) listMediaFilesSorted(ctx context.Context, libraryID, status, q, sortCol, sortDir string, limit, offset int64) ([]mediaFileRow, error) {
+	query := fmt.Sprintf(`
+SELECT mf.id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.match_status, mf.created_at,
+       COALESCE(a.title, '') AS matched_anime_title,
+       COALESCE(e.episode_number, 0) AS matched_episode_sort,
+       COALESCE(a.bangumi_id, 0) AS matched_bangumi_id,
+       (SELECT COUNT(*) FROM subtitle_files sf WHERE sf.media_file_id = mf.id) AS subtitle_count
+FROM media_files mf
+LEFT JOIN episodes e ON mf.episode_id = e.id
+LEFT JOIN anime a ON e.anime_id = a.id
+WHERE mf.library_id = ?
+  AND (? = 'all' OR (? = 'matched' AND mf.match_status != 'unmatched') OR mf.match_status = ?)
+  AND (? = '' OR mf.filename LIKE '%%' || ? || '%%')
+ORDER BY %s %s
+LIMIT ? OFFSET ?`, sortCol, sortDir)
+
+	rows, err := h.db.QueryContext(ctx, query,
+		libraryID,
+		status, status, status,
+		q, q,
+		limit, offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []mediaFileRow
+	for rows.Next() {
+		var r mediaFileRow
+		if err := rows.Scan(
+			&r.ID,
+			&r.LibraryID,
+			&r.Path,
+			&r.Filename,
+			&r.SizeBytes,
+			&r.MatchStatus,
+			&r.CreatedAt,
+			&r.MatchedAnimeTitle,
+			&r.MatchedEpisodeSort,
+			&r.MatchedBangumiID,
+			&r.SubtitleCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, r)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	return items, rows.Err()
+}
 
 type matchMediaFileRequest struct {
 	BangumiID int64 `json:"bangumi_id"`
@@ -50,16 +126,19 @@ func (h *handler) handleListMediaFiles(c echo.Context) error {
 
 	offset := (page - 1) * perPage
 
-	files, err := h.queries.ListMediaFilesByLibrary(c.Request().Context(), store.ListMediaFilesByLibraryParams{
-		LibraryID:   libraryID,
-		Column2:     status,
-		Column3:     status,
-		MatchStatus: status,
-		Column5:     q,
-		Column6:     sql.NullString{String: q, Valid: q != ""},
-		Limit:       int64(perPage),
-		Offset:      int64(offset),
-	})
+	// Parse sort params
+	sortBy := c.QueryParam("sort_by")
+	sortCol, ok := validSortColumns[sortBy]
+	if !ok {
+		sortCol = "mf.filename"
+	}
+
+	sortOrder := strings.ToUpper(c.QueryParam("sort_order"))
+	if sortOrder != "ASC" && sortOrder != "DESC" {
+		sortOrder = "ASC"
+	}
+
+	files, err := h.listMediaFilesSorted(c.Request().Context(), libraryID, status, q, sortCol, sortOrder, int64(perPage), int64(offset))
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
