@@ -25,6 +25,7 @@ Finish the half-done Bangumi and AniList OAuth integrations so milmil automatica
 - Periodic bidirectional pull sync with conflict resolution.
 - UI for resolving divergent watch states between milmil and trackers.
 - Exporting the whole library on demand (Phase A import-on-connect covers the realistic need).
+- **OAuth token refresh.** AniList tokens last ~1 year; Bangumi similar. Phase A treats 401/403 as fatal — worker marks the row dead-letter and emits a `sync:needs_reauth` ws event; user reconnects via the existing OAuth flow. Automatic refresh using the stored `refresh_token` ships in Phase B.
 
 ## Non-goals
 

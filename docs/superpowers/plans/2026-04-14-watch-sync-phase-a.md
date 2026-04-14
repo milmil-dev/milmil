@@ -12,6 +12,16 @@
 
 **Depends on:** AniDB Phase 1 branch `feature/anidb-phase1` merged (Phase 1 enriches `anilist_id` so sync can target the right remote entry). Migration numbers below assume Phase 1's `000032` has landed.
 
+**Revised 2026-04-15 after eng review.** Critical changes from v1:
+- **A1 fix:** `OnProgressUpdate` is called synchronously (not in a goroutine) so a crash between DB write and enqueue can't lose sync ops.
+- **A2 fix:** `Queue.Enqueue` wraps supersede + insert in a SQLite `BEGIN IMMEDIATE` transaction; added concurrency test.
+- **A3 fix:** `Drain` groups ready rows by (user_id, provider) and applies 429/Retry-After to the whole group at once.
+- **A4 decision:** Token refresh for AniList/Bangumi deferred to Phase B; expired tokens surface as `sync:needs_reauth` ws event and the user reconnects manually.
+- **A5 fix:** `FlushUser` only enqueues animes with `CountCompletedWatchProgressByAnime > 0` so we never push planning-only state that could overwrite a remote user's existing list.
+- **A6 fix:** `SyncDrainWorker.Run` uses `sync.Mutex` to prevent overlapping drains; `batchSize = 10` to fit within the 10s tick window at AniList's 90/min rate limit.
+- **C4 fix:** corrected SQL for `ListBangumiEpisodeIDsForAnimeWatchedByUser`.
+- **Tests:** added Task 0.5 (document test harness) and Task 10.5 (full integration test with two httptest servers + latency assertion + concurrency race test).
+
 ---
 
 ## File Structure
@@ -2380,6 +2390,434 @@ gh pr create --title "feat: watch state sync (Bangumi + AniList) Phase A" --body
 ```
 
 Reference the spec and plan files.
+
+---
+
+---
+
+## Plan revisions (applied during eng review)
+
+Apply these deltas inline when executing each task. Original tasks stay numbered as-is; revisions add new tasks (0.5, 10.5) and replace specific steps.
+
+### Δ Task 0.5 — Test harness inventory (NEW, do FIRST)
+
+Before any sync test is written, document the existing in-memory sqlite harness so every later task reuses it instead of reinventing.
+
+- [ ] **Step 1: Inventory the harness**
+
+Read these files end-to-end and note helpers + fixtures:
+
+- `api/internal/resolver/resolver_test.go` — already sets up in-memory sqlite + runs migrations.
+- `api/internal/matcher/matcher_test.go` — similar pattern; has `mockBangumi` stub.
+
+Document in a new file `api/internal/sync/testing_shared_test.go`:
+
+```go
+//go:build test
+// Package-local test helpers. Copy-paste the in-memory sqlite bootstrap from
+// resolver_test.go verbatim and expose it as newTestQueries(t) → (*store.Queries, func()).
+// Also expose mustInsertAnime(t, q, id, totalEps, anilistID, bangumiID),
+// mustInsertEpisodes(t, q, animeID, count, bangumiEpisodeIDStart),
+// mustMarkWatched(t, q, userID, animeID, n).
+```
+
+If the harness already lives somewhere importable, skip creating a new file — just document the import path and helper names the sync tests should use. If not, extract them once here.
+
+- [ ] **Step 2: Verify harness runs clean**
+
+```bash
+cd api && go test -run xxx ./internal/sync/ -v  # compile-only smoke
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add api/internal/sync/testing_shared_test.go
+git commit -m "test(sync): document shared in-memory test harness"
+```
+
+### Δ Task 4 Step 2 — `Queue.Enqueue` must use a transaction (A2 fix)
+
+Replace the body of `Enqueue`:
+
+```go
+func (qu *Queue) Enqueue(ctx context.Context, userID string, provider ProviderName, animeID string, op SyncOp) error {
+    payload, err := json.Marshal(op)
+    if err != nil {
+        return fmt.Errorf("sync: marshal op: %w", err)
+    }
+    return qu.inTx(ctx, func(tx *store.Queries) error {
+        if op.Kind == KindProgress {
+            if err := tx.SupersedeProgressOps(ctx, store.SupersedeProgressOpsParams{
+                UserID: userID, Provider: string(provider), AnimeID: animeID,
+            }); err != nil {
+                return fmt.Errorf("supersede: %w", err)
+            }
+        }
+        return tx.EnqueueSyncOp(ctx, store.EnqueueSyncOpParams{
+            ID:       uuid.NewString(),
+            UserID:   userID,
+            Provider: string(provider),
+            AnimeID:  animeID,
+            Kind:     string(op.Kind),
+            Payload:  string(payload),
+        })
+    })
+}
+```
+
+`inTx` is a helper on `Queue` that acquires a SQL transaction and calls `q.WithTx(tx)` (sqlc-generated). If the repo has an existing `withTx` helper, reuse it; if not, write it once here:
+
+```go
+// Requires the raw *sql.DB, not just *store.Queries. Extend NewQueue to accept it:
+type Queue struct {
+    q  *store.Queries
+    db *sql.DB
+}
+
+func NewQueue(q *store.Queries, db *sql.DB) *Queue { return &Queue{q: q, db: db} }
+
+func (qu *Queue) inTx(ctx context.Context, fn func(*store.Queries) error) error {
+    tx, err := qu.db.BeginTx(ctx, &sql.TxOptions{})
+    if err != nil { return err }
+    defer tx.Rollback()
+    if err := fn(qu.q.WithTx(tx)); err != nil { return err }
+    return tx.Commit()
+}
+```
+
+Update `NewService` signature and `main.go` wiring to pass `*sql.DB`.
+
+**Add this test** to `queue_test.go`:
+
+```go
+func TestEnqueueConcurrentSupersedeRace(t *testing.T) {
+    q, db, cleanup := newTestQueriesWithDB(t)
+    defer cleanup()
+    ctx := context.Background()
+    qu := NewQueue(q, db)
+
+    const N = 20
+    var wg sync.WaitGroup
+    for i := 0; i < N; i++ {
+        wg.Add(1)
+        go func(i int) {
+            defer wg.Done()
+            _ = qu.Enqueue(ctx, "u", ProviderAniList, "a", SyncOp{Kind: KindProgress, Progress: i})
+        }(i)
+    }
+    wg.Wait()
+
+    rows, _ := q.ListReadySyncOps(ctx, 100)
+    if len(rows) != 1 {
+        t.Errorf("expected exactly 1 active row after concurrent enqueues, got %d", len(rows))
+    }
+}
+```
+
+`newTestQueriesWithDB` returns the `*sql.DB` alongside `*store.Queries` — extend the harness from Task 0.5 accordingly.
+
+### Δ Task 9 Step 1 — Worker groups by (user, provider), uses mutex, batch=10 (A3 + A6)
+
+Replace `Drain`:
+
+```go
+var drainMu sync.Mutex // prevents overlapping ticks
+
+func (s *Service) Drain(ctx context.Context, batchSize int32) {
+    if !drainMu.TryLock() {
+        slog.Info("sync: drain already running, skipping tick")
+        return
+    }
+    defer drainMu.Unlock()
+
+    if batchSize <= 0 { batchSize = 10 }
+    rows, err := s.q.ListReadySyncOps(ctx, batchSize)
+    if err != nil {
+        slog.Warn("sync: list ready ops", "err", err)
+        return
+    }
+
+    // Group by (user_id, provider). When a row in a group returns a
+    // TransientError with RetryAfter, apply the same next_attempt_at to all
+    // remaining rows in that group in one UPDATE.
+    groups := make(map[string][]store.SyncOutbox)
+    for _, r := range rows {
+        key := r.UserID + "|" + r.Provider
+        groups[key] = append(groups[key], r)
+    }
+
+    for _, group := range groups {
+        var pausedUntil time.Time
+        for _, row := range group {
+            if !pausedUntil.IsZero() {
+                // Rest of the group deferred to the same Retry-After window.
+                _ = s.q.RescheduleSyncOp(ctx, store.RescheduleSyncOpParams{
+                    Attempts:      row.Attempts, // don't penalize unprocessed rows
+                    NextAttemptAt: pausedUntil.UTC().Format("2006-01-02T15:04:05Z"),
+                    LastError:     sqlNull("rate-limited group"),
+                    ID:            row.ID,
+                })
+                continue
+            }
+            pausedUntil = s.processRow(ctx, row)
+        }
+    }
+}
+
+// processRow returns a non-zero time when the provider signaled rate-limiting;
+// the caller defers the rest of the group's rows to that time.
+func (s *Service) processRow(ctx context.Context, row store.SyncOutbox) time.Time {
+    // ...same logic as before but on TransientError with RetryAfter, return
+    // time.Now().Add(te.RetryAfter) instead of just rescheduling this one row.
+}
+```
+
+Wire `SyncDrainWorker` to call with `batchSize=10`:
+
+```go
+func (w *SyncDrainWorker) Run(ctx context.Context) {
+    if w.svc == nil { return }
+    w.svc.Drain(ctx, 10)
+}
+```
+
+### Δ Task 8 — `FlushUser` filters to animes with completed progress (A5)
+
+Update the query in Task 8 Step 2 to require a completed episode:
+
+```sql
+-- name: ListAnimeForUserWithProviderID :many
+SELECT DISTINCT a.* FROM anime a
+JOIN episodes e ON e.anime_id = a.id
+JOIN watch_progress wp ON wp.episode_id = e.id
+WHERE wp.user_id = sqlc.arg('user_id')
+  AND wp.completed = 1
+  AND ( (sqlc.arg('provider') = 'anilist' AND a.anilist_id IS NOT NULL)
+     OR (sqlc.arg('provider') = 'bangumi' AND a.bangumi_id IS NOT NULL) )
+  AND a.sync_disabled = 0;
+```
+
+The `wp.completed = 1` clause is the only addition. No Go change needed; FlushUser naturally skips untouched animes now.
+
+### Δ Task 9 Step 1 — Fix `ListBangumiEpisodeIDsForAnimeWatchedByUser` SQL (C4)
+
+Replace the broken query:
+
+```sql
+-- name: ListBangumiEpisodeIDsForAnimeWatchedByUser :many
+SELECT e.bangumi_episode_id
+FROM episodes e
+JOIN watch_progress wp ON wp.episode_id = e.id
+WHERE e.anime_id = sqlc.arg('anime_id')
+  AND wp.user_id = sqlc.arg('user_id')
+  AND wp.completed = 1
+  AND e.bangumi_episode_id IS NOT NULL;
+```
+
+sqlc emits `[]sql.NullInt64`. In `worker.go`:
+
+```go
+rawEpIDs, _ := s.q.ListBangumiEpisodeIDsForAnimeWatchedByUser(ctx, store.ListBangumiEpisodeIDsForAnimeWatchedByUserParams{
+    AnimeID: row.AnimeID, UserID: row.UserID,
+})
+epIDs := make([]int64, 0, len(rawEpIDs))
+for _, n := range rawEpIDs {
+    if n.Valid { epIDs = append(epIDs, n.Int64) }
+}
+```
+
+### Δ Task 9 `failRow` — remove redundant reschedule (C3)
+
+```go
+func (s *Service) failRow(ctx context.Context, row store.SyncOutbox, reason string, deadLetter bool) {
+    if deadLetter {
+        slog.Warn("sync: dead letter", "provider", row.Provider, "anime", row.AnimeID, "err", reason)
+        _ = s.q.MarkSyncOpCompleted(ctx, row.ID)
+        return
+    }
+    _ = s.q.RescheduleSyncOp(ctx, store.RescheduleSyncOpParams{
+        Attempts:      row.Attempts + 1,
+        NextAttemptAt: time.Now().UTC().Add(24 * time.Hour).Format("2006-01-02T15:04:05Z"),
+        LastError:     sqlNull(reason),
+        ID:            row.ID,
+    })
+}
+```
+
+### Δ Task 10.5 — Integration test (NEW)
+
+After Task 10 (import), before Task 11 (scheduler).
+
+**Files:**
+- Create: `api/internal/sync/integration_test.go`
+
+- [ ] **Step 1: End-to-end flow**
+
+```go
+package sync_test  // external test package so we exercise the public API
+
+import (
+    "compress/gzip"
+    "context"
+    "encoding/json"
+    "io"
+    "net/http"
+    "net/http/httptest"
+    "testing"
+    "time"
+
+    milmilsync "github.com/milmil/api/internal/sync"
+    "github.com/milmil/api/internal/sync/providers"
+)
+
+func TestEndToEndProgressPushReachesProvider(t *testing.T) {
+    var received []string
+    srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        b, _ := io.ReadAll(r.Body)
+        received = append(received, string(b))
+        w.Header().Set("Content-Type", "application/json")
+        _, _ = io.WriteString(w, `{"data":{"SaveMediaListEntry":{"id":1,"progress":5}}}`)
+    }))
+    defer srv.Close()
+
+    q, db, cleanup := newTestQueriesWithDB(t)
+    defer cleanup()
+    mustInsertAnime(t, q, "a1", 12 /*total*/, 42 /*anilistID*/, 0 /*bangumiID*/)
+    mustInsertEpisodes(t, q, "a1", 12, 0 /*no bangumi ep ids*/)
+
+    al := providers.NewAniList(srv.Client(), srv.URL)
+    tokenLoader := func(_ context.Context, _ string, _ milmilsync.ProviderName) (string, error) {
+        return "fake-token", nil
+    }
+    svc := milmilsync.NewService(q, db, []milmilsync.Provider{al}, tokenLoader)
+
+    // User "u" marks 5 episodes as watched (simulating the PUT /watch-progress side effect).
+    mustMarkWatched(t, q, "u", "a1", 5)
+    start := time.Now()
+    svc.OnProgressUpdate(context.Background(), "u", "a1")
+    enqueueLatency := time.Since(start)
+    if enqueueLatency > 20*time.Millisecond {
+        t.Errorf("enqueue too slow: %v (must be <20ms to keep handler latency bounded)", enqueueLatency)
+    }
+
+    // Drain the queue — worker calls the httptest server.
+    svc.Drain(context.Background(), 10)
+
+    if len(received) != 1 {
+        t.Fatalf("expected 1 HTTP call, got %d", len(received))
+    }
+    var gql map[string]any
+    _ = json.Unmarshal([]byte(received[0]), &gql)
+    vars := gql["variables"].(map[string]any)
+    if int(vars["progress"].(float64)) != 5 {
+        t.Errorf("progress mismatch: %v", vars)
+    }
+    if vars["status"].(string) != "CURRENT" {
+        t.Errorf("status mismatch: %v", vars)
+    }
+
+    // No pending rows after successful drain.
+    rows, _ := q.ListReadySyncOps(context.Background(), 10)
+    if len(rows) != 0 {
+        t.Errorf("expected 0 pending rows, got %d", len(rows))
+    }
+}
+
+func TestEndToEndRateLimitGroupingHonored(t *testing.T) {
+    var callCount int
+    srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        callCount++
+        w.Header().Set("Retry-After", "30")
+        w.WriteHeader(http.StatusTooManyRequests)
+    }))
+    defer srv.Close()
+
+    q, db, cleanup := newTestQueriesWithDB(t)
+    defer cleanup()
+    for i := 0; i < 5; i++ {
+        id := "a" + string(rune('1'+i))
+        mustInsertAnime(t, q, id, 12, int64(100+i), 0)
+        mustInsertEpisodes(t, q, id, 12, 0)
+        mustMarkWatched(t, q, "u", id, 1)
+    }
+
+    al := providers.NewAniList(srv.Client(), srv.URL)
+    svc := milmilsync.NewService(q, db, []milmilsync.Provider{al}, func(_ context.Context, _ string, _ milmilsync.ProviderName) (string, error) { return "tok", nil })
+    for i := 0; i < 5; i++ {
+        id := "a" + string(rune('1'+i))
+        svc.OnProgressUpdate(context.Background(), "u", id)
+    }
+
+    svc.Drain(context.Background(), 10)
+
+    if callCount != 1 {
+        t.Errorf("expected exactly 1 upstream call before rate-limit grouping kicks in, got %d", callCount)
+    }
+}
+
+// newTestQueriesWithDB / mustInsertAnime etc come from Task 0.5's shared harness.
+```
+
+- [ ] **Step 2: Unused gzip import guard (delete the import if Goimports flags it)**
+
+```go
+var _ = gzip.BestCompression
+```
+
+- [ ] **Step 3: Run**
+
+```bash
+cd api && go test ./internal/sync/ -v -run TestEndToEnd
+```
+
+Both tests must pass. The rate-limit test specifically verifies A3 (grouping).
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add api/internal/sync/integration_test.go
+git commit -m "test(sync): add end-to-end integration + rate-limit grouping tests"
+```
+
+### Δ Task 13 — Enqueue synchronously, NOT in a goroutine (A1 fix)
+
+Replace:
+
+```go
+go h.syncSvc.OnProgressUpdate(context.Background(), userID, episode.AnimeID)
+```
+
+with:
+
+```go
+// Synchronous: the enqueue is ~1ms and must complete before we return 200,
+// otherwise a crash between DB write and enqueue drops the sync op silently.
+h.syncSvc.OnProgressUpdate(c.Request().Context(), userID, episode.AnimeID)
+```
+
+Use `c.Request().Context()` so the enqueue honors request cancellation. Rationale: SQLite INSERT + 2-3 point reads is ~1ms, well under any handler latency budget.
+
+Add a regression test asserting the handler latency budget:
+
+```go
+// api/internal/api/progress_handler_test.go (extend existing)
+func TestWatchProgressHandlerLatencyWithSyncEnqueue(t *testing.T) {
+    // Build handler with a service whose Enqueue does the real DB write.
+    // Fire 100 PUT requests; assert p99 < 50ms.
+    // (Use existing test harness; see resolver_test.go.)
+}
+```
+
+### Δ Spec update — document Phase A token-refresh deferral (A4)
+
+In `docs/superpowers/specs/2026-04-14-watch-sync-phase-a-design.md` under "Out of scope (deferred to Phase B)," add:
+
+```markdown
+- **OAuth token refresh.** AniList tokens last 1 year; Bangumi likewise. Phase A treats 401/403 as fatal — worker marks the row dead-letter and emits a `sync:needs_reauth` ws event. User reconnects via the existing OAuth flow. Automatic refresh using the stored `refresh_token` ships in Phase B.
+```
+
+No Go code changes for A4; the 401 handling is already fatal per Task 6/7 error paths.
 
 ---
 
