@@ -69,7 +69,7 @@ export function ApiTokensCard() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString(undefined, {
+    return new Date(dateStr).toLocaleDateString(i18n.locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
