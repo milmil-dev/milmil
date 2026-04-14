@@ -17,12 +17,14 @@ interface LoginResponse {
 }
 
 function isTokenExpired(token: string): boolean {
+  // API tokens (mlml_ prefix) never expire — they're revoked server-side
+  if (token.startsWith('mlml_')) return false;
+  // Legacy JWT check (for Jellyfin compat tokens)
   try {
     const parts = token.split('.');
     if (parts.length < 2 || !parts[1]) return true;
     const payload = JSON.parse(atob(parts[1]));
     if (!payload.exp) return false;
-    // Add 30s buffer
     return payload.exp * 1000 < Date.now() - 30_000;
   } catch {
     return true;
