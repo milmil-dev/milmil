@@ -1,7 +1,14 @@
 'use no memo';
 
-import { flexRender, type Table as TanStackTable } from '@tanstack/react-table';
+import { type RowData, flexRender, type Table as TanStackTable } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
+
+declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    width?: number;
+  }
+}
 
 const SORTABLE_COLUMNS = new Set(['filename', 'size_bytes', 'match_status', 'subtitle_count']);
 
