@@ -56,6 +56,7 @@ type Querier interface {
 	GetAPITokenByID(ctx context.Context, arg GetAPITokenByIDParams) (ApiToken, error)
 	GetAllUserPreferences(ctx context.Context, userID string) ([]UserPreference, error)
 	GetAnime(ctx context.Context, id string) (Anime, error)
+	GetAnimeByAnidbID(ctx context.Context, anidbID sql.NullInt64) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
@@ -127,6 +128,8 @@ type Querier interface {
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
 	UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error
 	UpdateAPITokenActivity(ctx context.Context, arg UpdateAPITokenActivityParams) error
+	// Fills only NULL columns; never overwrites an existing value.
+	UpdateAnimeExternalIDs(ctx context.Context, arg UpdateAnimeExternalIDsParams) error
 	UpdateAnimeLibraryID(ctx context.Context, arg UpdateAnimeLibraryIDParams) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error

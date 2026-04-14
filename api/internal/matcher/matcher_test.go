@@ -219,6 +219,10 @@ func (m *mockBangumi) SearchSubjects(_ context.Context, _ string, _ ...bangumi.S
 	return m.searchResult, m.searchErr
 }
 
+func (m *mockBangumi) SearchByTag(_ context.Context, _ []string, _ string, _, _ int) ([]bangumi.Subject, int, error) {
+	return nil, 0, nil
+}
+
 func (m *mockBangumi) GetCalendar(_ context.Context) ([]bangumi.CalendarDay, error) {
 	return nil, nil
 }
@@ -295,7 +299,7 @@ func TestMatchLibrary_BangumiFallback(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c)
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c, nil)
 	summary, err := m.MatchLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("MatchLibrary: %v", err)
@@ -324,5 +328,37 @@ func TestMatchLibrary_BangumiFallback(t *testing.T) {
 	}
 	if !mf.BangumiEpisodeID.Valid || mf.BangumiEpisodeID.Int64 != 5003 {
 		t.Errorf("want bangumi_episode_id=5003, got %v", mf.BangumiEpisodeID)
+	}
+}
+
+// TestExistingPassesUnchangedWhenAnidbNil asserts NewMulti(..., nil) behaves
+// identically to the pre-AniDB Matcher: Pass 2 (Bangumi) still matches 1 file,
+// no panics, no Pass 4 fallback invoked.
+func TestExistingPassesUnchangedWhenAnidbNil(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+
+	lib, _ := seedLibraryAndFileWithName(t, q, "[SubGroup] My Anime - 03.mkv")
+
+	ddpMock := &mockDandanplay{
+		matchResult: &dandanplay.MatchResult{IsMatched: false},
+	}
+	bgmMock := &mockBangumi{
+		searchResult: []bangumi.Subject{{ID: 200, Name: "My Anime"}},
+		episodes: []bangumi.Episode{
+			{ID: 5001, Sort: 1}, {ID: 5002, Sort: 2}, {ID: 5003, Sort: 3},
+		},
+	}
+
+	c := cache.New("")
+	defer c.Close()
+
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c, nil)
+	summary, err := m.MatchLibrary(context.Background(), lib.ID)
+	if err != nil {
+		t.Fatalf("MatchLibrary: %v", err)
+	}
+	if summary.Matched != 1 || summary.ByBangumi != 1 {
+		t.Errorf("want matched=1 by_bangumi=1, got %+v", summary)
 	}
 }

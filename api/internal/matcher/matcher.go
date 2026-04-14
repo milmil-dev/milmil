@@ -12,6 +12,7 @@ import (
 	"log/slog"
 
 	"github.com/milmil/api/internal/cache"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/tmdb"
@@ -35,6 +36,7 @@ type Matcher struct {
 	bangumi    bangumi.Client
 	tmdb       tmdb.Client
 	cache      cache.Cache
+	anidb      *anidb.Service
 }
 
 // New creates a matcher with only dandanplay support (backward compatible).
@@ -42,9 +44,10 @@ func New(q *store.Queries, ddp dandanplay.Client, c cache.Cache) *Matcher {
 	return &Matcher{queries: q, dandanplay: ddp, cache: c}
 }
 
-// NewMulti creates a matcher with all three strategy providers.
-func NewMulti(q *store.Queries, ddp dandanplay.Client, bgm bangumi.Client, tmdbClient tmdb.Client, c cache.Cache) *Matcher {
-	return &Matcher{queries: q, dandanplay: ddp, bangumi: bgm, tmdb: tmdbClient, cache: c}
+// NewMulti creates a matcher with all strategy providers. anidbSvc may be nil
+// to disable Pass 4 (AniDB title fallback) and cross-source ID enrichment.
+func NewMulti(q *store.Queries, ddp dandanplay.Client, bgm bangumi.Client, tmdbClient tmdb.Client, c cache.Cache, anidbSvc *anidb.Service) *Matcher {
+	return &Matcher{queries: q, dandanplay: ddp, bangumi: bgm, tmdb: tmdbClient, cache: c, anidb: anidbSvc}
 }
 
 func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress ...scanner.ProgressFunc) (*MatchSummary, error) {
@@ -269,6 +272,43 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 	}
 
 	return summary, nil
+}
+
+// EnrichExternalIDs fills any NULL external-ID columns on the anime row using
+// the cross-source mapping. Never overwrites an existing value. seed is the
+// IDSet known so far from the calling pass.
+func (m *Matcher) EnrichExternalIDs(ctx context.Context, animeID string, seed anidb.IDSet) error {
+	if m.anidb == nil {
+		return nil
+	}
+	merged := seed
+	for _, src := range anidb.AllSources() {
+		id := seed.Get(src)
+		if id == 0 {
+			continue
+		}
+		if set, ok := m.anidb.Resolve(src, id); ok {
+			merged.Merge(set)
+		}
+	}
+
+	params := store.UpdateAnimeExternalIDsParams{ID: animeID}
+	if merged.AniDB != 0 {
+		params.AnidbID = sql.NullInt64{Int64: merged.AniDB, Valid: true}
+	}
+	if merged.AniList != 0 {
+		params.AnilistID = sql.NullInt64{Int64: merged.AniList, Valid: true}
+	}
+	if merged.Bangumi != 0 {
+		params.BangumiID = sql.NullInt64{Int64: merged.Bangumi, Valid: true}
+	}
+	if merged.MAL != 0 {
+		params.MalID = sql.NullInt64{Int64: merged.MAL, Valid: true}
+	}
+	if merged.TMDB != 0 {
+		params.TmdbID = sql.NullInt64{Int64: merged.TMDB, Valid: true}
+	}
+	return m.queries.UpdateAnimeExternalIDs(ctx, params)
 }
 
 // matchDandanplay tries to match a file by its hash via dandanplay API.
