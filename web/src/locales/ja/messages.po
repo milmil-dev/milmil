@@ -284,15 +284,15 @@ msgstr "プロフィールとセキュリティの管理"
 
 #: src/pages/settings/AccountPanel.tsx:41
 msgid "account.tab.account"
-msgstr ""
+msgstr "アカウント"
 
 #: src/pages/settings/AccountPanel.tsx:43
 msgid "account.tab.sessions"
-msgstr ""
+msgstr "セッション"
 
 #: src/pages/settings/AccountPanel.tsx:42
 msgid "account.tab.tokens"
-msgstr ""
+msgstr "APIトークン"
 
 #: src/pages/settings/AccountPanel.tsx:226
 msgid "account.updatePassword"
@@ -401,55 +401,55 @@ msgstr "CV"
 
 #: src/pages/settings/ApiTokensCard.tsx:185
 msgid "apiTokens.create"
-msgstr ""
+msgstr "作成"
 
 #: src/pages/settings/ApiTokensCard.tsx:136
 msgid "apiTokens.created"
-msgstr ""
+msgstr "作成日"
 
 #: src/pages/settings/ApiTokensCard.tsx:89
 msgid "apiTokens.createdWarning"
-msgstr ""
+msgstr "このトークンを今すぐコピーしてください。再度表示されません。"
 
 #: src/pages/settings/ApiTokensCard.tsx:52
 msgid "apiTokens.createFailed"
-msgstr ""
+msgstr "トークンの作成に失敗しました"
 
 #: src/pages/settings/ApiTokensCard.tsx:82
 msgid "apiTokens.description"
-msgstr ""
+msgstr "モバイルアプリや外部ツール用のアクセストークンを作成します。"
 
 #: src/pages/settings/ApiTokensCard.tsx:110
 msgid "apiTokens.dismiss"
-msgstr ""
+msgstr "閉じる"
 
 #: src/pages/settings/ApiTokensCard.tsx:140
 msgid "apiTokens.lastUsed"
-msgstr ""
+msgstr "最終使用"
 
 #: src/pages/settings/ApiTokensCard.tsx:168
 msgid "apiTokens.namePlaceholder"
-msgstr ""
+msgstr "デバイス名（例：iPhone）"
 
 #: src/pages/settings/ApiTokensCard.tsx:155
 msgid "apiTokens.revoke"
-msgstr ""
+msgstr "取り消し"
 
 #: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revokeConfirm"
-msgstr ""
+msgstr "このトークンを取り消しますか？使用中のデバイスはアクセスできなくなります。"
 
 #: src/pages/settings/ApiTokensCard.tsx:58
 msgid "apiTokens.revoked"
-msgstr ""
+msgstr "トークンを取り消しました"
 
 #: src/pages/settings/ApiTokensCard.tsx:61
 msgid "apiTokens.revokeFailed"
-msgstr ""
+msgstr "トークンの取り消しに失敗しました"
 
 #: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
-msgstr ""
+msgstr "APIトークン"
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -3194,48 +3194,48 @@ msgstr ""
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
-msgstr ""
+msgstr "他のすべてのセッションを取り消しました"
 
 #: src/pages/settings/SessionsTab.tsx:96
 msgid "sessions.current"
-msgstr ""
+msgstr "現在"
 
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
-msgstr ""
+msgstr "milmilサーバーに現在ログインしているデバイス。"
 
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
-msgstr ""
+msgstr "たった今"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"
-msgstr ""
+msgstr "取り消し"
 
 #: src/pages/settings/SessionsTab.tsx:137
 msgid "sessions.revokeAllConfirm"
-msgstr ""
+msgstr "他のすべてのデバイスからログアウトしますか？"
 
 #: src/pages/settings/SessionsTab.tsx:144
 msgid "sessions.revokeAllOthers"
-msgstr ""
+msgstr "他のすべてのセッションを取り消す"
 
 #: src/pages/settings/SessionsTab.tsx:114
 msgid "sessions.revokeConfirm"
-msgstr ""
+msgstr "このセッションを取り消しますか？デバイスはログアウトされます。"
 
 #: src/pages/settings/SessionsTab.tsx:39
 msgid "sessions.revoked"
-msgstr ""
+msgstr "セッションを取り消しました"
 
 #: src/pages/settings/SessionsTab.tsx:42
 #: src/pages/settings/SessionsTab.tsx:51
 msgid "sessions.revokeFailed"
-msgstr ""
+msgstr "セッションの取り消しに失敗しました"
 
 #: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.title"
-msgstr ""
+msgstr "アクティブなセッション"
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"

@@ -282,15 +282,15 @@ msgstr "管理你嘅個人資料同安全設定"
 
 #: src/pages/settings/AccountPanel.tsx:41
 msgid "account.tab.account"
-msgstr ""
+msgstr "帳戶"
 
 #: src/pages/settings/AccountPanel.tsx:43
 msgid "account.tab.sessions"
-msgstr ""
+msgstr "工作階段"
 
 #: src/pages/settings/AccountPanel.tsx:42
 msgid "account.tab.tokens"
-msgstr ""
+msgstr "API 權杖"
 
 #: src/pages/settings/AccountPanel.tsx:226
 msgid "account.updatePassword"
@@ -399,55 +399,55 @@ msgstr "聲優"
 
 #: src/pages/settings/ApiTokensCard.tsx:185
 msgid "apiTokens.create"
-msgstr ""
+msgstr "建立"
 
 #: src/pages/settings/ApiTokensCard.tsx:136
 msgid "apiTokens.created"
-msgstr ""
+msgstr "建立於"
 
 #: src/pages/settings/ApiTokensCard.tsx:89
 msgid "apiTokens.createdWarning"
-msgstr ""
+msgstr "請立即複製此權杖——之後將無法再次查看。"
 
 #: src/pages/settings/ApiTokensCard.tsx:52
 msgid "apiTokens.createFailed"
-msgstr ""
+msgstr "建立權杖失敗"
 
 #: src/pages/settings/ApiTokensCard.tsx:82
 msgid "apiTokens.description"
-msgstr ""
+msgstr "為行動應用程式和外部工具建立存取權杖。"
 
 #: src/pages/settings/ApiTokensCard.tsx:110
 msgid "apiTokens.dismiss"
-msgstr ""
+msgstr "關閉"
 
 #: src/pages/settings/ApiTokensCard.tsx:140
 msgid "apiTokens.lastUsed"
-msgstr ""
+msgstr "上次使用"
 
 #: src/pages/settings/ApiTokensCard.tsx:168
 msgid "apiTokens.namePlaceholder"
-msgstr ""
+msgstr "裝置名稱（如 iPhone）"
 
 #: src/pages/settings/ApiTokensCard.tsx:155
 msgid "apiTokens.revoke"
-msgstr ""
+msgstr "撤銷"
 
 #: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revokeConfirm"
-msgstr ""
+msgstr "撤銷此權杖？使用該權杖的裝置將無法存取。"
 
 #: src/pages/settings/ApiTokensCard.tsx:58
 msgid "apiTokens.revoked"
-msgstr ""
+msgstr "權杖已撤銷"
 
 #: src/pages/settings/ApiTokensCard.tsx:61
 msgid "apiTokens.revokeFailed"
-msgstr ""
+msgstr "撤銷權杖失敗"
 
 #: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
-msgstr ""
+msgstr "API 權杖"
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -3192,48 +3192,48 @@ msgstr ""
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
-msgstr ""
+msgstr "已撤銷所有其他工作階段"
 
 #: src/pages/settings/SessionsTab.tsx:96
 msgid "sessions.current"
-msgstr ""
+msgstr "目前"
 
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
-msgstr ""
+msgstr "目前已登入你的 milmil 伺服器的裝置。"
 
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
-msgstr ""
+msgstr "剛剛"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"
-msgstr ""
+msgstr "撤銷"
 
 #: src/pages/settings/SessionsTab.tsx:137
 msgid "sessions.revokeAllConfirm"
-msgstr ""
+msgstr "登出所有其他裝置？"
 
 #: src/pages/settings/SessionsTab.tsx:144
 msgid "sessions.revokeAllOthers"
-msgstr ""
+msgstr "撤銷所有其他工作階段"
 
 #: src/pages/settings/SessionsTab.tsx:114
 msgid "sessions.revokeConfirm"
-msgstr ""
+msgstr "撤銷此工作階段？該裝置將被登出。"
 
 #: src/pages/settings/SessionsTab.tsx:39
 msgid "sessions.revoked"
-msgstr ""
+msgstr "工作階段已撤銷"
 
 #: src/pages/settings/SessionsTab.tsx:42
 #: src/pages/settings/SessionsTab.tsx:51
 msgid "sessions.revokeFailed"
-msgstr ""
+msgstr "撤銷工作階段失敗"
 
 #: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.title"
-msgstr ""
+msgstr "活躍工作階段"
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"

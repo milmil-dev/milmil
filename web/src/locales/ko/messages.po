@@ -284,15 +284,15 @@ msgstr "프로필 및 보안 설정 관리"
 
 #: src/pages/settings/AccountPanel.tsx:41
 msgid "account.tab.account"
-msgstr ""
+msgstr "계정"
 
 #: src/pages/settings/AccountPanel.tsx:43
 msgid "account.tab.sessions"
-msgstr ""
+msgstr "세션"
 
 #: src/pages/settings/AccountPanel.tsx:42
 msgid "account.tab.tokens"
-msgstr ""
+msgstr "API 토큰"
 
 #: src/pages/settings/AccountPanel.tsx:226
 msgid "account.updatePassword"
@@ -401,55 +401,55 @@ msgstr "CV"
 
 #: src/pages/settings/ApiTokensCard.tsx:185
 msgid "apiTokens.create"
-msgstr ""
+msgstr "생성"
 
 #: src/pages/settings/ApiTokensCard.tsx:136
 msgid "apiTokens.created"
-msgstr ""
+msgstr "생성일"
 
 #: src/pages/settings/ApiTokensCard.tsx:89
 msgid "apiTokens.createdWarning"
-msgstr ""
+msgstr "지금 이 토큰을 복사하세요. 다시 표시되지 않습니다."
 
 #: src/pages/settings/ApiTokensCard.tsx:52
 msgid "apiTokens.createFailed"
-msgstr ""
+msgstr "토큰 생성 실패"
 
 #: src/pages/settings/ApiTokensCard.tsx:82
 msgid "apiTokens.description"
-msgstr ""
+msgstr "모바일 앱과 외부 도구를 위한 액세스 토큰을 생성합니다."
 
 #: src/pages/settings/ApiTokensCard.tsx:110
 msgid "apiTokens.dismiss"
-msgstr ""
+msgstr "닫기"
 
 #: src/pages/settings/ApiTokensCard.tsx:140
 msgid "apiTokens.lastUsed"
-msgstr ""
+msgstr "마지막 사용"
 
 #: src/pages/settings/ApiTokensCard.tsx:168
 msgid "apiTokens.namePlaceholder"
-msgstr ""
+msgstr "기기 이름 (예: iPhone)"
 
 #: src/pages/settings/ApiTokensCard.tsx:155
 msgid "apiTokens.revoke"
-msgstr ""
+msgstr "취소"
 
 #: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revokeConfirm"
-msgstr ""
+msgstr "이 토큰을 취소하시겠습니까? 해당 기기의 접근이 차단됩니다."
 
 #: src/pages/settings/ApiTokensCard.tsx:58
 msgid "apiTokens.revoked"
-msgstr ""
+msgstr "토큰이 취소되었습니다"
 
 #: src/pages/settings/ApiTokensCard.tsx:61
 msgid "apiTokens.revokeFailed"
-msgstr ""
+msgstr "토큰 취소 실패"
 
 #: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
-msgstr ""
+msgstr "API 토큰"
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -3194,48 +3194,48 @@ msgstr ""
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
-msgstr ""
+msgstr "다른 모든 세션이 취소되었습니다"
 
 #: src/pages/settings/SessionsTab.tsx:96
 msgid "sessions.current"
-msgstr ""
+msgstr "현재"
 
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
-msgstr ""
+msgstr "milmil 서버에 현재 로그인된 기기입니다."
 
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
-msgstr ""
+msgstr "방금"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"
-msgstr ""
+msgstr "취소"
 
 #: src/pages/settings/SessionsTab.tsx:137
 msgid "sessions.revokeAllConfirm"
-msgstr ""
+msgstr "다른 모든 기기에서 로그아웃하시겠습니까?"
 
 #: src/pages/settings/SessionsTab.tsx:144
 msgid "sessions.revokeAllOthers"
-msgstr ""
+msgstr "다른 모든 세션 취소"
 
 #: src/pages/settings/SessionsTab.tsx:114
 msgid "sessions.revokeConfirm"
-msgstr ""
+msgstr "이 세션을 취소하시겠습니까? 해당 기기가 로그아웃됩니다."
 
 #: src/pages/settings/SessionsTab.tsx:39
 msgid "sessions.revoked"
-msgstr ""
+msgstr "세션이 취소되었습니다"
 
 #: src/pages/settings/SessionsTab.tsx:42
 #: src/pages/settings/SessionsTab.tsx:51
 msgid "sessions.revokeFailed"
-msgstr ""
+msgstr "세션 취소 실패"
 
 #: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.title"
-msgstr ""
+msgstr "활성 세션"
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"

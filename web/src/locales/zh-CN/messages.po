@@ -282,15 +282,15 @@ msgstr "管理您的个人资料与安全设置"
 
 #: src/pages/settings/AccountPanel.tsx:41
 msgid "account.tab.account"
-msgstr ""
+msgstr "账户"
 
 #: src/pages/settings/AccountPanel.tsx:43
 msgid "account.tab.sessions"
-msgstr ""
+msgstr "会话"
 
 #: src/pages/settings/AccountPanel.tsx:42
 msgid "account.tab.tokens"
-msgstr ""
+msgstr "API 令牌"
 
 #: src/pages/settings/AccountPanel.tsx:226
 msgid "account.updatePassword"
@@ -399,55 +399,55 @@ msgstr "声优"
 
 #: src/pages/settings/ApiTokensCard.tsx:185
 msgid "apiTokens.create"
-msgstr ""
+msgstr "创建"
 
 #: src/pages/settings/ApiTokensCard.tsx:136
 msgid "apiTokens.created"
-msgstr ""
+msgstr "创建于"
 
 #: src/pages/settings/ApiTokensCard.tsx:89
 msgid "apiTokens.createdWarning"
-msgstr ""
+msgstr "请立即复制此令牌——之后将无法再次查看。"
 
 #: src/pages/settings/ApiTokensCard.tsx:52
 msgid "apiTokens.createFailed"
-msgstr ""
+msgstr "创建令牌失败"
 
 #: src/pages/settings/ApiTokensCard.tsx:82
 msgid "apiTokens.description"
-msgstr ""
+msgstr "为移动应用和外部工具创建访问令牌。"
 
 #: src/pages/settings/ApiTokensCard.tsx:110
 msgid "apiTokens.dismiss"
-msgstr ""
+msgstr "关闭"
 
 #: src/pages/settings/ApiTokensCard.tsx:140
 msgid "apiTokens.lastUsed"
-msgstr ""
+msgstr "最后使用"
 
 #: src/pages/settings/ApiTokensCard.tsx:168
 msgid "apiTokens.namePlaceholder"
-msgstr ""
+msgstr "设备名称（如 iPhone）"
 
 #: src/pages/settings/ApiTokensCard.tsx:155
 msgid "apiTokens.revoke"
-msgstr ""
+msgstr "撤销"
 
 #: src/pages/settings/ApiTokensCard.tsx:149
 msgid "apiTokens.revokeConfirm"
-msgstr ""
+msgstr "撤销此令牌？使用该令牌的设备将无法访问。"
 
 #: src/pages/settings/ApiTokensCard.tsx:58
 msgid "apiTokens.revoked"
-msgstr ""
+msgstr "令牌已撤销"
 
 #: src/pages/settings/ApiTokensCard.tsx:61
 msgid "apiTokens.revokeFailed"
-msgstr ""
+msgstr "撤销令牌失败"
 
 #: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
-msgstr ""
+msgstr "API 令牌"
 
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
@@ -3192,48 +3192,48 @@ msgstr ""
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
-msgstr ""
+msgstr "已撤销所有其他会话"
 
 #: src/pages/settings/SessionsTab.tsx:96
 msgid "sessions.current"
-msgstr ""
+msgstr "当前"
 
 #: src/pages/settings/SessionsTab.tsx:74
 msgid "sessions.description"
-msgstr ""
+msgstr "当前已登录到你的 milmil 服务器的设备。"
 
 #: src/pages/settings/SessionsTab.tsx:57
 msgid "sessions.justNow"
-msgstr ""
+msgstr "刚刚"
 
 #: src/pages/settings/SessionsTab.tsx:120
 msgid "sessions.revoke"
-msgstr ""
+msgstr "撤销"
 
 #: src/pages/settings/SessionsTab.tsx:137
 msgid "sessions.revokeAllConfirm"
-msgstr ""
+msgstr "登出所有其他设备？"
 
 #: src/pages/settings/SessionsTab.tsx:144
 msgid "sessions.revokeAllOthers"
-msgstr ""
+msgstr "撤销所有其他会话"
 
 #: src/pages/settings/SessionsTab.tsx:114
 msgid "sessions.revokeConfirm"
-msgstr ""
+msgstr "撤销此会话？该设备将被登出。"
 
 #: src/pages/settings/SessionsTab.tsx:39
 msgid "sessions.revoked"
-msgstr ""
+msgstr "会话已撤销"
 
 #: src/pages/settings/SessionsTab.tsx:42
 #: src/pages/settings/SessionsTab.tsx:51
 msgid "sessions.revokeFailed"
-msgstr ""
+msgstr "撤销会话失败"
 
 #: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.title"
-msgstr ""
+msgstr "活跃会话"
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
