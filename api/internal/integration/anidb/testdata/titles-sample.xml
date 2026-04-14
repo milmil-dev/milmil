@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animetitles>
+  <anime aid="23">
+    <title xml:lang="en" type="main">Cowboy Bebop</title>
+    <title xml:lang="ja" type="official">カウボーイビバップ</title>
+    <title xml:lang="x-jat" type="syn">Kaubooi Bibappu</title>
+  </anime>
+  <anime aid="979">
+    <title xml:lang="en" type="main">Monster</title>
+  </anime>
+  <anime aid="1622">
+    <title xml:lang="en" type="main">Monster Musume no Iru Nichijou</title>
+  </anime>
+</animetitles>
