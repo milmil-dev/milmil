@@ -10,6 +10,13 @@
 
 **Spec:** `docs/superpowers/specs/2026-04-14-anidb-integration-phase1-design.md`
 
+**Revised 2026-04-14 after eng review.** Changes from v1:
+- **G1 fix:** Added `anime-lists/anime-lists` (XML) as a second mapping source so AniDB↔Bangumi (and AniDB↔TVDB) bridges actually work — Manami alone does not include bgm.tv. Mapping resolution unions both sources.
+- **G2 fix:** Added ngram prefilter to `TitleIndex.Search` so it doesn't run LCS over 500k entries per query.
+- **G3 fix:** Pass 4 ambiguity test must be implemented (no `t.Skip()`).
+- **DRY fix:** `IDSet.Get(Source)` / `IDSet.Set(Source, int64)` exported from anidb package; matcher's `seedField` removed.
+- **Robustness:** Client only unwraps gzip when Content-Encoding/Content-Type/URL signals it. Added regression tests for existing matcher passes when `anidb == nil`. Added test for `LoadFromDisk` partial-cache scenario.
+
 ---
 
 ## File Structure
@@ -18,16 +25,17 @@ Files to create:
 
 - `api/migrations/000032_add_anidb_id.up.sql` — add column + unique partial index
 - `api/migrations/000032_add_anidb_id.down.sql` — revert
-- `api/internal/integration/anidb/mapping.go` — Manami JSON loader + `Resolve(source, id) → IDSet`
+- `api/internal/integration/anidb/idset.go` — `IDSet` type with `Get(Source) int64` / `Set(Source, int64)` (extracted from mapping for reuse)
+- `api/internal/integration/anidb/mapping.go` — Manami JSON + anime-lists XML loaders, unioned `Resolve(source, id) → IDSet`
 - `api/internal/integration/anidb/mapping_test.go`
-- `api/internal/integration/anidb/titles.go` — XML parse + normalized fuzzy search
+- `api/internal/integration/anidb/titles.go` — XML parse + ngram-prefiltered fuzzy search
 - `api/internal/integration/anidb/titles_test.go`
-- `api/internal/integration/anidb/client.go` — HTTP downloads for both data files
+- `api/internal/integration/anidb/client.go` — HTTP downloads for Manami JSON, anime-lists XML, anime-titles.xml.gz; gzip only when signaled
 - `api/internal/integration/anidb/client_test.go`
-- `api/internal/integration/anidb/refresh.go` — atomic swap + rate-limit gate
+- `api/internal/integration/anidb/service.go` — facade with rate-limited refresh + atomic index swap
 - `api/internal/integration/anidb/refresh_test.go`
-- `api/internal/integration/anidb/service.go` — facade injected into matcher / handlers
 - `api/internal/integration/anidb/testdata/manami-sample.json`
+- `api/internal/integration/anidb/testdata/anime-lists-sample.xml`
 - `api/internal/integration/anidb/testdata/titles-sample.xml`
 - `api/internal/worker/anidb_refresh_worker.go`
 
@@ -1719,6 +1727,452 @@ git commit -am "fix(anidb): <specific issue>" # per fixup
 - [ ] **Step 4: PR**
 
 Push the branch, open the PR, reference the design doc in the description.
+
+---
+
+---
+
+## Plan revisions (applied during eng review)
+
+The original tasks above stand; these deltas are required additions/replacements. Apply them inline when executing each task.
+
+### Δ Task 3 — extract `IDSet` to `idset.go` and export accessors
+
+Before implementing `mapping.go`, create `api/internal/integration/anidb/idset.go`:
+
+```go
+package anidb
+
+type Source string
+
+const (
+    SourceAniDB   Source = "anidb"
+    SourceMAL     Source = "mal"
+    SourceAniList Source = "anilist"
+    SourceKitsu   Source = "kitsu"
+    SourceTMDB    Source = "tmdb"
+    SourceBangumi Source = "bangumi"
+)
+
+// IDSet is the cross-site identifier set for a single anime. Zero = unknown.
+type IDSet struct {
+    AniDB   int64
+    MAL     int64
+    AniList int64
+    Kitsu   int64
+    TMDB    int64
+    Bangumi int64
+}
+
+func (s IDSet) Get(src Source) int64 {
+    switch src {
+    case SourceAniDB:   return s.AniDB
+    case SourceMAL:     return s.MAL
+    case SourceAniList: return s.AniList
+    case SourceKitsu:   return s.Kitsu
+    case SourceTMDB:    return s.TMDB
+    case SourceBangumi: return s.Bangumi
+    }
+    return 0
+}
+
+func (s *IDSet) Set(src Source, v int64) {
+    switch src {
+    case SourceAniDB:   s.AniDB = v
+    case SourceMAL:     s.MAL = v
+    case SourceAniList: s.AniList = v
+    case SourceKitsu:   s.Kitsu = v
+    case SourceTMDB:    s.TMDB = v
+    case SourceBangumi: s.Bangumi = v
+    }
+}
+
+// Merge fills any zero-valued fields in s from other. Never overwrites.
+func (s *IDSet) Merge(other IDSet) {
+    if s.AniDB == 0   { s.AniDB   = other.AniDB }
+    if s.MAL == 0     { s.MAL     = other.MAL }
+    if s.AniList == 0 { s.AniList = other.AniList }
+    if s.Kitsu == 0   { s.Kitsu   = other.Kitsu }
+    if s.TMDB == 0    { s.TMDB    = other.TMDB }
+    if s.Bangumi == 0 { s.Bangumi = other.Bangumi }
+}
+```
+
+Remove the `Source*`/`IDSet`/`setField`/`getField` definitions from `mapping.go`. Replace internal calls with `set.Set(src, id)` and `set.Get(src)`. Remove `seedField` from `matcher.go`; use `seed.Get(src)`.
+
+### Δ Task 3 — add anime-lists as a second mapping source
+
+`anime-lists-master/anime-list.xml` (https://github.com/Anime-Lists/anime-lists/raw/master/anime-list.xml) is an XML file with `<anime anidbid="X" tvdbid="Y">` entries. The community fork at https://github.com/manami-project/anime-list-database also includes Bangumi where known. We include Bangumi via this XML.
+
+Real schema (abridged):
+
+```xml
+<anime-list>
+  <anime anidbid="23" tvdbid="76885" defaulttvdbseason="1">
+    <name>Cowboy Bebop</name>
+    <bangumiid>253</bangumiid>
+  </anime>
+</anime-list>
+```
+
+Add fixture `api/internal/integration/anidb/testdata/anime-lists-sample.xml`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<anime-list>
+  <anime anidbid="23" tvdbid="76885">
+    <name>Cowboy Bebop</name>
+    <bangumiid>253</bangumiid>
+  </anime>
+  <anime anidbid="979">
+    <name>Monster</name>
+    <bangumiid>1685</bangumiid>
+  </anime>
+</anime-list>
+```
+
+Extend `mapping.go` with a second loader:
+
+```go
+type animeListsDoc struct {
+    Anime []struct {
+        AnidbID   int64 `xml:"anidbid,attr"`
+        BangumiID int64 `xml:"bangumiid"`
+    } `xml:"anime"`
+}
+
+// LoadAnimeListsMapping parses the anime-lists XML and returns AniDB↔Bangumi pairs.
+func LoadAnimeListsMapping(raw []byte) ([]IDSet, error) {
+    var doc animeListsDoc
+    if err := xml.Unmarshal(raw, &doc); err != nil { return nil, err }
+    out := make([]IDSet, 0, len(doc.Anime))
+    for _, a := range doc.Anime {
+        if a.AnidbID == 0 || a.BangumiID == 0 { continue }
+        out = append(out, IDSet{AniDB: a.AnidbID, Bangumi: a.BangumiID})
+    }
+    return out, nil
+}
+
+// MergeIDSets folds extra ID pairs into an existing Mapping. For each pair, it
+// finds the existing IDSet for any known source and unions the new fields in.
+func (m *Mapping) MergeIDSets(extras []IDSet) {
+    for _, ex := range extras {
+        // Try to find an existing entry via any known source on the new pair.
+        var existing IDSet
+        var found bool
+        for _, src := range []Source{SourceAniDB, SourceMAL, SourceAniList, SourceTMDB, SourceKitsu, SourceBangumi} {
+            if id := ex.Get(src); id != 0 {
+                if e, ok := m.Resolve(src, id); ok {
+                    existing = e; found = true; break
+                }
+            }
+        }
+        merged := existing
+        if !found { merged = IDSet{} }
+        merged.Merge(ex)
+        // Re-index under every non-zero source on the merged set.
+        for _, src := range []Source{SourceAniDB, SourceMAL, SourceAniList, SourceTMDB, SourceKitsu, SourceBangumi} {
+            if id := merged.Get(src); id != 0 {
+                if _, ok := m.bySource[src]; !ok { m.bySource[src] = make(map[int64]IDSet) }
+                m.bySource[src][id] = merged
+            }
+        }
+    }
+}
+```
+
+Add a mapping test:
+
+```go
+func TestMappingMergesAnimeListsBangumi(t *testing.T) {
+    manami, _ := os.ReadFile("testdata/manami-sample.json")
+    al, _ := os.ReadFile("testdata/anime-lists-sample.xml")
+
+    m, _ := LoadMapping(manami)
+    extras, err := LoadAnimeListsMapping(al)
+    if err != nil { t.Fatal(err) }
+    m.MergeIDSets(extras)
+
+    set, ok := m.Resolve(SourceBangumi, 253)
+    if !ok { t.Fatal("expected bangumi 253 to resolve") }
+    if set.AniDB != 23 || set.MAL != 1 {
+        t.Errorf("expected bangumi→{anidb=23, mal=1}, got %+v", set)
+    }
+
+    // Reverse direction.
+    set, ok = m.Resolve(SourceAniDB, 23)
+    if !ok || set.Bangumi != 253 {
+        t.Errorf("expected anidb=23→bangumi=253, got %+v", set)
+    }
+}
+```
+
+### Δ Task 4 — ngram prefilter for `TitleIndex`
+
+Replace the linear scan in `Search` with an ngram lookup. Add to `titles.go`:
+
+```go
+type TitleIndex struct {
+    entries  []titleEntry
+    ngramIdx map[string][]int // 3-gram → entry indices
+}
+
+const ngramSize = 3
+
+func ngrams(s string) []string {
+    if len(s) < ngramSize { return nil }
+    rs := []rune(s)
+    if len(rs) < ngramSize { return nil }
+    out := make([]string, 0, len(rs)-ngramSize+1)
+    seen := make(map[string]struct{}, len(rs))
+    for i := 0; i+ngramSize <= len(rs); i++ {
+        g := string(rs[i : i+ngramSize])
+        if _, ok := seen[g]; ok { continue }
+        seen[g] = struct{}{}
+        out = append(out, g)
+    }
+    return out
+}
+```
+
+In `LoadTitleIndex`, after appending each entry, index its ngrams:
+
+```go
+idx.ngramIdx = make(map[string][]int)
+for i, e := range idx.entries {
+    for _, g := range ngrams(e.normalized) {
+        idx.ngramIdx[g] = append(idx.ngramIdx[g], i)
+    }
+}
+```
+
+Replace `Search`:
+
+```go
+func (idx *TitleIndex) Search(query string, year int) []Candidate {
+    if idx == nil { return nil }
+    q := normalizeTitle(query)
+    if q == "" { return nil }
+
+    // Candidate set = union of entries sharing at least one ngram with query.
+    grams := ngrams(q)
+    var candidateSet map[int]struct{}
+    if len(grams) == 0 {
+        // Very short query — fall back to scanning everything.
+        candidateSet = make(map[int]struct{}, len(idx.entries))
+        for i := range idx.entries { candidateSet[i] = struct{}{} }
+    } else {
+        candidateSet = make(map[int]struct{}, 256)
+        for _, g := range grams {
+            for _, i := range idx.ngramIdx[g] { candidateSet[i] = struct{}{} }
+        }
+    }
+
+    best := make(map[int64]Candidate, 16)
+    for i := range candidateSet {
+        e := idx.entries[i]
+        score := similarity(q, e.normalized)
+        if score < 0.5 { continue }
+        if existing, ok := best[e.aid]; ok && existing.Score >= score { continue }
+        best[e.aid] = Candidate{AniDBID: e.aid, Title: e.raw, Score: score}
+    }
+
+    out := make([]Candidate, 0, len(best))
+    for _, c := range best { out = append(out, c) }
+    sort.Slice(out, func(i, j int) bool { return out[i].Score > out[j].Score })
+    return out
+}
+```
+
+Add a perf-sanity test:
+
+```go
+func TestTitlesPerfWithLargeIndex(t *testing.T) {
+    if testing.Short() { t.Skip() }
+    // Synthesize 50k titles. Search should return < 100ms.
+    var b strings.Builder
+    b.WriteString(`<?xml version="1.0"?><animetitles>`)
+    for i := 0; i < 50000; i++ {
+        fmt.Fprintf(&b, `<anime aid="%d"><title>Series Number %d</title></anime>`, i, i)
+    }
+    b.WriteString(`</animetitles>`)
+    idx, err := LoadTitleIndex([]byte(b.String()))
+    if err != nil { t.Fatal(err) }
+    start := time.Now()
+    cs := idx.Search("Series Number 12345", 0)
+    elapsed := time.Since(start)
+    if elapsed > 250*time.Millisecond {
+        t.Errorf("search too slow: %v", elapsed)
+    }
+    if len(cs) == 0 || cs[0].AniDBID != 12345 {
+        t.Errorf("wrong top hit: %+v", cs)
+    }
+}
+```
+
+### Δ Task 5 — only unwrap gzip when signaled
+
+Replace the gzip-fallback heuristic in `client.go`. The fetch helper takes an `expectGzip bool` and only unwraps when one of: `Content-Encoding: gzip`, `Content-Type` contains `gzip`, or the URL ends in `.gz`:
+
+```go
+func (c *httpClient) fetch(ctx context.Context, url string) ([]byte, error) {
+    req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+    if err != nil { return nil, err }
+    req.Header.Set("User-Agent", userAgent)
+    resp, err := c.http.Do(req)
+    if err != nil { return nil, err }
+    defer resp.Body.Close()
+    if resp.StatusCode != http.StatusOK {
+        return nil, fmt.Errorf("anidb: GET %s returned %d", url, resp.StatusCode)
+    }
+
+    var reader io.Reader = io.LimitReader(resp.Body, maxReadBytes)
+    if isGzip(resp, url) {
+        gr, err := gzip.NewReader(reader)
+        if err != nil { return nil, fmt.Errorf("anidb: gzip decode %s: %w", url, err) }
+        defer gr.Close()
+        reader = gr
+    }
+    return io.ReadAll(reader)
+}
+
+func isGzip(resp *http.Response, url string) bool {
+    if strings.EqualFold(resp.Header.Get("Content-Encoding"), "gzip") { return true }
+    if strings.Contains(strings.ToLower(resp.Header.Get("Content-Type")), "gzip") { return true }
+    return strings.HasSuffix(strings.ToLower(url), ".gz")
+}
+```
+
+Update `client_test.go` so the gzip test sends `Content-Encoding: gzip` (or uses a `.gz` URL). Add a third method to the `Client` interface for anime-lists:
+
+```go
+type Client interface {
+    DownloadManami(ctx context.Context) ([]byte, error)
+    DownloadAnimeLists(ctx context.Context) ([]byte, error)
+    DownloadTitles(ctx context.Context) ([]byte, error)
+}
+```
+
+`DownloadAnimeLists` defaults to `https://raw.githubusercontent.com/Anime-Lists/anime-lists/master/anime-list.xml` (plain XML, no gzip).
+
+### Δ Task 6 — Service downloads + parses all three sources
+
+Update `Refresh` to download anime-lists and merge into the mapping after Manami:
+
+```go
+manamiBytes, err := s.client.DownloadManami(ctx)
+if err != nil { return err }
+animeListsBytes, err := s.client.DownloadAnimeLists(ctx)
+if err != nil { return err }
+titlesBytes, err := s.client.DownloadTitles(ctx)
+if err != nil { return err }
+
+m, err := LoadMapping(manamiBytes)
+if err != nil { return err }
+extras, err := LoadAnimeListsMapping(animeListsBytes)
+if err != nil { return err }
+m.MergeIDSets(extras)
+
+ti, err := LoadTitleIndex(titlesBytes)
+if err != nil { return err }
+```
+
+Persist all three files: `manami.json`, `anime-lists.xml`, `titles.xml`. Update `LoadFromDisk` accordingly.
+
+Add tests:
+
+```go
+func TestServiceRefreshFailureKeepsOldCache(t *testing.T) {
+    // First refresh succeeds; second refresh server returns 500 — Resolve still works.
+}
+
+func TestLoadFromDiskWithMissingTitlesReturnsError(t *testing.T) {
+    // Manami present, titles missing → LoadFromDisk returns error; service stays empty.
+    // Asserts that downstream Resolve/Search return zero/nil safely.
+}
+```
+
+### Δ Task 9 — use `IDSet.Get`/`Set`, not local helpers
+
+After the `IDSet` accessors are exported, rewrite `EnrichExternalIDs`:
+
+```go
+func (m *Matcher) EnrichExternalIDs(ctx context.Context, animeID string, seed anidb.IDSet) error {
+    if m.anidb == nil { return nil }
+
+    merged := seed
+    for _, src := range []anidb.Source{
+        anidb.SourceAniDB, anidb.SourceBangumi, anidb.SourceAniList, anidb.SourceMAL, anidb.SourceTMDB,
+    } {
+        id := seed.Get(src)
+        if id == 0 { continue }
+        if set, ok := m.anidb.Resolve(src, id); ok { merged.Merge(set) }
+    }
+
+    params := store.UpdateAnimeExternalIDsParams{ID: animeID}
+    if merged.AniDB != 0   { params.AnidbID   = sql.NullInt64{Int64: merged.AniDB,   Valid: true} }
+    if merged.AniList != 0 { params.AnilistID = sql.NullInt64{Int64: merged.AniList, Valid: true} }
+    if merged.Bangumi != 0 { params.BangumiID = sql.NullInt64{Int64: merged.Bangumi, Valid: true} }
+    if merged.MAL != 0     { params.MalID     = sql.NullInt64{Int64: merged.MAL,     Valid: true} }
+    if merged.TMDB != 0    { params.TmdbID    = sql.NullInt64{Int64: merged.TMDB,    Valid: true} }
+    return m.queries.UpdateAnimeExternalIDs(ctx, params)
+}
+```
+
+Delete the `seedField` helper from `matcher.go`.
+
+Add a regression test proving existing passes behave the same when `anidb` is nil:
+
+```go
+func TestExistingPassesUnchangedWhenAnidbNil(t *testing.T) {
+    // Build matcher via NewMulti(..., nil) and run a scenario covered by Pass 2 (Bangumi)
+    // before adding any anidb wiring. Assert summary counts match the pre-anidb baseline.
+}
+```
+
+### Δ Task 11 — implement (do NOT skip) the ambiguity test
+
+Replace `t.Skip(...)` with a real test. Helper change:
+
+```go
+// buildFixtureAnidbServiceAmbiguous returns a service whose titles index
+// has two entries scoring within 5% of each other for the query.
+func buildFixtureAnidbServiceAmbiguous(t *testing.T) *anidb.Service {
+    xml := `<?xml version="1.0"?><animetitles>
+        <anime aid="100"><title>Confusing Show</title></anime>
+        <anime aid="101"><title>Confusing Shows</title></anime>
+    </animetitles>`
+    // Construct a service via a test seam that injects pre-loaded indexes
+    // (add SetIndexesForTest on Service, gated by build tag if you prefer).
+    return mustServiceWithTitles(t, xml)
+}
+
+func TestPass4SkipsAmbiguousCandidates(t *testing.T) {
+    ctx := context.Background()
+    q, cleanup := newTestQueries(t)
+    defer cleanup()
+
+    mustInsertMediaFile(t, q, "fA", "[G] Confusing Show - 01.mkv")
+    svc := buildFixtureAnidbServiceAmbiguous(t)
+
+    m := NewMulti(q, nil, stubBangumi{noHits: true}, stubTMDB{}, cache.NewMemoryCache(), svc)
+    summary, err := m.MatchLibrary(ctx, "lib")
+    if err != nil { t.Fatal(err) }
+    if summary.ByAnidbTitle != 0 {
+        t.Errorf("expected ambiguous candidate to be skipped, got %d match", summary.ByAnidbTitle)
+    }
+    file, _ := q.GetMediaFile(ctx, "fA")
+    if file.BangumiSubjectID.Valid {
+        t.Error("expected file to remain unmatched")
+    }
+}
+```
+
+Add `Service.SetIndexesForTest(m *Mapping, t *TitleIndex)` (with `// +build` test-only file or simply named `service_testing.go` and unexported test helper) so tests can avoid network.
+
+### Δ Task 11 — Pass 4 conflict-with-A1 fix
+
+Now that Bangumi IDs flow through the mapping, the original Pass 4 rerun-via-Bangumi logic actually fires. No code change beyond the merged mapping; just verify the Pass 4 happy-path test exercises the Bangumi rerun branch (set the AniDB→Bangumi edge in the fixture).
 
 ---
 
