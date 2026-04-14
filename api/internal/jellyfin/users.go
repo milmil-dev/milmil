@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/store"
 )
 
 func (h *Handler) handleGetUser(c echo.Context) error {
@@ -33,7 +34,56 @@ func (h *Handler) handleGroupingOptions(c echo.Context) error {
 }
 
 func (h *Handler) handleItemsResume(c echo.Context) error {
-	return c.JSON(http.StatusOK, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+	userID, _ := c.Get("userID").(string)
+	ctx := c.Request().Context()
+
+	rows, err := h.queries.ListRecentProgressWithAnime(ctx, userID)
+	if err != nil {
+		return c.JSON(http.StatusOK, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+	}
+
+	items := make([]ItemDTO, 0)
+	for _, row := range rows {
+		// Only include in-progress (not completed, has position)
+		if row.Completed != 0 || row.PositionSeconds <= 0 {
+			continue
+		}
+
+		ep, err := h.queries.GetEpisode(ctx, row.EpisodeID)
+		if err != nil {
+			continue
+		}
+
+		dto := h.episodeToItemDTO(ep)
+
+		// Enrich with anime info
+		if anime, err := h.queries.GetAnime(ctx, row.AnimeID); err == nil {
+			seriesName := anime.Title
+			if anime.TitleZh.Valid && anime.TitleZh.String != "" {
+				seriesName = anime.TitleZh.String
+			}
+			dto.SeriesName = seriesName
+		}
+		dto.SeriesID = EncodeItemID("anime", row.AnimeID)
+
+		// Media sources
+		dto.MediaSources = h.getMediaSourcesForEpisode(c, row.EpisodeID)
+		if len(dto.MediaSources) > 0 && dto.MediaSources[0].RunTimeTicks != nil {
+			dto.RunTimeTicks = dto.MediaSources[0].RunTimeTicks
+		}
+
+		// Watch progress
+		positionTicks := row.PositionSeconds * 10_000_000
+		dto.UserData = &UserItemData{
+			PlaybackPositionTicks: positionTicks,
+			Played:                false,
+			Key:                   EncodeItemID("episode", row.EpisodeID),
+		}
+
+		items = append(items, dto)
+	}
+
+	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: len(items)})
 }
 
 func (h *Handler) handleItemsLatest(c echo.Context) error {
@@ -61,7 +111,66 @@ func (h *Handler) handleItemsLatest(c echo.Context) error {
 }
 
 func (h *Handler) handleNextUp(c echo.Context) error {
-	return c.JSON(http.StatusOK, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+	userID, _ := c.Get("userID").(string)
+	ctx := c.Request().Context()
+
+	rows, err := h.queries.ListRecentProgressWithAnime(ctx, userID)
+	if err != nil {
+		return c.JSON(http.StatusOK, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
+	}
+
+	// SQL already returns one row per anime (ROW_NUMBER partitioned by anime), so just iterate.
+	// Deduplicate by AnimeID just in case.
+	seen := make(map[string]bool)
+	items := make([]ItemDTO, 0)
+
+	for _, row := range rows {
+		if seen[row.AnimeID] {
+			continue
+		}
+		seen[row.AnimeID] = true
+
+		nextEp, err := h.queries.GetEpisodeByAnimeAndNumber(ctx, store.GetEpisodeByAnimeAndNumberParams{
+			AnimeID:       row.AnimeID,
+			EpisodeNumber: row.EpisodeNumber + 1,
+		})
+		if err != nil {
+			// No next episode (finished series or last watched)
+			continue
+		}
+
+		// Skip if user has already completed the next episode
+		dto := h.episodeToItemDTO(nextEp)
+
+		// Enrich with anime info
+		if anime, err := h.queries.GetAnime(ctx, row.AnimeID); err == nil {
+			seriesName := anime.Title
+			if anime.TitleZh.Valid && anime.TitleZh.String != "" {
+				seriesName = anime.TitleZh.String
+			}
+			dto.SeriesName = seriesName
+		}
+		dto.SeriesID = EncodeItemID("anime", row.AnimeID)
+
+		// Media sources
+		dto.MediaSources = h.getMediaSourcesForEpisode(c, nextEp.ID)
+		if len(dto.MediaSources) > 0 && dto.MediaSources[0].RunTimeTicks != nil {
+			dto.RunTimeTicks = dto.MediaSources[0].RunTimeTicks
+		}
+
+		dto.UserData = &UserItemData{
+			PlaybackPositionTicks: 0,
+			Played:                false,
+			Key:                   EncodeItemID("episode", nextEp.ID),
+		}
+
+		items = append(items, dto)
+		if len(items) >= 10 {
+			break
+		}
+	}
+
+	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: len(items)})
 }
 
 func (h *Handler) handleDisplayPreferences(c echo.Context) error {

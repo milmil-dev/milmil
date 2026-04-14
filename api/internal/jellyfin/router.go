@@ -97,13 +97,10 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 
 	// Stubs that Infuse expects (return empty results, not errors)
 	emptyArray := func(c echo.Context) error { return c.JSON(200, []any{}) }
-	emptyItems := func(c echo.Context) error {
-		return c.JSON(200, ItemsResponse{Items: []ItemDTO{}, TotalRecordCount: 0})
-	}
 	auth.GET("/Items/:itemId/LocalTrailers", emptyArray)
 	auth.GET("/Items/:itemId/SpecialFeatures", emptyArray)
-	auth.GET("/MediaSegments/:itemId", emptyArray)
-	auth.GET("/UserItems/Resume", emptyItems)
+	auth.GET("/MediaSegments/:itemId", h.handleMediaSegments)
+	auth.GET("/UserItems/Resume", h.handleItemsResume)
 
 	// Catch-all for unimplemented endpoints — return 404 (not 501)
 	// Infuse treats 501 as fatal but ignores 404 gracefully
