@@ -331,6 +331,8 @@ function FileTable({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [sortBy, setSortBy] = useState<'filename' | 'size_bytes' | 'match_status' | 'subtitle_count'>('filename');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -346,14 +348,32 @@ function FileTable({
     setPage(1);
   };
 
+  const handleSort = (column: string) => {
+    const col = column as typeof sortBy;
+    if (sortBy === col) {
+      if (sortOrder === 'asc') {
+        setSortOrder('desc');
+      } else {
+        setSortBy('filename');
+        setSortOrder('asc');
+      }
+    } else {
+      setSortBy(col);
+      setSortOrder('asc');
+    }
+    setPage(1);
+  };
+
   const { data, isLoading, isFetching } = useQuery<MediaFilesResponse, Error>({
-    queryKey: ['media-files', libraryId, page, perPage, statusFilter, debouncedSearch],
+    queryKey: ['media-files', libraryId, page, perPage, statusFilter, debouncedSearch, sortBy, sortOrder],
     queryFn: () =>
       libraryApi.mediaFiles(libraryId, {
         status: statusFilter === 'all' ? undefined : statusFilter,
         q: debouncedSearch || undefined,
         page,
         per_page: perPage,
+        sort_by: sortBy,
+        sort_order: sortOrder,
       }),
     enabled: !!libraryId,
     staleTime: 0,
@@ -628,7 +648,13 @@ function FileTable({
           </div>
         ) : (
           <div className="relative">
-            <MotionTable table={table} tableClassName="table-fixed" />
+            <MotionTable
+              table={table}
+              tableClassName="table-fixed"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
             <div
               className={cn(
                 'absolute inset-0 z-20 pointer-events-none flex items-center justify-center transition-opacity duration-200',

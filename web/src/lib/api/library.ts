@@ -132,6 +132,8 @@ export interface MediaFilesParams {
   q?: string;
   page?: number;
   per_page?: number;
+  sort_by?: 'filename' | 'size_bytes' | 'match_status' | 'subtitle_count';
+  sort_order?: 'asc' | 'desc';
 }
 
 export const libraryApi = {
@@ -155,6 +157,8 @@ export const libraryApi = {
     if (params.q) searchParams.set('q', params.q);
     if (params.page) searchParams.set('page', String(params.page));
     if (params.per_page) searchParams.set('per_page', String(params.per_page));
+    if (params.sort_by) searchParams.set('sort_by', params.sort_by);
+    if (params.sort_order) searchParams.set('sort_order', params.sort_order);
     const qs = searchParams.toString();
     return api.get<MediaFilesResponse>(`/api/v1/libraries/${id}/media-files${qs ? `?${qs}` : ''}`);
   },
@@ -182,6 +186,13 @@ export const libraryApi = {
   discoverNetwork: () => api.get<{ hosts: DiscoveredHost[] }>('/api/v1/libraries/discover-network'),
   listRcloneRemotes: () =>
     api.get<{ remotes: { name: string; type: string }[] }>('/api/v1/rclone/remotes'),
+};
+
+export const mediaFileApi = {
+  bulkMatch: (data: { file_ids: string[]; bangumi_id: number; episode_start: number }) =>
+    api.post<{ matched: number }>('/api/v1/media-files/bulk-match', data),
+  bulkUnmatch: (data: { file_ids: string[] }) =>
+    api.post<{ cleared: number }>('/api/v1/media-files/bulk-unmatch', data),
 };
 
 export const libraryKeys = {
