@@ -17,6 +17,12 @@ interface AuthState {
 
 const TOKEN_KEY = 'milmil-token';
 
+// Migrate: clear legacy JWT tokens (non-mlml_ prefix) from before API token migration
+const storedToken = localStorage.getItem(TOKEN_KEY);
+if (storedToken && !storedToken.startsWith('mlml_')) {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
 export const useAuthStore = create<AuthState>()(
   devtools(
     (set) => ({
