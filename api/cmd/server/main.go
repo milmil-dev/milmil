@@ -209,7 +209,7 @@ func main() {
 	step = time.Now()
 	slog.Debug("boot: creating matcher + resolver")
 	matcherSvc := matcher.NewMulti(store.New(database), ddpClient, bangumiClient, tmdbClient, cacheClient, anidbSvc)
-	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
+	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient, anidbSvc)
 	slog.Debug("boot: matcher + resolver ready", "took", time.Since(step))
 
 	// Download engine (built-in torrent + HTTP)
