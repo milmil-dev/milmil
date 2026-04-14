@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<anime-list>
+  <anime anidbid="23" tvdbid="76885">
+    <name>Cowboy Bebop</name>
+    <bangumiid>253</bangumiid>
+  </anime>
+  <anime anidbid="979">
+    <name>Monster</name>
+    <bangumiid>1685</bangumiid>
+  </anime>
+</anime-list>
