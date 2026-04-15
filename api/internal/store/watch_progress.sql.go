@@ -10,6 +10,34 @@ import (
 	"database/sql"
 )
 
+const countCompletedWatchProgressByAnime = `-- name: CountCompletedWatchProgressByAnime :one
+SELECT
+    COALESCE(SUM(CASE WHEN wp.completed = 1 THEN 1 ELSE 0 END), 0) AS completed_count,
+    COALESCE(MAX(wp.last_watched_at), '') AS last_played_at,
+    COALESCE(MIN(CASE WHEN wp.completed = 1 THEN wp.last_watched_at END), '') AS first_completed_at
+FROM watch_progress wp
+JOIN episodes e ON e.id = wp.episode_id
+WHERE wp.user_id = ?1 AND e.anime_id = ?2
+`
+
+type CountCompletedWatchProgressByAnimeParams struct {
+	UserID  string `json:"user_id"`
+	AnimeID string `json:"anime_id"`
+}
+
+type CountCompletedWatchProgressByAnimeRow struct {
+	CompletedCount   interface{} `json:"completed_count"`
+	LastPlayedAt     interface{} `json:"last_played_at"`
+	FirstCompletedAt interface{} `json:"first_completed_at"`
+}
+
+func (q *Queries) CountCompletedWatchProgressByAnime(ctx context.Context, arg CountCompletedWatchProgressByAnimeParams) (CountCompletedWatchProgressByAnimeRow, error) {
+	row := q.db.QueryRowContext(ctx, countCompletedWatchProgressByAnime, arg.UserID, arg.AnimeID)
+	var i CountCompletedWatchProgressByAnimeRow
+	err := row.Scan(&i.CompletedCount, &i.LastPlayedAt, &i.FirstCompletedAt)
+	return i, err
+}
+
 const getWatchProgress = `-- name: GetWatchProgress :one
 SELECT id, user_id, episode_id, media_file_id, position_seconds, duration_seconds, completed, last_watched_at, bangumi_synced_at, mal_synced_at, anilist_synced_at FROM watch_progress WHERE user_id = ? AND episode_id = ? LIMIT 1
 `
@@ -64,6 +92,65 @@ func (q *Queries) GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchP
 		&i.AnilistSyncedAt,
 	)
 	return i, err
+}
+
+const hasAnyWatchProgress = `-- name: HasAnyWatchProgress :one
+SELECT EXISTS(
+    SELECT 1 FROM watch_progress wp
+    JOIN episodes e ON e.id = wp.episode_id
+    WHERE wp.user_id = ?1 AND e.anime_id = ?2
+) AS has_progress
+`
+
+type HasAnyWatchProgressParams struct {
+	UserID  string `json:"user_id"`
+	AnimeID string `json:"anime_id"`
+}
+
+func (q *Queries) HasAnyWatchProgress(ctx context.Context, arg HasAnyWatchProgressParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, hasAnyWatchProgress, arg.UserID, arg.AnimeID)
+	var has_progress int64
+	err := row.Scan(&has_progress)
+	return has_progress, err
+}
+
+const listBangumiEpisodeIDsForAnimeWatchedByUser = `-- name: ListBangumiEpisodeIDsForAnimeWatchedByUser :many
+SELECT e.bangumi_episode_id
+FROM episodes e
+JOIN watch_progress wp ON wp.episode_id = e.id
+WHERE e.anime_id = ?1
+  AND wp.user_id = ?2
+  AND wp.completed = 1
+  AND e.bangumi_episode_id IS NOT NULL
+`
+
+type ListBangumiEpisodeIDsForAnimeWatchedByUserParams struct {
+	AnimeID string `json:"anime_id"`
+	UserID  string `json:"user_id"`
+}
+
+// C4 fix: list Bangumi episode IDs for all completed episodes of this anime.
+func (q *Queries) ListBangumiEpisodeIDsForAnimeWatchedByUser(ctx context.Context, arg ListBangumiEpisodeIDsForAnimeWatchedByUserParams) ([]sql.NullInt64, error) {
+	rows, err := q.db.QueryContext(ctx, listBangumiEpisodeIDsForAnimeWatchedByUser, arg.AnimeID, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []sql.NullInt64{}
+	for rows.Next() {
+		var bangumi_episode_id sql.NullInt64
+		if err := rows.Scan(&bangumi_episode_id); err != nil {
+			return nil, err
+		}
+		items = append(items, bangumi_episode_id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listCompletedWatchProgress = `-- name: ListCompletedWatchProgress :many

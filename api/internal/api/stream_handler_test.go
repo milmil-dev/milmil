@@ -30,7 +30,7 @@ func newTestAppWithDB(t *testing.T) (*echo.Echo, *sql.DB) {
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil), database
+	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil), database
 }
 
 func TestStreamDirect_NotFound(t *testing.T) {

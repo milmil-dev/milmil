@@ -45,3 +45,29 @@ SELECT * FROM watch_progress WHERE user_id = ? AND media_file_id = ? LIMIT 1;
 
 -- name: ListCompletedWatchProgress :many
 SELECT * FROM watch_progress WHERE user_id = ? AND completed = 1 ORDER BY last_watched_at DESC;
+
+-- name: CountCompletedWatchProgressByAnime :one
+SELECT
+    COALESCE(SUM(CASE WHEN wp.completed = 1 THEN 1 ELSE 0 END), 0) AS completed_count,
+    COALESCE(MAX(wp.last_watched_at), '') AS last_played_at,
+    COALESCE(MIN(CASE WHEN wp.completed = 1 THEN wp.last_watched_at END), '') AS first_completed_at
+FROM watch_progress wp
+JOIN episodes e ON e.id = wp.episode_id
+WHERE wp.user_id = sqlc.arg('user_id') AND e.anime_id = sqlc.arg('anime_id');
+
+-- name: HasAnyWatchProgress :one
+SELECT EXISTS(
+    SELECT 1 FROM watch_progress wp
+    JOIN episodes e ON e.id = wp.episode_id
+    WHERE wp.user_id = sqlc.arg('user_id') AND e.anime_id = sqlc.arg('anime_id')
+) AS has_progress;
+
+-- C4 fix: list Bangumi episode IDs for all completed episodes of this anime.
+-- name: ListBangumiEpisodeIDsForAnimeWatchedByUser :many
+SELECT e.bangumi_episode_id
+FROM episodes e
+JOIN watch_progress wp ON wp.episode_id = e.id
+WHERE e.anime_id = sqlc.arg('anime_id')
+  AND wp.user_id = sqlc.arg('user_id')
+  AND wp.completed = 1
+  AND e.bangumi_episode_id IS NOT NULL;

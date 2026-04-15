@@ -35,6 +35,8 @@ type Anime struct {
 	UserScore            sql.NullInt64  `json:"user_score"`
 	Score                float64        `json:"score"`
 	AnidbID              sql.NullInt64  `json:"anidb_id"`
+	SyncDisabled         int64          `json:"sync_disabled"`
+	WatchStatusOverride  string         `json:"watch_status_override"`
 }
 
 type ApiToken struct {
@@ -247,6 +249,20 @@ type SubtitleFile struct {
 	Format      string `json:"format"`
 	Source      string `json:"source"`
 	CreatedAt   string `json:"created_at"`
+}
+
+type SyncOutbox struct {
+	ID            string         `json:"id"`
+	UserID        string         `json:"user_id"`
+	Provider      string         `json:"provider"`
+	AnimeID       string         `json:"anime_id"`
+	Kind          string         `json:"kind"`
+	Payload       string         `json:"payload"`
+	Attempts      int64          `json:"attempts"`
+	NextAttemptAt string         `json:"next_attempt_at"`
+	LastError     sql.NullString `json:"last_error"`
+	CreatedAt     string         `json:"created_at"`
+	CompletedAt   sql.NullString `json:"completed_at"`
 }
 
 type TranscodeSession struct {

@@ -7,11 +7,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/store"
+	milmilsync "github.com/milmil/api/internal/sync"
 )
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -66,6 +68,7 @@ func (h *handler) handleBangumiAuthURL(c echo.Context) error {
 }
 
 func (h *handler) handleBangumiCallback(c echo.Context) error {
+	ctx := c.Request().Context()
 	code := c.QueryParam("code")
 	if code == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing code parameter")
@@ -102,7 +105,7 @@ func (h *handler) handleBangumiCallback(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "invalid token response from Bangumi")
 	}
 
-	_, err = h.queries.UpsertSetting(c.Request().Context(), store.UpsertSettingParams{
+	_, err = h.queries.UpsertSetting(ctx, store.UpsertSettingParams{
 		Key:   "bangumi_token",
 		Value: string(body),
 	})
@@ -110,14 +113,27 @@ func (h *handler) handleBangumiCallback(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	// Kick off an initial import now that the user is connected.
+	if h.syncSvc != nil {
+		userID := getUserID(c)
+		if err := h.syncSvc.EnqueueImport(ctx, userID, milmilsync.ProviderBangumi); err != nil {
+			slog.Warn("sync: enqueue import", "provider", "bangumi", "err", err)
+		}
+	}
+
 	// Redirect to frontend settings page
 	return c.Redirect(http.StatusFound, "/settings")
 }
 
 func (h *handler) handleBangumiDisconnect(c echo.Context) error {
-	err := h.queries.DeleteSetting(c.Request().Context(), "bangumi_token")
+	ctx := c.Request().Context()
+	err := h.queries.DeleteSetting(ctx, "bangumi_token")
 	if err != nil {
 		return echo.ErrInternalServerError
+	}
+	if h.syncSvc != nil {
+		userID := getUserID(c)
+		_ = h.syncSvc.Disconnect(ctx, userID, milmilsync.ProviderBangumi)
 	}
 	return c.NoContent(http.StatusNoContent)
 }
@@ -125,89 +141,14 @@ func (h *handler) handleBangumiDisconnect(c echo.Context) error {
 func (h *handler) handleBangumiSync(c echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
-
-	// Check token exists
-	tokenSetting, err := h.queries.GetSetting(ctx, "bangumi_token")
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return echo.NewHTTPError(http.StatusBadRequest, "Bangumi not connected")
-		}
+	if h.syncSvc == nil {
 		return echo.ErrInternalServerError
 	}
-
-	var tokenData map[string]any
-	if err := json.Unmarshal([]byte(tokenSetting.Value), &tokenData); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "invalid token data")
-	}
-	accessToken, _ := tokenData["access_token"].(string)
-	if accessToken == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid Bangumi token — please reconnect")
-	}
-
-	// Get completed watch progress
-	progress, err := h.queries.ListCompletedWatchProgress(ctx, userID)
+	n, err := h.syncSvc.FlushUser(ctx, userID, milmilsync.ProviderBangumi)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-
-	synced := 0
-	errs := 0
-
-	for _, wp := range progress {
-		// Look up the episode to get anime_id, then anime to get bangumi_id
-		episode, err := h.queries.GetEpisode(ctx, wp.EpisodeID)
-		if err != nil {
-			errs++
-			continue
-		}
-
-		anime, err := h.queries.GetAnime(ctx, episode.AnimeID)
-		if err != nil {
-			errs++
-			continue
-		}
-
-		if !anime.BangumiID.Valid || anime.BangumiID.Int64 == 0 {
-			continue // no bangumi mapping
-		}
-
-		// Check if episode has bangumi_episode_id
-		if !episode.BangumiEpisodeID.Valid || episode.BangumiEpisodeID.Int64 == 0 {
-			continue
-		}
-
-		// POST to Bangumi API to mark episode as watched
-		// PUT https://api.bgm.tv/v0/users/-/collections/-/episodes/{episode_id}
-		bangumiURL := fmt.Sprintf("https://api.bgm.tv/v0/users/-/collections/-/episodes/%d", episode.BangumiEpisodeID.Int64)
-		reqBody, _ := json.Marshal(map[string]int{"type": 2}) // 2 = watched
-		req, err := http.NewRequestWithContext(ctx, http.MethodPut, bangumiURL, bytes.NewReader(reqBody))
-		if err != nil {
-			errs++
-			continue
-		}
-		req.Header.Set("Authorization", "Bearer "+accessToken)
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("User-Agent", "milmil/1.0")
-
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			errs++
-			continue
-		}
-		resp.Body.Close()
-
-		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-			synced++
-		} else {
-			errs++
-		}
-	}
-
-	return c.JSON(http.StatusOK, map[string]any{
-		"synced": synced,
-		"errors": errs,
-		"total":  len(progress),
-	})
+	return c.JSON(http.StatusOK, map[string]any{"enqueued": n})
 }
 
 // ─── AniList ────────────────────────────────────────────────────────────────
@@ -229,6 +170,7 @@ func (h *handler) handleAniListAuthURL(c echo.Context) error {
 }
 
 func (h *handler) handleAniListCallback(c echo.Context) error {
+	ctx := c.Request().Context()
 	code := c.QueryParam("code")
 	if code == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing code parameter")
@@ -265,7 +207,7 @@ func (h *handler) handleAniListCallback(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "invalid token response from AniList")
 	}
 
-	_, err = h.queries.UpsertSetting(c.Request().Context(), store.UpsertSettingParams{
+	_, err = h.queries.UpsertSetting(ctx, store.UpsertSettingParams{
 		Key:   "anilist_token",
 		Value: string(body),
 	})
@@ -273,13 +215,25 @@ func (h *handler) handleAniListCallback(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	if h.syncSvc != nil {
+		userID := getUserID(c)
+		if err := h.syncSvc.EnqueueImport(ctx, userID, milmilsync.ProviderAniList); err != nil {
+			slog.Warn("sync: enqueue import", "provider", "anilist", "err", err)
+		}
+	}
+
 	return c.Redirect(http.StatusFound, "/settings")
 }
 
 func (h *handler) handleAniListDisconnect(c echo.Context) error {
-	err := h.queries.DeleteSetting(c.Request().Context(), "anilist_token")
+	ctx := c.Request().Context()
+	err := h.queries.DeleteSetting(ctx, "anilist_token")
 	if err != nil {
 		return echo.ErrInternalServerError
+	}
+	if h.syncSvc != nil {
+		userID := getUserID(c)
+		_ = h.syncSvc.Disconnect(ctx, userID, milmilsync.ProviderAniList)
 	}
 	return c.NoContent(http.StatusNoContent)
 }
@@ -287,104 +241,12 @@ func (h *handler) handleAniListDisconnect(c echo.Context) error {
 func (h *handler) handleAniListSync(c echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
-
-	tokenSetting, err := h.queries.GetSetting(ctx, "anilist_token")
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return echo.NewHTTPError(http.StatusBadRequest, "AniList not connected")
-		}
+	if h.syncSvc == nil {
 		return echo.ErrInternalServerError
 	}
-
-	var tokenData map[string]any
-	if err := json.Unmarshal([]byte(tokenSetting.Value), &tokenData); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "invalid token data")
-	}
-	accessToken, _ := tokenData["access_token"].(string)
-	if accessToken == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid AniList token — please reconnect")
-	}
-
-	progress, err := h.queries.ListCompletedWatchProgress(ctx, userID)
+	n, err := h.syncSvc.FlushUser(ctx, userID, milmilsync.ProviderAniList)
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
-
-	// Group progress by anime to calculate episode counts
-	type animeProgress struct {
-		anilistID int64
-		episodes  int
-	}
-	animeMap := make(map[string]*animeProgress)
-
-	for _, wp := range progress {
-		episode, err := h.queries.GetEpisode(ctx, wp.EpisodeID)
-		if err != nil {
-			continue
-		}
-
-		if _, ok := animeMap[episode.AnimeID]; !ok {
-			anime, err := h.queries.GetAnime(ctx, episode.AnimeID)
-			if err != nil {
-				continue
-			}
-			if !anime.AnilistID.Valid || anime.AnilistID.Int64 == 0 {
-				continue
-			}
-			animeMap[episode.AnimeID] = &animeProgress{
-				anilistID: anime.AnilistID.Int64,
-			}
-		}
-		if ap, ok := animeMap[episode.AnimeID]; ok {
-			ap.episodes++
-		}
-	}
-
-	synced := 0
-	errs := 0
-
-	for _, ap := range animeMap {
-		// GraphQL mutation to update progress
-		mutation := `mutation ($mediaId: Int, $progress: Int) {
-			SaveMediaListEntry(mediaId: $mediaId, progress: $progress, status: CURRENT) {
-				id
-				progress
-			}
-		}`
-		variables := map[string]any{
-			"mediaId":  ap.anilistID,
-			"progress": ap.episodes,
-		}
-		gqlBody, _ := json.Marshal(map[string]any{
-			"query":     mutation,
-			"variables": variables,
-		})
-
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://graphql.anilist.co", bytes.NewReader(gqlBody))
-		if err != nil {
-			errs++
-			continue
-		}
-		req.Header.Set("Authorization", "Bearer "+accessToken)
-		req.Header.Set("Content-Type", "application/json")
-
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			errs++
-			continue
-		}
-		resp.Body.Close()
-
-		if resp.StatusCode == http.StatusOK {
-			synced++
-		} else {
-			errs++
-		}
-	}
-
-	return c.JSON(http.StatusOK, map[string]any{
-		"synced": synced,
-		"errors": errs,
-		"total":  len(animeMap),
-	})
+	return c.JSON(http.StatusOK, map[string]any{"enqueued": n})
 }

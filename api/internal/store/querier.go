@@ -14,8 +14,10 @@ type Querier interface {
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
 	CountCollectionByStatus(ctx context.Context) ([]CountCollectionByStatusRow, error)
+	CountCompletedWatchProgressByAnime(ctx context.Context, arg CountCompletedWatchProgressByAnimeParams) (CountCompletedWatchProgressByAnimeRow, error)
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
 	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
+	CountPendingSyncOpsByUserProvider(ctx context.Context, arg CountPendingSyncOpsByUserProviderParams) (int64, error)
 	CountUnreadNotifications(ctx context.Context) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAPIToken(ctx context.Context, arg CreateAPITokenParams) (ApiToken, error)
@@ -36,6 +38,7 @@ type Querier interface {
 	DeleteAllNotifications(ctx context.Context) error
 	DeleteAnime(ctx context.Context, id string) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
+	DeleteCompletedSyncOpsOlderThan(ctx context.Context, completedAt sql.NullString) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteEpisodesByAnimeID(ctx context.Context, animeID string) error
@@ -52,11 +55,13 @@ type Querier interface {
 	DeleteUserPreference(ctx context.Context, arg DeleteUserPreferenceParams) error
 	DisableTwoFactor(ctx context.Context, id string) error
 	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
+	EnqueueSyncOp(ctx context.Context, arg EnqueueSyncOpParams) error
 	GetAPITokenByHash(ctx context.Context, tokenHash string) (ApiToken, error)
 	GetAPITokenByID(ctx context.Context, arg GetAPITokenByIDParams) (ApiToken, error)
 	GetAllUserPreferences(ctx context.Context, userID string) ([]UserPreference, error)
 	GetAnime(ctx context.Context, id string) (Anime, error)
 	GetAnimeByAnidbID(ctx context.Context, anidbID sql.NullInt64) (Anime, error)
+	GetAnimeByAnilistID(ctx context.Context, anilistID sql.NullInt64) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
@@ -67,6 +72,7 @@ type Querier interface {
 	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
 	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
+	GetLatestCompletedSyncOp(ctx context.Context, arg GetLatestCompletedSyncOpParams) (SyncOutbox, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
@@ -80,12 +86,17 @@ type Querier interface {
 	GetUserPreference(ctx context.Context, arg GetUserPreferenceParams) (UserPreference, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
+	HasAnyWatchProgress(ctx context.Context, arg HasAnyWatchProgressParams) (int64, error)
 	ListAPITokensByUser(ctx context.Context, userID string) ([]ListAPITokensByUserRow, error)
 	ListActiveDownloads(ctx context.Context) ([]Download, error)
 	ListAllUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
+	// A5 fix: only animes with at least one completed watch_progress episode.
+	ListAnimeForUserWithProviderID(ctx context.Context, arg ListAnimeForUserWithProviderIDParams) ([]Anime, error)
 	ListBackupConfigs(ctx context.Context, userID string) ([]BackupConfig, error)
+	// C4 fix: list Bangumi episode IDs for all completed episodes of this anime.
+	ListBangumiEpisodeIDsForAnimeWatchedByUser(ctx context.Context, arg ListBangumiEpisodeIDsForAnimeWatchedByUserParams) ([]sql.NullInt64, error)
 	ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListCollectionAnime(ctx context.Context, arg ListCollectionAnimeParams) ([]ListCollectionAnimeRow, error)
 	ListCompletedDownloads(ctx context.Context) ([]Download, error)
@@ -110,7 +121,9 @@ type Querier interface {
 	ListPlayableEpisodes(ctx context.Context, animeID string) ([]ListPlayableEpisodesRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
 	ListRSSFeedsDue(ctx context.Context) ([]RssFeed, error)
+	ListReadySyncOps(ctx context.Context, limit int64) ([]SyncOutbox, error)
 	ListRecentProgressWithAnime(ctx context.Context, userID string) ([]ListRecentProgressWithAnimeRow, error)
+	ListRecentSyncErrors(ctx context.Context, arg ListRecentSyncErrorsParams) ([]SyncOutbox, error)
 	ListRecentlyMatchedAnime(ctx context.Context) ([]ListRecentlyMatchedAnimeRow, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSegmentMarks(ctx context.Context, mediaFileID string) ([]SegmentMark, error)
@@ -123,8 +136,12 @@ type Querier interface {
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	MarkAllNotificationsRead(ctx context.Context) error
 	MarkNotificationRead(ctx context.Context, id string) error
+	MarkSyncOpCompleted(ctx context.Context, id string) error
+	MarkUserProviderOpsFailed(ctx context.Context, arg MarkUserProviderOpsFailedParams) error
+	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
+	SupersedeProgressOps(ctx context.Context, arg SupersedeProgressOpsParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
 	UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error
 	UpdateAPITokenActivity(ctx context.Context, arg UpdateAPITokenActivityParams) error
@@ -132,6 +149,7 @@ type Querier interface {
 	UpdateAnimeExternalIDs(ctx context.Context, arg UpdateAnimeExternalIDsParams) error
 	UpdateAnimeLibraryID(ctx context.Context, arg UpdateAnimeLibraryIDParams) error
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
+	UpdateAnimeSyncFlags(ctx context.Context, arg UpdateAnimeSyncFlagsParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error

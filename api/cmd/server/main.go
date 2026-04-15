@@ -40,6 +40,8 @@ import (
 	_ "github.com/milmil/api/internal/notification/providers" // register provider factories
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	milmilsync "github.com/milmil/api/internal/sync"
+	"github.com/milmil/api/internal/sync/providers"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
 	"github.com/milmil/api/internal/worker"
@@ -252,7 +254,31 @@ func main() {
 	step = time.Now()
 	slog.Debug("boot: initializing router")
 	notifier := notification.NewService(store.New(database), wsHub, metadataSvc)
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier)
+
+	// Watch-sync service — reads OAuth tokens from the settings table. Returns
+	// ErrNoToken (silently skipped by OnProgressUpdate) for unconnected users.
+	syncQueries := store.New(database)
+	tokenLoader := func(ctx context.Context, userID string, p milmilsync.ProviderName) (string, error) {
+		key := string(p) + "_token"
+		setting, err := syncQueries.GetSetting(ctx, key)
+		if err != nil {
+			return "", milmilsync.ErrNoToken
+		}
+		var tokenData map[string]any
+		if err := json.Unmarshal([]byte(setting.Value), &tokenData); err != nil {
+			return "", milmilsync.ErrNoToken
+		}
+		tok, _ := tokenData["access_token"].(string)
+		if tok == "" {
+			return "", milmilsync.ErrNoToken
+		}
+		return tok, nil
+	}
+	alProvider := providers.NewAniList(httpClient, "")
+	bgmProvider := providers.NewBangumi(httpClient, "")
+	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider}, tokenLoader)
+
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	// Bot engine
@@ -311,7 +337,7 @@ func main() {
 
 	// Background job scheduler — goroutine-based tickers
 	sched := worker.NewScheduler(
-		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, anidbSvc, wsHub, botEngine,
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, anidbSvc, syncSvc, wsHub, botEngine,
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")
