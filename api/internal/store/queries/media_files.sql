@@ -109,3 +109,18 @@ LEFT JOIN episodes e ON mf.episode_id = e.id
 LEFT JOIN anime a ON e.anime_id = a.id
 WHERE mf.library_id = ?
 ORDER BY mf.path ASC;
+
+-- name: CountMediaFilesPerEpisodeByAnime :many
+SELECT e.id AS episode_id, e.episode_number, COUNT(mf.id) AS file_count
+FROM episodes e
+JOIN media_files mf ON mf.episode_id = e.id
+WHERE e.anime_id = sqlc.arg('anime_id')
+GROUP BY e.id, e.episode_number;
+
+-- name: CountMediaFilesPerEpisodeByLibrary :many
+SELECT e.anime_id, e.id AS episode_id, e.episode_number, COUNT(mf.id) AS file_count
+FROM episodes e
+JOIN media_files mf ON mf.episode_id = e.id
+JOIN anime a ON a.id = e.anime_id
+WHERE a.library_id = sqlc.arg('library_id')
+GROUP BY e.anime_id, e.id, e.episode_number;
