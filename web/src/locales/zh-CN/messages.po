@@ -68,8 +68,14 @@ msgstr "从此处继续"
 #~ msgid "search.tag.misc"
 #~ msgstr "其他"
 
-#: src/pages/LibraryDetailPage.tsx:371
+#: src/pages/LibraryDetailPage.tsx:372
 msgid "{missingCount} missing episodes"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:55
+#: src/pages/library/RenameHistoryPage.tsx:49
+#: src/pages/library/RenamePreviewPage.tsx:55
+msgid "← Back to library"
 msgstr ""
 
 #: src/pages/settings/AboutPanel.tsx:148
@@ -304,19 +310,23 @@ msgstr "更新密码"
 msgid "account.updating"
 msgstr "更新中..."
 
-#: src/pages/AnimeDetailPage.tsx:677
+#: src/pages/library/LibraryDuplicatesPage.tsx:87
+msgid "Anime"
+msgstr ""
+
+#: src/pages/AnimeDetailPage.tsx:665
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:976
+#: src/pages/AnimeDetailPage.tsx:936
 msgid "anime.characters"
 msgstr "角色"
 
-#: src/pages/AnimeDetailPage.tsx:263
+#: src/pages/AnimeDetailPage.tsx:264
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:1148
+#: src/pages/AnimeDetailPage.tsx:1115
 msgid "anime.comments"
 msgstr "评论"
 
@@ -324,8 +334,7 @@ msgstr "评论"
 #~ msgid "anime.continueWatching"
 #~ msgstr "继续观看"
 
-#: src/pages/AnimeDetailPage.tsx:704
-#: src/pages/AnimeDetailPage.tsx:740
+#: src/pages/AnimeDetailPage.tsx:688
 msgid "anime.enableTrackerSync"
 msgstr ""
 
@@ -334,12 +343,11 @@ msgstr ""
 #~ msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:900
+#: src/pages/AnimeDetailPage.tsx:860
 msgid "anime.episodes"
 msgstr "集数"
 
-#: src/pages/AnimeDetailPage.tsx:705
-#: src/pages/AnimeDetailPage.tsx:741
+#: src/pages/AnimeDetailPage.tsx:688
 msgid "anime.excludeTrackerSync"
 msgstr ""
 
@@ -348,38 +356,38 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:782
-msgid "anime.myScore"
-msgstr "我的评分"
+#~ msgid "anime.myScore"
+#~ msgstr "我的评分"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "无本地文件"
 
-#: src/pages/AnimeDetailPage.tsx:535
+#: src/pages/AnimeDetailPage.tsx:533
 msgid "anime.notAired"
 msgstr "尚未播出"
 
-#: src/pages/AnimeDetailPage.tsx:330
+#: src/pages/AnimeDetailPage.tsx:331
 msgid "anime.notFound"
 msgstr "找不到动画"
 
-#: src/pages/AnimeDetailPage.tsx:557
+#: src/pages/AnimeDetailPage.tsx:546
 msgid "anime.playableEps"
 msgstr "集可播放"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:528
+#: src/pages/AnimeDetailPage.tsx:526
 msgid "anime.ratings"
 msgstr "评分"
 
-#: src/pages/AnimeDetailPage.tsx:1062
+#: src/pages/AnimeDetailPage.tsx:1029
 msgid "anime.recommendations"
 msgstr "推荐"
 
-#: src/pages/AnimeDetailPage.tsx:1033
+#: src/pages/AnimeDetailPage.tsx:1000
 msgid "anime.relations"
 msgstr "相关作品"
 
-#: src/pages/AnimeDetailPage.tsx:1100
+#: src/pages/AnimeDetailPage.tsx:1067
 msgid "anime.reviews"
 msgstr "评论"
 
@@ -387,22 +395,22 @@ msgstr "评论"
 #~ msgid "anime.score"
 #~ msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:689
+#: src/pages/AnimeDetailPage.tsx:677
 msgid "anime.searchResources"
 msgstr "搜索资源"
 
 #~ msgid "anime.season"
 #~ msgstr "季"
 
-#: src/pages/AnimeDetailPage.tsx:999
+#: src/pages/AnimeDetailPage.tsx:959
 msgid "anime.sideStories"
 msgstr "番外篇 / 剧场版"
 
-#: src/pages/AnimeDetailPage.tsx:551
+#: src/pages/AnimeDetailPage.tsx:540
 msgid "anime.subscribed"
 msgstr "已追番"
 
-#: src/pages/AnimeDetailPage.tsx:279
+#: src/pages/AnimeDetailPage.tsx:280
 msgid "anime.syncFlagsUpdated"
 msgstr ""
 
@@ -411,11 +419,11 @@ msgstr ""
 #~ msgstr "简介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:946
+#: src/pages/AnimeDetailPage.tsx:906
 msgid "anime.trailer"
 msgstr "预告片"
 
-#: src/pages/AnimeDetailPage.tsx:982
+#: src/pages/AnimeDetailPage.tsx:942
 msgid "anime.voiceActor"
 msgstr "声优"
 
@@ -471,6 +479,22 @@ msgstr "撤销令牌失败"
 msgid "apiTokens.title"
 msgstr "API 令牌"
 
+#. placeholder {0}: res.applied
+#. placeholder {1}: res.batch_id.slice(0, 8)
+#: src/pages/library/RenamePreviewPage.tsx:25
+msgid "Applied {0} files. Batch: {1}"
+msgstr ""
+
+#. placeholder {0}: ok.length
+#: src/pages/library/RenamePreviewPage.tsx:69
+msgid "Apply {0} renames. This will move files on disk. Continue?"
+msgstr ""
+
+#. placeholder {0}: ok.length
+#: src/pages/library/RenamePreviewPage.tsx:77
+msgid "Apply all OK ({0})"
+msgstr ""
+
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
 msgstr "验证码"
@@ -504,12 +528,12 @@ msgid "auth.error.setupFailed"
 msgstr "设置失败"
 
 #: src/pages/LibrariesPage.tsx:3159
-#: src/pages/LibraryDetailPage.tsx:1822
+#: src/pages/LibraryDetailPage.tsx:1832
 msgid "auth.libraries.signInSubtitle"
 msgstr "登录以访问您的媒体库"
 
 #: src/pages/LibrariesPage.tsx:3156
-#: src/pages/LibraryDetailPage.tsx:1819
+#: src/pages/LibraryDetailPage.tsx:1829
 msgid "auth.libraries.signInTitle"
 msgstr "需要登录"
 
@@ -524,7 +548,7 @@ msgstr "密码"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3166
-#: src/pages/LibraryDetailPage.tsx:1825
+#: src/pages/LibraryDetailPage.tsx:1835
 #: src/pages/LoginPage.tsx:407
 msgid "auth.login.submit"
 msgstr "登录"
@@ -586,6 +610,10 @@ msgstr "欢迎使用 milmil"
 #: src/pages/SetupPage.tsx:67
 msgid "auth.setup.username"
 msgstr "用户名"
+
+#: src/components/library/RenameConfigEditor.tsx:49
+msgid "Auto-rename on match"
+msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.active"
@@ -1115,9 +1143,24 @@ msgstr ""
 msgid "backup.username"
 msgstr ""
 
+#: src/pages/library/RenameHistoryPage.tsx:61
+msgid "Batch"
+msgstr ""
+
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
 msgstr "下一集"
+
+#. placeholder {0}: formatBytes(totalWaste)
+#: src/pages/library/LibraryDuplicatesPage.tsx:77
+msgid "Clean non-preferred ({0})"
+msgstr ""
+
+#. placeholder {0}: res.deleted
+#. placeholder {1}: formatBytes(res.reclaimed_bytes)
+#: src/pages/library/LibraryDuplicatesPage.tsx:28
+msgid "Cleaned up {0} files ({1})"
+msgstr ""
 
 #: src/pages/CollectionPage.tsx:20
 msgid "collection.all"
@@ -1128,14 +1171,14 @@ msgstr "全部"
 #~ msgstr "更改状态"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:771
+#: src/pages/AnimeDetailPage.tsx:735
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "已完成"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:777
+#: src/pages/AnimeDetailPage.tsx:737
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1157,14 +1200,14 @@ msgid "collection.goToLibraries"
 msgstr "前往媒体库"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:774
+#: src/pages/AnimeDetailPage.tsx:736
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暂停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:768
+#: src/pages/AnimeDetailPage.tsx:734
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1200,7 +1243,7 @@ msgid "collection.viewAll"
 msgstr "查看全部"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:765
+#: src/pages/AnimeDetailPage.tsx:733
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1210,7 +1253,7 @@ msgstr "观看中"
 msgid "common.back"
 msgstr "返回"
 
-#: src/pages/AnimeDetailPage.tsx:345
+#: src/pages/AnimeDetailPage.tsx:346
 msgid "common.backHome"
 msgstr "返回首页"
 
@@ -1235,23 +1278,23 @@ msgstr "已复制"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:518
-#: src/pages/AnimeDetailPage.tsx:902
+#: src/pages/AnimeDetailPage.tsx:516
+#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
-#: src/pages/LibraryDetailPage.tsx:1059
+#: src/pages/LibraryDetailPage.tsx:1060
 msgid "common.ep"
 msgstr "集"
 
-#: src/pages/AnimeDetailPage.tsx:330
-#: src/pages/LibraryDetailPage.tsx:1846
+#: src/pages/AnimeDetailPage.tsx:331
+#: src/pages/LibraryDetailPage.tsx:1856
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "加载失败"
 
 #: src/components/LoginModal.tsx:173
 #: src/components/MatchModal.tsx:415
-#: src/pages/LibraryDetailPage.tsx:1184
+#: src/pages/LibraryDetailPage.tsx:1185
 #: src/pages/LoginPage.tsx:258
 #: src/pages/LoginPage.tsx:395
 msgid "common.loading"
@@ -1261,7 +1304,7 @@ msgstr "加载中…"
 msgid "common.minuteShort"
 msgstr "分钟"
 
-#: src/pages/AnimeDetailPage.tsx:339
+#: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -1279,6 +1322,18 @@ msgstr "离线"
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.online"
 msgstr "在线"
+
+#: src/pages/library/RenameHistoryPage.tsx:62
+msgid "Date"
+msgstr ""
+
+#: src/components/anime/DuplicatesPanel.tsx:107
+msgid "Delete"
+msgstr ""
+
+#: src/components/anime/DuplicatesPanel.tsx:55
+msgid "Delete this file permanently?"
+msgstr ""
 
 #: src/pages/DiscoverPage.tsx:114
 msgid "discover.airedRecently"
@@ -1333,6 +1388,24 @@ msgstr "现在热门"
 #~ msgid "downloads.tab.search"
 #~ msgstr "搜索"
 
+#: src/components/anime/DuplicatesPanel.tsx:44
+#: src/pages/library/LibraryDuplicatesPage.tsx:58
+msgid "Duplicate files"
+msgstr ""
+
+#: src/pages/LibraryDetailPage.tsx:1991
+msgid "Duplicates"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:88
+msgid "Episode"
+msgstr ""
+
+#. placeholder {0}: set.episode_number
+#: src/components/anime/DuplicatesPanel.tsx:79
+msgid "Episode {0}"
+msgstr ""
+
 #: src/components/anime/EpisodeStatusCard.tsx:35
 msgid "Episode status"
 msgstr ""
@@ -1355,6 +1428,15 @@ msgstr "无法连接服务器"
 msgid "error.serverUnavailableHint"
 msgstr "请检查服务器是否运行并重试"
 
+#: src/components/anime/DuplicatesPanel.tsx:80
+msgid "files"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:89
+#: src/pages/library/RenameHistoryPage.tsx:63
+msgid "Files"
+msgstr ""
+
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
 #: src/components/PreviewModal.tsx:255
@@ -1364,6 +1446,10 @@ msgstr "详情"
 #: src/components/HeroBanner.tsx:173
 msgid "hero.preview"
 msgstr "预览"
+
+#: src/components/library/RenameConfigEditor.tsx:71
+msgid "History"
+msgstr ""
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -1397,7 +1483,7 @@ msgstr "热门"
 msgid "home.viewAll"
 msgstr "查看全部 →"
 
-#: src/pages/LibraryDetailPage.tsx:329
+#: src/pages/LibraryDetailPage.tsx:330
 msgid "Incomplete only"
 msgstr ""
 
@@ -1410,20 +1496,20 @@ msgstr ""
 msgid "library.addLibrary"
 msgstr "添加媒体库"
 
-#: src/pages/LibraryDetailPage.tsx:360
+#: src/pages/LibraryDetailPage.tsx:361
 msgid "library.anime.confirmDelete"
 msgstr "删除此动画并取消关联文件？文件将变为未匹配状态。"
 
-#: src/pages/LibraryDetailPage.tsx:285
+#: src/pages/LibraryDetailPage.tsx:286
 msgid "library.anime.deleted"
 msgstr "动画已删除"
 
-#: src/pages/LibraryDetailPage.tsx:288
+#: src/pages/LibraryDetailPage.tsx:289
 msgid "library.anime.deleteFailed"
 msgstr "删除动画失败"
 
-#: src/pages/LibraryDetailPage.tsx:309
-#: src/pages/LibraryDetailPage.tsx:339
+#: src/pages/LibraryDetailPage.tsx:310
+#: src/pages/LibraryDetailPage.tsx:340
 msgid "library.anime.empty"
 msgstr "此媒体库中没有已匹配的动画"
 
@@ -1466,68 +1552,68 @@ msgstr "删除"
 msgid "library.deleteConfirm"
 msgstr "所有媒体文件记录将被移除，磁盘上的文件不受影响。"
 
-#: src/pages/LibraryDetailPage.tsx:769
+#: src/pages/LibraryDetailPage.tsx:770
 msgid "library.detail.allMatched"
 msgstr "所有文件已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1932
+#: src/pages/LibraryDetailPage.tsx:1942
 msgid "library.detail.autoMatch"
 msgstr "自动匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1936
+#: src/pages/LibraryDetailPage.tsx:1946
 msgid "library.detail.autoMatchTooltip"
 msgstr "自动匹配所有未匹配文件"
 
-#: src/pages/LibraryDetailPage.tsx:1852
-#: src/pages/LibraryDetailPage.tsx:1883
+#: src/pages/LibraryDetailPage.tsx:1862
+#: src/pages/LibraryDetailPage.tsx:1893
 msgid "library.detail.backToLibraries"
 msgstr "媒体库"
 
-#: src/pages/LibraryDetailPage.tsx:825
+#: src/pages/LibraryDetailPage.tsx:826
 msgid "library.detail.bulkMatch"
 msgstr "批次匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1185
+#: src/pages/LibraryDetailPage.tsx:1186
 msgid "library.detail.bulkMatchModal.confirm"
 msgstr "匹配檔案"
 
-#: src/pages/LibraryDetailPage.tsx:1137
+#: src/pages/LibraryDetailPage.tsx:1138
 msgid "library.detail.bulkMatchModal.episodeStartHint"
 msgstr "檔案將被分配 EP{0}–EP{1}"
 
-#: src/pages/LibraryDetailPage.tsx:1134
+#: src/pages/LibraryDetailPage.tsx:1135
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
 msgstr "起始集數"
 
-#: src/pages/LibraryDetailPage.tsx:925
+#: src/pages/LibraryDetailPage.tsx:926
 msgid "library.detail.bulkMatchModal.filesSelected"
 msgstr "已選擇 {0} 個檔案"
 
-#: src/pages/LibraryDetailPage.tsx:964
+#: src/pages/LibraryDetailPage.tsx:965
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
 msgstr "設定集數"
 
-#: src/pages/LibraryDetailPage.tsx:914
+#: src/pages/LibraryDetailPage.tsx:915
 msgid "library.detail.bulkMatchModal.title"
 msgstr "批次匹配檔案"
 
-#: src/pages/LibraryDetailPage.tsx:895
+#: src/pages/LibraryDetailPage.tsx:896
 msgid "library.detail.bulkMatchSuccess"
 msgstr "已匹配 {0} 個檔案"
 
-#: src/pages/LibraryDetailPage.tsx:837
+#: src/pages/LibraryDetailPage.tsx:838
 msgid "library.detail.bulkUnmatch"
 msgstr "批次取消匹配"
 
-#: src/pages/LibraryDetailPage.tsx:831
+#: src/pages/LibraryDetailPage.tsx:832
 msgid "library.detail.bulkUnmatchConfirm"
 msgstr "確定取消匹配選中的檔案？"
 
-#: src/pages/LibraryDetailPage.tsx:506
+#: src/pages/LibraryDetailPage.tsx:507
 msgid "library.detail.col.filename"
 msgstr "文件名"
 
-#: src/pages/LibraryDetailPage.tsx:521
+#: src/pages/LibraryDetailPage.tsx:522
 msgid "library.detail.col.matchedAnime"
 msgstr "匹配的动画"
 
@@ -1535,42 +1621,42 @@ msgstr "匹配的动画"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "匹配至"
 
-#: src/pages/LibraryDetailPage.tsx:593
+#: src/pages/LibraryDetailPage.tsx:594
 msgid "library.detail.col.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:580
+#: src/pages/LibraryDetailPage.tsx:581
 msgid "library.detail.col.status"
 msgstr "状态"
 
-#: src/pages/LibraryDetailPage.tsx:586
+#: src/pages/LibraryDetailPage.tsx:587
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:244
+#: src/pages/LibraryDetailPage.tsx:245
 msgid "library.detail.copyPath"
 msgstr "复制路径"
 
-#: src/pages/LibraryDetailPage.tsx:224
+#: src/pages/LibraryDetailPage.tsx:225
 msgid "library.detail.editMatch"
 msgstr "编辑"
 
-#: src/pages/LibraryDetailPage.tsx:1569
+#: src/pages/LibraryDetailPage.tsx:1570
 msgid "library.detail.errors"
 msgstr "错误"
 
-#: src/pages/LibraryDetailPage.tsx:251
+#: src/pages/LibraryDetailPage.tsx:252
 msgid "library.detail.fileInfo"
 msgstr "文件信息"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "文件名"
 
-#: src/pages/LibraryDetailPage.tsx:1555
+#: src/pages/LibraryDetailPage.tsx:1556
 msgid "library.detail.found"
 msgstr "已发现"
 
-#: src/pages/LibraryDetailPage.tsx:1550
+#: src/pages/LibraryDetailPage.tsx:1551
 msgid "library.detail.inProgress"
 msgstr "进行中"
 
@@ -1578,12 +1664,12 @@ msgstr "进行中"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "加载更多"
 
-#: src/pages/LibraryDetailPage.tsx:633
+#: src/pages/LibraryDetailPage.tsx:634
 msgid "library.detail.match"
 msgstr "匹配"
 
-#: src/pages/LibraryDetailPage.tsx:726
-#: src/pages/LibraryDetailPage.tsx:1558
+#: src/pages/LibraryDetailPage.tsx:727
+#: src/pages/LibraryDetailPage.tsx:1559
 msgid "library.detail.matched"
 msgstr "已匹配"
 
@@ -1591,7 +1677,7 @@ msgstr "已匹配"
 #~ msgstr "匹配至"
 
 #: src/components/MatchModal.tsx:306
-#: src/pages/LibraryDetailPage.tsx:1121
+#: src/pages/LibraryDetailPage.tsx:1122
 msgid "library.detail.matchModal.change"
 msgstr "更改"
 
@@ -1611,7 +1697,7 @@ msgid "library.detail.matchModal.noEpisodes"
 msgstr "找不到集数"
 
 #: src/components/MatchModal.tsx:214
-#: src/pages/LibraryDetailPage.tsx:1026
+#: src/pages/LibraryDetailPage.tsx:1027
 msgid "library.detail.matchModal.noResults"
 msgstr "找不到结果"
 
@@ -1622,12 +1708,12 @@ msgstr "找不到结果"
 #~ msgstr "搜索动画..."
 
 #: src/components/MatchModal.tsx:196
-#: src/pages/LibraryDetailPage.tsx:1008
+#: src/pages/LibraryDetailPage.tsx:1009
 msgid "library.detail.matchModal.searchHint"
 msgstr "搜索动画以匹配此文件"
 
 #: src/components/MatchModal.tsx:182
-#: src/pages/LibraryDetailPage.tsx:995
+#: src/pages/LibraryDetailPage.tsx:996
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "搜索动画…"
 
@@ -1636,7 +1722,7 @@ msgid "library.detail.matchModal.stepEpisode"
 msgstr "选择集数"
 
 #: src/components/MatchModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:963
+#: src/pages/LibraryDetailPage.tsx:964
 msgid "library.detail.matchModal.stepSearch"
 msgstr "搜索动画"
 
@@ -1648,34 +1734,34 @@ msgstr "匹配文件"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "将此文件匹配到动画剧集"
 
-#: src/pages/LibraryDetailPage.tsx:668
-#: src/pages/LibraryDetailPage.tsx:774
-#: src/pages/LibraryDetailPage.tsx:1235
-#: src/pages/LibraryDetailPage.tsx:1434
+#: src/pages/LibraryDetailPage.tsx:669
+#: src/pages/LibraryDetailPage.tsx:775
+#: src/pages/LibraryDetailPage.tsx:1236
+#: src/pages/LibraryDetailPage.tsx:1435
 msgid "library.detail.noFiles"
 msgstr "找不到文件"
 
-#: src/pages/LibraryDetailPage.tsx:671
+#: src/pages/LibraryDetailPage.tsx:672
 msgid "library.detail.noFilesHint"
 msgstr "运行扫描以发现此媒体库中的媒体文件"
 
-#: src/pages/LibraryDetailPage.tsx:1506
+#: src/pages/LibraryDetailPage.tsx:1507
 msgid "library.detail.noScans"
 msgstr "尚未扫描"
 
-#: src/pages/LibraryDetailPage.tsx:1509
+#: src/pages/LibraryDetailPage.tsx:1510
 msgid "library.detail.noScansHint"
 msgstr "运行第一次扫描以查看扫描记录"
 
-#: src/pages/LibraryDetailPage.tsx:1846
+#: src/pages/LibraryDetailPage.tsx:1856
 msgid "library.detail.notFound"
 msgstr "找不到媒体库"
 
-#: src/pages/LibraryDetailPage.tsx:197
+#: src/pages/LibraryDetailPage.tsx:198
 msgid "library.detail.pathCopied"
 msgstr "路径已复制"
 
-#: src/pages/LibraryDetailPage.tsx:614
+#: src/pages/LibraryDetailPage.tsx:615
 msgid "library.detail.play"
 msgstr "播放"
 
@@ -1701,50 +1787,50 @@ msgstr "播放"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "开始时间"
 
-#: src/pages/LibraryDetailPage.tsx:1952
+#: src/pages/LibraryDetailPage.tsx:1962
 msgid "library.detail.scanNow"
 msgstr "立即扫描"
 
-#: src/pages/LibraryDetailPage.tsx:1956
+#: src/pages/LibraryDetailPage.tsx:1966
 msgid "library.detail.scanNowTooltip"
 msgstr "扫描此媒体库中的新文件"
 
 #~ msgid "library.detail.search"
 #~ msgstr "搜索文件..."
 
-#: src/pages/LibraryDetailPage.tsx:717
+#: src/pages/LibraryDetailPage.tsx:718
 msgid "library.detail.searchFiles"
 msgstr "搜索文件…"
 
-#: src/pages/LibraryDetailPage.tsx:817
+#: src/pages/LibraryDetailPage.tsx:818
 msgid "library.detail.selected"
 msgstr "已選擇"
 
-#: src/pages/LibraryDetailPage.tsx:1649
-#: src/pages/LibraryDetailPage.tsx:1969
+#: src/pages/LibraryDetailPage.tsx:1652
+#: src/pages/LibraryDetailPage.tsx:1979
 msgid "library.detail.settings"
 msgstr "设置"
 
-#: src/pages/LibraryDetailPage.tsx:1973
+#: src/pages/LibraryDetailPage.tsx:1983
 msgid "library.detail.settingsTooltip"
 msgstr "媒体库设置"
 
 #~ msgid "library.detail.size"
 #~ msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:2051
+#: src/pages/LibraryDetailPage.tsx:2074
 msgid "library.detail.stats.files"
 msgstr "个文件"
 
-#: src/pages/LibraryDetailPage.tsx:2068
+#: src/pages/LibraryDetailPage.tsx:2091
 msgid "library.detail.stats.matched"
 msgstr "已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:2088
+#: src/pages/LibraryDetailPage.tsx:2111
 msgid "library.detail.stats.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:2080
+#: src/pages/LibraryDetailPage.tsx:2103
 msgid "library.detail.stats.unmatched"
 msgstr "未匹配"
 
@@ -1758,11 +1844,11 @@ msgstr "未匹配"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "全部文件"
 
-#: src/pages/LibraryDetailPage.tsx:1789
+#: src/pages/LibraryDetailPage.tsx:1799
 msgid "library.detail.tab.anime"
 msgstr "动画"
 
-#: src/pages/LibraryDetailPage.tsx:1790
+#: src/pages/LibraryDetailPage.tsx:1800
 msgid "library.detail.tab.files"
 msgstr "文件"
 
@@ -1770,7 +1856,7 @@ msgstr "文件"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1791
+#: src/pages/LibraryDetailPage.tsx:1801
 msgid "library.detail.tab.scanHistory"
 msgstr "扫描记录"
 
@@ -1786,24 +1872,24 @@ msgstr "扫描记录"
 #~ msgid "library.detail.totalSize"
 #~ msgstr "总大小"
 
-#: src/pages/LibraryDetailPage.tsx:235
+#: src/pages/LibraryDetailPage.tsx:236
 msgid "library.detail.unmatch"
 msgstr "取消匹配"
 
-#: src/pages/LibraryDetailPage.tsx:188
+#: src/pages/LibraryDetailPage.tsx:189
 msgid "library.detail.unmatched"
 msgstr "未匹配"
 
-#: src/pages/LibraryDetailPage.tsx:730
-#: src/pages/LibraryDetailPage.tsx:1561
+#: src/pages/LibraryDetailPage.tsx:731
+#: src/pages/LibraryDetailPage.tsx:1562
 msgid "library.detail.unmatchedShort"
 msgstr "未匹配"
 
-#: src/pages/LibraryDetailPage.tsx:2146
+#: src/pages/LibraryDetailPage.tsx:2169
 msgid "library.detail.viewTable"
 msgstr "表格视图"
 
-#: src/pages/LibraryDetailPage.tsx:2165
+#: src/pages/LibraryDetailPage.tsx:2188
 msgid "library.detail.viewTree"
 msgstr "树形视图"
 
@@ -1841,7 +1927,7 @@ msgstr "编辑媒体库"
 
 #: src/pages/LibrariesPage.tsx:1029
 #: src/pages/LibrariesPage.tsx:2809
-#: src/pages/LibraryDetailPage.tsx:1693
+#: src/pages/LibraryDetailPage.tsx:1696
 msgid "library.enabled"
 msgstr "已启用"
 
@@ -1883,14 +1969,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:235
-#: src/pages/LibraryDetailPage.tsx:1931
+#: src/pages/LibraryDetailPage.tsx:1941
 msgid "library.matching"
 msgstr "匹配中…"
 
 #: src/pages/LibrariesPage.tsx:999
 #: src/pages/LibrariesPage.tsx:1922
 #: src/pages/LibrariesPage.tsx:2301
-#: src/pages/LibraryDetailPage.tsx:1654
+#: src/pages/LibraryDetailPage.tsx:1657
 msgid "library.name"
 msgstr "名称"
 
@@ -1900,7 +1986,7 @@ msgstr "名称"
 msgid "library.nameRequired"
 msgstr "名称为必填"
 
-#: src/pages/LibraryDetailPage.tsx:1866
+#: src/pages/LibraryDetailPage.tsx:1876
 msgid "library.neverScanned"
 msgstr "从未"
 
@@ -1929,7 +2015,7 @@ msgstr "我的媒体库"
 
 #: src/pages/LibrariesPage.tsx:1489
 #: src/pages/LibrariesPage.tsx:2716
-#: src/pages/LibraryDetailPage.tsx:1667
+#: src/pages/LibraryDetailPage.tsx:1670
 msgid "library.path"
 msgstr "路径"
 
@@ -1977,14 +2063,14 @@ msgid "library.s3.secretKey"
 msgstr "密钥"
 
 #: src/pages/LibrariesPage.tsx:3366
-#: src/pages/LibraryDetailPage.tsx:1721
+#: src/pages/LibraryDetailPage.tsx:1731
 msgid "library.saveChanges"
 msgstr "保存更改"
 
 #: src/pages/LibrariesPage.tsx:1562
 #: src/pages/LibrariesPage.tsx:2334
 #: src/pages/LibrariesPage.tsx:2834
-#: src/pages/LibraryDetailPage.tsx:1720
+#: src/pages/LibraryDetailPage.tsx:1730
 msgid "library.saving"
 msgstr "保存中…"
 
@@ -1994,12 +2080,12 @@ msgstr "保存中…"
 
 #: src/pages/LibrariesPage.tsx:1536
 #: src/pages/LibrariesPage.tsx:2795
-#: src/pages/LibraryDetailPage.tsx:1681
+#: src/pages/LibraryDetailPage.tsx:1684
 msgid "library.scanInterval"
 msgstr "扫描间隔"
 
 #: src/pages/LibrariesPage.tsx:233
-#: src/pages/LibraryDetailPage.tsx:1951
+#: src/pages/LibraryDetailPage.tsx:1961
 msgid "library.scanning"
 msgstr "扫描中"
 
@@ -2125,11 +2211,11 @@ msgstr "媒体库已添加"
 msgid "library.toast.deleted"
 msgstr "媒体库已删除"
 
-#: src/pages/LibraryDetailPage.tsx:1784
+#: src/pages/LibraryDetailPage.tsx:1794
 msgid "library.toast.matchFailed"
 msgstr "自动匹配失败"
 
-#: src/pages/LibraryDetailPage.tsx:1781
+#: src/pages/LibraryDetailPage.tsx:1791
 msgid "library.toast.matchStarted"
 msgstr "自动匹配已开始"
 
@@ -2138,16 +2224,16 @@ msgstr "自动匹配已开始"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "扫描完成"
 
-#: src/pages/LibraryDetailPage.tsx:1774
+#: src/pages/LibraryDetailPage.tsx:1784
 msgid "library.toast.scanFailed"
 msgstr "扫描失败"
 
-#: src/pages/LibraryDetailPage.tsx:1771
+#: src/pages/LibraryDetailPage.tsx:1781
 msgid "library.toast.scanStarted"
 msgstr "扫描已开始"
 
 #: src/pages/LibrariesPage.tsx:3066
-#: src/pages/LibraryDetailPage.tsx:1640
+#: src/pages/LibraryDetailPage.tsx:1643
 msgid "library.toast.updated"
 msgstr "媒体库已更新"
 
@@ -2365,7 +2451,7 @@ msgstr "首页"
 #: src/components/AppSidebar.tsx:33
 #: src/components/AppSidebar.tsx:229
 #: src/pages/LibrariesPage.tsx:3025
-#: src/pages/LibraryDetailPage.tsx:1732
+#: src/pages/LibraryDetailPage.tsx:1742
 msgid "nav.libraries"
 msgstr "媒体库"
 
@@ -2410,8 +2496,24 @@ msgstr "设置"
 #~ msgid "nav.trending"
 #~ msgstr "热门"
 
-#: src/pages/LibraryDetailPage.tsx:338
+#: src/pages/library/RenamePreviewPage.tsx:89
+msgid "New"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:82
+msgid "No duplicates."
+msgstr ""
+
+#: src/pages/LibraryDetailPage.tsx:339
 msgid "No incomplete anime in this library."
+msgstr ""
+
+#: src/pages/library/RenameHistoryPage.tsx:56
+msgid "No rename batches yet."
+msgstr ""
+
+#: src/pages/library/RenamePreviewPage.tsx:82
+msgid "No rename plans."
 msgstr ""
 
 #: src/components/anime/EpisodeStatusCard.tsx:46
@@ -2727,6 +2829,10 @@ msgstr "查看全部"
 msgid "notifications.yesterday"
 msgstr "昨天"
 
+#: src/pages/library/RenamePreviewPage.tsx:88
+msgid "Old"
+msgstr ""
+
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
 #~ msgstr "第一页"
@@ -2768,9 +2874,35 @@ msgid "pagination.rows"
 msgstr "行"
 
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:872
+#: src/pages/AnimeDetailPage.tsx:827
 msgid "player.remaining"
 msgstr "剩余"
+
+#: src/components/library/RenameConfigEditor.tsx:65
+msgid "Preview"
+msgstr ""
+
+#: src/pages/library/RenameHistoryPage.tsx:52
+msgid "Rename history"
+msgstr ""
+
+#: src/pages/library/RenamePreviewPage.tsx:58
+msgid "Rename preview"
+msgstr ""
+
+#: src/components/library/RenameConfigEditor.tsx:34
+msgid "Rename template"
+msgstr ""
+
+#: src/pages/library/RenameHistoryPage.tsx:64
+msgid "Reverted"
+msgstr ""
+
+#. placeholder {0}: res.reverted
+#. placeholder {1}: res.skipped
+#: src/pages/library/RenameHistoryPage.tsx:25
+msgid "Reverted {0} files, skipped {1}"
+msgstr ""
 
 #: src/components/RuleEditorModal.tsx:624
 msgid "ruleEditor.addGroup"
@@ -2991,19 +3123,23 @@ msgstr "搜索动画以关联..."
 msgid "ruleEditor.titleMatch"
 msgstr "标题匹配"
 
+#: src/components/library/RenameConfigEditor.tsx:59
+msgid "Save"
+msgstr ""
+
 #: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "扫描完成"
 
-#: src/pages/LibraryDetailPage.tsx:1989
+#: src/pages/LibraryDetailPage.tsx:2012
 msgid "scan.phase.hashing"
 msgstr "哈希中"
 
-#: src/pages/LibraryDetailPage.tsx:1990
+#: src/pages/LibraryDetailPage.tsx:2013
 msgid "scan.phase.matching"
 msgstr "匹配中"
 
-#: src/pages/LibraryDetailPage.tsx:1987
+#: src/pages/LibraryDetailPage.tsx:2010
 msgid "scan.phase.scanning"
 msgstr "扫描中"
 
@@ -3040,7 +3176,7 @@ msgstr "禁用"
 msgid "scanInterval.weekly"
 msgstr "每周"
 
-#: src/pages/LibraryDetailPage.tsx:723
+#: src/pages/LibraryDetailPage.tsx:724
 #: src/pages/SchedulePage.tsx:392
 msgid "schedule.all"
 msgstr "全部"
@@ -3340,6 +3476,10 @@ msgstr "撤销会话失败"
 #: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.title"
 msgstr "活跃会话"
+
+#: src/components/anime/DuplicatesPanel.tsx:99
+msgid "Set preferred"
+msgstr ""
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
@@ -3888,6 +4028,10 @@ msgstr "文字颜色"
 msgid "settings.volumeBoost"
 msgstr "音量增强"
 
+#: src/pages/library/RenamePreviewPage.tsx:87
+msgid "Status"
+msgstr ""
+
 #~ msgid "subscribe.add"
 #~ msgstr "添加"
 
@@ -3985,6 +4129,10 @@ msgstr "音量增强"
 #~ msgid "subscribe.success"
 #~ msgstr "订阅成功！新集数将自动下载。"
 
+#: src/pages/library/LibraryDuplicatesPage.tsx:69
+msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
+msgstr ""
+
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0} 天前"
 
@@ -4032,6 +4180,23 @@ msgstr "{seconds} 秒前"
 #: src/pages/TrendingPage.tsx:22
 #~ msgid "trending.tab.trending"
 #~ msgstr "热门"
+
+#: src/pages/library/RenameHistoryPage.tsx:94
+msgid "Undo"
+msgstr ""
+
+#. placeholder {0}: b.batch_id.slice(0, 8)
+#: src/pages/library/RenameHistoryPage.tsx:87
+msgid "Undo batch {0}?"
+msgstr ""
+
+#: src/pages/LibraryDetailPage.tsx:1996
+msgid "View and clean up duplicate files"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:90
+msgid "Wasted"
+msgstr ""
 
 #~ msgid "watch.audioTrack"
 #~ msgstr "音轨"

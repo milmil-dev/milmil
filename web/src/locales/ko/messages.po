@@ -70,8 +70,14 @@ msgstr "여기서 이어보기"
 #~ msgid "search.tag.misc"
 #~ msgstr "기타"
 
-#: src/pages/LibraryDetailPage.tsx:371
+#: src/pages/LibraryDetailPage.tsx:372
 msgid "{missingCount} missing episodes"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:55
+#: src/pages/library/RenameHistoryPage.tsx:49
+#: src/pages/library/RenamePreviewPage.tsx:55
+msgid "← Back to library"
 msgstr ""
 
 #: src/pages/settings/AboutPanel.tsx:148
@@ -306,19 +312,23 @@ msgstr "비밀번호 업데이트"
 msgid "account.updating"
 msgstr "업데이트 중..."
 
-#: src/pages/AnimeDetailPage.tsx:677
+#: src/pages/library/LibraryDuplicatesPage.tsx:87
+msgid "Anime"
+msgstr ""
+
+#: src/pages/AnimeDetailPage.tsx:665
 msgid "anime.addToCollection"
 msgstr "컬렉션에 추가"
 
-#: src/pages/AnimeDetailPage.tsx:976
+#: src/pages/AnimeDetailPage.tsx:936
 msgid "anime.characters"
 msgstr "캐릭터"
 
-#: src/pages/AnimeDetailPage.tsx:263
+#: src/pages/AnimeDetailPage.tsx:264
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:1148
+#: src/pages/AnimeDetailPage.tsx:1115
 msgid "anime.comments"
 msgstr "댓글"
 
@@ -326,8 +336,7 @@ msgstr "댓글"
 #~ msgid "anime.continueWatching"
 #~ msgstr "이어보기"
 
-#: src/pages/AnimeDetailPage.tsx:704
-#: src/pages/AnimeDetailPage.tsx:740
+#: src/pages/AnimeDetailPage.tsx:688
 msgid "anime.enableTrackerSync"
 msgstr ""
 
@@ -336,12 +345,11 @@ msgstr ""
 #~ msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:900
+#: src/pages/AnimeDetailPage.tsx:860
 msgid "anime.episodes"
 msgstr "에피소드"
 
-#: src/pages/AnimeDetailPage.tsx:705
-#: src/pages/AnimeDetailPage.tsx:741
+#: src/pages/AnimeDetailPage.tsx:688
 msgid "anime.excludeTrackerSync"
 msgstr ""
 
@@ -350,38 +358,38 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:782
-msgid "anime.myScore"
-msgstr "내 평점"
+#~ msgid "anime.myScore"
+#~ msgstr "내 평점"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:535
+#: src/pages/AnimeDetailPage.tsx:533
 msgid "anime.notAired"
 msgstr "미방영"
 
-#: src/pages/AnimeDetailPage.tsx:330
+#: src/pages/AnimeDetailPage.tsx:331
 msgid "anime.notFound"
 msgstr "애니메이션을 찾을 수 없습니다"
 
-#: src/pages/AnimeDetailPage.tsx:557
+#: src/pages/AnimeDetailPage.tsx:546
 msgid "anime.playableEps"
 msgstr "편 재생 가능"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:528
+#: src/pages/AnimeDetailPage.tsx:526
 msgid "anime.ratings"
 msgstr "평점"
 
-#: src/pages/AnimeDetailPage.tsx:1062
+#: src/pages/AnimeDetailPage.tsx:1029
 msgid "anime.recommendations"
 msgstr "추천"
 
-#: src/pages/AnimeDetailPage.tsx:1033
+#: src/pages/AnimeDetailPage.tsx:1000
 msgid "anime.relations"
 msgstr "관련 작품"
 
-#: src/pages/AnimeDetailPage.tsx:1100
+#: src/pages/AnimeDetailPage.tsx:1067
 msgid "anime.reviews"
 msgstr "리뷰"
 
@@ -389,22 +397,22 @@ msgstr "리뷰"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:689
+#: src/pages/AnimeDetailPage.tsx:677
 msgid "anime.searchResources"
 msgstr "리소스 검색"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
-#: src/pages/AnimeDetailPage.tsx:999
+#: src/pages/AnimeDetailPage.tsx:959
 msgid "anime.sideStories"
 msgstr "Side Stories & Movies"
 
-#: src/pages/AnimeDetailPage.tsx:551
+#: src/pages/AnimeDetailPage.tsx:540
 msgid "anime.subscribed"
 msgstr "추적 중"
 
-#: src/pages/AnimeDetailPage.tsx:279
+#: src/pages/AnimeDetailPage.tsx:280
 msgid "anime.syncFlagsUpdated"
 msgstr ""
 
@@ -413,11 +421,11 @@ msgstr ""
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:946
+#: src/pages/AnimeDetailPage.tsx:906
 msgid "anime.trailer"
 msgstr "예고편"
 
-#: src/pages/AnimeDetailPage.tsx:982
+#: src/pages/AnimeDetailPage.tsx:942
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -473,6 +481,22 @@ msgstr "토큰 취소 실패"
 msgid "apiTokens.title"
 msgstr "API 토큰"
 
+#. placeholder {0}: res.applied
+#. placeholder {1}: res.batch_id.slice(0, 8)
+#: src/pages/library/RenamePreviewPage.tsx:25
+msgid "Applied {0} files. Batch: {1}"
+msgstr ""
+
+#. placeholder {0}: ok.length
+#: src/pages/library/RenamePreviewPage.tsx:69
+msgid "Apply {0} renames. This will move files on disk. Continue?"
+msgstr ""
+
+#. placeholder {0}: ok.length
+#: src/pages/library/RenamePreviewPage.tsx:77
+msgid "Apply all OK ({0})"
+msgstr ""
+
 #: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.codeLabel"
 msgstr "인증 코드"
@@ -506,12 +530,12 @@ msgid "auth.error.setupFailed"
 msgstr "설정 실패"
 
 #: src/pages/LibrariesPage.tsx:3159
-#: src/pages/LibraryDetailPage.tsx:1822
+#: src/pages/LibraryDetailPage.tsx:1832
 msgid "auth.libraries.signInSubtitle"
 msgstr "라이브러리에 접근하려면 로그인하세요"
 
 #: src/pages/LibrariesPage.tsx:3156
-#: src/pages/LibraryDetailPage.tsx:1819
+#: src/pages/LibraryDetailPage.tsx:1829
 msgid "auth.libraries.signInTitle"
 msgstr "로그인 필요"
 
@@ -526,7 +550,7 @@ msgstr "비밀번호"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3166
-#: src/pages/LibraryDetailPage.tsx:1825
+#: src/pages/LibraryDetailPage.tsx:1835
 #: src/pages/LoginPage.tsx:407
 msgid "auth.login.submit"
 msgstr "로그인"
@@ -588,6 +612,10 @@ msgstr "milmil에 오신 것을 환영합니다"
 #: src/pages/SetupPage.tsx:67
 msgid "auth.setup.username"
 msgstr "사용자 이름"
+
+#: src/components/library/RenameConfigEditor.tsx:49
+msgid "Auto-rename on match"
+msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1599
 msgid "autoDownload.active"
@@ -1117,9 +1145,24 @@ msgstr ""
 msgid "backup.username"
 msgstr ""
 
+#: src/pages/library/RenameHistoryPage.tsx:61
+msgid "Batch"
+msgstr ""
+
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
 msgstr "다음 EP"
+
+#. placeholder {0}: formatBytes(totalWaste)
+#: src/pages/library/LibraryDuplicatesPage.tsx:77
+msgid "Clean non-preferred ({0})"
+msgstr ""
+
+#. placeholder {0}: res.deleted
+#. placeholder {1}: formatBytes(res.reclaimed_bytes)
+#: src/pages/library/LibraryDuplicatesPage.tsx:28
+msgid "Cleaned up {0} files ({1})"
+msgstr ""
 
 #: src/pages/CollectionPage.tsx:20
 msgid "collection.all"
@@ -1130,14 +1173,14 @@ msgstr "전체"
 #~ msgstr "상태 변경"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:771
+#: src/pages/AnimeDetailPage.tsx:735
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "완료"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:777
+#: src/pages/AnimeDetailPage.tsx:737
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1159,14 +1202,14 @@ msgid "collection.goToLibraries"
 msgstr "라이브러리로 이동"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:774
+#: src/pages/AnimeDetailPage.tsx:736
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "일시 중단"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:768
+#: src/pages/AnimeDetailPage.tsx:734
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1202,7 +1245,7 @@ msgid "collection.viewAll"
 msgstr "전체 보기"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:765
+#: src/pages/AnimeDetailPage.tsx:733
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1212,7 +1255,7 @@ msgstr "시청 중"
 msgid "common.back"
 msgstr "뒤로"
 
-#: src/pages/AnimeDetailPage.tsx:345
+#: src/pages/AnimeDetailPage.tsx:346
 msgid "common.backHome"
 msgstr "홈으로 돌아가기"
 
@@ -1237,23 +1280,23 @@ msgstr "복사됨"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:518
-#: src/pages/AnimeDetailPage.tsx:902
+#: src/pages/AnimeDetailPage.tsx:516
+#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
-#: src/pages/LibraryDetailPage.tsx:1059
+#: src/pages/LibraryDetailPage.tsx:1060
 msgid "common.ep"
 msgstr "화"
 
-#: src/pages/AnimeDetailPage.tsx:330
-#: src/pages/LibraryDetailPage.tsx:1846
+#: src/pages/AnimeDetailPage.tsx:331
+#: src/pages/LibraryDetailPage.tsx:1856
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "불러오기 실패"
 
 #: src/components/LoginModal.tsx:173
 #: src/components/MatchModal.tsx:415
-#: src/pages/LibraryDetailPage.tsx:1184
+#: src/pages/LibraryDetailPage.tsx:1185
 #: src/pages/LoginPage.tsx:258
 #: src/pages/LoginPage.tsx:395
 msgid "common.loading"
@@ -1263,7 +1306,7 @@ msgstr "불러오는 중…"
 msgid "common.minuteShort"
 msgstr "분"
 
-#: src/pages/AnimeDetailPage.tsx:339
+#: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -1281,6 +1324,18 @@ msgstr "오프라인"
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.online"
 msgstr "온라인"
+
+#: src/pages/library/RenameHistoryPage.tsx:62
+msgid "Date"
+msgstr ""
+
+#: src/components/anime/DuplicatesPanel.tsx:107
+msgid "Delete"
+msgstr ""
+
+#: src/components/anime/DuplicatesPanel.tsx:55
+msgid "Delete this file permanently?"
+msgstr ""
 
 #: src/pages/DiscoverPage.tsx:114
 msgid "discover.airedRecently"
@@ -1335,6 +1390,24 @@ msgstr "지금 인기"
 #~ msgid "downloads.tab.search"
 #~ msgstr "검색"
 
+#: src/components/anime/DuplicatesPanel.tsx:44
+#: src/pages/library/LibraryDuplicatesPage.tsx:58
+msgid "Duplicate files"
+msgstr ""
+
+#: src/pages/LibraryDetailPage.tsx:1991
+msgid "Duplicates"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:88
+msgid "Episode"
+msgstr ""
+
+#. placeholder {0}: set.episode_number
+#: src/components/anime/DuplicatesPanel.tsx:79
+msgid "Episode {0}"
+msgstr ""
+
 #: src/components/anime/EpisodeStatusCard.tsx:35
 msgid "Episode status"
 msgstr ""
@@ -1357,6 +1430,15 @@ msgstr "서버에 연결할 수 없습니다"
 msgid "error.serverUnavailableHint"
 msgstr "서버가 실행 중인지 확인하고 다시 시도하세요"
 
+#: src/components/anime/DuplicatesPanel.tsx:80
+msgid "files"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:89
+#: src/pages/library/RenameHistoryPage.tsx:63
+msgid "Files"
+msgstr ""
+
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
 #: src/components/PreviewModal.tsx:255
@@ -1366,6 +1448,10 @@ msgstr "상세"
 #: src/components/HeroBanner.tsx:173
 msgid "hero.preview"
 msgstr "미리보기"
+
+#: src/components/library/RenameConfigEditor.tsx:71
+msgid "History"
+msgstr ""
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -1399,7 +1485,7 @@ msgstr "인기"
 msgid "home.viewAll"
 msgstr "전체 보기 →"
 
-#: src/pages/LibraryDetailPage.tsx:329
+#: src/pages/LibraryDetailPage.tsx:330
 msgid "Incomplete only"
 msgstr ""
 
@@ -1412,20 +1498,20 @@ msgstr ""
 msgid "library.addLibrary"
 msgstr "라이브러리 추가"
 
-#: src/pages/LibraryDetailPage.tsx:360
+#: src/pages/LibraryDetailPage.tsx:361
 msgid "library.anime.confirmDelete"
 msgstr "이 애니메이션을 삭제하고 파일 연결을 해제하시겠습니까? 파일은 미매칭 상태가 됩니다."
 
-#: src/pages/LibraryDetailPage.tsx:285
+#: src/pages/LibraryDetailPage.tsx:286
 msgid "library.anime.deleted"
 msgstr "애니메이션 삭제됨"
 
-#: src/pages/LibraryDetailPage.tsx:288
+#: src/pages/LibraryDetailPage.tsx:289
 msgid "library.anime.deleteFailed"
 msgstr "애니메이션 삭제 실패"
 
-#: src/pages/LibraryDetailPage.tsx:309
-#: src/pages/LibraryDetailPage.tsx:339
+#: src/pages/LibraryDetailPage.tsx:310
+#: src/pages/LibraryDetailPage.tsx:340
 msgid "library.anime.empty"
 msgstr "이 라이브러리에 매칭된 애니메이션이 없습니다"
 
@@ -1468,68 +1554,68 @@ msgstr "삭제"
 msgid "library.deleteConfirm"
 msgstr "모든 미디어 파일 기록이 삭제됩니다. 디스크의 파일은 영향받지 않습니다."
 
-#: src/pages/LibraryDetailPage.tsx:769
+#: src/pages/LibraryDetailPage.tsx:770
 msgid "library.detail.allMatched"
 msgstr "모든 파일이 매치되었습니다"
 
-#: src/pages/LibraryDetailPage.tsx:1932
+#: src/pages/LibraryDetailPage.tsx:1942
 msgid "library.detail.autoMatch"
 msgstr "자동 매치"
 
-#: src/pages/LibraryDetailPage.tsx:1936
+#: src/pages/LibraryDetailPage.tsx:1946
 msgid "library.detail.autoMatchTooltip"
 msgstr "미매칭 파일 자동 매칭"
 
-#: src/pages/LibraryDetailPage.tsx:1852
-#: src/pages/LibraryDetailPage.tsx:1883
+#: src/pages/LibraryDetailPage.tsx:1862
+#: src/pages/LibraryDetailPage.tsx:1893
 msgid "library.detail.backToLibraries"
 msgstr "라이브러리"
 
-#: src/pages/LibraryDetailPage.tsx:825
+#: src/pages/LibraryDetailPage.tsx:826
 msgid "library.detail.bulkMatch"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1185
+#: src/pages/LibraryDetailPage.tsx:1186
 msgid "library.detail.bulkMatchModal.confirm"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1137
+#: src/pages/LibraryDetailPage.tsx:1138
 msgid "library.detail.bulkMatchModal.episodeStartHint"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1134
+#: src/pages/LibraryDetailPage.tsx:1135
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:925
+#: src/pages/LibraryDetailPage.tsx:926
 msgid "library.detail.bulkMatchModal.filesSelected"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:964
+#: src/pages/LibraryDetailPage.tsx:965
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:914
+#: src/pages/LibraryDetailPage.tsx:915
 msgid "library.detail.bulkMatchModal.title"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:895
+#: src/pages/LibraryDetailPage.tsx:896
 msgid "library.detail.bulkMatchSuccess"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:837
+#: src/pages/LibraryDetailPage.tsx:838
 msgid "library.detail.bulkUnmatch"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:831
+#: src/pages/LibraryDetailPage.tsx:832
 msgid "library.detail.bulkUnmatchConfirm"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:506
+#: src/pages/LibraryDetailPage.tsx:507
 msgid "library.detail.col.filename"
 msgstr "파일명"
 
-#: src/pages/LibraryDetailPage.tsx:521
+#: src/pages/LibraryDetailPage.tsx:522
 msgid "library.detail.col.matchedAnime"
 msgstr "매치된 애니메이션"
 
@@ -1537,42 +1623,42 @@ msgstr "매치된 애니메이션"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:593
+#: src/pages/LibraryDetailPage.tsx:594
 msgid "library.detail.col.size"
 msgstr "크기"
 
-#: src/pages/LibraryDetailPage.tsx:580
+#: src/pages/LibraryDetailPage.tsx:581
 msgid "library.detail.col.status"
 msgstr "상태"
 
-#: src/pages/LibraryDetailPage.tsx:586
+#: src/pages/LibraryDetailPage.tsx:587
 msgid "library.detail.col.subs"
 msgstr "자막"
 
-#: src/pages/LibraryDetailPage.tsx:244
+#: src/pages/LibraryDetailPage.tsx:245
 msgid "library.detail.copyPath"
 msgstr "경로 복사"
 
-#: src/pages/LibraryDetailPage.tsx:224
+#: src/pages/LibraryDetailPage.tsx:225
 msgid "library.detail.editMatch"
 msgstr "편집"
 
-#: src/pages/LibraryDetailPage.tsx:1569
+#: src/pages/LibraryDetailPage.tsx:1570
 msgid "library.detail.errors"
 msgstr "오류"
 
-#: src/pages/LibraryDetailPage.tsx:251
+#: src/pages/LibraryDetailPage.tsx:252
 msgid "library.detail.fileInfo"
 msgstr "파일 정보"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:1555
+#: src/pages/LibraryDetailPage.tsx:1556
 msgid "library.detail.found"
 msgstr "발견"
 
-#: src/pages/LibraryDetailPage.tsx:1550
+#: src/pages/LibraryDetailPage.tsx:1551
 msgid "library.detail.inProgress"
 msgstr "진행 중"
 
@@ -1580,12 +1666,12 @@ msgstr "진행 중"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:633
+#: src/pages/LibraryDetailPage.tsx:634
 msgid "library.detail.match"
 msgstr "매치"
 
-#: src/pages/LibraryDetailPage.tsx:726
-#: src/pages/LibraryDetailPage.tsx:1558
+#: src/pages/LibraryDetailPage.tsx:727
+#: src/pages/LibraryDetailPage.tsx:1559
 msgid "library.detail.matched"
 msgstr "매치됨"
 
@@ -1593,7 +1679,7 @@ msgstr "매치됨"
 #~ msgstr "Matched To"
 
 #: src/components/MatchModal.tsx:306
-#: src/pages/LibraryDetailPage.tsx:1121
+#: src/pages/LibraryDetailPage.tsx:1122
 msgid "library.detail.matchModal.change"
 msgstr "변경"
 
@@ -1613,7 +1699,7 @@ msgid "library.detail.matchModal.noEpisodes"
 msgstr "에피소드를 찾을 수 없습니다"
 
 #: src/components/MatchModal.tsx:214
-#: src/pages/LibraryDetailPage.tsx:1026
+#: src/pages/LibraryDetailPage.tsx:1027
 msgid "library.detail.matchModal.noResults"
 msgstr "결과를 찾을 수 없습니다"
 
@@ -1624,12 +1710,12 @@ msgstr "결과를 찾을 수 없습니다"
 #~ msgstr "Search anime..."
 
 #: src/components/MatchModal.tsx:196
-#: src/pages/LibraryDetailPage.tsx:1008
+#: src/pages/LibraryDetailPage.tsx:1009
 msgid "library.detail.matchModal.searchHint"
 msgstr "이 파일에 매치할 애니메이션을 검색"
 
 #: src/components/MatchModal.tsx:182
-#: src/pages/LibraryDetailPage.tsx:995
+#: src/pages/LibraryDetailPage.tsx:996
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "애니메이션 검색…"
 
@@ -1638,7 +1724,7 @@ msgid "library.detail.matchModal.stepEpisode"
 msgstr "에피소드 선택"
 
 #: src/components/MatchModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:963
+#: src/pages/LibraryDetailPage.tsx:964
 msgid "library.detail.matchModal.stepSearch"
 msgstr "애니메이션 검색"
 
@@ -1650,34 +1736,34 @@ msgstr "파일 매치"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "이 파일을 애니메이션 에피소드에 매칭"
 
-#: src/pages/LibraryDetailPage.tsx:668
-#: src/pages/LibraryDetailPage.tsx:774
-#: src/pages/LibraryDetailPage.tsx:1235
-#: src/pages/LibraryDetailPage.tsx:1434
+#: src/pages/LibraryDetailPage.tsx:669
+#: src/pages/LibraryDetailPage.tsx:775
+#: src/pages/LibraryDetailPage.tsx:1236
+#: src/pages/LibraryDetailPage.tsx:1435
 msgid "library.detail.noFiles"
 msgstr "파일을 찾을 수 없습니다"
 
-#: src/pages/LibraryDetailPage.tsx:671
+#: src/pages/LibraryDetailPage.tsx:672
 msgid "library.detail.noFilesHint"
 msgstr "스캔을 실행하여 이 라이브러리의 미디어 파일을 검색"
 
-#: src/pages/LibraryDetailPage.tsx:1506
+#: src/pages/LibraryDetailPage.tsx:1507
 msgid "library.detail.noScans"
 msgstr "아직 스캔되지 않았습니다"
 
-#: src/pages/LibraryDetailPage.tsx:1509
+#: src/pages/LibraryDetailPage.tsx:1510
 msgid "library.detail.noScansHint"
 msgstr "첫 스캔을 실행하여 기록을 확인하세요"
 
-#: src/pages/LibraryDetailPage.tsx:1846
+#: src/pages/LibraryDetailPage.tsx:1856
 msgid "library.detail.notFound"
 msgstr "라이브러리를 찾을 수 없습니다"
 
-#: src/pages/LibraryDetailPage.tsx:197
+#: src/pages/LibraryDetailPage.tsx:198
 msgid "library.detail.pathCopied"
 msgstr "경로가 복사되었습니다"
 
-#: src/pages/LibraryDetailPage.tsx:614
+#: src/pages/LibraryDetailPage.tsx:615
 msgid "library.detail.play"
 msgstr "재생"
 
@@ -1703,50 +1789,50 @@ msgstr "재생"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:1952
+#: src/pages/LibraryDetailPage.tsx:1962
 msgid "library.detail.scanNow"
 msgstr "지금 스캔"
 
-#: src/pages/LibraryDetailPage.tsx:1956
+#: src/pages/LibraryDetailPage.tsx:1966
 msgid "library.detail.scanNowTooltip"
 msgstr "라이브러리에서 새 파일 스캔"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:717
+#: src/pages/LibraryDetailPage.tsx:718
 msgid "library.detail.searchFiles"
 msgstr "파일 검색…"
 
-#: src/pages/LibraryDetailPage.tsx:817
+#: src/pages/LibraryDetailPage.tsx:818
 msgid "library.detail.selected"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1649
-#: src/pages/LibraryDetailPage.tsx:1969
+#: src/pages/LibraryDetailPage.tsx:1652
+#: src/pages/LibraryDetailPage.tsx:1979
 msgid "library.detail.settings"
 msgstr "설정"
 
-#: src/pages/LibraryDetailPage.tsx:1973
+#: src/pages/LibraryDetailPage.tsx:1983
 msgid "library.detail.settingsTooltip"
 msgstr "라이브러리 설정"
 
 #~ msgid "library.detail.size"
 #~ msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:2051
+#: src/pages/LibraryDetailPage.tsx:2074
 msgid "library.detail.stats.files"
 msgstr "파일"
 
-#: src/pages/LibraryDetailPage.tsx:2068
+#: src/pages/LibraryDetailPage.tsx:2091
 msgid "library.detail.stats.matched"
 msgstr "매치됨"
 
-#: src/pages/LibraryDetailPage.tsx:2088
+#: src/pages/LibraryDetailPage.tsx:2111
 msgid "library.detail.stats.size"
 msgstr "크기"
 
-#: src/pages/LibraryDetailPage.tsx:2080
+#: src/pages/LibraryDetailPage.tsx:2103
 msgid "library.detail.stats.unmatched"
 msgstr "미매치"
 
@@ -1760,11 +1846,11 @@ msgstr "미매치"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:1789
+#: src/pages/LibraryDetailPage.tsx:1799
 msgid "library.detail.tab.anime"
 msgstr "애니메이션"
 
-#: src/pages/LibraryDetailPage.tsx:1790
+#: src/pages/LibraryDetailPage.tsx:1800
 msgid "library.detail.tab.files"
 msgstr "파일"
 
@@ -1772,7 +1858,7 @@ msgstr "파일"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "Matched"
 
-#: src/pages/LibraryDetailPage.tsx:1791
+#: src/pages/LibraryDetailPage.tsx:1801
 msgid "library.detail.tab.scanHistory"
 msgstr "스캔 기록"
 
@@ -1788,24 +1874,24 @@ msgstr "스캔 기록"
 #~ msgid "library.detail.totalSize"
 #~ msgstr "Total Size"
 
-#: src/pages/LibraryDetailPage.tsx:235
+#: src/pages/LibraryDetailPage.tsx:236
 msgid "library.detail.unmatch"
 msgstr "Unmatch"
 
-#: src/pages/LibraryDetailPage.tsx:188
+#: src/pages/LibraryDetailPage.tsx:189
 msgid "library.detail.unmatched"
 msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:730
-#: src/pages/LibraryDetailPage.tsx:1561
+#: src/pages/LibraryDetailPage.tsx:731
+#: src/pages/LibraryDetailPage.tsx:1562
 msgid "library.detail.unmatchedShort"
 msgstr "미매치"
 
-#: src/pages/LibraryDetailPage.tsx:2146
+#: src/pages/LibraryDetailPage.tsx:2169
 msgid "library.detail.viewTable"
 msgstr "테이블 보기"
 
-#: src/pages/LibraryDetailPage.tsx:2165
+#: src/pages/LibraryDetailPage.tsx:2188
 msgid "library.detail.viewTree"
 msgstr "트리 보기"
 
@@ -1843,7 +1929,7 @@ msgstr "라이브러리 편집"
 
 #: src/pages/LibrariesPage.tsx:1029
 #: src/pages/LibrariesPage.tsx:2809
-#: src/pages/LibraryDetailPage.tsx:1693
+#: src/pages/LibraryDetailPage.tsx:1696
 msgid "library.enabled"
 msgstr "활성화됨"
 
@@ -1885,14 +1971,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:235
-#: src/pages/LibraryDetailPage.tsx:1931
+#: src/pages/LibraryDetailPage.tsx:1941
 msgid "library.matching"
 msgstr "매칭 중…"
 
 #: src/pages/LibrariesPage.tsx:999
 #: src/pages/LibrariesPage.tsx:1922
 #: src/pages/LibrariesPage.tsx:2301
-#: src/pages/LibraryDetailPage.tsx:1654
+#: src/pages/LibraryDetailPage.tsx:1657
 msgid "library.name"
 msgstr "이름"
 
@@ -1902,7 +1988,7 @@ msgstr "이름"
 msgid "library.nameRequired"
 msgstr "이름은 필수입니다"
 
-#: src/pages/LibraryDetailPage.tsx:1866
+#: src/pages/LibraryDetailPage.tsx:1876
 msgid "library.neverScanned"
 msgstr "없음"
 
@@ -1931,7 +2017,7 @@ msgstr "내 라이브러리"
 
 #: src/pages/LibrariesPage.tsx:1489
 #: src/pages/LibrariesPage.tsx:2716
-#: src/pages/LibraryDetailPage.tsx:1667
+#: src/pages/LibraryDetailPage.tsx:1670
 msgid "library.path"
 msgstr "경로"
 
@@ -1979,14 +2065,14 @@ msgid "library.s3.secretKey"
 msgstr "시크릿 키"
 
 #: src/pages/LibrariesPage.tsx:3366
-#: src/pages/LibraryDetailPage.tsx:1721
+#: src/pages/LibraryDetailPage.tsx:1731
 msgid "library.saveChanges"
 msgstr "변경 사항 저장"
 
 #: src/pages/LibrariesPage.tsx:1562
 #: src/pages/LibrariesPage.tsx:2334
 #: src/pages/LibrariesPage.tsx:2834
-#: src/pages/LibraryDetailPage.tsx:1720
+#: src/pages/LibraryDetailPage.tsx:1730
 msgid "library.saving"
 msgstr "저장 중…"
 
@@ -1996,12 +2082,12 @@ msgstr "저장 중…"
 
 #: src/pages/LibrariesPage.tsx:1536
 #: src/pages/LibrariesPage.tsx:2795
-#: src/pages/LibraryDetailPage.tsx:1681
+#: src/pages/LibraryDetailPage.tsx:1684
 msgid "library.scanInterval"
 msgstr "스캔 간격"
 
 #: src/pages/LibrariesPage.tsx:233
-#: src/pages/LibraryDetailPage.tsx:1951
+#: src/pages/LibraryDetailPage.tsx:1961
 msgid "library.scanning"
 msgstr "스캔 중"
 
@@ -2127,11 +2213,11 @@ msgstr "라이브러리가 추가되었습니다"
 msgid "library.toast.deleted"
 msgstr "라이브러리가 삭제되었습니다"
 
-#: src/pages/LibraryDetailPage.tsx:1784
+#: src/pages/LibraryDetailPage.tsx:1794
 msgid "library.toast.matchFailed"
 msgstr "자동 매치 실패"
 
-#: src/pages/LibraryDetailPage.tsx:1781
+#: src/pages/LibraryDetailPage.tsx:1791
 msgid "library.toast.matchStarted"
 msgstr "자동 매치가 시작되었습니다"
 
@@ -2140,16 +2226,16 @@ msgstr "자동 매치가 시작되었습니다"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "Scan complete"
 
-#: src/pages/LibraryDetailPage.tsx:1774
+#: src/pages/LibraryDetailPage.tsx:1784
 msgid "library.toast.scanFailed"
 msgstr "스캔 실패"
 
-#: src/pages/LibraryDetailPage.tsx:1771
+#: src/pages/LibraryDetailPage.tsx:1781
 msgid "library.toast.scanStarted"
 msgstr "스캔이 시작되었습니다"
 
 #: src/pages/LibrariesPage.tsx:3066
-#: src/pages/LibraryDetailPage.tsx:1640
+#: src/pages/LibraryDetailPage.tsx:1643
 msgid "library.toast.updated"
 msgstr "라이브러리가 업데이트되었습니다"
 
@@ -2367,7 +2453,7 @@ msgstr "홈"
 #: src/components/AppSidebar.tsx:33
 #: src/components/AppSidebar.tsx:229
 #: src/pages/LibrariesPage.tsx:3025
-#: src/pages/LibraryDetailPage.tsx:1732
+#: src/pages/LibraryDetailPage.tsx:1742
 msgid "nav.libraries"
 msgstr "라이브러리"
 
@@ -2412,8 +2498,24 @@ msgstr "설정"
 #~ msgid "nav.trending"
 #~ msgstr "인기"
 
-#: src/pages/LibraryDetailPage.tsx:338
+#: src/pages/library/RenamePreviewPage.tsx:89
+msgid "New"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:82
+msgid "No duplicates."
+msgstr ""
+
+#: src/pages/LibraryDetailPage.tsx:339
 msgid "No incomplete anime in this library."
+msgstr ""
+
+#: src/pages/library/RenameHistoryPage.tsx:56
+msgid "No rename batches yet."
+msgstr ""
+
+#: src/pages/library/RenamePreviewPage.tsx:82
+msgid "No rename plans."
 msgstr ""
 
 #: src/components/anime/EpisodeStatusCard.tsx:46
@@ -2729,6 +2831,10 @@ msgstr "모두 보기"
 msgid "notifications.yesterday"
 msgstr "어제"
 
+#: src/pages/library/RenamePreviewPage.tsx:88
+msgid "Old"
+msgstr ""
+
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
 #~ msgstr "First page"
@@ -2770,9 +2876,35 @@ msgid "pagination.rows"
 msgstr "행"
 
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:872
+#: src/pages/AnimeDetailPage.tsx:827
 msgid "player.remaining"
 msgstr "남음"
+
+#: src/components/library/RenameConfigEditor.tsx:65
+msgid "Preview"
+msgstr ""
+
+#: src/pages/library/RenameHistoryPage.tsx:52
+msgid "Rename history"
+msgstr ""
+
+#: src/pages/library/RenamePreviewPage.tsx:58
+msgid "Rename preview"
+msgstr ""
+
+#: src/components/library/RenameConfigEditor.tsx:34
+msgid "Rename template"
+msgstr ""
+
+#: src/pages/library/RenameHistoryPage.tsx:64
+msgid "Reverted"
+msgstr ""
+
+#. placeholder {0}: res.reverted
+#. placeholder {1}: res.skipped
+#: src/pages/library/RenameHistoryPage.tsx:25
+msgid "Reverted {0} files, skipped {1}"
+msgstr ""
 
 #: src/components/RuleEditorModal.tsx:624
 msgid "ruleEditor.addGroup"
@@ -2993,19 +3125,23 @@ msgstr "애니메 검색하여 연결..."
 msgid "ruleEditor.titleMatch"
 msgstr "제목 매칭"
 
+#: src/components/library/RenameConfigEditor.tsx:59
+msgid "Save"
+msgstr ""
+
 #: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "스캔 완료"
 
-#: src/pages/LibraryDetailPage.tsx:1989
+#: src/pages/LibraryDetailPage.tsx:2012
 msgid "scan.phase.hashing"
 msgstr "해싱"
 
-#: src/pages/LibraryDetailPage.tsx:1990
+#: src/pages/LibraryDetailPage.tsx:2013
 msgid "scan.phase.matching"
 msgstr "매칭"
 
-#: src/pages/LibraryDetailPage.tsx:1987
+#: src/pages/LibraryDetailPage.tsx:2010
 msgid "scan.phase.scanning"
 msgstr "스캔"
 
@@ -3042,7 +3178,7 @@ msgstr "비활성화"
 msgid "scanInterval.weekly"
 msgstr "매주"
 
-#: src/pages/LibraryDetailPage.tsx:723
+#: src/pages/LibraryDetailPage.tsx:724
 #: src/pages/SchedulePage.tsx:392
 msgid "schedule.all"
 msgstr "전체"
@@ -3342,6 +3478,10 @@ msgstr "세션 취소 실패"
 #: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.title"
 msgstr "활성 세션"
+
+#: src/components/anime/DuplicatesPanel.tsx:99
+msgid "Set preferred"
+msgstr ""
 
 #: src/pages/settings/GeneralPanel.tsx:77
 msgid "settings.appearance.language"
@@ -3890,6 +4030,10 @@ msgstr "텍스트 색상"
 msgid "settings.volumeBoost"
 msgstr "음량 부스트"
 
+#: src/pages/library/RenamePreviewPage.tsx:87
+msgid "Status"
+msgstr ""
+
 #~ msgid "subscribe.add"
 #~ msgstr "추가"
 
@@ -3987,6 +4131,10 @@ msgstr "음량 부스트"
 #~ msgid "subscribe.success"
 #~ msgstr "추적이 생성되었습니다! 새 에피소드가 자동 다운로드됩니다."
 
+#: src/pages/library/LibraryDuplicatesPage.tsx:69
+msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
+msgstr ""
+
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0}일 전"
 
@@ -4034,6 +4182,23 @@ msgstr "{seconds}초 전"
 #: src/pages/TrendingPage.tsx:22
 #~ msgid "trending.tab.trending"
 #~ msgstr "인기"
+
+#: src/pages/library/RenameHistoryPage.tsx:94
+msgid "Undo"
+msgstr ""
+
+#. placeholder {0}: b.batch_id.slice(0, 8)
+#: src/pages/library/RenameHistoryPage.tsx:87
+msgid "Undo batch {0}?"
+msgstr ""
+
+#: src/pages/LibraryDetailPage.tsx:1996
+msgid "View and clean up duplicate files"
+msgstr ""
+
+#: src/pages/library/LibraryDuplicatesPage.tsx:90
+msgid "Wasted"
+msgstr ""
 
 #~ msgid "watch.audioTrack"
 #~ msgstr "Audio"
