@@ -118,6 +118,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.GET("/:id/connection-status", h.handleGetLibraryConnectionStatus)
 	libGroup.POST("/test-connection", h.handleTestConnection)
 	libGroup.POST("/browse", h.handleBrowse)
+	libGroup.GET("/:id/missing-summary", h.handleLibraryMissingSummary)
 
 	// Rclone remotes — public (used during library setup to pick OAuth remotes)
 	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
@@ -177,6 +178,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Anime — protected
 	animeGroup := v1.Group("/anime", authMiddleware(h.queries))
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
+	animeGroup.GET("/:bangumiId/missing", h.handleAnimeMissing)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 	animeGroup.PATCH("/:bangumiId/sync-flags", h.handleUpdateAnimeSyncFlags)
 
