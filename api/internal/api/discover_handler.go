@@ -49,11 +49,27 @@ func (h *handler) handleSearch(c echo.Context) error {
 }
 
 func (h *handler) handleAnimeDetail(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	rawID := c.Param("id")
+	ctx := c.Request().Context()
+
+	// AniList-only: id starts with "al-"
+	if after, ok := strings.CutPrefix(rawID, "al-"); ok {
+		alID, err := strconv.Atoi(after)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "invalid anilist id")
+		}
+		detail, err := h.metadata.GetAnimeDetailByAniList(ctx, alID)
+		if err != nil {
+			return mapMetadataError(err)
+		}
+		return c.JSON(http.StatusOK, detail)
+	}
+
+	id, err := strconv.Atoi(rawID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
-	detail, err := h.metadata.GetAnimeDetail(c.Request().Context(), id)
+	detail, err := h.metadata.GetAnimeDetail(ctx, id)
 	if err != nil {
 		return mapMetadataError(err)
 	}
