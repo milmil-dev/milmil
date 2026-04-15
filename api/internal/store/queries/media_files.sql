@@ -161,3 +161,13 @@ SET episode_id = sqlc.arg('episode_id'),
     match_status = 'manual',
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
 WHERE id = sqlc.arg('id');
+
+-- name: UpdateMediaFilePath :exec
+UPDATE media_files SET path = ?, filename = ?,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?;
+
+-- name: ListMediaFilesByAnime :many
+SELECT mf.* FROM media_files mf
+JOIN episodes e ON e.id = mf.episode_id
+WHERE e.anime_id = ?;

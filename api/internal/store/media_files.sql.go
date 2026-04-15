@@ -566,6 +566,59 @@ func (q *Queries) ListMediaFileTreeByLibrary(ctx context.Context, libraryID stri
 	return items, nil
 }
 
+const listMediaFilesByAnime = `-- name: ListMediaFilesByAnime :many
+SELECT mf.id, mf.episode_id, mf.library_id, mf.path, mf.filename, mf.size_bytes, mf.duration_seconds, mf.container_format, mf.video_codec, mf.audio_codec, mf.width, mf.height, mf.file_hash, mf.dandanplay_episode_id, mf.match_status, mf.video_tracks, mf.audio_tracks, mf.subtitle_tracks, mf.created_at, mf.updated_at, mf.dandanplay_anime_id, mf.bangumi_subject_id, mf.bangumi_episode_id FROM media_files mf
+JOIN episodes e ON e.id = mf.episode_id
+WHERE e.anime_id = ?
+`
+
+func (q *Queries) ListMediaFilesByAnime(ctx context.Context, animeID string) ([]MediaFile, error) {
+	rows, err := q.db.QueryContext(ctx, listMediaFilesByAnime, animeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MediaFile{}
+	for rows.Next() {
+		var i MediaFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMediaFilesByEpisode = `-- name: ListMediaFilesByEpisode :many
 SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files WHERE episode_id = ? ORDER BY size_bytes DESC
 `
@@ -886,6 +939,23 @@ type UpdateMediaFileMatchParams struct {
 
 func (q *Queries) UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error {
 	_, err := q.db.ExecContext(ctx, updateMediaFileMatch, arg.DandanplayAnimeID, arg.DandanplayEpisodeID, arg.ID)
+	return err
+}
+
+const updateMediaFilePath = `-- name: UpdateMediaFilePath :exec
+UPDATE media_files SET path = ?, filename = ?,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?
+`
+
+type UpdateMediaFilePathParams struct {
+	Path     string `json:"path"`
+	Filename string `json:"filename"`
+	ID       string `json:"id"`
+}
+
+func (q *Queries) UpdateMediaFilePath(ctx context.Context, arg UpdateMediaFilePathParams) error {
+	_, err := q.db.ExecContext(ctx, updateMediaFilePath, arg.Path, arg.Filename, arg.ID)
 	return err
 }
 
