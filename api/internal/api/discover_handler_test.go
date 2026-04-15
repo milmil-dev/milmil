@@ -92,6 +92,10 @@ func (m *stubAniList) GetAiringSchedule(ctx context.Context, from, to int64) ([]
 	return nil, nil
 }
 
+func (m *stubAniList) GetMediaRelations(ctx context.Context, id int) (*anilist.Media, error) {
+	return nil, nil
+}
+
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 func newTestAppWithMetadata(t *testing.T, bgm bangumi.Client, al anilist.Client) *echo.Echo {
