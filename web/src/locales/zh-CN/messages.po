@@ -300,11 +300,11 @@ msgstr "更新密码"
 msgid "account.updating"
 msgstr "更新中..."
 
-#: src/pages/AnimeDetailPage.tsx:613
+#: src/pages/AnimeDetailPage.tsx:634
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:853
+#: src/pages/AnimeDetailPage.tsx:928
 msgid "anime.characters"
 msgstr "角色"
 
@@ -312,7 +312,7 @@ msgstr "角色"
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:986
+#: src/pages/AnimeDetailPage.tsx:1061
 msgid "anime.comments"
 msgstr "评论"
 
@@ -320,52 +320,62 @@ msgstr "评论"
 #~ msgid "anime.continueWatching"
 #~ msgstr "继续观看"
 
+#: src/pages/AnimeDetailPage.tsx:661
+#: src/pages/AnimeDetailPage.tsx:697
+msgid "anime.enableTrackerSync"
+msgstr ""
+
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
 #~ msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:777
+#: src/pages/AnimeDetailPage.tsx:852
 msgid "anime.episodes"
 msgstr "集数"
+
+#: src/pages/AnimeDetailPage.tsx:662
+#: src/pages/AnimeDetailPage.tsx:698
+msgid "anime.excludeTrackerSync"
+msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
 #~ msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:664
+#: src/pages/AnimeDetailPage.tsx:739
 msgid "anime.myScore"
 msgstr "我的评分"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "无本地文件"
 
-#: src/pages/AnimeDetailPage.tsx:506
+#: src/pages/AnimeDetailPage.tsx:527
 msgid "anime.notAired"
 msgstr "尚未播出"
 
-#: src/pages/AnimeDetailPage.tsx:312
+#: src/pages/AnimeDetailPage.tsx:322
 msgid "anime.notFound"
 msgstr "找不到动画"
 
-#: src/pages/AnimeDetailPage.tsx:528
+#: src/pages/AnimeDetailPage.tsx:549
 msgid "anime.playableEps"
 msgstr "集可播放"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:499
+#: src/pages/AnimeDetailPage.tsx:520
 msgid "anime.ratings"
 msgstr "评分"
 
-#: src/pages/AnimeDetailPage.tsx:900
+#: src/pages/AnimeDetailPage.tsx:975
 msgid "anime.recommendations"
 msgstr "推荐"
 
-#: src/pages/AnimeDetailPage.tsx:874
+#: src/pages/AnimeDetailPage.tsx:949
 msgid "anime.relations"
 msgstr "相关作品"
 
-#: src/pages/AnimeDetailPage.tsx:938
+#: src/pages/AnimeDetailPage.tsx:1013
 msgid "anime.reviews"
 msgstr "评论"
 
@@ -373,27 +383,31 @@ msgstr "评论"
 #~ msgid "anime.score"
 #~ msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:625
+#: src/pages/AnimeDetailPage.tsx:646
 msgid "anime.searchResources"
 msgstr "搜索资源"
 
 #~ msgid "anime.season"
 #~ msgstr "季"
 
-#: src/pages/AnimeDetailPage.tsx:522
+#: src/pages/AnimeDetailPage.tsx:543
 msgid "anime.subscribed"
 msgstr "已追番"
+
+#: src/pages/AnimeDetailPage.tsx:271
+msgid "anime.syncFlagsUpdated"
+msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
 #~ msgstr "简介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:823
+#: src/pages/AnimeDetailPage.tsx:898
 msgid "anime.trailer"
 msgstr "预告片"
 
-#: src/pages/AnimeDetailPage.tsx:859
+#: src/pages/AnimeDetailPage.tsx:934
 msgid "anime.voiceActor"
 msgstr "声优"
 
@@ -1106,14 +1120,14 @@ msgstr "全部"
 #~ msgstr "更改状态"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:653
+#: src/pages/AnimeDetailPage.tsx:728
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "已完成"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:659
+#: src/pages/AnimeDetailPage.tsx:734
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1135,14 +1149,14 @@ msgid "collection.goToLibraries"
 msgstr "前往媒体库"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:656
+#: src/pages/AnimeDetailPage.tsx:731
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暂停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:650
+#: src/pages/AnimeDetailPage.tsx:725
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1178,7 +1192,7 @@ msgid "collection.viewAll"
 msgstr "查看全部"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:647
+#: src/pages/AnimeDetailPage.tsx:722
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1188,7 +1202,7 @@ msgstr "观看中"
 msgid "common.back"
 msgstr "返回"
 
-#: src/pages/AnimeDetailPage.tsx:327
+#: src/pages/AnimeDetailPage.tsx:337
 msgid "common.backHome"
 msgstr "返回首页"
 
@@ -1213,15 +1227,15 @@ msgstr "已复制"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:489
-#: src/pages/AnimeDetailPage.tsx:779
+#: src/pages/AnimeDetailPage.tsx:510
+#: src/pages/AnimeDetailPage.tsx:854
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 #: src/pages/LibraryDetailPage.tsx:998
 msgid "common.ep"
 msgstr "集"
 
-#: src/pages/AnimeDetailPage.tsx:312
+#: src/pages/AnimeDetailPage.tsx:322
 #: src/pages/LibraryDetailPage.tsx:1785
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
@@ -1239,7 +1253,7 @@ msgstr "加载中…"
 msgid "common.minuteShort"
 msgstr "分钟"
 
-#: src/pages/AnimeDetailPage.tsx:321
+#: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -2725,7 +2739,7 @@ msgid "pagination.rows"
 msgstr "行"
 
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:754
+#: src/pages/AnimeDetailPage.tsx:829
 msgid "player.remaining"
 msgstr "剩余"
 
@@ -3447,59 +3461,71 @@ msgstr "字体大小"
 msgid "settings.general.subtitle"
 msgstr "语言、收藏与应用偏好设置"
 
-#: src/pages/settings/IntegrationsPanel.tsx:182
+#: src/pages/settings/IntegrationsPanel.tsx:260
 msgid "settings.integration.authUrlFailed"
 msgstr "获取授权链接失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:287
+#: src/pages/settings/IntegrationsPanel.tsx:372
 msgid "settings.integration.connect"
 msgstr "连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:212
+#: src/pages/settings/IntegrationsPanel.tsx:289
 msgid "settings.integration.connected"
 msgstr "已连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:286
+#: src/pages/settings/IntegrationsPanel.tsx:371
 msgid "settings.integration.connecting"
 msgstr "连接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:301
+#: src/pages/settings/IntegrationsPanel.tsx:386
 msgid "settings.integration.disconnect"
 msgstr "断开连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:188
+#: src/pages/settings/IntegrationsPanel.tsx:266
 msgid "settings.integration.disconnected"
 msgstr "已断开连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:191
+#: src/pages/settings/IntegrationsPanel.tsx:270
 msgid "settings.integration.disconnectFailed"
 msgstr "断开连接失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:300
+#: src/pages/settings/IntegrationsPanel.tsx:385
 msgid "settings.integration.disconnecting"
 msgstr "断开连接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:213
+#: src/pages/settings/IntegrationsPanel.tsx:149
+msgid "settings.integration.lastSync"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:290
 msgid "settings.integration.notConnected"
 msgstr "未连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:311
+#: src/pages/settings/IntegrationsPanel.tsx:155
+msgid "settings.integration.pending"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:162
+msgid "settings.integration.recentErrors"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:396
 msgid "settings.integration.sync"
 msgstr "同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:201
+#: src/pages/settings/IntegrationsPanel.tsx:277
 msgid "settings.integration.syncComplete"
 msgstr "同步完成"
 
 #: src/pages/settings/IntegrationsPanel.tsx:201
-msgid "settings.integration.syncErrors"
-msgstr "个错误"
+#~ msgid "settings.integration.syncErrors"
+#~ msgstr "个错误"
 
-#: src/pages/settings/IntegrationsPanel.tsx:204
+#: src/pages/settings/IntegrationsPanel.tsx:281
 msgid "settings.integration.syncFailed"
 msgstr "同步失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:310
+#: src/pages/settings/IntegrationsPanel.tsx:395
 msgid "settings.integration.syncing"
 msgstr "同步中…"
 
@@ -3507,7 +3533,7 @@ msgstr "同步中…"
 #~ msgid "settings.integration.title"
 #~ msgstr "联动"
 
-#: src/pages/settings/IntegrationsPanel.tsx:333
+#: src/pages/settings/IntegrationsPanel.tsx:418
 msgid "settings.integrations.description"
 msgstr "连接外部服务并同步数据"
 
@@ -3534,7 +3560,7 @@ msgstr "下载"
 msgid "settings.nav.general"
 msgstr "通用"
 
-#: src/pages/settings/IntegrationsPanel.tsx:330
+#: src/pages/settings/IntegrationsPanel.tsx:415
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "集成"
@@ -3725,8 +3751,8 @@ msgstr "饱和度"
 
 #: src/pages/settings/BackupPanel.tsx:341
 #: src/pages/settings/BackupPanel.tsx:577
-#: src/pages/settings/IntegrationsPanel.tsx:116
-#: src/pages/settings/IntegrationsPanel.tsx:273
+#: src/pages/settings/IntegrationsPanel.tsx:118
+#: src/pages/settings/IntegrationsPanel.tsx:358
 msgid "settings.save"
 msgstr "保存"
 
@@ -3735,8 +3761,8 @@ msgstr "保存"
 #: src/pages/settings/GeneralPanel.tsx:44
 #: src/pages/settings/GeneralPanel.tsx:54
 #: src/pages/settings/GeneralPanel.tsx:64
-#: src/pages/settings/IntegrationsPanel.tsx:52
-#: src/pages/settings/IntegrationsPanel.tsx:171
+#: src/pages/settings/IntegrationsPanel.tsx:54
+#: src/pages/settings/IntegrationsPanel.tsx:249
 #: src/pages/settings/PlayerPanel.tsx:195
 msgid "settings.saved"
 msgstr "已保存"
@@ -3745,16 +3771,16 @@ msgstr "已保存"
 #: src/pages/settings/BackupPanel.tsx:403
 #: src/pages/settings/GeneralPanel.tsx:47
 #: src/pages/settings/GeneralPanel.tsx:57
-#: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:174
+#: src/pages/settings/IntegrationsPanel.tsx:57
+#: src/pages/settings/IntegrationsPanel.tsx:252
 #: src/pages/settings/PlayerPanel.tsx:198
 msgid "settings.saveFailed"
 msgstr "保存失败"
 
 #: src/pages/settings/BackupPanel.tsx:340
 #: src/pages/settings/BackupPanel.tsx:576
-#: src/pages/settings/IntegrationsPanel.tsx:115
-#: src/pages/settings/IntegrationsPanel.tsx:272
+#: src/pages/settings/IntegrationsPanel.tsx:117
+#: src/pages/settings/IntegrationsPanel.tsx:357
 #: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "保存中…"

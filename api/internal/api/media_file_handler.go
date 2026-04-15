@@ -62,7 +62,7 @@ LIMIT ? OFFSET ?`, sortCol, sortDir)
 	}
 	defer rows.Close()
 
-	var items []mediaFileRow
+	items := make([]mediaFileRow, 0)
 	for rows.Next() {
 		var r mediaFileRow
 		if err := rows.Scan(

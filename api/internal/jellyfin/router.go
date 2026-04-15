@@ -1,6 +1,7 @@
 package jellyfin
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/google/uuid"
@@ -102,9 +103,10 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	auth.GET("/MediaSegments/:itemId", h.handleMediaSegments)
 	auth.GET("/UserItems/Resume", h.handleItemsResume)
 
-	// Catch-all for unimplemented endpoints — return 404 (not 501)
-	// Infuse treats 501 as fatal but ignores 404 gracefully
+	// Catch-all for unimplemented endpoints — return 501 so callers can
+	// distinguish "route does not exist at all" (404 from Echo) from
+	// "this Jellyfin endpoint is known but not implemented here".
 	jf.Any("/*", func(c echo.Context) error {
-		return c.JSON(404, JellyfinError{Message: "Not found"})
+		return c.JSON(http.StatusNotImplemented, JellyfinError{Message: "Not implemented"})
 	})
 }

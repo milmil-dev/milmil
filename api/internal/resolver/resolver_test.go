@@ -262,6 +262,8 @@ func TestResolveLibrary_SkipsExistingAnime(t *testing.T) {
 		Genres:              "[]",
 		BangumiID:           sql.NullInt64{Int64: 42, Valid: true},
 		DandanplayBangumiID: sql.NullInt64{Int64: 100, Valid: true},
+		WatchStatus:         "none",
+		Score:               7.5,
 	})
 	if err != nil {
 		t.Fatal(err)
