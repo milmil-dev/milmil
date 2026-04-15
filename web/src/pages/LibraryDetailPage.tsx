@@ -21,7 +21,7 @@ import { Link, useParams } from '@tanstack/react-router';
 import { type ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { DataPagination } from '../components/DataPagination';
@@ -47,6 +47,11 @@ import {
   type MediaFileEntry,
   type MediaFilesResponse,
 } from '../lib/api/library';
+import {
+  completenessApi,
+  completenessKeys,
+  type CompletenessReport,
+} from '../lib/api/completeness';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
@@ -253,16 +258,30 @@ function FileActionMenu({
 function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
+  const [incompleteOnly, setIncompleteOnly] = useState(false);
   const { data: animeList, isLoading } = useQuery({
     queryKey: [...libraryKeys.detail(libraryId), 'anime'],
     queryFn: () => libraryApi.anime(libraryId),
   });
+
+  const { data: missingSummary } = useQuery({
+    queryKey: completenessKeys.library(libraryId),
+    queryFn: () => completenessApi.librarySummary(libraryId),
+    enabled: !!libraryId,
+  });
+
+  const missingByAnimeID = useMemo(() => {
+    const map = new Map<string, CompletenessReport>();
+    (missingSummary ?? []).forEach((r) => map.set(r.anime_id, r));
+    return map;
+  }, [missingSummary]);
 
   const deleteMutation = useMutation({
     mutationFn: (animeId: string) => libraryApi.deleteAnime(libraryId, animeId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...libraryKeys.detail(libraryId), 'anime'] });
       queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
+      queryClient.invalidateQueries({ queryKey: completenessKeys.library(libraryId) });
       toast.success(i18n._(msg`library.anime.deleted`));
     },
     onError: () => {
@@ -292,31 +311,73 @@ function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
     );
   }
 
+  const visibleAnime = incompleteOnly
+    ? animeList.filter((a) => (missingByAnimeID.get(a.id)?.missing.length ?? 0) > 0)
+    : animeList;
+
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
-      {animeList.map((a) => (
-        <AnimeCard
-          key={a.id}
-          anime={{
-            ...a,
-            cover_image: a.cover_image,
-          }}
-        >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (confirm(i18n._(msg`library.anime.confirmDelete`))) {
-                deleteMutation.mutate(a.id);
-              }
-            }}
-            className="absolute top-1.5 left-1.5 p-1 rounded bg-black/60 text-white/50 hover:text-red-400 hover:bg-black/80 backdrop-blur-sm transition-colors opacity-0 group-hover/media-entry-card:opacity-100"
-          >
-            <HugeiconsIcon icon={Cancel01Icon} size={12} />
-          </button>
-        </AnimeCard>
-      ))}
+    <div className="space-y-4">
+      {/* Filter bar */}
+      <div className="flex items-center justify-end">
+        <label className="flex items-center gap-2 text-sm text-white/70 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={incompleteOnly}
+            onChange={(e) => setIncompleteOnly(e.target.checked)}
+            className="h-4 w-4 rounded border-white/20 bg-black/40"
+          />
+          {i18n._(msg`Incomplete only`)}
+        </label>
+      </div>
+
+      {visibleAnime.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-white/30">
+          <HugeiconsIcon icon={SparklesIcon} size={40} className="mb-3 opacity-50" />
+          <p className="text-sm">
+            {incompleteOnly
+              ? i18n._(msg`No incomplete anime in this library.`)
+              : i18n._(msg`library.anime.empty`)}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+          {visibleAnime.map((a) => {
+            const report = missingByAnimeID.get(a.id);
+            const missingCount = report?.missing.length ?? 0;
+            return (
+              <AnimeCard
+                key={a.id}
+                anime={{
+                  ...a,
+                  cover_image: a.cover_image,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm(i18n._(msg`library.anime.confirmDelete`))) {
+                      deleteMutation.mutate(a.id);
+                    }
+                  }}
+                  className="absolute top-1.5 left-1.5 p-1 rounded bg-black/60 text-white/50 hover:text-red-400 hover:bg-black/80 backdrop-blur-sm transition-colors opacity-0 group-hover/media-entry-card:opacity-100"
+                >
+                  <HugeiconsIcon icon={Cancel01Icon} size={12} />
+                </button>
+                {missingCount > 0 && (
+                  <div
+                    className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
+                    title={i18n._(msg`${missingCount} missing episodes`)}
+                  >
+                    ⚠ {missingCount}
+                  </div>
+                )}
+              </AnimeCard>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
