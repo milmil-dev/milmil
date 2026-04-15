@@ -14,8 +14,24 @@ import (
 	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/library/renamer"
+	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 )
+
+// ProviderFactory constructs a storage.Provider for a library. Injected into
+// Resolver so the resolver package doesn't have to know about encryption keys
+// or source-type factories. Nil is allowed — auto-rename becomes a no-op.
+type ProviderFactory func(lib store.Library) (storage.Provider, error)
+
+// providerMoverAdapter bridges storage.Provider's os.FileInfo Stat signature
+// to renamer.Mover's `any` Stat. Local to resolver to avoid cross-package
+// coupling with the api package's identical adapter.
+type providerMoverAdapter struct{ p storage.Provider }
+
+func (a *providerMoverAdapter) Stat(path string) (any, error) { return a.p.Stat(path) }
+func (a *providerMoverAdapter) MkdirAll(path string) error    { return a.p.MkdirAll(path) }
+func (a *providerMoverAdapter) Rename(o, n string) error      { return a.p.Rename(o, n) }
 
 type ResolveSummary struct {
 	AnimeCreated    int `json:"anime_created"`
@@ -25,15 +41,74 @@ type ResolveSummary struct {
 }
 
 type Resolver struct {
-	queries    *store.Queries
-	bangumi    bangumi.Client
-	dandanplay dandanplay.Client
-	cache      cache.Cache
-	anidb      *anidb.Service
+	queries     *store.Queries
+	bangumi     bangumi.Client
+	dandanplay  dandanplay.Client
+	cache       cache.Cache
+	anidb       *anidb.Service
+	newProvider ProviderFactory
 }
 
-func New(q *store.Queries, bgm bangumi.Client, ddp dandanplay.Client, c cache.Cache, anidbSvc *anidb.Service) *Resolver {
-	return &Resolver{queries: q, bangumi: bgm, dandanplay: ddp, cache: c, anidb: anidbSvc}
+func New(q *store.Queries, bgm bangumi.Client, ddp dandanplay.Client, c cache.Cache, anidbSvc *anidb.Service, newProvider ProviderFactory) *Resolver {
+	return &Resolver{queries: q, bangumi: bgm, dandanplay: ddp, cache: c, anidb: anidbSvc, newProvider: newProvider}
+}
+
+// runAutoRename renders and applies the library's rename template for every
+// media file of the given anime. Best-effort: any error logs a warning and
+// returns without blocking the resolver pipeline.
+func (r *Resolver) runAutoRename(ctx context.Context, animeID string) {
+	if r.newProvider == nil {
+		return
+	}
+	anime, err := r.queries.GetAnime(ctx, animeID)
+	if err != nil {
+		return
+	}
+	if !anime.LibraryID.Valid {
+		return
+	}
+	lib, err := r.queries.GetLibrary(ctx, anime.LibraryID.String)
+	if err != nil {
+		return
+	}
+	if lib.RenameAuto != 1 || lib.RenameTemplate == "" {
+		return
+	}
+	compiled, err := renamer.Compile(lib.RenameTemplate)
+	if err != nil {
+		slog.Warn("renamer: auto compile", "library", lib.ID, "err", err)
+		return
+	}
+	files, err := r.queries.ListMediaFilesByAnime(ctx, animeID)
+	if err != nil {
+		return
+	}
+	if len(files) == 0 {
+		return
+	}
+	provider, err := r.newProvider(lib)
+	if err != nil {
+		slog.Warn("renamer: provider", "library", lib.ID, "err", err)
+		return
+	}
+	defer provider.Close()
+
+	ctxs := make([]renamer.FileContext, 0, len(files))
+	for _, f := range files {
+		fc := renamer.FileContext{MediaFile: f, Anime: anime}
+		if f.EpisodeID.Valid {
+			if ep, err := r.queries.GetEpisode(ctx, f.EpisodeID.String); err == nil {
+				fc.Episode = ep
+			}
+		}
+		ctxs = append(ctxs, fc)
+	}
+
+	mover := &providerMoverAdapter{p: provider}
+	plans := renamer.Plan(ctx, ctxs, compiled, lib.Path, mover)
+	if _, err := renamer.Apply(ctx, r.queries, mover, lib.ID, plans); err != nil {
+		slog.Warn("renamer: apply", "library", lib.ID, "err", err)
+	}
 }
 
 // nullInt64Value returns the int64 inside n, or 0 if invalid.
@@ -195,6 +270,9 @@ func (r *Resolver) ResolveBangumiMatched(ctx context.Context, libraryID string) 
 				)
 			}
 		}
+
+		// Auto-rename once all files for this anime are linked to their episodes.
+		r.runAutoRename(ctx, anime.ID)
 	}
 
 	return summary, nil
@@ -240,6 +318,9 @@ func (r *Resolver) resolveAnimeGroup(ctx context.Context, libraryID string, ddpA
 		})
 		summary.FilesLinked++
 	}
+
+	// Auto-rename once all files for this anime are linked to their episodes.
+	r.runAutoRename(ctx, anime.ID)
 
 	return nil
 }

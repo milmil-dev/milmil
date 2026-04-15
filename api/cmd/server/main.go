@@ -39,6 +39,7 @@ import (
 	"github.com/milmil/api/internal/notification"
 	_ "github.com/milmil/api/internal/notification/providers" // register provider factories
 	"github.com/milmil/api/internal/resolver"
+	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/sync/providers"
@@ -223,7 +224,10 @@ func main() {
 	step = time.Now()
 	slog.Debug("boot: creating matcher + resolver")
 	matcherSvc := matcher.NewMulti(store.New(database), ddpClient, bangumiClient, tmdbClient, cacheClient, anidbSvc)
-	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient, anidbSvc)
+	providerFactory := func(lib store.Library) (storage.Provider, error) {
+		return storage.ProviderForLibrary(lib, cfg.EncryptionKey)
+	}
+	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient, anidbSvc, providerFactory)
 	slog.Debug("boot: matcher + resolver ready", "took", time.Since(step))
 
 	// Download engine (built-in torrent + HTTP)
