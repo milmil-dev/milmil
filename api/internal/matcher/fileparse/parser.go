@@ -13,6 +13,7 @@ type ParsedFilename struct {
 	Season        int
 	SubGroup      string
 	Year          int
+	Resolution    int
 }
 
 var (
@@ -26,6 +27,8 @@ var (
 	reChinese       = regexp.MustCompile(`第(\d{1,3})[話集话]`)
 	reBracketEp     = regexp.MustCompile(`\[(\d{1,3})\]`)
 	reBareNumber    = regexp.MustCompile(`^(\d{1,3})$`)
+	reResolution    = regexp.MustCompile(`(?i)\b(2160|1080|720|480)p\b`)
+	reResolution4K  = regexp.MustCompile(`(?i)\b4k\b`)
 )
 
 func Parse(filename string) ParsedFilename {
@@ -41,6 +44,14 @@ func Parse(filename string) ParsedFilename {
 		if y, err := strconv.Atoi(m[1]); err == nil {
 			result.Year = y
 		}
+	}
+
+	if m := reResolution.FindStringSubmatch(name); m != nil {
+		if r, err := strconv.Atoi(m[1]); err == nil {
+			result.Resolution = r
+		}
+	} else if reResolution4K.MatchString(name) {
+		result.Resolution = 2160
 	}
 
 	for reTrailingTags.MatchString(name) || reTrailingParen.MatchString(name) {
