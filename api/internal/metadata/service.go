@@ -756,17 +756,19 @@ func (s *Service) ResolveBangumiID(ctx context.Context, anilistID int) (int, err
 		if err != nil || len(subjects) == 0 {
 			continue
 		}
-		// Pick the result whose name best matches the query title.
-		// Prefer exact match, then shortest name (avoids "Title 2nd Season"
-		// matching when searching for "Title").
-		best := subjects[0]
+		// Only accept exact title matches to avoid mismatching
+		// "Title" to "Title 2nd Season" or unrelated results.
+		matched := false
 		for _, sub := range subjects {
 			if sub.Name == title || sub.NameCN == title {
-				best = sub
+				bangumiID = sub.ID
+				matched = true
 				break
 			}
 		}
-		bangumiID = best.ID
+		if !matched {
+			continue
+		}
 		// Cache both directions
 		s.setCache(ctx, reverseKey, bangumiID, 7*24*time.Hour)
 		fwdKey := fmt.Sprintf("meta:xref:bgm:%d", bangumiID)
