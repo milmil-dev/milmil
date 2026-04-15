@@ -155,7 +155,7 @@ export const discoverApi = {
     if (params.page) qs.set('page', String(params.page));
     return api.get<AnimeSummary[]>(`/api/v1/discover/browse?${qs.toString()}`);
   },
-  detail: (id: number) => api.get<AnimeDetail>(`/api/v1/discover/anime/${id}`),
+  detail: (id: number | string) => api.get<AnimeDetail>(`/api/v1/discover/anime/${id}`),
   episodes: (id: number) => api.get<Episode[]>(`/api/v1/discover/anime/${id}/episodes`),
   comments: (id: number) => api.get<BangumiComment[]>(`/api/v1/discover/anime/${id}/comments`),
   resolve: (anilistId: number) =>
@@ -174,7 +174,7 @@ export const discoverKeys = {
   search: (q: string) => ['discover', 'search', q] as const,
   browse: (genre: string, page: number) => ['discover', 'browse', genre, page] as const,
   browseParams: (params: BrowseParams) => ['discover', 'browse', params] as const,
-  detail: (id: number) => ['discover', 'detail', id] as const,
+  detail: (id: number | string) => ['discover', 'detail', id] as const,
   episodes: (id: number) => ['discover', 'episodes', id] as const,
   comments: (id: number) => ['discover', 'comments', id] as const,
   animeTorrents: (bangumiId: number, source?: string) =>

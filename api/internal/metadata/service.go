@@ -516,6 +516,100 @@ func (s *Service) GetAnimeDetail(ctx context.Context, bangumiID int) (*AnimeDeta
 	return detail, nil
 }
 
+// GetAnimeDetailByAniList constructs an AnimeDetail purely from AniList data.
+// Used when no Bangumi entry exists for an anime (e.g., certain OVAs, specials).
+func (s *Service) GetAnimeDetailByAniList(ctx context.Context, anilistID int) (*AnimeDetail, error) {
+	cacheKey := fmt.Sprintf("meta:anilist:%d", anilistID)
+	var cached AnimeDetail
+	if s.getCache(ctx, cacheKey, &cached) {
+		return &cached, nil
+	}
+
+	media, err := s.anilist.GetMedia(ctx, anilistID)
+	if err != nil {
+		return nil, err
+	}
+
+	summary := anilistMediaToSummary(*media)
+	detail := &AnimeDetail{
+		AnimeSummary: summary,
+		Synopsis:     media.Description,
+		BannerImage:  media.BannerImage,
+		Popularity:   media.Popularity,
+		Tags:         media.Genres,
+		Rating: Rating{
+			Score: float64(media.AverageScore) / 10.0,
+		},
+	}
+
+	if media.Trailer != nil && media.Trailer.ID != "" && media.Trailer.Site == "youtube" {
+		detail.TrailerURL = "https://www.youtube.com/embed/" + media.Trailer.ID
+	}
+
+	// Relations
+	if media.Relations != nil {
+		for _, edge := range media.Relations.Edges {
+			if edge.Node.Format != "ANIME" && edge.Node.Format != "OVA" && edge.Node.Format != "ONA" && edge.Node.Format != "MOVIE" && edge.Node.Format != "SPECIAL" {
+				continue
+			}
+			detail.Relations = append(detail.Relations, RelatedAnime{
+				RelationType: edge.RelationType,
+				Anime:        anilistMediaToSummary(edge.Node),
+			})
+		}
+	}
+
+	// Recommendations
+	if media.Recommendations != nil {
+		for _, rec := range media.Recommendations.Nodes {
+			if rec.MediaRecommendation != nil && rec.MediaRecommendation.Format != "MANGA" {
+				detail.Recommendations = append(detail.Recommendations, anilistMediaToSummary(*rec.MediaRecommendation))
+			}
+		}
+	}
+
+	// Reviews
+	if media.Reviews != nil {
+		for _, r := range media.Reviews.Nodes {
+			detail.Reviews = append(detail.Reviews, UserReview{
+				ID:       r.ID,
+				Summary:  r.Summary,
+				Score:    r.Score,
+				Username: r.User.Name,
+				Avatar:   r.User.Avatar.Medium,
+			})
+		}
+	}
+
+	// Characters
+	if media.Characters != nil {
+		for _, edge := range media.Characters.Edges {
+			char := AnimeCharacter{
+				Role: edge.Role,
+				Character: CharacterPerson{
+					ID:         edge.Node.ID,
+					Name:       edge.Node.Name.Full,
+					NameNative: edge.Node.Name.Native,
+					Image:      edge.Node.Image.Medium,
+				},
+			}
+			if len(edge.VoiceActors) > 0 {
+				va := edge.VoiceActors[0]
+				char.VoiceActor = &CharacterPerson{
+					ID:         va.ID,
+					Name:       va.Name.Full,
+					NameNative: va.Name.Native,
+					Image:      va.Image.Medium,
+				}
+			}
+			detail.Characters = append(detail.Characters, char)
+		}
+	}
+
+	s.setCache(ctx, cacheKey, detail, 24*time.Hour)
+	return detail, nil
+}
+
 func (s *Service) BrowseByGenre(ctx context.Context, genre string, page int) ([]AnimeSummary, error) {
 	cacheKey := fmt.Sprintf("meta:genre:%s:%d", genre, page)
 	var cached []AnimeSummary

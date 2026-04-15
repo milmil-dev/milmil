@@ -199,7 +199,9 @@ function CharacterCard({ entry, cvLabel }: { entry: AnimeCharacter; cvLabel: str
 export function AnimeDetailPage() {
   const { i18n } = useLingui();
   const { id } = useParams({ strict: false });
-  const numericId = Number(id);
+  const isAniListOnly = id?.startsWith('al-') ?? false;
+  const numericId = isAniListOnly ? Number(id!.slice(3)) : Number(id);
+  const detailId = isAniListOnly ? id! : numericId;
   const navigate = useNavigate();
   const setImage = useBgStore((s) => s.setImage);
 
@@ -208,9 +210,9 @@ export function AnimeDetailPage() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: discoverKeys.detail(numericId),
-    queryFn: () => discoverApi.detail(numericId),
-    enabled: !Number.isNaN(numericId),
+    queryKey: discoverKeys.detail(detailId),
+    queryFn: () => discoverApi.detail(detailId),
+    enabled: isAniListOnly || !Number.isNaN(numericId),
   });
 
   useDocumentTitle(anime?.title ?? 'Anime');
@@ -218,7 +220,7 @@ export function AnimeDetailPage() {
   const { data: episodes = [] } = useQuery({
     queryKey: discoverKeys.episodes(numericId),
     queryFn: () => discoverApi.episodes(numericId),
-    enabled: !Number.isNaN(numericId),
+    enabled: !isAniListOnly && !Number.isNaN(numericId),
   });
 
   const { isAuthenticated } = useAuth();
@@ -226,19 +228,19 @@ export function AnimeDetailPage() {
   const { data: playableData } = useQuery({
     queryKey: animeKeys.playableEpisodes(numericId),
     queryFn: () => animeApi.playableEpisodes(numericId),
-    enabled: !Number.isNaN(numericId) && isAuthenticated,
+    enabled: !isAniListOnly && !Number.isNaN(numericId) && isAuthenticated,
   });
 
   const { data: comments = [] } = useQuery({
     queryKey: discoverKeys.comments(numericId),
     queryFn: () => discoverApi.comments(numericId),
-    enabled: !Number.isNaN(numericId),
+    enabled: !isAniListOnly && !Number.isNaN(numericId),
   });
 
   const { data: franchise } = useQuery({
     queryKey: discoverKeys.franchise(numericId),
     queryFn: () => discoverApi.franchise(numericId),
-    enabled: !Number.isNaN(numericId),
+    enabled: !isAniListOnly && !Number.isNaN(numericId),
     staleTime: 24 * 60 * 60 * 1000,
   });
 
@@ -249,7 +251,7 @@ export function AnimeDetailPage() {
     enabled: isAuthenticated,
     staleTime: 60000,
   });
-  const hasSubscription = rules.some((r) => r.bangumi_id === numericId && r.enabled);
+  const hasSubscription = !isAniListOnly && rules.some((r) => r.bangumi_id === numericId && r.enabled);
 
   // Check if anime has local playable files
   const hasPlayableFiles = (playableData?.episodes?.filter((ep) => ep.media_file)?.length ?? 0) > 0;
@@ -607,13 +609,18 @@ export function AnimeDetailPage() {
                                   {`S${idx + 1}`}
                                 </Link>
                               ) : (
-                                <span
+                                <Link
                                   key={s.anilist_id}
-                                  className="px-3 py-1 rounded-full text-xs font-medium bg-white/[0.04] text-white/30 shrink-0"
+                                  to="/anime/$id"
+                                  params={{ id: `al-${s.anilist_id}` }}
+                                  className={cn(
+                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
+                                    'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
+                                  )}
                                   title={s.title}
                                 >
                                   {`S${idx + 1}`}
-                                </span>
+                                </Link>
                               );
                             })}
                           </div>
@@ -651,7 +658,7 @@ export function AnimeDetailPage() {
                       className="flex items-center justify-center sm:justify-start gap-2 flex-wrap"
                     >
                       {/* Bookmark toggle */}
-                      {isAuthenticated && (() => {
+                      {!isAniListOnly && isAuthenticated && (() => {
                         const isBookmarked = playableData?.watch_status && playableData.watch_status !== 'none';
                         return (
                           <motion.button
@@ -681,17 +688,17 @@ export function AnimeDetailPage() {
                       })()}
 
                       {/* Search resources */}
-                      <Link
+                      {!isAniListOnly && <Link
                         to="/downloads"
                         search={{ anime: String(anime.bangumi_id) }}
                         className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/70 hover:text-white transition-colors"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
                         {i18n._(msg`anime.searchResources`)}
-                      </Link>
+                      </Link>}
 
                       {/* Tracker sync toggle */}
-                      {isAuthenticated && playableData && (() => {
+                      {!isAniListOnly && isAuthenticated && playableData && (() => {
                         const syncDisabled = playableData.sync_disabled === 1;
                         return (
                           <button
@@ -748,7 +755,7 @@ export function AnimeDetailPage() {
 
                     {/* Collection watch status + personal score — inline when in collection */}
                     <AnimatePresence>
-                    {playableData?.watch_status && playableData.watch_status !== 'none' && (
+                    {!isAniListOnly && playableData?.watch_status && playableData.watch_status !== 'none' && (
                       <motion.div
                         initial={{ opacity: 0, height: 0, y: -4 }}
                         animate={{ opacity: 1, height: 'auto', y: 0 }}
@@ -881,14 +888,18 @@ export function AnimeDetailPage() {
         </div>
 
         {/* Episode completeness status — self-hides when everything is present */}
-        <div className="px-4 md:px-8 pt-2">
-          <EpisodeStatusCard bangumiId={numericId} />
-        </div>
+        {!isAniListOnly && (
+          <div className="px-4 md:px-8 pt-2">
+            <EpisodeStatusCard bangumiId={numericId} />
+          </div>
+        )}
 
         {/* Duplicate file detection — self-hides when no duplicates */}
-        <div className="px-4 md:px-8 pt-2">
-          <DuplicatesPanel bangumiId={numericId} />
-        </div>
+        {!isAniListOnly && (
+          <div className="px-4 md:px-8 pt-2">
+            <DuplicatesPanel bangumiId={numericId} />
+          </div>
+        )}
 
         {/* Trailer + Episodes */}
         {(episodeList.length > 0 || anime.trailer_url) && (
@@ -1020,9 +1031,11 @@ export function AnimeDetailPage() {
                         {entry.bangumi_id > 0 ? (
                           <AnimeCard anime={cardAnime} />
                         ) : (
-                          <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.05]">
-                            <img src={entry.cover_image} alt={entry.title} className="w-full h-full object-cover" />
-                          </div>
+                          <Link to="/anime/$id" params={{ id: `al-${entry.anilist_id}` }}>
+                            <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.05] hover:opacity-80 transition-opacity">
+                              <img src={entry.cover_image} alt={entry.title} className="w-full h-full object-cover" />
+                            </div>
+                          </Link>
                         )}
                         <p className="text-xs text-white/70 mt-1.5 line-clamp-2">{entry.title}</p>
                         <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-0.5">
