@@ -756,7 +756,19 @@ func (s *Service) ResolveBangumiID(ctx context.Context, anilistID int) (int, err
 		if err != nil || len(subjects) == 0 {
 			continue
 		}
-		bangumiID = subjects[0].ID
+		// Only accept exact title matches to avoid mismatching
+		// "Title" to "Title 2nd Season" or unrelated results.
+		matched := false
+		for _, sub := range subjects {
+			if sub.Name == title || sub.NameCN == title {
+				bangumiID = sub.ID
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			continue
+		}
 		// Cache both directions
 		s.setCache(ctx, reverseKey, bangumiID, 7*24*time.Hour)
 		fwdKey := fmt.Sprintf("meta:xref:bgm:%d", bangumiID)

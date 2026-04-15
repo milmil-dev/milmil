@@ -60,6 +60,18 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 	return c.JSON(http.StatusOK, detail)
 }
 
+func (h *handler) handleAnimeFranchise(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
+	}
+	result, err := h.metadata.GetFranchise(c.Request().Context(), id)
+	if err != nil {
+		return mapMetadataError(err)
+	}
+	return c.JSON(http.StatusOK, result)
+}
+
 func (h *handler) handleBrowseByGenre(c echo.Context) error {
 	genre := c.QueryParam("genre")
 	page := 1

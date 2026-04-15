@@ -79,3 +79,22 @@ type UserReview struct {
 	Username string `json:"username"`
 	Avatar   string `json:"avatar,omitempty"`
 }
+
+type FranchiseEntry struct {
+	AniListID     int      `json:"anilist_id"`
+	BangumiID     int      `json:"bangumi_id"`
+	Title         string   `json:"title"`
+	TitleOriginal string   `json:"title_original"`
+	TitleEN       string   `json:"title_en,omitempty"`
+	CoverImage    string   `json:"cover_image"`
+	MediaType     string   `json:"media_type,omitempty"`
+	AirDate       string   `json:"air_date,omitempty"`
+	EpisodeCount  int      `json:"episode_count"`
+	Score         float64  `json:"score"`
+	RelationType  string   `json:"relation_type,omitempty"`
+}
+
+type FranchiseResult struct {
+	MainSeries  []FranchiseEntry `json:"main_series"`
+	SideStories []FranchiseEntry `json:"side_stories"`
+}
