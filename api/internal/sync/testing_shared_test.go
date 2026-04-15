@@ -67,7 +67,7 @@ func mustInsertAnime(t *testing.T, q *store.Queries, id string, totalEps int, an
 		Genres:        "[]",
 		TotalEpisodes: nullInt64(int64(totalEps), totalEps > 0),
 		BangumiID:     nullInt64(bangumiID, bangumiID != 0),
-		WatchStatus:   "plan_to_watch",
+		WatchStatus:   "planning",
 		Score:         0,
 	})
 	if err != nil {
