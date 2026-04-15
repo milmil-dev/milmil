@@ -2,6 +2,7 @@ package providers
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -150,5 +151,75 @@ func TestAniListPushMissingAnilistIDFatal(t *testing.T) {
 	}
 	if _, ok := milmilsync.IsTransient(err); ok {
 		t.Error("missing id should not be transient")
+	}
+}
+
+func TestAniListRefreshTokenSuccess(t *testing.T) {
+	var body string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		b, _ := io.ReadAll(r.Body)
+		body = string(b)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, `{"access_token":"new-a","refresh_token":"new-r","expires_in":31536000}`)
+	}))
+	defer srv.Close()
+
+	p := NewAniList(srv.Client(), srv.URL)
+	tok, err := p.RefreshToken(context.Background(), milmilsync.OAuthCreds{ClientID: "cid", ClientSecret: "sec"}, "old-r")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tok.AccessToken != "new-a" || tok.RefreshToken != "new-r" {
+		t.Errorf("bad token: %+v", tok)
+	}
+	if tok.ExpiresIn != 31536000*time.Second {
+		t.Errorf("bad expires_in: %v", tok.ExpiresIn)
+	}
+	for _, want := range []string{`"grant_type":"refresh_token"`, `"refresh_token":"old-r"`, `"client_id":"cid"`, `"client_secret":"sec"`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("body missing %q: %s", want, body)
+		}
+	}
+}
+
+func TestAniListRefreshInvalidGrantFatal(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
+	}))
+	defer srv.Close()
+
+	p := NewAniList(srv.Client(), srv.URL)
+	_, err := p.RefreshToken(context.Background(), milmilsync.OAuthCreds{}, "bad-r")
+	if !errors.Is(err, milmilsync.ErrNeedsReauth) {
+		t.Errorf("expected ErrNeedsReauth, got %v", err)
+	}
+	if _, ok := milmilsync.IsTransient(err); ok {
+		t.Error("invalid_grant must be fatal")
+	}
+}
+
+func TestAniListRefresh5xxTransient(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "boom", http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+
+	p := NewAniList(srv.Client(), srv.URL)
+	_, err := p.RefreshToken(context.Background(), milmilsync.OAuthCreds{}, "r")
+	if _, ok := milmilsync.IsTransient(err); !ok {
+		t.Errorf("5xx must be transient, got %v", err)
+	}
+}
+
+func TestAniListPush401IsErrNeedsReauth(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "nope", http.StatusUnauthorized)
+	}))
+	defer srv.Close()
+
+	p := NewAniList(srv.Client(), srv.URL)
+	err := p.Push(context.Background(), "tok", milmilsync.SyncOp{Kind: milmilsync.KindProgress, Status: milmilsync.StatusWatching, Progress: 1}, milmilsync.ExternalIDs{AniList: 1})
+	if !errors.Is(err, milmilsync.ErrNeedsReauth) {
+		t.Errorf("Push 401 must wrap ErrNeedsReauth, got %v", err)
 	}
 }
