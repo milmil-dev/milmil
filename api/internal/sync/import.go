@@ -80,6 +80,17 @@ func (s *Service) lookupAnimeByProviderID(ctx context.Context, p ProviderName, i
 		if err == nil {
 			return a.ID, true
 		}
+	case ProviderTrakt:
+		// Trakt's FetchList sets ProviderAnimeID to show.ids.tmdb (primary),
+		// with the trakt numeric id as a fallback when tmdb is missing. Try
+		// TMDB first — the vast majority of anime shows have a TMDB mapping —
+		// then fall back to the cached trakt_show_id column.
+		if a, err := s.q.GetAnimeByTMDBID(ctx, arg); err == nil {
+			return a.ID, true
+		}
+		if a, err := s.q.GetAnimeByTraktShowID(ctx, arg); err == nil {
+			return a.ID, true
+		}
 	}
 	return "", false
 }
