@@ -1011,8 +1011,15 @@ export function AnimeDetailPage() {
                     };
                     return (
                       <div key={entry.anilist_id} className="shrink-0 w-[150px]">
-                        <AnimeCard anime={cardAnime} />
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-1">
+                        {entry.bangumi_id > 0 ? (
+                          <AnimeCard anime={cardAnime} />
+                        ) : (
+                          <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.05]">
+                            <img src={entry.cover_image} alt={entry.title} className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                        <p className="text-xs text-white/70 mt-1.5 line-clamp-2">{entry.title}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-0.5">
                           {entry.media_type || getRelationLabel(entry.relation_type || '', i18n.locale)}
                         </p>
                       </div>
