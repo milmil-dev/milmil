@@ -155,6 +155,11 @@ func hasProviderID(a store.Anime, p ProviderName) bool {
 		return a.AnilistID.Valid && a.AnilistID.Int64 != 0
 	case ProviderBangumi:
 		return a.BangumiID.Valid && a.BangumiID.Int64 != 0
+	case ProviderTrakt:
+		// For Trakt we only require a TMDB id — the trakt_show_id is resolved
+		// from TMDB on first push (see processRow). Without TMDB we can't
+		// resolve Trakt, so skip enqueuing to avoid a guaranteed failRow.
+		return a.TmdbID.Valid && a.TmdbID.Int64 != 0
 	}
 	return false
 }
