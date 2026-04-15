@@ -18,5 +18,8 @@ DELETE FROM download_rules WHERE id = ?;
 -- name: ListDownloadRulesByFeedID :many
 SELECT * FROM download_rules WHERE rss_feed_id = ? AND enabled = 1;
 
+-- name: ListDownloadRulesByBangumiID :many
+SELECT * FROM download_rules WHERE bangumi_id = ? AND enabled = 1 ORDER BY created_at DESC;
+
 -- name: UpdateDownloadRuleTriggered :exec
 UPDATE download_rules SET last_triggered_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ?;

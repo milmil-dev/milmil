@@ -195,6 +195,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 	animeGroup.PATCH("/:bangumiId/sync-flags", h.handleUpdateAnimeSyncFlags)
 	animeGroup.GET("/:bangumiId/duplicates", h.handleAnimeDuplicates)
+	animeGroup.POST("/:bangumiId/missing/search", h.handleMissingSearch)
+	animeGroup.POST("/:bangumiId/missing/download", h.handleMissingDownload)
+	animeGroup.POST("/:bangumiId/missing/auto-rule", h.handleMissingAutoRule)
 
 	// Sync (tracker watch-state) — protected
 	syncGroup := v1.Group("/sync", authMiddleware(h.queries))

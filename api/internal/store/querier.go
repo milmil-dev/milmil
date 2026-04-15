@@ -110,6 +110,7 @@ type Querier interface {
 	ListCompletedDownloads(ctx context.Context) ([]Download, error)
 	ListCompletedWatchProgress(ctx context.Context, userID string) ([]WatchProgress, error)
 	ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
+	ListDownloadRulesByBangumiID(ctx context.Context, bangumiID sql.NullInt64) ([]DownloadRule, error)
 	ListDownloadRulesByFeedID(ctx context.Context, rssFeedID string) ([]DownloadRule, error)
 	ListDownloads(ctx context.Context) ([]Download, error)
 	ListDownloadsByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Download, error)

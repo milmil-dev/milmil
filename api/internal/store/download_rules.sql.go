@@ -163,6 +163,52 @@ func (q *Queries) ListDownloadRules(ctx context.Context) ([]DownloadRule, error)
 	return items, nil
 }
 
+const listDownloadRulesByBangumiID = `-- name: ListDownloadRulesByBangumiID :many
+SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range FROM download_rules WHERE bangumi_id = ? AND enabled = 1 ORDER BY created_at DESC
+`
+
+func (q *Queries) ListDownloadRulesByBangumiID(ctx context.Context, bangumiID sql.NullInt64) ([]DownloadRule, error) {
+	rows, err := q.db.QueryContext(ctx, listDownloadRulesByBangumiID, bangumiID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []DownloadRule{}
+	for rows.Next() {
+		var i DownloadRule
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Enabled,
+			&i.RssFeedID,
+			&i.FilterRegex,
+			&i.ExcludeRegex,
+			&i.SaveDir,
+			&i.EpisodeOffset,
+			&i.LastTriggeredAt,
+			&i.CreatedAt,
+			&i.ResolutionFilter,
+			&i.SubgroupFilter,
+			&i.MinSeeders,
+			&i.LibraryID,
+			&i.BangumiID,
+			&i.MatchMode,
+			&i.EpisodeFilter,
+			&i.EpisodeRange,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listDownloadRulesByFeedID = `-- name: ListDownloadRulesByFeedID :many
 SELECT id, name, enabled, rss_feed_id, filter_regex, exclude_regex, save_dir, episode_offset, last_triggered_at, created_at, resolution_filter, subgroup_filter, min_seeders, library_id, bangumi_id, match_mode, episode_filter, episode_range FROM download_rules WHERE rss_feed_id = ? AND enabled = 1
 `
