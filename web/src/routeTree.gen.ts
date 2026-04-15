@@ -25,6 +25,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
+import { Route as LibrariesIdDuplicatesRouteImport } from './routes/libraries_.$id.duplicates'
 
 const TorrentSearchRoute = TorrentSearchRouteImport.update({
   id: '/torrent-search',
@@ -106,6 +107,11 @@ const AnimeIdRoute = AnimeIdRouteImport.update({
   path: '/anime/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibrariesIdDuplicatesRoute = LibrariesIdDuplicatesRouteImport.update({
+  id: '/duplicates',
+  path: '/duplicates',
+  getParentRoute: () => LibrariesIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,8 +128,9 @@ export interface FileRoutesByFullPath {
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
-  '/libraries/$id': typeof LibrariesIdRoute
+  '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
+  '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,8 +147,9 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
-  '/libraries/$id': typeof LibrariesIdRoute
+  '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
+  '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,8 +167,9 @@ export interface FileRoutesById {
   '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
-  '/libraries_/$id': typeof LibrariesIdRoute
+  '/libraries_/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
+  '/libraries_/$id/duplicates': typeof LibrariesIdDuplicatesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries/$id'
     | '/watch/$animeId'
+    | '/libraries/$id/duplicates'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries/$id'
     | '/watch/$animeId'
+    | '/libraries/$id/duplicates'
   id:
     | '__root__'
     | '/'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries_/$id'
     | '/watch/$animeId'
+    | '/libraries_/$id/duplicates'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -234,7 +246,7 @@ export interface RootRouteChildren {
   SetupRoute: typeof SetupRoute
   TorrentSearchRoute: typeof TorrentSearchRoute
   AnimeIdRoute: typeof AnimeIdRoute
-  LibrariesIdRoute: typeof LibrariesIdRoute
+  LibrariesIdRoute: typeof LibrariesIdRouteWithChildren
   WatchAnimeIdRoute: typeof WatchAnimeIdRoute
 }
 
@@ -352,8 +364,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnimeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/libraries_/$id/duplicates': {
+      id: '/libraries_/$id/duplicates'
+      path: '/duplicates'
+      fullPath: '/libraries/$id/duplicates'
+      preLoaderRoute: typeof LibrariesIdDuplicatesRouteImport
+      parentRoute: typeof LibrariesIdRoute
+    }
   }
 }
+
+interface LibrariesIdRouteChildren {
+  LibrariesIdDuplicatesRoute: typeof LibrariesIdDuplicatesRoute
+}
+
+const LibrariesIdRouteChildren: LibrariesIdRouteChildren = {
+  LibrariesIdDuplicatesRoute: LibrariesIdDuplicatesRoute,
+}
+
+const LibrariesIdRouteWithChildren = LibrariesIdRoute._addFileChildren(
+  LibrariesIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -370,7 +401,7 @@ const rootRouteChildren: RootRouteChildren = {
   SetupRoute: SetupRoute,
   TorrentSearchRoute: TorrentSearchRoute,
   AnimeIdRoute: AnimeIdRoute,
-  LibrariesIdRoute: LibrariesIdRoute,
+  LibrariesIdRoute: LibrariesIdRouteWithChildren,
   WatchAnimeIdRoute: WatchAnimeIdRoute,
 }
 export const routeTree = rootRouteImport
