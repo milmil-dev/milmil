@@ -68,6 +68,25 @@ export interface AnimeDetail extends AnimeSummary {
   characters?: AnimeCharacter[];
 }
 
+export interface FranchiseEntry {
+  anilist_id: number;
+  bangumi_id: number;
+  title: string;
+  title_original: string;
+  title_en?: string;
+  cover_image: string;
+  media_type?: string;
+  air_date?: string;
+  episode_count: number;
+  score: number;
+  relation_type?: string;
+}
+
+export interface FranchiseResult {
+  main_series: FranchiseEntry[];
+  side_stories: FranchiseEntry[];
+}
+
 export interface CalendarDay {
   weekday: string;
   weekday_en: string;
@@ -145,6 +164,8 @@ export const discoverApi = {
     api.get<{ results: TorrentResult[] }>(
       `/api/v1/discover/anime/${bangumiId}/torrents${source && source !== 'all' ? `?source=${source}` : ''}`
     ),
+  franchise: (bangumiId: number) =>
+    api.get<FranchiseResult>(`/api/v1/discover/anime/${bangumiId}/franchise`),
 };
 
 export const discoverKeys = {
@@ -158,4 +179,5 @@ export const discoverKeys = {
   comments: (id: number) => ['discover', 'comments', id] as const,
   animeTorrents: (bangumiId: number, source?: string) =>
     ['discover', 'anime-torrents', bangumiId, source ?? 'all'] as const,
+  franchise: (bangumiId: number) => ['discover', 'franchise', bangumiId] as const,
 };
