@@ -100,3 +100,54 @@ func (h *handler) handleSyncProvidersStatus(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, out)
 }
+
+// POST /api/v1/sync/:provider/pull
+//
+// Runs a one-shot pull from the remote provider, updating local watch
+// progress where the remote state is ahead.
+func (h *handler) handleSyncPullNow(c echo.Context) error {
+	ctx := c.Request().Context()
+	userID := getUserID(c)
+	provider := c.Param("provider")
+	if provider == "" {
+		return echo.ErrBadRequest
+	}
+	res, err := h.syncSvc.PullFromProvider(ctx, userID, milmilsync.ProviderName(provider))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, res)
+}
+
+type setPullEnabledReq struct {
+	Enabled bool `json:"enabled"`
+}
+
+// POST /api/v1/sync/:provider/pull-enabled
+//
+// Enables or disables the background pull loop for a given provider for the
+// current user. The state is persisted via sync_provider_state.
+func (h *handler) handleSyncSetPullEnabled(c echo.Context) error {
+	ctx := c.Request().Context()
+	userID := getUserID(c)
+	provider := c.Param("provider")
+	if provider == "" {
+		return echo.ErrBadRequest
+	}
+	var req setPullEnabledReq
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+	var enabled int64
+	if req.Enabled {
+		enabled = 1
+	}
+	if err := h.queries.SetPullEnabled(ctx, store.SetPullEnabledParams{
+		UserID:      userID,
+		Provider:    provider,
+		PullEnabled: enabled,
+	}); err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.NoContent(http.StatusNoContent)
+}

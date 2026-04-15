@@ -199,6 +199,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Sync (tracker watch-state) — protected
 	syncGroup := v1.Group("/sync", authMiddleware(h.queries))
 	syncGroup.GET("/status", h.handleSyncProvidersStatus)
+	syncGroup.POST("/:provider/pull", h.handleSyncPullNow)
+	syncGroup.POST("/:provider/pull-enabled", h.handleSyncSetPullEnabled)
 
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", authMiddleware(h.queries))
