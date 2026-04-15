@@ -8,6 +8,7 @@ import (
 	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/downloader"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
@@ -30,6 +31,7 @@ type Scheduler struct {
 	cache      cache.Cache
 	notifier   *notification.Service
 	metadata   *metadata.Service
+	anidbSvc   *anidb.Service
 	wsHub      *ws.Hub
 	botEngine  *bot.Engine
 	cancel     context.CancelFunc
@@ -46,6 +48,7 @@ func NewScheduler(
 	cacheClient cache.Cache,
 	notifier *notification.Service,
 	metadataSvc *metadata.Service,
+	anidbSvc *anidb.Service,
 	wsHub *ws.Hub,
 	botEngine *bot.Engine,
 ) *Scheduler {
@@ -59,6 +62,7 @@ func NewScheduler(
 		cache:      cacheClient,
 		notifier:   notifier,
 		metadata:   metadataSvc,
+		anidbSvc:   anidbSvc,
 		wsHub:      wsHub,
 		botEngine:  botEngine,
 	}
@@ -124,6 +128,12 @@ func (s *Scheduler) Start() {
 	digestWorker := NewDailyDigestWorker(s.queries, s.metadata, s.notifier)
 	go s.runTicker(ctx, "daily_digest", 5*time.Minute, true, func(ctx context.Context) {
 		digestWorker.Run(ctx)
+	})
+
+	// AniDB cross-site mapping refresh — every 24 hours, run immediately on start
+	go s.runTicker(ctx, "anidb_refresh", 24*time.Hour, true, func(ctx context.Context) {
+		w := &AnidbRefreshWorker{svc: s.anidbSvc, wsHub: s.wsHub}
+		w.Run(ctx)
 	})
 
 	// Notification cleanup — every 24 hours

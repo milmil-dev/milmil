@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "title": "Cowboy Bebop",
+      "sources": [
+        "https://anidb.net/anime/23",
+        "https://myanimelist.net/anime/1",
+        "https://anilist.co/anime/1",
+        "https://kitsu.io/anime/1",
+        "https://themoviedb.org/tv/30991"
+      ]
+    },
+    {
+      "title": "One Off",
+      "sources": ["https://anilist.co/anime/20612"]
+    }
+  ]
+}

@@ -43,3 +43,17 @@ WHERE bangumi_id = sqlc.arg(bangumi_id);
 -- name: UpdateAnimeScore :exec
 UPDATE anime SET score = sqlc.arg(score), updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE bangumi_id = sqlc.arg(bangumi_id) AND (score = 0 OR score != sqlc.arg(score));
+
+-- name: GetAnimeByAnidbID :one
+SELECT * FROM anime WHERE anidb_id = ? LIMIT 1;
+
+-- name: UpdateAnimeExternalIDs :exec
+-- Fills only NULL columns; never overwrites an existing value.
+UPDATE anime SET
+    anidb_id   = COALESCE(anidb_id,   sqlc.narg('anidb_id')),
+    anilist_id = COALESCE(anilist_id, sqlc.narg('anilist_id')),
+    bangumi_id = COALESCE(bangumi_id, sqlc.narg('bangumi_id')),
+    mal_id     = COALESCE(mal_id,     sqlc.narg('mal_id')),
+    tmdb_id    = COALESCE(tmdb_id,    sqlc.narg('tmdb_id')),
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = sqlc.arg('id');

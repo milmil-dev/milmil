@@ -9,6 +9,7 @@ import (
 
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/resolver"
@@ -118,6 +119,9 @@ type mockBangumi struct {
 func (m *mockBangumi) SearchSubjects(_ context.Context, _ string, _ ...bangumi.SearchOption) ([]bangumi.Subject, error) {
 	return nil, nil
 }
+func (m *mockBangumi) SearchByTag(_ context.Context, _ []string, _ string, _, _ int) ([]bangumi.Subject, int, error) {
+	return nil, 0, nil
+}
 func (m *mockBangumi) GetCalendar(_ context.Context) ([]bangumi.CalendarDay, error) {
 	return nil, nil
 }
@@ -163,7 +167,7 @@ func TestResolveLibrary_CreatesAnimeAndEpisodes(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c)
+	r := resolver.New(q, bgm, ddp, c, nil)
 	summary, err := r.ResolveLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
@@ -223,7 +227,7 @@ func TestResolveLibrary_LinksFiles(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c)
+	r := resolver.New(q, bgm, ddp, c, nil)
 	summary, err := r.ResolveLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
@@ -280,7 +284,7 @@ func TestResolveLibrary_SkipsExistingAnime(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c)
+	r := resolver.New(q, bgm, ddp, c, nil)
 	summary, err := r.ResolveLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
@@ -289,5 +293,73 @@ func TestResolveLibrary_SkipsExistingAnime(t *testing.T) {
 	// Should not have created a new anime
 	if summary.AnimeCreated != 0 {
 		t.Errorf("want anime_created=0, got %d", summary.AnimeCreated)
+	}
+}
+
+func TestResolverEnrichesExternalIDsViaAnidb(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+
+	lib, _ := seedLibraryAndMatchedFile(t, q, 90001, 100)
+
+	// Build an anidb.Service with a preloaded mapping linking:
+	//   bangumi=42 ↔ anidb=23 ↔ mal=55 ↔ anilist=77
+	manami := []byte(`{"data":[{"sources":[` +
+		`"https://anidb.net/anime/23",` +
+		`"https://myanimelist.net/anime/55",` +
+		`"https://anilist.co/anime/77"` +
+		`]}]}`)
+	mapping, err := anidb.LoadMapping(manami)
+	if err != nil {
+		t.Fatalf("LoadMapping: %v", err)
+	}
+	// Union in the bangumi↔anidb pair via the anime-lists merge path.
+	mapping.MergeIDSets([]anidb.IDSet{{AniDB: 23, Bangumi: 42}})
+
+	svc := anidb.NewService(nil, t.TempDir())
+	svc.SetIndexesForTest(mapping, nil)
+
+	ddp := &mockDandanplay{
+		bangumiInfo: &dandanplay.BangumiInfo{
+			AnimeID:    100,
+			AnimeTitle: "Test Anime",
+			BangumiID:  42,
+		},
+	}
+	bgm := &mockBangumi{
+		subject: &bangumi.Subject{
+			ID:     42,
+			Name:   "Test Anime",
+			NameCN: "测试动画",
+			Eps:    1,
+		},
+		episodes: []bangumi.Episode{
+			{ID: 90001, Sort: 1, Name: "Episode 1"},
+		},
+	}
+
+	c := cache.New("")
+	defer c.Close()
+
+	r := resolver.New(q, bgm, ddp, c, svc)
+	if _, err := r.ResolveLibrary(context.Background(), lib.ID); err != nil {
+		t.Fatalf("ResolveLibrary: %v", err)
+	}
+
+	anime, err := q.GetAnimeByBangumiID(context.Background(), sql.NullInt64{Int64: 42, Valid: true})
+	if err != nil {
+		t.Fatalf("GetAnimeByBangumiID: %v", err)
+	}
+	if !anime.AnidbID.Valid || anime.AnidbID.Int64 != 23 {
+		t.Errorf("want anidb_id=23, got %+v", anime.AnidbID)
+	}
+	if !anime.MalID.Valid || anime.MalID.Int64 != 55 {
+		t.Errorf("want mal_id=55, got %+v", anime.MalID)
+	}
+	if !anime.AnilistID.Valid || anime.AnilistID.Int64 != 77 {
+		t.Errorf("want anilist_id=77, got %+v", anime.AnilistID)
+	}
+	if !anime.BangumiID.Valid || anime.BangumiID.Int64 != 42 {
+		t.Errorf("want bangumi_id=42 unchanged, got %+v", anime.BangumiID)
 	}
 }

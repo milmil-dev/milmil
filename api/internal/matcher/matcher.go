@@ -11,7 +11,9 @@ import (
 
 	"log/slog"
 
+	"github.com/google/uuid"
 	"github.com/milmil/api/internal/cache"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/tmdb"
@@ -27,6 +29,7 @@ type MatchSummary struct {
 	ByDandanplay int `json:"by_dandanplay"`
 	ByBangumi    int `json:"by_bangumi"`
 	ByTMDB       int `json:"by_tmdb"`
+	ByAnidbTitle int `json:"by_anidb_title"`
 }
 
 type Matcher struct {
@@ -35,6 +38,7 @@ type Matcher struct {
 	bangumi    bangumi.Client
 	tmdb       tmdb.Client
 	cache      cache.Cache
+	anidb      *anidb.Service
 }
 
 // New creates a matcher with only dandanplay support (backward compatible).
@@ -42,9 +46,10 @@ func New(q *store.Queries, ddp dandanplay.Client, c cache.Cache) *Matcher {
 	return &Matcher{queries: q, dandanplay: ddp, cache: c}
 }
 
-// NewMulti creates a matcher with all three strategy providers.
-func NewMulti(q *store.Queries, ddp dandanplay.Client, bgm bangumi.Client, tmdbClient tmdb.Client, c cache.Cache) *Matcher {
-	return &Matcher{queries: q, dandanplay: ddp, bangumi: bgm, tmdb: tmdbClient, cache: c}
+// NewMulti creates a matcher with all strategy providers. anidbSvc may be nil
+// to disable Pass 4 (AniDB title fallback) and cross-source ID enrichment.
+func NewMulti(q *store.Queries, ddp dandanplay.Client, bgm bangumi.Client, tmdbClient tmdb.Client, c cache.Cache, anidbSvc *anidb.Service) *Matcher {
+	return &Matcher{queries: q, dandanplay: ddp, bangumi: bgm, tmdb: tmdbClient, cache: c, anidb: anidbSvc}
 }
 
 func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress ...scanner.ProgressFunc) (*MatchSummary, error) {
@@ -261,6 +266,76 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 		}
 	}
 
+	// --- Pass 4: AniDB title fallback ---
+	if m.anidb != nil {
+		const acceptThreshold = 0.75
+		const ambiguityMargin = 0.05
+		for _, f := range files {
+			if matched[f.ID] {
+				continue
+			}
+			parsed := fileparse.Parse(f.Filename)
+			if parsed.Title == "" {
+				continue
+			}
+			cands := m.anidb.SearchTitles(parsed.Title, parsed.Year)
+			if len(cands) == 0 {
+				continue
+			}
+			top := cands[0]
+			if top.Score < acceptThreshold {
+				continue
+			}
+			if len(cands) > 1 {
+				gap := top.Score - cands[1].Score
+				if gap < ambiguityMargin*top.Score {
+					continue
+				}
+			}
+
+			set, ok := m.anidb.Resolve(anidb.SourceAniDB, top.AniDBID)
+			if !ok {
+				set = anidb.IDSet{AniDB: top.AniDBID}
+			}
+
+			var animeID string
+			var retryErr error
+			if set.Bangumi != 0 && m.bangumi != nil {
+				animeID, retryErr = m.upsertAnimeByBangumi(ctx, f, set.Bangumi, parsed)
+			}
+			if animeID == "" && retryErr == nil && set.TMDB != 0 && m.tmdb != nil {
+				animeID, retryErr = m.upsertAnimeByTMDB(ctx, f, set.TMDB, parsed)
+			}
+			if animeID == "" && retryErr == nil {
+				animeID, retryErr = m.upsertAnimeByAnidb(ctx, f, top, parsed)
+			}
+			if retryErr != nil {
+				summary.Errors++
+				slog.Warn("matcher: pass4 upsert failed", "file", f.ID, "err", retryErr)
+				continue
+			}
+			if animeID == "" {
+				continue
+			}
+
+			if err := m.EnrichExternalIDs(ctx, animeID, set); err != nil {
+				slog.Warn("matcher: enrich failed", "anime", animeID, "err", err)
+			}
+			summary.Matched++
+			summary.ByAnidbTitle++
+			matched[f.ID] = true
+
+			processed++
+			emit(scanner.ProgressEvent{
+				Type:         "match:progress",
+				LibraryID:    libraryID,
+				FilesMatched: summary.Matched,
+				FilesTotal:   total,
+				CurrentFile:  f.Filename,
+			})
+		}
+	}
+
 	// Count remaining unmatched.
 	for _, f := range files {
 		if !matched[f.ID] {
@@ -269,6 +344,174 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 	}
 
 	return summary, nil
+}
+
+// EnrichExternalIDs fills any NULL external-ID columns on the anime row using
+// the cross-source mapping. Never overwrites an existing value. seed is the
+// IDSet known so far from the calling pass.
+func (m *Matcher) EnrichExternalIDs(ctx context.Context, animeID string, seed anidb.IDSet) error {
+	if m.anidb == nil {
+		return nil
+	}
+	merged := seed
+	for _, src := range anidb.AllSources() {
+		id := seed.Get(src)
+		if id == 0 {
+			continue
+		}
+		if set, ok := m.anidb.Resolve(src, id); ok {
+			merged.Merge(set)
+		}
+	}
+
+	params := store.UpdateAnimeExternalIDsParams{ID: animeID}
+	if merged.AniDB != 0 {
+		params.AnidbID = sql.NullInt64{Int64: merged.AniDB, Valid: true}
+	}
+	if merged.AniList != 0 {
+		params.AnilistID = sql.NullInt64{Int64: merged.AniList, Valid: true}
+	}
+	if merged.Bangumi != 0 {
+		params.BangumiID = sql.NullInt64{Int64: merged.Bangumi, Valid: true}
+	}
+	if merged.MAL != 0 {
+		params.MalID = sql.NullInt64{Int64: merged.MAL, Valid: true}
+	}
+	if merged.TMDB != 0 {
+		params.TmdbID = sql.NullInt64{Int64: merged.TMDB, Valid: true}
+	}
+	return m.queries.UpdateAnimeExternalIDs(ctx, params)
+}
+
+// upsertAnimeByBangumi finds (or creates) an anime row keyed on bangumi_id, then
+// tries to link the media file to the episode matching parsed.EpisodeNumber.
+func (m *Matcher) upsertAnimeByBangumi(ctx context.Context, f store.MediaFile, bangumiID int64, parsed fileparse.ParsedFilename) (string, error) {
+	nid := sql.NullInt64{Int64: bangumiID, Valid: true}
+	row, err := m.queries.GetAnimeByBangumiID(ctx, nid)
+	if err == nil {
+		m.tryLinkBangumiEpisode(ctx, f, int(bangumiID), parsed)
+		return row.ID, nil
+	}
+
+	// Look up subject metadata to seed the title.
+	title := parsed.Title
+	var year sql.NullInt64
+	if parsed.Year > 0 {
+		year = sql.NullInt64{Int64: int64(parsed.Year), Valid: true}
+	}
+	if subj, subjErr := m.bangumi.GetSubject(ctx, int(bangumiID)); subjErr == nil && subj != nil {
+		if subj.Name != "" {
+			title = subj.Name
+		}
+	}
+
+	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
+		ID:          uuid.NewString(),
+		Title:       title,
+		Status:      "unknown",
+		Genres:      "[]",
+		BangumiID:   nid,
+		Year:        year,
+		WatchStatus: "none",
+	})
+	if err != nil {
+		return "", err
+	}
+	m.tryLinkBangumiEpisode(ctx, f, int(bangumiID), parsed)
+	return created.ID, nil
+}
+
+func (m *Matcher) tryLinkBangumiEpisode(ctx context.Context, f store.MediaFile, bangumiID int, parsed fileparse.ParsedFilename) {
+	if parsed.EpisodeNumber == 0 || m.bangumi == nil {
+		return
+	}
+	episodes, err := m.bangumi.GetSubjectEpisodes(ctx, bangumiID)
+	if err != nil {
+		return
+	}
+	for _, ep := range episodes {
+		if int(ep.Sort) == parsed.EpisodeNumber {
+			_ = m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
+				BangumiSubjectID: sql.NullInt64{Int64: int64(bangumiID), Valid: true},
+				BangumiEpisodeID: sql.NullInt64{Int64: int64(ep.ID), Valid: true},
+				ID:               f.ID,
+			})
+			return
+		}
+	}
+}
+
+// upsertAnimeByTMDB attempts a Bangumi cross-reference via matchTMDB-style lookup;
+// if that fails, falls back to creating a minimal anime row keyed by tmdb_id.
+func (m *Matcher) upsertAnimeByTMDB(ctx context.Context, f store.MediaFile, tmdbID int64, parsed fileparse.ParsedFilename) (string, error) {
+	// Try Bangumi cross-ref first via existing matcher (uses TMDB original name).
+	if m.bangumi != nil && m.tmdb != nil {
+		if subjectID, episodeID, ok, _ := m.matchTMDB(ctx, parsed); ok {
+			row, err := m.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: int64(subjectID), Valid: true})
+			if err == nil {
+				_ = m.queries.UpdateMediaFileBangumiIDs(ctx, store.UpdateMediaFileBangumiIDsParams{
+					BangumiSubjectID: sql.NullInt64{Int64: int64(subjectID), Valid: true},
+					BangumiEpisodeID: sql.NullInt64{Int64: int64(episodeID), Valid: true},
+					ID:               f.ID,
+				})
+				return row.ID, nil
+			}
+		}
+	}
+	// Minimal row keyed on tmdb_id via anime external IDs update after creation.
+	var year sql.NullInt64
+	if parsed.Year > 0 {
+		year = sql.NullInt64{Int64: int64(parsed.Year), Valid: true}
+	}
+	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
+		ID:          uuid.NewString(),
+		Title:       parsed.Title,
+		Status:      "unknown",
+		Genres:      "[]",
+		Year:        year,
+		WatchStatus: "none",
+	})
+	if err != nil {
+		return "", err
+	}
+	_ = m.queries.UpdateAnimeExternalIDs(ctx, store.UpdateAnimeExternalIDsParams{
+		ID:     created.ID,
+		TmdbID: sql.NullInt64{Int64: tmdbID, Valid: true},
+	})
+	return created.ID, nil
+}
+
+// upsertAnimeByAnidb creates (or finds) a minimal anime row keyed on anidb_id.
+func (m *Matcher) upsertAnimeByAnidb(ctx context.Context, _ store.MediaFile, cand anidb.Candidate, parsed fileparse.ParsedFilename) (string, error) {
+	nid := sql.NullInt64{Int64: cand.AniDBID, Valid: true}
+	row, err := m.queries.GetAnimeByAnidbID(ctx, nid)
+	if err == nil {
+		return row.ID, nil
+	}
+	title := cand.Title
+	if title == "" {
+		title = parsed.Title
+	}
+	var year sql.NullInt64
+	if parsed.Year > 0 {
+		year = sql.NullInt64{Int64: int64(parsed.Year), Valid: true}
+	}
+	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
+		ID:          uuid.NewString(),
+		Title:       title,
+		Status:      "unknown",
+		Genres:      "[]",
+		Year:        year,
+		WatchStatus: "none",
+	})
+	if err != nil {
+		return "", err
+	}
+	_ = m.queries.UpdateAnimeExternalIDs(ctx, store.UpdateAnimeExternalIDsParams{
+		ID:      created.ID,
+		AnidbID: nid,
+	})
+	return created.ID, nil
 }
 
 // matchDandanplay tries to match a file by its hash via dandanplay API.

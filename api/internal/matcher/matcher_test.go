@@ -10,6 +10,7 @@ import (
 
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/matcher"
@@ -219,6 +220,10 @@ func (m *mockBangumi) SearchSubjects(_ context.Context, _ string, _ ...bangumi.S
 	return m.searchResult, m.searchErr
 }
 
+func (m *mockBangumi) SearchByTag(_ context.Context, _ []string, _ string, _, _ int) ([]bangumi.Subject, int, error) {
+	return nil, 0, nil
+}
+
 func (m *mockBangumi) GetCalendar(_ context.Context) ([]bangumi.CalendarDay, error) {
 	return nil, nil
 }
@@ -295,7 +300,7 @@ func TestMatchLibrary_BangumiFallback(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c)
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c, nil)
 	summary, err := m.MatchLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("MatchLibrary: %v", err)
@@ -324,5 +329,163 @@ func TestMatchLibrary_BangumiFallback(t *testing.T) {
 	}
 	if !mf.BangumiEpisodeID.Valid || mf.BangumiEpisodeID.Int64 != 5003 {
 		t.Errorf("want bangumi_episode_id=5003, got %v", mf.BangumiEpisodeID)
+	}
+}
+
+// buildFixtureAnidbServiceUnique returns a service preloaded with one Cowboy
+// Bebop anime mapped across AniDB/MAL/AniList/Bangumi/TMDB.
+func buildFixtureAnidbServiceUnique(t *testing.T) *anidb.Service {
+	t.Helper()
+	manami := []byte(`{"data":[{"sources":[
+        "https://anidb.net/anime/23",
+        "https://myanimelist.net/anime/1",
+        "https://anilist.co/anime/1",
+        "https://themoviedb.org/tv/30991"
+    ]}]}`)
+	al := []byte(`<anime-list><anime anidbid="23"><bangumiid>253</bangumiid></anime></anime-list>`)
+	titles := []byte(`<?xml version="1.0"?><animetitles>
+        <anime aid="23"><title>Cowboy Bebop</title></anime>
+    </animetitles>`)
+	m, err := anidb.LoadMapping(manami)
+	if err != nil {
+		t.Fatal(err)
+	}
+	extras, err := anidb.LoadAnimeListsMapping(al)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m.MergeIDSets(extras)
+	ti, err := anidb.LoadTitleIndex(titles)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := anidb.NewService(nil, t.TempDir())
+	s.SetIndexesForTest(m, ti)
+	return s
+}
+
+// buildFixtureAnidbServiceAmbiguous returns a service whose index contains two
+// titles that score within ambiguity margin of each other.
+func buildFixtureAnidbServiceAmbiguous(t *testing.T) *anidb.Service {
+	t.Helper()
+	// Both titles of equal length → both will score 1.0 on an exact-length
+	// match of the query "Confusing Show Alpha" / "Confusing Show Betaa"
+	// (identical prefix, different final token of same length).
+	titles := []byte(`<?xml version="1.0"?><animetitles>
+        <anime aid="100"><title>Confusing Show Alpha</title></anime>
+        <anime aid="101"><title>Confusing Show Betax</title></anime>
+    </animetitles>`)
+	m, err := anidb.LoadMapping([]byte(`{"data":[]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ti, err := anidb.LoadTitleIndex(titles)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := anidb.NewService(nil, t.TempDir())
+	s.SetIndexesForTest(m, ti)
+	return s
+}
+
+// TestExistingPassesUnchangedWhenAnidbNil asserts NewMulti(..., nil) behaves
+// identically to the pre-AniDB Matcher: Pass 2 (Bangumi) still matches 1 file,
+// no panics, no Pass 4 fallback invoked.
+func TestExistingPassesUnchangedWhenAnidbNil(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+
+	lib, _ := seedLibraryAndFileWithName(t, q, "[SubGroup] My Anime - 03.mkv")
+
+	ddpMock := &mockDandanplay{
+		matchResult: &dandanplay.MatchResult{IsMatched: false},
+	}
+	bgmMock := &mockBangumi{
+		searchResult: []bangumi.Subject{{ID: 200, Name: "My Anime"}},
+		episodes: []bangumi.Episode{
+			{ID: 5001, Sort: 1}, {ID: 5002, Sort: 2}, {ID: 5003, Sort: 3},
+		},
+	}
+
+	c := cache.New("")
+	defer c.Close()
+
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c, nil)
+	summary, err := m.MatchLibrary(context.Background(), lib.ID)
+	if err != nil {
+		t.Fatalf("MatchLibrary: %v", err)
+	}
+	if summary.Matched != 1 || summary.ByBangumi != 1 {
+		t.Errorf("want matched=1 by_bangumi=1, got %+v", summary)
+	}
+	if summary.ByAnidbTitle != 0 {
+		t.Errorf("want by_anidb_title=0 (anidb nil), got %d", summary.ByAnidbTitle)
+	}
+}
+
+func TestPass4TitleFallbackMatchesUniqueHit(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+
+	// Filename that will parse to title="Cowboy Bebop" and episode 1.
+	lib, _ := seedLibraryAndFileWithName(t, q, "[SubGroup] Cowboy Bebop - 01.mkv")
+
+	ddpMock := &mockDandanplay{
+		matchResult: &dandanplay.MatchResult{IsMatched: false},
+	}
+	bgmMock := &mockBangumi{
+		// Pass 2 must NOT match: return nothing for title search so Pass 2 fails
+		// but GetSubject (called by upsertAnimeByBangumi) still returns a subject.
+		searchResult: nil,
+		episodes: []bangumi.Episode{
+			{ID: 9001, Sort: 1}, {ID: 9002, Sort: 2},
+		},
+	}
+
+	c := cache.New("")
+	defer c.Close()
+
+	anidbSvc := buildFixtureAnidbServiceUnique(t)
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c, anidbSvc)
+	summary, err := m.MatchLibrary(context.Background(), lib.ID)
+	if err != nil {
+		t.Fatalf("MatchLibrary: %v", err)
+	}
+	if summary.ByAnidbTitle < 1 {
+		t.Fatalf("want by_anidb_title>=1, got summary=%+v", summary)
+	}
+	// Verify anime row exists keyed on bangumi_id=253 (present in fixture).
+	row, err := q.GetAnimeByBangumiID(context.Background(), sql.NullInt64{Int64: 253, Valid: true})
+	if err != nil {
+		t.Fatalf("GetAnimeByBangumiID: %v", err)
+	}
+	if !row.AnidbID.Valid || row.AnidbID.Int64 != 23 {
+		t.Errorf("want anidb_id=23 enriched on anime row, got %+v", row.AnidbID)
+	}
+}
+
+func TestPass4SkipsAmbiguousCandidates(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+
+	lib, _ := seedLibraryAndFileWithName(t, q, "[SubGroup] Confusing Show - 01.mkv")
+
+	ddpMock := &mockDandanplay{matchResult: &dandanplay.MatchResult{IsMatched: false}}
+	bgmMock := &mockBangumi{}
+
+	c := cache.New("")
+	defer c.Close()
+
+	anidbSvc := buildFixtureAnidbServiceAmbiguous(t)
+	m := matcher.NewMulti(q, ddpMock, bgmMock, nil, c, anidbSvc)
+	summary, err := m.MatchLibrary(context.Background(), lib.ID)
+	if err != nil {
+		t.Fatalf("MatchLibrary: %v", err)
+	}
+	if summary.ByAnidbTitle != 0 {
+		t.Errorf("want by_anidb_title=0 (ambiguous), got %d (summary=%+v)", summary.ByAnidbTitle, summary)
+	}
+	if summary.Unmatched != 1 {
+		t.Errorf("want unmatched=1, got %d", summary.Unmatched)
 	}
 }

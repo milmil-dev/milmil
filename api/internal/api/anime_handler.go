@@ -42,6 +42,7 @@ type playableEpisodesEnvelope struct {
 	WatchStatus string                    `json:"watch_status"`
 	MalID       *int64                    `json:"mal_id"`
 	TmdbID      *int64                    `json:"tmdb_id"`
+	AnidbID     *int64                    `json:"anidb_id"`
 	UserScore   *int64                    `json:"user_score"`
 	Episodes    []playableEpisodeResponse `json:"episodes"`
 }
@@ -108,6 +109,7 @@ func (h *handler) handlePlayableEpisodes(c echo.Context) error {
 		WatchStatus: anime.WatchStatus,
 		MalID:       nullInt(anime.MalID),
 		TmdbID:      nullInt(anime.TmdbID),
+		AnidbID:     nullInt(anime.AnidbID),
 		UserScore:   nullInt(anime.UserScore),
 		Episodes:    episodes,
 	})

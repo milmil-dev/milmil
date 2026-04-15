@@ -10,6 +10,7 @@ import (
 	"os"
 	"net"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"sync"
 	"syscall"
@@ -27,6 +28,7 @@ import (
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/bangumi"
@@ -194,10 +196,20 @@ func main() {
 	}
 	slog.Debug("boot: API clients ready", "took", time.Since(step))
 
+	// AniDB cross-site mapping service (manami + anime-lists + titles). Loaded
+	// from disk on startup if a prior refresh populated the cache; otherwise the
+	// scheduler's anidb_refresh job will populate it on first tick.
+	anidbDataDir := filepath.Join(cfg.DataDir, "anidb")
+	anidbClient := anidb.NewClient(httpClient, "", "", "")
+	anidbSvc := anidb.NewService(anidbClient, anidbDataDir)
+	if err := anidbSvc.LoadFromDisk(); err != nil {
+		slog.Info("anidb: no cached data on startup; will populate on first refresh", "err", err)
+	}
+
 	step = time.Now()
 	slog.Debug("boot: creating matcher + resolver")
-	matcherSvc := matcher.NewMulti(store.New(database), ddpClient, bangumiClient, tmdbClient, cacheClient)
-	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient)
+	matcherSvc := matcher.NewMulti(store.New(database), ddpClient, bangumiClient, tmdbClient, cacheClient, anidbSvc)
+	resolverSvc := resolver.New(store.New(database), bangumiClient, ddpClient, cacheClient, anidbSvc)
 	slog.Debug("boot: matcher + resolver ready", "took", time.Since(step))
 
 	// Download engine (built-in torrent + HTTP)
@@ -299,7 +311,7 @@ func main() {
 
 	// Background job scheduler — goroutine-based tickers
 	sched := worker.NewScheduler(
-		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, wsHub, botEngine,
+		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, anidbSvc, wsHub, botEngine,
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")

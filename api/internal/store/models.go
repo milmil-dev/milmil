@@ -34,6 +34,7 @@ type Anime struct {
 	WatchStatusUpdatedAt sql.NullString `json:"watch_status_updated_at"`
 	UserScore            sql.NullInt64  `json:"user_score"`
 	Score                float64        `json:"score"`
+	AnidbID              sql.NullInt64  `json:"anidb_id"`
 }
 
 type ApiToken struct {

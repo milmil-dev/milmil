@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/milmil/api/internal/cache"
+	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/store"
@@ -28,10 +29,70 @@ type Resolver struct {
 	bangumi    bangumi.Client
 	dandanplay dandanplay.Client
 	cache      cache.Cache
+	anidb      *anidb.Service
 }
 
-func New(q *store.Queries, bgm bangumi.Client, ddp dandanplay.Client, c cache.Cache) *Resolver {
-	return &Resolver{queries: q, bangumi: bgm, dandanplay: ddp, cache: c}
+func New(q *store.Queries, bgm bangumi.Client, ddp dandanplay.Client, c cache.Cache, anidbSvc *anidb.Service) *Resolver {
+	return &Resolver{queries: q, bangumi: bgm, dandanplay: ddp, cache: c, anidb: anidbSvc}
+}
+
+// nullInt64Value returns the int64 inside n, or 0 if invalid.
+func nullInt64Value(n sql.NullInt64) int64 {
+	if n.Valid {
+		return n.Int64
+	}
+	return 0
+}
+
+// enrichExternalIDs consults the anidb cross-site mapping to fill any missing
+// external IDs for an anime row. No-op when the service is unavailable or when
+// no new info is learned. Uses UpdateAnimeExternalIDs which COALESCEs — never
+// overwrites existing values.
+func (r *Resolver) enrichExternalIDs(ctx context.Context, animeID string) {
+	if r.anidb == nil {
+		return
+	}
+	row, err := r.queries.GetAnime(ctx, animeID)
+	if err != nil {
+		return
+	}
+	seed := anidb.IDSet{
+		Bangumi: nullInt64Value(row.BangumiID),
+		AniList: nullInt64Value(row.AnilistID),
+		MAL:     nullInt64Value(row.MalID),
+		TMDB:    nullInt64Value(row.TmdbID),
+		AniDB:   nullInt64Value(row.AnidbID),
+	}
+	merged := seed
+	for _, src := range anidb.AllSources() {
+		if id := seed.Get(src); id != 0 {
+			if set, ok := r.anidb.Resolve(src, id); ok {
+				merged.Merge(set)
+			}
+		}
+	}
+	if merged == seed {
+		return
+	}
+	params := store.UpdateAnimeExternalIDsParams{ID: row.ID}
+	if merged.AniDB != 0 {
+		params.AnidbID = sql.NullInt64{Int64: merged.AniDB, Valid: true}
+	}
+	if merged.AniList != 0 {
+		params.AnilistID = sql.NullInt64{Int64: merged.AniList, Valid: true}
+	}
+	if merged.Bangumi != 0 {
+		params.BangumiID = sql.NullInt64{Int64: merged.Bangumi, Valid: true}
+	}
+	if merged.MAL != 0 {
+		params.MalID = sql.NullInt64{Int64: merged.MAL, Valid: true}
+	}
+	if merged.TMDB != 0 {
+		params.TmdbID = sql.NullInt64{Int64: merged.TMDB, Valid: true}
+	}
+	if err := r.queries.UpdateAnimeExternalIDs(ctx, params); err != nil {
+		slog.Warn("resolver: anidb enrichment failed", "anime", row.ID, "err", err)
+	}
 }
 
 func (r *Resolver) ResolveLibrary(ctx context.Context, libraryID string) (*ResolveSummary, error) {
@@ -96,6 +157,8 @@ func (r *Resolver) ResolveBangumiMatched(ctx context.Context, libraryID string) 
 			summary.AnimeCreated++
 		}
 
+		r.enrichExternalIDs(ctx, anime.ID)
+
 		epsCreated, err := r.ensureEpisodes(ctx, anime.ID, bangumiID)
 		if err != nil {
 			slog.Error("resolver: ensureEpisodes failed", "bangumi_id", bangumiID, "err", err)
@@ -152,6 +215,8 @@ func (r *Resolver) resolveAnimeGroup(ctx context.Context, libraryID string, ddpA
 	if created {
 		summary.AnimeCreated++
 	}
+
+	r.enrichExternalIDs(ctx, anime.ID)
 
 	// 3. Ensure episodes exist
 	epsCreated, err := r.ensureEpisodes(ctx, anime.ID, bangumiID)
