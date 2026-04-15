@@ -68,6 +68,10 @@ msgstr "由呢度繼續"
 #~ msgid "search.tag.misc"
 #~ msgstr "其他"
 
+#: src/pages/LibraryDetailPage.tsx:371
+msgid "{missingCount} missing episodes"
+msgstr ""
+
 #: src/pages/settings/AboutPanel.tsx:148
 msgid "about.export"
 msgstr "導出"
@@ -300,19 +304,19 @@ msgstr "更新密碼"
 msgid "account.updating"
 msgstr "更新緊..."
 
-#: src/pages/AnimeDetailPage.tsx:634
+#: src/pages/AnimeDetailPage.tsx:677
 msgid "anime.addToCollection"
 msgstr "加入收藏"
 
-#: src/pages/AnimeDetailPage.tsx:928
+#: src/pages/AnimeDetailPage.tsx:976
 msgid "anime.characters"
 msgstr "角色"
 
-#: src/pages/AnimeDetailPage.tsx:255
+#: src/pages/AnimeDetailPage.tsx:263
 msgid "anime.collectionUpdated"
 msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:1061
+#: src/pages/AnimeDetailPage.tsx:1148
 msgid "anime.comments"
 msgstr "評論"
 
@@ -320,8 +324,8 @@ msgstr "評論"
 #~ msgid "anime.continueWatching"
 #~ msgstr "繼續睇"
 
-#: src/pages/AnimeDetailPage.tsx:661
-#: src/pages/AnimeDetailPage.tsx:697
+#: src/pages/AnimeDetailPage.tsx:704
+#: src/pages/AnimeDetailPage.tsx:740
 msgid "anime.enableTrackerSync"
 msgstr ""
 
@@ -330,12 +334,12 @@ msgstr ""
 #~ msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:852
+#: src/pages/AnimeDetailPage.tsx:900
 msgid "anime.episodes"
 msgstr "集數"
 
-#: src/pages/AnimeDetailPage.tsx:662
-#: src/pages/AnimeDetailPage.tsx:698
+#: src/pages/AnimeDetailPage.tsx:705
+#: src/pages/AnimeDetailPage.tsx:741
 msgid "anime.excludeTrackerSync"
 msgstr ""
 
@@ -343,39 +347,39 @@ msgstr ""
 #~ msgid "anime.inCollection"
 #~ msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:739
+#: src/pages/AnimeDetailPage.tsx:782
 msgid "anime.myScore"
 msgstr "我的評分"
 
 #~ msgid "anime.noLocalFile"
 #~ msgstr "無本地文件"
 
-#: src/pages/AnimeDetailPage.tsx:527
+#: src/pages/AnimeDetailPage.tsx:535
 msgid "anime.notAired"
 msgstr "未播"
 
-#: src/pages/AnimeDetailPage.tsx:322
+#: src/pages/AnimeDetailPage.tsx:330
 msgid "anime.notFound"
 msgstr "搵唔到動畫"
 
-#: src/pages/AnimeDetailPage.tsx:549
+#: src/pages/AnimeDetailPage.tsx:557
 msgid "anime.playableEps"
 msgstr "集可播放"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:520
+#: src/pages/AnimeDetailPage.tsx:528
 msgid "anime.ratings"
 msgstr "評分"
 
-#: src/pages/AnimeDetailPage.tsx:975
+#: src/pages/AnimeDetailPage.tsx:1062
 msgid "anime.recommendations"
 msgstr "推薦"
 
-#: src/pages/AnimeDetailPage.tsx:949
+#: src/pages/AnimeDetailPage.tsx:1033
 msgid "anime.relations"
 msgstr "相關作品"
 
-#: src/pages/AnimeDetailPage.tsx:1013
+#: src/pages/AnimeDetailPage.tsx:1100
 msgid "anime.reviews"
 msgstr "評論"
 
@@ -383,18 +387,22 @@ msgstr "評論"
 #~ msgid "anime.score"
 #~ msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:646
+#: src/pages/AnimeDetailPage.tsx:689
 msgid "anime.searchResources"
 msgstr "搵資源"
 
 #~ msgid "anime.season"
 #~ msgstr "季"
 
-#: src/pages/AnimeDetailPage.tsx:543
+#: src/pages/AnimeDetailPage.tsx:999
+msgid "anime.sideStories"
+msgstr "番外篇 / 劇場版"
+
+#: src/pages/AnimeDetailPage.tsx:551
 msgid "anime.subscribed"
 msgstr "追咗番"
 
-#: src/pages/AnimeDetailPage.tsx:271
+#: src/pages/AnimeDetailPage.tsx:279
 msgid "anime.syncFlagsUpdated"
 msgstr ""
 
@@ -403,11 +411,11 @@ msgstr ""
 #~ msgstr "簡介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:898
+#: src/pages/AnimeDetailPage.tsx:946
 msgid "anime.trailer"
 msgstr "預告片"
 
-#: src/pages/AnimeDetailPage.tsx:934
+#: src/pages/AnimeDetailPage.tsx:982
 msgid "anime.voiceActor"
 msgstr "聲優"
 
@@ -496,12 +504,12 @@ msgid "auth.error.setupFailed"
 msgstr "設定失敗"
 
 #: src/pages/LibrariesPage.tsx:3159
-#: src/pages/LibraryDetailPage.tsx:1761
+#: src/pages/LibraryDetailPage.tsx:1822
 msgid "auth.libraries.signInSubtitle"
 msgstr "登入先可以睇你嘅媒體庫"
 
 #: src/pages/LibrariesPage.tsx:3156
-#: src/pages/LibraryDetailPage.tsx:1758
+#: src/pages/LibraryDetailPage.tsx:1819
 msgid "auth.libraries.signInTitle"
 msgstr "需要登入"
 
@@ -516,7 +524,7 @@ msgstr "密碼"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:3166
-#: src/pages/LibraryDetailPage.tsx:1764
+#: src/pages/LibraryDetailPage.tsx:1825
 #: src/pages/LoginPage.tsx:407
 msgid "auth.login.submit"
 msgstr "登入"
@@ -1120,14 +1128,14 @@ msgstr "全部"
 #~ msgstr "改狀態"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:728
+#: src/pages/AnimeDetailPage.tsx:771
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "睇完"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:734
+#: src/pages/AnimeDetailPage.tsx:777
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1149,14 +1157,14 @@ msgid "collection.goToLibraries"
 msgstr "去媒體庫"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:731
+#: src/pages/AnimeDetailPage.tsx:774
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暫停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:725
+#: src/pages/AnimeDetailPage.tsx:768
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1192,7 +1200,7 @@ msgid "collection.viewAll"
 msgstr "睇晒"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:722
+#: src/pages/AnimeDetailPage.tsx:765
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1202,7 +1210,7 @@ msgstr "睇緊"
 msgid "common.back"
 msgstr "返回"
 
-#: src/pages/AnimeDetailPage.tsx:337
+#: src/pages/AnimeDetailPage.tsx:345
 msgid "common.backHome"
 msgstr "返去主頁"
 
@@ -1227,23 +1235,23 @@ msgstr "複製咗"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:510
-#: src/pages/AnimeDetailPage.tsx:854
+#: src/pages/AnimeDetailPage.tsx:518
+#: src/pages/AnimeDetailPage.tsx:902
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
-#: src/pages/LibraryDetailPage.tsx:998
+#: src/pages/LibraryDetailPage.tsx:1059
 msgid "common.ep"
 msgstr "集"
 
-#: src/pages/AnimeDetailPage.tsx:322
-#: src/pages/LibraryDetailPage.tsx:1785
+#: src/pages/AnimeDetailPage.tsx:330
+#: src/pages/LibraryDetailPage.tsx:1846
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
 msgstr "載入唔到"
 
 #: src/components/LoginModal.tsx:173
 #: src/components/MatchModal.tsx:415
-#: src/pages/LibraryDetailPage.tsx:1123
+#: src/pages/LibraryDetailPage.tsx:1184
 #: src/pages/LoginPage.tsx:258
 #: src/pages/LoginPage.tsx:395
 msgid "common.loading"
@@ -1253,7 +1261,7 @@ msgstr "載入緊…"
 msgid "common.minuteShort"
 msgstr "分鐘"
 
-#: src/pages/AnimeDetailPage.tsx:331
+#: src/pages/AnimeDetailPage.tsx:339
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -1325,6 +1333,10 @@ msgstr "現在熱門"
 #~ msgid "downloads.tab.search"
 #~ msgstr "搜尋"
 
+#: src/components/anime/EpisodeStatusCard.tsx:35
+msgid "Episode status"
+msgstr ""
+
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
 msgid "episode.prefix"
@@ -1385,6 +1397,10 @@ msgstr "熱門"
 msgid "home.viewAll"
 msgstr "睇晒 →"
 
+#: src/pages/LibraryDetailPage.tsx:329
+msgid "Incomplete only"
+msgstr ""
+
 #: src/pages/LibrariesPage.tsx:296
 #: src/pages/LibrariesPage.tsx:327
 #: src/pages/LibrariesPage.tsx:2335
@@ -1394,19 +1410,20 @@ msgstr "睇晒 →"
 msgid "library.addLibrary"
 msgstr "新增媒體庫"
 
-#: src/pages/LibraryDetailPage.tsx:310
+#: src/pages/LibraryDetailPage.tsx:360
 msgid "library.anime.confirmDelete"
 msgstr "刪除呢個動畫同取消關聯檔案？檔案會變返未匹配。"
 
-#: src/pages/LibraryDetailPage.tsx:266
+#: src/pages/LibraryDetailPage.tsx:285
 msgid "library.anime.deleted"
 msgstr "動畫已刪除"
 
-#: src/pages/LibraryDetailPage.tsx:269
+#: src/pages/LibraryDetailPage.tsx:288
 msgid "library.anime.deleteFailed"
 msgstr "刪除動畫失敗"
 
-#: src/pages/LibraryDetailPage.tsx:290
+#: src/pages/LibraryDetailPage.tsx:309
+#: src/pages/LibraryDetailPage.tsx:339
 msgid "library.anime.empty"
 msgstr "呢個媒體庫冇已匹配嘅動畫"
 
@@ -1449,68 +1466,68 @@ msgstr "刪除"
 msgid "library.deleteConfirm"
 msgstr "所有媒體檔案記錄會被移除，磁碟上嘅檔案唔會受影響。"
 
-#: src/pages/LibraryDetailPage.tsx:708
+#: src/pages/LibraryDetailPage.tsx:769
 msgid "library.detail.allMatched"
 msgstr "所有檔案匹配晒"
 
-#: src/pages/LibraryDetailPage.tsx:1871
+#: src/pages/LibraryDetailPage.tsx:1932
 msgid "library.detail.autoMatch"
 msgstr "自動匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1875
+#: src/pages/LibraryDetailPage.tsx:1936
 msgid "library.detail.autoMatchTooltip"
 msgstr "自動匹配晒所有未匹配嘅檔案"
 
-#: src/pages/LibraryDetailPage.tsx:1791
-#: src/pages/LibraryDetailPage.tsx:1822
+#: src/pages/LibraryDetailPage.tsx:1852
+#: src/pages/LibraryDetailPage.tsx:1883
 msgid "library.detail.backToLibraries"
 msgstr "媒體庫"
 
-#: src/pages/LibraryDetailPage.tsx:764
+#: src/pages/LibraryDetailPage.tsx:825
 msgid "library.detail.bulkMatch"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1124
+#: src/pages/LibraryDetailPage.tsx:1185
 msgid "library.detail.bulkMatchModal.confirm"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1076
+#: src/pages/LibraryDetailPage.tsx:1137
 msgid "library.detail.bulkMatchModal.episodeStartHint"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1073
+#: src/pages/LibraryDetailPage.tsx:1134
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:864
+#: src/pages/LibraryDetailPage.tsx:925
 msgid "library.detail.bulkMatchModal.filesSelected"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:903
+#: src/pages/LibraryDetailPage.tsx:964
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:853
+#: src/pages/LibraryDetailPage.tsx:914
 msgid "library.detail.bulkMatchModal.title"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:834
+#: src/pages/LibraryDetailPage.tsx:895
 msgid "library.detail.bulkMatchSuccess"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:776
+#: src/pages/LibraryDetailPage.tsx:837
 msgid "library.detail.bulkUnmatch"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:770
+#: src/pages/LibraryDetailPage.tsx:831
 msgid "library.detail.bulkUnmatchConfirm"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:445
+#: src/pages/LibraryDetailPage.tsx:506
 msgid "library.detail.col.filename"
 msgstr "檔案名稱"
 
-#: src/pages/LibraryDetailPage.tsx:460
+#: src/pages/LibraryDetailPage.tsx:521
 msgid "library.detail.col.matchedAnime"
 msgstr "匹配嘅動畫"
 
@@ -1518,42 +1535,42 @@ msgstr "匹配嘅動畫"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "匹配至"
 
-#: src/pages/LibraryDetailPage.tsx:532
+#: src/pages/LibraryDetailPage.tsx:593
 msgid "library.detail.col.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:519
+#: src/pages/LibraryDetailPage.tsx:580
 msgid "library.detail.col.status"
 msgstr "狀態"
 
-#: src/pages/LibraryDetailPage.tsx:525
+#: src/pages/LibraryDetailPage.tsx:586
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:239
+#: src/pages/LibraryDetailPage.tsx:244
 msgid "library.detail.copyPath"
 msgstr "複製路徑"
 
-#: src/pages/LibraryDetailPage.tsx:219
+#: src/pages/LibraryDetailPage.tsx:224
 msgid "library.detail.editMatch"
 msgstr "改"
 
-#: src/pages/LibraryDetailPage.tsx:1508
+#: src/pages/LibraryDetailPage.tsx:1569
 msgid "library.detail.errors"
 msgstr "錯誤"
 
-#: src/pages/LibraryDetailPage.tsx:246
+#: src/pages/LibraryDetailPage.tsx:251
 msgid "library.detail.fileInfo"
 msgstr "檔案資訊"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "檔案名稱"
 
-#: src/pages/LibraryDetailPage.tsx:1494
+#: src/pages/LibraryDetailPage.tsx:1555
 msgid "library.detail.found"
 msgstr "已發現"
 
-#: src/pages/LibraryDetailPage.tsx:1489
+#: src/pages/LibraryDetailPage.tsx:1550
 msgid "library.detail.inProgress"
 msgstr "進行中"
 
@@ -1561,12 +1578,12 @@ msgstr "進行中"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "載入多啲"
 
-#: src/pages/LibraryDetailPage.tsx:572
+#: src/pages/LibraryDetailPage.tsx:633
 msgid "library.detail.match"
 msgstr "匹配"
 
-#: src/pages/LibraryDetailPage.tsx:665
-#: src/pages/LibraryDetailPage.tsx:1497
+#: src/pages/LibraryDetailPage.tsx:726
+#: src/pages/LibraryDetailPage.tsx:1558
 msgid "library.detail.matched"
 msgstr "已匹配"
 
@@ -1574,7 +1591,7 @@ msgstr "已匹配"
 #~ msgstr "匹配至"
 
 #: src/components/MatchModal.tsx:306
-#: src/pages/LibraryDetailPage.tsx:1060
+#: src/pages/LibraryDetailPage.tsx:1121
 msgid "library.detail.matchModal.change"
 msgstr "改"
 
@@ -1594,7 +1611,7 @@ msgid "library.detail.matchModal.noEpisodes"
 msgstr "搵唔到集數"
 
 #: src/components/MatchModal.tsx:214
-#: src/pages/LibraryDetailPage.tsx:965
+#: src/pages/LibraryDetailPage.tsx:1026
 msgid "library.detail.matchModal.noResults"
 msgstr "搵唔到"
 
@@ -1605,12 +1622,12 @@ msgstr "搵唔到"
 #~ msgstr "搜尋動畫..."
 
 #: src/components/MatchModal.tsx:196
-#: src/pages/LibraryDetailPage.tsx:947
+#: src/pages/LibraryDetailPage.tsx:1008
 msgid "library.detail.matchModal.searchHint"
 msgstr "搵動畫嚟匹配呢個檔案"
 
 #: src/components/MatchModal.tsx:182
-#: src/pages/LibraryDetailPage.tsx:934
+#: src/pages/LibraryDetailPage.tsx:995
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "搜尋動畫…"
 
@@ -1619,7 +1636,7 @@ msgid "library.detail.matchModal.stepEpisode"
 msgstr "揀集數"
 
 #: src/components/MatchModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:902
+#: src/pages/LibraryDetailPage.tsx:963
 msgid "library.detail.matchModal.stepSearch"
 msgstr "搵動畫"
 
@@ -1631,34 +1648,34 @@ msgstr "匹配檔案"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "將此檔案匹配到動畫集數"
 
-#: src/pages/LibraryDetailPage.tsx:607
-#: src/pages/LibraryDetailPage.tsx:713
-#: src/pages/LibraryDetailPage.tsx:1174
-#: src/pages/LibraryDetailPage.tsx:1373
+#: src/pages/LibraryDetailPage.tsx:668
+#: src/pages/LibraryDetailPage.tsx:774
+#: src/pages/LibraryDetailPage.tsx:1235
+#: src/pages/LibraryDetailPage.tsx:1434
 msgid "library.detail.noFiles"
 msgstr "搵唔到檔案"
 
-#: src/pages/LibraryDetailPage.tsx:610
+#: src/pages/LibraryDetailPage.tsx:671
 msgid "library.detail.noFilesHint"
 msgstr "掃一掃搵媒體文件"
 
-#: src/pages/LibraryDetailPage.tsx:1445
+#: src/pages/LibraryDetailPage.tsx:1506
 msgid "library.detail.noScans"
 msgstr "未掃過"
 
-#: src/pages/LibraryDetailPage.tsx:1448
+#: src/pages/LibraryDetailPage.tsx:1509
 msgid "library.detail.noScansHint"
 msgstr "掃一次先會有記錄"
 
-#: src/pages/LibraryDetailPage.tsx:1785
+#: src/pages/LibraryDetailPage.tsx:1846
 msgid "library.detail.notFound"
 msgstr "搵唔到媒體庫"
 
-#: src/pages/LibraryDetailPage.tsx:192
+#: src/pages/LibraryDetailPage.tsx:197
 msgid "library.detail.pathCopied"
 msgstr "路徑複製咗"
 
-#: src/pages/LibraryDetailPage.tsx:553
+#: src/pages/LibraryDetailPage.tsx:614
 msgid "library.detail.play"
 msgstr "播放"
 
@@ -1684,50 +1701,50 @@ msgstr "播放"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "開始時間"
 
-#: src/pages/LibraryDetailPage.tsx:1891
+#: src/pages/LibraryDetailPage.tsx:1952
 msgid "library.detail.scanNow"
 msgstr "立即掃描"
 
-#: src/pages/LibraryDetailPage.tsx:1895
+#: src/pages/LibraryDetailPage.tsx:1956
 msgid "library.detail.scanNowTooltip"
 msgstr "掃呢個媒體庫入面嘅新檔案"
 
 #~ msgid "library.detail.search"
 #~ msgstr "搜尋檔案..."
 
-#: src/pages/LibraryDetailPage.tsx:656
+#: src/pages/LibraryDetailPage.tsx:717
 msgid "library.detail.searchFiles"
 msgstr "搜尋檔案…"
 
-#: src/pages/LibraryDetailPage.tsx:756
+#: src/pages/LibraryDetailPage.tsx:817
 msgid "library.detail.selected"
 msgstr ""
 
-#: src/pages/LibraryDetailPage.tsx:1588
-#: src/pages/LibraryDetailPage.tsx:1908
+#: src/pages/LibraryDetailPage.tsx:1649
+#: src/pages/LibraryDetailPage.tsx:1969
 msgid "library.detail.settings"
 msgstr "設定"
 
-#: src/pages/LibraryDetailPage.tsx:1912
+#: src/pages/LibraryDetailPage.tsx:1973
 msgid "library.detail.settingsTooltip"
 msgstr "媒體庫設定"
 
 #~ msgid "library.detail.size"
 #~ msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:1990
+#: src/pages/LibraryDetailPage.tsx:2051
 msgid "library.detail.stats.files"
 msgstr "個檔案"
 
-#: src/pages/LibraryDetailPage.tsx:2007
+#: src/pages/LibraryDetailPage.tsx:2068
 msgid "library.detail.stats.matched"
 msgstr "已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:2027
+#: src/pages/LibraryDetailPage.tsx:2088
 msgid "library.detail.stats.size"
 msgstr "大小"
 
-#: src/pages/LibraryDetailPage.tsx:2019
+#: src/pages/LibraryDetailPage.tsx:2080
 msgid "library.detail.stats.unmatched"
 msgstr "未匹配"
 
@@ -1741,11 +1758,11 @@ msgstr "未匹配"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "全部檔案"
 
-#: src/pages/LibraryDetailPage.tsx:1728
+#: src/pages/LibraryDetailPage.tsx:1789
 msgid "library.detail.tab.anime"
 msgstr "動畫"
 
-#: src/pages/LibraryDetailPage.tsx:1729
+#: src/pages/LibraryDetailPage.tsx:1790
 msgid "library.detail.tab.files"
 msgstr "檔案"
 
@@ -1753,7 +1770,7 @@ msgstr "檔案"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "已匹配"
 
-#: src/pages/LibraryDetailPage.tsx:1730
+#: src/pages/LibraryDetailPage.tsx:1791
 msgid "library.detail.tab.scanHistory"
 msgstr "掃描記錄"
 
@@ -1769,24 +1786,24 @@ msgstr "掃描記錄"
 #~ msgid "library.detail.totalSize"
 #~ msgstr "總大小"
 
-#: src/pages/LibraryDetailPage.tsx:230
+#: src/pages/LibraryDetailPage.tsx:235
 msgid "library.detail.unmatch"
 msgstr "取消匹配"
 
-#: src/pages/LibraryDetailPage.tsx:183
+#: src/pages/LibraryDetailPage.tsx:188
 msgid "library.detail.unmatched"
 msgstr "未匹配"
 
-#: src/pages/LibraryDetailPage.tsx:669
-#: src/pages/LibraryDetailPage.tsx:1500
+#: src/pages/LibraryDetailPage.tsx:730
+#: src/pages/LibraryDetailPage.tsx:1561
 msgid "library.detail.unmatchedShort"
 msgstr "未匹配"
 
-#: src/pages/LibraryDetailPage.tsx:2085
+#: src/pages/LibraryDetailPage.tsx:2146
 msgid "library.detail.viewTable"
 msgstr "表格檢視"
 
-#: src/pages/LibraryDetailPage.tsx:2104
+#: src/pages/LibraryDetailPage.tsx:2165
 msgid "library.detail.viewTree"
 msgstr "樹狀檢視"
 
@@ -1824,7 +1841,7 @@ msgstr "改媒體庫"
 
 #: src/pages/LibrariesPage.tsx:1029
 #: src/pages/LibrariesPage.tsx:2809
-#: src/pages/LibraryDetailPage.tsx:1632
+#: src/pages/LibraryDetailPage.tsx:1693
 msgid "library.enabled"
 msgstr "開咗"
 
@@ -1866,14 +1883,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:235
-#: src/pages/LibraryDetailPage.tsx:1870
+#: src/pages/LibraryDetailPage.tsx:1931
 msgid "library.matching"
 msgstr "匹配緊…"
 
 #: src/pages/LibrariesPage.tsx:999
 #: src/pages/LibrariesPage.tsx:1922
 #: src/pages/LibrariesPage.tsx:2301
-#: src/pages/LibraryDetailPage.tsx:1593
+#: src/pages/LibraryDetailPage.tsx:1654
 msgid "library.name"
 msgstr "名稱"
 
@@ -1883,7 +1900,7 @@ msgstr "名稱"
 msgid "library.nameRequired"
 msgstr "名稱為必填"
 
-#: src/pages/LibraryDetailPage.tsx:1805
+#: src/pages/LibraryDetailPage.tsx:1866
 msgid "library.neverScanned"
 msgstr "未掃過"
 
@@ -1912,7 +1929,7 @@ msgstr "我的媒體庫"
 
 #: src/pages/LibrariesPage.tsx:1489
 #: src/pages/LibrariesPage.tsx:2716
-#: src/pages/LibraryDetailPage.tsx:1606
+#: src/pages/LibraryDetailPage.tsx:1667
 msgid "library.path"
 msgstr "路徑"
 
@@ -1960,14 +1977,14 @@ msgid "library.s3.secretKey"
 msgstr "密鑰"
 
 #: src/pages/LibrariesPage.tsx:3366
-#: src/pages/LibraryDetailPage.tsx:1660
+#: src/pages/LibraryDetailPage.tsx:1721
 msgid "library.saveChanges"
 msgstr "儲存變更"
 
 #: src/pages/LibrariesPage.tsx:1562
 #: src/pages/LibrariesPage.tsx:2334
 #: src/pages/LibrariesPage.tsx:2834
-#: src/pages/LibraryDetailPage.tsx:1659
+#: src/pages/LibraryDetailPage.tsx:1720
 msgid "library.saving"
 msgstr "儲存緊…"
 
@@ -1977,12 +1994,12 @@ msgstr "儲存緊…"
 
 #: src/pages/LibrariesPage.tsx:1536
 #: src/pages/LibrariesPage.tsx:2795
-#: src/pages/LibraryDetailPage.tsx:1620
+#: src/pages/LibraryDetailPage.tsx:1681
 msgid "library.scanInterval"
 msgstr "掃描間隔"
 
 #: src/pages/LibrariesPage.tsx:233
-#: src/pages/LibraryDetailPage.tsx:1890
+#: src/pages/LibraryDetailPage.tsx:1951
 msgid "library.scanning"
 msgstr "掃緊"
 
@@ -2108,11 +2125,11 @@ msgstr "加咗媒體庫"
 msgid "library.toast.deleted"
 msgstr "刪咗媒體庫"
 
-#: src/pages/LibraryDetailPage.tsx:1723
+#: src/pages/LibraryDetailPage.tsx:1784
 msgid "library.toast.matchFailed"
 msgstr "自動匹配失敗"
 
-#: src/pages/LibraryDetailPage.tsx:1720
+#: src/pages/LibraryDetailPage.tsx:1781
 msgid "library.toast.matchStarted"
 msgstr "自動匹配開始咗"
 
@@ -2121,16 +2138,16 @@ msgstr "自動匹配開始咗"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "掃完"
 
-#: src/pages/LibraryDetailPage.tsx:1713
+#: src/pages/LibraryDetailPage.tsx:1774
 msgid "library.toast.scanFailed"
 msgstr "掃描失敗"
 
-#: src/pages/LibraryDetailPage.tsx:1710
+#: src/pages/LibraryDetailPage.tsx:1771
 msgid "library.toast.scanStarted"
 msgstr "掃描開始咗"
 
 #: src/pages/LibrariesPage.tsx:3066
-#: src/pages/LibraryDetailPage.tsx:1579
+#: src/pages/LibraryDetailPage.tsx:1640
 msgid "library.toast.updated"
 msgstr "更新咗媒體庫"
 
@@ -2316,6 +2333,10 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "匹配完成"
 
+#: src/components/anime/EpisodeStatusCard.tsx:40
+msgid "Missing"
+msgstr ""
+
 #: src/components/AppSidebar.tsx:32
 #: src/pages/DownloadsPage.tsx:219
 #: src/pages/DownloadsPage.tsx:344
@@ -2344,7 +2365,7 @@ msgstr "首頁"
 #: src/components/AppSidebar.tsx:33
 #: src/components/AppSidebar.tsx:229
 #: src/pages/LibrariesPage.tsx:3025
-#: src/pages/LibraryDetailPage.tsx:1671
+#: src/pages/LibraryDetailPage.tsx:1732
 msgid "nav.libraries"
 msgstr "媒體庫"
 
@@ -2388,6 +2409,14 @@ msgstr "設定"
 #: src/components/AppSidebar.tsx:29
 #~ msgid "nav.trending"
 #~ msgstr "熱門"
+
+#: src/pages/LibraryDetailPage.tsx:338
+msgid "No incomplete anime in this library."
+msgstr ""
+
+#: src/components/anime/EpisodeStatusCard.tsx:46
+msgid "Not aired yet"
+msgstr ""
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"
@@ -2739,7 +2768,7 @@ msgid "pagination.rows"
 msgstr "列"
 
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:829
+#: src/pages/AnimeDetailPage.tsx:872
 msgid "player.remaining"
 msgstr "剩返"
 
@@ -2966,15 +2995,15 @@ msgstr "標題匹配"
 msgid "scan.completed"
 msgstr "掃描完成"
 
-#: src/pages/LibraryDetailPage.tsx:1928
+#: src/pages/LibraryDetailPage.tsx:1989
 msgid "scan.phase.hashing"
 msgstr "雜湊緊"
 
-#: src/pages/LibraryDetailPage.tsx:1929
+#: src/pages/LibraryDetailPage.tsx:1990
 msgid "scan.phase.matching"
 msgstr "匹配緊"
 
-#: src/pages/LibraryDetailPage.tsx:1926
+#: src/pages/LibraryDetailPage.tsx:1987
 msgid "scan.phase.scanning"
 msgstr "掃緊"
 
@@ -3011,7 +3040,7 @@ msgstr "停用"
 msgid "scanInterval.weekly"
 msgstr "每週"
 
-#: src/pages/LibraryDetailPage.tsx:662
+#: src/pages/LibraryDetailPage.tsx:723
 #: src/pages/SchedulePage.tsx:392
 msgid "schedule.all"
 msgstr "全部"
@@ -3461,59 +3490,63 @@ msgstr "字體大小"
 msgid "settings.general.subtitle"
 msgstr "語言、收藏同應用程式偏好設定"
 
-#: src/pages/settings/IntegrationsPanel.tsx:260
+#: src/pages/settings/IntegrationsPanel.tsx:275
 msgid "settings.integration.authUrlFailed"
 msgstr "攞授權連結失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:372
+#: src/pages/settings/IntegrationsPanel.tsx:387
 msgid "settings.integration.connect"
 msgstr "連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:289
+#: src/pages/settings/IntegrationsPanel.tsx:304
 msgid "settings.integration.connected"
 msgstr "連咗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:371
+#: src/pages/settings/IntegrationsPanel.tsx:386
 msgid "settings.integration.connecting"
 msgstr "連緊…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:386
+#: src/pages/settings/IntegrationsPanel.tsx:401
 msgid "settings.integration.disconnect"
 msgstr "斷線"
 
-#: src/pages/settings/IntegrationsPanel.tsx:266
+#: src/pages/settings/IntegrationsPanel.tsx:281
 msgid "settings.integration.disconnected"
 msgstr "斷咗線"
 
-#: src/pages/settings/IntegrationsPanel.tsx:270
+#: src/pages/settings/IntegrationsPanel.tsx:285
 msgid "settings.integration.disconnectFailed"
 msgstr "斷線失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:385
+#: src/pages/settings/IntegrationsPanel.tsx:400
 msgid "settings.integration.disconnecting"
 msgstr "斷緊線…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:149
+#: src/pages/settings/IntegrationsPanel.tsx:150
 msgid "settings.integration.lastSync"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:290
+#: src/pages/settings/IntegrationsPanel.tsx:235
+msgid "settings.integration.needsReauth"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:305
 msgid "settings.integration.notConnected"
 msgstr "未連"
 
-#: src/pages/settings/IntegrationsPanel.tsx:155
+#: src/pages/settings/IntegrationsPanel.tsx:156
 msgid "settings.integration.pending"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:162
+#: src/pages/settings/IntegrationsPanel.tsx:163
 msgid "settings.integration.recentErrors"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:396
+#: src/pages/settings/IntegrationsPanel.tsx:411
 msgid "settings.integration.sync"
 msgstr "同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:277
+#: src/pages/settings/IntegrationsPanel.tsx:292
 msgid "settings.integration.syncComplete"
 msgstr "同步完"
 
@@ -3521,11 +3554,11 @@ msgstr "同步完"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "個錯誤"
 
-#: src/pages/settings/IntegrationsPanel.tsx:281
+#: src/pages/settings/IntegrationsPanel.tsx:296
 msgid "settings.integration.syncFailed"
 msgstr "同步唔到"
 
-#: src/pages/settings/IntegrationsPanel.tsx:395
+#: src/pages/settings/IntegrationsPanel.tsx:410
 msgid "settings.integration.syncing"
 msgstr "同步緊…"
 
@@ -3533,7 +3566,7 @@ msgstr "同步緊…"
 #~ msgid "settings.integration.title"
 #~ msgstr "連動"
 
-#: src/pages/settings/IntegrationsPanel.tsx:418
+#: src/pages/settings/IntegrationsPanel.tsx:433
 msgid "settings.integrations.description"
 msgstr "鏈接外部服務同埋同步資料"
 
@@ -3560,7 +3593,7 @@ msgstr "下載"
 msgid "settings.nav.general"
 msgstr "一般"
 
-#: src/pages/settings/IntegrationsPanel.tsx:415
+#: src/pages/settings/IntegrationsPanel.tsx:430
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "整合"
@@ -3751,8 +3784,8 @@ msgstr "飽和度"
 
 #: src/pages/settings/BackupPanel.tsx:341
 #: src/pages/settings/BackupPanel.tsx:577
-#: src/pages/settings/IntegrationsPanel.tsx:118
-#: src/pages/settings/IntegrationsPanel.tsx:358
+#: src/pages/settings/IntegrationsPanel.tsx:119
+#: src/pages/settings/IntegrationsPanel.tsx:373
 msgid "settings.save"
 msgstr "儲存"
 
@@ -3761,8 +3794,8 @@ msgstr "儲存"
 #: src/pages/settings/GeneralPanel.tsx:44
 #: src/pages/settings/GeneralPanel.tsx:54
 #: src/pages/settings/GeneralPanel.tsx:64
-#: src/pages/settings/IntegrationsPanel.tsx:54
-#: src/pages/settings/IntegrationsPanel.tsx:249
+#: src/pages/settings/IntegrationsPanel.tsx:55
+#: src/pages/settings/IntegrationsPanel.tsx:264
 #: src/pages/settings/PlayerPanel.tsx:195
 msgid "settings.saved"
 msgstr "儲存咗"
@@ -3771,16 +3804,16 @@ msgstr "儲存咗"
 #: src/pages/settings/BackupPanel.tsx:403
 #: src/pages/settings/GeneralPanel.tsx:47
 #: src/pages/settings/GeneralPanel.tsx:57
-#: src/pages/settings/IntegrationsPanel.tsx:57
-#: src/pages/settings/IntegrationsPanel.tsx:252
+#: src/pages/settings/IntegrationsPanel.tsx:58
+#: src/pages/settings/IntegrationsPanel.tsx:267
 #: src/pages/settings/PlayerPanel.tsx:198
 msgid "settings.saveFailed"
 msgstr "儲存唔到"
 
 #: src/pages/settings/BackupPanel.tsx:340
 #: src/pages/settings/BackupPanel.tsx:576
-#: src/pages/settings/IntegrationsPanel.tsx:117
-#: src/pages/settings/IntegrationsPanel.tsx:357
+#: src/pages/settings/IntegrationsPanel.tsx:118
+#: src/pages/settings/IntegrationsPanel.tsx:372
 #: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "儲存緊…"
