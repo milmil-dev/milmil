@@ -179,6 +179,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 
+	// Sync (tracker watch-state) — protected
+	syncGroup := v1.Group("/sync", authMiddleware(h.queries))
+	syncGroup.GET("/status", h.handleSyncProvidersStatus)
+
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", authMiddleware(h.queries))
 	dlGroup.GET("", h.handleListDownloads)
