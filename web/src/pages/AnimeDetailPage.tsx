@@ -481,7 +481,7 @@ export function AnimeDetailPage() {
                     )}
                   </motion.div>
 
-                  <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left sm:pt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)' }}>
+                  <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left sm:pt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)' }}>
                     {/* Title */}
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
@@ -496,79 +496,66 @@ export function AnimeDetailPage() {
                       )}
                     </motion.div>
 
-                    {/* Meta line: score · episodes · year · ratings — compact single row */}
+                    {/* Meta line: score · type · episodes · year + status indicators */}
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.25, duration: 0.4 }}
-                      className="flex items-center justify-center sm:justify-start gap-2.5 flex-wrap"
+                      className="flex items-center justify-center sm:justify-start gap-2 flex-wrap"
                     >
                       {anime.score > 0 && (
-                        <span className="text-[16px] font-bold text-mm-accent tabular-nums">
+                        <span className="text-[15px] font-bold text-mm-accent tabular-nums">
                           ♡ {anime.score.toFixed(1)}
                         </span>
                       )}
-                      {anime.score > 0 && (anime.episode_count > 0 || anime.air_date) && (
-                        <span className="text-white/25">·</span>
-                      )}
                       {anime.media_type && (
-                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-white/[0.12] text-white/70 font-semibold">
+                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-white/[0.10] text-white/60 font-medium">
                           {anime.media_type}
                         </span>
                       )}
                       {anime.episode_count > 0 && (
-                        <span className="text-[13px] text-white/70 font-medium">
+                        <span className="text-[12px] text-white/55">
                           {anime.episode_count} {i18n._(msg`common.ep`)}
                         </span>
                       )}
                       {anime.air_date && (
-                        <span className="text-[13px] text-white/70 font-medium">
+                        <span className="text-[12px] text-white/55">
                           {anime.air_date.slice(0, 7)}
                         </span>
                       )}
                       {anime.rating && anime.rating.total > 0 && (
-                        <span className="text-[12px] text-white/45">
+                        <span className="text-[11px] text-white/35">
                           {anime.rating.total} {i18n._(msg`anime.ratings`)}
                         </span>
                       )}
-                      {/* Not yet aired inline badge */}
+                      {/* Not yet aired */}
                       {anime.air_date && new Date(anime.air_date) > new Date() && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-semibold">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-semibold">
                           <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
                           {i18n._(msg`anime.notAired`)}
                         </span>
                       )}
+                      {/* Inline status dots */}
+                      {hasSubscription && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400 text-[10px] font-medium">
+                          <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+                          {i18n._(msg`anime.subscribed`)}
+                        </span>
+                      )}
+                      {hasPlayableFiles && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 text-[10px] font-medium">
+                          <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                          {playableCount} {i18n._(msg`anime.playableEps`)}
+                        </span>
+                      )}
                     </motion.div>
-
-                    {/* Status badges: subscription + playable */}
-                    {(hasSubscription || hasPlayableFiles) && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.4 }}
-                        className="flex items-center justify-center sm:justify-start gap-2 flex-wrap"
-                      >
-                        {hasSubscription && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/15 text-green-400 text-[11px] font-medium">
-                            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
-                            {i18n._(msg`anime.subscribed`)}
-                          </span>
-                        )}
-                        {hasPlayableFiles && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 text-blue-400 text-[11px] font-medium">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                            {playableCount} {i18n._(msg`anime.playableEps`)}
-                          </span>
-                        )}
-                      </motion.div>
-                    )}
 
                     {/* Tags */}
                     {anime.tags?.length > 0 && (
                       <motion.div
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.35, duration: 0.4 }}
+                        transition={{ delay: 0.3, duration: 0.4 }}
                         className="flex flex-wrap justify-center sm:justify-start gap-1.5"
                       >
                         {anime.tags.slice(0, 6).map((tag) => (
@@ -576,7 +563,7 @@ export function AnimeDetailPage() {
                             key={tag}
                             to="/search"
                             search={{ genre: tag }}
-                            className="text-[11px] font-semibold px-2 py-0.5 rounded bg-white/[0.08] text-white/60 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
+                            className="text-[11px] font-medium px-2 py-0.5 rounded bg-white/[0.08] text-white/50 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
                           >
                             {translateGenre(tag, i18n.locale)}
                           </Link>
@@ -650,12 +637,12 @@ export function AnimeDetailPage() {
                       );
                     })()}
 
-                    {/* Action buttons — grouped in a single row */}
+                    {/* Actions + collection status — single row */}
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.45, duration: 0.4 }}
-                      className="flex items-center justify-center sm:justify-start gap-2 flex-wrap"
+                      transition={{ delay: 0.4, duration: 0.4 }}
+                      className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap"
                     >
                       {/* Bookmark toggle */}
                       {!isAniListOnly && isAuthenticated && (() => {
@@ -666,7 +653,7 @@ export function AnimeDetailPage() {
                             onClick={() => statusMutation.mutate(isBookmarked ? 'none' : 'planning')}
                             disabled={statusMutation.isPending}
                             whileTap={{ scale: 0.97 }}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
                           >
                             <motion.svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -676,7 +663,7 @@ export function AnimeDetailPage() {
                               strokeWidth={2}
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className={cn('size-4', isBookmarked ? 'text-mm-accent' : 'text-white/70')}
+                              className={cn('size-3.5', isBookmarked ? 'text-mm-accent' : 'text-white/70')}
                               animate={isBookmarked ? { scale: [1, 1.15, 1] } : { scale: 1 }}
                               transition={{ duration: 0.3 }}
                             >
@@ -691,9 +678,9 @@ export function AnimeDetailPage() {
                       {!isAniListOnly && <Link
                         to="/downloads"
                         search={{ anime: String(anime.bangumi_id) }}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[13px] font-medium text-white/70 hover:text-white transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-3.5"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
                         {i18n._(msg`anime.searchResources`)}
                       </Link>}
 
@@ -703,32 +690,17 @@ export function AnimeDetailPage() {
                         return (
                           <button
                             type="button"
-                            onClick={() =>
-                              syncFlagsMutation.mutate(syncDisabled ? 0 : 1)
-                            }
+                            onClick={() => syncFlagsMutation.mutate(syncDisabled ? 0 : 1)}
                             disabled={syncFlagsMutation.isPending}
-                            title={
-                              syncDisabled
-                                ? i18n._(msg`anime.enableTrackerSync`)
-                                : i18n._(msg`anime.excludeTrackerSync`)
-                            }
+                            title={syncDisabled ? i18n._(msg`anime.enableTrackerSync`) : i18n._(msg`anime.excludeTrackerSync`)}
                             className={cn(
-                              'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium transition-colors',
+                              'inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors',
                               syncDisabled
-                                ? 'bg-white/[0.04] text-white/40 hover:bg-white/[0.10] hover:text-white/70'
-                                : 'bg-white/[0.08] text-white/70 hover:bg-white/[0.14] hover:text-white'
+                                ? 'bg-white/[0.04] text-white/30 hover:bg-white/[0.10] hover:text-white/60'
+                                : 'bg-white/[0.08] text-white/60 hover:bg-white/[0.14] hover:text-white'
                             )}
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="size-4"
-                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-3.5">
                               {syncDisabled ? (
                                 <>
                                   <path d="M18.364 5.636 5.636 18.364" />
@@ -744,9 +716,6 @@ export function AnimeDetailPage() {
                                 </>
                               )}
                             </svg>
-                            {syncDisabled
-                              ? i18n._(msg`anime.enableTrackerSync`)
-                              : i18n._(msg`anime.excludeTrackerSync`)}
                           </button>
                         );
                       })()}
@@ -762,42 +731,29 @@ export function AnimeDetailPage() {
                         exit={{ opacity: 0, height: 0, y: -4 }}
                         transition={{ duration: 0.25, ease: 'easeOut' }}
                         className="flex items-center justify-center sm:justify-start gap-3 flex-wrap"
-                      >
-                        <select
-                          value={playableData.watch_status}
-                          onChange={(e) => statusMutation.mutate(e.target.value)}
-                          className="text-[12px] px-2.5 py-1 rounded-lg bg-white/[0.06] text-white/70 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
-                          disabled={statusMutation.isPending}
                         >
-                          <option value="watching" className="bg-zinc-900">
-                            {i18n._(msg`collection.watching`)}
-                          </option>
-                          <option value="planning" className="bg-zinc-900">
-                            {i18n._(msg`collection.planning`)}
-                          </option>
-                          <option value="completed" className="bg-zinc-900">
-                            {i18n._(msg`collection.completed`)}
-                          </option>
-                          <option value="paused" className="bg-zinc-900">
-                            {i18n._(msg`collection.paused`)}
-                          </option>
-                          <option value="dropped" className="bg-zinc-900">
-                            {i18n._(msg`collection.dropped`)}
-                          </option>
-                        </select>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] text-white/30 shrink-0">
-                            {i18n._(msg`anime.myScore`)}
-                          </span>
+                          <span className="text-white/20">·</span>
+                          <select
+                            value={playableData.watch_status}
+                            onChange={(e) => statusMutation.mutate(e.target.value)}
+                            className="text-[11px] px-2 py-1 rounded-lg bg-white/[0.06] text-white/60 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
+                            disabled={statusMutation.isPending}
+                          >
+                            <option value="watching" className="bg-zinc-900">{i18n._(msg`collection.watching`)}</option>
+                            <option value="planning" className="bg-zinc-900">{i18n._(msg`collection.planning`)}</option>
+                            <option value="completed" className="bg-zinc-900">{i18n._(msg`collection.completed`)}</option>
+                            <option value="paused" className="bg-zinc-900">{i18n._(msg`collection.paused`)}</option>
+                            <option value="dropped" className="bg-zinc-900">{i18n._(msg`collection.dropped`)}</option>
+                          </select>
                           <ScoreSelector
                             score={playableData.user_score ?? null}
                             onChange={(s) => scoreMutation.mutate(s)}
                             disabled={scoreMutation.isPending}
                           />
-                        </div>
-                      </motion.div>
-                    )}
-                    </AnimatePresence>
+                        </motion.div>
+                      )}
+                      </AnimatePresence>
+                    </motion.div>
 
                     {/* Synopsis — expandable */}
                     {anime.synopsis && <SynopsisBlock text={anime.synopsis} />}

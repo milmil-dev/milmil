@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"log/slog"
 	"net/http"
@@ -11,6 +12,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
+
+// sensitiveFields are JSON keys whose values must be redacted in request logs.
+var sensitiveFields = map[string]bool{
+	"password": true,
+	"pw":       true,
+	"token":    true,
+	"secret":   true,
+}
 
 func attachMiddleware(e *echo.Echo) {
 	e.Use(middleware.Recover())
@@ -88,9 +97,9 @@ func prettyLogger() echo.MiddlewareFunc {
 				"latency", latency.Round(time.Millisecond).String(),
 			}
 
-			// Add request body for mutation requests
+			// Add request body for mutation requests (with sensitive fields redacted)
 			if reqBody != "" {
-				attrs = append(attrs, "req_body", reqBody)
+				attrs = append(attrs, "req_body", redactSensitiveFields(reqBody))
 			}
 
 			// Add response body for errors (always) and all requests (debug mode)
@@ -130,4 +139,28 @@ func (w *responseCapture) Write(b []byte) (int, error) {
 		w.buf.Write(b)
 	}
 	return w.ResponseWriter.Write(b)
+}
+
+// redactSensitiveFields replaces values of known credential fields with "[REDACTED]".
+// Falls back to the original string if the body isn't valid JSON.
+func redactSensitiveFields(body string) string {
+	var m map[string]any
+	if err := json.Unmarshal([]byte(body), &m); err != nil {
+		return body
+	}
+	changed := false
+	for k := range m {
+		if sensitiveFields[strings.ToLower(k)] {
+			m[k] = "[REDACTED]"
+			changed = true
+		}
+	}
+	if !changed {
+		return body
+	}
+	out, err := json.Marshal(m)
+	if err != nil {
+		return body
+	}
+	return string(out)
 }
