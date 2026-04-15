@@ -8,6 +8,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
+
+	"golang.org/x/time/rate"
 )
 
 var (
@@ -84,19 +87,21 @@ type Client interface {
 	BrowseByGenre(ctx context.Context, genre string, page, perPage int) ([]Media, error)
 	Browse(ctx context.Context, filter BrowseFilter, page, perPage int) ([]Media, error)
 	GetAiringSchedule(ctx context.Context, from, to int64) ([]AiringSchedule, error)
+	GetMediaRelations(ctx context.Context, id int) (*Media, error)
 }
 
 type graphqlClient struct {
 	http     *http.Client
 	endpoint string
+	limiter  *rate.Limiter
 }
 
 func NewClient(c *http.Client) Client {
-	return &graphqlClient{http: c, endpoint: defaultEndpoint}
+	return &graphqlClient{http: c, endpoint: defaultEndpoint, limiter: rate.NewLimiter(rate.Every(700*time.Millisecond), 1)}
 }
 
 func NewClientWithURL(c *http.Client, endpoint string) Client {
-	return &graphqlClient{http: c, endpoint: endpoint}
+	return &graphqlClient{http: c, endpoint: endpoint, limiter: rate.NewLimiter(rate.Every(700*time.Millisecond), 1)}
 }
 
 type graphqlRequest struct {
@@ -112,6 +117,9 @@ type graphqlResponse struct {
 }
 
 func (c *graphqlClient) query(ctx context.Context, q string, vars map[string]any, target any) error {
+	if err := c.limiter.Wait(ctx); err != nil {
+		return fmt.Errorf("%w: %v", ErrRateLimited, err)
+	}
 	body, _ := json.Marshal(graphqlRequest{Query: q, Variables: vars})
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.endpoint, bytes.NewReader(body))
 	if err != nil {
@@ -323,4 +331,24 @@ func (c *graphqlClient) GetAiringSchedule(ctx context.Context, from, to int64) (
 		}
 	}
 	return all, nil
+}
+
+func (c *graphqlClient) GetMediaRelations(ctx context.Context, id int) (*Media, error) {
+	q := `query ($id: Int) {
+		Media(id: $id, type: ANIME) {` + mediaFields + `
+			relations {
+				edges {
+					relationType
+					node {` + mediaFields + `}
+				}
+			}
+		}
+	}`
+	var result struct {
+		Media Media `json:"Media"`
+	}
+	if err := c.query(ctx, q, map[string]any{"id": id}, &result); err != nil {
+		return nil, err
+	}
+	return &result.Media, nil
 }
