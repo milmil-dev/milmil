@@ -274,6 +274,11 @@ func (p *RcloneProvider) Open(path string) (io.ReadCloser, error) {
 	return h, nil
 }
 
+// Delete removes the file at the given path.
+func (p *RcloneProvider) Delete(path string) error {
+	return p.vfs.Remove(path)
+}
+
 // Close shuts down the VFS and releases resources.
 func (p *RcloneProvider) Close() error {
 	p.vfs.Shutdown()

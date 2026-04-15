@@ -58,3 +58,26 @@ func TestLocalProvider_StatAndOpen(t *testing.T) {
 		t.Fatalf("expected hello, got %s", string(buf[:n]))
 	}
 }
+
+func TestLocalProvider_Delete(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "x.txt")
+	if err := os.WriteFile(path, []byte("hi"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	p := NewLocalProvider()
+	if err := p.Delete(path); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Errorf("expected file gone, got err=%v", err)
+	}
+}
+
+func TestLocalProvider_DeleteMissing(t *testing.T) {
+	p := NewLocalProvider()
+	err := p.Delete(filepath.Join(t.TempDir(), "nope"))
+	if !os.IsNotExist(err) {
+		t.Errorf("want IsNotExist, got %v", err)
+	}
+}
