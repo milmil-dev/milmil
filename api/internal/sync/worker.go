@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	stdsync "sync"
 	"time"
@@ -85,9 +86,10 @@ func (s *Service) processRow(ctx context.Context, row store.SyncOutbox) time.Dur
 		s.failRow(ctx, row, "unknown provider", true)
 		return 0
 	}
-	tok, err := s.loadToken(ctx, row.UserID, ProviderName(row.Provider))
+	access, refresh, err := s.tokens.Get(ctx, row.UserID, ProviderName(row.Provider))
 	if err != nil {
 		s.failRow(ctx, row, "no token: "+err.Error(), true)
+		s.broadcastNeedsReauth(row)
 		return 0
 	}
 
@@ -98,13 +100,10 @@ func (s *Service) processRow(ctx context.Context, row store.SyncOutbox) time.Dur
 	}
 
 	if op.Kind == KindImport {
-		if err := s.runImport(ctx, row.UserID, prov, tok); err != nil {
-			if te, ok := IsTransient(err); ok {
-				s.retryRow(ctx, row, te)
-				return te.RetryAfter
-			}
-			s.failRow(ctx, row, err.Error(), false)
-			return 0
+		if err := s.runImport(ctx, row.UserID, prov, access); err != nil {
+			return s.handlePushError(ctx, row, prov, refresh, err, func(newAccess string) error {
+				return s.runImport(ctx, row.UserID, prov, newAccess)
+			})
 		}
 		s.completeRow(ctx, row)
 		return 0
@@ -135,16 +134,95 @@ func (s *Service) processRow(ctx context.Context, row store.SyncOutbox) time.Dur
 		BangumiEpisodeIDs: epIDs,
 	}
 
-	if err := prov.Push(ctx, tok, op, ids); err != nil {
-		if te, ok := IsTransient(err); ok {
-			s.retryRow(ctx, row, te)
-			return te.RetryAfter
-		}
-		s.failRow(ctx, row, err.Error(), false)
-		return 0
+	if err := prov.Push(ctx, access, op, ids); err != nil {
+		return s.handlePushError(ctx, row, prov, refresh, err, func(newAccess string) error {
+			return prov.Push(ctx, newAccess, op, ids)
+		})
 	}
 	s.completeRow(ctx, row)
 	return 0
+}
+
+// handlePushError does the one-shot refresh-then-retry if err wraps
+// ErrNeedsReauth and a refresh token is present. Non-reauth errors fall
+// through to the standard transient/fatal classification.
+func (s *Service) handlePushError(
+	ctx context.Context,
+	row store.SyncOutbox,
+	prov Provider,
+	refresh string,
+	err error,
+	retry func(newAccess string) error,
+) time.Duration {
+	if errors.Is(err, ErrNeedsReauth) {
+		if refresh == "" {
+			s.failRow(ctx, row, err.Error(), true)
+			s.broadcastNeedsReauth(row)
+			return 0
+		}
+		creds, cerr := s.tokens.LoadCreds(ctx, ProviderName(row.Provider))
+		if cerr != nil {
+			s.failRow(ctx, row, "no creds: "+cerr.Error(), true)
+			s.broadcastNeedsReauth(row)
+			return 0
+		}
+		refreshed, rerr := prov.RefreshToken(ctx, creds, refresh)
+		if rerr != nil {
+			if te, ok := IsTransient(rerr); ok {
+				s.retryRow(ctx, row, te)
+				return te.RetryAfter
+			}
+			s.failRow(ctx, row, "refresh failed: "+rerr.Error(), true)
+			s.broadcastNeedsReauth(row)
+			return 0
+		}
+		newRefresh := refreshed.RefreshToken
+		if newRefresh == "" {
+			newRefresh = refresh
+		}
+		expiresAt := time.Time{}
+		if refreshed.ExpiresIn > 0 {
+			expiresAt = time.Now().Add(refreshed.ExpiresIn)
+		}
+		if perr := s.tokens.Put(ctx, row.UserID, ProviderName(row.Provider), refreshed.AccessToken, newRefresh, expiresAt); perr != nil {
+			s.failRow(ctx, row, "persist token: "+perr.Error(), true)
+			return 0
+		}
+		if rerr := retry(refreshed.AccessToken); rerr != nil {
+			if errors.Is(rerr, ErrNeedsReauth) {
+				s.failRow(ctx, row, "refresh succeeded but retry 401", true)
+				s.broadcastNeedsReauth(row)
+				return 0
+			}
+			if te, ok := IsTransient(rerr); ok {
+				s.retryRow(ctx, row, te)
+				return te.RetryAfter
+			}
+			s.failRow(ctx, row, rerr.Error(), false)
+			return 0
+		}
+		s.completeRow(ctx, row)
+		return 0
+	}
+
+	if te, ok := IsTransient(err); ok {
+		s.retryRow(ctx, row, te)
+		return te.RetryAfter
+	}
+	s.failRow(ctx, row, err.Error(), false)
+	return 0
+}
+
+// broadcastNeedsReauth pings the WS hub so the frontend can show a reconnect
+// prompt. Silently no-ops when the hub isn't wired (tests, CLI uses).
+func (s *Service) broadcastNeedsReauth(row store.SyncOutbox) {
+	if s.wsHub == nil {
+		return
+	}
+	s.wsHub.Broadcast("sync:needs_reauth", map[string]any{
+		"user_id":  row.UserID,
+		"provider": row.Provider,
+	})
 }
 
 // retryRow reschedules a transient failure using exponential backoff, or

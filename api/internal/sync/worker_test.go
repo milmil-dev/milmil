@@ -10,18 +10,25 @@ import (
 )
 
 // fakeProvider is a minimal Provider used across worker and import tests.
+// pushFn / refreshFn allow per-test behavior injection; pushErr / fetchErr are
+// kept for the simpler legacy tests that predate the refresh flow.
 type fakeProvider struct {
-	name     ProviderName
-	pushErr  error
-	pushes   int
-	fetched  []RemoteEntry
-	fetchErr error
+	name      ProviderName
+	pushFn    func(access string) error
+	refreshFn func() (RefreshedToken, error)
+	pushErr   error
+	pushes    int
+	fetched   []RemoteEntry
+	fetchErr  error
 }
 
 func (p *fakeProvider) Name() ProviderName { return p.name }
 
 func (p *fakeProvider) Push(ctx context.Context, tok string, op SyncOp, ids ExternalIDs) error {
 	p.pushes++
+	if p.pushFn != nil {
+		return p.pushFn(tok)
+	}
 	return p.pushErr
 }
 
@@ -29,12 +36,54 @@ func (p *fakeProvider) FetchList(ctx context.Context, tok string) ([]RemoteEntry
 	return p.fetched, p.fetchErr
 }
 
-func (p *fakeProvider) RefreshToken(ctx context.Context, creds OAuthCreds, refreshToken string) (RefreshedToken, error) {
+func (p *fakeProvider) RefreshToken(_ context.Context, _ OAuthCreds, _ string) (RefreshedToken, error) {
+	if p.refreshFn != nil {
+		return p.refreshFn()
+	}
 	return RefreshedToken{}, nil
 }
 
-func staticTokenLoader() TokenLoader {
-	return func(_ context.Context, _ string, _ ProviderName) (string, error) { return "tok", nil }
+// staticTS is the test-only TokenStore used by every sync test. It records the
+// last Put so refresh-flow tests can assert the new tokens were persisted.
+type staticTS struct {
+	access, refresh string
+	creds           OAuthCreds
+}
+
+func (s *staticTS) Get(_ context.Context, _ string, _ ProviderName) (string, string, error) {
+	if s.access == "" {
+		return "", "", ErrNoToken
+	}
+	return s.access, s.refresh, nil
+}
+
+func (s *staticTS) Put(_ context.Context, _ string, _ ProviderName, access, refresh string, _ time.Time) error {
+	s.access, s.refresh = access, refresh
+	return nil
+}
+
+func (s *staticTS) LoadCreds(_ context.Context, _ ProviderName) (OAuthCreds, error) {
+	return s.creds, nil
+}
+
+// newStaticTS returns the default "tok"-access token store used by tests that
+// don't care about the refresh flow.
+func newStaticTS() *staticTS { return &staticTS{access: "tok"} }
+
+// spyHub captures Broadcast events so refresh-on-401 tests can assert on the
+// sync:needs_reauth signal.
+type spyHub struct {
+	events []struct {
+		Type    string
+		Payload map[string]any
+	}
+}
+
+func (h *spyHub) Broadcast(t string, p map[string]any) {
+	h.events = append(h.events, struct {
+		Type    string
+		Payload map[string]any
+	}{Type: t, Payload: p})
 }
 
 func TestWorkerMarksRowCompleted(t *testing.T) {
@@ -42,7 +91,7 @@ func TestWorkerMarksRowCompleted(t *testing.T) {
 	defer cleanup()
 	mustInsertAnime(t, q, "a1", 12, 42, 0)
 	fp := &fakeProvider{name: ProviderAniList}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{
 		Kind: KindProgress, AnimeID: "a1", Progress: 1,
@@ -74,7 +123,7 @@ func TestWorkerRateLimitGroupingDefersRest(t *testing.T) {
 		name:    ProviderAniList,
 		pushErr: &TransientError{Err: errors.New("rate-limited"), RetryAfter: 42 * time.Second},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	for i := 0; i < 5; i++ {
 		id := fmt.Sprintf("a%d", i+1)
@@ -103,7 +152,7 @@ func TestWorkerTransientErrorReschedules(t *testing.T) {
 		name:    ProviderAniList,
 		pushErr: &TransientError{Err: errors.New("boom")},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1",
 		SyncOp{Kind: KindProgress, AnimeID: "a1", Progress: 1}); err != nil {
@@ -124,7 +173,7 @@ func TestWorkerFatalErrorCompletesRow(t *testing.T) {
 	defer cleanup()
 	mustInsertAnime(t, q, "a1", 12, 42, 0)
 	fp := &fakeProvider{name: ProviderAniList, pushErr: errors.New("permanent")}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1",
 		SyncOp{Kind: KindProgress, AnimeID: "a1", Progress: 1}); err != nil {
@@ -146,7 +195,7 @@ func TestWorkerOverlapPrevented(t *testing.T) {
 	mustInsertAnime(t, q, "a1", 12, 42, 0)
 	// Hold the provider for a tick so the second Drain actually races the first.
 	fp := &slowFakeProvider{name: ProviderAniList, delay: 50 * time.Millisecond}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1",
 		SyncOp{Kind: KindProgress, AnimeID: "a1", Progress: 1}); err != nil {

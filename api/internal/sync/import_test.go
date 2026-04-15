@@ -20,7 +20,7 @@ func TestImportSkipsAnimeWithExistingProgress(t *testing.T) {
 			{ProviderAnimeID: 42, Status: StatusCompleted, Progress: 12},
 		},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.runImport(context.Background(), "u", fp, "tok"); err != nil {
 		t.Fatal(err)
@@ -44,7 +44,7 @@ func TestImportPopulatesFromRemote(t *testing.T) {
 			{ProviderAnimeID: 99, Status: StatusCompleted, Progress: 12},
 		},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.runImport(context.Background(), "u", fp, "tok"); err != nil {
 		t.Fatal(err)
@@ -68,7 +68,7 @@ func TestImportDroppedSetsOverride(t *testing.T) {
 			{ProviderAnimeID: 77, Status: StatusDropped, Progress: 5},
 		},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 	if err := s.runImport(context.Background(), "u", fp, "tok"); err != nil {
 		t.Fatal(err)
 	}
@@ -94,7 +94,7 @@ func TestImportSkipsUnknownAnime(t *testing.T) {
 			{ProviderAnimeID: 9999, Status: StatusCompleted, Progress: 12},
 		},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 	if err := s.runImport(context.Background(), "u", fp, "tok"); err != nil {
 		t.Fatalf("import of unknown anime should be silent no-op: %v", err)
 	}
@@ -113,7 +113,7 @@ func TestImportBangumiLookup(t *testing.T) {
 			{ProviderAnimeID: 555, Status: StatusCompleted, Progress: 3},
 		},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 	if err := s.runImport(context.Background(), "u", fp, "tok"); err != nil {
 		t.Fatal(err)
 	}
