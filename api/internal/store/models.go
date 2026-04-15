@@ -37,6 +37,7 @@ type Anime struct {
 	AnidbID              sql.NullInt64  `json:"anidb_id"`
 	SyncDisabled         int64          `json:"sync_disabled"`
 	WatchStatusOverride  string         `json:"watch_status_override"`
+	TraktShowID          sql.NullInt64  `json:"trakt_show_id"`
 }
 
 type ApiToken struct {
@@ -278,6 +279,13 @@ type SyncOutbox struct {
 	LastError     sql.NullString `json:"last_error"`
 	CreatedAt     string         `json:"created_at"`
 	CompletedAt   sql.NullString `json:"completed_at"`
+}
+
+type SyncProviderState struct {
+	UserID       string         `json:"user_id"`
+	Provider     string         `json:"provider"`
+	PullEnabled  int64          `json:"pull_enabled"`
+	LastPulledAt sql.NullString `json:"last_pulled_at"`
 }
 
 type TranscodeSession struct {

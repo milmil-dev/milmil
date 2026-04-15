@@ -66,6 +66,8 @@ type Querier interface {
 	GetAnimeByAnidbID(ctx context.Context, anidbID sql.NullInt64) (Anime, error)
 	GetAnimeByAnilistID(ctx context.Context, anilistID sql.NullInt64) (Anime, error)
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
+	GetAnimeByTMDBID(ctx context.Context, tmdbID sql.NullInt64) (Anime, error)
+	GetAnimeByTraktShowID(ctx context.Context, traktShowID sql.NullInt64) (Anime, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByID(ctx context.Context, id string) (Download, error)
@@ -83,6 +85,7 @@ type Querier interface {
 	GetRSSFeed(ctx context.Context, id string) (RssFeed, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetSubtitleFile(ctx context.Context, id string) (SubtitleFile, error)
+	GetSyncProviderState(ctx context.Context, arg GetSyncProviderStateParams) (SyncProviderState, error)
 	GetTranscodeSession(ctx context.Context, sessionToken string) (TranscodeSession, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
@@ -130,6 +133,7 @@ type Querier interface {
 	ListNotificationsByType(ctx context.Context, arg ListNotificationsByTypeParams) ([]Notification, error)
 	ListPendingDeliveries(ctx context.Context, nextRetryAt sql.NullString) ([]NotificationDelivery, error)
 	ListPlayableEpisodes(ctx context.Context, animeID string) ([]ListPlayableEpisodesRow, error)
+	ListPullEnabledProviders(ctx context.Context) ([]ListPullEnabledProvidersRow, error)
 	ListRSSFeeds(ctx context.Context) ([]RssFeed, error)
 	ListRSSFeedsDue(ctx context.Context) ([]RssFeed, error)
 	ListReadySyncOps(ctx context.Context, limit int64) ([]SyncOutbox, error)
@@ -157,6 +161,7 @@ type Querier interface {
 	// Only writes when no manual preference is set yet.
 	SetEpisodePreferredAuto(ctx context.Context, arg SetEpisodePreferredAutoParams) error
 	SetEpisodePreferredManual(ctx context.Context, arg SetEpisodePreferredManualParams) error
+	SetPullEnabled(ctx context.Context, arg SetPullEnabledParams) error
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	SupersedeProgressOps(ctx context.Context, arg SupersedeProgressOpsParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
@@ -168,6 +173,7 @@ type Querier interface {
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeSyncFlags(ctx context.Context, arg UpdateAnimeSyncFlagsParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
+	UpdateAnimeTraktShowID(ctx context.Context, arg UpdateAnimeTraktShowIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
 	UpdateBackupSyncTime(ctx context.Context, arg UpdateBackupSyncTimeParams) error
@@ -194,6 +200,7 @@ type Querier interface {
 	UpsertBackupConfig(ctx context.Context, arg UpsertBackupConfigParams) (BackupConfig, error)
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
+	UpsertSyncProviderState(ctx context.Context, arg UpsertSyncProviderStateParams) error
 	UpsertUserPreference(ctx context.Context, arg UpsertUserPreferenceParams) (UserPreference, error)
 	UpsertWatchProgress(ctx context.Context, arg UpsertWatchProgressParams) (WatchProgress, error)
 }
