@@ -6,6 +6,7 @@ type ProviderName string
 const (
 	ProviderBangumi ProviderName = "bangumi"
 	ProviderAniList ProviderName = "anilist"
+	ProviderTrakt   ProviderName = "trakt"
 )
 
 // Kind distinguishes the flavour of a sync op.
