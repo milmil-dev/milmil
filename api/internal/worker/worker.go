@@ -151,6 +151,12 @@ func (s *Scheduler) Start() {
 		(&SyncGCWorker{svc: s.syncSvc}).Run(ctx)
 	})
 
+	// Watch-sync pull — every 30 minutes, sweep every pull-enabled (user,
+	// provider) pair and max-wins-merge remote progress back into milmil.
+	go s.runTicker(ctx, "sync_pull", 30*time.Minute, true, func(ctx context.Context) {
+		(&SyncPullWorker{svc: s.syncSvc, q: s.queries}).Run(ctx)
+	})
+
 	// Notification cleanup — every 24 hours
 	go s.runTicker(ctx, "notification_cleanup", 24*time.Hour, false, func(ctx context.Context) {
 		if err := s.notifier.CleanupOld(ctx, 30); err != nil {
