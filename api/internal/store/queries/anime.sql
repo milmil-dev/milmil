@@ -78,3 +78,13 @@ WHERE wp.user_id = sqlc.arg('user_id')
   AND ( (sqlc.arg('provider') = 'anilist' AND a.anilist_id IS NOT NULL)
      OR (sqlc.arg('provider') = 'bangumi' AND a.bangumi_id IS NOT NULL) )
   AND a.sync_disabled = 0;
+
+-- name: UpdateAnimeTraktShowID :exec
+UPDATE anime SET trakt_show_id = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?;
+
+-- name: GetAnimeByTraktShowID :one
+SELECT * FROM anime WHERE trakt_show_id = ? LIMIT 1;
+
+-- name: GetAnimeByTMDBID :one
+SELECT * FROM anime WHERE tmdb_id = ? LIMIT 1;

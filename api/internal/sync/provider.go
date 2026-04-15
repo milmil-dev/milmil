@@ -40,6 +40,10 @@ type RefreshedToken struct {
 // refresh attempt itself fails. Callers use errors.Is to detect it.
 var ErrNeedsReauth = errors.New("sync: needs reauth")
 
+// ErrNeedsResolve signals the worker that an external provider ID must be
+// resolved (e.g., Trakt show id from TMDB) before the push can be retried.
+var ErrNeedsResolve = errors.New("sync: needs id resolution")
+
 // ExternalIDs carries every provider-native identifier we know for a given
 // anime. Providers pick whichever one they need.
 type ExternalIDs struct {
@@ -48,6 +52,7 @@ type ExternalIDs struct {
 	Bangumi           int64
 	MAL               int64
 	TMDB              int64
+	Trakt             int64
 	BangumiEpisodeIDs []int64
 }
 

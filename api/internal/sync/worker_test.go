@@ -2,11 +2,14 @@ package sync
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	stdsync "sync"
 	"testing"
 	"time"
+
+	"github.com/milmil/api/internal/store"
 )
 
 // fakeProvider is a minimal Provider used across worker and import tests.
@@ -16,6 +19,7 @@ type fakeProvider struct {
 	name      ProviderName
 	pushFn    func(access string) error
 	refreshFn func() (RefreshedToken, error)
+	searchFn  func(tmdbID int64) (int64, error)
 	pushErr   error
 	pushes    int
 	fetched   []RemoteEntry
@@ -41,6 +45,16 @@ func (p *fakeProvider) RefreshToken(_ context.Context, _ OAuthCreds, _ string) (
 		return p.refreshFn()
 	}
 	return RefreshedToken{}, nil
+}
+
+// SearchByTMDB lets fakeProvider satisfy the anonymous interface the worker
+// uses to resolve Trakt show ids. The worker's type assertion only matches
+// when this method is present on the concrete type.
+func (p *fakeProvider) SearchByTMDB(_ context.Context, tmdbID int64) (int64, error) {
+	if p.searchFn != nil {
+		return p.searchFn(tmdbID)
+	}
+	return 0, nil
 }
 
 // staticTS is the test-only TokenStore used by every sync test. It records the
@@ -363,5 +377,117 @@ func TestWorkerRefreshTransientRetries(t *testing.T) {
 	rows, _ := q.ListReadySyncOps(context.Background(), 10)
 	if len(rows) != 0 {
 		t.Errorf("row should be rescheduled, got ready: %d", len(rows))
+	}
+}
+
+// TestWorker_TraktResolvesShowIDOnFirstPush verifies the worker calls
+// SearchByTMDB once when trakt_show_id is unset, caches the resolved id to
+// the anime row, and proceeds with Push exactly once.
+func TestWorker_TraktResolvesShowIDOnFirstPush(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnimeWithTMDB(t, q, "a1", 555, 12)
+
+	searchCalls := 0
+	fp := &fakeProvider{
+		name:   ProviderTrakt,
+		pushFn: func(string) error { return nil },
+		searchFn: func(tmdb int64) (int64, error) {
+			searchCalls++
+			if tmdb != 555 {
+				t.Errorf("unexpected tmdb %d", tmdb)
+			}
+			return 99999, nil
+		},
+	}
+	s := NewService(q, db, []Provider{fp}, &staticTS{access: "tok"}, nil)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderTrakt, "a1",
+		SyncOp{Kind: KindProgress, Progress: 3})
+	s.Drain(context.Background(), 10)
+
+	if searchCalls != 1 {
+		t.Errorf("expected 1 search, got %d", searchCalls)
+	}
+	anime, err := q.GetAnime(context.Background(), "a1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !anime.TraktShowID.Valid || anime.TraktShowID.Int64 != 99999 {
+		t.Errorf("trakt_show_id not cached: %+v", anime.TraktShowID)
+	}
+	if fp.pushes != 1 {
+		t.Errorf("expected 1 push after resolve, got %d", fp.pushes)
+	}
+}
+
+// TestWorker_TraktCachedShowIDReusedOnSubsequent verifies the resolve path is
+// skipped entirely when trakt_show_id is already populated.
+func TestWorker_TraktCachedShowIDReusedOnSubsequent(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnimeWithTMDB(t, q, "a1", 555, 12)
+	if err := q.UpdateAnimeTraktShowID(context.Background(), store.UpdateAnimeTraktShowIDParams{
+		TraktShowID: sql.NullInt64{Int64: 42, Valid: true},
+		ID:          "a1",
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	searchCalls := 0
+	fp := &fakeProvider{
+		name:     ProviderTrakt,
+		pushFn:   func(string) error { return nil },
+		searchFn: func(int64) (int64, error) { searchCalls++; return 0, nil },
+	}
+	s := NewService(q, db, []Provider{fp}, &staticTS{access: "tok"}, nil)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderTrakt, "a1",
+		SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	if searchCalls != 0 {
+		t.Errorf("should not call SearchByTMDB when cached, got %d", searchCalls)
+	}
+	if fp.pushes != 1 {
+		t.Errorf("expected 1 push, got %d", fp.pushes)
+	}
+}
+
+// TestWorker_TraktNoTMDBFallsThroughToProvider verifies that a Trakt row with
+// neither a TMDB nor a cached trakt_show_id bypasses the resolve block and
+// falls through to the provider, which is expected to return ErrNeedsResolve
+// (modelled here as a generic fatal error). The row is fatally classified so
+// it does not stay in the ready set.
+//
+// Enqueue bypasses hasProviderID, so this directly exercises the push path
+// when resolution is impossible.
+func TestWorker_TraktNoTMDBFallsThroughToProvider(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 0, 0) // no tmdb, no anilist, no bangumi
+
+	searchCalls := 0
+	fp := &fakeProvider{
+		name:     ProviderTrakt,
+		pushFn:   func(string) error { return errors.New("trakt: needs resolve") },
+		searchFn: func(int64) (int64, error) { searchCalls++; return 0, nil },
+	}
+	s := NewService(q, db, []Provider{fp}, &staticTS{access: "tok"}, nil)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderTrakt, "a1",
+		SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	// SearchByTMDB must not be called — the worker's resolve block is gated
+	// on ids.TMDB != 0, so a row with no TMDB never reaches the search path.
+	if searchCalls != 0 {
+		t.Errorf("SearchByTMDB should not be called without TMDB, got %d", searchCalls)
+	}
+	// Row should not still be ready — fatal classification reschedules it to
+	// a 24h soft-fail window (non-zero last_error stored) or marks completed.
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("row should not be ready after fatal push, got %d", len(rows))
 	}
 }

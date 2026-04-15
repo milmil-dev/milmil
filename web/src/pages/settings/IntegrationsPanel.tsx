@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { ConnectionBadge } from '@/components/settings/ConnectionBadge';
@@ -15,6 +15,7 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { useWSEvent } from '@/hooks/use-websocket';
 import { api } from '@/lib/api-client';
 import { syncApi, syncKeys, type SyncProvider, type SyncProviderStatus } from '@/lib/api/sync';
+import { traktApi, type DeviceCodeResponse, type DevicePollStatus } from '@/lib/api/trakt';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
@@ -196,6 +197,239 @@ function SyncStatusSkeleton() {
   );
 }
 
+// ─── Pull Controls (Pull now + auto-pull toggle) ────────────────────────────
+
+function PullControls({ provider }: { provider: SyncProvider }) {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  // Default-assume auto-pull is enabled; the status endpoint does not currently
+  // expose `pull_enabled`, but the toggle still writes idempotently to
+  // sync_provider_state.
+  const [pullEnabled, setPullEnabled] = useState(true);
+
+  const pullMut = useMutation({
+    mutationFn: () => syncApi.pullNow(provider),
+    onSuccess: (res) => {
+      toast.success(
+        `${i18n._(msg`settings.integration.pulled`)}: ${String(res.updated_local)}`,
+      );
+      queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+    },
+    onError: () => toast.error(i18n._(msg`settings.integration.pullFailed`)),
+  });
+
+  const setEnabledMut = useMutation({
+    mutationFn: (enabled: boolean) => syncApi.setPullEnabled(provider, enabled),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+    },
+    onError: () => toast.error(i18n._(msg`settings.integration.pullToggleFailed`)),
+  });
+
+  return (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+      <label className="flex items-center gap-2 text-xs text-white/70">
+        <input
+          type="checkbox"
+          checked={pullEnabled}
+          onChange={(e) => {
+            const next = e.target.checked;
+            setPullEnabled(next);
+            setEnabledMut.mutate(next);
+          }}
+          className="h-4 w-4 rounded border-white/20 bg-transparent"
+        />
+        {i18n._(msg`settings.integration.autoPull`)}
+      </label>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => pullMut.mutate()}
+        disabled={pullMut.isPending}
+      >
+        {pullMut.isPending
+          ? i18n._(msg`settings.integration.pulling`)
+          : i18n._(msg`settings.integration.pullNow`)}
+      </Button>
+    </div>
+  );
+}
+
+// ─── Trakt Card (device-code OAuth) ─────────────────────────────────────────
+
+function TraktCard() {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+  const [deviceCode, setDeviceCode] = useState<DeviceCodeResponse | null>(null);
+  const [pollError, setPollError] = useState<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const { data: syncStatusList, isLoading: syncStatusLoading } = useQuery({
+    queryKey: syncKeys.status(),
+    queryFn: syncApi.status,
+    refetchInterval: 15000,
+  });
+  const providerStatus = syncStatusList?.find((s) => s.provider === 'trakt');
+  const isConnected = !!providerStatus?.connected;
+
+  useWSEvent((event) => {
+    if (event.type !== 'sync:needs_reauth') return;
+    const eventProvider = (event.data?.provider as string | undefined) ?? '';
+    if (eventProvider !== 'trakt') return;
+    toast.error(`Trakt: ${i18n._(msg`settings.integration.needsReauth`)}`);
+    queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+  });
+
+  const startMut = useMutation({
+    mutationFn: () => traktApi.requestDeviceCode(),
+    onSuccess: (dc) => {
+      setDeviceCode(dc);
+      setPollError(null);
+    },
+    onError: () => toast.error(i18n._(msg`settings.integration.authUrlFailed`)),
+  });
+
+  const disconnectMut = useMutation({
+    mutationFn: () => traktApi.disconnect(),
+    onSuccess: () => {
+      toast.success(i18n._(msg`settings.integration.disconnected`));
+      queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+    },
+    onError: () => toast.error(i18n._(msg`settings.integration.disconnectFailed`)),
+  });
+
+  const syncMut = useMutation({
+    mutationFn: () => syncApi.flush('trakt'),
+    onSuccess: (data) => {
+      toast.success(
+        `${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.enqueued)}`,
+      );
+      queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+    },
+    onError: () => toast.error(i18n._(msg`settings.integration.syncFailed`)),
+  });
+
+  useEffect(() => {
+    if (!deviceCode) return;
+    const intervalMs = (deviceCode.poll_interval || 5) * 1000;
+    const tick = async () => {
+      try {
+        const res = await traktApi.pollDeviceCode();
+        if (res.status === 'approved') {
+          if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = null;
+          setDeviceCode(null);
+          setPollError(null);
+          toast.success(i18n._(msg`settings.integration.connected`));
+          queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+        } else if (res.status === 'expired' || res.status === 'denied') {
+          if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = null;
+          setDeviceCode(null);
+          setPollError(res.status);
+        }
+      } catch (e: unknown) {
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = null;
+        setDeviceCode(null);
+        setPollError(e instanceof Error ? e.message : String(e));
+      }
+    };
+    timerRef.current = setInterval(tick, intervalMs);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = null;
+    };
+  }, [deviceCode, queryClient, i18n]);
+
+  return (
+    <SettingsCard label="Trakt">
+      <div className="mb-4">
+        <ConnectionBadge
+          connected={isConnected}
+          connectedText={i18n._(msg`settings.integration.connected`)}
+          disconnectedText={i18n._(msg`settings.integration.notConnected`)}
+        />
+      </div>
+
+      {isConnected && (
+        syncStatusLoading && !providerStatus ? (
+          <SyncStatusSkeleton />
+        ) : providerStatus ? (
+          <>
+            <SyncStatusBlock status={providerStatus} />
+            <PullControls provider="trakt" />
+          </>
+        ) : null
+      )}
+
+      {deviceCode ? (
+        <div className="rounded-lg border border-white/[0.08] bg-black/30 p-4">
+          <p className="text-sm text-white/80">
+            {i18n._(msg`settings.integration.trakt.openAndEnter`)}{' '}
+            <a
+              href={deviceCode.verification_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-white"
+            >
+              {deviceCode.verification_url}
+            </a>
+          </p>
+          <div className="mt-3 font-mono text-3xl tracking-widest text-white select-all">
+            {deviceCode.user_code}
+          </div>
+          <p className="mt-2 text-xs text-white/50">
+            {i18n._(msg`settings.integration.trakt.waitingExpires`)}{' '}
+            {Math.max(1, Math.floor(deviceCode.expires_in / 60))}m
+          </p>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 flex-wrap justify-end">
+          {pollError && (
+            <span className="text-xs text-red-400 mr-auto">{pollError}</span>
+          )}
+          {!isConnected ? (
+            <Button
+              type="button"
+              onClick={() => startMut.mutate()}
+              disabled={startMut.isPending}
+              variant="outline"
+            >
+              {startMut.isPending
+                ? i18n._(msg`settings.integration.connecting`)
+                : i18n._(msg`settings.integration.connect`)}
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                onClick={() => disconnectMut.mutate()}
+                disabled={disconnectMut.isPending}
+                variant="destructive"
+              >
+                {disconnectMut.isPending
+                  ? i18n._(msg`settings.integration.disconnecting`)
+                  : i18n._(msg`settings.integration.disconnect`)}
+              </Button>
+              <Button
+                type="button"
+                onClick={() => syncMut.mutate()}
+                disabled={syncMut.isPending}
+                variant="outline"
+              >
+                {syncMut.isPending
+                  ? i18n._(msg`settings.integration.syncing`)
+                  : i18n._(msg`settings.integration.sync`)}
+              </Button>
+            </>
+          )}
+        </div>
+      )}
+    </SettingsCard>
+  );
+}
+
 function OAuthProviderCard({
   provider,
   label,
@@ -310,7 +544,10 @@ function OAuthProviderCard({
         syncStatusLoading && !providerStatus ? (
           <SyncStatusSkeleton />
         ) : providerStatus ? (
-          <SyncStatusBlock status={providerStatus} />
+          <>
+            <SyncStatusBlock status={providerStatus} />
+            <PullControls provider={provider} />
+          </>
         ) : null
       )}
 
@@ -422,6 +659,20 @@ function OAuthProviderCard({
 
 export function IntegrationsPanel() {
   const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+
+  // Broadcast when a scheduled or manual pull completes on the backend.
+  // Only surface a toast when something actually changed to avoid noise from
+  // the 30-minute scheduler.
+  useWSEvent((event) => {
+    if (event.type !== 'sync:pulled') return;
+    const provider = (event.data?.provider as string | undefined) ?? '';
+    const updatedCount = Number(event.data?.updated_count ?? 0);
+    if (updatedCount > 0) {
+      toast.info(`${provider}: ${updatedCount} ${i18n._(msg`settings.integration.updatesPulled`)}`);
+    }
+    queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+  });
 
   return (
     <div className="space-y-6">
@@ -444,6 +695,10 @@ export function IntegrationsPanel() {
 
       <div className="space-y-4">
         <OAuthProviderCard provider="anilist" label="AniList" />
+      </div>
+
+      <div className="space-y-4">
+        <TraktCard />
       </div>
     </div>
   );

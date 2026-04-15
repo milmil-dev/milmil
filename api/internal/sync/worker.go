@@ -131,7 +131,28 @@ func (s *Service) processRow(ctx context.Context, row store.SyncOutbox) time.Dur
 		MAL:               nullInt(anime.MalID),
 		TMDB:              nullInt(anime.TmdbID),
 		AniDB:             nullInt(anime.AnidbID),
+		Trakt:             nullInt(anime.TraktShowID),
 		BangumiEpisodeIDs: epIDs,
+	}
+
+	// Resolve-on-first-push for Trakt: the /sync/history endpoint needs a Trakt
+	// numeric show id, not TMDB. We look it up once via /search/tmdb and cache
+	// the result on the anime row so subsequent pushes skip the extra call.
+	if ProviderName(row.Provider) == ProviderTrakt && ids.Trakt == 0 && ids.TMDB != 0 {
+		if trakt, ok := prov.(interface {
+			SearchByTMDB(ctx context.Context, tmdbID int64) (int64, error)
+		}); ok {
+			if tid, err := trakt.SearchByTMDB(ctx, ids.TMDB); err == nil {
+				ids.Trakt = tid
+				_ = s.q.UpdateAnimeTraktShowID(ctx, store.UpdateAnimeTraktShowIDParams{
+					TraktShowID: sql.NullInt64{Int64: tid, Valid: true},
+					ID:          row.AnimeID,
+				})
+			} else {
+				s.failRow(ctx, row, "trakt: no show for tmdb_id: "+err.Error(), true)
+				return 0
+			}
+		}
 	}
 
 	if err := prov.Push(ctx, access, op, ids); err != nil {

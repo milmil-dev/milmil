@@ -278,7 +278,21 @@ func main() {
 	tokenStore := milmilsync.NewSettingsTokenStore(syncQueries)
 	alProvider := providers.NewAniList(httpClient, "")
 	bgmProvider := providers.NewBangumi(httpClient, "")
-	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider}, tokenStore, wsHubAdapter{hub: wsHub})
+	// Load Trakt OAuth app credentials (optional; provider still registers even
+	// if creds are missing so the handler can return a clean error).
+	var traktClientID, traktClientSecret string
+	if setting, err := syncQueries.GetSetting(context.Background(), "trakt_oauth"); err == nil {
+		var creds struct {
+			ClientID     string `json:"client_id"`
+			ClientSecret string `json:"client_secret"`
+		}
+		if err := json.Unmarshal([]byte(setting.Value), &creds); err == nil {
+			traktClientID = creds.ClientID
+			traktClientSecret = creds.ClientSecret
+		}
+	}
+	traktProvider := providers.NewTrakt(httpClient, "", traktClientID, traktClientSecret)
+	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider, traktProvider}, tokenStore, wsHubAdapter{hub: wsHub})
 
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc)
 	slog.Debug("boot: router initialized", "took", time.Since(step))

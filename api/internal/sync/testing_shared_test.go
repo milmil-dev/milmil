@@ -132,6 +132,36 @@ func mustMarkWatched(t *testing.T, q *store.Queries, userID, animeID string, nCo
 	}
 }
 
+// mustInsertAnimeWithTMDB creates an anime row with a tmdb_id set (via
+// UpdateAnimeExternalIDs since CreateAnimeParams doesn't carry TmdbID). Used
+// by the Trakt resolve-on-first-push tests which need a TMDB id but don't
+// care about anilist/bangumi.
+func mustInsertAnimeWithTMDB(t *testing.T, q *store.Queries, id string, tmdbID int64, totalEps int) {
+	t.Helper()
+	ctx := context.Background()
+
+	_, err := q.CreateAnime(ctx, store.CreateAnimeParams{
+		ID:            id,
+		Title:         fmt.Sprintf("Test Anime %s", id),
+		Status:        "unknown",
+		Genres:        "[]",
+		TotalEpisodes: nullInt64(int64(totalEps), totalEps > 0),
+		WatchStatus:   "planning",
+		Score:         0,
+	})
+	if err != nil {
+		t.Fatalf("mustInsertAnimeWithTMDB CreateAnime(%s): %v", id, err)
+	}
+	if tmdbID != 0 {
+		if err := q.UpdateAnimeExternalIDs(ctx, store.UpdateAnimeExternalIDsParams{
+			ID:     id,
+			TmdbID: sql.NullInt64{Int64: tmdbID, Valid: true},
+		}); err != nil {
+			t.Fatalf("mustInsertAnimeWithTMDB UpdateAnimeExternalIDs(%s): %v", id, err)
+		}
+	}
+}
+
 func nullInt64(v int64, valid bool) sql.NullInt64 {
 	return sql.NullInt64{Int64: v, Valid: valid}
 }

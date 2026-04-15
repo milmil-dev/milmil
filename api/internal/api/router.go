@@ -199,6 +199,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	// Sync (tracker watch-state) — protected
 	syncGroup := v1.Group("/sync", authMiddleware(h.queries))
 	syncGroup.GET("/status", h.handleSyncProvidersStatus)
+	syncGroup.POST("/:provider/pull", h.handleSyncPullNow)
+	syncGroup.POST("/:provider/pull-enabled", h.handleSyncSetPullEnabled)
 
 	// Downloads — protected
 	dlGroup := v1.Group("/downloads", authMiddleware(h.queries))
@@ -280,6 +282,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	intGroup.GET("/anilist/callback", h.handleAniListCallback)
 	intGroup.DELETE("/anilist", h.handleAniListDisconnect)
 	intGroup.POST("/anilist/sync", h.handleAniListSync)
+	// Trakt (device-code OAuth)
+	intGroup.POST("/trakt/device-code", h.handleTraktDeviceCode)
+	intGroup.POST("/trakt/poll", h.handleTraktPoll)
+	intGroup.DELETE("/trakt", h.handleTraktDisconnect)
 
 	// Notifications — protected
 	notifGroup := v1.Group("/notifications", authMiddleware(h.queries))
