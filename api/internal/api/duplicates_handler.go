@@ -8,25 +8,15 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/library/duplicates"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 )
 
-// providerForLibrary builds a storage.Provider from a library row, decrypting
-// the source config when present. Mirrors the pattern used by
-// handleScanLibrary / checkLibraryConnection.
+// providerForLibrary delegates to storage.ProviderForLibrary, binding the
+// handler's encryption key so callers can keep the short method form.
 func (h *handler) providerForLibrary(lib store.Library) (storage.Provider, error) {
-	var configJSON string
-	if lib.SourceConfigEncrypted.Valid && lib.SourceConfigEncrypted.String != "" {
-		decrypted, err := crypto.Decrypt(h.encryptionKey, lib.SourceConfigEncrypted.String)
-		if err != nil {
-			return nil, err
-		}
-		configJSON = decrypted
-	}
-	return storage.NewProvider(lib.SourceType, configJSON)
+	return storage.ProviderForLibrary(lib, h.encryptionKey)
 }
 
 func (h *handler) handleAnimeDuplicates(c echo.Context) error {

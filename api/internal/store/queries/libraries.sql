@@ -59,3 +59,10 @@ LEFT JOIN (
   FROM media_files GROUP BY library_id
 ) s ON l.id = s.library_id
 WHERE l.id = ?;
+
+-- name: UpdateLibraryRenameConfig :exec
+UPDATE libraries
+SET rename_template = sqlc.arg('template'),
+    rename_auto = sqlc.arg('auto'),
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = sqlc.arg('id');

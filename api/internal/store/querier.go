@@ -90,6 +90,7 @@ type Querier interface {
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
 	HasAnyWatchProgress(ctx context.Context, arg HasAnyWatchProgressParams) (int64, error)
+	InsertRenameHistory(ctx context.Context, arg InsertRenameHistoryParams) error
 	LinkMediaFileToEpisode(ctx context.Context, arg LinkMediaFileToEpisodeParams) error
 	ListAPITokensByUser(ctx context.Context, userID string) ([]ListAPITokensByUserRow, error)
 	ListActiveDownloads(ctx context.Context) ([]Download, error)
@@ -122,6 +123,7 @@ type Querier interface {
 	ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
 	ListMediaFileTreeByLibrary(ctx context.Context, libraryID string) ([]ListMediaFileTreeByLibraryRow, error)
+	ListMediaFilesByAnime(ctx context.Context, animeID string) ([]MediaFile, error)
 	ListMediaFilesByEpisode(ctx context.Context, episodeID sql.NullString) ([]MediaFile, error)
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListNotifications(ctx context.Context, arg ListNotificationsParams) ([]Notification, error)
@@ -134,6 +136,8 @@ type Querier interface {
 	ListRecentProgressWithAnime(ctx context.Context, userID string) ([]ListRecentProgressWithAnimeRow, error)
 	ListRecentSyncErrors(ctx context.Context, arg ListRecentSyncErrorsParams) ([]SyncOutbox, error)
 	ListRecentlyMatchedAnime(ctx context.Context) ([]ListRecentlyMatchedAnimeRow, error)
+	ListRenameHistoryBatches(ctx context.Context, arg ListRenameHistoryBatchesParams) ([]ListRenameHistoryBatchesRow, error)
+	ListRenameHistoryByBatch(ctx context.Context, batchID string) ([]RenameHistory, error)
 	ListScanSummaries(ctx context.Context, libraryID string) ([]ScanSummary, error)
 	ListSegmentMarks(ctx context.Context, mediaFileID string) ([]SegmentMark, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
@@ -145,6 +149,7 @@ type Querier interface {
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	MarkAllNotificationsRead(ctx context.Context) error
 	MarkNotificationRead(ctx context.Context, id string) error
+	MarkRenameHistoryReverted(ctx context.Context, id string) error
 	MarkSyncOpCompleted(ctx context.Context, id string) error
 	MarkUserProviderOpsFailed(ctx context.Context, arg MarkUserProviderOpsFailedParams) error
 	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
@@ -174,12 +179,14 @@ type Querier interface {
 	UpdateEpisodeTMDBMetadata(ctx context.Context, arg UpdateEpisodeTMDBMetadataParams) error
 	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
 	UpdateLibraryLastScanned(ctx context.Context, id string) error
+	UpdateLibraryRenameConfig(ctx context.Context, arg UpdateLibraryRenameConfigParams) error
 	UpdateMediaFileBangumiIDs(ctx context.Context, arg UpdateMediaFileBangumiIDsParams) error
 	UpdateMediaFileDandanplayID(ctx context.Context, arg UpdateMediaFileDandanplayIDParams) error
 	UpdateMediaFileDandanplayIDs(ctx context.Context, arg UpdateMediaFileDandanplayIDsParams) error
 	UpdateMediaFileEpisodeID(ctx context.Context, arg UpdateMediaFileEpisodeIDParams) error
 	UpdateMediaFileHash(ctx context.Context, arg UpdateMediaFileHashParams) error
 	UpdateMediaFileMatch(ctx context.Context, arg UpdateMediaFileMatchParams) error
+	UpdateMediaFilePath(ctx context.Context, arg UpdateMediaFilePathParams) error
 	UpdatePasswordHash(ctx context.Context, arg UpdatePasswordHashParams) error
 	UpdateRSSFeed(ctx context.Context, arg UpdateRSSFeedParams) error
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error

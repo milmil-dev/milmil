@@ -167,7 +167,7 @@ func TestResolveLibrary_CreatesAnimeAndEpisodes(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c, nil)
+	r := resolver.New(q, bgm, ddp, c, nil, nil)
 	summary, err := r.ResolveLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
@@ -227,7 +227,7 @@ func TestResolveLibrary_LinksFiles(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c, nil)
+	r := resolver.New(q, bgm, ddp, c, nil, nil)
 	summary, err := r.ResolveLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
@@ -286,7 +286,7 @@ func TestResolveLibrary_SkipsExistingAnime(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c, nil)
+	r := resolver.New(q, bgm, ddp, c, nil, nil)
 	summary, err := r.ResolveLibrary(context.Background(), lib.ID)
 	if err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
@@ -343,7 +343,7 @@ func TestResolverEnrichesExternalIDsViaAnidb(t *testing.T) {
 	c := cache.New("")
 	defer c.Close()
 
-	r := resolver.New(q, bgm, ddp, c, svc)
+	r := resolver.New(q, bgm, ddp, c, svc, nil)
 	if _, err := r.ResolveLibrary(context.Background(), lib.ID); err != nil {
 		t.Fatalf("ResolveLibrary: %v", err)
 	}

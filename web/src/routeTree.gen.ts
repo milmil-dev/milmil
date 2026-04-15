@@ -25,7 +25,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
+import { Route as LibrariesIdRenameRouteImport } from './routes/libraries_.$id.rename'
 import { Route as LibrariesIdDuplicatesRouteImport } from './routes/libraries_.$id.duplicates'
+import { Route as LibrariesIdRenameHistoryRouteImport } from './routes/libraries_.$id.rename.history'
 
 const TorrentSearchRoute = TorrentSearchRouteImport.update({
   id: '/torrent-search',
@@ -107,11 +109,22 @@ const AnimeIdRoute = AnimeIdRouteImport.update({
   path: '/anime/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibrariesIdRenameRoute = LibrariesIdRenameRouteImport.update({
+  id: '/rename',
+  path: '/rename',
+  getParentRoute: () => LibrariesIdRoute,
+} as any)
 const LibrariesIdDuplicatesRoute = LibrariesIdDuplicatesRouteImport.update({
   id: '/duplicates',
   path: '/duplicates',
   getParentRoute: () => LibrariesIdRoute,
 } as any)
+const LibrariesIdRenameHistoryRoute =
+  LibrariesIdRenameHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => LibrariesIdRenameRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -131,6 +144,8 @@ export interface FileRoutesByFullPath {
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
+  '/libraries/$id/rename': typeof LibrariesIdRenameRouteWithChildren
+  '/libraries/$id/rename/history': typeof LibrariesIdRenameHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -150,6 +165,8 @@ export interface FileRoutesByTo {
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
+  '/libraries/$id/rename': typeof LibrariesIdRenameRouteWithChildren
+  '/libraries/$id/rename/history': typeof LibrariesIdRenameHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -170,6 +187,8 @@ export interface FileRoutesById {
   '/libraries_/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/libraries_/$id/duplicates': typeof LibrariesIdDuplicatesRoute
+  '/libraries_/$id/rename': typeof LibrariesIdRenameRouteWithChildren
+  '/libraries_/$id/rename/history': typeof LibrariesIdRenameHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -191,6 +210,8 @@ export interface FileRouteTypes {
     | '/libraries/$id'
     | '/watch/$animeId'
     | '/libraries/$id/duplicates'
+    | '/libraries/$id/rename'
+    | '/libraries/$id/rename/history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -210,6 +231,8 @@ export interface FileRouteTypes {
     | '/libraries/$id'
     | '/watch/$animeId'
     | '/libraries/$id/duplicates'
+    | '/libraries/$id/rename'
+    | '/libraries/$id/rename/history'
   id:
     | '__root__'
     | '/'
@@ -229,6 +252,8 @@ export interface FileRouteTypes {
     | '/libraries_/$id'
     | '/watch/$animeId'
     | '/libraries_/$id/duplicates'
+    | '/libraries_/$id/rename'
+    | '/libraries_/$id/rename/history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -364,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnimeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/libraries_/$id/rename': {
+      id: '/libraries_/$id/rename'
+      path: '/rename'
+      fullPath: '/libraries/$id/rename'
+      preLoaderRoute: typeof LibrariesIdRenameRouteImport
+      parentRoute: typeof LibrariesIdRoute
+    }
     '/libraries_/$id/duplicates': {
       id: '/libraries_/$id/duplicates'
       path: '/duplicates'
@@ -371,15 +403,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibrariesIdDuplicatesRouteImport
       parentRoute: typeof LibrariesIdRoute
     }
+    '/libraries_/$id/rename/history': {
+      id: '/libraries_/$id/rename/history'
+      path: '/history'
+      fullPath: '/libraries/$id/rename/history'
+      preLoaderRoute: typeof LibrariesIdRenameHistoryRouteImport
+      parentRoute: typeof LibrariesIdRenameRoute
+    }
   }
 }
 
+interface LibrariesIdRenameRouteChildren {
+  LibrariesIdRenameHistoryRoute: typeof LibrariesIdRenameHistoryRoute
+}
+
+const LibrariesIdRenameRouteChildren: LibrariesIdRenameRouteChildren = {
+  LibrariesIdRenameHistoryRoute: LibrariesIdRenameHistoryRoute,
+}
+
+const LibrariesIdRenameRouteWithChildren =
+  LibrariesIdRenameRoute._addFileChildren(LibrariesIdRenameRouteChildren)
+
 interface LibrariesIdRouteChildren {
   LibrariesIdDuplicatesRoute: typeof LibrariesIdDuplicatesRoute
+  LibrariesIdRenameRoute: typeof LibrariesIdRenameRouteWithChildren
 }
 
 const LibrariesIdRouteChildren: LibrariesIdRouteChildren = {
   LibrariesIdDuplicatesRoute: LibrariesIdDuplicatesRoute,
+  LibrariesIdRenameRoute: LibrariesIdRenameRouteWithChildren,
 }
 
 const LibrariesIdRouteWithChildren = LibrariesIdRoute._addFileChildren(

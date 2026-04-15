@@ -137,6 +137,8 @@ type Library struct {
 	UpdatedAt             string         `json:"updated_at"`
 	SourceType            string         `json:"source_type"`
 	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
+	RenameTemplate        string         `json:"rename_template"`
+	RenameAuto            int64          `json:"rename_auto"`
 }
 
 type MediaFile struct {
@@ -203,6 +205,17 @@ type PlaylistEntry struct {
 	EpisodeID  string `json:"episode_id"`
 	Position   int64  `json:"position"`
 	AddedAt    string `json:"added_at"`
+}
+
+type RenameHistory struct {
+	ID          string         `json:"id"`
+	BatchID     string         `json:"batch_id"`
+	LibraryID   string         `json:"library_id"`
+	MediaFileID sql.NullString `json:"media_file_id"`
+	OldPath     string         `json:"old_path"`
+	NewPath     string         `json:"new_path"`
+	AppliedAt   string         `json:"applied_at"`
+	RevertedAt  sql.NullString `json:"reverted_at"`
 }
 
 type RssFeed struct {

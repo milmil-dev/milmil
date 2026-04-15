@@ -42,4 +42,12 @@ func (p *LocalProvider) Delete(path string) error {
 	return os.Remove(path)
 }
 
+func (p *LocalProvider) Rename(oldPath, newPath string) error {
+	return os.Rename(oldPath, newPath)
+}
+
+func (p *LocalProvider) MkdirAll(path string) error {
+	return os.MkdirAll(path, 0o755)
+}
+
 func (p *LocalProvider) Close() error { return nil }

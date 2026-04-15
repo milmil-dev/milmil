@@ -31,6 +31,7 @@ import { Modal } from '../components/Modal';
 import { MotionTable } from '../components/MotionTable';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
+import { RenameConfigEditor } from '../components/library/RenameConfigEditor';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
@@ -1605,6 +1606,8 @@ function SettingsModal({
     scan_interval_minutes: number;
     source_type: string;
     source_config?: Record<string, unknown>;
+    rename_template?: string;
+    rename_auto?: number;
   };
   libraryId: string;
 }) {
@@ -1708,6 +1711,13 @@ function SettingsModal({
             />
           </button>
         </div>
+
+        {/* Rename config */}
+        <RenameConfigEditor
+          libraryId={libraryId}
+          initialTemplate={library.rename_template ?? ''}
+          initialAuto={library.rename_auto === 1}
+        />
 
         {/* Save */}
         <Button

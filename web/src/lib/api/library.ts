@@ -10,6 +10,8 @@ export interface Library {
   last_scanned_at: string | null;
   created_at: string;
   updated_at: string;
+  rename_template?: string;
+  rename_auto?: number;
 }
 
 export interface ScanSummary {

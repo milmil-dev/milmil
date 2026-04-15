@@ -13,7 +13,7 @@ import (
 const createLibrary = `-- name: CreateLibrary :one
 INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, source_type, source_config_encrypted, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted
+RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted, rename_template, rename_auto
 `
 
 type CreateLibraryParams struct {
@@ -48,6 +48,8 @@ func (q *Queries) CreateLibrary(ctx context.Context, arg CreateLibraryParams) (L
 		&i.UpdatedAt,
 		&i.SourceType,
 		&i.SourceConfigEncrypted,
+		&i.RenameTemplate,
+		&i.RenameAuto,
 	)
 	return i, err
 }
@@ -62,7 +64,7 @@ func (q *Queries) DeleteLibrary(ctx context.Context, id string) error {
 }
 
 const getLibrary = `-- name: GetLibrary :one
-SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted FROM libraries WHERE id = ? LIMIT 1
+SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted, rename_template, rename_auto FROM libraries WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetLibrary(ctx context.Context, id string) (Library, error) {
@@ -79,12 +81,14 @@ func (q *Queries) GetLibrary(ctx context.Context, id string) (Library, error) {
 		&i.UpdatedAt,
 		&i.SourceType,
 		&i.SourceConfigEncrypted,
+		&i.RenameTemplate,
+		&i.RenameAuto,
 	)
 	return i, err
 }
 
 const getLibraryWithStats = `-- name: GetLibraryWithStats :one
-SELECT l.id, l.name, l.path, l.enabled, l.scan_interval_minutes, l.last_scanned_at, l.created_at, l.updated_at, l.source_type, l.source_config_encrypted,
+SELECT l.id, l.name, l.path, l.enabled, l.scan_interval_minutes, l.last_scanned_at, l.created_at, l.updated_at, l.source_type, l.source_config_encrypted, l.rename_template, l.rename_auto,
   COALESCE(s.file_count, 0) AS file_count,
   COALESCE(s.matched_count, 0) AS matched_count,
   COALESCE(s.unmatched_count, 0) AS unmatched_count,
@@ -112,6 +116,8 @@ type GetLibraryWithStatsRow struct {
 	UpdatedAt             string         `json:"updated_at"`
 	SourceType            string         `json:"source_type"`
 	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
+	RenameTemplate        string         `json:"rename_template"`
+	RenameAuto            int64          `json:"rename_auto"`
 	FileCount             int64          `json:"file_count"`
 	MatchedCount          float64        `json:"matched_count"`
 	UnmatchedCount        float64        `json:"unmatched_count"`
@@ -132,6 +138,8 @@ func (q *Queries) GetLibraryWithStats(ctx context.Context, id string) (GetLibrar
 		&i.UpdatedAt,
 		&i.SourceType,
 		&i.SourceConfigEncrypted,
+		&i.RenameTemplate,
+		&i.RenameAuto,
 		&i.FileCount,
 		&i.MatchedCount,
 		&i.UnmatchedCount,
@@ -141,7 +149,7 @@ func (q *Queries) GetLibraryWithStats(ctx context.Context, id string) (GetLibrar
 }
 
 const listLibraries = `-- name: ListLibraries :many
-SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted FROM libraries ORDER BY name
+SELECT id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted, rename_template, rename_auto FROM libraries ORDER BY name
 `
 
 func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
@@ -164,6 +172,8 @@ func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
 			&i.UpdatedAt,
 			&i.SourceType,
 			&i.SourceConfigEncrypted,
+			&i.RenameTemplate,
+			&i.RenameAuto,
 		); err != nil {
 			return nil, err
 		}
@@ -179,7 +189,7 @@ func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
 }
 
 const listLibrariesWithStats = `-- name: ListLibrariesWithStats :many
-SELECT l.id, l.name, l.path, l.enabled, l.scan_interval_minutes, l.last_scanned_at, l.created_at, l.updated_at, l.source_type, l.source_config_encrypted,
+SELECT l.id, l.name, l.path, l.enabled, l.scan_interval_minutes, l.last_scanned_at, l.created_at, l.updated_at, l.source_type, l.source_config_encrypted, l.rename_template, l.rename_auto,
   COALESCE(s.file_count, 0) AS file_count,
   COALESCE(s.matched_count, 0) AS matched_count,
   COALESCE(s.unmatched_count, 0) AS unmatched_count,
@@ -207,6 +217,8 @@ type ListLibrariesWithStatsRow struct {
 	UpdatedAt             string         `json:"updated_at"`
 	SourceType            string         `json:"source_type"`
 	SourceConfigEncrypted sql.NullString `json:"source_config_encrypted"`
+	RenameTemplate        string         `json:"rename_template"`
+	RenameAuto            int64          `json:"rename_auto"`
 	FileCount             int64          `json:"file_count"`
 	MatchedCount          float64        `json:"matched_count"`
 	UnmatchedCount        float64        `json:"unmatched_count"`
@@ -233,6 +245,8 @@ func (q *Queries) ListLibrariesWithStats(ctx context.Context) ([]ListLibrariesWi
 			&i.UpdatedAt,
 			&i.SourceType,
 			&i.SourceConfigEncrypted,
+			&i.RenameTemplate,
+			&i.RenameAuto,
 			&i.FileCount,
 			&i.MatchedCount,
 			&i.UnmatchedCount,
@@ -257,7 +271,7 @@ SET name = ?, path = ?, enabled = ?, scan_interval_minutes = ?,
     source_type = ?, source_config_encrypted = ?,
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = ?
-RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted
+RETURNING id, name, path, enabled, scan_interval_minutes, last_scanned_at, created_at, updated_at, source_type, source_config_encrypted, rename_template, rename_auto
 `
 
 type UpdateLibraryParams struct {
@@ -292,6 +306,8 @@ func (q *Queries) UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (L
 		&i.UpdatedAt,
 		&i.SourceType,
 		&i.SourceConfigEncrypted,
+		&i.RenameTemplate,
+		&i.RenameAuto,
 	)
 	return i, err
 }
@@ -305,5 +321,24 @@ WHERE id = ?
 
 func (q *Queries) UpdateLibraryLastScanned(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, updateLibraryLastScanned, id)
+	return err
+}
+
+const updateLibraryRenameConfig = `-- name: UpdateLibraryRenameConfig :exec
+UPDATE libraries
+SET rename_template = ?1,
+    rename_auto = ?2,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?3
+`
+
+type UpdateLibraryRenameConfigParams struct {
+	Template string `json:"template"`
+	Auto     int64  `json:"auto"`
+	ID       string `json:"id"`
+}
+
+func (q *Queries) UpdateLibraryRenameConfig(ctx context.Context, arg UpdateLibraryRenameConfigParams) error {
+	_, err := q.db.ExecContext(ctx, updateLibraryRenameConfig, arg.Template, arg.Auto, arg.ID)
 	return err
 }

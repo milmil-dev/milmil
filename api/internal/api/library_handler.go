@@ -69,6 +69,8 @@ type libraryListItem struct {
 	MatchedCount        float64 `json:"matched_count"`
 	UnmatchedCount      float64 `json:"unmatched_count"`
 	TotalSizeBytes      int64   `json:"total_size_bytes"`
+	RenameTemplate      string  `json:"rename_template"`
+	RenameAuto          int64   `json:"rename_auto"`
 }
 
 func (h *handler) handleListLibraries(c echo.Context) error {
@@ -99,6 +101,8 @@ func (h *handler) handleListLibraries(c echo.Context) error {
 			MatchedCount:        lib.MatchedCount,
 			UnmatchedCount:      lib.UnmatchedCount,
 			TotalSizeBytes:      totalSize,
+			RenameTemplate:      lib.RenameTemplate,
+			RenameAuto:          lib.RenameAuto,
 		}
 	}
 	return c.JSON(http.StatusOK, result)
@@ -133,6 +137,8 @@ func (h *handler) handleGetLibrary(c echo.Context) error {
 		MatchedCount:        lib.MatchedCount,
 		UnmatchedCount:      lib.UnmatchedCount,
 		TotalSizeBytes:      totalSize,
+		RenameTemplate:      lib.RenameTemplate,
+		RenameAuto:          lib.RenameAuto,
 	})
 }
 
