@@ -209,8 +209,12 @@ func (s *Service) buildFranchiseResult(ctx context.Context, nodes map[int]*franc
 func (s *Service) resolveBangumiIDCached(ctx context.Context, anilistID int) int {
 	reverseKey := fmt.Sprintf("meta:xref:al:%d", anilistID)
 	var bangumiID int
-	if s.getCache(ctx, reverseKey, &bangumiID) {
+	if s.getCache(ctx, reverseKey, &bangumiID) && bangumiID > 0 {
 		return bangumiID
+	}
+	// Cache miss — try full resolution (searches Bangumi by title)
+	if resolved, err := s.ResolveBangumiID(ctx, anilistID); err == nil && resolved > 0 {
+		return resolved
 	}
 	return 0
 }
