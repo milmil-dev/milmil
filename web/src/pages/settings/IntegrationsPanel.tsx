@@ -7,11 +7,13 @@ import { toast } from 'sonner';
 
 import { ConnectionBadge } from '@/components/settings/ConnectionBadge';
 import { SettingsCard } from '@/components/settings/SettingsCard';
+import { Skeleton } from '@/components/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { api } from '@/lib/api-client';
+import { syncApi, syncKeys, type SyncProvider, type SyncProviderStatus } from '@/lib/api/sync';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
@@ -125,11 +127,79 @@ function DandanPlayCard() {
 
 // ─── OAuth Provider Card (reusable for Bangumi & AniList) ───────────────────
 
+function formatLastSync(value: string, locale: string): string {
+  if (!value) return '—';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  try {
+    return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(d);
+  } catch {
+    return d.toISOString();
+  }
+}
+
+function SyncStatusBlock({ status }: { status: SyncProviderStatus }) {
+  const { i18n } = useLingui();
+  const lastSync = formatLastSync(status.last_sync, i18n.locale);
+
+  return (
+    <div className="mb-4 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-white/40">
+          {i18n._(msg`settings.integration.lastSync`)}
+        </span>
+        <span className="text-white/70 tabular-nums">{lastSync}</span>
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-white/40">
+          {i18n._(msg`settings.integration.pending`)}
+        </span>
+        <span className="text-white/70 tabular-nums">{status.pending}</span>
+      </div>
+      {status.last_errors.length > 0 && (
+        <details className="group text-xs">
+          <summary className="cursor-pointer text-white/60 hover:text-white/80 select-none">
+            {i18n._(msg`settings.integration.recentErrors`)}
+            <span className="ml-1 text-white/40">({status.last_errors.length})</span>
+          </summary>
+          <ul className="mt-2 space-y-1.5">
+            {status.last_errors.slice(0, 5).map((err, idx) => (
+              <li
+                key={`${err.anime_id}-${err.at}-${idx}`}
+                className="rounded border border-white/[0.06] bg-black/20 px-2 py-1.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-[10px] text-white/50 truncate">
+                    {err.anime_id}
+                  </span>
+                  <span className="text-[10px] text-white/30 shrink-0">
+                    {formatLastSync(err.at, i18n.locale)}
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] text-white/60 break-words">{err.error}</p>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
+  );
+}
+
+function SyncStatusSkeleton() {
+  return (
+    <div className="mb-4 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
+      <Skeleton className="h-4" style={{ width: '60%' }} />
+      <Skeleton className="h-4" style={{ width: '40%' }} />
+    </div>
+  );
+}
+
 function OAuthProviderCard({
   provider,
   label,
 }: {
-  provider: 'bangumi' | 'anilist';
+  provider: SyncProvider;
   label: string;
 }) {
   const { i18n } = useLingui();
@@ -144,6 +214,14 @@ function OAuthProviderCard({
   const tokenKey = `${provider}_token`;
   const isConfigured = !!settings?.[oauthKey]?.client_id;
   const isConnected = !!settings?.[tokenKey]?.access_token;
+
+  const { data: syncStatusList, isLoading: syncStatusLoading } = useQuery({
+    queryKey: syncKeys.status(),
+    queryFn: syncApi.status,
+    refetchInterval: 15000,
+    enabled: isConnected,
+  });
+  const providerStatus = syncStatusList?.find((s) => s.provider === provider);
 
   const form = useForm({
     defaultValues: { clientId: '', clientSecret: '' },
@@ -187,19 +265,18 @@ function OAuthProviderCard({
     onSuccess: () => {
       toast.success(i18n._(msg`settings.integration.disconnected`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
+      queryClient.invalidateQueries({ queryKey: syncKeys.status() });
     },
     onError: () => toast.error(i18n._(msg`settings.integration.disconnectFailed`)),
   });
 
   const syncMutation = useMutation({
-    mutationFn: () =>
-      api.post<{ synced: number; errors: number; total: number }>(
-        `/api/v1/integrations/${provider}/sync`,
-      ),
+    mutationFn: () => syncApi.flush(provider),
     onSuccess: (data) => {
       toast.success(
-        `${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.synced)} / ${String(data.errors)} ${i18n._(msg`settings.integration.syncErrors`)}`,
+        `${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.enqueued)}`,
       );
+      queryClient.invalidateQueries({ queryKey: syncKeys.status() });
     },
     onError: () => toast.error(i18n._(msg`settings.integration.syncFailed`)),
   });
@@ -213,6 +290,14 @@ function OAuthProviderCard({
           disconnectedText={i18n._(msg`settings.integration.notConnected`)}
         />
       </div>
+
+      {isConnected && (
+        syncStatusLoading && !providerStatus ? (
+          <SyncStatusSkeleton />
+        ) : providerStatus ? (
+          <SyncStatusBlock status={providerStatus} />
+        ) : null
+      )}
 
       <form
         onSubmit={(e) => {
