@@ -126,3 +126,25 @@ func TestParseExtractsYearFromBracket(t *testing.T) {
 		})
 	}
 }
+
+func TestParseExtractsResolution(t *testing.T) {
+	cases := []struct {
+		in   string
+		want int
+	}{
+		{"[SubGroup] Some Anime - 01 [1080p].mkv", 1080},
+		{"[Group] Title S01E05 720p.mkv", 720},
+		{"Show.2160p.BDRip.mkv", 2160},
+		{"Show.4K.mkv", 2160},
+		{"Show 480p.mp4", 480},
+		{"Show.mkv", 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.in, func(t *testing.T) {
+			p := Parse(tc.in)
+			if p.Resolution != tc.want {
+				t.Errorf("got %d want %d", p.Resolution, tc.want)
+			}
+		})
+	}
+}

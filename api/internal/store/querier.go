@@ -46,6 +46,7 @@ type Querier interface {
 	DeleteEpisodesByAnimeID(ctx context.Context, animeID string) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
+	DeleteMediaFileByID(ctx context.Context, id string) error
 	DeleteOldDeliveries(ctx context.Context, createdAt string) error
 	DeleteOldReadNotifications(ctx context.Context, createdAt string) error
 	DeleteOtherAPITokens(ctx context.Context, arg DeleteOtherAPITokensParams) error
@@ -89,6 +90,7 @@ type Querier interface {
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (WatchProgress, error)
 	GetWatchProgressByMediaFile(ctx context.Context, arg GetWatchProgressByMediaFileParams) (WatchProgress, error)
 	HasAnyWatchProgress(ctx context.Context, arg HasAnyWatchProgressParams) (int64, error)
+	LinkMediaFileToEpisode(ctx context.Context, arg LinkMediaFileToEpisodeParams) error
 	ListAPITokensByUser(ctx context.Context, userID string) ([]ListAPITokensByUserRow, error)
 	ListActiveDownloads(ctx context.Context) ([]Download, error)
 	ListAllUnmatchedMediaFilesByLibrary(ctx context.Context, libraryID string) ([]MediaFile, error)
@@ -108,6 +110,8 @@ type Querier interface {
 	ListDownloads(ctx context.Context) ([]Download, error)
 	ListDownloadsByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Download, error)
 	ListDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) ([]Download, error)
+	ListDuplicateEpisodesByAnime(ctx context.Context, animeID string) ([]ListDuplicateEpisodesByAnimeRow, error)
+	ListDuplicateEpisodesByLibrary(ctx context.Context, libraryID sql.NullString) ([]ListDuplicateEpisodesByLibraryRow, error)
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListEpisodesByAnimeIDWithAirDate(ctx context.Context, animeID string) ([]ListEpisodesByAnimeIDWithAirDateRow, error)
 	ListEpisodesByLibraryIDWithAirDate(ctx context.Context, libraryID sql.NullString) ([]ListEpisodesByLibraryIDWithAirDateRow, error)
@@ -118,6 +122,7 @@ type Querier interface {
 	ListMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
 	ListMediaFilePathsByLibrary(ctx context.Context, libraryID string) ([]string, error)
 	ListMediaFileTreeByLibrary(ctx context.Context, libraryID string) ([]ListMediaFileTreeByLibraryRow, error)
+	ListMediaFilesByEpisode(ctx context.Context, episodeID sql.NullString) ([]MediaFile, error)
 	ListMediaFilesByLibrary(ctx context.Context, arg ListMediaFilesByLibraryParams) ([]ListMediaFilesByLibraryRow, error)
 	ListNotifications(ctx context.Context, arg ListNotificationsParams) ([]Notification, error)
 	ListNotificationsByType(ctx context.Context, arg ListNotificationsByTypeParams) ([]Notification, error)
@@ -144,6 +149,9 @@ type Querier interface {
 	MarkUserProviderOpsFailed(ctx context.Context, arg MarkUserProviderOpsFailedParams) error
 	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
+	// Only writes when no manual preference is set yet.
+	SetEpisodePreferredAuto(ctx context.Context, arg SetEpisodePreferredAutoParams) error
+	SetEpisodePreferredManual(ctx context.Context, arg SetEpisodePreferredManualParams) error
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
 	SupersedeProgressOps(ctx context.Context, arg SupersedeProgressOpsParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error

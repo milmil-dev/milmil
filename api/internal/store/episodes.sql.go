@@ -15,7 +15,7 @@ INSERT INTO episodes (id, anime_id, episode_number, title, title_zh, air_date,
     dandanplay_episode_id, bangumi_episode_id, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?,
     strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh
+RETURNING id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh, preferred_media_file_id, preferred_manually_set
 `
 
 type CreateEpisodeParams struct {
@@ -56,12 +56,14 @@ func (q *Queries) CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (E
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.SynopsisZh,
+		&i.PreferredMediaFileID,
+		&i.PreferredManuallySet,
 	)
 	return i, err
 }
 
 const getEpisode = `-- name: GetEpisode :one
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE id = ? LIMIT 1
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh, preferred_media_file_id, preferred_manually_set FROM episodes WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetEpisode(ctx context.Context, id string) (Episode, error) {
@@ -82,12 +84,14 @@ func (q *Queries) GetEpisode(ctx context.Context, id string) (Episode, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.SynopsisZh,
+		&i.PreferredMediaFileID,
+		&i.PreferredManuallySet,
 	)
 	return i, err
 }
 
 const getEpisodeByAnimeAndNumber = `-- name: GetEpisodeByAnimeAndNumber :one
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE anime_id = ? AND episode_number = ? LIMIT 1
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh, preferred_media_file_id, preferred_manually_set FROM episodes WHERE anime_id = ? AND episode_number = ? LIMIT 1
 `
 
 type GetEpisodeByAnimeAndNumberParams struct {
@@ -113,12 +117,14 @@ func (q *Queries) GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisode
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.SynopsisZh,
+		&i.PreferredMediaFileID,
+		&i.PreferredManuallySet,
 	)
 	return i, err
 }
 
 const getEpisodeByDandanplayID = `-- name: GetEpisodeByDandanplayID :one
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE dandanplay_episode_id = ? LIMIT 1
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh, preferred_media_file_id, preferred_manually_set FROM episodes WHERE dandanplay_episode_id = ? LIMIT 1
 `
 
 func (q *Queries) GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error) {
@@ -139,12 +145,14 @@ func (q *Queries) GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisod
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.SynopsisZh,
+		&i.PreferredMediaFileID,
+		&i.PreferredManuallySet,
 	)
 	return i, err
 }
 
 const listEpisodesByAnimeID = `-- name: ListEpisodesByAnimeID :many
-SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh FROM episodes WHERE anime_id = ? ORDER BY episode_number
+SELECT id, anime_id, episode_number, title, title_zh, air_date, synopsis, thumbnail_url, dandanplay_episode_id, bangumi_episode_id, mal_episode_id, created_at, updated_at, synopsis_zh, preferred_media_file_id, preferred_manually_set FROM episodes WHERE anime_id = ? ORDER BY episode_number
 `
 
 func (q *Queries) ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error) {
@@ -171,6 +179,8 @@ func (q *Queries) ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.SynopsisZh,
+			&i.PreferredMediaFileID,
+			&i.PreferredManuallySet,
 		); err != nil {
 			return nil, err
 		}
@@ -265,6 +275,42 @@ func (q *Queries) ListEpisodesByLibraryIDWithAirDate(ctx context.Context, librar
 		return nil, err
 	}
 	return items, nil
+}
+
+const setEpisodePreferredAuto = `-- name: SetEpisodePreferredAuto :exec
+UPDATE episodes
+SET preferred_media_file_id = ?1,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?2 AND preferred_manually_set = 0
+`
+
+type SetEpisodePreferredAutoParams struct {
+	FileID sql.NullString `json:"file_id"`
+	ID     string         `json:"id"`
+}
+
+// Only writes when no manual preference is set yet.
+func (q *Queries) SetEpisodePreferredAuto(ctx context.Context, arg SetEpisodePreferredAutoParams) error {
+	_, err := q.db.ExecContext(ctx, setEpisodePreferredAuto, arg.FileID, arg.ID)
+	return err
+}
+
+const setEpisodePreferredManual = `-- name: SetEpisodePreferredManual :exec
+UPDATE episodes
+SET preferred_media_file_id = ?1,
+    preferred_manually_set = 1,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?2
+`
+
+type SetEpisodePreferredManualParams struct {
+	FileID sql.NullString `json:"file_id"`
+	ID     string         `json:"id"`
+}
+
+func (q *Queries) SetEpisodePreferredManual(ctx context.Context, arg SetEpisodePreferredManualParams) error {
+	_, err := q.db.ExecContext(ctx, setEpisodePreferredManual, arg.FileID, arg.ID)
+	return err
 }
 
 const updateEpisodeTMDBMetadata = `-- name: UpdateEpisodeTMDBMetadata :exec

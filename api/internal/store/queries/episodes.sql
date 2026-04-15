@@ -34,3 +34,17 @@ SELECT e.id, e.anime_id, e.episode_number, e.air_date
 FROM episodes e
 JOIN anime a ON a.id = e.anime_id
 WHERE a.library_id = ? ORDER BY e.anime_id, e.episode_number ASC;
+
+-- name: SetEpisodePreferredAuto :exec
+-- Only writes when no manual preference is set yet.
+UPDATE episodes
+SET preferred_media_file_id = sqlc.arg('file_id'),
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = sqlc.arg('id') AND preferred_manually_set = 0;
+
+-- name: SetEpisodePreferredManual :exec
+UPDATE episodes
+SET preferred_media_file_id = sqlc.arg('file_id'),
+    preferred_manually_set = 1,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = sqlc.arg('id');

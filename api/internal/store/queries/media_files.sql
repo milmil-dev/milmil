@@ -124,3 +124,40 @@ JOIN media_files mf ON mf.episode_id = e.id
 JOIN anime a ON a.id = e.anime_id
 WHERE a.library_id = sqlc.arg('library_id')
 GROUP BY e.anime_id, e.id, e.episode_number;
+
+-- name: ListDuplicateEpisodesByAnime :many
+SELECT e.id AS episode_id, e.episode_number,
+       e.preferred_media_file_id, e.preferred_manually_set,
+       COUNT(mf.id) AS file_count,
+       SUM(mf.size_bytes) AS total_bytes
+FROM episodes e
+JOIN media_files mf ON mf.episode_id = e.id
+WHERE e.anime_id = sqlc.arg('anime_id')
+GROUP BY e.id
+HAVING file_count >= 2;
+
+-- name: ListDuplicateEpisodesByLibrary :many
+SELECT a.id AS anime_id, a.title,
+       e.id AS episode_id, e.episode_number,
+       e.preferred_media_file_id, e.preferred_manually_set,
+       COUNT(mf.id) AS file_count,
+       SUM(mf.size_bytes) AS total_bytes
+FROM episodes e
+JOIN anime a ON a.id = e.anime_id
+JOIN media_files mf ON mf.episode_id = e.id
+WHERE a.library_id = sqlc.arg('library_id')
+GROUP BY e.id
+HAVING file_count >= 2;
+
+-- name: ListMediaFilesByEpisode :many
+SELECT * FROM media_files WHERE episode_id = ? ORDER BY size_bytes DESC;
+
+-- name: DeleteMediaFileByID :exec
+DELETE FROM media_files WHERE id = ?;
+
+-- name: LinkMediaFileToEpisode :exec
+UPDATE media_files
+SET episode_id = sqlc.arg('episode_id'),
+    match_status = 'manual',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = sqlc.arg('id');

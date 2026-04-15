@@ -119,6 +119,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.POST("/test-connection", h.handleTestConnection)
 	libGroup.POST("/browse", h.handleBrowse)
 	libGroup.GET("/:id/missing-summary", h.handleLibraryMissingSummary)
+	libGroup.GET("/:id/duplicates", h.handleLibraryDuplicates)
+	libGroup.POST("/:id/duplicates/cleanup", h.handleLibraryDuplicateCleanup)
 
 	// Rclone remotes — public (used during library setup to pick OAuth remotes)
 	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
@@ -130,6 +132,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)
 	mediaGroup.DELETE("/:id/match", h.handleUnmatchMediaFile)
 	mediaGroup.GET("/:id/info", h.handleMediaInfo)
+	mediaGroup.DELETE("/:id", h.handleDeleteMediaFile)
+
+	// Episodes — protected
+	episodesGroup := v1.Group("/episodes", authMiddleware(h.queries))
+	episodesGroup.PATCH("/:id/preferred", h.handleSetEpisodePreferred)
 
 	// Discover — public
 	discoverGroup := v1.Group("/discover")
@@ -181,6 +188,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	animeGroup.GET("/:bangumiId/missing", h.handleAnimeMissing)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 	animeGroup.PATCH("/:bangumiId/sync-flags", h.handleUpdateAnimeSyncFlags)
+	animeGroup.GET("/:bangumiId/duplicates", h.handleAnimeDuplicates)
 
 	// Sync (tracker watch-state) — protected
 	syncGroup := v1.Group("/sync", authMiddleware(h.queries))

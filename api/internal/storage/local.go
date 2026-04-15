@@ -38,4 +38,8 @@ func (p *LocalProvider) ReadDir(path string) ([]os.FileInfo, error) {
 	return infos, nil
 }
 
+func (p *LocalProvider) Delete(path string) error {
+	return os.Remove(path)
+}
+
 func (p *LocalProvider) Close() error { return nil }

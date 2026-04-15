@@ -100,20 +100,22 @@ type DownloadRule struct {
 }
 
 type Episode struct {
-	ID                  string         `json:"id"`
-	AnimeID             string         `json:"anime_id"`
-	EpisodeNumber       float64        `json:"episode_number"`
-	Title               sql.NullString `json:"title"`
-	TitleZh             sql.NullString `json:"title_zh"`
-	AirDate             sql.NullString `json:"air_date"`
-	Synopsis            sql.NullString `json:"synopsis"`
-	ThumbnailUrl        sql.NullString `json:"thumbnail_url"`
-	DandanplayEpisodeID sql.NullInt64  `json:"dandanplay_episode_id"`
-	BangumiEpisodeID    sql.NullInt64  `json:"bangumi_episode_id"`
-	MalEpisodeID        sql.NullInt64  `json:"mal_episode_id"`
-	CreatedAt           string         `json:"created_at"`
-	UpdatedAt           string         `json:"updated_at"`
-	SynopsisZh          sql.NullString `json:"synopsis_zh"`
+	ID                   string         `json:"id"`
+	AnimeID              string         `json:"anime_id"`
+	EpisodeNumber        float64        `json:"episode_number"`
+	Title                sql.NullString `json:"title"`
+	TitleZh              sql.NullString `json:"title_zh"`
+	AirDate              sql.NullString `json:"air_date"`
+	Synopsis             sql.NullString `json:"synopsis"`
+	ThumbnailUrl         sql.NullString `json:"thumbnail_url"`
+	DandanplayEpisodeID  sql.NullInt64  `json:"dandanplay_episode_id"`
+	BangumiEpisodeID     sql.NullInt64  `json:"bangumi_episode_id"`
+	MalEpisodeID         sql.NullInt64  `json:"mal_episode_id"`
+	CreatedAt            string         `json:"created_at"`
+	UpdatedAt            string         `json:"updated_at"`
+	SynopsisZh           sql.NullString `json:"synopsis_zh"`
+	PreferredMediaFileID sql.NullString `json:"preferred_media_file_id"`
+	PreferredManuallySet int64          `json:"preferred_manually_set"`
 }
 
 type HotTag struct {

@@ -19,6 +19,7 @@ import (
 	smb2 "github.com/hirochachacha/go-smb2"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/crypto"
+	"github.com/milmil/api/internal/library/duplicates"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/storage"
@@ -475,6 +476,12 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
 		}
 
+		// Rank duplicate episodes — picks preferred file for any episode with 2+ files.
+		// Non-fatal; never fail the scan.
+		if err := duplicates.AutoRank(context.Background(), h.queries, lib.ID); err != nil {
+			slog.Warn("duplicates: autorank failed", "library", lib.ID, "err", err)
+		}
+
 		onProgress(scanner.ProgressEvent{Type: "scan:completed", LibraryID: lib.ID})
 	}()
 
@@ -542,6 +549,11 @@ func (h *handler) handleMatchLibrary(c echo.Context) error {
 			} else {
 				slog.Info("match: TMDB enrichment done", "library_id", lib.ID, "episodes_enriched", enriched)
 			}
+		}
+
+		// Rank duplicate episodes — non-fatal.
+		if err := duplicates.AutoRank(context.Background(), h.queries, lib.ID); err != nil {
+			slog.Warn("duplicates: autorank failed", "library", lib.ID, "err", err)
 		}
 
 		onProgress(scanner.ProgressEvent{Type: "match:completed", LibraryID: lib.ID})

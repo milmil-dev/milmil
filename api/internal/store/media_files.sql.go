@@ -155,6 +155,15 @@ func (q *Queries) DeleteMediaFile(ctx context.Context, path string) error {
 	return err
 }
 
+const deleteMediaFileByID = `-- name: DeleteMediaFileByID :exec
+DELETE FROM media_files WHERE id = ?
+`
+
+func (q *Queries) DeleteMediaFileByID(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, deleteMediaFileByID, id)
+	return err
+}
+
 const getMediaFileByID = `-- name: GetMediaFileByID :one
 SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files WHERE id = ? LIMIT 1
 `
@@ -188,6 +197,24 @@ func (q *Queries) GetMediaFileByID(ctx context.Context, id string) (MediaFile, e
 		&i.BangumiEpisodeID,
 	)
 	return i, err
+}
+
+const linkMediaFileToEpisode = `-- name: LinkMediaFileToEpisode :exec
+UPDATE media_files
+SET episode_id = ?1,
+    match_status = 'manual',
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = ?2
+`
+
+type LinkMediaFileToEpisodeParams struct {
+	EpisodeID sql.NullString `json:"episode_id"`
+	ID        string         `json:"id"`
+}
+
+func (q *Queries) LinkMediaFileToEpisode(ctx context.Context, arg LinkMediaFileToEpisodeParams) error {
+	_, err := q.db.ExecContext(ctx, linkMediaFileToEpisode, arg.EpisodeID, arg.ID)
+	return err
 }
 
 const listAllUnmatchedMediaFilesByLibrary = `-- name: ListAllUnmatchedMediaFilesByLibrary :many
@@ -280,6 +307,114 @@ func (q *Queries) ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libr
 			&i.DandanplayAnimeID,
 			&i.BangumiSubjectID,
 			&i.BangumiEpisodeID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDuplicateEpisodesByAnime = `-- name: ListDuplicateEpisodesByAnime :many
+SELECT e.id AS episode_id, e.episode_number,
+       e.preferred_media_file_id, e.preferred_manually_set,
+       COUNT(mf.id) AS file_count,
+       SUM(mf.size_bytes) AS total_bytes
+FROM episodes e
+JOIN media_files mf ON mf.episode_id = e.id
+WHERE e.anime_id = ?1
+GROUP BY e.id
+HAVING file_count >= 2
+`
+
+type ListDuplicateEpisodesByAnimeRow struct {
+	EpisodeID            string          `json:"episode_id"`
+	EpisodeNumber        float64         `json:"episode_number"`
+	PreferredMediaFileID sql.NullString  `json:"preferred_media_file_id"`
+	PreferredManuallySet int64           `json:"preferred_manually_set"`
+	FileCount            int64           `json:"file_count"`
+	TotalBytes           sql.NullFloat64 `json:"total_bytes"`
+}
+
+func (q *Queries) ListDuplicateEpisodesByAnime(ctx context.Context, animeID string) ([]ListDuplicateEpisodesByAnimeRow, error) {
+	rows, err := q.db.QueryContext(ctx, listDuplicateEpisodesByAnime, animeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListDuplicateEpisodesByAnimeRow{}
+	for rows.Next() {
+		var i ListDuplicateEpisodesByAnimeRow
+		if err := rows.Scan(
+			&i.EpisodeID,
+			&i.EpisodeNumber,
+			&i.PreferredMediaFileID,
+			&i.PreferredManuallySet,
+			&i.FileCount,
+			&i.TotalBytes,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDuplicateEpisodesByLibrary = `-- name: ListDuplicateEpisodesByLibrary :many
+SELECT a.id AS anime_id, a.title,
+       e.id AS episode_id, e.episode_number,
+       e.preferred_media_file_id, e.preferred_manually_set,
+       COUNT(mf.id) AS file_count,
+       SUM(mf.size_bytes) AS total_bytes
+FROM episodes e
+JOIN anime a ON a.id = e.anime_id
+JOIN media_files mf ON mf.episode_id = e.id
+WHERE a.library_id = ?1
+GROUP BY e.id
+HAVING file_count >= 2
+`
+
+type ListDuplicateEpisodesByLibraryRow struct {
+	AnimeID              string          `json:"anime_id"`
+	Title                string          `json:"title"`
+	EpisodeID            string          `json:"episode_id"`
+	EpisodeNumber        float64         `json:"episode_number"`
+	PreferredMediaFileID sql.NullString  `json:"preferred_media_file_id"`
+	PreferredManuallySet int64           `json:"preferred_manually_set"`
+	FileCount            int64           `json:"file_count"`
+	TotalBytes           sql.NullFloat64 `json:"total_bytes"`
+}
+
+func (q *Queries) ListDuplicateEpisodesByLibrary(ctx context.Context, libraryID sql.NullString) ([]ListDuplicateEpisodesByLibraryRow, error) {
+	rows, err := q.db.QueryContext(ctx, listDuplicateEpisodesByLibrary, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListDuplicateEpisodesByLibraryRow{}
+	for rows.Next() {
+		var i ListDuplicateEpisodesByLibraryRow
+		if err := rows.Scan(
+			&i.AnimeID,
+			&i.Title,
+			&i.EpisodeID,
+			&i.EpisodeNumber,
+			&i.PreferredMediaFileID,
+			&i.PreferredManuallySet,
+			&i.FileCount,
+			&i.TotalBytes,
 		); err != nil {
 			return nil, err
 		}
@@ -417,6 +552,57 @@ func (q *Queries) ListMediaFileTreeByLibrary(ctx context.Context, libraryID stri
 			&i.MatchedEpisodeSort,
 			&i.MatchedBangumiID,
 			&i.SubtitleCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMediaFilesByEpisode = `-- name: ListMediaFilesByEpisode :many
+SELECT id, episode_id, library_id, path, filename, size_bytes, duration_seconds, container_format, video_codec, audio_codec, width, height, file_hash, dandanplay_episode_id, match_status, video_tracks, audio_tracks, subtitle_tracks, created_at, updated_at, dandanplay_anime_id, bangumi_subject_id, bangumi_episode_id FROM media_files WHERE episode_id = ? ORDER BY size_bytes DESC
+`
+
+func (q *Queries) ListMediaFilesByEpisode(ctx context.Context, episodeID sql.NullString) ([]MediaFile, error) {
+	rows, err := q.db.QueryContext(ctx, listMediaFilesByEpisode, episodeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MediaFile{}
+	for rows.Next() {
+		var i MediaFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.EpisodeID,
+			&i.LibraryID,
+			&i.Path,
+			&i.Filename,
+			&i.SizeBytes,
+			&i.DurationSeconds,
+			&i.ContainerFormat,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Width,
+			&i.Height,
+			&i.FileHash,
+			&i.DandanplayEpisodeID,
+			&i.MatchStatus,
+			&i.VideoTracks,
+			&i.AudioTracks,
+			&i.SubtitleTracks,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DandanplayAnimeID,
+			&i.BangumiSubjectID,
+			&i.BangumiEpisodeID,
 		); err != nil {
 			return nil, err
 		}

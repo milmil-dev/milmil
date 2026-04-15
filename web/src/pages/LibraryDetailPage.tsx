@@ -1973,6 +1973,19 @@ export function LibraryDetailPage() {
                   {i18n._(msg`library.detail.settingsTooltip`)}
                 </TooltipContent>
               </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button asChild type="button" variant="secondary" size="sm" className="gap-2">
+                    <Link to="/libraries/$id/duplicates" params={{ id }}>
+                      <HugeiconsIcon icon={Copy01Icon} size={15} />
+                      {i18n._(msg`Duplicates`)}
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {i18n._(msg`View and clean up duplicate files`)}
+                </TooltipContent>
+              </Tooltip>
             </div>
           </TooltipProvider>
         </motion.div>
