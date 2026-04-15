@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
+import { useWSEvent } from '@/hooks/use-websocket';
 import { api } from '@/lib/api-client';
 import { syncApi, syncKeys, type SyncProvider, type SyncProviderStatus } from '@/lib/api/sync';
 
@@ -222,6 +223,20 @@ function OAuthProviderCard({
     enabled: isConnected,
   });
   const providerStatus = syncStatusList?.find((s) => s.provider === provider);
+
+  // React to backend ws event when a provider push fails and re-auth is required.
+  // Invalidates sync status immediately instead of waiting for the 15s poll.
+  useWSEvent((event) => {
+    if (event.type !== 'sync:needs_reauth') return;
+    const eventProvider =
+      (event.data?.provider as string | undefined) ?? '';
+    if (eventProvider !== provider) return;
+    toast.error(
+      `${label}: ${i18n._(msg`settings.integration.needsReauth`)}`,
+    );
+    queryClient.invalidateQueries({ queryKey: syncKeys.status() });
+    queryClient.invalidateQueries({ queryKey: ['settings'] });
+  });
 
   const form = useForm({
     defaultValues: { clientId: '', clientSecret: '' },
