@@ -42,7 +42,7 @@ import { useAuth } from '../hooks/use-auth';
 import type { PlayableEpisode } from '../lib/api/anime';
 import { animeApi, animeKeys } from '../lib/api/anime';
 import { collectionApi, collectionKeys } from '../lib/api/collection';
-import type { AnimeCharacter } from '../lib/api/discover';
+import type { AnimeCharacter, AnimeSummary } from '../lib/api/discover';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useBgStore } from '../store/bg-store';
@@ -232,6 +232,13 @@ export function AnimeDetailPage() {
     queryKey: discoverKeys.comments(numericId),
     queryFn: () => discoverApi.comments(numericId),
     enabled: !Number.isNaN(numericId),
+  });
+
+  const { data: franchise } = useQuery({
+    queryKey: discoverKeys.franchise(numericId),
+    queryFn: () => discoverApi.franchise(numericId),
+    enabled: !Number.isNaN(numericId),
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   // Check if anime has active subscription
@@ -574,8 +581,43 @@ export function AnimeDetailPage() {
                       </motion.div>
                     )}
 
-                    {/* Season tabs */}
+                    {/* Season tabs — franchise-powered */}
                     {(() => {
+                      const franchiseSeasons = franchise?.main_series;
+                      if (franchiseSeasons && franchiseSeasons.length > 1) {
+                        return (
+                          <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+                            {franchiseSeasons.map((s, idx) => {
+                              const isCurrent = s.bangumi_id === numericId || s.anilist_id === anime.anilist_id;
+                              const targetId = s.bangumi_id > 0 ? s.bangumi_id : null;
+                              return targetId ? (
+                                <Link
+                                  key={s.anilist_id}
+                                  to="/anime/$id"
+                                  params={{ id: String(targetId) }}
+                                  className={cn(
+                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
+                                    isCurrent
+                                      ? 'bg-mm-accent/20 text-mm-accent'
+                                      : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
+                                  )}
+                                  title={s.title}
+                                >
+                                  {`S${idx + 1}`}
+                                </Link>
+                              ) : (
+                                <span
+                                  key={s.anilist_id}
+                                  className="px-3 py-1 rounded-full text-xs font-medium bg-white/[0.04] text-white/30 shrink-0"
+                                  title={s.title}
+                                >
+                                  {`S${idx + 1}`}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        );
+                      }
                       const seasons = buildSeasonChain(anime.relations, numericId, anime.title);
                       if (seasons.length <= 1) return null;
                       return (
@@ -944,30 +986,69 @@ export function AnimeDetailPage() {
           </motion.div>
         )}
 
-        {/* Related anime — prequel, sequel, side stories */}
-        {anime.relations && anime.relations.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="px-4 md:px-8 py-6"
-          >
-            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.relations`)}</h2>
-            <MediaRail>
-              {anime.relations.map((rel) => (
-                <div
-                  key={`${rel.relation_type}-${rel.anime.anilist_id}`}
-                  className="shrink-0 w-[150px]"
-                >
-                  <AnimeCard anime={rel.anime} />
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-1">
-                    {getRelationLabel(rel.relation_type, i18n.locale)}
-                  </p>
-                </div>
-              ))}
-            </MediaRail>
-          </motion.div>
-        )}
+        {/* Side stories — franchise-powered, with fallback to relations */}
+        {(() => {
+          if (franchise?.side_stories && franchise.side_stories.length > 0) {
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="px-4 md:px-8 py-6"
+              >
+                <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.sideStories`)}</h2>
+                <MediaRail>
+                  {franchise.side_stories.map((entry) => {
+                    const cardAnime: AnimeSummary = {
+                      bangumi_id: entry.bangumi_id,
+                      anilist_id: entry.anilist_id,
+                      title: entry.title,
+                      title_original: entry.title_original,
+                      cover_image: entry.cover_image,
+                      episode_count: entry.episode_count,
+                      score: entry.score,
+                      media_type: entry.media_type,
+                    };
+                    return (
+                      <div key={entry.anilist_id} className="shrink-0 w-[150px]">
+                        <AnimeCard anime={cardAnime} />
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-1">
+                          {entry.media_type || getRelationLabel(entry.relation_type || '', i18n.locale)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </MediaRail>
+              </motion.div>
+            );
+          }
+          if (anime.relations && anime.relations.length > 0) {
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="px-4 md:px-8 py-6"
+              >
+                <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.relations`)}</h2>
+                <MediaRail>
+                  {anime.relations.map((rel) => (
+                    <div
+                      key={`${rel.relation_type}-${rel.anime.anilist_id}`}
+                      className="shrink-0 w-[150px]"
+                    >
+                      <AnimeCard anime={rel.anime} />
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-1">
+                        {getRelationLabel(rel.relation_type, i18n.locale)}
+                      </p>
+                    </div>
+                  ))}
+                </MediaRail>
+              </motion.div>
+            );
+          }
+          return null;
+        })()}
 
         {/* Recommendations */}
         {anime.recommendations && anime.recommendations.length > 0 && (
