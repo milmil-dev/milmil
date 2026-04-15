@@ -130,6 +130,11 @@ func (s *Service) FlushUser(ctx context.Context, userID string, provider Provide
 	return enqueued, nil
 }
 
+// ProviderByName returns the registered provider or nil if absent.
+func (s *Service) ProviderByName(name ProviderName) Provider {
+	return s.providers[name]
+}
+
 // Disconnect marks every outstanding op for (user, provider) as fatally
 // completed with a "disconnected" marker, so the worker never touches them
 // again after the user revokes OAuth.
