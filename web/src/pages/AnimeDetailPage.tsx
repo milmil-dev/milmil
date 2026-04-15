@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
+import { EpisodeStatusCard } from '../components/anime/EpisodeStatusCard';
 import { EpisodeListItem } from '../components/EpisodeListItem';
 import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
@@ -834,6 +835,11 @@ export function AnimeDetailPage() {
                 </motion.div>
               );
             })()}
+        </div>
+
+        {/* Episode completeness status — self-hides when everything is present */}
+        <div className="px-4 md:px-8 pt-2">
+          <EpisodeStatusCard bangumiId={numericId} />
         </div>
 
         {/* Trailer + Episodes */}

@@ -65,6 +65,87 @@ func (q *Queries) CountMediaFilesByStatus(ctx context.Context, arg CountMediaFil
 	return total, err
 }
 
+const countMediaFilesPerEpisodeByAnime = `-- name: CountMediaFilesPerEpisodeByAnime :many
+SELECT e.id AS episode_id, e.episode_number, COUNT(mf.id) AS file_count
+FROM episodes e
+JOIN media_files mf ON mf.episode_id = e.id
+WHERE e.anime_id = ?1
+GROUP BY e.id, e.episode_number
+`
+
+type CountMediaFilesPerEpisodeByAnimeRow struct {
+	EpisodeID     string  `json:"episode_id"`
+	EpisodeNumber float64 `json:"episode_number"`
+	FileCount     int64   `json:"file_count"`
+}
+
+func (q *Queries) CountMediaFilesPerEpisodeByAnime(ctx context.Context, animeID string) ([]CountMediaFilesPerEpisodeByAnimeRow, error) {
+	rows, err := q.db.QueryContext(ctx, countMediaFilesPerEpisodeByAnime, animeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountMediaFilesPerEpisodeByAnimeRow{}
+	for rows.Next() {
+		var i CountMediaFilesPerEpisodeByAnimeRow
+		if err := rows.Scan(&i.EpisodeID, &i.EpisodeNumber, &i.FileCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const countMediaFilesPerEpisodeByLibrary = `-- name: CountMediaFilesPerEpisodeByLibrary :many
+SELECT e.anime_id, e.id AS episode_id, e.episode_number, COUNT(mf.id) AS file_count
+FROM episodes e
+JOIN media_files mf ON mf.episode_id = e.id
+JOIN anime a ON a.id = e.anime_id
+WHERE a.library_id = ?1
+GROUP BY e.anime_id, e.id, e.episode_number
+`
+
+type CountMediaFilesPerEpisodeByLibraryRow struct {
+	AnimeID       string  `json:"anime_id"`
+	EpisodeID     string  `json:"episode_id"`
+	EpisodeNumber float64 `json:"episode_number"`
+	FileCount     int64   `json:"file_count"`
+}
+
+func (q *Queries) CountMediaFilesPerEpisodeByLibrary(ctx context.Context, libraryID sql.NullString) ([]CountMediaFilesPerEpisodeByLibraryRow, error) {
+	rows, err := q.db.QueryContext(ctx, countMediaFilesPerEpisodeByLibrary, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountMediaFilesPerEpisodeByLibraryRow{}
+	for rows.Next() {
+		var i CountMediaFilesPerEpisodeByLibraryRow
+		if err := rows.Scan(
+			&i.AnimeID,
+			&i.EpisodeID,
+			&i.EpisodeNumber,
+			&i.FileCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const deleteMediaFile = `-- name: DeleteMediaFile :exec
 DELETE FROM media_files WHERE path = ?
 `

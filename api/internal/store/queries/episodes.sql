@@ -24,3 +24,13 @@ WHERE id = ?;
 
 -- name: GetEpisodeByAnimeAndNumber :one
 SELECT * FROM episodes WHERE anime_id = ? AND episode_number = ? LIMIT 1;
+
+-- name: ListEpisodesByAnimeIDWithAirDate :many
+SELECT id, anime_id, episode_number, air_date FROM episodes
+WHERE anime_id = ? ORDER BY episode_number ASC;
+
+-- name: ListEpisodesByLibraryIDWithAirDate :many
+SELECT e.id, e.anime_id, e.episode_number, e.air_date
+FROM episodes e
+JOIN anime a ON a.id = e.anime_id
+WHERE a.library_id = ? ORDER BY e.anime_id, e.episode_number ASC;

@@ -185,6 +185,88 @@ func (q *Queries) ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]
 	return items, nil
 }
 
+const listEpisodesByAnimeIDWithAirDate = `-- name: ListEpisodesByAnimeIDWithAirDate :many
+SELECT id, anime_id, episode_number, air_date FROM episodes
+WHERE anime_id = ? ORDER BY episode_number ASC
+`
+
+type ListEpisodesByAnimeIDWithAirDateRow struct {
+	ID            string         `json:"id"`
+	AnimeID       string         `json:"anime_id"`
+	EpisodeNumber float64        `json:"episode_number"`
+	AirDate       sql.NullString `json:"air_date"`
+}
+
+func (q *Queries) ListEpisodesByAnimeIDWithAirDate(ctx context.Context, animeID string) ([]ListEpisodesByAnimeIDWithAirDateRow, error) {
+	rows, err := q.db.QueryContext(ctx, listEpisodesByAnimeIDWithAirDate, animeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListEpisodesByAnimeIDWithAirDateRow{}
+	for rows.Next() {
+		var i ListEpisodesByAnimeIDWithAirDateRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.AnimeID,
+			&i.EpisodeNumber,
+			&i.AirDate,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listEpisodesByLibraryIDWithAirDate = `-- name: ListEpisodesByLibraryIDWithAirDate :many
+SELECT e.id, e.anime_id, e.episode_number, e.air_date
+FROM episodes e
+JOIN anime a ON a.id = e.anime_id
+WHERE a.library_id = ? ORDER BY e.anime_id, e.episode_number ASC
+`
+
+type ListEpisodesByLibraryIDWithAirDateRow struct {
+	ID            string         `json:"id"`
+	AnimeID       string         `json:"anime_id"`
+	EpisodeNumber float64        `json:"episode_number"`
+	AirDate       sql.NullString `json:"air_date"`
+}
+
+func (q *Queries) ListEpisodesByLibraryIDWithAirDate(ctx context.Context, libraryID sql.NullString) ([]ListEpisodesByLibraryIDWithAirDateRow, error) {
+	rows, err := q.db.QueryContext(ctx, listEpisodesByLibraryIDWithAirDate, libraryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListEpisodesByLibraryIDWithAirDateRow{}
+	for rows.Next() {
+		var i ListEpisodesByLibraryIDWithAirDateRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.AnimeID,
+			&i.EpisodeNumber,
+			&i.AirDate,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateEpisodeTMDBMetadata = `-- name: UpdateEpisodeTMDBMetadata :exec
 UPDATE episodes
 SET synopsis_zh = COALESCE(NULLIF(?, ''), synopsis_zh),
