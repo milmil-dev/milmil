@@ -1,0 +1,2 @@
+ALTER TABLE anime ADD COLUMN sync_disabled INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE anime ADD COLUMN watch_status_override TEXT NOT NULL DEFAULT '';

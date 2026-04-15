@@ -57,3 +57,21 @@ UPDATE anime SET
     tmdb_id    = COALESCE(tmdb_id,    sqlc.narg('tmdb_id')),
     updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 WHERE id = sqlc.arg('id');
+
+-- name: UpdateAnimeSyncFlags :exec
+UPDATE anime
+SET sync_disabled = sqlc.arg('sync_disabled'),
+    watch_status_override = sqlc.arg('watch_status_override'),
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')
+WHERE id = sqlc.arg('id');
+
+-- name: ListAnimeForUserWithProviderID :many
+-- A5 fix: only animes with at least one completed watch_progress episode.
+SELECT DISTINCT a.* FROM anime a
+JOIN episodes e ON e.anime_id = a.id
+JOIN watch_progress wp ON wp.episode_id = e.id
+WHERE wp.user_id = sqlc.arg('user_id')
+  AND wp.completed = 1
+  AND ( (sqlc.arg('provider') = 'anilist' AND a.anilist_id IS NOT NULL)
+     OR (sqlc.arg('provider') = 'bangumi' AND a.bangumi_id IS NOT NULL) )
+  AND a.sync_disabled = 0;
