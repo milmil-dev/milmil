@@ -193,6 +193,46 @@ func (q *Queries) GetAnimeByAnidbID(ctx context.Context, anidbID sql.NullInt64) 
 	return i, err
 }
 
+const getAnimeByAnilistID = `-- name: GetAnimeByAnilistID :one
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override FROM anime WHERE anilist_id = ? LIMIT 1
+`
+
+func (q *Queries) GetAnimeByAnilistID(ctx context.Context, anilistID sql.NullInt64) (Anime, error) {
+	row := q.db.QueryRowContext(ctx, getAnimeByAnilistID, anilistID)
+	var i Anime
+	err := row.Scan(
+		&i.ID,
+		&i.LibraryID,
+		&i.Title,
+		&i.TitleZh,
+		&i.TitleEn,
+		&i.Synopsis,
+		&i.CoverImageUrl,
+		&i.TotalEpisodes,
+		&i.Status,
+		&i.AirDate,
+		&i.Year,
+		&i.Season,
+		&i.Genres,
+		&i.IsCustom,
+		&i.AnilistID,
+		&i.BangumiID,
+		&i.DandanplayBangumiID,
+		&i.MalID,
+		&i.TmdbID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.WatchStatus,
+		&i.WatchStatusUpdatedAt,
+		&i.UserScore,
+		&i.Score,
+		&i.AnidbID,
+		&i.SyncDisabled,
+		&i.WatchStatusOverride,
+	)
+	return i, err
+}
+
 const getAnimeByBangumiID = `-- name: GetAnimeByBangumiID :one
 SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override FROM anime WHERE bangumi_id = ? LIMIT 1
 `
