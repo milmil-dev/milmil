@@ -77,6 +77,15 @@ func (h *handler) handleSaveProgress(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	// A1 fix: synchronous enqueue so a crash between DB write and queue insert
+	// cannot lose the sync op. The enqueue is a fast transactional INSERT (<5ms).
+	if h.syncSvc != nil {
+		episode, epErr := h.queries.GetEpisode(c.Request().Context(), req.EpisodeID)
+		if epErr == nil {
+			h.syncSvc.OnProgressUpdate(c.Request().Context(), userID, episode.AnimeID)
+		}
+	}
+
 	return c.JSON(http.StatusOK, toProgressResponse(progress))
 }
 
