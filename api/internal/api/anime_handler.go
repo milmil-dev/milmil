@@ -39,12 +39,15 @@ type playableEpisodeResponse struct {
 }
 
 type playableEpisodesEnvelope struct {
-	WatchStatus string                    `json:"watch_status"`
-	MalID       *int64                    `json:"mal_id"`
-	TmdbID      *int64                    `json:"tmdb_id"`
-	AnidbID     *int64                    `json:"anidb_id"`
-	UserScore   *int64                    `json:"user_score"`
-	Episodes    []playableEpisodeResponse `json:"episodes"`
+	AnimeID             string                    `json:"anime_id"`
+	WatchStatus         string                    `json:"watch_status"`
+	MalID               *int64                    `json:"mal_id"`
+	TmdbID              *int64                    `json:"tmdb_id"`
+	AnidbID             *int64                    `json:"anidb_id"`
+	UserScore           *int64                    `json:"user_score"`
+	SyncDisabled        int64                     `json:"sync_disabled"`
+	WatchStatusOverride string                    `json:"watch_status_override"`
+	Episodes            []playableEpisodeResponse `json:"episodes"`
 }
 
 func (h *handler) handlePlayableEpisodes(c echo.Context) error {
@@ -106,13 +109,65 @@ func (h *handler) handlePlayableEpisodes(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, playableEpisodesEnvelope{
-		WatchStatus: anime.WatchStatus,
-		MalID:       nullInt(anime.MalID),
-		TmdbID:      nullInt(anime.TmdbID),
-		AnidbID:     nullInt(anime.AnidbID),
-		UserScore:   nullInt(anime.UserScore),
-		Episodes:    episodes,
+		AnimeID:             anime.ID,
+		WatchStatus:         anime.WatchStatus,
+		MalID:               nullInt(anime.MalID),
+		TmdbID:              nullInt(anime.TmdbID),
+		AnidbID:             nullInt(anime.AnidbID),
+		UserScore:           nullInt(anime.UserScore),
+		SyncDisabled:        anime.SyncDisabled,
+		WatchStatusOverride: anime.WatchStatusOverride,
+		Episodes:            episodes,
 	})
+}
+
+// PATCH /api/v1/anime/:bangumiId/sync-flags
+//
+// Updates per-anime tracker sync flags. Accepts any combination of:
+//   - sync_disabled (0|1) — when 1, the anime is skipped by outgoing sync ops
+//   - watch_status_override (string) — pins a specific canonical watch status
+//
+// Fields omitted from the request body retain their current value.
+func (h *handler) handleUpdateAnimeSyncFlags(c echo.Context) error {
+	bangumiIDStr := c.Param("bangumiId")
+	bangumiID, err := strconv.ParseInt(bangumiIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid bangumiId")
+	}
+
+	var body struct {
+		SyncDisabled        *int    `json:"sync_disabled"`
+		WatchStatusOverride *string `json:"watch_status_override"`
+	}
+	if err := c.Bind(&body); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
+	}
+
+	ctx := c.Request().Context()
+	current, err := h.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: bangumiID, Valid: true})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return echo.NewHTTPError(http.StatusNotFound, "anime not found")
+		}
+		return echo.ErrInternalServerError
+	}
+
+	params := store.UpdateAnimeSyncFlagsParams{
+		ID:                  current.ID,
+		SyncDisabled:        current.SyncDisabled,
+		WatchStatusOverride: current.WatchStatusOverride,
+	}
+	if body.SyncDisabled != nil {
+		params.SyncDisabled = int64(*body.SyncDisabled)
+	}
+	if body.WatchStatusOverride != nil {
+		params.WatchStatusOverride = *body.WatchStatusOverride
+	}
+
+	if err := h.queries.UpdateAnimeSyncFlags(ctx, params); err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (h *handler) handleUpdateScore(c echo.Context) error {

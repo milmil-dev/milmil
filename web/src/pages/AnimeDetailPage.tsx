@@ -263,6 +263,16 @@ export function AnimeDetailPage() {
       queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) }),
   });
 
+  const syncFlagsMutation = useMutation({
+    mutationFn: (syncDisabled: 0 | 1) =>
+      animeApi.updateSyncFlags(numericId, { sync_disabled: syncDisabled }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(numericId) });
+      toast.success(i18n._(msg`anime.syncFlagsUpdated`));
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   const continueEpisode = useMemo(() => {
     if (!playableData?.episodes) return null;
     // Find first episode with progress but not completed
@@ -635,6 +645,60 @@ export function AnimeDetailPage() {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-4"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
                         {i18n._(msg`anime.searchResources`)}
                       </Link>
+
+                      {/* Tracker sync toggle */}
+                      {isAuthenticated && playableData && (() => {
+                        const syncDisabled = playableData.sync_disabled === 1;
+                        return (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              syncFlagsMutation.mutate(syncDisabled ? 0 : 1)
+                            }
+                            disabled={syncFlagsMutation.isPending}
+                            title={
+                              syncDisabled
+                                ? i18n._(msg`anime.enableTrackerSync`)
+                                : i18n._(msg`anime.excludeTrackerSync`)
+                            }
+                            className={cn(
+                              'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium transition-colors',
+                              syncDisabled
+                                ? 'bg-white/[0.04] text-white/40 hover:bg-white/[0.10] hover:text-white/70'
+                                : 'bg-white/[0.08] text-white/70 hover:bg-white/[0.14] hover:text-white'
+                            )}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="size-4"
+                            >
+                              {syncDisabled ? (
+                                <>
+                                  <path d="M18.364 5.636 5.636 18.364" />
+                                  <path d="M21 12a9 9 0 0 1-9 9" />
+                                  <path d="M3 12a9 9 0 0 1 9-9" />
+                                </>
+                              ) : (
+                                <>
+                                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                  <path d="M3 3v5h5" />
+                                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                                  <path d="M16 16h5v5" />
+                                </>
+                              )}
+                            </svg>
+                            {syncDisabled
+                              ? i18n._(msg`anime.enableTrackerSync`)
+                              : i18n._(msg`anime.excludeTrackerSync`)}
+                          </button>
+                        );
+                      })()}
 
                     </motion.div>
 
