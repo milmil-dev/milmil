@@ -24,6 +24,25 @@ import (
 // testing_shared_test.go helpers live in `package sync` and aren't importable
 // from here).
 
+// itTokenStore is the black-box TokenStore used by integration_test.go. It
+// mirrors the internal staticTS — we can't import the unexported helper from
+// package sync_test, so each external test file ships its own.
+type itTokenStore struct{ access, refresh string }
+
+func (s *itTokenStore) Get(_ context.Context, _ string, _ milmilsync.ProviderName) (string, string, error) {
+	if s.access == "" {
+		return "", "", milmilsync.ErrNoToken
+	}
+	return s.access, s.refresh, nil
+}
+func (s *itTokenStore) Put(_ context.Context, _ string, _ milmilsync.ProviderName, access, refresh string, _ time.Time) error {
+	s.access, s.refresh = access, refresh
+	return nil
+}
+func (s *itTokenStore) LoadCreds(_ context.Context, _ milmilsync.ProviderName) (milmilsync.OAuthCreds, error) {
+	return milmilsync.OAuthCreds{}, nil
+}
+
 func itDB(t *testing.T) (*store.Queries, *sql.DB, func()) {
 	t.Helper()
 	dsn := "sqlite://" + t.TempDir() + "/test.db"
@@ -112,10 +131,7 @@ func TestEndToEndProgressPushReachesProvider(t *testing.T) {
 	itInsertEpisodes(t, q, "a1", 12)
 
 	al := providers.NewAniList(srv.Client(), srv.URL)
-	tokenLoader := func(_ context.Context, _ string, _ milmilsync.ProviderName) (string, error) {
-		return "fake-token", nil
-	}
-	svc := milmilsync.NewService(q, database, []milmilsync.Provider{al}, tokenLoader)
+	svc := milmilsync.NewService(q, database, []milmilsync.Provider{al}, &itTokenStore{access: "fake-token"}, nil)
 
 	itMarkWatched(t, q, "u", "a1", 5)
 	start := time.Now()
@@ -164,7 +180,7 @@ func TestEndToEndRateLimitGroupingHonoredReal(t *testing.T) {
 	}
 
 	al := providers.NewAniList(srv.Client(), srv.URL)
-	svc := milmilsync.NewService(q, database, []milmilsync.Provider{al}, func(_ context.Context, _ string, _ milmilsync.ProviderName) (string, error) { return "tok", nil })
+	svc := milmilsync.NewService(q, database, []milmilsync.Provider{al}, &itTokenStore{access: "tok"}, nil)
 	for i := 0; i < 5; i++ {
 		id := "a" + string(rune('1'+i))
 		svc.OnProgressUpdate(context.Background(), "u", id)

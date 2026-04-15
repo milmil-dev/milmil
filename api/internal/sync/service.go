@@ -9,28 +9,32 @@ import (
 	"github.com/milmil/api/internal/store"
 )
 
-// TokenLoader returns the access token for (user, provider). Return ErrNoToken
-// if the user has not connected this provider.
-type TokenLoader func(ctx context.Context, userID string, provider ProviderName) (string, error)
-
 // ErrNoToken signals that no OAuth token exists for the given (user, provider).
-// TokenLoader implementations should return this (or an error wrapping it) so
+// TokenStore implementations should return this (or an error wrapping it) so
 // the service can silently skip enqueueing ops for unconnected providers.
 var ErrNoToken = errors.New("sync: no token")
 
-// Service wires the outbox queue, registered providers, and token lookup
+// WSHub is the minimal hook the worker needs to broadcast events. It lets the
+// sync package stay independent of internal/ws (avoids an import cycle).
+type WSHub interface {
+	Broadcast(eventType string, payload map[string]any)
+}
+
+// Service wires the outbox queue, registered providers, and token store
 // together. It is the only entry-point other packages use for watch-sync.
 type Service struct {
 	q         *store.Queries
 	db        *sql.DB
 	queue     *Queue
 	providers map[ProviderName]Provider
-	loadToken TokenLoader
+	tokens    TokenStore
+	wsHub     WSHub // may be nil
 }
 
 // NewService constructs a Service. Providers are indexed by Name() so the
-// worker can route outbox rows without a linear scan.
-func NewService(q *store.Queries, db *sql.DB, providers []Provider, loadToken TokenLoader) *Service {
+// worker can route outbox rows without a linear scan. hub may be nil — then
+// needs-reauth broadcasts are silently dropped.
+func NewService(q *store.Queries, db *sql.DB, providers []Provider, tokens TokenStore, hub WSHub) *Service {
 	m := make(map[ProviderName]Provider, len(providers))
 	for _, p := range providers {
 		m[p.Name()] = p
@@ -40,7 +44,8 @@ func NewService(q *store.Queries, db *sql.DB, providers []Provider, loadToken To
 		db:        db,
 		queue:     NewQueue(q, db),
 		providers: m,
-		loadToken: loadToken,
+		tokens:    tokens,
+		wsHub:     hub,
 	}
 }
 
@@ -71,7 +76,7 @@ func (s *Service) OnProgressUpdate(ctx context.Context, userID, animeID string) 
 		if !hasProviderID(anime, name) {
 			continue
 		}
-		if _, err := s.loadToken(ctx, userID, name); err != nil {
+		if _, _, err := s.tokens.Get(ctx, userID, name); err != nil {
 			continue
 		}
 		op := SyncOp{Kind: KindProgress, AnimeID: animeID, Status: status, Progress: progress}

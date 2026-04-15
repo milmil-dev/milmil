@@ -10,18 +10,25 @@ import (
 )
 
 // fakeProvider is a minimal Provider used across worker and import tests.
+// pushFn / refreshFn allow per-test behavior injection; pushErr / fetchErr are
+// kept for the simpler legacy tests that predate the refresh flow.
 type fakeProvider struct {
-	name     ProviderName
-	pushErr  error
-	pushes   int
-	fetched  []RemoteEntry
-	fetchErr error
+	name      ProviderName
+	pushFn    func(access string) error
+	refreshFn func() (RefreshedToken, error)
+	pushErr   error
+	pushes    int
+	fetched   []RemoteEntry
+	fetchErr  error
 }
 
 func (p *fakeProvider) Name() ProviderName { return p.name }
 
 func (p *fakeProvider) Push(ctx context.Context, tok string, op SyncOp, ids ExternalIDs) error {
 	p.pushes++
+	if p.pushFn != nil {
+		return p.pushFn(tok)
+	}
 	return p.pushErr
 }
 
@@ -29,8 +36,54 @@ func (p *fakeProvider) FetchList(ctx context.Context, tok string) ([]RemoteEntry
 	return p.fetched, p.fetchErr
 }
 
-func staticTokenLoader() TokenLoader {
-	return func(_ context.Context, _ string, _ ProviderName) (string, error) { return "tok", nil }
+func (p *fakeProvider) RefreshToken(_ context.Context, _ OAuthCreds, _ string) (RefreshedToken, error) {
+	if p.refreshFn != nil {
+		return p.refreshFn()
+	}
+	return RefreshedToken{}, nil
+}
+
+// staticTS is the test-only TokenStore used by every sync test. It records the
+// last Put so refresh-flow tests can assert the new tokens were persisted.
+type staticTS struct {
+	access, refresh string
+	creds           OAuthCreds
+}
+
+func (s *staticTS) Get(_ context.Context, _ string, _ ProviderName) (string, string, error) {
+	if s.access == "" {
+		return "", "", ErrNoToken
+	}
+	return s.access, s.refresh, nil
+}
+
+func (s *staticTS) Put(_ context.Context, _ string, _ ProviderName, access, refresh string, _ time.Time) error {
+	s.access, s.refresh = access, refresh
+	return nil
+}
+
+func (s *staticTS) LoadCreds(_ context.Context, _ ProviderName) (OAuthCreds, error) {
+	return s.creds, nil
+}
+
+// newStaticTS returns the default "tok"-access token store used by tests that
+// don't care about the refresh flow.
+func newStaticTS() *staticTS { return &staticTS{access: "tok"} }
+
+// spyHub captures Broadcast events so refresh-on-401 tests can assert on the
+// sync:needs_reauth signal.
+type spyHub struct {
+	events []struct {
+		Type    string
+		Payload map[string]any
+	}
+}
+
+func (h *spyHub) Broadcast(t string, p map[string]any) {
+	h.events = append(h.events, struct {
+		Type    string
+		Payload map[string]any
+	}{Type: t, Payload: p})
 }
 
 func TestWorkerMarksRowCompleted(t *testing.T) {
@@ -38,7 +91,7 @@ func TestWorkerMarksRowCompleted(t *testing.T) {
 	defer cleanup()
 	mustInsertAnime(t, q, "a1", 12, 42, 0)
 	fp := &fakeProvider{name: ProviderAniList}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{
 		Kind: KindProgress, AnimeID: "a1", Progress: 1,
@@ -70,7 +123,7 @@ func TestWorkerRateLimitGroupingDefersRest(t *testing.T) {
 		name:    ProviderAniList,
 		pushErr: &TransientError{Err: errors.New("rate-limited"), RetryAfter: 42 * time.Second},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	for i := 0; i < 5; i++ {
 		id := fmt.Sprintf("a%d", i+1)
@@ -99,7 +152,7 @@ func TestWorkerTransientErrorReschedules(t *testing.T) {
 		name:    ProviderAniList,
 		pushErr: &TransientError{Err: errors.New("boom")},
 	}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1",
 		SyncOp{Kind: KindProgress, AnimeID: "a1", Progress: 1}); err != nil {
@@ -120,7 +173,7 @@ func TestWorkerFatalErrorCompletesRow(t *testing.T) {
 	defer cleanup()
 	mustInsertAnime(t, q, "a1", 12, 42, 0)
 	fp := &fakeProvider{name: ProviderAniList, pushErr: errors.New("permanent")}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1",
 		SyncOp{Kind: KindProgress, AnimeID: "a1", Progress: 1}); err != nil {
@@ -142,7 +195,7 @@ func TestWorkerOverlapPrevented(t *testing.T) {
 	mustInsertAnime(t, q, "a1", 12, 42, 0)
 	// Hold the provider for a tick so the second Drain actually races the first.
 	fp := &slowFakeProvider{name: ProviderAniList, delay: 50 * time.Millisecond}
-	s := NewService(q, db, []Provider{fp}, staticTokenLoader())
+	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
 	if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1",
 		SyncOp{Kind: KindProgress, AnimeID: "a1", Progress: 1}); err != nil {
@@ -176,4 +229,139 @@ func (p *slowFakeProvider) Push(ctx context.Context, tok string, op SyncOp, ids 
 }
 func (p *slowFakeProvider) FetchList(ctx context.Context, tok string) ([]RemoteEntry, error) {
 	return nil, nil
+}
+func (p *slowFakeProvider) RefreshToken(ctx context.Context, creds OAuthCreds, refreshToken string) (RefreshedToken, error) {
+	return RefreshedToken{}, nil
+}
+
+// TestWorkerRefreshOn401ThenRetrySucceeds verifies the happy-path refresh
+// flow: push returns ErrNeedsReauth, worker swaps tokens via RefreshToken,
+// retries push, row completes, tokens are persisted, no broadcast fires.
+func TestWorkerRefreshOn401ThenRetrySucceeds(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	calls := 0
+	fp := &fakeProvider{
+		name: ProviderAniList,
+		pushFn: func(access string) error {
+			calls++
+			if calls == 1 {
+				return fmt.Errorf("%w: 401", ErrNeedsReauth)
+			}
+			return nil
+		},
+		refreshFn: func() (RefreshedToken, error) {
+			return RefreshedToken{AccessToken: "new-a", RefreshToken: "new-r", ExpiresIn: time.Hour}, nil
+		},
+	}
+	ts := &staticTS{access: "old-a", refresh: "old-r", creds: OAuthCreds{ClientID: "c"}}
+	hub := &spyHub{}
+	s := NewService(q, db, []Provider{fp}, ts, hub)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	if calls != 2 {
+		t.Errorf("expected 2 pushes, got %d", calls)
+	}
+	if ts.access != "new-a" || ts.refresh != "new-r" {
+		t.Errorf("token not persisted: (%q, %q)", ts.access, ts.refresh)
+	}
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("row not completed: %d", len(rows))
+	}
+	if len(hub.events) != 0 {
+		t.Errorf("unexpected broadcast: %+v", hub.events)
+	}
+}
+
+// TestWorkerRefreshFailureDeadLetters verifies that a refresh that itself
+// fails with a non-transient reauth error fatally fails the row and
+// broadcasts sync:needs_reauth so the UI can prompt reconnect.
+func TestWorkerRefreshFailureDeadLetters(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	fp := &fakeProvider{
+		name:   ProviderAniList,
+		pushFn: func(string) error { return fmt.Errorf("%w: 401", ErrNeedsReauth) },
+		refreshFn: func() (RefreshedToken, error) {
+			return RefreshedToken{}, fmt.Errorf("%w: invalid_grant", ErrNeedsReauth)
+		},
+	}
+	ts := &staticTS{access: "a", refresh: "r", creds: OAuthCreds{ClientID: "c"}}
+	hub := &spyHub{}
+	s := NewService(q, db, []Provider{fp}, ts, hub)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("expected dead-letter, %d rows still ready", len(rows))
+	}
+	if len(hub.events) == 0 || hub.events[0].Type != "sync:needs_reauth" {
+		t.Errorf("expected sync:needs_reauth, got %+v", hub.events)
+	}
+}
+
+// TestWorkerNoRefreshTokenDeadLetters verifies that a 401 without a stored
+// refresh token skips RefreshToken entirely and dead-letters+broadcasts.
+func TestWorkerNoRefreshTokenDeadLetters(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	refreshCalls := 0
+	fp := &fakeProvider{
+		name:   ProviderAniList,
+		pushFn: func(string) error { return fmt.Errorf("%w: 401", ErrNeedsReauth) },
+		refreshFn: func() (RefreshedToken, error) {
+			refreshCalls++
+			return RefreshedToken{}, nil
+		},
+	}
+	ts := &staticTS{access: "a", refresh: ""}
+	hub := &spyHub{}
+	s := NewService(q, db, []Provider{fp}, ts, hub)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	if refreshCalls != 0 {
+		t.Errorf("must not call RefreshToken without a refresh token")
+	}
+	if len(hub.events) == 0 || hub.events[0].Type != "sync:needs_reauth" {
+		t.Errorf("expected sync:needs_reauth, got %+v", hub.events)
+	}
+}
+
+// TestWorkerRefreshTransientRetries verifies that a transient refresh error
+// reschedules the row (standard retry path) rather than dead-lettering.
+func TestWorkerRefreshTransientRetries(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	fp := &fakeProvider{
+		name:   ProviderAniList,
+		pushFn: func(string) error { return fmt.Errorf("%w: 401", ErrNeedsReauth) },
+		refreshFn: func() (RefreshedToken, error) {
+			return RefreshedToken{}, &TransientError{Err: fmt.Errorf("500")}
+		},
+	}
+	ts := &staticTS{access: "a", refresh: "r", creds: OAuthCreds{ClientID: "c"}}
+	s := NewService(q, db, []Provider{fp}, ts, &spyHub{})
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("row should be rescheduled, got ready: %d", len(rows))
+	}
 }

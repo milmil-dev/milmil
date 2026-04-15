@@ -49,6 +49,18 @@ import (
 	"github.com/milmil/api/migrations"
 )
 
+// wsHubAdapter bridges *ws.Hub to the minimal milmilsync.WSHub interface so
+// the sync package doesn't need to import internal/ws (avoids an import
+// cycle and keeps the sync seam testable with a spyHub in unit tests).
+type wsHubAdapter struct{ hub *ws.Hub }
+
+func (a wsHubAdapter) Broadcast(t string, p map[string]any) {
+	if a.hub == nil {
+		return
+	}
+	a.hub.Broadcast(ws.Event{Type: t, Data: p})
+}
+
 // initLogger creates a zerolog-backed slog.Logger.
 // In debug mode: console output with caller info.
 // In production: JSON output at info level.
@@ -255,28 +267,14 @@ func main() {
 	slog.Debug("boot: initializing router")
 	notifier := notification.NewService(store.New(database), wsHub, metadataSvc)
 
-	// Watch-sync service — reads OAuth tokens from the settings table. Returns
-	// ErrNoToken (silently skipped by OnProgressUpdate) for unconnected users.
+	// Watch-sync service — reads OAuth tokens from the settings table via the
+	// SettingsTokenStore. The store is also used by the worker's refresh-on-401
+	// path to persist rotated tokens back to settings.
 	syncQueries := store.New(database)
-	tokenLoader := func(ctx context.Context, userID string, p milmilsync.ProviderName) (string, error) {
-		key := string(p) + "_token"
-		setting, err := syncQueries.GetSetting(ctx, key)
-		if err != nil {
-			return "", milmilsync.ErrNoToken
-		}
-		var tokenData map[string]any
-		if err := json.Unmarshal([]byte(setting.Value), &tokenData); err != nil {
-			return "", milmilsync.ErrNoToken
-		}
-		tok, _ := tokenData["access_token"].(string)
-		if tok == "" {
-			return "", milmilsync.ErrNoToken
-		}
-		return tok, nil
-	}
+	tokenStore := milmilsync.NewSettingsTokenStore(syncQueries)
 	alProvider := providers.NewAniList(httpClient, "")
 	bgmProvider := providers.NewBangumi(httpClient, "")
-	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider}, tokenLoader)
+	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider}, tokenStore, wsHubAdapter{hub: wsHub})
 
 	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc)
 	slog.Debug("boot: router initialized", "took", time.Since(step))

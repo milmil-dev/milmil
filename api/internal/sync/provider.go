@@ -16,7 +16,29 @@ type Provider interface {
 	Push(ctx context.Context, tok string, op SyncOp, ids ExternalIDs) error
 	// FetchList pulls the user's full remote collection for one-shot import.
 	FetchList(ctx context.Context, tok string) ([]RemoteEntry, error)
+	// RefreshToken exchanges a refresh token for a new access token (and
+	// possibly a new refresh token). Providers should return an error
+	// wrapping ErrNeedsReauth when the refresh token itself is invalid.
+	RefreshToken(ctx context.Context, creds OAuthCreds, refreshToken string) (RefreshedToken, error)
 }
+
+// OAuthCreds is the configured client id/secret for a provider.
+type OAuthCreds struct {
+	ClientID     string
+	ClientSecret string
+}
+
+// RefreshedToken is the response from Provider.RefreshToken. An empty
+// RefreshToken means the caller keeps its previous one.
+type RefreshedToken struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresIn    time.Duration
+}
+
+// ErrNeedsReauth is returned by providers on 401/403 and by the worker when a
+// refresh attempt itself fails. Callers use errors.Is to detect it.
+var ErrNeedsReauth = errors.New("sync: needs reauth")
 
 // ExternalIDs carries every provider-native identifier we know for a given
 // anime. Providers pick whichever one they need.

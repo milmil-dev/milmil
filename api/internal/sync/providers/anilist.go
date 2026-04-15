@@ -103,6 +103,52 @@ func (p *AniList) FetchList(ctx context.Context, tok string) ([]milmilsync.Remot
 	return entries, nil
 }
 
+func (p *AniList) RefreshToken(ctx context.Context, creds milmilsync.OAuthCreds, refreshToken string) (milmilsync.RefreshedToken, error) {
+	tokenURL := p.baseURL
+	if tokenURL == defaultAniListURL {
+		tokenURL = "https://anilist.co/api/v2/oauth/token"
+	}
+	body, _ := json.Marshal(map[string]string{
+		"grant_type":    "refresh_token",
+		"client_id":     creds.ClientID,
+		"client_secret": creds.ClientSecret,
+		"refresh_token": refreshToken,
+	})
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, tokenURL, bytes.NewReader(body))
+	if err != nil {
+		return milmilsync.RefreshedToken{}, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := p.http.Do(req)
+	if err != nil {
+		return milmilsync.RefreshedToken{}, &milmilsync.TransientError{Err: err}
+	}
+	defer resp.Body.Close()
+	raw, _ := io.ReadAll(resp.Body)
+	switch {
+	case resp.StatusCode == 200:
+		var out struct {
+			AccessToken  string `json:"access_token"`
+			RefreshToken string `json:"refresh_token"`
+			ExpiresIn    int64  `json:"expires_in"`
+		}
+		if err := json.Unmarshal(raw, &out); err != nil {
+			return milmilsync.RefreshedToken{}, fmt.Errorf("anilist refresh decode: %w", err)
+		}
+		return milmilsync.RefreshedToken{
+			AccessToken:  out.AccessToken,
+			RefreshToken: out.RefreshToken,
+			ExpiresIn:    time.Duration(out.ExpiresIn) * time.Second,
+		}, nil
+	case resp.StatusCode == 400, resp.StatusCode == 401, resp.StatusCode == 403:
+		return milmilsync.RefreshedToken{}, fmt.Errorf("%w: anilist refresh %d: %s", milmilsync.ErrNeedsReauth, resp.StatusCode, raw)
+	case resp.StatusCode >= 500:
+		return milmilsync.RefreshedToken{}, &milmilsync.TransientError{Err: fmt.Errorf("anilist refresh %d: %s", resp.StatusCode, raw)}
+	default:
+		return milmilsync.RefreshedToken{}, fmt.Errorf("anilist refresh %d: %s", resp.StatusCode, raw)
+	}
+}
+
 func (p *AniList) doGraphQL(ctx context.Context, tok string, body []byte) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, p.baseURL, bytes.NewReader(body))
 	if err != nil {
@@ -129,7 +175,7 @@ func (p *AniList) doGraphQL(ctx context.Context, tok string, body []byte) error 
 			RetryAfter: time.Duration(secs) * time.Second,
 		}
 	case 401, 403:
-		return fmt.Errorf("anilist auth: %s", raw)
+		return fmt.Errorf("%w: anilist %d: %s", milmilsync.ErrNeedsReauth, resp.StatusCode, raw)
 	case 500, 502, 503, 504:
 		return &milmilsync.TransientError{Err: fmt.Errorf("anilist %d: %s", resp.StatusCode, raw)}
 	default:
