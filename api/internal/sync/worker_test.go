@@ -233,3 +233,135 @@ func (p *slowFakeProvider) FetchList(ctx context.Context, tok string) ([]RemoteE
 func (p *slowFakeProvider) RefreshToken(ctx context.Context, creds OAuthCreds, refreshToken string) (RefreshedToken, error) {
 	return RefreshedToken{}, nil
 }
+
+// TestWorkerRefreshOn401ThenRetrySucceeds verifies the happy-path refresh
+// flow: push returns ErrNeedsReauth, worker swaps tokens via RefreshToken,
+// retries push, row completes, tokens are persisted, no broadcast fires.
+func TestWorkerRefreshOn401ThenRetrySucceeds(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	calls := 0
+	fp := &fakeProvider{
+		name: ProviderAniList,
+		pushFn: func(access string) error {
+			calls++
+			if calls == 1 {
+				return fmt.Errorf("%w: 401", ErrNeedsReauth)
+			}
+			return nil
+		},
+		refreshFn: func() (RefreshedToken, error) {
+			return RefreshedToken{AccessToken: "new-a", RefreshToken: "new-r", ExpiresIn: time.Hour}, nil
+		},
+	}
+	ts := &staticTS{access: "old-a", refresh: "old-r", creds: OAuthCreds{ClientID: "c"}}
+	hub := &spyHub{}
+	s := NewService(q, db, []Provider{fp}, ts, hub)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	if calls != 2 {
+		t.Errorf("expected 2 pushes, got %d", calls)
+	}
+	if ts.access != "new-a" || ts.refresh != "new-r" {
+		t.Errorf("token not persisted: (%q, %q)", ts.access, ts.refresh)
+	}
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("row not completed: %d", len(rows))
+	}
+	if len(hub.events) != 0 {
+		t.Errorf("unexpected broadcast: %+v", hub.events)
+	}
+}
+
+// TestWorkerRefreshFailureDeadLetters verifies that a refresh that itself
+// fails with a non-transient reauth error fatally fails the row and
+// broadcasts sync:needs_reauth so the UI can prompt reconnect.
+func TestWorkerRefreshFailureDeadLetters(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	fp := &fakeProvider{
+		name:   ProviderAniList,
+		pushFn: func(string) error { return fmt.Errorf("%w: 401", ErrNeedsReauth) },
+		refreshFn: func() (RefreshedToken, error) {
+			return RefreshedToken{}, fmt.Errorf("%w: invalid_grant", ErrNeedsReauth)
+		},
+	}
+	ts := &staticTS{access: "a", refresh: "r", creds: OAuthCreds{ClientID: "c"}}
+	hub := &spyHub{}
+	s := NewService(q, db, []Provider{fp}, ts, hub)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("expected dead-letter, %d rows still ready", len(rows))
+	}
+	if len(hub.events) == 0 || hub.events[0].Type != "sync:needs_reauth" {
+		t.Errorf("expected sync:needs_reauth, got %+v", hub.events)
+	}
+}
+
+// TestWorkerNoRefreshTokenDeadLetters verifies that a 401 without a stored
+// refresh token skips RefreshToken entirely and dead-letters+broadcasts.
+func TestWorkerNoRefreshTokenDeadLetters(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	refreshCalls := 0
+	fp := &fakeProvider{
+		name:   ProviderAniList,
+		pushFn: func(string) error { return fmt.Errorf("%w: 401", ErrNeedsReauth) },
+		refreshFn: func() (RefreshedToken, error) {
+			refreshCalls++
+			return RefreshedToken{}, nil
+		},
+	}
+	ts := &staticTS{access: "a", refresh: ""}
+	hub := &spyHub{}
+	s := NewService(q, db, []Provider{fp}, ts, hub)
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	if refreshCalls != 0 {
+		t.Errorf("must not call RefreshToken without a refresh token")
+	}
+	if len(hub.events) == 0 || hub.events[0].Type != "sync:needs_reauth" {
+		t.Errorf("expected sync:needs_reauth, got %+v", hub.events)
+	}
+}
+
+// TestWorkerRefreshTransientRetries verifies that a transient refresh error
+// reschedules the row (standard retry path) rather than dead-lettering.
+func TestWorkerRefreshTransientRetries(t *testing.T) {
+	q, db, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 12, 42, 0)
+
+	fp := &fakeProvider{
+		name:   ProviderAniList,
+		pushFn: func(string) error { return fmt.Errorf("%w: 401", ErrNeedsReauth) },
+		refreshFn: func() (RefreshedToken, error) {
+			return RefreshedToken{}, &TransientError{Err: fmt.Errorf("500")}
+		},
+	}
+	ts := &staticTS{access: "a", refresh: "r", creds: OAuthCreds{ClientID: "c"}}
+	s := NewService(q, db, []Provider{fp}, ts, &spyHub{})
+
+	_ = s.queue.Enqueue(context.Background(), "u", ProviderAniList, "a1", SyncOp{Kind: KindProgress, Progress: 1})
+	s.Drain(context.Background(), 10)
+
+	rows, _ := q.ListReadySyncOps(context.Background(), 10)
+	if len(rows) != 0 {
+		t.Errorf("row should be rescheduled, got ready: %d", len(rows))
+	}
+}
