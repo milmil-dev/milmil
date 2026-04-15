@@ -29,6 +29,10 @@ func (p *fakeProvider) FetchList(ctx context.Context, tok string) ([]RemoteEntry
 	return p.fetched, p.fetchErr
 }
 
+func (p *fakeProvider) RefreshToken(ctx context.Context, creds OAuthCreds, refreshToken string) (RefreshedToken, error) {
+	return RefreshedToken{}, nil
+}
+
 func staticTokenLoader() TokenLoader {
 	return func(_ context.Context, _ string, _ ProviderName) (string, error) { return "tok", nil }
 }
@@ -176,4 +180,7 @@ func (p *slowFakeProvider) Push(ctx context.Context, tok string, op SyncOp, ids 
 }
 func (p *slowFakeProvider) FetchList(ctx context.Context, tok string) ([]RemoteEntry, error) {
 	return nil, nil
+}
+func (p *slowFakeProvider) RefreshToken(ctx context.Context, creds OAuthCreds, refreshToken string) (RefreshedToken, error) {
+	return RefreshedToken{}, nil
 }
