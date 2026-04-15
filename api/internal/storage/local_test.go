@@ -81,3 +81,37 @@ func TestLocalProvider_DeleteMissing(t *testing.T) {
 		t.Errorf("want IsNotExist, got %v", err)
 	}
 }
+
+func TestLocalProvider_Rename(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(dir, "a.txt")
+	dst := filepath.Join(dir, "sub", "b.txt")
+	if err := os.WriteFile(src, []byte("hi"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	p := NewLocalProvider()
+	if err := p.MkdirAll(filepath.Dir(dst)); err != nil {
+		t.Fatal(err)
+	}
+	if err := p.Rename(src, dst); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(src); !os.IsNotExist(err) {
+		t.Errorf("src still there: %v", err)
+	}
+	if _, err := os.Stat(dst); err != nil {
+		t.Errorf("dst missing: %v", err)
+	}
+}
+
+func TestLocalProvider_MkdirAllIdempotent(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, "x", "y", "z")
+	p := NewLocalProvider()
+	if err := p.MkdirAll(target); err != nil {
+		t.Fatal(err)
+	}
+	if err := p.MkdirAll(target); err != nil {
+		t.Errorf("second call should be no-op: %v", err)
+	}
+}

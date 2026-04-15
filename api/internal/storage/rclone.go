@@ -279,6 +279,16 @@ func (p *RcloneProvider) Delete(path string) error {
 	return p.vfs.Remove(path)
 }
 
+// Rename renames (moves) oldPath to newPath within the same rclone backend.
+func (p *RcloneProvider) Rename(oldPath, newPath string) error {
+	return p.vfs.Rename(oldPath, newPath)
+}
+
+// MkdirAll creates a directory and any missing parents.
+func (p *RcloneProvider) MkdirAll(path string) error {
+	return p.vfs.MkdirAll(path, 0o755)
+}
+
 // Close shuts down the VFS and releases resources.
 func (p *RcloneProvider) Close() error {
 	p.vfs.Shutdown()
