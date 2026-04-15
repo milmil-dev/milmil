@@ -107,7 +107,7 @@ func newTestAppWithMetadata(t *testing.T, bgm bangumi.Client, al anilist.Client)
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(bgm, al, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil)
+	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────

@@ -18,6 +18,7 @@ import (
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/store"
+	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/torrent"
 	"github.com/milmil/api/internal/ws"
 )
@@ -36,11 +37,12 @@ type handler struct {
 	tmdb            tmdb.Client
 	torrentRegistry *torrent.Registry
 	notifier        *notification.Service
+	syncSvc         *milmilsync.Service
 	encryptionKey   []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -59,6 +61,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		tmdb:            tmdbClient,
 		torrentRegistry: torrentReg,
 		notifier:        notifier,
+		syncSvc:         syncSvc,
 		encryptionKey:   cfg.EncryptionKey,
 	}
 

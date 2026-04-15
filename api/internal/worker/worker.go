@@ -16,6 +16,7 @@ import (
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
+	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/ws"
 )
 
@@ -32,6 +33,7 @@ type Scheduler struct {
 	notifier   *notification.Service
 	metadata   *metadata.Service
 	anidbSvc   *anidb.Service
+	syncSvc    *milmilsync.Service
 	wsHub      *ws.Hub
 	botEngine  *bot.Engine
 	cancel     context.CancelFunc
@@ -49,6 +51,7 @@ func NewScheduler(
 	notifier *notification.Service,
 	metadataSvc *metadata.Service,
 	anidbSvc *anidb.Service,
+	syncSvc *milmilsync.Service,
 	wsHub *ws.Hub,
 	botEngine *bot.Engine,
 ) *Scheduler {
@@ -63,6 +66,7 @@ func NewScheduler(
 		notifier:   notifier,
 		metadata:   metadataSvc,
 		anidbSvc:   anidbSvc,
+		syncSvc:    syncSvc,
 		wsHub:      wsHub,
 		botEngine:  botEngine,
 	}
@@ -134,6 +138,17 @@ func (s *Scheduler) Start() {
 	go s.runTicker(ctx, "anidb_refresh", 24*time.Hour, true, func(ctx context.Context) {
 		w := &AnidbRefreshWorker{svc: s.anidbSvc, wsHub: s.wsHub}
 		w.Run(ctx)
+	})
+
+	// Watch-sync outbox drain — every 10s. Bounded batch keeps us within
+	// AniList's 90/min rate limit even on worst-case bursts.
+	go s.runTicker(ctx, "sync_outbox_drain", 10*time.Second, true, func(ctx context.Context) {
+		(&SyncDrainWorker{svc: s.syncSvc}).Run(ctx)
+	})
+
+	// Watch-sync outbox GC — daily cleanup of completed rows older than 30 days.
+	go s.runTicker(ctx, "sync_outbox_gc", 24*time.Hour, true, func(ctx context.Context) {
+		(&SyncGCWorker{svc: s.syncSvc}).Run(ctx)
 	})
 
 	// Notification cleanup — every 24 hours
