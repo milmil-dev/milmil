@@ -2,12 +2,14 @@ package providers
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	milmilsync "github.com/milmil/api/internal/sync"
 )
@@ -151,5 +153,74 @@ func TestBangumiPushMissingBangumiIDFatal(t *testing.T) {
 	}
 	if _, ok := milmilsync.IsTransient(err); ok {
 		t.Error("missing id should not be transient")
+	}
+}
+
+func TestBangumiRefreshTokenSuccess(t *testing.T) {
+	var form string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		b, _ := io.ReadAll(r.Body)
+		form = string(b)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, `{"access_token":"new-a","refresh_token":"new-r","expires_in":604800}`)
+	}))
+	defer srv.Close()
+
+	p := NewBangumi(srv.Client(), srv.URL)
+	tok, err := p.RefreshToken(context.Background(), milmilsync.OAuthCreds{ClientID: "cid", ClientSecret: "sec"}, "old-r")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tok.AccessToken != "new-a" || tok.RefreshToken != "new-r" {
+		t.Errorf("bad token: %+v", tok)
+	}
+	if tok.ExpiresIn != 604800*time.Second {
+		t.Errorf("bad expires_in: %v", tok.ExpiresIn)
+	}
+	for _, want := range []string{"grant_type=refresh_token", "client_id=cid", "client_secret=sec", "refresh_token=old-r"} {
+		if !strings.Contains(form, want) {
+			t.Errorf("form missing %q: %s", want, form)
+		}
+	}
+}
+
+func TestBangumiRefreshInvalidGrantFatal(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
+	}))
+	defer srv.Close()
+
+	p := NewBangumi(srv.Client(), srv.URL)
+	_, err := p.RefreshToken(context.Background(), milmilsync.OAuthCreds{}, "bad")
+	if !errors.Is(err, milmilsync.ErrNeedsReauth) {
+		t.Errorf("expected ErrNeedsReauth, got %v", err)
+	}
+}
+
+func TestBangumiRefresh5xxTransient(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "boom", http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+
+	p := NewBangumi(srv.Client(), srv.URL)
+	_, err := p.RefreshToken(context.Background(), milmilsync.OAuthCreds{}, "r")
+	if _, ok := milmilsync.IsTransient(err); !ok {
+		t.Errorf("5xx must be transient")
+	}
+}
+
+func TestBangumi401WrapsErrNeedsReauth(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "nope", http.StatusUnauthorized)
+	}))
+	defer srv.Close()
+
+	p := NewBangumi(srv.Client(), srv.URL)
+	err := p.Push(context.Background(), "tok", milmilsync.SyncOp{
+		Kind: milmilsync.KindProgress, Status: milmilsync.StatusWatching, Progress: 1,
+	}, milmilsync.ExternalIDs{Bangumi: 500, BangumiEpisodeIDs: []int64{1001}})
+	if !errors.Is(err, milmilsync.ErrNeedsReauth) {
+		t.Errorf("Push on 401 must wrap ErrNeedsReauth, got %v", err)
 	}
 }

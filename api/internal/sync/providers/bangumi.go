@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	milmilsync "github.com/milmil/api/internal/sync"
@@ -90,11 +92,56 @@ func classifyBangumiStatus(resp *http.Response, what string) error {
 			RetryAfter: 60 * time.Second,
 		}
 	case resp.StatusCode == 401 || resp.StatusCode == 403:
-		return fmt.Errorf("bangumi auth: %d", resp.StatusCode)
+		return fmt.Errorf("%w: bangumi auth %d", milmilsync.ErrNeedsReauth, resp.StatusCode)
 	case resp.StatusCode >= 500:
 		return &milmilsync.TransientError{Err: fmt.Errorf("bangumi %s: %d", what, resp.StatusCode)}
 	default:
 		return fmt.Errorf("bangumi %s: %d", what, resp.StatusCode)
+	}
+}
+
+func (p *Bangumi) RefreshToken(ctx context.Context, creds milmilsync.OAuthCreds, refreshToken string) (milmilsync.RefreshedToken, error) {
+	tokenURL := p.baseURL + "/oauth/access_token"
+	if p.baseURL == defaultBangumiURL {
+		tokenURL = "https://bgm.tv/oauth/access_token"
+	}
+	form := url.Values{}
+	form.Set("grant_type", "refresh_token")
+	form.Set("client_id", creds.ClientID)
+	form.Set("client_secret", creds.ClientSecret)
+	form.Set("refresh_token", refreshToken)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, tokenURL, strings.NewReader(form.Encode()))
+	if err != nil {
+		return milmilsync.RefreshedToken{}, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := p.http.Do(req)
+	if err != nil {
+		return milmilsync.RefreshedToken{}, &milmilsync.TransientError{Err: err}
+	}
+	defer resp.Body.Close()
+	raw, _ := io.ReadAll(resp.Body)
+	switch {
+	case resp.StatusCode == 200:
+		var out struct {
+			AccessToken  string `json:"access_token"`
+			RefreshToken string `json:"refresh_token"`
+			ExpiresIn    int64  `json:"expires_in"`
+		}
+		if err := json.Unmarshal(raw, &out); err != nil {
+			return milmilsync.RefreshedToken{}, fmt.Errorf("bangumi refresh decode: %w", err)
+		}
+		return milmilsync.RefreshedToken{
+			AccessToken:  out.AccessToken,
+			RefreshToken: out.RefreshToken,
+			ExpiresIn:    time.Duration(out.ExpiresIn) * time.Second,
+		}, nil
+	case resp.StatusCode == 400, resp.StatusCode == 401, resp.StatusCode == 403:
+		return milmilsync.RefreshedToken{}, fmt.Errorf("%w: bangumi refresh %d: %s", milmilsync.ErrNeedsReauth, resp.StatusCode, raw)
+	case resp.StatusCode >= 500:
+		return milmilsync.RefreshedToken{}, &milmilsync.TransientError{Err: fmt.Errorf("bangumi refresh %d: %s", resp.StatusCode, raw)}
+	default:
+		return milmilsync.RefreshedToken{}, fmt.Errorf("bangumi refresh %d: %s", resp.StatusCode, raw)
 	}
 }
 
