@@ -96,6 +96,10 @@ func (m *mockAniList) GetAiringSchedule(ctx context.Context, from, to int64) ([]
 	return nil, nil
 }
 
+func (m *mockAniList) GetMediaRelations(ctx context.Context, id int) (*anilist.Media, error) {
+	return nil, nil
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 func TestGetCalendar_ReturnsChinese(t *testing.T) {

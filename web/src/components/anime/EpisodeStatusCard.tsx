@@ -121,7 +121,7 @@ function formatRanges(nums: number[]): string {
   let i = 0;
   while (i < sorted.length) {
     let j = i;
-    while (j + 1 < sorted.length && sorted[j + 1] === sorted[j] + 1) j++;
+    while (j + 1 < sorted.length && sorted[j + 1]! === sorted[j]! + 1) j++;
     parts.push(i === j ? String(sorted[i]) : `${sorted[i]}-${sorted[j]}`);
     i = j + 1;
   }
