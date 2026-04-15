@@ -36,6 +36,7 @@ func (h *handler) handleSyncProvidersStatus(c echo.Context) error {
 	providers := []milmilsync.ProviderName{
 		milmilsync.ProviderAniList,
 		milmilsync.ProviderBangumi,
+		milmilsync.ProviderTrakt,
 	}
 
 	out := make([]syncProviderStatus, 0, len(providers))
