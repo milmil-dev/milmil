@@ -84,6 +84,9 @@ func buildRemoteString(backendType string, cfg RcloneConfig) (string, error) {
 		if cfg.Host == "" {
 			return "", fmt.Errorf("rclone smb: host is required")
 		}
+		if cfg.Share == "" {
+			return "", fmt.Errorf("rclone smb: share is required")
+		}
 		params = append(params, "host="+cfg.Host)
 		if cfg.Port != 0 {
 			params = append(params, fmt.Sprintf("port=%d", cfg.Port))
@@ -97,11 +100,7 @@ func buildRemoteString(backendType string, cfg RcloneConfig) (string, error) {
 		if cfg.Domain != "" {
 			params = append(params, "domain="+cfg.Domain)
 		}
-		if cfg.Share != "" {
-			rootPath = cfg.Share
-		} else {
-			rootPath = "/"
-		}
+		rootPath = cfg.Share
 
 	case "sftp":
 		if cfg.Host == "" {
