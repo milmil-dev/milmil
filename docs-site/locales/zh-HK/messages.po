@@ -9,47 +9,47 @@ msgstr ""
 
 #: components/landing.tsx:239
 msgid "landing.ctaDesc"
-msgstr "幾分鐘內部署 milmil，掌控你的動漫收藏。"
+msgstr "幾分鐘就搞掂部署，自己掌控動漫收藏。"
 
 #: components/landing.tsx:238
 msgid "landing.ctaTitle"
-msgstr "準備好了嗎？"
+msgstr "準備好未？"
 
 #: components/landing.tsx:16
 msgid "landing.d1"
-msgstr "多儲存來源（本機、SMB、SFTP、WebDAV、40+ 雲端後端），自動掃描和元資料匹配。"
+msgstr "支援多種儲存（本機、SMB、SFTP、WebDAV、40+ 雲端），自動掃描同埋元資料配對。"
 
 #: components/landing.tsx:17
 msgid "landing.d2"
-msgstr "直接播放、MKV 轉 MP4 轉封裝、FFmpeg HLS 自適應轉碼。"
+msgstr "直播、MKV 轉 MP4 封裝、FFmpeg HLS 自適應轉碼。"
 
 #: components/landing.tsx:18
 msgid "landing.d3"
-msgstr "來自彈彈Play的即時彈幕疊加。"
+msgstr "彈彈Play 即時彈幕疊加。"
 
 #: components/landing.tsx:19
 msgid "landing.d4"
-msgstr "內建種子客戶端、RSS 訂閱、聚合種子搜尋。"
+msgstr "內置種子客戶端、RSS 訂閱、聚合種子搜尋。"
 
 #: components/landing.tsx:20
 msgid "landing.d5"
-msgstr "季度日曆、熱門排行、全文搜尋。"
+msgstr "季度日曆、熱門排行、全文搜尋同類型篩選。"
 
 #: components/landing.tsx:21
 msgid "landing.d6"
-msgstr "觀看進度和收藏狀態與 Bangumi 和 AniList 同步。"
+msgstr "睇番進度同收藏狀態自動同步 Bangumi 同 AniList。"
 
 #: components/landing.tsx:195
 msgid "landing.deployDesc"
-msgstr "一條指令。包含所有服務 — PostgreSQL、Redis、API 和前端。"
+msgstr "一條指令搞掂。PostgreSQL、Redis、API 同前端全部包埋。"
 
 #: components/landing.tsx:194
 msgid "landing.deployTitle"
-msgstr "秒級部署"
+msgstr "秒速部署"
 
 #: components/landing.tsx:138
 msgid "landing.desc"
-msgstr "管理、探索和串流你的動漫收藏，支援彈幕、自動下載和多來源元資料匹配。"
+msgstr "管理、探索同串流你嘅動漫收藏，支援彈幕、自動下載同多來源元資料配對。"
 
 #: components/landing.tsx:185
 msgid "landing.detail"
@@ -57,7 +57,7 @@ msgstr "動漫詳情"
 
 #: components/landing.tsx:185
 msgid "landing.detailCaption"
-msgstr "元資料、劇集、類型、評分，一鍵播放。"
+msgstr "元資料、集數、類型、評分，撳一下就播。"
 
 #: components/landing.tsx:16
 msgid "landing.f1"
@@ -85,7 +85,7 @@ msgstr "同步追蹤"
 
 #: components/landing.tsx:160
 msgid "landing.featuresDesc"
-msgstr "為動漫愛好者打造的完整媒體伺服器。"
+msgstr "為動漫迷打造嘅完整媒體伺服器。"
 
 #: components/landing.tsx:159
 msgid "landing.featuresTitle"
@@ -93,19 +93,19 @@ msgstr "功能一覽"
 
 #: components/landing.tsx:142
 msgid "landing.getStarted"
-msgstr "開始使用"
+msgstr "開始用"
 
 #: components/landing.tsx:184
 msgid "landing.home"
-msgstr "首頁"
+msgstr "主頁"
 
 #: components/landing.tsx:184
 msgid "landing.homeCaption"
-msgstr "熱門輪播、繼續觀看和今日更新。"
+msgstr "熱門輪播、繼續睇同今日更新。"
 
 #: components/landing.tsx:219
 msgid "landing.integrationsDesc"
-msgstr "連接你已經在使用的服務。"
+msgstr "駁埋你已經用緊嘅服務。"
 
 #: components/landing.tsx:218
 msgid "landing.integrationsTitle"
@@ -117,15 +117,15 @@ msgstr "播放器 + 彈幕"
 
 #: components/landing.tsx:186
 msgid "landing.playerCaption"
-msgstr "即時彈幕串流，帶字幕和進度追蹤。"
+msgstr "即時彈幕串流，有字幕同進度追蹤。"
 
 #: components/landing.tsx:242
 msgid "landing.readDocs"
-msgstr "查看文檔"
+msgstr "睇文檔"
 
 #: components/landing.tsx:181
 msgid "landing.screenshotsDesc"
-msgstr "靈感來自最優秀的媒體伺服器的精美介面。"
+msgstr "參考咗最靚嘅媒體伺服器設計嘅精美介面。"
 
 #: components/landing.tsx:180
 msgid "landing.screenshotsTitle"
@@ -138,4 +138,4 @@ msgstr "自架動漫媒體伺服器"
 #: components/landing.tsx:145
 #: components/landing.tsx:245
 msgid "landing.viewGithub"
-msgstr "查看 GitHub"
+msgstr "睇 GitHub"
