@@ -418,7 +418,7 @@ export function WatchPage() {
 
   // --------------- Thumbnail VTT URL ---------------
   const thumbnailsVttUrl = fileId
-    ? `${API_URL}/api/v1/stream/${fileId}/thumbnails.vtt?token=${encodeURIComponent(localStorage.getItem('milmil-token') ?? '')}`
+    ? `${API_URL}/api/v1/stream/${fileId}/thumbnails?token=${encodeURIComponent(localStorage.getItem('milmil-token') ?? '')}`
     : undefined;
 
   // --------------- Stream URL ---------------
