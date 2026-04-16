@@ -12,7 +12,7 @@ const { provider } = defineI18nUI(fdI18n, {
     en: { displayName: 'English' },
     'zh-CN': { displayName: '简体中文', search: '搜索文档' },
     'zh-TW': { displayName: '繁體中文', search: '搜尋文檔' },
-    'zh-HK': { displayName: '繁體中文 (香港)', search: '搜尋文檔' },
+    'zh-HK': { displayName: '粵語', search: '搜尋文檔' },
     ja: { displayName: '日本語', search: 'ドキュメントを検索' },
     ko: { displayName: '한국어', search: '문서 검색' },
   },
