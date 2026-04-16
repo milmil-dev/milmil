@@ -1,6 +1,6 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
-.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup
+.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -41,6 +41,9 @@ test-e2e:
 lint:
 	cd api && go vet ./...
 	cd web && bun run lint
+
+kill:
+	@./scripts/release-ports.sh
 
 setup:
 	mise install
