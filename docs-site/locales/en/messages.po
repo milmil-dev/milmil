@@ -9,133 +9,133 @@ msgstr ""
 
 #: components/landing.tsx:239
 msgid "landing.ctaDesc"
-msgstr "landing.ctaDesc"
+msgstr "Deploy milmil in minutes and take control of your anime collection."
 
 #: components/landing.tsx:238
 msgid "landing.ctaTitle"
-msgstr "landing.ctaTitle"
+msgstr "Ready to get started?"
 
 #: components/landing.tsx:16
 msgid "landing.d1"
-msgstr "landing.d1"
+msgstr "Multiple storage backends (local, SMB, SFTP, WebDAV, 40+ cloud providers via rclone), auto-scanning and metadata matching."
 
 #: components/landing.tsx:17
 msgid "landing.d2"
-msgstr "landing.d2"
+msgstr "Direct play, MKV to MP4 remuxing, FFmpeg HLS adaptive transcoding."
 
 #: components/landing.tsx:18
 msgid "landing.d3"
-msgstr "landing.d3"
+msgstr "Real-time danmaku (bullet comments) overlay from DandanPlay."
 
 #: components/landing.tsx:19
 msgid "landing.d4"
-msgstr "landing.d4"
+msgstr "Built-in torrent client, RSS subscriptions, aggregated torrent search."
 
 #: components/landing.tsx:20
 msgid "landing.d5"
-msgstr "landing.d5"
+msgstr "Seasonal calendar, trending charts, full-text search with genre/tag filters."
 
 #: components/landing.tsx:21
 msgid "landing.d6"
-msgstr "landing.d6"
+msgstr "Watch progress and collection status synced with Bangumi and AniList."
 
 #: components/landing.tsx:195
 msgid "landing.deployDesc"
-msgstr "landing.deployDesc"
+msgstr "One command. All services included — PostgreSQL, Redis, API and frontend."
 
 #: components/landing.tsx:194
 msgid "landing.deployTitle"
-msgstr "landing.deployTitle"
+msgstr "Deploy in seconds"
 
 #: components/landing.tsx:138
 msgid "landing.desc"
-msgstr "landing.desc"
+msgstr "Manage, discover, and stream your anime collection with danmaku, auto-downloads, and multi-provider metadata matching."
 
 #: components/landing.tsx:185
 msgid "landing.detail"
-msgstr "landing.detail"
+msgstr "Anime Detail"
 
 #: components/landing.tsx:185
 msgid "landing.detailCaption"
-msgstr "landing.detailCaption"
+msgstr "Metadata, episodes, genres, ratings — one click to play."
 
 #: components/landing.tsx:16
 msgid "landing.f1"
-msgstr "landing.f1"
+msgstr "Library Management"
 
 #: components/landing.tsx:17
 msgid "landing.f2"
-msgstr "landing.f2"
+msgstr "Streaming"
 
 #: components/landing.tsx:18
 msgid "landing.f3"
-msgstr "landing.f3"
+msgstr "Danmaku"
 
 #: components/landing.tsx:19
 msgid "landing.f4"
-msgstr "landing.f4"
+msgstr "Auto Downloads"
 
 #: components/landing.tsx:20
 msgid "landing.f5"
-msgstr "landing.f5"
+msgstr "Discovery"
 
 #: components/landing.tsx:21
 msgid "landing.f6"
-msgstr "landing.f6"
+msgstr "Tracker Sync"
 
 #: components/landing.tsx:160
 msgid "landing.featuresDesc"
-msgstr "landing.featuresDesc"
+msgstr "A complete media server built for anime enthusiasts."
 
 #: components/landing.tsx:159
 msgid "landing.featuresTitle"
-msgstr "landing.featuresTitle"
+msgstr "Features"
 
 #: components/landing.tsx:142
 msgid "landing.getStarted"
-msgstr "landing.getStarted"
+msgstr "Get Started"
 
 #: components/landing.tsx:184
 msgid "landing.home"
-msgstr "landing.home"
+msgstr "Home"
 
 #: components/landing.tsx:184
 msgid "landing.homeCaption"
-msgstr "landing.homeCaption"
+msgstr "Trending carousel, continue watching, and today's releases."
 
 #: components/landing.tsx:219
 msgid "landing.integrationsDesc"
-msgstr "landing.integrationsDesc"
+msgstr "Connect the services you already use."
 
 #: components/landing.tsx:218
 msgid "landing.integrationsTitle"
-msgstr "landing.integrationsTitle"
+msgstr "Seamless Integrations"
 
 #: components/landing.tsx:186
 msgid "landing.player"
-msgstr "landing.player"
+msgstr "Player + Danmaku"
 
 #: components/landing.tsx:186
 msgid "landing.playerCaption"
-msgstr "landing.playerCaption"
+msgstr "Real-time danmaku streaming with subtitles and progress tracking."
 
 #: components/landing.tsx:242
 msgid "landing.readDocs"
-msgstr "landing.readDocs"
+msgstr "Read the Docs"
 
 #: components/landing.tsx:181
 msgid "landing.screenshotsDesc"
-msgstr "landing.screenshotsDesc"
+msgstr "A beautiful interface inspired by the best media servers."
 
 #: components/landing.tsx:180
 msgid "landing.screenshotsTitle"
-msgstr "landing.screenshotsTitle"
+msgstr "Product Preview"
 
 #: components/landing.tsx:135
 msgid "landing.tagline"
-msgstr "landing.tagline"
+msgstr "Self-hosted Anime Media Server"
 
 #: components/landing.tsx:145
 #: components/landing.tsx:245
 msgid "landing.viewGithub"
-msgstr "landing.viewGithub"
+msgstr "View on GitHub"
