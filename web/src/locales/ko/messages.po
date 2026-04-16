@@ -4525,3 +4525,21 @@ msgstr "HLS Transcode"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "library.browseFolder"
+msgstr "폴더 찾아보기"
+
+msgid "library.folderPicker.title"
+msgstr "폴더 선택"
+
+msgid "library.folderPicker.pathPlaceholder"
+msgstr "경로를 입력하고 Enter"
+
+msgid "library.folderPicker.select"
+msgstr "이 폴더 선택"
+
+msgid "library.folderPicker.cancel"
+msgstr "취소"
+
+msgid "library.folderPicker.invalidPath"
+msgstr "경로를 찾을 수 없습니다"

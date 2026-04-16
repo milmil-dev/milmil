@@ -4523,3 +4523,21 @@ msgstr "HLS 轉碼"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支援"
+
+msgid "library.browseFolder"
+msgstr "瀏覽資料夾"
+
+msgid "library.folderPicker.title"
+msgstr "選擇資料夾"
+
+msgid "library.folderPicker.pathPlaceholder"
+msgstr "輸入路徑後按 Enter"
+
+msgid "library.folderPicker.select"
+msgstr "選擇此資料夾"
+
+msgid "library.folderPicker.cancel"
+msgstr "取消"
+
+msgid "library.folderPicker.invalidPath"
+msgstr "找不到路徑"
