@@ -94,4 +94,4 @@ desktop.ini
 # Ignore local milmil-api binaries/artifacts
 # the source subtree or generated directory
 milmil-api/
-node_modules/
+node_modules/api/data
