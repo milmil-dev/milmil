@@ -34,6 +34,11 @@ interface VideoPlayerProps {
   className?: string;
   /** Extra buttons to insert in the control bar (before fullscreen) */
   controlBarExtra?: ReactNode;
+  /** HLS buffer configuration */
+  hlsConfig?: {
+    maxBufferLength: number;
+    maxMaxBufferLength: number;
+  };
 }
 
 /** Simplified API surface exposed to WatchPage */
@@ -234,7 +239,7 @@ function PauseIndicator() {
   );
 }
 
-function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPlayerProps) {
+function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig: _hlsConfig }: VideoPlayerProps) {
   const player = usePlayer();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);

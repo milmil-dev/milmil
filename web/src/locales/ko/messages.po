@@ -2900,6 +2900,12 @@ msgid "player.memoryPressure"
 msgstr ""
 
 #: src/components/HeroBanner.tsx:203
+msgid "player.memoryNormal"
+msgstr "메모리 사용량이 정상으로 돌아왔습니다"
+
+msgid "player.memoryPressure"
+msgstr "메모리 사용량이 높습니다 — 버퍼 크기를 줄이고 있습니다"
+
 msgid "player.remaining"
 msgstr "남음"
 

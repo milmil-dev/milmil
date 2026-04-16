@@ -2898,6 +2898,12 @@ msgid "player.memoryPressure"
 msgstr ""
 
 #: src/components/HeroBanner.tsx:203
+msgid "player.memoryNormal"
+msgstr "記憶體使用已回復正常"
+
+msgid "player.memoryPressure"
+msgstr "記憶體使用過高 — 正在縮細緩衝區"
+
 msgid "player.remaining"
 msgstr "剩返"
 
