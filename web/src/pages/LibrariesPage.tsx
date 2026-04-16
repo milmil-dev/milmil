@@ -13,6 +13,13 @@ import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Button } from '../components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -56,6 +63,24 @@ function formatBytes(bytes: number): string {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
+}
+
+const LAST_BROWSE_PATH_PREFIX = 'milmil.lastBrowsePath.';
+
+function getLastBrowsePath(sourceType: SourceType): string | null {
+  try {
+    return localStorage.getItem(`${LAST_BROWSE_PATH_PREFIX}${sourceType}`);
+  } catch {
+    return null;
+  }
+}
+
+function setLastBrowsePath(sourceType: SourceType, path: string): void {
+  try {
+    localStorage.setItem(`${LAST_BROWSE_PATH_PREFIX}${sourceType}`, path);
+  } catch {
+    // ignore (quota exceeded, private mode, etc.)
+  }
 }
 
 function formatCheckedAgo(timestamp: number): string {
@@ -786,6 +811,113 @@ function FolderBrowser({
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Folder picker dialog (modal wrapper over FolderBrowserCore) ─────────────
+function FolderPickerDialog({
+  open,
+  onOpenChange,
+  sourceType,
+  getSourceConfig,
+  initialPath,
+  onSelect,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  sourceType: SourceType;
+  getSourceConfig: () => Record<string, unknown>;
+  initialPath: string;
+  onSelect: (path: string) => void;
+}) {
+  const { i18n } = useLingui();
+  const [manualPath, setManualPath] = useState('');
+  const [browsePath, setBrowsePath] = useState<string>('');
+
+  const resolvedInitial = useMemo(() => {
+    if (initialPath && initialPath !== '') return initialPath;
+    const remembered = getLastBrowsePath(sourceType);
+    if (remembered) return remembered;
+    return '/';
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recompute when dialog opens
+  }, [initialPath, sourceType, open]);
+
+  useEffect(() => {
+    if (open) {
+      setManualPath(resolvedInitial);
+      setBrowsePath(resolvedInitial);
+    }
+  }, [open, resolvedInitial]);
+
+  const [coreKey, setCoreKey] = useState(0);
+  const [pendingInitial, setPendingInitial] = useState<string>(resolvedInitial);
+
+  const jumpTo = (path: string) => {
+    const trimmed = path.trim() || '/';
+    setPendingInitial(trimmed);
+    setBrowsePath(trimmed);
+    setCoreKey((k) => k + 1);
+  };
+
+  const handleSelect = () => {
+    if (!browsePath) return;
+    setLastBrowsePath(sourceType, browsePath);
+    onSelect(browsePath);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>{i18n._(msg`library.folderPicker.title`)}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3">
+          <Input
+            value={manualPath}
+            onChange={(e) => setManualPath(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                jumpTo(manualPath);
+              }
+            }}
+            placeholder={i18n._(msg`library.folderPicker.pathPlaceholder`)}
+            className="font-mono text-sm"
+          />
+          <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+            <FolderBrowserCore
+              key={coreKey}
+              sourceType={sourceType}
+              getSourceConfig={getSourceConfig}
+              initialPath={pendingInitial}
+              autoLoad
+              onBrowsePathChange={(p) => {
+                setBrowsePath(p);
+                setManualPath(p);
+              }}
+              height={340}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            {i18n._(msg`library.folderPicker.cancel`)}
+          </Button>
+          <Button
+            type="button"
+            onClick={handleSelect}
+            disabled={!browsePath}
+          >
+            {i18n._(msg`library.folderPicker.select`)}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
