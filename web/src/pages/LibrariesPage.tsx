@@ -1,3 +1,5 @@
+import { FolderOpenIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
@@ -1140,6 +1142,7 @@ function LibraryForm({
 }) {
   const { i18n } = useLingui();
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const form = useForm({
     defaultValues,
     onSubmit: async ({ value }) => onSubmit(value),
@@ -1671,13 +1674,23 @@ function LibraryForm({
                   <FieldLabel htmlFor="lib-path" className={labelClass}>
                     {i18n._(msg`library.path`)}
                   </FieldLabel>
-                  <Input
-                    id="lib-path"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={fixedSourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
-                    className={cn('font-mono text-sm', inputClass)}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="lib-path"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder={fixedSourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                      className={cn('font-mono text-sm pr-10', inputClass)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPickerOpen(true)}
+                      aria-label={i18n._(msg`library.browseFolder`)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                    >
+                      <HugeiconsIcon icon={FolderOpenIcon} className="w-4 h-4" />
+                    </button>
+                  </div>
                   <FieldError>
                     {field.state.meta.isTouched && field.state.meta.errors[0]
                       ? String(field.state.meta.errors[0])
@@ -1687,14 +1700,14 @@ function LibraryForm({
               )}
             </form.Field>
 
-            {fixedSourceType !== 'local' && (
-              <FolderBrowser
-                sourceType={fixedSourceType}
-                getSourceConfig={() => buildSourceConfig(values) ?? {}}
-                currentPath={values.path}
-                onSelect={(path) => form.setFieldValue('path', path)}
-              />
-            )}
+            <FolderPickerDialog
+              open={pickerOpen}
+              onOpenChange={setPickerOpen}
+              sourceType={fixedSourceType}
+              getSourceConfig={() => buildSourceConfig(values) ?? {}}
+              initialPath={values.path}
+              onSelect={(p) => form.setFieldValue('path', p)}
+            />
 
             {fixedSourceType !== 'local' && (
               <TestConnectionButton
