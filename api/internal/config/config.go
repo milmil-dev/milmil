@@ -25,6 +25,8 @@ type Config struct {
 	DandanPlayAppID     string
 	DandanPlayAppSecret string
 	DanmuAPIURL         string // optional custom danmu_api proxy URL
+	AdminUser           string // optional: auto-create admin on first boot
+	AdminPassword       string // optional: password for auto-created admin
 }
 
 // DBDriver returns "sqlite" or "postgres" based on the DATABASE_URL scheme.
@@ -75,6 +77,8 @@ func Load() (*Config, error) {
 		DandanPlayAppID:     k.String("DANDANPLAY_APP_ID"),
 		DandanPlayAppSecret: k.String("DANDANPLAY_APP_SECRET"),
 		DanmuAPIURL:         k.String("DANMU_API_URL"),
+		AdminUser:           k.String("ADMIN_USER"),
+		AdminPassword:       k.String("ADMIN_PASSWORD"),
 	}
 
 	if cfg.DatabaseURL == "" {

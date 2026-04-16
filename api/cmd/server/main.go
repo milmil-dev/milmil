@@ -20,6 +20,7 @@ import (
 	slogzerolog "github.com/samber/slog-zerolog/v2"
 
 	"github.com/milmil/api/internal/api"
+	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/jellyfin"
 	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/bot/commands"
@@ -362,6 +363,30 @@ func main() {
 	)
 	sched.Start()
 	slog.Info("boot: scheduler started")
+
+	// Auto-provision admin user from env if configured and no users exist yet
+	if cfg.AdminUser != "" && cfg.AdminPassword != "" {
+		count, countErr := store.New(database).CountUsers(context.Background())
+		if countErr == nil && count == 0 {
+			if err := auth.CheckPasswordStrength(cfg.AdminPassword); err != nil {
+				slog.Error("boot: ADMIN_PASSWORD rejected", "err", err)
+			} else {
+				hash, hashErr := auth.HashPassword(cfg.AdminPassword)
+				if hashErr == nil {
+					_, createErr := store.New(database).CreateUser(context.Background(), store.CreateUserParams{
+						ID:           "admin-" + cfg.AdminUser,
+						Username:     cfg.AdminUser,
+						PasswordHash: hash,
+					})
+					if createErr == nil {
+						slog.Info("boot: auto-provisioned admin user", "username", cfg.AdminUser)
+					} else {
+						slog.Error("boot: failed to create admin user", "err", createErr)
+					}
+				}
+			}
+		}
+	}
 
 	slog.Info("boot: ready", "total", time.Since(bootStart))
 

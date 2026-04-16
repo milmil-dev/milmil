@@ -55,8 +55,8 @@ func (h *handler) handleAuthSetup(c echo.Context) error {
 	if req.Username == "" || req.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "username and password required")
 	}
-	if len(req.Password) < 8 {
-		return echo.NewHTTPError(http.StatusBadRequest, "password must be at least 8 characters")
+	if err := auth.CheckPasswordStrength(req.Password); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	count, err := h.queries.CountUsers(c.Request().Context())
