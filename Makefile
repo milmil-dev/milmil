@@ -6,9 +6,9 @@ export PATH := $(HOME)/go/bin:$(PATH)
 
 # Start both API (air) and web (vite) dev servers
 dev:
-	@trap 'kill 0' SIGINT; \
-	(cd api && air) & \
-	(cd web && bun dev) & \
+	@trap 'kill 0; wait' INT TERM EXIT; \
+	cd api && air & \
+	cd web && bun dev & \
 	wait
 
 dev-api:
