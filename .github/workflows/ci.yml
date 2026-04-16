@@ -53,6 +53,6 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-        working-directory: website
+        working-directory: docs-site
       - run: bun run build
-        working-directory: website
+        working-directory: docs-site

@@ -18,13 +18,13 @@ dev-web:
 	cd web && bun dev
 
 dev-docs:
-	cd website && bun dev
+	cd docs-site && bun dev
 
 build:
 	cd web && bun run i18n:compile && bun run build
 
 build-docs:
-	cd website && bun run build
+	cd docs-site && bun run build
 
 test:
 	@echo "--- Go unit tests ---"
