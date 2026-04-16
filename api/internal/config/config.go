@@ -24,6 +24,7 @@ type Config struct {
 	SeedTimeMinutes     int
 	DandanPlayAppID     string
 	DandanPlayAppSecret string
+	DanmuAPIURL         string // optional custom danmu_api proxy URL
 }
 
 // DBDriver returns "sqlite" or "postgres" based on the DATABASE_URL scheme.
@@ -49,6 +50,7 @@ func Load() (*Config, error) {
 		"REDIS_URL":          "",
 		"REDIS_FAIL_FAST":  false,
 		"DEBUG":            false,
+		"DANMU_API_URL":    "",
 	}
 	if err := k.Load(confmap.Provider(defaults, "."), nil); err != nil {
 		return nil, fmt.Errorf("defaults: %w", err)
@@ -72,6 +74,7 @@ func Load() (*Config, error) {
 		SeedTimeMinutes:     k.Int("SEED_TIME_MINUTES"),
 		DandanPlayAppID:     k.String("DANDANPLAY_APP_ID"),
 		DandanPlayAppSecret: k.String("DANDANPLAY_APP_SECRET"),
+		DanmuAPIURL:         k.String("DANMU_API_URL"),
 	}
 
 	if cfg.DatabaseURL == "" {

@@ -203,7 +203,12 @@ func main() {
 		json.Unmarshal([]byte(setting.Value), &creds)
 		return creds.AppID, creds.AppSecret, nil
 	}
-	ddpClient := dandanplay.NewClient(&http.Client{Timeout: 10 * time.Second}, ddpCredFn)
+	ddpClient := dandanplay.NewFallbackClient(
+		&http.Client{Timeout: 10 * time.Second},
+		ddpCredFn,
+		"", // official URL — uses default
+		cfg.DanmuAPIURL, // fallback URL — empty uses default danmu.icu
+	)
 	// TMDB client (optional — only if API key is configured)
 	var tmdbClient tmdb.Client
 	if tmdbSetting, tmdbErr := store.New(database).GetSetting(context.Background(), "tmdb_api_key"); tmdbErr == nil && tmdbSetting.Value != "" {
