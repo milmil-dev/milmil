@@ -10,6 +10,7 @@ import (
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/search"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -41,7 +42,9 @@ func (h *handler) handleSearch(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "q parameter required")
 	}
 	isAdult := c.QueryParam("adult") == "true"
-	results, err := h.metadata.Search(c.Request().Context(), q, isAdult)
+
+	variants := search.GenerateVariants(q)
+	results, err := h.metadata.SearchWithVariants(c.Request().Context(), variants, isAdult)
 	if err != nil {
 		return mapMetadataError(err)
 	}
