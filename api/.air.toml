@@ -10,7 +10,7 @@ env_files = [".env"]
   delay = 1000
   stop_on_error = true
   send_interrupt = true
-  kill_delay = "10s"
+  kill_delay = "2s"
 
 [log]
   time = false
