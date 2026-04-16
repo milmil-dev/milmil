@@ -12,6 +12,7 @@ import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { Callout } from 'fumadocs-ui/components/callout';
+import { TypeTable } from 'fumadocs-ui/components/type-table';
 import { APIPage } from '@/lib/api-page';
 
 export default async function Page({
@@ -30,7 +31,7 @@ export default async function Page({
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDX components={{ ...defaultMdxComponents, Files, Folder, File, Tabs, Tab, Steps, Step, Accordion, Accordions, Callout, APIPage }} />
+        <MDX components={{ ...defaultMdxComponents, Files, Folder, File, Tabs, Tab, Steps, Step, Accordion, Accordions, Callout, TypeTable, APIPage }} />
       </DocsBody>
     </DocsPage>
   );
