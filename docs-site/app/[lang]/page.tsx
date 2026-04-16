@@ -1,30 +1,7 @@
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
 import { LandingPage } from '@/components/landing';
 import { i18n } from '@/lib/i18n';
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-
-function baseOptions(locale: string): BaseLayoutProps {
-  return {
-    i18n: true,
-    nav: {
-      title: 'milmil',
-      url: `/${locale}`,
-      transparentMode: 'top',
-    },
-    links: [
-      {
-        text: 'Documentation',
-        url: `/${locale}/docs`,
-        active: 'nested-url',
-      },
-      {
-        text: 'GitHub',
-        url: 'https://github.com/milmil-dev/milmil',
-        external: true,
-      },
-    ],
-  };
-}
+import { baseOptions } from '@/lib/nav-options';
 
 export default async function Home({
   params,
@@ -32,8 +9,9 @@ export default async function Home({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
+  const options = baseOptions(lang);
   return (
-    <HomeLayout {...baseOptions(lang)}>
+    <HomeLayout {...options} nav={{ ...options.nav, transparentMode: 'top' }}>
       <LandingPage lang={lang} />
     </HomeLayout>
   );
