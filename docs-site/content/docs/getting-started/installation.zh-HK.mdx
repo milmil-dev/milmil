@@ -1,17 +1,17 @@
 ---
 title: 安裝
-description: 如何在伺服器上安裝和執行 milmil。
+description: 點樣喺伺服器上安裝同執行 milmil。
 ---
 
 ## 前置條件
 
-- **Docker**（推薦）或 Go 1.26+ 和 Bun 1.3+
-- **FFmpeg** — 用於轉碼和媒體資訊擷取
-- **Redis** — 選用，但推薦用於正式環境部署
+- **Docker**（推薦）或 Go 1.26+ 同 Bun 1.3+
+- **FFmpeg** — 用於轉碼同媒體資訊擷取
+- **Redis** — 選用，但推薦用喺正式環境部署
 
 ## Docker（推薦）
 
-使用 Docker Compose 執行 milmil 是最簡單的方式：
+用 Docker Compose 執行 milmil 係最簡單嘅方式：
 
 ```bash
 git clone https://github.com/milmil-dev/milmil.git
@@ -19,7 +19,7 @@ cd milmil
 docker compose up -d
 ```
 
-這將啟動所有服務：
+呢個會啟動所有服務：
 - **PostgreSQL 16** — 資料庫
 - **Redis 7** — 快取
 - **milmil-api** — Go 後端（連接埠 8080）
@@ -46,7 +46,7 @@ bun install
 bun run build
 ```
 
-使用任意靜態檔案伺服器或 Nginx 託管 `web/dist` 目錄下的建置產物。
+用任意靜態檔案伺服器或 Nginx 託管 `web/dist` 目錄下嘅建置產物。
 
 ## 環境變數
 
@@ -56,6 +56,6 @@ bun run build
 | `JWT_SECRET` | *必填* | JWT 簽章金鑰（至少 32 個字元） |
 | `MILMIL_ENCRYPTION_KEY` | *必填* | AES-256 金鑰，用於加密儲存憑證 |
 | `API_PORT` | `8080` | API 伺服器連接埠 |
-| `DATA_DIR` | `./data` | 下載和轉碼快取目錄 |
+| `DATA_DIR` | `./data` | 下載同轉碼快取目錄 |
 
 所有選項請參閱 [設定](/docs/configuration/environment)。

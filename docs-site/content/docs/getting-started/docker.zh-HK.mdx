@@ -1,19 +1,19 @@
 ---
 title: Docker 部署
-description: 使用 Docker Compose 將 milmil 部署到正式環境。
+description: 用 Docker Compose 將 milmil 部署到正式環境。
 ---
 
 ## 正式環境設定
 
-使用正式環境的 compose 檔案進行完整部署：
+用正式環境嘅 compose 檔案進行完整部署：
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-### 必要的環境變數
+### 必要嘅環境變數
 
-在專案根目錄建立 `.env` 檔案：
+喺專案根目錄建立 `.env` 檔案：
 
 ```bash
 JWT_SECRET=your-secret-key-at-least-32-characters
@@ -34,7 +34,7 @@ DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
 
 ### 反向代理
 
-將 milmil 置於 Nginx 或 Caddy 之後以啟用 HTTPS。Nginx 設定範例：
+將 milmil 放喺 Nginx 或 Caddy 後面以啟用 HTTPS。Nginx 設定範例：
 
 ```nginx
 server {
@@ -63,7 +63,7 @@ server {
 
 ### 磁碟區掛載
 
-將媒體目錄對映到容器中：
+將媒體目錄對映到容器入面：
 
 ```yaml
 volumes:
@@ -74,5 +74,5 @@ volumes:
 ### 資料庫
 
 - **開發環境**：SQLite（零設定）
-- **正式環境**：推薦使用 PostgreSQL 16+
+- **正式環境**：推薦用 PostgreSQL 16+
 - 啟動時透過 golang-migrate 自動套用遷移
