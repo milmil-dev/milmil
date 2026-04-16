@@ -416,6 +416,11 @@ export function WatchPage() {
     };
   }, [transcodeStatus, fileId]);
 
+  // --------------- Thumbnail VTT URL ---------------
+  const thumbnailsVttUrl = fileId
+    ? `${API_URL}/api/v1/stream/${fileId}/thumbnails.vtt?token=${encodeURIComponent(localStorage.getItem('milmil-token') ?? '')}`
+    : undefined;
+
   // --------------- Stream URL ---------------
   const { streamUrl, mimeType } = useMemo(() => {
     if (!fileId || !mediaInfo) return { streamUrl: null, mimeType: 'video/mp4' };
@@ -746,6 +751,7 @@ export function WatchPage() {
                     <VideoPlayer
                       src={streamUrl}
                       type={mimeType}
+                      thumbnailsVtt={thumbnailsVttUrl}
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
                       hlsConfig={hlsBufferConfig}

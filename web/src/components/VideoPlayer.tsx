@@ -41,6 +41,8 @@ interface VideoPlayerProps {
     maxBufferLength: number;
     maxMaxBufferLength: number;
   };
+  /** URL for timeline thumbnail VTT file */
+  thumbnailsVtt?: string;
 }
 
 /** Simplified API surface exposed to WatchPage */
@@ -241,7 +243,7 @@ function PauseIndicator() {
   );
 }
 
-function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig }: VideoPlayerProps) {
+function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig, thumbnailsVtt }: VideoPlayerProps) {
   const player = usePlayer();
   const media = useMedia();
   const readyFired = useRef(false);
@@ -293,6 +295,32 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig
     engine.config.maxBufferLength = hlsConfig.maxBufferLength;
     engine.config.maxMaxBufferLength = hlsConfig.maxMaxBufferLength;
   }, [hlsConfig, media]);
+
+  // Inject thumbnail track element via DOM API (HlsVideo/Video don't accept children)
+  useEffect(() => {
+    if (!thumbnailsVtt) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Wait a frame so the video element is mounted
+    const rafId = requestAnimationFrame(() => {
+      const videoEl = container.querySelector('video');
+      if (!videoEl) return;
+
+      // Remove any existing thumbnail track to avoid duplicates on src change
+      const existing = videoEl.querySelector('track[label="thumbnails"]');
+      if (existing) existing.remove();
+
+      const track = document.createElement('track');
+      track.kind = 'metadata';
+      track.label = 'thumbnails';
+      track.src = thumbnailsVtt;
+      track.default = true;
+      videoEl.appendChild(track);
+    });
+
+    return () => cancelAnimationFrame(rafId);
+  }, [thumbnailsVtt]);
 
   // Auto-hide controls after 3s idle (works even when paused, like YouTube)
   useEffect(() => {

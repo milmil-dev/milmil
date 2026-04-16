@@ -168,6 +168,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	streamGroup.GET("/:fileId/direct", h.handleStreamDirect)
 	streamGroup.GET("/:fileId/remux", h.handleStreamRemux)
 	streamGroup.POST("/:fileId/transcode", h.handleStartTranscode)
+	streamGroup.GET("/:fileId/thumbnails.vtt", h.handleThumbnailVTT)
+	streamGroup.GET("/:fileId/sprite.jpg", h.handleThumbnailSprite)
 
 	// HLS segments — no auth (token in URL is the auth)
 	e.GET("/api/v1/stream/hls/:token/master.m3u8", h.handleHLSMaster)
