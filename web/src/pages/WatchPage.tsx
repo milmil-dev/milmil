@@ -778,8 +778,24 @@ export function WatchPage() {
                     <ResumeOverlay seconds={resumeFrom} onDone={() => setResumeFrom(null)} />
                   </>
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Spinner size={32} className="text-white/50" />
+                  /* Loading state — show player shell with spinner overlay */
+                  <div className="absolute inset-0 flex flex-col">
+                    <div className="flex-1 flex items-center justify-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <Spinner size={32} className="text-white/50" />
+                        {mediaInfo?.needs_transcode && transcodeStatus === 'processing' && (
+                          <span className="text-xs text-white/40">{i18n._(msg`watch.transcoding`)}</span>
+                        )}
+                      </div>
+                    </div>
+                    {/* Faux control bar so layout doesn't jump */}
+                    <div className="h-11 bg-black/60 border-t border-white/[0.04] flex items-center px-3">
+                      <div className="flex items-center gap-2 opacity-30 pointer-events-none">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white"><path d="M8 5v14l11-7z" /></svg>
+                        <span className="text-xs text-white/60 tabular-nums">0:00 / --:--</span>
+                      </div>
+                      <div className="flex-1" />
+                    </div>
                   </div>
                 )}
               </div>
