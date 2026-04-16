@@ -279,6 +279,60 @@ func (s *Service) Search(ctx context.Context, query string, isAdult bool) ([]Ani
 	return result, nil
 }
 
+// SearchWithVariants searches using multiple query variants in parallel,
+// deduplicating results by Bangumi subject ID.
+func (s *Service) SearchWithVariants(ctx context.Context, variants []string, isAdult bool) ([]AnimeSummary, error) {
+	if len(variants) == 0 {
+		return nil, nil
+	}
+
+	// Try first variant — if it returns ≥5 results, skip the rest
+	first, err := s.Search(ctx, variants[0], isAdult)
+	if err != nil {
+		return nil, err
+	}
+	if len(first) >= 5 || len(variants) == 1 {
+		return first, nil
+	}
+
+	// Search remaining variants in parallel
+	type variantResult struct {
+		results []AnimeSummary
+	}
+	g, gctx := errgroup.WithContext(ctx)
+	remaining := make([]variantResult, len(variants)-1)
+	for i, v := range variants[1:] {
+		g.Go(func() error {
+			r, err := s.Search(gctx, v, isAdult)
+			if err != nil {
+				return nil // Don't fail — just skip this variant
+			}
+			remaining[i] = variantResult{results: r}
+			return nil
+		})
+	}
+	_ = g.Wait()
+
+	// Merge and deduplicate
+	seen := make(map[string]struct{})
+	var merged []AnimeSummary
+	addResults := func(results []AnimeSummary) {
+		for _, r := range results {
+			key := fmt.Sprintf("%d-%d", r.BangumiID, r.AniListID)
+			if _, ok := seen[key]; ok {
+				continue
+			}
+			seen[key] = struct{}{}
+			merged = append(merged, r)
+		}
+	}
+	addResults(first)
+	for _, vr := range remaining {
+		addResults(vr.results)
+	}
+	return merged, nil
+}
+
 func (s *Service) GetEpisodes(ctx context.Context, bangumiID int) ([]Episode, error) {
 	cacheKey := fmt.Sprintf("meta:episodes:%d", bangumiID)
 	var cached []Episode

@@ -15,11 +15,13 @@ import {
   Tooltip,
   VolumeSlider,
   createPlayer,
+  useMedia,
   usePlayer,
   videoFeatures,
 } from '@videojs/react';
 import { Video } from '@videojs/react/video';
 import { HlsVideo } from '@videojs/react/media/hls-video';
+import { HlsMedia } from '@videojs/core/dom/media/hls';
 import type { ReactNode } from 'react';
 import { forwardRef, useEffect, useRef } from 'react';
 
@@ -34,6 +36,13 @@ interface VideoPlayerProps {
   className?: string;
   /** Extra buttons to insert in the control bar (before fullscreen) */
   controlBarExtra?: ReactNode;
+  /** HLS buffer configuration */
+  hlsConfig?: {
+    maxBufferLength: number;
+    maxMaxBufferLength: number;
+  };
+  /** URL for timeline thumbnail VTT file */
+  thumbnailsVtt?: string;
 }
 
 /** Simplified API surface exposed to WatchPage */
@@ -234,8 +243,9 @@ function PauseIndicator() {
   );
 }
 
-function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPlayerProps) {
+function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig, thumbnailsVtt }: VideoPlayerProps) {
   const player = usePlayer();
+  const media = useMedia();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -274,6 +284,43 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra }: VideoPl
 
     return () => cancelAnimationFrame(rafId);
   }, [player, onReady]);
+
+  // Apply HLS buffer config to underlying HLS.js engine
+  useEffect(() => {
+    if (!hlsConfig || !media) return;
+    // media is HlsMedia when HLS playback is active — cast and access engine
+    const hlsMedia = media as HlsMedia;
+    const engine = hlsMedia.engine;
+    if (!engine) return;
+    engine.config.maxBufferLength = hlsConfig.maxBufferLength;
+    engine.config.maxMaxBufferLength = hlsConfig.maxMaxBufferLength;
+  }, [hlsConfig, media]);
+
+  // Inject thumbnail track element via DOM API (HlsVideo/Video don't accept children)
+  useEffect(() => {
+    if (!thumbnailsVtt) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Wait a frame so the video element is mounted
+    const rafId = requestAnimationFrame(() => {
+      const videoEl = container.querySelector('video');
+      if (!videoEl) return;
+
+      // Remove any existing thumbnail track to avoid duplicates on src change
+      const existing = videoEl.querySelector('track[label="thumbnails"]');
+      if (existing) existing.remove();
+
+      const track = document.createElement('track');
+      track.kind = 'metadata';
+      track.label = 'thumbnails';
+      track.src = thumbnailsVtt;
+      track.default = true;
+      videoEl.appendChild(track);
+    });
+
+    return () => cancelAnimationFrame(rafId);
+  }, [thumbnailsVtt]);
 
   // Auto-hide controls after 3s idle (works even when paused, like YouTube)
   useEffect(() => {

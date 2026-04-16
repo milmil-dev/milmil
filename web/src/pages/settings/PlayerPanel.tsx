@@ -162,6 +162,8 @@ export function PlayerPanel() {
   const danmakuOpacity = usePreferencesStore((s) => s.danmakuOpacity);
   const danmakuFontSize = usePreferencesStore((s) => s.danmakuFontSize);
   const danmakuSpeed = usePreferencesStore((s) => s.danmakuSpeed);
+  const danmakuDensity = usePreferencesStore((s) => s.danmakuDensity);
+  const bufferMode = usePreferencesStore((s) => s.bufferMode);
 
   // Subtitle preferences
   const subtitleStyle = usePreferencesStore((s) => s.subtitleStyle);
@@ -306,7 +308,42 @@ export function PlayerPanel() {
                   onChange={(v) => save({ speed: v })}
                 />
               </div>
+
+              {/* Danmaku density selector */}
+              <div className="space-y-2">
+                <Label className="text-sm text-mm-text-secondary">
+                  {i18n._(msg`settings.player.danmakuDensity`)}
+                </Label>
+                <SelectorGroup
+                  options={[
+                    { label: i18n._(msg`settings.player.density.low`), value: 'low' as const },
+                    { label: i18n._(msg`settings.player.density.medium`), value: 'medium' as const },
+                    { label: i18n._(msg`settings.player.density.high`), value: 'high' as const },
+                  ]}
+                  value={danmakuDensity}
+                  onChange={(v) => updatePreference('danmakuDensity', v)}
+                />
+              </div>
             </div>
+          </div>
+        </SettingsCard>
+
+        {/* ── Buffer Mode ── */}
+        <SettingsCard label={i18n._(msg`settings.player.bufferMode`)}>
+          <div className="space-y-2">
+            <SelectorGroup
+              options={[
+                { label: i18n._(msg`settings.player.buffer.auto`), value: 'auto' as const },
+                { label: i18n._(msg`settings.player.buffer.low`), value: 'low' as const },
+                { label: i18n._(msg`settings.player.buffer.balanced`), value: 'balanced' as const },
+                { label: i18n._(msg`settings.player.buffer.high`), value: 'high' as const },
+              ]}
+              value={bufferMode}
+              onChange={(v) => updatePreference('bufferMode', v)}
+            />
+            <p className="text-xs text-mm-text-tertiary">
+              {i18n._(msg`settings.player.bufferModeDesc`)}
+            </p>
           </div>
         </SettingsCard>
 

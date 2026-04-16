@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:104
+#: src/pages/WatchPage.tsx:106
 msgid "watch.resumeFrom"
 msgstr "여기서 이어보기"
 
@@ -317,41 +317,40 @@ msgid "Anime"
 msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:665
-msgid "anime.addToCollection"
-msgstr "컬렉션에 추가"
+#~ msgid "anime.addToCollection"
+#~ msgstr "컬렉션에 추가"
 
 #: src/pages/AnimeDetailPage.tsx:936
-msgid "anime.characters"
-msgstr "캐릭터"
+#~ msgid "anime.characters"
+#~ msgstr "캐릭터"
 
 #: src/pages/AnimeDetailPage.tsx:264
-msgid "anime.collectionUpdated"
-msgstr ""
+#~ msgid "anime.collectionUpdated"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:1115
-msgid "anime.comments"
-msgstr "댓글"
+#~ msgid "anime.comments"
+#~ msgstr "댓글"
 
 #: src/pages/AnimeDetailPage.tsx:724
 #~ msgid "anime.continueWatching"
 #~ msgstr "이어보기"
 
 #: src/pages/AnimeDetailPage.tsx:688
-msgid "anime.enableTrackerSync"
-msgstr ""
+#~ msgid "anime.enableTrackerSync"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
 #~ msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:860
 msgid "anime.episodes"
 msgstr "에피소드"
 
 #: src/pages/AnimeDetailPage.tsx:688
-msgid "anime.excludeTrackerSync"
-msgstr ""
+#~ msgid "anime.excludeTrackerSync"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
@@ -365,69 +364,67 @@ msgstr ""
 #~ msgstr "No local file"
 
 #: src/pages/AnimeDetailPage.tsx:533
-msgid "anime.notAired"
-msgstr "미방영"
+#~ msgid "anime.notAired"
+#~ msgstr "미방영"
 
 #: src/pages/AnimeDetailPage.tsx:331
-msgid "anime.notFound"
-msgstr "애니메이션을 찾을 수 없습니다"
+#~ msgid "anime.notFound"
+#~ msgstr "애니메이션을 찾을 수 없습니다"
 
 #: src/pages/AnimeDetailPage.tsx:546
-msgid "anime.playableEps"
-msgstr "편 재생 가능"
+#~ msgid "anime.playableEps"
+#~ msgstr "편 재생 가능"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:526
 msgid "anime.ratings"
 msgstr "평점"
 
 #: src/pages/AnimeDetailPage.tsx:1029
-msgid "anime.recommendations"
-msgstr "추천"
+#~ msgid "anime.recommendations"
+#~ msgstr "추천"
 
 #: src/pages/AnimeDetailPage.tsx:1000
-msgid "anime.relations"
-msgstr "관련 작품"
+#~ msgid "anime.relations"
+#~ msgstr "관련 작품"
 
 #: src/pages/AnimeDetailPage.tsx:1067
-msgid "anime.reviews"
-msgstr "리뷰"
+#~ msgid "anime.reviews"
+#~ msgstr "리뷰"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
 #: src/pages/AnimeDetailPage.tsx:677
-msgid "anime.searchResources"
-msgstr "리소스 검색"
+#~ msgid "anime.searchResources"
+#~ msgstr "리소스 검색"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
 #: src/pages/AnimeDetailPage.tsx:959
-msgid "anime.sideStories"
-msgstr "Side Stories & Movies"
+#~ msgid "anime.sideStories"
+#~ msgstr "Side Stories & Movies"
 
 #: src/pages/AnimeDetailPage.tsx:540
-msgid "anime.subscribed"
-msgstr "추적 중"
+#~ msgid "anime.subscribed"
+#~ msgstr "추적 중"
 
 #: src/pages/AnimeDetailPage.tsx:280
-msgid "anime.syncFlagsUpdated"
-msgstr ""
+#~ msgid "anime.syncFlagsUpdated"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:906
 msgid "anime.trailer"
 msgstr "예고편"
 
 #: src/pages/AnimeDetailPage.tsx:942
-msgid "anime.voiceActor"
-msgstr "CV"
+#~ msgid "anime.voiceActor"
+#~ msgstr "CV"
 
 #: src/pages/settings/ApiTokensCard.tsx:191
 msgid "apiTokens.create"
@@ -612,6 +609,16 @@ msgstr "milmil에 오신 것을 환영합니다"
 #: src/pages/SetupPage.tsx:67
 msgid "auth.setup.username"
 msgstr "사용자 이름"
+
+#: src/components/anime/EpisodeStatusCard.tsx:91
+msgid "Auto-download missing"
+msgstr ""
+
+#. placeholder {0}: res.action
+#. placeholder {1}: res.episode_range
+#: src/components/anime/EpisodeStatusCard.tsx:29
+msgid "Auto-download rule {0} ({1})"
+msgstr ""
 
 #: src/components/library/RenameConfigEditor.tsx:49
 msgid "Auto-rename on match"
@@ -1173,14 +1180,12 @@ msgstr "전체"
 #~ msgstr "상태 변경"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:735
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "완료"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:737
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1202,14 +1207,12 @@ msgid "collection.goToLibraries"
 msgstr "라이브러리로 이동"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:736
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "일시 중단"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:734
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1245,7 +1248,6 @@ msgid "collection.viewAll"
 msgstr "전체 보기"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:733
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1256,8 +1258,8 @@ msgid "common.back"
 msgstr "뒤로"
 
 #: src/pages/AnimeDetailPage.tsx:346
-msgid "common.backHome"
-msgstr "홈으로 돌아가기"
+#~ msgid "common.backHome"
+#~ msgstr "홈으로 돌아가기"
 
 #: src/pages/settings/AboutPanel.tsx:228
 #: src/pages/settings/AboutPanel.tsx:247
@@ -1280,15 +1282,12 @@ msgstr "복사됨"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:516
-#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 #: src/pages/LibraryDetailPage.tsx:1060
 msgid "common.ep"
 msgstr "화"
 
-#: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:1856
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
@@ -1306,7 +1305,6 @@ msgstr "불러오는 중…"
 msgid "common.minuteShort"
 msgstr "분"
 
-#: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -1324,6 +1322,11 @@ msgstr "오프라인"
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.online"
 msgstr "온라인"
+
+#. placeholder {0}: sortedMissing.length
+#: src/components/anime/EpisodeStatusCard.tsx:82
+msgid "Create auto-download rule for {0} missing episodes?"
+msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:62
 msgid "Date"
@@ -1369,6 +1372,15 @@ msgstr "인기 영화"
 msgid "discover.trendingNow"
 msgstr "지금 인기"
 
+#: src/components/anime/MissingSearchModal.tsx:110
+msgid "Download"
+msgstr ""
+
+#. placeholder {0}: res.download_id.slice(0, 8)
+#: src/components/anime/MissingSearchModal.tsx:32
+msgid "Download queued: {0}"
+msgstr ""
+
 #~ msgid "downloads.feeds"
 #~ msgstr "RSS 피드"
 
@@ -1408,7 +1420,7 @@ msgstr ""
 msgid "Episode {0}"
 msgstr ""
 
-#: src/components/anime/EpisodeStatusCard.tsx:35
+#: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
 msgstr ""
 
@@ -2421,7 +2433,7 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "매칭 완료"
 
-#: src/components/anime/EpisodeStatusCard.tsx:40
+#: src/components/anime/EpisodeStatusCard.tsx:58
 msgid "Missing"
 msgstr ""
 
@@ -2518,7 +2530,11 @@ msgstr ""
 msgid "No rename plans."
 msgstr ""
 
-#: src/components/anime/EpisodeStatusCard.tsx:46
+#: src/components/anime/MissingSearchModal.tsx:75
+msgid "No results from any provider."
+msgstr ""
+
+#: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
 msgstr ""
 
@@ -2875,8 +2891,21 @@ msgstr "이전 페이지"
 msgid "pagination.rows"
 msgstr "행"
 
+#: src/pages/WatchPage.tsx:360
+msgid "player.memoryNormal"
+msgstr ""
+
+#: src/pages/WatchPage.tsx:353
+msgid "player.memoryPressure"
+msgstr ""
+
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:827
+msgid "player.memoryNormal"
+msgstr "메모리 사용량이 정상으로 돌아왔습니다"
+
+msgid "player.memoryPressure"
+msgstr "메모리 사용량이 높습니다 — 버퍼 크기를 줄이고 있습니다"
+
 msgid "player.remaining"
 msgstr "남음"
 
@@ -3236,6 +3265,14 @@ msgstr "오늘"
 msgid "schedule.totalShows"
 msgstr "편 이번 주 프로그램"
 
+#: src/components/anime/EpisodeStatusCard.tsx:65
+msgid "Search for this episode"
+msgstr ""
+
+#: src/components/anime/MissingSearchModal.tsx:57
+msgid "Search missing episode {episodeNumber}"
+msgstr ""
+
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
 msgstr "검색 결과"
@@ -3421,6 +3458,14 @@ msgstr ""
 #: src/pages/SearchPage.tsx:111
 #~ msgid "search.title"
 #~ msgstr "검색"
+
+#: src/components/anime/MissingSearchModal.tsx:70
+msgid "Searching..."
+msgstr ""
+
+#: src/components/anime/MissingSearchModal.tsx:84
+msgid "Seeders"
+msgstr ""
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -3632,63 +3677,100 @@ msgstr "글꼴 크기"
 msgid "settings.general.subtitle"
 msgstr "언어, 컬렉션 및 앱 환경설정"
 
-#: src/pages/settings/IntegrationsPanel.tsx:275
+#: src/pages/settings/IntegrationsPanel.tsx:289
+#: src/pages/settings/IntegrationsPanel.tsx:509
 msgid "settings.integration.authUrlFailed"
 msgstr "인증 URL 가져오기 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:387
+#: src/pages/settings/IntegrationsPanel.tsx:242
+msgid "settings.integration.autoPull"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:401
+#: src/pages/settings/IntegrationsPanel.tsx:624
 msgid "settings.integration.connect"
 msgstr "연결"
 
-#: src/pages/settings/IntegrationsPanel.tsx:304
+#: src/pages/settings/IntegrationsPanel.tsx:323
+#: src/pages/settings/IntegrationsPanel.tsx:350
+#: src/pages/settings/IntegrationsPanel.tsx:538
 msgid "settings.integration.connected"
 msgstr "연결됨"
 
-#: src/pages/settings/IntegrationsPanel.tsx:386
+#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:623
 msgid "settings.integration.connecting"
 msgstr "연결 중…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:401
+#: src/pages/settings/IntegrationsPanel.tsx:413
+#: src/pages/settings/IntegrationsPanel.tsx:638
 msgid "settings.integration.disconnect"
 msgstr "연결 해제"
 
-#: src/pages/settings/IntegrationsPanel.tsx:281
+#: src/pages/settings/IntegrationsPanel.tsx:295
+#: src/pages/settings/IntegrationsPanel.tsx:515
 msgid "settings.integration.disconnected"
 msgstr "연결 해제됨"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:298
+#: src/pages/settings/IntegrationsPanel.tsx:519
 msgid "settings.integration.disconnectFailed"
 msgstr "연결 해제 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:412
+#: src/pages/settings/IntegrationsPanel.tsx:637
 msgid "settings.integration.disconnecting"
 msgstr "연결 해제 중…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:150
+#: src/pages/settings/IntegrationsPanel.tsx:151
 msgid "settings.integration.lastSync"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:235
+#: src/pages/settings/IntegrationsPanel.tsx:279
+#: src/pages/settings/IntegrationsPanel.tsx:469
 msgid "settings.integration.needsReauth"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:351
+#: src/pages/settings/IntegrationsPanel.tsx:539
 msgid "settings.integration.notConnected"
 msgstr "연결되지 않음"
 
-#: src/pages/settings/IntegrationsPanel.tsx:156
+#: src/pages/settings/IntegrationsPanel.tsx:157
 msgid "settings.integration.pending"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:163
+#: src/pages/settings/IntegrationsPanel.tsx:214
+msgid "settings.integration.pulled"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:218
+msgid "settings.integration.pullFailed"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:251
+msgid "settings.integration.pulling"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:252
+msgid "settings.integration.pullNow"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:226
+msgid "settings.integration.pullToggleFailed"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:164
 msgid "settings.integration.recentErrors"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:411
+#: src/pages/settings/IntegrationsPanel.tsx:423
+#: src/pages/settings/IntegrationsPanel.tsx:648
 msgid "settings.integration.sync"
 msgstr "동기화"
 
-#: src/pages/settings/IntegrationsPanel.tsx:292
+#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:526
 msgid "settings.integration.syncComplete"
 msgstr "동기화 완료"
 
@@ -3696,11 +3778,13 @@ msgstr "동기화 완료"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "개 오류"
 
-#: src/pages/settings/IntegrationsPanel.tsx:296
+#: src/pages/settings/IntegrationsPanel.tsx:309
+#: src/pages/settings/IntegrationsPanel.tsx:530
 msgid "settings.integration.syncFailed"
 msgstr "동기화 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:410
+#: src/pages/settings/IntegrationsPanel.tsx:422
+#: src/pages/settings/IntegrationsPanel.tsx:647
 msgid "settings.integration.syncing"
 msgstr "동기화 중…"
 
@@ -3708,7 +3792,19 @@ msgstr "동기화 중…"
 #~ msgid "settings.integration.title"
 #~ msgstr "Integration"
 
-#: src/pages/settings/IntegrationsPanel.tsx:433
+#: src/pages/settings/IntegrationsPanel.tsx:369
+msgid "settings.integration.trakt.openAndEnter"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:383
+msgid "settings.integration.trakt.waitingExpires"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:672
+msgid "settings.integration.updatesPulled"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:684
 msgid "settings.integrations.description"
 msgstr "외부 서비스를 연결하고 데이터를 동기화"
 
@@ -3735,7 +3831,7 @@ msgstr "다운로드"
 msgid "settings.nav.general"
 msgstr "일반"
 
-#: src/pages/settings/IntegrationsPanel.tsx:430
+#: src/pages/settings/IntegrationsPanel.tsx:681
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "연동"
@@ -3746,7 +3842,7 @@ msgstr "연동"
 msgid "settings.nav.notifications"
 msgstr "알림"
 
-#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/PlayerPanel.tsx:241
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "플레이어"
@@ -3780,55 +3876,95 @@ msgstr "설정"
 msgid "settings.playbackSpeed"
 msgstr "재생 속도"
 
-#: src/pages/settings/PlayerPanel.tsx:561
+#: src/pages/settings/PlayerPanel.tsx:598
 msgid "settings.player.autoNext"
 msgstr "다음 에피소드 자동 재생"
 
-#: src/pages/settings/PlayerPanel.tsx:581
+#: src/pages/settings/PlayerPanel.tsx:618
 msgid "settings.player.autoSkipEd"
 msgstr "엔딩 자동 건너뛰기"
 
-#: src/pages/settings/PlayerPanel.tsx:571
+#: src/pages/settings/PlayerPanel.tsx:608
 msgid "settings.player.autoSkipOp"
 msgstr "오프닝 자동 건너뛰기"
 
-#: src/pages/settings/PlayerPanel.tsx:593
+#: src/pages/settings/PlayerPanel.tsx:630
 msgid "settings.player.backupNote"
 msgstr "플레이어 설정은 자동으로 백업됩니다"
 
-#: src/pages/settings/PlayerPanel.tsx:244
+#: src/pages/settings/PlayerPanel.tsx:336
+msgid "settings.player.buffer.auto"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:338
+msgid "settings.player.buffer.balanced"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:339
+msgid "settings.player.buffer.high"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:337
+msgid "settings.player.buffer.low"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:332
+msgid "settings.player.bufferMode"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:345
+msgid "settings.player.bufferModeDesc"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:246
 msgid "settings.player.danmaku"
 msgstr "탄막"
 
-#: src/pages/settings/PlayerPanel.tsx:249
+#: src/pages/settings/PlayerPanel.tsx:315
+msgid "settings.player.danmakuDensity"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:251
 msgid "settings.player.danmakuEnabled"
 msgstr "탄막 표시"
 
-#: src/pages/settings/PlayerPanel.tsx:289
+#: src/pages/settings/PlayerPanel.tsx:291
 msgid "settings.player.danmakuFontSize"
 msgstr "글꼴 크기"
 
-#: src/pages/settings/PlayerPanel.tsx:263
+#: src/pages/settings/PlayerPanel.tsx:265
 msgid "settings.player.danmakuOpacity"
 msgstr "불투명도"
 
-#: src/pages/settings/PlayerPanel.tsx:301
+#: src/pages/settings/PlayerPanel.tsx:303
 msgid "settings.player.danmakuSpeed"
 msgstr "속도"
 
-#: src/pages/settings/PlayerPanel.tsx:529
+#: src/pages/settings/PlayerPanel.tsx:321
+msgid "settings.player.density.high"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:319
+msgid "settings.player.density.low"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:320
+msgid "settings.player.density.medium"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:566
 msgid "settings.player.gestureEnabled"
 msgstr "제스처 활성화"
 
-#: src/pages/settings/PlayerPanel.tsx:525
+#: src/pages/settings/PlayerPanel.tsx:562
 msgid "settings.player.gestures"
 msgstr "제스처"
 
-#: src/pages/settings/PlayerPanel.tsx:540
+#: src/pages/settings/PlayerPanel.tsx:577
 msgid "settings.player.gestureSensitivity"
 msgstr "제스처 감도"
 
-#: src/pages/settings/PlayerPanel.tsx:557
+#: src/pages/settings/PlayerPanel.tsx:594
 msgid "settings.player.playbackDefaults"
 msgstr "재생 기본값"
 
@@ -3844,59 +3980,59 @@ msgstr "보통"
 msgid "settings.player.speed.slow"
 msgstr "느림"
 
-#: src/pages/settings/PlayerPanel.tsx:240
+#: src/pages/settings/PlayerPanel.tsx:242
 msgid "settings.player.subtitle"
 msgstr "탄막 및 재생 환경설정"
 
-#: src/pages/settings/PlayerPanel.tsx:415
+#: src/pages/settings/PlayerPanel.tsx:452
 msgid "settings.player.subtitleBgOpacity"
 msgstr "자막 배경 불투명도"
 
-#: src/pages/settings/PlayerPanel.tsx:432
+#: src/pages/settings/PlayerPanel.tsx:469
 msgid "settings.player.subtitleBorder"
 msgstr "자막 테두리"
 
-#: src/pages/settings/PlayerPanel.tsx:369
+#: src/pages/settings/PlayerPanel.tsx:406
 msgid "settings.player.subtitleColor"
 msgstr "자막 색상"
 
-#: src/pages/settings/PlayerPanel.tsx:495
+#: src/pages/settings/PlayerPanel.tsx:532
 msgid "settings.player.subtitleFade"
 msgstr "자막 페이드"
 
-#: src/pages/settings/PlayerPanel.tsx:333
+#: src/pages/settings/PlayerPanel.tsx:370
 msgid "settings.player.subtitleFont"
 msgstr "자막 글꼴"
 
-#: src/pages/settings/PlayerPanel.tsx:352
+#: src/pages/settings/PlayerPanel.tsx:389
 msgid "settings.player.subtitleFontSize"
 msgstr "자막 글꼴 크기"
 
-#: src/pages/settings/PlayerPanel.tsx:465
+#: src/pages/settings/PlayerPanel.tsx:502
 msgid "settings.player.subtitlePosition"
 msgstr "자막 위치"
 
-#: src/pages/settings/PlayerPanel.tsx:321
+#: src/pages/settings/PlayerPanel.tsx:358
 msgid "settings.player.subtitlePreset"
 msgstr "자막 프리셋"
 
-#: src/pages/settings/PlayerPanel.tsx:517
+#: src/pages/settings/PlayerPanel.tsx:554
 msgid "settings.player.subtitlePreview"
 msgstr "자막 미리보기"
 
-#: src/pages/settings/PlayerPanel.tsx:506
+#: src/pages/settings/PlayerPanel.tsx:543
 msgid "settings.player.subtitleRespectAss"
 msgstr "ASS 스타일 유지"
 
-#: src/pages/settings/PlayerPanel.tsx:478
+#: src/pages/settings/PlayerPanel.tsx:515
 msgid "settings.player.subtitleSafeMargin"
 msgstr "안전 여백"
 
-#: src/pages/settings/PlayerPanel.tsx:446
+#: src/pages/settings/PlayerPanel.tsx:483
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "테두리 두께"
 
-#: src/pages/settings/PlayerPanel.tsx:316
+#: src/pages/settings/PlayerPanel.tsx:353
 msgid "settings.player.subtitleStyle"
 msgstr "자막 스타일"
 
@@ -3926,8 +4062,8 @@ msgstr "채도"
 
 #: src/pages/settings/BackupPanel.tsx:341
 #: src/pages/settings/BackupPanel.tsx:577
-#: src/pages/settings/IntegrationsPanel.tsx:119
-#: src/pages/settings/IntegrationsPanel.tsx:373
+#: src/pages/settings/IntegrationsPanel.tsx:120
+#: src/pages/settings/IntegrationsPanel.tsx:610
 msgid "settings.save"
 msgstr "저장"
 
@@ -3936,9 +4072,9 @@ msgstr "저장"
 #: src/pages/settings/GeneralPanel.tsx:44
 #: src/pages/settings/GeneralPanel.tsx:54
 #: src/pages/settings/GeneralPanel.tsx:64
-#: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:264
-#: src/pages/settings/PlayerPanel.tsx:195
+#: src/pages/settings/IntegrationsPanel.tsx:56
+#: src/pages/settings/IntegrationsPanel.tsx:498
+#: src/pages/settings/PlayerPanel.tsx:197
 msgid "settings.saved"
 msgstr "저장됨"
 
@@ -3946,16 +4082,16 @@ msgstr "저장됨"
 #: src/pages/settings/BackupPanel.tsx:403
 #: src/pages/settings/GeneralPanel.tsx:47
 #: src/pages/settings/GeneralPanel.tsx:57
-#: src/pages/settings/IntegrationsPanel.tsx:58
-#: src/pages/settings/IntegrationsPanel.tsx:267
-#: src/pages/settings/PlayerPanel.tsx:198
+#: src/pages/settings/IntegrationsPanel.tsx:59
+#: src/pages/settings/IntegrationsPanel.tsx:501
+#: src/pages/settings/PlayerPanel.tsx:200
 msgid "settings.saveFailed"
 msgstr "저장 실패"
 
 #: src/pages/settings/BackupPanel.tsx:340
 #: src/pages/settings/BackupPanel.tsx:576
-#: src/pages/settings/IntegrationsPanel.tsx:118
-#: src/pages/settings/IntegrationsPanel.tsx:372
+#: src/pages/settings/IntegrationsPanel.tsx:119
+#: src/pages/settings/IntegrationsPanel.tsx:609
 #: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "저장 중…"
@@ -4030,8 +4166,16 @@ msgstr "텍스트 색상"
 msgid "settings.volumeBoost"
 msgstr "음량 부스트"
 
+#: src/components/anime/MissingSearchModal.tsx:83
+msgid "Size"
+msgstr ""
+
 #: src/pages/library/RenamePreviewPage.tsx:87
 msgid "Status"
+msgstr ""
+
+#: src/components/anime/MissingSearchModal.tsx:85
+msgid "Subgroup"
 msgstr ""
 
 #~ msgid "subscribe.add"
@@ -4166,6 +4310,10 @@ msgstr "{minutes}분 전"
 #: src/pages/NotificationsPage.tsx:34
 msgid "time.secondsAgo {seconds}"
 msgstr "{seconds}초 전"
+
+#: src/components/anime/MissingSearchModal.tsx:82
+msgid "Title"
+msgstr ""
 
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
@@ -4314,7 +4462,7 @@ msgstr "시청 중"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:626
+#: src/pages/WatchPage.tsx:725
 msgid "watch.notFound"
 msgstr "애니메이션을 찾을 수 없습니다"
 

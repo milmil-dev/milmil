@@ -31,7 +31,6 @@ import {
   getStreamUrl,
   mediaApi,
   mediaKeys,
-  parseDandanplayComments,
   streamApi,
 } from '@/lib/api/stream';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
@@ -52,6 +51,9 @@ import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
 import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { useBgStore } from '@/store/bg-store';
 import { usePreferencesStore } from '@/store/preferences-store';
+import { NetworkMonitor } from '@/lib/network-monitor';
+import { MemoryMonitor } from '@/lib/memory-monitor';
+import { toast } from 'sonner';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 const SAVE_INTERVAL_MS = 10_000;
@@ -256,17 +258,114 @@ export function WatchPage() {
     enabled: !!fileId,
   });
 
-  // --------------- Danmaku parsing ---------------
+  // --------------- Danmaku parsing (via WebWorker) ---------------
   const danmakuFontSize = usePreferencesStore((s) => s.danmakuFontSize);
   const danmakuOpacity = usePreferencesStore((s) => s.danmakuOpacity);
+  const danmakuDensity = usePreferencesStore((s) => s.danmakuDensity);
+  const [danmakuComments, setDanmakuComments] = useState<DanmakuComment[]>([]);
+  const workerRef = useRef<Worker | null>(null);
 
-  const danmakuComments: DanmakuComment[] = useMemo(
-    () =>
-      danmakuRaw?.comments
-        ? parseDandanplayComments(danmakuRaw.comments, danmakuFontSize, danmakuOpacity)
-        : [],
-    [danmakuRaw, danmakuFontSize, danmakuOpacity]
-  );
+  useEffect(() => {
+    try {
+      workerRef.current = new Worker(
+        new URL('../workers/danmaku-worker.ts', import.meta.url),
+        { type: 'module' }
+      );
+      workerRef.current.onmessage = (e: MessageEvent<DanmakuComment[]>) => {
+        setDanmakuComments(e.data);
+      };
+    } catch {
+      workerRef.current = null;
+    }
+    return () => {
+      workerRef.current?.terminate();
+      workerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!danmakuRaw?.comments?.length) {
+      setDanmakuComments([]);
+      return;
+    }
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const input = {
+      comments: danmakuRaw.comments,
+      fontSize: danmakuFontSize,
+      opacity: danmakuOpacity,
+      density: danmakuDensity,
+      isMobile,
+    };
+    if (workerRef.current) {
+      workerRef.current.postMessage(input);
+    } else {
+      import('../workers/danmaku-worker').then(({ processDanmaku }) => {
+        setDanmakuComments(processDanmaku(input));
+      });
+    }
+  }, [danmakuRaw, danmakuFontSize, danmakuOpacity, danmakuDensity]);
+
+  // --------------- Adaptive buffering ---------------
+  const bufferMode = usePreferencesStore((s) => s.bufferMode);
+  const networkMonitorRef = useRef<NetworkMonitor | null>(null);
+  const [activeBufferProfile, setActiveBufferProfile] = useState<'low' | 'balanced' | 'high'>('balanced');
+
+  useEffect(() => {
+    if (bufferMode !== 'auto') {
+      setActiveBufferProfile(bufferMode as 'low' | 'balanced' | 'high');
+      return;
+    }
+    const monitor = new NetworkMonitor();
+    networkMonitorRef.current = monitor;
+    const profileMap = { fast: 'high', medium: 'balanced', slow: 'low' } as const;
+    setActiveBufferProfile(profileMap[monitor.getProfile()]);
+    const unsub = monitor.subscribe((profile) => {
+      setActiveBufferProfile(profileMap[profile]);
+    });
+    return () => {
+      unsub();
+      monitor.destroy();
+      networkMonitorRef.current = null;
+    };
+  }, [bufferMode]);
+
+  const hlsBufferConfig = useMemo(() => {
+    const configs = {
+      low: { maxBufferLength: 15, maxMaxBufferLength: 30 },
+      balanced: { maxBufferLength: 30, maxMaxBufferLength: 60 },
+      high: { maxBufferLength: 60, maxMaxBufferLength: 120 },
+    };
+    return configs[activeBufferProfile];
+  }, [activeBufferProfile]);
+
+  // --------------- Memory monitoring ---------------
+  const memoryMonitorRef = useRef<MemoryMonitor | null>(null);
+
+  useEffect(() => {
+    const monitor = new MemoryMonitor();
+    memoryMonitorRef.current = monitor;
+    const unsub = monitor.subscribe((event) => {
+      const store = usePreferencesStore.getState();
+      if (event === 'memory-pressure') {
+        if (store.bufferMode === 'auto') {
+          setActiveBufferProfile('low');
+        }
+        toast.info(i18n._(msg`player.memoryPressure`));
+      } else {
+        if (store.bufferMode === 'auto') {
+          const profileMap = { fast: 'high', medium: 'balanced', slow: 'low' } as const;
+          const netProfile = networkMonitorRef.current?.getProfile() ?? 'medium';
+          setActiveBufferProfile(profileMap[netProfile]);
+        }
+        toast.info(i18n._(msg`player.memoryNormal`));
+      }
+    });
+    return () => {
+      unsub();
+      monitor.destroy();
+      memoryMonitorRef.current = null;
+    };
+  }, [i18n]);
 
   // --------------- Transcode auto-trigger ---------------
   useEffect(() => {
@@ -316,6 +415,11 @@ export function WatchPage() {
       ws.close();
     };
   }, [transcodeStatus, fileId]);
+
+  // --------------- Thumbnail VTT URL ---------------
+  const thumbnailsVttUrl = fileId
+    ? `${API_URL}/api/v1/stream/${fileId}/thumbnails?token=${encodeURIComponent(localStorage.getItem('milmil-token') ?? '')}`
+    : undefined;
 
   // --------------- Stream URL ---------------
   const { streamUrl, mimeType } = useMemo(() => {
@@ -647,8 +751,10 @@ export function WatchPage() {
                     <VideoPlayer
                       src={streamUrl}
                       type={mimeType}
+                      thumbnailsVtt={thumbnailsVttUrl}
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
+                      hlsConfig={hlsBufferConfig}
                       controlBarExtra={
                         <SkinButton
                           onClick={() => setSettingsPanelOpen((v) => !v)}
@@ -678,8 +784,24 @@ export function WatchPage() {
                     <ResumeOverlay seconds={resumeFrom} onDone={() => setResumeFrom(null)} />
                   </>
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Spinner size={32} className="text-white/50" />
+                  /* Loading state — show player shell with spinner overlay */
+                  <div className="absolute inset-0 flex flex-col">
+                    <div className="flex-1 flex items-center justify-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <Spinner size={32} className="text-white/50" />
+                        {mediaInfo?.needs_transcode && transcodeStatus === 'processing' && (
+                          <span className="text-xs text-white/40">{i18n._(msg`watch.transcoding`)}</span>
+                        )}
+                      </div>
+                    </div>
+                    {/* Faux control bar so layout doesn't jump */}
+                    <div className="h-11 bg-black/60 border-t border-white/[0.04] flex items-center px-3">
+                      <div className="flex items-center gap-2 opacity-30 pointer-events-none">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white"><path d="M8 5v14l11-7z" /></svg>
+                        <span className="text-xs text-white/60 tabular-nums">0:00 / --:--</span>
+                      </div>
+                      <div className="flex-1" />
+                    </div>
                   </div>
                 )}
               </div>

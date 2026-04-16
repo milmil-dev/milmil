@@ -1,4 +1,5 @@
 import { api } from '../api-client';
+import type { DanmakuDensity, BufferMode } from '../api/stream';
 
 // Types
 export interface SubtitleStyle {
@@ -36,6 +37,8 @@ export interface GlobalPreferences {
   danmakuOpacity: number;
   danmakuFontSize: number;
   danmakuSpeed: number;
+  danmakuDensity: DanmakuDensity;
+  bufferMode: BufferMode;
 }
 
 export interface SeriesPreferences {
