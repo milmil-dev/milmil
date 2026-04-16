@@ -52,6 +52,9 @@ export interface DanmakuComment {
   };
 }
 
+export type DanmakuDensity = 'low' | 'medium' | 'high';
+export type BufferMode = 'auto' | 'low' | 'balanced' | 'high';
+
 export function parseDandanplayComments(
   comments: { p: string; m: string }[],
   fontSize: number = 20,
