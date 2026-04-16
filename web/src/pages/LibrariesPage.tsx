@@ -923,6 +923,62 @@ function FolderPickerDialog({
   );
 }
 
+// ─── Shared path field: input + folder-icon trigger + picker dialog ──────────
+function PathFieldWithPicker({
+  id,
+  value,
+  onChange,
+  placeholder,
+  sourceType,
+  getSourceConfig,
+  onPickerSelect,
+  pickerOpen,
+  setPickerOpen,
+  inputClassName,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  sourceType: SourceType;
+  getSourceConfig: () => Record<string, unknown>;
+  onPickerSelect: (path: string) => void;
+  pickerOpen: boolean;
+  setPickerOpen: (open: boolean) => void;
+  inputClassName?: string;
+}) {
+  const { i18n } = useLingui();
+  return (
+    <>
+      <div className="relative">
+        <Input
+          id={id}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={cn('font-mono text-sm pr-10', inputClassName)}
+        />
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          aria-label={i18n._(msg`library.browseFolder`)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+        >
+          <HugeiconsIcon icon={FolderOpenIcon} className="w-4 h-4" />
+        </button>
+      </div>
+      <FolderPickerDialog
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        sourceType={sourceType}
+        getSourceConfig={getSourceConfig}
+        initialPath={value}
+        onSelect={onPickerSelect}
+      />
+    </>
+  );
+}
+
 // ─── Network browser (enhanced — auto-discovers, visual cards) ───────────────
 function NetworkBrowser({
   onSelect,
@@ -1674,23 +1730,18 @@ function LibraryForm({
                   <FieldLabel htmlFor="lib-path" className={labelClass}>
                     {i18n._(msg`library.path`)}
                   </FieldLabel>
-                  <div className="relative">
-                    <Input
-                      id="lib-path"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder={fixedSourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
-                      className={cn('font-mono text-sm pr-10', inputClass)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setPickerOpen(true)}
-                      aria-label={i18n._(msg`library.browseFolder`)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-                    >
-                      <HugeiconsIcon icon={FolderOpenIcon} className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <PathFieldWithPicker
+                    id="lib-path"
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder={fixedSourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'}
+                    sourceType={fixedSourceType}
+                    getSourceConfig={() => buildSourceConfig(values) ?? {}}
+                    onPickerSelect={(p) => form.setFieldValue('path', p)}
+                    pickerOpen={pickerOpen}
+                    setPickerOpen={setPickerOpen}
+                    inputClassName={inputClass}
+                  />
                   <FieldError>
                     {field.state.meta.isTouched && field.state.meta.errors[0]
                       ? String(field.state.meta.errors[0])
@@ -1699,15 +1750,6 @@ function LibraryForm({
                 </Field>
               )}
             </form.Field>
-
-            <FolderPickerDialog
-              open={pickerOpen}
-              onOpenChange={setPickerOpen}
-              sourceType={fixedSourceType}
-              getSourceConfig={() => buildSourceConfig(values) ?? {}}
-              initialPath={values.path}
-              onSelect={(p) => form.setFieldValue('path', p)}
-            />
 
             {fixedSourceType !== 'local' && (
               <TestConnectionButton
@@ -2018,6 +2060,7 @@ function AddLibraryWizard({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [smbStep, setSmbStep] = useState<'server' | 'credentials' | 'folder'>('server');
   const [manualSmbHost, setManualSmbHost] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   return (
     <div className="mt-2 h-[624px] overflow-y-auto">
@@ -2074,26 +2117,24 @@ function AddLibraryWizard({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.18 }}
           >
-            {/* Back link */}
-            <button
-              type="button"
-              onClick={() => {
-                setStep('source');
-                setSmbStep('server');
-              }}
-              className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors mb-4 cursor-pointer"
-            >
-              <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
-            </button>
-
-            {/* Source label */}
+            {/* Source header: icon + label + change-source link, single row */}
             <div className="flex items-center gap-2 mb-5">
               <div className="text-white/30">
                 {allSourceCards.find((c) => c.key === sourceType)?.icon}
               </div>
-              <span className="text-xs font-bold uppercase tracking-[0.15em] text-white/40">
+              <span className="min-w-0 truncate text-xs font-bold uppercase tracking-[0.15em] text-white/40">
                 {allSourceCards.find((c) => c.key === sourceType)?.name}
               </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep('source');
+                  setSmbStep('server');
+                }}
+                className="ml-auto shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+              >
+                <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
+              </button>
             </div>
 
             <form
@@ -2911,14 +2952,21 @@ function AddLibraryWizard({
                             <FieldLabel htmlFor="wiz-path" className={labelClass}>
                               {i18n._(msg`library.path`)}
                             </FieldLabel>
-                            <Input
+                            <PathFieldWithPicker
                               id="wiz-path"
                               value={field.state.value}
-                              onChange={(e) => field.handleChange(e.target.value)}
+                              onChange={field.handleChange}
                               placeholder={
                                 sourceType === 'local' ? '/mnt/media/anime' : '/Video/Anime'
                               }
-                              className={cn('font-mono text-sm', inputClass)}
+                              sourceType={sourceType}
+                              getSourceConfig={() =>
+                                buildSourceConfig({ ...values, source_type: sourceType }) ?? {}
+                              }
+                              onPickerSelect={(p) => form.setFieldValue('path', p)}
+                              pickerOpen={pickerOpen}
+                              setPickerOpen={setPickerOpen}
+                              inputClassName={inputClass}
                             />
                             <FieldError>
                               {field.state.meta.isTouched && field.state.meta.errors[0]
@@ -2929,19 +2977,6 @@ function AddLibraryWizard({
                         )}
                       </form.Field>
 
-                      {/* Folder browser for non-local source types */}
-                      {sourceType !== 'local' && (
-                        <FolderBrowser
-                          sourceType={sourceType}
-                          getSourceConfig={() =>
-                            buildSourceConfig({ ...values, source_type: sourceType }) ?? {}
-                          }
-                          currentPath={values.path}
-                          onSelect={(path) => form.setFieldValue('path', path)}
-                        />
-                      )}
-
-                      {/* Test connection for non-local */}
                       {sourceType !== 'local' && (
                         <TestConnectionButton
                           getConnectionInput={() => ({
