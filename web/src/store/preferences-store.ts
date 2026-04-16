@@ -5,6 +5,7 @@ import {
   type GlobalPreferences,
   type SubtitleStyle,
 } from '../lib/api/preferences';
+import type { DanmakuDensity, BufferMode } from '../lib/api/stream';
 
 // Default values
 export const DEFAULT_SUBTITLE_STYLE: SubtitleStyle = {
@@ -62,6 +63,8 @@ function extractPrefs(state: PreferencesState): GlobalPreferences {
     danmakuOpacity: state.danmakuOpacity,
     danmakuFontSize: state.danmakuFontSize,
     danmakuSpeed: state.danmakuSpeed,
+    danmakuDensity: state.danmakuDensity,
+    bufferMode: state.bufferMode,
   };
 }
 
@@ -81,6 +84,8 @@ export const usePreferencesStore = create<PreferencesState>()(
       danmakuOpacity: 1,
       danmakuFontSize: 20,
       danmakuSpeed: 144,
+      danmakuDensity: 'medium' as DanmakuDensity,
+      bufferMode: 'auto' as BufferMode,
 
       // Actions
       updateSubtitleStyle: (style) => {
@@ -137,6 +142,8 @@ export const usePreferencesStore = create<PreferencesState>()(
           danmakuOpacity: 1,
           danmakuFontSize: 20,
           danmakuSpeed: 144,
+          danmakuDensity: 'medium' as DanmakuDensity,
+          bufferMode: 'auto' as BufferMode,
         });
         debouncedSync(extractPrefs(get()));
       },
@@ -156,6 +163,8 @@ export const usePreferencesStore = create<PreferencesState>()(
         danmakuOpacity: state.danmakuOpacity,
         danmakuFontSize: state.danmakuFontSize,
         danmakuSpeed: state.danmakuSpeed,
+        danmakuDensity: state.danmakuDensity,
+        bufferMode: state.bufferMode,
       }),
     },
   ),
