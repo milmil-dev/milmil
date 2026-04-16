@@ -8,6 +8,7 @@ function baseOptions(locale: string): BaseLayoutProps {
     i18n: true,
     nav: {
       title: 'milmil',
+      url: `/${locale}`,
     },
     links: [
       {
