@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:104
+#: src/pages/WatchPage.tsx:106
 msgid "watch.resumeFrom"
 msgstr "从此处继续"
 
@@ -315,41 +315,40 @@ msgid "Anime"
 msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:665
-msgid "anime.addToCollection"
-msgstr "加入收藏"
+#~ msgid "anime.addToCollection"
+#~ msgstr "加入收藏"
 
 #: src/pages/AnimeDetailPage.tsx:936
-msgid "anime.characters"
-msgstr "角色"
+#~ msgid "anime.characters"
+#~ msgstr "角色"
 
 #: src/pages/AnimeDetailPage.tsx:264
-msgid "anime.collectionUpdated"
-msgstr ""
+#~ msgid "anime.collectionUpdated"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:1115
-msgid "anime.comments"
-msgstr "评论"
+#~ msgid "anime.comments"
+#~ msgstr "评论"
 
 #: src/pages/AnimeDetailPage.tsx:724
 #~ msgid "anime.continueWatching"
 #~ msgstr "继续观看"
 
 #: src/pages/AnimeDetailPage.tsx:688
-msgid "anime.enableTrackerSync"
-msgstr ""
+#~ msgid "anime.enableTrackerSync"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
 #~ msgstr "集"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:860
 msgid "anime.episodes"
 msgstr "集数"
 
 #: src/pages/AnimeDetailPage.tsx:688
-msgid "anime.excludeTrackerSync"
-msgstr ""
+#~ msgid "anime.excludeTrackerSync"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
@@ -363,69 +362,67 @@ msgstr ""
 #~ msgstr "无本地文件"
 
 #: src/pages/AnimeDetailPage.tsx:533
-msgid "anime.notAired"
-msgstr "尚未播出"
+#~ msgid "anime.notAired"
+#~ msgstr "尚未播出"
 
 #: src/pages/AnimeDetailPage.tsx:331
-msgid "anime.notFound"
-msgstr "找不到动画"
+#~ msgid "anime.notFound"
+#~ msgstr "找不到动画"
 
 #: src/pages/AnimeDetailPage.tsx:546
-msgid "anime.playableEps"
-msgstr "集可播放"
+#~ msgid "anime.playableEps"
+#~ msgstr "集可播放"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:526
 msgid "anime.ratings"
 msgstr "评分"
 
 #: src/pages/AnimeDetailPage.tsx:1029
-msgid "anime.recommendations"
-msgstr "推荐"
+#~ msgid "anime.recommendations"
+#~ msgstr "推荐"
 
 #: src/pages/AnimeDetailPage.tsx:1000
-msgid "anime.relations"
-msgstr "相关作品"
+#~ msgid "anime.relations"
+#~ msgstr "相关作品"
 
 #: src/pages/AnimeDetailPage.tsx:1067
-msgid "anime.reviews"
-msgstr "评论"
+#~ msgid "anime.reviews"
+#~ msgstr "评论"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
 #~ msgstr "分"
 
 #: src/pages/AnimeDetailPage.tsx:677
-msgid "anime.searchResources"
-msgstr "搜索资源"
+#~ msgid "anime.searchResources"
+#~ msgstr "搜索资源"
 
 #~ msgid "anime.season"
 #~ msgstr "季"
 
 #: src/pages/AnimeDetailPage.tsx:959
-msgid "anime.sideStories"
-msgstr "番外篇 / 剧场版"
+#~ msgid "anime.sideStories"
+#~ msgstr "番外篇 / 剧场版"
 
 #: src/pages/AnimeDetailPage.tsx:540
-msgid "anime.subscribed"
-msgstr "已追番"
+#~ msgid "anime.subscribed"
+#~ msgstr "已追番"
 
 #: src/pages/AnimeDetailPage.tsx:280
-msgid "anime.syncFlagsUpdated"
-msgstr ""
+#~ msgid "anime.syncFlagsUpdated"
+#~ msgstr ""
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
 #~ msgstr "简介"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:906
 msgid "anime.trailer"
 msgstr "预告片"
 
 #: src/pages/AnimeDetailPage.tsx:942
-msgid "anime.voiceActor"
-msgstr "声优"
+#~ msgid "anime.voiceActor"
+#~ msgstr "声优"
 
 #: src/pages/settings/ApiTokensCard.tsx:191
 msgid "apiTokens.create"
@@ -610,6 +607,16 @@ msgstr "欢迎使用 milmil"
 #: src/pages/SetupPage.tsx:67
 msgid "auth.setup.username"
 msgstr "用户名"
+
+#: src/components/anime/EpisodeStatusCard.tsx:91
+msgid "Auto-download missing"
+msgstr ""
+
+#. placeholder {0}: res.action
+#. placeholder {1}: res.episode_range
+#: src/components/anime/EpisodeStatusCard.tsx:29
+msgid "Auto-download rule {0} ({1})"
+msgstr ""
 
 #: src/components/library/RenameConfigEditor.tsx:49
 msgid "Auto-rename on match"
@@ -1171,14 +1178,12 @@ msgstr "全部"
 #~ msgstr "更改状态"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:735
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "已完成"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:737
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1200,14 +1205,12 @@ msgid "collection.goToLibraries"
 msgstr "前往媒体库"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:736
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暂停"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:734
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1243,7 +1246,6 @@ msgid "collection.viewAll"
 msgstr "查看全部"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:733
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1254,8 +1256,8 @@ msgid "common.back"
 msgstr "返回"
 
 #: src/pages/AnimeDetailPage.tsx:346
-msgid "common.backHome"
-msgstr "返回首页"
+#~ msgid "common.backHome"
+#~ msgstr "返回首页"
 
 #: src/pages/settings/AboutPanel.tsx:228
 #: src/pages/settings/AboutPanel.tsx:247
@@ -1278,15 +1280,12 @@ msgstr "已复制"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:516
-#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 #: src/pages/LibraryDetailPage.tsx:1060
 msgid "common.ep"
 msgstr "集"
 
-#: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:1856
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
@@ -1304,7 +1303,6 @@ msgstr "加载中…"
 msgid "common.minuteShort"
 msgstr "分钟"
 
-#: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -1322,6 +1320,11 @@ msgstr "离线"
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.online"
 msgstr "在线"
+
+#. placeholder {0}: sortedMissing.length
+#: src/components/anime/EpisodeStatusCard.tsx:82
+msgid "Create auto-download rule for {0} missing episodes?"
+msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:62
 msgid "Date"
@@ -1367,6 +1370,15 @@ msgstr "热门电影"
 msgid "discover.trendingNow"
 msgstr "现在热门"
 
+#: src/components/anime/MissingSearchModal.tsx:110
+msgid "Download"
+msgstr ""
+
+#. placeholder {0}: res.download_id.slice(0, 8)
+#: src/components/anime/MissingSearchModal.tsx:32
+msgid "Download queued: {0}"
+msgstr ""
+
 #~ msgid "downloads.feeds"
 #~ msgstr "RSS 订阅源"
 
@@ -1406,7 +1418,7 @@ msgstr ""
 msgid "Episode {0}"
 msgstr ""
 
-#: src/components/anime/EpisodeStatusCard.tsx:35
+#: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
 msgstr ""
 
@@ -2419,7 +2431,7 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "匹配完成"
 
-#: src/components/anime/EpisodeStatusCard.tsx:40
+#: src/components/anime/EpisodeStatusCard.tsx:58
 msgid "Missing"
 msgstr ""
 
@@ -2516,7 +2528,11 @@ msgstr ""
 msgid "No rename plans."
 msgstr ""
 
-#: src/components/anime/EpisodeStatusCard.tsx:46
+#: src/components/anime/MissingSearchModal.tsx:75
+msgid "No results from any provider."
+msgstr ""
+
+#: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
 msgstr ""
 
@@ -2873,8 +2889,15 @@ msgstr "上一页"
 msgid "pagination.rows"
 msgstr "行"
 
+#: src/pages/WatchPage.tsx:360
+msgid "player.memoryNormal"
+msgstr ""
+
+#: src/pages/WatchPage.tsx:353
+msgid "player.memoryPressure"
+msgstr ""
+
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:827
 msgid "player.remaining"
 msgstr "剩余"
 
@@ -3234,6 +3257,14 @@ msgstr "今天"
 msgid "schedule.totalShows"
 msgstr "部本周节目"
 
+#: src/components/anime/EpisodeStatusCard.tsx:65
+msgid "Search for this episode"
+msgstr ""
+
+#: src/components/anime/MissingSearchModal.tsx:57
+msgid "Search missing episode {episodeNumber}"
+msgstr ""
+
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
 msgstr "浏览结果"
@@ -3419,6 +3450,14 @@ msgstr ""
 #: src/pages/SearchPage.tsx:111
 #~ msgid "search.title"
 #~ msgstr "搜索"
+
+#: src/components/anime/MissingSearchModal.tsx:70
+msgid "Searching..."
+msgstr ""
+
+#: src/components/anime/MissingSearchModal.tsx:84
+msgid "Seeders"
+msgstr ""
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -3630,63 +3669,100 @@ msgstr "字体大小"
 msgid "settings.general.subtitle"
 msgstr "语言、收藏与应用偏好设置"
 
-#: src/pages/settings/IntegrationsPanel.tsx:275
+#: src/pages/settings/IntegrationsPanel.tsx:289
+#: src/pages/settings/IntegrationsPanel.tsx:509
 msgid "settings.integration.authUrlFailed"
 msgstr "获取授权链接失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:387
+#: src/pages/settings/IntegrationsPanel.tsx:242
+msgid "settings.integration.autoPull"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:401
+#: src/pages/settings/IntegrationsPanel.tsx:624
 msgid "settings.integration.connect"
 msgstr "连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:304
+#: src/pages/settings/IntegrationsPanel.tsx:323
+#: src/pages/settings/IntegrationsPanel.tsx:350
+#: src/pages/settings/IntegrationsPanel.tsx:538
 msgid "settings.integration.connected"
 msgstr "已连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:386
+#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:623
 msgid "settings.integration.connecting"
 msgstr "连接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:401
+#: src/pages/settings/IntegrationsPanel.tsx:413
+#: src/pages/settings/IntegrationsPanel.tsx:638
 msgid "settings.integration.disconnect"
 msgstr "断开连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:281
+#: src/pages/settings/IntegrationsPanel.tsx:295
+#: src/pages/settings/IntegrationsPanel.tsx:515
 msgid "settings.integration.disconnected"
 msgstr "已断开连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:298
+#: src/pages/settings/IntegrationsPanel.tsx:519
 msgid "settings.integration.disconnectFailed"
 msgstr "断开连接失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:412
+#: src/pages/settings/IntegrationsPanel.tsx:637
 msgid "settings.integration.disconnecting"
 msgstr "断开连接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:150
+#: src/pages/settings/IntegrationsPanel.tsx:151
 msgid "settings.integration.lastSync"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:235
+#: src/pages/settings/IntegrationsPanel.tsx:279
+#: src/pages/settings/IntegrationsPanel.tsx:469
 msgid "settings.integration.needsReauth"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:351
+#: src/pages/settings/IntegrationsPanel.tsx:539
 msgid "settings.integration.notConnected"
 msgstr "未连接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:156
+#: src/pages/settings/IntegrationsPanel.tsx:157
 msgid "settings.integration.pending"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:163
+#: src/pages/settings/IntegrationsPanel.tsx:214
+msgid "settings.integration.pulled"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:218
+msgid "settings.integration.pullFailed"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:251
+msgid "settings.integration.pulling"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:252
+msgid "settings.integration.pullNow"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:226
+msgid "settings.integration.pullToggleFailed"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:164
 msgid "settings.integration.recentErrors"
 msgstr ""
 
-#: src/pages/settings/IntegrationsPanel.tsx:411
+#: src/pages/settings/IntegrationsPanel.tsx:423
+#: src/pages/settings/IntegrationsPanel.tsx:648
 msgid "settings.integration.sync"
 msgstr "同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:292
+#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:526
 msgid "settings.integration.syncComplete"
 msgstr "同步完成"
 
@@ -3694,11 +3770,13 @@ msgstr "同步完成"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "个错误"
 
-#: src/pages/settings/IntegrationsPanel.tsx:296
+#: src/pages/settings/IntegrationsPanel.tsx:309
+#: src/pages/settings/IntegrationsPanel.tsx:530
 msgid "settings.integration.syncFailed"
 msgstr "同步失败"
 
-#: src/pages/settings/IntegrationsPanel.tsx:410
+#: src/pages/settings/IntegrationsPanel.tsx:422
+#: src/pages/settings/IntegrationsPanel.tsx:647
 msgid "settings.integration.syncing"
 msgstr "同步中…"
 
@@ -3706,7 +3784,19 @@ msgstr "同步中…"
 #~ msgid "settings.integration.title"
 #~ msgstr "联动"
 
-#: src/pages/settings/IntegrationsPanel.tsx:433
+#: src/pages/settings/IntegrationsPanel.tsx:369
+msgid "settings.integration.trakt.openAndEnter"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:383
+msgid "settings.integration.trakt.waitingExpires"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:672
+msgid "settings.integration.updatesPulled"
+msgstr ""
+
+#: src/pages/settings/IntegrationsPanel.tsx:684
 msgid "settings.integrations.description"
 msgstr "连接外部服务并同步数据"
 
@@ -3733,7 +3823,7 @@ msgstr "下载"
 msgid "settings.nav.general"
 msgstr "通用"
 
-#: src/pages/settings/IntegrationsPanel.tsx:430
+#: src/pages/settings/IntegrationsPanel.tsx:681
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "集成"
@@ -3744,7 +3834,7 @@ msgstr "集成"
 msgid "settings.nav.notifications"
 msgstr "通知"
 
-#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/PlayerPanel.tsx:241
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "播放器"
@@ -3778,55 +3868,95 @@ msgstr "设置"
 msgid "settings.playbackSpeed"
 msgstr "播放速度"
 
-#: src/pages/settings/PlayerPanel.tsx:561
+#: src/pages/settings/PlayerPanel.tsx:598
 msgid "settings.player.autoNext"
 msgstr "自动播放下一集"
 
-#: src/pages/settings/PlayerPanel.tsx:581
+#: src/pages/settings/PlayerPanel.tsx:618
 msgid "settings.player.autoSkipEd"
 msgstr "自动跳过片尾"
 
-#: src/pages/settings/PlayerPanel.tsx:571
+#: src/pages/settings/PlayerPanel.tsx:608
 msgid "settings.player.autoSkipOp"
 msgstr "自动跳过片头"
 
-#: src/pages/settings/PlayerPanel.tsx:593
+#: src/pages/settings/PlayerPanel.tsx:630
 msgid "settings.player.backupNote"
 msgstr "播放器设置会自动备份"
 
-#: src/pages/settings/PlayerPanel.tsx:244
+#: src/pages/settings/PlayerPanel.tsx:336
+msgid "settings.player.buffer.auto"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:338
+msgid "settings.player.buffer.balanced"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:339
+msgid "settings.player.buffer.high"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:337
+msgid "settings.player.buffer.low"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:332
+msgid "settings.player.bufferMode"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:345
+msgid "settings.player.bufferModeDesc"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:246
 msgid "settings.player.danmaku"
 msgstr "弹幕"
 
-#: src/pages/settings/PlayerPanel.tsx:249
+#: src/pages/settings/PlayerPanel.tsx:315
+msgid "settings.player.danmakuDensity"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:251
 msgid "settings.player.danmakuEnabled"
 msgstr "显示弹幕"
 
-#: src/pages/settings/PlayerPanel.tsx:289
+#: src/pages/settings/PlayerPanel.tsx:291
 msgid "settings.player.danmakuFontSize"
 msgstr "字体大小"
 
-#: src/pages/settings/PlayerPanel.tsx:263
+#: src/pages/settings/PlayerPanel.tsx:265
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:301
+#: src/pages/settings/PlayerPanel.tsx:303
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:529
+#: src/pages/settings/PlayerPanel.tsx:321
+msgid "settings.player.density.high"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:319
+msgid "settings.player.density.low"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:320
+msgid "settings.player.density.medium"
+msgstr ""
+
+#: src/pages/settings/PlayerPanel.tsx:566
 msgid "settings.player.gestureEnabled"
 msgstr "启用手势"
 
-#: src/pages/settings/PlayerPanel.tsx:525
+#: src/pages/settings/PlayerPanel.tsx:562
 msgid "settings.player.gestures"
 msgstr "手势"
 
-#: src/pages/settings/PlayerPanel.tsx:540
+#: src/pages/settings/PlayerPanel.tsx:577
 msgid "settings.player.gestureSensitivity"
 msgstr "手势灵敏度"
 
-#: src/pages/settings/PlayerPanel.tsx:557
+#: src/pages/settings/PlayerPanel.tsx:594
 msgid "settings.player.playbackDefaults"
 msgstr "播放默认值"
 
@@ -3842,59 +3972,59 @@ msgstr "正常"
 msgid "settings.player.speed.slow"
 msgstr "慢"
 
-#: src/pages/settings/PlayerPanel.tsx:240
+#: src/pages/settings/PlayerPanel.tsx:242
 msgid "settings.player.subtitle"
 msgstr "弹幕与播放偏好设置"
 
-#: src/pages/settings/PlayerPanel.tsx:415
+#: src/pages/settings/PlayerPanel.tsx:452
 msgid "settings.player.subtitleBgOpacity"
 msgstr "字幕背景透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:432
+#: src/pages/settings/PlayerPanel.tsx:469
 msgid "settings.player.subtitleBorder"
 msgstr "字幕边框"
 
-#: src/pages/settings/PlayerPanel.tsx:369
+#: src/pages/settings/PlayerPanel.tsx:406
 msgid "settings.player.subtitleColor"
 msgstr "字幕颜色"
 
-#: src/pages/settings/PlayerPanel.tsx:495
+#: src/pages/settings/PlayerPanel.tsx:532
 msgid "settings.player.subtitleFade"
 msgstr "字幕淡入淡出"
 
-#: src/pages/settings/PlayerPanel.tsx:333
+#: src/pages/settings/PlayerPanel.tsx:370
 msgid "settings.player.subtitleFont"
 msgstr "字幕字体"
 
-#: src/pages/settings/PlayerPanel.tsx:352
+#: src/pages/settings/PlayerPanel.tsx:389
 msgid "settings.player.subtitleFontSize"
 msgstr "字幕字体大小"
 
-#: src/pages/settings/PlayerPanel.tsx:465
+#: src/pages/settings/PlayerPanel.tsx:502
 msgid "settings.player.subtitlePosition"
 msgstr "字幕位置"
 
-#: src/pages/settings/PlayerPanel.tsx:321
+#: src/pages/settings/PlayerPanel.tsx:358
 msgid "settings.player.subtitlePreset"
 msgstr "字幕预设"
 
-#: src/pages/settings/PlayerPanel.tsx:517
+#: src/pages/settings/PlayerPanel.tsx:554
 msgid "settings.player.subtitlePreview"
 msgstr "字幕预览"
 
-#: src/pages/settings/PlayerPanel.tsx:506
+#: src/pages/settings/PlayerPanel.tsx:543
 msgid "settings.player.subtitleRespectAss"
 msgstr "保留 ASS 样式"
 
-#: src/pages/settings/PlayerPanel.tsx:478
+#: src/pages/settings/PlayerPanel.tsx:515
 msgid "settings.player.subtitleSafeMargin"
 msgstr "安全边距"
 
-#: src/pages/settings/PlayerPanel.tsx:446
+#: src/pages/settings/PlayerPanel.tsx:483
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "描边宽度"
 
-#: src/pages/settings/PlayerPanel.tsx:316
+#: src/pages/settings/PlayerPanel.tsx:353
 msgid "settings.player.subtitleStyle"
 msgstr "字幕样式"
 
@@ -3924,8 +4054,8 @@ msgstr "饱和度"
 
 #: src/pages/settings/BackupPanel.tsx:341
 #: src/pages/settings/BackupPanel.tsx:577
-#: src/pages/settings/IntegrationsPanel.tsx:119
-#: src/pages/settings/IntegrationsPanel.tsx:373
+#: src/pages/settings/IntegrationsPanel.tsx:120
+#: src/pages/settings/IntegrationsPanel.tsx:610
 msgid "settings.save"
 msgstr "保存"
 
@@ -3934,9 +4064,9 @@ msgstr "保存"
 #: src/pages/settings/GeneralPanel.tsx:44
 #: src/pages/settings/GeneralPanel.tsx:54
 #: src/pages/settings/GeneralPanel.tsx:64
-#: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:264
-#: src/pages/settings/PlayerPanel.tsx:195
+#: src/pages/settings/IntegrationsPanel.tsx:56
+#: src/pages/settings/IntegrationsPanel.tsx:498
+#: src/pages/settings/PlayerPanel.tsx:197
 msgid "settings.saved"
 msgstr "已保存"
 
@@ -3944,16 +4074,16 @@ msgstr "已保存"
 #: src/pages/settings/BackupPanel.tsx:403
 #: src/pages/settings/GeneralPanel.tsx:47
 #: src/pages/settings/GeneralPanel.tsx:57
-#: src/pages/settings/IntegrationsPanel.tsx:58
-#: src/pages/settings/IntegrationsPanel.tsx:267
-#: src/pages/settings/PlayerPanel.tsx:198
+#: src/pages/settings/IntegrationsPanel.tsx:59
+#: src/pages/settings/IntegrationsPanel.tsx:501
+#: src/pages/settings/PlayerPanel.tsx:200
 msgid "settings.saveFailed"
 msgstr "保存失败"
 
 #: src/pages/settings/BackupPanel.tsx:340
 #: src/pages/settings/BackupPanel.tsx:576
-#: src/pages/settings/IntegrationsPanel.tsx:118
-#: src/pages/settings/IntegrationsPanel.tsx:372
+#: src/pages/settings/IntegrationsPanel.tsx:119
+#: src/pages/settings/IntegrationsPanel.tsx:609
 #: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "保存中…"
@@ -4028,8 +4158,16 @@ msgstr "文字颜色"
 msgid "settings.volumeBoost"
 msgstr "音量增强"
 
+#: src/components/anime/MissingSearchModal.tsx:83
+msgid "Size"
+msgstr ""
+
 #: src/pages/library/RenamePreviewPage.tsx:87
 msgid "Status"
+msgstr ""
+
+#: src/components/anime/MissingSearchModal.tsx:85
+msgid "Subgroup"
 msgstr ""
 
 #~ msgid "subscribe.add"
@@ -4164,6 +4302,10 @@ msgstr "{minutes} 分钟前"
 #: src/pages/NotificationsPage.tsx:34
 msgid "time.secondsAgo {seconds}"
 msgstr "{seconds} 秒前"
+
+#: src/components/anime/MissingSearchModal.tsx:82
+msgid "Title"
+msgstr ""
 
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
@@ -4312,7 +4454,7 @@ msgstr "观看中"
 #~ msgid "watch.mediaFile"
 #~ msgstr "媒体文件"
 
-#: src/pages/WatchPage.tsx:626
+#: src/pages/WatchPage.tsx:725
 msgid "watch.notFound"
 msgstr "找不到动画"
 

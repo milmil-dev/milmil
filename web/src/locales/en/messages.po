@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:104
+#: src/pages/WatchPage.tsx:106
 msgid "watch.resumeFrom"
 msgstr "Resume from"
 
@@ -317,41 +317,40 @@ msgid "Anime"
 msgstr "Anime"
 
 #: src/pages/AnimeDetailPage.tsx:665
-msgid "anime.addToCollection"
-msgstr "Add to Collection"
+#~ msgid "anime.addToCollection"
+#~ msgstr "Add to Collection"
 
 #: src/pages/AnimeDetailPage.tsx:936
-msgid "anime.characters"
-msgstr "Characters"
+#~ msgid "anime.characters"
+#~ msgstr "Characters"
 
 #: src/pages/AnimeDetailPage.tsx:264
-msgid "anime.collectionUpdated"
-msgstr "Collection updated"
+#~ msgid "anime.collectionUpdated"
+#~ msgstr "Collection updated"
 
 #: src/pages/AnimeDetailPage.tsx:1115
-msgid "anime.comments"
-msgstr "Comments"
+#~ msgid "anime.comments"
+#~ msgstr "Comments"
 
 #: src/pages/AnimeDetailPage.tsx:724
 #~ msgid "anime.continueWatching"
 #~ msgstr "Continue Watching"
 
 #: src/pages/AnimeDetailPage.tsx:688
-msgid "anime.enableTrackerSync"
-msgstr "anime.enableTrackerSync"
+#~ msgid "anime.enableTrackerSync"
+#~ msgstr "anime.enableTrackerSync"
 
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
 #~ msgstr "Episode"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:860
 msgid "anime.episodes"
 msgstr "Episodes"
 
 #: src/pages/AnimeDetailPage.tsx:688
-msgid "anime.excludeTrackerSync"
-msgstr "anime.excludeTrackerSync"
+#~ msgid "anime.excludeTrackerSync"
+#~ msgstr "anime.excludeTrackerSync"
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
@@ -365,69 +364,67 @@ msgstr "anime.excludeTrackerSync"
 #~ msgstr "No local file"
 
 #: src/pages/AnimeDetailPage.tsx:533
-msgid "anime.notAired"
-msgstr "Not Yet Aired"
+#~ msgid "anime.notAired"
+#~ msgstr "Not Yet Aired"
 
 #: src/pages/AnimeDetailPage.tsx:331
-msgid "anime.notFound"
-msgstr "Anime not found"
+#~ msgid "anime.notFound"
+#~ msgstr "Anime not found"
 
 #: src/pages/AnimeDetailPage.tsx:546
-msgid "anime.playableEps"
-msgstr "playable eps"
+#~ msgid "anime.playableEps"
+#~ msgstr "playable eps"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:526
 msgid "anime.ratings"
 msgstr "ratings"
 
 #: src/pages/AnimeDetailPage.tsx:1029
-msgid "anime.recommendations"
-msgstr "Recommended"
+#~ msgid "anime.recommendations"
+#~ msgstr "Recommended"
 
 #: src/pages/AnimeDetailPage.tsx:1000
-msgid "anime.relations"
-msgstr "Related"
+#~ msgid "anime.relations"
+#~ msgstr "Related"
 
 #: src/pages/AnimeDetailPage.tsx:1067
-msgid "anime.reviews"
-msgstr "Reviews"
+#~ msgid "anime.reviews"
+#~ msgstr "Reviews"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
 #: src/pages/AnimeDetailPage.tsx:677
-msgid "anime.searchResources"
-msgstr "Search Resources"
+#~ msgid "anime.searchResources"
+#~ msgstr "Search Resources"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
 #: src/pages/AnimeDetailPage.tsx:959
-msgid "anime.sideStories"
-msgstr "Side Stories & Movies"
+#~ msgid "anime.sideStories"
+#~ msgstr "Side Stories & Movies"
 
 #: src/pages/AnimeDetailPage.tsx:540
-msgid "anime.subscribed"
-msgstr "Following"
+#~ msgid "anime.subscribed"
+#~ msgstr "Following"
 
 #: src/pages/AnimeDetailPage.tsx:280
-msgid "anime.syncFlagsUpdated"
-msgstr "anime.syncFlagsUpdated"
+#~ msgid "anime.syncFlagsUpdated"
+#~ msgstr "anime.syncFlagsUpdated"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:906
 msgid "anime.trailer"
 msgstr "Trailer"
 
 #: src/pages/AnimeDetailPage.tsx:942
-msgid "anime.voiceActor"
-msgstr "CV"
+#~ msgid "anime.voiceActor"
+#~ msgstr "CV"
 
 #: src/pages/settings/ApiTokensCard.tsx:191
 msgid "apiTokens.create"
@@ -612,6 +609,16 @@ msgstr "Welcome to milmil"
 #: src/pages/SetupPage.tsx:67
 msgid "auth.setup.username"
 msgstr "Username"
+
+#: src/components/anime/EpisodeStatusCard.tsx:91
+msgid "Auto-download missing"
+msgstr "Auto-download missing"
+
+#. placeholder {0}: res.action
+#. placeholder {1}: res.episode_range
+#: src/components/anime/EpisodeStatusCard.tsx:29
+msgid "Auto-download rule {0} ({1})"
+msgstr "Auto-download rule {0} ({1})"
 
 #: src/components/library/RenameConfigEditor.tsx:49
 msgid "Auto-rename on match"
@@ -1176,14 +1183,12 @@ msgstr "All"
 #~ msgstr "Change Status"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:735
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "Completed"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:737
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1205,14 +1210,12 @@ msgid "collection.goToLibraries"
 msgstr "Go to Libraries"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:736
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "On Hold"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:734
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1248,7 +1251,6 @@ msgid "collection.viewAll"
 msgstr "View All"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:733
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1259,8 +1261,8 @@ msgid "common.back"
 msgstr "Back"
 
 #: src/pages/AnimeDetailPage.tsx:346
-msgid "common.backHome"
-msgstr "Back to Home"
+#~ msgid "common.backHome"
+#~ msgstr "Back to Home"
 
 #: src/pages/settings/AboutPanel.tsx:228
 #: src/pages/settings/AboutPanel.tsx:247
@@ -1283,15 +1285,12 @@ msgstr "common.copied"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:516
-#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/DownloadsPage.tsx:805
 #: src/pages/DownloadsPage.tsx:1574
 #: src/pages/LibraryDetailPage.tsx:1060
 msgid "common.ep"
 msgstr "ep"
 
-#: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:1856
 #: src/routes/__root.tsx:46
 msgid "common.loadFailed"
@@ -1309,7 +1308,6 @@ msgstr "Loading..."
 msgid "common.minuteShort"
 msgstr "min"
 
-#: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:366
 #: src/pages/SchedulePage.tsx:594
 #: src/routes/__root.tsx:60
@@ -1327,6 +1325,11 @@ msgstr "OFFLINE"
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.online"
 msgstr "ONLINE"
+
+#. placeholder {0}: sortedMissing.length
+#: src/components/anime/EpisodeStatusCard.tsx:82
+msgid "Create auto-download rule for {0} missing episodes?"
+msgstr "Create auto-download rule for {0} missing episodes?"
 
 #: src/pages/library/RenameHistoryPage.tsx:62
 msgid "Date"
@@ -1372,6 +1375,15 @@ msgstr "Trending Movies"
 msgid "discover.trendingNow"
 msgstr "Trending Right Now"
 
+#: src/components/anime/MissingSearchModal.tsx:110
+msgid "Download"
+msgstr "Download"
+
+#. placeholder {0}: res.download_id.slice(0, 8)
+#: src/components/anime/MissingSearchModal.tsx:32
+msgid "Download queued: {0}"
+msgstr "Download queued: {0}"
+
 #~ msgid "downloads.feeds"
 #~ msgstr "RSS Feeds"
 
@@ -1411,7 +1423,7 @@ msgstr "Episode"
 msgid "Episode {0}"
 msgstr "Episode {0}"
 
-#: src/components/anime/EpisodeStatusCard.tsx:35
+#: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
 msgstr "Episode status"
 
@@ -2424,7 +2436,7 @@ msgstr "WebDAV"
 msgid "match.completed"
 msgstr "Matching completed"
 
-#: src/components/anime/EpisodeStatusCard.tsx:40
+#: src/components/anime/EpisodeStatusCard.tsx:58
 msgid "Missing"
 msgstr "Missing"
 
@@ -2521,7 +2533,11 @@ msgstr "No rename batches yet."
 msgid "No rename plans."
 msgstr "No rename plans."
 
-#: src/components/anime/EpisodeStatusCard.tsx:46
+#: src/components/anime/MissingSearchModal.tsx:75
+msgid "No results from any provider."
+msgstr "No results from any provider."
+
+#: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
 msgstr "Not aired yet"
 
@@ -2878,8 +2894,15 @@ msgstr "Previous page"
 msgid "pagination.rows"
 msgstr "Rows"
 
+#: src/pages/WatchPage.tsx:360
+msgid "player.memoryNormal"
+msgstr "Memory usage returned to normal"
+
+#: src/pages/WatchPage.tsx:353
+msgid "player.memoryPressure"
+msgstr "High memory usage detected — reducing buffer size"
+
 #: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:827
 msgid "player.remaining"
 msgstr "remaining"
 
@@ -3239,6 +3262,14 @@ msgstr "Today"
 msgid "schedule.totalShows"
 msgstr "shows this week"
 
+#: src/components/anime/EpisodeStatusCard.tsx:65
+msgid "Search for this episode"
+msgstr "Search for this episode"
+
+#: src/components/anime/MissingSearchModal.tsx:57
+msgid "Search missing episode {episodeNumber}"
+msgstr "Search missing episode {episodeNumber}"
+
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
 msgstr "Browse Results"
@@ -3424,6 +3455,14 @@ msgstr "search.tag.theme"
 #: src/pages/SearchPage.tsx:111
 #~ msgid "search.title"
 #~ msgstr "Search"
+
+#: src/components/anime/MissingSearchModal.tsx:70
+msgid "Searching..."
+msgstr "Searching..."
+
+#: src/components/anime/MissingSearchModal.tsx:84
+msgid "Seeders"
+msgstr "Seeders"
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -3635,63 +3674,100 @@ msgstr "settings.fontSize"
 msgid "settings.general.subtitle"
 msgstr "Language, collection, and app preferences"
 
-#: src/pages/settings/IntegrationsPanel.tsx:275
+#: src/pages/settings/IntegrationsPanel.tsx:289
+#: src/pages/settings/IntegrationsPanel.tsx:509
 msgid "settings.integration.authUrlFailed"
 msgstr "Failed to get auth URL"
 
-#: src/pages/settings/IntegrationsPanel.tsx:387
+#: src/pages/settings/IntegrationsPanel.tsx:242
+msgid "settings.integration.autoPull"
+msgstr "settings.integration.autoPull"
+
+#: src/pages/settings/IntegrationsPanel.tsx:401
+#: src/pages/settings/IntegrationsPanel.tsx:624
 msgid "settings.integration.connect"
 msgstr "Connect Account"
 
-#: src/pages/settings/IntegrationsPanel.tsx:304
+#: src/pages/settings/IntegrationsPanel.tsx:323
+#: src/pages/settings/IntegrationsPanel.tsx:350
+#: src/pages/settings/IntegrationsPanel.tsx:538
 msgid "settings.integration.connected"
 msgstr "Connected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:386
+#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:623
 msgid "settings.integration.connecting"
 msgstr "Connecting…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:401
+#: src/pages/settings/IntegrationsPanel.tsx:413
+#: src/pages/settings/IntegrationsPanel.tsx:638
 msgid "settings.integration.disconnect"
 msgstr "Disconnect"
 
-#: src/pages/settings/IntegrationsPanel.tsx:281
+#: src/pages/settings/IntegrationsPanel.tsx:295
+#: src/pages/settings/IntegrationsPanel.tsx:515
 msgid "settings.integration.disconnected"
 msgstr "Disconnected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:298
+#: src/pages/settings/IntegrationsPanel.tsx:519
 msgid "settings.integration.disconnectFailed"
 msgstr "Disconnect failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:412
+#: src/pages/settings/IntegrationsPanel.tsx:637
 msgid "settings.integration.disconnecting"
 msgstr "Disconnecting…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:150
+#: src/pages/settings/IntegrationsPanel.tsx:151
 msgid "settings.integration.lastSync"
 msgstr "settings.integration.lastSync"
 
-#: src/pages/settings/IntegrationsPanel.tsx:235
+#: src/pages/settings/IntegrationsPanel.tsx:279
+#: src/pages/settings/IntegrationsPanel.tsx:469
 msgid "settings.integration.needsReauth"
 msgstr "settings.integration.needsReauth"
 
-#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:351
+#: src/pages/settings/IntegrationsPanel.tsx:539
 msgid "settings.integration.notConnected"
 msgstr "Not connected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:156
+#: src/pages/settings/IntegrationsPanel.tsx:157
 msgid "settings.integration.pending"
 msgstr "settings.integration.pending"
 
-#: src/pages/settings/IntegrationsPanel.tsx:163
+#: src/pages/settings/IntegrationsPanel.tsx:214
+msgid "settings.integration.pulled"
+msgstr "settings.integration.pulled"
+
+#: src/pages/settings/IntegrationsPanel.tsx:218
+msgid "settings.integration.pullFailed"
+msgstr "settings.integration.pullFailed"
+
+#: src/pages/settings/IntegrationsPanel.tsx:251
+msgid "settings.integration.pulling"
+msgstr "settings.integration.pulling"
+
+#: src/pages/settings/IntegrationsPanel.tsx:252
+msgid "settings.integration.pullNow"
+msgstr "settings.integration.pullNow"
+
+#: src/pages/settings/IntegrationsPanel.tsx:226
+msgid "settings.integration.pullToggleFailed"
+msgstr "settings.integration.pullToggleFailed"
+
+#: src/pages/settings/IntegrationsPanel.tsx:164
 msgid "settings.integration.recentErrors"
 msgstr "settings.integration.recentErrors"
 
-#: src/pages/settings/IntegrationsPanel.tsx:411
+#: src/pages/settings/IntegrationsPanel.tsx:423
+#: src/pages/settings/IntegrationsPanel.tsx:648
 msgid "settings.integration.sync"
 msgstr "Sync Progress"
 
-#: src/pages/settings/IntegrationsPanel.tsx:292
+#: src/pages/settings/IntegrationsPanel.tsx:305
+#: src/pages/settings/IntegrationsPanel.tsx:526
 msgid "settings.integration.syncComplete"
 msgstr "Sync complete"
 
@@ -3699,11 +3775,13 @@ msgstr "Sync complete"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "errors"
 
-#: src/pages/settings/IntegrationsPanel.tsx:296
+#: src/pages/settings/IntegrationsPanel.tsx:309
+#: src/pages/settings/IntegrationsPanel.tsx:530
 msgid "settings.integration.syncFailed"
 msgstr "Sync failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:410
+#: src/pages/settings/IntegrationsPanel.tsx:422
+#: src/pages/settings/IntegrationsPanel.tsx:647
 msgid "settings.integration.syncing"
 msgstr "Syncing…"
 
@@ -3711,7 +3789,19 @@ msgstr "Syncing…"
 #~ msgid "settings.integration.title"
 #~ msgstr "Integration"
 
-#: src/pages/settings/IntegrationsPanel.tsx:433
+#: src/pages/settings/IntegrationsPanel.tsx:369
+msgid "settings.integration.trakt.openAndEnter"
+msgstr "settings.integration.trakt.openAndEnter"
+
+#: src/pages/settings/IntegrationsPanel.tsx:383
+msgid "settings.integration.trakt.waitingExpires"
+msgstr "settings.integration.trakt.waitingExpires"
+
+#: src/pages/settings/IntegrationsPanel.tsx:672
+msgid "settings.integration.updatesPulled"
+msgstr "settings.integration.updatesPulled"
+
+#: src/pages/settings/IntegrationsPanel.tsx:684
 msgid "settings.integrations.description"
 msgstr "Connect external services and sync your data"
 
@@ -3738,7 +3828,7 @@ msgstr "Download"
 msgid "settings.nav.general"
 msgstr "General"
 
-#: src/pages/settings/IntegrationsPanel.tsx:430
+#: src/pages/settings/IntegrationsPanel.tsx:681
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "Integrations"
@@ -3749,7 +3839,7 @@ msgstr "Integrations"
 msgid "settings.nav.notifications"
 msgstr "Notifications"
 
-#: src/pages/settings/PlayerPanel.tsx:239
+#: src/pages/settings/PlayerPanel.tsx:241
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "Player"
@@ -3783,55 +3873,95 @@ msgstr "Settings"
 msgid "settings.playbackSpeed"
 msgstr "settings.playbackSpeed"
 
-#: src/pages/settings/PlayerPanel.tsx:561
+#: src/pages/settings/PlayerPanel.tsx:598
 msgid "settings.player.autoNext"
 msgstr "settings.player.autoNext"
 
-#: src/pages/settings/PlayerPanel.tsx:581
+#: src/pages/settings/PlayerPanel.tsx:618
 msgid "settings.player.autoSkipEd"
 msgstr "settings.player.autoSkipEd"
 
-#: src/pages/settings/PlayerPanel.tsx:571
+#: src/pages/settings/PlayerPanel.tsx:608
 msgid "settings.player.autoSkipOp"
 msgstr "settings.player.autoSkipOp"
 
-#: src/pages/settings/PlayerPanel.tsx:593
+#: src/pages/settings/PlayerPanel.tsx:630
 msgid "settings.player.backupNote"
 msgstr "settings.player.backupNote"
 
-#: src/pages/settings/PlayerPanel.tsx:244
+#: src/pages/settings/PlayerPanel.tsx:336
+msgid "settings.player.buffer.auto"
+msgstr "settings.player.buffer.auto"
+
+#: src/pages/settings/PlayerPanel.tsx:338
+msgid "settings.player.buffer.balanced"
+msgstr "settings.player.buffer.balanced"
+
+#: src/pages/settings/PlayerPanel.tsx:339
+msgid "settings.player.buffer.high"
+msgstr "settings.player.buffer.high"
+
+#: src/pages/settings/PlayerPanel.tsx:337
+msgid "settings.player.buffer.low"
+msgstr "settings.player.buffer.low"
+
+#: src/pages/settings/PlayerPanel.tsx:332
+msgid "settings.player.bufferMode"
+msgstr "settings.player.bufferMode"
+
+#: src/pages/settings/PlayerPanel.tsx:345
+msgid "settings.player.bufferModeDesc"
+msgstr "settings.player.bufferModeDesc"
+
+#: src/pages/settings/PlayerPanel.tsx:246
 msgid "settings.player.danmaku"
 msgstr "Danmaku"
 
-#: src/pages/settings/PlayerPanel.tsx:249
+#: src/pages/settings/PlayerPanel.tsx:315
+msgid "settings.player.danmakuDensity"
+msgstr "settings.player.danmakuDensity"
+
+#: src/pages/settings/PlayerPanel.tsx:251
 msgid "settings.player.danmakuEnabled"
 msgstr "Danmaku enabled by default"
 
-#: src/pages/settings/PlayerPanel.tsx:289
+#: src/pages/settings/PlayerPanel.tsx:291
 msgid "settings.player.danmakuFontSize"
 msgstr "Danmaku font size"
 
-#: src/pages/settings/PlayerPanel.tsx:263
+#: src/pages/settings/PlayerPanel.tsx:265
 msgid "settings.player.danmakuOpacity"
 msgstr "Danmaku opacity"
 
-#: src/pages/settings/PlayerPanel.tsx:301
+#: src/pages/settings/PlayerPanel.tsx:303
 msgid "settings.player.danmakuSpeed"
 msgstr "Danmaku speed"
 
-#: src/pages/settings/PlayerPanel.tsx:529
+#: src/pages/settings/PlayerPanel.tsx:321
+msgid "settings.player.density.high"
+msgstr "settings.player.density.high"
+
+#: src/pages/settings/PlayerPanel.tsx:319
+msgid "settings.player.density.low"
+msgstr "settings.player.density.low"
+
+#: src/pages/settings/PlayerPanel.tsx:320
+msgid "settings.player.density.medium"
+msgstr "settings.player.density.medium"
+
+#: src/pages/settings/PlayerPanel.tsx:566
 msgid "settings.player.gestureEnabled"
 msgstr "settings.player.gestureEnabled"
 
-#: src/pages/settings/PlayerPanel.tsx:525
+#: src/pages/settings/PlayerPanel.tsx:562
 msgid "settings.player.gestures"
 msgstr "settings.player.gestures"
 
-#: src/pages/settings/PlayerPanel.tsx:540
+#: src/pages/settings/PlayerPanel.tsx:577
 msgid "settings.player.gestureSensitivity"
 msgstr "settings.player.gestureSensitivity"
 
-#: src/pages/settings/PlayerPanel.tsx:557
+#: src/pages/settings/PlayerPanel.tsx:594
 msgid "settings.player.playbackDefaults"
 msgstr "settings.player.playbackDefaults"
 
@@ -3847,59 +3977,59 @@ msgstr "Normal"
 msgid "settings.player.speed.slow"
 msgstr "Slow"
 
-#: src/pages/settings/PlayerPanel.tsx:240
+#: src/pages/settings/PlayerPanel.tsx:242
 msgid "settings.player.subtitle"
 msgstr "Danmaku and playback preferences"
 
-#: src/pages/settings/PlayerPanel.tsx:415
+#: src/pages/settings/PlayerPanel.tsx:452
 msgid "settings.player.subtitleBgOpacity"
 msgstr "settings.player.subtitleBgOpacity"
 
-#: src/pages/settings/PlayerPanel.tsx:432
+#: src/pages/settings/PlayerPanel.tsx:469
 msgid "settings.player.subtitleBorder"
 msgstr "settings.player.subtitleBorder"
 
-#: src/pages/settings/PlayerPanel.tsx:369
+#: src/pages/settings/PlayerPanel.tsx:406
 msgid "settings.player.subtitleColor"
 msgstr "settings.player.subtitleColor"
 
-#: src/pages/settings/PlayerPanel.tsx:495
+#: src/pages/settings/PlayerPanel.tsx:532
 msgid "settings.player.subtitleFade"
 msgstr "settings.player.subtitleFade"
 
-#: src/pages/settings/PlayerPanel.tsx:333
+#: src/pages/settings/PlayerPanel.tsx:370
 msgid "settings.player.subtitleFont"
 msgstr "settings.player.subtitleFont"
 
-#: src/pages/settings/PlayerPanel.tsx:352
+#: src/pages/settings/PlayerPanel.tsx:389
 msgid "settings.player.subtitleFontSize"
 msgstr "settings.player.subtitleFontSize"
 
-#: src/pages/settings/PlayerPanel.tsx:465
+#: src/pages/settings/PlayerPanel.tsx:502
 msgid "settings.player.subtitlePosition"
 msgstr "settings.player.subtitlePosition"
 
-#: src/pages/settings/PlayerPanel.tsx:321
+#: src/pages/settings/PlayerPanel.tsx:358
 msgid "settings.player.subtitlePreset"
 msgstr "settings.player.subtitlePreset"
 
-#: src/pages/settings/PlayerPanel.tsx:517
+#: src/pages/settings/PlayerPanel.tsx:554
 msgid "settings.player.subtitlePreview"
 msgstr "settings.player.subtitlePreview"
 
-#: src/pages/settings/PlayerPanel.tsx:506
+#: src/pages/settings/PlayerPanel.tsx:543
 msgid "settings.player.subtitleRespectAss"
 msgstr "settings.player.subtitleRespectAss"
 
-#: src/pages/settings/PlayerPanel.tsx:478
+#: src/pages/settings/PlayerPanel.tsx:515
 msgid "settings.player.subtitleSafeMargin"
 msgstr "settings.player.subtitleSafeMargin"
 
-#: src/pages/settings/PlayerPanel.tsx:446
+#: src/pages/settings/PlayerPanel.tsx:483
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "settings.player.subtitleStrokeWidth"
 
-#: src/pages/settings/PlayerPanel.tsx:316
+#: src/pages/settings/PlayerPanel.tsx:353
 msgid "settings.player.subtitleStyle"
 msgstr "settings.player.subtitleStyle"
 
@@ -3929,8 +4059,8 @@ msgstr "settings.saturation"
 
 #: src/pages/settings/BackupPanel.tsx:341
 #: src/pages/settings/BackupPanel.tsx:577
-#: src/pages/settings/IntegrationsPanel.tsx:119
-#: src/pages/settings/IntegrationsPanel.tsx:373
+#: src/pages/settings/IntegrationsPanel.tsx:120
+#: src/pages/settings/IntegrationsPanel.tsx:610
 msgid "settings.save"
 msgstr "Save"
 
@@ -3939,9 +4069,9 @@ msgstr "Save"
 #: src/pages/settings/GeneralPanel.tsx:44
 #: src/pages/settings/GeneralPanel.tsx:54
 #: src/pages/settings/GeneralPanel.tsx:64
-#: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:264
-#: src/pages/settings/PlayerPanel.tsx:195
+#: src/pages/settings/IntegrationsPanel.tsx:56
+#: src/pages/settings/IntegrationsPanel.tsx:498
+#: src/pages/settings/PlayerPanel.tsx:197
 msgid "settings.saved"
 msgstr "Saved"
 
@@ -3949,16 +4079,16 @@ msgstr "Saved"
 #: src/pages/settings/BackupPanel.tsx:403
 #: src/pages/settings/GeneralPanel.tsx:47
 #: src/pages/settings/GeneralPanel.tsx:57
-#: src/pages/settings/IntegrationsPanel.tsx:58
-#: src/pages/settings/IntegrationsPanel.tsx:267
-#: src/pages/settings/PlayerPanel.tsx:198
+#: src/pages/settings/IntegrationsPanel.tsx:59
+#: src/pages/settings/IntegrationsPanel.tsx:501
+#: src/pages/settings/PlayerPanel.tsx:200
 msgid "settings.saveFailed"
 msgstr "Save failed"
 
 #: src/pages/settings/BackupPanel.tsx:340
 #: src/pages/settings/BackupPanel.tsx:576
-#: src/pages/settings/IntegrationsPanel.tsx:118
-#: src/pages/settings/IntegrationsPanel.tsx:372
+#: src/pages/settings/IntegrationsPanel.tsx:119
+#: src/pages/settings/IntegrationsPanel.tsx:609
 #: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "settings.saving"
 msgstr "Saving…"
@@ -4033,9 +4163,17 @@ msgstr "settings.textColor"
 msgid "settings.volumeBoost"
 msgstr "settings.volumeBoost"
 
+#: src/components/anime/MissingSearchModal.tsx:83
+msgid "Size"
+msgstr "Size"
+
 #: src/pages/library/RenamePreviewPage.tsx:87
 msgid "Status"
 msgstr "Status"
+
+#: src/components/anime/MissingSearchModal.tsx:85
+msgid "Subgroup"
+msgstr "Subgroup"
 
 #~ msgid "subscribe.add"
 #~ msgstr "Add"
@@ -4177,6 +4315,10 @@ msgstr "{minutes}m ago"
 #: src/pages/NotificationsPage.tsx:34
 msgid "time.secondsAgo {seconds}"
 msgstr "{seconds}s ago"
+
+#: src/components/anime/MissingSearchModal.tsx:82
+msgid "Title"
+msgstr "Title"
 
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
@@ -4325,7 +4467,7 @@ msgstr "In progress"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:626
+#: src/pages/WatchPage.tsx:725
 msgid "watch.notFound"
 msgstr "Anime not found"
 
