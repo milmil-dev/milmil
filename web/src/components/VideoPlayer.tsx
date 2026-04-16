@@ -15,11 +15,13 @@ import {
   Tooltip,
   VolumeSlider,
   createPlayer,
+  useMedia,
   usePlayer,
   videoFeatures,
 } from '@videojs/react';
 import { Video } from '@videojs/react/video';
 import { HlsVideo } from '@videojs/react/media/hls-video';
+import { HlsMedia } from '@videojs/core/dom/media/hls';
 import type { ReactNode } from 'react';
 import { forwardRef, useEffect, useRef } from 'react';
 
@@ -239,8 +241,9 @@ function PauseIndicator() {
   );
 }
 
-function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig: _hlsConfig }: VideoPlayerProps) {
+function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig }: VideoPlayerProps) {
   const player = usePlayer();
+  const media = useMedia();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -279,6 +282,17 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig
 
     return () => cancelAnimationFrame(rafId);
   }, [player, onReady]);
+
+  // Apply HLS buffer config to underlying HLS.js engine
+  useEffect(() => {
+    if (!hlsConfig || !media) return;
+    // media is HlsMedia when HLS playback is active — cast and access engine
+    const hlsMedia = media as HlsMedia;
+    const engine = hlsMedia.engine;
+    if (!engine) return;
+    engine.config.maxBufferLength = hlsConfig.maxBufferLength;
+    engine.config.maxMaxBufferLength = hlsConfig.maxMaxBufferLength;
+  }, [hlsConfig, media]);
 
   // Auto-hide controls after 3s idle (works even when paused, like YouTube)
   useEffect(() => {
