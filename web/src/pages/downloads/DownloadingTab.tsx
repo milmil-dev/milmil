@@ -42,6 +42,7 @@ import {
 } from '../DownloadsPage';
 import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { aggregateActiveStats, toActiveProps } from './shared/adapters';
+import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 
 // ── New DownloadingTab — renders AnimeDownloadCard per active group ───────
 
@@ -94,7 +95,11 @@ export default function DownloadingTab({
       {activeGroups.map((g) => (
         <DownloadingCard key={g.rule_id} group={g} />
       ))}
-      {/* TODO Task 18: wire in MiscDownloadsSection for miscDownloads */}
+      <MiscDownloadsSection
+        downloads={miscDownloads}
+        mode="active"
+        onDelete={(_gid) => {/* TODO wire PR 4 */}}
+      />
     </div>
   );
 }

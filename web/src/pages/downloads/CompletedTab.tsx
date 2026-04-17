@@ -23,6 +23,7 @@ import { cn } from '../../lib/utils';
 import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { AnimeCover, formatBytes, parseDownloadName } from '../DownloadsPage';
 import { formatRelative, toCompleteProps } from './shared/adapters';
+import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 
 // ── Completed Sub-tab types ─────────────────────────────────────────────
 
@@ -725,7 +726,11 @@ export default function CompletedTab({ groups, miscDownloads, isLoading }: Compl
       {completeGroups.map((g) => (
         <CompletedCard key={g.rule_id} group={g} />
       ))}
-      {/* MiscDownloadsSection hook-up deferred to Task 18 */}
+      <MiscDownloadsSection
+        downloads={miscDownloads}
+        mode="complete"
+        onDelete={(_gid) => {/* TODO wire PR 4 */}}
+      />
     </div>
   );
 }
