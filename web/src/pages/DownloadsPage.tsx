@@ -382,6 +382,12 @@ export function DownloadsPage() {
     [allDownloads]
   );
 
+  // Downloads without a rule association (manual downloads, etc.)
+  const miscDownloads = useMemo(
+    () => activeDownloads.filter((d) => !d.rule_id || d.rule_id === ''),
+    [activeDownloads]
+  );
+
   const tabs: { key: Tab; label: string; icon: typeof Search01Icon; count?: number }[] = [
     { key: 'search', label: i18n._(msg`autoDownload.tab.search`), icon: Search01Icon },
     { key: 'subscriptions', label: i18n._(msg`autoDownload.subtab.subscriptions`), icon: RssIcon },
@@ -508,7 +514,7 @@ export function DownloadsPage() {
             />
           )}
           {tab === 'downloading' && (
-            <DownloadingTab downloads={activeDownloads} isLoading={groupsLoading} />
+            <DownloadingTab groups={groups} miscDownloads={miscDownloads} isLoading={groupsLoading} />
           )}
           {tab === 'completed' && (
             <CompletedTab downloads={completedDownloads} isLoading={groupsLoading} />
