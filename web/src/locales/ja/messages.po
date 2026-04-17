@@ -4543,3 +4543,6 @@ msgstr "キャンセル"
 
 msgid "library.folderPicker.invalidPath"
 msgstr "パスが見つかりません"
+
+msgid "library.folderPicker.refresh"
+msgstr "更新"

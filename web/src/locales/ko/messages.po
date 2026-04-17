@@ -4543,3 +4543,6 @@ msgstr "취소"
 
 msgid "library.folderPicker.invalidPath"
 msgstr "경로를 찾을 수 없습니다"
+
+msgid "library.folderPicker.refresh"
+msgstr "새로고침"

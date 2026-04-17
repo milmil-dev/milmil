@@ -4548,3 +4548,6 @@ msgstr "Cancel"
 
 msgid "library.folderPicker.invalidPath"
 msgstr "Path not found"
+
+msgid "library.folderPicker.refresh"
+msgstr "Refresh"

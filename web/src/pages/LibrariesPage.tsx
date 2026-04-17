@@ -1,4 +1,4 @@
-import { FolderOpenIcon } from '@hugeicons/core-free-icons';
+import { FolderOpenIcon, RefreshIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
@@ -861,6 +861,11 @@ function FolderPickerDialog({
     setCoreKey((k) => k + 1);
   };
 
+  const reload = () => {
+    setPendingInitial(browsePath || '/');
+    setCoreKey((k) => k + 1);
+  };
+
   const handleSelect = () => {
     if (!browsePath) return;
     setLastBrowsePath(sourceType, browsePath);
@@ -875,18 +880,28 @@ function FolderPickerDialog({
           <DialogTitle>{i18n._(msg`library.folderPicker.title`)}</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
-          <Input
-            value={manualPath}
-            onChange={(e) => setManualPath(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                jumpTo(manualPath);
-              }
-            }}
-            placeholder={i18n._(msg`library.folderPicker.pathPlaceholder`)}
-            className="font-mono text-sm"
-          />
+          <div className="flex items-center gap-2">
+            <Input
+              value={manualPath}
+              onChange={(e) => setManualPath(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  jumpTo(manualPath);
+                }
+              }}
+              placeholder={i18n._(msg`library.folderPicker.pathPlaceholder`)}
+              className="flex-1 font-mono text-sm"
+            />
+            <button
+              type="button"
+              onClick={reload}
+              aria-label={i18n._(msg`library.folderPicker.refresh`)}
+              className="shrink-0 p-2 rounded-md text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+            >
+              <HugeiconsIcon icon={RefreshIcon} className="w-4 h-4" />
+            </button>
+          </div>
           <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
             <FolderBrowserCore
               key={coreKey}

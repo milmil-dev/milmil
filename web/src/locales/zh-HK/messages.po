@@ -4541,3 +4541,6 @@ msgstr "取消"
 
 msgid "library.folderPicker.invalidPath"
 msgstr "找不到路徑"
+
+msgid "library.folderPicker.refresh"
+msgstr "重新整理"
