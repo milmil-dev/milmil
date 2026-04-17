@@ -29,6 +29,7 @@ export function AnimeDownloadCard({
 }: Props) {
   return (
     <div
+      data-testid="anime-download-card"
       className={cn(
         'relative bg-white/[0.02] hover:bg-white/[0.035] transition-colors',
         'border border-white/[0.06] rounded-[14px] overflow-hidden',

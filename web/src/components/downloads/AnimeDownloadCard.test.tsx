@@ -47,3 +47,12 @@ test('renders hairline divider between header and list when expanded', () => {
   );
   expect(screen.getByTestId('card-divider')).toBeInTheDocument();
 });
+
+test('exposes data-testid="anime-download-card"', () => {
+  render(
+    <AnimeDownloadCard {...baseProps}>
+      <div>ep</div>
+    </AnimeDownloadCard>
+  );
+  expect(screen.getByTestId('anime-download-card')).toBeInTheDocument();
+});
