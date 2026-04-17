@@ -4525,3 +4525,24 @@ msgstr "HLS Transcode"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "library.browseFolder"
+msgstr "フォルダを参照"
+
+msgid "library.folderPicker.title"
+msgstr "フォルダを選択"
+
+msgid "library.folderPicker.pathPlaceholder"
+msgstr "パスを入力して Enter"
+
+msgid "library.folderPicker.select"
+msgstr "このフォルダを選択"
+
+msgid "library.folderPicker.cancel"
+msgstr "キャンセル"
+
+msgid "library.folderPicker.invalidPath"
+msgstr "パスが見つかりません"
+
+msgid "library.folderPicker.refresh"
+msgstr "更新"

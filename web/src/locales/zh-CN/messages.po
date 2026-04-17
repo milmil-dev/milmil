@@ -4523,3 +4523,24 @@ msgstr "HLS 转码"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支持"
+
+msgid "library.browseFolder"
+msgstr "浏览文件夹"
+
+msgid "library.folderPicker.title"
+msgstr "选择文件夹"
+
+msgid "library.folderPicker.pathPlaceholder"
+msgstr "输入路径后按 Enter"
+
+msgid "library.folderPicker.select"
+msgstr "选择此文件夹"
+
+msgid "library.folderPicker.cancel"
+msgstr "取消"
+
+msgid "library.folderPicker.invalidPath"
+msgstr "找不到路径"
+
+msgid "library.folderPicker.refresh"
+msgstr "刷新"

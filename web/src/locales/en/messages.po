@@ -4530,3 +4530,24 @@ msgstr "HLS Transcode"
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "library.browseFolder"
+msgstr "Browse folder"
+
+msgid "library.folderPicker.title"
+msgstr "Select folder"
+
+msgid "library.folderPicker.pathPlaceholder"
+msgstr "Paste a path and press Enter"
+
+msgid "library.folderPicker.select"
+msgstr "Select this folder"
+
+msgid "library.folderPicker.cancel"
+msgstr "Cancel"
+
+msgid "library.folderPicker.invalidPath"
+msgstr "Path not found"
+
+msgid "library.folderPicker.refresh"
+msgstr "Refresh"
