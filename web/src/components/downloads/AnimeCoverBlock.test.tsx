@@ -1,4 +1,5 @@
 // web/src/components/downloads/AnimeCoverBlock.test.tsx
+import { fireEvent } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { AnimeCoverBlock } from './AnimeCoverBlock';
@@ -19,6 +20,6 @@ test('renders placeholder letter when coverUrl missing', () => {
 test('falls back to placeholder on img error', () => {
   render(<AnimeCoverBlock coverUrl="https://bad.example/x.jpg" title="Naruto" />);
   const img = screen.getByRole('img');
-  img.dispatchEvent(new Event('error'));
+  fireEvent.error(img);
   expect(screen.getByText('N')).toBeInTheDocument();
 });

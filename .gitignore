@@ -28,7 +28,7 @@ data/
 /web/coverage/
 
 # Docker volumes
-downloads/
+/downloads/
 aria2-config/*
 !aria2-config/aria2.conf
 redis-config/
