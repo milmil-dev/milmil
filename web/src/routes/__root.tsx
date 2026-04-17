@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
@@ -239,7 +239,9 @@ function RootLayout() {
       {/* Main content — pl-20 for 80px sidebar */}
       <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
         <AnimatePresence mode="wait" initial={false}>
-          <Outlet key={pathname} />
+          <Suspense key={pathname} fallback={<SplashScreen />}>
+            <Outlet />
+          </Suspense>
         </AnimatePresence>
       </main>
       <CommandPalette />
