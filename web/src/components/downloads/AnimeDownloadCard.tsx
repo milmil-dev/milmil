@@ -1,8 +1,8 @@
 // web/src/components/downloads/AnimeDownloadCard.tsx
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { AnimeGroupHeader, type GroupStats } from './AnimeGroupHeader';
 import { AnimeEpisodeList } from './AnimeEpisodeList';
+import { AnimeGroupHeader, type GroupStats } from './AnimeGroupHeader';
 
 interface Props {
   coverUrl?: string;

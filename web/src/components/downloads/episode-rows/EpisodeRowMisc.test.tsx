@@ -13,7 +13,7 @@ test('renders filename and percent for active misc', () => {
       percent={50}
       status="active"
       onDelete={() => {}}
-    />,
+    />
   );
   expect(screen.getByText('[manual] foo.mkv')).toBeInTheDocument();
   expect(screen.getByText('50%')).toBeInTheDocument();

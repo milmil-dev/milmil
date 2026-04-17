@@ -1,8 +1,9 @@
 // web/src/components/downloads/episode-rows/EpisodeRowMisc.tsx
+
+import { Delete02Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Delete02Icon } from '@hugeicons/core-free-icons';
 
 interface Props {
   gid: string;
@@ -20,7 +21,13 @@ function fmt(n: number): string {
 }
 
 export function EpisodeRowMisc({
-  gid, filename, downloadedBytes, totalBytes, percent, status, onDelete,
+  gid,
+  filename,
+  downloadedBytes,
+  totalBytes,
+  percent,
+  status,
+  onDelete,
 }: Props) {
   const { i18n } = useLingui();
   return (
@@ -33,9 +40,7 @@ export function EpisodeRowMisc({
         />
       </div>
       <div className="text-[11px] text-white/45 tabular-nums min-w-[110px] text-right">
-        {status === 'complete'
-          ? fmt(totalBytes)
-          : `${fmt(downloadedBytes)} / ${fmt(totalBytes)}`}
+        {status === 'complete' ? fmt(totalBytes) : `${fmt(downloadedBytes)} / ${fmt(totalBytes)}`}
       </div>
       <div className="flex items-center gap-2">
         <span className="text-[11px] text-white/65 tabular-nums w-[34px] text-right font-medium">

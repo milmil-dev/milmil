@@ -1,8 +1,9 @@
 // web/src/components/downloads/episode-rows/EpisodeRowComplete.tsx
+
+import { Delete02Icon, PlayIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { PlayIcon, Delete02Icon } from '@hugeicons/core-free-icons';
 
 interface Props {
   gid: string;
@@ -21,7 +22,13 @@ function fmt(n: number): string {
 }
 
 export function EpisodeRowComplete({
-  gid, episodeLabel, filename, sizeBytes, completedAtRelative, onPlay, onDelete,
+  gid,
+  episodeLabel,
+  filename,
+  sizeBytes,
+  completedAtRelative,
+  onPlay,
+  onDelete,
 }: Props) {
   const { i18n } = useLingui();
   return (

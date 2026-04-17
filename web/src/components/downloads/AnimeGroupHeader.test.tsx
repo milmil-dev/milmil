@@ -1,6 +1,7 @@
 // web/src/components/downloads/AnimeGroupHeader.test.tsx
-import { expect, test } from 'vitest';
+
 import userEvent from '@testing-library/user-event';
+import { expect, test } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { AnimeGroupHeader } from './AnimeGroupHeader';
 
@@ -43,7 +44,14 @@ test('hides live dot when live=false', () => {
 test('clicking toggle button calls onToggle', async () => {
   const user = userEvent.setup();
   let clicked = false;
-  render(<AnimeGroupHeader {...baseProps} onToggle={() => { clicked = true; }} />);
+  render(
+    <AnimeGroupHeader
+      {...baseProps}
+      onToggle={() => {
+        clicked = true;
+      }}
+    />
+  );
   await user.click(screen.getByRole('button', { name: /expand|collapse/i }));
   expect(clicked).toBe(true);
 });

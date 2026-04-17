@@ -1,8 +1,9 @@
 // web/src/components/downloads/episode-rows/EpisodeRowPending.tsx
+
+import { Refresh03Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Refresh03Icon } from '@hugeicons/core-free-icons';
 
 interface Props {
   nextFetchRelative: string;

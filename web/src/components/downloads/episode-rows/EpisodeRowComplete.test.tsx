@@ -1,6 +1,7 @@
 // web/src/components/downloads/episode-rows/EpisodeRowComplete.test.tsx
-import { expect, test } from 'vitest';
+
 import userEvent from '@testing-library/user-event';
+import { expect, test } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { EpisodeRowComplete } from './EpisodeRowComplete';
 
@@ -25,7 +26,14 @@ test('renders episode label, filename, size, completed time', () => {
 test('play button triggers onPlay', async () => {
   const user = userEvent.setup();
   let called = false;
-  render(<EpisodeRowComplete {...base} onPlay={() => { called = true; }} />);
+  render(
+    <EpisodeRowComplete
+      {...base}
+      onPlay={() => {
+        called = true;
+      }}
+    />
+  );
   await user.click(screen.getByRole('button', { name: /play/i }));
   expect(called).toBe(true);
 });

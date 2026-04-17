@@ -1,8 +1,10 @@
 // web/src/components/downloads/AnimeGroupHeader.tsx
+
+import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
+import { Fragment } from 'react';
 import { AnimeCoverBlock } from './AnimeCoverBlock';
 
 export type GroupMode = 'subscribed' | 'downloading' | 'completed';
@@ -59,7 +61,7 @@ export function AnimeGroupHeader({
   headerActions,
 }: Props) {
   const { i18n } = useLingui();
-  const { mode, live, percent } = stats;
+  const { mode, percent } = stats;
   const showProgressBar = mode !== 'completed';
 
   return (
@@ -95,16 +97,12 @@ export function AnimeGroupHeader({
             />
           </div>
         )}
-        {!showProgressBar && (
-          <div className="mt-2.5 h-[1px] bg-[rgba(74,222,128,0.18)]" />
-        )}
+        {!showProgressBar && <div className="mt-2.5 h-[1px] bg-[rgba(74,222,128,0.18)]" />}
       </div>
 
       <div className="flex flex-col items-end justify-between gap-2">
         <div className="flex items-baseline gap-1 text-white/90">
-          <span className="text-[20px] font-medium tracking-[-0.02em] tabular-nums">
-            {percent}
-          </span>
+          <span className="text-[20px] font-medium tracking-[-0.02em] tabular-nums">{percent}</span>
           <span className="text-[14px] font-light text-white/50">%</span>
         </div>
         <div className="flex items-center gap-2">
@@ -118,10 +116,7 @@ export function AnimeGroupHeader({
             <span>
               {expanded ? i18n._(msg`downloads.collapse`) : i18n._(msg`downloads.expand`)}
             </span>
-            <HugeiconsIcon
-              icon={expanded ? ArrowUp01Icon : ArrowDown01Icon}
-              size={11}
-            />
+            <HugeiconsIcon icon={expanded ? ArrowUp01Icon : ArrowDown01Icon} size={11} />
           </button>
         </div>
       </div>
@@ -129,80 +124,125 @@ export function AnimeGroupHeader({
   );
 }
 
-function StatLine({ stats, i18n }: { stats: GroupStats; i18n: ReturnType<typeof useLingui>['i18n'] }) {
-  const parts: React.ReactNode[] = [];
+type StatPart = { id: string; node: React.ReactNode };
+
+function StatLine({
+  stats,
+  i18n,
+}: {
+  stats: GroupStats;
+  i18n: ReturnType<typeof useLingui>['i18n'];
+}) {
+  const parts: StatPart[] = [];
 
   if (stats.live) {
-    parts.push(
-      <span
-        key="live"
-        data-testid="live-dot"
-        className="w-[5px] h-[5px] rounded-full bg-[#4ade80] shadow-[0_0_0_3px_rgba(74,222,128,0.35)] animate-[pulse_1.6s_ease-in-out_infinite]"
-      />
-    );
+    parts.push({
+      id: 'live',
+      node: (
+        <span
+          data-testid="live-dot"
+          className="w-[5px] h-[5px] rounded-full bg-[#4ade80] shadow-[0_0_0_3px_rgba(74,222,128,0.35)] animate-[pulse_1.6s_ease-in-out_infinite]"
+        />
+      ),
+    });
   }
 
   if (stats.mode === 'downloading') {
-    parts.push(
-      <span key="n">
-        <b className="text-white/90 font-medium">{stats.activeCount ?? 0}</b>{' '}
-        {i18n._(msg`downloads.downloading`)}
-      </span>
-    );
+    parts.push({
+      id: 'n',
+      node: (
+        <span>
+          <b className="text-white/90 font-medium">{stats.activeCount ?? 0}</b>{' '}
+          {i18n._(msg`downloads.downloading`)}
+        </span>
+      ),
+    });
     if (stats.speedBytes !== undefined)
-      parts.push(
-        <span key="s">
-          <b className="text-white/90 font-medium tabular-nums">{formatSpeed(stats.speedBytes)}</b>
-        </span>
-      );
+      parts.push({
+        id: 's',
+        node: (
+          <span>
+            <b className="text-white/90 font-medium tabular-nums">
+              {formatSpeed(stats.speedBytes)}
+            </b>
+          </span>
+        ),
+      });
     if (stats.downloadedBytes !== undefined && stats.totalBytes !== undefined)
-      parts.push(
-        <span key="d" className="tabular-nums">
-          {formatBytes(stats.downloadedBytes)} / {formatBytes(stats.totalBytes)}
-        </span>
-      );
+      parts.push({
+        id: 'd',
+        node: (
+          <span className="tabular-nums">
+            {formatBytes(stats.downloadedBytes)} / {formatBytes(stats.totalBytes)}
+          </span>
+        ),
+      });
     if (stats.etaSeconds !== undefined)
-      parts.push(<span key="e" className="tabular-nums">~{formatEta(stats.etaSeconds)}</span>);
+      parts.push({
+        id: 'e',
+        node: <span className="tabular-nums">~{formatEta(stats.etaSeconds)}</span>,
+      });
   } else if (stats.mode === 'subscribed') {
-    parts.push(
-      <span key="m">
-        {stats.live ? i18n._(msg`downloads.autoEnabled`) : i18n._(msg`downloads.autoDisabled`)}
-      </span>
-    );
+    parts.push({
+      id: 'm',
+      node: (
+        <span>
+          {stats.live ? i18n._(msg`downloads.autoEnabled`) : i18n._(msg`downloads.autoDisabled`)}
+        </span>
+      ),
+    });
     if (stats.nextFetchRelative)
-      parts.push(
-        <span key="nf">
-          {i18n._(msg`downloads.nextFetch`)} ~{stats.nextFetchRelative}
-        </span>
-      );
+      parts.push({
+        id: 'nf',
+        node: (
+          <span>
+            {i18n._(msg`downloads.nextFetch`)} ~{stats.nextFetchRelative}
+          </span>
+        ),
+      });
     if (stats.activeCount !== undefined && stats.episodeCount !== undefined)
-      parts.push(
-        <span key="eps" className="tabular-nums">
-          {stats.activeCount} / {stats.episodeCount} eps
-        </span>
-      );
+      parts.push({
+        id: 'eps',
+        node: (
+          <span className="tabular-nums">
+            {stats.activeCount} / {stats.episodeCount} eps
+          </span>
+        ),
+      });
     else if (stats.activeCount !== undefined)
-      parts.push(<span key="ec" className="tabular-nums">{stats.activeCount} eps</span>);
+      parts.push({
+        id: 'ec',
+        node: <span className="tabular-nums">{stats.activeCount} eps</span>,
+      });
   } else {
     if (stats.completedCount !== undefined)
-      parts.push(<span key="c" className="tabular-nums">{stats.completedCount} eps</span>);
+      parts.push({
+        id: 'c',
+        node: <span className="tabular-nums">{stats.completedCount} eps</span>,
+      });
     if (stats.totalBytes !== undefined)
-      parts.push(<span key="sz" className="tabular-nums">{formatBytes(stats.totalBytes)}</span>);
+      parts.push({
+        id: 'sz',
+        node: <span className="tabular-nums">{formatBytes(stats.totalBytes)}</span>,
+      });
     if (stats.completedAtRelative)
-      parts.push(
-        <span key="at">
-          {i18n._(msg`downloads.completedAt`)} {stats.completedAtRelative}
-        </span>
-      );
+      parts.push({
+        id: 'at',
+        node: (
+          <span>
+            {i18n._(msg`downloads.completedAt`)} {stats.completedAtRelative}
+          </span>
+        ),
+      });
   }
 
   return (
     <div className="mt-1 flex items-center gap-2 text-[12px] text-white/45 flex-wrap">
-      {parts.map((p, i) => (
-        <span key={i} className="inline-flex items-center gap-2">
-          {p}
-          {i < parts.length - 1 && <span className="text-white/15">·</span>}
-        </span>
+      {parts.map(({ id, node }, idx) => (
+        <Fragment key={id}>
+          {idx > 0 && <span className="text-white/15">·</span>}
+          {node}
+        </Fragment>
       ))}
     </div>
   );

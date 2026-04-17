@@ -1,8 +1,9 @@
 // web/src/components/downloads/episode-rows/EpisodeRowActive.tsx
+
+import { Delete02Icon, PauseIcon, PlayIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { PauseIcon, PlayIcon, Delete02Icon } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 
 export type ActiveStatus = 'active' | 'paused' | 'waiting';
@@ -33,8 +34,17 @@ function fmtEta(s: number): string {
 }
 
 export function EpisodeRowActive({
-  gid, episodeLabel, downloadedBytes, totalBytes, speedBytes, etaSeconds, percent, status,
-  onPause, onResume, onDelete,
+  gid,
+  episodeLabel,
+  downloadedBytes,
+  totalBytes,
+  speedBytes,
+  etaSeconds,
+  percent,
+  status,
+  onPause,
+  onResume,
+  onDelete,
 }: Props) {
   const { i18n } = useLingui();
   const isActive = status === 'active';
@@ -45,14 +55,19 @@ export function EpisodeRowActive({
         {episodeLabel}
       </div>
       <div className="text-[12px] text-white/65 tabular-nums truncate">
-        <span className="text-white/90 font-medium mr-1">{fmt(downloadedBytes)} / {fmt(totalBytes)}</span>
+        <span className="text-white/90 font-medium mr-1">
+          {fmt(downloadedBytes)} / {fmt(totalBytes)}
+        </span>
         <span className="text-white/25 mx-1.5">·</span>
         <span>{fmt(speedBytes)}/s</span>
       </div>
       <div className="h-[2px] bg-[rgba(74,222,128,0.06)] rounded-sm overflow-hidden">
         <div
           data-testid="ep-bar-fill"
-          className={cn('h-full bg-[rgba(74,222,128,0.85)] rounded-sm', isActive && 'animate-[pulse_2.2s_ease-in-out_infinite]')}
+          className={cn(
+            'h-full bg-[rgba(74,222,128,0.85)] rounded-sm',
+            isActive && 'animate-[pulse_2.2s_ease-in-out_infinite]'
+          )}
           style={{ width: `${percent}%` }}
         />
       </div>

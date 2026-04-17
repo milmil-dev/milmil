@@ -27,11 +27,9 @@ export const useDownloadsUIStore = create<DownloadsUIState>()(
           'toggleGroup'
         ),
 
-      expandAll: (ids) =>
-        set({ expandedGroupIds: new Set(ids) }, undefined, 'expandAll'),
+      expandAll: (ids) => set({ expandedGroupIds: new Set(ids) }, undefined, 'expandAll'),
 
-      collapseAll: () =>
-        set({ expandedGroupIds: new Set() }, undefined, 'collapseAll'),
+      collapseAll: () => set({ expandedGroupIds: new Set() }, undefined, 'collapseAll'),
     }),
     { name: 'downloads-ui-store' }
   )
