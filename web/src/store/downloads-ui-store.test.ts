@@ -28,3 +28,10 @@ test('collapseAll clears the set', () => {
   useDownloadsUIStore.getState().collapseAll();
   expect(useDownloadsUIStore.getState().expandedGroupIds.size).toBe(0);
 });
+
+test('toggleGroup produces a new Set reference (immutable)', () => {
+  const before = useDownloadsUIStore.getState().expandedGroupIds;
+  useDownloadsUIStore.getState().toggleGroup('x');
+  const after = useDownloadsUIStore.getState().expandedGroupIds;
+  expect(after).not.toBe(before);
+});

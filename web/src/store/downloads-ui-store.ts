@@ -8,12 +8,11 @@ interface DownloadsUIState {
   toggleGroup: (id: string) => void;
   expandAll: (ids: string[]) => void;
   collapseAll: () => void;
-  isExpanded: (id: string) => boolean;
 }
 
 export const useDownloadsUIStore = create<DownloadsUIState>()(
   devtools(
-    (set, get) => ({
+    (set) => ({
       expandedGroupIds: new Set(),
 
       toggleGroup: (id) =>
@@ -33,8 +32,6 @@ export const useDownloadsUIStore = create<DownloadsUIState>()(
 
       collapseAll: () =>
         set({ expandedGroupIds: new Set() }, undefined, 'collapseAll'),
-
-      isExpanded: (id) => get().expandedGroupIds.has(id),
     }),
     { name: 'downloads-ui-store' }
   )
