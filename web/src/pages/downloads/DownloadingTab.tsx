@@ -14,19 +14,24 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
-import { useRef, useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Modal } from '../../components/Modal';
 import { Button } from '../../components/ui/button';
 import { Checkbox } from '../../components/ui/checkbox';
 import { Sheet, SheetContent } from '../../components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../components/ui/tooltip';
 import { downloadApi } from '../../lib/api/downloads';
 import { cn } from '../../lib/utils';
 import {
   DownloadCard,
-  formatETA,
   formatBytes,
+  formatETA,
   formatSpeed,
   parseDownloadName,
   STATUS_INDICATOR,

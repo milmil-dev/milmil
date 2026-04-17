@@ -15,8 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../../components/ui/button';
 import { discoverApi } from '../../lib/api/discover';
-import { downloadApi } from '../../lib/api/downloads';
-import { ruleApi } from '../../lib/api/downloads';
+import { downloadApi, ruleApi } from '../../lib/api/downloads';
 import { cn } from '../../lib/utils';
 import { AnimeCover, formatBytes, parseDownloadName } from '../DownloadsPage';
 
