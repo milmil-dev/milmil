@@ -9,55 +9,56 @@ import {
   Copy01Icon,
   Delete02Icon,
   Download02Icon,
+  EyeIcon,
+  Link01Icon,
   PauseIcon,
   PlayIcon,
   Refresh03Icon,
   RssIcon,
   Search01Icon,
   TextIcon,
-  Link01Icon,
-  EyeIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useDocumentTitle } from '../hooks/use-document-title';
-import { useWSEvent } from '../hooks/use-websocket';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
+import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
+import { RuleEditorModal } from '../components/RuleEditorModal';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { Checkbox } from '../components/ui/checkbox';
-import { Input } from '../components/ui/input';
-import { Modal } from '../components/Modal';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { Drawer, DrawerContent } from '../components/ui/drawer';
+import { Input } from '../components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { Sheet, SheetContent } from '../components/ui/sheet';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import { useIsMobile } from '../hooks/use-mobile';
+import { useWSEvent } from '../hooks/use-websocket';
+import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import {
   type DownloadGroup,
   downloadApi,
   downloadKeys,
   rssFeedApi,
   ruleApi,
-  subscribeApi,
   type SubscribeInput,
+  subscribeApi,
 } from '../lib/api/downloads';
-import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
-import { animeGradient } from '../lib/gradient';
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi } from '../lib/api/torrent';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { api } from '../lib/api-client';
+import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
-import { RuleEditorModal } from '../components/RuleEditorModal';
 import type { DownloadsSearch } from '../routes/downloads';
+import SubscribedTab from './downloads/SubscribedTab';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -109,7 +110,7 @@ const MEDIA_TYPE_COLORS: Record<string, string> = {
   SPECIAL: 'bg-pink-500/15 text-pink-400',
 };
 
-function SourceBadge({ source }: { source: string }) {
+export function SourceBadge({ source }: { source: string }) {
   return (
     <span
       className={cn(
@@ -150,10 +151,34 @@ function formatSpeed(bytesPerSec: number): string {
   return `${formatBytes(bytesPerSec)}/s`;
 }
 
-const ALL_TORRENT_SOURCES = ['all', 'nyaa', 'mikan', 'dmhy', 'dandanplay', 'bangumi.moe', 'acg.rip'] as const;
+const ALL_TORRENT_SOURCES = [
+  'all',
+  'nyaa',
+  'mikan',
+  'dmhy',
+  'dandanplay',
+  'bangumi.moe',
+  'acg.rip',
+] as const;
 const RSS_SOURCES: ('mikan' | 'nyaa' | 'dmhy')[] = ['mikan', 'nyaa', 'dmhy'];
-const CJK_SOURCES = ['all', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip', 'dandanplay', 'nyaa'] as const;
-const EN_SOURCES = ['all', 'nyaa', 'dandanplay', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip'] as const;
+const CJK_SOURCES = [
+  'all',
+  'mikan',
+  'dmhy',
+  'bangumi.moe',
+  'acg.rip',
+  'dandanplay',
+  'nyaa',
+] as const;
+const EN_SOURCES = [
+  'all',
+  'nyaa',
+  'dandanplay',
+  'mikan',
+  'dmhy',
+  'bangumi.moe',
+  'acg.rip',
+] as const;
 const RESOLUTIONS = ['Any', '1080p', '720p', '4K'] as const;
 
 function isCJK(text: string): boolean {
@@ -177,7 +202,11 @@ function detectSourceFromUrl(url: string): string {
   return '';
 }
 
-function PreviewItemRow({ item, index, source }: {
+function PreviewItemRow({
+  item,
+  index,
+  source,
+}: {
   item: import('../lib/api/downloads').PreviewItem;
   index: number;
   source?: string;
@@ -198,11 +227,11 @@ function PreviewItemRow({ item, index, source }: {
           {item.subgroup && (
             <span className="text-[10px] text-orange-400/60 font-medium">{item.subgroup}</span>
           )}
-          {item.size && (
-            <span className="text-[10px] text-white/25">{item.size}</span>
-          )}
+          {item.size && <span className="text-[10px] text-white/25">{item.size}</span>}
           {item.publish_date && (
-            <span className="text-[10px] text-white/25">{formatPublishDate(item.publish_date)}</span>
+            <span className="text-[10px] text-white/25">
+              {formatPublishDate(item.publish_date)}
+            </span>
           )}
         </div>
       </div>
@@ -257,8 +286,11 @@ export function DownloadsPage() {
   useWSEvent((event) => {
     if (event.type !== 'download:progress') return;
     const batch = event.data as unknown as {
-      gid: string; status: string; total_bytes: number;
-      completed_bytes: number; speed_bytes: number;
+      gid: string;
+      status: string;
+      total_bytes: number;
+      completed_bytes: number;
+      speed_bytes: number;
     }[];
     if (!Array.isArray(batch) || batch.length === 0) return;
 
@@ -271,14 +303,32 @@ export function DownloadsPage() {
         const newDownloads = group.downloads.map((dl) => {
           const p = progressMap.get(dl.gid);
           if (!p) return dl;
-          if (p.status === dl.status && p.completed_bytes === dl.completed_bytes && p.speed_bytes === dl.speed_bytes) return dl;
+          if (
+            p.status === dl.status &&
+            p.completed_bytes === dl.completed_bytes &&
+            p.speed_bytes === dl.speed_bytes
+          )
+            return dl;
           changed = true;
-          return { ...dl, status: p.status, total_bytes: p.total_bytes, completed_bytes: p.completed_bytes, speed_bytes: p.speed_bytes };
+          return {
+            ...dl,
+            status: p.status,
+            total_bytes: p.total_bytes,
+            completed_bytes: p.completed_bytes,
+            speed_bytes: p.speed_bytes,
+          };
         });
         if (newDownloads === group.downloads) return group;
-        const activeCount = newDownloads.filter((d) => d.status === 'active' || d.status === 'waiting').length;
+        const activeCount = newDownloads.filter(
+          (d) => d.status === 'active' || d.status === 'waiting'
+        ).length;
         const completeCount = newDownloads.filter((d) => d.status === 'complete').length;
-        return { ...group, downloads: newDownloads, active_count: activeCount, complete_count: completeCount };
+        return {
+          ...group,
+          downloads: newDownloads,
+          active_count: activeCount,
+          complete_count: completeCount,
+        };
       });
       return changed ? updated : old;
     });
@@ -301,13 +351,20 @@ export function DownloadsPage() {
     );
   }, [groups]);
 
-  const isEffectivelyComplete = (d: { status: string; total_bytes: number; completed_bytes: number }) =>
-    d.status === 'complete' || (d.total_bytes > 0 && d.completed_bytes >= d.total_bytes);
+  const isEffectivelyComplete = (d: {
+    status: string;
+    total_bytes: number;
+    completed_bytes: number;
+  }) => d.status === 'complete' || (d.total_bytes > 0 && d.completed_bytes >= d.total_bytes);
 
   const activeDownloads = useMemo(
     () =>
       allDownloads
-        .filter((d) => (d.status === 'active' || d.status === 'waiting' || d.status === 'paused') && !isEffectivelyComplete(d))
+        .filter(
+          (d) =>
+            (d.status === 'active' || d.status === 'waiting' || d.status === 'paused') &&
+            !isEffectivelyComplete(d)
+        )
         .sort((a, b) => {
           const order: Record<string, number> = { active: 0, waiting: 1, paused: 2 };
           return (order[a.status] ?? 3) - (order[b.status] ?? 3);
@@ -326,8 +383,18 @@ export function DownloadsPage() {
   const tabs: { key: Tab; label: string; icon: typeof Search01Icon; count?: number }[] = [
     { key: 'search', label: i18n._(msg`autoDownload.tab.search`), icon: Search01Icon },
     { key: 'subscriptions', label: i18n._(msg`autoDownload.subtab.subscriptions`), icon: RssIcon },
-    { key: 'downloading', label: i18n._(msg`autoDownload.subtab.downloads`), icon: Download02Icon, count: activeDownloads.length },
-    { key: 'completed', label: i18n._(msg`autoDownload.subtab.completed`), icon: CheckmarkCircle02Icon, count: completedDownloads.length },
+    {
+      key: 'downloading',
+      label: i18n._(msg`autoDownload.subtab.downloads`),
+      icon: Download02Icon,
+      count: activeDownloads.length,
+    },
+    {
+      key: 'completed',
+      label: i18n._(msg`autoDownload.subtab.completed`),
+      icon: CheckmarkCircle02Icon,
+      count: completedDownloads.length,
+    },
   ];
 
   return (
@@ -356,7 +423,9 @@ export function DownloadsPage() {
               <span
                 className={cn(
                   'h-1.5 w-1.5 rounded-full shrink-0',
-                  downloaderStatus?.healthy ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.4)]' : 'bg-red-400/60'
+                  downloaderStatus?.healthy
+                    ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.4)]'
+                    : 'bg-red-400/60'
                 )}
               />
               <span
@@ -372,7 +441,6 @@ export function DownloadsPage() {
             </div>
           </div>
         </div>
-
 
         {/* Tabs */}
         <div className="px-8 mb-6">
@@ -394,7 +462,9 @@ export function DownloadsPage() {
                     <span
                       className={cn(
                         'text-[10px] px-1.5 py-px rounded-full font-semibold',
-                        tab === t.key ? 'bg-white/[0.15] text-white' : 'bg-white/[0.08] text-white/40'
+                        tab === t.key
+                          ? 'bg-white/[0.15] text-white'
+                          : 'bg-white/[0.08] text-white/40'
                       )}
                     >
                       {t.count}
@@ -427,7 +497,7 @@ export function DownloadsPage() {
         <div className="px-8 pb-16">
           {tab === 'search' && <SearchTab initialAnimeId={animeParam} />}
           {tab === 'subscriptions' && (
-            <SubscriptionsSubTab
+            <SubscribedTab
               rules={rules}
               feeds={feeds}
               groups={groups}
@@ -436,16 +506,10 @@ export function DownloadsPage() {
             />
           )}
           {tab === 'downloading' && (
-            <DownloadsSubTab
-              downloads={activeDownloads}
-              isLoading={groupsLoading}
-            />
+            <DownloadsSubTab downloads={activeDownloads} isLoading={groupsLoading} />
           )}
           {tab === 'completed' && (
-            <CompletedSubTab
-              downloads={completedDownloads}
-              isLoading={groupsLoading}
-            />
+            <CompletedSubTab downloads={completedDownloads} isLoading={groupsLoading} />
           )}
         </div>
       </div>
@@ -508,31 +572,54 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
               className="shrink-0 text-[11px] text-white/50 bg-white/[0.03] hover:bg-white/[0.06]"
             >
               <HugeiconsIcon icon={ruleMode === 'keyword' ? TextIcon : Link01Icon} size={13} />
-              {ruleMode === 'keyword' ? i18n._(msg`ruleEditor.keywordMode`) : i18n._(msg`ruleEditor.rssUrlMode`)}
+              {ruleMode === 'keyword'
+                ? i18n._(msg`ruleEditor.keywordMode`)
+                : i18n._(msg`ruleEditor.rssUrlMode`)}
               <HugeiconsIcon icon={ArrowDown01Icon} size={10} className="ml-0.5 opacity-40" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-44 p-1.5 border border-white/[0.08] bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-150 rounded-xl shadow-lg shadow-black/40 space-y-0.5">
+          <PopoverContent
+            align="start"
+            className="w-44 p-1.5 border border-white/[0.08] bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-150 rounded-xl shadow-lg shadow-black/40 space-y-0.5"
+          >
             <button
               type="button"
-              onClick={() => { setRuleMode('keyword'); setNewRuleMenuOpen(false); }}
+              onClick={() => {
+                setRuleMode('keyword');
+                setNewRuleMenuOpen(false);
+              }}
               className={cn(
                 'flex items-center gap-2.5 w-full px-3 py-2 text-[12px] rounded-lg transition-colors cursor-pointer',
-                ruleMode === 'keyword' ? 'text-white bg-white/[0.1]' : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
+                ruleMode === 'keyword'
+                  ? 'text-white bg-white/[0.1]'
+                  : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
               )}
             >
-              <HugeiconsIcon icon={TextIcon} size={13} className={ruleMode === 'keyword' ? 'text-white/70' : 'text-white/30'} />
+              <HugeiconsIcon
+                icon={TextIcon}
+                size={13}
+                className={ruleMode === 'keyword' ? 'text-white/70' : 'text-white/30'}
+              />
               {i18n._(msg`ruleEditor.keywordMode`)}
             </button>
             <button
               type="button"
-              onClick={() => { setRuleMode('rss'); setNewRuleMenuOpen(false); }}
+              onClick={() => {
+                setRuleMode('rss');
+                setNewRuleMenuOpen(false);
+              }}
               className={cn(
                 'flex items-center gap-2.5 w-full px-3 py-2 text-[12px] rounded-lg transition-colors cursor-pointer',
-                ruleMode === 'rss' ? 'text-white bg-white/[0.1]' : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
+                ruleMode === 'rss'
+                  ? 'text-white bg-white/[0.1]'
+                  : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
               )}
             >
-              <HugeiconsIcon icon={Link01Icon} size={13} className={ruleMode === 'rss' ? 'text-white/70' : 'text-white/30'} />
+              <HugeiconsIcon
+                icon={Link01Icon}
+                size={13}
+                className={ruleMode === 'rss' ? 'text-white/70' : 'text-white/30'}
+              />
               {i18n._(msg`ruleEditor.rssUrlMode`)}
             </button>
           </PopoverContent>
@@ -564,17 +651,17 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
             transition={{ duration: 0.2 }}
           >
             {selectedAnime ? (
-              <AnimeTorrentView
-                anime={selectedAnime}
-                onBack={() => setSelectedAnime(null)}
-              />
+              <AnimeTorrentView anime={selectedAnime} onBack={() => setSelectedAnime(null)} />
             ) : (
               <>
                 {/* Loading skeleton */}
                 {isSearching && query && (
                   <div className="space-y-2">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="flex gap-3 p-3 rounded-lg bg-white/[0.03] animate-pulse">
+                      <div
+                        key={i}
+                        className="flex gap-3 p-3 rounded-lg bg-white/[0.03] animate-pulse"
+                      >
                         <div className="w-12 h-16 rounded bg-white/[0.06] shrink-0" />
                         <div className="flex-1 space-y-2 py-1">
                           <div className="h-3 rounded bg-white/[0.06] w-[60%]" />
@@ -646,9 +733,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                       size={32}
                       className="mx-auto mb-4 text-white/10"
                     />
-                    <p className="text-white/25 text-sm">
-                      {i18n._(msg`autoDownload.searchHint`)}
-                    </p>
+                    <p className="text-white/25 text-sm">{i18n._(msg`autoDownload.searchHint`)}</p>
                   </div>
                 )}
               </>
@@ -666,20 +751,13 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
           </motion.div>
         )}
       </AnimatePresence>
-
     </>
   );
 }
 
 // ── Anime Torrent View ────────────────────────────────────────────────────
 
-function AnimeTorrentView({
-  anime,
-  onBack,
-}: {
-  anime: AnimeSummary;
-  onBack: () => void;
-}) {
+function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () => void }) {
   const { i18n } = useLingui();
   const [source, setSource] = useState<string>('all');
   const [resolution, setResolution] = useState<string>('Any');
@@ -690,7 +768,8 @@ function AnimeTorrentView({
 
   const { data: torrentData, isLoading } = useQuery({
     queryKey: discoverKeys.animeTorrents(anime.bangumi_id, source),
-    queryFn: () => discoverApi.animeTorrents(anime.bangumi_id, source === 'all' ? undefined : source),
+    queryFn: () =>
+      discoverApi.animeTorrents(anime.bangumi_id, source === 'all' ? undefined : source),
   });
 
   const results = torrentData?.results ?? [];
@@ -750,12 +829,15 @@ function AnimeTorrentView({
       <div className="rounded-xl bg-white/[0.02] p-4 mb-6 relative overflow-hidden [&_a]:no-underline [&_a:hover]:no-underline">
         {/* Blurred background from cover */}
         {anime.cover_image && (
-          <div className="absolute inset-0 opacity-[0.07]" style={{
-            backgroundImage: `url(${anime.cover_image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'blur(40px)',
-          }} />
+          <div
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage: `url(${anime.cover_image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(40px)',
+            }}
+          />
         )}
 
         <div className="relative flex gap-4">
@@ -806,9 +888,7 @@ function AnimeTorrentView({
                 </span>
               )}
               {anime.air_date && (
-                <span className="text-[12px] text-white/45">
-                  {anime.air_date.slice(0, 7)}
-                </span>
+                <span className="text-[12px] text-white/45">{anime.air_date.slice(0, 7)}</span>
               )}
             </div>
 
@@ -901,21 +981,25 @@ function AnimeTorrentView({
         )}
 
         {/* Subscribe action — only when a specific RSS source is selected */}
-        {filteredResults.length > 0 && source !== 'all' && RSS_SOURCES.includes(source as 'mikan' | 'nyaa' | 'dmhy') && (
-          <div className="flex items-center gap-3 mt-3 pt-3">
-            <button
-              type="button"
-              onClick={() => setShowSubscribe(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
-            >
-              <HugeiconsIcon icon={RssIcon} size={14} />
-              {i18n._(msg`autoDownload.subscribeFilter`)}
-            </button>
-            <span className="text-[11px] text-white/25">
-              {SOURCE_LABELS[source]} · {resolution !== 'Any' ? resolution : i18n._(msg`autoDownload.anyResolution`)} · {subgroup !== 'all' ? subgroup : i18n._(msg`autoDownload.allSubgroups`)}
-            </span>
-          </div>
-        )}
+        {filteredResults.length > 0 &&
+          source !== 'all' &&
+          RSS_SOURCES.includes(source as 'mikan' | 'nyaa' | 'dmhy') && (
+            <div className="flex items-center gap-3 mt-3 pt-3">
+              <button
+                type="button"
+                onClick={() => setShowSubscribe(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={RssIcon} size={14} />
+                {i18n._(msg`autoDownload.subscribeFilter`)}
+              </button>
+              <span className="text-[11px] text-white/25">
+                {SOURCE_LABELS[source]} ·{' '}
+                {resolution !== 'Any' ? resolution : i18n._(msg`autoDownload.anyResolution`)} ·{' '}
+                {subgroup !== 'all' ? subgroup : i18n._(msg`autoDownload.allSubgroups`)}
+              </span>
+            </div>
+          )}
         {filteredResults.length > 0 && source === 'all' && (
           <p className="text-[11px] text-white/20 mt-3 pt-3">
             {i18n._(msg`autoDownload.selectSourceToSubscribe`)}
@@ -955,21 +1039,17 @@ function AnimeTorrentView({
                   {item.sub_group && (
                     <span className="text-[10px] text-white/30">{item.sub_group}</span>
                   )}
-                  {item.size && (
-                    <span className="text-[10px] text-white/25">{item.size}</span>
-                  )}
+                  {item.size && <span className="text-[10px] text-white/25">{item.size}</span>}
                   {item.seeders > 0 && (
-                    <span className="text-[10px] text-green-400/70">
-                      ↑{item.seeders}
-                    </span>
+                    <span className="text-[10px] text-green-400/70">↑{item.seeders}</span>
                   )}
                   {item.leechers > 0 && (
-                    <span className="text-[10px] text-red-400/50">
-                      ↓{item.leechers}
-                    </span>
+                    <span className="text-[10px] text-red-400/50">↓{item.leechers}</span>
                   )}
                   {item.publish_date && (
-                    <span className="text-[10px] text-white/25">{formatPublishDate(item.publish_date)}</span>
+                    <span className="text-[10px] text-white/25">
+                      {formatPublishDate(item.publish_date)}
+                    </span>
                   )}
                 </div>
               </div>
@@ -977,9 +1057,7 @@ function AnimeTorrentView({
                 size="sm"
                 variant="ghost"
                 disabled={pendingDownloads.has(downloadURL(item)) || !downloadURL(item)}
-                onClick={() =>
-                  addMutation.mutate({ url: downloadURL(item), name: item.title })
-                }
+                onClick={() => addMutation.mutate({ url: downloadURL(item), name: item.title })}
                 className="shrink-0 text-[11px] text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
               >
                 {i18n._(msg`autoDownload.download`)}
@@ -1065,7 +1143,11 @@ function SubscribePanel({
 
   // Reset subgroup when RSS source changes and current selection is invalid
   useEffect(() => {
-    if (selectedSubgroup !== 'all' && sourceSubgroups.length > 0 && !sourceSubgroups.includes(selectedSubgroup)) {
+    if (
+      selectedSubgroup !== 'all' &&
+      sourceSubgroups.length > 0 &&
+      !sourceSubgroups.includes(selectedSubgroup)
+    ) {
       setSelectedSubgroup('all');
     }
   }, [rssSource, sourceSubgroups, selectedSubgroup]);
@@ -1266,9 +1348,7 @@ function SubscribePanel({
             disabled={subscribeMutation.isPending}
             className="font-semibold text-[13px]"
           >
-            {subscribeMutation.isPending
-              ? '...'
-              : i18n._(msg`autoDownload.confirm`)}
+            {subscribeMutation.isPending ? '...' : i18n._(msg`autoDownload.confirm`)}
           </Button>
         </div>
       </motion.div>
@@ -1279,7 +1359,6 @@ function SubscribePanel({
 // ═══════════════════════════════════════════════════════════════════════════
 // ANIMATED CHECKBOX
 // ═══════════════════════════════════════════════════════════════════════════
-
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SHARED HELPERS
@@ -1295,7 +1374,7 @@ function formatETA(seconds: number): string {
 }
 
 /** Hook to fetch anime cover by bangumi_id with 24h cache. */
-function useAnimeDetail(bangumiId: number | undefined) {
+export function useAnimeDetail(bangumiId: number | undefined) {
   return useQuery({
     queryKey: discoverKeys.detail(bangumiId!),
     queryFn: () => discoverApi.detail(bangumiId!),
@@ -1305,14 +1384,11 @@ function useAnimeDetail(bangumiId: number | undefined) {
 }
 
 /** Small cover thumbnail component that fetches anime detail on demand. Clickable → anime detail page. */
-function AnimeCover({ bangumiId, size = 62 }: { bangumiId?: number; size?: number }) {
+export function AnimeCover({ bangumiId, size = 62 }: { bangumiId?: number; size?: number }) {
   const { data } = useAnimeDetail(bangumiId);
   const h = Math.round(size * (4 / 3));
   const placeholder = (
-    <div
-      className="rounded bg-white/[0.06] shrink-0"
-      style={{ width: size, height: h }}
-    />
+    <div className="rounded bg-white/[0.06] shrink-0" style={{ width: size, height: h }} />
   );
   if (!data?.cover_image) return placeholder;
 
@@ -1341,537 +1417,6 @@ function AnimeCover({ bangumiId, size = 62 }: { bangumiId?: number; size?: numbe
   return img;
 }
 
-// ── Subscriptions Sub-tab ────────────────────────────────────────────────
-
-/** Wrapper card for subscriptions — fetches anime detail and renders AnimeCard or gradient fallback. */
-function SubscriptionAnimeCard({
-  rule,
-  feed,
-  group,
-  index,
-  onClick,
-}: {
-  rule: import('../lib/api/downloads').DownloadRule;
-  feed?: import('../lib/api/downloads').RSSFeed;
-  group?: DownloadGroup;
-  index: number;
-  onClick: () => void;
-}) {
-  const bangumiId = group?.bangumi_id ?? rule.bangumi_id ?? undefined;
-  const { data: animeDetail } = useAnimeDetail(bangumiId);
-
-  // Build AnimeSummary from detail response or fallback to placeholder
-  if (animeDetail && bangumiId) {
-    const summary: AnimeSummary = {
-      bangumi_id: bangumiId,
-      title: animeDetail.title || rule.name,
-      title_original: animeDetail.title_original || '',
-      cover_image: animeDetail.cover_image || '',
-      episode_count: animeDetail.episode_count || 0,
-      score: animeDetail.score || 0,
-      genres: animeDetail.genres,
-      air_date: animeDetail.air_date,
-      media_type: animeDetail.media_type,
-    };
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.025, duration: 0.3 }}
-      >
-        <AnimeCard anime={summary} onClick={onClick}>
-          {/* Status dot + source badge overlay */}
-          <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
-            <span
-              className={cn(
-                'h-2 w-2 rounded-full',
-                rule.enabled ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]' : 'bg-white/30'
-              )}
-            />
-            {feed && <SourceBadge source={feed.type} />}
-          </div>
-          {/* Episode progress */}
-          {group && group.complete_count > 0 && (
-            <span className="absolute bottom-2 left-2 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md">
-              {group.complete_count} / {animeDetail.episode_count || group.total_count}
-            </span>
-          )}
-        </AnimeCard>
-      </motion.div>
-    );
-  }
-
-  // Fallback card for rules without bangumi_id or while loading
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.025, duration: 0.3 }}
-    >
-      <button
-        type="button"
-        onClick={onClick}
-        className="group/media-entry-card relative flex flex-col w-full text-left cursor-pointer"
-      >
-        <div
-          className="relative aspect-[6/8] rounded-md overflow-hidden"
-          style={{ background: animeGradient(rule.name) }}
-        >
-          <div className="absolute inset-0 flex items-center justify-center p-3">
-            <span className="text-[11px] font-medium text-white/50 text-center line-clamp-3">
-              {rule.name}
-            </span>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
-          {/* Status dot + source */}
-          <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
-            <span
-              className={cn(
-                'h-2 w-2 rounded-full',
-                rule.enabled ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]' : 'bg-white/30'
-              )}
-            />
-            {feed && <SourceBadge source={feed.type} />}
-          </div>
-        </div>
-        <div className="mt-1.5 px-0.5 text-center">
-          <p className="text-sm font-medium text-[--foreground] line-clamp-2 leading-snug">
-            {rule.name}
-          </p>
-        </div>
-      </button>
-    </motion.div>
-  );
-}
-
-/** Shared content for subscription detail — used by both Sheet (desktop) and Modal (mobile). */
-function SubscriptionDetailContent({
-  rule,
-  feed,
-  group,
-  onClose,
-}: {
-  rule: import('../lib/api/downloads').DownloadRule;
-  feed?: import('../lib/api/downloads').RSSFeed;
-  group?: DownloadGroup;
-  onClose: () => void;
-}) {
-  const { i18n } = useLingui();
-  const queryClient = useQueryClient();
-  const bangumiId = group?.bangumi_id ?? rule.bangumi_id ?? undefined;
-  const { data: animeDetail } = useAnimeDetail(bangumiId);
-
-  const refreshMutation = useMutation({
-    mutationFn: (id: string) => rssFeedApi.refresh(id),
-    onSuccess: () => {
-      toast.success(i18n._(msg`autoDownload.refreshed`));
-      queryClient.invalidateQueries({ queryKey: downloadKeys.feeds() });
-      queryClient.invalidateQueries({ queryKey: ['downloads'] });
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
-
-  const deleteFeedMutation = useMutation({
-    mutationFn: async (feedId: string) => {
-      const allRules = queryClient.getQueryData<import('../lib/api/downloads').DownloadRule[]>(downloadKeys.rules()) ?? [];
-      const feedRules = allRules.filter((r) => r.rss_feed_id === feedId);
-      for (const r of feedRules) await ruleApi.delete(r.id);
-      await rssFeedApi.delete(feedId);
-    },
-    onSuccess: () => {
-      toast.success(i18n._(msg`autoDownload.deleted`));
-      onClose();
-      queryClient.invalidateQueries({ queryKey: downloadKeys.feeds() });
-      queryClient.invalidateQueries({ queryKey: downloadKeys.rules() });
-      queryClient.invalidateQueries({ queryKey: ['downloads'] });
-    },
-  });
-
-  const pauseMutation = useMutation({
-    mutationFn: downloadApi.pause,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
-  });
-  const resumeMutation = useMutation({
-    mutationFn: downloadApi.resume,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
-  });
-  const deleteDlMutation = useMutation({
-    mutationFn: downloadApi.delete,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
-  });
-
-  const hasCover = animeDetail?.cover_image?.startsWith('http');
-  const totalEps = animeDetail?.episode_count || group?.total_count || 0;
-  const completedEps = group?.complete_count ?? 0;
-  const progressPct = totalEps > 0 ? Math.round((completedEps / totalEps) * 100) : 0;
-
-  return (
-    <div className="space-y-0">
-      {/* ── Cover hero ── */}
-      <motion.div
-        className="relative -mx-6 -mt-6 overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        {/* Blurred background */}
-        <div className="absolute inset-0">
-          {hasCover ? (
-            <img
-              src={animeDetail!.cover_image}
-              alt=""
-              className="w-full h-full object-cover"
-              style={{ filter: 'blur(32px) saturate(1.3) brightness(0.35)', transform: 'scale(1.4)' }}
-            />
-          ) : (
-            <div className="w-full h-full" style={{ background: animeGradient(rule.name) }} />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--mm-bg)]/60 to-[var(--mm-bg)]" />
-        </div>
-
-        {/* Content over blur */}
-        <div className="relative z-[1] px-6 pt-10 pb-5">
-          <div className="flex items-end gap-4">
-            {/* Poster */}
-            <motion.div
-              className="shrink-0 w-[90px] h-[126px] rounded-lg overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/[0.08]"
-              style={hasCover ? undefined : { background: animeGradient(rule.name) }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1, duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-            >
-              {hasCover ? (
-                <img src={animeDetail!.cover_image} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center p-2">
-                  <span className="text-[10px] text-white/40 text-center line-clamp-3">{rule.name}</span>
-                </div>
-              )}
-            </motion.div>
-
-            <motion.div
-              className="min-w-0 flex-1 pb-0.5"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            >
-              <h2 className="text-[17px] font-bold text-white leading-snug line-clamp-2">
-                {animeDetail?.title || rule.name}
-              </h2>
-              {animeDetail?.title_original && animeDetail.title_original !== animeDetail.title && (
-                <p className="text-[11px] text-white/30 truncate mt-0.5">{animeDetail.title_original}</p>
-              )}
-              {/* Inline meta */}
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                {animeDetail && animeDetail.score > 0 && (
-                  <span className="text-[13px] font-bold text-mm-accent tabular-nums">
-                    ♡ {animeDetail.score.toFixed(1)}
-                  </span>
-                )}
-                {totalEps > 0 && (
-                  <span className="text-[11px] text-white/35 tabular-nums">
-                    {totalEps} {i18n._(msg`common.ep`)}
-                  </span>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ── Status + badges row ── */}
-      <motion.div
-        className="flex items-center gap-1.5 flex-wrap pt-4 pb-3"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <span
-          className={cn(
-            'inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-1 rounded-md',
-            rule.enabled
-              ? 'bg-green-500/10 text-green-400/90'
-              : 'bg-white/[0.06] text-white/35'
-          )}
-        >
-          <span className={cn('h-1.5 w-1.5 rounded-full', rule.enabled ? 'bg-green-400' : 'bg-white/25')} />
-          {rule.enabled ? i18n._(msg`autoDownload.active`) : i18n._(msg`autoDownload.paused`)}
-        </span>
-        {feed && <SourceBadge source={feed.type} />}
-        {rule.resolution_filter && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400/70 font-medium">
-            {rule.resolution_filter}
-          </span>
-        )}
-        {rule.subgroup_filter && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/70 font-medium">
-            {rule.subgroup_filter}
-          </span>
-        )}
-      </motion.div>
-
-      {/* ── Episode progress bar ── */}
-      {totalEps > 0 && (
-        <motion.div
-          className="pb-4"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          <div className="flex items-baseline justify-between mb-1.5">
-            <span className="text-[11px] text-white/40">{i18n._(msg`autoDownload.episodes`)}</span>
-            <span className="text-[12px] text-white/60 font-medium tabular-nums">
-              {completedEps}<span className="text-white/20"> / </span>{totalEps}
-            </span>
-          </div>
-          <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-            <motion.div
-              className="h-full rounded-full bg-mm-accent/80"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPct}%` }}
-              transition={{ delay: 0.4, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-            />
-          </div>
-        </motion.div>
-      )}
-
-      {/* ── Stats row ── */}
-      <motion.div
-        className="flex items-center gap-4 text-[11px] pb-4"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <div>
-          <span className="text-white/25">{i18n._(msg`autoDownload.interval`)}</span>
-          <span className="text-white/60 font-medium ml-1.5">{feed?.fetch_interval_minutes ?? 30}m</span>
-        </div>
-        {rule.last_triggered_at && (
-          <>
-            <span className="text-white/10">·</span>
-            <div>
-              <span className="text-white/25">{i18n._(msg`autoDownload.lastTriggered`)}</span>
-              <span className="text-white/60 font-medium ml-1.5">{new Date(rule.last_triggered_at).toLocaleDateString()}</span>
-            </div>
-          </>
-        )}
-        <span className="text-white/10">·</span>
-        <span className="text-white/60 font-medium capitalize">{feed?.type ?? '—'}</span>
-      </motion.div>
-
-      {/* ── Actions ── */}
-      <motion.div
-        className="flex items-center gap-2 pb-5"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        {bangumiId && (
-          <Link
-            to="/anime/$id"
-            params={{ id: String(bangumiId) }}
-            onClick={onClose}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold rounded-lg bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
-          >
-            {i18n._(msg`autoDownload.viewAnime`)}
-          </Link>
-        )}
-        {feed && (
-          <button
-            type="button"
-            onClick={() => refreshMutation.mutate(feed.id)}
-            disabled={refreshMutation.isPending}
-            className={cn(
-              'inline-flex items-center gap-1.5 px-3 py-2 text-[12px] font-medium rounded-lg transition-colors cursor-pointer',
-              'bg-white/[0.06] text-white/50 hover:bg-white/[0.1] hover:text-white/70'
-            )}
-          >
-            <HugeiconsIcon icon={Refresh03Icon} size={13} className={refreshMutation.isPending ? 'animate-spin' : ''} />
-            {i18n._(msg`autoDownload.refresh`)}
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={() => feed && deleteFeedMutation.mutate(feed.id)}
-          disabled={deleteFeedMutation.isPending}
-          className="inline-flex items-center gap-1.5 px-3 py-2 text-[12px] font-medium rounded-lg bg-white/[0.04] text-white/30 hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer ml-auto"
-        >
-          <HugeiconsIcon icon={Delete02Icon} size={13} />
-        </button>
-      </motion.div>
-
-      {/* ── Downloads ── */}
-      <motion.div
-        className="pt-4"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/25">
-            {i18n._(msg`autoDownload.subtab.downloads`)}
-          </h3>
-          {group && group.downloads.length > 0 && (
-            <span className="text-[10px] text-white/20 tabular-nums">{group.downloads.length}</span>
-          )}
-        </div>
-        {group && group.downloads.length > 0 ? (
-          <div className="space-y-1">
-            {group.downloads.map((dl, i) => (
-              <motion.div
-                key={dl.id}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.45 + i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
-                <DownloadCard
-                  dl={dl}
-                  onPause={() => pauseMutation.mutate(dl.gid)}
-                  onResume={() => resumeMutation.mutate(dl.gid)}
-                  onDelete={() => deleteDlMutation.mutate(dl.gid)}
-                />
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-8 text-center">
-            <HugeiconsIcon icon={RssIcon} size={24} className="mx-auto mb-2 text-white/[0.08]" />
-            <p className="text-[12px] text-white/20">
-              {i18n._(msg`autoDownload.noDownloadsYet`)}
-            </p>
-          </div>
-        )}
-      </motion.div>
-    </div>
-  );
-}
-
-/** Responsive subscription detail — bottom drawer on mobile, right drawer on desktop.
- * Kept for potential future use; currently replaced by RuleEditorModal. */
-// @ts-expect-error TS6133 — retained for future use
-function SubscriptionDetailModal({
-  rule,
-  feed,
-  group,
-  open,
-  onClose,
-}: {
-  rule: import('../lib/api/downloads').DownloadRule;
-  feed?: import('../lib/api/downloads').RSSFeed;
-  group?: DownloadGroup;
-  open: boolean;
-  onClose: () => void;
-}) {
-  const isMobile = useIsMobile();
-
-  return (
-    <Drawer
-      open={open}
-      onOpenChange={(v) => { if (!v) onClose(); }}
-      direction={isMobile ? 'bottom' : 'right'}
-    >
-      <DrawerContent className="overflow-y-auto p-6">
-        <SubscriptionDetailContent rule={rule} feed={feed} group={group} onClose={onClose} />
-      </DrawerContent>
-    </Drawer>
-  );
-}
-
-function SubscriptionsSubTab({
-  rules,
-  feeds,
-  groups,
-  isLoading,
-  onSwitchToSearch,
-}: {
-  rules: import('../lib/api/downloads').DownloadRule[];
-  feeds: import('../lib/api/downloads').RSSFeed[];
-  groups: DownloadGroup[];
-  isLoading: boolean;
-  onSwitchToSearch: () => void;
-}) {
-  const { i18n } = useLingui();
-  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
-
-  const feedMap = new Map(feeds.map((f) => [f.id, f]));
-  const ruleGroupMap = new Map<string, DownloadGroup>();
-  for (const g of groups) {
-    if (g.rule_id) ruleGroupMap.set(g.rule_id, g);
-  }
-
-  const selectedRule = rules.find((r) => r.id === selectedRuleId);
-
-  // Loading skeleton — card grid
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="space-y-2">
-            <Skeleton className="aspect-[6/8] w-full rounded-md" />
-            <Skeleton className="h-3.5 w-3/4" />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // Empty state
-  if (rules.length === 0) {
-    return (
-      <div className="rounded-xl bg-white/[0.02] p-6">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-lg bg-white/[0.04]">
-            <HugeiconsIcon icon={RssIcon} size={24} className="text-white/15" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-white/50 mb-1">
-              {i18n._(msg`autoDownload.noSubscriptions`)}
-            </p>
-            <p className="text-[12px] text-white/25">
-              {i18n._(msg`autoDownload.noSubscriptionsHint`)}
-            </p>
-          </div>
-          <Button
-            onClick={onSwitchToSearch}
-            variant="ghost"
-            className="shrink-0 text-[12px]"
-          >
-            {i18n._(msg`autoDownload.goToSearch`)}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
-        {rules.map((rule, i) => (
-          <SubscriptionAnimeCard
-            key={rule.id}
-            rule={rule}
-            feed={feedMap.get(rule.rss_feed_id)}
-            group={ruleGroupMap.get(rule.id)}
-            index={i}
-            onClick={() => setSelectedRuleId(rule.id)}
-          />
-        ))}
-      </div>
-
-      {/* Rule editor modal (edit) */}
-      {selectedRule && (
-        <RuleEditorModal
-          rule={selectedRule}
-          feed={feedMap.get(selectedRule.rss_feed_id)}
-          open={!!selectedRuleId}
-          onClose={() => setSelectedRuleId(null)}
-        />
-      )}
-    </>
-  );
-}
-
 // ── Inline Rule Editor (RSS URL mode) ─────────────────────────────────
 
 function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: () => void }) {
@@ -1880,7 +1425,9 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
 
   const [ruleName, setRuleName] = useState('');
   const [libraryId, setLibraryId] = useState('');
-  const [previewItems, setPreviewItems] = useState<import('../lib/api/downloads').PreviewItem[]>([]);
+  const [previewItems, setPreviewItems] = useState<import('../lib/api/downloads').PreviewItem[]>(
+    []
+  );
 
   // ── Linked anime ──
   const [bangumiId, setBangumiId] = useState<number | null>(null);
@@ -1891,7 +1438,10 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
   const animePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!animeSearchInput.trim()) { setAnimeSearchQuery(''); return; }
+    if (!animeSearchInput.trim()) {
+      setAnimeSearchQuery('');
+      return;
+    }
     const timer = setTimeout(() => setAnimeSearchQuery(animeSearchInput.trim()), 400);
     return () => clearTimeout(timer);
   }, [animeSearchInput]);
@@ -1966,7 +1516,10 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
       setSelectedAnime(null);
       onCreated();
     },
-    onError: (err: Error) => { creatingRef.current = false; toast.error(err.message); },
+    onError: (err: Error) => {
+      creatingRef.current = false;
+      toast.error(err.message);
+    },
   });
 
   const previewMutation = useMutation({
@@ -1988,12 +1541,17 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                 className="w-8 h-11 rounded object-cover shrink-0"
               />
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] text-white/90 font-medium truncate">{selectedAnime.title || selectedAnime.title_original}</p>
+                <p className="text-[13px] text-white/90 font-medium truncate">
+                  {selectedAnime.title || selectedAnime.title_original}
+                </p>
                 <p className="text-[10px] text-white/30">Bangumi #{bangumiId}</p>
               </div>
               <button
                 type="button"
-                onClick={() => { setBangumiId(null); setSelectedAnime(null); }}
+                onClick={() => {
+                  setBangumiId(null);
+                  setSelectedAnime(null);
+                }}
                 className="text-white/25 hover:text-white/50 transition-colors cursor-pointer shrink-0"
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={12} />
@@ -2002,8 +1560,13 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           ) : (
             <Input
               value={animeSearchInput}
-              onChange={(e) => { setAnimeSearchInput(e.target.value); setAnimePickerOpen(true); }}
-              onFocus={() => { if (animeSearchQuery) setAnimePickerOpen(true); }}
+              onChange={(e) => {
+                setAnimeSearchInput(e.target.value);
+                setAnimePickerOpen(true);
+              }}
+              onFocus={() => {
+                if (animeSearchQuery) setAnimePickerOpen(true);
+              }}
               placeholder={i18n._(msg`ruleEditor.searchAnime`)}
               className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
             />
@@ -2036,7 +1599,9 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                       className="w-7 h-10 rounded object-cover shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[12px] text-white/80 truncate">{anime.title || anime.title_original}</p>
+                      <p className="text-[12px] text-white/80 truncate">
+                        {anime.title || anime.title_original}
+                      </p>
                       {anime.air_date && (
                         <p className="text-[10px] text-white/25">{anime.air_date.slice(0, 4)}</p>
                       )}
@@ -2115,9 +1680,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           disabled={!canCreate || createMutation.isPending}
           className="text-[11px]"
         >
-          {createMutation.isPending
-            ? i18n._(msg`ruleEditor.saving`)
-            : i18n._(msg`ruleEditor.save`)}
+          {createMutation.isPending ? i18n._(msg`ruleEditor.saving`) : i18n._(msg`ruleEditor.save`)}
         </Button>
       </div>
 
@@ -2142,7 +1705,12 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
               </div>
               <div className="space-y-1.5 max-h-[400px] overflow-y-auto">
                 {previewItems.map((item, i) => (
-                  <PreviewItemRow key={item.link} item={item} index={i} source={detectSourceFromUrl(rssUrl)} />
+                  <PreviewItemRow
+                    key={item.link}
+                    item={item}
+                    index={i}
+                    source={detectSourceFromUrl(rssUrl)}
+                  />
                 ))}
               </div>
             </div>
@@ -2164,7 +1732,13 @@ function InlineSection({ label, children }: { label: string; children: React.Rea
 
 // ── Add URL Dialog ──────────────────────────────────────────────────────
 
-function AddUrlDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+function AddUrlDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
   const [urlInput, setUrlInput] = useState('');
@@ -2181,7 +1755,12 @@ function AddUrlDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
   });
 
   return (
-    <Modal open={open} onClose={() => onOpenChange(false)} title={i18n._(msg`autoDownload.addUrl`)} size="sm">
+    <Modal
+      open={open}
+      onClose={() => onOpenChange(false)}
+      title={i18n._(msg`autoDownload.addUrl`)}
+      size="sm"
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -2255,7 +1834,9 @@ function DownloadsSubTab({
     let list = downloads;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      list = list.filter((d) => d.name.toLowerCase().includes(q) || d.rule_name?.toLowerCase().includes(q));
+      list = list.filter(
+        (d) => d.name.toLowerCase().includes(q) || d.rule_name?.toLowerCase().includes(q)
+      );
     }
     const sorted = [...list];
     switch (sortBy) {
@@ -2330,9 +1911,7 @@ function DownloadsSubTab({
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
   });
   // Targets: selected items if any, otherwise all
-  const targets = hasSelection
-    ? downloads.filter((d) => selected.has(d.gid))
-    : downloads;
+  const targets = hasSelection ? downloads.filter((d) => selected.has(d.gid)) : downloads;
 
   const pauseTargets = targets.filter((d) => d.status === 'active');
   const resumeTargets = targets.filter((d) => d.status === 'paused' || d.status === 'waiting');
@@ -2369,8 +1948,8 @@ function DownloadsSubTab({
   });
   // Single-item delete confirm
   const [deleteTargetGid, setDeleteTargetGid] = useState<string | null>(null);
-  const [deleteTargetFiles, setDeleteTargetFiles] = useState(() =>
-    typeof window !== 'undefined' && localStorage.getItem('milmil:autoDeleteFiles') === 'true'
+  const [deleteTargetFiles, setDeleteTargetFiles] = useState(
+    () => typeof window !== 'undefined' && localStorage.getItem('milmil:autoDeleteFiles') === 'true'
   );
   const deleteSingleMutation = useMutation({
     mutationFn: async () => {
@@ -2389,7 +1968,8 @@ function DownloadsSubTab({
 
   // Batch delete dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const autoDeleteFiles = typeof window !== 'undefined' && localStorage.getItem('milmil:autoDeleteFiles') === 'true';
+  const autoDeleteFiles =
+    typeof window !== 'undefined' && localStorage.getItem('milmil:autoDeleteFiles') === 'true';
   const [deleteFiles, setDeleteFiles] = useState(autoDeleteFiles);
   const deleteAllMutation = useMutation({
     mutationFn: () => downloadApi.batchDelete(deleteFiles),
@@ -2443,7 +2023,11 @@ function DownloadsSubTab({
       {downloads.length > 0 && (
         <div className="flex items-center gap-2 mb-3">
           <div className="relative flex-1">
-            <HugeiconsIcon icon={Search01Icon} size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none" />
+            <HugeiconsIcon
+              icon={Search01Icon}
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none"
+            />
             <input
               type="text"
               value={searchQuery}
@@ -2478,10 +2062,15 @@ function DownloadsSubTab({
                     <button
                       key={key}
                       type="button"
-                      onClick={() => { setSortBy(key); setSortMenuOpen(false); }}
+                      onClick={() => {
+                        setSortBy(key);
+                        setSortMenuOpen(false);
+                      }}
                       className={cn(
                         'w-full px-3 py-1.5 text-left text-[11px] font-medium transition-colors cursor-pointer',
-                        sortBy === key ? 'text-mm-accent bg-white/[0.04]' : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
+                        sortBy === key
+                          ? 'text-mm-accent bg-white/[0.04]'
+                          : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
                       )}
                     >
                       {sortLabels[key]}
@@ -2501,7 +2090,9 @@ function DownloadsSubTab({
             {activeCount > 0 ? (
               <>
                 <HugeiconsIcon icon={ArrowDown01Icon} size={14} className="text-green-400/80" />
-                <span>{activeCount} {i18n._(msg`autoDownload.downloading`)}</span>
+                <span>
+                  {activeCount} {i18n._(msg`autoDownload.downloading`)}
+                </span>
                 {totalSpeed > 0 && (
                   <>
                     <span className="text-white/15">·</span>
@@ -2516,7 +2107,9 @@ function DownloadsSubTab({
                 )}
               </>
             ) : (
-              <span>{downloads.length} {i18n._(msg`autoDownload.items`)}</span>
+              <span>
+                {downloads.length} {i18n._(msg`autoDownload.items`)}
+              </span>
             )}
           </div>
           <TooltipProvider delayDuration={200}>
@@ -2533,7 +2126,9 @@ function DownloadsSubTab({
                       <HugeiconsIcon icon={PlayIcon} size={14} />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">{i18n._(msg`autoDownload.resumeAll`)}</TooltipContent>
+                  <TooltipContent side="bottom">
+                    {i18n._(msg`autoDownload.resumeAll`)}
+                  </TooltipContent>
                 </Tooltip>
               )}
               {pauseTargets.length > 0 && (
@@ -2548,7 +2143,9 @@ function DownloadsSubTab({
                       <HugeiconsIcon icon={PauseIcon} size={14} />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">{i18n._(msg`autoDownload.pauseAll`)}</TooltipContent>
+                  <TooltipContent side="bottom">
+                    {i18n._(msg`autoDownload.pauseAll`)}
+                  </TooltipContent>
                 </Tooltip>
               )}
               <Tooltip>
@@ -2561,7 +2158,9 @@ function DownloadsSubTab({
                     <HugeiconsIcon icon={Refresh03Icon} size={14} />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">{i18n._(msg`autoDownload.refreshAll`)}</TooltipContent>
+                <TooltipContent side="bottom">
+                  {i18n._(msg`autoDownload.refreshAll`)}
+                </TooltipContent>
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -2579,7 +2178,10 @@ function DownloadsSubTab({
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    onClick={() => { setDeleteDialogOpen(true); setDeleteFiles(autoDeleteFiles); }}
+                    onClick={() => {
+                      setDeleteDialogOpen(true);
+                      setDeleteFiles(autoDeleteFiles);
+                    }}
                     className="p-1.5 rounded-md text-red-400/30 hover:text-red-400 hover:bg-red-500/[0.06] transition-colors cursor-pointer"
                   >
                     <HugeiconsIcon icon={Delete02Icon} size={14} />
@@ -2604,11 +2206,7 @@ function DownloadsSubTab({
           >
             <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-white/[0.03]">
               <div className="flex items-center gap-3">
-                <Checkbox
-                  checked={allSelected}
-                  onCheckedChange={toggleSelectAll}
-                  size={18}
-                />
+                <Checkbox checked={allSelected} onCheckedChange={toggleSelectAll} size={18} />
                 <span className="text-[12px] font-medium text-white/70">
                   {selected.size} {i18n._(msg`autoDownload.selected`)}
                 </span>
@@ -2617,7 +2215,9 @@ function DownloadsSubTab({
                   onClick={toggleSelectAll}
                   className="text-[11px] text-mm-accent/70 hover:text-mm-accent cursor-pointer transition-colors"
                 >
-                  {allSelected ? i18n._(msg`autoDownload.deselectAll`) : i18n._(msg`autoDownload.selectAll`)}
+                  {allSelected
+                    ? i18n._(msg`autoDownload.deselectAll`)
+                    : i18n._(msg`autoDownload.selectAll`)}
                 </button>
               </div>
               <div className="flex items-center gap-1">
@@ -2649,7 +2249,10 @@ function DownloadsSubTab({
                 )}
                 <motion.button
                   type="button"
-                  onClick={() => { setDeleteDialogOpen(true); setDeleteFiles(autoDeleteFiles); }}
+                  onClick={() => {
+                    setDeleteDialogOpen(true);
+                    setDeleteFiles(autoDeleteFiles);
+                  }}
                   disabled={!hasSelection}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -2677,10 +2280,15 @@ function DownloadsSubTab({
       {/* Delete confirm modal */}
       <Modal
         open={deleteDialogOpen}
-        onClose={() => { setDeleteDialogOpen(false); setDeleteFiles(false); }}
-        title={hasSelection
-          ? `${i18n._(msg`autoDownload.deleteSelected`)} (${selected.size})`
-          : i18n._(msg`autoDownload.deleteAll`)}
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setDeleteFiles(false);
+        }}
+        title={
+          hasSelection
+            ? `${i18n._(msg`autoDownload.deleteSelected`)} (${selected.size})`
+            : i18n._(msg`autoDownload.deleteAll`)
+        }
         size="sm"
       >
         <p className="text-[13px] text-white/40 leading-relaxed mb-3">
@@ -2698,14 +2306,19 @@ function DownloadsSubTab({
           <Button
             type="button"
             variant="ghost"
-            onClick={() => { setDeleteDialogOpen(false); setDeleteFiles(false); }}
+            onClick={() => {
+              setDeleteDialogOpen(false);
+              setDeleteFiles(false);
+            }}
             className="text-[12px] text-white/50 hover:bg-white/[0.04]"
           >
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
           <Button
             type="button"
-            onClick={() => hasSelection ? deleteSelectedMutation.mutate() : deleteAllMutation.mutate()}
+            onClick={() =>
+              hasSelection ? deleteSelectedMutation.mutate() : deleteAllMutation.mutate()
+            }
             disabled={deleteAllMutation.isPending || deleteSelectedMutation.isPending}
             className={cn(
               'text-[12px] font-semibold',
@@ -2732,7 +2345,11 @@ function DownloadsSubTab({
           {deleteTargetGid && filteredDownloads.find((d) => d.gid === deleteTargetGid)?.name}
         </p>
         <label className="flex items-center gap-2.5 py-2 cursor-pointer group">
-          <Checkbox checked={deleteTargetFiles} onCheckedChange={(v) => setDeleteTargetFiles(v)} size={16} />
+          <Checkbox
+            checked={deleteTargetFiles}
+            onCheckedChange={(v) => setDeleteTargetFiles(v)}
+            size={16}
+          />
           <span className="text-[13px] text-white/60 group-hover:text-white/80 transition-colors select-none">
             {i18n._(msg`autoDownload.alsoDeleteFiles`)}
           </span>
@@ -2788,27 +2405,21 @@ function DownloadsSubTab({
         </div>
       ) : downloads.length > 0 ? (
         <div className="text-center py-8">
-          <p className="text-white/25 text-sm">
-            {i18n._(msg`autoDownload.noResults`)}
-          </p>
+          <p className="text-white/25 text-sm">{i18n._(msg`autoDownload.noResults`)}</p>
         </div>
       ) : (
         <div className="text-center py-12">
-          <HugeiconsIcon
-            icon={ArrowDown01Icon}
-            size={32}
-            className="mx-auto mb-3 text-white/10"
-          />
-          <p className="text-white/25 text-sm">
-            {i18n._(msg`autoDownload.noActiveDownloads`)}
-          </p>
+          <HugeiconsIcon icon={ArrowDown01Icon} size={32} className="mx-auto mb-3 text-white/10" />
+          <p className="text-white/25 text-sm">{i18n._(msg`autoDownload.noActiveDownloads`)}</p>
         </div>
       )}
 
       {/* Download detail drawer */}
       <DownloadDetailModal
         dl={detailGid ? filteredDownloads.find((d) => d.gid === detailGid) : undefined}
-        ruleName={detailGid ? filteredDownloads.find((d) => d.gid === detailGid)?.rule_name : undefined}
+        ruleName={
+          detailGid ? filteredDownloads.find((d) => d.gid === detailGid)?.rule_name : undefined
+        }
         open={!!detailGid}
         onClose={() => setDetailGid(null)}
       />
@@ -2864,7 +2475,17 @@ function DownloadDetailModal({
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads'] }),
   });
 
-  if (!d) return <Sheet open={open} onOpenChange={(o) => { if (!o) onClose(); }}><SheetContent side="right" className="!w-[480px] !max-w-[90vw]" /></Sheet>;
+  if (!d)
+    return (
+      <Sheet
+        open={open}
+        onOpenChange={(o) => {
+          if (!o) onClose();
+        }}
+      >
+        <SheetContent side="right" className="!w-[480px] !max-w-[90vw]" />
+      </Sheet>
+    );
 
   const parsed = parseDownloadName(d.name);
   const pct = d.total_bytes > 0 ? Math.min(100, (d.completed_bytes / d.total_bytes) * 100) : 0;
@@ -2873,7 +2494,12 @@ function DownloadDetailModal({
   const isActive = d.status === 'active' || d.status === 'paused' || d.status === 'waiting';
 
   return (
-    <Sheet open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
+    <Sheet
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) onClose();
+      }}
+    >
       <SheetContent side="right" showCloseButton={false} className="!w-[480px] !max-w-[90vw]">
         {/* Header */}
         <div className="px-5 pt-5 pb-3">
@@ -2882,10 +2508,17 @@ function DownloadDetailModal({
               <h2 className="text-[15px] font-semibold text-white truncate">{parsed.title}</h2>
               <div className="flex items-center gap-2 mt-1">
                 {parsed.episode && (
-                  <span className="text-[12px] font-semibold text-mm-accent tabular-nums">EP {parsed.episode}</span>
+                  <span className="text-[12px] font-semibold text-mm-accent tabular-nums">
+                    EP {parsed.episode}
+                  </span>
                 )}
                 <span className="flex items-center gap-1.5 text-[11px] text-white/40">
-                  <span className={cn('w-1.5 h-1.5 rounded-full', STATUS_INDICATOR[d.status] ?? 'bg-white/10')} />
+                  <span
+                    className={cn(
+                      'w-1.5 h-1.5 rounded-full',
+                      STATUS_INDICATOR[d.status] ?? 'bg-white/10'
+                    )}
+                  />
                   <span className="capitalize">{d.status}</span>
                 </span>
               </div>
@@ -2915,7 +2548,10 @@ function DownloadDetailModal({
               {d.status === 'active' && d.speed_bytes > 0 && (
                 <motion.div
                   className="absolute inset-y-0 w-[60%] rounded-full"
-                  style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)' }}
+                  style={{
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                  }}
                   animate={{ x: ['-100%', '200%'] }}
                   transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
                 />
@@ -2925,7 +2561,9 @@ function DownloadDetailModal({
               <span className="text-[11px] tabular-nums text-white/40">
                 {formatBytes(d.completed_bytes)} / {formatBytes(d.total_bytes)}
               </span>
-              <span className="text-[11px] tabular-nums text-white/50 font-medium">{Math.round(pct)}%</span>
+              <span className="text-[11px] tabular-nums text-white/50 font-medium">
+                {Math.round(pct)}%
+              </span>
             </div>
           </div>
         )}
@@ -2934,13 +2572,19 @@ function DownloadDetailModal({
         {d.status === 'active' && (
           <div className="px-5 pb-3 flex items-center gap-4">
             <div>
-              <p className="text-[10px] text-white/25 uppercase tracking-wider">{i18n._(msg`autoDownload.detail.speed`)}</p>
-              <p className="text-[13px] tabular-nums text-white/70 font-medium">{formatSpeed(d.speed_bytes)}</p>
+              <p className="text-[10px] text-white/25 uppercase tracking-wider">
+                {i18n._(msg`autoDownload.detail.speed`)}
+              </p>
+              <p className="text-[13px] tabular-nums text-white/70 font-medium">
+                {formatSpeed(d.speed_bytes)}
+              </p>
             </div>
             {eta > 0 && (
               <div>
                 <p className="text-[10px] text-white/25 uppercase tracking-wider">ETA</p>
-                <p className="text-[13px] tabular-nums text-white/70 font-medium">{formatETA(eta)}</p>
+                <p className="text-[13px] tabular-nums text-white/70 font-medium">
+                  {formatETA(eta)}
+                </p>
               </div>
             )}
           </div>
@@ -2955,7 +2599,10 @@ function DownloadDetailModal({
             <InfoRow label={i18n._(msg`autoDownload.detail.rule`)} value={ruleName} />
           )}
           <InfoRow label="GID" value={d.gid} mono />
-          <InfoRow label={i18n._(msg`autoDownload.detail.created`)} value={new Date(d.created_at).toLocaleString()} />
+          <InfoRow
+            label={i18n._(msg`autoDownload.detail.created`)}
+            value={new Date(d.created_at).toLocaleString()}
+          />
           {fileInfo?.dir && (
             <InfoRow label={i18n._(msg`autoDownload.detail.saveDir`)} value={fileInfo.dir} mono />
           )}
@@ -2983,14 +2630,20 @@ function DownloadDetailModal({
                       className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-[11px] text-white/50 truncate" title={f.path}>{fileName}</p>
+                        <p className="text-[11px] text-white/50 truncate" title={f.path}>
+                          {fileName}
+                        </p>
                       </div>
-                      <span className="text-[10px] tabular-nums text-white/25 shrink-0">{formatBytes(f.size)}</span>
+                      <span className="text-[10px] tabular-nums text-white/25 shrink-0">
+                        {formatBytes(f.size)}
+                      </span>
                       {f.size > 0 && (
-                        <span className={cn(
-                          'text-[10px] tabular-nums w-8 text-right shrink-0',
-                          filePct >= 100 ? 'text-green-400/50' : 'text-white/20'
-                        )}>
+                        <span
+                          className={cn(
+                            'text-[10px] tabular-nums w-8 text-right shrink-0',
+                            filePct >= 100 ? 'text-green-400/50' : 'text-white/20'
+                          )}
+                        >
                           {Math.round(filePct)}%
                         </span>
                       )}
@@ -3042,7 +2695,9 @@ function InfoRow({ label, value, mono }: { label: string; value: string; mono?: 
   return (
     <div>
       <p className="text-[10px] text-white/25 uppercase tracking-wider mb-0.5">{label}</p>
-      <p className={cn('text-[12px] text-white/60 break-all', mono && 'font-mono text-[11px]')}>{value}</p>
+      <p className={cn('text-[12px] text-white/60 break-all', mono && 'font-mono text-[11px]')}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -3244,17 +2899,10 @@ function SeedStatusDot({ isSeeding }: { isSeeding: boolean }) {
       <div
         className={cn(
           'w-1.5 h-1.5 rounded-full',
-          isSeeding
-            ? 'bg-green-400/60 shadow-[0_0_4px_rgba(74,222,128,0.3)]'
-            : 'bg-white/15'
+          isSeeding ? 'bg-green-400/60 shadow-[0_0_4px_rgba(74,222,128,0.3)]' : 'bg-white/15'
         )}
       />
-      <span
-        className={cn(
-          'text-[9px]',
-          isSeeding ? 'text-green-400/50' : 'text-white/20'
-        )}
-      >
+      <span className={cn('text-[9px]', isSeeding ? 'text-green-400/50' : 'text-white/20')}>
         {isSeeding ? 'Seeding' : 'Idle'}
       </span>
     </div>
@@ -3299,9 +2947,7 @@ function CompletedEpisodeRow({
       exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.12 } }}
       className="group/ep flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/[0.025] transition-colors"
     >
-      {showCover && (
-        <AnimeCover bangumiId={coverBangumiId} size={36} />
-      )}
+      {showCover && <AnimeCover bangumiId={coverBangumiId} size={36} />}
 
       {parsed.episode && (
         <span className="text-[11px] font-semibold text-mm-accent/70 tabular-nums w-[52px] shrink-0">
@@ -3309,9 +2955,7 @@ function CompletedEpisodeRow({
         </span>
       )}
 
-      <span className="text-[10px] text-white/30 truncate flex-1 min-w-0">
-        {download.name}
-      </span>
+      <span className="text-[10px] text-white/30 truncate flex-1 min-w-0">{download.name}</span>
 
       {showCover && <SeedStatusDot isSeeding={isSeeding} />}
 
@@ -3335,7 +2979,10 @@ function CompletedEpisodeRow({
         )}
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onDelete(download.gid); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(download.gid);
+          }}
           disabled={isDeleting}
           className="p-1 rounded hover:bg-red-500/10 text-white/15 hover:text-red-400/70 transition-colors cursor-pointer"
           title="Delete"
@@ -3430,9 +3077,13 @@ function CompletedGroupCard({
           </div>
           <div className="text-[10px] text-white/25 mb-2">
             {group.subgroup && <>{group.subgroup} · </>}
-            {formatBytes(group.totalBytes)} · Latest: {new Date(group.latestDate).toLocaleDateString()}
+            {formatBytes(group.totalBytes)} · Latest:{' '}
+            {new Date(group.latestDate).toLocaleDateString()}
             {group.libraryName && (
-              <> · <span className="text-mm-accent/40">{group.libraryName}</span></>
+              <>
+                {' '}
+                · <span className="text-mm-accent/40">{group.libraryName}</span>
+              </>
             )}
           </div>
           <div className="flex gap-1 flex-wrap">
@@ -3493,7 +3144,12 @@ function CompletedGroupCard({
                   {effectiveBangumiId && (
                     <button
                       type="button"
-                      onClick={() => navigate({ to: '/watch/$animeId', params: { animeId: String(effectiveBangumiId) } })}
+                      onClick={() =>
+                        navigate({
+                          to: '/watch/$animeId',
+                          params: { animeId: String(effectiveBangumiId) },
+                        })
+                      }
                       className="text-[9px] text-mm-accent/40 bg-mm-accent/[0.06] hover:bg-mm-accent/[0.12] hover:text-mm-accent/70 px-2 py-1 rounded transition-colors cursor-pointer"
                     >
                       <span className="flex items-center gap-1">
@@ -3531,7 +3187,10 @@ function CompletedTimelineView({
   deletingGids: Set<string>;
 }) {
   const sections = useMemo(() => {
-    const sectionMap = new Map<string, { download: CompletedDownload; parsed: ReturnType<typeof parseDownloadName> }[]>();
+    const sectionMap = new Map<
+      string,
+      { download: CompletedDownload; parsed: ReturnType<typeof parseDownloadName> }[]
+    >();
 
     for (const dl of downloads) {
       const section = getDateSection(dl.created_at);
@@ -3622,10 +3281,7 @@ function CompletedSubTab({
     return (
       <div className="space-y-2">
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="flex gap-3 p-3 rounded-[10px] bg-white/[0.02] animate-pulse"
-          >
+          <div key={i} className="flex gap-3 p-3 rounded-[10px] bg-white/[0.02] animate-pulse">
             <div className="w-[52px] h-[72px] rounded-md bg-white/[0.06] shrink-0" />
             <div className="flex-1 space-y-2 py-1">
               <div className="h-3.5 rounded bg-white/[0.06] w-[45%]" />
@@ -3645,9 +3301,7 @@ function CompletedSubTab({
   if (downloads.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-white/20 text-sm">
-          {i18n._(msg`autoDownload.noCompletedDownloads`)}
-        </p>
+        <p className="text-white/20 text-sm">{i18n._(msg`autoDownload.noCompletedDownloads`)}</p>
       </div>
     );
   }
@@ -3660,7 +3314,9 @@ function CompletedSubTab({
         totalSeries={groups.length}
         totalEpisodes={totalEpisodes}
         totalBytes={totalBytes}
-        onSelectAll={() => {/* batch select — can be wired later */}}
+        onSelectAll={() => {
+          /* batch select — can be wired later */
+        }}
         onClearAll={() => clearAllMutation.mutate()}
         isClearingAll={clearAllMutation.isPending}
       />
@@ -3725,7 +3381,7 @@ function parseDownloadName(name: string): {
 
   // Extract episode number patterns like " - 34 " or "[36]" or "S01E05"
   const epMatch = rest.match(/\s-\s(\d{1,3})\b|\[(\d{1,3})\]|S\d{1,2}E(\d{1,3})/i);
-  const episode: string | null = epMatch ? (epMatch[1] || epMatch[2] || epMatch[3] || null) : null;
+  const episode: string | null = epMatch ? epMatch[1] || epMatch[2] || epMatch[3] || null : null;
 
   // Extract bracketed tags like [1080p], [HEVC-10bit], [WebRip]
   const tagMatches = rest.match(/\[([^\]]+)\]/g) || [];
@@ -3740,7 +3396,10 @@ function parseDownloadName(name: string): {
     .replace(/\s{2,}/g, ' ')
     .trim();
   // Trim trailing episode separator
-  title = title.replace(/\s-\s*$/, '').replace(/\s-\s\d{1,3}\s*$/, '').trim();
+  title = title
+    .replace(/\s-\s*$/, '')
+    .replace(/\s-\s\d{1,3}\s*$/, '')
+    .trim();
 
   return { title: title || name, subgroup, episode, tags };
 }
@@ -3758,7 +3417,7 @@ const STATUS_INDICATOR: Record<string, string> = {
 
 // ── Download Card (shared by Downloads sub-tab & Subscription expand) ────
 
-function DownloadCard({
+export function DownloadCard({
   dl,
   ruleName,
   selected,
@@ -3787,8 +3446,7 @@ function DownloadCard({
   onDelete: () => void;
 }) {
   const { i18n } = useLingui();
-  const pct =
-    dl.total_bytes > 0 ? Math.min(100, (dl.completed_bytes / dl.total_bytes) * 100) : 0;
+  const pct = dl.total_bytes > 0 ? Math.min(100, (dl.completed_bytes / dl.total_bytes) * 100) : 0;
   const remaining = dl.total_bytes > 0 ? dl.total_bytes - dl.completed_bytes : 0;
   const dlEta = dl.speed_bytes > 0 ? remaining / dl.speed_bytes : 0;
 
@@ -3817,11 +3475,12 @@ function DownloadCard({
             className="absolute inset-y-0 left-0"
             animate={{
               width: `${pct}%`,
-              backgroundColor: dl.status === 'active'
-                ? 'rgba(74,222,128,0.7)'
-                : dl.status === 'paused'
-                  ? 'rgba(250,204,21,0.5)'
-                  : 'rgba(255,255,255,0.12)',
+              backgroundColor:
+                dl.status === 'active'
+                  ? 'rgba(74,222,128,0.7)'
+                  : dl.status === 'paused'
+                    ? 'rgba(250,204,21,0.5)'
+                    : 'rgba(255,255,255,0.12)',
             }}
             transition={{ type: 'spring', stiffness: 120, damping: 25 }}
           />
@@ -3829,7 +3488,8 @@ function DownloadCard({
             <motion.div
               className="absolute inset-y-0 w-[40%]"
               style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                background:
+                  'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
               }}
               animate={{ x: ['-100%', '300%'] }}
               transition={{ duration: 1.8, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
@@ -3852,7 +3512,10 @@ function DownloadCard({
         {onSelect && (
           <div
             className="shrink-0"
-            onClick={(e) => { e.stopPropagation(); onSelect(e as unknown as React.MouseEvent); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(e as unknown as React.MouseEvent);
+            }}
           >
             <Checkbox checked={selected} size={18} />
           </div>
@@ -3862,9 +3525,7 @@ function DownloadCard({
         <div className="flex-1 min-w-0">
           {/* Title row */}
           <div className="flex items-baseline gap-2 min-w-0">
-            <p className="text-[13px] font-medium text-white/90 truncate">
-              {parsed.title}
-            </p>
+            <p className="text-[13px] font-medium text-white/90 truncate">{parsed.title}</p>
             {parsed.episode && (
               <span className="text-[12px] font-bold text-green-400/80 tabular-nums shrink-0">
                 EP {parsed.episode}
@@ -3924,9 +3585,7 @@ function DownloadCard({
                 {formatSpeed(dl.speed_bytes)}
               </span>
               {dlEta > 0 && (
-                <span className="text-[9px] tabular-nums text-white/20">
-                  {formatETA(dlEta)}
-                </span>
+                <span className="text-[9px] tabular-nums text-white/20">{formatETA(dlEta)}</span>
               )}
             </div>
           )}
@@ -3936,32 +3595,39 @@ function DownloadCard({
             <div className="relative w-9 h-9 shrink-0">
               <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
                 <circle
-                  cx="18" cy="18" r="15"
+                  cx="18"
+                  cy="18"
+                  r="15"
                   fill="none"
                   stroke="rgba(255,255,255,0.06)"
                   strokeWidth="2.5"
                 />
                 <motion.circle
-                  cx="18" cy="18" r="15"
+                  cx="18"
+                  cy="18"
+                  r="15"
                   fill="none"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeDasharray={`${2 * Math.PI * 15}`}
                   animate={{
                     strokeDashoffset: `${2 * Math.PI * 15 * (1 - pct / 100)}`,
-                    stroke: dl.status === 'active'
-                      ? 'rgba(74,222,128,0.8)'
-                      : dl.status === 'paused'
-                        ? 'rgba(250,204,21,0.5)'
-                        : 'rgba(255,255,255,0.15)',
+                    stroke:
+                      dl.status === 'active'
+                        ? 'rgba(74,222,128,0.8)'
+                        : dl.status === 'paused'
+                          ? 'rgba(250,204,21,0.5)'
+                          : 'rgba(255,255,255,0.15)',
                   }}
                   transition={{ type: 'spring', stiffness: 80, damping: 20 }}
                 />
               </svg>
-              <span className={cn(
-                'absolute inset-0 flex items-center justify-center text-[9px] font-bold tabular-nums',
-                pct >= 100 ? 'text-green-400/80' : 'text-white/50'
-              )}>
+              <span
+                className={cn(
+                  'absolute inset-0 flex items-center justify-center text-[9px] font-bold tabular-nums',
+                  pct >= 100 ? 'text-green-400/80' : 'text-white/50'
+                )}
+              >
                 {Math.round(pct)}
               </span>
             </div>
@@ -3972,7 +3638,10 @@ function DownloadCard({
             {dl.status === 'active' && (
               <motion.button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); onPause(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPause();
+                }}
                 whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.9 }}
                 className="p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 cursor-pointer transition-colors"
@@ -3984,7 +3653,10 @@ function DownloadCard({
             {(dl.status === 'paused' || dl.status === 'waiting') && (
               <motion.button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); onResume(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onResume();
+                }}
                 whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.9 }}
                 className="p-1.5 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 cursor-pointer transition-colors"
@@ -3995,7 +3667,10 @@ function DownloadCard({
             )}
             <motion.button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
               className="p-1.5 rounded-md hover:bg-red-500/10 text-white/25 hover:text-red-400/80 cursor-pointer transition-colors"
