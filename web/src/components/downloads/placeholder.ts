@@ -16,5 +16,5 @@ export function placeholderGradient(title: string): string {
 
 export function placeholderLetter(title: string): string {
   const trimmed = title.trim();
-  return trimmed ? Array.from(trimmed)[0]!.toUpperCase() : '?';
+  return (Array.from(trimmed)[0] ?? '').toUpperCase() || '?';
 }

@@ -21,6 +21,7 @@ export function AnimeCoverBlock({ coverUrl, title, className }: Props) {
         className
       )}
       style={!showImage ? { background: placeholderGradient(title) } : undefined}
+      {...(!showImage ? { role: 'img' as const, 'aria-label': title } : {})}
     >
       {showImage && (
         <img

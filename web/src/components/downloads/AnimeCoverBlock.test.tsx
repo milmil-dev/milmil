@@ -12,8 +12,8 @@ test('renders img when coverUrl provided', () => {
 });
 
 test('renders placeholder letter when coverUrl missing', () => {
-  render(<AnimeCoverBlock coverUrl={undefined} title="Frieren" />);
-  expect(screen.queryByRole('img')).toBeNull();
+  const { container } = render(<AnimeCoverBlock coverUrl={undefined} title="Frieren" />);
+  expect(container.querySelector('img')).toBeNull();
   expect(screen.getByText('F')).toBeInTheDocument();
 });
 
