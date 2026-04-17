@@ -145,7 +145,7 @@ The card is **dumb** — per-mode logic (which stats to show, what colour the bi
 
 ```
 web/src/hooks/useAnimeCover.ts       — wraps discoverApi.detail(bangumiId), staleTime 24h
-web/src/store/downloads-ui.ts        — Zustand: { expandedGroupIds: Set<string>, ... }
+web/src/store/downloads-ui-store.ts  — Zustand: { expandedGroupIds: Set<string>, ... }
 ```
 
 Expand state is session-memory-only (no `localStorage`). Default rule: in 下載緊 tab auto-expand all active groups; in the other tabs everything starts collapsed.
@@ -244,7 +244,7 @@ Four PRs in sequence. Each ends in a working, testable state.
 - `AnimeDownloadCard` + `AnimeCoverBlock` + `AnimeGroupHeader` + `AnimeEpisodeList`
 - All four `EpisodeRow` variants
 - `useAnimeCover` hook
-- `useDownloadsUiStore` for expand state
+- `useDownloadsUIStore` for expand state
 - Vitest tests: render each mode (subscribed/downloading/completed), expand toggle, cover fallback, missing-bangumi fallback
 
 **PR 2 · Split `DownloadsPage.tsx`** — file restructure, no visual change yet.
