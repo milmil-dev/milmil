@@ -1,5 +1,10 @@
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+
+// Activate a minimal locale so I18nProvider renders children in tests.
+if (!i18n.locale) {
+  i18n.loadAndActivate({ locale: 'en', messages: {} });
+}
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type RenderOptions, render } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
