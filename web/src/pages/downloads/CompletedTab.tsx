@@ -13,11 +13,16 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
+import { EpisodeRowComplete } from '../../components/downloads/episode-rows/EpisodeRowComplete';
 import { Button } from '../../components/ui/button';
+import { useAnimeCover } from '../../hooks/use-anime-cover';
 import { discoverApi } from '../../lib/api/discover';
-import { downloadApi, ruleApi } from '../../lib/api/downloads';
+import { type Download, type DownloadGroup, downloadApi, ruleApi } from '../../lib/api/downloads';
 import { cn } from '../../lib/utils';
+import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { AnimeCover, formatBytes, parseDownloadName } from '../DownloadsPage';
+import { formatRelative, toCompleteProps } from './shared/adapters';
 
 // ── Completed Sub-tab types ─────────────────────────────────────────────
 
@@ -547,9 +552,9 @@ function CompletedTimelineView({
   );
 }
 
-// ── Completed Sub-tab ────────────────────────────────────────────────────
+// ── Completed Sub-tab (legacy — kept for Task 19 cleanup) ───────────────
 
-function CompletedTab({
+function _LegacyCompletedTab({
   downloads,
   isLoading,
 }: {
@@ -680,4 +685,98 @@ function CompletedTab({
   );
 }
 
-export default CompletedTab;
+// ── New CompletedTab — renders AnimeDownloadCard per completed group ─────
+
+interface CompletedTabProps {
+  groups: DownloadGroup[];
+  miscDownloads: Download[];
+  isLoading: boolean;
+}
+
+export default function CompletedTab({ groups, miscDownloads, isLoading }: CompletedTabProps) {
+  const completeGroups = useMemo(
+    () => groups.filter((g) => g.complete_count > 0),
+    [groups],
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-2.5">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-[160px] rounded-[14px] bg-white/[0.02] border border-white/[0.06] animate-pulse"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (completeGroups.length === 0 && miscDownloads.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-white/20 text-sm">No completed downloads</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      {completeGroups.map((g) => (
+        <CompletedCard key={g.rule_id} group={g} />
+      ))}
+      {/* MiscDownloadsSection hook-up deferred to Task 18 */}
+    </div>
+  );
+}
+
+function CompletedCard({ group }: { group: DownloadGroup }) {
+  const { coverUrl } = useAnimeCover(group.bangumi_id);
+  const expanded = useDownloadsUIStore((s) => s.expandedGroupIds.has(group.rule_id));
+  const toggle = useDownloadsUIStore((s) => s.toggleGroup);
+
+  const complete = useMemo(() => {
+    return group.downloads
+      .filter((d) => d.status === 'complete')
+      .slice()
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }, [group.downloads]);
+
+  const totalSize = useMemo(
+    () => complete.reduce((s, d) => s + d.total_bytes, 0),
+    [complete],
+  );
+
+  const latestCompletedAt = complete[0]?.created_at;
+
+  const chips = [group.subgroup_filter, group.resolution_filter].filter(
+    (s): s is string => !!s && s.trim() !== '',
+  );
+
+  return (
+    <AnimeDownloadCard
+      coverUrl={coverUrl}
+      title={group.rule_name}
+      subChips={chips}
+      stats={{
+        mode: 'completed',
+        percent: 100,
+        completedCount: complete.length,
+        totalBytes: totalSize,
+        completedAtRelative: latestCompletedAt ? formatRelative(latestCompletedAt) : undefined,
+        live: false,
+      }}
+      expanded={expanded}
+      onToggle={() => toggle(group.rule_id)}
+    >
+      {complete.map((d) => (
+        <EpisodeRowComplete
+          key={d.gid}
+          {...toCompleteProps(d)}
+          onPlay={() => {/* TODO wire in PR 4 */}}
+          onDelete={() => {/* TODO wire in PR 4 */}}
+        />
+      ))}
+    </AnimeDownloadCard>
+  );
+}
