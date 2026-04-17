@@ -16,6 +16,8 @@ import { useIsMobile } from '../../hooks/use-mobile';
 import type { AnimeSummary } from '../../lib/api/discover';
 import {
   type DownloadGroup,
+  type DownloadRule,
+  type RSSFeed,
   downloadApi,
   downloadKeys,
   rssFeedApi,
@@ -24,6 +26,19 @@ import {
 import { animeGradient } from '../../lib/gradient';
 import { cn } from '../../lib/utils';
 import { DownloadCard, SourceBadge, useAnimeDetail } from '../DownloadsPage';
+import { useAnimeCover } from '../../hooks/use-anime-cover';
+import { useDownloadsUIStore } from '../../store/downloads-ui-store';
+import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
+import { EpisodeRowActive } from '../../components/downloads/episode-rows/EpisodeRowActive';
+import { EpisodeRowComplete } from '../../components/downloads/episode-rows/EpisodeRowComplete';
+import { EpisodeRowPending } from '../../components/downloads/episode-rows/EpisodeRowPending';
+import {
+  deriveGroupPercent,
+  deriveNextFetch,
+  ruleSubChips,
+  toActiveProps,
+  toCompleteProps,
+} from './shared/adapters';
 
 // ── Subscriptions Sub-tab ────────────────────────────────────────────────
 
@@ -496,32 +511,25 @@ export default function SubscribedTab({
   isLoading,
   onSwitchToSearch,
 }: {
-  rules: import('../../lib/api/downloads').DownloadRule[];
-  feeds: import('../../lib/api/downloads').RSSFeed[];
+  rules: DownloadRule[];
+  feeds: RSSFeed[];
   groups: DownloadGroup[];
   isLoading: boolean;
   onSwitchToSearch: () => void;
 }) {
   const { i18n } = useLingui();
-  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
-
   const feedMap = new Map(feeds.map((f) => [f.id, f]));
-  const ruleGroupMap = new Map<string, DownloadGroup>();
-  for (const g of groups) {
-    if (g.rule_id) ruleGroupMap.set(g.rule_id, g);
-  }
+  const groupMap = new Map(groups.map((g) => [g.rule_id, g]));
 
-  const selectedRule = rules.find((r) => r.id === selectedRuleId);
-
-  // Loading skeleton — card grid
+  // Loading skeleton
   if (isLoading) {
     return (
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="space-y-2">
-            <Skeleton className="aspect-[6/8] w-full rounded-md" />
-            <Skeleton className="h-3.5 w-3/4" />
-          </div>
+      <div className="flex flex-col gap-2.5">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-[160px] rounded-[14px] bg-white/[0.02] border border-white/[0.06] animate-pulse"
+          />
         ))}
       </div>
     );
@@ -552,29 +560,86 @@ export default function SubscribedTab({
   }
 
   return (
-    <>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
-        {rules.map((rule, i) => (
-          <SubscriptionAnimeCard
-            key={rule.id}
-            rule={rule}
-            feed={feedMap.get(rule.rss_feed_id)}
-            group={ruleGroupMap.get(rule.id)}
-            index={i}
-            onClick={() => setSelectedRuleId(rule.id)}
-          />
-        ))}
-      </div>
-
-      {/* Rule editor modal (edit) */}
-      {selectedRule && (
-        <RuleEditorModal
-          rule={selectedRule}
-          feed={feedMap.get(selectedRule.rss_feed_id)}
-          open={!!selectedRuleId}
-          onClose={() => setSelectedRuleId(null)}
+    <div className="flex flex-col gap-2.5">
+      {rules.map((rule) => (
+        <SubscribedCard
+          key={rule.id}
+          rule={rule}
+          feed={feedMap.get(rule.rss_feed_id)}
+          group={groupMap.get(rule.id)}
         />
+      ))}
+    </div>
+  );
+}
+
+function SubscribedCard({
+  rule,
+  feed,
+  group,
+}: {
+  rule: DownloadRule;
+  feed?: RSSFeed;
+  group?: DownloadGroup;
+}) {
+  const { i18n } = useLingui();
+  const { coverUrl } = useAnimeCover(rule.bangumi_id);
+  const queryClient = useQueryClient();
+  const expanded = useDownloadsUIStore((s) => s.expandedGroupIds.has(rule.id));
+  const toggle = useDownloadsUIStore((s) => s.toggleGroup);
+
+  const recent = (group?.downloads ?? []).slice(0, 10);
+
+  const refreshMutation = useMutation({
+    mutationFn: () => (feed ? rssFeedApi.refresh(feed.id) : Promise.resolve()),
+    onSuccess: () => {
+      toast.success(i18n._(msg`autoDownload.refreshed`));
+      queryClient.invalidateQueries({ queryKey: downloadKeys.feeds() });
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <AnimeDownloadCard
+      coverUrl={coverUrl}
+      title={rule.name}
+      subChips={ruleSubChips(rule)}
+      stats={{
+        mode: 'subscribed',
+        percent: deriveGroupPercent(group),
+        activeCount: group?.total_count ?? 0,
+        nextFetchRelative: deriveNextFetch(feed),
+        live: rule.enabled === 1,
+      }}
+      expanded={expanded}
+      onToggle={() => toggle(rule.id)}
+    >
+      {recent.length === 0 ? (
+        <EpisodeRowPending
+          nextFetchRelative={deriveNextFetch(feed) ?? '—'}
+          onRefresh={() => refreshMutation.mutate()}
+        />
+      ) : (
+        recent.map((d) =>
+          d.status === 'complete' ? (
+            <EpisodeRowComplete
+              key={d.gid}
+              {...toCompleteProps(d)}
+              onPlay={() => {/* TODO wire in PR 4 */}}
+              onDelete={() => {/* TODO wire in PR 4 */}}
+            />
+          ) : (
+            <EpisodeRowActive
+              key={d.gid}
+              {...toActiveProps(d)}
+              onPause={() => {/* TODO wire in PR 4 */}}
+              onResume={() => {/* TODO wire in PR 4 */}}
+              onDelete={() => {/* TODO wire in PR 4 */}}
+            />
+          )
+        )
       )}
-    </>
+    </AnimeDownloadCard>
   );
 }
