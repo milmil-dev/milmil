@@ -4551,3 +4551,45 @@ msgstr "Path not found"
 
 msgid "library.folderPicker.refresh"
 msgstr "Refresh"
+
+msgid "downloads.downloading"
+msgstr "downloading"
+
+msgid "downloads.autoEnabled"
+msgstr "Auto-download on"
+
+msgid "downloads.autoDisabled"
+msgstr "Disabled"
+
+msgid "downloads.nextFetch"
+msgstr "Next fetch"
+
+msgid "downloads.completedAt"
+msgstr "Completed"
+
+msgid "downloads.collapse"
+msgstr "Collapse"
+
+msgid "downloads.expand"
+msgstr "Expand"
+
+msgid "downloads.waiting"
+msgstr "Waiting"
+
+msgid "downloads.refresh"
+msgstr "Refresh"
+
+msgid "downloads.pause"
+msgstr "Pause"
+
+msgid "downloads.resume"
+msgstr "Resume"
+
+msgid "downloads.delete"
+msgstr "Delete"
+
+msgid "downloads.play"
+msgstr "Play"
+
+msgid "downloads.miscHeader"
+msgstr "Other downloads"

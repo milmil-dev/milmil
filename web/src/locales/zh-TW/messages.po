@@ -4544,3 +4544,45 @@ msgstr "找不到路徑"
 
 msgid "library.folderPicker.refresh"
 msgstr "重新整理"
+
+msgid "downloads.downloading"
+msgstr "下載中"
+
+msgid "downloads.autoEnabled"
+msgstr "自動下載中"
+
+msgid "downloads.autoDisabled"
+msgstr "已停用"
+
+msgid "downloads.nextFetch"
+msgstr "下次刷新"
+
+msgid "downloads.completedAt"
+msgstr "完成於"
+
+msgid "downloads.collapse"
+msgstr "收合"
+
+msgid "downloads.expand"
+msgstr "展開"
+
+msgid "downloads.waiting"
+msgstr "等待中"
+
+msgid "downloads.refresh"
+msgstr "重新整理"
+
+msgid "downloads.pause"
+msgstr "暫停"
+
+msgid "downloads.resume"
+msgstr "繼續"
+
+msgid "downloads.delete"
+msgstr "刪除"
+
+msgid "downloads.play"
+msgstr "播放"
+
+msgid "downloads.miscHeader"
+msgstr "其他下載"

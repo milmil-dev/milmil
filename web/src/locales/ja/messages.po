@@ -4546,3 +4546,45 @@ msgstr "パスが見つかりません"
 
 msgid "library.folderPicker.refresh"
 msgstr "更新"
+
+msgid "downloads.downloading"
+msgstr "ダウンロード中"
+
+msgid "downloads.autoEnabled"
+msgstr "自動ダウンロード"
+
+msgid "downloads.autoDisabled"
+msgstr "停止中"
+
+msgid "downloads.nextFetch"
+msgstr "次回取得"
+
+msgid "downloads.completedAt"
+msgstr "完了"
+
+msgid "downloads.collapse"
+msgstr "閉じる"
+
+msgid "downloads.expand"
+msgstr "開く"
+
+msgid "downloads.waiting"
+msgstr "待機中"
+
+msgid "downloads.refresh"
+msgstr "更新"
+
+msgid "downloads.pause"
+msgstr "一時停止"
+
+msgid "downloads.resume"
+msgstr "再開"
+
+msgid "downloads.delete"
+msgstr "削除"
+
+msgid "downloads.play"
+msgstr "再生"
+
+msgid "downloads.miscHeader"
+msgstr "その他"

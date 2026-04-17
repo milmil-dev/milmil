@@ -4546,3 +4546,45 @@ msgstr "경로를 찾을 수 없습니다"
 
 msgid "library.folderPicker.refresh"
 msgstr "새로고침"
+
+msgid "downloads.downloading"
+msgstr "다운로드 중"
+
+msgid "downloads.autoEnabled"
+msgstr "자동 다운로드"
+
+msgid "downloads.autoDisabled"
+msgstr "중지됨"
+
+msgid "downloads.nextFetch"
+msgstr "다음 갱신"
+
+msgid "downloads.completedAt"
+msgstr "완료"
+
+msgid "downloads.collapse"
+msgstr "접기"
+
+msgid "downloads.expand"
+msgstr "펼치기"
+
+msgid "downloads.waiting"
+msgstr "대기 중"
+
+msgid "downloads.refresh"
+msgstr "새로고침"
+
+msgid "downloads.pause"
+msgstr "일시정지"
+
+msgid "downloads.resume"
+msgstr "재개"
+
+msgid "downloads.delete"
+msgstr "삭제"
+
+msgid "downloads.play"
+msgstr "재생"
+
+msgid "downloads.miscHeader"
+msgstr "기타 다운로드"
