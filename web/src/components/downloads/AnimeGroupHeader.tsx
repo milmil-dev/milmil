@@ -89,7 +89,7 @@ export function AnimeGroupHeader({
           <div className="mt-2.5 h-[2px] bg-[rgba(74,222,128,0.06)] rounded-sm overflow-hidden">
             <div
               data-testid="progress-fill"
-              className="h-full rounded-sm shadow-[0_0_8px_rgba(74,222,128,0.35)]"
+              className="h-full rounded-sm"
               style={{
                 width: `${percent}%`,
                 background: 'linear-gradient(90deg, rgba(74,222,128,0.85), #4ade80)',
@@ -97,7 +97,7 @@ export function AnimeGroupHeader({
             />
           </div>
         )}
-        {!showProgressBar && <div className="mt-2.5 h-[1px] bg-[rgba(74,222,128,0.18)]" />}
+        {!showProgressBar && <div data-testid="progress-fill-neutral" className="mt-2.5 h-[1px] bg-white/[0.14]" />}
       </div>
 
       <div className="flex flex-col items-end justify-between gap-2">
@@ -141,7 +141,7 @@ function StatLine({
       node: (
         <span
           data-testid="live-dot"
-          className="w-[5px] h-[5px] rounded-full bg-[#4ade80] shadow-[0_0_0_3px_rgba(74,222,128,0.35)] animate-[pulse_1.6s_ease-in-out_infinite]"
+          className="w-[5px] h-[5px] rounded-full bg-[#4ade80] animate-[pulse_1.6s_ease-in-out_infinite]"
         />
       ),
     });
