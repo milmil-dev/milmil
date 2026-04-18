@@ -70,6 +70,110 @@ msgstr "Resume from"
 #~ msgid "search.tag.misc"
 #~ msgstr "Other"
 
+#. js-lingui-explicit-id
+#~ msgid "downloads.noActive"
+#~ msgstr "No active downloads"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.noCompleted"
+#~ msgstr "No completed downloads"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.deleted"
+#~ msgstr "Deleted"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.notMatched"
+#~ msgstr "This download isn't matched to an anime yet"
+
+#. js-lingui-explicit-id
+#~ msgid "ruleEditor.openEditor"
+#~ msgstr "Edit subscription"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.tab.library"
+#~ msgstr "Library"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.activity"
+#~ msgstr "Recent activity"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.name"
+#~ msgstr "Name"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.progress"
+#~ msgstr "Progress"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.created"
+#~ msgstr "Subscription time"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.more"
+#~ msgstr "More"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.autoDownload"
+#~ msgstr "Auto download"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.on"
+#~ msgstr "On"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.off"
+#~ msgstr "Off"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.refresh"
+#~ msgstr "Refresh now"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.openAnime"
+#~ msgstr "Open anime page"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.copyRSS"
+#~ msgstr "Copy RSS URL"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.copied"
+#~ msgstr "Copied"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.delete"
+#~ msgstr "Delete subscription"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.confirm.delete"
+#~ msgstr "Delete this subscription? The feed will also be removed."
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.autoDisabled"
+#~ msgstr "Auto-download off"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.summary.subscribed"
+#~ msgstr "subscribed"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.summary.downloading"
+#~ msgstr "downloading"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.summary.stored"
+#~ msgstr "stored"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.noRulesHint"
+#~ msgstr "No subscriptions yet — go search to add your first"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.searchEmpty"
+#~ msgstr "No anime matches \"{query}\""
+
 #: src/pages/LibraryDetailPage.tsx:375
 msgid "{missingCount} missing episodes"
 msgstr "{missingCount} missing episodes"
@@ -628,160 +732,158 @@ msgstr "Auto-download rule {0} ({1})"
 #~ msgstr "Auto-rename on match"
 
 #: src/pages/DownloadsPage.tsx:1617
-msgid "autoDownload.active"
-msgstr "Active"
+#~ msgid "autoDownload.active"
+#~ msgstr "Active"
 
-#: src/pages/DownloadsPage.tsx:2233
+#: src/pages/DownloadsPage.tsx:1701
 msgid "autoDownload.add"
 msgstr "Add"
 
-#: src/pages/DownloadsPage.tsx:2232
+#: src/pages/DownloadsPage.tsx:1700
 msgid "autoDownload.adding"
 msgstr "Adding…"
 
-#: src/pages/DownloadsPage.tsx:436
-#: src/pages/DownloadsPage.tsx:2202
+#: src/pages/DownloadsPage.tsx:457
+#: src/pages/DownloadsPage.tsx:1668
 msgid "autoDownload.addUrl"
 msgstr "Add URL"
 
-#: src/pages/DownloadsPage.tsx:911
-#: src/pages/DownloadsPage.tsx:933
-#: src/pages/DownloadsPage.tsx:1208
+#: src/pages/DownloadsPage.tsx:937
+#: src/pages/DownloadsPage.tsx:963
+#: src/pages/DownloadsPage.tsx:1236
 msgid "autoDownload.allSubgroups"
 msgstr "All subgroups"
 
 #: src/pages/DownloadsPage.tsx:2712
 #: src/pages/DownloadsPage.tsx:2755
-msgid "autoDownload.alsoDeleteFiles"
-msgstr "Also delete downloaded files from disk"
+#~ msgid "autoDownload.alsoDeleteFiles"
+#~ msgstr "Also delete downloaded files from disk"
 
-#: src/pages/DownloadsPage.tsx:933
+#: src/pages/DownloadsPage.tsx:962
 msgid "autoDownload.anyResolution"
 msgstr "Any resolution"
 
-#: src/pages/DownloadsPage.tsx:1280
-#: src/pages/DownloadsPage.tsx:2224
-#: src/pages/DownloadsPage.tsx:2722
-#: src/pages/DownloadsPage.tsx:2765
+#: src/pages/DownloadsPage.tsx:1308
+#: src/pages/DownloadsPage.tsx:1692
 msgid "autoDownload.cancel"
 msgstr "Cancel"
 
 #: src/pages/DownloadsPage.tsx:3250
-msgid "autoDownload.clearAll"
-msgstr "Clear All"
+#~ msgid "autoDownload.clearAll"
+#~ msgstr "Clear All"
 
 #: src/pages/DownloadsPage.tsx:3212
-msgid "autoDownload.completed.grouped"
-msgstr "Grouped"
+#~ msgid "autoDownload.completed.grouped"
+#~ msgstr "Grouped"
 
 #: src/pages/DownloadsPage.tsx:3240
-msgid "autoDownload.completed.selectAll"
-msgstr "Select All"
+#~ msgid "autoDownload.completed.selectAll"
+#~ msgstr "Select All"
 
 #: src/pages/DownloadsPage.tsx:3224
-msgid "autoDownload.completed.timeline"
-msgstr "Timeline"
+#~ msgid "autoDownload.completed.timeline"
+#~ msgstr "Timeline"
 
-#: src/pages/DownloadsPage.tsx:1289
+#: src/pages/DownloadsPage.tsx:1315
 msgid "autoDownload.confirm"
 msgstr "Confirm Follow"
 
 #: src/pages/DownloadsPage.tsx:2737
 #: src/pages/DownloadsPage.tsx:2780
-msgid "autoDownload.confirmDelete"
-msgstr "Delete"
+#~ msgid "autoDownload.confirmDelete"
+#~ msgstr "Delete"
 
 #: src/pages/DownloadsPage.tsx:3930
-msgid "autoDownload.connecting"
-msgstr "Connecting..."
+#~ msgid "autoDownload.connecting"
+#~ msgstr "Connecting..."
 
 #: src/pages/DownloadsPage.tsx:2677
 #: src/pages/DownloadsPage.tsx:4020
-msgid "autoDownload.delete"
-msgstr "Delete"
+#~ msgid "autoDownload.delete"
+#~ msgstr "Delete"
 
 #: src/pages/DownloadsPage.tsx:2606
 #: src/pages/DownloadsPage.tsx:2701
-msgid "autoDownload.deleteAll"
-msgstr "Delete All"
+#~ msgid "autoDownload.deleteAll"
+#~ msgstr "Delete All"
 
 #: src/pages/DownloadsPage.tsx:2707
-msgid "autoDownload.deleteAllDesc"
-msgstr "This will remove all downloads from the list and stop any active transfers."
+#~ msgid "autoDownload.deleteAllDesc"
+#~ msgstr "This will remove all downloads from the list and stop any active transfers."
 
 #: src/pages/DownloadsPage.tsx:1501
-msgid "autoDownload.deleted"
-msgstr "Unfollowed"
+#~ msgid "autoDownload.deleted"
+#~ msgstr "Unfollowed"
 
 #: src/pages/DownloadsPage.tsx:2415
-msgid "autoDownload.deletedAll"
-msgstr "All downloads deleted"
+#~ msgid "autoDownload.deletedAll"
+#~ msgstr "All downloads deleted"
 
 #: src/pages/DownloadsPage.tsx:2746
-msgid "autoDownload.deleteItem"
-msgstr "Delete Download"
+#~ msgid "autoDownload.deleteItem"
+#~ msgstr "Delete Download"
 
 #: src/pages/DownloadsPage.tsx:2700
-msgid "autoDownload.deleteSelected"
-msgstr "Delete"
+#~ msgid "autoDownload.deleteSelected"
+#~ msgstr "Delete"
 
 #: src/pages/DownloadsPage.tsx:2706
-msgid "autoDownload.deleteSelectedDesc"
-msgstr "This will remove the selected downloads and stop any active transfers."
+#~ msgid "autoDownload.deleteSelectedDesc"
+#~ msgstr "This will remove the selected downloads and stop any active transfers."
 
 #: src/pages/DownloadsPage.tsx:2736
 #: src/pages/DownloadsPage.tsx:2779
-msgid "autoDownload.deleting"
-msgstr "Deleting…"
+#~ msgid "autoDownload.deleting"
+#~ msgstr "Deleting…"
 
 #: src/pages/DownloadsPage.tsx:2638
-msgid "autoDownload.deselectAll"
-msgstr "Deselect All"
+#~ msgid "autoDownload.deselectAll"
+#~ msgstr "Deselect All"
 
 #: src/pages/DownloadsPage.tsx:2976
-msgid "autoDownload.detail.created"
-msgstr "Created"
+#~ msgid "autoDownload.detail.created"
+#~ msgstr "Created"
 
 #: src/pages/DownloadsPage.tsx:2992
-msgid "autoDownload.detail.files"
-msgstr "Files"
+#~ msgid "autoDownload.detail.files"
+#~ msgstr "Files"
 
 #: src/pages/DownloadsPage.tsx:2971
-msgid "autoDownload.detail.name"
-msgstr "autoDownload.detail.name"
+#~ msgid "autoDownload.detail.name"
+#~ msgstr "autoDownload.detail.name"
 
 #: src/pages/DownloadsPage.tsx:2973
-msgid "autoDownload.detail.rule"
-msgstr "Rule"
+#~ msgid "autoDownload.detail.rule"
+#~ msgstr "Rule"
 
 #: src/pages/DownloadsPage.tsx:2978
-msgid "autoDownload.detail.saveDir"
-msgstr "Save Directory"
+#~ msgid "autoDownload.detail.saveDir"
+#~ msgstr "Save Directory"
 
 #: src/pages/DownloadsPage.tsx:2356
 #~ msgid "autoDownload.detail.size"
 #~ msgstr "Size"
 
 #: src/pages/DownloadsPage.tsx:2955
-msgid "autoDownload.detail.speed"
-msgstr "Speed"
+#~ msgid "autoDownload.detail.speed"
+#~ msgstr "Speed"
 
 #: src/pages/DownloadsPage.tsx:2349
 #~ msgid "autoDownload.detail.status"
 #~ msgstr "Status"
 
-#: src/pages/DownloadsPage.tsx:1003
+#: src/pages/DownloadsPage.tsx:1027
 msgid "autoDownload.download"
 msgstr "Download"
 
-#: src/pages/DownloadsPage.tsx:746
-#: src/pages/DownloadsPage.tsx:2193
+#: src/pages/DownloadsPage.tsx:771
+#: src/pages/DownloadsPage.tsx:1656
 msgid "autoDownload.downloadAdded"
 msgstr "Download added"
 
 #: src/pages/DownloadsPage.tsx:2522
-msgid "autoDownload.downloading"
-msgstr "downloading"
+#~ msgid "autoDownload.downloading"
+#~ msgstr "downloading"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -792,10 +894,10 @@ msgstr "downloading"
 #~ msgstr "Not following any anime yet"
 
 #: src/pages/DownloadsPage.tsx:1641
-msgid "autoDownload.episodes"
-msgstr "Episodes"
+#~ msgid "autoDownload.episodes"
+#~ msgstr "Episodes"
 
-#: src/pages/DownloadsPage.tsx:1858
+#: src/pages/downloads/LibraryTab.tsx:127
 msgid "autoDownload.goToSearch"
 msgstr "Go to Search"
 
@@ -804,18 +906,18 @@ msgstr "Go to Search"
 #~ msgstr "Go to Settings →"
 
 #: src/pages/DownloadsPage.tsx:1665
-msgid "autoDownload.interval"
-msgstr "Interval"
+#~ msgid "autoDownload.interval"
+#~ msgstr "Interval"
 
 #: src/pages/DownloadsPage.tsx:2537
-msgid "autoDownload.items"
-msgstr "items"
+#~ msgid "autoDownload.items"
+#~ msgstr "items"
 
 #: src/pages/DownloadsPage.tsx:1672
-msgid "autoDownload.lastTriggered"
-msgstr "Last triggered"
+#~ msgid "autoDownload.lastTriggered"
+#~ msgstr "Last triggered"
 
-#: src/pages/DownloadsPage.tsx:1242
+#: src/pages/DownloadsPage.tsx:1270
 msgid "autoDownload.library"
 msgstr "Library"
 
@@ -828,18 +930,18 @@ msgstr "Library"
 #~ msgstr "Matches"
 
 #: src/pages/DownloadsPage.tsx:2821
-msgid "autoDownload.noActiveDownloads"
-msgstr "No active downloads"
+#~ msgid "autoDownload.noActiveDownloads"
+#~ msgstr "No active downloads"
 
 #: src/pages/DownloadsPage.tsx:3667
-msgid "autoDownload.noCompletedDownloads"
-msgstr "No completed downloads"
+#~ msgid "autoDownload.noCompletedDownloads"
+#~ msgstr "No completed downloads"
 
 #: src/pages/DownloadsPage.tsx:1759
-msgid "autoDownload.noDownloadsYet"
-msgstr "No downloads yet"
+#~ msgid "autoDownload.noDownloadsYet"
+#~ msgstr "No downloads yet"
 
-#: src/pages/DownloadsPage.tsx:1013
+#: src/pages/DownloadsPage.tsx:1037
 msgid "autoDownload.noFilteredResults"
 msgstr "No results match filters"
 
@@ -847,100 +949,99 @@ msgstr "No results match filters"
 #~ msgid "autoDownload.noFilters"
 #~ msgstr "No filters applied"
 
-#: src/pages/DownloadsPage.tsx:1255
+#: src/pages/DownloadsPage.tsx:1283
 msgid "autoDownload.noLibrary"
 msgstr "Default folder"
 
-#: src/pages/DownloadsPage.tsx:655
-#: src/pages/DownloadsPage.tsx:2810
+#: src/pages/DownloadsPage.tsx:688
 msgid "autoDownload.noResults"
 msgstr "No results found"
 
 #: src/pages/DownloadsPage.tsx:1847
-msgid "autoDownload.noSubscriptions"
-msgstr "Not following any anime yet"
+#~ msgid "autoDownload.noSubscriptions"
+#~ msgstr "Not following any anime yet"
 
 #: src/pages/DownloadsPage.tsx:1850
-msgid "autoDownload.noSubscriptionsHint"
-msgstr "Search for an anime in the Search tab to create auto-download rules."
+#~ msgid "autoDownload.noSubscriptionsHint"
+#~ msgstr "Search for an anime in the Search tab to create auto-download rules."
 
-#: src/pages/DownloadsPage.tsx:1018
+#: src/pages/DownloadsPage.tsx:1042
 msgid "autoDownload.noTorrents"
 msgstr "No torrents found"
 
-#: src/pages/DownloadsPage.tsx:2213
+#: src/pages/DownloadsPage.tsx:1681
 msgid "autoDownload.pasteUrl"
 msgstr "Paste torrent or magnet URL..."
 
 #: src/pages/DownloadsPage.tsx:2665
 #: src/pages/DownloadsPage.tsx:3037
 #: src/pages/DownloadsPage.tsx:3997
-msgid "autoDownload.pause"
-msgstr "Pause"
+#~ msgid "autoDownload.pause"
+#~ msgstr "Pause"
 
 #: src/pages/DownloadsPage.tsx:2569
-msgid "autoDownload.pauseAll"
-msgstr "Pause All"
+#~ msgid "autoDownload.pauseAll"
+#~ msgstr "Pause All"
 
 #: src/pages/DownloadsPage.tsx:1617
-msgid "autoDownload.paused"
-msgstr "Paused"
+#~ msgid "autoDownload.paused"
+#~ msgstr "Paused"
 
 #: src/pages/DownloadsPage.tsx:1709
-msgid "autoDownload.refresh"
-msgstr "Refresh"
+#~ msgid "autoDownload.refresh"
+#~ msgstr "Refresh"
 
 #: src/pages/DownloadsPage.tsx:2582
-msgid "autoDownload.refreshAll"
-msgstr "Refresh"
+#~ msgid "autoDownload.refreshAll"
+#~ msgstr "Refresh"
 
-#: src/pages/DownloadsPage.tsx:1486
+#: src/pages/downloads/LibraryTab.tsx:250
 msgid "autoDownload.refreshed"
 msgstr "Follow refreshed"
 
-#: src/pages/DownloadsPage.tsx:879
+#: src/pages/DownloadsPage.tsx:905
 msgid "autoDownload.resolution"
 msgstr "Resolution"
 
 #: src/pages/DownloadsPage.tsx:2652
 #: src/pages/DownloadsPage.tsx:3048
 #: src/pages/DownloadsPage.tsx:4009
-msgid "autoDownload.resume"
-msgstr "Resume"
+#~ msgid "autoDownload.resume"
+#~ msgstr "Resume"
 
 #: src/pages/DownloadsPage.tsx:2554
-msgid "autoDownload.resumeAll"
-msgstr "Resume All"
+#~ msgid "autoDownload.resumeAll"
+#~ msgstr "Resume All"
 
-#: src/pages/DownloadsPage.tsx:1170
+#: src/pages/DownloadsPage.tsx:1198
 msgid "autoDownload.rssSource"
 msgstr "RSS Source"
 
-#: src/pages/DownloadsPage.tsx:560
+#: src/pages/DownloadsPage.tsx:593
 msgid "autoDownload.searchAnime"
 msgstr "Search anime..."
 
-#: src/pages/DownloadsPage.tsx:2469
+#: src/pages/downloads/LibraryTab.tsx:150
 msgid "autoDownload.searchDownloads"
 msgstr "Search downloads…"
 
-#: src/pages/DownloadsPage.tsx:668
+#: src/pages/DownloadsPage.tsx:700
 msgid "autoDownload.searchHint"
 msgstr "Select an anime to browse torrents"
 
 #: src/pages/DownloadsPage.tsx:2594
-msgid "autoDownload.select"
-msgstr "Select"
+#~ msgid "autoDownload.select"
+#~ msgstr "Select"
 
 #: src/pages/DownloadsPage.tsx:2638
-msgid "autoDownload.selectAll"
-msgstr "Select All"
+#~ msgid "autoDownload.selectAll"
+#~ msgstr "Select All"
 
 #: src/pages/DownloadsPage.tsx:2631
-msgid "autoDownload.selected"
-msgstr "selected"
+#~ msgid "autoDownload.selected"
+#~ msgstr "selected"
 
-#: src/pages/DownloadsPage.tsx:939
+#: src/pages/DownloadsPage.tsx:969
 msgid "autoDownload.selectSourceToSubscribe"
 msgstr "Select a specific source (Mikan, Nyaa, or DMHY) to follow"
 
@@ -948,27 +1049,27 @@ msgstr "Select a specific source (Mikan, Nyaa, or DMHY) to follow"
 #~ msgstr "Settings"
 
 #: src/pages/DownloadsPage.tsx:2455
-msgid "autoDownload.sort.date"
-msgstr "Date"
+#~ msgid "autoDownload.sort.date"
+#~ msgstr "Date"
 
 #: src/pages/DownloadsPage.tsx:2453
-msgid "autoDownload.sort.name"
-msgstr "Name"
+#~ msgid "autoDownload.sort.name"
+#~ msgstr "Name"
 
 #: src/pages/DownloadsPage.tsx:2454
-msgid "autoDownload.sort.size"
-msgstr "Size"
+#~ msgid "autoDownload.sort.size"
+#~ msgstr "Size"
 
 #: src/pages/DownloadsPage.tsx:2452
-msgid "autoDownload.sort.status"
-msgstr "Status"
+#~ msgid "autoDownload.sort.status"
+#~ msgstr "Status"
 
-#: src/pages/DownloadsPage.tsx:855
+#: src/pages/DownloadsPage.tsx:881
 msgid "autoDownload.source"
 msgstr "Source"
 
-#: src/pages/DownloadsPage.tsx:904
-#: src/pages/DownloadsPage.tsx:1195
+#: src/pages/DownloadsPage.tsx:930
+#: src/pages/DownloadsPage.tsx:1223
 msgid "autoDownload.subgroup"
 msgstr "Subgroup"
 
@@ -976,11 +1077,11 @@ msgstr "Subgroup"
 #~ msgid "autoDownload.subscribe"
 #~ msgstr "Subscribe"
 
-#: src/pages/DownloadsPage.tsx:930
+#: src/pages/DownloadsPage.tsx:958
 msgid "autoDownload.subscribeFilter"
 msgstr "Follow this filter"
 
-#: src/pages/DownloadsPage.tsx:1102
+#: src/pages/DownloadsPage.tsx:1130
 msgid "autoDownload.subscribeSuccess"
 msgstr "Now following"
 
@@ -993,38 +1094,38 @@ msgstr "Now following"
 #~ msgstr "Following"
 
 #: src/pages/DownloadsPage.tsx:348
-msgid "autoDownload.subtab.completed"
-msgstr "Completed"
+#~ msgid "autoDownload.subtab.completed"
+#~ msgstr "Completed"
 
 #: src/pages/DownloadsPage.tsx:347
 #: src/pages/DownloadsPage.tsx:1731
-msgid "autoDownload.subtab.downloads"
-msgstr "Downloading"
+#~ msgid "autoDownload.subtab.downloads"
+#~ msgstr "Downloading"
 
 #: src/pages/DownloadsPage.tsx:346
-msgid "autoDownload.subtab.subscriptions"
-msgstr "Following"
+#~ msgid "autoDownload.subtab.subscriptions"
+#~ msgstr "Following"
 
 #: src/pages/DownloadsPage.tsx:158
 #~ msgid "autoDownload.tab.manage"
 #~ msgstr "Manage"
 
-#: src/pages/DownloadsPage.tsx:345
+#: src/pages/DownloadsPage.tsx:377
 msgid "autoDownload.tab.search"
 msgstr "Search"
 
-#: src/pages/DownloadsPage.tsx:843
-#: src/pages/DownloadsPage.tsx:1159
+#: src/pages/DownloadsPage.tsx:869
+#: src/pages/DownloadsPage.tsx:1187
 msgid "autoDownload.torrentsFound"
 msgstr "torrents found"
 
 #: src/pages/DownloadsPage.tsx:1695
-msgid "autoDownload.viewAnime"
-msgstr "View Anime"
+#~ msgid "autoDownload.viewAnime"
+#~ msgstr "View Anime"
 
 #: src/pages/DownloadsPage.tsx:3929
-msgid "autoDownload.waiting"
-msgstr "Waiting..."
+#~ msgid "autoDownload.waiting"
+#~ msgstr "Waiting..."
 
 #: src/pages/settings/BackupPanel.tsx:233
 #: src/pages/settings/BackupPanel.tsx:433
@@ -1304,8 +1405,7 @@ msgstr "Danger zone"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:517
 #: src/pages/AnimeDetailPage.tsx:873
-#: src/pages/DownloadsPage.tsx:823
-#: src/pages/DownloadsPage.tsx:1592
+#: src/pages/DownloadsPage.tsx:851
 #: src/pages/LibraryDetailPage.tsx:1063
 msgid "common.ep"
 msgstr "ep"
@@ -1408,8 +1508,93 @@ msgstr "Download"
 msgid "Download queued: {0}"
 msgstr "Download queued: {0}"
 
+#: src/components/downloads/AnimeGroupHeader.tsx:190
+msgid "downloads.autoDisabled"
+msgstr "Auto-download off"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:190
+msgid "downloads.autoEnabled"
+msgstr "Auto-download on"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:113
+#: src/components/downloads/AnimeGroupHeader.tsx:117
+msgid "downloads.collapse"
+msgstr "Collapse"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:233
+msgid "downloads.completedAt"
+msgstr "Completed"
+
+#: src/pages/downloads/LibraryTab.tsx:325
+msgid "downloads.confirm.delete"
+msgstr "Delete this subscription? The feed will also be removed."
+
+#: src/components/downloads/episode-rows/EpisodeRowActive.tsx:100
+#: src/components/downloads/episode-rows/EpisodeRowComplete.tsx:53
+#: src/components/downloads/episode-rows/EpisodeRowMisc.tsx:51
+msgid "downloads.delete"
+msgstr "Delete"
+
+#: src/pages/downloads/LibraryTab.tsx:271
+msgid "downloads.deleted"
+msgstr "Deleted"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:156
+msgid "downloads.downloading"
+msgstr "downloading"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:113
+#: src/components/downloads/AnimeGroupHeader.tsx:117
+msgid "downloads.expand"
+msgstr "Expand"
+
 #~ msgid "downloads.feeds"
 #~ msgstr "RSS Feeds"
+
+#: src/components/downloads/CardMenu.tsx:63
+msgid "downloads.menu.autoDownload"
+msgstr "Auto download"
+
+#: src/pages/downloads/LibraryTab.tsx:323
+msgid "downloads.menu.copied"
+msgstr "Copied"
+
+#: src/components/downloads/CardMenu.tsx:90
+msgid "downloads.menu.copyRSS"
+msgstr "Copy RSS URL"
+
+#: src/components/downloads/CardMenu.tsx:99
+msgid "downloads.menu.delete"
+msgstr "Delete subscription"
+
+#: src/components/downloads/CardMenu.tsx:45
+msgid "downloads.menu.more"
+msgstr "More"
+
+#: src/components/downloads/CardMenu.tsx:71
+msgid "downloads.menu.off"
+msgstr "Off"
+
+#: src/components/downloads/CardMenu.tsx:71
+msgid "downloads.menu.on"
+msgstr "On"
+
+#: src/components/downloads/CardMenu.tsx:84
+msgid "downloads.menu.openAnime"
+msgstr "Open anime page"
+
+#: src/components/downloads/CardMenu.tsx:78
+msgid "downloads.menu.refresh"
+msgstr "Refresh now"
+
+#: src/components/downloads/MiscDownloadsSection.tsx:27
+msgid "downloads.miscHeader"
+msgstr "Other downloads"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:199
+#: src/components/downloads/episode-rows/EpisodeRowPending.tsx:21
+msgid "downloads.nextFetch"
+msgstr "Next fetch"
 
 #~ msgid "downloads.noFeeds"
 #~ msgstr "No RSS feeds configured. Subscribe to anime to auto-download."
@@ -1417,17 +1602,77 @@ msgstr "Download queued: {0}"
 #~ msgid "downloads.noRules"
 #~ msgstr "No download rules yet."
 
+#: src/pages/downloads/LibraryTab.tsx:123
+msgid "downloads.noRulesHint"
+msgstr "No subscriptions yet — go search to add your first"
+
+#: src/components/downloads/episode-rows/EpisodeRowActive.tsx:81
+msgid "downloads.pause"
+msgstr "Pause"
+
+#: src/components/downloads/episode-rows/EpisodeRowComplete.tsx:45
+msgid "downloads.play"
+msgstr "Play"
+
+#: src/components/downloads/episode-rows/EpisodeRowPending.tsx:25
+msgid "downloads.refresh"
+msgstr "Refresh"
+
+#: src/components/downloads/episode-rows/EpisodeRowActive.tsx:91
+msgid "downloads.resume"
+msgstr "Resume"
+
 #~ msgid "downloads.rules"
 #~ msgstr "Download Rules"
 
+#: src/pages/downloads/LibraryTab.tsx:206
+msgid "downloads.searchEmpty"
+msgstr "No anime matches \"{query}\""
+
+#: src/pages/downloads/LibraryTab.tsx:135
+msgid "downloads.sort.activity"
+msgstr "Recent activity"
+
+#: src/pages/downloads/LibraryTab.tsx:138
+msgid "downloads.sort.created"
+msgstr "Subscription time"
+
+#: src/pages/downloads/LibraryTab.tsx:136
+msgid "downloads.sort.name"
+msgstr "Name"
+
+#: src/pages/downloads/LibraryTab.tsx:137
+msgid "downloads.sort.progress"
+msgstr "Progress"
+
+#: src/pages/downloads/LibraryTab.tsx:192
+msgid "downloads.summary.downloading"
+msgstr "downloading"
+
+#: src/pages/downloads/LibraryTab.tsx:201
+msgid "downloads.summary.stored"
+msgstr "stored"
+
+#: src/pages/downloads/LibraryTab.tsx:188
+msgid "downloads.summary.subscribed"
+msgstr "subscribed"
+
 #~ msgid "downloads.tab.active"
 #~ msgstr "Active"
+
+#: src/pages/DownloadsPage.tsx:378
+msgid "downloads.tab.library"
+msgstr "Library"
 
 #~ msgid "downloads.tab.rules"
 #~ msgstr "Auto Rules"
 
 #~ msgid "downloads.tab.search"
 #~ msgstr "Search"
+
+#: src/components/downloads/episode-rows/EpisodeRowPending.tsx:18
+msgid "downloads.waiting"
+msgstr "Waiting"
 
 #: src/components/anime/DuplicatesPanel.tsx:44
 #: src/pages/library/LibraryDuplicatesPage.tsx:58
@@ -2532,8 +2777,8 @@ msgid "Missing"
 msgstr "Missing"
 
 #: src/components/AppSidebar.tsx:32
-#: src/pages/DownloadsPage.tsx:238
-#: src/pages/DownloadsPage.tsx:362
+#: src/pages/DownloadsPage.tsx:265
+#: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
 msgstr "Auto-Download"
 
@@ -3073,7 +3318,7 @@ msgid "ruleEditor.deleted"
 msgstr "Unfollowed"
 
 #: src/components/RuleEditorModal.tsx:464
-#: src/pages/DownloadsPage.tsx:2081
+#: src/pages/DownloadsPage.tsx:1535
 msgid "ruleEditor.destination"
 msgstr "Destination"
 
@@ -3125,7 +3370,7 @@ msgstr "Any group accepted"
 #~ msgid "ruleEditor.hideDownloaded"
 #~ msgstr "Hide downloaded"
 
-#: src/pages/DownloadsPage.tsx:2158
+#: src/pages/DownloadsPage.tsx:1610
 msgid "ruleEditor.items"
 msgstr "items"
 
@@ -3133,17 +3378,17 @@ msgstr "items"
 msgid "ruleEditor.justNow"
 msgstr "Just now"
 
-#: src/pages/DownloadsPage.tsx:529
-#: src/pages/DownloadsPage.tsx:543
+#: src/pages/DownloadsPage.tsx:540
+#: src/pages/DownloadsPage.tsx:567
 msgid "ruleEditor.keywordMode"
 msgstr "Keyword"
 
 #: src/components/RuleEditorModal.tsx:379
-#: src/pages/DownloadsPage.tsx:1999
+#: src/pages/DownloadsPage.tsx:1441
 msgid "ruleEditor.linkedAnime"
 msgstr "Linked Anime"
 
-#: src/pages/DownloadsPage.tsx:2126
+#: src/pages/DownloadsPage.tsx:1580
 msgid "ruleEditor.loading"
 msgstr "Loading..."
 
@@ -3160,7 +3405,7 @@ msgstr "New Only"
 #~ msgstr "New Rule"
 
 #: src/components/RuleEditorModal.tsx:479
-#: src/pages/DownloadsPage.tsx:2095
+#: src/pages/DownloadsPage.tsx:1549
 msgid "ruleEditor.noLibrary"
 msgstr "No library"
 
@@ -3168,9 +3413,13 @@ msgstr "No library"
 msgid "ruleEditor.noPreviewItems"
 msgstr "No items match current filters"
 
+#: src/pages/downloads/LibraryTab.tsx:309
+msgid "ruleEditor.openEditor"
+msgstr "ruleEditor.openEditor"
+
 #: src/components/RuleEditorModal.tsx:702
-#: src/pages/DownloadsPage.tsx:2127
-#: src/pages/DownloadsPage.tsx:2155
+#: src/pages/DownloadsPage.tsx:1581
+#: src/pages/DownloadsPage.tsx:1607
 msgid "ruleEditor.preview"
 msgstr "Preview"
 
@@ -3194,40 +3443,40 @@ msgstr "Resolution"
 msgid "ruleEditor.rssUrl"
 msgstr "RSS Feed URL"
 
-#: src/pages/DownloadsPage.tsx:529
-#: src/pages/DownloadsPage.tsx:554
+#: src/pages/DownloadsPage.tsx:541
+#: src/pages/DownloadsPage.tsx:587
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
 #: src/components/RuleEditorModal.tsx:368
-#: src/pages/DownloadsPage.tsx:2071
+#: src/pages/DownloadsPage.tsx:1525
 msgid "ruleEditor.ruleName"
 msgstr "Rule Name"
 
 #: src/components/RuleEditorModal.tsx:320
 #: src/components/RuleEditorModal.tsx:372
-#: src/pages/DownloadsPage.tsx:2075
+#: src/pages/DownloadsPage.tsx:1529
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "e.g. Anime Name Season 1"
 
 #: src/components/RuleEditorModal.tsx:692
-#: src/pages/DownloadsPage.tsx:2138
+#: src/pages/DownloadsPage.tsx:1590
 msgid "ruleEditor.save"
 msgstr "Save"
 
 #: src/components/RuleEditorModal.tsx:205
 #: src/components/RuleEditorModal.tsx:244
-#: src/pages/DownloadsPage.tsx:1977
+#: src/pages/DownloadsPage.tsx:1416
 msgid "ruleEditor.saved"
 msgstr "Rule updated"
 
 #: src/components/RuleEditorModal.tsx:691
-#: src/pages/DownloadsPage.tsx:2137
+#: src/pages/DownloadsPage.tsx:1590
 msgid "ruleEditor.saving"
 msgstr "Saving..."
 
 #: src/components/RuleEditorModal.tsx:416
-#: src/pages/DownloadsPage.tsx:2025
+#: src/pages/DownloadsPage.tsx:1477
 msgid "ruleEditor.searchAnime"
 msgstr "Search anime to link..."
 
@@ -3703,7 +3952,7 @@ msgstr "settings.download.builtin"
 msgid "settings.download.builtinDesc"
 msgstr "settings.download.builtinDesc"
 
-#: src/pages/DownloadsPage.tsx:388
+#: src/pages/DownloadsPage.tsx:420
 #: src/pages/settings/DownloadPanel.tsx:31
 msgid "settings.download.disconnected"
 msgstr "Not connected"
@@ -4632,149 +4881,3 @@ msgstr "Transcoding..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
-
-msgid "downloads.downloading"
-msgstr "downloading"
-
-msgid "downloads.autoEnabled"
-msgstr "Auto-download on"
-
-msgid "downloads.autoDisabled"
-msgstr "Disabled"
-
-msgid "downloads.nextFetch"
-msgstr "Next fetch"
-
-msgid "downloads.completedAt"
-msgstr "Completed"
-
-msgid "downloads.collapse"
-msgstr "Collapse"
-
-msgid "downloads.expand"
-msgstr "Expand"
-
-msgid "downloads.waiting"
-msgstr "Waiting"
-
-msgid "downloads.refresh"
-msgstr "Refresh"
-
-msgid "downloads.pause"
-msgstr "Pause"
-
-msgid "downloads.resume"
-msgstr "Resume"
-
-msgid "downloads.delete"
-msgstr "Delete"
-
-msgid "downloads.play"
-msgstr "Play"
-
-msgid "downloads.miscHeader"
-msgstr "Other downloads"
-
-#. js-lingui-explicit-id
-msgid "downloads.noActive"
-msgstr "No active downloads"
-
-#. js-lingui-explicit-id
-msgid "downloads.noCompleted"
-msgstr "No completed downloads"
-
-#. js-lingui-explicit-id
-msgid "downloads.deleted"
-msgstr "Deleted"
-
-#. js-lingui-explicit-id
-msgid "downloads.notMatched"
-msgstr "This download isn't matched to an anime yet"
-
-#. js-lingui-explicit-id
-msgid "ruleEditor.openEditor"
-msgstr "Edit subscription"
-
-#. js-lingui-explicit-id
-msgid "downloads.tab.library"
-msgstr "Library"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.activity"
-msgstr "Recent activity"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.name"
-msgstr "Name"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.progress"
-msgstr "Progress"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.created"
-msgstr "Subscription time"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.more"
-msgstr "More"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.autoDownload"
-msgstr "Auto download"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.on"
-msgstr "On"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.off"
-msgstr "Off"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.refresh"
-msgstr "Refresh now"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.openAnime"
-msgstr "Open anime page"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.copyRSS"
-msgstr "Copy RSS URL"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.copied"
-msgstr "Copied"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.delete"
-msgstr "Delete subscription"
-
-#. js-lingui-explicit-id
-msgid "downloads.confirm.delete"
-msgstr "Delete this subscription? The feed will also be removed."
-
-#. js-lingui-explicit-id
-msgid "downloads.autoDisabled"
-msgstr "Auto-download off"
-
-#. js-lingui-explicit-id
-msgid "downloads.summary.subscribed"
-msgstr "subscribed"
-
-#. js-lingui-explicit-id
-msgid "downloads.summary.downloading"
-msgstr "downloading"
-
-#. js-lingui-explicit-id
-msgid "downloads.summary.stored"
-msgstr "stored"
-
-#. js-lingui-explicit-id
-msgid "downloads.noRulesHint"
-msgstr "No subscriptions yet — go search to add your first"
-
-#. js-lingui-explicit-id
-msgid "downloads.searchEmpty"
-msgstr "No anime matches \"{query}\""

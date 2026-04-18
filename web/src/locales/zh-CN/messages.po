@@ -68,6 +68,110 @@ msgstr "从此处继续"
 #~ msgid "search.tag.misc"
 #~ msgstr "其他"
 
+#. js-lingui-explicit-id
+#~ msgid "downloads.noActive"
+#~ msgstr "没有进行中的下载"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.noCompleted"
+#~ msgstr "没有已完成的下载"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.deleted"
+#~ msgstr "已删除"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.notMatched"
+#~ msgstr "此项目尚未匹配到动画"
+
+#. js-lingui-explicit-id
+#~ msgid "ruleEditor.openEditor"
+#~ msgstr "编辑订阅"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.tab.library"
+#~ msgstr "库"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.activity"
+#~ msgstr "最近活动"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.name"
+#~ msgstr "名称"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.progress"
+#~ msgstr "进度"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.sort.created"
+#~ msgstr "订阅时间"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.more"
+#~ msgstr "更多"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.autoDownload"
+#~ msgstr "自动下载"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.on"
+#~ msgstr "开"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.off"
+#~ msgstr "关"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.refresh"
+#~ msgstr "立即刷新"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.openAnime"
+#~ msgstr "打开动画页"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.copyRSS"
+#~ msgstr "复制 RSS URL"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.copied"
+#~ msgstr "已复制"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.menu.delete"
+#~ msgstr "删除订阅"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.confirm.delete"
+#~ msgstr "确定删除此订阅？Feed 也会一起删除。"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.autoDisabled"
+#~ msgstr "自动下载已停用"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.summary.subscribed"
+#~ msgstr "订阅"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.summary.downloading"
+#~ msgstr "下载中"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.summary.stored"
+#~ msgstr "已存"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.noRulesHint"
+#~ msgstr "暂无订阅，去搜索添加第一个"
+
+#. js-lingui-explicit-id
+#~ msgid "downloads.searchEmpty"
+#~ msgstr "没有匹配「{query}」的动画"
+
 #: src/pages/LibraryDetailPage.tsx:375
 msgid "{missingCount} missing episodes"
 msgstr ""
@@ -626,160 +730,158 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1617
-msgid "autoDownload.active"
-msgstr "启用中"
+#~ msgid "autoDownload.active"
+#~ msgstr "启用中"
 
-#: src/pages/DownloadsPage.tsx:2233
+#: src/pages/DownloadsPage.tsx:1701
 msgid "autoDownload.add"
 msgstr "添加"
 
-#: src/pages/DownloadsPage.tsx:2232
+#: src/pages/DownloadsPage.tsx:1700
 msgid "autoDownload.adding"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:436
-#: src/pages/DownloadsPage.tsx:2202
+#: src/pages/DownloadsPage.tsx:457
+#: src/pages/DownloadsPage.tsx:1668
 msgid "autoDownload.addUrl"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:911
-#: src/pages/DownloadsPage.tsx:933
-#: src/pages/DownloadsPage.tsx:1208
+#: src/pages/DownloadsPage.tsx:937
+#: src/pages/DownloadsPage.tsx:963
+#: src/pages/DownloadsPage.tsx:1236
 msgid "autoDownload.allSubgroups"
 msgstr "全部字幕组"
 
 #: src/pages/DownloadsPage.tsx:2712
 #: src/pages/DownloadsPage.tsx:2755
-msgid "autoDownload.alsoDeleteFiles"
-msgstr ""
+#~ msgid "autoDownload.alsoDeleteFiles"
+#~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:933
+#: src/pages/DownloadsPage.tsx:962
 msgid "autoDownload.anyResolution"
 msgstr "任意解析度"
 
-#: src/pages/DownloadsPage.tsx:1280
-#: src/pages/DownloadsPage.tsx:2224
-#: src/pages/DownloadsPage.tsx:2722
-#: src/pages/DownloadsPage.tsx:2765
+#: src/pages/DownloadsPage.tsx:1308
+#: src/pages/DownloadsPage.tsx:1692
 msgid "autoDownload.cancel"
 msgstr "取消"
 
 #: src/pages/DownloadsPage.tsx:3250
-msgid "autoDownload.clearAll"
-msgstr "清除全部"
+#~ msgid "autoDownload.clearAll"
+#~ msgstr "清除全部"
 
 #: src/pages/DownloadsPage.tsx:3212
-msgid "autoDownload.completed.grouped"
-msgstr "按作品"
+#~ msgid "autoDownload.completed.grouped"
+#~ msgstr "按作品"
 
 #: src/pages/DownloadsPage.tsx:3240
-msgid "autoDownload.completed.selectAll"
-msgstr "全选"
+#~ msgid "autoDownload.completed.selectAll"
+#~ msgstr "全选"
 
 #: src/pages/DownloadsPage.tsx:3224
-msgid "autoDownload.completed.timeline"
-msgstr "时间线"
+#~ msgid "autoDownload.completed.timeline"
+#~ msgstr "时间线"
 
-#: src/pages/DownloadsPage.tsx:1289
+#: src/pages/DownloadsPage.tsx:1315
 msgid "autoDownload.confirm"
 msgstr "確認追番"
 
 #: src/pages/DownloadsPage.tsx:2737
 #: src/pages/DownloadsPage.tsx:2780
-msgid "autoDownload.confirmDelete"
-msgstr ""
+#~ msgid "autoDownload.confirmDelete"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:3930
-msgid "autoDownload.connecting"
-msgstr "连接中..."
+#~ msgid "autoDownload.connecting"
+#~ msgstr "连接中..."
 
 #: src/pages/DownloadsPage.tsx:2677
 #: src/pages/DownloadsPage.tsx:4020
-msgid "autoDownload.delete"
-msgstr "删除"
+#~ msgid "autoDownload.delete"
+#~ msgstr "删除"
 
 #: src/pages/DownloadsPage.tsx:2606
 #: src/pages/DownloadsPage.tsx:2701
-msgid "autoDownload.deleteAll"
-msgstr ""
+#~ msgid "autoDownload.deleteAll"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2707
-msgid "autoDownload.deleteAllDesc"
-msgstr ""
+#~ msgid "autoDownload.deleteAllDesc"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1501
-msgid "autoDownload.deleted"
-msgstr "追番已刪除"
+#~ msgid "autoDownload.deleted"
+#~ msgstr "追番已刪除"
 
 #: src/pages/DownloadsPage.tsx:2415
-msgid "autoDownload.deletedAll"
-msgstr ""
+#~ msgid "autoDownload.deletedAll"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2746
-msgid "autoDownload.deleteItem"
-msgstr ""
+#~ msgid "autoDownload.deleteItem"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2700
-msgid "autoDownload.deleteSelected"
-msgstr ""
+#~ msgid "autoDownload.deleteSelected"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2706
-msgid "autoDownload.deleteSelectedDesc"
-msgstr ""
+#~ msgid "autoDownload.deleteSelectedDesc"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2736
 #: src/pages/DownloadsPage.tsx:2779
-msgid "autoDownload.deleting"
-msgstr ""
+#~ msgid "autoDownload.deleting"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2638
-msgid "autoDownload.deselectAll"
-msgstr ""
+#~ msgid "autoDownload.deselectAll"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2976
-msgid "autoDownload.detail.created"
-msgstr ""
+#~ msgid "autoDownload.detail.created"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2992
-msgid "autoDownload.detail.files"
-msgstr ""
+#~ msgid "autoDownload.detail.files"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2971
-msgid "autoDownload.detail.name"
-msgstr ""
+#~ msgid "autoDownload.detail.name"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2973
-msgid "autoDownload.detail.rule"
-msgstr ""
+#~ msgid "autoDownload.detail.rule"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2978
-msgid "autoDownload.detail.saveDir"
-msgstr ""
+#~ msgid "autoDownload.detail.saveDir"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2356
 #~ msgid "autoDownload.detail.size"
 #~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2955
-msgid "autoDownload.detail.speed"
-msgstr ""
+#~ msgid "autoDownload.detail.speed"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2349
 #~ msgid "autoDownload.detail.status"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1003
+#: src/pages/DownloadsPage.tsx:1027
 msgid "autoDownload.download"
 msgstr "下载"
 
-#: src/pages/DownloadsPage.tsx:746
-#: src/pages/DownloadsPage.tsx:2193
+#: src/pages/DownloadsPage.tsx:771
+#: src/pages/DownloadsPage.tsx:1656
 msgid "autoDownload.downloadAdded"
 msgstr "已添加下载"
 
 #: src/pages/DownloadsPage.tsx:2522
-msgid "autoDownload.downloading"
-msgstr "下载中"
+#~ msgid "autoDownload.downloading"
+#~ msgstr "下载中"
 
 #: src/pages/DownloadsPage.tsx:934
 #~ msgid "autoDownload.emptyHint"
@@ -790,10 +892,10 @@ msgstr "下载中"
 #~ msgstr "未有追番"
 
 #: src/pages/DownloadsPage.tsx:1641
-msgid "autoDownload.episodes"
-msgstr "集数"
+#~ msgid "autoDownload.episodes"
+#~ msgstr "集数"
 
-#: src/pages/DownloadsPage.tsx:1858
+#: src/pages/downloads/LibraryTab.tsx:127
 msgid "autoDownload.goToSearch"
 msgstr "前往搜索"
 
@@ -802,18 +904,18 @@ msgstr "前往搜索"
 #~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1665
-msgid "autoDownload.interval"
-msgstr "更新间隔"
+#~ msgid "autoDownload.interval"
+#~ msgstr "更新间隔"
 
 #: src/pages/DownloadsPage.tsx:2537
-msgid "autoDownload.items"
-msgstr ""
+#~ msgid "autoDownload.items"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1672
-msgid "autoDownload.lastTriggered"
-msgstr "上次触发"
+#~ msgid "autoDownload.lastTriggered"
+#~ msgstr "上次触发"
 
-#: src/pages/DownloadsPage.tsx:1242
+#: src/pages/DownloadsPage.tsx:1270
 msgid "autoDownload.library"
 msgstr "媒体库"
 
@@ -826,18 +928,18 @@ msgstr "媒体库"
 #~ msgstr "匹配"
 
 #: src/pages/DownloadsPage.tsx:2821
-msgid "autoDownload.noActiveDownloads"
-msgstr "无进行中的下载"
+#~ msgid "autoDownload.noActiveDownloads"
+#~ msgstr "无进行中的下载"
 
 #: src/pages/DownloadsPage.tsx:3667
-msgid "autoDownload.noCompletedDownloads"
-msgstr "无已完成的下载"
+#~ msgid "autoDownload.noCompletedDownloads"
+#~ msgstr "无已完成的下载"
 
 #: src/pages/DownloadsPage.tsx:1759
-msgid "autoDownload.noDownloadsYet"
-msgstr "暂无下载"
+#~ msgid "autoDownload.noDownloadsYet"
+#~ msgstr "暂无下载"
 
-#: src/pages/DownloadsPage.tsx:1013
+#: src/pages/DownloadsPage.tsx:1037
 msgid "autoDownload.noFilteredResults"
 msgstr "无匹配结果"
 
@@ -845,125 +947,124 @@ msgstr "无匹配结果"
 #~ msgid "autoDownload.noFilters"
 #~ msgstr "无筛选"
 
-#: src/pages/DownloadsPage.tsx:1255
+#: src/pages/DownloadsPage.tsx:1283
 msgid "autoDownload.noLibrary"
 msgstr "默认目录"
 
-#: src/pages/DownloadsPage.tsx:655
-#: src/pages/DownloadsPage.tsx:2810
+#: src/pages/DownloadsPage.tsx:688
 msgid "autoDownload.noResults"
 msgstr "未找到结果"
 
 #: src/pages/DownloadsPage.tsx:1847
-msgid "autoDownload.noSubscriptions"
-msgstr "未有追番"
+#~ msgid "autoDownload.noSubscriptions"
+#~ msgstr "未有追番"
 
 #: src/pages/DownloadsPage.tsx:1850
-msgid "autoDownload.noSubscriptionsHint"
-msgstr "在搜索标签页中搜索动画，建立自動追番。"
+#~ msgid "autoDownload.noSubscriptionsHint"
+#~ msgstr "在搜索标签页中搜索动画，建立自動追番。"
 
-#: src/pages/DownloadsPage.tsx:1018
+#: src/pages/DownloadsPage.tsx:1042
 msgid "autoDownload.noTorrents"
 msgstr "未找到种子"
 
-#: src/pages/DownloadsPage.tsx:2213
+#: src/pages/DownloadsPage.tsx:1681
 msgid "autoDownload.pasteUrl"
 msgstr "粘贴种子或磁力链接..."
 
 #: src/pages/DownloadsPage.tsx:2665
 #: src/pages/DownloadsPage.tsx:3037
 #: src/pages/DownloadsPage.tsx:3997
-msgid "autoDownload.pause"
-msgstr "暂停"
+#~ msgid "autoDownload.pause"
+#~ msgstr "暂停"
 
 #: src/pages/DownloadsPage.tsx:2569
-msgid "autoDownload.pauseAll"
-msgstr "全部暂停"
+#~ msgid "autoDownload.pauseAll"
+#~ msgstr "全部暂停"
 
 #: src/pages/DownloadsPage.tsx:1617
-msgid "autoDownload.paused"
-msgstr ""
+#~ msgid "autoDownload.paused"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:1709
-msgid "autoDownload.refresh"
-msgstr "刷新"
+#~ msgid "autoDownload.refresh"
+#~ msgstr "刷新"
 
 #: src/pages/DownloadsPage.tsx:2582
-msgid "autoDownload.refreshAll"
-msgstr ""
+#~ msgid "autoDownload.refreshAll"
+#~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1486
+#: src/pages/downloads/LibraryTab.tsx:250
 msgid "autoDownload.refreshed"
 msgstr "追番已刷新"
 
-#: src/pages/DownloadsPage.tsx:879
+#: src/pages/DownloadsPage.tsx:905
 msgid "autoDownload.resolution"
 msgstr "分辨率"
 
 #: src/pages/DownloadsPage.tsx:2652
 #: src/pages/DownloadsPage.tsx:3048
 #: src/pages/DownloadsPage.tsx:4009
-msgid "autoDownload.resume"
-msgstr "恢复"
+#~ msgid "autoDownload.resume"
+#~ msgstr "恢复"
 
 #: src/pages/DownloadsPage.tsx:2554
-msgid "autoDownload.resumeAll"
-msgstr ""
+#~ msgid "autoDownload.resumeAll"
+#~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1170
+#: src/pages/DownloadsPage.tsx:1198
 msgid "autoDownload.rssSource"
 msgstr "RSS 来源"
 
-#: src/pages/DownloadsPage.tsx:560
+#: src/pages/DownloadsPage.tsx:593
 msgid "autoDownload.searchAnime"
 msgstr "搜索动画..."
 
-#: src/pages/DownloadsPage.tsx:2469
+#: src/pages/downloads/LibraryTab.tsx:150
 msgid "autoDownload.searchDownloads"
 msgstr ""
 
-#: src/pages/DownloadsPage.tsx:668
+#: src/pages/DownloadsPage.tsx:700
 msgid "autoDownload.searchHint"
 msgstr "选择动画浏览种子"
 
 #: src/pages/DownloadsPage.tsx:2594
-msgid "autoDownload.select"
-msgstr ""
+#~ msgid "autoDownload.select"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2638
-msgid "autoDownload.selectAll"
-msgstr ""
+#~ msgid "autoDownload.selectAll"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2631
-msgid "autoDownload.selected"
-msgstr ""
+#~ msgid "autoDownload.selected"
+#~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:939
+#: src/pages/DownloadsPage.tsx:969
 msgid "autoDownload.selectSourceToSubscribe"
 msgstr "选择具体来源（Mikan、Nyaa 或 DMHY）即可追番"
 
 #: src/pages/DownloadsPage.tsx:2455
-msgid "autoDownload.sort.date"
-msgstr ""
+#~ msgid "autoDownload.sort.date"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2453
-msgid "autoDownload.sort.name"
-msgstr ""
+#~ msgid "autoDownload.sort.name"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2454
-msgid "autoDownload.sort.size"
-msgstr ""
+#~ msgid "autoDownload.sort.size"
+#~ msgstr ""
 
 #: src/pages/DownloadsPage.tsx:2452
-msgid "autoDownload.sort.status"
-msgstr ""
+#~ msgid "autoDownload.sort.status"
+#~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:855
+#: src/pages/DownloadsPage.tsx:881
 msgid "autoDownload.source"
 msgstr "来源"
 
-#: src/pages/DownloadsPage.tsx:904
-#: src/pages/DownloadsPage.tsx:1195
+#: src/pages/DownloadsPage.tsx:930
+#: src/pages/DownloadsPage.tsx:1223
 msgid "autoDownload.subgroup"
 msgstr "字幕组"
 
@@ -971,11 +1072,11 @@ msgstr "字幕组"
 #~ msgid "autoDownload.subscribe"
 #~ msgstr "订阅"
 
-#: src/pages/DownloadsPage.tsx:930
+#: src/pages/DownloadsPage.tsx:958
 msgid "autoDownload.subscribeFilter"
 msgstr "追番此篩選"
 
-#: src/pages/DownloadsPage.tsx:1102
+#: src/pages/DownloadsPage.tsx:1130
 msgid "autoDownload.subscribeSuccess"
 msgstr "追番已建立"
 
@@ -988,38 +1089,38 @@ msgstr "追番已建立"
 #~ msgstr "订阅"
 
 #: src/pages/DownloadsPage.tsx:348
-msgid "autoDownload.subtab.completed"
-msgstr "已完成"
+#~ msgid "autoDownload.subtab.completed"
+#~ msgstr "已完成"
 
 #: src/pages/DownloadsPage.tsx:347
 #: src/pages/DownloadsPage.tsx:1731
-msgid "autoDownload.subtab.downloads"
-msgstr "下载中"
+#~ msgid "autoDownload.subtab.downloads"
+#~ msgstr "下载中"
 
 #: src/pages/DownloadsPage.tsx:346
-msgid "autoDownload.subtab.subscriptions"
-msgstr "已追番"
+#~ msgid "autoDownload.subtab.subscriptions"
+#~ msgstr "已追番"
 
 #: src/pages/DownloadsPage.tsx:158
 #~ msgid "autoDownload.tab.manage"
 #~ msgstr "管理"
 
-#: src/pages/DownloadsPage.tsx:345
+#: src/pages/DownloadsPage.tsx:377
 msgid "autoDownload.tab.search"
 msgstr "搜索"
 
-#: src/pages/DownloadsPage.tsx:843
-#: src/pages/DownloadsPage.tsx:1159
+#: src/pages/DownloadsPage.tsx:869
+#: src/pages/DownloadsPage.tsx:1187
 msgid "autoDownload.torrentsFound"
 msgstr "个种子"
 
 #: src/pages/DownloadsPage.tsx:1695
-msgid "autoDownload.viewAnime"
-msgstr "查看动画"
+#~ msgid "autoDownload.viewAnime"
+#~ msgstr "查看动画"
 
 #: src/pages/DownloadsPage.tsx:3929
-msgid "autoDownload.waiting"
-msgstr "等待中..."
+#~ msgid "autoDownload.waiting"
+#~ msgstr "等待中..."
 
 #: src/pages/settings/BackupPanel.tsx:233
 #: src/pages/settings/BackupPanel.tsx:433
@@ -1299,8 +1400,7 @@ msgstr "危险操作"
 #: src/components/PreviewModal.tsx:349
 #: src/pages/AnimeDetailPage.tsx:517
 #: src/pages/AnimeDetailPage.tsx:873
-#: src/pages/DownloadsPage.tsx:823
-#: src/pages/DownloadsPage.tsx:1592
+#: src/pages/DownloadsPage.tsx:851
 #: src/pages/LibraryDetailPage.tsx:1063
 msgid "common.ep"
 msgstr "集"
@@ -1403,8 +1503,93 @@ msgstr ""
 msgid "Download queued: {0}"
 msgstr ""
 
+#: src/components/downloads/AnimeGroupHeader.tsx:190
+msgid "downloads.autoDisabled"
+msgstr "自动下载已停用"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:190
+msgid "downloads.autoEnabled"
+msgstr "自动下载中"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:113
+#: src/components/downloads/AnimeGroupHeader.tsx:117
+msgid "downloads.collapse"
+msgstr "折叠"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:233
+msgid "downloads.completedAt"
+msgstr "完成于"
+
+#: src/pages/downloads/LibraryTab.tsx:325
+msgid "downloads.confirm.delete"
+msgstr "确定删除此订阅？Feed 也会一起删除。"
+
+#: src/components/downloads/episode-rows/EpisodeRowActive.tsx:100
+#: src/components/downloads/episode-rows/EpisodeRowComplete.tsx:53
+#: src/components/downloads/episode-rows/EpisodeRowMisc.tsx:51
+msgid "downloads.delete"
+msgstr "删除"
+
+#: src/pages/downloads/LibraryTab.tsx:271
+msgid "downloads.deleted"
+msgstr "已删除"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:156
+msgid "downloads.downloading"
+msgstr "下载中"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:113
+#: src/components/downloads/AnimeGroupHeader.tsx:117
+msgid "downloads.expand"
+msgstr "展开"
+
 #~ msgid "downloads.feeds"
 #~ msgstr "RSS 订阅源"
+
+#: src/components/downloads/CardMenu.tsx:63
+msgid "downloads.menu.autoDownload"
+msgstr "自动下载"
+
+#: src/pages/downloads/LibraryTab.tsx:323
+msgid "downloads.menu.copied"
+msgstr "已复制"
+
+#: src/components/downloads/CardMenu.tsx:90
+msgid "downloads.menu.copyRSS"
+msgstr "复制 RSS URL"
+
+#: src/components/downloads/CardMenu.tsx:99
+msgid "downloads.menu.delete"
+msgstr "删除订阅"
+
+#: src/components/downloads/CardMenu.tsx:45
+msgid "downloads.menu.more"
+msgstr "更多"
+
+#: src/components/downloads/CardMenu.tsx:71
+msgid "downloads.menu.off"
+msgstr "关"
+
+#: src/components/downloads/CardMenu.tsx:71
+msgid "downloads.menu.on"
+msgstr "开"
+
+#: src/components/downloads/CardMenu.tsx:84
+msgid "downloads.menu.openAnime"
+msgstr "打开动画页"
+
+#: src/components/downloads/CardMenu.tsx:78
+msgid "downloads.menu.refresh"
+msgstr "立即刷新"
+
+#: src/components/downloads/MiscDownloadsSection.tsx:27
+msgid "downloads.miscHeader"
+msgstr "其他下载"
+
+#: src/components/downloads/AnimeGroupHeader.tsx:199
+#: src/components/downloads/episode-rows/EpisodeRowPending.tsx:21
+msgid "downloads.nextFetch"
+msgstr "下次刷新"
 
 #~ msgid "downloads.noFeeds"
 #~ msgstr "尚未配置 RSS 订阅源。订阅番剧即可自动下载。"
@@ -1412,17 +1597,77 @@ msgstr ""
 #~ msgid "downloads.noRules"
 #~ msgstr "暂无下载规则。"
 
+#: src/pages/downloads/LibraryTab.tsx:123
+msgid "downloads.noRulesHint"
+msgstr "暂无订阅，去搜索添加第一个"
+
+#: src/components/downloads/episode-rows/EpisodeRowActive.tsx:81
+msgid "downloads.pause"
+msgstr "暂停"
+
+#: src/components/downloads/episode-rows/EpisodeRowComplete.tsx:45
+msgid "downloads.play"
+msgstr "播放"
+
+#: src/components/downloads/episode-rows/EpisodeRowPending.tsx:25
+msgid "downloads.refresh"
+msgstr "刷新"
+
+#: src/components/downloads/episode-rows/EpisodeRowActive.tsx:91
+msgid "downloads.resume"
+msgstr "继续"
+
 #~ msgid "downloads.rules"
 #~ msgstr "下载规则"
 
+#: src/pages/downloads/LibraryTab.tsx:206
+msgid "downloads.searchEmpty"
+msgstr "没有匹配「{query}」的动画"
+
+#: src/pages/downloads/LibraryTab.tsx:135
+msgid "downloads.sort.activity"
+msgstr "最近活动"
+
+#: src/pages/downloads/LibraryTab.tsx:138
+msgid "downloads.sort.created"
+msgstr "订阅时间"
+
+#: src/pages/downloads/LibraryTab.tsx:136
+msgid "downloads.sort.name"
+msgstr "名称"
+
+#: src/pages/downloads/LibraryTab.tsx:137
+msgid "downloads.sort.progress"
+msgstr "进度"
+
+#: src/pages/downloads/LibraryTab.tsx:192
+msgid "downloads.summary.downloading"
+msgstr "下载中"
+
+#: src/pages/downloads/LibraryTab.tsx:201
+msgid "downloads.summary.stored"
+msgstr "已存"
+
+#: src/pages/downloads/LibraryTab.tsx:188
+msgid "downloads.summary.subscribed"
+msgstr "订阅"
+
 #~ msgid "downloads.tab.active"
 #~ msgstr "下载中"
+
+#: src/pages/DownloadsPage.tsx:378
+msgid "downloads.tab.library"
+msgstr "库"
 
 #~ msgid "downloads.tab.rules"
 #~ msgstr "自动规则"
 
 #~ msgid "downloads.tab.search"
 #~ msgstr "搜索"
+
+#: src/components/downloads/episode-rows/EpisodeRowPending.tsx:18
+msgid "downloads.waiting"
+msgstr "等待中"
 
 #: src/components/anime/DuplicatesPanel.tsx:44
 #: src/pages/library/LibraryDuplicatesPage.tsx:58
@@ -2527,8 +2772,8 @@ msgid "Missing"
 msgstr ""
 
 #: src/components/AppSidebar.tsx:32
-#: src/pages/DownloadsPage.tsx:238
-#: src/pages/DownloadsPage.tsx:362
+#: src/pages/DownloadsPage.tsx:265
+#: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
 msgstr "自动下载"
 
@@ -3068,7 +3313,7 @@ msgid "ruleEditor.deleted"
 msgstr "已刪除追番"
 
 #: src/components/RuleEditorModal.tsx:464
-#: src/pages/DownloadsPage.tsx:2081
+#: src/pages/DownloadsPage.tsx:1535
 msgid "ruleEditor.destination"
 msgstr "保存位置"
 
@@ -3120,7 +3365,7 @@ msgstr "接受任何字幕组"
 #~ msgid "ruleEditor.hideDownloaded"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:2158
+#: src/pages/DownloadsPage.tsx:1610
 msgid "ruleEditor.items"
 msgstr "条"
 
@@ -3128,17 +3373,17 @@ msgstr "条"
 msgid "ruleEditor.justNow"
 msgstr "刚刚"
 
-#: src/pages/DownloadsPage.tsx:529
-#: src/pages/DownloadsPage.tsx:543
+#: src/pages/DownloadsPage.tsx:540
+#: src/pages/DownloadsPage.tsx:567
 msgid "ruleEditor.keywordMode"
 msgstr "关键字"
 
 #: src/components/RuleEditorModal.tsx:379
-#: src/pages/DownloadsPage.tsx:1999
+#: src/pages/DownloadsPage.tsx:1441
 msgid "ruleEditor.linkedAnime"
 msgstr "关联动画"
 
-#: src/pages/DownloadsPage.tsx:2126
+#: src/pages/DownloadsPage.tsx:1580
 msgid "ruleEditor.loading"
 msgstr "加载中..."
 
@@ -3155,7 +3400,7 @@ msgstr "仅新集"
 #~ msgstr ""
 
 #: src/components/RuleEditorModal.tsx:479
-#: src/pages/DownloadsPage.tsx:2095
+#: src/pages/DownloadsPage.tsx:1549
 msgid "ruleEditor.noLibrary"
 msgstr "无媒体库"
 
@@ -3163,9 +3408,13 @@ msgstr "无媒体库"
 msgid "ruleEditor.noPreviewItems"
 msgstr "没有匹配当前过滤条件的项目"
 
+#: src/pages/downloads/LibraryTab.tsx:309
+msgid "ruleEditor.openEditor"
+msgstr ""
+
 #: src/components/RuleEditorModal.tsx:702
-#: src/pages/DownloadsPage.tsx:2127
-#: src/pages/DownloadsPage.tsx:2155
+#: src/pages/DownloadsPage.tsx:1581
+#: src/pages/DownloadsPage.tsx:1607
 msgid "ruleEditor.preview"
 msgstr "预览"
 
@@ -3189,40 +3438,40 @@ msgstr "分辨率"
 msgid "ruleEditor.rssUrl"
 msgstr "RSS 追番連結"
 
-#: src/pages/DownloadsPage.tsx:529
-#: src/pages/DownloadsPage.tsx:554
+#: src/pages/DownloadsPage.tsx:541
+#: src/pages/DownloadsPage.tsx:587
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS 网址"
 
 #: src/components/RuleEditorModal.tsx:368
-#: src/pages/DownloadsPage.tsx:2071
+#: src/pages/DownloadsPage.tsx:1525
 msgid "ruleEditor.ruleName"
 msgstr "规则名称"
 
 #: src/components/RuleEditorModal.tsx:320
 #: src/components/RuleEditorModal.tsx:372
-#: src/pages/DownloadsPage.tsx:2075
+#: src/pages/DownloadsPage.tsx:1529
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "例如：动画名称 第一季"
 
 #: src/components/RuleEditorModal.tsx:692
-#: src/pages/DownloadsPage.tsx:2138
+#: src/pages/DownloadsPage.tsx:1590
 msgid "ruleEditor.save"
 msgstr "保存"
 
 #: src/components/RuleEditorModal.tsx:205
 #: src/components/RuleEditorModal.tsx:244
-#: src/pages/DownloadsPage.tsx:1977
+#: src/pages/DownloadsPage.tsx:1416
 msgid "ruleEditor.saved"
 msgstr "规则已更新"
 
 #: src/components/RuleEditorModal.tsx:691
-#: src/pages/DownloadsPage.tsx:2137
+#: src/pages/DownloadsPage.tsx:1590
 msgid "ruleEditor.saving"
 msgstr "保存中..."
 
 #: src/components/RuleEditorModal.tsx:416
-#: src/pages/DownloadsPage.tsx:2025
+#: src/pages/DownloadsPage.tsx:1477
 msgid "ruleEditor.searchAnime"
 msgstr "搜索动画以关联..."
 
@@ -3698,7 +3947,7 @@ msgstr "内置"
 msgid "settings.download.builtinDesc"
 msgstr "使用内置下载引擎"
 
-#: src/pages/DownloadsPage.tsx:388
+#: src/pages/DownloadsPage.tsx:420
 #: src/pages/settings/DownloadPanel.tsx:31
 msgid "settings.download.disconnected"
 msgstr "未连接"
@@ -4619,149 +4868,3 @@ msgstr "转码中..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支持"
-
-msgid "downloads.downloading"
-msgstr "下载中"
-
-msgid "downloads.autoEnabled"
-msgstr "自动下载中"
-
-msgid "downloads.autoDisabled"
-msgstr "已停用"
-
-msgid "downloads.nextFetch"
-msgstr "下次刷新"
-
-msgid "downloads.completedAt"
-msgstr "完成于"
-
-msgid "downloads.collapse"
-msgstr "折叠"
-
-msgid "downloads.expand"
-msgstr "展开"
-
-msgid "downloads.waiting"
-msgstr "等待中"
-
-msgid "downloads.refresh"
-msgstr "刷新"
-
-msgid "downloads.pause"
-msgstr "暂停"
-
-msgid "downloads.resume"
-msgstr "继续"
-
-msgid "downloads.delete"
-msgstr "删除"
-
-msgid "downloads.play"
-msgstr "播放"
-
-msgid "downloads.miscHeader"
-msgstr "其他下载"
-
-#. js-lingui-explicit-id
-msgid "downloads.noActive"
-msgstr "没有进行中的下载"
-
-#. js-lingui-explicit-id
-msgid "downloads.noCompleted"
-msgstr "没有已完成的下载"
-
-#. js-lingui-explicit-id
-msgid "downloads.deleted"
-msgstr "已删除"
-
-#. js-lingui-explicit-id
-msgid "downloads.notMatched"
-msgstr "此项目尚未匹配到动画"
-
-#. js-lingui-explicit-id
-msgid "ruleEditor.openEditor"
-msgstr "编辑订阅"
-
-#. js-lingui-explicit-id
-msgid "downloads.tab.library"
-msgstr "库"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.activity"
-msgstr "最近活动"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.name"
-msgstr "名称"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.progress"
-msgstr "进度"
-
-#. js-lingui-explicit-id
-msgid "downloads.sort.created"
-msgstr "订阅时间"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.more"
-msgstr "更多"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.autoDownload"
-msgstr "自动下载"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.on"
-msgstr "开"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.off"
-msgstr "关"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.refresh"
-msgstr "立即刷新"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.openAnime"
-msgstr "打开动画页"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.copyRSS"
-msgstr "复制 RSS URL"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.copied"
-msgstr "已复制"
-
-#. js-lingui-explicit-id
-msgid "downloads.menu.delete"
-msgstr "删除订阅"
-
-#. js-lingui-explicit-id
-msgid "downloads.confirm.delete"
-msgstr "确定删除此订阅？Feed 也会一起删除。"
-
-#. js-lingui-explicit-id
-msgid "downloads.autoDisabled"
-msgstr "自动下载已停用"
-
-#. js-lingui-explicit-id
-msgid "downloads.summary.subscribed"
-msgstr "订阅"
-
-#. js-lingui-explicit-id
-msgid "downloads.summary.downloading"
-msgstr "下载中"
-
-#. js-lingui-explicit-id
-msgid "downloads.summary.stored"
-msgstr "已存"
-
-#. js-lingui-explicit-id
-msgid "downloads.noRulesHint"
-msgstr "暂无订阅，去搜索添加第一个"
-
-#. js-lingui-explicit-id
-msgid "downloads.searchEmpty"
-msgstr "没有匹配「{query}」的动画"
