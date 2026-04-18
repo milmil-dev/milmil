@@ -392,33 +392,44 @@ export function DownloadsPage() {
                 {i18n._(msg`nav.autoDownload`)}
               </h1>
             </div>
-            {/* Downloader status */}
-            <div
-              className={cn(
-                'flex items-center gap-2 px-3 py-1.5 rounded-lg',
-                downloaderStatus?.healthy
-                  ? 'bg-white/[0.03]'
-                  : 'bg-red-500/[0.06] border border-red-500/10'
-              )}
-            >
-              <span
+            {/* Page-level actions: downloader status + Add URL */}
+            <div className="flex items-center gap-3">
+              {/* Downloader status */}
+              <div
                 className={cn(
-                  'h-1.5 w-1.5 rounded-full shrink-0',
+                  'flex items-center gap-2 px-3 py-1.5 rounded-lg',
                   downloaderStatus?.healthy
-                    ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.4)]'
-                    : 'bg-red-400/60'
-                )}
-              />
-              <span
-                className={cn(
-                  'text-[11px] font-medium',
-                  downloaderStatus?.healthy ? 'text-white/50' : 'text-red-400/70'
+                    ? 'bg-white/[0.03]'
+                    : 'bg-red-500/[0.06] border border-red-500/10'
                 )}
               >
-                {downloaderStatus?.healthy
-                  ? `${downloaderStatus.engine === 'builtin' ? 'Built-in' : downloaderStatus.engine}`
-                  : i18n._(msg`settings.download.disconnected`)}
-              </span>
+                <span
+                  className={cn(
+                    'h-1.5 w-1.5 rounded-full shrink-0',
+                    downloaderStatus?.healthy
+                      ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.4)]'
+                      : 'bg-red-400/60'
+                  )}
+                />
+                <span
+                  className={cn(
+                    'text-[11px] font-medium',
+                    downloaderStatus?.healthy ? 'text-white/50' : 'text-red-400/70'
+                  )}
+                >
+                  {downloaderStatus?.healthy
+                    ? `${downloaderStatus.engine === 'builtin' ? 'Built-in' : downloaderStatus.engine}`
+                    : i18n._(msg`settings.download.disconnected`)}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAddUrlOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={Add01Icon} size={14} />
+                {i18n._(msg`autoDownload.addUrl`)}
+              </button>
             </div>
           </div>
         </div>
@@ -426,7 +437,7 @@ export function DownloadsPage() {
         {/* Tabs */}
         <div className="px-8 mb-6">
           <div className="flex items-center pb-px">
-            <div className="flex gap-1 flex-1">
+            <div className="flex gap-1">
               {tabs.map((t) => (
                 <button
                   key={t.key}
@@ -448,14 +459,6 @@ export function DownloadsPage() {
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() => setAddUrlOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer mb-px"
-            >
-              <HugeiconsIcon icon={Add01Icon} size={14} />
-              {i18n._(msg`autoDownload.addUrl`)}
-            </button>
           </div>
         </div>
 
