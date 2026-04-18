@@ -139,6 +139,13 @@ export function ruleSubChips(rule: DownloadRule): string[] {
 }
 
 export type CardMode = 'downloading' | 'subscribed' | 'completed';
+export type SortKey = 'activity' | 'name' | 'progress' | 'created';
+
+export interface LibraryItem {
+  rule: DownloadRule;
+  group: DownloadGroup | undefined;
+  feed: RSSFeed | undefined;
+}
 
 /**
  * Priority: any active episode → downloading; else rule enabled → subscribed; else completed.
@@ -153,4 +160,67 @@ export function deriveCardMode(
   if (hasActive) return 'downloading';
   if (rule.enabled === 1) return 'subscribed';
   return 'completed';
+}
+
+export function deriveEpsForExpand(
+  group: DownloadGroup | undefined,
+  mode: CardMode,
+): DownloadGroup['downloads'] {
+  if (!group || mode === 'subscribed') return [];
+  const eps = group.downloads.filter((d) => {
+    if (mode === 'downloading') {
+      return d.status === 'active' || d.status === 'paused' || d.status === 'waiting';
+    }
+    return d.status === 'complete';
+  });
+  if (mode === 'downloading') {
+    return [...eps].sort((a, b) => {
+      const etaA = a.speed_bytes > 0 ? (a.total_bytes - a.completed_bytes) / a.speed_bytes : Infinity;
+      const etaB = b.speed_bytes > 0 ? (b.total_bytes - b.completed_bytes) / b.speed_bytes : Infinity;
+      return etaA - etaB;
+    });
+  }
+  // completed — sort by created_at desc
+  return [...eps].sort((a, b) =>
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+}
+
+function isActiveGroup(g: DownloadGroup | undefined): boolean {
+  return !!g && g.downloads.some(
+    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting',
+  );
+}
+
+export function sortRulesBy(items: LibraryItem[], key: SortKey): LibraryItem[] {
+  const copy = [...items];
+  const nameCmp = (a: LibraryItem, b: LibraryItem) =>
+    a.rule.name.localeCompare(b.rule.name);
+
+  switch (key) {
+    case 'name':
+      return copy.sort(nameCmp);
+    case 'progress':
+      return copy.sort((a, b) => {
+        const pa = deriveGroupPercent(a.group);
+        const pb = deriveGroupPercent(b.group);
+        return pb - pa || nameCmp(a, b);
+      });
+    case 'created':
+      return copy.sort((a, b) => {
+        const ta = new Date(a.rule.created_at || 0).getTime();
+        const tb = new Date(b.rule.created_at || 0).getTime();
+        return tb - ta || nameCmp(a, b);
+      });
+    case 'activity':
+    default:
+      return copy.sort((a, b) => {
+        const aActive = isActiveGroup(a.group);
+        const bActive = isActiveGroup(b.group);
+        if (aActive !== bActive) return aActive ? -1 : 1;
+        const ta = new Date(a.rule.last_triggered_at || a.rule.created_at || 0).getTime();
+        const tb = new Date(b.rule.last_triggered_at || b.rule.created_at || 0).getTime();
+        return tb - ta || nameCmp(a, b);
+      });
+  }
 }
