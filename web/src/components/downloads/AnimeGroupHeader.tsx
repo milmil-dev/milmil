@@ -101,10 +101,6 @@ export function AnimeGroupHeader({
       </div>
 
       <div className="flex flex-col items-end justify-between gap-2">
-        <div className="flex items-baseline gap-1 text-white/90">
-          <span className="text-[20px] font-medium tracking-[-0.02em] tabular-nums">{percent}</span>
-          <span className="text-[14px] font-light text-white/50">%</span>
-        </div>
         <div className="flex items-center gap-2">
           {headerActions}
           <button
@@ -118,6 +114,10 @@ export function AnimeGroupHeader({
             </span>
             <HugeiconsIcon icon={expanded ? ArrowUp01Icon : ArrowDown01Icon} size={11} />
           </button>
+        </div>
+        <div className="flex items-baseline gap-1 text-white/90">
+          <span className="text-[20px] font-medium tracking-[-0.02em] tabular-nums">{percent}</span>
+          <span className="text-[14px] font-light text-white/50">%</span>
         </div>
       </div>
     </div>
