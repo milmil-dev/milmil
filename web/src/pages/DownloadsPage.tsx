@@ -5,10 +5,8 @@ import {
   ArrowUpDownIcon,
   Cancel01Icon,
   CheckListIcon,
-  CheckmarkCircle02Icon,
   Copy01Icon,
   Delete02Icon,
-  Download02Icon,
   EyeIcon,
   Link01Icon,
   PauseIcon,
@@ -58,9 +56,7 @@ import { api } from '../lib/api-client';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import type { DownloadsSearch } from '../routes/downloads';
-import CompletedTab from './downloads/CompletedTab';
-import DownloadingTab from './downloads/DownloadingTab';
-import SubscribedTab from './downloads/SubscribedTab';
+import LibraryTab from './downloads/LibraryTab';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -85,7 +81,7 @@ interface DownloaderStatus {
   healthy: boolean;
 }
 
-type Tab = 'search' | 'subscriptions' | 'downloading' | 'completed';
+type Tab = 'search' | 'library';
 
 // ── Source config ───────────────────────────────────────────────────────────
 
@@ -371,61 +367,15 @@ export function DownloadsPage() {
     );
   }, [groups]);
 
-  const isEffectivelyComplete = (d: {
-    status: string;
-    total_bytes: number;
-    completed_bytes: number;
-  }) => d.status === 'complete' || (d.total_bytes > 0 && d.completed_bytes >= d.total_bytes);
-
-  const activeDownloads = useMemo(
-    () =>
-      allDownloads
-        .filter(
-          (d) =>
-            (d.status === 'active' || d.status === 'waiting' || d.status === 'paused') &&
-            !isEffectivelyComplete(d)
-        )
-        .sort((a, b) => {
-          const order: Record<string, number> = { active: 0, waiting: 1, paused: 2 };
-          return (order[a.status] ?? 3) - (order[b.status] ?? 3);
-        }),
-    [allDownloads]
-  );
-
-  const completedDownloads = useMemo(
-    () =>
-      allDownloads
-        .filter((d) => isEffectivelyComplete(d))
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
-    [allDownloads]
-  );
-
   // Downloads without a rule association (manual downloads, etc.)
   const miscDownloads = useMemo(
-    () => activeDownloads.filter((d) => !d.rule_id || d.rule_id === ''),
-    [activeDownloads]
+    () => allDownloads.filter((d) => !d.rule_id || d.rule_id === ''),
+    [allDownloads],
   );
 
-  const miscCompletedDownloads = useMemo(
-    () => completedDownloads.filter((d) => !d.rule_id || d.rule_id === ''),
-    [completedDownloads]
-  );
-
-  const tabs: { key: Tab; label: string; icon: typeof Search01Icon; count?: number }[] = [
+  const tabs: { key: Tab; label: string; icon: typeof Search01Icon }[] = [
     { key: 'search', label: i18n._(msg`autoDownload.tab.search`), icon: Search01Icon },
-    { key: 'subscriptions', label: i18n._(msg`autoDownload.subtab.subscriptions`), icon: RssIcon },
-    {
-      key: 'downloading',
-      label: i18n._(msg`autoDownload.subtab.downloads`),
-      icon: Download02Icon,
-      count: activeDownloads.length,
-    },
-    {
-      key: 'completed',
-      label: i18n._(msg`autoDownload.subtab.completed`),
-      icon: CheckmarkCircle02Icon,
-      count: completedDownloads.length,
-    },
+    { key: 'library', label: i18n._(msg`downloads.tab.library`), icon: RssIcon },
   ];
 
   return (
@@ -489,18 +439,6 @@ export function DownloadsPage() {
                 >
                   <HugeiconsIcon icon={t.icon} size={14} />
                   {t.label}
-                  {t.count != null && t.count > 0 && (
-                    <span
-                      className={cn(
-                        'text-[10px] px-1.5 py-px rounded-full font-semibold',
-                        tab === t.key
-                          ? 'bg-white/[0.15] text-white'
-                          : 'bg-white/[0.08] text-white/40'
-                      )}
-                    >
-                      {t.count}
-                    </span>
-                  )}
                   {tab === t.key && (
                     <motion.div
                       layoutId="auto-download-tab-indicator"
@@ -527,20 +465,15 @@ export function DownloadsPage() {
         {/* Tab content */}
         <div className="px-8 pb-16">
           {tab === 'search' && <SearchTab initialAnimeId={animeParam} />}
-          {tab === 'subscriptions' && (
-            <SubscribedTab
+          {tab === 'library' && (
+            <LibraryTab
               rules={rules}
               feeds={feeds}
               groups={groups}
+              miscDownloads={miscDownloads as unknown as import('../lib/api/downloads').Download[]}
               isLoading={groupsLoading}
               onSwitchToSearch={() => setTab('search')}
             />
-          )}
-          {tab === 'downloading' && (
-            <DownloadingTab groups={groups} miscDownloads={miscDownloads} isLoading={groupsLoading} />
-          )}
-          {tab === 'completed' && (
-            <CompletedTab groups={groups} miscDownloads={miscCompletedDownloads} isLoading={groupsLoading} />
           )}
         </div>
       </div>
