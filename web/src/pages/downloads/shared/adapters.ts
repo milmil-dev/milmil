@@ -47,7 +47,7 @@ export function toActiveProps(
   const percent = d.total_bytes > 0
     ? Math.min(100, Math.round((d.completed_bytes / d.total_bytes) * 100))
     : 0;
-  const remaining = d.total_bytes - d.completed_bytes;
+  const remaining = Math.max(0, d.total_bytes - d.completed_bytes);
   const etaSeconds = d.speed_bytes > 0 ? Math.round(remaining / d.speed_bytes) : 0;
   return {
     gid: d.gid,
