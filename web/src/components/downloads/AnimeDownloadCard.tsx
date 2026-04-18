@@ -14,6 +14,7 @@ interface Props {
   headerActions?: ReactNode;
   children?: ReactNode;
   className?: string;
+  onOpenAnime?: () => void;
 }
 
 export function AnimeDownloadCard({
@@ -26,6 +27,7 @@ export function AnimeDownloadCard({
   headerActions,
   children,
   className,
+  onOpenAnime,
 }: Props) {
   return (
     <div
@@ -44,6 +46,7 @@ export function AnimeDownloadCard({
         expanded={expanded}
         onToggle={onToggle}
         headerActions={headerActions}
+        onOpenAnime={onOpenAnime}
       />
       <AnimeEpisodeList expanded={expanded}>{children}</AnimeEpisodeList>
     </div>

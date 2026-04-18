@@ -32,6 +32,7 @@ interface Props {
   expanded: boolean;
   onToggle: () => void;
   headerActions?: React.ReactNode;
+  onOpenAnime?: () => void;
 }
 
 function formatBytes(n?: number): string {
@@ -59,6 +60,7 @@ export function AnimeGroupHeader({
   expanded,
   onToggle,
   headerActions,
+  onOpenAnime,
 }: Props) {
   const { i18n } = useLingui();
   const { mode, percent } = stats;
@@ -66,13 +68,33 @@ export function AnimeGroupHeader({
 
   return (
     <div className="grid grid-cols-[92px_1fr_auto] gap-5 p-4">
-      <AnimeCoverBlock coverUrl={coverUrl} title={title} />
+      {onOpenAnime ? (
+        <button
+          type="button"
+          onClick={onOpenAnime}
+          className="shrink-0 rounded-lg cursor-pointer hover:opacity-85 transition-opacity focus:outline-none"
+        >
+          <AnimeCoverBlock coverUrl={coverUrl} title={title} />
+        </button>
+      ) : (
+        <AnimeCoverBlock coverUrl={coverUrl} title={title} />
+      )}
 
       <div className="min-w-0 flex flex-col justify-between py-0.5">
         <div>
-          <h3 className="text-[15px] font-semibold text-white/90 tracking-[-0.01em] truncate">
-            {title}
-          </h3>
+          {onOpenAnime ? (
+            <button
+              type="button"
+              onClick={onOpenAnime}
+              className="text-[15px] font-semibold text-white/90 tracking-[-0.01em] truncate text-left hover:underline underline-offset-2 decoration-white/30 cursor-pointer"
+            >
+              {title}
+            </button>
+          ) : (
+            <h3 className="text-[15px] font-semibold text-white/90 tracking-[-0.01em] truncate">
+              {title}
+            </h3>
+          )}
           <div className="mt-1 flex gap-2 items-center text-[11px] text-white/40">
             {subChips.map((chip) => (
               <span

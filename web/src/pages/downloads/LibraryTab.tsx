@@ -333,6 +333,7 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
       coverUrl={coverUrl}
       title={rule.name}
       subChips={ruleSubChips(rule)}
+      onOpenAnime={rule.bangumi_id ? () => navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } }) : undefined}
       stats={{
         mode,
         percent,
