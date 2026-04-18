@@ -145,12 +145,12 @@ test.describe('Built-in Torrent: Subscribe → Download → Watch', () => {
 
     // Step 6: UI verification — navigate to downloads page
     await login(page);
-    await page.goto('/downloads?tab=downloading');
+    await page.goto('/downloads?tab=library');
     await page.waitForTimeout(5000);
     await page.screenshot({ path: 'e2e/screenshots/youzitsu-downloading.png', fullPage: true });
 
-    // Check completed tab too
-    await page.goto('/downloads?tab=completed');
+    // Check library tab (combined view)
+    await page.goto('/downloads?tab=library');
     await page.waitForTimeout(3000);
     await page.screenshot({ path: 'e2e/screenshots/youzitsu-completed.png', fullPage: true });
 

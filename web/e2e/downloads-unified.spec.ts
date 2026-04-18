@@ -151,8 +151,8 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
   });
 
   test('已追番 tab: shows AnimeDownloadCard with cover block', async ({ page }) => {
-    // Navigate directly to subscriptions tab via URL (locale-agnostic)
-    await page.goto('/downloads?tab=subscriptions');
+    // Navigate directly to library tab via URL (locale-agnostic)
+    await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');
 
     const card = page.getByTestId('anime-download-card').first();
@@ -165,8 +165,8 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
   });
 
   test('下載緊 tab: active group card is auto-expanded with ep-bar-fill visible', async ({ page }) => {
-    // Navigate directly to downloading tab via URL (locale-agnostic)
-    await page.goto('/downloads?tab=downloading');
+    // Navigate directly to library tab via URL (locale-agnostic)
+    await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');
 
     const card = page.getByTestId('anime-download-card').first();
@@ -177,8 +177,8 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
   });
 
   test('已完成 tab: toggle expand reveals card-divider', async ({ page }) => {
-    // Navigate directly to completed tab via URL (locale-agnostic)
-    await page.goto('/downloads?tab=completed');
+    // Navigate directly to library tab via URL (locale-agnostic)
+    await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');
 
     const card = page.getByTestId('anime-download-card').first();
@@ -196,8 +196,8 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
   });
 
   test('search filter: typing non-matching text shows zero subscription cards', async ({ page }) => {
-    // Verify subscription cards are visible on subscriptions tab
-    await page.goto('/downloads?tab=subscriptions');
+    // Verify subscription cards are visible on library tab
+    await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('anime-download-card').first()).toBeVisible();
 
