@@ -1,5 +1,7 @@
 import { ArrowDown01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useEffect, useMemo } from 'react';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
 import { AnimeDownloadCardSkeleton } from '@/components/downloads/AnimeDownloadCardSkeleton';
@@ -21,6 +23,7 @@ export default function DownloadingTab({
   miscDownloads: Download[];
   isLoading: boolean;
 }) {
+  const { i18n } = useLingui();
   const activeGroups = useMemo(
     () => groups.filter((g) => g.active_count > 0),
     [groups],
@@ -48,7 +51,7 @@ export default function DownloadingTab({
     return (
       <div className="text-center py-12">
         <HugeiconsIcon icon={ArrowDown01Icon} size={32} className="mx-auto mb-3 text-white/10" />
-        <p className="text-white/25 text-sm">No active downloads</p>
+        <p className="text-white/25 text-sm">{i18n._(msg`downloads.noActive`)}</p>
       </div>
     );
   }

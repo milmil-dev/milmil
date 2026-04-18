@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useMemo } from 'react';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
 import { AnimeDownloadCardSkeleton } from '@/components/downloads/AnimeDownloadCardSkeleton';
@@ -17,6 +19,7 @@ interface CompletedTabProps {
 }
 
 export default function CompletedTab({ groups, miscDownloads, isLoading }: CompletedTabProps) {
+  const { i18n } = useLingui();
   const completeGroups = useMemo(
     () => groups.filter((g) => g.complete_count > 0),
     [groups],
@@ -35,7 +38,7 @@ export default function CompletedTab({ groups, miscDownloads, isLoading }: Compl
   if (completeGroups.length === 0 && miscDownloads.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-white/20 text-sm">No completed downloads</p>
+        <p className="text-white/20 text-sm">{i18n._(msg`downloads.noCompleted`)}</p>
       </div>
     );
   }

@@ -4586,3 +4586,11 @@ msgstr "播放"
 
 msgid "downloads.miscHeader"
 msgstr "其他下載"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "沒有進行中的下載"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "沒有已完成的下載"

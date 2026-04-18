@@ -4588,3 +4588,11 @@ msgstr "再生"
 
 msgid "downloads.miscHeader"
 msgstr "その他"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "アクティブなダウンロードはありません"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "完了したダウンロードはありません"

@@ -4588,3 +4588,11 @@ msgstr "재생"
 
 msgid "downloads.miscHeader"
 msgstr "기타 다운로드"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "활성 다운로드가 없습니다"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "완료된 다운로드가 없습니다"

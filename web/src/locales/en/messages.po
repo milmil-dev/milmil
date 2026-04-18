@@ -4593,3 +4593,11 @@ msgstr "Play"
 
 msgid "downloads.miscHeader"
 msgstr "Other downloads"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "No active downloads"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "No completed downloads"
