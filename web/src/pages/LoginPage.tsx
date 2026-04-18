@@ -21,63 +21,73 @@ import { useDocumentTitle } from '../hooks/use-document-title';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { api } from '../lib/api-client';
 
-/* ── Poster collage background ─────────────────────────────── */
+/* ── Poster wall background (cinema-style grid with perspective tilt) ── */
 
-function PosterCollage() {
+function PosterWall() {
   const { data: trending } = useQuery({
     queryKey: discoverKeys.trending(1),
     queryFn: () => discoverApi.trending(1),
     staleTime: 5 * 60 * 1000,
   });
 
-  // Pick posters with valid cover images, fill to 24 slots
+  // 210 slots (14 cols × 15 rows) — repeat the list if fewer than that many covers
   const posters = useMemo(() => {
+    const SLOTS = 210;
     if (!trending) return [];
     const valid = trending
       .filter((a) => a.cover_image?.startsWith('http'))
       .map((a) => a.cover_image);
-    // Duplicate to fill grid if fewer than 24
+    if (valid.length === 0) return [];
     const result: string[] = [];
-    while (result.length < 24 && valid.length > 0) {
-      result.push(...valid);
-    }
-    return result.slice(0, 24);
+    while (result.length < SLOTS) result.push(...valid);
+    return result.slice(0, SLOTS);
   }, [trending]);
 
   if (posters.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 overflow-hidden">
-      {/* Poster grid — rotated for visual interest */}
-      <div className="absolute -inset-[20%]" style={{ transform: 'rotate(-12deg) scale(1.3)' }}>
-        <div className="grid grid-cols-6 gap-1.5 opacity-[0.45]">
+    <div className="pointer-events-none fixed inset-0 overflow-hidden bg-mm-bg">
+      {/* Tilted poster grid — posters sit at full opacity; darkness comes from overlays */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
+        style={{
+          transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
+          transformOrigin: '50% 50%',
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        <div
+          className="grid gap-x-[5px] gap-y-[10px]"
+          style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+        >
           {posters.map((src, i) => (
-            <motion.div
+            <div
               key={`${src}-${i}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.04, duration: 0.8 }}
-              className="aspect-[3/4] overflow-hidden rounded-sm"
+              className="aspect-[2/3] overflow-hidden rounded-[3px]"
             >
               <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
-            </motion.div>
+            </div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Dark overlay — ensures form readability */}
-      <div className="absolute inset-0 bg-mm-bg/50" />
+      {/* Flat dark overlay — evenly dims whole wall so posters are visible but subdued */}
+      <div className="absolute inset-0 bg-black/55" />
 
-      {/* Vignette — darker edges */}
+      {/* Vignette — fades edges darker, centre stays lighter so form reads well */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 30%, var(--mm-bg) 80%)',
+          background:
+            'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
         }}
       />
 
       {/* Accent glow behind form area */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-mm-accent/[0.04] blur-[120px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-mm-accent/[0.05] blur-[120px]" />
     </div>
   );
 }
@@ -148,7 +158,7 @@ export function LoginPage() {
 
   return (
     <div className="relative min-h-screen bg-mm-bg flex items-center justify-center p-4">
-      <PosterCollage />
+      <PosterWall />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
