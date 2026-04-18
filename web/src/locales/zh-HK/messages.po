@@ -1021,7 +1021,7 @@ msgstr "搵動畫..."
 
 #: src/pages/downloads/LibraryTab.tsx:150
 msgid "autoDownload.searchDownloads"
-msgstr ""
+msgstr "搜尋下載…"
 
 #: src/pages/DownloadsPage.tsx:700
 msgid "autoDownload.searchHint"

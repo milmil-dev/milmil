@@ -1023,7 +1023,7 @@ msgstr "애니메이션 검색..."
 
 #: src/pages/downloads/LibraryTab.tsx:150
 msgid "autoDownload.searchDownloads"
-msgstr ""
+msgstr "다운로드 검색…"
 
 #: src/pages/DownloadsPage.tsx:700
 msgid "autoDownload.searchHint"
