@@ -1,4 +1,5 @@
-import { RssIcon } from '@hugeicons/core-free-icons';
+import { useState } from 'react';
+import { RssIcon, Settings02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
@@ -14,8 +15,6 @@ import {
   downloadKeys,
   rssFeedApi,
 } from '../../lib/api/downloads';
-import { cn } from '../../lib/utils';
-import { SourceBadge } from '../DownloadsPage';
 import { useAnimeCover } from '../../hooks/use-anime-cover';
 import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
@@ -30,6 +29,7 @@ import {
   toActiveProps,
   toCompleteProps,
 } from './shared/adapters';
+import { RuleEditorModal } from '../../components/RuleEditorModal';
 
 export default function SubscribedTab({
   rules,
@@ -45,8 +45,11 @@ export default function SubscribedTab({
   onSwitchToSearch: () => void;
 }) {
   const { i18n } = useLingui();
+  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
   const feedMap = new Map(feeds.map((f) => [f.id, f]));
   const groupMap = new Map(groups.map((g) => [g.rule_id, g]));
+  const selectedRule = selectedRuleId ? rules.find((r) => r.id === selectedRuleId) : null;
+  const selectedFeed = selectedRule ? feedMap.get(selectedRule.rss_feed_id) : undefined;
 
   // Loading skeleton
   if (isLoading) {
@@ -84,16 +87,27 @@ export default function SubscribedTab({
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
-      {rules.map((rule) => (
-        <SubscribedCard
-          key={rule.id}
-          rule={rule}
-          feed={feedMap.get(rule.rss_feed_id)}
-          group={groupMap.get(rule.id)}
+    <>
+      <div className="flex flex-col gap-2.5">
+        {rules.map((rule) => (
+          <SubscribedCard
+            key={rule.id}
+            rule={rule}
+            feed={feedMap.get(rule.rss_feed_id)}
+            group={groupMap.get(rule.id)}
+            onEdit={() => setSelectedRuleId(rule.id)}
+          />
+        ))}
+      </div>
+      {selectedRule && (
+        <RuleEditorModal
+          rule={selectedRule}
+          feed={selectedFeed}
+          open={!!selectedRuleId}
+          onClose={() => setSelectedRuleId(null)}
         />
-      ))}
-    </div>
+      )}
+    </>
   );
 }
 
@@ -101,10 +115,12 @@ function SubscribedCard({
   rule,
   feed,
   group,
+  onEdit,
 }: {
   rule: DownloadRule;
   feed?: RSSFeed;
   group?: DownloadGroup;
+  onEdit: () => void;
 }) {
   const { i18n } = useLingui();
   const { coverUrl } = useAnimeCover(rule.bangumi_id);
@@ -164,6 +180,16 @@ function SubscribedCard({
       }}
       expanded={expanded}
       onToggle={() => toggle(rule.id)}
+      headerActions={
+        <button
+          type="button"
+          onClick={onEdit}
+          aria-label={i18n._(msg`ruleEditor.openEditor`)}
+          className="flex items-center justify-center w-6 h-6 rounded-md text-white/35 hover:text-white/70 hover:bg-white/[0.05] transition-colors cursor-pointer"
+        >
+          <HugeiconsIcon icon={Settings02Icon} size={13} />
+        </button>
+      }
     >
       {recent.length === 0 ? (
         <EpisodeRowPending

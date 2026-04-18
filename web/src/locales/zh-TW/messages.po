@@ -4677,3 +4677,7 @@ msgstr "已刪除"
 #. js-lingui-explicit-id
 msgid "downloads.notMatched"
 msgstr "此項目尚未匹配到動畫"
+
+#. js-lingui-explicit-id
+msgid "ruleEditor.openEditor"
+msgstr "編輯訂閱"

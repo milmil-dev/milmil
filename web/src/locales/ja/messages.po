@@ -4679,3 +4679,7 @@ msgstr "削除しました"
 #. js-lingui-explicit-id
 msgid "downloads.notMatched"
 msgstr "この項目はまだアニメにマッチしていません"
+
+#. js-lingui-explicit-id
+msgid "ruleEditor.openEditor"
+msgstr "編集"

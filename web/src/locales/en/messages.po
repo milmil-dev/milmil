@@ -4690,3 +4690,7 @@ msgstr "Deleted"
 #. js-lingui-explicit-id
 msgid "downloads.notMatched"
 msgstr "This download isn't matched to an anime yet"
+
+#. js-lingui-explicit-id
+msgid "ruleEditor.openEditor"
+msgstr "Edit subscription"
