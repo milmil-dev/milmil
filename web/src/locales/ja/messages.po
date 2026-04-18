@@ -4683,3 +4683,87 @@ msgstr "この項目はまだアニメにマッチしていません"
 #. js-lingui-explicit-id
 msgid "ruleEditor.openEditor"
 msgstr "編集"
+
+#. js-lingui-explicit-id
+msgid "downloads.tab.library"
+msgstr "ライブラリ"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.activity"
+msgstr "最近の活動"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.name"
+msgstr "名前"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.progress"
+msgstr "進捗"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.created"
+msgstr "購読日"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.more"
+msgstr "もっと見る"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.autoDownload"
+msgstr "自動ダウンロード"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.on"
+msgstr "ON"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.off"
+msgstr "OFF"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.refresh"
+msgstr "今すぐ更新"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.openAnime"
+msgstr "アニメページを開く"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copyRSS"
+msgstr "RSS URL をコピー"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copied"
+msgstr "コピーしました"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.delete"
+msgstr "購読を削除"
+
+#. js-lingui-explicit-id
+msgid "downloads.confirm.delete"
+msgstr "この購読を削除しますか？フィードも削除されます。"
+
+#. js-lingui-explicit-id
+msgid "downloads.autoDisabled"
+msgstr "自動ダウンロード停止"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.subscribed"
+msgstr "購読中"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.downloading"
+msgstr "ダウンロード中"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.stored"
+msgstr "保存"
+
+#. js-lingui-explicit-id
+msgid "downloads.noRulesHint"
+msgstr "購読がありません — 検索から追加してください"
+
+#. js-lingui-explicit-id
+msgid "downloads.searchEmpty"
+msgstr "\"{query}\" に一致するアニメなし"

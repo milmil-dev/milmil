@@ -4681,3 +4681,87 @@ msgstr "此項目尚未匹配到動畫"
 #. js-lingui-explicit-id
 msgid "ruleEditor.openEditor"
 msgstr "編輯訂閱"
+
+#. js-lingui-explicit-id
+msgid "downloads.tab.library"
+msgstr "庫"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.activity"
+msgstr "最近活動"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.name"
+msgstr "名稱"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.progress"
+msgstr "下載進度"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.created"
+msgstr "訂閱時間"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.more"
+msgstr "更多"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.autoDownload"
+msgstr "自動下載"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.on"
+msgstr "開啟"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.off"
+msgstr "關閉"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.refresh"
+msgstr "立即重新整理"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.openAnime"
+msgstr "開啟動畫頁面"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copyRSS"
+msgstr "複製 RSS URL"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copied"
+msgstr "已複製"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.delete"
+msgstr "刪除訂閱"
+
+#. js-lingui-explicit-id
+msgid "downloads.confirm.delete"
+msgstr "確定刪除此訂閱？Feed 也會一併刪除。"
+
+#. js-lingui-explicit-id
+msgid "downloads.autoDisabled"
+msgstr "自動下載已停用"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.subscribed"
+msgstr "訂閱"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.downloading"
+msgstr "下載中"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.stored"
+msgstr "已儲存"
+
+#. js-lingui-explicit-id
+msgid "downloads.noRulesHint"
+msgstr "尚無訂閱，去搜尋加入第一個"
+
+#. js-lingui-explicit-id
+msgid "downloads.searchEmpty"
+msgstr "沒有匹配「{query}」的動畫"

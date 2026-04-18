@@ -4683,3 +4683,87 @@ msgstr "이 다운로드는 아직 애니메이션에 매칭되지 않았습니�
 #. js-lingui-explicit-id
 msgid "ruleEditor.openEditor"
 msgstr "편집"
+
+#. js-lingui-explicit-id
+msgid "downloads.tab.library"
+msgstr "라이브러리"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.activity"
+msgstr "최근 활동"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.name"
+msgstr "이름"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.progress"
+msgstr "진행도"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.created"
+msgstr "구독일"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.more"
+msgstr "더 보기"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.autoDownload"
+msgstr "자동 다운로드"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.on"
+msgstr "ON"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.off"
+msgstr "OFF"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.refresh"
+msgstr "지금 새로고침"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.openAnime"
+msgstr "애니메 페이지 열기"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copyRSS"
+msgstr "RSS URL 복사"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copied"
+msgstr "복사됨"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.delete"
+msgstr "구독 삭제"
+
+#. js-lingui-explicit-id
+msgid "downloads.confirm.delete"
+msgstr "이 구독을 삭제할까요? 피드도 함께 삭제됩니다."
+
+#. js-lingui-explicit-id
+msgid "downloads.autoDisabled"
+msgstr "자동 다운로드 꺼짐"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.subscribed"
+msgstr "구독 중"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.downloading"
+msgstr "다운로드 중"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.stored"
+msgstr "저장됨"
+
+#. js-lingui-explicit-id
+msgid "downloads.noRulesHint"
+msgstr "구독이 없습니다 — 검색에서 추가하세요"
+
+#. js-lingui-explicit-id
+msgid "downloads.searchEmpty"
+msgstr "\"{query}\"에 일치하는 애니메가 없습니다"

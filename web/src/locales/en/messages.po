@@ -4694,3 +4694,87 @@ msgstr "This download isn't matched to an anime yet"
 #. js-lingui-explicit-id
 msgid "ruleEditor.openEditor"
 msgstr "Edit subscription"
+
+#. js-lingui-explicit-id
+msgid "downloads.tab.library"
+msgstr "Library"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.activity"
+msgstr "Recent activity"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.name"
+msgstr "Name"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.progress"
+msgstr "Progress"
+
+#. js-lingui-explicit-id
+msgid "downloads.sort.created"
+msgstr "Subscription time"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.more"
+msgstr "More"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.autoDownload"
+msgstr "Auto download"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.on"
+msgstr "On"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.off"
+msgstr "Off"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.refresh"
+msgstr "Refresh now"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.openAnime"
+msgstr "Open anime page"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copyRSS"
+msgstr "Copy RSS URL"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.copied"
+msgstr "Copied"
+
+#. js-lingui-explicit-id
+msgid "downloads.menu.delete"
+msgstr "Delete subscription"
+
+#. js-lingui-explicit-id
+msgid "downloads.confirm.delete"
+msgstr "Delete this subscription? The feed will also be removed."
+
+#. js-lingui-explicit-id
+msgid "downloads.autoDisabled"
+msgstr "Auto-download off"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.subscribed"
+msgstr "subscribed"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.downloading"
+msgstr "downloading"
+
+#. js-lingui-explicit-id
+msgid "downloads.summary.stored"
+msgstr "stored"
+
+#. js-lingui-explicit-id
+msgid "downloads.noRulesHint"
+msgstr "No subscriptions yet — go search to add your first"
+
+#. js-lingui-explicit-id
+msgid "downloads.searchEmpty"
+msgstr "No anime matches \"{query}\""
