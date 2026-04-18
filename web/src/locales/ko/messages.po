@@ -4621,3 +4621,61 @@ msgstr "Transcoding..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "downloads.downloading"
+msgstr "다운로드 중"
+
+msgid "downloads.autoEnabled"
+msgstr "자동 다운로드"
+
+msgid "downloads.autoDisabled"
+msgstr "중지됨"
+
+msgid "downloads.nextFetch"
+msgstr "다음 갱신"
+
+msgid "downloads.completedAt"
+msgstr "완료"
+
+msgid "downloads.collapse"
+msgstr "접기"
+
+msgid "downloads.expand"
+msgstr "펼치기"
+
+msgid "downloads.waiting"
+msgstr "대기 중"
+
+msgid "downloads.refresh"
+msgstr "새로고침"
+
+msgid "downloads.pause"
+msgstr "일시정지"
+
+msgid "downloads.resume"
+msgstr "재개"
+
+msgid "downloads.delete"
+msgstr "삭제"
+
+msgid "downloads.play"
+msgstr "재생"
+
+msgid "downloads.miscHeader"
+msgstr "기타 다운로드"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "활성 다운로드가 없습니다"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "완료된 다운로드가 없습니다"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "삭제됨"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "이 다운로드는 아직 애니메이션에 매칭되지 않았습니다"

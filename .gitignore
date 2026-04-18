@@ -28,7 +28,7 @@ data/
 /web/coverage/
 
 # Docker volumes
-downloads/
+/downloads/
 redis-config/
 transcode-tmp/
 pgdata/

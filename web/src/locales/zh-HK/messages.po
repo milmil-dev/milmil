@@ -4619,3 +4619,61 @@ msgstr "轉碼緊..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支援"
+
+msgid "downloads.downloading"
+msgstr "下載緊"
+
+msgid "downloads.autoEnabled"
+msgstr "自動下載開咗"
+
+msgid "downloads.autoDisabled"
+msgstr "已停用"
+
+msgid "downloads.nextFetch"
+msgstr "下次刷新"
+
+msgid "downloads.completedAt"
+msgstr "完成於"
+
+msgid "downloads.collapse"
+msgstr "收起"
+
+msgid "downloads.expand"
+msgstr "展開"
+
+msgid "downloads.waiting"
+msgstr "等緊"
+
+msgid "downloads.refresh"
+msgstr "刷新"
+
+msgid "downloads.pause"
+msgstr "暫停"
+
+msgid "downloads.resume"
+msgstr "繼續"
+
+msgid "downloads.delete"
+msgstr "刪除"
+
+msgid "downloads.play"
+msgstr "播放"
+
+msgid "downloads.miscHeader"
+msgstr "其他下載"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "冇下載緊"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "冇已完成"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "已刪除"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "呢個下載仲未配對到動畫"

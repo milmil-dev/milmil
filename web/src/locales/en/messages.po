@@ -4632,3 +4632,61 @@ msgstr "Transcoding..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
+
+msgid "downloads.downloading"
+msgstr "downloading"
+
+msgid "downloads.autoEnabled"
+msgstr "Auto-download on"
+
+msgid "downloads.autoDisabled"
+msgstr "Disabled"
+
+msgid "downloads.nextFetch"
+msgstr "Next fetch"
+
+msgid "downloads.completedAt"
+msgstr "Completed"
+
+msgid "downloads.collapse"
+msgstr "Collapse"
+
+msgid "downloads.expand"
+msgstr "Expand"
+
+msgid "downloads.waiting"
+msgstr "Waiting"
+
+msgid "downloads.refresh"
+msgstr "Refresh"
+
+msgid "downloads.pause"
+msgstr "Pause"
+
+msgid "downloads.resume"
+msgstr "Resume"
+
+msgid "downloads.delete"
+msgstr "Delete"
+
+msgid "downloads.play"
+msgstr "Play"
+
+msgid "downloads.miscHeader"
+msgstr "Other downloads"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "No active downloads"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "No completed downloads"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "Deleted"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "This download isn't matched to an anime yet"

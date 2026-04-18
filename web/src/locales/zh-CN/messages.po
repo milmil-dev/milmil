@@ -4619,3 +4619,61 @@ msgstr "转码中..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支持"
+
+msgid "downloads.downloading"
+msgstr "下载中"
+
+msgid "downloads.autoEnabled"
+msgstr "自动下载中"
+
+msgid "downloads.autoDisabled"
+msgstr "已停用"
+
+msgid "downloads.nextFetch"
+msgstr "下次刷新"
+
+msgid "downloads.completedAt"
+msgstr "完成于"
+
+msgid "downloads.collapse"
+msgstr "折叠"
+
+msgid "downloads.expand"
+msgstr "展开"
+
+msgid "downloads.waiting"
+msgstr "等待中"
+
+msgid "downloads.refresh"
+msgstr "刷新"
+
+msgid "downloads.pause"
+msgstr "暂停"
+
+msgid "downloads.resume"
+msgstr "继续"
+
+msgid "downloads.delete"
+msgstr "删除"
+
+msgid "downloads.play"
+msgstr "播放"
+
+msgid "downloads.miscHeader"
+msgstr "其他下载"
+
+#. js-lingui-explicit-id
+msgid "downloads.noActive"
+msgstr "没有进行中的下载"
+
+#. js-lingui-explicit-id
+msgid "downloads.noCompleted"
+msgstr "没有已完成的下载"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "已删除"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "此项目尚未匹配到动画"
