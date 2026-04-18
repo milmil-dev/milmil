@@ -789,40 +789,13 @@ export function WatchPage() {
                 ) : (
                   /* Loading state — show player shell with spinner overlay */
                   <div className="absolute inset-0 flex flex-col">
-                    {/* Tilted poster-wall backdrop while the stream buffers */}
+                    {/* Anime background image for loading state */}
                     {playerBg && (
-                      <div className="pointer-events-none absolute inset-0 overflow-hidden bg-mm-bg">
-                        <div
-                          className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
-                          style={{
-                            transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
-                            transformOrigin: '50% 50%',
-                            transformStyle: 'preserve-3d',
-                          }}
-                        >
-                          <div
-                            className="grid gap-x-[5px] gap-y-[10px]"
-                            style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
-                          >
-                            {Array.from({ length: 140 }).map((_, i) => (
-                              <div
-                                key={i}
-                                className="aspect-[2/3] overflow-hidden rounded-[3px]"
-                              >
-                                <img src={playerBg} alt="" className="h-full w-full object-cover" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-black/55" />
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background:
-                              'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
-                          }}
-                        />
-                      </div>
+                      <>
+                        <img src={playerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+                      </>
                     )}
                     <div className="relative flex-1 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-3">
