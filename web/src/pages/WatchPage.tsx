@@ -147,6 +147,13 @@ export function WatchPage() {
     enabled: !Number.isNaN(bangumiId),
   });
 
+  // Heterogeneous poster pool for the loading-state backdrop (login-style wall).
+  const { data: trendingForBackdrop } = useQuery({
+    queryKey: discoverKeys.trending(1),
+    queryFn: () => discoverApi.trending(1),
+    staleTime: 30 * 60 * 1000,
+  });
+
   const watchTitle = animeDetail?.title
     ? ep
       ? `${animeDetail.title} EP${ep}`
@@ -736,6 +743,22 @@ export function WatchPage() {
   // --------------- Main render ---------------
   const playerBg = animeDetail.banner_image || animeDetail.cover_image;
 
+  // Build a poster pool for the loading-state wall:
+  // current anime's cover first (biases visual to this show), then trending.
+  const loadingWallPosters: string[] = (() => {
+    const pool: string[] = [];
+    if (animeDetail.cover_image?.startsWith('http')) pool.push(animeDetail.cover_image);
+    const trending = (trendingForBackdrop ?? [])
+      .map((a) => a.cover_image)
+      .filter((s): s is string => typeof s === 'string' && s.startsWith('http'));
+    pool.push(...trending);
+    if (pool.length === 0) return [];
+    const SLOTS = 140;
+    const out: string[] = [];
+    while (out.length < SLOTS) out.push(...pool);
+    return out.slice(0, SLOTS);
+  })();
+
   return (
     <PageTransition>
       <div className="min-h-screen">
@@ -789,13 +812,40 @@ export function WatchPage() {
                 ) : (
                   /* Loading state — show player shell with spinner overlay */
                   <div className="absolute inset-0 flex flex-col">
-                    {/* Anime background image for loading state */}
-                    {playerBg && (
-                      <>
-                        <img src={playerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-                      </>
+                    {/* Login-style tilted poster wall (current anime cover + trending covers) */}
+                    {loadingWallPosters.length > 0 && (
+                      <div className="pointer-events-none absolute inset-0 overflow-hidden bg-mm-bg">
+                        <div
+                          className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
+                          style={{
+                            transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
+                            transformOrigin: '50% 50%',
+                            transformStyle: 'preserve-3d',
+                          }}
+                        >
+                          <div
+                            className="grid gap-x-[5px] gap-y-[10px]"
+                            style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+                          >
+                            {loadingWallPosters.map((src, i) => (
+                              <div
+                                key={`${src}-${i}`}
+                                className="aspect-[2/3] overflow-hidden rounded-[3px]"
+                              >
+                                <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="absolute inset-0 bg-black/55" />
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
+                          }}
+                        />
+                      </div>
                     )}
                     <div className="relative flex-1 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-3">
