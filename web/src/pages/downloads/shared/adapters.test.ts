@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
-import type { DownloadGroup, DownloadRule } from '@/lib/api/downloads';
+import type { DownloadGroup, DownloadRule, RSSFeed } from '@/lib/api/downloads';
+import { deriveNextFetch } from './adapters';
 import { deriveCardMode } from './adapters';
 
 const baseRule: DownloadRule = {
@@ -125,4 +126,22 @@ test('sortRulesBy("created") sorts by rule.created_at desc', () => {
   ];
   const sorted = sortRulesBy(items, 'created');
   expect(sorted.map((i) => i.rule.id)).toEqual(['newer', 'older']);
+});
+
+test('deriveNextFetch returns undefined when last_fetched_at is unparseable', () => {
+  const feed: RSSFeed = {
+    id: 'f', name: 'F', url: '', type: 'mikan',
+    enabled: 1, fetch_interval_minutes: 30,
+    last_fetched_at: 'not-a-date', created_at: '',
+  };
+  expect(deriveNextFetch(feed)).toBeUndefined();
+});
+
+test('deriveNextFetch returns undefined when fetch_interval_minutes is missing', () => {
+  const feed = {
+    id: 'f', name: 'F', url: '', type: 'mikan',
+    enabled: 1, fetch_interval_minutes: undefined as unknown as number,
+    last_fetched_at: '2024-01-01T00:00:00Z', created_at: '',
+  } as RSSFeed;
+  expect(deriveNextFetch(feed)).toBeUndefined();
 });

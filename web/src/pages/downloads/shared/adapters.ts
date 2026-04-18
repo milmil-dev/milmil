@@ -98,7 +98,12 @@ export function formatRelative(iso: string): string {
  */
 export function deriveNextFetch(feed?: RSSFeed): string | undefined {
   if (!feed || !feed.last_fetched_at) return undefined;
-  const nextMs = new Date(feed.last_fetched_at).getTime() + feed.fetch_interval_minutes * 60_000;
+  const lastFetchedMs = new Date(feed.last_fetched_at).getTime();
+  const interval = feed.fetch_interval_minutes;
+  if (!Number.isFinite(lastFetchedMs) || !Number.isFinite(interval) || interval <= 0) {
+    return undefined;
+  }
+  const nextMs = lastFetchedMs + interval * 60_000;
   const diffMs = nextMs - Date.now();
   if (diffMs <= 0) return 'now';
   const m = Math.round(diffMs / 60_000);
