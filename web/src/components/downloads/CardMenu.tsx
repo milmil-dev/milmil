@@ -81,7 +81,7 @@ export function CardMenu({
         <MenuSeparator />
         <MenuItem
           icon={Link02Icon}
-          label={i18n._(msg`Open Anime Page`)}
+          label={i18n._(msg`downloads.menu.openAnime`)}
           disabled={animeDisabled}
           onClick={handle(onOpenAnime)}
         />

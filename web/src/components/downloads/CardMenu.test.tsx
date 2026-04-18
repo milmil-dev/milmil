@@ -50,6 +50,6 @@ test('"open in anime page" item disabled when bangumiId is null', async () => {
   const user = userEvent.setup();
   render(<CardMenu {...baseProps} bangumiId={null} />);
   await user.click(screen.getByRole('button', { name: /more/i }));
-  const item = screen.getByText(/anime 頁面|anime page/i).closest('[role="menuitem"]');
+  const item = screen.getByText(/openAnime|anime 頁面|anime page/i).closest('[role="menuitem"]');
   expect(item).toHaveAttribute('aria-disabled', 'true');
 });
