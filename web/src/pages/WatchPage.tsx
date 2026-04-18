@@ -734,6 +734,8 @@ export function WatchPage() {
   }
 
   // --------------- Main render ---------------
+  const playerBg = animeDetail.banner_image || animeDetail.cover_image;
+
   return (
     <PageTransition>
       <div className="min-h-screen">
@@ -752,6 +754,7 @@ export function WatchPage() {
                       src={streamUrl}
                       type={mimeType}
                       thumbnailsVtt={thumbnailsVttUrl}
+                      poster={playerBg}
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
                       hlsConfig={hlsBufferConfig}
@@ -786,7 +789,42 @@ export function WatchPage() {
                 ) : (
                   /* Loading state — show player shell with spinner overlay */
                   <div className="absolute inset-0 flex flex-col">
-                    <div className="flex-1 flex items-center justify-center">
+                    {/* Tilted poster-wall backdrop while the stream buffers */}
+                    {playerBg && (
+                      <div className="pointer-events-none absolute inset-0 overflow-hidden bg-mm-bg">
+                        <div
+                          className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
+                          style={{
+                            transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
+                            transformOrigin: '50% 50%',
+                            transformStyle: 'preserve-3d',
+                          }}
+                        >
+                          <div
+                            className="grid gap-x-[5px] gap-y-[10px]"
+                            style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+                          >
+                            {Array.from({ length: 140 }).map((_, i) => (
+                              <div
+                                key={i}
+                                className="aspect-[2/3] overflow-hidden rounded-[3px]"
+                              >
+                                <img src={playerBg} alt="" className="h-full w-full object-cover" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="absolute inset-0 bg-black/55" />
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="relative flex-1 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-3">
                         <Spinner size={32} className="text-white/50" />
                         {mediaInfo?.needs_transcode && transcodeStatus === 'processing' && (
@@ -795,7 +833,7 @@ export function WatchPage() {
                       </div>
                     </div>
                     {/* Faux control bar so layout doesn't jump */}
-                    <div className="h-11 bg-black/60 border-t border-white/[0.04] flex items-center px-3">
+                    <div className="relative h-11 bg-black/60 border-t border-white/[0.04] flex items-center px-3">
                       <div className="flex items-center gap-2 opacity-30 pointer-events-none">
                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white"><path d="M8 5v14l11-7z" /></svg>
                         <span className="text-xs text-white/60 tabular-nums">0:00 / --:--</span>
@@ -821,11 +859,6 @@ export function WatchPage() {
                 <RelatedAnimeList relations={animeDetail.relations} />
               </div>
 
-              {/* Anime info */}
-              <AnimeInfoSection anime={animeDetail} />
-
-              {/* Comments */}
-              <BangumiComments comments={commentsData} isLoading={commentsLoading} />
             </div>
 
             {/* RIGHT SIDEBAR */}
@@ -841,6 +874,12 @@ export function WatchPage() {
                 <RelatedAnimeList relations={animeDetail.relations} />
               </div>
             </div>
+          </div>
+
+          {/* Anime info + comments (left column width) */}
+          <div className="lg:pr-[292px]">
+              <AnimeInfoSection anime={animeDetail} />
+              <BangumiComments comments={commentsData} isLoading={commentsLoading} />
           </div>
         </div>
       </div>
