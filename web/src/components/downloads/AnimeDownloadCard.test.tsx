@@ -56,3 +56,27 @@ test('exposes data-testid="anime-download-card"', () => {
   );
   expect(screen.getByTestId('anime-download-card')).toBeInTheDocument();
 });
+
+test('virtualizes episode list when children exceed threshold', () => {
+  const many = Array.from({ length: 50 }, (_, i) => <div key={i}>ep-{i}</div>);
+  render(
+    <AnimeDownloadCard {...baseProps}>
+      {many}
+    </AnimeDownloadCard>
+  );
+  // Virtual scroll container is present
+  expect(screen.getByTestId('episode-virtual-list')).toBeInTheDocument();
+  // Rendered DOM has fewer rows than the full 50 (virtualized)
+  const rows = document.querySelectorAll('[data-index]');
+  expect(rows.length).toBeLessThan(50);
+});
+
+test('does not virtualize when children are under threshold', () => {
+  const few = Array.from({ length: 5 }, (_, i) => <div key={i}>ep-{i}</div>);
+  render(
+    <AnimeDownloadCard {...baseProps}>
+      {few}
+    </AnimeDownloadCard>
+  );
+  expect(screen.queryByTestId('episode-virtual-list')).toBeNull();
+});
