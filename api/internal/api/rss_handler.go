@@ -89,7 +89,7 @@ func (h *handler) handlePreviewRSSFeed(c echo.Context) error {
 			if !rss.MatchRule(item.Title, rule.FilterRegex, rule.ExcludeRegex) {
 				continue
 			}
-			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+			if !rss.MatchesResolution(item.Title, rule.ResolutionFilter) {
 				continue
 			}
 			// Subgroup filter — support comma-separated
@@ -324,7 +324,7 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 				continue
 			}
 			// Apply resolution filter
-			if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+			if !rss.MatchesResolution(item.Title, rule.ResolutionFilter) {
 				continue
 			}
 			// Apply subgroup filter — support comma-separated

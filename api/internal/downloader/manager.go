@@ -6,7 +6,6 @@ import (
 )
 
 // Manager is the unified download engine interface.
-// It replaces the aria2.Client interface.
 type Manager interface {
 	// Add starts a download. Detects magnet/torrent vs HTTP automatically.
 	// Returns a GID (unique download identifier).

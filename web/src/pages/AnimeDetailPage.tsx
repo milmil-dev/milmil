@@ -105,8 +105,7 @@ function buildSeasonChain(
 function SynopsisBlock({ text }: { text: string }) {
   return (
     <div
-      className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
-      style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
+      className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] font-medium text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
     >
       {text}
     </div>
@@ -481,7 +480,7 @@ export function AnimeDetailPage() {
                     )}
                   </motion.div>
 
-                  <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left sm:pt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)' }}>
+                  <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left sm:pt-2">
                     {/* Title */}
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
@@ -492,7 +491,7 @@ export function AnimeDetailPage() {
                         {anime.title}
                       </h1>
                       {anime.title_original && anime.title_original !== anime.title && (
-                        <p className="text-[13px] text-white/60 mt-1 truncate">{anime.title_original}</p>
+                        <p className="text-[13px] font-medium text-white/60 mt-1 truncate">{anime.title_original}</p>
                       )}
                     </motion.div>
 
@@ -514,17 +513,17 @@ export function AnimeDetailPage() {
                         </span>
                       )}
                       {anime.episode_count > 0 && (
-                        <span className="text-[12px] text-white/55">
+                        <span className="text-[12px] font-medium text-white/55">
                           {anime.episode_count} {i18n._(msg`common.ep`)}
                         </span>
                       )}
                       {anime.air_date && (
-                        <span className="text-[12px] text-white/55">
+                        <span className="text-[12px] font-medium text-white/55">
                           {anime.air_date.slice(0, 7)}
                         </span>
                       )}
                       {anime.rating && anime.rating.total > 0 && (
-                        <span className="text-[11px] text-white/35">
+                        <span className="text-[11px] font-medium text-white/35">
                           {anime.rating.total} {i18n._(msg`anime.ratings`)}
                         </span>
                       )}
@@ -563,7 +562,7 @@ export function AnimeDetailPage() {
                             key={tag}
                             to="/search"
                             search={{ genre: tag }}
-                            className="text-[11px] font-medium px-2 py-0.5 rounded bg-white/[0.08] text-white/50 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
+                            className="text-[11px] font-semibold px-2 py-0.5 rounded bg-white/[0.08] text-white/60 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
                           >
                             {translateGenre(tag, i18n.locale)}
                           </Link>
@@ -753,7 +752,6 @@ export function AnimeDetailPage() {
                         </motion.div>
                       )}
                       </AnimatePresence>
-                    </motion.div>
 
                     {/* Synopsis — expandable */}
                     {anime.synopsis && <SynopsisBlock text={anime.synopsis} />}

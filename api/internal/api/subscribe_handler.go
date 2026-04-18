@@ -204,7 +204,7 @@ func (h *handler) refreshNewSubscription(feed store.RssFeed, rule store.Download
 		if !rss.MatchRule(item.Title, rule.FilterRegex, rule.ExcludeRegex) {
 			continue
 		}
-		if rule.ResolutionFilter != "" && !strings.Contains(strings.ToLower(item.Title), strings.ToLower(rule.ResolutionFilter)) {
+		if !rss.MatchesResolution(item.Title, rule.ResolutionFilter) {
 			continue
 		}
 		// Multi-subgroup matching (comma-separated)

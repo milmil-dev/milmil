@@ -18,6 +18,7 @@ import {
   discoverApi,
   discoverKeys,
 } from '../lib/api/discover';
+import { useUIStore, type WeekStartDay } from '../store/ui-store';
 import { cn } from '../lib/utils';
 
 /* ── Season / year helpers ────────────────────────────────── */
@@ -331,14 +332,17 @@ function CalendarView() {
   const today = todayWeekdayCN();
   const [activeDay, setActiveDay] = useState<string | 'all'>(today);
 
+  const weekStartDay = useUIStore((s) => s.weekStartDay);
+
   const sortedCalendar = useMemo(() => {
     if (!calendar) return [];
-    const todayIdx = BANGUMI_WEEKDAYS.indexOf(today);
-    const reordered = [...BANGUMI_WEEKDAYS.slice(todayIdx), ...BANGUMI_WEEKDAYS.slice(0, todayIdx)];
-    return reordered
+    const startIdx: Record<WeekStartDay, number> = { monday: 0, sunday: 6, saturday: 5 };
+    const idx = startIdx[weekStartDay];
+    const ordered = [...BANGUMI_WEEKDAYS.slice(idx), ...BANGUMI_WEEKDAYS.slice(0, idx)];
+    return ordered
       .map((wd) => calendar.find((d) => d.weekday === wd))
       .filter((d): d is CalendarDay => d !== undefined);
-  }, [calendar, today]);
+  }, [calendar, weekStartDay]);
 
   useEffect(() => {
     if (!tabsRef.current) return;

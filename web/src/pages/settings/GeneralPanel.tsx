@@ -11,10 +11,14 @@ import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Switch } from '@/components/ui/switch';
 import { availableLanguages, detectBrowserLocale, loadAndActivate } from '@/i18n/config';
 import { api } from '@/lib/api-client';
+import { useUIStore, type WeekStartDay } from '@/store/ui-store';
 
 export function GeneralPanel() {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
+
+  const weekStartDay = useUIStore((s) => s.weekStartDay);
+  const setWeekStartDay = useUIStore((s) => s.setWeekStartDay);
 
   const [currentLang, setCurrentLang] = useState(
     () => localStorage.getItem('milmil-locale') ?? detectBrowserLocale()
@@ -79,6 +83,18 @@ export function GeneralPanel() {
             options={availableLanguages.map((l) => ({ label: l.label, value: l.code }))}
             value={currentLang}
             onChange={handleLanguageChange}
+          />
+        </SettingsCard>
+
+        <SettingsCard label={i18n._(msg`settings.weekStartDay`)}>
+          <SelectorGroup
+            options={[
+              { label: i18n._(msg`settings.weekStartDay.monday`), value: 'monday' },
+              { label: i18n._(msg`settings.weekStartDay.sunday`), value: 'sunday' },
+              { label: i18n._(msg`settings.weekStartDay.saturday`), value: 'saturday' },
+            ]}
+            value={weekStartDay}
+            onChange={(v) => setWeekStartDay(v as WeekStartDay)}
           />
         </SettingsCard>
 

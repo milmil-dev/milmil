@@ -17,9 +17,10 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useParams } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { type ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
+import { enUS, ja, ko, zhCN, zhHK, zhTW } from 'date-fns/locale';
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -32,6 +33,7 @@ import { MotionTable } from '../components/MotionTable';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { RenameConfigEditor } from '../components/library/RenameConfigEditor';
+import { renameApi } from '../lib/api/rename';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
@@ -55,6 +57,7 @@ import {
 } from '../lib/api/completeness';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { cn } from '../lib/utils';
+import { PathFieldWithPicker } from '../components/library/FolderPicker';
 import { useScanStore } from '../store/scan-store';
 
 function formatBytes(bytes: number): string {
@@ -1613,10 +1616,15 @@ function SettingsModal({
 }) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [name, setName] = useState(library.name);
   const [path, setPath] = useState(library.path);
   const [scanInterval, setScanInterval] = useState(library.scan_interval_minutes);
   const [enabled, setEnabled] = useState(!!library.enabled);
+  const [renameTemplate, setRenameTemplate] = useState(library.rename_template ?? '');
+  const [renameAuto, setRenameAuto] = useState(library.rename_auto === 1);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -1624,19 +1632,30 @@ function SettingsModal({
       setPath(library.path);
       setScanInterval(library.scan_interval_minutes);
       setEnabled(!!library.enabled);
+      setRenameTemplate(library.rename_template ?? '');
+      setRenameAuto(library.rename_auto === 1);
+      setConfirmDelete(false);
     }
   }, [open, library]);
 
+  const renameDirty =
+    renameTemplate !== (library.rename_template ?? '') ||
+    renameAuto !== (library.rename_auto === 1);
+
   const updateMutation = useMutation({
-    mutationFn: () =>
-      libraryApi.update(libraryId, {
+    mutationFn: async () => {
+      await libraryApi.update(libraryId, {
         name,
         path,
         enabled: enabled,
         scan_interval_minutes: scanInterval,
         source_type: library.source_type,
         source_config: library.source_config,
-      }),
+      });
+      if (renameDirty) {
+        await renameApi.setConfig(libraryId, renameTemplate, renameAuto);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: libraryKeys.detail(libraryId) });
       queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
@@ -1648,56 +1667,89 @@ function SettingsModal({
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => libraryApi.delete(libraryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: libraryKeys.list() });
+      toast.success(i18n._(msg`library.toast.deleted`));
+      onClose();
+      navigate({ to: '/libraries' });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const sourceType = (library.source_type || 'local') as
+    | 'local'
+    | 'smb'
+    | 'sftp'
+    | 'webdav'
+    | 's3'
+    | 'ftp'
+    | 'http'
+    | 'gdrive'
+    | 'onedrive'
+    | 'dropbox';
+
+  const labelCls =
+    "text-[10px] font-bold uppercase tracking-[0.15em] text-white/35";
+  const fieldCls =
+    "w-full bg-white/[0.04] rounded-lg px-4 py-2.5 text-sm text-white/90 placeholder:text-white/25 focus:outline-none focus:bg-white/[0.07] transition-colors";
+
   return (
     <Modal open={open} onClose={onClose} title={i18n._(msg`library.detail.settings`)}>
-      <div className="space-y-5">
+      <div className="space-y-7">
         {/* Name */}
-        <div>
-          <label className="block text-xs font-medium text-white/50 mb-1.5">
+        <div className="space-y-2">
+          <label htmlFor="sm-name" className={labelCls}>
             {i18n._(msg`library.name`)}
           </label>
           <input
+            id="sm-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15]"
+            className={fieldCls}
           />
         </div>
 
-        {/* Path */}
-        <div>
-          <label className="block text-xs font-medium text-white/50 mb-1.5">
+        {/* Path with folder picker */}
+        <div className="space-y-2">
+          <label htmlFor="sm-path" className={labelCls}>
             {i18n._(msg`library.path`)}
           </label>
-          <input
-            type="text"
+          <PathFieldWithPicker
+            id="sm-path"
             value={path}
-            onChange={(e) => setPath(e.target.value)}
+            onChange={setPath}
             placeholder="/path/to/anime"
-            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/[0.15] font-mono"
+            sourceType={sourceType}
+            getSourceConfig={() => library.source_config ?? {}}
+            onPickerSelect={setPath}
+            pickerOpen={pickerOpen}
+            setPickerOpen={setPickerOpen}
+            inputClassName={fieldCls}
           />
         </div>
 
         {/* Scan interval */}
-        <div>
-          <label className="block text-xs font-medium text-white/50 mb-1.5">
+        <div className="space-y-2">
+          <label htmlFor="sm-scan" className={labelCls}>
             {i18n._(msg`library.scanInterval`)}
           </label>
           <ScanIntervalSelect
             value={scanInterval}
             onChange={setScanInterval}
-            className="w-full bg-white/[0.04] border border-white/[0.06] rounded-md px-3 py-2 text-sm text-white"
+            className={fieldCls}
           />
         </div>
 
-        {/* Enabled toggle */}
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-white/50">
-            {i18n._(msg`library.enabled`)}
-          </label>
+        {/* Enabled — own row, matches auto-rename pattern */}
+        <label className="flex items-center justify-between cursor-pointer select-none">
+          <span className="text-sm text-white/65">{i18n._(msg`library.enabled`)}</span>
           <button
             type="button"
             onClick={() => setEnabled((v) => !v)}
+            aria-label={i18n._(msg`library.enabled`)}
             className={cn(
               'relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer',
               enabled ? 'bg-mm-accent' : 'bg-white/[0.12]'
@@ -1710,26 +1762,86 @@ function SettingsModal({
               )}
             />
           </button>
-        </div>
+        </label>
 
-        {/* Rename config */}
+        {/* Rename config — flows inline, no wrapping card */}
         <RenameConfigEditor
-          libraryId={libraryId}
-          initialTemplate={library.rename_template ?? ''}
-          initialAuto={library.rename_auto === 1}
+          template={renameTemplate}
+          auto={renameAuto}
+          onTemplateChange={setRenameTemplate}
+          onAutoChange={setRenameAuto}
         />
 
-        {/* Save */}
+        {/* Save — subtle CTA matching the app's quiet palette */}
         <Button
           type="button"
           onClick={() => updateMutation.mutate()}
           disabled={updateMutation.isPending || !name.trim()}
-          className="w-full"
+          className="w-full h-11 bg-white/[0.08] hover:bg-white/[0.14] text-white font-semibold"
         >
           {updateMutation.isPending
             ? i18n._(msg`library.saving`)
             : i18n._(msg`library.saveChanges`)}
         </Button>
+
+        {/* Danger zone — borderless tinted surface */}
+        <div className="pt-3 space-y-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/45 px-1">
+            {i18n._(msg`common.dangerZone`)}
+          </p>
+          <div className="bg-red-500/[0.04] rounded-xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-red-400/70">
+                <path
+                  d="M3 6h14M8 6V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2M6 6v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M9 10v4M11 10v4"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white/85 leading-none">
+                {i18n._(msg`library.delete`)}
+              </p>
+              <p className="text-[11.5px] text-white/40 mt-1 leading-snug">
+                {i18n._(msg`library.deleteConfirm`)}
+              </p>
+            </div>
+            <div className="shrink-0">
+              {confirmDelete ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(false)}
+                    disabled={deleteMutation.isPending}
+                    className="text-xs text-white/50 hover:text-white/80 px-3 py-2 transition-colors cursor-pointer"
+                  >
+                    {i18n._(msg`common.cancel`)}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => deleteMutation.mutate()}
+                    disabled={deleteMutation.isPending}
+                    className="text-xs font-semibold text-white bg-red-500/80 hover:bg-red-500 px-3.5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {deleteMutation.isPending
+                      ? i18n._(msg`library.saving`)
+                      : i18n._(msg`common.confirmDelete`)}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(true)}
+                  className="text-sm font-medium text-red-400/80 hover:text-red-300 px-4 py-2 rounded-md hover:bg-red-500/10 transition-colors cursor-pointer"
+                >
+                  {i18n._(msg`library.delete`)}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </Modal>
   );
@@ -1773,6 +1885,14 @@ export function LibraryDetailPage() {
     queryKey: libraryKeys.detail(id),
     queryFn: () => libraryApi.get(id),
     enabled: isAuthenticated && !!id,
+  });
+
+  const { data: capacity } = useQuery({
+    queryKey: libraryKeys.capacity(id),
+    queryFn: () => libraryApi.getCapacity(id),
+    enabled: isAuthenticated && !!id,
+    staleTime: 60_000,
+    refetchInterval: 5 * 60_000,
   });
 
   const scanMutation = useMutation({
@@ -1869,10 +1989,20 @@ export function LibraryDetailPage() {
   const matchPct =
     library.file_count > 0 ? Math.round((library.matched_count / library.file_count) * 100) : 0;
 
+  const dateFnsLocale =
+    {
+      'zh-TW': zhTW,
+      'zh-HK': zhHK,
+      'zh-CN': zhCN,
+      ja,
+      ko,
+      en: enUS,
+    }[i18n.locale] ?? zhTW;
+
   const lastScannedDate = library.last_scanned_at ? new Date(library.last_scanned_at) : null;
   const lastScannedText =
     lastScannedDate && !Number.isNaN(lastScannedDate.getTime())
-      ? formatDistanceToNow(lastScannedDate, { addSuffix: true })
+      ? formatDistanceToNow(lastScannedDate, { addSuffix: true, locale: dateFnsLocale })
       : i18n._(msg`library.neverScanned`);
 
   const sourceLabel =
@@ -1988,12 +2118,12 @@ export function LibraryDetailPage() {
                   <Button asChild type="button" variant="secondary" size="sm" className="gap-2">
                     <Link to="/libraries/$id/duplicates" params={{ id }}>
                       <HugeiconsIcon icon={Copy01Icon} size={15} />
-                      {i18n._(msg`Duplicates`)}
+                      {i18n._(msg`library.detail.duplicates`)}
                     </Link>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  {i18n._(msg`View and clean up duplicate files`)}
+                  {i18n._(msg`library.detail.duplicatesTooltip`)}
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -2103,14 +2233,38 @@ export function LibraryDetailPage() {
               {i18n._(msg`library.detail.stats.unmatched`)}
             </p>
           </button>
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-2xl font-bold text-white tabular-nums">
-              {formatBytes(library.total_size_bytes)}
-            </p>
-            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
-              {i18n._(msg`library.detail.stats.size`)}
-            </p>
-          </div>
+          {capacity?.available && capacity.total_bytes > 0 ? (
+            <div className="bg-white/[0.04] rounded-xl p-4">
+              <div className="flex items-baseline gap-1.5">
+                <p className="text-2xl font-bold text-white tabular-nums leading-none">
+                  {formatBytes(capacity.used_bytes)}
+                </p>
+                <p className="text-xs text-white/40 tabular-nums">
+                  / {formatBytes(capacity.total_bytes)}
+                </p>
+              </div>
+              <div className="mt-2 h-1 rounded-full bg-white/[0.05] overflow-hidden">
+                <div
+                  className="h-full bg-mm-accent/60 transition-all"
+                  style={{
+                    width: `${Math.min(100, Math.max(2, Math.round((capacity.used_bytes / capacity.total_bytes) * 100)))}%`,
+                  }}
+                />
+              </div>
+              <p className="text-[11px] text-white/35 mt-2 font-medium tracking-wide uppercase">
+                {i18n._(msg`library.detail.stats.diskUsage`)}
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white/[0.04] rounded-xl p-4">
+              <p className="text-2xl font-bold text-white tabular-nums">
+                {formatBytes(library.total_size_bytes)}
+              </p>
+              <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
+                {i18n._(msg`library.detail.stats.size`)}
+              </p>
+            </div>
+          )}
         </motion.div>
 
         {/* Tab bar */}

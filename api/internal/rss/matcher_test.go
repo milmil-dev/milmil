@@ -29,3 +29,30 @@ func TestMatchRule_EmptyFilter(t *testing.T) {
 		t.Error("empty filter should not match")
 	}
 }
+
+func TestMatchesResolution(t *testing.T) {
+	cases := []struct {
+		name   string
+		title  string
+		filter string
+		want   bool
+	}{
+		{"empty filter matches anything", "[Group] Show - 01 [1080p]", "", true},
+		{"1080p literal", "[Group] Show - 01 [1080p]", "1080p", true},
+		{"720p literal", "[Group] Show - 01 [720p]", "720p", true},
+		{"4K matches 2160p", "[沸班亚马制作组] 尖帽子的魔法工房 - 03 [CR WebRip AI2160p HEVC AAC]", "4K", true},
+		{"4K matches UHD", "[Group] Show - 01 [UHD BluRay]", "4K", true},
+		{"4K literal", "[Group] Show - 01 [4K WEB-DL]", "4K", true},
+		{"4k lowercase input", "[Group] Show - 01 [2160p]", "4k", true},
+		{"1080p matches FHD", "[Group] Show - 01 [FHD WEB-DL]", "1080p", true},
+		{"4K does not match 1080p title", "[Group] Show - 01 [1080p]", "4K", false},
+		{"720p does not match 1080p title", "[Group] Show - 01 [1080p]", "720p", false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := rss.MatchesResolution(tc.title, tc.filter); got != tc.want {
+				t.Errorf("MatchesResolution(%q, %q) = %v, want %v", tc.title, tc.filter, got, tc.want)
+			}
+		})
+	}
+}

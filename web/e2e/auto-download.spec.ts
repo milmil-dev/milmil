@@ -156,14 +156,6 @@ async function setupApiMocks(page: Page, options?: {
     })
   );
 
-  // Aria2 status
-  await page.route('**/api/v1/system/aria2-status', (route) =>
-    route.fulfill({
-      status: 200,
-      body: JSON.stringify({ connected: true, version: '1.37.0' }),
-    })
-  );
-
   // Discover search — match by query
   await page.route('**/api/v1/discover/search*', (route) => {
     const url = new URL(route.request().url());
@@ -308,13 +300,6 @@ test.describe('Auto-Download Page', () => {
     // Should have search and manage tab buttons in the tab bar
     const tabs = page.locator('[class*="border-b"] button');
     await expect(tabs).toHaveCount(2);
-  });
-
-  test('shows Aria2 connection status', async ({ page }) => {
-    await page.goto('/downloads');
-    await page.waitForTimeout(500);
-
-    await expect(page.locator('text=Aria2 v1.37.0')).toBeVisible();
   });
 
   // ── Search Tab: Popular anime ─────────────────────────────────────────

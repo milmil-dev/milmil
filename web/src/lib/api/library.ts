@@ -58,6 +58,13 @@ export interface LibraryConnectionStatus {
   error?: string;
 }
 
+export interface LibraryCapacity {
+  total_bytes: number;
+  free_bytes: number;
+  used_bytes: number;
+  available: boolean;
+}
+
 export interface BrowseInput {
   source_type: string;
   source_config: Record<string, unknown>;
@@ -150,6 +157,8 @@ export const libraryApi = {
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
   getConnectionStatus: (id: string) =>
     api.get<LibraryConnectionStatus>(`/api/v1/libraries/${id}/connection-status`),
+  getCapacity: (id: string) =>
+    api.get<LibraryCapacity>(`/api/v1/libraries/${id}/capacity`),
   testConnection: (input: TestConnectionInput) =>
     api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
   browse: (input: BrowseInput) => api.post<BrowseResult>('/api/v1/libraries/browse', input),
@@ -203,6 +212,7 @@ export const libraryKeys = {
   detail: (id: string) => [...libraryKeys.all, 'detail', id] as const,
   summaries: (id: string) => [...libraryKeys.all, 'summaries', id] as const,
   connectionStatus: (id: string) => [...libraryKeys.all, 'connection-status', id] as const,
+  capacity: (id: string) => [...libraryKeys.all, 'capacity', id] as const,
   mediaFiles: (id: string, params: MediaFilesParams = {}) =>
     [...libraryKeys.all, 'media-files', id, params] as const,
   fileTree: (id: string) => [...libraryKeys.all, 'file-tree', id] as const,

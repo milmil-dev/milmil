@@ -218,7 +218,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
       if (feed && (rssUrl !== feed.url || feedType !== feed.type)) {
         await rssFeedApi.update(feed.id, { url: rssUrl, type: feedType });
       }
-      return ruleApi.update(rule.id, {
+      await ruleApi.update(rule.id, {
         name: ruleName,
         enabled: enabled ? 1 : 0,
         rss_feed_id: rule.rss_feed_id,
@@ -235,11 +235,16 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
         library_id: libraryId || null,
         bangumi_id: bangumiId,
       });
+      // Refresh feed so filter changes take effect on the existing queue immediately,
+      // mirroring the initial-subscribe behaviour (refreshNewSubscription) —
+      // otherwise the user waits up to 30 min for the next cron tick.
+      if (feed) await rssFeedApi.refresh(feed.id);
     },
     onSuccess: () => {
       toast.success(i18n._(msg`ruleEditor.saved`));
       queryClient.invalidateQueries({ queryKey: downloadKeys.rules() });
       queryClient.invalidateQueries({ queryKey: downloadKeys.feeds() });
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
       onClose();
     },
     onError: (err: Error) => toast.error(err.message),

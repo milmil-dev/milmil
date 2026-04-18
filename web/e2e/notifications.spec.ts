@@ -46,8 +46,8 @@ const ALL_NOTIFICATIONS = [
   {
     id: 'n5',
     type: 'system.error',
-    title: 'Aria2 Disconnected',
-    message: 'Connection to Aria2 lost',
+    title: 'Download Error',
+    message: 'Torrent client encountered an error',
     severity: 'error',
     read: 0,
     metadata: null,
@@ -140,13 +140,6 @@ async function setupApiMocks(page: Page) {
     route.fulfill({ status: 200, body: JSON.stringify([]) })
   );
 
-  // Aria2 status (may be fetched globally)
-  await page.route('**/api/v1/system/aria2-status', (route) =>
-    route.fulfill({
-      status: 200,
-      body: JSON.stringify({ connected: true, version: '1.37.0' }),
-    })
-  );
 }
 
 // ── Helper: click the bell via JS to avoid React remount from Playwright CDP ──
@@ -200,8 +193,8 @@ test.describe('Notification Center', () => {
     // Success notification (Download Complete)
     await expect(page.locator('text=Download Complete').first()).toBeVisible({ timeout: 5000 });
 
-    // Error notification (Aria2 Disconnected)
-    await expect(page.locator('text=Aria2 Disconnected').first()).toBeVisible();
+    // Error notification (Download Error)
+    await expect(page.locator('text=Download Error').first()).toBeVisible();
 
     // Info notification (New Episode)
     await expect(page.locator('text=New Episode').first()).toBeVisible();
@@ -209,7 +202,7 @@ test.describe('Notification Center', () => {
     // Verify severity borders are present (green for success, red for error)
     const successItem = page.locator('button', { hasText: 'Download Complete' });
     await expect(successItem).toHaveClass(/border-l-green/);
-    const errorItem = page.locator('button', { hasText: 'Aria2 Disconnected' });
+    const errorItem = page.locator('button', { hasText: 'Download Error' });
     await expect(errorItem).toHaveClass(/border-l-red/);
   });
 
@@ -234,7 +227,7 @@ test.describe('Notification Center', () => {
     await expect(page.locator('text=New Episode').first()).toBeVisible();
     await expect(page.locator('text=Download Failed').first()).toBeVisible();
     await expect(page.locator('text=Library Scan Complete').first()).toBeVisible();
-    await expect(page.locator('text=Aria2 Disconnected').first()).toBeVisible();
+    await expect(page.locator('text=Download Error').first()).toBeVisible();
   });
 
   test('filter tabs filter by type', async ({ page }) => {
@@ -264,7 +257,7 @@ test.describe('Notification Center', () => {
 
     // Non-download notifications should no longer be visible
     await expect(page.locator('text=Library Scan Complete')).not.toBeVisible({ timeout: 3000 });
-    await expect(page.locator('text=Aria2 Disconnected')).not.toBeVisible();
+    await expect(page.locator('text=Download Error')).not.toBeVisible();
   });
 
   test('notifications grouped by time (today/yesterday/earlier)', async ({ page }) => {

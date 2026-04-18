@@ -156,6 +156,25 @@ const CJK_SOURCES = ['all', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip', 'dandanpl
 const EN_SOURCES = ['all', 'nyaa', 'dandanplay', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip'] as const;
 const RESOLUTIONS = ['Any', '1080p', '720p', '4K'] as const;
 
+/**
+ * Match a title against a resolution filter, accepting common aliases.
+ * Torrent groups use different labels for the same resolution:
+ *   4K  ↔ 2160p ↔ UHD
+ *   1080p ↔ FHD ↔ FullHD
+ *   720p  ↔ HD
+ */
+function matchesResolution(title: string, filter: string): boolean {
+  const lower = title.toLowerCase();
+  const aliases: Record<string, string[]> = {
+    '4k': ['4k', '2160p', 'uhd'],
+    '1080p': ['1080p', 'fhd', 'fullhd'],
+    '720p': ['720p'],
+  };
+  const key = filter.toLowerCase();
+  const needles = aliases[key] ?? [key];
+  return needles.some((n) => lower.includes(n));
+}
+
 function isCJK(text: string): boolean {
   return /[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff]/.test(text);
 }
@@ -229,7 +248,6 @@ export function DownloadsPage() {
     navigate({ to: '/downloads', search: { tab: t, anime: animeParam }, replace: true });
   };
 
-  // Aria2 connection status
   const { data: downloaderStatus } = useQuery({
     queryKey: ['system', 'downloader-status'],
     queryFn: () => api.get<DownloaderStatus>('/api/v1/system/downloader-status'),
@@ -704,10 +722,10 @@ function AnimeTorrentView({
     return Array.from(groups).sort();
   }, [results]);
 
-  // Client-side filtering
+  // Client-side filtering — resolution uses aliases (4K ↔ 2160p ↔ UHD, etc.)
   const filteredResults = useMemo(() => {
     return results.filter((r) => {
-      if (resolution !== 'Any' && !r.title.toLowerCase().includes(resolution.toLowerCase())) {
+      if (resolution !== 'Any' && !matchesResolution(r.title, resolution)) {
         return false;
       }
       if (subgroup !== 'all' && r.sub_group !== subgroup) {

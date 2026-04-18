@@ -29,8 +29,6 @@ data/
 
 # Docker volumes
 downloads/
-aria2-config/*
-!aria2-config/aria2.conf
 redis-config/
 transcode-tmp/
 pgdata/
