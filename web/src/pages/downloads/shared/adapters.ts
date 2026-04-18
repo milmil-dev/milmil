@@ -137,3 +137,20 @@ export function ruleSubChips(rule: DownloadRule): string[] {
   return [rule.subgroup_filter, rule.resolution_filter]
     .filter((s): s is string => !!s && s.trim().length > 0);
 }
+
+export type CardMode = 'downloading' | 'subscribed' | 'completed';
+
+/**
+ * Priority: any active episode → downloading; else rule enabled → subscribed; else completed.
+ */
+export function deriveCardMode(
+  group: DownloadGroup | undefined,
+  rule: DownloadRule,
+): CardMode {
+  const hasActive = (group?.downloads ?? []).some(
+    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting',
+  );
+  if (hasActive) return 'downloading';
+  if (rule.enabled === 1) return 'subscribed';
+  return 'completed';
+}
