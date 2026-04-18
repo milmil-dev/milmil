@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
+import { AnimeDownloadCardSkeleton } from '@/components/downloads/AnimeDownloadCardSkeleton';
 import { EpisodeRowComplete } from '../../components/downloads/episode-rows/EpisodeRowComplete';
 import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 import { useAnimeCover } from '../../hooks/use-anime-cover';
@@ -25,10 +26,7 @@ export default function CompletedTab({ groups, miscDownloads, isLoading }: Compl
     return (
       <div className="flex flex-col gap-2.5">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-[160px] rounded-[14px] bg-white/[0.02] border border-white/[0.06] animate-pulse"
-          />
+          <AnimeDownloadCardSkeleton key={i} />
         ))}
       </div>
     );
