@@ -50,7 +50,7 @@ export function EpisodeRowActive({
   const isActive = status === 'active';
   const isPaused = status === 'paused';
   return (
-    <div className="group grid grid-cols-[92px_1fr_80px_70px_50px] gap-5 items-center px-2 py-[9px] rounded-lg hover:bg-white/[0.02] transition-colors">
+    <div className="group grid grid-cols-[92px_1fr_80px_70px_auto_50px] gap-5 items-center px-2 py-[9px] rounded-lg hover:bg-white/[0.02] transition-colors">
       <div className="text-center text-[11px] font-semibold tabular-nums tracking-[0.04em] text-[#4ade80]">
         {episodeLabel}
       </div>
@@ -104,7 +104,7 @@ export function EpisodeRowActive({
           <HugeiconsIcon icon={Delete02Icon} size={12} />
         </button>
       </div>
-      <div className="col-start-5 text-[11px] text-white/65 tabular-nums text-right font-medium">
+      <div className="text-[11px] text-white/65 tabular-nums text-right font-medium">
         {percent}%
       </div>
     </div>
