@@ -101,6 +101,37 @@ func (s *Scheduler) Start() {
 		w.Run(ctx)
 	})
 
+	// Library reconciliation — runs on boot and every hour after. Recovers orphan
+	// state where a download completed but its post-download pipeline (scan →
+	// match → resolve) was interrupted (server restart, crash). The pipeline is
+	// idempotent so re-running is cheap and safe.
+	go s.runTicker(ctx, "library_reconcile", 1*time.Hour, true, func(ctx context.Context) {
+		libs, err := s.queries.ListLibraries(ctx)
+		if err != nil {
+			slog.Error("library_reconcile: list libraries", "err", err)
+			return
+		}
+		w := &DownloadSyncWorker{
+			queries:    s.queries,
+			downloader: s.downloader,
+			scanner:    s.scanner,
+			matcher:    s.matcher,
+			resolver:   s.resolver,
+			tmdb:       s.tmdb,
+			cache:      s.cache,
+			notifier:   s.notifier,
+			wsHub:      s.wsHub,
+		}
+		for _, lib := range libs {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+			}
+			w.TriggerFullPipeline(lib.ID)
+		}
+	})
+
 	// Notification delivery retry — every 60 seconds
 	go s.runTicker(ctx, "notification_delivery", 60*time.Second, false, func(ctx context.Context) {
 		w := &NotificationDeliveryWorker{queries: s.queries}

@@ -115,7 +115,7 @@ func (w *DownloadSyncWorker) Run(ctx context.Context) {
 			if libraryID.Valid {
 				slog.Info("download_sync: download complete, triggering full pipeline",
 					"name", dl.Name, "library_id", libraryID.String)
-				go w.triggerFullPipeline(libraryID.String)
+				go w.TriggerFullPipeline(libraryID.String)
 			}
 		}
 	}
@@ -129,8 +129,10 @@ func (w *DownloadSyncWorker) Run(ctx context.Context) {
 	}
 }
 
-// triggerFullPipeline runs scan -> match -> resolve -> enrich for a library.
-func (w *DownloadSyncWorker) triggerFullPipeline(libraryID string) {
+// TriggerFullPipeline runs scan -> match -> resolve -> enrich for a library.
+// Idempotent: every stage upserts / skips already-matched rows, so it is safe
+// to re-run at any time (post-download, startup reconciliation, periodic sweep).
+func (w *DownloadSyncWorker) TriggerFullPipeline(libraryID string) {
 	ctx := context.Background()
 
 	lib, err := w.queries.GetLibrary(ctx, libraryID)
