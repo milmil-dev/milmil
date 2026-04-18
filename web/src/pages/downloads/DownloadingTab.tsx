@@ -75,7 +75,6 @@ export default function DownloadingTab({
       ))}
       <MiscDownloadsSection
         downloads={miscDownloads}
-        mode="active"
         onDelete={(gid) => miscDeleteMutation.mutate(gid)}
       />
     </div>

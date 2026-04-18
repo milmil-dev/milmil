@@ -9,27 +9,22 @@ import { EpisodeRowMisc } from './episode-rows/EpisodeRowMisc';
 
 interface Props {
   downloads: Download[];
-  mode: 'active' | 'complete';
   onDelete: (gid: string) => void;
 }
 
-export function MiscDownloadsSection({ downloads, mode, onDelete }: Props) {
+export function MiscDownloadsSection({ downloads, onDelete }: Props) {
   const { i18n } = useLingui();
   const [open, setOpen] = useState(false);
-
   if (downloads.length === 0) return null;
-
   return (
     <div className="mt-4">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 text-[11px] text-white/35 hover:text-white/65 uppercase tracking-[0.08em] cursor-pointer"
+        className="flex items-center gap-2 text-[11px] text-white/20 hover:text-white/60 uppercase tracking-[0.08em] cursor-pointer"
       >
         <HugeiconsIcon icon={open ? ArrowUp01Icon : ArrowDown01Icon} size={10} />
-        <span>
-          {i18n._(msg`downloads.miscHeader`)} ({downloads.length})
-        </span>
+        <span>{i18n._(msg`downloads.miscHeader`)} ({downloads.length})</span>
       </button>
       {open && (
         <div className="mt-2 flex flex-col">
@@ -45,7 +40,7 @@ export function MiscDownloadsSection({ downloads, mode, onDelete }: Props) {
                 downloadedBytes={d.completed_bytes}
                 totalBytes={d.total_bytes}
                 percent={percent}
-                status={mode}
+                status={d.status === 'complete' ? 'complete' : 'active'}
                 onDelete={onDelete}
               />
             );

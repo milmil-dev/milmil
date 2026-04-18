@@ -63,7 +63,6 @@ export default function CompletedTab({ groups, miscDownloads, isLoading }: Compl
       ))}
       <MiscDownloadsSection
         downloads={miscDownloads}
-        mode="complete"
         onDelete={(gid) => miscDeleteMutation.mutate(gid)}
       />
     </div>
