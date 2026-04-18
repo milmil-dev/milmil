@@ -4596,3 +4596,11 @@ msgstr "활성 다운로드가 없습니다"
 #. js-lingui-explicit-id
 msgid "downloads.noCompleted"
 msgstr "완료된 다운로드가 없습니다"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "삭제됨"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "이 다운로드는 아직 애니메이션에 매칭되지 않았습니다"

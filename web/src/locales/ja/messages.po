@@ -4596,3 +4596,11 @@ msgstr "アクティブなダウンロードはありません"
 #. js-lingui-explicit-id
 msgid "downloads.noCompleted"
 msgstr "完了したダウンロードはありません"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "削除しました"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "この項目はまだアニメにマッチしていません"

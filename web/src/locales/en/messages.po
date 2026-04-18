@@ -4601,3 +4601,11 @@ msgstr "No active downloads"
 #. js-lingui-explicit-id
 msgid "downloads.noCompleted"
 msgstr "No completed downloads"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "Deleted"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "This download isn't matched to an anime yet"

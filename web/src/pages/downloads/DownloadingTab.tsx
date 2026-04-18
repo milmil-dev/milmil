@@ -2,13 +2,15 @@ import { ArrowDown01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo } from 'react';
+import { toast } from 'sonner';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
 import { AnimeDownloadCardSkeleton } from '@/components/downloads/AnimeDownloadCardSkeleton';
 import { EpisodeRowActive } from '../../components/downloads/episode-rows/EpisodeRowActive';
 import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 import { useAnimeCover } from '../../hooks/use-anime-cover';
-import type { Download, DownloadGroup } from '../../lib/api/downloads';
+import { downloadApi, type Download, type DownloadGroup } from '../../lib/api/downloads';
 import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { aggregateActiveStats, toActiveProps } from './shared/adapters';
 
@@ -24,11 +26,21 @@ export default function DownloadingTab({
   isLoading: boolean;
 }) {
   const { i18n } = useLingui();
+  const queryClient = useQueryClient();
   const activeGroups = useMemo(
     () => groups.filter((g) => g.active_count > 0),
     [groups],
   );
   const expandAll = useDownloadsUIStore((s) => s.expandAll);
+
+  const miscDeleteMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.delete(gid),
+    onSuccess: () => {
+      toast.success(i18n._(msg`downloads.deleted`));
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   // Auto-expand all active groups whenever the set changes (by rule_id fingerprint)
   const fingerprint = activeGroups.map((g) => g.rule_id).join(',');
@@ -64,16 +76,43 @@ export default function DownloadingTab({
       <MiscDownloadsSection
         downloads={miscDownloads}
         mode="active"
-        onDelete={(_gid) => {/* TODO wire PR 4 */}}
+        onDelete={(gid) => miscDeleteMutation.mutate(gid)}
       />
     </div>
   );
 }
 
 function DownloadingCard({ group }: { group: DownloadGroup }) {
+  const { i18n } = useLingui();
   const { coverUrl } = useAnimeCover(group.bangumi_id);
+  const queryClient = useQueryClient();
   const expanded = useDownloadsUIStore((s) => s.expandedGroupIds.has(group.rule_id));
   const toggle = useDownloadsUIStore((s) => s.toggleGroup);
+
+  const pauseMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.pause(gid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resumeMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.resume(gid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.delete(gid),
+    onSuccess: () => {
+      toast.success(i18n._(msg`downloads.deleted`));
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const active = useMemo(
     () =>
@@ -110,9 +149,9 @@ function DownloadingCard({ group }: { group: DownloadGroup }) {
         <EpisodeRowActive
           key={d.gid}
           {...toActiveProps(d)}
-          onPause={() => {/* TODO wire PR 4 */}}
-          onResume={() => {/* TODO wire PR 4 */}}
-          onDelete={() => {/* TODO wire PR 4 */}}
+          onPause={(gid) => pauseMutation.mutate(gid)}
+          onResume={(gid) => resumeMutation.mutate(gid)}
+          onDelete={(gid) => deleteMutation.mutate(gid)}
         />
       ))}
     </AnimeDownloadCard>

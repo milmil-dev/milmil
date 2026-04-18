@@ -1,12 +1,15 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { toast } from 'sonner';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
 import { AnimeDownloadCardSkeleton } from '@/components/downloads/AnimeDownloadCardSkeleton';
 import { EpisodeRowComplete } from '../../components/downloads/episode-rows/EpisodeRowComplete';
 import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 import { useAnimeCover } from '../../hooks/use-anime-cover';
-import { type Download, type DownloadGroup } from '../../lib/api/downloads';
+import { downloadApi, type Download, type DownloadGroup } from '../../lib/api/downloads';
 import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { formatRelative, toCompleteProps } from './shared/adapters';
 
@@ -20,10 +23,20 @@ interface CompletedTabProps {
 
 export default function CompletedTab({ groups, miscDownloads, isLoading }: CompletedTabProps) {
   const { i18n } = useLingui();
+  const queryClient = useQueryClient();
   const completeGroups = useMemo(
     () => groups.filter((g) => g.complete_count > 0),
     [groups],
   );
+
+  const miscDeleteMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.delete(gid),
+    onSuccess: () => {
+      toast.success(i18n._(msg`downloads.deleted`));
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   if (isLoading) {
     return (
@@ -51,16 +64,28 @@ export default function CompletedTab({ groups, miscDownloads, isLoading }: Compl
       <MiscDownloadsSection
         downloads={miscDownloads}
         mode="complete"
-        onDelete={(_gid) => {/* TODO wire PR 4 */}}
+        onDelete={(gid) => miscDeleteMutation.mutate(gid)}
       />
     </div>
   );
 }
 
 function CompletedCard({ group }: { group: DownloadGroup }) {
+  const { i18n } = useLingui();
   const { coverUrl } = useAnimeCover(group.bangumi_id);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const expanded = useDownloadsUIStore((s) => s.expandedGroupIds.has(group.rule_id));
   const toggle = useDownloadsUIStore((s) => s.toggleGroup);
+
+  const deleteMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.delete(gid),
+    onSuccess: () => {
+      toast.success(i18n._(msg`downloads.deleted`));
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const complete = useMemo(() => {
     return group.downloads
@@ -100,8 +125,14 @@ function CompletedCard({ group }: { group: DownloadGroup }) {
         <EpisodeRowComplete
           key={d.gid}
           {...toCompleteProps(d)}
-          onPlay={() => {/* TODO wire in PR 4 */}}
-          onDelete={() => {/* TODO wire in PR 4 */}}
+          onPlay={() => {
+            if (group.bangumi_id) {
+              navigate({ to: '/anime/$id', params: { id: String(group.bangumi_id) } });
+            } else {
+              toast.info(i18n._(msg`downloads.notMatched`));
+            }
+          }}
+          onDelete={(gid) => deleteMutation.mutate(gid)}
         />
       ))}
     </AnimeDownloadCard>

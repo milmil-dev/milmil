@@ -4594,3 +4594,11 @@ msgstr "冇下載緊"
 #. js-lingui-explicit-id
 msgid "downloads.noCompleted"
 msgstr "冇已完成"
+
+#. js-lingui-explicit-id
+msgid "downloads.deleted"
+msgstr "已刪除"
+
+#. js-lingui-explicit-id
+msgid "downloads.notMatched"
+msgstr "呢個下載仲未配對到動畫"

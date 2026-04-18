@@ -3,12 +3,14 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Button } from '../../components/ui/button';
 import {
   type DownloadGroup,
   type DownloadRule,
   type RSSFeed,
+  downloadApi,
   downloadKeys,
   rssFeedApi,
 } from '../../lib/api/downloads';
@@ -107,6 +109,7 @@ function SubscribedCard({
   const { i18n } = useLingui();
   const { coverUrl } = useAnimeCover(rule.bangumi_id);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const expanded = useDownloadsUIStore((s) => s.expandedGroupIds.has(rule.id));
   const toggle = useDownloadsUIStore((s) => s.toggleGroup);
 
@@ -117,6 +120,31 @@ function SubscribedCard({
     onSuccess: () => {
       toast.success(i18n._(msg`autoDownload.refreshed`));
       queryClient.invalidateQueries({ queryKey: downloadKeys.feeds() });
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const pauseMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.pause(gid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resumeMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.resume(gid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['downloads'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (gid: string) => downloadApi.delete(gid),
+    onSuccess: () => {
+      toast.success(i18n._(msg`downloads.deleted`));
       queryClient.invalidateQueries({ queryKey: ['downloads'] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -148,16 +176,22 @@ function SubscribedCard({
             <EpisodeRowComplete
               key={d.gid}
               {...toCompleteProps(d)}
-              onPlay={() => {/* TODO wire in PR 4 */}}
-              onDelete={() => {/* TODO wire in PR 4 */}}
+              onPlay={() => {
+                if (rule.bangumi_id) {
+                  navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } });
+                } else {
+                  toast.info(i18n._(msg`downloads.notMatched`));
+                }
+              }}
+              onDelete={(gid) => deleteMutation.mutate(gid)}
             />
           ) : (
             <EpisodeRowActive
               key={d.gid}
               {...toActiveProps(d)}
-              onPause={() => {/* TODO wire in PR 4 */}}
-              onResume={() => {/* TODO wire in PR 4 */}}
-              onDelete={() => {/* TODO wire in PR 4 */}}
+              onPause={(gid) => pauseMutation.mutate(gid)}
+              onResume={(gid) => resumeMutation.mutate(gid)}
+              onDelete={(gid) => deleteMutation.mutate(gid)}
             />
           )
         )
