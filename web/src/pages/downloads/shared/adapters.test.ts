@@ -35,13 +35,20 @@ test('downloading mode when ep is paused or waiting', () => {
   expect(deriveCardMode(group([{ status: 'waiting' }]), baseRule)).toBe('downloading');
 });
 
-test('subscribed mode when rule enabled and no active eps', () => {
+test('completed mode when rule enabled but all eps already complete', () => {
   const g = group([{ status: 'complete' }]);
-  expect(deriveCardMode(g, { ...baseRule, enabled: 1 })).toBe('subscribed');
+  expect(deriveCardMode(g, { ...baseRule, enabled: 1 })).toBe('completed');
 });
 
 test('subscribed mode when no group at all and rule enabled', () => {
   expect(deriveCardMode(undefined, baseRule)).toBe('subscribed');
+});
+
+test('subscribed mode when rule enabled, no active, and no complete yet', () => {
+  expect(deriveCardMode(undefined, { ...baseRule, enabled: 1 })).toBe('subscribed');
+  // Also explicit: empty group
+  const g: DownloadGroup = { rule_id: 'r', rule_name: 'X', downloads: [], active_count: 0, complete_count: 0, total_count: 0 };
+  expect(deriveCardMode(g, { ...baseRule, enabled: 1 })).toBe('subscribed');
 });
 
 test('completed mode when rule disabled, regardless of complete count', () => {

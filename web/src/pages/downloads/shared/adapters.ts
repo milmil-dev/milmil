@@ -153,7 +153,10 @@ export interface LibraryItem {
 }
 
 /**
- * Priority: any active episode → downloading; else rule enabled → subscribed; else completed.
+ * Priority:
+ * 1. Any active ep → downloading
+ * 2. No active + (rule disabled OR at least one completed ep) → completed
+ * 3. No active + rule enabled + zero completed → subscribed (pending — waiting for first trigger)
  */
 export function deriveCardMode(
   group: DownloadGroup | undefined,
@@ -163,7 +166,8 @@ export function deriveCardMode(
     (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting',
   );
   if (hasActive) return 'downloading';
-  if (rule.enabled === 1) return 'subscribed';
+  const completeCount = group?.complete_count ?? 0;
+  if (rule.enabled === 1 && completeCount === 0) return 'subscribed';
   return 'completed';
 }
 
