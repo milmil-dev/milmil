@@ -764,7 +764,7 @@ export function WatchPage() {
   const posterWallBackdrop = loadingWallPosters.length > 0 ? (
     <div className="absolute inset-0 overflow-hidden bg-mm-bg">
       <div
-        className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
+        className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%] opacity-55"
         style={{
           transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
           transformOrigin: '50% 50%',
@@ -782,12 +782,14 @@ export function WatchPage() {
           ))}
         </div>
       </div>
-      <div className="absolute inset-0 bg-black/55" />
+      {/* Stronger dark layer — backdrop should whisper, not shout */}
+      <div className="absolute inset-0 bg-black/75" />
+      {/* Vignette: dim center only slightly, edges fade to full bg */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
+            'radial-gradient(ellipse 75% 75% at 50% 50%, rgba(7,7,7,0.45) 0%, rgba(7,7,7,0.80) 70%, var(--mm-bg) 100%)',
         }}
       />
     </div>
