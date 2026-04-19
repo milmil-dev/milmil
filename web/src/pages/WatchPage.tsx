@@ -743,21 +743,55 @@ export function WatchPage() {
   // --------------- Main render ---------------
   const playerBg = animeDetail.banner_image || animeDetail.cover_image;
 
-  // Build a poster pool for the loading-state wall:
-  // current anime's cover first (biases visual to this show), then trending.
+  // Build a poster pool for the login-style wall backdrop shown before
+  // playback starts. Requires at least 3 distinct covers — falls back to
+  // nothing if trending hasn't loaded yet (prevents the "140 tiles of the
+  // same cover" anti-pattern).
   const loadingWallPosters: string[] = (() => {
-    const pool: string[] = [];
-    if (animeDetail.cover_image?.startsWith('http')) pool.push(animeDetail.cover_image);
-    const trending = (trendingForBackdrop ?? [])
-      .map((a) => a.cover_image)
-      .filter((s): s is string => typeof s === 'string' && s.startsWith('http'));
-    pool.push(...trending);
-    if (pool.length === 0) return [];
+    const unique = new Set<string>();
+    if (animeDetail.cover_image?.startsWith('http')) unique.add(animeDetail.cover_image);
+    for (const a of trendingForBackdrop ?? []) {
+      if (a.cover_image?.startsWith('http')) unique.add(a.cover_image);
+    }
+    const pool = Array.from(unique);
+    if (pool.length < 3) return [];
     const SLOTS = 140;
     const out: string[] = [];
     while (out.length < SLOTS) out.push(...pool);
     return out.slice(0, SLOTS);
   })();
+
+  const posterWallBackdrop = loadingWallPosters.length > 0 ? (
+    <div className="absolute inset-0 overflow-hidden bg-mm-bg">
+      <div
+        className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
+        style={{
+          transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
+          transformOrigin: '50% 50%',
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        <div
+          className="grid gap-x-[5px] gap-y-[10px]"
+          style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+        >
+          {loadingWallPosters.map((src, i) => (
+            <div key={`${src}-${i}`} className="aspect-[2/3] overflow-hidden rounded-[3px]">
+              <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute inset-0 bg-black/55" />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
+        }}
+      />
+    </div>
+  ) : null;
 
   return (
     <PageTransition>
@@ -778,6 +812,7 @@ export function WatchPage() {
                       type={mimeType}
                       thumbnailsVtt={thumbnailsVttUrl}
                       poster={playerBg}
+                      posterBackdrop={posterWallBackdrop}
                       onReady={handlePlayerReady}
                       className="absolute inset-0 w-full h-full"
                       hlsConfig={hlsBufferConfig}
@@ -813,38 +848,9 @@ export function WatchPage() {
                   /* Loading state — show player shell with spinner overlay */
                   <div className="absolute inset-0 flex flex-col">
                     {/* Login-style tilted poster wall (current anime cover + trending covers) */}
-                    {loadingWallPosters.length > 0 && (
-                      <div className="pointer-events-none absolute inset-0 overflow-hidden bg-mm-bg">
-                        <div
-                          className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%]"
-                          style={{
-                            transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
-                            transformOrigin: '50% 50%',
-                            transformStyle: 'preserve-3d',
-                          }}
-                        >
-                          <div
-                            className="grid gap-x-[5px] gap-y-[10px]"
-                            style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
-                          >
-                            {loadingWallPosters.map((src, i) => (
-                              <div
-                                key={`${src}-${i}`}
-                                className="aspect-[2/3] overflow-hidden rounded-[3px]"
-                              >
-                                <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-black/55" />
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background:
-                              'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 0%, rgba(7,7,7,0.35) 70%, var(--mm-bg) 100%)',
-                          }}
-                        />
+                    {posterWallBackdrop && (
+                      <div className="pointer-events-none absolute inset-0">
+                        {posterWallBackdrop}
                       </div>
                     )}
                     <div className="relative flex-1 flex items-center justify-center">

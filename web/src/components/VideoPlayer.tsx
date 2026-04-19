@@ -23,7 +23,7 @@ import { Video } from '@videojs/react/video';
 import { HlsVideo } from '@videojs/react/media/hls-video';
 import { HlsMedia } from '@videojs/core/dom/media/hls';
 import type { ReactNode } from 'react';
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
 
@@ -43,6 +43,10 @@ interface VideoPlayerProps {
   };
   /** URL for timeline thumbnail VTT file */
   thumbnailsVtt?: string;
+  /** Background image shown before playback starts */
+  poster?: string;
+  /** Custom backdrop element shown before playback starts. Takes priority over `poster`. */
+  posterBackdrop?: ReactNode;
 }
 
 /** Simplified API surface exposed to WatchPage */
@@ -243,12 +247,13 @@ function PauseIndicator() {
   );
 }
 
-function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig, thumbnailsVtt }: VideoPlayerProps) {
+function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig, thumbnailsVtt, poster, posterBackdrop }: VideoPlayerProps) {
   const player = usePlayer();
   const media = useMedia();
   const readyFired = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [hasPlayed, setHasPlayed] = useState(false);
 
   useEffect(() => {
     if (!player || readyFired.current) return;
@@ -350,10 +355,31 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig
     };
   }, []);
 
+  // Hide poster once video starts playing
+  useEffect(() => {
+    if (hasPlayed) return;
+    const video = containerRef.current?.querySelector('video');
+    if (!video) return;
+    const onPlay = () => setHasPlayed(true);
+    video.addEventListener('playing', onPlay);
+    return () => video.removeEventListener('playing', onPlay);
+  }, [hasPlayed]);
+
   const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
 
   return (
     <div ref={containerRef} className={className} data-videojs>
+      {/* Poster backdrop — visible before playback starts.
+          Prefer a custom backdrop node (e.g. poster-wall) over the single-image fallback. */}
+      {!hasPlayed && (posterBackdrop ? (
+        <div className="absolute inset-0 z-[1] pointer-events-none">{posterBackdrop}</div>
+      ) : poster ? (
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <img src={poster} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+        </div>
+      ) : null)}
       <CustomVideoSkin controlBarExtra={controlBarExtra}>
         {isHLS ? <HlsVideo src={src} playsInline crossOrigin="anonymous" /> : <Video src={src} playsInline crossOrigin="anonymous" />}
       </CustomVideoSkin>
