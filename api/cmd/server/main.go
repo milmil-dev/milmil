@@ -34,6 +34,7 @@ import (
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/integration/danmaku"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
@@ -269,6 +270,11 @@ func main() {
 	torrentReg.Register(torrent.NewDanDanPlayProvider(""))
 	slog.Debug("boot: torrent providers registered", "took", time.Since(step))
 
+	// External danmaku sources
+	danmakuReg := danmaku.NewRegistry()
+	danmakuReg.Register(danmaku.NewBilibiliSource(&http.Client{Timeout: 15 * time.Second}))
+	slog.Debug("boot: external danmaku sources registered")
+
 	// Scanner for post-download library scan
 	sc := scanner.New(store.New(database))
 
@@ -300,7 +306,7 @@ func main() {
 	traktProvider := providers.NewTrakt(httpClient, "", traktClientID, traktClientSecret)
 	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider, traktProvider}, tokenStore, wsHubAdapter{hub: wsHub})
 
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc)
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	// Bot engine

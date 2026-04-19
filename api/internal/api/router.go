@@ -11,6 +11,7 @@ import (
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/integration/danmaku"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/jellyfin"
 	"github.com/milmil/api/internal/matcher"
@@ -35,14 +36,15 @@ type handler struct {
 	downloader      downloader.Manager
 	wsHub           *ws.Hub
 	tmdb            tmdb.Client
-	torrentRegistry *torrent.Registry
-	notifier        *notification.Service
-	syncSvc         *milmilsync.Service
-	encryptionKey   []byte
+	torrentRegistry  *torrent.Registry
+	notifier         *notification.Service
+	syncSvc          *milmilsync.Service
+	danmakuRegistry  *danmaku.Registry
+	encryptionKey    []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service, danmakuReg *danmaku.Registry) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -62,6 +64,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		torrentRegistry: torrentReg,
 		notifier:        notifier,
 		syncSvc:         syncSvc,
+		danmakuRegistry: danmakuReg,
 		encryptionKey:   cfg.EncryptionKey,
 	}
 
@@ -158,6 +161,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	discoverGroup.GET("/anime/:id/comments", h.handleAnimeComments)
 	discoverGroup.GET("/anime/:id/torrents", h.handleAnimeTorrents, authMiddleware(h.queries))
 	discoverGroup.GET("/anime/:id/franchise", h.handleAnimeFranchise)
+
+	// External danmaku sources — protected
+	danmakuExtGroup := v1.Group("/danmaku/external", authMiddleware(h.queries))
+	danmakuExtGroup.GET("/sources", h.handleListDanmakuSources)
+	danmakuExtGroup.GET("/search", h.handleSearchExternalDanmaku)
+	danmakuExtGroup.POST("/import", h.handleImportExternalDanmaku)
+	danmakuExtGroup.GET("/imported/:mediaFileId", h.handleGetImportedDanmaku)
+	danmakuExtGroup.DELETE("/imported/:mediaFileId", h.handleRemoveImportedDanmaku)
 
 	// Danmaku — protected
 	danmakuGroup := v1.Group("/danmaku", authMiddleware(h.queries))
