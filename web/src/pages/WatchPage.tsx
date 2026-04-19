@@ -837,20 +837,20 @@ export function WatchPage() {
           {/* Title bar */}
           <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
 
-          <div className="flex flex-col lg:flex-row gap-3">
-            {/* LEFT COLUMN */}
-            <div className="flex-1 min-w-0">
-              {/* Player container.
-                  Default: capped width (max 960px) AND capped by viewport height
-                  so the player doesn't dominate the page on large screens.
-                  Theater: wider cap (max 1600px) matching YouTube's theater height. */}
+          <div className="flex flex-col lg:flex-row gap-3 lg:justify-center">
+            {/* LEFT COLUMN — capped so the player area stays readable on ultra-wide.
+                In theater mode the cap releases so the player can fill the row. */}
+            <div className={cn('flex-1 min-w-0', !theaterMode && 'lg:max-w-[960px]')}>
+              {/* Player container — caps by viewport height only in theater mode
+                  so the player is never taller than the viewport. In default mode
+                  the column's max-width (see below) already does the capping. */}
               <div
                 className="relative aspect-video overflow-hidden border-0 rounded-lg bg-black lg:mx-auto"
-                style={{
-                  maxWidth: theaterMode
-                    ? 'min(calc((100vh - 140px) * 16 / 9), 1600px)'
-                    : 'min(calc((100vh - 280px) * 16 / 9), 960px)',
-                }}
+                style={
+                  theaterMode
+                    ? { maxWidth: 'min(calc((100vh - 140px) * 16 / 9), 1600px)' }
+                    : undefined
+                }
               >
                 {streamUrl ? (
                   <>
