@@ -840,17 +840,17 @@ export function WatchPage() {
           <div className="flex flex-col lg:flex-row gap-3">
             {/* LEFT COLUMN */}
             <div className="flex-1 min-w-0">
-              {/* Player container (YouTube-style theater mode caps height to viewport) */}
+              {/* Player container.
+                  Default: capped width (max 960px) AND capped by viewport height
+                  so the player doesn't dominate the page on large screens.
+                  Theater: wider cap (max 1600px) matching YouTube's theater height. */}
               <div
-                className={cn(
-                  'relative aspect-video overflow-hidden border-0 rounded-lg bg-black',
-                  theaterMode && 'lg:max-h-[calc(100vh-140px)] lg:w-auto lg:mx-auto',
-                )}
-                style={
-                  theaterMode
-                    ? { maxWidth: 'calc((100vh - 140px) * 16 / 9)' }
-                    : undefined
-                }
+                className="relative aspect-video overflow-hidden border-0 rounded-lg bg-black lg:mx-auto"
+                style={{
+                  maxWidth: theaterMode
+                    ? 'min(calc((100vh - 140px) * 16 / 9), 1600px)'
+                    : 'min(calc((100vh - 280px) * 16 / 9), 960px)',
+                }}
               >
                 {streamUrl ? (
                   <>
