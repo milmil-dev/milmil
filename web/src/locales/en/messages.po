@@ -16,7 +16,7 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:106
 msgid "watch.resumeFrom"
-msgstr "Resume from"
+msgstr "Jumped to"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"

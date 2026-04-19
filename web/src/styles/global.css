@@ -22,6 +22,15 @@
   --media-surface-inner-border-color: transparent;
   --media-surface-outer-border-color: transparent;
   --media-surface-shadow-color: transparent;
+  /* Override the default 2rem border radius to match container */
+  --media-border-radius: 0.5rem;
+  --media-video-border-radius: 0.5rem;
+  /* Ensure black background even when video hasn't loaded */
+  background: #000 !important;
+}
+/* Force video element to have black background (prevents white flash) */
+.media-default-skin--video video {
+  background: #000 !important;
 }
 /* Remove the built-in gradient on controls */
 .media-default-skin--video .media-controls {

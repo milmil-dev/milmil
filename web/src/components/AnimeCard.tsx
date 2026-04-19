@@ -242,7 +242,7 @@ function HoverDetailCard({
   return (
     <div
       className={cn(
-        'absolute top-1/2 -translate-y-1/2 z-50 w-[400px] pointer-events-none hidden lg:block',
+        'absolute top-1/2 -translate-y-1/2 z-50 w-[460px] pointer-events-none hidden lg:block',
         cardSide === 'right' ? 'left-full ml-3' : 'right-full mr-3'
       )}
     >

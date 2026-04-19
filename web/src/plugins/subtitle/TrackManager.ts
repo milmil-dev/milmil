@@ -31,7 +31,12 @@ function parseVTTCues(vttContent: string): SubtitleCue[] {
 
     const toSeconds = (h: string | undefined, m: string, s: string, ms: string) => {
       const hours = h ? Number.parseInt(h.replace(':', ''), 10) : 0;
-      return hours * 3600 + Number.parseInt(m, 10) * 60 + Number.parseInt(s, 10) + Number.parseInt(ms, 10) / 1000;
+      return (
+        hours * 3600 +
+        Number.parseInt(m, 10) * 60 +
+        Number.parseInt(s, 10) +
+        Number.parseInt(ms, 10) / 1000
+      );
     };
 
     const startTime = toSeconds(match[1], match[2]!, match[3]!, match[4]!);
@@ -72,6 +77,9 @@ export class TrackManager {
   // Subtitle delay in seconds
   private delay = 0;
 
+  // Preferred language (wins over appLocale when auto-selecting)
+  private preferredLanguage: string | null = null;
+
   // Callbacks
   onTrackChange?: (primary: SubtitleTrack | null, secondary: SubtitleTrack | null) => void;
   onCuesUpdate?: (primaryCues: SubtitleCue[], secondaryCues: SubtitleCue[]) => void;
@@ -80,6 +88,17 @@ export class TrackManager {
     private videoEl: HTMLVideoElement,
     private appLocale?: string
   ) {}
+
+  /**
+   * Set the preferred subtitle language (user's prior pick or global default).
+   * If tracks are already loaded, re-runs auto-select so the right track wins.
+   */
+  setPreferredLanguage(language: string | null) {
+    this.preferredLanguage = language;
+    if (this.tracks.length > 0) {
+      this.autoSelectPrimary();
+    }
+  }
 
   /** Load tracks from API subtitle list */
   loadTracks(tracks: SubtitleTrack[]) {
@@ -142,10 +161,29 @@ export class TrackManager {
   private autoSelectPrimary() {
     if (this.tracks.length === 0) return;
 
-    const locale = (this.appLocale ?? 'zh-TW').toLowerCase();
+    // Preferred language (from user's stored pick) wins over appLocale fallback.
+    const candidates = [this.preferredLanguage, this.appLocale ?? 'zh-TW'].filter(
+      (l): l is string => !!l
+    );
+
+    for (const candidate of candidates) {
+      const idx = this.findBestMatch(candidate);
+      if (idx !== -1) {
+        this.setPrimary(idx);
+        return;
+      }
+    }
+
+    // Nothing matched — default to first track.
+    this.setPrimary(0);
+  }
+
+  /** Returns best-match track index for a language code, or -1 if no match. */
+  private findBestMatch(language: string): number {
+    const locale = language.toLowerCase();
     const localeBase = locale.split('-')[0] ?? locale;
 
-    let bestIdx = 0;
+    let bestIdx = -1;
     let bestScore = 0;
 
     for (let idx = 0; idx < this.tracks.length; idx++) {
@@ -153,7 +191,7 @@ export class TrackManager {
       let score = 0;
       if (sl === locale) {
         score = 3;
-      } else if (sl.startsWith(localeBase)) {
+      } else if (sl.startsWith(localeBase) || localeBase.startsWith(sl)) {
         score = 2;
       } else if (ISO_MAP[sl] === localeBase) {
         score = 2;
@@ -164,7 +202,7 @@ export class TrackManager {
       }
     }
 
-    this.setPrimary(bestIdx);
+    return bestIdx;
   }
 
   /** Fetch and parse cues for a track (with caching) */

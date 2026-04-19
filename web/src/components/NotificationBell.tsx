@@ -11,6 +11,7 @@ import {
   notificationApi,
   notificationKeys,
 } from '../lib/api/notifications';
+import { useAuthStore } from '../store/auth-store';
 import { cn } from '../lib/utils';
 
 /* ── Relative time helper ─────────────────────────────────── */
@@ -42,12 +43,14 @@ export function NotificationBell() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const token = useAuthStore((s) => s.token);
 
-  // Unread count — poll every 30s
+  // Unread count — poll every 30s, only when authenticated
   const { data: unreadData } = useQuery({
     queryKey: notificationKeys.unreadCount(),
     queryFn: notificationApi.unreadCount,
     refetchInterval: 30_000,
+    enabled: !!token,
   });
   const unreadCount = unreadData?.count ?? 0;
 
@@ -55,7 +58,7 @@ export function NotificationBell() {
   const { data: notifications, isLoading } = useQuery({
     queryKey: [...notificationKeys.list(), 'bell'],
     queryFn: () => notificationApi.list({ limit: 5 }),
-    enabled: open,
+    enabled: open && !!token,
   });
 
   // Mark single read

@@ -14,7 +14,7 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:106
 msgid "watch.resumeFrom"
-msgstr "从此处继续"
+msgstr "已为你跳转到"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"

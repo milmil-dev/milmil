@@ -16,7 +16,7 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:106
 msgid "watch.resumeFrom"
-msgstr "여기서 이어보기"
+msgstr "이동한 위치"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"

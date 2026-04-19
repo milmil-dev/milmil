@@ -287,7 +287,7 @@ function CalendarSkeleton() {
           <Skeleton key={i} className="h-9 w-16 rounded-lg" />
         ))}
       </div>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-6">
         {Array.from({ length: 12 }).map((_, i) => (
           <div key={i} className="space-y-2">
             <Skeleton className="aspect-[2/3] w-full rounded-lg" />
@@ -302,7 +302,7 @@ function CalendarSkeleton() {
 
 function SeasonGridSkeleton() {
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-6">
       {Array.from({ length: 18 }).map((_, i) => (
         <div key={i} className="space-y-2">
           <Skeleton className="aspect-[2/3] w-full rounded-lg" />
@@ -612,7 +612,7 @@ function SeasonBrowseView({ year, season }: { year: number; season: SeasonKey })
   return (
     <div>
       <div
-        className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-5 gap-y-6"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-6"
         style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}
       >
         {allItems.map((anime, i) => (

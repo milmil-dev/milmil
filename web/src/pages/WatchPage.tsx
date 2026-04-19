@@ -20,6 +20,7 @@ import { RelatedAnimeList } from '@/components/watch/RelatedAnimeList';
 import { TechInfoPopover } from '@/components/watch/TechInfoPopover';
 import { WatchTitleBar } from '@/components/watch/WatchTitleBar';
 import { useDocumentTitle } from '@/hooks/use-document-title';
+import { useSeriesPreferences } from '@/hooks/use-series-preferences';
 import type { PlayableEpisode } from '@/lib/api/anime';
 import { animeApi, animeKeys } from '@/lib/api/anime';
 import { discoverApi, discoverKeys } from '@/lib/api/discover';
@@ -35,6 +36,7 @@ import {
   streamApi,
 } from '@/lib/api/stream';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
+import { formatLanguage } from '@/lib/format';
 import type { CapturePluginAPI } from '@/plugins/capture/CapturePlugin';
 import { createCapturePlugin } from '@/plugins/capture/CapturePlugin';
 import type { GesturePluginAPI } from '@/plugins/gesture/GesturePlugin';
@@ -86,7 +88,7 @@ function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: ()
 
   useEffect(() => {
     if (seconds === null) return;
-    const timer = setTimeout(onDone, 3000);
+    const timer = setTimeout(onDone, 4000);
     return () => clearTimeout(timer);
   }, [seconds, onDone]);
 
@@ -96,16 +98,29 @@ function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: ()
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute bottom-14 left-3 z-10 flex items-center gap-2 rounded-md bg-black/70 px-3 py-1.5 backdrop-blur-sm"
+          exit={{ opacity: 0, y: 4 }}
+          transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
+          className="absolute bottom-[10%] left-4 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/55 py-1.5 pl-3 pr-2 backdrop-blur-xl shadow-md shadow-black/30"
         >
-          <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 text-blue-400">
-            <path d="M8 3a5 5 0 110 10A5 5 0 018 3zm0 1.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h2a.5.5 0 000-1H8.5V5A.5.5 0 008 4.5z" />
+          <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 text-white/70">
+            <path d="M13 3a9 9 0 100 18 9 9 0 000-18zm-1 5h1.5v4.25L17 14.5l-.75 1.3L12 13V8z" />
           </svg>
-          <span className="text-xs text-white/90">
-            {i18n._('watch.resumeFrom', { time: formatTime(seconds) })}
+          <span className="text-[11px] text-white/80">
+            {i18n._('watch.resumeFrom')}
           </span>
+          <span className="text-[11px] font-medium tabular-nums text-white">
+            {formatTime(seconds)}
+          </span>
+          <button
+            type="button"
+            onClick={onDone}
+            aria-label="Dismiss"
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white/40 transition-colors hover:bg-white/10 hover:text-white/80"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          </button>
         </motion.div>
       )}
     </AnimatePresence>
@@ -119,6 +134,12 @@ export function WatchPage() {
   const { animeId } = useParams({ strict: false });
   const { ep } = useSearch({ strict: false }) as { ep?: number };
   const bangumiId = Number(animeId);
+
+  // Per-series + global preferences (subtitle/audio language, etc.)
+  const seriesPrefs = useSeriesPreferences(
+    Number.isFinite(bangumiId) ? String(bangumiId) : undefined,
+  );
+  const defaultSubtitleLanguage = usePreferencesStore((s) => s.defaultSubtitleLanguage);
 
   // --------------- Refs ---------------
   const playerRef = useRef<VideoPlayerAPI | null>(null);
@@ -563,12 +584,22 @@ export function WatchPage() {
         const subtitlePlugin = createSubtitlePlugin(el, containerEl, appLocale);
         subtitlePluginRef.current = subtitlePlugin;
 
+        // Preferred language chain: per-series > global default > (plugin falls back to appLocale)
+        const preferredLang =
+          seriesPrefs.prefs?.subtitleLanguage ?? defaultSubtitleLanguage ?? null;
+        subtitlePlugin.setPreferredLanguage(preferredLang);
+
+        // Apply stored subtitle delay
+        if (typeof seriesPrefs.prefs?.subtitleDelay === 'number') {
+          subtitlePlugin.setDelay(seriesPrefs.prefs.subtitleDelay);
+        }
+
         // Load tracks if subtitles are already available
         if (subtitles && subtitles.length > 0) {
           subtitlePlugin.loadTracks(
             subtitles.map((s) => ({
               id: s.id,
-              label: s.language,
+              label: formatLanguage(s.language, i18n.locale ?? 'en') || s.language,
               language: s.language,
               source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
               format: 'vtt' as SubtitleTrack['format'], // backend always converts to VTT
@@ -664,6 +695,18 @@ export function WatchPage() {
       }))
     );
   }, [subtitles]);
+
+  // --------------- Apply preferred language when series prefs arrive late ---------------
+  useEffect(() => {
+    const plugin = subtitlePluginRef.current;
+    if (!plugin) return;
+    const preferredLang =
+      seriesPrefs.prefs?.subtitleLanguage ?? defaultSubtitleLanguage ?? null;
+    plugin.setPreferredLanguage(preferredLang);
+    if (typeof seriesPrefs.prefs?.subtitleDelay === 'number') {
+      plugin.setDelay(seriesPrefs.prefs.subtitleDelay);
+    }
+  }, [seriesPrefs.prefs?.subtitleLanguage, seriesPrefs.prefs?.subtitleDelay, defaultSubtitleLanguage]);
 
   // --------------- Episode switching ---------------
   const handleSelectEpisode = useCallback(
@@ -844,7 +887,7 @@ export function WatchPage() {
                   so the player is never taller than the viewport. In default mode
                   the column's max-width (see below) already does the capping. */}
               <div
-                className="relative aspect-video overflow-hidden border-0 rounded-lg bg-black lg:mx-auto"
+                className="relative aspect-video overflow-hidden bg-black lg:mx-auto"
                 style={
                   theaterMode
                     ? { maxWidth: 'min(calc((100vh - 140px) * 16 / 9), 1600px)' }
@@ -903,6 +946,26 @@ export function WatchPage() {
                           mediaPlugin={mediaSettingsPluginRef.current}
                           videoEl={videoEl}
                           onClose={() => setSettingsPanelOpen(false)}
+                          onSubtitleChange={(track) => {
+                            const lang = track?.language ?? '';
+                            seriesPrefs.save({ subtitleLanguage: lang });
+                            if (lang) {
+                              usePreferencesStore
+                                .getState()
+                                .updatePreference('defaultSubtitleLanguage', lang);
+                            }
+                          }}
+                          onAudioChange={(language) => {
+                            seriesPrefs.save({ audioTrackLanguage: language });
+                            if (language) {
+                              usePreferencesStore
+                                .getState()
+                                .updatePreference('defaultAudioLanguage', language);
+                            }
+                          }}
+                          onSubtitleDelayChange={(seconds) => {
+                            seriesPrefs.save({ subtitleDelay: seconds });
+                          }}
                         />
                       )}
                     </AnimatePresence>

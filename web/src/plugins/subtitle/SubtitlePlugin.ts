@@ -9,6 +9,7 @@ export interface SubtitlePluginAPI {
   loadTracks(tracks: SubtitleTrack[]): void;
   addTrack(track: SubtitleTrack): void;
   getTracks(): SubtitleTrack[];
+  setPreferredLanguage(language: string | null): void;
   setPrimary(index: number): void;
   setSecondary(index: number): void;
   getPrimaryTrack(): SubtitleTrack | null;
@@ -35,7 +36,7 @@ export function createSubtitlePlugin(
   videoEl: HTMLVideoElement,
   containerEl: HTMLElement,
   appLocale?: string,
-  initialStyle?: Partial<SubtitleStyleConfig>,
+  initialStyle?: Partial<SubtitleStyleConfig>
 ): SubtitlePluginAPI {
   const disposables = new Disposables();
   const trackManager = new TrackManager(videoEl, appLocale);
@@ -75,6 +76,7 @@ export function createSubtitlePlugin(
     loadTracks: (tracks) => trackManager.loadTracks(tracks),
     addTrack: (track) => trackManager.addTrack(track),
     getTracks: () => trackManager.getTracks(),
+    setPreferredLanguage: (lang) => trackManager.setPreferredLanguage(lang),
     setPrimary: (i) => trackManager.setPrimary(i),
     setSecondary: (i) => trackManager.setSecondary(i),
     getPrimaryTrack: () => trackManager.getPrimaryTrack(),

@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { formatLanguage } from '@/lib/format';
 import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
 import type { SubtitleStyleConfig, SubtitleTrack } from '@/plugins/subtitle/types';
 import type { MediaSettingsPluginAPI } from '@/plugins/media-settings/MediaSettingsPlugin';
@@ -15,6 +16,12 @@ interface Props {
   mediaPlugin: MediaSettingsPluginAPI | null;
   videoEl: HTMLVideoElement | null;
   onClose: () => void;
+  /** Fires when primary subtitle changes. `track` is null when subtitles are turned off. */
+  onSubtitleChange?: (track: SubtitleTrack | null) => void;
+  /** Fires when audio track changes. `language` is the track's language code (may be empty). */
+  onAudioChange?: (language: string) => void;
+  /** Fires when subtitle delay changes. */
+  onSubtitleDelayChange?: (seconds: number) => void;
 }
 
 type View =
@@ -24,6 +31,27 @@ type View =
   | 'sub-color' | 'sub-bgOpacity' | 'sub-border' | 'sub-position' | 'sub-timing'
   // Media views
   | 'speed' | 'brightness' | 'contrast' | 'saturation' | 'warmth' | 'volumeBoost' | 'audioTrack';
+
+/** Parent view for each sub-view — drives the back button navigation. */
+const VIEW_PARENT: Record<Exclude<View, 'main'>, View> = {
+  subtitles: 'main',
+  'subtitle-style': 'main',
+  'sub-preset': 'subtitle-style',
+  'sub-font': 'subtitle-style',
+  'sub-fontSize': 'subtitle-style',
+  'sub-color': 'subtitle-style',
+  'sub-bgOpacity': 'subtitle-style',
+  'sub-border': 'subtitle-style',
+  'sub-position': 'subtitle-style',
+  'sub-timing': 'main',
+  speed: 'main',
+  brightness: 'main',
+  contrast: 'main',
+  saturation: 'main',
+  warmth: 'main',
+  volumeBoost: 'main',
+  audioTrack: 'main',
+};
 
 /* ─── Constants ──────────────────────────────────────────────────── */
 
@@ -85,15 +113,18 @@ function MenuRow({ icon, label, value, onClick }: {
 }
 
 function OptionRow({ label, selected, onClick, swatch }: {
-  label: string; selected: boolean; onClick: () => void; swatch?: string;
+  label: React.ReactNode; selected: boolean; onClick: () => void; swatch?: string;
 }) {
   return (
     <button type="button" onClick={onClick}
       className={cn(
-        'w-full flex items-center gap-2.5 mx-2 my-0.5 px-2.5 py-2 text-left text-xs rounded-lg transition-all duration-100 active:scale-[0.99]',
-        selected ? 'text-white bg-white/[0.1]' : 'text-white/60 hover:bg-white/[0.08]',
+        'relative w-full flex items-center gap-2 mx-2 my-px px-2.5 py-1.5 text-left text-xs rounded-lg transition-colors duration-100',
+        selected ? 'text-white bg-white/[0.08]' : 'text-white/65 hover:bg-white/[0.05] hover:text-white/90',
       )}
       style={{ width: 'calc(100% - 16px)' }}>
+      {selected && (
+        <span className="absolute left-0 top-1/2 h-3 w-[2px] -translate-y-1/2 rounded-r-sm bg-white" />
+      )}
       <span className="shrink-0 w-4 h-4 flex items-center justify-center">
         {selected ? (
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
@@ -101,21 +132,56 @@ function OptionRow({ label, selected, onClick, swatch }: {
           <span className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: swatch }} />
         ) : null}
       </span>
-      <span className="flex-1">{label}</span>
+      <span className="flex-1 min-w-0 flex items-center gap-1.5">{label}</span>
     </button>
   );
 }
 
-function BackHeader({ title, onBack }: { title: string; onBack: () => void }) {
+// Legacy BackHeader — now a no-op. The panel renders a single header outside
+// the scroll area (see PanelHeader below) so sub-views can't bleed through.
+function BackHeader(_props: { title: string; onBack: () => void }) {
+  return null;
+}
+
+function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return (
-    <button type="button" onClick={onBack}
-      className="w-full flex items-center gap-2 px-4 py-2.5 text-left text-xs font-medium
-        text-white/90 border-b border-white/[0.06] hover:bg-white/[0.06] transition-colors">
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-white/40">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-      </svg>
-      {title}
-    </button>
+    <div className="shrink-0 bg-[#1a1a1a] shadow-[0_1px_0_rgba(255,255,255,0.06)]">
+      <button
+        type="button"
+        onClick={onBack}
+        className="group flex w-full items-center gap-2 px-3 py-2.5 text-left
+          text-white/85 hover:text-white transition-colors"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 text-white/50 group-hover:text-white/80 transition-colors">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+        </svg>
+        <span className="truncate text-[13px] font-semibold tracking-[0.01em]">{title}</span>
+      </button>
+    </div>
+  );
+}
+
+/**
+ * Render a subtitle/audio track label with modifier markers as tinted chips.
+ * Strips `[CC]` / `[FORCED]` / `[SDH]` suffix from the name, then renders them
+ * as small chips beside the title.
+ */
+function TrackLabel({ name }: { name: string }) {
+  const match = name.match(/\s*\[(CC|FORCED|SDH)\]\s*$/i);
+  const modifier = match?.[1]?.toUpperCase();
+  const clean = modifier ? name.replace(/\s*\[(CC|FORCED|SDH)\]\s*$/i, '').trim() : name;
+  return (
+    <>
+      <span className="truncate">{clean}</span>
+      {modifier && (
+        <span
+          className="ml-auto shrink-0 rounded-sm bg-white/10 px-1.5 py-[1px]
+            text-[9px] font-semibold uppercase tracking-wider text-white/70"
+        >
+          {modifier}
+        </span>
+      )}
+    </>
   );
 }
 
@@ -154,7 +220,15 @@ function SliderControl({ label, value, min, max, step, display, defaultVal, onCh
 
 const SPEED_PRESETS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0];
 
-export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onClose }: Props) {
+export function UnifiedSettingsPanel({
+  subtitlePlugin,
+  mediaPlugin,
+  videoEl,
+  onClose,
+  onSubtitleChange,
+  onAudioChange,
+  onSubtitleDelayChange,
+}: Props) {
   const { i18n } = useLingui();
   const [view, setView] = useState<View>('main');
   const [subStyle, setSubStyle] = useState<Partial<SubtitleStyleConfig>>({});
@@ -192,6 +266,29 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
     refresh();
   }, [mediaPlugin, refresh]);
 
+  const headerTitle = ((): string | null => {
+    switch (view) {
+      case 'main': return null;
+      case 'subtitles': return i18n._(msg`settings.subtitles`);
+      case 'subtitle-style': return i18n._(msg`settings.subtitleStyle`);
+      case 'sub-preset': return i18n._(msg`settings.preset`);
+      case 'sub-font': return i18n._(msg`settings.font`);
+      case 'sub-fontSize': return i18n._(msg`settings.fontSize`);
+      case 'sub-color': return i18n._(msg`settings.textColor`);
+      case 'sub-bgOpacity': return i18n._(msg`settings.background`);
+      case 'sub-border': return i18n._(msg`settings.borderStyle`);
+      case 'sub-position': return i18n._(msg`settings.position`);
+      case 'sub-timing': return i18n._(msg`settings.subtitleTiming`);
+      case 'speed': return i18n._(msg`settings.playbackSpeed`);
+      case 'brightness': return i18n._(msg`settings.brightness`);
+      case 'contrast': return i18n._(msg`settings.contrast`);
+      case 'saturation': return i18n._(msg`settings.saturation`);
+      case 'warmth': return i18n._(msg`settings.nightMode`);
+      case 'volumeBoost': return i18n._(msg`settings.volumeBoost`);
+      case 'audioTrack': return i18n._(msg`settings.audioTrack`);
+    }
+  })();
+
   const renderContent = (): React.ReactNode => {
     switch (view) {
       // ── Subtitle sub-views ──
@@ -199,12 +296,31 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         return (<>
           <BackHeader title={i18n._(msg`settings.subtitles`)} onBack={() => back('main')} />
           <OptionRow label={i18n._(msg`settings.off`)} selected={!subPrimary}
-            onClick={() => { subtitlePlugin?.setPrimary(-1); refresh(); back('main'); }} />
-          {subTracks.map((t, i) => (
-            <OptionRow key={t.id} label={`${t.label} (${SOURCE_BADGE[t.source]})`}
-              selected={subPrimary?.id === t.id}
-              onClick={() => { subtitlePlugin?.setPrimary(i); refresh(); back('main'); }} />
-          ))}
+            onClick={() => { subtitlePlugin?.setPrimary(-1); onSubtitleChange?.(null); refresh(); back('main'); }} />
+          {(() => {
+            // Only show source badge when tracks have mixed sources.
+            const mixedSources = new Set(subTracks.map((t) => t.source)).size > 1;
+            return subTracks.map((t, i) => {
+              const name = formatLanguage(t.language, i18n.locale ?? 'en') || t.label;
+              return (
+                <OptionRow
+                  key={t.id}
+                  label={
+                    <>
+                      <TrackLabel name={name} />
+                      {mixedSources && (
+                        <span className="shrink-0 text-[9px] font-medium uppercase tracking-wider text-white/35">
+                          {SOURCE_BADGE[t.source]}
+                        </span>
+                      )}
+                    </>
+                  }
+                  selected={subPrimary?.id === t.id}
+                  onClick={() => { subtitlePlugin?.setPrimary(i); onSubtitleChange?.(t); refresh(); back('main'); }}
+                />
+              );
+            });
+          })()}
         </>);
 
       case 'subtitle-style':
@@ -292,7 +408,7 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
           <BackHeader title={i18n._(msg`settings.subtitleTiming`)} onBack={() => back('main')} />
           <SliderControl label="Delay" value={subDelay} min={-10} max={10} step={0.1}
             display={`${subDelay >= 0 ? '+' : ''}${subDelay.toFixed(1)}s`} defaultVal={0}
-            onChange={(v) => { subtitlePlugin?.setDelay(v); refresh(); }} />
+            onChange={(v) => { subtitlePlugin?.setDelay(v); onSubtitleDelayChange?.(v); refresh(); }} />
         </>);
 
       // ── Speed ──
@@ -380,11 +496,14 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
       case 'audioTrack':
         return (<>
           <BackHeader title={i18n._(msg`settings.audioTrack`)} onBack={() => back('main')} />
-          {audioTracks.map(t => (
-            <OptionRow key={t.index} label={`${t.label}${t.language ? ` (${t.language})` : ''}`}
-              selected={t.enabled}
-              onClick={() => { mediaPlugin?.setAudioTrack(t.index); refresh(); back('main'); }} />
-          ))}
+          {audioTracks.map(t => {
+            const name = formatLanguage(t.language, i18n.locale ?? 'en') || t.label || t.language;
+            return (
+              <OptionRow key={t.index} label={name}
+                selected={t.enabled}
+                onClick={() => { mediaPlugin?.setAudioTrack(t.index); onAudioChange?.(t.language ?? ''); refresh(); back('main'); }} />
+            );
+          })}
         </>);
 
       // ── Main ──
@@ -422,7 +541,12 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
                 value={volume !== 100 ? `${volume}%` : undefined} onClick={() => go('volumeBoost')} />
               {audioTracks.length > 1 && (
                 <MenuRow icon={<IconAudio />} label={i18n._(msg`settings.audioTrack`)}
-                  value={audioTracks.find(t => t.enabled)?.label} onClick={() => go('audioTrack')} />
+                  value={(() => {
+                    const cur = audioTracks.find(t => t.enabled);
+                    if (!cur) return undefined;
+                    return formatLanguage(cur.language, i18n.locale ?? 'en') || cur.label || cur.language;
+                  })()}
+                  onClick={() => go('audioTrack')} />
               )}
             </>
           )}
@@ -440,11 +564,14 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 6 }}
         transition={{ duration: 0.12, ease: [0.2, 0, 0, 1] }}
-        className="absolute right-2 bottom-12 z-[101] w-[260px] max-h-[65vh]
+        className="absolute right-2 bottom-12 z-[101] w-[260px] max-h-[20rem] flex flex-col
           rounded-2xl bg-[rgba(40,40,40,0.55)] backdrop-blur-[40px] backdrop-saturate-[1.8]
           border border-white/[0.12]
           shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_0.5px_0_rgba(255,255,255,0.08)] overflow-hidden"
       >
+        {headerTitle && (
+          <PanelHeader title={headerTitle} onBack={() => back(VIEW_PARENT[view as Exclude<View, 'main'>])} />
+        )}
         <AnimatePresence mode="popLayout" initial={false} custom={dirRef.current}>
           <motion.div
             key={viewKey}
@@ -453,7 +580,14 @@ export function UnifiedSettingsPanel({ subtitlePlugin, mediaPlugin, videoEl, onC
             animate={{ x: 0, opacity: 1 }}
             exit={(d: number) => ({ x: `${d * -80}%`, opacity: 0 })}
             transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-            className="overflow-y-auto max-h-[65vh] py-1"
+            className="flex-1 min-h-0 overflow-y-auto py-1"
+            style={
+              {
+                ['--scrollbar-size' as never]: '6px',
+                ['--scrollbar-thumb' as never]: 'rgba(255,255,255,0.12)',
+                ['--scrollbar-thumb-hover' as never]: 'rgba(255,255,255,0.22)',
+              } as React.CSSProperties
+            }
           >
             {renderContent()}
           </motion.div>

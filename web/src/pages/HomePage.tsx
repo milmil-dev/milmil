@@ -191,7 +191,7 @@ export function HomePage() {
                 className="mt-6"
               >
                 <SectionHeader title={i18n._(msg`home.trending`)} to="/discover" />
-                <div className="grid grid-cols-2 min-[768px]:grid-cols-3 min-[1080px]:grid-cols-4 min-[1320px]:grid-cols-5 min-[1750px]:grid-cols-6 min-[2000px]:grid-cols-8 gap-4">
+                <div className="grid grid-cols-2 min-[768px]:grid-cols-3 min-[1080px]:grid-cols-3 min-[1320px]:grid-cols-4 min-[1750px]:grid-cols-5 min-[2000px]:grid-cols-6 gap-4">
                   {trendingRest.map((anime, i) => (
                     <AnimeCard key={anime.bangumi_id} anime={anime} index={i} />
                   ))}

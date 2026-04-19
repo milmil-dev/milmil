@@ -1,11 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {
-  preferencesApi,
-  type GlobalPreferences,
-  type SubtitleStyle,
-} from '../lib/api/preferences';
-import type { DanmakuDensity, BufferMode } from '../lib/api/stream';
+import { type GlobalPreferences, preferencesApi, type SubtitleStyle } from '../lib/api/preferences';
+import type { BufferMode, DanmakuDensity } from '../lib/api/stream';
 
 // Default values
 export const DEFAULT_SUBTITLE_STYLE: SubtitleStyle = {
@@ -29,7 +25,7 @@ interface PreferencesState extends GlobalPreferences {
   updateSubtitleStyle: (style: Partial<SubtitleStyle>) => void;
   updatePreference: <K extends keyof GlobalPreferences>(
     key: K,
-    value: GlobalPreferences[K],
+    value: GlobalPreferences[K]
   ) => void;
   syncFromBackend: () => Promise<void>;
   resetToDefaults: () => void;
@@ -65,6 +61,8 @@ function extractPrefs(state: PreferencesState): GlobalPreferences {
     danmakuSpeed: state.danmakuSpeed,
     danmakuDensity: state.danmakuDensity,
     bufferMode: state.bufferMode,
+    defaultSubtitleLanguage: state.defaultSubtitleLanguage,
+    defaultAudioLanguage: state.defaultAudioLanguage,
   };
 }
 
@@ -86,6 +84,8 @@ export const usePreferencesStore = create<PreferencesState>()(
       danmakuSpeed: 144,
       danmakuDensity: 'medium' as DanmakuDensity,
       bufferMode: 'auto' as BufferMode,
+      defaultSubtitleLanguage: null,
+      defaultAudioLanguage: null,
 
       // Actions
       updateSubtitleStyle: (style) => {
@@ -144,6 +144,8 @@ export const usePreferencesStore = create<PreferencesState>()(
           danmakuSpeed: 144,
           danmakuDensity: 'medium' as DanmakuDensity,
           bufferMode: 'auto' as BufferMode,
+          defaultSubtitleLanguage: null,
+          defaultAudioLanguage: null,
         });
         debouncedSync(extractPrefs(get()));
       },
@@ -165,7 +167,9 @@ export const usePreferencesStore = create<PreferencesState>()(
         danmakuSpeed: state.danmakuSpeed,
         danmakuDensity: state.danmakuDensity,
         bufferMode: state.bufferMode,
+        defaultSubtitleLanguage: state.defaultSubtitleLanguage,
+        defaultAudioLanguage: state.defaultAudioLanguage,
       }),
-    },
-  ),
+    }
+  )
 );

@@ -1,5 +1,5 @@
+import type { BufferMode, DanmakuDensity } from '../api/stream';
 import { api } from '../api-client';
-import type { DanmakuDensity, BufferMode } from '../api/stream';
 
 // Types
 export interface SubtitleStyle {
@@ -39,6 +39,8 @@ export interface GlobalPreferences {
   danmakuSpeed: number;
   danmakuDensity: DanmakuDensity;
   bufferMode: BufferMode;
+  defaultSubtitleLanguage: string | null;
+  defaultAudioLanguage: string | null;
 }
 
 export interface SeriesPreferences {
@@ -60,20 +62,28 @@ export interface ExportResponse {
   exported_at: string;
 }
 
+interface PreferenceEnvelope<T> {
+  data: T;
+}
+
 export const preferencesApi = {
-  getGlobal: () => api.get<GlobalPreferences>('/api/v1/user/preferences'),
+  getGlobal: async () => {
+    const res = await api.get<PreferenceEnvelope<Partial<GlobalPreferences>>>(
+      '/api/v1/user/preferences'
+    );
+    return res.data;
+  },
   putGlobal: (data: Partial<GlobalPreferences>) =>
     api.put<void>('/api/v1/user/preferences', { data }),
-  getSeries: (seriesId: string) =>
-    api.get<SeriesPreferences>(
-      `/api/v1/user/preferences/series/${seriesId}`,
-    ),
+  getSeries: async (seriesId: string) => {
+    const res = await api.get<PreferenceEnvelope<Partial<SeriesPreferences>>>(
+      `/api/v1/user/preferences/series/${seriesId}`
+    );
+    return res.data;
+  },
   putSeries: (seriesId: string, data: Partial<SeriesPreferences>) =>
     api.put<void>(`/api/v1/user/preferences/series/${seriesId}`, { data }),
-  exportAll: () =>
-    api.post<ExportResponse>('/api/v1/user/preferences/export'),
-  importAll: (body: {
-    version: number;
-    preferences: ExportResponse['preferences'];
-  }) => api.post<void>('/api/v1/user/preferences/import', body),
+  exportAll: () => api.post<ExportResponse>('/api/v1/user/preferences/export'),
+  importAll: (body: { version: number; preferences: ExportResponse['preferences'] }) =>
+    api.post<void>('/api/v1/user/preferences/import', body),
 };
