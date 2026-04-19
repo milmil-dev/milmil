@@ -749,7 +749,7 @@ export function WatchPage() {
                 <Skeleton className="h-10 w-full mt-2 rounded" />
               </div>
               {/* Sidebar skeleton */}
-              <div className="hidden lg:block w-[400px] shrink-0">
+              <div className="hidden lg:block w-[480px] shrink-0">
                 <Skeleton className="h-10 w-full mb-2 rounded" />
                 <div className="space-y-2">
                   {Array.from({ length: 6 }, (_, i) => (
@@ -962,7 +962,7 @@ export function WatchPage() {
             </div>
 
             {/* RIGHT SIDEBAR — hidden in theater mode for YouTube-wide layout */}
-            <div className={cn('hidden w-[400px] shrink-0', !theaterMode && 'lg:block')}>
+            <div className={cn('hidden w-[480px] shrink-0', !theaterMode && 'lg:block')}>
               <div className="sticky top-4">
                 <EpisodeSidebar
                   episodes={mergedEpisodes}
