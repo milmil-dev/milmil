@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import type { VideoPlayerAPI } from '@/components/VideoPlayer';
 import { SkinButton, VideoPlayer } from '@/components/VideoPlayer';
+import { cn } from '@/lib/utils';
 import { AnimeInfoSection } from '@/components/watch/AnimeInfoSection';
 import { BangumiComments } from '@/components/watch/BangumiComments';
 import { DanmakuBar } from '@/components/watch/DanmakuBar';
@@ -456,6 +457,40 @@ export function WatchPage() {
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
   const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
 
+  // Theater mode — YouTube-style wide layout that hides the episode sidebar
+  // and caps the player to viewport height. Persisted across sessions.
+  const [theaterMode, setTheaterMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('mm_theater_mode') === '1';
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem('mm_theater_mode', theaterMode ? '1' : '0');
+    } catch {
+      // ignore: incognito / storage disabled
+    }
+  }, [theaterMode]);
+
+  // YouTube-style "T" shortcut to toggle theater mode.
+  // Ignored when user is typing into an input / textarea / contenteditable.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== 't' && e.key !== 'T') return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target) {
+        const tag = target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) return;
+      }
+      setTheaterMode((v) => !v);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // --------------- Progress saving ---------------
   const saveProgress = useCallback(() => {
     const player = playerRef.current;
@@ -805,8 +840,18 @@ export function WatchPage() {
           <div className="flex flex-col lg:flex-row gap-3">
             {/* LEFT COLUMN */}
             <div className="flex-1 min-w-0">
-              {/* Player container */}
-              <div className="relative aspect-video overflow-hidden border-0 rounded-lg bg-black">
+              {/* Player container (YouTube-style theater mode caps height to viewport) */}
+              <div
+                className={cn(
+                  'relative aspect-video overflow-hidden border-0 rounded-lg bg-black',
+                  theaterMode && 'lg:max-h-[calc(100vh-140px)] lg:w-auto lg:mx-auto',
+                )}
+                style={
+                  theaterMode
+                    ? { maxWidth: 'calc((100vh - 140px) * 16 / 9)' }
+                    : undefined
+                }
+              >
                 {streamUrl ? (
                   <>
                     <VideoPlayer
@@ -819,14 +864,35 @@ export function WatchPage() {
                       className="absolute inset-0 w-full h-full"
                       hlsConfig={hlsBufferConfig}
                       controlBarExtra={
-                        <SkinButton
-                          onClick={() => setSettingsPanelOpen((v) => !v)}
-                          aria-label="Settings"
-                        >
-                          <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
-                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
-                          </svg>
-                        </SkinButton>
+                        <>
+                          {/* Theater mode toggle — YouTube-style (T) */}
+                          <SkinButton
+                            onClick={() => setTheaterMode((v) => !v)}
+                            aria-label={theaterMode ? 'Default view' : 'Theater mode'}
+                            title={theaterMode ? 'Default view (T)' : 'Theater mode (T)'}
+                          >
+                            {theaterMode ? (
+                              /* Exit theater — inner rectangle */
+                              <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
+                                <path d="M19 6.5H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm0 9H5v-7h14v7z"/>
+                              </svg>
+                            ) : (
+                              /* Enter theater — wider rectangle */
+                              <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
+                                <path d="M19 7.5H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2zm0 7H5v-5h14v5z"/>
+                              </svg>
+                            )}
+                          </SkinButton>
+                          {/* Settings */}
+                          <SkinButton
+                            onClick={() => setSettingsPanelOpen((v) => !v)}
+                            aria-label="Settings"
+                          >
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
+                              <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                            </svg>
+                          </SkinButton>
+                        </>
                       }
                     />
 
@@ -892,8 +958,8 @@ export function WatchPage() {
 
             </div>
 
-            {/* RIGHT SIDEBAR */}
-            <div className="hidden lg:block w-[280px] shrink-0">
+            {/* RIGHT SIDEBAR — hidden in theater mode for YouTube-wide layout */}
+            <div className={cn('hidden w-[280px] shrink-0', !theaterMode && 'lg:block')}>
               <div className="sticky top-4">
                 <EpisodeSidebar
                   episodes={mergedEpisodes}
