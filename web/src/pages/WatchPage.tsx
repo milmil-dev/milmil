@@ -955,6 +955,10 @@ export function WatchPage() {
                 <RelatedAnimeList relations={animeDetail.relations} />
               </div>
 
+              {/* Anime info + comments live inside the left column so the
+                  right sidebar runs the full height of the page */}
+              <AnimeInfoSection anime={animeDetail} />
+              <BangumiComments comments={commentsData} isLoading={commentsLoading} />
             </div>
 
             {/* RIGHT SIDEBAR — hidden in theater mode for YouTube-wide layout */}
@@ -970,12 +974,6 @@ export function WatchPage() {
                 <RelatedAnimeList relations={animeDetail.relations} />
               </div>
             </div>
-          </div>
-
-          {/* Anime info + comments (left column width) */}
-          <div className="lg:pr-[292px]">
-              <AnimeInfoSection anime={animeDetail} />
-              <BangumiComments comments={commentsData} isLoading={commentsLoading} />
           </div>
         </div>
       </div>
