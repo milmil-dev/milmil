@@ -113,13 +113,19 @@ function VolumePopoverControl() {
 function CustomVideoSkin({
   children,
   controlBarExtra,
+  prePlayBackdrop,
 }: {
   children: ReactNode;
   controlBarExtra?: ReactNode;
+  prePlayBackdrop?: ReactNode;
 }) {
   return (
     <Container className="media-default-skin media-default-skin--video">
       {children}
+      {/* Optional backdrop shown before playback. Rendered between video
+          and Controls so it visually covers the video but sits below the
+          control UI (DOM order drives stacking in the default container). */}
+      {prePlayBackdrop}
       <BufferingIndicator
         render={(props) => (
           <div {...props} className="media-buffering-indicator">
@@ -367,20 +373,25 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig
 
   const isHLS = type === 'application/x-mpegURL' || src.endsWith('.m3u8');
 
+  // Compose the pre-play backdrop to pass into the skin. Rendered between the
+  // video element and the control bar, so the controls still layer on top.
+  const backdrop = !hasPlayed
+    ? posterBackdrop
+      ? <div className="absolute inset-0 pointer-events-none">{posterBackdrop}</div>
+      : poster
+        ? (
+            <div className="absolute inset-0 pointer-events-none">
+              <img src={poster} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+            </div>
+          )
+        : null
+    : null;
+
   return (
     <div ref={containerRef} className={className} data-videojs>
-      {/* Poster backdrop — visible before playback starts.
-          Prefer a custom backdrop node (e.g. poster-wall) over the single-image fallback. */}
-      {!hasPlayed && (posterBackdrop ? (
-        <div className="absolute inset-0 z-[1] pointer-events-none">{posterBackdrop}</div>
-      ) : poster ? (
-        <div className="absolute inset-0 z-[1] pointer-events-none">
-          <img src={poster} alt="" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-        </div>
-      ) : null)}
-      <CustomVideoSkin controlBarExtra={controlBarExtra}>
+      <CustomVideoSkin controlBarExtra={controlBarExtra} prePlayBackdrop={backdrop}>
         {isHLS ? <HlsVideo src={src} playsInline crossOrigin="anonymous" /> : <Video src={src} playsInline crossOrigin="anonymous" />}
       </CustomVideoSkin>
     </div>
