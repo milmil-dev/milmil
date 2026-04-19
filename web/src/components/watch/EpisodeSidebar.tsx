@@ -5,9 +5,10 @@ import type { PlayableEpisode } from '@/lib/api/anime';
 import type { DanmakuComment } from '@/lib/api/stream';
 import { cn } from '@/lib/utils';
 import { DanmakuList } from './DanmakuList';
+import { DanmakuSourceTab } from './DanmakuSourceTab';
 import { EpisodeGrid } from './EpisodeGrid';
 
-type Tab = 'episodes' | 'danmaku';
+type Tab = 'episodes' | 'danmaku' | 'sources';
 
 interface EpisodeSidebarProps {
   episodes: PlayableEpisode[];
@@ -15,6 +16,10 @@ interface EpisodeSidebarProps {
   onSelectEpisode: (sort: number) => void;
   danmakuComments: DanmakuComment[];
   onSeekDanmaku: (time: number) => void;
+  mediaFileId: string | null;
+  animeName: string;
+  episodeNumber: number | undefined;
+  onExternalDanmakuImported: () => void;
 }
 
 export function EpisodeSidebar({
@@ -23,6 +28,10 @@ export function EpisodeSidebar({
   onSelectEpisode,
   danmakuComments,
   onSeekDanmaku,
+  mediaFileId,
+  animeName,
+  episodeNumber,
+  onExternalDanmakuImported,
 }: EpisodeSidebarProps) {
   const { i18n } = useLingui();
   const [activeTab, setActiveTab] = useState<Tab>('episodes');
@@ -34,6 +43,7 @@ export function EpisodeSidebar({
       label: i18n._(msg`watch.danmaku`),
       badge: danmakuComments.length > 0 ? `(${danmakuComments.length})` : undefined,
     },
+    { id: 'sources', label: i18n._(msg`watch.danmaku.externalSources`) },
   ];
 
   return (
@@ -63,14 +73,23 @@ export function EpisodeSidebar({
 
       {/* Tab content */}
       <div className="p-3">
-        {activeTab === 'episodes' ? (
+        {activeTab === 'episodes' && (
           <EpisodeGrid
             episodes={episodes}
             currentSort={currentSort}
             onSelectEpisode={onSelectEpisode}
           />
-        ) : (
+        )}
+        {activeTab === 'danmaku' && (
           <DanmakuList comments={danmakuComments} onSeek={onSeekDanmaku} />
+        )}
+        {activeTab === 'sources' && (
+          <DanmakuSourceTab
+            mediaFileId={mediaFileId}
+            animeName={animeName}
+            episodeNumber={episodeNumber}
+            onImported={onExternalDanmakuImported}
+          />
         )}
       </div>
     </div>

@@ -35,6 +35,7 @@ import {
   mediaKeys,
   streamApi,
 } from '@/lib/api/stream';
+import { externalDanmakuApi, externalDanmakuKeys } from '@/lib/api/danmaku';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
 import { formatLanguage } from '@/lib/format';
 import type { CapturePluginAPI } from '@/plugins/capture/CapturePlugin';
@@ -333,6 +334,30 @@ export function WatchPage() {
       });
     }
   }, [danmakuRaw, danmakuFontSize, danmakuOpacity, danmakuDensity]);
+
+  // --------------- External imported danmaku ---------------
+  const { data: importedDanmaku, refetch: refetchImported } = useQuery({
+    queryKey: externalDanmakuKeys.imported(fileId ?? ''),
+    queryFn: () => externalDanmakuApi.getImported(fileId!),
+    enabled: !!fileId,
+  });
+
+  const mergedDanmakuComments = useMemo(() => {
+    if (!importedDanmaku?.length) return danmakuComments;
+    const imported: DanmakuComment[] = importedDanmaku.flatMap((source) =>
+      source.comments.map((c) => ({
+        text: c.text,
+        time: c.time,
+        mode: c.mode as 'rtl' | 'top' | 'bottom',
+        style: {
+          fontSize: `${danmakuFontSize}px`,
+          color: c.color,
+          opacity: danmakuOpacity,
+        },
+      }))
+    );
+    return [...danmakuComments, ...imported];
+  }, [danmakuComments, importedDanmaku, danmakuFontSize, danmakuOpacity]);
 
   // --------------- Adaptive buffering ---------------
   const bufferMode = usePreferencesStore((s) => s.bufferMode);
@@ -970,7 +995,7 @@ export function WatchPage() {
                       )}
                     </AnimatePresence>
 
-                    <DanmakuOverlay videoElement={videoEl} comments={danmakuComments} />
+                    <DanmakuOverlay videoElement={videoEl} comments={mergedDanmakuComments} />
                     <EpisodeTitleOverlay episode={currentEpisode} />
                     <ResumeOverlay seconds={resumeFrom} onDone={() => setResumeFrom(null)} />
                   </>
@@ -1004,7 +1029,7 @@ export function WatchPage() {
               </div>
 
               {/* Danmaku bar */}
-              <DanmakuBar fileId={fileId} danmakuCount={danmakuComments.length} />
+              <DanmakuBar fileId={fileId} danmakuCount={mergedDanmakuComments.length} />
 
               {/* Mobile only: sidebar content */}
               <div className="lg:hidden mt-4">
@@ -1012,8 +1037,12 @@ export function WatchPage() {
                   episodes={mergedEpisodes}
                   currentSort={currentEpisode?.sort}
                   onSelectEpisode={handleSelectEpisode}
-                  danmakuComments={danmakuComments}
+                  danmakuComments={mergedDanmakuComments}
                   onSeekDanmaku={handleSeekDanmaku}
+                  mediaFileId={fileId}
+                  animeName={animeDetail?.name_cn ?? animeDetail?.name ?? ''}
+                  episodeNumber={currentEpisode?.sort}
+                  onExternalDanmakuImported={() => refetchImported()}
                 />
                 <RelatedAnimeList relations={animeDetail.relations} />
               </div>
@@ -1031,8 +1060,12 @@ export function WatchPage() {
                   episodes={mergedEpisodes}
                   currentSort={currentEpisode?.sort}
                   onSelectEpisode={handleSelectEpisode}
-                  danmakuComments={danmakuComments}
+                  danmakuComments={mergedDanmakuComments}
                   onSeekDanmaku={handleSeekDanmaku}
+                  mediaFileId={fileId}
+                  animeName={animeDetail?.name_cn ?? animeDetail?.name ?? ''}
+                  episodeNumber={currentEpisode?.sort}
+                  onExternalDanmakuImported={() => refetchImported()}
                 />
                 <RelatedAnimeList relations={animeDetail.relations} />
               </div>
