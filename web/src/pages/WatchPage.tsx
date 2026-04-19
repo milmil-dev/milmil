@@ -738,7 +738,7 @@ export function WatchPage() {
     return (
       <PageTransition>
         <div className="min-h-screen">
-          <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
+          <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4 max-w-[1400px]">
             {/* Title bar skeleton */}
             <Skeleton className="h-6 w-1/3 mb-2" />
             <Skeleton className="h-4 w-1/5 mb-3" />
@@ -837,10 +837,9 @@ export function WatchPage() {
           {/* Title bar */}
           <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
 
-          <div className="flex flex-col lg:flex-row gap-3 lg:justify-center">
-            {/* LEFT COLUMN — capped so the player area stays readable on ultra-wide.
-                In theater mode the cap releases so the player can fill the row. */}
-            <div className={cn('flex-1 min-w-0', !theaterMode && 'lg:max-w-[960px]')}>
+          <div className="flex flex-col lg:flex-row gap-3">
+            {/* LEFT COLUMN */}
+            <div className="flex-1 min-w-0">
               {/* Player container — caps by viewport height only in theater mode
                   so the player is never taller than the viewport. In default mode
                   the column's max-width (see below) already does the capping. */}
