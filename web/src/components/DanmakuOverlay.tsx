@@ -26,12 +26,19 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
   const filterTop = usePreferencesStore((s) => s.danmakuFilterTop);
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
+  const blockKeywords = usePreferencesStore((s) => s.danmakuBlockKeywords);
 
-  // Filter comments by type
+  // Filter comments by type and block keywords
   const filteredComments = comments.filter((c) => {
     if (c.mode === 'rtl' && !filterScroll) return false;
     if (c.mode === 'top' && !filterTop) return false;
     if (c.mode === 'bottom' && !filterBottom) return false;
+    if (blockKeywords.length > 0) {
+      const text = c.text.toLowerCase();
+      for (const kw of blockKeywords) {
+        if (kw && text.includes(kw.toLowerCase())) return false;
+      }
+    }
     return true;
   });
 

@@ -30,7 +30,7 @@ const FONT_FAMILIES = [
   { value: 'monospace', label: '等寬' },
 ] as const;
 
-type View = 'main' | 'typeFilter' | 'area' | 'density' | 'font' | 'color' | 'speed' | 'stroke';
+type View = 'main' | 'typeFilter' | 'area' | 'density' | 'font' | 'color' | 'speed' | 'stroke' | 'block';
 
 const ic = 'w-[18px] h-[18px] text-white/50';
 
@@ -136,7 +136,9 @@ export function DanmakuSettingsControls() {
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
   const danmakuColor = usePreferencesStore((s) => s.danmakuColor);
+  const blockKeywords = usePreferencesStore((s) => s.danmakuBlockKeywords);
   const update = usePreferencesStore((s) => s.updatePreference);
+  const [newKeyword, setNewKeyword] = useState('');
 
   const densityLabels: Record<string, string> = {
     low: i18n._(msg`watch.danmaku.densityLow`),
@@ -235,6 +237,75 @@ export function DanmakuSettingsControls() {
           ))}
         </>);
 
+      case 'block':
+        return (<>
+          <PanelHeader title={i18n._(msg`watch.danmaku.blockKeywords`)} onBack={back} />
+          {/* Add keyword input */}
+          <div className="px-3 pt-2 pb-1 flex gap-1.5">
+            <input
+              type="text"
+              value={newKeyword}
+              onChange={(e) => setNewKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && newKeyword.trim()) {
+                  update('danmakuBlockKeywords', [...blockKeywords, newKeyword.trim()]);
+                  setNewKeyword('');
+                }
+              }}
+              placeholder={i18n._(msg`watch.danmaku.blockPlaceholder`)}
+              className="flex-1 bg-white/[0.06] border border-white/[0.08] rounded-md px-2 py-1.5 text-[12px] text-white placeholder:text-white/20 outline-none focus:border-white/15"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (newKeyword.trim()) {
+                  update('danmakuBlockKeywords', [...blockKeywords, newKeyword.trim()]);
+                  setNewKeyword('');
+                }
+              }}
+              disabled={!newKeyword.trim()}
+              className="shrink-0 text-[11px] text-white/50 hover:text-white/80 px-2 py-1.5 rounded-md bg-white/[0.06] hover:bg-white/[0.1] disabled:opacity-30 transition-colors"
+            >
+              +
+            </button>
+          </div>
+          {/* Keyword list */}
+          {blockKeywords.length === 0 ? (
+            <div className="px-3 py-4 text-center text-[11px] text-white/25">
+              {i18n._(msg`watch.danmaku.noBlockKeywords`)}
+            </div>
+          ) : (
+            <div className="px-3 py-2 flex flex-wrap gap-1.5">
+              {blockKeywords.map((kw, idx) => (
+                <span
+                  key={`${kw}-${idx}`}
+                  className="inline-flex items-center gap-1 bg-white/[0.06] text-[11px] text-white/60 rounded-md px-2 py-1"
+                >
+                  {kw}
+                  <button
+                    type="button"
+                    onClick={() => update('danmakuBlockKeywords', blockKeywords.filter((_, i) => i !== idx))}
+                    className="text-white/25 hover:text-white/60 transition-colors"
+                  >
+                    <svg viewBox="0 0 12 12" fill="currentColor" className="w-2.5 h-2.5">
+                      <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          {blockKeywords.length > 0 && (
+            <button
+              type="button"
+              onClick={() => update('danmakuBlockKeywords', [])}
+              className="w-full px-3 py-2 text-[11px] text-red-400/50 hover:text-red-400/80 text-center transition-colors"
+            >
+              {i18n._(msg`watch.danmaku.clearAllBlock`)}
+            </button>
+          )}
+        </>);
+
       default:
         return (<>
           {/* On/Off */}
@@ -254,6 +325,8 @@ export function DanmakuSettingsControls() {
           <Divider />
           <ToggleRow label={i18n._(msg`watch.danmaku.bold`)} checked={bold} onChange={() => update('danmakuBold', !bold)} />
           <ToggleRow label={i18n._(msg`watch.danmaku.antiSubtitle`)} checked={antiSubtitle} onChange={() => update('danmakuAntiSubtitle', !antiSubtitle)} />
+          <Divider />
+          <MenuRow label={i18n._(msg`watch.danmaku.blockKeywords`)} value={blockKeywords.length > 0 ? `${blockKeywords.length}` : undefined} onClick={() => go('block')} />
         </>);
     }
   };
