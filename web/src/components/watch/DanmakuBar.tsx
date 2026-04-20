@@ -50,25 +50,44 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
 
   return (
     <div className="flex items-center gap-2.5 px-3 py-2.5">
-      {/* Danmaku on/off — iconic button */}
+      {/* Danmaku on/off — animated icon button */}
       <button
         type="button"
         onClick={() => update('danmakuEnabled', !enabled)}
         title={enabled ? i18n._(msg`watch.danmaku.clickToDisable`) : i18n._(msg`watch.danmaku.clickToEnable`)}
         className={cn(
-          'shrink-0 flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full transition-all',
+          'shrink-0 flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full transition-all duration-300',
           enabled
             ? 'bg-white/[0.12] text-white hover:bg-white/[0.18]'
             : 'bg-white/[0.04] text-white/25 hover:bg-white/[0.08] hover:text-white/40'
         )}
       >
-        {/* Danmaku icon — three horizontal flying lines */}
-        <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
-          <rect x="1" y="4" width="12" height="2.5" rx="1.25" fill="currentColor" opacity={enabled ? 1 : 0.5} />
-          <rect x="5" y="9" width="14" height="2.5" rx="1.25" fill="currentColor" opacity={enabled ? 0.7 : 0.35} />
-          <rect x="2" y="14" width="10" height="2.5" rx="1.25" fill="currentColor" opacity={enabled ? 0.5 : 0.25} />
+        <svg viewBox="0 0 22 18" className="w-[18px] h-[15px] overflow-visible">
+          {/* Three flying danmaku lines */}
+          <motion.rect
+            x="1" y="1" height="2" rx="1" fill="currentColor"
+            animate={{ width: enabled ? 13 : 6, opacity: enabled ? 1 : 0.3, x: enabled ? 1 : 3 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+          />
+          <motion.rect
+            x="4" y="8" height="2" rx="1" fill="currentColor"
+            animate={{ width: enabled ? 16 : 8, opacity: enabled ? 0.75 : 0.2, x: enabled ? 4 : 5 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}
+          />
+          <motion.rect
+            x="2" y="15" height="2" rx="1" fill="currentColor"
+            animate={{ width: enabled ? 11 : 5, opacity: enabled ? 0.55 : 0.15, x: enabled ? 2 : 4 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}
+          />
+          {/* Strikethrough line when OFF */}
+          <motion.line
+            x1="0" y1="17" x2="22" y2="1"
+            stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+            animate={{ opacity: enabled ? 0 : 0.5, pathLength: enabled ? 0 : 1 }}
+            transition={{ duration: 0.25 }}
+          />
         </svg>
-        <span className="text-[11px] font-medium">
+        <span className="text-[11px] font-medium leading-none">
           {enabled ? i18n._(msg`watch.danmaku.on`) : i18n._(msg`watch.danmaku.off`)}
         </span>
       </button>
