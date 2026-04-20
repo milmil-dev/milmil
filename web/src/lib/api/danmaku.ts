@@ -46,10 +46,16 @@ export const externalDanmakuApi = {
       `/api/v1/danmaku/external/parts?source=${encodeURIComponent(source)}&videoId=${encodeURIComponent(videoId)}`
     ),
 
-  import: (source: string, videoId: string, mediaFileId: string, partIndex = 0, save = false) =>
+  import: (source: string, videoId: string, mediaFileId: string, partIndex = 0) =>
     api.post<{ source: string; count: number; saved: boolean; comments: ExternalComment[] }>(
       '/api/v1/danmaku/external/import',
-      { source, videoId, mediaFileId, partIndex, save }
+      { source, videoId, mediaFileId, partIndex }
+    ),
+
+  toggleSave: (mediaFileId: string, source: string, save: boolean) =>
+    api.patch<{ saved: boolean }>(
+      `/api/v1/danmaku/external/imported/${mediaFileId}/save`,
+      { source, save }
     ),
 
   getImported: (mediaFileId: string) =>

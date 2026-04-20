@@ -169,6 +169,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	danmakuExtGroup.GET("/parts", h.handleGetVideoParts)
 	danmakuExtGroup.POST("/import", h.handleImportExternalDanmaku)
 	danmakuExtGroup.GET("/imported/:mediaFileId", h.handleGetImportedDanmaku)
+	danmakuExtGroup.PATCH("/imported/:mediaFileId/save", h.handleToggleSaveDanmaku)
 	danmakuExtGroup.DELETE("/imported/:mediaFileId", h.handleRemoveImportedDanmaku)
 
 	// Danmaku — protected

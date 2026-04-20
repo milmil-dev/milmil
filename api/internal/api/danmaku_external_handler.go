@@ -83,7 +83,6 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 		VideoID     string `json:"videoId"`
 		MediaFileID string `json:"mediaFileId"`
 		PartIndex   int    `json:"partIndex"`
-		Save        bool   `json:"save"`
 	}
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -103,33 +102,76 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "fetch failed: "+err.Error())
 	}
 
+	// Always cache first (24h TTL)
 	data, _ := json.Marshal(comments)
+	cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", req.MediaFileID, req.Source)
+	_ = h.cache.Set(ctx, cacheKey, data, 24*time.Hour)
+
+	return c.JSON(http.StatusOK, map[string]any{
+		"source":   req.Source,
+		"count":    len(comments),
+		"saved":    false,
+		"comments": comments,
+	})
+}
+
+func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
+	mediaFileID := c.Param("mediaFileId")
+	var req struct {
+		Source string `json:"source"`
+		Save   bool   `json:"save"`
+	}
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+
+	ctx := c.Request().Context()
 
 	if req.Save {
-		// Persist to database
+		// Promote: read from cache, write to DB, delete cache
+		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, req.Source)
+		data, err := h.cache.Get(ctx, cacheKey)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "no cached danmaku to save")
+		}
+
+		var comments []danmaku.Comment
+		if err := json.Unmarshal(data, &comments); err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "corrupt cache data")
+		}
+
 		_, dbErr := h.queries.UpsertExternalDanmaku(ctx, store.UpsertExternalDanmakuParams{
-			MediaFileID:  req.MediaFileID,
+			MediaFileID:  mediaFileID,
 			Source:       req.Source,
-			VideoID:      req.VideoID,
-			PartIndex:    int64(req.PartIndex),
+			VideoID:      "",
+			PartIndex:    0,
 			CommentsJson: string(data),
 			CommentCount: int64(len(comments)),
 		})
 		if dbErr != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "save failed: "+dbErr.Error())
 		}
+		_ = h.cache.Del(ctx, cacheKey)
 	} else {
-		// Cache with 24h TTL
-		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", req.MediaFileID, req.Source)
-		_ = h.cache.Set(ctx, cacheKey, data, 24*time.Hour)
+		// Demote: read from DB, write to cache, delete from DB
+		rows, err := h.queries.GetExternalDanmakuByMediaFile(ctx, mediaFileID)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "read failed")
+		}
+		for _, row := range rows {
+			if row.Source == req.Source {
+				cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, req.Source)
+				_ = h.cache.Set(ctx, cacheKey, []byte(row.CommentsJson), 24*time.Hour)
+				_ = h.queries.DeleteExternalDanmaku(ctx, store.DeleteExternalDanmakuParams{
+					MediaFileID: mediaFileID,
+					Source:      req.Source,
+				})
+				break
+			}
+		}
 	}
 
-	return c.JSON(http.StatusOK, map[string]any{
-		"source":   req.Source,
-		"count":    len(comments),
-		"saved":    req.Save,
-		"comments": comments,
-	})
+	return c.JSON(http.StatusOK, map[string]any{"saved": req.Save})
 }
 
 func (h *handler) handleGetImportedDanmaku(c echo.Context) error {

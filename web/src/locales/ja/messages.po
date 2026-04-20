@@ -4736,10 +4736,18 @@ msgid "watch.danmaku"
 msgstr "弾幕"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
-msgid "watch.danmaku.cached"
-msgstr "24h"
+#~ msgid "watch.danmaku.cached"
+#~ msgstr "24h"
 
-#: src/components/watch/DanmakuSourceTab.tsx:274
+#: src/components/watch/DanmakuSourceTab.tsx:378
+msgid "watch.danmaku.clickToPin"
+msgstr "ピン留めして永久保存"
+
+#: src/components/watch/DanmakuSourceTab.tsx:378
+msgid "watch.danmaku.clickToUnpin"
+msgstr "ピンを外す（24hキャッシュに戻す）"
+
+#: src/components/watch/DanmakuSourceTab.tsx:275
 msgid "watch.danmaku.closeParts"
 msgstr "閉じる"
 
@@ -4761,15 +4769,15 @@ msgstr "速い"
 msgid "watch.danmaku.fontSize"
 msgstr "フォントサイズ"
 
-#: src/components/watch/DanmakuSourceTab.tsx:275
+#: src/components/watch/DanmakuSourceTab.tsx:276
 msgid "watch.danmaku.import"
 msgstr "インポート"
 
-#: src/components/watch/DanmakuSourceTab.tsx:360
+#: src/components/watch/DanmakuSourceTab.tsx:361
 msgid "watch.danmaku.imported"
 msgstr "インポート済み"
 
-#: src/components/watch/DanmakuSourceTab.tsx:98
+#: src/components/watch/DanmakuSourceTab.tsx:97
 msgid "watch.danmaku.importError"
 msgstr "インポートに失敗しました"
 
@@ -4781,7 +4789,7 @@ msgstr "インポートに失敗しました"
 msgid "watch.danmaku.noData"
 msgstr "弾幕データがありません"
 
-#: src/components/watch/DanmakuSourceTab.tsx:219
+#: src/components/watch/DanmakuSourceTab.tsx:220
 msgid "watch.danmaku.noResults"
 msgstr "結果が見つかりません"
 
@@ -4800,30 +4808,34 @@ msgid "watch.danmaku.placeholder"
 msgstr "弾幕を送信…"
 
 #: src/components/watch/DanmakuSourceTab.tsx:393
-msgid "watch.danmaku.remove"
-msgstr "削除"
+#~ msgid "watch.danmaku.remove"
+#~ msgstr "削除"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
-msgid "watch.danmaku.saved"
-msgstr "保存済み"
+#~ msgid "watch.danmaku.saved"
+#~ msgstr "保存済み"
+
+#: src/components/watch/DanmakuSourceTab.tsx:110
+msgid "watch.danmaku.savedSuccess"
+msgstr "弾幕を永久保存しました"
 
 #: src/components/watch/DanmakuSourceTab.tsx:198
-msgid "watch.danmaku.saveLocal"
-msgstr "ローカルに永久保存"
+#~ msgid "watch.danmaku.saveLocal"
+#~ msgstr "ローカルに永久保存"
 
-#: src/components/watch/DanmakuSourceTab.tsx:185
+#: src/components/watch/DanmakuSourceTab.tsx:199
 msgid "watch.danmaku.search"
 msgstr "検索"
 
-#: src/components/watch/DanmakuSourceTab.tsx:213
+#: src/components/watch/DanmakuSourceTab.tsx:214
 msgid "watch.danmaku.searchError"
 msgstr "検索に失敗しました"
 
-#: src/components/watch/DanmakuSourceTab.tsx:176
+#: src/components/watch/DanmakuSourceTab.tsx:190
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "アニメ名 + 話数を検索..."
 
-#: src/components/watch/DanmakuSourceTab.tsx:294
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.selectPart"
 msgstr "パートを選択"
 
@@ -4840,7 +4852,7 @@ msgstr "弾"
 msgid "watch.danmaku.slow"
 msgstr "遅い"
 
-#: src/components/watch/DanmakuSourceTab.tsx:155
+#: src/components/watch/DanmakuSourceTab.tsx:169
 msgid "watch.danmaku.source"
 msgstr "ソース"
 
@@ -4848,6 +4860,10 @@ msgstr "ソース"
 #: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.speed"
 msgstr "速度"
+
+#: src/components/watch/DanmakuSourceTab.tsx:111
+msgid "watch.danmaku.unsavedSuccess"
+msgstr "ピンを外しました（24h後に期限切れ）"
 
 #: src/components/watch/TechInfoPopover.tsx:99
 msgid "watch.directStream"

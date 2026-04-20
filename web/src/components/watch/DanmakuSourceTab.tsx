@@ -56,7 +56,6 @@ export function DanmakuSourceTab({
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const [loadingPartsFor, setLoadingPartsFor] = useState<string | null>(null);
   const [videoParts, setVideoParts] = useState<VideoPart[]>([]);
-  const [saveToLocal, setSaveToLocal] = useState(false);
 
   useEffect(() => {
     setKeyword(buildKeyword());
@@ -84,7 +83,7 @@ export function DanmakuSourceTab({
 
   const importMutation = useMutation({
     mutationFn: ({ videoId, partIndex }: { videoId: string; partIndex: number }) =>
-      externalDanmakuApi.import(selectedSource, videoId, mediaFileId!, partIndex, saveToLocal),
+      externalDanmakuApi.import(selectedSource, videoId, mediaFileId!, partIndex),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
@@ -96,6 +95,21 @@ export function DanmakuSourceTab({
     },
     onError: () => {
       toast.error(i18n._(msg`watch.danmaku.importError`));
+    },
+  });
+
+  const toggleSaveMutation = useMutation({
+    mutationFn: ({ source, save }: { source: string; save: boolean }) =>
+      externalDanmakuApi.toggleSave(mediaFileId!, source, save),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
+      });
+      toast.success(
+        variables.save
+          ? i18n._(msg`watch.danmaku.savedSuccess`)
+          : i18n._(msg`watch.danmaku.unsavedSuccess`)
+      );
     },
   });
 
@@ -185,19 +199,6 @@ export function DanmakuSourceTab({
           {searching ? <Spinner size={12} /> : i18n._(msg`watch.danmaku.search`)}
         </button>
       </div>
-
-      {/* Save toggle */}
-      <label className="flex items-center gap-2 cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={saveToLocal}
-          onChange={(e) => setSaveToLocal(e.target.checked)}
-          className="w-3.5 h-3.5 rounded border-white/20 bg-white/[0.04] accent-blue-500"
-        />
-        <span className="text-[11px] text-white/40">
-          {i18n._(msg`watch.danmaku.saveLocal`)}
-        </span>
-      </label>
 
       {/* Results */}
       {searchTriggered && (
@@ -362,35 +363,54 @@ export function DanmakuSourceTab({
             {imported.map((item) => (
               <div
                 key={item.source}
-                className="flex items-center justify-between py-2 group"
+                className="flex items-center gap-2 py-2 group"
               >
-                <div className="flex items-center gap-2">
-                  <span className={cn(
-                    'w-1.5 h-1.5 rounded-full',
-                    item.saved ? 'bg-blue-400/60' : 'bg-green-500/50'
-                  )} />
-                  <span className="text-xs text-white/50">
-                    {item.source}
-                  </span>
-                  <span className="text-[11px] text-white/25">
-                    {formatCount(item.count)} 弹幕
-                  </span>
-                  <span className={cn(
-                    'text-[10px] px-1 py-0.5 rounded',
-                    item.saved
-                      ? 'bg-blue-500/10 text-blue-400/50'
-                      : 'bg-white/[0.04] text-white/20'
-                  )}>
-                    {item.saved ? i18n._(msg`watch.danmaku.saved`) : i18n._(msg`watch.danmaku.cached`)}
-                  </span>
-                </div>
+                {/* Pin/save toggle */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    toggleSaveMutation.mutate({
+                      source: item.source,
+                      save: !item.saved,
+                    })
+                  }
+                  disabled={toggleSaveMutation.isPending}
+                  title={item.saved ? i18n._(msg`watch.danmaku.clickToUnpin`) : i18n._(msg`watch.danmaku.clickToPin`)}
+                  className="shrink-0 transition-all"
+                >
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill={item.saved ? 'currentColor' : 'none'}
+                    stroke="currentColor"
+                    strokeWidth={1.2}
+                    className={cn(
+                      'w-3.5 h-3.5 transition-colors',
+                      item.saved
+                        ? 'text-blue-400/80'
+                        : 'text-white/20 hover:text-white/40'
+                    )}
+                  >
+                    <path d="M3.5 2.5h9v4l-2 1.5v3L8 13l-2.5-2V7.5l-2-1.5z" />
+                  </svg>
+                </button>
+
+                <span className="text-xs text-white/50 flex-1 min-w-0 truncate">
+                  {item.source}
+                </span>
+                <span className="text-[11px] text-white/25 tabular-nums shrink-0">
+                  {formatCount(item.count)}
+                </span>
+
+                {/* Remove */}
                 <button
                   type="button"
                   onClick={() => removeMutation.mutate(item.source)}
                   disabled={removeMutation.isPending}
-                  className="text-[11px] text-white/20 hover:text-red-400/70 py-1 px-1.5 rounded opacity-0 group-hover:opacity-100 transition-all"
+                  className="shrink-0 text-white/0 group-hover:text-white/20 hover:!text-red-400/70 transition-colors p-0.5"
                 >
-                  {i18n._(msg`watch.danmaku.remove`)}
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3 h-3">
+                    <path d="M4 4l8 8M12 4l-8 8" />
+                  </svg>
                 </button>
               </div>
             ))}

@@ -4736,10 +4736,18 @@ msgid "watch.danmaku"
 msgstr "탄막"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
-msgid "watch.danmaku.cached"
-msgstr "24h"
+#~ msgid "watch.danmaku.cached"
+#~ msgstr "24h"
 
-#: src/components/watch/DanmakuSourceTab.tsx:274
+#: src/components/watch/DanmakuSourceTab.tsx:378
+msgid "watch.danmaku.clickToPin"
+msgstr "고정하여 영구 저장"
+
+#: src/components/watch/DanmakuSourceTab.tsx:378
+msgid "watch.danmaku.clickToUnpin"
+msgstr "고정 해제 (24시간 캐시로 전환)"
+
+#: src/components/watch/DanmakuSourceTab.tsx:275
 msgid "watch.danmaku.closeParts"
 msgstr "닫기"
 
@@ -4761,15 +4769,15 @@ msgstr "빠름"
 msgid "watch.danmaku.fontSize"
 msgstr "글꼴 크기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:275
+#: src/components/watch/DanmakuSourceTab.tsx:276
 msgid "watch.danmaku.import"
 msgstr "가져오기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:360
+#: src/components/watch/DanmakuSourceTab.tsx:361
 msgid "watch.danmaku.imported"
 msgstr "가져옴"
 
-#: src/components/watch/DanmakuSourceTab.tsx:98
+#: src/components/watch/DanmakuSourceTab.tsx:97
 msgid "watch.danmaku.importError"
 msgstr "가져오기 실패"
 
@@ -4781,7 +4789,7 @@ msgstr "가져오기 실패"
 msgid "watch.danmaku.noData"
 msgstr "탄막 데이터가 없습니다"
 
-#: src/components/watch/DanmakuSourceTab.tsx:219
+#: src/components/watch/DanmakuSourceTab.tsx:220
 msgid "watch.danmaku.noResults"
 msgstr "결과 없음"
 
@@ -4800,30 +4808,34 @@ msgid "watch.danmaku.placeholder"
 msgstr "탄막 보내기…"
 
 #: src/components/watch/DanmakuSourceTab.tsx:393
-msgid "watch.danmaku.remove"
-msgstr "제거"
+#~ msgid "watch.danmaku.remove"
+#~ msgstr "제거"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
-msgid "watch.danmaku.saved"
-msgstr "저장됨"
+#~ msgid "watch.danmaku.saved"
+#~ msgstr "저장됨"
+
+#: src/components/watch/DanmakuSourceTab.tsx:110
+msgid "watch.danmaku.savedSuccess"
+msgstr "탄막이 영구 저장되었습니다"
 
 #: src/components/watch/DanmakuSourceTab.tsx:198
-msgid "watch.danmaku.saveLocal"
-msgstr "로컬에 영구 저장"
+#~ msgid "watch.danmaku.saveLocal"
+#~ msgstr "로컬에 영구 저장"
 
-#: src/components/watch/DanmakuSourceTab.tsx:185
+#: src/components/watch/DanmakuSourceTab.tsx:199
 msgid "watch.danmaku.search"
 msgstr "검색"
 
-#: src/components/watch/DanmakuSourceTab.tsx:213
+#: src/components/watch/DanmakuSourceTab.tsx:214
 msgid "watch.danmaku.searchError"
 msgstr "검색 실패"
 
-#: src/components/watch/DanmakuSourceTab.tsx:176
+#: src/components/watch/DanmakuSourceTab.tsx:190
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "애니메이션 이름 + 화 검색..."
 
-#: src/components/watch/DanmakuSourceTab.tsx:294
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.selectPart"
 msgstr "파트 선택"
 
@@ -4840,7 +4852,7 @@ msgstr "탄"
 msgid "watch.danmaku.slow"
 msgstr "느림"
 
-#: src/components/watch/DanmakuSourceTab.tsx:155
+#: src/components/watch/DanmakuSourceTab.tsx:169
 msgid "watch.danmaku.source"
 msgstr "소스"
 
@@ -4848,6 +4860,10 @@ msgstr "소스"
 #: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.speed"
 msgstr "속도"
+
+#: src/components/watch/DanmakuSourceTab.tsx:111
+msgid "watch.danmaku.unsavedSuccess"
+msgstr "고정 해제됨 (24시간 후 만료)"
 
 #: src/components/watch/TechInfoPopover.tsx:99
 msgid "watch.directStream"

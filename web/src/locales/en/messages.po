@@ -4747,10 +4747,18 @@ msgid "watch.danmaku"
 msgstr "Danmaku"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
-msgid "watch.danmaku.cached"
-msgstr "24h"
+#~ msgid "watch.danmaku.cached"
+#~ msgstr "24h"
 
-#: src/components/watch/DanmakuSourceTab.tsx:274
+#: src/components/watch/DanmakuSourceTab.tsx:378
+msgid "watch.danmaku.clickToPin"
+msgstr "Pin to save permanently"
+
+#: src/components/watch/DanmakuSourceTab.tsx:378
+msgid "watch.danmaku.clickToUnpin"
+msgstr "Unpin (revert to 24h cache)"
+
+#: src/components/watch/DanmakuSourceTab.tsx:275
 msgid "watch.danmaku.closeParts"
 msgstr "Close"
 
@@ -4772,15 +4780,15 @@ msgstr "Fast"
 msgid "watch.danmaku.fontSize"
 msgstr "Font Size"
 
-#: src/components/watch/DanmakuSourceTab.tsx:275
+#: src/components/watch/DanmakuSourceTab.tsx:276
 msgid "watch.danmaku.import"
 msgstr "Import"
 
-#: src/components/watch/DanmakuSourceTab.tsx:360
+#: src/components/watch/DanmakuSourceTab.tsx:361
 msgid "watch.danmaku.imported"
 msgstr "Imported"
 
-#: src/components/watch/DanmakuSourceTab.tsx:98
+#: src/components/watch/DanmakuSourceTab.tsx:97
 msgid "watch.danmaku.importError"
 msgstr "Import failed, please try again"
 
@@ -4792,7 +4800,7 @@ msgstr "Import failed, please try again"
 msgid "watch.danmaku.noData"
 msgstr "No danmaku data"
 
-#: src/components/watch/DanmakuSourceTab.tsx:219
+#: src/components/watch/DanmakuSourceTab.tsx:220
 msgid "watch.danmaku.noResults"
 msgstr "No results found"
 
@@ -4811,30 +4819,34 @@ msgid "watch.danmaku.placeholder"
 msgstr "Send danmaku..."
 
 #: src/components/watch/DanmakuSourceTab.tsx:393
-msgid "watch.danmaku.remove"
-msgstr "Remove"
+#~ msgid "watch.danmaku.remove"
+#~ msgstr "Remove"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
-msgid "watch.danmaku.saved"
-msgstr "Saved"
+#~ msgid "watch.danmaku.saved"
+#~ msgstr "Saved"
+
+#: src/components/watch/DanmakuSourceTab.tsx:110
+msgid "watch.danmaku.savedSuccess"
+msgstr "Danmaku saved permanently"
 
 #: src/components/watch/DanmakuSourceTab.tsx:198
-msgid "watch.danmaku.saveLocal"
-msgstr "Save permanently"
+#~ msgid "watch.danmaku.saveLocal"
+#~ msgstr "Save permanently"
 
-#: src/components/watch/DanmakuSourceTab.tsx:185
+#: src/components/watch/DanmakuSourceTab.tsx:199
 msgid "watch.danmaku.search"
 msgstr "Search"
 
-#: src/components/watch/DanmakuSourceTab.tsx:213
+#: src/components/watch/DanmakuSourceTab.tsx:214
 msgid "watch.danmaku.searchError"
 msgstr "Search failed, please try again"
 
-#: src/components/watch/DanmakuSourceTab.tsx:176
+#: src/components/watch/DanmakuSourceTab.tsx:190
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "Search anime name + episode..."
 
-#: src/components/watch/DanmakuSourceTab.tsx:294
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.selectPart"
 msgstr "Select part"
 
@@ -4851,7 +4863,7 @@ msgstr "D"
 msgid "watch.danmaku.slow"
 msgstr "Slow"
 
-#: src/components/watch/DanmakuSourceTab.tsx:155
+#: src/components/watch/DanmakuSourceTab.tsx:169
 msgid "watch.danmaku.source"
 msgstr "Source"
 
@@ -4859,6 +4871,10 @@ msgstr "Source"
 #: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.speed"
 msgstr "Speed"
+
+#: src/components/watch/DanmakuSourceTab.tsx:111
+msgid "watch.danmaku.unsavedSuccess"
+msgstr "Danmaku unpinned (expires in 24h)"
 
 #: src/components/watch/TechInfoPopover.tsx:99
 msgid "watch.directStream"
