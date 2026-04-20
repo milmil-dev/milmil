@@ -30,7 +30,7 @@ const FONT_FAMILIES = [
   { value: 'monospace', label: '等寬' },
 ] as const;
 
-type View = 'main' | 'typeFilter' | 'area' | 'density' | 'font' | 'color' | 'speed' | 'stroke';
+type View = 'main' | 'typeFilter' | 'area' | 'density' | 'font' | 'color' | 'speed' | 'stroke' | 'chinese';
 
 const ic = 'w-[18px] h-[18px] text-white/50';
 
@@ -136,6 +136,7 @@ export function DanmakuSettingsControls() {
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
   const danmakuColor = usePreferencesStore((s) => s.danmakuColor);
+  const chineseConvert = usePreferencesStore((s) => s.danmakuChineseConvert);
   const update = usePreferencesStore((s) => s.updatePreference);
 
   const densityLabels: Record<string, string> = {
@@ -152,6 +153,11 @@ export function DanmakuSettingsControls() {
     none: i18n._(msg`watch.danmaku.strokeNone`),
     shadow: i18n._(msg`watch.danmaku.strokeShadow`),
     stroke: i18n._(msg`watch.danmaku.strokeOutline`),
+  };
+  const chineseLabels: Record<string, string> = {
+    none: i18n._(msg`watch.danmaku.convertNone`),
+    s2t: i18n._(msg`watch.danmaku.convertS2T`),
+    t2s: i18n._(msg`watch.danmaku.convertT2S`),
   };
   const areaLabel = AREA_OPTIONS.find((o) => o.value === area)?.label ?? '全';
   const fontLabel = FONT_FAMILIES.find((f) => f.value === fontFamily)?.label ?? '黑體';
@@ -235,6 +241,14 @@ export function DanmakuSettingsControls() {
           ))}
         </>);
 
+      case 'chinese':
+        return (<>
+          <PanelHeader title={i18n._(msg`watch.danmaku.chineseConvert`)} onBack={back} />
+          {(['none', 's2t', 't2s'] as const).map((v) => (
+            <OptionRow key={v} label={chineseLabels[v]!} selected={chineseConvert === v} onClick={() => { update('danmakuChineseConvert', v); back(); }} />
+          ))}
+        </>);
+
       default:
         return (<>
           <MenuRow label={i18n._(msg`watch.danmaku.typeFilter`)} value={activeFilters.join('·') || '—'} onClick={() => go('typeFilter')} />
@@ -248,6 +262,7 @@ export function DanmakuSettingsControls() {
           <MenuRow label={i18n._(msg`watch.danmaku.fontFamily`)} value={fontLabel} onClick={() => go('font')} />
           <MenuRow label={i18n._(msg`watch.danmaku.speed`)} value={speedLabels[speed] ?? i18n._(msg`watch.danmaku.normal`)} onClick={() => go('speed')} />
           <MenuRow label={i18n._(msg`watch.danmaku.strokeType`)} value={strokeLabels[stroke]} onClick={() => go('stroke')} />
+          <MenuRow label={i18n._(msg`watch.danmaku.chineseConvert`)} value={chineseLabels[chineseConvert]} onClick={() => go('chinese')} />
           <Divider />
           <ToggleRow label={i18n._(msg`watch.danmaku.bold`)} checked={bold} onChange={() => update('danmakuBold', !bold)} />
           <ToggleRow label={i18n._(msg`watch.danmaku.antiSubtitle`)} checked={antiSubtitle} onChange={() => update('danmakuAntiSubtitle', !antiSubtitle)} />

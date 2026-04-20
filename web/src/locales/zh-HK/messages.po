@@ -3877,9 +3877,9 @@ msgstr "語言"
 #~ msgid "settings.appearance.title"
 #~ msgstr "外觀設定"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:296
-#: src/components/watch/UnifiedSettingsPanel.tsx:506
-#: src/components/watch/UnifiedSettingsPanel.tsx:551
+#: src/components/watch/UnifiedSettingsPanel.tsx:303
+#: src/components/watch/UnifiedSettingsPanel.tsx:513
+#: src/components/watch/UnifiedSettingsPanel.tsx:558
 msgid "settings.audioTrack"
 msgstr "音軌"
 
@@ -3891,25 +3891,25 @@ msgstr "自動加入收藏"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配嘅動畫自動加入收藏"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:286
-#: src/components/watch/UnifiedSettingsPanel.tsx:341
-#: src/components/watch/UnifiedSettingsPanel.tsx:390
+#: src/components/watch/UnifiedSettingsPanel.tsx:293
+#: src/components/watch/UnifiedSettingsPanel.tsx:348
+#: src/components/watch/UnifiedSettingsPanel.tsx:397
 msgid "settings.background"
 msgstr "背景"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:342
+#: src/components/watch/UnifiedSettingsPanel.tsx:349
 msgid "settings.border"
 msgstr "邊框"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:287
-#: src/components/watch/UnifiedSettingsPanel.tsx:399
+#: src/components/watch/UnifiedSettingsPanel.tsx:294
+#: src/components/watch/UnifiedSettingsPanel.tsx:406
 msgid "settings.borderStyle"
 msgstr "邊框樣式"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:291
-#: src/components/watch/UnifiedSettingsPanel.tsx:475
-#: src/components/watch/UnifiedSettingsPanel.tsx:476
-#: src/components/watch/UnifiedSettingsPanel.tsx:539
+#: src/components/watch/UnifiedSettingsPanel.tsx:298
+#: src/components/watch/UnifiedSettingsPanel.tsx:482
+#: src/components/watch/UnifiedSettingsPanel.tsx:483
+#: src/components/watch/UnifiedSettingsPanel.tsx:546
 msgid "settings.brightness"
 msgstr "亮度"
 
@@ -3917,10 +3917,10 @@ msgstr "亮度"
 msgid "settings.collection"
 msgstr "收藏"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:292
-#: src/components/watch/UnifiedSettingsPanel.tsx:481
-#: src/components/watch/UnifiedSettingsPanel.tsx:482
-#: src/components/watch/UnifiedSettingsPanel.tsx:541
+#: src/components/watch/UnifiedSettingsPanel.tsx:299
+#: src/components/watch/UnifiedSettingsPanel.tsx:488
+#: src/components/watch/UnifiedSettingsPanel.tsx:489
+#: src/components/watch/UnifiedSettingsPanel.tsx:548
 msgid "settings.contrast"
 msgstr "對比度"
 
@@ -3928,7 +3928,7 @@ msgstr "對比度"
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay 設定"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
+#: src/components/watch/UnifiedSettingsPanel.tsx:345
 msgid "settings.default"
 msgstr "預設"
 
@@ -4005,15 +4005,15 @@ msgstr "下載偏好設定"
 #~ msgid "settings.download.test"
 #~ msgstr "測試"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:283
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
-#: src/components/watch/UnifiedSettingsPanel.tsx:366
+#: src/components/watch/UnifiedSettingsPanel.tsx:290
+#: src/components/watch/UnifiedSettingsPanel.tsx:345
+#: src/components/watch/UnifiedSettingsPanel.tsx:373
 msgid "settings.font"
 msgstr "字體"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:284
-#: src/components/watch/UnifiedSettingsPanel.tsx:339
-#: src/components/watch/UnifiedSettingsPanel.tsx:374
+#: src/components/watch/UnifiedSettingsPanel.tsx:291
+#: src/components/watch/UnifiedSettingsPanel.tsx:346
+#: src/components/watch/UnifiedSettingsPanel.tsx:381
 msgid "settings.fontSize"
 msgstr "字體大小"
 
@@ -4196,19 +4196,19 @@ msgstr "播放器"
 msgid "settings.nav.storage"
 msgstr "存儲空間"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:294
-#: src/components/watch/UnifiedSettingsPanel.tsx:493
-#: src/components/watch/UnifiedSettingsPanel.tsx:545
+#: src/components/watch/UnifiedSettingsPanel.tsx:301
+#: src/components/watch/UnifiedSettingsPanel.tsx:500
+#: src/components/watch/UnifiedSettingsPanel.tsx:552
 msgid "settings.nightMode"
 msgstr "夜間模式"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:466
-#: src/components/watch/UnifiedSettingsPanel.tsx:533
+#: src/components/watch/UnifiedSettingsPanel.tsx:473
+#: src/components/watch/UnifiedSettingsPanel.tsx:540
 msgid "settings.normal"
 msgstr "正常"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:260
-#: src/components/watch/UnifiedSettingsPanel.tsx:306
+#: src/components/watch/UnifiedSettingsPanel.tsx:267
+#: src/components/watch/UnifiedSettingsPanel.tsx:313
 msgid "settings.off"
 msgstr "閂"
 
@@ -4216,9 +4216,9 @@ msgstr "閂"
 msgid "settings.pageTitle"
 msgstr "設定"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:290
-#: src/components/watch/UnifiedSettingsPanel.tsx:427
-#: src/components/watch/UnifiedSettingsPanel.tsx:532
+#: src/components/watch/UnifiedSettingsPanel.tsx:297
+#: src/components/watch/UnifiedSettingsPanel.tsx:434
+#: src/components/watch/UnifiedSettingsPanel.tsx:539
 msgid "settings.playbackSpeed"
 msgstr "播放速度"
 
@@ -4386,26 +4386,26 @@ msgstr "字幕樣式"
 #~ msgid "settings.player.title"
 #~ msgstr "播放器設定"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:288
-#: src/components/watch/UnifiedSettingsPanel.tsx:343
-#: src/components/watch/UnifiedSettingsPanel.tsx:407
+#: src/components/watch/UnifiedSettingsPanel.tsx:295
+#: src/components/watch/UnifiedSettingsPanel.tsx:350
+#: src/components/watch/UnifiedSettingsPanel.tsx:414
 msgid "settings.position"
 msgstr "位置"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:282
-#: src/components/watch/UnifiedSettingsPanel.tsx:337
-#: src/components/watch/UnifiedSettingsPanel.tsx:358
+#: src/components/watch/UnifiedSettingsPanel.tsx:289
+#: src/components/watch/UnifiedSettingsPanel.tsx:344
+#: src/components/watch/UnifiedSettingsPanel.tsx:365
 msgid "settings.preset"
 msgstr "預設"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:346
+#: src/components/watch/UnifiedSettingsPanel.tsx:353
 msgid "settings.respectAssStyles"
 msgstr "保留 ASS 樣式"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:293
-#: src/components/watch/UnifiedSettingsPanel.tsx:487
-#: src/components/watch/UnifiedSettingsPanel.tsx:488
-#: src/components/watch/UnifiedSettingsPanel.tsx:543
+#: src/components/watch/UnifiedSettingsPanel.tsx:300
+#: src/components/watch/UnifiedSettingsPanel.tsx:494
+#: src/components/watch/UnifiedSettingsPanel.tsx:495
+#: src/components/watch/UnifiedSettingsPanel.tsx:550
 msgid "settings.saturation"
 msgstr "飽和度"
 
@@ -4490,6 +4490,18 @@ msgstr "管理轉碼文件同緩存"
 msgid "settings.storage.transcodeDesc"
 msgstr "轉碼影片文件儲存喺臨時目錄"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:176
+msgid "settings.sub.badge.cc"
+msgstr "字幕"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:177
+msgid "settings.sub.badge.forced"
+msgstr "強制"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:178
+msgid "settings.sub.badge.sdh"
+msgstr "聽障"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:92
 msgid "settings.sub.color.cyan"
 msgstr "青色"
@@ -4562,33 +4574,33 @@ msgstr "描邊"
 msgid "settings.sub.shadow.raised"
 msgstr "浮雕"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:280
-#: src/components/watch/UnifiedSettingsPanel.tsx:305
-#: src/components/watch/UnifiedSettingsPanel.tsx:523
+#: src/components/watch/UnifiedSettingsPanel.tsx:287
+#: src/components/watch/UnifiedSettingsPanel.tsx:312
+#: src/components/watch/UnifiedSettingsPanel.tsx:530
 msgid "settings.subtitles"
 msgstr "字幕"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:281
-#: src/components/watch/UnifiedSettingsPanel.tsx:336
-#: src/components/watch/UnifiedSettingsPanel.tsx:524
+#: src/components/watch/UnifiedSettingsPanel.tsx:288
+#: src/components/watch/UnifiedSettingsPanel.tsx:343
+#: src/components/watch/UnifiedSettingsPanel.tsx:531
 msgid "settings.subtitleStyle"
 msgstr "字幕樣式"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:289
-#: src/components/watch/UnifiedSettingsPanel.tsx:416
-#: src/components/watch/UnifiedSettingsPanel.tsx:525
+#: src/components/watch/UnifiedSettingsPanel.tsx:296
+#: src/components/watch/UnifiedSettingsPanel.tsx:423
+#: src/components/watch/UnifiedSettingsPanel.tsx:532
 msgid "settings.subtitleTiming"
 msgstr "字幕時間"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:285
-#: src/components/watch/UnifiedSettingsPanel.tsx:340
-#: src/components/watch/UnifiedSettingsPanel.tsx:382
+#: src/components/watch/UnifiedSettingsPanel.tsx:292
+#: src/components/watch/UnifiedSettingsPanel.tsx:347
+#: src/components/watch/UnifiedSettingsPanel.tsx:389
 msgid "settings.textColor"
 msgstr "文字顏色"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:295
-#: src/components/watch/UnifiedSettingsPanel.tsx:499
-#: src/components/watch/UnifiedSettingsPanel.tsx:548
+#: src/components/watch/UnifiedSettingsPanel.tsx:302
+#: src/components/watch/UnifiedSettingsPanel.tsx:506
+#: src/components/watch/UnifiedSettingsPanel.tsx:555
 msgid "settings.volumeBoost"
 msgstr "音量增強"
 
@@ -4810,29 +4822,29 @@ msgstr "睇完"
 msgid "watch.danmaku"
 msgstr "彈幕"
 
-#: src/components/watch/DanmakuList.tsx:147
+#: src/components/watch/DanmakuList.tsx:160
 msgid "watch.danmaku.addBlock"
 msgstr "新增"
 
-#: src/components/DanmakuSettings.tsx:253
+#: src/components/DanmakuSettings.tsx:268
 msgid "watch.danmaku.antiSubtitle"
 msgstr "防擋字幕"
 
-#: src/components/watch/DanmakuList.tsx:117
-#: src/components/watch/DanmakuList.tsx:127
+#: src/components/watch/DanmakuList.tsx:128
+#: src/components/watch/DanmakuList.tsx:140
 msgid "watch.danmaku.blockKeywords"
 msgstr "屏蔽詞"
 
-#: src/components/watch/DanmakuList.tsx:138
+#: src/components/watch/DanmakuList.tsx:151
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "輸入關鍵詞..."
 
-#: src/components/DanmakuSettings.tsx:252
+#: src/components/DanmakuSettings.tsx:267
 msgid "watch.danmaku.bold"
 msgstr "粗體"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:168
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:174
 msgid "watch.danmaku.bottom"
 msgstr "底部"
 
@@ -4840,7 +4852,12 @@ msgstr "底部"
 #~ msgid "watch.danmaku.cached"
 #~ msgstr "24h"
 
-#: src/components/watch/DanmakuList.tsx:184
+#: src/components/DanmakuSettings.tsx:246
+#: src/components/DanmakuSettings.tsx:265
+msgid "watch.danmaku.chineseConvert"
+msgstr "簡繁轉換"
+
+#: src/components/watch/DanmakuList.tsx:197
 msgid "watch.danmaku.clearAllBlock"
 msgstr "清除全部"
 
@@ -4864,29 +4881,41 @@ msgstr "取消釘選（恢復24h緩存）"
 msgid "watch.danmaku.closeParts"
 msgstr "收起"
 
+#: src/components/DanmakuSettings.tsx:158
+msgid "watch.danmaku.convertNone"
+msgstr "關閉"
+
+#: src/components/DanmakuSettings.tsx:159
+msgid "watch.danmaku.convertS2T"
+msgstr "簡體 → 繁體"
+
+#: src/components/DanmakuSettings.tsx:160
+msgid "watch.danmaku.convertT2S"
+msgstr "繁體 → 簡體"
+
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
 #~ msgstr "條彈幕"
 
-#: src/components/DanmakuSettings.tsx:181
-#: src/components/DanmakuSettings.tsx:242
+#: src/components/DanmakuSettings.tsx:187
+#: src/components/DanmakuSettings.tsx:256
 msgid "watch.danmaku.density"
 msgstr "密度"
 
-#: src/components/DanmakuSettings.tsx:144
+#: src/components/DanmakuSettings.tsx:145
 msgid "watch.danmaku.densityHigh"
 msgstr "高"
 
-#: src/components/DanmakuSettings.tsx:142
+#: src/components/DanmakuSettings.tsx:143
 msgid "watch.danmaku.densityLow"
 msgstr "低"
 
-#: src/components/DanmakuSettings.tsx:143
+#: src/components/DanmakuSettings.tsx:144
 msgid "watch.danmaku.densityMedium"
 msgstr "中"
 
-#: src/components/DanmakuSettings.tsx:173
-#: src/components/DanmakuSettings.tsx:241
+#: src/components/DanmakuSettings.tsx:179
+#: src/components/DanmakuSettings.tsx:255
 msgid "watch.danmaku.displayArea"
 msgstr "顯示區域"
 
@@ -4894,21 +4923,21 @@ msgstr "顯示區域"
 msgid "watch.danmaku.externalSources"
 msgstr "彈幕來源"
 
-#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:150
 msgid "watch.danmaku.fast"
 msgstr "快"
 
-#: src/components/DanmakuSettings.tsx:189
-#: src/components/DanmakuSettings.tsx:247
+#: src/components/DanmakuSettings.tsx:195
+#: src/components/DanmakuSettings.tsx:261
 msgid "watch.danmaku.fontColor"
 msgstr "字體顏色"
 
-#: src/components/DanmakuSettings.tsx:216
-#: src/components/DanmakuSettings.tsx:248
+#: src/components/DanmakuSettings.tsx:222
+#: src/components/DanmakuSettings.tsx:262
 msgid "watch.danmaku.fontFamily"
 msgstr "字體"
 
-#: src/components/DanmakuSettings.tsx:245
+#: src/components/DanmakuSettings.tsx:259
 msgid "watch.danmaku.fontSize"
 msgstr "字型大小"
 
@@ -4928,11 +4957,11 @@ msgstr "導入失敗，請重試"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "導入中..."
 
-#: src/components/watch/DanmakuBar.tsx:103
+#: src/components/watch/DanmakuBar.tsx:131
 msgid "watch.danmaku.loaded"
 msgstr "已裝填{count}條彈幕"
 
-#: src/components/watch/DanmakuList.tsx:154
+#: src/components/watch/DanmakuList.tsx:167
 msgid "watch.danmaku.noBlockKeywords"
 msgstr "暫無屏蔽詞"
 
@@ -4944,24 +4973,24 @@ msgstr "冇彈幕資料"
 msgid "watch.danmaku.noResults"
 msgstr "未找到結果"
 
-#: src/components/DanmakuSettings.tsx:148
-#: src/components/DanmakuSettings.tsx:249
+#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:263
 msgid "watch.danmaku.normal"
 msgstr "正常"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:99
 msgid "watch.danmaku.off"
 msgstr "關"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:99
 msgid "watch.danmaku.on"
 msgstr "開"
 
-#: src/components/DanmakuSettings.tsx:244
+#: src/components/DanmakuSettings.tsx:258
 msgid "watch.danmaku.opacity"
 msgstr "不透明度"
 
-#: src/components/watch/DanmakuBar.tsx:113
+#: src/components/watch/DanmakuBar.tsx:141
 msgid "watch.danmaku.placeholder"
 msgstr "發送彈幕…"
 
@@ -4981,8 +5010,8 @@ msgstr "彈幕已永久保存"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "永久保存到本地"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:166
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:172
 msgid "watch.danmaku.scroll"
 msgstr "滾動"
 
@@ -5002,7 +5031,7 @@ msgstr "搜索動畫名 + 集數..."
 msgid "watch.danmaku.selectPart"
 msgstr "選擇分P"
 
-#: src/components/watch/DanmakuBar.tsx:124
+#: src/components/watch/DanmakuBar.tsx:152
 msgid "watch.danmaku.send"
 msgstr "發送"
 
@@ -5010,7 +5039,7 @@ msgstr "發送"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "彈"
 
-#: src/components/DanmakuSettings.tsx:147
+#: src/components/DanmakuSettings.tsx:148
 msgid "watch.danmaku.slow"
 msgstr "慢"
 
@@ -5018,35 +5047,35 @@ msgstr "慢"
 msgid "watch.danmaku.source"
 msgstr "來源"
 
-#: src/components/DanmakuSettings.tsx:224
-#: src/components/DanmakuSettings.tsx:249
+#: src/components/DanmakuSettings.tsx:230
+#: src/components/DanmakuSettings.tsx:263
 msgid "watch.danmaku.speed"
 msgstr "速度"
 
-#: src/components/DanmakuSettings.tsx:152
+#: src/components/DanmakuSettings.tsx:153
 msgid "watch.danmaku.strokeNone"
 msgstr "無"
 
-#: src/components/DanmakuSettings.tsx:154
+#: src/components/DanmakuSettings.tsx:155
 msgid "watch.danmaku.strokeOutline"
 msgstr "描邊"
 
-#: src/components/DanmakuSettings.tsx:153
+#: src/components/DanmakuSettings.tsx:154
 msgid "watch.danmaku.strokeShadow"
 msgstr "陰影"
 
-#: src/components/DanmakuSettings.tsx:232
-#: src/components/DanmakuSettings.tsx:250
+#: src/components/DanmakuSettings.tsx:238
+#: src/components/DanmakuSettings.tsx:264
 msgid "watch.danmaku.strokeType"
 msgstr "描邊類型"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:167
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:173
 msgid "watch.danmaku.top"
 msgstr "頂部"
 
-#: src/components/DanmakuSettings.tsx:165
-#: src/components/DanmakuSettings.tsx:240
+#: src/components/DanmakuSettings.tsx:171
+#: src/components/DanmakuSettings.tsx:254
 msgid "watch.danmaku.typeFilter"
 msgstr "按類型過濾"
 

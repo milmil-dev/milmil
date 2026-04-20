@@ -151,7 +151,7 @@ function BackHeader(_props: { title: string; onBack: () => void }) {
 
 function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return (
-    <div className="shrink-0 bg-[#1a1a1a] shadow-[0_1px_0_rgba(255,255,255,0.06)]">
+    <div className="shrink-0 shadow-[0_1px_0_rgba(255,255,255,0.06)]">
       <button
         type="button"
         onClick={onBack}
@@ -172,7 +172,14 @@ function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
  * Strips `[CC]` / `[FORCED]` / `[SDH]` suffix from the name, then renders them
  * as small chips beside the title.
  */
+const MODIFIER_LABELS: Record<string, ReturnType<typeof msg>> = {
+  CC: msg`settings.sub.badge.cc`,
+  FORCED: msg`settings.sub.badge.forced`,
+  SDH: msg`settings.sub.badge.sdh`,
+};
+
 function TrackLabel({ name }: { name: string }) {
+  const { i18n } = useLingui();
   const match = name.match(/\s*\[(CC|FORCED|SDH)\]\s*$/i);
   const modifier = match?.[1]?.toUpperCase();
   const clean = modifier ? name.replace(/\s*\[(CC|FORCED|SDH)\]\s*$/i, '').trim() : name;
@@ -182,9 +189,9 @@ function TrackLabel({ name }: { name: string }) {
       {modifier && (
         <span
           className="ml-auto shrink-0 rounded-sm bg-white/10 px-1.5 py-[1px]
-            text-[9px] font-semibold uppercase tracking-wider text-white/70"
+            text-[9px] font-semibold tracking-wider text-white/70"
         >
-          {modifier}
+          {MODIFIER_LABELS[modifier] ? i18n._(MODIFIER_LABELS[modifier]!) : modifier}
         </span>
       )}
     </>

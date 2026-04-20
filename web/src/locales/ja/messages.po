@@ -3879,9 +3879,9 @@ msgstr "言語"
 #~ msgid "settings.appearance.title"
 #~ msgstr "Appearance"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:296
-#: src/components/watch/UnifiedSettingsPanel.tsx:506
-#: src/components/watch/UnifiedSettingsPanel.tsx:551
+#: src/components/watch/UnifiedSettingsPanel.tsx:303
+#: src/components/watch/UnifiedSettingsPanel.tsx:513
+#: src/components/watch/UnifiedSettingsPanel.tsx:558
 msgid "settings.audioTrack"
 msgstr "音声トラック"
 
@@ -3893,25 +3893,25 @@ msgstr "自動でコレクションに追加"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新しくマッチしたアニメを自動的にコレクションに追加"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:286
-#: src/components/watch/UnifiedSettingsPanel.tsx:341
-#: src/components/watch/UnifiedSettingsPanel.tsx:390
+#: src/components/watch/UnifiedSettingsPanel.tsx:293
+#: src/components/watch/UnifiedSettingsPanel.tsx:348
+#: src/components/watch/UnifiedSettingsPanel.tsx:397
 msgid "settings.background"
 msgstr "背景"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:342
+#: src/components/watch/UnifiedSettingsPanel.tsx:349
 msgid "settings.border"
 msgstr "ボーダー"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:287
-#: src/components/watch/UnifiedSettingsPanel.tsx:399
+#: src/components/watch/UnifiedSettingsPanel.tsx:294
+#: src/components/watch/UnifiedSettingsPanel.tsx:406
 msgid "settings.borderStyle"
 msgstr "ボーダースタイル"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:291
-#: src/components/watch/UnifiedSettingsPanel.tsx:475
-#: src/components/watch/UnifiedSettingsPanel.tsx:476
-#: src/components/watch/UnifiedSettingsPanel.tsx:539
+#: src/components/watch/UnifiedSettingsPanel.tsx:298
+#: src/components/watch/UnifiedSettingsPanel.tsx:482
+#: src/components/watch/UnifiedSettingsPanel.tsx:483
+#: src/components/watch/UnifiedSettingsPanel.tsx:546
 msgid "settings.brightness"
 msgstr "明るさ"
 
@@ -3919,10 +3919,10 @@ msgstr "明るさ"
 msgid "settings.collection"
 msgstr "コレクション"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:292
-#: src/components/watch/UnifiedSettingsPanel.tsx:481
-#: src/components/watch/UnifiedSettingsPanel.tsx:482
-#: src/components/watch/UnifiedSettingsPanel.tsx:541
+#: src/components/watch/UnifiedSettingsPanel.tsx:299
+#: src/components/watch/UnifiedSettingsPanel.tsx:488
+#: src/components/watch/UnifiedSettingsPanel.tsx:489
+#: src/components/watch/UnifiedSettingsPanel.tsx:548
 msgid "settings.contrast"
 msgstr "コントラスト"
 
@@ -3930,7 +3930,7 @@ msgstr "コントラスト"
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
+#: src/components/watch/UnifiedSettingsPanel.tsx:345
 msgid "settings.default"
 msgstr "デフォルト"
 
@@ -4007,15 +4007,15 @@ msgstr "ダウンロード設定"
 #~ msgid "settings.download.test"
 #~ msgstr "テスト"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:283
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
-#: src/components/watch/UnifiedSettingsPanel.tsx:366
+#: src/components/watch/UnifiedSettingsPanel.tsx:290
+#: src/components/watch/UnifiedSettingsPanel.tsx:345
+#: src/components/watch/UnifiedSettingsPanel.tsx:373
 msgid "settings.font"
 msgstr "フォント"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:284
-#: src/components/watch/UnifiedSettingsPanel.tsx:339
-#: src/components/watch/UnifiedSettingsPanel.tsx:374
+#: src/components/watch/UnifiedSettingsPanel.tsx:291
+#: src/components/watch/UnifiedSettingsPanel.tsx:346
+#: src/components/watch/UnifiedSettingsPanel.tsx:381
 msgid "settings.fontSize"
 msgstr "フォントサイズ"
 
@@ -4198,19 +4198,19 @@ msgstr "プレーヤー"
 msgid "settings.nav.storage"
 msgstr "ストレージ"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:294
-#: src/components/watch/UnifiedSettingsPanel.tsx:493
-#: src/components/watch/UnifiedSettingsPanel.tsx:545
+#: src/components/watch/UnifiedSettingsPanel.tsx:301
+#: src/components/watch/UnifiedSettingsPanel.tsx:500
+#: src/components/watch/UnifiedSettingsPanel.tsx:552
 msgid "settings.nightMode"
 msgstr "ナイトモード"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:466
-#: src/components/watch/UnifiedSettingsPanel.tsx:533
+#: src/components/watch/UnifiedSettingsPanel.tsx:473
+#: src/components/watch/UnifiedSettingsPanel.tsx:540
 msgid "settings.normal"
 msgstr "通常"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:260
-#: src/components/watch/UnifiedSettingsPanel.tsx:306
+#: src/components/watch/UnifiedSettingsPanel.tsx:267
+#: src/components/watch/UnifiedSettingsPanel.tsx:313
 msgid "settings.off"
 msgstr "オフ"
 
@@ -4218,9 +4218,9 @@ msgstr "オフ"
 msgid "settings.pageTitle"
 msgstr "設定"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:290
-#: src/components/watch/UnifiedSettingsPanel.tsx:427
-#: src/components/watch/UnifiedSettingsPanel.tsx:532
+#: src/components/watch/UnifiedSettingsPanel.tsx:297
+#: src/components/watch/UnifiedSettingsPanel.tsx:434
+#: src/components/watch/UnifiedSettingsPanel.tsx:539
 msgid "settings.playbackSpeed"
 msgstr "再生速度"
 
@@ -4388,26 +4388,26 @@ msgstr "字幕スタイル"
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:288
-#: src/components/watch/UnifiedSettingsPanel.tsx:343
-#: src/components/watch/UnifiedSettingsPanel.tsx:407
+#: src/components/watch/UnifiedSettingsPanel.tsx:295
+#: src/components/watch/UnifiedSettingsPanel.tsx:350
+#: src/components/watch/UnifiedSettingsPanel.tsx:414
 msgid "settings.position"
 msgstr "位置"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:282
-#: src/components/watch/UnifiedSettingsPanel.tsx:337
-#: src/components/watch/UnifiedSettingsPanel.tsx:358
+#: src/components/watch/UnifiedSettingsPanel.tsx:289
+#: src/components/watch/UnifiedSettingsPanel.tsx:344
+#: src/components/watch/UnifiedSettingsPanel.tsx:365
 msgid "settings.preset"
 msgstr "プリセット"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:346
+#: src/components/watch/UnifiedSettingsPanel.tsx:353
 msgid "settings.respectAssStyles"
 msgstr "ASSスタイルを維持"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:293
-#: src/components/watch/UnifiedSettingsPanel.tsx:487
-#: src/components/watch/UnifiedSettingsPanel.tsx:488
-#: src/components/watch/UnifiedSettingsPanel.tsx:543
+#: src/components/watch/UnifiedSettingsPanel.tsx:300
+#: src/components/watch/UnifiedSettingsPanel.tsx:494
+#: src/components/watch/UnifiedSettingsPanel.tsx:495
+#: src/components/watch/UnifiedSettingsPanel.tsx:550
 msgid "settings.saturation"
 msgstr "彩度"
 
@@ -4492,6 +4492,18 @@ msgstr "トランスコードファイルとキャッシュの管理"
 msgid "settings.storage.transcodeDesc"
 msgstr "トランスコード済みビデオファイルは一時ディレクトリに保存されます"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:176
+msgid "settings.sub.badge.cc"
+msgstr "字幕"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:177
+msgid "settings.sub.badge.forced"
+msgstr "強制"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:178
+msgid "settings.sub.badge.sdh"
+msgstr "聴覚障害"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:92
 msgid "settings.sub.color.cyan"
 msgstr "シアン"
@@ -4564,33 +4576,33 @@ msgstr "縁取り"
 msgid "settings.sub.shadow.raised"
 msgstr "浮き彫り"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:280
-#: src/components/watch/UnifiedSettingsPanel.tsx:305
-#: src/components/watch/UnifiedSettingsPanel.tsx:523
+#: src/components/watch/UnifiedSettingsPanel.tsx:287
+#: src/components/watch/UnifiedSettingsPanel.tsx:312
+#: src/components/watch/UnifiedSettingsPanel.tsx:530
 msgid "settings.subtitles"
 msgstr "字幕"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:281
-#: src/components/watch/UnifiedSettingsPanel.tsx:336
-#: src/components/watch/UnifiedSettingsPanel.tsx:524
+#: src/components/watch/UnifiedSettingsPanel.tsx:288
+#: src/components/watch/UnifiedSettingsPanel.tsx:343
+#: src/components/watch/UnifiedSettingsPanel.tsx:531
 msgid "settings.subtitleStyle"
 msgstr "字幕スタイル"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:289
-#: src/components/watch/UnifiedSettingsPanel.tsx:416
-#: src/components/watch/UnifiedSettingsPanel.tsx:525
+#: src/components/watch/UnifiedSettingsPanel.tsx:296
+#: src/components/watch/UnifiedSettingsPanel.tsx:423
+#: src/components/watch/UnifiedSettingsPanel.tsx:532
 msgid "settings.subtitleTiming"
 msgstr "字幕タイミング"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:285
-#: src/components/watch/UnifiedSettingsPanel.tsx:340
-#: src/components/watch/UnifiedSettingsPanel.tsx:382
+#: src/components/watch/UnifiedSettingsPanel.tsx:292
+#: src/components/watch/UnifiedSettingsPanel.tsx:347
+#: src/components/watch/UnifiedSettingsPanel.tsx:389
 msgid "settings.textColor"
 msgstr "テキスト色"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:295
-#: src/components/watch/UnifiedSettingsPanel.tsx:499
-#: src/components/watch/UnifiedSettingsPanel.tsx:548
+#: src/components/watch/UnifiedSettingsPanel.tsx:302
+#: src/components/watch/UnifiedSettingsPanel.tsx:506
+#: src/components/watch/UnifiedSettingsPanel.tsx:555
 msgid "settings.volumeBoost"
 msgstr "音量ブースト"
 
@@ -4812,29 +4824,29 @@ msgstr "視聴済み"
 msgid "watch.danmaku"
 msgstr "弾幕"
 
-#: src/components/watch/DanmakuList.tsx:147
+#: src/components/watch/DanmakuList.tsx:160
 msgid "watch.danmaku.addBlock"
 msgstr "追加"
 
-#: src/components/DanmakuSettings.tsx:253
+#: src/components/DanmakuSettings.tsx:268
 msgid "watch.danmaku.antiSubtitle"
 msgstr "字幕回避"
 
-#: src/components/watch/DanmakuList.tsx:117
-#: src/components/watch/DanmakuList.tsx:127
+#: src/components/watch/DanmakuList.tsx:128
+#: src/components/watch/DanmakuList.tsx:140
 msgid "watch.danmaku.blockKeywords"
 msgstr "NGワード"
 
-#: src/components/watch/DanmakuList.tsx:138
+#: src/components/watch/DanmakuList.tsx:151
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "キーワードを入力..."
 
-#: src/components/DanmakuSettings.tsx:252
+#: src/components/DanmakuSettings.tsx:267
 msgid "watch.danmaku.bold"
 msgstr "太字"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:168
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:174
 msgid "watch.danmaku.bottom"
 msgstr "下部"
 
@@ -4842,7 +4854,12 @@ msgstr "下部"
 #~ msgid "watch.danmaku.cached"
 #~ msgstr "24h"
 
-#: src/components/watch/DanmakuList.tsx:184
+#: src/components/DanmakuSettings.tsx:246
+#: src/components/DanmakuSettings.tsx:265
+msgid "watch.danmaku.chineseConvert"
+msgstr "簡繁変換"
+
+#: src/components/watch/DanmakuList.tsx:197
 msgid "watch.danmaku.clearAllBlock"
 msgstr "すべて削除"
 
@@ -4866,29 +4883,41 @@ msgstr "ピンを外す（24hキャッシュに戻す）"
 msgid "watch.danmaku.closeParts"
 msgstr "閉じる"
 
+#: src/components/DanmakuSettings.tsx:158
+msgid "watch.danmaku.convertNone"
+msgstr "オフ"
+
+#: src/components/DanmakuSettings.tsx:159
+msgid "watch.danmaku.convertS2T"
+msgstr "簡体 → 繁体"
+
+#: src/components/DanmakuSettings.tsx:160
+msgid "watch.danmaku.convertT2S"
+msgstr "繁体 → 簡体"
+
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#: src/components/DanmakuSettings.tsx:181
-#: src/components/DanmakuSettings.tsx:242
+#: src/components/DanmakuSettings.tsx:187
+#: src/components/DanmakuSettings.tsx:256
 msgid "watch.danmaku.density"
 msgstr "密度"
 
-#: src/components/DanmakuSettings.tsx:144
+#: src/components/DanmakuSettings.tsx:145
 msgid "watch.danmaku.densityHigh"
 msgstr "高"
 
-#: src/components/DanmakuSettings.tsx:142
+#: src/components/DanmakuSettings.tsx:143
 msgid "watch.danmaku.densityLow"
 msgstr "低"
 
-#: src/components/DanmakuSettings.tsx:143
+#: src/components/DanmakuSettings.tsx:144
 msgid "watch.danmaku.densityMedium"
 msgstr "中"
 
-#: src/components/DanmakuSettings.tsx:173
-#: src/components/DanmakuSettings.tsx:241
+#: src/components/DanmakuSettings.tsx:179
+#: src/components/DanmakuSettings.tsx:255
 msgid "watch.danmaku.displayArea"
 msgstr "表示範囲"
 
@@ -4896,21 +4925,21 @@ msgstr "表示範囲"
 msgid "watch.danmaku.externalSources"
 msgstr "弾幕ソース"
 
-#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:150
 msgid "watch.danmaku.fast"
 msgstr "速い"
 
-#: src/components/DanmakuSettings.tsx:189
-#: src/components/DanmakuSettings.tsx:247
+#: src/components/DanmakuSettings.tsx:195
+#: src/components/DanmakuSettings.tsx:261
 msgid "watch.danmaku.fontColor"
 msgstr "フォント色"
 
-#: src/components/DanmakuSettings.tsx:216
-#: src/components/DanmakuSettings.tsx:248
+#: src/components/DanmakuSettings.tsx:222
+#: src/components/DanmakuSettings.tsx:262
 msgid "watch.danmaku.fontFamily"
 msgstr "フォント"
 
-#: src/components/DanmakuSettings.tsx:245
+#: src/components/DanmakuSettings.tsx:259
 msgid "watch.danmaku.fontSize"
 msgstr "フォントサイズ"
 
@@ -4930,11 +4959,11 @@ msgstr "インポートに失敗しました"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "インポート中..."
 
-#: src/components/watch/DanmakuBar.tsx:103
+#: src/components/watch/DanmakuBar.tsx:131
 msgid "watch.danmaku.loaded"
 msgstr "{count}件の弾幕を読込"
 
-#: src/components/watch/DanmakuList.tsx:154
+#: src/components/watch/DanmakuList.tsx:167
 msgid "watch.danmaku.noBlockKeywords"
 msgstr "NGワードなし"
 
@@ -4946,24 +4975,24 @@ msgstr "弾幕データがありません"
 msgid "watch.danmaku.noResults"
 msgstr "結果が見つかりません"
 
-#: src/components/DanmakuSettings.tsx:148
-#: src/components/DanmakuSettings.tsx:249
+#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:263
 msgid "watch.danmaku.normal"
 msgstr "普通"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:99
 msgid "watch.danmaku.off"
 msgstr "オフ"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:99
 msgid "watch.danmaku.on"
 msgstr "オン"
 
-#: src/components/DanmakuSettings.tsx:244
+#: src/components/DanmakuSettings.tsx:258
 msgid "watch.danmaku.opacity"
 msgstr "不透明度"
 
-#: src/components/watch/DanmakuBar.tsx:113
+#: src/components/watch/DanmakuBar.tsx:141
 msgid "watch.danmaku.placeholder"
 msgstr "弾幕を送信…"
 
@@ -4983,8 +5012,8 @@ msgstr "弾幕を永久保存しました"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "ローカルに永久保存"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:166
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:172
 msgid "watch.danmaku.scroll"
 msgstr "スクロール"
 
@@ -5004,7 +5033,7 @@ msgstr "アニメ名 + 話数を検索..."
 msgid "watch.danmaku.selectPart"
 msgstr "パートを選択"
 
-#: src/components/watch/DanmakuBar.tsx:124
+#: src/components/watch/DanmakuBar.tsx:152
 msgid "watch.danmaku.send"
 msgstr "送信"
 
@@ -5012,7 +5041,7 @@ msgstr "送信"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "弾"
 
-#: src/components/DanmakuSettings.tsx:147
+#: src/components/DanmakuSettings.tsx:148
 msgid "watch.danmaku.slow"
 msgstr "遅い"
 
@@ -5020,35 +5049,35 @@ msgstr "遅い"
 msgid "watch.danmaku.source"
 msgstr "ソース"
 
-#: src/components/DanmakuSettings.tsx:224
-#: src/components/DanmakuSettings.tsx:249
+#: src/components/DanmakuSettings.tsx:230
+#: src/components/DanmakuSettings.tsx:263
 msgid "watch.danmaku.speed"
 msgstr "速度"
 
-#: src/components/DanmakuSettings.tsx:152
+#: src/components/DanmakuSettings.tsx:153
 msgid "watch.danmaku.strokeNone"
 msgstr "なし"
 
-#: src/components/DanmakuSettings.tsx:154
+#: src/components/DanmakuSettings.tsx:155
 msgid "watch.danmaku.strokeOutline"
 msgstr "縁取り"
 
-#: src/components/DanmakuSettings.tsx:153
+#: src/components/DanmakuSettings.tsx:154
 msgid "watch.danmaku.strokeShadow"
 msgstr "影"
 
-#: src/components/DanmakuSettings.tsx:232
-#: src/components/DanmakuSettings.tsx:250
+#: src/components/DanmakuSettings.tsx:238
+#: src/components/DanmakuSettings.tsx:264
 msgid "watch.danmaku.strokeType"
 msgstr "ストローク"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:167
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:173
 msgid "watch.danmaku.top"
 msgstr "上部"
 
-#: src/components/DanmakuSettings.tsx:165
-#: src/components/DanmakuSettings.tsx:240
+#: src/components/DanmakuSettings.tsx:171
+#: src/components/DanmakuSettings.tsx:254
 msgid "watch.danmaku.typeFilter"
 msgstr "タイプフィルター"
 

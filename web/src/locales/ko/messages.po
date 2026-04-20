@@ -3879,9 +3879,9 @@ msgstr "언어"
 #~ msgid "settings.appearance.title"
 #~ msgstr "Appearance"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:296
-#: src/components/watch/UnifiedSettingsPanel.tsx:506
-#: src/components/watch/UnifiedSettingsPanel.tsx:551
+#: src/components/watch/UnifiedSettingsPanel.tsx:303
+#: src/components/watch/UnifiedSettingsPanel.tsx:513
+#: src/components/watch/UnifiedSettingsPanel.tsx:558
 msgid "settings.audioTrack"
 msgstr "오디오 트랙"
 
@@ -3893,25 +3893,25 @@ msgstr "자동으로 컬렉션에 추가"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "새로 매치된 애니메이션을 자동으로 컬렉션에 추가"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:286
-#: src/components/watch/UnifiedSettingsPanel.tsx:341
-#: src/components/watch/UnifiedSettingsPanel.tsx:390
+#: src/components/watch/UnifiedSettingsPanel.tsx:293
+#: src/components/watch/UnifiedSettingsPanel.tsx:348
+#: src/components/watch/UnifiedSettingsPanel.tsx:397
 msgid "settings.background"
 msgstr "배경"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:342
+#: src/components/watch/UnifiedSettingsPanel.tsx:349
 msgid "settings.border"
 msgstr "테두리"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:287
-#: src/components/watch/UnifiedSettingsPanel.tsx:399
+#: src/components/watch/UnifiedSettingsPanel.tsx:294
+#: src/components/watch/UnifiedSettingsPanel.tsx:406
 msgid "settings.borderStyle"
 msgstr "테두리 스타일"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:291
-#: src/components/watch/UnifiedSettingsPanel.tsx:475
-#: src/components/watch/UnifiedSettingsPanel.tsx:476
-#: src/components/watch/UnifiedSettingsPanel.tsx:539
+#: src/components/watch/UnifiedSettingsPanel.tsx:298
+#: src/components/watch/UnifiedSettingsPanel.tsx:482
+#: src/components/watch/UnifiedSettingsPanel.tsx:483
+#: src/components/watch/UnifiedSettingsPanel.tsx:546
 msgid "settings.brightness"
 msgstr "밝기"
 
@@ -3919,10 +3919,10 @@ msgstr "밝기"
 msgid "settings.collection"
 msgstr "컬렉션"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:292
-#: src/components/watch/UnifiedSettingsPanel.tsx:481
-#: src/components/watch/UnifiedSettingsPanel.tsx:482
-#: src/components/watch/UnifiedSettingsPanel.tsx:541
+#: src/components/watch/UnifiedSettingsPanel.tsx:299
+#: src/components/watch/UnifiedSettingsPanel.tsx:488
+#: src/components/watch/UnifiedSettingsPanel.tsx:489
+#: src/components/watch/UnifiedSettingsPanel.tsx:548
 msgid "settings.contrast"
 msgstr "대비"
 
@@ -3930,7 +3930,7 @@ msgstr "대비"
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
+#: src/components/watch/UnifiedSettingsPanel.tsx:345
 msgid "settings.default"
 msgstr "기본값"
 
@@ -4007,15 +4007,15 @@ msgstr "다운로드 설정"
 #~ msgid "settings.download.test"
 #~ msgstr "테스트"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:283
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
-#: src/components/watch/UnifiedSettingsPanel.tsx:366
+#: src/components/watch/UnifiedSettingsPanel.tsx:290
+#: src/components/watch/UnifiedSettingsPanel.tsx:345
+#: src/components/watch/UnifiedSettingsPanel.tsx:373
 msgid "settings.font"
 msgstr "글꼴"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:284
-#: src/components/watch/UnifiedSettingsPanel.tsx:339
-#: src/components/watch/UnifiedSettingsPanel.tsx:374
+#: src/components/watch/UnifiedSettingsPanel.tsx:291
+#: src/components/watch/UnifiedSettingsPanel.tsx:346
+#: src/components/watch/UnifiedSettingsPanel.tsx:381
 msgid "settings.fontSize"
 msgstr "글꼴 크기"
 
@@ -4198,19 +4198,19 @@ msgstr "플레이어"
 msgid "settings.nav.storage"
 msgstr "저장소"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:294
-#: src/components/watch/UnifiedSettingsPanel.tsx:493
-#: src/components/watch/UnifiedSettingsPanel.tsx:545
+#: src/components/watch/UnifiedSettingsPanel.tsx:301
+#: src/components/watch/UnifiedSettingsPanel.tsx:500
+#: src/components/watch/UnifiedSettingsPanel.tsx:552
 msgid "settings.nightMode"
 msgstr "나이트 모드"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:466
-#: src/components/watch/UnifiedSettingsPanel.tsx:533
+#: src/components/watch/UnifiedSettingsPanel.tsx:473
+#: src/components/watch/UnifiedSettingsPanel.tsx:540
 msgid "settings.normal"
 msgstr "일반"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:260
-#: src/components/watch/UnifiedSettingsPanel.tsx:306
+#: src/components/watch/UnifiedSettingsPanel.tsx:267
+#: src/components/watch/UnifiedSettingsPanel.tsx:313
 msgid "settings.off"
 msgstr "끄기"
 
@@ -4218,9 +4218,9 @@ msgstr "끄기"
 msgid "settings.pageTitle"
 msgstr "설정"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:290
-#: src/components/watch/UnifiedSettingsPanel.tsx:427
-#: src/components/watch/UnifiedSettingsPanel.tsx:532
+#: src/components/watch/UnifiedSettingsPanel.tsx:297
+#: src/components/watch/UnifiedSettingsPanel.tsx:434
+#: src/components/watch/UnifiedSettingsPanel.tsx:539
 msgid "settings.playbackSpeed"
 msgstr "재생 속도"
 
@@ -4388,26 +4388,26 @@ msgstr "자막 스타일"
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:288
-#: src/components/watch/UnifiedSettingsPanel.tsx:343
-#: src/components/watch/UnifiedSettingsPanel.tsx:407
+#: src/components/watch/UnifiedSettingsPanel.tsx:295
+#: src/components/watch/UnifiedSettingsPanel.tsx:350
+#: src/components/watch/UnifiedSettingsPanel.tsx:414
 msgid "settings.position"
 msgstr "위치"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:282
-#: src/components/watch/UnifiedSettingsPanel.tsx:337
-#: src/components/watch/UnifiedSettingsPanel.tsx:358
+#: src/components/watch/UnifiedSettingsPanel.tsx:289
+#: src/components/watch/UnifiedSettingsPanel.tsx:344
+#: src/components/watch/UnifiedSettingsPanel.tsx:365
 msgid "settings.preset"
 msgstr "프리셋"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:346
+#: src/components/watch/UnifiedSettingsPanel.tsx:353
 msgid "settings.respectAssStyles"
 msgstr "ASS 스타일 유지"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:293
-#: src/components/watch/UnifiedSettingsPanel.tsx:487
-#: src/components/watch/UnifiedSettingsPanel.tsx:488
-#: src/components/watch/UnifiedSettingsPanel.tsx:543
+#: src/components/watch/UnifiedSettingsPanel.tsx:300
+#: src/components/watch/UnifiedSettingsPanel.tsx:494
+#: src/components/watch/UnifiedSettingsPanel.tsx:495
+#: src/components/watch/UnifiedSettingsPanel.tsx:550
 msgid "settings.saturation"
 msgstr "채도"
 
@@ -4492,6 +4492,18 @@ msgstr "트랜스코딩 파일 및 캐시 관리"
 msgid "settings.storage.transcodeDesc"
 msgstr "트랜스코딩된 비디오 파일이 임시 디렉토리에 저장됩니다"
 
+#: src/components/watch/UnifiedSettingsPanel.tsx:176
+msgid "settings.sub.badge.cc"
+msgstr "자막"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:177
+msgid "settings.sub.badge.forced"
+msgstr "강제"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:178
+msgid "settings.sub.badge.sdh"
+msgstr "청각장애"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:92
 msgid "settings.sub.color.cyan"
 msgstr "시안"
@@ -4564,33 +4576,33 @@ msgstr "테두리"
 msgid "settings.sub.shadow.raised"
 msgstr "돌출"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:280
-#: src/components/watch/UnifiedSettingsPanel.tsx:305
-#: src/components/watch/UnifiedSettingsPanel.tsx:523
+#: src/components/watch/UnifiedSettingsPanel.tsx:287
+#: src/components/watch/UnifiedSettingsPanel.tsx:312
+#: src/components/watch/UnifiedSettingsPanel.tsx:530
 msgid "settings.subtitles"
 msgstr "자막"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:281
-#: src/components/watch/UnifiedSettingsPanel.tsx:336
-#: src/components/watch/UnifiedSettingsPanel.tsx:524
+#: src/components/watch/UnifiedSettingsPanel.tsx:288
+#: src/components/watch/UnifiedSettingsPanel.tsx:343
+#: src/components/watch/UnifiedSettingsPanel.tsx:531
 msgid "settings.subtitleStyle"
 msgstr "자막 스타일"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:289
-#: src/components/watch/UnifiedSettingsPanel.tsx:416
-#: src/components/watch/UnifiedSettingsPanel.tsx:525
+#: src/components/watch/UnifiedSettingsPanel.tsx:296
+#: src/components/watch/UnifiedSettingsPanel.tsx:423
+#: src/components/watch/UnifiedSettingsPanel.tsx:532
 msgid "settings.subtitleTiming"
 msgstr "자막 타이밍"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:285
-#: src/components/watch/UnifiedSettingsPanel.tsx:340
-#: src/components/watch/UnifiedSettingsPanel.tsx:382
+#: src/components/watch/UnifiedSettingsPanel.tsx:292
+#: src/components/watch/UnifiedSettingsPanel.tsx:347
+#: src/components/watch/UnifiedSettingsPanel.tsx:389
 msgid "settings.textColor"
 msgstr "텍스트 색상"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:295
-#: src/components/watch/UnifiedSettingsPanel.tsx:499
-#: src/components/watch/UnifiedSettingsPanel.tsx:548
+#: src/components/watch/UnifiedSettingsPanel.tsx:302
+#: src/components/watch/UnifiedSettingsPanel.tsx:506
+#: src/components/watch/UnifiedSettingsPanel.tsx:555
 msgid "settings.volumeBoost"
 msgstr "음량 부스트"
 
@@ -4812,29 +4824,29 @@ msgstr "시청 완료"
 msgid "watch.danmaku"
 msgstr "탄막"
 
-#: src/components/watch/DanmakuList.tsx:147
+#: src/components/watch/DanmakuList.tsx:160
 msgid "watch.danmaku.addBlock"
 msgstr "추가"
 
-#: src/components/DanmakuSettings.tsx:253
+#: src/components/DanmakuSettings.tsx:268
 msgid "watch.danmaku.antiSubtitle"
 msgstr "자막 회피"
 
-#: src/components/watch/DanmakuList.tsx:117
-#: src/components/watch/DanmakuList.tsx:127
+#: src/components/watch/DanmakuList.tsx:128
+#: src/components/watch/DanmakuList.tsx:140
 msgid "watch.danmaku.blockKeywords"
 msgstr "차단 키워드"
 
-#: src/components/watch/DanmakuList.tsx:138
+#: src/components/watch/DanmakuList.tsx:151
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "키워드 입력..."
 
-#: src/components/DanmakuSettings.tsx:252
+#: src/components/DanmakuSettings.tsx:267
 msgid "watch.danmaku.bold"
 msgstr "굵게"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:168
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:174
 msgid "watch.danmaku.bottom"
 msgstr "하단"
 
@@ -4842,7 +4854,12 @@ msgstr "하단"
 #~ msgid "watch.danmaku.cached"
 #~ msgstr "24h"
 
-#: src/components/watch/DanmakuList.tsx:184
+#: src/components/DanmakuSettings.tsx:246
+#: src/components/DanmakuSettings.tsx:265
+msgid "watch.danmaku.chineseConvert"
+msgstr "간번체 변환"
+
+#: src/components/watch/DanmakuList.tsx:197
 msgid "watch.danmaku.clearAllBlock"
 msgstr "모두 삭제"
 
@@ -4866,29 +4883,41 @@ msgstr "고정 해제 (24시간 캐시로 전환)"
 msgid "watch.danmaku.closeParts"
 msgstr "닫기"
 
+#: src/components/DanmakuSettings.tsx:158
+msgid "watch.danmaku.convertNone"
+msgstr "끄기"
+
+#: src/components/DanmakuSettings.tsx:159
+msgid "watch.danmaku.convertS2T"
+msgstr "간체 → 번체"
+
+#: src/components/DanmakuSettings.tsx:160
+msgid "watch.danmaku.convertT2S"
+msgstr "번체 → 간체"
+
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#: src/components/DanmakuSettings.tsx:181
-#: src/components/DanmakuSettings.tsx:242
+#: src/components/DanmakuSettings.tsx:187
+#: src/components/DanmakuSettings.tsx:256
 msgid "watch.danmaku.density"
 msgstr "밀도"
 
-#: src/components/DanmakuSettings.tsx:144
+#: src/components/DanmakuSettings.tsx:145
 msgid "watch.danmaku.densityHigh"
 msgstr "높음"
 
-#: src/components/DanmakuSettings.tsx:142
+#: src/components/DanmakuSettings.tsx:143
 msgid "watch.danmaku.densityLow"
 msgstr "낮음"
 
-#: src/components/DanmakuSettings.tsx:143
+#: src/components/DanmakuSettings.tsx:144
 msgid "watch.danmaku.densityMedium"
 msgstr "중간"
 
-#: src/components/DanmakuSettings.tsx:173
-#: src/components/DanmakuSettings.tsx:241
+#: src/components/DanmakuSettings.tsx:179
+#: src/components/DanmakuSettings.tsx:255
 msgid "watch.danmaku.displayArea"
 msgstr "표시 영역"
 
@@ -4896,21 +4925,21 @@ msgstr "표시 영역"
 msgid "watch.danmaku.externalSources"
 msgstr "탄막 소스"
 
-#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:150
 msgid "watch.danmaku.fast"
 msgstr "빠름"
 
-#: src/components/DanmakuSettings.tsx:189
-#: src/components/DanmakuSettings.tsx:247
+#: src/components/DanmakuSettings.tsx:195
+#: src/components/DanmakuSettings.tsx:261
 msgid "watch.danmaku.fontColor"
 msgstr "글꼴 색상"
 
-#: src/components/DanmakuSettings.tsx:216
-#: src/components/DanmakuSettings.tsx:248
+#: src/components/DanmakuSettings.tsx:222
+#: src/components/DanmakuSettings.tsx:262
 msgid "watch.danmaku.fontFamily"
 msgstr "글꼴"
 
-#: src/components/DanmakuSettings.tsx:245
+#: src/components/DanmakuSettings.tsx:259
 msgid "watch.danmaku.fontSize"
 msgstr "글꼴 크기"
 
@@ -4930,11 +4959,11 @@ msgstr "가져오기 실패"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "가져오는 중..."
 
-#: src/components/watch/DanmakuBar.tsx:103
+#: src/components/watch/DanmakuBar.tsx:131
 msgid "watch.danmaku.loaded"
 msgstr "탄막 {count}개 로드됨"
 
-#: src/components/watch/DanmakuList.tsx:154
+#: src/components/watch/DanmakuList.tsx:167
 msgid "watch.danmaku.noBlockKeywords"
 msgstr "차단 키워드 없음"
 
@@ -4946,24 +4975,24 @@ msgstr "탄막 데이터가 없습니다"
 msgid "watch.danmaku.noResults"
 msgstr "결과 없음"
 
-#: src/components/DanmakuSettings.tsx:148
-#: src/components/DanmakuSettings.tsx:249
+#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:263
 msgid "watch.danmaku.normal"
 msgstr "보통"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:99
 msgid "watch.danmaku.off"
 msgstr "끄기"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:99
 msgid "watch.danmaku.on"
 msgstr "켜기"
 
-#: src/components/DanmakuSettings.tsx:244
+#: src/components/DanmakuSettings.tsx:258
 msgid "watch.danmaku.opacity"
 msgstr "불투명도"
 
-#: src/components/watch/DanmakuBar.tsx:113
+#: src/components/watch/DanmakuBar.tsx:141
 msgid "watch.danmaku.placeholder"
 msgstr "탄막 보내기…"
 
@@ -4983,8 +5012,8 @@ msgstr "탄막이 영구 저장되었습니다"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "로컬에 영구 저장"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:166
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:172
 msgid "watch.danmaku.scroll"
 msgstr "스크롤"
 
@@ -5004,7 +5033,7 @@ msgstr "애니메이션 이름 + 화 검색..."
 msgid "watch.danmaku.selectPart"
 msgstr "파트 선택"
 
-#: src/components/watch/DanmakuBar.tsx:124
+#: src/components/watch/DanmakuBar.tsx:152
 msgid "watch.danmaku.send"
 msgstr "보내기"
 
@@ -5012,7 +5041,7 @@ msgstr "보내기"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "탄"
 
-#: src/components/DanmakuSettings.tsx:147
+#: src/components/DanmakuSettings.tsx:148
 msgid "watch.danmaku.slow"
 msgstr "느림"
 
@@ -5020,35 +5049,35 @@ msgstr "느림"
 msgid "watch.danmaku.source"
 msgstr "소스"
 
-#: src/components/DanmakuSettings.tsx:224
-#: src/components/DanmakuSettings.tsx:249
+#: src/components/DanmakuSettings.tsx:230
+#: src/components/DanmakuSettings.tsx:263
 msgid "watch.danmaku.speed"
 msgstr "속도"
 
-#: src/components/DanmakuSettings.tsx:152
+#: src/components/DanmakuSettings.tsx:153
 msgid "watch.danmaku.strokeNone"
 msgstr "없음"
 
-#: src/components/DanmakuSettings.tsx:154
+#: src/components/DanmakuSettings.tsx:155
 msgid "watch.danmaku.strokeOutline"
 msgstr "테두리"
 
-#: src/components/DanmakuSettings.tsx:153
+#: src/components/DanmakuSettings.tsx:154
 msgid "watch.danmaku.strokeShadow"
 msgstr "그림자"
 
-#: src/components/DanmakuSettings.tsx:232
-#: src/components/DanmakuSettings.tsx:250
+#: src/components/DanmakuSettings.tsx:238
+#: src/components/DanmakuSettings.tsx:264
 msgid "watch.danmaku.strokeType"
 msgstr "윤곽선"
 
-#: src/components/DanmakuSettings.tsx:159
-#: src/components/DanmakuSettings.tsx:167
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:173
 msgid "watch.danmaku.top"
 msgstr "상단"
 
-#: src/components/DanmakuSettings.tsx:165
-#: src/components/DanmakuSettings.tsx:240
+#: src/components/DanmakuSettings.tsx:171
+#: src/components/DanmakuSettings.tsx:254
 msgid "watch.danmaku.typeFilter"
 msgstr "유형 필터"
 

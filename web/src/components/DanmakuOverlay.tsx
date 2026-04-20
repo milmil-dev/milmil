@@ -1,5 +1,6 @@
 import DanmakuEngine from 'danmaku';
-import { useEffect, useRef } from 'react';
+import * as OpenCC from 'opencc-js';
+import { useEffect, useMemo, useRef } from 'react';
 import type { DanmakuComment } from '@/lib/api/stream';
 import { usePreferencesStore } from '@/store/preferences-store';
 
@@ -27,6 +28,14 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
   const blockKeywords = usePreferencesStore((s) => s.danmakuBlockKeywords);
+  const chineseConvert = usePreferencesStore((s) => s.danmakuChineseConvert);
+
+  // Chinese conversion
+  const converter = useMemo(() => {
+    if (chineseConvert === 's2t') return OpenCC.Converter({ from: 'cn', to: 'twp' });
+    if (chineseConvert === 't2s') return OpenCC.Converter({ from: 'twp', to: 'cn' });
+    return null;
+  }, [chineseConvert]);
 
   // Filter comments by type and block keywords
   const filteredComments = comments.filter((c) => {
@@ -74,7 +83,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
       media: videoElement,
       engine: 'dom',
       comments: filteredComments.map((c) => ({
-        text: c.text,
+        text: converter ? converter(c.text) : c.text,
         time: c.time,
         mode: c.mode,
         style: buildStyle(c),
@@ -88,7 +97,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
       engine.destroy();
       danmakuRef.current = null;
     };
-  }, [videoElement, filteredComments, speed, fontSize, opacity, bold, stroke, fontFamily, danmakuColor]);
+  }, [videoElement, filteredComments, speed, fontSize, opacity, bold, stroke, fontFamily, danmakuColor, converter]);
 
   // Toggle visibility
   useEffect(() => {

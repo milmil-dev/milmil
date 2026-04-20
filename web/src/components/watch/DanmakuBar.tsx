@@ -56,7 +56,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         onClick={() => update('danmakuEnabled', !enabled)}
         title={enabled ? i18n._(msg`watch.danmaku.clickToDisable`) : i18n._(msg`watch.danmaku.clickToEnable`)}
         className={cn(
-          'shrink-0 flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full transition-all duration-300',
+          'shrink-0 flex items-center gap-1 pl-1.5 pr-2 py-1 rounded-full transition-all duration-300',
           enabled
             ? 'bg-white/[0.12] text-white hover:bg-white/[0.18]'
             : 'bg-white/[0.04] text-white/25 hover:bg-white/[0.08] hover:text-white/40'

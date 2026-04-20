@@ -48,6 +48,7 @@ export interface GlobalPreferences {
   danmakuFontFamily: string;
   danmakuColor: string;
   danmakuBlockKeywords: string[];
+  danmakuChineseConvert: 'none' | 's2t' | 't2s';
   bufferMode: BufferMode;
   defaultSubtitleLanguage: string | null;
   defaultAudioLanguage: string | null;
