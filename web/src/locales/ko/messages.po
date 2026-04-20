@@ -719,7 +719,7 @@ msgstr "사용자 이름"
 
 #: src/components/anime/EpisodeStatusCard.tsx:91
 msgid "Auto-download missing"
-msgstr ""
+msgstr "누락분 자동 다운로드"
 
 #. placeholder {0}: res.action
 #. placeholder {1}: res.episode_range
@@ -1691,7 +1691,11 @@ msgstr ""
 
 #: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
-msgstr ""
+msgstr "에피소드 상태"
+
+#: src/components/EpisodeListItem.tsx:128
+msgid "episode.noFile"
+msgstr "파일 없음"
 
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
@@ -2771,7 +2775,7 @@ msgstr "매칭 완료"
 
 #: src/components/anime/EpisodeStatusCard.tsx:58
 msgid "Missing"
-msgstr ""
+msgstr "누락"
 
 #: src/components/AppSidebar.tsx:32
 #: src/pages/DownloadsPage.tsx:265
@@ -2872,7 +2876,7 @@ msgstr ""
 
 #: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
-msgstr ""
+msgstr "미방영"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"

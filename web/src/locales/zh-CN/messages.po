@@ -717,7 +717,7 @@ msgstr "用户名"
 
 #: src/components/anime/EpisodeStatusCard.tsx:91
 msgid "Auto-download missing"
-msgstr ""
+msgstr "自動下載缺失集數"
 
 #. placeholder {0}: res.action
 #. placeholder {1}: res.episode_range
@@ -1689,7 +1689,11 @@ msgstr ""
 
 #: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
-msgstr ""
+msgstr "集數狀態"
+
+#: src/components/EpisodeListItem.tsx:128
+msgid "episode.noFile"
+msgstr "無檔案"
 
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
@@ -2769,7 +2773,7 @@ msgstr "匹配完成"
 
 #: src/components/anime/EpisodeStatusCard.tsx:58
 msgid "Missing"
-msgstr ""
+msgstr "缺失"
 
 #: src/components/AppSidebar.tsx:32
 #: src/pages/DownloadsPage.tsx:265
@@ -2870,7 +2874,7 @@ msgstr ""
 
 #: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
-msgstr ""
+msgstr "未播出"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.advanced"

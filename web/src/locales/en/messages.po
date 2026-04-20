@@ -1696,6 +1696,10 @@ msgstr "Episode {0}"
 msgid "Episode status"
 msgstr "Episode status"
 
+#: src/components/EpisodeListItem.tsx:128
+msgid "episode.noFile"
+msgstr "No file"
+
 #: src/components/EpisodeListItem.tsx:122
 #: src/components/EpisodeListItem.tsx:254
 msgid "episode.prefix"

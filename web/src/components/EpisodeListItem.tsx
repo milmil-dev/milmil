@@ -125,7 +125,7 @@ export function EpisodeListItem({
           </span>
           {!hasFile && (
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/30">
-              No file
+              {i18n._(msg`episode.noFile`)}
             </span>
           )}
           {durationLabel && (
