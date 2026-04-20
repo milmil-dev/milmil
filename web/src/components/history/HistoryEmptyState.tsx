@@ -1,4 +1,3 @@
-import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Link } from '@tanstack/react-router';
 
@@ -13,16 +12,16 @@ export function HistoryEmptyState() {
         </svg>
       </div>
       <p className="text-[15px] font-medium text-white/80">
-        {i18n._(msg`history.empty.title`)}
+        {i18n._('history.empty.title')}
       </p>
       <p className="mt-1.5 max-w-sm text-[13px] text-white/40">
-        {i18n._(msg`history.empty.description`)}
+        {i18n._('history.empty.description')}
       </p>
       <Link
         to="/"
         className="mt-6 rounded-md bg-white/[0.06] px-4 py-2 text-[13px] font-medium text-white/70 transition-colors hover:bg-white/[0.10] hover:text-white"
       >
-        {i18n._(msg`nav.home`)}
+        {i18n._('nav.home')}
       </Link>
     </div>
   );
