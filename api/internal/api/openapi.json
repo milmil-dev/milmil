@@ -1127,6 +1127,22 @@
         "responses": {
           "204": { "description": "Progress saved" }
         }
+      },
+      "delete": {
+        "summary": "Clear all watch progress for the authenticated user",
+        "operationId": "clearAllWatchProgress",
+        "tags": ["Watch Progress"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Deleted count",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "deleted": { "type": "integer" } } }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/progress/recent": {
@@ -1166,6 +1182,93 @@
             }
           },
           "404": { "description": "No progress found" }
+        }
+      }
+    },
+    "/api/v1/progress/history": {
+      "get": {
+        "summary": "Paginated watch history with filter and search",
+        "operationId": "listWatchHistory",
+        "tags": ["Watch Progress"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "before", "in": "query", "schema": { "type": "string", "format": "date-time" }, "description": "Cursor: last_watched_at of the last item from the previous page" },
+          { "name": "limit",  "in": "query", "schema": { "type": "integer", "default": 40, "maximum": 100 } },
+          { "name": "filter", "in": "query", "schema": { "type": "string", "enum": ["all", "in_progress", "completed"], "default": "all" } },
+          { "name": "q",      "in": "query", "schema": { "type": "string" }, "description": "Case-insensitive LIKE match against anime title or title_zh" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["items"],
+                  "properties": {
+                    "items":       { "type": "array", "items": { "$ref": "#/components/schemas/WatchProgress" } },
+                    "next_before": { "type": "string", "format": "date-time", "nullable": true }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid filter value" }
+        }
+      }
+    },
+    "/api/v1/progress/batch-delete": {
+      "post": {
+        "summary": "Batch-delete watch progress rows",
+        "operationId": "batchDeleteWatchProgress",
+        "tags": ["Watch Progress"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ids"],
+                "properties": {
+                  "ids": { "type": "array", "items": { "type": "string" }, "maxItems": 200 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted count",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "deleted": { "type": "integer" } } }
+              }
+            }
+          },
+          "400": { "description": "More than 200 ids or invalid body" }
+        }
+      }
+    },
+    "/api/v1/progress/{id}": {
+      "delete": {
+        "summary": "Delete a single watch progress row",
+        "operationId": "deleteWatchProgress",
+        "tags": ["Watch Progress"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "deleted": { "type": "integer" } } }
+              }
+            }
+          },
+          "404": { "description": "Not found" }
         }
       }
     },
