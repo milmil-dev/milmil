@@ -7,7 +7,16 @@ import { usePreferencesStore } from '@/store/preferences-store';
 
 /* ── Constants ── */
 
-const FONT_SIZES = [16, 20, 24] as const;
+const DANMAKU_COLORS = [
+  { value: '#FFFFFF', label: '白' },
+  { value: '#FFE600', label: '黃' },
+  { value: '#FF6B6B', label: '紅' },
+  { value: '#66CCFF', label: '藍' },
+  { value: '#00FF00', label: '綠' },
+  { value: '#FF69B4', label: '粉' },
+  { value: '#FFA500', label: '橙' },
+  { value: '#CC66FF', label: '紫' },
+];
 const AREA_OPTIONS = [
   { value: 0.25, label: '1/4' },
   { value: 0.5, label: '1/2' },
@@ -21,21 +30,21 @@ const FONT_FAMILIES = [
   { value: 'monospace', label: '等寬' },
 ] as const;
 
-type View = 'main' | 'typeFilter' | 'area' | 'density' | 'fontSize' | 'font' | 'speed' | 'stroke';
+type View = 'main' | 'typeFilter' | 'area' | 'density' | 'font' | 'color' | 'speed' | 'stroke';
 
 const ic = 'w-[18px] h-[18px] text-white/50';
 
 /* ── Shared UI primitives (matching player settings style) ── */
 
 function MenuRow({ icon, label, value, onClick }: {
-  icon?: React.ReactNode; label: string; value?: string; onClick: () => void;
+  icon?: React.ReactNode; label: string; value?: React.ReactNode; onClick: () => void;
 }) {
   return (
     <button type="button" onClick={onClick}
       className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/[0.04] transition-colors">
       {icon && <span className="shrink-0">{icon}</span>}
       <span className="flex-1 text-[13px] text-white/80">{label}</span>
-      {value && <span className="text-[12px] text-white/35">{value}</span>}
+      {value && <span className="text-[12px] text-white/35 flex items-center">{value}</span>}
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/20 shrink-0"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
     </button>
   );
@@ -78,7 +87,7 @@ function SliderRow({ label, value, min, max, step, unit, onChange }: {
     <div className="px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[13px] text-white/70">{label}</span>
-        <span className="text-[12px] text-white/30 tabular-nums">{Math.round(value * (unit === '%' ? 100 : 1))}{unit}</span>
+        <span className="text-[12px] text-white/30 tabular-nums">{unit === '%' ? `${Math.round(value * 100)}%` : `${Math.round(value)}${unit ?? ''}`}</span>
       </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
@@ -126,6 +135,7 @@ export function DanmakuSettingsControls() {
   const filterTop = usePreferencesStore((s) => s.danmakuFilterTop);
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
+  const danmakuColor = usePreferencesStore((s) => s.danmakuColor);
   const update = usePreferencesStore((s) => s.updatePreference);
 
   const densityLabels: Record<string, string> = {
@@ -174,12 +184,31 @@ export function DanmakuSettingsControls() {
           ))}
         </>);
 
-      case 'fontSize':
+      case 'color':
         return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.fontSize`)} onBack={back} />
-          {FONT_SIZES.map((s) => (
-            <OptionRow key={s} label={`${s}px`} selected={fontSize === s} onClick={() => { update('danmakuFontSize', s); back(); }} />
-          ))}
+          <PanelHeader title={i18n._(msg`watch.danmaku.fontColor`)} onBack={back} />
+          <div className="px-3 py-3 grid grid-cols-4 gap-2">
+            {DANMAKU_COLORS.map((c) => (
+              <button
+                key={c.value}
+                type="button"
+                onClick={() => { update('danmakuColor', c.value); back(); }}
+                className={cn(
+                  'flex flex-col items-center gap-1.5 py-2 rounded-lg transition-colors',
+                  danmakuColor === c.value ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'
+                )}
+              >
+                <div
+                  className={cn(
+                    'w-6 h-6 rounded-full border-2',
+                    danmakuColor === c.value ? 'border-white/60' : 'border-white/10'
+                  )}
+                  style={{ backgroundColor: c.value }}
+                />
+                <span className="text-[10px] text-white/40">{c.label}</span>
+              </button>
+            ))}
+          </div>
         </>);
 
       case 'font':
@@ -216,8 +245,9 @@ export function DanmakuSettingsControls() {
           <MenuRow label={i18n._(msg`watch.danmaku.density`)} value={densityLabels[density]} onClick={() => go('density')} />
           <Divider />
           <SliderRow label={i18n._(msg`watch.danmaku.opacity`)} value={opacity} min={0.1} max={1} step={0.05} unit="%" onChange={(v) => update('danmakuOpacity', v)} />
+          <SliderRow label={i18n._(msg`watch.danmaku.fontSize`)} value={fontSize} min={12} max={36} step={1} unit="px" onChange={(v) => update('danmakuFontSize', v)} />
           <Divider />
-          <MenuRow label={i18n._(msg`watch.danmaku.fontSize`)} value={`${fontSize}px`} onClick={() => go('fontSize')} />
+          <MenuRow label={i18n._(msg`watch.danmaku.fontColor`)} value={<span className="inline-block w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: danmakuColor }} />} onClick={() => go('color')} />
           <MenuRow label={i18n._(msg`watch.danmaku.fontFamily`)} value={fontLabel} onClick={() => go('font')} />
           <MenuRow label={i18n._(msg`watch.danmaku.speed`)} value={speedLabels[speed] ?? i18n._(msg`watch.danmaku.normal`)} onClick={() => go('speed')} />
           <MenuRow label={i18n._(msg`watch.danmaku.strokeType`)} value={strokeLabels[stroke]} onClick={() => go('stroke')} />
