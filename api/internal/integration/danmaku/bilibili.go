@@ -88,7 +88,7 @@ func (b *BilibiliSource) Search(ctx context.Context, keyword string, page int) (
 			Title:        stripHTMLTags(r.Title),
 			DanmakuCount: r.Danmaku,
 			Duration:     r.Duration,
-			Thumbnail:    r.Pic,
+			Thumbnail:    fixProtocol(r.Pic),
 		})
 	}
 	return results, nil
@@ -221,6 +221,14 @@ func mapBilibiliMode(mode int) string {
 	default:
 		return "rtl"
 	}
+}
+
+// fixProtocol adds "https:" to protocol-relative URLs (//i0.hdslb.com/...).
+func fixProtocol(u string) string {
+	if strings.HasPrefix(u, "//") {
+		return "https:" + u
+	}
+	return u
 }
 
 var htmlTagRegexp = regexp.MustCompile(`<[^>]*>`)

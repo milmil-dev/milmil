@@ -4741,7 +4741,7 @@ msgstr "弾幕"
 
 #: src/components/watch/EpisodeSidebar.tsx:46
 msgid "watch.danmaku.externalSources"
-msgstr ""
+msgstr "弾幕ソース"
 
 #: src/components/DanmakuSettings.tsx:113
 #: src/components/DanmakuSettings.tsx:214
@@ -4755,19 +4755,19 @@ msgstr "フォントサイズ"
 
 #: src/components/watch/DanmakuSourceTab.tsx:207
 msgid "watch.danmaku.import"
-msgstr ""
+msgstr "インポート"
 
 #: src/components/watch/DanmakuSourceTab.tsx:218
 msgid "watch.danmaku.imported"
-msgstr ""
+msgstr "インポート済み"
 
 #: src/components/watch/DanmakuSourceTab.tsx:86
 msgid "watch.danmaku.importError"
-msgstr ""
+msgstr "インポートに失敗しました"
 
 #: src/components/watch/DanmakuSourceTab.tsx:206
 msgid "watch.danmaku.importing"
-msgstr ""
+msgstr "インポート中..."
 
 #: src/components/watch/DanmakuList.tsx:40
 msgid "watch.danmaku.noData"
@@ -4775,7 +4775,7 @@ msgstr "弾幕データがありません"
 
 #: src/components/watch/DanmakuSourceTab.tsx:174
 msgid "watch.danmaku.noResults"
-msgstr ""
+msgstr "結果が見つかりません"
 
 #: src/components/DanmakuSettings.tsx:112
 #: src/components/DanmakuSettings.tsx:213
@@ -4793,19 +4793,19 @@ msgstr "弾幕を送信…"
 
 #: src/components/watch/DanmakuSourceTab.tsx:234
 msgid "watch.danmaku.remove"
-msgstr ""
+msgstr "削除"
 
 #: src/components/watch/DanmakuSourceTab.tsx:153
 msgid "watch.danmaku.search"
-msgstr ""
+msgstr "検索"
 
 #: src/components/watch/DanmakuSourceTab.tsx:168
 msgid "watch.danmaku.searchError"
-msgstr ""
+msgstr "検索に失敗しました"
 
 #: src/components/watch/DanmakuSourceTab.tsx:144
 msgid "watch.danmaku.searchPlaceholder"
-msgstr ""
+msgstr "アニメ名 + 話数を検索..."
 
 #: src/components/watch/DanmakuBar.tsx:72
 msgid "watch.danmaku.send"
@@ -4822,7 +4822,7 @@ msgstr "遅い"
 
 #: src/components/watch/DanmakuSourceTab.tsx:121
 msgid "watch.danmaku.source"
-msgstr ""
+msgstr "ソース"
 
 #: src/components/DanmakuSettings.tsx:107
 #: src/components/DanmakuSettings.tsx:208
