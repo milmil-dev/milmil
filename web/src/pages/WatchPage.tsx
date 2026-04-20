@@ -913,6 +913,7 @@ export function WatchPage() {
                   so the player is never taller than the viewport. In default mode
                   the column's max-width (see below) already does the capping. */}
               <div
+                id="player-container"
                 className="relative aspect-video overflow-hidden bg-black lg:mx-auto"
                 style={
                   theaterMode
