@@ -237,9 +237,6 @@ export function DanmakuSettingsControls() {
 
       default:
         return (<>
-          {/* On/Off */}
-          <ToggleRow label={i18n._(msg`watch.danmaku`)} checked={enabled} onChange={() => update('danmakuEnabled', !enabled)} />
-          <Divider />
           <MenuRow label={i18n._(msg`watch.danmaku.typeFilter`)} value={activeFilters.join('·') || '—'} onClick={() => go('typeFilter')} />
           <MenuRow label={i18n._(msg`watch.danmaku.displayArea`)} value={areaLabel} onClick={() => go('area')} />
           <MenuRow label={i18n._(msg`watch.danmaku.density`)} value={densityLabels[density]} onClick={() => go('density')} />

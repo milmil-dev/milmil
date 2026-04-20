@@ -4,7 +4,9 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 import { DanmakuSettingsControls } from '@/components/DanmakuSettings';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 
@@ -19,8 +21,9 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const enabled = usePreferencesStore((s) => s.danmakuEnabled);
+  const update = usePreferencesStore((s) => s.updatePreference);
 
-  // Click outside to close
   useEffect(() => {
     if (!settingsOpen) return;
     const handler = (e: MouseEvent) => {
@@ -35,7 +38,6 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
   const sendDanmaku = async () => {
     const trimmed = text.trim();
     if (!trimmed || !fileId) return;
-
     const token = localStorage.getItem('milmil-token') ?? '';
     await fetch(`${API_URL}/api/v1/danmaku/${fileId}`, {
       method: 'POST',
@@ -45,44 +47,25 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
       },
       body: JSON.stringify({ text: trimmed }),
     });
-
     setText('');
     inputRef.current?.focus();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendDanmaku();
-    }
-  };
-
   return (
     <div className="flex items-center gap-2 px-3 py-2">
-      {/* Label */}
-      <span className="shrink-0 text-xs text-mm-text-secondary">
-        {i18n._(msg`watch.danmaku`)} ({danmakuCount})
-      </span>
-
-      {/* Input */}
-      <input
-        ref={inputRef}
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={i18n._(msg`watch.danmaku.placeholder`)}
-        className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2.5 py-1 text-xs text-mm-text placeholder:text-mm-text-muted outline-none focus:border-mm-accent/40 transition-colors"
-      />
-
-      {/* Send button */}
+      {/* On/Off switch (leftmost) */}
       <button
         type="button"
-        onClick={sendDanmaku}
-        disabled={!text.trim() || !fileId}
-        className="shrink-0 bg-mm-accent/80 text-black font-medium text-xs px-3 py-1 rounded transition-colors hover:bg-mm-accent disabled:opacity-40 disabled:cursor-not-allowed"
+        onClick={() => update('danmakuEnabled', !enabled)}
+        className={cn(
+          'shrink-0 w-8 h-[18px] rounded-full transition-colors relative',
+          enabled ? 'bg-white/20' : 'bg-white/[0.08]'
+        )}
       >
-        {i18n._(msg`watch.danmaku.send`)}
+        <div className={cn(
+          'absolute top-[3px] w-3 h-3 rounded-full transition-all',
+          enabled ? 'left-[17px] bg-white' : 'left-[3px] bg-white/40'
+        )} />
       </button>
 
       {/* Settings gear */}
@@ -102,13 +85,39 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.12 }}
-              className="absolute bottom-full right-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden shadow-xl shadow-black/40"
+              className="absolute bottom-full left-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden shadow-xl shadow-black/40"
             >
               <DanmakuSettingsControls />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      {/* Label */}
+      <span className="shrink-0 text-xs text-mm-text-secondary">
+        {i18n._(msg`watch.danmaku.loaded`, { count: danmakuCount })}
+      </span>
+
+      {/* Input */}
+      <input
+        ref={inputRef}
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && sendDanmaku()}
+        placeholder={i18n._(msg`watch.danmaku.placeholder`)}
+        className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2.5 py-1 text-xs text-mm-text placeholder:text-mm-text-muted outline-none focus:border-white/15 transition-colors"
+      />
+
+      {/* Send button */}
+      <button
+        type="button"
+        onClick={sendDanmaku}
+        disabled={!text.trim() || !fileId}
+        className="shrink-0 bg-white/[0.08] text-white/70 font-medium text-xs px-3 py-1 rounded transition-colors hover:bg-white/[0.12] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {i18n._(msg`watch.danmaku.send`)}
+      </button>
     </div>
   );
 }

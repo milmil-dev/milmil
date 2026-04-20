@@ -4819,31 +4819,28 @@ msgstr "Comments"
 msgid "watch.completed"
 msgstr "Watched"
 
-#: src/components/DanmakuSettings.tsx:312
-#: src/components/watch/DanmakuBar.tsx:64
 #: src/components/watch/EpisodeSidebar.tsx:43
 msgid "watch.danmaku"
 msgstr "Danmaku"
 
-#: src/components/DanmakuSettings.tsx:327
+#: src/components/DanmakuSettings.tsx:253
 msgid "watch.danmaku.antiSubtitle"
 msgstr "Avoid subtitles"
 
-#: src/components/DanmakuSettings.tsx:242
-#: src/components/DanmakuSettings.tsx:329
+#: src/components/watch/DanmakuList.tsx:64
 msgid "watch.danmaku.blockKeywords"
 msgstr "Block Keywords"
 
-#: src/components/DanmakuSettings.tsx:255
+#: src/components/watch/DanmakuList.tsx:90
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "Enter keyword..."
 
-#: src/components/DanmakuSettings.tsx:326
+#: src/components/DanmakuSettings.tsx:252
 msgid "watch.danmaku.bold"
 msgstr "Bold"
 
-#: src/components/DanmakuSettings.tsx:161
-#: src/components/DanmakuSettings.tsx:170
+#: src/components/DanmakuSettings.tsx:159
+#: src/components/DanmakuSettings.tsx:168
 msgid "watch.danmaku.bottom"
 msgstr "Bottom"
 
@@ -4851,7 +4848,7 @@ msgstr "Bottom"
 #~ msgid "watch.danmaku.cached"
 #~ msgstr "24h"
 
-#: src/components/DanmakuSettings.tsx:304
+#: src/components/watch/DanmakuList.tsx:128
 msgid "watch.danmaku.clearAllBlock"
 msgstr "Clear all"
 
@@ -4871,25 +4868,25 @@ msgstr "Close"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#: src/components/DanmakuSettings.tsx:183
-#: src/components/DanmakuSettings.tsx:316
+#: src/components/DanmakuSettings.tsx:181
+#: src/components/DanmakuSettings.tsx:242
 msgid "watch.danmaku.density"
 msgstr "Density"
 
-#: src/components/DanmakuSettings.tsx:146
+#: src/components/DanmakuSettings.tsx:144
 msgid "watch.danmaku.densityHigh"
 msgstr "High"
 
-#: src/components/DanmakuSettings.tsx:144
+#: src/components/DanmakuSettings.tsx:142
 msgid "watch.danmaku.densityLow"
 msgstr "Low"
 
-#: src/components/DanmakuSettings.tsx:145
+#: src/components/DanmakuSettings.tsx:143
 msgid "watch.danmaku.densityMedium"
 msgstr "Medium"
 
-#: src/components/DanmakuSettings.tsx:175
-#: src/components/DanmakuSettings.tsx:315
+#: src/components/DanmakuSettings.tsx:173
+#: src/components/DanmakuSettings.tsx:241
 msgid "watch.danmaku.displayArea"
 msgstr "Display Area"
 
@@ -4897,21 +4894,21 @@ msgstr "Display Area"
 msgid "watch.danmaku.externalSources"
 msgstr "Danmaku Sources"
 
-#: src/components/DanmakuSettings.tsx:151
+#: src/components/DanmakuSettings.tsx:149
 msgid "watch.danmaku.fast"
 msgstr "Fast"
 
-#: src/components/DanmakuSettings.tsx:191
-#: src/components/DanmakuSettings.tsx:321
+#: src/components/DanmakuSettings.tsx:189
+#: src/components/DanmakuSettings.tsx:247
 msgid "watch.danmaku.fontColor"
 msgstr "Font Color"
 
-#: src/components/DanmakuSettings.tsx:218
-#: src/components/DanmakuSettings.tsx:322
+#: src/components/DanmakuSettings.tsx:216
+#: src/components/DanmakuSettings.tsx:248
 msgid "watch.danmaku.fontFamily"
 msgstr "Font"
 
-#: src/components/DanmakuSettings.tsx:319
+#: src/components/DanmakuSettings.tsx:245
 msgid "watch.danmaku.fontSize"
 msgstr "Font Size"
 
@@ -4931,11 +4928,15 @@ msgstr "Import failed, please try again"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "Importing..."
 
-#: src/components/DanmakuSettings.tsx:275
-msgid "watch.danmaku.noBlockKeywords"
-msgstr "No blocked keywords"
+#: src/components/watch/DanmakuBar.tsx:95
+msgid "watch.danmaku.loaded"
+msgstr "{count} danmaku loaded"
 
-#: src/components/watch/DanmakuList.tsx:40
+#: src/components/DanmakuSettings.tsx:275
+#~ msgid "watch.danmaku.noBlockKeywords"
+#~ msgstr "No blocked keywords"
+
+#: src/components/watch/DanmakuList.tsx:141
 msgid "watch.danmaku.noData"
 msgstr "No danmaku data"
 
@@ -4943,16 +4944,16 @@ msgstr "No danmaku data"
 msgid "watch.danmaku.noResults"
 msgstr "No results found"
 
-#: src/components/DanmakuSettings.tsx:150
-#: src/components/DanmakuSettings.tsx:323
+#: src/components/DanmakuSettings.tsx:148
+#: src/components/DanmakuSettings.tsx:249
 msgid "watch.danmaku.normal"
 msgstr "Normal"
 
-#: src/components/DanmakuSettings.tsx:318
+#: src/components/DanmakuSettings.tsx:244
 msgid "watch.danmaku.opacity"
 msgstr "Opacity"
 
-#: src/components/watch/DanmakuBar.tsx:74
+#: src/components/watch/DanmakuBar.tsx:105
 msgid "watch.danmaku.placeholder"
 msgstr "Send danmaku..."
 
@@ -4972,8 +4973,8 @@ msgstr "Danmaku saved permanently"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "Save permanently"
 
-#: src/components/DanmakuSettings.tsx:161
-#: src/components/DanmakuSettings.tsx:168
+#: src/components/DanmakuSettings.tsx:159
+#: src/components/DanmakuSettings.tsx:166
 msgid "watch.danmaku.scroll"
 msgstr "Scroll"
 
@@ -4993,7 +4994,7 @@ msgstr "Search anime name + episode..."
 msgid "watch.danmaku.selectPart"
 msgstr "Select part"
 
-#: src/components/watch/DanmakuBar.tsx:85
+#: src/components/watch/DanmakuBar.tsx:116
 msgid "watch.danmaku.send"
 msgstr "Send"
 
@@ -5001,7 +5002,7 @@ msgstr "Send"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "D"
 
-#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:147
 msgid "watch.danmaku.slow"
 msgstr "Slow"
 
@@ -5009,35 +5010,35 @@ msgstr "Slow"
 msgid "watch.danmaku.source"
 msgstr "Source"
 
-#: src/components/DanmakuSettings.tsx:226
-#: src/components/DanmakuSettings.tsx:323
+#: src/components/DanmakuSettings.tsx:224
+#: src/components/DanmakuSettings.tsx:249
 msgid "watch.danmaku.speed"
 msgstr "Speed"
 
-#: src/components/DanmakuSettings.tsx:154
+#: src/components/DanmakuSettings.tsx:152
 msgid "watch.danmaku.strokeNone"
 msgstr "None"
 
-#: src/components/DanmakuSettings.tsx:156
+#: src/components/DanmakuSettings.tsx:154
 msgid "watch.danmaku.strokeOutline"
 msgstr "Outline"
 
-#: src/components/DanmakuSettings.tsx:155
+#: src/components/DanmakuSettings.tsx:153
 msgid "watch.danmaku.strokeShadow"
 msgstr "Shadow"
 
-#: src/components/DanmakuSettings.tsx:234
-#: src/components/DanmakuSettings.tsx:324
+#: src/components/DanmakuSettings.tsx:232
+#: src/components/DanmakuSettings.tsx:250
 msgid "watch.danmaku.strokeType"
 msgstr "Stroke"
 
-#: src/components/DanmakuSettings.tsx:161
-#: src/components/DanmakuSettings.tsx:169
+#: src/components/DanmakuSettings.tsx:159
+#: src/components/DanmakuSettings.tsx:167
 msgid "watch.danmaku.top"
 msgstr "Top"
 
-#: src/components/DanmakuSettings.tsx:167
-#: src/components/DanmakuSettings.tsx:314
+#: src/components/DanmakuSettings.tsx:165
+#: src/components/DanmakuSettings.tsx:240
 msgid "watch.danmaku.typeFilter"
 msgstr "Type Filter"
 
