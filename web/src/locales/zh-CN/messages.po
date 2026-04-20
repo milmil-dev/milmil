@@ -4810,15 +4810,20 @@ msgstr "已观看"
 msgid "watch.danmaku"
 msgstr "弹幕"
 
+#: src/components/watch/DanmakuList.tsx:147
+msgid "watch.danmaku.addBlock"
+msgstr "新增"
+
 #: src/components/DanmakuSettings.tsx:253
 msgid "watch.danmaku.antiSubtitle"
 msgstr "防擋字幕"
 
-#: src/components/watch/DanmakuList.tsx:64
+#: src/components/watch/DanmakuList.tsx:117
+#: src/components/watch/DanmakuList.tsx:127
 msgid "watch.danmaku.blockKeywords"
 msgstr "屏蔽詞"
 
-#: src/components/watch/DanmakuList.tsx:90
+#: src/components/watch/DanmakuList.tsx:138
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "輸入關鍵詞..."
 
@@ -4835,7 +4840,7 @@ msgstr "底部"
 #~ msgid "watch.danmaku.cached"
 #~ msgstr "24h"
 
-#: src/components/watch/DanmakuList.tsx:128
+#: src/components/watch/DanmakuList.tsx:184
 msgid "watch.danmaku.clearAllBlock"
 msgstr "清除全部"
 
@@ -4927,11 +4932,11 @@ msgstr "導入失敗，請重試"
 msgid "watch.danmaku.loaded"
 msgstr "已裝填{count}條彈幕"
 
-#: src/components/DanmakuSettings.tsx:275
-#~ msgid "watch.danmaku.noBlockKeywords"
-#~ msgstr "暫無屏蔽詞"
+#: src/components/watch/DanmakuList.tsx:154
+msgid "watch.danmaku.noBlockKeywords"
+msgstr "暫無屏蔽詞"
 
-#: src/components/watch/DanmakuList.tsx:141
+#: src/components/watch/DanmakuList.tsx:53
 msgid "watch.danmaku.noData"
 msgstr "没有弹幕数据"
 

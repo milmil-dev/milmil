@@ -1,11 +1,17 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { AnimatePresence, motion } from 'motion/react';
 import { useRef, useMemo, useState } from 'react';
 import type { DanmakuComment } from '@/lib/api/stream';
 import { cn } from '@/lib/utils';
 import { usePreferencesStore } from '@/store/preferences-store';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface DanmakuListProps {
   comments: DanmakuComment[];
@@ -23,18 +29,6 @@ function formatTime(seconds: number): string {
 export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
   const { i18n } = useLingui();
   const parentRef = useRef<HTMLDivElement>(null);
-  const [showBlock, setShowBlock] = useState(false);
-  const [newKeyword, setNewKeyword] = useState('');
-  const blockKeywords = usePreferencesStore((s) => s.danmakuBlockKeywords);
-  const update = usePreferencesStore((s) => s.updatePreference);
-
-  const addKeyword = () => {
-    const kw = newKeyword.trim();
-    if (kw && !blockKeywords.includes(kw)) {
-      update('danmakuBlockKeywords', [...blockKeywords, kw]);
-    }
-    setNewKeyword('');
-  };
 
   const sorted = useMemo(
     () => [...comments].sort((a, b) => a.time - b.time),
@@ -50,90 +44,8 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
 
   return (
     <div className="flex flex-col gap-2 h-full">
-      {/* Block keywords toggle + panel */}
-      <div>
-        <button
-          type="button"
-          onClick={() => setShowBlock((v) => !v)}
-          className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/50 transition-colors"
-        >
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" className="w-3.5 h-3.5">
-            <circle cx="8" cy="8" r="6" />
-            <path d="M4.5 11.5l7-7" />
-          </svg>
-          {i18n._(msg`watch.danmaku.blockKeywords`)}
-          {blockKeywords.length > 0 && (
-            <span className="text-[10px] text-white/20">({blockKeywords.length})</span>
-          )}
-          <svg viewBox="0 0 12 12" fill="currentColor" className={cn('w-2.5 h-2.5 text-white/20 transition-transform', showBlock && 'rotate-180')}>
-            <path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </button>
-
-        <AnimatePresence>
-          {showBlock && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="overflow-hidden"
-            >
-              <div className="pt-2 space-y-2">
-                {/* Input */}
-                <div className="flex gap-1.5">
-                  <input
-                    type="text"
-                    value={newKeyword}
-                    onChange={(e) => setNewKeyword(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addKeyword()}
-                    placeholder={i18n._(msg`watch.danmaku.blockPlaceholder`)}
-                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/15 outline-none focus:border-white/15"
-                  />
-                  <button
-                    type="button"
-                    onClick={addKeyword}
-                    disabled={!newKeyword.trim()}
-                    className="shrink-0 text-[11px] text-white/40 hover:text-white/70 px-1.5 rounded bg-white/[0.04] hover:bg-white/[0.08] disabled:opacity-30 transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-
-                {/* Keywords */}
-                {blockKeywords.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {blockKeywords.map((kw, idx) => (
-                      <span
-                        key={`${kw}-${idx}`}
-                        className="inline-flex items-center gap-1 bg-white/[0.06] text-[10px] text-white/50 rounded px-1.5 py-0.5"
-                      >
-                        {kw}
-                        <button
-                          type="button"
-                          onClick={() => update('danmakuBlockKeywords', blockKeywords.filter((_, i) => i !== idx))}
-                          className="text-white/20 hover:text-white/50 transition-colors"
-                        >
-                          <svg viewBox="0 0 8 8" className="w-2 h-2">
-                            <path d="M1 1l6 6M7 1l-6 6" stroke="currentColor" strokeWidth="1.5" fill="none" />
-                          </svg>
-                        </button>
-                      </span>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => update('danmakuBlockKeywords', [])}
-                      className="text-[10px] text-red-400/40 hover:text-red-400/70 px-1 transition-colors"
-                    >
-                      {i18n._(msg`watch.danmaku.clearAllBlock`)}
-                    </button>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* Block keywords button → opens modal */}
+      <BlockKeywordsModal />
 
       {/* Danmaku list */}
       {sorted.length === 0 ? (
@@ -172,5 +84,109 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
         </div>
       )}
     </div>
+  );
+}
+
+/* ── Block Keywords Modal ── */
+
+function BlockKeywordsModal() {
+  const { i18n } = useLingui();
+  const [newKeyword, setNewKeyword] = useState('');
+  const blockKeywords = usePreferencesStore((s) => s.danmakuBlockKeywords);
+  const update = usePreferencesStore((s) => s.updatePreference);
+
+  const addKeyword = () => {
+    const kw = newKeyword.trim();
+    if (kw && !blockKeywords.includes(kw)) {
+      update('danmakuBlockKeywords', [...blockKeywords, kw]);
+    }
+    setNewKeyword('');
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/50 transition-colors"
+        >
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" className="w-3.5 h-3.5">
+            <circle cx="8" cy="8" r="6" />
+            <path d="M4.5 11.5l7-7" />
+          </svg>
+          {i18n._(msg`watch.danmaku.blockKeywords`)}
+          {blockKeywords.length > 0 && (
+            <span className="text-[10px] text-white/20">({blockKeywords.length})</span>
+          )}
+        </button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-md bg-[#1c1c1c] border-white/[0.06]" data-settings-panel>
+        <DialogHeader>
+          <DialogTitle className="text-white/80">
+            {i18n._(msg`watch.danmaku.blockKeywords`)}
+          </DialogTitle>
+        </DialogHeader>
+
+        {/* Add keyword input */}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newKeyword}
+            onChange={(e) => setNewKeyword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addKeyword()}
+            placeholder={i18n._(msg`watch.danmaku.blockPlaceholder`)}
+            className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/15"
+          />
+          <button
+            type="button"
+            onClick={addKeyword}
+            disabled={!newKeyword.trim()}
+            className="shrink-0 text-sm text-white/60 hover:text-white px-3 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] disabled:opacity-30 transition-colors"
+          >
+            {i18n._(msg`watch.danmaku.addBlock`)}
+          </button>
+        </div>
+
+        {/* Keywords list */}
+        {blockKeywords.length === 0 ? (
+          <div className="py-8 text-center text-sm text-white/20">
+            {i18n._(msg`watch.danmaku.noBlockKeywords`)}
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-wrap gap-2 max-h-[300px] overflow-y-auto py-1">
+              {blockKeywords.map((kw, idx) => (
+                <span
+                  key={`${kw}-${idx}`}
+                  className="inline-flex items-center gap-1.5 bg-white/[0.06] text-sm text-white/60 rounded-lg px-3 py-1.5 group"
+                >
+                  {kw}
+                  <button
+                    type="button"
+                    onClick={() => update('danmakuBlockKeywords', blockKeywords.filter((_, i) => i !== idx))}
+                    className="text-white/20 group-hover:text-white/50 hover:!text-red-400/70 transition-colors"
+                  >
+                    <svg viewBox="0 0 10 10" className="w-2.5 h-2.5">
+                      <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            <div className="flex justify-end pt-1">
+              <button
+                type="button"
+                onClick={() => update('danmakuBlockKeywords', [])}
+                className="text-[12px] text-red-400/50 hover:text-red-400/80 transition-colors"
+              >
+                {i18n._(msg`watch.danmaku.clearAllBlock`)}
+              </button>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
