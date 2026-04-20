@@ -104,31 +104,35 @@ function AlertDialogAction({
   ...props
 }: React.ComponentProps<'button'>) {
   return (
-    <AlertDialogPrimitive.Close>
-      <Button
-        data-slot="alert-dialog-action"
-        className={cn(className)}
-        onClick={onClick}
-        {...props}
-      >
-        {children}
-      </Button>
-    </AlertDialogPrimitive.Close>
+    <AlertDialogPrimitive.Close
+      render={
+        <Button
+          data-slot="alert-dialog-action"
+          className={cn(className)}
+          onClick={onClick}
+          {...props}
+        >
+          {children}
+        </Button>
+      }
+    />
   );
 }
 
 function AlertDialogCancel({ className, children, ...props }: React.ComponentProps<'button'>) {
   return (
-    <AlertDialogPrimitive.Close>
-      <Button
-        variant="outline"
-        data-slot="alert-dialog-cancel"
-        className={cn(className)}
-        {...props}
-      >
-        {children}
-      </Button>
-    </AlertDialogPrimitive.Close>
+    <AlertDialogPrimitive.Close
+      render={
+        <Button
+          variant="outline"
+          data-slot="alert-dialog-cancel"
+          className={cn(className)}
+          {...props}
+        >
+          {children}
+        </Button>
+      }
+    />
   );
 }
 

@@ -1407,7 +1407,7 @@ msgstr "common.clickToCopy"
 
 #: src/components/history/ConfirmDialog.tsx:49
 msgid "common.confirm"
-msgstr "common.confirm"
+msgstr "Confirm"
 
 #: src/pages/LibraryDetailPage.tsx:1830
 msgid "common.confirmDelete"
