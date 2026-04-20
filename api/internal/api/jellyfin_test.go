@@ -22,7 +22,7 @@ func getJellyfinToken(t *testing.T, e interface{ ServeHTTP(http.ResponseWriter, 
 	t.Helper()
 
 	// Create user via milmil setup
-	setupBody := `{"username":"testuser","password":"password123"}`
+	setupBody := `{"username":"testuser","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(setupBody))
 	req.Header.Set("Content-Type", "application/json")
 	rec := httptest.NewRecorder()
@@ -30,7 +30,7 @@ func getJellyfinToken(t *testing.T, e interface{ ServeHTTP(http.ResponseWriter, 
 	// 201 = created, 403 = already initialized (both fine)
 
 	// Authenticate via Jellyfin
-	authBody := `{"Username":"testuser","Pw":"password123"}`
+	authBody := `{"Username":"testuser","Pw":"Tr0ub4dor&3xplod3"}`
 	req2 := httptest.NewRequest(http.MethodPost, "/jellyfin/Users/AuthenticateByName", strings.NewReader(authBody))
 	req2.Header.Set("Content-Type", "application/json")
 	rec2 := httptest.NewRecorder()
@@ -82,13 +82,13 @@ func TestJellyfin_AuthenticateByName(t *testing.T) {
 	e := newTestApp(t)
 
 	// Create user
-	setupBody := `{"username":"testuser","password":"password123"}`
+	setupBody := `{"username":"testuser","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(setupBody))
 	req.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(httptest.NewRecorder(), req)
 
 	// Authenticate via Jellyfin
-	authBody := `{"Username":"testuser","Pw":"password123"}`
+	authBody := `{"Username":"testuser","Pw":"Tr0ub4dor&3xplod3"}`
 	req2 := httptest.NewRequest(http.MethodPost, "/jellyfin/Users/AuthenticateByName", strings.NewReader(authBody))
 	req2.Header.Set("Content-Type", "application/json")
 	rec2 := httptest.NewRecorder()
@@ -122,7 +122,7 @@ func TestJellyfin_AuthenticateByName_WrongPassword(t *testing.T) {
 	e := newTestApp(t)
 
 	// Create user
-	setupBody := `{"username":"testuser","password":"password123"}`
+	setupBody := `{"username":"testuser","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(setupBody))
 	req.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(httptest.NewRecorder(), req)
