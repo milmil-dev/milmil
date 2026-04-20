@@ -56,6 +56,7 @@ export function DanmakuSourceTab({
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const [loadingPartsFor, setLoadingPartsFor] = useState<string | null>(null);
   const [videoParts, setVideoParts] = useState<VideoPart[]>([]);
+  const [saveToLocal, setSaveToLocal] = useState(false);
 
   useEffect(() => {
     setKeyword(buildKeyword());
@@ -83,7 +84,7 @@ export function DanmakuSourceTab({
 
   const importMutation = useMutation({
     mutationFn: ({ videoId, partIndex }: { videoId: string; partIndex: number }) =>
-      externalDanmakuApi.import(selectedSource, videoId, mediaFileId!, partIndex),
+      externalDanmakuApi.import(selectedSource, videoId, mediaFileId!, partIndex, saveToLocal),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
@@ -184,6 +185,19 @@ export function DanmakuSourceTab({
           {searching ? <Spinner size={12} /> : i18n._(msg`watch.danmaku.search`)}
         </button>
       </div>
+
+      {/* Save toggle */}
+      <label className="flex items-center gap-2 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={saveToLocal}
+          onChange={(e) => setSaveToLocal(e.target.checked)}
+          className="w-3.5 h-3.5 rounded border-white/20 bg-white/[0.04] accent-blue-500"
+        />
+        <span className="text-[11px] text-white/40">
+          {i18n._(msg`watch.danmaku.saveLocal`)}
+        </span>
+      </label>
 
       {/* Results */}
       {searchTriggered && (
@@ -351,12 +365,23 @@ export function DanmakuSourceTab({
                 className="flex items-center justify-between py-2 group"
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500/50" />
+                  <span className={cn(
+                    'w-1.5 h-1.5 rounded-full',
+                    item.saved ? 'bg-blue-400/60' : 'bg-green-500/50'
+                  )} />
                   <span className="text-xs text-white/50">
                     {item.source}
                   </span>
                   <span className="text-[11px] text-white/25">
                     {formatCount(item.count)} 弹幕
+                  </span>
+                  <span className={cn(
+                    'text-[10px] px-1 py-0.5 rounded',
+                    item.saved
+                      ? 'bg-blue-500/10 text-blue-400/50'
+                      : 'bg-white/[0.04] text-white/20'
+                  )}>
+                    {item.saved ? i18n._(msg`watch.danmaku.saved`) : i18n._(msg`watch.danmaku.cached`)}
                   </span>
                 </div>
                 <button

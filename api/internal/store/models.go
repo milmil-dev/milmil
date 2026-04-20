@@ -119,6 +119,17 @@ type Episode struct {
 	PreferredManuallySet int64          `json:"preferred_manually_set"`
 }
 
+type ExternalDanmaku struct {
+	ID           int64  `json:"id"`
+	MediaFileID  string `json:"media_file_id"`
+	Source       string `json:"source"`
+	VideoID      string `json:"video_id"`
+	PartIndex    int64  `json:"part_index"`
+	CommentsJson string `json:"comments_json"`
+	CommentCount int64  `json:"comment_count"`
+	CreatedAt    string `json:"created_at"`
+}
+
 type HotTag struct {
 	ID        int64  `json:"id"`
 	Name      string `json:"name"`

@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/integration/danmaku"
+	"github.com/milmil/api/internal/store"
 )
 
 func (h *handler) handleListDanmakuSources(c echo.Context) error {
@@ -82,6 +83,7 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 		VideoID     string `json:"videoId"`
 		MediaFileID string `json:"mediaFileId"`
 		PartIndex   int    `json:"partIndex"`
+		Save        bool   `json:"save"`
 	}
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -101,13 +103,31 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "fetch failed: "+err.Error())
 	}
 
-	cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", req.MediaFileID, req.Source)
 	data, _ := json.Marshal(comments)
-	_ = h.cache.Set(ctx, cacheKey, data, 24*time.Hour)
+
+	if req.Save {
+		// Persist to database
+		_, dbErr := h.queries.UpsertExternalDanmaku(ctx, store.UpsertExternalDanmakuParams{
+			MediaFileID:  req.MediaFileID,
+			Source:       req.Source,
+			VideoID:      req.VideoID,
+			PartIndex:    int64(req.PartIndex),
+			CommentsJson: string(data),
+			CommentCount: int64(len(comments)),
+		})
+		if dbErr != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "save failed: "+dbErr.Error())
+		}
+	} else {
+		// Cache with 24h TTL
+		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", req.MediaFileID, req.Source)
+		_ = h.cache.Set(ctx, cacheKey, data, 24*time.Hour)
+	}
 
 	return c.JSON(http.StatusOK, map[string]any{
 		"source":   req.Source,
 		"count":    len(comments),
+		"saved":    req.Save,
 		"comments": comments,
 	})
 }
@@ -119,14 +139,38 @@ func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
 	type importedSource struct {
 		Source   string            `json:"source"`
 		Count   int               `json:"count"`
+		Saved   bool              `json:"saved"`
 		Comments []danmaku.Comment `json:"comments"`
 	}
 
+	seen := make(map[string]bool)
 	var imported []importedSource
+
+	// 1. Load from database (permanent)
+	dbRows, err := h.queries.GetExternalDanmakuByMediaFile(ctx, mediaFileID)
+	if err == nil {
+		for _, row := range dbRows {
+			var comments []danmaku.Comment
+			if json.Unmarshal([]byte(row.CommentsJson), &comments) == nil && len(comments) > 0 {
+				imported = append(imported, importedSource{
+					Source:   row.Source,
+					Count:    len(comments),
+					Saved:    true,
+					Comments: comments,
+				})
+				seen[row.Source] = true
+			}
+		}
+	}
+
+	// 2. Load from cache (temporary, skip sources already in DB)
 	for _, name := range h.danmakuRegistry.Names() {
+		if seen[name] {
+			continue
+		}
 		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, name)
-		data, err := h.cache.Get(ctx, cacheKey)
-		if err != nil {
+		data, cacheErr := h.cache.Get(ctx, cacheKey)
+		if cacheErr != nil {
 			continue
 		}
 		var comments []danmaku.Comment
@@ -134,6 +178,7 @@ func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
 			imported = append(imported, importedSource{
 				Source:   name,
 				Count:    len(comments),
+				Saved:    false,
 				Comments: comments,
 			})
 		}
@@ -148,9 +193,16 @@ func (h *handler) handleRemoveImportedDanmaku(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	if sourceName != "" {
+		// Remove from both DB and cache
+		_ = h.queries.DeleteExternalDanmaku(ctx, store.DeleteExternalDanmakuParams{
+			MediaFileID: mediaFileID,
+			Source:      sourceName,
+		})
 		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, sourceName)
 		_ = h.cache.Del(ctx, cacheKey)
 	} else {
+		// Remove all
+		_ = h.queries.DeleteAllExternalDanmaku(ctx, mediaFileID)
 		for _, name := range h.danmakuRegistry.Names() {
 			cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, name)
 			_ = h.cache.Del(ctx, cacheKey)
