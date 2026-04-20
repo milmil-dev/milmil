@@ -37,6 +37,7 @@ type Querier interface {
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAPIToken(ctx context.Context, arg DeleteAPITokenParams) error
+	DeleteAllExternalDanmaku(ctx context.Context, mediaFileID string) error
 	DeleteAllNotifications(ctx context.Context) error
 	DeleteAnime(ctx context.Context, id string) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
@@ -44,6 +45,7 @@ type Querier interface {
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteEpisodesByAnimeID(ctx context.Context, animeID string) error
+	DeleteExternalDanmaku(ctx context.Context, arg DeleteExternalDanmakuParams) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteMediaFileByID(ctx context.Context, id string) error
@@ -76,6 +78,7 @@ type Querier interface {
 	GetEpisode(ctx context.Context, id string) (Episode, error)
 	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
+	GetExternalDanmakuByMediaFile(ctx context.Context, mediaFileID string) ([]ExternalDanmaku, error)
 	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
 	GetLatestCompletedSyncOp(ctx context.Context, arg GetLatestCompletedSyncOpParams) (SyncOutbox, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
@@ -199,6 +202,7 @@ type Querier interface {
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
 	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error
 	UpsertBackupConfig(ctx context.Context, arg UpsertBackupConfigParams) (BackupConfig, error)
+	UpsertExternalDanmaku(ctx context.Context, arg UpsertExternalDanmakuParams) (ExternalDanmaku, error)
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
 	UpsertSyncProviderState(ctx context.Context, arg UpsertSyncProviderStateParams) error
