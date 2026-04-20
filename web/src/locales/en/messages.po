@@ -4852,6 +4852,14 @@ msgstr "Bottom"
 msgid "watch.danmaku.clearAllBlock"
 msgstr "Clear all"
 
+#: src/components/watch/DanmakuBar.tsx:57
+msgid "watch.danmaku.clickToDisable"
+msgstr "Hide danmaku"
+
+#: src/components/watch/DanmakuBar.tsx:57
+msgid "watch.danmaku.clickToEnable"
+msgstr "Show danmaku"
+
 #: src/components/watch/DanmakuSourceTab.tsx:378
 msgid "watch.danmaku.clickToPin"
 msgstr "Pin to save permanently"
@@ -4928,7 +4936,7 @@ msgstr "Import failed, please try again"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "Importing..."
 
-#: src/components/watch/DanmakuBar.tsx:95
+#: src/components/watch/DanmakuBar.tsx:103
 msgid "watch.danmaku.loaded"
 msgstr "{count} danmaku loaded"
 
@@ -4953,7 +4961,7 @@ msgstr "Normal"
 msgid "watch.danmaku.opacity"
 msgstr "Opacity"
 
-#: src/components/watch/DanmakuBar.tsx:105
+#: src/components/watch/DanmakuBar.tsx:113
 msgid "watch.danmaku.placeholder"
 msgstr "Send danmaku..."
 
@@ -4994,7 +5002,7 @@ msgstr "Search anime name + episode..."
 msgid "watch.danmaku.selectPart"
 msgstr "Select part"
 
-#: src/components/watch/DanmakuBar.tsx:116
+#: src/components/watch/DanmakuBar.tsx:124
 msgid "watch.danmaku.send"
 msgstr "Send"
 

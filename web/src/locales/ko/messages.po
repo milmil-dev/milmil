@@ -4841,6 +4841,14 @@ msgstr "하단"
 msgid "watch.danmaku.clearAllBlock"
 msgstr "모두 삭제"
 
+#: src/components/watch/DanmakuBar.tsx:57
+msgid "watch.danmaku.clickToDisable"
+msgstr "탄막 숨기기"
+
+#: src/components/watch/DanmakuBar.tsx:57
+msgid "watch.danmaku.clickToEnable"
+msgstr "탄막 보이기"
+
 #: src/components/watch/DanmakuSourceTab.tsx:378
 msgid "watch.danmaku.clickToPin"
 msgstr "고정하여 영구 저장"
@@ -4917,7 +4925,7 @@ msgstr "가져오기 실패"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "가져오는 중..."
 
-#: src/components/watch/DanmakuBar.tsx:95
+#: src/components/watch/DanmakuBar.tsx:103
 msgid "watch.danmaku.loaded"
 msgstr "탄막 {count}개 로드됨"
 
@@ -4942,7 +4950,7 @@ msgstr "보통"
 msgid "watch.danmaku.opacity"
 msgstr "불투명도"
 
-#: src/components/watch/DanmakuBar.tsx:105
+#: src/components/watch/DanmakuBar.tsx:113
 msgid "watch.danmaku.placeholder"
 msgstr "탄막 보내기…"
 
@@ -4983,7 +4991,7 @@ msgstr "애니메이션 이름 + 화 검색..."
 msgid "watch.danmaku.selectPart"
 msgstr "파트 선택"
 
-#: src/components/watch/DanmakuBar.tsx:116
+#: src/components/watch/DanmakuBar.tsx:124
 msgid "watch.danmaku.send"
 msgstr "보내기"
 

@@ -4839,6 +4839,14 @@ msgstr "底部"
 msgid "watch.danmaku.clearAllBlock"
 msgstr "清除全部"
 
+#: src/components/watch/DanmakuBar.tsx:57
+msgid "watch.danmaku.clickToDisable"
+msgstr "關閉彈幕"
+
+#: src/components/watch/DanmakuBar.tsx:57
+msgid "watch.danmaku.clickToEnable"
+msgstr "開啟彈幕"
+
 #: src/components/watch/DanmakuSourceTab.tsx:378
 msgid "watch.danmaku.clickToPin"
 msgstr "釘選以永久保存"
@@ -4915,7 +4923,7 @@ msgstr "導入失敗，請重試"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "導入中..."
 
-#: src/components/watch/DanmakuBar.tsx:95
+#: src/components/watch/DanmakuBar.tsx:103
 msgid "watch.danmaku.loaded"
 msgstr "已裝填{count}條彈幕"
 
@@ -4940,7 +4948,7 @@ msgstr "正常"
 msgid "watch.danmaku.opacity"
 msgstr "不透明度"
 
-#: src/components/watch/DanmakuBar.tsx:105
+#: src/components/watch/DanmakuBar.tsx:113
 msgid "watch.danmaku.placeholder"
 msgstr "发送弹幕…"
 
@@ -4981,7 +4989,7 @@ msgstr "搜索動畫名 + 集數..."
 msgid "watch.danmaku.selectPart"
 msgstr "選擇分P"
 
-#: src/components/watch/DanmakuBar.tsx:116
+#: src/components/watch/DanmakuBar.tsx:124
 msgid "watch.danmaku.send"
 msgstr "发送"
 
