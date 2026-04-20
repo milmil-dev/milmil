@@ -55,39 +55,45 @@ const VIEW_PARENT: Record<Exclude<View, 'main'>, View> = {
 
 /* ─── Constants ──────────────────────────────────────────────────── */
 
-const PRESET_OPTIONS = [
-  { value: 'default', label: 'Default' },
-  { value: 'cinema', label: 'Cinema' },
-  { value: 'anime', label: 'Anime' },
-  { value: 'highContrast', label: 'High Contrast' },
-];
-const SHADOW_OPTIONS = [
-  { value: 'none' as const, label: 'None' },
-  { value: 'outline' as const, label: 'Outline' },
-  { value: 'drop-shadow' as const, label: 'Drop Shadow' },
-  { value: 'raised' as const, label: 'Raised' },
-  { value: 'depressed' as const, label: 'Depressed' },
-];
-const POSITION_OPTIONS = [
-  { value: 'top' as const, label: 'Top' },
-  { value: 'center' as const, label: 'Center' },
-  { value: 'bottom' as const, label: 'Bottom' },
-];
-const FONT_OPTIONS = [
-  { value: '', label: 'Default' },
-  { value: 'Noto Sans CJK, sans-serif', label: 'Noto Sans CJK' },
-  { value: 'Arial, sans-serif', label: 'Arial' },
-  { value: 'Georgia, serif', label: 'Georgia' },
-];
 const SIZE_OPTIONS = [16, 20, 24, 28, 32, 36, 42, 48];
-const COLOR_OPTIONS = [
-  { value: '#FFFFFF', label: 'White' },
-  { value: '#FFE600', label: 'Yellow' },
-  { value: '#00FF00', label: 'Green' },
-  { value: '#00FFFF', label: 'Cyan' },
-  { value: '#FF6B6B', label: 'Red' },
-];
 const OPACITY_OPTIONS = [0, 0.25, 0.5, 0.75, 1];
+
+function useSettingsLabels() {
+  const { i18n } = useLingui();
+  return {
+    presets: [
+      { value: 'default', label: i18n._(msg`settings.sub.preset.default`) },
+      { value: 'cinema', label: i18n._(msg`settings.sub.preset.cinema`) },
+      { value: 'anime', label: i18n._(msg`settings.sub.preset.anime`) },
+      { value: 'highContrast', label: i18n._(msg`settings.sub.preset.highContrast`) },
+    ],
+    shadows: [
+      { value: 'none' as const, label: i18n._(msg`settings.sub.shadow.none`) },
+      { value: 'outline' as const, label: i18n._(msg`settings.sub.shadow.outline`) },
+      { value: 'drop-shadow' as const, label: i18n._(msg`settings.sub.shadow.dropShadow`) },
+      { value: 'raised' as const, label: i18n._(msg`settings.sub.shadow.raised`) },
+      { value: 'depressed' as const, label: i18n._(msg`settings.sub.shadow.depressed`) },
+    ],
+    positions: [
+      { value: 'top' as const, label: i18n._(msg`settings.sub.position.top`) },
+      { value: 'center' as const, label: i18n._(msg`settings.sub.position.center`) },
+      { value: 'bottom' as const, label: i18n._(msg`settings.sub.position.bottom`) },
+    ],
+    fonts: [
+      { value: '', label: i18n._(msg`settings.sub.font.default`) },
+      { value: 'Noto Sans CJK, sans-serif', label: 'Noto Sans CJK' },
+      { value: 'Arial, sans-serif', label: 'Arial' },
+      { value: 'Georgia, serif', label: 'Georgia' },
+    ],
+    colors: [
+      { value: '#FFFFFF', label: i18n._(msg`settings.sub.color.white`) },
+      { value: '#FFE600', label: i18n._(msg`settings.sub.color.yellow`) },
+      { value: '#00FF00', label: i18n._(msg`settings.sub.color.green`) },
+      { value: '#00FFFF', label: i18n._(msg`settings.sub.color.cyan`) },
+      { value: '#FF6B6B', label: i18n._(msg`settings.sub.color.red`) },
+    ],
+  };
+}
 const SOURCE_BADGE: Record<SubtitleTrack['source'], string> = {
   embedded: 'EMB', external: 'EXT', 'drag-drop': 'DROP', online: 'WEB',
 };
@@ -239,6 +245,8 @@ export function UnifiedSettingsPanel({
   const go = (v: View) => { dirRef.current = 1; setView(v); };
   const back = (v: View) => { dirRef.current = -1; setView(v); };
 
+  const labels = useSettingsLabels();
+
   const updateSubStyle = useCallback((patch: Partial<SubtitleStyleConfig>) => {
     setSubStyle((prev) => ({ ...prev, ...patch }));
     subtitlePlugin?.updateStyle(patch);
@@ -250,7 +258,7 @@ export function UnifiedSettingsPanel({
   const subPreset = subtitlePlugin?.getPresetName() ?? 'default';
   const subDelay = subtitlePlugin?.getDelay() ?? 0;
   const subTrackLabel = subPrimary?.label ?? i18n._(msg`settings.off`);
-  const presetLabel = PRESET_OPTIONS.find((p) => p.value === subPreset)?.label ?? subPreset;
+  const presetLabel = labels.presets.find((p) => p.value === subPreset)?.label ?? subPreset;
 
   // Media state
   const filters = mediaPlugin?.getFilterState() ?? { brightness: 100, contrast: 100, saturation: 100, warmth: 0 };
@@ -327,12 +335,12 @@ export function UnifiedSettingsPanel({
         return (<>
           <BackHeader title={i18n._(msg`settings.subtitleStyle`)} onBack={() => back('main')} />
           <MenuRow label={i18n._(msg`settings.preset`)} value={presetLabel} onClick={() => go('sub-preset')} />
-          <MenuRow label={i18n._(msg`settings.font`)} value={FONT_OPTIONS.find(f => f.value === (subStyle.fontFamily ?? ''))?.label ?? i18n._(msg`settings.default`)} onClick={() => go('sub-font')} />
+          <MenuRow label={i18n._(msg`settings.font`)} value={labels.fonts.find(f => f.value === (subStyle.fontFamily ?? ''))?.label ?? i18n._(msg`settings.default`)} onClick={() => go('sub-font')} />
           <MenuRow label={i18n._(msg`settings.fontSize`)} value={`${subStyle.fontSize ?? 24}px`} onClick={() => go('sub-fontSize')} />
-          <MenuRow label={i18n._(msg`settings.textColor`)} value={COLOR_OPTIONS.find(c => c.value === (subStyle.color ?? '#FFFFFF'))?.label} onClick={() => go('sub-color')} />
+          <MenuRow label={i18n._(msg`settings.textColor`)} value={labels.colors.find(c => c.value === (subStyle.color ?? '#FFFFFF'))?.label} onClick={() => go('sub-color')} />
           <MenuRow label={i18n._(msg`settings.background`)} value={`${Math.round((subStyle.backgroundOpacity ?? 0.75) * 100)}%`} onClick={() => go('sub-bgOpacity')} />
-          <MenuRow label={i18n._(msg`settings.border`)} value={SHADOW_OPTIONS.find(s => s.value === (subStyle.shadowType ?? 'none'))?.label} onClick={() => go('sub-border')} />
-          <MenuRow label={i18n._(msg`settings.position`)} value={POSITION_OPTIONS.find(p => p.value === (subStyle.position ?? 'bottom'))?.label} onClick={() => go('sub-position')} />
+          <MenuRow label={i18n._(msg`settings.border`)} value={labels.shadows.find(s => s.value === (subStyle.shadowType ?? 'none'))?.label} onClick={() => go('sub-border')} />
+          <MenuRow label={i18n._(msg`settings.position`)} value={labels.positions.find(p => p.value === (subStyle.position ?? 'bottom'))?.label} onClick={() => go('sub-position')} />
           <Divider />
           <div className="flex items-center gap-2.5 mx-2 px-2.5 py-2">
             <span className="flex-1 text-xs text-white/70">{i18n._(msg`settings.respectAssStyles`)}</span>
@@ -348,7 +356,7 @@ export function UnifiedSettingsPanel({
       case 'sub-preset':
         return (<>
           <BackHeader title={i18n._(msg`settings.preset`)} onBack={() => back('subtitle-style')} />
-          {PRESET_OPTIONS.map(o => (
+          {labels.presets.map(o => (
             <OptionRow key={o.value} label={o.label} selected={subPreset === o.value}
               onClick={() => { subtitlePlugin?.setPreset(o.value); setSubStyle({}); refresh(); back('subtitle-style'); }} />
           ))}
@@ -356,7 +364,7 @@ export function UnifiedSettingsPanel({
       case 'sub-font':
         return (<>
           <BackHeader title={i18n._(msg`settings.font`)} onBack={() => back('subtitle-style')} />
-          {FONT_OPTIONS.map(o => (
+          {labels.fonts.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.fontFamily ?? '') === o.value}
               onClick={() => { updateSubStyle({ fontFamily: o.value || undefined }); back('subtitle-style'); }} />
           ))}
@@ -372,7 +380,7 @@ export function UnifiedSettingsPanel({
       case 'sub-color':
         return (<>
           <BackHeader title={i18n._(msg`settings.textColor`)} onBack={() => back('subtitle-style')} />
-          {COLOR_OPTIONS.map(o => (
+          {labels.colors.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.color ?? '#FFFFFF') === o.value}
               swatch={o.value} onClick={() => { updateSubStyle({ color: o.value }); back('subtitle-style'); }} />
           ))}
@@ -389,7 +397,7 @@ export function UnifiedSettingsPanel({
       case 'sub-border':
         return (<>
           <BackHeader title={i18n._(msg`settings.borderStyle`)} onBack={() => back('subtitle-style')} />
-          {SHADOW_OPTIONS.map(o => (
+          {labels.shadows.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.shadowType ?? 'none') === o.value}
               onClick={() => { updateSubStyle({ shadowType: o.value }); back('subtitle-style'); }} />
           ))}
@@ -397,7 +405,7 @@ export function UnifiedSettingsPanel({
       case 'sub-position':
         return (<>
           <BackHeader title={i18n._(msg`settings.position`)} onBack={() => back('subtitle-style')} />
-          {POSITION_OPTIONS.map(o => (
+          {labels.positions.map(o => (
             <OptionRow key={o.value} label={o.label} selected={(subStyle.position ?? 'bottom') === o.value}
               onClick={() => { updateSubStyle({ position: o.value }); back('subtitle-style'); }} />
           ))}

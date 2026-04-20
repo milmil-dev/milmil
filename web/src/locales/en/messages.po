@@ -3234,11 +3234,11 @@ msgstr "Previous page"
 msgid "pagination.rows"
 msgstr "Rows"
 
-#: src/pages/WatchPage.tsx:414
+#: src/pages/WatchPage.tsx:415
 msgid "player.memoryNormal"
 msgstr "Memory usage returned to normal"
 
-#: src/pages/WatchPage.tsx:407
+#: src/pages/WatchPage.tsx:408
 msgid "player.memoryPressure"
 msgstr "High memory usage detected — reducing buffer size"
 
@@ -3882,9 +3882,9 @@ msgstr "Language"
 #~ msgid "settings.appearance.title"
 #~ msgstr "Appearance"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:288
-#: src/components/watch/UnifiedSettingsPanel.tsx:498
-#: src/components/watch/UnifiedSettingsPanel.tsx:543
+#: src/components/watch/UnifiedSettingsPanel.tsx:296
+#: src/components/watch/UnifiedSettingsPanel.tsx:506
+#: src/components/watch/UnifiedSettingsPanel.tsx:551
 msgid "settings.audioTrack"
 msgstr "settings.audioTrack"
 
@@ -3896,25 +3896,25 @@ msgstr "Auto-add matched anime"
 msgid "settings.autoAddToCollectionDesc"
 msgstr "Automatically add newly matched anime to your collection"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:278
-#: src/components/watch/UnifiedSettingsPanel.tsx:333
-#: src/components/watch/UnifiedSettingsPanel.tsx:382
+#: src/components/watch/UnifiedSettingsPanel.tsx:286
+#: src/components/watch/UnifiedSettingsPanel.tsx:341
+#: src/components/watch/UnifiedSettingsPanel.tsx:390
 msgid "settings.background"
 msgstr "settings.background"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:334
+#: src/components/watch/UnifiedSettingsPanel.tsx:342
 msgid "settings.border"
 msgstr "settings.border"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:279
-#: src/components/watch/UnifiedSettingsPanel.tsx:391
+#: src/components/watch/UnifiedSettingsPanel.tsx:287
+#: src/components/watch/UnifiedSettingsPanel.tsx:399
 msgid "settings.borderStyle"
 msgstr "settings.borderStyle"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:283
-#: src/components/watch/UnifiedSettingsPanel.tsx:467
-#: src/components/watch/UnifiedSettingsPanel.tsx:468
-#: src/components/watch/UnifiedSettingsPanel.tsx:531
+#: src/components/watch/UnifiedSettingsPanel.tsx:291
+#: src/components/watch/UnifiedSettingsPanel.tsx:475
+#: src/components/watch/UnifiedSettingsPanel.tsx:476
+#: src/components/watch/UnifiedSettingsPanel.tsx:539
 msgid "settings.brightness"
 msgstr "settings.brightness"
 
@@ -3922,10 +3922,10 @@ msgstr "settings.brightness"
 msgid "settings.collection"
 msgstr "Collection"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:284
-#: src/components/watch/UnifiedSettingsPanel.tsx:473
-#: src/components/watch/UnifiedSettingsPanel.tsx:474
-#: src/components/watch/UnifiedSettingsPanel.tsx:533
+#: src/components/watch/UnifiedSettingsPanel.tsx:292
+#: src/components/watch/UnifiedSettingsPanel.tsx:481
+#: src/components/watch/UnifiedSettingsPanel.tsx:482
+#: src/components/watch/UnifiedSettingsPanel.tsx:541
 msgid "settings.contrast"
 msgstr "settings.contrast"
 
@@ -3933,7 +3933,7 @@ msgstr "settings.contrast"
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:330
+#: src/components/watch/UnifiedSettingsPanel.tsx:338
 msgid "settings.default"
 msgstr "settings.default"
 
@@ -4010,15 +4010,15 @@ msgstr "Preferences"
 #~ msgid "settings.download.test"
 #~ msgstr "Test"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:275
-#: src/components/watch/UnifiedSettingsPanel.tsx:330
-#: src/components/watch/UnifiedSettingsPanel.tsx:358
+#: src/components/watch/UnifiedSettingsPanel.tsx:283
+#: src/components/watch/UnifiedSettingsPanel.tsx:338
+#: src/components/watch/UnifiedSettingsPanel.tsx:366
 msgid "settings.font"
 msgstr "settings.font"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:276
-#: src/components/watch/UnifiedSettingsPanel.tsx:331
-#: src/components/watch/UnifiedSettingsPanel.tsx:366
+#: src/components/watch/UnifiedSettingsPanel.tsx:284
+#: src/components/watch/UnifiedSettingsPanel.tsx:339
+#: src/components/watch/UnifiedSettingsPanel.tsx:374
 msgid "settings.fontSize"
 msgstr "settings.fontSize"
 
@@ -4201,19 +4201,19 @@ msgstr "Player"
 msgid "settings.nav.storage"
 msgstr "Storage"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:286
-#: src/components/watch/UnifiedSettingsPanel.tsx:485
-#: src/components/watch/UnifiedSettingsPanel.tsx:537
+#: src/components/watch/UnifiedSettingsPanel.tsx:294
+#: src/components/watch/UnifiedSettingsPanel.tsx:493
+#: src/components/watch/UnifiedSettingsPanel.tsx:545
 msgid "settings.nightMode"
 msgstr "settings.nightMode"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:458
-#: src/components/watch/UnifiedSettingsPanel.tsx:525
+#: src/components/watch/UnifiedSettingsPanel.tsx:466
+#: src/components/watch/UnifiedSettingsPanel.tsx:533
 msgid "settings.normal"
 msgstr "settings.normal"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:252
-#: src/components/watch/UnifiedSettingsPanel.tsx:298
+#: src/components/watch/UnifiedSettingsPanel.tsx:260
+#: src/components/watch/UnifiedSettingsPanel.tsx:306
 msgid "settings.off"
 msgstr "settings.off"
 
@@ -4221,9 +4221,9 @@ msgstr "settings.off"
 msgid "settings.pageTitle"
 msgstr "Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:282
-#: src/components/watch/UnifiedSettingsPanel.tsx:419
-#: src/components/watch/UnifiedSettingsPanel.tsx:524
+#: src/components/watch/UnifiedSettingsPanel.tsx:290
+#: src/components/watch/UnifiedSettingsPanel.tsx:427
+#: src/components/watch/UnifiedSettingsPanel.tsx:532
 msgid "settings.playbackSpeed"
 msgstr "settings.playbackSpeed"
 
@@ -4391,26 +4391,26 @@ msgstr "settings.player.subtitleStyle"
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:280
-#: src/components/watch/UnifiedSettingsPanel.tsx:335
-#: src/components/watch/UnifiedSettingsPanel.tsx:399
+#: src/components/watch/UnifiedSettingsPanel.tsx:288
+#: src/components/watch/UnifiedSettingsPanel.tsx:343
+#: src/components/watch/UnifiedSettingsPanel.tsx:407
 msgid "settings.position"
 msgstr "settings.position"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:274
-#: src/components/watch/UnifiedSettingsPanel.tsx:329
-#: src/components/watch/UnifiedSettingsPanel.tsx:350
+#: src/components/watch/UnifiedSettingsPanel.tsx:282
+#: src/components/watch/UnifiedSettingsPanel.tsx:337
+#: src/components/watch/UnifiedSettingsPanel.tsx:358
 msgid "settings.preset"
 msgstr "settings.preset"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:338
+#: src/components/watch/UnifiedSettingsPanel.tsx:346
 msgid "settings.respectAssStyles"
 msgstr "settings.respectAssStyles"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:285
-#: src/components/watch/UnifiedSettingsPanel.tsx:479
-#: src/components/watch/UnifiedSettingsPanel.tsx:480
-#: src/components/watch/UnifiedSettingsPanel.tsx:535
+#: src/components/watch/UnifiedSettingsPanel.tsx:293
+#: src/components/watch/UnifiedSettingsPanel.tsx:487
+#: src/components/watch/UnifiedSettingsPanel.tsx:488
+#: src/components/watch/UnifiedSettingsPanel.tsx:543
 msgid "settings.saturation"
 msgstr "settings.saturation"
 
@@ -4495,33 +4495,105 @@ msgstr "Manage transcoded files and cache"
 msgid "settings.storage.transcodeDesc"
 msgstr "Transcoded video files stored in temporary directory"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:272
-#: src/components/watch/UnifiedSettingsPanel.tsx:297
-#: src/components/watch/UnifiedSettingsPanel.tsx:515
+#: src/components/watch/UnifiedSettingsPanel.tsx:92
+msgid "settings.sub.color.cyan"
+msgstr "Cyan"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:91
+msgid "settings.sub.color.green"
+msgstr "Green"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:93
+msgid "settings.sub.color.red"
+msgstr "Red"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:89
+msgid "settings.sub.color.white"
+msgstr "White"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:90
+msgid "settings.sub.color.yellow"
+msgstr "Yellow"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:83
+msgid "settings.sub.font.default"
+msgstr "Default"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:80
+msgid "settings.sub.position.bottom"
+msgstr "Bottom"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:79
+msgid "settings.sub.position.center"
+msgstr "Center"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:78
+msgid "settings.sub.position.top"
+msgstr "Top"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:67
+msgid "settings.sub.preset.anime"
+msgstr "Anime"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:66
+msgid "settings.sub.preset.cinema"
+msgstr "Cinema"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:65
+msgid "settings.sub.preset.default"
+msgstr "Default"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:68
+msgid "settings.sub.preset.highContrast"
+msgstr "High Contrast"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:75
+msgid "settings.sub.shadow.depressed"
+msgstr "Depressed"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:73
+msgid "settings.sub.shadow.dropShadow"
+msgstr "Drop Shadow"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:71
+msgid "settings.sub.shadow.none"
+msgstr "None"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:72
+msgid "settings.sub.shadow.outline"
+msgstr "Outline"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:74
+msgid "settings.sub.shadow.raised"
+msgstr "Raised"
+
+#: src/components/watch/UnifiedSettingsPanel.tsx:280
+#: src/components/watch/UnifiedSettingsPanel.tsx:305
+#: src/components/watch/UnifiedSettingsPanel.tsx:523
 msgid "settings.subtitles"
 msgstr "settings.subtitles"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:273
-#: src/components/watch/UnifiedSettingsPanel.tsx:328
-#: src/components/watch/UnifiedSettingsPanel.tsx:516
+#: src/components/watch/UnifiedSettingsPanel.tsx:281
+#: src/components/watch/UnifiedSettingsPanel.tsx:336
+#: src/components/watch/UnifiedSettingsPanel.tsx:524
 msgid "settings.subtitleStyle"
 msgstr "settings.subtitleStyle"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:281
-#: src/components/watch/UnifiedSettingsPanel.tsx:408
-#: src/components/watch/UnifiedSettingsPanel.tsx:517
+#: src/components/watch/UnifiedSettingsPanel.tsx:289
+#: src/components/watch/UnifiedSettingsPanel.tsx:416
+#: src/components/watch/UnifiedSettingsPanel.tsx:525
 msgid "settings.subtitleTiming"
 msgstr "settings.subtitleTiming"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:277
-#: src/components/watch/UnifiedSettingsPanel.tsx:332
-#: src/components/watch/UnifiedSettingsPanel.tsx:374
+#: src/components/watch/UnifiedSettingsPanel.tsx:285
+#: src/components/watch/UnifiedSettingsPanel.tsx:340
+#: src/components/watch/UnifiedSettingsPanel.tsx:382
 msgid "settings.textColor"
 msgstr "settings.textColor"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:287
-#: src/components/watch/UnifiedSettingsPanel.tsx:491
-#: src/components/watch/UnifiedSettingsPanel.tsx:540
+#: src/components/watch/UnifiedSettingsPanel.tsx:295
+#: src/components/watch/UnifiedSettingsPanel.tsx:499
+#: src/components/watch/UnifiedSettingsPanel.tsx:548
 msgid "settings.volumeBoost"
 msgstr "settings.volumeBoost"
 
@@ -4747,21 +4819,22 @@ msgstr "Comments"
 msgid "watch.completed"
 msgstr "Watched"
 
-#: src/components/DanmakuSettings.tsx:117
-#: src/components/watch/DanmakuBar.tsx:51
+#: src/components/DanmakuSettings.tsx:212
+#: src/components/watch/DanmakuBar.tsx:64
 #: src/components/watch/EpisodeSidebar.tsx:43
 msgid "watch.danmaku"
 msgstr "Danmaku"
 
-#: src/components/DanmakuSettings.tsx:235
+#: src/components/DanmakuSettings.tsx:226
 msgid "watch.danmaku.antiSubtitle"
 msgstr "Avoid subtitles"
 
-#: src/components/DanmakuSettings.tsx:234
+#: src/components/DanmakuSettings.tsx:225
 msgid "watch.danmaku.bold"
 msgstr "Bold"
 
-#: src/components/DanmakuSettings.tsx:140
+#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:158
 msgid "watch.danmaku.bottom"
 msgstr "Bottom"
 
@@ -4785,23 +4858,25 @@ msgstr "Close"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#: src/components/DanmakuSettings.tsx:157
+#: src/components/DanmakuSettings.tsx:171
+#: src/components/DanmakuSettings.tsx:216
 msgid "watch.danmaku.density"
 msgstr "Density"
 
-#: src/components/DanmakuSettings.tsx:110
+#: src/components/DanmakuSettings.tsx:134
 msgid "watch.danmaku.densityHigh"
 msgstr "High"
 
-#: src/components/DanmakuSettings.tsx:108
+#: src/components/DanmakuSettings.tsx:132
 msgid "watch.danmaku.densityLow"
 msgstr "Low"
 
-#: src/components/DanmakuSettings.tsx:109
+#: src/components/DanmakuSettings.tsx:133
 msgid "watch.danmaku.densityMedium"
 msgstr "Medium"
 
-#: src/components/DanmakuSettings.tsx:146
+#: src/components/DanmakuSettings.tsx:163
+#: src/components/DanmakuSettings.tsx:215
 msgid "watch.danmaku.displayArea"
 msgstr "Display Area"
 
@@ -4809,15 +4884,17 @@ msgstr "Display Area"
 msgid "watch.danmaku.externalSources"
 msgstr "Danmaku Sources"
 
-#: src/components/DanmakuSettings.tsx:208
+#: src/components/DanmakuSettings.tsx:139
 msgid "watch.danmaku.fast"
 msgstr "Fast"
 
-#: src/components/DanmakuSettings.tsx:190
+#: src/components/DanmakuSettings.tsx:187
+#: src/components/DanmakuSettings.tsx:221
 msgid "watch.danmaku.fontFamily"
 msgstr "Font"
 
-#: src/components/DanmakuSettings.tsx:181
+#: src/components/DanmakuSettings.tsx:179
+#: src/components/DanmakuSettings.tsx:220
 msgid "watch.danmaku.fontSize"
 msgstr "Font Size"
 
@@ -4845,15 +4922,16 @@ msgstr "No danmaku data"
 msgid "watch.danmaku.noResults"
 msgstr "No results found"
 
-#: src/components/DanmakuSettings.tsx:207
+#: src/components/DanmakuSettings.tsx:138
+#: src/components/DanmakuSettings.tsx:222
 msgid "watch.danmaku.normal"
 msgstr "Normal"
 
-#: src/components/DanmakuSettings.tsx:168
+#: src/components/DanmakuSettings.tsx:218
 msgid "watch.danmaku.opacity"
 msgstr "Opacity"
 
-#: src/components/watch/DanmakuBar.tsx:61
+#: src/components/watch/DanmakuBar.tsx:74
 msgid "watch.danmaku.placeholder"
 msgstr "Send danmaku..."
 
@@ -4873,7 +4951,8 @@ msgstr "Danmaku saved permanently"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "Save permanently"
 
-#: src/components/DanmakuSettings.tsx:134
+#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:156
 msgid "watch.danmaku.scroll"
 msgstr "Scroll"
 
@@ -4893,7 +4972,7 @@ msgstr "Search anime name + episode..."
 msgid "watch.danmaku.selectPart"
 msgstr "Select part"
 
-#: src/components/watch/DanmakuBar.tsx:72
+#: src/components/watch/DanmakuBar.tsx:85
 msgid "watch.danmaku.send"
 msgstr "Send"
 
@@ -4901,7 +4980,7 @@ msgstr "Send"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "D"
 
-#: src/components/DanmakuSettings.tsx:206
+#: src/components/DanmakuSettings.tsx:137
 msgid "watch.danmaku.slow"
 msgstr "Slow"
 
@@ -4909,31 +4988,35 @@ msgstr "Slow"
 msgid "watch.danmaku.source"
 msgstr "Source"
 
-#: src/components/DanmakuSettings.tsx:203
+#: src/components/DanmakuSettings.tsx:195
+#: src/components/DanmakuSettings.tsx:222
 msgid "watch.danmaku.speed"
 msgstr "Speed"
 
-#: src/components/DanmakuSettings.tsx:221
+#: src/components/DanmakuSettings.tsx:142
 msgid "watch.danmaku.strokeNone"
 msgstr "None"
 
-#: src/components/DanmakuSettings.tsx:223
+#: src/components/DanmakuSettings.tsx:144
 msgid "watch.danmaku.strokeOutline"
 msgstr "Outline"
 
-#: src/components/DanmakuSettings.tsx:222
+#: src/components/DanmakuSettings.tsx:143
 msgid "watch.danmaku.strokeShadow"
 msgstr "Shadow"
 
-#: src/components/DanmakuSettings.tsx:218
+#: src/components/DanmakuSettings.tsx:203
+#: src/components/DanmakuSettings.tsx:223
 msgid "watch.danmaku.strokeType"
 msgstr "Stroke"
 
-#: src/components/DanmakuSettings.tsx:137
+#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:157
 msgid "watch.danmaku.top"
 msgstr "Top"
 
-#: src/components/DanmakuSettings.tsx:131
+#: src/components/DanmakuSettings.tsx:155
+#: src/components/DanmakuSettings.tsx:214
 msgid "watch.danmaku.typeFilter"
 msgstr "Type Filter"
 
@@ -4979,7 +5062,7 @@ msgstr "In progress"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:840
+#: src/pages/WatchPage.tsx:841
 msgid "watch.notFound"
 msgstr "Anime not found"
 
@@ -5037,7 +5120,7 @@ msgstr "HLS Transcode"
 #~ msgid "watch.transcodeReady"
 #~ msgstr "Transcode ready"
 
-#: src/pages/WatchPage.tsx:1015
+#: src/pages/WatchPage.tsx:1016
 msgid "watch.transcoding"
 msgstr "Transcoding..."
 
