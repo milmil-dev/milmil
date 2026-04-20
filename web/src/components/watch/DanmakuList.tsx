@@ -109,7 +109,7 @@ function BlockKeywordsModal() {
         <button
           type="button"
           className={cn(
-            'flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-all',
+            'inline-flex items-center justify-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-all',
             blockKeywords.length > 0
               ? 'bg-white/[0.06] text-white/50 hover:bg-white/[0.1]'
               : 'text-white/25 hover:bg-white/[0.04] hover:text-white/40'
