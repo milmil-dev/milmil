@@ -4962,6 +4962,14 @@ msgstr "No results found"
 msgid "watch.danmaku.normal"
 msgstr "Normal"
 
+#: src/components/watch/DanmakuBar.tsx:72
+msgid "watch.danmaku.off"
+msgstr "OFF"
+
+#: src/components/watch/DanmakuBar.tsx:72
+msgid "watch.danmaku.on"
+msgstr "ON"
+
 #: src/components/DanmakuSettings.tsx:244
 msgid "watch.danmaku.opacity"
 msgstr "Opacity"

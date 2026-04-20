@@ -4951,6 +4951,14 @@ msgstr "결과 없음"
 msgid "watch.danmaku.normal"
 msgstr "보통"
 
+#: src/components/watch/DanmakuBar.tsx:72
+msgid "watch.danmaku.off"
+msgstr "끄기"
+
+#: src/components/watch/DanmakuBar.tsx:72
+msgid "watch.danmaku.on"
+msgstr "켜기"
+
 #: src/components/DanmakuSettings.tsx:244
 msgid "watch.danmaku.opacity"
 msgstr "불투명도"

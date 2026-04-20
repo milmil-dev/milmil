@@ -69,7 +69,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
           <rect x="2" y="14" width="10" height="2.5" rx="1.25" fill="currentColor" opacity={enabled ? 0.5 : 0.25} />
         </svg>
         <span className="text-[11px] font-medium">
-          {enabled ? 'ON' : 'OFF'}
+          {enabled ? i18n._(msg`watch.danmaku.on`) : i18n._(msg`watch.danmaku.off`)}
         </span>
       </button>
 
