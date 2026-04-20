@@ -63,7 +63,7 @@ func (b *BilibiliSource) initBuvid() {
 // setHeaders adds required headers to bypass Bilibili's anti-bot (412).
 func (b *BilibiliSource) setHeaders(req *http.Request) {
 	b.initBuvid()
-	b.setHeaders(req)
+	req.Header.Set("User-Agent", bilibiliUserAgent)
 	req.Header.Set("Referer", "https://www.bilibili.com")
 	if b.buvid3 != "" {
 		req.Header.Set("Cookie", "buvid3="+b.buvid3)
