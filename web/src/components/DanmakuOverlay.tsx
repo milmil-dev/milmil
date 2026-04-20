@@ -104,10 +104,19 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
   const effectiveArea = antiSubtitle ? Math.min(areaPercent, 85) : areaPercent;
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute inset-x-0 top-0 pointer-events-none z-10"
-      style={{ height: `${effectiveArea}%` }}
-    />
+    <>
+      {/* Global style for danmaku elements — GPU-accelerated smooth movement */}
+      <style>{`
+        .danmaku-overlay > * {
+          will-change: transform;
+          -webkit-font-smoothing: antialiased;
+        }
+      `}</style>
+      <div
+        ref={containerRef}
+        className="danmaku-overlay absolute inset-x-0 top-0 pointer-events-none z-10"
+        style={{ height: `${effectiveArea}%`, contain: 'layout style' }}
+      />
+    </>
   );
 }
