@@ -20,6 +20,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
   const filterTop = usePreferencesStore((s) => s.danmakuFilterTop);
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
+  const fontFamily = usePreferencesStore((s) => s.danmakuFontFamily);
 
   // Filter comments by type
   const filteredComments = comments.filter((c) => {
@@ -33,6 +34,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
   const buildStyle = (c: DanmakuComment) => {
     const baseStyle: Record<string, string> = {
       fontSize: c.style.fontSize,
+      fontFamily,
       color: c.style.color,
       opacity: String(c.style.opacity),
     };
@@ -79,7 +81,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
       engine.destroy();
       danmakuRef.current = null;
     };
-  }, [videoElement, filteredComments, speed, bold, stroke]);
+  }, [videoElement, filteredComments, speed, bold, stroke, fontFamily]);
 
   // Toggle visibility
   useEffect(() => {

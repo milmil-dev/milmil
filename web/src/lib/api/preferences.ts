@@ -45,6 +45,7 @@ export interface GlobalPreferences {
   danmakuFilterTop: boolean;
   danmakuFilterBottom: boolean;
   danmakuAntiSubtitle: boolean;
+  danmakuFontFamily: string;
   bufferMode: BufferMode;
   defaultSubtitleLanguage: string | null;
   defaultAudioLanguage: string | null;

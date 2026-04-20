@@ -10,6 +10,12 @@ const AREA_OPTIONS = [
   { value: 0.75, label: '3/4' },
   { value: 1, label: '全' },
 ] as const;
+const FONT_FAMILIES = [
+  { value: 'sans-serif', label: '黑體' },
+  { value: 'serif', label: '宋體' },
+  { value: '"Noto Sans SC", sans-serif', label: 'Noto' },
+  { value: 'monospace', label: '等寬' },
+] as const;
 
 /* ── Primitives ── */
 
@@ -27,7 +33,7 @@ function Seg({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex-1 py-[5px] text-[11px] rounded-md transition-all',
+        'flex-1 py-[5px] text-[11px] rounded-md transition-all min-w-0',
         active
           ? 'bg-white/[0.12] text-white font-medium shadow-sm'
           : 'text-white/35 hover:text-white/55 hover:bg-white/[0.04]'
@@ -50,13 +56,7 @@ function Row({ label, children, end }: { label: string; children: React.ReactNod
   );
 }
 
-function Switch({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: () => void;
-}) {
+function Switch({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
     <button
       type="button"
@@ -69,9 +69,7 @@ function Switch({
       <div
         className={cn(
           'absolute top-[3px] w-3 h-3 rounded-full transition-all',
-          checked
-            ? 'left-[17px] bg-white'
-            : 'left-[3px] bg-white/40'
+          checked ? 'left-[17px] bg-white' : 'left-[3px] bg-white/40'
         )}
       />
     </button>
@@ -80,18 +78,14 @@ function Switch({
 
 function SwitchRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onChange}
-      className="w-full flex items-center justify-between py-0.5 group"
-    >
+    <button type="button" onClick={onChange} className="w-full flex items-center justify-between py-0.5 group">
       <span className="text-[11px] text-white/45 group-hover:text-white/60 transition-colors">{label}</span>
       <Switch checked={checked} onChange={onChange} />
     </button>
   );
 }
 
-/* ── Main component ── */
+/* ── Main ── */
 
 export function DanmakuSettingsControls() {
   const { i18n } = useLingui();
@@ -103,15 +97,22 @@ export function DanmakuSettingsControls() {
   const area = usePreferencesStore((s) => s.danmakuArea);
   const bold = usePreferencesStore((s) => s.danmakuBold);
   const stroke = usePreferencesStore((s) => s.danmakuStroke);
+  const fontFamily = usePreferencesStore((s) => s.danmakuFontFamily);
   const filterScroll = usePreferencesStore((s) => s.danmakuFilterScroll);
   const filterTop = usePreferencesStore((s) => s.danmakuFilterTop);
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
   const update = usePreferencesStore((s) => s.updatePreference);
 
+  const densityLabels = {
+    low: i18n._(msg`watch.danmaku.densityLow`),
+    medium: i18n._(msg`watch.danmaku.densityMedium`),
+    high: i18n._(msg`watch.danmaku.densityHigh`),
+  };
+
   return (
-    <div className="w-60 space-y-3">
-      {/* Header: 彈幕 ON/OFF */}
+    <div className="space-y-3">
+      {/* Header */}
       <div className="flex items-center justify-between pb-1 border-b border-white/[0.06]">
         <span className="text-[12px] text-white/70 font-medium">{i18n._(msg`watch.danmaku`)}</span>
         <button
@@ -119,9 +120,7 @@ export function DanmakuSettingsControls() {
           onClick={() => update('danmakuEnabled', !enabled)}
           className={cn(
             'px-2.5 py-[3px] text-[10px] font-semibold rounded-md tracking-wide transition-all',
-            enabled
-              ? 'bg-white/15 text-white'
-              : 'bg-white/[0.06] text-white/30'
+            enabled ? 'bg-white/15 text-white' : 'bg-white/[0.06] text-white/30'
           )}
         >
           {enabled ? 'ON' : 'OFF'}
@@ -159,7 +158,7 @@ export function DanmakuSettingsControls() {
         <div className="flex gap-1">
           {(['low', 'medium', 'high'] as const).map((d) => (
             <Seg key={d} active={density === d} onClick={() => update('danmakuDensity', d)}>
-              {i18n._(msg`settings.player.density.${d}`)}
+              {densityLabels[d]}
             </Seg>
           ))}
         </div>
@@ -182,11 +181,22 @@ export function DanmakuSettingsControls() {
       <Row label={i18n._(msg`watch.danmaku.fontSize`)}>
         <div className="flex gap-1">
           {FONT_SIZES.map((s) => (
-            <Seg key={s} active={fontSize === s} onClick={() => update('danmakuFontSize', s)}>
-              {s}
-            </Seg>
+            <Seg key={s} active={fontSize === s} onClick={() => update('danmakuFontSize', s)}>{s}</Seg>
           ))}
         </div>
+      </Row>
+
+      {/* Font family */}
+      <Row label={i18n._(msg`watch.danmaku.fontFamily`)}>
+        <select
+          value={fontFamily}
+          onChange={(e) => update('danmakuFontFamily', e.target.value)}
+          className="w-full bg-white/[0.06] border border-white/[0.08] rounded-md px-2 py-[5px] text-[11px] text-white/70 outline-none appearance-none cursor-pointer hover:bg-white/[0.08] transition-colors"
+        >
+          {FONT_FAMILIES.map((f) => (
+            <option key={f.value} value={f.value}>{f.label}</option>
+          ))}
+        </select>
       </Row>
 
       {/* Speed */}
@@ -221,16 +231,8 @@ export function DanmakuSettingsControls() {
 
       {/* Toggles */}
       <div className="space-y-1.5 pt-2 border-t border-white/[0.06]">
-        <SwitchRow
-          label={i18n._(msg`watch.danmaku.bold`)}
-          checked={bold}
-          onChange={() => update('danmakuBold', !bold)}
-        />
-        <SwitchRow
-          label={i18n._(msg`watch.danmaku.antiSubtitle`)}
-          checked={antiSubtitle}
-          onChange={() => update('danmakuAntiSubtitle', !antiSubtitle)}
-        />
+        <SwitchRow label={i18n._(msg`watch.danmaku.bold`)} checked={bold} onChange={() => update('danmakuBold', !bold)} />
+        <SwitchRow label={i18n._(msg`watch.danmaku.antiSubtitle`)} checked={antiSubtitle} onChange={() => update('danmakuAntiSubtitle', !antiSubtitle)} />
       </div>
     </div>
   );

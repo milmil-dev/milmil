@@ -4739,21 +4739,21 @@ msgstr "Comments"
 msgid "watch.completed"
 msgstr "Watched"
 
-#: src/components/DanmakuSettings.tsx:96
+#: src/components/DanmakuSettings.tsx:117
 #: src/components/watch/DanmakuBar.tsx:51
 #: src/components/watch/EpisodeSidebar.tsx:43
 msgid "watch.danmaku"
 msgstr "Danmaku"
 
-#: src/components/DanmakuSettings.tsx:224
+#: src/components/DanmakuSettings.tsx:235
 msgid "watch.danmaku.antiSubtitle"
 msgstr "Avoid subtitles"
 
-#: src/components/DanmakuSettings.tsx:219
+#: src/components/DanmakuSettings.tsx:234
 msgid "watch.danmaku.bold"
 msgstr "Bold"
 
-#: src/components/DanmakuSettings.tsx:128
+#: src/components/DanmakuSettings.tsx:140
 msgid "watch.danmaku.bottom"
 msgstr "Bottom"
 
@@ -4777,7 +4777,23 @@ msgstr "Close"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#: src/components/DanmakuSettings.tsx:134
+#: src/components/DanmakuSettings.tsx:157
+msgid "watch.danmaku.density"
+msgstr "Density"
+
+#: src/components/DanmakuSettings.tsx:110
+msgid "watch.danmaku.densityHigh"
+msgstr "High"
+
+#: src/components/DanmakuSettings.tsx:108
+msgid "watch.danmaku.densityLow"
+msgstr "Low"
+
+#: src/components/DanmakuSettings.tsx:109
+msgid "watch.danmaku.densityMedium"
+msgstr "Medium"
+
+#: src/components/DanmakuSettings.tsx:146
 msgid "watch.danmaku.displayArea"
 msgstr "Display Area"
 
@@ -4785,11 +4801,15 @@ msgstr "Display Area"
 msgid "watch.danmaku.externalSources"
 msgstr "Danmaku Sources"
 
-#: src/components/DanmakuSettings.tsx:182
+#: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.fast"
 msgstr "Fast"
 
-#: src/components/DanmakuSettings.tsx:162
+#: src/components/DanmakuSettings.tsx:190
+msgid "watch.danmaku.fontFamily"
+msgstr "Font"
+
+#: src/components/DanmakuSettings.tsx:181
 msgid "watch.danmaku.fontSize"
 msgstr "Font Size"
 
@@ -4817,11 +4837,11 @@ msgstr "No danmaku data"
 msgid "watch.danmaku.noResults"
 msgstr "No results found"
 
-#: src/components/DanmakuSettings.tsx:181
+#: src/components/DanmakuSettings.tsx:207
 msgid "watch.danmaku.normal"
 msgstr "Normal"
 
-#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:168
 msgid "watch.danmaku.opacity"
 msgstr "Opacity"
 
@@ -4845,7 +4865,7 @@ msgstr "Danmaku saved permanently"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "Save permanently"
 
-#: src/components/DanmakuSettings.tsx:116
+#: src/components/DanmakuSettings.tsx:134
 msgid "watch.danmaku.scroll"
 msgstr "Scroll"
 
@@ -4873,7 +4893,7 @@ msgstr "Send"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "D"
 
-#: src/components/DanmakuSettings.tsx:180
+#: src/components/DanmakuSettings.tsx:206
 msgid "watch.danmaku.slow"
 msgstr "Slow"
 
@@ -4881,31 +4901,31 @@ msgstr "Slow"
 msgid "watch.danmaku.source"
 msgstr "Source"
 
-#: src/components/DanmakuSettings.tsx:177
+#: src/components/DanmakuSettings.tsx:203
 msgid "watch.danmaku.speed"
 msgstr "Speed"
 
-#: src/components/DanmakuSettings.tsx:199
+#: src/components/DanmakuSettings.tsx:221
 msgid "watch.danmaku.strokeNone"
 msgstr "None"
 
-#: src/components/DanmakuSettings.tsx:201
+#: src/components/DanmakuSettings.tsx:223
 msgid "watch.danmaku.strokeOutline"
 msgstr "Outline"
 
-#: src/components/DanmakuSettings.tsx:200
+#: src/components/DanmakuSettings.tsx:222
 msgid "watch.danmaku.strokeShadow"
 msgstr "Shadow"
 
-#: src/components/DanmakuSettings.tsx:196
+#: src/components/DanmakuSettings.tsx:218
 msgid "watch.danmaku.strokeType"
 msgstr "Stroke"
 
-#: src/components/DanmakuSettings.tsx:122
+#: src/components/DanmakuSettings.tsx:137
 msgid "watch.danmaku.top"
 msgstr "Top"
 
-#: src/components/DanmakuSettings.tsx:110
+#: src/components/DanmakuSettings.tsx:131
 msgid "watch.danmaku.typeFilter"
 msgstr "Type Filter"
 

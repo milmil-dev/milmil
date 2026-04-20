@@ -4726,21 +4726,21 @@ msgstr "評論"
 msgid "watch.completed"
 msgstr "睇完"
 
-#: src/components/DanmakuSettings.tsx:96
+#: src/components/DanmakuSettings.tsx:117
 #: src/components/watch/DanmakuBar.tsx:51
 #: src/components/watch/EpisodeSidebar.tsx:43
 msgid "watch.danmaku"
 msgstr "彈幕"
 
-#: src/components/DanmakuSettings.tsx:224
+#: src/components/DanmakuSettings.tsx:235
 msgid "watch.danmaku.antiSubtitle"
 msgstr "防擋字幕"
 
-#: src/components/DanmakuSettings.tsx:219
+#: src/components/DanmakuSettings.tsx:234
 msgid "watch.danmaku.bold"
 msgstr "粗體"
 
-#: src/components/DanmakuSettings.tsx:128
+#: src/components/DanmakuSettings.tsx:140
 msgid "watch.danmaku.bottom"
 msgstr "底部"
 
@@ -4764,7 +4764,23 @@ msgstr "收起"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "條彈幕"
 
-#: src/components/DanmakuSettings.tsx:134
+#: src/components/DanmakuSettings.tsx:157
+msgid "watch.danmaku.density"
+msgstr "密度"
+
+#: src/components/DanmakuSettings.tsx:110
+msgid "watch.danmaku.densityHigh"
+msgstr "高"
+
+#: src/components/DanmakuSettings.tsx:108
+msgid "watch.danmaku.densityLow"
+msgstr "低"
+
+#: src/components/DanmakuSettings.tsx:109
+msgid "watch.danmaku.densityMedium"
+msgstr "中"
+
+#: src/components/DanmakuSettings.tsx:146
 msgid "watch.danmaku.displayArea"
 msgstr "顯示區域"
 
@@ -4772,11 +4788,15 @@ msgstr "顯示區域"
 msgid "watch.danmaku.externalSources"
 msgstr "彈幕來源"
 
-#: src/components/DanmakuSettings.tsx:182
+#: src/components/DanmakuSettings.tsx:208
 msgid "watch.danmaku.fast"
 msgstr "快"
 
-#: src/components/DanmakuSettings.tsx:162
+#: src/components/DanmakuSettings.tsx:190
+msgid "watch.danmaku.fontFamily"
+msgstr "字體"
+
+#: src/components/DanmakuSettings.tsx:181
 msgid "watch.danmaku.fontSize"
 msgstr "字型大小"
 
@@ -4804,11 +4824,11 @@ msgstr "冇彈幕資料"
 msgid "watch.danmaku.noResults"
 msgstr "未找到結果"
 
-#: src/components/DanmakuSettings.tsx:181
+#: src/components/DanmakuSettings.tsx:207
 msgid "watch.danmaku.normal"
 msgstr "正常"
 
-#: src/components/DanmakuSettings.tsx:149
+#: src/components/DanmakuSettings.tsx:168
 msgid "watch.danmaku.opacity"
 msgstr "不透明度"
 
@@ -4832,7 +4852,7 @@ msgstr "彈幕已永久保存"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "永久保存到本地"
 
-#: src/components/DanmakuSettings.tsx:116
+#: src/components/DanmakuSettings.tsx:134
 msgid "watch.danmaku.scroll"
 msgstr "滾動"
 
@@ -4860,7 +4880,7 @@ msgstr "發送"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "彈"
 
-#: src/components/DanmakuSettings.tsx:180
+#: src/components/DanmakuSettings.tsx:206
 msgid "watch.danmaku.slow"
 msgstr "慢"
 
@@ -4868,31 +4888,31 @@ msgstr "慢"
 msgid "watch.danmaku.source"
 msgstr "來源"
 
-#: src/components/DanmakuSettings.tsx:177
+#: src/components/DanmakuSettings.tsx:203
 msgid "watch.danmaku.speed"
 msgstr "速度"
 
-#: src/components/DanmakuSettings.tsx:199
+#: src/components/DanmakuSettings.tsx:221
 msgid "watch.danmaku.strokeNone"
 msgstr "無"
 
-#: src/components/DanmakuSettings.tsx:201
+#: src/components/DanmakuSettings.tsx:223
 msgid "watch.danmaku.strokeOutline"
 msgstr "描邊"
 
-#: src/components/DanmakuSettings.tsx:200
+#: src/components/DanmakuSettings.tsx:222
 msgid "watch.danmaku.strokeShadow"
 msgstr "陰影"
 
-#: src/components/DanmakuSettings.tsx:196
+#: src/components/DanmakuSettings.tsx:218
 msgid "watch.danmaku.strokeType"
 msgstr "描邊類型"
 
-#: src/components/DanmakuSettings.tsx:122
+#: src/components/DanmakuSettings.tsx:137
 msgid "watch.danmaku.top"
 msgstr "頂部"
 
-#: src/components/DanmakuSettings.tsx:110
+#: src/components/DanmakuSettings.tsx:131
 msgid "watch.danmaku.typeFilter"
 msgstr "按類型過濾"
 
