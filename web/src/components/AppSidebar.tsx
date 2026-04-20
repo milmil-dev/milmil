@@ -1,6 +1,7 @@
 import {
   Bookmark01Icon,
   Calendar03Icon,
+  Clock01Icon,
   Download04Icon,
   FireIcon,
   FolderLibraryIcon,
@@ -31,6 +32,7 @@ const mainNav = [
 const bottomNav = [
   { to: '/downloads', msgKey: msg`nav.autoDownload`, icon: Download04Icon },
   { to: '/libraries', msgKey: msg`nav.libraries`, icon: FolderLibraryIcon },
+  { to: '/history', msgKey: msg`nav.history`, icon: Clock01Icon },
   { to: '/collection', msgKey: msg`collection.title`, icon: Bookmark01Icon },
   { to: '/settings', msgKey: msg`nav.settings`, icon: Setting07Icon },
 ] as const;

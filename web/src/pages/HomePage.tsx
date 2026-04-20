@@ -109,7 +109,7 @@ export function HomePage() {
                 transition={{ delay: 0.15 }}
                 className="mt-6"
               >
-                <SectionHeader title={i18n._(msg`home.continueWatching`)} to="/" />
+                <SectionHeader title={i18n._(msg`home.continueWatching`)} to="/history" />
                 <MediaRail>
                   {continueWatching.map((item) => {
                     const progress =
