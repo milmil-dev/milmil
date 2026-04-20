@@ -56,6 +56,7 @@ function parseVTTCues(vttContent: string): SubtitleCue[] {
 
 /** ISO 639-2/3 to 639-1 mapping for common anime languages */
 const ISO_MAP: Record<string, string> = {
+  // 3-letter ISO 639-2/3
   eng: 'en',
   jpn: 'ja',
   kor: 'ko',
@@ -63,6 +64,34 @@ const ISO_MAP: Record<string, string> = {
   zho: 'zh',
   tha: 'th',
   ind: 'id',
+  ara: 'ar',
+  fre: 'fr',
+  fra: 'fr',
+  ger: 'de',
+  deu: 'de',
+  spa: 'es',
+  por: 'pt',
+  ita: 'it',
+  rus: 'ru',
+  // Full language names (as stored by embedded subtitle extraction)
+  'chinese (traditional)': 'zh-tw',
+  'chinese (simplified)': 'zh-cn',
+  chinese: 'zh',
+  english: 'en',
+  'english [cc]': 'en',
+  japanese: 'ja',
+  korean: 'ko',
+  arabic: 'ar',
+  french: 'fr',
+  german: 'de',
+  spanish: 'es',
+  'spanish (latin america)': 'es',
+  portuguese: 'pt',
+  'portuguese (brazil)': 'pt-br',
+  italian: 'it',
+  russian: 'ru',
+  thai: 'th',
+  indonesian: 'id',
 };
 
 export class TrackManager {
@@ -187,15 +216,32 @@ export class TrackManager {
     let bestScore = 0;
 
     for (let idx = 0; idx < this.tracks.length; idx++) {
-      const sl = this.tracks[idx]!.language.toLowerCase();
+      const rawLabel = this.tracks[idx]!.language.toLowerCase();
+      // Strip [Forced]/[CC] suffixes for matching, and deprioritize them
+      const isForced = rawLabel.includes('[forced]');
+      const isCC = rawLabel.includes('[cc]');
+      const sl = rawLabel.replace(/\s*\[(forced|cc)\]/g, '').trim();
+
+      // Resolve full name → ISO code via ISO_MAP
+      const mapped = ISO_MAP[sl];
+
       let score = 0;
-      if (sl === locale) {
+      if (sl === locale || mapped === locale) {
         score = 3;
-      } else if (sl.startsWith(localeBase) || localeBase.startsWith(sl)) {
-        score = 2;
-      } else if (ISO_MAP[sl] === localeBase) {
+      } else if (
+        sl.startsWith(localeBase) ||
+        localeBase.startsWith(sl) ||
+        mapped === localeBase ||
+        mapped?.startsWith(localeBase)
+      ) {
         score = 2;
       }
+
+      // Deprioritize [Forced] and [CC] variants
+      if (score > 0 && (isForced || isCC)) {
+        score = Math.max(score - 1, 1);
+      }
+
       if (score > bestScore) {
         bestScore = score;
         bestIdx = idx;
