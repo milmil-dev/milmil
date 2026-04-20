@@ -93,3 +93,4 @@ desktop.ini
 # the source subtree or generated directory
 milmil-api/
 node_modules/api/data
+api/server
