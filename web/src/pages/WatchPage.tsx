@@ -101,7 +101,7 @@ function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: ()
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 4 }}
           transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
-          className="absolute bottom-12 left-3 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/55 py-1.5 pl-3 pr-2 backdrop-blur-xl shadow-md shadow-black/30"
+          className="absolute bottom-16 left-3 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/55 py-1.5 pl-3 pr-2 backdrop-blur-xl shadow-md shadow-black/30"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 text-white/70">
             <path d="M13 3a9 9 0 100 18 9 9 0 000-18zm-1 5h1.5v4.25L17 14.5l-.75 1.3L12 13V8z" />
