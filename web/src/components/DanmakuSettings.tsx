@@ -229,7 +229,7 @@ export function DanmakuSettingsControls() {
   };
 
   return (
-    <div className="w-[240px] max-h-[60vh] overflow-y-auto">
+    <div className="w-[240px] max-h-[60vh] overflow-y-auto" data-settings-panel>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={view}

@@ -143,6 +143,11 @@
     transform: scale(0.97);
     transition: transform 0.1s;
   }
+  /* Disable press scale inside settings panels and popovers */
+  [data-settings-panel] button:active,
+  [data-settings-panel] a:active {
+    transform: none;
+  }
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,

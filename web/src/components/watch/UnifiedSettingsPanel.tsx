@@ -568,10 +568,11 @@ export function UnifiedSettingsPanel({
     <>
       <div className="absolute inset-0 z-[100]" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 6 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 6 }}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 6 }}
         transition={{ duration: 0.12, ease: [0.2, 0, 0, 1] }}
+        data-settings-panel
         className="absolute right-2 bottom-12 z-[101] w-[260px] max-h-[20rem] flex flex-col
           rounded-2xl bg-[rgba(40,40,40,0.55)] backdrop-blur-[40px] backdrop-saturate-[1.8]
           border border-white/[0.12]
