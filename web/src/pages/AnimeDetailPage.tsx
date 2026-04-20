@@ -1041,7 +1041,7 @@ export function AnimeDetailPage() {
             <h2 className="text-lg font-bold text-white mb-4">
               {i18n._(msg`anime.recommendations`)}
             </h2>
-            <div className="grid grid-cols-2 min-[768px]:grid-cols-4 min-[1080px]:grid-cols-5 min-[1320px]:grid-cols-6 gap-4">
+            <div className="grid grid-cols-3 min-[768px]:grid-cols-5 min-[1080px]:grid-cols-7 min-[1320px]:grid-cols-8 gap-3">
               {anime.recommendations.slice(0, 6).map((rec) => (
                 <AnimeCard
                   key={rec.anilist_id ?? rec.bangumi_id}

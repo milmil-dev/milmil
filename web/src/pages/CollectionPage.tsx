@@ -208,7 +208,7 @@ function CollectionSkeleton() {
       {/* Search row skeleton */}
       <Skeleton className="h-9 w-full max-w-sm rounded-lg" />
       {/* Card grid skeletons */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
         {Array.from({ length: 12 }).map((_, i) => (
           <div key={i} className="space-y-2">
             <Skeleton className="aspect-[3/4] rounded-lg" />
@@ -388,7 +388,7 @@ export function CollectionPage() {
             {!isEmpty && (
               <div
                 className={cn(
-                  'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 transition-opacity duration-200',
+                  'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 transition-opacity duration-200',
                   isFetching && 'opacity-50'
                 )}
                 style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}

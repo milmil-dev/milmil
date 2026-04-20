@@ -78,7 +78,7 @@ export function AnimeCard({ anime, onPreview, children, onClick }: AnimeCardProp
     if (itemRef.current) {
       const rect = itemRef.current.getBoundingClientRect();
       const spaceRight = window.innerWidth - rect.right;
-      setCardSide(spaceRight >= 420 ? 'right' : 'left');
+      setCardSide(spaceRight >= 550 ? 'right' : 'left');
     }
     timerRef.current = setTimeout(() => setShowCard(true), 400);
   }, []);
@@ -242,7 +242,7 @@ function HoverDetailCard({
   return (
     <div
       className={cn(
-        'absolute top-1/2 -translate-y-1/2 z-50 w-[460px] pointer-events-none hidden lg:block',
+        'absolute top-1/2 -translate-y-1/2 z-50 w-[530px] pointer-events-none hidden lg:block',
         cardSide === 'right' ? 'left-full ml-3' : 'right-full mr-3'
       )}
     >
@@ -276,7 +276,7 @@ function HoverDetailCard({
         <div className="relative z-[1] flex items-start gap-3.5 p-3.5">
           {/* Cover thumbnail */}
           <div
-            className="relative shrink-0 w-[120px] h-[168px] rounded overflow-hidden shadow-lg ring-1 ring-white/10"
+            className="relative shrink-0 w-[138px] h-[193px] rounded overflow-hidden shadow-lg ring-1 ring-white/10"
             style={hasCover ? undefined : { background: animeGradient(anime.title) }}
           >
             {hasCover && (
