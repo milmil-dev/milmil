@@ -47,7 +47,7 @@ export function EpisodeSidebar({
   ];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-[calc(100vh-6rem)]">
       {/* Tab bar */}
       <div className="flex border-b border-white/[0.06]">
         {tabs.map((tab) => (
@@ -72,7 +72,7 @@ export function EpisodeSidebar({
       </div>
 
       {/* Tab content */}
-      <div className="p-3">
+      <div className="p-3 flex-1 overflow-y-auto">
         {activeTab === 'episodes' && (
           <EpisodeGrid
             episodes={episodes}

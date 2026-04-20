@@ -49,7 +49,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
   });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 h-full">
       {/* Block keywords toggle + panel */}
       <div>
         <button
@@ -141,7 +141,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
           {i18n._(msg`watch.danmaku.noData`)}
         </div>
       ) : (
-        <div ref={parentRef} className="max-h-[400px] overflow-y-auto">
+        <div ref={parentRef} className="flex-1 overflow-y-auto">
           <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
             {virtualizer.getVirtualItems().map((virtualItem) => {
               const comment = sorted[virtualItem.index]!;
