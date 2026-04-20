@@ -17,10 +17,20 @@ type Comment struct {
 	Color string  `json:"color"`
 }
 
+// VideoPart represents a sub-page/part of a video (e.g., Bilibili 分P).
+type VideoPart struct {
+	Index    int    `json:"index"`    // 0-based part index
+	Title    string `json:"title"`    // part title
+	Duration int    `json:"duration"` // seconds
+}
+
 type Source interface {
 	Name() string
 	Search(ctx context.Context, keyword string, page int) ([]SearchResult, error)
-	FetchDanmaku(ctx context.Context, videoID string) ([]Comment, error)
+	// GetParts returns the list of parts for a video. Single-part videos return a slice of length 1.
+	GetParts(ctx context.Context, videoID string) ([]VideoPart, error)
+	// FetchDanmaku fetches danmaku for a specific part of a video (0-based index).
+	FetchDanmaku(ctx context.Context, videoID string, partIndex int) ([]Comment, error)
 }
 
 type Registry struct {

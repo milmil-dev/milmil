@@ -4735,6 +4735,10 @@ msgstr "시청 완료"
 msgid "watch.danmaku"
 msgstr "탄막"
 
+#: src/components/watch/DanmakuSourceTab.tsx:247
+msgid "watch.danmaku.closeParts"
+msgstr "닫기"
+
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
@@ -4753,19 +4757,19 @@ msgstr "빠름"
 msgid "watch.danmaku.fontSize"
 msgstr "글꼴 크기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:207
+#: src/components/watch/DanmakuSourceTab.tsx:248
 msgid "watch.danmaku.import"
 msgstr "가져오기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:218
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.imported"
 msgstr "가져옴"
 
-#: src/components/watch/DanmakuSourceTab.tsx:86
+#: src/components/watch/DanmakuSourceTab.tsx:102
 msgid "watch.danmaku.importError"
 msgstr "가져오기 실패"
 
-#: src/components/watch/DanmakuSourceTab.tsx:206
+#: src/components/watch/DanmakuSourceTab.tsx:245
 msgid "watch.danmaku.importing"
 msgstr "가져오는 중..."
 
@@ -4773,7 +4777,7 @@ msgstr "가져오는 중..."
 msgid "watch.danmaku.noData"
 msgstr "탄막 데이터가 없습니다"
 
-#: src/components/watch/DanmakuSourceTab.tsx:174
+#: src/components/watch/DanmakuSourceTab.tsx:213
 msgid "watch.danmaku.noResults"
 msgstr "결과 없음"
 
@@ -4791,21 +4795,25 @@ msgstr "불투명도"
 msgid "watch.danmaku.placeholder"
 msgstr "탄막 보내기…"
 
-#: src/components/watch/DanmakuSourceTab.tsx:234
+#: src/components/watch/DanmakuSourceTab.tsx:311
 msgid "watch.danmaku.remove"
 msgstr "제거"
 
-#: src/components/watch/DanmakuSourceTab.tsx:153
+#: src/components/watch/DanmakuSourceTab.tsx:192
 msgid "watch.danmaku.search"
 msgstr "검색"
 
-#: src/components/watch/DanmakuSourceTab.tsx:168
+#: src/components/watch/DanmakuSourceTab.tsx:207
 msgid "watch.danmaku.searchError"
 msgstr "검색 실패"
 
-#: src/components/watch/DanmakuSourceTab.tsx:144
+#: src/components/watch/DanmakuSourceTab.tsx:183
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "애니메이션 이름 + 화 검색..."
+
+#: src/components/watch/DanmakuSourceTab.tsx:256
+msgid "watch.danmaku.selectPart"
+msgstr "파트 선택"
 
 #: src/components/watch/DanmakuBar.tsx:72
 msgid "watch.danmaku.send"
@@ -4820,7 +4828,7 @@ msgstr "탄"
 msgid "watch.danmaku.slow"
 msgstr "느림"
 
-#: src/components/watch/DanmakuSourceTab.tsx:121
+#: src/components/watch/DanmakuSourceTab.tsx:160
 msgid "watch.danmaku.source"
 msgstr "소스"
 

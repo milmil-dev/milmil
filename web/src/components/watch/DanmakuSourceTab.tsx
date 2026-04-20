@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 import {
   type DanmakuSearchResult,
+  type VideoPart,
   externalDanmakuApi,
   externalDanmakuKeys,
 } from '@/lib/api/danmaku';
@@ -21,6 +22,12 @@ function formatCount(n: number): string {
   if (n >= 10000) return `${(n / 10000).toFixed(1)}万`;
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
   return String(n);
+}
+
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 export function DanmakuSourceTab({
@@ -46,11 +53,18 @@ export function DanmakuSourceTab({
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  // Multi-part expansion state
+  const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
+  const [loadingParts, setLoadingParts] = useState(false);
+  const [videoParts, setVideoParts] = useState<VideoPart[]>([]);
+
   // Reset state when episode changes
   useEffect(() => {
     setKeyword(buildKeyword());
     setSearchTriggered(false);
     setSearchKeyword('');
+    setExpandedVideoId(null);
+    setVideoParts([]);
   }, [mediaFileId, animeName, episodeNumber]);
 
   // Search query
@@ -73,14 +87,16 @@ export function DanmakuSourceTab({
 
   // Import mutation
   const importMutation = useMutation({
-    mutationFn: (result: DanmakuSearchResult) =>
-      externalDanmakuApi.import(selectedSource, result.videoId, mediaFileId!),
+    mutationFn: ({ videoId, partIndex }: { videoId: string; partIndex: number }) =>
+      externalDanmakuApi.import(selectedSource, videoId, mediaFileId!, partIndex),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
       });
       onImported();
       toast.success(`Imported ${formatCount(data.count)} danmaku from ${selectedSource}`);
+      setExpandedVideoId(null);
+      setVideoParts([]);
     },
     onError: () => {
       toast.error(i18n._(msg`watch.danmaku.importError`));
@@ -103,12 +119,35 @@ export function DanmakuSourceTab({
     if (!keyword.trim()) return;
     setSearchKeyword(keyword.trim());
     setSearchTriggered(true);
+    setExpandedVideoId(null);
+    setVideoParts([]);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleSearch();
+    }
+  };
+
+  const handleImportClick = async (result: DanmakuSearchResult) => {
+    // Fetch parts to check if multi-page
+    setLoadingParts(true);
+    try {
+      const parts = await externalDanmakuApi.parts(selectedSource, result.videoId);
+      if (parts.length <= 1) {
+        // Single part — import directly
+        importMutation.mutate({ videoId: result.videoId, partIndex: 0 });
+      } else {
+        // Multi-part — expand to show part picker
+        setExpandedVideoId(result.videoId);
+        setVideoParts(parts);
+      }
+    } catch {
+      // If parts fetch fails, try importing part 0
+      importMutation.mutate({ videoId: result.videoId, partIndex: 0 });
+    } finally {
+      setLoadingParts(false);
     }
   };
 
@@ -176,36 +215,74 @@ export function DanmakuSourceTab({
           )}
 
           {searchResults?.map((result) => (
-            <div
-              key={result.videoId}
-              className="flex items-start gap-2.5 p-2 rounded hover:bg-white/[0.04] transition-colors"
-            >
-              {result.thumbnail && (
-                <img
-                  src={result.thumbnail}
-                  alt=""
-                  className="w-[54px] h-[40px] rounded object-cover shrink-0 bg-white/[0.04]"
-                />
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/70 line-clamp-2" title={result.title}>
-                  {result.title}
-                </p>
-                <p className="text-[11px] text-white/30 mt-0.5">
-                  {formatCount(result.danmakuCount)} danmaku · {result.duration}
-                </p>
+            <div key={result.videoId}>
+              <div className="flex items-start gap-2.5 p-2 rounded hover:bg-white/[0.04] transition-colors">
+                {result.thumbnail && (
+                  <img
+                    src={result.thumbnail}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-[54px] h-[40px] rounded object-cover shrink-0 bg-white/[0.04]"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-white/70 line-clamp-2" title={result.title}>
+                    {result.title}
+                  </p>
+                  <p className="text-[11px] text-white/30 mt-0.5">
+                    {formatCount(result.danmakuCount)} danmaku · {result.duration}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleImportClick(result)}
+                  disabled={importMutation.isPending || loadingParts}
+                  className="shrink-0 text-xs text-blue-400/70 hover:text-blue-400 py-2 px-2 rounded transition-colors disabled:opacity-40"
+                >
+                  {(importMutation.isPending &&
+                    importMutation.variables?.videoId === result.videoId) ||
+                  (loadingParts && expandedVideoId === null)
+                    ? i18n._(msg`watch.danmaku.importing`)
+                    : expandedVideoId === result.videoId
+                      ? i18n._(msg`watch.danmaku.closeParts`)
+                      : i18n._(msg`watch.danmaku.import`)}
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => importMutation.mutate(result)}
-                disabled={importMutation.isPending}
-                className="shrink-0 text-xs text-blue-400/70 hover:text-blue-400 py-2 px-2 rounded transition-colors disabled:opacity-40"
-              >
-                {importMutation.isPending &&
-                importMutation.variables?.videoId === result.videoId
-                  ? i18n._(msg`watch.danmaku.importing`)
-                  : i18n._(msg`watch.danmaku.import`)}
-              </button>
+
+              {/* Inline part picker for multi-page videos */}
+              {expandedVideoId === result.videoId && videoParts.length > 1 && (
+                <div className="ml-[66px] mr-2 mb-1 border border-white/[0.06] rounded bg-white/[0.02]">
+                  <p className="text-[11px] text-white/30 px-2 pt-1.5 pb-1">
+                    {i18n._(msg`watch.danmaku.selectPart`)} ({videoParts.length}P)
+                  </p>
+                  <div className="max-h-[200px] overflow-y-auto">
+                    {videoParts.map((part) => (
+                      <button
+                        key={part.index}
+                        type="button"
+                        onClick={() =>
+                          importMutation.mutate({
+                            videoId: result.videoId,
+                            partIndex: part.index,
+                          })
+                        }
+                        disabled={importMutation.isPending}
+                        className="w-full flex items-center justify-between px-2 py-1.5 text-left hover:bg-white/[0.04] transition-colors disabled:opacity-40"
+                      >
+                        <span className="text-xs text-white/60 truncate">
+                          P{part.index + 1}
+                          {part.title ? ` · ${part.title}` : ''}
+                        </span>
+                        {part.duration > 0 && (
+                          <span className="text-[11px] text-white/25 shrink-0 ml-2">
+                            {formatDuration(part.duration)}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

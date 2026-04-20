@@ -54,11 +54,34 @@ func (h *handler) handleSearchExternalDanmaku(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
+func (h *handler) handleGetVideoParts(c echo.Context) error {
+	sourceName := c.QueryParam("source")
+	videoID := c.QueryParam("videoId")
+
+	if sourceName == "" || videoID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "source and videoId are required")
+	}
+
+	source, ok := h.danmakuRegistry.Get(sourceName)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "unknown source: "+sourceName)
+	}
+
+	ctx := c.Request().Context()
+	parts, err := source.GetParts(ctx, videoID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, "failed to get parts: "+err.Error())
+	}
+
+	return c.JSON(http.StatusOK, parts)
+}
+
 func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 	var req struct {
 		Source      string `json:"source"`
 		VideoID     string `json:"videoId"`
 		MediaFileID string `json:"mediaFileId"`
+		PartIndex   int    `json:"partIndex"`
 	}
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -73,7 +96,7 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	comments, err := source.FetchDanmaku(ctx, req.VideoID)
+	comments, err := source.FetchDanmaku(ctx, req.VideoID, req.PartIndex)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadGateway, "fetch failed: "+err.Error())
 	}

@@ -4746,6 +4746,10 @@ msgstr "Watched"
 msgid "watch.danmaku"
 msgstr "Danmaku"
 
+#: src/components/watch/DanmakuSourceTab.tsx:247
+msgid "watch.danmaku.closeParts"
+msgstr "Close"
+
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
@@ -4764,19 +4768,19 @@ msgstr "Fast"
 msgid "watch.danmaku.fontSize"
 msgstr "Font Size"
 
-#: src/components/watch/DanmakuSourceTab.tsx:207
+#: src/components/watch/DanmakuSourceTab.tsx:248
 msgid "watch.danmaku.import"
 msgstr "Import"
 
-#: src/components/watch/DanmakuSourceTab.tsx:218
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.imported"
 msgstr "Imported"
 
-#: src/components/watch/DanmakuSourceTab.tsx:86
+#: src/components/watch/DanmakuSourceTab.tsx:102
 msgid "watch.danmaku.importError"
 msgstr "Import failed, please try again"
 
-#: src/components/watch/DanmakuSourceTab.tsx:206
+#: src/components/watch/DanmakuSourceTab.tsx:245
 msgid "watch.danmaku.importing"
 msgstr "Importing..."
 
@@ -4784,7 +4788,7 @@ msgstr "Importing..."
 msgid "watch.danmaku.noData"
 msgstr "No danmaku data"
 
-#: src/components/watch/DanmakuSourceTab.tsx:174
+#: src/components/watch/DanmakuSourceTab.tsx:213
 msgid "watch.danmaku.noResults"
 msgstr "No results found"
 
@@ -4802,21 +4806,25 @@ msgstr "Opacity"
 msgid "watch.danmaku.placeholder"
 msgstr "Send danmaku..."
 
-#: src/components/watch/DanmakuSourceTab.tsx:234
+#: src/components/watch/DanmakuSourceTab.tsx:311
 msgid "watch.danmaku.remove"
 msgstr "Remove"
 
-#: src/components/watch/DanmakuSourceTab.tsx:153
+#: src/components/watch/DanmakuSourceTab.tsx:192
 msgid "watch.danmaku.search"
 msgstr "Search"
 
-#: src/components/watch/DanmakuSourceTab.tsx:168
+#: src/components/watch/DanmakuSourceTab.tsx:207
 msgid "watch.danmaku.searchError"
 msgstr "Search failed, please try again"
 
-#: src/components/watch/DanmakuSourceTab.tsx:144
+#: src/components/watch/DanmakuSourceTab.tsx:183
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "Search anime name + episode..."
+
+#: src/components/watch/DanmakuSourceTab.tsx:256
+msgid "watch.danmaku.selectPart"
+msgstr "Select part"
 
 #: src/components/watch/DanmakuBar.tsx:72
 msgid "watch.danmaku.send"
@@ -4831,7 +4839,7 @@ msgstr "D"
 msgid "watch.danmaku.slow"
 msgstr "Slow"
 
-#: src/components/watch/DanmakuSourceTab.tsx:121
+#: src/components/watch/DanmakuSourceTab.tsx:160
 msgid "watch.danmaku.source"
 msgstr "Source"
 

@@ -20,6 +20,12 @@ export interface ExternalComment {
   color: string;
 }
 
+export interface VideoPart {
+  index: number;
+  title: string;
+  duration: number;
+}
+
 export interface ImportedDanmaku {
   source: string;
   count: number;
@@ -34,10 +40,15 @@ export const externalDanmakuApi = {
       `/api/v1/danmaku/external/search?source=${encodeURIComponent(source)}&q=${encodeURIComponent(q)}&page=${page}`
     ),
 
-  import: (source: string, videoId: string, mediaFileId: string) =>
+  parts: (source: string, videoId: string) =>
+    api.get<VideoPart[]>(
+      `/api/v1/danmaku/external/parts?source=${encodeURIComponent(source)}&videoId=${encodeURIComponent(videoId)}`
+    ),
+
+  import: (source: string, videoId: string, mediaFileId: string, partIndex = 0) =>
     api.post<{ source: string; count: number; comments: ExternalComment[] }>(
       '/api/v1/danmaku/external/import',
-      { source, videoId, mediaFileId }
+      { source, videoId, mediaFileId, partIndex }
     ),
 
   getImported: (mediaFileId: string) =>

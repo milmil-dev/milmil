@@ -94,18 +94,59 @@ func (b *BilibiliSource) Search(ctx context.Context, keyword string, page int) (
 	return results, nil
 }
 
-// bilibiliViewResponse is the API response for video detail (to get CID).
+// bilibiliViewResponse is the API response for video detail (to get CID and pages).
 type bilibiliViewResponse struct {
 	Code int `json:"code"`
 	Data struct {
-		CID int64 `json:"cid"`
+		CID   int64 `json:"cid"`
+		Pages []struct {
+			CID      int64  `json:"cid"`
+			Page     int    `json:"page"`
+			Part     string `json:"part"`
+			Duration int    `json:"duration"`
+		} `json:"pages"`
 	} `json:"data"`
 }
 
-func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string) ([]Comment, error) {
-	cid, err := b.getCID(ctx, videoID)
+func (b *BilibiliSource) GetParts(ctx context.Context, videoID string) ([]VideoPart, error) {
+	vr, err := b.getVideoInfo(ctx, videoID)
 	if err != nil {
 		return nil, err
+	}
+
+	parts := make([]VideoPart, 0, len(vr.Data.Pages))
+	for i, p := range vr.Data.Pages {
+		parts = append(parts, VideoPart{
+			Index:    i,
+			Title:    p.Part,
+			Duration: p.Duration,
+		})
+	}
+	// If no pages returned, synthesize a single part from the top-level CID
+	if len(parts) == 0 {
+		parts = append(parts, VideoPart{Index: 0, Title: "", Duration: 0})
+	}
+	return parts, nil
+}
+
+func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string, partIndex int) ([]Comment, error) {
+	vr, err := b.getVideoInfo(ctx, videoID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Resolve cid for the requested part
+	var cid int64
+	if len(vr.Data.Pages) > 0 {
+		if partIndex < 0 || partIndex >= len(vr.Data.Pages) {
+			partIndex = 0
+		}
+		cid = vr.Data.Pages[partIndex].CID
+	} else {
+		cid = vr.Data.CID
+	}
+	if cid == 0 {
+		return nil, fmt.Errorf("bilibili: no cid for %s part %d", videoID, partIndex)
 	}
 
 	danmakuURL := fmt.Sprintf("%s/%d.xml", bilibiliDanmakuURL, cid)
@@ -129,7 +170,7 @@ func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string) ([]Co
 	return parseBilibiliXML(body)
 }
 
-func (b *BilibiliSource) getCID(ctx context.Context, bvid string) (int64, error) {
+func (b *BilibiliSource) getVideoInfo(ctx context.Context, bvid string) (*bilibiliViewResponse, error) {
 	u, _ := url.Parse(bilibiliViewURL)
 	q := u.Query()
 	q.Set("bvid", bvid)
@@ -137,24 +178,24 @@ func (b *BilibiliSource) getCID(ctx context.Context, bvid string) (int64, error)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
-		return 0, fmt.Errorf("bilibili getCID: create request: %w", err)
+		return nil, fmt.Errorf("bilibili view: create request: %w", err)
 	}
 	req.Header.Set("User-Agent", bilibiliUserAgent)
 
 	resp, err := b.client.Do(req)
 	if err != nil {
-		return 0, fmt.Errorf("bilibili getCID: %w", err)
+		return nil, fmt.Errorf("bilibili view: %w", err)
 	}
 	defer resp.Body.Close()
 
 	var vr bilibiliViewResponse
 	if err := json.NewDecoder(resp.Body).Decode(&vr); err != nil {
-		return 0, fmt.Errorf("bilibili getCID: decode response: %w", err)
+		return nil, fmt.Errorf("bilibili view: decode response: %w", err)
 	}
 	if vr.Code != 0 {
-		return 0, fmt.Errorf("bilibili getCID: API error code %d", vr.Code)
+		return nil, fmt.Errorf("bilibili view: API error code %d", vr.Code)
 	}
-	return vr.Data.CID, nil
+	return &vr, nil
 }
 
 // XML structures for Bilibili danmaku.

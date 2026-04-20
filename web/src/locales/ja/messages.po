@@ -4735,6 +4735,10 @@ msgstr "視聴済み"
 msgid "watch.danmaku"
 msgstr "弾幕"
 
+#: src/components/watch/DanmakuSourceTab.tsx:247
+msgid "watch.danmaku.closeParts"
+msgstr "閉じる"
+
 #: src/pages/WatchPage.tsx:184
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
@@ -4753,19 +4757,19 @@ msgstr "速い"
 msgid "watch.danmaku.fontSize"
 msgstr "フォントサイズ"
 
-#: src/components/watch/DanmakuSourceTab.tsx:207
+#: src/components/watch/DanmakuSourceTab.tsx:248
 msgid "watch.danmaku.import"
 msgstr "インポート"
 
-#: src/components/watch/DanmakuSourceTab.tsx:218
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.imported"
 msgstr "インポート済み"
 
-#: src/components/watch/DanmakuSourceTab.tsx:86
+#: src/components/watch/DanmakuSourceTab.tsx:102
 msgid "watch.danmaku.importError"
 msgstr "インポートに失敗しました"
 
-#: src/components/watch/DanmakuSourceTab.tsx:206
+#: src/components/watch/DanmakuSourceTab.tsx:245
 msgid "watch.danmaku.importing"
 msgstr "インポート中..."
 
@@ -4773,7 +4777,7 @@ msgstr "インポート中..."
 msgid "watch.danmaku.noData"
 msgstr "弾幕データがありません"
 
-#: src/components/watch/DanmakuSourceTab.tsx:174
+#: src/components/watch/DanmakuSourceTab.tsx:213
 msgid "watch.danmaku.noResults"
 msgstr "結果が見つかりません"
 
@@ -4791,21 +4795,25 @@ msgstr "不透明度"
 msgid "watch.danmaku.placeholder"
 msgstr "弾幕を送信…"
 
-#: src/components/watch/DanmakuSourceTab.tsx:234
+#: src/components/watch/DanmakuSourceTab.tsx:311
 msgid "watch.danmaku.remove"
 msgstr "削除"
 
-#: src/components/watch/DanmakuSourceTab.tsx:153
+#: src/components/watch/DanmakuSourceTab.tsx:192
 msgid "watch.danmaku.search"
 msgstr "検索"
 
-#: src/components/watch/DanmakuSourceTab.tsx:168
+#: src/components/watch/DanmakuSourceTab.tsx:207
 msgid "watch.danmaku.searchError"
 msgstr "検索に失敗しました"
 
-#: src/components/watch/DanmakuSourceTab.tsx:144
+#: src/components/watch/DanmakuSourceTab.tsx:183
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "アニメ名 + 話数を検索..."
+
+#: src/components/watch/DanmakuSourceTab.tsx:256
+msgid "watch.danmaku.selectPart"
+msgstr "パートを選択"
 
 #: src/components/watch/DanmakuBar.tsx:72
 msgid "watch.danmaku.send"
@@ -4820,7 +4828,7 @@ msgstr "弾"
 msgid "watch.danmaku.slow"
 msgstr "遅い"
 
-#: src/components/watch/DanmakuSourceTab.tsx:121
+#: src/components/watch/DanmakuSourceTab.tsx:160
 msgid "watch.danmaku.source"
 msgstr "ソース"
 

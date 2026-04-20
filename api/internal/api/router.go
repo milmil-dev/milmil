@@ -166,6 +166,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	danmakuExtGroup := v1.Group("/danmaku/external", authMiddleware(h.queries))
 	danmakuExtGroup.GET("/sources", h.handleListDanmakuSources)
 	danmakuExtGroup.GET("/search", h.handleSearchExternalDanmaku)
+	danmakuExtGroup.GET("/parts", h.handleGetVideoParts)
 	danmakuExtGroup.POST("/import", h.handleImportExternalDanmaku)
 	danmakuExtGroup.GET("/imported/:mediaFileId", h.handleGetImportedDanmaku)
 	danmakuExtGroup.DELETE("/imported/:mediaFileId", h.handleRemoveImportedDanmaku)
