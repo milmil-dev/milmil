@@ -38,6 +38,13 @@ export interface GlobalPreferences {
   danmakuFontSize: number;
   danmakuSpeed: number;
   danmakuDensity: DanmakuDensity;
+  danmakuArea: number; // 0.25 | 0.5 | 0.75 | 1
+  danmakuBold: boolean;
+  danmakuStroke: 'none' | 'shadow' | 'stroke';
+  danmakuFilterScroll: boolean;
+  danmakuFilterTop: boolean;
+  danmakuFilterBottom: boolean;
+  danmakuAntiSubtitle: boolean;
   bufferMode: BufferMode;
   defaultSubtitleLanguage: string | null;
   defaultAudioLanguage: string | null;

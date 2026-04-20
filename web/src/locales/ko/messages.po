@@ -4728,12 +4728,23 @@ msgstr "댓글"
 msgid "watch.completed"
 msgstr "시청 완료"
 
-#: src/components/DanmakuSettings.tsx:50
-#: src/components/DanmakuSettings.tsx:154
+#: src/components/DanmakuSettings.tsx:96
 #: src/components/watch/DanmakuBar.tsx:51
 #: src/components/watch/EpisodeSidebar.tsx:43
 msgid "watch.danmaku"
 msgstr "탄막"
+
+#: src/components/DanmakuSettings.tsx:224
+msgid "watch.danmaku.antiSubtitle"
+msgstr "자막 회피"
+
+#: src/components/DanmakuSettings.tsx:219
+msgid "watch.danmaku.bold"
+msgstr "굵게"
+
+#: src/components/DanmakuSettings.tsx:128
+msgid "watch.danmaku.bottom"
+msgstr "하단"
 
 #: src/components/watch/DanmakuSourceTab.tsx:384
 #~ msgid "watch.danmaku.cached"
@@ -4755,17 +4766,19 @@ msgstr "닫기"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
+#: src/components/DanmakuSettings.tsx:134
+msgid "watch.danmaku.displayArea"
+msgstr "표시 영역"
+
 #: src/components/watch/EpisodeSidebar.tsx:46
 msgid "watch.danmaku.externalSources"
 msgstr "탄막 소스"
 
-#: src/components/DanmakuSettings.tsx:113
-#: src/components/DanmakuSettings.tsx:214
+#: src/components/DanmakuSettings.tsx:182
 msgid "watch.danmaku.fast"
 msgstr "빠름"
 
-#: src/components/DanmakuSettings.tsx:83
-#: src/components/DanmakuSettings.tsx:186
+#: src/components/DanmakuSettings.tsx:162
 msgid "watch.danmaku.fontSize"
 msgstr "글꼴 크기"
 
@@ -4793,13 +4806,11 @@ msgstr "탄막 데이터가 없습니다"
 msgid "watch.danmaku.noResults"
 msgstr "결과 없음"
 
-#: src/components/DanmakuSettings.tsx:112
-#: src/components/DanmakuSettings.tsx:213
+#: src/components/DanmakuSettings.tsx:181
 msgid "watch.danmaku.normal"
 msgstr "보통"
 
-#: src/components/DanmakuSettings.tsx:67
-#: src/components/DanmakuSettings.tsx:170
+#: src/components/DanmakuSettings.tsx:149
 msgid "watch.danmaku.opacity"
 msgstr "불투명도"
 
@@ -4823,6 +4834,10 @@ msgstr "탄막이 영구 저장되었습니다"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "로컬에 영구 저장"
 
+#: src/components/DanmakuSettings.tsx:116
+msgid "watch.danmaku.scroll"
+msgstr "스크롤"
+
 #: src/components/watch/DanmakuSourceTab.tsx:199
 msgid "watch.danmaku.search"
 msgstr "검색"
@@ -4844,11 +4859,10 @@ msgid "watch.danmaku.send"
 msgstr "보내기"
 
 #: src/components/DanmakuSettings.tsx:34
-msgid "watch.danmaku.short"
-msgstr "탄"
+#~ msgid "watch.danmaku.short"
+#~ msgstr "탄"
 
-#: src/components/DanmakuSettings.tsx:111
-#: src/components/DanmakuSettings.tsx:212
+#: src/components/DanmakuSettings.tsx:180
 msgid "watch.danmaku.slow"
 msgstr "느림"
 
@@ -4856,10 +4870,33 @@ msgstr "느림"
 msgid "watch.danmaku.source"
 msgstr "소스"
 
-#: src/components/DanmakuSettings.tsx:107
-#: src/components/DanmakuSettings.tsx:208
+#: src/components/DanmakuSettings.tsx:177
 msgid "watch.danmaku.speed"
 msgstr "속도"
+
+#: src/components/DanmakuSettings.tsx:199
+msgid "watch.danmaku.strokeNone"
+msgstr "없음"
+
+#: src/components/DanmakuSettings.tsx:201
+msgid "watch.danmaku.strokeOutline"
+msgstr "테두리"
+
+#: src/components/DanmakuSettings.tsx:200
+msgid "watch.danmaku.strokeShadow"
+msgstr "그림자"
+
+#: src/components/DanmakuSettings.tsx:196
+msgid "watch.danmaku.strokeType"
+msgstr "윤곽선"
+
+#: src/components/DanmakuSettings.tsx:122
+msgid "watch.danmaku.top"
+msgstr "상단"
+
+#: src/components/DanmakuSettings.tsx:110
+msgid "watch.danmaku.typeFilter"
+msgstr "유형 필터"
 
 #: src/components/watch/DanmakuSourceTab.tsx:111
 msgid "watch.danmaku.unsavedSuccess"
