@@ -14,6 +14,26 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/components/history/HistoryEmptyState.tsx:15
+msgid "history.empty.title"
+msgstr "No watch history yet"
+
+#. js-lingui-explicit-id
+#: src/components/history/HistoryEmptyState.tsx:18
+msgid "history.empty.description"
+msgstr "Start watching an anime to build your history."
+
+#. js-lingui-explicit-id
+#: src/components/history/HistoryEmptyState.tsx:24
+msgid "nav.home"
+msgstr "Home"
+
+#. js-lingui-explicit-id
+#: src/components/history/HistoryCard.tsx:53
+msgid "history.finished"
+msgstr "Finished"
+
+#. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:110
 msgid "watch.resumeFrom"
 msgstr "Jumped to"
@@ -360,11 +380,11 @@ msgstr "Current Password"
 msgid "account.fieldRequired"
 msgstr "This field is required"
 
-#: src/components/AppSidebar.tsx:140
+#: src/components/AppSidebar.tsx:142
 msgid "account.local"
 msgstr "Local account"
 
-#: src/components/AppSidebar.tsx:168
+#: src/components/AppSidebar.tsx:170
 msgid "account.logout"
 msgstr "Log out"
 
@@ -1345,7 +1365,7 @@ msgstr "Name"
 msgid "collection.sortByRecent"
 msgstr "Recently Matched"
 
-#: src/components/AppSidebar.tsx:34
+#: src/components/AppSidebar.tsx:36
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "Collection"
@@ -1373,6 +1393,7 @@ msgstr "Back"
 msgid "common.backHome"
 msgstr "Back to Home"
 
+#: src/components/history/ConfirmDialog.tsx:44
 #: src/pages/LibraryDetailPage.tsx:1820
 #: src/pages/settings/AboutPanel.tsx:228
 #: src/pages/settings/AboutPanel.tsx:247
@@ -1383,6 +1404,10 @@ msgstr "Cancel"
 #: src/pages/settings/AccountPanel.tsx:357
 msgid "common.clickToCopy"
 msgstr "common.clickToCopy"
+
+#: src/components/history/ConfirmDialog.tsx:49
+msgid "common.confirm"
+msgstr "common.confirm"
 
 #: src/pages/LibraryDetailPage.tsx:1830
 msgid "common.confirmDelete"
@@ -1740,6 +1765,90 @@ msgstr "Preview"
 #: src/components/library/RenameConfigEditor.tsx:71
 #~ msgid "History"
 #~ msgstr "History"
+
+#: src/components/history/HistoryFilterBar.tsx:101
+msgid "history.batch"
+msgstr "Batch"
+
+#: src/components/history/HistoryBatchBar.tsx:24
+msgid "history.batch.cancel"
+msgstr "Cancel"
+
+#: src/components/history/HistoryBatchBar.tsx:32
+msgid "history.batch.deleteSelected"
+msgstr "Delete selected"
+
+#: src/components/history/HistoryFilterBar.tsx:89
+msgid "history.clearAll"
+msgstr "Clear"
+
+#: src/pages/HistoryPage.tsx:199
+msgid "history.clearAll.confirm"
+msgstr "Clear all watch history?"
+
+#: src/pages/HistoryPage.tsx:204
+msgid "history.clearAll.description"
+msgstr "This permanently removes every watch progress record. External tracker status (Bangumi / MAL / AniList) won't be reverted."
+
+#: src/pages/HistoryPage.tsx:200
+msgid "history.delete.confirm"
+msgstr "Delete this watch history entry?"
+
+#: src/pages/HistoryPage.tsx:205
+msgid "history.delete.description"
+msgstr "External tracker status (Bangumi / MAL / AniList) won't be reverted."
+
+#: src/components/history/HistoryGrid.tsx:39
+#: src/components/history/HistoryTimelineRail.tsx:20
+msgid "history.group.earlier"
+msgstr "Earlier"
+
+#: src/components/history/HistoryGrid.tsx:38
+#: src/components/history/HistoryTimelineRail.tsx:19
+msgid "history.group.lastWeek"
+msgstr "Last Week"
+
+#: src/components/history/HistoryGrid.tsx:37
+#: src/components/history/HistoryTimelineRail.tsx:18
+msgid "history.group.thisWeek"
+msgstr "This Week"
+
+#: src/components/history/HistoryGrid.tsx:35
+#: src/components/history/HistoryTimelineRail.tsx:16
+msgid "history.group.today"
+msgstr "Today"
+
+#: src/components/history/HistoryGrid.tsx:36
+#: src/components/history/HistoryTimelineRail.tsx:17
+msgid "history.group.yesterday"
+msgstr "Yesterday"
+
+#: src/pages/HistoryPage.tsx:69
+#: src/pages/HistoryPage.tsx:75
+#: src/pages/HistoryPage.tsx:81
+msgid "history.loadFailed"
+msgstr "Couldn't load history. Please retry."
+
+#: src/components/history/HistoryFilterBar.tsx:79
+msgid "history.searchPlaceholder"
+msgstr "Search title…"
+
+#: src/components/history/HistoryFilterBar.tsx:43
+msgid "history.tab.all"
+msgstr "All"
+
+#: src/components/history/HistoryFilterBar.tsx:45
+msgid "history.tab.completed"
+msgstr "Completed"
+
+#: src/components/history/HistoryFilterBar.tsx:44
+msgid "history.tab.inProgress"
+msgstr "In Progress"
+
+#: src/pages/HistoryPage.tsx:22
+#: src/pages/HistoryPage.tsx:143
+msgid "history.title"
+msgstr "Watch History"
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -2780,7 +2889,7 @@ msgstr "Matching completed"
 msgid "Missing"
 msgstr "Missing"
 
-#: src/components/AppSidebar.tsx:32
+#: src/components/AppSidebar.tsx:33
 #: src/pages/DownloadsPage.tsx:265
 #: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
@@ -2790,7 +2899,7 @@ msgstr "Auto-Download"
 msgid "nav.collection"
 msgstr "nav.collection"
 
-#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "Discover"
@@ -2799,20 +2908,24 @@ msgstr "Discover"
 #~ msgid "nav.downloads"
 #~ msgstr "Downloads"
 
-#: src/components/AppSidebar.tsx:25
-#: src/components/AppSidebar.tsx:226
+#: src/components/AppSidebar.tsx:35
+msgid "nav.history"
+msgstr "History"
+
+#: src/components/AppSidebar.tsx:26
+#: src/components/AppSidebar.tsx:228
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "Home"
 
-#: src/components/AppSidebar.tsx:33
-#: src/components/AppSidebar.tsx:229
+#: src/components/AppSidebar.tsx:34
+#: src/components/AppSidebar.tsx:231
 #: src/pages/LibrariesPage.tsx:2710
 #: src/pages/LibraryDetailPage.tsx:1854
 msgid "nav.libraries"
 msgstr "Library"
 
-#: src/components/AppSidebar.tsx:230
+#: src/components/AppSidebar.tsx:232
 msgid "nav.more"
 msgstr "More"
 
@@ -2824,20 +2937,20 @@ msgstr "Notifications"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:227
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:229
 #: src/pages/SchedulePage.tsx:637
 msgid "nav.schedule"
 msgstr "Schedule"
 
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:228
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:230
 #: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "Search"
 
-#: src/components/AppSidebar.tsx:35
-#: src/components/AppSidebar.tsx:156
+#: src/components/AppSidebar.tsx:37
+#: src/components/AppSidebar.tsx:158
 #: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "Settings"

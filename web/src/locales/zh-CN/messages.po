@@ -12,6 +12,26 @@ msgstr ""
 "Language-Team: \n"
 
 #. js-lingui-explicit-id
+#: src/components/history/HistoryEmptyState.tsx:15
+msgid "history.empty.title"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/history/HistoryEmptyState.tsx:18
+msgid "history.empty.description"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/history/HistoryEmptyState.tsx:24
+msgid "nav.home"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/components/history/HistoryCard.tsx:53
+msgid "history.finished"
+msgstr ""
+
+#. js-lingui-explicit-id
 #: src/pages/WatchPage.tsx:110
 msgid "watch.resumeFrom"
 msgstr "已为你跳转到"
@@ -358,11 +378,11 @@ msgstr "当前密码"
 msgid "account.fieldRequired"
 msgstr "此字段为必填项"
 
-#: src/components/AppSidebar.tsx:140
+#: src/components/AppSidebar.tsx:142
 msgid "account.local"
 msgstr "本地账号"
 
-#: src/components/AppSidebar.tsx:168
+#: src/components/AppSidebar.tsx:170
 msgid "account.logout"
 msgstr "退出登录"
 
@@ -1340,7 +1360,7 @@ msgstr "名称"
 msgid "collection.sortByRecent"
 msgstr "最近匹配"
 
-#: src/components/AppSidebar.tsx:34
+#: src/components/AppSidebar.tsx:36
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "收藏"
@@ -1368,6 +1388,7 @@ msgstr "返回"
 msgid "common.backHome"
 msgstr "返回首页"
 
+#: src/components/history/ConfirmDialog.tsx:44
 #: src/pages/LibraryDetailPage.tsx:1820
 #: src/pages/settings/AboutPanel.tsx:228
 #: src/pages/settings/AboutPanel.tsx:247
@@ -1378,6 +1399,10 @@ msgstr "取消"
 #: src/pages/settings/AccountPanel.tsx:357
 msgid "common.clickToCopy"
 msgstr "点击复制"
+
+#: src/components/history/ConfirmDialog.tsx:49
+msgid "common.confirm"
+msgstr ""
 
 #: src/pages/LibraryDetailPage.tsx:1830
 msgid "common.confirmDelete"
@@ -1735,6 +1760,90 @@ msgstr "预览"
 #: src/components/library/RenameConfigEditor.tsx:71
 #~ msgid "History"
 #~ msgstr ""
+
+#: src/components/history/HistoryFilterBar.tsx:101
+msgid "history.batch"
+msgstr ""
+
+#: src/components/history/HistoryBatchBar.tsx:24
+msgid "history.batch.cancel"
+msgstr ""
+
+#: src/components/history/HistoryBatchBar.tsx:32
+msgid "history.batch.deleteSelected"
+msgstr ""
+
+#: src/components/history/HistoryFilterBar.tsx:89
+msgid "history.clearAll"
+msgstr ""
+
+#: src/pages/HistoryPage.tsx:199
+msgid "history.clearAll.confirm"
+msgstr ""
+
+#: src/pages/HistoryPage.tsx:204
+msgid "history.clearAll.description"
+msgstr ""
+
+#: src/pages/HistoryPage.tsx:200
+msgid "history.delete.confirm"
+msgstr ""
+
+#: src/pages/HistoryPage.tsx:205
+msgid "history.delete.description"
+msgstr ""
+
+#: src/components/history/HistoryGrid.tsx:39
+#: src/components/history/HistoryTimelineRail.tsx:20
+msgid "history.group.earlier"
+msgstr ""
+
+#: src/components/history/HistoryGrid.tsx:38
+#: src/components/history/HistoryTimelineRail.tsx:19
+msgid "history.group.lastWeek"
+msgstr ""
+
+#: src/components/history/HistoryGrid.tsx:37
+#: src/components/history/HistoryTimelineRail.tsx:18
+msgid "history.group.thisWeek"
+msgstr ""
+
+#: src/components/history/HistoryGrid.tsx:35
+#: src/components/history/HistoryTimelineRail.tsx:16
+msgid "history.group.today"
+msgstr ""
+
+#: src/components/history/HistoryGrid.tsx:36
+#: src/components/history/HistoryTimelineRail.tsx:17
+msgid "history.group.yesterday"
+msgstr ""
+
+#: src/pages/HistoryPage.tsx:69
+#: src/pages/HistoryPage.tsx:75
+#: src/pages/HistoryPage.tsx:81
+msgid "history.loadFailed"
+msgstr ""
+
+#: src/components/history/HistoryFilterBar.tsx:79
+msgid "history.searchPlaceholder"
+msgstr ""
+
+#: src/components/history/HistoryFilterBar.tsx:43
+msgid "history.tab.all"
+msgstr ""
+
+#: src/components/history/HistoryFilterBar.tsx:45
+msgid "history.tab.completed"
+msgstr ""
+
+#: src/components/history/HistoryFilterBar.tsx:44
+msgid "history.tab.inProgress"
+msgstr ""
+
+#: src/pages/HistoryPage.tsx:22
+#: src/pages/HistoryPage.tsx:143
+msgid "history.title"
+msgstr ""
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -2775,7 +2884,7 @@ msgstr "匹配完成"
 msgid "Missing"
 msgstr "缺失"
 
-#: src/components/AppSidebar.tsx:32
+#: src/components/AppSidebar.tsx:33
 #: src/pages/DownloadsPage.tsx:265
 #: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
@@ -2785,7 +2894,7 @@ msgstr "自动下载"
 msgid "nav.collection"
 msgstr ""
 
-#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "探索"
@@ -2794,20 +2903,24 @@ msgstr "探索"
 #~ msgid "nav.downloads"
 #~ msgstr "下载"
 
-#: src/components/AppSidebar.tsx:25
-#: src/components/AppSidebar.tsx:226
+#: src/components/AppSidebar.tsx:35
+msgid "nav.history"
+msgstr ""
+
+#: src/components/AppSidebar.tsx:26
+#: src/components/AppSidebar.tsx:228
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "首页"
 
-#: src/components/AppSidebar.tsx:33
-#: src/components/AppSidebar.tsx:229
+#: src/components/AppSidebar.tsx:34
+#: src/components/AppSidebar.tsx:231
 #: src/pages/LibrariesPage.tsx:2710
 #: src/pages/LibraryDetailPage.tsx:1854
 msgid "nav.libraries"
 msgstr "媒体库"
 
-#: src/components/AppSidebar.tsx:230
+#: src/components/AppSidebar.tsx:232
 msgid "nav.more"
 msgstr "更多"
 
@@ -2819,20 +2932,20 @@ msgstr "通知"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:227
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:229
 #: src/pages/SchedulePage.tsx:637
 msgid "nav.schedule"
 msgstr "时刻表"
 
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:228
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:230
 #: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "搜索"
 
-#: src/components/AppSidebar.tsx:35
-#: src/components/AppSidebar.tsx:156
+#: src/components/AppSidebar.tsx:37
+#: src/components/AppSidebar.tsx:158
 #: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "设置"
