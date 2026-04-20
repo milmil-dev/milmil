@@ -138,11 +138,6 @@
   :focus-visible {
     outline: none;
   }
-  /* Press scale only on elements that opt in via data-press-scale */
-  [data-press-scale]:active {
-    transform: scale(0.97);
-    transition: transform 0.1s;
-  }
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
