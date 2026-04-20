@@ -8,7 +8,37 @@ package store
 import (
 	"context"
 	"database/sql"
+	"strings"
 )
+
+const batchDeleteWatchProgress = `-- name: BatchDeleteWatchProgress :execrows
+DELETE FROM watch_progress
+WHERE user_id = ?1 AND id IN (/*SLICE:ids*/?)
+`
+
+type BatchDeleteWatchProgressParams struct {
+	UserID string   `json:"user_id"`
+	Ids    []string `json:"ids"`
+}
+
+func (q *Queries) BatchDeleteWatchProgress(ctx context.Context, arg BatchDeleteWatchProgressParams) (int64, error) {
+	query := batchDeleteWatchProgress
+	var queryParams []interface{}
+	queryParams = append(queryParams, arg.UserID)
+	if len(arg.Ids) > 0 {
+		for _, v := range arg.Ids {
+			queryParams = append(queryParams, v)
+		}
+		query = strings.Replace(query, "/*SLICE:ids*/?", strings.Repeat(",?", len(arg.Ids))[1:], 1)
+	} else {
+		query = strings.Replace(query, "/*SLICE:ids*/?", "NULL", 1)
+	}
+	result, err := q.db.ExecContext(ctx, query, queryParams...)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
 
 const countCompletedWatchProgressByAnime = `-- name: CountCompletedWatchProgressByAnime :one
 SELECT
@@ -36,6 +66,36 @@ func (q *Queries) CountCompletedWatchProgressByAnime(ctx context.Context, arg Co
 	var i CountCompletedWatchProgressByAnimeRow
 	err := row.Scan(&i.CompletedCount, &i.LastPlayedAt, &i.FirstCompletedAt)
 	return i, err
+}
+
+const deleteAllWatchProgressByUser = `-- name: DeleteAllWatchProgressByUser :execrows
+DELETE FROM watch_progress WHERE user_id = ?1
+`
+
+func (q *Queries) DeleteAllWatchProgressByUser(ctx context.Context, userID string) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteAllWatchProgressByUser, userID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const deleteWatchProgress = `-- name: DeleteWatchProgress :execrows
+DELETE FROM watch_progress
+WHERE id = ?1 AND user_id = ?2
+`
+
+type DeleteWatchProgressParams struct {
+	ID     string `json:"id"`
+	UserID string `json:"user_id"`
+}
+
+func (q *Queries) DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgressParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteWatchProgress, arg.ID, arg.UserID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const getWatchProgress = `-- name: GetWatchProgress :one
@@ -178,6 +238,106 @@ func (q *Queries) ListCompletedWatchProgress(ctx context.Context, userID string)
 			&i.BangumiSyncedAt,
 			&i.MalSyncedAt,
 			&i.AnilistSyncedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listHistoryWithAnime = `-- name: ListHistoryWithAnime :many
+SELECT
+    wp.id, wp.user_id, wp.episode_id, wp.media_file_id,
+    wp.position_seconds, wp.duration_seconds, wp.completed, wp.last_watched_at,
+    a.id AS anime_id, a.title AS anime_title, a.title_zh AS anime_title_zh,
+    a.cover_image_url AS anime_cover_image_url, a.bangumi_id AS anime_bangumi_id,
+    e.episode_number
+FROM watch_progress wp
+JOIN episodes e ON e.id = wp.episode_id
+JOIN anime a ON a.id = e.anime_id
+WHERE wp.user_id = ?1
+  AND (?2 = '' OR wp.last_watched_at < ?2)
+  AND (
+    ?3 = 'all'
+    OR (?3 = 'completed' AND wp.completed = 1)
+    OR (?3 = 'in_progress' AND wp.completed = 0)
+  )
+  AND (
+    ?4 = ''
+    OR LOWER(a.title) LIKE LOWER('%' || ?4 || '%')
+    OR LOWER(COALESCE(a.title_zh, '')) LIKE LOWER('%' || ?4 || '%')
+  )
+ORDER BY wp.last_watched_at DESC, wp.id DESC
+LIMIT ?5
+`
+
+type ListHistoryWithAnimeParams struct {
+	UserID string      `json:"user_id"`
+	Before interface{} `json:"before"`
+	Filter interface{} `json:"filter"`
+	Q      interface{} `json:"q"`
+	Lim    int64       `json:"lim"`
+}
+
+type ListHistoryWithAnimeRow struct {
+	ID                 string         `json:"id"`
+	UserID             string         `json:"user_id"`
+	EpisodeID          string         `json:"episode_id"`
+	MediaFileID        sql.NullString `json:"media_file_id"`
+	PositionSeconds    int64          `json:"position_seconds"`
+	DurationSeconds    sql.NullInt64  `json:"duration_seconds"`
+	Completed          int64          `json:"completed"`
+	LastWatchedAt      string         `json:"last_watched_at"`
+	AnimeID            string         `json:"anime_id"`
+	AnimeTitle         string         `json:"anime_title"`
+	AnimeTitleZh       sql.NullString `json:"anime_title_zh"`
+	AnimeCoverImageUrl sql.NullString `json:"anime_cover_image_url"`
+	AnimeBangumiID     sql.NullInt64  `json:"anime_bangumi_id"`
+	EpisodeNumber      float64        `json:"episode_number"`
+}
+
+// Paginated, filterable list of watch progress enriched with anime + episode.
+// No per-anime dedup: every watch_progress row is returned (one per episode).
+// Cursor pagination on (last_watched_at DESC, id DESC).
+// When 'before' is empty string, no cursor is applied (first page).
+// When 'q' is empty string, no search filter is applied.
+func (q *Queries) ListHistoryWithAnime(ctx context.Context, arg ListHistoryWithAnimeParams) ([]ListHistoryWithAnimeRow, error) {
+	rows, err := q.db.QueryContext(ctx, listHistoryWithAnime,
+		arg.UserID,
+		arg.Before,
+		arg.Filter,
+		arg.Q,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListHistoryWithAnimeRow{}
+	for rows.Next() {
+		var i ListHistoryWithAnimeRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.EpisodeID,
+			&i.MediaFileID,
+			&i.PositionSeconds,
+			&i.DurationSeconds,
+			&i.Completed,
+			&i.LastWatchedAt,
+			&i.AnimeID,
+			&i.AnimeTitle,
+			&i.AnimeTitleZh,
+			&i.AnimeCoverImageUrl,
+			&i.AnimeBangumiID,
+			&i.EpisodeNumber,
 		); err != nil {
 			return nil, err
 		}

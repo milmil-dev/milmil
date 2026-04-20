@@ -10,6 +10,7 @@ import (
 )
 
 type Querier interface {
+	BatchDeleteWatchProgress(ctx context.Context, arg BatchDeleteWatchProgressParams) (int64, error)
 	ClearMediaFileMatch(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
@@ -37,13 +38,16 @@ type Querier interface {
 	CreateTranscodeSession(ctx context.Context, arg CreateTranscodeSessionParams) (TranscodeSession, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAPIToken(ctx context.Context, arg DeleteAPITokenParams) error
+	DeleteAllExternalDanmaku(ctx context.Context, mediaFileID string) error
 	DeleteAllNotifications(ctx context.Context) error
+	DeleteAllWatchProgressByUser(ctx context.Context, userID string) (int64, error)
 	DeleteAnime(ctx context.Context, id string) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
 	DeleteCompletedSyncOpsOlderThan(ctx context.Context, completedAt sql.NullString) error
 	DeleteDownload(ctx context.Context, gid string) error
 	DeleteDownloadRule(ctx context.Context, id string) error
 	DeleteEpisodesByAnimeID(ctx context.Context, animeID string) error
+	DeleteExternalDanmaku(ctx context.Context, arg DeleteExternalDanmakuParams) error
 	DeleteLibrary(ctx context.Context, id string) error
 	DeleteMediaFile(ctx context.Context, path string) error
 	DeleteMediaFileByID(ctx context.Context, id string) error
@@ -56,6 +60,7 @@ type Querier interface {
 	DeleteSubtitleFile(ctx context.Context, id string) error
 	DeleteTranscodeSession(ctx context.Context, sessionToken string) error
 	DeleteUserPreference(ctx context.Context, arg DeleteUserPreferenceParams) error
+	DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgressParams) (int64, error)
 	DisableTwoFactor(ctx context.Context, id string) error
 	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
 	EnqueueSyncOp(ctx context.Context, arg EnqueueSyncOpParams) error
@@ -76,6 +81,7 @@ type Querier interface {
 	GetEpisode(ctx context.Context, id string) (Episode, error)
 	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
+	GetExternalDanmakuByMediaFile(ctx context.Context, mediaFileID string) ([]ExternalDanmaku, error)
 	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
 	GetLatestCompletedSyncOp(ctx context.Context, arg GetLatestCompletedSyncOpParams) (SyncOutbox, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
@@ -120,6 +126,12 @@ type Querier interface {
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListEpisodesByAnimeIDWithAirDate(ctx context.Context, animeID string) ([]ListEpisodesByAnimeIDWithAirDateRow, error)
 	ListEpisodesByLibraryIDWithAirDate(ctx context.Context, libraryID sql.NullString) ([]ListEpisodesByLibraryIDWithAirDateRow, error)
+	// Paginated, filterable list of watch progress enriched with anime + episode.
+	// No per-anime dedup: every watch_progress row is returned (one per episode).
+	// Cursor pagination on (last_watched_at DESC, id DESC).
+	// When 'before' is empty string, no cursor is applied (first page).
+	// When 'q' is empty string, no search filter is applied.
+	ListHistoryWithAnime(ctx context.Context, arg ListHistoryWithAnimeParams) ([]ListHistoryWithAnimeRow, error)
 	ListHotTags(ctx context.Context) ([]HotTag, error)
 	ListHotTagsByCategory(ctx context.Context, category string) ([]HotTag, error)
 	ListLibraries(ctx context.Context) ([]Library, error)
@@ -199,6 +211,7 @@ type Querier interface {
 	UpdateRSSFeedLastFetched(ctx context.Context, id string) error
 	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error
 	UpsertBackupConfig(ctx context.Context, arg UpsertBackupConfigParams) (BackupConfig, error)
+	UpsertExternalDanmaku(ctx context.Context, arg UpsertExternalDanmakuParams) (ExternalDanmaku, error)
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
 	UpsertSyncProviderState(ctx context.Context, arg UpsertSyncProviderStateParams) error
