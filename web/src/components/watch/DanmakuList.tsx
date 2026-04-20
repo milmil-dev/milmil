@@ -108,15 +108,28 @@ function BlockKeywordsModal() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/50 transition-colors"
+          className={cn(
+            'flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-all',
+            blockKeywords.length > 0
+              ? 'bg-white/[0.06] text-white/50 hover:bg-white/[0.1]'
+              : 'text-white/25 hover:bg-white/[0.04] hover:text-white/40'
+          )}
         >
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" className="w-3.5 h-3.5">
-            <circle cx="8" cy="8" r="6" />
-            <path d="M4.5 11.5l7-7" />
+          {/* Shield icon */}
+          <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 shrink-0">
+            <path
+              d="M8 1.5L2.5 4v4c0 3.5 2.5 5.5 5.5 6.5 3-1 5.5-3 5.5-6.5V4L8 1.5z"
+              stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"
+            />
+            {blockKeywords.length > 0 && (
+              <path d="M5.5 8L7 9.5 10.5 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            )}
           </svg>
-          {i18n._(msg`watch.danmaku.blockKeywords`)}
+          <span>{i18n._(msg`watch.danmaku.blockKeywords`)}</span>
           {blockKeywords.length > 0 && (
-            <span className="text-[10px] text-white/20">({blockKeywords.length})</span>
+            <span className="text-[9px] bg-white/[0.08] text-white/40 rounded-full px-1.5 py-0.5 leading-none tabular-nums">
+              {blockKeywords.length}
+            </span>
           )}
         </button>
       </DialogTrigger>
