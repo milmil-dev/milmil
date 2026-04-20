@@ -13,7 +13,7 @@ import (
 // getToken returns a JWT by calling setup (first time) or login (if already initialized).
 func getToken(t *testing.T, e *echo.Echo) string {
 	t.Helper()
-	const creds = `{"username":"testuser","password":"password123"}`
+	const creds = `{"username":"testuser","password":"Tr0ub4dor&3xplod3"}`
 
 	// Try setup first
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(creds))
