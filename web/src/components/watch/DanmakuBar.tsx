@@ -98,9 +98,9 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         <AnimatePresence>
           {settingsOpen && (
             <motion.div
-              initial={{ opacity: 0, y: 4, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 4, scale: 0.96 }}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.12 }}
               className="absolute bottom-full right-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden shadow-xl shadow-black/40"
             >
