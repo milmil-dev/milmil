@@ -35,25 +35,24 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
     return true;
   });
 
-  // Build style using store values directly, not pre-baked comment styles
-  const buildStyle = (c: DanmakuComment) => {
-    const style: Record<string, string> = {
+  // Build CSS style for DOM rendering
+  const buildStyle = (c: DanmakuComment): Partial<CSSStyleDeclaration> => {
+    const color = danmakuColor !== '#FFFFFF' ? danmakuColor : c.style.color;
+    const style: Partial<CSSStyleDeclaration> = {
       fontSize: `${fontSize}px`,
       fontFamily,
-      color: danmakuColor !== '#FFFFFF' ? danmakuColor : c.style.color,
+      color,
       opacity: String(opacity),
+      textShadow:
+        stroke === 'shadow'
+          ? '1px 1px 2px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.5)'
+          : stroke === 'stroke'
+            ? '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
+            : 'none',
     };
 
     if (bold) {
       style.fontWeight = 'bold';
-    }
-
-    if (stroke === 'shadow') {
-      (style as any).shadowColor = 'rgba(0,0,0,0.8)';
-      (style as any).shadowBlur = '2';
-    } else if (stroke === 'stroke') {
-      (style as any).shadowColor = '#000';
-      (style as any).shadowBlur = '1';
     }
 
     return style;
@@ -66,7 +65,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
     const engine = new DanmakuEngine({
       container: containerRef.current,
       media: videoElement,
-      engine: 'canvas',
+      engine: 'dom',
       comments: filteredComments.map((c) => ({
         text: c.text,
         time: c.time,
