@@ -11,17 +11,21 @@ interface DanmakuOverlayProps {
 export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const danmakuRef = useRef<DanmakuEngine | null>(null);
+
+  // Read ALL settings directly from store (not from pre-baked comment styles)
   const enabled = usePreferencesStore((s) => s.danmakuEnabled);
   const speed = usePreferencesStore((s) => s.danmakuSpeed);
+  const fontSize = usePreferencesStore((s) => s.danmakuFontSize);
+  const opacity = usePreferencesStore((s) => s.danmakuOpacity);
   const area = usePreferencesStore((s) => s.danmakuArea);
   const bold = usePreferencesStore((s) => s.danmakuBold);
   const stroke = usePreferencesStore((s) => s.danmakuStroke);
+  const fontFamily = usePreferencesStore((s) => s.danmakuFontFamily);
+  const danmakuColor = usePreferencesStore((s) => s.danmakuColor);
   const filterScroll = usePreferencesStore((s) => s.danmakuFilterScroll);
   const filterTop = usePreferencesStore((s) => s.danmakuFilterTop);
   const filterBottom = usePreferencesStore((s) => s.danmakuFilterBottom);
   const antiSubtitle = usePreferencesStore((s) => s.danmakuAntiSubtitle);
-  const fontFamily = usePreferencesStore((s) => s.danmakuFontFamily);
-  const danmakuColor = usePreferencesStore((s) => s.danmakuColor);
 
   // Filter comments by type
   const filteredComments = comments.filter((c) => {
@@ -31,35 +35,31 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
     return true;
   });
 
-  // Build canvas style based on stroke/bold settings
+  // Build style using store values directly, not pre-baked comment styles
   const buildStyle = (c: DanmakuComment) => {
-    const baseStyle: Record<string, string> = {
-      fontSize: c.style.fontSize,
+    const style: Record<string, string> = {
+      fontSize: `${fontSize}px`,
       fontFamily,
       color: danmakuColor !== '#FFFFFF' ? danmakuColor : c.style.color,
-      opacity: String(c.style.opacity),
+      opacity: String(opacity),
     };
 
     if (bold) {
-      baseStyle.fontWeight = 'bold';
+      style.fontWeight = 'bold';
     }
 
-    // Stroke/shadow effects for canvas mode
     if (stroke === 'shadow') {
-      baseStyle.textShadow = '1px 1px 2px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,0.5)';
-      // Canvas equivalent
-      (baseStyle as any).shadowColor = 'rgba(0,0,0,0.8)';
-      (baseStyle as any).shadowBlur = '2';
+      (style as any).shadowColor = 'rgba(0,0,0,0.8)';
+      (style as any).shadowBlur = '2';
     } else if (stroke === 'stroke') {
-      baseStyle.textShadow = '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000';
-      (baseStyle as any).shadowColor = '#000';
-      (baseStyle as any).shadowBlur = '1';
+      (style as any).shadowColor = '#000';
+      (style as any).shadowBlur = '1';
     }
 
-    return baseStyle;
+    return style;
   };
 
-  // Init danmaku engine
+  // Init/reinit danmaku engine whenever ANY setting changes
   useEffect(() => {
     if (!videoElement || !containerRef.current || filteredComments.length === 0) return;
 
@@ -82,7 +82,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
       engine.destroy();
       danmakuRef.current = null;
     };
-  }, [videoElement, filteredComments, speed, bold, stroke, fontFamily, danmakuColor]);
+  }, [videoElement, filteredComments, speed, fontSize, opacity, bold, stroke, fontFamily, danmakuColor]);
 
   // Toggle visibility
   useEffect(() => {
@@ -101,9 +101,7 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Calculate container height based on area and anti-subtitle settings
   const areaPercent = area * 100;
-  // Anti-subtitle: if enabled, cap at 85% to leave room for subtitles at bottom
   const effectiveArea = antiSubtitle ? Math.min(areaPercent, 85) : areaPercent;
 
   return (
