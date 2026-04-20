@@ -1,6 +1,8 @@
 package danmaku
 
 import (
+	"compress/flate"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"encoding/xml"
@@ -199,7 +201,22 @@ func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string, partI
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	// Bilibili always sends compressed responses (gzip/deflate) for danmaku XML,
+	// even when Accept-Encoding is not set. Decompress based on Content-Encoding.
+	var reader io.Reader = resp.Body
+	switch resp.Header.Get("Content-Encoding") {
+	case "gzip":
+		gr, gzErr := gzip.NewReader(resp.Body)
+		if gzErr != nil {
+			return nil, fmt.Errorf("bilibili danmaku: gzip: %w", gzErr)
+		}
+		defer gr.Close()
+		reader = gr
+	case "deflate":
+		reader = flate.NewReader(resp.Body)
+	}
+
+	body, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, fmt.Errorf("bilibili danmaku: read body: %w", err)
 	}
