@@ -6,11 +6,13 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 const (
@@ -22,7 +24,9 @@ const (
 
 // BilibiliSource implements Source for Bilibili danmaku.
 type BilibiliSource struct {
-	client *http.Client
+	client  *http.Client
+	buvid3  string
+	buvidMu sync.Once
 }
 
 // NewBilibiliSource creates a new BilibiliSource with the given HTTP client.
@@ -31,6 +35,39 @@ func NewBilibiliSource(c *http.Client) *BilibiliSource {
 		c = http.DefaultClient
 	}
 	return &BilibiliSource{client: c}
+}
+
+// initBuvid fetches a buvid3 session token from Bilibili's SPI endpoint.
+// Without this cookie, Bilibili returns 412 for many API requests.
+func (b *BilibiliSource) initBuvid() {
+	b.buvidMu.Do(func() {
+		resp, err := b.client.Get("https://api.bilibili.com/x/frontend/finger/spi")
+		if err != nil {
+			slog.Warn("bilibili: failed to fetch buvid", "err", err)
+			return
+		}
+		defer resp.Body.Close()
+
+		var result struct {
+			Data struct {
+				B3 string `json:"b_3"`
+			} `json:"data"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && result.Data.B3 != "" {
+			b.buvid3 = result.Data.B3
+			slog.Debug("bilibili: acquired buvid3", "buvid3", b.buvid3[:8]+"...")
+		}
+	})
+}
+
+// setHeaders adds required headers to bypass Bilibili's anti-bot (412).
+func (b *BilibiliSource) setHeaders(req *http.Request) {
+	b.initBuvid()
+	b.setHeaders(req)
+	req.Header.Set("Referer", "https://www.bilibili.com")
+	if b.buvid3 != "" {
+		req.Header.Set("Cookie", "buvid3="+b.buvid3)
+	}
 }
 
 func (b *BilibiliSource) Name() string {
@@ -65,7 +102,7 @@ func (b *BilibiliSource) Search(ctx context.Context, keyword string, page int) (
 	if err != nil {
 		return nil, fmt.Errorf("bilibili search: create request: %w", err)
 	}
-	req.Header.Set("User-Agent", bilibiliUserAgent)
+	b.setHeaders(req)
 
 	resp, err := b.client.Do(req)
 	if err != nil {
@@ -154,7 +191,7 @@ func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string, partI
 	if err != nil {
 		return nil, fmt.Errorf("bilibili danmaku: create request: %w", err)
 	}
-	req.Header.Set("User-Agent", bilibiliUserAgent)
+	b.setHeaders(req)
 
 	resp, err := b.client.Do(req)
 	if err != nil {
@@ -180,7 +217,7 @@ func (b *BilibiliSource) getVideoInfo(ctx context.Context, bvid string) (*bilibi
 	if err != nil {
 		return nil, fmt.Errorf("bilibili view: create request: %w", err)
 	}
-	req.Header.Set("User-Agent", bilibiliUserAgent)
+	b.setHeaders(req)
 
 	resp, err := b.client.Do(req)
 	if err != nil {
