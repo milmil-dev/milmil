@@ -209,7 +209,10 @@ export class TrackManager {
   async getCues(track: SubtitleTrack): Promise<SubtitleCue[]> {
     const cacheKey = track.id;
     const cached = this.cueCache.get(cacheKey);
-    if (cached) return cached;
+    if (cached !== undefined) return cached;
+
+    // Mark as loading to prevent concurrent fetches from rAF polling
+    this.cueCache.set(cacheKey, []);
 
     let content: string | undefined;
 
