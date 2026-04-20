@@ -251,8 +251,15 @@ type bilibiliXMLItem struct {
 // Mode mapping: 1,6 → "rtl", 4 → "bottom", 5 → "top"
 // Color: decimal integer → "#xxxxxx" hex string
 func parseBilibiliXML(data []byte) ([]Comment, error) {
+	// Bilibili XML often contains bare '&' in danmaku text (invalid XML).
+	// Use a decoder with Strict=false + AutoClose to handle it gracefully.
+	decoder := xml.NewDecoder(strings.NewReader(string(data)))
+	decoder.Strict = false
+	decoder.AutoClose = xml.HTMLAutoClose
+	decoder.Entity = xml.HTMLEntity
+
 	var root bilibiliXMLRoot
-	if err := xml.Unmarshal(data, &root); err != nil {
+	if err := decoder.Decode(&root); err != nil {
 		return nil, fmt.Errorf("parse bilibili XML: %w", err)
 	}
 
