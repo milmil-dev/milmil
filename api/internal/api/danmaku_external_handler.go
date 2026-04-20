@@ -77,18 +77,23 @@ func (h *handler) handleGetVideoParts(c echo.Context) error {
 	return c.JSON(http.StatusOK, parts)
 }
 
+// cacheKey builds a stable cache key using episodeId (survives library rescans).
+func extCacheKey(episodeID, source string) string {
+	return fmt.Sprintf("danmaku:ext:%s:%s", episodeID, source)
+}
+
 func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 	var req struct {
-		Source      string `json:"source"`
-		VideoID     string `json:"videoId"`
-		MediaFileID string `json:"mediaFileId"`
-		PartIndex   int    `json:"partIndex"`
+		Source    string `json:"source"`
+		VideoID   string `json:"videoId"`
+		EpisodeID string `json:"episodeId"`
+		PartIndex int    `json:"partIndex"`
 	}
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
 	}
-	if req.Source == "" || req.VideoID == "" || req.MediaFileID == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "source, videoId, and mediaFileId are required")
+	if req.Source == "" || req.VideoID == "" || req.EpisodeID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "source, videoId, and episodeId are required")
 	}
 
 	source, ok := h.danmakuRegistry.Get(req.Source)
@@ -102,10 +107,8 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "fetch failed: "+err.Error())
 	}
 
-	// Always cache first (24h TTL)
 	data, _ := json.Marshal(comments)
-	cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", req.MediaFileID, req.Source)
-	_ = h.cache.Set(ctx, cacheKey, data, 24*time.Hour)
+	_ = h.cache.Set(ctx, extCacheKey(req.EpisodeID, req.Source), data, 24*time.Hour)
 
 	return c.JSON(http.StatusOK, map[string]any{
 		"source":   req.Source,
@@ -116,7 +119,7 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 }
 
 func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
-	mediaFileID := c.Param("mediaFileId")
+	episodeID := c.Param("episodeId")
 	var req struct {
 		Source string `json:"source"`
 		Save   bool   `json:"save"`
@@ -126,22 +129,19 @@ func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
+	ck := extCacheKey(episodeID, req.Source)
 
 	if req.Save {
-		// Promote: read from cache, write to DB, delete cache
-		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, req.Source)
-		data, err := h.cache.Get(ctx, cacheKey)
+		data, err := h.cache.Get(ctx, ck)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, "no cached danmaku to save")
 		}
-
 		var comments []danmaku.Comment
 		if err := json.Unmarshal(data, &comments); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "corrupt cache data")
 		}
-
 		_, dbErr := h.queries.UpsertExternalDanmaku(ctx, store.UpsertExternalDanmakuParams{
-			MediaFileID:  mediaFileID,
+			MediaFileID:  episodeID, // reuse column for episodeId
 			Source:       req.Source,
 			VideoID:      "",
 			PartIndex:    0,
@@ -151,19 +151,17 @@ func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
 		if dbErr != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "save failed: "+dbErr.Error())
 		}
-		_ = h.cache.Del(ctx, cacheKey)
+		_ = h.cache.Del(ctx, ck)
 	} else {
-		// Demote: read from DB, write to cache, delete from DB
-		rows, err := h.queries.GetExternalDanmakuByMediaFile(ctx, mediaFileID)
+		rows, err := h.queries.GetExternalDanmakuByMediaFile(ctx, episodeID)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "read failed")
 		}
 		for _, row := range rows {
 			if row.Source == req.Source {
-				cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, req.Source)
-				_ = h.cache.Set(ctx, cacheKey, []byte(row.CommentsJson), 24*time.Hour)
+				_ = h.cache.Set(ctx, ck, []byte(row.CommentsJson), 24*time.Hour)
 				_ = h.queries.DeleteExternalDanmaku(ctx, store.DeleteExternalDanmakuParams{
-					MediaFileID: mediaFileID,
+					MediaFileID: episodeID,
 					Source:      req.Source,
 				})
 				break
@@ -175,7 +173,7 @@ func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
 }
 
 func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
-	mediaFileID := c.Param("mediaFileId")
+	episodeID := c.Param("episodeId")
 	ctx := c.Request().Context()
 
 	type importedSource struct {
@@ -188,40 +186,33 @@ func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
 	seen := make(map[string]bool)
 	var imported []importedSource
 
-	// 1. Load from database (permanent)
-	dbRows, err := h.queries.GetExternalDanmakuByMediaFile(ctx, mediaFileID)
+	// 1. DB (permanent) — media_file_id column stores episodeId
+	dbRows, err := h.queries.GetExternalDanmakuByMediaFile(ctx, episodeID)
 	if err == nil {
 		for _, row := range dbRows {
 			var comments []danmaku.Comment
 			if json.Unmarshal([]byte(row.CommentsJson), &comments) == nil && len(comments) > 0 {
 				imported = append(imported, importedSource{
-					Source:   row.Source,
-					Count:    len(comments),
-					Saved:    true,
-					Comments: comments,
+					Source: row.Source, Count: len(comments), Saved: true, Comments: comments,
 				})
 				seen[row.Source] = true
 			}
 		}
 	}
 
-	// 2. Load from cache (temporary, skip sources already in DB)
+	// 2. Cache (temporary)
 	for _, name := range h.danmakuRegistry.Names() {
 		if seen[name] {
 			continue
 		}
-		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, name)
-		data, cacheErr := h.cache.Get(ctx, cacheKey)
+		data, cacheErr := h.cache.Get(ctx, extCacheKey(episodeID, name))
 		if cacheErr != nil {
 			continue
 		}
 		var comments []danmaku.Comment
 		if json.Unmarshal(data, &comments) == nil && len(comments) > 0 {
 			imported = append(imported, importedSource{
-				Source:   name,
-				Count:    len(comments),
-				Saved:    false,
-				Comments: comments,
+				Source: name, Count: len(comments), Saved: false, Comments: comments,
 			})
 		}
 	}
@@ -230,24 +221,19 @@ func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
 }
 
 func (h *handler) handleRemoveImportedDanmaku(c echo.Context) error {
-	mediaFileID := c.Param("mediaFileId")
+	episodeID := c.Param("episodeId")
 	sourceName := c.QueryParam("source")
 	ctx := c.Request().Context()
 
 	if sourceName != "" {
-		// Remove from both DB and cache
 		_ = h.queries.DeleteExternalDanmaku(ctx, store.DeleteExternalDanmakuParams{
-			MediaFileID: mediaFileID,
-			Source:      sourceName,
+			MediaFileID: episodeID, Source: sourceName,
 		})
-		cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, sourceName)
-		_ = h.cache.Del(ctx, cacheKey)
+		_ = h.cache.Del(ctx, extCacheKey(episodeID, sourceName))
 	} else {
-		// Remove all
-		_ = h.queries.DeleteAllExternalDanmaku(ctx, mediaFileID)
+		_ = h.queries.DeleteAllExternalDanmaku(ctx, episodeID)
 		for _, name := range h.danmakuRegistry.Names() {
-			cacheKey := fmt.Sprintf("danmaku:ext:%s:%s", mediaFileID, name)
-			_ = h.cache.Del(ctx, cacheKey)
+			_ = h.cache.Del(ctx, extCacheKey(episodeID, name))
 		}
 	}
 

@@ -249,6 +249,7 @@ export function WatchPage() {
     [mergedEpisodes, ep]
   );
   const fileId = currentEpisode?.media_file?.id ?? null;
+  const episodeId = currentEpisode?.episode_id ?? null;
 
   // Auto-sync URL when episode is auto-resolved (no ep param in URL)
   useEffect(() => {
@@ -337,9 +338,9 @@ export function WatchPage() {
 
   // --------------- External imported danmaku ---------------
   const { data: importedDanmaku, refetch: refetchImported } = useQuery({
-    queryKey: externalDanmakuKeys.imported(fileId ?? ''),
-    queryFn: () => externalDanmakuApi.getImported(fileId!),
-    enabled: !!fileId,
+    queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
+    queryFn: () => externalDanmakuApi.getImported(episodeId!),
+    enabled: !!episodeId,
   });
 
   const mergedDanmakuComments = useMemo(() => {
@@ -1039,7 +1040,7 @@ export function WatchPage() {
                   onSelectEpisode={handleSelectEpisode}
                   danmakuComments={mergedDanmakuComments}
                   onSeekDanmaku={handleSeekDanmaku}
-                  mediaFileId={fileId}
+                  episodeId={episodeId}
                   animeName={animeDetail?.title ?? animeDetail?.title_original ?? ''}
                   episodeNumber={currentEpisode?.sort}
                   onExternalDanmakuImported={() => refetchImported()}
@@ -1062,7 +1063,7 @@ export function WatchPage() {
                   onSelectEpisode={handleSelectEpisode}
                   danmakuComments={mergedDanmakuComments}
                   onSeekDanmaku={handleSeekDanmaku}
-                  mediaFileId={fileId}
+                  episodeId={episodeId}
                   animeName={animeDetail?.title ?? animeDetail?.title_original ?? ''}
                   episodeNumber={currentEpisode?.sort}
                   onExternalDanmakuImported={() => refetchImported()}

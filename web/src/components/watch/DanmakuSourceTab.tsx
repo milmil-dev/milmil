@@ -14,7 +14,7 @@ import {
 } from '@/lib/api/danmaku';
 
 interface DanmakuSourceTabProps {
-  mediaFileId: string | null;
+  episodeId: string | null;
   animeName: string;
   episodeNumber: number | undefined;
   onImported: () => void;
@@ -33,7 +33,7 @@ function formatDuration(seconds: number): string {
 }
 
 export function DanmakuSourceTab({
-  mediaFileId,
+  episodeId,
   animeName,
   episodeNumber,
   onImported,
@@ -63,7 +63,7 @@ export function DanmakuSourceTab({
     setSearchKeyword('');
     setExpandedVideoId(null);
     setVideoParts([]);
-  }, [mediaFileId, animeName, episodeNumber]);
+  }, [episodeId, animeName, episodeNumber]);
 
   const {
     data: searchResults,
@@ -76,17 +76,17 @@ export function DanmakuSourceTab({
   });
 
   const { data: imported } = useQuery({
-    queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
-    queryFn: () => externalDanmakuApi.getImported(mediaFileId!),
-    enabled: !!mediaFileId,
+    queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
+    queryFn: () => externalDanmakuApi.getImported(episodeId!),
+    enabled: !!episodeId,
   });
 
   const importMutation = useMutation({
     mutationFn: ({ videoId, partIndex }: { videoId: string; partIndex: number }) =>
-      externalDanmakuApi.import(selectedSource, videoId, mediaFileId!, partIndex),
+      externalDanmakuApi.import(selectedSource, videoId, episodeId!, partIndex),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
+        queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
       });
       onImported();
       toast.success(`Imported ${formatCount(data.count)} danmaku from ${selectedSource}`);
@@ -100,10 +100,10 @@ export function DanmakuSourceTab({
 
   const toggleSaveMutation = useMutation({
     mutationFn: ({ source, save }: { source: string; save: boolean }) =>
-      externalDanmakuApi.toggleSave(mediaFileId!, source, save),
+      externalDanmakuApi.toggleSave(episodeId!, source, save),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
+        queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
       });
       toast.success(
         variables.save
@@ -115,10 +115,10 @@ export function DanmakuSourceTab({
 
   const removeMutation = useMutation({
     mutationFn: (source: string) =>
-      externalDanmakuApi.removeImported(mediaFileId!, source),
+      externalDanmakuApi.removeImported(episodeId!, source),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: externalDanmakuKeys.imported(mediaFileId ?? ''),
+        queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
       });
       onImported();
     },

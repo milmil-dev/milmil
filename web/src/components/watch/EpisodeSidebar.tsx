@@ -16,7 +16,7 @@ interface EpisodeSidebarProps {
   onSelectEpisode: (sort: number) => void;
   danmakuComments: DanmakuComment[];
   onSeekDanmaku: (time: number) => void;
-  mediaFileId: string | null;
+  episodeId: string | null;
   animeName: string;
   episodeNumber: number | undefined;
   onExternalDanmakuImported: () => void;
@@ -28,7 +28,7 @@ export function EpisodeSidebar({
   onSelectEpisode,
   danmakuComments,
   onSeekDanmaku,
-  mediaFileId,
+  episodeId,
   animeName,
   episodeNumber,
   onExternalDanmakuImported,
@@ -85,7 +85,7 @@ export function EpisodeSidebar({
         )}
         {activeTab === 'sources' && (
           <DanmakuSourceTab
-            mediaFileId={mediaFileId}
+            episodeId={episodeId}
             animeName={animeName}
             episodeNumber={episodeNumber}
             onImported={onExternalDanmakuImported}

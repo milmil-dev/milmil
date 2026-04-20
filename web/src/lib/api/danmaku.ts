@@ -46,24 +46,24 @@ export const externalDanmakuApi = {
       `/api/v1/danmaku/external/parts?source=${encodeURIComponent(source)}&videoId=${encodeURIComponent(videoId)}`
     ),
 
-  import: (source: string, videoId: string, mediaFileId: string, partIndex = 0) =>
+  import: (source: string, videoId: string, episodeId: string, partIndex = 0) =>
     api.post<{ source: string; count: number; saved: boolean; comments: ExternalComment[] }>(
       '/api/v1/danmaku/external/import',
-      { source, videoId, mediaFileId, partIndex }
+      { source, videoId, episodeId, partIndex }
     ),
 
-  toggleSave: (mediaFileId: string, source: string, save: boolean) =>
+  toggleSave: (episodeId: string, source: string, save: boolean) =>
     api.patch<{ saved: boolean }>(
-      `/api/v1/danmaku/external/imported/${mediaFileId}/save`,
+      `/api/v1/danmaku/external/imported/${episodeId}/save`,
       { source, save }
     ),
 
-  getImported: (mediaFileId: string) =>
-    api.get<ImportedDanmaku[]>(`/api/v1/danmaku/external/imported/${mediaFileId}`),
+  getImported: (episodeId: string) =>
+    api.get<ImportedDanmaku[]>(`/api/v1/danmaku/external/imported/${episodeId}`),
 
-  removeImported: (mediaFileId: string, source?: string) =>
+  removeImported: (episodeId: string, source?: string) =>
     api.delete<void>(
-      `/api/v1/danmaku/external/imported/${mediaFileId}${source ? `?source=${encodeURIComponent(source)}` : ''}`
+      `/api/v1/danmaku/external/imported/${episodeId}${source ? `?source=${encodeURIComponent(source)}` : ''}`
     ),
 };
 
@@ -71,6 +71,6 @@ export const externalDanmakuKeys = {
   sources: () => ['danmaku', 'external', 'sources'] as const,
   search: (source: string, q: string, page: number) =>
     ['danmaku', 'external', 'search', source, q, page] as const,
-  imported: (mediaFileId: string) =>
-    ['danmaku', 'external', 'imported', mediaFileId] as const,
+  imported: (episodeId: string) =>
+    ['danmaku', 'external', 'imported', episodeId] as const,
 };
