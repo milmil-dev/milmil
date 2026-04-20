@@ -89,7 +89,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 4, scale: 0.96 }}
               transition={{ duration: 0.12 }}
-              className="absolute bottom-full right-0 mb-2 w-64 max-h-[70vh] overflow-y-auto rounded-lg border border-mm-border bg-mm-bg p-3"
+              className="absolute bottom-full right-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden"
             >
               <DanmakuSettingsControls />
             </motion.div>

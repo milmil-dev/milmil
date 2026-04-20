@@ -8,7 +8,6 @@ import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
 import type { SubtitleStyleConfig, SubtitleTrack } from '@/plugins/subtitle/types';
 import type { MediaSettingsPluginAPI } from '@/plugins/media-settings/MediaSettingsPlugin';
 import type { VideoFilterState } from '@/plugins/media-settings/VideoFilter';
-import { DanmakuSettingsControls } from '@/components/DanmakuSettings';
 
 /* ─── Types ──────────────────────────────────────────────────────── */
 
@@ -30,14 +29,11 @@ type View =
   // Subtitle views
   | 'subtitles' | 'subtitle-style' | 'sub-preset' | 'sub-font' | 'sub-fontSize'
   | 'sub-color' | 'sub-bgOpacity' | 'sub-border' | 'sub-position' | 'sub-timing'
-  // Danmaku views
-  | 'danmaku'
   // Media views
   | 'speed' | 'brightness' | 'contrast' | 'saturation' | 'warmth' | 'volumeBoost' | 'audioTrack';
 
 /** Parent view for each sub-view — drives the back button navigation. */
 const VIEW_PARENT: Record<Exclude<View, 'main'>, View> = {
-  danmaku: 'main',
   subtitles: 'main',
   'subtitle-style': 'main',
   'sub-preset': 'subtitle-style',
@@ -273,7 +269,6 @@ export function UnifiedSettingsPanel({
   const headerTitle = ((): string | null => {
     switch (view) {
       case 'main': return null;
-      case 'danmaku': return i18n._(msg`watch.danmaku`);
       case 'subtitles': return i18n._(msg`settings.subtitles`);
       case 'subtitle-style': return i18n._(msg`settings.subtitleStyle`);
       case 'sub-preset': return i18n._(msg`settings.preset`);
@@ -296,15 +291,6 @@ export function UnifiedSettingsPanel({
 
   const renderContent = (): React.ReactNode => {
     switch (view) {
-      // ── Danmaku ──
-      case 'danmaku':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku`)} onBack={() => back('main')} />
-          <div className="px-1 py-1">
-            <DanmakuSettingsControls />
-          </div>
-        </>);
-
       // ── Subtitle sub-views ──
       case 'subtitles':
         return (<>
@@ -533,8 +519,6 @@ export function UnifiedSettingsPanel({
                 onClick={() => go('sub-timing')} />
             </>
           )}
-          {/* Danmaku section */}
-          <MenuRow icon={<IconDanmaku />} label={i18n._(msg`watch.danmaku`)} onClick={() => go('danmaku')} />
           <Divider />
           {/* Playback speed */}
           <MenuRow icon={<IconSpeed />} label={i18n._(msg`settings.playbackSpeed`)}
@@ -625,5 +609,4 @@ function IconSaturation() { return <svg viewBox="0 0 24 24" fill="currentColor" 
 function IconNight() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54 0 4.48-2.94 8.27-7 9.54.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z"/></svg>; }
 function IconVolume() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>; }
 function IconAudio() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>; }
-function IconDanmaku() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm8 0h2v2h-2zm-4 0h2v2h-2z"/></svg>; }
 function IconSpeed() { return <svg viewBox="0 0 24 24" fill="currentColor" className={ic}><path d="M20.38 8.57l-1.23 1.85a8 8 0 01-.22 7.58H5.07A8 8 0 0115.58 6.85l1.85-1.23A10 10 0 003.35 19a2 2 0 001.72 1h13.85a2 2 0 001.74-1 10 10 0 00-.27-10.44zm-9.79 6.84a2 2 0 002.83 0l5.66-8.49-8.49 5.66a2 2 0 000 2.83z"/></svg>; }
