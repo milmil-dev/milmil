@@ -58,7 +58,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         className={cn(
           'shrink-0 flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full transition-all',
           enabled
-            ? 'bg-blue-500/15 text-blue-400 hover:bg-blue-500/25'
+            ? 'bg-white/[0.12] text-white hover:bg-white/[0.18]'
             : 'bg-white/[0.04] text-white/25 hover:bg-white/[0.08] hover:text-white/40'
         )}
       >
