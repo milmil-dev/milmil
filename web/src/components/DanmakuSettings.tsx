@@ -209,14 +209,7 @@ export function DanmakuSettingsControls() {
       default:
         return (<>
           {/* On/Off */}
-          <button type="button" onClick={() => update('danmakuEnabled', !enabled)}
-            className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-white/[0.03] transition-colors">
-            <span className="text-[13px] text-white/80 font-medium">{i18n._(msg`watch.danmaku`)}</span>
-            <span className={cn('px-2 py-0.5 text-[10px] font-semibold rounded-md tracking-wide',
-              enabled ? 'bg-white/15 text-white' : 'bg-white/[0.06] text-white/30')}>
-              {enabled ? 'ON' : 'OFF'}
-            </span>
-          </button>
+          <ToggleRow label={i18n._(msg`watch.danmaku`)} checked={enabled} onChange={() => update('danmakuEnabled', !enabled)} />
           <Divider />
           <MenuRow label={i18n._(msg`watch.danmaku.typeFilter`)} value={activeFilters.join('·') || '—'} onClick={() => go('typeFilter')} />
           <MenuRow label={i18n._(msg`watch.danmaku.displayArea`)} value={areaLabel} onClick={() => go('area')} />

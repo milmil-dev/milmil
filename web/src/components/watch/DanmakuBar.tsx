@@ -3,7 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DanmakuSettingsControls } from '@/components/DanmakuSettings';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
@@ -18,6 +18,19 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
   const [text, setText] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [settingsOpen]);
 
   const sendDanmaku = async () => {
     const trimmed = text.trim();
@@ -73,7 +86,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
       </button>
 
       {/* Settings gear */}
-      <div className="relative">
+      <div className="relative" ref={popoverRef}>
         <button
           type="button"
           onClick={() => setSettingsOpen((v) => !v)}
@@ -89,7 +102,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 4, scale: 0.96 }}
               transition={{ duration: 0.12 }}
-              className="absolute bottom-full right-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden"
+              className="absolute bottom-full right-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden shadow-xl shadow-black/40"
             >
               <DanmakuSettingsControls />
             </motion.div>
