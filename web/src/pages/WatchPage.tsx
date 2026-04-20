@@ -1040,7 +1040,7 @@ export function WatchPage() {
                   danmakuComments={mergedDanmakuComments}
                   onSeekDanmaku={handleSeekDanmaku}
                   mediaFileId={fileId}
-                  animeName={animeDetail?.name_cn ?? animeDetail?.name ?? ''}
+                  animeName={animeDetail?.title ?? animeDetail?.title_original ?? ''}
                   episodeNumber={currentEpisode?.sort}
                   onExternalDanmakuImported={() => refetchImported()}
                 />
@@ -1063,7 +1063,7 @@ export function WatchPage() {
                   danmakuComments={mergedDanmakuComments}
                   onSeekDanmaku={handleSeekDanmaku}
                   mediaFileId={fileId}
-                  animeName={animeDetail?.name_cn ?? animeDetail?.name ?? ''}
+                  animeName={animeDetail?.title ?? animeDetail?.title_original ?? ''}
                   episodeNumber={currentEpisode?.sort}
                   onExternalDanmakuImported={() => refetchImported()}
                 />
