@@ -1772,7 +1772,7 @@ msgstr "すべて表示 →"
 
 #: src/pages/LibraryDetailPage.tsx:333
 msgid "Incomplete only"
-msgstr ""
+msgstr "未完了のみ"
 
 #: src/pages/LibrariesPage.tsx:313
 #: src/pages/LibrariesPage.tsx:344
@@ -3500,6 +3500,10 @@ msgstr "タイトルマッチ"
 #: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "スキャン完了"
+
+#: src/pages/LibraryDetailPage.tsx:2166
+msgid "scan.files"
+msgstr "ファイル"
 
 #: src/pages/LibraryDetailPage.tsx:2142
 msgid "scan.phase.hashing"

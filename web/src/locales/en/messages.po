@@ -3504,6 +3504,10 @@ msgstr "Title Match"
 msgid "scan.completed"
 msgstr "Scan completed"
 
+#: src/pages/LibraryDetailPage.tsx:2166
+msgid "scan.files"
+msgstr "files"
+
 #: src/pages/LibraryDetailPage.tsx:2142
 msgid "scan.phase.hashing"
 msgstr "Hashing"

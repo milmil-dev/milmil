@@ -1772,7 +1772,7 @@ msgstr "전체 보기 →"
 
 #: src/pages/LibraryDetailPage.tsx:333
 msgid "Incomplete only"
-msgstr ""
+msgstr "미완료만"
 
 #: src/pages/LibrariesPage.tsx:313
 #: src/pages/LibrariesPage.tsx:344
@@ -3500,6 +3500,10 @@ msgstr "제목 매칭"
 #: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "스캔 완료"
+
+#: src/pages/LibraryDetailPage.tsx:2166
+msgid "scan.files"
+msgstr "파일"
 
 #: src/pages/LibraryDetailPage.tsx:2142
 msgid "scan.phase.hashing"

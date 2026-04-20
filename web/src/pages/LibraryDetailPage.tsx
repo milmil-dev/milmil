@@ -2155,26 +2155,26 @@ export function LibraryDetailPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="rounded-lg border border-mm-accent/20 bg-mm-accent/[0.04] p-4 mb-6"
+                  className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4 mb-6"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-mm-accent animate-pulse" />
-                      <span className="text-sm font-medium text-white/80">{phaseLabel}</span>
+                      <div className="w-2 h-2 rounded-full bg-blue-400/70 animate-pulse" />
+                      <span className="text-sm font-medium text-white/70">{phaseLabel}</span>
                     </div>
-                    <span className="text-xs text-white/40 font-mono">
-                      {scanProgress.filesFound > 0 && `${scanProgress.filesFound} files`}
+                    <span className="text-xs text-white/30 tabular-nums">
+                      {scanProgress.filesFound > 0 && `${scanProgress.filesFound} ${i18n._(msg`scan.files`)}`}
                       {scanProgress.filesMatched > 0 &&
-                        ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal} matched`}
+                        ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal}`}
                     </span>
                   </div>
                   {/* Progress bar */}
-                  <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden mb-2">
+                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden mb-2">
                     {isIndeterminate ? (
-                      <div className="h-full w-1/3 rounded-full bg-mm-accent animate-pulse" />
+                      <div className="h-full w-1/3 rounded-full bg-blue-400/50 animate-pulse" />
                     ) : (
                       <motion.div
-                        className="h-full rounded-full bg-mm-accent"
+                        className="h-full rounded-full bg-blue-400/60"
                         initial={{ width: 0 }}
                         animate={{ width: `${percentage}%` }}
                         transition={{ duration: 0.3 }}
@@ -2182,7 +2182,7 @@ export function LibraryDetailPage() {
                     )}
                   </div>
                   {scanProgress.currentFile && (
-                    <p className="text-xs text-white/30 truncate font-mono">
+                    <p className="text-xs text-white/20 truncate">
                       {scanProgress.currentFile}
                     </p>
                   )}

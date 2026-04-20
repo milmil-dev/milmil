@@ -1770,7 +1770,7 @@ msgstr "睇晒 →"
 
 #: src/pages/LibraryDetailPage.tsx:333
 msgid "Incomplete only"
-msgstr ""
+msgstr "僅顯示不完整"
 
 #: src/pages/LibrariesPage.tsx:313
 #: src/pages/LibrariesPage.tsx:344
@@ -3498,6 +3498,10 @@ msgstr "標題匹配"
 #: src/routes/__root.tsx:211
 msgid "scan.completed"
 msgstr "掃描完成"
+
+#: src/pages/LibraryDetailPage.tsx:2166
+msgid "scan.files"
+msgstr "個檔案"
 
 #: src/pages/LibraryDetailPage.tsx:2142
 msgid "scan.phase.hashing"
