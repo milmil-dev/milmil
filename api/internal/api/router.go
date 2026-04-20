@@ -271,6 +271,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	progressGroup.GET("/recent", h.handleListRecentProgress)
 	progressGroup.GET("/history", h.handleListHistory)
 	progressGroup.GET("/file/:fileId", h.handleGetProgressByFile)
+	progressGroup.DELETE("", h.handleClearAllProgress)
+	progressGroup.DELETE("/:id", h.handleDeleteProgress)
+	progressGroup.POST("/batch-delete", h.handleBatchDeleteProgress)
 
 	// Torrent Search — protected
 	searchGroup := v1.Group("/torrent-search", authMiddleware(h.queries))

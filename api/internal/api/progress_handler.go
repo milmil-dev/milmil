@@ -235,3 +235,59 @@ func (h *handler) handleListHistory(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func (h *handler) handleDeleteProgress(c echo.Context) error {
+	userID := getUserID(c)
+	id := c.Param("id")
+	if id == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "id is required")
+	}
+
+	n, err := h.queries.DeleteWatchProgress(c.Request().Context(), store.DeleteWatchProgressParams{
+		ID:     id,
+		UserID: userID,
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	if n == 0 {
+		return echo.NewHTTPError(http.StatusNotFound, "watch progress not found")
+	}
+	return c.JSON(http.StatusOK, map[string]int64{"deleted": n})
+}
+
+type batchDeleteRequest struct {
+	IDs []string `json:"ids"`
+}
+
+func (h *handler) handleBatchDeleteProgress(c echo.Context) error {
+	var req batchDeleteRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+	if len(req.IDs) > 200 {
+		return echo.NewHTTPError(http.StatusBadRequest, "ids: max 200 per call")
+	}
+	if len(req.IDs) == 0 {
+		return c.JSON(http.StatusOK, map[string]int64{"deleted": 0})
+	}
+
+	userID := getUserID(c)
+	n, err := h.queries.BatchDeleteWatchProgress(c.Request().Context(), store.BatchDeleteWatchProgressParams{
+		UserID: userID,
+		Ids:    req.IDs,
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, map[string]int64{"deleted": n})
+}
+
+func (h *handler) handleClearAllProgress(c echo.Context) error {
+	userID := getUserID(c)
+	n, err := h.queries.DeleteAllWatchProgressByUser(c.Request().Context(), userID)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, map[string]int64{"deleted": n})
+}
