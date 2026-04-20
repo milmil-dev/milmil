@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -156,4 +157,81 @@ func (h *handler) handleGetProgressByFile(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, toProgressResponse(progress))
+}
+
+type listHistoryResponse struct {
+	Items      []enrichedProgressResponse `json:"items"`
+	NextBefore *string                    `json:"next_before"`
+}
+
+func (h *handler) handleListHistory(c echo.Context) error {
+	userID := getUserID(c)
+
+	filter := c.QueryParam("filter")
+	if filter == "" {
+		filter = "all"
+	}
+	switch filter {
+	case "all", "in_progress", "completed":
+	default:
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid filter; must be one of all, in_progress, completed")
+	}
+
+	before := c.QueryParam("before")
+	q := c.QueryParam("q")
+
+	limit := int64(40)
+	if s := c.QueryParam("limit"); s != "" {
+		if n, err := strconv.ParseInt(s, 10, 64); err == nil && n > 0 {
+			limit = n
+		}
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
+	// Fetch limit+1 to determine whether there's a next page.
+	rows, err := h.queries.ListHistoryWithAnime(c.Request().Context(), store.ListHistoryWithAnimeParams{
+		UserID: userID,
+		Before: before,
+		Filter: filter,
+		Q:      q,
+		Lim:    limit + 1,
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	hasMore := int64(len(rows)) > limit
+	if hasMore {
+		rows = rows[:limit]
+	}
+
+	items := make([]enrichedProgressResponse, len(rows))
+	for i, item := range rows {
+		items[i] = enrichedProgressResponse{
+			ID:              item.ID,
+			UserID:          item.UserID,
+			EpisodeID:       item.EpisodeID,
+			MediaFileID:     nullStr(item.MediaFileID),
+			PositionSeconds: item.PositionSeconds,
+			DurationSeconds: nullInt(item.DurationSeconds),
+			Completed:       item.Completed,
+			LastWatchedAt:   item.LastWatchedAt,
+			AnimeID:         item.AnimeID,
+			AnimeTitle:      item.AnimeTitle,
+			AnimeTitleZh:    nullStr(item.AnimeTitleZh),
+			AnimeCoverImage: nullStr(item.AnimeCoverImageUrl),
+			AnimeBangumiID:  nullInt(item.AnimeBangumiID),
+			EpisodeNumber:   item.EpisodeNumber,
+		}
+	}
+
+	resp := listHistoryResponse{Items: items}
+	if hasMore && len(items) > 0 {
+		next := items[len(items)-1].LastWatchedAt
+		resp.NextBefore = &next
+	}
+
+	return c.JSON(http.StatusOK, resp)
 }
