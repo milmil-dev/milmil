@@ -87,9 +87,20 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             transition={{ duration: 0.25 }}
           />
         </svg>
-        <span className="text-[11px] font-medium leading-none">
-          {enabled ? i18n._(msg`watch.danmaku.on`) : i18n._(msg`watch.danmaku.off`)}
-        </span>
+        <div className="relative w-5 h-4 overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={enabled ? 'on' : 'off'}
+              initial={{ y: enabled ? 12 : -12, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: enabled ? -12 : 12, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="absolute inset-0 flex items-center text-[11px] font-medium leading-none"
+            >
+              {enabled ? i18n._(msg`watch.danmaku.on`) : i18n._(msg`watch.danmaku.off`)}
+            </motion.span>
+          </AnimatePresence>
+        </div>
       </button>
 
       {/* Settings gear */}
