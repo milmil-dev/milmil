@@ -138,15 +138,10 @@
   :focus-visible {
     outline: none;
   }
-  a:active,
-  button:active {
+  /* Press scale only on elements that opt in via data-press-scale */
+  [data-press-scale]:active {
     transform: scale(0.97);
     transition: transform 0.1s;
-  }
-  /* Disable press scale inside settings panels and popovers */
-  [data-settings-panel] button:active,
-  [data-settings-panel] a:active {
-    transform: none;
   }
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
