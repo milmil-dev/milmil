@@ -207,33 +207,39 @@ export class TrackManager {
     this.setPrimary(0);
   }
 
+  /** Normalize a language identifier to an ISO code for comparison. */
+  private static normalize(lang: string): string {
+    const lower = lang.toLowerCase().replace(/\s*\[(forced|cc)\]/g, '').trim();
+    return ISO_MAP[lower] ?? lower;
+  }
+
   /** Returns best-match track index for a language code, or -1 if no match. */
   private findBestMatch(language: string): number {
-    const locale = language.toLowerCase();
-    const localeBase = locale.split('-')[0] ?? locale;
+    // Normalize the search language (could be "zh-TW", "Chinese (Traditional)", "chi", etc.)
+    const target = TrackManager.normalize(language);
+    const targetBase = target.split('-')[0] ?? target;
 
     let bestIdx = -1;
     let bestScore = 0;
 
     for (let idx = 0; idx < this.tracks.length; idx++) {
       const rawLabel = this.tracks[idx]!.language.toLowerCase();
-      // Strip [Forced]/[CC] suffixes for matching, and deprioritize them
       const isForced = rawLabel.includes('[forced]');
       const isCC = rawLabel.includes('[cc]');
-      const sl = rawLabel.replace(/\s*\[(forced|cc)\]/g, '').trim();
 
-      // Resolve full name → ISO code via ISO_MAP
-      const mapped = ISO_MAP[sl];
+      // Normalize track language to ISO code
+      const trackLang = TrackManager.normalize(rawLabel);
+      const trackBase = trackLang.split('-')[0] ?? trackLang;
 
       let score = 0;
-      if (sl === locale || mapped === locale) {
-        score = 3;
-      } else if (
-        sl.startsWith(localeBase) ||
-        localeBase.startsWith(sl) ||
-        mapped === localeBase ||
-        mapped?.startsWith(localeBase)
-      ) {
+      if (trackLang === target) {
+        // Exact match: zh-tw === zh-tw
+        score = 4;
+      } else if (trackBase === targetBase && trackLang.includes('-') && target.includes('-')) {
+        // Both have variants but different: zh-cn vs zh-tw → low score
+        score = 1;
+      } else if (trackBase === targetBase) {
+        // Base match: zh === zh, or zh-cn vs zh → score 2
         score = 2;
       }
 
