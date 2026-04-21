@@ -3,6 +3,7 @@ import React from 'react';
 import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => () => {},
   Link: ({
     children,
     to,

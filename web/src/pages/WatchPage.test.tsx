@@ -3,6 +3,7 @@ import React from 'react';
 import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => () => {},
   Link: ({
     children,
     to,
@@ -29,6 +30,8 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => ({ invalidateQueries: () => {}, setQueryData: () => {}, getQueryData: () => undefined }),
+  useMutation: () => ({ mutate: () => {}, mutateAsync: async () => {}, isPending: false }),
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     if (queryKey[0] === 'danmaku') return { data: { count: 42, comments: [] } };
     if (queryKey[0] === 'subtitles') return { data: [] };
@@ -77,14 +80,20 @@ vi.mock('@/components/DanmakuSettings', () => ({
   DanmakuSettings: () => <div data-testid="danmaku-settings" />,
 }));
 
-vi.mock('@/store/preferences-store', () => ({
-  usePreferencesStore: (selector: (s: Record<string, unknown>) => unknown) =>
-    selector({ danmakuOpacity: 1, danmakuFontSize: 24 }),
-}));
+vi.mock('@/store/preferences-store', () => {
+  const usePreferencesStore = (selector: (s: Record<string, unknown>) => unknown) =>
+    selector({ danmakuOpacity: 1, danmakuFontSize: 24 });
+  // WatchPage calls usePreferencesStore.subscribe() in a useEffect
+  (usePreferencesStore as unknown as { subscribe: () => () => void }).subscribe = () => () => {};
+  (usePreferencesStore as unknown as { getState: () => Record<string, unknown> }).getState = () => ({});
+  return { usePreferencesStore };
+});
 
 vi.mock('@/lib/api/stream', () => ({
   getStreamUrl: () => 'http://localhost/stream/test',
   parseDandanplayComments: () => [],
+  mediaApi: { info: () => Promise.resolve(null) },
+  mediaKeys: { info: (fileId: string) => ['media', 'info', fileId] },
 }));
 
 vi.mock('@/lib/api/subtitle', () => ({
