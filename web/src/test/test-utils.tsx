@@ -58,6 +58,6 @@ function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptions, 'wr
   return render(ui, { wrapper: AllProviders, ...options });
 }
 
-export { renderWithProviders as render };
 export { screen, waitFor, within } from '@testing-library/react';
 export { default as userEvent } from '@testing-library/user-event';
+export { renderWithProviders as render };

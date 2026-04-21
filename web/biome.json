@@ -6,7 +6,23 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.css", "**/*.md"],
+    "includes": [
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.json",
+      "**/*.css",
+      "**/*.md",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/out",
+      "!**/src/components/ui",
+      "!**/src/routeTree.gen.ts",
+      "!**/src/locales/**/messages.ts",
+      "!test-*.tsx",
+      "!test-*.ts"
+    ],
     "ignoreUnknown": true
   },
   "formatter": {
