@@ -12,7 +12,7 @@ export function SplashScreen() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <img src="/icons/logo.svg" alt="milmil" className="w-16 h-16 mb-4" />
+        <img src="/icons/icon-512.png" alt="milmil" className="w-16 h-16 mb-4 rounded-lg" />
         <h1 className="text-2xl font-bold tracking-tight text-mm-accent">milmil</h1>
       </motion.div>
 

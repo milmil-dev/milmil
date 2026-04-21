@@ -92,8 +92,8 @@ test('renders the sidebar with navigation links', () => {
 
 test('sidebar renders logo', () => {
   const { container } = render(<AppSidebar />);
-  // Logo is an <img> pointing to /icons/logo.svg
-  const img = container.querySelector('img[src="/icons/logo.svg"]');
+  // Logo is an <img> pointing to the brand mark PNG
+  const img = container.querySelector('img[src="/icons/icon-512.png"]');
   expect(img).not.toBeNull();
 });
 

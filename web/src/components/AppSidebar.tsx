@@ -193,7 +193,7 @@ export function AppSidebar() {
         >
           {/* Logo */}
           <div className="flex items-center justify-center h-16 shrink-0">
-            <img src="/icons/logo.svg" alt="milmil" className="w-9 h-9" />
+            <img src="/icons/icon-512.png" alt="milmil" className="w-9 h-9 rounded-md" />
           </div>
 
           {/* Main nav */}
