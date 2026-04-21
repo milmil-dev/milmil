@@ -1,0 +1,32 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Build artifacts / binaries
+milmil-api
+server
+tmp/
+*.exe
+*.test
+*.out
+*.log
+
+# Databases & data
+*.db
+*.db-shm
+*.db-wal
+data/
+
+# VCS / IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs (API image doesn't need them)
+*.md

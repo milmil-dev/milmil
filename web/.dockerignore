@@ -1,0 +1,35 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Build outputs (will be rebuilt inside container)
+dist/
+build/
+.cache/
+.vite/
+coverage/
+
+# Dependencies (installed fresh inside container)
+node_modules/
+
+# Test artifacts
+test-results/
+playwright-report/
+e2e/
+test-*.tsx
+test-plan-*.md
+
+# VCS / IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Agent config (not needed in image)
+CLAUDE.md
+AGENTS.md
