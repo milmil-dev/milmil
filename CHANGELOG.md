@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/milmil-dev/milmil/compare/v0.1.1...v0.1.2) (2026-04-21)
+
+
+### Miscellaneous Chores
+
+* release 0.1.2 ([965e5c8](https://github.com/milmil-dev/milmil/commit/965e5c8fed2bd86950e4d9de3beea5b15a7de394))
+
 ## [0.1.1](https://github.com/milmil-dev/milmil/compare/v0.1.0...v0.1.1) (2026-04-21)
 
 
