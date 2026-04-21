@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels: ["dependencies", "go"]
     commit-message:
       prefix: "chore(deps)"
@@ -15,6 +15,9 @@ updates:
       go-deps:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+      go-deps-major:
+        patterns: ["*"]
+        update-types: ["major"]
 
   # Frontend (web)
   - package-ecosystem: "npm"
@@ -22,7 +25,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels: ["dependencies", "javascript"]
     commit-message:
       prefix: "chore(deps)"
@@ -41,7 +44,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 2
     labels: ["dependencies", "javascript", "docs"]
     commit-message:
       prefix: "chore(deps)"
@@ -50,32 +53,50 @@ updates:
       docs-deps:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+      docs-deps-major:
+        patterns: ["*"]
+        update-types: ["major"]
 
-  # Docker base images
+  # Docker base images — group api + web into one PR per week
   - package-ecosystem: "docker"
     directory: "/api"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 2
     labels: ["dependencies", "docker"]
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
+    groups:
+      docker-api:
+        patterns: ["*"]
 
   - package-ecosystem: "docker"
     directory: "/web"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 2
     labels: ["dependencies", "docker"]
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
+    groups:
+      docker-web:
+        patterns: ["*"]
 
-  # GitHub Actions
+  # GitHub Actions — group everything into one PR
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 2
     labels: ["dependencies", "ci"]
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
+    groups:
+      github-actions:
+        patterns: ["*"]
