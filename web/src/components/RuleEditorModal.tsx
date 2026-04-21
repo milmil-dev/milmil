@@ -336,13 +336,23 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
         {/* ── RSS URL ── */}
         <Section label={i18n._(msg`ruleEditor.rssUrl`)}>
           {rssEditing ? (
-            <Input
-              value={rssUrl}
-              onChange={(e) => setRssUrl(e.target.value)}
-              placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
-              className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20 font-mono"
-              autoFocus
-            />
+            <div className="flex gap-2">
+              <Input
+                value={rssUrl}
+                onChange={(e) => setRssUrl(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && rssUrl.trim()) setRssEditing(false); if (e.key === 'Escape') setRssEditing(false); }}
+                placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
+                className="flex-1 bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20 font-mono"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => setRssEditing(false)}
+                className="shrink-0 text-[11px] text-white/50 hover:text-white px-2.5 py-1.5 rounded bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
+              >
+                {i18n._(msg`ruleEditor.done`)}
+              </button>
+            </div>
           ) : (
             <div className="space-y-1.5">
               <a

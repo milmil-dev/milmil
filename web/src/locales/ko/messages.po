@@ -3383,19 +3383,19 @@ msgstr ""
 msgid "Reverted {0} files, skipped {1}"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:652
+#: src/components/RuleEditorModal.tsx:661
 msgid "ruleEditor.addGroup"
 msgstr "그룹 추가..."
 
-#: src/components/RuleEditorModal.tsx:652
+#: src/components/RuleEditorModal.tsx:661
 msgid "ruleEditor.addGroupManual"
 msgstr "다른 그룹 추가..."
 
-#: src/components/RuleEditorModal.tsx:554
+#: src/components/RuleEditorModal.tsx:563
 msgid "ruleEditor.allEpisodes"
 msgstr "전체"
 
-#: src/components/RuleEditorModal.tsx:705
+#: src/components/RuleEditorModal.tsx:714
 msgid "ruleEditor.cancel"
 msgstr "취소"
 
@@ -3423,7 +3423,7 @@ msgstr "취소"
 msgid "ruleEditor.createTitle"
 msgstr "새 규칙"
 
-#: src/components/RuleEditorModal.tsx:695
+#: src/components/RuleEditorModal.tsx:704
 msgid "ruleEditor.delete"
 msgstr "삭제"
 
@@ -3431,7 +3431,7 @@ msgstr "삭제"
 msgid "ruleEditor.deleted"
 msgstr "추적이 삭제되었습니다"
 
-#: src/components/RuleEditorModal.tsx:487
+#: src/components/RuleEditorModal.tsx:496
 #: src/pages/DownloadsPage.tsx:1538
 msgid "ruleEditor.destination"
 msgstr "저장 위치"
@@ -3440,11 +3440,15 @@ msgstr "저장 위치"
 msgid "ruleEditor.disabled"
 msgstr "비활성"
 
-#: src/components/RuleEditorModal.tsx:778
+#: src/components/RuleEditorModal.tsx:353
+msgid "ruleEditor.done"
+msgstr "완료"
+
+#: src/components/RuleEditorModal.tsx:787
 msgid "ruleEditor.downloaded"
 msgstr "다운로드됨"
 
-#: src/components/RuleEditorModal.tsx:362
+#: src/components/RuleEditorModal.tsx:371
 msgid "ruleEditor.editUrl"
 msgstr "편집"
 
@@ -3452,35 +3456,35 @@ msgstr "편집"
 msgid "ruleEditor.enabled"
 msgstr "활성"
 
-#: src/components/RuleEditorModal.tsx:549
+#: src/components/RuleEditorModal.tsx:558
 msgid "ruleEditor.episodes"
 msgstr "에피소드"
 
-#: src/components/RuleEditorModal.tsx:535
+#: src/components/RuleEditorModal.tsx:544
 msgid "ruleEditor.exact"
 msgstr "정확"
 
-#: src/components/RuleEditorModal.tsx:536
+#: src/components/RuleEditorModal.tsx:545
 msgid "ruleEditor.exactDesc"
 msgstr "제목에 키워드 포함 (대소문자 구분 없음)"
 
-#: src/components/RuleEditorModal.tsx:369
+#: src/components/RuleEditorModal.tsx:378
 msgid "ruleEditor.feedType"
 msgstr "피드 유형"
 
-#: src/components/RuleEditorModal.tsx:542
+#: src/components/RuleEditorModal.tsx:551
 msgid "ruleEditor.filterRegex"
 msgstr "필터 패턴"
 
-#: src/components/RuleEditorModal.tsx:529
+#: src/components/RuleEditorModal.tsx:538
 msgid "ruleEditor.fuzzy"
 msgstr "퍼지"
 
-#: src/components/RuleEditorModal.tsx:530
+#: src/components/RuleEditorModal.tsx:539
 msgid "ruleEditor.fuzzyDesc"
 msgstr "비교 알고리즘으로 분석"
 
-#: src/components/RuleEditorModal.tsx:657
+#: src/components/RuleEditorModal.tsx:666
 msgid "ruleEditor.groupHint"
 msgstr "모든 그룹 허용"
 
@@ -3501,7 +3505,7 @@ msgstr "방금"
 msgid "ruleEditor.keywordMode"
 msgstr "키워드"
 
-#: src/components/RuleEditorModal.tsx:402
+#: src/components/RuleEditorModal.tsx:411
 #: src/pages/DownloadsPage.tsx:1444
 msgid "ruleEditor.linkedAnime"
 msgstr "연결된 애니메"
@@ -3514,7 +3518,7 @@ msgstr "로딩 중..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:559
+#: src/components/RuleEditorModal.tsx:568
 msgid "ruleEditor.newOnly"
 msgstr "새 에피소드만"
 
@@ -3522,12 +3526,12 @@ msgstr "새 에피소드만"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:502
+#: src/components/RuleEditorModal.tsx:511
 #: src/pages/DownloadsPage.tsx:1552
 msgid "ruleEditor.noLibrary"
 msgstr "라이브러리 없음"
 
-#: src/components/RuleEditorModal.tsx:788
+#: src/components/RuleEditorModal.tsx:797
 msgid "ruleEditor.noPreviewItems"
 msgstr "현재 필터에 일치하는 항목이 없습니다"
 
@@ -3535,25 +3539,25 @@ msgstr "현재 필터에 일치하는 항목이 없습니다"
 msgid "ruleEditor.openEditor"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:725
+#: src/components/RuleEditorModal.tsx:734
 #: src/pages/DownloadsPage.tsx:1584
 #: src/pages/DownloadsPage.tsx:1610
 msgid "ruleEditor.preview"
 msgstr "미리보기"
 
-#: src/components/RuleEditorModal.tsx:564
+#: src/components/RuleEditorModal.tsx:573
 msgid "ruleEditor.range"
 msgstr "범위"
 
-#: src/components/RuleEditorModal.tsx:741
+#: src/components/RuleEditorModal.tsx:750
 msgid "ruleEditor.refreshPreview"
 msgstr "새로고침"
 
-#: src/components/RuleEditorModal.tsx:588
+#: src/components/RuleEditorModal.tsx:597
 msgid "ruleEditor.releaseGroups"
 msgstr "자막 그룹"
 
-#: src/components/RuleEditorModal.tsx:664
+#: src/components/RuleEditorModal.tsx:673
 msgid "ruleEditor.resolution"
 msgstr "해상도"
 
@@ -3566,18 +3570,18 @@ msgstr "RSS 피드 URL"
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
-#: src/components/RuleEditorModal.tsx:391
+#: src/components/RuleEditorModal.tsx:400
 #: src/pages/DownloadsPage.tsx:1528
 msgid "ruleEditor.ruleName"
 msgstr "규칙 이름"
 
 #: src/components/RuleEditorModal.tsx:321
-#: src/components/RuleEditorModal.tsx:395
+#: src/components/RuleEditorModal.tsx:404
 #: src/pages/DownloadsPage.tsx:1532
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "예: 애니메이션 이름 시즌 1"
 
-#: src/components/RuleEditorModal.tsx:715
+#: src/components/RuleEditorModal.tsx:724
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.save"
 msgstr "저장"
@@ -3588,12 +3592,12 @@ msgstr "저장"
 msgid "ruleEditor.saved"
 msgstr "규칙이 업데이트되었습니다"
 
-#: src/components/RuleEditorModal.tsx:714
+#: src/components/RuleEditorModal.tsx:723
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.saving"
 msgstr "저장 중..."
 
-#: src/components/RuleEditorModal.tsx:439
+#: src/components/RuleEditorModal.tsx:448
 #: src/pages/DownloadsPage.tsx:1480
 msgid "ruleEditor.searchAnime"
 msgstr "애니메 검색하여 연결..."
@@ -3606,7 +3610,7 @@ msgstr "애니메 검색하여 연결..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:524
+#: src/components/RuleEditorModal.tsx:533
 msgid "ruleEditor.titleMatch"
 msgstr "제목 매칭"
 
