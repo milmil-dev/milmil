@@ -86,7 +86,7 @@
     "@lingui/vite-plugin": "^5.8.0",
     "@playwright/test": "^1.57.0",
     "@rolldown/plugin-babel": "^0.2.0",
-    "@tanstack/react-devtools": "^0.9.2",
+    "@tanstack/react-devtools": "^0.10.2",
     "@tanstack/react-form-devtools": "^0.2.13",
     "@tanstack/react-query-devtools": "^5.91.1",
     "@tanstack/react-router-devtools": "^1.154.12",
