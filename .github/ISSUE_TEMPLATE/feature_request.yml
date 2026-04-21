@@ -1,0 +1,62 @@
+name: Feature request
+description: Suggest an enhancement or new capability.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please check existing issues / discussions — your idea may already be tracked.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user need or current limitation. "I'd like X" is fine, but "I currently can't do Y because Z" is much better.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would the feature work? UX sketches, API shape, config keys — whatever applies.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you've tried, or other approaches you ruled out.
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Library / scanning
+        - Discovery (calendar, trending, search)
+        - Player / streaming / danmaku
+        - Downloads (torrent / RSS)
+        - Collection (status / sync / history)
+        - Notifications
+        - Authentication / 2FA / API tokens
+        - Settings / configuration
+        - Mobile / PWA
+        - Documentation
+        - Build / deploy / CI
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I'm willing to discuss design tradeoffs, not just request "add X".
+          required: true

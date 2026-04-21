@@ -171,7 +171,7 @@ export default function LibraryTab({
                     onClick={() => { setSort(key); setSortMenuOpen(false); }}
                     className={cn(
                       'w-full px-3 py-1.5 text-left text-[11px] font-medium transition-colors cursor-pointer',
-                      sort === key ? 'text-[#e88faa] bg-white/[0.04]' : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]',
+                      sort === key ? 'text-mm-accent bg-white/[0.04]' : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]',
                     )}
                   >
                     {sortLabels[key]}

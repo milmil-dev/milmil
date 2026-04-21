@@ -120,9 +120,12 @@ api/server
 /docs-*.png
 /watch-*.png
 /ref-*.png
-/milmil-logo*
-/milmil-favicon*
-/milmil-mark*
+# (brand assets live under docs/brand/ and ARE tracked — only loose root copies are ignored)
+/milmil-logo.png
+/milmil-logo.pdf
+/milmil-logo-*.png
+/milmil-favicon-*.png
+/milmil-mark-*.png
 
 # Web-level scratch test files (motion/animate/query debug)
 /web/test-*.tsx

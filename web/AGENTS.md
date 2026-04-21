@@ -2,7 +2,7 @@
 
 ## Overview
 
-TanStack SPA template — a client-side single-page application built with React 19, TanStack Router, Tailwind CSS v4, and Serwist PWA. Designed for dashboards, internal tools, and client-only web apps.
+milmil web frontend — the React SPA that talks to the milmil Go API. Built with React 19, TanStack Router, Tailwind CSS v4, and Serwist PWA. Ships as a static bundle served by nginx in production (see `web/nginx.conf`); the API runs in a separate container at `/api/*`.
 
 ## Core Rules
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="web/public/icons/milmil-icon-512.png" width="120" alt="milmil logo" />
+  <img src="web/public/icons/icon-512.png" width="120" alt="milmil logo" />
 </p>
 
 <h1 align="center">milmil</h1>

@@ -1,0 +1,102 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please fill in the sections below — incomplete reports are slower to fix.
+        For security issues, use a [private Security Advisory](https://github.com/milmil-dev/milmil/security/advisories/new) instead.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences describing the bug.
+      placeholder: e.g. "Library scan crashes when an SMB share contains a file with a colon in its name."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Concrete steps that reliably trigger the bug.
+      placeholder: |
+        1. Add an SMB library at smb://...
+        2. Click "Scan now"
+        3. Observe error in API logs
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error messages, stack traces, screenshots, or relevant log lines.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: milmil version / commit
+      description: Output of `docker image inspect` tag, or the commit SHA you built from.
+      placeholder: "v0.4.2 / commit abc1234"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment
+      multiple: false
+      options:
+        - Docker Compose (production)
+        - Local development (make dev)
+        - Bare metal / custom
+    validations:
+      required: true
+
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      options:
+        - SQLite
+        - PostgreSQL
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (if frontend bug)
+      placeholder: "Chrome 134 / Safari 18 / Firefox 130"
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Relevant environment / config
+      description: Any non-default `api/.env` settings, reverse proxy config, OS, container runtime, etc. Redact secrets.
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I am running the latest release (or a recent main) and the bug still reproduces.
+          required: true
+        - label: I have not included any secrets / tokens / passwords in this report.
+          required: true

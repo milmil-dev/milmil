@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/milmil-dev/milmil/security/advisories/new
+    about: Please report security issues privately via a Security Advisory, not as a public issue.
+  - name: Question / discussion
+    url: https://github.com/milmil-dev/milmil/discussions
+    about: Open-ended questions, ideas, and help requests belong in Discussions.
