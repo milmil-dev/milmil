@@ -5,25 +5,17 @@
 <h1 align="center">milmil</h1>
 
 <p align="center">
-  你嘅自架動畫媒體伺服器<br/>
+  自架動畫媒體伺服器<br/>
   <sub>媒體庫管理、新番日曆、動畫趨勢、彈幕播放</sub>
 </p>
 
 <p align="center">
-  <a href="https://github.com/milmil-dev/milmil/releases"><img src="https://img.shields.io/github/v/release/milmil-dev/milmil?style=flat-square&color=blue" alt="Release" /></a>
-  <a href="https://github.com/milmil-dev/milmil/blob/main/LICENSE"><img src="https://img.shields.io/github/license/milmil-dev/milmil?style=flat-square" alt="License" /></a>
-  <a href="https://github.com/milmil-dev/milmil/stargazers"><img src="https://img.shields.io/github/stars/milmil-dev/milmil?style=flat-square" alt="Stars" /></a>
-  <a href="https://github.com/milmil-dev/milmil/actions"><img src="https://img.shields.io/github/actions/workflow/status/milmil-dev/milmil/ci.yml?style=flat-square&label=CI" alt="CI" /></a>
-  <a href="https://hub.docker.com/r/milmil/milmil-api"><img src="https://img.shields.io/docker/pulls/milmil/milmil-api?style=flat-square&label=Docker%20Pulls" alt="Docker Pulls" /></a>
-</p>
-
-<p align="center">
-  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | 繁體中文（香港）
+  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | 繁體中文（台灣） | <a href="README.md">繁體中文（香港）</a>
 </p>
 
 <p align="center">
   <a href="#功能特色">功能特色</a> &bull;
-  <a href="#截圖睇睇">截圖睇睇</a> &bull;
+  <a href="#截圖預覽">截圖預覽</a> &bull;
   <a href="#快速開始">快速開始</a> &bull;
   <a href="#部署">部署</a> &bull;
   <a href="#設定">設定</a> &bull;
@@ -33,10 +25,10 @@
 
 ---
 
-## 截圖睇睇
+## 截圖預覽
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="800" alt="首頁 — 精選輪播、今日時間表、熱門排行" />
+  <img src="docs/screenshots/home.png" width="800" alt="首頁 — 精選輪播、今日時間表、趨勢排行" />
 </p>
 
 <p align="center">
@@ -48,7 +40,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/detail.png" width="800" alt="動畫詳情 — 集數列表、角色、預告片" />
+  <img src="docs/screenshots/detail.png" width="800" alt="動畫詳情 — 劇集列表、角色、預告片" />
 </p>
 
 ---
@@ -56,45 +48,45 @@
 ## 功能特色
 
 ### 媒體庫管理
-- **多來源儲存** — 本地檔案系統、SMB、SFTP，仲可以透過 rclone 支援 40+ 雲端後端
-- **自動掃描** — 可設定掃描間隔，配合 FFmpeg 提取媒體中繼資料
-- **檔案比對** — 多來源動畫識別（DandanPlay 哈希、Bangumi、TMDB、AniList）
+- **多來源儲存** — 本地檔案系統、SMB、SFTP，以及透過 rclone 支援 40+ 雲端後端
+- **自動掃描** — 可設定掃描間隔，搭配 FFmpeg 擷取媒體中繼資料
+- **檔案比對** — 多來源動畫辨識（DandanPlay 雜湊、Bangumi、TMDB、AniList）
 - **集數解析** — 自動從多個來源豐富集數中繼資料
 
 ### 探索
 - **新番日曆** — 按星期排列新番動畫
-- **熱門排行** — 來自 Bangumi 嘅人氣動畫排名
+- **趨勢排行** — 來自 Bangumi 的人氣動畫排名
 - **搜尋** — 跨動畫資料庫全文搜尋
-- **類型同標籤瀏覽** — 按類型、年份、季度、格式同評分篩選
+- **類型與標籤瀏覽** — 按類型、年份、季度、格式和評分篩選
 
 ### 播放
-- **直接串流** — 相容格式嘅 byte-range 請求
-- **容器重新封裝** — MKV 轉 MP4，唔使轉碼
-- **HLS 轉碼** — 基於 FFmpeg 嘅自適應串流，支援 session 快取
-- **彈幕** — 嚟自 DandanPlay 嘅彈幕覆蓋層
-- **字幕支援** — 內嵌同外掛字幕軌
-- **觀看進度** — 自動儲存位置、續播功能
+- **直接串流** — 相容格式的 byte-range 請求
+- **容器重新封裝** — MKV 轉 MP4，無需轉碼
+- **HLS 轉碼** — 基於 FFmpeg 的自適應串流，支援 session 快取
+- **彈幕** — 來自 DandanPlay 的彈幕留言覆蓋層
+- **字幕支援** — 內嵌及外掛字幕軌
+- **觀看進度** — 自動儲存位置及續播
 - **外部播放器支援** — 透過 Jellyfin 相容 API 連接 Infuse、VLC、Kodi、mpv，支援 LAN 自動探索
 
 ### 下載
 - **內建 torrent 用戶端** — 基於 anacrolix/torrent，可設定做種
 - **HTTP 下載** — 直接檔案下載，支援中斷續傳
-- **RSS 自動下載** — 訂閱動畫，支援正則表達式篩選、解析度／字幕組偏好
+- **RSS 自動下載** — 訂閱動畫，支援正規表示式篩選、解析度/字幕組偏好
 - **種子搜尋** — 聚合搜尋 Nyaa、DMHY、Mikan、Bangumi.moe、ACG.rip
 - **下載後流程** — 完成後自動掃描、比對、解析
 
 ### 收藏
-- **觀看狀態** — 想睇、在睇、睇咗、擱置、棄追
-- **用戶評分** — 個人評分系統
-- **最近紀錄** — 由上次離開嘅地方繼續睇
-- **Bangumi 同 AniList 同步** — 基於 OAuth 嘅清單同步
+- **觀看狀態** — 想看、在看、看過、擱置、拋棄
+- **使用者評分** — 個人評分系統
+- **最近紀錄** — 從上次離開的地方繼續觀看
+- **Bangumi 及 AniList 同步** — 基於 OAuth 的清單同步
 
 ### 系統
-- **PWA** — 可安裝嘅漸進式網頁應用程式，支援離線
-- **國際化** — 英文、日文、韓文、簡體中文、繁體中文（台灣／香港）
-- **通知** — 基於 WebSocket 嘅即時推送（下載／掃描事件）
-- **雙重驗證** — 基於 TOTP 嘅 2FA
-- **設定匯出／匯入** — 完整組態備份
+- **PWA** — 可安裝的漸進式網頁應用程式，支援離線
+- **國際化** — 英文、日文、韓文、簡體中文、繁體中文（台灣/香港）
+- **通知** — 基於 WebSocket 的即時推播（下載/掃描事件）
+- **雙重驗證** — 基於 TOTP 的 2FA
+- **設定匯出/匯入** — 完整組態備份
 
 ---
 
@@ -113,7 +105,7 @@
 | PWA | Serwist |
 | 快取 | Redis（選用，記憶體回退） |
 | 測試 | Vitest, Playwright, Go testing |
-| 代碼品質 | Biome, Lefthook, Commitlint |
+| 程式碼品質 | Biome, Lefthook, Commitlint |
 
 ---
 
@@ -123,7 +115,7 @@
 
 - Go 1.26+
 - Bun 1.3+
-- FFmpeg（用嚟轉碼同讀取媒體資料）
+- FFmpeg（用於轉碼及媒體資訊）
 - Redis（選用）
 
 ### 開發模式
@@ -136,7 +128,7 @@ make setup
 make dev
 ```
 
-API 行緊 `http://localhost:8080`，前端行緊 `http://localhost:5173`。
+API 執行於 `http://localhost:8080`，前端執行於 `http://localhost:5173`。
 
 ### Docker
 
@@ -151,7 +143,7 @@ docker-compose up -d
 ### Docker Compose（正式環境）
 
 ```bash
-# 複製同編輯環境變數檔
+# 複製並編輯環境變數檔案
 cp .env.example .env
 
 # 啟動所有服務
@@ -161,12 +153,12 @@ docker-compose -f docker-compose.prod.yml up -d
 **服務：**
 - **PostgreSQL 16** — 資料庫
 - **Redis 7** — 快取
-- **milmil-api** — Go 後端（端口 8080）
-- **milmil-web** — React 前端，透過 Nginx（端口 3000）
+- **milmil-api** — Go 後端（port 8080）
+- **milmil-web** — React 前端，透過 Nginx（port 3000）
 
 ### 反向代理
 
-建議放喺 Nginx 或者 Caddy 後面並配合 HTTPS：
+建議使用 Nginx 或 Caddy 加上 HTTPS：
 
 ```nginx
 server {
@@ -200,12 +192,12 @@ server {
 | 變數 | 預設值 | 說明 |
 |------|--------|------|
 | `DATABASE_URL` | `sqlite://data/milmil.db` | 資料庫連線字串 |
-| `REDIS_URL` | — | Redis URL（開發時選用） |
+| `REDIS_URL` | — | Redis URL（開發環境選用） |
 | `JWT_SECRET` | — | JWT 簽章金鑰（最少 32 字元，必填） |
-| `MILMIL_ENCRYPTION_KEY` | — | AES-256 金鑰，用嚟加密儲存憑證 |
-| `API_PORT` | `8080` | API 伺服器端口 |
-| `DATA_DIR` | `./data` | 下載同轉碼快取目錄 |
-| `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT／peer 端口 |
+| `MILMIL_ENCRYPTION_KEY` | — | AES-256 金鑰，用於加密儲存憑證 |
+| `API_PORT` | `8080` | API 伺服器埠 |
+| `DATA_DIR` | `./data` | 下載及轉碼快取目錄 |
+| `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT/peer 埠 |
 | `SEED_RATIO` | `1.0` | Torrent 做種比率目標 |
 | `SEED_TIME_MINUTES` | `60` | Torrent 做種時長 |
 | `DANDANPLAY_APP_ID` | — | DandanPlay API 憑證 |
@@ -214,12 +206,12 @@ server {
 
 ### 外部整合（選用）
 
-| 服務 | 用途 | 設定位置 |
-|------|------|----------|
+| 服務 | 用途 | 設定 |
+|------|------|------|
 | **Bangumi** | 動畫中繼資料、OAuth 同步 | 設定 > 整合 |
 | **AniList** | 替代中繼資料來源、OAuth 同步 | 設定 > 整合 |
 | **DandanPlay** | 檔案比對、彈幕留言 | 環境變數或設定頁面 |
-| **TMDB** | 電視節目交叉參照 | 設定 > 整合 |
+| **TMDB** | TV 節目交叉參照 | 設定 > 整合 |
 
 ---
 
@@ -247,7 +239,7 @@ milmil/
       rss/                # RSS 訂閱解析
       scanner/            # 媒體庫檔案掃描器
       storage/            # SMB/SFTP/本地儲存提供者
-      store/              # SQLc 生成嘅查詢
+      store/              # SQLc 產生查詢
       torrent/            # 種子搜尋提供者
       worker/             # 背景工作
       ws/                 # WebSocket hub
@@ -256,7 +248,7 @@ milmil/
     src/
       components/         # UI 元件
       hooks/              # 自訂 hooks
-      lib/                # API 客戶端、工具函式
+      lib/                # API 用戶端、工具函式
       locales/            # 國際化翻譯（6 種語言）
       pages/              # 頁面元件
       routes/             # TanStack Router 定義
@@ -269,15 +261,15 @@ milmil/
 
 ```bash
 # 開發
-make dev              # 同時啟動兩個伺服器（熱重載）
-make dev-api          # 淨係 API（用 air）
-make dev-web          # 淨係前端（用 Vite）
+make dev              # 啟動雙伺服器（熱重載）
+make dev-api          # 僅 API（使用 air）
+make dev-web          # 僅前端（使用 Vite）
 
 # 建置
 make build            # 正式環境前端建置
 
 # 測試
-make test             # 跑晒所有測試（Go + 前端）
+make test             # 執行所有測試（Go + 前端）
 cd web && bun run test:run      # 前端單元測試
 cd web && bun run test:e2e      # Playwright E2E 測試
 
@@ -286,16 +278,16 @@ make lint             # Go vet + Biome lint
 cd web && bun run check:all     # 型別檢查 + lint + 格式化 + 測試
 
 # 國際化
-cd web && bun run i18n:extract  # 提取翻譯字串
+cd web && bun run i18n:extract  # 擷取翻譯字串
 cd web && bun run i18n:compile  # 編譯翻譯
 ```
 
 ### 資料庫
 
-- **開發：** SQLite（免配置）
+- **開發：** SQLite（零設定）
 - **正式：** PostgreSQL 16+
-- **遷移：** 啟動時透過 golang-migrate 自動套用
-- **查詢：** SQL 優先，用 sqlc 生成代碼
+- **遷移：** 啟動時自動套用，使用 golang-migrate
+- **查詢：** SQL-first，使用 sqlc 程式碼產生
 
 ---
 
@@ -306,7 +298,7 @@ cd web && bun run i18n:compile  # 編譯翻譯
 - 한국어 (ko)
 - 简体中文 (zh-CN)
 - 繁體中文 — 台灣 (zh-TW)
-- 繁體中文 — 香港 (zh-HK) / 粵語
+- 繁體中文 — 香港 (zh-HK)
 
 ---
 
@@ -326,4 +318,4 @@ cd web && bun run i18n:compile  # 編譯翻譯
 
 milmil 採用 [GNU Affero General Public License v3.0](LICENSE) 授權。
 
-即係話你可以自由使用、修改同散佈 milmil，但如果你將修改版作為網絡服務運行，就必須向該服務嘅用戶提供原始碼。
+這表示您可以自由使用、修改及散布 milmil，但若您將修改版本作為網路服務執行，您必須向該服務的使用者提供原始碼。
