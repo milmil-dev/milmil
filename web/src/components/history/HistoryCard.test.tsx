@@ -5,6 +5,7 @@ import type { WatchProgress } from '@/lib/api/progress';
 import { HistoryCard } from './HistoryCard';
 
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => () => {},
   Link: ({
     children,
     to,

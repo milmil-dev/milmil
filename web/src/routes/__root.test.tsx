@@ -3,6 +3,7 @@ import React from 'react';
 import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => () => {},
   Link: ({
     children,
     to,
@@ -60,18 +61,9 @@ vi.mock('@hugeicons/react', () => ({
   HugeiconsIcon: () => <span data-testid="icon" />,
 }));
 
-vi.mock('@hugeicons/core-free-icons', () => ({
-  Calendar03Icon: 'mock-icon',
-  Download04Icon: 'mock-icon',
-  FireIcon: 'mock-icon',
-  FolderLibraryIcon: 'mock-icon',
-  HouseIcon: 'mock-icon',
-  MagnetIcon: 'mock-icon',
-  Menu01Icon: 'mock-icon',
-  RssIcon: 'mock-icon',
-  Search01Icon: 'mock-icon',
-  Setting07Icon: 'mock-icon',
-}));
+// Proxy returns 'mock-icon' for any requested icon name so adding new icons in
+// AppSidebar (or any component the route renders) doesn't break this test.
+vi.mock('@hugeicons/core-free-icons', () => new Proxy({}, { get: () => 'mock-icon' }));
 
 vi.mock('@lingui/react', () => ({
   useLingui: () => ({

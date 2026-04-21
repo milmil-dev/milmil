@@ -3,6 +3,7 @@ import React from 'react';
 import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => () => {},
   Link: ({
     children,
     to,
@@ -28,6 +29,12 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => ({
+    invalidateQueries: () => {},
+    setQueryData: () => {},
+    getQueryData: () => undefined,
+  }),
+  useMutation: () => ({ mutate: () => {}, mutateAsync: async () => {}, isPending: false }),
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     if (queryKey[0] === 'discover' && queryKey[1] === 'detail') {
       return {

@@ -3,6 +3,7 @@ import React from 'react';
 import { expect, test, vi } from 'vitest';
 
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => () => {},
   Link: ({
     children,
     to,
@@ -31,6 +32,7 @@ vi.mock('@tanstack/react-router', () => ({
 vi.mock('@lingui/react', () => ({
   useLingui: () => ({
     i18n: {
+      locale: 'en',
       _: (v: unknown) => {
         if (typeof v === 'string') return v;
         if (v && typeof v === 'object' && 'id' in v) return (v as { id: string }).id;
@@ -41,6 +43,12 @@ vi.mock('@lingui/react', () => ({
 }));
 
 vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => ({
+    invalidateQueries: () => {},
+    setQueryData: () => {},
+    getQueryData: () => undefined,
+  }),
+  useMutation: () => ({ mutate: () => {}, mutateAsync: async () => {}, isPending: false }),
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     const key = queryKey[1] as string;
     if (key === 'calendar') return { data: [] };
