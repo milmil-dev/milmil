@@ -18,6 +18,7 @@ import { Route as RssRouteImport } from './routes/rss'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibrariesRouteImport } from './routes/libraries'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as CollectionRouteImport } from './routes/collection'
@@ -72,6 +73,11 @@ const LoginRoute = LoginRouteImport.update({
 const LibrariesRoute = LibrariesRouteImport.update({
   id: '/libraries',
   path: '/libraries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadsRoute = DownloadsRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/collection': typeof CollectionRoute
   '/discover': typeof DiscoverRoute
   '/downloads': typeof DownloadsRoute
+  '/history': typeof HistoryRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/collection': typeof CollectionRoute
   '/discover': typeof DiscoverRoute
   '/downloads': typeof DownloadsRoute
+  '/history': typeof HistoryRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/collection': typeof CollectionRoute
   '/discover': typeof DiscoverRoute
   '/downloads': typeof DownloadsRoute
+  '/history': typeof HistoryRoute
   '/libraries': typeof LibrariesRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/collection'
     | '/discover'
     | '/downloads'
+    | '/history'
     | '/libraries'
     | '/login'
     | '/notifications'
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/collection'
     | '/discover'
     | '/downloads'
+    | '/history'
     | '/libraries'
     | '/login'
     | '/notifications'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/collection'
     | '/discover'
     | '/downloads'
+    | '/history'
     | '/libraries'
     | '/login'
     | '/notifications'
@@ -261,6 +273,7 @@ export interface RootRouteChildren {
   CollectionRoute: typeof CollectionRoute
   DiscoverRoute: typeof DiscoverRoute
   DownloadsRoute: typeof DownloadsRoute
+  HistoryRoute: typeof HistoryRoute
   LibrariesRoute: typeof LibrariesRoute
   LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -338,6 +351,13 @@ declare module '@tanstack/react-router' {
       path: '/libraries'
       fullPath: '/libraries'
       preLoaderRoute: typeof LibrariesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/downloads': {
@@ -443,6 +463,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionRoute: CollectionRoute,
   DiscoverRoute: DiscoverRoute,
   DownloadsRoute: DownloadsRoute,
+  HistoryRoute: HistoryRoute,
   LibrariesRoute: LibrariesRoute,
   LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,

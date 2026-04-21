@@ -10,6 +10,7 @@ import (
 )
 
 type Querier interface {
+	BatchDeleteWatchProgress(ctx context.Context, arg BatchDeleteWatchProgressParams) (int64, error)
 	ClearMediaFileMatch(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
@@ -39,6 +40,7 @@ type Querier interface {
 	DeleteAPIToken(ctx context.Context, arg DeleteAPITokenParams) error
 	DeleteAllExternalDanmaku(ctx context.Context, mediaFileID string) error
 	DeleteAllNotifications(ctx context.Context) error
+	DeleteAllWatchProgressByUser(ctx context.Context, userID string) (int64, error)
 	DeleteAnime(ctx context.Context, id string) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
 	DeleteCompletedSyncOpsOlderThan(ctx context.Context, completedAt sql.NullString) error
@@ -58,6 +60,7 @@ type Querier interface {
 	DeleteSubtitleFile(ctx context.Context, id string) error
 	DeleteTranscodeSession(ctx context.Context, sessionToken string) error
 	DeleteUserPreference(ctx context.Context, arg DeleteUserPreferenceParams) error
+	DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgressParams) (int64, error)
 	DisableTwoFactor(ctx context.Context, id string) error
 	EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams) error
 	EnqueueSyncOp(ctx context.Context, arg EnqueueSyncOpParams) error
@@ -123,6 +126,12 @@ type Querier interface {
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListEpisodesByAnimeIDWithAirDate(ctx context.Context, animeID string) ([]ListEpisodesByAnimeIDWithAirDateRow, error)
 	ListEpisodesByLibraryIDWithAirDate(ctx context.Context, libraryID sql.NullString) ([]ListEpisodesByLibraryIDWithAirDateRow, error)
+	// Paginated, filterable list of watch progress enriched with anime + episode.
+	// No per-anime dedup: every watch_progress row is returned (one per episode).
+	// Cursor pagination on (last_watched_at DESC, id DESC).
+	// When 'before' is empty string, no cursor is applied (first page).
+	// When 'q' is empty string, no search filter is applied.
+	ListHistoryWithAnime(ctx context.Context, arg ListHistoryWithAnimeParams) ([]ListHistoryWithAnimeRow, error)
 	ListHotTags(ctx context.Context) ([]HotTag, error)
 	ListHotTagsByCategory(ctx context.Context, category string) ([]HotTag, error)
 	ListLibraries(ctx context.Context) ([]Library, error)

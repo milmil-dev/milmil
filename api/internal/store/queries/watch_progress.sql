@@ -71,3 +71,44 @@ WHERE e.anime_id = sqlc.arg('anime_id')
   AND wp.user_id = sqlc.arg('user_id')
   AND wp.completed = 1
   AND e.bangumi_episode_id IS NOT NULL;
+
+-- name: ListHistoryWithAnime :many
+-- Paginated, filterable list of watch progress enriched with anime + episode.
+-- No per-anime dedup: every watch_progress row is returned (one per episode).
+-- Cursor pagination on (last_watched_at DESC, id DESC).
+-- When 'before' is empty string, no cursor is applied (first page).
+-- When 'q' is empty string, no search filter is applied.
+SELECT
+    wp.id, wp.user_id, wp.episode_id, wp.media_file_id,
+    wp.position_seconds, wp.duration_seconds, wp.completed, wp.last_watched_at,
+    a.id AS anime_id, a.title AS anime_title, a.title_zh AS anime_title_zh,
+    a.cover_image_url AS anime_cover_image_url, a.bangumi_id AS anime_bangumi_id,
+    e.episode_number
+FROM watch_progress wp
+JOIN episodes e ON e.id = wp.episode_id
+JOIN anime a ON a.id = e.anime_id
+WHERE wp.user_id = sqlc.arg('user_id')
+  AND (sqlc.arg('before') = '' OR wp.last_watched_at < sqlc.arg('before'))
+  AND (
+    sqlc.arg('filter') = 'all'
+    OR (sqlc.arg('filter') = 'completed' AND wp.completed = 1)
+    OR (sqlc.arg('filter') = 'in_progress' AND wp.completed = 0)
+  )
+  AND (
+    sqlc.arg('q') = ''
+    OR LOWER(a.title) LIKE LOWER('%' || sqlc.arg('q') || '%')
+    OR LOWER(COALESCE(a.title_zh, '')) LIKE LOWER('%' || sqlc.arg('q') || '%')
+  )
+ORDER BY wp.last_watched_at DESC, wp.id DESC
+LIMIT sqlc.arg('lim');
+
+-- name: DeleteWatchProgress :execrows
+DELETE FROM watch_progress
+WHERE id = sqlc.arg('id') AND user_id = sqlc.arg('user_id');
+
+-- name: BatchDeleteWatchProgress :execrows
+DELETE FROM watch_progress
+WHERE user_id = sqlc.arg('user_id') AND id IN (sqlc.slice('ids'));
+
+-- name: DeleteAllWatchProgressByUser :execrows
+DELETE FROM watch_progress WHERE user_id = sqlc.arg('user_id');

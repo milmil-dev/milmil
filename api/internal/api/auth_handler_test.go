@@ -30,7 +30,7 @@ func newTestApp(t *testing.T) *echo.Echo {
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 }
 
 func TestAuthStatus_NotInitialized(t *testing.T) {
@@ -50,7 +50,7 @@ func TestAuthStatus_NotInitialized(t *testing.T) {
 
 func TestAuthSetup_CreatesUser(t *testing.T) {
 	e := newTestApp(t)
-	body := `{"username":"admin","password":"password123"}`
+	body := `{"username":"admin","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	rec := httptest.NewRecorder()
@@ -67,7 +67,7 @@ func TestAuthSetup_CreatesUser(t *testing.T) {
 
 func TestAuthSetup_AlreadyInitialized(t *testing.T) {
 	e := newTestApp(t)
-	body := `{"username":"admin","password":"password123"}`
+	body := `{"username":"admin","password":"Tr0ub4dor&3xplod3"}`
 	for range 2 {
 		req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(body))
 		req.Header.Set("Content-Type", "application/json")
@@ -84,12 +84,12 @@ func TestAuthSetup_AlreadyInitialized(t *testing.T) {
 
 func TestAuthLogin_Success(t *testing.T) {
 	e := newTestApp(t)
-	setup := `{"username":"admin","password":"password123"}`
+	setup := `{"username":"admin","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(setup))
 	req.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(httptest.NewRecorder(), req)
 
-	loginBody := `{"username":"admin","password":"password123"}`
+	loginBody := `{"username":"admin","password":"Tr0ub4dor&3xplod3"}`
 	req2 := httptest.NewRequest(http.MethodPost, "/api/v1/auth/login", strings.NewReader(loginBody))
 	req2.Header.Set("Content-Type", "application/json")
 	rec2 := httptest.NewRecorder()
@@ -109,7 +109,7 @@ func TestAuthLogin_Success(t *testing.T) {
 
 func TestAuthLogin_WrongPassword(t *testing.T) {
 	e := newTestApp(t)
-	setup := `{"username":"admin","password":"password123"}`
+	setup := `{"username":"admin","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(setup))
 	req.Header.Set("Content-Type", "application/json")
 	e.ServeHTTP(httptest.NewRecorder(), req)
@@ -153,7 +153,7 @@ func TestAuthMe_RequiresToken(t *testing.T) {
 func TestAuthMe_WithValidToken(t *testing.T) {
 	e := newTestApp(t)
 	// Create user via setup
-	setup := `{"username":"admin","password":"password123"}`
+	setup := `{"username":"admin","password":"Tr0ub4dor&3xplod3"}`
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/setup", strings.NewReader(setup))
 	req.Header.Set("Content-Type", "application/json")
 	rec := httptest.NewRecorder()

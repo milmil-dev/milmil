@@ -58,11 +58,14 @@ vi.mock('@hugeicons/react', () => ({
 }));
 
 vi.mock('@hugeicons/core-free-icons', () => ({
+  Bookmark01Icon: 'mock-icon',
   Calendar03Icon: 'mock-icon',
+  Clock01Icon: 'mock-icon',
   Download04Icon: 'mock-icon',
   FireIcon: 'mock-icon',
   FolderLibraryIcon: 'mock-icon',
   HouseIcon: 'mock-icon',
+  Logout01Icon: 'mock-icon',
   MagnetIcon: 'mock-icon',
   Menu01Icon: 'mock-icon',
   RssIcon: 'mock-icon',

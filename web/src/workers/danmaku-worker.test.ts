@@ -25,7 +25,10 @@ describe('processDanmaku', () => {
 
     expect(result).toHaveLength(4);
 
-    const [rtl, bottom, top, rtl2] = result;
+    const rtl = result[0]!;
+    const bottom = result[1]!;
+    const top = result[2]!;
+    const rtl2 = result[3]!;
 
     expect(rtl.text).toBe('red rtl');
     expect(rtl.time).toBe(1.5);
@@ -102,12 +105,12 @@ describe('processDanmaku', () => {
 
     // After sorting by time, rtl comments at t=0.0, 0.1, 0.2... and top at 0.05, 0.15...
     // The first sorted item should be the rtl comment at t=0.0
-    expect(result[0].mode).toBe('rtl');
-    expect(result[0].time).toBe(0);
+    expect(result[0]!.mode).toBe('rtl');
+    expect(result[0]!.time).toBe(0);
 
     // All results should be in ascending time order
     for (let i = 1; i < result.length; i++) {
-      expect(result[i].time).toBeGreaterThanOrEqual(result[i - 1].time);
+      expect(result[i]!.time).toBeGreaterThanOrEqual(result[i - 1]!.time);
     }
   });
 
@@ -122,7 +125,7 @@ describe('processDanmaku', () => {
       isMobile: false,
     });
 
-    expect(result[0].mode).toBe('rtl');
+    expect(result[0]!.mode).toBe('rtl');
   });
 
   it('resets window count when entering a new 6s window', () => {
