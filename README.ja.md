@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="README.en.md">English</a> | 日本語 | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">繁體中文（香港）</a>
+  <a href="README.en.md">English</a> | 日本語 | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">粵語</a>
 </p>
 
 <p align="center">
@@ -41,6 +41,10 @@
 
 <p align="center">
   <img src="docs/screenshots/detail.png" width="800" alt="アニメ詳細 — エピソード一覧、キャラクター、予告編" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/watch.png" width="800" alt="再生 — 広東語の弾幕オーバーレイ付きプレイヤー" />
 </p>
 
 ---

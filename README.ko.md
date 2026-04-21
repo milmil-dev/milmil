@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | 한국어 | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">繁體中文（香港）</a>
+  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | 한국어 | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">粵語</a>
 </p>
 
 <p align="center">
@@ -41,6 +41,10 @@
 
 <p align="center">
   <img src="docs/screenshots/detail.png" width="800" alt="애니메이션 상세 — 에피소드 목록, 캐릭터, 예고편" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/watch.png" width="800" alt="시청 — 광둥어 탄막 오버레이가 있는 플레이어" />
 </p>
 
 ---

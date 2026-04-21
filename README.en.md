@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  English | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">繁體中文（香港）</a>
+  English | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">粵語</a>
 </p>
 
 <p align="center">
@@ -54,6 +54,11 @@
 <p align="center">
   <img src="docs/screenshots/detail.png" width="800" alt="Anime detail — episodes, characters, trailer" />
   <br/><sub>Anime detail — Episode list, character info, YouTube trailer</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/watch.png" width="800" alt="Watch — video player with Cantonese danmaku overlay" />
+  <br/><sub>Watch — Player with danmaku overlay and external source picker</sub>
 </p>
 
 ---

@@ -5,8 +5,8 @@
 <h1 align="center">milmil</h1>
 
 <p align="center">
-  你嘅自架動畫媒體伺服器<br/>
-  <sub>媒體庫管理、新番日曆、動畫趨勢、彈幕播放</sub>
+  你自己嘅動畫媒體伺服器<br/>
+  <sub>媒體庫管理、新番日曆、動畫熱度、彈幕播放</sub>
 </p>
 
 <p align="center">
@@ -18,90 +18,94 @@
 </p>
 
 <p align="center">
-  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | 繁體中文（香港）
+  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文（台灣）</a> | 粵語
 </p>
 
 <p align="center">
-  <a href="#功能特色">功能特色</a> &bull;
-  <a href="#截圖睇睇">截圖睇睇</a> &bull;
-  <a href="#快速開始">快速開始</a> &bull;
-  <a href="#部署">部署</a> &bull;
+  <a href="#功能">功能</a> &bull;
+  <a href="#睇下個樣">睇下個樣</a> &bull;
+  <a href="#點樣開工">點樣開工</a> &bull;
+  <a href="#點樣部署">點樣部署</a> &bull;
   <a href="#設定">設定</a> &bull;
   <a href="#開發">開發</a> &bull;
-  <a href="#授權條款">授權條款</a>
+  <a href="#授權">授權</a>
 </p>
 
 ---
 
-## 截圖睇睇
+## 睇下個樣
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="800" alt="首頁 — 精選輪播、今日時間表、熱門排行" />
+  <img src="docs/screenshots/home.png" width="800" alt="首頁 — 精選輪播、今日時刻表、熱門排行" />
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/discover.png" width="800" alt="探索 — 當季熱門、類型篩選" />
+  <img src="docs/screenshots/discover.png" width="800" alt="探索 — 而家熱門、類型篩選" />
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/schedule.png" width="800" alt="新番日曆 — 按星期排列當季動畫" />
+  <img src="docs/screenshots/schedule.png" width="800" alt="新番日曆 — 按星期排嘅當季動畫" />
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/detail.png" width="800" alt="動畫詳情 — 集數列表、角色、預告片" />
+  <img src="docs/screenshots/detail.png" width="800" alt="動畫詳情 — 集數、角色、預告片" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/watch.png" width="800" alt="睇戲畫面 — 播放器連粵語彈幕覆蓋層" />
 </p>
 
 ---
 
-## 功能特色
+## 功能
 
 ### 媒體庫管理
-- **多來源儲存** — 本地檔案系統、SMB、SFTP，仲可以透過 rclone 支援 40+ 雲端後端
-- **自動掃描** — 可設定掃描間隔，配合 FFmpeg 提取媒體中繼資料
-- **檔案比對** — 多來源動畫識別（DandanPlay 哈希、Bangumi、TMDB、AniList）
-- **集數解析** — 自動從多個來源豐富集數中繼資料
+- **多種儲存嚟源** — 本地檔案系統、SMB、SFTP，仲可以透過 rclone 接 40+ 種雲端後端
+- **自動掃描** — 掃描間隔自己設，順便用 FFmpeg 抽媒體資料
+- **檔案比對** — 多個來源一齊認動畫（DandanPlay 哈希、Bangumi、TMDB、AniList）
+- **集數解析** — 自動由唔同來源補齊集數資料
 
 ### 探索
-- **新番日曆** — 按星期排列新番動畫
-- **熱門排行** — 來自 Bangumi 嘅人氣動畫排名
-- **搜尋** — 跨動畫資料庫全文搜尋
-- **類型同標籤瀏覽** — 按類型、年份、季度、格式同評分篩選
+- **新番日曆** — 當季新番逐日睇
+- **熱門排行** — 嚟自 Bangumi 嘅人氣榜
+- **搜尋** — 跨晒動畫資料庫做全文搜尋
+- **類型同標籤瀏覽** — 按類型、年份、季度、格式同評分揀
 
 ### 播放
-- **直接串流** — 相容格式嘅 byte-range 請求
+- **直接串流** — 相容格式用 byte-range 請求直接播
 - **容器重新封裝** — MKV 轉 MP4，唔使轉碼
-- **HLS 轉碼** — 基於 FFmpeg 嘅自適應串流，支援 session 快取
+- **HLS 轉碼** — 用 FFmpeg 做自適應串流，有 session 快取
 - **彈幕** — 嚟自 DandanPlay 嘅彈幕覆蓋層
-- **字幕支援** — 內嵌同外掛字幕軌
-- **觀看進度** — 自動儲存位置、續播功能
-- **外部播放器支援** — 透過 Jellyfin 相容 API 連接 Infuse、VLC、Kodi、mpv，支援 LAN 自動探索
+- **字幕支援** — 內嵌同外掛字幕軌都 OK
+- **觀看進度** — 自動幫你記位置、續返上次嗰度
+- **外部播放器支援** — 透過 Jellyfin 相容 API 駁 Infuse、VLC、Kodi、mpv，仲支援 LAN 自動搵返個伺服器
 
 ### 下載
-- **內建 torrent 用戶端** — 基於 anacrolix/torrent，可設定做種
-- **HTTP 下載** — 直接檔案下載，支援中斷續傳
-- **RSS 自動下載** — 訂閱動畫，支援正則表達式篩選、解析度／字幕組偏好
-- **種子搜尋** — 聚合搜尋 Nyaa、DMHY、Mikan、Bangumi.moe、ACG.rip
-- **下載後流程** — 完成後自動掃描、比對、解析
+- **內建 torrent 客戶端** — 基於 anacrolix/torrent，做種規則自己揸
+- **HTTP 下載** — 直接拎檔案，仲可以斷點續傳
+- **RSS 自動下載** — 訂閱動畫，可以用正則揀、揀解析度／字幕組
+- **種子搜尋** — 一次過揾 Nyaa、DMHY、Mikan、Bangumi.moe、ACG.rip
+- **落完之後嘅流程** — 下載完自動掃描、比對、解析
 
 ### 收藏
-- **觀看狀態** — 想睇、在睇、睇咗、擱置、棄追
-- **用戶評分** — 個人評分系統
-- **最近紀錄** — 由上次離開嘅地方繼續睇
-- **Bangumi 同 AniList 同步** — 基於 OAuth 嘅清單同步
+- **觀看狀態** — 想睇、而家睇緊、睇咗、擱低、唔追啦
+- **用戶評分** — 自己打分
+- **最近紀錄** — 上次停咗喺邊就由邊繼續
+- **Bangumi 同 AniList 同步** — 用 OAuth 對清單
 
 ### 系統
-- **PWA** — 可安裝嘅漸進式網頁應用程式，支援離線
+- **PWA** — 可以裝做 app，仲有離線支援
 - **國際化** — 英文、日文、韓文、簡體中文、繁體中文（台灣／香港）
-- **通知** — 基於 WebSocket 嘅即時推送（下載／掃描事件）
-- **雙重驗證** — 基於 TOTP 嘅 2FA
-- **設定匯出／匯入** — 完整組態備份
+- **通知** — WebSocket 即時推送（下載／掃描嘅事件）
+- **雙重驗證** — TOTP 嘅 2FA
+- **設定匯出／匯入** — 配置 full backup 冇難度
 
 ---
 
 ## 技術堆疊
 
-| 層級 | 技術 |
-|------|------|
+| 層 | 用乜嘢 |
+|----|--------|
 | 後端 | Go 1.26, Echo v4, SQLite / PostgreSQL |
 | 前端 | React 19, TanStack Router, Tailwind CSS v4 |
 | 狀態 | Zustand (UI), TanStack Query (伺服器) |
@@ -111,32 +115,32 @@
 | 國際化 | Lingui v5 |
 | 影片 | Video.js, FFmpeg |
 | PWA | Serwist |
-| 快取 | Redis（選用，記憶體回退） |
+| 快取 | Redis（唔裝都得，自動用記憶體頂） |
 | 測試 | Vitest, Playwright, Go testing |
 | 代碼品質 | Biome, Lefthook, Commitlint |
 
 ---
 
-## 快速開始
+## 點樣開工
 
-### 前置需求
+### 開工前要有嘅嘢
 
 - Go 1.26+
 - Bun 1.3+
-- FFmpeg（用嚟轉碼同讀取媒體資料）
-- Redis（選用）
+- FFmpeg（用嚟轉碼、讀媒體資料）
+- Redis（唔裝都得）
 
 ### 開發模式
 
 ```bash
-# 安裝工具
+# 裝好啲工具
 make setup
 
-# 啟動 API + 前端（熱重載）
+# 開 API + 前端（熱重載）
 make dev
 ```
 
-API 行緊 `http://localhost:8080`，前端行緊 `http://localhost:5173`。
+API 喺 `http://localhost:8080` 行緊，前端喺 `http://localhost:5173` 行緊。
 
 ### Docker
 
@@ -146,27 +150,27 @@ docker-compose up -d
 
 ---
 
-## 部署
+## 點樣部署
 
 ### Docker Compose（正式環境）
 
 ```bash
-# 複製同編輯環境變數檔
+# Copy 一份環境變數檔再自己改
 cp .env.example .env
 
-# 啟動所有服務
+# 開齊所有服務
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-**服務：**
+**幾個服務：**
 - **PostgreSQL 16** — 資料庫
 - **Redis 7** — 快取
 - **milmil-api** — Go 後端（端口 8080）
-- **milmil-web** — React 前端，透過 Nginx（端口 3000）
+- **milmil-web** — React 前端，經 Nginx 出（端口 3000）
 
 ### 反向代理
 
-建議放喺 Nginx 或者 Caddy 後面並配合 HTTPS：
+記住要擺喺 Nginx 或者 Caddy 後面，順便開埋 HTTPS：
 
 ```nginx
 server {
@@ -197,29 +201,29 @@ server {
 
 ### 環境變數
 
-| 變數 | 預設值 | 說明 |
-|------|--------|------|
+| 變數 | 預設值 | 做咩用 |
+|------|--------|--------|
 | `DATABASE_URL` | `sqlite://data/milmil.db` | 資料庫連線字串 |
-| `REDIS_URL` | — | Redis URL（開發時選用） |
-| `JWT_SECRET` | — | JWT 簽章金鑰（最少 32 字元，必填） |
-| `MILMIL_ENCRYPTION_KEY` | — | AES-256 金鑰，用嚟加密儲存憑證 |
+| `REDIS_URL` | — | Redis URL（開發可以唔填） |
+| `JWT_SECRET` | — | JWT 簽章 key（至少 32 字，一定要填） |
+| `MILMIL_ENCRYPTION_KEY` | — | AES-256 key，用嚟加密儲存嘅憑證 |
 | `API_PORT` | `8080` | API 伺服器端口 |
-| `DATA_DIR` | `./data` | 下載同轉碼快取目錄 |
+| `DATA_DIR` | `./data` | 下載同轉碼快取放呢度 |
 | `TORRENT_LISTEN_PORT` | `42069` | Torrent DHT／peer 端口 |
-| `SEED_RATIO` | `1.0` | Torrent 做種比率目標 |
-| `SEED_TIME_MINUTES` | `60` | Torrent 做種時長 |
+| `SEED_RATIO` | `1.0` | 做種比率目標 |
+| `SEED_TIME_MINUTES` | `60` | 做種幾耐 |
 | `DANDANPLAY_APP_ID` | — | DandanPlay API 憑證 |
 | `DANDANPLAY_APP_SECRET` | — | DandanPlay API 憑證 |
-| `DEBUG` | `0` | 啟用除錯紀錄 |
+| `DEBUG` | `0` | 開埋 debug log |
 
-### 外部整合（選用）
+### 外部整合（唔開都得）
 
-| 服務 | 用途 | 設定位置 |
-|------|------|----------|
-| **Bangumi** | 動畫中繼資料、OAuth 同步 | 設定 > 整合 |
-| **AniList** | 替代中繼資料來源、OAuth 同步 | 設定 > 整合 |
-| **DandanPlay** | 檔案比對、彈幕留言 | 環境變數或設定頁面 |
-| **TMDB** | 電視節目交叉參照 | 設定 > 整合 |
+| 服務 | 用嚟做 | 喺邊度設定 |
+|------|--------|-----------|
+| **Bangumi** | 動畫資料、OAuth 同步 | 設定 > 整合 |
+| **AniList** | 備用資料來源、OAuth 同步 | 設定 > 整合 |
+| **DandanPlay** | 檔案比對、彈幕 | 環境變數或者設定頁 |
+| **TMDB** | 對返電視劇資料 | 設定 > 整合 |
 
 ---
 
@@ -230,13 +234,13 @@ server {
 ```
 milmil/
   api/                    # Go 後端
-    cmd/server/           # 進入點
+    cmd/server/           # 入口
     internal/
-      api/                # HTTP 處理器 + 路由
+      api/                # HTTP handler + router
       auth/               # JWT + 2FA
       cache/              # Redis / 記憶體快取
       config/             # 環境組態
-      db/                 # 資料庫設定 + 遷移
+      db/                 # 資料庫 + migration
       downloader/         # Torrent + HTTP 引擎
       ffmpeg/             # 轉碼
       integration/        # Bangumi, AniList, DandanPlay, TMDB
@@ -245,18 +249,18 @@ milmil/
       notification/       # 事件通知
       resolver/           # 集數解析器
       rss/                # RSS 訂閱解析
-      scanner/            # 媒體庫檔案掃描器
-      storage/            # SMB/SFTP/本地儲存提供者
-      store/              # SQLc 生成嘅查詢
-      torrent/            # 種子搜尋提供者
+      scanner/            # 媒體庫檔案掃描
+      storage/            # SMB/SFTP/本地 provider
+      store/              # sqlc 生成嘅查詢
+      torrent/            # 種子搜尋 provider
       worker/             # 背景工作
       ws/                 # WebSocket hub
-    migrations/           # SQL 遷移
+    migrations/           # SQL migration
   web/                    # React 前端
     src/
       components/         # UI 元件
       hooks/              # 自訂 hooks
-      lib/                # API 客戶端、工具函式
+      lib/                # API client、工具
       locales/            # 國際化翻譯（6 種語言）
       pages/              # 頁面元件
       routes/             # TanStack Router 定義
@@ -265,16 +269,16 @@ milmil/
     e2e/                  # Playwright 測試
 ```
 
-### 指令
+### 常用指令
 
 ```bash
 # 開發
-make dev              # 同時啟動兩個伺服器（熱重載）
-make dev-api          # 淨係 API（用 air）
-make dev-web          # 淨係前端（用 Vite）
+make dev              # 同時開前後端（熱重載）
+make dev-api          # 淨係 API（行 air）
+make dev-web          # 淨係前端（行 Vite）
 
 # 建置
-make build            # 正式環境前端建置
+make build            # 打包正式環境前端
 
 # 測試
 make test             # 跑晒所有測試（Go + 前端）
@@ -283,30 +287,30 @@ cd web && bun run test:e2e      # Playwright E2E 測試
 
 # 品質
 make lint             # Go vet + Biome lint
-cd web && bun run check:all     # 型別檢查 + lint + 格式化 + 測試
+cd web && bun run check:all     # 型別檢查 + lint + 格式 + 測試
 
 # 國際化
-cd web && bun run i18n:extract  # 提取翻譯字串
+cd web && bun run i18n:extract  # 抽翻譯字串
 cd web && bun run i18n:compile  # 編譯翻譯
 ```
 
 ### 資料庫
 
-- **開發：** SQLite（免配置）
+- **開發：** SQLite（唔使配置）
 - **正式：** PostgreSQL 16+
-- **遷移：** 啟動時透過 golang-migrate 自動套用
+- **Migration：** 啟動時用 golang-migrate 自動做
 - **查詢：** SQL 優先，用 sqlc 生成代碼
 
 ---
 
-## 支援語言
+## 支援嘅語言
 
 - English
 - 日本語 (ja)
 - 한국어 (ko)
 - 简体中文 (zh-CN)
 - 繁體中文 — 台灣 (zh-TW)
-- 繁體中文 — 香港 (zh-HK) / 粵語
+- 粵語 — 香港 (zh-HK)
 
 ---
 
@@ -322,8 +326,8 @@ cd web && bun run i18n:compile  # 編譯翻譯
 
 ---
 
-## 授權條款
+## 授權
 
-milmil 採用 [GNU Affero General Public License v3.0](LICENSE) 授權。
+milmil 用 [GNU Affero General Public License v3.0](LICENSE) 授權。
 
-即係話你可以自由使用、修改同散佈 milmil，但如果你將修改版作為網絡服務運行，就必須向該服務嘅用戶提供原始碼。
+即係話你可以自由用、改、同派 milmil，不過如果你改咗之後攞去做網絡服務行，就要將個 source code 畀返嗰個服務嘅用戶睇。

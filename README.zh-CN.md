@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | 简体中文 | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">繁體中文（香港）</a>
+  <a href="README.en.md">English</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | 简体中文 | <a href="README.zh-TW.md">繁體中文（台灣）</a> | <a href="README.md">粵語</a>
 </p>
 
 <p align="center">
@@ -41,6 +41,10 @@
 
 <p align="center">
   <img src="docs/screenshots/detail.png" width="800" alt="动画详情 — 剧集列表、角色、预告片" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/watch.png" width="800" alt="播放页 — 带粤语弹幕叠加层的播放器" />
 </p>
 
 ---
