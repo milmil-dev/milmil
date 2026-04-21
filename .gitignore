@@ -94,3 +94,38 @@ desktop.ini
 milmil-api/
 node_modules/api/data
 api/server
+
+# Compiled Go server binaries (explicit file paths)
+/milmil-api
+/api/milmil-api
+
+# Root-level node_modules (tooling not in web/)
+/node_modules/
+
+# Claude Code workspace
+/.claude/
+
+# Root-level scratch / debug artifacts
+/TODOS.md
+/fix.js
+/debug-motion.js
+/debug-motion-table.js
+/test-motion-table.tsx
+/test-pages.js
+/test-plan.md
+/test-plan-2.md
+/test-plan-3.md
+/debug-*.png
+/e2e-*.png
+/docs-*.png
+/watch-*.png
+/ref-*.png
+/milmil-logo*
+/milmil-favicon*
+/milmil-mark*
+
+# Web-level scratch test files (motion/animate/query debug)
+/web/test-*.tsx
+/web/test-plan-*.md
+/web/playwright-report/
+/web/test-results/
