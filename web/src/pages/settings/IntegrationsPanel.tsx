@@ -4,18 +4,17 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-
+import { Skeleton } from '@/components/Skeleton';
 import { ConnectionBadge } from '@/components/settings/ConnectionBadge';
 import { SettingsCard } from '@/components/settings/SettingsCard';
-import { Skeleton } from '@/components/Skeleton';
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { useWSEvent } from '@/hooks/use-websocket';
+import { type SyncProvider, type SyncProviderStatus, syncApi, syncKeys } from '@/lib/api/sync';
+import { type DeviceCodeResponse, type DevicePollStatus, traktApi } from '@/lib/api/trakt';
 import { api } from '@/lib/api-client';
-import { syncApi, syncKeys, type SyncProvider, type SyncProviderStatus } from '@/lib/api/sync';
-import { traktApi, type DeviceCodeResponse, type DevicePollStatus } from '@/lib/api/trakt';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
@@ -111,10 +110,7 @@ function DandanPlayCard() {
         <div className="flex justify-end">
           <form.Subscribe selector={(s) => s.isSubmitting}>
             {(isSubmitting) => (
-              <Button
-                type="submit"
-                disabled={saveMutation.isPending || isSubmitting}
-              >
+              <Button type="submit" disabled={saveMutation.isPending || isSubmitting}>
                 {saveMutation.isPending || isSubmitting
                   ? i18n._(msg`settings.saving`)
                   : i18n._(msg`settings.save`)}
@@ -147,15 +143,11 @@ function SyncStatusBlock({ status }: { status: SyncProviderStatus }) {
   return (
     <div className="mb-4 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-white/40">
-          {i18n._(msg`settings.integration.lastSync`)}
-        </span>
+        <span className="text-white/40">{i18n._(msg`settings.integration.lastSync`)}</span>
         <span className="text-white/70 tabular-nums">{lastSync}</span>
       </div>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-white/40">
-          {i18n._(msg`settings.integration.pending`)}
-        </span>
+        <span className="text-white/40">{i18n._(msg`settings.integration.pending`)}</span>
         <span className="text-white/70 tabular-nums">{status.pending}</span>
       </div>
       {status.last_errors.length > 0 && (
@@ -210,9 +202,7 @@ function PullControls({ provider }: { provider: SyncProvider }) {
   const pullMut = useMutation({
     mutationFn: () => syncApi.pullNow(provider),
     onSuccess: (res) => {
-      toast.success(
-        `${i18n._(msg`settings.integration.pulled`)}: ${String(res.updated_local)}`,
-      );
+      toast.success(`${i18n._(msg`settings.integration.pulled`)}: ${String(res.updated_local)}`);
       queryClient.invalidateQueries({ queryKey: syncKeys.status() });
     },
     onError: () => toast.error(i18n._(msg`settings.integration.pullFailed`)),
@@ -301,9 +291,7 @@ function TraktCard() {
   const syncMut = useMutation({
     mutationFn: () => syncApi.flush('trakt'),
     onSuccess: (data) => {
-      toast.success(
-        `${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.enqueued)}`,
-      );
+      toast.success(`${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.enqueued)}`);
       queryClient.invalidateQueries({ queryKey: syncKeys.status() });
     },
     onError: () => toast.error(i18n._(msg`settings.integration.syncFailed`)),
@@ -352,16 +340,15 @@ function TraktCard() {
         />
       </div>
 
-      {isConnected && (
-        syncStatusLoading && !providerStatus ? (
+      {isConnected &&
+        (syncStatusLoading && !providerStatus ? (
           <SyncStatusSkeleton />
         ) : providerStatus ? (
           <>
             <SyncStatusBlock status={providerStatus} />
             <PullControls provider="trakt" />
           </>
-        ) : null
-      )}
+        ) : null)}
 
       {deviceCode ? (
         <div className="rounded-lg border border-white/[0.08] bg-black/30 p-4">
@@ -386,9 +373,7 @@ function TraktCard() {
         </div>
       ) : (
         <div className="flex items-center gap-3 flex-wrap justify-end">
-          {pollError && (
-            <span className="text-xs text-red-400 mr-auto">{pollError}</span>
-          )}
+          {pollError && <span className="text-xs text-red-400 mr-auto">{pollError}</span>}
           {!isConnected ? (
             <Button
               type="button"
@@ -430,13 +415,7 @@ function TraktCard() {
   );
 }
 
-function OAuthProviderCard({
-  provider,
-  label,
-}: {
-  provider: SyncProvider;
-  label: string;
-}) {
+function OAuthProviderCard({ provider, label }: { provider: SyncProvider; label: string }) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
 
@@ -462,12 +441,9 @@ function OAuthProviderCard({
   // Invalidates sync status immediately instead of waiting for the 15s poll.
   useWSEvent((event) => {
     if (event.type !== 'sync:needs_reauth') return;
-    const eventProvider =
-      (event.data?.provider as string | undefined) ?? '';
+    const eventProvider = (event.data?.provider as string | undefined) ?? '';
     if (eventProvider !== provider) return;
-    toast.error(
-      `${label}: ${i18n._(msg`settings.integration.needsReauth`)}`,
-    );
+    toast.error(`${label}: ${i18n._(msg`settings.integration.needsReauth`)}`);
     queryClient.invalidateQueries({ queryKey: syncKeys.status() });
     queryClient.invalidateQueries({ queryKey: ['settings'] });
   });
@@ -522,9 +498,7 @@ function OAuthProviderCard({
   const syncMutation = useMutation({
     mutationFn: () => syncApi.flush(provider),
     onSuccess: (data) => {
-      toast.success(
-        `${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.enqueued)}`,
-      );
+      toast.success(`${i18n._(msg`settings.integration.syncComplete`)}: ${String(data.enqueued)}`);
       queryClient.invalidateQueries({ queryKey: syncKeys.status() });
     },
     onError: () => toast.error(i18n._(msg`settings.integration.syncFailed`)),
@@ -540,16 +514,15 @@ function OAuthProviderCard({
         />
       </div>
 
-      {isConnected && (
-        syncStatusLoading && !providerStatus ? (
+      {isConnected &&
+        (syncStatusLoading && !providerStatus ? (
           <SyncStatusSkeleton />
         ) : providerStatus ? (
           <>
             <SyncStatusBlock status={providerStatus} />
             <PullControls provider={provider} />
           </>
-        ) : null
-      )}
+        ) : null)}
 
       <form
         onSubmit={(e) => {
@@ -601,10 +574,7 @@ function OAuthProviderCard({
         <div className="flex items-center gap-3 flex-wrap justify-end">
           <form.Subscribe selector={(s) => s.isSubmitting}>
             {(isSubmitting) => (
-              <Button
-                type="submit"
-                disabled={saveCredsMutation.isPending || isSubmitting}
-              >
+              <Button type="submit" disabled={saveCredsMutation.isPending || isSubmitting}>
                 {saveCredsMutation.isPending || isSubmitting
                   ? i18n._(msg`settings.saving`)
                   : i18n._(msg`settings.save`)}
@@ -677,9 +647,7 @@ export function IntegrationsPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-white">
-          {i18n._(msg`settings.nav.integrations`)}
-        </h2>
+        <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.integrations`)}</h2>
         <p className="mt-1 text-sm text-white/40">
           {i18n._(msg`settings.integrations.description`)}
         </p>

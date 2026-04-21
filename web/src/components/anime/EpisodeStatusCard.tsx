@@ -25,9 +25,7 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
   const autoRule = useMutation({
     mutationFn: () => missingSearchApi.autoRule(bangumiId, data?.missing ?? []),
     onSuccess: (res) =>
-      toast.success(
-        i18n._(msg`Auto-download rule ${res.action} (${res.episode_range})`),
-      ),
+      toast.success(i18n._(msg`Auto-download rule ${res.action} (${res.episode_range})`)),
     onError: (err: unknown) => toast.error(String(err)),
   });
 
@@ -48,9 +46,7 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
   return (
     <>
       <div className="rounded-lg border border-white/10 bg-black/40 p-4 backdrop-blur-sm">
-        <h3 className="text-sm font-semibold text-white/80">
-          {i18n._(msg`Episode status`)}
-        </h3>
+        <h3 className="text-sm font-semibold text-white/80">{i18n._(msg`Episode status`)}</h3>
         <div className="mt-2 space-y-2 text-sm text-white/60">
           {sortedMissing.length > 0 && (
             <div>
@@ -66,9 +62,7 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
                     >
                       {n}
                     </button>
-                    {idx < sortedMissing.length - 1 && (
-                      <span className="text-white/40">,</span>
-                    )}
+                    {idx < sortedMissing.length - 1 && <span className="text-white/40">,</span>}
                   </span>
                 ))}
               </div>
@@ -79,8 +73,8 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
                   if (
                     window.confirm(
                       i18n._(
-                        msg`Create auto-download rule for ${sortedMissing.length} missing episodes?`,
-                      ),
+                        msg`Create auto-download rule for ${sortedMissing.length} missing episodes?`
+                      )
                     )
                   ) {
                     autoRule.mutate();
@@ -95,9 +89,7 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
           {data.airing_pending.length > 0 && (
             <div>
               <span className="mr-1">{i18n._(msg`Not aired yet`)}:</span>
-              <span className="text-white">
-                {formatRanges(data.airing_pending)}
-              </span>
+              <span className="text-white">{formatRanges(data.airing_pending)}</span>
             </div>
           )}
         </div>

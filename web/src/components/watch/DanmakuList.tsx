@@ -1,10 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef, useMemo, useState } from 'react';
-import type { DanmakuComment } from '@/lib/api/stream';
-import { cn } from '@/lib/utils';
-import { usePreferencesStore } from '@/store/preferences-store';
+import { useMemo, useRef, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,6 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import type { DanmakuComment } from '@/lib/api/stream';
+import { cn } from '@/lib/utils';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 interface DanmakuListProps {
   comments: DanmakuComment[];
@@ -30,10 +30,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
   const { i18n } = useLingui();
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const sorted = useMemo(
-    () => [...comments].sort((a, b) => a.time - b.time),
-    [comments]
-  );
+  const sorted = useMemo(() => [...comments].sort((a, b) => a.time - b.time), [comments]);
 
   const virtualizer = useVirtualizer({
     count: sorted.length,
@@ -119,10 +116,18 @@ function BlockKeywordsModal() {
           <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 shrink-0">
             <path
               d="M8 1.5L2.5 4v4c0 3.5 2.5 5.5 5.5 6.5 3-1 5.5-3 5.5-6.5V4L8 1.5z"
-              stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
             />
             {blockKeywords.length > 0 && (
-              <path d="M5.5 8L7 9.5 10.5 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M5.5 8L7 9.5 10.5 6"
+                stroke="currentColor"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             )}
           </svg>
           <span>{i18n._(msg`watch.danmaku.blockKeywords`)}</span>
@@ -177,11 +182,21 @@ function BlockKeywordsModal() {
                   {kw}
                   <button
                     type="button"
-                    onClick={() => update('danmakuBlockKeywords', blockKeywords.filter((_, i) => i !== idx))}
+                    onClick={() =>
+                      update(
+                        'danmakuBlockKeywords',
+                        blockKeywords.filter((_, i) => i !== idx)
+                      )
+                    }
                     className="text-white/20 group-hover:text-white/50 hover:!text-red-400/70 transition-colors"
                   >
                     <svg viewBox="0 0 10 10" className="w-2.5 h-2.5">
-                      <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                      <path
+                        d="M2 2l6 6M8 2l-6 6"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        fill="none"
+                      />
                     </svg>
                   </button>
                 </span>

@@ -7,12 +7,12 @@ import { SelectorGroup } from '@/components/settings/SelectorGroup';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import type { SubtitleStyle } from '@/lib/api/preferences';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { KeyBindingPanel } from '@/plugins/keyboard/KeyBindingPanel';
-import { usePreferencesStore } from '@/store/preferences-store';
 import { SUBTITLE_PRESETS } from '@/plugins/subtitle/StyleEngine';
-import type { SubtitleStyle } from '@/lib/api/preferences';
+import { usePreferencesStore } from '@/store/preferences-store';
 
 const FONT_SIZE_OPTIONS = [
   { label: '16px', value: 16 },
@@ -82,8 +82,12 @@ function RangeSlider({
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      onMouseUp={onCommit ? (e) => onCommit(Number((e.target as HTMLInputElement).value)) : undefined}
-      onTouchEnd={onCommit ? (e) => onCommit(Number((e.target as HTMLInputElement).value)) : undefined}
+      onMouseUp={
+        onCommit ? (e) => onCommit(Number((e.target as HTMLInputElement).value)) : undefined
+      }
+      onTouchEnd={
+        onCommit ? (e) => onCommit(Number((e.target as HTMLInputElement).value)) : undefined
+      }
       className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-white/50"
       style={{
         background: `linear-gradient(to right, oklch(70% 0.01 280) ${String(pct)}%, oklch(18% 0.01 280) ${String(pct)}%)`,
@@ -132,7 +136,9 @@ function SubtitlePreview({ style }: { style: SubtitleStyle }) {
           color: style.color,
           backgroundColor:
             style.backgroundOpacity > 0
-              ? `${style.backgroundColor}${Math.round(style.backgroundOpacity * 255).toString(16).padStart(2, '0')}`
+              ? `${style.backgroundColor}${Math.round(style.backgroundOpacity * 255)
+                  .toString(16)
+                  .padStart(2, '0')}`
               : 'transparent',
           textShadow,
           padding: '2px 8px',
@@ -200,12 +206,14 @@ export function PlayerPanel() {
     onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
   });
 
-  const save = (overrides: Partial<{
-    enabled: boolean;
-    opacity: number;
-    fontSize: number;
-    speed: number;
-  }>) => {
+  const save = (
+    overrides: Partial<{
+      enabled: boolean;
+      opacity: number;
+      fontSize: number;
+      speed: number;
+    }>
+  ) => {
     const store = usePreferencesStore.getState();
     saveMutation.mutate({
       danmaku_enabled: overrides.enabled ?? store.danmakuEnabled,
@@ -277,7 +285,9 @@ export function PlayerPanel() {
                     usePreferencesStore.getState().setDanmakuOpacity(Number(e.target.value) / 100);
                   }}
                   onMouseUp={(e) => save({ opacity: Number((e.target as HTMLInputElement).value) })}
-                  onTouchEnd={(e) => save({ opacity: Number((e.target as HTMLInputElement).value) })}
+                  onTouchEnd={(e) =>
+                    save({ opacity: Number((e.target as HTMLInputElement).value) })
+                  }
                   className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-white/50"
                   style={{
                     background: `linear-gradient(to right, oklch(70% 0.01 280) ${String(Math.round(danmakuOpacity * 100))}%, oklch(18% 0.01 280) ${String(Math.round(danmakuOpacity * 100))}%)`,
@@ -317,7 +327,10 @@ export function PlayerPanel() {
                 <SelectorGroup
                   options={[
                     { label: i18n._(msg`settings.player.density.low`), value: 'low' as const },
-                    { label: i18n._(msg`settings.player.density.medium`), value: 'medium' as const },
+                    {
+                      label: i18n._(msg`settings.player.density.medium`),
+                      value: 'medium' as const,
+                    },
                     { label: i18n._(msg`settings.player.density.high`), value: 'high' as const },
                   ]}
                   value={danmakuDensity}
@@ -416,7 +429,7 @@ export function PlayerPanel() {
                       'size-7 rounded-full border-2 transition-all',
                       subtitleStyle.color === swatch.value
                         ? 'border-white/60 scale-110'
-                        : 'border-white/10 hover:border-white/30',
+                        : 'border-white/10 hover:border-white/30'
                     )}
                     style={{ backgroundColor: swatch.value }}
                   />
@@ -431,7 +444,8 @@ export function PlayerPanel() {
                   <div
                     className={cn(
                       'flex size-7 items-center justify-center rounded-full border-2 border-dashed border-white/20 text-xs text-white/40',
-                      !COLOR_SWATCHES.some((s) => s.value === subtitleStyle.color) && 'border-white/60',
+                      !COLOR_SWATCHES.some((s) => s.value === subtitleStyle.color) &&
+                        'border-white/60'
                     )}
                     style={
                       !COLOR_SWATCHES.some((s) => s.value === subtitleStyle.color)

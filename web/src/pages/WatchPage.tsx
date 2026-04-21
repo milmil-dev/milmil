@@ -4,13 +4,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { DanmakuOverlay } from '@/components/DanmakuOverlay';
 import { PageTransition } from '@/components/PageTransition';
 import { Skeleton } from '@/components/Skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import type { VideoPlayerAPI } from '@/components/VideoPlayer';
 import { SkinButton, VideoPlayer } from '@/components/VideoPlayer';
-import { cn } from '@/lib/utils';
 import { AnimeInfoSection } from '@/components/watch/AnimeInfoSection';
 import { BangumiComments } from '@/components/watch/BangumiComments';
 import { DanmakuBar } from '@/components/watch/DanmakuBar';
@@ -18,11 +18,13 @@ import { EpisodeSidebar } from '@/components/watch/EpisodeSidebar';
 import { EpisodeTitleOverlay } from '@/components/watch/EpisodeTitleOverlay';
 import { RelatedAnimeList } from '@/components/watch/RelatedAnimeList';
 import { TechInfoPopover } from '@/components/watch/TechInfoPopover';
+import { UnifiedSettingsPanel } from '@/components/watch/UnifiedSettingsPanel';
 import { WatchTitleBar } from '@/components/watch/WatchTitleBar';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useSeriesPreferences } from '@/hooks/use-series-preferences';
 import type { PlayableEpisode } from '@/lib/api/anime';
 import { animeApi, animeKeys } from '@/lib/api/anime';
+import { externalDanmakuApi, externalDanmakuKeys } from '@/lib/api/danmaku';
 import { discoverApi, discoverKeys } from '@/lib/api/discover';
 import { progressApi } from '@/lib/api/progress';
 import {
@@ -35,9 +37,11 @@ import {
   mediaKeys,
   streamApi,
 } from '@/lib/api/stream';
-import { externalDanmakuApi, externalDanmakuKeys } from '@/lib/api/danmaku';
 import { getSubtitleUrl, subtitleApi } from '@/lib/api/subtitle';
 import { formatLanguage } from '@/lib/format';
+import { MemoryMonitor } from '@/lib/memory-monitor';
+import { NetworkMonitor } from '@/lib/network-monitor';
+import { cn } from '@/lib/utils';
 import type { CapturePluginAPI } from '@/plugins/capture/CapturePlugin';
 import { createCapturePlugin } from '@/plugins/capture/CapturePlugin';
 import type { GesturePluginAPI } from '@/plugins/gesture/GesturePlugin';
@@ -46,7 +50,6 @@ import type { KeyboardPluginAPI } from '@/plugins/keyboard/KeyboardPlugin';
 import { createKeyboardPlugin } from '@/plugins/keyboard/KeyboardPlugin';
 import type { MediaSettingsPluginAPI } from '@/plugins/media-settings/MediaSettingsPlugin';
 import { createMediaSettingsPlugin } from '@/plugins/media-settings/MediaSettingsPlugin';
-import { UnifiedSettingsPanel } from '@/components/watch/UnifiedSettingsPanel';
 import type { PlaybackPluginAPI } from '@/plugins/playback/PlaybackPlugin';
 import { createPlaybackPlugin } from '@/plugins/playback/PlaybackPlugin';
 import type { SubtitlePluginAPI } from '@/plugins/subtitle/SubtitlePlugin';
@@ -55,9 +58,6 @@ import { createSubtitlePlugin } from '@/plugins/subtitle/SubtitlePlugin';
 import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { useBgStore } from '@/store/bg-store';
 import { usePreferencesStore } from '@/store/preferences-store';
-import { NetworkMonitor } from '@/lib/network-monitor';
-import { MemoryMonitor } from '@/lib/memory-monitor';
-import { toast } from 'sonner';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
 const SAVE_INTERVAL_MS = 10_000;
@@ -106,9 +106,7 @@ function ResumeOverlay({ seconds, onDone }: { seconds: number | null; onDone: ()
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 text-white/70">
             <path d="M13 3a9 9 0 100 18 9 9 0 000-18zm-1 5h1.5v4.25L17 14.5l-.75 1.3L12 13V8z" />
           </svg>
-          <span className="text-[11px] text-white/80">
-            {i18n._('watch.resumeFrom')}
-          </span>
+          <span className="text-[11px] text-white/80">{i18n._('watch.resumeFrom')}</span>
           <span className="text-[11px] font-medium tabular-nums text-white">
             {formatTime(seconds)}
           </span>
@@ -138,7 +136,7 @@ export function WatchPage() {
 
   // Per-series + global preferences (subtitle/audio language, etc.)
   const seriesPrefs = useSeriesPreferences(
-    Number.isFinite(bangumiId) ? String(bangumiId) : undefined,
+    Number.isFinite(bangumiId) ? String(bangumiId) : undefined
   );
   const defaultSubtitleLanguage = usePreferencesStore((s) => s.defaultSubtitleLanguage);
 
@@ -244,10 +242,7 @@ export function WatchPage() {
   });
 
   // --------------- Episode resolution ---------------
-  const currentEpisode = useMemo(
-    () => resolveEpisode(mergedEpisodes, ep),
-    [mergedEpisodes, ep]
-  );
+  const currentEpisode = useMemo(() => resolveEpisode(mergedEpisodes, ep), [mergedEpisodes, ep]);
   const fileId = currentEpisode?.media_file?.id ?? null;
   const episodeId = currentEpisode?.episode_id ?? null;
 
@@ -298,10 +293,9 @@ export function WatchPage() {
 
   useEffect(() => {
     try {
-      workerRef.current = new Worker(
-        new URL('../workers/danmaku-worker.ts', import.meta.url),
-        { type: 'module' }
-      );
+      workerRef.current = new Worker(new URL('../workers/danmaku-worker.ts', import.meta.url), {
+        type: 'module',
+      });
       workerRef.current.onmessage = (e: MessageEvent<DanmakuComment[]>) => {
         setDanmakuComments(e.data);
       };
@@ -363,7 +357,9 @@ export function WatchPage() {
   // --------------- Adaptive buffering ---------------
   const bufferMode = usePreferencesStore((s) => s.bufferMode);
   const networkMonitorRef = useRef<NetworkMonitor | null>(null);
-  const [activeBufferProfile, setActiveBufferProfile] = useState<'low' | 'balanced' | 'high'>('balanced');
+  const [activeBufferProfile, setActiveBufferProfile] = useState<'low' | 'balanced' | 'high'>(
+    'balanced'
+  );
 
   useEffect(() => {
     if (bufferMode !== 'auto') {
@@ -627,7 +623,9 @@ export function WatchPage() {
               id: s.id,
               label: formatLanguage(s.language, i18n.locale ?? 'en') || s.language,
               language: s.language,
-              source: (s.source === 'embedded' ? 'embedded' : 'external') as SubtitleTrack['source'],
+              source: (s.source === 'embedded'
+                ? 'embedded'
+                : 'external') as SubtitleTrack['source'],
               format: 'vtt' as SubtitleTrack['format'], // backend always converts to VTT
               url: getSubtitleUrl(s.id),
             }))
@@ -669,10 +667,18 @@ export function WatchPage() {
           const sp = subtitlePluginRef.current;
           if (!sp) return;
           switch (e.detail.action) {
-            case 'subtitle:toggle': sp.toggle(); break;
-            case 'subtitle:next-track': sp.nextTrack(); break;
-            case 'subtitle:delay-decrease': sp.adjustDelay(-0.1); break;
-            case 'subtitle:delay-increase': sp.adjustDelay(0.1); break;
+            case 'subtitle:toggle':
+              sp.toggle();
+              break;
+            case 'subtitle:next-track':
+              sp.nextTrack();
+              break;
+            case 'subtitle:delay-decrease':
+              sp.adjustDelay(-0.1);
+              break;
+            case 'subtitle:delay-increase':
+              sp.adjustDelay(0.1);
+              break;
           }
         }) as EventListener);
       }
@@ -726,13 +732,16 @@ export function WatchPage() {
   useEffect(() => {
     const plugin = subtitlePluginRef.current;
     if (!plugin) return;
-    const preferredLang =
-      seriesPrefs.prefs?.subtitleLanguage ?? defaultSubtitleLanguage ?? null;
+    const preferredLang = seriesPrefs.prefs?.subtitleLanguage ?? defaultSubtitleLanguage ?? null;
     plugin.setPreferredLanguage(preferredLang);
     if (typeof seriesPrefs.prefs?.subtitleDelay === 'number') {
       plugin.setDelay(seriesPrefs.prefs.subtitleDelay);
     }
-  }, [seriesPrefs.prefs?.subtitleLanguage, seriesPrefs.prefs?.subtitleDelay, defaultSubtitleLanguage]);
+  }, [
+    seriesPrefs.prefs?.subtitleLanguage,
+    seriesPrefs.prefs?.subtitleDelay,
+    defaultSubtitleLanguage,
+  ]);
 
   // --------------- Episode switching ---------------
   const handleSelectEpisode = useCallback(
@@ -865,46 +874,58 @@ export function WatchPage() {
     return out.slice(0, SLOTS);
   })();
 
-  const posterWallBackdrop = loadingWallPosters.length > 0 ? (
-    <div className="absolute inset-0 overflow-hidden bg-mm-bg">
-      <div
-        className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%] opacity-55"
-        style={{
-          transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
-          transformOrigin: '50% 50%',
-          transformStyle: 'preserve-3d',
-        }}
-      >
+  const posterWallBackdrop =
+    loadingWallPosters.length > 0 ? (
+      <div className="absolute inset-0 overflow-hidden bg-mm-bg">
         <div
-          className="grid gap-x-[5px] gap-y-[10px]"
-          style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+          className="absolute left-[-40%] right-[-40%] top-[-20%] bottom-[-20%] opacity-55"
+          style={{
+            transform: 'perspective(1400px) rotateY(-22deg) rotateZ(2deg)',
+            transformOrigin: '50% 50%',
+            transformStyle: 'preserve-3d',
+          }}
         >
-          {loadingWallPosters.map((src, i) => (
-            <div key={`${src}-${i}`} className="aspect-[2/3] overflow-hidden rounded-[3px]">
-              <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-          ))}
+          <div
+            className="grid gap-x-[5px] gap-y-[10px]"
+            style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
+          >
+            {loadingWallPosters.map((src, i) => (
+              <div key={`${src}-${i}`} className="aspect-[2/3] overflow-hidden rounded-[3px]">
+                <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
         </div>
+        {/* Stronger dark layer — backdrop should whisper, not shout */}
+        <div className="absolute inset-0 bg-black/75" />
+        {/* Vignette: dim center only slightly, edges fade to full bg */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(ellipse 75% 75% at 50% 50%, rgba(7,7,7,0.45) 0%, rgba(7,7,7,0.80) 70%, var(--mm-bg) 100%)',
+          }}
+        />
       </div>
-      {/* Stronger dark layer — backdrop should whisper, not shout */}
-      <div className="absolute inset-0 bg-black/75" />
-      {/* Vignette: dim center only slightly, edges fade to full bg */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(ellipse 75% 75% at 50% 50%, rgba(7,7,7,0.45) 0%, rgba(7,7,7,0.80) 70%, var(--mm-bg) 100%)',
-        }}
-      />
-    </div>
-  ) : null;
+    ) : null;
 
   return (
     <PageTransition>
       <div className="min-h-screen">
         <div className="mx-auto px-3 lg:px-6 py-3 lg:py-4">
           {/* Title bar */}
-          <WatchTitleBar anime={animeDetail} episodesData={episodesData ?? { watch_status: 'unwatched', mal_id: null, tmdb_id: null, episodes: mergedEpisodes }} bangumiId={bangumiId} />
+          <WatchTitleBar
+            anime={animeDetail}
+            episodesData={
+              episodesData ?? {
+                watch_status: 'unwatched',
+                mal_id: null,
+                tmdb_id: null,
+                episodes: mergedEpisodes,
+              }
+            }
+            bangumiId={bangumiId}
+          />
 
           <div className="flex flex-col lg:flex-row gap-3">
             {/* LEFT COLUMN */}
@@ -942,13 +963,23 @@ export function WatchPage() {
                           >
                             {theaterMode ? (
                               /* Exit theater — inner rectangle */
-                              <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
-                                <path d="M19 6.5H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm0 9H5v-7h14v7z"/>
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="media-icon"
+                                style={{ width: 20, height: 20 }}
+                              >
+                                <path d="M19 6.5H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm0 9H5v-7h14v7z" />
                               </svg>
                             ) : (
                               /* Enter theater — wider rectangle */
-                              <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
-                                <path d="M19 7.5H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2zm0 7H5v-5h14v5z"/>
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="media-icon"
+                                style={{ width: 20, height: 20 }}
+                              >
+                                <path d="M19 7.5H5c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2zm0 7H5v-5h14v5z" />
                               </svg>
                             )}
                           </SkinButton>
@@ -957,7 +988,12 @@ export function WatchPage() {
                             onClick={() => setSettingsPanelOpen((v) => !v)}
                             aria-label="Settings"
                           >
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon" style={{ width: 20, height: 20 }}>
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="media-icon"
+                              style={{ width: 20, height: 20 }}
+                            >
                               <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
                             </svg>
                           </SkinButton>
@@ -1014,14 +1050,18 @@ export function WatchPage() {
                       <div className="flex flex-col items-center gap-3">
                         <Spinner size={32} className="text-white/50" />
                         {mediaInfo?.needs_transcode && transcodeStatus === 'processing' && (
-                          <span className="text-xs text-white/40">{i18n._(msg`watch.transcoding`)}</span>
+                          <span className="text-xs text-white/40">
+                            {i18n._(msg`watch.transcoding`)}
+                          </span>
                         )}
                       </div>
                     </div>
                     {/* Faux control bar so layout doesn't jump */}
                     <div className="relative h-11 bg-black/60 border-t border-white/[0.04] flex items-center px-3">
                       <div className="flex items-center gap-2 opacity-30 pointer-events-none">
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white"><path d="M8 5v14l11-7z" /></svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
                         <span className="text-xs text-white/60 tabular-nums">0:00 / --:--</span>
                       </div>
                       <div className="flex-1" />

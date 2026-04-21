@@ -64,10 +64,7 @@ function PosterWall() {
           style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
         >
           {posters.map((src, i) => (
-            <div
-              key={`${src}-${i}`}
-              className="aspect-[2/3] overflow-hidden rounded-[3px]"
-            >
+            <div key={`${src}-${i}`} className="aspect-[2/3] overflow-hidden rounded-[3px]">
               <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
             </div>
           ))}

@@ -42,10 +42,7 @@ export function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancelLabel ?? i18n._(msg`common.cancel`)}</AlertDialogCancel>
-          <AlertDialogAction
-            data-destructive={destructive ? '' : undefined}
-            onClick={onConfirm}
-          >
+          <AlertDialogAction data-destructive={destructive ? '' : undefined} onClick={onConfirm}>
             {confirmLabel ?? i18n._(msg`common.confirm`)}
           </AlertDialogAction>
         </AlertDialogFooter>

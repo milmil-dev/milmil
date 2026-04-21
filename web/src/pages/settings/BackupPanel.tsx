@@ -65,7 +65,7 @@ function JsonExportImportCard() {
   const exportMutation = useMutation({
     mutationFn: () =>
       api.post<{ version: number; preferences: unknown[]; exported_at: string }>(
-        '/api/v1/user/preferences/export',
+        '/api/v1/user/preferences/export'
       ),
     onSuccess: (data) => {
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -113,9 +113,7 @@ function JsonExportImportCard() {
 
   return (
     <SettingsCard label={i18n._(msg`backup.jsonExportImport`)}>
-      <FieldDescription className="mb-4">
-        {i18n._(msg`backup.jsonDescription`)}
-      </FieldDescription>
+      <FieldDescription className="mb-4">{i18n._(msg`backup.jsonDescription`)}</FieldDescription>
 
       <div className="flex items-center gap-3">
         <Button
@@ -265,9 +263,7 @@ function WebDAVConfigCard() {
         <form.Field name="username">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="webdav-username">
-                {i18n._(msg`backup.username`)}
-              </FieldLabel>
+              <FieldLabel htmlFor="webdav-username">{i18n._(msg`backup.username`)}</FieldLabel>
               <Input
                 id="webdav-username"
                 value={field.state.value}
@@ -282,9 +278,7 @@ function WebDAVConfigCard() {
         <form.Field name="password">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="webdav-password">
-                {i18n._(msg`backup.password`)}
-              </FieldLabel>
+              <FieldLabel htmlFor="webdav-password">{i18n._(msg`backup.password`)}</FieldLabel>
               <PasswordInput
                 id="webdav-password"
                 value={field.state.value}
@@ -517,9 +511,7 @@ function S3ConfigCard() {
         <form.Field name="region">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="s3-region">
-                {i18n._(msg`backup.region`)}
-              </FieldLabel>
+              <FieldLabel htmlFor="s3-region">{i18n._(msg`backup.region`)}</FieldLabel>
               <Input
                 id="s3-region"
                 value={field.state.value}
@@ -633,7 +625,7 @@ function SyncControlsCard() {
                   <div
                     className={cn(
                       'h-2 w-2 rounded-full',
-                      entry.enabled ? 'bg-emerald-500' : 'bg-white/20',
+                      entry.enabled ? 'bg-emerald-500' : 'bg-white/20'
                     )}
                   />
                   <span className="text-sm text-white/70 uppercase tracking-wide">
@@ -656,9 +648,7 @@ function SyncControlsCard() {
             disabled={syncMutation.isPending || !hasEnabledTarget}
           >
             {syncMutation.isPending ? <Spinner className="mr-1.5" /> : null}
-            {syncMutation.isPending
-              ? i18n._(msg`backup.syncing`)
-              : i18n._(msg`backup.syncNow`)}
+            {syncMutation.isPending ? i18n._(msg`backup.syncing`) : i18n._(msg`backup.syncNow`)}
           </Button>
         </div>
       </div>
@@ -674,12 +664,8 @@ export function BackupPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-white">
-          {i18n._(msg`backup.title`)}
-        </h2>
-        <p className="mt-1 text-sm text-white/40">
-          {i18n._(msg`backup.description`)}
-        </p>
+        <h2 className="text-xl font-bold text-white">{i18n._(msg`backup.title`)}</h2>
+        <p className="mt-1 text-sm text-white/40">{i18n._(msg`backup.description`)}</p>
       </div>
 
       <JsonExportImportCard />

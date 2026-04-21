@@ -12,7 +12,7 @@ export class SubtitleRenderer {
 
   constructor(
     private containerEl: HTMLElement,
-    initialStyle: SubtitleStyleConfig,
+    initialStyle: SubtitleStyleConfig
   ) {
     this.styleConfig = initialStyle;
 
@@ -90,11 +90,7 @@ export class SubtitleRenderer {
     this.renderCues(this.secondaryContainer, cues, true);
   }
 
-  private renderCues(
-    container: HTMLDivElement,
-    cues: SubtitleCue[],
-    isSecondary: boolean,
-  ) {
+  private renderCues(container: HTMLDivElement, cues: SubtitleCue[], isSecondary: boolean) {
     // Clear existing
     container.innerHTML = '';
 
@@ -115,11 +111,7 @@ export class SubtitleRenderer {
     }
   }
 
-  private applyStyle(
-    el: HTMLSpanElement,
-    cue: SubtitleCue,
-    isSecondary: boolean,
-  ) {
+  private applyStyle(el: HTMLSpanElement, cue: SubtitleCue, isSecondary: boolean) {
     const s = this.styleConfig;
 
     // If respectAssStyle and cue has ASS style data, use those instead
@@ -150,9 +142,7 @@ export class SubtitleRenderer {
     });
   }
 
-  private getTextEffect(
-    s: SubtitleStyleConfig,
-  ): Partial<CSSStyleDeclaration> {
+  private getTextEffect(s: SubtitleStyleConfig): Partial<CSSStyleDeclaration> {
     switch (s.shadowType) {
       case 'outline':
         return {
@@ -206,7 +196,8 @@ export class SubtitleRenderer {
     // Outline and shadow via textShadow
     if (s.textShadow) el.style.textShadow = s.textShadow;
     if (s.webkitTextStroke) {
-      (el.style as CSSStyleDeclaration & { webkitTextStroke: string }).webkitTextStroke = s.webkitTextStroke;
+      (el.style as CSSStyleDeclaration & { webkitTextStroke: string }).webkitTextStroke =
+        s.webkitTextStroke;
     }
 
     // Opaque box background (BorderStyle 3)
@@ -271,9 +262,7 @@ export class SubtitleRenderer {
 
   private areSameCues(a: SubtitleCue[], b: SubtitleCue[]): boolean {
     if (a.length !== b.length) return false;
-    return a.every(
-      (c, i) => c.startTime === b[i]?.startTime && c.text === b[i]?.text,
-    );
+    return a.every((c, i) => c.startTime === b[i]?.startTime && c.text === b[i]?.text);
   }
 
   /** Update style config (called when user changes settings) */

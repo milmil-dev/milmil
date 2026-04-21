@@ -7,14 +7,16 @@ interface HistoryBatchBarProps {
   onCancel: () => void;
 }
 
-export function HistoryBatchBar({ selectedCount, onDeleteSelected, onCancel }: HistoryBatchBarProps) {
+export function HistoryBatchBar({
+  selectedCount,
+  onDeleteSelected,
+  onCancel,
+}: HistoryBatchBarProps) {
   const { i18n } = useLingui();
   return (
     <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-[rgba(10,10,10,0.85)] backdrop-blur md:left-20">
       <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-6 py-3">
-        <span className="text-[13px] text-white/70">
-          {selectedCount} selected
-        </span>
+        <span className="text-[13px] text-white/70">{selectedCount} selected</span>
         <div className="flex-1" />
         <button
           type="button"

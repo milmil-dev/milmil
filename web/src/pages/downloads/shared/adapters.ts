@@ -1,5 +1,5 @@
 // web/src/pages/downloads/shared/adapters.ts
-import type { DownloadGroup, RSSFeed, DownloadRule } from '@/lib/api/downloads';
+import type { DownloadGroup, DownloadRule, RSSFeed } from '@/lib/api/downloads';
 
 export interface ActiveRowInput {
   gid: string;
@@ -41,12 +41,9 @@ export function statusToActiveStatus(status: string): 'active' | 'paused' | 'wai
 /**
  * Convert a DownloadGroup download row to EpisodeRowActive props (minus event handlers).
  */
-export function toActiveProps(
-  d: DownloadGroup['downloads'][number],
-): ActiveRowInput {
-  const percent = d.total_bytes > 0
-    ? Math.min(100, Math.round((d.completed_bytes / d.total_bytes) * 100))
-    : 0;
+export function toActiveProps(d: DownloadGroup['downloads'][number]): ActiveRowInput {
+  const percent =
+    d.total_bytes > 0 ? Math.min(100, Math.round((d.completed_bytes / d.total_bytes) * 100)) : 0;
   const remaining = Math.max(0, d.total_bytes - d.completed_bytes);
   const etaSeconds = d.speed_bytes > 0 ? Math.round(remaining / d.speed_bytes) : 0;
   return {
@@ -64,9 +61,7 @@ export function toActiveProps(
 /**
  * Convert a completed DownloadGroup row to EpisodeRowComplete props.
  */
-export function toCompleteProps(
-  d: DownloadGroup['downloads'][number],
-): CompleteRowInput {
+export function toCompleteProps(d: DownloadGroup['downloads'][number]): CompleteRowInput {
   return {
     gid: d.gid,
     episodeLabel: parseEpisodeLabel(d.name),
@@ -139,8 +134,9 @@ export function deriveGroupPercent(group?: DownloadGroup): number {
  * Quick sub-chip list for a rule — filters empty / returns up to 2.
  */
 export function ruleSubChips(rule: DownloadRule): string[] {
-  return [rule.subgroup_filter, rule.resolution_filter]
-    .filter((s): s is string => !!s && s.trim().length > 0);
+  return [rule.subgroup_filter, rule.resolution_filter].filter(
+    (s): s is string => !!s && s.trim().length > 0
+  );
 }
 
 export type CardMode = 'downloading' | 'subscribed' | 'completed';
@@ -158,12 +154,9 @@ export interface LibraryItem {
  * 2. No active + (rule disabled OR at least one completed ep) → completed
  * 3. No active + rule enabled + zero completed → subscribed (pending — waiting for first trigger)
  */
-export function deriveCardMode(
-  group: DownloadGroup | undefined,
-  rule: DownloadRule,
-): CardMode {
+export function deriveCardMode(group: DownloadGroup | undefined, rule: DownloadRule): CardMode {
   const hasActive = (group?.downloads ?? []).some(
-    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting',
+    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting'
   );
   if (hasActive) return 'downloading';
   const completeCount = group?.complete_count ?? 0;
@@ -173,7 +166,7 @@ export function deriveCardMode(
 
 export function deriveEpsForExpand(
   group: DownloadGroup | undefined,
-  mode: CardMode,
+  mode: CardMode
 ): DownloadGroup['downloads'] {
   if (!group || mode === 'subscribed') return [];
   const eps = group.downloads.filter((d) => {
@@ -184,27 +177,31 @@ export function deriveEpsForExpand(
   });
   if (mode === 'downloading') {
     return [...eps].sort((a, b) => {
-      const etaA = a.speed_bytes > 0 ? (a.total_bytes - a.completed_bytes) / a.speed_bytes : Infinity;
-      const etaB = b.speed_bytes > 0 ? (b.total_bytes - b.completed_bytes) / b.speed_bytes : Infinity;
+      const etaA =
+        a.speed_bytes > 0 ? (a.total_bytes - a.completed_bytes) / a.speed_bytes : Infinity;
+      const etaB =
+        b.speed_bytes > 0 ? (b.total_bytes - b.completed_bytes) / b.speed_bytes : Infinity;
       return etaA - etaB;
     });
   }
   // completed — sort by created_at desc
-  return [...eps].sort((a, b) =>
-    new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  return [...eps].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 }
 
 function isActiveGroup(g: DownloadGroup | undefined): boolean {
-  return !!g && g.downloads.some(
-    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting',
+  return (
+    !!g &&
+    g.downloads.some(
+      (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting'
+    )
   );
 }
 
 export function sortRulesBy(items: LibraryItem[], key: SortKey): LibraryItem[] {
   const copy = [...items];
-  const nameCmp = (a: LibraryItem, b: LibraryItem) =>
-    a.rule.name.localeCompare(b.rule.name);
+  const nameCmp = (a: LibraryItem, b: LibraryItem) => a.rule.name.localeCompare(b.rule.name);
 
   switch (key) {
     case 'name':

@@ -1,14 +1,14 @@
-import { useLingui } from '@lingui/react';
+import {
+  ComputerIcon,
+  Delete02Icon,
+  Logout02Icon,
+  SmartPhone01Icon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  Delete02Icon,
-  SmartPhone01Icon,
-  ComputerIcon,
-  Logout02Icon,
-} from '@hugeicons/core-free-icons';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api-client';
@@ -62,17 +62,14 @@ export function SessionsTab() {
     return i18n._(msg`sessions.daysAgo`, { count: days });
   };
 
-  const isMobile = (ua: string) =>
-    /iPhone|iPad|Android|milmil-ios|milmil-android/i.test(ua);
+  const isMobile = (ua: string) => /iPhone|iPad|Android|milmil-ios|milmil-android/i.test(ua);
 
   const otherSessions = sessions.filter((s) => !s.is_current);
 
   return (
     <div className="space-y-3">
       <SettingsCard label={i18n._(msg`sessions.title`)}>
-        <p className="mb-4 text-xs text-white/40">
-          {i18n._(msg`sessions.description`)}
-        </p>
+        <p className="mb-4 text-xs text-white/40">{i18n._(msg`sessions.description`)}</p>
 
         <div className="space-y-2">
           {sessions.map((session) => (
@@ -88,9 +85,7 @@ export function SessionsTab() {
                 />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-[13px] font-medium text-white truncate">
-                      {session.name}
-                    </p>
+                    <p className="text-[13px] font-medium text-white truncate">{session.name}</p>
                     {session.is_current && (
                       <span className="shrink-0 rounded-full bg-mm-accent/15 px-2 py-0.5 text-[10px] font-medium text-mm-accent">
                         {i18n._(msg`sessions.current`)}
@@ -100,9 +95,7 @@ export function SessionsTab() {
                   <p className="text-[11px] text-white/25">
                     {session.last_ip && <span>{session.last_ip}</span>}
                     {session.last_used_at && (
-                      <span className="ml-2">
-                        · {formatRelativeTime(session.last_used_at)}
-                      </span>
+                      <span className="ml-2">· {formatRelativeTime(session.last_used_at)}</span>
                     )}
                   </p>
                 </div>

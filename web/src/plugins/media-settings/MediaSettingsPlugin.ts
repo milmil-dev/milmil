@@ -41,7 +41,7 @@ export interface MediaSettingsPluginAPI {
 
 export function createMediaSettingsPlugin(
   videoEl: HTMLVideoElement,
-  containerEl: HTMLElement,
+  containerEl: HTMLElement
 ): MediaSettingsPluginAPI {
   const disposables = new Disposables();
   const osd = new OSDFeedback(containerEl);

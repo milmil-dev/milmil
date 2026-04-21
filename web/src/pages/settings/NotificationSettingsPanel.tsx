@@ -1,10 +1,10 @@
+import { Loading03Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Loading03Icon } from '@hugeicons/core-free-icons';
 
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
@@ -13,19 +13,19 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Switch } from '@/components/ui/switch';
-import { api } from '@/lib/api-client';
-import { cn } from '@/lib/utils';
 import {
   type DiscordBotConfig,
+  NOTIFICATION_EVENTS,
   type NotificationSettings,
+  notificationSettingsApi,
+  notificationSettingsKeys,
+  PROVIDERS,
   type ProviderName,
   type ProviderStatus,
   type TelegramBotConfig,
-  NOTIFICATION_EVENTS,
-  PROVIDERS,
-  notificationSettingsApi,
-  notificationSettingsKeys,
 } from '@/lib/api/notification-settings';
+import { api } from '@/lib/api-client';
+import { cn } from '@/lib/utils';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
 
@@ -38,16 +38,16 @@ const BOT_LANGUAGES = [
   { code: 'ko', label: '한국어' },
 ];
 
-const PROVIDER_META: Record<
-  ProviderName,
-  { label: string; color: string; colorClass: string }
-> = {
+const PROVIDER_META: Record<ProviderName, { label: string; color: string; colorClass: string }> = {
   discord: { label: 'Discord', color: '#5865F2', colorClass: 'text-[#5865F2]' },
   telegram: { label: 'Telegram', color: '#26A5E4', colorClass: 'text-[#26A5E4]' },
   webhook: { label: 'Webhook', color: '', colorClass: 'text-white/50' },
 };
 
-const EVENT_LABEL_KEYS: Record<string, { label: ReturnType<typeof msg>; desc: ReturnType<typeof msg> }> = {
+const EVENT_LABEL_KEYS: Record<
+  string,
+  { label: ReturnType<typeof msg>; desc: ReturnType<typeof msg> }
+> = {
   'download.started': {
     label: msg`notifications.event.downloadStarted`,
     desc: msg`notifications.event.downloadStarted.desc`,
@@ -93,7 +93,16 @@ function defaultSettings(): NotificationSettings {
     },
     events: {},
     bot: {
-      telegram: { enabled: false, bot_token: '', webhook_url: '', allowed_chat_ids: [], report_interval: '', language: '', airing_reminder_minutes: 0, daily_digest_time: '' },
+      telegram: {
+        enabled: false,
+        bot_token: '',
+        webhook_url: '',
+        allowed_chat_ids: [],
+        report_interval: '',
+        language: '',
+        airing_reminder_minutes: 0,
+        daily_digest_time: '',
+      },
       discord: { enabled: false, bot_token: '', application_id: '', allowed_guild_ids: [] },
     },
   };
@@ -101,18 +110,22 @@ function defaultSettings(): NotificationSettings {
 
 // ─── Status Badge ───────────────────────────────────────────────────────────
 
-function ProviderStatusBadge({
-  status,
-}: {
-  status: ProviderStatus | undefined;
-}) {
+function ProviderStatusBadge({ status }: { status: ProviderStatus | undefined }) {
   const { i18n } = useLingui();
 
   if (!status) return null;
 
   const config: Record<string, { dot: string; text: string; label: ReturnType<typeof msg> }> = {
-    ok: { dot: 'bg-green-400', text: 'text-green-400', label: msg`notifications.providerStatus.ok` },
-    error: { dot: 'bg-red-400', text: 'text-red-400', label: msg`notifications.providerStatus.error` },
+    ok: {
+      dot: 'bg-green-400',
+      text: 'text-green-400',
+      label: msg`notifications.providerStatus.ok`,
+    },
+    error: {
+      dot: 'bg-red-400',
+      text: 'text-red-400',
+      label: msg`notifications.providerStatus.error`,
+    },
     unconfigured: {
       dot: 'bg-white/15',
       text: 'text-white/40',
@@ -171,7 +184,10 @@ function TestButton({ provider }: { provider: ProviderName }) {
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0 }}
-            className={cn('text-xs font-medium', result.success ? 'text-green-400' : 'text-red-400')}
+            className={cn(
+              'text-xs font-medium',
+              result.success ? 'text-green-400' : 'text-red-400'
+            )}
           >
             {result.success
               ? i18n._(msg`notifications.testSuccess`)
@@ -185,7 +201,11 @@ function TestButton({ provider }: { provider: ProviderName }) {
 
 function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
   const { i18n } = useLingui();
-  const [result, setResult] = useState<{ success: boolean; error?: string; bot_username?: string } | null>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    error?: string;
+    bot_username?: string;
+  } | null>(null);
 
   const testMutation = useMutation({
     mutationFn: () => notificationSettingsApi.testBot(platform),
@@ -204,7 +224,10 @@ function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
       <button
         type="button"
         disabled={testMutation.isPending}
-        onClick={() => { setResult(null); testMutation.mutate(); }}
+        onClick={() => {
+          setResult(null);
+          testMutation.mutate();
+        }}
         className="text-[11px] text-white/30 hover:text-white/60 hover:bg-white/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
@@ -219,7 +242,10 @@ function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0 }}
-            className={cn('text-xs font-medium', result.success ? 'text-green-400' : 'text-red-400')}
+            className={cn(
+              'text-xs font-medium',
+              result.success ? 'text-green-400' : 'text-red-400'
+            )}
           >
             {result.success
               ? `@${result.bot_username}`
@@ -248,16 +274,17 @@ function DiscordCard({
 }) {
   const { i18n } = useLingui();
 
-  const [guildIdsRaw, setGuildIdsRaw] = useState(
-    (botConfig.allowed_guild_ids ?? []).join(', '),
-  );
+  const [guildIdsRaw, setGuildIdsRaw] = useState((botConfig.allowed_guild_ids ?? []).join(', '));
   useEffect(() => {
     setGuildIdsRaw((botConfig.allowed_guild_ids ?? []).join(', '));
   }, [botConfig.allowed_guild_ids]);
 
   const handleGuildIdsChange = (value: string) => {
     setGuildIdsRaw(value);
-    const parsed = value.split(',').map((s) => s.trim()).filter((s) => s.length > 0);
+    const parsed = value
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
     onBotChange({ allowed_guild_ids: parsed });
   };
 
@@ -277,8 +304,12 @@ function DiscordCard({
         {/* Push notifications section */}
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.pushNotifications`)}</div>
-            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.pushNotifications.desc`)}</div>
+            <div className="text-[13px] font-medium text-white/80">
+              {i18n._(msg`notifications.pushNotifications`)}
+            </div>
+            <div className="text-[11px] text-white/30">
+              {i18n._(msg`notifications.pushNotifications.desc`)}
+            </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <Switch
@@ -316,8 +347,12 @@ function DiscordCard({
         {/* Bot commands section */}
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.botCommands`)}</div>
-            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.botCommands.shortDesc`)}</div>
+            <div className="text-[13px] font-medium text-white/80">
+              {i18n._(msg`notifications.botCommands`)}
+            </div>
+            <div className="text-[11px] text-white/30">
+              {i18n._(msg`notifications.botCommands.shortDesc`)}
+            </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {botConfig.enabled && <TestBotButton platform="discord" />}
@@ -401,17 +436,19 @@ function TelegramCard({
   const { i18n } = useLingui();
   const isActive = config.enabled || botConfig.enabled;
 
-  const [chatIdsRaw, setChatIdsRaw] = useState(
-    (botConfig.allowed_chat_ids ?? []).join(', '),
-  );
+  const [chatIdsRaw, setChatIdsRaw] = useState((botConfig.allowed_chat_ids ?? []).join(', '));
   useEffect(() => {
     setChatIdsRaw((botConfig.allowed_chat_ids ?? []).join(', '));
   }, [botConfig.allowed_chat_ids]);
 
   const handleChatIdsChange = (value: string) => {
     setChatIdsRaw(value);
-    const parsed = value.split(',').map((s) => s.trim()).filter((s) => s.length > 0)
-      .map((s) => Number(s)).filter((n) => Number.isFinite(n));
+    const parsed = value
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0)
+      .map((s) => Number(s))
+      .filter((n) => Number.isFinite(n));
     onBotChange({ allowed_chat_ids: parsed });
   };
 
@@ -460,8 +497,12 @@ function TelegramCard({
       <div className="mt-5 space-y-3">
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.pushNotifications`)}</div>
-            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.pushNotifications.desc`)}</div>
+            <div className="text-[13px] font-medium text-white/80">
+              {i18n._(msg`notifications.pushNotifications`)}
+            </div>
+            <div className="text-[11px] text-white/30">
+              {i18n._(msg`notifications.pushNotifications.desc`)}
+            </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {config.enabled && <TestButton provider="telegram" />}
@@ -474,14 +515,20 @@ function TelegramCard({
 
         <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">{i18n._(msg`notifications.botCommands`)}</div>
-            <div className="text-[11px] text-white/30">{i18n._(msg`notifications.botCommands.shortDesc`)}</div>
+            <div className="text-[13px] font-medium text-white/80">
+              {i18n._(msg`notifications.botCommands`)}
+            </div>
+            <div className="text-[11px] text-white/30">
+              {i18n._(msg`notifications.botCommands.shortDesc`)}
+            </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {botConfig.enabled && <TestBotButton platform="telegram" />}
             <Switch
               checked={botConfig.enabled}
-              onCheckedChange={(checked) => onBotChange({ enabled: checked, bot_token: sharedToken })}
+              onCheckedChange={(checked) =>
+                onBotChange({ enabled: checked, bot_token: sharedToken })
+              }
             />
           </div>
         </div>
@@ -552,7 +599,9 @@ function TelegramCard({
                           : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
                       )}
                     >
-                      {mins === 0 ? i18n._(msg`notifications.bot.airingReminder.off`) : `${mins} min`}
+                      {mins === 0
+                        ? i18n._(msg`notifications.bot.airingReminder.off`)
+                        : `${mins} min`}
                     </button>
                   ))}
                 </div>
@@ -646,7 +695,9 @@ function WebhookCard({
   status: ProviderStatus | undefined;
 }) {
   const { i18n } = useLingui();
-  const [showSecretField, setShowSecretField] = useState(!config.secret || !config.secret.includes('••••'));
+  const [showSecretField, setShowSecretField] = useState(
+    !config.secret || !config.secret.includes('••••')
+  );
 
   return (
     <SettingsCard>
@@ -772,7 +823,7 @@ function EventRoutingMatrix({
                   key={p}
                   className={cn(
                     'text-center text-xs font-semibold pb-2 px-3',
-                    PROVIDER_META[p].colorClass,
+                    PROVIDER_META[p].colorClass
                   )}
                 >
                   {PROVIDER_META[p].label}
@@ -937,7 +988,7 @@ export function NotificationSettingsPanel() {
 
   const updateProvider = <K extends ProviderName>(
     provider: K,
-    config: NotificationSettings['providers'][K],
+    config: NotificationSettings['providers'][K]
   ) => {
     setLocal((prev) => {
       const base = prev ?? defaultSettings();
@@ -985,9 +1036,7 @@ export function NotificationSettingsPanel() {
           <h2 className="text-xl font-bold text-white">
             {i18n._(msg`settings.nav.notifications`)}
           </h2>
-          <p className="mt-1 text-sm text-white/40">
-            {i18n._(msg`notifications.intro`)}
-          </p>
+          <p className="mt-1 text-sm text-white/40">{i18n._(msg`notifications.intro`)}</p>
         </div>
         <SkeletonCards />
       </div>
@@ -1001,9 +1050,7 @@ export function NotificationSettingsPanel() {
           <h2 className="text-xl font-bold text-white">
             {i18n._(msg`settings.nav.notifications`)}
           </h2>
-          <p className="mt-1 text-sm text-white/40">
-            {i18n._(msg`notifications.intro`)}
-          </p>
+          <p className="mt-1 text-sm text-white/40">{i18n._(msg`notifications.intro`)}</p>
         </div>
         {docsUrl && (
           <a

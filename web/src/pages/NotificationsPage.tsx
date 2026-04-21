@@ -9,11 +9,7 @@ import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { useDocumentTitle } from '../hooks/use-document-title';
-import {
-  type Notification,
-  notificationApi,
-  notificationKeys,
-} from '../lib/api/notifications';
+import { type Notification, notificationApi, notificationKeys } from '../lib/api/notifications';
 import { cn } from '../lib/utils';
 
 /* ── Time helpers ─────────────────────────────────────────── */
@@ -134,9 +130,7 @@ export function NotificationsPage() {
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-white">
-            {i18n._(msg`notifications.title`)}
-          </h1>
+          <h1 className="text-2xl font-bold text-white">{i18n._(msg`notifications.title`)}</h1>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -245,12 +239,8 @@ export function NotificationsPage() {
                 className="text-white/20"
               />
             </div>
-            <p className="text-sm text-white/40 mb-1">
-              {i18n._(msg`notifications.empty`)}
-            </p>
-            <p className="text-xs text-white/25 max-w-xs">
-              {i18n._(msg`notifications.emptyHint`)}
-            </p>
+            <p className="text-sm text-white/40 mb-1">{i18n._(msg`notifications.empty`)}</p>
+            <p className="text-xs text-white/25 max-w-xs">{i18n._(msg`notifications.emptyHint`)}</p>
           </div>
         )}
       </div>
@@ -294,9 +284,7 @@ function NotificationCard({
               TYPE_BADGE[typePrefix] ?? 'bg-white/[0.06] text-white/40'
             )}
           >
-            {TYPE_LABEL_KEYS[typePrefix]
-              ? i18n._(TYPE_LABEL_KEYS[typePrefix])
-              : typePrefix}
+            {TYPE_LABEL_KEYS[typePrefix] ? i18n._(TYPE_LABEL_KEYS[typePrefix]) : typePrefix}
           </span>
         </div>
         <p className="text-xs text-white/40 mt-1 line-clamp-2">{notification.message}</p>

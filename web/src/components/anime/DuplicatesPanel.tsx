@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Skeleton } from '@/components/Skeleton';
-import { duplicatesApi, duplicatesKeys, type DupSet } from '@/lib/api/duplicates';
+import { type DupSet, duplicatesApi, duplicatesKeys } from '@/lib/api/duplicates';
 import { formatBytes } from '@/lib/format';
 
 interface Props {
@@ -23,14 +23,12 @@ export function DuplicatesPanel({ bangumiId }: Props) {
   const setPreferred = useMutation({
     mutationFn: ({ episodeId, fileId }: { episodeId: string; fileId: string }) =>
       duplicatesApi.setPreferred(episodeId, fileId),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: duplicatesKeys.anime(bangumiId) }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: duplicatesKeys.anime(bangumiId) }),
   });
 
   const deleteFile = useMutation({
     mutationFn: (id: string) => duplicatesApi.deleteFile(id),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: duplicatesKeys.anime(bangumiId) }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: duplicatesKeys.anime(bangumiId) }),
   });
 
   if (isLoading) {
@@ -40,17 +38,13 @@ export function DuplicatesPanel({ bangumiId }: Props) {
 
   return (
     <div className="rounded-lg border border-white/10 bg-black/40 p-4 backdrop-blur-sm">
-      <h3 className="mb-3 text-sm font-semibold text-white/80">
-        {i18n._(msg`Duplicate files`)}
-      </h3>
+      <h3 className="mb-3 text-sm font-semibold text-white/80">{i18n._(msg`Duplicate files`)}</h3>
       <div className="space-y-3">
         {data.map((s) => (
           <DupRow
             key={s.episode_id}
             set={s}
-            onSetPreferred={(fileId) =>
-              setPreferred.mutate({ episodeId: s.episode_id, fileId })
-            }
+            onSetPreferred={(fileId) => setPreferred.mutate({ episodeId: s.episode_id, fileId })}
             onDeleteFile={(id) => {
               if (window.confirm(i18n._(msg`Delete this file permanently?`))) {
                 deleteFile.mutate(id);
@@ -76,8 +70,7 @@ function DupRow({
   return (
     <div className="rounded border border-white/10 p-3">
       <div className="mb-2 text-sm text-white/80">
-        {i18n._(msg`Episode ${set.episode_number}`)} — {set.files.length}{' '}
-        {i18n._(msg`files`)}
+        {i18n._(msg`Episode ${set.episode_number}`)} — {set.files.length} {i18n._(msg`files`)}
       </div>
       <ul className="space-y-1 text-xs">
         {set.files.map((f) => {

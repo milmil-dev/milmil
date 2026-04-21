@@ -13,8 +13,7 @@ export interface CompletenessReport {
 }
 
 export const completenessApi = {
-  anime: (bangumiId: number) =>
-    api.get<CompletenessReport>(`/api/v1/anime/${bangumiId}/missing`),
+  anime: (bangumiId: number) => api.get<CompletenessReport>(`/api/v1/anime/${bangumiId}/missing`),
   librarySummary: (libraryId: string) =>
     api.get<CompletenessReport[]>(`/api/v1/libraries/${libraryId}/missing-summary`),
 };

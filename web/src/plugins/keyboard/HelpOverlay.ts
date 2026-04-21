@@ -12,7 +12,7 @@ export class HelpOverlay {
   constructor(
     containerEl: HTMLElement,
     private getBindings: () => KeyBinding[],
-    private bindingToString: (b: KeyBinding) => string,
+    private bindingToString: (b: KeyBinding) => string
   ) {
     // Full-screen overlay
     this.overlay = document.createElement('div');

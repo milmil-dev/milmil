@@ -57,9 +57,7 @@ function NavItem({
           aria-label={i18n._(msgKey)}
           className={cn(
             'relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200',
-            isActive
-              ? 'text-white'
-              : 'text-white/40 hover:text-white/80 hover:bg-white/[0.04]'
+            isActive ? 'text-white' : 'text-white/40 hover:text-white/80 hover:bg-white/[0.04]'
           )}
         >
           <AnimatePresence>
@@ -74,7 +72,12 @@ function NavItem({
               />
             )}
           </AnimatePresence>
-          <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive ? 2 : 1.5} className="relative z-[1]" />
+          <HugeiconsIcon
+            icon={icon}
+            size={20}
+            strokeWidth={isActive ? 2 : 1.5}
+            className="relative z-[1]"
+          />
         </Link>
       </TooltipTrigger>
       <TooltipContent side="right">{i18n._(msgKey)}</TooltipContent>

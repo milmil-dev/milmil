@@ -6,13 +6,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import {
-  type Notification,
-  notificationApi,
-  notificationKeys,
-} from '../lib/api/notifications';
-import { useAuthStore } from '../store/auth-store';
+import { type Notification, notificationApi, notificationKeys } from '../lib/api/notifications';
 import { cn } from '../lib/utils';
+import { useAuthStore } from '../store/auth-store';
 
 /* ── Relative time helper ─────────────────────────────────── */
 
@@ -200,9 +196,7 @@ function NotificationItem({
           {!notification.read && (
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
           )}
-          <span className="text-sm font-medium text-white truncate">
-            {notification.title}
-          </span>
+          <span className="text-sm font-medium text-white truncate">{notification.title}</span>
         </div>
         <p className="text-xs text-white/40 mt-0.5 line-clamp-2">{notification.message}</p>
         <p className="text-[10px] text-white/25 mt-1">{timeAgo(notification.created_at, i18n)}</p>

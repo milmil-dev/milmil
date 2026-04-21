@@ -1,19 +1,24 @@
-import { useLingui } from '@lingui/react';
 import { msg } from '@lingui/core/macro';
-import { useState } from 'react';
+import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { QueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
-import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp';
-import { Switch } from '@/components/ui/switch';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
 import { PasswordInput } from '@/components/ui/password-input';
+import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
-import { useAuthStore } from '@/store/auth-store';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/store/auth-store';
 import { ApiTokensCard } from './ApiTokensCard';
 import { SessionsTab } from './SessionsTab';
 
@@ -76,12 +81,8 @@ export function AccountPanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">
-        {i18n._(msg`settings.nav.account`)}
-      </h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">
-        {i18n._(msg`account.subtitle`)}
-      </p>
+      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.account`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`account.subtitle`)}</p>
 
       {/* Inner tab bar */}
       <div className="mb-6 flex gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
@@ -134,7 +135,9 @@ export function AccountPanel() {
                 }}
               >
                 {(field) => (
-                  <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                  <Field
+                    data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  >
                     <FieldLabel htmlFor={field.name}>
                       {i18n._(msg`account.currentPassword`)}
                     </FieldLabel>
@@ -165,10 +168,10 @@ export function AccountPanel() {
                 }}
               >
                 {(field) => (
-                  <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-                    <FieldLabel htmlFor={field.name}>
-                      {i18n._(msg`account.newPassword`)}
-                    </FieldLabel>
+                  <Field
+                    data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  >
+                    <FieldLabel htmlFor={field.name}>{i18n._(msg`account.newPassword`)}</FieldLabel>
                     <PasswordInput
                       id={field.name}
                       autoComplete="new-password"
@@ -197,7 +200,9 @@ export function AccountPanel() {
                 }}
               >
                 {(field) => (
-                  <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+                  <Field
+                    data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  >
                     <FieldLabel htmlFor={field.name}>
                       {i18n._(msg`account.confirmPassword`)}
                     </FieldLabel>
@@ -306,9 +311,7 @@ function TwoFactorCard({
 
   return (
     <SettingsCard label={i18n._(msg`account.2fa.title`)}>
-      <p className="mb-4 text-xs text-white/40">
-        {i18n._(msg`account.2fa.description`)}
-      </p>
+      <p className="mb-4 text-xs text-white/40">{i18n._(msg`account.2fa.description`)}</p>
 
       {/* Toggle row — label left, switch right */}
       <div className="flex items-center justify-between">
@@ -366,11 +369,7 @@ function TwoFactorCard({
             <label className="text-[11px] font-medium text-white/50">
               {i18n._(msg`account.2fa.verificationCode`)}
             </label>
-            <InputOTP
-              maxLength={6}
-              value={totpCode}
-              onChange={(value) => setTotpCode(value)}
-            >
+            <InputOTP maxLength={6} value={totpCode} onChange={(value) => setTotpCode(value)}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
@@ -401,9 +400,7 @@ function TwoFactorCard({
       {enabled && (
         <div className="mt-4 flex items-center gap-2 rounded-lg bg-green-500/[0.06] px-3 py-2 border border-green-500/10">
           <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
-          <p className="text-xs text-green-400/90">
-            {i18n._(msg`account.2fa.activeMessage`)}
-          </p>
+          <p className="text-xs text-green-400/90">{i18n._(msg`account.2fa.activeMessage`)}</p>
         </div>
       )}
     </SettingsCard>

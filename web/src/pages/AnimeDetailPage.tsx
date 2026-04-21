@@ -13,7 +13,7 @@ import { MediaRail } from '../components/MediaRail';
 import { PageTransition } from '../components/PageTransition';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
-import { ruleApi, downloadKeys } from '../lib/api/downloads';
+import { downloadKeys, ruleApi } from '../lib/api/downloads';
 import { translateGenre } from '../lib/genre-i18n';
 
 const RELATION_LABELS: Record<string, Record<string, string>> = {
@@ -104,9 +104,7 @@ function buildSeasonChain(
 
 function SynopsisBlock({ text }: { text: string }) {
   return (
-    <div
-      className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] font-medium text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
-    >
+    <div className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] font-medium text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
       {text}
     </div>
   );
@@ -250,7 +248,8 @@ export function AnimeDetailPage() {
     enabled: isAuthenticated,
     staleTime: 60000,
   });
-  const hasSubscription = !isAniListOnly && rules.some((r) => r.bangumi_id === numericId && r.enabled);
+  const hasSubscription =
+    !isAniListOnly && rules.some((r) => r.bangumi_id === numericId && r.enabled);
 
   // Check if anime has local playable files
   const hasPlayableFiles = (playableData?.episodes?.filter((ep) => ep.media_file)?.length ?? 0) > 0;
@@ -394,13 +393,22 @@ export function AnimeDetailPage() {
               className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
               title="Bangumi"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 {/* TV antenna */}
-                <path d="M7 2l5 5 5-5"/>
+                <path d="M7 2l5 5 5-5" />
                 {/* TV body */}
-                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <rect x="2" y="7" width="20" height="14" rx="2" />
                 {/* Screen */}
-                <rect x="5" y="10" width="14" height="8" rx="1"/>
+                <rect x="5" y="10" width="14" height="8" rx="1" />
               </svg>
             </a>
             {anime?.anilist_id && anime.anilist_id > 0 && (
@@ -491,7 +499,9 @@ export function AnimeDetailPage() {
                         {anime.title}
                       </h1>
                       {anime.title_original && anime.title_original !== anime.title && (
-                        <p className="text-[13px] font-medium text-white/60 mt-1 truncate">{anime.title_original}</p>
+                        <p className="text-[13px] font-medium text-white/60 mt-1 truncate">
+                          {anime.title_original}
+                        </p>
                       )}
                     </motion.div>
 
@@ -577,7 +587,8 @@ export function AnimeDetailPage() {
                         return (
                           <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
                             {franchiseSeasons.map((s, idx) => {
-                              const isCurrent = s.bangumi_id === numericId || s.anilist_id === anime.anilist_id;
+                              const isCurrent =
+                                s.bangumi_id === numericId || s.anilist_id === anime.anilist_id;
                               const targetId = s.bangumi_id > 0 ? s.bangumi_id : null;
                               return targetId ? (
                                 <Link
@@ -644,114 +655,163 @@ export function AnimeDetailPage() {
                       className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap"
                     >
                       {/* Bookmark toggle */}
-                      {!isAniListOnly && isAuthenticated && (() => {
-                        const isBookmarked = playableData?.watch_status && playableData.watch_status !== 'none';
-                        return (
-                          <motion.button
-                            type="button"
-                            onClick={() => statusMutation.mutate(isBookmarked ? 'none' : 'planning')}
-                            disabled={statusMutation.isPending}
-                            whileTap={{ scale: 0.97 }}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
-                          >
-                            <motion.svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill={isBookmarked ? 'currentColor' : 'none'}
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className={cn('size-3.5', isBookmarked ? 'text-mm-accent' : 'text-white/70')}
-                              animate={isBookmarked ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-                              transition={{ duration: 0.3 }}
+                      {!isAniListOnly &&
+                        isAuthenticated &&
+                        (() => {
+                          const isBookmarked =
+                            playableData?.watch_status && playableData.watch_status !== 'none';
+                          return (
+                            <motion.button
+                              type="button"
+                              onClick={() =>
+                                statusMutation.mutate(isBookmarked ? 'none' : 'planning')
+                              }
+                              disabled={statusMutation.isPending}
+                              whileTap={{ scale: 0.97 }}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
                             >
-                              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-                            </motion.svg>
-                            {i18n._(msg`anime.addToCollection`)}
-                          </motion.button>
-                        );
-                      })()}
+                              <motion.svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill={isBookmarked ? 'currentColor' : 'none'}
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className={cn(
+                                  'size-3.5',
+                                  isBookmarked ? 'text-mm-accent' : 'text-white/70'
+                                )}
+                                animate={isBookmarked ? { scale: [1, 1.15, 1] } : { scale: 1 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+                              </motion.svg>
+                              {i18n._(msg`anime.addToCollection`)}
+                            </motion.button>
+                          );
+                        })()}
 
                       {/* Search resources */}
-                      {!isAniListOnly && <Link
-                        to="/downloads"
-                        search={{ anime: String(anime.bangumi_id) }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-3.5"><circle cx={11} cy={11} r={8}/><path d="m21 21-4.3-4.3"/></svg>
-                        {i18n._(msg`anime.searchResources`)}
-                      </Link>}
+                      {!isAniListOnly && (
+                        <Link
+                          to="/downloads"
+                          search={{ anime: String(anime.bangumi_id) }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="size-3.5"
+                          >
+                            <circle cx={11} cy={11} r={8} />
+                            <path d="m21 21-4.3-4.3" />
+                          </svg>
+                          {i18n._(msg`anime.searchResources`)}
+                        </Link>
+                      )}
 
                       {/* Tracker sync toggle */}
-                      {!isAniListOnly && isAuthenticated && playableData && (() => {
-                        const syncDisabled = playableData.sync_disabled === 1;
-                        return (
-                          <button
-                            type="button"
-                            onClick={() => syncFlagsMutation.mutate(syncDisabled ? 0 : 1)}
-                            disabled={syncFlagsMutation.isPending}
-                            title={syncDisabled ? i18n._(msg`anime.enableTrackerSync`) : i18n._(msg`anime.excludeTrackerSync`)}
-                            className={cn(
-                              'inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors',
-                              syncDisabled
-                                ? 'bg-white/[0.04] text-white/30 hover:bg-white/[0.10] hover:text-white/60'
-                                : 'bg-white/[0.08] text-white/60 hover:bg-white/[0.14] hover:text-white'
-                            )}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-3.5">
-                              {syncDisabled ? (
-                                <>
-                                  <path d="M18.364 5.636 5.636 18.364" />
-                                  <path d="M21 12a9 9 0 0 1-9 9" />
-                                  <path d="M3 12a9 9 0 0 1 9-9" />
-                                </>
-                              ) : (
-                                <>
-                                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                  <path d="M3 3v5h5" />
-                                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                                  <path d="M16 16h5v5" />
-                                </>
+                      {!isAniListOnly &&
+                        isAuthenticated &&
+                        playableData &&
+                        (() => {
+                          const syncDisabled = playableData.sync_disabled === 1;
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => syncFlagsMutation.mutate(syncDisabled ? 0 : 1)}
+                              disabled={syncFlagsMutation.isPending}
+                              title={
+                                syncDisabled
+                                  ? i18n._(msg`anime.enableTrackerSync`)
+                                  : i18n._(msg`anime.excludeTrackerSync`)
+                              }
+                              className={cn(
+                                'inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors',
+                                syncDisabled
+                                  ? 'bg-white/[0.04] text-white/30 hover:bg-white/[0.10] hover:text-white/60'
+                                  : 'bg-white/[0.08] text-white/60 hover:bg-white/[0.14] hover:text-white'
                               )}
-                            </svg>
-                          </button>
-                        );
-                      })()}
-
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="size-3.5"
+                              >
+                                {syncDisabled ? (
+                                  <>
+                                    <path d="M18.364 5.636 5.636 18.364" />
+                                    <path d="M21 12a9 9 0 0 1-9 9" />
+                                    <path d="M3 12a9 9 0 0 1 9-9" />
+                                  </>
+                                ) : (
+                                  <>
+                                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                    <path d="M3 3v5h5" />
+                                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                                    <path d="M16 16h5v5" />
+                                  </>
+                                )}
+                              </svg>
+                            </button>
+                          );
+                        })()}
                     </motion.div>
 
                     {/* Collection watch status + personal score — inline when in collection */}
                     <AnimatePresence>
-                    {!isAniListOnly && playableData?.watch_status && playableData.watch_status !== 'none' && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0, y: -4 }}
-                        animate={{ opacity: 1, height: 'auto', y: 0 }}
-                        exit={{ opacity: 0, height: 0, y: -4 }}
-                        transition={{ duration: 0.25, ease: 'easeOut' }}
-                        className="flex items-center justify-center sm:justify-start gap-3 flex-wrap"
-                        >
-                          <span className="text-white/20">·</span>
-                          <select
-                            value={playableData.watch_status}
-                            onChange={(e) => statusMutation.mutate(e.target.value)}
-                            className="text-[11px] px-2 py-1 rounded-lg bg-white/[0.06] text-white/60 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
-                            disabled={statusMutation.isPending}
+                      {!isAniListOnly &&
+                        playableData?.watch_status &&
+                        playableData.watch_status !== 'none' && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0, y: -4 }}
+                            animate={{ opacity: 1, height: 'auto', y: 0 }}
+                            exit={{ opacity: 0, height: 0, y: -4 }}
+                            transition={{ duration: 0.25, ease: 'easeOut' }}
+                            className="flex items-center justify-center sm:justify-start gap-3 flex-wrap"
                           >
-                            <option value="watching" className="bg-zinc-900">{i18n._(msg`collection.watching`)}</option>
-                            <option value="planning" className="bg-zinc-900">{i18n._(msg`collection.planning`)}</option>
-                            <option value="completed" className="bg-zinc-900">{i18n._(msg`collection.completed`)}</option>
-                            <option value="paused" className="bg-zinc-900">{i18n._(msg`collection.paused`)}</option>
-                            <option value="dropped" className="bg-zinc-900">{i18n._(msg`collection.dropped`)}</option>
-                          </select>
-                          <ScoreSelector
-                            score={playableData.user_score ?? null}
-                            onChange={(s) => scoreMutation.mutate(s)}
-                            disabled={scoreMutation.isPending}
-                          />
-                        </motion.div>
-                      )}
-                      </AnimatePresence>
+                            <span className="text-white/20">·</span>
+                            <select
+                              value={playableData.watch_status}
+                              onChange={(e) => statusMutation.mutate(e.target.value)}
+                              className="text-[11px] px-2 py-1 rounded-lg bg-white/[0.06] text-white/60 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
+                              disabled={statusMutation.isPending}
+                            >
+                              <option value="watching" className="bg-zinc-900">
+                                {i18n._(msg`collection.watching`)}
+                              </option>
+                              <option value="planning" className="bg-zinc-900">
+                                {i18n._(msg`collection.planning`)}
+                              </option>
+                              <option value="completed" className="bg-zinc-900">
+                                {i18n._(msg`collection.completed`)}
+                              </option>
+                              <option value="paused" className="bg-zinc-900">
+                                {i18n._(msg`collection.paused`)}
+                              </option>
+                              <option value="dropped" className="bg-zinc-900">
+                                {i18n._(msg`collection.dropped`)}
+                              </option>
+                            </select>
+                            <ScoreSelector
+                              score={playableData.user_score ?? null}
+                              onChange={(s) => scoreMutation.mutate(s)}
+                              disabled={scoreMutation.isPending}
+                            />
+                          </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     {/* Synopsis — expandable */}
                     {anime.synopsis && <SynopsisBlock text={anime.synopsis} />}
@@ -767,12 +827,15 @@ export function AnimeDetailPage() {
             (() => {
               const prog = continueEpisode.progress;
               const progress =
-                prog && prog.duration_seconds > 0 ? prog.position_seconds / prog.duration_seconds : 0;
+                prog && prog.duration_seconds > 0
+                  ? prog.position_seconds / prog.duration_seconds
+                  : 0;
               const timeLeft =
                 prog && !prog.completed ? prog.duration_seconds - prog.position_seconds : 0;
-              const epNum = continueEpisode.sort % 1 === 0
-                ? Math.floor(continueEpisode.sort)
-                : continueEpisode.sort;
+              const epNum =
+                continueEpisode.sort % 1 === 0
+                  ? Math.floor(continueEpisode.sort)
+                  : continueEpisode.sort;
 
               const coverSrc = anime.cover_image;
               const hasCoverImg = coverSrc?.startsWith('http');
@@ -805,17 +868,47 @@ export function AnimeDetailPage() {
                         style={hasCoverImg ? undefined : { background: animeGradient(anime.title) }}
                       >
                         {hasCoverImg && (
-                          <img src={coverSrc} alt={anime.title} className="w-full h-full object-cover" />
+                          <img
+                            src={coverSrc}
+                            alt={anime.title}
+                            className="w-full h-full object-cover"
+                          />
                         )}
                       </div>
                       <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
                         <div className="relative w-[76px] h-[76px] flex items-center justify-center">
-                          <svg className="absolute inset-0 -rotate-90" width="76" height="76" viewBox="0 0 76 76">
-                            <circle cx="38" cy="38" r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2.5" />
-                            <circle cx="38" cy="38" r={radius} fill="none" stroke="var(--mm-accent)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} className="transition-all duration-500" style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }} />
+                          <svg
+                            className="absolute inset-0 -rotate-90"
+                            width="76"
+                            height="76"
+                            viewBox="0 0 76 76"
+                          >
+                            <circle
+                              cx="38"
+                              cy="38"
+                              r={radius}
+                              fill="none"
+                              stroke="rgba(255,255,255,0.12)"
+                              strokeWidth="2.5"
+                            />
+                            <circle
+                              cx="38"
+                              cy="38"
+                              r={radius}
+                              fill="none"
+                              stroke="var(--mm-accent)"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeDasharray={circumference}
+                              strokeDashoffset={strokeDashoffset}
+                              className="transition-all duration-500"
+                              style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }}
+                            />
                           </svg>
                           <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z" /></svg>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="black">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
                           </div>
                         </div>
                       </div>
@@ -967,7 +1060,9 @@ export function AnimeDetailPage() {
                 transition={{ delay: 0.3 }}
                 className="px-4 md:px-8 py-6"
               >
-                <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.sideStories`)}</h2>
+                <h2 className="text-lg font-bold text-white mb-4">
+                  {i18n._(msg`anime.sideStories`)}
+                </h2>
                 <MediaRail>
                   {franchise.side_stories.map((entry) => {
                     const cardAnime: AnimeSummary = {
@@ -987,13 +1082,18 @@ export function AnimeDetailPage() {
                         ) : (
                           <Link to="/anime/$id" params={{ id: `al-${entry.anilist_id}` }}>
                             <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.05] hover:opacity-80 transition-opacity">
-                              <img src={entry.cover_image} alt={entry.title} className="w-full h-full object-cover" />
+                              <img
+                                src={entry.cover_image}
+                                alt={entry.title}
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                           </Link>
                         )}
                         <p className="text-xs text-white/70 mt-1.5 line-clamp-2">{entry.title}</p>
                         <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-0.5">
-                          {entry.media_type || getRelationLabel(entry.relation_type || '', i18n.locale)}
+                          {entry.media_type ||
+                            getRelationLabel(entry.relation_type || '', i18n.locale)}
                         </p>
                       </div>
                     );
@@ -1010,7 +1110,9 @@ export function AnimeDetailPage() {
                 transition={{ delay: 0.3 }}
                 className="px-4 md:px-8 py-6"
               >
-                <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.relations`)}</h2>
+                <h2 className="text-lg font-bold text-white mb-4">
+                  {i18n._(msg`anime.relations`)}
+                </h2>
                 <MediaRail>
                   {anime.relations.map((rel) => (
                     <div

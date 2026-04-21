@@ -53,10 +53,10 @@ export const externalDanmakuApi = {
     ),
 
   toggleSave: (episodeId: string, source: string, save: boolean) =>
-    api.patch<{ saved: boolean }>(
-      `/api/v1/danmaku/external/imported/${episodeId}/save`,
-      { source, save }
-    ),
+    api.patch<{ saved: boolean }>(`/api/v1/danmaku/external/imported/${episodeId}/save`, {
+      source,
+      save,
+    }),
 
   getImported: (episodeId: string) =>
     api.get<ImportedDanmaku[]>(`/api/v1/danmaku/external/imported/${episodeId}`),
@@ -71,6 +71,5 @@ export const externalDanmakuKeys = {
   sources: () => ['danmaku', 'external', 'sources'] as const,
   search: (source: string, q: string, page: number) =>
     ['danmaku', 'external', 'search', source, q, page] as const,
-  imported: (episodeId: string) =>
-    ['danmaku', 'external', 'imported', episodeId] as const,
+  imported: (episodeId: string) => ['danmaku', 'external', 'imported', episodeId] as const,
 };

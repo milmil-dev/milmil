@@ -18,8 +18,8 @@ import {
   discoverApi,
   discoverKeys,
 } from '../lib/api/discover';
-import { useUIStore, type WeekStartDay } from '../store/ui-store';
 import { cn } from '../lib/utils';
+import { useUIStore, type WeekStartDay } from '../store/ui-store';
 
 /* ── Season / year helpers ────────────────────────────────── */
 
@@ -389,23 +389,13 @@ function TimelineView({
             filter="blur(4px)"
           />
           {/* Main line */}
-          <path
-            d={path}
-            stroke="white"
-            strokeWidth="1"
-            strokeLinecap="round"
-            opacity="0.12"
-          />
+          <path d={path} stroke="white" strokeWidth="1" strokeLinecap="round" opacity="0.12" />
         </svg>
       )}
 
       {/* Scroll-linked flowing light along the vertical spine */}
       {spineY && (
-        <FlowingSpineLight
-          containerRef={containerRef}
-          topY={spineY.top}
-          bottomY={spineY.bottom}
-        />
+        <FlowingSpineLight containerRef={containerRef} topY={spineY.top} bottomY={spineY.bottom} />
       )}
 
       {/* Inner content — offset right to clear the vertical spine */}
@@ -414,7 +404,10 @@ function TimelineView({
           const cards = group.animes.map((anime) => {
             const idx = cardIdx++;
             return (
-              <div key={anime.bangumi_id} className="w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]">
+              <div
+                key={anime.bangumi_id}
+                className="w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]"
+              >
                 <ScheduleAnimeCard anime={anime} index={idx} />
               </div>
             );
@@ -427,7 +420,9 @@ function TimelineView({
                 <div className="relative z-10 flex items-center gap-1.5 sm:gap-2 mx-1.5 sm:mx-2">
                   {/* Dot — measured by SVG hook */}
                   <div
-                    ref={(el) => { dotRefs.current[gi] = el; }}
+                    ref={(el) => {
+                      dotRefs.current[gi] = el;
+                    }}
                     className="relative shrink-0"
                   >
                     <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
@@ -439,9 +434,7 @@ function TimelineView({
                 </div>
               </div>
               {/* ── Cards ── */}
-              <div className="flex flex-wrap gap-1.5 sm:gap-2 px-1.5 sm:px-2">
-                {cards}
-              </div>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 px-1.5 sm:px-2">{cards}</div>
             </div>
           );
         })}
@@ -552,10 +545,7 @@ function CalendarView() {
   return (
     <div>
       {/* Weekday tabs */}
-      <div
-        ref={tabsRef}
-        className="flex items-end gap-0 overflow-x-auto scrollbar-none mb-5"
-      >
+      <div ref={tabsRef} className="flex items-end gap-0 overflow-x-auto scrollbar-none mb-5">
         <button
           type="button"
           data-active={activeDay === 'all'}

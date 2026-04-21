@@ -28,7 +28,9 @@ async function getToken(page: Page): Promise<string> {
 test.describe('Built-in Torrent: Subscribe → Download → Watch', () => {
   test.setTimeout(300_000); // 5 min for full flow
 
-  test('full flow: subscribe 欢迎来到实力至上主义教室 第四季, download, watch', async ({ page }) => {
+  test('full flow: subscribe 欢迎来到实力至上主义教室 第四季, download, watch', async ({
+    page,
+  }) => {
     const token = await getToken(page);
     console.log('Authenticated');
 
@@ -57,9 +59,9 @@ test.describe('Built-in Torrent: Subscribe → Download → Watch', () => {
       }
 
       // Step 3: Pick the first 1080p result and add it
-      const target = searchResults.find((r: any) =>
-        r.title.includes('1080') && (r.magnet || r.torrent_url)
-      ) || searchResults[0];
+      const target =
+        searchResults.find((r: any) => r.title.includes('1080') && (r.magnet || r.torrent_url)) ||
+        searchResults[0];
 
       console.log(`\nAdding: ${target.title}`);
       const downloadUrl = target.magnet || target.torrent_url;
@@ -86,7 +88,8 @@ test.describe('Built-in Torrent: Subscribe → Download → Watch', () => {
         // Step 4: Poll download progress
         console.log('\nPolling download progress...');
         let lastPct = 0;
-        for (let i = 0; i < 60; i++) { // up to 2 min
+        for (let i = 0; i < 60; i++) {
+          // up to 2 min
           await page.waitForTimeout(2000);
 
           const dlResp = await page.request.get(`${API_BASE}/api/v1/downloads`, {
@@ -96,28 +99,32 @@ test.describe('Built-in Torrent: Subscribe → Download → Watch', () => {
           const dl = downloads.find((d: any) => d.gid === gid);
 
           if (dl) {
-            const pct = dl.total_bytes > 0
-              ? Math.round((dl.completed_bytes / dl.total_bytes) * 100)
-              : 0;
+            const pct =
+              dl.total_bytes > 0 ? Math.round((dl.completed_bytes / dl.total_bytes) * 100) : 0;
 
             // Only log on change
             if (pct !== lastPct || i % 5 === 0) {
-              const speed = dl.speed_bytes > 0
-                ? `${(dl.speed_bytes / 1024 / 1024).toFixed(1)} MB/s`
-                : '0';
+              const speed =
+                dl.speed_bytes > 0 ? `${(dl.speed_bytes / 1024 / 1024).toFixed(1)} MB/s` : '0';
               console.log(
                 `[${(i + 1) * 2}s] ${dl.status} ${pct}% (${(dl.completed_bytes / 1024 / 1024).toFixed(1)}/${(dl.total_bytes / 1024 / 1024).toFixed(1)} MB) ${speed}`
               );
               lastPct = pct;
             }
 
-            if (dl.status === 'complete' || (dl.total_bytes > 0 && dl.completed_bytes >= dl.total_bytes)) {
+            if (
+              dl.status === 'complete' ||
+              (dl.total_bytes > 0 && dl.completed_bytes >= dl.total_bytes)
+            ) {
               console.log('\n✓ Download complete!');
 
               // Step 5: Get files
-              const filesResp = await page.request.get(`${API_BASE}/api/v1/downloads/${gid}/files`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+              const filesResp = await page.request.get(
+                `${API_BASE}/api/v1/downloads/${gid}/files`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
               if (filesResp.ok()) {
                 const files = await filesResp.json();
                 console.log('Files:');

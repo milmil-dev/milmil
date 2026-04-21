@@ -157,8 +157,7 @@ export const libraryApi = {
   scanSummaries: (id: string) => api.get<ScanSummary[]>(`/api/v1/libraries/${id}/scan-summaries`),
   getConnectionStatus: (id: string) =>
     api.get<LibraryConnectionStatus>(`/api/v1/libraries/${id}/connection-status`),
-  getCapacity: (id: string) =>
-    api.get<LibraryCapacity>(`/api/v1/libraries/${id}/capacity`),
+  getCapacity: (id: string) => api.get<LibraryCapacity>(`/api/v1/libraries/${id}/capacity`),
   testConnection: (input: TestConnectionInput) =>
     api.post<TestConnectionResult>('/api/v1/libraries/test-connection', input),
   browse: (input: BrowseInput) => api.post<BrowseResult>('/api/v1/libraries/browse', input),

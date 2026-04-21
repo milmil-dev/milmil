@@ -70,8 +70,7 @@ export class StyleEngine {
 
   /** Get the resolved style (preset + user overrides) */
   getStyle(): SubtitleStyleConfig {
-    const base =
-      SUBTITLE_PRESETS[this.currentPreset] ?? SUBTITLE_PRESETS.default!;
+    const base = SUBTITLE_PRESETS[this.currentPreset] ?? SUBTITLE_PRESETS.default!;
     return { ...base, ...this.customOverrides };
   }
 

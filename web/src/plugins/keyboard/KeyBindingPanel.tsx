@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { usePreferencesStore } from '@/store/preferences-store';
-import { DEFAULT_BINDINGS, ACTION_LABELS, ACTION_GROUPS } from './defaults';
-import type { KeyBinding } from '@/lib/api/preferences';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SettingsCard } from '@/components/settings/SettingsCard';
+import type { KeyBinding } from '@/lib/api/preferences';
+import { usePreferencesStore } from '@/store/preferences-store';
+import { ACTION_GROUPS, ACTION_LABELS, DEFAULT_BINDINGS } from './defaults';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -89,25 +89,20 @@ export function KeyBindingPanel() {
         (b) =>
           b.action !== capturingAction &&
           b.key === newBinding.key &&
-          JSON.stringify(b.modifiers ?? []) === JSON.stringify(newBinding.modifiers ?? []),
+          JSON.stringify(b.modifiers ?? []) === JSON.stringify(newBinding.modifiers ?? [])
       );
 
       if (conflicting) {
-        setConflict(
-          `Conflicts with "${ACTION_LABELS[conflicting.action] ?? conflicting.action}"`,
-        );
+        setConflict(`Conflicts with "${ACTION_LABELS[conflicting.action] ?? conflicting.action}"`);
       } else {
         setConflict(null);
       }
 
-      const updated = [
-        ...keyboardBindings.filter((b) => b.action !== capturingAction),
-        newBinding,
-      ];
+      const updated = [...keyboardBindings.filter((b) => b.action !== capturingAction), newBinding];
       updatePreference('keyboardBindings', updated);
       setCapturingAction(null);
     },
-    [capturingAction, effectiveBindings, keyboardBindings, updatePreference],
+    [capturingAction, effectiveBindings, keyboardBindings, updatePreference]
   );
 
   const handleReset = () => {
@@ -118,16 +113,10 @@ export function KeyBindingPanel() {
   const bindingFor = (action: string): KeyBinding | undefined =>
     effectiveBindings.find((b) => b.action === action);
 
-  const isCustom = (action: string): boolean =>
-    keyboardBindings.some((b) => b.action === action);
+  const isCustom = (action: string): boolean => keyboardBindings.some((b) => b.action === action);
 
   return (
-    <div
-      ref={containerRef}
-      tabIndex={-1}
-      onKeyDown={handleKeyCapture}
-      className="outline-none"
-    >
+    <div ref={containerRef} tabIndex={-1} onKeyDown={handleKeyCapture} className="outline-none">
       <SettingsCard label="Keyboard Shortcuts">
         <div className="space-y-5">
           {Object.entries(ACTION_GROUPS).map(([group, actions]) => (
@@ -184,9 +173,7 @@ export function KeyBindingPanel() {
           ))}
 
           {/* Conflict warning */}
-          {conflict && (
-            <p className="text-xs text-amber-400/80">{conflict}</p>
-          )}
+          {conflict && <p className="text-xs text-amber-400/80">{conflict}</p>}
 
           {/* Reset button */}
           <button

@@ -4,10 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import {
-  missingSearchApi,
-  type MissingSearchResult,
-} from '@/lib/api/missing_search';
+import { type MissingSearchResult, missingSearchApi } from '@/lib/api/missing_search';
 
 interface Props {
   bangumiId: number;
@@ -28,9 +25,7 @@ export function MissingSearchModal({ bangumiId, episodeNumber, onClose }: Props)
       return missingSearchApi.download(bangumiId, uri, r.title);
     },
     onSuccess: (res) => {
-      toast.success(
-        i18n._(msg`Download queued: ${res.download_id.slice(0, 8)}`),
-      );
+      toast.success(i18n._(msg`Download queued: ${res.download_id.slice(0, 8)}`));
       onClose();
     },
     onError: (err: unknown) => toast.error(String(err)),
@@ -56,19 +51,13 @@ export function MissingSearchModal({ bangumiId, episodeNumber, onClose }: Props)
           <h3 className="text-sm font-semibold text-white/80">
             {i18n._(msg`Search missing episode ${episodeNumber}`)}
           </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-white/60 hover:text-white"
-          >
+          <button type="button" onClick={onClose} className="text-white/60 hover:text-white">
             ✕
           </button>
         </div>
 
         {search.isPending && (
-          <div className="py-8 text-center text-sm text-white/60">
-            {i18n._(msg`Searching...`)}
-          </div>
+          <div className="py-8 text-center text-sm text-white/60">{i18n._(msg`Searching...`)}</div>
         )}
         {!search.isPending && results.length === 0 && (
           <div className="py-8 text-center text-sm text-white/60">
@@ -88,17 +77,10 @@ export function MissingSearchModal({ bangumiId, episodeNumber, onClose }: Props)
             </thead>
             <tbody>
               {results.map((r, i) => (
-                <tr
-                  key={r.info_hash || r.title + i}
-                  className="border-t border-white/10 align-top"
-                >
+                <tr key={r.info_hash || r.title + i} className="border-t border-white/10 align-top">
                   <td className="py-1 pr-2 text-white/80">{r.title}</td>
-                  <td className="py-1 pr-2 text-right text-white/60">
-                    {r.size_display}
-                  </td>
-                  <td className="py-1 pr-2 text-right text-white/60">
-                    {r.seeders}
-                  </td>
+                  <td className="py-1 pr-2 text-right text-white/60">{r.size_display}</td>
+                  <td className="py-1 pr-2 text-right text-white/60">{r.seeders}</td>
                   <td className="py-1 pr-2 text-white/60">{r.parsed.SubGroup}</td>
                   <td className="py-1 text-right">
                     <button

@@ -320,8 +320,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
             {episodes && episodes.length > 0 && (
               <div className="space-y-1 max-h-[35vh] overflow-y-auto pr-1 mb-5">
                 {episodes.map((ep, index) => {
-                  const isSelected =
-                    selectedEpisode?.bangumi_episode_id === ep.bangumi_episode_id;
+                  const isSelected = selectedEpisode?.bangumi_episode_id === ep.bangumi_episode_id;
                   return (
                     <motion.button
                       key={ep.bangumi_episode_id}
@@ -346,9 +345,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                       <motion.span
                         className="text-[12px] font-bold tabular-nums whitespace-nowrap"
                         animate={{
-                          color: isSelected
-                            ? 'rgba(255,255,255,0.8)'
-                            : 'rgba(255,255,255,0.25)',
+                          color: isSelected ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.25)',
                         }}
                         transition={{ duration: 0.15 }}
                       >

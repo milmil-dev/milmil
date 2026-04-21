@@ -14,9 +14,10 @@ export const Route = createFileRoute('/downloads')({
   component: DownloadsPage,
   validateSearch: (search: Record<string, unknown>): DownloadsSearch => {
     const validTabs = ['search', 'library'];
-    const tab = typeof search.tab === 'string' && validTabs.includes(search.tab)
-      ? (search.tab as DownloadsSearch['tab'])
-      : undefined;
+    const tab =
+      typeof search.tab === 'string' && validTabs.includes(search.tab)
+        ? (search.tab as DownloadsSearch['tab'])
+        : undefined;
     return {
       tab,
       anime: typeof search.anime === 'string' ? search.anime : undefined,

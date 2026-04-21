@@ -370,7 +370,7 @@ export function DownloadsPage() {
   // Downloads without a rule association (manual downloads, etc.)
   const miscDownloads = useMemo(
     () => allDownloads.filter((d) => !d.rule_id || d.rule_id === ''),
-    [allDownloads],
+    [allDownloads]
   );
 
   const tabs: { key: Tab; label: string; icon: typeof Search01Icon }[] = [

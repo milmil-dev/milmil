@@ -5,13 +5,23 @@ import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { discoverApi, type HotTag } from '@/lib/api/discover';
+import { cn } from '@/lib/utils';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from './ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { type HotTag, discoverApi } from '@/lib/api/discover';
-import { cn } from '@/lib/utils';
 
 /** Category display order and labels */
-const CATEGORY_ORDER = ['genre', 'mood', 'setting', 'source', 'theme', 'style', 'studio', 'activity', 'misc'] as const;
+const CATEGORY_ORDER = [
+  'genre',
+  'mood',
+  'setting',
+  'source',
+  'theme',
+  'style',
+  'studio',
+  'activity',
+  'misc',
+] as const;
 const CATEGORY_LABELS: Record<string, ReturnType<typeof msg>> = {
   genre: msg`search.tag.genre`,
   mood: msg`search.tag.mood`,

@@ -209,7 +209,10 @@ export class TrackManager {
 
   /** Normalize a language identifier to an ISO code for comparison. */
   private static normalize(lang: string): string {
-    const lower = lang.toLowerCase().replace(/\s*\[(forced|cc)\]/g, '').trim();
+    const lower = lang
+      .toLowerCase()
+      .replace(/\s*\[(forced|cc)\]/g, '')
+      .trim();
     return ISO_MAP[lower] ?? lower;
   }
 

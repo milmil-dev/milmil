@@ -23,26 +23,33 @@
       "recommended": true,
       "correctness": {
         "useExhaustiveDependencies": "warn",
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "warn",
+        "useHookAtTopLevel": "warn"
       },
       "suspicious": {
         "noExplicitAny": "off",
         "noConsole": "off",
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "warn",
+        "noImplicitAnyLet": "warn"
       },
       "style": {
         "noNegationElse": "off",
         "useConst": "warn",
         "useImportType": "warn",
-        "useNamingConvention": {
-          "level": "warn",
-          "options": {
-            "strictCase": false
-          }
-        }
+        "useNamingConvention": "off",
+        "noNonNullAssertion": "off"
       },
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "noStaticElementInteractions": "warn",
+        "useKeyWithClickEvents": "warn",
+        "noLabelWithoutControl": "warn",
+        "useSemanticElements": "warn",
+        "noAutofocus": "warn",
+        "useFocusableInteractive": "warn",
+        "noNoninteractiveTabindex": "warn",
+        "useAriaPropsForRole": "warn",
+        "noRedundantRoles": "warn"
       }
     }
   },

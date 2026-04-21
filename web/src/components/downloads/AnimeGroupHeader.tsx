@@ -119,7 +119,9 @@ export function AnimeGroupHeader({
             />
           </div>
         )}
-        {!showProgressBar && <div data-testid="progress-fill-neutral" className="mt-2.5 h-[1px] bg-white/[0.14]" />}
+        {!showProgressBar && (
+          <div data-testid="progress-fill-neutral" className="mt-2.5 h-[1px] bg-white/[0.14]" />
+        )}
       </div>
 
       <div className="flex flex-col items-end justify-between gap-2">

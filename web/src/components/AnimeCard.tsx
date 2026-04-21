@@ -27,7 +27,10 @@ const STATUS_LABELS: Record<string, ReturnType<typeof msg>> = {
   dropped: msg`collection.dropped`,
 };
 
-function formatSeason(airDate: string | undefined, i18n: ReturnType<typeof useLingui>['i18n']): string | null {
+function formatSeason(
+  airDate: string | undefined,
+  i18n: ReturnType<typeof useLingui>['i18n']
+): string | null {
   if (!airDate) return null;
   const d = new Date(airDate);
   if (Number.isNaN(d.getTime())) return null;
@@ -132,7 +135,11 @@ export function AnimeCard({ anime, onPreview, children, onClick }: AnimeCardProp
         <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-[#0c0c0c] to-transparent opacity-90" />
         {anime.score > 0 && (
           <span className="absolute top-1.5 right-1.5 inline-flex items-center gap-0.5 text-[10px] font-bold text-white tabular-nums bg-black/60 backdrop-blur-sm rounded px-1.5 py-0.5 leading-none">
-            <svg viewBox="0 0 12 12" fill="currentColor" className="w-[10px] h-[10px] text-amber-400">
+            <svg
+              viewBox="0 0 12 12"
+              fill="currentColor"
+              className="w-[10px] h-[10px] text-amber-400"
+            >
               <path d="M6 0.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L6 9.52 2.48 11.35l.67-3.93L.3 4.64l3.94-.57z" />
             </svg>
             {anime.score.toFixed(1)}
@@ -166,12 +173,7 @@ export function AnimeCard({ anime, onPreview, children, onClick }: AnimeCardProp
   );
 
   const cardWrapper = (inner: ReactNode) => (
-    <div
-      ref={itemRef}
-      className="relative"
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-    >
+    <div ref={itemRef} className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       {inner}
       {/* Hover detail card — desktop only */}
       <AnimatePresence>

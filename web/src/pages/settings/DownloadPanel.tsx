@@ -27,7 +27,11 @@ export function DownloadPanel() {
         <div className="flex items-center justify-between">
           <ConnectionBadge
             connected={status?.healthy ?? false}
-            connectedText={status?.engine === 'builtin' ? i18n._(msg`settings.download.builtin`) : (status?.engine ?? '')}
+            connectedText={
+              status?.engine === 'builtin'
+                ? i18n._(msg`settings.download.builtin`)
+                : (status?.engine ?? '')
+            }
             disconnectedText={i18n._(msg`settings.download.disconnected`)}
           />
         </div>
@@ -47,7 +51,7 @@ export function DownloadPanel() {
 // ── Auto-delete files switch ────────────────────────────────────────────
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 

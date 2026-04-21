@@ -19,7 +19,7 @@ export class SkipSegment {
 
   constructor(
     private videoEl: HTMLVideoElement,
-    private containerEl: HTMLElement,
+    private containerEl: HTMLElement
   ) {
     this.startMonitoring();
   }
@@ -40,10 +40,7 @@ export class SkipSegment {
       if (seg && seg !== this.currentSegment) {
         this.currentSegment = seg;
         // Auto-skip if enabled
-        if (
-          (seg.type === 'op' && this.autoSkip.op) ||
-          (seg.type === 'ed' && this.autoSkip.ed)
-        ) {
+        if ((seg.type === 'op' && this.autoSkip.op) || (seg.type === 'ed' && this.autoSkip.ed)) {
           this.videoEl.currentTime = seg.end_time;
           this.currentSegment = null;
         } else {
@@ -63,11 +60,7 @@ export class SkipSegment {
     if (this.skipButton) return;
 
     const label =
-      seg.type === 'op'
-        ? 'Skip Intro'
-        : seg.type === 'ed'
-          ? 'Skip Ending'
-          : `Skip ${seg.type}`;
+      seg.type === 'op' ? 'Skip Intro' : seg.type === 'ed' ? 'Skip Ending' : `Skip ${seg.type}`;
 
     this.skipButton = document.createElement('button');
     this.skipButton.textContent = label;

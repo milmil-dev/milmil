@@ -7,16 +7,43 @@
  */
 const LANG_ALIASES: Record<string, string> = {
   // 3-letter ISO 639-2/3
-  eng: 'en', jpn: 'ja', kor: 'ko', chi: 'zh', zho: 'zh',
-  tha: 'th', ind: 'id', fra: 'fr', fre: 'fr', deu: 'de',
-  ger: 'de', spa: 'es', ita: 'it', rus: 'ru', por: 'pt',
-  vie: 'vi', ara: 'ar',
+  eng: 'en',
+  jpn: 'ja',
+  kor: 'ko',
+  chi: 'zh',
+  zho: 'zh',
+  tha: 'th',
+  ind: 'id',
+  fra: 'fr',
+  fre: 'fr',
+  deu: 'de',
+  ger: 'de',
+  spa: 'es',
+  ita: 'it',
+  rus: 'ru',
+  por: 'pt',
+  vie: 'vi',
+  ara: 'ar',
   // English language names
-  english: 'en', japanese: 'ja', korean: 'ko', chinese: 'zh',
-  french: 'fr', german: 'de', spanish: 'es', italian: 'it',
-  russian: 'ru', portuguese: 'pt', arabic: 'ar', thai: 'th',
-  indonesian: 'id', vietnamese: 'vi', dutch: 'nl', polish: 'pl',
-  turkish: 'tr', hebrew: 'he', hindi: 'hi',
+  english: 'en',
+  japanese: 'ja',
+  korean: 'ko',
+  chinese: 'zh',
+  french: 'fr',
+  german: 'de',
+  spanish: 'es',
+  italian: 'it',
+  russian: 'ru',
+  portuguese: 'pt',
+  arabic: 'ar',
+  thai: 'th',
+  indonesian: 'id',
+  vietnamese: 'vi',
+  dutch: 'nl',
+  polish: 'pl',
+  turkish: 'tr',
+  hebrew: 'he',
+  hindi: 'hi',
   // Variants
   'chinese (simplified)': 'zh-Hans',
   'chinese (traditional)': 'zh-Hant',
@@ -29,7 +56,7 @@ const LANG_ALIASES: Record<string, string> = {
 };
 
 /** Suffixes the player should strip and display as a separate marker. */
-const MODIFIER_RE = /\s*[\[(](cc|forced|sdh|hearing impaired)[\])]\s*/i;
+const MODIFIER_RE = /\s*[[(](cc|forced|sdh|hearing impaired)[\])]\s*/i;
 
 /**
  * Format a raw language identifier into a localized display name using

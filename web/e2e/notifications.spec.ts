@@ -139,7 +139,6 @@ async function setupApiMocks(page: Page) {
   await page.route('**/api/v1/libraries', (route) =>
     route.fulfill({ status: 200, body: JSON.stringify([]) })
   );
-
 }
 
 // ── Helper: click the bell via JS to avoid React remount from Playwright CDP ──

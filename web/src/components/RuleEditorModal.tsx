@@ -11,20 +11,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { type AnimeSummary, discoverApi, discoverKeys } from '@/lib/api/discover';
 import {
   type DownloadRule,
-  type RSSFeed,
   downloadKeys,
+  type RSSFeed,
   rssFeedApi,
   ruleApi,
 } from '@/lib/api/downloads';
-import { type AnimeSummary, discoverApi, discoverKeys } from '@/lib/api/discover';
 import { libraryApi, libraryKeys } from '@/lib/api/library';
+import { cn } from '@/lib/utils';
 import { Modal } from './Modal';
-import { Switch } from './ui/switch';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Switch } from './ui/switch';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -55,15 +55,18 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
 
   // ── Form state ──
   const [enabled, setEnabled] = useState(rule ? rule.enabled === 1 : true);
-  const [matchMode, setMatchMode] = useState<MatchMode>(
-    (rule?.match_mode as MatchMode) || 'fuzzy'
-  );
+  const [matchMode, setMatchMode] = useState<MatchMode>((rule?.match_mode as MatchMode) || 'fuzzy');
   const [episodeFilter, setEpisodeFilter] = useState<EpisodeFilter>(
     (rule?.episode_filter as EpisodeFilter) || 'all'
   );
   const [episodeRange, setEpisodeRange] = useState(rule?.episode_range || '');
   const [subgroupFilter, setSubgroupFilter] = useState<string[]>(
-    rule?.subgroup_filter ? rule.subgroup_filter.split(',').map((s) => s.trim()).filter(Boolean) : []
+    rule?.subgroup_filter
+      ? rule.subgroup_filter
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : []
   );
   const [subgroupInput, setSubgroupInput] = useState('');
   const [resolution, setResolution] = useState(rule?.resolution_filter || '');
@@ -209,7 +212,10 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
       queryClient.invalidateQueries({ queryKey: ['downloads'] });
       onClose();
     },
-    onError: (err: Error) => { creatingRef.current = false; toast.error(err.message); },
+    onError: (err: Error) => {
+      creatingRef.current = false;
+      toast.error(err.message);
+    },
   });
 
   const updateMutation = useMutation({
@@ -306,390 +312,423 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
       <div className="flex flex-col md:flex-row gap-6">
         {/* ── Left column: Form ── */}
         <div className="flex-1 min-w-0 space-y-5">
-        {/* ── Header ── */}
-        <div className="flex items-center justify-between gap-4">
-          {isCreateMode ? (
-            <h2 className="text-base font-semibold text-white truncate">
-              {i18n._(msg`ruleEditor.createTitle`)}
-            </h2>
-          ) : (
-            <div className="min-w-0 flex-1">
-              <input
-                value={ruleName}
-                onChange={(e) => setRuleName(e.target.value)}
-                className="text-base font-semibold text-white truncate bg-transparent border-none outline-none focus:ring-0 p-0 w-full placeholder:text-white/30"
-                placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
-              />
-              <p className="text-[10px] text-white/20 font-mono mt-0.5">{rule!.id}</p>
-            </div>
-          )}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-[11px] text-white/40">
-              {enabled
-                ? i18n._(msg`ruleEditor.enabled`)
-                : i18n._(msg`ruleEditor.disabled`)}
-            </span>
-            <Switch checked={enabled} onCheckedChange={setEnabled} />
-          </div>
-        </div>
-
-        {/* ── RSS URL ── */}
-        <Section label={i18n._(msg`ruleEditor.rssUrl`)}>
-          {rssEditing ? (
-            <div className="space-y-2">
-              <textarea
-                value={rssUrl}
-                onChange={(e) => setRssUrl(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Escape') setRssEditing(false); }}
-                placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
-                rows={3}
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-[13px] text-white placeholder:text-white/20 font-mono resize-none outline-none focus:border-white/15 transition-colors"
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => setRssEditing(false)}
-                className="text-[11px] text-white/50 hover:text-white px-2.5 py-1.5 rounded bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
-              >
-                {i18n._(msg`ruleEditor.done`)}
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-1.5">
-              <a
-                href={rssUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-[12px] text-blue-400/70 hover:text-blue-400 font-mono break-all leading-relaxed transition-colors"
-              >
-                {rssUrl}
-              </a>
-              <button
-                type="button"
-                onClick={() => setRssEditing(true)}
-                className="text-[11px] text-white/30 hover:text-white/60 px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
-              >
-                {i18n._(msg`ruleEditor.editUrl`)}
-              </button>
-            </div>
-          )}
-        </Section>
-
-        {/* ── Feed Type ── */}
-        <Section label={i18n._(msg`ruleEditor.feedType`)}>
-          <div className="flex flex-wrap gap-2">
-            {(['mikan', 'nyaa', 'custom'] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setFeedType(t)}
-                className={cn(
-                  'px-3 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer capitalize',
-                  feedType === t
-                    ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.15]'
-                    : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
-                )}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </Section>
-
-        {/* ── Create-mode: Name ── */}
-        {isCreateMode && (
-          <Section label={i18n._(msg`ruleEditor.ruleName`)}>
-            <Input
-              value={ruleName}
-              onChange={(e) => setRuleName(e.target.value)}
-              placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
-              className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
-            />
-          </Section>
-        )}
-
-        {/* ── Linked Anime ── */}
-        <Section label={i18n._(msg`ruleEditor.linkedAnime`)}>
-          <div ref={animePickerRef} className="relative">
-            {bangumiId && selectedAnime ? (
-              <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white/[0.04]">
-                <img
-                  src={selectedAnime.cover_image}
-                  alt=""
-                  className="w-8 h-11 rounded object-cover shrink-0"
+          {/* ── Header ── */}
+          <div className="flex items-center justify-between gap-4">
+            {isCreateMode ? (
+              <h2 className="text-base font-semibold text-white truncate">
+                {i18n._(msg`ruleEditor.createTitle`)}
+              </h2>
+            ) : (
+              <div className="min-w-0 flex-1">
+                <input
+                  value={ruleName}
+                  onChange={(e) => setRuleName(e.target.value)}
+                  className="text-base font-semibold text-white truncate bg-transparent border-none outline-none focus:ring-0 p-0 w-full placeholder:text-white/30"
+                  placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
                 />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[13px] text-white/90 font-medium truncate">{selectedAnime.title || selectedAnime.title_original}</p>
-                  <p className="text-[10px] text-white/30">Bangumi #{bangumiId}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => { setBangumiId(null); setSelectedAnime(null); }}
-                  className="text-white/25 hover:text-white/50 transition-colors cursor-pointer shrink-0"
-                >
-                  <HugeiconsIcon icon={Cancel01Icon} size={12} />
-                </button>
+                <p className="text-[10px] text-white/20 font-mono mt-0.5">{rule!.id}</p>
               </div>
-            ) : bangumiId && !selectedAnime ? (
-              <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.04]">
-                <span className="text-[13px] text-white/50">Bangumi #{bangumiId}</span>
+            )}
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[11px] text-white/40">
+                {enabled ? i18n._(msg`ruleEditor.enabled`) : i18n._(msg`ruleEditor.disabled`)}
+              </span>
+              <Switch checked={enabled} onCheckedChange={setEnabled} />
+            </div>
+          </div>
+
+          {/* ── RSS URL ── */}
+          <Section label={i18n._(msg`ruleEditor.rssUrl`)}>
+            {rssEditing ? (
+              <div className="space-y-2">
+                <textarea
+                  value={rssUrl}
+                  onChange={(e) => setRssUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') setRssEditing(false);
+                  }}
+                  placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
+                  rows={3}
+                  className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-[13px] text-white placeholder:text-white/20 font-mono resize-none outline-none focus:border-white/15 transition-colors"
+                  autoFocus
+                />
                 <button
                   type="button"
-                  onClick={() => { setBangumiId(null); setSelectedAnime(null); }}
-                  className="text-white/25 hover:text-white/50 transition-colors cursor-pointer"
+                  onClick={() => setRssEditing(false)}
+                  className="text-[11px] text-white/50 hover:text-white px-2.5 py-1.5 rounded bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
                 >
-                  <HugeiconsIcon icon={Cancel01Icon} size={12} />
+                  {i18n._(msg`ruleEditor.done`)}
                 </button>
               </div>
             ) : (
-              <Input
-                value={animeSearchInput}
-                onChange={(e) => { setAnimeSearchInput(e.target.value); setAnimePickerOpen(true); }}
-                onFocus={() => { if (animeSearchQuery) setAnimePickerOpen(true); }}
-                placeholder={i18n._(msg`ruleEditor.searchAnime`)}
-                className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
-              />
-            )}
-            {/* Dropdown results */}
-            <AnimatePresence>
-              {animePickerOpen && animeResults.length > 0 && !bangumiId && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.12 }}
-                  className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-zinc-900 shadow-xl shadow-black/40"
+              <div className="space-y-1.5">
+                <a
+                  href={rssUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[12px] text-blue-400/70 hover:text-blue-400 font-mono break-all leading-relaxed transition-colors"
                 >
-                  {animeResults.slice(0, 8).map((anime) => (
-                    <button
-                      key={anime.bangumi_id}
-                      type="button"
-                      onClick={() => {
-                        setBangumiId(anime.bangumi_id);
-                        setSelectedAnime(anime);
-                        setAnimePickerOpen(false);
-                        setAnimeSearchInput('');
-                        // Auto-fill rule name if empty
-                        setRuleName(anime.title || anime.title_original);
-                      }}
-                      className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
-                    >
-                      <img
-                        src={anime.cover_image}
-                        alt=""
-                        className="w-7 h-10 rounded object-cover shrink-0"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[12px] text-white/80 truncate">{anime.title || anime.title_original}</p>
-                        {anime.air_date && (
-                          <p className="text-[10px] text-white/25">{anime.air_date.slice(0, 4)}</p>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </Section>
-
-        {/* ── Destination ── */}
-        <Section label={i18n._(msg`ruleEditor.destination`)}>
-          <div className="space-y-2">
-            {/* Library selector */}
-            <div className="relative">
-              <select
-                value={libraryId}
-                onChange={(e) => setLibraryId(e.target.value)}
-                className={cn(
-                  'w-full appearance-none rounded-lg px-3 py-2 pr-8 text-[13px] font-medium',
-                  'bg-white/[0.04] text-white/90',
-                  'focus:outline-none focus:ring-1 focus:ring-white/10',
-                  'cursor-pointer'
-                )}
-              >
-                <option value="" className="bg-zinc-900">
-                  {i18n._(msg`ruleEditor.noLibrary`)}
-                </option>
-                {libraries.map((lib) => (
-                  <option key={lib.id} value={lib.id} className="bg-zinc-900">
-                    {lib.name}
-                  </option>
-                ))}
-              </select>
-              <HugeiconsIcon
-                icon={ArrowDown01Icon}
-                size={14}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
-              />
-            </div>
-            {/* Save path */}
-            {savePath && (
-              <p className="text-[11px] text-white/30 font-mono truncate px-1">{savePath}</p>
-            )}
-          </div>
-        </Section>
-
-        {/* ── Title Match (edit mode or custom tab) ── */}
-        {!isCreateMode && <Section label={i18n._(msg`ruleEditor.titleMatch`)}>
-          <div className="grid grid-cols-2 gap-2">
-            <OptionCard
-              selected={matchMode === 'fuzzy'}
-              onClick={() => setMatchMode('fuzzy')}
-              label={i18n._(msg`ruleEditor.fuzzy`)}
-              description={i18n._(msg`ruleEditor.fuzzyDesc`)}
-            />
-            <OptionCard
-              selected={matchMode === 'exact'}
-              onClick={() => setMatchMode('exact')}
-              label={i18n._(msg`ruleEditor.exact`)}
-              description={i18n._(msg`ruleEditor.exactDesc`)}
-            />
-          </div>
-          {/* Show filter regex read-only (edit mode only) */}
-          {!isCreateMode && rule?.filter_regex && (
-            <div className="mt-2 px-3 py-2 rounded-lg bg-white/[0.03]">
-              <p className="text-[10px] text-white/25 mb-0.5">{i18n._(msg`ruleEditor.filterRegex`)}</p>
-              <p className="text-[12px] text-white/50 font-mono truncate">{rule.filter_regex}</p>
-            </div>
-          )}
-        </Section>}
-
-        {/* ── Episodes (edit mode or custom tab) ── */}
-        {!isCreateMode && <Section label={i18n._(msg`ruleEditor.episodes`)}>
-          <div className="grid grid-cols-3 gap-2">
-            <OptionCard
-              selected={episodeFilter === 'all'}
-              onClick={() => setEpisodeFilter('all')}
-              label={i18n._(msg`ruleEditor.allEpisodes`)}
-            />
-            <OptionCard
-              selected={episodeFilter === 'new'}
-              onClick={() => setEpisodeFilter('new')}
-              label={i18n._(msg`ruleEditor.newOnly`)}
-            />
-            <OptionCard
-              selected={episodeFilter === 'range'}
-              onClick={() => setEpisodeFilter('range')}
-              label={i18n._(msg`ruleEditor.range`)}
-            />
-          </div>
-          <AnimatePresence>
-            {episodeFilter === 'range' && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="overflow-hidden"
-              >
-                <Input
-                  value={episodeRange}
-                  onChange={(e) => setEpisodeRange(e.target.value)}
-                  placeholder="1-12"
-                  className="mt-2 bg-white/[0.03] border-white/[0.06] text-white text-[13px] placeholder:text-white/20 font-mono"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Section>}
-
-        {/* ── Release Groups ── */}
-        <Section label={i18n._(msg`ruleEditor.releaseGroups`)}>
-          <div className="space-y-2">
-            {/* Selectable chips from preview data */}
-            {availableSubgroups.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {availableSubgroups.map((sg) => {
-                  const isSelected = subgroupFilter.includes(sg);
-                  return (
-                    <button
-                      key={sg}
-                      type="button"
-                      onClick={() => isSelected ? removeSubgroup(sg) : addSubgroup(sg)}
-                      className={cn(
-                        'inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1.5 rounded-md transition-all cursor-pointer',
-                        isSelected
-                          ? 'bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/20'
-                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
-                      )}
-                    >
-                      {isSelected && <HugeiconsIcon icon={CheckmarkCircle02Icon} size={11} />}
-                      {sg}
-                    </button>
-                  );
-                })}
+                  {rssUrl}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setRssEditing(true)}
+                  className="text-[11px] text-white/30 hover:text-white/60 px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+                >
+                  {i18n._(msg`ruleEditor.editUrl`)}
+                </button>
               </div>
             )}
-            {/* Selected tags not in available list (manual entries) */}
-            <AnimatePresence>
-              {subgroupFilter.filter((t) => !availableSubgroups.includes(t)).length > 0 && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="flex flex-wrap gap-1.5 overflow-hidden"
-                >
-                  {subgroupFilter.filter((t) => !availableSubgroups.includes(t)).map((tag) => (
-                    <motion.span
-                      key={tag}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.8, opacity: 0 }}
-                      transition={{ duration: 0.12 }}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-md bg-orange-500/10 text-orange-400/90"
-                    >
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => removeSubgroup(tag)}
-                        className="text-orange-400/40 hover:text-orange-400/80 transition-colors cursor-pointer"
-                      >
-                        <HugeiconsIcon icon={Cancel01Icon} size={9} />
-                      </button>
-                    </motion.span>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {/* Manual input fallback */}
-            <Input
-              value={subgroupInput}
-              onChange={(e) => setSubgroupInput(e.target.value)}
-              onKeyDown={handleSubgroupKeyDown}
-              onBlur={() => { if (subgroupInput.trim()) addSubgroup(subgroupInput); }}
-              placeholder={availableSubgroups.length > 0 ? i18n._(msg`ruleEditor.addGroupManual`) : i18n._(msg`ruleEditor.addGroup`)}
-              className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
-            />
-            {availableSubgroups.length === 0 && (
-              <p className="text-[10px] text-white/20 px-1">
-                {i18n._(msg`ruleEditor.groupHint`)}
-              </p>
-            )}
-          </div>
-        </Section>
+          </Section>
 
-        {/* ── Resolution ── */}
-        <Section label={i18n._(msg`ruleEditor.resolution`)}>
-          <div className="flex flex-wrap gap-2">
-            {RESOLUTIONS.map((res) => (
-              <button
-                key={res}
-                type="button"
-                onClick={() => setResolution(res)}
-                className={cn(
-                  'px-3 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer',
-                  resolution === res
-                    ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.15]'
-                    : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+          {/* ── Feed Type ── */}
+          <Section label={i18n._(msg`ruleEditor.feedType`)}>
+            <div className="flex flex-wrap gap-2">
+              {(['mikan', 'nyaa', 'custom'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setFeedType(t)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer capitalize',
+                    feedType === t
+                      ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.15]'
+                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+                  )}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </Section>
+
+          {/* ── Create-mode: Name ── */}
+          {isCreateMode && (
+            <Section label={i18n._(msg`ruleEditor.ruleName`)}>
+              <Input
+                value={ruleName}
+                onChange={(e) => setRuleName(e.target.value)}
+                placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
+                className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+              />
+            </Section>
+          )}
+
+          {/* ── Linked Anime ── */}
+          <Section label={i18n._(msg`ruleEditor.linkedAnime`)}>
+            <div ref={animePickerRef} className="relative">
+              {bangumiId && selectedAnime ? (
+                <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white/[0.04]">
+                  <img
+                    src={selectedAnime.cover_image}
+                    alt=""
+                    className="w-8 h-11 rounded object-cover shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] text-white/90 font-medium truncate">
+                      {selectedAnime.title || selectedAnime.title_original}
+                    </p>
+                    <p className="text-[10px] text-white/30">Bangumi #{bangumiId}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBangumiId(null);
+                      setSelectedAnime(null);
+                    }}
+                    className="text-white/25 hover:text-white/50 transition-colors cursor-pointer shrink-0"
+                  >
+                    <HugeiconsIcon icon={Cancel01Icon} size={12} />
+                  </button>
+                </div>
+              ) : bangumiId && !selectedAnime ? (
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.04]">
+                  <span className="text-[13px] text-white/50">Bangumi #{bangumiId}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBangumiId(null);
+                      setSelectedAnime(null);
+                    }}
+                    className="text-white/25 hover:text-white/50 transition-colors cursor-pointer"
+                  >
+                    <HugeiconsIcon icon={Cancel01Icon} size={12} />
+                  </button>
+                </div>
+              ) : (
+                <Input
+                  value={animeSearchInput}
+                  onChange={(e) => {
+                    setAnimeSearchInput(e.target.value);
+                    setAnimePickerOpen(true);
+                  }}
+                  onFocus={() => {
+                    if (animeSearchQuery) setAnimePickerOpen(true);
+                  }}
+                  placeholder={i18n._(msg`ruleEditor.searchAnime`)}
+                  className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+                />
+              )}
+              {/* Dropdown results */}
+              <AnimatePresence>
+                {animePickerOpen && animeResults.length > 0 && !bangumiId && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-zinc-900 shadow-xl shadow-black/40"
+                  >
+                    {animeResults.slice(0, 8).map((anime) => (
+                      <button
+                        key={anime.bangumi_id}
+                        type="button"
+                        onClick={() => {
+                          setBangumiId(anime.bangumi_id);
+                          setSelectedAnime(anime);
+                          setAnimePickerOpen(false);
+                          setAnimeSearchInput('');
+                          // Auto-fill rule name if empty
+                          setRuleName(anime.title || anime.title_original);
+                        }}
+                        className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+                      >
+                        <img
+                          src={anime.cover_image}
+                          alt=""
+                          className="w-7 h-10 rounded object-cover shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[12px] text-white/80 truncate">
+                            {anime.title || anime.title_original}
+                          </p>
+                          {anime.air_date && (
+                            <p className="text-[10px] text-white/25">
+                              {anime.air_date.slice(0, 4)}
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </motion.div>
                 )}
-              >
-                {RESOLUTION_LABELS[res]}
-              </button>
-            ))}
-          </div>
-        </Section>
+              </AnimatePresence>
+            </div>
+          </Section>
+
+          {/* ── Destination ── */}
+          <Section label={i18n._(msg`ruleEditor.destination`)}>
+            <div className="space-y-2">
+              {/* Library selector */}
+              <div className="relative">
+                <select
+                  value={libraryId}
+                  onChange={(e) => setLibraryId(e.target.value)}
+                  className={cn(
+                    'w-full appearance-none rounded-lg px-3 py-2 pr-8 text-[13px] font-medium',
+                    'bg-white/[0.04] text-white/90',
+                    'focus:outline-none focus:ring-1 focus:ring-white/10',
+                    'cursor-pointer'
+                  )}
+                >
+                  <option value="" className="bg-zinc-900">
+                    {i18n._(msg`ruleEditor.noLibrary`)}
+                  </option>
+                  {libraries.map((lib) => (
+                    <option key={lib.id} value={lib.id} className="bg-zinc-900">
+                      {lib.name}
+                    </option>
+                  ))}
+                </select>
+                <HugeiconsIcon
+                  icon={ArrowDown01Icon}
+                  size={14}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+                />
+              </div>
+              {/* Save path */}
+              {savePath && (
+                <p className="text-[11px] text-white/30 font-mono truncate px-1">{savePath}</p>
+              )}
+            </div>
+          </Section>
+
+          {/* ── Title Match (edit mode or custom tab) ── */}
+          {!isCreateMode && (
+            <Section label={i18n._(msg`ruleEditor.titleMatch`)}>
+              <div className="grid grid-cols-2 gap-2">
+                <OptionCard
+                  selected={matchMode === 'fuzzy'}
+                  onClick={() => setMatchMode('fuzzy')}
+                  label={i18n._(msg`ruleEditor.fuzzy`)}
+                  description={i18n._(msg`ruleEditor.fuzzyDesc`)}
+                />
+                <OptionCard
+                  selected={matchMode === 'exact'}
+                  onClick={() => setMatchMode('exact')}
+                  label={i18n._(msg`ruleEditor.exact`)}
+                  description={i18n._(msg`ruleEditor.exactDesc`)}
+                />
+              </div>
+              {/* Show filter regex read-only (edit mode only) */}
+              {!isCreateMode && rule?.filter_regex && (
+                <div className="mt-2 px-3 py-2 rounded-lg bg-white/[0.03]">
+                  <p className="text-[10px] text-white/25 mb-0.5">
+                    {i18n._(msg`ruleEditor.filterRegex`)}
+                  </p>
+                  <p className="text-[12px] text-white/50 font-mono truncate">
+                    {rule.filter_regex}
+                  </p>
+                </div>
+              )}
+            </Section>
+          )}
+
+          {/* ── Episodes (edit mode or custom tab) ── */}
+          {!isCreateMode && (
+            <Section label={i18n._(msg`ruleEditor.episodes`)}>
+              <div className="grid grid-cols-3 gap-2">
+                <OptionCard
+                  selected={episodeFilter === 'all'}
+                  onClick={() => setEpisodeFilter('all')}
+                  label={i18n._(msg`ruleEditor.allEpisodes`)}
+                />
+                <OptionCard
+                  selected={episodeFilter === 'new'}
+                  onClick={() => setEpisodeFilter('new')}
+                  label={i18n._(msg`ruleEditor.newOnly`)}
+                />
+                <OptionCard
+                  selected={episodeFilter === 'range'}
+                  onClick={() => setEpisodeFilter('range')}
+                  label={i18n._(msg`ruleEditor.range`)}
+                />
+              </div>
+              <AnimatePresence>
+                {episodeFilter === 'range' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="overflow-hidden"
+                  >
+                    <Input
+                      value={episodeRange}
+                      onChange={(e) => setEpisodeRange(e.target.value)}
+                      placeholder="1-12"
+                      className="mt-2 bg-white/[0.03] border-white/[0.06] text-white text-[13px] placeholder:text-white/20 font-mono"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Section>
+          )}
+
+          {/* ── Release Groups ── */}
+          <Section label={i18n._(msg`ruleEditor.releaseGroups`)}>
+            <div className="space-y-2">
+              {/* Selectable chips from preview data */}
+              {availableSubgroups.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {availableSubgroups.map((sg) => {
+                    const isSelected = subgroupFilter.includes(sg);
+                    return (
+                      <button
+                        key={sg}
+                        type="button"
+                        onClick={() => (isSelected ? removeSubgroup(sg) : addSubgroup(sg))}
+                        className={cn(
+                          'inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1.5 rounded-md transition-all cursor-pointer',
+                          isSelected
+                            ? 'bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/20'
+                            : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+                        )}
+                      >
+                        {isSelected && <HugeiconsIcon icon={CheckmarkCircle02Icon} size={11} />}
+                        {sg}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {/* Selected tags not in available list (manual entries) */}
+              <AnimatePresence>
+                {subgroupFilter.filter((t) => !availableSubgroups.includes(t)).length > 0 && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex flex-wrap gap-1.5 overflow-hidden"
+                  >
+                    {subgroupFilter
+                      .filter((t) => !availableSubgroups.includes(t))
+                      .map((tag) => (
+                        <motion.span
+                          key={tag}
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.8, opacity: 0 }}
+                          transition={{ duration: 0.12 }}
+                          className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-md bg-orange-500/10 text-orange-400/90"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => removeSubgroup(tag)}
+                            className="text-orange-400/40 hover:text-orange-400/80 transition-colors cursor-pointer"
+                          >
+                            <HugeiconsIcon icon={Cancel01Icon} size={9} />
+                          </button>
+                        </motion.span>
+                      ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {/* Manual input fallback */}
+              <Input
+                value={subgroupInput}
+                onChange={(e) => setSubgroupInput(e.target.value)}
+                onKeyDown={handleSubgroupKeyDown}
+                onBlur={() => {
+                  if (subgroupInput.trim()) addSubgroup(subgroupInput);
+                }}
+                placeholder={
+                  availableSubgroups.length > 0
+                    ? i18n._(msg`ruleEditor.addGroupManual`)
+                    : i18n._(msg`ruleEditor.addGroup`)
+                }
+                className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+              />
+              {availableSubgroups.length === 0 && (
+                <p className="text-[10px] text-white/20 px-1">
+                  {i18n._(msg`ruleEditor.groupHint`)}
+                </p>
+              )}
+            </div>
+          </Section>
+
+          {/* ── Resolution ── */}
+          <Section label={i18n._(msg`ruleEditor.resolution`)}>
+            <div className="flex flex-wrap gap-2">
+              {RESOLUTIONS.map((res) => (
+                <button
+                  key={res}
+                  type="button"
+                  onClick={() => setResolution(res)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer',
+                    resolution === res
+                      ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.15]'
+                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+                  )}
+                >
+                  {RESOLUTION_LABELS[res]}
+                </button>
+              ))}
+            </div>
+          </Section>
 
           {/* ── Footer ── */}
           <div className="flex items-center gap-2 pt-4">
@@ -766,20 +805,25 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                     key={item.link}
                     className={cn(
                       'px-3 py-2 rounded-lg transition-colors',
-                      item.already_downloaded
-                        ? 'bg-green-500/[0.06]'
-                        : 'bg-white/[0.03]'
+                      item.already_downloaded ? 'bg-green-500/[0.06]' : 'bg-white/[0.03]'
                     )}
                   >
                     <div className="flex items-start gap-2">
                       <div className="min-w-0 flex-1">
-                        <p className={cn(
-                          'text-[12px] truncate leading-snug',
-                          item.already_downloaded ? 'text-white/30' : 'text-white/60'
-                        )} title={item.title}>{item.title}</p>
+                        <p
+                          className={cn(
+                            'text-[12px] truncate leading-snug',
+                            item.already_downloaded ? 'text-white/30' : 'text-white/60'
+                          )}
+                          title={item.title}
+                        >
+                          {item.title}
+                        </p>
                         <div className="flex items-center gap-2 mt-1 text-[10px] text-white/25">
                           {item.episode && <span>EP{item.episode}</span>}
-                          {item.subgroup && <span className="text-orange-400/50">{item.subgroup}</span>}
+                          {item.subgroup && (
+                            <span className="text-orange-400/50">{item.subgroup}</span>
+                          )}
                           {item.size && <span>{item.size}</span>}
                           {item.publish_date && <span>{relativeDate(item.publish_date)}</span>}
                           {item.already_downloaded && (
@@ -795,7 +839,9 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                 ))}
               </div>
             ) : (
-              <p className="text-[11px] text-white/15 text-center py-8">{i18n._(msg`ruleEditor.noPreviewItems`)}</p>
+              <p className="text-[11px] text-white/15 text-center py-8">
+                {i18n._(msg`ruleEditor.noPreviewItems`)}
+              </p>
             )}
           </div>
         )}
@@ -839,17 +885,10 @@ function OptionCard({
           : 'bg-white/[0.04] hover:bg-white/[0.06]'
       )}
     >
-      <span
-        className={cn(
-          'text-[12px] font-medium',
-          selected ? 'text-white' : 'text-white/60'
-        )}
-      >
+      <span className={cn('text-[12px] font-medium', selected ? 'text-white' : 'text-white/60')}>
         {label}
       </span>
-      {description && (
-        <span className="text-[10px] text-white/25">{description}</span>
-      )}
+      {description && <span className="text-[10px] text-white/25">{description}</span>}
     </button>
   );
 }

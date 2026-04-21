@@ -4,8 +4,8 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
 import { DanmakuSettingsControls } from '@/components/DanmakuSettings';
+import { cn } from '@/lib/utils';
 import { usePreferencesStore } from '@/store/preferences-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
@@ -54,7 +54,11 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
       <button
         type="button"
         onClick={() => update('danmakuEnabled', !enabled)}
-        title={enabled ? i18n._(msg`watch.danmaku.clickToDisable`) : i18n._(msg`watch.danmaku.clickToEnable`)}
+        title={
+          enabled
+            ? i18n._(msg`watch.danmaku.clickToDisable`)
+            : i18n._(msg`watch.danmaku.clickToEnable`)
+        }
         className={cn(
           'shrink-0 flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-full transition-all duration-300',
           enabled
@@ -65,24 +69,45 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         <svg viewBox="0 0 22 18" className="w-[18px] h-[15px] overflow-visible">
           {/* Three flying danmaku lines */}
           <motion.rect
-            x="1" y="1" height="2" rx="1" fill="currentColor"
+            x="1"
+            y="1"
+            height="2"
+            rx="1"
+            fill="currentColor"
             animate={{ width: enabled ? 13 : 6, opacity: enabled ? 1 : 0.3, x: enabled ? 1 : 3 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
           />
           <motion.rect
-            x="4" y="8" height="2" rx="1" fill="currentColor"
+            x="4"
+            y="8"
+            height="2"
+            rx="1"
+            fill="currentColor"
             animate={{ width: enabled ? 16 : 8, opacity: enabled ? 0.75 : 0.2, x: enabled ? 4 : 5 }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}
           />
           <motion.rect
-            x="2" y="15" height="2" rx="1" fill="currentColor"
-            animate={{ width: enabled ? 11 : 5, opacity: enabled ? 0.55 : 0.15, x: enabled ? 2 : 4 }}
+            x="2"
+            y="15"
+            height="2"
+            rx="1"
+            fill="currentColor"
+            animate={{
+              width: enabled ? 11 : 5,
+              opacity: enabled ? 0.55 : 0.15,
+              x: enabled ? 2 : 4,
+            }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}
           />
           {/* Strikethrough line when OFF */}
           <motion.line
-            x1="0" y1="17" x2="22" y2="1"
-            stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+            x1="0"
+            y1="17"
+            x2="22"
+            y2="1"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
             animate={{ opacity: enabled ? 0 : 0.5, pathLength: enabled ? 0 : 1 }}
             transition={{ duration: 0.25 }}
           />

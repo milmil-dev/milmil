@@ -19,10 +19,7 @@ export class DragDropLoader {
 
   private onTrackLoaded: (track: SubtitleTrack) => void;
 
-  constructor(
-    containerEl: HTMLElement,
-    onTrackLoaded: (track: SubtitleTrack) => void,
-  ) {
+  constructor(containerEl: HTMLElement, onTrackLoaded: (track: SubtitleTrack) => void) {
     this.onTrackLoaded = onTrackLoaded;
     this.dropOverlay = this.createDropOverlay();
     containerEl.appendChild(this.dropOverlay);

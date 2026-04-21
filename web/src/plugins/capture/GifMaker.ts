@@ -70,7 +70,7 @@ export class GifMaker {
           this.videoEl.play();
           drawFrame();
         },
-        { once: true },
+        { once: true }
       );
     });
   }

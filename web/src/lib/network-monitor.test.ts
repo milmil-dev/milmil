@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NetworkMonitor, type NetworkProfile } from './network-monitor';
 
 // Helper: bytes for a given Mbps over durationMs
@@ -133,7 +133,7 @@ describe('NetworkMonitor', () => {
 
     // Simulate connection change to slow
     mockConn.downlink = 1;
-    listeners.forEach((fn) => fn());
+    for (const fn of listeners) fn();
     expect(monitor.getProfile()).toBe('slow');
 
     // Recording segments when Connection API is present should not override

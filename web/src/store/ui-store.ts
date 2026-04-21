@@ -25,8 +25,7 @@ export const useUIStore = create<UIState>()(
         setSidebarVisible: (visible) =>
           set({ sidebarVisible: visible }, undefined, 'setSidebarVisible'),
 
-        setWeekStartDay: (day) =>
-          set({ weekStartDay: day }, undefined, 'setWeekStartDay'),
+        setWeekStartDay: (day) => set({ weekStartDay: day }, undefined, 'setWeekStartDay'),
       }),
       {
         name: 'milmil-ui',

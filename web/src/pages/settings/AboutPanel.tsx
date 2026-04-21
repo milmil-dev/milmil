@@ -1,19 +1,17 @@
-import { useLingui } from '@lingui/react';
-import { msg } from '@lingui/core/macro';
-import { useQuery } from '@tanstack/react-query';
-
-import { useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
   ArrowDown01Icon,
   ArrowUp01Icon,
   Delete02Icon,
   GithubIcon,
 } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useQuery } from '@tanstack/react-query';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import { SettingsCard } from '@/components/settings/SettingsCard';
-import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api-client';
 
 interface SystemInfo {
@@ -105,12 +104,8 @@ export function AboutPanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">
-        {i18n._(msg`settings.nav.about`)}
-      </h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">
-        {i18n._(msg`about.subtitle`)}
-      </p>
+      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.about`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`about.subtitle`)}</p>
 
       <div className="space-y-3">
         {/* Card 1 — System Info */}
@@ -136,9 +131,7 @@ export function AboutPanel() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-white/85">
-                  {i18n._(msg`about.exportSettings`)}
-                </p>
+                <p className="text-[13px] text-white/85">{i18n._(msg`about.exportSettings`)}</p>
                 <p className="mt-0.5 text-[11px] text-white/30">
                   {i18n._(msg`about.exportSettingsDesc`)}
                 </p>
@@ -153,18 +146,12 @@ export function AboutPanel() {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-white/85">
-                  {i18n._(msg`about.importSettings`)}
-                </p>
+                <p className="text-[13px] text-white/85">{i18n._(msg`about.importSettings`)}</p>
                 <p className="mt-0.5 text-[11px] text-white/30">
                   {i18n._(msg`about.importSettingsDesc`)}
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <HugeiconsIcon icon={ArrowUp01Icon} size={14} />
                 {i18n._(msg`about.import`)}
               </Button>
@@ -181,18 +168,12 @@ export function AboutPanel() {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-white/85">
-                  {i18n._(msg`about.resetToDefaults`)}
-                </p>
+                <p className="text-[13px] text-white/85">{i18n._(msg`about.resetToDefaults`)}</p>
                 <p className="mt-0.5 text-[11px] text-white/30">
                   {i18n._(msg`about.resetToDefaultsDesc`)}
                 </p>
               </div>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setResetDialogOpen(true)}
-              >
+              <Button variant="destructive" size="sm" onClick={() => setResetDialogOpen(true)}>
                 <HugeiconsIcon icon={Delete02Icon} size={14} />
                 {i18n._(msg`about.reset`)}
               </Button>
@@ -219,9 +200,7 @@ export function AboutPanel() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{i18n._(msg`about.importConfirmTitle`)}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {i18n._(msg`about.importConfirmDesc`)}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{i18n._(msg`about.importConfirmDesc`)}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setPendingFile(null)}>
@@ -239,9 +218,7 @@ export function AboutPanel() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{i18n._(msg`about.resetConfirmTitle`)}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {i18n._(msg`about.resetConfirmDesc`)}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{i18n._(msg`about.resetConfirmDesc`)}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{i18n._(msg`common.cancel`)}</AlertDialogCancel>

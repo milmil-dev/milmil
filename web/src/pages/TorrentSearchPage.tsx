@@ -143,14 +143,10 @@ export function TorrentSearchPage() {
                     )}
                     {item.size && <span className="text-[10px] text-white/25">{item.size}</span>}
                     {item.seeders > 0 && (
-                      <span className="text-[10px] text-green-400/70">
-                        ↑{item.seeders}
-                      </span>
+                      <span className="text-[10px] text-green-400/70">↑{item.seeders}</span>
                     )}
                     {item.leechers > 0 && (
-                      <span className="text-[10px] text-red-400/50">
-                        ↓{item.leechers}
-                      </span>
+                      <span className="text-[10px] text-red-400/50">↓{item.leechers}</span>
                     )}
                     {item.publish_date && (
                       <span className="text-[10px] text-white/20">
@@ -163,9 +159,7 @@ export function TorrentSearchPage() {
                   size="sm"
                   variant="outline"
                   disabled={addMutation.isPending || !downloadURL(item)}
-                  onClick={() =>
-                    addMutation.mutate({ url: downloadURL(item), name: item.title })
-                  }
+                  onClick={() => addMutation.mutate({ url: downloadURL(item), name: item.title })}
                   className="shrink-0 text-[11px]"
                 >
                   Download
