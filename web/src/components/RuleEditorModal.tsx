@@ -344,20 +344,19 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
               autoFocus
             />
           ) : (
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="space-y-1.5">
               <a
                 href={rssUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-[13px] text-blue-400/70 hover:text-blue-400 font-mono truncate transition-colors"
-                title={rssUrl}
+                className="block text-[12px] text-blue-400/70 hover:text-blue-400 font-mono break-all leading-relaxed transition-colors"
               >
                 {rssUrl}
               </a>
               <button
                 type="button"
                 onClick={() => setRssEditing(true)}
-                className="shrink-0 text-[11px] text-white/30 hover:text-white/60 px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+                className="text-[11px] text-white/30 hover:text-white/60 px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
               >
                 {i18n._(msg`ruleEditor.editUrl`)}
               </button>
