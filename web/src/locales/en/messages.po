@@ -14,6 +14,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/pages/WatchPage.tsx:110
+msgid "watch.resumeFrom"
+msgstr "Jumped to"
+
+#. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:15
 msgid "history.empty.title"
 msgstr "No watch history yet"
@@ -32,11 +37,6 @@ msgstr "Home"
 #: src/components/history/HistoryCard.tsx:53
 msgid "history.finished"
 msgstr "Finished"
-
-#. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:110
-msgid "watch.resumeFrom"
-msgstr "Jumped to"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"
@@ -3386,19 +3386,19 @@ msgstr "Reverted"
 msgid "Reverted {0} files, skipped {1}"
 msgstr "Reverted {0} files, skipped {1}"
 
-#: src/components/RuleEditorModal.tsx:629
+#: src/components/RuleEditorModal.tsx:652
 msgid "ruleEditor.addGroup"
 msgstr "Add group..."
 
-#: src/components/RuleEditorModal.tsx:629
+#: src/components/RuleEditorModal.tsx:652
 msgid "ruleEditor.addGroupManual"
 msgstr "Add other group..."
 
-#: src/components/RuleEditorModal.tsx:531
+#: src/components/RuleEditorModal.tsx:554
 msgid "ruleEditor.allEpisodes"
 msgstr "All"
 
-#: src/components/RuleEditorModal.tsx:682
+#: src/components/RuleEditorModal.tsx:705
 msgid "ruleEditor.cancel"
 msgstr "Cancel"
 
@@ -3422,64 +3422,68 @@ msgstr "Cancel"
 #~ msgid "ruleEditor.colTitle"
 #~ msgstr "Title"
 
-#: src/components/RuleEditorModal.tsx:312
+#: src/components/RuleEditorModal.tsx:313
 msgid "ruleEditor.createTitle"
 msgstr "New Rule"
 
-#: src/components/RuleEditorModal.tsx:672
+#: src/components/RuleEditorModal.tsx:695
 msgid "ruleEditor.delete"
 msgstr "Delete"
 
-#: src/components/RuleEditorModal.tsx:260
+#: src/components/RuleEditorModal.tsx:261
 msgid "ruleEditor.deleted"
 msgstr "Unfollowed"
 
-#: src/components/RuleEditorModal.tsx:464
+#: src/components/RuleEditorModal.tsx:487
 #: src/pages/DownloadsPage.tsx:1538
 msgid "ruleEditor.destination"
 msgstr "Destination"
 
-#: src/components/RuleEditorModal.tsx:329
+#: src/components/RuleEditorModal.tsx:330
 msgid "ruleEditor.disabled"
 msgstr "Disabled"
 
-#: src/components/RuleEditorModal.tsx:755
+#: src/components/RuleEditorModal.tsx:778
 msgid "ruleEditor.downloaded"
 msgstr "Downloaded"
 
-#: src/components/RuleEditorModal.tsx:328
+#: src/components/RuleEditorModal.tsx:362
+msgid "ruleEditor.editUrl"
+msgstr "Edit"
+
+#: src/components/RuleEditorModal.tsx:329
 msgid "ruleEditor.enabled"
 msgstr "Enabled"
 
-#: src/components/RuleEditorModal.tsx:526
+#: src/components/RuleEditorModal.tsx:549
 msgid "ruleEditor.episodes"
 msgstr "Episodes"
 
-#: src/components/RuleEditorModal.tsx:512
+#: src/components/RuleEditorModal.tsx:535
 msgid "ruleEditor.exact"
 msgstr "Exact"
 
-#: src/components/RuleEditorModal.tsx:513
+#: src/components/RuleEditorModal.tsx:536
 msgid "ruleEditor.exactDesc"
 msgstr "Must contain the title (case insensitive)"
 
-#: src/components/RuleEditorModal.tsx:346
+#: src/components/RuleEditorModal.tsx:369
 msgid "ruleEditor.feedType"
 msgstr "Feed Type"
 
-#: src/components/RuleEditorModal.tsx:519
+#: src/components/RuleEditorModal.tsx:542
 msgid "ruleEditor.filterRegex"
 msgstr "Filter Pattern"
 
-#: src/components/RuleEditorModal.tsx:506
+#: src/components/RuleEditorModal.tsx:529
 msgid "ruleEditor.fuzzy"
 msgstr "Fuzzy"
 
-#: src/components/RuleEditorModal.tsx:507
+#: src/components/RuleEditorModal.tsx:530
 msgid "ruleEditor.fuzzyDesc"
 msgstr "Parsed using comparison algorithm"
 
-#: src/components/RuleEditorModal.tsx:634
+#: src/components/RuleEditorModal.tsx:657
 msgid "ruleEditor.groupHint"
 msgstr "Any group accepted"
 
@@ -3491,7 +3495,7 @@ msgstr "Any group accepted"
 msgid "ruleEditor.items"
 msgstr "items"
 
-#: src/components/RuleEditorModal.tsx:297
+#: src/components/RuleEditorModal.tsx:298
 msgid "ruleEditor.justNow"
 msgstr "Just now"
 
@@ -3500,7 +3504,7 @@ msgstr "Just now"
 msgid "ruleEditor.keywordMode"
 msgstr "Keyword"
 
-#: src/components/RuleEditorModal.tsx:379
+#: src/components/RuleEditorModal.tsx:402
 #: src/pages/DownloadsPage.tsx:1444
 msgid "ruleEditor.linkedAnime"
 msgstr "Linked Anime"
@@ -3513,7 +3517,7 @@ msgstr "Loading..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr "matched"
 
-#: src/components/RuleEditorModal.tsx:536
+#: src/components/RuleEditorModal.tsx:559
 msgid "ruleEditor.newOnly"
 msgstr "New Only"
 
@@ -3521,12 +3525,12 @@ msgstr "New Only"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr "New Rule"
 
-#: src/components/RuleEditorModal.tsx:479
+#: src/components/RuleEditorModal.tsx:502
 #: src/pages/DownloadsPage.tsx:1552
 msgid "ruleEditor.noLibrary"
 msgstr "No library"
 
-#: src/components/RuleEditorModal.tsx:765
+#: src/components/RuleEditorModal.tsx:788
 msgid "ruleEditor.noPreviewItems"
 msgstr "No items match current filters"
 
@@ -3534,29 +3538,29 @@ msgstr "No items match current filters"
 msgid "ruleEditor.openEditor"
 msgstr "ruleEditor.openEditor"
 
-#: src/components/RuleEditorModal.tsx:702
+#: src/components/RuleEditorModal.tsx:725
 #: src/pages/DownloadsPage.tsx:1584
 #: src/pages/DownloadsPage.tsx:1610
 msgid "ruleEditor.preview"
 msgstr "Preview"
 
-#: src/components/RuleEditorModal.tsx:541
+#: src/components/RuleEditorModal.tsx:564
 msgid "ruleEditor.range"
 msgstr "Range"
 
-#: src/components/RuleEditorModal.tsx:718
+#: src/components/RuleEditorModal.tsx:741
 msgid "ruleEditor.refreshPreview"
 msgstr "Refresh"
 
-#: src/components/RuleEditorModal.tsx:565
+#: src/components/RuleEditorModal.tsx:588
 msgid "ruleEditor.releaseGroups"
 msgstr "Release Groups"
 
-#: src/components/RuleEditorModal.tsx:641
+#: src/components/RuleEditorModal.tsx:664
 msgid "ruleEditor.resolution"
 msgstr "Resolution"
 
-#: src/components/RuleEditorModal.tsx:336
+#: src/components/RuleEditorModal.tsx:337
 msgid "ruleEditor.rssUrl"
 msgstr "RSS Feed URL"
 
@@ -3565,34 +3569,34 @@ msgstr "RSS Feed URL"
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
-#: src/components/RuleEditorModal.tsx:368
+#: src/components/RuleEditorModal.tsx:391
 #: src/pages/DownloadsPage.tsx:1528
 msgid "ruleEditor.ruleName"
 msgstr "Rule Name"
 
-#: src/components/RuleEditorModal.tsx:320
-#: src/components/RuleEditorModal.tsx:372
+#: src/components/RuleEditorModal.tsx:321
+#: src/components/RuleEditorModal.tsx:395
 #: src/pages/DownloadsPage.tsx:1532
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "e.g. Anime Name Season 1"
 
-#: src/components/RuleEditorModal.tsx:692
+#: src/components/RuleEditorModal.tsx:715
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.save"
 msgstr "Save"
 
-#: src/components/RuleEditorModal.tsx:205
-#: src/components/RuleEditorModal.tsx:244
+#: src/components/RuleEditorModal.tsx:206
+#: src/components/RuleEditorModal.tsx:245
 #: src/pages/DownloadsPage.tsx:1419
 msgid "ruleEditor.saved"
 msgstr "Rule updated"
 
-#: src/components/RuleEditorModal.tsx:691
+#: src/components/RuleEditorModal.tsx:714
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.saving"
 msgstr "Saving..."
 
-#: src/components/RuleEditorModal.tsx:416
+#: src/components/RuleEditorModal.tsx:439
 #: src/pages/DownloadsPage.tsx:1480
 msgid "ruleEditor.searchAnime"
 msgstr "Search anime to link..."
@@ -3605,7 +3609,7 @@ msgstr "Search anime to link..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr "RSS Subscribe"
 
-#: src/components/RuleEditorModal.tsx:501
+#: src/components/RuleEditorModal.tsx:524
 msgid "ruleEditor.titleMatch"
 msgstr "Title Match"
 
@@ -5305,7 +5309,7 @@ msgstr "HLS Transcode"
 #~ msgid "watch.transcodeReady"
 #~ msgstr "Transcode ready"
 
-#: src/pages/WatchPage.tsx:1016
+#: src/pages/WatchPage.tsx:1017
 msgid "watch.transcoding"
 msgstr "Transcoding..."
 

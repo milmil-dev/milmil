@@ -72,6 +72,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
   // ── Name field (shared by create & edit) ──
   const [ruleName, setRuleName] = useState(rule?.name || '');
   const [rssUrl, setRssUrl] = useState(feed?.url || '');
+  const [rssEditing, setRssEditing] = useState(!feed?.url);
   const [feedType, setFeedType] = useState(feed?.type || 'mikan');
   const [filterRegex] = useState('');
 
@@ -334,12 +335,34 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
 
         {/* ── RSS URL ── */}
         <Section label={i18n._(msg`ruleEditor.rssUrl`)}>
-          <Input
-            value={rssUrl}
-            onChange={(e) => setRssUrl(e.target.value)}
-            placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
-            className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20 font-mono"
-          />
+          {rssEditing ? (
+            <Input
+              value={rssUrl}
+              onChange={(e) => setRssUrl(e.target.value)}
+              placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
+              className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20 font-mono"
+              autoFocus
+            />
+          ) : (
+            <div className="flex items-center gap-2 min-w-0">
+              <a
+                href={rssUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-[13px] text-blue-400/70 hover:text-blue-400 font-mono truncate transition-colors"
+                title={rssUrl}
+              >
+                {rssUrl}
+              </a>
+              <button
+                type="button"
+                onClick={() => setRssEditing(true)}
+                className="shrink-0 text-[11px] text-white/30 hover:text-white/60 px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+              >
+                {i18n._(msg`ruleEditor.editUrl`)}
+              </button>
+            </div>
+          )}
         </Section>
 
         {/* ── Feed Type ── */}

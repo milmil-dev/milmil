@@ -12,6 +12,11 @@ msgstr ""
 "Language-Team: \n"
 
 #. js-lingui-explicit-id
+#: src/pages/WatchPage.tsx:110
+msgid "watch.resumeFrom"
+msgstr "已为你跳转到"
+
+#. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:15
 msgid "history.empty.title"
 msgstr ""
@@ -30,11 +35,6 @@ msgstr ""
 #: src/components/history/HistoryCard.tsx:53
 msgid "history.finished"
 msgstr ""
-
-#. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:110
-msgid "watch.resumeFrom"
-msgstr "已为你跳转到"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"
@@ -3381,19 +3381,19 @@ msgstr ""
 msgid "Reverted {0} files, skipped {1}"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:629
+#: src/components/RuleEditorModal.tsx:652
 msgid "ruleEditor.addGroup"
 msgstr "添加字幕组..."
 
-#: src/components/RuleEditorModal.tsx:629
+#: src/components/RuleEditorModal.tsx:652
 msgid "ruleEditor.addGroupManual"
 msgstr "添加其他字幕组..."
 
-#: src/components/RuleEditorModal.tsx:531
+#: src/components/RuleEditorModal.tsx:554
 msgid "ruleEditor.allEpisodes"
 msgstr "全部"
 
-#: src/components/RuleEditorModal.tsx:682
+#: src/components/RuleEditorModal.tsx:705
 msgid "ruleEditor.cancel"
 msgstr "取消"
 
@@ -3417,64 +3417,68 @@ msgstr "取消"
 #~ msgid "ruleEditor.colTitle"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:312
+#: src/components/RuleEditorModal.tsx:313
 msgid "ruleEditor.createTitle"
 msgstr "新建规则"
 
-#: src/components/RuleEditorModal.tsx:672
+#: src/components/RuleEditorModal.tsx:695
 msgid "ruleEditor.delete"
 msgstr "删除"
 
-#: src/components/RuleEditorModal.tsx:260
+#: src/components/RuleEditorModal.tsx:261
 msgid "ruleEditor.deleted"
 msgstr "已刪除追番"
 
-#: src/components/RuleEditorModal.tsx:464
+#: src/components/RuleEditorModal.tsx:487
 #: src/pages/DownloadsPage.tsx:1538
 msgid "ruleEditor.destination"
 msgstr "保存位置"
 
-#: src/components/RuleEditorModal.tsx:329
+#: src/components/RuleEditorModal.tsx:330
 msgid "ruleEditor.disabled"
 msgstr "已禁用"
 
-#: src/components/RuleEditorModal.tsx:755
+#: src/components/RuleEditorModal.tsx:778
 msgid "ruleEditor.downloaded"
 msgstr "已下载"
 
-#: src/components/RuleEditorModal.tsx:328
+#: src/components/RuleEditorModal.tsx:362
+msgid "ruleEditor.editUrl"
+msgstr "編輯"
+
+#: src/components/RuleEditorModal.tsx:329
 msgid "ruleEditor.enabled"
 msgstr "已启用"
 
-#: src/components/RuleEditorModal.tsx:526
+#: src/components/RuleEditorModal.tsx:549
 msgid "ruleEditor.episodes"
 msgstr "剧集"
 
-#: src/components/RuleEditorModal.tsx:512
+#: src/components/RuleEditorModal.tsx:535
 msgid "ruleEditor.exact"
 msgstr "精确"
 
-#: src/components/RuleEditorModal.tsx:513
+#: src/components/RuleEditorModal.tsx:536
 msgid "ruleEditor.exactDesc"
 msgstr "标题必须包含关键词（不区分大小写）"
 
-#: src/components/RuleEditorModal.tsx:346
+#: src/components/RuleEditorModal.tsx:369
 msgid "ruleEditor.feedType"
 msgstr "来源类型"
 
-#: src/components/RuleEditorModal.tsx:519
+#: src/components/RuleEditorModal.tsx:542
 msgid "ruleEditor.filterRegex"
 msgstr "过滤规则"
 
-#: src/components/RuleEditorModal.tsx:506
+#: src/components/RuleEditorModal.tsx:529
 msgid "ruleEditor.fuzzy"
 msgstr "模糊"
 
-#: src/components/RuleEditorModal.tsx:507
+#: src/components/RuleEditorModal.tsx:530
 msgid "ruleEditor.fuzzyDesc"
 msgstr "使用比较算法解析"
 
-#: src/components/RuleEditorModal.tsx:634
+#: src/components/RuleEditorModal.tsx:657
 msgid "ruleEditor.groupHint"
 msgstr "接受任何字幕组"
 
@@ -3486,7 +3490,7 @@ msgstr "接受任何字幕组"
 msgid "ruleEditor.items"
 msgstr "条"
 
-#: src/components/RuleEditorModal.tsx:297
+#: src/components/RuleEditorModal.tsx:298
 msgid "ruleEditor.justNow"
 msgstr "刚刚"
 
@@ -3495,7 +3499,7 @@ msgstr "刚刚"
 msgid "ruleEditor.keywordMode"
 msgstr "关键字"
 
-#: src/components/RuleEditorModal.tsx:379
+#: src/components/RuleEditorModal.tsx:402
 #: src/pages/DownloadsPage.tsx:1444
 msgid "ruleEditor.linkedAnime"
 msgstr "关联动画"
@@ -3508,7 +3512,7 @@ msgstr "加载中..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:536
+#: src/components/RuleEditorModal.tsx:559
 msgid "ruleEditor.newOnly"
 msgstr "仅新集"
 
@@ -3516,12 +3520,12 @@ msgstr "仅新集"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:479
+#: src/components/RuleEditorModal.tsx:502
 #: src/pages/DownloadsPage.tsx:1552
 msgid "ruleEditor.noLibrary"
 msgstr "无媒体库"
 
-#: src/components/RuleEditorModal.tsx:765
+#: src/components/RuleEditorModal.tsx:788
 msgid "ruleEditor.noPreviewItems"
 msgstr "没有匹配当前过滤条件的项目"
 
@@ -3529,29 +3533,29 @@ msgstr "没有匹配当前过滤条件的项目"
 msgid "ruleEditor.openEditor"
 msgstr ""
 
-#: src/components/RuleEditorModal.tsx:702
+#: src/components/RuleEditorModal.tsx:725
 #: src/pages/DownloadsPage.tsx:1584
 #: src/pages/DownloadsPage.tsx:1610
 msgid "ruleEditor.preview"
 msgstr "预览"
 
-#: src/components/RuleEditorModal.tsx:541
+#: src/components/RuleEditorModal.tsx:564
 msgid "ruleEditor.range"
 msgstr "范围"
 
-#: src/components/RuleEditorModal.tsx:718
+#: src/components/RuleEditorModal.tsx:741
 msgid "ruleEditor.refreshPreview"
 msgstr "刷新"
 
-#: src/components/RuleEditorModal.tsx:565
+#: src/components/RuleEditorModal.tsx:588
 msgid "ruleEditor.releaseGroups"
 msgstr "字幕组"
 
-#: src/components/RuleEditorModal.tsx:641
+#: src/components/RuleEditorModal.tsx:664
 msgid "ruleEditor.resolution"
 msgstr "分辨率"
 
-#: src/components/RuleEditorModal.tsx:336
+#: src/components/RuleEditorModal.tsx:337
 msgid "ruleEditor.rssUrl"
 msgstr "RSS 追番連結"
 
@@ -3560,34 +3564,34 @@ msgstr "RSS 追番連結"
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS 网址"
 
-#: src/components/RuleEditorModal.tsx:368
+#: src/components/RuleEditorModal.tsx:391
 #: src/pages/DownloadsPage.tsx:1528
 msgid "ruleEditor.ruleName"
 msgstr "规则名称"
 
-#: src/components/RuleEditorModal.tsx:320
-#: src/components/RuleEditorModal.tsx:372
+#: src/components/RuleEditorModal.tsx:321
+#: src/components/RuleEditorModal.tsx:395
 #: src/pages/DownloadsPage.tsx:1532
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "例如：动画名称 第一季"
 
-#: src/components/RuleEditorModal.tsx:692
+#: src/components/RuleEditorModal.tsx:715
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.save"
 msgstr "保存"
 
-#: src/components/RuleEditorModal.tsx:205
-#: src/components/RuleEditorModal.tsx:244
+#: src/components/RuleEditorModal.tsx:206
+#: src/components/RuleEditorModal.tsx:245
 #: src/pages/DownloadsPage.tsx:1419
 msgid "ruleEditor.saved"
 msgstr "规则已更新"
 
-#: src/components/RuleEditorModal.tsx:691
+#: src/components/RuleEditorModal.tsx:714
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.saving"
 msgstr "保存中..."
 
-#: src/components/RuleEditorModal.tsx:416
+#: src/components/RuleEditorModal.tsx:439
 #: src/pages/DownloadsPage.tsx:1480
 msgid "ruleEditor.searchAnime"
 msgstr "搜索动画以关联..."
@@ -3600,7 +3604,7 @@ msgstr "搜索动画以关联..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:501
+#: src/components/RuleEditorModal.tsx:524
 msgid "ruleEditor.titleMatch"
 msgstr "标题匹配"
 
@@ -5292,7 +5296,7 @@ msgstr "HLS 转码"
 #~ msgid "watch.transcodeReady"
 #~ msgstr "转码完成"
 
-#: src/pages/WatchPage.tsx:1016
+#: src/pages/WatchPage.tsx:1017
 msgid "watch.transcoding"
 msgstr "转码中..."
 
