@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
@@ -123,9 +123,11 @@ function groupByTime(items: AnimeSummary[]): { time: string; animes: AnimeSummar
 function useTimelinePath(
   containerRef: React.RefObject<HTMLDivElement | null>,
   dotRefs: React.MutableRefObject<(HTMLDivElement | null)[]>,
-  count: number
+  count: number,
+  noSpine: boolean
 ) {
   const [path, setPath] = useState('');
+  const [spineY, setSpineY] = useState<{ top: number; bottom: number } | null>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
@@ -145,6 +147,7 @@ function useTimelinePath(
       }
       if (points.length < 2) {
         setPath('');
+        setSpineY(null);
         setSize({ w: rect.width, h: rect.height });
         return;
       }
@@ -163,17 +166,22 @@ function useTimelinePath(
         }
       }
 
-      // Draw each row left-to-right, with vertical drop between rows
+      // Draw each row left-to-right
       const segments: string[] = [];
       for (let ri = 0; ri < rows.length; ri++) {
         const row = rows[ri]!;
         const y = row[0]!.y;
-        const firstX = row[0]!.x;
-        const lastX = row[row.length - 1]!.x;
-
-        // Row line: left edge → through all dots → right edge
         segments.push(`M ${edgeL} ${y} L ${edgeR} ${y}`);
+      }
 
+      // Vertical spine connecting all rows on the left (skip when parent provides one)
+      if (rows.length >= 2 && !noSpine) {
+        const topY = rows[0]![0]!.y;
+        const botY = rows[rows.length - 1]![0]!.y;
+        segments.push(`M ${edgeL} ${topY} L ${edgeL} ${botY}`);
+        setSpineY({ top: topY, bottom: botY });
+      } else {
+        setSpineY(null);
       }
 
       setPath(segments.join(' '));
@@ -184,12 +192,147 @@ function useTimelinePath(
     const ro = new ResizeObserver(compute);
     ro.observe(container);
     return () => ro.disconnect();
-  }, [containerRef, dotRefs, count]);
+  }, [containerRef, dotRefs, count, noSpine]);
 
-  return { path, size };
+  return { path, spineY, size };
 }
 
-function TimelineView({ items }: { items: AnimeSummary[] }) {
+function ContinuousSpine({
+  containerRef,
+}: {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  });
+
+  // Light traverses the full container length as user scrolls
+  const lightY = useTransform(scrollYProgress, [0, 1], ['-4%', '104%']);
+
+  return (
+    <>
+      {/* Static spine — comet fade-in at top, solid middle, comet fade-out at bottom */}
+      <div
+        className="absolute pointer-events-none z-0"
+        style={{
+          left: 4,
+          top: 0,
+          bottom: 0,
+          width: 1.5,
+          marginLeft: -0.75,
+          background:
+            'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.16) 15%, rgba(255,255,255,0.16) 85%, transparent 100%)',
+        }}
+      />
+      {/* Accent halo running alongside */}
+      <div
+        className="absolute pointer-events-none z-0"
+        style={{
+          left: 4,
+          top: 0,
+          bottom: 0,
+          width: 8,
+          marginLeft: -4,
+          background:
+            'linear-gradient(to bottom, transparent 0%, color-mix(in oklch, var(--mm-accent, #c8a0ff) 11%, transparent) 15%, color-mix(in oklch, var(--mm-accent, #c8a0ff) 11%, transparent) 85%, transparent 100%)',
+          filter: 'blur(5px)',
+        }}
+      />
+
+      {/* Soft halo (moving) */}
+      <motion.div
+        className="absolute pointer-events-none z-[1]"
+        style={{
+          left: 4,
+          top: lightY,
+          width: 16,
+          height: 80,
+          marginLeft: -8,
+          marginTop: -40,
+          background:
+            'radial-gradient(ellipse at center, color-mix(in oklch, var(--mm-accent, #c8a0ff) 55%, transparent) 0%, transparent 70%)',
+          filter: 'blur(4px)',
+          mixBlendMode: 'screen',
+        }}
+      />
+      {/* Bright core (moving) */}
+      <motion.div
+        className="absolute pointer-events-none z-[1]"
+        style={{
+          left: 4,
+          top: lightY,
+          width: 3,
+          height: 36,
+          marginLeft: -1.5,
+          marginTop: -18,
+          background:
+            'linear-gradient(to bottom, transparent 0%, color-mix(in oklch, var(--mm-accent, #c8a0ff) 85%, white) 50%, transparent 100%)',
+          filter: 'blur(1px)',
+          opacity: 0.9,
+          mixBlendMode: 'screen',
+        }}
+      />
+    </>
+  );
+}
+
+function FlowingSpineLight({
+  containerRef,
+  topY,
+  bottomY,
+}: {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  topY: number;
+  bottomY: number;
+}) {
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  });
+
+  const lightY = useTransform(scrollYProgress, [0, 1], [topY - 80, bottomY + 80]);
+
+  return (
+    <>
+      {/* Soft halo */}
+      <motion.div
+        className="absolute pointer-events-none z-[1]"
+        style={{
+          left: '4px',
+          top: lightY,
+          width: '28px',
+          height: '160px',
+          marginLeft: '-14px',
+          marginTop: '-80px',
+          background:
+            'radial-gradient(ellipse at center, color-mix(in oklch, var(--mm-accent, #c8a0ff) 55%, transparent) 0%, transparent 70%)',
+          filter: 'blur(6px)',
+          mixBlendMode: 'screen',
+        }}
+      />
+      {/* Bright core */}
+      <motion.div
+        className="absolute pointer-events-none z-[1]"
+        style={{
+          left: '4px',
+          top: lightY,
+          width: '5px',
+          height: '70px',
+          marginLeft: '-2.5px',
+          marginTop: '-35px',
+          background:
+            'linear-gradient(to bottom, transparent 0%, color-mix(in oklch, var(--mm-accent, #c8a0ff) 85%, white) 50%, transparent 100%)',
+          filter: 'blur(1.5px)',
+          opacity: 0.9,
+          mixBlendMode: 'screen',
+        }}
+      />
+    </>
+  );
+}
+
+function TimelineView({ items, noSpine = false }: { items: AnimeSummary[]; noSpine?: boolean }) {
   const { i18n } = useLingui();
   const containerRef = useRef<HTMLDivElement>(null);
   const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -206,10 +349,10 @@ function TimelineView({ items }: { items: AnimeSummary[] }) {
   let cardIdx = 0;
   dotRefs.current = [];
 
-  const { path, size } = useTimelinePath(containerRef, dotRefs, groups.length);
+  const { path, spineY, size } = useTimelinePath(containerRef, dotRefs, groups.length, noSpine);
 
   return (
-    <div ref={containerRef} className="w-full flex flex-wrap gap-x-0 gap-y-5 sm:gap-y-6 items-start relative">
+    <div ref={containerRef} className="w-full relative">
       {/* SVG timeline path */}
       {path && (
         <svg
@@ -238,41 +381,53 @@ function TimelineView({ items }: { items: AnimeSummary[] }) {
         </svg>
       )}
 
-      {groups.map((group, gi) => {
-        const cards = group.animes.map((anime) => {
-          const idx = cardIdx++;
-          return (
-            <div key={anime.bangumi_id} className="w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]">
-              <ScheduleAnimeCard anime={anime} index={idx} />
-            </div>
-          );
-        });
+      {/* Scroll-linked flowing light along the vertical spine */}
+      {spineY && (
+        <FlowingSpineLight
+          containerRef={containerRef}
+          topY={spineY.top}
+          bottomY={spineY.bottom}
+        />
+      )}
 
-        return (
-          <div key={group.time || `g-${gi}`} className="flex flex-col items-start">
-            {/* ── Time marker ── */}
-            <div className="relative flex items-center w-full h-7 sm:h-8 mb-1.5 sm:mb-2">
-              <div className="relative z-10 flex items-center gap-1.5 sm:gap-2 mx-1.5 sm:mx-2">
-                {/* Dot — measured by SVG hook */}
-                <div
-                  ref={(el) => { dotRefs.current[gi] = el; }}
-                  className="relative shrink-0"
-                >
-                  <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
-                  <div className="relative w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
+      {/* Inner content — offset right to clear the vertical spine */}
+      <div className="w-full flex flex-wrap gap-x-0 gap-y-5 sm:gap-y-6 items-start pl-4 sm:pl-5">
+        {groups.map((group, gi) => {
+          const cards = group.animes.map((anime) => {
+            const idx = cardIdx++;
+            return (
+              <div key={anime.bangumi_id} className="w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]">
+                <ScheduleAnimeCard anime={anime} index={idx} />
+              </div>
+            );
+          });
+
+          return (
+            <div key={group.time || `g-${gi}`} className="flex flex-col items-start">
+              {/* ── Time marker ── */}
+              <div className="relative flex items-center w-full h-7 sm:h-8 mb-1.5 sm:mb-2">
+                <div className="relative z-10 flex items-center gap-1.5 sm:gap-2 mx-1.5 sm:mx-2">
+                  {/* Dot — measured by SVG hook */}
+                  <div
+                    ref={(el) => { dotRefs.current[gi] = el; }}
+                    className="relative shrink-0"
+                  >
+                    <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
+                    <div className="relative w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
+                  </div>
+                  <span className="px-2 sm:px-2.5 py-0.5 rounded-md bg-white/[0.06] backdrop-blur-sm border border-white/[0.06] text-mm-accent text-[10px] sm:text-[11px] font-bold tabular-nums whitespace-nowrap shadow-sm">
+                    {group.time || '—'}
+                  </span>
                 </div>
-                <span className="px-2 sm:px-2.5 py-0.5 rounded-md bg-white/[0.06] backdrop-blur-sm border border-white/[0.06] text-mm-accent text-[10px] sm:text-[11px] font-bold tabular-nums whitespace-nowrap shadow-sm">
-                  {group.time || '—'}
-                </span>
+              </div>
+              {/* ── Cards ── */}
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 px-1.5 sm:px-2">
+                {cards}
               </div>
             </div>
-            {/* ── Cards ── */}
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 px-1.5 sm:px-2">
-              {cards}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -331,6 +486,7 @@ function CalendarView() {
 
   const today = todayWeekdayCN();
   const [activeDay, setActiveDay] = useState<string | 'all'>(today);
+  const allTabRef = useRef<HTMLDivElement>(null);
 
   const weekStartDay = useUIStore((s) => s.weekStartDay);
 
@@ -380,7 +536,7 @@ function CalendarView() {
       {/* Weekday tabs */}
       <div
         ref={tabsRef}
-        className="flex items-end gap-0 overflow-x-auto scrollbar-none border-b border-white/[0.06] mb-5"
+        className="flex items-end gap-0 overflow-x-auto scrollbar-none mb-5"
       >
         <button
           type="button"
@@ -471,25 +627,29 @@ function CalendarView() {
                     </span>
                   )}
                 </div>
-                <TimelineView items={activeCalendar.items} />
+                <TimelineView items={activeCalendar.items} noSpine />
               </motion.div>
             );
           })()
         ) : (
           <motion.div
             key="all"
+            ref={allTabRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="space-y-8"
+            className="space-y-8 relative"
           >
+            {/* Continuous vertical spine connecting every weekday section */}
+            <ContinuousSpine containerRef={allTabRef} />
+
             {sortedCalendar.map((day) => (
               <div
                 key={day.weekday}
                 style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
               >
-                <div className="flex items-center gap-2.5 mb-3">
+                <div className="flex items-center gap-2.5 mb-3 pl-4 sm:pl-5">
                   <h2 className="text-lg font-bold text-white">
                     {getWeekdayJapanese(day.weekday)}
                   </h2>
@@ -503,7 +663,7 @@ function CalendarView() {
                     </span>
                   )}
                 </div>
-                <TimelineView items={day.items} />
+                <TimelineView items={day.items} noSpine />
               </div>
             ))}
           </motion.div>
