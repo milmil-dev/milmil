@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
@@ -124,7 +124,8 @@ function useTimelinePath(
   containerRef: React.RefObject<HTMLDivElement | null>,
   dotRefs: React.MutableRefObject<(HTMLDivElement | null)[]>,
   count: number,
-  noSpine: boolean
+  noSpine: boolean,
+  extendLeft: number
 ) {
   const [path, setPath] = useState('');
   const [spineY, setSpineY] = useState<{ top: number; bottom: number } | null>(null);
@@ -153,7 +154,7 @@ function useTimelinePath(
       }
 
       const edgeR = rect.width - 4;
-      const edgeL = 4;
+      const edgeL = extendLeft > 0 ? -extendLeft : 4;
 
       // Group points by row (same Y ± threshold)
       const rows: { x: number; y: number }[][] = [];
@@ -192,15 +193,17 @@ function useTimelinePath(
     const ro = new ResizeObserver(compute);
     ro.observe(container);
     return () => ro.disconnect();
-  }, [containerRef, dotRefs, count, noSpine]);
+  }, [containerRef, dotRefs, count, noSpine, extendLeft]);
 
   return { path, spineY, size };
 }
 
 function ContinuousSpine({
   containerRef,
+  x = 4,
 }: {
   containerRef: React.RefObject<HTMLDivElement | null>;
+  x?: number;
 }) {
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -216,7 +219,7 @@ function ContinuousSpine({
       <div
         className="absolute pointer-events-none z-0"
         style={{
-          left: 4,
+          left: x,
           top: 0,
           bottom: 0,
           width: 1.5,
@@ -229,7 +232,7 @@ function ContinuousSpine({
       <div
         className="absolute pointer-events-none z-0"
         style={{
-          left: 4,
+          left: x,
           top: 0,
           bottom: 0,
           width: 8,
@@ -244,7 +247,7 @@ function ContinuousSpine({
       <motion.div
         className="absolute pointer-events-none z-[1]"
         style={{
-          left: 4,
+          left: x,
           top: lightY,
           width: 16,
           height: 80,
@@ -260,7 +263,7 @@ function ContinuousSpine({
       <motion.div
         className="absolute pointer-events-none z-[1]"
         style={{
-          left: 4,
+          left: x,
           top: lightY,
           width: 3,
           height: 36,
@@ -332,7 +335,15 @@ function FlowingSpineLight({
   );
 }
 
-function TimelineView({ items, noSpine = false }: { items: AnimeSummary[]; noSpine?: boolean }) {
+function TimelineView({
+  items,
+  noSpine = false,
+  extendLeft = 0,
+}: {
+  items: AnimeSummary[];
+  noSpine?: boolean;
+  extendLeft?: number;
+}) {
   const { i18n } = useLingui();
   const containerRef = useRef<HTMLDivElement>(null);
   const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -349,7 +360,13 @@ function TimelineView({ items, noSpine = false }: { items: AnimeSummary[]; noSpi
   let cardIdx = 0;
   dotRefs.current = [];
 
-  const { path, spineY, size } = useTimelinePath(containerRef, dotRefs, groups.length, noSpine);
+  const { path, spineY, size } = useTimelinePath(
+    containerRef,
+    dotRefs,
+    groups.length,
+    noSpine,
+    extendLeft
+  );
 
   return (
     <div ref={containerRef} className="w-full relative">
@@ -360,6 +377,7 @@ function TimelineView({ items, noSpine = false }: { items: AnimeSummary[]; noSpi
           width={size.w}
           height={size.h}
           fill="none"
+          overflow="visible"
         >
           {/* Glow layer */}
           <path
@@ -639,33 +657,57 @@ function CalendarView() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="space-y-8 relative"
+            className="relative grid grid-cols-[112px_1fr] gap-x-6 gap-y-8"
           >
-            {/* Continuous vertical spine connecting every weekday section */}
-            <ContinuousSpine containerRef={allTabRef} />
+            {/* Continuous vertical spine in the rail column (x = 96 from grid start) */}
+            <ContinuousSpine containerRef={allTabRef} x={96} />
 
-            {sortedCalendar.map((day) => (
-              <div
-                key={day.weekday}
-                style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
-              >
-                <div className="flex items-center gap-2.5 mb-3 pl-4 sm:pl-5">
-                  <h2 className="text-lg font-bold text-white">
-                    {getWeekdayJapanese(day.weekday)}
-                  </h2>
-                  <span className="text-[12px] font-medium text-mm-text-muted tabular-nums">
-                    {day.items.length} {i18n._(msg`schedule.totalShows`)}
-                  </span>
-                  {day.weekday === today && (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-mm-accent">
-                      <span className="w-1.5 h-1.5 rounded-full bg-mm-accent animate-pulse" />
-                      {i18n._(msg`schedule.today`)}
-                    </span>
-                  )}
-                </div>
-                <TimelineView items={day.items} noSpine />
-              </div>
-            ))}
+            {sortedCalendar.map((day) => {
+              const isToday = day.weekday === today;
+              return (
+                <Fragment key={day.weekday}>
+                  {/* Rail cell — weekday label + accent dot on the spine */}
+                  <div className="relative z-[2] flex items-start justify-end gap-3 pr-[11px]">
+                    <div className="text-right leading-tight">
+                      <div
+                        className={cn(
+                          'text-[14px] font-semibold',
+                          isToday ? 'text-mm-accent' : 'text-white/70'
+                        )}
+                      >
+                        {getWeekdayJapanese(day.weekday)}
+                      </div>
+                      <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
+                        {getDateForWeekday(day.weekday)}
+                      </div>
+                      <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
+                        {day.items.length} {i18n._(msg`schedule.totalShows`)}
+                      </div>
+                    </div>
+                    {/* Dot wrapper height matches TimelineView's first time-marker row (h-8),
+                        so the dot center sits at the same Y as the first time-marker dot. */}
+                    <div className="relative shrink-0 h-8 flex items-center">
+                      <div className="relative">
+                        <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
+                        {isToday && (
+                          <span className="absolute inset-0 rounded-full bg-mm-accent/40 animate-ping" />
+                        )}
+                        <div className="relative w-2.5 h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content cell — TimelineView for this weekday.
+                      extendLeft = 40 = grid gap (24) + (rail width 112 - SPINE_X 96), so each row's
+                      horizontal line reaches all the way back to the rail spine.
+                      contentVisibility intentionally omitted: it would create `contain: paint` and
+                      clip the SVG lines that extend leftward past the cell. */}
+                  <div className="min-w-0">
+                    <TimelineView items={day.items} noSpine extendLeft={40} />
+                  </div>
+                </Fragment>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

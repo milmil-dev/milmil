@@ -63,7 +63,7 @@ export function HistoryGrid({
         if (groupItems.length === 0) return null;
         return (
           <section key={key} className="mb-8">
-            <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wider text-white/30">
+            <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wider text-white/30 md:hidden">
               {labels[key]}
             </h3>
             <div className="grid gap-x-5 gap-y-6 grid-cols-2 min-[768px]:grid-cols-3 min-[1320px]:grid-cols-4">

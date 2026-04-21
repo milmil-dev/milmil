@@ -46,7 +46,7 @@ export function HistoryFilterBar({
   ];
 
   return (
-    <div className="mb-7 flex items-center gap-4 border-b border-white/[0.06]">
+    <div className="mb-7 flex items-center gap-4">
       <div className="flex gap-6">
         {tabs.map((t) => (
           <button
@@ -68,7 +68,7 @@ export function HistoryFilterBar({
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
+      <div className="flex items-center gap-2 rounded-md bg-white/[0.03] px-3 py-1.5">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/30">
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
@@ -84,7 +84,7 @@ export function HistoryFilterBar({
       <button
         type="button"
         onClick={onClearAll}
-        className="cursor-pointer rounded-md border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white"
+        className="cursor-pointer rounded-md bg-white/[0.03] px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white"
       >
         {i18n._(msg`history.clearAll`)}
       </button>
@@ -92,7 +92,7 @@ export function HistoryFilterBar({
         type="button"
         onClick={onToggleBatch}
         className={cn(
-          'cursor-pointer rounded-md border border-white/[0.06] px-3 py-1.5 text-[13px] font-medium transition-colors',
+          'cursor-pointer rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors',
           batchMode
             ? 'bg-white/[0.1] text-white'
             : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.06] hover:text-white'
