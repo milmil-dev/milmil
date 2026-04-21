@@ -30,7 +30,11 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 vi.mock('@tanstack/react-query', () => ({
-  useQueryClient: () => ({ invalidateQueries: () => {}, setQueryData: () => {}, getQueryData: () => undefined }),
+  useQueryClient: () => ({
+    invalidateQueries: () => {},
+    setQueryData: () => {},
+    getQueryData: () => undefined,
+  }),
   useMutation: () => ({ mutate: () => {}, mutateAsync: async () => {}, isPending: false }),
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     if (queryKey[0] === 'danmaku') return { data: { count: 42, comments: [] } };
@@ -85,7 +89,8 @@ vi.mock('@/store/preferences-store', () => {
     selector({ danmakuOpacity: 1, danmakuFontSize: 24 });
   // WatchPage calls usePreferencesStore.subscribe() in a useEffect
   (usePreferencesStore as unknown as { subscribe: () => () => void }).subscribe = () => () => {};
-  (usePreferencesStore as unknown as { getState: () => Record<string, unknown> }).getState = () => ({});
+  (usePreferencesStore as unknown as { getState: () => Record<string, unknown> }).getState =
+    () => ({});
   return { usePreferencesStore };
 });
 

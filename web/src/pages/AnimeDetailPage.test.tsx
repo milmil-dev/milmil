@@ -29,7 +29,11 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 vi.mock('@tanstack/react-query', () => ({
-  useQueryClient: () => ({ invalidateQueries: () => {}, setQueryData: () => {}, getQueryData: () => undefined }),
+  useQueryClient: () => ({
+    invalidateQueries: () => {},
+    setQueryData: () => {},
+    getQueryData: () => undefined,
+  }),
   useMutation: () => ({ mutate: () => {}, mutateAsync: async () => {}, isPending: false }),
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     if (queryKey[0] === 'discover' && queryKey[1] === 'detail') {
