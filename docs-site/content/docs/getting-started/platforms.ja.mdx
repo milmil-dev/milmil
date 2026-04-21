@@ -1,0 +1,155 @@
+---
+title: プラットフォームガイド
+description: Synology、Unraid、TrueNAS、Raspberry Pi 向けのプラットフォーム別インストールガイド。
+---
+
+<Tabs items={["Synology", "Unraid", "TrueNAS", "Raspberry Pi"]}>
+<Tab value="Synology">
+
+## Synology NAS（DSM 7+）
+
+<Steps>
+<Step>
+### Container Manager をインストール
+
+**パッケージセンター** を開き、**Container Manager**（旧 Docker）をインストールします。
+</Step>
+<Step>
+### プロジェクトディレクトリを作成
+
+SSH で NAS に接続するか、File Station を使用して `/docker/milmil/` を作成します。
+
+<Files>
+  <Folder name="docker" defaultOpen>
+    <Folder name="milmil" defaultOpen>
+      <File name=".env" />
+      <File name="docker-compose.yml" />
+      <Folder name="data" />
+    </Folder>
+  </Folder>
+</Files>
+</Step>
+<Step>
+### docker-compose.yml と .env をアップロード
+
+本番用 compose ファイルと環境変数をコピーします。[Docker デプロイ](/docs/getting-started/docker) を参照してください。
+</Step>
+<Step>
+### Container Manager から起動
+
+Container Manager で **プロジェクト > 作成** に移動します。`docker-compose.yml` ファイルを選択してプロジェクトを起動します。
+</Step>
+</Steps>
+
+<Callout type="warn">
+**権限について：** Synology のコンテナはデフォルトで root として実行されます。共有フォルダの権限がアニメライブラリディレクトリへの読み取りアクセスを許可していることを確認してください。ボリュームマウントを共有フォルダのパス（例：`/volume1/media/anime`）に設定してください。
+</Callout>
+
+</Tab>
+<Tab value="Unraid">
+
+## Unraid
+
+<Steps>
+<Step>
+### Docker Compose Manager をインストール
+
+Unraid の **Community Applications** ストアで **Docker Compose Manager** プラグインをインストールします。
+</Step>
+<Step>
+### Compose スタックを作成
+
+milmil の `docker-compose.yml` と `.env` ファイルで新しいスタックを追加します。[Docker デプロイ](/docs/getting-started/docker) を参照してください。
+</Step>
+<Step>
+### パスを設定
+
+メディア共有をマッピングします：
+
+```yaml
+volumes:
+  - /mnt/user/media/anime:/media/anime
+  - /mnt/user/appdata/milmil:/data
+```
+</Step>
+<Step>
+### スタックを起動
+
+Docker Compose Manager の UI からスタックを適用します。
+</Step>
+</Steps>
+
+<Callout type="info">
+Unraid の慣例に従い、永続データには `/mnt/user/appdata/milmil` を使用してください。
+</Callout>
+
+</Tab>
+<Tab value="TrueNAS">
+
+## TrueNAS SCALE
+
+<Steps>
+<Step>
+### アプリに移動
+
+TrueNAS SCALE の Web UI で **アプリ > アプリを検索** に移動します。
+</Step>
+<Step>
+### カスタムアプリ
+
+**カスタムアプリ** をクリックし、milmil の compose ファイルで Docker Compose デプロイを設定します。
+</Step>
+<Step>
+### ストレージを設定
+
+データセットのパスをマッピングします：
+
+```yaml
+volumes:
+  - /mnt/pool/media/anime:/media/anime
+  - /mnt/pool/apps/milmil:/data
+```
+</Step>
+</Steps>
+
+<Callout type="warn">
+TrueNAS SCALE はカスタムアプリの内部で Kubernetes を使用しています。プールのパスが正しく、アクセス可能であることを確認してください。
+</Callout>
+
+</Tab>
+<Tab value="Raspberry Pi">
+
+## Raspberry Pi（4/5）
+
+<Callout type="warn">
+Raspberry Pi はトランスコーディング用の CPU が限られています。ダイレクトプレイとコンテナリミックスは問題なく動作しますが、HLS トランスコーディングは低速になります。最良の結果を得るには、事前エンコード済みの MP4 ファイルを使用してください。
+</Callout>
+
+<Steps>
+<Step>
+### Docker をインストール
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+```
+
+グループの変更を反映するためにログアウトして再ログインしてください。
+</Step>
+<Step>
+### クローンして起動
+
+```bash
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
+docker compose up -d
+```
+</Step>
+</Steps>
+
+<Callout type="info">
+データボリュームには SD カードの代わりに SSD（USB 3.0 経由）を使用してください — SD カードは書き込み耐久性が限られており、データベース操作には低速です。
+</Callout>
+
+</Tab>
+</Tabs>

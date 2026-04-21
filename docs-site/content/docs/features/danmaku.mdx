@@ -1,0 +1,45 @@
+---
+title: Danmaku (Bullet Comments)
+description: Real-time scrolling comment overlay on the video player, sourced from DandanPlay and other databases.
+---
+
+## Overview
+
+Danmaku (bullet comments) scroll across the video during playback, recreating the communal viewing experience found on platforms like Bilibili and Niconico. milmil integrates with the [DandanPlay](https://www.dandanplay.com/) comment database to pull in thousands of time-synced comments per episode.
+
+<Callout type="info">
+Danmaku requires a DandanPlay connection. See [Integrations](/docs/configuration/integrations) to set it up.
+</Callout>
+
+## Danmaku Sources
+
+milmil matches episodes against multiple comment databases:
+
+- **DandanPlay** — Primary source with the largest Chinese-language comment pool
+- **External databases** — Additional sources aggregated by DandanPlay
+
+Use the **Source tab** in the player to browse available episodes and select which comment set to load. This is useful when automatic matching picks the wrong episode or when you want comments from a different release.
+
+## Settings
+
+Fine-tune the danmaku display from the player settings panel:
+
+| Setting | Description |
+| --- | --- |
+| **Opacity** | Transparency of comments (0 &ndash; 100%) |
+| **Font size** | Text size relative to the video |
+| **Speed** | How fast comments scroll across the screen |
+| **Display area** | Portion of the video covered (top half, full, bottom) |
+| **Density** | Maximum number of simultaneous on-screen comments |
+
+## Filtering & Search
+
+The **Danmaku List** panel shows all loaded comments in chronological order. You can:
+
+- Search comments by keyword
+- Filter by comment type (scroll, top-pinned, bottom-pinned)
+- Jump to a specific comment's timestamp
+
+## Toggle
+
+Use the danmaku button in the player controls to show or hide comments at any time. Your preference is remembered across sessions.

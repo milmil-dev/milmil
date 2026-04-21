@@ -1,0 +1,94 @@
+---
+title: 성능 튜닝
+description: 프로덕션 워크로드를 위한 milmil 최적화.
+---
+
+## Redis 캐시
+
+<Callout type="info">
+Redis는 선택 사항이지만 프로덕션 환경에서는 강력히 권장됩니다. Redis가 없으면 milmil은 재시작 시 유지되지 않는 인메모리 캐시를 사용합니다.
+</Callout>
+
+```bash
+REDIS_URL=redis://localhost:6379
+```
+
+### 크기 권장 사항
+
+| 라이브러리 크기 | 권장 Redis 메모리 |
+|---|---|
+| < 500 애니메이션 | 64 MB |
+| 500–2000 애니메이션 | 256 MB |
+| 2000+ 애니메이션 | 512 MB+ |
+
+## 트랜스코딩
+
+### 하드웨어 가속
+
+<Callout type="warn">
+하드웨어 가속은 트랜스코딩 중 CPU 사용량을 크게 줄여줍니다. 하드웨어 가속 없이 단일 1080p 트랜스코드 스트림은 CPU 코어 하나를 100% 사용할 수 있습니다.
+</Callout>
+
+milmil은 FFmpeg 하드웨어 가속 백엔드를 지원합니다:
+
+| 백엔드 | 설명 |
+|---|---|
+| **VAAPI** | Video Acceleration API (Linux에서 Intel, AMD) |
+| **NVENC** | NVIDIA GPU 인코딩 |
+| **QSV** | Intel Quick Sync Video |
+| **VideoToolbox** | macOS 하드웨어 가속 |
+
+Docker의 경우 GPU 장치를 전달합니다:
+
+```yaml
+# NVIDIA
+devices:
+  - /dev/nvidia0:/dev/nvidia0
+  - /dev/nvidiactl:/dev/nvidiactl
+
+# Intel VAAPI
+devices:
+  - /dev/dri:/dev/dri
+```
+
+### 품질 프리셋
+
+| 프리셋 | 사용 사례 | CPU 사용량 |
+|---|---|---|
+| `ultrafast` | 저전력 장치 (RPi) | 최소 |
+| `fast` | 품질/속도 균형 | 보통 |
+| `medium` | 기본값 — 좋은 품질 | 높음 |
+
+## 데이터베이스 튜닝
+
+<Tabs items={["PostgreSQL", "SQLite"]}>
+<Tab value="PostgreSQL">
+
+대규모 라이브러리의 경우 PostgreSQL을 튜닝하세요:
+
+```sql
+-- 커넥션 풀 (DATABASE_URL에서 설정)
+-- ?pool_max_conns=20&pool_min_conns=5
+
+-- 권장 postgresql.conf 조정
+shared_buffers = 256MB
+effective_cache_size = 1GB
+work_mem = 16MB
+```
+
+</Tab>
+<Tab value="SQLite">
+
+SQLite는 소규모에서 중규모 라이브러리에 적합합니다. 더 나은 동시 읽기 성능을 위해 WAL 모드를 활성화하세요 (milmil은 자동으로 활성화합니다):
+
+```sql
+PRAGMA journal_mode=WAL;
+PRAGMA busy_timeout=5000;
+```
+
+<Callout type="warn">
+SQLite는 쓰기 동시성이 제한적입니다. 빈번한 스캔이나 다운로드를 동시에 실행하는 경우 PostgreSQL로 전환하는 것을 고려하세요.
+</Callout>
+
+</Tab>
+</Tabs>

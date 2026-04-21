@@ -1,0 +1,48 @@
+---
+title: よくある質問
+description: よくある質問と一般的な解決策。
+---
+
+## 一般
+
+<Accordions>
+<Accordion title="最小システム要件は？">
+- **CPU：** 2 コア（トランスコーディング用には 4 コア以上推奨）
+- **RAM：** 最低 1 GB、2 GB 以上推奨
+- **ストレージ：** メディアライブラリに依存。milmil 自体はアプリケーションとデータベースで 500 MB 未満を使用します。
+- **FFmpeg：** メディア情報の抽出とトランスコーディングに必要
+</Accordion>
+<Accordion title="milmil はマルチユーザーに対応していますか？">
+はい。**設定 > ユーザー** から追加のユーザーアカウントを作成できます。各ユーザーは独自のコレクション、視聴進捗、設定を持ちます。
+</Accordion>
+<Accordion title="外部ネットワークから milmil にアクセスできますか？">
+はい。ただし HTTPS を設定したリバースプロキシが必要です。[リバースプロキシ](/docs/configuration/reverse-proxy) ガイドを参照してください。HTTPS なしで milmil を直接インターネットに公開しないでください。
+</Accordion>
+<Accordion title="対応している動画フォーマットは？">
+milmil は FFmpeg がサポートするすべてのフォーマットを再生できます。ダイレクトプレイには、ブラウザがコーデックに対応している必要があります（通常は MP4 の H.264/H.265）。その他のフォーマットは自動的にリミックスまたはトランスコードされます。
+</Accordion>
+<Accordion title="milmil を更新するには？">
+最新の Docker イメージをプルして再起動します：
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+データベースマイグレーションは起動時に自動的に適用されます。
+</Accordion>
+</Accordions>
+
+## 特定の問題
+
+<Cards>
+  <Card title="再生の問題" href="/docs/troubleshooting/playback">
+    ストリーミング、トランスコーディング、弾幕、字幕の問題。
+  </Card>
+  <Card title="スキャンの問題" href="/docs/troubleshooting/scanning">
+    ライブラリスキャン、メタデータマッチング、ファイル検出の問題。
+  </Card>
+  <Card title="ネットワークの問題" href="/docs/troubleshooting/networking">
+    接続、リバースプロキシ、WebSocket、CORS の問題。
+  </Card>
+</Cards>

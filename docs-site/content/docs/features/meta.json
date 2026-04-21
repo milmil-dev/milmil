@@ -1,4 +1,4 @@
 {
   "title": "Features",
-  "pages": ["library", "streaming", "downloads", "discovery", "collection", "bot"]
+  "pages": ["library", "file-management", "streaming", "history", "player", "danmaku", "downloads", "discovery", "collection", "notifications", "settings", "bot"]
 }

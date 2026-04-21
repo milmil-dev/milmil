@@ -1,0 +1,132 @@
+---
+title: 架構
+description: milmil 系統架構與內部原理。
+---
+
+## 系統概覽
+
+milmil 是一個單體式 Go 後端搭配 React SPA 前端，專為自建部署而設計。
+
+```
+┌─────────────────────────────────────────────────┐
+│                   用戶端                        │
+│         瀏覽器 (PWA)  │  Telegram/Discord 機器人│
+└───────────┬─────────────────────┬───────────────┘
+            │ HTTP/WS             │ Bot API
+┌───────────▼─────────────────────▼───────────────┐
+│                milmil-api (Go)                  │
+│  ┌──────────┐ ┌──────────┐ ┌──────────────────┐│
+│  │ REST API │ │WebSocket │ │ 機器人引擎       ││
+│  └────┬─────┘ └────┬─────┘ └───────┬──────────┘│
+│       │             │               │           │
+│  ┌────▼─────────────▼───────────────▼──────────┐│
+│  │              服務層                         ││
+│  │  媒體庫 │ 串流 │ 下載 │ 探索               ││
+│  │  收藏 │ 認證 │ 通知                         ││
+│  └────┬────────────────────────────────────────┘│
+│       │                                         │
+│  ┌────▼────────────────────────────────────────┐│
+│  │           基礎設施層                        ││
+│  │  PostgreSQL/SQLite │ Redis │ FFmpeg │ Rclone││
+│  └─────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────┐
+│              milmil-web (React SPA)             │
+│  透過 Nginx 或開發伺服器提供服務                │
+└─────────────────────────────────────────────────┘
+```
+
+## 元件概覽
+
+| 元件 | 說明 |
+|---|---|
+| **REST API** | Echo 路由器提供 JSON 端點。處理認證、CRUD、串流和搜尋。 |
+| **WebSocket** | 即時事件推送，用於彈幕、通知和掃描進度。 |
+| **機器人引擎** | 跨平台機器人，提供 Telegram 和 Discord 轉接器。 |
+| **服務層** | 媒體庫掃描、中繼資料比對、下載管理和收藏同步的業務邏輯。 |
+| **FFmpeg** | 媒體探測、容器重新封裝和 HLS 轉碼。 |
+| **Rclone** | 支援 40+ 雲端服務提供商的雲端儲存抽象層。 |
+
+## 資料流程：媒體庫掃描
+
+<Steps>
+<Step>
+### 檔案發現
+
+遍歷儲存後端（本機、SMB、rclone 等）以列舉所有媒體檔案。
+</Step>
+<Step>
+### 媒體探測
+
+FFmpeg 探測每個檔案的編解碼器資訊、解析度、時長、內嵌字幕和音軌。
+</Step>
+<Step>
+### 中繼資料比對
+
+使用提供商管線將檔案比對到動畫條目：DandanPlay（雜湊）→ Bangumi（標題）→ AniList（標題）→ TMDB（備援）。
+</Step>
+<Step>
+### 資料補充
+
+從比對的提供商取得封面圖片、劇集標題、簡介和評分。
+</Step>
+<Step>
+### 持久化
+
+將所有中繼資料儲存至資料庫。發送掃描完成通知。
+</Step>
+</Steps>
+
+## 資料流程：串流
+
+```
+用戶端請求
+    │
+    ▼
+┌─────────────────┐
+│ 支援該編解碼器？│──是──▶ 直接播放（位元組範圍）
+└────────┬────────┘
+         │ 否
+         ▼
+┌─────────────────┐
+│ 僅需重新封裝？  │──是──▶ 重新封裝（MKV→MP4，不重新編碼）
+└────────┬────────┘
+         │ 否
+         ▼
+    HLS 轉碼（FFmpeg）
+```
+
+## 技術堆疊
+
+| 技術 | 說明 |
+|---|---|
+| **後端** | Go — Chi 路由器、sqlc、golang-migrate、anacrolix/torrent |
+| **前端** | React — Vite、TanStack Router、TanStack Query、Tailwind CSS |
+| **資料庫** | PostgreSQL/SQLite — 使用 golang-migrate 管理結構 |
+| **快取** | Redis — 選用，提供記憶體內備援方案 |
+| **媒體** | FFmpeg — 探測、重新封裝、HLS 轉碼 |
+| **儲存** | Rclone — 40+ 雲端服務提供商後端 |
+| **文件** | Fumadocs — 基於 Next.js 的文件系統，支援多語系 |
+
+## 儲存庫結構
+
+<Files>
+  <Folder name="milmil" defaultOpen>
+    <Folder name="api" defaultOpen>
+      <Folder name="internal" defaultOpen>
+        <Folder name="api">API 路由、中介軟體、OpenAPI 規格</Folder>
+        <Folder name="bot">機器人引擎、轉接器（Telegram、Discord）</Folder>
+        <Folder name="domain">實體、儲存庫介面</Folder>
+        <Folder name="infra">資料庫、Redis、FFmpeg、Rclone 實作</Folder>
+        <Folder name="service">業務邏輯（媒體庫、串流、下載等）</Folder>
+      </Folder>
+      <File name="go.mod" />
+      <File name="Makefile" />
+    </Folder>
+    <Folder name="web">React SPA 前端</Folder>
+    <Folder name="website">文件網站（本站）</Folder>
+    <File name="docker-compose.yml" />
+    <File name="Makefile" />
+  </Folder>
+</Files>

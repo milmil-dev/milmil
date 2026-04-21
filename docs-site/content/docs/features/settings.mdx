@@ -1,0 +1,59 @@
+---
+title: Settings
+description: Configure language, player, integrations, backups, and more from the multi-panel Settings page.
+---
+
+## Overview
+
+The Settings page is organized into tabbed panels, each covering a distinct area of configuration. Open it from the sidebar or navigation menu.
+
+## Panels
+
+### General
+
+Set your preferred **display language** (EN, JA, ZH-CN, ZH-TW, ZH-HK, KO), choose the **week start day** for calendar views, and toggle **auto-add to collection** so that newly matched anime are added to your collection automatically.
+
+### Player
+
+Customize subtitle appearance — **font size**, **font family**, and **style presets** — and review the default **keyboard shortcuts** for playback control (play/pause, seek, volume, fullscreen, etc.).
+
+### Account
+
+Manage your **username**, generate or revoke **API tokens** for third-party access, and view or terminate active **sessions**.
+
+### Integrations
+
+Connect external services:
+
+| Service | Details |
+|---------|---------|
+| **DandanPlay** | File-hash matching and danmaku (bullet comments) |
+| **Trakt.tv** | Watch history sync via OAuth device-code flow |
+
+<Callout type="info">
+Trakt.tv uses the device-code flow — milmil displays a code you enter at trakt.tv/activate on any browser.
+</Callout>
+
+### Downloads
+
+View the current **download engine status** and run a **health check** to verify that the torrent client and feed subscriptions are operating normally.
+
+### Notifications
+
+Configure **push** and **email** notification preferences on a per-event basis (e.g., new episodes available, download complete, scan finished).
+
+### Backup
+
+Schedule automated backups to **WebDAV** or **S3-compatible** storage. Set the backup frequency and retention policy to protect your database and configuration.
+
+<Callout type="warn">
+Backups include your database and settings but not media files. Ensure your media storage has its own redundancy.
+</Callout>
+
+### Storage
+
+Review **cache statistics** and **storage usage** across all configured backends. Use the **clear cache** action to reclaim disk space used by thumbnails and temporary files.
+
+### About
+
+Displays the current **app version**, open-source **license**, and project **credits**.

@@ -3,12 +3,12 @@
 @import 'fumadocs-ui/css/preset.css';
 
 :root {
-  --mm-accent: #e88faa;
+  --mm-accent: #A78BFA;
   --mm-bg: #070707;
 }
 
 .landing-title {
-  background: linear-gradient(135deg, #ffffff 0%, #fcd5df 40%, var(--mm-accent) 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #d4c5f9 40%, var(--mm-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

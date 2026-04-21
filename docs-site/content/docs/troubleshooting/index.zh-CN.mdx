@@ -1,0 +1,48 @@
+---
+title: 常见问题
+description: 常见问题解答与解决方案。
+---
+
+## 通用
+
+<Accordions>
+<Accordion title="最低系统要求是什么？">
+- **CPU：** 2 核（转码推荐 4 核以上）
+- **内存：** 最低 1 GB，推荐 2 GB 以上
+- **存储：** 取决于你的媒体库大小。milmil 本身的应用和数据库占用不到 500 MB。
+- **FFmpeg：** 媒体信息提取和转码必需
+</Accordion>
+<Accordion title="milmil 支持多用户吗？">
+支持。在**设置 > 用户**中创建额外的用户账户。每个用户拥有独立的收藏、观看进度和偏好设置。
+</Accordion>
+<Accordion title="可以从外部网络访问 milmil 吗？">
+可以，但你需要配置带 HTTPS 的反向代理。请参阅[反向代理](/docs/configuration/reverse-proxy)指南。不要在没有 HTTPS 的情况下将 milmil 直接暴露到互联网。
+</Accordion>
+<Accordion title="支持哪些视频格式？">
+milmil 可以播放 FFmpeg 支持的任何格式。直接播放时，浏览器必须支持对应的编解码器（通常是 MP4 中的 H.264/H.265）。其他格式会自动进行重封装或转码。
+</Accordion>
+<Accordion title="如何更新 milmil？">
+拉取最新的 Docker 镜像并重启：
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+数据库迁移会在启动时自动执行。
+</Accordion>
+</Accordions>
+
+## 具体问题
+
+<Cards>
+  <Card title="播放问题" href="/docs/troubleshooting/playback">
+    串流、转码、弹幕和字幕问题。
+  </Card>
+  <Card title="扫描问题" href="/docs/troubleshooting/scanning">
+    媒体库扫描、元数据匹配和文件检测。
+  </Card>
+  <Card title="网络问题" href="/docs/troubleshooting/networking">
+    连接、反向代理、WebSocket 和 CORS 问题。
+  </Card>
+</Cards>

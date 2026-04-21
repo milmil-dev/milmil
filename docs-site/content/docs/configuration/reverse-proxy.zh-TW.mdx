@@ -1,0 +1,149 @@
+---
+title: 反向代理
+description: 設定 Nginx、Caddy 或 Traefik 作為 milmil 的反向代理。
+---
+
+<Callout type="info">
+反向代理是 HTTPS 的必要條件，也是正式環境部署的推薦配置。milmil 使用 WebSocket 連線來實現即時功能（彈幕、通知），因此你的代理必須支援 WebSocket 升級。
+</Callout>
+
+<Tabs items={["Nginx", "Caddy", "Traefik"]}>
+<Tab value="Nginx">
+
+## Nginx
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name milmil.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/milmil.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/milmil.example.com/privkey.pem;
+
+    # 前端
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # API + WebSocket
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # WebSocket 端點
+    location /ws {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # 串流 — 增加逾時時間並停用緩衝
+    location /api/v1/stream/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_request_buffering off;
+        client_max_body_size 0;
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+}
+
+# HTTP 導向 HTTPS
+server {
+    listen 80;
+    server_name milmil.example.com;
+    return 301 https://$host$request_uri;
+}
+```
+
+<Callout type="warn">
+串流的 location 區塊會停用緩衝並增加逾時時間。如未設定，大型影片檔案可能無法正常串流。
+</Callout>
+
+### 使用 Certbot 取得 Let's Encrypt 憑證
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d milmil.example.com
+```
+
+</Tab>
+<Tab value="Caddy">
+
+## Caddy
+
+Caddy 透過 Let's Encrypt 提供自動 HTTPS。
+
+```
+milmil.example.com {
+    handle /api/* {
+        reverse_proxy localhost:8080
+    }
+
+    handle /ws {
+        reverse_proxy localhost:8080
+    }
+
+    handle {
+        reverse_proxy localhost:3000
+    }
+}
+```
+
+<Callout type="info">
+Caddy 會自動處理 HTTPS 憑證 — 不需要額外設定。只需將你的 DNS 指向伺服器即可。
+</Callout>
+
+</Tab>
+<Tab value="Traefik">
+
+## Traefik
+
+在你的 `docker-compose.yml` 中加入標籤：
+
+```yaml
+services:
+  milmil-web:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.milmil.rule=Host(`milmil.example.com`)"
+      - "traefik.http.routers.milmil.tls.certresolver=letsencrypt"
+      - "traefik.http.services.milmil.loadbalancer.server.port=3000"
+
+  milmil-api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.milmil-api.rule=Host(`milmil.example.com`) && (PathPrefix(`/api`) || PathPrefix(`/ws`))"
+      - "traefik.http.routers.milmil-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.milmil-api.loadbalancer.server.port=8080"
+```
+
+</Tab>
+</Tabs>
+
+## 疑難排解
+
+<Accordions>
+<Accordion title="WebSocket 連線失敗（彈幕無法載入）">
+確認你的代理有為 `/ws` 和 `/api/` 路徑傳遞 `Upgrade` 和 `Connection` 標頭。檢查 Nginx 是否已設定 `proxy_http_version 1.1`。
+</Accordion>
+<Accordion title="影片串流中斷或速度緩慢">
+為串流端點停用代理緩衝。在 Nginx 中，設定 `proxy_buffering off` 並增加 `proxy_read_timeout`。
+</Accordion>
+<Accordion title="502 Bad Gateway">
+檢查 `milmil-api`（連接埠 8080）和 `milmil-web`（連接埠 3000）是否都在執行中。使用 `docker ps` 進行驗證。
+</Accordion>
+</Accordions>

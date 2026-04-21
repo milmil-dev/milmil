@@ -1,0 +1,46 @@
+---
+title: 問題の報告
+description: バグの報告と機能リクエストの方法。
+---
+
+## バグレポート
+
+<Steps>
+<Step>
+### 既存の Issue を検索
+
+新しいバグを報告する前に、[GitHub Issues](https://github.com/milmil-dev/milmil/issues) で既に報告されていないか確認してください。
+</Step>
+<Step>
+### 情報を収集
+
+レポートに以下を含めてください：
+
+- milmil バージョン（**設定 > システム** に表示）
+- デプロイ方法（Docker、手動）
+- オペレーティングシステムとアーキテクチャ
+- ブラウザとバージョン（UI のバグの場合）
+- 関連するログ出力
+</Step>
+<Step>
+### Issue を作成
+
+明確なタイトルと詳細な説明を含めて [新しい Issue](https://github.com/milmil-dev/milmil/issues/new) を作成してください。バグの再現手順を含めてください。
+</Step>
+</Steps>
+
+<Callout type="info">
+バックエンドの問題には `docker logs milmil-api` の関連ログ出力を含めてください。フロントエンドの問題には、ブラウザのコンソールエラー（F12 > Console）を含めてください。
+</Callout>
+
+## 機能リクエスト
+
+機能のアイデアは [GitHub Discussions](https://github.com/milmil-dev/milmil/discussions) で提案してください。以下を記述してください：
+
+- **何を** 実現したいか
+- **なぜ** それが有用か
+- **どのように** 動作するイメージか（任意）
+
+## 質問とヘルプ
+
+一般的な質問には、Issue ではなく [GitHub Discussions](https://github.com/milmil-dev/milmil/discussions) を使用してください。Issue は確認済みのバグとトラッキング対象の作業項目に限定されます。

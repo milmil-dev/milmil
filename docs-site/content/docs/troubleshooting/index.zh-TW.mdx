@@ -1,0 +1,48 @@
+---
+title: 常見問題
+description: 常見問題解答與解決方案。
+---
+
+## 一般問題
+
+<Accordions>
+<Accordion title="最低系統需求是什麼？">
+- **CPU：** 2 核心（轉碼建議 4 核心以上）
+- **RAM：** 最低 1 GB，建議 2 GB 以上
+- **儲存空間：** 取決於你的媒體庫大小。milmil 本身的應用程式和資料庫使用不到 500 MB。
+- **FFmpeg：** 媒體資訊擷取和轉碼的必要條件
+</Accordion>
+<Accordion title="milmil 支援多使用者嗎？">
+支援。在 **設定 > 使用者** 中建立額外的使用者帳號。每位使用者都有自己的收藏、觀看進度和偏好設定。
+</Accordion>
+<Accordion title="能從外部網路存取 milmil 嗎？">
+可以，但你需要設定帶有 HTTPS 的反向代理。請參閱[反向代理](/docs/configuration/reverse-proxy)指南。請勿在沒有 HTTPS 的情況下將 milmil 直接暴露在網際網路上。
+</Accordion>
+<Accordion title="支援哪些影片格式？">
+milmil 可以播放 FFmpeg 支援的任何格式。若要直接播放，瀏覽器必須支援該編解碼器（通常是 MP4 中的 H.264/H.265）。其他格式會自動重新封裝或轉碼。
+</Accordion>
+<Accordion title="如何更新 milmil？">
+拉取最新的 Docker 映像檔並重新啟動：
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+資料庫遷移會在啟動時自動套用。
+</Accordion>
+</Accordions>
+
+## 特定問題
+
+<Cards>
+  <Card title="播放問題" href="/docs/troubleshooting/playback">
+    串流、轉碼、彈幕和字幕問題。
+  </Card>
+  <Card title="掃描問題" href="/docs/troubleshooting/scanning">
+    媒體庫掃描、中繼資料比對和檔案偵測。
+  </Card>
+  <Card title="網路問題" href="/docs/troubleshooting/networking">
+    連線、反向代理、WebSocket 和 CORS 問題。
+  </Card>
+</Cards>

@@ -1,0 +1,111 @@
+---
+title: 遷移指南
+description: 從其他動畫媒體伺服器遷移至 milmil。
+---
+
+<Callout type="info">
+milmil 目前尚無自動遷移工具。以下指南說明哪些內容可以手動轉移，哪些需要重新設定。
+</Callout>
+
+<Tabs items={["從 Jellyfin", "從 Plex", "從 Seanime"]}>
+<Tab value="從 Jellyfin">
+
+## 從 Jellyfin 遷移
+
+### 可轉移的內容
+- **媒體檔案** — 將 milmil 指向相同的媒體目錄即可，無需搬移檔案。
+- **檔案組織結構** — milmil 支援相同的每部作品一個資料夾的結構。
+
+### 需要重新設定的內容
+- **中繼資料** — milmil 使用不同的中繼資料提供商（Bangumi、AniList、DandanPlay，而非 TheTVDB/TMDb）。首次掃描時會重新比對所有中繼資料。
+- **觀看進度** — 無法轉移。需從頭開始，或手動標記已看的集數。
+- **使用者帳號** — 需在 milmil 中建立新帳號。
+
+<Callout type="warn">
+milmil 的中繼資料比對專為動畫最佳化。在 Jellyfin 中難以比對的作品，在 milmil 中可能因使用 DandanPlay 和 Bangumi 等動畫專用提供商而比對得更準確。
+</Callout>
+
+### 步驟
+
+<Steps>
+<Step>
+在 Jellyfin 旁邊安裝 milmil（兩者可以共存）。
+</Step>
+<Step>
+將 milmil 指向 Jellyfin 使用的相同媒體目錄。
+</Step>
+<Step>
+在 milmil 中執行完整的媒體庫掃描。
+</Step>
+<Step>
+驗證中繼資料比對結果，手動修正任何比對錯誤。
+</Step>
+<Step>
+如需收藏同步，連接 Bangumi/AniList 帳號。
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="從 Plex">
+
+## 從 Plex 遷移
+
+### 可轉移的內容
+- **媒體檔案** — 將 milmil 指向相同的媒體目錄。
+
+### 需要重新設定的內容
+- **中繼資料** — 全部由動畫專用提供商重新比對。
+- **觀看進度** — 無法轉移。
+- **播放清單/收藏** — 無法轉移。
+- **使用者帳號** — 需建立新帳號。
+
+### 步驟
+
+<Steps>
+<Step>
+在 Plex 旁邊安裝 milmil。
+</Step>
+<Step>
+將 milmil 指向相同的媒體庫路徑。
+</Step>
+<Step>
+執行完整的媒體庫掃描。
+</Step>
+<Step>
+檢視並修正中繼資料比對結果。
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="從 Seanime">
+
+## 從 Seanime 遷移
+
+### 可轉移的內容
+- **媒體檔案** — 相同的目錄結構。
+- **AniList 資料** — 如果你在 Seanime 中使用了 AniList，在 milmil 中連接相同的 AniList 帳號即可同步你的收藏。
+
+### 需要重新設定的內容
+- **本機中繼資料** — 需重新掃描和比對。
+- **下載規則** — RSS 訂閱需重新建立。
+- **設定** — 所有應用程式設定。
+
+### 步驟
+
+<Steps>
+<Step>
+安裝 milmil 並指向你的動畫目錄。
+</Step>
+<Step>
+連接你的 AniList 帳號以恢復收藏資料。
+</Step>
+<Step>
+執行完整的媒體庫掃描。
+</Step>
+<Step>
+重新建立任何 RSS 訂閱或下載規則。
+</Step>
+</Steps>
+
+</Tab>
+</Tabs>

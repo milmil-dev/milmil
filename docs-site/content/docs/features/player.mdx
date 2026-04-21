@@ -1,0 +1,70 @@
+---
+title: Video Player
+description: A VideoJS-based player with plugin architecture, danmaku overlay, and full playback control.
+---
+
+## Overview
+
+milmil's video player is built on VideoJS with a custom dark theme and a modular plugin system. It supports HLS streaming, on-the-fly MKV-to-MP4 container remuxing, and direct stream URLs.
+
+## Plugin System
+
+The player is extended through a set of built-in plugins, each handling a specific concern.
+
+### Playback Plugin
+
+- Playback speed control (0.25x–4x)
+- Auto-advance to the next episode
+- A-B loop for replaying specific segments
+- Skip intro/outro segments
+
+### Subtitle Plugin
+
+- Multiple subtitle track selection (embedded and external)
+- Style customization — font family, size, color, outline, and positioning
+- Drag-and-drop `.srt`, `.ass`, or `.vtt` files to load subtitles on the fly
+
+### Keyboard Plugin
+
+- Fully customizable keybindings for all player actions
+- Press `?` to open the keyboard shortcut help overlay
+
+### Media Settings Plugin
+
+- Audio enhancer with equalizer presets
+- Video filters — brightness, contrast, saturation, and hue adjustments
+
+### Gesture Plugin
+
+- Tap to play/pause, double-tap to seek
+- Swipe up/down for volume and brightness on mobile
+- Long-press for fast-forward
+
+### Capture Plugin
+
+- Screenshot the current frame as PNG
+- Record a clip as an animated GIF with configurable duration
+
+## Danmaku Overlay
+
+Real-time bullet comments scroll across the video during playback, sourced from DandanPlay. Density, opacity, font size, and display region are all configurable in-player.
+
+<Callout type="info">
+Danmaku requires the DandanPlay integration to be enabled. See [Integrations](/docs/configuration/integrations).
+</Callout>
+
+## Episode Sidebar
+
+A collapsible sidebar displays all episodes for the current anime. Switch between list and grid views, and jump to any episode without leaving the player.
+
+## Related Recommendations
+
+Below the player, milmil shows related anime based on genre, tags, and franchise relationships — useful for discovering sequels, spin-offs, and similar titles.
+
+## Technical Info Popover
+
+Click the info icon to inspect the current stream's technical details: video resolution, codec, bitrate, container format, and available audio tracks.
+
+## Watch Progress
+
+Playback position is saved automatically every few seconds. When you return, playback resumes exactly where you left off. Progress syncs with Bangumi and AniList when those integrations are connected.

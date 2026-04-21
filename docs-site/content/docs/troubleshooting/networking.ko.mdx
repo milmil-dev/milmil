@@ -1,0 +1,53 @@
+---
+title: 네트워크 문제
+description: 연결, 리버스 프록시, WebSocket 문제를 해결합니다.
+---
+
+<Accordions>
+<Accordion title="네트워크의 다른 기기에서 milmil에 접근할 수 없음">
+**해결 방법:**
+
+1. milmil이 `127.0.0.1` (localhost 전용)이 아닌 `0.0.0.0`에서 수신 대기하고 있는지 확인하세요
+2. 방화벽 규칙을 확인하세요 — 포트 3000 (웹)과 8080 (API)이 열려 있어야 합니다
+3. IP 주소로 접근을 시도하세요 (예: `http://192.168.1.100:3000`)
+4. Docker의 경우 포트가 `-p 3000:3000 -p 8080:8080`으로 매핑되어 있는지 확인하세요
+</Accordion>
+
+<Accordion title="리버스 프록시에서 502 Bad Gateway">
+**일반적인 원인:**
+
+1. milmil 서비스가 실행되지 않음 — `docker ps`로 확인하세요
+2. 프록시 설정에서 잘못된 업스트림 포트
+3. milmil이 HTTP만 제공하는데 프록시가 업스트림에 HTTPS를 시도
+
+**해결 방법:** 서비스가 실행 중인지 확인한 다음, 프록시 오류 로그를 확인하세요 (Nginx의 경우 `/var/log/nginx/error.log`).
+</Accordion>
+
+<Accordion title="WebSocket 연결 실패">
+**증상:** 탄막이 로드되지 않음, 알림이 실시간으로 업데이트되지 않음.
+
+**해결 방법:**
+
+1. 리버스 프록시가 WebSocket 업그레이드 헤더를 전달하는지 확인하세요 — [리버스 프록시](/docs/configuration/reverse-proxy) 참조
+2. `/ws` 및 `/api/` 경로 모두에 WebSocket 지원이 설정되어 있는지 확인하세요
+3. 일부 CDN(Cloudflare 무료 티어)은 WebSocket에 제한이 있습니다 — CDN 설정을 확인하세요
+</Accordion>
+
+<Accordion title="브라우저 콘솔에서 CORS 오류">
+**원인:** API와 프론트엔드가 적절한 CORS 헤더 없이 다른 도메인 또는 포트에 있습니다.
+
+**해결 방법:**
+
+1. 리버스 프록시를 사용하여 프론트엔드와 API를 동일한 도메인에서 제공하세요 (권장)
+2. 별도로 실행하는 경우, milmil의 API는 `CORS_ORIGIN` 환경 변수를 기반으로 CORS 헤더를 자동으로 설정합니다
+</Accordion>
+
+<Accordion title="토렌트 다운로드가 시작되지 않음">
+**해결 방법:**
+
+1. 포트 `42069` (또는 설정한 `TORRENT_LISTEN_PORT`)가 열려 있고 라우터에서 포트 포워딩되어 있는지 확인하세요
+2. DHT는 첫 실행 시 부트스트랩에 시간이 필요합니다 — 몇 분 기다리세요
+3. ISP가 BitTorrent 트래픽을 차단하는지 확인하세요
+4. Docker의 경우 토렌트 포트가 매핑되어야 합니다: `-p 42069:42069/tcp -p 42069:42069/udp`
+</Accordion>
+</Accordions>

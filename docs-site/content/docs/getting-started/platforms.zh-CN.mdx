@@ -1,0 +1,155 @@
+---
+title: 平台指南
+description: Synology、Unraid、TrueNAS 和树莓派的安装指南。
+---
+
+<Tabs items={["Synology", "Unraid", "TrueNAS", "Raspberry Pi"]}>
+<Tab value="Synology">
+
+## Synology NAS (DSM 7+)
+
+<Steps>
+<Step>
+### 安装 Container Manager
+
+打开**套件中心**，安装 **Container Manager**（原 Docker）。
+</Step>
+<Step>
+### 创建项目目录
+
+通过 SSH 登录 NAS 或使用 File Station 创建 `/docker/milmil/` 目录。
+
+<Files>
+  <Folder name="docker" defaultOpen>
+    <Folder name="milmil" defaultOpen>
+      <File name=".env" />
+      <File name="docker-compose.yml" />
+      <Folder name="data" />
+    </Folder>
+  </Folder>
+</Files>
+</Step>
+<Step>
+### 上传 docker-compose.yml 和 .env
+
+复制生产环境的 compose 文件和环境变量。参见 [Docker 部署](/docs/getting-started/docker)。
+</Step>
+<Step>
+### 通过 Container Manager 启动
+
+在 Container Manager 中，前往**项目 > 新建**。选择 `docker-compose.yml` 文件并启动项目。
+</Step>
+</Steps>
+
+<Callout type="warn">
+**权限：** Synology 容器默认以 root 用户运行。确保你的共享文件夹权限允许读取动画媒体库目录。将卷挂载设置为共享文件夹路径（例如 `/volume1/media/anime`）。
+</Callout>
+
+</Tab>
+<Tab value="Unraid">
+
+## Unraid
+
+<Steps>
+<Step>
+### 安装 Docker Compose Manager
+
+在 Unraid 的**社区应用**商店中，安装 **Docker Compose Manager** 插件。
+</Step>
+<Step>
+### 创建 compose 堆栈
+
+使用 milmil 的 `docker-compose.yml` 和 `.env` 文件添加一个新堆栈。参见 [Docker 部署](/docs/getting-started/docker)。
+</Step>
+<Step>
+### 配置路径
+
+映射你的媒体共享目录：
+
+```yaml
+volumes:
+  - /mnt/user/media/anime:/media/anime
+  - /mnt/user/appdata/milmil:/data
+```
+</Step>
+<Step>
+### 启动堆栈
+
+在 Docker Compose Manager 界面中应用 compose 堆栈。
+</Step>
+</Steps>
+
+<Callout type="info">
+使用 `/mnt/user/appdata/milmil` 存放持久化数据，以符合 Unraid 惯例。
+</Callout>
+
+</Tab>
+<Tab value="TrueNAS">
+
+## TrueNAS SCALE
+
+<Steps>
+<Step>
+### 导航到应用
+
+在 TrueNAS SCALE Web 界面中，前往**应用 > 发现应用**。
+</Step>
+<Step>
+### 自定义应用
+
+点击**自定义应用**，使用 milmil 的 compose 文件配置 Docker Compose 部署。
+</Step>
+<Step>
+### 配置存储
+
+映射你的数据集路径：
+
+```yaml
+volumes:
+  - /mnt/pool/media/anime:/media/anime
+  - /mnt/pool/apps/milmil:/data
+```
+</Step>
+</Steps>
+
+<Callout type="warn">
+TrueNAS SCALE 底层使用 Kubernetes 来运行自定义应用。请确保你的存储池路径正确且可访问。
+</Callout>
+
+</Tab>
+<Tab value="Raspberry Pi">
+
+## 树莓派 (4/5)
+
+<Callout type="warn">
+树莓派的 CPU 转码能力有限。直接播放和容器重封装效果良好，但 HLS 转码会比较慢。建议使用预编码的 MP4 文件以获得最佳体验。
+</Callout>
+
+<Steps>
+<Step>
+### 安装 Docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+```
+
+注销并重新登录以使用户组变更生效。
+</Step>
+<Step>
+### 克隆并启动
+
+```bash
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
+docker compose up -d
+```
+</Step>
+</Steps>
+
+<Callout type="info">
+建议使用 SSD（通过 USB 3.0 连接）代替 SD 卡作为数据卷 — SD 卡的写入寿命有限，且数据库操作速度较慢。
+</Callout>
+
+</Tab>
+</Tabs>

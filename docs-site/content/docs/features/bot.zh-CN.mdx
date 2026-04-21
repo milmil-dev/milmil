@@ -1,0 +1,62 @@
+---
+title: 机器人与通知
+description: 设置 Discord 和 Telegram 机器人，支持交互式命令和推送通知。
+---
+
+## 概览
+
+milmil 支持通过 Telegram、Discord 和通用 Webhook 进行交互式机器人命令和推送通知。机器人是一等公民 — 它们可以搜索动画、管理下载、查看时间表和控制订阅。
+
+<Cards>
+  <Card title="设置指南" href="/docs/configuration/notifications">
+    Telegram、Discord 和 Webhook 的分步设置教程。
+  </Card>
+</Cards>
+
+## 机器人命令
+
+Telegram 和 Discord 机器人支持相同的命令集：
+
+| 命令 | 说明 |
+|---|---|
+| `/start` | 欢迎消息和命令列表 |
+| `/schedule` | 按星期分组的每周播出时间表 |
+| `/search <query>` | 按标题搜索动画 |
+| `/detail <id>` | 动画详情，包含封面图片和评分 |
+| `/downloads` | 活跃下载及进度条 |
+| `/subscribe <anime>` | 设置新剧集的自动下载 |
+| `/status` | 系统概览（运行时间、磁盘、活跃流） |
+| `/mylist [status]` | 按状态筛选的动画收藏 |
+| `/continue` | 最近观看的动画及续播链接 |
+
+## 交互功能
+
+命令支持内联按钮以便快速操作：
+
+- **搜索结果** — 查看详情、订阅或下载按钮
+- **下载列表** — 暂停、恢复或取消按钮
+- **动画详情** — 订阅、添加到收藏或开始播放
+
+<Callout type="info">
+Discord 使用带自动补全的斜杠命令。Telegram 使用内联键盘和回调按钮。
+</Callout>
+
+## 推送通知
+
+配置哪些事件触发通知：
+
+| 事件 | 说明 |
+|---|---|
+| 下载开始 | RSS 规则触发新下载 |
+| 下载完成 | 下载成功完成 |
+| 下载失败 | 下载遇到错误 |
+| 媒体库扫描完成 | 媒体库扫描处理完毕 |
+| 系统错误 | 后台任务意外失败 |
+
+通知包含富嵌入（Discord）或格式化消息（Telegram），附带动画封面图片和元数据。
+
+## 安全性
+
+<Callout type="warn">
+请务必配置**允许的聊天 ID**（Telegram）或**允许的服务器 ID**（Discord），以限制谁可以与你的机器人交互。如果没有这些限制，任何发现你机器人的人都可以控制你的 milmil 实例。
+</Callout>

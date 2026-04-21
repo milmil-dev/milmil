@@ -1,0 +1,111 @@
+---
+title: 迁移指南
+description: 从其他动画媒体服务器迁移到 milmil。
+---
+
+<Callout type="info">
+milmil 目前尚未提供自动迁移工具。以下指南说明了哪些数据可以手动迁移，哪些需要重新设置。
+</Callout>
+
+<Tabs items={["From Jellyfin", "From Plex", "From Seanime"]}>
+<Tab value="From Jellyfin">
+
+## 从 Jellyfin 迁移
+
+### 可迁移的内容
+- **媒体文件** — 将 milmil 指向同一个媒体目录即可，无需移动文件。
+- **文件组织** — milmil 支持相同的按番剧分文件夹结构。
+
+### 需要重新设置的内容
+- **元数据** — milmil 使用不同的元数据提供商（Bangumi、AniList、DandanPlay，而非 TheTVDB/TMDb）。所有元数据将在首次扫描时重新匹配。
+- **观看进度** — 无法迁移。需要重新开始或手动标记已看的剧集。
+- **用户账户** — 需要在 milmil 中创建新账户。
+
+<Callout type="warn">
+milmil 的元数据匹配专门针对动画进行了优化。由于使用了 DandanPlay 和 Bangumi 等动画专用提供商，在 Jellyfin 中难以匹配的番剧在 milmil 中可能匹配得更准确。
+</Callout>
+
+### 步骤
+
+<Steps>
+<Step>
+将 milmil 与 Jellyfin 并行安装（两者可以共存）。
+</Step>
+<Step>
+将 milmil 指向 Jellyfin 使用的同一个媒体目录。
+</Step>
+<Step>
+在 milmil 中运行完整的媒体库扫描。
+</Step>
+<Step>
+验证元数据匹配结果，手动纠正任何错误匹配。
+</Step>
+<Step>
+如需收藏同步，连接 Bangumi/AniList 账户。
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="From Plex">
+
+## 从 Plex 迁移
+
+### 可迁移的内容
+- **媒体文件** — 将 milmil 指向同一个媒体目录即可。
+
+### 需要重新设置的内容
+- **元数据** — 全部从动画专用提供商重新匹配。
+- **观看进度** — 无法迁移。
+- **播放列表/收藏** — 无法迁移。
+- **用户账户** — 需要创建新账户。
+
+### 步骤
+
+<Steps>
+<Step>
+将 milmil 与 Plex 并行安装。
+</Step>
+<Step>
+将 milmil 指向同一个媒体库路径。
+</Step>
+<Step>
+运行完整的媒体库扫描。
+</Step>
+<Step>
+检查并纠正元数据匹配结果。
+</Step>
+</Steps>
+
+</Tab>
+<Tab value="From Seanime">
+
+## 从 Seanime 迁移
+
+### 可迁移的内容
+- **媒体文件** — 相同的目录结构。
+- **AniList 数据** — 如果你在 Seanime 中使用了 AniList，在 milmil 中连接相同的 AniList 账户即可同步你的收藏。
+
+### 需要重新设置的内容
+- **本地元数据** — 需要重新扫描和重新匹配。
+- **下载规则** — RSS 订阅需要重新创建。
+- **设置** — 所有应用设置。
+
+### 步骤
+
+<Steps>
+<Step>
+安装 milmil 并将其指向你的动画目录。
+</Step>
+<Step>
+连接你的 AniList 账户以恢复收藏数据。
+</Step>
+<Step>
+运行完整的媒体库扫描。
+</Step>
+<Step>
+重新创建 RSS 订阅或下载规则。
+</Step>
+</Steps>
+
+</Tab>
+</Tabs>

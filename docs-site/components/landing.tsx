@@ -70,11 +70,20 @@ function TMDBLogo() {
     </svg>
   );
 }
+function TraktLogo() {
+  return (
+    <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
+      <rect width="32" height="32" rx="6" fill="#ED1C24" />
+      <text x="16" y="21" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="800" fontFamily="sans-serif">T</text>
+    </svg>
+  );
+}
 
 const INTEGRATIONS = [
   { name: 'Bangumi', Logo: BangumiLogo },
   { name: 'AniList', Logo: AniListLogo },
   { name: 'DandanPlay', Logo: DandanPlayLogo },
+  { name: 'Trakt.tv', Logo: TraktLogo },
   { name: 'rclone', Logo: RcloneLogo },
   { name: 'FFmpeg', Logo: FFmpegLogo },
   { name: 'TMDB', Logo: TMDBLogo },
@@ -130,7 +139,7 @@ export function LandingPage({ lang }: { lang: string }) {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }} className="relative z-10 text-center max-w-[720px] px-6">
-          <h1 className="landing-title text-[80px] max-md:text-[48px] font-extrabold tracking-[-3px] leading-none mb-5 drop-shadow-[0_4px_24px_rgba(232,143,170,0.2)]">milmil</h1>
+          <h1 className="landing-title text-[80px] max-md:text-[48px] font-extrabold tracking-[-3px] leading-none mb-5 drop-shadow-[0_4px_24px_rgba(167,139,250,0.2)]">milmil</h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl text-white/65 mb-3.5 tracking-wide">
             {i18n._(msg`landing.tagline`)}
           </motion.p>
@@ -138,7 +147,7 @@ export function LandingPage({ lang }: { lang: string }) {
             {i18n._(msg`landing.desc`)}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex gap-3 justify-center flex-wrap">
-            <a href={`/${lang}/docs`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(232,143,170,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(232,143,170,0.35)] transition-all">
+            <a href={`/${lang}/docs`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(167,139,250,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(167,139,250,0.35)] transition-all">
               {i18n._(msg`landing.getStarted`)}
             </a>
             <a href="https://github.com/milmil-dev/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
@@ -189,7 +198,7 @@ export function LandingPage({ lang }: { lang: string }) {
 
       {/* ═══ DEPLOY ═══ */}
       <section className="relative py-20 px-6 overflow-hidden bg-gradient-to-b from-[--mm-bg] via-[#0c0a12] to-[--mm-bg]">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(232,143,170,0.03)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.03)_0%,transparent_70%)] pointer-events-none" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative z-10 max-w-[680px] mx-auto text-center">
           <h2 className="text-[32px] font-bold mb-3">{i18n._(msg`landing.deployTitle`)}</h2>
           <p className="text-[15px] text-white/40 mb-10">{i18n._(msg`landing.deployDesc`)}</p>
@@ -233,12 +242,12 @@ export function LandingPage({ lang }: { lang: string }) {
 
       {/* ═══ CTA ═══ */}
       <section className="relative py-24 px-6 text-center">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(232,143,170,0.03)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.03)_0%,transparent_70%)] pointer-events-none" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-4xl font-bold mb-3.5">{i18n._(msg`landing.ctaTitle`)}</h2>
           <p className="text-[15px] text-white/40 max-w-[420px] mx-auto mb-8">{i18n._(msg`landing.ctaDesc`)}</p>
           <div className="flex gap-3 justify-center">
-            <a href={`/${lang}/docs/getting-started/installation`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(232,143,170,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(232,143,170,0.35)] transition-all">
+            <a href={`/${lang}/docs/getting-started/installation`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(167,139,250,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(167,139,250,0.35)] transition-all">
               {i18n._(msg`landing.readDocs`)}
             </a>
             <a href="https://github.com/milmil-dev/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
@@ -276,16 +285,24 @@ function SSFrame({ title, caption, children, delay }: { title: string; caption: 
 function MockHome() {
   return (
     <div className="flex h-full bg-gradient-to-br from-[#0f0f18] to-[#161624]">
-      <div className="w-12 bg-white/[0.015] border-r border-white/5 flex flex-col items-center pt-2.5 gap-2.5">
+      <div className="w-12 bg-white/[0.015] border-r border-white/5 flex flex-col items-center pt-2.5 gap-2">
         <div className="w-[22px] h-[22px] rounded-[5px] bg-[--mm-accent]/20 border border-[--mm-accent]/25" />
-        {[1, 2, 3, 4].map((j) => <div key={j} className="w-[22px] h-[22px] rounded-[5px] bg-white/5" />)}
+        {[1, 2, 3].map((j) => <div key={j} className="w-[22px] h-[22px] rounded-[5px] bg-white/5" />)}
+        <div className="flex-1" />
+        {[1, 2, 3, 4, 5].map((j) => <div key={j} className="w-[22px] h-[22px] rounded-[5px] bg-white/5" />)}
+        <div className="w-5 h-5 rounded-full bg-white/10 mb-1" />
       </div>
       <div className="flex-1 p-3.5">
-        <div className="h-[120px] rounded-lg bg-gradient-to-br from-[--mm-accent]/[0.12] to-blue-500/[0.08] mb-3 flex items-end p-3.5">
-          <span className="text-[11px] text-white/40 font-semibold">Trending</span>
+        <div className="h-[110px] rounded-lg bg-gradient-to-br from-[--mm-accent]/[0.12] to-indigo-500/[0.08] mb-3 relative overflow-hidden">
+          <div className="absolute bottom-0 inset-x-0 p-3">
+            <div className="w-24 h-2 rounded bg-white/20 mb-1.5" />
+            <div className="w-16 h-1.5 rounded bg-white/10" />
+          </div>
         </div>
         <div className="text-[10px] text-white/30 mb-2 font-semibold tracking-wider">CONTINUE WATCHING</div>
-        <div className="flex gap-2">{[1, 2, 3].map((j) => <div key={j} className="flex-1 h-[70px] rounded-md bg-white/[0.025] border border-white/[0.04]" />)}</div>
+        <div className="flex gap-2 mb-3">{[1, 2, 3].map((j) => <div key={j} className="flex-1 h-16 rounded-md bg-white/[0.025] border border-white/[0.04]" />)}</div>
+        <div className="text-[10px] text-white/30 mb-2 font-semibold tracking-wider">TRENDING</div>
+        <div className="flex gap-1.5">{[1, 2, 3, 4].map((j) => <div key={j} className="flex-1 h-[52px] rounded bg-white/[0.02] border border-white/[0.03]" />)}</div>
       </div>
     </div>
   );
@@ -295,7 +312,7 @@ function MockDetail() {
   return (
     <div className="h-full bg-gradient-to-br from-[#0f0f18] to-[#161624] p-3.5">
       <div className="flex gap-3.5 mb-3.5">
-        <div className="w-20 h-28 rounded-md bg-gradient-to-br from-[--mm-accent]/15 to-pink-500/10 shrink-0" />
+        <div className="w-20 h-28 rounded-md bg-gradient-to-br from-[--mm-accent]/15 to-violet-500/10 shrink-0" />
         <div>
           <div className="text-sm font-bold text-white/80 mb-1.5">Anime Title</div>
           <div className="text-[10px] text-white/30 mb-2">♡ 8.5 · 24 eps · 2024</div>
@@ -318,14 +335,25 @@ function MockPlayer() {
     <div className="h-full bg-black relative flex items-center justify-center">
       <div className="absolute inset-0 bg-gradient-to-br from-[rgba(20,10,30,0.6)] to-[rgba(10,10,20,0.4)]" />
       <div className="w-12 h-12 rounded-full bg-white/15 flex items-center justify-center z-10 text-base text-white pl-[3px]">▶</div>
-      <span className="absolute z-10 top-[30%] left-[20%] text-[11px] text-white/60">すごい！</span>
-      <span className="absolute z-10 top-[45%] left-[55%] text-[11px] text-white/60">哈哈哈哈</span>
-      <span className="absolute z-10 top-[25%] left-[65%] text-[11px] text-white/60">www</span>
-      <span className="absolute z-10 top-[55%] left-[30%] text-[11px] text-white/60">lol</span>
-      <div className="absolute bottom-0 inset-x-0 z-10 px-3.5 py-2.5 bg-gradient-to-t from-black/80 to-transparent flex items-center gap-2">
-        <span className="text-[9px] text-white/40">12:34</span>
-        <div className="flex-1 h-[3px] rounded-sm bg-white/15 overflow-hidden"><div className="w-[35%] h-full rounded-sm bg-[--mm-accent]" /></div>
-        <span className="text-[9px] text-white/40">35:20</span>
+      <span className="absolute z-10 top-[22%] left-[15%] text-[11px] text-white/60 animate-[slideLeft_8s_linear_infinite]">すごい！</span>
+      <span className="absolute z-10 top-[38%] left-[50%] text-[11px] text-white/60 animate-[slideLeft_10s_linear_infinite]">哈哈哈哈</span>
+      <span className="absolute z-10 top-[28%] left-[65%] text-[10px] text-white/50 animate-[slideLeft_7s_linear_infinite]">www</span>
+      <span className="absolute z-10 top-[48%] left-[25%] text-[11px] text-white/55 animate-[slideLeft_9s_linear_infinite]">草</span>
+      <span className="absolute z-10 top-[55%] left-[70%] text-[10px] text-white/45 animate-[slideLeft_11s_linear_infinite]">名シーン</span>
+      <div className="absolute top-3 right-3 z-10 flex gap-1.5">
+        <div className="px-2 py-0.5 rounded bg-black/40 text-[8px] text-white/40 border border-white/10">弾幕</div>
+        <div className="px-2 py-0.5 rounded bg-black/40 text-[8px] text-white/40 border border-white/10">字幕</div>
+      </div>
+      <div className="absolute bottom-0 inset-x-0 z-10 px-3.5 py-2.5 bg-gradient-to-t from-black/80 to-transparent">
+        <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex-1 h-[3px] rounded-sm bg-white/15 overflow-hidden"><div className="w-[35%] h-full rounded-sm bg-[--mm-accent]" /></div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] text-white/40">12:34 / 24:10</span>
+          <div className="flex-1" />
+          <span className="text-[8px] text-white/30">1080p</span>
+          <span className="text-[8px] text-white/30">1.0x</span>
+        </div>
       </div>
     </div>
   );

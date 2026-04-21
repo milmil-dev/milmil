@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import { createElement } from 'react';
 
 const navLabels: Record<string, { docs: string; github: string }> = {
   en: { docs: 'Documentation', github: 'GitHub' },
@@ -13,8 +14,14 @@ export function baseOptions(locale: string): BaseLayoutProps {
   const labels = navLabels[locale] ?? navLabels.en;
   return {
     i18n: true,
+    githubUrl: 'https://github.com/milmil-dev/milmil',
     nav: {
-      title: 'milmil',
+      title: createElement(
+        'span',
+        { className: 'inline-flex items-center gap-2' },
+        createElement('img', { src: '/logo.svg', alt: 'milmil', className: 'h-6 w-6' }),
+        'milmil',
+      ),
       url: `/${locale}`,
     },
     links: [

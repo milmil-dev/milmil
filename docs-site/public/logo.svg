@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <!-- Left circle (indigo) -->
+  <circle cx="15" cy="20" r="13" fill="#4338CA" opacity="0.75"/>
+  <!-- Right circle (violet) -->
+  <circle cx="25" cy="20" r="13" fill="#5B21B6" opacity="0.8"/>
+  <!-- Vesica piscis intersection — brighter -->
+  <clipPath id="left-clip">
+    <circle cx="15" cy="20" r="13"/>
+  </clipPath>
+  <clipPath id="right-clip">
+    <circle cx="25" cy="20" r="13"/>
+  </clipPath>
+  <circle cx="25" cy="20" r="13" clip-path="url(#left-clip)" fill="#7C3AED" opacity="0.9"/>
+  <!-- Play triangle cutout -->
+  <polygon points="18,15 18,25 25,20" fill="#0A0A0F"/>
+</svg>

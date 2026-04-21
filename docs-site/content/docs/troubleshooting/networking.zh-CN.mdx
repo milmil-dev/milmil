@@ -1,0 +1,53 @@
+---
+title: 网络问题
+description: 排查连接、反向代理和 WebSocket 问题。
+---
+
+<Accordions>
+<Accordion title="无法从局域网其他设备访问 milmil">
+**解决方案：**
+
+1. 检查 milmil 是否监听在 `0.0.0.0`，而非 `127.0.0.1`（仅本机）
+2. 检查防火墙规则 — 端口 3000（Web）和 8080（API）必须开放
+3. 尝试通过 IP 地址访问（例如 `http://192.168.1.100:3000`）
+4. 在 Docker 中，确保端口已映射：`-p 3000:3000 -p 8080:8080`
+</Accordion>
+
+<Accordion title="反向代理返回 502 Bad Gateway">
+**常见原因：**
+
+1. milmil 服务未运行 — 使用 `docker ps` 检查
+2. 代理配置中的上游端口错误
+3. 代理尝试通过 HTTPS 连接上游，但 milmil 仅提供 HTTP 服务
+
+**解决方案：** 确认服务正在运行，然后检查代理错误日志（Nginx 的日志位于 `/var/log/nginx/error.log`）。
+</Accordion>
+
+<Accordion title="WebSocket 连接失败">
+**症状：** 弹幕无法加载，通知不能实时更新。
+
+**解决方案：**
+
+1. 确保你的反向代理传递了 WebSocket 升级头 — 参见[反向代理](/docs/configuration/reverse-proxy)
+2. 检查 `/ws` 和 `/api/` 路径是否都配置了 WebSocket 支持
+3. 部分 CDN（如 Cloudflare 免费版）对 WebSocket 有限制 — 检查你的 CDN 设置
+</Accordion>
+
+<Accordion title="浏览器控制台出现 CORS 错误">
+**原因：** API 和前端位于不同的域名或端口，且没有正确的 CORS 头。
+
+**解决方案：**
+
+1. 使用反向代理将前端和 API 部署在同一域名下（推荐）
+2. 如果分开运行，milmil 的 API 会根据 `CORS_ORIGIN` 环境变量自动设置 CORS 头
+</Accordion>
+
+<Accordion title="种子下载无法启动">
+**解决方案：**
+
+1. 检查端口 `42069`（或你配置的 `TORRENT_LISTEN_PORT`）是否已开放并在路由器上做了端口转发
+2. DHT 在首次运行时需要时间引导 — 请等待几分钟
+3. 检查你的 ISP 是否屏蔽了 BitTorrent 流量
+4. 在 Docker 中，种子端口必须映射：`-p 42069:42069/tcp -p 42069:42069/udp`
+</Accordion>
+</Accordions>

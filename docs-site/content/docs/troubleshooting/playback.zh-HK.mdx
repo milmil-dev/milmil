@@ -1,0 +1,49 @@
+---
+title: 播放問題
+description: 排解串流、轉碼同彈幕問題。
+---
+
+<Accordions>
+<Accordion title="影片無法播放 / 黑屏">
+**原因：** 影片編解碼器唔支援喺你嘅瀏覽器直接播放。
+
+**解決方法：**
+1. 喺媒體庫檔案瀏覽器檢查檔案嘅編解碼器（例如 HEVC、AV1）
+2. milmil 應該會自動轉為重新封裝或轉碼 — 檢查 FFmpeg 係咪已安裝並且可存取
+3. 試吓用唔同嘅瀏覽器（Chrome 嘅編解碼器支援最好）
+</Accordion>
+
+<Accordion title="轉碼速度好慢">
+**原因：** 軟件轉碼使用 CPU，處理 HD/4K 內容會好慢。
+
+**解決方法：**
+1. 啟用硬件加速 — 參閱[效能調校](/docs/configuration/performance)
+2. 低功耗裝置建議用 `ultrafast` 或 `fast` 預設
+3. 將檔案預先編碼為 H.264 MP4 嚟實現直接播放（唔使轉碼）
+</Accordion>
+
+<Accordion title="彈幕（彈幕評論）無顯示">
+**原因：** DandanPlay 整合未設定或者呢集無可用嘅評論。
+
+**解決方法：**
+1. 確認已設定 DandanPlay 憑證 — 參閱[整合設定](/docs/configuration/integrations)
+2. 檢查該集係咪透過 DandanPlay 比對（檔案雜湊比對）
+3. 部分劇集可能有好少或者無評論
+4. 如果用緊反向代理，確保 WebSocket 連線正常 — 參閱[反向代理](/docs/configuration/reverse-proxy)
+</Accordion>
+
+<Accordion title="字幕無顯示">
+**解決方法：**
+1. 檢查係咪已經喺播放器控制列選擇咗字幕軌道
+2. 內嵌字幕方面，milmil 會自動從 MKV/MP4 容器擷取
+3. 外掛字幕方面，確保 `.srt`/`.ass`/`.vtt` 檔案同影片放喺同一個目錄，並且有相同嘅基本檔名
+4. 帶有複雜樣式嘅 ASS 字幕喺網頁播放器可能無法完美呈現
+</Accordion>
+
+<Accordion title="影片緩衝 / 拖動好慢">
+**解決方法：**
+1. 如果用緊 HLS 轉碼，之前拖動過嘅片段會被快取 — 之後嘅拖動會快啲
+2. 檢查伺服器同用戶端之間嘅網路頻寬
+3. 遠端存取嘅話，確保反向代理無緩衝串流 — 參閱[反向代理](/docs/configuration/reverse-proxy)
+</Accordion>
+</Accordions>

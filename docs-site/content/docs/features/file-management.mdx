@@ -1,0 +1,70 @@
+---
+title: File Management
+description: Rename files with pattern templates and detect duplicates across your library.
+---
+
+## Overview
+
+milmil provides file management tools to keep your library organized. Rename files in bulk using configurable patterns, and detect duplicate files to reclaim storage space.
+
+## File Rename
+
+Rename media files using pattern templates with a live preview before applying changes.
+
+<Steps>
+<Step>
+### Select files
+
+Open the file rename tool from a library detail page and select the files to rename.
+</Step>
+<Step>
+### Configure pattern
+
+Choose a rename pattern using available tokens, e.g. `[SubGroup] Title - E01.mkv`.
+</Step>
+<Step>
+### Preview and apply
+
+Review the before/after preview for each file, then apply the rename.
+</Step>
+</Steps>
+
+<Callout type="info">
+All rename operations are tracked in the rename history, so you can review past changes at any time.
+</Callout>
+
+## Duplicate Detection
+
+Automatically identify duplicate files within a library and clean them up in bulk.
+
+### Detection Methods
+
+| Method | Description |
+|--------|-------------|
+| **File hash** | Exact match by content hash (most accurate) |
+| **Name similarity** | Fuzzy match on file names |
+| **Episode match** | Files matched to the same anime episode |
+
+### Cleanup Workflow
+
+<Steps>
+<Step>
+### Scan for duplicates
+
+Run duplicate detection on a library to surface matching file groups.
+</Step>
+<Step>
+### Compare files
+
+Use the file path comparison view to decide which copy to keep.
+</Step>
+<Step>
+### Bulk cleanup
+
+Select duplicates across multiple groups and delete or move them in one operation.
+</Step>
+</Steps>
+
+<Callout type="warn">
+Deleted files are permanently removed. Double-check the comparison view before confirming a bulk delete.
+</Callout>

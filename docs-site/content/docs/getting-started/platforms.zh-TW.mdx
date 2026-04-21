@@ -1,0 +1,155 @@
+---
+title: 平台指南
+description: 針對 Synology、Unraid、TrueNAS 和 Raspberry Pi 的平台專屬安裝指南。
+---
+
+<Tabs items={["Synology", "Unraid", "TrueNAS", "Raspberry Pi"]}>
+<Tab value="Synology">
+
+## Synology NAS（DSM 7+）
+
+<Steps>
+<Step>
+### 安裝 Container Manager
+
+開啟 **套件中心**，安裝 **Container Manager**（前身為 Docker）。
+</Step>
+<Step>
+### 建立專案目錄
+
+透過 SSH 登入 NAS 或使用 File Station 建立 `/docker/milmil/`。
+
+<Files>
+  <Folder name="docker" defaultOpen>
+    <Folder name="milmil" defaultOpen>
+      <File name=".env" />
+      <File name="docker-compose.yml" />
+      <Folder name="data" />
+    </Folder>
+  </Folder>
+</Files>
+</Step>
+<Step>
+### 上傳 docker-compose.yml 和 .env
+
+複製正式環境的 compose 檔案和環境變數。請參閱 [Docker 部署](/docs/getting-started/docker)。
+</Step>
+<Step>
+### 透過 Container Manager 啟動
+
+在 Container Manager 中，前往 **專案 > 新增**。選擇 `docker-compose.yml` 檔案並啟動專案。
+</Step>
+</Steps>
+
+<Callout type="warn">
+**權限問題：** Synology 容器預設以 root 身分執行。確保你的共用資料夾權限允許讀取動畫媒體庫目錄。將磁碟區掛載設定為共用資料夾路徑（例如 `/volume1/media/anime`）。
+</Callout>
+
+</Tab>
+<Tab value="Unraid">
+
+## Unraid
+
+<Steps>
+<Step>
+### 安裝 Docker Compose Manager
+
+在 Unraid 的 **Community Applications** 商店中，安裝 **Docker Compose Manager** 外掛。
+</Step>
+<Step>
+### 建立 compose 堆疊
+
+新增一個堆疊，填入 milmil 的 `docker-compose.yml` 和 `.env` 檔案。請參閱 [Docker 部署](/docs/getting-started/docker)。
+</Step>
+<Step>
+### 設定路徑
+
+掛載你的媒體共享：
+
+```yaml
+volumes:
+  - /mnt/user/media/anime:/media/anime
+  - /mnt/user/appdata/milmil:/data
+```
+</Step>
+<Step>
+### 啟動堆疊
+
+在 Docker Compose Manager 介面中套用 compose 堆疊。
+</Step>
+</Steps>
+
+<Callout type="info">
+請使用 `/mnt/user/appdata/milmil` 作為持久化資料目錄，以遵循 Unraid 慣例。
+</Callout>
+
+</Tab>
+<Tab value="TrueNAS">
+
+## TrueNAS SCALE
+
+<Steps>
+<Step>
+### 前往應用程式
+
+在 TrueNAS SCALE 網頁介面中，前往 **應用程式 > 探索應用程式**。
+</Step>
+<Step>
+### 自訂應用程式
+
+點選 **自訂應用程式**，並使用 milmil compose 檔案設定 Docker Compose 部署。
+</Step>
+<Step>
+### 設定儲存
+
+掛載你的資料集路徑：
+
+```yaml
+volumes:
+  - /mnt/pool/media/anime:/media/anime
+  - /mnt/pool/apps/milmil:/data
+```
+</Step>
+</Steps>
+
+<Callout type="warn">
+TrueNAS SCALE 底層使用 Kubernetes 來管理自訂應用程式。請確保你的儲存池路徑正確且可存取。
+</Callout>
+
+</Tab>
+<Tab value="Raspberry Pi">
+
+## Raspberry Pi（4/5）
+
+<Callout type="warn">
+Raspberry Pi 的 CPU 轉碼能力有限。直接播放和容器重新封裝表現良好，但 HLS 轉碼會很慢。建議使用預先編碼的 MP4 檔案以獲得最佳效果。
+</Callout>
+
+<Steps>
+<Step>
+### 安裝 Docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+```
+
+登出後重新登入，使群組變更生效。
+</Step>
+<Step>
+### 複製並啟動
+
+```bash
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
+docker compose up -d
+```
+</Step>
+</Steps>
+
+<Callout type="info">
+建議使用 SSD（透過 USB 3.0 連接）而非 SD 卡作為資料磁碟區 — SD 卡的寫入壽命有限，且資料庫操作速度較慢。
+</Callout>
+
+</Tab>
+</Tabs>

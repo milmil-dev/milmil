@@ -1,0 +1,49 @@
+---
+title: 播放问题
+description: 排查串流、转码和弹幕问题。
+---
+
+<Accordions>
+<Accordion title="视频无法播放 / 黑屏">
+**原因：** 你的浏览器不支持该视频编解码器的直接播放。
+
+**解决方案：**
+1. 在媒体库文件浏览器中查看文件的编解码器（如 HEVC、AV1）
+2. milmil 应自动回退到重封装或转码 — 检查 FFmpeg 是否已安装并可访问
+3. 尝试使用其他浏览器（Chrome 的编解码器支持最全面）
+</Accordion>
+
+<Accordion title="转码非常慢">
+**原因：** 软件转码使用 CPU，对于高清/4K 内容速度较慢。
+
+**解决方案：**
+1. 启用硬件加速 — 参见[性能调优](/docs/configuration/performance)
+2. 在低功耗设备上使用 `ultrafast` 或 `fast` 预设
+3. 将文件预编码为 H.264 MP4 格式以实现直接播放（无需转码）
+</Accordion>
+
+<Accordion title="弹幕（评论弹幕）不显示">
+**原因：** 未配置 DandanPlay 集成，或该剧集没有可用的弹幕。
+
+**解决方案：**
+1. 确认已设置 DandanPlay 凭据 — 参见[集成配置](/docs/configuration/integrations)
+2. 检查该剧集是否通过 DandanPlay 匹配（文件哈希匹配）
+3. 部分剧集可能弹幕很少或没有弹幕
+4. 如果使用了反向代理，确保 WebSocket 连接正常 — 参见[反向代理](/docs/configuration/reverse-proxy)
+</Accordion>
+
+<Accordion title="字幕不显示">
+**解决方案：**
+1. 检查播放器控件中是否选择了字幕轨道
+2. 对于内嵌字幕，milmil 会自动从 MKV/MP4 容器中提取
+3. 对于外挂字幕，确保 `.srt`/`.ass`/`.vtt` 文件与视频在同一目录下，且文件名相同
+4. 带有复杂样式的 ASS 字幕在网页播放器中可能无法完美呈现
+</Accordion>
+
+<Accordion title="视频缓冲 / 拖动进度条很慢">
+**解决方案：**
+1. 使用 HLS 转码时，已拖动过的片段会被缓存 — 后续拖动会更快
+2. 检查服务器与客户端之间的网络带宽
+3. 远程访问时，确保反向代理没有缓冲串流 — 参见[反向代理](/docs/configuration/reverse-proxy)
+</Accordion>
+</Accordions>

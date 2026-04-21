@@ -1,0 +1,94 @@
+---
+title: 性能调优
+description: 针对生产环境优化 milmil 性能。
+---
+
+## Redis 缓存
+
+<Callout type="info">
+Redis 是可选的，但强烈推荐在生产环境中使用。没有 Redis 时，milmil 使用内存缓存，重启后不会保留。
+</Callout>
+
+```bash
+REDIS_URL=redis://localhost:6379
+```
+
+### 容量建议
+
+| 媒体库规模 | 推荐 Redis 内存 |
+|---|---|
+| < 500 部动画 | 64 MB |
+| 500–2000 部动画 | 256 MB |
+| 2000+ 部动画 | 512 MB+ |
+
+## 转码
+
+### 硬件加速
+
+<Callout type="warn">
+硬件加速可以显著降低转码时的 CPU 占用。没有硬件加速时，单个 1080p 转码流可能占用 100% 的 CPU 核心。
+</Callout>
+
+milmil 支持以下 FFmpeg 硬件加速后端：
+
+| 后端 | 说明 |
+|---|---|
+| **VAAPI** | 视频加速 API（Linux 上的 Intel、AMD） |
+| **NVENC** | NVIDIA GPU 编码 |
+| **QSV** | Intel Quick Sync Video |
+| **VideoToolbox** | macOS 硬件加速 |
+
+在 Docker 中，需要透传 GPU 设备：
+
+```yaml
+# NVIDIA
+devices:
+  - /dev/nvidia0:/dev/nvidia0
+  - /dev/nvidiactl:/dev/nvidiactl
+
+# Intel VAAPI
+devices:
+  - /dev/dri:/dev/dri
+```
+
+### 质量预设
+
+| 预设 | 适用场景 | CPU 占用 |
+|---|---|---|
+| `ultrafast` | 低功耗设备（树莓派） | 最低 |
+| `fast` | 质量与速度平衡 | 中等 |
+| `medium` | 默认 — 画质较好 | 较高 |
+
+## 数据库调优
+
+<Tabs items={["PostgreSQL", "SQLite"]}>
+<Tab value="PostgreSQL">
+
+对于大型媒体库，可以调优 PostgreSQL：
+
+```sql
+-- 连接池（在 DATABASE_URL 中设置）
+-- ?pool_max_conns=20&pool_min_conns=5
+
+-- 推荐的 postgresql.conf 调整
+shared_buffers = 256MB
+effective_cache_size = 1GB
+work_mem = 16MB
+```
+
+</Tab>
+<Tab value="SQLite">
+
+SQLite 适用于中小型媒体库。启用 WAL 模式可以提升并发读取性能（milmil 会自动启用）：
+
+```sql
+PRAGMA journal_mode=WAL;
+PRAGMA busy_timeout=5000;
+```
+
+<Callout type="warn">
+SQLite 的写入并发能力有限。如果你频繁进行扫描或同时运行多个下载任务，建议切换到 PostgreSQL。
+</Callout>
+
+</Tab>
+</Tabs>
