@@ -61,10 +61,15 @@
     </div>
   </div>
   <script>
+    // Whitelist: relative filename, alphanumerics + basic separators, image extension.
+    // Prevents the img.src sink from being fed a javascript: or cross-origin URL.
+    const SAFE_SRC = /^[\w.-]+\.(png|jpe?g|webp)$/;
     const params = new URLSearchParams(window.location.search);
     const src = params.get('src');
     const title = params.get('title') || 'milmil';
-    document.getElementById('screenshot').src = src;
+    if (src && SAFE_SRC.test(src)) {
+      document.getElementById('screenshot').src = src;
+    }
     document.getElementById('title').textContent = title;
   </script>
 </body>
