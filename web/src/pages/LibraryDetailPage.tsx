@@ -27,13 +27,13 @@ import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { DataPagination } from '../components/DataPagination';
 import { LoginModal } from '../components/LoginModal';
+import { PathFieldWithPicker } from '../components/library/FolderPicker';
+import { RenameConfigEditor } from '../components/library/RenameConfigEditor';
 import { MatchModal } from '../components/MatchModal';
 import { Modal } from '../components/Modal';
 import { MotionTable } from '../components/MotionTable';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
-import { RenameConfigEditor } from '../components/library/RenameConfigEditor';
-import { renameApi } from '../lib/api/rename';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
@@ -43,21 +43,21 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../com
 import { useAuth } from '../hooks/use-auth';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import {
+  type CompletenessReport,
+  completenessApi,
+  completenessKeys,
+} from '../lib/api/completeness';
+import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
+import {
   type FileTreeNode,
   libraryApi,
   libraryKeys,
-  mediaFileApi,
   type MediaFileEntry,
   type MediaFilesResponse,
+  mediaFileApi,
 } from '../lib/api/library';
-import {
-  completenessApi,
-  completenessKeys,
-  type CompletenessReport,
-} from '../lib/api/completeness';
-import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
+import { renameApi } from '../lib/api/rename';
 import { cn } from '../lib/utils';
-import { PathFieldWithPicker } from '../components/library/FolderPicker';
 import { useScanStore } from '../store/scan-store';
 
 function formatBytes(bytes: number): string {
@@ -276,7 +276,7 @@ function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
 
   const missingByAnimeID = useMemo(() => {
     const map = new Map<string, CompletenessReport>();
-    (missingSummary ?? []).forEach((r) => map.set(r.anime_id, r));
+    for (const r of missingSummary ?? []) map.set(r.anime_id, r);
     return map;
   }, [missingSummary]);
 
@@ -399,7 +399,9 @@ function FileTable({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState<'filename' | 'size_bytes' | 'match_status' | 'subtitle_count'>('filename');
+  const [sortBy, setSortBy] = useState<
+    'filename' | 'size_bytes' | 'match_status' | 'subtitle_count'
+  >('filename');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
@@ -439,7 +441,16 @@ function FileTable({
   };
 
   const { data, isLoading, isFetching } = useQuery<MediaFilesResponse, Error>({
-    queryKey: ['media-files', libraryId, page, perPage, statusFilter, debouncedSearch, sortBy, sortOrder],
+    queryKey: [
+      'media-files',
+      libraryId,
+      page,
+      perPage,
+      statusFilter,
+      debouncedSearch,
+      sortBy,
+      sortOrder,
+    ],
     queryFn: () =>
       libraryApi.mediaFiles(libraryId, {
         status: statusFilter === 'all' ? undefined : statusFilter,
@@ -821,11 +832,7 @@ function FileTable({
               {selectedCount} {i18n._(msg`library.detail.selected`)}
             </span>
             <div className="w-px h-5 bg-white/10" />
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setBulkMatchOpen(true)}
-            >
+            <Button size="sm" variant="secondary" onClick={() => setBulkMatchOpen(true)}>
               {i18n._(msg`library.detail.bulkMatch`)}
             </Button>
             <Button
@@ -1146,7 +1153,13 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                   onClick={() => setEpisodeStart((n) => Math.max(1, n - 1))}
                   className="w-8 h-8 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-4 h-4"
+                  >
                     <path d="M5 12h14" />
                   </svg>
                 </button>
@@ -1162,12 +1175,19 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                   onClick={() => setEpisodeStart((n) => n + 1)}
                   className="w-8 h-8 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-4 h-4"
+                  >
                     <path d="M12 5v14M5 12h14" />
                   </svg>
                 </button>
                 <span className="text-xs text-white/30 ml-1">
-                  EP {String(episodeStart).padStart(2, '0')} → EP {String(episodeStart + fileIds.length - 1).padStart(2, '0')}
+                  EP {String(episodeStart).padStart(2, '0')} → EP{' '}
+                  {String(episodeStart + fileIds.length - 1).padStart(2, '0')}
                 </span>
               </div>
             </motion.div>
@@ -1270,10 +1290,7 @@ function FileTreeView({
           transition={{ duration: 0.15 }}
         >
           <motion.svg
-            className={cn(
-              'w-3.5 h-3.5 shrink-0 text-white/20',
-              !hasChildren && 'invisible'
-            )}
+            className={cn('w-3.5 h-3.5 shrink-0 text-white/20', !hasChildren && 'invisible')}
             animate={{ rotate: isExpanded ? 90 : 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             viewBox="0 0 24 24"
@@ -1411,7 +1428,9 @@ function FileTreeView({
                           }
                         >
                           <HugeiconsIcon
-                            icon={file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon}
+                            icon={
+                              file.match_status === 'unmatched' ? LinkSquare01Icon : ShuffleIcon
+                            }
                             size={12}
                           />
                         </Button>
@@ -1690,10 +1709,9 @@ function SettingsModal({
     | 'onedrive'
     | 'dropbox';
 
-  const labelCls =
-    "text-[10px] font-bold uppercase tracking-[0.15em] text-white/35";
+  const labelCls = 'text-[10px] font-bold uppercase tracking-[0.15em] text-white/35';
   const fieldCls =
-    "w-full bg-white/[0.04] rounded-lg px-4 py-2.5 text-sm text-white/90 placeholder:text-white/25 focus:outline-none focus:bg-white/[0.07] transition-colors";
+    'w-full bg-white/[0.04] rounded-lg px-4 py-2.5 text-sm text-white/90 placeholder:text-white/25 focus:outline-none focus:bg-white/[0.07] transition-colors';
 
   return (
     <Modal open={open} onClose={onClose} title={i18n._(msg`library.detail.settings`)}>
@@ -2163,7 +2181,8 @@ export function LibraryDetailPage() {
                       <span className="text-sm font-medium text-white/70">{phaseLabel}</span>
                     </div>
                     <span className="text-xs text-white/30 tabular-nums">
-                      {scanProgress.filesFound > 0 && `${scanProgress.filesFound} ${i18n._(msg`scan.files`)}`}
+                      {scanProgress.filesFound > 0 &&
+                        `${scanProgress.filesFound} ${i18n._(msg`scan.files`)}`}
                       {scanProgress.filesMatched > 0 &&
                         ` · ${scanProgress.filesMatched}/${scanProgress.filesTotal}`}
                     </span>
@@ -2182,9 +2201,7 @@ export function LibraryDetailPage() {
                     )}
                   </div>
                   {scanProgress.currentFile && (
-                    <p className="text-xs text-white/20 truncate">
-                      {scanProgress.currentFile}
-                    </p>
+                    <p className="text-xs text-white/20 truncate">{scanProgress.currentFile}</p>
                   )}
                 </motion.div>
               );

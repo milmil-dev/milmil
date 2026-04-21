@@ -35,9 +35,7 @@ export const renameApi = {
     api.patch<void>(`/api/v1/libraries/${libraryId}/rename-config`, { template, auto }),
   preview: (libraryId: string, animeId?: string) => {
     const qs = animeId ? `?anime_id=${encodeURIComponent(animeId)}` : '';
-    return api.get<{ plans: RenamePlan[] }>(
-      `/api/v1/libraries/${libraryId}/rename/preview${qs}`
-    );
+    return api.get<{ plans: RenamePlan[] }>(`/api/v1/libraries/${libraryId}/rename/preview${qs}`);
   },
   apply: (libraryId: string, plans: RenamePlan[]) =>
     api.post<ApplyResult>(`/api/v1/libraries/${libraryId}/rename/apply`, { plans }),

@@ -1,11 +1,10 @@
-import { useLingui } from '@lingui/react';
 import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
-import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api-client';
 
 function formatBytes(bytes: number): string {
@@ -23,7 +23,7 @@ function formatBytes(bytes: number): string {
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+  return `${parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
 }
 
 interface StorageStats {
@@ -56,12 +56,8 @@ export function StoragePanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">
-        {i18n._(msg`settings.nav.storage`)}
-      </h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">
-        {i18n._(msg`settings.storage.subtitle`)}
-      </p>
+      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.storage`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`settings.storage.subtitle`)}</p>
 
       <div className="space-y-3">
         <SettingsCard label={i18n._(msg`settings.storage.diskUsage`)}>
@@ -101,9 +97,7 @@ export function StoragePanel() {
       <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {i18n._(msg`settings.storage.clearConfirmTitle`)}
-            </AlertDialogTitle>
+            <AlertDialogTitle>{i18n._(msg`settings.storage.clearConfirmTitle`)}</AlertDialogTitle>
             <AlertDialogDescription>
               {i18n._(msg`settings.storage.clearConfirmDesc`)}
             </AlertDialogDescription>

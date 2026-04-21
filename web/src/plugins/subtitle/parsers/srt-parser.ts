@@ -32,7 +32,7 @@ export function parseSrt(content: string): SubtitleCue[] {
 
     const tsLine = lines[tsLineIdx]!;
     const match = tsLine.match(
-      /(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})/,
+      /(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{3})/
     );
     if (!match) continue;
 

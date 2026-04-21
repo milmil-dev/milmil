@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 
 import { Skeleton } from '@/components/Skeleton';
-import { renameApi, renameKeys, type RenamePlan } from '@/lib/api/rename';
+import { type RenamePlan, renameApi, renameKeys } from '@/lib/api/rename';
 
 export function RenamePreviewPage() {
   const { id: rawId } = useParams({ strict: false }) as { id?: string };
@@ -21,9 +21,7 @@ export function RenamePreviewPage() {
   const apply = useMutation({
     mutationFn: (plans: RenamePlan[]) => renameApi.apply(libraryId, plans),
     onSuccess: (res) => {
-      window.alert(
-        i18n._(msg`Applied ${res.applied} files. Batch: ${res.batch_id.slice(0, 8)}`)
-      );
+      window.alert(i18n._(msg`Applied ${res.applied} files. Batch: ${res.batch_id.slice(0, 8)}`));
       qc.invalidateQueries({ queryKey: renameKeys.preview(libraryId) });
       qc.invalidateQueries({ queryKey: renameKeys.history(libraryId) });
     },
@@ -54,9 +52,7 @@ export function RenamePreviewPage() {
           >
             {i18n._(msg`← Back to library`)}
           </Link>
-          <h1 className="text-lg font-semibold text-white/90">
-            {i18n._(msg`Rename preview`)}
-          </h1>
+          <h1 className="text-lg font-semibold text-white/90">{i18n._(msg`Rename preview`)}</h1>
         </div>
         <button
           type="button"
@@ -65,9 +61,7 @@ export function RenamePreviewPage() {
           onClick={() => {
             if (
               window.confirm(
-                i18n._(
-                  msg`Apply ${ok.length} renames. This will move files on disk. Continue?`
-                )
+                i18n._(msg`Apply ${ok.length} renames. This will move files on disk. Continue?`)
               )
             ) {
               apply.mutate(ok);

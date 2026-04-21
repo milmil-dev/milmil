@@ -35,7 +35,7 @@ export interface PlaybackPluginAPI {
 
 export function createPlaybackPlugin(
   videoEl: HTMLVideoElement,
-  containerEl: HTMLElement,
+  containerEl: HTMLElement
 ): PlaybackPluginAPI {
   const disposables = new Disposables();
   const osd = new OSDFeedback(containerEl);
@@ -67,13 +67,15 @@ export function createPlaybackPlugin(
   };
 
   // --- Listen for plugin-action events (from KeyboardPlugin) ---
-  disposables.addEventListener(containerEl, 'plugin-action' as keyof HTMLElementEventMap, ((
-    e: CustomEvent<{ action: string }>,
-  ) => {
-    if (e.detail.action === 'playback:ab-loop') {
-      abLoop.toggle();
-    }
-  }) as EventListener);
+  disposables.addEventListener(
+    containerEl,
+    'plugin-action' as keyof HTMLElementEventMap,
+    ((e: CustomEvent<{ action: string }>) => {
+      if (e.detail.action === 'playback:ab-loop') {
+        abLoop.toggle();
+      }
+    }) as EventListener
+  );
 
   // --- Auto-next on video end ---
   disposables.addEventListener(videoEl, 'ended', () => {

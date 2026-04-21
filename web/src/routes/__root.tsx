@@ -31,19 +31,33 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
       <div className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/40">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          className="text-white/40"
+        >
           {isNetworkError ? (
-            <path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           ) : (
-            <path d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           )}
         </svg>
       </div>
       <div>
         <p className="text-[15px] font-medium text-white/70">
-          {isNetworkError
-            ? i18n._(msg`error.serverUnavailable`)
-            : i18n._(msg`common.loadFailed`)}
+          {isNetworkError ? i18n._(msg`error.serverUnavailable`) : i18n._(msg`common.loadFailed`)}
         </p>
         {isNetworkError && (
           <p className="text-[13px] text-white/30 mt-1">
@@ -79,7 +93,15 @@ function isPublicRoute(pathname: string): boolean {
  * - Scroll dimming: fades to opacity-5 when scrolled past 100px
  * - Transition overlay: bg-color fades in during image switches
  */
-function BannerImage({ src, position, dimMode }: { src: string | null; position: 'top' | 'bottom'; dimMode: 'scroll-down' | 'scroll-up' }) {
+function BannerImage({
+  src,
+  position,
+  dimMode,
+}: {
+  src: string | null;
+  position: 'top' | 'bottom';
+  dimMode: 'scroll-down' | 'scroll-up';
+}) {
   const [dimmed, setDimmed] = useState(dimMode === 'scroll-up');
   const isBottom = position === 'bottom';
 
@@ -88,7 +110,8 @@ function BannerImage({ src, position, dimMode }: { src: string | null; position:
       // Start dimmed, un-dim when scrolled near bottom
       setDimmed(true);
       const onScroll = () => {
-        const distFromBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+        const distFromBottom =
+          document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
         setDimmed(distFromBottom > 200);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
@@ -115,17 +138,27 @@ function BannerImage({ src, position, dimMode }: { src: string | null; position:
     >
       {/* Edge bleed — prevents hard edge at the far end of banner */}
       <div
-        className={cn('w-full z-[2] absolute h-[5rem]', isBottom ? '-top-[5rem]' : '-bottom-[5rem]')}
-        style={{ background: isBottom
-          ? 'linear-gradient(to top, var(--mm-bg), transparent)'
-          : 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+        className={cn(
+          'w-full z-[2] absolute h-[5rem]',
+          isBottom ? '-top-[5rem]' : '-bottom-[5rem]'
+        )}
+        style={{
+          background: isBottom
+            ? 'linear-gradient(to top, var(--mm-bg), transparent)'
+            : 'linear-gradient(to bottom, var(--mm-bg), transparent)',
+        }}
       />
       {/* Inner fade — soft transition at content-facing edge */}
       <div
-        className={cn('w-full absolute z-[2] h-[10rem] opacity-50', isBottom ? 'bottom-0' : 'top-0')}
-        style={{ background: isBottom
-          ? 'linear-gradient(to top, var(--mm-bg), transparent)'
-          : 'linear-gradient(to bottom, var(--mm-bg), transparent)' }}
+        className={cn(
+          'w-full absolute z-[2] h-[10rem] opacity-50',
+          isBottom ? 'bottom-0' : 'top-0'
+        )}
+        style={{
+          background: isBottom
+            ? 'linear-gradient(to top, var(--mm-bg), transparent)'
+            : 'linear-gradient(to bottom, var(--mm-bg), transparent)',
+        }}
       />
 
       {/* The image — z-[1] so gradients at z-[2] overlay it */}
@@ -142,12 +175,18 @@ function BannerImage({ src, position, dimMode }: { src: string | null; position:
             src={src}
             alt=""
             className="w-full h-full object-cover object-center brightness-[0.6]"
-            style={isBottom ? {
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
-              maskComposite: 'intersect',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
-              WebkitMaskComposite: 'source-in',
-            } : undefined}
+            style={
+              isBottom
+                ? {
+                    maskImage:
+                      'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+                    maskComposite: 'intersect',
+                    WebkitMaskImage:
+                      'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+                    WebkitMaskComposite: 'source-in',
+                  }
+                : undefined
+            }
           />
         </motion.div>
       </AnimatePresence>

@@ -1,8 +1,8 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useEffect, useMemo, useRef } from 'react';
-import { bucketByDate } from '@/lib/history-date-buckets';
 import type { WatchProgress } from '@/lib/api/progress';
+import { bucketByDate } from '@/lib/history-date-buckets';
 import { HistoryCard } from './HistoryCard';
 
 interface HistoryGridProps {
@@ -83,9 +83,7 @@ export function HistoryGrid({
       })}
       {hasNextPage && (
         <div ref={sentinelRef} className="h-10" aria-hidden="true">
-          {isFetchingNextPage && (
-            <p className="text-center text-[12px] text-white/30">Loading…</p>
-          )}
+          {isFetchingNextPage && <p className="text-center text-[12px] text-white/30">Loading…</p>}
         </div>
       )}
     </div>

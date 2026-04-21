@@ -30,36 +30,73 @@ const FONT_FAMILIES = [
   { value: 'monospace', label: '等寬' },
 ] as const;
 
-type View = 'main' | 'typeFilter' | 'area' | 'density' | 'font' | 'color' | 'speed' | 'stroke' | 'chinese';
+type View =
+  | 'main'
+  | 'typeFilter'
+  | 'area'
+  | 'density'
+  | 'font'
+  | 'color'
+  | 'speed'
+  | 'stroke'
+  | 'chinese';
 
 const ic = 'w-[18px] h-[18px] text-white/50';
 
 /* ── Shared UI primitives (matching player settings style) ── */
 
-function MenuRow({ icon, label, value, onClick }: {
-  icon?: React.ReactNode; label: string; value?: React.ReactNode; onClick: () => void;
+function MenuRow({
+  icon,
+  label,
+  value,
+  onClick,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  value?: React.ReactNode;
+  onClick: () => void;
 }) {
   return (
-    <button type="button" onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/[0.04] transition-colors">
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/[0.04] transition-colors"
+    >
       {icon && <span className="shrink-0">{icon}</span>}
       <span className="flex-1 text-[13px] text-white/80">{label}</span>
       {value && <span className="text-[12px] text-white/35 flex items-center">{value}</span>}
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/20 shrink-0"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/20 shrink-0">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      </svg>
     </button>
   );
 }
 
-function OptionRow({ label, selected, onClick }: {
-  label: string; selected: boolean; onClick: () => void;
+function OptionRow({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
 }) {
   return (
-    <button type="button" onClick={onClick}
-      className={cn('w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors',
-        selected ? 'bg-white/[0.04]' : 'hover:bg-white/[0.03]')}>
-      <span className={cn('flex-1 text-[13px]', selected ? 'text-white' : 'text-white/50')}>{label}</span>
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors',
+        selected ? 'bg-white/[0.04]' : 'hover:bg-white/[0.03]'
+      )}
+    >
+      <span className={cn('flex-1 text-[13px]', selected ? 'text-white' : 'text-white/50')}>
+        {label}
+      </span>
       {selected && (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-400 shrink-0"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-400 shrink-0">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+        </svg>
       )}
     </button>
   );
@@ -67,9 +104,14 @@ function OptionRow({ label, selected, onClick }: {
 
 function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return (
-    <button type="button" onClick={onBack}
-      className="w-full flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.06] hover:bg-white/[0.03] transition-colors">
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/40"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    <button
+      type="button"
+      onClick={onBack}
+      className="w-full flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.06] hover:bg-white/[0.03] transition-colors"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/40">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+      </svg>
       <span className="text-[13px] text-white/70 font-medium">{title}</span>
     </button>
   );
@@ -79,18 +121,37 @@ function Divider() {
   return <div className="mx-3 my-1 border-t border-white/[0.04]" />;
 }
 
-function SliderRow({ label, value, min, max, step, unit, onChange }: {
-  label: string; value: number; min: number; max: number; step: number; unit?: string;
+function SliderRow({
+  label,
+  value,
+  min,
+  max,
+  step,
+  unit,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  unit?: string;
   onChange: (v: number) => void;
 }) {
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[13px] text-white/70">{label}</span>
-        <span className="text-[12px] text-white/30 tabular-nums">{unit === '%' ? `${Math.round(value * 100)}%` : `${Math.round(value)}${unit ?? ''}`}</span>
+        <span className="text-[12px] text-white/30 tabular-nums">
+          {unit === '%' ? `${Math.round(value * 100)}%` : `${Math.round(value)}${unit ?? ''}`}
+        </span>
       </div>
       <input
-        type="range" min={min} max={max} step={step} value={value}
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full h-1 rounded-full appearance-none bg-white/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-sm"
       />
@@ -98,15 +159,34 @@ function SliderRow({ label, value, min, max, step, unit, onChange }: {
   );
 }
 
-function ToggleRow({ label, checked, onChange }: {
-  label: string; checked: boolean; onChange: () => void;
+function ToggleRow({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
 }) {
   return (
-    <button type="button" onClick={onChange}
-      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-white/[0.03] transition-colors">
+    <button
+      type="button"
+      onClick={onChange}
+      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-white/[0.03] transition-colors"
+    >
       <span className="text-[13px] text-white/70">{label}</span>
-      <div className={cn('w-8 h-[18px] rounded-full transition-colors relative', checked ? 'bg-white/20' : 'bg-white/[0.08]')}>
-        <div className={cn('absolute top-[3px] w-3 h-3 rounded-full transition-all', checked ? 'left-[17px] bg-white' : 'left-[3px] bg-white/40')} />
+      <div
+        className={cn(
+          'w-8 h-[18px] rounded-full transition-colors relative',
+          checked ? 'bg-white/20' : 'bg-white/[0.08]'
+        )}
+      >
+        <div
+          className={cn(
+            'absolute top-[3px] w-3 h-3 rounded-full transition-all',
+            checked ? 'left-[17px] bg-white' : 'left-[3px] bg-white/40'
+          )}
+        />
       </div>
     </button>
   );
@@ -119,8 +199,14 @@ export function DanmakuSettingsControls() {
   const [view, setView] = useState<View>('main');
   const dirRef = useRef(1);
 
-  const go = (v: View) => { dirRef.current = 1; setView(v); };
-  const back = () => { dirRef.current = -1; setView('main'); };
+  const go = (v: View) => {
+    dirRef.current = 1;
+    setView(v);
+  };
+  const back = () => {
+    dirRef.current = -1;
+    setView('main');
+  };
 
   const enabled = usePreferencesStore((s) => s.danmakuEnabled);
   const opacity = usePreferencesStore((s) => s.danmakuOpacity);
@@ -162,111 +248,257 @@ export function DanmakuSettingsControls() {
   const areaLabel = AREA_OPTIONS.find((o) => o.value === area)?.label ?? '全';
   const fontLabel = FONT_FAMILIES.find((f) => f.value === fontFamily)?.label ?? '黑體';
 
-  const activeFilters = [filterScroll && i18n._(msg`watch.danmaku.scroll`), filterTop && i18n._(msg`watch.danmaku.top`), filterBottom && i18n._(msg`watch.danmaku.bottom`)].filter(Boolean);
+  const activeFilters = [
+    filterScroll && i18n._(msg`watch.danmaku.scroll`),
+    filterTop && i18n._(msg`watch.danmaku.top`),
+    filterBottom && i18n._(msg`watch.danmaku.bottom`),
+  ].filter(Boolean);
 
   const renderView = () => {
     switch (view) {
       case 'typeFilter':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.typeFilter`)} onBack={back} />
-          <ToggleRow label={i18n._(msg`watch.danmaku.scroll`)} checked={filterScroll} onChange={() => update('danmakuFilterScroll', !filterScroll)} />
-          <ToggleRow label={i18n._(msg`watch.danmaku.top`)} checked={filterTop} onChange={() => update('danmakuFilterTop', !filterTop)} />
-          <ToggleRow label={i18n._(msg`watch.danmaku.bottom`)} checked={filterBottom} onChange={() => update('danmakuFilterBottom', !filterBottom)} />
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.typeFilter`)} onBack={back} />
+            <ToggleRow
+              label={i18n._(msg`watch.danmaku.scroll`)}
+              checked={filterScroll}
+              onChange={() => update('danmakuFilterScroll', !filterScroll)}
+            />
+            <ToggleRow
+              label={i18n._(msg`watch.danmaku.top`)}
+              checked={filterTop}
+              onChange={() => update('danmakuFilterTop', !filterTop)}
+            />
+            <ToggleRow
+              label={i18n._(msg`watch.danmaku.bottom`)}
+              checked={filterBottom}
+              onChange={() => update('danmakuFilterBottom', !filterBottom)}
+            />
+          </>
+        );
 
       case 'area':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.displayArea`)} onBack={back} />
-          {AREA_OPTIONS.map((o) => (
-            <OptionRow key={o.value} label={o.label} selected={area === o.value} onClick={() => { update('danmakuArea', o.value); back(); }} />
-          ))}
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.displayArea`)} onBack={back} />
+            {AREA_OPTIONS.map((o) => (
+              <OptionRow
+                key={o.value}
+                label={o.label}
+                selected={area === o.value}
+                onClick={() => {
+                  update('danmakuArea', o.value);
+                  back();
+                }}
+              />
+            ))}
+          </>
+        );
 
       case 'density':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.density`)} onBack={back} />
-          {(['low', 'medium', 'high'] as const).map((d) => (
-            <OptionRow key={d} label={densityLabels[d]!} selected={density === d} onClick={() => { update('danmakuDensity', d); back(); }} />
-          ))}
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.density`)} onBack={back} />
+            {(['low', 'medium', 'high'] as const).map((d) => (
+              <OptionRow
+                key={d}
+                label={densityLabels[d]!}
+                selected={density === d}
+                onClick={() => {
+                  update('danmakuDensity', d);
+                  back();
+                }}
+              />
+            ))}
+          </>
+        );
 
       case 'color':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.fontColor`)} onBack={back} />
-          <div className="px-3 py-3 grid grid-cols-4 gap-2">
-            {DANMAKU_COLORS.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                onClick={() => { update('danmakuColor', c.value); back(); }}
-                className={cn(
-                  'flex flex-col items-center gap-1.5 py-2 rounded-lg transition-colors',
-                  danmakuColor === c.value ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'
-                )}
-              >
-                <div
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.fontColor`)} onBack={back} />
+            <div className="px-3 py-3 grid grid-cols-4 gap-2">
+              {DANMAKU_COLORS.map((c) => (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => {
+                    update('danmakuColor', c.value);
+                    back();
+                  }}
                   className={cn(
-                    'w-6 h-6 rounded-full border-2',
-                    danmakuColor === c.value ? 'border-white/60' : 'border-white/10'
+                    'flex flex-col items-center gap-1.5 py-2 rounded-lg transition-colors',
+                    danmakuColor === c.value ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'
                   )}
-                  style={{ backgroundColor: c.value }}
-                />
-                <span className="text-[10px] text-white/40">{c.label}</span>
-              </button>
-            ))}
-          </div>
-        </>);
+                >
+                  <div
+                    className={cn(
+                      'w-6 h-6 rounded-full border-2',
+                      danmakuColor === c.value ? 'border-white/60' : 'border-white/10'
+                    )}
+                    style={{ backgroundColor: c.value }}
+                  />
+                  <span className="text-[10px] text-white/40">{c.label}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        );
 
       case 'font':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.fontFamily`)} onBack={back} />
-          {FONT_FAMILIES.map((f) => (
-            <OptionRow key={f.value} label={f.label} selected={fontFamily === f.value} onClick={() => { update('danmakuFontFamily', f.value); back(); }} />
-          ))}
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.fontFamily`)} onBack={back} />
+            {FONT_FAMILIES.map((f) => (
+              <OptionRow
+                key={f.value}
+                label={f.label}
+                selected={fontFamily === f.value}
+                onClick={() => {
+                  update('danmakuFontFamily', f.value);
+                  back();
+                }}
+              />
+            ))}
+          </>
+        );
 
       case 'speed':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.speed`)} onBack={back} />
-          {[100, 144, 200].map((s) => (
-            <OptionRow key={s} label={speedLabels[s]!} selected={speed === s} onClick={() => { update('danmakuSpeed', s); back(); }} />
-          ))}
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.speed`)} onBack={back} />
+            {[100, 144, 200].map((s) => (
+              <OptionRow
+                key={s}
+                label={speedLabels[s]!}
+                selected={speed === s}
+                onClick={() => {
+                  update('danmakuSpeed', s);
+                  back();
+                }}
+              />
+            ))}
+          </>
+        );
 
       case 'stroke':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.strokeType`)} onBack={back} />
-          {(['none', 'shadow', 'stroke'] as const).map((s) => (
-            <OptionRow key={s} label={strokeLabels[s]!} selected={stroke === s} onClick={() => { update('danmakuStroke', s); back(); }} />
-          ))}
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.strokeType`)} onBack={back} />
+            {(['none', 'shadow', 'stroke'] as const).map((s) => (
+              <OptionRow
+                key={s}
+                label={strokeLabels[s]!}
+                selected={stroke === s}
+                onClick={() => {
+                  update('danmakuStroke', s);
+                  back();
+                }}
+              />
+            ))}
+          </>
+        );
 
       case 'chinese':
-        return (<>
-          <PanelHeader title={i18n._(msg`watch.danmaku.chineseConvert`)} onBack={back} />
-          {(['none', 's2t', 't2s'] as const).map((v) => (
-            <OptionRow key={v} label={chineseLabels[v]!} selected={chineseConvert === v} onClick={() => { update('danmakuChineseConvert', v); back(); }} />
-          ))}
-        </>);
+        return (
+          <>
+            <PanelHeader title={i18n._(msg`watch.danmaku.chineseConvert`)} onBack={back} />
+            {(['none', 's2t', 't2s'] as const).map((v) => (
+              <OptionRow
+                key={v}
+                label={chineseLabels[v]!}
+                selected={chineseConvert === v}
+                onClick={() => {
+                  update('danmakuChineseConvert', v);
+                  back();
+                }}
+              />
+            ))}
+          </>
+        );
 
       default:
-        return (<>
-          <MenuRow label={i18n._(msg`watch.danmaku.typeFilter`)} value={activeFilters.join('·') || '—'} onClick={() => go('typeFilter')} />
-          <MenuRow label={i18n._(msg`watch.danmaku.displayArea`)} value={areaLabel} onClick={() => go('area')} />
-          <MenuRow label={i18n._(msg`watch.danmaku.density`)} value={densityLabels[density]} onClick={() => go('density')} />
-          <Divider />
-          <SliderRow label={i18n._(msg`watch.danmaku.opacity`)} value={opacity} min={0.1} max={1} step={0.05} unit="%" onChange={(v) => update('danmakuOpacity', v)} />
-          <SliderRow label={i18n._(msg`watch.danmaku.fontSize`)} value={fontSize} min={12} max={36} step={1} unit="px" onChange={(v) => update('danmakuFontSize', v)} />
-          <Divider />
-          <MenuRow label={i18n._(msg`watch.danmaku.fontColor`)} value={<span className="inline-block w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: danmakuColor }} />} onClick={() => go('color')} />
-          <MenuRow label={i18n._(msg`watch.danmaku.fontFamily`)} value={fontLabel} onClick={() => go('font')} />
-          <MenuRow label={i18n._(msg`watch.danmaku.speed`)} value={speedLabels[speed] ?? i18n._(msg`watch.danmaku.normal`)} onClick={() => go('speed')} />
-          <MenuRow label={i18n._(msg`watch.danmaku.strokeType`)} value={strokeLabels[stroke]} onClick={() => go('stroke')} />
-          <MenuRow label={i18n._(msg`watch.danmaku.chineseConvert`)} value={chineseLabels[chineseConvert]} onClick={() => go('chinese')} />
-          <Divider />
-          <ToggleRow label={i18n._(msg`watch.danmaku.bold`)} checked={bold} onChange={() => update('danmakuBold', !bold)} />
-          <ToggleRow label={i18n._(msg`watch.danmaku.antiSubtitle`)} checked={antiSubtitle} onChange={() => update('danmakuAntiSubtitle', !antiSubtitle)} />
-        </>);
+        return (
+          <>
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.typeFilter`)}
+              value={activeFilters.join('·') || '—'}
+              onClick={() => go('typeFilter')}
+            />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.displayArea`)}
+              value={areaLabel}
+              onClick={() => go('area')}
+            />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.density`)}
+              value={densityLabels[density]}
+              onClick={() => go('density')}
+            />
+            <Divider />
+            <SliderRow
+              label={i18n._(msg`watch.danmaku.opacity`)}
+              value={opacity}
+              min={0.1}
+              max={1}
+              step={0.05}
+              unit="%"
+              onChange={(v) => update('danmakuOpacity', v)}
+            />
+            <SliderRow
+              label={i18n._(msg`watch.danmaku.fontSize`)}
+              value={fontSize}
+              min={12}
+              max={36}
+              step={1}
+              unit="px"
+              onChange={(v) => update('danmakuFontSize', v)}
+            />
+            <Divider />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.fontColor`)}
+              value={
+                <span
+                  className="inline-block w-3 h-3 rounded-full border border-white/20"
+                  style={{ backgroundColor: danmakuColor }}
+                />
+              }
+              onClick={() => go('color')}
+            />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.fontFamily`)}
+              value={fontLabel}
+              onClick={() => go('font')}
+            />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.speed`)}
+              value={speedLabels[speed] ?? i18n._(msg`watch.danmaku.normal`)}
+              onClick={() => go('speed')}
+            />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.strokeType`)}
+              value={strokeLabels[stroke]}
+              onClick={() => go('stroke')}
+            />
+            <MenuRow
+              label={i18n._(msg`watch.danmaku.chineseConvert`)}
+              value={chineseLabels[chineseConvert]}
+              onClick={() => go('chinese')}
+            />
+            <Divider />
+            <ToggleRow
+              label={i18n._(msg`watch.danmaku.bold`)}
+              checked={bold}
+              onChange={() => update('danmakuBold', !bold)}
+            />
+            <ToggleRow
+              label={i18n._(msg`watch.danmaku.antiSubtitle`)}
+              checked={antiSubtitle}
+              onChange={() => update('danmakuAntiSubtitle', !antiSubtitle)}
+            />
+          </>
+        );
     }
   };
 

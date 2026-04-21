@@ -27,7 +27,11 @@ describe('bucketByDate', () => {
 
   it('handles empty input', () => {
     expect(bucketByDate([], now)).toEqual({
-      today: [], yesterday: [], thisWeek: [], lastWeek: [], earlier: [],
+      today: [],
+      yesterday: [],
+      thisWeek: [],
+      lastWeek: [],
+      earlier: [],
     });
   });
 

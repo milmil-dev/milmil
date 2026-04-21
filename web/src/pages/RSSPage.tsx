@@ -8,6 +8,7 @@ import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
+import { useDocumentTitle } from '../hooks/use-document-title';
 import {
   type DownloadRule,
   downloadKeys,
@@ -15,7 +16,6 @@ import {
   rssFeedApi,
   ruleApi,
 } from '../lib/api/downloads';
-import { useDocumentTitle } from '../hooks/use-document-title';
 import { cn } from '../lib/utils';
 
 // ─── Feed type badge ──────────────────────────────────────────────────────────

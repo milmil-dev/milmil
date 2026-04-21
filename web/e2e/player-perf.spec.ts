@@ -4,10 +4,10 @@ import { expect, test } from '@playwright/test';
 function mockAuth(page: import('@playwright/test').Page) {
   return Promise.all([
     page.route('**/api/v1/auth/me', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ id: 'user-1', username: 'testuser' }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ id: 'user-1', username: 'testuser' }) })
     ),
     page.route('**/api/v1/auth/status', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) })
     ),
   ]);
 }
@@ -39,7 +39,7 @@ test.describe('Danmaku WebWorker', () => {
           episodes: [{ sort: 1, name: 'Episode 1', id: 'ep-1' }],
           relations: [],
         }),
-      }),
+      })
     );
 
     // Mock media files
@@ -49,7 +49,7 @@ test.describe('Danmaku WebWorker', () => {
         body: JSON.stringify([
           { id: 'file-1', filename: 'ep01.mp4', episode_sort: 1, size_bytes: 100000 },
         ]),
-      }),
+      })
     );
 
     // Mock media info
@@ -65,22 +65,22 @@ test.describe('Danmaku WebWorker', () => {
           library_online: true,
           library_type: 'local',
         }),
-      }),
+      })
     );
 
     // Mock danmaku endpoint
     await page.route('**/api/v1/danmaku/*', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify(MOCK_DANMAKU) }),
+      route.fulfill({ status: 200, body: JSON.stringify(MOCK_DANMAKU) })
     );
 
     // Mock subtitles
     await page.route('**/api/v1/media-files/*/subtitles', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify([]) }),
+      route.fulfill({ status: 200, body: JSON.stringify([]) })
     );
 
     // Mock progress
     await page.route('**/api/v1/progress/*', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) })
     );
 
     const errors: string[] = [];
@@ -91,7 +91,7 @@ test.describe('Danmaku WebWorker', () => {
 
     // No crash errors related to danmaku/worker
     const danmakuErrors = errors.filter(
-      (e) => e.includes('danmaku') || e.includes('Worker') || e.includes('worker'),
+      (e) => e.includes('danmaku') || e.includes('Worker') || e.includes('worker')
     );
     expect(danmakuErrors).toHaveLength(0);
   });
@@ -109,7 +109,7 @@ test.describe('Danmaku WebWorker', () => {
       route.fulfill({
         status: 200,
         body: JSON.stringify({ count: heavyComments.length, comments: heavyComments }),
-      }),
+      })
     );
 
     // Mock other endpoints minimally
@@ -122,7 +122,7 @@ test.describe('Danmaku WebWorker', () => {
           episodes: [{ sort: 1, name: 'Ep 1', id: 'ep-1' }],
           relations: [],
         }),
-      }),
+      })
     );
     await page.route('**/api/v1/anime/*/media-files', (route) =>
       route.fulfill({
@@ -130,7 +130,7 @@ test.describe('Danmaku WebWorker', () => {
         body: JSON.stringify([
           { id: 'file-1', filename: 'ep01.mp4', episode_sort: 1, size_bytes: 100000 },
         ]),
-      }),
+      })
     );
     await page.route('**/api/v1/media-files/*/info', (route) =>
       route.fulfill({
@@ -144,13 +144,13 @@ test.describe('Danmaku WebWorker', () => {
           library_online: true,
           library_type: 'local',
         }),
-      }),
+      })
     );
     await page.route('**/api/v1/media-files/*/subtitles', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify([]) }),
+      route.fulfill({ status: 200, body: JSON.stringify([]) })
     );
     await page.route('**/api/v1/progress/*', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) })
     );
 
     // Measure main thread responsiveness during danmaku load
@@ -175,8 +175,13 @@ test.describe('Settings Panel — Buffer & Density', () => {
   async function mockSettingsAPIs(page: import('@playwright/test').Page) {
     await page.route('**/api/v1/**', (route) => {
       const url = route.request().url();
-      if (url.includes('/auth/me')) return route.fulfill({ status: 200, body: JSON.stringify({ id: 'user-1', username: 'testuser' }) });
-      if (url.includes('/auth/status')) return route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) });
+      if (url.includes('/auth/me'))
+        return route.fulfill({
+          status: 200,
+          body: JSON.stringify({ id: 'user-1', username: 'testuser' }),
+        });
+      if (url.includes('/auth/status'))
+        return route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) });
       // Fulfill any other API call to prevent hanging
       return route.fulfill({ status: 200, body: JSON.stringify({}) });
     });
@@ -188,7 +193,9 @@ test.describe('Settings Panel — Buffer & Density', () => {
     await page.goto('/settings/player');
 
     // Wait for settings page to render (look for any settings content)
-    await page.waitForSelector('button, [role="switch"], input[type="range"]', { timeout: 10000 }).catch(() => {});
+    await page
+      .waitForSelector('button, [role="switch"], input[type="range"]', { timeout: 10000 })
+      .catch(() => {});
     await page.waitForTimeout(2000);
 
     // Check page rendered (not stuck on "Server Unavailable")
@@ -251,7 +258,7 @@ test.describe('Memory Monitor', () => {
           episodes: [{ sort: 1, name: 'Ep 1', id: 'ep-1' }],
           relations: [],
         }),
-      }),
+      })
     );
     await page.route('**/api/v1/anime/*/media-files', (route) =>
       route.fulfill({
@@ -259,7 +266,7 @@ test.describe('Memory Monitor', () => {
         body: JSON.stringify([
           { id: 'file-1', filename: 'ep01.mp4', episode_sort: 1, size_bytes: 100000 },
         ]),
-      }),
+      })
     );
     await page.route('**/api/v1/media-files/*/info', (route) =>
       route.fulfill({
@@ -273,16 +280,16 @@ test.describe('Memory Monitor', () => {
           library_online: true,
           library_type: 'local',
         }),
-      }),
+      })
     );
     await page.route('**/api/v1/danmaku/*', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ count: 0, comments: [] }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ count: 0, comments: [] }) })
     );
     await page.route('**/api/v1/media-files/*/subtitles', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify([]) }),
+      route.fulfill({ status: 200, body: JSON.stringify([]) })
     );
     await page.route('**/api/v1/progress/*', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) })
     );
 
     const errors: string[] = [];
@@ -293,7 +300,7 @@ test.describe('Memory Monitor', () => {
 
     // No errors from memory monitor
     const memoryErrors = errors.filter(
-      (e) => e.includes('memory') || e.includes('Memory') || e.includes('MemoryMonitor'),
+      (e) => e.includes('memory') || e.includes('Memory') || e.includes('MemoryMonitor')
     );
     expect(memoryErrors).toHaveLength(0);
   });
@@ -306,15 +313,27 @@ test.describe('CJK Search', () => {
     let capturedSearchQuery = '';
     await page.route('**/api/v1/**', (route) => {
       const url = route.request().url();
-      if (url.includes('/auth/me')) return route.fulfill({ status: 200, body: JSON.stringify({ id: 'user-1', username: 'testuser' }) });
-      if (url.includes('/auth/status')) return route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) });
+      if (url.includes('/auth/me'))
+        return route.fulfill({
+          status: 200,
+          body: JSON.stringify({ id: 'user-1', username: 'testuser' }),
+        });
+      if (url.includes('/auth/status'))
+        return route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) });
       if (url.includes('/discover/search')) {
         const parsed = new URL(url);
         capturedSearchQuery = parsed.searchParams.get('q') ?? '';
         return route.fulfill({
           status: 200,
           body: JSON.stringify([
-            { bangumi_id: 265, anilist_id: 16498, title: '進擊的巨人', title_cn: '进击的巨人', cover_image: '', score: 9.0 },
+            {
+              bangumi_id: 265,
+              anilist_id: 16498,
+              title: '進擊的巨人',
+              title_cn: '进击的巨人',
+              cover_image: '',
+              score: 9.0,
+            },
           ]),
         });
       }
@@ -365,7 +384,7 @@ test.describe('DandanPlay Fallback', () => {
           episodes: [{ sort: 1, name: 'Ep 1', id: 'ep-1' }],
           relations: [],
         }),
-      }),
+      })
     );
     await page.route('**/api/v1/anime/*/media-files', (route) =>
       route.fulfill({
@@ -373,7 +392,7 @@ test.describe('DandanPlay Fallback', () => {
         body: JSON.stringify([
           { id: 'file-1', filename: 'ep01.mp4', episode_sort: 1, size_bytes: 100000 },
         ]),
-      }),
+      })
     );
     await page.route('**/api/v1/media-files/*/info', (route) =>
       route.fulfill({
@@ -387,13 +406,13 @@ test.describe('DandanPlay Fallback', () => {
           library_online: true,
           library_type: 'local',
         }),
-      }),
+      })
     );
     await page.route('**/api/v1/media-files/*/subtitles', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify([]) }),
+      route.fulfill({ status: 200, body: JSON.stringify([]) })
     );
     await page.route('**/api/v1/progress/*', (route) =>
-      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) }),
+      route.fulfill({ status: 200, body: JSON.stringify({ current_time: 0, completed: false }) })
     );
 
     // Simulate DandanPlay service unavailable — frontend should handle gracefully
@@ -401,7 +420,7 @@ test.describe('DandanPlay Fallback', () => {
       route.fulfill({
         status: 502,
         body: JSON.stringify({ message: 'DandanPlay unavailable' }),
-      }),
+      })
     );
 
     const errors: string[] = [];
@@ -412,7 +431,7 @@ test.describe('DandanPlay Fallback', () => {
 
     // Page should not crash even when danmaku API fails
     const criticalErrors = errors.filter(
-      (e) => !e.includes('ResizeObserver') && !e.includes('Non-Error'),
+      (e) => !e.includes('ResizeObserver') && !e.includes('Non-Error')
     );
     expect(criticalErrors).toHaveLength(0);
   });
@@ -424,8 +443,13 @@ test.describe('Network Monitor Integration', () => {
   test('adaptive buffering state initializes with auto mode', async ({ page }) => {
     await page.route('**/api/v1/**', (route) => {
       const url = route.request().url();
-      if (url.includes('/auth/me')) return route.fulfill({ status: 200, body: JSON.stringify({ id: 'user-1', username: 'testuser' }) });
-      if (url.includes('/auth/status')) return route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) });
+      if (url.includes('/auth/me'))
+        return route.fulfill({
+          status: 200,
+          body: JSON.stringify({ id: 'user-1', username: 'testuser' }),
+        });
+      if (url.includes('/auth/status'))
+        return route.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) });
       return route.fulfill({ status: 200, body: JSON.stringify({}) });
     });
 

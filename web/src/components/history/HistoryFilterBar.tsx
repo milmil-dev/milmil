@@ -1,8 +1,8 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
 import type { HistoryFilter } from '@/lib/api/history';
+import { cn } from '@/lib/utils';
 
 interface HistoryFilterBarProps {
   filter: HistoryFilter;
@@ -69,7 +69,15 @@ export function HistoryFilterBar({
       <div className="flex-1" />
 
       <div className="flex items-center gap-2 rounded-md bg-white/[0.03] px-3 py-1.5">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/30">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-white/30"
+        >
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
         </svg>

@@ -1,4 +1,4 @@
-import { clamp, Disposables } from '../shared';
+import { clamp, type Disposables } from '../shared';
 
 const ACTIVATION_THRESHOLD = 10; // px before swipe activates
 const MAX_SEEK_SECONDS = 120;
@@ -71,7 +71,7 @@ export class SwipeHandler {
           const deltaSeconds = clamp(
             (dx / SEEK_PX_PER_SECOND) * this.sensitivity,
             -MAX_SEEK_SECONDS,
-            MAX_SEEK_SECONDS,
+            MAX_SEEK_SECONDS
           );
           this.onSeek?.(deltaSeconds);
         } else if (this.direction === 'vertical-right') {
@@ -92,7 +92,7 @@ export class SwipeHandler {
           const deltaSeconds = clamp(
             (dx / SEEK_PX_PER_SECOND) * this.sensitivity,
             -MAX_SEEK_SECONDS,
-            MAX_SEEK_SECONDS,
+            MAX_SEEK_SECONDS
           );
           this.onSeekCommit?.(deltaSeconds);
         }

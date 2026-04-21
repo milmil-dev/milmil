@@ -24,9 +24,7 @@ export function LibraryDuplicatesPage() {
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: duplicatesKeys.library(libraryId) });
       window.alert(
-        i18n._(
-          msg`Cleaned up ${res.deleted} files (${formatBytes(res.reclaimed_bytes)})`
-        )
+        i18n._(msg`Cleaned up ${res.deleted} files (${formatBytes(res.reclaimed_bytes)})`)
       );
     },
   });
@@ -54,9 +52,7 @@ export function LibraryDuplicatesPage() {
           >
             {i18n._(msg`← Back to library`)}
           </Link>
-          <h1 className="text-lg font-semibold text-white/90">
-            {i18n._(msg`Duplicate files`)}
-          </h1>
+          <h1 className="text-lg font-semibold text-white/90">{i18n._(msg`Duplicate files`)}</h1>
         </div>
         <button
           type="button"
@@ -96,9 +92,7 @@ export function LibraryDuplicatesPage() {
                 <td className="py-1 text-white/80">{s.anime_title}</td>
                 <td className="py-1 text-white/60">#{s.episode_number}</td>
                 <td className="py-1 text-right text-white/60">{s.files.length}</td>
-                <td className="py-1 text-right text-white/60">
-                  {formatBytes(s.wasted_bytes)}
-                </td>
+                <td className="py-1 text-right text-white/60">{formatBytes(s.wasted_bytes)}</td>
               </tr>
             ))}
           </tbody>

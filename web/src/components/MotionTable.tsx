@@ -1,6 +1,6 @@
 'use no memo';
 
-import { type RowData, flexRender, type Table as TanStackTable } from '@tanstack/react-table';
+import { flexRender, type RowData, type Table as TanStackTable } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
 declare module '@tanstack/react-table' {
@@ -20,13 +20,7 @@ interface MotionTableProps<T> {
   onSort?: (columnId: string) => void;
 }
 
-function SortIcon({
-  active,
-  direction,
-}: {
-  active: boolean;
-  direction?: 'asc' | 'desc';
-}) {
+function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 'desc' }) {
   if (active && direction) {
     return (
       <svg

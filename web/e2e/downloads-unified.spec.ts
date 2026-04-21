@@ -77,7 +77,7 @@ const ANIME_DETAIL = {
   bangumi_id: BANGUMI_ID,
   title: '葬送的芙莉蓮',
   title_original: '葬送のフリーレン',
-  title_en: 'Frieren: Beyond Journey\'s End',
+  title_en: "Frieren: Beyond Journey's End",
   cover_image: COVER_URL,
   episode_count: 28,
   score: 9.2,
@@ -132,7 +132,11 @@ async function setupAuth(page: Page) {
     localStorage.setItem(
       'auth',
       JSON.stringify({
-        state: { token: 'mlml_fake-token', user: { id: 'u1', username: 'test' }, initialized: true },
+        state: {
+          token: 'mlml_fake-token',
+          user: { id: 'u1', username: 'test' },
+          initialized: true,
+        },
         version: 0,
       })
     );
@@ -164,7 +168,9 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
     await expect(coverBlock).toBeVisible();
   });
 
-  test('下載緊 tab: active group card is auto-expanded with ep-bar-fill visible', async ({ page }) => {
+  test('下載緊 tab: active group card is auto-expanded with ep-bar-fill visible', async ({
+    page,
+  }) => {
     // Navigate directly to library tab via URL (locale-agnostic)
     await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');
@@ -195,7 +201,9 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
     await expect(page.getByTestId('card-divider').first()).toBeVisible();
   });
 
-  test('search filter: typing non-matching text shows zero subscription cards', async ({ page }) => {
+  test('search filter: typing non-matching text shows zero subscription cards', async ({
+    page,
+  }) => {
     // Verify subscription cards are visible on library tab
     await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');

@@ -1,26 +1,33 @@
-import { describe, expect, it, vi } from 'vitest';
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import type React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { HistoryPage } from './HistoryPage';
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => () => {},
   useSearch: () => ({ filter: 'all', q: '' }),
-  Link: ({ children, to }: { children: React.ReactNode; to: string }) => <a href={to}>{children}</a>,
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
+    <a href={to}>{children}</a>
+  ),
 }));
 
 vi.mock('@lingui/react', () => ({
   useLingui: () => ({
     i18n: {
       _: (v: unknown) =>
-        typeof v === 'string' ? v : v && typeof v === 'object' && 'id' in v ? (v as { id: string }).id : String(v),
+        typeof v === 'string'
+          ? v
+          : v && typeof v === 'object' && 'id' in v
+            ? (v as { id: string }).id
+            : String(v),
       locale: 'en',
     },
   }),
 }));
 
 vi.mock('@tanstack/react-query', async () => {
-  const actual = await vi.importActual<typeof import('@tanstack/react-query')>('@tanstack/react-query');
+  const actual =
+    await vi.importActual<typeof import('@tanstack/react-query')>('@tanstack/react-query');
   return {
     ...actual,
     useInfiniteQuery: () => ({

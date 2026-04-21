@@ -1,8 +1,10 @@
 import '@videojs/react/video/skin.css';
+import type { HlsMedia } from '@videojs/core/dom/media/hls';
 import {
   BufferingIndicator,
   Container,
   Controls,
+  createPlayer,
   MuteButton,
   PiPButton,
   PlayButton,
@@ -12,21 +14,17 @@ import {
   Time,
   TimeSlider,
   Tooltip,
-  VolumeSlider,
-  createPlayer,
   useMedia,
   usePlayer,
+  VolumeSlider,
   videoFeatures,
 } from '@videojs/react';
-import { Video } from '@videojs/react/video';
 import { HlsVideo } from '@videojs/react/media/hls-video';
-import { HlsMedia } from '@videojs/core/dom/media/hls';
+import { Video } from '@videojs/react/video';
 import type { ReactNode } from 'react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 const Player = createPlayer({ features: videoFeatures });
-
-
 
 interface VideoPlayerProps {
   src: string;
@@ -59,16 +57,17 @@ export interface VideoPlayerAPI {
 }
 
 // Reusable button matching the VideoJS skin style
-export const SkinButton = forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
-  ({ className, ...props }, ref) => (
-    <button
-      ref={ref}
-      type="button"
-      className={`media-button media-button--subtle media-button--icon ${className ?? ''}`}
-      {...props}
-    />
-  )
-);
+export const SkinButton = forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+  <button
+    ref={ref}
+    type="button"
+    className={`media-button media-button--subtle media-button--icon ${className ?? ''}`}
+    {...props}
+  />
+));
 
 function PlayLabel() {
   const paused = usePlayer((s) => Boolean(s.paused));
@@ -88,9 +87,15 @@ function VolumePopoverControl() {
   const volumeUnsupported = usePlayer((s) => s.volumeAvailability === 'unsupported');
   const muteBtn = (
     <MuteButton className="media-button--mute" render={<SkinButton />}>
-      <svg className="media-icon media-icon--volume-off" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-      <svg className="media-icon media-icon--volume-low" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>
-      <svg className="media-icon media-icon--volume-high" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      <svg className="media-icon media-icon--volume-off" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+      </svg>
+      <svg className="media-icon media-icon--volume-low" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z" />
+      </svg>
+      <svg className="media-icon media-icon--volume-high" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+      </svg>
     </MuteButton>
   );
   if (volumeUnsupported) return muteBtn;
@@ -134,10 +139,15 @@ function ContainerFullscreenButton() {
               }
             }}
           >
-            {isFullscreen
-              ? <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
-              : <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-            }
+            {isFullscreen ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon">
+                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="media-icon">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+              </svg>
+            )}
           </SkinButton>
         }
       />
@@ -169,9 +179,19 @@ function CustomVideoSkin({
           <div {...props} className="media-buffering-indicator">
             <div className="media-surface">
               <svg className="media-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" opacity=".25" />
+                <path
+                  d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"
+                  opacity=".25"
+                />
                 <path d="M12 2a10 10 0 0 1 10 10h-2a8 8 0 0 0-8-8z">
-                  <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite" />
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 12 12"
+                    to="360 12 12"
+                    dur="1s"
+                    repeatCount="indefinite"
+                  />
                 </path>
               </svg>
             </div>
@@ -205,13 +225,33 @@ function CustomVideoSkin({
                 <Tooltip.Trigger
                   render={
                     <PlayButton className="media-button--play" render={<SkinButton />}>
-                      <svg className="media-icon media-icon--restart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                      <svg className="media-icon media-icon--play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      <svg className="media-icon media-icon--pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      <svg
+                        className="media-icon media-icon--restart"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                      </svg>
+                      <svg
+                        className="media-icon media-icon--play"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                      <svg
+                        className="media-icon media-icon--pause"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                      </svg>
                     </PlayButton>
                   }
                 />
-                <Tooltip.Popup className="media-surface media-tooltip"><PlayLabel /></Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  <PlayLabel />
+                </Tooltip.Popup>
               </Tooltip.Root>
 
               {/* Volume (YouTube: right next to play) */}
@@ -233,9 +273,16 @@ function CustomVideoSkin({
               {/* Playback speed */}
               <Tooltip.Root side="top">
                 <Tooltip.Trigger
-                  render={<PlaybackRateButton className="media-button--playback-rate" render={<SkinButton />} />}
+                  render={
+                    <PlaybackRateButton
+                      className="media-button--playback-rate"
+                      render={<SkinButton />}
+                    />
+                  }
                 />
-                <Tooltip.Popup className="media-surface media-tooltip">Playback speed</Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  Playback speed
+                </Tooltip.Popup>
               </Tooltip.Root>
 
               {/* Custom extra buttons (settings gear) */}
@@ -246,12 +293,26 @@ function CustomVideoSkin({
                 <Tooltip.Trigger
                   render={
                     <PiPButton className="media-button--pip" render={<SkinButton />}>
-                      <svg className="media-icon media-icon--pip-enter" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
-                      <svg className="media-icon media-icon--pip-exit" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z"/></svg>
+                      <svg
+                        className="media-icon media-icon--pip-enter"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z" />
+                      </svg>
+                      <svg
+                        className="media-icon media-icon--pip-exit"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h9v6h-9z" />
+                      </svg>
                     </PiPButton>
                   }
                 />
-                <Tooltip.Popup className="media-surface media-tooltip"><PiPLabel /></Tooltip.Popup>
+                <Tooltip.Popup className="media-surface media-tooltip">
+                  <PiPLabel />
+                </Tooltip.Popup>
               </Tooltip.Root>
 
               {/* Fullscreen — targets #player-container so overlays (danmaku, subtitles) are included */}
@@ -272,8 +333,10 @@ function PauseIndicator() {
   const ended = usePlayer((s) => Boolean(s.ended));
   if (!paused || ended) return null;
   return (
-    <div className="pause-indicator absolute bottom-4 right-4 pointer-events-none
-      opacity-0 transition-opacity duration-300 text-white/40">
+    <div
+      className="pause-indicator absolute bottom-4 right-4 pointer-events-none
+      opacity-0 transition-opacity duration-300 text-white/40"
+    >
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
       </svg>
@@ -281,7 +344,17 @@ function PauseIndicator() {
   );
 }
 
-function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig, thumbnailsVtt, poster, posterBackdrop }: VideoPlayerProps) {
+function PlayerInner({
+  src,
+  type,
+  onReady,
+  className,
+  controlBarExtra,
+  hlsConfig,
+  thumbnailsVtt,
+  poster,
+  posterBackdrop,
+}: VideoPlayerProps) {
   const player = usePlayer();
   const media = useMedia();
   const readyFired = useRef(false);
@@ -403,24 +476,26 @@ function PlayerInner({ src, type, onReady, className, controlBarExtra, hlsConfig
 
   // Compose the pre-play backdrop to pass into the skin. Rendered between the
   // video element and the control bar, so the controls still layer on top.
-  const backdrop = !hasPlayed
-    ? posterBackdrop
-      ? <div className="absolute inset-0 pointer-events-none">{posterBackdrop}</div>
-      : poster
-        ? (
-            <div className="absolute inset-0 pointer-events-none">
-              <img src={poster} alt="" className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-            </div>
-          )
-        : null
-    : null;
+  const backdrop = !hasPlayed ? (
+    posterBackdrop ? (
+      <div className="absolute inset-0 pointer-events-none">{posterBackdrop}</div>
+    ) : poster ? (
+      <div className="absolute inset-0 pointer-events-none">
+        <img src={poster} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+      </div>
+    ) : null
+  ) : null;
 
   return (
     <div ref={containerRef} className={className} data-videojs>
       <CustomVideoSkin controlBarExtra={controlBarExtra} prePlayBackdrop={backdrop}>
-        {isHLS ? <HlsVideo src={src} playsInline crossOrigin="anonymous" /> : <Video src={src} playsInline crossOrigin="anonymous" />}
+        {isHLS ? (
+          <HlsVideo src={src} playsInline crossOrigin="anonymous" />
+        ) : (
+          <Video src={src} playsInline crossOrigin="anonymous" />
+        )}
       </CustomVideoSkin>
     </div>
   );

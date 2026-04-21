@@ -8,7 +8,7 @@ const ANIME_SEARCH_RESULTS = {
       bangumi_id: 400602,
       title: '葬送的芙莉蓮',
       title_original: '葬送のフリーレン',
-      title_en: 'Frieren: Beyond Journey\'s End',
+      title_en: "Frieren: Beyond Journey's End",
       cover_image: 'https://lain.bgm.tv/pic/cover/l/00/00/400602_abc.jpg',
       air_date: '2023-09-29',
       episode_count: 28,
@@ -77,8 +77,26 @@ const GROUPED_DOWNLOADS_WITH_DATA = [
     rule_name: 'Frieren S1',
     bangumi_id: 400602,
     downloads: [
-      { id: 'dl-1', gid: 'gid-1', name: '[桜都] Frieren - 01 [1080p]', status: 'active', total_bytes: 1500000000, completed_bytes: 1020000000, speed_bytes: 2100000, created_at: '2024-01-15T12:00:00Z' },
-      { id: 'dl-2', gid: 'gid-2', name: '[桜都] Frieren - 02 [1080p]', status: 'complete', total_bytes: 1400000000, completed_bytes: 1400000000, speed_bytes: 0, created_at: '2024-01-14T12:00:00Z' },
+      {
+        id: 'dl-1',
+        gid: 'gid-1',
+        name: '[桜都] Frieren - 01 [1080p]',
+        status: 'active',
+        total_bytes: 1500000000,
+        completed_bytes: 1020000000,
+        speed_bytes: 2100000,
+        created_at: '2024-01-15T12:00:00Z',
+      },
+      {
+        id: 'dl-2',
+        gid: 'gid-2',
+        name: '[桜都] Frieren - 02 [1080p]',
+        status: 'complete',
+        total_bytes: 1400000000,
+        completed_bytes: 1400000000,
+        speed_bytes: 0,
+        created_at: '2024-01-14T12:00:00Z',
+      },
     ],
     active_count: 1,
     complete_count: 1,
@@ -88,7 +106,16 @@ const GROUPED_DOWNLOADS_WITH_DATA = [
     rule_id: '',
     rule_name: 'Manual Downloads',
     downloads: [
-      { id: 'dl-3', gid: 'gid-3', name: 'Some manual download.mkv', status: 'complete', total_bytes: 800000000, completed_bytes: 800000000, speed_bytes: 0, created_at: '2024-01-13T12:00:00Z' },
+      {
+        id: 'dl-3',
+        gid: 'gid-3',
+        name: 'Some manual download.mkv',
+        status: 'complete',
+        total_bytes: 800000000,
+        completed_bytes: 800000000,
+        speed_bytes: 0,
+        created_at: '2024-01-13T12:00:00Z',
+      },
     ],
     active_count: 0,
     complete_count: 1,
@@ -97,11 +124,34 @@ const GROUPED_DOWNLOADS_WITH_DATA = [
 ];
 
 const RSS_FEEDS = [
-  { id: 'feed-1', name: '[Auto] Frieren', url: 'https://mikanani.me/RSS/Search?searchstr=Frieren', type: 'mikan', enabled: 1, fetch_interval_minutes: 30, last_fetched_at: '2024-01-15T10:00:00Z', created_at: '2024-01-01T00:00:00Z' },
+  {
+    id: 'feed-1',
+    name: '[Auto] Frieren',
+    url: 'https://mikanani.me/RSS/Search?searchstr=Frieren',
+    type: 'mikan',
+    enabled: 1,
+    fetch_interval_minutes: 30,
+    last_fetched_at: '2024-01-15T10:00:00Z',
+    created_at: '2024-01-01T00:00:00Z',
+  },
 ];
 
 const DOWNLOAD_RULES = [
-  { id: 'rule-1', name: 'Frieren S1', enabled: 1, rss_feed_id: 'feed-1', filter_regex: '.*Frieren.*', exclude_regex: '', save_dir: '', episode_offset: 0, resolution_filter: '1080p', subgroup_filter: '桜都字幕組', min_seeders: 0, last_triggered_at: '2024-01-15T11:00:00Z', created_at: '2024-01-01T00:00:00Z' },
+  {
+    id: 'rule-1',
+    name: 'Frieren S1',
+    enabled: 1,
+    rss_feed_id: 'feed-1',
+    filter_regex: '.*Frieren.*',
+    exclude_regex: '',
+    save_dir: '',
+    episode_offset: 0,
+    resolution_filter: '1080p',
+    subgroup_filter: '桜都字幕組',
+    min_seeders: 0,
+    last_triggered_at: '2024-01-15T11:00:00Z',
+    created_at: '2024-01-01T00:00:00Z',
+  },
 ];
 
 const ANIME_DETAIL_FRIEREN = {
@@ -136,10 +186,13 @@ async function setupAuth(page: Page) {
   });
 }
 
-async function setupApiMocks(page: Page, options?: {
-  withSubscriptions?: boolean;
-  withDownloads?: boolean;
-}) {
+async function setupApiMocks(
+  page: Page,
+  options?: {
+    withSubscriptions?: boolean;
+    withDownloads?: boolean;
+  }
+) {
   const { withSubscriptions = false, withDownloads = false } = options ?? {};
 
   // Auth endpoints
@@ -211,8 +264,31 @@ async function setupApiMocks(page: Page, options?: {
     route.fulfill({
       status: 201,
       body: JSON.stringify({
-        feed: { id: 'feed-1', name: '[Auto] Test', url: 'https://example.com/rss', type: 'mikan', enabled: 1, fetch_interval_minutes: 30, last_fetched_at: null, created_at: new Date().toISOString() },
-        rule: { id: 'rule-1', name: 'Test', enabled: 1, rss_feed_id: 'feed-1', filter_regex: '.*', exclude_regex: '', save_dir: '', episode_offset: 0, resolution_filter: '1080p', subgroup_filter: '', min_seeders: 0, last_triggered_at: null, created_at: new Date().toISOString() },
+        feed: {
+          id: 'feed-1',
+          name: '[Auto] Test',
+          url: 'https://example.com/rss',
+          type: 'mikan',
+          enabled: 1,
+          fetch_interval_minutes: 30,
+          last_fetched_at: null,
+          created_at: new Date().toISOString(),
+        },
+        rule: {
+          id: 'rule-1',
+          name: 'Test',
+          enabled: 1,
+          rss_feed_id: 'feed-1',
+          filter_regex: '.*',
+          exclude_regex: '',
+          save_dir: '',
+          episode_offset: 0,
+          resolution_filter: '1080p',
+          subgroup_filter: '',
+          min_seeders: 0,
+          last_triggered_at: null,
+          created_at: new Date().toISOString(),
+        },
       }),
     })
   );
@@ -230,7 +306,16 @@ async function setupApiMocks(page: Page, options?: {
     if (route.request().method() === 'POST') {
       return route.fulfill({
         status: 200,
-        body: JSON.stringify({ id: 'dl-new', gid: 'gid-new', status: 'active', name: 'New download', total_bytes: 0, completed_bytes: 0, speed_bytes: 0, created_at: new Date().toISOString() }),
+        body: JSON.stringify({
+          id: 'dl-new',
+          gid: 'gid-new',
+          status: 'active',
+          name: 'New download',
+          total_bytes: 0,
+          completed_bytes: 0,
+          speed_bytes: 0,
+          created_at: new Date().toISOString(),
+        }),
       });
     }
     return route.continue();
@@ -273,7 +358,10 @@ async function goToManageTab(page: Page) {
 
 async function clickSubTab(page: Page, name: string) {
   // Sub-tab buttons are inside the manage tab content, pill-shaped buttons
-  await page.locator('button', { hasText: new RegExp(name, 'i') }).first().click();
+  await page
+    .locator('button', { hasText: new RegExp(name, 'i') })
+    .first()
+    .click();
   await page.waitForTimeout(300);
 }
 
@@ -431,7 +519,10 @@ test.describe('Auto-Download Page', () => {
     await page.waitForTimeout(500);
 
     // Torrent view should be showing — find and click back button
-    const backButton = page.locator('button').filter({ has: page.locator('svg') }).first();
+    const backButton = page
+      .locator('button')
+      .filter({ has: page.locator('svg') })
+      .first();
     await backButton.click();
     await page.waitForTimeout(300);
 
@@ -844,7 +935,10 @@ test.describe('Manage Tab — with subscriptions and downloads', () => {
     await goToManageTab(page);
 
     // The Downloads sub-tab pill should show "1" badge (1 active download)
-    const downloadsTab = page.locator('button', { hasText: /downloads/i }).filter({ hasNotText: /completed/i }).first();
+    const downloadsTab = page
+      .locator('button', { hasText: /downloads/i })
+      .filter({ hasNotText: /completed/i })
+      .first();
     await expect(downloadsTab).toContainText('1');
   });
 

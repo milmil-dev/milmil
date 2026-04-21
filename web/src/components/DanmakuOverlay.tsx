@@ -97,7 +97,18 @@ export function DanmakuOverlay({ videoElement, comments }: DanmakuOverlayProps) 
       engine.destroy();
       danmakuRef.current = null;
     };
-  }, [videoElement, filteredComments, speed, fontSize, opacity, bold, stroke, fontFamily, danmakuColor, converter]);
+  }, [
+    videoElement,
+    filteredComments,
+    speed,
+    fontSize,
+    opacity,
+    bold,
+    stroke,
+    fontFamily,
+    danmakuColor,
+    converter,
+  ]);
 
   // Toggle visibility
   useEffect(() => {

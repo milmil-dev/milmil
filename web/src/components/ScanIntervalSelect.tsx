@@ -1,12 +1,6 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const PRESETS = [
   { value: '0', label: msg`scanInterval.disabled` },
@@ -34,10 +28,7 @@ export function ScanIntervalSelect({ value, onChange, className }: ScanIntervalS
   const displayValue = PRESET_VALUES.has(strValue) ? strValue : '60';
 
   return (
-    <Select
-      value={displayValue}
-      onValueChange={(v) => onChange(Number(v))}
-    >
+    <Select value={displayValue} onValueChange={(v) => onChange(Number(v))}>
       <SelectTrigger className={className}>
         <SelectValue />
       </SelectTrigger>

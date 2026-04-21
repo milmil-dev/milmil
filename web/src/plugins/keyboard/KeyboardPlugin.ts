@@ -19,7 +19,7 @@ export function createKeyboardPlugin(
     onNextEpisode?: () => void;
     onToggleHelp?: () => void;
     onToggleTechInfo?: () => void;
-  },
+  }
 ): KeyboardPluginAPI {
   const disposables = new Disposables();
   const osd = new OSDFeedback(containerEl);
@@ -27,7 +27,7 @@ export function createKeyboardPlugin(
   const helpOverlay = new HelpOverlay(
     containerEl,
     () => manager.getBindings(),
-    (b) => manager.bindingToString(b),
+    (b) => manager.bindingToString(b)
   );
   disposables.add(() => osd.dispose());
   disposables.add(() => manager.dispose());
@@ -116,7 +116,7 @@ export function createKeyboardPlugin(
     () => {
       videoEl.playbackRate = savedSpeed;
       osd.hide();
-    },
+    }
   );
 
   // Volume
@@ -133,7 +133,9 @@ export function createKeyboardPlugin(
   manager.on('volume:mute', () => {
     videoEl.muted = !videoEl.muted;
     osd.show({
-      text: videoEl.muted ? '\uD83D\uDD07 Muted' : `\uD83D\uDD0A ${Math.round(videoEl.volume * 100)}%`,
+      text: videoEl.muted
+        ? '\uD83D\uDD07 Muted'
+        : `\uD83D\uDD0A ${Math.round(videoEl.volume * 100)}%`,
     });
   });
 

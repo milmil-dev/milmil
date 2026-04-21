@@ -37,11 +37,7 @@ export function HistoryTimelineRail({ visibleBuckets }: HistoryTimelineRailProps
   };
 
   return (
-    <aside
-      ref={railRef}
-      className="relative hidden w-28 shrink-0 md:block"
-      aria-hidden="true"
-    >
+    <aside ref={railRef} className="relative hidden w-28 shrink-0 md:block" aria-hidden="true">
       {/* Comet-tail spine — fades in at top, holds, fades out at bottom */}
       <div
         className="absolute pointer-events-none z-0"

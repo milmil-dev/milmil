@@ -52,12 +52,7 @@ function validateTemplate(t: string): TemplateCheck {
   return { ok: true, fields: [...fields] };
 }
 
-export function RenameConfigEditor({
-  template,
-  auto,
-  onTemplateChange,
-  onAutoChange,
-}: Props) {
+export function RenameConfigEditor({ template, auto, onTemplateChange, onAutoChange }: Props) {
   const { i18n } = useLingui();
   const check = useMemo(() => validateTemplate(template), [template]);
 
@@ -80,7 +75,11 @@ export function RenameConfigEditor({
         <div className="flex items-start gap-2 px-1">
           {check.ok ? (
             <>
-              <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 mt-0.5 text-emerald-400/80 shrink-0">
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                className="w-3.5 h-3.5 mt-0.5 text-emerald-400/80 shrink-0"
+              >
                 <path
                   d="M5 10.5l3 3 7-7"
                   stroke="currentColor"
@@ -95,18 +94,25 @@ export function RenameConfigEditor({
                     ? `${i18n._(msg`library.rename.fieldsDetected`)}: `
                     : i18n._(msg`library.rename.validEmpty`)}
                   {check.fields.length > 0 && (
-                    <span className="font-mono text-white/70">
-                      {check.fields.join(', ')}
-                    </span>
+                    <span className="font-mono text-white/70">{check.fields.join(', ')}</span>
                   )}
                 </p>
               </div>
             </>
           ) : (
             <>
-              <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 mt-0.5 text-red-400/80 shrink-0">
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                className="w-3.5 h-3.5 mt-0.5 text-red-400/80 shrink-0"
+              >
                 <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.3" />
-                <path d="M10 6v5M10 13.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path
+                  d="M10 6v5M10 13.5v.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
               </svg>
               <p className="text-[11px] text-red-400/80">{check.error}</p>
             </>
@@ -115,9 +121,7 @@ export function RenameConfigEditor({
       )}
 
       <label className="flex items-center justify-between cursor-pointer select-none pt-1">
-        <span className="text-sm text-white/65">
-          {i18n._(msg`library.rename.autoOnMatch`)}
-        </span>
+        <span className="text-sm text-white/65">{i18n._(msg`library.rename.autoOnMatch`)}</span>
         <Switch checked={auto} onCheckedChange={onAutoChange} />
       </label>
     </div>

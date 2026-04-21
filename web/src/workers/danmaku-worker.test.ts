@@ -9,9 +9,9 @@ function makeComment(time: number, type: string, color: number, text: string) {
 describe('processDanmaku', () => {
   it('parses dandanplay format correctly (time, mode, color)', () => {
     const comments = [
-      makeComment(1.5, '1', 16711680, 'red rtl'),   // type 1 → rtl, color #ff0000
+      makeComment(1.5, '1', 16711680, 'red rtl'), // type 1 → rtl, color #ff0000
       makeComment(2.0, '4', 65280, 'green bottom'), // type 4 → bottom, color #00ff00
-      makeComment(3.0, '5', 255, 'blue top'),       // type 5 → top, color #0000ff
+      makeComment(3.0, '5', 255, 'blue top'), // type 5 → top, color #0000ff
       makeComment(4.0, '6', 16777215, 'white rtl'), // type 6 → rtl, color #ffffff
     ];
 
@@ -84,11 +84,13 @@ describe('processDanmaku', () => {
   it('prioritizes rtl mode comments (sorting and windowing preserve insertion order within limit)', () => {
     // Mix of modes, all in the same 6s window. With high desktop limit (80) all should pass.
     // With low desktop limit (20), only first 20 sorted by time should remain.
-    const rtlComments = Array.from({ length: 10 }, (_, i) =>
-      makeComment(i * 0.1, '1', 16777215, `rtl ${i}`)       // times 0.0..0.9
+    const rtlComments = Array.from(
+      { length: 10 },
+      (_, i) => makeComment(i * 0.1, '1', 16777215, `rtl ${i}`) // times 0.0..0.9
     );
-    const topComments = Array.from({ length: 10 }, (_, i) =>
-      makeComment(i * 0.1 + 0.05, '5', 16777215, `top ${i}`) // times 0.05..0.95
+    const topComments = Array.from(
+      { length: 10 },
+      (_, i) => makeComment(i * 0.1 + 0.05, '5', 16777215, `top ${i}`) // times 0.05..0.95
     );
 
     const comments = [...topComments, ...rtlComments]; // intentionally mixed
@@ -97,7 +99,7 @@ describe('processDanmaku', () => {
       comments,
       fontSize: 20,
       opacity: 1,
-      density: 'low',    // desktop limit = 20, exactly enough for all 20
+      density: 'low', // desktop limit = 20, exactly enough for all 20
       isMobile: false,
     });
 
@@ -131,11 +133,13 @@ describe('processDanmaku', () => {
   it('resets window count when entering a new 6s window', () => {
     // 15 comments in window 0-6s and 15 comments in window 6-12s
     // With low mobile limit (15), all 30 should be included (15 per window)
-    const window1 = Array.from({ length: 15 }, (_, i) =>
-      makeComment(i * 0.3, '1', 16777215, `w1 ${i}`) // 0.0..4.2
+    const window1 = Array.from(
+      { length: 15 },
+      (_, i) => makeComment(i * 0.3, '1', 16777215, `w1 ${i}`) // 0.0..4.2
     );
-    const window2 = Array.from({ length: 15 }, (_, i) =>
-      makeComment(6 + i * 0.3, '1', 16777215, `w2 ${i}`) // 6.0..10.2
+    const window2 = Array.from(
+      { length: 15 },
+      (_, i) => makeComment(6 + i * 0.3, '1', 16777215, `w2 ${i}`) // 6.0..10.2
     );
 
     const result = processDanmaku({

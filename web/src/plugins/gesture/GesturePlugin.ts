@@ -12,7 +12,7 @@ export interface GesturePluginAPI {
 export function createGesturePlugin(
   videoEl: HTMLVideoElement,
   containerEl: HTMLElement,
-  options?: { enabled?: boolean; sensitivity?: number },
+  options?: { enabled?: boolean; sensitivity?: number }
 ): GesturePluginAPI {
   const disposables = new Disposables();
   const osd = new OSDFeedback(containerEl);

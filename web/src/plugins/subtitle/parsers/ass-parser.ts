@@ -57,7 +57,7 @@ export function assColorToCSS(color: string): string {
 export function assAlignmentToPosition(alignment: number): { x: number; y: number } {
   // x: left=0, center=50, right=100
   // y: top=0, center=50, bottom=100
-  const col = ((alignment - 1) % 3); // 0=left, 1=center, 2=right
+  const col = (alignment - 1) % 3; // 0=left, 1=center, 2=right
   const row = Math.floor((alignment - 1) / 3); // 0=bottom, 1=middle, 2=top
 
   const xMap = [10, 50, 90];

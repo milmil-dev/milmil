@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
-import { cn } from '@/lib/utils';
 import {
   type DanmakuSearchResult,
-  type VideoPart,
   externalDanmakuApi,
   externalDanmakuKeys,
+  type VideoPart,
 } from '@/lib/api/danmaku';
+import { cn } from '@/lib/utils';
 
 interface DanmakuSourceTabProps {
   episodeId: string | null;
@@ -47,8 +47,7 @@ export function DanmakuSourceTab({
   });
   const [selectedSource, setSelectedSource] = useState('bilibili');
 
-  const buildKeyword = () =>
-    episodeNumber ? `${animeName} 第${episodeNumber}話` : animeName;
+  const buildKeyword = () => (episodeNumber ? `${animeName} 第${episodeNumber}話` : animeName);
   const [keyword, setKeyword] = useState(buildKeyword);
   const [searchTriggered, setSearchTriggered] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -114,8 +113,7 @@ export function DanmakuSourceTab({
   });
 
   const removeMutation = useMutation({
-    mutationFn: (source: string) =>
-      externalDanmakuApi.removeImported(episodeId!, source),
+    mutationFn: (source: string) => externalDanmakuApi.removeImported(episodeId!, source),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
@@ -158,7 +156,9 @@ export function DanmakuSourceTab({
   const isExpanded = (id: string) => expandedVideoId === id;
   const isLoadingResult = (id: string) =>
     loadingPartsFor === id ||
-    (importMutation.isPending && importMutation.variables?.videoId === id && expandedVideoId !== id);
+    (importMutation.isPending &&
+      importMutation.variables?.videoId === id &&
+      expandedVideoId !== id);
 
   return (
     <div className="flex flex-col gap-3">
@@ -174,7 +174,9 @@ export function DanmakuSourceTab({
             className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-xs text-white outline-none"
           >
             {sources.map((s) => (
-              <option key={s.name} value={s.name}>{s.label}</option>
+              <option key={s.name} value={s.name}>
+                {s.label}
+              </option>
             ))}
           </select>
         </div>
@@ -361,10 +363,7 @@ export function DanmakuSourceTab({
               {i18n._(msg`watch.danmaku.imported`)}
             </p>
             {imported.map((item) => (
-              <div
-                key={item.source}
-                className="flex items-center gap-2 py-2 group"
-              >
+              <div key={item.source} className="flex items-center gap-2 py-2 group">
                 {/* Pin/save toggle */}
                 <button
                   type="button"
@@ -375,7 +374,11 @@ export function DanmakuSourceTab({
                     })
                   }
                   disabled={toggleSaveMutation.isPending}
-                  title={item.saved ? i18n._(msg`watch.danmaku.clickToUnpin`) : i18n._(msg`watch.danmaku.clickToPin`)}
+                  title={
+                    item.saved
+                      ? i18n._(msg`watch.danmaku.clickToUnpin`)
+                      : i18n._(msg`watch.danmaku.clickToPin`)
+                  }
                   className="shrink-0 transition-all"
                 >
                   <svg
@@ -385,18 +388,14 @@ export function DanmakuSourceTab({
                     strokeWidth={1.2}
                     className={cn(
                       'w-3.5 h-3.5 transition-colors',
-                      item.saved
-                        ? 'text-blue-400/80'
-                        : 'text-white/20 hover:text-white/40'
+                      item.saved ? 'text-blue-400/80' : 'text-white/20 hover:text-white/40'
                     )}
                   >
                     <path d="M3.5 2.5h9v4l-2 1.5v3L8 13l-2.5-2V7.5l-2-1.5z" />
                   </svg>
                 </button>
 
-                <span className="text-xs text-white/50 flex-1 min-w-0 truncate">
-                  {item.source}
-                </span>
+                <span className="text-xs text-white/50 flex-1 min-w-0 truncate">{item.source}</span>
                 <span className="text-[11px] text-white/25 tabular-nums shrink-0">
                   {formatCount(item.count)}
                 </span>
@@ -408,7 +407,13 @@ export function DanmakuSourceTab({
                   disabled={removeMutation.isPending}
                   className="shrink-0 text-white/0 group-hover:text-white/20 hover:!text-red-400/70 transition-colors p-0.5"
                 >
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3 h-3">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    className="w-3 h-3"
+                  >
                     <path d="M4 4l8 8M12 4l-8 8" />
                   </svg>
                 </button>

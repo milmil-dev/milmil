@@ -37,6 +37,5 @@ export const historyApi = {
 
 export const historyKeys = {
   all: ['progress', 'history'] as const,
-  list: (filter: HistoryFilter, q: string) =>
-    [...historyKeys.all, { filter, q }] as const,
+  list: (filter: HistoryFilter, q: string) => [...historyKeys.all, { filter, q }] as const,
 };

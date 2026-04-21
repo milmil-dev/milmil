@@ -104,8 +104,7 @@ export const rssFeedApi = {
     api.get<PreviewResponse>(
       `/api/v1/rss-feeds/${feedId}/preview${ruleId ? `?rule_id=${ruleId}` : ''}`
     ),
-  previewUrl: (url: string) =>
-    api.post<PreviewResponse>('/api/v1/rss-feeds/preview-url', { url }),
+  previewUrl: (url: string) => api.post<PreviewResponse>('/api/v1/rss-feeds/preview-url', { url }),
 };
 
 export const ruleApi = {
@@ -155,8 +154,7 @@ export interface DownloadFileInfo {
 }
 
 export const subscribeApi = {
-  subscribe: (data: SubscribeInput) =>
-    api.post<SubscribeResponse>('/api/v1/subscribe', data),
+  subscribe: (data: SubscribeInput) => api.post<SubscribeResponse>('/api/v1/subscribe', data),
 };
 
 export const downloadKeys = {

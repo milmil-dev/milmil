@@ -12,7 +12,7 @@ export interface CapturePluginAPI {
 
 export function createCapturePlugin(
   videoEl: HTMLVideoElement,
-  containerEl: HTMLElement,
+  containerEl: HTMLElement
 ): CapturePluginAPI {
   const disposables = new Disposables();
   const screenshotUtil = new Screenshot(videoEl);
@@ -39,7 +39,7 @@ export function createCapturePlugin(
           gifMode ? api.exitGifMode() : api.enterGifMode();
           break;
       }
-    }) as EventListener,
+    }) as EventListener
   );
 
   const api: CapturePluginAPI = {

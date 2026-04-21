@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useLingui } from '@lingui/react';
-import { msg } from '@lingui/core/macro';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { Add01Icon, Copy01Icon, Delete02Icon, SmartPhone01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Delete02Icon, SmartPhone01Icon, Add01Icon, Copy01Icon } from '@hugeicons/core-free-icons';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api-client';
@@ -43,8 +43,7 @@ export function ApiTokensCard() {
   });
 
   const createToken = useMutation({
-    mutationFn: (name: string) =>
-      api.post<ApiTokenCreateResponse>('/api/v1/api-tokens', { name }),
+    mutationFn: (name: string) => api.post<ApiTokenCreateResponse>('/api/v1/api-tokens', { name }),
     onSuccess: (data) => {
       setCreatedToken(data.token);
       setNewTokenName('');
@@ -79,9 +78,7 @@ export function ApiTokensCard() {
 
   return (
     <SettingsCard label={i18n._(msg`apiTokens.title`)}>
-      <p className="mb-4 text-xs text-white/40">
-        {i18n._(msg`apiTokens.description`)}
-      </p>
+      <p className="mb-4 text-xs text-white/40">{i18n._(msg`apiTokens.description`)}</p>
 
       {/* Created token banner — shown once after creation */}
       {createdToken && (
@@ -133,9 +130,7 @@ export function ApiTokensCard() {
                   className="shrink-0 text-white/30"
                 />
                 <div className="min-w-0">
-                  <p className="text-[13px] font-medium text-white truncate">
-                    {token.name}
-                  </p>
+                  <p className="text-[13px] font-medium text-white truncate">{token.name}</p>
                   <p className="text-[11px] text-white/25">
                     <span className="font-mono">mlml_{token.token_prefix}...</span>
                     <span className="ml-2 font-sans">

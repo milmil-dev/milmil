@@ -107,10 +107,7 @@ export function DataPagination({
         <Pagination className="mx-0 w-auto">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious
-                onClick={() => onPageChange(page - 1)}
-                disabled={!canPrev}
-              />
+              <PaginationPrevious onClick={() => onPageChange(page - 1)} disabled={!canPrev} />
             </PaginationItem>
 
             {getPageNumbers().map((p, idx) => (
@@ -126,10 +123,7 @@ export function DataPagination({
             ))}
 
             <PaginationItem>
-              <PaginationNext
-                onClick={() => onPageChange(page + 1)}
-                disabled={!canNext}
-              />
+              <PaginationNext onClick={() => onPageChange(page + 1)} disabled={!canNext} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

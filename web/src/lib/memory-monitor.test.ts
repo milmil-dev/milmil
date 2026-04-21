@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryMonitor } from './memory-monitor';
 
 // Stub window.matchMedia so MemoryMonitor constructor works in jsdom
@@ -111,15 +111,15 @@ describe('MemoryMonitor', () => {
     const monitor = new MemoryMonitor();
 
     monitor.reportActiveDanmaku(2000); // pressure
-    monitor.reportActiveDanmaku(100);  // +1 normal
-    monitor.reportActiveDanmaku(100);  // +2 normal
+    monitor.reportActiveDanmaku(100); // +1 normal
+    monitor.reportActiveDanmaku(100); // +2 normal
     monitor.reportActiveDanmaku(2000); // pressure again → resets counter
-    monitor.reportActiveDanmaku(100);  // +1 normal
-    monitor.reportActiveDanmaku(100);  // +2 normal
+    monitor.reportActiveDanmaku(100); // +1 normal
+    monitor.reportActiveDanmaku(100); // +2 normal
     // Only 2 normal ticks since last pressure — still pressured
     expect(monitor.isPressured()).toBe(true);
 
-    monitor.reportActiveDanmaku(100);  // +3 → recovers
+    monitor.reportActiveDanmaku(100); // +3 → recovers
     expect(monitor.isPressured()).toBe(false);
     monitor.destroy();
   });

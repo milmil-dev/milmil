@@ -1,12 +1,22 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
+import type React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { HistoryCard } from './HistoryCard';
 import type { WatchProgress } from '@/lib/api/progress';
+import { HistoryCard } from './HistoryCard';
 
 vi.mock('@tanstack/react-router', () => ({
-  Link: ({ children, to, onClick }: { children: React.ReactNode; to: string; onClick?: () => void }) => (
-    <a href={to} onClick={onClick}>{children}</a>
+  Link: ({
+    children,
+    to,
+    onClick,
+  }: {
+    children: React.ReactNode;
+    to: string;
+    onClick?: () => void;
+  }) => (
+    <a href={to} onClick={onClick}>
+      {children}
+    </a>
   ),
 }));
 
@@ -14,7 +24,11 @@ vi.mock('@lingui/react', () => ({
   useLingui: () => ({
     i18n: {
       _: (v: unknown) =>
-        typeof v === 'string' ? v : v && typeof v === 'object' && 'id' in v ? (v as { id: string }).id : String(v),
+        typeof v === 'string'
+          ? v
+          : v && typeof v === 'object' && 'id' in v
+            ? (v as { id: string }).id
+            : String(v),
       locale: 'en',
     },
   }),

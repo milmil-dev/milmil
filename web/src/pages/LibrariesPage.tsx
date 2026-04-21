@@ -7,12 +7,12 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
+import { LoginModal } from '../components/LoginModal';
 import {
   FolderBrowser,
   PathFieldWithPicker,
   type SourceType,
 } from '../components/library/FolderPicker';
-import { LoginModal } from '../components/LoginModal';
 import { Modal } from '../components/Modal';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
@@ -266,7 +266,7 @@ function LibraryCard({
               {formatBytes(capacity.used_bytes)} / {formatBytes(capacity.total_bytes)} ·{' '}
               <span
                 className={cn(
-                  diskPct >= 90 ? 'text-red-400/60' : diskPct >= 75 ? 'text-amber-400/60' : '',
+                  diskPct >= 90 ? 'text-red-400/60' : diskPct >= 75 ? 'text-amber-400/60' : ''
                 )}
               >
                 {diskPct}%
@@ -431,7 +431,6 @@ function TestConnectionButton({
     </div>
   );
 }
-
 
 // ─── Network browser (enhanced — auto-discovers, visual cards) ───────────────
 function NetworkBrowser({

@@ -7,8 +7,8 @@ import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
 import { Input } from '../components/ui/input';
 import { PasswordInput } from '../components/ui/password-input';
-import { api } from '../lib/api-client';
 import { useDocumentTitle } from '../hooks/use-document-title';
+import { api } from '../lib/api-client';
 import { useAuthStore } from '../store/auth-store';
 
 interface SetupResponse {

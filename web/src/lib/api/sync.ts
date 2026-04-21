@@ -28,8 +28,7 @@ export const syncApi = {
   status: () => api.get<SyncProviderStatus[]>('/api/v1/sync/status'),
   flush: (provider: SyncProvider) =>
     api.post<{ enqueued: number }>(`/api/v1/integrations/${provider}/sync`),
-  pullNow: (provider: SyncProvider) =>
-    api.post<PullResult>(`/api/v1/sync/${provider}/pull`, {}),
+  pullNow: (provider: SyncProvider) => api.post<PullResult>(`/api/v1/sync/${provider}/pull`, {}),
   setPullEnabled: (provider: SyncProvider, enabled: boolean) =>
     api.post<void>(`/api/v1/sync/${provider}/pull-enabled`, { enabled }),
 };

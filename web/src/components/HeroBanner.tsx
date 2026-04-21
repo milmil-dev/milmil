@@ -64,9 +64,9 @@ export function HeroBanner({
   if (!featured) return null;
 
   // Find watch progress matching the currently featured anime
-  const matchedWatch = watchHistory?.find(
-    (w) => w.anime_bangumi_id === featured.bangumi_id && w.completed !== 1
-  ) ?? null;
+  const matchedWatch =
+    watchHistory?.find((w) => w.anime_bangumi_id === featured.bangumi_id && w.completed !== 1) ??
+    null;
 
   const hasCover = featured.cover_image?.startsWith('http');
 
@@ -122,7 +122,13 @@ export function HeroBanner({
                 <div className="flex items-center gap-3 flex-wrap">
                   {featured.score > 0 && (
                     <span className="text-mm-accent font-bold text-[15px] flex items-center gap-1">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="opacity-80">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="opacity-80"
+                      >
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                       </svg>
                       {featured.score.toFixed(1)}
@@ -130,9 +136,7 @@ export function HeroBanner({
                   )}
                   {featured.genres && featured.genres.length > 0 && (
                     <>
-                      {featured.score > 0 && (
-                        <span className="w-px h-3.5 bg-white/15" />
-                      )}
+                      {featured.score > 0 && <span className="w-px h-3.5 bg-white/15" />}
                       {featured.genres.slice(0, 4).map((g) => (
                         <Link
                           key={g}
@@ -186,10 +190,8 @@ export function HeroBanner({
                   key={item.bangumi_id}
                   onClick={() => setActiveIndex(i)}
                   className={cn(
-                    "size-2 rounded-full cursor-pointer transition-all duration-200",
-                    i === activeIndex
-                      ? "h-[6px] w-5 bg-white"
-                      : "bg-white/50 hover:bg-white/70",
+                    'size-2 rounded-full cursor-pointer transition-all duration-200',
+                    i === activeIndex ? 'h-[6px] w-5 bg-white' : 'bg-white/50 hover:bg-white/70'
                   )}
                 />
               ))}
@@ -200,7 +202,12 @@ export function HeroBanner({
         {/* Resume watching card — only when featured anime has watch progress */}
         <AnimatePresence>
           {matchedWatch && (
-            <ResumeCard key={matchedWatch.id} item={matchedWatch} locale={i18n.locale} remainingLabel={i18n._(msg`player.remaining`)} />
+            <ResumeCard
+              key={matchedWatch.id}
+              item={matchedWatch}
+              locale={i18n.locale}
+              remainingLabel={i18n._(msg`player.remaining`)}
+            />
           )}
         </AnimatePresence>
       </div>
@@ -233,9 +240,7 @@ function PosterCard({ src, title }: { src?: string; title: string }) {
     >
       {src && (
         <>
-          {!loaded && (
-            <div className="w-full h-full animate-pulse bg-white/[0.06]" />
-          )}
+          {!loaded && <div className="w-full h-full animate-pulse bg-white/[0.06]" />}
           <img
             src={src}
             alt={title}
@@ -259,10 +264,18 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-function ResumeCard({ item, locale, remainingLabel }: { item: WatchProgress; locale: string; remainingLabel: string }) {
-  const title = (locale.startsWith('zh')
-    ? item.anime_title_zh || item.anime_title
-    : item.anime_title) || 'Unknown';
+function ResumeCard({
+  item,
+  locale,
+  remainingLabel,
+}: {
+  item: WatchProgress;
+  locale: string;
+  remainingLabel: string;
+}) {
+  const title =
+    (locale.startsWith('zh') ? item.anime_title_zh || item.anime_title : item.anime_title) ||
+    'Unknown';
 
   const progress =
     item.duration_seconds && item.duration_seconds > 0
@@ -274,9 +287,7 @@ function ResumeCard({ item, locale, remainingLabel }: { item: WatchProgress; loc
     : item.episode_number.toFixed(1);
 
   const hasCover = item.anime_cover_image?.startsWith('http');
-  const timeLeft = item.duration_seconds
-    ? item.duration_seconds - item.position_seconds
-    : 0;
+  const timeLeft = item.duration_seconds ? item.duration_seconds - item.position_seconds : 0;
 
   const radius = 34;
   const circumference = 2 * Math.PI * radius;
@@ -306,26 +317,54 @@ function ResumeCard({ item, locale, remainingLabel }: { item: WatchProgress; loc
             style={hasCover ? undefined : { background: animeGradient(title) }}
           >
             {hasCover && (
-              <img src={item.anime_cover_image!} alt={title} className="w-full h-full object-cover" />
+              <img
+                src={item.anime_cover_image!}
+                alt={title}
+                className="w-full h-full object-cover"
+              />
             )}
           </div>
           <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
             <div className="relative w-[76px] h-[76px] flex items-center justify-center">
-              <svg className="absolute inset-0 -rotate-90" width="76" height="76" viewBox="0 0 76 76">
-                <circle cx="38" cy="38" r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2.5" />
-                <circle cx="38" cy="38" r={radius} fill="none" stroke="var(--mm-accent)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} className="transition-all duration-500" style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }} />
+              <svg
+                className="absolute inset-0 -rotate-90"
+                width="76"
+                height="76"
+                viewBox="0 0 76 76"
+              >
+                <circle
+                  cx="38"
+                  cy="38"
+                  r={radius}
+                  fill="none"
+                  stroke="rgba(255,255,255,0.12)"
+                  strokeWidth="2.5"
+                />
+                <circle
+                  cx="38"
+                  cy="38"
+                  r={radius}
+                  fill="none"
+                  stroke="var(--mm-accent)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  className="transition-all duration-500"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }}
+                />
               </svg>
               <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z" /></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="black">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
               </div>
             </div>
           </div>
         </div>
 
         <div className="min-w-0 py-0.5">
-          <p className="text-[15px] font-semibold text-white truncate max-w-[210px]">
-            {title}
-          </p>
+          <p className="text-[15px] font-semibold text-white truncate max-w-[210px]">{title}</p>
           <p className="text-[13px] text-white/45 mt-1.5 font-medium">
             EP {epNum} · {formatTime(item.position_seconds)}
             {item.duration_seconds ? ` / ${formatTime(item.duration_seconds)}` : ''}

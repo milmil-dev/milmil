@@ -29,10 +29,8 @@ export interface CleanupResult {
 }
 
 export const duplicatesApi = {
-  anime: (bangumiId: number) =>
-    api.get<DupSet[]>(`/api/v1/anime/${bangumiId}/duplicates`),
-  library: (libraryId: string) =>
-    api.get<DupSet[]>(`/api/v1/libraries/${libraryId}/duplicates`),
+  anime: (bangumiId: number) => api.get<DupSet[]>(`/api/v1/anime/${bangumiId}/duplicates`),
+  library: (libraryId: string) => api.get<DupSet[]>(`/api/v1/libraries/${libraryId}/duplicates`),
   setPreferred: (episodeId: string, mediaFileId: string) =>
     api.patch<void>(`/api/v1/episodes/${episodeId}/preferred`, {
       media_file_id: mediaFileId,

@@ -11,7 +11,14 @@ interface MediaSettingsPanelProps {
   onClose: () => void;
 }
 
-type PanelView = 'main' | 'brightness' | 'contrast' | 'saturation' | 'warmth' | 'volumeBoost' | 'audioTrack';
+type PanelView =
+  | 'main'
+  | 'brightness'
+  | 'contrast'
+  | 'saturation'
+  | 'warmth'
+  | 'volumeBoost'
+  | 'audioTrack';
 
 /* ─── YouTube-style menu items ──────────────────────────────────── */
 
@@ -37,9 +44,7 @@ function MenuRow({
         {icon}
       </span>
       <span className="flex-1">{label}</span>
-      {value && (
-        <span className="shrink-0 text-white/50 text-[12px]">{value}</span>
-      )}
+      {value && <span className="shrink-0 text-white/50 text-[12px]">{value}</span>}
       <svg viewBox="0 0 24 24" fill="currentColor" className="shrink-0 w-4 h-4 text-white/30">
         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
       </svg>
@@ -62,7 +67,7 @@ function OptionRow({
       onClick={onClick}
       className={cn(
         'w-full flex items-center gap-3 px-4 py-2.5 text-left text-[13px] transition-colors',
-        selected ? 'text-white bg-white/[0.08]' : 'text-white/70 hover:bg-white/[0.06]',
+        selected ? 'text-white bg-white/[0.08]' : 'text-white/70 hover:bg-white/[0.06]'
       )}
     >
       <span className="shrink-0 w-5 h-5 flex items-center justify-center">
@@ -168,8 +173,14 @@ function MediaSettingsPanelInner({
   const refresh = useCallback(() => setTick((t) => t + 1), []);
   const [view, setView] = useState<PanelView>('main');
   const directionRef = useRef(1);
-  const navigateTo = (v: PanelView) => { directionRef.current = 1; setView(v); };
-  const navigateBack = () => { directionRef.current = -1; setView('main'); };
+  const navigateTo = (v: PanelView) => {
+    directionRef.current = 1;
+    setView(v);
+  };
+  const navigateBack = () => {
+    directionRef.current = -1;
+    setView('main');
+  };
 
   const filters = plugin.getFilterState();
   const volume = plugin.getVolume();
@@ -186,7 +197,7 @@ function MediaSettingsPanelInner({
       setters[key](value);
       refresh();
     },
-    [plugin, refresh],
+    [plugin, refresh]
   );
 
   const renderContent = () => {
@@ -196,7 +207,9 @@ function MediaSettingsPanelInner({
           <SliderView
             title="Brightness"
             value={filters.brightness}
-            min={0} max={200} step={5}
+            min={0}
+            max={200}
+            step={5}
             displayValue={`${filters.brightness}%`}
             defaultValue={100}
             onChange={(v) => updateFilter('brightness', v)}
@@ -208,7 +221,9 @@ function MediaSettingsPanelInner({
           <SliderView
             title="Contrast"
             value={filters.contrast}
-            min={0} max={200} step={5}
+            min={0}
+            max={200}
+            step={5}
             displayValue={`${filters.contrast}%`}
             defaultValue={100}
             onChange={(v) => updateFilter('contrast', v)}
@@ -220,7 +235,9 @@ function MediaSettingsPanelInner({
           <SliderView
             title="Saturation"
             value={filters.saturation}
-            min={0} max={200} step={5}
+            min={0}
+            max={200}
+            step={5}
             displayValue={`${filters.saturation}%`}
             defaultValue={100}
             onChange={(v) => updateFilter('saturation', v)}
@@ -232,7 +249,9 @@ function MediaSettingsPanelInner({
           <SliderView
             title="Night Mode"
             value={filters.warmth}
-            min={0} max={100} step={5}
+            min={0}
+            max={100}
+            step={5}
             displayValue={`${filters.warmth}%`}
             defaultValue={0}
             onChange={(v) => updateFilter('warmth', v)}
@@ -244,10 +263,15 @@ function MediaSettingsPanelInner({
           <SliderView
             title="Volume Boost"
             value={volume}
-            min={0} max={200} step={5}
+            min={0}
+            max={200}
+            step={5}
             displayValue={`${volume}%`}
             defaultValue={100}
-            onChange={(v) => { plugin.setVolume(v); refresh(); }}
+            onChange={(v) => {
+              plugin.setVolume(v);
+              refresh();
+            }}
             onBack={navigateBack}
           />
         );
@@ -260,7 +284,11 @@ function MediaSettingsPanelInner({
                 key={track.index}
                 label={`${track.label}${track.language ? ` (${track.language})` : ''}`}
                 selected={track.enabled}
-                onClick={() => { plugin.setAudioTrack(track.index); refresh(); setView('main'); }}
+                onClick={() => {
+                  plugin.setAudioTrack(track.index);
+                  refresh();
+                  setView('main');
+                }}
               />
             ))}
           </>

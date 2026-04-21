@@ -1,8 +1,8 @@
 import { useLingui } from '@lingui/react';
 import { Link } from '@tanstack/react-router';
+import type { WatchProgress } from '@/lib/api/progress';
 import { animeGradient } from '@/lib/gradient';
 import { cn } from '@/lib/utils';
-import type { WatchProgress } from '@/lib/api/progress';
 
 interface HistoryCardProps {
   item: WatchProgress;
@@ -42,7 +42,8 @@ export function HistoryCard({
   const { i18n } = useLingui();
   const hasCover = item.anime_cover_image?.startsWith('http');
   const title =
-    (i18n.locale.startsWith('zh') ? item.anime_title_zh || item.anime_title : item.anime_title) || 'Unknown';
+    (i18n.locale.startsWith('zh') ? item.anime_title_zh || item.anime_title : item.anime_title) ||
+    'Unknown';
   const isCompleted = item.completed === 1;
   const progress =
     item.duration_seconds && item.duration_seconds > 0
@@ -111,7 +112,14 @@ export function HistoryCard({
             onClick={handleDelete}
             className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-md bg-black/60 text-white/80 opacity-0 backdrop-blur transition-opacity duration-200 hover:bg-black/80 hover:text-white group-hover:opacity-100"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
             </svg>
           </button>
@@ -126,7 +134,14 @@ export function HistoryCard({
             )}
           >
             {selected && (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="3"
+              >
                 <path d="m5 13 4 4 10-10" />
               </svg>
             )}
@@ -145,9 +160,7 @@ export function HistoryCard({
       </div>
 
       <div className="px-0.5 pt-2.5">
-        <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-white">
-          {title}
-        </p>
+        <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-white">{title}</p>
         <div className="mt-1 flex items-center justify-between text-[11px] text-mm-text-tertiary">
           <span>EP {formatEpisodeNumber(item.episode_number)}</span>
           <span>{new Date(item.last_watched_at).toLocaleString()}</span>

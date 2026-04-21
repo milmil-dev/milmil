@@ -12,7 +12,7 @@ export class AutoNext {
 
   constructor(
     private containerEl: HTMLElement,
-    private enabled: boolean = true,
+    private enabled: boolean = true
   ) {}
 
   /** Called when video ends */
@@ -133,7 +133,7 @@ export class AutoNext {
     if (textEl) textEl.textContent = `Starting in ${this.remaining}s`;
 
     const progress = this.countdownEl.querySelector(
-      '#countdown-progress',
+      '#countdown-progress'
     ) as SVGCircleElement | null;
     if (progress) {
       const circumference = 2 * Math.PI * 17;

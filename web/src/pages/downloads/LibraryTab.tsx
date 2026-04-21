@@ -1,32 +1,48 @@
 // web/src/pages/downloads/LibraryTab.tsx
-import { useState, useMemo } from 'react';
+
+import { ArrowUpDownIcon, Edit02Icon, RssIcon, Search01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { RssIcon, Search01Icon, ArrowUpDownIcon, Edit02Icon } from '@hugeicons/core-free-icons';
-import {
-  type Download, type DownloadGroup, type DownloadRule, type RSSFeed,
-  downloadApi, downloadKeys, rssFeedApi, ruleApi,
-} from '../../lib/api/downloads';
-import { cn } from '../../lib/utils';
-import { Button } from '../../components/ui/button';
-import { useAnimeCover } from '../../hooks/use-anime-cover';
-import { useDownloadsUIStore } from '../../store/downloads-ui-store';
 import { AnimeDownloadCard } from '../../components/downloads/AnimeDownloadCard';
 import { AnimeDownloadCardSkeleton } from '../../components/downloads/AnimeDownloadCardSkeleton';
 import { CardMenu } from '../../components/downloads/CardMenu';
-import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 import { EpisodeRowActive } from '../../components/downloads/episode-rows/EpisodeRowActive';
 import { EpisodeRowComplete } from '../../components/downloads/episode-rows/EpisodeRowComplete';
 import { EpisodeRowPending } from '../../components/downloads/episode-rows/EpisodeRowPending';
+import { MiscDownloadsSection } from '../../components/downloads/MiscDownloadsSection';
 import { RuleEditorModal } from '../../components/RuleEditorModal';
+import { Button } from '../../components/ui/button';
+import { useAnimeCover } from '../../hooks/use-anime-cover';
 import {
-  deriveCardMode, deriveEpsForExpand, deriveGroupPercent, deriveNextFetch,
-  formatRelative, ruleSubChips, sortRulesBy, type CardMode, type LibraryItem, type SortKey,
-  toActiveProps, toCompleteProps,
+  type Download,
+  type DownloadGroup,
+  type DownloadRule,
+  downloadApi,
+  downloadKeys,
+  type RSSFeed,
+  rssFeedApi,
+  ruleApi,
+} from '../../lib/api/downloads';
+import { cn } from '../../lib/utils';
+import { useDownloadsUIStore } from '../../store/downloads-ui-store';
+import {
+  type CardMode,
+  deriveCardMode,
+  deriveEpsForExpand,
+  deriveGroupPercent,
+  deriveNextFetch,
+  formatRelative,
+  type LibraryItem,
+  ruleSubChips,
+  type SortKey,
+  sortRulesBy,
+  toActiveProps,
+  toCompleteProps,
 } from './shared/adapters';
 
 interface Props {
@@ -45,7 +61,12 @@ function formatBytes(n: number): string {
 }
 
 export default function LibraryTab({
-  rules, feeds, groups, miscDownloads, isLoading, onSwitchToSearch,
+  rules,
+  feeds,
+  groups,
+  miscDownloads,
+  isLoading,
+  onSwitchToSearch,
 }: Props) {
   const { i18n } = useLingui();
   const [query, setQuery] = useState('');
@@ -57,12 +78,13 @@ export default function LibraryTab({
   const groupMap = useMemo(() => new Map(groups.map((g) => [g.rule_id, g])), [groups]);
 
   const items: LibraryItem[] = useMemo(
-    () => rules.map((rule) => ({
-      rule,
-      group: groupMap.get(rule.id),
-      feed: feedMap.get(rule.rss_feed_id),
-    })),
-    [rules, feedMap, groupMap],
+    () =>
+      rules.map((rule) => ({
+        rule,
+        group: groupMap.get(rule.id),
+        feed: feedMap.get(rule.rss_feed_id),
+      })),
+    [rules, feedMap, groupMap]
   );
 
   const filtered = useMemo(() => {
@@ -93,7 +115,7 @@ export default function LibraryTab({
     return { downloadingCount, speed, storedBytes };
   }, [groups]);
 
-  const selectedRule = selectedRuleId ? rules.find((r) => r.id === selectedRuleId) ?? null : null;
+  const selectedRule = selectedRuleId ? (rules.find((r) => r.id === selectedRuleId) ?? null) : null;
   const selectedFeed = selectedRule ? feedMap.get(selectedRule.rss_feed_id) : undefined;
 
   const queryClient = useQueryClient();
@@ -106,7 +128,9 @@ export default function LibraryTab({
   if (isLoading) {
     return (
       <div className="flex flex-col gap-2.5">
-        {Array.from({ length: 3 }).map((_, i) => <AnimeDownloadCardSkeleton key={i} />)}
+        {Array.from({ length: 3 }).map((_, i) => (
+          <AnimeDownloadCardSkeleton key={i} />
+        ))}
       </div>
     );
   }
@@ -142,7 +166,11 @@ export default function LibraryTab({
     <>
       <div className="flex items-center gap-2 mb-3">
         <div className="relative flex-1 max-w-[280px]">
-          <HugeiconsIcon icon={Search01Icon} size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none" />
+          <HugeiconsIcon
+            icon={Search01Icon}
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none"
+          />
           <input
             type="text"
             value={query}
@@ -168,10 +196,15 @@ export default function LibraryTab({
                   <button
                     key={key}
                     type="button"
-                    onClick={() => { setSort(key); setSortMenuOpen(false); }}
+                    onClick={() => {
+                      setSort(key);
+                      setSortMenuOpen(false);
+                    }}
                     className={cn(
                       'w-full px-3 py-1.5 text-left text-[11px] font-medium transition-colors cursor-pointer',
-                      sort === key ? 'text-mm-accent bg-white/[0.04]' : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]',
+                      sort === key
+                        ? 'text-mm-accent bg-white/[0.04]'
+                        : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
                     )}
                   >
                     {sortLabels[key]}
@@ -185,25 +218,36 @@ export default function LibraryTab({
 
       {(rules.length > 0 || miscDownloads.length > 0) && (
         <div className="flex items-center gap-3 mb-3 text-[11px] text-white/20 flex-wrap">
-          <span><b className="text-white/40 font-medium">{rules.length}</b> {i18n._(msg`downloads.summary.subscribed`)}</span>
+          <span>
+            <b className="text-white/40 font-medium">{rules.length}</b>{' '}
+            {i18n._(msg`downloads.summary.subscribed`)}
+          </span>
           <span className="text-white/10">·</span>
           <span>
             <span className="inline-block w-[5px] h-[5px] rounded-full bg-[#4ade80] mr-1.5 align-middle" />
-            <b className="text-white/40 font-medium">{stats.downloadingCount}</b> {i18n._(msg`downloads.summary.downloading`)}
+            <b className="text-white/40 font-medium">{stats.downloadingCount}</b>{' '}
+            {i18n._(msg`downloads.summary.downloading`)}
           </span>
           {stats.speed > 0 && (
             <>
               <span className="text-white/10">·</span>
-              <span className="tabular-nums"><b className="text-white/40 font-medium">{formatBytes(stats.speed)}/s</b></span>
+              <span className="tabular-nums">
+                <b className="text-white/40 font-medium">{formatBytes(stats.speed)}/s</b>
+              </span>
             </>
           )}
           <span className="text-white/10">·</span>
-          <span className="tabular-nums"><b className="text-white/40 font-medium">{formatBytes(stats.storedBytes)}</b> {i18n._(msg`downloads.summary.stored`)}</span>
+          <span className="tabular-nums">
+            <b className="text-white/40 font-medium">{formatBytes(stats.storedBytes)}</b>{' '}
+            {i18n._(msg`downloads.summary.stored`)}
+          </span>
         </div>
       )}
 
       {query.trim() && sorted.length === 0 && (
-        <p className="text-[12px] text-white/30 mb-3">{i18n._(msg`downloads.searchEmpty`).replace('{query}', query)}</p>
+        <p className="text-[12px] text-white/30 mb-3">
+          {i18n._(msg`downloads.searchEmpty`).replace('{query}', query)}
+        </p>
       )}
 
       <div className="flex flex-col gap-2.5">
@@ -298,7 +342,7 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
   const remaining = Math.max(0, total - downloaded);
   const etaSeconds = speed > 0 ? Math.round(remaining / speed) : 0;
   const activeCount = (group?.downloads ?? []).filter(
-    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting',
+    (d) => d.status === 'active' || d.status === 'paused' || d.status === 'waiting'
   ).length;
 
   const headerActions = (
@@ -318,7 +362,8 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
         onToggleEnabled={() => toggleEnabledMutation.mutate()}
         onRefresh={() => refreshMutation.mutate()}
         onOpenAnime={() => {
-          if (rule.bangumi_id) navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } });
+          if (rule.bangumi_id)
+            navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } });
         }}
         onCopyRssUrl={() => toast.success(i18n._(msg`downloads.menu.copied`))}
         onDelete={() => {
@@ -333,7 +378,11 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
       coverUrl={coverUrl}
       title={rule.name}
       subChips={ruleSubChips(rule)}
-      onOpenAnime={rule.bangumi_id ? () => navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } }) : undefined}
+      onOpenAnime={
+        rule.bangumi_id
+          ? () => navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } })
+          : undefined
+      }
       stats={{
         mode,
         percent,
@@ -343,9 +392,10 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
         etaSeconds: mode === 'downloading' ? etaSeconds : undefined,
         activeCount: mode === 'downloading' ? activeCount : undefined,
         completedCount: mode === 'completed' ? (group?.complete_count ?? 0) : undefined,
-        completedAtRelative: mode === 'completed' && eps[0]?.created_at
-          ? formatRelative(eps[0].created_at)
-          : undefined,
+        completedAtRelative:
+          mode === 'completed' && eps[0]?.created_at
+            ? formatRelative(eps[0].created_at)
+            : undefined,
         nextFetchRelative: mode === 'subscribed' ? deriveNextFetch(feed) : undefined,
         live: mode === 'downloading' || (mode === 'subscribed' && rule.enabled === 1),
       }}
@@ -359,25 +409,28 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
           onRefresh={() => refreshMutation.mutate()}
         />
       )}
-      {mode === 'downloading' && eps.map((d) => (
-        <EpisodeRowActive
-          key={d.gid}
-          {...toActiveProps(d)}
-          onPause={(gid) => pauseMutation.mutate(gid)}
-          onResume={(gid) => resumeMutation.mutate(gid)}
-          onDelete={(gid) => deleteDownloadMutation.mutate(gid)}
-        />
-      ))}
-      {mode === 'completed' && eps.map((d) => (
-        <EpisodeRowComplete
-          key={d.gid}
-          {...toCompleteProps(d)}
-          onPlay={() => {
-            if (rule.bangumi_id) navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } });
-          }}
-          onDelete={(gid) => deleteDownloadMutation.mutate(gid)}
-        />
-      ))}
+      {mode === 'downloading' &&
+        eps.map((d) => (
+          <EpisodeRowActive
+            key={d.gid}
+            {...toActiveProps(d)}
+            onPause={(gid) => pauseMutation.mutate(gid)}
+            onResume={(gid) => resumeMutation.mutate(gid)}
+            onDelete={(gid) => deleteDownloadMutation.mutate(gid)}
+          />
+        ))}
+      {mode === 'completed' &&
+        eps.map((d) => (
+          <EpisodeRowComplete
+            key={d.gid}
+            {...toCompleteProps(d)}
+            onPlay={() => {
+              if (rule.bangumi_id)
+                navigate({ to: '/anime/$id', params: { id: String(rule.bangumi_id) } });
+            }}
+            onDelete={(gid) => deleteDownloadMutation.mutate(gid)}
+          />
+        ))}
     </AnimeDownloadCard>
   );
 }

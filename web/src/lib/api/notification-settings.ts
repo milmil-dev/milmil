@@ -68,7 +68,7 @@ export const notificationSettingsApi = {
   testBot: (platform: string) =>
     api.post<{ success: boolean; error?: string; bot_username?: string }>(
       '/api/v1/settings/notifications/test-bot',
-      { platform },
+      { platform }
     ),
   status: () => api.get<Record<string, ProviderStatus>>('/api/v1/settings/notifications/status'),
 };

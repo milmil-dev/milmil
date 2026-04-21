@@ -1,32 +1,32 @@
-import { useLingui } from '@lingui/react';
-import { msg } from '@lingui/core/macro';
-import { motion } from 'motion/react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
-  Settings02Icon,
-  Link04Icon,
-  PlayIcon,
-  UserIcon,
+  CloudIcon,
+  Download04Icon,
   HardDriveIcon,
   InformationCircleIcon,
-  Download04Icon,
-  CloudIcon,
+  Link04Icon,
   Notification03Icon,
+  PlayIcon,
+  Settings02Icon,
+  UserIcon,
 } from '@hugeicons/core-free-icons';
-import { cn } from '@/lib/utils';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { motion } from 'motion/react';
 import { PageAtmosphere } from '@/components/PageAtmosphere';
 import { PageTransition } from '@/components/PageTransition';
-import { GeneralPanel } from './GeneralPanel';
-import { IntegrationsPanel } from './IntegrationsPanel';
-import { PlayerPanel } from './PlayerPanel';
-import { AccountPanel } from './AccountPanel';
-import { StoragePanel } from './StoragePanel';
+import { useDocumentTitle } from '@/hooks/use-document-title';
+import { cn } from '@/lib/utils';
 import { AboutPanel } from './AboutPanel';
+import { AccountPanel } from './AccountPanel';
 import { BackupPanel } from './BackupPanel';
 import { DownloadPanel } from './DownloadPanel';
+import { GeneralPanel } from './GeneralPanel';
+import { IntegrationsPanel } from './IntegrationsPanel';
 import { NotificationSettingsPanel } from './NotificationSettingsPanel';
-import { useDocumentTitle } from '@/hooks/use-document-title';
+import { PlayerPanel } from './PlayerPanel';
+import { StoragePanel } from './StoragePanel';
 
 const TABS = [
   { id: 'general', labelKey: msg`settings.nav.general`, icon: Settings02Icon },
@@ -61,7 +61,8 @@ export function SettingsPage() {
   useDocumentTitle(i18n._(msg`nav.settings`));
   const search = useSearch({ strict: false }) as { tab?: string };
   const navigate = useNavigate();
-  const activeTab: TabId = search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
+  const activeTab: TabId =
+    search.tab && TAB_IDS.has(search.tab) ? (search.tab as TabId) : 'general';
 
   const setActiveTab = (tab: TabId) => {
     navigate({ to: '/settings', search: { tab }, replace: true });

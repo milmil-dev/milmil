@@ -1,18 +1,19 @@
 // web/src/components/downloads/CardMenu.tsx
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
-import { HugeiconsIcon } from '@hugeicons/react';
+
 import {
-  MoreHorizontalIcon,
-  ToggleOnIcon,
-  Refresh03Icon,
-  Link02Icon,
   Copy01Icon,
   Delete02Icon,
+  Link02Icon,
+  MoreHorizontalIcon,
+  Refresh03Icon,
+  ToggleOnIcon,
 } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface Props {
   enabled: boolean;
@@ -26,15 +27,24 @@ interface Props {
 }
 
 export function CardMenu({
-  enabled, bangumiId, feedUrl,
-  onToggleEnabled, onRefresh, onOpenAnime, onCopyRssUrl, onDelete,
+  enabled,
+  bangumiId,
+  feedUrl,
+  onToggleEnabled,
+  onRefresh,
+  onOpenAnime,
+  onCopyRssUrl,
+  onDelete,
 }: Props) {
   const { i18n } = useLingui();
   const [open, setOpen] = useState(false);
   const animeDisabled = !bangumiId;
 
   function handle(fn: () => void) {
-    return () => { fn(); setOpen(false); };
+    return () => {
+      fn();
+      setOpen(false);
+    };
   }
 
   return (
@@ -46,7 +56,7 @@ export function CardMenu({
           className={cn(
             'w-[26px] h-[26px] rounded-[7px] flex items-center justify-center',
             'text-white/20 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer',
-            open && 'text-white bg-white/[0.06]',
+            open && 'text-white bg-white/[0.06]'
           )}
         >
           <HugeiconsIcon icon={MoreHorizontalIcon} size={14} />
@@ -65,7 +75,9 @@ export function CardMenu({
             <span
               className={cn(
                 'text-[10px] px-2 py-[2px] rounded-full tabular-nums',
-                enabled ? 'bg-[rgba(74,222,128,0.15)] text-[#4ade80]' : 'bg-white/[0.06] text-white/40',
+                enabled
+                  ? 'bg-[rgba(74,222,128,0.15)] text-[#4ade80]'
+                  : 'bg-white/[0.06] text-white/40'
               )}
             >
               {enabled ? i18n._(msg`downloads.menu.on`) : i18n._(msg`downloads.menu.off`)}
@@ -106,7 +118,12 @@ export function CardMenu({
 }
 
 function MenuItem({
-  icon, label, trailing, onClick, disabled, danger,
+  icon,
+  label,
+  trailing,
+  onClick,
+  disabled,
+  danger,
 }: {
   icon: Parameters<typeof HugeiconsIcon>[0]['icon'];
   label: string;
@@ -127,7 +144,7 @@ function MenuItem({
         'transition-colors text-left cursor-pointer',
         disabled && 'opacity-40 cursor-not-allowed',
         !disabled && !danger && 'text-white/60 hover:text-white hover:bg-white/[0.04]',
-        !disabled && danger && 'text-[#f87171] hover:bg-[rgba(248,113,113,0.08)]',
+        !disabled && danger && 'text-[#f87171] hover:bg-[rgba(248,113,113,0.08)]'
       )}
     >
       <HugeiconsIcon icon={icon} size={12} />

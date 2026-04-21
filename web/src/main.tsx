@@ -28,7 +28,10 @@ async function boot() {
 boot();
 
 // Register Serwist service worker (always in prod, controlled by VITE_ENABLE_SW in dev)
-if ((import.meta.env.PROD || import.meta.env.VITE_ENABLE_SW === 'true') && 'serviceWorker' in navigator) {
+if (
+  (import.meta.env.PROD || import.meta.env.VITE_ENABLE_SW === 'true') &&
+  'serviceWorker' in navigator
+) {
   window.addEventListener('load', async () => {
     try {
       const { Serwist } = await import('@serwist/window');

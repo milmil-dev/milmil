@@ -13,7 +13,7 @@ import { HistorySkeleton } from '@/components/history/HistorySkeleton';
 import { HistoryTimelineRail } from '@/components/history/HistoryTimelineRail';
 import { PageTransition } from '@/components/PageTransition';
 import { useDocumentTitle } from '@/hooks/use-document-title';
-import { historyApi, historyKeys, type HistoryFilter } from '@/lib/api/history';
+import { type HistoryFilter, historyApi, historyKeys } from '@/lib/api/history';
 import { progressKeys } from '@/lib/api/progress';
 import { bucketByDate } from '@/lib/history-date-buckets';
 
@@ -48,15 +48,11 @@ export function HistoryPage() {
   const query = useInfiniteQuery({
     queryKey: historyKeys.list(filter, q),
     initialPageParam: '' as string,
-    queryFn: ({ pageParam }) =>
-      historyApi.list({ before: pageParam, filter, q, limit: 40 }),
+    queryFn: ({ pageParam }) => historyApi.list({ before: pageParam, filter, q, limit: 40 }),
     getNextPageParam: (last) => last.next_before ?? undefined,
   });
 
-  const allItems = useMemo(
-    () => query.data?.pages.flatMap((p) => p.items) ?? [],
-    [query.data]
-  );
+  const allItems = useMemo(() => query.data?.pages.flatMap((p) => p.items) ?? [], [query.data]);
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: historyKeys.all });
@@ -134,7 +130,14 @@ export function HistoryPage() {
         <div className="flex-1 min-w-0">
           <header className="mb-7 flex items-center gap-3">
             <span className="flex h-7 w-7 items-center justify-center text-white/60">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
                 <circle cx="12" cy="12" r="9" />
                 <path d="M12 7v5l3 3" />
               </svg>
