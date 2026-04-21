@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
       ./cmd/server
 
 # ---- Runtime stage ---------------------------------------------------------
-FROM alpine:3.20
+FROM alpine:3.23
 
 RUN apk add --no-cache \
       ffmpeg \
