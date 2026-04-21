@@ -19,22 +19,22 @@ msgstr "已为你跳转到"
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:15
 msgid "history.empty.title"
-msgstr ""
+msgstr "没有观看记录"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:18
 msgid "history.empty.description"
-msgstr ""
+msgstr "你观看过的动画将会显示在这里"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:24
 msgid "nav.home"
-msgstr ""
+msgstr "首页"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryCard.tsx:53
 msgid "history.finished"
-msgstr ""
+msgstr "已看完"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"
@@ -194,13 +194,13 @@ msgstr ""
 
 #: src/pages/LibraryDetailPage.tsx:375
 msgid "{missingCount} missing episodes"
-msgstr ""
+msgstr "缺少 {missingCount} 集"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:55
 #: src/pages/library/RenameHistoryPage.tsx:49
 #: src/pages/library/RenamePreviewPage.tsx:55
 msgid "← Back to library"
-msgstr ""
+msgstr "← 返回媒体库"
 
 #: src/pages/settings/AboutPanel.tsx:148
 msgid "about.export"
@@ -436,7 +436,7 @@ msgstr "更新中..."
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:87
 msgid "Anime"
-msgstr ""
+msgstr "动画"
 
 #: src/pages/AnimeDetailPage.tsx:671
 msgid "anime.addToCollection"
@@ -448,7 +448,7 @@ msgstr "角色"
 
 #: src/pages/AnimeDetailPage.tsx:265
 msgid "anime.collectionUpdated"
-msgstr ""
+msgstr "收藏已更新"
 
 #: src/pages/AnimeDetailPage.tsx:1128
 msgid "anime.comments"
@@ -460,7 +460,7 @@ msgstr "评论"
 
 #: src/pages/AnimeDetailPage.tsx:694
 msgid "anime.enableTrackerSync"
-msgstr ""
+msgstr "启用追踪同步"
 
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
@@ -473,7 +473,7 @@ msgstr "集数"
 
 #: src/pages/AnimeDetailPage.tsx:694
 msgid "anime.excludeTrackerSync"
-msgstr ""
+msgstr "排除追踪同步"
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
@@ -536,7 +536,7 @@ msgstr "已追番"
 
 #: src/pages/AnimeDetailPage.tsx:281
 msgid "anime.syncFlagsUpdated"
-msgstr ""
+msgstr "同步标记已更新"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -607,17 +607,17 @@ msgstr "API 令牌"
 #. placeholder {1}: res.batch_id.slice(0, 8)
 #: src/pages/library/RenamePreviewPage.tsx:25
 msgid "Applied {0} files. Batch: {1}"
-msgstr ""
+msgstr "已应用 {0} 个文件。批次：{1}"
 
 #. placeholder {0}: ok.length
 #: src/pages/library/RenamePreviewPage.tsx:69
 msgid "Apply {0} renames. This will move files on disk. Continue?"
-msgstr ""
+msgstr "应用 {0} 项重命名。这将移动磁盘上的文件。是否继续？"
 
 #. placeholder {0}: ok.length
 #: src/pages/library/RenamePreviewPage.tsx:77
 msgid "Apply all OK ({0})"
-msgstr ""
+msgstr "全部应用 ({0})"
 
 #: src/pages/LoginPage.tsx:202
 msgid "auth.2fa.codeLabel"
@@ -743,7 +743,7 @@ msgstr "自動下載缺失集數"
 #. placeholder {1}: res.episode_range
 #: src/components/anime/EpisodeStatusCard.tsx:29
 msgid "Auto-download rule {0} ({1})"
-msgstr ""
+msgstr "自动下载规则 {0} ({1})"
 
 #: src/components/library/RenameConfigEditor.tsx:49
 #~ msgid "Auto-rename on match"
@@ -759,12 +759,12 @@ msgstr "添加"
 
 #: src/pages/DownloadsPage.tsx:1703
 msgid "autoDownload.adding"
-msgstr ""
+msgstr "添加中…"
 
 #: src/pages/DownloadsPage.tsx:431
 #: src/pages/DownloadsPage.tsx:1671
 msgid "autoDownload.addUrl"
-msgstr ""
+msgstr "添加网址"
 
 #: src/pages/DownloadsPage.tsx:940
 #: src/pages/DownloadsPage.tsx:966
@@ -1145,138 +1145,138 @@ msgstr "个种子"
 #: src/pages/settings/BackupPanel.tsx:233
 #: src/pages/settings/BackupPanel.tsx:433
 msgid "backup.configDeleted"
-msgstr ""
+msgstr "备份配置已删除"
 
 #: src/pages/settings/BackupPanel.tsx:224
 #: src/pages/settings/BackupPanel.tsx:227
 #: src/pages/settings/BackupPanel.tsx:424
 #: src/pages/settings/BackupPanel.tsx:427
 msgid "backup.connectionFailed"
-msgstr ""
+msgstr "连接失败"
 
 #: src/pages/settings/BackupPanel.tsx:222
 #: src/pages/settings/BackupPanel.tsx:422
 msgid "backup.connectionOk"
-msgstr ""
+msgstr "连接成功"
 
 #: src/pages/settings/BackupPanel.tsx:332
 #: src/pages/settings/BackupPanel.tsx:568
 msgid "backup.delete"
-msgstr ""
+msgstr "删除备份"
 
 #: src/pages/settings/BackupPanel.tsx:238
 #: src/pages/settings/BackupPanel.tsx:445
 msgid "backup.deleteFailed"
-msgstr ""
+msgstr "删除失败"
 
 #: src/pages/settings/BackupPanel.tsx:681
 msgid "backup.description"
-msgstr ""
+msgstr "备份与还原你的数据库和设置"
 
 #: src/pages/settings/BackupPanel.tsx:303
 #: src/pages/settings/BackupPanel.tsx:539
 msgid "backup.enabled"
-msgstr ""
+msgstr "已启用"
 
 #: src/pages/settings/BackupPanel.tsx:128
 msgid "backup.export"
-msgstr ""
+msgstr "导出"
 
 #: src/pages/settings/BackupPanel.tsx:80
 msgid "backup.exportFailed"
-msgstr ""
+msgstr "导出失败"
 
 #: src/pages/settings/BackupPanel.tsx:78
 msgid "backup.exportSuccess"
-msgstr ""
+msgstr "导出成功"
 
 #: src/pages/settings/BackupPanel.tsx:138
 msgid "backup.import"
-msgstr ""
+msgstr "导入"
 
 #: src/pages/settings/BackupPanel.tsx:88
 msgid "backup.importFailed"
-msgstr ""
+msgstr "导入失败"
 
 #: src/pages/settings/BackupPanel.tsx:86
 msgid "backup.importSuccess"
-msgstr ""
+msgstr "导入成功"
 
 #: src/pages/settings/BackupPanel.tsx:100
 #: src/pages/settings/BackupPanel.tsx:105
 msgid "backup.invalidFile"
-msgstr ""
+msgstr "无效的文件"
 
 #: src/pages/settings/BackupPanel.tsx:117
 msgid "backup.jsonDescription"
-msgstr ""
+msgstr "导出或导入 JSON 格式的备份文件"
 
 #: src/pages/settings/BackupPanel.tsx:115
 msgid "backup.jsonExportImport"
-msgstr ""
+msgstr "JSON 导出/导入"
 
 #: src/pages/settings/BackupPanel.tsx:618
 msgid "backup.neverSynced"
-msgstr ""
+msgstr "从未同步"
 
 #: src/pages/settings/BackupPanel.tsx:648
 msgid "backup.noTargets"
-msgstr ""
+msgstr "没有备份目标"
 
 #: src/pages/settings/BackupPanel.tsx:286
 #: src/pages/settings/BackupPanel.tsx:292
 msgid "backup.password"
-msgstr ""
+msgstr "密码"
 
 #: src/pages/settings/BackupPanel.tsx:521
 msgid "backup.region"
-msgstr ""
+msgstr "区域"
 
 #: src/pages/settings/BackupPanel.tsx:530
 msgid "backup.regionOptional"
-msgstr ""
+msgstr "区域（选填）"
 
 #: src/pages/settings/BackupPanel.tsx:449
 msgid "backup.s3Compatible"
-msgstr ""
+msgstr "S3 兼容存储"
 
 #: src/pages/settings/BackupPanel.tsx:623
 msgid "backup.syncControls"
-msgstr ""
+msgstr "同步控制"
 
 #: src/pages/settings/BackupPanel.tsx:612
 msgid "backup.syncFailed"
-msgstr ""
+msgstr "同步失败"
 
 #: src/pages/settings/BackupPanel.tsx:660
 msgid "backup.syncing"
-msgstr ""
+msgstr "同步中…"
 
 #: src/pages/settings/BackupPanel.tsx:661
 msgid "backup.syncNow"
-msgstr ""
+msgstr "立即同步"
 
 #: src/pages/settings/BackupPanel.tsx:603
 msgid "backup.syncSuccess"
-msgstr ""
+msgstr "同步成功"
 
 #: src/pages/settings/BackupPanel.tsx:321
 #: src/pages/settings/BackupPanel.tsx:557
 msgid "backup.testConnection"
-msgstr ""
+msgstr "测试连接"
 
 #: src/pages/settings/BackupPanel.tsx:678
 msgid "backup.title"
-msgstr ""
+msgstr "备份"
 
 #: src/pages/settings/BackupPanel.tsx:269
 #: src/pages/settings/BackupPanel.tsx:275
 msgid "backup.username"
-msgstr ""
+msgstr "用户名"
 
 #: src/pages/library/RenameHistoryPage.tsx:61
 msgid "Batch"
-msgstr ""
+msgstr "批次"
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1285,13 +1285,13 @@ msgstr "下一集"
 #. placeholder {0}: formatBytes(totalWaste)
 #: src/pages/library/LibraryDuplicatesPage.tsx:77
 msgid "Clean non-preferred ({0})"
-msgstr ""
+msgstr "清除非偏好项 ({0})"
 
 #. placeholder {0}: res.deleted
 #. placeholder {1}: formatBytes(res.reclaimed_bytes)
 #: src/pages/library/LibraryDuplicatesPage.tsx:28
 msgid "Cleaned up {0} files ({1})"
-msgstr ""
+msgstr "已清除 {0} 个文件 ({1})"
 
 #: src/pages/CollectionPage.tsx:20
 msgid "collection.all"
@@ -1402,7 +1402,7 @@ msgstr "点击复制"
 
 #: src/components/history/ConfirmDialog.tsx:49
 msgid "common.confirm"
-msgstr ""
+msgstr "确认"
 
 #: src/pages/LibraryDetailPage.tsx:1830
 msgid "common.confirmDelete"
@@ -1473,19 +1473,19 @@ msgstr "在线"
 #. placeholder {0}: sortedMissing.length
 #: src/components/anime/EpisodeStatusCard.tsx:82
 msgid "Create auto-download rule for {0} missing episodes?"
-msgstr ""
+msgstr "为缺少的 {0} 集创建自动下载规则？"
 
 #: src/pages/library/RenameHistoryPage.tsx:62
 msgid "Date"
-msgstr ""
+msgstr "日期"
 
 #: src/components/anime/DuplicatesPanel.tsx:107
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: src/components/anime/DuplicatesPanel.tsx:55
 msgid "Delete this file permanently?"
-msgstr ""
+msgstr "确定要永久删除此文件？"
 
 #: src/pages/DiscoverPage.tsx:114
 msgid "discover.airedRecently"
@@ -1521,12 +1521,12 @@ msgstr "现在热门"
 
 #: src/components/anime/MissingSearchModal.tsx:110
 msgid "Download"
-msgstr ""
+msgstr "下载"
 
 #. placeholder {0}: res.download_id.slice(0, 8)
 #: src/components/anime/MissingSearchModal.tsx:32
 msgid "Download queued: {0}"
-msgstr ""
+msgstr "已加入下载队列：{0}"
 
 #: src/components/downloads/AnimeGroupHeader.tsx:212
 msgid "downloads.autoDisabled"
@@ -1697,7 +1697,7 @@ msgstr "等待中"
 #: src/components/anime/DuplicatesPanel.tsx:44
 #: src/pages/library/LibraryDuplicatesPage.tsx:58
 msgid "Duplicate files"
-msgstr ""
+msgstr "重复文件"
 
 #: src/pages/LibraryDetailPage.tsx:1991
 #~ msgid "Duplicates"
@@ -1705,12 +1705,12 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:88
 msgid "Episode"
-msgstr ""
+msgstr "集"
 
 #. placeholder {0}: set.episode_number
 #: src/components/anime/DuplicatesPanel.tsx:79
 msgid "Episode {0}"
-msgstr ""
+msgstr "第 {0} 集"
 
 #: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
@@ -1740,12 +1740,12 @@ msgstr "请检查服务器是否运行并重试"
 
 #: src/components/anime/DuplicatesPanel.tsx:80
 msgid "files"
-msgstr ""
+msgstr "文件"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:89
 #: src/pages/library/RenameHistoryPage.tsx:63
 msgid "Files"
-msgstr ""
+msgstr "文件"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -1763,87 +1763,87 @@ msgstr "预览"
 
 #: src/components/history/HistoryFilterBar.tsx:101
 msgid "history.batch"
-msgstr ""
+msgstr "批量操作"
 
 #: src/components/history/HistoryBatchBar.tsx:24
 msgid "history.batch.cancel"
-msgstr ""
+msgstr "取消"
 
 #: src/components/history/HistoryBatchBar.tsx:32
 msgid "history.batch.deleteSelected"
-msgstr ""
+msgstr "删除所选"
 
 #: src/components/history/HistoryFilterBar.tsx:89
 msgid "history.clearAll"
-msgstr ""
+msgstr "清除全部"
 
 #: src/pages/HistoryPage.tsx:199
 msgid "history.clearAll.confirm"
-msgstr ""
+msgstr "确定要清除全部记录吗？"
 
 #: src/pages/HistoryPage.tsx:204
 msgid "history.clearAll.description"
-msgstr ""
+msgstr "此操作无法撤销，所有观看记录将被永久删除。"
 
 #: src/pages/HistoryPage.tsx:200
 msgid "history.delete.confirm"
-msgstr ""
+msgstr "确定要删除此记录吗？"
 
 #: src/pages/HistoryPage.tsx:205
 msgid "history.delete.description"
-msgstr ""
+msgstr "此观看记录将被永久删除。"
 
 #: src/components/history/HistoryGrid.tsx:39
 #: src/components/history/HistoryTimelineRail.tsx:20
 msgid "history.group.earlier"
-msgstr ""
+msgstr "更早"
 
 #: src/components/history/HistoryGrid.tsx:38
 #: src/components/history/HistoryTimelineRail.tsx:19
 msgid "history.group.lastWeek"
-msgstr ""
+msgstr "上周"
 
 #: src/components/history/HistoryGrid.tsx:37
 #: src/components/history/HistoryTimelineRail.tsx:18
 msgid "history.group.thisWeek"
-msgstr ""
+msgstr "本周"
 
 #: src/components/history/HistoryGrid.tsx:35
 #: src/components/history/HistoryTimelineRail.tsx:16
 msgid "history.group.today"
-msgstr ""
+msgstr "今天"
 
 #: src/components/history/HistoryGrid.tsx:36
 #: src/components/history/HistoryTimelineRail.tsx:17
 msgid "history.group.yesterday"
-msgstr ""
+msgstr "昨天"
 
 #: src/pages/HistoryPage.tsx:69
 #: src/pages/HistoryPage.tsx:75
 #: src/pages/HistoryPage.tsx:81
 msgid "history.loadFailed"
-msgstr ""
+msgstr "加载记录失败"
 
 #: src/components/history/HistoryFilterBar.tsx:79
 msgid "history.searchPlaceholder"
-msgstr ""
+msgstr "搜索观看记录…"
 
 #: src/components/history/HistoryFilterBar.tsx:43
 msgid "history.tab.all"
-msgstr ""
+msgstr "全部"
 
 #: src/components/history/HistoryFilterBar.tsx:45
 msgid "history.tab.completed"
-msgstr ""
+msgstr "已完成"
 
 #: src/components/history/HistoryFilterBar.tsx:44
 msgid "history.tab.inProgress"
-msgstr ""
+msgstr "观看中"
 
 #: src/pages/HistoryPage.tsx:22
 #: src/pages/HistoryPage.tsx:143
 msgid "history.title"
-msgstr ""
+msgstr "观看记录"
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -2892,7 +2892,7 @@ msgstr "自动下载"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"
-msgstr ""
+msgstr "收藏"
 
 #: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
@@ -2905,7 +2905,7 @@ msgstr "探索"
 
 #: src/components/AppSidebar.tsx:35
 msgid "nav.history"
-msgstr ""
+msgstr "记录"
 
 #: src/components/AppSidebar.tsx:26
 #: src/components/AppSidebar.tsx:228
@@ -2963,27 +2963,27 @@ msgstr "设置"
 
 #: src/pages/library/RenamePreviewPage.tsx:89
 msgid "New"
-msgstr ""
+msgstr "新"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:82
 msgid "No duplicates."
-msgstr ""
+msgstr "没有重复文件。"
 
 #: src/pages/LibraryDetailPage.tsx:342
 msgid "No incomplete anime in this library."
-msgstr ""
+msgstr "此媒体库中没有未完成的动画。"
 
 #: src/pages/library/RenameHistoryPage.tsx:56
 msgid "No rename batches yet."
-msgstr ""
+msgstr "尚无重命名批次。"
 
 #: src/pages/library/RenamePreviewPage.tsx:82
 msgid "No rename plans."
-msgstr ""
+msgstr "没有重命名计划。"
 
 #: src/components/anime/MissingSearchModal.tsx:75
 msgid "No results from any provider."
-msgstr ""
+msgstr "所有来源均无结果。"
 
 #: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
@@ -3031,15 +3031,15 @@ msgstr "机器人令牌"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:567
 msgid "notifications.bot.dailyDigest"
-msgstr ""
+msgstr "每日摘要"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.dailyDigest.desc"
-msgstr ""
+msgstr "每天发送一次通知摘要"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:582
 msgid "notifications.bot.dailyDigest.off"
-msgstr ""
+msgstr "已关闭"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
@@ -3300,7 +3300,7 @@ msgstr "昨天"
 
 #: src/pages/library/RenamePreviewPage.tsx:88
 msgid "Old"
-msgstr ""
+msgstr "旧"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
@@ -3361,11 +3361,11 @@ msgstr "剩余"
 
 #: src/pages/library/RenameHistoryPage.tsx:52
 msgid "Rename history"
-msgstr ""
+msgstr "重命名记录"
 
 #: src/pages/library/RenamePreviewPage.tsx:58
 msgid "Rename preview"
-msgstr ""
+msgstr "重命名预览"
 
 #: src/components/library/RenameConfigEditor.tsx:34
 #~ msgid "Rename template"
@@ -3373,13 +3373,13 @@ msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:64
 msgid "Reverted"
-msgstr ""
+msgstr "已还原"
 
 #. placeholder {0}: res.reverted
 #. placeholder {1}: res.skipped
 #: src/pages/library/RenameHistoryPage.tsx:25
 msgid "Reverted {0} files, skipped {1}"
-msgstr ""
+msgstr "已还原 {0} 个文件，跳过 {1} 个"
 
 #: src/components/RuleEditorModal.tsx:661
 msgid "ruleEditor.addGroup"
@@ -3535,7 +3535,7 @@ msgstr "没有匹配当前过滤条件的项目"
 
 #: src/pages/downloads/LibraryTab.tsx:309
 msgid "ruleEditor.openEditor"
-msgstr ""
+msgstr "打开规则编辑器"
 
 #: src/components/RuleEditorModal.tsx:734
 #: src/pages/DownloadsPage.tsx:1584
@@ -3729,11 +3729,11 @@ msgstr "部本周节目"
 
 #: src/components/anime/EpisodeStatusCard.tsx:65
 msgid "Search for this episode"
-msgstr ""
+msgstr "搜索此集"
 
 #: src/components/anime/MissingSearchModal.tsx:57
 msgid "Search missing episode {episodeNumber}"
-msgstr ""
+msgstr "搜索缺少的第 {episodeNumber} 集"
 
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
@@ -3880,39 +3880,39 @@ msgstr "即将播出"
 
 #: src/components/TagMultiSelect.tsx:23
 msgid "search.tag.activity"
-msgstr ""
+msgstr "活动"
 
 #: src/components/TagMultiSelect.tsx:16
 msgid "search.tag.genre"
-msgstr ""
+msgstr "类型"
 
 #: src/components/TagMultiSelect.tsx:24
 msgid "search.tag.misc"
-msgstr ""
+msgstr "其他"
 
 #: src/components/TagMultiSelect.tsx:17
 msgid "search.tag.mood"
-msgstr ""
+msgstr "氛围"
 
 #: src/components/TagMultiSelect.tsx:18
 msgid "search.tag.setting"
-msgstr ""
+msgstr "背景"
 
 #: src/components/TagMultiSelect.tsx:19
 msgid "search.tag.source"
-msgstr ""
+msgstr "原作"
 
 #: src/components/TagMultiSelect.tsx:22
 msgid "search.tag.studio"
-msgstr ""
+msgstr "制作公司"
 
 #: src/components/TagMultiSelect.tsx:21
 msgid "search.tag.style"
-msgstr ""
+msgstr "风格"
 
 #: src/components/TagMultiSelect.tsx:20
 msgid "search.tag.theme"
-msgstr ""
+msgstr "主题"
 
 #~ msgid "search.tagPlaceholder"
 #~ msgstr "输入 Bangumi 标签…"
@@ -3923,11 +3923,11 @@ msgstr ""
 
 #: src/components/anime/MissingSearchModal.tsx:70
 msgid "Searching..."
-msgstr ""
+msgstr "搜索中…"
 
 #: src/components/anime/MissingSearchModal.tsx:84
 msgid "Seeders"
-msgstr ""
+msgstr "做种数"
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -3988,7 +3988,7 @@ msgstr "活跃会话"
 
 #: src/components/anime/DuplicatesPanel.tsx:99
 msgid "Set preferred"
-msgstr ""
+msgstr "设为偏好"
 
 #: src/pages/settings/GeneralPanel.tsx:81
 msgid "settings.appearance.language"
@@ -4149,7 +4149,7 @@ msgstr "获取授权链接失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:242
 msgid "settings.integration.autoPull"
-msgstr ""
+msgstr "自动拉取"
 
 #: src/pages/settings/IntegrationsPanel.tsx:401
 #: src/pages/settings/IntegrationsPanel.tsx:624
@@ -4189,12 +4189,12 @@ msgstr "断开连接中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:151
 msgid "settings.integration.lastSync"
-msgstr ""
+msgstr "上次同步"
 
 #: src/pages/settings/IntegrationsPanel.tsx:279
 #: src/pages/settings/IntegrationsPanel.tsx:469
 msgid "settings.integration.needsReauth"
-msgstr ""
+msgstr "需要重新授权"
 
 #: src/pages/settings/IntegrationsPanel.tsx:351
 #: src/pages/settings/IntegrationsPanel.tsx:539
@@ -4203,31 +4203,31 @@ msgstr "未连接"
 
 #: src/pages/settings/IntegrationsPanel.tsx:157
 msgid "settings.integration.pending"
-msgstr ""
+msgstr "待处理"
 
 #: src/pages/settings/IntegrationsPanel.tsx:214
 msgid "settings.integration.pulled"
-msgstr ""
+msgstr "已拉取"
 
 #: src/pages/settings/IntegrationsPanel.tsx:218
 msgid "settings.integration.pullFailed"
-msgstr ""
+msgstr "拉取失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:251
 msgid "settings.integration.pulling"
-msgstr ""
+msgstr "拉取中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:252
 msgid "settings.integration.pullNow"
-msgstr ""
+msgstr "立即拉取"
 
 #: src/pages/settings/IntegrationsPanel.tsx:226
 msgid "settings.integration.pullToggleFailed"
-msgstr ""
+msgstr "切换自动拉取失败"
 
 #: src/pages/settings/IntegrationsPanel.tsx:164
 msgid "settings.integration.recentErrors"
-msgstr ""
+msgstr "最近的错误"
 
 #: src/pages/settings/IntegrationsPanel.tsx:423
 #: src/pages/settings/IntegrationsPanel.tsx:648
@@ -4259,15 +4259,15 @@ msgstr "同步中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:369
 msgid "settings.integration.trakt.openAndEnter"
-msgstr ""
+msgstr "打开 Trakt 并输入验证码"
 
 #: src/pages/settings/IntegrationsPanel.tsx:383
 msgid "settings.integration.trakt.waitingExpires"
-msgstr ""
+msgstr "等待中，将于 {0} 过期"
 
 #: src/pages/settings/IntegrationsPanel.tsx:672
 msgid "settings.integration.updatesPulled"
-msgstr ""
+msgstr "已拉取更新"
 
 #: src/pages/settings/IntegrationsPanel.tsx:684
 msgid "settings.integrations.description"
@@ -4361,27 +4361,27 @@ msgstr "播放器设置会自动备份"
 
 #: src/pages/settings/PlayerPanel.tsx:336
 msgid "settings.player.buffer.auto"
-msgstr ""
+msgstr "自动"
 
 #: src/pages/settings/PlayerPanel.tsx:338
 msgid "settings.player.buffer.balanced"
-msgstr ""
+msgstr "均衡"
 
 #: src/pages/settings/PlayerPanel.tsx:339
 msgid "settings.player.buffer.high"
-msgstr ""
+msgstr "高"
 
 #: src/pages/settings/PlayerPanel.tsx:337
 msgid "settings.player.buffer.low"
-msgstr ""
+msgstr "低"
 
 #: src/pages/settings/PlayerPanel.tsx:332
 msgid "settings.player.bufferMode"
-msgstr ""
+msgstr "缓冲模式"
 
 #: src/pages/settings/PlayerPanel.tsx:345
 msgid "settings.player.bufferModeDesc"
-msgstr ""
+msgstr "控制视频播放器的缓冲策略"
 
 #: src/pages/settings/PlayerPanel.tsx:246
 msgid "settings.player.danmaku"
@@ -4389,7 +4389,7 @@ msgstr "弹幕"
 
 #: src/pages/settings/PlayerPanel.tsx:315
 msgid "settings.player.danmakuDensity"
-msgstr ""
+msgstr "弹幕密度"
 
 #: src/pages/settings/PlayerPanel.tsx:251
 msgid "settings.player.danmakuEnabled"
@@ -4409,15 +4409,15 @@ msgstr "速度"
 
 #: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.density.high"
-msgstr ""
+msgstr "高"
 
 #: src/pages/settings/PlayerPanel.tsx:319
 msgid "settings.player.density.low"
-msgstr ""
+msgstr "低"
 
 #: src/pages/settings/PlayerPanel.tsx:320
 msgid "settings.player.density.medium"
-msgstr ""
+msgstr "中"
 
 #: src/pages/settings/PlayerPanel.tsx:566
 msgid "settings.player.gestureEnabled"
@@ -4743,15 +4743,15 @@ msgstr "星期日"
 
 #: src/components/anime/MissingSearchModal.tsx:83
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 #: src/pages/library/RenamePreviewPage.tsx:87
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #: src/components/anime/MissingSearchModal.tsx:85
 msgid "Subgroup"
-msgstr ""
+msgstr "字幕组"
 
 #~ msgid "subscribe.add"
 #~ msgstr "添加"
@@ -4849,7 +4849,7 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:69
 msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
-msgstr ""
+msgstr "这将永久删除此媒体库中 {totalRemovable} 个非偏好文件。是否继续？"
 
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0} 天前"
@@ -4885,7 +4885,7 @@ msgstr "{seconds} 秒前"
 
 #: src/components/anime/MissingSearchModal.tsx:82
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
@@ -4905,12 +4905,12 @@ msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:94
 msgid "Undo"
-msgstr ""
+msgstr "撤销"
 
 #. placeholder {0}: b.batch_id.slice(0, 8)
 #: src/pages/library/RenameHistoryPage.tsx:87
 msgid "Undo batch {0}?"
-msgstr ""
+msgstr "撤销批次 {0}？"
 
 #: src/pages/LibraryDetailPage.tsx:1996
 #~ msgid "View and clean up duplicate files"
@@ -4918,7 +4918,7 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:90
 msgid "Wasted"
-msgstr ""
+msgstr "浪费"
 
 #~ msgid "watch.audioTrack"
 #~ msgstr "音轨"

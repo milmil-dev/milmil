@@ -21,22 +21,22 @@ msgstr "ジャンプ先"
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:15
 msgid "history.empty.title"
-msgstr ""
+msgstr "視聴履歴がありません"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:18
 msgid "history.empty.description"
-msgstr ""
+msgstr "視聴したアニメがここに表示されます"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:24
 msgid "nav.home"
-msgstr ""
+msgstr "ホーム"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryCard.tsx:53
 msgid "history.finished"
-msgstr ""
+msgstr "視聴済み"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"
@@ -196,13 +196,13 @@ msgstr ""
 
 #: src/pages/LibraryDetailPage.tsx:375
 msgid "{missingCount} missing episodes"
-msgstr ""
+msgstr "{missingCount} 話が不足"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:55
 #: src/pages/library/RenameHistoryPage.tsx:49
 #: src/pages/library/RenamePreviewPage.tsx:55
 msgid "← Back to library"
-msgstr ""
+msgstr "← ライブラリに戻る"
 
 #: src/pages/settings/AboutPanel.tsx:148
 msgid "about.export"
@@ -438,7 +438,7 @@ msgstr "更新中..."
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:87
 msgid "Anime"
-msgstr ""
+msgstr "アニメ"
 
 #: src/pages/AnimeDetailPage.tsx:671
 msgid "anime.addToCollection"
@@ -450,7 +450,7 @@ msgstr "キャラクター"
 
 #: src/pages/AnimeDetailPage.tsx:265
 msgid "anime.collectionUpdated"
-msgstr ""
+msgstr "コレクションを更新しました"
 
 #: src/pages/AnimeDetailPage.tsx:1128
 msgid "anime.comments"
@@ -462,7 +462,7 @@ msgstr "コメント"
 
 #: src/pages/AnimeDetailPage.tsx:694
 msgid "anime.enableTrackerSync"
-msgstr ""
+msgstr "トラッカー同期を有効にする"
 
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
@@ -475,7 +475,7 @@ msgstr "エピソード"
 
 #: src/pages/AnimeDetailPage.tsx:694
 msgid "anime.excludeTrackerSync"
-msgstr ""
+msgstr "トラッカー同期から除外"
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
@@ -538,7 +538,7 @@ msgstr "追跡中"
 
 #: src/pages/AnimeDetailPage.tsx:281
 msgid "anime.syncFlagsUpdated"
-msgstr ""
+msgstr "同期フラグを更新しました"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -609,17 +609,17 @@ msgstr "APIトークン"
 #. placeholder {1}: res.batch_id.slice(0, 8)
 #: src/pages/library/RenamePreviewPage.tsx:25
 msgid "Applied {0} files. Batch: {1}"
-msgstr ""
+msgstr "{0} ファイルを適用しました。バッチ：{1}"
 
 #. placeholder {0}: ok.length
 #: src/pages/library/RenamePreviewPage.tsx:69
 msgid "Apply {0} renames. This will move files on disk. Continue?"
-msgstr ""
+msgstr "{0} 件のリネームを適用します。ディスク上のファイルが移動されます。続行しますか？"
 
 #. placeholder {0}: ok.length
 #: src/pages/library/RenamePreviewPage.tsx:77
 msgid "Apply all OK ({0})"
-msgstr ""
+msgstr "すべて適用 ({0})"
 
 #: src/pages/LoginPage.tsx:202
 msgid "auth.2fa.codeLabel"
@@ -745,7 +745,7 @@ msgstr "不足分を自動ダウンロード"
 #. placeholder {1}: res.episode_range
 #: src/components/anime/EpisodeStatusCard.tsx:29
 msgid "Auto-download rule {0} ({1})"
-msgstr ""
+msgstr "自動ダウンロードルール {0} ({1})"
 
 #: src/components/library/RenameConfigEditor.tsx:49
 #~ msgid "Auto-rename on match"
@@ -761,12 +761,12 @@ msgstr "追加"
 
 #: src/pages/DownloadsPage.tsx:1703
 msgid "autoDownload.adding"
-msgstr ""
+msgstr "追加中…"
 
 #: src/pages/DownloadsPage.tsx:431
 #: src/pages/DownloadsPage.tsx:1671
 msgid "autoDownload.addUrl"
-msgstr ""
+msgstr "URL を追加"
 
 #: src/pages/DownloadsPage.tsx:940
 #: src/pages/DownloadsPage.tsx:966
@@ -1147,138 +1147,138 @@ msgstr "件のトレント"
 #: src/pages/settings/BackupPanel.tsx:233
 #: src/pages/settings/BackupPanel.tsx:433
 msgid "backup.configDeleted"
-msgstr ""
+msgstr "バックアップ設定を削除しました"
 
 #: src/pages/settings/BackupPanel.tsx:224
 #: src/pages/settings/BackupPanel.tsx:227
 #: src/pages/settings/BackupPanel.tsx:424
 #: src/pages/settings/BackupPanel.tsx:427
 msgid "backup.connectionFailed"
-msgstr ""
+msgstr "接続に失敗しました"
 
 #: src/pages/settings/BackupPanel.tsx:222
 #: src/pages/settings/BackupPanel.tsx:422
 msgid "backup.connectionOk"
-msgstr ""
+msgstr "接続に成功しました"
 
 #: src/pages/settings/BackupPanel.tsx:332
 #: src/pages/settings/BackupPanel.tsx:568
 msgid "backup.delete"
-msgstr ""
+msgstr "バックアップを削除"
 
 #: src/pages/settings/BackupPanel.tsx:238
 #: src/pages/settings/BackupPanel.tsx:445
 msgid "backup.deleteFailed"
-msgstr ""
+msgstr "削除に失敗しました"
 
 #: src/pages/settings/BackupPanel.tsx:681
 msgid "backup.description"
-msgstr ""
+msgstr "データベースと設定のバックアップと復元"
 
 #: src/pages/settings/BackupPanel.tsx:303
 #: src/pages/settings/BackupPanel.tsx:539
 msgid "backup.enabled"
-msgstr ""
+msgstr "有効"
 
 #: src/pages/settings/BackupPanel.tsx:128
 msgid "backup.export"
-msgstr ""
+msgstr "エクスポート"
 
 #: src/pages/settings/BackupPanel.tsx:80
 msgid "backup.exportFailed"
-msgstr ""
+msgstr "エクスポートに失敗しました"
 
 #: src/pages/settings/BackupPanel.tsx:78
 msgid "backup.exportSuccess"
-msgstr ""
+msgstr "エクスポートに成功しました"
 
 #: src/pages/settings/BackupPanel.tsx:138
 msgid "backup.import"
-msgstr ""
+msgstr "インポート"
 
 #: src/pages/settings/BackupPanel.tsx:88
 msgid "backup.importFailed"
-msgstr ""
+msgstr "インポートに失敗しました"
 
 #: src/pages/settings/BackupPanel.tsx:86
 msgid "backup.importSuccess"
-msgstr ""
+msgstr "インポートに成功しました"
 
 #: src/pages/settings/BackupPanel.tsx:100
 #: src/pages/settings/BackupPanel.tsx:105
 msgid "backup.invalidFile"
-msgstr ""
+msgstr "無効なファイル"
 
 #: src/pages/settings/BackupPanel.tsx:117
 msgid "backup.jsonDescription"
-msgstr ""
+msgstr "JSON 形式のバックアップファイルをエクスポート・インポート"
 
 #: src/pages/settings/BackupPanel.tsx:115
 msgid "backup.jsonExportImport"
-msgstr ""
+msgstr "JSON エクスポート/インポート"
 
 #: src/pages/settings/BackupPanel.tsx:618
 msgid "backup.neverSynced"
-msgstr ""
+msgstr "未同期"
 
 #: src/pages/settings/BackupPanel.tsx:648
 msgid "backup.noTargets"
-msgstr ""
+msgstr "バックアップ先がありません"
 
 #: src/pages/settings/BackupPanel.tsx:286
 #: src/pages/settings/BackupPanel.tsx:292
 msgid "backup.password"
-msgstr ""
+msgstr "パスワード"
 
 #: src/pages/settings/BackupPanel.tsx:521
 msgid "backup.region"
-msgstr ""
+msgstr "リージョン"
 
 #: src/pages/settings/BackupPanel.tsx:530
 msgid "backup.regionOptional"
-msgstr ""
+msgstr "リージョン（任意）"
 
 #: src/pages/settings/BackupPanel.tsx:449
 msgid "backup.s3Compatible"
-msgstr ""
+msgstr "S3 互換ストレージ"
 
 #: src/pages/settings/BackupPanel.tsx:623
 msgid "backup.syncControls"
-msgstr ""
+msgstr "同期コントロール"
 
 #: src/pages/settings/BackupPanel.tsx:612
 msgid "backup.syncFailed"
-msgstr ""
+msgstr "同期に失敗しました"
 
 #: src/pages/settings/BackupPanel.tsx:660
 msgid "backup.syncing"
-msgstr ""
+msgstr "同期中…"
 
 #: src/pages/settings/BackupPanel.tsx:661
 msgid "backup.syncNow"
-msgstr ""
+msgstr "今すぐ同期"
 
 #: src/pages/settings/BackupPanel.tsx:603
 msgid "backup.syncSuccess"
-msgstr ""
+msgstr "同期に成功しました"
 
 #: src/pages/settings/BackupPanel.tsx:321
 #: src/pages/settings/BackupPanel.tsx:557
 msgid "backup.testConnection"
-msgstr ""
+msgstr "接続テスト"
 
 #: src/pages/settings/BackupPanel.tsx:678
 msgid "backup.title"
-msgstr ""
+msgstr "バックアップ"
 
 #: src/pages/settings/BackupPanel.tsx:269
 #: src/pages/settings/BackupPanel.tsx:275
 msgid "backup.username"
-msgstr ""
+msgstr "ユーザー名"
 
 #: src/pages/library/RenameHistoryPage.tsx:61
 msgid "Batch"
-msgstr ""
+msgstr "バッチ"
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1287,13 +1287,13 @@ msgstr "次回 EP"
 #. placeholder {0}: formatBytes(totalWaste)
 #: src/pages/library/LibraryDuplicatesPage.tsx:77
 msgid "Clean non-preferred ({0})"
-msgstr ""
+msgstr "非優先を削除 ({0})"
 
 #. placeholder {0}: res.deleted
 #. placeholder {1}: formatBytes(res.reclaimed_bytes)
 #: src/pages/library/LibraryDuplicatesPage.tsx:28
 msgid "Cleaned up {0} files ({1})"
-msgstr ""
+msgstr "{0} ファイルを削除しました ({1})"
 
 #: src/pages/CollectionPage.tsx:20
 msgid "collection.all"
@@ -1404,7 +1404,7 @@ msgstr "クリックしてコピー"
 
 #: src/components/history/ConfirmDialog.tsx:49
 msgid "common.confirm"
-msgstr ""
+msgstr "確認"
 
 #: src/pages/LibraryDetailPage.tsx:1830
 msgid "common.confirmDelete"
@@ -1475,19 +1475,19 @@ msgstr "オンライン"
 #. placeholder {0}: sortedMissing.length
 #: src/components/anime/EpisodeStatusCard.tsx:82
 msgid "Create auto-download rule for {0} missing episodes?"
-msgstr ""
+msgstr "不足している {0} 話の自動ダウンロードルールを作成しますか？"
 
 #: src/pages/library/RenameHistoryPage.tsx:62
 msgid "Date"
-msgstr ""
+msgstr "日付"
 
 #: src/components/anime/DuplicatesPanel.tsx:107
 msgid "Delete"
-msgstr ""
+msgstr "削除"
 
 #: src/components/anime/DuplicatesPanel.tsx:55
 msgid "Delete this file permanently?"
-msgstr ""
+msgstr "このファイルを完全に削除しますか？"
 
 #: src/pages/DiscoverPage.tsx:114
 msgid "discover.airedRecently"
@@ -1523,12 +1523,12 @@ msgstr "今トレンド"
 
 #: src/components/anime/MissingSearchModal.tsx:110
 msgid "Download"
-msgstr ""
+msgstr "ダウンロード"
 
 #. placeholder {0}: res.download_id.slice(0, 8)
 #: src/components/anime/MissingSearchModal.tsx:32
 msgid "Download queued: {0}"
-msgstr ""
+msgstr "ダウンロードキューに追加：{0}"
 
 #: src/components/downloads/AnimeGroupHeader.tsx:212
 msgid "downloads.autoDisabled"
@@ -1699,7 +1699,7 @@ msgstr "待機中"
 #: src/components/anime/DuplicatesPanel.tsx:44
 #: src/pages/library/LibraryDuplicatesPage.tsx:58
 msgid "Duplicate files"
-msgstr ""
+msgstr "重複ファイル"
 
 #: src/pages/LibraryDetailPage.tsx:1991
 #~ msgid "Duplicates"
@@ -1707,12 +1707,12 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:88
 msgid "Episode"
-msgstr ""
+msgstr "話"
 
 #. placeholder {0}: set.episode_number
 #: src/components/anime/DuplicatesPanel.tsx:79
 msgid "Episode {0}"
-msgstr ""
+msgstr "第 {0} 話"
 
 #: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
@@ -1742,12 +1742,12 @@ msgstr "サーバーが起動しているか確認してください"
 
 #: src/components/anime/DuplicatesPanel.tsx:80
 msgid "files"
-msgstr ""
+msgstr "ファイル"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:89
 #: src/pages/library/RenameHistoryPage.tsx:63
 msgid "Files"
-msgstr ""
+msgstr "ファイル"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -1765,87 +1765,87 @@ msgstr "プレビュー"
 
 #: src/components/history/HistoryFilterBar.tsx:101
 msgid "history.batch"
-msgstr ""
+msgstr "一括操作"
 
 #: src/components/history/HistoryBatchBar.tsx:24
 msgid "history.batch.cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: src/components/history/HistoryBatchBar.tsx:32
 msgid "history.batch.deleteSelected"
-msgstr ""
+msgstr "選択項目を削除"
 
 #: src/components/history/HistoryFilterBar.tsx:89
 msgid "history.clearAll"
-msgstr ""
+msgstr "すべて消去"
 
 #: src/pages/HistoryPage.tsx:199
 msgid "history.clearAll.confirm"
-msgstr ""
+msgstr "すべての履歴を消去しますか？"
 
 #: src/pages/HistoryPage.tsx:204
 msgid "history.clearAll.description"
-msgstr ""
+msgstr "この操作は取り消せません。すべての視聴履歴が完全に削除されます。"
 
 #: src/pages/HistoryPage.tsx:200
 msgid "history.delete.confirm"
-msgstr ""
+msgstr "この履歴を削除しますか？"
 
 #: src/pages/HistoryPage.tsx:205
 msgid "history.delete.description"
-msgstr ""
+msgstr "この視聴履歴は完全に削除されます。"
 
 #: src/components/history/HistoryGrid.tsx:39
 #: src/components/history/HistoryTimelineRail.tsx:20
 msgid "history.group.earlier"
-msgstr ""
+msgstr "それ以前"
 
 #: src/components/history/HistoryGrid.tsx:38
 #: src/components/history/HistoryTimelineRail.tsx:19
 msgid "history.group.lastWeek"
-msgstr ""
+msgstr "先週"
 
 #: src/components/history/HistoryGrid.tsx:37
 #: src/components/history/HistoryTimelineRail.tsx:18
 msgid "history.group.thisWeek"
-msgstr ""
+msgstr "今週"
 
 #: src/components/history/HistoryGrid.tsx:35
 #: src/components/history/HistoryTimelineRail.tsx:16
 msgid "history.group.today"
-msgstr ""
+msgstr "今日"
 
 #: src/components/history/HistoryGrid.tsx:36
 #: src/components/history/HistoryTimelineRail.tsx:17
 msgid "history.group.yesterday"
-msgstr ""
+msgstr "昨日"
 
 #: src/pages/HistoryPage.tsx:69
 #: src/pages/HistoryPage.tsx:75
 #: src/pages/HistoryPage.tsx:81
 msgid "history.loadFailed"
-msgstr ""
+msgstr "履歴の読み込みに失敗しました"
 
 #: src/components/history/HistoryFilterBar.tsx:79
 msgid "history.searchPlaceholder"
-msgstr ""
+msgstr "視聴履歴を検索…"
 
 #: src/components/history/HistoryFilterBar.tsx:43
 msgid "history.tab.all"
-msgstr ""
+msgstr "すべて"
 
 #: src/components/history/HistoryFilterBar.tsx:45
 msgid "history.tab.completed"
-msgstr ""
+msgstr "視聴済み"
 
 #: src/components/history/HistoryFilterBar.tsx:44
 msgid "history.tab.inProgress"
-msgstr ""
+msgstr "視聴中"
 
 #: src/pages/HistoryPage.tsx:22
 #: src/pages/HistoryPage.tsx:143
 msgid "history.title"
-msgstr ""
+msgstr "視聴履歴"
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -1974,43 +1974,43 @@ msgstr "ライブラリ"
 
 #: src/pages/LibraryDetailPage.tsx:829
 msgid "library.detail.bulkMatch"
-msgstr ""
+msgstr "一括マッチ"
 
 #: src/pages/LibraryDetailPage.tsx:1189
 msgid "library.detail.bulkMatchModal.confirm"
-msgstr ""
+msgstr "マッチを確認"
 
 #: src/pages/LibraryDetailPage.tsx:1141
 msgid "library.detail.bulkMatchModal.episodeStartHint"
-msgstr ""
+msgstr "選択したファイルはこの話数から順にマッチされます"
 
 #: src/pages/LibraryDetailPage.tsx:1138
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
-msgstr ""
+msgstr "開始話数"
 
 #: src/pages/LibraryDetailPage.tsx:929
 msgid "library.detail.bulkMatchModal.filesSelected"
-msgstr ""
+msgstr "{0} ファイルを選択中"
 
 #: src/pages/LibraryDetailPage.tsx:968
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
-msgstr ""
+msgstr "開始話数を設定"
 
 #: src/pages/LibraryDetailPage.tsx:918
 msgid "library.detail.bulkMatchModal.title"
-msgstr ""
+msgstr "一括マッチ"
 
 #: src/pages/LibraryDetailPage.tsx:899
 msgid "library.detail.bulkMatchSuccess"
-msgstr ""
+msgstr "一括マッチに成功しました"
 
 #: src/pages/LibraryDetailPage.tsx:841
 msgid "library.detail.bulkUnmatch"
-msgstr ""
+msgstr "一括マッチ解除"
 
 #: src/pages/LibraryDetailPage.tsx:835
 msgid "library.detail.bulkUnmatchConfirm"
-msgstr ""
+msgstr "選択したファイルのマッチを解除しますか？"
 
 #: src/pages/LibraryDetailPage.tsx:510
 msgid "library.detail.col.filename"
@@ -2215,7 +2215,7 @@ msgstr "ファイルを検索…"
 
 #: src/pages/LibraryDetailPage.tsx:821
 msgid "library.detail.selected"
-msgstr ""
+msgstr "{0} 件を選択中"
 
 #: src/pages/LibraryDetailPage.tsx:1699
 #: src/pages/LibraryDetailPage.tsx:2109
@@ -2894,7 +2894,7 @@ msgstr "自動ダウンロード"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"
-msgstr ""
+msgstr "コレクション"
 
 #: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
@@ -2907,7 +2907,7 @@ msgstr "探索"
 
 #: src/components/AppSidebar.tsx:35
 msgid "nav.history"
-msgstr ""
+msgstr "履歴"
 
 #: src/components/AppSidebar.tsx:26
 #: src/components/AppSidebar.tsx:228
@@ -2965,27 +2965,27 @@ msgstr "設定"
 
 #: src/pages/library/RenamePreviewPage.tsx:89
 msgid "New"
-msgstr ""
+msgstr "新しい"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:82
 msgid "No duplicates."
-msgstr ""
+msgstr "重複ファイルはありません。"
 
 #: src/pages/LibraryDetailPage.tsx:342
 msgid "No incomplete anime in this library."
-msgstr ""
+msgstr "このライブラリに未完了のアニメはありません。"
 
 #: src/pages/library/RenameHistoryPage.tsx:56
 msgid "No rename batches yet."
-msgstr ""
+msgstr "リネームバッチはまだありません。"
 
 #: src/pages/library/RenamePreviewPage.tsx:82
 msgid "No rename plans."
-msgstr ""
+msgstr "リネーム計画はありません。"
 
 #: src/components/anime/MissingSearchModal.tsx:75
 msgid "No results from any provider."
-msgstr ""
+msgstr "どのプロバイダーからも結果がありません。"
 
 #: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
@@ -3033,15 +3033,15 @@ msgstr "ボットトークン"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:567
 msgid "notifications.bot.dailyDigest"
-msgstr ""
+msgstr "デイリーダイジェスト"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.dailyDigest.desc"
-msgstr ""
+msgstr "1日1回通知の要約を送信"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:582
 msgid "notifications.bot.dailyDigest.off"
-msgstr ""
+msgstr "オフ"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
@@ -3302,7 +3302,7 @@ msgstr "昨日"
 
 #: src/pages/library/RenamePreviewPage.tsx:88
 msgid "Old"
-msgstr ""
+msgstr "古い"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
@@ -3363,11 +3363,11 @@ msgstr "残り"
 
 #: src/pages/library/RenameHistoryPage.tsx:52
 msgid "Rename history"
-msgstr ""
+msgstr "リネーム履歴"
 
 #: src/pages/library/RenamePreviewPage.tsx:58
 msgid "Rename preview"
-msgstr ""
+msgstr "リネームプレビュー"
 
 #: src/components/library/RenameConfigEditor.tsx:34
 #~ msgid "Rename template"
@@ -3375,13 +3375,13 @@ msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:64
 msgid "Reverted"
-msgstr ""
+msgstr "元に戻しました"
 
 #. placeholder {0}: res.reverted
 #. placeholder {1}: res.skipped
 #: src/pages/library/RenameHistoryPage.tsx:25
 msgid "Reverted {0} files, skipped {1}"
-msgstr ""
+msgstr "{0} ファイルを元に戻し、{1} ファイルをスキップしました"
 
 #: src/components/RuleEditorModal.tsx:661
 msgid "ruleEditor.addGroup"
@@ -3537,7 +3537,7 @@ msgstr "現在のフィルターに一致する項目がありません"
 
 #: src/pages/downloads/LibraryTab.tsx:309
 msgid "ruleEditor.openEditor"
-msgstr ""
+msgstr "ルールエディターを開く"
 
 #: src/components/RuleEditorModal.tsx:734
 #: src/pages/DownloadsPage.tsx:1584
@@ -3731,11 +3731,11 @@ msgstr "件の今週の番組"
 
 #: src/components/anime/EpisodeStatusCard.tsx:65
 msgid "Search for this episode"
-msgstr ""
+msgstr "このエピソードを検索"
 
 #: src/components/anime/MissingSearchModal.tsx:57
 msgid "Search missing episode {episodeNumber}"
-msgstr ""
+msgstr "不足している第 {episodeNumber} 話を検索"
 
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
@@ -3882,39 +3882,39 @@ msgstr "放送予定"
 
 #: src/components/TagMultiSelect.tsx:23
 msgid "search.tag.activity"
-msgstr ""
+msgstr "アクティビティ"
 
 #: src/components/TagMultiSelect.tsx:16
 msgid "search.tag.genre"
-msgstr ""
+msgstr "ジャンル"
 
 #: src/components/TagMultiSelect.tsx:24
 msgid "search.tag.misc"
-msgstr ""
+msgstr "その他"
 
 #: src/components/TagMultiSelect.tsx:17
 msgid "search.tag.mood"
-msgstr ""
+msgstr "雰囲気"
 
 #: src/components/TagMultiSelect.tsx:18
 msgid "search.tag.setting"
-msgstr ""
+msgstr "舞台設定"
 
 #: src/components/TagMultiSelect.tsx:19
 msgid "search.tag.source"
-msgstr ""
+msgstr "原作"
 
 #: src/components/TagMultiSelect.tsx:22
 msgid "search.tag.studio"
-msgstr ""
+msgstr "スタジオ"
 
 #: src/components/TagMultiSelect.tsx:21
 msgid "search.tag.style"
-msgstr ""
+msgstr "スタイル"
 
 #: src/components/TagMultiSelect.tsx:20
 msgid "search.tag.theme"
-msgstr ""
+msgstr "テーマ"
 
 #~ msgid "search.tagPlaceholder"
 #~ msgstr "Bangumiタグを追加…"
@@ -3925,11 +3925,11 @@ msgstr ""
 
 #: src/components/anime/MissingSearchModal.tsx:70
 msgid "Searching..."
-msgstr ""
+msgstr "検索中…"
 
 #: src/components/anime/MissingSearchModal.tsx:84
 msgid "Seeders"
-msgstr ""
+msgstr "シーダー数"
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -3990,7 +3990,7 @@ msgstr "アクティブなセッション"
 
 #: src/components/anime/DuplicatesPanel.tsx:99
 msgid "Set preferred"
-msgstr ""
+msgstr "優先に設定"
 
 #: src/pages/settings/GeneralPanel.tsx:81
 msgid "settings.appearance.language"
@@ -4151,7 +4151,7 @@ msgstr "認証 URL の取得に失敗しました"
 
 #: src/pages/settings/IntegrationsPanel.tsx:242
 msgid "settings.integration.autoPull"
-msgstr ""
+msgstr "自動プル"
 
 #: src/pages/settings/IntegrationsPanel.tsx:401
 #: src/pages/settings/IntegrationsPanel.tsx:624
@@ -4191,12 +4191,12 @@ msgstr "切断中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:151
 msgid "settings.integration.lastSync"
-msgstr ""
+msgstr "最終同期"
 
 #: src/pages/settings/IntegrationsPanel.tsx:279
 #: src/pages/settings/IntegrationsPanel.tsx:469
 msgid "settings.integration.needsReauth"
-msgstr ""
+msgstr "再認証が必要です"
 
 #: src/pages/settings/IntegrationsPanel.tsx:351
 #: src/pages/settings/IntegrationsPanel.tsx:539
@@ -4205,31 +4205,31 @@ msgstr "未接続"
 
 #: src/pages/settings/IntegrationsPanel.tsx:157
 msgid "settings.integration.pending"
-msgstr ""
+msgstr "保留中"
 
 #: src/pages/settings/IntegrationsPanel.tsx:214
 msgid "settings.integration.pulled"
-msgstr ""
+msgstr "プル済み"
 
 #: src/pages/settings/IntegrationsPanel.tsx:218
 msgid "settings.integration.pullFailed"
-msgstr ""
+msgstr "プルに失敗しました"
 
 #: src/pages/settings/IntegrationsPanel.tsx:251
 msgid "settings.integration.pulling"
-msgstr ""
+msgstr "プル中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:252
 msgid "settings.integration.pullNow"
-msgstr ""
+msgstr "今すぐプル"
 
 #: src/pages/settings/IntegrationsPanel.tsx:226
 msgid "settings.integration.pullToggleFailed"
-msgstr ""
+msgstr "自動プルの切り替えに失敗しました"
 
 #: src/pages/settings/IntegrationsPanel.tsx:164
 msgid "settings.integration.recentErrors"
-msgstr ""
+msgstr "最近のエラー"
 
 #: src/pages/settings/IntegrationsPanel.tsx:423
 #: src/pages/settings/IntegrationsPanel.tsx:648
@@ -4261,15 +4261,15 @@ msgstr "同期中…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:369
 msgid "settings.integration.trakt.openAndEnter"
-msgstr ""
+msgstr "Trakt を開いて認証コードを入力"
 
 #: src/pages/settings/IntegrationsPanel.tsx:383
 msgid "settings.integration.trakt.waitingExpires"
-msgstr ""
+msgstr "待機中、{0} に期限切れ"
 
 #: src/pages/settings/IntegrationsPanel.tsx:672
 msgid "settings.integration.updatesPulled"
-msgstr ""
+msgstr "更新をプルしました"
 
 #: src/pages/settings/IntegrationsPanel.tsx:684
 msgid "settings.integrations.description"
@@ -4363,27 +4363,27 @@ msgstr "プレーヤー設定は自動的にバックアップされます"
 
 #: src/pages/settings/PlayerPanel.tsx:336
 msgid "settings.player.buffer.auto"
-msgstr ""
+msgstr "自動"
 
 #: src/pages/settings/PlayerPanel.tsx:338
 msgid "settings.player.buffer.balanced"
-msgstr ""
+msgstr "バランス"
 
 #: src/pages/settings/PlayerPanel.tsx:339
 msgid "settings.player.buffer.high"
-msgstr ""
+msgstr "高"
 
 #: src/pages/settings/PlayerPanel.tsx:337
 msgid "settings.player.buffer.low"
-msgstr ""
+msgstr "低"
 
 #: src/pages/settings/PlayerPanel.tsx:332
 msgid "settings.player.bufferMode"
-msgstr ""
+msgstr "バッファモード"
 
 #: src/pages/settings/PlayerPanel.tsx:345
 msgid "settings.player.bufferModeDesc"
-msgstr ""
+msgstr "動画プレーヤーのバッファ戦略を制御"
 
 #: src/pages/settings/PlayerPanel.tsx:246
 msgid "settings.player.danmaku"
@@ -4391,7 +4391,7 @@ msgstr "弾幕"
 
 #: src/pages/settings/PlayerPanel.tsx:315
 msgid "settings.player.danmakuDensity"
-msgstr ""
+msgstr "弾幕密度"
 
 #: src/pages/settings/PlayerPanel.tsx:251
 msgid "settings.player.danmakuEnabled"
@@ -4411,15 +4411,15 @@ msgstr "速度"
 
 #: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.density.high"
-msgstr ""
+msgstr "高"
 
 #: src/pages/settings/PlayerPanel.tsx:319
 msgid "settings.player.density.low"
-msgstr ""
+msgstr "低"
 
 #: src/pages/settings/PlayerPanel.tsx:320
 msgid "settings.player.density.medium"
-msgstr ""
+msgstr "中"
 
 #: src/pages/settings/PlayerPanel.tsx:566
 msgid "settings.player.gestureEnabled"
@@ -4745,15 +4745,15 @@ msgstr "日曜日"
 
 #: src/components/anime/MissingSearchModal.tsx:83
 msgid "Size"
-msgstr ""
+msgstr "サイズ"
 
 #: src/pages/library/RenamePreviewPage.tsx:87
 msgid "Status"
-msgstr ""
+msgstr "ステータス"
 
 #: src/components/anime/MissingSearchModal.tsx:85
 msgid "Subgroup"
-msgstr ""
+msgstr "字幕グループ"
 
 #~ msgid "subscribe.add"
 #~ msgstr "追加"
@@ -4851,7 +4851,7 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:69
 msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
-msgstr ""
+msgstr "このライブラリ内の非優先ファイル {totalRemovable} 件を完全に削除します。続行しますか？"
 
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0}日前"
@@ -4887,7 +4887,7 @@ msgstr "{seconds}秒前"
 
 #: src/components/anime/MissingSearchModal.tsx:82
 msgid "Title"
-msgstr ""
+msgstr "タイトル"
 
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
@@ -4907,12 +4907,12 @@ msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:94
 msgid "Undo"
-msgstr ""
+msgstr "元に戻す"
 
 #. placeholder {0}: b.batch_id.slice(0, 8)
 #: src/pages/library/RenameHistoryPage.tsx:87
 msgid "Undo batch {0}?"
-msgstr ""
+msgstr "バッチ {0} を元に戻しますか？"
 
 #: src/pages/LibraryDetailPage.tsx:1996
 #~ msgid "View and clean up duplicate files"
@@ -4920,7 +4920,7 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:90
 msgid "Wasted"
-msgstr ""
+msgstr "無駄"
 
 #~ msgid "watch.audioTrack"
 #~ msgstr "Audio"

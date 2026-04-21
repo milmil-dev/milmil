@@ -21,22 +21,22 @@ msgstr "이동한 위치"
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:15
 msgid "history.empty.title"
-msgstr ""
+msgstr "시청 기록이 없습니다"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:18
 msgid "history.empty.description"
-msgstr ""
+msgstr "시청한 애니메이션이 여기에 표시됩니다"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryEmptyState.tsx:24
 msgid "nav.home"
-msgstr ""
+msgstr "홈"
 
 #. js-lingui-explicit-id
 #: src/components/history/HistoryCard.tsx:53
 msgid "history.finished"
-msgstr ""
+msgstr "시청 완료"
 
 #. js-lingui-explicit-id
 #~ msgid "search.filter.tags"
@@ -196,13 +196,13 @@ msgstr ""
 
 #: src/pages/LibraryDetailPage.tsx:375
 msgid "{missingCount} missing episodes"
-msgstr ""
+msgstr "{missingCount}화 누락"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:55
 #: src/pages/library/RenameHistoryPage.tsx:49
 #: src/pages/library/RenamePreviewPage.tsx:55
 msgid "← Back to library"
-msgstr ""
+msgstr "← 라이브러리로 돌아가기"
 
 #: src/pages/settings/AboutPanel.tsx:148
 msgid "about.export"
@@ -438,7 +438,7 @@ msgstr "업데이트 중..."
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:87
 msgid "Anime"
-msgstr ""
+msgstr "애니메이션"
 
 #: src/pages/AnimeDetailPage.tsx:671
 msgid "anime.addToCollection"
@@ -450,7 +450,7 @@ msgstr "캐릭터"
 
 #: src/pages/AnimeDetailPage.tsx:265
 msgid "anime.collectionUpdated"
-msgstr ""
+msgstr "컬렉션이 업데이트되었습니다"
 
 #: src/pages/AnimeDetailPage.tsx:1128
 msgid "anime.comments"
@@ -462,7 +462,7 @@ msgstr "댓글"
 
 #: src/pages/AnimeDetailPage.tsx:694
 msgid "anime.enableTrackerSync"
-msgstr ""
+msgstr "트래커 동기화 활성화"
 
 #: src/pages/AnimeDetailPage.tsx:727
 #~ msgid "anime.episode"
@@ -475,7 +475,7 @@ msgstr "에피소드"
 
 #: src/pages/AnimeDetailPage.tsx:694
 msgid "anime.excludeTrackerSync"
-msgstr ""
+msgstr "트래커 동기화에서 제외"
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
@@ -538,7 +538,7 @@ msgstr "추적 중"
 
 #: src/pages/AnimeDetailPage.tsx:281
 msgid "anime.syncFlagsUpdated"
-msgstr ""
+msgstr "동기화 플래그가 업데이트되었습니다"
 
 #: src/pages/AnimeDetailPage.tsx:201
 #~ msgid "anime.synopsis"
@@ -609,17 +609,17 @@ msgstr "API 토큰"
 #. placeholder {1}: res.batch_id.slice(0, 8)
 #: src/pages/library/RenamePreviewPage.tsx:25
 msgid "Applied {0} files. Batch: {1}"
-msgstr ""
+msgstr "{0}개 파일을 적용했습니다. 배치: {1}"
 
 #. placeholder {0}: ok.length
 #: src/pages/library/RenamePreviewPage.tsx:69
 msgid "Apply {0} renames. This will move files on disk. Continue?"
-msgstr ""
+msgstr "{0}개 이름 변경을 적용합니다. 디스크의 파일이 이동됩니다. 계속하시겠습니까?"
 
 #. placeholder {0}: ok.length
 #: src/pages/library/RenamePreviewPage.tsx:77
 msgid "Apply all OK ({0})"
-msgstr ""
+msgstr "모두 적용 ({0})"
 
 #: src/pages/LoginPage.tsx:202
 msgid "auth.2fa.codeLabel"
@@ -745,7 +745,7 @@ msgstr "누락분 자동 다운로드"
 #. placeholder {1}: res.episode_range
 #: src/components/anime/EpisodeStatusCard.tsx:29
 msgid "Auto-download rule {0} ({1})"
-msgstr ""
+msgstr "자동 다운로드 규칙 {0} ({1})"
 
 #: src/components/library/RenameConfigEditor.tsx:49
 #~ msgid "Auto-rename on match"
@@ -761,12 +761,12 @@ msgstr "추가"
 
 #: src/pages/DownloadsPage.tsx:1703
 msgid "autoDownload.adding"
-msgstr ""
+msgstr "추가 중…"
 
 #: src/pages/DownloadsPage.tsx:431
 #: src/pages/DownloadsPage.tsx:1671
 msgid "autoDownload.addUrl"
-msgstr ""
+msgstr "URL 추가"
 
 #: src/pages/DownloadsPage.tsx:940
 #: src/pages/DownloadsPage.tsx:966
@@ -1147,138 +1147,138 @@ msgstr "개 토렌트"
 #: src/pages/settings/BackupPanel.tsx:233
 #: src/pages/settings/BackupPanel.tsx:433
 msgid "backup.configDeleted"
-msgstr ""
+msgstr "백업 설정이 삭제되었습니다"
 
 #: src/pages/settings/BackupPanel.tsx:224
 #: src/pages/settings/BackupPanel.tsx:227
 #: src/pages/settings/BackupPanel.tsx:424
 #: src/pages/settings/BackupPanel.tsx:427
 msgid "backup.connectionFailed"
-msgstr ""
+msgstr "연결 실패"
 
 #: src/pages/settings/BackupPanel.tsx:222
 #: src/pages/settings/BackupPanel.tsx:422
 msgid "backup.connectionOk"
-msgstr ""
+msgstr "연결 성공"
 
 #: src/pages/settings/BackupPanel.tsx:332
 #: src/pages/settings/BackupPanel.tsx:568
 msgid "backup.delete"
-msgstr ""
+msgstr "백업 삭제"
 
 #: src/pages/settings/BackupPanel.tsx:238
 #: src/pages/settings/BackupPanel.tsx:445
 msgid "backup.deleteFailed"
-msgstr ""
+msgstr "삭제 실패"
 
 #: src/pages/settings/BackupPanel.tsx:681
 msgid "backup.description"
-msgstr ""
+msgstr "데이터베이스와 설정을 백업 및 복원"
 
 #: src/pages/settings/BackupPanel.tsx:303
 #: src/pages/settings/BackupPanel.tsx:539
 msgid "backup.enabled"
-msgstr ""
+msgstr "활성화됨"
 
 #: src/pages/settings/BackupPanel.tsx:128
 msgid "backup.export"
-msgstr ""
+msgstr "내보내기"
 
 #: src/pages/settings/BackupPanel.tsx:80
 msgid "backup.exportFailed"
-msgstr ""
+msgstr "내보내기 실패"
 
 #: src/pages/settings/BackupPanel.tsx:78
 msgid "backup.exportSuccess"
-msgstr ""
+msgstr "내보내기 성공"
 
 #: src/pages/settings/BackupPanel.tsx:138
 msgid "backup.import"
-msgstr ""
+msgstr "가져오기"
 
 #: src/pages/settings/BackupPanel.tsx:88
 msgid "backup.importFailed"
-msgstr ""
+msgstr "가져오기 실패"
 
 #: src/pages/settings/BackupPanel.tsx:86
 msgid "backup.importSuccess"
-msgstr ""
+msgstr "가져오기 성공"
 
 #: src/pages/settings/BackupPanel.tsx:100
 #: src/pages/settings/BackupPanel.tsx:105
 msgid "backup.invalidFile"
-msgstr ""
+msgstr "유효하지 않은 파일"
 
 #: src/pages/settings/BackupPanel.tsx:117
 msgid "backup.jsonDescription"
-msgstr ""
+msgstr "JSON 형식의 백업 파일 내보내기 또는 가져오기"
 
 #: src/pages/settings/BackupPanel.tsx:115
 msgid "backup.jsonExportImport"
-msgstr ""
+msgstr "JSON 내보내기/가져오기"
 
 #: src/pages/settings/BackupPanel.tsx:618
 msgid "backup.neverSynced"
-msgstr ""
+msgstr "동기화한 적 없음"
 
 #: src/pages/settings/BackupPanel.tsx:648
 msgid "backup.noTargets"
-msgstr ""
+msgstr "백업 대상이 없습니다"
 
 #: src/pages/settings/BackupPanel.tsx:286
 #: src/pages/settings/BackupPanel.tsx:292
 msgid "backup.password"
-msgstr ""
+msgstr "비밀번호"
 
 #: src/pages/settings/BackupPanel.tsx:521
 msgid "backup.region"
-msgstr ""
+msgstr "리전"
 
 #: src/pages/settings/BackupPanel.tsx:530
 msgid "backup.regionOptional"
-msgstr ""
+msgstr "리전 (선택 사항)"
 
 #: src/pages/settings/BackupPanel.tsx:449
 msgid "backup.s3Compatible"
-msgstr ""
+msgstr "S3 호환 스토리지"
 
 #: src/pages/settings/BackupPanel.tsx:623
 msgid "backup.syncControls"
-msgstr ""
+msgstr "동기화 제어"
 
 #: src/pages/settings/BackupPanel.tsx:612
 msgid "backup.syncFailed"
-msgstr ""
+msgstr "동기화 실패"
 
 #: src/pages/settings/BackupPanel.tsx:660
 msgid "backup.syncing"
-msgstr ""
+msgstr "동기화 중…"
 
 #: src/pages/settings/BackupPanel.tsx:661
 msgid "backup.syncNow"
-msgstr ""
+msgstr "지금 동기화"
 
 #: src/pages/settings/BackupPanel.tsx:603
 msgid "backup.syncSuccess"
-msgstr ""
+msgstr "동기화 성공"
 
 #: src/pages/settings/BackupPanel.tsx:321
 #: src/pages/settings/BackupPanel.tsx:557
 msgid "backup.testConnection"
-msgstr ""
+msgstr "연결 테스트"
 
 #: src/pages/settings/BackupPanel.tsx:678
 msgid "backup.title"
-msgstr ""
+msgstr "백업"
 
 #: src/pages/settings/BackupPanel.tsx:269
 #: src/pages/settings/BackupPanel.tsx:275
 msgid "backup.username"
-msgstr ""
+msgstr "사용자 이름"
 
 #: src/pages/library/RenameHistoryPage.tsx:61
 msgid "Batch"
-msgstr ""
+msgstr "배치"
 
 #: src/components/AnimeCard.tsx:344
 msgid "card.nextEp"
@@ -1287,13 +1287,13 @@ msgstr "다음 EP"
 #. placeholder {0}: formatBytes(totalWaste)
 #: src/pages/library/LibraryDuplicatesPage.tsx:77
 msgid "Clean non-preferred ({0})"
-msgstr ""
+msgstr "비선호 항목 정리 ({0})"
 
 #. placeholder {0}: res.deleted
 #. placeholder {1}: formatBytes(res.reclaimed_bytes)
 #: src/pages/library/LibraryDuplicatesPage.tsx:28
 msgid "Cleaned up {0} files ({1})"
-msgstr ""
+msgstr "{0}개 파일을 정리했습니다 ({1})"
 
 #: src/pages/CollectionPage.tsx:20
 msgid "collection.all"
@@ -1404,7 +1404,7 @@ msgstr "클릭하여 복사"
 
 #: src/components/history/ConfirmDialog.tsx:49
 msgid "common.confirm"
-msgstr ""
+msgstr "확인"
 
 #: src/pages/LibraryDetailPage.tsx:1830
 msgid "common.confirmDelete"
@@ -1475,19 +1475,19 @@ msgstr "온라인"
 #. placeholder {0}: sortedMissing.length
 #: src/components/anime/EpisodeStatusCard.tsx:82
 msgid "Create auto-download rule for {0} missing episodes?"
-msgstr ""
+msgstr "누락된 {0}화에 대한 자동 다운로드 규칙을 생성하시겠습니까?"
 
 #: src/pages/library/RenameHistoryPage.tsx:62
 msgid "Date"
-msgstr ""
+msgstr "날짜"
 
 #: src/components/anime/DuplicatesPanel.tsx:107
 msgid "Delete"
-msgstr ""
+msgstr "삭제"
 
 #: src/components/anime/DuplicatesPanel.tsx:55
 msgid "Delete this file permanently?"
-msgstr ""
+msgstr "이 파일을 영구적으로 삭제하시겠습니까?"
 
 #: src/pages/DiscoverPage.tsx:114
 msgid "discover.airedRecently"
@@ -1523,12 +1523,12 @@ msgstr "지금 인기"
 
 #: src/components/anime/MissingSearchModal.tsx:110
 msgid "Download"
-msgstr ""
+msgstr "다운로드"
 
 #. placeholder {0}: res.download_id.slice(0, 8)
 #: src/components/anime/MissingSearchModal.tsx:32
 msgid "Download queued: {0}"
-msgstr ""
+msgstr "다운로드 대기열에 추가: {0}"
 
 #: src/components/downloads/AnimeGroupHeader.tsx:212
 msgid "downloads.autoDisabled"
@@ -1699,7 +1699,7 @@ msgstr "대기 중"
 #: src/components/anime/DuplicatesPanel.tsx:44
 #: src/pages/library/LibraryDuplicatesPage.tsx:58
 msgid "Duplicate files"
-msgstr ""
+msgstr "중복 파일"
 
 #: src/pages/LibraryDetailPage.tsx:1991
 #~ msgid "Duplicates"
@@ -1707,12 +1707,12 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:88
 msgid "Episode"
-msgstr ""
+msgstr "화"
 
 #. placeholder {0}: set.episode_number
 #: src/components/anime/DuplicatesPanel.tsx:79
 msgid "Episode {0}"
-msgstr ""
+msgstr "제 {0}화"
 
 #: src/components/anime/EpisodeStatusCard.tsx:52
 msgid "Episode status"
@@ -1742,12 +1742,12 @@ msgstr "서버가 실행 중인지 확인하고 다시 시도하세요"
 
 #: src/components/anime/DuplicatesPanel.tsx:80
 msgid "files"
-msgstr ""
+msgstr "파일"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:89
 #: src/pages/library/RenameHistoryPage.tsx:63
 msgid "Files"
-msgstr ""
+msgstr "파일"
 
 #: src/components/HeroBanner.tsx:166
 #: src/components/PreviewModal.tsx:251
@@ -1765,87 +1765,87 @@ msgstr "미리보기"
 
 #: src/components/history/HistoryFilterBar.tsx:101
 msgid "history.batch"
-msgstr ""
+msgstr "일괄 작업"
 
 #: src/components/history/HistoryBatchBar.tsx:24
 msgid "history.batch.cancel"
-msgstr ""
+msgstr "취소"
 
 #: src/components/history/HistoryBatchBar.tsx:32
 msgid "history.batch.deleteSelected"
-msgstr ""
+msgstr "선택 항목 삭제"
 
 #: src/components/history/HistoryFilterBar.tsx:89
 msgid "history.clearAll"
-msgstr ""
+msgstr "전체 삭제"
 
 #: src/pages/HistoryPage.tsx:199
 msgid "history.clearAll.confirm"
-msgstr ""
+msgstr "모든 기록을 삭제하시겠습니까?"
 
 #: src/pages/HistoryPage.tsx:204
 msgid "history.clearAll.description"
-msgstr ""
+msgstr "이 작업은 되돌릴 수 없습니다. 모든 시청 기록이 영구적으로 삭제됩니다."
 
 #: src/pages/HistoryPage.tsx:200
 msgid "history.delete.confirm"
-msgstr ""
+msgstr "이 기록을 삭제하시겠습니까?"
 
 #: src/pages/HistoryPage.tsx:205
 msgid "history.delete.description"
-msgstr ""
+msgstr "이 시청 기록이 영구적으로 삭제됩니다."
 
 #: src/components/history/HistoryGrid.tsx:39
 #: src/components/history/HistoryTimelineRail.tsx:20
 msgid "history.group.earlier"
-msgstr ""
+msgstr "이전"
 
 #: src/components/history/HistoryGrid.tsx:38
 #: src/components/history/HistoryTimelineRail.tsx:19
 msgid "history.group.lastWeek"
-msgstr ""
+msgstr "지난주"
 
 #: src/components/history/HistoryGrid.tsx:37
 #: src/components/history/HistoryTimelineRail.tsx:18
 msgid "history.group.thisWeek"
-msgstr ""
+msgstr "이번 주"
 
 #: src/components/history/HistoryGrid.tsx:35
 #: src/components/history/HistoryTimelineRail.tsx:16
 msgid "history.group.today"
-msgstr ""
+msgstr "오늘"
 
 #: src/components/history/HistoryGrid.tsx:36
 #: src/components/history/HistoryTimelineRail.tsx:17
 msgid "history.group.yesterday"
-msgstr ""
+msgstr "어제"
 
 #: src/pages/HistoryPage.tsx:69
 #: src/pages/HistoryPage.tsx:75
 #: src/pages/HistoryPage.tsx:81
 msgid "history.loadFailed"
-msgstr ""
+msgstr "기록을 불러오지 못했습니다"
 
 #: src/components/history/HistoryFilterBar.tsx:79
 msgid "history.searchPlaceholder"
-msgstr ""
+msgstr "시청 기록 검색…"
 
 #: src/components/history/HistoryFilterBar.tsx:43
 msgid "history.tab.all"
-msgstr ""
+msgstr "전체"
 
 #: src/components/history/HistoryFilterBar.tsx:45
 msgid "history.tab.completed"
-msgstr ""
+msgstr "완료"
 
 #: src/components/history/HistoryFilterBar.tsx:44
 msgid "history.tab.inProgress"
-msgstr ""
+msgstr "시청 중"
 
 #: src/pages/HistoryPage.tsx:22
 #: src/pages/HistoryPage.tsx:143
 msgid "history.title"
-msgstr ""
+msgstr "시청 기록"
 
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
@@ -1974,43 +1974,43 @@ msgstr "라이브러리"
 
 #: src/pages/LibraryDetailPage.tsx:829
 msgid "library.detail.bulkMatch"
-msgstr ""
+msgstr "일괄 매칭"
 
 #: src/pages/LibraryDetailPage.tsx:1189
 msgid "library.detail.bulkMatchModal.confirm"
-msgstr ""
+msgstr "매칭 확인"
 
 #: src/pages/LibraryDetailPage.tsx:1141
 msgid "library.detail.bulkMatchModal.episodeStartHint"
-msgstr ""
+msgstr "선택한 파일이 이 화수부터 순서대로 매칭됩니다"
 
 #: src/pages/LibraryDetailPage.tsx:1138
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
-msgstr ""
+msgstr "시작 화수"
 
 #: src/pages/LibraryDetailPage.tsx:929
 msgid "library.detail.bulkMatchModal.filesSelected"
-msgstr ""
+msgstr "{0}개 파일 선택됨"
 
 #: src/pages/LibraryDetailPage.tsx:968
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
-msgstr ""
+msgstr "시작 화수 설정"
 
 #: src/pages/LibraryDetailPage.tsx:918
 msgid "library.detail.bulkMatchModal.title"
-msgstr ""
+msgstr "일괄 매칭"
 
 #: src/pages/LibraryDetailPage.tsx:899
 msgid "library.detail.bulkMatchSuccess"
-msgstr ""
+msgstr "일괄 매칭 성공"
 
 #: src/pages/LibraryDetailPage.tsx:841
 msgid "library.detail.bulkUnmatch"
-msgstr ""
+msgstr "일괄 매칭 해제"
 
 #: src/pages/LibraryDetailPage.tsx:835
 msgid "library.detail.bulkUnmatchConfirm"
-msgstr ""
+msgstr "선택한 파일의 매칭을 해제하시겠습니까?"
 
 #: src/pages/LibraryDetailPage.tsx:510
 msgid "library.detail.col.filename"
@@ -2215,7 +2215,7 @@ msgstr "파일 검색…"
 
 #: src/pages/LibraryDetailPage.tsx:821
 msgid "library.detail.selected"
-msgstr ""
+msgstr "{0}개 선택됨"
 
 #: src/pages/LibraryDetailPage.tsx:1699
 #: src/pages/LibraryDetailPage.tsx:2109
@@ -2894,7 +2894,7 @@ msgstr "자동 다운로드"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"
-msgstr ""
+msgstr "컬렉션"
 
 #: src/components/AppSidebar.tsx:29
 #: src/pages/DiscoverPage.tsx:158
@@ -2907,7 +2907,7 @@ msgstr "탐색"
 
 #: src/components/AppSidebar.tsx:35
 msgid "nav.history"
-msgstr ""
+msgstr "기록"
 
 #: src/components/AppSidebar.tsx:26
 #: src/components/AppSidebar.tsx:228
@@ -2965,27 +2965,27 @@ msgstr "설정"
 
 #: src/pages/library/RenamePreviewPage.tsx:89
 msgid "New"
-msgstr ""
+msgstr "새로운"
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:82
 msgid "No duplicates."
-msgstr ""
+msgstr "중복 파일이 없습니다."
 
 #: src/pages/LibraryDetailPage.tsx:342
 msgid "No incomplete anime in this library."
-msgstr ""
+msgstr "이 라이브러리에 미완료 애니메이션이 없습니다."
 
 #: src/pages/library/RenameHistoryPage.tsx:56
 msgid "No rename batches yet."
-msgstr ""
+msgstr "이름 변경 배치가 없습니다."
 
 #: src/pages/library/RenamePreviewPage.tsx:82
 msgid "No rename plans."
-msgstr ""
+msgstr "이름 변경 계획이 없습니다."
 
 #: src/components/anime/MissingSearchModal.tsx:75
 msgid "No results from any provider."
-msgstr ""
+msgstr "어떤 소스에서도 결과가 없습니다."
 
 #: src/components/anime/EpisodeStatusCard.tsx:97
 msgid "Not aired yet"
@@ -3033,15 +3033,15 @@ msgstr "봇 토큰"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:567
 msgid "notifications.bot.dailyDigest"
-msgstr ""
+msgstr "일일 요약"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.dailyDigest.desc"
-msgstr ""
+msgstr "하루에 한 번 알림 요약 전송"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:582
 msgid "notifications.bot.dailyDigest.off"
-msgstr ""
+msgstr "꺼짐"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:520
 #~ msgid "notifications.bot.discord"
@@ -3302,7 +3302,7 @@ msgstr "어제"
 
 #: src/pages/library/RenamePreviewPage.tsx:88
 msgid "Old"
-msgstr ""
+msgstr "오래된"
 
 #: src/components/MotionPagination.tsx:145
 #~ msgid "pagination.firstPage"
@@ -3363,11 +3363,11 @@ msgstr "남음"
 
 #: src/pages/library/RenameHistoryPage.tsx:52
 msgid "Rename history"
-msgstr ""
+msgstr "이름 변경 기록"
 
 #: src/pages/library/RenamePreviewPage.tsx:58
 msgid "Rename preview"
-msgstr ""
+msgstr "이름 변경 미리보기"
 
 #: src/components/library/RenameConfigEditor.tsx:34
 #~ msgid "Rename template"
@@ -3375,13 +3375,13 @@ msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:64
 msgid "Reverted"
-msgstr ""
+msgstr "되돌림 완료"
 
 #. placeholder {0}: res.reverted
 #. placeholder {1}: res.skipped
 #: src/pages/library/RenameHistoryPage.tsx:25
 msgid "Reverted {0} files, skipped {1}"
-msgstr ""
+msgstr "{0}개 파일을 되돌리고, {1}개를 건너뛰었습니다"
 
 #: src/components/RuleEditorModal.tsx:661
 msgid "ruleEditor.addGroup"
@@ -3537,7 +3537,7 @@ msgstr "현재 필터에 일치하는 항목이 없습니다"
 
 #: src/pages/downloads/LibraryTab.tsx:309
 msgid "ruleEditor.openEditor"
-msgstr ""
+msgstr "규칙 편집기 열기"
 
 #: src/components/RuleEditorModal.tsx:734
 #: src/pages/DownloadsPage.tsx:1584
@@ -3731,11 +3731,11 @@ msgstr "편 이번 주 프로그램"
 
 #: src/components/anime/EpisodeStatusCard.tsx:65
 msgid "Search for this episode"
-msgstr ""
+msgstr "이 에피소드 검색"
 
 #: src/components/anime/MissingSearchModal.tsx:57
 msgid "Search missing episode {episodeNumber}"
-msgstr ""
+msgstr "누락된 제 {episodeNumber}화 검색"
 
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
@@ -3882,39 +3882,39 @@ msgstr "방영 예정"
 
 #: src/components/TagMultiSelect.tsx:23
 msgid "search.tag.activity"
-msgstr ""
+msgstr "활동"
 
 #: src/components/TagMultiSelect.tsx:16
 msgid "search.tag.genre"
-msgstr ""
+msgstr "장르"
 
 #: src/components/TagMultiSelect.tsx:24
 msgid "search.tag.misc"
-msgstr ""
+msgstr "기타"
 
 #: src/components/TagMultiSelect.tsx:17
 msgid "search.tag.mood"
-msgstr ""
+msgstr "분위기"
 
 #: src/components/TagMultiSelect.tsx:18
 msgid "search.tag.setting"
-msgstr ""
+msgstr "배경"
 
 #: src/components/TagMultiSelect.tsx:19
 msgid "search.tag.source"
-msgstr ""
+msgstr "원작"
 
 #: src/components/TagMultiSelect.tsx:22
 msgid "search.tag.studio"
-msgstr ""
+msgstr "스튜디오"
 
 #: src/components/TagMultiSelect.tsx:21
 msgid "search.tag.style"
-msgstr ""
+msgstr "스타일"
 
 #: src/components/TagMultiSelect.tsx:20
 msgid "search.tag.theme"
-msgstr ""
+msgstr "테마"
 
 #~ msgid "search.tagPlaceholder"
 #~ msgstr "Bangumi 태그 추가…"
@@ -3925,11 +3925,11 @@ msgstr ""
 
 #: src/components/anime/MissingSearchModal.tsx:70
 msgid "Searching..."
-msgstr ""
+msgstr "검색 중…"
 
 #: src/components/anime/MissingSearchModal.tsx:84
 msgid "Seeders"
-msgstr ""
+msgstr "시더 수"
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -3990,7 +3990,7 @@ msgstr "활성 세션"
 
 #: src/components/anime/DuplicatesPanel.tsx:99
 msgid "Set preferred"
-msgstr ""
+msgstr "선호로 설정"
 
 #: src/pages/settings/GeneralPanel.tsx:81
 msgid "settings.appearance.language"
@@ -4151,7 +4151,7 @@ msgstr "인증 URL 가져오기 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:242
 msgid "settings.integration.autoPull"
-msgstr ""
+msgstr "자동 가져오기"
 
 #: src/pages/settings/IntegrationsPanel.tsx:401
 #: src/pages/settings/IntegrationsPanel.tsx:624
@@ -4191,12 +4191,12 @@ msgstr "연결 해제 중…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:151
 msgid "settings.integration.lastSync"
-msgstr ""
+msgstr "마지막 동기화"
 
 #: src/pages/settings/IntegrationsPanel.tsx:279
 #: src/pages/settings/IntegrationsPanel.tsx:469
 msgid "settings.integration.needsReauth"
-msgstr ""
+msgstr "재인증이 필요합니다"
 
 #: src/pages/settings/IntegrationsPanel.tsx:351
 #: src/pages/settings/IntegrationsPanel.tsx:539
@@ -4205,31 +4205,31 @@ msgstr "연결되지 않음"
 
 #: src/pages/settings/IntegrationsPanel.tsx:157
 msgid "settings.integration.pending"
-msgstr ""
+msgstr "대기 중"
 
 #: src/pages/settings/IntegrationsPanel.tsx:214
 msgid "settings.integration.pulled"
-msgstr ""
+msgstr "가져옴"
 
 #: src/pages/settings/IntegrationsPanel.tsx:218
 msgid "settings.integration.pullFailed"
-msgstr ""
+msgstr "가져오기 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:251
 msgid "settings.integration.pulling"
-msgstr ""
+msgstr "가져오는 중…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:252
 msgid "settings.integration.pullNow"
-msgstr ""
+msgstr "지금 가져오기"
 
 #: src/pages/settings/IntegrationsPanel.tsx:226
 msgid "settings.integration.pullToggleFailed"
-msgstr ""
+msgstr "자동 가져오기 전환 실패"
 
 #: src/pages/settings/IntegrationsPanel.tsx:164
 msgid "settings.integration.recentErrors"
-msgstr ""
+msgstr "최근 오류"
 
 #: src/pages/settings/IntegrationsPanel.tsx:423
 #: src/pages/settings/IntegrationsPanel.tsx:648
@@ -4261,15 +4261,15 @@ msgstr "동기화 중…"
 
 #: src/pages/settings/IntegrationsPanel.tsx:369
 msgid "settings.integration.trakt.openAndEnter"
-msgstr ""
+msgstr "Trakt를 열고 인증 코드를 입력하세요"
 
 #: src/pages/settings/IntegrationsPanel.tsx:383
 msgid "settings.integration.trakt.waitingExpires"
-msgstr ""
+msgstr "대기 중, {0}에 만료"
 
 #: src/pages/settings/IntegrationsPanel.tsx:672
 msgid "settings.integration.updatesPulled"
-msgstr ""
+msgstr "업데이트를 가져왔습니다"
 
 #: src/pages/settings/IntegrationsPanel.tsx:684
 msgid "settings.integrations.description"
@@ -4363,27 +4363,27 @@ msgstr "플레이어 설정은 자동으로 백업됩니다"
 
 #: src/pages/settings/PlayerPanel.tsx:336
 msgid "settings.player.buffer.auto"
-msgstr ""
+msgstr "자동"
 
 #: src/pages/settings/PlayerPanel.tsx:338
 msgid "settings.player.buffer.balanced"
-msgstr ""
+msgstr "균형"
 
 #: src/pages/settings/PlayerPanel.tsx:339
 msgid "settings.player.buffer.high"
-msgstr ""
+msgstr "높음"
 
 #: src/pages/settings/PlayerPanel.tsx:337
 msgid "settings.player.buffer.low"
-msgstr ""
+msgstr "낮음"
 
 #: src/pages/settings/PlayerPanel.tsx:332
 msgid "settings.player.bufferMode"
-msgstr ""
+msgstr "버퍼 모드"
 
 #: src/pages/settings/PlayerPanel.tsx:345
 msgid "settings.player.bufferModeDesc"
-msgstr ""
+msgstr "비디오 플레이어의 버퍼 전략을 제어"
 
 #: src/pages/settings/PlayerPanel.tsx:246
 msgid "settings.player.danmaku"
@@ -4391,7 +4391,7 @@ msgstr "탄막"
 
 #: src/pages/settings/PlayerPanel.tsx:315
 msgid "settings.player.danmakuDensity"
-msgstr ""
+msgstr "탄막 밀도"
 
 #: src/pages/settings/PlayerPanel.tsx:251
 msgid "settings.player.danmakuEnabled"
@@ -4411,15 +4411,15 @@ msgstr "속도"
 
 #: src/pages/settings/PlayerPanel.tsx:321
 msgid "settings.player.density.high"
-msgstr ""
+msgstr "높음"
 
 #: src/pages/settings/PlayerPanel.tsx:319
 msgid "settings.player.density.low"
-msgstr ""
+msgstr "낮음"
 
 #: src/pages/settings/PlayerPanel.tsx:320
 msgid "settings.player.density.medium"
-msgstr ""
+msgstr "중간"
 
 #: src/pages/settings/PlayerPanel.tsx:566
 msgid "settings.player.gestureEnabled"
@@ -4745,15 +4745,15 @@ msgstr "일요일"
 
 #: src/components/anime/MissingSearchModal.tsx:83
 msgid "Size"
-msgstr ""
+msgstr "크기"
 
 #: src/pages/library/RenamePreviewPage.tsx:87
 msgid "Status"
-msgstr ""
+msgstr "상태"
 
 #: src/components/anime/MissingSearchModal.tsx:85
 msgid "Subgroup"
-msgstr ""
+msgstr "자막 그룹"
 
 #~ msgid "subscribe.add"
 #~ msgstr "추가"
@@ -4851,7 +4851,7 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:69
 msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
-msgstr ""
+msgstr "이 라이브러리의 비선호 파일 {totalRemovable}개가 영구적으로 삭제됩니다. 계속하시겠습니까?"
 
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0}일 전"
@@ -4887,7 +4887,7 @@ msgstr "{seconds}초 전"
 
 #: src/components/anime/MissingSearchModal.tsx:82
 msgid "Title"
-msgstr ""
+msgstr "제목"
 
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
@@ -4907,12 +4907,12 @@ msgstr ""
 
 #: src/pages/library/RenameHistoryPage.tsx:94
 msgid "Undo"
-msgstr ""
+msgstr "실행 취소"
 
 #. placeholder {0}: b.batch_id.slice(0, 8)
 #: src/pages/library/RenameHistoryPage.tsx:87
 msgid "Undo batch {0}?"
-msgstr ""
+msgstr "배치 {0}을(를) 되돌리시겠습니까?"
 
 #: src/pages/LibraryDetailPage.tsx:1996
 #~ msgid "View and clean up duplicate files"
@@ -4920,7 +4920,7 @@ msgstr ""
 
 #: src/pages/library/LibraryDuplicatesPage.tsx:90
 msgid "Wasted"
-msgstr ""
+msgstr "낭비"
 
 #~ msgid "watch.audioTrack"
 #~ msgstr "Audio"
