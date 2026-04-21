@@ -102,6 +102,12 @@ api/server
 # Root-level node_modules (tooling not in web/)
 /node_modules/
 
+# Repo is Bun-locked — reject accidental npm/yarn/pnpm lockfiles at root
+/package.json
+/package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
+
 # Claude Code workspace
 /.claude/
 
