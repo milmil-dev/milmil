@@ -336,19 +336,20 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
         {/* ── RSS URL ── */}
         <Section label={i18n._(msg`ruleEditor.rssUrl`)}>
           {rssEditing ? (
-            <div className="flex gap-2">
-              <Input
+            <div className="space-y-2">
+              <textarea
                 value={rssUrl}
                 onChange={(e) => setRssUrl(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && rssUrl.trim()) setRssEditing(false); if (e.key === 'Escape') setRssEditing(false); }}
+                onKeyDown={(e) => { if (e.key === 'Escape') setRssEditing(false); }}
                 placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
-                className="flex-1 bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20 font-mono"
+                rows={3}
+                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-[13px] text-white placeholder:text-white/20 font-mono resize-none outline-none focus:border-white/15 transition-colors"
                 autoFocus
               />
               <button
                 type="button"
                 onClick={() => setRssEditing(false)}
-                className="shrink-0 text-[11px] text-white/50 hover:text-white px-2.5 py-1.5 rounded bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
+                className="text-[11px] text-white/50 hover:text-white px-2.5 py-1.5 rounded bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
               >
                 {i18n._(msg`ruleEditor.done`)}
               </button>
