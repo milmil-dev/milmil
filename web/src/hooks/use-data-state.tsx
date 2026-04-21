@@ -51,4 +51,4 @@ function useDataState<T extends HTMLElement = HTMLElement>(
   return [value, localRef];
 }
 
-export { useDataState, type DataStateValue };
+export { type DataStateValue, useDataState };
