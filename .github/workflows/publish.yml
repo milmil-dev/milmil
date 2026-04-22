@@ -7,49 +7,41 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write   # cosign keyless signing
+  security-events: write   # upload Trivy SARIF
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false   # never cancel a release publish
 
 jobs:
-  docker-api:
-    name: Build API Image
+  build:
+    name: Build ${{ matrix.image }} Image
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: docker/setup-qemu-action@v4
-      - uses: docker/setup-buildx-action@v4
-      - uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/metadata-action@v6
-        id: meta
-        with:
-          images: |
-            milmildev/milmil-api
-            ghcr.io/milmil-dev/milmil-api
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest
-      - uses: docker/build-push-action@v7
-        with:
-          context: ./api
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: api
+            context: ./api
+            smoke_port: 8080
+            smoke_path: /health
+            smoke_env: |
+              -e JWT_SECRET=smoke_test_secret_at_least_thirty_two_chars
+              -e DATABASE_URL=sqlite:///app/data/smoke.db
+          - image: web
+            context: ./web
+            smoke_port: 80
+            smoke_path: /
+            smoke_env: ""
 
-  docker-web:
-    name: Build Web Image
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
       - uses: docker/setup-qemu-action@v4
       - uses: docker/setup-buildx-action@v4
+
       - uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -59,20 +51,102 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: docker/metadata-action@v6
         id: meta
         with:
           images: |
-            milmildev/milmil-web
-            ghcr.io/milmil-dev/milmil-web
+            milmildev/milmil-${{ matrix.image }}
+            ghcr.io/milmil-dev/milmil-${{ matrix.image }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
-      - uses: docker/build-push-action@v7
+
+      # ---- Smoke test: build native amd64, run container, hit endpoint -----
+      - name: Build for smoke test (native amd64)
+        uses: docker/build-push-action@v7
         with:
-          context: ./web
+          context: ${{ matrix.context }}
+          platforms: linux/amd64
+          load: true
+          tags: smoketest:${{ matrix.image }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
+
+      - name: Smoke test
+        env:
+          IMAGE: ${{ matrix.image }}
+          PORT: ${{ matrix.smoke_port }}
+          PATH_: ${{ matrix.smoke_path }}
+          SMOKE_ENV: ${{ matrix.smoke_env }}
+        run: |
+          set -euo pipefail
+          # SMOKE_ENV is a multiline string of `-e KEY=VALUE` flags; eval it
+          # into the docker run argv (we authored it, no user input).
+          # shellcheck disable=SC2086
+          docker run -d --name smoke ${SMOKE_ENV} \
+            -p "${PORT}:${PORT}" \
+            "smoketest:${IMAGE}"
+
+          for i in $(seq 1 30); do
+            if curl -fs "http://localhost:${PORT}${PATH_}" >/dev/null 2>&1; then
+              echo "✓ ${IMAGE} responded on ${PATH_}"
+              docker logs smoke
+              docker stop smoke >/dev/null
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "✗ ${IMAGE} did not respond within 60s"
+          docker logs smoke
+          exit 1
+
+      # ---- Multi-arch publish (cache hits the smoke build) -----------------
+      - name: Build and push (multi-arch)
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.context }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
+          sbom: true
+          provenance: mode=max
+
+      # ---- Vulnerability scan (does not fail the build, just reports) ------
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: milmildev/milmil-${{ matrix.image }}@${{ steps.build.outputs.digest }}
+          format: sarif
+          output: trivy-${{ matrix.image }}.sarif
+          severity: HIGH,CRITICAL
+          exit-code: "0"
+          ignore-unfixed: true
+
+      - name: Upload Trivy results to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-${{ matrix.image }}.sarif
+          category: trivy-${{ matrix.image }}
+
+      # ---- Sign all tags with cosign keyless (Sigstore OIDC, no key) -------
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Sign images with cosign
+        env:
+          COSIGN_YES: "true"
+          DIGEST: ${{ steps.build.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r tag; do
+            [ -z "$tag" ] && continue
+            cosign sign "${tag}@${DIGEST}"
+          done <<< "$TAGS"
