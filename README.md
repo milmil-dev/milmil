@@ -145,7 +145,11 @@ API 喺 `http://localhost:8080` 行緊，前端喺 `http://localhost:5173` 行�
 ### Docker
 
 ```bash
-docker-compose up -d
+# 用官方鏡像（Postgres + Redis + API + Web 一齊起）
+docker compose up -d
+
+# 或者用本地源碼自己 build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 ---
@@ -157,9 +161,10 @@ docker-compose up -d
 ```bash
 # Copy 一份環境變數檔再自己改
 cp .env.example .env
+cp api/.env.example api/.env  # 入面要填 JWT_SECRET 同 REDIS 密碼
 
-# 開齊所有服務
-docker-compose -f docker-compose.prod.yml up -d
+# 用 Docker Hub 上面已 build 好嘅鏡像（milmildev/milmil-api、milmildev/milmil-web）
+docker compose up -d
 ```
 
 **幾個服務：**
