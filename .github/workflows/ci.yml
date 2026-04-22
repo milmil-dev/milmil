@@ -10,49 +10,115 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Pinned tool versions (mirror mise.toml).
+env:
+  GO_VERSION: "1.26.1"
+  BUN_VERSION: "1.3.11"
+
 jobs:
   go:
     name: Go
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.26"
+          go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: api/go.sum
-      - run: go vet ./...
+
+      # Informational: enforces gofmt cleanliness. Not yet a gate because
+      # the repo has ~10 files needing reformatting; flip continue-on-error
+      # to false once `gofmt -w api/` has landed.
+      - name: gofmt check (informational)
+        continue-on-error: true
         working-directory: api
-      - run: go test ./...
+        run: |
+          set -euo pipefail
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::warning::Files need gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go mod tidy check
         working-directory: api
-      - run: go build -o /dev/null ./cmd/server
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+      - name: go vet
         working-directory: api
+        run: go vet ./...
+
+      # Informational: -race uncovers existing data races in
+      # internal/api tests. Flip continue-on-error to false once
+      # those are resolved.
+      - name: go test (race + cover, informational)
+        continue-on-error: true
+        working-directory: api
+        run: go test -race -cover ./...
+
+      - name: go test
+        working-directory: api
+        run: go test ./...
+
+      - name: go build
+        working-directory: api
+        run: go build -o /dev/null ./cmd/server
 
   web:
     name: Web
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
+
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
         working-directory: web
-      - run: bun run lint
+        run: bun install --frozen-lockfile
+
+      - name: Lint
         working-directory: web
-      - run: bun run test:run
+        run: bun run lint
+
+      - name: Unit tests
         working-directory: web
-      - run: bun run i18n:compile && bun run build
+        run: bun run test:run
+
+      # Informational: full check:all (typecheck + lint + format:check +
+      # test:run). Currently fails on ~30 pre-existing TS errors.
+      # Flip continue-on-error to false once those are fixed.
+      - name: check:all (informational)
+        continue-on-error: true
         working-directory: web
+        run: bun run check:all
+
+      - name: Production build
+        working-directory: web
+        run: bun run i18n:compile && bun run build
 
   docs:
     name: Docs
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
+
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
         working-directory: docs-site
-      - run: bun run build
+        run: bun install --frozen-lockfile
+
+      - name: Build docs site
         working-directory: docs-site
+        run: bun run build
