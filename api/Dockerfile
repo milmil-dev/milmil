@@ -1,7 +1,13 @@
 # syntax=docker/dockerfile:1.7
 
 # ---- Build stage -----------------------------------------------------------
-FROM golang:1.26-alpine AS builder
+# Build on the native arch and let Go cross-compile to the target arch — avoids
+# QEMU emulation, which turns a multi-arch publish from ~3min into ~30min.
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 WORKDIR /src
 
@@ -13,10 +19,15 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 COPY . .
 
 # -trimpath: reproducible binary (no local paths)
-# -s -w: strip debug info and symbol table (smaller binary)
+# -s -w:    strip debug info and symbol table (smaller binary)
+# GOARM:    set the ARM variant when targeting linux/arm/v6 or v7 (no-op otherwise)
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=linux go build \
+    CGO_ENABLED=0 \
+      GOOS=${TARGETOS} \
+      GOARCH=${TARGETARCH} \
+      GOARM=${TARGETVARIANT#v} \
+    go build \
       -trimpath \
       -ldflags "-s -w" \
       -o /out/milmil-api \
