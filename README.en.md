@@ -131,18 +131,18 @@
 
 ### Docker (Recommended)
 
-Get up and running with one command:
-
-```bash
-docker-compose up -d
-```
-
-Or use the production configuration:
+Pulls published images (`milmildev/milmil-api`, `milmildev/milmil-web`) and brings up the full stack — Postgres, Redis, API, Web:
 
 ```bash
 cp .env.example .env
-# Edit .env to set JWT_SECRET and other required variables
-docker-compose -f docker-compose.prod.yml up -d
+cp api/.env.example api/.env   # set JWT_SECRET, REDIS credentials, etc.
+docker compose up -d
+```
+
+To build from your local checkout instead of pulling:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 ### From Source

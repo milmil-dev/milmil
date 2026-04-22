@@ -137,7 +137,14 @@ API는 `http://localhost:8080`, 프론트엔드는 `http://localhost:5173`에서
 ### Docker
 
 ```bash
-docker-compose up -d
+# 공개 이미지 사용 (API + Web + Redis, SQLite로 시작)
+docker compose up -d
+
+# Postgres 사용 시 (옵트인)
+docker compose --profile postgres up -d
+
+# 로컬 코드로 빌드
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 ---
@@ -149,9 +156,10 @@ docker-compose up -d
 ```bash
 # 환경 변수 파일을 복사하고 편집
 cp .env.example .env
+cp api/.env.example api/.env  # JWT_SECRET 및 REDIS 자격 증명 설정
 
-# 모든 서비스 시작
-docker-compose -f docker-compose.prod.yml up -d
+# Docker Hub의 공개 이미지로 시작 (milmildev/milmil-api, milmildev/milmil-web)
+docker compose up -d
 ```
 
 **서비스:**

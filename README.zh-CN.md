@@ -137,7 +137,14 @@ API 运行于 `http://localhost:8080`，前端运行于 `http://localhost:5173`�
 ### Docker
 
 ```bash
-docker-compose up -d
+# 使用官方镜像（API + Web + Redis，默认 SQLite）
+docker compose up -d
+
+# 启用 Postgres（按需）
+docker compose --profile postgres up -d
+
+# 用本地源码构建
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 ---
@@ -149,9 +156,10 @@ docker-compose up -d
 ```bash
 # 复制并编辑环境变量文件
 cp .env.example .env
+cp api/.env.example api/.env  # 配置 JWT_SECRET 和 REDIS 凭据
 
-# 启动所有服务
-docker-compose -f docker-compose.prod.yml up -d
+# 使用 Docker Hub 上的官方镜像（milmildev/milmil-api、milmildev/milmil-web）
+docker compose up -d
 ```
 
 **服务：**

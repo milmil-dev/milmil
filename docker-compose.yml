@@ -1,40 +1,83 @@
+# milmil — production-ready stack using published Docker Hub images.
+#
+# Default: api + web + redis with SQLite (lightest setup).
+#   docker compose up -d
+#
+# Postgres opt-in (point DATABASE_URL at it in api/.env first):
+#   docker compose --profile postgres up -d
+#
+# Local code build (overlay):
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+
 services:
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server /etc/redis/redis.conf
+    volumes:
+      - ./redis-config/redis.conf:/etc/redis/redis.conf:ro
+      - ./redis-config/users.acl:/etc/redis/users.acl:ro
+      - redis-data:/data
+    env_file:
+      - ./api/.env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'redis-cli --user "$${REDIS_USERNAME}" --pass "$${REDIS_PASSWORD}" ping | grep -q PONG',
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    profiles: [postgres]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-milmil}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_postgres_password}
+      POSTGRES_DB: ${POSTGRES_DB:-milmil}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-milmil}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    image: milmildev/milmil-api:latest
     restart: unless-stopped
     ports:
       - "${API_PORT:-8080}:8080"
     volumes:
       - ${DATA_DIR:-./data}:/data
       - ${MEDIA_DIR:-/mnt/media}:/media:ro
+      - ${DOWNLOAD_DIR:-./downloads}:/downloads
     env_file:
       - ./api/.env
     environment:
-      - DATA_DIR=/data
-      - DATABASE_URL=sqlite:///data/milmil.db
-      - API_PORT=8080
+      DATA_DIR: /data
+      REDIS_URL: redis://redis:6379
+      API_PORT: 8080
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+        required: false
 
   web:
-    build:
-      context: ./web
-      dockerfile: Dockerfile
+    image: milmildev/milmil-web:latest
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-3000}:80"
     environment:
-      - VITE_API_URL=http://localhost:${API_PORT:-8080}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080}
     depends_on:
       - api
 
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    volumes:
-      - redis-data:/data
-    profiles:
-      - with-redis
-
 volumes:
   redis-data:
+  pgdata:
