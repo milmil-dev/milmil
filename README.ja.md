@@ -137,7 +137,14 @@ APIは `http://localhost:8080`、フロントエンドは `http://localhost:5173
 ### Docker
 
 ```bash
-docker-compose up -d
+# 公開イメージを使用（API + Web + Redis、SQLiteで起動）
+docker compose up -d
+
+# Postgresを使う場合（オプトイン）
+docker compose --profile postgres up -d
+
+# ローカルコードからビルド
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 ---
@@ -149,9 +156,10 @@ docker-compose up -d
 ```bash
 # 環境変数ファイルをコピーして編集
 cp .env.example .env
+cp api/.env.example api/.env  # JWT_SECRETやREDISの認証情報を設定
 
-# 全サービスを起動
-docker-compose -f docker-compose.prod.yml up -d
+# Docker Hubの公開イメージで起動（milmildev/milmil-api、milmildev/milmil-web）
+docker compose up -d
 ```
 
 **サービス：**
