@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
@@ -11,7 +15,12 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
+      # Use a PAT (RELEASE_PLEASE_PAT, with `repo` + `workflow` scopes) when
+      # available so the release tag triggers downstream workflows like
+      # publish.yml. The default GITHUB_TOKEN can't fire other workflows,
+      # which is why publish.yml had to be re-pushed manually for v0.1.2.
       - uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_PAT || secrets.GITHUB_TOKEN }}
