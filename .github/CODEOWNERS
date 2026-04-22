@@ -1,0 +1,26 @@
+# GitHub auto-assigns these reviewers on PRs touching the matching paths.
+# Format: <pattern>  @owner1 @owner2 ...
+# Last matching pattern wins, so order from generic → specific.
+
+# Default owner for everything not matched below.
+*                              @milmil-dev
+
+# Build / CI / release
+/.github/                      @milmil-dev
+/Dockerfile                    @milmil-dev
+/docker-compose*.yml           @milmil-dev
+/release-please-config.json    @milmil-dev
+/.release-please-manifest.json @milmil-dev
+/Makefile                      @milmil-dev
+/mise.toml                     @milmil-dev
+
+# API (Go backend)
+/api/                          @milmil-dev
+
+# Frontend
+/web/                          @milmil-dev
+
+# Documentation
+/docs/                         @milmil-dev
+/docs-site/                    @milmil-dev
+/README*.md                    @milmil-dev

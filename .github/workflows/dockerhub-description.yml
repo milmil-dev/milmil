@@ -1,0 +1,37 @@
+name: Sync Docker Hub README
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "README.en.md"
+      - ".github/workflows/dockerhub-description.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dockerhub-readme
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [milmil-api, milmil-web]
+    steps:
+      - uses: actions/checkout@v6
+
+      # Push the English README to the Docker Hub overview page so
+      # hub.docker.com/r/milmildev/milmil-{api,web} isn't blank.
+      - uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: milmildev/${{ matrix.image }}
+          readme-filepath: ./README.en.md
+          short-description: "Self-hosted anime media server"
