@@ -16,6 +16,10 @@ Set your username and password. This is the only admin account — you can creat
 <Callout type="warn">
 Choose a strong password. There is no password recovery without database access.
 </Callout>
+
+<Callout type="info">
+**Skip the UI:** You can auto-provision the admin account via env vars. Set `ADMIN_USER` and `ADMIN_PASSWORD` in `api/.env` before first boot. milmil creates the admin on startup if the users table is empty, then the wizard redirects straight to login. Remove the vars after first boot to avoid leaving the password on disk.
+</Callout>
 </Step>
 <Step>
 ### Add Library
