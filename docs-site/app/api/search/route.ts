@@ -9,8 +9,6 @@ const server = createFromSource(source, {
     'zh-CN': { tokenizer: cjkTokenizer },
     'zh-TW': { tokenizer: cjkTokenizer },
     'zh-HK': { tokenizer: cjkTokenizer },
-    ja: { tokenizer: cjkTokenizer },
-    ko: { tokenizer: cjkTokenizer },
   },
 });
 
