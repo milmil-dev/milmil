@@ -6,12 +6,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: zh-CN\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
-#: components/landing.tsx:239
+#: components/landing.tsx:248
 msgid "landing.ctaDesc"
 msgstr "几分钟内部署 milmil，掌控你的动漫收藏。"
 
-#: components/landing.tsx:238
+#: components/landing.tsx:247
 msgid "landing.ctaTitle"
 msgstr "准备好了吗？"
 
@@ -39,23 +45,23 @@ msgstr "季度日历、热门排行、全文搜索。"
 msgid "landing.d6"
 msgstr "观看进度和收藏状态与 Bangumi 和 AniList 同步。"
 
-#: components/landing.tsx:195
+#: components/landing.tsx:204
 msgid "landing.deployDesc"
 msgstr "一条命令。包含所有服务 — PostgreSQL、Redis、API 和前端。"
 
-#: components/landing.tsx:194
+#: components/landing.tsx:203
 msgid "landing.deployTitle"
 msgstr "秒级部署"
 
-#: components/landing.tsx:138
+#: components/landing.tsx:147
 msgid "landing.desc"
 msgstr "管理、发现和串流你的动漫收藏，支持弹幕、自动下载和多来源元数据匹配。"
 
-#: components/landing.tsx:185
+#: components/landing.tsx:194
 msgid "landing.detail"
 msgstr "动漫详情"
 
-#: components/landing.tsx:185
+#: components/landing.tsx:194
 msgid "landing.detailCaption"
 msgstr "元数据、剧集、类型、评分，一键播放。"
 
@@ -83,59 +89,59 @@ msgstr "发现"
 msgid "landing.f6"
 msgstr "同步追踪"
 
-#: components/landing.tsx:160
+#: components/landing.tsx:169
 msgid "landing.featuresDesc"
 msgstr "为动漫爱好者打造的完整媒体服务器。"
 
-#: components/landing.tsx:159
+#: components/landing.tsx:168
 msgid "landing.featuresTitle"
 msgstr "功能一览"
 
-#: components/landing.tsx:142
+#: components/landing.tsx:151
 msgid "landing.getStarted"
 msgstr "开始使用"
 
-#: components/landing.tsx:184
+#: components/landing.tsx:193
 msgid "landing.home"
 msgstr "首页"
 
-#: components/landing.tsx:184
+#: components/landing.tsx:193
 msgid "landing.homeCaption"
 msgstr "热门轮播、继续观看和今日更新。"
 
-#: components/landing.tsx:219
+#: components/landing.tsx:228
 msgid "landing.integrationsDesc"
 msgstr "连接你已经在使用的服务。"
 
-#: components/landing.tsx:218
+#: components/landing.tsx:227
 msgid "landing.integrationsTitle"
 msgstr "无缝集成"
 
-#: components/landing.tsx:186
+#: components/landing.tsx:195
 msgid "landing.player"
 msgstr "播放器 + 弹幕"
 
-#: components/landing.tsx:186
+#: components/landing.tsx:195
 msgid "landing.playerCaption"
 msgstr "实时弹幕串流，带字幕和进度追踪。"
 
-#: components/landing.tsx:242
+#: components/landing.tsx:251
 msgid "landing.readDocs"
 msgstr "查看文档"
 
-#: components/landing.tsx:181
+#: components/landing.tsx:190
 msgid "landing.screenshotsDesc"
 msgstr "灵感来自最优秀的媒体服务器的精美界面。"
 
-#: components/landing.tsx:180
+#: components/landing.tsx:189
 msgid "landing.screenshotsTitle"
 msgstr "产品预览"
 
-#: components/landing.tsx:135
+#: components/landing.tsx:144
 msgid "landing.tagline"
 msgstr "自托管动漫媒体服务器"
 
-#: components/landing.tsx:145
-#: components/landing.tsx:245
+#: components/landing.tsx:154
+#: components/landing.tsx:254
 msgid "landing.viewGithub"
 msgstr "查看 GitHub"
