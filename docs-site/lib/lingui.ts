@@ -5,8 +5,6 @@ const locales = {
   'zh-CN': () => import('../locales/zh-CN/messages'),
   'zh-TW': () => import('../locales/zh-TW/messages'),
   'zh-HK': () => import('../locales/zh-HK/messages'),
-  ja: () => import('../locales/ja/messages'),
-  ko: () => import('../locales/ko/messages'),
 };
 
 export async function loadCatalog(locale: string) {
