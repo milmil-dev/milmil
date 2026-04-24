@@ -1,136 +1,128 @@
 ---
-title: Docker Deployment
-description: Deploy milmil with Docker Compose for production use.
+title: Docker Reference
+description: Environment variables, profiles, volumes, and reverse proxy reference for milmil's Docker Compose setup.
 ---
 
-## Production Setup
-
-<Steps>
-<Step>
-### Create environment file
-
-Create a `.env` file in the project root:
-
-```bash
-JWT_SECRET=your-secret-key-at-least-32-characters
-MILMIL_ENCRYPTION_KEY=your-aes-256-encryption-key
-DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
-```
-
-<Callout type="warn">
-Generate strong random keys for production. You can use `openssl rand -hex 32` to generate a 64-character hex key.
+<Callout type="info">
+For the step-by-step install flow, see [Installation](/docs/getting-started/installation). This page is the reference you come back to after you're running.
 </Callout>
-</Step>
-<Step>
-### Start the stack
 
-<Tabs items={["docker compose", "docker run"]}>
-<Tab value="docker compose">
+## Env files
+
+milmil splits environment variables into two files:
+
+### `.env` (repo root) — compose-level
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `API_PORT` | `8080` | Host port the API binds to |
+| `WEB_PORT` | `3000` | Host port the web UI binds to |
+| `DATA_DIR` | `./data` | Host path mounted into the API at `/data` |
+| `MEDIA_DIR` | `/mnt/media` | Host path mounted into the API at `/media` (read-only) |
+| `DOWNLOAD_DIR` | `./downloads` | Host path mounted into the API at `/downloads` |
+| `POSTGRES_USER` | `milmil` | Postgres superuser (only used with `--profile postgres`) |
+| `POSTGRES_PASSWORD` | `change_me_postgres_password` | Postgres password |
+| `POSTGRES_DB` | `milmil` | Postgres database name |
+
+### `api/.env` — runtime secrets
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `JWT_SECRET` | ✅ | JWT signing key (≥ 32 chars). Generate with `openssl rand -hex 32`. |
+| `DATABASE_URL` | ✅ | See [Database](#database) below |
+| `MILMIL_ENCRYPTION_KEY` | Recommended | AES-256 key for storage credentials. Falls back to `JWT_SECRET`. |
+| `REDIS_URL` | No | Leave empty for in-memory cache (dev); set `redis://redis:6379` in production. |
+| `REDIS_USERNAME`, `REDIS_PASSWORD` | No | Used by the Redis container's ACL (not consumed by the API directly). |
+| `ADMIN_USER`, `ADMIN_PASSWORD` | No | First-boot admin auto-provisioning. See [First-time Setup](/docs/getting-started/first-setup). |
+| `DANDANPLAY_APP_ID`, `DANDANPLAY_APP_SECRET` | No | DandanPlay hash match + danmaku. |
+
+See [`api/.env.example`](https://github.com/milmil-dev/milmil/blob/main/api/.env.example) for the full list.
+
+## Profiles
+
 ```bash
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
-</Tab>
-<Tab value="docker run">
+
+Starts: `api` + `web` + `redis` (SQLite database — no Postgres).
+
 ```bash
-docker run -d \
-  --name milmil-api \
-  -p 8080:8080 \
-  --env-file .env \
-  -v milmil-data:/data \
-  -v /path/to/anime:/media/anime \
-  ghcr.io/milmil-dev/milmil:latest
+docker compose --profile postgres up -d
 ```
-</Tab>
-</Tabs>
-</Step>
-</Steps>
+
+Adds: Postgres 16 container. Set `DATABASE_URL=postgres://...` in `api/.env` first.
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+```
+
+Builds images from local source instead of pulling from Docker Hub.
 
 ## Services
 
-| Service | Port | Description |
-|---------|------|-------------|
-| `milmil-api` | 8080 | Go backend API |
-| `milmil-web` | 3000 | React frontend |
-| `postgres` | 5432 | PostgreSQL 16 |
-| `redis` | 6379 | Redis 7 cache |
+| Service | Port | Image |
+|---------|------|-------|
+| `milmil-api` | 8080 | `milmildev/milmil-api:latest` |
+| `milmil-web` | 3000 | `milmildev/milmil-web:latest` |
+| `redis` | 6379 | `redis:alpine` |
+| `postgres` | 5432 | `postgres:16-alpine` (opt-in via `--profile postgres`) |
 
-## Volume Mounts
+## Volume mounts
 
-Map your media directories into the container:
+The API container expects three mounts:
 
 ```yaml
 volumes:
-  - /path/to/anime:/media/anime
-  - milmil-data:/data
+  - ${DATA_DIR:-./data}:/data            # app data, transcode cache, SQLite DB
+  - ${MEDIA_DIR:-/mnt/media}:/media:ro   # anime library (read-only)
+  - ${DOWNLOAD_DIR:-./downloads}:/downloads
 ```
 
-<Callout type="info">
-The `/data` volume stores downloads, transcode cache, and SQLite database (if used). Make sure it has enough space.
-</Callout>
+Set those host paths in `.env`. The container always uses `/data`, `/media`, `/downloads` internally, so library paths inside milmil should start with `/media/...`.
 
-## Expected File Layout
+## Database
+
+<Tabs items={['SQLite', 'PostgreSQL']}>
+<Tab value="SQLite">
+
+Zero config, stored at `/data/milmil.db`. Recommended for single-user setups and small libraries.
+
+```
+DATABASE_URL=sqlite://data/milmil.db
+```
+
+</Tab>
+<Tab value="PostgreSQL">
+
+Recommended for multi-user or multi-instance deployments. Migrations auto-apply on startup.
+
+```
+DATABASE_URL=postgres://milmil:change_me_postgres_password@postgres:5432/milmil?sslmode=disable
+```
+
+Start the stack with `docker compose --profile postgres up -d`.
+
+</Tab>
+</Tabs>
+
+## Reverse proxy
+
+See the dedicated [Reverse Proxy](/docs/configuration/reverse-proxy) guide for Nginx, Caddy, and Traefik configs.
+
+## Expected file layout
 
 <Files>
   <Folder name="milmil" defaultOpen>
     <File name=".env" />
     <File name="docker-compose.yml" />
-    <File name="docker-compose.prod.yml" />
+    <File name="docker-compose.dev.yml" />
+    <Folder name="api" defaultOpen>
+      <File name=".env" />
+    </Folder>
     <Folder name="data">
       <File name="milmil.db" />
-      <Folder name="downloads" />
       <Folder name="transcode" />
     </Folder>
+    <Folder name="downloads" />
   </Folder>
 </Files>
-
-## Database
-
-<Tabs items={["SQLite", "PostgreSQL"]}>
-<Tab value="SQLite">
-Zero configuration — great for development and small setups. Data stored in `data/milmil.db`.
-
-```bash
-DATABASE_URL=sqlite://data/milmil.db
-```
-</Tab>
-<Tab value="PostgreSQL">
-Recommended for production deployments. Migrations are auto-applied on startup.
-
-```bash
-DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
-```
-</Tab>
-</Tabs>
-
-## Reverse Proxy
-
-<Callout type="info">
-See the dedicated [Reverse Proxy](/docs/configuration/reverse-proxy) guide for full Nginx, Caddy, and Traefik configurations.
-</Callout>
-
-Place milmil behind a reverse proxy for HTTPS. Example Nginx config:
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name milmil.example.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /ws {
-        proxy_pass http://localhost:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
