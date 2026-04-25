@@ -1,78 +1,128 @@
 ---
-title: Docker 部署
-description: 使用 Docker Compose 部署 milmil 到生产环境。
+title: Docker 参考
+description: milmil Docker Compose 配置的环境变量、profile、卷挂载及反向代理参考。
 ---
 
-## 生产环境设置
+<Callout type="info">
+分步安装流程请参阅[安装](/docs/getting-started/installation)。本页为运行后的参考手册。
+</Callout>
 
-使用生产环境的 compose 文件进行完整部署：
+## 环境变量文件
+
+milmil 将环境变量拆分为两个文件：
+
+### `.env`（仓库根目录）— Compose 层
+
+| 变量 | 默认值 | 用途 |
+|----------|---------|---------|
+| `API_PORT` | `8080` | API 绑定的宿主机端口 |
+| `WEB_PORT` | `3000` | Web UI 绑定的宿主机端口 |
+| `DATA_DIR` | `./data` | 挂载到容器 `/data` 的宿主机路径 |
+| `MEDIA_DIR` | `/mnt/media` | 挂载到容器 `/media` 的宿主机路径（只读） |
+| `DOWNLOAD_DIR` | `./downloads` | 挂载到容器 `/downloads` 的宿主机路径 |
+| `POSTGRES_USER` | `milmil` | Postgres 超级用户（仅在 `--profile postgres` 时使用） |
+| `POSTGRES_PASSWORD` | `change_me_postgres_password` | Postgres 密码 |
+| `POSTGRES_DB` | `milmil` | Postgres 数据库名 |
+
+### `api/.env` — 运行时密钥
+
+| 变量 | 是否必填 | 用途 |
+|----------|----------|---------|
+| `JWT_SECRET` | ✅ | JWT 签名密钥（≥ 32 字符）。使用 `openssl rand -hex 32` 生成。 |
+| `DATABASE_URL` | ✅ | 参见下方[数据库](#database)说明 |
+| `MILMIL_ENCRYPTION_KEY` | 推荐 | 用于加密存储凭据的 AES-256 密钥。未设置时回退到 `JWT_SECRET`。 |
+| `REDIS_URL` | 否 | 开发环境可留空（使用内存缓存）；生产环境设为 `redis://redis:6379`。 |
+| `REDIS_USERNAME`, `REDIS_PASSWORD` | 否 | 用于 Redis 容器 ACL（API 不直接使用）。 |
+| `ADMIN_USER`, `ADMIN_PASSWORD` | 否 | 首次启动时自动配置管理员账户。参见[首次设置](/docs/getting-started/first-setup)。 |
+| `DANDANPLAY_APP_ID`, `DANDANPLAY_APP_SECRET` | 否 | DandanPlay 哈希匹配 + 弹幕功能。 |
+
+完整变量列表请参阅 [`api/.env.example`](https://github.com/milmil-dev/milmil/blob/main/api/.env.example)。
+
+## Profiles
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
-### 必需的环境变量
-
-在项目根目录创建 `.env` 文件：
+启动：`api` + `web` + `redis`（使用 SQLite 数据库，不含 Postgres）。
 
 ```bash
-JWT_SECRET=your-secret-key-at-least-32-characters
-MILMIL_ENCRYPTION_KEY=your-aes-256-encryption-key
-DATABASE_URL=postgres://milmil:password@postgres:5432/milmil?sslmode=disable
+docker compose --profile postgres up -d
 ```
 
-### 服务
+额外启动：Postgres 16 容器。请先在 `api/.env` 中设置 `DATABASE_URL=postgres://...`。
 
-生产环境包含以下服务：
-
-| 服务 | 端口 | 说明 |
-|---------|------|-------------|
-| `milmil-api` | 8080 | Go 后端 API |
-| `milmil-web` | 3000 | React 前端 |
-| `postgres` | 5432 | PostgreSQL 16 |
-| `redis` | 6379 | Redis 7 缓存 |
-
-### 反向代理
-
-将 milmil 置于 Nginx 或 Caddy 之后以启用 HTTPS。Nginx 配置示例：
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name milmil.example.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /ws {
-        proxy_pass http://localhost:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
-### 卷挂载
+从本地源码构建镜像，而非从 Docker Hub 拉取。
 
-将媒体目录映射到容器中：
+## 服务
+
+| 服务 | 端口 | 镜像 |
+|---------|------|-------|
+| `milmil-api` | 8080 | `milmildev/milmil-api:latest` |
+| `milmil-web` | 3000 | `milmildev/milmil-web:latest` |
+| `redis` | 6379 | `redis:alpine` |
+| `postgres` | 5432 | `postgres:16-alpine`（通过 `--profile postgres` 启用） |
+
+## 卷挂载
+
+API 容器需要三个挂载点：
 
 ```yaml
 volumes:
-  - /path/to/anime:/media/anime
-  - milmil-data:/data
+  - ${DATA_DIR:-./data}:/data            # app data, transcode cache, SQLite DB
+  - ${MEDIA_DIR:-/mnt/media}:/media:ro   # anime library (read-only)
+  - ${DOWNLOAD_DIR:-./downloads}:/downloads
 ```
 
-### 数据库
+在 `.env` 中配置宿主机路径。容器内部始终使用 `/data`、`/media`、`/downloads`，因此 milmil 内的媒体库路径应以 `/media/...` 开头。
 
-- **开发环境**：SQLite（零配置）
-- **生产环境**：推荐使用 PostgreSQL 16+
-- 启动时通过 golang-migrate 自动应用迁移
+## 数据库
+
+<Tabs items={['SQLite', 'PostgreSQL']}>
+<Tab value="SQLite">
+
+零配置，数据存储于 `/data/milmil.db`。推荐用于单用户场景及小型媒体库。
+
+```
+DATABASE_URL=sqlite://data/milmil.db
+```
+
+</Tab>
+<Tab value="PostgreSQL">
+
+推荐用于多用户或多实例部署。迁移在启动时自动应用。
+
+```
+DATABASE_URL=postgres://milmil:change_me_postgres_password@postgres:5432/milmil?sslmode=disable
+```
+
+使用 `docker compose --profile postgres up -d` 启动服务栈。
+
+</Tab>
+</Tabs>
+
+## 反向代理
+
+Nginx、Caddy 和 Traefik 的配置请参阅专属的[反向代理](/docs/configuration/reverse-proxy)指南。
+
+## 目录结构
+
+<Files>
+  <Folder name="milmil" defaultOpen>
+    <File name=".env" />
+    <File name="docker-compose.yml" />
+    <File name="docker-compose.dev.yml" />
+    <Folder name="api" defaultOpen>
+      <File name=".env" />
+    </Folder>
+    <Folder name="data">
+      <File name="milmil.db" />
+      <Folder name="transcode" />
+    </Folder>
+    <Folder name="downloads" />
+  </Folder>
+</Files>
