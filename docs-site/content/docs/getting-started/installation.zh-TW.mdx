@@ -1,61 +1,163 @@
 ---
 title: 安裝
-description: 如何在伺服器上安裝和執行 milmil。
+description: 使用 Docker Compose 在五分鐘內安裝 milmil。
 ---
 
-## 前置條件
+## 前置需求
 
-- **Docker**（推薦）或 Go 1.26+ 和 Bun 1.3+
-- **FFmpeg** — 用於轉碼和媒體資訊擷取
-- **Redis** — 選用，但推薦用於正式環境部署
+- **Docker Desktop** 或帶有 Compose 插件的 **Docker Engine**
+- 約 2 GB 磁碟空間（用於映像檔與應用程式資料）
+- ≥ 1 GB 可用記憶體
 
-## Docker（推薦）
+<Callout type="info">
+FFmpeg 已內建於 `milmildev/milmil-api` 映像檔中，主機上**無需**另行安裝。
+</Callout>
 
-使用 Docker Compose 執行 milmil 是最簡單的方式：
+## 使用 Docker 安裝
+
+<Steps>
+
+<Step>
+### 複製儲存庫
 
 ```bash
 git clone https://github.com/milmil-dev/milmil.git
 cd milmil
+```
+</Step>
+
+<Step>
+### 建立環境變數檔案
+
+milmil 使用兩個各司其職的環境變數檔案：
+
+| 檔案 | 用途 |
+|------|----------|
+| `.env`（儲存庫根目錄） | Compose 層：埠號、掛載路徑、Postgres 認證資訊 |
+| `api/.env` | 執行期密鑰：`JWT_SECRET`、`DATABASE_URL`、Redis、整合設定 |
+
+```bash
+cp .env.example .env
+cp api/.env.example api/.env
+```
+</Step>
+
+<Step>
+### 產生 JWT 密鑰（必填）
+
+API 要求 `JWT_SECRET` 至少 32 個字元，否則將拒絕啟動。
+
+```bash
+openssl rand -hex 32
+```
+
+將輸出結果貼到 `api/.env` 中的 `JWT_SECRET=` 那一行。
+
+<Callout type="warn">
+**同時設定 `MILMIL_ENCRYPTION_KEY`** — 再次執行 `openssl rand -hex 32`，將結果貼到 `api/.env` 的 `MILMIL_ENCRYPTION_KEY=` 那一行。此金鑰用於加密已儲存的儲存憑證（rclone token、OAuth）。若未設定，則回退使用 `JWT_SECRET`。
+</Callout>
+</Step>
+
+<Step>
+### 啟動服務
+
+```bash
 docker compose up -d
 ```
 
-這將啟動所有服務：
-- **PostgreSQL 16** — 資料庫
-- **Redis 7** — 快取
-- **milmil-api** — Go 後端（連接埠 8080）
-- **milmil-web** — React 前端，透過 Nginx 提供服務（連接埠 3000）
+首次執行將拉取 `milmildev/milmil-api` 與 `milmildev/milmil-web` 映像檔（約需 1 分鐘）。
+</Step>
 
-更多進階設定請參閱 [Docker 部署](/docs/getting-started/docker)。
-
-## 手動安裝
-
-### 後端（Go API）
+<Step>
+### 驗證
 
 ```bash
-cd api
-go mod download
-make build
-./server
+docker compose ps
 ```
 
-### 前端（React SPA）
+每一列均應顯示 `running` 或 `healthy`。
 
+```bash
+curl http://localhost:8080/health
+# {"status":"ok","version":"1.0.0"}
+```
+</Step>
+
+<Step>
+### 開啟應用程式
+
+前往 [http://localhost:3000](http://localhost:3000)，依照[首次設定](/docs/getting-started/first-setup)精靈建立管理員帳號並新增媒體庫。
+</Step>
+
+</Steps>
+
+## 進階設定
+
+<Accordions>
+
+<Accordion title="改用 PostgreSQL 取代 SQLite">
+
+預設的 Compose 設定使用 SQLite。如需切換至 Postgres：
+
+1. 編輯 `api/.env`：
+   ```
+   DATABASE_URL=postgres://milmil:change_me_postgres_password@postgres:5432/milmil?sslmode=disable
+   ```
+
+2. 使用 `postgres` profile 啟動：
+   ```bash
+   docker compose --profile postgres up -d
+   ```
+
+所有 Compose profile 的說明請參閱 [Docker 參考](/docs/getting-started/docker)。
+
+</Accordion>
+
+<Accordion title="從本機原始碼建置（開發模式）">
+
+疊加 `docker-compose.dev.yml`，從本機簽出建置映像檔而非拉取已發布版本：
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+```
+
+</Accordion>
+
+<Accordion title="略過精靈：自動建立管理員帳號">
+
+在 `api/.env` 中新增以下兩個變數：
+
+```
+ADMIN_USER=admin
+ADMIN_PASSWORD=your-strong-password
+```
+
+首次啟動時，若使用者資料表為空，milmil 將自動建立此管理員帳號。首次啟動後請刪除這兩個變數，以免密碼明文留存於磁碟上。
+
+</Accordion>
+
+<Accordion title="手動安裝（不使用 Docker）">
+
+前置需求：Go 1.26+、Bun 1.3+、FFmpeg 已加入 `$PATH`。
+
+**後端：**
+```bash
+cd api
+go build -o milmil-api ./cmd/server
+export JWT_SECRET=$(openssl rand -hex 32)
+./milmil-api
+```
+
+**前端：**
 ```bash
 cd web
 bun install
 bun run build
+# Serve web/dist from Nginx, Caddy, or any static host.
 ```
 
-使用任意靜態檔案伺服器或 Nginx 託管 `web/dist` 目錄下的建置產物。
+將前端的 `VITE_API_URL` 指向 API 主機位址。`api/.env.example` 中列出的所有環境變數均適用。
 
-## 環境變數
+</Accordion>
 
-| 變數 | 預設值 | 說明 |
-|----------|---------|-------------|
-| `DATABASE_URL` | `sqlite://data/milmil.db` | 資料庫連線字串 |
-| `JWT_SECRET` | *必填* | JWT 簽章金鑰（至少 32 個字元） |
-| `MILMIL_ENCRYPTION_KEY` | *必填* | AES-256 金鑰，用於加密儲存憑證 |
-| `API_PORT` | `8080` | API 伺服器連接埠 |
-| `DATA_DIR` | `./data` | 下載和轉碼快取目錄 |
-
-所有選項請參閱 [設定](/docs/configuration/environment)。
+</Accordions>
