@@ -115,85 +115,38 @@
 
 ## 快速開始
 
-### 前置需求
-
-- Go 1.26+
-- Bun 1.3+
-- FFmpeg（用於轉碼及媒體資訊）
-- Redis（選用）
-
-### 開發模式
+**Docker（建議）：**
 
 ```bash
-# 安裝工具
-make setup
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
+cp .env.example .env
+cp api/.env.example api/.env
 
-# 啟動 API + 前端（熱重載）
+# 在 api/.env 中設定 JWT_SECRET（必填，32 字元以上）
+openssl rand -hex 32
+
+docker compose up -d
+```
+
+接著開啟 [http://localhost:3000](http://localhost:3000) 並執行安裝精靈。
+
+完整安裝指南：[docs-site/content/docs/getting-started/installation.mdx](docs-site/content/docs/getting-started/installation.mdx)。
+
+**從原始碼建置**（Go 1.26+、Bun 1.3+、FFmpeg）：
+
+```bash
+make setup
 make dev
 ```
 
 API 執行於 `http://localhost:8080`，前端執行於 `http://localhost:5173`。
 
-### Docker
-
-```bash
-# 使用官方映像檔（API + Web + Redis，預設 SQLite）
-docker compose up -d
-
-# 啟用 Postgres（按需）
-docker compose --profile postgres up -d
-
-# 用本機原始碼建置
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-```
-
 ---
 
 ## 部署
 
-### Docker Compose（正式環境）
-
-```bash
-# 複製並編輯環境變數檔案
-cp .env.example .env
-cp api/.env.example api/.env  # 設定 JWT_SECRET 與 REDIS 憑證
-
-# 使用 Docker Hub 上的官方映像檔（milmildev/milmil-api、milmildev/milmil-web）
-docker compose up -d
-```
-
-**服務：**
-- **PostgreSQL 16** — 資料庫
-- **Redis 7** — 快取
-- **milmil-api** — Go 後端（port 8080）
-- **milmil-web** — React 前端，透過 Nginx（port 3000）
-
-### 反向代理
-
-建議使用 Nginx 或 Caddy 加上 HTTPS：
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name anime.example.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /ws {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
+環境變數、compose profile（`--profile postgres`）、資料卷及反向代理設定，請參閱 [docs-site/content/docs/getting-started/docker.mdx](docs-site/content/docs/getting-started/docker.mdx)。
 
 ---
 
