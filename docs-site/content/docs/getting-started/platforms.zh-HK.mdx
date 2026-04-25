@@ -1,155 +1,74 @@
 ---
-title: 平台指南
-description: Synology、Unraid、TrueNAS 同 Raspberry Pi 嘅平台專屬安裝指南。
+title: 平台特定說明
+description: Synology、Unraid、TrueNAS 同 Raspberry Pi 相對標準 Docker Compose 安裝嘅差異說明。
 ---
 
-<Tabs items={["Synology", "Unraid", "TrueNAS", "Raspberry Pi"]}>
-<Tab value="Synology">
-
-## Synology NAS (DSM 7+)
-
-<Steps>
-<Step>
-### 安裝 Container Manager
-
-打開 **套件中心** 安裝 **Container Manager**（前身係 Docker）。
-</Step>
-<Step>
-### 建立專案目錄
-
-SSH 入你嘅 NAS 或者用 File Station 建立 `/docker/milmil/`。
-
-<Files>
-  <Folder name="docker" defaultOpen>
-    <Folder name="milmil" defaultOpen>
-      <File name=".env" />
-      <File name="docker-compose.yml" />
-      <Folder name="data" />
-    </Folder>
-  </Folder>
-</Files>
-</Step>
-<Step>
-### 上傳 docker-compose.yml 同 .env
-
-複製正式環境嘅 compose 檔案同環境變數。參閱 [Docker 部署](/docs/getting-started/docker)。
-</Step>
-<Step>
-### 透過 Container Manager 啟動
-
-喺 Container Manager 入面，去 **專案 > 新增**。選擇 `docker-compose.yml` 檔案然後啟動專案。
-</Step>
-</Steps>
-
-<Callout type="warn">
-**權限：** Synology 容器預設以 root 身份運行。確保你嘅共享資料夾權限容許讀取動畫媒體庫目錄。將卷掛載設定為共享資料夾路徑（例如 `/volume1/media/anime`）。
+<Callout type="info">
+請先跟標準 [安裝](/docs/getting-started/installation) 指南操作。呢頁只記錄各平台有咩唔同。
 </Callout>
 
-</Tab>
-<Tab value="Unraid">
+## Synology NAS（DSM 7+）
+
+1. 喺套件中心安裝 **Container Manager**。
+2. SSH 入去並建立 `/volume1/docker/milmil/`。
+3. 將專案嘅 `docker-compose.yml`、`.env` 同 `api/.env` 複製到該資料夾入面。
+4. 喺 Container Manager，**專案 > 新增**，選擇 compose 檔案。
+
+**Volume：** 媒體路徑用你嘅 Synology 共享資料夾路徑：
+```
+MEDIA_DIR=/volume1/media/anime
+```
+
+<Callout type="warn">
+容器預設以 root 身份運行。確保共享資料夾嘅權限容許容器讀取你嘅動畫目錄。
+</Callout>
 
 ## Unraid
 
-<Steps>
-<Step>
-### 安裝 Docker Compose Manager
+1. 從 Community Applications 安裝 **Docker Compose Manager** 插件。
+2. 新增一個 stack，指向 `docker-compose.yml`，並將 `.env` 同 `api/.env` 放喺同一位置。
 
-喺 Unraid **Community Applications** 商店安裝 **Docker Compose Manager** 外掛。
-</Step>
-<Step>
-### 建立 compose 堆疊
-
-用 milmil 嘅 `docker-compose.yml` 同 `.env` 檔案新增堆疊。參閱 [Docker 部署](/docs/getting-started/docker)。
-</Step>
-<Step>
-### 設定路徑
-
-映射你嘅媒體共享：
-
-```yaml
-volumes:
-  - /mnt/user/media/anime:/media/anime
-  - /mnt/user/appdata/milmil:/data
+**Volume：** 用 Unraid 嘅 `/mnt/user/` 慣例：
 ```
-</Step>
-<Step>
-### 啟動堆疊
-
-喺 Docker Compose Manager UI 套用 compose 堆疊。
-</Step>
-</Steps>
+DATA_DIR=/mnt/user/appdata/milmil
+MEDIA_DIR=/mnt/user/media/anime
+DOWNLOAD_DIR=/mnt/user/downloads/milmil
+```
 
 <Callout type="info">
-用 `/mnt/user/appdata/milmil` 存放持久化資料，遵循 Unraid 慣例。
+`/mnt/user/appdata/milmil` 係 Unraid 存放持久化應用資料嘅標準路徑。
 </Callout>
-
-</Tab>
-<Tab value="TrueNAS">
 
 ## TrueNAS SCALE
 
-<Steps>
-<Step>
-### 前往 Apps
+1. 喺 TrueNAS Web UI：**Apps > Discover Apps > Custom App**。
+2. 用 milmil compose 檔案設定 Docker Compose 部署。
 
-喺 TrueNAS SCALE 網頁介面，去 **Apps > Discover Apps**。
-</Step>
-<Step>
-### 自訂應用程式
-
-點選 **Custom App**，用 milmil 嘅 compose 檔案設定 Docker Compose 部署。
-</Step>
-<Step>
-### 設定儲存
-
-映射你嘅資料集路徑：
-
-```yaml
-volumes:
-  - /mnt/pool/media/anime:/media/anime
-  - /mnt/pool/apps/milmil:/data
+**Volume：** 映射你嘅 dataset 路徑：
 ```
-</Step>
-</Steps>
+DATA_DIR=/mnt/pool/apps/milmil
+MEDIA_DIR=/mnt/pool/media/anime
+```
 
 <Callout type="warn">
-TrueNAS SCALE 底層用 Kubernetes 嚟管理自訂應用程式。確保你嘅儲存池路徑正確且可存取。
+TrueNAS SCALE 用 Kubernetes 管理自訂應用。確認儲存池權限容許容器讀取媒體 dataset。
 </Callout>
 
-</Tab>
-<Tab value="Raspberry Pi">
-
-## Raspberry Pi (4/5)
+## Raspberry Pi（4/5）
 
 <Callout type="warn">
-Raspberry Pi 嘅 CPU 轉碼能力有限。直接播放同容器重新封裝效果唔錯，但 HLS 轉碼會好慢。建議用預編碼嘅 MP4 檔案以獲得最佳效果。
+Pi 嘅 CPU 轉碼能力有限。直接播放同容器重新封裝表現唔錯；HLS 轉碼會好慢。建議用預先編碼嘅 MP4 檔案。
 </Callout>
 
-<Steps>
-<Step>
-### 安裝 Docker
+1. 安裝 Docker：
+   ```bash
+   curl -fsSL https://get.docker.com | sh
+   sudo usermod -aG docker $USER
+   ```
+   登出再重新登入。
 
-```bash
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER
-```
-
-登出再重新登入等群組變更生效。
-</Step>
-<Step>
-### 複製並啟動
-
-```bash
-git clone https://github.com/milmil-dev/milmil.git
-cd milmil
-docker compose up -d
-```
-</Step>
-</Steps>
+2. 跟標準 [安裝](/docs/getting-started/installation) 流程操作。
 
 <Callout type="info">
-建議用 SSD（透過 USB 3.0）代替 SD 卡作為資料卷 — SD 卡嘅寫入壽命有限，做資料庫操作亦比較慢。
+`DATA_DIR` Volume 建議用 USB 3.0 接駁嘅 SSD。SD 卡寫入壽命有限，做資料庫操作亦比較慢。
 </Callout>
-
-</Tab>
-</Tabs>
