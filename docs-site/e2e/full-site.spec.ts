@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const BASE = 'http://localhost:4000';
-const LANGS = ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ja', 'ko'];
+const LANGS = ['en', 'zh-CN', 'zh-TW', 'zh-HK'];
 const CHILD_PAGES = [
   'getting-started/installation',
   'getting-started/docker',

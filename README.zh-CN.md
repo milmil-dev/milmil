@@ -115,85 +115,38 @@
 
 ## 快速开始
 
-### 前置要求
-
-- Go 1.26+
-- Bun 1.3+
-- FFmpeg（用于转码及媒体信息）
-- Redis（可选）
-
-### 开发模式
+**Docker（推荐）：**
 
 ```bash
-# 安装工具
-make setup
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
+cp .env.example .env
+cp api/.env.example api/.env
 
-# 启动 API + 前端（热重载）
+# 在 api/.env 中设置 JWT_SECRET（必填，32 位以上）
+openssl rand -hex 32
+
+docker compose up -d
+```
+
+然后打开 [http://localhost:3000](http://localhost:3000) 并运行安装向导。
+
+完整安装指南：[docs-site/content/docs/getting-started/installation.mdx](docs-site/content/docs/getting-started/installation.mdx)。
+
+**从源码构建**（Go 1.26+、Bun 1.3+、FFmpeg）：
+
+```bash
+make setup
 make dev
 ```
 
 API 运行于 `http://localhost:8080`，前端运行于 `http://localhost:5173`。
 
-### Docker
-
-```bash
-# 使用官方镜像（API + Web + Redis，默认 SQLite）
-docker compose up -d
-
-# 启用 Postgres（按需）
-docker compose --profile postgres up -d
-
-# 用本地源码构建
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-```
-
 ---
 
 ## 部署
 
-### Docker Compose（生产环境）
-
-```bash
-# 复制并编辑环境变量文件
-cp .env.example .env
-cp api/.env.example api/.env  # 配置 JWT_SECRET 和 REDIS 凭据
-
-# 使用 Docker Hub 上的官方镜像（milmildev/milmil-api、milmildev/milmil-web）
-docker compose up -d
-```
-
-**服务：**
-- **PostgreSQL 16** — 数据库
-- **Redis 7** — 缓存
-- **milmil-api** — Go 后端（端口 8080）
-- **milmil-web** — React 前端，通过 Nginx（端口 3000）
-
-### 反向代理
-
-建议使用 Nginx 或 Caddy 加上 HTTPS：
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name anime.example.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /ws {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
+环境变量、compose profile（`--profile postgres`）、数据卷及反向代理配置，请参阅 [docs-site/content/docs/getting-started/docker.mdx](docs-site/content/docs/getting-started/docker.mdx)。
 
 ---
 

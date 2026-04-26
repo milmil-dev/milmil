@@ -73,7 +73,7 @@ test.describe('Landing Page E2E', () => {
   });
 
   test('all language landing pages load', async ({ page }) => {
-    for (const lang of ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ja', 'ko']) {
+    for (const lang of ['en', 'zh-CN', 'zh-TW', 'zh-HK']) {
       const resp = await page.goto(`${BASE}/${lang}`);
       expect(resp?.status()).toBe(200);
       await expect(page.locator('h1')).toContainText('milmil');
@@ -81,7 +81,7 @@ test.describe('Landing Page E2E', () => {
   });
 
   test('all language docs pages load', async ({ page }) => {
-    for (const lang of ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ja', 'ko']) {
+    for (const lang of ['en', 'zh-CN', 'zh-TW', 'zh-HK']) {
       const resp = await page.goto(`${BASE}/${lang}/docs`);
       expect(resp?.status()).toBe(200);
       await expect(page.locator('h1')).toBeVisible({ timeout: 5000 });

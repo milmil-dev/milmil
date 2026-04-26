@@ -1,26 +1,38 @@
 ---
 title: First-time Setup
-description: Configure milmil after installation.
+description: After installation — signup, then add and scan your first library.
 ---
 
-## Setup Wizard
-
-When you first open milmil, you'll be guided through the setup wizard:
+Once milmil is running, you'll work through three short tasks to start watching: create your admin account in the signup wizard, then add and scan your first library from the main UI. Only the first task is a guided wizard — the next two are everyday actions in the Libraries section.
 
 <Steps>
-<Step>
-### Create Admin Account
 
-Set your username and password. This is the only admin account — you can create additional users later.
+<Step>
+### Create your admin account
+
+The first time you open milmil, the app routes you to the **`/setup`** page. It's a one-screen signup wizard.
+
+Enter a username and a strong password and submit. milmil creates the admin user and logs you straight in. There is currently only one admin account — additional users can be created later from settings.
 
 <Callout type="warn">
 Choose a strong password. There is no password recovery without database access.
 </Callout>
-</Step>
-<Step>
-### Add Library
 
-Point to your anime media directory. milmil supports multiple storage backends:
+<Callout type="info">
+**Skip the UI:** You can auto-provision the admin account via env vars. Set `ADMIN_USER` and `ADMIN_PASSWORD` in `api/.env` before first boot. milmil creates the admin on startup if the users table is empty, then the wizard redirects straight to login. Remove the vars after first boot to avoid leaving the password on disk.
+</Callout>
+</Step>
+
+<Step>
+### Add your first library
+
+After signup you land on the home page. There is no in-app wizard for this step — you add libraries manually:
+
+1. Open **Libraries** from the sidebar.
+2. Click **Add Library**.
+3. Fill in the form (storage backend + path or connection details) and save.
+
+milmil supports multiple storage backends:
 
 <Tabs items={["Local", "Network Storage", "Cloud (Rclone)"]}>
 <Tab value="Local">
@@ -31,11 +43,11 @@ The simplest setup — provide the path to your anime folder:
 ```
 
 <Callout type="info">
-If using Docker, this path must match your container volume mount (e.g. `/media/anime` if you mounted `-v /path/to/anime:/media/anime`).
+If using Docker, this path must match your container volume mount (e.g. `/media/anime` if your `MEDIA_DIR` in `.env` points to your anime folder on the host).
 </Callout>
 </Tab>
 <Tab value="Network Storage">
-For SMB, SFTP, or WebDAV, provide the connection details in the library settings. Supported protocols:
+For SMB, SFTP, or WebDAV, provide the connection details in the library form. Supported protocols:
 
 | Type | Example |
 |------|---------|
@@ -53,10 +65,19 @@ Configure your rclone remote first, then add it as a library source in milmil.
 </Tab>
 </Tabs>
 </Step>
-<Step>
-### Scan Library
 
-milmil scans and matches your files automatically. The scan process:
+<Step>
+### Scan the library
+
+A new library doesn't scan automatically the moment you save it. To trigger the first scan:
+
+1. Open the **Libraries** page.
+2. Click into the library you just added.
+3. Click **Scan**.
+
+(Or wait for the configured auto-scan interval to fire.)
+
+The scan pipeline:
 
 1. Walks the directory tree to discover media files
 2. Extracts metadata using FFmpeg (codec, resolution, duration, subtitles)
@@ -67,6 +88,7 @@ milmil scans and matches your files automatically. The scan process:
 Initial scans can take several minutes for large libraries. Progress is shown in the UI.
 </Callout>
 </Step>
+
 </Steps>
 
 ## Metadata Matching

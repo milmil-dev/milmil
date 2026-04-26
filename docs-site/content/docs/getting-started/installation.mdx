@@ -1,24 +1,22 @@
 ---
 title: Installation
-description: How to install and run milmil on your server.
+description: Install milmil with Docker Compose in under five minutes.
 ---
 
 ## Prerequisites
 
+- **Docker Desktop** or **Docker Engine** with the Compose plugin
+- ~2 GB disk space for images and app data
+- ≥ 1 GB free RAM
+
 <Callout type="info">
-milmil requires **FFmpeg** for media info extraction and transcoding. Make sure it's installed and available in your `PATH`.
+FFmpeg is bundled in the `milmildev/milmil-api` image. You do **not** need to install it on the host.
 </Callout>
 
-- **Docker** (recommended) or Go 1.26+ and Bun 1.3+
-- **FFmpeg** — Required for transcoding and media info extraction
-- **Redis** — Optional but recommended for production deployments
-
-## Installation
-
-<Tabs items={["Docker (Recommended)", "Manual"]}>
-<Tab value="Docker (Recommended)">
+## Install with Docker
 
 <Steps>
+
 <Step>
 ### Clone the repository
 
@@ -27,68 +25,139 @@ git clone https://github.com/milmil-dev/milmil.git
 cd milmil
 ```
 </Step>
+
 <Step>
-### Start the services
+### Create env files
+
+milmil uses two env files with distinct responsibilities:
+
+| File | Controls |
+|------|----------|
+| `.env` (repo root) | Compose-level: ports, volume paths, Postgres credentials |
+| `api/.env` | Runtime secrets: `JWT_SECRET`, `DATABASE_URL`, Redis, integrations |
+
+```bash
+cp .env.example .env
+cp api/.env.example api/.env
+```
+</Step>
+
+<Step>
+### Generate a JWT secret (required)
+
+The API refuses to start without a `JWT_SECRET` of at least 32 characters.
+
+```bash
+openssl rand -hex 32
+```
+
+Paste the output into the `JWT_SECRET=` line in `api/.env`.
+
+<Callout type="warn">
+**Also set `MILMIL_ENCRYPTION_KEY`** — run `openssl rand -hex 32` again and paste it into `api/.env` under `MILMIL_ENCRYPTION_KEY=`. This encrypts stored storage credentials (rclone tokens, OAuth). If unset it falls back to `JWT_SECRET`.
+</Callout>
+</Step>
+
+<Step>
+### Start the stack
 
 ```bash
 docker compose up -d
 ```
 
-This starts all services:
-
-| Service | Port | Description |
-|---------|------|-------------|
-| `milmil-api` | 8080 | Go backend API |
-| `milmil-web` | 3000 | React frontend |
-| `postgres` | 5432 | PostgreSQL 16 |
-| `redis` | 6379 | Redis 7 cache |
+First run pulls `milmildev/milmil-api` and `milmildev/milmil-web` (~1 minute).
 </Step>
+
+<Step>
+### Verify
+
+```bash
+docker compose ps
+```
+
+Every row should show `running` or `healthy`.
+
+```bash
+curl http://localhost:8080/health
+# {"status":"ok","version":"1.0.0"}
+```
+</Step>
+
 <Step>
 ### Open the app
 
-Navigate to `http://localhost:3000` and follow the [First Setup](/docs/getting-started/first-setup) wizard.
+Visit [http://localhost:3000](http://localhost:3000) and follow the [First-time Setup](/docs/getting-started/first-setup) wizard to create your admin account and add a library.
 </Step>
+
 </Steps>
 
-See [Docker Deployment](/docs/getting-started/docker) for advanced configuration.
+## Advanced
 
-</Tab>
-<Tab value="Manual">
+<Accordions>
 
-### Backend (Go API)
+<Accordion title="Use PostgreSQL instead of SQLite">
+
+The default compose setup uses SQLite. To switch to Postgres:
+
+1. Edit `api/.env`:
+   ```
+   DATABASE_URL=postgres://milmil:change_me_postgres_password@postgres:5432/milmil?sslmode=disable
+   ```
+
+2. Start with the `postgres` profile:
+   ```bash
+   docker compose --profile postgres up -d
+   ```
+
+See the [Docker reference](/docs/getting-started/docker) for all compose profiles.
+
+</Accordion>
+
+<Accordion title="Build from local source (development)">
+
+Overlay `docker-compose.dev.yml` to build images from your local checkout instead of pulling published ones:
 
 ```bash
-cd api
-go mod download
-make build
-./server
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
-### Frontend (React SPA)
+</Accordion>
 
+<Accordion title="Skip the wizard: auto-provision admin">
+
+Add two variables to `api/.env`:
+
+```
+ADMIN_USER=admin
+ADMIN_PASSWORD=your-strong-password
+```
+
+On first boot, if the users table is empty, milmil auto-creates this admin. Remove both variables after first boot to avoid leaking the password on disk.
+
+</Accordion>
+
+<Accordion title="Manual install (no Docker)">
+
+Prerequisites: Go 1.26+, Bun 1.3+, FFmpeg in `$PATH`.
+
+**Backend:**
+```bash
+cd api
+go build -o milmil-api ./cmd/server
+export JWT_SECRET=$(openssl rand -hex 32)
+./milmil-api
+```
+
+**Frontend:**
 ```bash
 cd web
 bun install
 bun run build
+# Serve web/dist from Nginx, Caddy, or any static host.
 ```
 
-Serve the built files from `web/dist` with any static file server or Nginx.
+Point the frontend's `VITE_API_URL` at the API host. All env vars from `api/.env.example` apply.
 
-</Tab>
-</Tabs>
+</Accordion>
 
-## Environment Variables
-
-<Callout type="warn">
-`JWT_SECRET` and `MILMIL_ENCRYPTION_KEY` are **required**. The server will not start without them.
-</Callout>
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | `sqlite://data/milmil.db` | Database connection string |
-| `JWT_SECRET` | *required* | JWT signing key (min 32 chars) |
-| `MILMIL_ENCRYPTION_KEY` | *required* | AES-256 key for storage credentials |
-| `API_PORT` | `8080` | API server port |
-| `DATA_DIR` | `./data` | Downloads and transcode cache |
-
-See [Configuration](/docs/configuration/environment) for all options.
+</Accordions>

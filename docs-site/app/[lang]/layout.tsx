@@ -13,8 +13,6 @@ const { provider } = defineI18nUI(fdI18n, {
     'zh-CN': { displayName: '简体中文', search: '搜索文档' },
     'zh-TW': { displayName: '繁體中文', search: '搜尋文檔' },
     'zh-HK': { displayName: '粵語', search: '搜尋文檔' },
-    ja: { displayName: '日本語', search: 'ドキュメントを検索' },
-    ko: { displayName: '한국어', search: '문서 검색' },
   },
 });
 
@@ -23,8 +21,6 @@ const localeLoaders: Record<string, () => Promise<{ messages: any }>> = {
   'zh-CN': () => import('@/locales/zh-CN/messages'),
   'zh-TW': () => import('@/locales/zh-TW/messages'),
   'zh-HK': () => import('@/locales/zh-HK/messages'),
-  ja: () => import('@/locales/ja/messages'),
-  ko: () => import('@/locales/ko/messages'),
 };
 
 export default async function LangLayout({

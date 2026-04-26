@@ -123,82 +123,38 @@
 
 ## 點樣開工
 
-### 開工前要有嘅嘢
-
-- Go 1.26+
-- Bun 1.3+
-- FFmpeg（用嚟轉碼、讀媒體資料）
-- Redis（唔裝都得）
-
-### 開發模式
+**Docker（推薦）：**
 
 ```bash
-# 裝好啲工具
-make setup
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
+cp .env.example .env
+cp api/.env.example api/.env
 
-# 開 API + 前端（熱重載）
+# 喺 api/.env 入面設定 JWT_SECRET（必填，32 位以上）
+openssl rand -hex 32
+
+docker compose up -d
+```
+
+跟住打開 [http://localhost:3000](http://localhost:3000)，跟住個安裝精靈做就得喇。
+
+完整安裝指南：[docs-site/content/docs/getting-started/installation.mdx](docs-site/content/docs/getting-started/installation.mdx)。
+
+**由源碼起**（Go 1.26+、Bun 1.3+、FFmpeg）：
+
+```bash
+make setup
 make dev
 ```
 
 API 喺 `http://localhost:8080` 行緊，前端喺 `http://localhost:5173` 行緊。
 
-### Docker
-
-```bash
-# 用官方鏡像（Postgres + Redis + API + Web 一齊起）
-docker compose up -d
-
-# 或者用本地源碼自己 build
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-```
-
 ---
 
 ## 點樣部署
 
-### Docker Compose（正式環境）
-
-```bash
-# Copy 一份環境變數檔再自己改
-cp .env.example .env
-cp api/.env.example api/.env  # 入面要填 JWT_SECRET 同 REDIS 密碼
-
-# 用 Docker Hub 上面已 build 好嘅鏡像（milmildev/milmil-api、milmildev/milmil-web）
-docker compose up -d
-```
-
-**幾個服務：**
-- **PostgreSQL 16** — 資料庫
-- **Redis 7** — 快取
-- **milmil-api** — Go 後端（端口 8080）
-- **milmil-web** — React 前端，經 Nginx 出（端口 3000）
-
-### 反向代理
-
-記住要擺喺 Nginx 或者 Caddy 後面，順便開埋 HTTPS：
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name anime.example.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /ws {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
+環境變數、compose profile（`--profile postgres`）、數據卷同反向代理配置，睇呢度：[docs-site/content/docs/getting-started/docker.mdx](docs-site/content/docs/getting-started/docker.mdx)。
 
 ---
 

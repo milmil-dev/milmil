@@ -129,74 +129,38 @@
 
 ## Quick Start
 
-### Docker (Recommended)
-
-Pulls published images (`milmildev/milmil-api`, `milmildev/milmil-web`) and brings up the full stack — Postgres, Redis, API, Web:
+**Docker (recommended):**
 
 ```bash
+git clone https://github.com/milmil-dev/milmil.git
+cd milmil
 cp .env.example .env
-cp api/.env.example api/.env   # set JWT_SECRET, REDIS credentials, etc.
+cp api/.env.example api/.env
+
+# Set JWT_SECRET in api/.env (required, 32+ chars)
+openssl rand -hex 32
+
 docker compose up -d
 ```
 
-To build from your local checkout instead of pulling:
+Then open [http://localhost:3000](http://localhost:3000) and run the setup wizard.
+
+Full install guide: [docs-site/content/docs/getting-started/installation.mdx](docs-site/content/docs/getting-started/installation.mdx).
+
+**From source** (Go 1.26+, Bun 1.3+, FFmpeg):
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-```
-
-### From Source
-
-**Prerequisites:** Go 1.26+, Bun 1.3+, FFmpeg, Redis (optional)
-
-```bash
-# Install tools
 make setup
-
-# Start API + frontend with hot reload
 make dev
 ```
 
-The API runs at `http://localhost:8080` and the frontend at `http://localhost:5173`.
+API runs at `http://localhost:8080`, frontend at `http://localhost:5173`.
 
 ---
 
 ## Deployment
 
-### Docker Compose (Production)
-
-**Services:**
-- **PostgreSQL 16** — database
-- **Redis 7** — cache
-- **milmil-api** — Go backend (port 8080)
-- **milmil-web** — React frontend via Nginx (port 3000)
-
-### Reverse Proxy
-
-Place behind Nginx or Caddy for HTTPS:
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name anime.example.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-
-    location /ws {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
+See [docs-site/content/docs/getting-started/docker.mdx](docs-site/content/docs/getting-started/docker.mdx) for env variables, compose profiles (`--profile postgres`), volumes, and reverse-proxy setup.
 
 ---
 
