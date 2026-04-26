@@ -21,6 +21,7 @@ require (
 	github.com/knadh/koanf/v2 v2.3.4
 	github.com/labstack/echo/v4 v4.15.1
 	github.com/longbridgeapp/opencc v0.3.13
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/mmcdole/gofeed v1.3.0
 	github.com/pquerna/otp v1.5.0
 	github.com/rclone/rclone v1.73.3
