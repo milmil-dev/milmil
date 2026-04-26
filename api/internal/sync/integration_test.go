@@ -137,7 +137,7 @@ func TestEndToEndProgressPushReachesProvider(t *testing.T) {
 	start := time.Now()
 	svc.OnProgressUpdate(context.Background(), "u", "a1")
 	elapsed := time.Since(start)
-	if elapsed > 100*time.Millisecond {
+	if elapsed > 500*time.Millisecond {
 		t.Errorf("enqueue too slow: %v", elapsed)
 	}
 

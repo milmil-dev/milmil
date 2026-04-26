@@ -1,11 +1,14 @@
 package api_test
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/api"
@@ -17,16 +20,46 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func newTestApp(t *testing.T) *echo.Echo {
+// newTestDB opens a sqlite test DB inside its own temp dir and registers a
+// cleanup that closes the DB and force-removes the temp dir. The latter
+// retries briefly to absorb the race against fire-and-forget DB goroutines
+// (e.g. updateTokenActivity) that would otherwise leave stray files behind
+// and fail t.TempDir's own RemoveAll cleanup.
+func newTestDB(t *testing.T) (*sql.DB, string) {
 	t.Helper()
-	dsn := "sqlite://" + t.TempDir() + "/test.db"
-	database, err := db.Open(dsn)
+	tmp, err := os.MkdirTemp("", "milmiltest-*")
 	if err != nil {
 		t.Fatal(err)
 	}
+	dsn := "sqlite://" + tmp + "/test.db"
+	database, err := db.Open(dsn)
+	if err != nil {
+		_ = os.RemoveAll(tmp)
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		_ = database.Close()
+		// Retry: a leaked goroutine may briefly recreate files.
+		deadline := time.Now().Add(2 * time.Second)
+		for {
+			if err := os.RemoveAll(tmp); err == nil {
+				return
+			}
+			if time.Now().After(deadline) {
+				return
+			}
+			time.Sleep(20 * time.Millisecond)
+		}
+	})
 	if err := db.MigrateUp(migrations.FS, dsn); err != nil {
 		t.Fatal(err)
 	}
+	return database, dsn
+}
+
+func newTestApp(t *testing.T) *echo.Echo {
+	t.Helper()
+	database, dsn := newTestDB(t)
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
