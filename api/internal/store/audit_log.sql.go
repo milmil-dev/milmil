@@ -99,28 +99,31 @@ func (q *Queries) GetAuditLog(ctx context.Context, id string) (AuditLog, error) 
 
 const listAuditLogByUser = `-- name: ListAuditLogByUser :many
 SELECT id, user_id, token_id, agent_label, action_type, target_type, target_id, before_json, after_json, confidence, parent_id, dry_run, undone_at, undone_by, created_at FROM audit_log
-WHERE user_id = ?
-  AND (?4 IS NULL OR action_type = ?4)
-  AND (?5 IS NULL OR created_at >= ?5)
+WHERE user_id = ?1
+  AND (?2 IS NULL OR action_type = ?2)
+  AND (?3 IS NULL OR created_at >= ?3)
 ORDER BY created_at DESC
-LIMIT ? OFFSET ?
+LIMIT ?5 OFFSET ?4
 `
 
 type ListAuditLogByUserParams struct {
 	UserID     string      `json:"user_id"`
 	ActionType interface{} `json:"action_type"`
 	Since      interface{} `json:"since"`
+	OffsetN    int64       `json:"offset_n"`
 	Limit      int64       `json:"limit"`
-	Offset     int64       `json:"offset"`
 }
 
+// action_type and since are optional filters: pass NULL to skip.
+// All params are explicitly numbered (sqlc.arg / sqlc.narg) to avoid the
+// mixed `?` + `?N` parameter counting bug in modernc-sqlite.
 func (q *Queries) ListAuditLogByUser(ctx context.Context, arg ListAuditLogByUserParams) ([]AuditLog, error) {
 	rows, err := q.db.QueryContext(ctx, listAuditLogByUser,
 		arg.UserID,
 		arg.ActionType,
 		arg.Since,
+		arg.OffsetN,
 		arg.Limit,
-		arg.Offset,
 	)
 	if err != nil {
 		return nil, err

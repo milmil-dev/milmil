@@ -10,12 +10,15 @@ RETURNING *;
 SELECT * FROM audit_log WHERE id = ? LIMIT 1;
 
 -- name: ListAuditLogByUser :many
+-- action_type and since are optional filters: pass NULL to skip.
+-- All params are explicitly numbered (sqlc.arg / sqlc.narg) to avoid the
+-- mixed `?` + `?N` parameter counting bug in modernc-sqlite.
 SELECT * FROM audit_log
-WHERE user_id = ?
+WHERE user_id = sqlc.arg('user_id')
   AND (sqlc.narg('action_type') IS NULL OR action_type = sqlc.narg('action_type'))
   AND (sqlc.narg('since') IS NULL OR created_at >= sqlc.narg('since'))
 ORDER BY created_at DESC
-LIMIT ? OFFSET ?;
+LIMIT sqlc.arg('limit') OFFSET sqlc.arg('offset_n');
 
 -- name: ListAuditLogChildren :many
 SELECT * FROM audit_log WHERE parent_id = ? ORDER BY created_at ASC;

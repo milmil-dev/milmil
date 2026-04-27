@@ -95,6 +95,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authProtected.DELETE("/2fa", h.handleTwoFactorDisable)
 	authProtected.GET("/2fa/status", h.handleTwoFactorStatus)
 
+	// Audit log — protected. The undo handler opts out of the generic
+	// middleware row via auditSkipKey because macro.Undo writes its own
+	// per-action entries.
+	auditGroup := v1.Group("/audit", authMiddleware(h.queries), auditMiddleware(h.queries))
+	auditGroup.GET("", h.handleListAudit)
+	auditGroup.GET("/:id", h.handleGetAudit)
+	auditGroup.POST("/undo", h.handleUndoAudit)
+
 	// API Tokens — protected
 	tokenGroup := v1.Group("/api-tokens", authMiddleware(h.queries), auditMiddleware(h.queries))
 	tokenGroup.GET("", h.handleListAPITokens)

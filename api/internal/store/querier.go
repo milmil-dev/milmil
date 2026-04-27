@@ -110,6 +110,9 @@ type Querier interface {
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	// A5 fix: only animes with at least one completed watch_progress episode.
 	ListAnimeForUserWithProviderID(ctx context.Context, arg ListAnimeForUserWithProviderIDParams) ([]Anime, error)
+	// action_type and since are optional filters: pass NULL to skip.
+	// All params are explicitly numbered (sqlc.arg / sqlc.narg) to avoid the
+	// mixed `?` + `?N` parameter counting bug in modernc-sqlite.
 	ListAuditLogByUser(ctx context.Context, arg ListAuditLogByUserParams) ([]AuditLog, error)
 	ListAuditLogChildren(ctx context.Context, parentID sql.NullString) ([]AuditLog, error)
 	ListBackupConfigs(ctx context.Context, userID string) ([]BackupConfig, error)
