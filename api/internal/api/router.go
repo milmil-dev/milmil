@@ -86,7 +86,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authGroup.POST("/login/2fa", h.handleAuthLogin2FA)
 
 	// Auth — protected
-	authProtected := v1.Group("/auth", authMiddleware(h.queries))
+	authProtected := v1.Group("/auth", authMiddleware(h.queries), auditMiddleware(h.queries))
 	authProtected.POST("/logout", h.handleAuthLogout)
 	authProtected.GET("/me", h.handleAuthMe)
 	authProtected.PUT("/password", h.handleChangePassword)
@@ -96,7 +96,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authProtected.GET("/2fa/status", h.handleTwoFactorStatus)
 
 	// API Tokens — protected
-	tokenGroup := v1.Group("/api-tokens", authMiddleware(h.queries))
+	tokenGroup := v1.Group("/api-tokens", authMiddleware(h.queries), auditMiddleware(h.queries))
 	tokenGroup.GET("", h.handleListAPITokens)
 	tokenGroup.POST("", h.handleCreateAPIToken)
 	tokenGroup.GET("/current", h.handleGetCurrentToken)
@@ -104,7 +104,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	tokenGroup.DELETE("/:id", h.handleDeleteAPIToken)
 
 	// Libraries — protected
-	libGroup := v1.Group("/libraries", authMiddleware(h.queries))
+	libGroup := v1.Group("/libraries", authMiddleware(h.queries), auditMiddleware(h.queries))
 	libGroup.GET("", h.handleListLibraries)
 	libGroup.POST("", h.handleCreateLibrary)
 	libGroup.GET("/discover-network", h.handleDiscoverNetwork)
@@ -135,7 +135,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
 
 	// Media files — protected
-	mediaGroup := v1.Group("/media-files", authMiddleware(h.queries))
+	mediaGroup := v1.Group("/media-files", authMiddleware(h.queries), auditMiddleware(h.queries))
 	mediaGroup.POST("/bulk-match", h.handleBulkMatchMediaFiles)
 	mediaGroup.POST("/bulk-unmatch", h.handleBulkUnmatchMediaFiles)
 	mediaGroup.PUT("/:id/match", h.handleMatchMediaFile)
@@ -144,7 +144,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	mediaGroup.DELETE("/:id", h.handleDeleteMediaFile)
 
 	// Episodes — protected
-	episodesGroup := v1.Group("/episodes", authMiddleware(h.queries))
+	episodesGroup := v1.Group("/episodes", authMiddleware(h.queries), auditMiddleware(h.queries))
 	episodesGroup.PATCH("/:id/preferred", h.handleSetEpisodePreferred)
 
 	// Discover — public
@@ -163,7 +163,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	discoverGroup.GET("/anime/:id/franchise", h.handleAnimeFranchise)
 
 	// External danmaku sources — protected
-	danmakuExtGroup := v1.Group("/danmaku/external", authMiddleware(h.queries))
+	danmakuExtGroup := v1.Group("/danmaku/external", authMiddleware(h.queries), auditMiddleware(h.queries))
 	danmakuExtGroup.GET("/sources", h.handleListDanmakuSources)
 	danmakuExtGroup.GET("/search", h.handleSearchExternalDanmaku)
 	danmakuExtGroup.GET("/parts", h.handleGetVideoParts)
@@ -173,12 +173,12 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	danmakuExtGroup.DELETE("/imported/:episodeId", h.handleRemoveImportedDanmaku)
 
 	// Danmaku — protected
-	danmakuGroup := v1.Group("/danmaku", authMiddleware(h.queries))
+	danmakuGroup := v1.Group("/danmaku", authMiddleware(h.queries), auditMiddleware(h.queries))
 	danmakuGroup.GET("/:mediaFileId", h.handleGetDanmaku)
 	danmakuGroup.POST("/:mediaFileId", h.handlePostDanmaku)
 
 	// Stream — protected (with query param token fallback for <video src>)
-	streamGroup := v1.Group("/stream", authMiddlewareWithQueryParam(h.queries))
+	streamGroup := v1.Group("/stream", authMiddlewareWithQueryParam(h.queries), auditMiddleware(h.queries))
 	streamGroup.GET("/:fileId/direct", h.handleStreamDirect)
 	streamGroup.GET("/:fileId/remux", h.handleStreamRemux)
 	streamGroup.POST("/:fileId/transcode", h.handleStartTranscode)
@@ -193,7 +193,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	e.GET("/api/v1/stream/hls/:token/:segment", h.handleHLSSegment)
 
 	// Settings — protected
-	settingsGroup := v1.Group("/settings", authMiddleware(h.queries))
+	settingsGroup := v1.Group("/settings", authMiddleware(h.queries), auditMiddleware(h.queries))
 	settingsGroup.GET("", h.handleGetSettings)
 	settingsGroup.GET("/export", h.handleExportSettings)
 	settingsGroup.POST("/import", h.handleImportSettings)
@@ -201,14 +201,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	settingsGroup.PUT("/:section", h.handleUpdateSettings)
 
 	// Collection — protected
-	collectionGroup := v1.Group("/collection", authMiddleware(h.queries))
+	collectionGroup := v1.Group("/collection", authMiddleware(h.queries), auditMiddleware(h.queries))
 	collectionGroup.GET("", h.handleListCollection)
 	collectionGroup.GET("/recent", h.handleListRecentCollection)
 	collectionGroup.GET("/status-counts", h.handleCollectionStatusCounts)
 	collectionGroup.PATCH("/:bangumiId/status", h.handleUpdateWatchStatus)
 
 	// Anime — protected
-	animeGroup := v1.Group("/anime", authMiddleware(h.queries))
+	animeGroup := v1.Group("/anime", authMiddleware(h.queries), auditMiddleware(h.queries))
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
 	animeGroup.GET("/:bangumiId/missing", h.handleAnimeMissing)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
@@ -219,13 +219,13 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	animeGroup.POST("/:bangumiId/missing/auto-rule", h.handleMissingAutoRule)
 
 	// Sync (tracker watch-state) — protected
-	syncGroup := v1.Group("/sync", authMiddleware(h.queries))
+	syncGroup := v1.Group("/sync", authMiddleware(h.queries), auditMiddleware(h.queries))
 	syncGroup.GET("/status", h.handleSyncProvidersStatus)
 	syncGroup.POST("/:provider/pull", h.handleSyncPullNow)
 	syncGroup.POST("/:provider/pull-enabled", h.handleSyncSetPullEnabled)
 
 	// Downloads — protected
-	dlGroup := v1.Group("/downloads", authMiddleware(h.queries))
+	dlGroup := v1.Group("/downloads", authMiddleware(h.queries), auditMiddleware(h.queries))
 	dlGroup.GET("", h.handleListDownloads)
 	dlGroup.GET("/grouped", h.handleDownloadsGrouped)
 	dlGroup.GET("/:gid/files", h.handleDownloadFiles)
@@ -236,7 +236,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	dlGroup.DELETE("", h.handleBatchDeleteDownloads)
 
 	// RSS Feeds — protected
-	rssGroup := v1.Group("/rss-feeds", authMiddleware(h.queries))
+	rssGroup := v1.Group("/rss-feeds", authMiddleware(h.queries), auditMiddleware(h.queries))
 	rssGroup.GET("", h.handleListRSSFeeds)
 	rssGroup.POST("", h.handleCreateRSSFeed)
 	rssGroup.POST("/preview-url", h.handlePreviewRSSFeedURL)
@@ -246,7 +246,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	rssGroup.POST("/:id/refresh", h.handleRefreshRSSFeed)
 
 	// User Preferences — protected
-	prefsGroup := v1.Group("/user/preferences", authMiddleware(h.queries))
+	prefsGroup := v1.Group("/user/preferences", authMiddleware(h.queries), auditMiddleware(h.queries))
 	prefsGroup.GET("", h.handleGetGlobalPreferences)
 	prefsGroup.PUT("", h.handleUpsertGlobalPreferences)
 	prefsGroup.GET("/series/:seriesId", h.handleGetSeriesPreferences)
@@ -261,12 +261,12 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	prefsGroup.GET("/sync/status", h.handleSyncStatus)
 
 	// Segment Marks — protected
-	v1.POST("/media/:fileId/segments", h.handleCreateSegmentMark, authMiddleware(h.queries))
+	v1.POST("/media/:fileId/segments", h.handleCreateSegmentMark, authMiddleware(h.queries), auditMiddleware(h.queries))
 	v1.GET("/media/:fileId/segments", h.handleListSegmentMarks, authMiddleware(h.queries))
-	v1.DELETE("/media/:fileId/segments/:segmentId", h.handleDeleteSegmentMark, authMiddleware(h.queries))
+	v1.DELETE("/media/:fileId/segments/:segmentId", h.handleDeleteSegmentMark, authMiddleware(h.queries), auditMiddleware(h.queries))
 
 	// Watch Progress — protected
-	progressGroup := v1.Group("/progress", authMiddleware(h.queries))
+	progressGroup := v1.Group("/progress", authMiddleware(h.queries), auditMiddleware(h.queries))
 	progressGroup.POST("", h.handleSaveProgress)
 	progressGroup.GET("/recent", h.handleListRecentProgress)
 	progressGroup.GET("/history", h.handleListHistory)
@@ -276,13 +276,13 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	progressGroup.POST("/batch-delete", h.handleBatchDeleteProgress)
 
 	// Torrent Search — protected
-	searchGroup := v1.Group("/torrent-search", authMiddleware(h.queries))
+	searchGroup := v1.Group("/torrent-search", authMiddleware(h.queries), auditMiddleware(h.queries))
 	searchGroup.GET("", h.handleTorrentSearch)
 	searchGroup.GET("/providers", h.handleTorrentProviders)
 	searchGroup.POST("/add", h.handleTorrentSearchAdd)
 
 	// Auto-download subscription — protected
-	v1.POST("/subscribe", h.handleSubscribe, authMiddleware(h.queries))
+	v1.POST("/subscribe", h.handleSubscribe, authMiddleware(h.queries), auditMiddleware(h.queries))
 
 	// Subtitles — protected (with query param token fallback for <track src>)
 	subGroup := v1.Group("/subtitles", authMiddlewareWithQueryParam(h.queries))
@@ -290,14 +290,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	subGroup.GET("/:id/content", h.handleSubtitleContent)
 
 	// Download Rules — protected
-	ruleGroup := v1.Group("/download-rules", authMiddleware(h.queries))
+	ruleGroup := v1.Group("/download-rules", authMiddleware(h.queries), auditMiddleware(h.queries))
 	ruleGroup.GET("", h.handleListDownloadRules)
 	ruleGroup.POST("", h.handleCreateDownloadRule)
 	ruleGroup.PUT("/:id", h.handleUpdateDownloadRule)
 	ruleGroup.DELETE("/:id", h.handleDeleteDownloadRule)
 
 	// Integrations — protected
-	intGroup := v1.Group("/integrations", authMiddleware(h.queries))
+	intGroup := v1.Group("/integrations", authMiddleware(h.queries), auditMiddleware(h.queries))
 	// Bangumi
 	intGroup.GET("/bangumi/auth-url", h.handleBangumiAuthURL)
 	intGroup.GET("/bangumi/callback", h.handleBangumiCallback)
@@ -314,7 +314,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	intGroup.DELETE("/trakt", h.handleTraktDisconnect)
 
 	// Notifications — protected
-	notifGroup := v1.Group("/notifications", authMiddleware(h.queries))
+	notifGroup := v1.Group("/notifications", authMiddleware(h.queries), auditMiddleware(h.queries))
 	notifGroup.GET("", h.handleListNotifications)
 	notifGroup.GET("/unread-count", h.handleUnreadCount)
 	notifGroup.PATCH("/:id/read", h.handleMarkNotificationRead)
@@ -322,14 +322,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	notifGroup.DELETE("", h.handleClearNotifications)
 
 	// Notification Settings — protected
-	notifSettingsGroup := v1.Group("/settings/notifications", authMiddleware(h.queries))
+	notifSettingsGroup := v1.Group("/settings/notifications", authMiddleware(h.queries), auditMiddleware(h.queries))
 	notifSettingsGroup.GET("", h.handleGetNotificationSettings)
 	notifSettingsGroup.PUT("", h.handleUpdateNotificationSettings)
 	notifSettingsGroup.POST("/test", h.handleTestNotification)
 	notifSettingsGroup.GET("/status", h.handleNotificationProviderStatus)
 
 	// System — protected
-	systemGroup := v1.Group("/system", authMiddleware(h.queries))
+	systemGroup := v1.Group("/system", authMiddleware(h.queries), auditMiddleware(h.queries))
 	systemGroup.GET("/info", h.handleSystemInfo)
 	systemGroup.GET("/storage", h.handleStorageStats)
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
