@@ -544,6 +544,75 @@ func (q *Queries) ListAnimeForUserWithProviderID(ctx context.Context, arg ListAn
 	return items, nil
 }
 
+const searchAnimeLocal = `-- name: SearchAnimeLocal :many
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime
+WHERE title LIKE ?1
+   OR title_zh LIKE ?1
+   OR title_en LIKE ?1
+ORDER BY title
+LIMIT ?2
+`
+
+type SearchAnimeLocalParams struct {
+	Pattern string `json:"pattern"`
+	LimitN  int64  `json:"limit_n"`
+}
+
+// Fuzzy local anime search across all title columns. Caller passes a single
+// LIKE pattern (e.g. "%Frieren%"); ranking is left to the caller.
+func (q *Queries) SearchAnimeLocal(ctx context.Context, arg SearchAnimeLocalParams) ([]Anime, error) {
+	rows, err := q.db.QueryContext(ctx, searchAnimeLocal, arg.Pattern, arg.LimitN)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Anime{}
+	for rows.Next() {
+		var i Anime
+		if err := rows.Scan(
+			&i.ID,
+			&i.LibraryID,
+			&i.Title,
+			&i.TitleZh,
+			&i.TitleEn,
+			&i.Synopsis,
+			&i.CoverImageUrl,
+			&i.TotalEpisodes,
+			&i.Status,
+			&i.AirDate,
+			&i.Year,
+			&i.Season,
+			&i.Genres,
+			&i.IsCustom,
+			&i.AnilistID,
+			&i.BangumiID,
+			&i.DandanplayBangumiID,
+			&i.MalID,
+			&i.TmdbID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.WatchStatus,
+			&i.WatchStatusUpdatedAt,
+			&i.UserScore,
+			&i.Score,
+			&i.AnidbID,
+			&i.SyncDisabled,
+			&i.WatchStatusOverride,
+			&i.TraktShowID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const unlinkMediaFilesByAnimeID = `-- name: UnlinkMediaFilesByAnimeID :exec
 UPDATE media_files SET episode_id = NULL, match_status = 'unmatched'
 WHERE episode_id IN (SELECT id FROM episodes WHERE anime_id = ?)

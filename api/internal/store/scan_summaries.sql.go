@@ -55,6 +55,31 @@ func (q *Queries) CreateScanSummary(ctx context.Context, arg CreateScanSummaryPa
 	return i, err
 }
 
+const getLatestScanSummary = `-- name: GetLatestScanSummary :one
+SELECT id, library_id, started_at, completed_at, files_found, files_matched, files_unmatched, errors FROM scan_summaries
+WHERE library_id = ?
+ORDER BY started_at DESC
+LIMIT 1
+`
+
+// Returns the most recent scan_summary for a library, or sql.ErrNoRows if
+// no scan has ever run for that library.
+func (q *Queries) GetLatestScanSummary(ctx context.Context, libraryID string) (ScanSummary, error) {
+	row := q.db.QueryRowContext(ctx, getLatestScanSummary, libraryID)
+	var i ScanSummary
+	err := row.Scan(
+		&i.ID,
+		&i.LibraryID,
+		&i.StartedAt,
+		&i.CompletedAt,
+		&i.FilesFound,
+		&i.FilesMatched,
+		&i.FilesUnmatched,
+		&i.Errors,
+	)
+	return i, err
+}
+
 const listScanSummaries = `-- name: ListScanSummaries :many
 SELECT id, library_id, started_at, completed_at, files_found, files_matched, files_unmatched, errors FROM scan_summaries
 WHERE library_id = ?

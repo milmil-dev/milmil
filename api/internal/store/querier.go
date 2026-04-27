@@ -86,6 +86,9 @@ type Querier interface {
 	GetExternalDanmakuByMediaFile(ctx context.Context, mediaFileID string) ([]ExternalDanmaku, error)
 	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
 	GetLatestCompletedSyncOp(ctx context.Context, arg GetLatestCompletedSyncOpParams) (SyncOutbox, error)
+	// Returns the most recent scan_summary for a library, or sql.ErrNoRows if
+	// no scan has ever run for that library.
+	GetLatestScanSummary(ctx context.Context, libraryID string) (ScanSummary, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
@@ -178,6 +181,9 @@ type Querier interface {
 	MarkSyncOpCompleted(ctx context.Context, id string) error
 	MarkUserProviderOpsFailed(ctx context.Context, arg MarkUserProviderOpsFailedParams) error
 	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
+	// Fuzzy local anime search across all title columns. Caller passes a single
+	// LIKE pattern (e.g. "%Frieren%"); ranking is left to the caller.
+	SearchAnimeLocal(ctx context.Context, arg SearchAnimeLocalParams) ([]Anime, error)
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	// Only writes when no manual preference is set yet.
 	SetEpisodePreferredAuto(ctx context.Context, arg SetEpisodePreferredAutoParams) error

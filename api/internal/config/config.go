@@ -27,6 +27,15 @@ type Config struct {
 	DanmuAPIURL         string // optional custom danmu_api proxy URL
 	AdminUser           string // optional: auto-create admin on first boot
 	AdminPassword       string // optional: password for auto-created admin
+	// PublicWebURL is the externally-reachable base URL of the milmil web UI
+	// (e.g. https://milmil.example.com). Used to construct watch-page URLs
+	// returned by /api/v1/episodes/:id/watch-url. Falls back to
+	// http://localhost:<APIPort> when unset.
+	PublicWebURL string
+	// PublicAPIURL is the externally-reachable base URL of the milmil API.
+	// Used to construct stream URLs returned by /api/v1/episodes/:id/watch-url
+	// so CLI/agent clients can hit them directly. Falls back to PublicWebURL.
+	PublicAPIURL string
 }
 
 // DBDriver returns "sqlite" or "postgres" based on the DATABASE_URL scheme.
@@ -79,6 +88,15 @@ func Load() (*Config, error) {
 		DanmuAPIURL:         k.String("DANMU_API_URL"),
 		AdminUser:           k.String("ADMIN_USER"),
 		AdminPassword:       k.String("ADMIN_PASSWORD"),
+		PublicWebURL:        k.String("PUBLIC_WEB_URL"),
+		PublicAPIURL:        k.String("PUBLIC_API_URL"),
+	}
+
+	if cfg.PublicWebURL == "" {
+		cfg.PublicWebURL = fmt.Sprintf("http://localhost:%d", cfg.APIPort)
+	}
+	if cfg.PublicAPIURL == "" {
+		cfg.PublicAPIURL = cfg.PublicWebURL
 	}
 
 	if cfg.DatabaseURL == "" {

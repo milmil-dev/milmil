@@ -103,6 +103,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	auditGroup.GET("/:id", h.handleGetAudit)
 	auditGroup.POST("/undo", h.handleUndoAudit)
 
+	// CLI/agent supporting endpoints — read-only, no audit middleware
+	v1.GET("/search/anime", h.handleSearchAnime, authMiddleware(h.queries))
+	v1.GET("/episodes/:id/watch-url", h.handleEpisodeWatchURL, authMiddleware(h.queries))
+	v1.GET("/library/:id/scan/wait", h.handleScanWait, authMiddleware(h.queries))
+
 	// API Tokens — protected
 	tokenGroup := v1.Group("/api-tokens", authMiddleware(h.queries), auditMiddleware(h.queries))
 	tokenGroup.GET("", h.handleListAPITokens)
