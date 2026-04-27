@@ -105,7 +105,7 @@
     "knip": "^6.6.0",
     "lefthook": "^2.0.15",
     "playwright": "^1.57.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vite": "^8.0.0",
     "vitest": "^4.0.18"
   }
