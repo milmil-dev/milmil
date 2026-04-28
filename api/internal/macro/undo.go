@@ -5,12 +5,10 @@ package macro
 
 import (
 	"context"
-	"crypto/rand"
 	"database/sql"
-	"encoding/hex"
 	"fmt"
-	"log/slog"
 
+	"github.com/google/uuid"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -92,7 +90,16 @@ func Undo(ctx context.Context, q *store.Queries, deps Deps, userID string, p Und
 			ID:       row.ID,
 			UndoneBy: sql.NullString{String: newAuditID(), Valid: true},
 		}); err != nil {
-			slog.Warn("undo: failed to mark audit row as undone", "audit_id", row.ID, "err", err)
+			// Reversal already applied to the world, but the bookkeeping
+			// row is still pristine — re-running undo would replay the
+			// reverse a second time. Surface this so callers know the
+			// state is inconsistent rather than swallowing it as a warn.
+			res.Items = append(res.Items, UndoItem{
+				AuditID: row.ID,
+				Status:  "failed",
+				Reason:  fmt.Sprintf("reverse applied but mark-undone failed: %v (re-running undo will replay the reverse)", err),
+			})
+			continue
 		}
 		res.Items = append(res.Items, UndoItem{AuditID: row.ID, Status: "reversed"})
 	}
@@ -136,6 +143,15 @@ func reverseOne(ctx context.Context, q *store.Queries, deps Deps, row store.Audi
 		// The macro entry's children are reversed first; the parent is a
 		// pure marker with no side effects of its own.
 		return nil
+	case "subscribe.create":
+		// Generic middleware row from the standalone POST /api/v1/subscribe
+		// endpoint. We don't know which RSS feed / sync action to reverse
+		// from the row alone (target_id isn't populated by the generic
+		// middleware), and the proper subscribe-undo macro lives in v0.2
+		// alongside POST /api/v1/subscribe-as-macro. Surface a clear
+		// message so the user knows what to do manually instead of seeing
+		// a generic "no reverse handler".
+		return fmt.Errorf("subscribe.create undo lands in v0.2 alongside the macro endpoint; for now, delete the RSS feed via the web UI and the audit row will remain marked unreversed")
 	case "download.queue":
 		if deps.Downloads == nil {
 			return fmt.Errorf("download canceller not configured")
@@ -182,10 +198,11 @@ func reverseRSSCreate(_ context.Context, _ *store.Queries, _ store.AuditLog) err
 	return nil
 }
 
-// newAuditID is a local copy of the api-layer helper so the macro package
-// stays free of import cycles with internal/api.
+// newAuditID returns a fresh audit-log row ID (used for the UndoneBy
+// foreign-key on reversed entries). uuid.NewString matches the
+// convention every other entity in the codebase uses; the macro
+// package keeps its own helper purely to avoid an import cycle with
+// internal/api.
 func newAuditID() string {
-	b := make([]byte, 4)
-	_, _ = rand.Read(b)
-	return hex.EncodeToString(b)
+	return uuid.NewString()
 }

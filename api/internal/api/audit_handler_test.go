@@ -76,6 +76,38 @@ func TestAuditList_LimitsToOwnUser(t *testing.T) {
 	}
 }
 
+func TestAuditUndo_SubscribeCreateReturnsV02Message(t *testing.T) {
+	srv := newAuditTestServer(t)
+
+	_, err := srv.queries.CreateAuditLog(context.Background(), store.CreateAuditLogParams{
+		ID:         "subscribe-row",
+		UserID:     srv.testUserID,
+		ActionType: "subscribe.create",
+	})
+	require.NoError(t, err)
+
+	tokenPlaintext := srv.mintAPIToken(t, "undo-agent")
+	body := `{"id":"subscribe-row"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/audit/undo", strings.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+tokenPlaintext)
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	srv.e.ServeHTTP(rec, req)
+	require.Equal(t, http.StatusOK, rec.Code, "body=%s", rec.Body.String())
+
+	var resp struct {
+		Items []struct {
+			AuditID string `json:"audit_id"`
+			Status  string `json:"status"`
+			Reason  string `json:"reason,omitempty"`
+		} `json:"items"`
+	}
+	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &resp))
+	require.Len(t, resp.Items, 1)
+	require.Equal(t, "failed", resp.Items[0].Status)
+	require.Contains(t, resp.Items[0].Reason, "v0.2")
+}
+
 func TestAuditUndo_DryRunReportsButDoesNotMark(t *testing.T) {
 	srv := newAuditTestServer(t)
 

@@ -150,6 +150,56 @@ func TestAuditMiddleware_SkipsReadRequests(t *testing.T) {
 	require.Empty(t, rows, "GET requests must not write audit_log rows")
 }
 
+func TestAuditMiddleware_RedactsSensitiveFields(t *testing.T) {
+	srv := newAuditTestServer(t)
+	tokenPlaintext := srv.mintAPIToken(t, "redact-agent")
+
+	// /api-tokens isn't an auth path, so the body IS captured — but any
+	// 'token'/'password'/'secret' key must be redacted before storage.
+	body := `{"name":"x","token":"mlml_should_not_land_in_db","password":"hunter2"}`
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/api-tokens", strings.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+tokenPlaintext)
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	srv.e.ServeHTTP(rec, req)
+	require.Equal(t, http.StatusCreated, rec.Code, "body=%s", rec.Body.String())
+
+	rows := listAuditRows(t, srv.db, srv.testUserID)
+	require.Len(t, rows, 1)
+	require.True(t, rows[0].AfterJson.Valid)
+	require.NotContains(t, rows[0].AfterJson.String, "mlml_should_not_land_in_db")
+	require.NotContains(t, rows[0].AfterJson.String, "hunter2")
+	require.Contains(t, rows[0].AfterJson.String, "[REDACTED]")
+}
+
+func TestAuditMiddleware_SkipsBodyForAuthPaths(t *testing.T) {
+	srv := newAuditTestServer(t)
+	tokenPlaintext := srv.mintAPIToken(t, "auth-agent")
+
+	// PUT /auth/password — even with redaction, we belt-and-braces skip
+	// body capture entirely on /api/v1/auth/* so a malformed-JSON body
+	// containing a password can't round-trip into after_json.
+	body := `{"current_password":"old-pass","new_password":"new-pass-Tr0ub4dor!!"}`
+	req := httptest.NewRequest(http.MethodPut, "/api/v1/auth/password", strings.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+tokenPlaintext)
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	srv.e.ServeHTTP(rec, req)
+	// We don't care about the response status (the user's stored password
+	// hash isn't 'old-pass' so it'll 4xx) — only that NO audit row leaks
+	// the body, regardless of outcome.
+
+	rows := listAuditRows(t, srv.db, srv.testUserID)
+	for _, r := range rows {
+		if r.AfterJson.Valid {
+			require.NotContains(t, r.AfterJson.String, "old-pass",
+				"auth path body must not appear in after_json")
+			require.NotContains(t, r.AfterJson.String, "new-pass-Tr0ub4dor!!",
+				"auth path body must not appear in after_json")
+		}
+	}
+}
+
 func TestAuditMiddleware_SkipsFailedMutations(t *testing.T) {
 	srv := newAuditTestServer(t)
 

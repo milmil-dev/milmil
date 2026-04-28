@@ -3,14 +3,13 @@ package api
 import (
 	"bytes"
 	"context"
-	"crypto/rand"
 	"database/sql"
-	"encoding/hex"
 	"io"
 	"log/slog"
 	"net/http"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/store"
 )
@@ -25,6 +24,12 @@ const auditSkipKey = "audit_skip"
 // route + HTTP method (e.g. "POST /api-tokens" -> "api_token.create"). Macro
 // endpoints write their own richer entries inside the handler and signal the
 // middleware to skip via the auditSkipKey context value.
+//
+// Sensitive bodies (anything under /api/v1/auth/*) are NOT captured into
+// after_json — those endpoints take password / 2FA secret fields that must
+// not land in the audit log. For other paths the request body is captured
+// after redactSensitiveFields() (the same redactor the request logger uses)
+// scrubs top-level password/token/secret keys.
 func auditMiddleware(q *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -34,10 +39,20 @@ func auditMiddleware(q *store.Queries) echo.MiddlewareFunc {
 			}
 
 			// Capture request body so the handler can still bind/read it.
+			// Auth paths intentionally skip body capture entirely — even
+			// after redaction, a malformed-JSON body containing a password
+			// would round-trip into after_json, and the action_type alone
+			// is enough audit value for those routes.
+			isAuthPath := strings.HasPrefix(c.Path(), "/api/v1/auth/")
 			var reqBody []byte
-			if c.Request().Body != nil {
+			if !isAuthPath && c.Request().Body != nil {
 				reqBody, _ = io.ReadAll(c.Request().Body)
 				c.Request().Body = io.NopCloser(bytes.NewReader(reqBody))
+			} else if c.Request().Body != nil {
+				// Drain + restore so the handler's c.Bind still works without
+				// us holding a copy.
+				raw, _ := io.ReadAll(c.Request().Body)
+				c.Request().Body = io.NopCloser(bytes.NewReader(raw))
 			}
 
 			if err := next(c); err != nil {
@@ -58,6 +73,11 @@ func auditMiddleware(q *store.Queries) echo.MiddlewareFunc {
 				return nil
 			}
 
+			afterJSON := sql.NullString{}
+			if len(reqBody) > 0 {
+				afterJSON = sql.NullString{String: redactSensitiveFields(string(reqBody)), Valid: true}
+			}
+
 			_, err := q.CreateAuditLog(context.Background(), store.CreateAuditLogParams{
 				ID:         newAuditID(),
 				UserID:     userID,
@@ -67,7 +87,7 @@ func auditMiddleware(q *store.Queries) echo.MiddlewareFunc {
 				TargetType: sql.NullString{},
 				TargetID:   sql.NullString{},
 				BeforeJson: sql.NullString{},
-				AfterJson:  sql.NullString{String: string(reqBody), Valid: len(reqBody) > 0},
+				AfterJson:  afterJSON,
 				Confidence: sql.NullFloat64{},
 				ParentID:   sql.NullString{},
 				DryRun:     0,
@@ -105,10 +125,11 @@ func deriveActionType(path, method string) string {
 	return resource + "." + verb
 }
 
+// newAuditID returns a fresh audit-log row ID. The schema column is TEXT,
+// so any unique string works; using uuid.NewString matches every other
+// entity in the codebase and keeps birthday-collision risk negligible.
 func newAuditID() string {
-	b := make([]byte, 4)
-	_, _ = rand.Read(b)
-	return hex.EncodeToString(b)
+	return uuid.NewString()
 }
 
 func auditNullStr(s string) sql.NullString {
