@@ -19,6 +19,13 @@ type playableEpisode struct {
 	AirDate   *string `json:"air_date"`
 }
 
+// playableEpisodesEnvelope is the actual server response shape — the
+// episodes array is wrapped alongside watch-status / sync-flag fields
+// the CLI doesn't use here.
+type playableEpisodesEnvelope struct {
+	Episodes []playableEpisode `json:"episodes"`
+}
+
 type watchURLResponse struct {
 	AnimeID     string `json:"anime_id"`
 	EpisodeID   string `json:"episode_id"`
@@ -48,20 +55,20 @@ both columns; pass the 'Bangumi' column value here.`,
 		if err != nil {
 			return err
 		}
-		var eps []playableEpisode
+		var env playableEpisodesEnvelope
 		path := fmt.Sprintf("/api/v1/anime/%d/playable-episodes", bangumiID)
-		if err := c.DoJSON("GET", path, nil, nil, &eps); err != nil {
+		if err := c.DoJSON("GET", path, nil, nil, &env); err != nil {
 			return err
 		}
 		if flagJSON {
-			return output.PrintJSON(eps)
+			return output.PrintJSON(env.Episodes)
 		}
-		if len(eps) == 0 {
+		if len(env.Episodes) == 0 {
 			output.Printf("No playable episodes for Bangumi anime %d.", bangumiID)
 			return nil
 		}
-		rows := make([][]string, 0, len(eps))
-		for _, e := range eps {
+		rows := make([][]string, 0, len(env.Episodes))
+		for _, e := range env.Episodes {
 			title := ""
 			if e.Title != nil {
 				title = *e.Title

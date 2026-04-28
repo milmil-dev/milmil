@@ -50,20 +50,20 @@ v0.2 macro endpoint to round-trip without remote IDs).`,
 			return fmt.Errorf("top match %q has no Bangumi ID — playable-episodes lookup not available; pick by ID with 'episode list --anime-id' once the local path is supported", anime.Title)
 		}
 
-		var eps []playableEpisode
+		var env playableEpisodesEnvelope
 		path := fmt.Sprintf("/api/v1/anime/%d/playable-episodes", *anime.BangumiID)
-		if err := c.DoJSON("GET", path, nil, nil, &eps); err != nil {
+		if err := c.DoJSON("GET", path, nil, nil, &env); err != nil {
 			return fmt.Errorf("list episodes: %w", err)
 		}
 		var pickEpisodeID string
-		for _, e := range eps {
+		for _, e := range env.Episodes {
 			if math.Abs(e.Sort-epNum) < 0.001 {
 				pickEpisodeID = e.EpisodeID
 				break
 			}
 		}
 		if pickEpisodeID == "" {
-			return fmt.Errorf("episode %v not found in %q (have %d playable episodes)", epNum, anime.Title, len(eps))
+			return fmt.Errorf("episode %v not found in %q (have %d playable episodes)", epNum, anime.Title, len(env.Episodes))
 		}
 
 		var resp watchURLResponse
