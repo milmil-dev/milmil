@@ -160,18 +160,24 @@ func reverseOne(ctx context.Context, q *store.Queries, deps Deps, row store.Audi
 
 // reverseMatchApply restores the previous match on a media file.
 //
-// TODO: implement using existing media_files match queries once the bulk
-// match sqlc bindings are stable. Until then this is a no-op so a dry-run
-// surfaces the entry without an error and a real undo silently succeeds; the
-// follow-up tasks (Plan Task 5) wire the real reversal.
+// v0.1: deliberate no-op so dry-runs surface the entry without an error and
+// real undo silently succeeds. The real reversal lands in v0.2 alongside
+// the POST /api/v1/match/auto macro endpoint, which is the only producer
+// of match.apply audit entries that carries the before-snapshot needed to
+// replay a previous match — manual matches via PUT /media-files/:id/match
+// don't populate before_json at all.
 func reverseMatchApply(_ context.Context, _ *store.Queries, _ store.AuditLog) error {
 	return nil
 }
 
 // reverseRSSCreate deletes the rule that was created.
 //
-// TODO: wire DeleteDownloadRule once we know the canonical query for the
-// rss.create action's target_id mapping. Plan Task 6 lands the real reversal.
+// v0.1: deliberate no-op. The real reversal lands in v0.2 alongside the
+// POST /api/v1/subscribe macro endpoint. The standalone
+// POST /api/v1/rss-feeds endpoint also writes rss.create audit entries,
+// but a v0.2 implementation needs to disambiguate "delete rule X" from
+// "delete subscription's child rule" via target_id and parent_id; deferring
+// rather than half-baking that.
 func reverseRSSCreate(_ context.Context, _ *store.Queries, _ store.AuditLog) error {
 	return nil
 }
