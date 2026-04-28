@@ -11,7 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const Version = "0.1.0-dev"
+// Version is overridden at build time via the -X linker flag (see
+// .goreleaser.yaml). Must be a var, not const, for -X to take effect.
+var Version = "0.1.0-dev"
 
 // Persistent flags shared by every subcommand. They override values loaded
 // from ~/.config/milmil/credentials and the MILMIL_SERVER/MILMIL_TOKEN env
