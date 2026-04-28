@@ -1,0 +1,89 @@
+# Goreleaser config for the `milmil` CLI binary.
+#
+# Application/server releases are managed separately via release-please +
+# publish.yml on `v*` tags. CLI releases use the `cli-v*` tag prefix so
+# the two cadences stay decoupled.
+#
+# Local validation:
+#   goreleaser check
+#   goreleaser build --snapshot --clean
+#
+# Producing a release:
+#   git tag cli-v0.1.0 && git push origin cli-v0.1.0
+# (the release.yml workflow will run goreleaser release --clean)
+
+version: 2
+project_name: milmil
+
+# The `cli-v` tag prefix lives outside goreleaser's auto-computed
+# .Version (the monorepo block that does this is a Pro feature). We strip
+# it manually with `trimPrefix` everywhere we reference the version.
+# Server/Docker releases stay on the `v*` tag namespace handled by
+# publish.yml.
+
+before:
+  hooks:
+    - go -C api mod tidy
+
+builds:
+  - id: milmil
+    main: ./cmd/cli
+    dir: api
+    binary: milmil
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.Version={{ trimprefix .Tag "cli-v" }}
+
+archives:
+  - id: milmil-archive
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "milmil_{{ trimprefix .Tag \"cli-v\" }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README*.md
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  version_template: "{{ .Tag }}-snapshot-{{ .ShortCommit }}"
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+
+release:
+  draft: false
+  prerelease: auto
+  github:
+    owner: milmil-dev
+    name: milmil
+  name_template: "milmil CLI {{ .Tag }}"
+  header: |
+    ## milmil CLI release
+
+    Cross-platform binaries for the `milmil` command-line client.
+    Server-side milmil releases live under the `v*` tags.
+
+  footer: |
+    Install via:
+
+    ```
+    VER={{ trimprefix .Tag "cli-v" }}
+    curl -L https://github.com/milmil-dev/milmil/releases/download/{{ .Tag }}/milmil_${VER}_$(uname -s | tr A-Z a-z)_$(uname -m | sed 's/x86_64/amd64/').tar.gz | tar xz
+    ./milmil --help
+    ```

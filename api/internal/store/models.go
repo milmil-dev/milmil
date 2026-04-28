@@ -53,6 +53,24 @@ type ApiToken struct {
 	LastUserAgent string         `json:"last_user_agent"`
 }
 
+type AuditLog struct {
+	ID         string          `json:"id"`
+	UserID     string          `json:"user_id"`
+	TokenID    sql.NullString  `json:"token_id"`
+	AgentLabel sql.NullString  `json:"agent_label"`
+	ActionType string          `json:"action_type"`
+	TargetType sql.NullString  `json:"target_type"`
+	TargetID   sql.NullString  `json:"target_id"`
+	BeforeJson sql.NullString  `json:"before_json"`
+	AfterJson  sql.NullString  `json:"after_json"`
+	Confidence sql.NullFloat64 `json:"confidence"`
+	ParentID   sql.NullString  `json:"parent_id"`
+	DryRun     int64           `json:"dry_run"`
+	UndoneAt   sql.NullString  `json:"undone_at"`
+	UndoneBy   sql.NullString  `json:"undone_by"`
+	CreatedAt  string          `json:"created_at"`
+}
+
 type BackupConfig struct {
 	ID         string         `json:"id"`
 	UserID     string         `json:"user_id"`

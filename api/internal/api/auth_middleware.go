@@ -13,6 +13,7 @@ import (
 
 const contextKeyUserID = "userID"
 const contextKeyTokenID = "tokenID"
+const contextKeyTokenName = "tokenName"
 
 // authMiddleware validates API tokens and sets the userID in context.
 func authMiddleware(queries *store.Queries) echo.MiddlewareFunc {
@@ -29,6 +30,7 @@ func authMiddleware(queries *store.Queries) echo.MiddlewareFunc {
 			}
 			c.Set(contextKeyUserID, apiToken.UserID)
 			c.Set(contextKeyTokenID, apiToken.ID)
+			c.Set(contextKeyTokenName, apiToken.Name)
 			go updateTokenActivity(queries, apiToken.ID, c.RealIP(), c.Request().UserAgent())
 			return next(c)
 		}
@@ -56,6 +58,7 @@ func authMiddlewareWithQueryParam(queries *store.Queries) echo.MiddlewareFunc {
 			}
 			c.Set(contextKeyUserID, apiToken.UserID)
 			c.Set(contextKeyTokenID, apiToken.ID)
+			c.Set(contextKeyTokenName, apiToken.Name)
 			go updateTokenActivity(queries, apiToken.ID, c.RealIP(), c.Request().UserAgent())
 			return next(c)
 		}
@@ -92,4 +95,12 @@ func getUserID(c echo.Context) string {
 func getTokenID(c echo.Context) string {
 	id, _ := c.Get(contextKeyTokenID).(string)
 	return id
+}
+
+// getTokenName extracts the current API token's display name from the Echo
+// context. Used by the audit middleware as the agent_label so revoking the
+// token does not erase historical attribution.
+func getTokenName(c echo.Context) string {
+	name, _ := c.Get(contextKeyTokenName).(string)
+	return name
 }

@@ -1,0 +1,162 @@
+---
+title: AI Agent Integration
+description: Use Claude Code, Cursor, Codex, or any terminal-based AI agent to control milmil via the milmil CLI.
+---
+
+milmil exposes its agent automation surface through a single CLI binary
+(`milmil`) — the same tool you use as a human admin. Because every modern
+AI agent can call shell commands, no agent-specific integration is required.
+
+## Quick start
+
+<Steps>
+
+<Step>
+### Install the CLI
+
+Download the latest release for your platform from the
+[GitHub Releases page](https://github.com/milmil-dev/milmil/releases) — the
+`cli-v*` tags hold platform binaries for `linux`, `darwin`, and `windows`
+on `amd64` and `arm64`.
+
+```bash
+# Example: Linux amd64
+VER=0.1.0
+curl -L https://github.com/milmil-dev/milmil/releases/download/cli-v${VER}/milmil_${VER}_linux_amd64.tar.gz | tar xz
+sudo mv milmil /usr/local/bin/
+milmil version
+```
+</Step>
+
+<Step>
+### Generate an API token
+
+In milmil's web UI: **Settings → API Tokens → Create**. Name it after the
+agent that will use it (e.g. `claude-code-laptop`). Copy the `mlml_…`
+token immediately — it's shown only once.
+</Step>
+
+<Step>
+### Authenticate the CLI
+
+```bash
+milmil auth login --server http://localhost:8080
+# > Token (mlml_...): mlml_...
+# Logged in as "admin" to http://localhost:8080
+```
+
+Verify:
+
+```bash
+milmil auth status
+```
+
+The credentials are stored at `~/.config/milmil/credentials` with mode
+`0600`. Override per-command with `--server` / `--token` flags or the
+`MILMIL_SERVER` / `MILMIL_TOKEN` env vars.
+</Step>
+
+<Step>
+### Tell your agent about milmil
+
+Run this from the directory you'll work with the agent in:
+
+```bash
+# Claude Code:
+mkdir -p .claude/skills/milmil
+milmil generate-skill --format claude > .claude/skills/milmil/SKILL.md
+
+# Codex / Aider / any agent that reads AGENTS.md:
+milmil generate-skill --format agents-md >> AGENTS.md
+
+# Cursor:
+milmil generate-skill --format cursor > .cursorrules
+```
+
+Each shim is a 3-5 line redirect telling the agent to run
+`milmil agents-guide` whenever the user mentions milmil. The full guide
+(roughly 140 lines, embedded in the binary) covers recipes, pitfalls,
+and the audit workflow.
+</Step>
+
+</Steps>
+
+## What the agent can do in v0.1
+
+The CLI surface in v0.1 maps each subcommand to a single server endpoint:
+
+| Subcommand | Effect |
+|---|---|
+| `library list / add / scan / stats` | Manage libraries |
+| `search anime <q>` | Local DB fuzzy title search |
+| `episode list / watch-url` | Inspect a Bangumi-matched anime's episodes |
+| `watch resolve <title> --episode <n>` | Title + episode number → web watch URL + stream URL |
+| `match auto / list / apply / undo` | Manual + scripted matching, with surgical and window undo |
+| `audit list / show` | Browse and inspect every autonomous action |
+| `token list / revoke` | Per-agent token management |
+
+Run `milmil agents-guide` for the recipe-oriented version. Every action
+that mutates server state is recorded in milmil's audit log with the
+calling token's name, timestamp, and a JSON snapshot.
+
+### Coming in v0.2
+
+These commands are scaffolded but not yet wired:
+
+- **`subscribe` namespace** — `subscribe add` / `list` / `undo` will land
+  with a server-side macro endpoint that records a parent audit entry
+  linking the per-action children. For v0.1, use the web UI's plan-to-
+  watch toggle plus the RSS rule editor.
+- **`match auto --confidence-floor X`** — accepted but no-op in v0.1
+  (warns to stderr). The server's existing matcher uses internal
+  acceptance thresholds; the autonomous floor lands with the
+  `/match/auto` macro endpoint in v0.2.
+- **`match suggest --file <id>`** — backing endpoint not yet defined.
+
+## Audit and undo
+
+```bash
+milmil audit list --since 1h
+milmil audit list --action match.apply --since 7d
+milmil audit show <audit_id>
+
+# Surgical undo
+milmil match undo --id <audit_id> --dry-run    # preview
+milmil match undo --id <audit_id> --yes        # commit
+
+# Bulk window undo (reverts every match.apply in the window — including
+# manual ones from the web UI)
+milmil match undo --since 5m --dry-run
+milmil match undo --since 5m --yes
+```
+
+External-tracker reverters (Bangumi, AniList) report
+`failed: dep not configured` in v0.1. Wiring lands in v0.2 alongside the
+macro endpoints.
+
+## Supported skill formats
+
+| Format | Output | Conventional location |
+|---|---|---|
+| `claude` | Skill markdown with frontmatter | `~/.claude/skills/milmil/SKILL.md` (global) or per-project |
+| `cursor` | `.cursorrules` body | project root |
+| `agents-md` | `AGENTS.md` section | append to project's `AGENTS.md` |
+
+Adding a new format is a one-file change inside the CLI repo —
+`api/cmd/cli/skill_templates/<format>.md` is automatically picked up by
+`milmil generate-skill --format <format>`.
+
+## One token per agent
+
+Best practice is to mint a separate token per agent and per device. Each
+token is independently revocable and the audit log records which token
+performed each action:
+
+```bash
+milmil token list                    # see all tokens
+milmil token revoke claude-code-laptop --yes
+```
+
+`milmil token revoke` refuses to remove the token used by the current
+CLI session — switch credentials with `milmil auth login` first if you
+need to revoke that one.

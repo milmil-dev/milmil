@@ -15,3 +15,11 @@ SELECT * FROM scan_summaries
 WHERE library_id = ?
 ORDER BY started_at DESC
 LIMIT 10;
+
+-- name: GetLatestScanSummary :one
+-- Returns the most recent scan_summary for a library, or sql.ErrNoRows if
+-- no scan has ever run for that library.
+SELECT * FROM scan_summaries
+WHERE library_id = ?
+ORDER BY started_at DESC
+LIMIT 1;

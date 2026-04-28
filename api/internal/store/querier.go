@@ -25,6 +25,7 @@ type Querier interface {
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAPIToken(ctx context.Context, arg CreateAPITokenParams) (ApiToken, error)
 	CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime, error)
+	CreateAuditLog(ctx context.Context, arg CreateAuditLogParams) (AuditLog, error)
 	CreateDownload(ctx context.Context, arg CreateDownloadParams) (Download, error)
 	CreateDownloadRule(ctx context.Context, arg CreateDownloadRuleParams) (DownloadRule, error)
 	CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (Episode, error)
@@ -73,6 +74,7 @@ type Querier interface {
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetAnimeByTMDBID(ctx context.Context, tmdbID sql.NullInt64) (Anime, error)
 	GetAnimeByTraktShowID(ctx context.Context, traktShowID sql.NullInt64) (Anime, error)
+	GetAuditLog(ctx context.Context, id string) (AuditLog, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
 	GetDownloadByID(ctx context.Context, id string) (Download, error)
@@ -84,6 +86,9 @@ type Querier interface {
 	GetExternalDanmakuByMediaFile(ctx context.Context, mediaFileID string) ([]ExternalDanmaku, error)
 	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
 	GetLatestCompletedSyncOp(ctx context.Context, arg GetLatestCompletedSyncOpParams) (SyncOutbox, error)
+	// Returns the most recent scan_summary for a library, or sql.ErrNoRows if
+	// no scan has ever run for that library.
+	GetLatestScanSummary(ctx context.Context, libraryID string) (ScanSummary, error)
 	GetLibrary(ctx context.Context, id string) (Library, error)
 	GetLibraryWithStats(ctx context.Context, id string) (GetLibraryWithStatsRow, error)
 	GetMediaFileByID(ctx context.Context, id string) (MediaFile, error)
@@ -108,6 +113,11 @@ type Querier interface {
 	ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error)
 	// A5 fix: only animes with at least one completed watch_progress episode.
 	ListAnimeForUserWithProviderID(ctx context.Context, arg ListAnimeForUserWithProviderIDParams) ([]Anime, error)
+	// action_type and since are optional filters: pass NULL to skip.
+	// All params are explicitly numbered (sqlc.arg / sqlc.narg) to avoid the
+	// mixed `?` + `?N` parameter counting bug in modernc-sqlite.
+	ListAuditLogByUser(ctx context.Context, arg ListAuditLogByUserParams) ([]AuditLog, error)
+	ListAuditLogChildren(ctx context.Context, parentID sql.NullString) ([]AuditLog, error)
 	ListBackupConfigs(ctx context.Context, userID string) ([]BackupConfig, error)
 	// C4 fix: list Bangumi episode IDs for all completed episodes of this anime.
 	ListBangumiEpisodeIDsForAnimeWatchedByUser(ctx context.Context, arg ListBangumiEpisodeIDsForAnimeWatchedByUserParams) ([]sql.NullInt64, error)
@@ -165,11 +175,15 @@ type Querier interface {
 	ListUserPreferences(ctx context.Context, arg ListUserPreferencesParams) ([]UserPreference, error)
 	ListWatchProgressByUser(ctx context.Context, userID string) ([]WatchProgress, error)
 	MarkAllNotificationsRead(ctx context.Context) error
+	MarkAuditUndone(ctx context.Context, arg MarkAuditUndoneParams) error
 	MarkNotificationRead(ctx context.Context, id string) error
 	MarkRenameHistoryReverted(ctx context.Context, id string) error
 	MarkSyncOpCompleted(ctx context.Context, id string) error
 	MarkUserProviderOpsFailed(ctx context.Context, arg MarkUserProviderOpsFailedParams) error
 	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
+	// Fuzzy local anime search across all title columns. Caller passes a single
+	// LIKE pattern (e.g. "%Frieren%"); ranking is left to the caller.
+	SearchAnimeLocal(ctx context.Context, arg SearchAnimeLocalParams) ([]Anime, error)
 	SearchHotTags(ctx context.Context, dollar_1 sql.NullString) ([]HotTag, error)
 	// Only writes when no manual preference is set yet.
 	SetEpisodePreferredAuto(ctx context.Context, arg SetEpisodePreferredAutoParams) error

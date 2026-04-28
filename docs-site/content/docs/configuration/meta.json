@@ -1,4 +1,4 @@
 {
   "title": "Configuration",
-  "pages": ["environment", "integrations", "notifications", "reverse-proxy", "performance"]
+  "pages": ["environment", "integrations", "ai-agents", "notifications", "reverse-proxy", "performance"]
 }

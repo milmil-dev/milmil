@@ -88,3 +88,13 @@ SELECT * FROM anime WHERE trakt_show_id = ? LIMIT 1;
 
 -- name: GetAnimeByTMDBID :one
 SELECT * FROM anime WHERE tmdb_id = ? LIMIT 1;
+
+-- name: SearchAnimeLocal :many
+-- Fuzzy local anime search across all title columns. Caller passes a single
+-- LIKE pattern (e.g. "%Frieren%"); ranking is left to the caller.
+SELECT * FROM anime
+WHERE title LIKE sqlc.arg('pattern')
+   OR title_zh LIKE sqlc.arg('pattern')
+   OR title_en LIKE sqlc.arg('pattern')
+ORDER BY title
+LIMIT sqlc.arg('limit_n');
