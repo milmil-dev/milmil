@@ -12,21 +12,12 @@ import (
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
-	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/metadata"
-	"github.com/milmil/api/migrations"
 )
 
 func newTestAppWithDB(t *testing.T) (*echo.Echo, *sql.DB) {
 	t.Helper()
-	dsn := "sqlite://" + t.TempDir() + "/test.db"
-	database, err := db.Open(dsn)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := db.MigrateUp(migrations.FS, dsn); err != nil {
-		t.Fatal(err)
-	}
+	database, dsn := newTestDB(t)
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
