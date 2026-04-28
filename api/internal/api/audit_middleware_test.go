@@ -15,10 +15,8 @@ import (
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
-	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/store"
-	"github.com/milmil/api/migrations"
 	"github.com/stretchr/testify/require"
 	_ "modernc.org/sqlite"
 )
@@ -66,10 +64,10 @@ func listAuditRows(t *testing.T, d *sql.DB, userID string) []auditRow {
 
 func newAuditTestServer(t *testing.T) *auditTestServer {
 	t.Helper()
-	dsn := "sqlite://" + t.TempDir() + "/test.db"
-	database, err := db.Open(dsn)
-	require.NoError(t, err)
-	require.NoError(t, db.MigrateUp(migrations.FS, dsn))
+	// newTestDB (auth_handler_test.go) handles temp-dir lifecycle, DB
+	// close, and the RemoveAll retry that absorbs the race against the
+	// fire-and-forget updateTokenActivity goroutine.
+	database, dsn := newTestDB(t)
 
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
