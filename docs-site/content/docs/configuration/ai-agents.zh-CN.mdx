@@ -1,0 +1,153 @@
+---
+title: AI 代理集成
+description: 通过 milmil CLI 让 Claude Code、Cursor、Codex 等任意终端 AI 代理控制 milmil。
+---
+
+milmil 的代理自动化能力通过同一个 CLI 二进制（`milmil`）暴露——也就是
+人类管理员日常使用的那个工具。任何能调用 shell 命令的 AI 代理都能直接
+驱动它,无需为某个代理单独做集成。
+
+## 快速开始
+
+<Steps>
+
+<Step>
+### 安装 CLI
+
+从 [GitHub Releases](https://github.com/milmil-dev/milmil/releases) 下载
+对应平台的二进制——`cli-v*` 标签下提供 `linux`、`darwin`、`windows`
+×`amd64`、`arm64` 的预编译版本。
+
+```bash
+# 示例:Linux amd64
+VER=0.1.0
+curl -L https://github.com/milmil-dev/milmil/releases/download/cli-v${VER}/milmil_${VER}_linux_amd64.tar.gz | tar xz
+sudo mv milmil /usr/local/bin/
+milmil version
+```
+</Step>
+
+<Step>
+### 生成 API 令牌
+
+在 milmil Web 界面:**设置 → API 令牌 → 新建**。用代理名称命名(例如
+`claude-code-laptop`)。`mlml_…` 令牌只显示一次,务必立即复制。
+</Step>
+
+<Step>
+### CLI 登录
+
+```bash
+milmil auth login --server http://localhost:8080
+# > Token (mlml_...): mlml_...
+# Logged in as "admin" to http://localhost:8080
+```
+
+验证:
+
+```bash
+milmil auth status
+```
+
+凭据保存在 `~/.config/milmil/credentials`,权限 `0600`。可通过
+`--server` / `--token` 参数或 `MILMIL_SERVER` / `MILMIL_TOKEN` 环境
+变量在单次命令中覆盖。
+</Step>
+
+<Step>
+### 让代理认识 milmil
+
+在打算使用代理的目录下运行:
+
+```bash
+# Claude Code:
+mkdir -p .claude/skills/milmil
+milmil generate-skill --format claude > .claude/skills/milmil/SKILL.md
+
+# Codex / Aider / 任何读取 AGENTS.md 的代理:
+milmil generate-skill --format agents-md >> AGENTS.md
+
+# Cursor:
+milmil generate-skill --format cursor > .cursorrules
+```
+
+输出的 shim 只有 3-5 行,告诉代理:用户提到 milmil 时,先执行
+`milmil agents-guide`。完整指南(约 140 行,内嵌在二进制中)涵盖配方、
+常见陷阱与审计流程。
+</Step>
+
+</Steps>
+
+## v0.1 支持的能力
+
+v0.1 的 CLI 表面采用"一个子命令对应一个服务端接口"的简单映射:
+
+| 子命令 | 作用 |
+|---|---|
+| `library list / add / scan / stats` | 管理媒体库 |
+| `search anime <q>` | 本地数据库的模糊标题搜索 |
+| `episode list / watch-url` | 查看已匹配 Bangumi 番剧的集数 |
+| `watch resolve <title> --episode <n>` | 标题+集号 → Web 观看 URL + 直播流 URL |
+| `match auto / list / apply / undo` | 手动/脚本匹配,以及精准撤销与时间窗撤销 |
+| `audit list / show` | 浏览每一次自动化动作 |
+| `token list / revoke` | 按代理管理令牌 |
+
+执行 `milmil agents-guide` 查看面向场景的版本。所有改动服务端状态的
+请求都会写入 milmil 审计日志,包含调用方令牌名、时间戳和 JSON 快照。
+
+### v0.2 即将到来
+
+下列命令在脚手架中已规划但尚未连线:
+
+- **`subscribe` 命名空间** —— `subscribe add` / `list` / `undo` 将随
+  服务端宏接口落地。该接口会写入一个父审计条目,把每个子动作串联起来,
+  实现"一次 undo 全部回滚"。v0.1 期间请使用 Web 界面的"加入想看"
+  开关 + RSS 规则编辑器。
+- **`match auto --confidence-floor X`** —— v0.1 接受该标志但视为
+  no-op(stderr 会有警告)。服务端现有匹配器有自己的内部接受阈值;
+  自治信心地板将随 `/match/auto` 宏接口在 v0.2 上线。
+- **`match suggest --file <id>`** —— 后端接口尚未定义。
+
+## 审计与撤销
+
+```bash
+milmil audit list --since 1h
+milmil audit list --action match.apply --since 7d
+milmil audit show <audit_id>
+
+# 精准撤销
+milmil match undo --id <audit_id> --dry-run    # 预览
+milmil match undo --id <audit_id> --yes        # 提交
+
+# 时间窗批量撤销(会回滚窗口内所有 match.apply,包括 Web 界面里手动
+# 操作的)
+milmil match undo --since 5m --dry-run
+milmil match undo --since 5m --yes
+```
+
+v0.1 的外部跟踪器反向同步(Bangumi、AniList)会返回
+`failed: dep not configured`。完整连线随 v0.2 的宏接口一同到来。
+
+## 支持的 Skill 格式
+
+| 格式 | 输出 | 约定位置 |
+|---|---|---|
+| `claude` | 含 frontmatter 的 Skill markdown | `~/.claude/skills/milmil/SKILL.md`(全局)或每个项目独立放置 |
+| `cursor` | `.cursorrules` 文件内容 | 项目根目录 |
+| `agents-md` | `AGENTS.md` 片段 | 追加到项目的 `AGENTS.md` |
+
+新增格式只需在 CLI 仓库中加一个文件:
+`api/cmd/cli/skill_templates/<format>.md`,`milmil generate-skill --format <format>` 就会自动识别。
+
+## 一个代理一个令牌
+
+最佳实践是为每个代理 + 每台设备单独签发令牌。它们可独立吊销,审计
+日志也会记录每个动作由哪个令牌触发:
+
+```bash
+milmil token list                    # 查看所有令牌
+milmil token revoke claude-code-laptop --yes
+```
+
+`milmil token revoke` 会拒绝吊销当前 CLI 会话所用的令牌——如需吊销
+该令牌,请先用 `milmil auth login` 切换到另一个令牌。

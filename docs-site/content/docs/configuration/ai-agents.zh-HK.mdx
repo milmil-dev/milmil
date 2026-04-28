@@ -1,0 +1,154 @@
+---
+title: AI 代理整合
+description: 透過 milmil CLI 等 Claude Code、Cursor、Codex 等任何終端 AI 代理控制你嘅 milmil。
+---
+
+milmil 嘅代理自動化功能係透過同一個 CLI 二進位(`milmil`)暴露——即係
+人類管理員平日用嘅嗰個工具。任何識叫 shell 指令嘅 AI 代理都可以直接
+用佢,毋須為某個代理單獨整合。
+
+## 快速開始
+
+<Steps>
+
+<Step>
+### 安裝 CLI
+
+去 [GitHub Releases](https://github.com/milmil-dev/milmil/releases) 攞
+你個平台嘅二進位——`cli-v*` 標籤入面有 `linux`、`darwin`、`windows`
+×`amd64`、`arm64` 嘅預編譯版本。
+
+```bash
+# 例子:Linux amd64
+VER=0.1.0
+curl -L https://github.com/milmil-dev/milmil/releases/download/cli-v${VER}/milmil_${VER}_linux_amd64.tar.gz | tar xz
+sudo mv milmil /usr/local/bin/
+milmil version
+```
+</Step>
+
+<Step>
+### 整個 API Token
+
+喺 milmil Web 介面:**設定 → API Tokens → 新增**。用代理嘅名嚟改名(例如
+`claude-code-laptop`)。`mlml_…` Token 只會出現一次,要即刻 copy。
+</Step>
+
+<Step>
+### CLI 登入
+
+```bash
+milmil auth login --server http://localhost:8080
+# > Token (mlml_...): mlml_...
+# Logged in as "admin" to http://localhost:8080
+```
+
+驗證:
+
+```bash
+milmil auth status
+```
+
+憑證會擺喺 `~/.config/milmil/credentials`,權限 `0600`。可以用
+`--server` / `--token` 旗標或者 `MILMIL_SERVER` / `MILMIL_TOKEN` 環境
+變數喺單次指令度蓋過。
+</Step>
+
+<Step>
+### 等代理識得 milmil
+
+喺打算用代理嘅資料夾入面執行:
+
+```bash
+# Claude Code:
+mkdir -p .claude/skills/milmil
+milmil generate-skill --format claude > .claude/skills/milmil/SKILL.md
+
+# Codex / Aider / 任何讀 AGENTS.md 嘅代理:
+milmil generate-skill --format agents-md >> AGENTS.md
+
+# Cursor:
+milmil generate-skill --format cursor > .cursorrules
+```
+
+呢個 shim 得 3-5 行,係叫代理:用戶提到 milmil 嗰陣,先行
+`milmil agents-guide`。完整指南(大約 140 行,內嵌喺二進位入面)
+覆蓋常見場景、陷阱同稽核流程。
+</Step>
+
+</Steps>
+
+## v0.1 可以做啲乜
+
+v0.1 嘅 CLI 表面用「一個子指令對應一個伺服器端 API」嘅簡單對映:
+
+| 子指令 | 作用 |
+|---|---|
+| `library list / add / scan / stats` | 管理媒體庫 |
+| `search anime <q>` | 本機資料庫嘅模糊標題搜尋 |
+| `episode list / watch-url` | 睇已配對 Bangumi 動畫嘅集數 |
+| `watch resolve <title> --episode <n>` | 標題+集號 → Web 觀看 URL + 直播流 URL |
+| `match auto / list / apply / undo` | 手動/腳本配對,可以精準還原同時間區間還原 |
+| `audit list / show` | 睇每次自動化動作 |
+| `token list / revoke` | 按代理管理 Token |
+
+執行 `milmil agents-guide` 攞情境式指南。所有會改伺服器狀態嘅請求
+都會寫入 milmil 稽核紀錄,包括叫嘅 Token 名、時間戳同 JSON 快照。
+
+### v0.2 將會推出
+
+下面呢啲指令喺腳手架入面已經諗咗,但係未接線:
+
+- **`subscribe` 命名空間** —— `subscribe add` / `list` / `undo` 會
+  跟住伺服器端嘅 macro 端點一齊推出。嗰個端點會寫一個父稽核條目,
+  將每個子動作串埋一齊,做到「一次 undo 全部還原」。v0.1 期間請用
+  Web 介面嘅「想睇」掣同 RSS 規則編輯器。
+- **`match auto --confidence-floor X`** —— v0.1 收到呢個旗標但會
+  當佢冇(stderr 會有警告)。伺服器現有嘅配對器有自己內部嘅接受
+  門檻;自主信心下限會隨 `/match/auto` macro 端點喺 v0.2 上線。
+- **`match suggest --file <id>`** —— 後端 API 仲未定義。
+
+## 稽核同還原
+
+```bash
+milmil audit list --since 1h
+milmil audit list --action match.apply --since 7d
+milmil audit show <audit_id>
+
+# 精準還原
+milmil match undo --id <audit_id> --dry-run    # 預覽
+milmil match undo --id <audit_id> --yes        # 套用
+
+# 時間區間批次還原(會還原嗰個區間內所有 match.apply,包埋 Web 介面
+# 手動嘅)
+milmil match undo --since 5m --dry-run
+milmil match undo --since 5m --yes
+```
+
+v0.1 嘅外部追蹤器反向同步(Bangumi、AniList)會回應
+`failed: dep not configured`。完整接線會喺 v0.2 macro 端點一齊
+推出。
+
+## 支援嘅 Skill 格式
+
+| 格式 | 輸出 | 慣例位置 |
+|---|---|---|
+| `claude` | 帶 frontmatter 嘅 Skill markdown | `~/.claude/skills/milmil/SKILL.md`(全域)或每個 project 各自擺 |
+| `cursor` | `.cursorrules` 內容 | project 根目錄 |
+| `agents-md` | `AGENTS.md` 片段 | 加埋落 project 嘅 `AGENTS.md` |
+
+要加新格式得一個檔嘅事:`api/cmd/cli/skill_templates/<format>.md`,
+之後 `milmil generate-skill --format <format>` 就會自動識到。
+
+## 每個代理用一個獨立 Token
+
+最佳做法係每個代理 + 每部機都獨立發 Token。佢哋可以分開撤銷,稽核
+紀錄都會記住每個動作邊個 Token 做嘅:
+
+```bash
+milmil token list                    # 列出所有 Token
+milmil token revoke claude-code-laptop --yes
+```
+
+`milmil token revoke` 會拒絕撤銷依個 CLI session 用緊嘅 Token——
+如果真係要撤銷,用 `milmil auth login` 換隻 Token 先。
