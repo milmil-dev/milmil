@@ -6,6 +6,9 @@
 FROM --platform=$BUILDPLATFORM oven/bun:1-alpine AS builder
 WORKDIR /app
 
+ARG VERSION=dev
+ENV VITE_APP_VERSION=${VERSION}
+
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
