@@ -1,7 +1,13 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  isRedirect,
+  Outlet,
+  redirect,
+  useRouterState,
+} from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -9,8 +15,8 @@ import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
 import { SplashScreen } from '../components/SplashScreen';
 import { useMillilWebSocket, useWSEvent } from '../hooks/use-websocket';
-import { api } from '../lib/api-client';
 import { setupApi } from '../lib/api/setup';
+import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
 import { useBgStore } from '../store/bg-store';
@@ -326,17 +332,14 @@ export const Route = createRootRoute({
     // must finish setup. Skip if Tailscale-style AUTH_BYPASS is on, if
     // the path is /setup/*/login (already handled above), or if we're
     // not at the root.
-    if (
-      useAuthStore.getState().token &&
-      location.pathname === '/'
-    ) {
+    if (useAuthStore.getState().token && location.pathname === '/') {
       try {
         const status = await setupApi.getStatus();
         if (status.library_count === 0) {
           throw redirect({ to: '/setup/library' });
         }
       } catch (err) {
-        if (err && typeof err === 'object' && 'to' in err) throw err; // re-throw redirect
+        if (isRedirect(err)) throw err; // re-throw redirect
         // Server error: fall through to render dashboard with whatever it gives.
       }
     }
