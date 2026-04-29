@@ -8,8 +8,8 @@ import { Field, FieldLabel } from '../../components/ui/field';
 import { Input } from '../../components/ui/input';
 import { Spinner } from '../../components/ui/spinner';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { libraryApi } from '../../lib/api/library';
 import type { CreateLibraryInput } from '../../lib/api/library';
+import { libraryApi } from '../../lib/api/library';
 
 type PathStatus =
   | { kind: 'idle' }
@@ -91,7 +91,7 @@ export function LibraryStep() {
         navigate({ to: '/setup/integrations' });
       } catch (err) {
         setSubmitError(
-          err instanceof Error ? err.message : i18n._(msg`setup.library.createFailed`),
+          err instanceof Error ? err.message : i18n._(msg`setup.library.createFailed`)
         );
       }
     },
@@ -99,12 +99,8 @@ export function LibraryStep() {
 
   return (
     <>
-      <h2 className="text-lg font-semibold text-white mb-1">
-        {i18n._(msg`setup.library.title`)}
-      </h2>
-      <p className="text-[13px] text-white/40 mb-6">
-        {i18n._(msg`setup.library.subtitle`)}
-      </p>
+      <h2 className="text-lg font-semibold text-white mb-1">{i18n._(msg`setup.library.title`)}</h2>
+      <p className="text-[13px] text-white/40 mb-6">{i18n._(msg`setup.library.subtitle`)}</p>
 
       <form
         onSubmit={(e) => {
@@ -116,9 +112,7 @@ export function LibraryStep() {
         <form.Field name="name">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>
-                {i18n._(msg`setup.library.nameLabel`)}
-              </FieldLabel>
+              <FieldLabel htmlFor={field.name}>{i18n._(msg`setup.library.nameLabel`)}</FieldLabel>
               <Input
                 id={field.name}
                 type="text"
@@ -135,9 +129,7 @@ export function LibraryStep() {
         <form.Field name="path">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>
-                {i18n._(msg`setup.library.pathLabel`)}
-              </FieldLabel>
+              <FieldLabel htmlFor={field.name}>{i18n._(msg`setup.library.pathLabel`)}</FieldLabel>
               <Input
                 id={field.name}
                 type="text"
@@ -164,9 +156,7 @@ export function LibraryStep() {
             <Button
               type="submit"
               disabled={
-                isSubmitting ||
-                pathStatus.kind === 'checking' ||
-                pathStatus.kind === 'error'
+                isSubmitting || pathStatus.kind === 'checking' || pathStatus.kind === 'error'
               }
               className="w-full"
             >

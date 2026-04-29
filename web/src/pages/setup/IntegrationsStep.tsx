@@ -38,9 +38,7 @@ export function IntegrationsStep() {
       <h2 className="text-lg font-semibold text-white mb-1">
         {i18n._(msg`setup.integrations.title`)}
       </h2>
-      <p className="text-[13px] text-white/40 mb-6">
-        {i18n._(msg`setup.integrations.subtitle`)}
-      </p>
+      <p className="text-[13px] text-white/40 mb-6">{i18n._(msg`setup.integrations.subtitle`)}</p>
 
       <ul className="space-y-3 mb-6">
         {providers.map((p) => (

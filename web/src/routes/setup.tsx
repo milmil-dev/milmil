@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { setupApi, type SetupStatus } from '../lib/api/setup';
+import { type SetupStatus, setupApi } from '../lib/api/setup';
 import { SetupLayout } from '../pages/setup/SetupLayout';
 
 export const Route = createFileRoute('/setup')({

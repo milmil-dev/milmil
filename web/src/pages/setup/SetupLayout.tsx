@@ -33,9 +33,7 @@ export function SetupLayout() {
             <span className="text-lg font-bold text-mm-accent">M</span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
-          <p className="mt-2 text-[12px] uppercase tracking-wider text-white/40">
-            {activeLabel}
-          </p>
+          <p className="mt-2 text-[12px] uppercase tracking-wider text-white/40">{activeLabel}</p>
           <div className="mt-3 flex items-center justify-center gap-2">
             {STEPS.map((s, i) => (
               <span
