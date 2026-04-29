@@ -14,27 +14,27 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/pages/WatchPage.tsx:110
+#: src/pages/WatchPage.tsx:109
 msgid "watch.resumeFrom"
 msgstr "Jumped to"
 
 #. js-lingui-explicit-id
-#: src/components/history/HistoryEmptyState.tsx:15
+#: src/components/history/HistoryEmptyState.tsx:21
 msgid "history.empty.title"
 msgstr "No watch history yet"
 
 #. js-lingui-explicit-id
-#: src/components/history/HistoryEmptyState.tsx:18
+#: src/components/history/HistoryEmptyState.tsx:23
 msgid "history.empty.description"
 msgstr "Start watching an anime to build your history."
 
 #. js-lingui-explicit-id
-#: src/components/history/HistoryEmptyState.tsx:24
+#: src/components/history/HistoryEmptyState.tsx:29
 msgid "nav.home"
 msgstr "Home"
 
 #. js-lingui-explicit-id
-#: src/components/history/HistoryCard.tsx:53
+#: src/components/history/HistoryCard.tsx:54
 msgid "history.finished"
 msgstr "Finished"
 
@@ -198,261 +198,261 @@ msgstr "Finished"
 msgid "{missingCount} missing episodes"
 msgstr "{missingCount} missing episodes"
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:55
-#: src/pages/library/RenameHistoryPage.tsx:49
-#: src/pages/library/RenamePreviewPage.tsx:55
+#: src/pages/library/LibraryDuplicatesPage.tsx:53
+#: src/pages/library/RenameHistoryPage.tsx:47
+#: src/pages/library/RenamePreviewPage.tsx:53
 msgid "← Back to library"
 msgstr "← Back to library"
 
-#: src/pages/settings/AboutPanel.tsx:148
+#: src/pages/settings/AboutPanel.tsx:141
 msgid "about.export"
 msgstr "Export"
 
-#: src/pages/settings/AboutPanel.tsx:62
+#: src/pages/settings/AboutPanel.tsx:61
 msgid "about.exportFailed"
 msgstr "Export failed"
 
-#: src/pages/settings/AboutPanel.tsx:140
+#: src/pages/settings/AboutPanel.tsx:134
 msgid "about.exportSettings"
 msgstr "Export Settings"
 
-#: src/pages/settings/AboutPanel.tsx:143
+#: src/pages/settings/AboutPanel.tsx:136
 msgid "about.exportSettingsDesc"
 msgstr "Download your settings as a JSON file"
 
-#: src/pages/settings/AboutPanel.tsx:60
+#: src/pages/settings/AboutPanel.tsx:59
 msgid "about.exportSuccess"
 msgstr "Settings exported"
 
-#: src/pages/settings/AboutPanel.tsx:169
-#: src/pages/settings/AboutPanel.tsx:231
+#: src/pages/settings/AboutPanel.tsx:156
+#: src/pages/settings/AboutPanel.tsx:210
 msgid "about.import"
 msgstr "Import"
 
-#: src/pages/settings/AboutPanel.tsx:223
+#: src/pages/settings/AboutPanel.tsx:203
 msgid "about.importConfirmDesc"
 msgstr "This will overwrite your current settings. This cannot be undone."
 
-#: src/pages/settings/AboutPanel.tsx:221
+#: src/pages/settings/AboutPanel.tsx:202
 msgid "about.importConfirmTitle"
 msgstr "Import settings?"
 
-#: src/pages/settings/AboutPanel.tsx:84
+#: src/pages/settings/AboutPanel.tsx:83
 msgid "about.importFailed"
 msgstr "Import failed"
 
-#: src/pages/settings/AboutPanel.tsx:157
+#: src/pages/settings/AboutPanel.tsx:149
 msgid "about.importSettings"
 msgstr "Import Settings"
 
-#: src/pages/settings/AboutPanel.tsx:160
+#: src/pages/settings/AboutPanel.tsx:151
 msgid "about.importSettingsDesc"
 msgstr "Restore settings from a JSON file"
 
-#: src/pages/settings/AboutPanel.tsx:82
+#: src/pages/settings/AboutPanel.tsx:81
 msgid "about.importSuccess"
 msgstr "Settings imported"
 
-#: src/pages/settings/AboutPanel.tsx:204
+#: src/pages/settings/AboutPanel.tsx:185
 msgid "about.links"
 msgstr "Links"
 
-#: src/pages/settings/AboutPanel.tsx:197
-#: src/pages/settings/AboutPanel.tsx:252
+#: src/pages/settings/AboutPanel.tsx:178
+#: src/pages/settings/AboutPanel.tsx:229
 msgid "about.reset"
 msgstr "Reset"
 
-#: src/pages/settings/AboutPanel.tsx:243
+#: src/pages/settings/AboutPanel.tsx:221
 msgid "about.resetConfirmDesc"
 msgstr "This will reset all settings to default values. This cannot be undone."
 
-#: src/pages/settings/AboutPanel.tsx:241
+#: src/pages/settings/AboutPanel.tsx:220
 msgid "about.resetConfirmTitle"
 msgstr "Reset to defaults?"
 
-#: src/pages/settings/AboutPanel.tsx:95
+#: src/pages/settings/AboutPanel.tsx:94
 msgid "about.resetFailed"
 msgstr "Reset failed"
 
-#: src/pages/settings/AboutPanel.tsx:93
+#: src/pages/settings/AboutPanel.tsx:92
 msgid "about.resetSuccess"
 msgstr "Settings reset"
 
-#: src/pages/settings/AboutPanel.tsx:185
+#: src/pages/settings/AboutPanel.tsx:171
 msgid "about.resetToDefaults"
 msgstr "Reset to Defaults"
 
-#: src/pages/settings/AboutPanel.tsx:188
+#: src/pages/settings/AboutPanel.tsx:173
 msgid "about.resetToDefaultsDesc"
 msgstr "Restore all settings to their original values"
 
-#: src/pages/settings/AboutPanel.tsx:135
+#: src/pages/settings/AboutPanel.tsx:130
 msgid "about.settingsManagement"
 msgstr "Settings Management"
 
-#: src/pages/settings/AboutPanel.tsx:112
+#: src/pages/settings/AboutPanel.tsx:108
 msgid "about.subtitle"
 msgstr "About milmil"
 
-#: src/pages/settings/AboutPanel.tsx:117
+#: src/pages/settings/AboutPanel.tsx:112
 msgid "about.systemInfo"
 msgstr "System Information"
 
-#: src/pages/settings/AccountPanel.tsx:405
+#: src/pages/settings/AccountPanel.tsx:403
 msgid "account.2fa.activeMessage"
 msgstr "Two-factor authentication is active. Toggle off to disable."
 
-#: src/pages/settings/AccountPanel.tsx:310
+#: src/pages/settings/AccountPanel.tsx:314
 msgid "account.2fa.description"
 msgstr "Add an extra layer of security by requiring a TOTP code when signing in."
 
-#: src/pages/settings/AccountPanel.tsx:291
+#: src/pages/settings/AccountPanel.tsx:296
 msgid "account.2fa.disabled"
 msgstr "2FA disabled"
 
-#: src/pages/settings/AccountPanel.tsx:296
+#: src/pages/settings/AccountPanel.tsx:301
 msgid "account.2fa.disableFailed"
 msgstr "Failed to disable 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:280
+#: src/pages/settings/AccountPanel.tsx:285
 msgid "account.2fa.enabled"
 msgstr "2FA enabled"
 
-#: src/pages/settings/AccountPanel.tsx:285
+#: src/pages/settings/AccountPanel.tsx:290
 msgid "account.2fa.invalidCode"
 msgstr "Invalid code"
 
-#: src/pages/settings/AccountPanel.tsx:348
+#: src/pages/settings/AccountPanel.tsx:351
 msgid "account.2fa.manualEntry"
 msgstr "Manual entry"
 
-#: src/pages/settings/AccountPanel.tsx:334
+#: src/pages/settings/AccountPanel.tsx:337
 msgid "account.2fa.scanInstructions"
 msgstr "Scan this QR code with your authenticator app, then enter the 6-digit code to verify."
 
-#: src/pages/settings/AccountPanel.tsx:274
+#: src/pages/settings/AccountPanel.tsx:279
 msgid "account.2fa.setupFailed"
 msgstr "Failed to set up 2FA"
 
-#: src/pages/settings/AccountPanel.tsx:320
+#: src/pages/settings/AccountPanel.tsx:323
 msgid "account.2fa.statusDisabled"
 msgstr "Disabled"
 
-#: src/pages/settings/AccountPanel.tsx:317
+#: src/pages/settings/AccountPanel.tsx:320
 msgid "account.2fa.statusEnabled"
 msgstr "Enabled"
 
-#: src/pages/settings/AccountPanel.tsx:319
+#: src/pages/settings/AccountPanel.tsx:322
 msgid "account.2fa.statusPending"
 msgstr "Pending verification"
 
-#: src/pages/settings/AccountPanel.tsx:308
+#: src/pages/settings/AccountPanel.tsx:313
 msgid "account.2fa.title"
 msgstr "Two-Factor Authentication"
 
-#: src/pages/settings/AccountPanel.tsx:367
+#: src/pages/settings/AccountPanel.tsx:370
 msgid "account.2fa.verificationCode"
 msgstr "Verification Code"
 
-#: src/pages/settings/AccountPanel.tsx:394
+#: src/pages/settings/AccountPanel.tsx:393
 msgid "account.2fa.verifyEnable"
 msgstr "Verify & Enable"
 
-#: src/pages/settings/AccountPanel.tsx:393
+#: src/pages/settings/AccountPanel.tsx:392
 msgid "account.2fa.verifying"
 msgstr "Verifying..."
 
-#: src/pages/settings/AccountPanel.tsx:121
+#: src/pages/settings/AccountPanel.tsx:122
 msgid "account.changePassword"
 msgstr "Change Password"
 
-#: src/pages/settings/AccountPanel.tsx:202
+#: src/pages/settings/AccountPanel.tsx:207
 msgid "account.confirmPassword"
 msgstr "Confirm New Password"
 
-#: src/pages/settings/AccountPanel.tsx:139
+#: src/pages/settings/AccountPanel.tsx:142
 msgid "account.currentPassword"
 msgstr "Current Password"
 
-#: src/pages/settings/AccountPanel.tsx:133
-#: src/pages/settings/AccountPanel.tsx:161
-#: src/pages/settings/AccountPanel.tsx:192
+#: src/pages/settings/AccountPanel.tsx:134
+#: src/pages/settings/AccountPanel.tsx:164
+#: src/pages/settings/AccountPanel.tsx:195
 msgid "account.fieldRequired"
 msgstr "This field is required"
 
-#: src/components/AppSidebar.tsx:142
+#: src/components/AppSidebar.tsx:145
 msgid "account.local"
 msgstr "Local account"
 
-#: src/components/AppSidebar.tsx:170
+#: src/components/AppSidebar.tsx:173
 msgid "account.logout"
 msgstr "Log out"
 
-#: src/pages/settings/AccountPanel.tsx:170
+#: src/pages/settings/AccountPanel.tsx:174
 msgid "account.newPassword"
 msgstr "New Password"
 
-#: src/pages/settings/AccountPanel.tsx:162
+#: src/pages/settings/AccountPanel.tsx:165
 msgid "account.passwordMinLength"
 msgstr "Password must be at least 8 characters"
 
-#: src/pages/settings/AccountPanel.tsx:194
+#: src/pages/settings/AccountPanel.tsx:197
 msgid "account.passwordMismatch"
 msgstr "Passwords do not match"
 
-#: src/pages/settings/AccountPanel.tsx:57
+#: src/pages/settings/AccountPanel.tsx:62
 msgid "account.passwordUpdated"
 msgstr "Password updated"
 
-#: src/pages/settings/AccountPanel.tsx:60
+#: src/pages/settings/AccountPanel.tsx:65
 msgid "account.passwordUpdateFailed"
 msgstr "Failed to update password"
 
-#: src/pages/settings/AccountPanel.tsx:108
+#: src/pages/settings/AccountPanel.tsx:109
 msgid "account.profile"
 msgstr "Profile"
 
-#: src/pages/settings/AccountPanel.tsx:83
+#: src/pages/settings/AccountPanel.tsx:85
 msgid "account.subtitle"
 msgstr "Manage your profile and security"
 
-#: src/pages/settings/AccountPanel.tsx:41
+#: src/pages/settings/AccountPanel.tsx:46
 msgid "account.tab.account"
 msgstr "Account"
 
-#: src/pages/settings/AccountPanel.tsx:43
+#: src/pages/settings/AccountPanel.tsx:48
 msgid "account.tab.sessions"
 msgstr "Sessions"
 
-#: src/pages/settings/AccountPanel.tsx:42
+#: src/pages/settings/AccountPanel.tsx:47
 msgid "account.tab.tokens"
 msgstr "API Tokens"
 
-#: src/pages/settings/AccountPanel.tsx:226
+#: src/pages/settings/AccountPanel.tsx:231
 msgid "account.updatePassword"
 msgstr "Update Password"
 
-#: src/pages/settings/AccountPanel.tsx:225
+#: src/pages/settings/AccountPanel.tsx:230
 msgid "account.updating"
 msgstr "Updating..."
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:87
+#: src/pages/library/LibraryDuplicatesPage.tsx:83
 msgid "Anime"
 msgstr "Anime"
 
-#: src/pages/AnimeDetailPage.tsx:671
+#: src/pages/AnimeDetailPage.tsx:690
 msgid "anime.addToCollection"
 msgstr "Add to Collection"
 
-#: src/pages/AnimeDetailPage.tsx:947
+#: src/pages/AnimeDetailPage.tsx:1040
 msgid "anime.characters"
 msgstr "Characters"
 
-#: src/pages/AnimeDetailPage.tsx:265
+#: src/pages/AnimeDetailPage.tsx:264
 msgid "anime.collectionUpdated"
 msgstr "Collection updated"
 
-#: src/pages/AnimeDetailPage.tsx:1128
+#: src/pages/AnimeDetailPage.tsx:1230
 msgid "anime.comments"
 msgstr "Comments"
 
@@ -460,7 +460,7 @@ msgstr "Comments"
 #~ msgid "anime.continueWatching"
 #~ msgstr "Continue Watching"
 
-#: src/pages/AnimeDetailPage.tsx:694
+#: src/pages/AnimeDetailPage.tsx:732
 msgid "anime.enableTrackerSync"
 msgstr "anime.enableTrackerSync"
 
@@ -469,11 +469,11 @@ msgstr "anime.enableTrackerSync"
 #~ msgstr "Episode"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:871
+#: src/pages/AnimeDetailPage.tsx:964
 msgid "anime.episodes"
 msgstr "Episodes"
 
-#: src/pages/AnimeDetailPage.tsx:694
+#: src/pages/AnimeDetailPage.tsx:733
 msgid "anime.excludeTrackerSync"
 msgstr "anime.excludeTrackerSync"
 
@@ -488,32 +488,32 @@ msgstr "anime.excludeTrackerSync"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:534
+#: src/pages/AnimeDetailPage.tsx:544
 msgid "anime.notAired"
 msgstr "Not Yet Aired"
 
-#: src/pages/AnimeDetailPage.tsx:332
+#: src/pages/AnimeDetailPage.tsx:331
 msgid "anime.notFound"
 msgstr "Anime not found"
 
-#: src/pages/AnimeDetailPage.tsx:547
+#: src/pages/AnimeDetailPage.tsx:557
 msgid "anime.playableEps"
 msgstr "playable eps"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:527
+#: src/pages/AnimeDetailPage.tsx:537
 msgid "anime.ratings"
 msgstr "ratings"
 
-#: src/pages/AnimeDetailPage.tsx:1042
+#: src/pages/AnimeDetailPage.tsx:1144
 msgid "anime.recommendations"
 msgstr "Recommended"
 
-#: src/pages/AnimeDetailPage.tsx:1013
+#: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.relations"
 msgstr "Related"
 
-#: src/pages/AnimeDetailPage.tsx:1080
+#: src/pages/AnimeDetailPage.tsx:1182
 msgid "anime.reviews"
 msgstr "Reviews"
 
@@ -521,22 +521,22 @@ msgstr "Reviews"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:683
+#: src/pages/AnimeDetailPage.tsx:715
 msgid "anime.searchResources"
 msgstr "Search Resources"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
-#: src/pages/AnimeDetailPage.tsx:970
+#: src/pages/AnimeDetailPage.tsx:1064
 msgid "anime.sideStories"
 msgstr "Side Stories & Movies"
 
-#: src/pages/AnimeDetailPage.tsx:541
+#: src/pages/AnimeDetailPage.tsx:551
 msgid "anime.subscribed"
 msgstr "Following"
 
-#: src/pages/AnimeDetailPage.tsx:281
+#: src/pages/AnimeDetailPage.tsx:280
 msgid "anime.syncFlagsUpdated"
 msgstr "anime.syncFlagsUpdated"
 
@@ -545,95 +545,95 @@ msgstr "anime.syncFlagsUpdated"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:917
+#: src/pages/AnimeDetailPage.tsx:1010
 msgid "anime.trailer"
 msgstr "Trailer"
 
-#: src/pages/AnimeDetailPage.tsx:953
+#: src/pages/AnimeDetailPage.tsx:1046
 msgid "anime.voiceActor"
 msgstr "CV"
 
-#: src/pages/settings/ApiTokensCard.tsx:191
+#: src/pages/settings/ApiTokensCard.tsx:186
 msgid "apiTokens.create"
 msgstr "Create"
 
-#: src/pages/settings/ApiTokensCard.tsx:142
+#: src/pages/settings/ApiTokensCard.tsx:137
 msgid "apiTokens.created"
 msgstr "Created"
 
-#: src/pages/settings/ApiTokensCard.tsx:90
+#: src/pages/settings/ApiTokensCard.tsx:87
 msgid "apiTokens.createdWarning"
 msgstr "Copy this token now — it won't be shown again."
 
-#: src/pages/settings/ApiTokensCard.tsx:53
+#: src/pages/settings/ApiTokensCard.tsx:52
 msgid "apiTokens.createFailed"
 msgstr "Failed to create token"
 
-#: src/pages/settings/ApiTokensCard.tsx:83
+#: src/pages/settings/ApiTokensCard.tsx:81
 msgid "apiTokens.description"
 msgstr "Create tokens for mobile apps and external tools to access your milmil server."
 
-#: src/pages/settings/ApiTokensCard.tsx:116
+#: src/pages/settings/ApiTokensCard.tsx:113
 msgid "apiTokens.dismiss"
 msgstr "Dismiss"
 
-#: src/pages/settings/ApiTokensCard.tsx:146
+#: src/pages/settings/ApiTokensCard.tsx:141
 msgid "apiTokens.lastUsed"
 msgstr "Last used"
 
-#: src/pages/settings/ApiTokensCard.tsx:174
+#: src/pages/settings/ApiTokensCard.tsx:169
 msgid "apiTokens.namePlaceholder"
 msgstr "Device name (e.g. iPhone)"
 
-#: src/pages/settings/ApiTokensCard.tsx:161
+#: src/pages/settings/ApiTokensCard.tsx:156
 msgid "apiTokens.revoke"
 msgstr "Revoke"
 
-#: src/pages/settings/ApiTokensCard.tsx:155
+#: src/pages/settings/ApiTokensCard.tsx:150
 msgid "apiTokens.revokeConfirm"
 msgstr "Revoke this token? The device using it will lose access."
 
-#: src/pages/settings/ApiTokensCard.tsx:59
+#: src/pages/settings/ApiTokensCard.tsx:58
 msgid "apiTokens.revoked"
 msgstr "Token revoked"
 
-#: src/pages/settings/ApiTokensCard.tsx:62
+#: src/pages/settings/ApiTokensCard.tsx:61
 msgid "apiTokens.revokeFailed"
 msgstr "Failed to revoke token"
 
-#: src/pages/settings/ApiTokensCard.tsx:81
+#: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
 msgstr "API Tokens"
 
 #. placeholder {0}: res.applied
 #. placeholder {1}: res.batch_id.slice(0, 8)
-#: src/pages/library/RenamePreviewPage.tsx:25
+#: src/pages/library/RenamePreviewPage.tsx:24
 msgid "Applied {0} files. Batch: {1}"
 msgstr "Applied {0} files. Batch: {1}"
 
 #. placeholder {0}: ok.length
-#: src/pages/library/RenamePreviewPage.tsx:69
+#: src/pages/library/RenamePreviewPage.tsx:64
 msgid "Apply {0} renames. This will move files on disk. Continue?"
 msgstr "Apply {0} renames. This will move files on disk. Continue?"
 
 #. placeholder {0}: ok.length
-#: src/pages/library/RenamePreviewPage.tsx:77
+#: src/pages/library/RenamePreviewPage.tsx:71
 msgid "Apply all OK ({0})"
 msgstr "Apply all OK ({0})"
 
-#: src/pages/LoginPage.tsx:202
+#: src/pages/LoginPage.tsx:199
 msgid "auth.2fa.codeLabel"
 msgstr "Authentication Code"
 
-#: src/pages/LoginPage.tsx:197
+#: src/pages/LoginPage.tsx:194
 msgid "auth.2fa.subtitle"
 msgstr "Enter the 6-digit code from your authenticator app"
 
-#: src/pages/LoginPage.tsx:195
+#: src/pages/LoginPage.tsx:192
 msgid "auth.2fa.title"
 msgstr "Two-Factor Authentication"
 
-#: src/pages/LoginPage.tsx:271
+#: src/pages/LoginPage.tsx:268
 msgid "auth.2fa.verify"
 msgstr "Verify"
 
@@ -653,13 +653,13 @@ msgstr "Login failed"
 msgid "auth.error.setupFailed"
 msgstr "Setup failed"
 
-#: src/pages/LibrariesPage.tsx:2844
-#: src/pages/LibraryDetailPage.tsx:1952
+#: src/pages/LibrariesPage.tsx:2843
+#: src/pages/LibraryDetailPage.tsx:1970
 msgid "auth.libraries.signInSubtitle"
 msgstr "Sign in to access your libraries"
 
-#: src/pages/LibrariesPage.tsx:2841
-#: src/pages/LibraryDetailPage.tsx:1949
+#: src/pages/LibrariesPage.tsx:2840
+#: src/pages/LibraryDetailPage.tsx:1967
 msgid "auth.libraries.signInTitle"
 msgstr "Sign in required"
 
@@ -668,82 +668,82 @@ msgstr "Sign in required"
 #~ msgstr "Signing in..."
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LoginPage.tsx:358
+#: src/pages/LoginPage.tsx:355
 msgid "auth.login.password"
 msgstr "Password"
 
 #: src/components/LoginModal.tsx:175
-#: src/pages/LibrariesPage.tsx:2851
-#: src/pages/LibraryDetailPage.tsx:1955
-#: src/pages/LoginPage.tsx:417
+#: src/pages/LibrariesPage.tsx:2850
+#: src/pages/LibraryDetailPage.tsx:1973
+#: src/pages/LoginPage.tsx:414
 msgid "auth.login.submit"
 msgstr "Sign in"
 
-#: src/pages/LoginPage.tsx:180
+#: src/pages/LoginPage.tsx:177
 msgid "auth.login.subtitle"
 msgstr "Your personal anime media server"
 
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
-#: src/pages/LoginPage.tsx:99
-#: src/pages/LoginPage.tsx:290
-#: src/pages/LoginPage.tsx:308
+#: src/pages/LoginPage.tsx:96
+#: src/pages/LoginPage.tsx:287
+#: src/pages/LoginPage.tsx:305
 msgid "auth.login.title"
 msgstr "Sign in to milmil"
 
 #: src/components/LoginModal.tsx:127
-#: src/pages/LoginPage.tsx:331
+#: src/pages/LoginPage.tsx:328
 msgid "auth.login.username"
 msgstr "Username"
 
-#: src/pages/SetupPage.tsx:42
+#: src/pages/setup/AdminStep.tsx:42
 msgid "auth.setup.error"
 msgstr "Setup failed. Please try again."
 
-#: src/pages/SetupPage.tsx:112
+#: src/pages/setup/AdminStep.tsx:105
 msgid "auth.setup.loading"
 msgstr "Creating account..."
 
-#: src/pages/SetupPage.tsx:90
+#: src/pages/setup/AdminStep.tsx:83
 msgid "auth.setup.password"
 msgstr "Password"
 
 #: src/components/LoginModal.tsx:41
-#: src/pages/LoginPage.tsx:120
-#: src/pages/SetupPage.tsx:31
+#: src/pages/LoginPage.tsx:117
+#: src/pages/setup/AdminStep.tsx:31
 msgid "auth.setup.passwordTooShort"
 msgstr "Password must be at least 8 characters"
 
 #: src/components/LoginModal.tsx:176
-#: src/pages/LoginPage.tsx:418
-#: src/pages/SetupPage.tsx:112
+#: src/pages/LoginPage.tsx:415
+#: src/pages/setup/AdminStep.tsx:105
 msgid "auth.setup.submit"
 msgstr "Create account"
 
 #: src/components/LoginModal.tsx:112
-#: src/pages/LoginPage.tsx:313
-#: src/pages/SetupPage.tsx:53
+#: src/pages/LoginPage.tsx:310
+#: src/pages/setup/AdminStep.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "Create your admin account to get started."
 
 #: src/components/LoginModal.tsx:104
-#: src/pages/LoginPage.tsx:301
-#: src/pages/SetupPage.tsx:21
-#: src/pages/SetupPage.tsx:51
+#: src/pages/LoginPage.tsx:298
+#: src/pages/setup/AdminStep.tsx:21
+#: src/pages/setup/AdminStep.tsx:49
 msgid "auth.setup.title"
 msgstr "Welcome to milmil"
 
-#: src/pages/SetupPage.tsx:67
+#: src/pages/setup/AdminStep.tsx:62
 msgid "auth.setup.username"
 msgstr "Username"
 
-#: src/components/anime/EpisodeStatusCard.tsx:91
+#: src/components/anime/EpisodeStatusCard.tsx:85
 msgid "Auto-download missing"
 msgstr "Auto-download missing"
 
 #. placeholder {0}: res.action
 #. placeholder {1}: res.episode_range
-#: src/components/anime/EpisodeStatusCard.tsx:29
+#: src/components/anime/EpisodeStatusCard.tsx:28
 msgid "Auto-download rule {0} ({1})"
 msgstr "Auto-download rule {0} ({1})"
 
@@ -917,7 +917,7 @@ msgstr "Download added"
 #~ msgid "autoDownload.episodes"
 #~ msgstr "Episodes"
 
-#: src/pages/downloads/LibraryTab.tsx:127
+#: src/pages/downloads/LibraryTab.tsx:151
 msgid "autoDownload.goToSearch"
 msgstr "Go to Search"
 
@@ -1015,7 +1015,7 @@ msgstr "Paste torrent or magnet URL..."
 #~ msgid "autoDownload.refreshAll"
 #~ msgstr "Refresh"
 
-#: src/pages/downloads/LibraryTab.tsx:250
+#: src/pages/downloads/LibraryTab.tsx:294
 msgid "autoDownload.refreshed"
 msgstr "Follow refreshed"
 
@@ -1041,7 +1041,7 @@ msgstr "RSS Source"
 msgid "autoDownload.searchAnime"
 msgstr "Search anime..."
 
-#: src/pages/downloads/LibraryTab.tsx:150
+#: src/pages/downloads/LibraryTab.tsx:178
 msgid "autoDownload.searchDownloads"
 msgstr "Search downloads…"
 
@@ -1147,43 +1147,43 @@ msgstr "torrents found"
 #~ msgid "autoDownload.waiting"
 #~ msgstr "Waiting..."
 
-#: src/pages/settings/BackupPanel.tsx:233
-#: src/pages/settings/BackupPanel.tsx:433
+#: src/pages/settings/BackupPanel.tsx:231
+#: src/pages/settings/BackupPanel.tsx:427
 msgid "backup.configDeleted"
 msgstr "backup.configDeleted"
 
-#: src/pages/settings/BackupPanel.tsx:224
-#: src/pages/settings/BackupPanel.tsx:227
-#: src/pages/settings/BackupPanel.tsx:424
-#: src/pages/settings/BackupPanel.tsx:427
+#: src/pages/settings/BackupPanel.tsx:222
+#: src/pages/settings/BackupPanel.tsx:225
+#: src/pages/settings/BackupPanel.tsx:418
+#: src/pages/settings/BackupPanel.tsx:421
 msgid "backup.connectionFailed"
 msgstr "backup.connectionFailed"
 
-#: src/pages/settings/BackupPanel.tsx:222
-#: src/pages/settings/BackupPanel.tsx:422
+#: src/pages/settings/BackupPanel.tsx:220
+#: src/pages/settings/BackupPanel.tsx:416
 msgid "backup.connectionOk"
 msgstr "backup.connectionOk"
 
-#: src/pages/settings/BackupPanel.tsx:332
-#: src/pages/settings/BackupPanel.tsx:568
+#: src/pages/settings/BackupPanel.tsx:326
+#: src/pages/settings/BackupPanel.tsx:560
 msgid "backup.delete"
 msgstr "backup.delete"
 
-#: src/pages/settings/BackupPanel.tsx:238
-#: src/pages/settings/BackupPanel.tsx:445
+#: src/pages/settings/BackupPanel.tsx:236
+#: src/pages/settings/BackupPanel.tsx:439
 msgid "backup.deleteFailed"
 msgstr "backup.deleteFailed"
 
-#: src/pages/settings/BackupPanel.tsx:681
+#: src/pages/settings/BackupPanel.tsx:668
 msgid "backup.description"
 msgstr "backup.description"
 
-#: src/pages/settings/BackupPanel.tsx:303
-#: src/pages/settings/BackupPanel.tsx:539
+#: src/pages/settings/BackupPanel.tsx:297
+#: src/pages/settings/BackupPanel.tsx:531
 msgid "backup.enabled"
 msgstr "backup.enabled"
 
-#: src/pages/settings/BackupPanel.tsx:128
+#: src/pages/settings/BackupPanel.tsx:126
 msgid "backup.export"
 msgstr "backup.export"
 
@@ -1195,7 +1195,7 @@ msgstr "backup.exportFailed"
 msgid "backup.exportSuccess"
 msgstr "backup.exportSuccess"
 
-#: src/pages/settings/BackupPanel.tsx:138
+#: src/pages/settings/BackupPanel.tsx:136
 msgid "backup.import"
 msgstr "backup.import"
 
@@ -1212,7 +1212,7 @@ msgstr "backup.importSuccess"
 msgid "backup.invalidFile"
 msgstr "backup.invalidFile"
 
-#: src/pages/settings/BackupPanel.tsx:117
+#: src/pages/settings/BackupPanel.tsx:116
 msgid "backup.jsonDescription"
 msgstr "backup.jsonDescription"
 
@@ -1220,81 +1220,81 @@ msgstr "backup.jsonDescription"
 msgid "backup.jsonExportImport"
 msgstr "backup.jsonExportImport"
 
-#: src/pages/settings/BackupPanel.tsx:618
+#: src/pages/settings/BackupPanel.tsx:610
 msgid "backup.neverSynced"
 msgstr "backup.neverSynced"
 
-#: src/pages/settings/BackupPanel.tsx:648
+#: src/pages/settings/BackupPanel.tsx:640
 msgid "backup.noTargets"
 msgstr "backup.noTargets"
 
+#: src/pages/settings/BackupPanel.tsx:281
 #: src/pages/settings/BackupPanel.tsx:286
-#: src/pages/settings/BackupPanel.tsx:292
 msgid "backup.password"
 msgstr "backup.password"
 
-#: src/pages/settings/BackupPanel.tsx:521
+#: src/pages/settings/BackupPanel.tsx:514
 msgid "backup.region"
 msgstr "backup.region"
 
-#: src/pages/settings/BackupPanel.tsx:530
+#: src/pages/settings/BackupPanel.tsx:522
 msgid "backup.regionOptional"
 msgstr "backup.regionOptional"
 
-#: src/pages/settings/BackupPanel.tsx:449
+#: src/pages/settings/BackupPanel.tsx:443
 msgid "backup.s3Compatible"
 msgstr "backup.s3Compatible"
 
-#: src/pages/settings/BackupPanel.tsx:623
+#: src/pages/settings/BackupPanel.tsx:615
 msgid "backup.syncControls"
 msgstr "backup.syncControls"
 
-#: src/pages/settings/BackupPanel.tsx:612
+#: src/pages/settings/BackupPanel.tsx:604
 msgid "backup.syncFailed"
 msgstr "backup.syncFailed"
 
-#: src/pages/settings/BackupPanel.tsx:660
+#: src/pages/settings/BackupPanel.tsx:651
 msgid "backup.syncing"
 msgstr "backup.syncing"
 
-#: src/pages/settings/BackupPanel.tsx:661
+#: src/pages/settings/BackupPanel.tsx:651
 msgid "backup.syncNow"
 msgstr "backup.syncNow"
 
-#: src/pages/settings/BackupPanel.tsx:603
+#: src/pages/settings/BackupPanel.tsx:595
 msgid "backup.syncSuccess"
 msgstr "backup.syncSuccess"
 
-#: src/pages/settings/BackupPanel.tsx:321
-#: src/pages/settings/BackupPanel.tsx:557
+#: src/pages/settings/BackupPanel.tsx:315
+#: src/pages/settings/BackupPanel.tsx:549
 msgid "backup.testConnection"
 msgstr "backup.testConnection"
 
-#: src/pages/settings/BackupPanel.tsx:678
+#: src/pages/settings/BackupPanel.tsx:667
 msgid "backup.title"
 msgstr "backup.title"
 
-#: src/pages/settings/BackupPanel.tsx:269
-#: src/pages/settings/BackupPanel.tsx:275
+#: src/pages/settings/BackupPanel.tsx:266
+#: src/pages/settings/BackupPanel.tsx:271
 msgid "backup.username"
 msgstr "backup.username"
 
-#: src/pages/library/RenameHistoryPage.tsx:61
+#: src/pages/library/RenameHistoryPage.tsx:57
 msgid "Batch"
 msgstr "Batch"
 
-#: src/components/AnimeCard.tsx:344
+#: src/components/AnimeCard.tsx:346
 msgid "card.nextEp"
 msgstr "Next EP"
 
 #. placeholder {0}: formatBytes(totalWaste)
-#: src/pages/library/LibraryDuplicatesPage.tsx:77
+#: src/pages/library/LibraryDuplicatesPage.tsx:73
 msgid "Clean non-preferred ({0})"
 msgstr "Clean non-preferred ({0})"
 
 #. placeholder {0}: res.deleted
 #. placeholder {1}: formatBytes(res.reclaimed_bytes)
-#: src/pages/library/LibraryDuplicatesPage.tsx:28
+#: src/pages/library/LibraryDuplicatesPage.tsx:27
 msgid "Cleaned up {0} files ({1})"
 msgstr "Cleaned up {0} files ({1})"
 
@@ -1307,14 +1307,14 @@ msgstr "All"
 #~ msgstr "Change Status"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:743
+#: src/pages/AnimeDetailPage.tsx:798
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "Completed"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:745
+#: src/pages/AnimeDetailPage.tsx:804
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1336,20 +1336,20 @@ msgid "collection.goToLibraries"
 msgstr "Go to Libraries"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:744
+#: src/pages/AnimeDetailPage.tsx:801
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "On Hold"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:742
+#: src/pages/AnimeDetailPage.tsx:795
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
 msgstr "Planning"
 
-#: src/pages/LibrariesPage.tsx:2658
+#: src/pages/LibrariesPage.tsx:2657
 msgid "collection.recentlyMatched"
 msgstr "Recently Matched"
 
@@ -1374,78 +1374,78 @@ msgstr "Collection"
 msgid "collection.totalShows"
 msgstr "shows"
 
-#: src/pages/LibrariesPage.tsx:2664
+#: src/pages/LibrariesPage.tsx:2663
 msgid "collection.viewAll"
 msgstr "View All"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:741
+#: src/pages/AnimeDetailPage.tsx:792
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
 msgstr "Watching"
 
-#: src/pages/LoginPage.tsx:251
+#: src/pages/LoginPage.tsx:248
 msgid "common.back"
 msgstr "Back"
 
-#: src/pages/AnimeDetailPage.tsx:347
+#: src/pages/AnimeDetailPage.tsx:346
 msgid "common.backHome"
 msgstr "Back to Home"
 
 #: src/components/history/ConfirmDialog.tsx:44
-#: src/pages/LibraryDetailPage.tsx:1820
-#: src/pages/settings/AboutPanel.tsx:228
-#: src/pages/settings/AboutPanel.tsx:247
-#: src/pages/settings/StoragePanel.tsx:112
+#: src/pages/LibraryDetailPage.tsx:1838
+#: src/pages/settings/AboutPanel.tsx:207
+#: src/pages/settings/AboutPanel.tsx:224
+#: src/pages/settings/StoragePanel.tsx:106
 msgid "common.cancel"
 msgstr "Cancel"
 
-#: src/pages/settings/AccountPanel.tsx:357
+#: src/pages/settings/AccountPanel.tsx:360
 msgid "common.clickToCopy"
 msgstr "common.clickToCopy"
 
-#: src/components/history/ConfirmDialog.tsx:49
+#: src/components/history/ConfirmDialog.tsx:46
 msgid "common.confirm"
 msgstr "Confirm"
 
-#: src/pages/LibraryDetailPage.tsx:1830
+#: src/pages/LibraryDetailPage.tsx:1848
 msgid "common.confirmDelete"
 msgstr "Confirm delete"
 
-#: src/pages/settings/AccountPanel.tsx:355
-#: src/pages/settings/ApiTokensCard.tsx:68
+#: src/pages/settings/AccountPanel.tsx:358
+#: src/pages/settings/ApiTokensCard.tsx:67
 msgid "common.copied"
 msgstr "common.copied"
 
-#: src/pages/LibraryDetailPage.tsx:1790
+#: src/pages/LibraryDetailPage.tsx:1808
 msgid "common.dangerZone"
 msgstr "Danger zone"
 
-#: src/components/AnimeCard.tsx:154
-#: src/components/AnimeCard.tsx:323
+#: src/components/AnimeCard.tsx:161
+#: src/components/AnimeCard.tsx:325
 #: src/components/AnimeRow.tsx:48
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:517
-#: src/pages/AnimeDetailPage.tsx:873
+#: src/pages/AnimeDetailPage.tsx:527
+#: src/pages/AnimeDetailPage.tsx:966
 #: src/pages/DownloadsPage.tsx:854
-#: src/pages/LibraryDetailPage.tsx:1063
+#: src/pages/LibraryDetailPage.tsx:1070
 msgid "common.ep"
 msgstr "ep"
 
-#: src/pages/AnimeDetailPage.tsx:332
-#: src/pages/LibraryDetailPage.tsx:1976
-#: src/routes/__root.tsx:46
+#: src/pages/AnimeDetailPage.tsx:331
+#: src/pages/LibraryDetailPage.tsx:1994
+#: src/routes/__root.tsx:67
 msgid "common.loadFailed"
 msgstr "Failed to load"
 
 #: src/components/LoginModal.tsx:173
-#: src/components/MatchModal.tsx:415
-#: src/pages/LibraryDetailPage.tsx:1188
-#: src/pages/LoginPage.tsx:268
-#: src/pages/LoginPage.tsx:405
+#: src/components/MatchModal.tsx:412
+#: src/pages/LibraryDetailPage.tsx:1208
+#: src/pages/LoginPage.tsx:265
+#: src/pages/LoginPage.tsx:402
 msgid "common.loading"
 msgstr "Loading..."
 
@@ -1453,10 +1453,10 @@ msgstr "Loading..."
 msgid "common.minuteShort"
 msgstr "min"
 
-#: src/pages/AnimeDetailPage.tsx:341
-#: src/pages/SchedulePage.tsx:370
-#: src/pages/SchedulePage.tsx:598
-#: src/routes/__root.tsx:60
+#: src/pages/AnimeDetailPage.tsx:340
+#: src/pages/SchedulePage.tsx:537
+#: src/pages/SchedulePage.tsx:790
+#: src/routes/__root.tsx:81
 msgid "common.retry"
 msgstr "Retry"
 
@@ -1476,19 +1476,19 @@ msgid "connection.online"
 msgstr "ONLINE"
 
 #. placeholder {0}: sortedMissing.length
-#: src/components/anime/EpisodeStatusCard.tsx:82
+#: src/components/anime/EpisodeStatusCard.tsx:76
 msgid "Create auto-download rule for {0} missing episodes?"
 msgstr "Create auto-download rule for {0} missing episodes?"
 
-#: src/pages/library/RenameHistoryPage.tsx:62
+#: src/pages/library/RenameHistoryPage.tsx:58
 msgid "Date"
 msgstr "Date"
 
-#: src/components/anime/DuplicatesPanel.tsx:107
+#: src/components/anime/DuplicatesPanel.tsx:100
 msgid "Delete"
 msgstr "Delete"
 
-#: src/components/anime/DuplicatesPanel.tsx:55
+#: src/components/anime/DuplicatesPanel.tsx:49
 msgid "Delete this file permanently?"
 msgstr "Delete this file permanently?"
 
@@ -1524,33 +1524,33 @@ msgstr "Trending Movies"
 msgid "discover.trendingNow"
 msgstr "Trending Right Now"
 
-#: src/components/anime/MissingSearchModal.tsx:110
+#: src/components/anime/MissingSearchModal.tsx:92
 msgid "Download"
 msgstr "Download"
 
 #. placeholder {0}: res.download_id.slice(0, 8)
-#: src/components/anime/MissingSearchModal.tsx:32
+#: src/components/anime/MissingSearchModal.tsx:28
 msgid "Download queued: {0}"
 msgstr "Download queued: {0}"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:212
+#: src/components/downloads/AnimeGroupHeader.tsx:214
 msgid "downloads.autoDisabled"
 msgstr "Auto-download off"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:212
+#: src/components/downloads/AnimeGroupHeader.tsx:214
 msgid "downloads.autoEnabled"
 msgstr "Auto-download on"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:131
-#: src/components/downloads/AnimeGroupHeader.tsx:135
+#: src/components/downloads/AnimeGroupHeader.tsx:133
+#: src/components/downloads/AnimeGroupHeader.tsx:137
 msgid "downloads.collapse"
 msgstr "Collapse"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:255
+#: src/components/downloads/AnimeGroupHeader.tsx:257
 msgid "downloads.completedAt"
 msgstr "Completed"
 
-#: src/pages/downloads/LibraryTab.tsx:325
+#: src/pages/downloads/LibraryTab.tsx:370
 msgid "downloads.confirm.delete"
 msgstr "Delete this subscription? The feed will also be removed."
 
@@ -1560,63 +1560,63 @@ msgstr "Delete this subscription? The feed will also be removed."
 msgid "downloads.delete"
 msgstr "Delete"
 
-#: src/pages/downloads/LibraryTab.tsx:271
+#: src/pages/downloads/LibraryTab.tsx:315
 msgid "downloads.deleted"
 msgstr "Deleted"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:178
+#: src/components/downloads/AnimeGroupHeader.tsx:180
 msgid "downloads.downloading"
 msgstr "downloading"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:131
-#: src/components/downloads/AnimeGroupHeader.tsx:135
+#: src/components/downloads/AnimeGroupHeader.tsx:133
+#: src/components/downloads/AnimeGroupHeader.tsx:137
 msgid "downloads.expand"
 msgstr "Expand"
 
 #~ msgid "downloads.feeds"
 #~ msgstr "RSS Feeds"
 
-#: src/components/downloads/CardMenu.tsx:63
+#: src/components/downloads/CardMenu.tsx:73
 msgid "downloads.menu.autoDownload"
 msgstr "Auto download"
 
-#: src/pages/downloads/LibraryTab.tsx:323
+#: src/pages/downloads/LibraryTab.tsx:368
 msgid "downloads.menu.copied"
 msgstr "Copied"
 
-#: src/components/downloads/CardMenu.tsx:90
+#: src/components/downloads/CardMenu.tsx:102
 msgid "downloads.menu.copyRSS"
 msgstr "Copy RSS URL"
 
-#: src/components/downloads/CardMenu.tsx:99
+#: src/components/downloads/CardMenu.tsx:111
 msgid "downloads.menu.delete"
 msgstr "Delete subscription"
 
-#: src/components/downloads/CardMenu.tsx:45
+#: src/components/downloads/CardMenu.tsx:55
 msgid "downloads.menu.more"
 msgstr "More"
 
-#: src/components/downloads/CardMenu.tsx:71
+#: src/components/downloads/CardMenu.tsx:83
 msgid "downloads.menu.off"
 msgstr "Off"
 
-#: src/components/downloads/CardMenu.tsx:71
+#: src/components/downloads/CardMenu.tsx:83
 msgid "downloads.menu.on"
 msgstr "On"
 
-#: src/components/downloads/CardMenu.tsx:84
+#: src/components/downloads/CardMenu.tsx:96
 msgid "downloads.menu.openAnime"
 msgstr "Open anime page"
 
-#: src/components/downloads/CardMenu.tsx:78
+#: src/components/downloads/CardMenu.tsx:90
 msgid "downloads.menu.refresh"
 msgstr "Refresh now"
 
-#: src/components/downloads/MiscDownloadsSection.tsx:27
+#: src/components/downloads/MiscDownloadsSection.tsx:29
 msgid "downloads.miscHeader"
 msgstr "Other downloads"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:221
+#: src/components/downloads/AnimeGroupHeader.tsx:223
 #: src/components/downloads/episode-rows/EpisodeRowPending.tsx:21
 msgid "downloads.nextFetch"
 msgstr "Next fetch"
@@ -1627,7 +1627,7 @@ msgstr "Next fetch"
 #~ msgid "downloads.noRules"
 #~ msgstr "No download rules yet."
 
-#: src/pages/downloads/LibraryTab.tsx:123
+#: src/pages/downloads/LibraryTab.tsx:147
 msgid "downloads.noRulesHint"
 msgstr "No subscriptions yet — go search to add your first"
 
@@ -1650,35 +1650,35 @@ msgstr "Resume"
 #~ msgid "downloads.rules"
 #~ msgstr "Download Rules"
 
-#: src/pages/downloads/LibraryTab.tsx:206
+#: src/pages/downloads/LibraryTab.tsx:249
 msgid "downloads.searchEmpty"
 msgstr "No anime matches \"{query}\""
 
-#: src/pages/downloads/LibraryTab.tsx:135
+#: src/pages/downloads/LibraryTab.tsx:159
 msgid "downloads.sort.activity"
 msgstr "Recent activity"
 
-#: src/pages/downloads/LibraryTab.tsx:138
+#: src/pages/downloads/LibraryTab.tsx:162
 msgid "downloads.sort.created"
 msgstr "Subscription time"
 
-#: src/pages/downloads/LibraryTab.tsx:136
+#: src/pages/downloads/LibraryTab.tsx:160
 msgid "downloads.sort.name"
 msgstr "Name"
 
-#: src/pages/downloads/LibraryTab.tsx:137
+#: src/pages/downloads/LibraryTab.tsx:161
 msgid "downloads.sort.progress"
 msgstr "Progress"
 
-#: src/pages/downloads/LibraryTab.tsx:192
+#: src/pages/downloads/LibraryTab.tsx:229
 msgid "downloads.summary.downloading"
 msgstr "downloading"
 
-#: src/pages/downloads/LibraryTab.tsx:201
+#: src/pages/downloads/LibraryTab.tsx:242
 msgid "downloads.summary.stored"
 msgstr "stored"
 
-#: src/pages/downloads/LibraryTab.tsx:188
+#: src/pages/downloads/LibraryTab.tsx:223
 msgid "downloads.summary.subscribed"
 msgstr "subscribed"
 
@@ -1699,8 +1699,8 @@ msgstr "Library"
 msgid "downloads.waiting"
 msgstr "Waiting"
 
-#: src/components/anime/DuplicatesPanel.tsx:44
-#: src/pages/library/LibraryDuplicatesPage.tsx:58
+#: src/components/anime/DuplicatesPanel.tsx:41
+#: src/pages/library/LibraryDuplicatesPage.tsx:55
 msgid "Duplicate files"
 msgstr "Duplicate files"
 
@@ -1708,16 +1708,16 @@ msgstr "Duplicate files"
 #~ msgid "Duplicates"
 #~ msgstr "Duplicates"
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:88
+#: src/pages/library/LibraryDuplicatesPage.tsx:84
 msgid "Episode"
 msgstr "Episode"
 
 #. placeholder {0}: set.episode_number
-#: src/components/anime/DuplicatesPanel.tsx:79
+#: src/components/anime/DuplicatesPanel.tsx:73
 msgid "Episode {0}"
 msgstr "Episode {0}"
 
-#: src/components/anime/EpisodeStatusCard.tsx:52
+#: src/components/anime/EpisodeStatusCard.tsx:49
 msgid "Episode status"
 msgstr "Episode status"
 
@@ -1735,30 +1735,30 @@ msgstr "Episode "
 msgid "episode.suffix"
 msgstr ""
 
-#: src/routes/__root.tsx:45
+#: src/routes/__root.tsx:67
 msgid "error.serverUnavailable"
 msgstr "Server Unavailable"
 
-#: src/routes/__root.tsx:50
+#: src/routes/__root.tsx:71
 msgid "error.serverUnavailableHint"
 msgstr "Please check if the server is running and try again"
 
-#: src/components/anime/DuplicatesPanel.tsx:80
+#: src/components/anime/DuplicatesPanel.tsx:73
 msgid "files"
 msgstr "files"
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:89
-#: src/pages/library/RenameHistoryPage.tsx:63
+#: src/pages/library/LibraryDuplicatesPage.tsx:85
+#: src/pages/library/RenameHistoryPage.tsx:59
 msgid "Files"
 msgstr "Files"
 
-#: src/components/HeroBanner.tsx:166
+#: src/components/HeroBanner.tsx:170
 #: src/components/PreviewModal.tsx:251
 #: src/components/PreviewModal.tsx:255
 msgid "hero.details"
 msgstr "Details"
 
-#: src/components/HeroBanner.tsx:173
+#: src/components/HeroBanner.tsx:177
 msgid "hero.preview"
 msgstr "Preview"
 
@@ -1766,70 +1766,70 @@ msgstr "Preview"
 #~ msgid "History"
 #~ msgstr "History"
 
-#: src/components/history/HistoryFilterBar.tsx:101
+#: src/components/history/HistoryFilterBar.tsx:109
 msgid "history.batch"
 msgstr "Batch"
 
-#: src/components/history/HistoryBatchBar.tsx:24
+#: src/components/history/HistoryBatchBar.tsx:26
 msgid "history.batch.cancel"
 msgstr "Cancel"
 
-#: src/components/history/HistoryBatchBar.tsx:32
+#: src/components/history/HistoryBatchBar.tsx:34
 msgid "history.batch.deleteSelected"
 msgstr "Delete selected"
 
-#: src/components/history/HistoryFilterBar.tsx:89
+#: src/components/history/HistoryFilterBar.tsx:97
 msgid "history.clearAll"
 msgstr "Clear"
 
-#: src/pages/HistoryPage.tsx:199
+#: src/pages/HistoryPage.tsx:202
 msgid "history.clearAll.confirm"
 msgstr "Clear all watch history?"
 
-#: src/pages/HistoryPage.tsx:204
+#: src/pages/HistoryPage.tsx:207
 msgid "history.clearAll.description"
 msgstr "This permanently removes every watch progress record. External tracker status (Bangumi / MAL / AniList) won't be reverted."
 
-#: src/pages/HistoryPage.tsx:200
+#: src/pages/HistoryPage.tsx:203
 msgid "history.delete.confirm"
 msgstr "Delete this watch history entry?"
 
-#: src/pages/HistoryPage.tsx:205
+#: src/pages/HistoryPage.tsx:208
 msgid "history.delete.description"
 msgstr "External tracker status (Bangumi / MAL / AniList) won't be reverted."
 
 #: src/components/history/HistoryGrid.tsx:39
-#: src/components/history/HistoryTimelineRail.tsx:20
+#: src/components/history/HistoryTimelineRail.tsx:36
 msgid "history.group.earlier"
 msgstr "Earlier"
 
 #: src/components/history/HistoryGrid.tsx:38
-#: src/components/history/HistoryTimelineRail.tsx:19
+#: src/components/history/HistoryTimelineRail.tsx:35
 msgid "history.group.lastWeek"
 msgstr "Last Week"
 
 #: src/components/history/HistoryGrid.tsx:37
-#: src/components/history/HistoryTimelineRail.tsx:18
+#: src/components/history/HistoryTimelineRail.tsx:34
 msgid "history.group.thisWeek"
 msgstr "This Week"
 
 #: src/components/history/HistoryGrid.tsx:35
-#: src/components/history/HistoryTimelineRail.tsx:16
+#: src/components/history/HistoryTimelineRail.tsx:32
 msgid "history.group.today"
 msgstr "Today"
 
 #: src/components/history/HistoryGrid.tsx:36
-#: src/components/history/HistoryTimelineRail.tsx:17
+#: src/components/history/HistoryTimelineRail.tsx:33
 msgid "history.group.yesterday"
 msgstr "Yesterday"
 
-#: src/pages/HistoryPage.tsx:69
-#: src/pages/HistoryPage.tsx:75
-#: src/pages/HistoryPage.tsx:81
+#: src/pages/HistoryPage.tsx:65
+#: src/pages/HistoryPage.tsx:71
+#: src/pages/HistoryPage.tsx:77
 msgid "history.loadFailed"
 msgstr "Couldn't load history. Please retry."
 
-#: src/components/history/HistoryFilterBar.tsx:79
+#: src/components/history/HistoryFilterBar.tsx:87
 msgid "history.searchPlaceholder"
 msgstr "Search title…"
 
@@ -1846,7 +1846,7 @@ msgid "history.tab.inProgress"
 msgstr "In Progress"
 
 #: src/pages/HistoryPage.tsx:22
-#: src/pages/HistoryPage.tsx:143
+#: src/pages/HistoryPage.tsx:146
 msgid "history.title"
 msgstr "Watch History"
 
@@ -1888,10 +1888,10 @@ msgstr "Incomplete only"
 
 #: src/pages/LibrariesPage.tsx:313
 #: src/pages/LibrariesPage.tsx:344
-#: src/pages/LibrariesPage.tsx:2026
-#: src/pages/LibrariesPage.tsx:2520
-#: src/pages/LibrariesPage.tsx:2891
-#: src/pages/LibrariesPage.tsx:3022
+#: src/pages/LibrariesPage.tsx:2025
+#: src/pages/LibrariesPage.tsx:2519
+#: src/pages/LibrariesPage.tsx:2890
+#: src/pages/LibrariesPage.tsx:3021
 msgid "library.addLibrary"
 msgstr "Add Library"
 
@@ -1912,29 +1912,29 @@ msgstr "Failed to delete anime"
 msgid "library.anime.empty"
 msgstr "No matched anime in this library"
 
-#: src/components/library/FolderPicker.tsx:339
+#: src/components/library/FolderPicker.tsx:333
 msgid "library.browse.folders"
 msgstr "Browse folders"
 
-#: src/components/library/FolderPicker.tsx:237
+#: src/components/library/FolderPicker.tsx:231
 msgid "library.browse.noSubdirectories"
 msgstr "No subdirectories found"
 
-#: src/components/library/FolderPicker.tsx:393
+#: src/components/library/FolderPicker.tsx:387
 msgid "library.browse.select"
 msgstr "Select"
 
-#: src/components/library/FolderPicker.tsx:382
-#: src/pages/LibrariesPage.tsx:575
-#: src/pages/LibrariesPage.tsx:593
+#: src/components/library/FolderPicker.tsx:376
+#: src/pages/LibrariesPage.tsx:574
+#: src/pages/LibrariesPage.tsx:592
 msgid "library.browse.selected"
 msgstr "Selected"
 
-#: src/components/library/FolderPicker.tsx:556
+#: src/components/library/FolderPicker.tsx:550
 msgid "library.browseFolder"
 msgstr "Browse folder"
 
-#: src/pages/LibrariesPage.tsx:3086
+#: src/pages/LibrariesPage.tsx:3085
 msgid "library.cancel"
 msgstr "Cancel"
 
@@ -1946,80 +1946,80 @@ msgstr "Cancel"
 #~ msgid "library.connectSource"
 #~ msgstr "Connect a media source"
 
-#: src/pages/LibrariesPage.tsx:3074
-#: src/pages/LibrariesPage.tsx:3096
-#: src/pages/LibraryDetailPage.tsx:1805
-#: src/pages/LibraryDetailPage.tsx:1839
+#: src/pages/LibrariesPage.tsx:3073
+#: src/pages/LibrariesPage.tsx:3095
+#: src/pages/LibraryDetailPage.tsx:1823
+#: src/pages/LibraryDetailPage.tsx:1857
 msgid "library.delete"
 msgstr "Delete"
 
-#: src/pages/LibrariesPage.tsx:3078
-#: src/pages/LibraryDetailPage.tsx:1808
+#: src/pages/LibrariesPage.tsx:3077
+#: src/pages/LibraryDetailPage.tsx:1826
 msgid "library.deleteConfirm"
 msgstr "All media file records will be removed. Your files on disk are unaffected."
 
-#: src/pages/LibraryDetailPage.tsx:773
+#: src/pages/LibraryDetailPage.tsx:784
 msgid "library.detail.allMatched"
 msgstr "All files matched"
 
-#: src/pages/LibraryDetailPage.tsx:2072
+#: src/pages/LibraryDetailPage.tsx:2090
 msgid "library.detail.autoMatch"
 msgstr "Auto Match"
 
-#: src/pages/LibraryDetailPage.tsx:2076
+#: src/pages/LibraryDetailPage.tsx:2094
 msgid "library.detail.autoMatchTooltip"
 msgstr "Auto-match all unmatched files"
 
-#: src/pages/LibraryDetailPage.tsx:1982
-#: src/pages/LibraryDetailPage.tsx:2023
+#: src/pages/LibraryDetailPage.tsx:2000
+#: src/pages/LibraryDetailPage.tsx:2041
 msgid "library.detail.backToLibraries"
 msgstr "Libraries"
 
-#: src/pages/LibraryDetailPage.tsx:829
+#: src/pages/LibraryDetailPage.tsx:836
 msgid "library.detail.bulkMatch"
 msgstr "Bulk Match"
 
-#: src/pages/LibraryDetailPage.tsx:1189
+#: src/pages/LibraryDetailPage.tsx:1209
 msgid "library.detail.bulkMatchModal.confirm"
 msgstr "Match Files"
 
-#: src/pages/LibraryDetailPage.tsx:1141
+#: src/pages/LibraryDetailPage.tsx:1148
 msgid "library.detail.bulkMatchModal.episodeStartHint"
 msgstr "Files will be assigned EP{0}–EP{1}"
 
-#: src/pages/LibraryDetailPage.tsx:1138
+#: src/pages/LibraryDetailPage.tsx:1145
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
 msgstr "Starting episode"
 
-#: src/pages/LibraryDetailPage.tsx:929
+#: src/pages/LibraryDetailPage.tsx:936
 msgid "library.detail.bulkMatchModal.filesSelected"
 msgstr "{0} files selected"
 
-#: src/pages/LibraryDetailPage.tsx:968
+#: src/pages/LibraryDetailPage.tsx:975
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
 msgstr "Episode Start"
 
-#: src/pages/LibraryDetailPage.tsx:918
+#: src/pages/LibraryDetailPage.tsx:925
 msgid "library.detail.bulkMatchModal.title"
 msgstr "Bulk Match Files"
 
-#: src/pages/LibraryDetailPage.tsx:899
+#: src/pages/LibraryDetailPage.tsx:906
 msgid "library.detail.bulkMatchSuccess"
 msgstr "Matched {0} files"
 
-#: src/pages/LibraryDetailPage.tsx:841
+#: src/pages/LibraryDetailPage.tsx:848
 msgid "library.detail.bulkUnmatch"
 msgstr "Bulk Unmatch"
 
-#: src/pages/LibraryDetailPage.tsx:835
+#: src/pages/LibraryDetailPage.tsx:842
 msgid "library.detail.bulkUnmatchConfirm"
 msgstr "Unmatch selected files?"
 
-#: src/pages/LibraryDetailPage.tsx:510
+#: src/pages/LibraryDetailPage.tsx:521
 msgid "library.detail.col.filename"
 msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:525
+#: src/pages/LibraryDetailPage.tsx:536
 msgid "library.detail.col.matchedAnime"
 msgstr "Matched Anime"
 
@@ -2027,15 +2027,15 @@ msgstr "Matched Anime"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:597
+#: src/pages/LibraryDetailPage.tsx:608
 msgid "library.detail.col.size"
 msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:584
+#: src/pages/LibraryDetailPage.tsx:595
 msgid "library.detail.col.status"
 msgstr "Status"
 
-#: src/pages/LibraryDetailPage.tsx:590
+#: src/pages/LibraryDetailPage.tsx:601
 msgid "library.detail.col.subs"
 msgstr "Subs"
 
@@ -2043,11 +2043,11 @@ msgstr "Subs"
 msgid "library.detail.copyPath"
 msgstr "Copy Path"
 
-#: src/pages/LibraryDetailPage.tsx:2121
+#: src/pages/LibraryDetailPage.tsx:2139
 msgid "library.detail.duplicates"
 msgstr "Duplicates"
 
-#: src/pages/LibraryDetailPage.tsx:2126
+#: src/pages/LibraryDetailPage.tsx:2144
 msgid "library.detail.duplicatesTooltip"
 msgstr "View and clean up duplicate files"
 
@@ -2055,7 +2055,7 @@ msgstr "View and clean up duplicate files"
 msgid "library.detail.editMatch"
 msgstr "Edit"
 
-#: src/pages/LibraryDetailPage.tsx:1573
+#: src/pages/LibraryDetailPage.tsx:1592
 msgid "library.detail.errors"
 msgstr "Errors"
 
@@ -2066,11 +2066,11 @@ msgstr "File Info"
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:1559
+#: src/pages/LibraryDetailPage.tsx:1578
 msgid "library.detail.found"
 msgstr "Found"
 
-#: src/pages/LibraryDetailPage.tsx:1554
+#: src/pages/LibraryDetailPage.tsx:1573
 msgid "library.detail.inProgress"
 msgstr "In Progress"
 
@@ -2078,12 +2078,12 @@ msgstr "In Progress"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:637
+#: src/pages/LibraryDetailPage.tsx:648
 msgid "library.detail.match"
 msgstr "Match"
 
-#: src/pages/LibraryDetailPage.tsx:730
-#: src/pages/LibraryDetailPage.tsx:1562
+#: src/pages/LibraryDetailPage.tsx:741
+#: src/pages/LibraryDetailPage.tsx:1581
 msgid "library.detail.matched"
 msgstr "Matched"
 
@@ -2091,11 +2091,11 @@ msgstr "Matched"
 #~ msgstr "Matched To"
 
 #: src/components/MatchModal.tsx:306
-#: src/pages/LibraryDetailPage.tsx:1125
+#: src/pages/LibraryDetailPage.tsx:1132
 msgid "library.detail.matchModal.change"
 msgstr "Change"
 
-#: src/components/MatchModal.tsx:416
+#: src/components/MatchModal.tsx:413
 msgid "library.detail.matchModal.confirm"
 msgstr "Confirm Match"
 
@@ -2106,12 +2106,12 @@ msgstr "Confirm Match"
 msgid "library.detail.matchModal.matched"
 msgstr "File matched"
 
-#: src/components/MatchModal.tsx:398
+#: src/components/MatchModal.tsx:395
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "No episodes found"
 
 #: src/components/MatchModal.tsx:214
-#: src/pages/LibraryDetailPage.tsx:1030
+#: src/pages/LibraryDetailPage.tsx:1037
 msgid "library.detail.matchModal.noResults"
 msgstr "No results found"
 
@@ -2122,12 +2122,12 @@ msgstr "No results found"
 #~ msgstr "Search anime..."
 
 #: src/components/MatchModal.tsx:196
-#: src/pages/LibraryDetailPage.tsx:1012
+#: src/pages/LibraryDetailPage.tsx:1019
 msgid "library.detail.matchModal.searchHint"
 msgstr "Search for an anime to match this file"
 
 #: src/components/MatchModal.tsx:182
-#: src/pages/LibraryDetailPage.tsx:999
+#: src/pages/LibraryDetailPage.tsx:1006
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "Search anime..."
 
@@ -2136,7 +2136,7 @@ msgid "library.detail.matchModal.stepEpisode"
 msgstr "Select episode"
 
 #: src/components/MatchModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:967
+#: src/pages/LibraryDetailPage.tsx:974
 msgid "library.detail.matchModal.stepSearch"
 msgstr "Search anime"
 
@@ -2148,26 +2148,26 @@ msgstr "Match File"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "Match this file to an anime episode"
 
-#: src/pages/LibraryDetailPage.tsx:672
-#: src/pages/LibraryDetailPage.tsx:778
-#: src/pages/LibraryDetailPage.tsx:1239
-#: src/pages/LibraryDetailPage.tsx:1438
+#: src/pages/LibraryDetailPage.tsx:683
+#: src/pages/LibraryDetailPage.tsx:789
+#: src/pages/LibraryDetailPage.tsx:1259
+#: src/pages/LibraryDetailPage.tsx:1457
 msgid "library.detail.noFiles"
 msgstr "No files found"
 
-#: src/pages/LibraryDetailPage.tsx:675
+#: src/pages/LibraryDetailPage.tsx:686
 msgid "library.detail.noFilesHint"
 msgstr "Run a scan to discover media files in this library"
 
-#: src/pages/LibraryDetailPage.tsx:1510
+#: src/pages/LibraryDetailPage.tsx:1529
 msgid "library.detail.noScans"
 msgstr "No scans yet"
 
-#: src/pages/LibraryDetailPage.tsx:1513
+#: src/pages/LibraryDetailPage.tsx:1532
 msgid "library.detail.noScansHint"
 msgstr "Run your first scan to see history here"
 
-#: src/pages/LibraryDetailPage.tsx:1976
+#: src/pages/LibraryDetailPage.tsx:1994
 msgid "library.detail.notFound"
 msgstr "Library not found"
 
@@ -2175,7 +2175,7 @@ msgstr "Library not found"
 msgid "library.detail.pathCopied"
 msgstr "Path copied"
 
-#: src/pages/LibraryDetailPage.tsx:618
+#: src/pages/LibraryDetailPage.tsx:629
 msgid "library.detail.play"
 msgstr "Play"
 
@@ -2201,54 +2201,54 @@ msgstr "Play"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:2092
+#: src/pages/LibraryDetailPage.tsx:2110
 msgid "library.detail.scanNow"
 msgstr "Scan Now"
 
-#: src/pages/LibraryDetailPage.tsx:2096
+#: src/pages/LibraryDetailPage.tsx:2114
 msgid "library.detail.scanNowTooltip"
 msgstr "Scan for new files in this library"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:721
+#: src/pages/LibraryDetailPage.tsx:732
 msgid "library.detail.searchFiles"
 msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:821
+#: src/pages/LibraryDetailPage.tsx:832
 msgid "library.detail.selected"
 msgstr "selected"
 
-#: src/pages/LibraryDetailPage.tsx:1699
-#: src/pages/LibraryDetailPage.tsx:2109
+#: src/pages/LibraryDetailPage.tsx:1717
+#: src/pages/LibraryDetailPage.tsx:2127
 msgid "library.detail.settings"
 msgstr "Settings"
 
-#: src/pages/LibraryDetailPage.tsx:2113
+#: src/pages/LibraryDetailPage.tsx:2131
 msgid "library.detail.settingsTooltip"
 msgstr "Library settings"
 
 #~ msgid "library.detail.size"
 #~ msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:2255
+#: src/pages/LibraryDetailPage.tsx:2272
 msgid "library.detail.stats.diskUsage"
 msgstr "Disk usage"
 
-#: src/pages/LibraryDetailPage.tsx:2204
+#: src/pages/LibraryDetailPage.tsx:2221
 msgid "library.detail.stats.files"
 msgstr "files"
 
-#: src/pages/LibraryDetailPage.tsx:2221
+#: src/pages/LibraryDetailPage.tsx:2238
 msgid "library.detail.stats.matched"
 msgstr "matched"
 
-#: src/pages/LibraryDetailPage.tsx:2264
+#: src/pages/LibraryDetailPage.tsx:2281
 msgid "library.detail.stats.size"
 msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:2233
+#: src/pages/LibraryDetailPage.tsx:2250
 msgid "library.detail.stats.unmatched"
 msgstr "unmatched"
 
@@ -2262,11 +2262,11 @@ msgstr "unmatched"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:1919
+#: src/pages/LibraryDetailPage.tsx:1937
 msgid "library.detail.tab.anime"
 msgstr "Anime"
 
-#: src/pages/LibraryDetailPage.tsx:1920
+#: src/pages/LibraryDetailPage.tsx:1938
 msgid "library.detail.tab.files"
 msgstr "Files"
 
@@ -2274,7 +2274,7 @@ msgstr "Files"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "Matched"
 
-#: src/pages/LibraryDetailPage.tsx:1921
+#: src/pages/LibraryDetailPage.tsx:1939
 msgid "library.detail.tab.scanHistory"
 msgstr "Scan History"
 
@@ -2298,40 +2298,40 @@ msgstr "Unmatch"
 msgid "library.detail.unmatched"
 msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:734
-#: src/pages/LibraryDetailPage.tsx:1565
+#: src/pages/LibraryDetailPage.tsx:745
+#: src/pages/LibraryDetailPage.tsx:1584
 msgid "library.detail.unmatchedShort"
 msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:2323
+#: src/pages/LibraryDetailPage.tsx:2340
 msgid "library.detail.viewTable"
 msgstr "Table view"
 
-#: src/pages/LibraryDetailPage.tsx:2342
+#: src/pages/LibraryDetailPage.tsx:2359
 msgid "library.detail.viewTree"
 msgstr "Tree view"
 
-#: src/pages/LibrariesPage.tsx:497
-#: src/pages/LibrariesPage.tsx:615
+#: src/pages/LibrariesPage.tsx:496
+#: src/pages/LibrariesPage.tsx:614
 msgid "library.discover.browse"
 msgstr "Browse Network"
 
-#: src/pages/LibrariesPage.tsx:491
+#: src/pages/LibrariesPage.tsx:490
 msgid "library.discover.noHosts"
 msgstr "No hosts found"
 
-#: src/pages/LibrariesPage.tsx:587
+#: src/pages/LibrariesPage.tsx:586
 msgid "library.discover.noShares"
 msgstr "No shares found — credentials may be required"
 
-#: src/pages/LibrariesPage.tsx:480
+#: src/pages/LibrariesPage.tsx:479
 msgid "library.discover.scanning"
 msgstr "Scanning network..."
 
 #~ msgid "library.discover.timeout"
 #~ msgstr "Discovery timed out"
 
-#: src/pages/LibrariesPage.tsx:597
+#: src/pages/LibrariesPage.tsx:596
 msgid "library.discover.useThisHost"
 msgstr "Use this host"
 
@@ -2339,60 +2339,60 @@ msgstr "Use this host"
 #~ msgid "library.edit"
 #~ msgstr "Edit"
 
-#: src/pages/LibrariesPage.tsx:3045
+#: src/pages/LibrariesPage.tsx:3044
 msgid "library.editLibrary"
 msgstr "Edit Library"
 
-#: src/pages/LibrariesPage.tsx:725
-#: src/pages/LibrariesPage.tsx:2494
-#: src/pages/LibraryDetailPage.tsx:1748
-#: src/pages/LibraryDetailPage.tsx:1752
+#: src/pages/LibrariesPage.tsx:724
+#: src/pages/LibrariesPage.tsx:2493
+#: src/pages/LibraryDetailPage.tsx:1766
+#: src/pages/LibraryDetailPage.tsx:1770
 msgid "library.enabled"
 msgstr "Enabled"
 
 #~ msgid "library.files"
 #~ msgstr "files"
 
-#: src/components/library/FolderPicker.tsx:508
+#: src/components/library/FolderPicker.tsx:502
 msgid "library.folderPicker.cancel"
 msgstr "Cancel"
 
 #~ msgid "library.folderPicker.invalidPath"
 #~ msgstr "Path not found"
 
-#: src/components/library/FolderPicker.tsx:479
+#: src/components/library/FolderPicker.tsx:473
 msgid "library.folderPicker.pathPlaceholder"
 msgstr "Paste a path and press Enter"
 
-#: src/components/library/FolderPicker.tsx:485
+#: src/components/library/FolderPicker.tsx:479
 msgid "library.folderPicker.refresh"
 msgstr "Refresh"
 
-#: src/components/library/FolderPicker.tsx:511
+#: src/components/library/FolderPicker.tsx:505
 msgid "library.folderPicker.select"
 msgstr "Select this folder"
 
-#: src/components/library/FolderPicker.tsx:466
+#: src/components/library/FolderPicker.tsx:460
 msgid "library.folderPicker.title"
 msgstr "Select folder"
 
-#: src/pages/LibrariesPage.tsx:1066
-#: src/pages/LibrariesPage.tsx:2273
+#: src/pages/LibrariesPage.tsx:1065
+#: src/pages/LibrariesPage.tsx:2272
 msgid "library.ftp.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:1109
-#: src/pages/LibrariesPage.tsx:2319
+#: src/pages/LibrariesPage.tsx:1108
+#: src/pages/LibrariesPage.tsx:2318
 msgid "library.ftp.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:1079
-#: src/pages/LibrariesPage.tsx:2288
+#: src/pages/LibrariesPage.tsx:1078
+#: src/pages/LibrariesPage.tsx:2287
 msgid "library.ftp.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:1094
-#: src/pages/LibrariesPage.tsx:2304
+#: src/pages/LibrariesPage.tsx:1093
+#: src/pages/LibrariesPage.tsx:2303
 msgid "library.ftp.username"
 msgstr "Username"
 
@@ -2400,46 +2400,46 @@ msgstr "Username"
 msgid "library.hashing"
 msgstr "Hashing..."
 
-#: src/pages/LibrariesPage.tsx:1135
-#: src/pages/LibrariesPage.tsx:2349
+#: src/pages/LibrariesPage.tsx:1134
+#: src/pages/LibrariesPage.tsx:2348
 msgid "library.http.readOnly"
 msgstr "Read-only"
 
-#: src/pages/LibrariesPage.tsx:1128
-#: src/pages/LibrariesPage.tsx:2340
+#: src/pages/LibrariesPage.tsx:1127
+#: src/pages/LibrariesPage.tsx:2339
 msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:237
-#: src/pages/LibraryDetailPage.tsx:2071
+#: src/pages/LibraryDetailPage.tsx:2089
 msgid "library.matching"
 msgstr "Matching..."
 
-#: src/pages/LibrariesPage.tsx:695
-#: src/pages/LibrariesPage.tsx:1613
-#: src/pages/LibrariesPage.tsx:1992
-#: src/pages/LibraryDetailPage.tsx:1704
+#: src/pages/LibrariesPage.tsx:694
+#: src/pages/LibrariesPage.tsx:1612
+#: src/pages/LibrariesPage.tsx:1991
+#: src/pages/LibraryDetailPage.tsx:1722
 msgid "library.name"
 msgstr "Name"
 
-#: src/pages/LibrariesPage.tsx:687
-#: src/pages/LibrariesPage.tsx:1607
-#: src/pages/LibrariesPage.tsx:1981
+#: src/pages/LibrariesPage.tsx:686
+#: src/pages/LibrariesPage.tsx:1606
+#: src/pages/LibrariesPage.tsx:1980
 msgid "library.nameRequired"
 msgstr "Name required"
 
-#: src/pages/LibraryDetailPage.tsx:2006
+#: src/pages/LibraryDetailPage.tsx:2024
 msgid "library.neverScanned"
 msgstr "Never"
 
-#: src/pages/LibrariesPage.tsx:2693
+#: src/pages/LibrariesPage.tsx:2692
+#: src/pages/LibrariesPage.tsx:2697
 #: src/pages/LibrariesPage.tsx:2698
-#: src/pages/LibrariesPage.tsx:2699
-#: src/pages/LibrariesPage.tsx:2702
+#: src/pages/LibrariesPage.tsx:2701
 msgid "library.nextScan"
 msgstr "Next scan in"
 
-#: src/pages/LibrariesPage.tsx:2691
+#: src/pages/LibrariesPage.tsx:2690
 msgid "library.nextScan.soon"
 msgstr "Scan due soon"
 
@@ -2451,39 +2451,39 @@ msgstr "OFF"
 #~ msgid "library.on"
 #~ msgstr "ON"
 
-#: src/pages/LibrariesPage.tsx:2868
+#: src/pages/LibrariesPage.tsx:2867
 msgid "library.pageTitle"
 msgstr "My Libraries"
 
-#: src/pages/LibrariesPage.tsx:1185
-#: src/pages/LibrariesPage.tsx:2407
-#: src/pages/LibraryDetailPage.tsx:1718
+#: src/pages/LibrariesPage.tsx:1184
+#: src/pages/LibrariesPage.tsx:2406
+#: src/pages/LibraryDetailPage.tsx:1736
 msgid "library.path"
 msgstr "Path"
 
-#: src/pages/LibrariesPage.tsx:1177
-#: src/pages/LibrariesPage.tsx:2397
+#: src/pages/LibrariesPage.tsx:1176
+#: src/pages/LibrariesPage.tsx:2396
 msgid "library.pathRequired"
 msgstr "Path required"
 
-#: src/pages/LibrariesPage.tsx:1282
+#: src/pages/LibrariesPage.tsx:1281
 msgid "library.rclone.availableRemotes"
 msgstr "Available Remotes"
 
-#: src/pages/LibrariesPage.tsx:1292
+#: src/pages/LibrariesPage.tsx:1291
 msgid "library.rclone.noRemotes"
 msgstr "No remotes found"
 
-#: src/pages/LibrariesPage.tsx:1154
-#: src/pages/LibrariesPage.tsx:2374
+#: src/pages/LibrariesPage.tsx:1153
+#: src/pages/LibrariesPage.tsx:2373
 msgid "library.rclone.remoteName"
 msgstr "Remote Name"
 
-#: src/components/library/RenameConfigEditor.tsx:119
+#: src/components/library/RenameConfigEditor.tsx:124
 msgid "library.rename.autoOnMatch"
 msgstr "Auto-rename on match"
 
-#: src/components/library/RenameConfigEditor.tsx:95
+#: src/components/library/RenameConfigEditor.tsx:94
 msgid "library.rename.fieldsDetected"
 msgstr "Fields detected"
 
@@ -2493,49 +2493,49 @@ msgstr "Fields detected"
 #~ msgid "library.rename.preview"
 #~ msgstr "Preview"
 
-#: src/components/library/RenameConfigEditor.tsx:67
+#: src/components/library/RenameConfigEditor.tsx:62
 msgid "library.rename.template"
 msgstr "Rename template"
 
-#: src/components/library/RenameConfigEditor.tsx:96
+#: src/components/library/RenameConfigEditor.tsx:95
 msgid "library.rename.validEmpty"
 msgstr "Valid (no fields referenced yet)"
 
-#: src/pages/LibrariesPage.tsx:1031
-#: src/pages/LibrariesPage.tsx:2237
+#: src/pages/LibrariesPage.tsx:1030
+#: src/pages/LibrariesPage.tsx:2236
 msgid "library.s3.accessKey"
 msgstr "Access Key"
 
-#: src/pages/LibrariesPage.tsx:1004
-#: src/pages/LibrariesPage.tsx:2207
+#: src/pages/LibrariesPage.tsx:1003
+#: src/pages/LibrariesPage.tsx:2206
 msgid "library.s3.bucket"
 msgstr "Bucket"
 
-#: src/pages/LibrariesPage.tsx:990
-#: src/pages/LibrariesPage.tsx:2192
+#: src/pages/LibrariesPage.tsx:989
+#: src/pages/LibrariesPage.tsx:2191
 msgid "library.s3.endpoint"
 msgstr "Endpoint"
 
-#: src/pages/LibrariesPage.tsx:1017
-#: src/pages/LibrariesPage.tsx:2222
+#: src/pages/LibrariesPage.tsx:1016
+#: src/pages/LibrariesPage.tsx:2221
 msgid "library.s3.region"
 msgstr "Region"
 
-#: src/pages/LibrariesPage.tsx:1046
-#: src/pages/LibrariesPage.tsx:2252
+#: src/pages/LibrariesPage.tsx:1045
+#: src/pages/LibrariesPage.tsx:2251
 msgid "library.s3.secretKey"
 msgstr "Secret Key"
 
-#: src/pages/LibrariesPage.tsx:3051
-#: src/pages/LibraryDetailPage.tsx:1784
+#: src/pages/LibrariesPage.tsx:3050
+#: src/pages/LibraryDetailPage.tsx:1802
 msgid "library.saveChanges"
 msgstr "Save Changes"
 
-#: src/pages/LibrariesPage.tsx:1254
-#: src/pages/LibrariesPage.tsx:2025
-#: src/pages/LibrariesPage.tsx:2519
-#: src/pages/LibraryDetailPage.tsx:1783
-#: src/pages/LibraryDetailPage.tsx:1829
+#: src/pages/LibrariesPage.tsx:1253
+#: src/pages/LibrariesPage.tsx:2024
+#: src/pages/LibrariesPage.tsx:2518
+#: src/pages/LibraryDetailPage.tsx:1801
+#: src/pages/LibraryDetailPage.tsx:1847
 msgid "library.saving"
 msgstr "Saving…"
 
@@ -2543,61 +2543,61 @@ msgstr "Saving…"
 #~ msgid "library.scan"
 #~ msgstr "Scan"
 
-#: src/pages/LibrariesPage.tsx:1228
-#: src/pages/LibrariesPage.tsx:2480
-#: src/pages/LibraryDetailPage.tsx:1737
+#: src/pages/LibrariesPage.tsx:1227
+#: src/pages/LibrariesPage.tsx:2479
+#: src/pages/LibraryDetailPage.tsx:1755
 msgid "library.scanInterval"
 msgstr "Scan Interval"
 
 #: src/pages/LibrariesPage.tsx:235
-#: src/pages/LibraryDetailPage.tsx:2091
+#: src/pages/LibraryDetailPage.tsx:2109
 msgid "library.scanning"
 msgstr "Scanning"
 
-#: src/pages/LibrariesPage.tsx:845
-#: src/pages/LibrariesPage.tsx:2044
+#: src/pages/LibrariesPage.tsx:844
+#: src/pages/LibrariesPage.tsx:2043
 msgid "library.sftp.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:888
-#: src/pages/LibrariesPage.tsx:2090
+#: src/pages/LibrariesPage.tsx:887
+#: src/pages/LibrariesPage.tsx:2089
 msgid "library.sftp.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:858
-#: src/pages/LibrariesPage.tsx:2059
+#: src/pages/LibrariesPage.tsx:857
+#: src/pages/LibrariesPage.tsx:2058
 msgid "library.sftp.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:873
-#: src/pages/LibrariesPage.tsx:2075
+#: src/pages/LibrariesPage.tsx:872
+#: src/pages/LibrariesPage.tsx:2074
 msgid "library.sftp.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:825
-#: src/pages/LibrariesPage.tsx:1854
+#: src/pages/LibrariesPage.tsx:824
+#: src/pages/LibrariesPage.tsx:1853
 msgid "library.smb.domain"
 msgstr "Domain"
 
-#: src/pages/LibrariesPage.tsx:741
+#: src/pages/LibrariesPage.tsx:740
 msgid "library.smb.host"
 msgstr "Host"
 
-#: src/pages/LibrariesPage.tsx:810
-#: src/pages/LibrariesPage.tsx:1839
+#: src/pages/LibrariesPage.tsx:809
+#: src/pages/LibrariesPage.tsx:1838
 msgid "library.smb.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:763
+#: src/pages/LibrariesPage.tsx:762
 msgid "library.smb.port"
 msgstr "Port"
 
-#: src/pages/LibrariesPage.tsx:779
+#: src/pages/LibrariesPage.tsx:778
 msgid "library.smb.share"
 msgstr "Share"
 
-#: src/pages/LibrariesPage.tsx:795
-#: src/pages/LibrariesPage.tsx:1824
+#: src/pages/LibrariesPage.tsx:794
+#: src/pages/LibrariesPage.tsx:1823
 msgid "library.smb.username"
 msgstr "Username"
 
@@ -2605,19 +2605,19 @@ msgstr "Username"
 #~ msgid "library.sort.label"
 #~ msgstr "Sort"
 
-#: src/pages/LibrariesPage.tsx:2934
+#: src/pages/LibrariesPage.tsx:2933
 msgid "library.sort.match"
 msgstr "Match %"
 
-#: src/pages/LibrariesPage.tsx:2933
+#: src/pages/LibrariesPage.tsx:2932
 msgid "library.sort.name"
 msgstr "Name"
 
-#: src/pages/LibrariesPage.tsx:2936
+#: src/pages/LibrariesPage.tsx:2935
 msgid "library.sort.scanned"
 msgstr "Last Scanned"
 
-#: src/pages/LibrariesPage.tsx:2935
+#: src/pages/LibrariesPage.tsx:2934
 msgid "library.sort.size"
 msgstr "Size"
 
@@ -2625,30 +2625,30 @@ msgstr "Size"
 #~ msgid "library.sourceType"
 #~ msgstr "Source Type"
 
-#: src/pages/LibrariesPage.tsx:626
-#: src/pages/LibrariesPage.tsx:1421
+#: src/pages/LibrariesPage.tsx:625
+#: src/pages/LibrariesPage.tsx:1420
 msgid "library.sourceType.local"
 msgstr "Local"
 
-#: src/pages/LibrariesPage.tsx:628
-#: src/pages/LibrariesPage.tsx:1433
+#: src/pages/LibrariesPage.tsx:627
+#: src/pages/LibrariesPage.tsx:1432
 msgid "library.sourceType.sftp"
 msgstr "SFTP"
 
-#: src/pages/LibrariesPage.tsx:627
-#: src/pages/LibrariesPage.tsx:1427
+#: src/pages/LibrariesPage.tsx:626
+#: src/pages/LibrariesPage.tsx:1426
 msgid "library.sourceType.smb"
 msgstr "SMB"
 
-#: src/pages/LibrariesPage.tsx:2905
+#: src/pages/LibrariesPage.tsx:2904
 msgid "library.summary.files"
 msgstr "files"
 
-#: src/pages/LibrariesPage.tsx:2901
+#: src/pages/LibrariesPage.tsx:2900
 msgid "library.summary.libraries"
 msgstr "libraries"
 
-#: src/pages/LibrariesPage.tsx:2916
+#: src/pages/LibrariesPage.tsx:2915
 msgid "library.summary.matched"
 msgstr "matched"
 
@@ -2668,20 +2668,20 @@ msgstr "Connected"
 msgid "library.testConnection.testing"
 msgstr "Testing..."
 
-#: src/pages/LibrariesPage.tsx:2737
+#: src/pages/LibrariesPage.tsx:2736
 msgid "library.toast.added"
 msgstr "Library added"
 
-#: src/pages/LibrariesPage.tsx:2761
-#: src/pages/LibraryDetailPage.tsx:1674
+#: src/pages/LibrariesPage.tsx:2760
+#: src/pages/LibraryDetailPage.tsx:1693
 msgid "library.toast.deleted"
 msgstr "Library deleted"
 
-#: src/pages/LibraryDetailPage.tsx:1914
+#: src/pages/LibraryDetailPage.tsx:1932
 msgid "library.toast.matchFailed"
 msgstr "Auto matching failed"
 
-#: src/pages/LibraryDetailPage.tsx:1911
+#: src/pages/LibraryDetailPage.tsx:1929
 msgid "library.toast.matchStarted"
 msgstr "Auto matching started"
 
@@ -2690,80 +2690,80 @@ msgstr "Auto matching started"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "Scan complete"
 
-#: src/pages/LibraryDetailPage.tsx:1904
+#: src/pages/LibraryDetailPage.tsx:1922
 msgid "library.toast.scanFailed"
 msgstr "Scan failed"
 
-#: src/pages/LibraryDetailPage.tsx:1901
+#: src/pages/LibraryDetailPage.tsx:1919
 msgid "library.toast.scanStarted"
 msgstr "Scan started"
 
-#: src/pages/LibrariesPage.tsx:2751
-#: src/pages/LibraryDetailPage.tsx:1662
+#: src/pages/LibrariesPage.tsx:2750
+#: src/pages/LibraryDetailPage.tsx:1681
 msgid "library.toast.updated"
 msgstr "Library updated"
 
-#: src/pages/LibrariesPage.tsx:969
-#: src/pages/LibrariesPage.tsx:2171
+#: src/pages/LibrariesPage.tsx:968
+#: src/pages/LibrariesPage.tsx:2170
 msgid "library.webdav.password"
 msgstr "Password"
 
-#: src/pages/LibrariesPage.tsx:909
-#: src/pages/LibrariesPage.tsx:2111
+#: src/pages/LibrariesPage.tsx:908
+#: src/pages/LibrariesPage.tsx:2110
 msgid "library.webdav.url"
 msgstr "URL"
 
-#: src/pages/LibrariesPage.tsx:954
-#: src/pages/LibrariesPage.tsx:2156
+#: src/pages/LibrariesPage.tsx:953
+#: src/pages/LibrariesPage.tsx:2155
 msgid "library.webdav.username"
 msgstr "Username"
 
-#: src/pages/LibrariesPage.tsx:924
-#: src/pages/LibrariesPage.tsx:2126
+#: src/pages/LibrariesPage.tsx:923
+#: src/pages/LibrariesPage.tsx:2125
 msgid "library.webdav.vendor"
 msgstr "Vendor"
 
-#: src/pages/LibrariesPage.tsx:943
-#: src/pages/LibrariesPage.tsx:2145
+#: src/pages/LibrariesPage.tsx:942
+#: src/pages/LibrariesPage.tsx:2144
 msgid "library.webdav.vendorOther"
 msgstr "Other WebDAV"
 
-#: src/pages/LibrariesPage.tsx:2464
+#: src/pages/LibrariesPage.tsx:2463
 msgid "library.wizard.advanced"
 msgstr "Advanced"
 
-#: src/pages/LibrariesPage.tsx:1590
+#: src/pages/LibrariesPage.tsx:1589
 msgid "library.wizard.changeSource"
 msgstr "Change source"
 
-#: src/pages/LibrariesPage.tsx:1532
+#: src/pages/LibrariesPage.tsx:1531
 msgid "library.wizard.chooseSource"
 msgstr "Choose a source type"
 
-#: src/pages/LibrariesPage.tsx:1486
+#: src/pages/LibrariesPage.tsx:1485
 msgid "library.wizard.dropbox.desc"
 msgstr "Access files from Dropbox"
 
-#: src/pages/LibrariesPage.tsx:635
-#: src/pages/LibrariesPage.tsx:1485
+#: src/pages/LibrariesPage.tsx:634
+#: src/pages/LibrariesPage.tsx:1484
 msgid "library.wizard.dropbox.name"
 msgstr "Dropbox"
 
-#: src/pages/LibrariesPage.tsx:1440
+#: src/pages/LibrariesPage.tsx:1439
 msgid "library.wizard.ftp.desc"
 msgstr "Connect via FTP file transfer"
 
-#: src/pages/LibrariesPage.tsx:629
-#: src/pages/LibrariesPage.tsx:1439
+#: src/pages/LibrariesPage.tsx:628
+#: src/pages/LibrariesPage.tsx:1438
 msgid "library.wizard.ftp.name"
 msgstr "FTP"
 
-#: src/pages/LibrariesPage.tsx:1474
+#: src/pages/LibrariesPage.tsx:1473
 msgid "library.wizard.gdrive.desc"
 msgstr "Access files from Google Drive"
 
-#: src/pages/LibrariesPage.tsx:633
-#: src/pages/LibrariesPage.tsx:1473
+#: src/pages/LibrariesPage.tsx:632
+#: src/pages/LibrariesPage.tsx:1472
 msgid "library.wizard.gdrive.name"
 msgstr "Google Drive"
 
@@ -2771,29 +2771,29 @@ msgstr "Google Drive"
 #~ msgid "library.wizard.hideManual"
 #~ msgstr "Hide manual fields"
 
-#: src/pages/LibrariesPage.tsx:1446
+#: src/pages/LibrariesPage.tsx:1445
 msgid "library.wizard.http.desc"
 msgstr "Stream from a web server"
 
-#: src/pages/LibrariesPage.tsx:630
-#: src/pages/LibrariesPage.tsx:1445
+#: src/pages/LibrariesPage.tsx:629
+#: src/pages/LibrariesPage.tsx:1444
 msgid "library.wizard.http.name"
 msgstr "HTTP"
 
-#: src/pages/LibrariesPage.tsx:1422
+#: src/pages/LibrariesPage.tsx:1421
 msgid "library.wizard.local.desc"
 msgstr "Scan a folder on this server"
 
-#: src/pages/LibrariesPage.tsx:1480
+#: src/pages/LibrariesPage.tsx:1479
 msgid "library.wizard.onedrive.desc"
 msgstr "Access files from OneDrive"
 
-#: src/pages/LibrariesPage.tsx:634
-#: src/pages/LibrariesPage.tsx:1479
+#: src/pages/LibrariesPage.tsx:633
+#: src/pages/LibrariesPage.tsx:1478
 msgid "library.wizard.onedrive.name"
 msgstr "OneDrive"
 
-#: src/pages/LibrariesPage.tsx:1856
+#: src/pages/LibrariesPage.tsx:1855
 msgid "library.wizard.optional"
 msgstr "optional"
 
@@ -2801,91 +2801,91 @@ msgstr "optional"
 #~ msgid "library.wizard.orManual"
 #~ msgstr "or enter manually"
 
-#: src/pages/LibrariesPage.tsx:1463
+#: src/pages/LibrariesPage.tsx:1462
 msgid "library.wizard.s3.desc"
 msgstr "Amazon S3 or compatible storage"
 
-#: src/pages/LibrariesPage.tsx:632
-#: src/pages/LibrariesPage.tsx:1462
+#: src/pages/LibrariesPage.tsx:631
+#: src/pages/LibrariesPage.tsx:1461
 msgid "library.wizard.s3.name"
 msgstr "S3"
 
-#: src/pages/LibrariesPage.tsx:1452
+#: src/pages/LibrariesPage.tsx:1451
 msgid "library.wizard.section.cloud"
 msgstr "Cloud & WebDAV"
 
-#: src/pages/LibrariesPage.tsx:1469
+#: src/pages/LibrariesPage.tsx:1468
 msgid "library.wizard.section.rclone"
 msgstr "Import from Rclone"
 
-#: src/pages/LibrariesPage.tsx:1417
+#: src/pages/LibrariesPage.tsx:1416
 msgid "library.wizard.section.storage"
 msgstr "Storage"
 
-#: src/pages/LibrariesPage.tsx:1434
+#: src/pages/LibrariesPage.tsx:1433
 msgid "library.wizard.sftp.desc"
 msgstr "Connect via SSH file transfer"
 
-#: src/pages/LibrariesPage.tsx:1927
+#: src/pages/LibrariesPage.tsx:1926
 msgid "library.wizard.smb.asUser"
 msgstr "as"
 
-#: src/pages/LibrariesPage.tsx:1813
-#: src/pages/LibrariesPage.tsx:1935
+#: src/pages/LibrariesPage.tsx:1812
+#: src/pages/LibrariesPage.tsx:1934
 msgid "library.wizard.smb.change"
 msgstr "Change"
 
-#: src/components/library/FolderPicker.tsx:358
-#: src/pages/LibrariesPage.tsx:1704
+#: src/components/library/FolderPicker.tsx:352
+#: src/pages/LibrariesPage.tsx:1703
 msgid "library.wizard.smb.chooseServer"
 msgstr "Choose a server"
 
-#: src/pages/LibrariesPage.tsx:1875
+#: src/pages/LibrariesPage.tsx:1874
 msgid "library.wizard.smb.connect"
 msgstr "Connect"
 
-#: src/pages/LibrariesPage.tsx:1644
+#: src/pages/LibrariesPage.tsx:1643
 msgid "library.wizard.smb.credentials"
 msgstr "Credentials"
 
-#: src/pages/LibrariesPage.tsx:1428
+#: src/pages/LibrariesPage.tsx:1427
 msgid "library.wizard.smb.desc"
 msgstr "Connect to a Windows or NAS share"
 
-#: src/pages/LibrariesPage.tsx:1725
+#: src/pages/LibrariesPage.tsx:1724
 msgid "library.wizard.smb.enterManually"
 msgstr "Enter server address manually"
 
-#: src/pages/LibrariesPage.tsx:1649
+#: src/pages/LibrariesPage.tsx:1648
 msgid "library.wizard.smb.folder"
 msgstr "Folder"
 
-#: src/pages/LibrariesPage.tsx:1994
+#: src/pages/LibrariesPage.tsx:1993
 msgid "library.wizard.smb.nameHint"
 msgstr "display name in your library list"
 
-#: src/pages/LibrariesPage.tsx:1752
+#: src/pages/LibrariesPage.tsx:1751
 msgid "library.wizard.smb.next"
 msgstr "Next"
 
-#: src/pages/LibrariesPage.tsx:1639
+#: src/pages/LibrariesPage.tsx:1638
 msgid "library.wizard.smb.server"
 msgstr "Server"
 
-#: src/pages/LibrariesPage.tsx:1457
+#: src/pages/LibrariesPage.tsx:1456
 msgid "library.wizard.webdav.desc"
 msgstr "Connect to a WebDAV server"
 
-#: src/pages/LibrariesPage.tsx:631
-#: src/pages/LibrariesPage.tsx:1456
+#: src/pages/LibrariesPage.tsx:630
+#: src/pages/LibrariesPage.tsx:1455
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:215
+#: src/routes/__root.tsx:262
 msgid "match.completed"
 msgstr "Matching completed"
 
-#: src/components/anime/EpisodeStatusCard.tsx:58
+#: src/components/anime/EpisodeStatusCard.tsx:54
 msgid "Missing"
 msgstr "Missing"
 
@@ -2913,23 +2913,23 @@ msgid "nav.history"
 msgstr "History"
 
 #: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:228
+#: src/components/AppSidebar.tsx:231
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "Home"
 
 #: src/components/AppSidebar.tsx:34
-#: src/components/AppSidebar.tsx:231
-#: src/pages/LibrariesPage.tsx:2710
-#: src/pages/LibraryDetailPage.tsx:1854
+#: src/components/AppSidebar.tsx:234
+#: src/pages/LibrariesPage.tsx:2709
+#: src/pages/LibraryDetailPage.tsx:1872
 msgid "nav.libraries"
 msgstr "Library"
 
-#: src/components/AppSidebar.tsx:232
+#: src/components/AppSidebar.tsx:235
 msgid "nav.more"
 msgstr "More"
 
-#: src/components/NotificationBell.tsx:99
+#: src/components/NotificationBell.tsx:95
 msgid "nav.notifications"
 msgstr "Notifications"
 
@@ -2938,19 +2938,19 @@ msgstr "Notifications"
 #~ msgstr "RSS"
 
 #: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:229
-#: src/pages/SchedulePage.tsx:637
+#: src/components/AppSidebar.tsx:232
+#: src/pages/SchedulePage.tsx:829
 msgid "nav.schedule"
 msgstr "Schedule"
 
 #: src/components/AppSidebar.tsx:28
-#: src/components/AppSidebar.tsx:230
+#: src/components/AppSidebar.tsx:233
 #: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "Search"
 
 #: src/components/AppSidebar.tsx:37
-#: src/components/AppSidebar.tsx:158
+#: src/components/AppSidebar.tsx:161
 #: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "Settings"
@@ -2966,11 +2966,11 @@ msgstr "Settings"
 #~ msgid "nav.trending"
 #~ msgstr "Trending"
 
-#: src/pages/library/RenamePreviewPage.tsx:89
+#: src/pages/library/RenamePreviewPage.tsx:83
 msgid "New"
 msgstr "New"
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:82
+#: src/pages/library/LibraryDuplicatesPage.tsx:78
 msgid "No duplicates."
 msgstr "No duplicates."
 
@@ -2978,71 +2978,71 @@ msgstr "No duplicates."
 msgid "No incomplete anime in this library."
 msgstr "No incomplete anime in this library."
 
-#: src/pages/library/RenameHistoryPage.tsx:56
+#: src/pages/library/RenameHistoryPage.tsx:52
 msgid "No rename batches yet."
 msgstr "No rename batches yet."
 
-#: src/pages/library/RenamePreviewPage.tsx:82
+#: src/pages/library/RenamePreviewPage.tsx:76
 msgid "No rename plans."
 msgstr "No rename plans."
 
-#: src/components/anime/MissingSearchModal.tsx:75
+#: src/components/anime/MissingSearchModal.tsx:64
 msgid "No results from any provider."
 msgstr "No results from any provider."
 
-#: src/components/anime/EpisodeStatusCard.tsx:97
+#: src/components/anime/EpisodeStatusCard.tsx:91
 msgid "Not aired yet"
 msgstr "Not aired yet"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:611
+#: src/pages/settings/NotificationSettingsPanel.tsx:660
 msgid "notifications.bot.advanced"
 msgstr "Advanced Settings"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:540
+#: src/pages/settings/NotificationSettingsPanel.tsx:587
 msgid "notifications.bot.airingReminder"
 msgstr "Airing Reminder"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:560
+#: src/pages/settings/NotificationSettingsPanel.tsx:609
 msgid "notifications.bot.airingReminder.desc"
 msgstr "Get notified before a watched anime airs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:555
+#: src/pages/settings/NotificationSettingsPanel.tsx:603
 msgid "notifications.bot.airingReminder.off"
 msgstr "Off"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:594
+#: src/pages/settings/NotificationSettingsPanel.tsx:643
 msgid "notifications.bot.allowedChatIds"
 msgstr "Allowed Chat IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:604
+#: src/pages/settings/NotificationSettingsPanel.tsx:653
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any chat."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:366
+#: src/pages/settings/NotificationSettingsPanel.tsx:401
 msgid "notifications.bot.allowedGuildIds"
 msgstr "Allowed Guild IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:376
+#: src/pages/settings/NotificationSettingsPanel.tsx:411
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any guild."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:354
+#: src/pages/settings/NotificationSettingsPanel.tsx:389
 msgid "notifications.bot.applicationId"
 msgstr "Application ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:342
+#: src/pages/settings/NotificationSettingsPanel.tsx:377
 msgid "notifications.bot.botToken"
 msgstr "Bot Token"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:567
+#: src/pages/settings/NotificationSettingsPanel.tsx:616
 msgid "notifications.bot.dailyDigest"
 msgstr "notifications.bot.dailyDigest"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:636
 msgid "notifications.bot.dailyDigest.desc"
 msgstr "notifications.bot.dailyDigest.desc"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:582
+#: src/pages/settings/NotificationSettingsPanel.tsx:631
 msgid "notifications.bot.dailyDigest.off"
 msgstr "notifications.bot.dailyDigest.off"
 
@@ -3050,11 +3050,11 @@ msgstr "notifications.bot.dailyDigest.off"
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:504
+#: src/pages/settings/NotificationSettingsPanel.tsx:551
 msgid "notifications.bot.language"
 msgstr "Bot Language"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:517
+#: src/pages/settings/NotificationSettingsPanel.tsx:564
 msgid "notifications.bot.language.system"
 msgstr "Follow System"
 
@@ -3062,16 +3062,16 @@ msgstr "Follow System"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:616
+#: src/pages/settings/NotificationSettingsPanel.tsx:665
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:626
+#: src/pages/settings/NotificationSettingsPanel.tsx:675
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "Optional. Leave blank to use long polling."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:319
-#: src/pages/settings/NotificationSettingsPanel.tsx:477
+#: src/pages/settings/NotificationSettingsPanel.tsx:351
+#: src/pages/settings/NotificationSettingsPanel.tsx:519
 msgid "notifications.botCommands"
 msgstr "Bot Commands"
 
@@ -3079,37 +3079,37 @@ msgstr "Bot Commands"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Enable interactive bot commands in Telegram or Discord"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:320
-#: src/pages/settings/NotificationSettingsPanel.tsx:478
+#: src/pages/settings/NotificationSettingsPanel.tsx:354
+#: src/pages/settings/NotificationSettingsPanel.tsx:522
 msgid "notifications.botCommands.shortDesc"
 msgstr "Interactive commands via /search, /schedule, etc."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:703
+#: src/pages/settings/NotificationSettingsPanel.tsx:754
 msgid "notifications.change"
 msgstr "Change"
 
-#: src/pages/NotificationsPage.tsx:155
+#: src/pages/NotificationsPage.tsx:149
 msgid "notifications.clearAll"
 msgstr "Clear all"
 
-#: src/pages/NotificationsPage.tsx:84
+#: src/pages/NotificationsPage.tsx:80
 msgid "notifications.earlier"
 msgstr "Earlier"
 
-#: src/components/NotificationBell.tsx:155
-#: src/pages/NotificationsPage.tsx:249
+#: src/components/NotificationBell.tsx:151
+#: src/pages/NotificationsPage.tsx:242
 msgid "notifications.empty"
 msgstr "No notifications"
 
-#: src/pages/NotificationsPage.tsx:252
+#: src/pages/NotificationsPage.tsx:243
 msgid "notifications.emptyHint"
 msgstr "Notifications appear here..."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:750
+#: src/pages/settings/NotificationSettingsPanel.tsx:801
 msgid "notifications.enableProviderAbove"
 msgstr "Enable a provider above to configure event routing"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:768
+#: src/pages/settings/NotificationSettingsPanel.tsx:819
 msgid "notifications.event"
 msgstr "Event"
 
@@ -3177,133 +3177,133 @@ msgstr "System Error"
 msgid "notifications.event.systemError.desc"
 msgstr "When a background job fails unexpectedly"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:759
+#: src/pages/settings/NotificationSettingsPanel.tsx:810
 msgid "notifications.eventRouting"
 msgstr "Event Routing"
 
-#: src/pages/NotificationsPage.tsx:46
+#: src/pages/NotificationsPage.tsx:42
 msgid "notifications.filter.all"
 msgstr "All"
 
-#: src/pages/NotificationsPage.tsx:47
-#: src/pages/NotificationsPage.tsx:65
+#: src/pages/NotificationsPage.tsx:43
+#: src/pages/NotificationsPage.tsx:61
 msgid "notifications.filter.downloads"
 msgstr "Downloads"
 
-#: src/pages/NotificationsPage.tsx:48
-#: src/pages/NotificationsPage.tsx:66
+#: src/pages/NotificationsPage.tsx:44
+#: src/pages/NotificationsPage.tsx:62
 msgid "notifications.filter.library"
 msgstr "Library"
 
-#: src/pages/NotificationsPage.tsx:49
-#: src/pages/NotificationsPage.tsx:67
+#: src/pages/NotificationsPage.tsx:45
+#: src/pages/NotificationsPage.tsx:63
 msgid "notifications.filter.system"
 msgstr "System"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:989
-#: src/pages/settings/NotificationSettingsPanel.tsx:1005
+#: src/pages/settings/NotificationSettingsPanel.tsx:1039
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
 msgid "notifications.intro"
 msgstr "Get notified on Discord, Telegram, or any webhook when downloads finish or something goes wrong."
 
-#: src/pages/NotificationsPage.tsx:232
+#: src/pages/NotificationsPage.tsx:226
 msgid "notifications.loadMore"
 msgstr "Load more"
 
-#: src/components/NotificationBell.tsx:130
-#: src/pages/NotificationsPage.tsx:147
+#: src/components/NotificationBell.tsx:126
+#: src/pages/NotificationsPage.tsx:141
 msgid "notifications.markAllRead"
 msgstr "Mark all read"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:115
+#: src/pages/settings/NotificationSettingsPanel.tsx:127
 msgid "notifications.providerStatus.error"
 msgstr "Error"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:114
+#: src/pages/settings/NotificationSettingsPanel.tsx:122
 msgid "notifications.providerStatus.ok"
 msgstr "Connected"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:119
+#: src/pages/settings/NotificationSettingsPanel.tsx:132
 msgid "notifications.providerStatus.unconfigured"
 msgstr "Not configured"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:280
-#: src/pages/settings/NotificationSettingsPanel.tsx:463
+#: src/pages/settings/NotificationSettingsPanel.tsx:308
+#: src/pages/settings/NotificationSettingsPanel.tsx:501
 msgid "notifications.pushNotifications"
 msgstr "Push Notifications"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:281
-#: src/pages/settings/NotificationSettingsPanel.tsx:464
+#: src/pages/settings/NotificationSettingsPanel.tsx:311
+#: src/pages/settings/NotificationSettingsPanel.tsx:504
 msgid "notifications.pushNotifications.desc"
 msgstr "Receive alerts for downloads and system events"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:692
+#: src/pages/settings/NotificationSettingsPanel.tsx:743
 msgid "notifications.secretIsSet"
 msgstr "Secret is set"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:687
+#: src/pages/settings/NotificationSettingsPanel.tsx:738
 msgid "notifications.secretPlaceholder"
 msgstr "Optional signing secret"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1015
+#: src/pages/settings/NotificationSettingsPanel.tsx:1062
 msgid "notifications.setupGuide"
 msgstr "Setup Guide"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:165
+#: src/pages/settings/NotificationSettingsPanel.tsx:178
 msgid "notifications.test"
 msgstr "Test"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:213
+#: src/pages/settings/NotificationSettingsPanel.tsx:236
 msgid "notifications.testBot"
 msgstr "Test Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:178
-#: src/pages/settings/NotificationSettingsPanel.tsx:226
+#: src/pages/settings/NotificationSettingsPanel.tsx:194
+#: src/pages/settings/NotificationSettingsPanel.tsx:252
 msgid "notifications.testFailed"
 msgstr "Test failed"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:177
+#: src/pages/settings/NotificationSettingsPanel.tsx:193
 msgid "notifications.testSuccess"
 msgstr "Sent!"
 
-#: src/components/NotificationBell.tsx:122
-#: src/pages/NotificationsPage.tsx:97
-#: src/pages/NotificationsPage.tsx:138
+#: src/components/NotificationBell.tsx:118
+#: src/pages/NotificationsPage.tsx:93
+#: src/pages/NotificationsPage.tsx:133
 msgid "notifications.title"
 msgstr "Notifications"
 
-#: src/pages/NotificationsPage.tsx:82
+#: src/pages/NotificationsPage.tsx:78
 msgid "notifications.today"
 msgstr "Today"
 
-#: src/pages/NotificationsPage.tsx:73
+#: src/pages/NotificationsPage.tsx:69
 msgid "notifications.type.downloadComplete"
 msgstr "Download Complete"
 
-#: src/pages/NotificationsPage.tsx:74
+#: src/pages/NotificationsPage.tsx:70
 msgid "notifications.type.downloadFailed"
 msgstr "Download Failed"
 
-#: src/pages/NotificationsPage.tsx:75
+#: src/pages/NotificationsPage.tsx:71
 msgid "notifications.type.libraryScanComplete"
 msgstr "Library Scan Complete"
 
-#: src/pages/NotificationsPage.tsx:72
+#: src/pages/NotificationsPage.tsx:68
 msgid "notifications.type.newEpisode"
 msgstr "New Episode"
 
-#: src/pages/NotificationsPage.tsx:76
+#: src/pages/NotificationsPage.tsx:72
 msgid "notifications.type.systemError"
 msgstr "System Error"
 
-#: src/components/NotificationBell.tsx:167
+#: src/components/NotificationBell.tsx:163
 msgid "notifications.viewAll"
 msgstr "View all"
 
-#: src/pages/NotificationsPage.tsx:83
+#: src/pages/NotificationsPage.tsx:79
 msgid "notifications.yesterday"
 msgstr "Yesterday"
 
-#: src/pages/library/RenamePreviewPage.tsx:88
+#: src/pages/library/RenamePreviewPage.tsx:82
 msgid "Old"
 msgstr "Old"
 
@@ -3311,7 +3311,7 @@ msgstr "Old"
 #~ msgid "pagination.firstPage"
 #~ msgstr "First page"
 
-#: src/components/DataPagination.tsx:143
+#: src/components/DataPagination.tsx:137
 msgid "pagination.go"
 msgstr "Go"
 
@@ -3347,16 +3347,16 @@ msgstr "Previous page"
 msgid "pagination.rows"
 msgstr "Rows"
 
-#: src/pages/WatchPage.tsx:415
+#: src/pages/WatchPage.tsx:411
 msgid "player.memoryNormal"
 msgstr "Memory usage returned to normal"
 
-#: src/pages/WatchPage.tsx:408
+#: src/pages/WatchPage.tsx:404
 msgid "player.memoryPressure"
 msgstr "High memory usage detected — reducing buffer size"
 
-#: src/components/HeroBanner.tsx:203
-#: src/pages/AnimeDetailPage.tsx:834
+#: src/components/HeroBanner.tsx:209
+#: src/pages/AnimeDetailPage.tsx:927
 msgid "player.remaining"
 msgstr "remaining"
 
@@ -3364,11 +3364,11 @@ msgstr "remaining"
 #~ msgid "Preview"
 #~ msgstr "Preview"
 
-#: src/pages/library/RenameHistoryPage.tsx:52
+#: src/pages/library/RenameHistoryPage.tsx:49
 msgid "Rename history"
 msgstr "Rename history"
 
-#: src/pages/library/RenamePreviewPage.tsx:58
+#: src/pages/library/RenamePreviewPage.tsx:55
 msgid "Rename preview"
 msgstr "Rename preview"
 
@@ -3376,29 +3376,29 @@ msgstr "Rename preview"
 #~ msgid "Rename template"
 #~ msgstr "Rename template"
 
-#: src/pages/library/RenameHistoryPage.tsx:64
+#: src/pages/library/RenameHistoryPage.tsx:60
 msgid "Reverted"
 msgstr "Reverted"
 
 #. placeholder {0}: res.reverted
 #. placeholder {1}: res.skipped
-#: src/pages/library/RenameHistoryPage.tsx:25
+#: src/pages/library/RenameHistoryPage.tsx:24
 msgid "Reverted {0} files, skipped {1}"
 msgstr "Reverted {0} files, skipped {1}"
 
-#: src/components/RuleEditorModal.tsx:661
+#: src/components/RuleEditorModal.tsx:700
 msgid "ruleEditor.addGroup"
 msgstr "Add group..."
 
-#: src/components/RuleEditorModal.tsx:661
+#: src/components/RuleEditorModal.tsx:699
 msgid "ruleEditor.addGroupManual"
 msgstr "Add other group..."
 
-#: src/components/RuleEditorModal.tsx:563
+#: src/components/RuleEditorModal.tsx:594
 msgid "ruleEditor.allEpisodes"
 msgstr "All"
 
-#: src/components/RuleEditorModal.tsx:714
+#: src/components/RuleEditorModal.tsx:754
 msgid "ruleEditor.cancel"
 msgstr "Cancel"
 
@@ -3422,72 +3422,72 @@ msgstr "Cancel"
 #~ msgid "ruleEditor.colTitle"
 #~ msgstr "Title"
 
-#: src/components/RuleEditorModal.tsx:313
+#: src/components/RuleEditorModal.tsx:319
 msgid "ruleEditor.createTitle"
 msgstr "New Rule"
 
-#: src/components/RuleEditorModal.tsx:704
+#: src/components/RuleEditorModal.tsx:744
 msgid "ruleEditor.delete"
 msgstr "Delete"
 
-#: src/components/RuleEditorModal.tsx:261
+#: src/components/RuleEditorModal.tsx:267
 msgid "ruleEditor.deleted"
 msgstr "Unfollowed"
 
-#: src/components/RuleEditorModal.tsx:496
+#: src/components/RuleEditorModal.tsx:520
 #: src/pages/DownloadsPage.tsx:1538
 msgid "ruleEditor.destination"
 msgstr "Destination"
 
-#: src/components/RuleEditorModal.tsx:330
+#: src/components/RuleEditorModal.tsx:334
 msgid "ruleEditor.disabled"
 msgstr "Disabled"
 
-#: src/components/RuleEditorModal.tsx:353
+#: src/components/RuleEditorModal.tsx:360
 msgid "ruleEditor.done"
 msgstr "Done"
 
-#: src/components/RuleEditorModal.tsx:787
+#: src/components/RuleEditorModal.tsx:832
 msgid "ruleEditor.downloaded"
 msgstr "Downloaded"
 
-#: src/components/RuleEditorModal.tsx:371
+#: src/components/RuleEditorModal.tsx:378
 msgid "ruleEditor.editUrl"
 msgstr "Edit"
 
-#: src/components/RuleEditorModal.tsx:329
+#: src/components/RuleEditorModal.tsx:334
 msgid "ruleEditor.enabled"
 msgstr "Enabled"
 
-#: src/components/RuleEditorModal.tsx:558
+#: src/components/RuleEditorModal.tsx:589
 msgid "ruleEditor.episodes"
 msgstr "Episodes"
 
-#: src/components/RuleEditorModal.tsx:544
+#: src/components/RuleEditorModal.tsx:569
 msgid "ruleEditor.exact"
 msgstr "Exact"
 
-#: src/components/RuleEditorModal.tsx:545
+#: src/components/RuleEditorModal.tsx:570
 msgid "ruleEditor.exactDesc"
 msgstr "Must contain the title (case insensitive)"
 
-#: src/components/RuleEditorModal.tsx:378
+#: src/components/RuleEditorModal.tsx:385
 msgid "ruleEditor.feedType"
 msgstr "Feed Type"
 
-#: src/components/RuleEditorModal.tsx:551
+#: src/components/RuleEditorModal.tsx:577
 msgid "ruleEditor.filterRegex"
 msgstr "Filter Pattern"
 
-#: src/components/RuleEditorModal.tsx:538
+#: src/components/RuleEditorModal.tsx:563
 msgid "ruleEditor.fuzzy"
 msgstr "Fuzzy"
 
-#: src/components/RuleEditorModal.tsx:539
+#: src/components/RuleEditorModal.tsx:564
 msgid "ruleEditor.fuzzyDesc"
 msgstr "Parsed using comparison algorithm"
 
-#: src/components/RuleEditorModal.tsx:666
+#: src/components/RuleEditorModal.tsx:706
 msgid "ruleEditor.groupHint"
 msgstr "Any group accepted"
 
@@ -3499,7 +3499,7 @@ msgstr "Any group accepted"
 msgid "ruleEditor.items"
 msgstr "items"
 
-#: src/components/RuleEditorModal.tsx:298
+#: src/components/RuleEditorModal.tsx:304
 msgid "ruleEditor.justNow"
 msgstr "Just now"
 
@@ -3508,7 +3508,7 @@ msgstr "Just now"
 msgid "ruleEditor.keywordMode"
 msgstr "Keyword"
 
-#: src/components/RuleEditorModal.tsx:411
+#: src/components/RuleEditorModal.tsx:418
 #: src/pages/DownloadsPage.tsx:1444
 msgid "ruleEditor.linkedAnime"
 msgstr "Linked Anime"
@@ -3521,7 +3521,7 @@ msgstr "Loading..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr "matched"
 
-#: src/components/RuleEditorModal.tsx:568
+#: src/components/RuleEditorModal.tsx:599
 msgid "ruleEditor.newOnly"
 msgstr "New Only"
 
@@ -3529,42 +3529,42 @@ msgstr "New Only"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr "New Rule"
 
-#: src/components/RuleEditorModal.tsx:511
+#: src/components/RuleEditorModal.tsx:535
 #: src/pages/DownloadsPage.tsx:1552
 msgid "ruleEditor.noLibrary"
 msgstr "No library"
 
-#: src/components/RuleEditorModal.tsx:797
+#: src/components/RuleEditorModal.tsx:843
 msgid "ruleEditor.noPreviewItems"
 msgstr "No items match current filters"
 
-#: src/pages/downloads/LibraryTab.tsx:309
+#: src/pages/downloads/LibraryTab.tsx:353
 msgid "ruleEditor.openEditor"
 msgstr "ruleEditor.openEditor"
 
-#: src/components/RuleEditorModal.tsx:734
+#: src/components/RuleEditorModal.tsx:774
 #: src/pages/DownloadsPage.tsx:1584
 #: src/pages/DownloadsPage.tsx:1610
 msgid "ruleEditor.preview"
 msgstr "Preview"
 
-#: src/components/RuleEditorModal.tsx:573
+#: src/components/RuleEditorModal.tsx:604
 msgid "ruleEditor.range"
 msgstr "Range"
 
-#: src/components/RuleEditorModal.tsx:750
+#: src/components/RuleEditorModal.tsx:790
 msgid "ruleEditor.refreshPreview"
 msgstr "Refresh"
 
-#: src/components/RuleEditorModal.tsx:597
+#: src/components/RuleEditorModal.tsx:629
 msgid "ruleEditor.releaseGroups"
 msgstr "Release Groups"
 
-#: src/components/RuleEditorModal.tsx:673
+#: src/components/RuleEditorModal.tsx:713
 msgid "ruleEditor.resolution"
 msgstr "Resolution"
 
-#: src/components/RuleEditorModal.tsx:337
+#: src/components/RuleEditorModal.tsx:341
 msgid "ruleEditor.rssUrl"
 msgstr "RSS Feed URL"
 
@@ -3573,34 +3573,34 @@ msgstr "RSS Feed URL"
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
-#: src/components/RuleEditorModal.tsx:400
+#: src/components/RuleEditorModal.tsx:407
 #: src/pages/DownloadsPage.tsx:1528
 msgid "ruleEditor.ruleName"
 msgstr "Rule Name"
 
-#: src/components/RuleEditorModal.tsx:321
-#: src/components/RuleEditorModal.tsx:404
+#: src/components/RuleEditorModal.tsx:327
+#: src/components/RuleEditorModal.tsx:411
 #: src/pages/DownloadsPage.tsx:1532
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "e.g. Anime Name Season 1"
 
-#: src/components/RuleEditorModal.tsx:724
+#: src/components/RuleEditorModal.tsx:764
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.save"
 msgstr "Save"
 
-#: src/components/RuleEditorModal.tsx:206
-#: src/components/RuleEditorModal.tsx:245
+#: src/components/RuleEditorModal.tsx:209
+#: src/components/RuleEditorModal.tsx:251
 #: src/pages/DownloadsPage.tsx:1419
 msgid "ruleEditor.saved"
 msgstr "Rule updated"
 
-#: src/components/RuleEditorModal.tsx:723
+#: src/components/RuleEditorModal.tsx:763
 #: src/pages/DownloadsPage.tsx:1593
 msgid "ruleEditor.saving"
 msgstr "Saving..."
 
-#: src/components/RuleEditorModal.tsx:448
+#: src/components/RuleEditorModal.tsx:468
 #: src/pages/DownloadsPage.tsx:1480
 msgid "ruleEditor.searchAnime"
 msgstr "Search anime to link..."
@@ -3613,7 +3613,7 @@ msgstr "Search anime to link..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr "RSS Subscribe"
 
-#: src/components/RuleEditorModal.tsx:533
+#: src/components/RuleEditorModal.tsx:558
 msgid "ruleEditor.titleMatch"
 msgstr "Title Match"
 
@@ -3621,78 +3621,78 @@ msgstr "Title Match"
 #~ msgid "Save"
 #~ msgstr "Save"
 
-#: src/routes/__root.tsx:211
+#: src/routes/__root.tsx:258
 msgid "scan.completed"
 msgstr "Scan completed"
 
-#: src/pages/LibraryDetailPage.tsx:2166
+#: src/pages/LibraryDetailPage.tsx:2185
 msgid "scan.files"
 msgstr "files"
 
-#: src/pages/LibraryDetailPage.tsx:2142
+#: src/pages/LibraryDetailPage.tsx:2160
 msgid "scan.phase.hashing"
 msgstr "Hashing"
 
-#: src/pages/LibraryDetailPage.tsx:2143
+#: src/pages/LibraryDetailPage.tsx:2161
 msgid "scan.phase.matching"
 msgstr "Matching"
 
-#: src/pages/LibraryDetailPage.tsx:2140
+#: src/pages/LibraryDetailPage.tsx:2158
 msgid "scan.phase.scanning"
 msgstr "Scanning"
 
-#: src/pages/LibrariesPage.tsx:2879
-#: src/pages/LibrariesPage.tsx:2884
+#: src/pages/LibrariesPage.tsx:2878
+#: src/pages/LibrariesPage.tsx:2883
 msgid "scan.scanAll"
 msgstr "Scan All"
 
-#: src/components/ScanIntervalSelect.tsx:16
+#: src/components/ScanIntervalSelect.tsx:10
 msgid "scanInterval.12h"
 msgstr "Every 12 hours"
 
-#: src/components/ScanIntervalSelect.tsx:14
+#: src/components/ScanIntervalSelect.tsx:8
 msgid "scanInterval.1h"
 msgstr "Every hour"
 
-#: src/components/ScanIntervalSelect.tsx:13
+#: src/components/ScanIntervalSelect.tsx:7
 msgid "scanInterval.30min"
 msgstr "Every 30 minutes"
 
-#: src/components/ScanIntervalSelect.tsx:15
+#: src/components/ScanIntervalSelect.tsx:9
 msgid "scanInterval.6h"
 msgstr "Every 6 hours"
 
-#: src/components/ScanIntervalSelect.tsx:17
+#: src/components/ScanIntervalSelect.tsx:11
 msgid "scanInterval.daily"
 msgstr "Daily"
 
-#: src/components/ScanIntervalSelect.tsx:12
+#: src/components/ScanIntervalSelect.tsx:6
 msgid "scanInterval.disabled"
 msgstr "Disabled"
 
-#: src/components/ScanIntervalSelect.tsx:18
+#: src/components/ScanIntervalSelect.tsx:12
 msgid "scanInterval.weekly"
 msgstr "Weekly"
 
-#: src/pages/LibraryDetailPage.tsx:727
-#: src/pages/SchedulePage.tsx:396
+#: src/pages/LibraryDetailPage.tsx:738
+#: src/pages/SchedulePage.tsx:560
 msgid "schedule.all"
 msgstr "All"
 
-#: src/pages/SchedulePage.tsx:728
+#: src/pages/SchedulePage.tsx:920
 msgid "schedule.backToCurrent"
 msgstr "Back to current"
 
-#: src/pages/SchedulePage.tsx:364
-#: src/pages/SchedulePage.tsx:592
+#: src/pages/SchedulePage.tsx:531
+#: src/pages/SchedulePage.tsx:784
 msgid "schedule.loadFailed"
 msgstr "Failed to load calendar"
 
 #~ msgid "schedule.next"
 #~ msgstr "Next"
 
-#: src/pages/SchedulePage.tsx:200
-#: src/pages/SchedulePage.tsx:607
+#: src/pages/SchedulePage.tsx:354
+#: src/pages/SchedulePage.tsx:799
 msgid "schedule.noShows"
 msgstr "No shows scheduled"
 
@@ -3702,41 +3702,40 @@ msgstr "No shows scheduled"
 #~ msgid "schedule.prev"
 #~ msgstr "Prev"
 
-#: src/components/AnimeCard.tsx:40
+#: src/components/AnimeCard.tsx:43
 #: src/pages/SchedulePage.tsx:46
 msgid "schedule.season.fall"
 msgstr "Fall"
 
-#: src/components/AnimeCard.tsx:38
+#: src/components/AnimeCard.tsx:41
 #: src/pages/SchedulePage.tsx:42
 msgid "schedule.season.spring"
 msgstr "Spring"
 
-#: src/components/AnimeCard.tsx:39
+#: src/components/AnimeCard.tsx:42
 #: src/pages/SchedulePage.tsx:44
 msgid "schedule.season.summer"
 msgstr "Summer"
 
-#: src/components/AnimeCard.tsx:37
+#: src/components/AnimeCard.tsx:40
 #: src/pages/SchedulePage.tsx:40
 msgid "schedule.season.winter"
 msgstr "Winter"
 
-#: src/pages/SchedulePage.tsx:470
-#: src/pages/SchedulePage.tsx:502
+#: src/pages/SchedulePage.tsx:634
 msgid "schedule.today"
 msgstr "Today"
 
-#: src/pages/SchedulePage.tsx:465
-#: src/pages/SchedulePage.tsx:497
+#: src/pages/SchedulePage.tsx:629
+#: src/pages/SchedulePage.tsx:674
 msgid "schedule.totalShows"
 msgstr "shows this week"
 
-#: src/components/anime/EpisodeStatusCard.tsx:65
+#: src/components/anime/EpisodeStatusCard.tsx:61
 msgid "Search for this episode"
 msgstr "Search for this episode"
 
-#: src/components/anime/MissingSearchModal.tsx:57
+#: src/components/anime/MissingSearchModal.tsx:52
 msgid "Search missing episode {episodeNumber}"
 msgstr "Search missing episode {episodeNumber}"
 
@@ -3748,7 +3747,7 @@ msgstr "Browse Results"
 msgid "search.emptyHint"
 msgstr "Search your favorite anime"
 
-#: src/components/TagMultiSelect.tsx:169
+#: src/components/TagMultiSelect.tsx:179
 msgid "search.filter.addCustomTag"
 msgstr "search.filter.addCustomTag"
 
@@ -3760,7 +3759,7 @@ msgstr "current filters"
 msgid "search.filter.clear"
 msgstr "Clear Filters"
 
-#: src/components/TagMultiSelect.tsx:174
+#: src/components/TagMultiSelect.tsx:184
 msgid "search.filter.noTags"
 msgstr "search.filter.noTags"
 
@@ -3780,12 +3779,12 @@ msgstr "Sort"
 msgid "search.filter.status"
 msgstr "Status"
 
-#: src/components/TagMultiSelect.tsx:98
-#: src/components/TagMultiSelect.tsx:99
+#: src/components/TagMultiSelect.tsx:108
+#: src/components/TagMultiSelect.tsx:109
 msgid "search.filter.tags"
 msgstr "search.filter.tags"
 
-#: src/components/TagMultiSelect.tsx:121
+#: src/components/TagMultiSelect.tsx:131
 msgid "search.filter.tagSearch"
 msgstr "search.filter.tagSearch"
 
@@ -3805,7 +3804,7 @@ msgstr "Search anime name or tag…"
 msgid "search.loadMore"
 msgstr "Load More"
 
-#: src/components/CommandPalette.tsx:172
+#: src/components/CommandPalette.tsx:171
 msgid "search.noResults"
 msgstr "No results found"
 
@@ -3883,39 +3882,39 @@ msgstr "Finished"
 msgid "search.status.upcoming"
 msgstr "Upcoming"
 
-#: src/components/TagMultiSelect.tsx:23
+#: src/components/TagMultiSelect.tsx:33
 msgid "search.tag.activity"
 msgstr "search.tag.activity"
 
-#: src/components/TagMultiSelect.tsx:16
+#: src/components/TagMultiSelect.tsx:26
 msgid "search.tag.genre"
 msgstr "search.tag.genre"
 
-#: src/components/TagMultiSelect.tsx:24
+#: src/components/TagMultiSelect.tsx:34
 msgid "search.tag.misc"
 msgstr "search.tag.misc"
 
-#: src/components/TagMultiSelect.tsx:17
+#: src/components/TagMultiSelect.tsx:27
 msgid "search.tag.mood"
 msgstr "search.tag.mood"
 
-#: src/components/TagMultiSelect.tsx:18
+#: src/components/TagMultiSelect.tsx:28
 msgid "search.tag.setting"
 msgstr "search.tag.setting"
 
-#: src/components/TagMultiSelect.tsx:19
+#: src/components/TagMultiSelect.tsx:29
 msgid "search.tag.source"
 msgstr "search.tag.source"
 
-#: src/components/TagMultiSelect.tsx:22
+#: src/components/TagMultiSelect.tsx:32
 msgid "search.tag.studio"
 msgstr "search.tag.studio"
 
-#: src/components/TagMultiSelect.tsx:21
+#: src/components/TagMultiSelect.tsx:31
 msgid "search.tag.style"
 msgstr "search.tag.style"
 
-#: src/components/TagMultiSelect.tsx:20
+#: src/components/TagMultiSelect.tsx:30
 msgid "search.tag.theme"
 msgstr "search.tag.theme"
 
@@ -3926,11 +3925,11 @@ msgstr "search.tag.theme"
 #~ msgid "search.title"
 #~ msgstr "Search"
 
-#: src/components/anime/MissingSearchModal.tsx:70
+#: src/components/anime/MissingSearchModal.tsx:60
 msgid "Searching..."
 msgstr "Searching..."
 
-#: src/components/anime/MissingSearchModal.tsx:84
+#: src/components/anime/MissingSearchModal.tsx:73
 msgid "Seeders"
 msgstr "Seeders"
 
@@ -3938,7 +3937,7 @@ msgstr "Seeders"
 msgid "sessions.allOthersRevoked"
 msgstr "All other sessions revoked"
 
-#: src/pages/settings/SessionsTab.tsx:96
+#: src/pages/settings/SessionsTab.tsx:91
 msgid "sessions.current"
 msgstr "Current"
 
@@ -3946,7 +3945,7 @@ msgstr "Current"
 msgid "sessions.daysAgo"
 msgstr "{count}d ago"
 
-#: src/pages/settings/SessionsTab.tsx:74
+#: src/pages/settings/SessionsTab.tsx:72
 msgid "sessions.description"
 msgstr "Devices currently signed in to your milmil server."
 
@@ -3962,19 +3961,19 @@ msgstr "Just now"
 msgid "sessions.minutesAgo"
 msgstr "{count}m ago"
 
-#: src/pages/settings/SessionsTab.tsx:120
+#: src/pages/settings/SessionsTab.tsx:113
 msgid "sessions.revoke"
 msgstr "Revoke"
 
-#: src/pages/settings/SessionsTab.tsx:137
+#: src/pages/settings/SessionsTab.tsx:130
 msgid "sessions.revokeAllConfirm"
 msgstr "Sign out all other devices?"
 
-#: src/pages/settings/SessionsTab.tsx:144
+#: src/pages/settings/SessionsTab.tsx:137
 msgid "sessions.revokeAllOthers"
 msgstr "Revoke all other sessions"
 
-#: src/pages/settings/SessionsTab.tsx:114
+#: src/pages/settings/SessionsTab.tsx:107
 msgid "sessions.revokeConfirm"
 msgstr "Revoke this session? The device will be signed out."
 
@@ -3987,15 +3986,15 @@ msgstr "Session revoked"
 msgid "sessions.revokeFailed"
 msgstr "Failed to revoke session"
 
-#: src/pages/settings/SessionsTab.tsx:72
+#: src/pages/settings/SessionsTab.tsx:71
 msgid "sessions.title"
 msgstr "Active Sessions"
 
-#: src/components/anime/DuplicatesPanel.tsx:99
+#: src/components/anime/DuplicatesPanel.tsx:92
 msgid "Set preferred"
 msgstr "Set preferred"
 
-#: src/pages/settings/GeneralPanel.tsx:81
+#: src/pages/settings/GeneralPanel.tsx:76
 msgid "settings.appearance.language"
 msgstr "Language"
 
@@ -4003,50 +4002,50 @@ msgstr "Language"
 #~ msgid "settings.appearance.title"
 #~ msgstr "Appearance"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:303
-#: src/components/watch/UnifiedSettingsPanel.tsx:513
-#: src/components/watch/UnifiedSettingsPanel.tsx:558
+#: src/components/watch/UnifiedSettingsPanel.tsx:414
+#: src/components/watch/UnifiedSettingsPanel.tsx:859
+#: src/components/watch/UnifiedSettingsPanel.tsx:960
 msgid "settings.audioTrack"
 msgstr "settings.audioTrack"
 
-#: src/pages/settings/GeneralPanel.tsx:105
+#: src/pages/settings/GeneralPanel.tsx:100
 msgid "settings.autoAddToCollection"
 msgstr "Auto-add matched anime"
 
-#: src/pages/settings/GeneralPanel.tsx:108
+#: src/pages/settings/GeneralPanel.tsx:103
 msgid "settings.autoAddToCollectionDesc"
 msgstr "Automatically add newly matched anime to your collection"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:293
-#: src/components/watch/UnifiedSettingsPanel.tsx:348
-#: src/components/watch/UnifiedSettingsPanel.tsx:397
+#: src/components/watch/UnifiedSettingsPanel.tsx:394
+#: src/components/watch/UnifiedSettingsPanel.tsx:495
+#: src/components/watch/UnifiedSettingsPanel.tsx:621
 msgid "settings.background"
 msgstr "settings.background"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:349
+#: src/components/watch/UnifiedSettingsPanel.tsx:500
 msgid "settings.border"
 msgstr "settings.border"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:294
-#: src/components/watch/UnifiedSettingsPanel.tsx:406
+#: src/components/watch/UnifiedSettingsPanel.tsx:396
+#: src/components/watch/UnifiedSettingsPanel.tsx:641
 msgid "settings.borderStyle"
 msgstr "settings.borderStyle"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:298
-#: src/components/watch/UnifiedSettingsPanel.tsx:482
-#: src/components/watch/UnifiedSettingsPanel.tsx:483
-#: src/components/watch/UnifiedSettingsPanel.tsx:546
+#: src/components/watch/UnifiedSettingsPanel.tsx:404
+#: src/components/watch/UnifiedSettingsPanel.tsx:776
+#: src/components/watch/UnifiedSettingsPanel.tsx:778
+#: src/components/watch/UnifiedSettingsPanel.tsx:928
 msgid "settings.brightness"
 msgstr "settings.brightness"
 
-#: src/pages/settings/GeneralPanel.tsx:101
+#: src/pages/settings/GeneralPanel.tsx:96
 msgid "settings.collection"
 msgstr "Collection"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:299
-#: src/components/watch/UnifiedSettingsPanel.tsx:488
-#: src/components/watch/UnifiedSettingsPanel.tsx:489
-#: src/components/watch/UnifiedSettingsPanel.tsx:548
+#: src/components/watch/UnifiedSettingsPanel.tsx:406
+#: src/components/watch/UnifiedSettingsPanel.tsx:792
+#: src/components/watch/UnifiedSettingsPanel.tsx:794
+#: src/components/watch/UnifiedSettingsPanel.tsx:934
 msgid "settings.contrast"
 msgstr "settings.contrast"
 
@@ -4054,23 +4053,23 @@ msgstr "settings.contrast"
 #~ msgid "settings.dandanplay.title"
 #~ msgstr "DandanPlay Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:345
+#: src/components/watch/UnifiedSettingsPanel.tsx:480
 msgid "settings.default"
 msgstr "settings.default"
 
-#: src/pages/settings/GeneralPanel.tsx:121
+#: src/pages/settings/GeneralPanel.tsx:116
 msgid "settings.docsUrl"
 msgstr "Documentation"
 
-#: src/pages/settings/GeneralPanel.tsx:133
+#: src/pages/settings/GeneralPanel.tsx:127
 msgid "settings.docsUrl.desc"
 msgstr "Base URL for documentation links throughout the app"
 
-#: src/pages/settings/GeneralPanel.tsx:123
+#: src/pages/settings/GeneralPanel.tsx:118
 msgid "settings.docsUrl.label"
 msgstr "Documentation Website URL"
 
-#: src/pages/settings/DownloadPanel.tsx:82
+#: src/pages/settings/DownloadPanel.tsx:86
 msgid "settings.download.autoDeleteFiles"
 msgstr "Auto-select delete files"
 
@@ -4078,16 +4077,16 @@ msgstr "Auto-select delete files"
 #~ msgid "settings.download.autoDeleteFilesDesc"
 #~ msgstr "When deleting downloads, auto-tick the option to also delete files from disk"
 
-#: src/pages/settings/DownloadPanel.tsx:30
+#: src/pages/settings/DownloadPanel.tsx:32
 msgid "settings.download.builtin"
 msgstr "settings.download.builtin"
 
-#: src/pages/settings/DownloadPanel.tsx:35
+#: src/pages/settings/DownloadPanel.tsx:39
 msgid "settings.download.builtinDesc"
 msgstr "settings.download.builtinDesc"
 
 #: src/pages/DownloadsPage.tsx:422
-#: src/pages/settings/DownloadPanel.tsx:31
+#: src/pages/settings/DownloadPanel.tsx:35
 msgid "settings.download.disconnected"
 msgstr "Not connected"
 
@@ -4111,7 +4110,7 @@ msgstr "settings.download.engine"
 #~ msgid "settings.download.howItWorks"
 #~ msgstr "How Subscribe Works"
 
-#: src/pages/settings/DownloadPanel.tsx:40
+#: src/pages/settings/DownloadPanel.tsx:44
 msgid "settings.download.preferences"
 msgstr "Preferences"
 
@@ -4131,116 +4130,116 @@ msgstr "Preferences"
 #~ msgid "settings.download.test"
 #~ msgstr "Test"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:290
-#: src/components/watch/UnifiedSettingsPanel.tsx:345
-#: src/components/watch/UnifiedSettingsPanel.tsx:373
+#: src/components/watch/UnifiedSettingsPanel.tsx:388
+#: src/components/watch/UnifiedSettingsPanel.tsx:477
+#: src/components/watch/UnifiedSettingsPanel.tsx:562
 msgid "settings.font"
 msgstr "settings.font"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:291
-#: src/components/watch/UnifiedSettingsPanel.tsx:346
-#: src/components/watch/UnifiedSettingsPanel.tsx:381
+#: src/components/watch/UnifiedSettingsPanel.tsx:390
+#: src/components/watch/UnifiedSettingsPanel.tsx:485
+#: src/components/watch/UnifiedSettingsPanel.tsx:580
 msgid "settings.fontSize"
 msgstr "settings.fontSize"
 
-#: src/pages/settings/GeneralPanel.tsx:77
+#: src/pages/settings/GeneralPanel.tsx:73
 msgid "settings.general.subtitle"
 msgstr "Language, collection, and app preferences"
 
-#: src/pages/settings/IntegrationsPanel.tsx:289
-#: src/pages/settings/IntegrationsPanel.tsx:509
+#: src/pages/settings/IntegrationsPanel.tsx:279
+#: src/pages/settings/IntegrationsPanel.tsx:485
 msgid "settings.integration.authUrlFailed"
 msgstr "Failed to get auth URL"
 
-#: src/pages/settings/IntegrationsPanel.tsx:242
+#: src/pages/settings/IntegrationsPanel.tsx:232
 msgid "settings.integration.autoPull"
 msgstr "settings.integration.autoPull"
 
-#: src/pages/settings/IntegrationsPanel.tsx:401
-#: src/pages/settings/IntegrationsPanel.tsx:624
+#: src/pages/settings/IntegrationsPanel.tsx:386
+#: src/pages/settings/IntegrationsPanel.tsx:594
 msgid "settings.integration.connect"
 msgstr "Connect Account"
 
-#: src/pages/settings/IntegrationsPanel.tsx:323
-#: src/pages/settings/IntegrationsPanel.tsx:350
-#: src/pages/settings/IntegrationsPanel.tsx:538
+#: src/pages/settings/IntegrationsPanel.tsx:311
+#: src/pages/settings/IntegrationsPanel.tsx:338
+#: src/pages/settings/IntegrationsPanel.tsx:512
 msgid "settings.integration.connected"
 msgstr "Connected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:400
-#: src/pages/settings/IntegrationsPanel.tsx:623
+#: src/pages/settings/IntegrationsPanel.tsx:385
+#: src/pages/settings/IntegrationsPanel.tsx:593
 msgid "settings.integration.connecting"
 msgstr "Connecting…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:413
-#: src/pages/settings/IntegrationsPanel.tsx:638
+#: src/pages/settings/IntegrationsPanel.tsx:398
+#: src/pages/settings/IntegrationsPanel.tsx:608
 msgid "settings.integration.disconnect"
 msgstr "Disconnect"
 
-#: src/pages/settings/IntegrationsPanel.tsx:295
-#: src/pages/settings/IntegrationsPanel.tsx:515
+#: src/pages/settings/IntegrationsPanel.tsx:285
+#: src/pages/settings/IntegrationsPanel.tsx:491
 msgid "settings.integration.disconnected"
 msgstr "Disconnected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:298
-#: src/pages/settings/IntegrationsPanel.tsx:519
+#: src/pages/settings/IntegrationsPanel.tsx:288
+#: src/pages/settings/IntegrationsPanel.tsx:495
 msgid "settings.integration.disconnectFailed"
 msgstr "Disconnect failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:412
-#: src/pages/settings/IntegrationsPanel.tsx:637
+#: src/pages/settings/IntegrationsPanel.tsx:397
+#: src/pages/settings/IntegrationsPanel.tsx:607
 msgid "settings.integration.disconnecting"
 msgstr "Disconnecting…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:151
+#: src/pages/settings/IntegrationsPanel.tsx:146
 msgid "settings.integration.lastSync"
 msgstr "settings.integration.lastSync"
 
-#: src/pages/settings/IntegrationsPanel.tsx:279
-#: src/pages/settings/IntegrationsPanel.tsx:469
+#: src/pages/settings/IntegrationsPanel.tsx:269
+#: src/pages/settings/IntegrationsPanel.tsx:446
 msgid "settings.integration.needsReauth"
 msgstr "settings.integration.needsReauth"
 
-#: src/pages/settings/IntegrationsPanel.tsx:351
-#: src/pages/settings/IntegrationsPanel.tsx:539
+#: src/pages/settings/IntegrationsPanel.tsx:339
+#: src/pages/settings/IntegrationsPanel.tsx:513
 msgid "settings.integration.notConnected"
 msgstr "Not connected"
 
-#: src/pages/settings/IntegrationsPanel.tsx:157
+#: src/pages/settings/IntegrationsPanel.tsx:150
 msgid "settings.integration.pending"
 msgstr "settings.integration.pending"
 
-#: src/pages/settings/IntegrationsPanel.tsx:214
+#: src/pages/settings/IntegrationsPanel.tsx:205
 msgid "settings.integration.pulled"
 msgstr "settings.integration.pulled"
 
-#: src/pages/settings/IntegrationsPanel.tsx:218
+#: src/pages/settings/IntegrationsPanel.tsx:208
 msgid "settings.integration.pullFailed"
 msgstr "settings.integration.pullFailed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:251
+#: src/pages/settings/IntegrationsPanel.tsx:241
 msgid "settings.integration.pulling"
 msgstr "settings.integration.pulling"
 
-#: src/pages/settings/IntegrationsPanel.tsx:252
+#: src/pages/settings/IntegrationsPanel.tsx:242
 msgid "settings.integration.pullNow"
 msgstr "settings.integration.pullNow"
 
-#: src/pages/settings/IntegrationsPanel.tsx:226
+#: src/pages/settings/IntegrationsPanel.tsx:216
 msgid "settings.integration.pullToggleFailed"
 msgstr "settings.integration.pullToggleFailed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:164
+#: src/pages/settings/IntegrationsPanel.tsx:156
 msgid "settings.integration.recentErrors"
 msgstr "settings.integration.recentErrors"
 
-#: src/pages/settings/IntegrationsPanel.tsx:423
-#: src/pages/settings/IntegrationsPanel.tsx:648
+#: src/pages/settings/IntegrationsPanel.tsx:408
+#: src/pages/settings/IntegrationsPanel.tsx:618
 msgid "settings.integration.sync"
 msgstr "Sync Progress"
 
-#: src/pages/settings/IntegrationsPanel.tsx:305
-#: src/pages/settings/IntegrationsPanel.tsx:526
+#: src/pages/settings/IntegrationsPanel.tsx:294
+#: src/pages/settings/IntegrationsPanel.tsx:501
 msgid "settings.integration.syncComplete"
 msgstr "Sync complete"
 
@@ -4248,13 +4247,13 @@ msgstr "Sync complete"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "errors"
 
-#: src/pages/settings/IntegrationsPanel.tsx:309
-#: src/pages/settings/IntegrationsPanel.tsx:530
+#: src/pages/settings/IntegrationsPanel.tsx:297
+#: src/pages/settings/IntegrationsPanel.tsx:504
 msgid "settings.integration.syncFailed"
 msgstr "Sync failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:422
-#: src/pages/settings/IntegrationsPanel.tsx:647
+#: src/pages/settings/IntegrationsPanel.tsx:407
+#: src/pages/settings/IntegrationsPanel.tsx:617
 msgid "settings.integration.syncing"
 msgstr "Syncing…"
 
@@ -4262,28 +4261,28 @@ msgstr "Syncing…"
 #~ msgid "settings.integration.title"
 #~ msgstr "Integration"
 
-#: src/pages/settings/IntegrationsPanel.tsx:369
+#: src/pages/settings/IntegrationsPanel.tsx:356
 msgid "settings.integration.trakt.openAndEnter"
 msgstr "settings.integration.trakt.openAndEnter"
 
-#: src/pages/settings/IntegrationsPanel.tsx:383
+#: src/pages/settings/IntegrationsPanel.tsx:370
 msgid "settings.integration.trakt.waitingExpires"
 msgstr "settings.integration.trakt.waitingExpires"
 
-#: src/pages/settings/IntegrationsPanel.tsx:672
+#: src/pages/settings/IntegrationsPanel.tsx:642
 msgid "settings.integration.updatesPulled"
 msgstr "settings.integration.updatesPulled"
 
-#: src/pages/settings/IntegrationsPanel.tsx:684
+#: src/pages/settings/IntegrationsPanel.tsx:652
 msgid "settings.integrations.description"
 msgstr "Connect external services and sync your data"
 
-#: src/pages/settings/AboutPanel.tsx:109
+#: src/pages/settings/AboutPanel.tsx:107
 #: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "About"
 
-#: src/pages/settings/AccountPanel.tsx:80
+#: src/pages/settings/AccountPanel.tsx:84
 #: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.account"
 msgstr "Account"
@@ -4296,215 +4295,215 @@ msgstr "settings.nav.backup"
 msgid "settings.nav.download"
 msgstr "Download"
 
-#: src/pages/settings/GeneralPanel.tsx:74
+#: src/pages/settings/GeneralPanel.tsx:72
 #: src/pages/settings/SettingsPage.tsx:32
 msgid "settings.nav.general"
 msgstr "General"
 
-#: src/pages/settings/IntegrationsPanel.tsx:681
+#: src/pages/settings/IntegrationsPanel.tsx:650
 #: src/pages/settings/SettingsPage.tsx:33
 msgid "settings.nav.integrations"
 msgstr "Integrations"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:986
-#: src/pages/settings/NotificationSettingsPanel.tsx:1002
+#: src/pages/settings/NotificationSettingsPanel.tsx:1037
+#: src/pages/settings/NotificationSettingsPanel.tsx:1051
 #: src/pages/settings/SettingsPage.tsx:34
 msgid "settings.nav.notifications"
 msgstr "Notifications"
 
-#: src/pages/settings/PlayerPanel.tsx:241
+#: src/pages/settings/PlayerPanel.tsx:249
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.player"
 msgstr "Player"
 
 #: src/pages/settings/SettingsPage.tsx:39
-#: src/pages/settings/StoragePanel.tsx:60
+#: src/pages/settings/StoragePanel.tsx:59
 msgid "settings.nav.storage"
 msgstr "Storage"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:301
-#: src/components/watch/UnifiedSettingsPanel.tsx:500
-#: src/components/watch/UnifiedSettingsPanel.tsx:552
+#: src/components/watch/UnifiedSettingsPanel.tsx:410
+#: src/components/watch/UnifiedSettingsPanel.tsx:824
+#: src/components/watch/UnifiedSettingsPanel.tsx:946
 msgid "settings.nightMode"
 msgstr "settings.nightMode"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:473
-#: src/components/watch/UnifiedSettingsPanel.tsx:540
+#: src/components/watch/UnifiedSettingsPanel.tsx:764
+#: src/components/watch/UnifiedSettingsPanel.tsx:918
 msgid "settings.normal"
 msgstr "settings.normal"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:267
-#: src/components/watch/UnifiedSettingsPanel.tsx:313
+#: src/components/watch/UnifiedSettingsPanel.tsx:350
+#: src/components/watch/UnifiedSettingsPanel.tsx:426
 msgid "settings.off"
 msgstr "settings.off"
 
-#: src/pages/settings/SettingsPage.tsx:79
+#: src/pages/settings/SettingsPage.tsx:80
 msgid "settings.pageTitle"
 msgstr "Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:297
-#: src/components/watch/UnifiedSettingsPanel.tsx:434
-#: src/components/watch/UnifiedSettingsPanel.tsx:539
+#: src/components/watch/UnifiedSettingsPanel.tsx:402
+#: src/components/watch/UnifiedSettingsPanel.tsx:708
+#: src/components/watch/UnifiedSettingsPanel.tsx:914
 msgid "settings.playbackSpeed"
 msgstr "settings.playbackSpeed"
 
-#: src/pages/settings/PlayerPanel.tsx:598
+#: src/pages/settings/PlayerPanel.tsx:612
 msgid "settings.player.autoNext"
 msgstr "settings.player.autoNext"
 
-#: src/pages/settings/PlayerPanel.tsx:618
+#: src/pages/settings/PlayerPanel.tsx:632
 msgid "settings.player.autoSkipEd"
 msgstr "settings.player.autoSkipEd"
 
-#: src/pages/settings/PlayerPanel.tsx:608
+#: src/pages/settings/PlayerPanel.tsx:622
 msgid "settings.player.autoSkipOp"
 msgstr "settings.player.autoSkipOp"
 
-#: src/pages/settings/PlayerPanel.tsx:630
+#: src/pages/settings/PlayerPanel.tsx:644
 msgid "settings.player.backupNote"
 msgstr "settings.player.backupNote"
 
-#: src/pages/settings/PlayerPanel.tsx:336
+#: src/pages/settings/PlayerPanel.tsx:349
 msgid "settings.player.buffer.auto"
 msgstr "settings.player.buffer.auto"
 
-#: src/pages/settings/PlayerPanel.tsx:338
+#: src/pages/settings/PlayerPanel.tsx:351
 msgid "settings.player.buffer.balanced"
 msgstr "settings.player.buffer.balanced"
 
-#: src/pages/settings/PlayerPanel.tsx:339
+#: src/pages/settings/PlayerPanel.tsx:352
 msgid "settings.player.buffer.high"
 msgstr "settings.player.buffer.high"
 
-#: src/pages/settings/PlayerPanel.tsx:337
+#: src/pages/settings/PlayerPanel.tsx:350
 msgid "settings.player.buffer.low"
 msgstr "settings.player.buffer.low"
 
-#: src/pages/settings/PlayerPanel.tsx:332
+#: src/pages/settings/PlayerPanel.tsx:345
 msgid "settings.player.bufferMode"
 msgstr "settings.player.bufferMode"
 
-#: src/pages/settings/PlayerPanel.tsx:345
+#: src/pages/settings/PlayerPanel.tsx:358
 msgid "settings.player.bufferModeDesc"
 msgstr "settings.player.bufferModeDesc"
 
-#: src/pages/settings/PlayerPanel.tsx:246
+#: src/pages/settings/PlayerPanel.tsx:254
 msgid "settings.player.danmaku"
 msgstr "Danmaku"
 
-#: src/pages/settings/PlayerPanel.tsx:315
+#: src/pages/settings/PlayerPanel.tsx:325
 msgid "settings.player.danmakuDensity"
 msgstr "settings.player.danmakuDensity"
 
-#: src/pages/settings/PlayerPanel.tsx:251
+#: src/pages/settings/PlayerPanel.tsx:259
 msgid "settings.player.danmakuEnabled"
 msgstr "Danmaku enabled by default"
 
-#: src/pages/settings/PlayerPanel.tsx:291
+#: src/pages/settings/PlayerPanel.tsx:301
 msgid "settings.player.danmakuFontSize"
 msgstr "Danmaku font size"
 
-#: src/pages/settings/PlayerPanel.tsx:265
+#: src/pages/settings/PlayerPanel.tsx:273
 msgid "settings.player.danmakuOpacity"
 msgstr "Danmaku opacity"
 
-#: src/pages/settings/PlayerPanel.tsx:303
+#: src/pages/settings/PlayerPanel.tsx:313
 msgid "settings.player.danmakuSpeed"
 msgstr "Danmaku speed"
 
-#: src/pages/settings/PlayerPanel.tsx:321
+#: src/pages/settings/PlayerPanel.tsx:334
 msgid "settings.player.density.high"
 msgstr "settings.player.density.high"
 
-#: src/pages/settings/PlayerPanel.tsx:319
+#: src/pages/settings/PlayerPanel.tsx:329
 msgid "settings.player.density.low"
 msgstr "settings.player.density.low"
 
-#: src/pages/settings/PlayerPanel.tsx:320
+#: src/pages/settings/PlayerPanel.tsx:331
 msgid "settings.player.density.medium"
 msgstr "settings.player.density.medium"
 
-#: src/pages/settings/PlayerPanel.tsx:566
+#: src/pages/settings/PlayerPanel.tsx:580
 msgid "settings.player.gestureEnabled"
 msgstr "settings.player.gestureEnabled"
 
-#: src/pages/settings/PlayerPanel.tsx:562
+#: src/pages/settings/PlayerPanel.tsx:576
 msgid "settings.player.gestures"
 msgstr "settings.player.gestures"
 
-#: src/pages/settings/PlayerPanel.tsx:577
+#: src/pages/settings/PlayerPanel.tsx:591
 msgid "settings.player.gestureSensitivity"
 msgstr "settings.player.gestureSensitivity"
 
-#: src/pages/settings/PlayerPanel.tsx:594
+#: src/pages/settings/PlayerPanel.tsx:608
 msgid "settings.player.playbackDefaults"
 msgstr "settings.player.playbackDefaults"
 
-#: src/pages/settings/PlayerPanel.tsx:158
+#: src/pages/settings/PlayerPanel.tsx:164
 msgid "settings.player.speed.fast"
 msgstr "Fast"
 
-#: src/pages/settings/PlayerPanel.tsx:157
+#: src/pages/settings/PlayerPanel.tsx:163
 msgid "settings.player.speed.normal"
 msgstr "Normal"
 
-#: src/pages/settings/PlayerPanel.tsx:156
+#: src/pages/settings/PlayerPanel.tsx:162
 msgid "settings.player.speed.slow"
 msgstr "Slow"
 
-#: src/pages/settings/PlayerPanel.tsx:242
+#: src/pages/settings/PlayerPanel.tsx:250
 msgid "settings.player.subtitle"
 msgstr "Danmaku and playback preferences"
 
-#: src/pages/settings/PlayerPanel.tsx:452
+#: src/pages/settings/PlayerPanel.tsx:466
 msgid "settings.player.subtitleBgOpacity"
 msgstr "settings.player.subtitleBgOpacity"
 
-#: src/pages/settings/PlayerPanel.tsx:469
+#: src/pages/settings/PlayerPanel.tsx:483
 msgid "settings.player.subtitleBorder"
 msgstr "settings.player.subtitleBorder"
 
-#: src/pages/settings/PlayerPanel.tsx:406
+#: src/pages/settings/PlayerPanel.tsx:419
 msgid "settings.player.subtitleColor"
 msgstr "settings.player.subtitleColor"
 
-#: src/pages/settings/PlayerPanel.tsx:532
+#: src/pages/settings/PlayerPanel.tsx:546
 msgid "settings.player.subtitleFade"
 msgstr "settings.player.subtitleFade"
 
-#: src/pages/settings/PlayerPanel.tsx:370
+#: src/pages/settings/PlayerPanel.tsx:383
 msgid "settings.player.subtitleFont"
 msgstr "settings.player.subtitleFont"
 
-#: src/pages/settings/PlayerPanel.tsx:389
+#: src/pages/settings/PlayerPanel.tsx:402
 msgid "settings.player.subtitleFontSize"
 msgstr "settings.player.subtitleFontSize"
 
-#: src/pages/settings/PlayerPanel.tsx:502
+#: src/pages/settings/PlayerPanel.tsx:516
 msgid "settings.player.subtitlePosition"
 msgstr "settings.player.subtitlePosition"
 
-#: src/pages/settings/PlayerPanel.tsx:358
+#: src/pages/settings/PlayerPanel.tsx:371
 msgid "settings.player.subtitlePreset"
 msgstr "settings.player.subtitlePreset"
 
-#: src/pages/settings/PlayerPanel.tsx:554
+#: src/pages/settings/PlayerPanel.tsx:568
 msgid "settings.player.subtitlePreview"
 msgstr "settings.player.subtitlePreview"
 
-#: src/pages/settings/PlayerPanel.tsx:543
+#: src/pages/settings/PlayerPanel.tsx:557
 msgid "settings.player.subtitleRespectAss"
 msgstr "settings.player.subtitleRespectAss"
 
-#: src/pages/settings/PlayerPanel.tsx:515
+#: src/pages/settings/PlayerPanel.tsx:529
 msgid "settings.player.subtitleSafeMargin"
 msgstr "settings.player.subtitleSafeMargin"
 
-#: src/pages/settings/PlayerPanel.tsx:483
+#: src/pages/settings/PlayerPanel.tsx:497
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "settings.player.subtitleStrokeWidth"
 
-#: src/pages/settings/PlayerPanel.tsx:353
+#: src/pages/settings/PlayerPanel.tsx:366
 msgid "settings.player.subtitleStyle"
 msgstr "settings.player.subtitleStyle"
 
@@ -4512,74 +4511,74 @@ msgstr "settings.player.subtitleStyle"
 #~ msgid "settings.player.title"
 #~ msgstr "Player Settings"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:295
-#: src/components/watch/UnifiedSettingsPanel.tsx:350
-#: src/components/watch/UnifiedSettingsPanel.tsx:414
+#: src/components/watch/UnifiedSettingsPanel.tsx:398
+#: src/components/watch/UnifiedSettingsPanel.tsx:505
+#: src/components/watch/UnifiedSettingsPanel.tsx:661
 msgid "settings.position"
 msgstr "settings.position"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:289
-#: src/components/watch/UnifiedSettingsPanel.tsx:344
-#: src/components/watch/UnifiedSettingsPanel.tsx:365
+#: src/components/watch/UnifiedSettingsPanel.tsx:386
+#: src/components/watch/UnifiedSettingsPanel.tsx:472
+#: src/components/watch/UnifiedSettingsPanel.tsx:541
 msgid "settings.preset"
 msgstr "settings.preset"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:353
+#: src/components/watch/UnifiedSettingsPanel.tsx:514
 msgid "settings.respectAssStyles"
 msgstr "settings.respectAssStyles"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:300
-#: src/components/watch/UnifiedSettingsPanel.tsx:494
-#: src/components/watch/UnifiedSettingsPanel.tsx:495
-#: src/components/watch/UnifiedSettingsPanel.tsx:550
+#: src/components/watch/UnifiedSettingsPanel.tsx:408
+#: src/components/watch/UnifiedSettingsPanel.tsx:808
+#: src/components/watch/UnifiedSettingsPanel.tsx:810
+#: src/components/watch/UnifiedSettingsPanel.tsx:940
 msgid "settings.saturation"
 msgstr "settings.saturation"
 
-#: src/pages/settings/BackupPanel.tsx:341
-#: src/pages/settings/BackupPanel.tsx:577
-#: src/pages/settings/IntegrationsPanel.tsx:120
-#: src/pages/settings/IntegrationsPanel.tsx:610
+#: src/pages/settings/BackupPanel.tsx:335
+#: src/pages/settings/BackupPanel.tsx:569
+#: src/pages/settings/IntegrationsPanel.tsx:116
+#: src/pages/settings/IntegrationsPanel.tsx:580
 msgid "settings.save"
 msgstr "Save"
 
-#: src/pages/settings/BackupPanel.tsx:201
-#: src/pages/settings/BackupPanel.tsx:399
+#: src/pages/settings/BackupPanel.tsx:199
+#: src/pages/settings/BackupPanel.tsx:393
 #: src/pages/settings/GeneralPanel.tsx:48
-#: src/pages/settings/GeneralPanel.tsx:58
-#: src/pages/settings/GeneralPanel.tsx:68
-#: src/pages/settings/IntegrationsPanel.tsx:56
-#: src/pages/settings/IntegrationsPanel.tsx:498
-#: src/pages/settings/PlayerPanel.tsx:197
+#: src/pages/settings/GeneralPanel.tsx:57
+#: src/pages/settings/GeneralPanel.tsx:67
+#: src/pages/settings/IntegrationsPanel.tsx:55
+#: src/pages/settings/IntegrationsPanel.tsx:474
+#: src/pages/settings/PlayerPanel.tsx:203
 msgid "settings.saved"
 msgstr "Saved"
 
-#: src/pages/settings/BackupPanel.tsx:205
-#: src/pages/settings/BackupPanel.tsx:403
+#: src/pages/settings/BackupPanel.tsx:203
+#: src/pages/settings/BackupPanel.tsx:397
 #: src/pages/settings/GeneralPanel.tsx:51
-#: src/pages/settings/GeneralPanel.tsx:61
-#: src/pages/settings/IntegrationsPanel.tsx:59
-#: src/pages/settings/IntegrationsPanel.tsx:501
-#: src/pages/settings/PlayerPanel.tsx:200
+#: src/pages/settings/GeneralPanel.tsx:60
+#: src/pages/settings/IntegrationsPanel.tsx:58
+#: src/pages/settings/IntegrationsPanel.tsx:477
+#: src/pages/settings/PlayerPanel.tsx:206
 msgid "settings.saveFailed"
 msgstr "Save failed"
 
-#: src/pages/settings/BackupPanel.tsx:340
-#: src/pages/settings/BackupPanel.tsx:576
-#: src/pages/settings/IntegrationsPanel.tsx:119
-#: src/pages/settings/IntegrationsPanel.tsx:609
-#: src/pages/settings/NotificationSettingsPanel.tsx:1053
+#: src/pages/settings/BackupPanel.tsx:334
+#: src/pages/settings/BackupPanel.tsx:568
+#: src/pages/settings/IntegrationsPanel.tsx:115
+#: src/pages/settings/IntegrationsPanel.tsx:579
+#: src/pages/settings/NotificationSettingsPanel.tsx:1100
 msgid "settings.saving"
 msgstr "Saving…"
 
-#: src/pages/settings/StoragePanel.tsx:89
+#: src/pages/settings/StoragePanel.tsx:85
 msgid "settings.storage.actions"
 msgstr "Actions"
 
-#: src/pages/settings/StoragePanel.tsx:108
+#: src/pages/settings/StoragePanel.tsx:102
 msgid "settings.storage.clearConfirmDesc"
 msgstr "This will delete all transcoded video files. This cannot be undone."
 
-#: src/pages/settings/StoragePanel.tsx:105
+#: src/pages/settings/StoragePanel.tsx:100
 msgid "settings.storage.clearConfirmTitle"
 msgstr "Clear transcode cache?"
 
@@ -4591,170 +4590,268 @@ msgstr "Cache cleared"
 msgid "settings.storage.clearFailed"
 msgstr "Failed to clear cache"
 
-#: src/pages/settings/StoragePanel.tsx:118
+#: src/pages/settings/StoragePanel.tsx:112
 msgid "settings.storage.clearing"
 msgstr "Clearing..."
 
-#: src/pages/settings/StoragePanel.tsx:96
-#: src/pages/settings/StoragePanel.tsx:119
+#: src/pages/settings/StoragePanel.tsx:92
+#: src/pages/settings/StoragePanel.tsx:113
 msgid "settings.storage.clearTranscode"
 msgstr "Clear transcoded files"
 
-#: src/pages/settings/StoragePanel.tsx:67
+#: src/pages/settings/StoragePanel.tsx:63
 msgid "settings.storage.diskUsage"
 msgstr "Disk Usage"
 
-#: src/pages/settings/StoragePanel.tsx:74
+#: src/pages/settings/StoragePanel.tsx:70
 msgid "settings.storage.files"
 msgstr "files"
 
-#: src/pages/settings/StoragePanel.tsx:63
+#: src/pages/settings/StoragePanel.tsx:60
 msgid "settings.storage.subtitle"
 msgstr "Manage transcoded files and cache"
 
-#: src/pages/settings/StoragePanel.tsx:84
+#: src/pages/settings/StoragePanel.tsx:80
 msgid "settings.storage.transcodeDesc"
 msgstr "Transcoded video files stored in temporary directory"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:176
+#: src/components/watch/UnifiedSettingsPanel.tsx:226
 msgid "settings.sub.badge.cc"
 msgstr "CC"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:177
+#: src/components/watch/UnifiedSettingsPanel.tsx:227
 msgid "settings.sub.badge.forced"
 msgstr "Forced"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:178
+#: src/components/watch/UnifiedSettingsPanel.tsx:228
 msgid "settings.sub.badge.sdh"
 msgstr "SDH"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:92
+#: src/components/watch/UnifiedSettingsPanel.tsx:106
 msgid "settings.sub.color.cyan"
 msgstr "Cyan"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:91
+#: src/components/watch/UnifiedSettingsPanel.tsx:105
 msgid "settings.sub.color.green"
 msgstr "Green"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:93
+#: src/components/watch/UnifiedSettingsPanel.tsx:107
 msgid "settings.sub.color.red"
 msgstr "Red"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:89
+#: src/components/watch/UnifiedSettingsPanel.tsx:103
 msgid "settings.sub.color.white"
 msgstr "White"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:90
+#: src/components/watch/UnifiedSettingsPanel.tsx:104
 msgid "settings.sub.color.yellow"
 msgstr "Yellow"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:83
+#: src/components/watch/UnifiedSettingsPanel.tsx:97
 msgid "settings.sub.font.default"
 msgstr "Default"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:80
+#: src/components/watch/UnifiedSettingsPanel.tsx:94
 msgid "settings.sub.position.bottom"
 msgstr "Bottom"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:79
+#: src/components/watch/UnifiedSettingsPanel.tsx:93
 msgid "settings.sub.position.center"
 msgstr "Center"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:78
+#: src/components/watch/UnifiedSettingsPanel.tsx:92
 msgid "settings.sub.position.top"
 msgstr "Top"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:67
+#: src/components/watch/UnifiedSettingsPanel.tsx:81
 msgid "settings.sub.preset.anime"
 msgstr "Anime"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:66
+#: src/components/watch/UnifiedSettingsPanel.tsx:80
 msgid "settings.sub.preset.cinema"
 msgstr "Cinema"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:65
+#: src/components/watch/UnifiedSettingsPanel.tsx:79
 msgid "settings.sub.preset.default"
 msgstr "Default"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:68
+#: src/components/watch/UnifiedSettingsPanel.tsx:82
 msgid "settings.sub.preset.highContrast"
 msgstr "High Contrast"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:75
+#: src/components/watch/UnifiedSettingsPanel.tsx:89
 msgid "settings.sub.shadow.depressed"
 msgstr "Depressed"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:73
+#: src/components/watch/UnifiedSettingsPanel.tsx:87
 msgid "settings.sub.shadow.dropShadow"
 msgstr "Drop Shadow"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:71
+#: src/components/watch/UnifiedSettingsPanel.tsx:85
 msgid "settings.sub.shadow.none"
 msgstr "None"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:72
+#: src/components/watch/UnifiedSettingsPanel.tsx:86
 msgid "settings.sub.shadow.outline"
 msgstr "Outline"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:74
+#: src/components/watch/UnifiedSettingsPanel.tsx:88
 msgid "settings.sub.shadow.raised"
 msgstr "Raised"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:287
-#: src/components/watch/UnifiedSettingsPanel.tsx:312
-#: src/components/watch/UnifiedSettingsPanel.tsx:530
+#: src/components/watch/UnifiedSettingsPanel.tsx:382
+#: src/components/watch/UnifiedSettingsPanel.tsx:424
+#: src/components/watch/UnifiedSettingsPanel.tsx:888
 msgid "settings.subtitles"
 msgstr "settings.subtitles"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:288
-#: src/components/watch/UnifiedSettingsPanel.tsx:343
-#: src/components/watch/UnifiedSettingsPanel.tsx:531
+#: src/components/watch/UnifiedSettingsPanel.tsx:384
+#: src/components/watch/UnifiedSettingsPanel.tsx:470
+#: src/components/watch/UnifiedSettingsPanel.tsx:894
 msgid "settings.subtitleStyle"
 msgstr "settings.subtitleStyle"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:296
-#: src/components/watch/UnifiedSettingsPanel.tsx:423
-#: src/components/watch/UnifiedSettingsPanel.tsx:532
+#: src/components/watch/UnifiedSettingsPanel.tsx:400
+#: src/components/watch/UnifiedSettingsPanel.tsx:681
+#: src/components/watch/UnifiedSettingsPanel.tsx:900
 msgid "settings.subtitleTiming"
 msgstr "settings.subtitleTiming"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:292
-#: src/components/watch/UnifiedSettingsPanel.tsx:347
-#: src/components/watch/UnifiedSettingsPanel.tsx:389
+#: src/components/watch/UnifiedSettingsPanel.tsx:392
+#: src/components/watch/UnifiedSettingsPanel.tsx:490
+#: src/components/watch/UnifiedSettingsPanel.tsx:600
 msgid "settings.textColor"
 msgstr "settings.textColor"
 
-#: src/components/watch/UnifiedSettingsPanel.tsx:302
-#: src/components/watch/UnifiedSettingsPanel.tsx:506
-#: src/components/watch/UnifiedSettingsPanel.tsx:555
+#: src/components/watch/UnifiedSettingsPanel.tsx:412
+#: src/components/watch/UnifiedSettingsPanel.tsx:840
+#: src/components/watch/UnifiedSettingsPanel.tsx:953
 msgid "settings.volumeBoost"
 msgstr "settings.volumeBoost"
 
-#: src/pages/settings/GeneralPanel.tsx:89
+#: src/pages/settings/GeneralPanel.tsx:84
 msgid "settings.weekStartDay"
 msgstr "Week Start Day"
 
-#: src/pages/settings/GeneralPanel.tsx:92
+#: src/pages/settings/GeneralPanel.tsx:87
 msgid "settings.weekStartDay.monday"
 msgstr "Monday"
 
-#: src/pages/settings/GeneralPanel.tsx:94
+#: src/pages/settings/GeneralPanel.tsx:89
 msgid "settings.weekStartDay.saturday"
 msgstr "Saturday"
 
-#: src/pages/settings/GeneralPanel.tsx:93
+#: src/pages/settings/GeneralPanel.tsx:88
 msgid "settings.weekStartDay.sunday"
 msgstr "Sunday"
 
-#: src/components/anime/MissingSearchModal.tsx:83
+#: src/pages/setup/IntegrationsStep.tsx:27
+msgid "setup.integrations.anilistDescription"
+msgstr "Sync watch progress and import lists from AniList."
+
+#: src/pages/setup/IntegrationsStep.tsx:57
+msgid "setup.integrations.availableInSettings"
+msgstr "In Settings"
+
+#: src/pages/setup/IntegrationsStep.tsx:22
+msgid "setup.integrations.bangumiDescription"
+msgstr "Pull anime metadata, episode lists, and air dates from Bangumi."
+
+#: src/pages/setup/IntegrationsStep.tsx:65
+msgid "setup.integrations.finish"
+msgstr "Finish setup"
+
+#: src/pages/setup/IntegrationsStep.tsx:42
+msgid "setup.integrations.subtitle"
+msgstr "Connect external metadata providers later in Settings → Integrations to sync your watch history and enrich your library."
+
+#: src/pages/setup/IntegrationsStep.tsx:15
+#: src/pages/setup/IntegrationsStep.tsx:39
+msgid "setup.integrations.title"
+msgstr "Optional integrations"
+
+#: src/pages/setup/IntegrationsStep.tsx:32
+msgid "setup.integrations.traktDescription"
+msgstr "Track watched episodes across devices via Trakt."
+
+#: src/pages/setup/LibraryStep.tsx:94
+msgid "setup.library.createFailed"
+msgstr "Could not create library — try again"
+
+#: src/pages/setup/LibraryStep.tsx:174
+msgid "setup.library.creating"
+msgstr "Creating…"
+
+#: src/pages/setup/LibraryStep.tsx:73
+msgid "setup.library.fixPathFirst"
+msgstr "Fix the path before continuing"
+
+#: src/pages/setup/LibraryStep.tsx:120
+msgid "setup.library.nameLabel"
+msgstr "Library name"
+
+#: src/pages/setup/LibraryStep.tsx:128
+msgid "setup.library.namePlaceholder"
+msgstr "e.g. Anime"
+
+#: src/pages/setup/LibraryStep.tsx:64
+msgid "setup.library.pathCheckFailed"
+msgstr "Path check failed — try again"
+
+#: src/pages/setup/LibraryStep.tsx:191
+msgid "setup.library.pathChecking"
+msgstr "Checking…"
+
+#: src/pages/setup/LibraryStep.tsx:58
+msgid "setup.library.pathInvalid"
+msgstr "Path is not valid"
+
+#: src/pages/setup/LibraryStep.tsx:139
+msgid "setup.library.pathLabel"
+msgstr "Path inside the container"
+
+#: src/pages/setup/LibraryStep.tsx:152
+msgid "setup.library.pathPlaceholder"
+msgstr "/media"
+
+#: src/pages/setup/LibraryStep.tsx:198
+msgid "setup.library.pathReadable"
+msgstr "Path readable"
+
+#: src/pages/setup/LibraryStep.tsx:175
+msgid "setup.library.submit"
+msgstr "Create library"
+
+#: src/pages/setup/LibraryStep.tsx:106
+msgid "setup.library.subtitle"
+msgstr "Point milmil at a folder of media files. You can add more libraries later in Settings."
+
+#: src/pages/setup/LibraryStep.tsx:25
+#: src/pages/setup/LibraryStep.tsx:103
+msgid "setup.library.title"
+msgstr "Add your first library"
+
+#: src/pages/setup/SetupLayout.tsx:10
+msgid "setup.step.admin"
+msgstr "Admin account"
+
+#: src/pages/setup/SetupLayout.tsx:12
+msgid "setup.step.integrations"
+msgstr "Integrations"
+
+#: src/pages/setup/SetupLayout.tsx:11
+msgid "setup.step.library"
+msgstr "Library"
+
+#: src/components/anime/MissingSearchModal.tsx:72
 msgid "Size"
 msgstr "Size"
 
-#: src/pages/library/RenamePreviewPage.tsx:87
+#: src/pages/library/RenamePreviewPage.tsx:81
 msgid "Status"
 msgstr "Status"
 
-#: src/components/anime/MissingSearchModal.tsx:85
+#: src/components/anime/MissingSearchModal.tsx:74
 msgid "Subgroup"
 msgstr "Subgroup"
 
@@ -4852,7 +4949,7 @@ msgstr "Subgroup"
 #~ msgid "subscribe.success"
 #~ msgstr "Subscription created! New episodes will be auto-downloaded."
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:69
+#: src/pages/library/LibraryDuplicatesPage.tsx:65
 msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
 msgstr "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
 
@@ -4861,8 +4958,8 @@ msgstr "This will permanently delete {totalRemovable} non-preferred files across
 #~ msgid "time.daysAgo {0}"
 #~ msgstr "{0}d ago"
 
-#: src/components/NotificationBell.tsx:28
-#: src/pages/NotificationsPage.tsx:40
+#: src/components/NotificationBell.tsx:24
+#: src/pages/NotificationsPage.tsx:36
 msgid "time.daysAgo {days}"
 msgstr "{days}d ago"
 
@@ -4871,8 +4968,8 @@ msgstr "{days}d ago"
 #~ msgid "time.hoursAgo {0}"
 #~ msgstr "{0}h ago"
 
-#: src/components/NotificationBell.tsx:26
-#: src/pages/NotificationsPage.tsx:38
+#: src/components/NotificationBell.tsx:22
+#: src/pages/NotificationsPage.tsx:34
 msgid "time.hoursAgo {hours}"
 msgstr "{hours}h ago"
 
@@ -4881,8 +4978,8 @@ msgstr "{hours}h ago"
 #~ msgid "time.minutesAgo {0}"
 #~ msgstr "{0}m ago"
 
-#: src/components/NotificationBell.tsx:24
-#: src/pages/NotificationsPage.tsx:36
+#: src/components/NotificationBell.tsx:20
+#: src/pages/NotificationsPage.tsx:32
 msgid "time.minutesAgo {minutes}"
 msgstr "{minutes}m ago"
 
@@ -4891,12 +4988,12 @@ msgstr "{minutes}m ago"
 #~ msgid "time.secondsAgo {0}"
 #~ msgstr "{0}s ago"
 
-#: src/components/NotificationBell.tsx:22
-#: src/pages/NotificationsPage.tsx:34
+#: src/components/NotificationBell.tsx:18
+#: src/pages/NotificationsPage.tsx:30
 msgid "time.secondsAgo {seconds}"
 msgstr "{seconds}s ago"
 
-#: src/components/anime/MissingSearchModal.tsx:82
+#: src/components/anime/MissingSearchModal.tsx:71
 msgid "Title"
 msgstr "Title"
 
@@ -4916,12 +5013,12 @@ msgstr "Title"
 #~ msgid "trending.tab.trending"
 #~ msgstr "Trending"
 
-#: src/pages/library/RenameHistoryPage.tsx:94
+#: src/pages/library/RenameHistoryPage.tsx:84
 msgid "Undo"
 msgstr "Undo"
 
 #. placeholder {0}: b.batch_id.slice(0, 8)
-#: src/pages/library/RenameHistoryPage.tsx:87
+#: src/pages/library/RenameHistoryPage.tsx:79
 msgid "Undo batch {0}?"
 msgstr "Undo batch {0}?"
 
@@ -4929,7 +5026,7 @@ msgstr "Undo batch {0}?"
 #~ msgid "View and clean up duplicate files"
 #~ msgstr "View and clean up duplicate files"
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:90
+#: src/pages/library/LibraryDuplicatesPage.tsx:86
 msgid "Wasted"
 msgstr "Wasted"
 
@@ -4956,29 +5053,29 @@ msgstr "Watched"
 msgid "watch.danmaku"
 msgstr "Danmaku"
 
-#: src/components/watch/DanmakuList.tsx:160
+#: src/components/watch/DanmakuList.tsx:165
 msgid "watch.danmaku.addBlock"
 msgstr "Add"
 
-#: src/components/DanmakuSettings.tsx:268
+#: src/components/DanmakuSettings.tsx:496
 msgid "watch.danmaku.antiSubtitle"
 msgstr "Avoid subtitles"
 
-#: src/components/watch/DanmakuList.tsx:128
-#: src/components/watch/DanmakuList.tsx:140
+#: src/components/watch/DanmakuList.tsx:133
+#: src/components/watch/DanmakuList.tsx:145
 msgid "watch.danmaku.blockKeywords"
 msgstr "Block Keywords"
 
-#: src/components/watch/DanmakuList.tsx:151
+#: src/components/watch/DanmakuList.tsx:156
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "Enter keyword..."
 
-#: src/components/DanmakuSettings.tsx:267
+#: src/components/DanmakuSettings.tsx:491
 msgid "watch.danmaku.bold"
 msgstr "Bold"
 
-#: src/components/DanmakuSettings.tsx:165
-#: src/components/DanmakuSettings.tsx:174
+#: src/components/DanmakuSettings.tsx:254
+#: src/components/DanmakuSettings.tsx:274
 msgid "watch.danmaku.bottom"
 msgstr "Bottom"
 
@@ -4986,44 +5083,44 @@ msgstr "Bottom"
 #~ msgid "watch.danmaku.cached"
 #~ msgstr "24h"
 
-#: src/components/DanmakuSettings.tsx:246
-#: src/components/DanmakuSettings.tsx:265
+#: src/components/DanmakuSettings.tsx:406
+#: src/components/DanmakuSettings.tsx:485
 msgid "watch.danmaku.chineseConvert"
 msgstr "Chinese Convert"
 
-#: src/components/watch/DanmakuList.tsx:197
+#: src/components/watch/DanmakuList.tsx:212
 msgid "watch.danmaku.clearAllBlock"
 msgstr "Clear all"
 
-#: src/components/watch/DanmakuBar.tsx:57
+#: src/components/watch/DanmakuBar.tsx:59
 msgid "watch.danmaku.clickToDisable"
 msgstr "Hide danmaku"
 
-#: src/components/watch/DanmakuBar.tsx:57
+#: src/components/watch/DanmakuBar.tsx:60
 msgid "watch.danmaku.clickToEnable"
 msgstr "Show danmaku"
 
-#: src/components/watch/DanmakuSourceTab.tsx:378
+#: src/components/watch/DanmakuSourceTab.tsx:380
 msgid "watch.danmaku.clickToPin"
 msgstr "Pin to save permanently"
 
-#: src/components/watch/DanmakuSourceTab.tsx:378
+#: src/components/watch/DanmakuSourceTab.tsx:379
 msgid "watch.danmaku.clickToUnpin"
 msgstr "Unpin (revert to 24h cache)"
 
-#: src/components/watch/DanmakuSourceTab.tsx:275
+#: src/components/watch/DanmakuSourceTab.tsx:277
 msgid "watch.danmaku.closeParts"
 msgstr "Close"
 
-#: src/components/DanmakuSettings.tsx:158
+#: src/components/DanmakuSettings.tsx:244
 msgid "watch.danmaku.convertNone"
 msgstr "Off"
 
-#: src/components/DanmakuSettings.tsx:159
+#: src/components/DanmakuSettings.tsx:245
 msgid "watch.danmaku.convertS2T"
 msgstr "Simplified → Traditional"
 
-#: src/components/DanmakuSettings.tsx:160
+#: src/components/DanmakuSettings.tsx:246
 msgid "watch.danmaku.convertT2S"
 msgstr "Traditional → Simplified"
 
@@ -5031,25 +5128,25 @@ msgstr "Traditional → Simplified"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#: src/components/DanmakuSettings.tsx:187
-#: src/components/DanmakuSettings.tsx:256
+#: src/components/DanmakuSettings.tsx:302
+#: src/components/DanmakuSettings.tsx:435
 msgid "watch.danmaku.density"
 msgstr "Density"
 
-#: src/components/DanmakuSettings.tsx:145
+#: src/components/DanmakuSettings.tsx:231
 msgid "watch.danmaku.densityHigh"
 msgstr "High"
 
-#: src/components/DanmakuSettings.tsx:143
+#: src/components/DanmakuSettings.tsx:229
 msgid "watch.danmaku.densityLow"
 msgstr "Low"
 
-#: src/components/DanmakuSettings.tsx:144
+#: src/components/DanmakuSettings.tsx:230
 msgid "watch.danmaku.densityMedium"
 msgstr "Medium"
 
-#: src/components/DanmakuSettings.tsx:179
-#: src/components/DanmakuSettings.tsx:255
+#: src/components/DanmakuSettings.tsx:284
+#: src/components/DanmakuSettings.tsx:430
 msgid "watch.danmaku.displayArea"
 msgstr "Display Area"
 
@@ -5057,33 +5154,33 @@ msgstr "Display Area"
 msgid "watch.danmaku.externalSources"
 msgstr "Danmaku Sources"
 
-#: src/components/DanmakuSettings.tsx:150
+#: src/components/DanmakuSettings.tsx:236
 msgid "watch.danmaku.fast"
 msgstr "Fast"
 
-#: src/components/DanmakuSettings.tsx:195
-#: src/components/DanmakuSettings.tsx:261
+#: src/components/DanmakuSettings.tsx:320
+#: src/components/DanmakuSettings.tsx:460
 msgid "watch.danmaku.fontColor"
 msgstr "Font Color"
 
-#: src/components/DanmakuSettings.tsx:222
-#: src/components/DanmakuSettings.tsx:262
+#: src/components/DanmakuSettings.tsx:352
+#: src/components/DanmakuSettings.tsx:470
 msgid "watch.danmaku.fontFamily"
 msgstr "Font"
 
-#: src/components/DanmakuSettings.tsx:259
+#: src/components/DanmakuSettings.tsx:450
 msgid "watch.danmaku.fontSize"
 msgstr "Font Size"
 
-#: src/components/watch/DanmakuSourceTab.tsx:276
+#: src/components/watch/DanmakuSourceTab.tsx:278
 msgid "watch.danmaku.import"
 msgstr "Import"
 
-#: src/components/watch/DanmakuSourceTab.tsx:361
+#: src/components/watch/DanmakuSourceTab.tsx:363
 msgid "watch.danmaku.imported"
 msgstr "Imported"
 
-#: src/components/watch/DanmakuSourceTab.tsx:97
+#: src/components/watch/DanmakuSourceTab.tsx:96
 msgid "watch.danmaku.importError"
 msgstr "Import failed, please try again"
 
@@ -5091,40 +5188,40 @@ msgstr "Import failed, please try again"
 #~ msgid "watch.danmaku.importing"
 #~ msgstr "Importing..."
 
-#: src/components/watch/DanmakuBar.tsx:131
+#: src/components/watch/DanmakuBar.tsx:156
 msgid "watch.danmaku.loaded"
 msgstr "{count} danmaku loaded"
 
-#: src/components/watch/DanmakuList.tsx:167
+#: src/components/watch/DanmakuList.tsx:172
 msgid "watch.danmaku.noBlockKeywords"
 msgstr "No blocked keywords"
 
-#: src/components/watch/DanmakuList.tsx:53
+#: src/components/watch/DanmakuList.tsx:50
 msgid "watch.danmaku.noData"
 msgstr "No danmaku data"
 
-#: src/components/watch/DanmakuSourceTab.tsx:220
+#: src/components/watch/DanmakuSourceTab.tsx:222
 msgid "watch.danmaku.noResults"
 msgstr "No results found"
 
-#: src/components/DanmakuSettings.tsx:149
-#: src/components/DanmakuSettings.tsx:263
+#: src/components/DanmakuSettings.tsx:235
+#: src/components/DanmakuSettings.tsx:476
 msgid "watch.danmaku.normal"
 msgstr "Normal"
 
-#: src/components/watch/DanmakuBar.tsx:99
+#: src/components/watch/DanmakuBar.tsx:124
 msgid "watch.danmaku.off"
 msgstr "OFF"
 
-#: src/components/watch/DanmakuBar.tsx:99
+#: src/components/watch/DanmakuBar.tsx:124
 msgid "watch.danmaku.on"
 msgstr "ON"
 
-#: src/components/DanmakuSettings.tsx:258
+#: src/components/DanmakuSettings.tsx:441
 msgid "watch.danmaku.opacity"
 msgstr "Opacity"
 
-#: src/components/watch/DanmakuBar.tsx:141
+#: src/components/watch/DanmakuBar.tsx:166
 msgid "watch.danmaku.placeholder"
 msgstr "Send danmaku..."
 
@@ -5136,7 +5233,7 @@ msgstr "Send danmaku..."
 #~ msgid "watch.danmaku.saved"
 #~ msgstr "Saved"
 
-#: src/components/watch/DanmakuSourceTab.tsx:110
+#: src/components/watch/DanmakuSourceTab.tsx:109
 msgid "watch.danmaku.savedSuccess"
 msgstr "Danmaku saved permanently"
 
@@ -5144,28 +5241,28 @@ msgstr "Danmaku saved permanently"
 #~ msgid "watch.danmaku.saveLocal"
 #~ msgstr "Save permanently"
 
-#: src/components/DanmakuSettings.tsx:165
-#: src/components/DanmakuSettings.tsx:172
+#: src/components/DanmakuSettings.tsx:252
+#: src/components/DanmakuSettings.tsx:264
 msgid "watch.danmaku.scroll"
 msgstr "Scroll"
 
-#: src/components/watch/DanmakuSourceTab.tsx:199
+#: src/components/watch/DanmakuSourceTab.tsx:201
 msgid "watch.danmaku.search"
 msgstr "Search"
 
-#: src/components/watch/DanmakuSourceTab.tsx:214
+#: src/components/watch/DanmakuSourceTab.tsx:216
 msgid "watch.danmaku.searchError"
 msgstr "Search failed, please try again"
 
-#: src/components/watch/DanmakuSourceTab.tsx:190
+#: src/components/watch/DanmakuSourceTab.tsx:192
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "Search anime name + episode..."
 
-#: src/components/watch/DanmakuSourceTab.tsx:295
+#: src/components/watch/DanmakuSourceTab.tsx:297
 msgid "watch.danmaku.selectPart"
 msgstr "Select part"
 
-#: src/components/watch/DanmakuBar.tsx:152
+#: src/components/watch/DanmakuBar.tsx:177
 msgid "watch.danmaku.send"
 msgstr "Send"
 
@@ -5173,7 +5270,7 @@ msgstr "Send"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "D"
 
-#: src/components/DanmakuSettings.tsx:148
+#: src/components/DanmakuSettings.tsx:234
 msgid "watch.danmaku.slow"
 msgstr "Slow"
 
@@ -5181,39 +5278,39 @@ msgstr "Slow"
 msgid "watch.danmaku.source"
 msgstr "Source"
 
-#: src/components/DanmakuSettings.tsx:230
-#: src/components/DanmakuSettings.tsx:263
+#: src/components/DanmakuSettings.tsx:370
+#: src/components/DanmakuSettings.tsx:475
 msgid "watch.danmaku.speed"
 msgstr "Speed"
 
-#: src/components/DanmakuSettings.tsx:153
+#: src/components/DanmakuSettings.tsx:239
 msgid "watch.danmaku.strokeNone"
 msgstr "None"
 
-#: src/components/DanmakuSettings.tsx:155
+#: src/components/DanmakuSettings.tsx:241
 msgid "watch.danmaku.strokeOutline"
 msgstr "Outline"
 
-#: src/components/DanmakuSettings.tsx:154
+#: src/components/DanmakuSettings.tsx:240
 msgid "watch.danmaku.strokeShadow"
 msgstr "Shadow"
 
-#: src/components/DanmakuSettings.tsx:238
-#: src/components/DanmakuSettings.tsx:264
+#: src/components/DanmakuSettings.tsx:388
+#: src/components/DanmakuSettings.tsx:480
 msgid "watch.danmaku.strokeType"
 msgstr "Stroke"
 
-#: src/components/DanmakuSettings.tsx:165
-#: src/components/DanmakuSettings.tsx:173
+#: src/components/DanmakuSettings.tsx:253
+#: src/components/DanmakuSettings.tsx:269
 msgid "watch.danmaku.top"
 msgstr "Top"
 
-#: src/components/DanmakuSettings.tsx:171
-#: src/components/DanmakuSettings.tsx:254
+#: src/components/DanmakuSettings.tsx:262
+#: src/components/DanmakuSettings.tsx:425
 msgid "watch.danmaku.typeFilter"
 msgstr "Type Filter"
 
-#: src/components/watch/DanmakuSourceTab.tsx:111
+#: src/components/watch/DanmakuSourceTab.tsx:110
 msgid "watch.danmaku.unsavedSuccess"
 msgstr "Danmaku unpinned (expires in 24h)"
 
@@ -5255,7 +5352,7 @@ msgstr "In progress"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:841
+#: src/pages/WatchPage.tsx:850
 msgid "watch.notFound"
 msgstr "Anime not found"
 
@@ -5313,7 +5410,7 @@ msgstr "HLS Transcode"
 #~ msgid "watch.transcodeReady"
 #~ msgstr "Transcode ready"
 
-#: src/pages/WatchPage.tsx:1017
+#: src/pages/WatchPage.tsx:1054
 msgid "watch.transcoding"
 msgstr "Transcoding..."
 

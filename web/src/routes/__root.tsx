@@ -1,7 +1,13 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { createRootRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  isRedirect,
+  Outlet,
+  redirect,
+  useRouterState,
+} from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -9,6 +15,7 @@ import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
 import { SplashScreen } from '../components/SplashScreen';
 import { useMillilWebSocket, useWSEvent } from '../hooks/use-websocket';
+import { setupApi } from '../lib/api/setup';
 import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
@@ -79,8 +86,9 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 }
 
 function isPublicRoute(pathname: string): boolean {
-  const publicExact = ['/login', '/setup', '/schedule', '/discover', '/search'];
+  const publicExact = ['/login', '/schedule', '/discover', '/search'];
   if (publicExact.includes(pathname)) return true;
+  if (pathname === '/setup' || pathname.startsWith('/setup/')) return true;
   if (pathname.startsWith('/anime/')) return true;
   if (pathname.startsWith('/watch/')) return true;
   return false;
@@ -263,7 +271,7 @@ function RootLayout() {
     }
   });
 
-  if (pathname === '/login' || pathname === '/setup') {
+  if (pathname === '/login' || pathname === '/setup' || pathname.startsWith('/setup/')) {
     return <Outlet />;
   }
 
@@ -317,6 +325,22 @@ export const Route = createRootRoute({
         useAuthStore.getState().login(token, me);
       } catch {
         // Network error or invalid token — don't redirect, page will handle
+      }
+    }
+
+    // Library-required gate: authed users hitting / with zero libraries
+    // must finish setup. Skip if Tailscale-style AUTH_BYPASS is on, if
+    // the path is /setup/*/login (already handled above), or if we're
+    // not at the root.
+    if (useAuthStore.getState().token && location.pathname === '/') {
+      try {
+        const status = await setupApi.getStatus();
+        if (status.library_count === 0) {
+          throw redirect({ to: '/setup/library' });
+        }
+      } catch (err) {
+        if (isRedirect(err)) throw err; // re-throw redirect
+        // Server error: fall through to render dashboard with whatever it gives.
       }
     }
   },

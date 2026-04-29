@@ -10,6 +10,17 @@ import (
 	"database/sql"
 )
 
+const countLibraries = `-- name: CountLibraries :one
+SELECT count(*) FROM libraries
+`
+
+func (q *Queries) CountLibraries(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countLibraries)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createLibrary = `-- name: CreateLibrary :one
 INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, source_type, source_config_encrypted, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))

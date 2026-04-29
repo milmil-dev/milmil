@@ -1,15 +1,20 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { api } from '../lib/api-client';
-import { SetupPage } from '../pages/SetupPage';
-
-interface StatusResponse {
-  initialized: boolean;
-}
+import { createFileRoute } from '@tanstack/react-router';
+import { type SetupStatus, setupApi } from '../lib/api/setup';
+import { SetupLayout } from '../pages/setup/SetupLayout';
 
 export const Route = createFileRoute('/setup')({
   beforeLoad: async () => {
-    const status = await api.get<StatusResponse>('/api/v1/auth/status');
-    if (status.initialized) throw redirect({ to: '/login' });
+    try {
+      const status = await setupApi.getStatus();
+      return { status };
+    } catch {
+      // API unreachable — degrade gracefully to "fresh install" assumption,
+      // which lands the user on /setup/admin. Better than the generic error
+      // boundary on first-run when docker-compose is still booting.
+      return {
+        status: { has_admin: false, library_count: 0 } satisfies SetupStatus,
+      };
+    }
   },
-  component: SetupPage,
+  component: SetupLayout,
 });
