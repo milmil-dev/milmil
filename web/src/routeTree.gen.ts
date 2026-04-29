@@ -23,6 +23,7 @@ import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SetupIndexRouteImport } from './routes/setup.index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
@@ -100,6 +101,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SetupIndexRoute = SetupIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SetupRoute,
+} as any)
 const WatchAnimeIdRoute = WatchAnimeIdRouteImport.update({
   id: '/watch/$animeId',
   path: '/watch/$animeId',
@@ -145,11 +151,12 @@ export interface FileRoutesByFullPath {
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
-  '/setup': typeof SetupRoute
+  '/setup': typeof SetupRouteWithChildren
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
+  '/setup/': typeof SetupIndexRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
   '/libraries/$id/rename': typeof LibrariesIdRenameRouteWithChildren
   '/libraries/$id/rename/history': typeof LibrariesIdRenameHistoryRoute
@@ -167,11 +174,11 @@ export interface FileRoutesByTo {
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
-  '/setup': typeof SetupRoute
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
+  '/setup': typeof SetupIndexRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
   '/libraries/$id/rename': typeof LibrariesIdRenameRouteWithChildren
   '/libraries/$id/rename/history': typeof LibrariesIdRenameHistoryRoute
@@ -190,11 +197,12 @@ export interface FileRoutesById {
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
-  '/setup': typeof SetupRoute
+  '/setup': typeof SetupRouteWithChildren
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries_/$id': typeof LibrariesIdRouteWithChildren
   '/watch/$animeId': typeof WatchAnimeIdRoute
+  '/setup/': typeof SetupIndexRoute
   '/libraries_/$id/duplicates': typeof LibrariesIdDuplicatesRoute
   '/libraries_/$id/rename': typeof LibrariesIdRenameRouteWithChildren
   '/libraries_/$id/rename/history': typeof LibrariesIdRenameHistoryRoute
@@ -219,6 +227,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries/$id'
     | '/watch/$animeId'
+    | '/setup/'
     | '/libraries/$id/duplicates'
     | '/libraries/$id/rename'
     | '/libraries/$id/rename/history'
@@ -236,11 +245,11 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/search'
     | '/settings'
-    | '/setup'
     | '/torrent-search'
     | '/anime/$id'
     | '/libraries/$id'
     | '/watch/$animeId'
+    | '/setup'
     | '/libraries/$id/duplicates'
     | '/libraries/$id/rename'
     | '/libraries/$id/rename/history'
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries_/$id'
     | '/watch/$animeId'
+    | '/setup/'
     | '/libraries_/$id/duplicates'
     | '/libraries_/$id/rename'
     | '/libraries_/$id/rename/history'
@@ -281,7 +291,7 @@ export interface RootRouteChildren {
   ScheduleRoute: typeof ScheduleRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
-  SetupRoute: typeof SetupRoute
+  SetupRoute: typeof SetupRouteWithChildren
   TorrentSearchRoute: typeof TorrentSearchRoute
   AnimeIdRoute: typeof AnimeIdRoute
   LibrariesIdRoute: typeof LibrariesIdRouteWithChildren
@@ -388,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/setup/': {
+      id: '/setup/'
+      path: '/'
+      fullPath: '/setup/'
+      preLoaderRoute: typeof SetupIndexRouteImport
+      parentRoute: typeof SetupRoute
+    }
     '/watch/$animeId': {
       id: '/watch/$animeId'
       path: '/watch/$animeId'
@@ -433,6 +450,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SetupRouteChildren {
+  SetupIndexRoute: typeof SetupIndexRoute
+}
+
+const SetupRouteChildren: SetupRouteChildren = {
+  SetupIndexRoute: SetupIndexRoute,
+}
+
+const SetupRouteWithChildren = SetupRoute._addFileChildren(SetupRouteChildren)
+
 interface LibrariesIdRenameRouteChildren {
   LibrariesIdRenameHistoryRoute: typeof LibrariesIdRenameHistoryRoute
 }
@@ -471,7 +498,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScheduleRoute: ScheduleRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
-  SetupRoute: SetupRoute,
+  SetupRoute: SetupRouteWithChildren,
   TorrentSearchRoute: TorrentSearchRoute,
   AnimeIdRoute: AnimeIdRoute,
   LibrariesIdRoute: LibrariesIdRouteWithChildren,
