@@ -9,7 +9,7 @@ updates:
     open-pull-requests-limit: 3
     labels: ["dependencies", "go"]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
     groups:
       go-deps:
@@ -28,7 +28,7 @@ updates:
     open-pull-requests-limit: 3
     labels: ["dependencies", "javascript"]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
     groups:
       web-deps:
@@ -47,7 +47,7 @@ updates:
     open-pull-requests-limit: 2
     labels: ["dependencies", "javascript", "docs"]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
     groups:
       docs-deps:
@@ -66,7 +66,7 @@ updates:
     open-pull-requests-limit: 2
     labels: ["dependencies", "docker"]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
     groups:
       docker-api:
@@ -80,7 +80,7 @@ updates:
     open-pull-requests-limit: 2
     labels: ["dependencies", "docker"]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
     groups:
       docker-web:
@@ -95,7 +95,7 @@ updates:
     open-pull-requests-limit: 2
     labels: ["dependencies", "ci"]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
     groups:
       github-actions:
