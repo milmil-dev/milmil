@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.5](https://github.com/milmil-dev/milmil/compare/v0.1.4...v0.1.5) (2026-04-29)
+
+
+### Bug Fixes
+
+* **web:** defer milmil-api DNS resolution so nginx survives missing upstream ([#48](https://github.com/milmil-dev/milmil/issues/48)) ([caa35ad](https://github.com/milmil-dev/milmil/commit/caa35adff48c0e40afcebf03e7df9f3e3417e1ae))
+
+## [0.1.4](https://github.com/milmil-dev/milmil/compare/v0.1.3...v0.1.4) (2026-04-29)
+
+
+### Bug Fixes
+
+* **ci:** bump aquasecurity/trivy-action to v0.36.0 ([#43](https://github.com/milmil-dev/milmil/issues/43)) ([70eac70](https://github.com/milmil-dev/milmil/commit/70eac702f1bbeb5fb009001c5ce7b9a71f110997))
+* **dependabot:** drop redundant '(deps)' from commit-message prefix ([#41](https://github.com/milmil-dev/milmil/issues/41)) ([e5de715](https://github.com/milmil-dev/milmil/commit/e5de7156f6f50534635cc1918de4dc9c92571d08))
+
 ## [0.1.3](https://github.com/milmil-dev/milmil/compare/v0.1.2...v0.1.3) (2026-04-29)
 
 
