@@ -15,6 +15,13 @@ test.describe('First-run setup wizard', () => {
     let hasAdmin = false;
     let libraryCount = 0;
 
+    // Catch-all MUST be registered FIRST — Playwright matches routes in LIFO order,
+    // so the most-recently-added handler runs first. Specific routes registered after
+    // this catch-all will therefore be checked first; the catch-all only fires for
+    // unmatched paths.
+    await page.route('**/api/v1/**', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    });
     await page.route('**/api/v1/setup/status', async (route) => {
       await route.fulfill({
         status: 200,
@@ -80,10 +87,6 @@ test.describe('First-run setup wizard', () => {
     await page.route('**/api/v1/libraries/lib-1/scan', async (route) => {
       await route.fulfill({ status: 202, contentType: 'application/json', body: '{}' });
     });
-    // Fall-through for any other API call the dashboard might make after redirect.
-    await page.route('**/api/v1/**', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-    });
 
     await page.goto('/');
 
@@ -105,9 +108,11 @@ test.describe('First-run setup wizard', () => {
     await page.getByRole('button', { name: /library\.submit|create library/i }).click();
 
     await expect(page).toHaveURL(/\/setup\/integrations$/);
-    await expect(page.getByText('Bangumi')).toBeVisible();
-    await expect(page.getByText('AniList')).toBeVisible();
-    await expect(page.getByText('Trakt')).toBeVisible();
+    // Use exact: true — non-exact `getByText('Bangumi')` matches the description copy
+    // ("Pull anime metadata…") in addition to the provider name and trips strict mode.
+    await expect(page.getByText('Bangumi', { exact: true })).toBeVisible();
+    await expect(page.getByText('AniList', { exact: true })).toBeVisible();
+    await expect(page.getByText('Trakt', { exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: /finish/i }).click();
 
@@ -115,6 +120,10 @@ test.describe('First-run setup wizard', () => {
   });
 
   test('refresh during library step keeps user on /setup/library', async ({ page }) => {
+    // Catch-all first (LIFO matching — see happy-path test for explanation).
+    await page.route('**/api/v1/**', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    });
     await page.route('**/api/v1/setup/status', async (route) => {
       await route.fulfill({
         status: 200,
@@ -156,6 +165,10 @@ test.describe('First-run setup wizard', () => {
   });
 
   test('deep link to / with no library bounces to /setup/library', async ({ page }) => {
+    // Catch-all first (LIFO matching — see happy-path test for explanation).
+    await page.route('**/api/v1/**', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    });
     await page.route('**/api/v1/setup/status', async (route) => {
       await route.fulfill({
         status: 200,
@@ -176,10 +189,6 @@ test.describe('First-run setup wizard', () => {
         contentType: 'application/json',
         body: JSON.stringify({ id: 'u1', username: 'admin' }),
       });
-    });
-    // Fall-through for anything else the root may fetch.
-    await page.route('**/api/v1/**', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
     });
 
     await page.addInitScript(() => {
