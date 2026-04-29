@@ -9,26 +9,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
-	"github.com/milmil/api/internal/api"
-	"github.com/milmil/api/internal/cache"
-	"github.com/milmil/api/internal/config"
-	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/store"
 )
-
-// newSetupTestApp builds an Echo router plus the underlying *sql.DB so the
-// test can seed users / libraries directly. Mirrors newTestApp from
-// auth_handler_test.go, but exposes the DB for seeding.
-func newSetupTestApp(t *testing.T) (*echo.Echo, *sql.DB) {
-	t.Helper()
-	database, dsn := newTestDB(t)
-	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
-	c := cache.New("")
-	metadataSvc := metadata.New(nil, nil, c)
-	e := api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
-	return e, database
-}
 
 // seedSetupAdmin inserts a user row directly. We don't care about a usable
 // password hash for these read-only tests; we only need users.count > 0.
@@ -45,17 +27,19 @@ func seedSetupAdmin(t *testing.T, db *sql.DB, username string) {
 	}
 }
 
-// seedSetupLibrary inserts a library row directly. Bypasses the create
-// handler's path-exists validation since we only need libraries.count > 0.
+// seedSetupLibrary inserts a library row via the store layer. Bypasses the
+// create handler's path-exists validation since we only need libraries.count > 0.
 func seedSetupLibrary(t *testing.T, db *sql.DB, name, path string) {
 	t.Helper()
-	_, err := db.Exec(
-		`INSERT INTO libraries (id, name, path, enabled, scan_interval_minutes, created_at, updated_at)
-		 VALUES (?, ?, ?, 1, 60,
-		         strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
-		         strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))`,
-		uuid.NewString(), name, path,
-	)
+	q := store.New(db)
+	_, err := q.CreateLibrary(context.Background(), store.CreateLibraryParams{
+		ID:                  uuid.NewString(),
+		Name:                name,
+		Path:                path,
+		Enabled:             1,
+		ScanIntervalMinutes: 60,
+		SourceType:          "local",
+	})
 	if err != nil {
 		t.Fatalf("seedSetupLibrary: %v", err)
 	}
@@ -106,7 +90,7 @@ func TestSetupStatus(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			e, db := newSetupTestApp(t)
+			e, db := newTestAppWithDB(t)
 			tc.seed(t, db)
 
 			req := httptest.NewRequest(http.MethodGet, "/api/v1/setup/status", nil)
@@ -134,7 +118,7 @@ func TestSetupStatus(t *testing.T) {
 
 	t.Run("no auth required", func(t *testing.T) {
 		t.Parallel()
-		e, _ := newSetupTestApp(t)
+		e, _ := newTestAppWithDB(t)
 		req := httptest.NewRequest(http.MethodGet, "/api/v1/setup/status", nil)
 		rec := httptest.NewRecorder()
 		e.ServeHTTP(rec, req)

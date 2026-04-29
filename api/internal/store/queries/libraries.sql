@@ -1,6 +1,9 @@
 -- name: ListLibraries :many
 SELECT * FROM libraries ORDER BY name;
 
+-- name: CountLibraries :one
+SELECT count(*) FROM libraries;
+
 -- name: GetLibrary :one
 SELECT * FROM libraries WHERE id = ? LIMIT 1;
 

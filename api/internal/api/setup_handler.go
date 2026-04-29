@@ -22,7 +22,9 @@ func (h *handler) handleSetupStatus(c echo.Context) error {
 	ctx := c.Request().Context()
 	hasAdmin, libCount, err := h.querySetupStatus(ctx)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		// Public endpoint: don't leak DB error strings to unauthenticated
+		// callers. Mirrors handleAuthStatus.
+		return echo.ErrInternalServerError
 	}
 	return c.JSON(http.StatusOK, setupStatusResponse{
 		HasAdmin:     hasAdmin,
@@ -31,13 +33,13 @@ func (h *handler) handleSetupStatus(c echo.Context) error {
 }
 
 func (h *handler) querySetupStatus(ctx context.Context) (bool, int, error) {
-	var userCount int
-	if err := h.db.QueryRowContext(ctx, `SELECT count(*) FROM users`).Scan(&userCount); err != nil {
+	userCount, err := h.queries.CountUsers(ctx)
+	if err != nil {
 		return false, 0, err
 	}
-	var libCount int
-	if err := h.db.QueryRowContext(ctx, `SELECT count(*) FROM libraries`).Scan(&libCount); err != nil {
+	libCount, err := h.queries.CountLibraries(ctx)
+	if err != nil {
 		return false, 0, err
 	}
-	return userCount > 0, libCount, nil
+	return userCount > 0, int(libCount), nil
 }

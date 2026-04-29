@@ -16,6 +16,7 @@ type Querier interface {
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
 	CountCollectionByStatus(ctx context.Context) ([]CountCollectionByStatusRow, error)
 	CountCompletedWatchProgressByAnime(ctx context.Context, arg CountCompletedWatchProgressByAnimeParams) (CountCompletedWatchProgressByAnimeRow, error)
+	CountLibraries(ctx context.Context) (int64, error)
 	CountMediaFilesByLibrary(ctx context.Context, libraryID string) (int64, error)
 	CountMediaFilesByStatus(ctx context.Context, arg CountMediaFilesByStatusParams) (int64, error)
 	CountMediaFilesPerEpisodeByAnime(ctx context.Context, animeID string) ([]CountMediaFilesPerEpisodeByAnimeRow, error)
