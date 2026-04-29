@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/milmil-dev/milmil/compare/v0.1.2...v0.1.3) (2026-04-29)
+
+
+### Features
+
+* milmil CLI v0.1 + audit log + agent automation surface ([#40](https://github.com/milmil-dev/milmil/issues/40)) ([2c98a85](https://github.com/milmil-dev/milmil/commit/2c98a853d826a0e5492cc103fab64aaaeb920eb2))
+
 ## [0.1.2](https://github.com/milmil-dev/milmil/compare/v0.1.1...v0.1.2) (2026-04-21)
 
 
