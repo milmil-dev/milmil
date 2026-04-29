@@ -2,18 +2,14 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../components/ui/button';
 import { Field, FieldLabel } from '../../components/ui/field';
 import { Input } from '../../components/ui/input';
 import { Spinner } from '../../components/ui/spinner';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { api } from '../../lib/api-client';
-import type {
-  CreateLibraryInput,
-  Library,
-  TestConnectionResult,
-} from '../../lib/api/library';
+import { libraryApi } from '../../lib/api/library';
+import type { CreateLibraryInput } from '../../lib/api/library';
 
 type PathStatus =
   | { kind: 'idle' }
@@ -30,6 +26,13 @@ export function LibraryStep() {
   const navigate = useNavigate();
   const [pathStatus, setPathStatus] = useState<PathStatus>({ kind: 'idle' });
   const [submitError, setSubmitError] = useState('');
+  const inflightPathRef = useRef<string | null>(null);
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   async function checkPath(rawPath: string) {
     const path = rawPath.trim();
@@ -37,13 +40,16 @@ export function LibraryStep() {
       setPathStatus({ kind: 'idle' });
       return;
     }
+    inflightPathRef.current = path;
     setPathStatus({ kind: 'checking' });
     try {
-      const res = await api.post<TestConnectionResult>('/api/v1/libraries/test-connection', {
+      const res = await libraryApi.testConnection({
         source_type: 'local',
         source_config: {},
         path,
       });
+      if (!mountedRef.current) return;
+      if (inflightPathRef.current !== path) return; // stale — newer check superseded us
       if (res.ok) {
         setPathStatus({ kind: 'ok' });
       } else {
@@ -53,6 +59,8 @@ export function LibraryStep() {
         });
       }
     } catch {
+      if (!mountedRef.current) return;
+      if (inflightPathRef.current !== path) return;
       setPathStatus({ kind: 'error', message: i18n._(msg`setup.library.pathCheckFailed`) });
     }
   }
@@ -73,10 +81,12 @@ export function LibraryStep() {
         scan_interval_minutes: DEFAULT_SCAN_INTERVAL_MIN,
       };
       try {
-        const lib = await api.post<Library>('/api/v1/libraries', input);
+        const lib = await libraryApi.create(input);
         // Fire-and-forget scan — don't block the redirect on it.
-        api.post<void>(`/api/v1/libraries/${lib.id}/scan`, {}).catch(() => {
-          /* logged server-side; user can retry from settings */
+        libraryApi.scan(lib.id).catch((err) => {
+          // Best-effort: scan kickoff failed (network/auth/server error). User can retry
+          // from Settings → Library → Scan. Log so it shows up in dev console / sentry.
+          console.error('Initial scan kickoff failed for library', lib.id, err);
         });
         navigate({ to: '/setup/integrations' });
       } catch (err) {
