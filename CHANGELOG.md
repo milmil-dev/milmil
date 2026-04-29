@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7](https://github.com/milmil-dev/milmil/compare/v0.1.6...v0.1.7) (2026-04-29)
+
+
+### Features
+
+* **web:** first-run setup wizard (admin → library → integrations) ([#52](https://github.com/milmil-dev/milmil/issues/52)) ([92b0f0d](https://github.com/milmil-dev/milmil/commit/92b0f0db6e02574a84bfb8be570ee6b3f6dc3c02))
+
 ## [0.1.6](https://github.com/milmil-dev/milmil/compare/v0.1.5...v0.1.6) (2026-04-29)
 
 
