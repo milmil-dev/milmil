@@ -49,7 +49,7 @@ export function IntegrationsStep() {
             className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3"
           >
             <div className="flex items-start justify-between gap-3">
-              <div>
+              <div className="min-w-0">
                 <p className="text-[14px] font-medium text-white">{p.name}</p>
                 <p className="mt-1 text-[12px] text-white/40">{p.description}</p>
               </div>
