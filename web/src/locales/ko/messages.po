@@ -4840,10 +4840,6 @@ msgstr ""
 msgid "setup.step.library"
 msgstr ""
 
-#: src/pages/setup/SetupLayout.tsx:39
-msgid "setup.stepProgress"
-msgstr ""
-
 #: src/components/anime/MissingSearchModal.tsx:72
 msgid "Size"
 msgstr "크기"

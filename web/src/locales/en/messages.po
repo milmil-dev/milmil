@@ -4843,10 +4843,6 @@ msgstr "Integrations"
 msgid "setup.step.library"
 msgstr "Library"
 
-#: src/pages/setup/SetupLayout.tsx:39
-msgid "setup.stepProgress"
-msgstr "Step {n} of {total}"
-
 #: src/components/anime/MissingSearchModal.tsx:72
 msgid "Size"
 msgstr "Size"

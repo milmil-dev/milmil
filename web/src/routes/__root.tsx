@@ -271,7 +271,11 @@ function RootLayout() {
     }
   });
 
-  if (pathname === '/login' || pathname === '/setup') {
+  if (
+    pathname === '/login' ||
+    pathname === '/setup' ||
+    pathname.startsWith('/setup/')
+  ) {
     return <Outlet />;
   }
 

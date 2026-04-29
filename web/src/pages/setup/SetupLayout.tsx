@@ -19,8 +19,6 @@ export function SetupLayout() {
   const safeIndex = activeIndex < 0 ? 0 : activeIndex;
   const activeStep = STEPS[safeIndex] ?? STEPS[0]!;
   const activeLabel = i18n._(activeStep.labelMsg);
-  const stepN = safeIndex + 1;
-  const total = STEPS.length;
 
   return (
     <div className="relative min-h-screen bg-mm-bg flex items-center justify-center p-4">
@@ -36,7 +34,7 @@ export function SetupLayout() {
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
           <p className="mt-2 text-[12px] uppercase tracking-wider text-white/40">
-            {i18n._(msg`setup.stepProgress`, { n: stepN, total })} — {activeLabel}
+            {activeLabel}
           </p>
           <div className="mt-3 flex items-center justify-center gap-2">
             {STEPS.map((s, i) => (
