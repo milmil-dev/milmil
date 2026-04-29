@@ -25,6 +25,7 @@ import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SetupIndexRouteImport } from './routes/setup.index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
+import { Route as SetupAdminRouteImport } from './routes/setup.admin'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
 import { Route as LibrariesIdRenameRouteImport } from './routes/libraries_.$id.rename'
@@ -111,6 +112,11 @@ const WatchAnimeIdRoute = WatchAnimeIdRouteImport.update({
   path: '/watch/$animeId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SetupAdminRoute = SetupAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => SetupRoute,
+} as any)
 const LibrariesIdRoute = LibrariesIdRouteImport.update({
   id: '/libraries_/$id',
   path: '/libraries/$id',
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
+  '/setup/admin': typeof SetupAdminRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/setup/': typeof SetupIndexRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
+  '/setup/admin': typeof SetupAdminRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/setup': typeof SetupIndexRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/torrent-search': typeof TorrentSearchRoute
   '/anime/$id': typeof AnimeIdRoute
   '/libraries_/$id': typeof LibrariesIdRouteWithChildren
+  '/setup/admin': typeof SetupAdminRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/setup/': typeof SetupIndexRoute
   '/libraries_/$id/duplicates': typeof LibrariesIdDuplicatesRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/torrent-search'
     | '/anime/$id'
     | '/libraries/$id'
+    | '/setup/admin'
     | '/watch/$animeId'
     | '/setup/'
     | '/libraries/$id/duplicates'
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/torrent-search'
     | '/anime/$id'
     | '/libraries/$id'
+    | '/setup/admin'
     | '/watch/$animeId'
     | '/setup'
     | '/libraries/$id/duplicates'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/torrent-search'
     | '/anime/$id'
     | '/libraries_/$id'
+    | '/setup/admin'
     | '/watch/$animeId'
     | '/setup/'
     | '/libraries_/$id/duplicates'
@@ -412,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchAnimeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/setup/admin': {
+      id: '/setup/admin'
+      path: '/admin'
+      fullPath: '/setup/admin'
+      preLoaderRoute: typeof SetupAdminRouteImport
+      parentRoute: typeof SetupRoute
+    }
     '/libraries_/$id': {
       id: '/libraries_/$id'
       path: '/libraries/$id'
@@ -451,10 +470,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface SetupRouteChildren {
+  SetupAdminRoute: typeof SetupAdminRoute
   SetupIndexRoute: typeof SetupIndexRoute
 }
 
 const SetupRouteChildren: SetupRouteChildren = {
+  SetupAdminRoute: SetupAdminRoute,
   SetupIndexRoute: SetupIndexRoute,
 }
 
