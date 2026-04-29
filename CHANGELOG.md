@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/milmil-dev/milmil/compare/v0.1.5...v0.1.6) (2026-04-29)
+
+
+### Bug Fixes
+
+* stamp release version into binary + sync web/api version sources ([#50](https://github.com/milmil-dev/milmil/issues/50)) ([22831c2](https://github.com/milmil-dev/milmil/commit/22831c2be68fa135235de95d0248974036c76845))
+
 ## [0.1.5](https://github.com/milmil-dev/milmil/compare/v0.1.4...v0.1.5) (2026-04-29)
 
 
