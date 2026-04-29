@@ -21,6 +21,6 @@ jobs:
       # available so the release tag triggers downstream workflows like
       # publish.yml. The default GITHUB_TOKEN can't fire other workflows,
       # which is why publish.yml had to be re-pushed manually for v0.1.2.
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.RELEASE_PLEASE_PAT || secrets.GITHUB_TOKEN }}
