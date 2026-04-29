@@ -85,6 +85,11 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	authGroup.POST("/login", h.handleAuthLogin)
 	authGroup.POST("/login/2fa", h.handleAuthLogin2FA)
 
+	// Setup wizard status — public. Front-end loaders call this before
+	// login to decide whether to show admin signup, library creation, or
+	// skip directly into the app.
+	v1.GET("/setup/status", h.handleSetupStatus)
+
 	// Auth — protected
 	authProtected := v1.Group("/auth", authMiddleware(h.queries), auditMiddleware(h.queries))
 	authProtected.POST("/logout", h.handleAuthLogout)
