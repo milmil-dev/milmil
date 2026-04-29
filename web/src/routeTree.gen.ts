@@ -25,6 +25,7 @@ import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SetupIndexRouteImport } from './routes/setup.index'
 import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
+import { Route as SetupLibraryRouteImport } from './routes/setup.library'
 import { Route as SetupAdminRouteImport } from './routes/setup.admin'
 import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
@@ -112,6 +113,11 @@ const WatchAnimeIdRoute = WatchAnimeIdRouteImport.update({
   path: '/watch/$animeId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SetupLibraryRoute = SetupLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => SetupRoute,
+} as any)
 const SetupAdminRoute = SetupAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/setup/admin': typeof SetupAdminRoute
+  '/setup/library': typeof SetupLibraryRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/setup/': typeof SetupIndexRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/anime/$id': typeof AnimeIdRoute
   '/libraries/$id': typeof LibrariesIdRouteWithChildren
   '/setup/admin': typeof SetupAdminRoute
+  '/setup/library': typeof SetupLibraryRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/setup': typeof SetupIndexRoute
   '/libraries/$id/duplicates': typeof LibrariesIdDuplicatesRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/anime/$id': typeof AnimeIdRoute
   '/libraries_/$id': typeof LibrariesIdRouteWithChildren
   '/setup/admin': typeof SetupAdminRoute
+  '/setup/library': typeof SetupLibraryRoute
   '/watch/$animeId': typeof WatchAnimeIdRoute
   '/setup/': typeof SetupIndexRoute
   '/libraries_/$id/duplicates': typeof LibrariesIdDuplicatesRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries/$id'
     | '/setup/admin'
+    | '/setup/library'
     | '/watch/$animeId'
     | '/setup/'
     | '/libraries/$id/duplicates'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries/$id'
     | '/setup/admin'
+    | '/setup/library'
     | '/watch/$animeId'
     | '/setup'
     | '/libraries/$id/duplicates'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/anime/$id'
     | '/libraries_/$id'
     | '/setup/admin'
+    | '/setup/library'
     | '/watch/$animeId'
     | '/setup/'
     | '/libraries_/$id/duplicates'
@@ -424,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchAnimeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/setup/library': {
+      id: '/setup/library'
+      path: '/library'
+      fullPath: '/setup/library'
+      preLoaderRoute: typeof SetupLibraryRouteImport
+      parentRoute: typeof SetupRoute
+    }
     '/setup/admin': {
       id: '/setup/admin'
       path: '/admin'
@@ -471,11 +490,13 @@ declare module '@tanstack/react-router' {
 
 interface SetupRouteChildren {
   SetupAdminRoute: typeof SetupAdminRoute
+  SetupLibraryRoute: typeof SetupLibraryRoute
   SetupIndexRoute: typeof SetupIndexRoute
 }
 
 const SetupRouteChildren: SetupRouteChildren = {
   SetupAdminRoute: SetupAdminRoute,
+  SetupLibraryRoute: SetupLibraryRoute,
   SetupIndexRoute: SetupIndexRoute,
 }
 
