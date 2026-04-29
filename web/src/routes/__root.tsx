@@ -10,6 +10,7 @@ import { CommandPalette } from '../components/CommandPalette';
 import { SplashScreen } from '../components/SplashScreen';
 import { useMillilWebSocket, useWSEvent } from '../hooks/use-websocket';
 import { api } from '../lib/api-client';
+import { setupApi } from '../lib/api/setup';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
 import { useBgStore } from '../store/bg-store';
@@ -79,8 +80,9 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 }
 
 function isPublicRoute(pathname: string): boolean {
-  const publicExact = ['/login', '/setup', '/schedule', '/discover', '/search'];
+  const publicExact = ['/login', '/schedule', '/discover', '/search'];
   if (publicExact.includes(pathname)) return true;
+  if (pathname === '/setup' || pathname.startsWith('/setup/')) return true;
   if (pathname.startsWith('/anime/')) return true;
   if (pathname.startsWith('/watch/')) return true;
   return false;
@@ -317,6 +319,25 @@ export const Route = createRootRoute({
         useAuthStore.getState().login(token, me);
       } catch {
         // Network error or invalid token — don't redirect, page will handle
+      }
+    }
+
+    // Library-required gate: authed users hitting / with zero libraries
+    // must finish setup. Skip if Tailscale-style AUTH_BYPASS is on, if
+    // the path is /setup/*/login (already handled above), or if we're
+    // not at the root.
+    if (
+      useAuthStore.getState().token &&
+      location.pathname === '/'
+    ) {
+      try {
+        const status = await setupApi.getStatus();
+        if (status.library_count === 0) {
+          throw redirect({ to: '/setup/library' });
+        }
+      } catch (err) {
+        if (err && typeof err === 'object' && 'to' in err) throw err; // re-throw redirect
+        // Server error: fall through to render dashboard with whatever it gives.
       }
     }
   },
