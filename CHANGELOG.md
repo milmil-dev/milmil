@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/milmil-dev/milmil/compare/v0.1.4...v0.1.5) (2026-04-29)
+
+
+### Bug Fixes
+
+* **web:** defer milmil-api DNS resolution so nginx survives missing upstream ([#48](https://github.com/milmil-dev/milmil/issues/48)) ([caa35ad](https://github.com/milmil-dev/milmil/commit/caa35adff48c0e40afcebf03e7df9f3e3417e1ae))
+
 ## [0.1.4](https://github.com/milmil-dev/milmil/compare/v0.1.3...v0.1.4) (2026-04-29)
 
 
