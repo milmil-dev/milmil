@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/milmil/api/internal/version"
 )
 
 var startTime = time.Now()
@@ -22,7 +24,7 @@ type systemInfoResponse struct {
 func (h *handler) handleSystemInfo(c echo.Context) error {
 	uptime := time.Since(startTime).Truncate(time.Second)
 	return c.JSON(http.StatusOK, systemInfoResponse{
-		Version:  "0.1.0",
+		Version:  version.Version,
 		Uptime:   uptime.String(),
 		GoVer:    runtime.Version(),
 		Platform: runtime.GOOS + "/" + runtime.GOARCH,

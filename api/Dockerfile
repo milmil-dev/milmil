@@ -8,6 +8,7 @@ FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
+ARG VERSION=dev
 
 WORKDIR /src
 
@@ -20,6 +21,7 @@ COPY . .
 
 # -trimpath: reproducible binary (no local paths)
 # -s -w:    strip debug info and symbol table (smaller binary)
+# -X version.Version=...: stamp the release version into the binary
 # GOARM:    set the ARM variant when targeting linux/arm/v6 or v7 (no-op otherwise)
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
@@ -29,7 +31,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
       GOARM=${TARGETVARIANT#v} \
     go build \
       -trimpath \
-      -ldflags "-s -w" \
+      -ldflags "-s -w -X github.com/milmil/api/internal/version.Version=${VERSION}" \
       -o /out/milmil-api \
       ./cmd/server
 
