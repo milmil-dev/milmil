@@ -120,7 +120,7 @@ jobs:
 
       # ---- Vulnerability scan (does not fail the build, just reports) ------
       - name: Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: milmildev/milmil-${{ matrix.image }}@${{ steps.build.outputs.digest }}
           format: sarif
