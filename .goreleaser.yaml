@@ -72,3 +72,28 @@ release:
   # `cli-v*` tag for the actual release on GitHub. Disabling here keeps
   # the cli-v* tag namespace clean and avoids polluting the v* server tags.
   disable: true
+
+brews:
+  - name: milmil
+    repository:
+      owner: milmil-dev
+      name: homebrew-tap
+      branch: main
+      # The default Actions GITHUB_TOKEN can't push to a different repo,
+      # so the workflow injects a PAT via HOMEBREW_TAP_GITHUB_TOKEN.
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/milmil-dev/milmil"
+    description: "Self-hosted anime media server CLI"
+    license: "AGPL-3.0-or-later"
+    # Goreleaser would otherwise build the URL from .Tag (= v$SEMVER,
+    # the local shadow tag), which doesn't exist on origin. Pin to the
+    # cli-v$SEMVER release tag where the artifacts actually live.
+    url_template: "https://github.com/milmil-dev/milmil/releases/download/cli-v{{ .Version }}/{{ .ArtifactName }}"
+    commit_author:
+      name: github-actions[bot]
+      email: 41898282+github-actions[bot]@users.noreply.github.com
+    install: |
+      bin.install "milmil"
+    test: |
+      system "#{bin}/milmil", "version"
