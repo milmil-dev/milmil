@@ -478,6 +478,7 @@ function FileTable({
       {
         id: 'select',
         size: 40,
+        enableResizing: false,
         header: () => {
           const allSelected = files.length > 0 && files.every((f) => rowSelection[f.id]);
           const someSelected = files.some((f) => rowSelection[f.id]) && !allSelected;
@@ -617,6 +618,7 @@ function FileTable({
             {
               id: 'actions',
               size: 140,
+              enableResizing: false,
               cell: ({ row }: { row: { original: MediaFileEntry } }) => {
                 const file = row.original;
                 const isMatched = file.match_status !== 'unmatched';
@@ -668,6 +670,9 @@ function FileTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => row.id,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+    defaultColumn: { minSize: 60 },
   });
 
   // Only show full-page empty state when no filters/search applied and truly no files
