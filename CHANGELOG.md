@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/milmil-dev/milmil/compare/v0.1.9...v0.1.10) (2026-04-30)
+
+
+### Features
+
+* **web:** user-resizable columns on library media files table ([#63](https://github.com/milmil-dev/milmil/issues/63)) ([867037b](https://github.com/milmil-dev/milmil/commit/867037bca2ca979518a1714b8f996b5341572afa))
+
 ## [0.1.9](https://github.com/milmil-dev/milmil/compare/v0.1.8...v0.1.9) (2026-04-30)
 
 
