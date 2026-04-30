@@ -477,7 +477,7 @@ function FileTable({
     () => [
       {
         id: 'select',
-        meta: { width: 40 },
+        size: 40,
         header: () => {
           const allSelected = files.length > 0 && files.every((f) => rowSelection[f.id]);
           const someSelected = files.some((f) => rowSelection[f.id]) && !allSelected;
@@ -519,7 +519,7 @@ function FileTable({
       {
         accessorKey: 'filename',
         header: () => i18n._(msg`library.detail.col.filename`),
-        meta: { width: 650 },
+        size: 650,
         cell: ({ row }) => (
           <div className="w-full min-w-0 overflow-hidden">
             <span
@@ -534,7 +534,7 @@ function FileTable({
       {
         id: 'matched',
         header: () => i18n._(msg`library.detail.col.matchedAnime`),
-        meta: { width: 300 },
+        size: 300,
         cell: ({ row }) => {
           const file = row.original;
           if (file.matched_anime_title && file.matched_episode_sort > 0) {
@@ -593,12 +593,13 @@ function FileTable({
       {
         accessorKey: 'match_status',
         header: () => i18n._(msg`library.detail.col.status`),
-        meta: { width: 80 },
+        size: 80,
         cell: ({ row }) => <StatusBadge status={row.original.match_status} />,
       },
       {
         accessorKey: 'subtitle_count',
         header: () => i18n._(msg`library.detail.col.subs`),
+        size: 70,
         cell: ({ row }) => (
           <span className="text-xs text-white/40">{row.original.subtitle_count}</span>
         ),
@@ -606,6 +607,7 @@ function FileTable({
       {
         accessorKey: 'size_bytes',
         header: () => i18n._(msg`library.detail.col.size`),
+        size: 100,
         cell: ({ row }) => (
           <span className="text-xs text-white/50">{formatBytes(row.original.size_bytes)}</span>
         ),
@@ -614,7 +616,7 @@ function FileTable({
         ? [
             {
               id: 'actions',
-              meta: { width: 140 },
+              size: 140,
               cell: ({ row }: { row: { original: MediaFileEntry } }) => {
                 const file = row.original;
                 const isMatched = file.match_status !== 'unmatched';

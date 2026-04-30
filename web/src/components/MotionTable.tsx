@@ -1,14 +1,7 @@
 'use no memo';
 
-import { flexRender, type RowData, type Table as TanStackTable } from '@tanstack/react-table';
+import { flexRender, type Table as TanStackTable } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-
-declare module '@tanstack/react-table' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface ColumnMeta<TData extends RowData, TValue> {
-    width?: number;
-  }
-}
 
 const SORTABLE_COLUMNS = new Set(['filename', 'size_bytes', 'match_status', 'subtitle_count']);
 
@@ -63,7 +56,7 @@ export function MotionTable<T>({
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} className="border-white/[0.04] hover:bg-transparent">
             {headerGroup.headers.map((header) => {
-              const width = header.column.columnDef.meta?.width;
+              const width = header.getSize();
               const colId = header.column.id;
               const isSortable = SORTABLE_COLUMNS.has(colId) && !!onSort;
               const isActive = isSortable && sortBy === colId;
@@ -79,7 +72,7 @@ export function MotionTable<T>({
                   ]
                     .filter(Boolean)
                     .join(' ')}
-                  style={width ? { width, minWidth: width, maxWidth: width } : undefined}
+                  style={{ width, minWidth: width, maxWidth: width }}
                   onClick={isSortable ? () => onSort(colId) : undefined}
                 >
                   {header.isPlaceholder ? null : (
@@ -103,12 +96,12 @@ export function MotionTable<T>({
             className="group border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-150"
           >
             {row.getVisibleCells().map((cell) => {
-              const width = cell.column.columnDef.meta?.width;
+              const width = cell.column.getSize();
               return (
                 <TableCell
                   key={cell.id}
                   className="py-3 transition-colors duration-150 group-hover:text-mm-accent/80"
-                  style={width ? { width, minWidth: width, maxWidth: width } : undefined}
+                  style={{ width, minWidth: width, maxWidth: width }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
