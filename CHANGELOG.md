@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.11](https://github.com/milmil-dev/milmil/compare/v0.1.10...v0.1.11) (2026-04-30)
+
+
+### Features
+
+* add container password reset ([#66](https://github.com/milmil-dev/milmil/issues/66)) ([4758c8d](https://github.com/milmil-dev/milmil/commit/4758c8d7ec89944083b5adb2ea900bd06522a775))
+
+
+### Bug Fixes
+
+* **compose:** alias api service as milmil-api so default stack works ([#65](https://github.com/milmil-dev/milmil/issues/65)) ([fbb4809](https://github.com/milmil-dev/milmil/commit/fbb4809b5e03b61d03c2ea4abd932ecc10e7d418))
+* **update-check:** address post-merge review findings from [#56](https://github.com/milmil-dev/milmil/issues/56) ([#62](https://github.com/milmil-dev/milmil/issues/62)) ([3328a05](https://github.com/milmil-dev/milmil/commit/3328a05a67c794c3e95c08b0f8fc035355ca986d))
+
 ## [0.1.10](https://github.com/milmil-dev/milmil/compare/v0.1.9...v0.1.10) (2026-04-30)
 
 
