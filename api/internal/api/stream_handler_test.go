@@ -13,15 +13,24 @@ import (
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/updatecheck"
 )
 
 func newTestAppWithDB(t *testing.T) (*echo.Echo, *sql.DB) {
+	t.Helper()
+	return newTestAppWithDBAndChecker(t, noopChecker())
+}
+
+// newTestAppWithDBAndChecker is the underlying helper that lets tests
+// (specifically the /update-check handler tests in system_handler_test.go)
+// inject a Checker pointed at an httptest.Server with a known release payload.
+func newTestAppWithDBAndChecker(t *testing.T, checker *updatecheck.Checker) (*echo.Echo, *sql.DB) {
 	t.Helper()
 	database, dsn := newTestDB(t)
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil), database
+	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, checker), database
 }
 
 func TestStreamDirect_NotFound(t *testing.T) {

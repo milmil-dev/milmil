@@ -23,7 +23,47 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { useUpdateCheck } from '@/hooks/use-update-check';
 import { api } from '@/lib/api-client';
+import { useUpdateStore } from '@/store/update-store';
+
+function UpdateRow() {
+  const { i18n } = useLingui();
+  const { hasUpdate, latest, releaseUrl, dismiss } = useUpdateCheck();
+  const dismissedVersion = useUpdateStore((s) => s.dismissedVersion);
+
+  if (!latest) return null; // silent on offline / never-cached
+
+  if (!hasUpdate) {
+    return <p className="text-[13px] text-white/40">{i18n._(msg`about.upToDate`)}</p>;
+  }
+
+  const isDismissed = dismissedVersion === latest;
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <p className="text-[13px] text-white/70">
+        {i18n._(msg`about.updateAvailable`)} v{latest} —{' '}
+        <a
+          href={releaseUrl ?? '#'}
+          target="_blank"
+          rel="noreferrer"
+          className="text-mm-accent hover:underline"
+        >
+          {i18n._(msg`about.releaseNotes`)} →
+        </a>
+      </p>
+      {!isDismissed && (
+        <button
+          type="button"
+          onClick={() => dismiss(latest)}
+          className="text-[12px] text-white/40 transition-colors hover:text-white/70"
+        >
+          {i18n._(msg`about.dismiss`)}
+        </button>
+      )}
+    </div>
+  );
+}
 
 interface SystemInfo {
   version: string;
@@ -123,6 +163,7 @@ export function AboutPanel() {
                 )}
               </div>
             ))}
+            <UpdateRow />
           </div>
         </SettingsCard>
 

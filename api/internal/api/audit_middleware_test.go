@@ -72,7 +72,7 @@ func newAuditTestServer(t *testing.T) *auditTestServer {
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
-	e := api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	e := api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, noopChecker())
 
 	q := store.New(database)
 	user, err := q.CreateUser(context.Background(), store.CreateUserParams{

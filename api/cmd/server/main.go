@@ -47,6 +47,7 @@ import (
 	"github.com/milmil/api/internal/sync/providers"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
+	"github.com/milmil/api/internal/updatecheck"
 	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/migrations"
@@ -306,8 +307,37 @@ func main() {
 	traktProvider := providers.NewTrakt(httpClient, "", traktClientID, traktClientSecret)
 	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider, traktProvider}, tokenStore, wsHubAdapter{hub: wsHub})
 
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg)
+	// Update checker — handler dependency + background ticker. The ticker
+	// polls GitHub releases hourly (24h cache) and broadcasts a
+	// "system:update-available" event over the WS hub when a newer version
+	// is observed, so connected clients can show an upgrade banner.
+	updateChecker := updatecheck.NewChecker(updatecheck.Config{
+		Repo:       "milmil-dev/milmil",
+		HTTPClient: &http.Client{Timeout: 5 * time.Second},
+		Interval:   1 * time.Hour,
+		TTL:        24 * time.Hour,
+		Notify: func(r updatecheck.Result) {
+			wsHub.Broadcast(ws.Event{
+				Type: "system:update-available",
+				Data: map[string]any{
+					"latest":       r.Latest,
+					"release_url":  r.ReleaseURL,
+					"published_at": r.PublishedAt.UTC().Format(time.RFC3339),
+				},
+			})
+		},
+	})
+
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg, updateChecker)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
+
+	// Start update-checker background ticker. main.go does not currently
+	// thread a long-lived signal-bound context through (shutdown is driven
+	// by the `quit` chan below), so we use context.Background() here. The
+	// goroutine exits naturally on process termination; tightening to a
+	// cancellable context can land alongside a broader main.go lifecycle
+	// refactor.
+	go updateChecker.Run(context.Background())
 
 	// Bot engine
 	botRouter := bot.NewRouter()
