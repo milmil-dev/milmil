@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
-	"net"
 	"os/signal"
 	"path/filepath"
 	"strings"
@@ -21,7 +21,6 @@ import (
 
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/auth"
-	"github.com/milmil/api/internal/jellyfin"
 	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/bot/commands"
 	dcadapter "github.com/milmil/api/internal/bot/discord"
@@ -29,23 +28,24 @@ import (
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
+	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/anilist"
-	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
 	"github.com/milmil/api/internal/integration/danmaku"
 	"github.com/milmil/api/internal/integration/tmdb"
+	"github.com/milmil/api/internal/jellyfin"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/notification"
 	_ "github.com/milmil/api/internal/notification/providers" // register provider factories
 	"github.com/milmil/api/internal/resolver"
+	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/sync/providers"
-	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
 	"github.com/milmil/api/internal/updatecheck"
 	"github.com/milmil/api/internal/worker"
@@ -117,6 +117,16 @@ func redactRedisURL(url string) string {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "admin" {
+		cmd := newAdminCommand()
+		cmd.SetArgs(os.Args[2:])
+		if err := cmd.Execute(); err != nil {
+			fmt.Fprintln(os.Stderr, "error:", err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	bootStart := time.Now()
 
 	// Bootstrap logger (info-level) until config is loaded.
@@ -209,7 +219,7 @@ func main() {
 	ddpClient := dandanplay.NewFallbackClient(
 		&http.Client{Timeout: 10 * time.Second},
 		ddpCredFn,
-		"", // official URL — uses default
+		"",              // official URL — uses default
 		cfg.DanmuAPIURL, // fallback URL — empty uses default danmu.icu
 	)
 	// TMDB client (optional — only if API key is configured)
