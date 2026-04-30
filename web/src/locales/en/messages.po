@@ -206,7 +206,7 @@ msgstr "← Back to library"
 
 #: src/pages/settings/AboutPanel.tsx:61
 msgid "about.dismiss"
-msgstr "about.dismiss"
+msgstr "Dismiss"
 
 #: src/pages/settings/AboutPanel.tsx:182
 msgid "about.export"
@@ -263,7 +263,7 @@ msgstr "Links"
 
 #: src/pages/settings/AboutPanel.tsx:52
 msgid "about.releaseNotes"
-msgstr "about.releaseNotes"
+msgstr "release notes"
 
 #: src/pages/settings/AboutPanel.tsx:219
 #: src/pages/settings/AboutPanel.tsx:270
@@ -308,11 +308,11 @@ msgstr "System Information"
 
 #: src/pages/settings/AboutPanel.tsx:45
 msgid "about.updateAvailable"
-msgstr "about.updateAvailable"
+msgstr "Update available:"
 
 #: src/pages/settings/AboutPanel.tsx:38
 msgid "about.upToDate"
-msgstr "about.upToDate"
+msgstr "You're up to date"
 
 #: src/pages/settings/AccountPanel.tsx:403
 msgid "account.2fa.activeMessage"
