@@ -16,9 +16,22 @@ import (
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/metadata"
+	"github.com/milmil/api/internal/updatecheck"
 	"github.com/milmil/api/migrations"
 	_ "modernc.org/sqlite"
 )
+
+// noopChecker returns an updatecheck.Checker pointed at a non-routable BaseURL
+// so any unintended Check() call fails cleanly (no panic, no real network).
+// Tests that exercise the /update-check handler should construct their own
+// Checker via newTestAppWithChecker.
+func noopChecker() *updatecheck.Checker {
+	return updatecheck.NewChecker(updatecheck.Config{
+		Repo:    "test/test",
+		BaseURL: "http://127.0.0.1:0",
+		TTL:     time.Hour,
+	})
+}
 
 // newTestDB opens a sqlite test DB inside its own temp dir and registers a
 // cleanup that closes the DB and force-removes the temp dir. The latter
@@ -63,7 +76,7 @@ func newTestApp(t *testing.T) *echo.Echo {
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, noopChecker())
 }
 
 func TestAuthStatus_NotInitialized(t *testing.T) {

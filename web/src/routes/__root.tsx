@@ -20,6 +20,7 @@ import { api } from '../lib/api-client';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
 import { useBgStore } from '../store/bg-store';
+import { useUpdateStore } from '../store/update-store';
 
 interface StatusResponse {
   initialized: boolean;
@@ -268,6 +269,13 @@ function RootLayout() {
     }
     if (event.type === 'notification:new') {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    }
+    if (event.type === 'system:update-available') {
+      useUpdateStore.getState().setLatest({
+        latest: event.data?.latest as string,
+        releaseUrl: (event.data?.release_url as string) ?? '',
+        publishedAt: (event.data?.published_at as string) ?? '',
+      });
     }
   });
 

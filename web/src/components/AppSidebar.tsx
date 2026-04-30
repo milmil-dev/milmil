@@ -17,6 +17,7 @@ import { useLingui } from '@lingui/react';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import { useUpdateCheck } from '../hooks/use-update-check';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
 import { NotificationBell } from './NotificationBell';
@@ -42,11 +43,13 @@ function NavItem({
   msgKey,
   icon,
   isActive,
+  dot,
 }: {
   to: string;
   msgKey: { id: string };
   icon: typeof HouseIcon;
   isActive: boolean;
+  dot?: boolean;
 }) {
   const { i18n } = useLingui();
   return (
@@ -78,6 +81,12 @@ function NavItem({
             strokeWidth={isActive ? 2 : 1.5}
             className="relative z-[1]"
           />
+          {dot && (
+            <span
+              aria-hidden
+              className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-mm-accent z-[2]"
+            />
+          )}
         </Link>
       </TooltipTrigger>
       <TooltipContent side="right">{i18n._(msgKey)}</TooltipContent>
@@ -185,6 +194,7 @@ function AccountAvatar() {
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to));
+  const { showBadge } = useUpdateCheck();
 
   return (
     <>
@@ -208,7 +218,14 @@ export function AppSidebar() {
             <div className="w-6 h-px my-3 bg-white/[0.06]" />
 
             {bottomNav.map(({ to, msgKey, icon }) => (
-              <NavItem key={to} to={to} msgKey={msgKey} icon={icon} isActive={isActive(to)} />
+              <NavItem
+                key={to}
+                to={to}
+                msgKey={msgKey}
+                icon={icon}
+                isActive={isActive(to)}
+                dot={to === '/settings' && showBadge}
+              />
             ))}
           </nav>
 
