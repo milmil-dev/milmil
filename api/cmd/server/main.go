@@ -47,6 +47,7 @@ import (
 	"github.com/milmil/api/internal/sync/providers"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/torrent"
+	"github.com/milmil/api/internal/updatecheck"
 	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
 	"github.com/milmil/api/migrations"
@@ -306,7 +307,16 @@ func main() {
 	traktProvider := providers.NewTrakt(httpClient, "", traktClientID, traktClientSecret)
 	syncSvc := milmilsync.NewService(syncQueries, database, []milmilsync.Provider{alProvider, bgmProvider, traktProvider}, tokenStore, wsHubAdapter{hub: wsHub})
 
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg)
+	// Update checker — handler dependency. Background polling + WS notify
+	// is wired in a follow-up task; for now we just construct it so the
+	// /api/v1/system/update-check handler has a non-nil Checker.
+	updateChecker := updatecheck.NewChecker(updatecheck.Config{
+		Repo:       "milmil-dev/milmil",
+		HTTPClient: &http.Client{Timeout: 5 * time.Second},
+		TTL:        24 * time.Hour,
+	})
+
+	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg, updateChecker)
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	// Bot engine
