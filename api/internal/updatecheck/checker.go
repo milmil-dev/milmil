@@ -1,7 +1,7 @@
 // Package updatecheck polls GitHub releases for the configured repo and
-// caches the result in memory with a TTL. It exposes Check (synchronous,
-// cache-first) and Run (background ticker that triggers Notify on version
-// changes).
+// caches the result in memory with a TTL. Check is the synchronous,
+// cache-first read API; the background polling loop (Run) lands in a
+// follow-up commit.
 package updatecheck
 
 import (
@@ -13,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/singleflight"
 )
 
 // Result is the parsed-and-trimmed view of GitHub's "latest release" payload
@@ -44,6 +46,7 @@ type Checker struct {
 	mu        sync.Mutex
 	cached    *Result
 	fetchedAt time.Time
+	sf        singleflight.Group
 }
 
 func NewChecker(cfg Config) *Checker {
@@ -69,13 +72,14 @@ func (c *Checker) Check(ctx context.Context) (*Result, bool, error) {
 		return cached, false, nil
 	}
 
-	r, err := c.fetch(ctx)
+	v, err, _ := c.sf.Do("fetch", func() (any, error) { return c.fetch(ctx) })
 	if err != nil {
 		if cached != nil {
 			return cached, true, nil
 		}
 		return nil, false, err
 	}
+	r := v.(*Result)
 
 	c.mu.Lock()
 	c.cached = r
