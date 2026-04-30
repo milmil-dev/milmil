@@ -204,99 +204,115 @@ msgstr "{missingCount} 話が不足"
 msgid "← Back to library"
 msgstr "← ライブラリに戻る"
 
-#: src/pages/settings/AboutPanel.tsx:141
+#: src/pages/settings/AboutPanel.tsx:61
+msgid "about.dismiss"
+msgstr ""
+
+#: src/pages/settings/AboutPanel.tsx:182
 msgid "about.export"
 msgstr "エクスポート"
 
-#: src/pages/settings/AboutPanel.tsx:61
+#: src/pages/settings/AboutPanel.tsx:101
 msgid "about.exportFailed"
 msgstr "エクスポートに失敗しました"
 
-#: src/pages/settings/AboutPanel.tsx:134
+#: src/pages/settings/AboutPanel.tsx:175
 msgid "about.exportSettings"
 msgstr "設定をエクスポート"
 
-#: src/pages/settings/AboutPanel.tsx:136
+#: src/pages/settings/AboutPanel.tsx:177
 msgid "about.exportSettingsDesc"
 msgstr "設定を JSON ファイルとしてダウンロード"
 
-#: src/pages/settings/AboutPanel.tsx:59
+#: src/pages/settings/AboutPanel.tsx:99
 msgid "about.exportSuccess"
 msgstr "設定をエクスポートしました"
 
-#: src/pages/settings/AboutPanel.tsx:156
-#: src/pages/settings/AboutPanel.tsx:210
+#: src/pages/settings/AboutPanel.tsx:197
+#: src/pages/settings/AboutPanel.tsx:251
 msgid "about.import"
 msgstr "インポート"
 
-#: src/pages/settings/AboutPanel.tsx:203
+#: src/pages/settings/AboutPanel.tsx:244
 msgid "about.importConfirmDesc"
 msgstr "現在の設定が上書きされます。この操作は元に戻せません。"
 
-#: src/pages/settings/AboutPanel.tsx:202
+#: src/pages/settings/AboutPanel.tsx:243
 msgid "about.importConfirmTitle"
 msgstr "設定をインポートしますか？"
 
-#: src/pages/settings/AboutPanel.tsx:83
+#: src/pages/settings/AboutPanel.tsx:123
 msgid "about.importFailed"
 msgstr "インポートに失敗しました"
 
-#: src/pages/settings/AboutPanel.tsx:149
+#: src/pages/settings/AboutPanel.tsx:190
 msgid "about.importSettings"
 msgstr "設定をインポート"
 
-#: src/pages/settings/AboutPanel.tsx:151
+#: src/pages/settings/AboutPanel.tsx:192
 msgid "about.importSettingsDesc"
 msgstr "JSON ファイルから設定を復元"
 
-#: src/pages/settings/AboutPanel.tsx:81
+#: src/pages/settings/AboutPanel.tsx:121
 msgid "about.importSuccess"
 msgstr "設定をインポートしました"
 
-#: src/pages/settings/AboutPanel.tsx:185
+#: src/pages/settings/AboutPanel.tsx:226
 msgid "about.links"
 msgstr "リンク"
 
-#: src/pages/settings/AboutPanel.tsx:178
-#: src/pages/settings/AboutPanel.tsx:229
+#: src/pages/settings/AboutPanel.tsx:52
+msgid "about.releaseNotes"
+msgstr ""
+
+#: src/pages/settings/AboutPanel.tsx:219
+#: src/pages/settings/AboutPanel.tsx:270
 msgid "about.reset"
 msgstr "リセット"
 
-#: src/pages/settings/AboutPanel.tsx:221
+#: src/pages/settings/AboutPanel.tsx:262
 msgid "about.resetConfirmDesc"
 msgstr "すべての設定がデフォルト値にリセットされます。この操作は元に戻せません。"
 
-#: src/pages/settings/AboutPanel.tsx:220
+#: src/pages/settings/AboutPanel.tsx:261
 msgid "about.resetConfirmTitle"
 msgstr "デフォルトに戻しますか？"
 
-#: src/pages/settings/AboutPanel.tsx:94
+#: src/pages/settings/AboutPanel.tsx:134
 msgid "about.resetFailed"
 msgstr "リセットに失敗しました"
 
-#: src/pages/settings/AboutPanel.tsx:92
+#: src/pages/settings/AboutPanel.tsx:132
 msgid "about.resetSuccess"
 msgstr "設定をリセットしました"
 
-#: src/pages/settings/AboutPanel.tsx:171
+#: src/pages/settings/AboutPanel.tsx:212
 msgid "about.resetToDefaults"
 msgstr "デフォルトに戻す"
 
-#: src/pages/settings/AboutPanel.tsx:173
+#: src/pages/settings/AboutPanel.tsx:214
 msgid "about.resetToDefaultsDesc"
 msgstr "すべての設定をデフォルト値に復元"
 
-#: src/pages/settings/AboutPanel.tsx:130
+#: src/pages/settings/AboutPanel.tsx:171
 msgid "about.settingsManagement"
 msgstr "設定管理"
 
-#: src/pages/settings/AboutPanel.tsx:108
+#: src/pages/settings/AboutPanel.tsx:148
 msgid "about.subtitle"
 msgstr "milmil について"
 
-#: src/pages/settings/AboutPanel.tsx:112
+#: src/pages/settings/AboutPanel.tsx:152
 msgid "about.systemInfo"
 msgstr "システム情報"
+
+#: src/pages/settings/AboutPanel.tsx:45
+msgid "about.updateAvailable"
+msgstr ""
+
+#: src/pages/settings/AboutPanel.tsx:38
+msgid "about.upToDate"
+msgstr ""
 
 #: src/pages/settings/AccountPanel.tsx:403
 msgid "account.2fa.activeMessage"
@@ -380,11 +396,11 @@ msgstr "現在のパスワード"
 msgid "account.fieldRequired"
 msgstr "この項目は必須です"
 
-#: src/components/AppSidebar.tsx:145
+#: src/components/AppSidebar.tsx:154
 msgid "account.local"
 msgstr "ローカルアカウント"
 
-#: src/components/AppSidebar.tsx:173
+#: src/components/AppSidebar.tsx:182
 msgid "account.logout"
 msgstr "ログアウト"
 
@@ -1362,7 +1378,7 @@ msgstr "名前"
 msgid "collection.sortByRecent"
 msgstr "最近マッチ"
 
-#: src/components/AppSidebar.tsx:36
+#: src/components/AppSidebar.tsx:37
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "コレクション"
@@ -1392,8 +1408,8 @@ msgstr "ホームに戻る"
 
 #: src/components/history/ConfirmDialog.tsx:44
 #: src/pages/LibraryDetailPage.tsx:1838
-#: src/pages/settings/AboutPanel.tsx:207
-#: src/pages/settings/AboutPanel.tsx:224
+#: src/pages/settings/AboutPanel.tsx:248
+#: src/pages/settings/AboutPanel.tsx:265
 #: src/pages/settings/StoragePanel.tsx:106
 msgid "common.cancel"
 msgstr "キャンセル"
@@ -1434,7 +1450,7 @@ msgstr "話"
 
 #: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:1994
-#: src/routes/__root.tsx:67
+#: src/routes/__root.tsx:68
 msgid "common.loadFailed"
 msgstr "読み込みに失敗しました"
 
@@ -1453,7 +1469,7 @@ msgstr "分"
 #: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:537
 #: src/pages/SchedulePage.tsx:790
-#: src/routes/__root.tsx:81
+#: src/routes/__root.tsx:82
 msgid "common.retry"
 msgstr "リトライ"
 
@@ -1732,11 +1748,11 @@ msgstr "第"
 msgid "episode.suffix"
 msgstr "話"
 
-#: src/routes/__root.tsx:67
+#: src/routes/__root.tsx:68
 msgid "error.serverUnavailable"
 msgstr "サーバーに接続できません"
 
-#: src/routes/__root.tsx:71
+#: src/routes/__root.tsx:72
 msgid "error.serverUnavailableHint"
 msgstr "サーバーが起動しているか確認してください"
 
@@ -2878,7 +2894,7 @@ msgstr "WebDAV サーバーに接続"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:262
+#: src/routes/__root.tsx:263
 msgid "match.completed"
 msgstr "マッチング完了"
 
@@ -2886,7 +2902,7 @@ msgstr "マッチング完了"
 msgid "Missing"
 msgstr "不足"
 
-#: src/components/AppSidebar.tsx:33
+#: src/components/AppSidebar.tsx:34
 #: src/pages/DownloadsPage.tsx:265
 #: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
@@ -2896,7 +2912,7 @@ msgstr "自動ダウンロード"
 msgid "nav.collection"
 msgstr "コレクション"
 
-#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:30
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "探索"
@@ -2905,24 +2921,24 @@ msgstr "探索"
 #~ msgid "nav.downloads"
 #~ msgstr "ダウンロード"
 
-#: src/components/AppSidebar.tsx:35
+#: src/components/AppSidebar.tsx:36
 msgid "nav.history"
 msgstr "履歴"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:231
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:248
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "ホーム"
 
-#: src/components/AppSidebar.tsx:34
-#: src/components/AppSidebar.tsx:234
+#: src/components/AppSidebar.tsx:35
+#: src/components/AppSidebar.tsx:251
 #: src/pages/LibrariesPage.tsx:2709
 #: src/pages/LibraryDetailPage.tsx:1872
 msgid "nav.libraries"
 msgstr "ライブラリ"
 
-#: src/components/AppSidebar.tsx:235
+#: src/components/AppSidebar.tsx:252
 msgid "nav.more"
 msgstr "もっと見る"
 
@@ -2934,20 +2950,20 @@ msgstr "通知"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:232
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:249
 #: src/pages/SchedulePage.tsx:829
 msgid "nav.schedule"
 msgstr "番組表"
 
-#: src/components/AppSidebar.tsx:28
-#: src/components/AppSidebar.tsx:233
+#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:250
 #: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "検索"
 
-#: src/components/AppSidebar.tsx:37
-#: src/components/AppSidebar.tsx:161
+#: src/components/AppSidebar.tsx:38
+#: src/components/AppSidebar.tsx:170
 #: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "設定"
@@ -3618,7 +3634,7 @@ msgstr "タイトルマッチ"
 #~ msgid "Save"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:258
+#: src/routes/__root.tsx:259
 msgid "scan.completed"
 msgstr "スキャン完了"
 
@@ -4274,7 +4290,7 @@ msgstr "更新をプルしました"
 msgid "settings.integrations.description"
 msgstr "外部サービスを接続してデータを同期"
 
-#: src/pages/settings/AboutPanel.tsx:107
+#: src/pages/settings/AboutPanel.tsx:147
 #: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "このアプリについて"
@@ -4746,7 +4762,7 @@ msgstr "日曜日"
 msgid "setup.integrations.anilistDescription"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:57
+#: src/pages/setup/IntegrationsStep.tsx:55
 msgid "setup.integrations.availableInSettings"
 msgstr ""
 
@@ -4754,11 +4770,11 @@ msgstr ""
 msgid "setup.integrations.bangumiDescription"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:65
+#: src/pages/setup/IntegrationsStep.tsx:63
 msgid "setup.integrations.finish"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:42
+#: src/pages/setup/IntegrationsStep.tsx:41
 msgid "setup.integrations.subtitle"
 msgstr ""
 
@@ -4775,7 +4791,7 @@ msgstr ""
 msgid "setup.library.createFailed"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:174
+#: src/pages/setup/LibraryStep.tsx:164
 msgid "setup.library.creating"
 msgstr ""
 
@@ -4783,11 +4799,11 @@ msgstr ""
 msgid "setup.library.fixPathFirst"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:120
+#: src/pages/setup/LibraryStep.tsx:115
 msgid "setup.library.nameLabel"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:128
+#: src/pages/setup/LibraryStep.tsx:122
 msgid "setup.library.namePlaceholder"
 msgstr ""
 
@@ -4795,7 +4811,7 @@ msgstr ""
 msgid "setup.library.pathCheckFailed"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:191
+#: src/pages/setup/LibraryStep.tsx:181
 msgid "setup.library.pathChecking"
 msgstr ""
 
@@ -4803,28 +4819,28 @@ msgstr ""
 msgid "setup.library.pathInvalid"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:139
+#: src/pages/setup/LibraryStep.tsx:132
 msgid "setup.library.pathLabel"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:152
+#: src/pages/setup/LibraryStep.tsx:144
 msgid "setup.library.pathPlaceholder"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:198
+#: src/pages/setup/LibraryStep.tsx:188
 msgid "setup.library.pathReadable"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:175
+#: src/pages/setup/LibraryStep.tsx:165
 msgid "setup.library.submit"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:106
+#: src/pages/setup/LibraryStep.tsx:103
 msgid "setup.library.subtitle"
 msgstr ""
 
 #: src/pages/setup/LibraryStep.tsx:25
-#: src/pages/setup/LibraryStep.tsx:103
+#: src/pages/setup/LibraryStep.tsx:102
 msgid "setup.library.title"
 msgstr ""
 

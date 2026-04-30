@@ -204,99 +204,115 @@ msgstr "{missingCount}화 누락"
 msgid "← Back to library"
 msgstr "← 라이브러리로 돌아가기"
 
-#: src/pages/settings/AboutPanel.tsx:141
+#: src/pages/settings/AboutPanel.tsx:61
+msgid "about.dismiss"
+msgstr ""
+
+#: src/pages/settings/AboutPanel.tsx:182
 msgid "about.export"
 msgstr "내보내기"
 
-#: src/pages/settings/AboutPanel.tsx:61
+#: src/pages/settings/AboutPanel.tsx:101
 msgid "about.exportFailed"
 msgstr "내보내기 실패"
 
-#: src/pages/settings/AboutPanel.tsx:134
+#: src/pages/settings/AboutPanel.tsx:175
 msgid "about.exportSettings"
 msgstr "설정 내보내기"
 
-#: src/pages/settings/AboutPanel.tsx:136
+#: src/pages/settings/AboutPanel.tsx:177
 msgid "about.exportSettingsDesc"
 msgstr "설정을 JSON 파일로 다운로드"
 
-#: src/pages/settings/AboutPanel.tsx:59
+#: src/pages/settings/AboutPanel.tsx:99
 msgid "about.exportSuccess"
 msgstr "설정을 내보냈습니다"
 
-#: src/pages/settings/AboutPanel.tsx:156
-#: src/pages/settings/AboutPanel.tsx:210
+#: src/pages/settings/AboutPanel.tsx:197
+#: src/pages/settings/AboutPanel.tsx:251
 msgid "about.import"
 msgstr "가져오기"
 
-#: src/pages/settings/AboutPanel.tsx:203
+#: src/pages/settings/AboutPanel.tsx:244
 msgid "about.importConfirmDesc"
 msgstr "현재 설정이 덮어쓰여집니다. 이 작업은 취소할 수 없습니다."
 
-#: src/pages/settings/AboutPanel.tsx:202
+#: src/pages/settings/AboutPanel.tsx:243
 msgid "about.importConfirmTitle"
 msgstr "설정을 가져오시겠습니까?"
 
-#: src/pages/settings/AboutPanel.tsx:83
+#: src/pages/settings/AboutPanel.tsx:123
 msgid "about.importFailed"
 msgstr "가져오기 실패"
 
-#: src/pages/settings/AboutPanel.tsx:149
+#: src/pages/settings/AboutPanel.tsx:190
 msgid "about.importSettings"
 msgstr "설정 가져오기"
 
-#: src/pages/settings/AboutPanel.tsx:151
+#: src/pages/settings/AboutPanel.tsx:192
 msgid "about.importSettingsDesc"
 msgstr "JSON 파일에서 설정 복원"
 
-#: src/pages/settings/AboutPanel.tsx:81
+#: src/pages/settings/AboutPanel.tsx:121
 msgid "about.importSuccess"
 msgstr "설정을 가져왔습니다"
 
-#: src/pages/settings/AboutPanel.tsx:185
+#: src/pages/settings/AboutPanel.tsx:226
 msgid "about.links"
 msgstr "링크"
 
-#: src/pages/settings/AboutPanel.tsx:178
-#: src/pages/settings/AboutPanel.tsx:229
+#: src/pages/settings/AboutPanel.tsx:52
+msgid "about.releaseNotes"
+msgstr ""
+
+#: src/pages/settings/AboutPanel.tsx:219
+#: src/pages/settings/AboutPanel.tsx:270
 msgid "about.reset"
 msgstr "초기화"
 
-#: src/pages/settings/AboutPanel.tsx:221
+#: src/pages/settings/AboutPanel.tsx:262
 msgid "about.resetConfirmDesc"
 msgstr "모든 설정이 기본값으로 초기화됩니다. 이 작업은 취소할 수 없습니다."
 
-#: src/pages/settings/AboutPanel.tsx:220
+#: src/pages/settings/AboutPanel.tsx:261
 msgid "about.resetConfirmTitle"
 msgstr "기본값으로 초기화하시겠습니까?"
 
-#: src/pages/settings/AboutPanel.tsx:94
+#: src/pages/settings/AboutPanel.tsx:134
 msgid "about.resetFailed"
 msgstr "초기화 실패"
 
-#: src/pages/settings/AboutPanel.tsx:92
+#: src/pages/settings/AboutPanel.tsx:132
 msgid "about.resetSuccess"
 msgstr "설정을 초기화했습니다"
 
-#: src/pages/settings/AboutPanel.tsx:171
+#: src/pages/settings/AboutPanel.tsx:212
 msgid "about.resetToDefaults"
 msgstr "기본값으로 초기화"
 
-#: src/pages/settings/AboutPanel.tsx:173
+#: src/pages/settings/AboutPanel.tsx:214
 msgid "about.resetToDefaultsDesc"
 msgstr "모든 설정을 기본값으로 복원"
 
-#: src/pages/settings/AboutPanel.tsx:130
+#: src/pages/settings/AboutPanel.tsx:171
 msgid "about.settingsManagement"
 msgstr "설정 관리"
 
-#: src/pages/settings/AboutPanel.tsx:108
+#: src/pages/settings/AboutPanel.tsx:148
 msgid "about.subtitle"
 msgstr "milmil 정보"
 
-#: src/pages/settings/AboutPanel.tsx:112
+#: src/pages/settings/AboutPanel.tsx:152
 msgid "about.systemInfo"
 msgstr "시스템 정보"
+
+#: src/pages/settings/AboutPanel.tsx:45
+msgid "about.updateAvailable"
+msgstr ""
+
+#: src/pages/settings/AboutPanel.tsx:38
+msgid "about.upToDate"
+msgstr ""
 
 #: src/pages/settings/AccountPanel.tsx:403
 msgid "account.2fa.activeMessage"
@@ -380,11 +396,11 @@ msgstr "현재 비밀번호"
 msgid "account.fieldRequired"
 msgstr "필수 항목입니다"
 
-#: src/components/AppSidebar.tsx:145
+#: src/components/AppSidebar.tsx:154
 msgid "account.local"
 msgstr "로컬 계정"
 
-#: src/components/AppSidebar.tsx:173
+#: src/components/AppSidebar.tsx:182
 msgid "account.logout"
 msgstr "로그아웃"
 
@@ -1362,7 +1378,7 @@ msgstr "이름"
 msgid "collection.sortByRecent"
 msgstr "최근 매치"
 
-#: src/components/AppSidebar.tsx:36
+#: src/components/AppSidebar.tsx:37
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "컬렉션"
@@ -1392,8 +1408,8 @@ msgstr "홈으로 돌아가기"
 
 #: src/components/history/ConfirmDialog.tsx:44
 #: src/pages/LibraryDetailPage.tsx:1838
-#: src/pages/settings/AboutPanel.tsx:207
-#: src/pages/settings/AboutPanel.tsx:224
+#: src/pages/settings/AboutPanel.tsx:248
+#: src/pages/settings/AboutPanel.tsx:265
 #: src/pages/settings/StoragePanel.tsx:106
 msgid "common.cancel"
 msgstr "취소"
@@ -1434,7 +1450,7 @@ msgstr "화"
 
 #: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:1994
-#: src/routes/__root.tsx:67
+#: src/routes/__root.tsx:68
 msgid "common.loadFailed"
 msgstr "불러오기 실패"
 
@@ -1453,7 +1469,7 @@ msgstr "분"
 #: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:537
 #: src/pages/SchedulePage.tsx:790
-#: src/routes/__root.tsx:81
+#: src/routes/__root.tsx:82
 msgid "common.retry"
 msgstr "다시 시도"
 
@@ -1732,11 +1748,11 @@ msgstr "제"
 msgid "episode.suffix"
 msgstr "화"
 
-#: src/routes/__root.tsx:67
+#: src/routes/__root.tsx:68
 msgid "error.serverUnavailable"
 msgstr "서버에 연결할 수 없습니다"
 
-#: src/routes/__root.tsx:71
+#: src/routes/__root.tsx:72
 msgid "error.serverUnavailableHint"
 msgstr "서버가 실행 중인지 확인하고 다시 시도하세요"
 
@@ -2878,7 +2894,7 @@ msgstr "WebDAV 서버에 연결"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:262
+#: src/routes/__root.tsx:263
 msgid "match.completed"
 msgstr "매칭 완료"
 
@@ -2886,7 +2902,7 @@ msgstr "매칭 완료"
 msgid "Missing"
 msgstr "누락"
 
-#: src/components/AppSidebar.tsx:33
+#: src/components/AppSidebar.tsx:34
 #: src/pages/DownloadsPage.tsx:265
 #: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
@@ -2896,7 +2912,7 @@ msgstr "자동 다운로드"
 msgid "nav.collection"
 msgstr "컬렉션"
 
-#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:30
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "탐색"
@@ -2905,24 +2921,24 @@ msgstr "탐색"
 #~ msgid "nav.downloads"
 #~ msgstr "다운로드"
 
-#: src/components/AppSidebar.tsx:35
+#: src/components/AppSidebar.tsx:36
 msgid "nav.history"
 msgstr "기록"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:231
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:248
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "홈"
 
-#: src/components/AppSidebar.tsx:34
-#: src/components/AppSidebar.tsx:234
+#: src/components/AppSidebar.tsx:35
+#: src/components/AppSidebar.tsx:251
 #: src/pages/LibrariesPage.tsx:2709
 #: src/pages/LibraryDetailPage.tsx:1872
 msgid "nav.libraries"
 msgstr "라이브러리"
 
-#: src/components/AppSidebar.tsx:235
+#: src/components/AppSidebar.tsx:252
 msgid "nav.more"
 msgstr "더보기"
 
@@ -2934,20 +2950,20 @@ msgstr "알림"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:232
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:249
 #: src/pages/SchedulePage.tsx:829
 msgid "nav.schedule"
 msgstr "편성표"
 
-#: src/components/AppSidebar.tsx:28
-#: src/components/AppSidebar.tsx:233
+#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:250
 #: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "검색"
 
-#: src/components/AppSidebar.tsx:37
-#: src/components/AppSidebar.tsx:161
+#: src/components/AppSidebar.tsx:38
+#: src/components/AppSidebar.tsx:170
 #: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "설정"
@@ -3618,7 +3634,7 @@ msgstr "제목 매칭"
 #~ msgid "Save"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:258
+#: src/routes/__root.tsx:259
 msgid "scan.completed"
 msgstr "스캔 완료"
 
@@ -4274,7 +4290,7 @@ msgstr "업데이트를 가져왔습니다"
 msgid "settings.integrations.description"
 msgstr "외부 서비스를 연결하고 데이터를 동기화"
 
-#: src/pages/settings/AboutPanel.tsx:107
+#: src/pages/settings/AboutPanel.tsx:147
 #: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "정보"
@@ -4746,7 +4762,7 @@ msgstr "일요일"
 msgid "setup.integrations.anilistDescription"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:57
+#: src/pages/setup/IntegrationsStep.tsx:55
 msgid "setup.integrations.availableInSettings"
 msgstr ""
 
@@ -4754,11 +4770,11 @@ msgstr ""
 msgid "setup.integrations.bangumiDescription"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:65
+#: src/pages/setup/IntegrationsStep.tsx:63
 msgid "setup.integrations.finish"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:42
+#: src/pages/setup/IntegrationsStep.tsx:41
 msgid "setup.integrations.subtitle"
 msgstr ""
 
@@ -4775,7 +4791,7 @@ msgstr ""
 msgid "setup.library.createFailed"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:174
+#: src/pages/setup/LibraryStep.tsx:164
 msgid "setup.library.creating"
 msgstr ""
 
@@ -4783,11 +4799,11 @@ msgstr ""
 msgid "setup.library.fixPathFirst"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:120
+#: src/pages/setup/LibraryStep.tsx:115
 msgid "setup.library.nameLabel"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:128
+#: src/pages/setup/LibraryStep.tsx:122
 msgid "setup.library.namePlaceholder"
 msgstr ""
 
@@ -4795,7 +4811,7 @@ msgstr ""
 msgid "setup.library.pathCheckFailed"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:191
+#: src/pages/setup/LibraryStep.tsx:181
 msgid "setup.library.pathChecking"
 msgstr ""
 
@@ -4803,28 +4819,28 @@ msgstr ""
 msgid "setup.library.pathInvalid"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:139
+#: src/pages/setup/LibraryStep.tsx:132
 msgid "setup.library.pathLabel"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:152
+#: src/pages/setup/LibraryStep.tsx:144
 msgid "setup.library.pathPlaceholder"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:198
+#: src/pages/setup/LibraryStep.tsx:188
 msgid "setup.library.pathReadable"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:175
+#: src/pages/setup/LibraryStep.tsx:165
 msgid "setup.library.submit"
 msgstr ""
 
-#: src/pages/setup/LibraryStep.tsx:106
+#: src/pages/setup/LibraryStep.tsx:103
 msgid "setup.library.subtitle"
 msgstr ""
 
 #: src/pages/setup/LibraryStep.tsx:25
-#: src/pages/setup/LibraryStep.tsx:103
+#: src/pages/setup/LibraryStep.tsx:102
 msgid "setup.library.title"
 msgstr ""
 
