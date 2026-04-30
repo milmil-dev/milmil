@@ -48,7 +48,13 @@ function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 
   );
 }
 
-function ResizeHandle<T>({ header }: { header: Header<T, unknown> }) {
+function ResizeHandle<T>({
+  header,
+  onReset,
+}: {
+  header: Header<T, unknown>;
+  onReset?: (columnId: string) => void;
+}) {
   const isResizing = header.column.getIsResizing();
   return (
     <div
@@ -62,6 +68,10 @@ function ResizeHandle<T>({ header }: { header: Header<T, unknown> }) {
       onTouchStart={(e) => {
         e.stopPropagation();
         header.getResizeHandler()(e);
+      }}
+      onDoubleClick={(e) => {
+        e.stopPropagation();
+        onReset?.(header.column.id);
       }}
       className="group absolute top-0 right-[-3px] z-10 flex h-full w-[6px] cursor-col-resize touch-none select-none items-stretch justify-center"
     >
@@ -130,7 +140,12 @@ export function MotionTable<T>({
                       )}
                     </span>
                   )}
-                  {header.column.getCanResize() ? <ResizeHandle header={header} /> : null}
+                  {header.column.getCanResize() ? (
+                    <ResizeHandle
+                      header={header}
+                      onReset={(colId) => onColumnResizeEnd?.(colId, Number.NaN)}
+                    />
+                  ) : null}
                 </TableHead>
               );
             })}

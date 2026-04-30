@@ -398,6 +398,7 @@ function FileTable({
   const TABLE_ID = 'library-detail-files';
   const persistedWidths = useTablePrefsStore((s) => s.columnWidths[TABLE_ID]);
   const setColumnWidth = useTablePrefsStore((s) => s.setColumnWidth);
+  const resetColumn = useTablePrefsStore((s) => s.resetColumn);
   const [statusFilter, setStatusFilter] = useState<'all' | 'matched' | 'unmatched'>('all');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -446,6 +447,15 @@ function FileTable({
   };
 
   const handleColumnResizeEnd = (colId: string, w: number) => {
+    if (Number.isNaN(w)) {
+      resetColumn(TABLE_ID, colId);
+      setColumnSizing((prev) => {
+        const next = { ...prev };
+        delete next[colId];
+        return next;
+      });
+      return;
+    }
     setColumnWidth(TABLE_ID, colId, w);
   };
 
