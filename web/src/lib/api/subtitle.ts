@@ -14,7 +14,7 @@ export const subtitleApi = {
 };
 
 export function getSubtitleUrl(subtitleId: string): string {
-  const ApiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
+  const ApiUrl = import.meta.env.VITE_API_URL ?? '';
   const token = localStorage.getItem('milmil-token') ?? '';
   return `${ApiUrl}/api/v1/subtitles/${subtitleId}/content?token=${encodeURIComponent(token)}`;
 }

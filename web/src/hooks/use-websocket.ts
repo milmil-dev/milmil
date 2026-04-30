@@ -1,8 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { useScanStore } from '../store/scan-store';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-const WS_URL = API_URL.replace(/^http/, 'ws') + '/ws';
+const API_URL = import.meta.env.VITE_API_URL ?? '';
+// Empty API_URL means same-origin (production behind a reverse proxy that
+// proxies /ws) — derive scheme/host from window.location. Otherwise (dev
+// with API on a different origin), swap http→ws on the configured URL.
+const WS_URL = API_URL
+  ? API_URL.replace(/^http/, 'ws') + '/ws'
+  : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
 
 interface WSEvent {
   type: string;
