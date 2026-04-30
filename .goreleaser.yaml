@@ -16,8 +16,10 @@ version: 2
 project_name: milmil
 
 # The `cli-v` tag prefix lives outside goreleaser's auto-computed
-# .Version (the monorepo block that does this is a Pro feature). We strip
-# it manually with `trimPrefix` everywhere we reference the version.
+# .Version (the monorepo block that does this is a Pro feature). The
+# release workflow strips `cli-v` and exports the result as
+# GORELEASER_CURRENT_TAG, so inside this file `.Version` already holds
+# the SemVer (e.g. `0.1.0`) and `.Tag` holds `v0.1.0`.
 # Server/Docker releases stay on the `v*` tag namespace handled by
 # publish.yml.
 
@@ -37,7 +39,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X main.Version={{ trimprefix .Tag "cli-v" }}
+      - -s -w -X main.Version={{ .Version }}
 
 archives:
   - id: milmil-archive
@@ -45,7 +47,7 @@ archives:
     format_overrides:
       - goos: windows
         formats: [zip]
-    name_template: "milmil_{{ trimprefix .Tag \"cli-v\" }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "milmil_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE
       - README*.md
@@ -57,33 +59,16 @@ snapshot:
   version_template: "{{ .Tag }}-snapshot-{{ .ShortCommit }}"
 
 changelog:
-  use: github
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-      - "^chore:"
-      - "^ci:"
+  # Release notes are produced by `gh release create --generate-notes`
+  # in release-cli.yml, scoped to commits since the previous cli-v* tag.
+  # Goreleaser's changelog would reach for the GitHub compare API
+  # against the v* server tag namespace and 404, so disable it here.
+  disable: true
 
 release:
-  draft: false
-  prerelease: auto
-  github:
-    owner: milmil-dev
-    name: milmil
-  name_template: "milmil CLI {{ .Tag }}"
-  header: |
-    ## milmil CLI release
-
-    Cross-platform binaries for the `milmil` command-line client.
-    Server-side milmil releases live under the `v*` tags.
-
-  footer: |
-    Install via:
-
-    ```
-    VER={{ trimprefix .Tag "cli-v" }}
-    curl -L https://github.com/milmil-dev/milmil/releases/download/{{ .Tag }}/milmil_${VER}_$(uname -s | tr A-Z a-z)_$(uname -m | sed 's/x86_64/amd64/').tar.gz | tar xz
-    ./milmil --help
-    ```
+  # The GitHub release is created by release-cli.yml via `gh release
+  # create`, not by goreleaser. The workflow strips the `cli-v` prefix
+  # for goreleaser (so .Version is valid SemVer) but uses the original
+  # `cli-v*` tag for the actual release on GitHub. Disabling here keeps
+  # the cli-v* tag namespace clean and avoids polluting the v* server tags.
+  disable: true

@@ -2,13 +2,21 @@ name: Release CLI
 
 # Releases the `milmil` CLI binary on `cli-v*` tags. Server releases use
 # the `v*` tag namespace handled by publish.yml + release-please.
+#
+# Goreleaser doesn't natively understand non-SemVer tag prefixes outside
+# of its Pro `monorepo:` feature, so we:
+#   1. strip `cli-v` and feed `vX.Y.Z` via GORELEASER_CURRENT_TAG so
+#      goreleaser can parse SemVer for .Version
+#   2. tell goreleaser to skip publishing (release.disable: true)
+#   3. publish the GitHub release ourselves on the original `cli-v*` tag
+#      via `gh release create`, keeping cli-v* and v* namespaces decoupled
 on:
   push:
     tags:
       - "cli-v*"
 
 permissions:
-  contents: write   # goreleaser needs to create a Release
+  contents: write   # gh release create needs to create a Release
 
 concurrency:
   group: release-cli-${{ github.ref }}
@@ -31,11 +39,62 @@ jobs:
           go-version: "1.26"
           cache-dependency-path: api/go.sum
 
-      - name: goreleaser
+      - name: Compute SemVer + create local shadow tag
+        id: ver
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          # cli-v0.1.0 → 0.1.0
+          SEMVER="${REF_NAME#cli-v}"
+          if [ -z "$SEMVER" ] || [ "$SEMVER" = "$REF_NAME" ]; then
+            echo "::error::tag '$REF_NAME' is missing the 'cli-v' prefix"
+            exit 1
+          fi
+          # Goreleaser validates GORELEASER_CURRENT_TAG against an actual
+          # git tag pointing at HEAD, so create a local-only `v$SEMVER`
+          # alias on the same commit. We never push it, so the v*
+          # namespace on origin stays reserved for the server cadence.
+          # If a server `v$SEMVER` was fetched, replace it locally —
+          # only this CI checkout is affected.
+          git tag -d "v$SEMVER" 2>/dev/null || true
+          git tag "v$SEMVER" "$REF_NAME"
+          echo "semver=${SEMVER}" >> "$GITHUB_OUTPUT"
+          echo "Shadow tag: v${SEMVER} → cli-v${SEMVER}"
+
+      - name: Build artifacts with goreleaser
         uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
           version: latest
+          # release.disable: true is set in .goreleaser.yaml, so this
+          # builds artifacts but does not publish anything.
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Feed goreleaser a SemVer-compliant tag (e.g. v0.1.0) so its
+          # tag-parser is happy. .Version inside templates will be 0.1.0.
+          GORELEASER_CURRENT_TAG: v${{ steps.ver.outputs.semver }}
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF_NAME: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+          SEMVER: ${{ steps.ver.outputs.semver }}
+        run: |
+          # Use the previous cli-v* tag (if any) as the changelog start
+          # point so notes don't bleed into the v* server-tag history.
+          PREV=$(git tag --sort=-v:refname --list 'cli-v*' | grep -vx "$REF_NAME" | head -n1 || true)
+          NOTES_ARGS=()
+          if [ -n "$PREV" ]; then
+            NOTES_ARGS+=(--generate-notes --notes-start-tag "$PREV")
+          else
+            NOTES_ARGS+=(--notes "$(printf 'First release of the milmil CLI.\n\nCross-platform binaries for the `milmil` command-line client.\nServer-side milmil releases live under the `v*` tags.\n\n## Install\n\n```\nVER=%s\ncurl -L https://github.com/%s/releases/download/%s/milmil_${VER}_$(uname -s | tr A-Z a-z)_$(uname -m | sed '"'"'s/x86_64/amd64/'"'"').tar.gz | tar xz\n./milmil --help\n```' "$SEMVER" "$REPO" "$REF_NAME")")
+          fi
+
+          gh release create "$REF_NAME" \
+            --title "milmil CLI $REF_NAME" \
+            "${NOTES_ARGS[@]}" \
+            dist/milmil_*.tar.gz \
+            dist/milmil_*.zip \
+            dist/checksums.txt
