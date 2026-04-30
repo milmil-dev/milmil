@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/milmil-dev/milmil/compare/v0.1.7...v0.1.8) (2026-04-30)
+
+
+### Features
+
+* auto update-check (notification-only) with WS push ([#56](https://github.com/milmil-dev/milmil/issues/56)) ([899feb5](https://github.com/milmil-dev/milmil/commit/899feb571646fd883a586f662c7f3c0b4e434aa2))
+
 ## [0.1.7](https://github.com/milmil-dev/milmil/compare/v0.1.6...v0.1.7) (2026-04-29)
 
 
