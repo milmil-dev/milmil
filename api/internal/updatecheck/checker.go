@@ -1,7 +1,7 @@
 // Package updatecheck polls GitHub releases for the configured repo and
 // caches the result in memory with a TTL. Check is the synchronous,
-// cache-first read API; the background polling loop (Run) lands in a
-// follow-up commit.
+// cache-first read API; Run is the background polling loop that fires a
+// Notify callback when a newer version is observed.
 package updatecheck
 
 import (

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -215,17 +216,17 @@ func TestChecker_Run_NoNotifyOnInitialSeed(t *testing.T) {
 	}))
 	t.Cleanup(srv.Close)
 
-	notified := false
+	var notified atomic.Bool
 	c := updatecheck.NewChecker(updatecheck.Config{
 		Repo: "x/y", HTTPClient: srv.Client(), BaseURL: srv.URL,
 		Interval: 20 * time.Millisecond, TTL: 0,
-		Notify:   func(_ updatecheck.Result) { notified = true },
+		Notify:   func(_ updatecheck.Result) { notified.Store(true) },
 	})
 
 	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond)
 	defer cancel()
 	c.Run(ctx) // blocks until ctx done
-	if notified {
+	if notified.Load() {
 		t.Error("notified on initial seed; want no notify until version changes")
 	}
 }
