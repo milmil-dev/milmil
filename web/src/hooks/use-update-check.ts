@@ -31,8 +31,9 @@ export function useUpdateCheck() {
   const setLatest = useUpdateStore((s) => s.setLatest);
   const dismiss = useUpdateStore((s) => s.dismiss);
 
+  // Reuse AboutPanel's queryKey so /system/info is fetched once, not twice.
   const { data: info } = useQuery({
-    queryKey: ['system', 'info'],
+    queryKey: ['system-info'],
     queryFn: () => api.get<{ version: string }>('/api/v1/system/info'),
     staleTime: Infinity,
   });
@@ -44,8 +45,8 @@ export function useUpdateCheck() {
       if (res.latest) {
         setLatest({
           latest: res.latest,
-          releaseUrl: res.release_url ?? '',
-          publishedAt: res.published_at ?? '',
+          releaseUrl: res.release_url ?? null,
+          publishedAt: res.published_at ?? null,
         });
       }
       return res;

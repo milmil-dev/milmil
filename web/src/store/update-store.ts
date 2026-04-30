@@ -6,7 +6,14 @@ interface UpdateState {
   releaseUrl: string | null;
   publishedAt: string | null;
   dismissedVersion: string | null;
-  setLatest: (info: { latest: string; releaseUrl: string; publishedAt: string }) => void;
+  // releaseUrl/publishedAt are nullable so AboutPanel's `?? '#'` fallback
+  // actually fires when those payload fields are missing — `??` does not
+  // short-circuit on empty string.
+  setLatest: (info: {
+    latest: string;
+    releaseUrl: string | null;
+    publishedAt: string | null;
+  }) => void;
   dismiss: (version: string) => void;
 }
 

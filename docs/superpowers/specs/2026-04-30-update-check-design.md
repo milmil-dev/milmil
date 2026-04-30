@@ -153,8 +153,8 @@ Route: `systemGroup.GET("/update-check", h.handleUpdateCheck)` — same auth + a
 ### WS event
 
 ```
-type:    "system:update-available"
-payload: { "latest": string, "release_url": string, "published_at": string (RFC3339) }
+type: "system:update-available"
+data: { "latest": string, "release_url": string, "published_at": string (RFC3339) }
 ```
 
 Broadcast inside `Notify` callback. Sent to all connected sessions; no per-user filtering.
@@ -171,7 +171,7 @@ checker := updatecheck.NewChecker(updatecheck.Config{
     Notify: func(r updatecheck.Result) {
         wsHub.Broadcast(ws.Event{
             Type: "system:update-available",
-            Payload: map[string]any{
+            Data: map[string]any{
                 "latest":       r.Latest,
                 "release_url":  r.ReleaseURL,
                 "published_at": r.PublishedAt.UTC().Format(time.RFC3339),
@@ -361,4 +361,4 @@ Dismiss button calls `dismiss(latest)`.
 - **GitHub rate limit (60/hr unauth).** A single home-server hitting once per hour uses 1/60 of the budget — fine. Multiple instances on the same NAT'd IP could compound, but that's an unusual deployment.
 - **WS broadcast on first cold start.** When the server boots and the ticker first fires, `notify` will compare against an empty cached value; it should NOT broadcast on the very first observation (only on subsequent changes). Guard logic: skip notify if `previous == nil`.
 - **Stale check is global.** All sessions share the same notification — a user on browser A who dismisses doesn't dismiss for browser B (per-browser localStorage). This is correct per Q3 (per-version dismiss). Note in PR description.
-- **`current` includes `-dev` suffix in unreleased builds.** semver treats `0.1.7-dev < 0.1.7`, so a dev build always sees the latest stable as an update. This is desired behavior — devs get reminded to upgrade past their dev build.
+- **`current` is the literal string `"dev"` for unbuilt/local runs**, not `X.Y.Z-dev` (per `api/internal/version/version.go`). Docker builds stamp a clean semver via `-ldflags`. Both the frontend `semverGt` (where `parseInt('dev', 10) || 0 = 0`) and backend `semver.Compare("vdev", "vX.Y.Z")` (where invalid `<` valid in `golang.org/x/mod/semver`) treat `dev` as less than any released version, so dev builds correctly see updates — but via numeric/invalid-version ordering, not semver prerelease ordering.
