@@ -21,6 +21,7 @@ import (
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/torrent"
+	"github.com/milmil/api/internal/updatecheck"
 	"github.com/milmil/api/internal/ws"
 )
 
@@ -40,11 +41,12 @@ type handler struct {
 	notifier         *notification.Service
 	syncSvc          *milmilsync.Service
 	danmakuRegistry  *danmaku.Registry
+	updateChecker    *updatecheck.Checker
 	encryptionKey    []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service, danmakuReg *danmaku.Registry) *echo.Echo {
+func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service, danmakuReg *danmaku.Registry, updateChecker *updatecheck.Checker) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	attachMiddleware(e)
@@ -65,6 +67,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		notifier:        notifier,
 		syncSvc:         syncSvc,
 		danmakuRegistry: danmakuReg,
+		updateChecker:   updateChecker,
 		encryptionKey:   cfg.EncryptionKey,
 	}
 
@@ -352,6 +355,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	systemGroup.GET("/storage", h.handleStorageStats)
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
 	systemGroup.GET("/downloader-status", h.handleDownloaderStatus)
+	systemGroup.GET("/update-check", h.handleUpdateCheck)
 
 	// Jellyfin-compatible API for external players (Infuse, VLC, Kodi)
 	jellyfinCacheDir := filepath.Join(os.TempDir(), "milmil", "jellyfin-images")

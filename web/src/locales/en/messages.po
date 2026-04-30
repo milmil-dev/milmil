@@ -204,99 +204,115 @@ msgstr "{missingCount} missing episodes"
 msgid "← Back to library"
 msgstr "← Back to library"
 
-#: src/pages/settings/AboutPanel.tsx:141
+#: src/pages/settings/AboutPanel.tsx:61
+msgid "about.dismiss"
+msgstr "Dismiss"
+
+#: src/pages/settings/AboutPanel.tsx:182
 msgid "about.export"
 msgstr "Export"
 
-#: src/pages/settings/AboutPanel.tsx:61
+#: src/pages/settings/AboutPanel.tsx:101
 msgid "about.exportFailed"
 msgstr "Export failed"
 
-#: src/pages/settings/AboutPanel.tsx:134
+#: src/pages/settings/AboutPanel.tsx:175
 msgid "about.exportSettings"
 msgstr "Export Settings"
 
-#: src/pages/settings/AboutPanel.tsx:136
+#: src/pages/settings/AboutPanel.tsx:177
 msgid "about.exportSettingsDesc"
 msgstr "Download your settings as a JSON file"
 
-#: src/pages/settings/AboutPanel.tsx:59
+#: src/pages/settings/AboutPanel.tsx:99
 msgid "about.exportSuccess"
 msgstr "Settings exported"
 
-#: src/pages/settings/AboutPanel.tsx:156
-#: src/pages/settings/AboutPanel.tsx:210
+#: src/pages/settings/AboutPanel.tsx:197
+#: src/pages/settings/AboutPanel.tsx:251
 msgid "about.import"
 msgstr "Import"
 
-#: src/pages/settings/AboutPanel.tsx:203
+#: src/pages/settings/AboutPanel.tsx:244
 msgid "about.importConfirmDesc"
 msgstr "This will overwrite your current settings. This cannot be undone."
 
-#: src/pages/settings/AboutPanel.tsx:202
+#: src/pages/settings/AboutPanel.tsx:243
 msgid "about.importConfirmTitle"
 msgstr "Import settings?"
 
-#: src/pages/settings/AboutPanel.tsx:83
+#: src/pages/settings/AboutPanel.tsx:123
 msgid "about.importFailed"
 msgstr "Import failed"
 
-#: src/pages/settings/AboutPanel.tsx:149
+#: src/pages/settings/AboutPanel.tsx:190
 msgid "about.importSettings"
 msgstr "Import Settings"
 
-#: src/pages/settings/AboutPanel.tsx:151
+#: src/pages/settings/AboutPanel.tsx:192
 msgid "about.importSettingsDesc"
 msgstr "Restore settings from a JSON file"
 
-#: src/pages/settings/AboutPanel.tsx:81
+#: src/pages/settings/AboutPanel.tsx:121
 msgid "about.importSuccess"
 msgstr "Settings imported"
 
-#: src/pages/settings/AboutPanel.tsx:185
+#: src/pages/settings/AboutPanel.tsx:226
 msgid "about.links"
 msgstr "Links"
 
-#: src/pages/settings/AboutPanel.tsx:178
-#: src/pages/settings/AboutPanel.tsx:229
+#: src/pages/settings/AboutPanel.tsx:52
+msgid "about.releaseNotes"
+msgstr "release notes"
+
+#: src/pages/settings/AboutPanel.tsx:219
+#: src/pages/settings/AboutPanel.tsx:270
 msgid "about.reset"
 msgstr "Reset"
 
-#: src/pages/settings/AboutPanel.tsx:221
+#: src/pages/settings/AboutPanel.tsx:262
 msgid "about.resetConfirmDesc"
 msgstr "This will reset all settings to default values. This cannot be undone."
 
-#: src/pages/settings/AboutPanel.tsx:220
+#: src/pages/settings/AboutPanel.tsx:261
 msgid "about.resetConfirmTitle"
 msgstr "Reset to defaults?"
 
-#: src/pages/settings/AboutPanel.tsx:94
+#: src/pages/settings/AboutPanel.tsx:134
 msgid "about.resetFailed"
 msgstr "Reset failed"
 
-#: src/pages/settings/AboutPanel.tsx:92
+#: src/pages/settings/AboutPanel.tsx:132
 msgid "about.resetSuccess"
 msgstr "Settings reset"
 
-#: src/pages/settings/AboutPanel.tsx:171
+#: src/pages/settings/AboutPanel.tsx:212
 msgid "about.resetToDefaults"
 msgstr "Reset to Defaults"
 
-#: src/pages/settings/AboutPanel.tsx:173
+#: src/pages/settings/AboutPanel.tsx:214
 msgid "about.resetToDefaultsDesc"
 msgstr "Restore all settings to their original values"
 
-#: src/pages/settings/AboutPanel.tsx:130
+#: src/pages/settings/AboutPanel.tsx:171
 msgid "about.settingsManagement"
 msgstr "Settings Management"
 
-#: src/pages/settings/AboutPanel.tsx:108
+#: src/pages/settings/AboutPanel.tsx:148
 msgid "about.subtitle"
 msgstr "About milmil"
 
-#: src/pages/settings/AboutPanel.tsx:112
+#: src/pages/settings/AboutPanel.tsx:152
 msgid "about.systemInfo"
 msgstr "System Information"
+
+#: src/pages/settings/AboutPanel.tsx:45
+msgid "about.updateAvailable"
+msgstr "Update available:"
+
+#: src/pages/settings/AboutPanel.tsx:38
+msgid "about.upToDate"
+msgstr "You're up to date"
 
 #: src/pages/settings/AccountPanel.tsx:403
 msgid "account.2fa.activeMessage"
@@ -380,11 +396,11 @@ msgstr "Current Password"
 msgid "account.fieldRequired"
 msgstr "This field is required"
 
-#: src/components/AppSidebar.tsx:145
+#: src/components/AppSidebar.tsx:154
 msgid "account.local"
 msgstr "Local account"
 
-#: src/components/AppSidebar.tsx:173
+#: src/components/AppSidebar.tsx:182
 msgid "account.logout"
 msgstr "Log out"
 
@@ -1365,7 +1381,7 @@ msgstr "Name"
 msgid "collection.sortByRecent"
 msgstr "Recently Matched"
 
-#: src/components/AppSidebar.tsx:36
+#: src/components/AppSidebar.tsx:37
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "Collection"
@@ -1395,8 +1411,8 @@ msgstr "Back to Home"
 
 #: src/components/history/ConfirmDialog.tsx:44
 #: src/pages/LibraryDetailPage.tsx:1838
-#: src/pages/settings/AboutPanel.tsx:207
-#: src/pages/settings/AboutPanel.tsx:224
+#: src/pages/settings/AboutPanel.tsx:248
+#: src/pages/settings/AboutPanel.tsx:265
 #: src/pages/settings/StoragePanel.tsx:106
 msgid "common.cancel"
 msgstr "Cancel"
@@ -1437,7 +1453,7 @@ msgstr "ep"
 
 #: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:1994
-#: src/routes/__root.tsx:67
+#: src/routes/__root.tsx:68
 msgid "common.loadFailed"
 msgstr "Failed to load"
 
@@ -1456,7 +1472,7 @@ msgstr "min"
 #: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:537
 #: src/pages/SchedulePage.tsx:790
-#: src/routes/__root.tsx:81
+#: src/routes/__root.tsx:82
 msgid "common.retry"
 msgstr "Retry"
 
@@ -1735,11 +1751,11 @@ msgstr "Episode "
 msgid "episode.suffix"
 msgstr ""
 
-#: src/routes/__root.tsx:67
+#: src/routes/__root.tsx:68
 msgid "error.serverUnavailable"
 msgstr "Server Unavailable"
 
-#: src/routes/__root.tsx:71
+#: src/routes/__root.tsx:72
 msgid "error.serverUnavailableHint"
 msgstr "Please check if the server is running and try again"
 
@@ -2881,7 +2897,7 @@ msgstr "Connect to a WebDAV server"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:262
+#: src/routes/__root.tsx:263
 msgid "match.completed"
 msgstr "Matching completed"
 
@@ -2889,7 +2905,7 @@ msgstr "Matching completed"
 msgid "Missing"
 msgstr "Missing"
 
-#: src/components/AppSidebar.tsx:33
+#: src/components/AppSidebar.tsx:34
 #: src/pages/DownloadsPage.tsx:265
 #: src/pages/DownloadsPage.tsx:392
 msgid "nav.autoDownload"
@@ -2899,7 +2915,7 @@ msgstr "Auto-Download"
 msgid "nav.collection"
 msgstr "nav.collection"
 
-#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:30
 #: src/pages/DiscoverPage.tsx:158
 msgid "nav.discover"
 msgstr "Discover"
@@ -2908,24 +2924,24 @@ msgstr "Discover"
 #~ msgid "nav.downloads"
 #~ msgstr "Downloads"
 
-#: src/components/AppSidebar.tsx:35
+#: src/components/AppSidebar.tsx:36
 msgid "nav.history"
 msgstr "History"
 
-#: src/components/AppSidebar.tsx:26
-#: src/components/AppSidebar.tsx:231
+#: src/components/AppSidebar.tsx:27
+#: src/components/AppSidebar.tsx:248
 #: src/pages/HomePage.tsx:38
 msgid "nav.home"
 msgstr "Home"
 
-#: src/components/AppSidebar.tsx:34
-#: src/components/AppSidebar.tsx:234
+#: src/components/AppSidebar.tsx:35
+#: src/components/AppSidebar.tsx:251
 #: src/pages/LibrariesPage.tsx:2709
 #: src/pages/LibraryDetailPage.tsx:1872
 msgid "nav.libraries"
 msgstr "Library"
 
-#: src/components/AppSidebar.tsx:235
+#: src/components/AppSidebar.tsx:252
 msgid "nav.more"
 msgstr "More"
 
@@ -2937,20 +2953,20 @@ msgstr "Notifications"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:232
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:249
 #: src/pages/SchedulePage.tsx:829
 msgid "nav.schedule"
 msgstr "Schedule"
 
-#: src/components/AppSidebar.tsx:28
-#: src/components/AppSidebar.tsx:233
+#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:250
 #: src/pages/SearchPage.tsx:131
 msgid "nav.search"
 msgstr "Search"
 
-#: src/components/AppSidebar.tsx:37
-#: src/components/AppSidebar.tsx:161
+#: src/components/AppSidebar.tsx:38
+#: src/components/AppSidebar.tsx:170
 #: src/pages/settings/SettingsPage.tsx:61
 msgid "nav.settings"
 msgstr "Settings"
@@ -3621,7 +3637,7 @@ msgstr "Title Match"
 #~ msgid "Save"
 #~ msgstr "Save"
 
-#: src/routes/__root.tsx:258
+#: src/routes/__root.tsx:259
 msgid "scan.completed"
 msgstr "Scan completed"
 
@@ -4277,7 +4293,7 @@ msgstr "settings.integration.updatesPulled"
 msgid "settings.integrations.description"
 msgstr "Connect external services and sync your data"
 
-#: src/pages/settings/AboutPanel.tsx:107
+#: src/pages/settings/AboutPanel.tsx:147
 #: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.about"
 msgstr "About"
@@ -4749,7 +4765,7 @@ msgstr "Sunday"
 msgid "setup.integrations.anilistDescription"
 msgstr "Sync watch progress and import lists from AniList."
 
-#: src/pages/setup/IntegrationsStep.tsx:57
+#: src/pages/setup/IntegrationsStep.tsx:55
 msgid "setup.integrations.availableInSettings"
 msgstr "In Settings"
 
@@ -4757,11 +4773,11 @@ msgstr "In Settings"
 msgid "setup.integrations.bangumiDescription"
 msgstr "Pull anime metadata, episode lists, and air dates from Bangumi."
 
-#: src/pages/setup/IntegrationsStep.tsx:65
+#: src/pages/setup/IntegrationsStep.tsx:63
 msgid "setup.integrations.finish"
 msgstr "Finish setup"
 
-#: src/pages/setup/IntegrationsStep.tsx:42
+#: src/pages/setup/IntegrationsStep.tsx:41
 msgid "setup.integrations.subtitle"
 msgstr "Connect external metadata providers later in Settings → Integrations to sync your watch history and enrich your library."
 
@@ -4778,7 +4794,7 @@ msgstr "Track watched episodes across devices via Trakt."
 msgid "setup.library.createFailed"
 msgstr "Could not create library — try again"
 
-#: src/pages/setup/LibraryStep.tsx:174
+#: src/pages/setup/LibraryStep.tsx:164
 msgid "setup.library.creating"
 msgstr "Creating…"
 
@@ -4786,11 +4802,11 @@ msgstr "Creating…"
 msgid "setup.library.fixPathFirst"
 msgstr "Fix the path before continuing"
 
-#: src/pages/setup/LibraryStep.tsx:120
+#: src/pages/setup/LibraryStep.tsx:115
 msgid "setup.library.nameLabel"
 msgstr "Library name"
 
-#: src/pages/setup/LibraryStep.tsx:128
+#: src/pages/setup/LibraryStep.tsx:122
 msgid "setup.library.namePlaceholder"
 msgstr "e.g. Anime"
 
@@ -4798,7 +4814,7 @@ msgstr "e.g. Anime"
 msgid "setup.library.pathCheckFailed"
 msgstr "Path check failed — try again"
 
-#: src/pages/setup/LibraryStep.tsx:191
+#: src/pages/setup/LibraryStep.tsx:181
 msgid "setup.library.pathChecking"
 msgstr "Checking…"
 
@@ -4806,28 +4822,28 @@ msgstr "Checking…"
 msgid "setup.library.pathInvalid"
 msgstr "Path is not valid"
 
-#: src/pages/setup/LibraryStep.tsx:139
+#: src/pages/setup/LibraryStep.tsx:132
 msgid "setup.library.pathLabel"
 msgstr "Path inside the container"
 
-#: src/pages/setup/LibraryStep.tsx:152
+#: src/pages/setup/LibraryStep.tsx:144
 msgid "setup.library.pathPlaceholder"
 msgstr "/media"
 
-#: src/pages/setup/LibraryStep.tsx:198
+#: src/pages/setup/LibraryStep.tsx:188
 msgid "setup.library.pathReadable"
 msgstr "Path readable"
 
-#: src/pages/setup/LibraryStep.tsx:175
+#: src/pages/setup/LibraryStep.tsx:165
 msgid "setup.library.submit"
 msgstr "Create library"
 
-#: src/pages/setup/LibraryStep.tsx:106
+#: src/pages/setup/LibraryStep.tsx:103
 msgid "setup.library.subtitle"
 msgstr "Point milmil at a folder of media files. You can add more libraries later in Settings."
 
 #: src/pages/setup/LibraryStep.tsx:25
-#: src/pages/setup/LibraryStep.tsx:103
+#: src/pages/setup/LibraryStep.tsx:102
 msgid "setup.library.title"
 msgstr "Add your first library"
 
