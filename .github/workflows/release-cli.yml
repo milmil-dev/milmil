@@ -67,13 +67,20 @@ jobs:
           distribution: goreleaser
           version: latest
           # release.disable: true is set in .goreleaser.yaml, so this
-          # builds artifacts but does not publish anything.
+          # builds artifacts and (with token) publishes the Homebrew
+          # formula, but does not publish a GitHub release — that's
+          # done in a later step against the original cli-v* tag.
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Feed goreleaser a SemVer-compliant tag (e.g. v0.1.0) so its
           # tag-parser is happy. .Version inside templates will be 0.1.0.
           GORELEASER_CURRENT_TAG: v${{ steps.ver.outputs.semver }}
+          # PAT with `repo` scope on milmil-dev/homebrew-tap. The default
+          # Actions GITHUB_TOKEN can't push to other repos. If unset,
+          # goreleaser fails the brews pipe — so the secret is required
+          # for any release to succeed.
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
 
       - name: Publish GitHub release
         env:
