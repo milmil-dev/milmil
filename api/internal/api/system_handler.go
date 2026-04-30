@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/mod/semver"
 
 	"github.com/milmil/api/internal/version"
 )
@@ -65,4 +66,28 @@ func (h *handler) handleClearTranscodeCache(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	return c.NoContent(http.StatusNoContent)
+}
+
+type updateCheckResponse struct {
+	Current     string  `json:"current"`
+	Latest      *string `json:"latest"`
+	HasUpdate   bool    `json:"has_update"`
+	ReleaseURL  *string `json:"release_url,omitempty"`
+	PublishedAt *string `json:"published_at,omitempty"`
+	Stale       bool    `json:"stale"`
+}
+
+func (h *handler) handleUpdateCheck(c echo.Context) error {
+	res, stale, err := h.updateChecker.Check(c.Request().Context())
+	current := version.Version
+	if err != nil || res == nil {
+		// Never-cached + offline: silent, return only the current version.
+		return c.JSON(http.StatusOK, updateCheckResponse{Current: current})
+	}
+	hasUpdate := semver.Compare("v"+current, "v"+res.Latest) < 0
+	publishedAt := res.PublishedAt.UTC().Format(time.RFC3339)
+	return c.JSON(http.StatusOK, updateCheckResponse{
+		Current: current, Latest: &res.Latest, HasUpdate: hasUpdate,
+		ReleaseURL: &res.ReleaseURL, PublishedAt: &publishedAt, Stale: stale,
+	})
 }

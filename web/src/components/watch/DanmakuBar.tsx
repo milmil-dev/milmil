@@ -8,7 +8,7 @@ import { DanmakuSettingsControls } from '@/components/DanmakuSettings';
 import { cn } from '@/lib/utils';
 import { usePreferencesStore } from '@/store/preferences-store';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 interface DanmakuBarProps {
   fileId: string | null;
