@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useUpdateStore } from '../store/update-store';
 import { useUpdateCheck } from './use-update-check';

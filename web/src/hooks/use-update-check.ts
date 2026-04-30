@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../lib/api-client';
 import { systemApi } from '../lib/api/system';
+import { api } from '../lib/api-client';
 import { useUpdateStore } from '../store/update-store';
 
 // Minimal semver-greater-than. Compares major.minor.patch numerically;
