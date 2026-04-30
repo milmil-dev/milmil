@@ -59,6 +59,7 @@ import {
 import { renameApi } from '../lib/api/rename';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
+import { useTablePrefsStore } from '../store/table-prefs-store';
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -394,6 +395,10 @@ function FileTable({
   onMatch?: (file: MediaFileEntry) => void;
 }) {
   const { i18n } = useLingui();
+  const TABLE_ID = 'library-detail-files';
+  const persistedWidths = useTablePrefsStore((s) => s.columnWidths[TABLE_ID]);
+  const setColumnWidth = useTablePrefsStore((s) => s.setColumnWidth);
+  const resetColumn = useTablePrefsStore((s) => s.resetColumn);
   const [statusFilter, setStatusFilter] = useState<'all' | 'matched' | 'unmatched'>('all');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -404,6 +409,7 @@ function FileTable({
   >('filename');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [columnSizing, setColumnSizing] = useState<Record<string, number>>(persistedWidths ?? {});
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -438,6 +444,19 @@ function FileTable({
       setSortOrder('asc');
     }
     setPage(1);
+  };
+
+  const handleColumnResizeEnd = (colId: string, w: number) => {
+    if (Number.isNaN(w)) {
+      resetColumn(TABLE_ID, colId);
+      setColumnSizing((prev) => {
+        const next = { ...prev };
+        delete next[colId];
+        return next;
+      });
+      return;
+    }
+    setColumnWidth(TABLE_ID, colId, w);
   };
 
   const { data, isLoading, isFetching } = useQuery<MediaFilesResponse, Error>({
@@ -477,7 +496,8 @@ function FileTable({
     () => [
       {
         id: 'select',
-        meta: { width: 40 },
+        size: 40,
+        enableResizing: false,
         header: () => {
           const allSelected = files.length > 0 && files.every((f) => rowSelection[f.id]);
           const someSelected = files.some((f) => rowSelection[f.id]) && !allSelected;
@@ -519,7 +539,7 @@ function FileTable({
       {
         accessorKey: 'filename',
         header: () => i18n._(msg`library.detail.col.filename`),
-        meta: { width: 650 },
+        size: 650,
         cell: ({ row }) => (
           <div className="w-full min-w-0 overflow-hidden">
             <span
@@ -534,7 +554,7 @@ function FileTable({
       {
         id: 'matched',
         header: () => i18n._(msg`library.detail.col.matchedAnime`),
-        meta: { width: 300 },
+        size: 300,
         cell: ({ row }) => {
           const file = row.original;
           if (file.matched_anime_title && file.matched_episode_sort > 0) {
@@ -593,12 +613,13 @@ function FileTable({
       {
         accessorKey: 'match_status',
         header: () => i18n._(msg`library.detail.col.status`),
-        meta: { width: 80 },
+        size: 80,
         cell: ({ row }) => <StatusBadge status={row.original.match_status} />,
       },
       {
         accessorKey: 'subtitle_count',
         header: () => i18n._(msg`library.detail.col.subs`),
+        size: 70,
         cell: ({ row }) => (
           <span className="text-xs text-white/40">{row.original.subtitle_count}</span>
         ),
@@ -606,6 +627,7 @@ function FileTable({
       {
         accessorKey: 'size_bytes',
         header: () => i18n._(msg`library.detail.col.size`),
+        size: 100,
         cell: ({ row }) => (
           <span className="text-xs text-white/50">{formatBytes(row.original.size_bytes)}</span>
         ),
@@ -614,7 +636,8 @@ function FileTable({
         ? [
             {
               id: 'actions',
-              meta: { width: 140 },
+              size: 140,
+              enableResizing: false,
               cell: ({ row }: { row: { original: MediaFileEntry } }) => {
                 const file = row.original;
                 const isMatched = file.match_status !== 'unmatched';
@@ -666,6 +689,11 @@ function FileTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => row.id,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+    defaultColumn: { minSize: 60 },
+    state: { columnSizing },
+    onColumnSizingChange: setColumnSizing,
   });
 
   // Only show full-page empty state when no filters/search applied and truly no files
@@ -798,6 +826,8 @@ function FileTable({
               sortBy={sortBy}
               sortOrder={sortOrder}
               onSort={handleSort}
+              tableId={TABLE_ID}
+              onColumnResizeEnd={handleColumnResizeEnd}
             />
             <div
               className={cn(

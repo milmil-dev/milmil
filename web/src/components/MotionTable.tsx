@@ -1,14 +1,8 @@
 'use no memo';
 
-import { flexRender, type RowData, type Table as TanStackTable } from '@tanstack/react-table';
+import { flexRender, type Header, type Table as TanStackTable } from '@tanstack/react-table';
+import { useEffect, useRef } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-
-declare module '@tanstack/react-table' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface ColumnMeta<TData extends RowData, TValue> {
-    width?: number;
-  }
-}
 
 const SORTABLE_COLUMNS = new Set(['filename', 'size_bytes', 'match_status', 'subtitle_count']);
 
@@ -18,6 +12,10 @@ interface MotionTableProps<T> {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   onSort?: (columnId: string) => void;
+  // When set, MotionTable emits onColumnResizeEnd(colId, newWidth) once
+  // per drag (on mouseup). The caller decides whether/where to persist.
+  tableId?: string;
+  onColumnResizeEnd?: (columnId: string, width: number) => void;
 }
 
 function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 'desc' }) {
@@ -50,20 +48,72 @@ function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 
   );
 }
 
+function ResizeHandle<T>({
+  header,
+  onReset,
+}: {
+  header: Header<T, unknown>;
+  onReset?: (columnId: string) => void;
+}) {
+  const isResizing = header.column.getIsResizing();
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      title="Drag to resize. Double-click to reset."
+      onMouseDown={(e) => {
+        e.stopPropagation();
+        header.getResizeHandler()(e);
+      }}
+      onTouchStart={(e) => {
+        e.stopPropagation();
+        header.getResizeHandler()(e);
+      }}
+      onDoubleClick={(e) => {
+        e.stopPropagation();
+        onReset?.(header.column.id);
+      }}
+      className="group absolute top-0 right-[-3px] z-10 flex h-full w-[6px] cursor-col-resize touch-none select-none items-stretch justify-center"
+    >
+      <span
+        className={[
+          'w-[2px] transition-colors',
+          isResizing ? 'bg-white/60' : 'bg-transparent group-hover:bg-white/30',
+        ].join(' ')}
+      />
+    </div>
+  );
+}
+
 export function MotionTable<T>({
   table,
   tableClassName,
   sortBy,
   sortOrder,
   onSort,
+  onColumnResizeEnd,
 }: MotionTableProps<T>) {
+  const resizingColId = table.getState().columnSizingInfo.isResizingColumn;
+  const wasResizingRef = useRef<string | false>(false);
+
+  useEffect(() => {
+    if (wasResizingRef.current && !resizingColId) {
+      const colId = wasResizingRef.current;
+      const col = table.getColumn(colId);
+      if (col && onColumnResizeEnd) {
+        onColumnResizeEnd(colId, col.getSize());
+      }
+    }
+    wasResizingRef.current = resizingColId;
+  }, [resizingColId, onColumnResizeEnd, table]);
+
   return (
     <Table className={tableClassName}>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} className="border-white/[0.04] hover:bg-transparent">
             {headerGroup.headers.map((header) => {
-              const width = header.column.columnDef.meta?.width;
+              const width = header.getSize();
               const colId = header.column.id;
               const isSortable = SORTABLE_COLUMNS.has(colId) && !!onSort;
               const isActive = isSortable && sortBy === colId;
@@ -72,14 +122,14 @@ export function MotionTable<T>({
                 <TableHead
                   key={header.id}
                   className={[
-                    'text-[10px] uppercase tracking-wider text-white/30 font-medium h-auto pb-3',
+                    'relative text-[10px] uppercase tracking-wider text-white/30 font-medium h-auto pb-3',
                     isSortable
                       ? 'cursor-pointer select-none hover:text-white/50 transition-colors'
                       : '',
                   ]
                     .filter(Boolean)
                     .join(' ')}
-                  style={width ? { width, minWidth: width, maxWidth: width } : undefined}
+                  style={{ width, minWidth: width, maxWidth: width }}
                   onClick={isSortable ? () => onSort(colId) : undefined}
                 >
                   {header.isPlaceholder ? null : (
@@ -90,6 +140,12 @@ export function MotionTable<T>({
                       )}
                     </span>
                   )}
+                  {header.column.getCanResize() ? (
+                    <ResizeHandle
+                      header={header}
+                      onReset={(colId) => onColumnResizeEnd?.(colId, Number.NaN)}
+                    />
+                  ) : null}
                 </TableHead>
               );
             })}
@@ -103,12 +159,12 @@ export function MotionTable<T>({
             className="group border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-150"
           >
             {row.getVisibleCells().map((cell) => {
-              const width = cell.column.columnDef.meta?.width;
+              const width = cell.column.getSize();
               return (
                 <TableCell
                   key={cell.id}
                   className="py-3 transition-colors duration-150 group-hover:text-mm-accent/80"
-                  style={width ? { width, minWidth: width, maxWidth: width } : undefined}
+                  style={{ width, minWidth: width, maxWidth: width }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
