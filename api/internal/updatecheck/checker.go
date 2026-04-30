@@ -125,8 +125,26 @@ func (c *Checker) fetch(ctx context.Context) (*Result, error) {
 	}, nil
 }
 
-// Run starts the background ticker. It calls Check every Interval and,
-// when the latest version differs from the previously-cached value,
+// refresh always fetches GitHub (bypassing the TTL cache) and writes the
+// result into the cache slots. Used by Run so that hourly polling actually
+// hits the network — Check would short-circuit on cache hits, and with
+// the production Interval=1h / TTL=24h that means Notify would only fire
+// once every 24h instead of within an hour of an upstream release.
+func (c *Checker) refresh(ctx context.Context) (*Result, error) {
+	v, err, _ := c.sf.Do("fetch", func() (any, error) { return c.fetch(ctx) })
+	if err != nil {
+		return nil, err
+	}
+	r := v.(*Result)
+	c.mu.Lock()
+	c.cached = r
+	c.fetchedAt = time.Now()
+	c.mu.Unlock()
+	return r, nil
+}
+
+// Run starts the background ticker. It refreshes the cache every Interval
+// and, when the latest version differs from the previously-observed value,
 // invokes Notify. The very first observation does not notify (it just
 // seeds the cache). Run blocks until ctx is cancelled. Recover-and-log
 // is the caller's responsibility — Run does not panic on its own paths.
@@ -139,7 +157,7 @@ func (c *Checker) Run(ctx context.Context) {
 
 	var prev string
 	check := func() {
-		r, _, err := c.Check(ctx)
+		r, err := c.refresh(ctx)
 		if err != nil || r == nil {
 			return
 		}

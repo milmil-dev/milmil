@@ -273,8 +273,8 @@ function RootLayout() {
     if (event.type === 'system:update-available') {
       useUpdateStore.getState().setLatest({
         latest: event.data?.latest as string,
-        releaseUrl: (event.data?.release_url as string) ?? '',
-        publishedAt: (event.data?.published_at as string) ?? '',
+        releaseUrl: (event.data?.release_url as string) ?? null,
+        publishedAt: (event.data?.published_at as string) ?? null,
       });
     }
   });

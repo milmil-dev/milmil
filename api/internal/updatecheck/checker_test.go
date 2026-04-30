@@ -88,9 +88,10 @@ func TestChecker_Check_CacheHitWithinTTL(t *testing.T) {
 
 func TestChecker_Check_StaleOnFetchFailure(t *testing.T) {
 	t.Parallel()
-	state := struct{ ok bool }{ok: true}
+	var ok atomic.Bool
+	ok.Store(true)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		if !state.ok {
+		if !ok.Load() {
 			http.Error(w, "boom", http.StatusInternalServerError)
 			return
 		}
@@ -108,7 +109,7 @@ func TestChecker_Check_StaleOnFetchFailure(t *testing.T) {
 	}
 
 	// Second call: TTL expired (nanosecond), upstream fails — should return stale
-	state.ok = false
+	ok.Store(false)
 	got, stale, err := c.Check(context.Background())
 	if err != nil {
 		t.Fatalf("second Check: %v", err)
@@ -171,11 +172,12 @@ func TestChecker_Check_SkipsPrereleaseAndDraft(t *testing.T) {
 func TestChecker_Run_NotifiesOnVersionChange(t *testing.T) {
 	t.Parallel()
 	versions := []string{"v0.1.7", "v0.1.7", "v0.1.8"}
-	idx := 0
+	var idx atomic.Int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		v := versions[idx]
-		if idx < len(versions)-1 {
-			idx++
+		i := int(idx.Load())
+		v := versions[i]
+		if i < len(versions)-1 {
+			idx.Add(1)
 		}
 		_ = json.NewEncoder(w).Encode(fakeGitHubRelease{
 			TagName: v, HTMLURL: "https://x/" + v, PublishedAt: time.Now().UTC(),
