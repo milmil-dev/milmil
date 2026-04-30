@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9](https://github.com/milmil-dev/milmil/compare/v0.1.8...v0.1.9) (2026-04-30)
+
+
+### Bug Fixes
+
+* **web:** default VITE_API_URL to '' so prod builds use relative URLs ([#58](https://github.com/milmil-dev/milmil/issues/58)) ([40e1434](https://github.com/milmil-dev/milmil/commit/40e14347f4fddf32460a41b5a66fb5a4a93cbfc3))
+
 ## [0.1.8](https://github.com/milmil-dev/milmil/compare/v0.1.7...v0.1.8) (2026-04-30)
 
 
