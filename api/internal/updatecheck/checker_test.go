@@ -166,3 +166,66 @@ func TestChecker_Check_SkipsPrereleaseAndDraft(t *testing.T) {
 		})
 	}
 }
+
+func TestChecker_Run_NotifiesOnVersionChange(t *testing.T) {
+	t.Parallel()
+	versions := []string{"v0.1.7", "v0.1.7", "v0.1.8"}
+	idx := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		v := versions[idx]
+		if idx < len(versions)-1 {
+			idx++
+		}
+		_ = json.NewEncoder(w).Encode(fakeGitHubRelease{
+			TagName: v, HTMLURL: "https://x/" + v, PublishedAt: time.Now().UTC(),
+		})
+	}))
+	t.Cleanup(srv.Close)
+
+	notified := make(chan updatecheck.Result, 4)
+	c := updatecheck.NewChecker(updatecheck.Config{
+		Repo: "x/y", HTTPClient: srv.Client(), BaseURL: srv.URL,
+		Interval: 20 * time.Millisecond, TTL: 0, // TTL=0 so each tick re-fetches
+		Notify: func(r updatecheck.Result) { notified <- r },
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	defer cancel()
+	go c.Run(ctx)
+
+	// Wait for the v0.1.8 notify (the only real change).
+	deadline := time.After(150 * time.Millisecond)
+	for {
+		select {
+		case r := <-notified:
+			if r.Latest == "0.1.8" {
+				return // success
+			}
+			t.Fatalf("first notify: got %q want 0.1.8 (no notify expected on initial seed or unchanged tick)", r.Latest)
+		case <-deadline:
+			t.Fatal("never received notify for 0.1.8")
+		}
+	}
+}
+
+func TestChecker_Run_NoNotifyOnInitialSeed(t *testing.T) {
+	t.Parallel()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_ = json.NewEncoder(w).Encode(fakeGitHubRelease{TagName: "v0.1.7", PublishedAt: time.Now().UTC()})
+	}))
+	t.Cleanup(srv.Close)
+
+	notified := false
+	c := updatecheck.NewChecker(updatecheck.Config{
+		Repo: "x/y", HTTPClient: srv.Client(), BaseURL: srv.URL,
+		Interval: 20 * time.Millisecond, TTL: 0,
+		Notify:   func(_ updatecheck.Result) { notified = true },
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond)
+	defer cancel()
+	c.Run(ctx) // blocks until ctx done
+	if notified {
+		t.Error("notified on initial seed; want no notify until version changes")
+	}
+}

@@ -124,3 +124,42 @@ func (c *Checker) fetch(ctx context.Context) (*Result, error) {
 		PublishedAt: rel.PublishedAt,
 	}, nil
 }
+
+// Run starts the background ticker. It calls Check every Interval and,
+// when the latest version differs from the previously-cached value,
+// invokes Notify. The very first observation does not notify (it just
+// seeds the cache). Run blocks until ctx is cancelled. Recover-and-log
+// is the caller's responsibility — Run does not panic on its own paths.
+func (c *Checker) Run(ctx context.Context) {
+	if c.cfg.Interval <= 0 {
+		return
+	}
+	ticker := time.NewTicker(c.cfg.Interval)
+	defer ticker.Stop()
+
+	var prev string
+	check := func() {
+		r, _, err := c.Check(ctx)
+		if err != nil || r == nil {
+			return
+		}
+		if prev == "" {
+			prev = r.Latest // initial seed; no notify
+			return
+		}
+		if r.Latest != prev && c.cfg.Notify != nil {
+			c.cfg.Notify(*r)
+		}
+		prev = r.Latest
+	}
+
+	check() // immediate first call so the cache is hot for /update-check
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			check()
+		}
+	}
+}
