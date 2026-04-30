@@ -59,7 +59,7 @@ import type { SubtitleTrack } from '@/plugins/subtitle/types';
 import { useBgStore } from '@/store/bg-store';
 import { usePreferencesStore } from '@/store/preferences-store';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_API_URL ?? '';
 const SAVE_INTERVAL_MS = 10_000;
 const COMPLETION_THRESHOLD_SECONDS = 30;
 
@@ -445,7 +445,8 @@ export function WatchPage() {
     if (transcodeStatus !== 'processing' || !fileId) return;
 
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${wsProtocol}//${new URL(API_URL).host}/ws`;
+    const wsHost = API_URL ? new URL(API_URL).host : window.location.host;
+    const wsUrl = `${wsProtocol}//${wsHost}/ws`;
     const ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
