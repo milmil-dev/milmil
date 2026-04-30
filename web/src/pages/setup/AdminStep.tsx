@@ -48,6 +48,9 @@ export function AdminStep() {
     <>
       <h2 className="text-lg font-semibold text-white mb-1">{i18n._(msg`auth.setup.title`)}</h2>
       <p className="text-[13px] text-white/40 mb-6">{i18n._(msg`auth.setup.subtitle`)}</p>
+      <p className="mb-5 rounded-lg border border-amber-400/15 bg-amber-400/[0.04] px-3 py-2 text-[12px] leading-relaxed text-amber-100/60">
+        {i18n._(msg`auth.setup.passwordRecoveryWarning`)}
+      </p>
 
       <form
         onSubmit={(e) => {

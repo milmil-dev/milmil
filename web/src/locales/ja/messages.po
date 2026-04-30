@@ -194,7 +194,7 @@ msgstr "視聴済み"
 #~ msgid "downloads.searchEmpty"
 #~ msgstr "\"{query}\" に一致するアニメなし"
 
-#: src/pages/LibraryDetailPage.tsx:375
+#: src/pages/LibraryDetailPage.tsx:376
 msgid "{missingCount} missing episodes"
 msgstr "{missingCount} 話が不足"
 
@@ -670,14 +670,18 @@ msgid "auth.error.setupFailed"
 msgstr "セットアップに失敗しました"
 
 #: src/pages/LibrariesPage.tsx:2843
-#: src/pages/LibraryDetailPage.tsx:1970
+#: src/pages/LibraryDetailPage.tsx:2000
 msgid "auth.libraries.signInSubtitle"
 msgstr "ライブラリにアクセスするにはログインしてください"
 
 #: src/pages/LibrariesPage.tsx:2840
-#: src/pages/LibraryDetailPage.tsx:1967
+#: src/pages/LibraryDetailPage.tsx:1997
 msgid "auth.libraries.signInTitle"
 msgstr "ログインが必要です"
+
+#: src/pages/LoginPage.tsx:426
+msgid "auth.login.forgotPassword"
+msgstr "パスワードを忘れましたか？"
 
 #: src/pages/LoginPage.tsx:79
 #~ msgid "auth.login.loading"
@@ -688,9 +692,17 @@ msgstr "ログインが必要です"
 msgid "auth.login.password"
 msgstr "パスワード"
 
+#: src/pages/LoginPage.tsx:434
+msgid "auth.login.recoveryAccessRequired"
+msgstr "この復旧コマンドを実行するには、サーバーまたはコンテナへのアクセス権が必要です。"
+
+#: src/pages/LoginPage.tsx:429
+msgid "auth.login.recoveryNoEmail"
+msgstr "milmil はメールによるパスワードリセットに対応していません。サーバーコンテナ内で管理者パスワードをリセットしてください："
+
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:2850
-#: src/pages/LibraryDetailPage.tsx:1973
+#: src/pages/LibraryDetailPage.tsx:2003
 #: src/pages/LoginPage.tsx:414
 msgid "auth.login.submit"
 msgstr "ログイン"
@@ -716,13 +728,17 @@ msgstr "ユーザー名"
 msgid "auth.setup.error"
 msgstr "セットアップに失敗しました。もう一度お試しください。"
 
-#: src/pages/setup/AdminStep.tsx:105
+#: src/pages/setup/AdminStep.tsx:108
 msgid "auth.setup.loading"
 msgstr "アカウントを作成中…"
 
-#: src/pages/setup/AdminStep.tsx:83
+#: src/pages/setup/AdminStep.tsx:86
 msgid "auth.setup.password"
 msgstr "パスワード"
+
+#: src/pages/setup/AdminStep.tsx:52
+msgid "auth.setup.passwordRecoveryWarning"
+msgstr "このパスワードは安全に保管してください。紛失した場合、復旧にはサーバーまたはコンテナへのアクセス権が必要です。"
 
 #: src/components/LoginModal.tsx:41
 #: src/pages/LoginPage.tsx:117
@@ -732,7 +748,7 @@ msgstr "パスワードは8文字以上必要です"
 
 #: src/components/LoginModal.tsx:176
 #: src/pages/LoginPage.tsx:415
-#: src/pages/setup/AdminStep.tsx:105
+#: src/pages/setup/AdminStep.tsx:108
 msgid "auth.setup.submit"
 msgstr "アカウントを作成"
 
@@ -749,7 +765,7 @@ msgstr "管理者アカウントを作成して始めましょう。"
 msgid "auth.setup.title"
 msgstr "milmil へようこそ"
 
-#: src/pages/setup/AdminStep.tsx:62
+#: src/pages/setup/AdminStep.tsx:65
 msgid "auth.setup.username"
 msgstr "ユーザー名"
 
@@ -1407,7 +1423,7 @@ msgid "common.backHome"
 msgstr "ホームに戻る"
 
 #: src/components/history/ConfirmDialog.tsx:44
-#: src/pages/LibraryDetailPage.tsx:1838
+#: src/pages/LibraryDetailPage.tsx:1868
 #: src/pages/settings/AboutPanel.tsx:248
 #: src/pages/settings/AboutPanel.tsx:265
 #: src/pages/settings/StoragePanel.tsx:106
@@ -1422,7 +1438,7 @@ msgstr "クリックしてコピー"
 msgid "common.confirm"
 msgstr "確認"
 
-#: src/pages/LibraryDetailPage.tsx:1848
+#: src/pages/LibraryDetailPage.tsx:1878
 msgid "common.confirmDelete"
 msgstr "削除を確認"
 
@@ -1431,7 +1447,7 @@ msgstr "削除を確認"
 msgid "common.copied"
 msgstr "コピーしました"
 
-#: src/pages/LibraryDetailPage.tsx:1808
+#: src/pages/LibraryDetailPage.tsx:1838
 msgid "common.dangerZone"
 msgstr "危険な操作"
 
@@ -1444,19 +1460,19 @@ msgstr "危険な操作"
 #: src/pages/AnimeDetailPage.tsx:527
 #: src/pages/AnimeDetailPage.tsx:966
 #: src/pages/DownloadsPage.tsx:854
-#: src/pages/LibraryDetailPage.tsx:1070
+#: src/pages/LibraryDetailPage.tsx:1100
 msgid "common.ep"
 msgstr "話"
 
 #: src/pages/AnimeDetailPage.tsx:331
-#: src/pages/LibraryDetailPage.tsx:1994
+#: src/pages/LibraryDetailPage.tsx:2024
 #: src/routes/__root.tsx:68
 msgid "common.loadFailed"
 msgstr "読み込みに失敗しました"
 
 #: src/components/LoginModal.tsx:173
 #: src/components/MatchModal.tsx:412
-#: src/pages/LibraryDetailPage.tsx:1208
+#: src/pages/LibraryDetailPage.tsx:1238
 #: src/pages/LoginPage.tsx:265
 #: src/pages/LoginPage.tsx:402
 msgid "common.loading"
@@ -1895,7 +1911,7 @@ msgstr "トレンド"
 msgid "home.viewAll"
 msgstr "すべて表示 →"
 
-#: src/pages/LibraryDetailPage.tsx:333
+#: src/pages/LibraryDetailPage.tsx:334
 msgid "Incomplete only"
 msgstr "未完了のみ"
 
@@ -1908,20 +1924,20 @@ msgstr "未完了のみ"
 msgid "library.addLibrary"
 msgstr "ライブラリを追加"
 
-#: src/pages/LibraryDetailPage.tsx:364
+#: src/pages/LibraryDetailPage.tsx:365
 msgid "library.anime.confirmDelete"
 msgstr "このアニメを削除してファイルのリンクを解除しますか？ファイルは未マッチ状態になります。"
 
-#: src/pages/LibraryDetailPage.tsx:289
+#: src/pages/LibraryDetailPage.tsx:290
 msgid "library.anime.deleted"
 msgstr "アニメを削除しました"
 
-#: src/pages/LibraryDetailPage.tsx:292
+#: src/pages/LibraryDetailPage.tsx:293
 msgid "library.anime.deleteFailed"
 msgstr "アニメの削除に失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:313
-#: src/pages/LibraryDetailPage.tsx:343
+#: src/pages/LibraryDetailPage.tsx:314
+#: src/pages/LibraryDetailPage.tsx:344
 msgid "library.anime.empty"
 msgstr "このライブラリにマッチしたアニメはありません"
 
@@ -1961,78 +1977,78 @@ msgstr "キャンセル"
 
 #: src/pages/LibrariesPage.tsx:3073
 #: src/pages/LibrariesPage.tsx:3095
-#: src/pages/LibraryDetailPage.tsx:1823
-#: src/pages/LibraryDetailPage.tsx:1857
+#: src/pages/LibraryDetailPage.tsx:1853
+#: src/pages/LibraryDetailPage.tsx:1887
 msgid "library.delete"
 msgstr "削除"
 
 #: src/pages/LibrariesPage.tsx:3077
-#: src/pages/LibraryDetailPage.tsx:1826
+#: src/pages/LibraryDetailPage.tsx:1856
 msgid "library.deleteConfirm"
 msgstr "すべてのメディアファイル記録が削除されます。ディスク上のファイルには影響しません。"
 
-#: src/pages/LibraryDetailPage.tsx:784
+#: src/pages/LibraryDetailPage.tsx:812
 msgid "library.detail.allMatched"
 msgstr "すべてのファイルがマッチ済み"
 
-#: src/pages/LibraryDetailPage.tsx:2090
+#: src/pages/LibraryDetailPage.tsx:2120
 msgid "library.detail.autoMatch"
 msgstr "自動マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:2094
+#: src/pages/LibraryDetailPage.tsx:2124
 msgid "library.detail.autoMatchTooltip"
 msgstr "未マッチのファイルをすべて自動マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:2000
-#: src/pages/LibraryDetailPage.tsx:2041
+#: src/pages/LibraryDetailPage.tsx:2030
+#: src/pages/LibraryDetailPage.tsx:2071
 msgid "library.detail.backToLibraries"
 msgstr "ライブラリ"
 
-#: src/pages/LibraryDetailPage.tsx:836
+#: src/pages/LibraryDetailPage.tsx:866
 msgid "library.detail.bulkMatch"
 msgstr "一括マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:1209
+#: src/pages/LibraryDetailPage.tsx:1239
 msgid "library.detail.bulkMatchModal.confirm"
 msgstr "マッチを確認"
 
-#: src/pages/LibraryDetailPage.tsx:1148
+#: src/pages/LibraryDetailPage.tsx:1178
 msgid "library.detail.bulkMatchModal.episodeStartHint"
 msgstr "選択したファイルはこの話数から順にマッチされます"
 
-#: src/pages/LibraryDetailPage.tsx:1145
+#: src/pages/LibraryDetailPage.tsx:1175
 msgid "library.detail.bulkMatchModal.episodeStartLabel"
 msgstr "開始話数"
 
-#: src/pages/LibraryDetailPage.tsx:936
+#: src/pages/LibraryDetailPage.tsx:966
 msgid "library.detail.bulkMatchModal.filesSelected"
 msgstr "{0} ファイルを選択中"
 
-#: src/pages/LibraryDetailPage.tsx:975
+#: src/pages/LibraryDetailPage.tsx:1005
 msgid "library.detail.bulkMatchModal.stepEpisodeStart"
 msgstr "開始話数を設定"
 
-#: src/pages/LibraryDetailPage.tsx:925
+#: src/pages/LibraryDetailPage.tsx:955
 msgid "library.detail.bulkMatchModal.title"
 msgstr "一括マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:906
+#: src/pages/LibraryDetailPage.tsx:936
 msgid "library.detail.bulkMatchSuccess"
 msgstr "一括マッチに成功しました"
 
-#: src/pages/LibraryDetailPage.tsx:848
+#: src/pages/LibraryDetailPage.tsx:878
 msgid "library.detail.bulkUnmatch"
 msgstr "一括マッチ解除"
 
-#: src/pages/LibraryDetailPage.tsx:842
+#: src/pages/LibraryDetailPage.tsx:872
 msgid "library.detail.bulkUnmatchConfirm"
 msgstr "選択したファイルのマッチを解除しますか？"
 
-#: src/pages/LibraryDetailPage.tsx:521
+#: src/pages/LibraryDetailPage.tsx:541
 msgid "library.detail.col.filename"
 msgstr "ファイル名"
 
-#: src/pages/LibraryDetailPage.tsx:536
+#: src/pages/LibraryDetailPage.tsx:556
 msgid "library.detail.col.matchedAnime"
 msgstr "マッチしたアニメ"
 
@@ -2040,50 +2056,50 @@ msgstr "マッチしたアニメ"
 #~ msgid "library.detail.col.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/pages/LibraryDetailPage.tsx:608
+#: src/pages/LibraryDetailPage.tsx:629
 msgid "library.detail.col.size"
 msgstr "サイズ"
 
-#: src/pages/LibraryDetailPage.tsx:595
+#: src/pages/LibraryDetailPage.tsx:615
 msgid "library.detail.col.status"
 msgstr "ステータス"
 
-#: src/pages/LibraryDetailPage.tsx:601
+#: src/pages/LibraryDetailPage.tsx:621
 msgid "library.detail.col.subs"
 msgstr "字幕"
 
-#: src/pages/LibraryDetailPage.tsx:248
+#: src/pages/LibraryDetailPage.tsx:249
 msgid "library.detail.copyPath"
 msgstr "パスをコピー"
 
-#: src/pages/LibraryDetailPage.tsx:2139
+#: src/pages/LibraryDetailPage.tsx:2169
 msgid "library.detail.duplicates"
 msgstr "重複"
 
-#: src/pages/LibraryDetailPage.tsx:2144
+#: src/pages/LibraryDetailPage.tsx:2174
 msgid "library.detail.duplicatesTooltip"
 msgstr "重複ファイルを確認・整理"
 
-#: src/pages/LibraryDetailPage.tsx:228
+#: src/pages/LibraryDetailPage.tsx:229
 msgid "library.detail.editMatch"
 msgstr "編集"
 
-#: src/pages/LibraryDetailPage.tsx:1592
+#: src/pages/LibraryDetailPage.tsx:1622
 msgid "library.detail.errors"
 msgstr "エラー"
 
-#: src/pages/LibraryDetailPage.tsx:255
+#: src/pages/LibraryDetailPage.tsx:256
 msgid "library.detail.fileInfo"
 msgstr "ファイル情報"
 
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#: src/pages/LibraryDetailPage.tsx:1578
+#: src/pages/LibraryDetailPage.tsx:1608
 msgid "library.detail.found"
 msgstr "発見"
 
-#: src/pages/LibraryDetailPage.tsx:1573
+#: src/pages/LibraryDetailPage.tsx:1603
 msgid "library.detail.inProgress"
 msgstr "進行中"
 
@@ -2091,12 +2107,12 @@ msgstr "進行中"
 #~ msgid "library.detail.loadMore"
 #~ msgstr "Load More"
 
-#: src/pages/LibraryDetailPage.tsx:648
+#: src/pages/LibraryDetailPage.tsx:671
 msgid "library.detail.match"
 msgstr "マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:741
-#: src/pages/LibraryDetailPage.tsx:1581
+#: src/pages/LibraryDetailPage.tsx:769
+#: src/pages/LibraryDetailPage.tsx:1611
 msgid "library.detail.matched"
 msgstr "マッチ済み"
 
@@ -2104,7 +2120,7 @@ msgstr "マッチ済み"
 #~ msgstr "Matched To"
 
 #: src/components/MatchModal.tsx:306
-#: src/pages/LibraryDetailPage.tsx:1132
+#: src/pages/LibraryDetailPage.tsx:1162
 msgid "library.detail.matchModal.change"
 msgstr "変更"
 
@@ -2124,7 +2140,7 @@ msgid "library.detail.matchModal.noEpisodes"
 msgstr "エピソードが見つかりません"
 
 #: src/components/MatchModal.tsx:214
-#: src/pages/LibraryDetailPage.tsx:1037
+#: src/pages/LibraryDetailPage.tsx:1067
 msgid "library.detail.matchModal.noResults"
 msgstr "結果が見つかりません"
 
@@ -2135,12 +2151,12 @@ msgstr "結果が見つかりません"
 #~ msgstr "Search anime..."
 
 #: src/components/MatchModal.tsx:196
-#: src/pages/LibraryDetailPage.tsx:1019
+#: src/pages/LibraryDetailPage.tsx:1049
 msgid "library.detail.matchModal.searchHint"
 msgstr "このファイルにマッチするアニメを検索"
 
 #: src/components/MatchModal.tsx:182
-#: src/pages/LibraryDetailPage.tsx:1006
+#: src/pages/LibraryDetailPage.tsx:1036
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "アニメを検索…"
 
@@ -2149,7 +2165,7 @@ msgid "library.detail.matchModal.stepEpisode"
 msgstr "エピソードを選択"
 
 #: src/components/MatchModal.tsx:150
-#: src/pages/LibraryDetailPage.tsx:974
+#: src/pages/LibraryDetailPage.tsx:1004
 msgid "library.detail.matchModal.stepSearch"
 msgstr "アニメを検索"
 
@@ -2161,34 +2177,34 @@ msgstr "ファイルをマッチ"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "このファイルをアニメエピソードにマッチ"
 
-#: src/pages/LibraryDetailPage.tsx:683
-#: src/pages/LibraryDetailPage.tsx:789
-#: src/pages/LibraryDetailPage.tsx:1259
-#: src/pages/LibraryDetailPage.tsx:1457
+#: src/pages/LibraryDetailPage.tsx:711
+#: src/pages/LibraryDetailPage.tsx:817
+#: src/pages/LibraryDetailPage.tsx:1289
+#: src/pages/LibraryDetailPage.tsx:1487
 msgid "library.detail.noFiles"
 msgstr "ファイルが見つかりません"
 
-#: src/pages/LibraryDetailPage.tsx:686
+#: src/pages/LibraryDetailPage.tsx:714
 msgid "library.detail.noFilesHint"
 msgstr "スキャンを実行してこのライブラリのメディアファイルを検出"
 
-#: src/pages/LibraryDetailPage.tsx:1529
+#: src/pages/LibraryDetailPage.tsx:1559
 msgid "library.detail.noScans"
 msgstr "まだスキャンされていません"
 
-#: src/pages/LibraryDetailPage.tsx:1532
+#: src/pages/LibraryDetailPage.tsx:1562
 msgid "library.detail.noScansHint"
 msgstr "最初のスキャンを実行して履歴を確認"
 
-#: src/pages/LibraryDetailPage.tsx:1994
+#: src/pages/LibraryDetailPage.tsx:2024
 msgid "library.detail.notFound"
 msgstr "ライブラリが見つかりません"
 
-#: src/pages/LibraryDetailPage.tsx:201
+#: src/pages/LibraryDetailPage.tsx:202
 msgid "library.detail.pathCopied"
 msgstr "パスをコピーしました"
 
-#: src/pages/LibraryDetailPage.tsx:629
+#: src/pages/LibraryDetailPage.tsx:652
 msgid "library.detail.play"
 msgstr "再生"
 
@@ -2214,54 +2230,54 @@ msgstr "再生"
 #~ msgid "library.detail.scanHistory.started"
 #~ msgstr "Started"
 
-#: src/pages/LibraryDetailPage.tsx:2110
+#: src/pages/LibraryDetailPage.tsx:2140
 msgid "library.detail.scanNow"
 msgstr "今すぐスキャン"
 
-#: src/pages/LibraryDetailPage.tsx:2114
+#: src/pages/LibraryDetailPage.tsx:2144
 msgid "library.detail.scanNowTooltip"
 msgstr "ライブラリ内の新しいファイルをスキャン"
 
 #~ msgid "library.detail.search"
 #~ msgstr "Search files..."
 
-#: src/pages/LibraryDetailPage.tsx:732
+#: src/pages/LibraryDetailPage.tsx:760
 msgid "library.detail.searchFiles"
 msgstr "ファイルを検索…"
 
-#: src/pages/LibraryDetailPage.tsx:832
+#: src/pages/LibraryDetailPage.tsx:862
 msgid "library.detail.selected"
 msgstr "{0} 件を選択中"
 
-#: src/pages/LibraryDetailPage.tsx:1717
-#: src/pages/LibraryDetailPage.tsx:2127
+#: src/pages/LibraryDetailPage.tsx:1747
+#: src/pages/LibraryDetailPage.tsx:2157
 msgid "library.detail.settings"
 msgstr "設定"
 
-#: src/pages/LibraryDetailPage.tsx:2131
+#: src/pages/LibraryDetailPage.tsx:2161
 msgid "library.detail.settingsTooltip"
 msgstr "ライブラリ設定"
 
 #~ msgid "library.detail.size"
 #~ msgstr "Size"
 
-#: src/pages/LibraryDetailPage.tsx:2272
+#: src/pages/LibraryDetailPage.tsx:2302
 msgid "library.detail.stats.diskUsage"
 msgstr "ディスク使用量"
 
-#: src/pages/LibraryDetailPage.tsx:2221
+#: src/pages/LibraryDetailPage.tsx:2251
 msgid "library.detail.stats.files"
 msgstr "ファイル"
 
-#: src/pages/LibraryDetailPage.tsx:2238
+#: src/pages/LibraryDetailPage.tsx:2268
 msgid "library.detail.stats.matched"
 msgstr "マッチ済み"
 
-#: src/pages/LibraryDetailPage.tsx:2281
+#: src/pages/LibraryDetailPage.tsx:2311
 msgid "library.detail.stats.size"
 msgstr "サイズ"
 
-#: src/pages/LibraryDetailPage.tsx:2250
+#: src/pages/LibraryDetailPage.tsx:2280
 msgid "library.detail.stats.unmatched"
 msgstr "未マッチ"
 
@@ -2275,11 +2291,11 @@ msgstr "未マッチ"
 #~ msgid "library.detail.tab.allFiles"
 #~ msgstr "All Files"
 
-#: src/pages/LibraryDetailPage.tsx:1937
+#: src/pages/LibraryDetailPage.tsx:1967
 msgid "library.detail.tab.anime"
 msgstr "アニメ"
 
-#: src/pages/LibraryDetailPage.tsx:1938
+#: src/pages/LibraryDetailPage.tsx:1968
 msgid "library.detail.tab.files"
 msgstr "ファイル"
 
@@ -2287,7 +2303,7 @@ msgstr "ファイル"
 #~ msgid "library.detail.tab.matched"
 #~ msgstr "Matched"
 
-#: src/pages/LibraryDetailPage.tsx:1939
+#: src/pages/LibraryDetailPage.tsx:1969
 msgid "library.detail.tab.scanHistory"
 msgstr "スキャン履歴"
 
@@ -2303,24 +2319,24 @@ msgstr "スキャン履歴"
 #~ msgid "library.detail.totalSize"
 #~ msgstr "Total Size"
 
-#: src/pages/LibraryDetailPage.tsx:239
+#: src/pages/LibraryDetailPage.tsx:240
 msgid "library.detail.unmatch"
 msgstr "Unmatch"
 
-#: src/pages/LibraryDetailPage.tsx:192
+#: src/pages/LibraryDetailPage.tsx:193
 msgid "library.detail.unmatched"
 msgstr "Unmatched"
 
-#: src/pages/LibraryDetailPage.tsx:745
-#: src/pages/LibraryDetailPage.tsx:1584
+#: src/pages/LibraryDetailPage.tsx:773
+#: src/pages/LibraryDetailPage.tsx:1614
 msgid "library.detail.unmatchedShort"
 msgstr "未マッチ"
 
-#: src/pages/LibraryDetailPage.tsx:2340
+#: src/pages/LibraryDetailPage.tsx:2370
 msgid "library.detail.viewTable"
 msgstr "テーブル表示"
 
-#: src/pages/LibraryDetailPage.tsx:2359
+#: src/pages/LibraryDetailPage.tsx:2389
 msgid "library.detail.viewTree"
 msgstr "ツリー表示"
 
@@ -2358,8 +2374,8 @@ msgstr "ライブラリを編集"
 
 #: src/pages/LibrariesPage.tsx:724
 #: src/pages/LibrariesPage.tsx:2493
-#: src/pages/LibraryDetailPage.tsx:1766
-#: src/pages/LibraryDetailPage.tsx:1770
+#: src/pages/LibraryDetailPage.tsx:1796
+#: src/pages/LibraryDetailPage.tsx:1800
 msgid "library.enabled"
 msgstr "有効"
 
@@ -2424,14 +2440,14 @@ msgid "library.http.url"
 msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:237
-#: src/pages/LibraryDetailPage.tsx:2089
+#: src/pages/LibraryDetailPage.tsx:2119
 msgid "library.matching"
 msgstr "マッチ中…"
 
 #: src/pages/LibrariesPage.tsx:694
 #: src/pages/LibrariesPage.tsx:1612
 #: src/pages/LibrariesPage.tsx:1991
-#: src/pages/LibraryDetailPage.tsx:1722
+#: src/pages/LibraryDetailPage.tsx:1752
 msgid "library.name"
 msgstr "名前"
 
@@ -2441,7 +2457,7 @@ msgstr "名前"
 msgid "library.nameRequired"
 msgstr "名前は必須です"
 
-#: src/pages/LibraryDetailPage.tsx:2024
+#: src/pages/LibraryDetailPage.tsx:2054
 msgid "library.neverScanned"
 msgstr "未実行"
 
@@ -2470,7 +2486,7 @@ msgstr "マイライブラリ"
 
 #: src/pages/LibrariesPage.tsx:1184
 #: src/pages/LibrariesPage.tsx:2406
-#: src/pages/LibraryDetailPage.tsx:1736
+#: src/pages/LibraryDetailPage.tsx:1766
 msgid "library.path"
 msgstr "パス"
 
@@ -2540,15 +2556,15 @@ msgid "library.s3.secretKey"
 msgstr "シークレットキー"
 
 #: src/pages/LibrariesPage.tsx:3050
-#: src/pages/LibraryDetailPage.tsx:1802
+#: src/pages/LibraryDetailPage.tsx:1832
 msgid "library.saveChanges"
 msgstr "変更を保存"
 
 #: src/pages/LibrariesPage.tsx:1253
 #: src/pages/LibrariesPage.tsx:2024
 #: src/pages/LibrariesPage.tsx:2518
-#: src/pages/LibraryDetailPage.tsx:1801
-#: src/pages/LibraryDetailPage.tsx:1847
+#: src/pages/LibraryDetailPage.tsx:1831
+#: src/pages/LibraryDetailPage.tsx:1877
 msgid "library.saving"
 msgstr "保存中…"
 
@@ -2558,12 +2574,12 @@ msgstr "保存中…"
 
 #: src/pages/LibrariesPage.tsx:1227
 #: src/pages/LibrariesPage.tsx:2479
-#: src/pages/LibraryDetailPage.tsx:1755
+#: src/pages/LibraryDetailPage.tsx:1785
 msgid "library.scanInterval"
 msgstr "スキャン間隔"
 
 #: src/pages/LibrariesPage.tsx:235
-#: src/pages/LibraryDetailPage.tsx:2109
+#: src/pages/LibraryDetailPage.tsx:2139
 msgid "library.scanning"
 msgstr "スキャン中"
 
@@ -2686,15 +2702,15 @@ msgid "library.toast.added"
 msgstr "ライブラリを追加しました"
 
 #: src/pages/LibrariesPage.tsx:2760
-#: src/pages/LibraryDetailPage.tsx:1693
+#: src/pages/LibraryDetailPage.tsx:1723
 msgid "library.toast.deleted"
 msgstr "ライブラリを削除しました"
 
-#: src/pages/LibraryDetailPage.tsx:1932
+#: src/pages/LibraryDetailPage.tsx:1962
 msgid "library.toast.matchFailed"
 msgstr "自動マッチに失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:1929
+#: src/pages/LibraryDetailPage.tsx:1959
 msgid "library.toast.matchStarted"
 msgstr "自動マッチを開始しました"
 
@@ -2703,16 +2719,16 @@ msgstr "自動マッチを開始しました"
 #~ msgid "library.toast.scanComplete"
 #~ msgstr "Scan complete"
 
-#: src/pages/LibraryDetailPage.tsx:1922
+#: src/pages/LibraryDetailPage.tsx:1952
 msgid "library.toast.scanFailed"
 msgstr "スキャンに失敗しました"
 
-#: src/pages/LibraryDetailPage.tsx:1919
+#: src/pages/LibraryDetailPage.tsx:1949
 msgid "library.toast.scanStarted"
 msgstr "スキャンを開始しました"
 
 #: src/pages/LibrariesPage.tsx:2750
-#: src/pages/LibraryDetailPage.tsx:1681
+#: src/pages/LibraryDetailPage.tsx:1711
 msgid "library.toast.updated"
 msgstr "ライブラリを更新しました"
 
@@ -2934,7 +2950,7 @@ msgstr "ホーム"
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:251
 #: src/pages/LibrariesPage.tsx:2709
-#: src/pages/LibraryDetailPage.tsx:1872
+#: src/pages/LibraryDetailPage.tsx:1902
 msgid "nav.libraries"
 msgstr "ライブラリ"
 
@@ -2987,7 +3003,7 @@ msgstr "新しい"
 msgid "No duplicates."
 msgstr "重複ファイルはありません。"
 
-#: src/pages/LibraryDetailPage.tsx:342
+#: src/pages/LibraryDetailPage.tsx:343
 msgid "No incomplete anime in this library."
 msgstr "このライブラリに未完了のアニメはありません。"
 
@@ -3638,19 +3654,19 @@ msgstr "タイトルマッチ"
 msgid "scan.completed"
 msgstr "スキャン完了"
 
-#: src/pages/LibraryDetailPage.tsx:2185
+#: src/pages/LibraryDetailPage.tsx:2215
 msgid "scan.files"
 msgstr "ファイル"
 
-#: src/pages/LibraryDetailPage.tsx:2160
+#: src/pages/LibraryDetailPage.tsx:2190
 msgid "scan.phase.hashing"
 msgstr "ハッシュ中"
 
-#: src/pages/LibraryDetailPage.tsx:2161
+#: src/pages/LibraryDetailPage.tsx:2191
 msgid "scan.phase.matching"
 msgstr "マッチ中"
 
-#: src/pages/LibraryDetailPage.tsx:2158
+#: src/pages/LibraryDetailPage.tsx:2188
 msgid "scan.phase.scanning"
 msgstr "スキャン中"
 
@@ -3687,7 +3703,7 @@ msgstr "無効"
 msgid "scanInterval.weekly"
 msgstr "毎週"
 
-#: src/pages/LibraryDetailPage.tsx:738
+#: src/pages/LibraryDetailPage.tsx:766
 #: src/pages/SchedulePage.tsx:560
 msgid "schedule.all"
 msgstr "すべて"
@@ -5357,7 +5373,7 @@ msgstr "視聴中"
 #~ msgid "watch.mediaFile"
 #~ msgstr "Media File"
 
-#: src/pages/WatchPage.tsx:850
+#: src/pages/WatchPage.tsx:851
 msgid "watch.notFound"
 msgstr "アニメが見つかりません"
 
@@ -5415,7 +5431,7 @@ msgstr "HLS Transcode"
 #~ msgid "watch.transcodeReady"
 #~ msgstr "Transcode ready"
 
-#: src/pages/WatchPage.tsx:1054
+#: src/pages/WatchPage.tsx:1055
 msgid "watch.transcoding"
 msgstr "Transcoding..."
 

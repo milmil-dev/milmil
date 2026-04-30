@@ -419,6 +419,23 @@ export function LoginPage() {
                     </Button>
                   )}
                 </form.Subscribe>
+
+                {isInitialized && mode === 'login' && (
+                  <details className="group rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+                    <summary className="cursor-pointer list-none text-center text-[12px] font-medium text-white/35 transition-colors hover:text-white/60 marker:hidden">
+                      {i18n._(msg`auth.login.forgotPassword`)}
+                    </summary>
+                    <div className="mt-2 space-y-2 border-t border-white/[0.06] pt-2 text-[12px] leading-relaxed text-white/35">
+                      <p>{i18n._(msg`auth.login.recoveryNoEmail`)}</p>
+                      <code className="block overflow-x-auto rounded-md border border-white/[0.06] bg-black/30 px-2 py-1.5 font-mono text-[11px] text-white/60">
+                        {
+                          'docker compose exec api /app/milmil-api admin reset-password --username admin --password-stdin'
+                        }
+                      </code>
+                      <p>{i18n._(msg`auth.login.recoveryAccessRequired`)}</p>
+                    </div>
+                  </details>
+                )}
               </form>
             </>
           )}
