@@ -1,6 +1,7 @@
 'use no memo';
 
 import { flexRender, type Header, type Table as TanStackTable } from '@tanstack/react-table';
+import { useEffect, useRef } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
 const SORTABLE_COLUMNS = new Set(['filename', 'size_bytes', 'match_status', 'subtitle_count']);
@@ -11,6 +12,10 @@ interface MotionTableProps<T> {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   onSort?: (columnId: string) => void;
+  // When set, MotionTable emits onColumnResizeEnd(colId, newWidth) once
+  // per drag (on mouseup). The caller decides whether/where to persist.
+  tableId?: string;
+  onColumnResizeEnd?: (columnId: string, width: number) => void;
 }
 
 function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 'desc' }) {
@@ -76,7 +81,22 @@ export function MotionTable<T>({
   sortBy,
   sortOrder,
   onSort,
+  onColumnResizeEnd,
 }: MotionTableProps<T>) {
+  const resizingColId = table.getState().columnSizingInfo.isResizingColumn;
+  const wasResizingRef = useRef<string | false>(false);
+
+  useEffect(() => {
+    if (wasResizingRef.current && !resizingColId) {
+      const colId = wasResizingRef.current;
+      const col = table.getColumn(colId);
+      if (col && onColumnResizeEnd) {
+        onColumnResizeEnd(colId, col.getSize());
+      }
+    }
+    wasResizingRef.current = resizingColId;
+  }, [resizingColId, onColumnResizeEnd, table]);
+
   return (
     <Table className={tableClassName}>
       <TableHeader>

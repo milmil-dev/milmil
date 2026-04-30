@@ -59,6 +59,7 @@ import {
 import { renameApi } from '../lib/api/rename';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
+import { useTablePrefsStore } from '../store/table-prefs-store';
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -394,6 +395,9 @@ function FileTable({
   onMatch?: (file: MediaFileEntry) => void;
 }) {
   const { i18n } = useLingui();
+  const TABLE_ID = 'library-detail-files';
+  const persistedWidths = useTablePrefsStore((s) => s.columnWidths[TABLE_ID]);
+  const setColumnWidth = useTablePrefsStore((s) => s.setColumnWidth);
   const [statusFilter, setStatusFilter] = useState<'all' | 'matched' | 'unmatched'>('all');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -404,6 +408,7 @@ function FileTable({
   >('filename');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [columnSizing, setColumnSizing] = useState<Record<string, number>>(persistedWidths ?? {});
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -438,6 +443,10 @@ function FileTable({
       setSortOrder('asc');
     }
     setPage(1);
+  };
+
+  const handleColumnResizeEnd = (colId: string, w: number) => {
+    setColumnWidth(TABLE_ID, colId, w);
   };
 
   const { data, isLoading, isFetching } = useQuery<MediaFilesResponse, Error>({
@@ -673,6 +682,8 @@ function FileTable({
     enableColumnResizing: true,
     columnResizeMode: 'onChange',
     defaultColumn: { minSize: 60 },
+    state: { columnSizing },
+    onColumnSizingChange: setColumnSizing,
   });
 
   // Only show full-page empty state when no filters/search applied and truly no files
@@ -805,6 +816,8 @@ function FileTable({
               sortBy={sortBy}
               sortOrder={sortOrder}
               onSort={handleSort}
+              tableId={TABLE_ID}
+              onColumnResizeEnd={handleColumnResizeEnd}
             />
             <div
               className={cn(
