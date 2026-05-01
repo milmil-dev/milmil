@@ -310,7 +310,7 @@ func (c *graphqlClient) GetAiringSchedule(ctx context.Context, from, to int64) (
 			Page(page: $page, perPage: 50) {
 				airingSchedules(airingAt_greater: $from, airingAt_lesser: $to, sort: TIME) {
 					airingAt episode
-					media { id title { romaji english native } }
+					media {` + mediaFields + `}
 				}
 			}
 		}`

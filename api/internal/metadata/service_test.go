@@ -2,6 +2,7 @@ package metadata_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/milmil/api/internal/cache"
@@ -61,6 +62,7 @@ type mockAniList struct {
 	searchFn   func(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error)
 	mediaFn    func(ctx context.Context, id int) (*anilist.Media, error)
 	trendingFn func(ctx context.Context, page, perPage int) ([]anilist.Media, error)
+	airingFn   func(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error)
 }
 
 func (m *mockAniList) SearchMedia(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error) {
@@ -93,6 +95,9 @@ func (m *mockAniList) Browse(ctx context.Context, filter anilist.BrowseFilter, p
 }
 
 func (m *mockAniList) GetAiringSchedule(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
+	if m.airingFn != nil {
+		return m.airingFn(ctx, from, to)
+	}
 	return nil, nil
 }
 
@@ -146,6 +151,168 @@ func TestGetCalendar_CacheHit(t *testing.T) {
 
 	if callCount != 1 {
 		t.Errorf("want 1 API call (cached), got %d", callCount)
+	}
+}
+
+func TestGetCalendar_FallsBackToStaleOnUpstreamError(t *testing.T) {
+	callCount := 0
+	bgm := &mockBangumi{
+		calendarFn: func(ctx context.Context) ([]bangumi.CalendarDay, error) {
+			callCount++
+			if callCount == 1 {
+				return []bangumi.CalendarDay{{
+					Weekday: bangumi.Weekday{CN: "星期一", EN: "Mon"},
+					Items: []bangumi.Subject{{
+						ID: 1, Name: "テスト", NameCN: "測試",
+					}},
+				}}, nil
+			}
+			return nil, errors.New("bangumi 502")
+		},
+	}
+	c := cache.New("")
+	svc := metadata.New(bgm, &mockAniList{}, c)
+
+	if _, err := svc.GetCalendar(context.Background()); err != nil {
+		t.Fatalf("seed call: %v", err)
+	}
+
+	// Expire the fresh cache so the next call must hit upstream.
+	if err := c.Del(context.Background(), "meta:calendar"); err != nil {
+		t.Fatalf("del fresh: %v", err)
+	}
+
+	days, err := svc.GetCalendar(context.Background())
+	if err != nil {
+		t.Fatalf("want stale fallback, got error: %v", err)
+	}
+	if len(days) != 1 || len(days[0].Items) != 1 || days[0].Items[0].Title != "測試" {
+		t.Errorf("want stale calendar with 測試, got %+v", days)
+	}
+	if callCount != 2 {
+		t.Errorf("want upstream called twice (seed + retry-after-fresh-expire), got %d", callCount)
+	}
+}
+
+func TestGetCalendar_FallsBackToAniListWhenBangumiFailsAndNoStale(t *testing.T) {
+	bgm := &mockBangumi{
+		calendarFn: func(ctx context.Context) ([]bangumi.CalendarDay, error) {
+			return nil, errors.New("bangumi 502")
+		},
+	}
+	// 2024-01-01 09:00 JST = Monday
+	mondayJST := int64(1704067200)
+	al := &mockAniList{
+		airingFn: func(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
+			return []anilist.AiringSchedule{{
+				AiringAt: int(mondayJST),
+				Episode:  5,
+				Media: anilist.Media{
+					ID:         100,
+					Title:      anilist.MediaTitle{Romaji: "Test", Native: "テスト"},
+					CoverImage: anilist.CoverImage{ExtraLarge: "https://cover.jpg"},
+				},
+			}}, nil
+		},
+	}
+	svc := metadata.New(bgm, al, cache.New(""))
+
+	days, err := svc.GetCalendar(context.Background())
+	if err != nil {
+		t.Fatalf("want AniList fallback, got error: %v", err)
+	}
+
+	var monday *metadata.CalendarDay
+	for i, d := range days {
+		if d.WeekdayEN == "Mon" {
+			monday = &days[i]
+			break
+		}
+	}
+	if monday == nil {
+		t.Fatalf("Monday not found in fallback calendar: %+v", days)
+	}
+	if len(monday.Items) != 1 {
+		t.Fatalf("want 1 Monday item, got %d", len(monday.Items))
+	}
+	item := monday.Items[0]
+	if item.AniListID != 100 {
+		t.Errorf("want AniListID=100, got %d", item.AniListID)
+	}
+	if item.CoverImage != "https://cover.jpg" {
+		t.Errorf("want cover image, got %q", item.CoverImage)
+	}
+	if item.NextEpisode != 5 {
+		t.Errorf("want NextEpisode=5, got %d", item.NextEpisode)
+	}
+	if item.AirTime != "09:00" {
+		t.Errorf("want AirTime=09:00, got %q", item.AirTime)
+	}
+}
+
+func TestGetCalendar_PrefersStaleOverAniListFallback(t *testing.T) {
+	callCount := 0
+	bgm := &mockBangumi{
+		calendarFn: func(ctx context.Context) ([]bangumi.CalendarDay, error) {
+			callCount++
+			if callCount == 1 {
+				return []bangumi.CalendarDay{{
+					Weekday: bangumi.Weekday{CN: "星期一", EN: "Mon"},
+					Items: []bangumi.Subject{{
+						ID: 1, Name: "テスト", NameCN: "從Bangumi來的測試",
+					}},
+				}}, nil
+			}
+			return nil, errors.New("bangumi 502")
+		},
+	}
+	airingCalls := 0
+	al := &mockAniList{
+		airingFn: func(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
+			airingCalls++
+			return nil, nil
+		},
+	}
+	c := cache.New("")
+	svc := metadata.New(bgm, al, c)
+
+	if _, err := svc.GetCalendar(context.Background()); err != nil {
+		t.Fatalf("seed: %v", err)
+	}
+	airingCallsAfterSeed := airingCalls
+
+	if err := c.Del(context.Background(), "meta:calendar"); err != nil {
+		t.Fatal(err)
+	}
+
+	days, err := svc.GetCalendar(context.Background())
+	if err != nil {
+		t.Fatalf("want stale, got error: %v", err)
+	}
+	if len(days) != 1 || days[0].Items[0].Title != "從Bangumi來的測試" {
+		t.Errorf("want stale Bangumi data, got %+v", days)
+	}
+	// AniList fallback path must NOT have been triggered when stale was available.
+	if airingCalls != airingCallsAfterSeed {
+		t.Errorf("AniList airing schedule called for fallback when stale was available")
+	}
+}
+
+func TestGetCalendar_ReturnsErrorWhenNoStaleAvailable(t *testing.T) {
+	bgm := &mockBangumi{
+		calendarFn: func(ctx context.Context) ([]bangumi.CalendarDay, error) {
+			return nil, errors.New("bangumi 502")
+		},
+	}
+	al := &mockAniList{
+		airingFn: func(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
+			return nil, errors.New("anilist down too")
+		},
+	}
+	svc := metadata.New(bgm, al, cache.New(""))
+
+	if _, err := svc.GetCalendar(context.Background()); err == nil {
+		t.Fatal("want error when both Bangumi and AniList fail with no stale cache")
 	}
 }
 

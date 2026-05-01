@@ -102,7 +102,12 @@ func bangumiEpisodeToEpisode(e bangumi.Episode) Episode {
 }
 
 func (s *Service) GetCalendar(ctx context.Context) ([]CalendarDay, error) {
-	cacheKey := "meta:calendar"
+	const (
+		cacheKey      = "meta:calendar"
+		staleCacheKey = "meta:calendar:stale"
+		freshTTL      = 2 * time.Hour
+		staleTTL      = 7 * 24 * time.Hour
+	)
 	var cached []CalendarDay
 	if s.getCache(ctx, cacheKey, &cached) {
 		return cached, nil
@@ -110,6 +115,16 @@ func (s *Service) GetCalendar(ctx context.Context) ([]CalendarDay, error) {
 
 	days, err := s.bangumi.GetCalendar(ctx)
 	if err != nil {
+		// Bangumi sometimes returns 502 (Cloudflare upstream failure). Try, in order:
+		// 1) last known good Bangumi calendar (preserves Chinese titles + Bangumi IDs)
+		// 2) live AniList airing schedule (fresh but no Bangumi-side cross-ref)
+		var stale []CalendarDay
+		if s.getCache(ctx, staleCacheKey, &stale) && len(stale) > 0 {
+			return stale, nil
+		}
+		if alResult, alErr := s.calendarFromAniList(ctx); alErr == nil && len(alResult) > 0 {
+			return alResult, nil
+		}
 		return nil, err
 	}
 
@@ -159,7 +174,61 @@ func (s *Service) GetCalendar(ctx context.Context) ([]CalendarDay, error) {
 	// Enrich with air times from AniList airing schedule
 	s.enrichCalendarAirTimes(ctx, result)
 
-	s.setCache(ctx, cacheKey, result, 2*time.Hour)
+	s.setCache(ctx, cacheKey, result, freshTTL)
+	s.setCache(ctx, staleCacheKey, result, staleTTL)
+	return result, nil
+}
+
+// calendarFromAniList builds a 7-day calendar from AniList's airing schedule.
+// Used as fallback when Bangumi is unreachable and no stale cache is available.
+// Items lack BangumiID, so library cross-ref will be empty until Bangumi recovers.
+func (s *Service) calendarFromAniList(ctx context.Context) ([]CalendarDay, error) {
+	now := time.Now()
+	schedules, err := s.anilist.GetAiringSchedule(ctx, now.Unix(), now.Add(7*24*time.Hour).Unix())
+	if err != nil {
+		return nil, err
+	}
+
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	type names struct{ cn, en string }
+	weekdays := map[time.Weekday]names{
+		time.Monday:    {"星期一", "Mon"},
+		time.Tuesday:   {"星期二", "Tue"},
+		time.Wednesday: {"星期三", "Wed"},
+		time.Thursday:  {"星期四", "Thu"},
+		time.Friday:    {"星期五", "Fri"},
+		time.Saturday:  {"星期六", "Sat"},
+		time.Sunday:    {"星期日", "Sun"},
+	}
+	order := []time.Weekday{time.Monday, time.Tuesday, time.Wednesday, time.Thursday, time.Friday, time.Saturday, time.Sunday}
+
+	grouped := make(map[time.Weekday][]anilist.AiringSchedule, 7)
+	for _, sched := range schedules {
+		wd := time.Unix(int64(sched.AiringAt), 0).In(jst).Weekday()
+		grouped[wd] = append(grouped[wd], sched)
+	}
+
+	result := make([]CalendarDay, 0, 7)
+	for _, wd := range order {
+		scheds := grouped[wd]
+		items := make([]AnimeSummary, 0, len(scheds))
+		seen := make(map[int]bool, len(scheds))
+		for _, sched := range scheds {
+			if seen[sched.Media.ID] {
+				continue
+			}
+			seen[sched.Media.ID] = true
+			sum := anilistMediaToSummary(sched.Media)
+			sum.AirTime = time.Unix(int64(sched.AiringAt), 0).In(jst).Format("15:04")
+			sum.NextEpisode = sched.Episode
+			items = append(items, sum)
+		}
+		result = append(result, CalendarDay{
+			Weekday:   weekdays[wd].cn,
+			WeekdayEN: weekdays[wd].en,
+			Items:     items,
+		})
+	}
 	return result, nil
 }
 
