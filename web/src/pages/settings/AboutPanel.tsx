@@ -225,7 +225,7 @@ export function AboutPanel() {
         {/* Card 3 — Links */}
         <SettingsCard label={i18n._(msg`about.links`)}>
           <a
-            href="https://github.com/your-repo/milmil"
+            href="https://github.com/milmil-dev/milmil"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[13px] text-white/60 transition-colors hover:text-white/90"
