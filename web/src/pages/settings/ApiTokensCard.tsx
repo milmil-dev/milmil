@@ -163,7 +163,7 @@ export function ApiTokensCard() {
       )}
 
       {/* Create new token */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <input
           type="text"
           placeholder={i18n._(msg`apiTokens.namePlaceholder`)}
@@ -174,13 +174,14 @@ export function ApiTokensCard() {
               createToken.mutate(newTokenName.trim());
             }
           }}
-          className={`flex-1 rounded-lg border px-3 py-2 text-sm ${inputClass}`}
+          className={`min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm ${inputClass}`}
         />
         <Button
           type="button"
           size="sm"
           disabled={!newTokenName.trim() || createToken.isPending}
           onClick={() => createToken.mutate(newTokenName.trim())}
+          className="w-full justify-center sm:w-auto"
         >
           <HugeiconsIcon icon={Add01Icon} size={14} className="mr-1" />
           {i18n._(msg`apiTokens.create`)}

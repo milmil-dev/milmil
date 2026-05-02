@@ -246,8 +246,12 @@ export function PlayerPanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.player`)}</h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`settings.player.subtitle`)}</p>
+      <h2 className="text-lg font-bold text-white sm:text-xl">
+        {i18n._(msg`settings.nav.player`)}
+      </h2>
+      <p className="mt-1 mb-4 text-xs text-white/35 sm:mb-6">
+        {i18n._(msg`settings.player.subtitle`)}
+      </p>
 
       <div className="space-y-3">
         {/* ── Danmaku Settings ── */}

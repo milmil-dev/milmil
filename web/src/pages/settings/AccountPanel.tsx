@@ -3,7 +3,8 @@ import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import type { QueryClient } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,17 @@ import { ApiTokensCard } from './ApiTokensCard';
 import { SessionsTab } from './SessionsTab';
 
 const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
+const EASE_OUT_QUINT = [0.22, 1, 0.36, 1] as const;
+const accountTabVariants = {
+  hidden: { opacity: 0, x: 12 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.22, ease: EASE_OUT_QUINT } },
+  exit: { opacity: 0, x: -8, transition: { duration: 0.16, ease: EASE_OUT_QUINT } },
+};
+
+function getIsMobileSettingsPanelLayout() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(max-width: 1023px)').matches;
+}
 
 interface TwoFactorSetupResponse {
   secret: string;
@@ -36,6 +48,10 @@ interface TwoFactorStatusResponse {
 
 export function AccountPanel() {
   const { i18n } = useLingui();
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobileSettingsPanelLayout, setIsMobileSettingsPanelLayout] = useState(
+    getIsMobileSettingsPanelLayout
+  );
   const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const [totpCode, setTotpCode] = useState('');
@@ -54,6 +70,16 @@ export function AccountPanel() {
   });
 
   const twoFactorEnabled = twoFactorStatus?.enabled ?? false;
+  const useMobileTabMotion = isMobileSettingsPanelLayout && !prefersReducedMotion;
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 1023px)');
+    const updateLayoutMode = () => setIsMobileSettingsPanelLayout(mediaQuery.matches);
+
+    updateLayoutMode();
+    mediaQuery.addEventListener('change', updateLayoutMode);
+    return () => mediaQuery.removeEventListener('change', updateLayoutMode);
+  }, []);
 
   const changePassword = useMutation({
     mutationFn: (data: { current_password: string; new_password: string }) =>
@@ -80,19 +106,19 @@ export function AccountPanel() {
   });
 
   return (
-    <div>
+    <div className="w-full max-w-full">
       <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.account`)}</h2>
       <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`account.subtitle`)}</p>
 
       {/* Inner tab bar */}
-      <div className="mb-6 flex gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+      <div className="mb-6 flex w-full max-w-full gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
         {INNER_TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200',
+              'min-w-0 flex-1 truncate rounded-md px-2 py-1.5 text-[11px] font-medium transition-all duration-200 sm:px-3 sm:text-xs',
               activeTab === tab.id
                 ? 'bg-white/[0.08] text-white'
                 : 'text-white/35 hover:text-white/60'
@@ -103,153 +129,203 @@ export function AccountPanel() {
         ))}
       </div>
 
-      {activeTab === 'account' && (
-        <div className="space-y-3">
-          {/* Profile */}
-          <SettingsCard label={i18n._(msg`account.profile`)}>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mm-accent/15 text-sm font-semibold text-mm-accent ring-1 ring-mm-accent/25">
-                {user?.username?.charAt(0).toUpperCase() ?? '?'}
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">{user?.username ?? '—'}</p>
-                <p className="text-xs text-white/30">ID: {user?.id ?? '—'}</p>
-              </div>
-            </div>
-          </SettingsCard>
-
-          {/* Change Password */}
-          <SettingsCard label={i18n._(msg`account.changePassword`)}>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                form.handleSubmit();
-              }}
-              className="space-y-4"
+      <motion.div
+        data-testid="account-settings-tab-shell"
+        layout={useMobileTabMotion}
+        transition={{ layout: { duration: 0.24, ease: EASE_OUT_QUINT } }}
+        className="w-full max-w-full"
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {activeTab === 'account' && (
+            <motion.div
+              key="account"
+              data-testid="account-settings-tab-panel"
+              layout={useMobileTabMotion}
+              variants={useMobileTabMotion ? accountTabVariants : undefined}
+              initial={useMobileTabMotion ? 'hidden' : false}
+              animate={useMobileTabMotion ? 'show' : { opacity: 1 }}
+              exit={useMobileTabMotion ? 'exit' : { opacity: 1 }}
+              className="space-y-3"
             >
-              <form.Field
-                name="current_password"
-                validators={{
-                  onSubmit: ({ value }) =>
-                    !value ? i18n._(msg`account.fieldRequired`) : undefined,
-                }}
-              >
-                {(field) => (
-                  <Field
-                    data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+              {/* Profile */}
+              <SettingsCard label={i18n._(msg`account.profile`)}>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mm-accent/15 text-sm font-semibold text-mm-accent ring-1 ring-mm-accent/25">
+                    {user?.username?.charAt(0).toUpperCase() ?? '?'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">{user?.username ?? '—'}</p>
+                    <p className="text-xs text-white/30">ID: {user?.id ?? '—'}</p>
+                  </div>
+                </div>
+              </SettingsCard>
+
+              {/* Change Password */}
+              <SettingsCard label={i18n._(msg`account.changePassword`)}>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    form.handleSubmit();
+                  }}
+                  className="space-y-4"
+                >
+                  <form.Field
+                    name="current_password"
+                    validators={{
+                      onSubmit: ({ value }) =>
+                        !value ? i18n._(msg`account.fieldRequired`) : undefined,
+                    }}
                   >
-                    <FieldLabel htmlFor={field.name}>
-                      {i18n._(msg`account.currentPassword`)}
-                    </FieldLabel>
-                    <PasswordInput
-                      id={field.name}
-                      autoComplete="current-password"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className={inputClass}
-                    />
-                    <FieldError>
-                      {field.state.meta.isTouched && field.state.meta.errors[0]
-                        ? String(field.state.meta.errors[0])
-                        : null}
-                    </FieldError>
-                  </Field>
-                )}
-              </form.Field>
+                    {(field) => (
+                      <Field
+                        data-invalid={
+                          field.state.meta.isTouched && field.state.meta.errors.length > 0
+                        }
+                      >
+                        <FieldLabel htmlFor={field.name}>
+                          {i18n._(msg`account.currentPassword`)}
+                        </FieldLabel>
+                        <PasswordInput
+                          id={field.name}
+                          autoComplete="current-password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          className={inputClass}
+                        />
+                        <FieldError>
+                          {field.state.meta.isTouched && field.state.meta.errors[0]
+                            ? String(field.state.meta.errors[0])
+                            : null}
+                        </FieldError>
+                      </Field>
+                    )}
+                  </form.Field>
 
-              <form.Field
-                name="new_password"
-                validators={{
-                  onSubmit: ({ value }) => {
-                    if (!value) return i18n._(msg`account.fieldRequired`);
-                    if (value.length < 8) return i18n._(msg`account.passwordMinLength`);
-                    return undefined;
-                  },
-                }}
-              >
-                {(field) => (
-                  <Field
-                    data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  <form.Field
+                    name="new_password"
+                    validators={{
+                      onSubmit: ({ value }) => {
+                        if (!value) return i18n._(msg`account.fieldRequired`);
+                        if (value.length < 8) return i18n._(msg`account.passwordMinLength`);
+                        return undefined;
+                      },
+                    }}
                   >
-                    <FieldLabel htmlFor={field.name}>{i18n._(msg`account.newPassword`)}</FieldLabel>
-                    <PasswordInput
-                      id={field.name}
-                      autoComplete="new-password"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className={inputClass}
-                    />
-                    <FieldError>
-                      {field.state.meta.isTouched && field.state.meta.errors[0]
-                        ? String(field.state.meta.errors[0])
-                        : null}
-                    </FieldError>
-                  </Field>
-                )}
-              </form.Field>
+                    {(field) => (
+                      <Field
+                        data-invalid={
+                          field.state.meta.isTouched && field.state.meta.errors.length > 0
+                        }
+                      >
+                        <FieldLabel htmlFor={field.name}>
+                          {i18n._(msg`account.newPassword`)}
+                        </FieldLabel>
+                        <PasswordInput
+                          id={field.name}
+                          autoComplete="new-password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          className={inputClass}
+                        />
+                        <FieldError>
+                          {field.state.meta.isTouched && field.state.meta.errors[0]
+                            ? String(field.state.meta.errors[0])
+                            : null}
+                        </FieldError>
+                      </Field>
+                    )}
+                  </form.Field>
 
-              <form.Field
-                name="confirm_password"
-                validators={{
-                  onSubmit: ({ value, fieldApi }) => {
-                    if (!value) return i18n._(msg`account.fieldRequired`);
-                    if (value !== fieldApi.form.getFieldValue('new_password'))
-                      return i18n._(msg`account.passwordMismatch`);
-                    return undefined;
-                  },
-                }}
-              >
-                {(field) => (
-                  <Field
-                    data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  <form.Field
+                    name="confirm_password"
+                    validators={{
+                      onSubmit: ({ value, fieldApi }) => {
+                        if (!value) return i18n._(msg`account.fieldRequired`);
+                        if (value !== fieldApi.form.getFieldValue('new_password'))
+                          return i18n._(msg`account.passwordMismatch`);
+                        return undefined;
+                      },
+                    }}
                   >
-                    <FieldLabel htmlFor={field.name}>
-                      {i18n._(msg`account.confirmPassword`)}
-                    </FieldLabel>
-                    <PasswordInput
-                      id={field.name}
-                      autoComplete="new-password"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className={inputClass}
-                    />
-                    <FieldError>
-                      {field.state.meta.isTouched && field.state.meta.errors[0]
-                        ? String(field.state.meta.errors[0])
-                        : null}
-                    </FieldError>
-                  </Field>
-                )}
-              </form.Field>
+                    {(field) => (
+                      <Field
+                        data-invalid={
+                          field.state.meta.isTouched && field.state.meta.errors.length > 0
+                        }
+                      >
+                        <FieldLabel htmlFor={field.name}>
+                          {i18n._(msg`account.confirmPassword`)}
+                        </FieldLabel>
+                        <PasswordInput
+                          id={field.name}
+                          autoComplete="new-password"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          className={inputClass}
+                        />
+                        <FieldError>
+                          {field.state.meta.isTouched && field.state.meta.errors[0]
+                            ? String(field.state.meta.errors[0])
+                            : null}
+                        </FieldError>
+                      </Field>
+                    )}
+                  </form.Field>
 
-              <div className="flex justify-end">
-                <form.Subscribe selector={(s) => s.isSubmitting}>
-                  {(isSubmitting) => (
-                    <Button type="submit" disabled={isSubmitting || changePassword.isPending}>
-                      {isSubmitting || changePassword.isPending
-                        ? i18n._(msg`account.updating`)
-                        : i18n._(msg`account.updatePassword`)}
-                    </Button>
-                  )}
-                </form.Subscribe>
-              </div>
-            </form>
-          </SettingsCard>
+                  <div className="flex justify-end">
+                    <form.Subscribe selector={(s) => s.isSubmitting}>
+                      {(isSubmitting) => (
+                        <Button type="submit" disabled={isSubmitting || changePassword.isPending}>
+                          {isSubmitting || changePassword.isPending
+                            ? i18n._(msg`account.updating`)
+                            : i18n._(msg`account.updatePassword`)}
+                        </Button>
+                      )}
+                    </form.Subscribe>
+                  </div>
+                </form>
+              </SettingsCard>
 
-          {/* 2FA */}
-          <TwoFactorCard
-            enabled={twoFactorEnabled}
-            setupData={setupData}
-            setSetupData={setSetupData}
-            totpCode={totpCode}
-            setTotpCode={setTotpCode}
-            queryClient={queryClient}
-          />
-        </div>
-      )}
+              {/* 2FA */}
+              <TwoFactorCard
+                enabled={twoFactorEnabled}
+                setupData={setupData}
+                setSetupData={setSetupData}
+                totpCode={totpCode}
+                setTotpCode={setTotpCode}
+                queryClient={queryClient}
+              />
+            </motion.div>
+          )}
 
-      {activeTab === 'tokens' && <ApiTokensCard />}
-      {activeTab === 'sessions' && <SessionsTab />}
+          {activeTab === 'tokens' && (
+            <motion.div
+              key="tokens"
+              data-testid="account-settings-tab-panel"
+              layout={useMobileTabMotion}
+              variants={useMobileTabMotion ? accountTabVariants : undefined}
+              initial={useMobileTabMotion ? 'hidden' : false}
+              animate={useMobileTabMotion ? 'show' : { opacity: 1 }}
+              exit={useMobileTabMotion ? 'exit' : { opacity: 1 }}
+            >
+              <ApiTokensCard />
+            </motion.div>
+          )}
+          {activeTab === 'sessions' && (
+            <motion.div
+              key="sessions"
+              data-testid="account-settings-tab-panel"
+              layout={useMobileTabMotion}
+              variants={useMobileTabMotion ? accountTabVariants : undefined}
+              initial={useMobileTabMotion ? 'hidden' : false}
+              animate={useMobileTabMotion ? 'show' : { opacity: 1 }}
+              exit={useMobileTabMotion ? 'exit' : { opacity: 1 }}
+            >
+              <SessionsTab />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
@@ -366,10 +442,15 @@ function TwoFactorCard({
 
           {/* Verify input */}
           <div className="flex flex-col items-center gap-2.5">
-            <label className="text-[11px] font-medium text-white/50">
+            <label htmlFor="two-factor-code" className="text-[11px] font-medium text-white/50">
               {i18n._(msg`account.2fa.verificationCode`)}
             </label>
-            <InputOTP maxLength={6} value={totpCode} onChange={(value) => setTotpCode(value)}>
+            <InputOTP
+              id="two-factor-code"
+              maxLength={6}
+              value={totpCode}
+              onChange={(value) => setTotpCode(value)}
+            >
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />

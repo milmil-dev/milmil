@@ -76,7 +76,7 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
   const displayError = localError || error;
 
   return (
-    <Modal open={open} onClose={onClose} size="sm">
+    <Modal open={open} onClose={onClose} size="sm" placement="center">
       <div className="pt-2">
         {/* Mode tabs — only show setup tab if no admin exists yet */}
         {!isInitialized ? (

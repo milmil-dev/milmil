@@ -6,8 +6,6 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { SelectorGroup } from '@/components/settings/SelectorGroup';
 import { SettingsCard } from '@/components/settings/SettingsCard';
-import { Field, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { availableLanguages, detectBrowserLocale, loadAndActivate } from '@/i18n/config';
 import { api } from '@/lib/api-client';
@@ -30,29 +28,16 @@ export function GeneralPanel() {
   });
 
   const [autoAdd, setAutoAdd] = useState(true);
-  const [docsUrl, setDocsUrl] = useState('');
 
   useEffect(() => {
     if (settings?.collection) {
       setAutoAdd(settings.collection.auto_add_to_collection ?? true);
     }
-    if (settings?.general) {
-      setDocsUrl(settings.general.docs_url ?? '');
-    }
-  }, [settings?.collection, settings?.general]);
+  }, [settings?.collection]);
 
   const updateCollectionSettings = useMutation({
     mutationFn: (data: { auto_add_to_collection: boolean }) =>
       api.put('/api/v1/settings/collection', data),
-    onSuccess: () => {
-      toast.success(i18n._(msg`settings.saved`));
-      queryClient.invalidateQueries({ queryKey: ['settings'] });
-    },
-    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
-  });
-
-  const updateGeneralSettings = useMutation({
-    mutationFn: (data: { docs_url: string }) => api.put('/api/v1/settings/general', data),
     onSuccess: () => {
       toast.success(i18n._(msg`settings.saved`));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
@@ -69,8 +54,12 @@ export function GeneralPanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.general`)}</h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`settings.general.subtitle`)}</p>
+      <h2 className="text-lg font-bold text-white sm:text-xl">
+        {i18n._(msg`settings.nav.general`)}
+      </h2>
+      <p className="mt-1 mb-4 text-xs text-white/35 sm:mb-6">
+        {i18n._(msg`settings.general.subtitle`)}
+      </p>
 
       <div className="space-y-3">
         <SettingsCard label={i18n._(msg`settings.appearance.language`)}>
@@ -94,8 +83,8 @@ export function GeneralPanel() {
         </SettingsCard>
 
         <SettingsCard label={i18n._(msg`settings.collection`)}>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col gap-3 min-[430px]:flex-row min-[430px]:items-center min-[430px]:justify-between">
+            <div className="min-w-0">
               <p className="text-[13px] text-white/85">
                 {i18n._(msg`settings.autoAddToCollection`)}
               </p>
@@ -104,6 +93,7 @@ export function GeneralPanel() {
               </p>
             </div>
             <Switch
+              className="shrink-0"
               checked={autoAdd}
               onCheckedChange={(checked) => {
                 setAutoAdd(checked);
@@ -111,21 +101,6 @@ export function GeneralPanel() {
               }}
             />
           </div>
-        </SettingsCard>
-
-        <SettingsCard label={i18n._(msg`settings.docsUrl`)}>
-          <Field>
-            <FieldLabel htmlFor="docs-url">{i18n._(msg`settings.docsUrl.label`)}</FieldLabel>
-            <Input
-              id="docs-url"
-              value={docsUrl}
-              onChange={(e) => setDocsUrl(e.target.value)}
-              onBlur={() => updateGeneralSettings.mutate({ docs_url: docsUrl })}
-              placeholder="https://milmil.org"
-              className="bg-transparent border-white/[0.08] focus:border-mm-accent text-white"
-            />
-            <p className="mt-1 text-[11px] text-white/30">{i18n._(msg`settings.docsUrl.desc`)}</p>
-          </Field>
         </SettingsCard>
       </div>
     </div>

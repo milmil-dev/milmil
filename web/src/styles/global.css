@@ -93,6 +93,9 @@
   }
   body {
     @apply font-sans bg-mm-bg text-mm-text-primary antialiased;
+    font-family: var(--font-family-sans);
+    font-feature-settings: "kern";
+    font-kerning: normal;
     min-height: 100dvh;
     overflow-x: hidden;
     background-color: var(--mm-bg);
@@ -130,10 +133,26 @@
   }
   html {
     @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-family-sans);
     min-height: 100%;
+    text-rendering: optimizeLegibility;
   }
   #root {
     min-height: 100dvh;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-family-mono);
   }
   :focus-visible {
     outline: none;

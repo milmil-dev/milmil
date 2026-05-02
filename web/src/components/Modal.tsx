@@ -14,6 +14,8 @@ interface ModalProps {
   fixedBg?: React.ReactNode;
   /** Scroll handler for the scrollable content area */
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
+  /** Mobile placement. Defaults to bottom-sheet behavior. */
+  placement?: 'bottom' | 'center';
 }
 
 export function Modal({
@@ -25,6 +27,7 @@ export function Modal({
   size = 'md',
   fixedBg,
   onScroll,
+  placement = 'bottom',
 }: ModalProps) {
   // Lock body scroll when open — compensate for scrollbar width to prevent layout shift
   useEffect(() => {
@@ -63,11 +66,15 @@ export function Modal({
       {open && (
         <motion.div
           key="modal-wrapper"
+          data-testid="modal-wrapper"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4"
+          className={cn(
+            'fixed inset-0 z-50 flex justify-center p-4',
+            placement === 'center' ? 'items-center' : 'items-end md:items-center'
+          )}
         >
           {/* Backdrop — HeroUI-style opaque gradient */}
           <motion.div
@@ -86,7 +93,8 @@ export function Modal({
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 500, damping: 35 }}
             className={cn(
-              'relative z-10 w-full max-h-[85vh] rounded-t-2xl md:rounded-2xl overflow-hidden',
+              'relative z-10 w-full max-h-[85vh] overflow-hidden',
+              placement === 'center' ? 'rounded-2xl' : 'rounded-t-2xl md:rounded-2xl',
               'bg-[var(--mm-bg-elevated)] border border-white/[0.06]',
               'shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]',
               sizeClasses[size],
