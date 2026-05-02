@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.12](https://github.com/milmil-dev/milmil/compare/v0.1.11...v0.1.12) (2026-05-02)
+
+
+### Features
+
+* **web:** improve mobile settings, schedule, and login UI ([7a4112f](https://github.com/milmil-dev/milmil/commit/7a4112f792d15b1e445115700dc189d9133ffbc6))
+
+
+### Bug Fixes
+
+* **calendar:** fall back to stale cache then AniList when Bangumi 502s ([964d0d0](https://github.com/milmil-dev/milmil/commit/964d0d07eaa20824f33fa1e9a968a4c497424e44))
+* **calendar:** fall back to stale cache then AniList when Bangumi 502s ([#68](https://github.com/milmil-dev/milmil/issues/68)) ([65d2929](https://github.com/milmil-dev/milmil/commit/65d29296cd3928c217c3622ba87a43fa880ebd46))
+* **web:** correct about page GitHub link ([ace2a54](https://github.com/milmil-dev/milmil/commit/ace2a54dd64c62976a6578806ca1fe56d5f57383))
+
 ## [0.1.11](https://github.com/milmil-dev/milmil/compare/v0.1.10...v0.1.11) (2026-04-30)
 
 
