@@ -14,7 +14,7 @@ export function SelectorGroup<T extends string | number>({
   disabled,
 }: SelectorGroupProps<T>) {
   return (
-    <div className="flex gap-2">
+    <fieldset className="flex flex-wrap gap-2">
       {options.map((opt) => (
         <button
           key={String(opt.value)}
@@ -22,7 +22,7 @@ export function SelectorGroup<T extends string | number>({
           onClick={() => onChange(opt.value)}
           disabled={disabled}
           className={cn(
-            'rounded px-3.5 py-1.5 text-xs font-semibold transition-colors',
+            'min-w-0 rounded px-3.5 py-1.5 text-xs font-semibold transition-colors',
             value === opt.value
               ? 'bg-white/[0.10] text-white'
               : 'bg-transparent text-mm-text-secondary hover:bg-white/[0.04] hover:text-white/70',
@@ -32,6 +32,6 @@ export function SelectorGroup<T extends string | number>({
           {opt.label}
         </button>
       ))}
-    </div>
+    </fieldset>
   );
 }

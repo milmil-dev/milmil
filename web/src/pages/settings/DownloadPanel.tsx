@@ -21,10 +21,10 @@ export function DownloadPanel() {
   });
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Downloader Status */}
       <SettingsCard label={i18n._(msg`settings.download.engine`)}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <ConnectionBadge
             connected={status?.healthy ?? false}
             connectedText={
@@ -81,17 +81,18 @@ function AutoDeleteFilesSwitch() {
   });
 
   return (
-    <label className="flex items-center justify-between cursor-pointer">
-      <span className="text-[13px] text-white/60">
+    <div className="flex items-center justify-between gap-3">
+      <span className="min-w-0 text-[13px] text-white/60">
         {i18n._(msg`settings.download.autoDeleteFiles`)}
       </span>
       <Switch
+        className="shrink-0"
         checked={autoDelete}
         onCheckedChange={(v) => {
           setAutoDelete(v);
           mutation.mutate(v);
         }}
       />
-    </label>
+    </div>
   );
 }

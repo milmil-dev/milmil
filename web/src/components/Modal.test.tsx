@@ -11,6 +11,7 @@ vi.mock('motion/react', () => {
           className: props.className,
           style: props.style,
           onClick: props.onClick,
+          'data-testid': props['data-testid'],
         },
         props.children as React.ReactNode
       );
@@ -62,4 +63,28 @@ test('modal calls onClose when escape is pressed', () => {
   );
   fireEvent.keyDown(window, { key: 'Escape' });
   expect(onClose).toHaveBeenCalled();
+});
+
+test('modal uses bottom placement on mobile by default', () => {
+  render(
+    <Modal open={true} onClose={() => {}}>
+      <p>Bottom content</p>
+    </Modal>
+  );
+
+  const wrapper = screen.getByTestId('modal-wrapper');
+  expect(wrapper).toHaveClass('items-end');
+  expect(wrapper).toHaveClass('md:items-center');
+});
+
+test('modal can opt into centered mobile placement', () => {
+  render(
+    <Modal open={true} onClose={() => {}} placement="center">
+      <p>Centered content</p>
+    </Modal>
+  );
+
+  const wrapper = screen.getByTestId('modal-wrapper');
+  expect(wrapper).toHaveClass('items-center');
+  expect(wrapper).not.toHaveClass('items-end');
 });

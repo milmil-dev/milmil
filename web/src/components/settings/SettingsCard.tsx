@@ -11,7 +11,7 @@ export function SettingsCard({ label, children, className }: SettingsCardProps) 
   return (
     <div
       className={cn(
-        'rounded-[10px] border border-white/[0.06] bg-white/[0.025] p-4 px-5',
+        'rounded-[10px] border border-white/[0.06] bg-white/[0.025] p-3 sm:p-4 sm:px-5',
         className
       )}
     >
