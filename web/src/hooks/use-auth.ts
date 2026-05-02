@@ -31,6 +31,32 @@ function isTokenExpired(token: string): boolean {
   }
 }
 
+export function formatAuthErrorMessage(
+  err: unknown,
+  fallback: string,
+  invalidCredentials: string
+): string {
+  if (!(err instanceof Error)) return fallback;
+
+  let message = err.message.trim();
+  try {
+    const parsed = JSON.parse(message) as { message?: unknown; error?: unknown };
+    const parsedMessage = parsed.message ?? parsed.error;
+    if (typeof parsedMessage === 'string') {
+      message = parsedMessage;
+    }
+  } catch {
+    // Non-JSON error messages can be shown as-is.
+  }
+
+  if (message.toLowerCase() === 'invalid credentials') {
+    return invalidCredentials;
+  }
+
+  if (!message || message.startsWith('{')) return fallback;
+  return message;
+}
+
 export function useAuth() {
   const { i18n } = useLingui();
   const token = useAuthStore((s) => s.token);
@@ -56,7 +82,11 @@ export function useAuth() {
         storeLogin(res.token, res.user);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : i18n._(msg`auth.error.loginFailed`);
+      const message = formatAuthErrorMessage(
+        err,
+        i18n._(msg`auth.error.loginFailed`),
+        i18n._(msg`Invalid username or password`)
+      );
       setError(message);
       throw err;
     } finally {
@@ -76,7 +106,11 @@ export function useAuth() {
       storeLogin(res.token, res.user);
       setPending2FA(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : i18n._(msg`auth.error.invalid2FA`);
+      const message = formatAuthErrorMessage(
+        err,
+        i18n._(msg`auth.error.invalid2FA`),
+        i18n._(msg`Invalid username or password`)
+      );
       setError(message);
       throw err;
     } finally {
@@ -91,7 +125,11 @@ export function useAuth() {
       const res = await api.post<AuthResponse>('/api/v1/auth/setup', { username, password });
       storeLogin(res.token, res.user);
     } catch (err) {
-      const message = err instanceof Error ? err.message : i18n._(msg`auth.error.setupFailed`);
+      const message = formatAuthErrorMessage(
+        err,
+        i18n._(msg`auth.error.setupFailed`),
+        i18n._(msg`Invalid username or password`)
+      );
       setError(message);
       throw err;
     } finally {

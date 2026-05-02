@@ -4,12 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton } from '../components/Skeleton';
 import { Spinner } from '../components/ui/spinner';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import {
   type AnimeSummary,
@@ -19,12 +20,52 @@ import {
   discoverKeys,
 } from '../lib/api/discover';
 import { cn } from '../lib/utils';
-import { useUIStore, type WeekStartDay } from '../store/ui-store';
+import { type ScheduleCardSize, useUIStore, type WeekStartDay } from '../store/ui-store';
 
 /* ── Season / year helpers ────────────────────────────────── */
 
 type SeasonKey = 'WINTER' | 'SPRING' | 'SUMMER' | 'FALL';
 const SEASONS: SeasonKey[] = ['WINTER', 'SPRING', 'SUMMER', 'FALL'];
+
+const SCHEDULE_SIZE_OPTIONS = [
+  { value: 'small', label: 'Small cards' },
+  { value: 'medium', label: 'Medium cards' },
+  { value: 'large', label: 'Large cards' },
+] as const satisfies ReadonlyArray<{ value: ScheduleCardSize; label: string }>;
+
+const TIMELINE_CARD_WIDTHS: Record<ScheduleCardSize, string> = {
+  small: 'w-[calc(50%-4px)] sm:w-[148px] md:w-[168px] lg:w-[184px]',
+  medium: 'w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]',
+  large: 'w-full min-[430px]:w-[calc(50%-4px)] sm:w-[220px] md:w-[250px] lg:w-[276px]',
+};
+
+const SEASON_GRID_CLASSES: Record<ScheduleCardSize, string> = {
+  small: 'grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-x-3 gap-y-4',
+  medium: 'grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-x-3 sm:gap-x-4 gap-y-5',
+  large: 'grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-6',
+};
+
+const MOBILE_SCHEDULE_GRID_CLASSES: Record<ScheduleCardSize, string> = {
+  small: 'gap-x-2 gap-y-4',
+  medium: 'gap-x-3 gap-y-5',
+  large: 'gap-y-5',
+};
+
+const MOBILE_SCHEDULE_GRID_STYLES: Record<ScheduleCardSize, CSSProperties> = {
+  small: {
+    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+  },
+  medium: {
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(13rem, 100%), 1fr))',
+  },
+  large: {
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(21rem, 100%), 1fr))',
+  },
+};
+
+const WEEKDAY_TAB_SKELETON_KEYS = Array.from({ length: 7 }, (_, i) => `weekday-tab-${i}`);
+const CALENDAR_CARD_SKELETON_KEYS = Array.from({ length: 12 }, (_, i) => `calendar-card-${i}`);
+const SEASON_CARD_SKELETON_KEYS = Array.from({ length: 18 }, (_, i) => `season-card-${i}`);
 
 function getCurrentSeason(): SeasonKey {
   const month = new Date().getMonth() + 1;
@@ -45,6 +86,69 @@ function getSeasonLabel(season: SeasonKey, i18n: ReturnType<typeof useLingui>['i
     case 'FALL':
       return i18n._(msg`schedule.season.fall`);
   }
+}
+
+function ScheduleSizeGlyph({ size, active }: { size: ScheduleCardSize; active: boolean }) {
+  const sizeClassName =
+    size === 'small' ? 'h-[10px] w-2' : size === 'medium' ? 'h-[13px] w-[10px]' : 'h-4 w-[13px]';
+
+  return (
+    <span aria-hidden className="flex size-4 items-center justify-center">
+      <span
+        className={cn(
+          'relative rounded-[3px] border transition-all duration-200',
+          sizeClassName,
+          active ? 'border-mm-accent/75 bg-mm-accent/15' : 'border-current/45 bg-current/[0.03]'
+        )}
+      >
+        <span className="absolute inset-x-[2.5px] bottom-[2.5px] h-px rounded-full bg-current/55" />
+      </span>
+    </span>
+  );
+}
+
+function ScheduleSizeControl({
+  scheduleCardSize,
+  setScheduleCardSize,
+}: {
+  scheduleCardSize: ScheduleCardSize;
+  setScheduleCardSize: (size: ScheduleCardSize) => void;
+}) {
+  return (
+    <TooltipProvider delayDuration={250}>
+      <fieldset className="flex items-center gap-0.5 rounded-lg bg-black/15 p-0.5 backdrop-blur-md">
+        <legend className="sr-only">Anime card size</legend>
+        {SCHEDULE_SIZE_OPTIONS.map((option) => {
+          const isActive = scheduleCardSize === option.value;
+          return (
+            <Tooltip key={option.value}>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={option.label}
+                  aria-pressed={isActive}
+                  onClick={() => setScheduleCardSize(option.value)}
+                  className={cn(
+                    'relative flex size-7 items-center justify-center rounded-md transition-all duration-200 cursor-pointer',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mm-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+                    isActive
+                      ? 'bg-white/[0.12] text-white shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_6px_16px_rgba(166,130,255,0.14)]'
+                      : 'text-mm-text-tertiary hover:bg-white/[0.06] hover:text-mm-text-secondary'
+                  )}
+                >
+                  <ScheduleSizeGlyph size={option.value} active={isActive} />
+                  {isActive && (
+                    <span className="absolute bottom-0.5 h-0.5 w-2.5 rounded-full bg-mm-accent shadow-[0_0_8px_rgba(168,132,255,0.7)]" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">{option.label}</TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </fieldset>
+    </TooltipProvider>
+  );
 }
 
 /* ── Bangumi weekday helpers (for calendar view) ──────────── */
@@ -75,6 +179,18 @@ function getDateForWeekday(bangumiWeekday: string): string {
   return format(target, 'M月d日');
 }
 
+function getCompactDateForWeekday(bangumiWeekday: string): string {
+  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
+  if (idx === -1) return '';
+  const now = new Date();
+  const jsDay = getDay(now);
+  const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
+  const diff = idx - currentIdx;
+  const target = new Date(now);
+  target.setDate(target.getDate() + diff);
+  return format(target, 'M/d');
+}
+
 /* ── Schedule card wrapper — adds EP badge overlay ────────── */
 
 function ScheduleAnimeCard({ anime, index }: { anime: AnimeSummary; index: number }) {
@@ -83,6 +199,7 @@ function ScheduleAnimeCard({ anime, index }: { anime: AnimeSummary; index: numbe
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.025, duration: 0.3 }}
+      className="min-w-0"
     >
       <AnimeCard anime={anime}>
         {anime.next_episode && anime.next_episode > 0 && (
@@ -339,25 +456,18 @@ function TimelineView({
   items,
   noSpine = false,
   extendLeft = 0,
+  cardSize,
 }: {
   items: AnimeSummary[];
   noSpine?: boolean;
   extendLeft?: number;
+  cardSize: ScheduleCardSize;
 }) {
   const { i18n } = useLingui();
   const containerRef = useRef<HTMLDivElement>(null);
   const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  if (items.length === 0) {
-    return (
-      <div className="py-12 text-center">
-        <p className="text-[13px] text-mm-text-muted">{i18n._(msg`schedule.noShows`)}</p>
-      </div>
-    );
-  }
-
   const groups = groupByTime(items);
-  let cardIdx = 0;
+
   dotRefs.current = [];
 
   const { path, spineY, size } = useTimelinePath(
@@ -367,6 +477,16 @@ function TimelineView({
     noSpine,
     extendLeft
   );
+
+  if (items.length === 0) {
+    return (
+      <div className="py-12 text-center">
+        <p className="text-[13px] text-mm-text-muted">{i18n._(msg`schedule.noShows`)}</p>
+      </div>
+    );
+  }
+
+  let cardIdx = 0;
 
   return (
     <div ref={containerRef} className="w-full relative">
@@ -404,10 +524,7 @@ function TimelineView({
           const cards = group.animes.map((anime) => {
             const idx = cardIdx++;
             return (
-              <div
-                key={anime.bangumi_id}
-                className="w-[calc(50%-4px)] sm:w-[180px] md:w-[207px] lg:w-[229px]"
-              >
+              <div key={anime.bangumi_id} className={TIMELINE_CARD_WIDTHS[cardSize]}>
                 <ScheduleAnimeCard anime={anime} index={idx} />
               </div>
             );
@@ -448,14 +565,14 @@ function TimelineView({
 function CalendarSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="flex gap-2">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <Skeleton key={i} className="h-9 w-16 rounded-lg" />
+      <div className="-mx-4 flex gap-2 overflow-hidden px-4 sm:mx-0 sm:px-0">
+        {WEEKDAY_TAB_SKELETON_KEYS.map((key) => (
+          <Skeleton key={key} className="h-9 w-16 rounded-lg" />
         ))}
       </div>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-x-4 gap-y-5">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="space-y-2">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 lg:gap-x-4">
+        {CALENDAR_CARD_SKELETON_KEYS.map((key) => (
+          <div key={key} className="min-w-0 space-y-2">
             <Skeleton className="aspect-[2/3] w-full rounded-lg" />
             <Skeleton className="h-3.5 w-3/4" />
             <Skeleton className="h-2.5 w-1/2" />
@@ -468,9 +585,9 @@ function CalendarSkeleton() {
 
 function SeasonGridSkeleton() {
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-x-4 gap-y-5">
-      {Array.from({ length: 18 }).map((_, i) => (
-        <div key={i} className="space-y-2">
+    <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 lg:gap-x-4">
+      {SEASON_CARD_SKELETON_KEYS.map((key) => (
+        <div key={key} className="min-w-0 space-y-2">
           <Skeleton className="aspect-[2/3] w-full rounded-lg" />
           <Skeleton className="h-3.5 w-3/4" />
           <Skeleton className="h-2.5 w-1/2" />
@@ -480,11 +597,195 @@ function SeasonGridSkeleton() {
   );
 }
 
+function MobileScheduleGrid({
+  items,
+  cardSize,
+}: {
+  items: AnimeSummary[];
+  cardSize: ScheduleCardSize;
+}) {
+  const { i18n } = useLingui();
+
+  if (items.length === 0) {
+    return (
+      <div className="rounded-xl bg-white/[0.03] px-4 py-8 text-center">
+        <p className="text-[13px] font-medium text-mm-text-muted">
+          {i18n._(msg`schedule.noShows`)}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        'grid w-[var(--schedule-mobile-content-width)] max-w-full justify-start overflow-hidden',
+        MOBILE_SCHEDULE_GRID_CLASSES[cardSize]
+      )}
+      style={MOBILE_SCHEDULE_GRID_STYLES[cardSize]}
+    >
+      {items.map((anime, index) => (
+        <div
+          key={
+            anime.bangumi_id > 0
+              ? `mobile-bangumi-${anime.bangumi_id}`
+              : `mobile-anilist-${anime.anilist_id || anime.title}`
+          }
+          className="min-w-0 overflow-hidden [&_.group\\/media-entry-card]:min-w-0 [&_.group\\/media-entry-card]:overflow-hidden"
+        >
+          <ScheduleAnimeCard anime={anime} index={index < 40 ? index : 0} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MobileDayHeading({ day, today }: { day: CalendarDay; today: string }) {
+  const { i18n } = useLingui();
+  const isToday = day.weekday === today;
+
+  return (
+    <div className="mb-4 flex w-[var(--schedule-mobile-content-width)] max-w-full flex-wrap items-end justify-between gap-3">
+      <div>
+        <div className="flex items-center gap-2.5">
+          <h2 className="text-[24px] font-bold leading-none text-white">
+            {getWeekdayJapanese(day.weekday)}
+          </h2>
+          {isToday && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-mm-accent/12 px-2 py-0.5 text-[10px] font-bold text-mm-accent">
+              <span className="size-1 rounded-full bg-mm-accent" />
+              {i18n._(msg`schedule.today`)}
+            </span>
+          )}
+        </div>
+        <p className="mt-1.5 text-xs font-medium text-white/38 tabular-nums">
+          {getDateForWeekday(day.weekday)}
+        </p>
+      </div>
+      <span className="rounded-full bg-white/[0.04] px-2.5 py-1 text-xs font-semibold text-white/45 tabular-nums">
+        {day.items.length} {i18n._(msg`schedule.totalShows`)}
+      </span>
+    </div>
+  );
+}
+
+function MobileWeekdayTabs({
+  sortedCalendar,
+  activeDay,
+  today,
+  setActiveDay,
+  tabsRef,
+}: {
+  sortedCalendar: CalendarDay[];
+  activeDay: string;
+  today: string;
+  setActiveDay: (day: string) => void;
+  tabsRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const { i18n } = useLingui();
+  const totalShows = sortedCalendar.reduce((sum, day) => sum + day.items.length, 0);
+
+  return (
+    <div className="md:hidden">
+      <div
+        ref={tabsRef}
+        className="-mx-4 mb-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent)',
+          maskImage:
+            'linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent)',
+        }}
+      >
+        <div className="flex w-max min-w-full snap-x snap-mandatory items-start justify-center gap-3 px-4 pb-1">
+          <button
+            type="button"
+            data-active={activeDay === 'all'}
+            data-tab-surface="mobile"
+            data-weekday="all"
+            onClick={() => setActiveDay('all')}
+            className={cn(
+              'relative flex h-[54px] min-w-[52px] snap-start flex-col items-center justify-center rounded-full transition-all duration-200 cursor-pointer',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mm-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+              activeDay === 'all'
+                ? 'bg-mm-accent text-black shadow-[0_8px_20px_rgba(168,132,255,0.22)]'
+                : 'bg-white/[0.055] text-white/62 hover:bg-white/[0.085] hover:text-white'
+            )}
+          >
+            <span className="text-[11px] font-bold leading-none">{i18n._(msg`schedule.all`)}</span>
+            <span className="mt-1 text-[9px] font-semibold leading-none opacity-60 tabular-nums">
+              {totalShows}
+            </span>
+          </button>
+
+          {sortedCalendar.map((day) => {
+            const isToday = day.weekday === today;
+            const isActive = day.weekday === activeDay;
+            return (
+              <button
+                key={day.weekday}
+                type="button"
+                data-active={isActive}
+                data-tab-surface="mobile"
+                data-weekday={day.weekday}
+                onClick={() => setActiveDay(day.weekday)}
+                className={cn(
+                  'relative flex h-[62px] min-w-[44px] snap-start flex-col items-center gap-1 rounded-full px-1.5 py-1 transition-colors duration-200 cursor-pointer',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mm-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+                  isActive ? 'text-white' : 'text-white/58 hover:text-white'
+                )}
+              >
+                <span
+                  className={cn(
+                    'text-[10px] font-bold leading-none',
+                    isActive ? 'text-mm-accent' : 'text-white/42'
+                  )}
+                >
+                  {getWeekdayJapanese(day.weekday).slice(0, 1)}
+                </span>
+                <span
+                  className={cn(
+                    'flex size-9 items-center justify-center rounded-full text-[13px] font-bold tabular-nums transition-all duration-200',
+                    isActive
+                      ? 'bg-white text-black shadow-[0_8px_18px_rgba(0,0,0,0.25)]'
+                      : isToday
+                        ? 'bg-mm-accent/12 text-mm-accent ring-1 ring-mm-accent/40'
+                        : 'bg-transparent text-white/72'
+                  )}
+                >
+                  {getCompactDateForWeekday(day.weekday).split('/')[1]}
+                </span>
+                <span
+                  className={cn(
+                    'text-[9px] font-semibold leading-none tabular-nums',
+                    isActive ? 'text-white/58' : 'text-white/25'
+                  )}
+                >
+                  {day.items.length}
+                </span>
+                {isToday && (
+                  <span
+                    className={cn(
+                      'absolute -top-0.5 size-1 rounded-full',
+                      isActive ? 'bg-mm-accent' : 'bg-mm-accent/80'
+                    )}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Calendar view (weekly schedule) ──────────────────────── */
 
 function CalendarView() {
   const { i18n } = useLingui();
-  const tabsRef = useRef<HTMLDivElement>(null);
+  const mobileTabsRef = useRef<HTMLDivElement>(null);
+  const desktopTabsRef = useRef<HTMLDivElement>(null);
   const {
     data: calendar,
     isLoading,
@@ -500,6 +801,7 @@ function CalendarView() {
   const allTabRef = useRef<HTMLDivElement>(null);
 
   const weekStartDay = useUIStore((s) => s.weekStartDay);
+  const scheduleCardSize = useUIStore((s) => s.scheduleCardSize);
 
   const sortedCalendar = useMemo(() => {
     if (!calendar) return [];
@@ -512,16 +814,30 @@ function CalendarView() {
   }, [calendar, weekStartDay]);
 
   useEffect(() => {
-    if (!tabsRef.current) return;
-    const activeBtn = tabsRef.current.querySelector('[data-active="true"]');
-    if (activeBtn) {
-      activeBtn.scrollIntoView({
+    if (sortedCalendar.length === 0) return;
+    const activeSelector = `[data-weekday="${activeDay}"]`;
+    const mobileScroller = mobileTabsRef.current;
+    const mobileActiveBtn = mobileScroller?.querySelector(activeSelector) as HTMLElement | null;
+
+    if (mobileScroller && mobileActiveBtn) {
+      mobileScroller.scrollTo({
+        left:
+          mobileActiveBtn.offsetLeft -
+          mobileScroller.clientWidth / 2 +
+          mobileActiveBtn.offsetWidth / 2,
+        behavior: 'smooth',
+      });
+    }
+
+    const desktopActiveBtn = desktopTabsRef.current?.querySelector(activeSelector);
+    if (desktopActiveBtn) {
+      desktopActiveBtn.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
         inline: 'center',
       });
     }
-  }, [sortedCalendar.length]);
+  }, [activeDay, sortedCalendar.length]);
 
   if (isLoading) return <CalendarSkeleton />;
 
@@ -545,13 +861,26 @@ function CalendarView() {
   return (
     <div>
       {/* Weekday tabs */}
-      <div ref={tabsRef} className="flex items-end gap-0 overflow-x-auto scrollbar-none mb-5">
+      <MobileWeekdayTabs
+        sortedCalendar={sortedCalendar}
+        activeDay={activeDay}
+        today={today}
+        setActiveDay={setActiveDay}
+        tabsRef={mobileTabsRef}
+      />
+
+      <div
+        ref={desktopTabsRef}
+        className="mb-5 hidden items-end gap-0 overflow-x-auto scrollbar-none md:flex"
+      >
         <button
           type="button"
           data-active={activeDay === 'all'}
+          data-tab-surface="desktop"
+          data-weekday="all"
           onClick={() => setActiveDay('all')}
           className={cn(
-            'relative shrink-0 px-4 pb-2.5 pt-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200',
+            'relative shrink-0 px-4 pb-2.5 pt-2 text-[14px] font-bold cursor-pointer transition-colors duration-200 sm:text-[13px] sm:font-semibold',
             activeDay === 'all'
               ? 'text-mm-accent'
               : 'text-mm-text-tertiary hover:text-mm-text-secondary'
@@ -575,9 +904,11 @@ function CalendarView() {
               key={day.weekday}
               type="button"
               data-active={isActive}
+              data-tab-surface="desktop"
+              data-weekday={day.weekday}
               onClick={() => setActiveDay(day.weekday)}
               className={cn(
-                'relative shrink-0 flex items-center gap-1.5 px-3 pb-2.5 pt-2 cursor-pointer transition-colors duration-200',
+                'relative shrink-0 flex items-center gap-1.5 px-3.5 pb-2.5 pt-2 cursor-pointer transition-colors duration-200 sm:px-3',
                 isActive ? 'text-mm-accent' : 'text-white/90 hover:text-white'
               )}
             >
@@ -590,12 +921,12 @@ function CalendarView() {
               )}
               <span
                 className={cn(
-                  'text-[13px] font-bold whitespace-nowrap',
+                  'text-[14px] font-bold whitespace-nowrap sm:text-[13px]',
                   isActive ? 'text-mm-accent' : 'text-white/80'
                 )}
               >
                 {day.weekday.replace(/^星期/, '週')} ({getWeekdayJapanese(day.weekday).slice(0, 1)})
-                <span className="ml-1 text-[10px] font-medium text-white/40">
+                <span className="ml-1 text-[11px] font-medium text-white/40 sm:text-[10px]">
                   {getDateForWeekday(day.weekday)}
                 </span>
               </span>
@@ -608,99 +939,145 @@ function CalendarView() {
       </div>
 
       {/* Content */}
-      <AnimatePresence mode="wait">
-        {activeDay !== 'all' ? (
-          (() => {
-            const activeCalendar = sortedCalendar.find((d) => d.weekday === activeDay);
-            if (!activeCalendar) return null;
-            return (
-              <motion.div
-                key={activeDay}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <div className="flex items-center gap-2.5 mb-4">
-                  <h2 className="text-lg font-bold text-white">
-                    {getWeekdayJapanese(activeCalendar.weekday)}
-                  </h2>
-                  <span className="text-[12px] font-medium text-mm-text-muted tabular-nums">
-                    {activeCalendar.items.length} {i18n._(msg`schedule.totalShows`)}
-                  </span>
-                  {activeCalendar.weekday === today && (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-mm-accent">
-                      <span className="w-1.5 h-1.5 rounded-full bg-mm-accent animate-pulse" />
-                      {i18n._(msg`schedule.today`)}
-                    </span>
-                  )}
-                </div>
-                <TimelineView items={activeCalendar.items} noSpine />
-              </motion.div>
-            );
-          })()
-        ) : (
-          <motion.div
-            key="all"
-            ref={allTabRef}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="relative grid grid-cols-[112px_1fr] gap-x-6 gap-y-8"
-          >
-            {/* Continuous vertical spine in the rail column (x = 96 from grid start) */}
-            <ContinuousSpine containerRef={allTabRef} x={96} />
-
-            {sortedCalendar.map((day) => {
-              const isToday = day.weekday === today;
+      <div className="md:hidden">
+        <AnimatePresence mode="wait">
+          {activeDay !== 'all' ? (
+            (() => {
+              const activeCalendar = sortedCalendar.find((d) => d.weekday === activeDay);
+              if (!activeCalendar) return null;
               return (
-                <Fragment key={day.weekday}>
-                  {/* Rail cell — weekday label + accent dot on the spine */}
-                  <div className="relative z-[2] flex items-start justify-end gap-3 pr-[11px]">
-                    <div className="text-right leading-tight">
-                      <div
-                        className={cn(
-                          'text-[14px] font-semibold',
-                          isToday ? 'text-mm-accent' : 'text-white/70'
-                        )}
-                      >
-                        {getWeekdayJapanese(day.weekday)}
-                      </div>
-                      <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
-                        {getDateForWeekday(day.weekday)}
-                      </div>
-                      <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
-                        {day.items.length} {i18n._(msg`schedule.totalShows`)}
-                      </div>
-                    </div>
-                    {/* Dot wrapper height matches TimelineView's first time-marker row (h-8),
-                        so the dot center sits at the same Y as the first time-marker dot. */}
-                    <div className="relative shrink-0 h-8 flex items-center">
-                      <div className="relative">
-                        <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
-                        {isToday && (
-                          <span className="absolute inset-0 rounded-full bg-mm-accent/40 animate-ping" />
-                        )}
-                        <div className="relative w-2.5 h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
-                      </div>
-                    </div>
-                  </div>
+                <motion.div
+                  key={`mobile-${activeDay}`}
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <MobileDayHeading day={activeCalendar} today={today} />
+                  <MobileScheduleGrid items={activeCalendar.items} cardSize={scheduleCardSize} />
+                </motion.div>
+              );
+            })()
+          ) : (
+            <motion.div
+              key="mobile-all"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.16 }}
+              className="space-y-8"
+            >
+              {sortedCalendar.map((day) => (
+                <section key={day.weekday}>
+                  <MobileDayHeading day={day} today={today} />
+                  <MobileScheduleGrid items={day.items} cardSize={scheduleCardSize} />
+                </section>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-                  {/* Content cell — TimelineView for this weekday.
+      <div className="hidden md:block">
+        <AnimatePresence mode="wait">
+          {activeDay !== 'all' ? (
+            (() => {
+              const activeCalendar = sortedCalendar.find((d) => d.weekday === activeDay);
+              if (!activeCalendar) return null;
+              return (
+                <motion.div
+                  key={activeDay}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <div className="flex items-center gap-2.5 mb-4">
+                    <h2 className="text-lg font-bold text-white">
+                      {getWeekdayJapanese(activeCalendar.weekday)}
+                    </h2>
+                    <span className="text-[12px] font-medium text-mm-text-muted tabular-nums">
+                      {activeCalendar.items.length} {i18n._(msg`schedule.totalShows`)}
+                    </span>
+                    {activeCalendar.weekday === today && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-mm-accent">
+                        <span className="w-1.5 h-1.5 rounded-full bg-mm-accent animate-pulse" />
+                        {i18n._(msg`schedule.today`)}
+                      </span>
+                    )}
+                  </div>
+                  <TimelineView items={activeCalendar.items} noSpine cardSize={scheduleCardSize} />
+                </motion.div>
+              );
+            })()
+          ) : (
+            <motion.div
+              key="all"
+              ref={allTabRef}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="relative grid grid-cols-[112px_1fr] gap-x-6 gap-y-8"
+            >
+              {/* Continuous vertical spine in the rail column (x = 96 from grid start) */}
+              <ContinuousSpine containerRef={allTabRef} x={96} />
+
+              {sortedCalendar.map((day) => {
+                const isToday = day.weekday === today;
+                return (
+                  <Fragment key={day.weekday}>
+                    {/* Rail cell — weekday label + accent dot on the spine */}
+                    <div className="relative z-[2] flex items-start justify-end gap-3 pr-[11px]">
+                      <div className="text-right leading-tight">
+                        <div
+                          className={cn(
+                            'text-[14px] font-semibold',
+                            isToday ? 'text-mm-accent' : 'text-white/70'
+                          )}
+                        >
+                          {getWeekdayJapanese(day.weekday)}
+                        </div>
+                        <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
+                          {getDateForWeekday(day.weekday)}
+                        </div>
+                        <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
+                          {day.items.length} {i18n._(msg`schedule.totalShows`)}
+                        </div>
+                      </div>
+                      {/* Dot wrapper height matches TimelineView's first time-marker row (h-8),
+                        so the dot center sits at the same Y as the first time-marker dot. */}
+                      <div className="relative shrink-0 h-8 flex items-center">
+                        <div className="relative">
+                          <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
+                          {isToday && (
+                            <span className="absolute inset-0 rounded-full bg-mm-accent/40 animate-ping" />
+                          )}
+                          <div className="relative w-2.5 h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content cell — TimelineView for this weekday.
                       extendLeft = 40 = grid gap (24) + (rail width 112 - SPINE_X 96), so each row's
                       horizontal line reaches all the way back to the rail spine.
                       contentVisibility intentionally omitted: it would create `contain: paint` and
                       clip the SVG lines that extend leftward past the cell. */}
-                  <div className="min-w-0">
-                    <TimelineView items={day.items} noSpine extendLeft={40} />
-                  </div>
-                </Fragment>
-              );
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    <div className="min-w-0">
+                      <TimelineView
+                        items={day.items}
+                        noSpine
+                        extendLeft={40}
+                        cardSize={scheduleCardSize}
+                      />
+                    </div>
+                  </Fragment>
+                );
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
@@ -740,6 +1117,7 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 
 function SeasonBrowseView({ year, season }: { year: number; season: SeasonKey }) {
   const { i18n } = useLingui();
+  const scheduleCardSize = useUIStore((s) => s.scheduleCardSize);
   const [allItems, setAllItems] = useState<AnimeSummary[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -804,12 +1182,16 @@ function SeasonBrowseView({ year, season }: { year: number; season: SeasonKey })
   return (
     <div>
       <div
-        className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-x-4 gap-y-5"
+        className={cn('grid', SEASON_GRID_CLASSES[scheduleCardSize])}
         style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}
       >
         {allItems.map((anime, i) => (
           <ScheduleAnimeCard
-            key={`${anime.bangumi_id || anime.anilist_id || i}-${i}`}
+            key={
+              anime.bangumi_id > 0
+                ? `bangumi-${anime.bangumi_id}`
+                : `anilist-${anime.anilist_id || anime.title}`
+            }
             anime={anime}
             index={i < 50 ? i : 0}
           />
@@ -819,6 +1201,104 @@ function SeasonBrowseView({ year, season }: { year: number; season: SeasonKey })
       {/* Auto load more — sentinel triggers next page when scrolled into view */}
       {hasMore && <LoadMoreSentinel loading={isFetching} onVisible={() => setPage((p) => p + 1)} />}
     </div>
+  );
+}
+
+function MobileScheduleHeader({
+  selectedYear,
+  currentYear,
+  selectedSeason,
+  currentSeason,
+  scheduleCardSize,
+  setScheduleCardSize,
+  setSearch,
+}: {
+  selectedYear: number;
+  currentYear: number;
+  selectedSeason: SeasonKey;
+  currentSeason: SeasonKey;
+  scheduleCardSize: ScheduleCardSize;
+  setScheduleCardSize: (size: ScheduleCardSize) => void;
+  setSearch: (params: { year?: number; season?: string }) => void;
+}) {
+  const { i18n } = useLingui();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-5 w-[var(--schedule-mobile-content-width)] max-w-full md:hidden"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-semibold text-mm-accent/75">
+            {i18n._(msg`nav.schedule`)}
+          </div>
+          <div className="mt-1 flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setSearch({ year: selectedYear - 1 })}
+              className="flex size-8 items-center justify-center rounded-full text-lg text-white/35 transition-colors cursor-pointer hover:bg-white/[0.05] hover:text-white/80"
+            >
+              ‹
+            </button>
+            <span className="min-w-[76px] text-center text-[32px] font-bold leading-none text-white tabular-nums">
+              {selectedYear}
+            </span>
+            <button
+              type="button"
+              onClick={() => setSearch({ year: selectedYear + 1 })}
+              disabled={selectedYear >= currentYear + 1}
+              className="flex size-8 items-center justify-center rounded-full text-lg text-white/35 transition-colors cursor-pointer hover:bg-white/[0.05] hover:text-white/80 disabled:cursor-default disabled:opacity-20"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        <div className="pt-1">
+          <ScheduleSizeControl
+            scheduleCardSize={scheduleCardSize}
+            setScheduleCardSize={setScheduleCardSize}
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 grid w-full grid-cols-4 gap-1 rounded-2xl bg-white/[0.035] p-1">
+        {SEASONS.map((season) => {
+          const isActive = selectedSeason === season;
+          const isCurrent = selectedYear === currentYear && season === currentSeason;
+          return (
+            <button
+              key={season}
+              type="button"
+              onClick={() => setSearch({ season })}
+              className={cn(
+                'relative h-9 rounded-xl text-[13px] font-semibold transition-all duration-200 cursor-pointer',
+                isActive
+                  ? 'bg-white/[0.12] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]'
+                  : 'text-white/42 hover:bg-white/[0.055] hover:text-white/70'
+              )}
+            >
+              {getSeasonLabel(season, i18n)}
+              {isCurrent && !isActive && (
+                <span className="absolute right-2 top-2 size-1 rounded-full bg-mm-accent" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {(selectedYear !== currentYear || selectedSeason !== currentSeason) && (
+        <button
+          type="button"
+          onClick={() => setSearch({ year: currentYear, season: currentSeason })}
+          className="mt-3 text-[11px] font-semibold text-mm-accent/70 transition-colors cursor-pointer hover:text-mm-accent"
+        >
+          ← {i18n._(msg`schedule.backToCurrent`)}
+        </button>
+      )}
+    </motion.div>
   );
 }
 
@@ -837,6 +1317,25 @@ export function SchedulePage() {
     SEASONS.includes(search.season as SeasonKey) ? search.season : currentSeason
   ) as SeasonKey;
   const isCurrentSeason = selectedYear === currentYear && selectedSeason === currentSeason;
+  const scheduleCardSize = useUIStore((s) => s.scheduleCardSize);
+  const setScheduleCardSize = useUIStore((s) => s.setScheduleCardSize);
+  const [mobileContentWidth, setMobileContentWidth] = useState('calc(100vw - 2rem)');
+
+  useEffect(() => {
+    const updateMobileContentWidth = () => {
+      const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+      setMobileContentWidth(`${Math.max(0, viewportWidth - 32)}px`);
+    };
+
+    updateMobileContentWidth();
+    window.addEventListener('resize', updateMobileContentWidth);
+    window.visualViewport?.addEventListener('resize', updateMobileContentWidth);
+
+    return () => {
+      window.removeEventListener('resize', updateMobileContentWidth);
+      window.visualViewport?.removeEventListener('resize', updateMobileContentWidth);
+    };
+  }, []);
 
   const setSearch = (params: { year?: number; season?: string }) => {
     const next = { year: params.year ?? selectedYear, season: params.season ?? selectedSeason };
@@ -851,41 +1350,63 @@ export function SchedulePage() {
 
   return (
     <PageTransition>
-      <div className="relative min-h-screen px-4 md:px-6 pt-6 pb-16">
+      <div
+        className="relative min-h-screen max-w-[100vw] overflow-x-hidden px-4 pt-6 pb-16 md:max-w-none md:overflow-visible md:px-6"
+        style={{ '--schedule-mobile-content-width': mobileContentWidth } as CSSProperties}
+      >
         <PageAtmosphere preset="schedule" />
-        {/* Header — year nav + season chips in one row */}
+        <MobileScheduleHeader
+          selectedYear={selectedYear}
+          currentYear={currentYear}
+          selectedSeason={selectedSeason}
+          currentSeason={currentSeason}
+          scheduleCardSize={scheduleCardSize}
+          setScheduleCardSize={setScheduleCardSize}
+          setSearch={setSearch}
+        />
+
+        {/* Desktop header — year nav + season chips in one row */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center gap-x-5 gap-y-3 mb-6"
+          className="hidden md:mb-6 md:flex md:flex-wrap md:items-center md:gap-x-5 md:gap-y-3"
         >
-          {/* Year selector */}
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setSearch({ year: selectedYear - 1 })}
-              className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-sm"
-            >
-              ‹
-            </button>
-            <span className="text-xl font-bold text-white tabular-nums min-w-[56px] text-center">
-              {selectedYear}
-            </span>
-            <button
-              type="button"
-              onClick={() => setSearch({ year: selectedYear + 1 })}
-              disabled={selectedYear >= currentYear + 1}
-              className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-sm disabled:opacity-20 disabled:cursor-default"
-            >
-              ›
-            </button>
+          <div className="flex w-full min-w-0 items-center gap-4 md:contents">
+            {/* Year selector */}
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setSearch({ year: selectedYear - 1 })}
+                className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-sm"
+              >
+                ‹
+              </button>
+              <span className="min-w-[64px] text-center text-2xl font-bold tabular-nums text-white md:min-w-[56px] md:text-xl">
+                {selectedYear}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSearch({ year: selectedYear + 1 })}
+                disabled={selectedYear >= currentYear + 1}
+                className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-sm disabled:opacity-20 disabled:cursor-default"
+              >
+                ›
+              </button>
+            </div>
+
+            <div className="shrink-0 md:hidden">
+              <ScheduleSizeControl
+                scheduleCardSize={scheduleCardSize}
+                setScheduleCardSize={setScheduleCardSize}
+              />
+            </div>
           </div>
 
           {/* Divider */}
-          <div className="w-px h-5 bg-white/[0.08]" />
+          <div className="hidden h-5 w-px bg-white/[0.08] md:block" />
 
           {/* Season chips */}
-          <div className="flex items-center gap-1.5">
+          <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 scrollbar-none md:mx-0 md:px-0">
             {SEASONS.map((season) => {
               const isActive = selectedSeason === season;
               const isCurrent = selectedYear === currentYear && season === currentSeason;
@@ -908,6 +1429,17 @@ export function SchedulePage() {
                 </button>
               );
             })}
+          </div>
+
+          {/* Divider */}
+          <div className="hidden h-5 w-px bg-white/[0.08] md:block" />
+
+          {/* Card size density */}
+          <div className="hidden md:block">
+            <ScheduleSizeControl
+              scheduleCardSize={scheduleCardSize}
+              setScheduleCardSize={setScheduleCardSize}
+            />
           </div>
 
           {/* Back to current — only when off-season */}

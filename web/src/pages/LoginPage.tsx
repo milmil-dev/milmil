@@ -1,9 +1,12 @@
+import { ForgotPasswordIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
+import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
@@ -38,8 +41,13 @@ function PosterWall() {
       .filter((a) => a.cover_image?.startsWith('http'))
       .map((a) => a.cover_image);
     if (valid.length === 0) return [];
-    const result: string[] = [];
-    while (result.length < SLOTS) result.push(...valid);
+    const result: Array<{ key: string; src: string }> = [];
+    while (result.length < SLOTS) {
+      for (const src of valid) {
+        result.push({ key: `${result.length}-${src}`, src });
+        if (result.length >= SLOTS) break;
+      }
+    }
     return result.slice(0, SLOTS);
   }, [trending]);
 
@@ -63,8 +71,8 @@ function PosterWall() {
           className="grid gap-x-[5px] gap-y-[10px]"
           style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
         >
-          {posters.map((src, i) => (
-            <div key={`${src}-${i}`} className="aspect-[2/3] overflow-hidden rounded-[3px]">
+          {posters.map(({ key, src }) => (
+            <div key={key} className="aspect-[2/3] overflow-hidden rounded-[3px]">
               <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
             </div>
           ))}
@@ -86,6 +94,24 @@ function PosterWall() {
       {/* Accent glow behind form area */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-mm-accent/[0.05] blur-[120px]" />
     </div>
+  );
+}
+
+function AuthErrorAlert({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -4, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -4, scale: 0.98 }}
+      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+      role="alert"
+      className="flex items-start gap-3 rounded-xl border border-red-400/[0.18] bg-red-500/[0.09] px-3.5 py-3 text-left shadow-[0_14px_32px_rgba(120,24,24,0.18)]"
+    >
+      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-red-400/15 text-[13px] font-bold leading-none text-red-200 ring-1 ring-red-300/20">
+        !
+      </span>
+      <p className="text-[13px] font-medium leading-5 text-red-100">{children}</p>
+    </motion.div>
   );
 }
 
@@ -174,7 +200,9 @@ export function LoginPage() {
             <span className="text-lg font-bold text-mm-accent">M</span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
-          <p className="mt-1 text-[13px] text-white/30">{i18n._(msg`auth.login.subtitle`)}</p>
+          <p className="mt-1 text-[13px] font-medium text-white/60 drop-shadow-sm">
+            {i18n._(msg`auth.login.subtitle`)}
+          </p>
         </motion.div>
 
         {/* Card */}
@@ -195,10 +223,14 @@ export function LoginPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-[13px] font-medium text-white/60">
+                <p
+                  id="totp-code-label"
+                  className="mb-2 block text-[13px] font-medium text-white/60"
+                >
                   {i18n._(msg`auth.2fa.codeLabel`)}
-                </label>
+                </p>
                 <InputOTP
+                  aria-labelledby="totp-code-label"
                   maxLength={6}
                   value={totpCode}
                   onChange={(value) => setTotpCode(value)}
@@ -225,15 +257,9 @@ export function LoginPage() {
                 </InputOTP>
               </div>
 
-              {displayError && (
-                <motion.p
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-[13px] text-red-400"
-                >
-                  {displayError}
-                </motion.p>
-              )}
+              <AnimatePresence>
+                {displayError && <AuthErrorAlert>{displayError}</AuthErrorAlert>}
+              </AnimatePresence>
 
               <div className="flex gap-3">
                 <Button
@@ -370,15 +396,9 @@ export function LoginPage() {
                   )}
                 </form.Field>
 
-                {displayError && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-[13px] text-red-400"
-                  >
-                    {displayError}
-                  </motion.p>
-                )}
+                <AnimatePresence>
+                  {displayError && <AuthErrorAlert>{displayError}</AuthErrorAlert>}
+                </AnimatePresence>
 
                 <form.Subscribe selector={(s) => s.isSubmitting}>
                   {(isSubmitting) => (
@@ -422,8 +442,11 @@ export function LoginPage() {
 
                 {isInitialized && mode === 'login' && (
                   <details className="group rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
-                    <summary className="cursor-pointer list-none text-center text-[12px] font-medium text-white/35 transition-colors hover:text-white/60 marker:hidden">
-                      {i18n._(msg`auth.login.forgotPassword`)}
+                    <summary className="flex cursor-pointer list-none items-center justify-center gap-2 text-center text-[12px] font-medium text-white/40 transition-colors hover:text-white/65 marker:hidden">
+                      <span className="flex size-5 items-center justify-center rounded-full bg-white/[0.04] text-white/35 transition-colors group-open:text-mm-accent group-hover:text-white/55">
+                        <HugeiconsIcon icon={ForgotPasswordIcon} size={13} strokeWidth={1.8} />
+                      </span>
+                      <span>{i18n._(msg`auth.login.forgotPassword`)}</span>
                     </summary>
                     <div className="mt-2 space-y-2 border-t border-white/[0.06] pt-2 text-[12px] leading-relaxed text-white/35">
                       <p>{i18n._(msg`auth.login.recoveryNoEmail`)}</p>
