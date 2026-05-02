@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DefaultManamiURL     = "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/anime-offline-database.json"
+	DefaultManamiURL     = "https://github.com/manami-project/anime-offline-database/releases/latest/download/anime-offline-database-minified.json"
 	DefaultAnimeListsURL = "https://raw.githubusercontent.com/Anime-Lists/anime-lists/master/anime-list.xml"
 	DefaultTitlesURL     = "https://anidb.net/api/anime-titles.xml.gz"
 	userAgent            = "milmil-anidb-phase1/1.0"
