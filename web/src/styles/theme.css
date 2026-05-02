@@ -7,10 +7,10 @@
   --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 42%, var(--foreground) 18%);
   --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 58%, var(--foreground) 12%);
   --font-family-sans:
-    "Segoe UI", "Microsoft JhengHei UI", "Microsoft JhengHei", "Microsoft YaHei UI",
+    "Huninn", "Segoe UI", "Microsoft JhengHei UI", "Microsoft JhengHei", "Microsoft YaHei UI",
     "Microsoft YaHei", "Yu Gothic UI", "Meiryo UI", Meiryo, "Malgun Gothic", "PingFang TC",
     "PingFang SC", "Noto Sans TC", "Noto Sans SC", "Noto Sans CJK TC", "Noto Sans CJK SC",
-    "Huninn", ui-sans-serif, system-ui, sans-serif;
+    ui-sans-serif, system-ui, sans-serif;
   --font-family-mono: "Cascadia Code", Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
   /* milmil app theme — matching Seanime's CSS variable system */
   --mm-bg: #070707; /* Seanime uses #070707 as --background */
