@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.13](https://github.com/milmil-dev/milmil/compare/v0.1.12...v0.1.13) (2026-05-07)
+
+
+### Features
+
+* TMDB localization, security hardening, and UI polish ([#77](https://github.com/milmil-dev/milmil/issues/77)) ([2ba1443](https://github.com/milmil-dev/milmil/commit/2ba14438db7eb736cea13ae838994965f04e84cc))
+
 ## [0.1.12](https://github.com/milmil-dev/milmil/compare/v0.1.11...v0.1.12) (2026-05-02)
 
 
