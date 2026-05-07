@@ -68,7 +68,7 @@ func NewRcloneProvider(backendType string, configJSON string) (*RcloneProvider, 
 		return nil, fmt.Errorf("rclone: create backend %q: %w", backendType, err)
 	}
 
-	v := vfs.New(f, nil)
+	v := vfs.New(context.Background(), f, nil)
 
 	return &RcloneProvider{vfs: v}, nil
 }
