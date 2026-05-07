@@ -15,9 +15,14 @@ import (
 )
 
 func (h *handler) handleCalendar(c echo.Context) error {
-	days, err := h.metadata.GetCalendar(c.Request().Context())
+	ctx := c.Request().Context()
+	days, err := h.metadata.GetCalendar(ctx)
 	if err != nil {
 		return mapMetadataError(err)
+	}
+	locale := h.preferredLocale(c)
+	for i := range days {
+		h.enrichSummariesWithTMDB(ctx, days[i].Items, locale)
 	}
 	return c.JSON(http.StatusOK, days)
 }
@@ -29,10 +34,12 @@ func (h *handler) handleTrending(c echo.Context) error {
 			page = v
 		}
 	}
-	results, err := h.metadata.GetTrending(c.Request().Context(), page)
+	ctx := c.Request().Context()
+	results, err := h.metadata.GetTrending(ctx, page)
 	if err != nil {
 		return mapMetadataError(err)
 	}
+	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c))
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -44,10 +51,12 @@ func (h *handler) handleSearch(c echo.Context) error {
 	isAdult := c.QueryParam("adult") == "true"
 
 	variants := search.GenerateVariants(q)
-	results, err := h.metadata.SearchWithVariants(c.Request().Context(), variants, isAdult)
+	ctx := c.Request().Context()
+	results, err := h.metadata.SearchWithVariants(ctx, variants, isAdult)
 	if err != nil {
 		return mapMetadataError(err)
 	}
+	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c))
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -65,6 +74,7 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 		if err != nil {
 			return mapMetadataError(err)
 		}
+		h.enrichAnimeDetailWithTMDB(ctx, detail, h.preferredLocale(c))
 		return c.JSON(http.StatusOK, detail)
 	}
 
@@ -76,6 +86,7 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 	if err != nil {
 		return mapMetadataError(err)
 	}
+	h.enrichAnimeDetailWithTMDB(ctx, detail, h.preferredLocale(c))
 	return c.JSON(http.StatusOK, detail)
 }
 
@@ -118,12 +129,16 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 
 	hasAdvanced := sort != "" || yearStr != "" || season != "" || minScoreStr != "" || status != "" || format != "" || isAdult || len(genres) > 1
 
+	ctx := c.Request().Context()
+	locale := h.preferredLocale(c)
+
 	if !hasAdvanced && len(genres) == 1 {
 		// Legacy path: single genre browse
-		results, err := h.metadata.BrowseByGenre(c.Request().Context(), genres[0], page)
+		results, err := h.metadata.BrowseByGenre(ctx, genres[0], page)
 		if err != nil {
 			return mapMetadataError(err)
 		}
+		h.enrichSummariesWithTMDB(ctx, results, locale)
 		return c.JSON(http.StatusOK, results)
 	}
 
@@ -150,10 +165,11 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 		Format:   format,
 		IsAdult:  isAdult,
 	}
-	results, err := h.metadata.Browse(c.Request().Context(), filter, page)
+	results, err := h.metadata.Browse(ctx, filter, page)
 	if err != nil {
 		return mapMetadataError(err)
 	}
+	h.enrichSummariesWithTMDB(ctx, results, locale)
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -172,10 +188,12 @@ func (h *handler) handleBrowseByTag(c echo.Context) error {
 		}
 	}
 
-	results, err := h.metadata.BrowseByTag(c.Request().Context(), tags, sort, page)
+	ctx := c.Request().Context()
+	results, err := h.metadata.BrowseByTag(ctx, tags, sort, page)
 	if err != nil {
 		return mapMetadataError(err)
 	}
+	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c))
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -213,10 +231,12 @@ func (h *handler) handleAnimeEpisodes(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
-	eps, err := h.metadata.GetEpisodes(c.Request().Context(), id)
+	ctx := c.Request().Context()
+	eps, err := h.metadata.GetEpisodes(ctx, id)
 	if err != nil {
 		return mapMetadataError(err)
 	}
+	h.enrichEpisodesWithTMDB(ctx, eps, id, h.preferredLocale(c))
 	return c.JSON(http.StatusOK, eps)
 }
 

@@ -7,12 +7,14 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/store"
 )
 
-var settingsKeys = []string{"dandanplay", "player", "appearance", "bangumi_oauth", "bangumi_token", "anilist_oauth", "anilist_token", "collection"}
+var settingsKeys = []string{"dandanplay", "player", "appearance", "bangumi_oauth", "bangumi_token", "anilist_oauth", "anilist_token", "tmdb_api_key", "collection"}
 
 func (h *handler) handleGetSettings(c echo.Context) error {
 	ctx := c.Request().Context()
@@ -54,7 +56,31 @@ func (h *handler) handleUpdateSettings(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	if section == "tmdb_api_key" {
+		h.setTMDBClientFromSetting(string(body))
+	}
+
 	return c.NoContent(http.StatusNoContent)
+}
+
+func (h *handler) setTMDBClientFromSetting(value string) {
+	auth := tmdb.AuthFromSetting(value)
+	var client tmdb.Client
+	if auth.AccessToken != "" || auth.APIKey != "" {
+		client = tmdb.NewClientWithAuth(&http.Client{Timeout: 10 * time.Second}, auth)
+	}
+	h.tmdbMu.Lock()
+	h.tmdb = client
+	h.tmdbMu.Unlock()
+	if h.matcher != nil {
+		h.matcher.SetTMDBClient(client)
+	}
+}
+
+func (h *handler) tmdbClient() tmdb.Client {
+	h.tmdbMu.RLock()
+	defer h.tmdbMu.RUnlock()
+	return h.tmdb
 }
 
 func (h *handler) handleExportSettings(c echo.Context) error {
@@ -114,5 +140,6 @@ func (h *handler) handleResetSettings(c echo.Context) error {
 			slog.Warn("settings: reset key", "key", key, "err", upsertErr)
 		}
 	}
+	h.setTMDBClientFromSetting("{}")
 	return c.NoContent(http.StatusNoContent)
 }

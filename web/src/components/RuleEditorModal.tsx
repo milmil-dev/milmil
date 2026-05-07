@@ -770,7 +770,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
         {!isCreateMode && feed && (
           <div className="md:w-[400px] md:shrink-0 md:pl-5 pt-5 md:pt-0">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/25">
+              <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">
                 {i18n._(msg`ruleEditor.preview`)}
               </span>
               {previewData && (
@@ -855,7 +855,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/25">{label}</h3>
+      <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">{label}</h3>
       {children}
     </div>
   );

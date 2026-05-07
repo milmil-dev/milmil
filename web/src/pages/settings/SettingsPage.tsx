@@ -152,7 +152,7 @@ export function SettingsPage() {
           <>
             {/* Header — centered */}
             <div className="mb-8 text-center">
-              <h1 className="text-xl font-bold text-white tracking-tight sm:text-2xl">
+              <h1 className="text-xl font-semibold text-white tracking-tight sm:text-2xl">
                 {i18n._(msg`settings.pageTitle`)}
               </h1>
             </div>
@@ -231,7 +231,7 @@ export function SettingsPage() {
                   onClick={() => setActiveTab('account')}
                   className="mb-4 flex min-h-[76px] w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.045] px-4 text-left shadow-[0_14px_32px_rgba(0,0,0,0.16)] transition-colors active:bg-white/[0.075]"
                 >
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-mm-accent/20 text-lg font-bold text-mm-accent ring-1 ring-mm-accent/30">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-mm-accent/20 text-lg font-semibold text-mm-accent ring-1 ring-mm-accent/30">
                     {accountInitial}
                   </span>
                   <span className="min-w-0 flex-1">

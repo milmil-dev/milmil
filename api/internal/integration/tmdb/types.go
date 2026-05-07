@@ -1,13 +1,23 @@
 package tmdb
 
 type TVShow struct {
-	ID            int      `json:"id"`
-	Name          string   `json:"name"`
-	OriginalName  string   `json:"original_name"`
-	Overview      string   `json:"overview"`
-	PosterPath    string   `json:"poster_path"`
-	FirstAirDate  string   `json:"first_air_date"`
-	OriginCountry []string `json:"origin_country"`
+	ID            int          `json:"id"`
+	Name          string       `json:"name"`
+	OriginalName  string       `json:"original_name"`
+	Overview      string       `json:"overview"`
+	PosterPath    string       `json:"poster_path"`
+	FirstAirDate  string       `json:"first_air_date"`
+	OriginCountry []string     `json:"origin_country"`
+	Seasons       []SeasonInfo `json:"seasons,omitempty"`
+}
+
+// SeasonInfo is the per-season summary returned in /3/tv/{id}. Used for
+// mapping Bangumi's franchise-wide absolute episode numbering to TMDB's
+// per-season numbering.
+type SeasonInfo struct {
+	SeasonNumber int    `json:"season_number"`
+	EpisodeCount int    `json:"episode_count"`
+	Name         string `json:"name,omitempty"`
 }
 
 type ExternalIDs struct {

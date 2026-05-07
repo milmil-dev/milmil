@@ -328,7 +328,7 @@ export function FolderBrowser({
         <button
           type="button"
           onClick={() => setOpened(true)}
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+          className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
         >
           {i18n._(msg`library.browse.folders`)}
         </button>

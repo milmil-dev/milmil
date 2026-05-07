@@ -57,4 +57,6 @@ DANDANPLAY_APP_SECRET=your_app_secret
 
 ## TMDB
 
-[TMDB](https://www.themoviedb.org) 用作交叉引用电视节目元数据的后备来源。无需配置。
+[TMDB](https://www.themoviedb.org) 用作交叉引用电视节目元数据的后备来源，也会按界面语言补充本地化剧集元数据。此集成是可选的；在设置 > 集成中填入 TMDB API Read Access Token（推荐）或 v3 API key 后启用。
+
+TMDB 元数据语言会跟随设置 > 通用中的界面语言；未设置时默认回退到繁体中文。

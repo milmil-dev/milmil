@@ -478,8 +478,8 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 		}
 
 		// Enrich episodes with TMDB Chinese metadata
-		if h.tmdb != nil {
-			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+		if tmdbClient := h.tmdbClient(); tmdbClient != nil {
+			_, _ = matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, tmdbClient, h.cache, lib.ID)
 		}
 
 		// Rank duplicate episodes — picks preferred file for any episode with 2+ files.
@@ -548,8 +548,8 @@ func (h *handler) handleMatchLibrary(c echo.Context) error {
 			}
 		}
 
-		if h.tmdb != nil {
-			enriched, err := matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, h.tmdb, h.cache, lib.ID)
+		if tmdbClient := h.tmdbClient(); tmdbClient != nil {
+			enriched, err := matcher.EnrichEpisodesFromTMDB(context.Background(), h.queries, tmdbClient, h.cache, lib.ID)
 			if err != nil {
 				slog.Error("match: TMDB enrichment failed", "library_id", lib.ID, "err", err)
 			} else {

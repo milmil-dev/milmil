@@ -209,7 +209,7 @@ function SectionHeader({ title, to }: { title: string; to: string }) {
   const { i18n } = useLingui();
   return (
     <div className="flex items-baseline justify-between mb-4">
-      <h2 className="text-lg lg:text-xl font-bold text-white tracking-tight">{title}</h2>
+      <h2 className="text-lg lg:text-xl font-semibold text-white tracking-tight">{title}</h2>
       <Link
         to={to}
         className="text-[12px] font-medium transition-colors hover:text-white text-white/40 cursor-pointer"

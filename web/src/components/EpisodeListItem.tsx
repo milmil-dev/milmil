@@ -1,4 +1,4 @@
-import { InformationCircleIcon } from '@hugeicons/core-free-icons';
+import { Clock01Icon, InformationCircleIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
@@ -30,6 +30,40 @@ function isAired(dateStr?: string): boolean {
   return new Date(dateStr) <= new Date();
 }
 
+// daysUntil returns whole-day difference (target - now) ignoring time-of-day.
+// Negative means in the past, 0 means today, 1 means tomorrow.
+function daysUntil(dateStr: string): number {
+  const target = new Date(dateStr);
+  const now = new Date();
+  const targetDay = new Date(target.getFullYear(), target.getMonth(), target.getDate()).getTime();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  return Math.round((targetDay - today) / 86_400_000);
+}
+
+function formatMonthShort(dateStr: string, locale: string): string {
+  try {
+    return new Intl.DateTimeFormat(locale, { month: 'short' }).format(new Date(dateStr));
+  } catch {
+    return '';
+  }
+}
+
+function formatWeekdayShort(dateStr: string, locale: string): string {
+  try {
+    return new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(dateStr));
+  } catch {
+    return '';
+  }
+}
+
+function dayOfMonth(dateStr: string): string {
+  try {
+    return String(new Date(dateStr).getDate());
+  } catch {
+    return '';
+  }
+}
+
 export function EpisodeListItem({
   sort,
   title,
@@ -52,6 +86,93 @@ export function EpisodeListItem({
   const [imgFailed, setImgFailed] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const hasImage = !imgFailed && image?.startsWith('http');
+
+  // Anime-calendar "ticket" treatment for unaired episodes. Three structural
+  // pieces, each carrying its own visual personality:
+  //   1. Calendar tile (left)  — month / day / weekday stacked, like a
+  //      stub-tile from a real calendar; gradient ring keeps it interesting
+  //      without going neon.
+  //   2. Episode plate (middle) — "EP 55" in stylized mono with a thin
+  //      mm-accent underline, evokes a Blu-ray promo card.
+  //   3. Countdown chip (right) — pill with hourglass glyph + relative
+  //      time. The closest-to-air entries get a gentle pulse.
+  // Hover reveals a soft accent glow and slight lift so the row feels
+  // tactile rather than dim/broken.
+  const isUpcoming = !hasFile && !title && airDate && !aired;
+  if (isUpcoming) {
+    const diffDays = daysUntil(airDate);
+    const day = dayOfMonth(airDate);
+    const monthShort = formatMonthShort(airDate, i18n.locale);
+    const weekdayShort = formatWeekdayShort(airDate, i18n.locale);
+
+    let countdown = '';
+    if (diffDays === 0) countdown = i18n._(msg`episode.airDate.today`);
+    else if (diffDays === 1) countdown = i18n._(msg`episode.airDate.tomorrow`);
+    else if (diffDays === 2) countdown = i18n._(msg`episode.airDate.dayAfterTomorrow`);
+    else if (diffDays > 0 && diffDays <= 60)
+      countdown = i18n._(msg`episode.airDate.inDays ${diffDays}`);
+
+    const isImminent = diffDays >= 0 && diffDays <= 7;
+
+    return (
+      <div className="group relative flex items-stretch gap-3 rounded-lg pl-1 pr-2 py-1.5 transition-colors duration-200 hover:bg-white/[0.02]">
+        {/* Calendar tile — pure white/opacity, accent only when imminent */}
+        <div
+          className={cn(
+            'shrink-0 w-12 flex flex-col items-center justify-center rounded-md py-1.5 text-center',
+            'border border-white/[0.06] bg-white/[0.02]',
+            'transition-colors duration-200',
+            isImminent
+              ? 'border-mm-accent/25 bg-mm-accent/[0.04]'
+              : 'group-hover:border-white/[0.10] group-hover:bg-white/[0.03]'
+          )}
+        >
+          <span className="text-[9px] uppercase tracking-[0.10em] text-white/35 leading-none">
+            {monthShort}
+          </span>
+          <span className="text-[17px] font-semibold tabular-nums leading-none mt-1 text-white/80">
+            {day}
+          </span>
+          <span className="text-[9px] text-white/25 leading-none mt-1">
+            {weekdayShort}
+          </span>
+        </div>
+
+        {/* Episode plate — quiet typography, no accent decoration */}
+        <div className="flex-1 flex flex-col justify-center min-w-0 gap-0.5">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[10px] font-medium tracking-[0.12em] text-white/35">
+              EP
+            </span>
+            <span className="text-[17px] font-semibold tabular-nums leading-none text-white/80 group-hover:text-white/95 transition-colors">
+              {sort}
+            </span>
+          </div>
+          <span className="text-[10px] tracking-[0.10em] text-white/25">
+            {i18n._(msg`episode.upcoming`)}
+          </span>
+        </div>
+
+        {/* Countdown chip — accent reserved for the imminent tier (≤7d) */}
+        {countdown && (
+          <div
+            className={cn(
+              'shrink-0 self-center flex items-center gap-1.5 px-2 py-1 rounded-full',
+              'border transition-colors duration-200',
+              isImminent
+                ? 'border-mm-accent/20 bg-mm-accent/[0.06] text-mm-accent/85'
+                : 'border-white/[0.06] bg-white/[0.02] text-white/45 group-hover:border-white/[0.10] group-hover:text-white/55'
+            )}
+          >
+            <HugeiconsIcon icon={Clock01Icon} className="size-3" aria-hidden="true" />
+            <span className="text-[11px] font-medium tabular-nums whitespace-nowrap">
+              {countdown}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   const durationLabel =
     duration && duration > 0 ? `${duration}${i18n._(msg`common.minuteShort`)}` : null;
@@ -138,15 +259,17 @@ export function EpisodeListItem({
           )}
         </div>
 
-        <p
-          className={cn(
-            'text-[14px] font-bold leading-snug mt-0.5 transition-colors',
-            hasImage ? 'line-clamp-1' : 'truncate',
-            isActive ? 'text-mm-accent' : 'text-white/90 group-hover:text-white'
-          )}
-        >
-          {title}
-        </p>
+        {title && (
+          <p
+            className={cn(
+              'text-[14px] font-bold leading-snug mt-0.5 transition-colors',
+              hasImage ? 'line-clamp-1' : 'truncate',
+              isActive ? 'text-mm-accent' : 'text-white/90 group-hover:text-white'
+            )}
+          >
+            {title}
+          </p>
+        )}
 
         {synopsis ? (
           <p className="text-[12px] text-white/35 line-clamp-2 mt-1 leading-relaxed">

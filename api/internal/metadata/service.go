@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 	"unicode"
@@ -91,6 +92,13 @@ func bangumiEpisodeToEpisode(e bangumi.Episode) Episode {
 	if title == "" {
 		title = e.Name
 	}
+	// Bangumi fills "第 N 集" / "第 N 話" as a placeholder when the episode
+	// has no real title yet (typically unaired episodes). Treat that as
+	// empty so the UI can hide the title row instead of duplicating the
+	// episode-number badge already shown above it.
+	if isPlaceholderEpisodeTitle(title) {
+		title = ""
+	}
 	return Episode{
 		BangumiEpisodeID: e.ID,
 		Sort:             e.Sort,
@@ -99,6 +107,15 @@ func bangumiEpisodeToEpisode(e bangumi.Episode) Episode {
 		AirDate:          e.AirDate,
 		Synopsis:         e.Desc,
 	}
+}
+
+// placeholderEpisodeTitleRE matches "第 N 集" / "第N話" / "第 N 期" forms
+// that Bangumi auto-generates for episodes without titles. Whitespace is
+// optional; the unit covers Chinese 集, Japanese 話/话, and 期/章.
+var placeholderEpisodeTitleRE = regexp.MustCompile(`^第\s*\d+(?:\.\d+)?\s*[集話话期章]\s*$`)
+
+func isPlaceholderEpisodeTitle(title string) bool {
+	return placeholderEpisodeTitleRE.MatchString(strings.TrimSpace(title))
 }
 
 func (s *Service) GetCalendar(ctx context.Context) ([]CalendarDay, error) {
@@ -406,6 +423,15 @@ func (s *Service) GetEpisodes(ctx context.Context, bangumiID int) ([]Episode, er
 	cacheKey := fmt.Sprintf("meta:episodes:%d", bangumiID)
 	var cached []Episode
 	if s.getCache(ctx, cacheKey, &cached) {
+		// Strip Bangumi auto-generated "第 N 集" placeholders from cached
+		// data too — entries written before the read-time filter existed
+		// still carry them, and we don't want to wait 24h for the cache
+		// to expire.
+		for i := range cached {
+			if isPlaceholderEpisodeTitle(cached[i].Title) {
+				cached[i].Title = ""
+			}
+		}
 		return cached, nil
 	}
 

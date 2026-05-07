@@ -94,10 +94,11 @@ DANDANPLAY_APP_SECRET=your_app_secret
 
 ## TMDB
 
-[TMDB](https://www.themoviedb.org) is used as a fallback for cross-referencing TV show metadata.
+[TMDB](https://www.themoviedb.org) is used as a fallback for cross-referencing TV show metadata and enriching localized episode metadata.
 
 <Callout type="info">
-No configuration required. TMDB is used automatically as a fallback source.
+TMDB is optional. Add your TMDB API Read Access Token (recommended) or v3 API key in Settings → Integrations to enable TMDB matching and metadata enrichment.
+TMDB metadata language follows the UI language selected in Settings → General, with Traditional Chinese as the default fallback.
 </Callout>
 
 </Tab>

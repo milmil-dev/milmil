@@ -1739,7 +1739,7 @@ function SettingsModal({
     | 'onedrive'
     | 'dropbox';
 
-  const labelCls = 'text-[10px] font-bold uppercase tracking-[0.15em] text-white/35';
+  const labelCls = 'text-[10px] font-medium uppercase tracking-[0.15em] text-white/35';
   const fieldCls =
     'w-full bg-white/[0.04] rounded-lg px-4 py-2.5 text-sm text-white/90 placeholder:text-white/25 focus:outline-none focus:bg-white/[0.07] transition-colors';
 
@@ -1834,7 +1834,7 @@ function SettingsModal({
 
         {/* Danger zone — borderless tinted surface */}
         <div className="pt-3 space-y-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/45 px-1">
+          <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-red-400/45 px-1">
             {i18n._(msg`common.dangerZone`)}
           </p>
           <div className="bg-red-500/[0.04] rounded-xl p-4 flex items-center gap-4">
@@ -2091,7 +2091,7 @@ export function LibraryDetailPage() {
               <p className="font-mono text-xs text-white/30 mt-1 truncate">{library.path}</p>
               <div className="flex items-center gap-2 mt-2">
                 {sourceLabel && (
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">
+                  <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">
                     {sourceLabel}
                   </span>
                 )}

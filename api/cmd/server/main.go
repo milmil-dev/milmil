@@ -224,8 +224,15 @@ func main() {
 	)
 	// TMDB client (optional — only if API key is configured)
 	var tmdbClient tmdb.Client
-	if tmdbSetting, tmdbErr := store.New(database).GetSetting(context.Background(), "tmdb_api_key"); tmdbErr == nil && tmdbSetting.Value != "" {
-		tmdbClient = tmdb.NewClient(&http.Client{Timeout: 10 * time.Second}, tmdbSetting.Value)
+	tmdbAuth := tmdb.Auth{APIKey: cfg.TMDBAPIKey, AccessToken: cfg.TMDBAccessToken}
+	if tmdbSetting, tmdbErr := store.New(database).GetSetting(context.Background(), "tmdb_api_key"); tmdbErr == nil {
+		settingAuth := tmdb.AuthFromSetting(tmdbSetting.Value)
+		if settingAuth.AccessToken != "" || settingAuth.APIKey != "" {
+			tmdbAuth = settingAuth
+		}
+	}
+	if tmdbAuth.AccessToken != "" || tmdbAuth.APIKey != "" {
+		tmdbClient = tmdb.NewClientWithAuth(&http.Client{Timeout: 10 * time.Second}, tmdbAuth)
 	}
 	slog.Debug("boot: API clients ready", "took", time.Since(step))
 

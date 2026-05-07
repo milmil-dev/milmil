@@ -79,7 +79,7 @@ export function TorrentSearchPage() {
           className="flex items-center gap-3 mb-6"
         >
           <HugeiconsIcon icon={MagnetIcon} size={22} className="text-mm-accent" />
-          <h1 className="text-lg font-bold text-white tracking-tight">Torrent Search</h1>
+          <h1 className="text-lg font-semibold text-white tracking-tight">Torrent Search</h1>
         </motion.div>
 
         {/* Search input */}

@@ -56,7 +56,7 @@ export function StoragePanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.storage`)}</h2>
+      <h2 className="text-xl font-semibold text-white">{i18n._(msg`settings.nav.storage`)}</h2>
       <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`settings.storage.subtitle`)}</p>
 
       <div className="space-y-3">

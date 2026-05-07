@@ -257,7 +257,7 @@ function LibraryCard({
 
       {/* Right stats */}
       <div className="text-right shrink-0 mr-1">
-        <p className="text-lg font-bold text-white/65 tabular-nums tracking-tight">
+        <p className="text-lg font-semibold text-white/65 tabular-nums tracking-tight">
           {lib.file_count.toLocaleString()}
         </p>
         <p className="text-[9px] text-white/20 mt-0.5 tabular-nums">
@@ -388,7 +388,7 @@ interface LibraryFormValues {
   rclone_remote_name: string;
 }
 
-const labelClass = 'text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200';
+const labelClass = 'text-[10px] font-medium uppercase tracking-[0.2em] text-gray-200';
 const inputClass = 'bg-white/[0.06] border-none outline-none text-white rounded-md';
 
 // ─── Test connection button ───────────────────────────────────────────────────
@@ -415,7 +415,7 @@ function TestConnectionButton({
           testMutation.mutate(getConnectionInput());
         }}
         disabled={testMutation.isPending}
-        className="px-3 py-1.5 text-xs font-bold rounded-md bg-white/[0.06] text-gray-200 hover:bg-white/[0.1] transition-colors disabled:opacity-40"
+        className="px-3 py-1.5 text-xs font-semibold rounded-md bg-white/[0.06] text-gray-200 hover:bg-white/[0.1] transition-colors disabled:opacity-40"
       >
         {testMutation.isPending
           ? i18n._(msg`library.testConnection.testing`)
@@ -672,7 +672,7 @@ function LibraryForm({
         <div className="text-white/30">
           <SourceIcon sourceType={fixedSourceType} className="w-6 h-6" />
         </div>
-        <span className="text-xs font-bold uppercase tracking-[0.15em] text-white/40">
+        <span className="text-xs font-medium uppercase tracking-[0.15em] text-white/40">
           {sourceTypeName(fixedSourceType, i18n)}
         </span>
       </div>
@@ -697,7 +697,7 @@ function LibraryForm({
                   id="lib-name"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Anime"
+                  placeholder={i18n._(msg`library.name.placeholder`)}
                   className={inputClass}
                 />
                 <FieldError>
@@ -719,7 +719,7 @@ function LibraryForm({
               />
               <Label
                 htmlFor="lib-enabled"
-                className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/30"
+                className="text-[9px] font-medium uppercase tracking-[0.15em] text-white/30"
               >
                 {i18n._(msg`library.enabled`)}
               </Label>
@@ -929,7 +929,7 @@ function LibraryForm({
                           type="button"
                           onClick={() => field.handleChange(v)}
                           className={cn(
-                            'flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors',
+                            'flex-1 px-3 py-2 text-xs font-semibold rounded-md transition-colors',
                             field.state.value === v
                               ? 'bg-mm-accent text-black'
                               : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
@@ -1277,7 +1277,7 @@ function RcloneRemotePicker({
 
   return (
     <div className="space-y-3 p-4 rounded-md bg-white/[0.03]">
-      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200">
+      <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-200">
         {i18n._(msg`library.rclone.availableRemotes`)}
       </p>
       {isLoading && (
@@ -1532,7 +1532,7 @@ function AddLibraryWizard({
             <div className="space-y-4">
               {sourceSections.map((section) => (
                 <div key={section.label}>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/25 mb-2">
+                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25 mb-2">
                     {section.label}
                   </p>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -1575,7 +1575,7 @@ function AddLibraryWizard({
               <div className="text-white/30">
                 {allSourceCards.find((c) => c.key === sourceType)?.icon}
               </div>
-              <span className="min-w-0 truncate text-xs font-bold uppercase tracking-[0.15em] text-white/40">
+              <span className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.15em] text-white/40">
                 {allSourceCards.find((c) => c.key === sourceType)?.name}
               </span>
               <button
@@ -1584,7 +1584,7 @@ function AddLibraryWizard({
                   setStep('source');
                   setSmbStep('server');
                 }}
-                className="ml-auto shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+                className="ml-auto shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.15em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
               >
                 <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
               </button>
@@ -1615,7 +1615,7 @@ function AddLibraryWizard({
                         id="wiz-name"
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Anime"
+                        placeholder={i18n._(msg`library.name.placeholder`)}
                         className={inputClass}
                       />
                       {field.state.meta.errors[0] && (
@@ -1746,7 +1746,7 @@ function AddLibraryWizard({
                                 form.setFieldValue('smb_port', 445);
                                 setSmbStep('credentials');
                               }}
-                              className="px-4 py-2 text-xs font-bold rounded-md bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
+                              className="px-4 py-2 text-xs font-semibold rounded-md bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
                             >
                               {i18n._(msg`library.wizard.smb.next`)}
                             </button>
@@ -1869,7 +1869,7 @@ function AddLibraryWizard({
                         <button
                           type="button"
                           onClick={() => setSmbStep('folder')}
-                          className="w-full px-4 py-2.5 text-sm font-bold rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-white transition-all cursor-pointer"
+                          className="w-full px-4 py-2.5 text-sm font-semibold rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-white transition-all cursor-pointer"
                         >
                           {i18n._(msg`library.wizard.smb.connect`)}
                         </button>
@@ -2131,7 +2131,7 @@ function AddLibraryWizard({
                               type="button"
                               onClick={() => field.handleChange(v)}
                               className={cn(
-                                'flex-1 px-3 py-2 text-xs font-bold rounded-md transition-colors',
+                                'flex-1 px-3 py-2 text-xs font-semibold rounded-md transition-colors',
                                 field.state.value === v
                                   ? 'bg-mm-accent text-black'
                                   : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
@@ -2845,7 +2845,7 @@ export function LibrariesPage() {
           <button
             type="button"
             onClick={() => setShowLogin(true)}
-            className="px-5 py-2.5 text-sm font-bold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
+            className="px-5 py-2.5 text-sm font-semibold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
           >
             {i18n._(msg`auth.login.submit`)}
           </button>

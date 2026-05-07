@@ -172,7 +172,7 @@ function FeedForm({
           <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
             <FieldLabel
               htmlFor="feed-name"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Name
             </FieldLabel>
@@ -200,7 +200,7 @@ function FeedForm({
           <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
             <FieldLabel
               htmlFor="feed-url"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               URL
             </FieldLabel>
@@ -225,7 +225,7 @@ function FeedForm({
           <Field>
             <FieldLabel
               htmlFor="feed-type"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Type
             </FieldLabel>
@@ -316,7 +316,7 @@ function RuleForm({
           <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
             <FieldLabel
               htmlFor="rule-name"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Name
             </FieldLabel>
@@ -344,7 +344,7 @@ function RuleForm({
           <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
             <FieldLabel
               htmlFor="rule-feed"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Feed
             </FieldLabel>
@@ -380,7 +380,7 @@ function RuleForm({
           <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
             <FieldLabel
               htmlFor="rule-filter"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Filter Regex
             </FieldLabel>
@@ -405,7 +405,7 @@ function RuleForm({
           <Field>
             <FieldLabel
               htmlFor="rule-exclude"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Exclude Regex
             </FieldLabel>
@@ -425,7 +425,7 @@ function RuleForm({
           <Field>
             <FieldLabel
               htmlFor="rule-dir"
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-mm-text-secondary"
+              className="text-[10px] font-medium uppercase tracking-[0.2em] text-mm-text-secondary"
             >
               Save Directory
             </FieldLabel>
@@ -470,7 +470,7 @@ function SectionHeader({
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-baseline gap-2">
-        <h2 className="text-lg font-bold text-white">{title}</h2>
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
         <span className="text-xs font-mono text-mm-text-tertiary">{count}</span>
       </div>
       <Button size="sm" onClick={onAdd}>
@@ -630,7 +630,7 @@ export function RSSPage() {
       <div className="min-h-screen">
         {/* Header */}
         <div className="px-8 pt-12 pb-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">milmil</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">milmil</p>
           <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">
             RSS Feeds &amp; Rules
           </h1>

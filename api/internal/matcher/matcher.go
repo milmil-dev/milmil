@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"log/slog"
@@ -33,6 +34,7 @@ type MatchSummary struct {
 }
 
 type Matcher struct {
+	mu         sync.RWMutex
 	queries    *store.Queries
 	dandanplay dandanplay.Client
 	bangumi    bangumi.Client
@@ -50,6 +52,18 @@ func New(q *store.Queries, ddp dandanplay.Client, c cache.Cache) *Matcher {
 // to disable Pass 4 (AniDB title fallback) and cross-source ID enrichment.
 func NewMulti(q *store.Queries, ddp dandanplay.Client, bgm bangumi.Client, tmdbClient tmdb.Client, c cache.Cache, anidbSvc *anidb.Service) *Matcher {
 	return &Matcher{queries: q, dandanplay: ddp, bangumi: bgm, tmdb: tmdbClient, cache: c, anidb: anidbSvc}
+}
+
+func (m *Matcher) SetTMDBClient(client tmdb.Client) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.tmdb = client
+}
+
+func (m *Matcher) tmdbClient() tmdb.Client {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	return m.tmdb
 }
 
 func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress ...scanner.ProgressFunc) (*MatchSummary, error) {
@@ -226,7 +240,7 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 	}
 
 	// --- Pass 3: TMDB search → cross-ref Bangumi ---
-	if m.tmdb != nil && m.bangumi != nil {
+	if m.tmdbClient() != nil && m.bangumi != nil {
 		for _, f := range files {
 			if matched[f.ID] {
 				continue
@@ -303,7 +317,7 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 			if set.Bangumi != 0 && m.bangumi != nil {
 				animeID, retryErr = m.upsertAnimeByBangumi(ctx, f, set.Bangumi, parsed)
 			}
-			if animeID == "" && retryErr == nil && set.TMDB != 0 && m.tmdb != nil {
+			if animeID == "" && retryErr == nil && set.TMDB != 0 && m.tmdbClient() != nil {
 				animeID, retryErr = m.upsertAnimeByTMDB(ctx, f, set.TMDB, parsed)
 			}
 			if animeID == "" && retryErr == nil {
@@ -445,7 +459,7 @@ func (m *Matcher) tryLinkBangumiEpisode(ctx context.Context, f store.MediaFile, 
 // if that fails, falls back to creating a minimal anime row keyed by tmdb_id.
 func (m *Matcher) upsertAnimeByTMDB(ctx context.Context, f store.MediaFile, tmdbID int64, parsed fileparse.ParsedFilename) (string, error) {
 	// Try Bangumi cross-ref first via existing matcher (uses TMDB original name).
-	if m.bangumi != nil && m.tmdb != nil {
+	if m.bangumi != nil && m.tmdbClient() != nil {
 		if subjectID, episodeID, ok, _ := m.matchTMDB(ctx, parsed); ok {
 			row, err := m.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: int64(subjectID), Valid: true})
 			if err == nil {
@@ -599,10 +613,13 @@ func (m *Matcher) matchBangumi(ctx context.Context, parsed fileparse.ParsedFilen
 	return 0, 0, false, nil
 }
 
-// matchTMDB searches TMDB by parsed title (zh-CN), then cross-references to Bangumi
-// by searching the show's OriginalName (or Name as fallback).
+// matchTMDB searches TMDB using the languages derived from the user's UI locale
+// (see tmdbLanguagesForSettings), then cross-references to Bangumi by searching
+// the show's OriginalName (or Name as fallback).
 func (m *Matcher) matchTMDB(ctx context.Context, parsed fileparse.ParsedFilename) (subjectID int, episodeID int, ok bool, err error) {
-	cacheKey := fmt.Sprintf("tmdb:search:%s", parsed.Title)
+	languages := tmdbLanguagesForSettings(ctx, m.queries)
+	primaryLanguage := languages[0]
+	cacheKey := fmt.Sprintf("tmdb:search:%s:%s", primaryLanguage, parsed.Title)
 
 	var shows []tmdb.TVShow
 	if data, cacheErr := m.cache.Get(ctx, cacheKey); cacheErr == nil {
@@ -610,11 +627,12 @@ func (m *Matcher) matchTMDB(ctx context.Context, parsed fileparse.ParsedFilename
 	}
 
 	if len(shows) == 0 {
-		shows, err = m.tmdb.SearchTV(ctx, parsed.Title, "zh-CN")
-		if err != nil {
-			return 0, 0, false, err
+		client := m.tmdbClient()
+		if client == nil {
+			return 0, 0, false, nil
 		}
-		if len(shows) == 0 {
+		shows, ok = searchTVWithLanguageFallback(ctx, client, parsed.Title, languages)
+		if !ok {
 			return 0, 0, false, nil
 		}
 		if data, marshalErr := json.Marshal(shows); marshalErr == nil {

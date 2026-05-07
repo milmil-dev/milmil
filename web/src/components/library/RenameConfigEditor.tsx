@@ -11,7 +11,7 @@ interface Props {
   onAutoChange: (value: boolean) => void;
 }
 
-const LABEL_CLS = 'text-[10px] font-bold uppercase tracking-[0.15em] text-white/35';
+const LABEL_CLS = 'text-[10px] font-medium uppercase tracking-[0.15em] text-white/35';
 
 interface TemplateCheck {
   ok: boolean;

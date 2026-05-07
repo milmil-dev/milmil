@@ -993,7 +993,7 @@ function CalendarView() {
                   transition={{ duration: 0.15 }}
                 >
                   <div className="flex items-center gap-2.5 mb-4">
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-semibold text-white">
                       {getWeekdayJapanese(activeCalendar.weekday)}
                     </h2>
                     <span className="text-[12px] font-medium text-mm-text-muted tabular-nums">

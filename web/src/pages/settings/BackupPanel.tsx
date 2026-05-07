@@ -248,7 +248,7 @@ function WebDAVConfigCard() {
         <form.Field name="url">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="webdav-url">URL</FieldLabel>
+              <FieldLabel htmlFor="webdav-url">{i18n._(msg`URL`)}</FieldLabel>
               <Input
                 id="webdav-url"
                 value={field.state.value}
@@ -451,7 +451,7 @@ function S3ConfigCard() {
         <form.Field name="endpoint">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="s3-endpoint">Endpoint</FieldLabel>
+              <FieldLabel htmlFor="s3-endpoint">{i18n._(msg`Endpoint`)}</FieldLabel>
               <Input
                 id="s3-endpoint"
                 value={field.state.value}
@@ -466,7 +466,7 @@ function S3ConfigCard() {
         <form.Field name="bucket">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="s3-bucket">Bucket</FieldLabel>
+              <FieldLabel htmlFor="s3-bucket">{i18n._(msg`Bucket`)}</FieldLabel>
               <Input
                 id="s3-bucket"
                 value={field.state.value}
@@ -481,7 +481,7 @@ function S3ConfigCard() {
         <form.Field name="access_key">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="s3-access-key">Access Key</FieldLabel>
+              <FieldLabel htmlFor="s3-access-key">{i18n._(msg`Access Key`)}</FieldLabel>
               <Input
                 id="s3-access-key"
                 value={field.state.value}
@@ -496,7 +496,7 @@ function S3ConfigCard() {
         <form.Field name="secret_key">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor="s3-secret-key">Secret Key</FieldLabel>
+              <FieldLabel htmlFor="s3-secret-key">{i18n._(msg`Secret Key`)}</FieldLabel>
               <PasswordInput
                 id="s3-secret-key"
                 value={field.state.value}
@@ -664,7 +664,7 @@ export function BackupPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-white">{i18n._(msg`backup.title`)}</h2>
+        <h2 className="text-xl font-semibold text-white">{i18n._(msg`backup.title`)}</h2>
         <p className="mt-1 text-sm text-white/40">{i18n._(msg`backup.description`)}</p>
       </div>
 
