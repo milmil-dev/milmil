@@ -233,7 +233,7 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
       {/* Section header */}
       <div className="flex items-baseline justify-between mb-4">
         <div className="flex items-baseline gap-2">
-          <h2 className="text-lg lg:text-xl font-bold text-white tracking-tight">{title}</h2>
+          <h2 className="text-lg lg:text-xl font-semibold text-white tracking-tight">{title}</h2>
           {!isLoading && data.length > 0 && (
             <span className="text-[11px] text-white/20 tabular-nums">{data.length}</span>
           )}

@@ -192,7 +192,7 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
                 <CommandGroup
                   key={cat}
                   heading={
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/25 px-1">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-white/25 px-1">
                       {CATEGORY_LABELS[cat] ? i18n._(CATEGORY_LABELS[cat]!) : cat}
                     </span>
                   }

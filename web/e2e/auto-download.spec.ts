@@ -171,12 +171,12 @@ const ANIME_DETAIL_FRIEREN = {
 
 async function setupAuth(page: Page) {
   await page.evaluate(() => {
-    localStorage.setItem('milmil-token', 'fake-token');
+    localStorage.setItem('milmil-token', 'mlml_fake-token');
     localStorage.setItem(
       'auth',
       JSON.stringify({
         state: {
-          token: 'fake-token',
+          token: 'mlml_fake-token',
           user: { id: 'user-1', username: 'testuser' },
           initialized: true,
         },
@@ -352,16 +352,17 @@ async function setupApiMocks(
 // ── Helper: navigate to manage tab and click a sub-tab ────────────────────
 
 async function goToManageTab(page: Page) {
-  await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
+  await page.getByRole('button', { name: /^library$/i }).click();
   await page.waitForTimeout(500);
 }
 
-async function clickSubTab(page: Page, name: string) {
-  // Sub-tab buttons are inside the manage tab content, pill-shaped buttons
-  await page
-    .locator('button', { hasText: new RegExp(name, 'i') })
-    .first()
-    .click();
+async function openSubscribePanel(page: Page, source = 'Mikan') {
+  await page.getByRole('button', { name: new RegExp(`^${source}$`, 'i') }).click();
+  const followButton = page
+    .getByRole('button', { name: /follow this filter|subscribe|訂閱|追番/i })
+    .first();
+  await expect(followButton).toBeVisible();
+  await followButton.click();
   await page.waitForTimeout(300);
 }
 
@@ -381,13 +382,12 @@ test.describe('Auto-Download Page', () => {
     await expect(page.locator('h1')).toContainText(/auto/i);
   });
 
-  test('shows two tabs: Search and Manage', async ({ page }) => {
+  test('shows two tabs: Search and Library', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    // Should have search and manage tab buttons in the tab bar
-    const tabs = page.locator('[class*="border-b"] button');
-    await expect(tabs).toHaveCount(2);
+    await expect(page.getByRole('button', { name: /^search$/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^library$/i })).toBeVisible();
   });
 
   // ── Search Tab: Popular anime ─────────────────────────────────────────
@@ -496,9 +496,6 @@ test.describe('Auto-Download Page', () => {
     await page.click('text=葬送的芙莉蓮');
     await page.waitForTimeout(500);
 
-    // Count initial results
-    const initialCount = await page.locator('[class*="rounded-lg"][class*="bg-white"]').count();
-
     // Click 720p filter
     await page.locator('button', { hasText: '720p' }).first().click();
     await page.waitForTimeout(300);
@@ -563,10 +560,7 @@ test.describe('Auto-Download Page', () => {
     await page.click('text=葬送的芙莉蓮');
     await page.waitForTimeout(500);
 
-    // Click subscribe button
-    const subscribeBtn = page.locator('button', { hasText: /subscribe/i }).first();
-    await subscribeBtn.click();
-    await page.waitForTimeout(300);
+    await openSubscribePanel(page);
 
     // Confirmation panel should show anime name and match count
     await expect(page.locator('text=葬送的芙莉蓮').first()).toBeVisible();
@@ -584,10 +578,7 @@ test.describe('Auto-Download Page', () => {
     await page.click('text=葬送的芙莉蓮');
     await page.waitForTimeout(500);
 
-    // Open subscribe panel
-    const subscribeBtn = page.locator('button', { hasText: /subscribe/i }).first();
-    await subscribeBtn.click();
-    await page.waitForTimeout(300);
+    await openSubscribePanel(page);
 
     // Select library
     await page.click('text=Anime Library');
@@ -615,10 +606,7 @@ test.describe('Auto-Download Page', () => {
     // Verify torrents loaded
     await expect(page.locator('text=Tamayura').first()).toBeVisible();
 
-    // Subscribe
-    const subscribeBtn = page.locator('button', { hasText: /subscribe/i }).first();
-    await subscribeBtn.click();
-    await page.waitForTimeout(300);
+    await openSubscribePanel(page);
 
     const confirmBtn = page.locator('button', { hasText: /confirm/i }).first();
     await confirmBtn.click();
@@ -627,28 +615,24 @@ test.describe('Auto-Download Page', () => {
     await expect(page.locator('[data-sonner-toast]').first()).toBeVisible({ timeout: 3000 });
   });
 
-  // ── Manage Tab — Sub-tab structure ────────────────────────────────────
+  // ── Library Tab ───────────────────────────────────────────────────────
 
-  test('manage tab shows 3 sub-tabs: Subscriptions, Downloads, Completed', async ({ page }) => {
+  test('library tab shows empty subscription state', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
 
-    // Should see all 3 sub-tab pill buttons
-    await expect(page.locator('button', { hasText: /subscriptions/i }).first()).toBeVisible();
-    await expect(page.locator('button', { hasText: /^downloads$/i }).first()).toBeVisible();
-    await expect(page.locator('button', { hasText: /completed/i }).first()).toBeVisible();
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
+    await expect(page.locator('button', { hasText: /go to search/i })).toBeVisible();
   });
 
-  test('manage tab defaults to Subscriptions sub-tab', async ({ page }) => {
+  test('library tab defaults to subscriptions view', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
 
-    // Subscriptions sub-tab should be active (has brighter styling)
-    // and should show subscription content (empty state or cards)
     await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
   });
 
@@ -679,74 +663,54 @@ test.describe('Auto-Download Page', () => {
     await expect(searchInput).toBeVisible();
   });
 
-  test('downloads sub-tab shows URL input form', async ({ page }) => {
+  test('add URL dialog shows URL input form', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    await goToManageTab(page);
-    await clickSubTab(page, 'downloads');
+    await page.getByRole('button', { name: /add url/i }).click();
 
-    // Should see the URL input with paste placeholder
     await expect(page.locator('input[placeholder]').first()).toBeVisible();
-    // Should see the Add button
     await expect(page.locator('button', { hasText: /^add$/i })).toBeVisible();
   });
 
-  test('downloads sub-tab URL form accepts input', async ({ page }) => {
+  test('add URL dialog accepts input', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    await goToManageTab(page);
-    await clickSubTab(page, 'downloads');
+    await page.getByRole('button', { name: /add url/i }).click();
 
-    // Type a magnet URL
     const urlInput = page.locator('input[placeholder]').first();
     await urlInput.fill('magnet:?xt=urn:btih:abc123');
     await expect(urlInput).toHaveValue('magnet:?xt=urn:btih:abc123');
   });
 
-  test('downloads sub-tab shows no active downloads empty state', async ({ page }) => {
+  test('library tab shows no subscriptions when there are no rules', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
-    await clickSubTab(page, 'downloads');
 
-    // Should show empty state when no active downloads
-    await expect(page.locator('text=/no active downloads/i')).toBeVisible();
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
   });
 
-  test('completed sub-tab shows no completed downloads empty state', async ({ page }) => {
+  test('library tab keeps empty state stable', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
-    await clickSubTab(page, 'completed');
 
-    // Should show empty state
-    await expect(page.locator('text=/no completed downloads/i')).toBeVisible();
+    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
   });
 
-  test('switching between sub-tabs works', async ({ page }) => {
+  test('switching between Search and Library works', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
-
-    // Default: Subscriptions
     await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
 
-    // Switch to Downloads
-    await clickSubTab(page, 'downloads');
-    await expect(page.locator('text=/no active downloads/i')).toBeVisible();
-
-    // Switch to Completed
-    await clickSubTab(page, 'completed');
-    await expect(page.locator('text=/no completed downloads/i')).toBeVisible();
-
-    // Switch back to Subscriptions
-    await clickSubTab(page, 'subscriptions');
-    await expect(page.locator('text=/no subscriptions yet/i')).toBeVisible();
+    await page.getByRole('button', { name: /^search$/i }).click();
+    await expect(page.locator('input[placeholder]').first()).toBeVisible();
   });
 
   // ── Edge cases ────────────────────────────────────────────────────────
@@ -793,12 +757,12 @@ test.describe('Auto-Download Page', () => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
-    // Switch to Manage
-    await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
+    // Switch to Library
+    await goToManageTab(page);
     await page.waitForTimeout(300);
 
     // Switch back to Search
-    await page.locator('[class*="border-b"] button', { hasText: /search/i }).click();
+    await page.getByRole('button', { name: /^search$/i }).click();
     await page.waitForTimeout(300);
 
     // Search should still work after tab switch
@@ -838,9 +802,12 @@ test.describe('Auto-Download Page', () => {
       await page.waitForTimeout(300);
     }
 
-    // Open subscribe panel
-    const subscribeBtn = page.locator('button', { hasText: /subscribe/i }).first();
-    if (await subscribeBtn.isVisible()) {
+    // Open subscribe panel after choosing an RSS source
+    await page.getByRole('button', { name: /^nyaa$/i }).click();
+    const subscribeBtn = page
+      .getByRole('button', { name: /follow this filter|subscribe|訂閱|追番/i })
+      .first();
+    if (await subscribeBtn.isVisible().catch(() => false)) {
       await subscribeBtn.click();
       await page.waitForTimeout(300);
 
@@ -852,16 +819,12 @@ test.describe('Auto-Download Page', () => {
       }
     }
 
-    // Switch to Manage and cycle through sub-tabs
-    await page.locator('[class*="border-b"] button', { hasText: /manage/i }).click();
+    // Switch to Library and back
+    await goToManageTab(page);
     await page.waitForTimeout(300);
 
-    await clickSubTab(page, 'downloads');
-    await clickSubTab(page, 'completed');
-    await clickSubTab(page, 'subscriptions');
-
     // Switch back to Search
-    await page.locator('[class*="border-b"] button', { hasText: /search/i }).click();
+    await page.getByRole('button', { name: /^search$/i }).click();
     await page.waitForTimeout(300);
 
     expect(errors).toEqual([]);
@@ -894,66 +857,65 @@ test.describe('Manage Tab — with subscriptions and downloads', () => {
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
-    await clickSubTab(page, 'downloads');
 
-    // Should show the summary bar with active download count
     await expect(page.locator('text=/downloading/i').first()).toBeVisible();
-    // Should show the active download card
-    await expect(page.locator('text=[桜都] Frieren - 01 [1080p]')).toBeVisible();
+    await page
+      .getByRole('button', { name: /expand/i })
+      .first()
+      .click();
+    await expect(page.locator('text=EP 01')).toBeVisible();
+    await expect(page.getByRole('button', { name: /pause/i }).first()).toBeVisible();
   });
 
-  test('downloads sub-tab shows Pause All button when active downloads exist', async ({ page }) => {
+  test('library tab shows pause control when active downloads exist', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
-    await clickSubTab(page, 'downloads');
 
-    // Should show Pause All in the summary bar
-    await expect(page.locator('button', { hasText: /pause all/i })).toBeVisible();
+    await page
+      .getByRole('button', { name: /expand/i })
+      .first()
+      .click();
+    await expect(page.getByRole('button', { name: /pause/i }).first()).toBeVisible();
   });
 
-  test('completed sub-tab shows completed downloads with Clear All button', async ({ page }) => {
+  test('library tab shows other completed downloads', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
-    await clickSubTab(page, 'completed');
 
-    // Should show completed download cards
-    await expect(page.locator('text=[桜都] Frieren - 02 [1080p]')).toBeVisible();
+    await page.getByRole('button', { name: /other downloads/i }).click();
     await expect(page.locator('text=Some manual download.mkv')).toBeVisible();
-
-    // Should show Clear All button
-    await expect(page.locator('button', { hasText: /clear all/i })).toBeVisible();
   });
 
-  test('downloads sub-tab badge shows active count', async ({ page }) => {
+  test('library tab summary shows active count', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
 
-    // The Downloads sub-tab pill should show "1" badge (1 active download)
-    const downloadsTab = page
-      .locator('button', { hasText: /downloads/i })
-      .filter({ hasNotText: /completed/i })
-      .first();
-    await expect(downloadsTab).toContainText('1');
+    await expect(page.locator('text=/downloading/i').first()).toBeVisible();
+    await page
+      .getByRole('button', { name: /expand/i })
+      .first()
+      .click();
+    await expect(page.locator('text=EP 01')).toBeVisible();
+    await expect(page.getByRole('button', { name: /pause/i }).first()).toBeVisible();
   });
 
-  test('completed sub-tab badge shows completed count', async ({ page }) => {
+  test('library tab summary shows subscribed count', async ({ page }) => {
     await page.goto('/downloads');
     await page.waitForTimeout(500);
 
     await goToManageTab(page);
 
-    // The Completed sub-tab pill should show "2" badge (2 completed downloads)
-    const completedTab = page.locator('button', { hasText: /completed/i }).first();
-    await expect(completedTab).toContainText('2');
+    await expect(page.locator('text=/subscribed/i').first()).toBeVisible();
+    await expect(page.locator('text=Frieren S1').first()).toBeVisible();
   });
 
-  test('no crash when cycling through all sub-tabs with data', async ({ page }) => {
+  test('no crash when switching Library with data', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (err) => errors.push(err.message));
 
@@ -962,19 +924,17 @@ test.describe('Manage Tab — with subscriptions and downloads', () => {
 
     await goToManageTab(page);
 
-    // Subscriptions (default)
     await expect(page.locator('text=Frieren S1').first()).toBeVisible();
-
-    // Downloads
-    await clickSubTab(page, 'downloads');
-    await expect(page.locator('text=[桜都] Frieren - 01 [1080p]')).toBeVisible();
-
-    // Completed
-    await clickSubTab(page, 'completed');
+    await page
+      .getByRole('button', { name: /expand/i })
+      .first()
+      .click();
+    await expect(page.locator('text=EP 01')).toBeVisible();
+    await page.getByRole('button', { name: /other downloads/i }).click();
     await expect(page.locator('text=Some manual download.mkv')).toBeVisible();
 
-    // Back to Subscriptions
-    await clickSubTab(page, 'subscriptions');
+    await page.getByRole('button', { name: /^search$/i }).click();
+    await page.getByRole('button', { name: /^library$/i }).click();
     await expect(page.locator('text=Frieren S1').first()).toBeVisible();
 
     expect(errors).toEqual([]);

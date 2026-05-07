@@ -30,7 +30,7 @@ export function SetupLayout() {
       >
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20">
-            <span className="text-lg font-bold text-mm-accent">M</span>
+            <span className="text-lg font-semibold text-mm-accent">M</span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
           <p className="mt-2 text-[12px] uppercase tracking-wider text-white/40">{activeLabel}</p>

@@ -122,7 +122,7 @@ export function KeyBindingPanel() {
           {Object.entries(ACTION_GROUPS).map(([group, actions]) => (
             <div key={group}>
               {/* Group header */}
-              <div className="mb-2 text-[10px] font-semibold uppercase tracking-[1.5px] text-white/30">
+              <div className="mb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-white/30">
                 {group}
               </div>
 

@@ -36,7 +36,7 @@ function PosterWall() {
   // 210 slots (14 cols × 15 rows) — repeat the list if fewer than that many covers
   const posters = useMemo(() => {
     const SLOTS = 210;
-    if (!trending) return [];
+    if (!Array.isArray(trending)) return [];
     const valid = trending
       .filter((a) => a.cover_image?.startsWith('http'))
       .map((a) => a.cover_image);
@@ -197,7 +197,7 @@ export function LoginPage() {
           className="mb-8 text-center"
         >
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20 backdrop-blur-sm">
-            <span className="text-lg font-bold text-mm-accent">M</span>
+            <span className="text-lg font-semibold text-mm-accent">M</span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
           <p className="mt-1 text-[13px] font-medium text-white/60 drop-shadow-sm">

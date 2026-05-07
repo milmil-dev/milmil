@@ -312,141 +312,147 @@ msgstr ""
 msgid "about.upToDate"
 msgstr ""
 
-#: src/pages/settings/AccountPanel.tsx:403
+#: src/pages/settings/BackupPanel.tsx:484
+msgid "Access Key"
+msgstr "存取金鑰"
+
+#: src/pages/settings/AccountPanel.tsx:484
 msgid "account.2fa.activeMessage"
 msgstr "雙重驗證已啟用。關閉開關即可停用。"
 
-#: src/pages/settings/AccountPanel.tsx:314
+#: src/pages/settings/AccountPanel.tsx:390
 msgid "account.2fa.description"
 msgstr "透過在登入時要求 TOTP 驗證碼，為您的帳號增加額外的安全防護。"
 
-#: src/pages/settings/AccountPanel.tsx:296
+#: src/pages/settings/AccountPanel.tsx:372
 msgid "account.2fa.disabled"
 msgstr "已停用雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:301
+#: src/pages/settings/AccountPanel.tsx:377
 msgid "account.2fa.disableFailed"
 msgstr "停用雙重驗證失敗"
 
-#: src/pages/settings/AccountPanel.tsx:285
+#: src/pages/settings/AccountPanel.tsx:361
 msgid "account.2fa.enabled"
 msgstr "已啟用雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:290
+#: src/pages/settings/AccountPanel.tsx:366
 msgid "account.2fa.invalidCode"
 msgstr "驗證碼無效"
 
-#: src/pages/settings/AccountPanel.tsx:351
+#: src/pages/settings/AccountPanel.tsx:427
 msgid "account.2fa.manualEntry"
 msgstr "手動輸入"
 
-#: src/pages/settings/AccountPanel.tsx:337
+#: src/pages/settings/AccountPanel.tsx:413
 msgid "account.2fa.scanInstructions"
 msgstr "使用驗證器應用程式掃描此 QR 碼，然後輸入 6 位數驗證碼進行驗證。"
 
-#: src/pages/settings/AccountPanel.tsx:279
+#: src/pages/settings/AccountPanel.tsx:355
 msgid "account.2fa.setupFailed"
 msgstr "雙重驗證設定失敗"
 
-#: src/pages/settings/AccountPanel.tsx:323
+#: src/pages/settings/AccountPanel.tsx:399
 msgid "account.2fa.statusDisabled"
 msgstr "已停用"
 
-#: src/pages/settings/AccountPanel.tsx:320
+#: src/pages/settings/AccountPanel.tsx:396
 msgid "account.2fa.statusEnabled"
 msgstr "已啟用"
 
-#: src/pages/settings/AccountPanel.tsx:322
+#: src/pages/settings/AccountPanel.tsx:398
 msgid "account.2fa.statusPending"
 msgstr "待驗證"
 
-#: src/pages/settings/AccountPanel.tsx:313
+#: src/pages/settings/AccountPanel.tsx:389
 msgid "account.2fa.title"
 msgstr "雙重驗證"
 
-#: src/pages/settings/AccountPanel.tsx:370
+#: src/pages/settings/AccountPanel.tsx:446
 msgid "account.2fa.verificationCode"
 msgstr "驗證碼"
 
-#: src/pages/settings/AccountPanel.tsx:393
+#: src/pages/settings/AccountPanel.tsx:474
 msgid "account.2fa.verifyEnable"
 msgstr "驗證並啟用"
 
-#: src/pages/settings/AccountPanel.tsx:392
+#: src/pages/settings/AccountPanel.tsx:473
 msgid "account.2fa.verifying"
 msgstr "驗證中..."
 
-#: src/pages/settings/AccountPanel.tsx:122
+#: src/pages/settings/AccountPanel.tsx:164
 msgid "account.changePassword"
 msgstr "變更密碼"
 
-#: src/pages/settings/AccountPanel.tsx:207
+#: src/pages/settings/AccountPanel.tsx:257
 msgid "account.confirmPassword"
 msgstr "確認新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:142
+#: src/pages/settings/AccountPanel.tsx:186
 msgid "account.currentPassword"
 msgstr "目前密碼"
 
-#: src/pages/settings/AccountPanel.tsx:134
-#: src/pages/settings/AccountPanel.tsx:164
-#: src/pages/settings/AccountPanel.tsx:195
+#: src/pages/settings/AccountPanel.tsx:176
+#: src/pages/settings/AccountPanel.tsx:208
+#: src/pages/settings/AccountPanel.tsx:243
 msgid "account.fieldRequired"
 msgstr "此欄位為必填"
 
 #: src/components/AppSidebar.tsx:154
+#: src/pages/settings/SettingsPage.tsx:242
 msgid "account.local"
 msgstr "本機帳號"
 
 #: src/components/AppSidebar.tsx:182
+#: src/pages/settings/SettingsPage.tsx:280
 msgid "account.logout"
 msgstr "登出"
 
-#: src/pages/settings/AccountPanel.tsx:174
+#: src/pages/settings/AccountPanel.tsx:221
 msgid "account.newPassword"
 msgstr "新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:165
+#: src/pages/settings/AccountPanel.tsx:209
 msgid "account.passwordMinLength"
 msgstr "密碼至少需要 8 個字元"
 
-#: src/pages/settings/AccountPanel.tsx:197
+#: src/pages/settings/AccountPanel.tsx:245
 msgid "account.passwordMismatch"
 msgstr "密碼不一致"
 
-#: src/pages/settings/AccountPanel.tsx:62
+#: src/pages/settings/AccountPanel.tsx:88
 msgid "account.passwordUpdated"
 msgstr "密碼已更新"
 
-#: src/pages/settings/AccountPanel.tsx:65
+#: src/pages/settings/AccountPanel.tsx:91
 msgid "account.passwordUpdateFailed"
 msgstr "密碼更新失敗"
 
-#: src/pages/settings/AccountPanel.tsx:109
+#: src/pages/settings/AccountPanel.tsx:151
 msgid "account.profile"
 msgstr "個人資料"
 
-#: src/pages/settings/AccountPanel.tsx:85
+#: src/pages/settings/AccountPanel.tsx:111
 msgid "account.subtitle"
 msgstr "管理您的個人資料與安全設定"
 
-#: src/pages/settings/AccountPanel.tsx:46
+#: src/pages/settings/AccountPanel.tsx:62
 msgid "account.tab.account"
 msgstr "帳戶"
 
-#: src/pages/settings/AccountPanel.tsx:48
+#: src/pages/settings/AccountPanel.tsx:64
 msgid "account.tab.sessions"
 msgstr "工作階段"
 
-#: src/pages/settings/AccountPanel.tsx:47
+#: src/pages/settings/AccountPanel.tsx:63
 msgid "account.tab.tokens"
 msgstr "API 權杖"
 
-#: src/pages/settings/AccountPanel.tsx:231
+#: src/pages/settings/AccountPanel.tsx:281
 msgid "account.updatePassword"
 msgstr "更新密碼"
 
-#: src/pages/settings/AccountPanel.tsx:230
+#: src/pages/settings/AccountPanel.tsx:280
 msgid "account.updating"
 msgstr "更新中..."
 
@@ -567,7 +573,15 @@ msgstr "預告片"
 msgid "anime.voiceActor"
 msgstr "聲優"
 
-#: src/pages/settings/ApiTokensCard.tsx:186
+#: src/pages/settings/IntegrationsPanel.tsx:227
+msgid "API Key"
+msgstr "API 金鑰"
+
+#: src/pages/settings/IntegrationsPanel.tsx:247
+msgid "API Read Access Token"
+msgstr "API 讀取存取權杖"
+
+#: src/pages/settings/ApiTokensCard.tsx:187
 msgid "apiTokens.create"
 msgstr "建立"
 
@@ -619,6 +633,14 @@ msgstr "撤銷權杖失敗"
 msgid "apiTokens.title"
 msgstr "API 權杖"
 
+#: src/pages/settings/IntegrationsPanel.tsx:73
+msgid "App ID"
+msgstr "應用 ID"
+
+#: src/pages/settings/IntegrationsPanel.tsx:93
+msgid "App Secret"
+msgstr "應用密鑰"
+
 #. placeholder {0}: res.applied
 #. placeholder {1}: res.batch_id.slice(0, 8)
 #: src/pages/library/RenamePreviewPage.tsx:24
@@ -635,23 +657,23 @@ msgstr "套用 {0} 項重新命名。這將會移動磁碟上的檔案。是否�
 msgid "Apply all OK ({0})"
 msgstr "全部套用 ({0})"
 
-#: src/pages/LoginPage.tsx:199
+#: src/pages/LoginPage.tsx:230
 msgid "auth.2fa.codeLabel"
 msgstr "驗證碼"
 
-#: src/pages/LoginPage.tsx:194
+#: src/pages/LoginPage.tsx:222
 msgid "auth.2fa.subtitle"
 msgstr "請輸入驗證器應用程式中的 6 位數驗證碼"
 
-#: src/pages/LoginPage.tsx:192
+#: src/pages/LoginPage.tsx:220
 msgid "auth.2fa.title"
 msgstr "雙重驗證"
 
-#: src/pages/LoginPage.tsx:268
+#: src/pages/LoginPage.tsx:294
 msgid "auth.2fa.verify"
 msgstr "驗證"
 
-#: src/hooks/use-auth.ts:79
+#: src/hooks/use-auth.ts:111
 msgid "auth.error.invalid2FA"
 msgstr "雙重驗證碼無效"
 
@@ -659,11 +681,11 @@ msgstr "雙重驗證碼無效"
 #~ msgid "auth.error.invalidCredentials"
 #~ msgstr "帳號或密碼錯誤"
 
-#: src/hooks/use-auth.ts:59
+#: src/hooks/use-auth.ts:87
 msgid "auth.error.loginFailed"
 msgstr "登入失敗"
 
-#: src/hooks/use-auth.ts:94
+#: src/hooks/use-auth.ts:130
 msgid "auth.error.setupFailed"
 msgstr "設定失敗"
 
@@ -677,7 +699,7 @@ msgstr "登入以存取您的媒體庫"
 msgid "auth.libraries.signInTitle"
 msgstr "需要登入"
 
-#: src/pages/LoginPage.tsx:426
+#: src/pages/LoginPage.tsx:449
 msgid "auth.login.forgotPassword"
 msgstr "忘記密碼？"
 
@@ -686,39 +708,39 @@ msgstr "忘記密碼？"
 #~ msgstr "登入中..."
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LoginPage.tsx:355
+#: src/pages/LoginPage.tsx:381
 msgid "auth.login.password"
 msgstr "密碼"
 
-#: src/pages/LoginPage.tsx:434
+#: src/pages/LoginPage.tsx:458
 msgid "auth.login.recoveryAccessRequired"
 msgstr "您需要具備伺服器或容器存取權，才能執行此復原指令。"
 
-#: src/pages/LoginPage.tsx:429
+#: src/pages/LoginPage.tsx:452
 msgid "auth.login.recoveryNoEmail"
 msgstr "milmil 目前不支援電子郵件重設密碼。請從伺服器容器中重設管理員密碼："
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:2850
 #: src/pages/LibraryDetailPage.tsx:2003
-#: src/pages/LoginPage.tsx:414
+#: src/pages/LoginPage.tsx:434
 msgid "auth.login.submit"
 msgstr "登入"
 
-#: src/pages/LoginPage.tsx:177
+#: src/pages/LoginPage.tsx:204
 msgid "auth.login.subtitle"
 msgstr "您的個人動畫媒體伺服器"
 
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
-#: src/pages/LoginPage.tsx:96
-#: src/pages/LoginPage.tsx:287
-#: src/pages/LoginPage.tsx:305
+#: src/pages/LoginPage.tsx:122
+#: src/pages/LoginPage.tsx:313
+#: src/pages/LoginPage.tsx:331
 msgid "auth.login.title"
 msgstr "登入 milmil"
 
 #: src/components/LoginModal.tsx:127
-#: src/pages/LoginPage.tsx:328
+#: src/pages/LoginPage.tsx:354
 msgid "auth.login.username"
 msgstr "使用者名稱"
 
@@ -739,25 +761,25 @@ msgid "auth.setup.passwordRecoveryWarning"
 msgstr "請妥善保管此密碼。若遺失，之後需要伺服器或容器存取權才能重設。"
 
 #: src/components/LoginModal.tsx:41
-#: src/pages/LoginPage.tsx:117
+#: src/pages/LoginPage.tsx:143
 #: src/pages/setup/AdminStep.tsx:31
 msgid "auth.setup.passwordTooShort"
 msgstr "密碼至少需要 8 個字元"
 
 #: src/components/LoginModal.tsx:176
-#: src/pages/LoginPage.tsx:415
+#: src/pages/LoginPage.tsx:435
 #: src/pages/setup/AdminStep.tsx:108
 msgid "auth.setup.submit"
 msgstr "建立帳號"
 
 #: src/components/LoginModal.tsx:112
-#: src/pages/LoginPage.tsx:310
+#: src/pages/LoginPage.tsx:336
 #: src/pages/setup/AdminStep.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "建立管理員帳號以開始使用。"
 
 #: src/components/LoginModal.tsx:104
-#: src/pages/LoginPage.tsx:298
+#: src/pages/LoginPage.tsx:324
 #: src/pages/setup/AdminStep.tsx:21
 #: src/pages/setup/AdminStep.tsx:49
 msgid "auth.setup.title"
@@ -1310,9 +1332,25 @@ msgstr "使用者名稱"
 msgid "Batch"
 msgstr "批次"
 
+#: src/pages/settings/NotificationSettingsPanel.tsx:385
+msgid "Bot token"
+msgstr "機器人權杖"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:474
+msgid "Bot Token"
+msgstr "機器人權杖"
+
+#: src/pages/settings/BackupPanel.tsx:469
+msgid "Bucket"
+msgstr "儲存桶"
+
 #: src/components/AnimeCard.tsx:346
 msgid "card.nextEp"
 msgstr "下一集"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:487
+msgid "Chat ID"
+msgstr "聊天 ID"
 
 #. placeholder {0}: formatBytes(totalWaste)
 #: src/pages/library/LibraryDuplicatesPage.tsx:73
@@ -1324,6 +1362,14 @@ msgstr "清除非偏好項 ({0})"
 #: src/pages/library/LibraryDuplicatesPage.tsx:27
 msgid "Cleaned up {0} files ({1})"
 msgstr "已清除 {0} 個檔案 ({1})"
+
+#: src/pages/settings/IntegrationsPanel.tsx:722
+msgid "Client ID"
+msgstr "用戶端 ID"
+
+#: src/pages/settings/IntegrationsPanel.tsx:744
+msgid "Client Secret"
+msgstr "用戶端密鑰"
 
 #: src/pages/CollectionPage.tsx:20
 msgid "collection.all"
@@ -1412,7 +1458,7 @@ msgstr "查看全部"
 msgid "collection.watching"
 msgstr "觀看中"
 
-#: src/pages/LoginPage.tsx:248
+#: src/pages/LoginPage.tsx:274
 msgid "common.back"
 msgstr "返回"
 
@@ -1428,7 +1474,7 @@ msgstr "返回首頁"
 msgid "common.cancel"
 msgstr "取消"
 
-#: src/pages/settings/AccountPanel.tsx:360
+#: src/pages/settings/AccountPanel.tsx:436
 msgid "common.clickToCopy"
 msgstr "點擊複製"
 
@@ -1440,7 +1486,7 @@ msgstr "確認"
 msgid "common.confirmDelete"
 msgstr "確認刪除"
 
-#: src/pages/settings/AccountPanel.tsx:358
+#: src/pages/settings/AccountPanel.tsx:434
 #: src/pages/settings/ApiTokensCard.tsx:67
 msgid "common.copied"
 msgstr "已複製"
@@ -1471,24 +1517,28 @@ msgstr "載入失敗"
 #: src/components/LoginModal.tsx:173
 #: src/components/MatchModal.tsx:412
 #: src/pages/LibraryDetailPage.tsx:1238
-#: src/pages/LoginPage.tsx:265
-#: src/pages/LoginPage.tsx:402
+#: src/pages/LoginPage.tsx:291
+#: src/pages/LoginPage.tsx:422
 msgid "common.loading"
 msgstr "載入中…"
 
-#: src/components/EpisodeListItem.tsx:57
+#: src/components/EpisodeListItem.tsx:122
 msgid "common.minuteShort"
 msgstr "分鐘"
 
 #: src/pages/AnimeDetailPage.tsx:340
-#: src/pages/SchedulePage.tsx:537
-#: src/pages/SchedulePage.tsx:790
+#: src/pages/SchedulePage.tsx:853
+#: src/pages/SchedulePage.tsx:1168
 #: src/routes/__root.tsx:82
 msgid "common.retry"
 msgstr "重試"
 
 #~ msgid "common.save"
 #~ msgstr "儲存"
+
+#: src/pages/settings/IntegrationsPanel.tsx:210
+msgid "Configured"
+msgstr "已設定"
 
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.checking"
@@ -1735,6 +1785,10 @@ msgstr "重複檔案"
 #~ msgid "Duplicates"
 #~ msgstr ""
 
+#: src/pages/settings/BackupPanel.tsx:454
+msgid "Endpoint"
+msgstr "端點"
+
 #: src/pages/library/LibraryDuplicatesPage.tsx:84
 msgid "Episode"
 msgstr "集"
@@ -1748,19 +1802,41 @@ msgstr "第 {0} 集"
 msgid "Episode status"
 msgstr "集數狀態"
 
-#: src/components/EpisodeListItem.tsx:128
+#: src/components/EpisodeListItem.tsx:87
+msgid "episode.airDate.dayAfterTomorrow"
+msgstr "後天上線"
+
+#: src/components/EpisodeListItem.tsx:89
+msgid "episode.airDate.inDays {diffDays}"
+msgstr "還有 {diffDays} 天"
+
+#: src/components/EpisodeListItem.tsx:85
+msgid "episode.airDate.today"
+msgstr "今天上線"
+
+#: src/components/EpisodeListItem.tsx:86
+msgid "episode.airDate.tomorrow"
+msgstr "明天上線"
+
+#: src/components/EpisodeListItem.tsx:193
 msgid "episode.noFile"
 msgstr "無檔案"
 
-#: src/components/EpisodeListItem.tsx:122
-#: src/components/EpisodeListItem.tsx:254
+#: src/components/EpisodeListItem.tsx:98
+#: src/components/EpisodeListItem.tsx:187
+#: src/components/EpisodeListItem.tsx:321
 msgid "episode.prefix"
 msgstr "第 "
 
-#: src/components/EpisodeListItem.tsx:124
-#: src/components/EpisodeListItem.tsx:256
+#: src/components/EpisodeListItem.tsx:100
+#: src/components/EpisodeListItem.tsx:189
+#: src/components/EpisodeListItem.tsx:323
 msgid "episode.suffix"
 msgstr " 集"
+
+#: src/components/EpisodeListItem.tsx:103
+msgid "episode.upcoming"
+msgstr "即將播出"
 
 #: src/routes/__root.tsx:68
 msgid "error.serverUnavailable"
@@ -1877,6 +1953,10 @@ msgstr "觀看中"
 msgid "history.title"
 msgstr "觀看紀錄"
 
+#: src/pages/settings/NotificationSettingsPanel.tsx:764
+msgid "HMAC signing secret (optional)"
+msgstr "HMAC 簽章密鑰（選填）"
+
 #: src/pages/HomePage.tsx:112
 msgid "home.continueWatching"
 msgstr "繼續觀看"
@@ -1912,6 +1992,12 @@ msgstr "查看全部 →"
 #: src/pages/LibraryDetailPage.tsx:334
 msgid "Incomplete only"
 msgstr "僅顯示不完整"
+
+#: src/hooks/use-auth.ts:88
+#: src/hooks/use-auth.ts:112
+#: src/hooks/use-auth.ts:131
+msgid "Invalid username or password"
+msgstr ""
 
 #: src/pages/LibrariesPage.tsx:313
 #: src/pages/LibrariesPage.tsx:344
@@ -2449,6 +2535,11 @@ msgstr "匹配中…"
 msgid "library.name"
 msgstr "名稱"
 
+#: src/pages/LibrariesPage.tsx:700
+#: src/pages/LibrariesPage.tsx:1618
+msgid "library.name.placeholder"
+msgstr "動畫"
+
 #: src/pages/LibrariesPage.tsx:686
 #: src/pages/LibrariesPage.tsx:1606
 #: src/pages/LibrariesPage.tsx:1980
@@ -2966,7 +3057,8 @@ msgstr "通知"
 
 #: src/components/AppSidebar.tsx:28
 #: src/components/AppSidebar.tsx:249
-#: src/pages/SchedulePage.tsx:829
+#: src/pages/SchedulePage.tsx:1235
+#: src/pages/SchedulePage.tsx:1309
 msgid "nav.schedule"
 msgstr "時刻表"
 
@@ -2978,7 +3070,7 @@ msgstr "搜尋"
 
 #: src/components/AppSidebar.tsx:38
 #: src/components/AppSidebar.tsx:170
-#: src/pages/settings/SettingsPage.tsx:61
+#: src/pages/settings/SettingsPage.tsx:102
 msgid "nav.settings"
 msgstr "設定"
 
@@ -3021,55 +3113,59 @@ msgstr "所有來源均無結果。"
 msgid "Not aired yet"
 msgstr "未播出"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:660
+#: src/pages/settings/IntegrationsPanel.tsx:211
+msgid "Not configured"
+msgstr "未設定"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:662
 msgid "notifications.bot.advanced"
 msgstr "進階設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:589
 msgid "notifications.bot.airingReminder"
 msgstr "播出提醒"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:609
+#: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.airingReminder.desc"
 msgstr "追蹤的新番播出前推送提醒"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:603
+#: src/pages/settings/NotificationSettingsPanel.tsx:605
 msgid "notifications.bot.airingReminder.off"
 msgstr "關閉"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:643
+#: src/pages/settings/NotificationSettingsPanel.tsx:645
 msgid "notifications.bot.allowedChatIds"
 msgstr "允許的聊天 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:653
+#: src/pages/settings/NotificationSettingsPanel.tsx:655
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "以逗號分隔。留空則允許任何聊天。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:401
+#: src/pages/settings/NotificationSettingsPanel.tsx:403
 msgid "notifications.bot.allowedGuildIds"
 msgstr "允許的伺服器 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:411
+#: src/pages/settings/NotificationSettingsPanel.tsx:413
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "以逗號分隔。留空則允許任何伺服器。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:389
+#: src/pages/settings/NotificationSettingsPanel.tsx:391
 msgid "notifications.bot.applicationId"
 msgstr "應用程式 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:377
+#: src/pages/settings/NotificationSettingsPanel.tsx:379
 msgid "notifications.bot.botToken"
 msgstr "機器人權杖"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:616
+#: src/pages/settings/NotificationSettingsPanel.tsx:618
 msgid "notifications.bot.dailyDigest"
 msgstr "每日摘要"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:636
+#: src/pages/settings/NotificationSettingsPanel.tsx:638
 msgid "notifications.bot.dailyDigest.desc"
 msgstr "每天傳送一次通知摘要"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:631
+#: src/pages/settings/NotificationSettingsPanel.tsx:633
 msgid "notifications.bot.dailyDigest.off"
 msgstr "已關閉"
 
@@ -3077,11 +3173,11 @@ msgstr "已關閉"
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord 機器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:551
+#: src/pages/settings/NotificationSettingsPanel.tsx:553
 msgid "notifications.bot.language"
 msgstr "機器人語言"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:564
+#: src/pages/settings/NotificationSettingsPanel.tsx:566
 msgid "notifications.bot.language.system"
 msgstr "跟隨系統"
 
@@ -3089,16 +3185,16 @@ msgstr "跟隨系統"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 機器人"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:665
+#: src/pages/settings/NotificationSettingsPanel.tsx:667
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:675
+#: src/pages/settings/NotificationSettingsPanel.tsx:677
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "可選。留空則使用長輪詢。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:351
-#: src/pages/settings/NotificationSettingsPanel.tsx:519
+#: src/pages/settings/NotificationSettingsPanel.tsx:353
+#: src/pages/settings/NotificationSettingsPanel.tsx:521
 msgid "notifications.botCommands"
 msgstr "機器人指令"
 
@@ -3106,12 +3202,12 @@ msgstr "機器人指令"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "在 Telegram 或 Discord 啟用互動式機器人指令"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:354
-#: src/pages/settings/NotificationSettingsPanel.tsx:522
+#: src/pages/settings/NotificationSettingsPanel.tsx:356
+#: src/pages/settings/NotificationSettingsPanel.tsx:524
 msgid "notifications.botCommands.shortDesc"
 msgstr "透過 /search、/schedule 等指令互動"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:754
+#: src/pages/settings/NotificationSettingsPanel.tsx:756
 msgid "notifications.change"
 msgstr "更改"
 
@@ -3132,11 +3228,11 @@ msgstr "暫無通知"
 msgid "notifications.emptyHint"
 msgstr "下載完成或發現新劇集時，通知會顯示在這裡。"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:801
+#: src/pages/settings/NotificationSettingsPanel.tsx:803
 msgid "notifications.enableProviderAbove"
 msgstr "啟用上方的提供者以設定事件路由"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:819
+#: src/pages/settings/NotificationSettingsPanel.tsx:821
 msgid "notifications.event"
 msgstr "事件"
 
@@ -3204,7 +3300,7 @@ msgstr "系統錯誤"
 msgid "notifications.event.systemError.desc"
 msgstr "背景工作意外失敗時"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:810
+#: src/pages/settings/NotificationSettingsPanel.tsx:812
 msgid "notifications.eventRouting"
 msgstr "事件路由"
 
@@ -3227,8 +3323,8 @@ msgstr "媒體庫"
 msgid "notifications.filter.system"
 msgstr "系統"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1039
-#: src/pages/settings/NotificationSettingsPanel.tsx:1053
+#: src/pages/settings/NotificationSettingsPanel.tsx:1041
+#: src/pages/settings/NotificationSettingsPanel.tsx:1055
 msgid "notifications.intro"
 msgstr "當下載完成或出現問題時，透過Discord、Telegram或Webhook接收通知。"
 
@@ -3254,24 +3350,24 @@ msgid "notifications.providerStatus.unconfigured"
 msgstr "未設定"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:308
-#: src/pages/settings/NotificationSettingsPanel.tsx:501
+#: src/pages/settings/NotificationSettingsPanel.tsx:503
 msgid "notifications.pushNotifications"
 msgstr "推送通知"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:311
-#: src/pages/settings/NotificationSettingsPanel.tsx:504
+#: src/pages/settings/NotificationSettingsPanel.tsx:506
 msgid "notifications.pushNotifications.desc"
 msgstr "接收下載和系統事件的通知"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:743
+#: src/pages/settings/NotificationSettingsPanel.tsx:745
 msgid "notifications.secretIsSet"
 msgstr "密鑰已設定"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:738
+#: src/pages/settings/NotificationSettingsPanel.tsx:740
 msgid "notifications.secretPlaceholder"
 msgstr "可選簽名密鑰"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1062
+#: src/pages/settings/NotificationSettingsPanel.tsx:1064
 msgid "notifications.setupGuide"
 msgstr "設定指南"
 
@@ -3702,24 +3798,27 @@ msgid "scanInterval.weekly"
 msgstr "每週"
 
 #: src/pages/LibraryDetailPage.tsx:766
-#: src/pages/SchedulePage.tsx:560
+#: src/pages/SchedulePage.tsx:715
+#: src/pages/SchedulePage.tsx:889
 msgid "schedule.all"
 msgstr "全部"
 
-#: src/pages/SchedulePage.tsx:920
+#: src/pages/SchedulePage.tsx:1298
+#: src/pages/SchedulePage.tsx:1452
 msgid "schedule.backToCurrent"
 msgstr "回到當季"
 
-#: src/pages/SchedulePage.tsx:531
-#: src/pages/SchedulePage.tsx:784
+#: src/pages/SchedulePage.tsx:847
+#: src/pages/SchedulePage.tsx:1162
 msgid "schedule.loadFailed"
 msgstr "載入日曆失敗"
 
 #~ msgid "schedule.next"
 #~ msgstr "下一頁"
 
-#: src/pages/SchedulePage.tsx:354
-#: src/pages/SchedulePage.tsx:799
+#: src/pages/SchedulePage.tsx:484
+#: src/pages/SchedulePage.tsx:613
+#: src/pages/SchedulePage.tsx:1177
 msgid "schedule.noShows"
 msgstr "沒有排定的節目"
 
@@ -3730,31 +3829,33 @@ msgstr "沒有排定的節目"
 #~ msgstr "上一頁"
 
 #: src/components/AnimeCard.tsx:43
-#: src/pages/SchedulePage.tsx:46
+#: src/pages/SchedulePage.tsx:87
 msgid "schedule.season.fall"
 msgstr "秋季"
 
 #: src/components/AnimeCard.tsx:41
-#: src/pages/SchedulePage.tsx:42
+#: src/pages/SchedulePage.tsx:83
 msgid "schedule.season.spring"
 msgstr "春季"
 
 #: src/components/AnimeCard.tsx:42
-#: src/pages/SchedulePage.tsx:44
+#: src/pages/SchedulePage.tsx:85
 msgid "schedule.season.summer"
 msgstr "夏季"
 
 #: src/components/AnimeCard.tsx:40
-#: src/pages/SchedulePage.tsx:40
+#: src/pages/SchedulePage.tsx:81
 msgid "schedule.season.winter"
 msgstr "冬季"
 
-#: src/pages/SchedulePage.tsx:634
+#: src/pages/SchedulePage.tsx:657
+#: src/pages/SchedulePage.tsx:1005
 msgid "schedule.today"
 msgstr "今天"
 
-#: src/pages/SchedulePage.tsx:629
-#: src/pages/SchedulePage.tsx:674
+#: src/pages/SchedulePage.tsx:666
+#: src/pages/SchedulePage.tsx:1000
+#: src/pages/SchedulePage.tsx:1045
 msgid "schedule.totalShows"
 msgstr "部本週節目"
 
@@ -3956,6 +4057,10 @@ msgstr "主題"
 msgid "Searching..."
 msgstr "搜尋中…"
 
+#: src/pages/settings/BackupPanel.tsx:499
+msgid "Secret Key"
+msgstr "密鑰"
+
 #: src/components/anime/MissingSearchModal.tsx:73
 msgid "Seeders"
 msgstr "做種數"
@@ -4021,7 +4126,7 @@ msgstr "活躍工作階段"
 msgid "Set preferred"
 msgstr "設為偏好"
 
-#: src/pages/settings/GeneralPanel.tsx:76
+#: src/pages/settings/GeneralPanel.tsx:87
 msgid "settings.appearance.language"
 msgstr "語言"
 
@@ -4035,11 +4140,11 @@ msgstr "語言"
 msgid "settings.audioTrack"
 msgstr "音軌"
 
-#: src/pages/settings/GeneralPanel.tsx:100
+#: src/pages/settings/GeneralPanel.tsx:111
 msgid "settings.autoAddToCollection"
 msgstr "自動加入收藏"
 
-#: src/pages/settings/GeneralPanel.tsx:103
+#: src/pages/settings/GeneralPanel.tsx:114
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配的動畫自動加入收藏"
 
@@ -4065,7 +4170,7 @@ msgstr "邊框樣式"
 msgid "settings.brightness"
 msgstr "亮度"
 
-#: src/pages/settings/GeneralPanel.tsx:96
+#: src/pages/settings/GeneralPanel.tsx:107
 msgid "settings.collection"
 msgstr "收藏"
 
@@ -4085,16 +4190,16 @@ msgid "settings.default"
 msgstr "預設"
 
 #: src/pages/settings/GeneralPanel.tsx:116
-msgid "settings.docsUrl"
-msgstr "文檔"
+#~ msgid "settings.docsUrl"
+#~ msgstr "文檔"
 
 #: src/pages/settings/GeneralPanel.tsx:127
-msgid "settings.docsUrl.desc"
-msgstr "應用程式內文檔連結的基礎 URL"
+#~ msgid "settings.docsUrl.desc"
+#~ msgstr "應用程式內文檔連結的基礎 URL"
 
 #: src/pages/settings/GeneralPanel.tsx:118
-msgid "settings.docsUrl.label"
-msgstr "文檔網站 URL"
+#~ msgid "settings.docsUrl.label"
+#~ msgstr "文檔網站 URL"
 
 #: src/pages/settings/DownloadPanel.tsx:86
 msgid "settings.download.autoDeleteFiles"
@@ -4169,104 +4274,104 @@ msgstr "字體"
 msgid "settings.fontSize"
 msgstr "字體大小"
 
-#: src/pages/settings/GeneralPanel.tsx:73
+#: src/pages/settings/GeneralPanel.tsx:83
 msgid "settings.general.subtitle"
 msgstr "語言、收藏與應用程式偏好設定"
 
-#: src/pages/settings/IntegrationsPanel.tsx:279
-#: src/pages/settings/IntegrationsPanel.tsx:485
+#: src/pages/settings/IntegrationsPanel.tsx:463
+#: src/pages/settings/IntegrationsPanel.tsx:669
 msgid "settings.integration.authUrlFailed"
 msgstr "取得授權連結失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:232
+#: src/pages/settings/IntegrationsPanel.tsx:416
 msgid "settings.integration.autoPull"
 msgstr "自動拉取"
 
-#: src/pages/settings/IntegrationsPanel.tsx:386
-#: src/pages/settings/IntegrationsPanel.tsx:594
+#: src/pages/settings/IntegrationsPanel.tsx:570
+#: src/pages/settings/IntegrationsPanel.tsx:782
 msgid "settings.integration.connect"
 msgstr "連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:311
-#: src/pages/settings/IntegrationsPanel.tsx:338
-#: src/pages/settings/IntegrationsPanel.tsx:512
+#: src/pages/settings/IntegrationsPanel.tsx:495
+#: src/pages/settings/IntegrationsPanel.tsx:522
+#: src/pages/settings/IntegrationsPanel.tsx:696
 msgid "settings.integration.connected"
 msgstr "已連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:385
-#: src/pages/settings/IntegrationsPanel.tsx:593
+#: src/pages/settings/IntegrationsPanel.tsx:569
+#: src/pages/settings/IntegrationsPanel.tsx:781
 msgid "settings.integration.connecting"
 msgstr "連接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:398
-#: src/pages/settings/IntegrationsPanel.tsx:608
+#: src/pages/settings/IntegrationsPanel.tsx:582
+#: src/pages/settings/IntegrationsPanel.tsx:796
 msgid "settings.integration.disconnect"
 msgstr "中斷連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:285
-#: src/pages/settings/IntegrationsPanel.tsx:491
+#: src/pages/settings/IntegrationsPanel.tsx:469
+#: src/pages/settings/IntegrationsPanel.tsx:675
 msgid "settings.integration.disconnected"
 msgstr "已中斷連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:288
-#: src/pages/settings/IntegrationsPanel.tsx:495
+#: src/pages/settings/IntegrationsPanel.tsx:472
+#: src/pages/settings/IntegrationsPanel.tsx:679
 msgid "settings.integration.disconnectFailed"
 msgstr "中斷連接失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:397
-#: src/pages/settings/IntegrationsPanel.tsx:607
+#: src/pages/settings/IntegrationsPanel.tsx:581
+#: src/pages/settings/IntegrationsPanel.tsx:795
 msgid "settings.integration.disconnecting"
 msgstr "中斷連接中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:146
+#: src/pages/settings/IntegrationsPanel.tsx:330
 msgid "settings.integration.lastSync"
 msgstr "上次同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:269
-#: src/pages/settings/IntegrationsPanel.tsx:446
+#: src/pages/settings/IntegrationsPanel.tsx:453
+#: src/pages/settings/IntegrationsPanel.tsx:630
 msgid "settings.integration.needsReauth"
 msgstr "需要重新授權"
 
-#: src/pages/settings/IntegrationsPanel.tsx:339
-#: src/pages/settings/IntegrationsPanel.tsx:513
+#: src/pages/settings/IntegrationsPanel.tsx:523
+#: src/pages/settings/IntegrationsPanel.tsx:697
 msgid "settings.integration.notConnected"
 msgstr "未連接"
 
-#: src/pages/settings/IntegrationsPanel.tsx:150
+#: src/pages/settings/IntegrationsPanel.tsx:334
 msgid "settings.integration.pending"
 msgstr "待處理"
 
-#: src/pages/settings/IntegrationsPanel.tsx:205
+#: src/pages/settings/IntegrationsPanel.tsx:389
 msgid "settings.integration.pulled"
 msgstr "已拉取"
 
-#: src/pages/settings/IntegrationsPanel.tsx:208
+#: src/pages/settings/IntegrationsPanel.tsx:392
 msgid "settings.integration.pullFailed"
 msgstr "拉取失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:241
+#: src/pages/settings/IntegrationsPanel.tsx:425
 msgid "settings.integration.pulling"
 msgstr "拉取中…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:242
+#: src/pages/settings/IntegrationsPanel.tsx:426
 msgid "settings.integration.pullNow"
 msgstr "立即拉取"
 
-#: src/pages/settings/IntegrationsPanel.tsx:216
+#: src/pages/settings/IntegrationsPanel.tsx:400
 msgid "settings.integration.pullToggleFailed"
 msgstr "切換自動拉取失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:156
+#: src/pages/settings/IntegrationsPanel.tsx:340
 msgid "settings.integration.recentErrors"
 msgstr "最近的錯誤"
 
-#: src/pages/settings/IntegrationsPanel.tsx:408
-#: src/pages/settings/IntegrationsPanel.tsx:618
+#: src/pages/settings/IntegrationsPanel.tsx:592
+#: src/pages/settings/IntegrationsPanel.tsx:806
 msgid "settings.integration.sync"
 msgstr "同步"
 
-#: src/pages/settings/IntegrationsPanel.tsx:294
-#: src/pages/settings/IntegrationsPanel.tsx:501
+#: src/pages/settings/IntegrationsPanel.tsx:478
+#: src/pages/settings/IntegrationsPanel.tsx:685
 msgid "settings.integration.syncComplete"
 msgstr "同步完成"
 
@@ -4274,13 +4379,13 @@ msgstr "同步完成"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "個錯誤"
 
-#: src/pages/settings/IntegrationsPanel.tsx:297
-#: src/pages/settings/IntegrationsPanel.tsx:504
+#: src/pages/settings/IntegrationsPanel.tsx:481
+#: src/pages/settings/IntegrationsPanel.tsx:688
 msgid "settings.integration.syncFailed"
 msgstr "同步失敗"
 
-#: src/pages/settings/IntegrationsPanel.tsx:407
-#: src/pages/settings/IntegrationsPanel.tsx:617
+#: src/pages/settings/IntegrationsPanel.tsx:591
+#: src/pages/settings/IntegrationsPanel.tsx:805
 msgid "settings.integration.syncing"
 msgstr "同步中…"
 
@@ -4288,62 +4393,63 @@ msgstr "同步中…"
 #~ msgid "settings.integration.title"
 #~ msgstr "連動"
 
-#: src/pages/settings/IntegrationsPanel.tsx:356
+#: src/pages/settings/IntegrationsPanel.tsx:540
 msgid "settings.integration.trakt.openAndEnter"
 msgstr "開啟 Trakt 並輸入驗證碼"
 
-#: src/pages/settings/IntegrationsPanel.tsx:370
+#: src/pages/settings/IntegrationsPanel.tsx:554
 msgid "settings.integration.trakt.waitingExpires"
 msgstr "等待中，將於 {0} 過期"
 
-#: src/pages/settings/IntegrationsPanel.tsx:642
+#: src/pages/settings/IntegrationsPanel.tsx:830
 msgid "settings.integration.updatesPulled"
 msgstr "已拉取更新"
 
-#: src/pages/settings/IntegrationsPanel.tsx:652
+#: src/pages/settings/IntegrationsPanel.tsx:842
 msgid "settings.integrations.description"
 msgstr "連結外部服務並同步資料"
 
 #: src/pages/settings/AboutPanel.tsx:147
-#: src/pages/settings/SettingsPage.tsx:40
+#: src/pages/settings/SettingsPage.tsx:44
 msgid "settings.nav.about"
 msgstr "關於"
 
-#: src/pages/settings/AccountPanel.tsx:84
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/AccountPanel.tsx:110
+#: src/pages/settings/SettingsPage.tsx:41
+#: src/pages/settings/SettingsPage.tsx:239
 msgid "settings.nav.account"
 msgstr "帳號"
 
-#: src/pages/settings/SettingsPage.tsx:38
+#: src/pages/settings/SettingsPage.tsx:42
 msgid "settings.nav.backup"
 msgstr "備份"
 
-#: src/pages/settings/SettingsPage.tsx:35
+#: src/pages/settings/SettingsPage.tsx:39
 msgid "settings.nav.download"
 msgstr "下載"
 
-#: src/pages/settings/GeneralPanel.tsx:72
-#: src/pages/settings/SettingsPage.tsx:32
+#: src/pages/settings/GeneralPanel.tsx:80
+#: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.general"
 msgstr "一般"
 
-#: src/pages/settings/IntegrationsPanel.tsx:650
-#: src/pages/settings/SettingsPage.tsx:33
+#: src/pages/settings/IntegrationsPanel.tsx:839
+#: src/pages/settings/SettingsPage.tsx:37
 msgid "settings.nav.integrations"
 msgstr "整合"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1037
-#: src/pages/settings/NotificationSettingsPanel.tsx:1051
-#: src/pages/settings/SettingsPage.tsx:34
+#: src/pages/settings/NotificationSettingsPanel.tsx:1039
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.notifications"
 msgstr "通知"
 
-#: src/pages/settings/PlayerPanel.tsx:249
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/PlayerPanel.tsx:250
+#: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.player"
 msgstr "播放器"
 
-#: src/pages/settings/SettingsPage.tsx:39
+#: src/pages/settings/SettingsPage.tsx:43
 #: src/pages/settings/StoragePanel.tsx:59
 msgid "settings.nav.storage"
 msgstr "儲存空間"
@@ -4364,7 +4470,9 @@ msgstr "正常"
 msgid "settings.off"
 msgstr "關閉"
 
-#: src/pages/settings/SettingsPage.tsx:80
+#: src/pages/settings/SettingsPage.tsx:156
+#: src/pages/settings/SettingsPage.tsx:225
+#: src/pages/settings/SettingsPage.tsx:303
 msgid "settings.pageTitle"
 msgstr "設定"
 
@@ -4374,95 +4482,95 @@ msgstr "設定"
 msgid "settings.playbackSpeed"
 msgstr "播放速度"
 
-#: src/pages/settings/PlayerPanel.tsx:612
+#: src/pages/settings/PlayerPanel.tsx:616
 msgid "settings.player.autoNext"
 msgstr "自動播放下一集"
 
-#: src/pages/settings/PlayerPanel.tsx:632
+#: src/pages/settings/PlayerPanel.tsx:636
 msgid "settings.player.autoSkipEd"
 msgstr "自動跳過片尾"
 
-#: src/pages/settings/PlayerPanel.tsx:622
+#: src/pages/settings/PlayerPanel.tsx:626
 msgid "settings.player.autoSkipOp"
 msgstr "自動跳過片頭"
 
-#: src/pages/settings/PlayerPanel.tsx:644
+#: src/pages/settings/PlayerPanel.tsx:648
 msgid "settings.player.backupNote"
 msgstr "播放器設定會自動備份"
 
-#: src/pages/settings/PlayerPanel.tsx:349
+#: src/pages/settings/PlayerPanel.tsx:353
 msgid "settings.player.buffer.auto"
 msgstr "自動"
 
-#: src/pages/settings/PlayerPanel.tsx:351
+#: src/pages/settings/PlayerPanel.tsx:355
 msgid "settings.player.buffer.balanced"
 msgstr "均衡"
 
-#: src/pages/settings/PlayerPanel.tsx:352
+#: src/pages/settings/PlayerPanel.tsx:356
 msgid "settings.player.buffer.high"
 msgstr "高"
 
-#: src/pages/settings/PlayerPanel.tsx:350
+#: src/pages/settings/PlayerPanel.tsx:354
 msgid "settings.player.buffer.low"
 msgstr "低"
 
-#: src/pages/settings/PlayerPanel.tsx:345
+#: src/pages/settings/PlayerPanel.tsx:349
 msgid "settings.player.bufferMode"
 msgstr "緩衝模式"
 
-#: src/pages/settings/PlayerPanel.tsx:358
+#: src/pages/settings/PlayerPanel.tsx:362
 msgid "settings.player.bufferModeDesc"
 msgstr "控制影片播放器的緩衝策略"
 
-#: src/pages/settings/PlayerPanel.tsx:254
+#: src/pages/settings/PlayerPanel.tsx:258
 msgid "settings.player.danmaku"
 msgstr "彈幕"
 
-#: src/pages/settings/PlayerPanel.tsx:325
+#: src/pages/settings/PlayerPanel.tsx:329
 msgid "settings.player.danmakuDensity"
 msgstr "彈幕密度"
 
-#: src/pages/settings/PlayerPanel.tsx:259
+#: src/pages/settings/PlayerPanel.tsx:263
 msgid "settings.player.danmakuEnabled"
 msgstr "顯示彈幕"
 
-#: src/pages/settings/PlayerPanel.tsx:301
+#: src/pages/settings/PlayerPanel.tsx:305
 msgid "settings.player.danmakuFontSize"
 msgstr "字型大小"
 
-#: src/pages/settings/PlayerPanel.tsx:273
+#: src/pages/settings/PlayerPanel.tsx:277
 msgid "settings.player.danmakuOpacity"
 msgstr "不透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:313
+#: src/pages/settings/PlayerPanel.tsx:317
 msgid "settings.player.danmakuSpeed"
 msgstr "速度"
 
-#: src/pages/settings/PlayerPanel.tsx:334
+#: src/pages/settings/PlayerPanel.tsx:338
 msgid "settings.player.density.high"
 msgstr "高"
 
-#: src/pages/settings/PlayerPanel.tsx:329
+#: src/pages/settings/PlayerPanel.tsx:333
 msgid "settings.player.density.low"
 msgstr "低"
 
-#: src/pages/settings/PlayerPanel.tsx:331
+#: src/pages/settings/PlayerPanel.tsx:335
 msgid "settings.player.density.medium"
 msgstr "中"
 
-#: src/pages/settings/PlayerPanel.tsx:580
+#: src/pages/settings/PlayerPanel.tsx:584
 msgid "settings.player.gestureEnabled"
 msgstr "啟用手勢"
 
-#: src/pages/settings/PlayerPanel.tsx:576
+#: src/pages/settings/PlayerPanel.tsx:580
 msgid "settings.player.gestures"
 msgstr "手勢"
 
-#: src/pages/settings/PlayerPanel.tsx:591
+#: src/pages/settings/PlayerPanel.tsx:595
 msgid "settings.player.gestureSensitivity"
 msgstr "手勢靈敏度"
 
-#: src/pages/settings/PlayerPanel.tsx:608
+#: src/pages/settings/PlayerPanel.tsx:612
 msgid "settings.player.playbackDefaults"
 msgstr "播放預設"
 
@@ -4478,59 +4586,59 @@ msgstr "正常"
 msgid "settings.player.speed.slow"
 msgstr "慢"
 
-#: src/pages/settings/PlayerPanel.tsx:250
+#: src/pages/settings/PlayerPanel.tsx:253
 msgid "settings.player.subtitle"
 msgstr "彈幕與播放偏好設定"
 
-#: src/pages/settings/PlayerPanel.tsx:466
+#: src/pages/settings/PlayerPanel.tsx:470
 msgid "settings.player.subtitleBgOpacity"
 msgstr "字幕背景透明度"
 
-#: src/pages/settings/PlayerPanel.tsx:483
+#: src/pages/settings/PlayerPanel.tsx:487
 msgid "settings.player.subtitleBorder"
 msgstr "字幕邊框"
 
-#: src/pages/settings/PlayerPanel.tsx:419
+#: src/pages/settings/PlayerPanel.tsx:423
 msgid "settings.player.subtitleColor"
 msgstr "字幕顏色"
 
-#: src/pages/settings/PlayerPanel.tsx:546
+#: src/pages/settings/PlayerPanel.tsx:550
 msgid "settings.player.subtitleFade"
 msgstr "字幕淡入淡出"
 
-#: src/pages/settings/PlayerPanel.tsx:383
+#: src/pages/settings/PlayerPanel.tsx:387
 msgid "settings.player.subtitleFont"
 msgstr "字幕字體"
 
-#: src/pages/settings/PlayerPanel.tsx:402
+#: src/pages/settings/PlayerPanel.tsx:406
 msgid "settings.player.subtitleFontSize"
 msgstr "字幕字體大小"
 
-#: src/pages/settings/PlayerPanel.tsx:516
+#: src/pages/settings/PlayerPanel.tsx:520
 msgid "settings.player.subtitlePosition"
 msgstr "字幕位置"
 
-#: src/pages/settings/PlayerPanel.tsx:371
+#: src/pages/settings/PlayerPanel.tsx:375
 msgid "settings.player.subtitlePreset"
 msgstr "字幕預設"
 
-#: src/pages/settings/PlayerPanel.tsx:568
+#: src/pages/settings/PlayerPanel.tsx:572
 msgid "settings.player.subtitlePreview"
 msgstr "字幕預覽"
 
-#: src/pages/settings/PlayerPanel.tsx:557
+#: src/pages/settings/PlayerPanel.tsx:561
 msgid "settings.player.subtitleRespectAss"
 msgstr "保留 ASS 樣式"
 
-#: src/pages/settings/PlayerPanel.tsx:529
+#: src/pages/settings/PlayerPanel.tsx:533
 msgid "settings.player.subtitleSafeMargin"
 msgstr "安全邊距"
 
-#: src/pages/settings/PlayerPanel.tsx:497
+#: src/pages/settings/PlayerPanel.tsx:501
 msgid "settings.player.subtitleStrokeWidth"
 msgstr "描邊寬度"
 
-#: src/pages/settings/PlayerPanel.tsx:366
+#: src/pages/settings/PlayerPanel.tsx:370
 msgid "settings.player.subtitleStyle"
 msgstr "字幕樣式"
 
@@ -4564,27 +4672,29 @@ msgstr "飽和度"
 #: src/pages/settings/BackupPanel.tsx:335
 #: src/pages/settings/BackupPanel.tsx:569
 #: src/pages/settings/IntegrationsPanel.tsx:116
-#: src/pages/settings/IntegrationsPanel.tsx:580
+#: src/pages/settings/IntegrationsPanel.tsx:300
+#: src/pages/settings/IntegrationsPanel.tsx:768
 msgid "settings.save"
 msgstr "儲存"
 
 #: src/pages/settings/BackupPanel.tsx:199
 #: src/pages/settings/BackupPanel.tsx:393
-#: src/pages/settings/GeneralPanel.tsx:48
-#: src/pages/settings/GeneralPanel.tsx:57
-#: src/pages/settings/GeneralPanel.tsx:67
+#: src/pages/settings/GeneralPanel.tsx:63
+#: src/pages/settings/GeneralPanel.tsx:74
 #: src/pages/settings/IntegrationsPanel.tsx:55
-#: src/pages/settings/IntegrationsPanel.tsx:474
+#: src/pages/settings/IntegrationsPanel.tsx:180
+#: src/pages/settings/IntegrationsPanel.tsx:658
 #: src/pages/settings/PlayerPanel.tsx:203
 msgid "settings.saved"
 msgstr "已儲存"
 
 #: src/pages/settings/BackupPanel.tsx:203
 #: src/pages/settings/BackupPanel.tsx:397
-#: src/pages/settings/GeneralPanel.tsx:51
-#: src/pages/settings/GeneralPanel.tsx:60
+#: src/pages/settings/GeneralPanel.tsx:56
+#: src/pages/settings/GeneralPanel.tsx:66
 #: src/pages/settings/IntegrationsPanel.tsx:58
-#: src/pages/settings/IntegrationsPanel.tsx:477
+#: src/pages/settings/IntegrationsPanel.tsx:183
+#: src/pages/settings/IntegrationsPanel.tsx:661
 #: src/pages/settings/PlayerPanel.tsx:206
 msgid "settings.saveFailed"
 msgstr "儲存失敗"
@@ -4592,8 +4702,9 @@ msgstr "儲存失敗"
 #: src/pages/settings/BackupPanel.tsx:334
 #: src/pages/settings/BackupPanel.tsx:568
 #: src/pages/settings/IntegrationsPanel.tsx:115
-#: src/pages/settings/IntegrationsPanel.tsx:579
-#: src/pages/settings/NotificationSettingsPanel.tsx:1100
+#: src/pages/settings/IntegrationsPanel.tsx:299
+#: src/pages/settings/IntegrationsPanel.tsx:767
+#: src/pages/settings/NotificationSettingsPanel.tsx:1102
 msgid "settings.saving"
 msgstr "儲存中…"
 
@@ -4756,19 +4867,19 @@ msgstr "文字顏色"
 msgid "settings.volumeBoost"
 msgstr "音量增強"
 
-#: src/pages/settings/GeneralPanel.tsx:84
+#: src/pages/settings/GeneralPanel.tsx:95
 msgid "settings.weekStartDay"
 msgstr "每週起始日"
 
-#: src/pages/settings/GeneralPanel.tsx:87
+#: src/pages/settings/GeneralPanel.tsx:98
 msgid "settings.weekStartDay.monday"
 msgstr "星期一"
 
-#: src/pages/settings/GeneralPanel.tsx:89
+#: src/pages/settings/GeneralPanel.tsx:100
 msgid "settings.weekStartDay.saturday"
 msgstr "星期六"
 
-#: src/pages/settings/GeneralPanel.tsx:88
+#: src/pages/settings/GeneralPanel.tsx:99
 msgid "settings.weekStartDay.sunday"
 msgstr "星期日"
 
@@ -4976,6 +5087,14 @@ msgstr "字幕組"
 #~ msgid "subscribe.success"
 #~ msgstr "訂閱成功！新集數將自動下載。"
 
+#: src/pages/settings/IntegrationsPanel.tsx:290
+msgid "Test connection"
+msgstr "測試連線"
+
+#: src/pages/settings/IntegrationsPanel.tsx:290
+msgid "Testing…"
+msgstr "測試中…"
+
 #: src/pages/library/LibraryDuplicatesPage.tsx:65
 msgid "This will permanently delete {totalRemovable} non-preferred files across this library. Continue?"
 msgstr "這將永久刪除此媒體庫中 {totalRemovable} 個非偏好檔案。是否繼續？"
@@ -5016,6 +5135,23 @@ msgstr "{seconds} 秒前"
 msgid "Title"
 msgstr "標題"
 
+#: src/pages/settings/IntegrationsPanel.tsx:254
+msgid "TMDB API Read Access Token"
+msgstr "TMDB API 讀取存取權杖"
+
+#: src/pages/settings/IntegrationsPanel.tsx:193
+#: src/pages/settings/IntegrationsPanel.tsx:196
+msgid "TMDB connection failed"
+msgstr "TMDB 連線失敗"
+
+#: src/pages/settings/IntegrationsPanel.tsx:191
+msgid "TMDB connection successful"
+msgstr "TMDB 連線成功"
+
+#: src/pages/settings/IntegrationsPanel.tsx:232
+msgid "TMDB v3 API key"
+msgstr "TMDB v3 API 金鑰"
+
 #: src/pages/TrendingPage.tsx:161
 #~ msgid "trending.filter.all"
 #~ msgstr "全部"
@@ -5040,6 +5176,15 @@ msgstr "復原"
 #: src/pages/library/RenameHistoryPage.tsx:79
 msgid "Undo batch {0}?"
 msgstr "復原批次 {0}？"
+
+#: src/pages/settings/BackupPanel.tsx:251
+#: src/pages/settings/NotificationSettingsPanel.tsx:729
+msgid "URL"
+msgstr "URL"
+
+#: src/pages/settings/IntegrationsPanel.tsx:268
+msgid "Used for TMDB fallback matching and localized episode metadata based on your UI language. Read Access Token is preferred; v3 API key is still supported. Leave both blank to disable TMDB."
+msgstr "用於 TMDB 後備比對與依介面語言提供的本地化集數中繼資料。建議使用 Read Access Token；仍支援 v3 API 金鑰。兩者皆留空以停用 TMDB。"
 
 #: src/pages/LibraryDetailPage.tsx:1996
 #~ msgid "View and clean up duplicate files"
@@ -5435,3 +5580,23 @@ msgstr "轉碼中..."
 
 #~ msgid "watch.unsupported"
 #~ msgstr "不支援"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:333
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+#: src/pages/settings/IntegrationsPanel.tsx:728
+msgid "Your {label} Client ID"
+msgstr "你的 {label} 用戶端 ID"
+
+#: src/pages/settings/IntegrationsPanel.tsx:750
+msgid "Your {label} Client Secret"
+msgstr "你的 {label} 用戶端密鑰"
+
+#: src/pages/settings/IntegrationsPanel.tsx:78
+msgid "Your DandanPlay App ID"
+msgstr "你的 DandanPlay 應用 ID"
+
+#: src/pages/settings/IntegrationsPanel.tsx:98
+msgid "Your DandanPlay App Secret"
+msgstr "你的 DandanPlay 應用密鑰"

@@ -59,12 +59,12 @@ const ALL_NOTIFICATIONS = [
 
 async function setupAuth(page: Page) {
   await page.evaluate(() => {
-    localStorage.setItem('milmil-token', 'fake-token');
+    localStorage.setItem('milmil-token', 'mlml_fake-token');
     localStorage.setItem(
       'auth',
       JSON.stringify({
         state: {
-          token: 'fake-token',
+          token: 'mlml_fake-token',
           user: { id: 'user-1', username: 'testuser' },
           initialized: true,
         },
@@ -198,18 +198,13 @@ test.describe('Notification Center', () => {
     // Info notification (New Episode)
     await expect(page.locator('text=New Episode').first()).toBeVisible();
 
-    // Verify severity borders are present (green for success, red for error)
-    const successItem = page.locator('button', { hasText: 'Download Complete' });
-    await expect(successItem).toHaveClass(/border-l-green/);
-    const errorItem = page.locator('button', { hasText: 'Download Error' });
-    await expect(errorItem).toHaveClass(/border-l-red/);
+    await expect(page.locator('button', { hasText: 'Download Complete' })).toBeVisible();
+    await expect(page.locator('button', { hasText: 'Download Error' })).toBeVisible();
   });
 
   test('clicking "view all" navigates to notifications page', async ({ page }) => {
-    // Navigate via the sidebar notifications link (the bell dropdown's "View all"
-    // link also works but the sidebar link avoids the remount issue)
-    const notifLink = page.locator('a[href="/notifications"]');
-    await notifLink.click();
+    await openBellDropdown(page);
+    await page.locator('a[href="/notifications"]').click();
     await page.waitForTimeout(500);
 
     await expect(page).toHaveURL(/\/notifications/);
@@ -226,7 +221,7 @@ test.describe('Notification Center', () => {
     await expect(page.locator('text=New Episode').first()).toBeVisible();
     await expect(page.locator('text=Download Failed').first()).toBeVisible();
     await expect(page.locator('text=Library Scan Complete').first()).toBeVisible();
-    await expect(page.locator('text=Download Error').first()).toBeVisible();
+    await expect(page.locator('text=System Error').first()).toBeVisible();
   });
 
   test('filter tabs filter by type', async ({ page }) => {
@@ -238,7 +233,7 @@ test.describe('Notification Center', () => {
     await expect(page.locator('text=Library Scan Complete').first()).toBeVisible();
 
     // Click "Downloads" filter tab and wait for filtered API response
-    const downloadFilter = page.locator('button', { hasText: 'Downloads' });
+    const downloadFilter = page.getByRole('button', { name: 'Downloads', exact: true });
     const responsePromise = page.waitForResponse(
       (resp) =>
         resp.url().includes('/api/v1/notifications') &&

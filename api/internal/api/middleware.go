@@ -13,12 +13,52 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-// sensitiveFields are JSON keys whose values must be redacted in request logs.
+// sensitiveFields are exact JSON keys whose values must be redacted in request
+// logs. Suffix-based matches are handled separately by isSensitiveKey.
 var sensitiveFields = map[string]bool{
-	"password": true,
-	"pw":       true,
-	"token":    true,
-	"secret":   true,
+	"password":      true,
+	"pw":            true,
+	"token":         true,
+	"secret":        true,
+	"api_key":       true,
+	"apikey":        true,
+	"access_token":  true,
+	"refresh_token": true,
+	"app_id":        true,
+	"app_secret":    true,
+	"client_id":     true,
+	"client_secret": true,
+	"private_key":   true,
+	"jwt_secret":    true,
+	"encryption_key": true,
+}
+
+// sensitiveSuffixes catch credential field variants like smb_password,
+// webdav_password, source_token, etc. Matched case-insensitively as a suffix.
+var sensitiveSuffixes = []string{
+	"_password",
+	"_secret",
+	"_token",
+	"_key",
+	"_apikey",
+	"_credentials",
+}
+
+func isSensitiveKey(key string) bool {
+	k := strings.ToLower(key)
+	if sensitiveFields[k] {
+		return true
+	}
+	// Skip non-sensitive *_id fields that would otherwise match _key, etc.
+	if strings.HasSuffix(k, "_id") {
+		return false
+	}
+	for _, suf := range sensitiveSuffixes {
+		if strings.HasSuffix(k, suf) {
+			return true
+		}
+	}
+	return false
 }
 
 func attachMiddleware(e *echo.Echo) {
@@ -141,26 +181,44 @@ func (w *responseCapture) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-// redactSensitiveFields replaces values of known credential fields with "[REDACTED]".
-// Falls back to the original string if the body isn't valid JSON.
+// redactSensitiveFields replaces values of known credential fields with
+// "[REDACTED]" anywhere they appear in a JSON document, including nested
+// objects and arrays. Falls back to the original string if the body isn't
+// valid JSON.
 func redactSensitiveFields(body string) string {
-	var m map[string]any
-	if err := json.Unmarshal([]byte(body), &m); err != nil {
+	var v any
+	if err := json.Unmarshal([]byte(body), &v); err != nil {
 		return body
 	}
-	changed := false
-	for k := range m {
-		if sensitiveFields[strings.ToLower(k)] {
-			m[k] = "[REDACTED]"
-			changed = true
-		}
-	}
-	if !changed {
-		return body
-	}
-	out, err := json.Marshal(m)
+	redacted := redactValue(v)
+	out, err := json.Marshal(redacted)
 	if err != nil {
 		return body
 	}
 	return string(out)
+}
+
+func redactValue(v any) any {
+	switch val := v.(type) {
+	case map[string]any:
+		for k, child := range val {
+			if isSensitiveKey(k) {
+				if child == nil || child == "" {
+					// preserve empty/null — useful for "is the field set" debugging
+					continue
+				}
+				val[k] = "[REDACTED]"
+				continue
+			}
+			val[k] = redactValue(child)
+		}
+		return val
+	case []any:
+		for i, item := range val {
+			val[i] = redactValue(item)
+		}
+		return val
+	default:
+		return val
+	}
 }

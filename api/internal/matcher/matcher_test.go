@@ -13,6 +13,7 @@ import (
 	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/integration/dandanplay"
+	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/migrations"
@@ -104,6 +105,51 @@ func (m *mockDandanplay) GetBangumiInfo(_ context.Context, _ int64) (*dandanplay
 	return nil, nil
 }
 
+type mockTMDB struct {
+	searchLanguages  []string
+	seasonLanguages  []string
+	searchByLanguage map[string][]tmdb.TVShow
+	seasonByLanguage map[string]*tmdb.Season
+}
+
+func (m *mockTMDB) SearchTV(_ context.Context, _ string, language string) ([]tmdb.TVShow, error) {
+	m.searchLanguages = append(m.searchLanguages, language)
+	if m.searchByLanguage != nil {
+		return m.searchByLanguage[language], nil
+	}
+	if language != "zh-TW" {
+		return nil, nil
+	}
+	return []tmdb.TVShow{{ID: 100, Name: "繁體番劇"}}, nil
+}
+
+func (m *mockTMDB) GetTVExternalIDs(_ context.Context, _ int) (*tmdb.ExternalIDs, error) {
+	return &tmdb.ExternalIDs{}, nil
+}
+
+func (m *mockTMDB) Ping(_ context.Context) error { return nil }
+
+func (m *mockTMDB) GetTVDetails(_ context.Context, _ int, _ string) (*tmdb.TVShow, error) {
+	return &tmdb.TVShow{}, nil
+}
+
+func (m *mockTMDB) GetTVSeason(_ context.Context, _ int, _ int, language string) (*tmdb.Season, error) {
+	m.seasonLanguages = append(m.seasonLanguages, language)
+	if m.seasonByLanguage != nil {
+		season := m.seasonByLanguage[language]
+		if season == nil {
+			return &tmdb.Season{}, nil
+		}
+		return season, nil
+	}
+	if language != "zh-TW" {
+		return &tmdb.Season{}, nil
+	}
+	return &tmdb.Season{SeasonNumber: 1, Episodes: []tmdb.TVEpisode{
+		{EpisodeNumber: 1, Name: "繁體集名", Overview: "繁體簡介", StillPath: "/tw.jpg"},
+	}}, nil
+}
+
 func TestMatchLibrary_MatchesFile(t *testing.T) {
 	q, cleanup := newTestDB(t)
 	defer cleanup()
@@ -148,6 +194,136 @@ func TestMatchLibrary_MatchesFile(t *testing.T) {
 	}
 	if mf.MatchStatus != "auto" {
 		t.Errorf("want match_status=auto, got %s", mf.MatchStatus)
+	}
+}
+
+func TestEnrichEpisodesFromTMDBPrefersTraditionalChineseMetadata(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+	ctx := context.Background()
+
+	lib, _ := seedLibraryAndFile(t, q, "")
+	anime, err := q.CreateAnime(ctx, store.CreateAnimeParams{
+		ID:            "anime-tmdb",
+		LibraryID:     sql.NullString{String: lib.ID, Valid: true},
+		Title:         "Test Anime",
+		TitleZh:       sql.NullString{String: "舊中文名", Valid: true},
+		Status:        "unknown",
+		Genres:        "[]",
+		WatchStatus:   "none",
+		TotalEpisodes: sql.NullInt64{Int64: 1, Valid: true},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ep, err := q.CreateEpisode(ctx, store.CreateEpisodeParams{
+		ID:            "episode-tmdb",
+		AnimeID:       anime.ID,
+		EpisodeNumber: 1,
+		TitleZh:       sql.NullString{String: "舊集名", Valid: true},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	c := cache.New("")
+	defer c.Close()
+	client := &mockTMDB{}
+	enriched, err := matcher.EnrichEpisodesFromTMDB(ctx, q, client, c, lib.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if enriched != 1 {
+		t.Fatalf("want 1 enriched episode, got %d", enriched)
+	}
+
+	got, err := q.GetEpisode(ctx, ep.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.TitleZh.String != "繁體集名" {
+		t.Fatalf("want Traditional Chinese title, got %q", got.TitleZh.String)
+	}
+	if got.SynopsisZh.String != "繁體簡介" {
+		t.Fatalf("want Traditional Chinese synopsis, got %q", got.SynopsisZh.String)
+	}
+	if got.ThumbnailUrl.String != "https://image.tmdb.org/t/p/w300/tw.jpg" {
+		t.Fatalf("want TMDB thumbnail, got %q", got.ThumbnailUrl.String)
+	}
+	if len(client.searchLanguages) == 0 || client.searchLanguages[0] != "zh-TW" {
+		t.Fatalf("want first TMDB search in zh-TW, got %v", client.searchLanguages)
+	}
+	if len(client.seasonLanguages) == 0 || client.seasonLanguages[0] != "zh-TW" {
+		t.Fatalf("want first TMDB season fetch in zh-TW, got %v", client.seasonLanguages)
+	}
+}
+
+func TestEnrichEpisodesFromTMDBUsesAppearanceLanguage(t *testing.T) {
+	q, cleanup := newTestDB(t)
+	defer cleanup()
+	ctx := context.Background()
+
+	if _, err := q.UpsertSetting(ctx, store.UpsertSettingParams{
+		Key:   "appearance",
+		Value: `{"language":"zh-CN"}`,
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	lib, _ := seedLibraryAndFile(t, q, "")
+	anime, err := q.CreateAnime(ctx, store.CreateAnimeParams{
+		ID:            "anime-tmdb-cn",
+		LibraryID:     sql.NullString{String: lib.ID, Valid: true},
+		Title:         "Test Anime",
+		Status:        "unknown",
+		Genres:        "[]",
+		WatchStatus:   "none",
+		TotalEpisodes: sql.NullInt64{Int64: 1, Valid: true},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ep, err := q.CreateEpisode(ctx, store.CreateEpisodeParams{
+		ID:            "episode-tmdb-cn",
+		AnimeID:       anime.ID,
+		EpisodeNumber: 1,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	c := cache.New("")
+	defer c.Close()
+	client := &mockTMDB{
+		searchByLanguage: map[string][]tmdb.TVShow{
+			"zh-CN": {{ID: 200, Name: "简体番剧"}},
+		},
+		seasonByLanguage: map[string]*tmdb.Season{
+			"zh-CN": {SeasonNumber: 1, Episodes: []tmdb.TVEpisode{
+				{EpisodeNumber: 1, Name: "简体集名", Overview: "简体简介"},
+			}},
+		},
+	}
+	enriched, err := matcher.EnrichEpisodesFromTMDB(ctx, q, client, c, lib.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if enriched != 1 {
+		t.Fatalf("want 1 enriched episode, got %d", enriched)
+	}
+
+	got, err := q.GetEpisode(ctx, ep.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.TitleZh.String != "简体集名" {
+		t.Fatalf("want Simplified Chinese title, got %q", got.TitleZh.String)
+	}
+	if len(client.searchLanguages) == 0 || client.searchLanguages[0] != "zh-CN" {
+		t.Fatalf("want first TMDB search in zh-CN, got %v", client.searchLanguages)
+	}
+	if len(client.seasonLanguages) == 0 || client.seasonLanguages[0] != "zh-CN" {
+		t.Fatalf("want first TMDB season fetch in zh-CN, got %v", client.seasonLanguages)
 	}
 }
 
@@ -210,10 +386,10 @@ func TestMatchLibrary_ContinuesOnError(t *testing.T) {
 
 // mockBangumi implements bangumi.Client for testing.
 type mockBangumi struct {
-	searchResult  []bangumi.Subject
-	searchErr     error
-	episodes      []bangumi.Episode
-	episodesErr   error
+	searchResult []bangumi.Subject
+	searchErr    error
+	episodes     []bangumi.Episode
+	episodesErr  error
 }
 
 func (m *mockBangumi) SearchSubjects(_ context.Context, _ string, _ ...bangumi.SearchOption) ([]bangumi.Subject, error) {

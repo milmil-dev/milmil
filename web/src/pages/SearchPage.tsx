@@ -525,7 +525,7 @@ export function SearchPage() {
         {/* Active filter summary */}
         {isFilterActive && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
-            <h2 className="text-lg font-bold text-white tracking-tight">
+            <h2 className="text-lg font-semibold text-white tracking-tight">
               {isTagMode
                 ? selectedTags.join(' · ')
                 : selectedGenres.length > 0

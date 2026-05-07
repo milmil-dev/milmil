@@ -16,7 +16,7 @@ export function SettingsCard({ label, children, className }: SettingsCardProps) 
       )}
     >
       {label && (
-        <div className="mb-3 text-xs font-semibold uppercase tracking-[1px] text-white/50">
+        <div className="mb-3 text-xs font-medium uppercase tracking-[1px] text-white/50">
           {label}
         </div>
       )}

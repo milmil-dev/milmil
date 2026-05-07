@@ -24,6 +24,8 @@ type Config struct {
 	SeedTimeMinutes     int
 	DandanPlayAppID     string
 	DandanPlayAppSecret string
+	TMDBAPIKey          string
+	TMDBAccessToken     string
 	DanmuAPIURL         string // optional custom danmu_api proxy URL
 	AdminUser           string // optional: auto-create admin on first boot
 	AdminPassword       string // optional: password for auto-created admin
@@ -52,16 +54,16 @@ func Load() (*Config, error) {
 
 	// Defaults via confmap provider.
 	defaults := map[string]any{
-		"API_PORT":         8080,
-		"DATA_DIR":         "./data",
-		"DATABASE_URL":     "sqlite://data/milmil.db",
+		"API_PORT":            8080,
+		"DATA_DIR":            "./data",
+		"DATABASE_URL":        "sqlite://data/milmil.db",
 		"TORRENT_LISTEN_PORT": 42069,
-		"SEED_RATIO":         1.0,
-		"SEED_TIME_MINUTES":  60,
-		"REDIS_URL":          "",
-		"REDIS_FAIL_FAST":  false,
-		"DEBUG":            false,
-		"DANMU_API_URL":    "",
+		"SEED_RATIO":          1.0,
+		"SEED_TIME_MINUTES":   60,
+		"REDIS_URL":           "",
+		"REDIS_FAIL_FAST":     false,
+		"DEBUG":               false,
+		"DANMU_API_URL":       "",
 	}
 	if err := k.Load(confmap.Provider(defaults, "."), nil); err != nil {
 		return nil, fmt.Errorf("defaults: %w", err)
@@ -85,6 +87,8 @@ func Load() (*Config, error) {
 		SeedTimeMinutes:     k.Int("SEED_TIME_MINUTES"),
 		DandanPlayAppID:     k.String("DANDANPLAY_APP_ID"),
 		DandanPlayAppSecret: k.String("DANDANPLAY_APP_SECRET"),
+		TMDBAPIKey:          k.String("TMDB_API_KEY"),
+		TMDBAccessToken:     k.String("TMDB_ACCESS_TOKEN"),
 		DanmuAPIURL:         k.String("DANMU_API_URL"),
 		AdminUser:           k.String("ADMIN_USER"),
 		AdminPassword:       k.String("ADMIN_PASSWORD"),

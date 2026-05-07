@@ -246,7 +246,7 @@ export function PlayerPanel() {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-white sm:text-xl">
+      <h2 className="text-lg font-semibold text-white sm:text-xl">
         {i18n._(msg`settings.nav.player`)}
       </h2>
       <p className="mt-1 mb-4 text-xs text-white/35 sm:mb-6">

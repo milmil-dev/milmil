@@ -246,12 +246,12 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
               <Link
                 to={`/anime/${bangumiId}` as string}
                 onClick={onClose}
-                className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-bold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-semibold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
               >
                 {i18n._(msg`hero.details`)}
               </Link>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-bold rounded-md bg-white/20 text-white/40 cursor-default">
+              <span className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-semibold rounded-md bg-white/20 text-white/40 cursor-default">
                 {i18n._(msg`hero.details`)}
               </span>
             )}
@@ -282,7 +282,7 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
       {/* Trailer — compact, max 320px wide */}
       {detail?.trailer_url && (
         <div className="relative pt-4">
-          <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/30 mb-2">
+          <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-white/30 mb-2">
             {i18n._(msg`anime.trailer`)}
           </h3>
           <div className="max-w-[320px]">
@@ -319,7 +319,7 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
         )}
         {!episodesLoading && episodes.length > 0 && (
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/30 mb-2">
+            <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-white/30 mb-2">
               {i18n._(msg`anime.episodes`)} ({episodes.length})
             </h3>
             <div className="space-y-0.5">

@@ -30,10 +30,31 @@ export function GeneralPanel() {
   const [autoAdd, setAutoAdd] = useState(true);
 
   useEffect(() => {
+    const language = settings?.appearance?.language;
+    if (!language || language === currentLang) return;
+    if (!availableLanguages.some((l) => l.code === language)) return;
+    setCurrentLang(language);
+    localStorage.setItem('milmil-locale', language);
+    loadAndActivate(language);
+  }, [settings?.appearance?.language, currentLang]);
+
+  useEffect(() => {
     if (settings?.collection) {
       setAutoAdd(settings.collection.auto_add_to_collection ?? true);
     }
   }, [settings?.collection]);
+
+  const updateAppearanceSettings = useMutation({
+    mutationFn: (data: { language: string }) =>
+      api.put('/api/v1/settings/appearance', {
+        ...(settings?.appearance ?? {}),
+        ...data,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    },
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
+  });
 
   const updateCollectionSettings = useMutation({
     mutationFn: (data: { auto_add_to_collection: boolean }) =>
@@ -49,12 +70,13 @@ export function GeneralPanel() {
     setCurrentLang(code);
     localStorage.setItem('milmil-locale', code);
     await loadAndActivate(code);
+    updateAppearanceSettings.mutate({ language: code });
     toast.success(i18n._(msg`settings.saved`));
   };
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-white sm:text-xl">
+      <h2 className="text-lg font-semibold text-white sm:text-xl">
         {i18n._(msg`settings.nav.general`)}
       </h2>
       <p className="mt-1 mb-4 text-xs text-white/35 sm:mb-6">

@@ -144,7 +144,7 @@ export function AboutPanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.about`)}</h2>
+      <h2 className="text-xl font-semibold text-white">{i18n._(msg`settings.nav.about`)}</h2>
       <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`about.subtitle`)}</p>
 
       <div className="space-y-3">

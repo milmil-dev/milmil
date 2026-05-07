@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/labstack/echo/v4"
 	"github.com/milmil/api/internal/cache"
@@ -36,13 +37,14 @@ type handler struct {
 	resolver        *resolver.Resolver
 	downloader      downloader.Manager
 	wsHub           *ws.Hub
+	tmdbMu          sync.RWMutex
 	tmdb            tmdb.Client
-	torrentRegistry  *torrent.Registry
-	notifier         *notification.Service
-	syncSvc          *milmilsync.Service
-	danmakuRegistry  *danmaku.Registry
-	updateChecker    *updatecheck.Checker
-	encryptionKey    []byte
+	torrentRegistry *torrent.Registry
+	notifier        *notification.Service
+	syncSvc         *milmilsync.Service
+	danmakuRegistry *danmaku.Registry
+	updateChecker   *updatecheck.Checker
+	encryptionKey   []byte
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
@@ -333,6 +335,8 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	intGroup.POST("/trakt/device-code", h.handleTraktDeviceCode)
 	intGroup.POST("/trakt/poll", h.handleTraktPoll)
 	intGroup.DELETE("/trakt", h.handleTraktDisconnect)
+	// TMDB
+	intGroup.POST("/tmdb/test", h.handleTestTMDBConnection)
 
 	// Notifications — protected
 	notifGroup := v1.Group("/notifications", authMiddleware(h.queries), auditMiddleware(h.queries))

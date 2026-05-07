@@ -168,9 +168,7 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
     await expect(coverBlock).toBeVisible();
   });
 
-  test('下載緊 tab: active group card is auto-expanded with ep-bar-fill visible', async ({
-    page,
-  }) => {
+  test('下載緊 tab: expanding active group shows ep-bar-fill', async ({ page }) => {
     // Navigate directly to library tab via URL (locale-agnostic)
     await page.goto('/downloads?tab=library');
     await page.waitForLoadState('networkidle');
@@ -178,7 +176,9 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
     const card = page.getByTestId('anime-download-card').first();
     await expect(card).toBeVisible();
 
-    // Active groups are auto-expanded — ep-bar-fill (progress bar) should be visible
+    await card.getByRole('button', { name: /expand/i }).click();
+
+    // Expanded active group shows ep-bar-fill (progress bar)
     await expect(page.getByTestId('ep-bar-fill').first()).toBeVisible();
   });
 
@@ -194,7 +194,7 @@ test.describe('Downloads — unified AnimeDownloadCard', () => {
     await expect(page.getByTestId('card-divider').first()).not.toBeVisible();
 
     // Click the toggle to expand
-    await card.locator('button').first().click();
+    await card.getByRole('button', { name: /expand/i }).click();
     await page.waitForTimeout(400);
 
     // card-divider should now be visible

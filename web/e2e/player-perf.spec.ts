@@ -173,6 +173,9 @@ test.describe('Danmaku WebWorker', () => {
 
 test.describe('Settings Panel — Buffer & Density', () => {
   async function mockSettingsAPIs(page: import('@playwright/test').Page) {
+    await page.addInitScript(() => {
+      localStorage.setItem('milmil-token', 'mlml_fake-token');
+    });
     await page.route('**/api/v1/**', (route) => {
       const url = route.request().url();
       if (url.includes('/auth/me'))
@@ -190,7 +193,7 @@ test.describe('Settings Panel — Buffer & Density', () => {
   test('buffer mode and danmaku density controls are visible', async ({ page }) => {
     await mockSettingsAPIs(page);
 
-    await page.goto('/settings/player');
+    await page.goto('/settings?tab=player');
 
     // Wait for settings page to render (look for any settings content)
     await page
@@ -220,7 +223,7 @@ test.describe('Settings Panel — Buffer & Density', () => {
   test('buffer mode selection persists in localStorage', async ({ page }) => {
     await mockSettingsAPIs(page);
 
-    await page.goto('/settings/player');
+    await page.goto('/settings?tab=player');
     await page.waitForTimeout(3000);
 
     // Set buffer mode via JS directly (test the store integration)
@@ -453,7 +456,7 @@ test.describe('Network Monitor Integration', () => {
       return route.fulfill({ status: 200, body: JSON.stringify({}) });
     });
 
-    await page.goto('/settings/player');
+    await page.goto('/settings?tab=player');
     await page.waitForTimeout(3000);
 
     // Verify that auto is the default buffer mode in localStorage

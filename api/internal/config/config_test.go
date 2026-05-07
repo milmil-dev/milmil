@@ -69,3 +69,15 @@ func TestLoad_DebugEnabled(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, cfg.Debug)
 }
+
+func TestLoad_TMDBCredentials(t *testing.T) {
+	t.Setenv("DATABASE_URL", "sqlite://data/test.db")
+	t.Setenv("JWT_SECRET", "secret")
+	t.Setenv("TMDB_API_KEY", "tmdb-api-key")
+	t.Setenv("TMDB_ACCESS_TOKEN", "tmdb-access-token")
+
+	cfg, err := config.Load()
+	require.NoError(t, err)
+	require.Equal(t, "tmdb-api-key", cfg.TMDBAPIKey)
+	require.Equal(t, "tmdb-access-token", cfg.TMDBAccessToken)
+}

@@ -385,7 +385,7 @@ export function DownloadsPage() {
         <div className="px-8 pt-12 pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-mm-accent">
+              <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">
                 milmil
               </p>
               <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">
@@ -1606,7 +1606,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           >
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/25">
+                <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">
                   {i18n._(msg`ruleEditor.preview`)}
                 </span>
                 <span className="text-[10px] text-white/25 tabular-nums">
@@ -1634,7 +1634,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
 function InlineSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/25">{label}</h3>
+      <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">{label}</h3>
       {children}
     </div>
   );

@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { useWSEvent } from '@/hooks/use-websocket';
 import { type SyncProvider, type SyncProviderStatus, syncApi, syncKeys } from '@/lib/api/sync';
-import { type DeviceCodeResponse, type DevicePollStatus, traktApi } from '@/lib/api/trakt';
+import { type DeviceCodeResponse, traktApi } from '@/lib/api/trakt';
 import { api } from '@/lib/api-client';
 
 const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
@@ -46,7 +46,7 @@ function DandanPlayCard() {
         appSecret: settings.dandanplay.app_secret ?? '',
       });
     }
-  }, [settings?.dandanplay]);
+  }, [settings?.dandanplay, form.reset]);
 
   const saveMutation = useMutation({
     mutationFn: (data: { app_id: string; app_secret: string }) =>
@@ -70,12 +70,12 @@ function DandanPlayCard() {
         <form.Field name="appId">
           {(field) => (
             <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-              <FieldLabel htmlFor={field.name}>App ID</FieldLabel>
+              <FieldLabel htmlFor={field.name}>{i18n._(msg`App ID`)}</FieldLabel>
               <Input
                 id={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Your DandanPlay App ID"
+                placeholder={i18n._(msg`Your DandanPlay App ID`)}
                 className={INPUT_CLASS}
               />
               <FieldError>
@@ -90,12 +90,12 @@ function DandanPlayCard() {
         <form.Field name="appSecret">
           {(field) => (
             <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-              <FieldLabel htmlFor={field.name}>App Secret</FieldLabel>
+              <FieldLabel htmlFor={field.name}>{i18n._(msg`App Secret`)}</FieldLabel>
               <PasswordInput
                 id={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Your DandanPlay App Secret"
+                placeholder={i18n._(msg`Your DandanPlay App Secret`)}
                 className={INPUT_CLASS}
               />
               <FieldError>
@@ -108,6 +108,190 @@ function DandanPlayCard() {
         </form.Field>
 
         <div className="flex justify-end">
+          <form.Subscribe selector={(s) => s.isSubmitting}>
+            {(isSubmitting) => (
+              <Button type="submit" disabled={saveMutation.isPending || isSubmitting}>
+                {saveMutation.isPending || isSubmitting
+                  ? i18n._(msg`settings.saving`)
+                  : i18n._(msg`settings.save`)}
+              </Button>
+            )}
+          </form.Subscribe>
+        </div>
+      </form>
+    </SettingsCard>
+  );
+}
+
+// ─── TMDB Card ───────────────────────────────────────────────────────────────
+
+function readTMDBAPIKey(value: unknown): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object' && 'api_key' in value) {
+    const k = (value as { api_key?: unknown }).api_key;
+    return typeof k === 'string' ? k : '';
+  }
+  return '';
+}
+
+function readTMDBAccessToken(value: unknown): string {
+  if (!value || typeof value === 'string') return '';
+  if (typeof value === 'object' && 'access_token' in value) {
+    const t = (value as { access_token?: unknown }).access_token;
+    return typeof t === 'string' ? t : '';
+  }
+  return '';
+}
+
+function TMDBCard() {
+  const { i18n } = useLingui();
+  const queryClient = useQueryClient();
+
+  const { data: settings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get<Record<string, any>>('/api/v1/settings'),
+  });
+
+  const form = useForm({
+    defaultValues: { apiKey: '', accessToken: '' },
+    onSubmit: async ({ value }) => {
+      await saveMutation.mutateAsync({
+        api_key: value.apiKey.trim(),
+        access_token: value.accessToken.trim(),
+      });
+    },
+  });
+
+  const tmdbSection = settings?.tmdb_api_key;
+  useEffect(() => {
+    if (tmdbSection !== undefined) {
+      form.reset({
+        apiKey: readTMDBAPIKey(tmdbSection),
+        accessToken: readTMDBAccessToken(tmdbSection),
+      });
+    }
+  }, [tmdbSection, form.reset]);
+
+  const saveMutation = useMutation({
+    mutationFn: (data: { api_key: string; access_token: string }) =>
+      api.put('/api/v1/settings/tmdb_api_key', data),
+    onSuccess: () => {
+      toast.success(i18n._(msg`settings.saved`));
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+    },
+    onError: () => toast.error(i18n._(msg`settings.saveFailed`)),
+  });
+
+  const testMutation = useMutation({
+    mutationFn: (data: { api_key: string; access_token: string }) =>
+      api.post<{ ok: boolean; error?: string }>('/api/v1/integrations/tmdb/test', data),
+    onSuccess: (res) => {
+      if (res.ok) {
+        toast.success(i18n._(msg`TMDB connection successful`));
+      } else {
+        toast.error(res.error || i18n._(msg`TMDB connection failed`));
+      }
+    },
+    onError: () => toast.error(i18n._(msg`TMDB connection failed`)),
+  });
+
+  return (
+    <SettingsCard label="TMDB">
+      <div className="mb-4">
+        <form.Subscribe
+          selector={(s) =>
+            s.values.apiKey.trim().length > 0 || s.values.accessToken.trim().length > 0
+          }
+        >
+          {(connected) => (
+            <ConnectionBadge
+              connected={connected}
+              connectedText={i18n._(msg`Configured`)}
+              disconnectedText={i18n._(msg`Not configured`)}
+            />
+          )}
+        </form.Subscribe>
+      </div>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+        className="space-y-4"
+      >
+        <form.Field name="apiKey">
+          {(field) => (
+            <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <FieldLabel htmlFor={field.name}>{i18n._(msg`API Key`)}</FieldLabel>
+              <PasswordInput
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={i18n._(msg`TMDB v3 API key`)}
+                className={INPUT_CLASS}
+              />
+              <FieldError>
+                {field.state.meta.isTouched && field.state.meta.errors[0]
+                  ? String(field.state.meta.errors[0])
+                  : null}
+              </FieldError>
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="accessToken">
+          {(field) => (
+            <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
+              <FieldLabel htmlFor={field.name}>{i18n._(msg`API Read Access Token`)}</FieldLabel>
+              <PasswordInput
+                multiline
+                rows={3}
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={i18n._(msg`TMDB API Read Access Token`)}
+                className={INPUT_CLASS}
+              />
+              <FieldError>
+                {field.state.meta.isTouched && field.state.meta.errors[0]
+                  ? String(field.state.meta.errors[0])
+                  : null}
+              </FieldError>
+            </Field>
+          )}
+        </form.Field>
+
+        <p className="text-xs leading-relaxed text-white/45">
+          {i18n._(
+            msg`Used for TMDB fallback matching and localized episode metadata based on your UI language. Read Access Token is preferred; v3 API key is still supported. Leave both blank to disable TMDB.`
+          )}
+        </p>
+
+        <div className="flex justify-end gap-2">
+          <form.Subscribe
+            selector={(s) => ({
+              apiKey: s.values.apiKey.trim(),
+              accessToken: s.values.accessToken.trim(),
+            })}
+          >
+            {({ apiKey, accessToken }) => {
+              const hasCreds = apiKey.length > 0 || accessToken.length > 0;
+              return (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!hasCreds || testMutation.isPending}
+                  onClick={() =>
+                    testMutation.mutate({ api_key: apiKey, access_token: accessToken })
+                  }
+                >
+                  {testMutation.isPending ? i18n._(msg`Testing…`) : i18n._(msg`Test connection`)}
+                </Button>
+              );
+            }}
+          </form.Subscribe>
           <form.Subscribe selector={(s) => s.isSubmitting}>
             {(isSubmitting) => (
               <Button type="submit" disabled={saveMutation.isPending || isSubmitting}>
@@ -157,9 +341,9 @@ function SyncStatusBlock({ status }: { status: SyncProviderStatus }) {
             <span className="ml-1 text-white/40">({status.last_errors.length})</span>
           </summary>
           <ul className="mt-2 space-y-1.5">
-            {status.last_errors.slice(0, 5).map((err, idx) => (
+            {status.last_errors.slice(0, 5).map((err) => (
               <li
-                key={`${err.anime_id}-${err.at}-${idx}`}
+                key={`${err.anime_id}-${err.at}-${err.error}`}
                 className="rounded border border-white/[0.06] bg-black/20 px-2 py-1.5"
               >
                 <div className="flex items-center justify-between gap-2">
@@ -465,7 +649,7 @@ function OAuthProviderCard({ provider, label }: { provider: SyncProvider; label:
         clientSecret: settings[oauthKey].client_secret ?? '',
       });
     }
-  }, [settings, oauthKey]);
+  }, [settings, oauthKey, form.reset]);
 
   const saveCredsMutation = useMutation({
     mutationFn: (data: { client_id: string; client_secret: string }) =>
@@ -534,12 +718,14 @@ function OAuthProviderCard({ provider, label }: { provider: SyncProvider; label:
         <form.Field name="clientId">
           {(field) => (
             <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-              <FieldLabel htmlFor={`${provider}-${field.name}`}>Client ID</FieldLabel>
+              <FieldLabel htmlFor={`${provider}-${field.name}`}>
+                {i18n._(msg`Client ID`)}
+              </FieldLabel>
               <Input
                 id={`${provider}-${field.name}`}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder={`Your ${label} Client ID`}
+                placeholder={i18n._(msg`Your ${label} Client ID`)}
                 className={INPUT_CLASS}
               />
               <FieldError>
@@ -554,12 +740,14 @@ function OAuthProviderCard({ provider, label }: { provider: SyncProvider; label:
         <form.Field name="clientSecret">
           {(field) => (
             <Field data-invalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}>
-              <FieldLabel htmlFor={`${provider}-${field.name}`}>Client Secret</FieldLabel>
+              <FieldLabel htmlFor={`${provider}-${field.name}`}>
+                {i18n._(msg`Client Secret`)}
+              </FieldLabel>
               <PasswordInput
                 id={`${provider}-${field.name}`}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder={`Your ${label} Client Secret`}
+                placeholder={i18n._(msg`Your ${label} Client Secret`)}
                 className={INPUT_CLASS}
               />
               <FieldError>
@@ -647,7 +835,9 @@ export function IntegrationsPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.integrations`)}</h2>
+        <h2 className="text-xl font-semibold text-white">
+          {i18n._(msg`settings.nav.integrations`)}
+        </h2>
         <p className="mt-1 text-sm text-white/40">
           {i18n._(msg`settings.integrations.description`)}
         </p>
@@ -655,6 +845,10 @@ export function IntegrationsPanel() {
 
       <div className="space-y-4">
         <DandanPlayCard />
+      </div>
+
+      <div className="space-y-4">
+        <TMDBCard />
       </div>
 
       <div className="space-y-4">

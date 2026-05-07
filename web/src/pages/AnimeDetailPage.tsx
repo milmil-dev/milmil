@@ -172,7 +172,7 @@ function CharacterCard({ entry, cvLabel }: { entry: AnimeCharacter; cvLabel: str
         )}
         {/* Role badge */}
         {isMain && (
-          <span className="ml-auto text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-mm-accent/15 text-mm-accent shrink-0">
+          <span className="ml-auto text-[9px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-mm-accent/15 text-mm-accent shrink-0">
             MAIN
           </span>
         )}
@@ -961,7 +961,9 @@ export function AnimeDetailPage() {
               {episodeList.length > 0 && (
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-3 mb-4">
-                    <h2 className="text-lg font-bold text-white">{i18n._(msg`anime.episodes`)}</h2>
+                    <h2 className="text-lg font-semibold text-white">
+                      {i18n._(msg`anime.episodes`)}
+                    </h2>
                     <span className="text-[13px] text-mm-text-muted tabular-nums">
                       {episodeList.length} {i18n._(msg`common.ep`)}
                     </span>
@@ -976,7 +978,7 @@ export function AnimeDetailPage() {
                       >
                         <EpisodeListItem
                           sort={ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
-                          title={ep.title_zh || ep.title || `Episode ${ep.sort}`}
+                          title={ep.title_zh || ep.title || ''}
                           titleOriginal={ep.title ?? undefined}
                           synopsis={(ep.synopsis_zh || ep.synopsis) ?? undefined}
                           image={ep.image ?? undefined}
@@ -1006,7 +1008,7 @@ export function AnimeDetailPage() {
               {/* Trailer — right column, sticky */}
               {anime.trailer_url && (
                 <div className="lg:w-[360px] xl:w-[420px] shrink-0">
-                  <h2 className="text-lg font-bold text-white mb-4">
+                  <h2 className="text-lg font-semibold text-white mb-4">
                     {i18n._(msg`anime.trailer`)}
                   </h2>
                   <div className="lg:sticky lg:top-6">
@@ -1037,7 +1039,9 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.28 }}
             className="px-4 md:px-8 py-6"
           >
-            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.characters`)}</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">
+              {i18n._(msg`anime.characters`)}
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {anime.characters.map((c: AnimeCharacter) => (
                 <CharacterCard
@@ -1060,7 +1064,7 @@ export function AnimeDetailPage() {
                 transition={{ delay: 0.3 }}
                 className="px-4 md:px-8 py-6"
               >
-                <h2 className="text-lg font-bold text-white mb-4">
+                <h2 className="text-lg font-semibold text-white mb-4">
                   {i18n._(msg`anime.sideStories`)}
                 </h2>
                 <MediaRail>
@@ -1091,7 +1095,7 @@ export function AnimeDetailPage() {
                           </Link>
                         )}
                         <p className="text-xs text-white/70 mt-1.5 line-clamp-2">{entry.title}</p>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-0.5">
+                        <p className="text-[10px] font-medium uppercase tracking-wider text-mm-accent/60 mt-0.5">
                           {entry.media_type ||
                             getRelationLabel(entry.relation_type || '', i18n.locale)}
                         </p>
@@ -1110,7 +1114,7 @@ export function AnimeDetailPage() {
                 transition={{ delay: 0.3 }}
                 className="px-4 md:px-8 py-6"
               >
-                <h2 className="text-lg font-bold text-white mb-4">
+                <h2 className="text-lg font-semibold text-white mb-4">
                   {i18n._(msg`anime.relations`)}
                 </h2>
                 <MediaRail>
@@ -1120,7 +1124,7 @@ export function AnimeDetailPage() {
                       className="shrink-0 w-[150px]"
                     >
                       <AnimeCard anime={rel.anime} />
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-mm-accent/60 mt-1">
+                      <p className="text-[10px] font-medium uppercase tracking-wider text-mm-accent/60 mt-1">
                         {getRelationLabel(rel.relation_type, i18n.locale)}
                       </p>
                     </div>
@@ -1140,7 +1144,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.35 }}
             className="px-4 md:px-8 py-6"
           >
-            <h2 className="text-lg font-bold text-white mb-4">
+            <h2 className="text-lg font-semibold text-white mb-4">
               {i18n._(msg`anime.recommendations`)}
             </h2>
             <div className="grid grid-cols-3 min-[768px]:grid-cols-5 min-[1080px]:grid-cols-7 min-[1320px]:grid-cols-8 gap-3">
@@ -1179,7 +1183,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.4 }}
             className="px-4 md:px-8 py-6 pb-16"
           >
-            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.reviews`)}</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">{i18n._(msg`anime.reviews`)}</h2>
             <div className="space-y-3 max-w-2xl">
               {anime.reviews.map((review) => (
                 <a
@@ -1227,7 +1231,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.45 }}
             className="px-4 md:px-8 py-6 pb-16"
           >
-            <h2 className="text-lg font-bold text-white mb-4">{i18n._(msg`anime.comments`)}</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">{i18n._(msg`anime.comments`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl">
               {comments.map((c) => (
                 <div key={c.id} className="flex items-start gap-2.5 p-3 rounded-lg bg-white/[0.03]">

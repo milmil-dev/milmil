@@ -329,7 +329,7 @@ function DiscordCard({
             >
               <div className="space-y-3 pl-3 border-l-2 border-white/[0.06]">
                 <Field>
-                  <FieldLabel htmlFor="discord-webhook-url">Webhook URL</FieldLabel>
+                  <FieldLabel htmlFor="discord-webhook-url">{i18n._(msg`Webhook URL`)}</FieldLabel>
                   <PasswordInput
                     id="discord-webhook-url"
                     value={config.webhook_url}
@@ -380,7 +380,7 @@ function DiscordCard({
                     id="discord-bot-token"
                     value={botConfig.bot_token}
                     onChange={(e) => onBotChange({ bot_token: e.target.value })}
-                    placeholder="Bot token"
+                    placeholder={i18n._(msg`Bot token`)}
                     className={INPUT_CLASS}
                   />
                 </Field>
@@ -469,7 +469,7 @@ function TelegramCard({
       {/* Shared credentials */}
       <div className="mt-4 space-y-4">
         <Field>
-          <FieldLabel htmlFor="telegram-bot-token">Bot Token</FieldLabel>
+          <FieldLabel htmlFor="telegram-bot-token">{i18n._(msg`Bot Token`)}</FieldLabel>
           <PasswordInput
             id="telegram-bot-token"
             value={config.bot_token}
@@ -482,7 +482,7 @@ function TelegramCard({
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="telegram-chat-id">Chat ID</FieldLabel>
+          <FieldLabel htmlFor="telegram-chat-id">{i18n._(msg`Chat ID`)}</FieldLabel>
           <Input
             id="telegram-chat-id"
             value={config.chat_id}
@@ -724,7 +724,7 @@ function WebhookCard({
           >
             <div className="mt-4 space-y-4">
               <Field>
-                <FieldLabel htmlFor="webhook-url">URL</FieldLabel>
+                <FieldLabel htmlFor="webhook-url">{i18n._(msg`URL`)}</FieldLabel>
                 <PasswordInput
                   id="webhook-url"
                   value={config.url}
@@ -759,7 +759,7 @@ function WebhookCard({
                     id="webhook-secret"
                     value={config.secret}
                     onChange={(e) => onChange({ ...config, secret: e.target.value })}
-                    placeholder="HMAC signing secret (optional)"
+                    placeholder={i18n._(msg`HMAC signing secret (optional)`)}
                     className={INPUT_CLASS}
                   />
                 )}
@@ -806,7 +806,7 @@ function EventRoutingMatrix({
 
   return (
     <SettingsCard>
-      <div className="mb-3 text-xs font-semibold uppercase tracking-[1px] text-white/50">
+      <div className="mb-3 text-xs font-medium uppercase tracking-[1px] text-white/50">
         {i18n._(msg`notifications.eventRouting`)}
       </div>
 
@@ -1033,7 +1033,7 @@ export function NotificationSettingsPanel() {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-xl font-semibold text-white">
             {i18n._(msg`settings.nav.notifications`)}
           </h2>
           <p className="mt-1 text-sm text-white/40">{i18n._(msg`notifications.intro`)}</p>
@@ -1047,7 +1047,7 @@ export function NotificationSettingsPanel() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-xl font-semibold text-white">
             {i18n._(msg`settings.nav.notifications`)}
           </h2>
           <p className="mt-1 text-sm text-white/40">{i18n._(msg`notifications.intro`)}</p>

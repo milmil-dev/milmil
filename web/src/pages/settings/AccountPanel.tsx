@@ -107,7 +107,7 @@ export function AccountPanel() {
 
   return (
     <div className="w-full max-w-full">
-      <h2 className="text-xl font-bold text-white">{i18n._(msg`settings.nav.account`)}</h2>
+      <h2 className="text-xl font-semibold text-white">{i18n._(msg`settings.nav.account`)}</h2>
       <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`account.subtitle`)}</p>
 
       {/* Inner tab bar */}

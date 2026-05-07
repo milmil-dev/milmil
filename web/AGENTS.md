@@ -36,7 +36,7 @@ milmil web frontend — the React SPA that talks to the milmil Go API. Built wit
 | Linting | Biome |
 | Testing | Vitest + Testing Library + Playwright |
 | Git Hooks | Lefthook + Commitlint |
-| Fonts | Figtree (`@fontsource-variable/figtree`) |
+| Fonts | Figtree (Latin) + Noto Sans TC (CJK), both variable |
 
 ## Architecture Patterns
 
