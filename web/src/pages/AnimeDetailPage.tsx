@@ -961,7 +961,9 @@ export function AnimeDetailPage() {
               {episodeList.length > 0 && (
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-3 mb-4">
-                    <h2 className="text-lg font-semibold text-white">{i18n._(msg`anime.episodes`)}</h2>
+                    <h2 className="text-lg font-semibold text-white">
+                      {i18n._(msg`anime.episodes`)}
+                    </h2>
                     <span className="text-[13px] text-mm-text-muted tabular-nums">
                       {episodeList.length} {i18n._(msg`common.ep`)}
                     </span>
@@ -1037,7 +1039,9 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.28 }}
             className="px-4 md:px-8 py-6"
           >
-            <h2 className="text-lg font-semibold text-white mb-4">{i18n._(msg`anime.characters`)}</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">
+              {i18n._(msg`anime.characters`)}
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {anime.characters.map((c: AnimeCharacter) => (
                 <CharacterCard

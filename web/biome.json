@@ -122,6 +122,16 @@
       "assist": {
         "enabled": false
       }
+    },
+    {
+      "includes": ["src/styles/global.css", "**/src/styles/global.css"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
     }
   ]
 }

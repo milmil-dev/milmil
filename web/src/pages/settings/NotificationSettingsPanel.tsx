@@ -329,9 +329,7 @@ function DiscordCard({
             >
               <div className="space-y-3 pl-3 border-l-2 border-white/[0.06]">
                 <Field>
-                  <FieldLabel htmlFor="discord-webhook-url">
-                    {i18n._(msg`Webhook URL`)}
-                  </FieldLabel>
+                  <FieldLabel htmlFor="discord-webhook-url">{i18n._(msg`Webhook URL`)}</FieldLabel>
                   <PasswordInput
                     id="discord-webhook-url"
                     value={config.webhook_url}

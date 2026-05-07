@@ -630,7 +630,9 @@ export function RSSPage() {
       <div className="min-h-screen">
         {/* Header */}
         <div className="px-8 pt-12 pb-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">milmil</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">
+            milmil
+          </p>
           <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">
             RSS Feeds &amp; Rules
           </h1>

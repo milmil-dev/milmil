@@ -133,17 +133,13 @@ export function EpisodeListItem({
           <span className="text-[17px] font-semibold tabular-nums leading-none mt-1 text-white/80">
             {day}
           </span>
-          <span className="text-[9px] text-white/25 leading-none mt-1">
-            {weekdayShort}
-          </span>
+          <span className="text-[9px] text-white/25 leading-none mt-1">{weekdayShort}</span>
         </div>
 
         {/* Episode plate — quiet typography, no accent decoration */}
         <div className="flex-1 flex flex-col justify-center min-w-0 gap-0.5">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[10px] font-medium tracking-[0.12em] text-white/35">
-              EP
-            </span>
+            <span className="text-[10px] font-medium tracking-[0.12em] text-white/35">EP</span>
             <span className="text-[17px] font-semibold tabular-nums leading-none text-white/80 group-hover:text-white/95 transition-colors">
               {sort}
             </span>
