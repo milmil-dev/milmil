@@ -419,20 +419,22 @@ func (s *Service) SearchWithVariants(ctx context.Context, variants []string, isA
 	return merged, nil
 }
 
-func (s *Service) GetEpisodes(ctx context.Context, bangumiID int) ([]Episode, error) {
+func (s *Service) GetEpisodes(ctx context.Context, bangumiID int, refresh bool) ([]Episode, error) {
 	cacheKey := fmt.Sprintf("meta:episodes:%d", bangumiID)
-	var cached []Episode
-	if s.getCache(ctx, cacheKey, &cached) {
-		// Strip Bangumi auto-generated "第 N 集" placeholders from cached
-		// data too — entries written before the read-time filter existed
-		// still carry them, and we don't want to wait 24h for the cache
-		// to expire.
-		for i := range cached {
-			if isPlaceholderEpisodeTitle(cached[i].Title) {
-				cached[i].Title = ""
+	if !refresh {
+		var cached []Episode
+		if s.getCache(ctx, cacheKey, &cached) {
+			// Strip Bangumi auto-generated "第 N 集" placeholders from cached
+			// data too — entries written before the read-time filter existed
+			// still carry them, and we don't want to wait 24h for the cache
+			// to expire.
+			for i := range cached {
+				if isPlaceholderEpisodeTitle(cached[i].Title) {
+					cached[i].Title = ""
+				}
 			}
+			return cached, nil
 		}
-		return cached, nil
 	}
 
 	eps, err := s.bangumi.GetSubjectEpisodes(ctx, bangumiID)
@@ -669,11 +671,13 @@ func (s *Service) GetAnimeDetail(ctx context.Context, bangumiID int, refresh boo
 
 // GetAnimeDetailByAniList constructs an AnimeDetail purely from AniList data.
 // Used when no Bangumi entry exists for an anime (e.g., certain OVAs, specials).
-func (s *Service) GetAnimeDetailByAniList(ctx context.Context, anilistID int) (*AnimeDetail, error) {
+func (s *Service) GetAnimeDetailByAniList(ctx context.Context, anilistID int, refresh bool) (*AnimeDetail, error) {
 	cacheKey := fmt.Sprintf("meta:anilist:%d", anilistID)
-	var cached AnimeDetail
-	if s.getCache(ctx, cacheKey, &cached) {
-		return &cached, nil
+	if !refresh {
+		var cached AnimeDetail
+		if s.getCache(ctx, cacheKey, &cached) {
+			return &cached, nil
+		}
 	}
 
 	media, err := s.anilist.GetMedia(ctx, anilistID)
