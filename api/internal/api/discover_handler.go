@@ -22,7 +22,7 @@ func (h *handler) handleCalendar(c echo.Context) error {
 	}
 	locale := h.preferredLocale(c)
 	for i := range days {
-		h.enrichSummariesWithTMDB(ctx, days[i].Items, locale)
+		h.enrichSummariesWithTMDB(ctx, days[i].Items, locale, false)
 	}
 	return c.JSON(http.StatusOK, days)
 }
@@ -39,7 +39,7 @@ func (h *handler) handleTrending(c echo.Context) error {
 	if err != nil {
 		return mapMetadataError(err)
 	}
-	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c))
+	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c), false)
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -56,13 +56,14 @@ func (h *handler) handleSearch(c echo.Context) error {
 	if err != nil {
 		return mapMetadataError(err)
 	}
-	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c))
+	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c), false)
 	return c.JSON(http.StatusOK, results)
 }
 
 func (h *handler) handleAnimeDetail(c echo.Context) error {
 	rawID := c.Param("id")
 	ctx := c.Request().Context()
+	refresh := c.QueryParam("refresh") == "true"
 
 	// AniList-only: id starts with "al-"
 	if after, ok := strings.CutPrefix(rawID, "al-"); ok {
@@ -70,11 +71,11 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "invalid anilist id")
 		}
-		detail, err := h.metadata.GetAnimeDetailByAniList(ctx, alID)
+		detail, err := h.metadata.GetAnimeDetailByAniList(ctx, alID, refresh)
 		if err != nil {
 			return mapMetadataError(err)
 		}
-		h.enrichAnimeDetailWithTMDB(ctx, detail, h.preferredLocale(c))
+		h.enrichAnimeDetailWithTMDB(ctx, detail, h.preferredLocale(c), refresh)
 		return c.JSON(http.StatusOK, detail)
 	}
 
@@ -82,11 +83,11 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
-	detail, err := h.metadata.GetAnimeDetail(ctx, id)
+	detail, err := h.metadata.GetAnimeDetail(ctx, id, refresh)
 	if err != nil {
 		return mapMetadataError(err)
 	}
-	h.enrichAnimeDetailWithTMDB(ctx, detail, h.preferredLocale(c))
+	h.enrichAnimeDetailWithTMDB(ctx, detail, h.preferredLocale(c), refresh)
 	return c.JSON(http.StatusOK, detail)
 }
 
@@ -138,7 +139,7 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 		if err != nil {
 			return mapMetadataError(err)
 		}
-		h.enrichSummariesWithTMDB(ctx, results, locale)
+		h.enrichSummariesWithTMDB(ctx, results, locale, false)
 		return c.JSON(http.StatusOK, results)
 	}
 
@@ -169,7 +170,7 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 	if err != nil {
 		return mapMetadataError(err)
 	}
-	h.enrichSummariesWithTMDB(ctx, results, locale)
+	h.enrichSummariesWithTMDB(ctx, results, locale, false)
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -193,7 +194,7 @@ func (h *handler) handleBrowseByTag(c echo.Context) error {
 	if err != nil {
 		return mapMetadataError(err)
 	}
-	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c))
+	h.enrichSummariesWithTMDB(ctx, results, h.preferredLocale(c), false)
 	return c.JSON(http.StatusOK, results)
 }
 
@@ -231,12 +232,13 @@ func (h *handler) handleAnimeEpisodes(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
+	refresh := c.QueryParam("refresh") == "true"
 	ctx := c.Request().Context()
-	eps, err := h.metadata.GetEpisodes(ctx, id)
+	eps, err := h.metadata.GetEpisodes(ctx, id, refresh)
 	if err != nil {
 		return mapMetadataError(err)
 	}
-	h.enrichEpisodesWithTMDB(ctx, eps, id, h.preferredLocale(c))
+	h.enrichEpisodesWithTMDB(ctx, eps, id, h.preferredLocale(c), refresh)
 	return c.JSON(http.StatusOK, eps)
 }
 

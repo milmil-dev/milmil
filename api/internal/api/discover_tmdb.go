@@ -128,7 +128,7 @@ func localeNeedsTMDBOverride(locale string) bool {
 // Score, AirDate, Genres, BangumiID — anything Bangumi/AniList already curate
 // well — are left alone. Failures are non-fatal: any per-item error degrades
 // gracefully to whatever the metadata service already returned.
-func (h *handler) enrichSummariesWithTMDB(ctx context.Context, summaries []metadata.AnimeSummary, locale string) {
+func (h *handler) enrichSummariesWithTMDB(ctx context.Context, summaries []metadata.AnimeSummary, locale string, refresh bool) {
 	client := h.tmdbClient()
 	if client == nil || len(summaries) == 0 {
 		return
@@ -154,17 +154,14 @@ func (h *handler) enrichSummariesWithTMDB(ctx context.Context, summaries []metad
 			if err != nil || tmdbID == 0 {
 				return nil
 			}
-			show, err := h.fetchTMDBLocalizedShow(gctx, client, tmdbID, locale)
+			show, err := h.fetchTMDBLocalizedShow(gctx, client, tmdbID, locale, refresh)
 			if err != nil || show == nil {
 				return nil
 			}
 			if show.Name != "" {
 				summaries[i].Title = show.Name
 			}
-			// Description override walks the fallback chain — TMDB often
-			// has zh-CN even when zh-TW is empty, and that beats raw
-			// Japanese for a 繁中 user.
-			if overview := h.fetchTMDBSynopsisWithFallback(gctx, client, tmdbID, locale); overview != "" {
+			if overview := h.fetchTMDBSynopsisWithFallback(gctx, client, tmdbID, locale, refresh); overview != "" {
 				summaries[i].Description = overview
 			}
 			return nil
@@ -189,7 +186,7 @@ func (h *handler) enrichSummariesWithTMDB(ctx context.Context, summaries []metad
 // /discover/anime/:id call). If not cached, skip — we don't want to add a
 // blocking SearchTV roundtrip just to render episodes; the detail call
 // already does that work and warms the cache.
-func (h *handler) enrichEpisodesWithTMDB(ctx context.Context, eps []metadata.Episode, bangumiID int, locale string) {
+func (h *handler) enrichEpisodesWithTMDB(ctx context.Context, eps []metadata.Episode, bangumiID int, locale string, refresh bool) {
 	client := h.tmdbClient()
 	if client == nil || !localeNeedsTMDBOverride(locale) || len(eps) == 0 {
 		return
@@ -204,19 +201,14 @@ func (h *handler) enrichEpisodesWithTMDB(ctx context.Context, eps []metadata.Epi
 	if tmdbID == 0 {
 		return
 	}
-	// Fetch the show metadata once so we know its season layout. Locale
-	// here is just for cache reuse — we only need the seasons[] slice,
-	// which is locale-blind.
-	show, err := h.fetchTMDBLocalizedShow(ctx, client, tmdbID, locale)
+	show, err := h.fetchTMDBLocalizedShow(ctx, client, tmdbID, locale, refresh)
 	if err != nil || show == nil {
 		return
 	}
 
-	// Find the right TMDB season for each Bangumi episode and group lookups
-	// by season so we fetch each season's full episode list at most once.
 	seasonForEpisode := make(map[int]struct {
-		Season   int
-		Episode  int
+		Season  int
+		Episode int
 	})
 	for i := range eps {
 		n := int(eps[i].Sort)
@@ -236,15 +228,13 @@ func (h *handler) enrichEpisodesWithTMDB(ctx context.Context, eps []metadata.Epi
 		return
 	}
 
-	// Group required season numbers and fetch each one (cached) in the
-	// requested locale.
 	needed := make(map[int]bool)
 	for _, m := range seasonForEpisode {
 		needed[m.Season] = true
 	}
 	seasons := make(map[int]map[int]tmdb.TVEpisode, len(needed))
 	for sn := range needed {
-		s, ok := h.fetchTMDBLocalizedSeason(ctx, client, tmdbID, sn, locale)
+		s, ok := h.fetchTMDBLocalizedSeason(ctx, client, tmdbID, sn, locale, refresh)
 		if !ok {
 			continue
 		}
@@ -264,10 +254,6 @@ func (h *handler) enrichEpisodesWithTMDB(ctx context.Context, eps []metadata.Epi
 		if !ok {
 			continue
 		}
-		// Skip TMDB's auto-generated "第 N 集" placeholder titles — TMDB
-		// fills the same shape Bangumi does for unaired/untitled episodes,
-		// and overwriting our already-cleared field with that placeholder
-		// would re-introduce the duplicate-of-the-badge UI bug.
 		if te.Name != "" && !isPlaceholderEpisodeTitleString(te.Name) {
 			eps[i].Title = te.Name
 		}
@@ -323,12 +309,14 @@ func mapEpisodeToTMDBSeason(seasons []tmdb.SeasonInfo, n int) (int, int, bool) {
 	return 0, 0, false
 }
 
-func (h *handler) fetchTMDBLocalizedSeason(ctx context.Context, client tmdb.Client, tmdbID, seasonNumber int, locale string) (*tmdb.Season, bool) {
+func (h *handler) fetchTMDBLocalizedSeason(ctx context.Context, client tmdb.Client, tmdbID, seasonNumber int, locale string, refresh bool) (*tmdb.Season, bool) {
 	cacheKey := fmt.Sprintf("tmdb:season:%s:%d:%d:%s", xrefVersion, tmdbID, seasonNumber, locale)
-	if data, err := h.cache.Get(ctx, cacheKey); err == nil {
-		var cached tmdb.Season
-		if json.Unmarshal(data, &cached) == nil && len(cached.Episodes) > 0 {
-			return &cached, true
+	if !refresh {
+		if data, err := h.cache.Get(ctx, cacheKey); err == nil {
+			var cached tmdb.Season
+			if json.Unmarshal(data, &cached) == nil && len(cached.Episodes) > 0 {
+				return &cached, true
+			}
 		}
 	}
 	season, err := client.GetTVSeason(ctx, tmdbID, seasonNumber, locale)
@@ -343,7 +331,7 @@ func (h *handler) fetchTMDBLocalizedSeason(ctx context.Context, client tmdb.Clie
 
 // enrichAnimeDetailWithTMDB applies TMDB enrichment across the detail's own
 // summary fields, the standalone Synopsis, recommendations, and relations.
-func (h *handler) enrichAnimeDetailWithTMDB(ctx context.Context, detail *metadata.AnimeDetail, locale string) {
+func (h *handler) enrichAnimeDetailWithTMDB(ctx context.Context, detail *metadata.AnimeDetail, locale string, refresh bool) {
 	if detail == nil {
 		return
 	}
@@ -352,35 +340,30 @@ func (h *handler) enrichAnimeDetailWithTMDB(ctx context.Context, detail *metadat
 		return
 	}
 	primary := []metadata.AnimeSummary{detail.AnimeSummary}
-	h.enrichSummariesWithTMDB(ctx, primary, locale)
+	h.enrichSummariesWithTMDB(ctx, primary, locale, refresh)
 	detail.AnimeSummary = primary[0]
 
-	// AnimeDetail.Synopsis is a separate top-level field (the frontend reads
-	// this, not Description). Re-fetch the localized show so we can overlay
-	// it with TMDB's overview when available. The lookup hits the same
-	// caches enrichSummariesWithTMDB just populated, so this is essentially
-	// free.
 	searchQuery := detail.TitleOriginal
 	if searchQuery == "" {
 		searchQuery = detail.Title
 	}
 	if searchQuery != "" {
 		if tmdbID, err := h.lookupTMDBID(ctx, client, detail.AniListID, detail.BangumiID, searchQuery); err == nil && tmdbID > 0 {
-			if overview := h.fetchTMDBSynopsisWithFallback(ctx, client, tmdbID, locale); overview != "" {
+			if overview := h.fetchTMDBSynopsisWithFallback(ctx, client, tmdbID, locale, refresh); overview != "" {
 				detail.Synopsis = overview
 			}
 		}
 	}
 
 	if len(detail.Recommendations) > 0 {
-		h.enrichSummariesWithTMDB(ctx, detail.Recommendations, locale)
+		h.enrichSummariesWithTMDB(ctx, detail.Recommendations, locale, refresh)
 	}
 	if len(detail.Relations) > 0 {
 		rels := make([]metadata.AnimeSummary, len(detail.Relations))
 		for i, r := range detail.Relations {
 			rels[i] = r.Anime
 		}
-		h.enrichSummariesWithTMDB(ctx, rels, locale)
+		h.enrichSummariesWithTMDB(ctx, rels, locale, refresh)
 		for i := range detail.Relations {
 			detail.Relations[i].Anime = rels[i]
 		}
@@ -489,12 +472,14 @@ func stripSeasonSuffix(s string) string {
 // Seasons[] before that field was added to TVShow) don't keep masking real
 // data — the seasons[] missing case looked identical to "TMDB has no
 // season layout", which silently disabled episode enrichment.
-func (h *handler) fetchTMDBLocalizedShow(ctx context.Context, client tmdb.Client, tmdbID int, locale string) (*tmdb.TVShow, error) {
+func (h *handler) fetchTMDBLocalizedShow(ctx context.Context, client tmdb.Client, tmdbID int, locale string, refresh bool) (*tmdb.TVShow, error) {
 	cacheKey := fmt.Sprintf("tmdb:tv:%s:%d:%s", xrefVersion, tmdbID, locale)
-	if data, err := h.cache.Get(ctx, cacheKey); err == nil {
-		var cached tmdb.TVShow
-		if json.Unmarshal(data, &cached) == nil {
-			return &cached, nil
+	if !refresh {
+		if data, err := h.cache.Get(ctx, cacheKey); err == nil {
+			var cached tmdb.TVShow
+			if json.Unmarshal(data, &cached) == nil {
+				return &cached, nil
+			}
 		}
 	}
 	show, err := client.GetTVDetails(ctx, tmdbID, locale)
@@ -533,9 +518,9 @@ func synopsisFallbackChain(locale string) []string {
 // fetchTMDBSynopsisWithFallback walks the locale fallback chain and returns
 // the first non-empty Overview. Each locale's response is cached separately
 // via fetchTMDBLocalizedShow, so repeated misses don't re-hit TMDB.
-func (h *handler) fetchTMDBSynopsisWithFallback(ctx context.Context, client tmdb.Client, tmdbID int, locale string) string {
+func (h *handler) fetchTMDBSynopsisWithFallback(ctx context.Context, client tmdb.Client, tmdbID int, locale string, refresh bool) string {
 	for _, l := range synopsisFallbackChain(locale) {
-		show, err := h.fetchTMDBLocalizedShow(ctx, client, tmdbID, l)
+		show, err := h.fetchTMDBLocalizedShow(ctx, client, tmdbID, l, refresh)
 		if err != nil || show == nil {
 			continue
 		}
