@@ -553,11 +553,13 @@ func (s *Service) GetComments(ctx context.Context, bangumiID int) ([]BangumiComm
 	return result, nil
 }
 
-func (s *Service) GetAnimeDetail(ctx context.Context, bangumiID int) (*AnimeDetail, error) {
+func (s *Service) GetAnimeDetail(ctx context.Context, bangumiID int, refresh bool) (*AnimeDetail, error) {
 	cacheKey := fmt.Sprintf("meta:bangumi:%d", bangumiID)
-	var cached AnimeDetail
-	if s.getCache(ctx, cacheKey, &cached) {
-		return &cached, nil
+	if !refresh {
+		var cached AnimeDetail
+		if s.getCache(ctx, cacheKey, &cached) {
+			return &cached, nil
+		}
 	}
 
 	sub, err := s.bangumi.GetSubject(ctx, bangumiID)

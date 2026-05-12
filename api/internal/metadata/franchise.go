@@ -28,7 +28,7 @@ type franchiseNode struct {
 }
 
 func (s *Service) GetFranchise(ctx context.Context, bangumiID int) (*FranchiseResult, error) {
-	detail, err := s.GetAnimeDetail(ctx, bangumiID)
+	detail, err := s.GetAnimeDetail(ctx, bangumiID, false)
 	if err != nil {
 		return nil, err
 	}
