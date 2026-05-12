@@ -22,7 +22,7 @@ func (h *handler) handleAnimeTorrents(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	// Fetch anime detail to get title variants for searching.
-	detail, err := h.metadata.GetAnimeDetail(ctx, bangumiID)
+	detail, err := h.metadata.GetAnimeDetail(ctx, bangumiID, false)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadGateway, "failed to fetch anime detail: "+err.Error())
 	}
