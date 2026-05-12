@@ -204,27 +204,17 @@ msgstr "{missingCount} missing episodes"
 msgid "← Back to library"
 msgstr "← Back to library"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AboutPanel.tsx:61
-msgid "/7toGw"
-msgstr "about.dismiss"
-
-#: src/pages/settings/AboutPanel.tsx:61
-#~ msgid "about.dismiss"
-#~ msgstr "Dismiss"
+msgid "about.dismiss"
+msgstr "Dismiss"
 
 #: src/pages/settings/AboutPanel.tsx:182
 msgid "about.export"
 msgstr "Export"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AboutPanel.tsx:101
-msgid "n+o5cV"
-msgstr "about.exportFailed"
-
-#: src/pages/settings/AboutPanel.tsx:101
-#~ msgid "about.exportFailed"
-#~ msgstr "Export failed"
+msgid "about.exportFailed"
+msgstr "Export failed"
 
 #: src/pages/settings/AboutPanel.tsx:175
 msgid "about.exportSettings"
@@ -238,29 +228,18 @@ msgstr "Download your settings as a JSON file"
 msgid "about.exportSuccess"
 msgstr "Settings exported"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AboutPanel.tsx:197
 #: src/pages/settings/AboutPanel.tsx:251
-msgid "zSJ/ya"
-msgstr "about.import"
-
-#: src/pages/settings/AboutPanel.tsx:197
-#: src/pages/settings/AboutPanel.tsx:251
-#~ msgid "about.import"
-#~ msgstr "Import"
+msgid "about.import"
+msgstr "Import"
 
 #: src/pages/settings/AboutPanel.tsx:244
 msgid "about.importConfirmDesc"
 msgstr "This will overwrite your current settings. This cannot be undone."
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AboutPanel.tsx:243
-msgid "uZhC/c"
-msgstr "about.importConfirmTitle"
-
-#: src/pages/settings/AboutPanel.tsx:243
-#~ msgid "about.importConfirmTitle"
-#~ msgstr "Import settings?"
+msgid "about.importConfirmTitle"
+msgstr "Import settings?"
 
 #: src/pages/settings/AboutPanel.tsx:123
 msgid "about.importFailed"
@@ -270,14 +249,9 @@ msgstr "Import failed"
 msgid "about.importSettings"
 msgstr "Import Settings"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AboutPanel.tsx:192
-msgid "1Dz3t/"
-msgstr "about.importSettingsDesc"
-
-#: src/pages/settings/AboutPanel.tsx:192
-#~ msgid "about.importSettingsDesc"
-#~ msgstr "Restore settings from a JSON file"
+msgid "about.importSettingsDesc"
+msgstr "Restore settings from a JSON file"
 
 #: src/pages/settings/AboutPanel.tsx:121
 msgid "about.importSuccess"
@@ -380,14 +354,9 @@ msgstr "Scan this QR code with your authenticator app, then enter the 6-digit co
 msgid "account.2fa.setupFailed"
 msgstr "Failed to set up 2FA"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AccountPanel.tsx:399
-msgid "nQ8+Xp"
-msgstr "account.2fa.statusDisabled"
-
-#: src/pages/settings/AccountPanel.tsx:399
-#~ msgid "account.2fa.statusDisabled"
-#~ msgstr "Disabled"
+msgid "account.2fa.statusDisabled"
+msgstr "Disabled"
 
 #: src/pages/settings/AccountPanel.tsx:396
 msgid "account.2fa.statusEnabled"
@@ -401,14 +370,9 @@ msgstr "Pending verification"
 msgid "account.2fa.title"
 msgstr "Two-Factor Authentication"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AccountPanel.tsx:446
-msgid "wnlZ/0"
-msgstr "account.2fa.verificationCode"
-
-#: src/pages/settings/AccountPanel.tsx:446
-#~ msgid "account.2fa.verificationCode"
-#~ msgstr "Verification Code"
+msgid "account.2fa.verificationCode"
+msgstr "Verification Code"
 
 #: src/pages/settings/AccountPanel.tsx:474
 msgid "account.2fa.verifyEnable"
@@ -470,23 +434,13 @@ msgstr "Failed to update password"
 msgid "account.profile"
 msgstr "Profile"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AccountPanel.tsx:111
-msgid "/zGZ2q"
-msgstr "account.subtitle"
-
-#: src/pages/settings/AccountPanel.tsx:111
-#~ msgid "account.subtitle"
-#~ msgstr "Manage your profile and security"
-
-#. js-lingui-explicit-id
-#: src/pages/settings/AccountPanel.tsx:62
-msgid "+uUyg2"
-msgstr "account.tab.account"
+msgid "account.subtitle"
+msgstr "Manage your profile and security"
 
 #: src/pages/settings/AccountPanel.tsx:62
-#~ msgid "account.tab.account"
-#~ msgstr "Account"
+msgid "account.tab.account"
+msgstr "Account"
 
 #: src/pages/settings/AccountPanel.tsx:64
 msgid "account.tab.sessions"
@@ -496,41 +450,31 @@ msgstr "Sessions"
 msgid "account.tab.tokens"
 msgstr "API Tokens"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AccountPanel.tsx:281
-msgid "QKh+xV"
-msgstr "account.updatePassword"
-
-#: src/pages/settings/AccountPanel.tsx:281
-#~ msgid "account.updatePassword"
-#~ msgstr "Update Password"
+msgid "account.updatePassword"
+msgstr "Update Password"
 
 #: src/pages/settings/AccountPanel.tsx:280
 msgid "account.updating"
 msgstr "Updating..."
 
-#. js-lingui-explicit-id
 #: src/pages/library/LibraryDuplicatesPage.tsx:83
-msgid "0NCJ/8"
+msgid "Anime"
 msgstr "Anime"
 
-#: src/pages/library/LibraryDuplicatesPage.tsx:83
-#~ msgid "Anime"
-#~ msgstr "Anime"
-
-#: src/pages/AnimeDetailPage.tsx:725
+#: src/pages/AnimeDetailPage.tsx:690
 msgid "anime.addToCollection"
 msgstr "Add to Collection"
 
-#: src/pages/AnimeDetailPage.tsx:1078
+#: src/pages/AnimeDetailPage.tsx:1040
 msgid "anime.characters"
 msgstr "Characters"
 
-#: src/pages/AnimeDetailPage.tsx:266
+#: src/pages/AnimeDetailPage.tsx:264
 msgid "anime.collectionUpdated"
 msgstr "Collection updated"
 
-#: src/pages/AnimeDetailPage.tsx:1269
+#: src/pages/AnimeDetailPage.tsx:1230
 msgid "anime.comments"
 msgstr "Comments"
 
@@ -538,7 +482,7 @@ msgstr "Comments"
 #~ msgid "anime.continueWatching"
 #~ msgstr "Continue Watching"
 
-#: src/pages/AnimeDetailPage.tsx:767
+#: src/pages/AnimeDetailPage.tsx:732
 msgid "anime.enableTrackerSync"
 msgstr "anime.enableTrackerSync"
 
@@ -547,26 +491,17 @@ msgstr "anime.enableTrackerSync"
 #~ msgstr "Episode"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:1000
+#: src/pages/AnimeDetailPage.tsx:964
 msgid "anime.episodes"
 msgstr "Episodes"
 
-#. js-lingui-explicit-id
-#: src/pages/AnimeDetailPage.tsx:768
-msgid "NY/yQ2"
-msgstr "anime.excludeTrackerSync"
-
 #: src/pages/AnimeDetailPage.tsx:733
-#~ msgid "anime.excludeTrackerSync"
-#~ msgstr "anime.excludeTrackerSync"
+msgid "anime.excludeTrackerSync"
+msgstr "anime.excludeTrackerSync"
 
 #: src/pages/AnimeDetailPage.tsx:587
 #~ msgid "anime.inCollection"
 #~ msgstr "In Collection"
-
-#: src/pages/AnimeDetailPage.tsx:300
-msgid "anime.metaRefreshed"
-msgstr "anime.metaRefreshed"
 
 #: src/pages/AnimeDetailPage.tsx:782
 #~ msgid "anime.myScore"
@@ -575,70 +510,55 @@ msgstr "anime.metaRefreshed"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:579
+#: src/pages/AnimeDetailPage.tsx:544
 msgid "anime.notAired"
 msgstr "Not Yet Aired"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:331
 msgid "anime.notFound"
 msgstr "Anime not found"
 
-#: src/pages/AnimeDetailPage.tsx:592
+#: src/pages/AnimeDetailPage.tsx:557
 msgid "anime.playableEps"
 msgstr "playable eps"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:572
+#: src/pages/AnimeDetailPage.tsx:537
 msgid "anime.ratings"
 msgstr "ratings"
 
-#: src/pages/AnimeDetailPage.tsx:1183
+#: src/pages/AnimeDetailPage.tsx:1144
 msgid "anime.recommendations"
 msgstr "Recommended"
 
-#: src/pages/AnimeDetailPage.tsx:414
-#: src/pages/AnimeDetailPage.tsx:415
-msgid "anime.refreshMeta"
-msgstr "anime.refreshMeta"
-
-#: src/pages/AnimeDetailPage.tsx:1153
+#: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.relations"
 msgstr "Related"
 
-#. js-lingui-explicit-id
-#: src/pages/AnimeDetailPage.tsx:1221
-msgid "+WZCs1"
-msgstr "anime.reviews"
-
 #: src/pages/AnimeDetailPage.tsx:1182
-#~ msgid "anime.reviews"
-#~ msgstr "Reviews"
+msgid "anime.reviews"
+msgstr "Reviews"
 
 #: src/pages/AnimeDetailPage.tsx:152
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:750
+#: src/pages/AnimeDetailPage.tsx:715
 msgid "anime.searchResources"
 msgstr "Search Resources"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
-#: src/pages/AnimeDetailPage.tsx:1103
+#: src/pages/AnimeDetailPage.tsx:1064
 msgid "anime.sideStories"
 msgstr "Side Stories & Movies"
 
-#. js-lingui-explicit-id
-#: src/pages/AnimeDetailPage.tsx:586
-msgid "nVJD+Z"
-msgstr "anime.subscribed"
-
 #: src/pages/AnimeDetailPage.tsx:551
-#~ msgid "anime.subscribed"
-#~ msgstr "Following"
+msgid "anime.subscribed"
+msgstr "Following"
 
-#: src/pages/AnimeDetailPage.tsx:282
+#: src/pages/AnimeDetailPage.tsx:280
 msgid "anime.syncFlagsUpdated"
 msgstr "anime.syncFlagsUpdated"
 
@@ -647,11 +567,11 @@ msgstr "anime.syncFlagsUpdated"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:1047
+#: src/pages/AnimeDetailPage.tsx:1010
 msgid "anime.trailer"
 msgstr "Trailer"
 
-#: src/pages/AnimeDetailPage.tsx:1085
+#: src/pages/AnimeDetailPage.tsx:1046
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -663,14 +583,9 @@ msgstr "API Key"
 msgid "API Read Access Token"
 msgstr "API Read Access Token"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/ApiTokensCard.tsx:187
-msgid "WY/njO"
-msgstr "apiTokens.create"
-
-#: src/pages/settings/ApiTokensCard.tsx:187
-#~ msgid "apiTokens.create"
-#~ msgstr "Create"
+msgid "apiTokens.create"
+msgstr "Create"
 
 #: src/pages/settings/ApiTokensCard.tsx:137
 msgid "apiTokens.created"
@@ -696,14 +611,9 @@ msgstr "Dismiss"
 msgid "apiTokens.lastUsed"
 msgstr "Last used"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/ApiTokensCard.tsx:169
-msgid "6/EDj8"
-msgstr "apiTokens.namePlaceholder"
-
-#: src/pages/settings/ApiTokensCard.tsx:169
-#~ msgid "apiTokens.namePlaceholder"
-#~ msgstr "Device name (e.g. iPhone)"
+msgid "apiTokens.namePlaceholder"
+msgstr "Device name (e.g. iPhone)"
 
 #: src/pages/settings/ApiTokensCard.tsx:156
 msgid "apiTokens.revoke"
@@ -717,14 +627,9 @@ msgstr "Revoke this token? The device using it will lose access."
 msgid "apiTokens.revoked"
 msgstr "Token revoked"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/ApiTokensCard.tsx:61
-msgid "/yajwu"
-msgstr "apiTokens.revokeFailed"
-
-#: src/pages/settings/ApiTokensCard.tsx:61
-#~ msgid "apiTokens.revokeFailed"
-#~ msgstr "Failed to revoke token"
+msgid "apiTokens.revokeFailed"
+msgstr "Failed to revoke token"
 
 #: src/pages/settings/ApiTokensCard.tsx:80
 msgid "apiTokens.title"
@@ -758,14 +663,9 @@ msgstr "Apply all OK ({0})"
 msgid "auth.2fa.codeLabel"
 msgstr "Authentication Code"
 
-#. js-lingui-explicit-id
 #: src/pages/LoginPage.tsx:222
-msgid "Fi/jGX"
-msgstr "auth.2fa.subtitle"
-
-#: src/pages/LoginPage.tsx:222
-#~ msgid "auth.2fa.subtitle"
-#~ msgstr "Enter the 6-digit code from your authenticator app"
+msgid "auth.2fa.subtitle"
+msgstr "Enter the 6-digit code from your authenticator app"
 
 #: src/pages/LoginPage.tsx:220
 msgid "auth.2fa.title"
@@ -783,23 +683,13 @@ msgstr "Invalid 2FA code"
 #~ msgid "auth.error.invalidCredentials"
 #~ msgstr "Invalid username or password"
 
-#. js-lingui-explicit-id
 #: src/hooks/use-auth.ts:87
-msgid "5/TcJg"
-msgstr "auth.error.loginFailed"
-
-#: src/hooks/use-auth.ts:87
-#~ msgid "auth.error.loginFailed"
-#~ msgstr "Login failed"
-
-#. js-lingui-explicit-id
-#: src/hooks/use-auth.ts:130
-msgid "kFZ/RX"
-msgstr "auth.error.setupFailed"
+msgid "auth.error.loginFailed"
+msgstr "Login failed"
 
 #: src/hooks/use-auth.ts:130
-#~ msgid "auth.error.setupFailed"
-#~ msgstr "Setup failed"
+msgid "auth.error.setupFailed"
+msgstr "Setup failed"
 
 #: src/pages/LibrariesPage.tsx:2843
 #: src/pages/LibraryDetailPage.tsx:2000
@@ -819,16 +709,10 @@ msgstr "Forgot password?"
 #~ msgid "auth.login.loading"
 #~ msgstr "Signing in..."
 
-#. js-lingui-explicit-id
 #: src/components/LoginModal.tsx:150
 #: src/pages/LoginPage.tsx:381
-msgid "VF/h0g"
-msgstr "auth.login.password"
-
-#: src/components/LoginModal.tsx:150
-#: src/pages/LoginPage.tsx:381
-#~ msgid "auth.login.password"
-#~ msgstr "Password"
+msgid "auth.login.password"
+msgstr "Password"
 
 #: src/pages/LoginPage.tsx:458
 msgid "auth.login.recoveryAccessRequired"
@@ -849,22 +733,13 @@ msgstr "Sign in"
 msgid "auth.login.subtitle"
 msgstr "Your personal anime media server"
 
-#. js-lingui-explicit-id
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
 #: src/pages/LoginPage.tsx:122
 #: src/pages/LoginPage.tsx:313
 #: src/pages/LoginPage.tsx:331
-msgid "/oJ8Q0"
-msgstr "auth.login.title"
-
-#: src/components/LoginModal.tsx:93
-#: src/components/LoginModal.tsx:108
-#: src/pages/LoginPage.tsx:122
-#: src/pages/LoginPage.tsx:313
-#: src/pages/LoginPage.tsx:331
-#~ msgid "auth.login.title"
-#~ msgstr "Sign in to milmil"
+msgid "auth.login.title"
+msgstr "Sign in to milmil"
 
 #: src/components/LoginModal.tsx:127
 #: src/pages/LoginPage.tsx:354
@@ -875,14 +750,9 @@ msgstr "Username"
 msgid "auth.setup.error"
 msgstr "Setup failed. Please try again."
 
-#. js-lingui-explicit-id
 #: src/pages/setup/AdminStep.tsx:108
-msgid "Gckb+0"
-msgstr "auth.setup.loading"
-
-#: src/pages/setup/AdminStep.tsx:108
-#~ msgid "auth.setup.loading"
-#~ msgstr "Creating account..."
+msgid "auth.setup.loading"
+msgstr "Creating account..."
 
 #: src/pages/setup/AdminStep.tsx:86
 msgid "auth.setup.password"
@@ -904,18 +774,11 @@ msgstr "Password must be at least 8 characters"
 msgid "auth.setup.submit"
 msgstr "Create account"
 
-#. js-lingui-explicit-id
 #: src/components/LoginModal.tsx:112
 #: src/pages/LoginPage.tsx:336
 #: src/pages/setup/AdminStep.tsx:50
-msgid "YyU/uz"
-msgstr "auth.setup.subtitle"
-
-#: src/components/LoginModal.tsx:112
-#: src/pages/LoginPage.tsx:336
-#: src/pages/setup/AdminStep.tsx:50
-#~ msgid "auth.setup.subtitle"
-#~ msgstr "Create your admin account to get started."
+msgid "auth.setup.subtitle"
+msgstr "Create your admin account to get started."
 
 #: src/components/LoginModal.tsx:104
 #: src/pages/LoginPage.tsx:324
@@ -932,16 +795,11 @@ msgstr "Username"
 msgid "Auto-download missing"
 msgstr "Auto-download missing"
 
-#. js-lingui-explicit-id
 #. placeholder {0}: res.action
 #. placeholder {1}: res.episode_range
 #: src/components/anime/EpisodeStatusCard.tsx:28
-msgid "+RfnFl"
+msgid "Auto-download rule {0} ({1})"
 msgstr "Auto-download rule {0} ({1})"
-
-#: src/components/anime/EpisodeStatusCard.tsx:28
-#~ msgid "Auto-download rule {0} ({1})"
-#~ msgstr "Auto-download rule {0} ({1})"
 
 #: src/components/library/RenameConfigEditor.tsx:49
 #~ msgid "Auto-rename on match"
@@ -951,14 +809,9 @@ msgstr "Auto-download rule {0} ({1})"
 #~ msgid "autoDownload.active"
 #~ msgstr "Active"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:1704
-msgid "ZNN+MT"
-msgstr "autoDownload.add"
-
-#: src/pages/DownloadsPage.tsx:1704
-#~ msgid "autoDownload.add"
-#~ msgstr "Add"
+msgid "autoDownload.add"
+msgstr "Add"
 
 #: src/pages/DownloadsPage.tsx:1703
 msgid "autoDownload.adding"
@@ -984,16 +837,10 @@ msgstr "All subgroups"
 msgid "autoDownload.anyResolution"
 msgstr "Any resolution"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:1311
 #: src/pages/DownloadsPage.tsx:1695
-msgid "Hy/abf"
-msgstr "autoDownload.cancel"
-
-#: src/pages/DownloadsPage.tsx:1311
-#: src/pages/DownloadsPage.tsx:1695
-#~ msgid "autoDownload.cancel"
-#~ msgstr "Cancel"
+msgid "autoDownload.cancel"
+msgstr "Cancel"
 
 #: src/pages/DownloadsPage.tsx:3250
 #~ msgid "autoDownload.clearAll"
@@ -1103,16 +950,10 @@ msgstr "Confirm Follow"
 msgid "autoDownload.download"
 msgstr "Download"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:774
 #: src/pages/DownloadsPage.tsx:1659
-msgid "/fSIgS"
-msgstr "autoDownload.downloadAdded"
-
-#: src/pages/DownloadsPage.tsx:774
-#: src/pages/DownloadsPage.tsx:1659
-#~ msgid "autoDownload.downloadAdded"
-#~ msgstr "Download added"
+msgid "autoDownload.downloadAdded"
+msgstr "Download added"
 
 #: src/pages/DownloadsPage.tsx:2522
 #~ msgid "autoDownload.downloading"
@@ -1232,14 +1073,9 @@ msgstr "Paste torrent or magnet URL..."
 msgid "autoDownload.refreshed"
 msgstr "Follow refreshed"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:908
-msgid "/no+6o"
-msgstr "autoDownload.resolution"
-
-#: src/pages/DownloadsPage.tsx:908
-#~ msgid "autoDownload.resolution"
-#~ msgstr "Resolution"
+msgid "autoDownload.resolution"
+msgstr "Resolution"
 
 #: src/pages/DownloadsPage.tsx:2652
 #: src/pages/DownloadsPage.tsx:3048
@@ -1255,14 +1091,9 @@ msgstr "autoDownload.resolution"
 msgid "autoDownload.rssSource"
 msgstr "RSS Source"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:596
-msgid "eMX/Ba"
-msgstr "autoDownload.searchAnime"
-
-#: src/pages/DownloadsPage.tsx:596
-#~ msgid "autoDownload.searchAnime"
-#~ msgstr "Search anime..."
+msgid "autoDownload.searchAnime"
+msgstr "Search anime..."
 
 #: src/pages/downloads/LibraryTab.tsx:178
 msgid "autoDownload.searchDownloads"
@@ -1284,14 +1115,9 @@ msgstr "Select an anime to browse torrents"
 #~ msgid "autoDownload.selected"
 #~ msgstr "selected"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:972
-msgid "SDd/1m"
-msgstr "autoDownload.selectSourceToSubscribe"
-
-#: src/pages/DownloadsPage.tsx:972
-#~ msgid "autoDownload.selectSourceToSubscribe"
-#~ msgstr "Select a specific source (Mikan, Nyaa, or DMHY) to follow"
+msgid "autoDownload.selectSourceToSubscribe"
+msgstr "Select a specific source (Mikan, Nyaa, or DMHY) to follow"
 
 #~ msgid "autoDownload.settings"
 #~ msgstr "Settings"
@@ -1387,16 +1213,10 @@ msgstr "backup.configDeleted"
 msgid "backup.connectionFailed"
 msgstr "backup.connectionFailed"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/BackupPanel.tsx:220
 #: src/pages/settings/BackupPanel.tsx:416
-msgid "r/nFb2"
+msgid "backup.connectionOk"
 msgstr "backup.connectionOk"
-
-#: src/pages/settings/BackupPanel.tsx:220
-#: src/pages/settings/BackupPanel.tsx:416
-#~ msgid "backup.connectionOk"
-#~ msgstr "backup.connectionOk"
 
 #: src/pages/settings/BackupPanel.tsx:326
 #: src/pages/settings/BackupPanel.tsx:560
@@ -1417,14 +1237,9 @@ msgstr "backup.description"
 msgid "backup.enabled"
 msgstr "backup.enabled"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/BackupPanel.tsx:126
-msgid "+8ui03"
+msgid "backup.export"
 msgstr "backup.export"
-
-#: src/pages/settings/BackupPanel.tsx:126
-#~ msgid "backup.export"
-#~ msgstr "backup.export"
 
 #: src/pages/settings/BackupPanel.tsx:80
 msgid "backup.exportFailed"
@@ -1438,14 +1253,9 @@ msgstr "backup.exportSuccess"
 msgid "backup.import"
 msgstr "backup.import"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/BackupPanel.tsx:88
-msgid "bK6E+2"
+msgid "backup.importFailed"
 msgstr "backup.importFailed"
-
-#: src/pages/settings/BackupPanel.tsx:88
-#~ msgid "backup.importFailed"
-#~ msgstr "backup.importFailed"
 
 #: src/pages/settings/BackupPanel.tsx:86
 msgid "backup.importSuccess"
@@ -1527,11 +1337,11 @@ msgstr "backup.username"
 msgid "Batch"
 msgstr "Batch"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:383
+#: src/pages/settings/NotificationSettingsPanel.tsx:385
 msgid "Bot token"
 msgstr "Bot token"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:472
+#: src/pages/settings/NotificationSettingsPanel.tsx:474
 msgid "Bot Token"
 msgstr "Bot Token"
 
@@ -1543,14 +1353,9 @@ msgstr "Bucket"
 msgid "card.nextEp"
 msgstr "Next EP"
 
-#. js-lingui-explicit-id
-#: src/pages/settings/NotificationSettingsPanel.tsx:485
-msgid "/gYAMa"
-msgstr "Chat ID"
-
 #: src/pages/settings/NotificationSettingsPanel.tsx:487
-#~ msgid "Chat ID"
-#~ msgstr "Chat ID"
+msgid "Chat ID"
+msgstr "Chat ID"
 
 #. placeholder {0}: formatBytes(totalWaste)
 #: src/pages/library/LibraryDuplicatesPage.tsx:73
@@ -1571,40 +1376,27 @@ msgstr "Client ID"
 msgid "Client Secret"
 msgstr "Client Secret"
 
-#. js-lingui-explicit-id
 #: src/pages/CollectionPage.tsx:20
-msgid "ddzK+R"
-msgstr "collection.all"
-
-#: src/pages/CollectionPage.tsx:20
-#~ msgid "collection.all"
-#~ msgstr "All"
+msgid "collection.all"
+msgstr "All"
 
 #: src/pages/CollectionPage.tsx:187
 #~ msgid "collection.changeStatus"
 #~ msgstr "Change Status"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:833
+#: src/pages/AnimeDetailPage.tsx:798
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "Completed"
 
-#. js-lingui-explicit-id
-#: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:839
-#: src/pages/CollectionPage.tsx:25
-#: src/pages/CollectionPage.tsx:41
-msgid "v+Myhf"
-msgstr "collection.dropped"
-
 #: src/components/AnimeCard.tsx:27
 #: src/pages/AnimeDetailPage.tsx:804
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
-#~ msgid "collection.dropped"
-#~ msgstr "Dropped"
+msgid "collection.dropped"
+msgstr "Dropped"
 
 #: src/pages/CollectionPage.tsx:371
 msgid "collection.empty"
@@ -1622,14 +1414,14 @@ msgid "collection.goToLibraries"
 msgstr "Go to Libraries"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:836
+#: src/pages/AnimeDetailPage.tsx:801
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "On Hold"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:830
+#: src/pages/AnimeDetailPage.tsx:795
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1664,33 +1456,20 @@ msgstr "shows"
 msgid "collection.viewAll"
 msgstr "View All"
 
-#. js-lingui-explicit-id
-#: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:827
-#: src/pages/CollectionPage.tsx:21
-#: src/pages/CollectionPage.tsx:37
-msgid "W/gNdg"
-msgstr "collection.watching"
-
 #: src/components/AnimeCard.tsx:23
 #: src/pages/AnimeDetailPage.tsx:792
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
-#~ msgid "collection.watching"
-#~ msgstr "Watching"
+msgid "collection.watching"
+msgstr "Watching"
 
 #: src/pages/LoginPage.tsx:274
 msgid "common.back"
 msgstr "Back"
 
-#. js-lingui-explicit-id
-#: src/pages/AnimeDetailPage.tsx:366
-msgid "akzvZ/"
-msgstr "common.backHome"
-
 #: src/pages/AnimeDetailPage.tsx:346
-#~ msgid "common.backHome"
-#~ msgstr "Back to Home"
+msgid "common.backHome"
+msgstr "Back to Home"
 
 #: src/components/history/ConfirmDialog.tsx:44
 #: src/pages/LibraryDetailPage.tsx:1868
@@ -1717,14 +1496,9 @@ msgstr "Confirm delete"
 msgid "common.copied"
 msgstr "common.copied"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:1838
-msgid "p/XWwN"
-msgstr "common.dangerZone"
-
-#: src/pages/LibraryDetailPage.tsx:1838
-#~ msgid "common.dangerZone"
-#~ msgstr "Danger zone"
+msgid "common.dangerZone"
+msgstr "Danger zone"
 
 #: src/components/AnimeCard.tsx:161
 #: src/components/AnimeCard.tsx:325
@@ -1732,14 +1506,14 @@ msgstr "common.dangerZone"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:562
-#: src/pages/AnimeDetailPage.tsx:1003
+#: src/pages/AnimeDetailPage.tsx:527
+#: src/pages/AnimeDetailPage.tsx:966
 #: src/pages/DownloadsPage.tsx:854
 #: src/pages/LibraryDetailPage.tsx:1100
 msgid "common.ep"
 msgstr "ep"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:331
 #: src/pages/LibraryDetailPage.tsx:2024
 #: src/routes/__root.tsx:68
 msgid "common.loadFailed"
@@ -1753,11 +1527,11 @@ msgstr "Failed to load"
 msgid "common.loading"
 msgstr "Loading..."
 
-#: src/components/EpisodeListItem.tsx:174
+#: src/components/EpisodeListItem.tsx:122
 msgid "common.minuteShort"
 msgstr "min"
 
-#: src/pages/AnimeDetailPage.tsx:360
+#: src/pages/AnimeDetailPage.tsx:340
 #: src/pages/SchedulePage.tsx:853
 #: src/pages/SchedulePage.tsx:1168
 #: src/routes/__root.tsx:82
@@ -1767,14 +1541,9 @@ msgstr "Retry"
 #~ msgid "common.save"
 #~ msgstr "Save"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/IntegrationsPanel.tsx:210
-msgid "M1co/O"
+msgid "Configured"
 msgstr "Configured"
-
-#: src/pages/settings/IntegrationsPanel.tsx:210
-#~ msgid "Configured"
-#~ msgstr "Configured"
 
 #: src/pages/LibrariesPage.tsx:224
 msgid "connection.checking"
@@ -1784,14 +1553,9 @@ msgstr "CHECKING"
 msgid "connection.offline"
 msgstr "OFFLINE"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:226
-msgid "J+eSdE"
-msgstr "connection.online"
-
-#: src/pages/LibrariesPage.tsx:226
-#~ msgid "connection.online"
-#~ msgstr "ONLINE"
+msgid "connection.online"
+msgstr "ONLINE"
 
 #. placeholder {0}: sortedMissing.length
 #: src/components/anime/EpisodeStatusCard.tsx:76
@@ -1842,14 +1606,9 @@ msgstr "Trending Movies"
 msgid "discover.trendingNow"
 msgstr "Trending Right Now"
 
-#. js-lingui-explicit-id
 #: src/components/anime/MissingSearchModal.tsx:92
-msgid "mzI/c+"
+msgid "Download"
 msgstr "Download"
-
-#: src/components/anime/MissingSearchModal.tsx:92
-#~ msgid "Download"
-#~ msgstr "Download"
 
 #. placeholder {0}: res.download_id.slice(0, 8)
 #: src/components/anime/MissingSearchModal.tsx:28
@@ -1860,14 +1619,9 @@ msgstr "Download queued: {0}"
 msgid "downloads.autoDisabled"
 msgstr "Auto-download off"
 
-#. js-lingui-explicit-id
 #: src/components/downloads/AnimeGroupHeader.tsx:214
-msgid "Cp8B/T"
-msgstr "downloads.autoEnabled"
-
-#: src/components/downloads/AnimeGroupHeader.tsx:214
-#~ msgid "downloads.autoEnabled"
-#~ msgstr "Auto-download on"
+msgid "downloads.autoEnabled"
+msgstr "Auto-download on"
 
 #: src/components/downloads/AnimeGroupHeader.tsx:133
 #: src/components/downloads/AnimeGroupHeader.tsx:137
@@ -1908,14 +1662,9 @@ msgstr "Expand"
 msgid "downloads.menu.autoDownload"
 msgstr "Auto download"
 
-#. js-lingui-explicit-id
 #: src/pages/downloads/LibraryTab.tsx:368
-msgid "l9+3L6"
-msgstr "downloads.menu.copied"
-
-#: src/pages/downloads/LibraryTab.tsx:368
-#~ msgid "downloads.menu.copied"
-#~ msgstr "Copied"
+msgid "downloads.menu.copied"
+msgstr "Copied"
 
 #: src/components/downloads/CardMenu.tsx:102
 msgid "downloads.menu.copyRSS"
@@ -1929,14 +1678,9 @@ msgstr "Delete subscription"
 msgid "downloads.menu.more"
 msgstr "More"
 
-#. js-lingui-explicit-id
 #: src/components/downloads/CardMenu.tsx:83
-msgid "/kYNPn"
-msgstr "downloads.menu.off"
-
-#: src/components/downloads/CardMenu.tsx:83
-#~ msgid "downloads.menu.off"
-#~ msgstr "Off"
+msgid "downloads.menu.off"
+msgstr "Off"
 
 #: src/components/downloads/CardMenu.tsx:83
 msgid "downloads.menu.on"
@@ -2023,14 +1767,9 @@ msgstr "subscribed"
 #~ msgid "downloads.tab.active"
 #~ msgstr "Active"
 
-#. js-lingui-explicit-id
 #: src/pages/DownloadsPage.tsx:378
-msgid "M7w+Kc"
-msgstr "downloads.tab.library"
-
-#: src/pages/DownloadsPage.tsx:378
-#~ msgid "downloads.tab.library"
-#~ msgstr "Library"
+msgid "downloads.tab.library"
+msgstr "Library"
 
 #~ msgid "downloads.tab.rules"
 #~ msgstr "Auto Rules"
@@ -2064,46 +1803,43 @@ msgstr "Episode"
 msgid "Episode {0}"
 msgstr "Episode {0}"
 
-#. js-lingui-explicit-id
 #: src/components/anime/EpisodeStatusCard.tsx:49
-msgid "0bu9+g"
+msgid "Episode status"
 msgstr "Episode status"
 
-#: src/components/anime/EpisodeStatusCard.tsx:49
-#~ msgid "Episode status"
-#~ msgstr "Episode status"
-
-#: src/components/EpisodeListItem.tsx:111
+#: src/components/EpisodeListItem.tsx:87
 msgid "episode.airDate.dayAfterTomorrow"
 msgstr "episode.airDate.dayAfterTomorrow"
 
-#: src/components/EpisodeListItem.tsx:113
+#: src/components/EpisodeListItem.tsx:89
 msgid "episode.airDate.inDays {diffDays}"
 msgstr "episode.airDate.inDays {diffDays}"
 
-#: src/components/EpisodeListItem.tsx:109
+#: src/components/EpisodeListItem.tsx:85
 msgid "episode.airDate.today"
 msgstr "episode.airDate.today"
 
-#: src/components/EpisodeListItem.tsx:110
+#: src/components/EpisodeListItem.tsx:86
 msgid "episode.airDate.tomorrow"
 msgstr "episode.airDate.tomorrow"
 
-#: src/components/EpisodeListItem.tsx:245
+#: src/components/EpisodeListItem.tsx:193
 msgid "episode.noFile"
 msgstr "No file"
 
-#: src/components/EpisodeListItem.tsx:239
-#: src/components/EpisodeListItem.tsx:373
+#: src/components/EpisodeListItem.tsx:98
+#: src/components/EpisodeListItem.tsx:187
+#: src/components/EpisodeListItem.tsx:321
 msgid "episode.prefix"
 msgstr "Episode "
 
-#: src/components/EpisodeListItem.tsx:241
-#: src/components/EpisodeListItem.tsx:375
+#: src/components/EpisodeListItem.tsx:100
+#: src/components/EpisodeListItem.tsx:189
+#: src/components/EpisodeListItem.tsx:323
 msgid "episode.suffix"
 msgstr ""
 
-#: src/components/EpisodeListItem.tsx:148
+#: src/components/EpisodeListItem.tsx:103
 msgid "episode.upcoming"
 msgstr "episode.upcoming"
 
@@ -2119,16 +1855,10 @@ msgstr "Please check if the server is running and try again"
 msgid "files"
 msgstr "files"
 
-#. js-lingui-explicit-id
 #: src/pages/library/LibraryDuplicatesPage.tsx:85
 #: src/pages/library/RenameHistoryPage.tsx:59
-msgid "sER+bs"
+msgid "Files"
 msgstr "Files"
-
-#: src/pages/library/LibraryDuplicatesPage.tsx:85
-#: src/pages/library/RenameHistoryPage.tsx:59
-#~ msgid "Files"
-#~ msgstr "Files"
 
 #: src/components/HeroBanner.tsx:170
 #: src/components/PreviewModal.tsx:251
@@ -2160,14 +1890,9 @@ msgstr "Delete selected"
 msgid "history.clearAll"
 msgstr "Clear"
 
-#. js-lingui-explicit-id
 #: src/pages/HistoryPage.tsx:202
-msgid "rZj9Y/"
-msgstr "history.clearAll.confirm"
-
-#: src/pages/HistoryPage.tsx:202
-#~ msgid "history.clearAll.confirm"
-#~ msgstr "Clear all watch history?"
+msgid "history.clearAll.confirm"
+msgstr "Clear all watch history?"
 
 #: src/pages/HistoryPage.tsx:207
 msgid "history.clearAll.description"
@@ -2224,21 +1949,16 @@ msgstr "All"
 msgid "history.tab.completed"
 msgstr "Completed"
 
-#. js-lingui-explicit-id
 #: src/components/history/HistoryFilterBar.tsx:44
-msgid "/GLyG6"
-msgstr "history.tab.inProgress"
-
-#: src/components/history/HistoryFilterBar.tsx:44
-#~ msgid "history.tab.inProgress"
-#~ msgstr "In Progress"
+msgid "history.tab.inProgress"
+msgstr "In Progress"
 
 #: src/pages/HistoryPage.tsx:22
 #: src/pages/HistoryPage.tsx:146
 msgid "history.title"
 msgstr "Watch History"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:762
+#: src/pages/settings/NotificationSettingsPanel.tsx:764
 msgid "HMAC signing secret (optional)"
 msgstr "HMAC signing secret (optional)"
 
@@ -2246,16 +1966,10 @@ msgstr "HMAC signing secret (optional)"
 msgid "home.continueWatching"
 msgstr "Continue Watching"
 
-#. js-lingui-explicit-id
 #: src/components/LibraryEmptyState.tsx:23
 #: src/pages/LibrariesPage.tsx:338
-msgid "HXzy/i"
-msgstr "home.library.empty.subtitle"
-
-#: src/components/LibraryEmptyState.tsx:23
-#: src/pages/LibrariesPage.tsx:338
-#~ msgid "home.library.empty.subtitle"
-#~ msgstr "Add a folder to start scanning"
+msgid "home.library.empty.subtitle"
+msgstr "Add a folder to start scanning"
 
 #: src/components/LibraryEmptyState.tsx:21
 #: src/pages/LibrariesPage.tsx:336
@@ -2267,38 +1981,22 @@ msgstr "No libraries added"
 #~ msgid "home.myLibraries"
 #~ msgstr "My Libraries"
 
-#. js-lingui-explicit-id
 #: src/pages/HomePage.tsx:150
-msgid "/KGg2z"
-msgstr "home.todaySchedule"
-
-#: src/pages/HomePage.tsx:150
-#~ msgid "home.todaySchedule"
-#~ msgstr "Today's Schedule"
+msgid "home.todaySchedule"
+msgstr "Today's Schedule"
 
 #: src/pages/HomePage.tsx:193
 msgid "home.trending"
 msgstr "Trending"
 
-#. js-lingui-explicit-id
 #: src/pages/DiscoverPage.tsx:247
 #: src/pages/HomePage.tsx:217
-msgid "+Fc7/V"
-msgstr "home.viewAll"
+msgid "home.viewAll"
+msgstr "View All →"
 
-#: src/pages/DiscoverPage.tsx:247
-#: src/pages/HomePage.tsx:217
-#~ msgid "home.viewAll"
-#~ msgstr "View All →"
-
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:334
-msgid "NGLL/D"
+msgid "Incomplete only"
 msgstr "Incomplete only"
-
-#: src/pages/LibraryDetailPage.tsx:334
-#~ msgid "Incomplete only"
-#~ msgstr "Incomplete only"
 
 #: src/hooks/use-auth.ts:88
 #: src/hooks/use-auth.ts:112
@@ -2319,14 +2017,9 @@ msgstr "Add Library"
 msgid "library.anime.confirmDelete"
 msgstr "Delete this anime and unlink its files? Files will become unmatched."
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:290
-msgid "4Tk/uI"
-msgstr "library.anime.deleted"
-
-#: src/pages/LibraryDetailPage.tsx:290
-#~ msgid "library.anime.deleted"
-#~ msgstr "Anime deleted"
+msgid "library.anime.deleted"
+msgstr "Anime deleted"
 
 #: src/pages/LibraryDetailPage.tsx:293
 msgid "library.anime.deleteFailed"
@@ -2355,23 +2048,13 @@ msgstr "Select"
 msgid "library.browse.selected"
 msgstr "Selected"
 
-#. js-lingui-explicit-id
 #: src/components/library/FolderPicker.tsx:550
-msgid "1c+G98"
-msgstr "library.browseFolder"
-
-#: src/components/library/FolderPicker.tsx:550
-#~ msgid "library.browseFolder"
-#~ msgstr "Browse folder"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:3085
-msgid "a6s9/j"
-msgstr "library.cancel"
+msgid "library.browseFolder"
+msgstr "Browse folder"
 
 #: src/pages/LibrariesPage.tsx:3085
-#~ msgid "library.cancel"
-#~ msgstr "Cancel"
+msgid "library.cancel"
+msgstr "Cancel"
 
 #: src/pages/LibrariesPage.tsx:322
 #~ msgid "library.checked"
@@ -2381,20 +2064,12 @@ msgstr "library.cancel"
 #~ msgid "library.connectSource"
 #~ msgstr "Connect a media source"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:3073
 #: src/pages/LibrariesPage.tsx:3095
 #: src/pages/LibraryDetailPage.tsx:1853
 #: src/pages/LibraryDetailPage.tsx:1887
-msgid "F9fP/N"
-msgstr "library.delete"
-
-#: src/pages/LibrariesPage.tsx:3073
-#: src/pages/LibrariesPage.tsx:3095
-#: src/pages/LibraryDetailPage.tsx:1853
-#: src/pages/LibraryDetailPage.tsx:1887
-#~ msgid "library.delete"
-#~ msgstr "Delete"
+msgid "library.delete"
+msgstr "Delete"
 
 #: src/pages/LibrariesPage.tsx:3077
 #: src/pages/LibraryDetailPage.tsx:1856
@@ -2418,14 +2093,9 @@ msgstr "Auto-match all unmatched files"
 msgid "library.detail.backToLibraries"
 msgstr "Libraries"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:866
-msgid "/dnzX9"
-msgstr "library.detail.bulkMatch"
-
-#: src/pages/LibraryDetailPage.tsx:866
-#~ msgid "library.detail.bulkMatch"
-#~ msgstr "Bulk Match"
+msgid "library.detail.bulkMatch"
+msgstr "Bulk Match"
 
 #: src/pages/LibraryDetailPage.tsx:1239
 msgid "library.detail.bulkMatchModal.confirm"
@@ -2455,14 +2125,9 @@ msgstr "Bulk Match Files"
 msgid "library.detail.bulkMatchSuccess"
 msgstr "Matched {0} files"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:878
-msgid "lj+Ob1"
-msgstr "library.detail.bulkUnmatch"
-
-#: src/pages/LibraryDetailPage.tsx:878
-#~ msgid "library.detail.bulkUnmatch"
-#~ msgstr "Bulk Unmatch"
+msgid "library.detail.bulkUnmatch"
+msgstr "Bulk Unmatch"
 
 #: src/pages/LibraryDetailPage.tsx:872
 msgid "library.detail.bulkUnmatchConfirm"
@@ -2500,32 +2165,17 @@ msgstr "Copy Path"
 msgid "library.detail.duplicates"
 msgstr "Duplicates"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:2174
-msgid "2GG++I"
-msgstr "library.detail.duplicatesTooltip"
-
-#: src/pages/LibraryDetailPage.tsx:2174
-#~ msgid "library.detail.duplicatesTooltip"
-#~ msgstr "View and clean up duplicate files"
-
-#. js-lingui-explicit-id
-#: src/pages/LibraryDetailPage.tsx:229
-msgid "zvo+Xg"
-msgstr "library.detail.editMatch"
+msgid "library.detail.duplicatesTooltip"
+msgstr "View and clean up duplicate files"
 
 #: src/pages/LibraryDetailPage.tsx:229
-#~ msgid "library.detail.editMatch"
-#~ msgstr "Edit"
-
-#. js-lingui-explicit-id
-#: src/pages/LibraryDetailPage.tsx:1622
-msgid "Gd/OiL"
-msgstr "library.detail.errors"
+msgid "library.detail.editMatch"
+msgstr "Edit"
 
 #: src/pages/LibraryDetailPage.tsx:1622
-#~ msgid "library.detail.errors"
-#~ msgstr "Errors"
+msgid "library.detail.errors"
+msgstr "Errors"
 
 #: src/pages/LibraryDetailPage.tsx:256
 msgid "library.detail.fileInfo"
@@ -2534,14 +2184,9 @@ msgstr "File Info"
 #~ msgid "library.detail.filename"
 #~ msgstr "Filename"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:1608
-msgid "0+/eHm"
-msgstr "library.detail.found"
-
-#: src/pages/LibraryDetailPage.tsx:1608
-#~ msgid "library.detail.found"
-#~ msgstr "Found"
+msgid "library.detail.found"
+msgstr "Found"
 
 #: src/pages/LibraryDetailPage.tsx:1603
 msgid "library.detail.inProgress"
@@ -2563,16 +2208,10 @@ msgstr "Matched"
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "Matched To"
 
-#. js-lingui-explicit-id
 #: src/components/MatchModal.tsx:306
 #: src/pages/LibraryDetailPage.tsx:1162
-msgid "/pQyLi"
-msgstr "library.detail.matchModal.change"
-
-#: src/components/MatchModal.tsx:306
-#: src/pages/LibraryDetailPage.tsx:1162
-#~ msgid "library.detail.matchModal.change"
-#~ msgstr "Change"
+msgid "library.detail.matchModal.change"
+msgstr "Change"
 
 #: src/components/MatchModal.tsx:413
 msgid "library.detail.matchModal.confirm"
@@ -2627,42 +2266,24 @@ msgstr "Match File"
 #~ msgid "library.detail.matchTooltip"
 #~ msgstr "Match this file to an anime episode"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:711
 #: src/pages/LibraryDetailPage.tsx:817
 #: src/pages/LibraryDetailPage.tsx:1289
 #: src/pages/LibraryDetailPage.tsx:1487
-msgid "Qufs+t"
-msgstr "library.detail.noFiles"
-
-#: src/pages/LibraryDetailPage.tsx:711
-#: src/pages/LibraryDetailPage.tsx:817
-#: src/pages/LibraryDetailPage.tsx:1289
-#: src/pages/LibraryDetailPage.tsx:1487
-#~ msgid "library.detail.noFiles"
-#~ msgstr "No files found"
+msgid "library.detail.noFiles"
+msgstr "No files found"
 
 #: src/pages/LibraryDetailPage.tsx:714
 msgid "library.detail.noFilesHint"
 msgstr "Run a scan to discover media files in this library"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:1559
-msgid "vmrje+"
-msgstr "library.detail.noScans"
-
-#: src/pages/LibraryDetailPage.tsx:1559
-#~ msgid "library.detail.noScans"
-#~ msgstr "No scans yet"
-
-#. js-lingui-explicit-id
-#: src/pages/LibraryDetailPage.tsx:1562
-msgid "+doPgQ"
-msgstr "library.detail.noScansHint"
+msgid "library.detail.noScans"
+msgstr "No scans yet"
 
 #: src/pages/LibraryDetailPage.tsx:1562
-#~ msgid "library.detail.noScansHint"
-#~ msgstr "Run your first scan to see history here"
+msgid "library.detail.noScansHint"
+msgstr "Run your first scan to see history here"
 
 #: src/pages/LibraryDetailPage.tsx:2024
 msgid "library.detail.notFound"
@@ -2737,14 +2358,9 @@ msgstr "Disk usage"
 msgid "library.detail.stats.files"
 msgstr "files"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:2268
-msgid "cOzKJ+"
-msgstr "library.detail.stats.matched"
-
-#: src/pages/LibraryDetailPage.tsx:2268
-#~ msgid "library.detail.stats.matched"
-#~ msgstr "matched"
+msgid "library.detail.stats.matched"
+msgstr "matched"
 
 #: src/pages/LibraryDetailPage.tsx:2311
 msgid "library.detail.stats.size"
@@ -2855,14 +2471,9 @@ msgstr "Enabled"
 #~ msgid "library.files"
 #~ msgstr "files"
 
-#. js-lingui-explicit-id
 #: src/components/library/FolderPicker.tsx:502
-msgid "uj+8ZW"
-msgstr "library.folderPicker.cancel"
-
-#: src/components/library/FolderPicker.tsx:502
-#~ msgid "library.folderPicker.cancel"
-#~ msgstr "Cancel"
+msgid "library.folderPicker.cancel"
+msgstr "Cancel"
 
 #~ msgid "library.folderPicker.invalidPath"
 #~ msgstr "Path not found"
@@ -2903,25 +2514,14 @@ msgstr "Port"
 msgid "library.ftp.username"
 msgstr "Username"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:236
-msgid "V+NnVD"
-msgstr "library.hashing"
-
-#: src/pages/LibrariesPage.tsx:236
-#~ msgid "library.hashing"
-#~ msgstr "Hashing..."
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:1134
-#: src/pages/LibrariesPage.tsx:2348
-msgid "Ih+b4I"
-msgstr "library.http.readOnly"
+msgid "library.hashing"
+msgstr "Hashing..."
 
 #: src/pages/LibrariesPage.tsx:1134
 #: src/pages/LibrariesPage.tsx:2348
-#~ msgid "library.http.readOnly"
-#~ msgstr "Read-only"
+msgid "library.http.readOnly"
+msgstr "Read-only"
 
 #: src/pages/LibrariesPage.tsx:1127
 #: src/pages/LibrariesPage.tsx:2339
@@ -2984,49 +2584,27 @@ msgstr "My Libraries"
 msgid "library.path"
 msgstr "Path"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:1176
 #: src/pages/LibrariesPage.tsx:2396
-msgid "sdlP+a"
-msgstr "library.pathRequired"
-
-#: src/pages/LibrariesPage.tsx:1176
-#: src/pages/LibrariesPage.tsx:2396
-#~ msgid "library.pathRequired"
-#~ msgstr "Path required"
+msgid "library.pathRequired"
+msgstr "Path required"
 
 #: src/pages/LibrariesPage.tsx:1281
 msgid "library.rclone.availableRemotes"
 msgstr "Available Remotes"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:1291
-msgid "c/Hv/P"
-msgstr "library.rclone.noRemotes"
-
-#: src/pages/LibrariesPage.tsx:1291
-#~ msgid "library.rclone.noRemotes"
-#~ msgstr "No remotes found"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:1153
-#: src/pages/LibrariesPage.tsx:2373
-msgid "/AWrxV"
-msgstr "library.rclone.remoteName"
+msgid "library.rclone.noRemotes"
+msgstr "No remotes found"
 
 #: src/pages/LibrariesPage.tsx:1153
 #: src/pages/LibrariesPage.tsx:2373
-#~ msgid "library.rclone.remoteName"
-#~ msgstr "Remote Name"
-
-#. js-lingui-explicit-id
-#: src/components/library/RenameConfigEditor.tsx:124
-msgid "mfBF6/"
-msgstr "library.rename.autoOnMatch"
+msgid "library.rclone.remoteName"
+msgstr "Remote Name"
 
 #: src/components/library/RenameConfigEditor.tsx:124
-#~ msgid "library.rename.autoOnMatch"
-#~ msgstr "Auto-rename on match"
+msgid "library.rename.autoOnMatch"
+msgstr "Auto-rename on match"
 
 #: src/components/library/RenameConfigEditor.tsx:94
 msgid "library.rename.fieldsDetected"
@@ -3051,27 +2629,15 @@ msgstr "Valid (no fields referenced yet)"
 msgid "library.s3.accessKey"
 msgstr "Access Key"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:1003
 #: src/pages/LibrariesPage.tsx:2206
-msgid "1BN8+7"
-msgstr "library.s3.bucket"
-
-#: src/pages/LibrariesPage.tsx:1003
-#: src/pages/LibrariesPage.tsx:2206
-#~ msgid "library.s3.bucket"
-#~ msgstr "Bucket"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:989
-#: src/pages/LibrariesPage.tsx:2191
-msgid "/6EOKi"
-msgstr "library.s3.endpoint"
+msgid "library.s3.bucket"
+msgstr "Bucket"
 
 #: src/pages/LibrariesPage.tsx:989
 #: src/pages/LibrariesPage.tsx:2191
-#~ msgid "library.s3.endpoint"
-#~ msgstr "Endpoint"
+msgid "library.s3.endpoint"
+msgstr "Endpoint"
 
 #: src/pages/LibrariesPage.tsx:1016
 #: src/pages/LibrariesPage.tsx:2221
@@ -3083,16 +2649,10 @@ msgstr "Region"
 msgid "library.s3.secretKey"
 msgstr "Secret Key"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:3050
 #: src/pages/LibraryDetailPage.tsx:1832
-msgid "+sHqIf"
-msgstr "library.saveChanges"
-
-#: src/pages/LibrariesPage.tsx:3050
-#: src/pages/LibraryDetailPage.tsx:1832
-#~ msgid "library.saveChanges"
-#~ msgstr "Save Changes"
+msgid "library.saveChanges"
+msgstr "Save Changes"
 
 #: src/pages/LibrariesPage.tsx:1253
 #: src/pages/LibrariesPage.tsx:2024
@@ -3142,14 +2702,9 @@ msgstr "Username"
 msgid "library.smb.domain"
 msgstr "Domain"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:740
-msgid "7aP+Qg"
-msgstr "library.smb.host"
-
-#: src/pages/LibrariesPage.tsx:740
-#~ msgid "library.smb.host"
-#~ msgstr "Host"
+msgid "library.smb.host"
+msgstr "Host"
 
 #: src/pages/LibrariesPage.tsx:809
 #: src/pages/LibrariesPage.tsx:1838
@@ -3220,23 +2775,13 @@ msgstr "libraries"
 msgid "library.summary.matched"
 msgstr "matched"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:422
-msgid "ZkcY/R"
-msgstr "library.testConnection"
-
-#: src/pages/LibrariesPage.tsx:422
-#~ msgid "library.testConnection"
-#~ msgstr "Test Connection"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:428
-msgid "bW3vk/"
-msgstr "library.testConnection.failed"
+msgid "library.testConnection"
+msgstr "Test Connection"
 
 #: src/pages/LibrariesPage.tsx:428
-#~ msgid "library.testConnection.failed"
-#~ msgstr "Connection Failed"
+msgid "library.testConnection.failed"
+msgstr "Connection Failed"
 
 #: src/pages/LibrariesPage.tsx:427
 msgid "library.testConnection.success"
@@ -3286,16 +2831,10 @@ msgstr "Library updated"
 msgid "library.webdav.password"
 msgstr "Password"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:908
 #: src/pages/LibrariesPage.tsx:2110
-msgid "ZX+eO2"
-msgstr "library.webdav.url"
-
-#: src/pages/LibrariesPage.tsx:908
-#: src/pages/LibrariesPage.tsx:2110
-#~ msgid "library.webdav.url"
-#~ msgstr "URL"
+msgid "library.webdav.url"
+msgstr "URL"
 
 #: src/pages/LibrariesPage.tsx:953
 #: src/pages/LibrariesPage.tsx:2155
@@ -3372,16 +2911,10 @@ msgstr "Scan a folder on this server"
 msgid "library.wizard.onedrive.desc"
 msgstr "Access files from OneDrive"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:633
 #: src/pages/LibrariesPage.tsx:1478
-msgid "+ODh4q"
-msgstr "library.wizard.onedrive.name"
-
-#: src/pages/LibrariesPage.tsx:633
-#: src/pages/LibrariesPage.tsx:1478
-#~ msgid "library.wizard.onedrive.name"
-#~ msgstr "OneDrive"
+msgid "library.wizard.onedrive.name"
+msgstr "OneDrive"
 
 #: src/pages/LibrariesPage.tsx:1855
 msgid "library.wizard.optional"
@@ -3391,25 +2924,14 @@ msgstr "optional"
 #~ msgid "library.wizard.orManual"
 #~ msgstr "or enter manually"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:1462
-msgid "SBdX+k"
-msgstr "library.wizard.s3.desc"
-
-#: src/pages/LibrariesPage.tsx:1462
-#~ msgid "library.wizard.s3.desc"
-#~ msgstr "Amazon S3 or compatible storage"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:631
-#: src/pages/LibrariesPage.tsx:1461
-msgid "SK/sKG"
-msgstr "library.wizard.s3.name"
+msgid "library.wizard.s3.desc"
+msgstr "Amazon S3 or compatible storage"
 
 #: src/pages/LibrariesPage.tsx:631
 #: src/pages/LibrariesPage.tsx:1461
-#~ msgid "library.wizard.s3.name"
-#~ msgstr "S3"
+msgid "library.wizard.s3.name"
+msgstr "S3"
 
 #: src/pages/LibrariesPage.tsx:1451
 msgid "library.wizard.section.cloud"
@@ -3419,14 +2941,9 @@ msgstr "Cloud & WebDAV"
 msgid "library.wizard.section.rclone"
 msgstr "Import from Rclone"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:1416
-msgid "+znmNv"
-msgstr "library.wizard.section.storage"
-
-#: src/pages/LibrariesPage.tsx:1416
-#~ msgid "library.wizard.section.storage"
-#~ msgstr "Storage"
+msgid "library.wizard.section.storage"
+msgstr "Storage"
 
 #: src/pages/LibrariesPage.tsx:1433
 msgid "library.wizard.sftp.desc"
@@ -3441,56 +2958,30 @@ msgstr "as"
 msgid "library.wizard.smb.change"
 msgstr "Change"
 
-#. js-lingui-explicit-id
 #: src/components/library/FolderPicker.tsx:352
 #: src/pages/LibrariesPage.tsx:1703
-msgid "K/bvB4"
-msgstr "library.wizard.smb.chooseServer"
-
-#: src/components/library/FolderPicker.tsx:352
-#: src/pages/LibrariesPage.tsx:1703
-#~ msgid "library.wizard.smb.chooseServer"
-#~ msgstr "Choose a server"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:1874
-msgid "DudZI+"
-msgstr "library.wizard.smb.connect"
+msgid "library.wizard.smb.chooseServer"
+msgstr "Choose a server"
 
 #: src/pages/LibrariesPage.tsx:1874
-#~ msgid "library.wizard.smb.connect"
-#~ msgstr "Connect"
+msgid "library.wizard.smb.connect"
+msgstr "Connect"
 
 #: src/pages/LibrariesPage.tsx:1643
 msgid "library.wizard.smb.credentials"
 msgstr "Credentials"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:1427
-msgid "B1Y+Es"
-msgstr "library.wizard.smb.desc"
-
-#: src/pages/LibrariesPage.tsx:1427
-#~ msgid "library.wizard.smb.desc"
-#~ msgstr "Connect to a Windows or NAS share"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:1724
-msgid "Np/H0N"
-msgstr "library.wizard.smb.enterManually"
+msgid "library.wizard.smb.desc"
+msgstr "Connect to a Windows or NAS share"
 
 #: src/pages/LibrariesPage.tsx:1724
-#~ msgid "library.wizard.smb.enterManually"
-#~ msgstr "Enter server address manually"
-
-#. js-lingui-explicit-id
-#: src/pages/LibrariesPage.tsx:1648
-msgid "w/lEDP"
-msgstr "library.wizard.smb.folder"
+msgid "library.wizard.smb.enterManually"
+msgstr "Enter server address manually"
 
 #: src/pages/LibrariesPage.tsx:1648
-#~ msgid "library.wizard.smb.folder"
-#~ msgstr "Folder"
+msgid "library.wizard.smb.folder"
+msgstr "Folder"
 
 #: src/pages/LibrariesPage.tsx:1993
 msgid "library.wizard.smb.nameHint"
@@ -3508,16 +2999,10 @@ msgstr "Server"
 msgid "library.wizard.webdav.desc"
 msgstr "Connect to a WebDAV server"
 
-#. js-lingui-explicit-id
 #: src/pages/LibrariesPage.tsx:630
 #: src/pages/LibrariesPage.tsx:1455
-msgid "/c2GAg"
-msgstr "library.wizard.webdav.name"
-
-#: src/pages/LibrariesPage.tsx:630
-#: src/pages/LibrariesPage.tsx:1455
-#~ msgid "library.wizard.webdav.name"
-#~ msgstr "WebDAV"
+msgid "library.wizard.webdav.name"
+msgstr "WebDAV"
 
 #: src/routes/__root.tsx:263
 msgid "match.completed"
@@ -3527,18 +3012,11 @@ msgstr "Matching completed"
 msgid "Missing"
 msgstr "Missing"
 
-#. js-lingui-explicit-id
 #: src/components/AppSidebar.tsx:34
 #: src/pages/DownloadsPage.tsx:265
 #: src/pages/DownloadsPage.tsx:392
-msgid "+ZJOIy"
-msgstr "nav.autoDownload"
-
-#: src/components/AppSidebar.tsx:34
-#: src/pages/DownloadsPage.tsx:265
-#: src/pages/DownloadsPage.tsx:392
-#~ msgid "nav.autoDownload"
-#~ msgstr "Auto-Download"
+msgid "nav.autoDownload"
+msgstr "Auto-Download"
 
 #: src/pages/CollectionPage.tsx:228
 msgid "nav.collection"
@@ -3557,18 +3035,11 @@ msgstr "Discover"
 msgid "nav.history"
 msgstr "History"
 
-#. js-lingui-explicit-id
 #: src/components/AppSidebar.tsx:27
 #: src/components/AppSidebar.tsx:248
 #: src/pages/HomePage.tsx:38
-msgid "skLu+M"
-msgstr "nav.home"
-
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:248
-#: src/pages/HomePage.tsx:38
-#~ msgid "nav.home"
-#~ msgstr "Home"
+msgid "nav.home"
+msgstr "Home"
 
 #: src/components/AppSidebar.tsx:35
 #: src/components/AppSidebar.tsx:251
@@ -3589,20 +3060,12 @@ msgstr "Notifications"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#. js-lingui-explicit-id
 #: src/components/AppSidebar.tsx:28
 #: src/components/AppSidebar.tsx:249
 #: src/pages/SchedulePage.tsx:1235
 #: src/pages/SchedulePage.tsx:1309
-msgid "/k2GEa"
-msgstr "nav.schedule"
-
-#: src/components/AppSidebar.tsx:28
-#: src/components/AppSidebar.tsx:249
-#: src/pages/SchedulePage.tsx:1235
-#: src/pages/SchedulePage.tsx:1309
-#~ msgid "nav.schedule"
-#~ msgstr "Schedule"
+msgid "nav.schedule"
+msgstr "Schedule"
 
 #: src/components/AppSidebar.tsx:29
 #: src/components/AppSidebar.tsx:250
@@ -3610,18 +3073,11 @@ msgstr "nav.schedule"
 msgid "nav.search"
 msgstr "Search"
 
-#. js-lingui-explicit-id
 #: src/components/AppSidebar.tsx:38
 #: src/components/AppSidebar.tsx:170
 #: src/pages/settings/SettingsPage.tsx:102
-msgid "/Sgca+"
-msgstr "nav.settings"
-
-#: src/components/AppSidebar.tsx:38
-#: src/components/AppSidebar.tsx:170
-#: src/pages/settings/SettingsPage.tsx:102
-#~ msgid "nav.settings"
-#~ msgstr "Settings"
+msgid "nav.settings"
+msgstr "Settings"
 
 #~ msgid "nav.subscribe"
 #~ msgstr "Subscribe"
@@ -3650,14 +3106,9 @@ msgstr "No incomplete anime in this library."
 msgid "No rename batches yet."
 msgstr "No rename batches yet."
 
-#. js-lingui-explicit-id
 #: src/pages/library/RenamePreviewPage.tsx:76
-msgid "/3mfxd"
+msgid "No rename plans."
 msgstr "No rename plans."
-
-#: src/pages/library/RenamePreviewPage.tsx:76
-#~ msgid "No rename plans."
-#~ msgstr "No rename plans."
 
 #: src/components/anime/MissingSearchModal.tsx:64
 msgid "No results from any provider."
@@ -3671,55 +3122,55 @@ msgstr "Not aired yet"
 msgid "Not configured"
 msgstr "Not configured"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:660
+#: src/pages/settings/NotificationSettingsPanel.tsx:662
 msgid "notifications.bot.advanced"
 msgstr "Advanced Settings"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:587
+#: src/pages/settings/NotificationSettingsPanel.tsx:589
 msgid "notifications.bot.airingReminder"
 msgstr "Airing Reminder"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:609
+#: src/pages/settings/NotificationSettingsPanel.tsx:611
 msgid "notifications.bot.airingReminder.desc"
 msgstr "Get notified before a watched anime airs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:603
+#: src/pages/settings/NotificationSettingsPanel.tsx:605
 msgid "notifications.bot.airingReminder.off"
 msgstr "Off"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:643
+#: src/pages/settings/NotificationSettingsPanel.tsx:645
 msgid "notifications.bot.allowedChatIds"
 msgstr "Allowed Chat IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:653
+#: src/pages/settings/NotificationSettingsPanel.tsx:655
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any chat."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:401
+#: src/pages/settings/NotificationSettingsPanel.tsx:403
 msgid "notifications.bot.allowedGuildIds"
 msgstr "Allowed Guild IDs"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:411
+#: src/pages/settings/NotificationSettingsPanel.tsx:413
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "Comma-separated. Leave blank to allow any guild."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:389
+#: src/pages/settings/NotificationSettingsPanel.tsx:391
 msgid "notifications.bot.applicationId"
 msgstr "Application ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:377
+#: src/pages/settings/NotificationSettingsPanel.tsx:379
 msgid "notifications.bot.botToken"
 msgstr "Bot Token"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:616
+#: src/pages/settings/NotificationSettingsPanel.tsx:618
 msgid "notifications.bot.dailyDigest"
 msgstr "notifications.bot.dailyDigest"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:636
+#: src/pages/settings/NotificationSettingsPanel.tsx:638
 msgid "notifications.bot.dailyDigest.desc"
 msgstr "notifications.bot.dailyDigest.desc"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:631
+#: src/pages/settings/NotificationSettingsPanel.tsx:633
 msgid "notifications.bot.dailyDigest.off"
 msgstr "notifications.bot.dailyDigest.off"
 
@@ -3727,16 +3178,11 @@ msgstr "notifications.bot.dailyDigest.off"
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord Bot"
 
-#. js-lingui-explicit-id
-#: src/pages/settings/NotificationSettingsPanel.tsx:551
-msgid "B5RS/O"
-msgstr "notifications.bot.language"
-
 #: src/pages/settings/NotificationSettingsPanel.tsx:553
-#~ msgid "notifications.bot.language"
-#~ msgstr "Bot Language"
+msgid "notifications.bot.language"
+msgstr "Bot Language"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:564
+#: src/pages/settings/NotificationSettingsPanel.tsx:566
 msgid "notifications.bot.language.system"
 msgstr "Follow System"
 
@@ -3744,16 +3190,16 @@ msgstr "Follow System"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram Bot"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:665
+#: src/pages/settings/NotificationSettingsPanel.tsx:667
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:675
+#: src/pages/settings/NotificationSettingsPanel.tsx:677
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "Optional. Leave blank to use long polling."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:351
-#: src/pages/settings/NotificationSettingsPanel.tsx:519
+#: src/pages/settings/NotificationSettingsPanel.tsx:353
+#: src/pages/settings/NotificationSettingsPanel.tsx:521
 msgid "notifications.botCommands"
 msgstr "Bot Commands"
 
@@ -3761,18 +3207,12 @@ msgstr "Bot Commands"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Enable interactive bot commands in Telegram or Discord"
 
-#. js-lingui-explicit-id
-#: src/pages/settings/NotificationSettingsPanel.tsx:354
-#: src/pages/settings/NotificationSettingsPanel.tsx:522
-msgid "+ekXt4"
-msgstr "notifications.botCommands.shortDesc"
-
 #: src/pages/settings/NotificationSettingsPanel.tsx:356
 #: src/pages/settings/NotificationSettingsPanel.tsx:524
-#~ msgid "notifications.botCommands.shortDesc"
-#~ msgstr "Interactive commands via /search, /schedule, etc."
+msgid "notifications.botCommands.shortDesc"
+msgstr "Interactive commands via /search, /schedule, etc."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:754
+#: src/pages/settings/NotificationSettingsPanel.tsx:756
 msgid "notifications.change"
 msgstr "Change"
 
@@ -3793,11 +3233,11 @@ msgstr "No notifications"
 msgid "notifications.emptyHint"
 msgstr "Notifications appear here..."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:801
+#: src/pages/settings/NotificationSettingsPanel.tsx:803
 msgid "notifications.enableProviderAbove"
 msgstr "Enable a provider above to configure event routing"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:819
+#: src/pages/settings/NotificationSettingsPanel.tsx:821
 msgid "notifications.event"
 msgstr "Event"
 
@@ -3825,14 +3265,9 @@ msgstr "Login Alert"
 msgid "notifications.event.authLogin.desc"
 msgstr "When someone logs into the web panel"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/NotificationSettingsPanel.tsx:56
-msgid "+E3YFI"
-msgstr "notifications.event.downloadCompleted"
-
-#: src/pages/settings/NotificationSettingsPanel.tsx:56
-#~ msgid "notifications.event.downloadCompleted"
-#~ msgstr "Download Completed"
+msgid "notifications.event.downloadCompleted"
+msgstr "Download Completed"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:57
 msgid "notifications.event.downloadCompleted.desc"
@@ -3870,7 +3305,7 @@ msgstr "System Error"
 msgid "notifications.event.systemError.desc"
 msgstr "When a background job fails unexpectedly"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:810
+#: src/pages/settings/NotificationSettingsPanel.tsx:812
 msgid "notifications.eventRouting"
 msgstr "Event Routing"
 
@@ -3878,16 +3313,10 @@ msgstr "Event Routing"
 msgid "notifications.filter.all"
 msgstr "All"
 
-#. js-lingui-explicit-id
 #: src/pages/NotificationsPage.tsx:43
 #: src/pages/NotificationsPage.tsx:61
-msgid "W+o2Nf"
-msgstr "notifications.filter.downloads"
-
-#: src/pages/NotificationsPage.tsx:43
-#: src/pages/NotificationsPage.tsx:61
-#~ msgid "notifications.filter.downloads"
-#~ msgstr "Downloads"
+msgid "notifications.filter.downloads"
+msgstr "Downloads"
 
 #: src/pages/NotificationsPage.tsx:44
 #: src/pages/NotificationsPage.tsx:62
@@ -3899,8 +3328,8 @@ msgstr "Library"
 msgid "notifications.filter.system"
 msgstr "System"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1039
-#: src/pages/settings/NotificationSettingsPanel.tsx:1053
+#: src/pages/settings/NotificationSettingsPanel.tsx:1041
+#: src/pages/settings/NotificationSettingsPanel.tsx:1055
 msgid "notifications.intro"
 msgstr "Get notified on Discord, Telegram, or any webhook when downloads finish or something goes wrong."
 
@@ -3926,30 +3355,24 @@ msgid "notifications.providerStatus.unconfigured"
 msgstr "Not configured"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:308
-#: src/pages/settings/NotificationSettingsPanel.tsx:501
+#: src/pages/settings/NotificationSettingsPanel.tsx:503
 msgid "notifications.pushNotifications"
 msgstr "Push Notifications"
 
-#. js-lingui-explicit-id
-#: src/pages/settings/NotificationSettingsPanel.tsx:311
-#: src/pages/settings/NotificationSettingsPanel.tsx:504
-msgid "unQd+c"
-msgstr "notifications.pushNotifications.desc"
-
 #: src/pages/settings/NotificationSettingsPanel.tsx:311
 #: src/pages/settings/NotificationSettingsPanel.tsx:506
-#~ msgid "notifications.pushNotifications.desc"
-#~ msgstr "Receive alerts for downloads and system events"
+msgid "notifications.pushNotifications.desc"
+msgstr "Receive alerts for downloads and system events"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:743
+#: src/pages/settings/NotificationSettingsPanel.tsx:745
 msgid "notifications.secretIsSet"
 msgstr "Secret is set"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:738
+#: src/pages/settings/NotificationSettingsPanel.tsx:740
 msgid "notifications.secretPlaceholder"
 msgstr "Optional signing secret"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1062
+#: src/pages/settings/NotificationSettingsPanel.tsx:1064
 msgid "notifications.setupGuide"
 msgstr "Setup Guide"
 
@@ -3980,27 +3403,17 @@ msgstr "Notifications"
 msgid "notifications.today"
 msgstr "Today"
 
-#. js-lingui-explicit-id
 #: src/pages/NotificationsPage.tsx:69
-msgid "S3OT+H"
-msgstr "notifications.type.downloadComplete"
-
-#: src/pages/NotificationsPage.tsx:69
-#~ msgid "notifications.type.downloadComplete"
-#~ msgstr "Download Complete"
+msgid "notifications.type.downloadComplete"
+msgstr "Download Complete"
 
 #: src/pages/NotificationsPage.tsx:70
 msgid "notifications.type.downloadFailed"
 msgstr "Download Failed"
 
-#. js-lingui-explicit-id
 #: src/pages/NotificationsPage.tsx:71
-msgid "Nqx0/x"
-msgstr "notifications.type.libraryScanComplete"
-
-#: src/pages/NotificationsPage.tsx:71
-#~ msgid "notifications.type.libraryScanComplete"
-#~ msgstr "Library Scan Complete"
+msgid "notifications.type.libraryScanComplete"
+msgstr "Library Scan Complete"
 
 #: src/pages/NotificationsPage.tsx:68
 msgid "notifications.type.newEpisode"
@@ -4026,14 +3439,9 @@ msgstr "Old"
 #~ msgid "pagination.firstPage"
 #~ msgstr "First page"
 
-#. js-lingui-explicit-id
 #: src/components/DataPagination.tsx:137
-msgid "OkUR/r"
-msgstr "pagination.go"
-
-#: src/components/DataPagination.tsx:137
-#~ msgid "pagination.go"
-#~ msgstr "Go"
+msgid "pagination.go"
+msgstr "Go"
 
 #: src/components/MotionPagination.tsx:230
 #~ msgid "pagination.lastPage"
@@ -4051,14 +3459,9 @@ msgstr "Next"
 msgid "pagination.nextPage"
 msgstr "Next page"
 
-#. js-lingui-explicit-id
 #: src/components/DataPagination.tsx:100
-msgid "Za2N+P"
-msgstr "pagination.of"
-
-#: src/components/DataPagination.tsx:100
-#~ msgid "pagination.of"
-#~ msgstr "of"
+msgid "pagination.of"
+msgstr "of"
 
 #: src/components/ui/pagination.tsx:72
 msgid "pagination.prev"
@@ -4081,7 +3484,7 @@ msgid "player.memoryPressure"
 msgstr "High memory usage detected — reducing buffer size"
 
 #: src/components/HeroBanner.tsx:209
-#: src/pages/AnimeDetailPage.tsx:962
+#: src/pages/AnimeDetailPage.tsx:927
 msgid "player.remaining"
 msgstr "remaining"
 
@@ -4155,28 +3558,18 @@ msgstr "New Rule"
 msgid "ruleEditor.delete"
 msgstr "Delete"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:267
-msgid "6+KFun"
-msgstr "ruleEditor.deleted"
-
-#: src/components/RuleEditorModal.tsx:267
-#~ msgid "ruleEditor.deleted"
-#~ msgstr "Unfollowed"
+msgid "ruleEditor.deleted"
+msgstr "Unfollowed"
 
 #: src/components/RuleEditorModal.tsx:520
 #: src/pages/DownloadsPage.tsx:1538
 msgid "ruleEditor.destination"
 msgstr "Destination"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:334
-msgid "2E1+HZ"
-msgstr "ruleEditor.disabled"
-
-#: src/components/RuleEditorModal.tsx:334
-#~ msgid "ruleEditor.disabled"
-#~ msgstr "Disabled"
+msgid "ruleEditor.disabled"
+msgstr "Disabled"
 
 #: src/components/RuleEditorModal.tsx:360
 msgid "ruleEditor.done"
@@ -4190,14 +3583,9 @@ msgstr "Downloaded"
 msgid "ruleEditor.editUrl"
 msgstr "Edit"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:334
-msgid "+4qSUv"
-msgstr "ruleEditor.enabled"
-
-#: src/components/RuleEditorModal.tsx:334
-#~ msgid "ruleEditor.enabled"
-#~ msgstr "Enabled"
+msgid "ruleEditor.enabled"
+msgstr "Enabled"
 
 #: src/components/RuleEditorModal.tsx:589
 msgid "ruleEditor.episodes"
@@ -4248,16 +3636,10 @@ msgstr "Just now"
 msgid "ruleEditor.keywordMode"
 msgstr "Keyword"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:418
 #: src/pages/DownloadsPage.tsx:1444
-msgid "Is1t/l"
-msgstr "ruleEditor.linkedAnime"
-
-#: src/components/RuleEditorModal.tsx:418
-#: src/pages/DownloadsPage.tsx:1444
-#~ msgid "ruleEditor.linkedAnime"
-#~ msgstr "Linked Anime"
+msgid "ruleEditor.linkedAnime"
+msgstr "Linked Anime"
 
 #: src/pages/DownloadsPage.tsx:1583
 msgid "ruleEditor.loading"
@@ -4284,97 +3666,51 @@ msgstr "No library"
 msgid "ruleEditor.noPreviewItems"
 msgstr "No items match current filters"
 
-#. js-lingui-explicit-id
 #: src/pages/downloads/LibraryTab.tsx:353
-msgid "H+osPR"
+msgid "ruleEditor.openEditor"
 msgstr "ruleEditor.openEditor"
 
-#: src/pages/downloads/LibraryTab.tsx:353
-#~ msgid "ruleEditor.openEditor"
-#~ msgstr "ruleEditor.openEditor"
-
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:774
 #: src/pages/DownloadsPage.tsx:1584
 #: src/pages/DownloadsPage.tsx:1610
-msgid "Nj8l+e"
-msgstr "ruleEditor.preview"
-
-#: src/components/RuleEditorModal.tsx:774
-#: src/pages/DownloadsPage.tsx:1584
-#: src/pages/DownloadsPage.tsx:1610
-#~ msgid "ruleEditor.preview"
-#~ msgstr "Preview"
+msgid "ruleEditor.preview"
+msgstr "Preview"
 
 #: src/components/RuleEditorModal.tsx:604
 msgid "ruleEditor.range"
 msgstr "Range"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:790
-msgid "W+g6oV"
-msgstr "ruleEditor.refreshPreview"
-
-#: src/components/RuleEditorModal.tsx:790
-#~ msgid "ruleEditor.refreshPreview"
-#~ msgstr "Refresh"
-
-#. js-lingui-explicit-id
-#: src/components/RuleEditorModal.tsx:629
-msgid "j+XoXi"
-msgstr "ruleEditor.releaseGroups"
+msgid "ruleEditor.refreshPreview"
+msgstr "Refresh"
 
 #: src/components/RuleEditorModal.tsx:629
-#~ msgid "ruleEditor.releaseGroups"
-#~ msgstr "Release Groups"
+msgid "ruleEditor.releaseGroups"
+msgstr "Release Groups"
 
 #: src/components/RuleEditorModal.tsx:713
 msgid "ruleEditor.resolution"
 msgstr "Resolution"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:341
-msgid "j/U/60"
-msgstr "ruleEditor.rssUrl"
-
-#: src/components/RuleEditorModal.tsx:341
-#~ msgid "ruleEditor.rssUrl"
-#~ msgstr "RSS Feed URL"
-
-#. js-lingui-explicit-id
-#: src/pages/DownloadsPage.tsx:544
-#: src/pages/DownloadsPage.tsx:590
-msgid "y1/HTa"
-msgstr "ruleEditor.rssUrlMode"
+msgid "ruleEditor.rssUrl"
+msgstr "RSS Feed URL"
 
 #: src/pages/DownloadsPage.tsx:544
 #: src/pages/DownloadsPage.tsx:590
-#~ msgid "ruleEditor.rssUrlMode"
-#~ msgstr "RSS URL"
-
-#. js-lingui-explicit-id
-#: src/components/RuleEditorModal.tsx:407
-#: src/pages/DownloadsPage.tsx:1528
-msgid "GU1//z"
-msgstr "ruleEditor.ruleName"
+msgid "ruleEditor.rssUrlMode"
+msgstr "RSS URL"
 
 #: src/components/RuleEditorModal.tsx:407
 #: src/pages/DownloadsPage.tsx:1528
-#~ msgid "ruleEditor.ruleName"
-#~ msgstr "Rule Name"
-
-#. js-lingui-explicit-id
-#: src/components/RuleEditorModal.tsx:327
-#: src/components/RuleEditorModal.tsx:411
-#: src/pages/DownloadsPage.tsx:1532
-msgid "xaK+xi"
-msgstr "ruleEditor.ruleNamePlaceholder"
+msgid "ruleEditor.ruleName"
+msgstr "Rule Name"
 
 #: src/components/RuleEditorModal.tsx:327
 #: src/components/RuleEditorModal.tsx:411
 #: src/pages/DownloadsPage.tsx:1532
-#~ msgid "ruleEditor.ruleNamePlaceholder"
-#~ msgstr "e.g. Anime Name Season 1"
+msgid "ruleEditor.ruleNamePlaceholder"
+msgstr "e.g. Anime Name Season 1"
 
 #: src/components/RuleEditorModal.tsx:764
 #: src/pages/DownloadsPage.tsx:1593
@@ -4405,14 +3741,9 @@ msgstr "Search anime to link..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr "RSS Subscribe"
 
-#. js-lingui-explicit-id
 #: src/components/RuleEditorModal.tsx:558
-msgid "QKza1+"
-msgstr "ruleEditor.titleMatch"
-
-#: src/components/RuleEditorModal.tsx:558
-#~ msgid "ruleEditor.titleMatch"
-#~ msgstr "Title Match"
+msgid "ruleEditor.titleMatch"
+msgstr "Title Match"
 
 #: src/components/library/RenameConfigEditor.tsx:59
 #~ msgid "Save"
@@ -4430,14 +3761,9 @@ msgstr "files"
 msgid "scan.phase.hashing"
 msgstr "Hashing"
 
-#. js-lingui-explicit-id
 #: src/pages/LibraryDetailPage.tsx:2191
-msgid "WX4T+U"
-msgstr "scan.phase.matching"
-
-#: src/pages/LibraryDetailPage.tsx:2191
-#~ msgid "scan.phase.matching"
-#~ msgstr "Matching"
+msgid "scan.phase.matching"
+msgstr "Matching"
 
 #: src/pages/LibraryDetailPage.tsx:2188
 msgid "scan.phase.scanning"
@@ -4452,40 +3778,25 @@ msgstr "Scan All"
 msgid "scanInterval.12h"
 msgstr "Every 12 hours"
 
-#. js-lingui-explicit-id
 #: src/components/ScanIntervalSelect.tsx:8
-msgid "U/3zXo"
-msgstr "scanInterval.1h"
-
-#: src/components/ScanIntervalSelect.tsx:8
-#~ msgid "scanInterval.1h"
-#~ msgstr "Every hour"
+msgid "scanInterval.1h"
+msgstr "Every hour"
 
 #: src/components/ScanIntervalSelect.tsx:7
 msgid "scanInterval.30min"
 msgstr "Every 30 minutes"
 
-#. js-lingui-explicit-id
 #: src/components/ScanIntervalSelect.tsx:9
-msgid "vD+Z7F"
-msgstr "scanInterval.6h"
-
-#: src/components/ScanIntervalSelect.tsx:9
-#~ msgid "scanInterval.6h"
-#~ msgstr "Every 6 hours"
+msgid "scanInterval.6h"
+msgstr "Every 6 hours"
 
 #: src/components/ScanIntervalSelect.tsx:11
 msgid "scanInterval.daily"
 msgstr "Daily"
 
-#. js-lingui-explicit-id
 #: src/components/ScanIntervalSelect.tsx:6
-msgid "T+AxV6"
-msgstr "scanInterval.disabled"
-
-#: src/components/ScanIntervalSelect.tsx:6
-#~ msgid "scanInterval.disabled"
-#~ msgstr "Disabled"
+msgid "scanInterval.disabled"
+msgstr "Disabled"
 
 #: src/components/ScanIntervalSelect.tsx:12
 msgid "scanInterval.weekly"
@@ -4497,27 +3808,15 @@ msgstr "Weekly"
 msgid "schedule.all"
 msgstr "All"
 
-#. js-lingui-explicit-id
 #: src/pages/SchedulePage.tsx:1298
 #: src/pages/SchedulePage.tsx:1452
-msgid "/Z6npT"
-msgstr "schedule.backToCurrent"
-
-#: src/pages/SchedulePage.tsx:1298
-#: src/pages/SchedulePage.tsx:1452
-#~ msgid "schedule.backToCurrent"
-#~ msgstr "Back to current"
-
-#. js-lingui-explicit-id
-#: src/pages/SchedulePage.tsx:847
-#: src/pages/SchedulePage.tsx:1162
-msgid "/60wBT"
-msgstr "schedule.loadFailed"
+msgid "schedule.backToCurrent"
+msgstr "Back to current"
 
 #: src/pages/SchedulePage.tsx:847
 #: src/pages/SchedulePage.tsx:1162
-#~ msgid "schedule.loadFailed"
-#~ msgstr "Failed to load calendar"
+msgid "schedule.loadFailed"
+msgstr "Failed to load calendar"
 
 #~ msgid "schedule.next"
 #~ msgstr "Next"
@@ -4534,32 +3833,20 @@ msgstr "No shows scheduled"
 #~ msgid "schedule.prev"
 #~ msgstr "Prev"
 
-#. js-lingui-explicit-id
 #: src/components/AnimeCard.tsx:43
 #: src/pages/SchedulePage.tsx:87
-msgid "V5sn+F"
-msgstr "schedule.season.fall"
-
-#: src/components/AnimeCard.tsx:43
-#: src/pages/SchedulePage.tsx:87
-#~ msgid "schedule.season.fall"
-#~ msgstr "Fall"
+msgid "schedule.season.fall"
+msgstr "Fall"
 
 #: src/components/AnimeCard.tsx:41
 #: src/pages/SchedulePage.tsx:83
 msgid "schedule.season.spring"
 msgstr "Spring"
 
-#. js-lingui-explicit-id
 #: src/components/AnimeCard.tsx:42
 #: src/pages/SchedulePage.tsx:85
-msgid "Vqw79/"
-msgstr "schedule.season.summer"
-
-#: src/components/AnimeCard.tsx:42
-#: src/pages/SchedulePage.tsx:85
-#~ msgid "schedule.season.summer"
-#~ msgstr "Summer"
+msgid "schedule.season.summer"
+msgstr "Summer"
 
 #: src/components/AnimeCard.tsx:40
 #: src/pages/SchedulePage.tsx:81
@@ -4577,23 +3864,13 @@ msgstr "Today"
 msgid "schedule.totalShows"
 msgstr "shows this week"
 
-#. js-lingui-explicit-id
 #: src/components/anime/EpisodeStatusCard.tsx:61
-msgid "Xe+bIR"
+msgid "Search for this episode"
 msgstr "Search for this episode"
 
-#: src/components/anime/EpisodeStatusCard.tsx:61
-#~ msgid "Search for this episode"
-#~ msgstr "Search for this episode"
-
-#. js-lingui-explicit-id
 #: src/components/anime/MissingSearchModal.tsx:52
-msgid "/YGFa2"
+msgid "Search missing episode {episodeNumber}"
 msgstr "Search missing episode {episodeNumber}"
-
-#: src/components/anime/MissingSearchModal.tsx:52
-#~ msgid "Search missing episode {episodeNumber}"
-#~ msgstr "Search missing episode {episodeNumber}"
 
 #: src/pages/SearchPage.tsx:533
 msgid "search.browseResults"
@@ -4623,27 +3900,17 @@ msgstr "search.filter.noTags"
 msgid "search.filter.rating"
 msgstr "Rating"
 
-#. js-lingui-explicit-id
 #: src/pages/SearchPage.tsx:394
-msgid "Zo+fUO"
-msgstr "search.filter.season"
-
-#: src/pages/SearchPage.tsx:394
-#~ msgid "search.filter.season"
-#~ msgstr "Season"
+msgid "search.filter.season"
+msgstr "Season"
 
 #: src/pages/SearchPage.tsx:354
 msgid "search.filter.sort"
 msgstr "Sort"
 
-#. js-lingui-explicit-id
 #: src/pages/SearchPage.tsx:434
-msgid "p8B+zZ"
-msgstr "search.filter.status"
-
-#: src/pages/SearchPage.tsx:434
-#~ msgid "search.filter.status"
-#~ msgstr "Status"
+msgid "search.filter.status"
+msgstr "Status"
 
 #: src/components/TagMultiSelect.tsx:108
 #: src/components/TagMultiSelect.tsx:109
@@ -4654,14 +3921,9 @@ msgstr "search.filter.tags"
 msgid "search.filter.tagSearch"
 msgstr "search.filter.tagSearch"
 
-#. js-lingui-explicit-id
 #: src/pages/SearchPage.tsx:374
-msgid "m+rfUr"
-msgstr "search.filter.year"
-
-#: src/pages/SearchPage.tsx:374
-#~ msgid "search.filter.year"
-#~ msgstr "Year"
+msgid "search.filter.year"
+msgstr "Year"
 
 #: src/pages/SearchPage.tsx:506
 msgid "search.inputPlaceholder"
@@ -4709,14 +3971,9 @@ msgstr "search.season.{0}"
 msgid "search.season.fall"
 msgstr "Fall"
 
-#. js-lingui-explicit-id
 #: src/pages/SearchPage.tsx:71
-msgid "d/Xc8V"
-msgstr "search.season.spring"
-
-#: src/pages/SearchPage.tsx:71
-#~ msgid "search.season.spring"
-#~ msgstr "Spring"
+msgid "search.season.spring"
+msgstr "Spring"
 
 #: src/pages/SearchPage.tsx:72
 msgid "search.season.summer"
@@ -4726,14 +3983,9 @@ msgstr "Summer"
 msgid "search.season.winter"
 msgstr "Winter"
 
-#. js-lingui-explicit-id
 #: src/pages/SearchPage.tsx:58
-msgid "69r+kn"
-msgstr "search.sort.newest"
-
-#: src/pages/SearchPage.tsx:58
-#~ msgid "search.sort.newest"
-#~ msgstr "Newest First"
+msgid "search.sort.newest"
+msgstr "Newest First"
 
 #: src/pages/SearchPage.tsx:59
 msgid "search.sort.oldest"
@@ -4751,14 +4003,9 @@ msgstr "Highest Rated"
 msgid "search.sort.trending"
 msgstr "Trending"
 
-#. js-lingui-explicit-id
 #: src/pages/SearchPage.tsx:83
-msgid "A/fTJr"
-msgstr "search.status.airing"
-
-#: src/pages/SearchPage.tsx:83
-#~ msgid "search.status.airing"
-#~ msgstr "Airing"
+msgid "search.status.airing"
+msgstr "Airing"
 
 #: src/pages/SearchPage.tsx:84
 msgid "search.status.finished"
@@ -4784,23 +4031,13 @@ msgstr "search.tag.misc"
 msgid "search.tag.mood"
 msgstr "search.tag.mood"
 
-#. js-lingui-explicit-id
 #: src/components/TagMultiSelect.tsx:28
-msgid "k7/zbl"
+msgid "search.tag.setting"
 msgstr "search.tag.setting"
 
-#: src/components/TagMultiSelect.tsx:28
-#~ msgid "search.tag.setting"
-#~ msgstr "search.tag.setting"
-
-#. js-lingui-explicit-id
 #: src/components/TagMultiSelect.tsx:29
-msgid "VU+UCp"
+msgid "search.tag.source"
 msgstr "search.tag.source"
-
-#: src/components/TagMultiSelect.tsx:29
-#~ msgid "search.tag.source"
-#~ msgstr "search.tag.source"
 
 #: src/components/TagMultiSelect.tsx:32
 msgid "search.tag.studio"
@@ -4810,14 +4047,9 @@ msgstr "search.tag.studio"
 msgid "search.tag.style"
 msgstr "search.tag.style"
 
-#. js-lingui-explicit-id
 #: src/components/TagMultiSelect.tsx:30
-msgid "w3A+Ce"
+msgid "search.tag.theme"
 msgstr "search.tag.theme"
-
-#: src/components/TagMultiSelect.tsx:30
-#~ msgid "search.tag.theme"
-#~ msgstr "search.tag.theme"
 
 #~ msgid "search.tagPlaceholder"
 #~ msgstr "Add Bangumi tag…"
@@ -4826,14 +4058,9 @@ msgstr "search.tag.theme"
 #~ msgid "search.title"
 #~ msgstr "Search"
 
-#. js-lingui-explicit-id
 #: src/components/anime/MissingSearchModal.tsx:60
-msgid "Du+zn+"
+msgid "Searching..."
 msgstr "Searching..."
-
-#: src/components/anime/MissingSearchModal.tsx:60
-#~ msgid "Searching..."
-#~ msgstr "Searching..."
 
 #: src/pages/settings/BackupPanel.tsx:499
 msgid "Secret Key"
@@ -4867,14 +4094,9 @@ msgstr "{count}h ago"
 msgid "sessions.justNow"
 msgstr "Just now"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/SessionsTab.tsx:58
-msgid "+X0ePn"
-msgstr "sessions.minutesAgo"
-
-#: src/pages/settings/SessionsTab.tsx:58
-#~ msgid "sessions.minutesAgo"
-#~ msgstr "{count}m ago"
+msgid "sessions.minutesAgo"
+msgstr "{count}m ago"
 
 #: src/pages/settings/SessionsTab.tsx:113
 msgid "sessions.revoke"
@@ -4937,14 +4159,9 @@ msgstr "Automatically add newly matched anime to your collection"
 msgid "settings.background"
 msgstr "settings.background"
 
-#. js-lingui-explicit-id
 #: src/components/watch/UnifiedSettingsPanel.tsx:500
-msgid "Uvw/dz"
+msgid "settings.border"
 msgstr "settings.border"
-
-#: src/components/watch/UnifiedSettingsPanel.tsx:500
-#~ msgid "settings.border"
-#~ msgstr "settings.border"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:396
 #: src/components/watch/UnifiedSettingsPanel.tsx:641
@@ -4958,14 +4175,9 @@ msgstr "settings.borderStyle"
 msgid "settings.brightness"
 msgstr "settings.brightness"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/GeneralPanel.tsx:107
-msgid "xOo/0w"
-msgstr "settings.collection"
-
-#: src/pages/settings/GeneralPanel.tsx:107
-#~ msgid "settings.collection"
-#~ msgstr "Collection"
+msgid "settings.collection"
+msgstr "Collection"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:406
 #: src/components/watch/UnifiedSettingsPanel.tsx:792
@@ -5002,14 +4214,9 @@ msgstr "Auto-select delete files"
 #~ msgid "settings.download.autoDeleteFilesDesc"
 #~ msgstr "When deleting downloads, auto-tick the option to also delete files from disk"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/DownloadPanel.tsx:32
-msgid "vvA/YQ"
+msgid "settings.download.builtin"
 msgstr "settings.download.builtin"
-
-#: src/pages/settings/DownloadPanel.tsx:32
-#~ msgid "settings.download.builtin"
-#~ msgstr "settings.download.builtin"
 
 #: src/pages/settings/DownloadPanel.tsx:39
 msgid "settings.download.builtinDesc"
@@ -5081,25 +4288,14 @@ msgstr "Language, collection, and app preferences"
 msgid "settings.integration.authUrlFailed"
 msgstr "Failed to get auth URL"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/IntegrationsPanel.tsx:416
-msgid "vsZE+q"
+msgid "settings.integration.autoPull"
 msgstr "settings.integration.autoPull"
 
-#: src/pages/settings/IntegrationsPanel.tsx:416
-#~ msgid "settings.integration.autoPull"
-#~ msgstr "settings.integration.autoPull"
-
-#. js-lingui-explicit-id
 #: src/pages/settings/IntegrationsPanel.tsx:570
 #: src/pages/settings/IntegrationsPanel.tsx:782
-msgid "6ZpI+Q"
-msgstr "settings.integration.connect"
-
-#: src/pages/settings/IntegrationsPanel.tsx:570
-#: src/pages/settings/IntegrationsPanel.tsx:782
-#~ msgid "settings.integration.connect"
-#~ msgstr "Connect Account"
+msgid "settings.integration.connect"
+msgstr "Connect Account"
 
 #: src/pages/settings/IntegrationsPanel.tsx:495
 #: src/pages/settings/IntegrationsPanel.tsx:522
@@ -5162,14 +4358,9 @@ msgstr "settings.integration.pullFailed"
 msgid "settings.integration.pulling"
 msgstr "settings.integration.pulling"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/IntegrationsPanel.tsx:426
-msgid "CvP/Cg"
+msgid "settings.integration.pullNow"
 msgstr "settings.integration.pullNow"
-
-#: src/pages/settings/IntegrationsPanel.tsx:426
-#~ msgid "settings.integration.pullNow"
-#~ msgstr "settings.integration.pullNow"
 
 #: src/pages/settings/IntegrationsPanel.tsx:400
 msgid "settings.integration.pullToggleFailed"
@@ -5228,36 +4419,19 @@ msgstr "Connect external services and sync your data"
 msgid "settings.nav.about"
 msgstr "About"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/AccountPanel.tsx:110
 #: src/pages/settings/SettingsPage.tsx:41
 #: src/pages/settings/SettingsPage.tsx:239
-msgid "E+GeIZ"
-msgstr "settings.nav.account"
+msgid "settings.nav.account"
+msgstr "Account"
 
-#: src/pages/settings/AccountPanel.tsx:110
-#: src/pages/settings/SettingsPage.tsx:41
-#: src/pages/settings/SettingsPage.tsx:239
-#~ msgid "settings.nav.account"
-#~ msgstr "Account"
-
-#. js-lingui-explicit-id
 #: src/pages/settings/SettingsPage.tsx:42
-msgid "+YHAbi"
+msgid "settings.nav.backup"
 msgstr "settings.nav.backup"
 
-#: src/pages/settings/SettingsPage.tsx:42
-#~ msgid "settings.nav.backup"
-#~ msgstr "settings.nav.backup"
-
-#. js-lingui-explicit-id
 #: src/pages/settings/SettingsPage.tsx:39
-msgid "ibxo/c"
-msgstr "settings.nav.download"
-
-#: src/pages/settings/SettingsPage.tsx:39
-#~ msgid "settings.nav.download"
-#~ msgstr "Download"
+msgid "settings.nav.download"
+msgstr "Download"
 
 #: src/pages/settings/GeneralPanel.tsx:80
 #: src/pages/settings/SettingsPage.tsx:36
@@ -5269,8 +4443,8 @@ msgstr "General"
 msgid "settings.nav.integrations"
 msgstr "Integrations"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1037
-#: src/pages/settings/NotificationSettingsPanel.tsx:1051
+#: src/pages/settings/NotificationSettingsPanel.tsx:1039
+#: src/pages/settings/NotificationSettingsPanel.tsx:1053
 #: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.notifications"
 msgstr "Notifications"
@@ -5301,18 +4475,11 @@ msgstr "settings.normal"
 msgid "settings.off"
 msgstr "settings.off"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/SettingsPage.tsx:156
 #: src/pages/settings/SettingsPage.tsx:225
 #: src/pages/settings/SettingsPage.tsx:303
-msgid "FI0a/Q"
-msgstr "settings.pageTitle"
-
-#: src/pages/settings/SettingsPage.tsx:156
-#: src/pages/settings/SettingsPage.tsx:225
-#: src/pages/settings/SettingsPage.tsx:303
-#~ msgid "settings.pageTitle"
-#~ msgstr "Settings"
+msgid "settings.pageTitle"
+msgstr "Settings"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:402
 #: src/components/watch/UnifiedSettingsPanel.tsx:708
@@ -5340,14 +4507,9 @@ msgstr "settings.player.backupNote"
 msgid "settings.player.buffer.auto"
 msgstr "settings.player.buffer.auto"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/PlayerPanel.tsx:355
-msgid "o2teN/"
+msgid "settings.player.buffer.balanced"
 msgstr "settings.player.buffer.balanced"
-
-#: src/pages/settings/PlayerPanel.tsx:355
-#~ msgid "settings.player.buffer.balanced"
-#~ msgstr "settings.player.buffer.balanced"
 
 #: src/pages/settings/PlayerPanel.tsx:356
 msgid "settings.player.buffer.high"
@@ -5373,14 +4535,9 @@ msgstr "Danmaku"
 msgid "settings.player.danmakuDensity"
 msgstr "settings.player.danmakuDensity"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/PlayerPanel.tsx:263
-msgid "P8x+1h"
-msgstr "settings.player.danmakuEnabled"
-
-#: src/pages/settings/PlayerPanel.tsx:263
-#~ msgid "settings.player.danmakuEnabled"
-#~ msgstr "Danmaku enabled by default"
+msgid "settings.player.danmakuEnabled"
+msgstr "Danmaku enabled by default"
 
 #: src/pages/settings/PlayerPanel.tsx:305
 msgid "settings.player.danmakuFontSize"
@@ -5390,14 +4547,9 @@ msgstr "Danmaku font size"
 msgid "settings.player.danmakuOpacity"
 msgstr "Danmaku opacity"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/PlayerPanel.tsx:317
-msgid "+le84k"
-msgstr "settings.player.danmakuSpeed"
-
-#: src/pages/settings/PlayerPanel.tsx:317
-#~ msgid "settings.player.danmakuSpeed"
-#~ msgstr "Danmaku speed"
+msgid "settings.player.danmakuSpeed"
+msgstr "Danmaku speed"
 
 #: src/pages/settings/PlayerPanel.tsx:338
 msgid "settings.player.density.high"
@@ -5479,14 +4631,9 @@ msgstr "settings.player.subtitlePreset"
 msgid "settings.player.subtitlePreview"
 msgstr "settings.player.subtitlePreview"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/PlayerPanel.tsx:561
-msgid "rgr/AY"
+msgid "settings.player.subtitleRespectAss"
 msgstr "settings.player.subtitleRespectAss"
-
-#: src/pages/settings/PlayerPanel.tsx:561
-#~ msgid "settings.player.subtitleRespectAss"
-#~ msgstr "settings.player.subtitleRespectAss"
 
 #: src/pages/settings/PlayerPanel.tsx:533
 msgid "settings.player.subtitleSafeMargin"
@@ -5562,7 +4709,7 @@ msgstr "Save failed"
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:299
 #: src/pages/settings/IntegrationsPanel.tsx:767
-#: src/pages/settings/NotificationSettingsPanel.tsx:1100
+#: src/pages/settings/NotificationSettingsPanel.tsx:1102
 msgid "settings.saving"
 msgstr "Saving…"
 
@@ -5627,27 +4774,17 @@ msgstr "SDH"
 msgid "settings.sub.color.cyan"
 msgstr "Cyan"
 
-#. js-lingui-explicit-id
 #: src/components/watch/UnifiedSettingsPanel.tsx:105
-msgid "gu+gdQ"
-msgstr "settings.sub.color.green"
-
-#: src/components/watch/UnifiedSettingsPanel.tsx:105
-#~ msgid "settings.sub.color.green"
-#~ msgstr "Green"
+msgid "settings.sub.color.green"
+msgstr "Green"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:107
 msgid "settings.sub.color.red"
 msgstr "Red"
 
-#. js-lingui-explicit-id
 #: src/components/watch/UnifiedSettingsPanel.tsx:103
-msgid "ucQ+zq"
-msgstr "settings.sub.color.white"
-
-#: src/components/watch/UnifiedSettingsPanel.tsx:103
-#~ msgid "settings.sub.color.white"
-#~ msgstr "White"
+msgid "settings.sub.color.white"
+msgstr "White"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:104
 msgid "settings.sub.color.yellow"
@@ -5673,27 +4810,17 @@ msgstr "Top"
 msgid "settings.sub.preset.anime"
 msgstr "Anime"
 
-#. js-lingui-explicit-id
 #: src/components/watch/UnifiedSettingsPanel.tsx:80
-msgid "uMUen+"
-msgstr "settings.sub.preset.cinema"
-
-#: src/components/watch/UnifiedSettingsPanel.tsx:80
-#~ msgid "settings.sub.preset.cinema"
-#~ msgstr "Cinema"
+msgid "settings.sub.preset.cinema"
+msgstr "Cinema"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:79
 msgid "settings.sub.preset.default"
 msgstr "Default"
 
-#. js-lingui-explicit-id
 #: src/components/watch/UnifiedSettingsPanel.tsx:82
-msgid "e/jVb+"
-msgstr "settings.sub.preset.highContrast"
-
-#: src/components/watch/UnifiedSettingsPanel.tsx:82
-#~ msgid "settings.sub.preset.highContrast"
-#~ msgstr "High Contrast"
+msgid "settings.sub.preset.highContrast"
+msgstr "High Contrast"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:89
 msgid "settings.sub.shadow.depressed"
@@ -5715,18 +4842,11 @@ msgstr "Outline"
 msgid "settings.sub.shadow.raised"
 msgstr "Raised"
 
-#. js-lingui-explicit-id
 #: src/components/watch/UnifiedSettingsPanel.tsx:382
 #: src/components/watch/UnifiedSettingsPanel.tsx:424
 #: src/components/watch/UnifiedSettingsPanel.tsx:888
-msgid "qY/PYO"
+msgid "settings.subtitles"
 msgstr "settings.subtitles"
-
-#: src/components/watch/UnifiedSettingsPanel.tsx:382
-#: src/components/watch/UnifiedSettingsPanel.tsx:424
-#: src/components/watch/UnifiedSettingsPanel.tsx:888
-#~ msgid "settings.subtitles"
-#~ msgstr "settings.subtitles"
 
 #: src/components/watch/UnifiedSettingsPanel.tsx:384
 #: src/components/watch/UnifiedSettingsPanel.tsx:470
@@ -5776,14 +4896,9 @@ msgstr "Sync watch progress and import lists from AniList."
 msgid "setup.integrations.availableInSettings"
 msgstr "In Settings"
 
-#. js-lingui-explicit-id
 #: src/pages/setup/IntegrationsStep.tsx:22
-msgid "8/vBuv"
-msgstr "setup.integrations.bangumiDescription"
-
-#: src/pages/setup/IntegrationsStep.tsx:22
-#~ msgid "setup.integrations.bangumiDescription"
-#~ msgstr "Pull anime metadata, episode lists, and air dates from Bangumi."
+msgid "setup.integrations.bangumiDescription"
+msgstr "Pull anime metadata, episode lists, and air dates from Bangumi."
 
 #: src/pages/setup/IntegrationsStep.tsx:63
 msgid "setup.integrations.finish"
@@ -5798,14 +4913,9 @@ msgstr "Connect external metadata providers later in Settings → Integrations t
 msgid "setup.integrations.title"
 msgstr "Optional integrations"
 
-#. js-lingui-explicit-id
 #: src/pages/setup/IntegrationsStep.tsx:32
-msgid "++I8Vb"
-msgstr "setup.integrations.traktDescription"
-
-#: src/pages/setup/IntegrationsStep.tsx:32
-#~ msgid "setup.integrations.traktDescription"
-#~ msgstr "Track watched episodes across devices via Trakt."
+msgid "setup.integrations.traktDescription"
+msgstr "Track watched episodes across devices via Trakt."
 
 #: src/pages/setup/LibraryStep.tsx:94
 msgid "setup.library.createFailed"
@@ -5823,23 +4933,13 @@ msgstr "Fix the path before continuing"
 msgid "setup.library.nameLabel"
 msgstr "Library name"
 
-#. js-lingui-explicit-id
 #: src/pages/setup/LibraryStep.tsx:122
-msgid "A3/+fv"
-msgstr "setup.library.namePlaceholder"
-
-#: src/pages/setup/LibraryStep.tsx:122
-#~ msgid "setup.library.namePlaceholder"
-#~ msgstr "e.g. Anime"
-
-#. js-lingui-explicit-id
-#: src/pages/setup/LibraryStep.tsx:64
-msgid "sx6/2H"
-msgstr "setup.library.pathCheckFailed"
+msgid "setup.library.namePlaceholder"
+msgstr "e.g. Anime"
 
 #: src/pages/setup/LibraryStep.tsx:64
-#~ msgid "setup.library.pathCheckFailed"
-#~ msgstr "Path check failed — try again"
+msgid "setup.library.pathCheckFailed"
+msgstr "Path check failed — try again"
 
 #: src/pages/setup/LibraryStep.tsx:181
 msgid "setup.library.pathChecking"
@@ -5849,51 +4949,30 @@ msgstr "Checking…"
 msgid "setup.library.pathInvalid"
 msgstr "Path is not valid"
 
-#. js-lingui-explicit-id
 #: src/pages/setup/LibraryStep.tsx:132
-msgid "sm/PL6"
-msgstr "setup.library.pathLabel"
-
-#: src/pages/setup/LibraryStep.tsx:132
-#~ msgid "setup.library.pathLabel"
-#~ msgstr "Path inside the container"
-
-#. js-lingui-explicit-id
-#: src/pages/setup/LibraryStep.tsx:144
-msgid "///MWj"
-msgstr "setup.library.pathPlaceholder"
+msgid "setup.library.pathLabel"
+msgstr "Path inside the container"
 
 #: src/pages/setup/LibraryStep.tsx:144
-#~ msgid "setup.library.pathPlaceholder"
-#~ msgstr "/media"
+msgid "setup.library.pathPlaceholder"
+msgstr "/media"
 
 #: src/pages/setup/LibraryStep.tsx:188
 msgid "setup.library.pathReadable"
 msgstr "Path readable"
 
-#. js-lingui-explicit-id
 #: src/pages/setup/LibraryStep.tsx:165
-msgid "Xvr2P+"
-msgstr "setup.library.submit"
-
-#: src/pages/setup/LibraryStep.tsx:165
-#~ msgid "setup.library.submit"
-#~ msgstr "Create library"
+msgid "setup.library.submit"
+msgstr "Create library"
 
 #: src/pages/setup/LibraryStep.tsx:103
 msgid "setup.library.subtitle"
 msgstr "Point milmil at a folder of media files. You can add more libraries later in Settings."
 
-#. js-lingui-explicit-id
 #: src/pages/setup/LibraryStep.tsx:25
 #: src/pages/setup/LibraryStep.tsx:102
-msgid "D9a/0m"
-msgstr "setup.library.title"
-
-#: src/pages/setup/LibraryStep.tsx:25
-#: src/pages/setup/LibraryStep.tsx:102
-#~ msgid "setup.library.title"
-#~ msgstr "Add your first library"
+msgid "setup.library.title"
+msgstr "Add your first library"
 
 #: src/pages/setup/SetupLayout.tsx:10
 msgid "setup.step.admin"
@@ -5915,14 +4994,9 @@ msgstr "Size"
 msgid "Status"
 msgstr "Status"
 
-#. js-lingui-explicit-id
 #: src/components/anime/MissingSearchModal.tsx:74
-msgid "oFH/w4"
+msgid "Subgroup"
 msgstr "Subgroup"
-
-#: src/components/anime/MissingSearchModal.tsx:74
-#~ msgid "Subgroup"
-#~ msgstr "Subgroup"
 
 #~ msgid "subscribe.add"
 #~ msgstr "Add"
@@ -6078,25 +5152,14 @@ msgstr "Title"
 msgid "TMDB API Read Access Token"
 msgstr "TMDB API Read Access Token"
 
-#. js-lingui-explicit-id
 #: src/pages/settings/IntegrationsPanel.tsx:193
 #: src/pages/settings/IntegrationsPanel.tsx:196
-msgid "/2RHOF"
+msgid "TMDB connection failed"
 msgstr "TMDB connection failed"
 
-#: src/pages/settings/IntegrationsPanel.tsx:193
-#: src/pages/settings/IntegrationsPanel.tsx:196
-#~ msgid "TMDB connection failed"
-#~ msgstr "TMDB connection failed"
-
-#. js-lingui-explicit-id
 #: src/pages/settings/IntegrationsPanel.tsx:191
-msgid "eP+EjP"
+msgid "TMDB connection successful"
 msgstr "TMDB connection successful"
-
-#: src/pages/settings/IntegrationsPanel.tsx:191
-#~ msgid "TMDB connection successful"
-#~ msgstr "TMDB connection successful"
 
 #: src/pages/settings/IntegrationsPanel.tsx:232
 msgid "TMDB v3 API key"
@@ -6118,14 +5181,9 @@ msgstr "TMDB v3 API key"
 #~ msgid "trending.tab.trending"
 #~ msgstr "Trending"
 
-#. js-lingui-explicit-id
 #: src/pages/library/RenameHistoryPage.tsx:84
-msgid "9uI/rE"
+msgid "Undo"
 msgstr "Undo"
-
-#: src/pages/library/RenameHistoryPage.tsx:84
-#~ msgid "Undo"
-#~ msgstr "Undo"
 
 #. placeholder {0}: b.batch_id.slice(0, 8)
 #: src/pages/library/RenameHistoryPage.tsx:79
@@ -6133,7 +5191,7 @@ msgid "Undo batch {0}?"
 msgstr "Undo batch {0}?"
 
 #: src/pages/settings/BackupPanel.tsx:251
-#: src/pages/settings/NotificationSettingsPanel.tsx:727
+#: src/pages/settings/NotificationSettingsPanel.tsx:729
 msgid "URL"
 msgstr "URL"
 
@@ -6168,14 +5226,9 @@ msgstr "Comments"
 msgid "watch.completed"
 msgstr "Watched"
 
-#. js-lingui-explicit-id
 #: src/components/watch/EpisodeSidebar.tsx:43
-msgid "N88l/T"
-msgstr "watch.danmaku"
-
-#: src/components/watch/EpisodeSidebar.tsx:43
-#~ msgid "watch.danmaku"
-#~ msgstr "Danmaku"
+msgid "watch.danmaku"
+msgstr "Danmaku"
 
 #: src/components/watch/DanmakuList.tsx:165
 msgid "watch.danmaku.addBlock"
@@ -6236,14 +5289,9 @@ msgstr "Unpin (revert to 24h cache)"
 msgid "watch.danmaku.closeParts"
 msgstr "Close"
 
-#. js-lingui-explicit-id
 #: src/components/DanmakuSettings.tsx:244
-msgid "plfr9/"
-msgstr "watch.danmaku.convertNone"
-
-#: src/components/DanmakuSettings.tsx:244
-#~ msgid "watch.danmaku.convertNone"
-#~ msgstr "Off"
+msgid "watch.danmaku.convertNone"
+msgstr "Off"
 
 #: src/components/DanmakuSettings.tsx:245
 msgid "watch.danmaku.convertS2T"
@@ -6257,16 +5305,10 @@ msgstr "Traditional → Simplified"
 #~ msgid "watch.danmaku.count"
 #~ msgstr "comments"
 
-#. js-lingui-explicit-id
 #: src/components/DanmakuSettings.tsx:302
 #: src/components/DanmakuSettings.tsx:435
-msgid "ksMs/O"
-msgstr "watch.danmaku.density"
-
-#: src/components/DanmakuSettings.tsx:302
-#: src/components/DanmakuSettings.tsx:435
-#~ msgid "watch.danmaku.density"
-#~ msgstr "Density"
+msgid "watch.danmaku.density"
+msgstr "Density"
 
 #: src/components/DanmakuSettings.tsx:231
 msgid "watch.danmaku.densityHigh"
@@ -6303,23 +5345,13 @@ msgstr "Font Color"
 msgid "watch.danmaku.fontFamily"
 msgstr "Font"
 
-#. js-lingui-explicit-id
 #: src/components/DanmakuSettings.tsx:450
-msgid "R0lLC/"
-msgstr "watch.danmaku.fontSize"
-
-#: src/components/DanmakuSettings.tsx:450
-#~ msgid "watch.danmaku.fontSize"
-#~ msgstr "Font Size"
-
-#. js-lingui-explicit-id
-#: src/components/watch/DanmakuSourceTab.tsx:278
-msgid "Ga66/Q"
-msgstr "watch.danmaku.import"
+msgid "watch.danmaku.fontSize"
+msgstr "Font Size"
 
 #: src/components/watch/DanmakuSourceTab.tsx:278
-#~ msgid "watch.danmaku.import"
-#~ msgstr "Import"
+msgid "watch.danmaku.import"
+msgstr "Import"
 
 #: src/components/watch/DanmakuSourceTab.tsx:363
 msgid "watch.danmaku.imported"
@@ -6395,14 +5427,9 @@ msgstr "Scroll"
 msgid "watch.danmaku.search"
 msgstr "Search"
 
-#. js-lingui-explicit-id
 #: src/components/watch/DanmakuSourceTab.tsx:216
-msgid "k/Qr89"
-msgstr "watch.danmaku.searchError"
-
-#: src/components/watch/DanmakuSourceTab.tsx:216
-#~ msgid "watch.danmaku.searchError"
-#~ msgstr "Search failed, please try again"
+msgid "watch.danmaku.searchError"
+msgstr "Search failed, please try again"
 
 #: src/components/watch/DanmakuSourceTab.tsx:192
 msgid "watch.danmaku.searchPlaceholder"
@@ -6420,14 +5447,9 @@ msgstr "Send"
 #~ msgid "watch.danmaku.short"
 #~ msgstr "D"
 
-#. js-lingui-explicit-id
 #: src/components/DanmakuSettings.tsx:234
-msgid "VeQ+Cp"
-msgstr "watch.danmaku.slow"
-
-#: src/components/DanmakuSettings.tsx:234
-#~ msgid "watch.danmaku.slow"
-#~ msgstr "Slow"
+msgid "watch.danmaku.slow"
+msgstr "Slow"
 
 #: src/components/watch/DanmakuSourceTab.tsx:169
 msgid "watch.danmaku.source"
@@ -6438,14 +5460,9 @@ msgstr "Source"
 msgid "watch.danmaku.speed"
 msgstr "Speed"
 
-#. js-lingui-explicit-id
 #: src/components/DanmakuSettings.tsx:239
-msgid "3r/fBE"
-msgstr "watch.danmaku.strokeNone"
-
-#: src/components/DanmakuSettings.tsx:239
-#~ msgid "watch.danmaku.strokeNone"
-#~ msgstr "None"
+msgid "watch.danmaku.strokeNone"
+msgstr "None"
 
 #: src/components/DanmakuSettings.tsx:241
 msgid "watch.danmaku.strokeOutline"
@@ -6577,14 +5594,9 @@ msgstr "Transcoding..."
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
 
-#. js-lingui-explicit-id
-#: src/pages/settings/NotificationSettingsPanel.tsx:332
-msgid "nuh/Wq"
-msgstr "Webhook URL"
-
 #: src/pages/settings/NotificationSettingsPanel.tsx:333
-#~ msgid "Webhook URL"
-#~ msgstr "Webhook URL"
+msgid "Webhook URL"
+msgstr "Webhook URL"
 
 #: src/pages/settings/IntegrationsPanel.tsx:728
 msgid "Your {label} Client ID"
