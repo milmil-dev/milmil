@@ -58,7 +58,7 @@ func SubscribePickCallback(svc *Services) bot.CallbackHandler {
 			return &bot.BotResponse{Text: "Invalid anime ID."}, nil
 		}
 
-		detail, err := svc.Metadata.GetAnimeDetail(ctx, id)
+		detail, err := svc.Metadata.GetAnimeDetail(ctx, id, false)
 		if err != nil || detail == nil {
 			return &bot.BotResponse{Text: "Failed to load anime."}, nil
 		}
@@ -93,7 +93,7 @@ func SubscribeDoCallback(svc *Services) bot.CallbackHandler {
 		}
 		source := parts[2]
 
-		detail, err := svc.Metadata.GetAnimeDetail(ctx, bangumiID)
+		detail, err := svc.Metadata.GetAnimeDetail(ctx, bangumiID, false)
 		if err != nil || detail == nil {
 			return &bot.BotResponse{Text: "Failed to load anime details."}, nil
 		}

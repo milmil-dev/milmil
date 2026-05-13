@@ -510,6 +510,10 @@ msgstr "트래커 동기화에서 제외"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
+#: src/pages/AnimeDetailPage.tsx:300
+msgid "anime.metaRefreshed"
+msgstr "메타데이터가 새로고침되었습니다"
+
 #: src/pages/AnimeDetailPage.tsx:544
 msgid "anime.notAired"
 msgstr "미방영"
@@ -530,6 +534,10 @@ msgstr "평점"
 #: src/pages/AnimeDetailPage.tsx:1144
 msgid "anime.recommendations"
 msgstr "추천"
+
+#: src/pages/AnimeDetailPage.tsx:1114
+msgid "anime.refreshMeta"
+msgstr "메타데이터 새로고침"
 
 #: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.relations"

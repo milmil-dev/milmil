@@ -510,6 +510,10 @@ msgstr "anime.excludeTrackerSync"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
+#: src/pages/AnimeDetailPage.tsx:300
+msgid "anime.metaRefreshed"
+msgstr "Metadata refreshed"
+
 #: src/pages/AnimeDetailPage.tsx:544
 msgid "anime.notAired"
 msgstr "Not Yet Aired"
@@ -530,6 +534,10 @@ msgstr "ratings"
 #: src/pages/AnimeDetailPage.tsx:1144
 msgid "anime.recommendations"
 msgstr "Recommended"
+
+#: src/pages/AnimeDetailPage.tsx:1114
+msgid "anime.refreshMeta"
+msgstr "Refresh metadata"
 
 #: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.relations"
