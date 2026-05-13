@@ -158,7 +158,9 @@ export const discoverApi = {
   detail: (id: number | string, opts?: { refresh?: boolean }) =>
     api.get<AnimeDetail>(`/api/v1/discover/anime/${id}${opts?.refresh ? '?refresh=true' : ''}`),
   episodes: (id: number, opts?: { refresh?: boolean }) =>
-    api.get<Episode[]>(`/api/v1/discover/anime/${id}/episodes${opts?.refresh ? '?refresh=true' : ''}`),
+    api.get<Episode[]>(
+      `/api/v1/discover/anime/${id}/episodes${opts?.refresh ? '?refresh=true' : ''}`
+    ),
   comments: (id: number) => api.get<BangumiComment[]>(`/api/v1/discover/anime/${id}/comments`),
   resolve: (anilistId: number) =>
     api.get<{ bangumi_id: number }>(`/api/v1/discover/resolve?anilist_id=${anilistId}`),
