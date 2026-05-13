@@ -508,6 +508,10 @@ msgstr "排除追踪同步"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "无本地文件"
 
+#: src/pages/AnimeDetailPage.tsx:300
+msgid "anime.metaRefreshed"
+msgstr "元数据已刷新"
+
 #: src/pages/AnimeDetailPage.tsx:544
 msgid "anime.notAired"
 msgstr "尚未播出"
@@ -528,6 +532,10 @@ msgstr "评分"
 #: src/pages/AnimeDetailPage.tsx:1144
 msgid "anime.recommendations"
 msgstr "推荐"
+
+#: src/pages/AnimeDetailPage.tsx:1114
+msgid "anime.refreshMeta"
+msgstr "刷新元数据"
 
 #: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.relations"

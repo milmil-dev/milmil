@@ -18,7 +18,7 @@ import (
 
 // MetadataLookup is the subset of metadata.Service needed for enrichment.
 type MetadataLookup interface {
-	GetAnimeDetail(ctx context.Context, bangumiID int) (*metadata.AnimeDetail, error)
+	GetAnimeDetail(ctx context.Context, bangumiID int, refresh bool) (*metadata.AnimeDetail, error)
 }
 
 type Service struct {
@@ -135,7 +135,7 @@ func (s *Service) dispatchExternal(notifType, title, message, severity string, m
 						metadata["subgroup"] = sg
 					}
 					if dl.BangumiID.Valid {
-						if detail, derr := s.metadata.GetAnimeDetail(ctx, int(dl.BangumiID.Int64)); derr == nil && detail != nil {
+						if detail, derr := s.metadata.GetAnimeDetail(ctx, int(dl.BangumiID.Int64), false); derr == nil && detail != nil {
 							metadata["anime_name"] = detail.Title
 							metadata["cover_image"] = detail.CoverImage
 							if name, _ := metadata["anime_name"].(string); name != "" {

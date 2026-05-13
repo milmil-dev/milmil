@@ -38,6 +38,8 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+import { Refresh03Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../hooks/use-auth';
 import type { PlayableEpisode } from '../lib/api/anime';
@@ -282,6 +284,24 @@ export function AnimeDetailPage() {
     onError: (err: Error) => toast.error(err.message),
   });
 
+  const refreshMetaMutation = useMutation({
+    mutationFn: async () => {
+      const tasks: Promise<unknown>[] = [discoverApi.detail(detailId, { refresh: true })];
+      if (!isAniListOnly && !Number.isNaN(numericId)) {
+        tasks.push(discoverApi.episodes(numericId, { refresh: true }));
+      }
+      await Promise.all(tasks);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: discoverKeys.detail(detailId) });
+      if (!isAniListOnly) {
+        queryClient.invalidateQueries({ queryKey: discoverKeys.episodes(numericId) });
+      }
+      toast.success(i18n._(msg`anime.metaRefreshed`));
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   const continueEpisode = useMemo(() => {
     if (!playableData?.episodes) return null;
     // Find first episode with progress but not completed
@@ -386,6 +406,21 @@ export function AnimeDetailPage() {
         <div className="relative w-full overflow-hidden md:h-[clamp(340px,45vh,28rem)]">
           {/* External link icons — top right */}
           <div className="absolute top-4 right-4 md:top-6 md:right-6 z-[3] flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => refreshMetaMutation.mutate()}
+              disabled={refreshMetaMutation.isPending}
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed mr-1.5"
+              title={i18n._(msg`anime.refreshMeta`)}
+              aria-label={i18n._(msg`anime.refreshMeta`)}
+            >
+              <HugeiconsIcon
+                icon={Refresh03Icon}
+                size={14}
+                strokeWidth={1.8}
+                className={refreshMetaMutation.isPending ? 'animate-spin' : undefined}
+              />
+            </button>
             <a
               href={`https://bgm.tv/subject/${numericId}`}
               target="_blank"

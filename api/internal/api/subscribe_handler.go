@@ -75,7 +75,7 @@ func (h *handler) handleSubscribe(c echo.Context) error {
 
 	// If bangumi_id is provided, resolve titles for better RSS matching
 	if req.BangumiID != 0 && req.Query == "" {
-		detail, err := h.metadata.GetAnimeDetail(ctx, req.BangumiID)
+		detail, err := h.metadata.GetAnimeDetail(ctx, req.BangumiID, false)
 		if err == nil {
 			switch req.Source {
 			case "mikan", "dmhy":

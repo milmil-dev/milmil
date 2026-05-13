@@ -372,7 +372,7 @@ func TestGetAnimeDetail_EnrichesWithAniList(t *testing.T) {
 	}
 	svc := metadata.New(bgm, al, cache.New(""))
 
-	detail, err := svc.GetAnimeDetail(context.Background(), 425848)
+	detail, err := svc.GetAnimeDetail(context.Background(), 425848, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -384,6 +384,42 @@ func TestGetAnimeDetail_EnrichesWithAniList(t *testing.T) {
 	}
 	if detail.Synopsis != "勇者一行人打倒了魔王" {
 		t.Errorf("want Chinese synopsis, got %s", detail.Synopsis)
+	}
+}
+
+func TestGetAnimeDetail_RefreshBypassesCache(t *testing.T) {
+	calls := 0
+	bgm := &mockBangumi{
+		subjectFn: func(ctx context.Context, id int) (*bangumi.Subject, error) {
+			calls++
+			return &bangumi.Subject{
+				ID: 425848, Name: "Frieren", NameCN: "葬送的芙莉蓮",
+				Summary: "勇者一行人打倒了魔王",
+				Rating:  bangumi.Rating{Score: 9.1, Total: 5000},
+			}, nil
+		},
+	}
+	al := &mockAniList{
+		searchFn: func(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error) {
+			return nil, nil
+		},
+	}
+	svc := metadata.New(bgm, al, cache.New(""))
+
+	if _, err := svc.GetAnimeDetail(context.Background(), 425848, false); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := svc.GetAnimeDetail(context.Background(), 425848, false); err != nil {
+		t.Fatal(err)
+	}
+	if calls != 1 {
+		t.Fatalf("expected 1 Bangumi call before refresh, got %d", calls)
+	}
+	if _, err := svc.GetAnimeDetail(context.Background(), 425848, true); err != nil {
+		t.Fatal(err)
+	}
+	if calls != 2 {
+		t.Fatalf("expected 2 Bangumi calls after refresh=true, got %d", calls)
 	}
 }
 

@@ -185,7 +185,7 @@ func (h *handler) handleUpdateWatchStatus(c echo.Context) error {
 	_, getErr := h.queries.GetAnimeByBangumiID(ctx, sql.NullInt64{Int64: bangumiID, Valid: true})
 	if getErr != nil {
 		// Anime not in local DB — fetch metadata and create
-		detail, metaErr := h.metadata.GetAnimeDetail(ctx, int(bangumiID))
+		detail, metaErr := h.metadata.GetAnimeDetail(ctx, int(bangumiID), false)
 		if metaErr == nil {
 			year := int64(0)
 			season := ""

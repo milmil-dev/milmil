@@ -37,7 +37,7 @@ func DetailCallback(svc *Services) bot.CallbackHandler {
 }
 
 func buildDetailResponse(ctx context.Context, svc *Services, bangumiID int) (*bot.BotResponse, error) {
-	detail, err := svc.Metadata.GetAnimeDetail(ctx, bangumiID)
+	detail, err := svc.Metadata.GetAnimeDetail(ctx, bangumiID, false)
 	if err != nil || detail == nil {
 		return &bot.BotResponse{Text: "Failed to load anime details."}, nil
 	}
