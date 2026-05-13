@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/milmil-dev/milmil/compare/v0.1.13...v0.1.14) (2026-05-13)
+
+
+### Features
+
+* refresh metadata button on anime detail page ([#85](https://github.com/milmil-dev/milmil/issues/85)) ([2181fb8](https://github.com/milmil-dev/milmil/commit/2181fb808522c236dee4355935f7fa6a82b1d0a8))
+
 ## [0.1.13](https://github.com/milmil-dev/milmil/compare/v0.1.12...v0.1.13) (2026-05-07)
 
 
