@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.15](https://github.com/milmil-dev/milmil/compare/v0.1.14...v0.1.15) (2026-05-14)
+
+
+### Bug Fixes
+
+* **web:** pin @lingui/format-po to 5.9.5 to match runtime macro hashes ([#88](https://github.com/milmil-dev/milmil/issues/88)) ([1a14841](https://github.com/milmil-dev/milmil/commit/1a1484192614c9eeeb3caad166d4dd0328d9ace2))
+
 ## [0.1.14](https://github.com/milmil-dev/milmil/compare/v0.1.13...v0.1.14) (2026-05-13)
 
 
