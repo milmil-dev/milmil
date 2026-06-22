@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # goreleaser needs the full history to compute the changelog
           # since the last cli-v* tag.
