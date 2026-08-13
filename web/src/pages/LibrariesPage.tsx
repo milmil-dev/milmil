@@ -37,7 +37,6 @@ import {
   type TestConnectionInput,
   type UpdateLibraryInput,
 } from '../lib/api/library';
-import { hashName } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
 
@@ -47,29 +46,6 @@ function formatBytes(bytes: number): string {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / k ** i).toFixed(i > 2 ? 1 : 0)} ${sizes[i]}`;
-}
-
-function formatCheckedAgo(timestamp: number): string {
-  const diffMs = Date.now() - timestamp;
-  if (diffMs < 10_000) return 'just now';
-
-  const seconds = Math.floor(diffMs / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
-
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
-// Derive a subtle accent hue from library name for the top border line
-function cardAccentColor(name: string): string {
-  const h = hashName(name) % 360;
-  return `oklch(55% 0.18 ${h})`;
 }
 
 // ─── Source type icon (SVG) ─────────────────────────────────────────────────
@@ -2676,30 +2652,6 @@ function RecentlyMatchedPreview() {
 }
 
 // ─── Next scan helper ────────────────────────────────────────────────────────
-function formatNextScan(
-  lastScannedAt: string | null,
-  intervalMinutes: number,
-  enabled: number,
-  i18n: ReturnType<typeof useLingui>['i18n']
-): string | null {
-  if (!enabled || !lastScannedAt || intervalMinutes <= 0) return null;
-  const lastScanned = new Date(lastScannedAt);
-  if (Number.isNaN(lastScanned.getTime()) || lastScanned.getFullYear() <= 2000) return null;
-  const nextScanMs = lastScanned.getTime() + intervalMinutes * 60_000;
-  const diffMs = nextScanMs - Date.now();
-  if (diffMs <= 0) return i18n._(msg`library.nextScan.soon`);
-  const minutes = Math.ceil(diffMs / 60_000);
-  if (minutes < 60) return `${i18n._(msg`library.nextScan`)} ${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  const remainingMins = minutes % 60;
-  if (hours < 24) {
-    return remainingMins > 0
-      ? `${i18n._(msg`library.nextScan`)} ${hours}h ${remainingMins}m`
-      : `${i18n._(msg`library.nextScan`)} ${hours}h`;
-  }
-  const days = Math.floor(hours / 24);
-  return `${i18n._(msg`library.nextScan`)} ${days}d`;
-}
 
 type SortKey = 'name' | 'match' | 'size' | 'scanned';
 

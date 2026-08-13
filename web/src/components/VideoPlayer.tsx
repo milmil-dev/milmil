@@ -79,10 +79,6 @@ function PiPLabel() {
   return usePlayer((s) => Boolean(s.pip)) ? 'Exit picture-in-picture' : 'Enter picture-in-picture';
 }
 
-function FullscreenLabel() {
-  return usePlayer((s) => Boolean(s.fullscreen)) ? 'Exit fullscreen' : 'Enter fullscreen';
-}
-
 function VolumePopoverControl() {
   const volumeUnsupported = usePlayer((s) => s.volumeAvailability === 'unsupported');
   const muteBtn = (

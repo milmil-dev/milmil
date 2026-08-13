@@ -434,8 +434,6 @@ function TelegramCard({
   onBotChange: (updates: Partial<TelegramBotConfig>) => void;
 }) {
   const { i18n } = useLingui();
-  const isActive = config.enabled || botConfig.enabled;
-
   const [chatIdsRaw, setChatIdsRaw] = useState((botConfig.allowed_chat_ids ?? []).join(', '));
   useEffect(() => {
     setChatIdsRaw((botConfig.allowed_chat_ids ?? []).join(', '));

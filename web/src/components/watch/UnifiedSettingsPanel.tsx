@@ -1003,9 +1003,14 @@ export function UnifiedSettingsPanel({
           <motion.div
             key={viewKey}
             custom={dirRef.current}
-            initial={(d: number) => ({ x: `${d * 80}%`, opacity: 0 })}
-            animate={{ x: 0, opacity: 1 }}
-            exit={(d: number) => ({ x: `${d * -80}%`, opacity: 0 })}
+            variants={{
+              enter: (d: number) => ({ x: `${d * 80}%`, opacity: 0 }),
+              center: { x: 0, opacity: 1 },
+              exit: (d: number) => ({ x: `${d * -80}%`, opacity: 0 }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
             className="flex-1 min-h-0 overflow-y-auto py-1"
             style={
