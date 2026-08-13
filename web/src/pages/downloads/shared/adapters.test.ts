@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import type { DownloadGroup, DownloadRule, RSSFeed } from '@/lib/api/downloads';
 import { deriveCardMode, deriveNextFetch } from './adapters';
 
@@ -94,10 +94,10 @@ test('deriveEpsForExpand in downloading mode: only active/paused/waiting, sorted
     { status: 'active' }, // index 2
   ]);
   // Fake ETAs by speed: ep0 full 100 left, speed 10 → eta 10; ep2 speed 2 → eta 50
-  g.downloads[0].speed_bytes = 10;
-  g.downloads[0].completed_bytes = 0;
-  g.downloads[2].speed_bytes = 2;
-  g.downloads[2].completed_bytes = 0;
+  g.downloads[0]!.speed_bytes = 10;
+  g.downloads[0]!.completed_bytes = 0;
+  g.downloads[2]!.speed_bytes = 2;
+  g.downloads[2]!.completed_bytes = 0;
   const eps = deriveEpsForExpand(g, 'downloading');
   expect(eps.map((d) => d.gid)).toEqual(['0', '2']); // ep0 (eta 10) before ep2 (eta 50)
 });
@@ -108,8 +108,8 @@ test('deriveEpsForExpand in completed mode: only complete, sorted by created_at 
     { status: 'complete' },
     { status: 'active' }, // skipped
   ]);
-  g.downloads[0].created_at = '2024-01-01T00:00:00Z';
-  g.downloads[1].created_at = '2024-02-01T00:00:00Z';
+  g.downloads[0]!.created_at = '2024-01-01T00:00:00Z';
+  g.downloads[1]!.created_at = '2024-02-01T00:00:00Z';
   const eps = deriveEpsForExpand(g, 'completed');
   expect(eps.map((d) => d.gid)).toEqual(['1', '0']); // feb before jan
 });
@@ -149,7 +149,7 @@ test('sortRulesBy("activity") puts active groups first, then by last_triggered_a
 
 test('sortRulesBy("progress") sorts by group percent descending', () => {
   const g100 = group([{ status: 'complete' }]);
-  g100.downloads[0].completed_bytes = g100.downloads[0].total_bytes;
+  g100.downloads[0]!.completed_bytes = g100.downloads[0]!.total_bytes;
   const g50 = group([{ status: 'active' }]);
   const items: LibraryItem[] = [
     { rule: { ...baseRule, id: 'half' }, group: g50, feed: undefined },

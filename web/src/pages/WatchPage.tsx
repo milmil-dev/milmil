@@ -17,7 +17,6 @@ import { DanmakuBar } from '@/components/watch/DanmakuBar';
 import { EpisodeSidebar } from '@/components/watch/EpisodeSidebar';
 import { EpisodeTitleOverlay } from '@/components/watch/EpisodeTitleOverlay';
 import { RelatedAnimeList } from '@/components/watch/RelatedAnimeList';
-import { TechInfoPopover } from '@/components/watch/TechInfoPopover';
 import { UnifiedSettingsPanel } from '@/components/watch/UnifiedSettingsPanel';
 import { WatchTitleBar } from '@/components/watch/WatchTitleBar';
 import { useDocumentTitle } from '@/hooks/use-document-title';
@@ -919,9 +918,14 @@ export function WatchPage() {
             anime={animeDetail}
             episodesData={
               episodesData ?? {
+                anime_id: '',
                 watch_status: 'unwatched',
                 mal_id: null,
                 tmdb_id: null,
+                anidb_id: null,
+                user_score: null,
+                sync_disabled: 0,
+                watch_status_override: '',
                 episodes: mergedEpisodes,
               }
             }

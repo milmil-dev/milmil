@@ -153,7 +153,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
 
       {/* Label */}
       <span className="shrink-0 text-[11px] text-white/30">
-        {i18n._(msg`watch.danmaku.loaded`, { count: danmakuCount })}
+        {i18n._({ ...msg`watch.danmaku.loaded`, values: { count: danmakuCount } })}
       </span>
 
       {/* Input */}

@@ -25,7 +25,7 @@ export function HeroBanner({
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [, setProgress] = useState(0);
   const featured = items[activeIndex];
 
   // Notify parent when active item changes

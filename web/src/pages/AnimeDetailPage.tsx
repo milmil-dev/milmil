@@ -76,8 +76,8 @@ function buildSeasonChain(
   // Prequels (reversed — earliest first)
   for (let i = prequels.length - 1; i >= 0; i--) {
     chain.push({
-      bangumiId: prequels[i].anime.bangumi_id,
-      title: prequels[i].anime.title,
+      bangumiId: prequels[i]!.anime.bangumi_id,
+      title: prequels[i]!.anime.title,
       label: `S${chain.length + 1}`,
       isCurrent: false,
     });

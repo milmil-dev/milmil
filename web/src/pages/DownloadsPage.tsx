@@ -2,16 +2,9 @@ import {
   Add01Icon,
   ArrowDown01Icon,
   ArrowLeft01Icon,
-  ArrowUpDownIcon,
   Cancel01Icon,
-  CheckListIcon,
-  Copy01Icon,
-  Delete02Icon,
   EyeIcon,
   Link01Icon,
-  PauseIcon,
-  PlayIcon,
-  Refresh03Icon,
   RssIcon,
   Search01Icon,
   TextIcon,
@@ -24,20 +17,12 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { AnimeCard } from '../components/AnimeCard';
 import { Modal } from '../components/Modal';
 import { PageTransition } from '../components/PageTransition';
-import { RuleEditorModal } from '../components/RuleEditorModal';
-import { Skeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
-import { Checkbox } from '../components/ui/checkbox';
-import { Drawer, DrawerContent } from '../components/ui/drawer';
 import { Input } from '../components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import { Sheet, SheetContent } from '../components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { useDocumentTitle } from '../hooks/use-document-title';
-import { useIsMobile } from '../hooks/use-mobile';
 import { useWSEvent } from '../hooks/use-websocket';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import {
@@ -53,7 +38,6 @@ import { libraryApi, libraryKeys } from '../lib/api/library';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi } from '../lib/api/torrent';
 import { api } from '../lib/api-client';
-import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import type { DownloadsSearch } from '../routes/downloads';
 import LibraryTab from './downloads/LibraryTab';
@@ -1123,7 +1107,7 @@ function SubscribePanel({
   const [libraryId, setLibraryId] = useState<string>('');
   useEffect(() => {
     if (libraries.length > 0 && !libraryId) {
-      setLibraryId(libraries[0].id);
+      setLibraryId(libraries[0]!.id);
     }
   }, [libraries, libraryId]);
 

@@ -92,11 +92,8 @@ jobs:
         working-directory: web
         run: bun run test:run
 
-      # Informational: full check:all (typecheck + lint + format:check +
-      # test:run). Currently fails on ~30 pre-existing TS errors.
-      # Flip continue-on-error to false once those are fixed.
-      - name: check:all (informational)
-        continue-on-error: true
+      # Full quality gate: typecheck + lint + format:check + test:run.
+      - name: check:all
         working-directory: web
         run: bun run check:all
 

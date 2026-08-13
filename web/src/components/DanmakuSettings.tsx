@@ -41,8 +41,6 @@ type View =
   | 'stroke'
   | 'chinese';
 
-const ic = 'w-[18px] h-[18px] text-white/50';
-
 /* ── Shared UI primitives (matching player settings style) ── */
 
 function MenuRow({
@@ -208,7 +206,6 @@ export function DanmakuSettingsControls() {
     setView('main');
   };
 
-  const enabled = usePreferencesStore((s) => s.danmakuEnabled);
   const opacity = usePreferencesStore((s) => s.danmakuOpacity);
   const fontSize = usePreferencesStore((s) => s.danmakuFontSize);
   const speed = usePreferencesStore((s) => s.danmakuSpeed);

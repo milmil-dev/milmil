@@ -12,9 +12,10 @@ const supportedCodes = new Set(availableLanguages.map((l) => l.code));
 
 function resolveLocale(): string {
   let saved = localStorage.getItem('milmil-locale');
-  if (saved && LOCALE_MIGRATIONS[saved]) {
-    saved = LOCALE_MIGRATIONS[saved];
-    localStorage.setItem('milmil-locale', saved);
+  const migrated = saved ? LOCALE_MIGRATIONS[saved] : undefined;
+  if (migrated) {
+    saved = migrated;
+    localStorage.setItem('milmil-locale', migrated);
   }
   if (saved && supportedCodes.has(saved)) return saved;
   if (saved) localStorage.removeItem('milmil-locale');
