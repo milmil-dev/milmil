@@ -109,7 +109,7 @@
 | PWA | Serwist |
 | キャッシュ | Redis（オプション、インメモリフォールバック） |
 | テスト | Vitest, Playwright, Go testing |
-| リンティング | Biome, Lefthook, Commitlint |
+| リンティング | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
 
 ---
 
@@ -286,7 +286,7 @@ cd web && bun run test:run      # フロントエンド単体テスト
 cd web && bun run test:e2e      # Playwright E2Eテスト
 
 # 品質
-make lint             # Go vet + Biome lint
+make lint             # Go vet + vp lint (Oxlint)
 cd web && bun run check:all     # 型チェック + lint + フォーマット + テスト
 
 # i18n

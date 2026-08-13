@@ -1,7 +1,7 @@
 // web/src/hooks/use-anime-cover.test.tsx
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import * as discoverModule from '@/lib/api/discover';
 import { useAnimeCover } from './use-anime-cover';
 

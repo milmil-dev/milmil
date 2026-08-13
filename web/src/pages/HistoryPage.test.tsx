@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import type React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { HistoryPage } from './HistoryPage';
 
 vi.mock('@tanstack/react-router', () => ({

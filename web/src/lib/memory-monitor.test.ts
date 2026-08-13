@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { MemoryMonitor } from './memory-monitor';
 
 // Stub window.matchMedia so MemoryMonitor constructor works in jsdom

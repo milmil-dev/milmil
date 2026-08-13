@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test } from 'vite-plus/test';
 import { useTablePrefsStore } from './table-prefs-store';
 
 const STORAGE_KEY = 'milmil-table-prefs';

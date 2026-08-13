@@ -109,7 +109,7 @@
 | PWA | Serwist |
 | 缓存 | Redis（可选，内存回退） |
 | 测试 | Vitest, Playwright, Go testing |
-| 代码质量 | Biome, Lefthook, Commitlint |
+| 代码质量 | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
 
 ---
 
@@ -239,7 +239,7 @@ cd web && bun run test:run      # 前端单元测试
 cd web && bun run test:e2e      # Playwright E2E 测试
 
 # 质量
-make lint             # Go vet + Biome lint
+make lint             # Go vet + vp lint (Oxlint)
 cd web && bun run check:all     # 类型检查 + lint + 格式化 + 测试
 
 # 国际化

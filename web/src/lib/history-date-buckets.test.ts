@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { bucketByDate, type DatedItem } from './history-date-buckets';
 
 function mk(id: string, iso: string): DatedItem {
