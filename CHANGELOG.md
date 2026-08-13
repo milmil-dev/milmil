@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.16](https://github.com/milmil-dev/milmil/compare/v0.1.15...v0.1.16) (2026-08-13)
+
+
+### Features
+
+* **api:** upgrade Echo framework from v4 to v5 ([b4b14c5](https://github.com/milmil-dev/milmil/commit/b4b14c5f22ca4a57ea36e22263b3523adea1435c))
+* **web:** migrate frontend to Vite+ unified toolchain ([7c0b9c6](https://github.com/milmil-dev/milmil/commit/7c0b9c6f97c5abe50ad0a77da676cd717926c380))
+
+
+### Bug Fixes
+
+* **web:** resolve all TypeScript errors and enforce check:all in CI ([a286502](https://github.com/milmil-dev/milmil/commit/a286502fdf0b79547116e766dc7e767ae1f86879))
+
 ## [0.1.15](https://github.com/milmil-dev/milmil/compare/v0.1.14...v0.1.15) (2026-05-14)
 
 
