@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/library/searchmissing"
 	"github.com/milmil/api/internal/store"
@@ -23,7 +23,7 @@ type missingSearchReq struct {
 
 // handleMissingSearch aggregates torrent-provider results for a specific
 // missing episode of the given anime, returning deduped + ranked candidates.
-func (h *handler) handleMissingSearch(c echo.Context) error {
+func (h *handler) handleMissingSearch(c *echo.Context) error {
 	ctx := c.Request().Context()
 	bangumiID, err := strconv.ParseInt(c.Param("bangumiId"), 10, 64)
 	if err != nil {
@@ -74,7 +74,7 @@ type missingDownloadReq struct {
 
 // handleMissingDownload enqueues a torrent into the downloader and records it
 // in the downloads table linked to the anime's bangumi_id.
-func (h *handler) handleMissingDownload(c echo.Context) error {
+func (h *handler) handleMissingDownload(c *echo.Context) error {
 	ctx := c.Request().Context()
 	bangumiID, err := strconv.ParseInt(c.Param("bangumiId"), 10, 64)
 	if err != nil {
@@ -147,7 +147,7 @@ type missingAutoRuleReq struct {
 // anime's bangumi_id so missing episodes get auto-downloaded by the RSS
 // refresher. If a rule already exists, merges the requested episode numbers
 // into its EpisodeRange CSV; otherwise creates a new rule (requires rss_feed_id).
-func (h *handler) handleMissingAutoRule(c echo.Context) error {
+func (h *handler) handleMissingAutoRule(c *echo.Context) error {
 	ctx := c.Request().Context()
 	bangumiID, err := strconv.ParseInt(c.Param("bangumiId"), 10, 64)
 	if err != nil {

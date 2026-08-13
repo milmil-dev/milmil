@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/text/language"
 
@@ -24,7 +24,7 @@ import (
 //   2. The browser's Accept-Language header.
 //   3. zh-TW as a default — the project's primary audience and the
 //      matcher's default fallback.
-func (h *handler) preferredLocale(c echo.Context) string {
+func (h *handler) preferredLocale(c *echo.Context) string {
 	if loc := h.appearanceLocale(c.Request().Context()); loc != "" {
 		return loc
 	}

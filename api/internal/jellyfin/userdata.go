@@ -5,11 +5,11 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *Handler) handleGetUserData(c echo.Context) error {
+func (h *Handler) handleGetUserData(c *echo.Context) error {
 	userID := c.Get("userID").(string)
 	itemIDEncoded := c.Param("itemId")
 

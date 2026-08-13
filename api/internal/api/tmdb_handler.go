@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/integration/tmdb"
 )
 
@@ -23,7 +23,7 @@ type tmdbTestResponse struct {
 // handleTestTMDBConnection probes TMDB with the supplied credentials and
 // returns whether they're valid. Credentials are used in-memory only —
 // they're not persisted by this endpoint and the response never echoes them.
-func (h *handler) handleTestTMDBConnection(c echo.Context) error {
+func (h *handler) handleTestTMDBConnection(c *echo.Context) error {
 	var req tmdbTestRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body")

@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *Handler) handleGetUser(c echo.Context) error {
+func (h *Handler) handleGetUser(c *echo.Context) error {
 	userIDEncoded := c.Param("userId")
 	_, userID, err := DecodeItemID(userIDEncoded)
 	if err != nil {
@@ -29,11 +29,11 @@ func (h *Handler) handleGetUser(c echo.Context) error {
 	})
 }
 
-func (h *Handler) handleGroupingOptions(c echo.Context) error {
+func (h *Handler) handleGroupingOptions(c *echo.Context) error {
 	return c.JSON(http.StatusOK, []any{})
 }
 
-func (h *Handler) handleItemsResume(c echo.Context) error {
+func (h *Handler) handleItemsResume(c *echo.Context) error {
 	userID, _ := c.Get("userID").(string)
 	ctx := c.Request().Context()
 
@@ -86,7 +86,7 @@ func (h *Handler) handleItemsResume(c echo.Context) error {
 	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: len(items)})
 }
 
-func (h *Handler) handleItemsLatest(c echo.Context) error {
+func (h *Handler) handleItemsLatest(c *echo.Context) error {
 	ctx := c.Request().Context()
 	parentID := c.QueryParam("parentId")
 
@@ -110,7 +110,7 @@ func (h *Handler) handleItemsLatest(c echo.Context) error {
 	return c.JSON(http.StatusOK, []ItemDTO{})
 }
 
-func (h *Handler) handleNextUp(c echo.Context) error {
+func (h *Handler) handleNextUp(c *echo.Context) error {
 	userID, _ := c.Get("userID").(string)
 	ctx := c.Request().Context()
 
@@ -173,7 +173,7 @@ func (h *Handler) handleNextUp(c echo.Context) error {
 	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: len(items)})
 }
 
-func (h *Handler) handleDisplayPreferences(c echo.Context) error {
+func (h *Handler) handleDisplayPreferences(c *echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{
 		"Id":               c.Param("displayPreferencesId"),
 		"SortBy":           "SortName",
@@ -185,7 +185,7 @@ func (h *Handler) handleDisplayPreferences(c echo.Context) error {
 	})
 }
 
-func (h *Handler) handleGetUserViews(c echo.Context) error {
+func (h *Handler) handleGetUserViews(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libs, err := h.queries.ListLibraries(ctx)
 	if err != nil {

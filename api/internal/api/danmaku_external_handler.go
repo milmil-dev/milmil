@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/integration/danmaku"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *handler) handleListDanmakuSources(c echo.Context) error {
+func (h *handler) handleListDanmakuSources(c *echo.Context) error {
 	names := h.danmakuRegistry.Names()
 	type sourceInfo struct {
 		Name  string `json:"name"`
@@ -25,7 +25,7 @@ func (h *handler) handleListDanmakuSources(c echo.Context) error {
 	return c.JSON(http.StatusOK, sources)
 }
 
-func (h *handler) handleSearchExternalDanmaku(c echo.Context) error {
+func (h *handler) handleSearchExternalDanmaku(c *echo.Context) error {
 	sourceName := c.QueryParam("source")
 	keyword := c.QueryParam("q")
 	pageStr := c.QueryParam("page")
@@ -55,7 +55,7 @@ func (h *handler) handleSearchExternalDanmaku(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func (h *handler) handleGetVideoParts(c echo.Context) error {
+func (h *handler) handleGetVideoParts(c *echo.Context) error {
 	sourceName := c.QueryParam("source")
 	videoID := c.QueryParam("videoId")
 
@@ -82,7 +82,7 @@ func extCacheKey(episodeID, source string) string {
 	return fmt.Sprintf("danmaku:ext:%s:%s", episodeID, source)
 }
 
-func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
+func (h *handler) handleImportExternalDanmaku(c *echo.Context) error {
 	var req struct {
 		Source    string `json:"source"`
 		VideoID   string `json:"videoId"`
@@ -118,7 +118,7 @@ func (h *handler) handleImportExternalDanmaku(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
+func (h *handler) handleToggleSaveDanmaku(c *echo.Context) error {
 	episodeID := c.Param("episodeId")
 	var req struct {
 		Source string `json:"source"`
@@ -172,7 +172,7 @@ func (h *handler) handleToggleSaveDanmaku(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{"saved": req.Save})
 }
 
-func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
+func (h *handler) handleGetImportedDanmaku(c *echo.Context) error {
 	episodeID := c.Param("episodeId")
 	ctx := c.Request().Context()
 
@@ -220,7 +220,7 @@ func (h *handler) handleGetImportedDanmaku(c echo.Context) error {
 	return c.JSON(http.StatusOK, imported)
 }
 
-func (h *handler) handleRemoveImportedDanmaku(c echo.Context) error {
+func (h *handler) handleRemoveImportedDanmaku(c *echo.Context) error {
 	episodeID := c.Param("episodeId")
 	sourceName := c.QueryParam("source")
 	ctx := c.Request().Context()

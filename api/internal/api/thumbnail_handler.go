@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/ffmpeg"
 	"github.com/milmil/api/internal/storage"
@@ -70,7 +70,7 @@ func (h *handler) resolveInputPath(ctx context.Context, lib store.Library, media
 
 // handleThumbnailVTT serves the WebVTT file for timeline thumbnail previews.
 // Generates sprite sheet on first request, caches in data dir.
-func (h *handler) handleThumbnailVTT(c echo.Context) error {
+func (h *handler) handleThumbnailVTT(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("fileId")
 
@@ -121,7 +121,7 @@ func (h *handler) handleThumbnailVTT(c echo.Context) error {
 }
 
 // handleThumbnailSprite serves the sprite sheet image.
-func (h *handler) handleThumbnailSprite(c echo.Context) error {
+func (h *handler) handleThumbnailSprite(c *echo.Context) error {
 	fileID := c.Param("fileId")
 	cacheDir := filepath.Join(h.cfg.DataDir, "thumbnails", fileID)
 	spritePath := filepath.Join(cacheDir, "sprite.jpg")

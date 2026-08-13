@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/library/renamer"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
@@ -28,7 +28,7 @@ type renameConfigReq struct {
 	Auto     *bool  `json:"auto"`
 }
 
-func (h *handler) handleRenameConfig(c echo.Context) error {
+func (h *handler) handleRenameConfig(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	lib, err := h.queries.GetLibrary(ctx, libraryID)
@@ -64,7 +64,7 @@ func (h *handler) handleRenameConfig(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleRenamePreview(c echo.Context) error {
+func (h *handler) handleRenamePreview(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	animeID := c.QueryParam("anime_id")
@@ -101,7 +101,7 @@ type renameApplyReq struct {
 	Plans []renamer.PlanResult `json:"plans"`
 }
 
-func (h *handler) handleRenameApply(c echo.Context) error {
+func (h *handler) handleRenameApply(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	lib, err := h.queries.GetLibrary(ctx, libraryID)
@@ -132,7 +132,7 @@ type renameUndoReq struct {
 	BatchID string `json:"batch_id"`
 }
 
-func (h *handler) handleRenameUndo(c echo.Context) error {
+func (h *handler) handleRenameUndo(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	lib, err := h.queries.GetLibrary(ctx, libraryID)
@@ -166,7 +166,7 @@ func (h *handler) handleRenameUndo(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-func (h *handler) handleRenameHistory(c echo.Context) error {
+func (h *handler) handleRenameHistory(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	rows, err := h.queries.ListRenameHistoryBatches(ctx, store.ListRenameHistoryBatchesParams{

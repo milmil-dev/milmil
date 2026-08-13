@@ -6,30 +6,31 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 )
 
 // sensitiveFields are exact JSON keys whose values must be redacted in request
 // logs. Suffix-based matches are handled separately by isSensitiveKey.
 var sensitiveFields = map[string]bool{
-	"password":      true,
-	"pw":            true,
-	"token":         true,
-	"secret":        true,
-	"api_key":       true,
-	"apikey":        true,
-	"access_token":  true,
-	"refresh_token": true,
-	"app_id":        true,
-	"app_secret":    true,
-	"client_id":     true,
-	"client_secret": true,
-	"private_key":   true,
-	"jwt_secret":    true,
+	"password":       true,
+	"pw":             true,
+	"token":          true,
+	"secret":         true,
+	"api_key":        true,
+	"apikey":         true,
+	"access_token":   true,
+	"refresh_token":  true,
+	"app_id":         true,
+	"app_secret":     true,
+	"client_id":      true,
+	"client_secret":  true,
+	"private_key":    true,
+	"jwt_secret":     true,
 	"encryption_key": true,
 }
 
@@ -65,7 +66,15 @@ func attachMiddleware(e *echo.Echo) {
 	e.Use(middleware.Recover())
 	e.Use(prettyLogger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
+		// v5 no longer supports wildcard ports in AllowOrigins; allow any
+		// localhost/127.0.0.1 port via the origin callback instead.
+		UnsafeAllowOriginFunc: func(c *echo.Context, origin string) (string, bool, error) {
+			if u, err := url.Parse(origin); err == nil && u.Scheme == "http" &&
+				(u.Hostname() == "localhost" || u.Hostname() == "127.0.0.1") {
+				return origin, true, nil
+			}
+			return "", false, nil
+		},
 		AllowHeaders: []string{
 			echo.HeaderOrigin,
 			echo.HeaderContentType,
@@ -88,7 +97,7 @@ func attachMiddleware(e *echo.Echo) {
 // colorful, human-readable request logs in dev mode.
 func prettyLogger() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			start := time.Now()
 			req := c.Request()
 
@@ -117,24 +126,23 @@ func prettyLogger() echo.MiddlewareFunc {
 
 			// Capture response body for error responses
 			resBodyBuf := new(bytes.Buffer)
-			origWriter := c.Response().Writer
+			origWriter := c.Response()
 			mw := &responseCapture{ResponseWriter: origWriter, buf: resBodyBuf}
-			c.Response().Writer = mw
+			c.SetResponse(mw)
 
 			err := next(c)
-			if err != nil {
-				c.Error(err)
-			}
 
-			res := c.Response()
 			latency := time.Since(start)
-			status := res.Status
+			_, status := echo.ResolveResponseStatus(c.Response(), err)
 
 			attrs := []any{
 				"method", req.Method,
 				"uri", req.RequestURI,
 				"status", status,
 				"latency", latency.Round(time.Millisecond).String(),
+			}
+			if err != nil {
+				attrs = append(attrs, "err", err.Error())
 			}
 
 			// Add request body for mutation requests (with sensitive fields redacted)
@@ -162,7 +170,7 @@ func prettyLogger() echo.MiddlewareFunc {
 				slog.Info("request", attrs...)
 			}
 
-			return nil
+			return err
 		}
 	}
 }
@@ -179,6 +187,12 @@ func (w *responseCapture) Write(b []byte) (int, error) {
 		w.buf.Write(b)
 	}
 	return w.ResponseWriter.Write(b)
+}
+
+// Unwrap lets echo.UnwrapResponse reach the underlying *echo.Response
+// through this wrapper (required for status resolution in v5).
+func (w *responseCapture) Unwrap() http.ResponseWriter {
+	return w.ResponseWriter
 }
 
 // redactSensitiveFields replaces values of known credential fields with

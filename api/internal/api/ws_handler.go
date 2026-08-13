@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/websocket"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	ws2 "github.com/milmil/api/internal/ws"
 )
 
@@ -20,7 +20,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func (h *handler) handleWebSocket(c echo.Context) error {
+func (h *handler) handleWebSocket(c *echo.Context) error {
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
 		return err

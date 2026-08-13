@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 )
 
@@ -15,7 +15,7 @@ import (
 // Format: MediaBrowser Token="<jwt>", Client="Infuse", Device="iPhone", ...
 func EmbyAuthMiddleware(secret string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			token := extractEmbyToken(c.Request())
 			if token == "" {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Missing authentication token"})
@@ -29,10 +29,11 @@ func EmbyAuthMiddleware(secret string) echo.MiddlewareFunc {
 
 			start := time.Now()
 			err = next(c)
+			_, status := echo.ResolveResponseStatus(c.Response(), err)
 			slog.Info("jellyfin request",
 				"method", c.Request().Method,
 				"path", c.Request().URL.Path,
-				"status", c.Response().Status,
+				"status", status,
 				"duration_ms", time.Since(start).Milliseconds(),
 				"client", extractEmbyParam(c.Request(), "Client"),
 			)
@@ -81,10 +82,10 @@ func extractEmbyParam(r *http.Request, key string) string {
 // jellyfinLogMiddleware logs all /jellyfin/* requests including unauthenticated ones.
 func jellyfinLogMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			start := time.Now()
 			err := next(c)
-			status := c.Response().Status
+			_, status := echo.ResolveResponseStatus(c.Response(), err)
 			level := slog.LevelInfo
 			if status >= 400 {
 				level = slog.LevelWarn

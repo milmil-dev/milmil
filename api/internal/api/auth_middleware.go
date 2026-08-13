@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
 )
@@ -18,7 +18,7 @@ const contextKeyTokenName = "tokenName"
 // authMiddleware validates API tokens and sets the userID in context.
 func authMiddleware(queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			header := c.Request().Header.Get("Authorization")
 			if !strings.HasPrefix(header, "Bearer ") {
 				return echo.NewHTTPError(http.StatusUnauthorized, "missing token")
@@ -40,7 +40,7 @@ func authMiddleware(queries *store.Queries) echo.MiddlewareFunc {
 // authMiddlewareWithQueryParam is like authMiddleware but also accepts ?token= as fallback.
 func authMiddlewareWithQueryParam(queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			header := c.Request().Header.Get("Authorization")
 			token := ""
 			if strings.HasPrefix(header, "Bearer ") {
@@ -66,7 +66,7 @@ func authMiddlewareWithQueryParam(queries *store.Queries) echo.MiddlewareFunc {
 }
 
 // resolveToken validates an API token by hash lookup.
-func resolveToken(c echo.Context, queries *store.Queries, token string) (store.ApiToken, error) {
+func resolveToken(c *echo.Context, queries *store.Queries, token string) (store.ApiToken, error) {
 	if !auth.IsAPIToken(token) {
 		return store.ApiToken{}, echo.NewHTTPError(http.StatusUnauthorized, "invalid token format")
 	}
@@ -86,13 +86,13 @@ func updateTokenActivity(queries *store.Queries, tokenID, ip, userAgent string) 
 }
 
 // getUserID extracts the authenticated user ID from the Echo context.
-func getUserID(c echo.Context) string {
+func getUserID(c *echo.Context) string {
 	id, _ := c.Get(contextKeyUserID).(string)
 	return id
 }
 
 // getTokenID extracts the current API token ID from the Echo context.
-func getTokenID(c echo.Context) string {
+func getTokenID(c *echo.Context) string {
 	id, _ := c.Get(contextKeyTokenID).(string)
 	return id
 }
@@ -100,7 +100,7 @@ func getTokenID(c echo.Context) string {
 // getTokenName extracts the current API token's display name from the Echo
 // context. Used by the audit middleware as the agent_label so revoking the
 // token does not erase historical attribution.
-func getTokenName(c echo.Context) string {
+func getTokenName(c *echo.Context) string {
 	name, _ := c.Get(contextKeyTokenName).(string)
 	return name
 }

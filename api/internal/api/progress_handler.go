@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -43,7 +43,7 @@ func toProgressResponse(p store.WatchProgress) progressResponse {
 	}
 }
 
-func (h *handler) handleSaveProgress(c echo.Context) error {
+func (h *handler) handleSaveProgress(c *echo.Context) error {
 	var req saveProgressRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -107,7 +107,7 @@ type enrichedProgressResponse struct {
 	EpisodeNumber   float64 `json:"episode_number"`
 }
 
-func (h *handler) handleListRecentProgress(c echo.Context) error {
+func (h *handler) handleListRecentProgress(c *echo.Context) error {
 	userID := getUserID(c)
 
 	items, err := h.queries.ListRecentProgressWithAnime(c.Request().Context(), userID)
@@ -138,7 +138,7 @@ func (h *handler) handleListRecentProgress(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleGetProgressByFile(c echo.Context) error {
+func (h *handler) handleGetProgressByFile(c *echo.Context) error {
 	userID := getUserID(c)
 	fileID := c.Param("fileId")
 
@@ -164,7 +164,7 @@ type listHistoryResponse struct {
 	NextBefore *string                    `json:"next_before"`
 }
 
-func (h *handler) handleListHistory(c echo.Context) error {
+func (h *handler) handleListHistory(c *echo.Context) error {
 	userID := getUserID(c)
 
 	filter := c.QueryParam("filter")
@@ -236,7 +236,7 @@ func (h *handler) handleListHistory(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (h *handler) handleDeleteProgress(c echo.Context) error {
+func (h *handler) handleDeleteProgress(c *echo.Context) error {
 	userID := getUserID(c)
 	id := c.Param("id")
 	if id == "" {
@@ -260,7 +260,7 @@ type batchDeleteRequest struct {
 	IDs []string `json:"ids"`
 }
 
-func (h *handler) handleBatchDeleteProgress(c echo.Context) error {
+func (h *handler) handleBatchDeleteProgress(c *echo.Context) error {
 	var req batchDeleteRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -283,7 +283,7 @@ func (h *handler) handleBatchDeleteProgress(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]int64{"deleted": n})
 }
 
-func (h *handler) handleClearAllProgress(c echo.Context) error {
+func (h *handler) handleClearAllProgress(c *echo.Context) error {
 	userID := getUserID(c)
 	n, err := h.queries.DeleteAllWatchProgressByUser(c.Request().Context(), userID)
 	if err != nil {

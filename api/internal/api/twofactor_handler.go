@@ -6,7 +6,7 @@ import (
 	"image/png"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 	"github.com/pquerna/otp/totp"
 )
@@ -26,7 +26,7 @@ type twoFactorStatusResponse struct {
 }
 
 // POST /api/v1/auth/2fa/setup — generate a new TOTP secret and QR code
-func (h *handler) handleTwoFactorSetup(c echo.Context) error {
+func (h *handler) handleTwoFactorSetup(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 
@@ -72,7 +72,7 @@ func (h *handler) handleTwoFactorSetup(c echo.Context) error {
 }
 
 // POST /api/v1/auth/2fa/verify — verify TOTP code and enable 2FA
-func (h *handler) handleTwoFactorVerify(c echo.Context) error {
+func (h *handler) handleTwoFactorVerify(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 
@@ -109,7 +109,7 @@ func (h *handler) handleTwoFactorVerify(c echo.Context) error {
 }
 
 // DELETE /api/v1/auth/2fa — disable 2FA
-func (h *handler) handleTwoFactorDisable(c echo.Context) error {
+func (h *handler) handleTwoFactorDisable(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 
@@ -121,7 +121,7 @@ func (h *handler) handleTwoFactorDisable(c echo.Context) error {
 }
 
 // GET /api/v1/auth/2fa/status — check if 2FA is enabled
-func (h *handler) handleTwoFactorStatus(c echo.Context) error {
+func (h *handler) handleTwoFactorStatus(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 

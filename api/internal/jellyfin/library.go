@@ -3,7 +3,7 @@ package jellyfin
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type virtualFolder struct {
@@ -13,7 +13,7 @@ type virtualFolder struct {
 	ItemID         string   `json:"ItemId"`
 }
 
-func (h *Handler) handleVirtualFolders(c echo.Context) error {
+func (h *Handler) handleVirtualFolders(c *echo.Context) error {
 	libs, err := h.queries.ListLibraries(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, JellyfinError{Message: "Failed to list libraries"})

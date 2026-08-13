@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
 	"github.com/pquerna/otp/totp"
@@ -39,7 +39,7 @@ type authStatusResponse struct {
 	Initialized bool `json:"initialized"`
 }
 
-func (h *handler) handleAuthStatus(c echo.Context) error {
+func (h *handler) handleAuthStatus(c *echo.Context) error {
 	count, err := h.queries.CountUsers(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -47,7 +47,7 @@ func (h *handler) handleAuthStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, authStatusResponse{Initialized: count > 0})
 }
 
-func (h *handler) handleAuthSetup(c echo.Context) error {
+func (h *handler) handleAuthSetup(c *echo.Context) error {
 	var req authSetupRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -103,7 +103,7 @@ func (h *handler) handleAuthSetup(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleAuthLogin(c echo.Context) error {
+func (h *handler) handleAuthLogin(c *echo.Context) error {
 	var req authLoginRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -146,7 +146,7 @@ type authLogin2FARequest struct {
 	DeviceName string `json:"device_name,omitempty"`
 }
 
-func (h *handler) handleAuthLogin2FA(c echo.Context) error {
+func (h *handler) handleAuthLogin2FA(c *echo.Context) error {
 	var req authLogin2FARequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -174,11 +174,11 @@ func (h *handler) handleAuthLogin2FA(c echo.Context) error {
 	return h.issueAPIToken(c, user.ID, user.Username, deviceName)
 }
 
-func (h *handler) handleAuthLogout(c echo.Context) error {
+func (h *handler) handleAuthLogout(c *echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleAuthMe(c echo.Context) error {
+func (h *handler) handleAuthMe(c *echo.Context) error {
 	user, err := h.queries.GetUserByID(c.Request().Context(), getUserID(c))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -195,7 +195,7 @@ type changePasswordRequest struct {
 }
 
 // sendLoginNotification fires an auth.login notification via the notification service.
-func (h *handler) sendLoginNotification(c echo.Context, username string) {
+func (h *handler) sendLoginNotification(c *echo.Context, username string) {
 	if h.notifier == nil {
 		return
 	}
@@ -210,7 +210,7 @@ func (h *handler) sendLoginNotification(c echo.Context, username string) {
 }
 
 // issueAPIToken creates a new API token for the device and returns it in the login response.
-func (h *handler) issueAPIToken(c echo.Context, userID, username, deviceName string) error {
+func (h *handler) issueAPIToken(c *echo.Context, userID, username, deviceName string) error {
 	if len(deviceName) > 100 {
 		deviceName = deviceName[:100]
 	}
@@ -236,7 +236,7 @@ func (h *handler) issueAPIToken(c echo.Context, userID, username, deviceName str
 	})
 }
 
-func (h *handler) handleChangePassword(c echo.Context) error {
+func (h *handler) handleChangePassword(c *echo.Context) error {
 	var req changePasswordRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"syscall"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type libraryCapacityResponse struct {
@@ -19,7 +19,7 @@ type libraryCapacityResponse struct {
 
 // handleGetLibraryCapacity returns disk usage statistics for a library's path.
 // Only supported for local source types — remote sources return Available=false.
-func (h *handler) handleGetLibraryCapacity(c echo.Context) error {
+func (h *handler) handleGetLibraryCapacity(c *echo.Context) error {
 	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

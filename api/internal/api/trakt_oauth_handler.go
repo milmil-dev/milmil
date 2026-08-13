@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/sync/providers"
@@ -29,7 +29,7 @@ func (h *handler) traktProvider() (*providers.Trakt, error) {
 	return t, nil
 }
 
-func (h *handler) handleTraktDeviceCode(c echo.Context) error {
+func (h *handler) handleTraktDeviceCode(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 
@@ -62,7 +62,7 @@ func (h *handler) handleTraktDeviceCode(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleTraktPoll(c echo.Context) error {
+func (h *handler) handleTraktPoll(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 
@@ -130,7 +130,7 @@ func (h *handler) handleTraktPoll(c echo.Context) error {
 	return echo.ErrInternalServerError
 }
 
-func (h *handler) handleTraktDisconnect(c echo.Context) error {
+func (h *handler) handleTraktDisconnect(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 	if err := h.queries.DeleteSetting(ctx, "trakt_token"); err != nil {

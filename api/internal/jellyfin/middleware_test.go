@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 )
 
@@ -14,7 +14,7 @@ func TestEmbyAuthMiddleware_ValidToken(t *testing.T) {
 	token, _ := auth.SignToken(secret, "user-123")
 
 	e := echo.New()
-	e.GET("/test", func(c echo.Context) error {
+	e.GET("/test", func(c *echo.Context) error {
 		uid := c.Get("userID").(string)
 		return c.String(http.StatusOK, uid)
 	}, EmbyAuthMiddleware(secret))
@@ -37,7 +37,7 @@ func TestEmbyAuthMiddleware_AuthorizationHeader(t *testing.T) {
 	token, _ := auth.SignToken(secret, "user-456")
 
 	e := echo.New()
-	e.GET("/test", func(c echo.Context) error {
+	e.GET("/test", func(c *echo.Context) error {
 		uid := c.Get("userID").(string)
 		return c.String(http.StatusOK, uid)
 	}, EmbyAuthMiddleware(secret))
@@ -54,7 +54,7 @@ func TestEmbyAuthMiddleware_AuthorizationHeader(t *testing.T) {
 
 func TestEmbyAuthMiddleware_NoToken(t *testing.T) {
 	e := echo.New()
-	e.GET("/test", func(c echo.Context) error {
+	e.GET("/test", func(c *echo.Context) error {
 		return c.String(http.StatusOK, "ok")
 	}, EmbyAuthMiddleware("secret"))
 

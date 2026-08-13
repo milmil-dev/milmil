@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -39,7 +39,7 @@ type importPreferencesRequest struct {
 	Preferences []exportedPreference `json:"preferences"`
 }
 
-func (h *handler) handleGetGlobalPreferences(c echo.Context) error {
+func (h *handler) handleGetGlobalPreferences(c *echo.Context) error {
 	userID := getUserID(c)
 
 	pref, err := h.queries.GetUserPreference(c.Request().Context(), store.GetUserPreferenceParams{
@@ -57,7 +57,7 @@ func (h *handler) handleGetGlobalPreferences(c echo.Context) error {
 	return c.JSON(http.StatusOK, preferenceResponse{Data: json.RawMessage(pref.Data)})
 }
 
-func (h *handler) handleUpsertGlobalPreferences(c echo.Context) error {
+func (h *handler) handleUpsertGlobalPreferences(c *echo.Context) error {
 	userID := getUserID(c)
 
 	var req upsertPreferenceRequest
@@ -82,7 +82,7 @@ func (h *handler) handleUpsertGlobalPreferences(c echo.Context) error {
 	return c.JSON(http.StatusOK, preferenceResponse{Data: json.RawMessage(pref.Data)})
 }
 
-func (h *handler) handleGetSeriesPreferences(c echo.Context) error {
+func (h *handler) handleGetSeriesPreferences(c *echo.Context) error {
 	userID := getUserID(c)
 	seriesID := c.Param("seriesId")
 
@@ -101,7 +101,7 @@ func (h *handler) handleGetSeriesPreferences(c echo.Context) error {
 	return c.JSON(http.StatusOK, preferenceResponse{Data: json.RawMessage(pref.Data)})
 }
 
-func (h *handler) handleUpsertSeriesPreferences(c echo.Context) error {
+func (h *handler) handleUpsertSeriesPreferences(c *echo.Context) error {
 	userID := getUserID(c)
 	seriesID := c.Param("seriesId")
 
@@ -127,7 +127,7 @@ func (h *handler) handleUpsertSeriesPreferences(c echo.Context) error {
 	return c.JSON(http.StatusOK, preferenceResponse{Data: json.RawMessage(pref.Data)})
 }
 
-func (h *handler) handleExportPreferences(c echo.Context) error {
+func (h *handler) handleExportPreferences(c *echo.Context) error {
 	userID := getUserID(c)
 
 	prefs, err := h.queries.GetAllUserPreferences(c.Request().Context(), userID)
@@ -152,7 +152,7 @@ func (h *handler) handleExportPreferences(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleImportPreferences(c echo.Context) error {
+func (h *handler) handleImportPreferences(c *echo.Context) error {
 	userID := getUserID(c)
 
 	body, err := io.ReadAll(c.Request().Body)

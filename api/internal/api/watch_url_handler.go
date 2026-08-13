@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -22,7 +22,7 @@ type watchURLResponse struct {
 // URL for the preferred matched media file of an episode.
 //
 // 404 if the episode does not exist or has no matched media file.
-func (h *handler) handleEpisodeWatchURL(c echo.Context) error {
+func (h *handler) handleEpisodeWatchURL(c *echo.Context) error {
 	episodeID := c.Param("id")
 	ep, err := h.queries.GetEpisode(c.Request().Context(), episodeID)
 	if err != nil {

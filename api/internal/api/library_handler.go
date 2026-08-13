@@ -17,7 +17,7 @@ import (
 
 	"github.com/google/uuid"
 	smb2 "github.com/hirochachacha/go-smb2"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/library/duplicates"
 	"github.com/milmil/api/internal/matcher"
@@ -73,7 +73,7 @@ type libraryListItem struct {
 	RenameAuto          int64   `json:"rename_auto"`
 }
 
-func (h *handler) handleListLibraries(c echo.Context) error {
+func (h *handler) handleListLibraries(c *echo.Context) error {
 	libs, err := h.queries.ListLibrariesWithStats(c.Request().Context())
 	if err != nil {
 		slog.Error("failed to list libraries", "err", err)
@@ -108,7 +108,7 @@ func (h *handler) handleListLibraries(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleGetLibrary(c echo.Context) error {
+func (h *handler) handleGetLibrary(c *echo.Context) error {
 	lib, err := h.queries.GetLibraryWithStats(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -142,7 +142,7 @@ func (h *handler) handleGetLibrary(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleGetLibraryConnectionStatus(c echo.Context) error {
+func (h *handler) handleGetLibraryConnectionStatus(c *echo.Context) error {
 	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -186,7 +186,7 @@ func (h *handler) checkLibraryConnection(lib store.Library) (bool, string) {
 	return true, ""
 }
 
-func (h *handler) handleCreateLibrary(c echo.Context) error {
+func (h *handler) handleCreateLibrary(c *echo.Context) error {
 	var req createLibraryRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -252,7 +252,7 @@ func (h *handler) handleCreateLibrary(c echo.Context) error {
 	return c.JSON(http.StatusCreated, lib)
 }
 
-func (h *handler) handleUpdateLibrary(c echo.Context) error {
+func (h *handler) handleUpdateLibrary(c *echo.Context) error {
 	var req updateLibraryRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -325,7 +325,7 @@ func (h *handler) handleUpdateLibrary(c echo.Context) error {
 	return c.JSON(http.StatusOK, lib)
 }
 
-func (h *handler) handleDeleteLibrary(c echo.Context) error {
+func (h *handler) handleDeleteLibrary(c *echo.Context) error {
 	if err := h.queries.DeleteLibrary(c.Request().Context(), c.Param("id")); err != nil {
 		slog.Error("failed to delete library", "id", c.Param("id"), "err", err)
 		return echo.ErrInternalServerError
@@ -333,7 +333,7 @@ func (h *handler) handleDeleteLibrary(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleDeleteAnime(c echo.Context) error {
+func (h *handler) handleDeleteAnime(c *echo.Context) error {
 	animeID := c.Param("animeId")
 	ctx := c.Request().Context()
 
@@ -356,7 +356,7 @@ func (h *handler) handleDeleteAnime(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleListLibraryAnime(c echo.Context) error {
+func (h *handler) handleListLibraryAnime(c *echo.Context) error {
 	libraryID := c.Param("id")
 	animeList, err := h.queries.ListAnimeByLibrary(c.Request().Context(), sql.NullString{String: libraryID, Valid: true})
 	if err != nil {
@@ -426,7 +426,7 @@ func (h *handler) handleListLibraryAnime(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleScanLibrary(c echo.Context) error {
+func (h *handler) handleScanLibrary(c *echo.Context) error {
 	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -497,7 +497,7 @@ func (h *handler) handleScanLibrary(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleMatchLibrary(c echo.Context) error {
+func (h *handler) handleMatchLibrary(c *echo.Context) error {
 	lib, err := h.queries.GetLibrary(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -603,7 +603,7 @@ type scanSummaryResponse struct {
 	Errors         string  `json:"errors"`
 }
 
-func (h *handler) handleListScanSummaries(c echo.Context) error {
+func (h *handler) handleListScanSummaries(c *echo.Context) error {
 	summaries, err := h.queries.ListScanSummaries(c.Request().Context(), c.Param("id"))
 	if err != nil {
 		slog.Error("failed to list scan summaries", "library_id", c.Param("id"), "err", err)
@@ -635,7 +635,7 @@ func (h *handler) handleListScanSummaries(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (h *handler) handleTestConnection(c echo.Context) error {
+func (h *handler) handleTestConnection(c *echo.Context) error {
 	var req testConnectionRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -674,7 +674,7 @@ type browseResponse struct {
 	Directories []browseEntry `json:"directories"`
 }
 
-func (h *handler) handleBrowse(c echo.Context) error {
+func (h *handler) handleBrowse(c *echo.Context) error {
 	var req browseRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")

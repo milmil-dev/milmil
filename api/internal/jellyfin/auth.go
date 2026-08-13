@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 )
 
@@ -14,7 +14,7 @@ type authenticateRequest struct {
 	Pw       string `json:"Pw"`
 }
 
-func (h *Handler) handleAuthenticateByName(c echo.Context) error {
+func (h *Handler) handleAuthenticateByName(c *echo.Context) error {
 	var req authenticateRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request body"})

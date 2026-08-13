@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -37,7 +37,7 @@ func toSegmentMarkResponse(s store.SegmentMark) segmentMarkResponse {
 	}
 }
 
-func (h *handler) handleCreateSegmentMark(c echo.Context) error {
+func (h *handler) handleCreateSegmentMark(c *echo.Context) error {
 	fileID := c.Param("fileId")
 
 	var req createSegmentMarkRequest
@@ -66,7 +66,7 @@ func (h *handler) handleCreateSegmentMark(c echo.Context) error {
 	return c.JSON(http.StatusCreated, toSegmentMarkResponse(mark))
 }
 
-func (h *handler) handleListSegmentMarks(c echo.Context) error {
+func (h *handler) handleListSegmentMarks(c *echo.Context) error {
 	fileID := c.Param("fileId")
 
 	marks, err := h.queries.ListSegmentMarks(c.Request().Context(), fileID)
@@ -82,7 +82,7 @@ func (h *handler) handleListSegmentMarks(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleDeleteSegmentMark(c echo.Context) error {
+func (h *handler) handleDeleteSegmentMark(c *echo.Context) error {
 	segmentID := c.Param("segmentId")
 
 	if err := h.queries.DeleteSegmentMark(c.Request().Context(), segmentID); err != nil {

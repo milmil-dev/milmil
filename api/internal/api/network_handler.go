@@ -11,7 +11,7 @@ import (
 
 	"github.com/grandcat/zeroconf"
 	smb2 "github.com/hirochachacha/go-smb2"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type discoveredHost struct {
@@ -24,7 +24,7 @@ type discoverNetworkResponse struct {
 	Hosts []discoveredHost `json:"hosts"`
 }
 
-func (h *handler) handleDiscoverNetwork(c echo.Context) error {
+func (h *handler) handleDiscoverNetwork(c *echo.Context) error {
 	ctx, cancel := context.WithTimeout(c.Request().Context(), 8*time.Second)
 	defer cancel()
 

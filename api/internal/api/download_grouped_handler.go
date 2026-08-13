@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type groupedDownloads struct {
@@ -33,7 +33,7 @@ type downloadItem struct {
 }
 
 // handleDownloadsGrouped returns downloads grouped by subscription (rule).
-func (h *handler) handleDownloadsGrouped(c echo.Context) error {
+func (h *handler) handleDownloadsGrouped(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	downloads, err := h.queries.ListDownloads(ctx)
@@ -147,7 +147,7 @@ func (h *handler) handleDownloadsGrouped(c echo.Context) error {
 }
 
 // handleDownloadFiles returns the file list for a specific download.
-func (h *handler) handleDownloadFiles(c echo.Context) error {
+func (h *handler) handleDownloadFiles(c *echo.Context) error {
 	gid := c.Param("gid")
 	ctx := c.Request().Context()
 

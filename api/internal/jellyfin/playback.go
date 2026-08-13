@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *Handler) handlePlaybackStart(c echo.Context) error {
+func (h *Handler) handlePlaybackStart(c *echo.Context) error {
 	var req PlaybackStartRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request"})
@@ -17,7 +17,7 @@ func (h *Handler) handlePlaybackStart(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *Handler) handlePlaybackProgress(c echo.Context) error {
+func (h *Handler) handlePlaybackProgress(c *echo.Context) error {
 	var req PlaybackProgressRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request"})
@@ -66,7 +66,7 @@ func (h *Handler) handlePlaybackProgress(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *Handler) handlePlaybackStop(c echo.Context) error {
+func (h *Handler) handlePlaybackStop(c *echo.Context) error {
 	var req PlaybackStopRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request"})
