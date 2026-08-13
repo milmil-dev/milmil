@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"golang.org/x/mod/semver"
 
 	"github.com/milmil/api/internal/version"
@@ -22,7 +22,7 @@ type systemInfoResponse struct {
 	Platform string `json:"platform"`
 }
 
-func (h *handler) handleSystemInfo(c echo.Context) error {
+func (h *handler) handleSystemInfo(c *echo.Context) error {
 	uptime := time.Since(startTime).Truncate(time.Second)
 	return c.JSON(http.StatusOK, systemInfoResponse{
 		Version:  version.Version,
@@ -37,7 +37,7 @@ type storageStatsResponse struct {
 	FileCount int   `json:"file_count"`
 }
 
-func (h *handler) handleStorageStats(c echo.Context) error {
+func (h *handler) handleStorageStats(c *echo.Context) error {
 	transcodeDir := filepath.Join(os.TempDir(), "milmil", "transcode")
 
 	var totalSize int64
@@ -60,7 +60,7 @@ func (h *handler) handleStorageStats(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleClearTranscodeCache(c echo.Context) error {
+func (h *handler) handleClearTranscodeCache(c *echo.Context) error {
 	transcodeDir := filepath.Join(os.TempDir(), "milmil", "transcode")
 	if err := os.RemoveAll(transcodeDir); err != nil {
 		return echo.ErrInternalServerError
@@ -77,7 +77,7 @@ type updateCheckResponse struct {
 	Stale       bool    `json:"stale"`
 }
 
-func (h *handler) handleUpdateCheck(c echo.Context) error {
+func (h *handler) handleUpdateCheck(c *echo.Context) error {
 	res, stale, err := h.updateChecker.Check(c.Request().Context())
 	current := version.Version
 	if err != nil || res == nil {

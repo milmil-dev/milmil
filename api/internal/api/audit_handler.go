@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/macro"
 	"github.com/milmil/api/internal/store"
 )
@@ -17,7 +17,7 @@ import (
 //   - since:  optional RFC3339 timestamp; only entries created at-or-after
 //   - limit:  page size, default 50, max 200
 //   - offset: zero-based, default 0
-func (h *handler) handleListAudit(c echo.Context) error {
+func (h *handler) handleListAudit(c *echo.Context) error {
 	limit := int64(50)
 	if l, err := strconv.ParseInt(c.QueryParam("limit"), 10, 64); err == nil && l > 0 && l <= 200 {
 		limit = l
@@ -52,7 +52,7 @@ func (h *handler) handleListAudit(c echo.Context) error {
 
 // handleGetAudit returns one audit entry plus any child entries (macro
 // children). 403 if the entry belongs to another user.
-func (h *handler) handleGetAudit(c echo.Context) error {
+func (h *handler) handleGetAudit(c *echo.Context) error {
 	id := c.Param("id")
 	row, err := h.queries.GetAuditLog(c.Request().Context(), id)
 	if err != nil {
@@ -79,7 +79,7 @@ type auditUndoRequest struct {
 
 // handleUndoAudit reverses one audit entry (when id is provided) or every
 // entry created since the given timestamp.
-func (h *handler) handleUndoAudit(c echo.Context) error {
+func (h *handler) handleUndoAudit(c *echo.Context) error {
 	var req auditUndoRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())

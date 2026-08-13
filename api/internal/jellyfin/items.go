@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *Handler) handleGetItems(c echo.Context) error {
+func (h *Handler) handleGetItems(c *echo.Context) error {
 	ctx := c.Request().Context()
 	parentID := c.QueryParam("parentId")
 
@@ -66,7 +66,7 @@ func (h *Handler) handleGetItems(c echo.Context) error {
 	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: total})
 }
 
-func (h *Handler) listAnimeByLibrary(c echo.Context, libraryID string) error {
+func (h *Handler) listAnimeByLibrary(c *echo.Context, libraryID string) error {
 	animeList, err := h.queries.ListAnimeByLibrary(c.Request().Context(), sql.NullString{String: libraryID, Valid: true})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, JellyfinError{Message: "Failed to list anime"})
@@ -78,7 +78,7 @@ func (h *Handler) listAnimeByLibrary(c echo.Context, libraryID string) error {
 	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: len(items)})
 }
 
-func (h *Handler) searchItems(c echo.Context, term string) error {
+func (h *Handler) searchItems(c *echo.Context, term string) error {
 	ctx := c.Request().Context()
 	libs, err := h.queries.ListLibraries(ctx)
 	if err != nil {
@@ -102,7 +102,7 @@ func (h *Handler) searchItems(c echo.Context, term string) error {
 	return c.JSON(http.StatusOK, ItemsResponse{Items: items, TotalRecordCount: len(items)})
 }
 
-func (h *Handler) handleGetItem(c echo.Context) error {
+func (h *Handler) handleGetItem(c *echo.Context) error {
 	itemIDEncoded := c.Param("itemId")
 	typ, id, err := DecodeItemID(itemIDEncoded)
 	if err != nil {

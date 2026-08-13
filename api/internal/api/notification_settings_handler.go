@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/store"
 )
@@ -31,7 +31,7 @@ func isMasked(s string) bool {
 	return strings.Contains(s, "••••••••")
 }
 
-func (h *handler) handleGetNotificationSettings(c echo.Context) error {
+func (h *handler) handleGetNotificationSettings(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	cfg, err := notification.LoadNotificationConfig(ctx, h.queries)
@@ -48,7 +48,7 @@ func (h *handler) handleGetNotificationSettings(c echo.Context) error {
 	return c.JSON(http.StatusOK, cfg)
 }
 
-func (h *handler) handleUpdateNotificationSettings(c echo.Context) error {
+func (h *handler) handleUpdateNotificationSettings(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	var incoming notification.NotificationConfig
@@ -92,7 +92,7 @@ func (h *handler) handleUpdateNotificationSettings(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleTestNotification(c echo.Context) error {
+func (h *handler) handleTestNotification(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	var body struct {
@@ -136,7 +136,7 @@ func (h *handler) handleTestNotification(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{"success": true})
 }
 
-func (h *handler) handleTestBot(c echo.Context) error {
+func (h *handler) handleTestBot(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	var body struct {
@@ -209,7 +209,7 @@ type providerStatus struct {
 	LastError  *string `json:"last_error"`
 }
 
-func (h *handler) handleNotificationProviderStatus(c echo.Context) error {
+func (h *handler) handleNotificationProviderStatus(c *echo.Context) error {
 	ctx := c.Request().Context()
 
 	cfg, err := notification.LoadNotificationConfig(ctx, h.queries)

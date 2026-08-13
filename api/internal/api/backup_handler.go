@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/backup"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/store"
@@ -55,7 +55,7 @@ type syncResult struct {
 // ─── Handlers ───────────────────────────────────────────────────────────────
 
 // PUT /api/v1/user/preferences/backup-config
-func (h *handler) handleUpsertBackupConfig(c echo.Context) error {
+func (h *handler) handleUpsertBackupConfig(c *echo.Context) error {
 	userID := getUserID(c)
 
 	var req backupConfigRequest
@@ -98,7 +98,7 @@ func (h *handler) handleUpsertBackupConfig(c echo.Context) error {
 }
 
 // GET /api/v1/user/preferences/backup-config
-func (h *handler) handleListBackupConfigs(c echo.Context) error {
+func (h *handler) handleListBackupConfigs(c *echo.Context) error {
 	userID := getUserID(c)
 
 	rows, err := h.queries.ListBackupConfigs(c.Request().Context(), userID)
@@ -117,7 +117,7 @@ func (h *handler) handleListBackupConfigs(c echo.Context) error {
 }
 
 // DELETE /api/v1/user/preferences/backup-config/:type
-func (h *handler) handleDeleteBackupConfig(c echo.Context) error {
+func (h *handler) handleDeleteBackupConfig(c *echo.Context) error {
 	userID := getUserID(c)
 	cfgType := c.Param("type")
 
@@ -137,7 +137,7 @@ func (h *handler) handleDeleteBackupConfig(c echo.Context) error {
 }
 
 // POST /api/v1/user/preferences/backup-config/test
-func (h *handler) handleTestBackupConnection(c echo.Context) error {
+func (h *handler) handleTestBackupConnection(c *echo.Context) error {
 	var req backupTestConnectionRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body")
@@ -166,7 +166,7 @@ func (h *handler) handleTestBackupConnection(c echo.Context) error {
 }
 
 // POST /api/v1/user/preferences/sync
-func (h *handler) handleTriggerSync(c echo.Context) error {
+func (h *handler) handleTriggerSync(c *echo.Context) error {
 	userID := getUserID(c)
 	ctx := c.Request().Context()
 
@@ -254,7 +254,7 @@ func (h *handler) handleTriggerSync(c echo.Context) error {
 }
 
 // GET /api/v1/user/preferences/sync/status
-func (h *handler) handleSyncStatus(c echo.Context) error {
+func (h *handler) handleSyncStatus(c *echo.Context) error {
 	userID := getUserID(c)
 
 	configs, err := h.queries.ListBackupConfigs(c.Request().Context(), userID)

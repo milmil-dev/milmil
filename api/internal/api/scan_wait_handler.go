@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type scanWaitResponse struct {
@@ -44,7 +44,7 @@ func SetScanWaitPollInterval(d time.Duration) { scanWaitPollInterval = d }
 //   - 200 status="complete" or "never_scanned"
 //   - 408 when the timeout expires before scan completes
 //   - 408 when the client cancels
-func (h *handler) handleScanWait(c echo.Context) error {
+func (h *handler) handleScanWait(c *echo.Context) error {
 	libraryID := c.Param("id")
 	timeout := scanWaitDefaultTimeout
 	if t, err := strconv.Atoi(c.QueryParam("timeout")); err == nil && t > 0 {

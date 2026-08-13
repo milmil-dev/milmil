@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/ws"
@@ -19,7 +19,7 @@ type addDownloadRequest struct {
 	SaveDir string `json:"save_dir"`
 }
 
-func (h *handler) handleListDownloads(c echo.Context) error {
+func (h *handler) handleListDownloads(c *echo.Context) error {
 	downloads, err := h.queries.ListDownloads(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -27,7 +27,7 @@ func (h *handler) handleListDownloads(c echo.Context) error {
 	return c.JSON(http.StatusOK, downloads)
 }
 
-func (h *handler) handleAddDownload(c echo.Context) error {
+func (h *handler) handleAddDownload(c *echo.Context) error {
 	var req addDownloadRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -66,7 +66,7 @@ func (h *handler) handleAddDownload(c echo.Context) error {
 	return c.JSON(http.StatusCreated, dl)
 }
 
-func (h *handler) handlePauseDownload(c echo.Context) error {
+func (h *handler) handlePauseDownload(c *echo.Context) error {
 	gid := c.Param("gid")
 	if err := h.downloader.Pause(c.Request().Context(), gid); err != nil {
 		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
@@ -80,7 +80,7 @@ func (h *handler) handlePauseDownload(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"status": "paused"})
 }
 
-func (h *handler) handleResumeDownload(c echo.Context) error {
+func (h *handler) handleResumeDownload(c *echo.Context) error {
 	gid := c.Param("gid")
 	if err := h.downloader.Resume(c.Request().Context(), gid); err != nil {
 		return echo.NewHTTPError(http.StatusBadGateway, "download error: "+err.Error())
@@ -94,7 +94,7 @@ func (h *handler) handleResumeDownload(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"status": "active"})
 }
 
-func (h *handler) handleDeleteDownload(c echo.Context) error {
+func (h *handler) handleDeleteDownload(c *echo.Context) error {
 	gid := c.Param("gid")
 	deleteFiles := c.QueryParam("delete_files") == "true"
 	ctx := c.Request().Context()
@@ -121,7 +121,7 @@ func (h *handler) handleDeleteDownload(c echo.Context) error {
 
 // handleBatchDeleteDownloads removes all downloads, optionally deleting files.
 // DELETE /downloads/batch?delete_files=true
-func (h *handler) handleBatchDeleteDownloads(c echo.Context) error {
+func (h *handler) handleBatchDeleteDownloads(c *echo.Context) error {
 	deleteFiles := c.QueryParam("delete_files") == "true"
 	ctx := c.Request().Context()
 
@@ -174,7 +174,7 @@ func (h *handler) deleteDownloadFiles(dl store.Download) {
 }
 
 // handleDownloaderStatus returns the health status of the builtin download engine.
-func (h *handler) handleDownloaderStatus(c echo.Context) error {
+func (h *handler) handleDownloaderStatus(c *echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]any{
 		"engine":  "builtin",
 		"healthy": h.downloader.Healthy(),

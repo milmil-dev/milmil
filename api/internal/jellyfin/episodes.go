@@ -3,10 +3,10 @@ package jellyfin
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
-func (h *Handler) handleGetSeasons(c echo.Context) error {
+func (h *Handler) handleGetSeasons(c *echo.Context) error {
 	seriesIDEncoded := c.Param("seriesId")
 	typ, animeID, err := DecodeItemID(seriesIDEncoded)
 	if err != nil || typ != "anime" {
@@ -44,7 +44,7 @@ func (h *Handler) handleGetSeasons(c echo.Context) error {
 	})
 }
 
-func (h *Handler) handleGetEpisodes(c echo.Context) error {
+func (h *Handler) handleGetEpisodes(c *echo.Context) error {
 	seriesIDEncoded := c.Param("seriesId")
 	typ, animeID, err := DecodeItemID(seriesIDEncoded)
 	if err != nil || typ != "anime" {

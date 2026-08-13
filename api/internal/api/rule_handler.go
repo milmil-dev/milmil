@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -99,7 +99,7 @@ func toRuleResponse(r store.DownloadRule) downloadRuleResponse {
 	return resp
 }
 
-func (h *handler) handleListDownloadRules(c echo.Context) error {
+func (h *handler) handleListDownloadRules(c *echo.Context) error {
 	rules, err := h.queries.ListDownloadRules(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -111,7 +111,7 @@ func (h *handler) handleListDownloadRules(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (h *handler) handleCreateDownloadRule(c echo.Context) error {
+func (h *handler) handleCreateDownloadRule(c *echo.Context) error {
 	var req createDownloadRuleRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -151,7 +151,7 @@ func (h *handler) handleCreateDownloadRule(c echo.Context) error {
 	return c.JSON(http.StatusCreated, toRuleResponse(rule))
 }
 
-func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
+func (h *handler) handleUpdateDownloadRule(c *echo.Context) error {
 	var req updateDownloadRuleRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -190,7 +190,7 @@ func (h *handler) handleUpdateDownloadRule(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"status": "updated"})
 }
 
-func (h *handler) handleDeleteDownloadRule(c echo.Context) error {
+func (h *handler) handleDeleteDownloadRule(c *echo.Context) error {
 	ctx := c.Request().Context()
 	ruleID := c.Param("id")
 	// Unlink downloads so they don't become orphans

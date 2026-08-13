@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/downloader"
@@ -50,7 +50,11 @@ type handler struct {
 // NewRouter creates the Echo instance with all middleware and routes.
 func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service, danmakuReg *danmaku.Registry, updateChecker *updatecheck.Checker) *echo.Echo {
 	e := echo.New()
-	e.HideBanner = true
+	// Echo v5 no longer reads X-Forwarded-For by default (c.RealIP would
+	// return the reverse proxy's address). Restore client-IP extraction for
+	// the documented nginx/Docker deployment; only proxy hops on loopback,
+	// link-local, or private ranges are trusted.
+	e.IPExtractor = echo.ExtractIPFromXFFHeader()
 	attachMiddleware(e)
 
 	h := &handler{

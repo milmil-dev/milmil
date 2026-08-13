@@ -3,10 +3,10 @@ package jellyfin
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
-func (h *Handler) handleGetImage(c echo.Context) error {
+func (h *Handler) handleGetImage(c *echo.Context) error {
 	itemIDEncoded := c.Param("itemId")
 	typ, id, err := DecodeItemID(itemIDEncoded)
 	if err != nil {

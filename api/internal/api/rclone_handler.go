@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type rcloneRemote struct {
@@ -23,7 +23,7 @@ type listRcloneRemotesResponse struct {
 // configured remote names with their backend types.
 //
 // GET /api/v1/rclone/remotes
-func (h *handler) handleListRcloneRemotes(c echo.Context) error {
+func (h *handler) handleListRcloneRemotes(c *echo.Context) error {
 	confPath := rcloneConfigPath()
 	if confPath == "" {
 		return c.JSON(http.StatusOK, listRcloneRemotesResponse{Remotes: []rcloneRemote{}})

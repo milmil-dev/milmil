@@ -4,13 +4,13 @@ import (
 	_ "embed"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 //go:embed openapi.json
 var openapiSpec []byte
 
-func handleDocs(c echo.Context) error {
+func handleDocs(c *echo.Context) error {
 	html := `<!doctype html>
 <html>
   <head>
@@ -26,6 +26,6 @@ func handleDocs(c echo.Context) error {
 	return c.HTML(http.StatusOK, html)
 }
 
-func handleOpenAPISpec(c echo.Context) error {
+func handleOpenAPISpec(c *echo.Context) error {
 	return c.JSONBlob(http.StatusOK, openapiSpec)
 }

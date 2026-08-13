@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/jellyfin/imagecache"
 	"github.com/milmil/api/internal/store"
 )
@@ -97,7 +97,7 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	auth.GET("/Users/:userId/Items/:itemId/UserData", h.handleGetUserData)
 
 	// Stubs that Infuse expects (return empty results, not errors)
-	emptyArray := func(c echo.Context) error { return c.JSON(200, []any{}) }
+	emptyArray := func(c *echo.Context) error { return c.JSON(200, []any{}) }
 	auth.GET("/Items/:itemId/LocalTrailers", emptyArray)
 	auth.GET("/Items/:itemId/SpecialFeatures", emptyArray)
 	auth.GET("/MediaSegments/:itemId", h.handleMediaSegments)
@@ -106,7 +106,7 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	// Catch-all for unimplemented endpoints — return 501 so callers can
 	// distinguish "route does not exist at all" (404 from Echo) from
 	// "this Jellyfin endpoint is known but not implemented here".
-	jf.Any("/*", func(c echo.Context) error {
+	jf.Any("/*", func(c *echo.Context) error {
 		return c.JSON(http.StatusNotImplemented, JellyfinError{Message: "Not implemented"})
 	})
 }

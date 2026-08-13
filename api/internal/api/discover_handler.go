@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
 	"github.com/milmil/api/internal/metadata"
@@ -14,7 +14,7 @@ import (
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *handler) handleCalendar(c echo.Context) error {
+func (h *handler) handleCalendar(c *echo.Context) error {
 	ctx := c.Request().Context()
 	days, err := h.metadata.GetCalendar(ctx)
 	if err != nil {
@@ -27,7 +27,7 @@ func (h *handler) handleCalendar(c echo.Context) error {
 	return c.JSON(http.StatusOK, days)
 }
 
-func (h *handler) handleTrending(c echo.Context) error {
+func (h *handler) handleTrending(c *echo.Context) error {
 	page := 1
 	if p := c.QueryParam("page"); p != "" {
 		if v, err := strconv.Atoi(p); err == nil && v > 0 {
@@ -43,7 +43,7 @@ func (h *handler) handleTrending(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func (h *handler) handleSearch(c echo.Context) error {
+func (h *handler) handleSearch(c *echo.Context) error {
 	q := c.QueryParam("q")
 	if q == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "q parameter required")
@@ -60,7 +60,7 @@ func (h *handler) handleSearch(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func (h *handler) handleAnimeDetail(c echo.Context) error {
+func (h *handler) handleAnimeDetail(c *echo.Context) error {
 	rawID := c.Param("id")
 	ctx := c.Request().Context()
 	refresh := c.QueryParam("refresh") == "true"
@@ -91,7 +91,7 @@ func (h *handler) handleAnimeDetail(c echo.Context) error {
 	return c.JSON(http.StatusOK, detail)
 }
 
-func (h *handler) handleAnimeFranchise(c echo.Context) error {
+func (h *handler) handleAnimeFranchise(c *echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
@@ -103,7 +103,7 @@ func (h *handler) handleAnimeFranchise(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleBrowseByGenre(c echo.Context) error {
+func (h *handler) handleBrowseByGenre(c *echo.Context) error {
 	genre := c.QueryParam("genre")
 	page := 1
 	if p := c.QueryParam("page"); p != "" {
@@ -174,7 +174,7 @@ func (h *handler) handleBrowseByGenre(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func (h *handler) handleBrowseByTag(c echo.Context) error {
+func (h *handler) handleBrowseByTag(c *echo.Context) error {
 	tag := c.QueryParam("tag")
 	if tag == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "tag parameter required")
@@ -198,7 +198,7 @@ func (h *handler) handleBrowseByTag(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func (h *handler) handleHotTags(c echo.Context) error {
+func (h *handler) handleHotTags(c *echo.Context) error {
 	category := c.QueryParam("category")
 	var (
 		tags []store.HotTag
@@ -215,7 +215,7 @@ func (h *handler) handleHotTags(c echo.Context) error {
 	return c.JSON(http.StatusOK, tags)
 }
 
-func (h *handler) handleResolveAniList(c echo.Context) error {
+func (h *handler) handleResolveAniList(c *echo.Context) error {
 	anilistID, err := strconv.Atoi(c.QueryParam("anilist_id"))
 	if err != nil || anilistID <= 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "anilist_id parameter required")
@@ -227,7 +227,7 @@ func (h *handler) handleResolveAniList(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]int{"bangumi_id": bangumiID})
 }
 
-func (h *handler) handleAnimeEpisodes(c echo.Context) error {
+func (h *handler) handleAnimeEpisodes(c *echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
@@ -242,7 +242,7 @@ func (h *handler) handleAnimeEpisodes(c echo.Context) error {
 	return c.JSON(http.StatusOK, eps)
 }
 
-func (h *handler) handleAnimeComments(c echo.Context) error {
+func (h *handler) handleAnimeComments(c *echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
