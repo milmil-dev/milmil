@@ -1,6 +1,6 @@
 // web/src/components/downloads/AnimeCoverBlock.test.tsx
 import { fireEvent } from '@testing-library/react';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { render, screen } from '@/test/test-utils';
 import { AnimeCoverBlock } from './AnimeCoverBlock';
 

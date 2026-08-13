@@ -1,7 +1,7 @@
 // web/src/components/downloads/episode-rows/EpisodeRowPending.test.tsx
 
 import userEvent from '@testing-library/user-event';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { render, screen } from '@/test/test-utils';
 import { EpisodeRowPending } from './EpisodeRowPending';
 

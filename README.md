@@ -117,7 +117,7 @@
 | PWA | Serwist |
 | 快取 | Redis（唔裝都得，自動用記憶體頂） |
 | 測試 | Vitest, Playwright, Go testing |
-| 代碼品質 | Biome, Lefthook, Commitlint |
+| 代碼品質 | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
 
 ---
 
@@ -247,7 +247,7 @@ cd web && bun run test:run      # 前端單元測試
 cd web && bun run test:e2e      # Playwright E2E 測試
 
 # 品質
-make lint             # Go vet + Biome lint
+make lint             # Go vet + vp lint (Oxlint)
 cd web && bun run check:all     # 型別檢查 + lint + 格式 + 測試
 
 # 國際化

@@ -123,7 +123,7 @@
 | PWA | Serwist |
 | Cache | Redis (optional, in-memory fallback) |
 | Testing | Vitest, Playwright, Go testing |
-| Linting | Biome, Lefthook, Commitlint |
+| Linting | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
 
 ---
 
@@ -253,7 +253,7 @@ cd web && bun run test:run      # Frontend unit tests
 cd web && bun run test:e2e      # Playwright E2E tests
 
 # Quality
-make lint             # Go vet + Biome lint
+make lint             # Go vet + vp lint (Oxlint)
 cd web && bun run check:all     # Typecheck + lint + format + test
 
 # i18n

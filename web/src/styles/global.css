@@ -1,8 +1,8 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "./animation";
-@import "./theme";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import './animation';
+@import './theme';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -94,7 +94,7 @@
   body {
     @apply font-sans bg-mm-bg text-mm-text-primary antialiased;
     font-family: var(--font-family-sans);
-    font-feature-settings: "kern";
+    font-feature-settings: 'kern';
     font-kerning: normal;
     min-height: 100dvh;
     overflow-x: hidden;

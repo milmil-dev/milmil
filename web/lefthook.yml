@@ -1,9 +1,9 @@
 pre-commit:
   parallel: true
   commands:
-    biome-check:
+    vp-check:
       glob: '**/*.{js,jsx,ts,tsx,json,css}'
-      run: bun run biome check --write --no-errors-on-unmatched {staged_files}
+      run: vp fmt --write {staged_files} && vp lint --fix {staged_files}
       stage_fixed: true
 
     type-check:

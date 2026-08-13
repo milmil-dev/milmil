@@ -22,7 +22,7 @@ milmil web frontend — the React SPA that talks to the milmil Go API. Built wit
 | Runtime | Bun |
 | UI Framework | React 19 + React Compiler |
 | Routing | TanStack Router (code-based, type-safe) |
-| Bundler | Vite 7 |
+| Bundler | Vite+ (`vp` CLI, `vite-plus` — Rolldown-powered Vite core) |
 | Styling | Tailwind CSS v4 + tw-animate-css |
 | UI Components | shadcn + Base UI + Radix |
 | Icons | Hugeicons (`@hugeicons/react` + `@hugeicons/core-free-icons`) |
@@ -33,8 +33,8 @@ milmil web frontend — the React SPA that talks to the milmil Go API. Built wit
 | Animation | Motion |
 | Utilities | es-toolkit, clsx, cva, tailwind-merge |
 | PWA | Serwist (`@serwist/vite`) |
-| Linting | Biome |
-| Testing | Vitest + Testing Library + Playwright |
+| Linting / Formatting | Vite+ (`vp lint` = Oxlint, `vp fmt` = Oxfmt; configured in the `lint`/`fmt` blocks of `vite.config.ts`) |
+| Testing | Vitest (bundled with Vite+; import from `vite-plus/test`) + Testing Library + Playwright |
 | Git Hooks | Lefthook + Commitlint |
 | Fonts | Figtree (Latin) + Noto Sans TC (CJK), both variable |
 
@@ -128,9 +128,9 @@ bun run dev              # Start dev server
 bun run build            # Production build
 bun run preview          # Preview production build
 bun run typecheck        # TypeScript check
-bun run lint             # Biome lint
+bun run lint             # Oxlint via vp lint
 bun run lint:fix         # Auto-fix lint issues
-bun run format           # Format code
+bun run format           # Format code (Oxfmt via vp fmt)
 bun run test             # Run tests (watch)
 bun run test:run         # Run tests (once)
 bun run test:e2e         # Playwright E2E tests
@@ -183,7 +183,7 @@ bun run i18n:compile     # Compile translations
 
 ## Testing
 
-- **Unit**: Vitest + Testing Library in `src/**/*.test.{ts,tsx}`
+- **Unit**: Vitest + Testing Library in `src/**/*.test.{ts,tsx}` — import test APIs from `vite-plus/test` (not `vitest`; enforced by the `vite-plus/prefer-vite-plus-imports` oxlint rule)
 - **E2E**: Playwright in `e2e/*.spec.ts`
 - **Test utils**: `src/test/test-utils.tsx` provides `render()` with all providers
 - **Setup**: `src/test/setup.ts` mocks `matchMedia`

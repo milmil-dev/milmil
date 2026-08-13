@@ -1,5 +1,5 @@
 // web/src/store/downloads-ui-store.test.ts
-import { afterEach, expect, test } from 'vitest';
+import { afterEach, expect, test } from 'vite-plus/test';
 import { useDownloadsUIStore } from './downloads-ui-store';
 
 afterEach(() => {

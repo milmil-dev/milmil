@@ -20,7 +20,7 @@ bun run dev
 - **Lingui v5** — internationalization
 - **Serwist** — PWA with service worker
 - **Vitest + Testing Library + Playwright** — comprehensive testing
-- **Biome** — fast linting and formatting
+- **Vite+** — unified toolchain: `vp` runs dev/build/test, with Oxlint linting and Oxfmt formatting
 - **Lefthook + Commitlint** — git hooks and conventional commits
 
 ## Scripts
