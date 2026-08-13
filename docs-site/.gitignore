@@ -3,5 +3,4 @@ node_modules
 dist
 .source
 *.tsbuildinfo
-bun.lock
 test-results
