@@ -1,6 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
 
-const BASE = 'http://localhost:4000';
 const LANGS = ['en', 'zh-CN', 'zh-TW', 'zh-HK'];
 const CHILD_PAGES = [
   'getting-started/installation',
@@ -31,32 +30,32 @@ async function assertPageLoaded(page: Page) {
 }
 
 // ─── Root redirect ───
-test('root / redirects to /zh-HK', async ({ page }) => {
-  const resp = await page.goto(BASE);
-  await page.waitForURL('**/zh-HK**');
-  expect(page.url()).toContain('/zh-HK');
+test('root / redirects to /en', async ({ page }) => {
+  const resp = await page.goto('/');
+  await page.waitForURL('**/en');
+  expect(page.url()).toContain('/en');
 });
 
 // ─── Landing page per language ───
 for (const lang of LANGS) {
   test(`landing /${lang} renders`, async ({ page }) => {
-    await page.goto(`${BASE}/${lang}`);
+    await page.goto(`/${lang}`);
     await expect(page.locator('h1')).toContainText('milmil');
     await assertNoFatalErrors(page);
   });
 }
 
 // ─── Landing → Docs navigation ───
-test('landing 開始使用 → docs (browser click)', async ({ page }) => {
-  await page.goto(`${BASE}/zh-HK`);
-  await page.getByText('開始使用').first().click();
+test('landing 開始用 → docs (browser click)', async ({ page }) => {
+  await page.goto(`/zh-HK`);
+  await page.getByText('開始用').first().click();
   await page.waitForURL('**/zh-HK/docs**', { timeout: 10000 });
   await assertPageLoaded(page);
 });
 
-test('landing 查看文檔 → installation (browser click)', async ({ page }) => {
-  await page.goto(`${BASE}/zh-HK`);
-  await page.getByText('查看文檔').first().click();
+test('landing 睇文檔 → installation (browser click)', async ({ page }) => {
+  await page.goto(`/zh-HK`);
+  await page.getByText('睇文檔').first().click();
   await page.waitForURL('**/docs/getting-started/installation**', { timeout: 10000 });
   await assertPageLoaded(page);
 });
@@ -64,7 +63,7 @@ test('landing 查看文檔 → installation (browser click)', async ({ page }) =
 // ─── Docs index per language ───
 for (const lang of LANGS) {
   test(`docs /${lang}/docs renders with sidebar`, async ({ page }) => {
-    await page.goto(`${BASE}/${lang}/docs`);
+    await page.goto(`/${lang}/docs`);
     await assertPageLoaded(page);
     // Sidebar must exist
     await expect(page.locator('aside')).toBeVisible({ timeout: 5000 });
@@ -75,7 +74,7 @@ for (const lang of LANGS) {
 for (const lang of LANGS) {
   for (const child of CHILD_PAGES) {
     test(`docs /${lang}/docs/${child} loads`, async ({ page }) => {
-      await page.goto(`${BASE}/${lang}/docs/${child}`);
+      await page.goto(`/${lang}/docs/${child}`);
       await assertPageLoaded(page);
       await expect(page.locator('aside')).toBeVisible({ timeout: 5000 });
     });
@@ -87,24 +86,18 @@ test('sidebar click navigates to child page', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', err => errors.push(err.message));
 
-  await page.goto(`${BASE}/zh-HK/docs`);
-  await page.waitForTimeout(2000);
+  // Start on a page inside a section so that section's links are already expanded —
+  // clicking folder toggles blindly hits the search dialog trigger, which also carries
+  // aria-expanded and opens a modal that swallows later clicks.
+  await page.goto('/zh-HK/docs/getting-started/installation');
 
-  // Expand first folder (Getting Started / 入門)
-  const gsBtn = page.locator('aside button[aria-expanded="false"]').first();
-  if (await gsBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await gsBtn.click();
-    await page.waitForTimeout(500);
-  }
-
-  // Click Installation (安裝) in sidebar
-  const link = page.locator('aside a[href*="installation"]').first();
+  const link = page.locator('aside a[href*="getting-started/docker"]').first();
   await expect(link).toBeVisible({ timeout: 5000 });
   const href = await link.getAttribute('href');
-  expect(href).toContain('/zh-HK/docs/getting-started/installation');
+  expect(href).toContain('/zh-HK/docs/getting-started/docker');
 
   await link.click();
-  await page.waitForURL('**/installation**', { timeout: 10000 });
+  await page.waitForURL('**/getting-started/docker', { timeout: 10000 });
   await assertPageLoaded(page);
 
   // No JS errors
@@ -114,20 +107,20 @@ test('sidebar click navigates to child page', async ({ page }) => {
 
 // ─── Features section renders ───
 test('landing features section', async ({ page }) => {
-  await page.goto(`${BASE}/zh-HK`);
+  await page.goto(`/zh-HK`);
   await expect(page.getByText('功能一覽')).toBeVisible();
 });
 
 // ─── Deploy section renders ───
 test('landing deploy section', async ({ page }) => {
-  await page.goto(`${BASE}/zh-HK`);
-  await expect(page.getByText('秒級部署')).toBeVisible();
+  await page.goto(`/zh-HK`);
+  await expect(page.getByText('秒速部署')).toBeVisible();
   await expect(page.getByText('docker compose up -d').first()).toBeVisible();
 });
 
 // ─── Integrations section ───
 test('landing integrations section', async ({ page }) => {
-  await page.goto(`${BASE}/zh-HK`);
+  await page.goto(`/zh-HK`);
   await expect(page.getByText('無縫整合')).toBeVisible();
   await expect(page.getByText('Bangumi', { exact: true })).toBeVisible();
   await expect(page.getByText('AniList', { exact: true })).toBeVisible();
@@ -135,6 +128,6 @@ test('landing integrations section', async ({ page }) => {
 
 // ─── Search API responds ───
 test('search API responds', async ({ page }) => {
-  const resp = await page.goto(`${BASE}/api/search?query=install&locale=zh-HK`);
+  const resp = await page.goto(`/api/search?query=install&locale=zh-HK`);
   expect(resp?.status()).toBe(200);
 });

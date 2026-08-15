@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const BASE = 'http://localhost:4000';
 
 const CHILD_PAGES = [
   'getting-started/installation',
@@ -32,7 +31,7 @@ const CHILD_PAGES = [
 test.describe('Docs Pages — Browser E2E', () => {
   // Test 1: Direct navigation to docs index
   test('zh-HK/docs loads with content and sidebar', async ({ page }) => {
-    await page.goto(`${BASE}/zh-HK/docs`);
+    await page.goto(`/zh-HK/docs`);
     // Wait for page to fully render
     await page.waitForLoadState('networkidle');
 
@@ -68,7 +67,7 @@ test.describe('Docs Pages — Browser E2E', () => {
         if (msg.type() === 'error') errors.push(msg.text());
       });
 
-      await page.goto(`${BASE}/zh-HK/docs/${childPage}`);
+      await page.goto(`/zh-HK/docs/${childPage}`);
       await page.waitForLoadState('networkidle');
 
       // Page should have h1
@@ -102,7 +101,7 @@ test.describe('Docs Pages — Browser E2E', () => {
     });
 
     // Start at docs index
-    await page.goto(`${BASE}/zh-HK/docs`);
+    await page.goto(`/zh-HK/docs`);
     await page.waitForLoadState('networkidle');
 
     // Find and click a sidebar link to a child page
@@ -141,12 +140,12 @@ test.describe('Docs Pages — Browser E2E', () => {
 
   // Test 4: Take screenshot for visual verification
   test('screenshot docs page', async ({ page }) => {
-    await page.goto(`${BASE}/zh-HK/docs`);
+    await page.goto(`/zh-HK/docs`);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await page.screenshot({ path: 'test-results/docs-index.png', fullPage: true });
 
-    await page.goto(`${BASE}/zh-HK/docs/getting-started/installation`);
+    await page.goto(`/zh-HK/docs/getting-started/installation`);
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
     await page.screenshot({ path: 'test-results/docs-child.png', fullPage: true });

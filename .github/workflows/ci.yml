@@ -104,7 +104,7 @@ jobs:
   docs:
     name: Docs
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
 
@@ -116,6 +116,30 @@ jobs:
         working-directory: docs-site
         run: bun install --frozen-lockfile
 
+      - name: Lint
+        working-directory: docs-site
+        run: bun run lint
+
+      - name: Typecheck
+        working-directory: docs-site
+        run: bun run types:check
+
       - name: Build docs site
         working-directory: docs-site
         run: bun run build
+
+      - name: Install Playwright browser
+        working-directory: docs-site
+        run: bunx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        working-directory: docs-site
+        run: bun run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-playwright-report
+          path: docs-site/test-results
+          retention-days: 7
