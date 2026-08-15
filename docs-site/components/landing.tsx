@@ -1,6 +1,5 @@
 'use client';
-import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react';
+import { useTranslations } from 'next-intl';
 import { motion } from 'motion/react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
@@ -12,14 +11,16 @@ import {
   Refresh01Icon,
 } from '@hugeicons/core-free-icons';
 
+// Titles and descriptions are looked up by key so this stays at module scope;
+// `useTranslations` is hook-bound and can only be called inside the component.
 const FEATURES = [
-  { icon: FolderLibraryIcon, title: msg`landing.f1`, desc: msg`landing.d1` },
-  { icon: PlayCircleIcon, title: msg`landing.f2`, desc: msg`landing.d2` },
-  { icon: SubtitleIcon, title: msg`landing.f3`, desc: msg`landing.d3` },
-  { icon: Download04Icon, title: msg`landing.f4`, desc: msg`landing.d4` },
-  { icon: DiscoverSquareIcon, title: msg`landing.f5`, desc: msg`landing.d5` },
-  { icon: Refresh01Icon, title: msg`landing.f6`, desc: msg`landing.d6` },
-];
+  { icon: FolderLibraryIcon, title: 'f1', desc: 'd1' },
+  { icon: PlayCircleIcon, title: 'f2', desc: 'd2' },
+  { icon: SubtitleIcon, title: 'f3', desc: 'd3' },
+  { icon: Download04Icon, title: 'f4', desc: 'd4' },
+  { icon: DiscoverSquareIcon, title: 'f5', desc: 'd5' },
+  { icon: Refresh01Icon, title: 'f6', desc: 'd6' },
+] as const;
 
 function BangumiLogo() {
   return (
@@ -117,7 +118,7 @@ const POSTERS = [
 ];
 
 export function LandingPage({ lang }: { lang: string }) {
-  const { i18n } = useLingui();
+  const t = useTranslations('Landing');
 
   return (
     <div className="bg-[--mm-bg] text-white/90">
@@ -141,17 +142,17 @@ export function LandingPage({ lang }: { lang: string }) {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }} className="relative z-10 text-center max-w-[720px] px-6">
           <h1 className="landing-title text-[80px] max-md:text-[48px] font-extrabold tracking-[-3px] leading-none mb-5 drop-shadow-[0_4px_24px_rgba(167,139,250,0.2)]">milmil</h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl text-white/65 mb-3.5 tracking-wide">
-            {i18n._(msg`landing.tagline`)}
+            {t('tagline')}
           </motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="text-[15px] text-white/[0.38] leading-[1.7] max-w-[520px] mx-auto mb-9">
-            {i18n._(msg`landing.desc`)}
+            {t('desc')}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex gap-3 justify-center flex-wrap">
             <a href={`/${lang}/docs`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(167,139,250,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(167,139,250,0.35)] transition-all">
-              {i18n._(msg`landing.getStarted`)}
+              {t('getStarted')}
             </a>
             <a href="https://github.com/milmil-dev/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
-              {i18n._(msg`landing.viewGithub`)}
+              {t('viewGithub')}
             </a>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mt-7 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-black/40 border border-white/[0.08] font-mono text-[13px] text-white/45 backdrop-blur-sm">
@@ -165,8 +166,8 @@ export function LandingPage({ lang }: { lang: string }) {
       <section className="relative py-24 px-6 max-w-[1080px] mx-auto">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-px bg-gradient-to-r from-transparent via-[--mm-accent]/30 to-transparent" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-          <h2 className="text-4xl font-bold tracking-tight mb-3">{i18n._(msg`landing.featuresTitle`)}</h2>
-          <p className="text-[15px] text-white/40 max-w-[480px] mx-auto">{i18n._(msg`landing.featuresDesc`)}</p>
+          <h2 className="text-4xl font-bold tracking-tight mb-3">{t('featuresTitle')}</h2>
+          <p className="text-[15px] text-white/40 max-w-[480px] mx-auto">{t('featuresDesc')}</p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {FEATURES.map((f, i) => (
@@ -175,8 +176,8 @@ export function LandingPage({ lang }: { lang: string }) {
               <div className="w-11 h-11 rounded-xl bg-[--mm-accent]/[0.08] border border-[--mm-accent]/[0.12] flex items-center justify-center mb-5">
                 <HugeiconsIcon icon={f.icon} size={20} strokeWidth={1.5} className="text-[--mm-accent]" />
               </div>
-              <h3 className="text-base font-semibold text-[#f0f0f0] mb-2.5">{i18n._(f.title)}</h3>
-              <p className="text-[13px] text-white/[0.38] leading-relaxed">{i18n._(f.desc)}</p>
+              <h3 className="text-base font-semibold text-[#f0f0f0] mb-2.5">{t(f.title)}</h3>
+              <p className="text-[13px] text-white/[0.38] leading-relaxed">{t(f.desc)}</p>
             </motion.div>
           ))}
         </div>
@@ -186,13 +187,13 @@ export function LandingPage({ lang }: { lang: string }) {
       <section className="relative py-20 px-6 max-w-[1100px] mx-auto">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-          <h2 className="text-4xl font-bold tracking-tight mb-3">{i18n._(msg`landing.screenshotsTitle`)}</h2>
-          <p className="text-[15px] text-white/40">{i18n._(msg`landing.screenshotsDesc`)}</p>
+          <h2 className="text-4xl font-bold tracking-tight mb-3">{t('screenshotsTitle')}</h2>
+          <p className="text-[15px] text-white/40">{t('screenshotsDesc')}</p>
         </motion.div>
         <div className="flex gap-6 max-md:flex-col">
-          <SSFrame title={i18n._(msg`landing.home`)} caption={i18n._(msg`landing.homeCaption`)} delay={0}><MockHome /></SSFrame>
-          <SSFrame title={i18n._(msg`landing.detail`)} caption={i18n._(msg`landing.detailCaption`)} delay={0.1}><MockDetail /></SSFrame>
-          <SSFrame title={i18n._(msg`landing.player`)} caption={i18n._(msg`landing.playerCaption`)} delay={0.2}><MockPlayer /></SSFrame>
+          <SSFrame title={t('home')} caption={t('homeCaption')} delay={0}><MockHome /></SSFrame>
+          <SSFrame title={t('detail')} caption={t('detailCaption')} delay={0.1}><MockDetail /></SSFrame>
+          <SSFrame title={t('player')} caption={t('playerCaption')} delay={0.2}><MockPlayer /></SSFrame>
         </div>
       </section>
 
@@ -200,8 +201,8 @@ export function LandingPage({ lang }: { lang: string }) {
       <section className="relative py-20 px-6 overflow-hidden bg-gradient-to-b from-[--mm-bg] via-[#0c0a12] to-[--mm-bg]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.03)_0%,transparent_70%)] pointer-events-none" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative z-10 max-w-[680px] mx-auto text-center">
-          <h2 className="text-[32px] font-bold mb-3">{i18n._(msg`landing.deployTitle`)}</h2>
-          <p className="text-[15px] text-white/40 mb-10">{i18n._(msg`landing.deployDesc`)}</p>
+          <h2 className="text-[32px] font-bold mb-3">{t('deployTitle')}</h2>
+          <p className="text-[15px] text-white/40 mb-10">{t('deployDesc')}</p>
           <div className="rounded-[14px] overflow-hidden text-left border border-white/[0.08] bg-[#111] shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
             <div className="h-[38px] bg-[#1a1a1a] flex items-center px-3.5 gap-1.5 border-b border-white/5">
               <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" /><div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" /><div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
@@ -224,8 +225,8 @@ export function LandingPage({ lang }: { lang: string }) {
       <section className="relative py-20 px-6 max-w-[900px] mx-auto">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="text-[32px] font-bold mb-3">{i18n._(msg`landing.integrationsTitle`)}</h2>
-          <p className="text-[15px] text-white/40">{i18n._(msg`landing.integrationsDesc`)}</p>
+          <h2 className="text-[32px] font-bold mb-3">{t('integrationsTitle')}</h2>
+          <p className="text-[15px] text-white/40">{t('integrationsDesc')}</p>
         </motion.div>
         <div className="flex justify-center items-center gap-12 flex-wrap">
           {INTEGRATIONS.map((int, i) => (
@@ -244,14 +245,14 @@ export function LandingPage({ lang }: { lang: string }) {
       <section className="relative py-24 px-6 text-center">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.03)_0%,transparent_70%)] pointer-events-none" />
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="text-4xl font-bold mb-3.5">{i18n._(msg`landing.ctaTitle`)}</h2>
-          <p className="text-[15px] text-white/40 max-w-[420px] mx-auto mb-8">{i18n._(msg`landing.ctaDesc`)}</p>
+          <h2 className="text-4xl font-bold mb-3.5">{t('ctaTitle')}</h2>
+          <p className="text-[15px] text-white/40 max-w-[420px] mx-auto mb-8">{t('ctaDesc')}</p>
           <div className="flex gap-3 justify-center">
             <a href={`/${lang}/docs/getting-started/installation`} className="inline-flex px-8 py-3.5 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(167,139,250,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(167,139,250,0.35)] transition-all">
-              {i18n._(msg`landing.readDocs`)}
+              {t('readDocs')}
             </a>
             <a href="https://github.com/milmil-dev/milmil" className="inline-flex px-7 py-3.5 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
-              {i18n._(msg`landing.viewGithub`)}
+              {t('viewGithub')}
             </a>
           </div>
         </motion.div>
