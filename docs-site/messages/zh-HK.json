@@ -1,0 +1,41 @@
+{
+  "Landing": {
+    "ctaDesc": "幾分鐘就搞掂部署，自己掌控動漫收藏。",
+    "ctaTitle": "準備好未？",
+    "d1": "支援多種儲存（本機、SMB、SFTP、WebDAV、40+ 雲端），自動掃描同埋元資料配對。",
+    "d2": "直播、MKV 轉 MP4 封裝、FFmpeg HLS 自適應轉碼。",
+    "d3": "彈彈Play 即時彈幕疊加。",
+    "d4": "內置種子客戶端、RSS 訂閱、聚合種子搜尋。",
+    "d5": "季度日曆、熱門排行、全文搜尋同類型篩選。",
+    "d6": "睇番進度同收藏狀態自動同步 Bangumi 同 AniList。",
+    "deployDesc": "一條指令搞掂。PostgreSQL、Redis、API 同前端全部包埋。",
+    "deployTitle": "秒速部署",
+    "desc": "管理、探索同串流你嘅動漫收藏，支援彈幕、自動下載同多來源元資料配對。",
+    "detail": "動漫詳情",
+    "detailCaption": "元資料、集數、類型、評分，撳一下就播。",
+    "f1": "媒體庫管理",
+    "f2": "串流播放",
+    "f3": "彈幕",
+    "f4": "自動下載",
+    "f5": "探索",
+    "f6": "同步追蹤",
+    "featuresDesc": "為動漫迷打造嘅完整媒體伺服器。",
+    "featuresTitle": "功能一覽",
+    "getStarted": "開始用",
+    "home": "主頁",
+    "homeCaption": "熱門輪播、繼續睇同今日更新。",
+    "integrationsDesc": "駁埋你已經用緊嘅服務。",
+    "integrationsTitle": "無縫整合",
+    "player": "播放器 + 彈幕",
+    "playerCaption": "即時彈幕串流，有字幕同進度追蹤。",
+    "readDocs": "睇文檔",
+    "screenshotsDesc": "參考咗最靚嘅媒體伺服器設計嘅精美介面。",
+    "screenshotsTitle": "產品預覽",
+    "tagline": "自架動漫媒體伺服器",
+    "viewGithub": "睇 GitHub"
+  },
+  "Nav": {
+    "docs": "文檔",
+    "github": "GitHub"
+  }
+}
