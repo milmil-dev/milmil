@@ -1,1 +1,32 @@
-{"title":"API"}
+{
+  "title": "API 參考",
+  "pages": [
+    "system",
+    "auth",
+    "api-tokens",
+    "user-preferences",
+    "libraries",
+    "library-rename",
+    "media-files",
+    "anime",
+    "episodes",
+    "discover",
+    "search",
+    "collection",
+    "watch-progress",
+    "streaming",
+    "subtitles",
+    "segments",
+    "danmaku",
+    "external-danmaku",
+    "downloads",
+    "download-rules",
+    "torrent-search",
+    "rss-feeds",
+    "integrations",
+    "sync",
+    "notifications",
+    "notification-settings",
+    "audit"
+  ]
+}
