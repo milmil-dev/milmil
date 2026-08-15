@@ -4,3 +4,6 @@ dist
 .source
 *.tsbuildinfo
 test-results
+
+# Generated from api/internal/api/openapi.json by scripts/sync-openapi.mjs
+/lib/openapi.generated.json
