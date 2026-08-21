@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.17](https://github.com/milmil-dev/milmil/compare/v0.1.16...v0.1.17) (2026-08-21)
+
+
+### Features
+
+* **docs-site:** add sitemap, robots, llms.txt, OG images and markdown negotiation ([80ffbf4](https://github.com/milmil-dev/milmil/commit/80ffbf4a44a7ce9dc65d2206a6029d271a250506))
+* **docs-site:** migrate i18n from Lingui to next-intl ([450f72c](https://github.com/milmil-dev/milmil/commit/450f72c50d2ecbf53fc016b9821cdd42a4079f6a))
+* **docs-site:** upgrade to Next 16.3 and Fumadocs 16.14, generate API reference from the canonical spec ([61f1d2b](https://github.com/milmil-dev/milmil/commit/61f1d2bb1dead3d47e0cd5f8e8246aec313b4797))
+
+
+### Bug Fixes
+
+* **docs-site:** drop unused response binding in root-redirect e2e test ([ef6b02b](https://github.com/milmil-dev/milmil/commit/ef6b02b1427a526b54331d5efdeef25e0a06e53e))
+
 ## [0.1.16](https://github.com/milmil-dev/milmil/compare/v0.1.15...v0.1.16) (2026-08-13)
 
 
