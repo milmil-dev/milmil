@@ -187,3 +187,22 @@ bun run i18n:compile     # Compile translations
 - **E2E**: Playwright in `e2e/*.spec.ts`
 - **Test utils**: `src/test/test-utils.tsx` provides `render()` with all providers
 - **Setup**: `src/test/setup.ts` mocks `matchMedia`
+
+## Unused-Code Checks (knip)
+
+`bun run knip` gates CI, reporting unreachable files, exports and
+dependencies. Two things it cannot see, so check them by hand before deleting
+a dependency it flags:
+
+- **CSS imports.** `src/styles/global.css` does `@import 'shadcn/tailwind.css'`
+  and `theme.css` imports the two `@fontsource-variable` packages. knip does
+  not follow imports out of CSS, so those packages look unused and are listed
+  in `ignoreDependencies`. Grepping `from '<pkg>'` will not find them —
+  `grep -r <pkg> src/styles` will.
+- **Directory imports.** `import { Disposables } from '../shared'` resolves to
+  `src/plugins/shared/index.ts`. A barrel can look dead while being the only
+  thing consumers import.
+
+`src/components/ui/**` and `src/lib/get-strict-context.tsx` are listed as
+entry points: they are public API by intent (vendored shadcn primitives, and a
+pattern this document recommends), so their exports are not "unused".

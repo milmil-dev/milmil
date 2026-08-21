@@ -13,7 +13,8 @@
     "@fontsource-variable/.*",
     "@tailwindcss/typography",
     "tailwindcss",
-    "tw-animate-css"
+    "tw-animate-css",
+    "shadcn"
   ],
   "ignoreExportsUsedInFile": true
 }
