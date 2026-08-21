@@ -530,7 +530,7 @@
       },
       "post": {
         "summary": "Create a new API token",
-        "description": "Creates a named API token. The full token value is returned **only once** in this response — store it securely.",
+        "description": "Creates a named API token. The full token value is returned **only once** in this response \u2014 store it securely.",
         "operationId": "createApiToken",
         "tags": [
           "API Tokens"
@@ -1084,7 +1084,7 @@
                   "properties": {
                     "token": {
                       "type": "string",
-                      "description": "API token (mlml_ prefix). Store securely — shown only once.",
+                      "description": "API token (mlml_ prefix). Store securely \u2014 shown only once.",
                       "example": "mlml_abc123xyz"
                     },
                     "user": {
@@ -1153,7 +1153,7 @@
                   "properties": {
                     "token": {
                       "type": "string",
-                      "description": "API token (mlml_ prefix). Store securely — shown only once.",
+                      "description": "API token (mlml_ prefix). Store securely \u2014 shown only once.",
                       "example": "mlml_abc123xyz"
                     },
                     "user": {
@@ -1314,7 +1314,7 @@
         },
         "responses": {
           "201": {
-            "description": "User created — returns token + user"
+            "description": "User created \u2014 returns token + user"
           },
           "400": {
             "description": "Invalid input"
@@ -1801,7 +1801,7 @@
     "/api/v1/danmaku/external/parts": {
       "get": {
         "summary": "List sub-pages (parts) for an external video",
-        "description": "Multi-part videos (e.g. Bilibili 分P) return one VideoPart per part. Single-part videos return a slice of length 1.",
+        "description": "Multi-part videos (e.g. Bilibili \u5206P) return one VideoPart per part. Single-part videos return a slice of length 1.",
         "operationId": "getExternalDanmakuParts",
         "tags": [
           "External Danmaku"
@@ -3305,6 +3305,65 @@
         }
       }
     },
+    "/api/v1/integrations/tmdb/test": {
+      "post": {
+        "summary": "Test TMDB credentials",
+        "description": "Always responds 200; `ok` reports whether the credentials worked.",
+        "operationId": "testTMDBConnection",
+        "tags": [
+          "Integrations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "api_key": {
+                    "type": "string"
+                  },
+                  "access_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          }
+        }
+      }
+    },
     "/api/v1/integrations/trakt": {
       "delete": {
         "summary": "Disconnect Trakt",
@@ -3397,7 +3456,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Approved — tokens persisted, initial import enqueued",
+            "description": "Approved \u2014 tokens persisted, initial import enqueued",
             "content": {
               "application/json": {
                 "schema": {
@@ -4029,7 +4088,7 @@
     "/api/v1/libraries/{id}/duplicates/cleanup": {
       "post": {
         "summary": "Delete every non-preferred duplicate file in the library",
-        "description": "Iterates duplicate episodes and deletes every file that isn't the preferred copy. Episodes with no preferred copy are skipped (no rank → nothing to keep). Returns counts and reclaimed bytes.",
+        "description": "Iterates duplicate episodes and deletes every file that isn't the preferred copy. Episodes with no preferred copy are skipped (no rank \u2192 nothing to keep). Returns counts and reclaimed bytes.",
         "operationId": "cleanupLibraryDuplicates",
         "tags": [
           "Libraries"
@@ -4787,7 +4846,7 @@
     "/api/v1/media-files/{id}": {
       "delete": {
         "summary": "Hard-delete a media file (disk + DB)",
-        "description": "Removes the file from the underlying storage provider and deletes the `media_files` row. Use cautiously — there is no undo.",
+        "description": "Removes the file from the underlying storage provider and deletes the `media_files` row. Use cautiously \u2014 there is no undo.",
         "operationId": "deleteMediaFile",
         "tags": [
           "Media Files"
@@ -6216,6 +6275,72 @@
         }
       }
     },
+    "/api/v1/settings/notifications/test-bot": {
+      "post": {
+        "summary": "Test a chat bot's credentials",
+        "description": "Always responds 200; `success` reports whether the bot token worked.",
+        "operationId": "testNotificationBot",
+        "tags": [
+          "Notification Settings"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "platform": {
+                    "type": "string",
+                    "enum": [
+                      "telegram",
+                      "discord"
+                    ]
+                  }
+                },
+                "required": [
+                  "platform"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "bot_username": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported or missing platform"
+          }
+        }
+      }
+    },
     "/api/v1/settings/reset": {
       "post": {
         "summary": "Reset all settings to defaults",
@@ -6464,6 +6589,84 @@
                 "schema": {
                   "type": "string",
                   "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found"
+          }
+        }
+      }
+    },
+    "/api/v1/stream/{fileId}/sprite.jpg": {
+      "get": {
+        "summary": "Get the seek-preview sprite sheet",
+        "description": "Served without authentication: the sprite is referenced by the authenticated WebVTT track and is addressed by an unguessable file UUID. Request the thumbnails track first \u2014 the sprite is generated there.",
+        "operationId": "getThumbnailSprite",
+        "tags": [
+          "Streaming"
+        ],
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JPEG sprite sheet",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sprite not generated yet"
+          }
+        }
+      }
+    },
+    "/api/v1/stream/{fileId}/thumbnails": {
+      "get": {
+        "summary": "Get the seek-preview thumbnail track",
+        "description": "WebVTT cues pointing into the sprite sheet served at ../sprite.jpg. Generating it on first request can take a moment.",
+        "operationId": "getThumbnailVTT",
+        "tags": [
+          "Streaming"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "WebVTT track",
+            "content": {
+              "text/vtt": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -6934,6 +7137,62 @@
         "responses": {
           "204": {
             "description": "Cache cleared"
+          }
+        }
+      }
+    },
+    "/api/v1/system/update-check": {
+      "get": {
+        "summary": "Check for a newer milmil release",
+        "description": "Results are cached; `stale` reports that the cached answer could not be refreshed.",
+        "operationId": "getUpdateCheck",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "current": {
+                      "type": "string"
+                    },
+                    "latest": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "has_update": {
+                      "type": "boolean"
+                    },
+                    "release_url": {
+                      "type": "string"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "stale": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "current",
+                    "has_update",
+                    "stale"
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -7418,6 +7677,49 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/ws/ticket": {
+      "get": {
+        "summary": "Issue a single-use WebSocket ticket",
+        "description": "A WebSocket handshake cannot carry an Authorization header, so clients exchange their API token for a short-lived, single-use ticket and pass it as ?ticket= when opening /ws.",
+        "operationId": "createWebSocketTicket",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ticket": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer",
+                      "description": "Seconds until the ticket expires"
+                    }
+                  },
+                  "required": [
+                    "ticket",
+                    "expires_in"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token"
           }
         }
       }
