@@ -22,9 +22,9 @@ type preferenceResponse struct {
 }
 
 type exportPreferencesResponse struct {
-	Version     int                    `json:"version"`
-	Preferences []exportedPreference   `json:"preferences"`
-	ExportedAt  string                 `json:"exported_at"`
+	Version     int                  `json:"version"`
+	Preferences []exportedPreference `json:"preferences"`
+	ExportedAt  string               `json:"exported_at"`
 }
 
 type exportedPreference struct {

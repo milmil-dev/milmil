@@ -19,9 +19,9 @@ func RecentHandler(svc *Services) bot.CommandHandler {
 		cutoff := time.Now().Add(-48 * time.Hour)
 
 		var recent []struct {
-			Name      string
-			Size      int64
-			BangumiID int64
+			Name       string
+			Size       int64
+			BangumiID  int64
 			HasBangumi bool
 		}
 		for _, dl := range allCompleted {
@@ -34,9 +34,9 @@ func RecentHandler(svc *Services) bot.CommandHandler {
 			}
 			if t.After(cutoff) {
 				entry := struct {
-					Name      string
-					Size      int64
-					BangumiID int64
+					Name       string
+					Size       int64
+					BangumiID  int64
 					HasBangumi bool
 				}{
 					Name: dl.Name,

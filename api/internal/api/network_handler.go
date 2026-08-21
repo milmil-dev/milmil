@@ -30,9 +30,9 @@ func (h *handler) handleDiscoverNetwork(c *echo.Context) error {
 
 	// Run mDNS and port scan in parallel, merge results
 	var (
-		mu        sync.Mutex
-		hostMap   = make(map[string]*discoveredHost) // keyed by IP
-		wgPhase1  sync.WaitGroup
+		mu       sync.Mutex
+		hostMap  = make(map[string]*discoveredHost) // keyed by IP
+		wgPhase1 sync.WaitGroup
 	)
 
 	// Phase 1a: mDNS/Bonjour discovery (fast, finds macOS/Linux hosts)

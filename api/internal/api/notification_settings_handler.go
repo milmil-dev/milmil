@@ -165,7 +165,7 @@ func (h *handler) handleTestBot(c *echo.Context) error {
 		}
 		defer resp.Body.Close()
 		var result struct {
-			OK          bool `json:"ok"`
+			OK          bool   `json:"ok"`
 			Description string `json:"description"`
 			Result      struct {
 				Username string `json:"username"`

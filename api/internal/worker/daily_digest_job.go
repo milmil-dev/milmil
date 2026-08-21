@@ -188,4 +188,3 @@ func parseHHMM(s string) (hour, min int, ok bool) {
 	}
 	return hour, min, true
 }
-

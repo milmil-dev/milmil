@@ -16,13 +16,13 @@ import (
 // columns ride as either *string or {Valid bool, ...} — sqlc's
 // sql.NullString marshals as the latter, so we decode both forms.
 type auditEntry struct {
-	ID         string `json:"id"`
-	UserID     string `json:"user_id"`
-	TokenID    nullString `json:"token_id"`
-	AgentLabel nullString `json:"agent_label"`
-	ActionType string `json:"action_type"`
-	TargetType nullString `json:"target_type"`
-	TargetID   nullString `json:"target_id"`
+	ID         string      `json:"id"`
+	UserID     string      `json:"user_id"`
+	TokenID    nullString  `json:"token_id"`
+	AgentLabel nullString  `json:"agent_label"`
+	ActionType string      `json:"action_type"`
+	TargetType nullString  `json:"target_type"`
+	TargetID   nullString  `json:"target_id"`
 	Confidence nullFloat64 `json:"confidence"`
 	ParentID   nullString  `json:"parent_id"`
 	DryRun     int64       `json:"dry_run"`

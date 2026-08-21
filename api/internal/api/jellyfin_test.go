@@ -1,9 +1,9 @@
 package api_test
 
 import (
-	"github.com/milmil/api/internal/jellyfin"
 	"encoding/json"
 	"fmt"
+	"github.com/milmil/api/internal/jellyfin"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -18,7 +18,9 @@ func jellyfinAuthHeader(token string) string {
 }
 
 // getJellyfinToken creates a milmil user and authenticates via Jellyfin to return an access token.
-func getJellyfinToken(t *testing.T, e interface{ ServeHTTP(http.ResponseWriter, *http.Request) }) string {
+func getJellyfinToken(t *testing.T, e interface {
+	ServeHTTP(http.ResponseWriter, *http.Request)
+}) string {
 	t.Helper()
 
 	// Create user via milmil setup

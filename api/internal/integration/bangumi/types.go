@@ -1,15 +1,15 @@
 package bangumi
 
 type Subject struct {
-	ID      int     `json:"id"`
-	Name    string  `json:"name"`
-	NameCN  string  `json:"name_cn"`
-	Summary string  `json:"summary"`
-	Images  Images  `json:"images"`
-	AirDate string  `json:"date"`
-	Eps     int     `json:"eps"`
-	Tags    []Tag   `json:"tags"`
-	Rating  Rating  `json:"rating"`
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	NameCN  string `json:"name_cn"`
+	Summary string `json:"summary"`
+	Images  Images `json:"images"`
+	AirDate string `json:"date"`
+	Eps     int    `json:"eps"`
+	Tags    []Tag  `json:"tags"`
+	Rating  Rating `json:"rating"`
 }
 
 type Images struct {
@@ -71,9 +71,9 @@ type SubjectComment struct {
 }
 
 type CommentUser struct {
-	ID       int          `json:"id"`
-	Username string       `json:"username"`
-	Nickname string       `json:"nickname"`
+	ID       int           `json:"id"`
+	Username string        `json:"username"`
+	Nickname string        `json:"nickname"`
 	Avatar   CommentAvatar `json:"avatar"`
 }
 
