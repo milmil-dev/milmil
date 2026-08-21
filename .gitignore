@@ -138,3 +138,8 @@ api/server
 /web/test-plan-*.md
 /web/playwright-report/
 /web/test-results/
+
+# Local aria2 runtime state (contains rpc-secret, session and DHT data)
+/aria2-config/
+# Local build cache directory
+/.build/
