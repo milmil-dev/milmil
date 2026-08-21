@@ -13,7 +13,7 @@ concurrency:
 # Pinned tool versions (mirror mise.toml).
 env:
   GO_VERSION: "1.26.1"
-  BUN_VERSION: "1.3.11"
+  BUN_VERSION: "1.4.0"
 
 jobs:
   go:
