@@ -14,12 +14,13 @@ concurrency:
 env:
   GO_VERSION: "1.26.1"
   BUN_VERSION: "1.4.0"
+  GOLANGCI_LINT_VERSION: "v2.13.0"
 
 jobs:
   go:
     name: Go
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
 
@@ -32,9 +33,9 @@ jobs:
         working-directory: api
         run: |
           set -euo pipefail
-          unformatted=$(gofmt -l .)
+          unformatted=$(gofmt -s -l .)
           if [ -n "$unformatted" ]; then
-            echo "::warning::Files need gofmt:"
+            echo "::error::Files need 'gofmt -s -w':"
             echo "$unformatted"
             exit 1
           fi
@@ -45,23 +46,20 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.mod go.sum
 
-      - name: go vet
-        working-directory: api
-        run: go vet ./...
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          working-directory: api
 
-      # Informational: the race detector itself is clean (a full -race run
-      # reports 0 data races), but it slows execution several-fold, which
-      # trips the wall-clock assertion in anidb's TestTitlesPerfWithLargeIndex
-      # ("must be <1s"). Flip continue-on-error to false once that test
-      # relaxes or skips its threshold under -race.
-      - name: go test (race + cover, informational)
-        continue-on-error: true
-        working-directory: api
-        run: go test -race -cover ./...
-
+      # Fast feedback before the much slower instrumented run below.
       - name: go test
         working-directory: api
         run: go test ./...
+
+      - name: go test (race + cover)
+        working-directory: api
+        run: go test -race -cover ./...
 
       - name: go build
         working-directory: api
@@ -70,7 +68,7 @@ jobs:
   web:
     name: Web
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
 
@@ -82,15 +80,38 @@ jobs:
         working-directory: web
         run: bun install --frozen-lockfile
 
-      # Full quality gate: typecheck + lint + format:check + test:run.
-      # Covers linting and unit tests, so they are not run separately.
+      # typecheck + lint + format:check + test:run
       - name: check:all
         working-directory: web
         run: bun run check:all
 
+      - name: Unused files, exports and dependencies
+        working-directory: web
+        run: bun run knip
+
       - name: Production build
         working-directory: web
         run: bun run i18n:compile && bun run build
+
+      - name: Install Playwright browser
+        working-directory: web
+        run: bunx playwright install --with-deps chromium
+
+      # Every spec stubs the API with page.route; the one that needs a live
+      # backend is gated behind MILMIL_E2E_LIVE and stays out of CI.
+      - name: End-to-end tests
+        working-directory: web
+        run: bunx playwright test --reporter=line
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-playwright-report
+          path: |
+            web/playwright-report
+            web/test-results
+          retention-days: 7
 
   docs:
     name: Docs
