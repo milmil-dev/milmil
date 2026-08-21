@@ -37,6 +37,7 @@ type handler struct {
 	resolver        *resolver.Resolver
 	downloader      downloader.Manager
 	wsHub           *ws.Hub
+	wsTickets       *ws.TicketStore
 	tmdbMu          sync.RWMutex
 	tmdb            tmdb.Client
 	torrentRegistry *torrent.Registry
@@ -68,6 +69,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		resolver:        resolverSvc,
 		downloader:      dlManager,
 		wsHub:           wsHub,
+		wsTickets:       ws.NewTicketStore(),
 		tmdb:            tmdbClient,
 		torrentRegistry: torrentReg,
 		notifier:        notifier,
@@ -77,7 +79,9 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		encryptionKey:   cfg.EncryptionKey,
 	}
 
-	// WebSocket (no auth — WS auth is complex, keep it simple)
+	// WebSocket. The handshake cannot carry an Authorization header, so the
+	// client first calls GET /api/v1/ws/ticket (authenticated) and redeems the
+	// single-use ticket it gets back here.
 	e.GET("/ws", h.handleWebSocket)
 
 	// System routes
@@ -87,12 +91,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 
 	v1 := e.Group("/api/v1")
 
-	// Auth — public
+	// Auth — public. The three endpoints that verify a credential are rate
+	// limited per IP on top of the global limiter; /status is not, since the
+	// frontend polls it and it reveals nothing.
 	authGroup := v1.Group("/auth")
 	authGroup.GET("/status", h.handleAuthStatus)
-	authGroup.POST("/setup", h.handleAuthSetup)
-	authGroup.POST("/login", h.handleAuthLogin)
-	authGroup.POST("/login/2fa", h.handleAuthLogin2FA)
+	authGroup.POST("/setup", h.handleAuthSetup, authRateLimiter())
+	authGroup.POST("/login", h.handleAuthLogin, authRateLimiter())
+	authGroup.POST("/login/2fa", h.handleAuthLogin2FA, authRateLimiter())
 
 	// Setup wizard status — public. Front-end loaders call this before
 	// login to decide whether to show admin signup, library creation, or
@@ -116,6 +122,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	auditGroup.GET("", h.handleListAudit)
 	auditGroup.GET("/:id", h.handleGetAudit)
 	auditGroup.POST("/undo", h.handleUndoAudit)
+
+	// WebSocket ticket — protected. Exchanges the caller's API token for a
+	// single-use ticket that authorises one /ws upgrade.
+	v1.GET("/ws/ticket", h.handleWSTicket, authMiddleware(h.queries))
 
 	// CLI/agent supporting endpoints — read-only, no audit middleware
 	v1.GET("/search/anime", h.handleSearchAnime, authMiddleware(h.queries))
@@ -158,8 +168,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.POST("/:id/rename/undo", h.handleRenameUndo)
 	libGroup.GET("/:id/rename/history", h.handleRenameHistory)
 
-	// Rclone remotes — public (used during library setup to pick OAuth remotes)
-	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
+	// Rclone remotes — protected. Listing configured remotes exposes the
+	// names of the operator's cloud accounts, so it stays behind auth even
+	// though the library setup wizard is the only caller.
+	v1.GET("/rclone/remotes", h.handleListRcloneRemotes, authMiddleware(h.queries))
 
 	// Media files — protected
 	mediaGroup := v1.Group("/media-files", authMiddleware(h.queries), auditMiddleware(h.queries))
