@@ -65,9 +65,9 @@ func buildEmbed(resp *bot.BotResponse) *discordgo.MessageEmbed {
 	if len(resp.List) > 0 {
 		var sb strings.Builder
 		for i, item := range resp.List {
-			sb.WriteString(fmt.Sprintf("**%d.** %s", i+1, item.Title))
+			fmt.Fprintf(&sb, "**%d.** %s", i+1, item.Title)
 			if item.Subtitle != "" {
-				sb.WriteString(fmt.Sprintf("\n%s", item.Subtitle))
+				fmt.Fprintf(&sb, "\n%s", item.Subtitle)
 			}
 			sb.WriteString("\n")
 		}

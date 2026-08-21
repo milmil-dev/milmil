@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -77,10 +76,4 @@ func extractSubGroup(title string) string {
 		return ""
 	}
 	return title[1:end]
-}
-
-// parseNyaaDate parses Nyaa's RFC2822-style date format.
-func parseNyaaDate(s string) time.Time {
-	t, _ := time.Parse(time.RFC1123Z, s)
-	return t
 }
