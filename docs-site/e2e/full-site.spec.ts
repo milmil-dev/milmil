@@ -31,7 +31,7 @@ async function assertPageLoaded(page: Page) {
 
 // ─── Root redirect ───
 test('root / redirects to /en', async ({ page }) => {
-  const resp = await page.goto('/');
+  await page.goto('/');
   await page.waitForURL('**/en');
   expect(page.url()).toContain('/en');
 });
