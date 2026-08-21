@@ -6,13 +6,6 @@ export function hashName(name: string): number {
   return Math.abs(h);
 }
 
-export function libraryGradient(name: string): string {
-  const h = hashName(name);
-  const h1 = h % 360;
-  const h2 = (h1 + 55 + ((h >> 8) % 50)) % 360;
-  return `linear-gradient(135deg, oklch(32% 0.18 ${h1}), oklch(16% 0.12 ${h2}))`;
-}
-
 export function animeGradient(name: string): string {
   const h = hashName(name);
   const h1 = h % 360;

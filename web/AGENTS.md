@@ -28,10 +28,10 @@ milmil web frontend — the React SPA that talks to the milmil Go API. Built wit
 | Icons | Hugeicons (`@hugeicons/react` + `@hugeicons/core-free-icons`) |
 | State | Zustand v5 |
 | Data Fetching | TanStack Query v5 |
-| Forms | TanStack Form + Zod + `@tanstack/zod-form-adapter` |
+| Forms | TanStack Form |
 | i18n | Lingui v5 |
 | Animation | Motion |
-| Utilities | es-toolkit, clsx, cva, tailwind-merge |
+| Utilities | clsx, cva, tailwind-merge |
 | PWA | Serwist (`@serwist/vite`) |
 | Linting / Formatting | Vite+ (`vp lint` = Oxlint, `vp fmt` = Oxfmt; configured in the `lint`/`fmt` blocks of `vite.config.ts`) |
 | Testing | Vitest (bundled with Vite+; import from `vite-plus/test`) + Testing Library + Playwright |

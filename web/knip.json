@@ -1,15 +1,19 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/main.tsx", "vite.config.ts"],
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/sw.ts",
+    "lingui.config.ts",
+    "e2e/**/*.spec.ts",
+    "src/components/ui/**",
+    "src/lib/get-strict-context.tsx"
+  ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["src/components/ui/**", "src/test/**", "**/index.ts"],
+  "ignore": ["src/test/**", "src/locales/**"],
   "ignoreDependencies": [
-    "@radix-ui/*",
+    "@fontsource-variable/.*",
+    "@tailwindcss/typography",
     "tailwindcss",
-    "tw-animate-css",
-    "@testing-library/*",
-    "babel-plugin-react-compiler",
-    "@dotenvx/dotenvx"
+    "tw-animate-css"
   ],
   "ignoreExportsUsedInFile": true
 }
