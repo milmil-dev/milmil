@@ -187,6 +187,13 @@ bun run i18n:compile     # Compile translations
 - **E2E**: Playwright in `e2e/*.spec.ts`
 - **Test utils**: `src/test/test-utils.tsx` provides `render()` with all providers
 - **Setup**: `src/test/setup.ts` mocks `matchMedia`
+- **E2E waits**: the specs contain ~110 fixed `page.waitForTimeout(...)` sleeps.
+  They are timing bombs — on a cold Vite the route is still compiling when the
+  budget expires — and CI runs with `retries: 2` to absorb that. When you touch
+  a spec, replace the sleeps you pass with `await expect(locator).toBeVisible()`
+  and let Playwright wait on state instead of the clock.
+- **`builtin-torrent.spec.ts` needs a live backend** on `:8080` with hardcoded
+  local credentials, so it is excluded unless `MILMIL_E2E_LIVE=1` is set.
 
 ## Unused-Code Checks (knip)
 

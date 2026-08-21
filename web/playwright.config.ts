@@ -8,7 +8,13 @@ export default defineConfig({
   // with page.route and needs nothing but the dev server.
   testIgnore: process.env.MILMIL_E2E_LIVE ? [] : ['**/builtin-torrent.spec.ts'],
   fullyParallel: true,
-  retries: 0,
+  // The specs lean heavily on fixed waitForTimeout sleeps (80 in
+  // auto-download.spec.ts alone) rather than waiting on state. On a CI runner
+  // Vite compiles each route on first request, so those budgets occasionally
+  // expire before the page is ready. Retries absorb that cold-start variance;
+  // a test that only passes on a retry is still reported as flaky, so this
+  // hides nothing. Removing the sleeps is the real fix.
+  retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'html',
   use: {
