@@ -355,6 +355,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	notifSettingsGroup.GET("", h.handleGetNotificationSettings)
 	notifSettingsGroup.PUT("", h.handleUpdateNotificationSettings)
 	notifSettingsGroup.POST("/test", h.handleTestNotification)
+	notifSettingsGroup.POST("/test-bot", h.handleTestBot)
 	notifSettingsGroup.GET("/status", h.handleNotificationProviderStatus)
 
 	// System — protected
