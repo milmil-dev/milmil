@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -178,7 +179,9 @@ func (h *Handler) animeToItemDTO(a store.Anime) ItemDTO {
 	}
 	if a.Genres != "" {
 		var genres []string
-		json.Unmarshal([]byte(a.Genres), &genres)
+		if err := json.Unmarshal([]byte(a.Genres), &genres); err != nil {
+			slog.Debug("malformed genres column", "anime_id", a.ID, "err", err)
+		}
 		dto.Genres = genres
 	}
 	if a.TotalEpisodes.Valid {

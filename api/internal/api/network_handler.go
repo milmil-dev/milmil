@@ -292,7 +292,7 @@ func listSMBShares(ctx context.Context, ip string) []string {
 		}
 
 		names, err := s.ListSharenames()
-		s.Logoff()
+		_ = s.Logoff() // teardown; nothing to recover if it fails
 		conn.Close()
 
 		if err != nil {

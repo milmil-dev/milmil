@@ -214,7 +214,9 @@ func main() {
 			AppID     string `json:"app_id"`
 			AppSecret string `json:"app_secret"`
 		}
-		json.Unmarshal([]byte(setting.Value), &creds)
+		if err := json.Unmarshal([]byte(setting.Value), &creds); err != nil {
+			return "", "", fmt.Errorf("parse dandanplay credentials: %w", err)
+		}
 		return creds.AppID, creds.AppSecret, nil
 	}
 	ddpClient := dandanplay.NewFallbackClient(
