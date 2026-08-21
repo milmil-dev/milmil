@@ -28,11 +28,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: api/go.sum
 
-      # Informational: enforces gofmt cleanliness. Not yet a gate because
-      # the repo has ~10 files needing reformatting; flip continue-on-error
-      # to false once `gofmt -w api/` has landed.
-      - name: gofmt check (informational)
-        continue-on-error: true
+      - name: gofmt check
         working-directory: api
         run: |
           set -euo pipefail
@@ -53,17 +49,11 @@ jobs:
         working-directory: api
         run: go vet ./...
 
-      # Informational: -race uncovers existing data races in
-      # internal/api tests. Flip continue-on-error to false once
-      # those are resolved.
-      - name: go test (race + cover, informational)
-        continue-on-error: true
+      # Runs the whole suite under the race detector, so it supersedes a
+      # plain `go test ./...` pass.
+      - name: go test (race + cover)
         working-directory: api
         run: go test -race -cover ./...
-
-      - name: go test
-        working-directory: api
-        run: go test ./...
 
       - name: go build
         working-directory: api
@@ -84,15 +74,8 @@ jobs:
         working-directory: web
         run: bun install --frozen-lockfile
 
-      - name: Lint
-        working-directory: web
-        run: bun run lint
-
-      - name: Unit tests
-        working-directory: web
-        run: bun run test:run
-
       # Full quality gate: typecheck + lint + format:check + test:run.
+      # Covers linting and unit tests, so they are not run separately.
       - name: check:all
         working-directory: web
         run: bun run check:all
