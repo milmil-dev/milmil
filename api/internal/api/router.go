@@ -48,8 +48,35 @@ type handler struct {
 	encryptionKey   []byte
 }
 
+// Deps carries everything the API layer needs to serve requests.
+//
+// A struct rather than a parameter list: the handlers depend on fifteen
+// collaborators, and as positional arguments that made every call site an
+// unreadable run of nils and every addition a change to all of them. Fields
+// left zero disable the features that need them, which is how the tests build
+// a router with only the few services a given handler touches.
+type Deps struct {
+	Config        *config.Config
+	DB            *sql.DB
+	Cache         cache.Cache
+	Metadata      *metadata.Service
+	Matcher       *matcher.Matcher
+	DandanPlay    dandanplay.Client
+	Resolver      *resolver.Resolver
+	Downloader    downloader.Manager
+	WSHub         *ws.Hub
+	TMDB          tmdb.Client
+	Torrents      *torrent.Registry
+	Notifier      *notification.Service
+	Sync          *milmilsync.Service
+	Danmaku       *danmaku.Registry
+	UpdateChecker *updatecheck.Checker
+}
+
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service, danmakuReg *danmaku.Registry, updateChecker *updatecheck.Checker) *echo.Echo {
+func NewRouter(deps Deps) *echo.Echo {
+	cfg := deps.Config
+	db := deps.DB
 	e := echo.New()
 	// Echo v5 no longer reads X-Forwarded-For by default (c.RealIP would
 	// return the reverse proxy's address). Restore client-IP extraction for
@@ -62,20 +89,20 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 		cfg:             cfg,
 		db:              db,
 		queries:         store.New(db),
-		cache:           cacheClient,
-		metadata:        metadataSvc,
-		matcher:         matcherSvc,
-		dandanplay:      ddpClient,
-		resolver:        resolverSvc,
-		downloader:      dlManager,
-		wsHub:           wsHub,
+		cache:           deps.Cache,
+		metadata:        deps.Metadata,
+		matcher:         deps.Matcher,
+		dandanplay:      deps.DandanPlay,
+		resolver:        deps.Resolver,
+		downloader:      deps.Downloader,
+		wsHub:           deps.WSHub,
 		wsTickets:       ws.NewTicketStore(),
-		tmdb:            tmdbClient,
-		torrentRegistry: torrentReg,
-		notifier:        notifier,
-		syncSvc:         syncSvc,
-		danmakuRegistry: danmakuReg,
-		updateChecker:   updateChecker,
+		tmdb:            deps.TMDB,
+		torrentRegistry: deps.Torrents,
+		notifier:        deps.Notifier,
+		syncSvc:         deps.Sync,
+		danmakuRegistry: deps.Danmaku,
+		updateChecker:   deps.UpdateChecker,
 		encryptionKey:   cfg.EncryptionKey,
 	}
 

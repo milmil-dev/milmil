@@ -348,7 +348,23 @@ func main() {
 		},
 	})
 
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg, updateChecker)
+	e := api.NewRouter(api.Deps{
+		Config:        cfg,
+		DB:            database,
+		Cache:         cacheClient,
+		Metadata:      metadataSvc,
+		Matcher:       matcherSvc,
+		DandanPlay:    ddpClient,
+		Resolver:      resolverSvc,
+		Downloader:    dlEngine,
+		WSHub:         wsHub,
+		TMDB:          tmdbClient,
+		Torrents:      torrentReg,
+		Notifier:      notifier,
+		Sync:          syncSvc,
+		Danmaku:       danmakuReg,
+		UpdateChecker: updateChecker,
+	})
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	// Start update-checker background ticker. main.go does not currently
