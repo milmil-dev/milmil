@@ -1,4 +1,5 @@
 import Foundation
+import MilmilAPI
 import Observation
 import OSLog
 
@@ -14,6 +15,7 @@ enum BrowseRoute: Hashable {
     case genre(String)
     case tag(String)
     case trending
+    case query(BrowseQuery)
 }
 
 @Observable

@@ -14,7 +14,9 @@ final class ServerSession {
     let realtime: RealtimeClient
 
     private(set) var preferences = GlobalPreferences()
-    private(set) var unreadNotifications = 0
+    private(set) var unreadNotifications = 0 {
+        didSet { SystemNotifier.shared.setBadge(unreadNotifications) }
+    }
     private(set) var isRealtimeConnected = false
     /// Bumped on every realtime event so views can refetch (`.task(id:)`).
     private(set) var eventGeneration = 0
@@ -32,6 +34,7 @@ final class ServerSession {
 
     func start() {
         guard realtimeTask == nil else { return }
+        SystemNotifier.shared.requestAuthorizationIfNeeded()
         Task { await loadPreferences() }
         Task { await refreshUnread() }
         realtimeTask = Task { [weak self] in
@@ -47,6 +50,7 @@ final class ServerSession {
         realtimeTask?.cancel()
         realtimeTask = nil
         Task { await realtime.stop() }
+        SystemNotifier.shared.setBadge(0)
     }
 
     private func handle(_ event: ServerEvent) {
@@ -57,6 +61,9 @@ final class ServerSession {
             isRealtimeConnected = false
         case ServerEventType.notificationNew:
             unreadNotifications += 1
+            if let notification: MilmilNotification = try? event.decode() {
+                SystemNotifier.shared.post(notification)
+            }
             lastEvent = event
             eventGeneration += 1
         default:

@@ -73,6 +73,8 @@ struct MainShellView: View {
             let session = ServerSession(profile: profile, user: user, client: client)
             self.session = session
             session.start()
+            if let destination = DevSnapshot.initialDestination { router.select(destination) }
+            if let anime = DevSnapshot.initialAnime { router.openAnime(anime) }
         }
         .onDisappear { session?.stop() }
     }
@@ -94,9 +96,11 @@ struct MainShellView: View {
         .toolbar { ShellToolbar() }
         .overlay {
             if router.paletteShown {
-                CommandPaletteOverlay()
+                CommandPalette()
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
             }
         }
+        .animation(.snappy(duration: 0.18), value: router.paletteShown)
         .background(Theme.background)
         .tint(Theme.accent)
         .onKeyPress(.escape) {
@@ -110,14 +114,14 @@ struct MainShellView: View {
     private func root(for destination: Destination) -> some View {
         switch destination {
         case .home: HomeView()
-        case .schedule: PlaceholderPage(destination: .schedule)
-        case .discover: PlaceholderPage(destination: .discover)
-        case .search: PlaceholderPage(destination: .search)
-        case .collection: PlaceholderPage(destination: .collection)
-        case .history: PlaceholderPage(destination: .history)
+        case .schedule: ScheduleView()
+        case .discover: DiscoverView()
+        case .search: SearchView()
+        case .collection: CollectionView()
+        case .history: HistoryView()
         case .libraries: PlaceholderPage(destination: .libraries)
         case .downloads: PlaceholderPage(destination: .downloads)
-        case .notifications: PlaceholderPage(destination: .notifications)
+        case .notifications: NotificationsView()
         }
     }
 
@@ -125,11 +129,11 @@ struct MainShellView: View {
     private func destination(for route: Route) -> some View {
         switch route {
         case let .anime(bangumiID):
-            PlaceholderRoute(title: "作品 \(bangumiID)")
-        case let .discoverCategory(title, _):
-            PlaceholderRoute(title: title)
+            AnimeDetailView(bangumiID: bangumiID)
+        case let .discoverCategory(title, route):
+            DiscoverCategoryView(title: title, route: route)
         case .history:
-            PlaceholderPage(destination: .history)
+            HistoryView()
         }
     }
 }
@@ -232,31 +236,6 @@ private struct ShellToolbar: ToolbarContent {
     }
 }
 
-/// Until the palette lands (Commit D), ⌘K opens the search tab.
-private struct CommandPaletteOverlay: View {
-    @Environment(Router.self) private var router
-
-    var body: some View {
-        Color.black.opacity(0.35)
-            .ignoresSafeArea()
-            .onTapGesture { router.paletteShown = false }
-            .overlay(alignment: .top) {
-                VStack(spacing: 8) {
-                    Text("⌘K 搜尋面板在下一批實作")
-                        .font(.system(size: 13, weight: .semibold))
-                    Button("先到搜尋頁") {
-                        router.paletteShown = false
-                        router.select(.search)
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .padding(20)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-                .padding(.top, 80)
-            }
-    }
-}
-
 struct PlaceholderPage: View {
     let destination: Destination
 
@@ -267,7 +246,7 @@ struct PlaceholderPage: View {
                 .foregroundStyle(Theme.accent)
             Text(destination.title)
                 .font(.system(size: 20, weight: .bold))
-            Text("此畫面在 Phase 1 的下一批實作。")
+            Text("此畫面在 Phase 5（管理）實作。")
                 .font(.system(size: 12))
                 .foregroundStyle(Theme.Text.tertiary)
         }

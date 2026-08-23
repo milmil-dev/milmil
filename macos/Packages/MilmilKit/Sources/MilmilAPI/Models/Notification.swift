@@ -8,7 +8,8 @@ public struct MilmilNotification: Decodable, Sendable, Hashable, Identifiable {
     public let title: String
     public let message: String
     public let severity: Severity
-    public let read: Bool
+    /// Mutable so clients can apply optimistic "mark read" updates.
+    public var read: Bool
     /// Raw JSON payload, when the server attached one.
     public let metadata: String?
     public let createdAt: Date?

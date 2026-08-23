@@ -6,6 +6,24 @@ import SwiftUI
 /// to that PNG and quits. Needs no Screen Recording permission because an app
 /// may always capture its own windows. Used by agents and CI to eyeball UI.
 enum DevSnapshot {
+    /// `MILMIL_SNAPSHOT_DESTINATION=schedule` lands the shell on that tab.
+    static var initialDestination: Destination? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_DESTINATION"].flatMap(Destination.init(rawValue:))
+        #else
+        nil
+        #endif
+    }
+
+    /// `MILMIL_SNAPSHOT_ANIME=530725` pushes that series on top of the tab.
+    static var initialAnime: Int? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_ANIME"].flatMap(Int.init)
+        #else
+        nil
+        #endif
+    }
+
     #if DEBUG
     static func runIfRequested() {
         let env = ProcessInfo.processInfo.environment
