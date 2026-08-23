@@ -20,7 +20,12 @@ jobs:
   go:
     name: Go
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # golangci-lint has to type-check the whole dependency graph, and this
+    # module pulls in rclone, the AWS SDK and anacrolix/torrent. A dependency
+    # bump changes go.sum, which misses setup-go's build cache, and the lint
+    # step alone then runs past 20 minutes from cold — #106 was cancelled at
+    # exactly 25. Warm runs finish the whole job in about 11.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v6
 
@@ -51,6 +56,7 @@ jobs:
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
           working-directory: api
+          args: --timeout=30m
 
       # Fast feedback before the much slower instrumented run below.
       - name: go test
