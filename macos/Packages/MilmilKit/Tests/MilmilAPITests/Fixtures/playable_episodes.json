@@ -1,0 +1,48 @@
+{
+  "anime_id": "anm_01",
+  "watch_status": "watching",
+  "mal_id": 58514,
+  "tmdb_id": null,
+  "anidb_id": 18290,
+  "user_score": 8,
+  "sync_disabled": 0,
+  "watch_status_override": "",
+  "episodes": [
+    {
+      "episode_id": "ep_1",
+      "sort": 1,
+      "title": "The Beginning of Magic",
+      "title_zh": "魔法的開端",
+      "air_date": "2026-04-07",
+      "synopsis": "Coco dreams of magic.",
+      "synopsis_zh": "可可夢想成為魔法使。",
+      "image": "https://lain.bgm.tv/pic/episode/l/ep1.jpg",
+      "media_file": { "id": "mf_1", "filename": "[Sakurato] Tongari Boushi no Atelier [01][AVC-8bit 1080p AAC][CHT].mp4", "size_bytes": 1503238553, "width": 1920, "height": 1080, "video_codec": "h264", "audio_codec": "aac" },
+      "progress": { "position_seconds": 1010, "duration_seconds": 1421, "completed": 0 }
+    },
+    {
+      "episode_id": "ep_2",
+      "sort": 2,
+      "title": "Episode 2",
+      "title_zh": null,
+      "air_date": "2026-04-14",
+      "synopsis": null,
+      "synopsis_zh": null,
+      "image": "",
+      "media_file": { "id": "mf_2", "filename": "ep2.mkv", "size_bytes": null, "width": 3840, "height": 2160, "video_codec": "hevc", "audio_codec": null },
+      "progress": null
+    },
+    {
+      "episode_id": "ep_12_5",
+      "sort": 12.5,
+      "title": "Special",
+      "title_zh": null,
+      "air_date": null,
+      "synopsis": null,
+      "synopsis_zh": null,
+      "image": null,
+      "media_file": null,
+      "progress": null
+    }
+  ]
+}

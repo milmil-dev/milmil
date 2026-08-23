@@ -61,6 +61,10 @@ public struct AnimeSummary: Decodable, Sendable, Hashable, Identifiable {
     }
 }
 
+extension String {
+    var nonEmpty: String? { isEmpty ? nil : self }
+}
+
 extension String? {
     var nonEmpty: String? {
         guard let self, !self.isEmpty else { return nil }

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "anm_01",
+    "bangumi_id": 501234,
+    "title": "Tongari Boushi no Atelier",
+    "title_zh": "尖帽子的魔法工房",
+    "title_en": "Witch Hat Atelier",
+    "cover_image_url": "http://lain.bgm.tv/pic/cover/l/ab/cd/501234_abc.jpg",
+    "total_episodes": 13,
+    "status": "RELEASING",
+    "watch_status": "watching",
+    "watch_status_updated_at": "2026-08-22 09:15:00",
+    "genres": "[\"奇幻\",\"冒險\"]",
+    "year": 2026,
+    "season": "SPRING",
+    "air_date": "2026-04-07",
+    "created_at": "2026-08-01T10:00:00Z",
+    "user_score": 8,
+    "score": 7.1,
+    "local_file_count": 5
+  },
+  {
+    "id": "anm_02",
+    "bangumi_id": null,
+    "title": "Unknown",
+    "title_zh": null,
+    "title_en": null,
+    "cover_image_url": null,
+    "total_episodes": null,
+    "status": "",
+    "watch_status": "",
+    "watch_status_updated_at": null,
+    "genres": null,
+    "year": null,
+    "season": null,
+    "air_date": null,
+    "created_at": "2026-08-01T10:00:00Z",
+    "user_score": null,
+    "score": 0,
+    "local_file_count": 0
+  }
+]

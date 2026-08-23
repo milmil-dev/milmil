@@ -1,0 +1,34 @@
+[
+  {
+    "id": "wp_1",
+    "user_id": "admin-dev",
+    "episode_id": "ep_1",
+    "media_file_id": "mf_1",
+    "position_seconds": 1010,
+    "duration_seconds": 1421,
+    "completed": 0,
+    "last_watched_at": "2026-08-23T06:22:11.1234Z",
+    "anime_id": "anm_01",
+    "anime_title": "Tongari Boushi no Atelier",
+    "anime_title_zh": "尖帽子的魔法工房",
+    "anime_cover_image": "http://lain.bgm.tv/pic/cover/l/ab/cd/501234_abc.jpg",
+    "anime_bangumi_id": 501234,
+    "episode_number": 1
+  },
+  {
+    "id": "wp_2",
+    "user_id": "admin-dev",
+    "episode_id": "ep_9",
+    "media_file_id": null,
+    "position_seconds": 1400,
+    "duration_seconds": null,
+    "completed": 1,
+    "last_watched_at": "2026-08-22 21:05:00",
+    "anime_id": "anm_03",
+    "anime_title": "Dungeon Meshi",
+    "anime_title_zh": null,
+    "anime_cover_image": "",
+    "anime_bangumi_id": null,
+    "episode_number": 9
+  }
+]
