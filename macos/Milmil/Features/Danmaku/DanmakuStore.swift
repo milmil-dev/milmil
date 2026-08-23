@@ -189,7 +189,13 @@ final class DanmakuStore {
     }
 
     func toggleSave(source: String, save: Bool) async {
-        try? await client.toggleSaveImportedDanmaku(episodeID: episodeID, source: source, save: save)
+        sourceError = nil
+        do {
+            try await client.toggleSaveImportedDanmaku(episodeID: episodeID, source: source, save: save)
+        } catch {
+            // 404 "no cached danmaku to save" once the 24 h import cache expired.
+            sourceError = (error as? APIError)?.serverMessage ?? error.localizedDescription
+        }
         await reloadImported()
     }
 
@@ -239,8 +245,10 @@ extension APIClient {
         try await post("/api/v1/danmaku/\(fileID)", body: Body(time: time, mode: mode, color: color, comment: comment))
     }
 
+    /// The handler serialises "nothing imported" as JSON `null`, not `[]`.
     func importedDanmaku(episodeID: String) async throws -> [ImportedDanmaku] {
-        try await get("/api/v1/danmaku/external/imported/\(episodeID)")
+        let rows: [ImportedDanmaku]? = try await get("/api/v1/danmaku/external/imported/\(episodeID)")
+        return rows ?? []
     }
 
     func danmakuSources() async throws -> [DanmakuSourceInfo] {
@@ -269,8 +277,7 @@ extension APIClient {
     }
 
     func removeImportedDanmaku(episodeID: String, source: String?) async throws {
-        var path = "/api/v1/danmaku/external/imported/\(episodeID)"
-        if let source, let encoded = source.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) { path += "?source=\(encoded)" }
-        try await delete(path)
+        let query = source.map { [URLQueryItem(name: "source", value: $0)] } ?? []
+        try await delete("/api/v1/danmaku/external/imported/\(episodeID)", query: query)
     }
 }

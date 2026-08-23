@@ -72,9 +72,10 @@ final class PlayerCoordinator {
     }
 
     /// The watch page left the stack while embedded → stop, like the web.
-    func watchDidDisappear() {
+    /// Covered by another route (作品頁 pushed on top) → keep playing.
+    func watchDidDisappear(stillOnStack: Bool) {
         watchVisible = false
-        if presentation == .embedded { controller?.windowClosed() }
+        if presentation == .embedded, !stillOnStack { controller?.windowClosed() }
     }
 
     func closePlayer() {

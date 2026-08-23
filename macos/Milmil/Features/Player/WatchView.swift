@@ -41,6 +41,8 @@ struct WatchView: View {
             coordinator.watchVisible = true
             if !coordinator.isPlaying(bangumiID: bangumiID, episodeID: episodeID) {
                 coordinator.play(PlaybackRequest(bangumiID: bangumiID, episodeID: episodeID, title: store.detail.value?.title ?? ""))
+            } else {
+                coordinator.controller?.resumeCurrentEpisode()
             }
             await store.load()
             if let detail = store.detail.value { coordinator.controller?.updateTitle(detail.title, cover: detail.coverImage) }
@@ -48,7 +50,10 @@ struct WatchView: View {
         .onDisappear {
             backdrop.clear(owner: "watch")
             router.immersive = false
-            coordinator.watchDidDisappear()
+            surfaceModel.detach()
+            // Pushing 作品頁 on top also fires this; only a real pop stops playback.
+            let stillOnStack = router.path.contains { if case .watch = $0 { return true } else { return false } }
+            coordinator.watchDidDisappear(stillOnStack: stillOnStack)
         }
         .onChange(of: surfaceModel.isFullscreen) { _, full in router.immersive = full }
     }

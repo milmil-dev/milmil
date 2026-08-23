@@ -8,6 +8,10 @@ import SwiftUI
 /// and a stale host's teardown cannot pull the view out of the new one.
 struct PlayerRenderHost: NSViewRepresentable {
     let renderView: MPVRenderView
+    /// Only the designated host (embedded page vs. pop-out window, per
+    /// `PlayerCoordinator.presentation`) may adopt the view; a host that is
+    /// on its way out must not steal it back during its last update.
+    let isActive: Bool
 
     func makeNSView(context: Context) -> RenderContainerView {
         let container = RenderContainerView()
@@ -33,7 +37,7 @@ struct PlayerRenderHost: NSViewRepresentable {
     }
 
     private func adopt(into container: RenderContainerView) {
-        guard renderView.superview !== container else { return }
+        guard isActive, renderView.superview !== container else { return }
         renderView.removeFromSuperview()
         renderView.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(renderView)

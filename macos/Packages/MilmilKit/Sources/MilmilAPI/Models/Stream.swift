@@ -46,7 +46,8 @@ public struct MediaInfo: Decodable, Sendable, Hashable {
         canRemux = (try? c.decode(LenientBool.self, forKey: .canRemux).wrappedValue) ?? true
         needsTranscode = (try? c.decode(LenientBool.self, forKey: .needsTranscode).wrappedValue) ?? false
         libraryOnline = (try? c.decode(LenientBool.self, forKey: .libraryOnline).wrappedValue) ?? true
-        libraryType = try c.decodeIfPresent(String.self, forKey: .libraryType) ?? "local"
+        // The server treats "" as local for legacy libraries.
+        libraryType = (try c.decodeIfPresent(String.self, forKey: .libraryType)).nonEmpty ?? "local"
     }
 }
 

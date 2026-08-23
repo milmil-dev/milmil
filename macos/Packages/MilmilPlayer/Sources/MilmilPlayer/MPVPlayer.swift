@@ -60,9 +60,13 @@ public final class MPVPlayer: @unchecked Sendable {
 
     private struct State {
         var destroyed = false
-        var renderTeardown: (@Sendable () -> Void)?
-        var nextCommandID: UInt64 = 1
     }
+
+    private let nextCommandID = Atomic<UInt64>(1)
+    /// Separate from `state`: the render thread registers this while other
+    /// threads may be inside `withLiveHandle`, and render.h forbids the
+    /// render thread waiting on a thread that is inside a libmpv call.
+    private let renderTeardown = Mutex<(@Sendable () -> Void)?>(nil)
 
     nonisolated(unsafe) private let handle: OpaquePointer
     private let state = Mutex(State())
@@ -108,7 +112,7 @@ public final class MPVPlayer: @unchecked Sendable {
     /// Registered by the render layer so `destroy()` can free the render
     /// context *before* `mpv_terminate_destroy`, as libmpv requires.
     func setRenderTeardown(_ teardown: (@Sendable () -> Void)?) {
-        state.withLock { $0.renderTeardown = teardown }
+        renderTeardown.withLock { $0 = teardown }
     }
 
     public var isDestroyed: Bool { state.withLock { $0.destroyed } }
@@ -120,16 +124,18 @@ public final class MPVPlayer: @unchecked Sendable {
 
     /// Tear everything down. Safe to call more than once.
     public func destroy() {
-        let teardown: (@Sendable () -> Void)? = state.withLock { state in
-            guard !state.destroyed else { return nil }
+        let first: Bool = state.withLock { state in
+            guard !state.destroyed else { return false }
             state.destroyed = true
-            let teardown = state.renderTeardown
-            state.renderTeardown = nil
-            return teardown ?? {}
+            return true
         }
-        guard let teardown else { return }
+        guard first else { return }
         mpv_set_wakeup_callback(handle, nil, nil)
-        teardown()
+        let teardown = renderTeardown.withLock { hook -> (@Sendable () -> Void)? in
+            defer { hook = nil }
+            return hook
+        }
+        teardown?()
         // Drain anything queued, then destroy on the queue that reads events.
         eventQueue.sync {
             mpv_terminate_destroy(handle)
@@ -139,32 +145,43 @@ public final class MPVPlayer: @unchecked Sendable {
 
     // MARK: - Commands
 
-    public func command(_ args: [String]) throws {
-        guard !isDestroyed else { throw MPVError.destroyed }
-        try Self.withCStringArray(args) { argv in
-            try Self.check(mpv_command(handle, argv))
+    /// Runs `body` with the handle while holding the state lock, so
+    /// `destroy()` cannot tear the core down under an in-flight call.
+    /// Returns nil once destroyed.
+    @discardableResult
+    private func withLiveHandle<R>(_ body: (OpaquePointer) throws -> R) rethrows -> R? {
+        try state.withLock { state -> R? in
+            guard !state.destroyed else { return nil }
+            return try body(handle)
         }
+    }
+
+    public func command(_ args: [String]) throws {
+        let status: Int32? = try Self.withCStringArray(args) { argv in
+            try withLiveHandle { handle in mpv_command(handle, argv) }
+        }
+        guard let status else { throw MPVError.destroyed }
+        try Self.check(status)
     }
 
     /// Fire-and-forget; the reply arrives as `PlayerEvent.commandReply`.
     @discardableResult
     public func commandAsync(_ args: [String]) -> UInt64 {
-        guard !isDestroyed else { return 0 }
-        let id = state.withLock { state in
-            defer { state.nextCommandID += 1 }
-            return state.nextCommandID
-        }
         Self.withCStringArray(args) { argv in
-            _ = mpv_command_async(handle, id, argv)
+            withLiveHandle { handle -> UInt64 in
+                let id = nextCommandID.add(1, ordering: .relaxed).oldValue
+                _ = mpv_command_async(handle, id, argv)
+                return id
+            } ?? 0
         }
-        return id
     }
 
+    /// `loadfile <url> replace -1 <options>`: the 4th argument is a
+    /// comma-separated list, so callers must keep option *values* free of
+    /// commas (titles go through the `force-media-title` property instead).
     public func loadFile(_ url: String, options: [String: String] = [:]) throws {
         var args = ["loadfile", url, "replace"]
         if !options.isEmpty {
-            // loadfile's 4th arg (mpv ≥ 0.38 takes an index first) — use the
-            // property form so we don't depend on the positional layout.
             args.append("-1")
             args.append(options.map { "\($0.key)=\($0.value)" }.joined(separator: ","))
         }
@@ -194,56 +211,60 @@ public final class MPVPlayer: @unchecked Sendable {
 
     public func set(_ name: String, _ value: Bool) {
         var flag: Int32 = value ? 1 : 0
-        _ = mpv_set_property(handle, name, MPV_FORMAT_FLAG, &flag)
+        withLiveHandle { mpv_set_property($0, name, MPV_FORMAT_FLAG, &flag) }
     }
 
     public func set(_ name: String, _ value: Double) {
         var double = value
-        _ = mpv_set_property(handle, name, MPV_FORMAT_DOUBLE, &double)
+        withLiveHandle { mpv_set_property($0, name, MPV_FORMAT_DOUBLE, &double) }
     }
 
     public func set(_ name: String, _ value: Int64) {
         var int = value
-        _ = mpv_set_property(handle, name, MPV_FORMAT_INT64, &int)
+        withLiveHandle { mpv_set_property($0, name, MPV_FORMAT_INT64, &int) }
     }
 
     public func set(_ name: String, _ value: String) {
-        _ = mpv_set_property_string(handle, name, value)
+        withLiveHandle { mpv_set_property_string($0, name, value) }
     }
 
     public func setOption(_ name: String, _ value: String) {
-        _ = mpv_set_option_string(handle, name, value)
+        withLiveHandle { mpv_set_option_string($0, name, value) }
     }
 
     public func getString(_ name: String) -> String? {
-        guard let cString = mpv_get_property_string(handle, name) else { return nil }
-        defer { mpv_free(cString) }
-        return String(cString: cString)
+        withLiveHandle { handle -> String? in
+            guard let cString = mpv_get_property_string(handle, name) else { return nil }
+            defer { mpv_free(cString) }
+            return String(cString: cString)
+        } ?? nil
     }
 
     public func getDouble(_ name: String) -> Double? {
         var value: Double = 0
-        guard mpv_get_property(handle, name, MPV_FORMAT_DOUBLE, &value) >= 0 else { return nil }
+        guard withLiveHandle({ mpv_get_property($0, name, MPV_FORMAT_DOUBLE, &value) }) ?? -1 >= 0 else { return nil }
         return value
     }
 
     public func getInt(_ name: String) -> Int64? {
         var value: Int64 = 0
-        guard mpv_get_property(handle, name, MPV_FORMAT_INT64, &value) >= 0 else { return nil }
+        guard withLiveHandle({ mpv_get_property($0, name, MPV_FORMAT_INT64, &value) }) ?? -1 >= 0 else { return nil }
         return value
     }
 
     public func getBool(_ name: String) -> Bool? {
         var value: Int32 = 0
-        guard mpv_get_property(handle, name, MPV_FORMAT_FLAG, &value) >= 0 else { return nil }
+        guard withLiveHandle({ mpv_get_property($0, name, MPV_FORMAT_FLAG, &value) }) ?? -1 >= 0 else { return nil }
         return value != 0
     }
 
     public func getNode(_ name: String) -> MPVNode? {
-        var node = mpv_node()
-        guard mpv_get_property(handle, name, MPV_FORMAT_NODE, &node) >= 0 else { return nil }
-        defer { mpv_free_node_contents(&node) }
-        return MPVNode(node)
+        withLiveHandle { handle -> MPVNode? in
+            var node = mpv_node()
+            guard mpv_get_property(handle, name, MPV_FORMAT_NODE, &node) >= 0 else { return nil }
+            defer { mpv_free_node_contents(&node) }
+            return MPVNode(node)
+        } ?? nil
     }
 
     // MARK: - Event loop
@@ -252,7 +273,9 @@ public final class MPVPlayer: @unchecked Sendable {
         // Coalesce bursts: one drain per wakeup storm.
         let (exchanged, _) = wakeupPending.compareExchange(expected: false, desired: true, ordering: .acquiringAndReleasing)
         guard exchanged else { return }
-        eventQueue.async { [self] in
+        // Weak: a wakeup racing `deinit` must not resurrect the player.
+        eventQueue.async { [weak self] in
+            guard let self else { return }
             wakeupPending.store(false, ordering: .releasing)
             drainEvents()
         }

@@ -21,8 +21,8 @@ final class NowPlayingBridge {
         guard !registered else { return }
         registered = true
         let center = MPRemoteCommandCenter.shared()
-        register(center.playCommand) { $0.togglePause() }
-        register(center.pauseCommand) { $0.togglePause() }
+        register(center.playCommand) { $0.setPaused(false) }
+        register(center.pauseCommand) { $0.setPaused(true) }
         register(center.togglePlayPauseCommand) { $0.togglePause() }
         register(center.nextTrackCommand) { $0.playNext() }
         register(center.previousTrackCommand) { $0.playPrevious() }

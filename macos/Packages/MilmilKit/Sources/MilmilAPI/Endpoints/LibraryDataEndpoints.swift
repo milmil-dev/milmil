@@ -22,7 +22,7 @@ public extension APIClient {
 
     /// `PATCH /collection/{bangumiId}/status` — `.none` removes it from the list.
     func setWatchStatus(bangumiID: Int, _ status: WatchStatus) async throws {
-        let _: EmptyResponse = try await patch("/api/v1/collection/\(bangumiID)/status", body: WatchStatusUpdate(status: status.rawValue))
+        try await patch("/api/v1/collection/\(bangumiID)/status", body: WatchStatusUpdate(status: status.rawValue))
     }
 
     // MARK: Progress
@@ -64,11 +64,11 @@ public extension APIClient {
 
     /// 1–10, or nil to clear.
     func setScore(bangumiID: Int, _ score: Int?) async throws {
-        let _: EmptyResponse = try await patch("/api/v1/anime/\(bangumiID)/score", body: ScoreUpdate(score: score))
+        try await patch("/api/v1/anime/\(bangumiID)/score", body: ScoreUpdate(score: score))
     }
 
     func setSyncFlags(bangumiID: Int, _ flags: SyncFlagsUpdate) async throws {
-        let _: EmptyResponse = try await patch("/api/v1/anime/\(bangumiID)/sync-flags", body: flags)
+        try await patch("/api/v1/anime/\(bangumiID)/sync-flags", body: flags)
     }
 
     // MARK: Notifications

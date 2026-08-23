@@ -34,6 +34,7 @@ struct PlayerSurface: View {
     let model: PlayerWindowModel
     var embedded = false
     var embeddedHandler: ((PlayerWindowModel.EmbeddedAction) -> Void)?
+    @Environment(PlayerCoordinator.self) private var coordinator
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var surfaceWidth: CGFloat = 1000
     @ObserveInjection private var inject
@@ -91,7 +92,7 @@ struct PlayerSurface: View {
     @ViewBuilder
     private var picture: some View {
         if let renderView = controller.renderView {
-            PlayerRenderHost(renderView: renderView)
+            PlayerRenderHost(renderView: renderView, isActive: embedded == (coordinator.presentation == .embedded))
         } else {
             Color.black
         }

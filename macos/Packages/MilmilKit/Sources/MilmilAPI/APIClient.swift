@@ -68,8 +68,15 @@ public actor APIClient {
         return try decode(try await perform(request))
     }
 
-    public func delete(_ path: String) async throws {
-        let request = try makeRequest(method: "DELETE", path: path, query: [], body: nil as Data?)
+    /// For handlers that answer `204 No Content` — decoding an empty body
+    /// would throw even for an "empty" response type.
+    public func patch(_ path: String, body: some Encodable & Sendable) async throws {
+        let request = try makeRequest(method: "PATCH", path: path, query: [], body: try encoder.encode(body))
+        _ = try await perform(request)
+    }
+
+    public func delete(_ path: String, query: [URLQueryItem] = []) async throws {
+        let request = try makeRequest(method: "DELETE", path: path, query: query, body: nil as Data?)
         _ = try await perform(request)
     }
 

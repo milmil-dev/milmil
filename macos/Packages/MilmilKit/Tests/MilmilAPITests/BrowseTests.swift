@@ -99,7 +99,8 @@ struct BrowseTests {
     @Test("mutations hit the right paths and unwrap empty bodies")
     func mutations() async throws {
         let transport = FakeTransport()
-        transport.stub("PATCH /api/v1/collection/501234/status", json: #"{"status":"ok"}"#)
+        // The Go handler answers 204 with no body.
+        transport.stub("PATCH /api/v1/collection/501234/status", status: 204, json: "")
         transport.stub("POST /api/v1/progress", status: 204, json: "")
         transport.stub("PATCH /api/v1/notifications/ntf_1/read", json: #"{"status":"ok"}"#)
         transport.stub("GET /api/v1/notifications/unread-count", json: #"{"count":12}"#)

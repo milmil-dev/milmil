@@ -15,7 +15,12 @@ import Synchronization
 public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
     private let player: MPVPlayer
     nonisolated(unsafe) private var renderContext: OpaquePointer?
+    nonisolated(unsafe) private var cglContext: CGLContextObj?
     private let renderQueue = DispatchQueue(label: "dev.milmil.mpv.render", qos: .userInteractive)
+    /// render.h: only one `mpv_render_*` call at a time per core. CA may
+    /// drive `canDraw`/`draw` from its own thread during live resize while
+    /// the update callback schedules draws on `renderQueue`.
+    private let renderLock = NSLock()
     private let tornDown = Atomic(false)
     private let forceRender = Atomic(false)
 
@@ -30,8 +35,8 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
     }
 
     /// Presentation-layer copies (made whenever Core Animation animates the
-    /// layer's frame) must stay inert: they share no render context, so only
-    /// the model layer ever calls into mpv.
+    /// layer's frame) are inert: no render context, never create one, never
+    /// draw. Only the model layer talks to mpv.
     override public init(layer: Any) {
         guard let other = layer as? MPVRenderLayer else {
             fatalError("MPVRenderLayer can only copy another MPVRenderLayer")
@@ -39,11 +44,16 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
         player = other.player
         renderContext = nil
         super.init(layer: layer)
+        tornDown.store(true, ordering: .releasing)
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not supported")
+    }
+
+    deinit {
+        teardown()
     }
 
     // MARK: - Pixel format / context
@@ -70,12 +80,13 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
         CGLSetParameter(context, kCGLCPSwapInterval, &swapInterval)
         CGLEnable(context, kCGLCEMPEngine)
         CGLSetCurrentContext(context)
+        cglContext = context
         createRenderContextIfNeeded()
         return context
     }
 
     private func createRenderContextIfNeeded() {
-        guard renderContext == nil, !tornDown.load(ordering: .acquiring) else { return }
+        guard renderContext == nil, !tornDown.load(ordering: .acquiring), !player.isDestroyed else { return }
         var advanced: Int32 = 1
         var initParams = mpv_opengl_init_params(get_proc_address: { _, name in
             guard let name else { return nil }
@@ -83,26 +94,23 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
             let bundle = CFBundleGetBundleWithIdentifier("com.apple.opengl" as CFString)
             return CFBundleGetFunctionPointerForName(bundle, symbol)
         }, get_proc_address_ctx: nil)
-        let status: Int32 = withUnsafeMutablePointer(to: &initParams) { initPointer in
-            withUnsafeMutablePointer(to: &advanced) { advancedPointer in
-                let apiType = UnsafeMutableRawPointer(mutating: (MPV_RENDER_API_TYPE_OPENGL as NSString).utf8String)
-                var params = [
-                    mpv_render_param(type: MPV_RENDER_PARAM_API_TYPE, data: apiType),
-                    mpv_render_param(type: MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, data: UnsafeMutableRawPointer(initPointer)),
-                    mpv_render_param(type: MPV_RENDER_PARAM_ADVANCED_CONTROL, data: UnsafeMutableRawPointer(advancedPointer)),
-                    mpv_render_param(type: MPV_RENDER_PARAM_INVALID, data: nil),
-                ]
-                var context: OpaquePointer?
-                let status = mpv_render_context_create(&context, player.rawHandle, &params)
-                renderContext = context
-                return status
+        var context: OpaquePointer?
+        let status: Int32 = MPV_RENDER_API_TYPE_OPENGL.withCString { apiType in
+            withUnsafeMutablePointer(to: &initParams) { initPointer in
+                withUnsafeMutablePointer(to: &advanced) { advancedPointer in
+                    var params = [
+                        mpv_render_param(type: MPV_RENDER_PARAM_API_TYPE, data: UnsafeMutableRawPointer(mutating: apiType)),
+                        mpv_render_param(type: MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, data: UnsafeMutableRawPointer(initPointer)),
+                        mpv_render_param(type: MPV_RENDER_PARAM_ADVANCED_CONTROL, data: UnsafeMutableRawPointer(advancedPointer)),
+                        mpv_render_param(type: MPV_RENDER_PARAM_INVALID, data: nil),
+                    ]
+                    return renderLock.withLock { mpv_render_context_create(&context, player.rawHandle, &params) }
+                }
             }
         }
-        guard status >= 0, let renderContext else {
-            self.renderContext = nil
-            return
-        }
-        mpv_render_context_set_update_callback(renderContext, { context in
+        guard status >= 0, let context else { return }
+        renderContext = context
+        mpv_render_context_set_update_callback(context, { context in
             guard let context else { return }
             Unmanaged<MPVRenderLayer>.fromOpaque(context).takeUnretainedValue().scheduleDraw()
         }, Unmanaged.passUnretained(self).toOpaque())
@@ -111,15 +119,13 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
 
     // MARK: - Drawing
 
+    /// Update callback → schedule a display on the render queue. The
+    /// mandatory `mpv_render_context_update` happens in `canDraw`, where the
+    /// GL context is current. In live resize CA already drives draws.
     private func scheduleDraw() {
-        renderQueue.async { [self] in
-            guard !tornDown.load(ordering: .acquiring), let renderContext else { return }
-            let flags = mpv_render_context_update(renderContext)
-            guard flags & UInt64(MPV_RENDER_UPDATE_FRAME.rawValue) != 0 else { return }
-            if isAsynchronous {
-                // CA is already driving draws at display rate (live resize).
-                return
-            }
+        renderQueue.async { [weak self] in
+            guard let self, !tornDown.load(ordering: .acquiring), renderContext != nil else { return }
+            if isAsynchronous { return }
             forceRender.store(true, ordering: .releasing)
             display()
         }
@@ -131,12 +137,14 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
         forLayerTime t: CFTimeInterval,
         displayTime ts: UnsafePointer<CVTimeStamp>?
     ) -> Bool {
-        guard renderContext != nil, !tornDown.load(ordering: .acquiring) else { return false }
-        if forceRender.exchange(false, ordering: .acquiringAndReleasing) { return true }
-        if isAsynchronous, let renderContext {
-            return mpv_render_context_update(renderContext) & UInt64(MPV_RENDER_UPDATE_FRAME.rawValue) != 0
-        }
-        return true
+        guard let renderContext, !tornDown.load(ordering: .acquiring) else { return false }
+        CGLLockContext(ctx)
+        CGLSetCurrentContext(ctx)
+        defer { CGLUnlockContext(ctx) }
+        let flags = renderLock.withLock { mpv_render_context_update(renderContext) }
+        let hasFrame = flags & UInt64(MPV_RENDER_UPDATE_FRAME.rawValue) != 0
+        let forced = forceRender.exchange(false, ordering: .acquiringAndReleasing)
+        return hasFrame || forced
     }
 
     override public func draw(
@@ -164,24 +172,35 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
                     mpv_render_param(type: MPV_RENDER_PARAM_FLIP_Y, data: UnsafeMutableRawPointer(flipPointer)),
                     mpv_render_param(type: MPV_RENDER_PARAM_INVALID, data: nil),
                 ]
-                _ = mpv_render_context_render(renderContext, &params)
+                renderLock.withLock {
+                    _ = mpv_render_context_render(renderContext, &params)
+                    glFlush()
+                    mpv_render_context_report_swap(renderContext)
+                }
             }
         }
-        glFlush()
-        mpv_render_context_report_swap(renderContext)
     }
 
     // MARK: - Teardown
 
-    /// Free the render context. Must run before `mpv_terminate_destroy`.
+    /// Free the render context. Must run before `mpv_terminate_destroy`,
+    /// with the GL context current like every other `mpv_render_*` call.
     func teardown() {
         let (exchanged, _) = tornDown.compareExchange(expected: false, desired: true, ordering: .acquiringAndReleasing)
         guard exchanged else { return }
         renderQueue.sync {
             guard let renderContext else { return }
-            mpv_render_context_set_update_callback(renderContext, nil, nil)
-            mpv_render_context_free(renderContext)
+            if let cglContext {
+                CGLLockContext(cglContext)
+                CGLSetCurrentContext(cglContext)
+            }
+            renderLock.withLock {
+                mpv_render_context_set_update_callback(renderContext, nil, nil)
+                mpv_render_context_free(renderContext)
+            }
+            if let cglContext { CGLUnlockContext(cglContext) }
             self.renderContext = nil
         }
+        player.setRenderTeardown(nil)
     }
 }

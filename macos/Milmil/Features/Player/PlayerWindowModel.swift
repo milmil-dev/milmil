@@ -36,6 +36,7 @@ final class PlayerWindowModel: PlayerWindowActions {
 
     func attach(window: NSWindow, controller: PlayerController, embedded: Bool = false) {
         guard self.window !== window else { return }
+        if self.window != nil { detach() }
         self.window = window
         self.controller = controller
         self.embedded = embedded
@@ -133,7 +134,11 @@ final class PlayerWindowModel: PlayerWindowActions {
             return
         }
         guard let window else { return }
-        if isFullscreen { window.toggleFullScreen(nil) }
+        if isFullscreen {
+            // Leave fullscreen first; the frame we would save is the screen's.
+            window.toggleFullScreen(nil)
+            return
+        }
         isMini.toggle()
         if isMini {
             normalFrame = window.frame

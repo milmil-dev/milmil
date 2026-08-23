@@ -37,6 +37,9 @@ final class PlayerController {
     private var eventTask: Task<Void, Never>?
     private var saveTask: Task<Void, Never>?
     private var transcodeTask: Task<Void, Never>?
+    private var loadTask: Task<Void, Never>?
+    private var resumePillTask: Task<Void, Never>?
+    private var sidecarsAddedForGeneration = -1
     private var osdTask: Task<Void, Never>?
     private var postPlayTask: Task<Void, Never>?
     private var lastTimelinePush: TimeInterval = 0
@@ -79,7 +82,10 @@ final class PlayerController {
         self.request = request
         state.status = .loading("讀取集數…")
         state.mediaTitle = request.title
-        Task { await loadSeries(request) }
+        loadTask?.cancel()
+        loadGeneration += 1
+        let generation = loadGeneration
+        loadTask = Task { await loadSeries(request, generation: generation) }
     }
 
     /// Browse screens may only know the id; fill the title/cover in later.
@@ -109,9 +115,10 @@ final class PlayerController {
         playable = try? await session.client.playableEpisodes(bangumiID: request.bangumiID)
     }
 
-    private func loadSeries(_ request: PlaybackRequest) async {
+    private func loadSeries(_ request: PlaybackRequest, generation: Int) async {
         do {
             let playable = try await session.client.playableEpisodes(bangumiID: request.bangumiID)
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             self.playable = playable
             let target = request.episodeID.flatMap { id in playable.episodes.first { $0.episodeID == id } } ?? playable.resumeCandidate
             guard let target, target.mediaFile != nil else {
@@ -126,7 +133,14 @@ final class PlayerController {
 
     func play(episode: PlayableEpisode) {
         guard episode.mediaFile != nil else { return }
-        Task { await start(episode) }
+        loadTask?.cancel()
+        loadTask = Task { await start(episode) }
+    }
+
+    /// The episode that was playing before `windowClosed()` stopped it.
+    func resumeCurrentEpisode() {
+        guard let episode, state.status == .idle else { return }
+        play(episode: episode)
     }
 
     func playNext() {
@@ -143,7 +157,10 @@ final class PlayerController {
         guard let file = episode.mediaFile else { return }
         saveProgressNow()
         cancelPostPlay()
+        transcodeTask?.cancel()
+        resumePillTask?.cancel()
         loadGeneration += 1
+        let generation = loadGeneration
         self.episode = episode
         state.status = .loading("準備串流…")
         state.segments = []
@@ -165,12 +182,15 @@ final class PlayerController {
         // Ask the server what it knows; mpv ignores can_direct_play but the
         // ladder needs library_online and the transcode availability.
         let info = try? await session.client.mediaInfo(fileID: file.id)
+        guard generation == loadGeneration, !Task.isCancelled else { return }
         if let info, !info.libraryOnline {
+            player?.stop()
             state.status = .failed("媒體庫目前離線，無法播放此檔案")
             return
         }
         fallback = StreamFallback(hasLocalFile: false, canRemux: info?.canRemux ?? true, canTranscode: true)
         await refreshAuthHeader()
+        guard generation == loadGeneration, !Task.isCancelled else { return }
         await loadCurrentStage(fileID: file.id)
 
         let danmaku = DanmakuStore(fileID: file.id, episodeID: episode.episodeID, client: session.client, preferences: session.preferences)
@@ -187,9 +207,13 @@ final class PlayerController {
 
         async let segments = session.client.segments(fileID: file.id)
         async let sidecars = session.client.subtitles(fileID: file.id)
-        state.segments = (try? await segments) ?? []
-        state.sidecarSubtitles = (try? await sidecars) ?? []
-        await loadThumbnails(fileID: file.id)
+        let (loadedSegments, loadedSidecars) = await (try? segments, try? sidecars)
+        guard generation == loadGeneration else { return }
+        state.segments = loadedSegments ?? []
+        state.sidecarSubtitles = loadedSidecars ?? []
+        // `fileLoaded` may already have passed; attach sidecars now if so.
+        if state.status.isActive { addSidecarSubtitles() }
+        await loadThumbnails(fileID: file.id, generation: generation)
     }
 
     private func loadCurrentStage(fileID: String) async {
@@ -201,9 +225,9 @@ final class PlayerController {
             fallback.advance()
             await loadCurrentStage(fileID: fileID)
         case .direct:
-            load(url: session.client.directStreamURL(fileID: fileID))
+            load(url: session.client.directStreamURL(fileID: fileID), generation: generation)
         case .remux:
-            load(url: session.client.remuxStreamURL(fileID: fileID))
+            load(url: session.client.remuxStreamURL(fileID: fileID), generation: generation)
         case .hls:
             state.status = .loading("伺服器轉碼中…")
             transcodeTask?.cancel()
@@ -213,14 +237,14 @@ final class PlayerController {
                     let start = try await session.client.startTranscode(fileID: fileID)
                     var token = start.token
                     if start.status == "ready" {
-                        load(url: session.client.hlsURL(token: token))
+                        load(url: session.client.hlsURL(token: token), generation: generation)
                         return
                     }
                     while !Task.isCancelled, generation == loadGeneration {
                         try await Task.sleep(for: .seconds(2))
                         switch try await session.client.transcodeState(token: token) {
                         case .ready:
-                            load(url: session.client.hlsURL(token: token))
+                            load(url: session.client.hlsURL(token: token), generation: generation)
                             return
                         case let .pending(progress):
                             state.status = .loading("伺服器轉碼中… \(progress ?? 0)%")
@@ -237,11 +261,18 @@ final class PlayerController {
         }
     }
 
-    private func load(url: URL) {
-        guard let player else { return }
+    private func load(url: URL, generation: Int) {
+        guard let player, generation == loadGeneration else { return }
         var options: [String: String] = [:]
-        if let resumePosition { options["start"] = String(resumePosition) }
-        options["force-media-title"] = state.mediaTitle
+        // A fallback after playback already started continues where we were;
+        // the first load honours the server's resume position.
+        if state.timePos > 1 {
+            options["start"] = String(Int(state.timePos))
+        } else if let resumePosition {
+            options["start"] = String(resumePosition)
+        }
+        // Titles can contain commas, which would split loadfile's option list.
+        player.set("force-media-title", state.mediaTitle)
         do {
             try player.loadFile(url.absoluteString, options: options)
             player.set("pause", false)
@@ -250,12 +281,12 @@ final class PlayerController {
         }
     }
 
-    private func loadThumbnails(fileID: String) async {
+    private func loadThumbnails(fileID: String, generation: Int) async {
         guard let vttURL = session.client.thumbnailsURL(fileID: fileID, token: authToken),
               let spriteURL = session.client.spriteURL(fileID: fileID, token: authToken) else { return }
         guard let (data, response) = try? await URLSession.milmil.data(from: vttURL),
               (response as? HTTPURLResponse)?.statusCode == 200,
-              let text = String(data: data, encoding: .utf8) else { return }
+              let text = String(data: data, encoding: .utf8), generation == loadGeneration else { return }
         state.thumbnails = ThumbnailTrack.parse(text, spriteURL: spriteURL)
     }
 
@@ -313,7 +344,7 @@ final class PlayerController {
         case .eof:
             markCompleted()
             state.status = .ended
-            if session.preferences.autoNext, nextEpisode != nil { beginPostPlayCountdown() }
+            if session.preferences.autoNext, nextEpisode != nil { beginPostPlayCountdown(seconds: 5) }
         case .error:
             if fallback.advance() != nil, let file = episode?.mediaFile {
                 Self.log.warning("stage \(self.state.stage.rawValue) failed, trying \(self.fallback.current.rawValue)")
@@ -417,13 +448,17 @@ final class PlayerController {
     // MARK: - Commands
 
     func togglePause() {
+        setPaused(!state.paused)
+    }
+
+    func setPaused(_ paused: Bool) {
         guard let player else { return }
-        if state.status == .ended {
+        if !paused, state.status == .ended {
             player.seek(to: 0)
             player.set("pause", false)
             return
         }
-        player.set("pause", !state.paused)
+        player.set("pause", paused)
     }
 
     func seek(to seconds: Double) {
@@ -656,22 +691,30 @@ final class PlayerController {
 
     // MARK: - Segments / post-play
 
+    /// First entry into an OP/ED with the matching preference skips it,
+    /// including when resuming into the middle of one (web `SkipSegment`).
     private func checkAutoSkip(at position: Double) {
         guard let segment = state.currentSegment, !skippedSegmentIDs.contains(segment.id) else { return }
         let auto = (segment.type == "op" && session.preferences.autoSkipOp) || (segment.type == "ed" && session.preferences.autoSkipEd)
-        guard auto, position - segment.startTime < 2 else { return }
+        guard auto else { return }
         skipCurrentSegment()
     }
 
+    /// Shows the next-episode card for the last 30 s with the seconds left;
+    /// the actual switch waits for EOF (`handleEndFile`) like the web.
     private func checkPostPlay(at position: Double) {
-        guard state.duration > 0, nextEpisode != nil, postPlayCountdown == nil else { return }
-        guard session.preferences.autoNext, state.duration - position <= Self.postPlayLead, state.duration - position > 1 else { return }
-        beginPostPlayCountdown()
+        guard state.duration > 0, nextEpisode != nil, postPlayTask == nil, session.preferences.autoNext else { return }
+        let remaining = state.duration - position
+        if remaining <= Self.postPlayLead, remaining > 0 {
+            postPlayCountdown = Int(remaining.rounded(.up))
+        } else if postPlayCountdown != nil {
+            postPlayCountdown = nil
+        }
     }
 
-    private func beginPostPlayCountdown() {
+    private func beginPostPlayCountdown(seconds: Int) {
         guard postPlayTask == nil else { return }
-        postPlayCountdown = 10
+        postPlayCountdown = seconds
         postPlayTask = Task { [weak self] in
             while let self, let remaining = postPlayCountdown, remaining > 0, !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(1))
@@ -704,8 +747,10 @@ final class PlayerController {
     }
 
     private func scheduleHideResumePill() {
-        Task { [weak self] in
+        resumePillTask?.cancel()
+        resumePillTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(4))
+            guard !Task.isCancelled else { return }
             self?.showResumePill = false
         }
     }
@@ -713,7 +758,8 @@ final class PlayerController {
     // MARK: - Subtitles
 
     private func addSidecarSubtitles() {
-        guard let player else { return }
+        guard let player, sidecarsAddedForGeneration != loadGeneration, !state.sidecarSubtitles.isEmpty else { return }
+        sidecarsAddedForGeneration = loadGeneration
         for subtitle in state.sidecarSubtitles {
             guard let url = session.client.subtitleContentURL(id: subtitle.id, token: authToken) else { continue }
             player.addSubtitle(url.absoluteString, title: subtitle.filename, language: subtitle.language, select: false)
@@ -746,6 +792,9 @@ final class PlayerController {
     func windowClosed() {
         saveProgressNow()
         cancelPostPlay()
+        loadTask?.cancel()
+        transcodeTask?.cancel()
+        loadGeneration += 1
         player?.stop()
         endActivity()
         state.status = .idle
@@ -756,7 +805,9 @@ final class PlayerController {
         saveProgressNow()
         cancelPostPlay()
         eventTask?.cancel()
+        loadTask?.cancel()
         transcodeTask?.cancel()
+        loadGeneration += 1
         endActivity()
         NowPlayingBridge.shared.detach()
         player?.destroy()
