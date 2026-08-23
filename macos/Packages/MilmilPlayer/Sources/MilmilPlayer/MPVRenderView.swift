@@ -37,9 +37,10 @@ public final class MPVRenderView: NSView {
     }
 
     private func syncLayerFrame() {
+        guard renderLayer.frame != bounds else { return }
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        if renderLayer.frame != bounds { renderLayer.frame = bounds }
+        renderLayer.frame = bounds
         CATransaction.commit()
         renderLayer.setNeedsDisplay()
     }

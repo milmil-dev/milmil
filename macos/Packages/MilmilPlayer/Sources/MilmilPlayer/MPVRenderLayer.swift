@@ -15,7 +15,11 @@ import Synchronization
 public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
     private let player: MPVPlayer
     nonisolated(unsafe) private var renderContext: OpaquePointer?
+    /// One GL context for the layer's lifetime: mpv's GL objects belong to
+    /// the context the render context was created with, and CA would
+    /// otherwise ask for a fresh one whenever the display mask changes.
     nonisolated(unsafe) private var cglContext: CGLContextObj?
+    nonisolated(unsafe) private var cglPixelFormat: CGLPixelFormatObj?
     private let renderQueue = DispatchQueue(label: "dev.milmil.mpv.render", qos: .userInteractive)
     /// render.h: only one `mpv_render_*` call at a time per core. CA may
     /// drive `canDraw`/`draw` from its own thread during live resize while
@@ -59,6 +63,7 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
     // MARK: - Pixel format / context
 
     override public func copyCGLPixelFormat(forDisplayMask mask: UInt32) -> CGLPixelFormatObj {
+        if let cglPixelFormat { return CGLRetainPixelFormat(cglPixelFormat) }
         let attributes: [CGLPixelFormatAttribute] = [
             kCGLPFADoubleBuffer,
             kCGLPFAOpenGLProfile, CGLPixelFormatAttribute(kCGLOGLPVersion_3_2_Core.rawValue),
@@ -70,11 +75,17 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
         var format: CGLPixelFormatObj?
         var count: GLint = 0
         CGLChoosePixelFormat(attributes, &format, &count)
-        if let format { return format }
-        return super.copyCGLPixelFormat(forDisplayMask: mask)
+        let chosen = format ?? super.copyCGLPixelFormat(forDisplayMask: mask)
+        cglPixelFormat = chosen
+        return CGLRetainPixelFormat(chosen)
+    }
+
+    override public func releaseCGLPixelFormat(_ pixelFormat: CGLPixelFormatObj) {
+        CGLReleasePixelFormat(pixelFormat)
     }
 
     override public func copyCGLContext(forPixelFormat pixelFormat: CGLPixelFormatObj) -> CGLContextObj {
+        if let cglContext { return CGLRetainContext(cglContext) }
         let context = super.copyCGLContext(forPixelFormat: pixelFormat)
         var swapInterval: GLint = 1
         CGLSetParameter(context, kCGLCPSwapInterval, &swapInterval)
@@ -82,7 +93,11 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
         CGLSetCurrentContext(context)
         cglContext = context
         createRenderContextIfNeeded()
-        return context
+        return CGLRetainContext(context)
+    }
+
+    override public func releaseCGLContext(_ context: CGLContextObj) {
+        CGLReleaseContext(context)
     }
 
     private func createRenderContextIfNeeded() {
@@ -202,5 +217,13 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
             self.renderContext = nil
         }
         player.setRenderTeardown(nil)
+        if let cglContext {
+            CGLReleaseContext(cglContext)
+            self.cglContext = nil
+        }
+        if let cglPixelFormat {
+            CGLReleasePixelFormat(cglPixelFormat)
+            self.cglPixelFormat = nil
+        }
     }
 }

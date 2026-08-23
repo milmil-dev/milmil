@@ -80,23 +80,27 @@ final class DanmakuLayerView: NSView {
     func setPaused(_ paused: Bool) {
         guard paused != self.paused else { return }
         self.paused = paused
-        if paused {
-            let pausedTime = container.convertTime(CACurrentMediaTime(), from: nil)
-            container.speed = 0
-            container.timeOffset = pausedTime
-        } else {
-            let pausedTime = container.timeOffset
-            container.speed = Float(rate)
-            container.timeOffset = 0
-            container.beginTime = 0
-            let sincePause = container.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-            container.beginTime = sincePause
-        }
+        retime(speed: paused ? 0 : rate)
     }
 
     func setRate(_ rate: Double) {
-        self.rate = max(0.05, rate)
-        if !paused { container.speed = Float(self.rate) }
+        let clamped = max(0.05, rate)
+        guard clamped != self.rate else { return }
+        self.rate = clamped
+        if !paused { retime(speed: clamped) }
+    }
+
+    /// Change the container's speed without moving its local time: the
+    /// general form of the pause/resume recipe, correct for any rate.
+    private func retime(speed: Double) {
+        let now = CACurrentMediaTime()
+        let local = container.convertTime(now, from: nil)
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        container.speed = Float(speed)
+        container.timeOffset = local
+        container.beginTime = now
+        CATransaction.commit()
     }
 
     // MARK: - Ticking
@@ -345,7 +349,9 @@ struct DanmakuOverlayView: NSViewRepresentable {
         view.reduceMotion = reduceMotion
         view.clock = state.clock
         view.setRate(state.speed)
-        view.setPaused(state.paused || !state.status.isActive)
+        var stalled = false
+        if case .buffering = state.status { stalled = true }
+        view.setPaused(state.paused || stalled || !state.status.isActive)
         if let store {
             var raster = DanmakuLayerView.RasterStyle()
             raster.fontFamily = store.style.fontFamily

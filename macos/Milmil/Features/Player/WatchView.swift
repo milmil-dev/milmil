@@ -19,6 +19,7 @@ struct WatchView: View {
     @State private var store: WatchStore?
     @State private var surfaceModel = PlayerWindowModel()
     @FocusState private var composeFocused: Bool
+    @State private var token = UUID()
     @ObserveInjection private var inject
 
     private static let sidebarWidth: CGFloat = 380
@@ -38,7 +39,7 @@ struct WatchView: View {
             backdrop.set(nil, seed: "watch", dim: 0.7, owner: "watch")
             let store = WatchStore(bangumiID: bangumiID, client: session.client)
             self.store = store
-            coordinator.watchVisible = true
+            coordinator.watchDidAppear(token: token)
             if !coordinator.isPlaying(bangumiID: bangumiID, episodeID: episodeID) {
                 coordinator.play(PlaybackRequest(bangumiID: bangumiID, episodeID: episodeID, title: store.detail.value?.title ?? ""))
             } else {
@@ -53,7 +54,7 @@ struct WatchView: View {
             surfaceModel.detach()
             // Pushing 作品頁 on top also fires this; only a real pop stops playback.
             let stillOnStack = router.path.contains { if case .watch = $0 { return true } else { return false } }
-            coordinator.watchDidDisappear(stillOnStack: stillOnStack)
+            coordinator.watchDidDisappear(token: token, stillOnStack: stillOnStack)
         }
         .onChange(of: surfaceModel.isFullscreen) { _, full in router.immersive = full }
     }

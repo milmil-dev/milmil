@@ -108,10 +108,19 @@ final class DanmakuStore {
     }
 
     func apply(preferences: GlobalPreferences) {
+        let old = self.preferences
         self.preferences = preferences
         let newStyle = Style(preferences: preferences)
         if newStyle != style { style = newStyle }
-        rebuild()
+        // Only filter / density / conversion changes need the pipeline again;
+        // style-only changes (sliders) must not re-run OpenCC over every comment.
+        let pipelineChanged = old.danmakuDensity != preferences.danmakuDensity
+            || old.danmakuFilterScroll != preferences.danmakuFilterScroll
+            || old.danmakuFilterTop != preferences.danmakuFilterTop
+            || old.danmakuFilterBottom != preferences.danmakuFilterBottom
+            || old.danmakuBlockKeywords != preferences.danmakuBlockKeywords
+            || old.danmakuChineseConvert != preferences.danmakuChineseConvert
+        if pipelineChanged { rebuild() }
     }
 
     private func rebuild() {

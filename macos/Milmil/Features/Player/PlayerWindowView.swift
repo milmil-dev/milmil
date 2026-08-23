@@ -166,11 +166,11 @@ struct PlayerSurface: View {
                         .transition(.opacity)
                 }
                 if controller.postPlayCountdown != nil, let next = controller.nextEpisode {
-                    PostPlayCard(episode: next, countdown: controller.postPlayCountdown ?? 0) {
+                    PostPlayCard(episode: next, countdown: controller.autoNextEnabled ? controller.postPlayCountdown : nil) {
                         controller.cancelPostPlay()
                         controller.play(episode: next)
                     } cancel: {
-                        controller.cancelPostPlay()
+                        controller.dismissPostPlay()
                     }
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
@@ -299,7 +299,8 @@ struct ResumePill: View {
 
 struct PostPlayCard: View {
     let episode: PlayableEpisode
-    let countdown: Int
+    /// nil when auto-next is off: the card is just an offer.
+    let countdown: Int?
     var playNow: () -> Void
     var cancel: () -> Void
 
@@ -309,7 +310,7 @@ struct PostPlayCard: View {
                 .frame(width: 120, height: 68)
                 .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
             VStack(alignment: .leading, spacing: 4) {
-                Text("下一集 · \(countdown) 秒後").font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
+                Text(countdown.map { "下一集 · \($0) 秒後" } ?? "下一集").font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
                 Text("第 \(episode.number) 集").font(.system(size: 13, weight: .semibold))
                 if let title = episode.displayTitle { Text(title).font(.system(size: 11)).foregroundStyle(.white.opacity(0.8)).lineLimit(1) }
                 HStack(spacing: 8) {

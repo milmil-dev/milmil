@@ -25,9 +25,12 @@ public extension APIClient {
         case 200:
             return .ready
         case 202:
-            let body = try? JSONDecoder().decode(TranscodeStatus.self, from: data)
-            if body?.status == "error" { return .failed }
-            return .pending(progress: body?.progress)
+            // Anything but the handler's `{status, progress}` here is not "still working".
+            guard let body = try? JSONDecoder().decode(TranscodeStatus.self, from: data) else { return .failed }
+            return body.status == "error" ? .failed : .pending(progress: body.progress)
+        case 429, 502, 503, 504:
+            // A proxy blip or rate limit during a long ffmpeg run: keep polling.
+            return .pending(progress: nil)
         default:
             return .failed
         }

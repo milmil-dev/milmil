@@ -31,8 +31,10 @@ final class PlayerCoordinator {
 
     private(set) var controller: PlayerController?
     private(set) var presentation: Presentation = .embedded
-    /// True while a `WatchView` for the current series is on screen.
-    var watchVisible = false
+    /// The `WatchView` currently on screen (per-view token, so a page that
+    /// replaces another cannot be cleared by the old page's disappearance).
+    var activeWatchToken: UUID?
+    var watchVisible: Bool { activeWatchToken != nil }
     /// Set by the shell when a server session starts, cleared on logout.
     var session: ServerSession? {
         didSet { if session == nil { closePlayer() } }
@@ -73,8 +75,13 @@ final class PlayerCoordinator {
 
     /// The watch page left the stack while embedded → stop, like the web.
     /// Covered by another route (作品頁 pushed on top) → keep playing.
-    func watchDidDisappear(stillOnStack: Bool) {
-        watchVisible = false
+    func watchDidAppear(token: UUID) {
+        activeWatchToken = token
+    }
+
+    func watchDidDisappear(token: UUID, stillOnStack: Bool) {
+        guard activeWatchToken == token else { return }
+        activeWatchToken = nil
         if presentation == .embedded, !stillOnStack { controller?.windowClosed() }
     }
 

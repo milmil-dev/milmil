@@ -179,32 +179,34 @@ public final class MPVPlayer: @unchecked Sendable {
     /// `loadfile <url> replace -1 <options>`: the 4th argument is a
     /// comma-separated list, so callers must keep option *values* free of
     /// commas (titles go through the `force-media-title` property instead).
-    public func loadFile(_ url: String, options: [String: String] = [:]) throws {
+    /// Asynchronous: synchronous `mpv_command` can block for as long as the
+    /// core is busy (slow network); failures arrive as `endFile(.error)`.
+    public func loadFile(_ url: String, options: [String: String] = [:]) {
         var args = ["loadfile", url, "replace"]
         if !options.isEmpty {
             args.append("-1")
             args.append(options.map { "\($0.key)=\($0.value)" }.joined(separator: ","))
         }
-        try command(args)
+        commandAsync(args)
     }
 
     public func seek(to seconds: Double, exact: Bool = true) {
-        try? command(["seek", String(seconds), exact ? "absolute+exact" : "absolute"])
+        commandAsync(["seek", String(seconds), exact ? "absolute+exact" : "absolute"])
     }
 
     public func seek(by seconds: Double, exact: Bool = false) {
-        try? command(["seek", String(seconds), exact ? "relative+exact" : "relative"])
+        commandAsync(["seek", String(seconds), exact ? "relative+exact" : "relative"])
     }
 
     public func frameStep(backward: Bool = false) {
-        try? command([backward ? "frame-back-step" : "frame-step"])
+        commandAsync([backward ? "frame-back-step" : "frame-step"])
     }
 
     public func addSubtitle(_ url: String, title: String? = nil, language: String? = nil, select: Bool = true) {
         var args = ["sub-add", url, select ? "select" : "auto"]
         if let title { args.append(title) }
         if let language { args.append(language) }
-        try? command(args)
+        commandAsync(args)
     }
 
     // MARK: - Properties

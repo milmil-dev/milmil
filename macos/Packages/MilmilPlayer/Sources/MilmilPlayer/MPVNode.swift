@@ -4,7 +4,9 @@ import Libmpv
 /// A Swift copy of an `mpv_node` tree (track-list, chapter-list, …).
 /// Built eagerly so the C memory can be released right after the event.
 public indirect enum MPVNode: Sendable, Equatable {
-    case none
+    /// mpv's `MPV_FORMAT_NONE`. Not named `none` so it cannot be confused
+    /// with `Optional.none` at call sites.
+    case null
     case string(String)
     case flag(Bool)
     case int(Int64)
@@ -16,7 +18,7 @@ public indirect enum MPVNode: Sendable, Equatable {
     init(_ node: mpv_node) {
         switch node.format {
         case MPV_FORMAT_STRING, MPV_FORMAT_OSD_STRING:
-            self = node.u.string.map { .string(String(cString: $0)) } ?? .none
+            self = node.u.string.map { .string(String(cString: $0)) } ?? .null
         case MPV_FORMAT_FLAG:
             self = .flag(node.u.flag != 0)
         case MPV_FORMAT_INT64:
@@ -45,7 +47,7 @@ public indirect enum MPVNode: Sendable, Equatable {
             guard let bytes = node.u.ba, let data = bytes.pointee.data else { self = .bytes(Data()); return }
             self = .bytes(Data(bytes: data, count: bytes.pointee.size))
         default:
-            self = .none
+            self = .null
         }
     }
 

@@ -45,6 +45,11 @@ final class PlayerController {
     private var lastTimelinePush: TimeInterval = 0
     private var lastSavedPosition = -1
     private var skippedSegmentIDs: Set<String> = []
+    /// mpv has reported a real `time-pos` for the current file; before that a
+    /// progress save would write 0 and wipe the server's resume point.
+    private var hasPosition = false
+    /// The user dismissed the next-episode card for this episode.
+    private var postPlayDismissed = false
     private var activity: NSObjectProtocol?
     private var loadGeneration = 0
     private var authToken: String?
@@ -170,6 +175,8 @@ final class PlayerController {
         state.duration = Double(episode.progress?.durationSeconds ?? 0)
         skippedSegmentIDs = []
         lastSavedPosition = -1
+        hasPosition = false
+        postPlayDismissed = false
         let number = episode.number
         state.mediaTitle = "\(request?.title ?? "") 第 \(number) 集"
         if let progress = episode.progress, progress.positionSeconds > 0, !progress.completed {
@@ -235,6 +242,7 @@ final class PlayerController {
                 guard let self else { return }
                 do {
                     let start = try await session.client.startTranscode(fileID: fileID)
+                    guard generation == loadGeneration, !Task.isCancelled else { return }
                     var token = start.token
                     if start.status == "ready" {
                         load(url: session.client.hlsURL(token: token), generation: generation)
@@ -242,7 +250,9 @@ final class PlayerController {
                     }
                     while !Task.isCancelled, generation == loadGeneration {
                         try await Task.sleep(for: .seconds(2))
-                        switch try await session.client.transcodeState(token: token) {
+                        let transcode = try await session.client.transcodeState(token: token)
+                        guard generation == loadGeneration, !Task.isCancelled else { return }
+                        switch transcode {
                         case .ready:
                             load(url: session.client.hlsURL(token: token), generation: generation)
                             return
@@ -273,12 +283,8 @@ final class PlayerController {
         }
         // Titles can contain commas, which would split loadfile's option list.
         player.set("force-media-title", state.mediaTitle)
-        do {
-            try player.loadFile(url.absoluteString, options: options)
-            player.set("pause", false)
-        } catch {
-            state.status = .failed(error.localizedDescription)
-        }
+        player.loadFile(url.absoluteString, options: options)
+        player.set("pause", false)
     }
 
     private func loadThumbnails(fileID: String, generation: Int) async {
@@ -329,6 +335,7 @@ final class PlayerController {
             state.isSeeking = false
             if case .buffering = state.status { state.status = state.paused ? .paused : .playing }
             state.clock.update(position: state.timePos, hostTime: CACurrentMediaTime())
+            NowPlayingBridge.shared.update(self)
         case .videoReconfig:
             break
         case let .propertyChange(name, value):
@@ -344,7 +351,7 @@ final class PlayerController {
         case .eof:
             markCompleted()
             state.status = .ended
-            if session.preferences.autoNext, nextEpisode != nil { beginPostPlayCountdown(seconds: 5) }
+            if session.preferences.autoNext, nextEpisode != nil, !postPlayDismissed { beginPostPlayCountdown(seconds: 5) }
         case .error:
             if fallback.advance() != nil, let file = episode?.mediaFile {
                 Self.log.warning("stage \(self.state.stage.rawValue) failed, trying \(self.fallback.current.rawValue)")
@@ -369,6 +376,7 @@ final class PlayerController {
         switch name {
         case "time-pos":
             guard let pos = value?.doubleValue else { return true }
+            hasPosition = true
             state.clock.update(position: pos, hostTime: now)
             if now - lastTimelinePush >= 0.1 {
                 lastTimelinePush = now
@@ -376,14 +384,21 @@ final class PlayerController {
                 checkAutoSkip(at: pos)
                 checkPostPlay(at: pos)
             }
-        case "duration": state.duration = value?.doubleValue ?? 0
+        case "duration":
+            state.duration = value?.doubleValue ?? 0
+            NowPlayingBridge.shared.update(self)
+        case "eof-reached":
+            // `keep-open=yes`: mpv pauses at the end instead of emitting END_FILE.
+            if value?.boolValue == true, state.status != .ended, state.status.isActive || state.paused { handleEndFile(.eof) }
         case "demuxer-cache-duration": state.cacheSeconds = value?.doubleValue ?? 0
         case "seeking": state.isSeeking = value?.boolValue ?? false
         case "paused-for-cache":
             if value?.boolValue == true, state.status.isActive {
                 state.status = .buffering(percent: 0)
+                state.clock.setPaused(true, hostTime: now)
             } else if case .buffering = state.status {
                 state.status = state.paused ? .paused : .playing
+                state.clock.setPaused(state.paused, hostTime: now)
             }
         case "cache-buffering-state":
             if case .buffering = state.status { state.status = .buffering(percent: Int(value?.intValue ?? 0)) }
@@ -398,12 +413,17 @@ final class PlayerController {
             let paused = value?.boolValue ?? true
             state.paused = paused
             state.clock.setPaused(paused, hostTime: now)
-            if state.status.isActive || state.status == .ended { state.status = paused ? .paused : .playing }
+            if state.status.isActive {
+                state.status = paused ? .paused : .playing
+            } else if state.status == .ended, !paused {
+                state.status = .playing
+            }
             if paused { saveProgressNow() }
             NowPlayingBridge.shared.update(self)
         case "speed":
             state.speed = value?.doubleValue ?? 1
             state.clock.setSpeed(state.speed, hostTime: now)
+            NowPlayingBridge.shared.update(self)
         case "volume": state.volume = value?.doubleValue ?? 100
         case "mute": state.muted = value?.boolValue ?? false
         case "sub-delay": state.subDelay = value?.doubleValue ?? 0
@@ -661,7 +681,8 @@ final class PlayerController {
     }
 
     func saveProgressNow() {
-        guard let episode, let file = episode.mediaFile, state.duration > 0 else { return }
+        guard let episode, let file = episode.mediaFile, state.duration > 0, hasPosition else { return }
+        guard state.status.isActive || state.status == .ended else { return }
         let position = Int(state.timePos)
         guard position != lastSavedPosition else { return }
         lastSavedPosition = position
@@ -703,7 +724,7 @@ final class PlayerController {
     /// Shows the next-episode card for the last 30 s with the seconds left;
     /// the actual switch waits for EOF (`handleEndFile`) like the web.
     private func checkPostPlay(at position: Double) {
-        guard state.duration > 0, nextEpisode != nil, postPlayTask == nil, session.preferences.autoNext else { return }
+        guard state.duration > 0, nextEpisode != nil, postPlayTask == nil, !postPlayDismissed else { return }
         let remaining = state.duration - position
         if remaining <= Self.postPlayLead, remaining > 0 {
             postPlayCountdown = Int(remaining.rounded(.up))
@@ -733,6 +754,14 @@ final class PlayerController {
         postPlayTask = nil
         postPlayCountdown = nil
     }
+
+    /// The user closed the card: stay dismissed for the rest of this episode.
+    func dismissPostPlay() {
+        postPlayDismissed = true
+        cancelPostPlay()
+    }
+
+    var autoNextEnabled: Bool { session.preferences.autoNext }
 
     // MARK: - OSD
 

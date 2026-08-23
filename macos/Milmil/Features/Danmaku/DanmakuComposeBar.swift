@@ -84,7 +84,7 @@ struct DanmakuComposeBar: View {
     }
 
     private func send() {
-        guard let store = controller.danmakuStore else { return }
+        guard let store = controller.danmakuStore, !store.isSending else { return }
         let payload = text
         text = ""
         let time = controller.state.timePos
