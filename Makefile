@@ -1,7 +1,7 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
 .PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill \
-	macos-gen macos-build macos-test macos-lint
+	macos-gen macos-build macos-test macos-lint macos-run
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -66,3 +66,10 @@ macos-build: macos-gen
 	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
 		-destination 'platform=macOS,arch=arm64' -configuration Debug \
 		CODE_SIGNING_ALLOWED=NO -quiet build
+
+# Build into macos/DerivedData (gitignored) and launch the app — no Xcode UI needed.
+macos-run: macos-gen
+	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
+		-destination 'platform=macOS,arch=arm64' -configuration Debug \
+		-derivedDataPath DerivedData -quiet build \
+		&& open DerivedData/Build/Products/Debug/milmil.app

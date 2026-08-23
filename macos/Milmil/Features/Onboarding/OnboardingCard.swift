@@ -61,30 +61,69 @@ struct AppMark: View {
     }
 }
 
-/// Gradient poster wall, rotated like the web login page. Static — no
-/// motion, so it is safe under Reduce Motion.
+/// The web login page's cinema wall: trending covers from
+/// `GET /discover/trending` in a 14-column grid, tilted in perspective
+/// (`rotateY(-22°) rotateZ(2°)`), dimmed 55 %, vignetted, with an accent glow
+/// behind the form. Falls back to title-keyed gradients until covers arrive
+/// (or when there is no server yet). The only motion is a one-off fade-in.
 struct PosterWall: View {
-    private static let names = ["尖帽子的魔法工房", "黄泉使者", "葬送的芙莉莲", "药屋少女的呢喃", "迷宫饭", "夏日重现", "异兽魔都", "左撇子艾伦"]
+    @Environment(SessionStore.self) private var session
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private static let columns = 14
+    private static let slots = 210
+    private static let fallbackNames = ["尖帽子的魔法工房", "黄泉使者", "葬送的芙莉莲", "药屋少女的呢喃", "迷宫饭", "夏日重现", "异兽魔都", "左撇子艾伦"]
 
     var body: some View {
+        let covers = session.trendingCovers
         GeometryReader { proxy in
-            let columns = Array(repeating: GridItem(.flexible(), spacing: 5), count: 12)
+            let columns = Array(repeating: GridItem(.flexible(), spacing: 5), count: Self.columns)
             LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(0..<72, id: \.self) { index in
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(Theme.animeGradient(Self.names[index % Self.names.count] + String(index)))
+                ForEach(0..<Self.slots, id: \.self) { index in
+                    cell(index: index, covers: covers)
                         .aspectRatio(2 / 3, contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 3))
                 }
             }
-            .frame(width: proxy.size.width * 1.6)
-            .offset(x: -proxy.size.width * 0.3, y: -proxy.size.height * 0.25)
-            .rotationEffect(.degrees(-12))
-            .opacity(0.9)
+            .frame(width: proxy.size.width * 1.8)
+            .offset(x: -proxy.size.width * 0.4, y: -proxy.size.height * 0.2)
+            .rotation3DEffect(.degrees(-22), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
+            .rotationEffect(.degrees(2))
         }
+        .animation(reduceMotion ? nil : .easeOut(duration: 1.2), value: covers)
         .overlay(Color.black.opacity(0.55))
-        .overlay(LinearGradient(colors: [Theme.background.opacity(0.4), Theme.background.opacity(0.95)], startPoint: .top, endPoint: .bottom))
+        .overlay(
+            RadialGradient(
+                stops: [
+                    .init(color: .clear, location: 0),
+                    .init(color: Theme.background.opacity(0.35), location: 0.7),
+                    .init(color: Theme.background, location: 1),
+                ],
+                center: .center,
+                startRadius: 0,
+                endRadius: 900
+            )
+        )
+        .overlay(
+            Circle()
+                .fill(Theme.accent.opacity(0.05))
+                .frame(width: 600, height: 600)
+                .blur(radius: 120)
+        )
         .ignoresSafeArea()
         .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private func cell(index: Int, covers: [URL]) -> some View {
+        let fallback = Theme.animeGradient(Self.fallbackNames[index % Self.fallbackNames.count] + String(index))
+        if covers.isEmpty {
+            Rectangle().fill(fallback)
+        } else {
+            RemoteImage(url: covers[index % covers.count], maxPixel: 240) {
+                Rectangle().fill(fallback)
+            }
+        }
     }
 }
 

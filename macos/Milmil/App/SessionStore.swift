@@ -26,6 +26,8 @@ final class SessionStore {
     private(set) var profiles: [ServerProfile] = []
     private(set) var phase: SessionPhase = .noServer
     private(set) var client: APIClient?
+    /// Covers for the onboarding poster wall; loaded once per connect.
+    private(set) var trendingCovers: [URL] = []
 
     private let tokenStore: any TokenStore
     private let defaults: UserDefaults
@@ -91,6 +93,7 @@ final class SessionStore {
             var updated = profile
             updated.lastKnownVersion = health.version
             update(updated)
+            loadTrendingCovers(from: client)
 
             if token != nil {
                 do {
@@ -161,6 +164,17 @@ final class SessionStore {
         updated.username = session.user.username
         update(updated)
         phase = .ready(updated, user: session.user, version: version)
+    }
+
+    /// Best-effort and public, so it never gates the login flow.
+    private func loadTrendingCovers(from client: APIClient) {
+        guard trendingCovers.isEmpty else { return }
+        Task {
+            guard let items = try? await client.trending(page: 1) else { return }
+            let covers = items.compactMap(\.coverImage)
+            guard !covers.isEmpty, self.client === client else { return }
+            trendingCovers = covers
+        }
     }
 
     // MARK: - Persistence
