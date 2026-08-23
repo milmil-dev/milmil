@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
@@ -52,7 +52,7 @@ type previewResponse struct {
 	Matched int           `json:"matched"`
 }
 
-func (h *handler) handlePreviewRSSFeed(c echo.Context) error {
+func (h *handler) handlePreviewRSSFeed(c *echo.Context) error {
 	feedID := c.Param("id")
 	ruleID := c.QueryParam("rule_id")
 	ctx := c.Request().Context()
@@ -148,7 +148,7 @@ type previewURLRequest struct {
 	URL string `json:"url"`
 }
 
-func (h *handler) handlePreviewRSSFeedURL(c echo.Context) error {
+func (h *handler) handlePreviewRSSFeedURL(c *echo.Context) error {
 	var req previewURLRequest
 	if err := c.Bind(&req); err != nil || req.URL == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "url is required")
@@ -201,7 +201,7 @@ type updateRSSFeedRequest struct {
 	FetchIntervalMinutes int64  `json:"fetch_interval_minutes"`
 }
 
-func (h *handler) handleListRSSFeeds(c echo.Context) error {
+func (h *handler) handleListRSSFeeds(c *echo.Context) error {
 	feeds, err := h.queries.ListRSSFeeds(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -209,7 +209,7 @@ func (h *handler) handleListRSSFeeds(c echo.Context) error {
 	return c.JSON(http.StatusOK, feeds)
 }
 
-func (h *handler) handleCreateRSSFeed(c echo.Context) error {
+func (h *handler) handleCreateRSSFeed(c *echo.Context) error {
 	var req createRSSFeedRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -243,7 +243,7 @@ func (h *handler) handleCreateRSSFeed(c echo.Context) error {
 	return c.JSON(http.StatusCreated, feed)
 }
 
-func (h *handler) handleUpdateRSSFeed(c echo.Context) error {
+func (h *handler) handleUpdateRSSFeed(c *echo.Context) error {
 	var req updateRSSFeedRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -284,14 +284,14 @@ func (h *handler) handleUpdateRSSFeed(c echo.Context) error {
 	return c.JSON(http.StatusOK, feed)
 }
 
-func (h *handler) handleDeleteRSSFeed(c echo.Context) error {
+func (h *handler) handleDeleteRSSFeed(c *echo.Context) error {
 	if err := h.queries.DeleteRSSFeed(c.Request().Context(), c.Param("id")); err != nil {
 		return echo.ErrInternalServerError
 	}
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
+func (h *handler) handleRefreshRSSFeed(c *echo.Context) error {
 	ctx := c.Request().Context()
 	feedID := c.Param("id")
 
@@ -398,8 +398,8 @@ func (h *handler) handleRefreshRSSFeed(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
-		"items_found":    len(items),
-		"items_added":    added,
-		"rules_checked":  len(rules),
+		"items_found":   len(items),
+		"items_added":   added,
+		"rules_checked": len(rules),
 	})
 }

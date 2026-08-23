@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/ffmpeg"
 	"github.com/milmil/api/internal/storage"
@@ -25,7 +25,7 @@ type transcodeRequest struct {
 	Resolution string `json:"resolution"`
 }
 
-func (h *handler) handleStartTranscode(c echo.Context) error {
+func (h *handler) handleStartTranscode(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("fileId")
 
@@ -154,7 +154,7 @@ func (h *handler) handleStartTranscode(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleHLSMaster(c echo.Context) error {
+func (h *handler) handleHLSMaster(c *echo.Context) error {
 	token := c.Param("token")
 	session, err := h.queries.GetTranscodeSession(c.Request().Context(), token)
 	if err != nil {
@@ -172,7 +172,7 @@ func (h *handler) handleHLSMaster(c echo.Context) error {
 	return c.File(m3u8Path)
 }
 
-func (h *handler) handleHLSSegment(c echo.Context) error {
+func (h *handler) handleHLSSegment(c *echo.Context) error {
 	token := c.Param("token")
 	segment := c.Param("segment")
 

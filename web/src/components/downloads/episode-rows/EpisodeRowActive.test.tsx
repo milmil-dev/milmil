@@ -1,5 +1,5 @@
 // web/src/components/downloads/episode-rows/EpisodeRowActive.test.tsx
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { render, screen } from '@/test/test-utils';
 import { EpisodeRowActive } from './EpisodeRowActive';
 

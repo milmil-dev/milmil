@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
 )
@@ -23,7 +23,7 @@ type oauthCreds struct {
 	ClientSecret string `json:"client_secret"`
 }
 
-func (h *handler) loadOAuthCreds(c echo.Context, settingsKey string) (*oauthCreds, error) {
+func (h *handler) loadOAuthCreds(c *echo.Context, settingsKey string) (*oauthCreds, error) {
 	setting, err := h.queries.GetSetting(c.Request().Context(), settingsKey)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -41,7 +41,7 @@ func (h *handler) loadOAuthCreds(c echo.Context, settingsKey string) (*oauthCred
 	return &creds, nil
 }
 
-func buildRedirectURI(c echo.Context, provider string) string {
+func buildRedirectURI(c *echo.Context, provider string) string {
 	scheme := "http"
 	if c.Request().TLS != nil || c.Request().Header.Get("X-Forwarded-Proto") == "https" {
 		scheme = "https"
@@ -51,7 +51,7 @@ func buildRedirectURI(c echo.Context, provider string) string {
 
 // ─── Bangumi ────────────────────────────────────────────────────────────────
 
-func (h *handler) handleBangumiAuthURL(c echo.Context) error {
+func (h *handler) handleBangumiAuthURL(c *echo.Context) error {
 	creds, err := h.loadOAuthCreds(c, "bangumi_oauth")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Bangumi OAuth not configured: "+err.Error())
@@ -67,7 +67,7 @@ func (h *handler) handleBangumiAuthURL(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"url": authURL})
 }
 
-func (h *handler) handleBangumiCallback(c echo.Context) error {
+func (h *handler) handleBangumiCallback(c *echo.Context) error {
 	ctx := c.Request().Context()
 	code := c.QueryParam("code")
 	if code == "" {
@@ -125,7 +125,7 @@ func (h *handler) handleBangumiCallback(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "/settings")
 }
 
-func (h *handler) handleBangumiDisconnect(c echo.Context) error {
+func (h *handler) handleBangumiDisconnect(c *echo.Context) error {
 	ctx := c.Request().Context()
 	err := h.queries.DeleteSetting(ctx, "bangumi_token")
 	if err != nil {
@@ -138,7 +138,7 @@ func (h *handler) handleBangumiDisconnect(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleBangumiSync(c echo.Context) error {
+func (h *handler) handleBangumiSync(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 	if h.syncSvc == nil {
@@ -153,7 +153,7 @@ func (h *handler) handleBangumiSync(c echo.Context) error {
 
 // ─── AniList ────────────────────────────────────────────────────────────────
 
-func (h *handler) handleAniListAuthURL(c echo.Context) error {
+func (h *handler) handleAniListAuthURL(c *echo.Context) error {
 	creds, err := h.loadOAuthCreds(c, "anilist_oauth")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "AniList OAuth not configured: "+err.Error())
@@ -169,7 +169,7 @@ func (h *handler) handleAniListAuthURL(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"url": authURL})
 }
 
-func (h *handler) handleAniListCallback(c echo.Context) error {
+func (h *handler) handleAniListCallback(c *echo.Context) error {
 	ctx := c.Request().Context()
 	code := c.QueryParam("code")
 	if code == "" {
@@ -225,7 +225,7 @@ func (h *handler) handleAniListCallback(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "/settings")
 }
 
-func (h *handler) handleAniListDisconnect(c echo.Context) error {
+func (h *handler) handleAniListDisconnect(c *echo.Context) error {
 	ctx := c.Request().Context()
 	err := h.queries.DeleteSetting(ctx, "anilist_token")
 	if err != nil {
@@ -238,7 +238,7 @@ func (h *handler) handleAniListDisconnect(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleAniListSync(c echo.Context) error {
+func (h *handler) handleAniListSync(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 	if h.syncSvc == nil {

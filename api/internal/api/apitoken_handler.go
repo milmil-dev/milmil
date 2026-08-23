@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
 )
@@ -32,7 +32,7 @@ type apiTokenCreateResponse struct {
 	CreatedAt   string `json:"created_at"`
 }
 
-func (h *handler) handleListAPITokens(c echo.Context) error {
+func (h *handler) handleListAPITokens(c *echo.Context) error {
 	tokens, err := h.queries.ListAPITokensByUser(c.Request().Context(), getUserID(c))
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -57,7 +57,7 @@ func (h *handler) handleListAPITokens(c echo.Context) error {
 	return c.JSON(http.StatusOK, dtos)
 }
 
-func (h *handler) handleCreateAPIToken(c echo.Context) error {
+func (h *handler) handleCreateAPIToken(c *echo.Context) error {
 	var req apiTokenCreateRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -104,7 +104,7 @@ func (h *handler) handleCreateAPIToken(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleDeleteAPIToken(c echo.Context) error {
+func (h *handler) handleDeleteAPIToken(c *echo.Context) error {
 	id := c.Param("id")
 	if err := h.queries.DeleteAPIToken(c.Request().Context(), store.DeleteAPITokenParams{
 		ID:     id,
@@ -115,7 +115,7 @@ func (h *handler) handleDeleteAPIToken(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleGetCurrentToken(c echo.Context) error {
+func (h *handler) handleGetCurrentToken(c *echo.Context) error {
 	tokenID := getTokenID(c)
 	token, err := h.queries.GetAPITokenByID(c.Request().Context(), store.GetAPITokenByIDParams{
 		ID:     tokenID,
@@ -139,7 +139,7 @@ func (h *handler) handleGetCurrentToken(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto)
 }
 
-func (h *handler) handleDeleteOtherTokens(c echo.Context) error {
+func (h *handler) handleDeleteOtherTokens(c *echo.Context) error {
 	tokenID := getTokenID(c)
 	if err := h.queries.DeleteOtherAPITokens(c.Request().Context(), store.DeleteOtherAPITokensParams{
 		UserID: getUserID(c),

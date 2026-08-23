@@ -3,15 +3,15 @@ package jellyfin
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
 // MediaSegmentItem is a single Jellyfin media segment (intro, outro, recap).
 type MediaSegmentItem struct {
-	ID       string `json:"Id"`
-	ItemID   string `json:"ItemId"`
-	Type     string `json:"Type"`
+	ID         string `json:"Id"`
+	ItemID     string `json:"ItemId"`
+	Type       string `json:"Type"`
 	StartTicks int64  `json:"StartTicks"`
 	EndTicks   int64  `json:"EndTicks"`
 }
@@ -35,7 +35,7 @@ func segmentTypeToJellyfin(t string) (string, bool) {
 	}
 }
 
-func (h *Handler) handleMediaSegments(c echo.Context) error {
+func (h *Handler) handleMediaSegments(c *echo.Context) error {
 	itemIDEncoded := c.Param("itemId")
 	typ, id, err := DecodeItemID(itemIDEncoded)
 	if err != nil {

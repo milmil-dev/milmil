@@ -9,14 +9,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/integration/tmdb"
 	"github.com/milmil/api/internal/store"
 )
 
 var settingsKeys = []string{"dandanplay", "player", "appearance", "bangumi_oauth", "bangumi_token", "anilist_oauth", "anilist_token", "tmdb_api_key", "collection"}
 
-func (h *handler) handleGetSettings(c echo.Context) error {
+func (h *handler) handleGetSettings(c *echo.Context) error {
 	ctx := c.Request().Context()
 	result := make(map[string]json.RawMessage, len(settingsKeys))
 
@@ -35,7 +35,7 @@ func (h *handler) handleGetSettings(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleUpdateSettings(c echo.Context) error {
+func (h *handler) handleUpdateSettings(c *echo.Context) error {
 	section := c.Param("section")
 
 	body, err := io.ReadAll(c.Request().Body)
@@ -83,7 +83,7 @@ func (h *handler) tmdbClient() tmdb.Client {
 	return h.tmdb
 }
 
-func (h *handler) handleExportSettings(c echo.Context) error {
+func (h *handler) handleExportSettings(c *echo.Context) error {
 	ctx := c.Request().Context()
 	result := make(map[string]json.RawMessage, len(settingsKeys))
 
@@ -102,7 +102,7 @@ func (h *handler) handleExportSettings(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleImportSettings(c echo.Context) error {
+func (h *handler) handleImportSettings(c *echo.Context) error {
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
@@ -130,7 +130,7 @@ func (h *handler) handleImportSettings(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleResetSettings(c echo.Context) error {
+func (h *handler) handleResetSettings(c *echo.Context) error {
 	ctx := c.Request().Context()
 	for _, key := range settingsKeys {
 		if _, upsertErr := h.queries.UpsertSetting(ctx, store.UpsertSettingParams{

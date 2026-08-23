@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => () => {},
@@ -96,7 +96,6 @@ vi.mock('@/store/preferences-store', () => {
 
 vi.mock('@/lib/api/stream', () => ({
   getStreamUrl: () => 'http://localhost/stream/test',
-  parseDandanplayComments: () => [],
   mediaApi: { info: () => Promise.resolve(null) },
   mediaKeys: { info: (fileId: string) => ['media', 'info', fileId] },
 }));

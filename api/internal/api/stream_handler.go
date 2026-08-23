@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/ffmpeg"
 	"github.com/milmil/api/internal/storage"
@@ -28,7 +28,7 @@ var mimeTypes = map[string]string{
 	".flv":  "video/x-flv",
 }
 
-func (h *handler) handleStreamDirect(c echo.Context) error {
+func (h *handler) handleStreamDirect(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("fileId")
 
@@ -113,7 +113,7 @@ func (h *handler) handleStreamDirect(c echo.Context) error {
 // handleStreamRemux re-wraps a video file into MP4 container without re-encoding.
 // Used for MKV/AVI files with browser-compatible codecs (H264, VP9).
 // Much faster than full transcode — only copies streams.
-func (h *handler) handleStreamRemux(c echo.Context) error {
+func (h *handler) handleStreamRemux(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("fileId")
 
@@ -150,7 +150,9 @@ func (h *handler) handleStreamRemux(c echo.Context) error {
 		}
 
 		tempDir := filepath.Join(os.TempDir(), "milmil", "remux-input")
-		os.MkdirAll(tempDir, 0o755)
+		if err := os.MkdirAll(tempDir, 0o755); err != nil {
+			return echo.ErrInternalServerError
+		}
 		tempInput = filepath.Join(tempDir, filepath.Base(mediaFile.Path))
 
 		reader, err := provider.Open(mediaFile.Path)
@@ -181,7 +183,9 @@ func (h *handler) handleStreamRemux(c echo.Context) error {
 
 	// Remux to temp MP4
 	outputDir := filepath.Join(os.TempDir(), "milmil", "remux-output")
-	os.MkdirAll(outputDir, 0o755)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return echo.ErrInternalServerError
+	}
 	outputPath := filepath.Join(outputDir, fmt.Sprintf("%s.mp4", fileID))
 
 	// Check if already remuxed (cache)

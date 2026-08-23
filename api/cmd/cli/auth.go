@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	defaultServer = "http://localhost:8080"
+	defaultServer  = "http://localhost:8080"
 	apiTokenPrefix = "mlml_"
 )
 

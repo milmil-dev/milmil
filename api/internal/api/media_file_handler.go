@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -93,7 +93,7 @@ type matchMediaFileRequest struct {
 	EpisodeID int64 `json:"episode_id"`
 }
 
-func (h *handler) handleListMediaFiles(c echo.Context) error {
+func (h *handler) handleListMediaFiles(c *echo.Context) error {
 	libraryID := c.Param("id")
 
 	// Check library exists
@@ -163,7 +163,7 @@ func (h *handler) handleListMediaFiles(c echo.Context) error {
 	})
 }
 
-func (h *handler) handleMatchMediaFile(c echo.Context) error {
+func (h *handler) handleMatchMediaFile(c *echo.Context) error {
 	fileID := c.Param("id")
 
 	var req matchMediaFileRequest
@@ -200,7 +200,7 @@ func (h *handler) handleMatchMediaFile(c echo.Context) error {
 	return c.JSON(http.StatusOK, updated)
 }
 
-func (h *handler) handleFileTree(c echo.Context) error {
+func (h *handler) handleFileTree(c *echo.Context) error {
 	libraryID := c.Param("id")
 
 	// Check library exists
@@ -245,10 +245,7 @@ func (h *handler) handleFileTree(c echo.Context) error {
 
 	for _, f := range files {
 		// Get relative directory by stripping the library base path
-		relPath := f.Path
-		if strings.HasPrefix(relPath, basePath) {
-			relPath = relPath[len(basePath):]
-		}
+		relPath := strings.TrimPrefix(f.Path, basePath)
 		dir := filepath.Dir(relPath)
 
 		// Split directory into parts
@@ -311,7 +308,7 @@ func (h *handler) handleFileTree(c echo.Context) error {
 	return c.JSON(http.StatusOK, root)
 }
 
-func (h *handler) handleUnmatchMediaFile(c echo.Context) error {
+func (h *handler) handleUnmatchMediaFile(c *echo.Context) error {
 	fileID := c.Param("id")
 
 	// Check file exists
@@ -336,7 +333,7 @@ type bulkMatchRequest struct {
 	EpisodeStart int64    `json:"episode_start"`
 }
 
-func (h *handler) handleBulkMatchMediaFiles(c echo.Context) error {
+func (h *handler) handleBulkMatchMediaFiles(c *echo.Context) error {
 	var req bulkMatchRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
@@ -403,7 +400,7 @@ type bulkUnmatchRequest struct {
 	FileIDs []string `json:"file_ids"`
 }
 
-func (h *handler) handleBulkUnmatchMediaFiles(c echo.Context) error {
+func (h *handler) handleBulkUnmatchMediaFiles(c *echo.Context) error {
 	var req bulkUnmatchRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")

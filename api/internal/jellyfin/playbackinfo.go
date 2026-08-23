@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *Handler) handlePlaybackInfo(c echo.Context) error {
+func (h *Handler) handlePlaybackInfo(c *echo.Context) error {
 	itemIDEncoded := c.Param("itemId")
 	typ, id, err := DecodeItemID(itemIDEncoded)
 	if err != nil {
@@ -51,7 +51,7 @@ func (h *Handler) handlePlaybackInfo(c echo.Context) error {
 }
 
 // getMediaSourcesForEpisode returns media sources for an episode by looking up its playable files.
-func (h *Handler) getMediaSourcesForEpisode(c echo.Context, episodeID string) []MediaSource {
+func (h *Handler) getMediaSourcesForEpisode(c *echo.Context, episodeID string) []MediaSource {
 	files, err := h.queries.ListMediaFilesByEpisodeID(c.Request().Context(), episodeID)
 	if err != nil {
 		return nil
@@ -160,6 +160,6 @@ func (h *Handler) mediaFileToSource(f store.MediaFile) MediaSource {
 		SupportsTranscoding:  true,
 		SupportsProbing:      true,
 		VideoType:            "VideoFile",
-		MediaStreams:          streams,
+		MediaStreams:         streams,
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/library/duplicates"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
@@ -19,7 +19,7 @@ func (h *handler) providerForLibrary(lib store.Library) (storage.Provider, error
 	return storage.ProviderForLibrary(lib, h.encryptionKey)
 }
 
-func (h *handler) handleAnimeDuplicates(c echo.Context) error {
+func (h *handler) handleAnimeDuplicates(c *echo.Context) error {
 	ctx := c.Request().Context()
 	idStr := c.Param("bangumiId")
 	bangumiID, err := strconv.ParseInt(idStr, 10, 64)
@@ -45,7 +45,7 @@ func (h *handler) handleAnimeDuplicates(c echo.Context) error {
 	return c.JSON(http.StatusOK, sets)
 }
 
-func (h *handler) handleLibraryDuplicates(c echo.Context) error {
+func (h *handler) handleLibraryDuplicates(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	sets, err := duplicates.FindLibraryDuplicates(ctx, h.queries, libraryID)
@@ -63,7 +63,7 @@ type setPreferredReq struct {
 	MediaFileID string `json:"media_file_id"`
 }
 
-func (h *handler) handleSetEpisodePreferred(c echo.Context) error {
+func (h *handler) handleSetEpisodePreferred(c *echo.Context) error {
 	ctx := c.Request().Context()
 	episodeID := c.Param("id")
 	var req setPreferredReq
@@ -92,7 +92,7 @@ func (h *handler) handleSetEpisodePreferred(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleDeleteMediaFile(c echo.Context) error {
+func (h *handler) handleDeleteMediaFile(c *echo.Context) error {
 	ctx := c.Request().Context()
 	id := c.Param("id")
 	mf, err := h.queries.GetMediaFileByID(ctx, id)
@@ -117,7 +117,7 @@ func (h *handler) handleDeleteMediaFile(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleLibraryDuplicateCleanup(c echo.Context) error {
+func (h *handler) handleLibraryDuplicateCleanup(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	library, err := h.queries.GetLibrary(ctx, libraryID)

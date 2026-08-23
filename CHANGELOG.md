@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.1.17](https://github.com/milmil-dev/milmil/compare/v0.1.16...v0.1.17) (2026-08-21)
+
+
+### Features
+
+* **docs-site:** add sitemap, robots, llms.txt, OG images and markdown negotiation ([80ffbf4](https://github.com/milmil-dev/milmil/commit/80ffbf4a44a7ce9dc65d2206a6029d271a250506))
+* **docs-site:** migrate i18n from Lingui to next-intl ([450f72c](https://github.com/milmil-dev/milmil/commit/450f72c50d2ecbf53fc016b9821cdd42a4079f6a))
+* **docs-site:** upgrade to Next 16.3 and Fumadocs 16.14, generate API reference from the canonical spec ([61f1d2b](https://github.com/milmil-dev/milmil/commit/61f1d2bb1dead3d47e0cd5f8e8246aec313b4797))
+
+
+### Bug Fixes
+
+* **docs-site:** drop unused response binding in root-redirect e2e test ([ef6b02b](https://github.com/milmil-dev/milmil/commit/ef6b02b1427a526b54331d5efdeef25e0a06e53e))
+
+## [0.1.16](https://github.com/milmil-dev/milmil/compare/v0.1.15...v0.1.16) (2026-08-13)
+
+
+### Features
+
+* **api:** upgrade Echo framework from v4 to v5 ([b4b14c5](https://github.com/milmil-dev/milmil/commit/b4b14c5f22ca4a57ea36e22263b3523adea1435c))
+* **web:** migrate frontend to Vite+ unified toolchain ([7c0b9c6](https://github.com/milmil-dev/milmil/commit/7c0b9c6f97c5abe50ad0a77da676cd717926c380))
+
+
+### Bug Fixes
+
+* **web:** resolve all TypeScript errors and enforce check:all in CI ([a286502](https://github.com/milmil-dev/milmil/commit/a286502fdf0b79547116e766dc7e767ae1f86879))
+
 ## [0.1.15](https://github.com/milmil-dev/milmil/compare/v0.1.14...v0.1.15) (2026-05-14)
 
 

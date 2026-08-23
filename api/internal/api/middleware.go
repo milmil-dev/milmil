@@ -6,30 +6,32 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 )
 
 // sensitiveFields are exact JSON keys whose values must be redacted in request
 // logs. Suffix-based matches are handled separately by isSensitiveKey.
 var sensitiveFields = map[string]bool{
-	"password":      true,
-	"pw":            true,
-	"token":         true,
-	"secret":        true,
-	"api_key":       true,
-	"apikey":        true,
-	"access_token":  true,
-	"refresh_token": true,
-	"app_id":        true,
-	"app_secret":    true,
-	"client_id":     true,
-	"client_secret": true,
-	"private_key":   true,
-	"jwt_secret":    true,
+	"password":       true,
+	"pw":             true,
+	"token":          true,
+	"ticket":         true,
+	"secret":         true,
+	"api_key":        true,
+	"apikey":         true,
+	"access_token":   true,
+	"refresh_token":  true,
+	"app_id":         true,
+	"app_secret":     true,
+	"client_id":      true,
+	"client_secret":  true,
+	"private_key":    true,
+	"jwt_secret":     true,
 	"encryption_key": true,
 }
 
@@ -65,7 +67,15 @@ func attachMiddleware(e *echo.Echo) {
 	e.Use(middleware.Recover())
 	e.Use(prettyLogger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
+		// v5 no longer supports wildcard ports in AllowOrigins; allow any
+		// localhost/127.0.0.1 port via the origin callback instead.
+		UnsafeAllowOriginFunc: func(c *echo.Context, origin string) (string, bool, error) {
+			if u, err := url.Parse(origin); err == nil && u.Scheme == "http" &&
+				(u.Hostname() == "localhost" || u.Hostname() == "127.0.0.1") {
+				return origin, true, nil
+			}
+			return "", false, nil
+		},
 		AllowHeaders: []string{
 			echo.HeaderOrigin,
 			echo.HeaderContentType,
@@ -82,13 +92,39 @@ func attachMiddleware(e *echo.Echo) {
 			middleware.RateLimiterMemoryStoreConfig{Rate: 100},
 		),
 	}))
+	e.Use(middleware.Secure())
+	// Every endpoint takes JSON; nothing here accepts uploads. The cap is far
+	// above the largest real payload (a settings or rule document) and exists
+	// so an unauthenticated POST cannot make the server buffer arbitrary data.
+	e.Use(middleware.BodyLimit(maxRequestBody))
+}
+
+// maxRequestBody bounds any single request body.
+const maxRequestBody = 8 * 1024 * 1024
+
+// authRateLimiter throttles the endpoints that check credentials.
+//
+// The global limiter allows 100 req/s, which does nothing to stop credential
+// stuffing or a TOTP sweep: a 6-digit code is only a million guesses, and at
+// 100 req/s that is hours. At 12 attempts/minute per IP the same sweep takes
+// months, while a human retyping a password never notices.
+func authRateLimiter() echo.MiddlewareFunc {
+	return middleware.RateLimiterWithConfig(middleware.RateLimiterConfig{
+		Store: middleware.NewRateLimiterMemoryStoreWithConfig(
+			middleware.RateLimiterMemoryStoreConfig{
+				Rate:      0.2, // 12 attempts per minute, sustained
+				Burst:     10,  // absorbs a few genuine retries up front
+				ExpiresIn: 10 * time.Minute,
+			},
+		),
+	})
 }
 
 // prettyLogger uses slog (which is wired to zerolog ConsoleWriter) for
 // colorful, human-readable request logs in dev mode.
 func prettyLogger() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			start := time.Now()
 			req := c.Request()
 
@@ -117,24 +153,23 @@ func prettyLogger() echo.MiddlewareFunc {
 
 			// Capture response body for error responses
 			resBodyBuf := new(bytes.Buffer)
-			origWriter := c.Response().Writer
+			origWriter := c.Response()
 			mw := &responseCapture{ResponseWriter: origWriter, buf: resBodyBuf}
-			c.Response().Writer = mw
+			c.SetResponse(mw)
 
 			err := next(c)
-			if err != nil {
-				c.Error(err)
-			}
 
-			res := c.Response()
 			latency := time.Since(start)
-			status := res.Status
+			_, status := echo.ResolveResponseStatus(c.Response(), err)
 
 			attrs := []any{
 				"method", req.Method,
-				"uri", req.RequestURI,
+				"uri", redactURI(req.RequestURI),
 				"status", status,
 				"latency", latency.Round(time.Millisecond).String(),
+			}
+			if err != nil {
+				attrs = append(attrs, "err", err.Error())
 			}
 
 			// Add request body for mutation requests (with sensitive fields redacted)
@@ -162,7 +197,7 @@ func prettyLogger() echo.MiddlewareFunc {
 				slog.Info("request", attrs...)
 			}
 
-			return nil
+			return err
 		}
 	}
 }
@@ -179,6 +214,12 @@ func (w *responseCapture) Write(b []byte) (int, error) {
 		w.buf.Write(b)
 	}
 	return w.ResponseWriter.Write(b)
+}
+
+// Unwrap lets echo.UnwrapResponse reach the underlying *echo.Response
+// through this wrapper (required for status resolution in v5).
+func (w *responseCapture) Unwrap() http.ResponseWriter {
+	return w.ResponseWriter
 }
 
 // redactSensitiveFields replaces values of known credential fields with
@@ -221,4 +262,30 @@ func redactValue(v any) any {
 	default:
 		return val
 	}
+}
+
+// redactURI strips credential-bearing query parameters from a request URI so
+// they do not reach the logs.
+//
+// Streaming endpoints accept ?token= because a <video> element cannot send an
+// Authorization header, and /ws accepts ?ticket=. Both would otherwise be
+// written verbatim to every access log line.
+func redactURI(uri string) string {
+	u, err := url.ParseRequestURI(uri)
+	if err != nil {
+		return uri
+	}
+	q := u.Query()
+	redacted := false
+	for key := range q {
+		if isSensitiveKey(key) {
+			q.Set(key, "[REDACTED]")
+			redacted = true
+		}
+	}
+	if !redacted {
+		return uri
+	}
+	u.RawQuery = q.Encode()
+	return u.String()
 }

@@ -55,7 +55,4 @@ export function detectBrowserLocale(): string {
   return defaultLocale;
 }
 
-export const isRTL = (lng?: string): boolean => !!lng && rtlLanguages.includes(lng);
-
-export default i18n;
 export { i18n, loadAndActivate, onLocaleChange };

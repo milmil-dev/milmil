@@ -26,12 +26,6 @@ function timeAgo(dateStr: string, i18n: { _: (descriptor: any) => string }): str
 
 /* ── Severity color ───────────────────────────────────────── */
 
-const SEVERITY_BORDER: Record<string, string> = {
-  success: 'border-l-green-400',
-  info: 'border-l-blue-400',
-  error: 'border-l-red-400',
-};
-
 /* ── Component ────────────────────────────────────────────── */
 
 export function NotificationBell() {
@@ -180,7 +174,6 @@ function NotificationItem({
   onMarkRead: () => void;
 }) {
   const { i18n } = useLingui();
-  const severity = notification.severity ?? 'info';
 
   return (
     <button

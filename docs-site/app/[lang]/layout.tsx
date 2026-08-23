@@ -1,26 +1,17 @@
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
-import { i18n as fdI18n } from '@/lib/i18n';
-import { defineI18nUI } from 'fumadocs-ui/i18n';
-import { LinguiClientProvider } from '@/components/lingui-provider';
+import { NextIntlClientProvider } from 'next-intl';
+import { setRequestLocale } from 'next-intl/server';
+import { i18nProvider } from 'fumadocs-ui/i18n';
+import { translations } from '@/lib/translations';
+import { resolveLocale } from '@/i18n/locales';
+import { siteUrl } from '@/lib/shared';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const { provider } = defineI18nUI(fdI18n, {
-  translations: {
-    en: { displayName: 'English' },
-    'zh-CN': { displayName: '简体中文', search: '搜索文档' },
-    'zh-TW': { displayName: '繁體中文', search: '搜尋文檔' },
-    'zh-HK': { displayName: '粵語', search: '搜尋文檔' },
-  },
-});
-
-const localeLoaders: Record<string, () => Promise<{ messages: any }>> = {
-  en: () => import('@/locales/en/messages'),
-  'zh-CN': () => import('@/locales/zh-CN/messages'),
-  'zh-TW': () => import('@/locales/zh-TW/messages'),
-  'zh-HK': () => import('@/locales/zh-HK/messages'),
+export const metadata = {
+  metadataBase: new URL(siteUrl),
 };
 
 export default async function LangLayout({
@@ -31,16 +22,14 @@ export default async function LangLayout({
   children: ReactNode;
 }) {
   const { lang } = await params;
-  const { messages } = await (localeLoaders[lang] ?? localeLoaders.en)();
+  setRequestLocale(resolveLocale(lang));
 
   return (
     <html lang={lang} className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <RootProvider i18n={provider(lang)}>
-          <LinguiClientProvider locale={lang} messages={messages}>
-            {children}
-          </LinguiClientProvider>
-        </RootProvider>
+        <NextIntlClientProvider>
+          <RootProvider i18n={i18nProvider(translations, lang)}>{children}</RootProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

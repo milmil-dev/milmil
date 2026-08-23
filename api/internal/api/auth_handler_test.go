@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
@@ -76,7 +76,9 @@ func newTestApp(t *testing.T) *echo.Echo {
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(nil, nil, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, noopChecker())
+	return api.NewRouter(api.Deps{
+		Config: cfg, DB: database, Cache: c, Metadata: metadataSvc, UpdateChecker: noopChecker(),
+	})
 }
 
 func TestAuthStatus_NotInitialized(t *testing.T) {

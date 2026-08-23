@@ -10,7 +10,7 @@ const GRADIENTS: [string, string][] = [
 
 export function placeholderGradient(title: string): string {
   const code = title.charCodeAt(0) || 0;
-  const [from, to] = GRADIENTS[code % GRADIENTS.length];
+  const [from, to] = GRADIENTS[code % GRADIENTS.length]!;
   return `linear-gradient(135deg, ${from} 0%, ${to} 100%)`;
 }
 

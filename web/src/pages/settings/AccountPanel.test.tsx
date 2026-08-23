@@ -1,5 +1,5 @@
 import type React from 'react';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { render, screen, userEvent } from '@/test/test-utils';
 
 vi.mock('@hugeicons/react', () => ({

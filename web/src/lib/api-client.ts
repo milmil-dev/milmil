@@ -39,9 +39,3 @@ export const api = {
     request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };
-
-export interface HealthResponse {
-  status: string;
-  version: string;
-}
-export const getHealth = () => api.get<HealthResponse>('/health');

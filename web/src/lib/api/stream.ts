@@ -55,35 +55,6 @@ export interface DanmakuComment {
 export type DanmakuDensity = 'low' | 'medium' | 'high';
 export type BufferMode = 'auto' | 'low' | 'balanced' | 'high';
 
-export function parseDandanplayComments(
-  comments: { p: string; m: string }[],
-  fontSize: number = 20,
-  opacity: number = 1
-): DanmakuComment[] {
-  const modeMap: Record<string, 'rtl' | 'top' | 'bottom'> = {
-    '1': 'rtl',
-    '4': 'bottom',
-    '5': 'top',
-    '6': 'rtl',
-  };
-  return comments.map(({ p, m }) => {
-    const parts = p.split(',');
-    const time = parseFloat(parts[0] ?? '0');
-    const type = parts[1] ?? '1';
-    const colorInt = parseInt(parts[2] ?? '16777215', 10);
-    return {
-      text: m,
-      time,
-      mode: modeMap[type] ?? 'rtl',
-      style: {
-        fontSize: `${fontSize}px`,
-        color: `#${colorInt.toString(16).padStart(6, '0')}`,
-        opacity,
-      },
-    };
-  });
-}
-
 export interface MediaInfo {
   id: string;
   filename: string;

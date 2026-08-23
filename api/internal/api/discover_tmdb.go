@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/text/language"
 
@@ -19,12 +19,12 @@ import (
 
 // preferredLocale picks a canonical locale (zh-TW / zh-CN / zh-HK /
 // en-US / ja-JP / ko-KR) for response localization. Order of preference:
-//   1. The `appearance.language` setting the user picked in milmil itself
-//      (so the configured UI language wins over whatever the browser says).
-//   2. The browser's Accept-Language header.
-//   3. zh-TW as a default — the project's primary audience and the
-//      matcher's default fallback.
-func (h *handler) preferredLocale(c echo.Context) string {
+//  1. The `appearance.language` setting the user picked in milmil itself
+//     (so the configured UI language wins over whatever the browser says).
+//  2. The browser's Accept-Language header.
+//  3. zh-TW as a default — the project's primary audience and the
+//     matcher's default fallback.
+func (h *handler) preferredLocale(c *echo.Context) string {
 	if loc := h.appearanceLocale(c.Request().Context()); loc != "" {
 		return loc
 	}
@@ -446,13 +446,13 @@ func searchFirstTMDBID(ctx context.Context, client tmdb.Client, query string) (i
 // anime title. We only strip when the marker has a clear word boundary so
 // we don't accidentally truncate titles like "鬼滅の刃" or "Code Geass R2".
 var seasonSuffixPatterns = []*regexp.Regexp{
-	regexp.MustCompile(`\s+第\s*\d+\s*[期季部章]\s*$`),                  // " 第5期" / "第 2 季"
-	regexp.MustCompile(`(?i)\s+season\s+\d+\s*$`),                       // " Season 2"
-	regexp.MustCompile(`(?i)\s+(?:2nd|3rd|4th|5th|6th)\s+season\s*$`),   // " 2nd Season"
-	regexp.MustCompile(`(?i)\s+the\s+final\s+season\s*$`),               // " The Final Season"
-	regexp.MustCompile(`(?i)\s+part\s+\d+\s*$`),                         // " Part 2"
-	regexp.MustCompile(`\s+S\d+\s*$`),                                   // " S5"
-	regexp.MustCompile(`\s+(?:II|III|IV|V|VI|VII|VIII|IX|X)\s*$`),       // trailing roman numerals (with leading space)
+	regexp.MustCompile(`\s+第\s*\d+\s*[期季部章]\s*$`),                     // " 第5期" / "第 2 季"
+	regexp.MustCompile(`(?i)\s+season\s+\d+\s*$`),                     // " Season 2"
+	regexp.MustCompile(`(?i)\s+(?:2nd|3rd|4th|5th|6th)\s+season\s*$`), // " 2nd Season"
+	regexp.MustCompile(`(?i)\s+the\s+final\s+season\s*$`),             // " The Final Season"
+	regexp.MustCompile(`(?i)\s+part\s+\d+\s*$`),                       // " Part 2"
+	regexp.MustCompile(`\s+S\d+\s*$`),                                 // " S5"
+	regexp.MustCompile(`\s+(?:II|III|IV|V|VI|VII|VIII|IX|X)\s*$`),     // trailing roman numerals (with leading space)
 }
 
 // stripSeasonSuffix removes a trailing season/part marker if present.

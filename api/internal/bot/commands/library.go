@@ -110,9 +110,8 @@ func triggerScan(ctx context.Context, svc *Services, libID, libName string) (*bo
 
 	if svc.Scanner != nil {
 		go func() {
-			if scanErr := svc.Scanner.ScanLibrary(context.Background(), lib, "{}"); scanErr != nil {
-				// Error is logged by scanner
-			}
+			// The scanner logs its own failures.
+			_ = svc.Scanner.ScanLibrary(context.Background(), lib, "{}")
 		}()
 	}
 

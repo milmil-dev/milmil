@@ -41,7 +41,8 @@ func TestEncodeItemID_FixedLength32(t *testing.T) {
 	}
 	// Should be valid hex
 	for _, c := range encoded {
-		if !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')) {
+		isHex := (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')
+		if !isHex {
 			t.Fatalf("encoded ID contains non-hex char: %c in %s", c, encoded)
 		}
 	}

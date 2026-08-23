@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/subtitle"
 )
 
-func (h *handler) handleListSubtitles(c echo.Context) error {
+func (h *handler) handleListSubtitles(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("fileId")
 
@@ -22,7 +22,7 @@ func (h *handler) handleListSubtitles(c echo.Context) error {
 	return c.JSON(http.StatusOK, subs)
 }
 
-func (h *handler) handleSubtitleContent(c echo.Context) error {
+func (h *handler) handleSubtitleContent(c *echo.Context) error {
 	ctx := c.Request().Context()
 	id := c.Param("id")
 

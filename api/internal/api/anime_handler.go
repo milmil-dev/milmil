@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -20,9 +20,9 @@ type playableEpisodeMedia struct {
 }
 
 type playableEpisodeProgress struct {
-	PositionSeconds  int64 `json:"position_seconds"`
-	DurationSeconds  int64 `json:"duration_seconds"`
-	Completed        bool  `json:"completed"`
+	PositionSeconds int64 `json:"position_seconds"`
+	DurationSeconds int64 `json:"duration_seconds"`
+	Completed       bool  `json:"completed"`
 }
 
 type playableEpisodeResponse struct {
@@ -50,7 +50,7 @@ type playableEpisodesEnvelope struct {
 	Episodes            []playableEpisodeResponse `json:"episodes"`
 }
 
-func (h *handler) handlePlayableEpisodes(c echo.Context) error {
+func (h *handler) handlePlayableEpisodes(c *echo.Context) error {
 	bangumiIDStr := c.Param("bangumiId")
 	bangumiID, err := strconv.ParseInt(bangumiIDStr, 10, 64)
 	if err != nil {
@@ -128,7 +128,7 @@ func (h *handler) handlePlayableEpisodes(c echo.Context) error {
 //   - watch_status_override (string) — pins a specific canonical watch status
 //
 // Fields omitted from the request body retain their current value.
-func (h *handler) handleUpdateAnimeSyncFlags(c echo.Context) error {
+func (h *handler) handleUpdateAnimeSyncFlags(c *echo.Context) error {
 	bangumiIDStr := c.Param("bangumiId")
 	bangumiID, err := strconv.ParseInt(bangumiIDStr, 10, 64)
 	if err != nil {
@@ -170,7 +170,7 @@ func (h *handler) handleUpdateAnimeSyncFlags(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleUpdateScore(c echo.Context) error {
+func (h *handler) handleUpdateScore(c *echo.Context) error {
 	bangumiIDStr := c.Param("bangumiId")
 	bangumiID, err := strconv.ParseInt(bangumiIDStr, 10, 64)
 	if err != nil {

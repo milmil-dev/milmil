@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
@@ -102,7 +102,9 @@ func newTestAppWithMetadata(t *testing.T, bgm bangumi.Client, al anilist.Client)
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
 	metadataSvc := metadata.New(bgm, al, c)
-	return api.NewRouter(cfg, database, c, metadataSvc, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, noopChecker())
+	return api.NewRouter(api.Deps{
+		Config: cfg, DB: database, Cache: c, Metadata: metadataSvc, UpdateChecker: noopChecker(),
+	})
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────

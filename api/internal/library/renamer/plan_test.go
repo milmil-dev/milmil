@@ -91,4 +91,3 @@ func TestPlan_ErrorOnClampEscape(t *testing.T) {
 		t.Errorf("Error should be populated")
 	}
 }
-

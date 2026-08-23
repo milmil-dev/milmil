@@ -109,7 +109,7 @@
 | PWA | Serwist |
 | 캐시 | Redis (선택 사항, 인메모리 폴백) |
 | 테스트 | Vitest, Playwright, Go testing |
-| 린팅 | Biome, Lefthook, Commitlint |
+| 린팅 | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
 
 ---
 
@@ -286,7 +286,7 @@ cd web && bun run test:run      # 프론트엔드 단위 테스트
 cd web && bun run test:e2e      # Playwright E2E 테스트
 
 # 품질
-make lint             # Go vet + Biome lint
+make lint             # Go vet + vp lint (Oxlint)
 cd web && bun run check:all     # 타입 체크 + lint + 포맷 + 테스트
 
 # i18n

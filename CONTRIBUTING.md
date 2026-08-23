@@ -90,7 +90,7 @@ Releases are managed by [release-please](.github/workflows/release-please.yml) �
 
 ### TypeScript (`web/`)
 
-- Biome handles lint + format. Run `bun run lint:fix` before pushing.
+- Vite+ handles lint + format (`vp lint` = Oxlint, `vp fmt` = Oxfmt). Run `bun run lint:fix && bun run format` before pushing.
 - Strict TS — no `any` without justification.
 - Component patterns and i18n usage are documented in `web/AGENTS.md`.
 - Wrap user-facing strings with Lingui (`msg\`...\``) — never hardcode UI text.
@@ -107,7 +107,7 @@ Run everything before opening a PR:
 ```bash
 make test            # Go unit + integration + frontend unit tests
 make test-e2e        # Playwright E2E (requires both servers running)
-make lint            # go vet + Biome
+make lint            # go vet + vp lint (Oxlint)
 ```
 
 Targeted runs:

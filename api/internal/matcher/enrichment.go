@@ -16,8 +16,6 @@ import (
 
 const tmdbImageBase = "https://image.tmdb.org/t/p/w300"
 
-var tmdbChineseLanguages = []string{"zh-TW", "zh-CN"}
-
 // EnrichEpisodesFromTMDB fetches Chinese synopses from TMDB and updates episode records.
 func EnrichEpisodesFromTMDB(ctx context.Context, q *store.Queries, tmdbClient tmdb.Client, c cache.Cache, libraryID string) (int, error) {
 	if tmdbClient == nil {

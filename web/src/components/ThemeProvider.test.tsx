@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { render } from '@/test/test-utils';
 

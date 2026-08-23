@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/storage"
 )
@@ -46,7 +46,7 @@ type mediaInfoResponse struct {
 	LibraryType     string  `json:"library_type"`
 }
 
-func (h *handler) handleMediaInfo(c echo.Context) error {
+func (h *handler) handleMediaInfo(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("id")
 

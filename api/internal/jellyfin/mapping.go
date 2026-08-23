@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 // idMap stores bidirectional mapping between 32-char GUID-like IDs and type:id pairs.
@@ -60,7 +60,7 @@ func DecodeItemID(encoded string) (typ, id string, err error) {
 }
 
 // queryParam reads a query parameter case-insensitively (tries lowercase first, then PascalCase).
-func queryParam(c echo.Context, key string) string {
+func queryParam(c *echo.Context, key string) string {
 	if v := c.QueryParam(key); v != "" {
 		return v
 	}

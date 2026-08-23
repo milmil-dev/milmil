@@ -7,11 +7,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/torrent"
 )
 
-func (h *handler) handleAnimeTorrents(c echo.Context) error {
+func (h *handler) handleAnimeTorrents(c *echo.Context) error {
 	idStr := c.Param("id")
 	bangumiID, err := strconv.Atoi(idStr)
 	if err != nil {
