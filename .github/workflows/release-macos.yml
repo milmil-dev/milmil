@@ -1,0 +1,59 @@
+# Builds the ad-hoc signed macOS DMG for a release tag (or on demand) and
+# attaches it to the GitHub release. No Developer Team yet, so the app is
+# not notarized: users open it via right-click › Open. Switch
+# macos/scripts/make-dmg.sh to a Developer ID identity + notarytool once an
+# account exists; this workflow stays the same.
+name: Release macOS
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dmg:
+    name: DMG (ad-hoc signed)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          xcode=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Restore SwiftPM cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            macos/Packages/MilmilKit/.build
+            macos/Packages/MilmilPlayer/.build
+            macos/DerivedData-release/SourcePackages
+          key: macos-release-${{ runner.os }}-${{ hashFiles('macos/Packages/**/Package.swift', 'macos/project.yml') }}
+          restore-keys: |
+            macos-release-${{ runner.os }}-
+
+      - name: Build DMG
+        run: make macos-dmg
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: milmil-macos-dmg
+          path: macos/dist/*.dmg
+          if-no-files-found: error
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${GITHUB_REF_NAME}" macos/dist/*.dmg --clobber

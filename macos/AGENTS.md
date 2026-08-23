@@ -26,6 +26,7 @@ make macos-test    # swift test in Packages/MilmilKit and Packages/MilmilPlayer
 make macos-build   # xcodebuild the app (Debug, ad-hoc signed)
 make macos-lint    # swiftlint --strict
 make macos-run     # build + (re)launch the app without Xcode
+make macos-dmg     # Release build → ad-hoc signed DMG in macos/dist (CI: release-macos.yml on v* tags)
 make macos-watch   # rebuild + relaunch on every save (watchexec)
 ```
 
@@ -126,6 +127,11 @@ xcodegen generate && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
   render context before `mpv_terminate_destroy`; `MPVPlayer.destroy()` does
   this through the registered teardown closure — never call
   `mpv_terminate_destroy` elsewhere.
+- **Local direct play.** `media_file.path` (server ≥ 0.1.18) + Settings ›
+  播放 › 本機路徑對應 → `LocalPathMappings.localURL` → first rung of the
+  stream ladder; the file must be readable locally or the rung is skipped.
+- **Release builds have no DevSnapshot / InjectionIII** (all `#if DEBUG`);
+  verify Release behaviour by launching `macos/DerivedData-release/…/milmil.app`.
 - **One mpv instance per app.** `PlayerCoordinator` keeps the
   `PlayerController` alive across window close/open; `windowClosed()` stops
   playback, `shutdown()` destroys.

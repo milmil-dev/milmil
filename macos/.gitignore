@@ -8,3 +8,5 @@ DerivedData/
 .swiftpm/
 Packages/*/.build/
 *.xcresult
+DerivedData-release/
+dist/

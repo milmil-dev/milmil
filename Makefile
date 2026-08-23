@@ -1,7 +1,7 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
 .PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill \
-	macos-gen macos-build macos-test macos-lint macos-run macos-watch
+	macos-gen macos-build macos-test macos-lint macos-run macos-watch macos-dmg
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -67,6 +67,10 @@ macos-build: macos-gen
 	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
 		-destination 'platform=macOS,arch=arm64' -configuration Debug \
 		CODE_SIGNING_ALLOWED=NO -quiet build
+
+# Release build → ad-hoc signed DMG in macos/dist (see macos/scripts/make-dmg.sh).
+macos-dmg:
+	macos/scripts/make-dmg.sh
 
 # Build into macos/DerivedData (gitignored) and launch the app — no Xcode UI needed.
 macos-run: macos-gen
