@@ -8,7 +8,7 @@ If you're reporting a security issue, please follow [SECURITY.md](SECURITY.md) i
 
 ### Prerequisites
 
-- **Go** 1.26+
+- **Go** 1.27+
 - **Bun** 1.3+
 - **FFmpeg** (transcoding + media probing)
 - **Redis** (optional — falls back to in-memory cache)
