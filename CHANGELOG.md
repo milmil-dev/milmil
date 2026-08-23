@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.18](https://github.com/milmil-dev/milmil/compare/v0.1.17...v0.1.18) (2026-08-23)
+
+
+### Bug Fixes
+
+* **api:** authenticate WebSocket upgrades and enforce every CI gate ([#110](https://github.com/milmil-dev/milmil/issues/110)) ([3e0e93c](https://github.com/milmil-dev/milmil/commit/3e0e93c183f682f45605b2242d381323c96a5982))
+* **sync:** report a finished series as completed, not repeating ([#117](https://github.com/milmil-dev/milmil/issues/117)) ([68b8d23](https://github.com/milmil-dev/milmil/commit/68b8d23b7b695581c7d77c6102d2dd5d6f0fcd13))
+* **web:** give the e2e suite its own port ([#115](https://github.com/milmil-dev/milmil/issues/115)) ([5a841f8](https://github.com/milmil-dev/milmil/commit/5a841f864767ca352ab5b33d9c7bc551561b5b02))
+
 ## [0.1.17](https://github.com/milmil-dev/milmil/compare/v0.1.16...v0.1.17) (2026-08-21)
 
 
