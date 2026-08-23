@@ -156,3 +156,13 @@ Spotlight 索引、App Intents/Shortcuts、WidgetKit、真 PiP（SW render + `AV
   3. 彈幕 CA 方案在極端密度（>500 同屏）可能掉幀；緩解：density 上限 + Metal 備案。
   4. Bangumi CDN Referer/防盜鏈；緩解：Nuke request 加 header，失敗用 gradient fallback。
   5. 單帳號 server：多 profile 只解決多 server，不解決多人；記錄為 server 未來議題。
+
+---
+
+## 進度（2026-08-23）
+
+- **Phase 0 / 1 完成**：scaffold、MilmilKit（API + Realtime + preferences）、Shell、Home、Schedule、Discover、Search、⌘K、AnimeDetail、Collection、History、Notifications（含系統通知 + Dock badge）。**未做**：`.xcstrings` i18n 搬移（字串仍為 zh-TW 字面值，另開一輪）。
+- **Phase 2 核心完成**（commits `2eef89fc`、`9a0ebf5a`）：`MilmilPlayer` 套件（MPVKit 1.0.0、純 Swift 綁定，暫不需 C shim）、in-app 播放頁（`Route.watch`，對齊 web WatchPage：劇院模式 / 沉浸全螢幕 / 側欄 = inspector）、獨立視窗 pop-out（同一個 render view 搬移）、OSC / OSD / seek bar thumbnail peek、字幕 sidecar、進度同步、Resume pill、自動下一集、OP/ED skip、Now Playing、防睡眠、快捷鍵表（與 web rebind 共用）。
+  - **未做**：本機路徑直開（需 server 回 `media_file.path`）、thumbnail VTT 驗證（server 端需有 sprite）、A-B loop UI、截圖到剪貼簿、音訊輸出裝置、Anime4K shaders、UI smoke loop（50 次換集）。
+  - **驗證方式**：ffmpeg 測試片 + 本機 OrbStack server，`MILMIL_SNAPSHOT_PLAY` 截圖（見 `macos/AGENTS.md`）。
+- **下一步**：Phase 3 彈幕（`MilmilDanmaku` + `DanmakuOverlayView`，`DanmakuOverlayHost` 與 `PlaybackClock` 已預留）。
