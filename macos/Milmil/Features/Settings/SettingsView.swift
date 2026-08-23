@@ -4,32 +4,46 @@ import SwiftUI
 /// `Settings` scene (⌘,): System Settings-style tabs. Everything that the
 /// web also stores lives in the shared server preferences; the few
 /// desktop-only knobs live in `UserDefaults`.
+enum SettingsTab: String, CaseIterable {
+    case player, subtitles, danmaku, keyboard, integrations, notifications, account, server, about
+}
+
 struct SettingsView: View {
     @Environment(PlayerCoordinator.self) private var coordinator
     @Environment(SessionStore.self) private var sessionStore
+    @State private var tab: SettingsTab = DevSnapshot.settingsTab.flatMap(SettingsTab.init(rawValue:)) ?? .player
 
     var body: some View {
-        TabView {
-            Tab("播放", systemImage: "play.rectangle") {
+        TabView(selection: $tab) {
+            Tab("播放", systemImage: "play.rectangle", value: .player) {
                 sessionGated { PlayerSettingsTab(session: $0) }
             }
-            Tab("字幕", systemImage: "captions.bubble") {
+            Tab("字幕", systemImage: "captions.bubble", value: .subtitles) {
                 sessionGated { SubtitleSettingsTab(session: $0) }
             }
-            Tab("彈幕", systemImage: "text.bubble") {
+            Tab("彈幕", systemImage: "text.bubble", value: .danmaku) {
                 sessionGated { DanmakuSettingsView(session: $0, controller: coordinator.controller).frame(width: nil, height: nil) }
             }
-            Tab("快捷鍵", systemImage: "keyboard") {
+            Tab("快捷鍵", systemImage: "keyboard", value: .keyboard) {
                 sessionGated { KeyboardSettingsTab(session: $0) }
             }
-            Tab("伺服器", systemImage: "server.rack") {
+            Tab("整合", systemImage: "link", value: .integrations) {
+                sessionGated { IntegrationsSettingsTab(session: $0) }
+            }
+            Tab("通知", systemImage: "bell.badge", value: .notifications) {
+                sessionGated { NotificationsSettingsTab(session: $0) }
+            }
+            Tab("帳號", systemImage: "person.crop.circle", value: .account) {
+                sessionGated { AccountSettingsTab(session: $0) }
+            }
+            Tab("伺服器", systemImage: "server.rack", value: .server) {
                 ServerSettingsTab()
             }
-            Tab("關於", systemImage: "info.circle") {
+            Tab("關於", systemImage: "info.circle", value: .about) {
                 AboutTab()
             }
         }
-        .frame(width: 640, height: 560)
+        .frame(width: 720, height: 600)
         .preferredColorScheme(.dark)
     }
 

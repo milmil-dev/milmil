@@ -1,4 +1,5 @@
 import AppKit
+import MilmilAPI
 import SwiftUI
 
 /// Debug-only self-screenshot: launch with `MILMIL_SNAPSHOT=/tmp/x.png`
@@ -46,6 +47,31 @@ enum DevSnapshot {
     static var downloadsTab: String? {
         #if DEBUG
         ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_DOWNLOADS_TAB"]
+        #else
+        nil
+        #endif
+    }
+
+    /// `MILMIL_SNAPSHOT_TOKEN_FILE=<path>` seeds an in-memory token store for the
+    /// seeded profile instead of the Keychain — every rebuilt ad-hoc signature
+    /// would otherwise trip a keychain prompt that a headless run cannot answer.
+    static var tokenStore: (any TokenStore)? {
+        #if DEBUG
+        let env = ProcessInfo.processInfo.environment
+        guard let path = env["MILMIL_SNAPSHOT_TOKEN_FILE"], let token = try? String(contentsOfFile: path, encoding: .utf8),
+              let profile = UUID(uuidString: env["MILMIL_SNAPSHOT_PROFILE"] ?? "11111111-1111-1111-1111-111111111111") else { return nil }
+        let store = InMemoryTokenStore()
+        try? store.setToken(token.trimmingCharacters(in: .whitespacesAndNewlines), for: profile)
+        return store
+        #else
+        nil
+        #endif
+    }
+
+    /// `MILMIL_SNAPSHOT_SETTINGS_TAB=integrations` picks the Settings tab.
+    static var settingsTab: String? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_SETTINGS_TAB"]
         #else
         nil
         #endif

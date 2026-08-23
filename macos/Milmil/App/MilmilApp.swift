@@ -3,7 +3,7 @@ import SwiftUI
 
 @main
 struct MilmilApp: App {
-    @State private var session = SessionStore(tokenStore: KeychainTokenStore(), defaults: .standard)
+    @State private var session = SessionStore(tokenStore: DevSnapshot.tokenStore ?? KeychainTokenStore(), defaults: .standard)
     @State private var player = PlayerCoordinator()
     /// `milmil://…` links and dropped / double-clicked `.torrent` files that
     /// arrived before the shell was ready.

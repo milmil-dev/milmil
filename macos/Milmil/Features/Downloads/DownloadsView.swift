@@ -334,7 +334,7 @@ private struct AddDownloadSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("新增下載").font(.system(size: 16, weight: .bold))
             Form {
-                TextField("連結", text: $url, prompt: Text("magnet:?xt=… 或 https://…/file.torrent"))
+                TextField("連結", text: $url, prompt: Text(verbatim: "magnet:?xt=… 或 https://…/file.torrent"))
                 TextField("名稱（選填）", text: $name)
             }
             .formStyle(.columns)

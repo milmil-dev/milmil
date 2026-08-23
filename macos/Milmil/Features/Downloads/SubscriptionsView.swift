@@ -306,7 +306,7 @@ struct FeedEditorSheet: View {
             Text(feed == nil ? String(localized: "新增訂閱來源") : String(localized: "編輯訂閱來源")).font(.system(size: 16, weight: .bold))
             Form {
                 TextField("名稱", text: $draft.name, prompt: Text("Mikan Anime"))
-                TextField("RSS 網址", text: $draft.url, prompt: Text("https://mikanani.me/RSS/…"))
+                TextField("RSS 網址", text: $draft.url, prompt: Text(verbatim: "https://mikanani.me/RSS/…"))
                 Picker("類型", selection: $draft.type) {
                     ForEach(RSSFeed.types, id: \.self) { Text($0 == "custom" ? String(localized: "自訂") : TorrentFinderView.sourceLabel($0)).tag($0) }
                 }

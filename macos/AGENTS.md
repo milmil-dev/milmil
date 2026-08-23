@@ -80,7 +80,12 @@ Navigation hooks: `MILMIL_SNAPSHOT_DESTINATION=<sidebar tab>`,
 add `MILMIL_SNAPSHOT_WINDOW=player` for the pop-out window) and
 `MILMIL_SNAPSHOT_CHROME=1` to stop the OSC auto-hiding,
 `MILMIL_SNAPSHOT_DANMAKU=1` to inject 240 sample comments (the dev server has
-no DandanPlay credentials). Use
+no DandanPlay credentials), `MILMIL_SNAPSHOT_TORRENTS=<bangumiID>` (下載 › 找種子
+on that title), `MILMIL_SNAPSHOT_DOWNLOADS_TAB=subscriptions`,
+`MILMIL_SNAPSHOT_SETTINGS_TAB=integrations|notifications|account|…`.
+Pass `MILMIL_SNAPSHOT_TOKEN_FILE=<file with the mlml_ token>` to skip the
+Keychain entirely — every rebuilt ad-hoc signature otherwise trips a keychain
+prompt a headless run cannot answer. Use
 `MILMIL_SNAPSHOT_COMPOSITE=1` for anything with video — the flattened render
 cannot see the OpenGL picture — and launch through `open -n`, not the binary:
 the window server returns a 198 px thumbnail for windows of a process that
