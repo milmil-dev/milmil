@@ -8,7 +8,7 @@ independently built workspaces.
 
 | Workspace | What it is | Toolchain |
 |---|---|---|
-| `api/` | Go backend — HTTP API, scanner, matcher, downloader, Jellyfin-compatible layer | Go 1.26.1 |
+| `api/` | Go backend — HTTP API, scanner, matcher, downloader, Jellyfin-compatible layer | Go 1.27.0 |
 | `web/` | React SPA served as a static bundle by nginx | Bun 1.4.0 |
 | `docs-site/` | Public documentation site (Next.js + Fumadocs) | Bun 1.4.0 |
 

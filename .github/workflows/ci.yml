@@ -12,19 +12,14 @@ concurrency:
 
 # Pinned tool versions (mirror mise.toml).
 env:
-  GO_VERSION: "1.26.1"
+  GO_VERSION: "1.27.0"
   BUN_VERSION: "1.4.0"
-  GOLANGCI_LINT_VERSION: "v2.13.0"
+  GOLANGCI_LINT_VERSION: "v2.13.1"
 
 jobs:
   go:
     name: Go
     runs-on: ubuntu-latest
-    # golangci-lint has to type-check the whole dependency graph, and this
-    # module pulls in rclone, the AWS SDK and anacrolix/torrent. A dependency
-    # bump changes go.sum, which misses setup-go's build cache, and the lint
-    # step alone then runs past 20 minutes from cold — #106 was cancelled at
-    # exactly 25. Warm runs finish the whole job in about 11.
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
@@ -32,7 +27,24 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: api/go.sum
+          # setup-go's own cache keys on go.sum exactly, so every dependency
+          # bump starts from nothing. The step below adds a fallback.
+          cache: false
+
+      # golangci-lint type-checks the whole graph — rclone, the AWS SDK and
+      # anacrolix/torrent — so a cold build cache costs 40 minutes. restore-keys
+      # lets a dependency bump reuse the previous run's cache and recompile only
+      # what actually changed.
+      - name: Restore Go module and build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+            ~/.cache/golangci-lint
+          key: go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('api/go.sum') }}
+          restore-keys: |
+            go-${{ runner.os }}-${{ env.GO_VERSION }}-
 
       - name: gofmt check
         working-directory: api
@@ -51,12 +63,19 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.mod go.sum
 
+      # Installed directly rather than via golangci-lint-action: the action
+      # manages its own cache, which does not include the Go build cache that
+      # actually dominates the run here, so it kept overshooting the job
+      # timeout on dependency bumps. The prebuilt binary plus the shared cache
+      # above is one caching story instead of two fighting each other.
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh \
+            | sh -s -- -b "$(go env GOPATH)/bin" "${GOLANGCI_LINT_VERSION}"
+
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: ${{ env.GOLANGCI_LINT_VERSION }}
-          working-directory: api
-          args: --timeout=30m
+        working-directory: api
+        run: golangci-lint run --timeout=20m
 
       # Fast feedback before the much slower instrumented run below.
       - name: go test
