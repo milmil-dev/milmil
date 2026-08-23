@@ -168,4 +168,6 @@ Spotlight 索引、App Intents/Shortcuts、WidgetKit、真 PiP（SW render + `AV
 - **Phase 3 核心完成**（commits `fd71b1d6`、`b0463ac0`）：`MilmilDanmaku`（parser / pipeline / LaneScheduler，11 tests 含隨機不重疊驗證）、`DanmakuLayerView`（CA 渲染、暫停/倍速用 layer speed、seek 重 seed）、compose bar、Inspector 彈幕 / 來源 tabs、設定 popover（全部 web 同名 key）、SwiftyOpenCC 轉換。
   - **未做**：磁碟快取 6h、Instruments 效能驗證（300 同屏）、Reduce Motion 只做了靜態化 fallback、`/regex/` 封鎖詞 UI 已支援但無即時預覽計數。
 - **Audit 完成**（commits `087696c7`、`caff6fe0`）：Cursor Grok 4.6 ×3 scope + 3 個獨立 reviewer；修了 libmpv render-thread 規則（GL context current + 單一呼叫）、`keep-open` 下 EOF 不觸發、載入中進度寫 0、GL context 重建、彈幕倍速 retime、API 204/null/query 等 30+ 項。
+- **App icon**（`bcdc9f80`）：web 的 vesica-piscis 標誌 → macOS squircle，10 個 AppIcon slot 由 `scratch make_icon.py` 產出。
+- **Phase 5 部分完成**：Settings scene（`c01257d6`：播放 / 字幕 / 彈幕 / 快捷鍵重綁 / 伺服器 token / 關於）、媒體庫頁（`e8cdc046`：掃描進度、media-file Table、手動匹配 sheet、新增/刪除）、下載頁（`f5163c49`：進度、暫停/繼續/刪除、新增、拖放 .torrent）。**未做**：遠端來源表單、重複/缺集/rename、RSS 訂閱與規則、Integrations/Notifications/Account 設定 tab、audit undo。
 - **下一步**：Phase 4（桌面加值：本機路徑直開、Dock/Menu bar、快捷鍵設定頁、截圖到剪貼簿）與 Phase 5（管理頁）。
