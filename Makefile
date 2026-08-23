@@ -58,6 +58,7 @@ macos-gen:
 
 macos-test:
 	swift test --package-path macos/Packages/MilmilKit
+	swift test --package-path macos/Packages/MilmilPlayer
 
 macos-lint:
 	cd macos && swiftlint lint --strict --quiet

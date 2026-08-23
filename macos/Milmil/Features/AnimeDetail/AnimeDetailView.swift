@@ -7,11 +7,12 @@ struct AnimeDetailView: View {
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
     @Environment(\.openURL) private var openURL
+    @Environment(\.openWindow) private var openWindow
+    @Environment(PlayerCoordinator.self) private var playerCoordinator
     let bangumiID: Int
 
     @State private var store: AnimeDetailStore?
     @State private var episodeFilter: EpisodeFilter = .all
-    @State private var playerStub: PlayableEpisode?
     @ObserveInjection private var inject
 
     enum EpisodeFilter: String, CaseIterable, Identifiable {
@@ -42,11 +43,6 @@ struct AnimeDetailView: View {
             }
         }
         .onDisappear { backdrop.clear(owner: "detail-\(bangumiID)") }
-        .alert("播放器尚未實作", isPresented: Binding(get: { playerStub != nil }, set: { if !$0 { playerStub = nil } })) {
-            Button("好") {}
-        } message: {
-            Text("EP \(playerStub?.number ?? "") 會在 Phase 2（mpv 播放器）開始播放。")
-        }
     }
 
     private func content(_ store: AnimeDetailStore) -> some View {
@@ -163,7 +159,7 @@ struct AnimeDetailView: View {
         HStack(spacing: 8) {
             let action = store.primaryAction
             Button {
-                playerStub = action.episode
+                startPlayback(action.episode, store)
             } label: {
                 Label(action.title, systemImage: "play.fill")
             }
@@ -242,7 +238,7 @@ struct AnimeDetailView: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 20)], alignment: .leading, spacing: 6) {
                     ForEach(filteredEpisodes(store)) { episode in
                         EpisodeRow(episode: episode, isCurrent: episode.id == store.primaryAction.episode?.id) {
-                            playerStub = episode
+                            startPlayback(episode, store)
                         } markWatched: { watched in
                             Task { await store.markEpisode(episode, watched: watched) }
                         }
@@ -259,6 +255,12 @@ struct AnimeDetailView: View {
         case .unwatched: store.episodes.filter { !($0.progress?.completed ?? false) }
         case .available: store.episodes.filter(\.hasFile)
         }
+    }
+
+    private func startPlayback(_ episode: PlayableEpisode?, _ store: AnimeDetailStore) {
+        guard let episode, episode.hasFile, let detail = store.detail.value else { return }
+        playerCoordinator.play(PlaybackRequest(bangumiID: bangumiID, episodeID: episode.episodeID, title: detail.title, coverImage: detail.coverImage))
+        openWindow(id: "player")
     }
 
     // MARK: Side column

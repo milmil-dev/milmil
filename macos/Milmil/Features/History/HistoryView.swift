@@ -81,6 +81,8 @@ struct HistoryView: View {
     @Environment(ServerSession.self) private var session
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
+    @Environment(PlayerCoordinator.self) private var playerCoordinator
+    @Environment(\.openWindow) private var openWindow
     @State private var store: HistoryStore?
     @State private var confirmClear = false
     @ObserveInjection private var inject
@@ -140,6 +142,13 @@ struct HistoryView: View {
                             ForEach(bucket.entries) { entry in
                                 HistoryRow(entry: entry, selected: store.selection.contains(entry.id)) {
                                     store.toggle(entry.id)
+                                } play: {
+                                    if let id = entry.animeBangumiID {
+                                        playerCoordinator.play(PlaybackRequest(
+                                            bangumiID: id, episodeID: entry.episodeID, title: entry.displayTitle, coverImage: entry.animeCoverImage
+                                        ))
+                                        openWindow(id: "player")
+                                    }
                                 } open: {
                                     if let id = entry.animeBangumiID { router.openAnime(id) }
                                 } remove: {
@@ -173,6 +182,7 @@ struct HistoryRow: View {
     let entry: ProgressEntry
     let selected: Bool
     var toggle: () -> Void
+    var play: () -> Void
     var open: () -> Void
     var remove: () -> Void
 
@@ -201,7 +211,7 @@ struct HistoryRow: View {
             }
             Spacer()
             Text(Formatters.relative(entry.lastWatchedAt)).font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary).monospacedDigit()
-            Button("繼續", systemImage: "play.fill", action: open)
+            Button("繼續", systemImage: "play.fill", action: play)
                 .buttonStyle(.bordered).controlSize(.small)
             Menu {
                 Button("作品頁", systemImage: "info.circle", action: open)
@@ -214,7 +224,7 @@ struct HistoryRow: View {
         .padding(.horizontal, 10).padding(.vertical, 8)
         .background(selected ? Theme.accent.opacity(0.08) : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .contentShape(Rectangle())
-        .onTapGesture(count: 2, perform: open)
+        .onTapGesture(count: 2, perform: play)
     }
 
     private var detail: String {

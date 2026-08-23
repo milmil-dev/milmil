@@ -48,6 +48,8 @@ enum Destination: String, CaseIterable, Identifiable {
 /// shared backdrop, with the ⌘K palette layered on top.
 struct MainShellView: View {
     @Environment(SessionStore.self) private var sessionStore
+    @Environment(PlayerCoordinator.self) private var playerCoordinator
+    @Environment(\.openWindow) private var openWindow
     let profile: ServerProfile
     let user: User
     let version: String
@@ -73,10 +75,18 @@ struct MainShellView: View {
             let session = ServerSession(profile: profile, user: user, client: client)
             self.session = session
             session.start()
+            playerCoordinator.session = session
             if let destination = DevSnapshot.initialDestination { router.select(destination) }
             if let anime = DevSnapshot.initialAnime { router.openAnime(anime) }
+            if let anime = DevSnapshot.initialPlayback {
+                playerCoordinator.play(PlaybackRequest(bangumiID: anime, title: "Snapshot"))
+                openWindow(id: "player")
+            }
         }
-        .onDisappear { session?.stop() }
+        .onDisappear {
+            session?.stop()
+            playerCoordinator.session = nil
+        }
     }
 
     private func shell(_ session: ServerSession) -> some View {

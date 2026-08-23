@@ -24,6 +24,15 @@ enum DevSnapshot {
         #endif
     }
 
+    /// `MILMIL_SNAPSHOT_PLAY=530725` opens the player on that series' resume episode.
+    static var initialPlayback: Int? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_PLAY"].flatMap(Int.init)
+        #else
+        nil
+        #endif
+    }
+
     #if DEBUG
     static func runIfRequested() {
         let env = ProcessInfo.processInfo.environment
@@ -32,7 +41,11 @@ enum DevSnapshot {
 
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(delay))
-            let windows = NSApp.windows.filter { $0.isVisible && $0.frame.width > 200 }
+            var windows = NSApp.windows.filter { $0.isVisible && $0.frame.width > 200 }
+            // MILMIL_SNAPSHOT_WINDOW=player picks the player scene instead of the biggest window.
+            if let wanted = env["MILMIL_SNAPSHOT_WINDOW"], !wanted.isEmpty {
+                windows = windows.filter { $0.identifier?.rawValue == wanted }
+            }
             guard let window = windows.max(by: { $0.frame.width * $0.frame.height < $1.frame.width * $1.frame.height }),
                   let view = window.contentView else {
                 FileHandle.standardError.write(Data("📸 snapshot: no visible window\n".utf8))

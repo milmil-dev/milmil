@@ -5,6 +5,8 @@ struct HomeView: View {
     @Environment(ServerSession.self) private var session
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
+    @Environment(PlayerCoordinator.self) private var playerCoordinator
+    @Environment(\.openWindow) private var openWindow
     @State private var store: HomeStore?
     @ObserveInjection private var inject
 
@@ -43,6 +45,11 @@ struct HomeView: View {
         .scrollIndicators(.automatic)
     }
 
+    private func play(_ request: PlaybackRequest) {
+        playerCoordinator.play(request)
+        openWindow(id: "player")
+    }
+
     @ViewBuilder
     private func heroSection(_ store: HomeStore) -> some View {
         switch store.trending {
@@ -50,7 +57,7 @@ struct HomeView: View {
             HeroCarousel(
                 items: store.heroItems,
                 onOpen: { router.openAnime($0.bangumiID) },
-                onPlay: { router.openAnime($0.bangumiID) },
+                onPlay: { play(PlaybackRequest(bangumiID: $0.bangumiID, title: $0.title, coverImage: $0.coverImage)) },
                 onActiveChange: { backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, owner: "home") }
             )
             .padding(.top, 40)
@@ -71,7 +78,13 @@ struct HomeView: View {
                     ForEach(entries) { entry in
                         StillCard(
                             entry: entry,
-                            onPlay: { if let id = entry.animeBangumiID { router.openAnime(id) } },
+                            onPlay: {
+                                if let id = entry.animeBangumiID {
+                                    play(PlaybackRequest(
+                                        bangumiID: id, episodeID: entry.episodeID, title: entry.displayTitle, coverImage: entry.animeCoverImage
+                                    ))
+                                }
+                            },
                             onOpen: { if let id = entry.animeBangumiID { router.openAnime(id) } },
                             onRemove: { Task { await store.remove(entry) } },
                             onMarkWatched: { Task { await store.markWatched(entry) } }

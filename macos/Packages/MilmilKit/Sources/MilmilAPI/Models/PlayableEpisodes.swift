@@ -12,7 +12,8 @@ public struct PlayableEpisodesResponse: Decodable, Sendable, Hashable {
     public let userScore: Int?
     public let syncDisabled: Bool
     public let watchStatusOverride: String
-    public let episodes: [PlayableEpisode]
+    /// Mutable so the player can fold local progress in without a refetch.
+    public var episodes: [PlayableEpisode]
 
     enum CodingKeys: String, CodingKey {
         case episodes
@@ -98,6 +99,23 @@ public struct PlayableEpisode: Decodable, Sendable, Hashable, Identifiable {
         mediaFile = try c.decodeIfPresent(PlayableMediaFile.self, forKey: .mediaFile)
         progress = try c.decodeIfPresent(PlayableProgress.self, forKey: .progress)
     }
+
+    private init(copying other: PlayableEpisode, progress: PlayableProgress?) {
+        episodeID = other.episodeID
+        sort = other.sort
+        title = other.title
+        titleZh = other.titleZh
+        airDate = other.airDate
+        synopsis = other.synopsis
+        synopsisZh = other.synopsisZh
+        image = other.image
+        mediaFile = other.mediaFile
+        self.progress = progress
+    }
+
+    public func withProgress(_ progress: PlayableProgress?) -> PlayableEpisode {
+        PlayableEpisode(copying: self, progress: progress)
+    }
 }
 
 public struct PlayableMediaFile: Decodable, Sendable, Hashable, Identifiable {
@@ -144,6 +162,12 @@ public struct PlayableProgress: Decodable, Sendable, Hashable {
         positionSeconds = try c.decodeIfPresent(Int.self, forKey: .positionSeconds) ?? 0
         durationSeconds = try c.decodeIfPresent(Int.self, forKey: .durationSeconds) ?? 0
         completed = try c.decode(LenientBool.self, forKey: .completed).wrappedValue
+    }
+
+    public init(positionSeconds: Int, durationSeconds: Int, completed: Bool) {
+        self.positionSeconds = positionSeconds
+        self.durationSeconds = durationSeconds
+        self.completed = completed
     }
 
     public var fraction: Double {

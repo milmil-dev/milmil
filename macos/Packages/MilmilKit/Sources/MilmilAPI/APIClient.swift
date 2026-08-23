@@ -79,6 +79,15 @@ public actor APIClient {
         public init() {}
     }
 
+    /// Status + body without the JSON/error mapping, for endpoints that
+    /// answer with a non-JSON 200 (HLS playlists).
+    public func raw(_ method: String, _ path: String, query: [URLQueryItem] = []) async throws -> (status: Int, data: Data) {
+        let request = try makeRequest(method: method, path: path, query: query, body: nil)
+        let (data, response) = try await transport.send(request)
+        if response.statusCode == 401 { throw APIError.unauthorized(message: serverMessage(in: data)) }
+        return (response.statusCode, data)
+    }
+
     private func makeRequest(method: String, path: String, query: [URLQueryItem], body: Data?) throws -> URLRequest {
         let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path
         var components = URLComponents(url: baseURL.appending(path: trimmed), resolvingAgainstBaseURL: false)

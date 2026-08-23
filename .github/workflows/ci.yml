@@ -205,13 +205,16 @@ jobs:
         with:
           path: |
             macos/Packages/MilmilKit/.build
+            macos/Packages/MilmilPlayer/.build
             ~/Library/Developer/Xcode/DerivedData
           key: macos-${{ runner.os }}-${{ hashFiles('macos/Packages/**/Package.swift', 'macos/project.yml') }}
           restore-keys: |
             macos-${{ runner.os }}-
 
       - name: Package tests
-        run: swift test --package-path macos/Packages/MilmilKit
+        run: |
+          swift test --package-path macos/Packages/MilmilKit
+          swift test --package-path macos/Packages/MilmilPlayer
 
       - name: Generate project
         working-directory: macos

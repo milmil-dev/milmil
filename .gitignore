@@ -146,3 +146,6 @@ api/server
 /aria2-config/
 # Local build cache directory
 /.build/
+
+# LLVM coverage droppings from swift test / xcodebuild
+*.profraw

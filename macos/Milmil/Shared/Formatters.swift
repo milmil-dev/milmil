@@ -1,6 +1,16 @@
 import Foundation
 
 enum Formatters {
+    /// "3:07" / "1:02:45" for player timelines.
+    static func clock(_ seconds: Double) -> String {
+        guard seconds.isFinite, seconds >= 0 else { return "0:00" }
+        let total = Int(seconds.rounded(.down))
+        let hours = total / 3600
+        let minutes = (total % 3600) / 60
+        let secs = total % 60
+        return hours > 0 ? String(format: "%d:%02d:%02d", hours, minutes, secs) : String(format: "%d:%02d", minutes, secs)
+    }
+
     /// "剩 7 分鐘" / "剩 1 小時 12 分鐘" / "剛開始".
     static func remaining(_ seconds: Int) -> String {
         let minutes = Int((Double(seconds) / 60).rounded(.up))
