@@ -23,7 +23,7 @@ struct SubtitleSettingsTab: View {
                         Text("\(style.fontSize)").monospacedDigit().frame(width: 30, alignment: .trailing)
                     }
                 }
-                ColorPicker("顏色", selection: colorBind(\.color), supportsOpacity: false)
+                ColorPicker(String(localized: "顏色"), selection: colorBind(\.color), supportsOpacity: false)
             }
             Section("描邊與陰影") {
                 Picker("樣式", selection: bind(\.shadowType)) {
@@ -36,7 +36,7 @@ struct SubtitleSettingsTab: View {
                 LabeledContent("描邊寬度") {
                     Stepper("\(style.strokeWidth)", value: Binding(get: { style.strokeWidth }, set: { value in update { $0.strokeWidth = value } }), in: 0...4)
                 }
-                ColorPicker("描邊顏色", selection: colorBind(\.strokeColor), supportsOpacity: false)
+                ColorPicker(String(localized: "描邊顏色"), selection: colorBind(\.strokeColor), supportsOpacity: false)
             }
             Section("位置") {
                 Picker("位置", selection: bind(\.position)) {

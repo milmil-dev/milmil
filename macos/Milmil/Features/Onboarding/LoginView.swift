@@ -14,7 +14,7 @@ struct LoginView: View {
 
     var body: some View {
         let profile = session.phase.profile
-        OnboardingCard(title: profile?.name ?? "milmil", subtitle: "登入你的 milmil 伺服器") {
+        OnboardingCard(title: profile?.name ?? "milmil", subtitle: String(localized: "登入你的 milmil 伺服器")) {
             if let profile {
                 HStack(spacing: 8) {
                     Image(systemName: "server.rack")
@@ -40,14 +40,14 @@ struct LoginView: View {
                 .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
             }
 
-            FormField(label: "使用者名稱") {
+            FormField(label: String(localized: "使用者名稱")) {
                 TextField("admin", text: $username)
                     .textFieldStyle(.roundedBorder)
                     .textContentType(.username)
                     .focused($focus, equals: .username)
                     .onSubmit { focus = .password }
             }
-            FormField(label: "密碼") {
+            FormField(label: String(localized: "密碼")) {
                 SecureField("••••••••", text: $password)
                     .textFieldStyle(.roundedBorder)
                     .textContentType(.password)
@@ -88,11 +88,11 @@ struct LoginView: View {
             do {
                 try await session.login(username: username, password: password)
             } catch APIError.unauthorized {
-                errorMessage = "使用者名稱或密碼錯誤"
+                errorMessage = String(localized: "使用者名稱或密碼錯誤")
                 password = ""
                 focus = .password
             } catch APIError.rateLimited(let retry) {
-                errorMessage = retry.map { "嘗試次數過多，請 \(Int($0)) 秒後再試" } ?? "嘗試次數過多，請稍後再試"
+                errorMessage = retry.map { String(localized: "嘗試次數過多，請 \(Int($0)) 秒後再試") } ?? String(localized: "嘗試次數過多，請稍後再試")
             } catch {
                 errorMessage = error.localizedDescription
             }

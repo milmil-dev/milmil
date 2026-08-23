@@ -33,13 +33,13 @@ struct CommandPalette: View {
         var result: [Row] = local.map(Row.local) + remote.prefix(6).map(Row.remote)
         if query.trimmingCharacters(in: .whitespaces).isEmpty {
             result += [
-                .action(title: "時刻表", symbol: "calendar") { router.select(.schedule) },
-                .action(title: "探索", symbol: "flame") { router.select(.discover) },
-                .action(title: "收藏", symbol: "bookmark") { router.select(.collection) },
-                .action(title: "歷史", symbol: "clock") { router.select(.history) },
+                .action(title: String(localized: "時刻表"), symbol: "calendar") { router.select(.schedule) },
+                .action(title: String(localized: "探索"), symbol: "flame") { router.select(.discover) },
+                .action(title: String(localized: "收藏"), symbol: "bookmark") { router.select(.collection) },
+                .action(title: String(localized: "歷史"), symbol: "clock") { router.select(.history) },
             ]
         } else {
-            result.append(.action(title: "在搜尋頁開啟「\(query)」", symbol: "magnifyingglass") { router.select(.search) })
+            result.append(.action(title: String(localized: "在搜尋頁開啟「\(query)」"), symbol: "magnifyingglass") { router.select(.search) })
         }
         return result
     }
@@ -77,8 +77,8 @@ struct CommandPalette: View {
                 }
                 Divider()
                 HStack(spacing: 14) {
-                    hint("↑↓", "移動")
-                    hint("↩", "開啟")
+                    hint("↑↓", String(localized: "移動"))
+                    hint("↩", String(localized: "開啟"))
                     Spacer()
                     if searching { ProgressView().controlSize(.mini) }
                     Text("媒體庫 + Bangumi 即時搜尋").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
@@ -120,13 +120,13 @@ struct CommandPalette: View {
                     Text(hit.altTitles.prefix(2).joined(separator: " · ")).font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary).lineLimit(1)
                 }
                 Spacer()
-                Chip(text: "媒體庫", small: true).opacity(0.9)
+                Chip(text: String(localized: "媒體庫"), small: true).opacity(0.9)
             case let .remote(item):
                 RemoteImage(url: item.coverImage, maxPixel: 120) { Rectangle().fill(Theme.animeGradient(item.title)) }
                     .frame(width: 34, height: 48).clipShape(RoundedRectangle(cornerRadius: 4))
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
-                    let meta = [Formatters.season(from: item.airDate), item.episodeCount > 0 ? "\(item.episodeCount) 集" : nil]
+                    let meta = [Formatters.season(from: item.airDate), item.episodeCount > 0 ? String(localized: "\(item.episodeCount) 集") : nil]
                     Text(meta.compactMap { $0 }.joined(separator: " · "))
                         .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                 }

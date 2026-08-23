@@ -11,15 +11,15 @@ enum Destination: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .home: "首頁"
-        case .schedule: "時刻表"
-        case .discover: "探索"
-        case .search: "搜尋"
-        case .collection: "收藏"
-        case .history: "歷史"
-        case .libraries: "媒體庫"
-        case .downloads: "下載"
-        case .notifications: "通知"
+        case .home: String(localized: "首頁")
+        case .schedule: String(localized: "時刻表")
+        case .discover: String(localized: "探索")
+        case .search: String(localized: "搜尋")
+        case .collection: String(localized: "收藏")
+        case .history: String(localized: "歷史")
+        case .libraries: String(localized: "媒體庫")
+        case .downloads: String(localized: "下載")
+        case .notifications: String(localized: "通知")
         }
     }
 
@@ -38,9 +38,9 @@ enum Destination: String, CaseIterable, Identifiable {
     }
 
     static let sections: [(title: String, items: [Destination])] = [
-        ("首頁", [.home, .schedule, .discover, .search]),
-        ("我的", [.collection, .history]),
-        ("管理", [.libraries, .downloads, .notifications]),
+        (String(localized: "首頁"), [.home, .schedule, .discover, .search]),
+        (String(localized: "我的"), [.collection, .history]),
+        (String(localized: "管理"), [.libraries, .downloads, .notifications]),
     ]
 }
 
@@ -272,38 +272,6 @@ private struct ShellToolbar: ToolbarContent {
             .keyboardShortcut("k", modifiers: .command)
             .help("搜尋（⌘K）")
         }
-    }
-}
-
-struct PlaceholderPage: View {
-    let destination: Destination
-
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: destination.symbol)
-                .font(.system(size: 36))
-                .foregroundStyle(Theme.accent)
-            Text(destination.title)
-                .font(.system(size: 20, weight: .bold))
-            Text("此畫面在 Phase 5（管理）實作。")
-                .font(.system(size: 12))
-                .foregroundStyle(Theme.Text.tertiary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle(destination.title)
-    }
-}
-
-struct PlaceholderRoute: View {
-    let title: String
-
-    var body: some View {
-        VStack(spacing: 12) {
-            Text(title).font(.system(size: 20, weight: .bold))
-            Text("此畫面在 Phase 1 的下一批實作。").font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle(title)
     }
 }
 

@@ -12,24 +12,24 @@ enum Genre: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .action: "動作"
-        case .adventure: "冒險"
-        case .comedy: "喜劇"
-        case .drama: "劇情"
-        case .fantasy: "奇幻"
-        case .mystery: "懸疑"
-        case .psychological: "心理"
-        case .romance: "戀愛"
-        case .sciFi: "科幻"
-        case .sliceOfLife: "日常"
-        case .supernatural: "超自然"
-        case .thriller: "驚悚"
-        case .horror: "恐怖"
-        case .sports: "運動"
-        case .music: "音樂"
-        case .mecha: "機戰"
-        case .mahouShoujo: "魔法少女"
-        case .ecchi: "福利"
+        case .action: String(localized: "動作")
+        case .adventure: String(localized: "冒險")
+        case .comedy: String(localized: "喜劇")
+        case .drama: String(localized: "劇情")
+        case .fantasy: String(localized: "奇幻")
+        case .mystery: String(localized: "懸疑")
+        case .psychological: String(localized: "心理")
+        case .romance: String(localized: "戀愛")
+        case .sciFi: String(localized: "科幻")
+        case .sliceOfLife: String(localized: "日常")
+        case .supernatural: String(localized: "超自然")
+        case .thriller: String(localized: "驚悚")
+        case .horror: String(localized: "恐怖")
+        case .sports: String(localized: "運動")
+        case .music: String(localized: "音樂")
+        case .mecha: String(localized: "機戰")
+        case .mahouShoujo: String(localized: "魔法少女")
+        case .ecchi: String(localized: "福利")
         }
     }
 
@@ -46,10 +46,10 @@ enum Season: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .winter: "冬季"
-        case .spring: "春季"
-        case .summer: "夏季"
-        case .fall: "秋季"
+        case .winter: String(localized: "冬季")
+        case .spring: String(localized: "春季")
+        case .summer: String(localized: "夏季")
+        case .fall: String(localized: "秋季")
         }
     }
 
@@ -81,9 +81,9 @@ enum AiringStatus: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .releasing: "放送中"
-        case .finished: "已完結"
-        case .notYetReleased: "即將播出"
+        case .releasing: String(localized: "放送中")
+        case .finished: String(localized: "已完結")
+        case .notYetReleased: String(localized: "即將播出")
         }
     }
 }

@@ -41,52 +41,60 @@ enum PlayerAction: String, CaseIterable {
 
     var label: String {
         switch self {
-        case .toggle: "播放 / 暫停"
-        case .seekBack5: "後退 5 秒"
-        case .seekForward5: "前進 5 秒"
-        case .seekBack30: "後退 30 秒"
-        case .seekForward30: "前進 30 秒"
-        case .frameForward: "下一格"
-        case .frameBackward: "上一格"
-        case .speedDown: "速度 −0.25×"
-        case .speedUp: "速度 +0.25×"
-        case .speedReset: "重設速度"
-        case .abLoop: "A-B 循環"
-        case .volumeUp: "音量 +"
-        case .volumeDown: "音量 −"
-        case .mute: "靜音"
-        case .subtitleToggle: "字幕開關"
-        case .subtitleNext: "下一個字幕軌"
-        case .subtitleDelayDecrease: "字幕延遲 −0.1s"
-        case .subtitleDelayIncrease: "字幕延遲 +0.1s"
-        case .audioNext: "下一個音軌"
-        case .fullscreen: "全螢幕"
-        case .miniPlayer: "迷你播放器"
-        case .help: "快捷鍵說明"
-        case .techInfo: "技術資訊"
-        case .nextEpisode: "下一集"
-        case .previousEpisode: "上一集"
-        case .inspector: "側欄"
-        case .theater: "劇院模式"
-        case .danmakuToggle: "彈幕開關"
-        case .danmakuSettings: "彈幕設定"
-        case .danmakuCompose: "發送彈幕"
-        case .screenshot: "截圖"
-        case .screenshotWithSubs: "截圖（含字幕）"
-        case .screenshotToClipboard: "截圖到剪貼簿"
-        case .skipSegment: "跳過 OP / ED"
+        case .toggle: String(localized: "播放 / 暫停")
+        case .seekBack5: String(localized: "後退 5 秒")
+        case .seekForward5: String(localized: "前進 5 秒")
+        case .seekBack30: String(localized: "後退 30 秒")
+        case .seekForward30: String(localized: "前進 30 秒")
+        case .frameForward: String(localized: "下一格")
+        case .frameBackward: String(localized: "上一格")
+        case .speedDown: String(localized: "速度 −0.25×")
+        case .speedUp: String(localized: "速度 +0.25×")
+        case .speedReset: String(localized: "重設速度")
+        case .abLoop: String(localized: "A-B 循環")
+        case .volumeUp: String(localized: "音量 +")
+        case .volumeDown: String(localized: "音量 −")
+        case .mute: String(localized: "靜音")
+        case .subtitleToggle: String(localized: "字幕開關")
+        case .subtitleNext: String(localized: "下一個字幕軌")
+        case .subtitleDelayDecrease: String(localized: "字幕延遲 −0.1s")
+        case .subtitleDelayIncrease: String(localized: "字幕延遲 +0.1s")
+        case .audioNext: String(localized: "下一個音軌")
+        case .fullscreen: String(localized: "全螢幕")
+        case .miniPlayer: String(localized: "迷你播放器")
+        case .help: String(localized: "快捷鍵說明")
+        case .techInfo: String(localized: "技術資訊")
+        case .nextEpisode: String(localized: "下一集")
+        case .previousEpisode: String(localized: "上一集")
+        case .inspector: String(localized: "側欄")
+        case .theater: String(localized: "劇院模式")
+        case .danmakuToggle: String(localized: "彈幕開關")
+        case .danmakuSettings: String(localized: "彈幕設定")
+        case .danmakuCompose: String(localized: "發送彈幕")
+        case .screenshot: String(localized: "截圖")
+        case .screenshotWithSubs: String(localized: "截圖（含字幕）")
+        case .screenshotToClipboard: String(localized: "截圖到剪貼簿")
+        case .skipSegment: String(localized: "跳過 OP / ED")
         }
+    }
+
+    /// Display order of `group` in the keyboard settings and the help overlay.
+    static var groupOrder: [String] {
+        [
+            String(localized: "播放"), String(localized: "音量"), String(localized: "字幕 / 音訊"),
+            String(localized: "介面"), String(localized: "彈幕"), String(localized: "擷取")
+        ]
     }
 
     var group: String {
         switch self {
         case .toggle, .seekBack5, .seekForward5, .seekBack30, .seekForward30, .frameForward, .frameBackward,
-             .speedDown, .speedUp, .speedReset, .abLoop, .skipSegment: "播放"
-        case .volumeUp, .volumeDown, .mute: "音量"
-        case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext: "字幕 / 音訊"
-        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater: "介面"
-        case .danmakuToggle, .danmakuSettings, .danmakuCompose: "彈幕"
-        case .screenshot, .screenshotWithSubs, .screenshotToClipboard: "擷取"
+             .speedDown, .speedUp, .speedReset, .abLoop, .skipSegment: String(localized: "播放")
+        case .volumeUp, .volumeDown, .mute: String(localized: "音量")
+        case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext: String(localized: "字幕 / 音訊")
+        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater: String(localized: "介面")
+        case .danmakuToggle, .danmakuSettings, .danmakuCompose: String(localized: "彈幕")
+        case .screenshot, .screenshotWithSubs, .screenshotToClipboard: String(localized: "擷取")
         }
     }
 }

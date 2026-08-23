@@ -106,7 +106,7 @@ struct HeroCarousel: View {
         var parts: [String] = []
         if let season = Formatters.season(from: item.airDate) { parts.append(season) }
         if let type = item.mediaType { parts.append(type) }
-        if item.episodeCount > 0 { parts.append("\(item.episodeCount) 集") }
+        if item.episodeCount > 0 { parts.append(String(localized: "\(item.episodeCount) 集")) }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 

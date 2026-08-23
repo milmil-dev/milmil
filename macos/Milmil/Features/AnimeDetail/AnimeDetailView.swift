@@ -19,9 +19,9 @@ struct AnimeDetailView: View {
         var id: String { rawValue }
         var label: String {
             switch self {
-            case .all: "全部"
-            case .unwatched: "未看"
-            case .available: "有檔案"
+            case .all: String(localized: "全部")
+            case .unwatched: String(localized: "未看")
+            case .available: String(localized: "有檔案")
             }
         }
     }
@@ -89,7 +89,7 @@ struct AnimeDetailView: View {
                 if !store.capabilityBadges.isEmpty {
                     HStack(spacing: 6) {
                         ForEach(store.capabilityBadges, id: \.self) { Chip(text: $0, small: true).opacity(0.85) }
-                        if session.profile.baseURL.host() == "127.0.0.1" { Chip(text: "本機", small: true).opacity(0.85) }
+                        if session.profile.baseURL.host() == "127.0.0.1" { Chip(text: String(localized: "本機"), small: true).opacity(0.85) }
                     }
                 }
                 actionRow(store)
@@ -116,7 +116,7 @@ struct AnimeDetailView: View {
                     .font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.accent)
             }
             if let type = detail.summary.mediaType { PillBadge(text: type, tint: .white.opacity(0.1)) }
-            if detail.summary.episodeCount > 0 { meta("\(detail.summary.episodeCount) 集") }
+            if detail.summary.episodeCount > 0 { meta(String(localized: "\(detail.summary.episodeCount) 集")) }
             if let date = detail.summary.airDate { meta(String(date.prefix(7))) }
             if detail.rating.total > 0 { Text("\(detail.rating.total) 評分").font(.system(size: 11)).foregroundStyle(Theme.Text.muted) }
             if detail.summary.nextEpisode != nil {
@@ -167,13 +167,13 @@ struct AnimeDetailView: View {
 
             Menu {
                 ForEach(WatchStatus.allCases, id: \.self) { status in
-                    Button(status == .none ? "移出收藏" : status.label, systemImage: status.symbol) {
+                    Button(status == .none ? String(localized: "移出收藏") : status.label, systemImage: status.symbol) {
                         Task { await store.setWatchStatus(status) }
                     }
                 }
             } label: {
                 let collected = store.watchStatus.isInCollection
-                Label(collected ? store.watchStatus.label : "加入收藏", systemImage: collected ? "bookmark.fill" : "bookmark")
+                Label(collected ? store.watchStatus.label : String(localized: "加入收藏"), systemImage: collected ? "bookmark.fill" : "bookmark")
             }
             .menuStyle(.button)
             .buttonStyle(HeroButtonStyle(primary: false))
@@ -187,7 +187,7 @@ struct AnimeDetailView: View {
                     Button("清除評分") { Task { await store.setScore(nil) } }
                 }
             } label: {
-                Label(store.userScore.map(String.init) ?? "評分", systemImage: "star.fill")
+                Label(store.userScore.map(String.init) ?? String(localized: "評分"), systemImage: "star.fill")
             }
             .menuStyle(.button)
             .buttonStyle(HeroButtonStyle(primary: false))
@@ -214,7 +214,8 @@ struct AnimeDetailView: View {
             HStack {
                 Text("集數").font(.system(size: 20, weight: .bold))
                 let available = store.episodes.filter(\.hasFile).count
-                Text(store.episodes.isEmpty ? "\(store.discoverEpisodes.count) 集" : "\(store.episodes.count) 集 · \(available) 有檔案")
+                let count = store.episodes.count
+                Text(store.episodes.isEmpty ? String(localized: "\(store.discoverEpisodes.count) 集") : String(localized: "\(count) 集 · \(available) 有檔案"))
                     .font(.system(size: 13)).foregroundStyle(Theme.Text.tertiary)
                 Spacer()
                 if !store.episodes.isEmpty {
@@ -225,7 +226,7 @@ struct AnimeDetailView: View {
                 if store.discoverEpisodes.isEmpty, store.playable.isLoading {
                     ProgressView().frame(maxWidth: .infinity).padding()
                 } else if store.discoverEpisodes.isEmpty {
-                    EmptyState(symbol: "film", title: "還沒有集數資料", message: "這部作品尚未加入媒體庫，也沒有 Bangumi 的集數資訊。")
+                    EmptyState(symbol: "film", title: String(localized: "還沒有集數資料"), message: String(localized: "這部作品尚未加入媒體庫，也沒有 Bangumi 的集數資訊。"))
                 } else {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 20)], alignment: .leading, spacing: 6) {
                         ForEach(store.discoverEpisodes) { episode in
@@ -341,18 +342,22 @@ struct AnimeDetailView: View {
 
     private static func relationLabel(_ raw: String) -> String {
         switch raw.uppercased() {
-        case "SEQUEL": "續篇"
-        case "PREQUEL": "前傳"
-        case "SIDE_STORY": "外傳"
-        case "PARENT": "本篇"
-        case "ADAPTATION", "SOURCE": "原作"
-        case "SUMMARY": "總集篇"
-        case "ALTERNATIVE": "另一版本"
-        case "SPIN_OFF": "衍生"
-        case "CHARACTER": "角色客串"
+        case "SEQUEL": String(localized: "續篇")
+        case "PREQUEL": String(localized: "前傳")
+        case "SIDE_STORY": String(localized: "外傳")
+        case "PARENT": String(localized: "本篇")
+        case "ADAPTATION", "SOURCE": String(localized: "原作")
+        case "SUMMARY": String(localized: "總集篇")
+        case "ALTERNATIVE": String(localized: "另一版本")
+        case "SPIN_OFF": String(localized: "衍生")
+        case "CHARACTER": String(localized: "角色客串")
         default: raw.capitalized
         }
     }
+}
+
+private func missingBadge(_ airDate: String?) -> String {
+    airDate.map { date in String(localized: "無檔案 · \(date)") } ?? String(localized: "無檔案")
 }
 
 /// One episode in the two-column grid: still, number, status tag, title, synopsis.
@@ -387,7 +392,7 @@ struct EpisodeRow: View {
                     Text("第 \(episode.number) 集").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.Text.tertiary)
                     statusTag
                 }
-                Text(episode.displayTitle ?? "第 \(episode.number) 集")
+                Text(episode.displayTitle ?? String(localized: "第 \(episode.number) 集"))
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(episode.hasFile ? .white : Theme.Text.tertiary)
                     .lineLimit(1)
@@ -425,7 +430,10 @@ struct EpisodeRow: View {
                 Button("播放", systemImage: "play.fill", action: play)
                 Button("從頭播放", systemImage: "gobackward", action: play)
                 Divider()
-                Button(completed ? "標記為未看" : "標記為已看", systemImage: completed ? "circle" : "checkmark.circle") { markWatched(!completed) }
+                Button(
+                    completed ? String(localized: "標記為未看") : String(localized: "標記為已看"),
+                    systemImage: completed ? "circle" : "checkmark.circle"
+                ) { markWatched(!completed) }
             }
         }
     }
@@ -433,9 +441,9 @@ struct EpisodeRow: View {
     @ViewBuilder
     private var statusTag: some View {
         if !episode.hasFile {
-            PillBadge(text: episode.airDate.map { "無檔案 · \($0)" } ?? "無檔案", tint: .white.opacity(0.05), foreground: Theme.Text.tertiary)
+            PillBadge(text: missingBadge(episode.airDate), tint: .white.opacity(0.05), foreground: Theme.Text.tertiary)
         } else if completed {
-            PillBadge(text: "已看完", tint: Color(hex: 0x22C55E).opacity(0.12), foreground: Color(hex: 0x4ADE80))
+            PillBadge(text: String(localized: "已看完"), tint: Color(hex: 0x22C55E).opacity(0.12), foreground: Color(hex: 0x4ADE80))
         } else if let progress = episode.progress, progress.positionSeconds > 0 {
             PillBadge(text: Formatters.remaining(progress.remainingSeconds), tint: Theme.accent.opacity(0.15), foreground: Theme.accent)
         }
@@ -456,7 +464,7 @@ struct DiscoverEpisodeRow: View {
                 HStack(spacing: 8) {
                     Text("第 \(episode.sort.rounded() == episode.sort ? String(Int(episode.sort)) : String(episode.sort)) 集")
                         .font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.Text.tertiary)
-                    PillBadge(text: episode.airDate.map { "無檔案 · \($0)" } ?? "無檔案", tint: .white.opacity(0.05), foreground: Theme.Text.tertiary)
+                    PillBadge(text: missingBadge(episode.airDate), tint: .white.opacity(0.05), foreground: Theme.Text.tertiary)
                 }
                 Text(episode.title.isEmpty ? (episode.titleOriginal ?? "") : episode.title)
                     .font(.system(size: 14, weight: .semibold)).foregroundStyle(Theme.Text.tertiary).lineLimit(1)

@@ -19,11 +19,14 @@ final class DiscoverStore {
         let now = Season.current()
         let prev = now.season.previous
         rails = [
-            Rail(id: "trending", title: "現在熱門", route: .trending),
-            Rail(id: "season", title: "本季最佳", route: .query(BrowseQuery(sort: .score, year: now.year, season: now.season.rawValue))),
-            Rail(id: "lastSeason", title: "上季最佳", route: .query(BrowseQuery(sort: .score, year: now.year + prev.delta, season: prev.season.rawValue))),
-            Rail(id: "movies", title: "熱門劇場版", route: .query(BrowseQuery(sort: .trending, format: "MOVIE"))),
-            Rail(id: "upcoming", title: "即將播出", route: .query(BrowseQuery(sort: .popularity, status: AiringStatus.notYetReleased.rawValue))),
+            Rail(id: "trending", title: String(localized: "現在熱門"), route: .trending),
+            Rail(id: "season", title: String(localized: "本季最佳"), route: .query(BrowseQuery(sort: .score, year: now.year, season: now.season.rawValue))),
+            Rail(
+                id: "lastSeason", title: String(localized: "上季最佳"),
+                route: .query(BrowseQuery(sort: .score, year: now.year + prev.delta, season: prev.season.rawValue))
+            ),
+            Rail(id: "movies", title: String(localized: "熱門劇場版"), route: .query(BrowseQuery(sort: .trending, format: "MOVIE"))),
+            Rail(id: "upcoming", title: String(localized: "即將播出"), route: .query(BrowseQuery(sort: .popularity, status: AiringStatus.notYetReleased.rawValue))),
         ]
     }
 
@@ -154,7 +157,7 @@ struct DiscoverView: View {
     private func railSection(_ rail: DiscoverStore.Rail) -> some View {
         if let items = rail.items.value, !items.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                SectionHeader(title: rail.title, count: "\(items.count)", moreTitle: "睇晒") {
+                SectionHeader(title: rail.title, count: "\(items.count)", moreTitle: String(localized: "查看全部")) {
                     router.push(.discoverCategory(title: rail.title, query: rail.route))
                 }
                 Shelf {
@@ -221,7 +224,7 @@ struct DiscoverCategoryView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                PageHeader(title: title, subtitle: items.isEmpty ? nil : "\(items.count) 部")
+                PageHeader(title: title, subtitle: items.isEmpty ? nil : String(localized: "\(items.count) 部"))
                 if let error { ErrorBanner(message: error) { Task { await loadMore(reset: true) } } }
                 PosterGrid(
                     items: items,

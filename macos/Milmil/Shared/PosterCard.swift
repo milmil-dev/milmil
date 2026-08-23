@@ -144,7 +144,7 @@ extension PosterCard {
             cover: summary.coverImage,
             score: summary.score,
             badge: nil,
-            cornerBadge: summary.episodeCount > 0 ? "\(summary.episodeCount) 集" : nil,
+            cornerBadge: summary.episodeCount > 0 ? String(localized: "\(summary.episodeCount) 集") : nil,
             subtitle: subtitle,
             watchStatus: watchStatus,
             width: width,
@@ -156,12 +156,12 @@ extension PosterCard {
 extension WatchStatus {
     var label: String {
         switch self {
-        case .none: "無"
-        case .watching: "在看"
-        case .planning: "想看"
-        case .completed: "看過"
-        case .paused: "擱置"
-        case .dropped: "抛棄"
+        case .none: String(localized: "無")
+        case .watching: String(localized: "在看")
+        case .planning: String(localized: "想看")
+        case .completed: String(localized: "看過")
+        case .paused: String(localized: "擱置")
+        case .dropped: String(localized: "拋棄")
         }
     }
 

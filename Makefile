@@ -62,6 +62,7 @@ macos-test:
 
 macos-lint:
 	cd macos && swiftlint lint --strict --quiet
+	cd macos && python3 scripts/i18n_sync.py --check
 
 macos-build: macos-gen
 	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \

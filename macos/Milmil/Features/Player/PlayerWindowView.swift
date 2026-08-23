@@ -203,7 +203,8 @@ struct PlayerStatusLayer: View {
             case let .buffering(percent):
                 VStack(spacing: 8) {
                     ProgressView().controlSize(.large)
-                    Text(percent > 0 ? "緩衝中 \(percent)%" : "緩衝中…").font(.system(size: 12)).foregroundStyle(.white.opacity(0.8))
+                    Text(percent > 0 ? String(localized: "緩衝中 \(percent)%") : String(localized: "緩衝中…"))
+                        .font(.system(size: 12)).foregroundStyle(.white.opacity(0.8))
                 }
             case let .failed(message):
                 VStack(spacing: 14) {
@@ -272,7 +273,8 @@ struct OSDPill: View {
         switch message {
         case let .seek(seconds): Formatters.clock(seconds)
         case let .seekDelta(delta, target): "\(delta > 0 ? "+" : "")\(Int(delta))s · \(Formatters.clock(target))"
-        case let .volume(level, muted): muted ? "靜音" : "音量 \(level)%"
+        case let .volume(level, muted):
+            if muted { String(localized: "靜音") } else { String(localized: "音量 \(level)%") }
         case let .speed(speed): String(format: "%.2g×", speed)
         case let .text(text): text
         }
@@ -310,7 +312,8 @@ struct PostPlayCard: View {
                 .frame(width: 120, height: 68)
                 .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
             VStack(alignment: .leading, spacing: 4) {
-                Text(countdown.map { "下一集 · \($0) 秒後" } ?? "下一集").font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
+                Text(countdown.map { String(localized: "下一集 · \($0) 秒後") } ?? String(localized: "下一集"))
+                    .font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
                 Text("第 \(episode.number) 集").font(.system(size: 13, weight: .semibold))
                 if let title = episode.displayTitle { Text(title).font(.system(size: 11)).foregroundStyle(.white.opacity(0.8)).lineLimit(1) }
                 HStack(spacing: 8) {
@@ -331,14 +334,15 @@ struct TechInfoOverlay: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
-            row("視訊", "\(state.videoCodec) \(Int(state.videoSize.width))×\(Int(state.videoSize.height)) \(String(format: "%.3g", state.fps)) fps")
-            row("解碼", state.hwdec.isEmpty || state.hwdec == "no" ? "軟體" : state.hwdec)
-            row("音訊", state.audioCodec)
-            row("位元率", state.videoBitrate > 0 ? String(format: "%.1f Mbps", state.videoBitrate / 1_000_000) : "—")
-            row("快取", String(format: "%.1fs", state.cacheSeconds))
-            row("速度", String(format: "%.2g×", state.speed))
-            row("來源", state.stage.label)
-            if state.isHDR { row("HDR", "是") }
+            let size = "\(Int(state.videoSize.width))×\(Int(state.videoSize.height))"
+            row(String(localized: "視訊"), "\(state.videoCodec) \(size) \(String(format: "%.3g", state.fps)) fps")
+            row(String(localized: "解碼"), state.hwdec.isEmpty || state.hwdec == "no" ? String(localized: "軟體") : state.hwdec)
+            row(String(localized: "音訊"), state.audioCodec)
+            row(String(localized: "位元率"), state.videoBitrate > 0 ? String(format: "%.1f Mbps", state.videoBitrate / 1_000_000) : "—")
+            row(String(localized: "快取"), String(format: "%.1fs", state.cacheSeconds))
+            row(String(localized: "速度"), String(format: "%.2g×", state.speed))
+            row(String(localized: "來源"), state.stage.label)
+            if state.isHDR { row("HDR", String(localized: "是")) }
         }
         .font(.system(size: 11, design: .monospaced))
         .padding(10)
@@ -360,7 +364,7 @@ struct HelpOverlay: View {
 
     private var groups: [(String, [PlayerAction])] {
         let grouped = Dictionary(grouping: PlayerAction.allCases, by: \.group)
-        return ["播放", "音量", "字幕 / 音訊", "介面", "彈幕", "擷取"].compactMap { title in
+        return PlayerAction.groupOrder.compactMap { title in
             grouped[title].map { (title, $0) }
         }
     }

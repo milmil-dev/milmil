@@ -11,12 +11,12 @@ struct PlayerInspector: View {
         var id: String { rawValue }
         var label: String {
             switch self {
-            case .episodes: "集數"
-            case .danmaku: "彈幕"
-            case .sources: "來源"
-            case .subtitles: "字幕"
-            case .audio: "音訊"
-            case .video: "視訊"
+            case .episodes: String(localized: "集數")
+            case .danmaku: String(localized: "彈幕")
+            case .sources: String(localized: "來源")
+            case .subtitles: String(localized: "字幕")
+            case .audio: String(localized: "音訊")
+            case .video: String(localized: "視訊")
             }
         }
     }
@@ -190,8 +190,8 @@ private struct VideoTab: View {
             Section("資訊") {
                 LabeledContent("編碼", value: "\(state.videoCodec) · \(Int(state.videoSize.width))×\(Int(state.videoSize.height))")
                 LabeledContent("影格率", value: String(format: "%.3g fps", state.fps))
-                LabeledContent("硬體解碼", value: state.hwdec.isEmpty || state.hwdec == "no" ? "關（軟體解碼）" : state.hwdec)
-                LabeledContent("HDR", value: state.isHDR ? "是（tone-mapping）" : "否")
+                LabeledContent("硬體解碼", value: state.hwdec.isEmpty || state.hwdec == "no" ? String(localized: "關（軟體解碼）") : state.hwdec)
+                LabeledContent("HDR", value: state.isHDR ? String(localized: "是（tone-mapping）") : String(localized: "否"))
                 LabeledContent("串流", value: state.stage.label)
             }
             Section("畫面") {
@@ -234,38 +234,38 @@ enum PlayerContextMenu {
     static func show(controller: PlayerController, model: PlayerWindowModel, in view: NSView, with event: NSEvent) {
         let state = controller.state
         let menu = NSMenu()
-        menu.addItem(withTitle: state.paused ? "播放" : "暫停", action: nil, keyEquivalent: "").target = nil
+        menu.addItem(withTitle: state.paused ? String(localized: "播放") : String(localized: "暫停"), action: nil, keyEquivalent: "").target = nil
         menu.items.last?.setAction { controller.togglePause() }
 
         let subtitles = NSMenu()
-        subtitles.addItem(withTitle: "關閉", state: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
+        subtitles.addItem(withTitle: String(localized: "關閉"), state: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
         for track in state.subtitleTracks {
             subtitles.addItem(withTitle: track.displayName, state: state.subtitleID == track.id) { controller.selectTrack(.sub, id: track.id) }
         }
         subtitles.addItem(.separator())
-        subtitles.addItem(withTitle: "載入字幕檔…", state: false) { openSubtitlePanel(controller: controller) }
-        menu.addSubmenu("字幕", subtitles)
+        subtitles.addItem(withTitle: String(localized: "載入字幕檔…"), state: false) { openSubtitlePanel(controller: controller) }
+        menu.addSubmenu(String(localized: "字幕"), subtitles)
 
         let audio = NSMenu()
         for track in state.audioTracks {
             audio.addItem(withTitle: track.displayName, state: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
         }
-        menu.addSubmenu("音軌", audio)
+        menu.addSubmenu(String(localized: "音軌"), audio)
 
         let speed = NSMenu()
         for value in [0.5, 0.75, 1, 1.25, 1.5, 2] {
             speed.addItem(withTitle: String(format: "%.2g×", value), state: state.speed == value) { controller.setSpeed(value) }
         }
-        menu.addSubmenu("速度", speed)
+        menu.addSubmenu(String(localized: "速度"), speed)
 
         menu.addItem(.separator())
-        menu.addItem(withTitle: "截圖", state: false) { controller.screenshot(withSubtitles: false) }
-        menu.addItem(withTitle: "截圖（含字幕）", state: false) { controller.screenshot(withSubtitles: true) }
-        menu.addItem(withTitle: "截圖到剪貼簿", state: false) { controller.screenshotToClipboard() }
+        menu.addItem(withTitle: String(localized: "截圖"), state: false) { controller.screenshot(withSubtitles: false) }
+        menu.addItem(withTitle: String(localized: "截圖（含字幕）"), state: false) { controller.screenshot(withSubtitles: true) }
+        menu.addItem(withTitle: String(localized: "截圖到剪貼簿"), state: false) { controller.screenshotToClipboard() }
         menu.addItem(.separator())
-        menu.addItem(withTitle: model.isMini ? "離開迷你播放器" : "迷你播放器", state: false) { model.toggleMini() }
-        menu.addItem(withTitle: "技術資訊", state: model.techInfoShown) { model.techInfoShown.toggle() }
-        menu.addItem(withTitle: "快捷鍵…", state: false) { model.helpShown = true }
+        menu.addItem(withTitle: model.isMini ? String(localized: "離開迷你播放器") : String(localized: "迷你播放器"), state: false) { model.toggleMini() }
+        menu.addItem(withTitle: String(localized: "技術資訊"), state: model.techInfoShown) { model.techInfoShown.toggle() }
+        menu.addItem(withTitle: String(localized: "快捷鍵…"), state: false) { model.helpShown = true }
         NSMenu.popUpContextMenu(menu, with: event, for: view)
     }
 
@@ -274,7 +274,7 @@ enum PlayerContextMenu {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = ["srt", "ass", "ssa", "vtt"].compactMap { UTType(filenameExtension: $0) }
         panel.allowsMultipleSelection = true
-        panel.message = "選擇要載入的字幕檔"
+        panel.message = String(localized: "選擇要載入的字幕檔")
         panel.begin { response in
             guard response == .OK else { return }
             for url in panel.urls { controller.addExternalSubtitle(fileURL: url) }

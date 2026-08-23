@@ -14,7 +14,7 @@ struct KeyboardSettingsTab: View {
     private var keymap: PlayerKeymap { PlayerKeymap(userBindings: session.preferences.keyboardBindings) }
     private var groups: [(String, [PlayerAction])] {
         let grouped = Dictionary(grouping: PlayerAction.allCases, by: \.group)
-        return ["播放", "音量", "字幕 / 音訊", "介面", "彈幕", "擷取"].compactMap { title in grouped[title].map { (title, $0) } }
+        return PlayerAction.groupOrder.compactMap { title in grouped[title].map { (title, $0) } }
     }
 
     var body: some View {
@@ -31,7 +31,7 @@ struct KeyboardSettingsTab: View {
             .listStyle(.inset)
             Divider()
             HStack {
-                Text(recording.map { "按下要綁定到「\($0.label)」的按鍵，Esc 取消" } ?? "點「變更」後按下新的按鍵組合。與 web 共用。")
+                Text(recording.map { String(localized: "按下要綁定到「\($0.label)」的按鍵，Esc 取消") } ?? String(localized: "點「變更」後按下新的按鍵組合。與 web 共用。"))
                     .font(.system(size: 11)).foregroundStyle(recording == nil ? Theme.Text.tertiary : Theme.accent)
                 Spacer()
                 Button("全部還原預設") {
@@ -69,7 +69,7 @@ struct KeyboardSettingsTab: View {
                 }
                 if chords.isEmpty { Text("未綁定").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary) }
             }
-            Button(recording == action ? "按下按鍵…" : "變更") { recording = recording == action ? nil : action }
+            Button(recording == action ? String(localized: "按下按鍵…") : String(localized: "變更")) { recording = recording == action ? nil : action }
                 .controlSize(.small)
                 .tint(recording == action ? Theme.accent : nil)
             if isUser {

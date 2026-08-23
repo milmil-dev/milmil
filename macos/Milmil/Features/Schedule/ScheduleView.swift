@@ -31,7 +31,7 @@ final class ScheduleStore {
 enum ScheduleMode: String, CaseIterable, Identifiable {
     case week, season
     var id: String { rawValue }
-    var label: String { self == .week ? "本週" : "季度" }
+    var label: String { self == .week ? String(localized: "本週") : String(localized: "季度") }
 }
 
 /// Weekly airing timeline (grouped by JST air time) and seasonal browse.
@@ -146,7 +146,7 @@ struct ScheduleView: View {
     }
 
     private func dayTimeline(_ day: CalendarDay) -> some View {
-        let unknown = "時間未定"
+        let unknown = String(localized: "時間未定")
         let groups = Dictionary(grouping: day.items) { $0.airTime ?? unknown }
         let times = groups.keys.sorted { a, b in
             if a == unknown { return false }
@@ -200,10 +200,7 @@ struct ScheduleView: View {
         let today = Date()
         let todayIndex = (calendar.component(.weekday, from: today) + 5) % 7
         guard let date = calendar.date(byAdding: .day, value: target - todayIndex, to: today) else { return "" }
-        let formatter = DateFormatter()
-        formatter.timeZone = tokyo
-        formatter.dateFormat = "M月d日"
-        return formatter.string(from: date)
+        return date.formatted(Date.FormatStyle(timeZone: tokyo).month(.defaultDigits).day())
     }
 
     // MARK: Season

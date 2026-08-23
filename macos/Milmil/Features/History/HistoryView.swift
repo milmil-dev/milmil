@@ -69,11 +69,11 @@ final class HistoryStore {
     }
 
     private static func bucketTitle(for date: Date?, calendar: Calendar, now: Date) -> String {
-        guard let date else { return "更早" }
-        if calendar.isDateInToday(date) { return "今天" }
-        if calendar.isDateInYesterday(date) { return "昨天" }
-        if let week = calendar.dateInterval(of: .weekOfYear, for: now), week.contains(date) { return "本週" }
-        return "更早"
+        guard let date else { return String(localized: "更早") }
+        if calendar.isDateInToday(date) { return String(localized: "今天") }
+        if calendar.isDateInYesterday(date) { return String(localized: "昨天") }
+        if let week = calendar.dateInterval(of: .weekOfYear, for: now), week.contains(date) { return String(localized: "本週") }
+        return String(localized: "更早")
     }
 }
 
@@ -103,16 +103,16 @@ struct HistoryView: View {
         @Bindable var store = store
         return ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                PageHeader(title: "觀看歷史") {
+                PageHeader(title: String(localized: "觀看歷史")) {
                     HStack(spacing: 8) {
                         TextField("搜尋歷史…", text: $store.search)
                             .textFieldStyle(.roundedBorder).frame(width: 180)
                             .onSubmit { Task { await store.load() } }
                         Segmented(options: HistoryFilter.allCases, selection: $store.filter) { filter in
                             switch filter {
-                            case .all: "全部"
-                            case .inProgress: "進行中"
-                            case .completed: "已完成"
+                            case .all: String(localized: "全部")
+                            case .inProgress: String(localized: "進行中")
+                            case .completed: String(localized: "已完成")
                             }
                         }
                         if !store.selection.isEmpty {
@@ -129,7 +129,7 @@ struct HistoryView: View {
                 }
                 switch store.entries {
                 case .loaded where (store.entries.value ?? []).isEmpty:
-                    EmptyState(symbol: "clock", title: "還沒有觀看記錄", message: "播放過的集數會出現在這裡，也會同步到 AniList / Bangumi。")
+                    EmptyState(symbol: "clock", title: String(localized: "還沒有觀看記錄"), message: String(localized: "播放過的集數會出現在這裡，也會同步到 AniList / Bangumi。"))
                         .frame(maxWidth: .infinity).padding(.top, 40)
                 case .loaded:
                     ForEach(store.buckets, id: \.title) { bucket in
@@ -193,7 +193,7 @@ struct HistoryRow: View {
                     .foregroundStyle(selected ? Theme.accent : Theme.Text.muted)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(selected ? "取消選取" : "選取")
+            .accessibilityLabel(selected ? String(localized: "取消選取") : String(localized: "選取"))
 
             ZStack {
                 RemoteImage(url: entry.animeCoverImage, maxPixel: 320) { Rectangle().fill(Theme.animeGradient(entry.displayTitle)) }
@@ -228,8 +228,8 @@ struct HistoryRow: View {
 
     private var detail: String {
         let ep = Formatters.episode(entry.episodeNumber)
-        if entry.completed { return "\(ep) · 已看完" }
-        if let fraction = entry.fraction { return "\(ep) · 看到 \(Int(fraction * 100))%" }
+        if entry.completed { return String(localized: "\(ep) · 已看完") }
+        if let fraction = entry.fraction { return String(localized: "\(ep) · 看到 \(Int(fraction * 100))%") }
         return ep
     }
 }

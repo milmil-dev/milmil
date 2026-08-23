@@ -10,7 +10,7 @@ struct SetupRedirectView: View {
     let profile: ServerProfile
 
     var body: some View {
-        OnboardingCard(title: "伺服器尚未初始化", subtitle: "需要先在瀏覽器完成首次設定") {
+        OnboardingCard(title: String(localized: "伺服器尚未初始化"), subtitle: String(localized: "需要先在瀏覽器完成首次設定")) {
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: "info.circle.fill")
                     .foregroundStyle(.yellow)

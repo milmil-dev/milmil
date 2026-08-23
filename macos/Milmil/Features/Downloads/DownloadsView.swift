@@ -95,7 +95,7 @@ struct DownloadsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 let speed = ByteCountFormatter.string(fromByteCount: store.totalSpeed, countStyle: .file)
-                PageHeader(title: "下載", subtitle: store.hasActive ? "↓ \(speed)/s" : nil) {
+                PageHeader(title: String(localized: "下載"), subtitle: store.hasActive ? "↓ \(speed)/s" : nil) {
                     HStack(spacing: 8) {
                         Button("新增", systemImage: "plus") { showAdd = true }.buttonStyle(.borderedProminent)
                         Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }
@@ -106,16 +106,16 @@ struct DownloadsView: View {
                 switch store.downloads {
                 case .loaded where (store.downloads.value ?? []).isEmpty:
                     EmptyState(
-                        symbol: "arrow.down.circle", title: "沒有下載",
-                        message: "貼上 magnet / torrent / HTTP 連結，或把 .torrent 拖進這裡。", actionTitle: "新增下載"
+                        symbol: "arrow.down.circle", title: String(localized: "沒有下載"),
+                        message: String(localized: "貼上 magnet / torrent / HTTP 連結，或把 .torrent 拖進這裡。"), actionTitle: String(localized: "新增下載")
                     ) { showAdd = true }
                         .frame(maxWidth: .infinity).padding(.top, 40)
                 case .loaded:
                     if !store.active.isEmpty {
-                        section("進行中", store.active, store)
+                        section(String(localized: "進行中"), store.active, store)
                     }
                     if !store.finished.isEmpty {
-                        section("已完成", store.finished, store)
+                        section(String(localized: "已完成"), store.finished, store)
                     }
                 case let .failed(message):
                     ErrorBanner(message: message) { Task { await store.load() } }
@@ -202,17 +202,17 @@ private struct DownloadRow: View {
             Spacer()
             HStack(spacing: 4) {
                 if download.isActive {
-                    action("暫停", "pause.fill") { Task { await store.pause(download) } }
+                    action(String(localized: "暫停"), "pause.fill") { Task { await store.pause(download) } }
                 } else if download.isPaused || download.isError {
-                    action("繼續", "play.fill") { Task { await store.resume(download) } }
+                    action(String(localized: "繼續"), "play.fill") { Task { await store.resume(download) } }
                 }
                 if download.isDone, !download.saveDir.isEmpty {
-                    action("複製路徑", "doc.on.doc") {
+                    action(String(localized: "複製路徑"), "doc.on.doc") {
                         NSPasteboard.general.clearContents()
                         NSPasteboard.general.setString(download.saveDir, forType: .string)
                     }
                 }
-                action("移除", "xmark") { confirmDelete = true }
+                action(String(localized: "移除"), "xmark") { confirmDelete = true }
             }
         }
         .padding(.horizontal, 14).padding(.vertical, 10)
@@ -261,13 +261,13 @@ private struct DownloadRow: View {
             var text = "\(done) / \(total) · \(speed)/s"
             if download.speedBytes > 0, download.totalBytes > download.completedBytes {
                 let eta = Double(download.totalBytes - download.completedBytes) / Double(download.speedBytes)
-                text += " · 剩 \(Formatters.clock(eta))"
+                text += String(localized: " · 剩 \(Formatters.clock(eta))")
             }
             return text
         case "complete": return "\(total) · \(Formatters.relative(download.updatedAt ?? download.createdAt))"
-        case "error": return "下載失敗 · \(done) / \(total)"
-        case "paused": return "已暫停 · \(done) / \(total)"
-        default: return "等待中 · \(total)"
+        case "error": return String(localized: "下載失敗 · \(done) / \(total)")
+        case "paused": return String(localized: "已暫停 · \(done) / \(total)")
+        default: return String(localized: "等待中 · \(total)")
         }
     }
 }

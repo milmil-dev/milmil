@@ -65,7 +65,7 @@ struct CollectionView: View {
         @Bindable var store = store
         return ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                PageHeader(title: "收藏", subtitle: "\(store.total) 部") {
+                PageHeader(title: String(localized: "收藏"), subtitle: String(localized: "\(store.total) 部")) {
                     HStack(spacing: 8) {
                         TextField("在收藏中搜尋…", text: $store.search)
                             .textFieldStyle(.roundedBorder)
@@ -85,9 +85,9 @@ struct CollectionView: View {
                     if items.isEmpty {
                         EmptyState(
                             symbol: "bookmark",
-                            title: "這個清單還是空的",
-                            message: "在作品頁按「加入收藏」，或開始播放時自動加入「在看」。",
-                            actionTitle: "去探索"
+                            title: String(localized: "這個清單還是空的"),
+                            message: String(localized: "在作品頁按「加入收藏」，或開始播放時自動加入「在看」。"),
+                            actionTitle: String(localized: "去探索")
                         ) { router.select(.discover) }
                             .frame(maxWidth: .infinity).padding(.top, 40)
                     } else {
@@ -126,7 +126,7 @@ struct CollectionView: View {
                     store.status = status
                 } label: {
                     HStack(spacing: 6) {
-                        Text(status == .none ? "全部" : status.label)
+                        Text(status == .none ? String(localized: "全部") : status.label)
                         Text("\(count)").font(.system(size: 11, weight: .semibold)).foregroundStyle(isOn ? Theme.accent : Theme.Text.muted)
                     }
                     .font(.system(size: 13, weight: .medium))
@@ -143,14 +143,14 @@ struct CollectionView: View {
 
     private func cornerBadge(_ item: CollectionItem) -> String? {
         if let total = item.totalEpisodes, total > 0 {
-            return item.localFileCount > 0 ? "\(item.localFileCount)/\(total) 集" : "\(total) 集"
+            return item.localFileCount > 0 ? String(localized: "\(item.localFileCount)/\(total) 集") : String(localized: "\(total) 集")
         }
-        return item.localFileCount > 0 ? "\(item.localFileCount) 集" : nil
+        return item.localFileCount > 0 ? String(localized: "\(item.localFileCount) 集") : nil
     }
 
     private func subtitle(_ item: CollectionItem) -> String? {
-        if let score = item.userScore { return "我的評分 \(score)" }
-        if let date = item.watchStatusUpdatedAt { return "更新於 \(Formatters.relative(date))" }
+        if let score = item.userScore { return String(localized: "我的評分 \(score)") }
+        if let date = item.watchStatusUpdatedAt { return String(localized: "更新於 \(Formatters.relative(date))") }
         return Formatters.season(from: item.airDate)
     }
 }

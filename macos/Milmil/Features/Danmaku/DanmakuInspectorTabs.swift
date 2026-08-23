@@ -21,13 +21,18 @@ struct DanmakuListTab: View {
                 if store.isLoading, store.timeline.isEmpty {
                     ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if store.timeline.isEmpty {
-                    EmptyState(symbol: "text.bubble", title: "這集還沒有彈幕", message: store.loadError ?? "可以在「來源」分頁從 Bilibili 匯入，或直接發一條。")
+                    EmptyState(
+                        symbol: "text.bubble",
+                        title: String(localized: "這集還沒有彈幕"),
+                        message: store.loadError ?? String(localized: "可以在「來源」分頁從 Bilibili 匯入，或直接發一條。")
+                    )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     list(store)
                 }
             } else {
-                EmptyState(symbol: "text.bubble", title: "彈幕", message: "開始播放後載入。").frame(maxWidth: .infinity, maxHeight: .infinity)
+                EmptyState(symbol: "text.bubble", title: String(localized: "彈幕"), message: String(localized: "開始播放後載入。"))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
@@ -126,7 +131,7 @@ struct DanmakuSourcesTab: View {
                     Divider()
                     searchSection(store)
                 } else {
-                    EmptyState(symbol: "square.and.arrow.down", title: "彈幕來源", message: "開始播放後可匯入。")
+                    EmptyState(symbol: "square.and.arrow.down", title: String(localized: "彈幕來源"), message: String(localized: "開始播放後可匯入。"))
                 }
             }
             .padding(12)
@@ -150,7 +155,7 @@ struct DanmakuSourcesTab: View {
 
     private var defaultQuery: String {
         let title = controller.request?.title ?? ""
-        if let number = controller.episode?.number { return "\(title) 第\(number)話" }
+        if let number = controller.episode?.number { return String(localized: "\(title) 第\(number)話") }
         return title
     }
 
@@ -214,7 +219,7 @@ struct DanmakuSourcesTab: View {
                 .buttonStyle(.plain)
                 if selected?.id == result.id {
                     if store.parts.isEmpty {
-                        importButton(store, videoID: result.videoId, part: 0, title: "匯入")
+                        importButton(store, videoID: result.videoId, part: 0, title: String(localized: "匯入"))
                     } else {
                         ForEach(store.parts) { part in
                             importButton(store, videoID: result.videoId, part: part.index, title: "P\(part.index + 1) \(part.title ?? "")")
@@ -231,7 +236,7 @@ struct DanmakuSourcesTab: View {
         Button {
             Task {
                 if let count = await store.importExternal(source: source, videoID: videoID, partIndex: part) {
-                    showToast("已匯入 \(count) 條")
+                    showToast(String(localized: "已匯入 \(count) 條"))
                 }
             }
         } label: {

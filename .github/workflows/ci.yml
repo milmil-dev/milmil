@@ -200,6 +200,10 @@ jobs:
         working-directory: macos
         run: swiftlint lint --strict --reporter github-actions-logging
 
+      - name: String catalog is in sync and fully translated
+        working-directory: macos
+        run: python3 scripts/i18n_sync.py --check && git diff --exit-code Milmil/Resources/Localizable.xcstrings
+
       - name: Restore SwiftPM cache
         uses: actions/cache@v4
         with:

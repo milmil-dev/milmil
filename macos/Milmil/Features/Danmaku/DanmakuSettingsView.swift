@@ -51,7 +51,7 @@ struct DanmakuSettingsView: View {
                     get: { prefs.danmakuFontFamily == "sans-serif" ? "" : prefs.danmakuFontFamily },
                     set: { value in update { $0.danmakuFontFamily = value.isEmpty ? "sans-serif" : value } }
                 ))
-                ColorPicker("統一顏色", selection: Binding(
+                ColorPicker(String(localized: "統一顏色"), selection: Binding(
                     get: { Color(hex: UInt32(Int(prefs.danmakuColor.dropFirst(), radix: 16) ?? 0xFFFFFF)) },
                     set: { color in update { $0.danmakuColor = color.hexString } }
                 ), supportsOpacity: false)

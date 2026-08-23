@@ -36,8 +36,8 @@ struct PlayerOSC: View {
 
     private var transport: some View {
         HStack(spacing: 6) {
-            OSCButton(symbol: "backward.end.fill", label: "上一集", disabled: controller.previousEpisode == nil) { controller.playPrevious() }
-            OSCButton(symbol: "gobackward.10", label: "後退 10 秒") { controller.seek(by: -10) }
+            OSCButton(symbol: "backward.end.fill", label: String(localized: "上一集"), disabled: controller.previousEpisode == nil) { controller.playPrevious() }
+            OSCButton(symbol: "gobackward.10", label: String(localized: "後退 10 秒")) { controller.seek(by: -10) }
             Button { controller.togglePause() } label: {
                 Image(systemName: state.paused || state.status == .ended ? "play.fill" : "pause.fill")
                     .font(.system(size: 18, weight: .bold))
@@ -45,9 +45,9 @@ struct PlayerOSC: View {
                     .background(.white.opacity(0.14), in: Circle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(state.paused ? "播放" : "暫停")
-            OSCButton(symbol: "goforward.10", label: "前進 10 秒") { controller.seek(by: 10) }
-            OSCButton(symbol: "forward.end.fill", label: "下一集", disabled: controller.nextEpisode == nil) { controller.playNext() }
+            .accessibilityLabel(state.paused ? String(localized: "播放") : String(localized: "暫停"))
+            OSCButton(symbol: "goforward.10", label: String(localized: "前進 10 秒")) { controller.seek(by: 10) }
+            OSCButton(symbol: "forward.end.fill", label: String(localized: "下一集"), disabled: controller.nextEpisode == nil) { controller.playNext() }
         }
     }
 
@@ -76,7 +76,11 @@ struct PlayerOSC: View {
                 subtitleMenu
                 audioMenu
             }
-            OSCButton(symbol: controller.danmakuEnabled ? "text.bubble.fill" : "text.bubble", label: "彈幕（D，右鍵設定）", active: controller.danmakuEnabled) {
+            OSCButton(
+                symbol: controller.danmakuEnabled ? "text.bubble.fill" : "text.bubble",
+                label: String(localized: "彈幕（D，右鍵設定）"),
+                active: controller.danmakuEnabled
+            ) {
                 controller.setDanmakuEnabled(!controller.danmakuEnabled)
             }
             .contextMenu {
@@ -87,22 +91,22 @@ struct PlayerOSC: View {
             }
             if compact { overflowMenu }
             if model.embedded {
-                OSCButton(symbol: "rectangle.expand.vertical", label: "劇院模式（T）") { model.perform(.theater) }
-                OSCButton(symbol: "macwindow.badge.plus", label: "獨立視窗") { model.toggleMini() }
+                OSCButton(symbol: "rectangle.expand.vertical", label: String(localized: "劇院模式（T）")) { model.perform(.theater) }
+                OSCButton(symbol: "macwindow.badge.plus", label: String(localized: "獨立視窗")) { model.toggleMini() }
             } else {
-                OSCButton(symbol: "sidebar.right", label: "側欄", active: model.inspectorShown) { model.inspectorShown.toggle() }
-                OSCButton(symbol: model.isMini ? "pip.exit" : "pip.enter", label: "迷你播放器", active: model.isMini) { model.toggleMini() }
+                OSCButton(symbol: "sidebar.right", label: String(localized: "側欄"), active: model.inspectorShown) { model.inspectorShown.toggle() }
+                OSCButton(symbol: model.isMini ? "pip.exit" : "pip.enter", label: String(localized: "迷你播放器"), active: model.isMini) { model.toggleMini() }
             }
             OSCButton(
                 symbol: model.isFullscreen ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
-                label: "全螢幕"
+                label: String(localized: "全螢幕")
             ) { model.toggleFullscreen() }
         }
     }
 
     private var volumeControl: some View {
         HStack(spacing: 6) {
-            OSCButton(symbol: volumeSymbol, label: state.muted ? "取消靜音" : "靜音") { controller.toggleMute() }
+            OSCButton(symbol: volumeSymbol, label: state.muted ? String(localized: "取消靜音") : String(localized: "靜音")) { controller.toggleMute() }
             if volumeExpanded || compact == false {
                 Slider(value: Binding(get: { state.muted ? 0 : state.volume }, set: { controller.setVolume($0) }), in: 0...130)
                     .controlSize(.mini)
@@ -118,7 +122,7 @@ struct PlayerOSC: View {
     }
 
     private var speedMenu: some View {
-        OSCPopover(label: String(format: "%.2g×", state.speed), help: "播放速度", width: 40) {
+        OSCPopover(label: String(format: "%.2g×", state.speed), help: String(localized: "播放速度"), width: 40) {
             ForEach([0.5, 0.75, 1, 1.25, 1.5, 2], id: \.self) { speed in
                 OSCPopoverRow(title: String(format: "%.2g×", speed), selected: state.speed == speed) { controller.setSpeed(speed) }
             }
@@ -126,20 +130,20 @@ struct PlayerOSC: View {
     }
 
     private var subtitleMenu: some View {
-        OSCPopover(symbol: state.subtitleID == nil ? "captions.bubble" : "captions.bubble.fill", help: "字幕") {
-            OSCPopoverRow(title: "關閉", selected: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
+        OSCPopover(symbol: state.subtitleID == nil ? "captions.bubble" : "captions.bubble.fill", help: String(localized: "字幕")) {
+            OSCPopoverRow(title: String(localized: "關閉"), selected: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
             ForEach(state.subtitleTracks) { track in
                 OSCPopoverRow(title: track.displayName, selected: state.subtitleID == track.id) { controller.selectTrack(.sub, id: track.id) }
             }
             Divider().padding(.vertical, 4)
-            OSCPopoverRow(title: "字幕延遲 −0.1s", symbol: "minus.circle") { controller.adjustSubtitleDelay(by: -0.1) }
-            OSCPopoverRow(title: "字幕延遲 +0.1s", symbol: "plus.circle") { controller.adjustSubtitleDelay(by: 0.1) }
-            OSCPopoverRow(title: "載入外部字幕…", symbol: "doc.badge.plus") { PlayerContextMenu.openSubtitlePanel(controller: controller) }
+            OSCPopoverRow(title: String(localized: "字幕延遲 −0.1s"), symbol: "minus.circle") { controller.adjustSubtitleDelay(by: -0.1) }
+            OSCPopoverRow(title: String(localized: "字幕延遲 +0.1s"), symbol: "plus.circle") { controller.adjustSubtitleDelay(by: 0.1) }
+            OSCPopoverRow(title: String(localized: "載入外部字幕…"), symbol: "doc.badge.plus") { PlayerContextMenu.openSubtitlePanel(controller: controller) }
         }
     }
 
     private var audioMenu: some View {
-        OSCPopover(symbol: "waveform", help: "音軌") {
+        OSCPopover(symbol: "waveform", help: String(localized: "音軌")) {
             ForEach(state.audioTracks) { track in
                 OSCPopoverRow(title: track.displayName, selected: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
             }
@@ -148,7 +152,7 @@ struct PlayerOSC: View {
     }
 
     private var overflowMenu: some View {
-        OSCPopover(symbol: "ellipsis", help: "更多") {
+        OSCPopover(symbol: "ellipsis", help: String(localized: "更多")) {
             Text("速度").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.Text.tertiary).padding(.horizontal, 8)
             HStack(spacing: 4) {
                 ForEach([0.5, 0.75, 1, 1.25, 1.5, 2], id: \.self) { speed in
@@ -159,20 +163,20 @@ struct PlayerOSC: View {
             }
             .padding(.horizontal, 8).padding(.bottom, 4)
             Divider().padding(.vertical, 4)
-            OSCPopoverRow(title: "字幕：關閉", selected: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
+            OSCPopoverRow(title: String(localized: "字幕：關閉"), selected: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
             ForEach(state.subtitleTracks) { track in
-                OSCPopoverRow(title: "字幕：\(track.displayName)", selected: state.subtitleID == track.id) { controller.selectTrack(.sub, id: track.id) }
+                OSCPopoverRow(title: String(localized: "字幕：\(track.displayName)"), selected: state.subtitleID == track.id) { controller.selectTrack(.sub, id: track.id) }
             }
             if state.audioTracks.count > 1 {
                 Divider().padding(.vertical, 4)
                 ForEach(state.audioTracks) { track in
-                    OSCPopoverRow(title: "音軌：\(track.displayName)", selected: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
+                    OSCPopoverRow(title: String(localized: "音軌：\(track.displayName)"), selected: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
                 }
             }
             Divider().padding(.vertical, 4)
-            OSCPopoverRow(title: "截圖", symbol: "camera") { controller.screenshot(withSubtitles: false) }
-            OSCPopoverRow(title: "技術資訊", symbol: "info.circle") { model.techInfoShown.toggle() }
-            OSCPopoverRow(title: "快捷鍵", symbol: "keyboard") { model.helpShown.toggle() }
+            OSCPopoverRow(title: String(localized: "截圖"), symbol: "camera") { controller.screenshot(withSubtitles: false) }
+            OSCPopoverRow(title: String(localized: "技術資訊"), symbol: "info.circle") { model.techInfoShown.toggle() }
+            OSCPopoverRow(title: String(localized: "快捷鍵"), symbol: "keyboard") { model.helpShown.toggle() }
         }
     }
 }

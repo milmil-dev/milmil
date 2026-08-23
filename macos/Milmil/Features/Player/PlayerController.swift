@@ -80,7 +80,7 @@ final class PlayerController {
         } catch {
             Self.log.error("mpv init failed: \(String(describing: error))")
             player = nil
-            state.status = .failed("無法初始化 mpv：\(error)")
+            state.status = .failed(String(localized: "無法初始化 mpv：\(error)"))
         }
         Task { await refreshAuthHeader() }
         startEventLoop()
@@ -92,7 +92,7 @@ final class PlayerController {
 
     func play(_ request: PlaybackRequest) {
         self.request = request
-        state.status = .loading("讀取集數…")
+        state.status = .loading(String(localized: "讀取集數…"))
         state.mediaTitle = request.title
         loadTask?.cancel()
         loadGeneration += 1
@@ -104,7 +104,7 @@ final class PlayerController {
     func updateTitle(_ title: String, cover: URL?) {
         guard let request, request.title != title || request.coverImage != cover else { return }
         self.request = PlaybackRequest(bangumiID: request.bangumiID, episodeID: request.episodeID, title: title, coverImage: cover)
-        if let episode { state.mediaTitle = "\(title) 第 \(episode.number) 集" }
+        if let episode { state.mediaTitle = String(localized: "\(title) 第 \(episode.number) 集") }
         NowPlayingBridge.shared.update(self)
     }
 
@@ -134,7 +134,7 @@ final class PlayerController {
             self.playable = playable
             let target = request.episodeID.flatMap { id in playable.episodes.first { $0.episodeID == id } } ?? playable.resumeCandidate
             guard let target, target.mediaFile != nil else {
-                state.status = .failed("這部作品沒有可播放的檔案")
+                state.status = .failed(String(localized: "這部作品沒有可播放的檔案"))
                 return
             }
             await start(target)
@@ -174,7 +174,7 @@ final class PlayerController {
         loadGeneration += 1
         let generation = loadGeneration
         self.episode = episode
-        state.status = .loading("準備串流…")
+        state.status = .loading(String(localized: "準備串流…"))
         state.segments = []
         state.sidecarSubtitles = []
         state.thumbnails = nil
@@ -185,7 +185,7 @@ final class PlayerController {
         hasPosition = false
         postPlayDismissed = false
         let number = episode.number
-        state.mediaTitle = "\(request?.title ?? "") 第 \(number) 集"
+        state.mediaTitle = String(localized: "\(request?.title ?? "") 第 \(number) 集")
         if let progress = episode.progress, progress.positionSeconds > 0, !progress.completed {
             resumePosition = progress.positionSeconds
         } else {
@@ -199,7 +199,7 @@ final class PlayerController {
         guard generation == loadGeneration, !Task.isCancelled else { return }
         if let info, !info.libraryOnline {
             player?.stop()
-            state.status = .failed("媒體庫目前離線，無法播放此檔案")
+            state.status = .failed(String(localized: "媒體庫目前離線，無法播放此檔案"))
             return
         }
         localFileURL = file.path.flatMap { LocalPathMappings.shared.localURL(forServerPath: $0) }
@@ -248,7 +248,7 @@ final class PlayerController {
         case .remux:
             load(url: session.client.remuxStreamURL(fileID: fileID), generation: generation)
         case .hls:
-            state.status = .loading("伺服器轉碼中…")
+            state.status = .loading(String(localized: "伺服器轉碼中…"))
             transcodeTask?.cancel()
             transcodeTask = Task { [weak self] in
                 guard let self else { return }
@@ -269,15 +269,15 @@ final class PlayerController {
                             load(url: session.client.hlsURL(token: token), generation: generation)
                             return
                         case let .pending(progress):
-                            state.status = .loading("伺服器轉碼中… \(progress ?? 0)%")
+                            state.status = .loading(String(localized: "伺服器轉碼中… \(progress ?? 0)%"))
                         case .failed:
-                            state.status = .failed("伺服器轉碼失敗")
+                            state.status = .failed(String(localized: "伺服器轉碼失敗"))
                             return
                         }
                         token = start.token
                     }
                 } catch {
-                    if !Task.isCancelled { state.status = .failed("無法開始轉碼：\(error.localizedDescription)") }
+                    if !Task.isCancelled { state.status = .failed(String(localized: "無法開始轉碼：\(error.localizedDescription)")) }
                 }
             }
         }
@@ -371,7 +371,7 @@ final class PlayerController {
                 Self.log.warning("stage \(self.state.stage.rawValue) failed, trying \(self.fallback.current.rawValue)")
                 Task { await loadCurrentStage(fileID: file.id) }
             } else {
-                state.status = .failed("無法播放此檔案（已嘗試所有串流方式）")
+                state.status = .failed(String(localized: "無法播放此檔案（已嘗試所有串流方式）"))
             }
         case .stop, .quit, .redirect, .unknown:
             if case .loading = state.status { return }
@@ -540,7 +540,7 @@ final class PlayerController {
     func toggleSubtitles() {
         let next = !state.subtitlesVisible
         player?.set("sub-visibility", next)
-        flash(.text(next ? "字幕：開" : "字幕：關"))
+        flash(.text(next ? String(localized: "字幕：開") : String(localized: "字幕：關")))
     }
 
     func selectTrack(_ kind: MediaTrack.Kind, id: Int64?) {
@@ -558,18 +558,18 @@ final class PlayerController {
 
     func cycleSubtitle() {
         try? player?.command(["cycle", "sid"])
-        flash(.text("切換字幕軌"))
+        flash(.text(String(localized: "切換字幕軌")))
     }
 
     func cycleAudio() {
         try? player?.command(["cycle", "aid"])
-        flash(.text("切換音軌"))
+        flash(.text(String(localized: "切換音軌")))
     }
 
     func adjustSubtitleDelay(by delta: Double) {
         let next = ((state.subDelay + delta) * 10).rounded() / 10
         player?.set("sub-delay", next)
-        flash(.text(String(format: "字幕延遲 %+.1fs", next)))
+        flash(.text(String(localized: "字幕延遲 \(String(format: "%+.1f", next))s")))
     }
 
     func setSubtitleDelay(_ seconds: Double) { player?.set("sub-delay", seconds) }
@@ -578,17 +578,17 @@ final class PlayerController {
     func toggleABLoop() {
         try? player?.command(["ab-loop"])
         if state.abLoopA == nil {
-            flash(.text("A-B 循環：設定 A 點"))
+            flash(.text(String(localized: "A-B 循環：設定 A 點")))
         } else if state.abLoopB == nil {
-            flash(.text("A-B 循環：設定 B 點"))
+            flash(.text(String(localized: "A-B 循環：設定 B 點")))
         } else {
-            flash(.text("A-B 循環：清除"))
+            flash(.text(String(localized: "A-B 循環：清除")))
         }
     }
 
     func screenshot(withSubtitles: Bool) {
         player?.commandAsync(["screenshot", withSubtitles ? "subtitles" : "video"])
-        flash(.text("已儲存截圖"))
+        flash(.text(String(localized: "已儲存截圖")))
     }
 
     /// Renders to a temp PNG via `screenshot-to-file`, then puts it on the
@@ -604,30 +604,30 @@ final class PlayerController {
         guard let url = pendingClipboardShots.removeValue(forKey: id) else { return }
         defer { try? FileManager.default.removeItem(at: url) }
         guard error >= 0, let image = NSImage(contentsOf: url) else {
-            flash(.text("截圖失敗"))
+            flash(.text(String(localized: "截圖失敗")))
             return
         }
         NSPasteboard.general.clearContents()
         NSPasteboard.general.writeObjects([image])
-        flash(.text("截圖已複製"))
+        flash(.text(String(localized: "截圖已複製")))
     }
 
     func addExternalSubtitle(fileURL: URL) {
         player?.addSubtitle(fileURL.path, title: fileURL.lastPathComponent)
-        flash(.text("已載入 \(fileURL.lastPathComponent)"))
+        flash(.text(String(localized: "已載入 \(fileURL.lastPathComponent)")))
     }
 
     func skipCurrentSegment() {
         guard let segment = state.currentSegment else { return }
         skippedSegmentIDs.insert(segment.id)
         seek(to: segment.endTime)
-        flash(.text("跳過 \(segment.label)"))
+        flash(.text(String(localized: "跳過 \(segment.label)")))
     }
 
     func setDanmakuEnabled(_ enabled: Bool) {
         danmakuEnabled = enabled
         session.updatePreferences { $0.danmakuEnabled = enabled }
-        flash(.text(enabled ? "彈幕：開" : "彈幕：關"))
+        flash(.text(enabled ? String(localized: "彈幕：開") : String(localized: "彈幕：關")))
     }
 
     /// Settings changed the shared `keyboardBindings`.

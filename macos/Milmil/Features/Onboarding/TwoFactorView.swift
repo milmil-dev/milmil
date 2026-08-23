@@ -10,7 +10,7 @@ struct TwoFactorView: View {
     @FocusState private var focused: Bool
 
     var body: some View {
-        OnboardingCard(title: "兩步驟驗證", subtitle: "輸入驗證 app 顯示的 6 位數代碼") {
+        OnboardingCard(title: String(localized: "兩步驟驗證"), subtitle: String(localized: "輸入驗證 app 顯示的 6 位數代碼")) {
             TextField("000000", text: $code)
                 .textFieldStyle(.roundedBorder)
                 .font(.system(size: 22, weight: .bold, design: .monospaced))
@@ -56,7 +56,7 @@ struct TwoFactorView: View {
             do {
                 try await session.completeTwoFactor(code: code)
             } catch APIError.unauthorized {
-                errorMessage = "驗證碼錯誤或已過期"
+                errorMessage = String(localized: "驗證碼錯誤或已過期")
                 code = ""
             } catch {
                 errorMessage = error.localizedDescription

@@ -70,14 +70,15 @@ struct NotificationsView: View {
         @Bindable var store = store
         return ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                PageHeader(title: "通知", subtitle: session.unreadNotifications > 0 ? "\(session.unreadNotifications) 未讀" : nil) {
+                let unread = session.unreadNotifications
+                PageHeader(title: String(localized: "通知"), subtitle: unread > 0 ? String(localized: "\(unread) 未讀") : nil) {
                     HStack(spacing: 8) {
                         Segmented(options: MilmilNotification.Category.allCases, selection: $store.category) { category in
                             switch category {
-                            case .all: "全部"
-                            case .download: "下載"
-                            case .library: "媒體庫"
-                            case .system: "系統"
+                            case .all: String(localized: "全部")
+                            case .download: String(localized: "下載")
+                            case .library: String(localized: "媒體庫")
+                            case .system: String(localized: "系統")
                             }
                         }
                         Button("全部標為已讀") {
@@ -92,7 +93,7 @@ struct NotificationsView: View {
                 }
                 switch store.items {
                 case .loaded where (store.items.value ?? []).isEmpty:
-                    EmptyState(symbol: "bell", title: "沒有通知", message: "下載完成、掃描結果與系統訊息會出現在這裡。")
+                    EmptyState(symbol: "bell", title: String(localized: "沒有通知"), message: String(localized: "下載完成、掃描結果與系統訊息會出現在這裡。"))
                         .frame(maxWidth: .infinity).padding(.top, 40)
                 case let .loaded(items):
                     VStack(spacing: 2) {

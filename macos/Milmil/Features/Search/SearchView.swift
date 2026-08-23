@@ -133,7 +133,9 @@ struct SearchView: View {
                         Label("在你的媒體庫", systemImage: "folder").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.Text.secondary)
                         HStack(spacing: 14) {
                             ForEach(store.local) { hit in
-                                PosterCard(title: hit.title, cover: nil, badge: "媒體庫", onOpen: { if let id = hit.bangumiID { router.openAnime(id) } })
+                                PosterCard(title: hit.title, cover: nil, badge: String(localized: "媒體庫")) {
+                                    if let id = hit.bangumiID { router.openAnime(id) }
+                                }
                             }
                         }
                     }
@@ -142,7 +144,11 @@ struct SearchView: View {
                 switch store.remote {
                 case let .loaded(items):
                     if items.isEmpty {
-                        EmptyState(symbol: "magnifyingglass", title: store.hasQuery ? "找不到「\(store.query)」" : "沒有符合的作品", message: "試試原名或英文名；⌘K 也會同時搜尋媒體庫。")
+                        EmptyState(
+                            symbol: "magnifyingglass",
+                            title: store.hasQuery ? String(localized: "找不到「\(store.query)」") : String(localized: "沒有符合的作品"),
+                            message: String(localized: "試試原名或英文名；⌘K 也會同時搜尋媒體庫。")
+                        )
                             .frame(maxWidth: .infinity)
                     } else {
                         if store.hasQuery {

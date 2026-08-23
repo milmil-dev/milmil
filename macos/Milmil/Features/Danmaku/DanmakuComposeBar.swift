@@ -26,8 +26,8 @@ struct DanmakuComposeBar: View {
                     .foregroundStyle(controller.danmakuEnabled ? Theme.accent : Theme.Text.tertiary)
             }
             .buttonStyle(.plain)
-            .help(controller.danmakuEnabled ? "關閉彈幕（D）" : "開啟彈幕（D）")
-            Text(store.map { "\($0.timeline.count) 條" } ?? "—")
+            .help(controller.danmakuEnabled ? String(localized: "關閉彈幕（D）") : String(localized: "開啟彈幕（D）"))
+            Text(store.map { String(localized: "\($0.timeline.count) 條") } ?? "—")
                 .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary).monospacedDigit()
                 .frame(minWidth: 44, alignment: .leading)
 
@@ -43,7 +43,7 @@ struct DanmakuComposeBar: View {
                     Button {
                         colorHex = hex
                     } label: {
-                        Label(hex == "#FFFFFF" ? "白色（預設）" : hex, systemImage: colorHex == hex ? "checkmark.circle.fill" : "circle.fill")
+                        Label(hex == "#FFFFFF" ? String(localized: "白色（預設）") : hex, systemImage: colorHex == hex ? "checkmark.circle.fill" : "circle.fill")
                     }
                 }
             } label: {
@@ -57,7 +57,7 @@ struct DanmakuComposeBar: View {
             .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
             .help("彈幕樣式")
 
-            TextField(controller.danmakuEnabled ? "發個彈幕…（⌘↩ 聚焦）" : "開啟彈幕後即可發送", text: $text)
+            TextField(controller.danmakuEnabled ? String(localized: "發個彈幕…（⌘↩ 聚焦）") : String(localized: "開啟彈幕後即可發送"), text: $text)
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
                 .padding(.horizontal, 10).padding(.vertical, 6)

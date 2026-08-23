@@ -35,10 +35,10 @@ final class AnimeDetailStore {
 
         var title: String {
             switch self {
-            case let .resume(episode, remaining): "繼續 EP\(episode.number) · \(Formatters.remaining(remaining))"
-            case let .start(episode): "播放 EP\(episode.number)"
-            case .rewatch: "已看完 · 重看"
-            case .none: "沒有可播放的檔案"
+            case let .resume(episode, remaining): String(localized: "繼續 EP\(episode.number) · \(Formatters.remaining(remaining))")
+            case let .start(episode): String(localized: "播放 EP\(episode.number)")
+            case .rewatch: String(localized: "已看完 · 重看")
+            case .none: String(localized: "沒有可播放的檔案")
             }
         }
 
@@ -70,7 +70,7 @@ final class AnimeDetailStore {
         if let best = files.compactMap(\.height).max(), let label = PlayableMediaFile.resolutionLabel(forHeight: best) { badges.append(label) }
         let codecs = Set(files.compactMap { $0.videoCodec?.uppercased() })
         if codecs.contains("HEVC") || codecs.contains("H265") { badges.append("HEVC") }
-        badges.append("\(files.count) 集有檔案")
+        badges.append(String(localized: "\(files.count) 集有檔案"))
         return badges
     }
 

@@ -38,7 +38,7 @@ struct SettingsView: View {
         if let session = coordinator.session {
             content(session)
         } else {
-            EmptyState(symbol: "person.crop.circle.badge.xmark", title: "尚未登入", message: "這些設定與 web 共用，登入伺服器後才能編輯。")
+            EmptyState(symbol: "person.crop.circle.badge.xmark", title: String(localized: "尚未登入"), message: String(localized: "這些設定與 web 共用，登入伺服器後才能編輯。"))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
@@ -127,7 +127,7 @@ struct LocalMappingsEditor: View {
                     Spacer()
                     Image(systemName: FileManager.default.fileExists(atPath: mapping.localPrefix) ? "checkmark.circle.fill" : "questionmark.circle")
                         .foregroundStyle(FileManager.default.fileExists(atPath: mapping.localPrefix) ? Color(hex: 0x4ADE80) : Theme.Text.tertiary)
-                        .help(FileManager.default.fileExists(atPath: mapping.localPrefix) ? "本機路徑存在" : "本機路徑目前不存在（未掛載？）")
+                        .help(FileManager.default.fileExists(atPath: mapping.localPrefix) ? String(localized: "本機路徑存在") : String(localized: "本機路徑目前不存在（未掛載？）"))
                     Button { mappings.remove(mapping) } label: { Image(systemName: "minus.circle") }.buttonStyle(.plain).foregroundStyle(Theme.Text.tertiary)
                 }
             }
@@ -171,7 +171,7 @@ struct AboutTab: View {
                 Section("元件與授權") {
                     LabeledContent("mpv / FFmpeg（MPVKit 1.0.0）", value: "LGPL-2.1+")
                     LabeledContent("SwiftyOpenCC / OpenCC", value: "MIT / Apache-2.0")
-                    LabeledContent("Bangumi · AniList · DandanPlay", value: "資料來源")
+                    LabeledContent("Bangumi · AniList · DandanPlay", value: String(localized: "資料來源"))
                 }
                 Section {
                     Link("GitHub：milmil", destination: URL(string: "https://github.com/milmil-dev/milmil")!)

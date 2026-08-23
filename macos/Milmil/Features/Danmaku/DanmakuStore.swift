@@ -98,7 +98,7 @@ final class DanmakuStore {
         let (response, importedRows) = await (ddp, ext)
         dandanplay = response.map(DanmakuParser.comments(from:)) ?? []
         imported = importedRows ?? []
-        if response == nil, importedRows == nil { loadError = "無法載入彈幕" }
+        if response == nil, importedRows == nil { loadError = String(localized: "無法載入彈幕") }
         rebuild()
     }
 

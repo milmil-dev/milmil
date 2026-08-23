@@ -72,7 +72,7 @@ struct HomeView: View {
     private func continueSection(_ store: HomeStore) -> some View {
         if let entries = store.continueWatching.value, !entries.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                SectionHeader(title: "繼續睇", moreTitle: "歷史") { router.push(.history) }
+                SectionHeader(title: String(localized: "繼續觀看"), moreTitle: String(localized: "歷史")) { router.push(.history) }
                 Shelf {
                     ForEach(entries) { entry in
                         StillCard(
@@ -98,7 +98,7 @@ struct HomeView: View {
     private func todaySection(_ store: HomeStore) -> some View {
         if let day = store.today.value ?? nil, !day.items.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                SectionHeader(title: "今日時刻表", count: day.weekday, moreTitle: "時刻表") { router.select(.schedule) }
+                SectionHeader(title: String(localized: "今日時刻表"), count: day.weekday, moreTitle: String(localized: "時刻表")) { router.select(.schedule) }
                 Shelf {
                     ForEach(day.items) { item in
                         PosterCard(
@@ -119,7 +119,7 @@ struct HomeView: View {
     private func trendingSection(_ store: HomeStore) -> some View {
         if let items = store.trending.value, !items.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                SectionHeader(title: "現在熱門", moreTitle: "探索") { router.select(.discover) }
+                SectionHeader(title: String(localized: "現在熱門"), moreTitle: String(localized: "探索")) { router.select(.discover) }
                 Shelf {
                     ForEach(items) { item in
                         PosterCard(summary: item, onOpen: { router.openAnime(item.bangumiID) })

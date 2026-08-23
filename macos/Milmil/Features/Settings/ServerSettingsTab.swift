@@ -19,7 +19,7 @@ struct ServerSettingsTab: View {
                     LabeledContent("即時連線") {
                         HStack(spacing: 6) {
                             Circle().fill(session.isRealtimeConnected ? .green : .orange).frame(width: 8, height: 8)
-                            Text(session.isRealtimeConnected ? "已連線" : "重新連線中")
+                            Text(session.isRealtimeConnected ? String(localized: "已連線") : String(localized: "重新連線中"))
                         }
                     }
                     HStack {
@@ -80,7 +80,7 @@ struct ServerSettingsTab: View {
         .formStyle(.grouped)
         .task(id: coordinator.session?.profile.id) { await loadTokens() }
         .confirmationDialog(
-            "撤銷「\(confirmRevoke?.name ?? "")」？",
+            String(localized: "撤銷「\(confirmRevoke?.name ?? "")」？"),
             isPresented: Binding(get: { confirmRevoke != nil }, set: { if !$0 { confirmRevoke = nil } }),
             titleVisibility: .visible
         ) {

@@ -85,9 +85,9 @@ struct StillCard: View {
 
     private var label: String {
         let ep = Formatters.episode(entry.episodeNumber)
-        if entry.completed { return "\(ep) · 已看完" }
+        if entry.completed { return String(localized: "\(ep) · 已看完") }
         if let remaining = entry.remainingSeconds { return "\(ep) · \(Formatters.remaining(remaining))" }
-        return entry.positionSeconds > 0 ? "\(ep) · 已開始" : ep
+        return entry.positionSeconds > 0 ? String(localized: "\(ep) · 已開始") : ep
     }
 }
 

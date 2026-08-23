@@ -66,6 +66,14 @@ launch. The default render is flattened (no materials / 3D);
 can catch the window mid-animation (a skewed capture is an artifact — confirm
 on screen before chasing it). Headless logged-in runs: seed the profile in
 `defaults` and the token in the Keychain (see scratch `dev_login.py`).
+If no window ever appears, pass `--args -ApplePersistenceIgnoreState YES`
+(a stale window-restoration record from a different build makes SwiftUI
+restore nothing instead of opening a fresh window) and check that the main
+thread is not parked in `SecItemCopyMatching` (`sample <pid>`): a
+`SecurityAgent` keychain prompt left on screen blocks every later launch —
+`kill` it. A process in `ps` state `SX` is paused under Xcode's debugger; kill
+its `debugserver` parent. Use `/usr/bin/log show --predicate 'process ==
+"milmil"'` — bare `log` is a zsh builtin.
 Navigation hooks: `MILMIL_SNAPSHOT_DESTINATION=<sidebar tab>`,
 `MILMIL_SNAPSHOT_ANIME=<bangumiID>` (push the detail page),
 `MILMIL_SNAPSHOT_PLAY=<bangumiID>` (open the in-app watch page on that series;
@@ -82,6 +90,23 @@ A library with no files can be seeded with an ffmpeg test clip — `testsrc2`
 video + `sine` audio + an SRT track muxed to `.../<Series name>/[Test] <Series
 name> - 01 [1080p].mkv` — then `POST /api/v1/libraries/{id}/scan`; the
 matcher resolves the folder name against Bangumi.
+
+## Localization
+
+Source language is zh-Hant: write UI literals in Traditional Chinese and keep
+them as the catalog keys. SwiftUI initializers that take a
+`LocalizedStringKey` (`Text`, `Button`, `Label`, `.help`, …) localize on their
+own; anything that ends up as a plain `String` (enum labels, OSD text,
+`EmptyState`/`PageHeader` params, `\(…)` built in helpers) must go through
+`String(localized:)`. Interpolate `Int` or `String` only — a `Double` becomes
+`%lf` ("1.500000"); format it first. Then run
+`python3 scripts/i18n_sync.py` (from `macos/`): it extracts the keys into
+`Milmil/Resources/Localizable.xcstrings` (`xcodebuild` never runs Xcode's own
+extraction), keeps existing translations, and lists what is untranslated in
+en / ja / ko / zh-Hans / zh-HK. Fill those in the catalog (Xcode's editor or
+by hand); CI fails on a stale or partially translated catalog. Wording should
+match the web `.po` files — zh-HK is written Cantonese there (睇晒, 收藏咗).
+Test a locale with `open -n milmil.app --args -AppleLanguages "(ja)"`.
 
 ## Core Rules
 

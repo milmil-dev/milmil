@@ -45,7 +45,7 @@ struct MilmilApp: App {
         }
 
         // One player window, reused across episodes (one mpv instance).
-        Window("播放器", id: "player") {
+        Window(String(localized: "播放器"), id: "player") {
             PlayerWindowView()
                 .environment(session)
                 .environment(player)

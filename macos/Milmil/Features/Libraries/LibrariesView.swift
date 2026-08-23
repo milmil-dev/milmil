@@ -86,13 +86,18 @@ struct LibrariesView: View {
                 LibraryDetailView(library: library, store: store, client: session.client)
                     .id(library.id)
             } else {
-                EmptyState(symbol: "folder.badge.plus", title: "還沒有媒體庫", message: "加入伺服器上的資料夾，掃描後就能在首頁看到作品。", actionTitle: "新增媒體庫") { showAdd = true }
+                EmptyState(
+                    symbol: "folder.badge.plus",
+                    title: String(localized: "還沒有媒體庫"),
+                    message: String(localized: "加入伺服器上的資料夾，掃描後就能在首頁看到作品。"),
+                    actionTitle: String(localized: "新增媒體庫")
+                ) { showAdd = true }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .sheet(isPresented: $showAdd) { AddLibrarySheet(store: store) }
         .confirmationDialog(
-            "刪除媒體庫「\(confirmDelete?.name ?? "")」？",
+            String(localized: "刪除媒體庫「\(confirmDelete?.name ?? "")」？"),
             isPresented: Binding(get: { confirmDelete != nil }, set: { if !$0 { confirmDelete = nil } }),
             titleVisibility: .visible
         ) {
@@ -157,9 +162,9 @@ private struct LibraryRow: View {
 
     private func scanText(_ scan: ScanProgress) -> String {
         switch scan.type {
-        case ServerEventType.scanHash: "雜湊中 \(scan.filesHashed)/\(scan.filesTotal)"
-        case ServerEventType.matchProgress, ServerEventType.matchStarted: "匹配中 \(scan.filesMatched)/\(scan.filesTotal)"
-        default: "掃描中 · 找到 \(scan.filesFound) 個檔案"
+        case ServerEventType.scanHash: String(localized: "雜湊中 \(scan.filesHashed)/\(scan.filesTotal)")
+        case ServerEventType.matchProgress, ServerEventType.matchStarted: String(localized: "匹配中 \(scan.filesMatched)/\(scan.filesTotal)")
+        default: String(localized: "掃描中 · 找到 \(scan.filesFound) 個檔案")
         }
     }
 }
@@ -200,9 +205,9 @@ struct LibraryDetailView: View {
                 Text(library.name).font(.system(size: 20, weight: .bold))
                 Text(library.path).font(.system(size: 12, design: .monospaced)).foregroundStyle(Theme.Text.tertiary).lineLimit(1).truncationMode(.middle)
                 HStack(spacing: 12) {
-                    stat("檔案", library.fileCount)
-                    stat("已匹配", library.matchedCount)
-                    stat("未匹配", library.unmatchedCount, warn: library.unmatchedCount > 0)
+                    stat(String(localized: "檔案"), library.fileCount)
+                    stat(String(localized: "已匹配"), library.matchedCount)
+                    stat(String(localized: "未匹配"), library.unmatchedCount, warn: library.unmatchedCount > 0)
                     if let date = library.lastScannedAt {
                         Text("上次掃描 \(Formatters.relative(date))").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                     }
@@ -212,7 +217,8 @@ struct LibraryDetailView: View {
             Spacer()
             if let scan = store.scans[library.id] {
                 if scan.type == ServerEventType.scanError {
-                    Label(scan.error ?? "掃描失敗", systemImage: "exclamationmark.triangle").foregroundStyle(Color(hex: 0xF87171)).font(.system(size: 12))
+                    Label(scan.error ?? String(localized: "掃描失敗"), systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(Color(hex: 0xF87171)).font(.system(size: 12))
                 } else {
                     ProgressView().controlSize(.small)
                 }
@@ -235,9 +241,9 @@ struct LibraryDetailView: View {
         HStack(spacing: 10) {
             Segmented(options: MediaFileFilter.allCases, selection: $filter) { filter in
                 switch filter {
-                case .all: "全部"
-                case .matched: "已匹配"
-                case .unmatched: "未匹配"
+                case .all: String(localized: "全部")
+                case .matched: String(localized: "已匹配")
+                case .unmatched: String(localized: "未匹配")
                 }
             }
             TextField("搜尋檔名…", text: $query).textFieldStyle(.roundedBorder).frame(width: 220)
@@ -257,20 +263,20 @@ struct LibraryDetailView: View {
         case let .loaded(page) where page.items.isEmpty:
             EmptyState(
                 symbol: "doc.questionmark",
-                title: filter == .unmatched ? "沒有未匹配的檔案" : "沒有檔案",
-                message: library.fileCount == 0 ? "掃描後會列出這個資料夾裡的影片。" : "換個篩選條件試試。"
+                title: filter == .unmatched ? String(localized: "沒有未匹配的檔案") : String(localized: "沒有檔案"),
+                message: library.fileCount == 0 ? String(localized: "掃描後會列出這個資料夾裡的影片。") : String(localized: "換個篩選條件試試。")
             )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case let .loaded(page):
             Table(page.items.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
-                TableColumn("檔名", value: \.filename) { row in
+                TableColumn(String(localized: "檔名"), value: \.filename) { row in
                     Text(row.filename).lineLimit(1).truncationMode(.middle).help(row.path)
                 }
-                TableColumn("狀態") { row in
+                TableColumn(String(localized: "狀態")) { row in
                     PillBadge(text: statusLabel(row), tint: statusTint(row))
                 }
                 .width(80)
-                TableColumn("作品") { row in
+                TableColumn(String(localized: "作品")) { row in
                     if row.isMatched {
                         Button { router.openAnime(row.matchedBangumiID) } label: {
                             Text("\(row.matchedAnimeTitle) · EP \(Formatters.episode(row.matchedEpisodeSort).dropFirst(3))").lineLimit(1)
@@ -280,11 +286,11 @@ struct LibraryDetailView: View {
                         Button("匹配…") { matching = row }.controlSize(.small)
                     }
                 }
-                TableColumn("大小") { row in
+                TableColumn(String(localized: "大小")) { row in
                     Text(ByteCountFormatter.string(fromByteCount: row.sizeBytes, countStyle: .file)).monospacedDigit().foregroundStyle(Theme.Text.tertiary)
                 }
                 .width(80)
-                TableColumn("字幕") { row in
+                TableColumn(String(localized: "字幕")) { row in
                     Text(row.subtitleCount > 0 ? "\(row.subtitleCount)" : "—").foregroundStyle(Theme.Text.tertiary)
                 }
                 .width(40)
@@ -329,9 +335,9 @@ struct LibraryDetailView: View {
 
     private func statusLabel(_ row: MediaFileRow) -> String {
         switch row.matchStatus {
-        case "auto": "自動"
-        case "manual": "手動"
-        default: "未匹配"
+        case "auto": String(localized: "自動")
+        case "manual": String(localized: "手動")
+        default: String(localized: "未匹配")
         }
     }
 
@@ -389,7 +395,7 @@ private struct AddLibrarySheet: View {
                         let panel = NSOpenPanel()
                         panel.canChooseDirectories = true
                         panel.canChooseFiles = false
-                        panel.message = "選擇資料夾（伺服器在本機時才適用）"
+                        panel.message = String(localized: "選擇資料夾（伺服器在本機時才適用）")
                         if panel.runModal() == .OK, let url = panel.url {
                             path = url.path
                             if name.isEmpty { name = url.lastPathComponent }
@@ -489,7 +495,7 @@ private struct MatchSheet: View {
                             .frame(width: 32, height: 44).clipShape(RoundedRectangle(cornerRadius: 4))
                         VStack(alignment: .leading, spacing: 2) {
                             Text(anime.title).font(.system(size: 13, weight: .medium)).lineLimit(1)
-                            let meta = [Formatters.season(from: anime.airDate), anime.episodeCount > 0 ? "\(anime.episodeCount) 集" : nil]
+                            let meta = [Formatters.season(from: anime.airDate), anime.episodeCount > 0 ? String(localized: "\(anime.episodeCount) 集") : nil]
                             Text(meta.compactMap { $0 }.joined(separator: " · "))
                                 .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                         }

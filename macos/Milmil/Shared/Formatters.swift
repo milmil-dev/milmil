@@ -14,9 +14,9 @@ enum Formatters {
     /// "剩 7 分鐘" / "剩 1 小時 12 分鐘" / "剛開始".
     static func remaining(_ seconds: Int) -> String {
         let minutes = Int((Double(seconds) / 60).rounded(.up))
-        if minutes <= 0 { return "即將看完" }
-        if minutes < 60 { return "剩 \(minutes) 分鐘" }
-        return "剩 \(minutes / 60) 小時 \(minutes % 60) 分鐘"
+        if minutes <= 0 { return String(localized: "即將看完") }
+        if minutes < 60 { return String(localized: "剩 \(minutes) 分鐘") }
+        return String(localized: "剩 \(minutes / 60) 小時 \(minutes % 60) 分鐘")
     }
 
     /// "EP 3" / "EP 12.5".
@@ -27,7 +27,7 @@ enum Formatters {
     /// Air time is `HH:mm` in Asia/Tokyo; return "23:00 JST · 本地 22:00".
     static func airTime(_ jst: String) -> String {
         guard let local = localTime(fromJST: jst) else { return "\(jst) JST" }
-        return local == jst ? "\(jst) JST" : "\(jst) JST · 本地 \(local)"
+        return local == jst ? "\(jst) JST" : String(localized: "\(jst) JST · 本地 \(local)")
     }
 
     static func localTime(fromJST jst: String) -> String? {
@@ -59,10 +59,10 @@ enum Formatters {
     static func season(from airDate: String?) -> String? {
         guard let airDate, airDate.count >= 7, let year = Int(airDate.prefix(4)), let month = Int(airDate.dropFirst(5).prefix(2)) else { return nil }
         let season = switch month {
-        case 1...3: "冬"
-        case 4...6: "春"
-        case 7...9: "夏"
-        default: "秋"
+        case 1...3: String(localized: "冬")
+        case 4...6: String(localized: "春")
+        case 7...9: String(localized: "夏")
+        default: String(localized: "秋")
         }
         return "\(year) \(season)"
     }

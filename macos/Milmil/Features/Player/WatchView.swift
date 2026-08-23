@@ -32,7 +32,7 @@ struct WatchView: View {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .navigationTitle(store?.detail.value?.title ?? coordinator.controller?.request?.title ?? "播放")
+        .navigationTitle(store?.detail.value?.title ?? coordinator.controller?.request?.title ?? String(localized: "播放"))
         .toolbar(router.immersive ? .hidden : .automatic, for: .windowToolbar)
         .background(Theme.background)
         .task(id: bangumiID) {
@@ -178,13 +178,19 @@ struct WatchTitleBar: View {
                     scoreText = controller.playable?.userScore.map(String.init) ?? ""
                     scorePrompt = true
                 } label: {
-                    Label(controller.playable?.userScore.map { "\($0)" } ?? "評分", systemImage: controller.playable?.userScore == nil ? "star" : "star.fill")
+                    Label(
+                        controller.playable?.userScore.map { "\($0)" } ?? String(localized: "評分"),
+                        systemImage: controller.playable?.userScore == nil ? "star" : "star.fill"
+                    )
                 }
                 .foregroundStyle(controller.playable?.userScore == nil ? Theme.Text.secondary : Color(hex: 0xFBBF24))
                 Button {
                     Task { await controller.toggleCollection() }
                 } label: {
-                    Label(controller.isInCollection ? "已收藏" : "收藏", systemImage: controller.isInCollection ? "bookmark.fill" : "bookmark")
+                    Label(
+                        controller.isInCollection ? String(localized: "已收藏") : String(localized: "收藏"),
+                        systemImage: controller.isInCollection ? "bookmark.fill" : "bookmark"
+                    )
                 }
                 .foregroundStyle(controller.isInCollection ? Theme.accent : Theme.Text.secondary)
                 Button {
@@ -196,9 +202,12 @@ struct WatchTitleBar: View {
                 Button {
                     theater.toggle()
                 } label: {
-                    Label(theater ? "預設檢視" : "劇院模式", systemImage: theater ? "rectangle.inset.filled" : "rectangle.expand.vertical")
+                    Label(
+                        theater ? String(localized: "預設檢視") : String(localized: "劇院模式"),
+                        systemImage: theater ? "rectangle.inset.filled" : "rectangle.expand.vertical"
+                    )
                 }
-                .help(theater ? "預設檢視（T）" : "劇院模式（T）")
+                .help(theater ? String(localized: "預設檢視（T）") : String(localized: "劇院模式（T）"))
                 Button(action: popOut) {
                     Label("獨立視窗", systemImage: "macwindow.badge.plus")
                 }
@@ -221,7 +230,7 @@ struct WatchTitleBar: View {
     private func meta(_ detail: AnimeDetail?) -> String {
         var parts: [String] = []
         if let date = detail?.summary.airDate, date.count >= 4 { parts.append(String(date.prefix(4))) }
-        if let count = detail?.summary.episodeCount, count > 0 { parts.append("\(count) 集") }
+        if let count = detail?.summary.episodeCount, count > 0 { parts.append(String(localized: "\(count) 集")) }
         if controller.state.status.isActive { parts.append(controller.state.stage.label) }
         return parts.joined(separator: " · ")
     }

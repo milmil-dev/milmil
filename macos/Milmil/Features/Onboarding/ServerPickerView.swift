@@ -10,7 +10,7 @@ struct ServerPickerView: View {
     @State private var validationMessage: String?
 
     var body: some View {
-        OnboardingCard(title: "milmil", subtitle: "選擇或新增一個 milmil 伺服器") {
+        OnboardingCard(title: "milmil", subtitle: String(localized: "選擇或新增一個 milmil 伺服器")) {
             if !session.profiles.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("已儲存的伺服器")
@@ -23,7 +23,7 @@ struct ServerPickerView: View {
                 Divider()
             }
 
-            FormField(label: "伺服器網址") {
+            FormField(label: String(localized: "伺服器網址")) {
                 // No `.textContentType(.URL)` and no scheme in the placeholder:
                 // AppKit would otherwise paint the placeholder as a blue link.
                 TextField("192.168.1.10:8080 或 milmil.home.arpa", text: $urlText)
@@ -31,7 +31,7 @@ struct ServerPickerView: View {
                     .autocorrectionDisabled()
                     .onSubmit(add)
             }
-            FormField(label: "名稱（選填）") {
+            FormField(label: String(localized: "名稱（選填）")) {
                 TextField("home-nas", text: $nameText)
                     .textFieldStyle(.roundedBorder)
                     .onSubmit(add)
@@ -53,7 +53,7 @@ struct ServerPickerView: View {
 
     private func add() {
         guard let url = ServerProfile.parseUserInput(urlText) else {
-            validationMessage = "請輸入有效的網址，例如 https://milmil.home.arpa 或 192.168.1.10:8080"
+            validationMessage = String(localized: "請輸入有效的網址，例如 https://milmil.home.arpa 或 192.168.1.10:8080")
             return
         }
         validationMessage = nil
@@ -112,7 +112,7 @@ struct ConnectionErrorView: View {
     let message: String
 
     var body: some View {
-        OnboardingCard(title: "連線中斷", subtitle: profile.baseURL.absoluteString) {
+        OnboardingCard(title: String(localized: "連線中斷"), subtitle: profile.baseURL.absoluteString) {
             InlineError(message: message)
             Text("• 確認伺服器已啟動（docker compose ps）\n• 若在外網，確認 VPN / 反向代理\n• 自簽憑證請用 http 或先在 Safari 信任")
                 .font(.system(size: 12))
@@ -146,8 +146,8 @@ struct ConnectionErrorView: View {
 }
 
 #Preview("Connection error") {
-    PreviewHost(phase: .connectionFailed(Preview.profile, message: "無法連線到伺服器（連線被拒）")) {
-        ConnectionErrorView(profile: Preview.profile, message: "無法連線到伺服器（連線被拒）")
+    PreviewHost(phase: .connectionFailed(Preview.profile, message: String(localized: "無法連線到伺服器（連線被拒）"))) {
+        ConnectionErrorView(profile: Preview.profile, message: String(localized: "無法連線到伺服器（連線被拒）"))
     }
 }
 #endif
