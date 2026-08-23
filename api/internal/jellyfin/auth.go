@@ -35,7 +35,7 @@ func (h *Handler) handleAuthenticateByName(c *echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid username or password"})
 	}
 
-	token, err := auth.SignToken(h.jwtSecret, user.ID)
+	token, err := auth.SignToken(h.jwtSecret, user.ID, user.TokenVersion)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, JellyfinError{Message: "Failed to generate token"})
 	}

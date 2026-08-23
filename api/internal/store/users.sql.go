@@ -9,6 +9,15 @@ import (
 	"context"
 )
 
+const bumpTokenVersion = `-- name: BumpTokenVersion :exec
+UPDATE users SET token_version = token_version + 1, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+func (q *Queries) BumpTokenVersion(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, bumpTokenVersion, id)
+	return err
+}
+
 const countUsers = `-- name: CountUsers :one
 SELECT COUNT(*) FROM users
 `
@@ -23,7 +32,7 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, username, password_hash, created_at, updated_at)
 VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled
+RETURNING id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version
 `
 
 type CreateUserParams struct {
@@ -43,6 +52,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdatedAt,
 		&i.TotpSecret,
 		&i.TwoFactorEnabled,
+		&i.TokenVersion,
 	)
 	return i, err
 }
@@ -71,7 +81,7 @@ func (q *Queries) EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled FROM users WHERE id = ? LIMIT 1
+SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version FROM users WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
@@ -85,12 +95,13 @@ func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
 		&i.UpdatedAt,
 		&i.TotpSecret,
 		&i.TwoFactorEnabled,
+		&i.TokenVersion,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled FROM users WHERE username = ? LIMIT 1
+SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version FROM users WHERE username = ? LIMIT 1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -104,6 +115,7 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.UpdatedAt,
 		&i.TotpSecret,
 		&i.TwoFactorEnabled,
+		&i.TokenVersion,
 	)
 	return i, err
 }

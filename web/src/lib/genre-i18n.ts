@@ -112,8 +112,3 @@ const MAPS: Record<string, Record<string, string>> = {
 export function translateGenre(genre: string, locale: string): string {
   return MAPS[locale]?.[genre] ?? genre;
 }
-
-/** Translate an array of genres. */
-export function translateGenres(genres: string[], locale: string): string[] {
-  return genres.map((g) => translateGenre(g, locale));
-}

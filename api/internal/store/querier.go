@@ -11,6 +11,7 @@ import (
 
 type Querier interface {
 	BatchDeleteWatchProgress(ctx context.Context, arg BatchDeleteWatchProgressParams) (int64, error)
+	BumpTokenVersion(ctx context.Context, id string) error
 	ClearMediaFileMatch(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)

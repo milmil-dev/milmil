@@ -83,5 +83,5 @@ func (s *SettingsTokenStore) LoadCreds(ctx context.Context, p ProviderName) (OAu
 	if cp.ClientID == "" {
 		return OAuthCreds{}, fmt.Errorf("sync: empty client id for %s", p)
 	}
-	return OAuthCreds{ClientID: cp.ClientID, ClientSecret: cp.ClientSecret}, nil
+	return OAuthCreds(cp), nil
 }

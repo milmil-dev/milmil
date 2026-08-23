@@ -160,6 +160,6 @@ func (h *Handler) mediaFileToSource(f store.MediaFile) MediaSource {
 		SupportsTranscoding:  true,
 		SupportsProbing:      true,
 		VideoType:            "VideoFile",
-		MediaStreams:          streams,
+		MediaStreams:         streams,
 	}
 }

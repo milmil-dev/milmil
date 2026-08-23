@@ -9,89 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TorrentSearchRouteImport } from './routes/torrent-search'
-import { Route as SetupRouteImport } from './routes/setup'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SearchRouteImport } from './routes/search'
-import { Route as ScheduleRouteImport } from './routes/schedule'
-import { Route as RssRouteImport } from './routes/rss'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as LibrariesRouteImport } from './routes/libraries'
-import { Route as HistoryRouteImport } from './routes/history'
-import { Route as DownloadsRouteImport } from './routes/downloads'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SetupIndexRouteImport } from './routes/setup.index'
-import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
-import { Route as SetupLibraryRouteImport } from './routes/setup.library'
-import { Route as SetupIntegrationsRouteImport } from './routes/setup.integrations'
-import { Route as SetupAdminRouteImport } from './routes/setup.admin'
-import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
+import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as LibrariesRouteImport } from './routes/libraries'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as RssRouteImport } from './routes/rss'
+import { Route as ScheduleRouteImport } from './routes/schedule'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SetupRouteImport } from './routes/setup'
+import { Route as TorrentSearchRouteImport } from './routes/torrent-search'
 import { Route as AnimeIdRouteImport } from './routes/anime.$id'
-import { Route as LibrariesIdRenameRouteImport } from './routes/libraries_.$id.rename'
+import { Route as LibrariesIdRouteImport } from './routes/libraries_.$id'
+import { Route as SetupIndexRouteImport } from './routes/setup.index'
+import { Route as SetupAdminRouteImport } from './routes/setup.admin'
+import { Route as SetupIntegrationsRouteImport } from './routes/setup.integrations'
+import { Route as SetupLibraryRouteImport } from './routes/setup.library'
+import { Route as WatchAnimeIdRouteImport } from './routes/watch.$animeId'
 import { Route as LibrariesIdDuplicatesRouteImport } from './routes/libraries_.$id.duplicates'
+import { Route as LibrariesIdRenameRouteImport } from './routes/libraries_.$id.rename'
 import { Route as LibrariesIdRenameHistoryRouteImport } from './routes/libraries_.$id.rename.history'
 
-const TorrentSearchRoute = TorrentSearchRouteImport.update({
-  id: '/torrent-search',
-  path: '/torrent-search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SetupRoute = SetupRouteImport.update({
-  id: '/setup',
-  path: '/setup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScheduleRoute = ScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RssRoute = RssRouteImport.update({
-  id: '/rss',
-  path: '/rss',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibrariesRoute = LibrariesRouteImport.update({
-  id: '/libraries',
-  path: '/libraries',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoryRoute = HistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DownloadsRoute = DownloadsRouteImport.update({
-  id: '/downloads',
-  path: '/downloads',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollectionRoute = CollectionRouteImport.update({
@@ -99,39 +44,64 @@ const CollectionRoute = CollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SetupIndexRoute = SetupIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SetupRoute,
-} as any)
-const WatchAnimeIdRoute = WatchAnimeIdRouteImport.update({
-  id: '/watch/$animeId',
-  path: '/watch/$animeId',
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SetupLibraryRoute = SetupLibraryRouteImport.update({
-  id: '/library',
-  path: '/library',
-  getParentRoute: () => SetupRoute,
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const SetupIntegrationsRoute = SetupIntegrationsRouteImport.update({
-  id: '/integrations',
-  path: '/integrations',
-  getParentRoute: () => SetupRoute,
+const LibrariesRoute = LibrariesRouteImport.update({
+  id: '/libraries',
+  path: '/libraries',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const SetupAdminRoute = SetupAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => SetupRoute,
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const LibrariesIdRoute = LibrariesIdRouteImport.update({
-  id: '/libraries_/$id',
-  path: '/libraries/$id',
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RssRoute = RssRouteImport.update({
+  id: '/rss',
+  path: '/rss',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScheduleRoute = ScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TorrentSearchRoute = TorrentSearchRouteImport.update({
+  id: '/torrent-search',
+  path: '/torrent-search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnimeIdRoute = AnimeIdRouteImport.update({
@@ -139,14 +109,44 @@ const AnimeIdRoute = AnimeIdRouteImport.update({
   path: '/anime/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibrariesIdRenameRoute = LibrariesIdRenameRouteImport.update({
-  id: '/rename',
-  path: '/rename',
-  getParentRoute: () => LibrariesIdRoute,
+const LibrariesIdRoute = LibrariesIdRouteImport.update({
+  id: '/libraries_/$id',
+  path: '/libraries/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupIndexRoute = SetupIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SetupRoute,
+} as any)
+const SetupAdminRoute = SetupAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => SetupRoute,
+} as any)
+const SetupIntegrationsRoute = SetupIntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => SetupRoute,
+} as any)
+const SetupLibraryRoute = SetupLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => SetupRoute,
+} as any)
+const WatchAnimeIdRoute = WatchAnimeIdRouteImport.update({
+  id: '/watch/$animeId',
+  path: '/watch/$animeId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LibrariesIdDuplicatesRoute = LibrariesIdDuplicatesRouteImport.update({
   id: '/duplicates',
   path: '/duplicates',
+  getParentRoute: () => LibrariesIdRoute,
+} as any)
+const LibrariesIdRenameRoute = LibrariesIdRenameRouteImport.update({
+  id: '/rename',
+  path: '/rename',
   getParentRoute: () => LibrariesIdRoute,
 } as any)
 const LibrariesIdRenameHistoryRoute =
@@ -336,88 +336,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/torrent-search': {
-      id: '/torrent-search'
-      path: '/torrent-search'
-      fullPath: '/torrent-search'
-      preLoaderRoute: typeof TorrentSearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/setup': {
-      id: '/setup'
-      path: '/setup'
-      fullPath: '/setup'
-      preLoaderRoute: typeof SetupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/schedule': {
-      id: '/schedule'
-      path: '/schedule'
-      fullPath: '/schedule'
-      preLoaderRoute: typeof ScheduleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rss': {
-      id: '/rss'
-      path: '/rss'
-      fullPath: '/rss'
-      preLoaderRoute: typeof RssRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/libraries': {
-      id: '/libraries'
-      path: '/libraries'
-      fullPath: '/libraries'
-      preLoaderRoute: typeof LibrariesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/history': {
-      id: '/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downloads': {
-      id: '/downloads'
-      path: '/downloads'
-      fullPath: '/downloads'
-      preLoaderRoute: typeof DownloadsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/collection': {
@@ -427,53 +350,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/setup/': {
-      id: '/setup/'
-      path: '/'
-      fullPath: '/setup/'
-      preLoaderRoute: typeof SetupIndexRouteImport
-      parentRoute: typeof SetupRoute
-    }
-    '/watch/$animeId': {
-      id: '/watch/$animeId'
-      path: '/watch/$animeId'
-      fullPath: '/watch/$animeId'
-      preLoaderRoute: typeof WatchAnimeIdRouteImport
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/setup/library': {
-      id: '/setup/library'
-      path: '/library'
-      fullPath: '/setup/library'
-      preLoaderRoute: typeof SetupLibraryRouteImport
-      parentRoute: typeof SetupRoute
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/setup/integrations': {
-      id: '/setup/integrations'
-      path: '/integrations'
-      fullPath: '/setup/integrations'
-      preLoaderRoute: typeof SetupIntegrationsRouteImport
-      parentRoute: typeof SetupRoute
+    '/libraries': {
+      id: '/libraries'
+      path: '/libraries'
+      fullPath: '/libraries'
+      preLoaderRoute: typeof LibrariesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/setup/admin': {
-      id: '/setup/admin'
-      path: '/admin'
-      fullPath: '/setup/admin'
-      preLoaderRoute: typeof SetupAdminRouteImport
-      parentRoute: typeof SetupRoute
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/libraries_/$id': {
-      id: '/libraries_/$id'
-      path: '/libraries/$id'
-      fullPath: '/libraries/$id'
-      preLoaderRoute: typeof LibrariesIdRouteImport
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rss': {
+      id: '/rss'
+      path: '/rss'
+      fullPath: '/rss'
+      preLoaderRoute: typeof RssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schedule': {
+      id: '/schedule'
+      path: '/schedule'
+      fullPath: '/schedule'
+      preLoaderRoute: typeof ScheduleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/torrent-search': {
+      id: '/torrent-search'
+      path: '/torrent-search'
+      fullPath: '/torrent-search'
+      preLoaderRoute: typeof TorrentSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/anime/$id': {
@@ -483,18 +441,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnimeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/libraries_/$id/rename': {
-      id: '/libraries_/$id/rename'
-      path: '/rename'
-      fullPath: '/libraries/$id/rename'
-      preLoaderRoute: typeof LibrariesIdRenameRouteImport
-      parentRoute: typeof LibrariesIdRoute
+    '/libraries_/$id': {
+      id: '/libraries_/$id'
+      path: '/libraries/$id'
+      fullPath: '/libraries/$id'
+      preLoaderRoute: typeof LibrariesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup/': {
+      id: '/setup/'
+      path: '/'
+      fullPath: '/setup/'
+      preLoaderRoute: typeof SetupIndexRouteImport
+      parentRoute: typeof SetupRoute
+    }
+    '/setup/admin': {
+      id: '/setup/admin'
+      path: '/admin'
+      fullPath: '/setup/admin'
+      preLoaderRoute: typeof SetupAdminRouteImport
+      parentRoute: typeof SetupRoute
+    }
+    '/setup/integrations': {
+      id: '/setup/integrations'
+      path: '/integrations'
+      fullPath: '/setup/integrations'
+      preLoaderRoute: typeof SetupIntegrationsRouteImport
+      parentRoute: typeof SetupRoute
+    }
+    '/setup/library': {
+      id: '/setup/library'
+      path: '/library'
+      fullPath: '/setup/library'
+      preLoaderRoute: typeof SetupLibraryRouteImport
+      parentRoute: typeof SetupRoute
+    }
+    '/watch/$animeId': {
+      id: '/watch/$animeId'
+      path: '/watch/$animeId'
+      fullPath: '/watch/$animeId'
+      preLoaderRoute: typeof WatchAnimeIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/libraries_/$id/duplicates': {
       id: '/libraries_/$id/duplicates'
       path: '/duplicates'
       fullPath: '/libraries/$id/duplicates'
       preLoaderRoute: typeof LibrariesIdDuplicatesRouteImport
+      parentRoute: typeof LibrariesIdRoute
+    }
+    '/libraries_/$id/rename': {
+      id: '/libraries_/$id/rename'
+      path: '/rename'
+      fullPath: '/libraries/$id/rename'
+      preLoaderRoute: typeof LibrariesIdRenameRouteImport
       parentRoute: typeof LibrariesIdRoute
     }
     '/libraries_/$id/rename/history': {

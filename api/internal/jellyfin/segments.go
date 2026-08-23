@@ -9,9 +9,9 @@ import (
 
 // MediaSegmentItem is a single Jellyfin media segment (intro, outro, recap).
 type MediaSegmentItem struct {
-	ID       string `json:"Id"`
-	ItemID   string `json:"ItemId"`
-	Type     string `json:"Type"`
+	ID         string `json:"Id"`
+	ItemID     string `json:"ItemId"`
+	Type       string `json:"Type"`
 	StartTicks int64  `json:"StartTicks"`
 	EndTicks   int64  `json:"EndTicks"`
 }

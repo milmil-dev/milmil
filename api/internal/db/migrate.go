@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5" // postgres driver
-	_ "github.com/golang-migrate/migrate/v4/database/sqlite"  // sqlite driver (modernc, no CGO)
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite" // sqlite driver (modernc, no CGO)
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 )
 
 // MigrateUp runs all pending up migrations from the provided embedded FS.

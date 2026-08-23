@@ -20,6 +20,7 @@ var sensitiveFields = map[string]bool{
 	"password":       true,
 	"pw":             true,
 	"token":          true,
+	"ticket":         true,
 	"secret":         true,
 	"api_key":        true,
 	"apikey":         true,
@@ -91,6 +92,32 @@ func attachMiddleware(e *echo.Echo) {
 			middleware.RateLimiterMemoryStoreConfig{Rate: 100},
 		),
 	}))
+	e.Use(middleware.Secure())
+	// Every endpoint takes JSON; nothing here accepts uploads. The cap is far
+	// above the largest real payload (a settings or rule document) and exists
+	// so an unauthenticated POST cannot make the server buffer arbitrary data.
+	e.Use(middleware.BodyLimit(maxRequestBody))
+}
+
+// maxRequestBody bounds any single request body.
+const maxRequestBody = 8 * 1024 * 1024
+
+// authRateLimiter throttles the endpoints that check credentials.
+//
+// The global limiter allows 100 req/s, which does nothing to stop credential
+// stuffing or a TOTP sweep: a 6-digit code is only a million guesses, and at
+// 100 req/s that is hours. At 12 attempts/minute per IP the same sweep takes
+// months, while a human retyping a password never notices.
+func authRateLimiter() echo.MiddlewareFunc {
+	return middleware.RateLimiterWithConfig(middleware.RateLimiterConfig{
+		Store: middleware.NewRateLimiterMemoryStoreWithConfig(
+			middleware.RateLimiterMemoryStoreConfig{
+				Rate:      0.2, // 12 attempts per minute, sustained
+				Burst:     10,  // absorbs a few genuine retries up front
+				ExpiresIn: 10 * time.Minute,
+			},
+		),
+	})
 }
 
 // prettyLogger uses slog (which is wired to zerolog ConsoleWriter) for
@@ -137,7 +164,7 @@ func prettyLogger() echo.MiddlewareFunc {
 
 			attrs := []any{
 				"method", req.Method,
-				"uri", req.RequestURI,
+				"uri", redactURI(req.RequestURI),
 				"status", status,
 				"latency", latency.Round(time.Millisecond).String(),
 			}
@@ -235,4 +262,30 @@ func redactValue(v any) any {
 	default:
 		return val
 	}
+}
+
+// redactURI strips credential-bearing query parameters from a request URI so
+// they do not reach the logs.
+//
+// Streaming endpoints accept ?token= because a <video> element cannot send an
+// Authorization header, and /ws accepts ?ticket=. Both would otherwise be
+// written verbatim to every access log line.
+func redactURI(uri string) string {
+	u, err := url.ParseRequestURI(uri)
+	if err != nil {
+		return uri
+	}
+	q := u.Query()
+	redacted := false
+	for key := range q {
+		if isSensitiveKey(key) {
+			q.Set(key, "[REDACTED]")
+			redacted = true
+		}
+	}
+	if !redacted {
+		return uri
+	}
+	u.RawQuery = q.Encode()
+	return u.String()
 }

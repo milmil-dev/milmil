@@ -1,8 +1,3 @@
-/** Event naming convention for plugin events */
-export function pluginEvent(namespace: string, action: string): string {
-  return `${namespace}:${action}`;
-}
-
 /** Disposable pattern — collect cleanup functions */
 export class Disposables {
   private fns: (() => void)[] = [];

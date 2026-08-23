@@ -20,9 +20,9 @@ type playableEpisodeMedia struct {
 }
 
 type playableEpisodeProgress struct {
-	PositionSeconds  int64 `json:"position_seconds"`
-	DurationSeconds  int64 `json:"duration_seconds"`
-	Completed        bool  `json:"completed"`
+	PositionSeconds int64 `json:"position_seconds"`
+	DurationSeconds int64 `json:"duration_seconds"`
+	Completed       bool  `json:"completed"`
 }
 
 type playableEpisodeResponse struct {

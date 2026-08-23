@@ -88,7 +88,7 @@ type MediaSource struct {
 	SupportsTranscoding  bool          `json:"SupportsTranscoding"`
 	SupportsProbing      bool          `json:"SupportsProbing"`
 	VideoType            string        `json:"VideoType"`
-	MediaStreams          []MediaStream `json:"MediaStreams"`
+	MediaStreams         []MediaStream `json:"MediaStreams"`
 	DirectStreamURL      string        `json:"DirectStreamUrl,omitempty"`
 	TranscodingURL       string        `json:"TranscodingUrl,omitempty"`
 }

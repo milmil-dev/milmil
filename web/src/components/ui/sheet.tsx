@@ -1,4 +1,4 @@
-import { Dialog as DialogPrimitive } from '@base-ui-components/react/dialog';
+import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { Cancel01Icon as XIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import type * as React from 'react';

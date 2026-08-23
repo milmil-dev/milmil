@@ -1,0 +1,41 @@
+{
+  "Landing": {
+    "ctaDesc": "幾分鐘內部署 milmil，掌控你的動漫收藏。",
+    "ctaTitle": "準備好了嗎？",
+    "d1": "多儲存來源（本機、SMB、SFTP、WebDAV、40+ 雲端後端），自動掃描和元資料匹配。",
+    "d2": "直接播放、MKV 轉 MP4 轉封裝、FFmpeg HLS 自適應轉碼。",
+    "d3": "來自彈彈Play的即時彈幕疊加。",
+    "d4": "內建種子客戶端、RSS 訂閱、聚合種子搜尋。",
+    "d5": "季度日曆、熱門排行、全文搜尋。",
+    "d6": "觀看進度和收藏狀態與 Bangumi 和 AniList 同步。",
+    "deployDesc": "一條指令。包含所有服務 — PostgreSQL、Redis、API 和前端。",
+    "deployTitle": "秒級部署",
+    "desc": "管理、探索和串流你的動漫收藏，支援彈幕、自動下載和多來源元資料匹配。",
+    "detail": "動漫詳情",
+    "detailCaption": "元資料、劇集、類型、評分，一鍵播放。",
+    "f1": "媒體庫管理",
+    "f2": "串流播放",
+    "f3": "彈幕",
+    "f4": "自動下載",
+    "f5": "探索",
+    "f6": "同步追蹤",
+    "featuresDesc": "為動漫愛好者打造的完整媒體伺服器。",
+    "featuresTitle": "功能一覽",
+    "getStarted": "開始使用",
+    "home": "首頁",
+    "homeCaption": "熱門輪播、繼續觀看和今日更新。",
+    "integrationsDesc": "連接你已經在使用的服務。",
+    "integrationsTitle": "無縫整合",
+    "player": "播放器 + 彈幕",
+    "playerCaption": "即時彈幕串流，帶字幕和進度追蹤。",
+    "readDocs": "查看文檔",
+    "screenshotsDesc": "靈感來自最優秀的媒體伺服器的精美介面。",
+    "screenshotsTitle": "產品預覽",
+    "tagline": "自架動漫媒體伺服器",
+    "viewGithub": "查看 GitHub"
+  },
+  "Nav": {
+    "docs": "文檔",
+    "github": "GitHub"
+  }
+}

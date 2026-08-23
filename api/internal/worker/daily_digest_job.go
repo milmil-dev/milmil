@@ -138,7 +138,7 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		if timeStr == "" {
 			timeStr = "TBA"
 		}
-		sb.WriteString(fmt.Sprintf("• %s%s (%s)\n", title, epStr, timeStr))
+		fmt.Fprintf(&sb, "• %s%s (%s)\n", title, epStr, timeStr)
 	}
 
 	notifTitle := fmt.Sprintf("📅 今日更新 (%d部)", len(watchingToday))
@@ -188,4 +188,3 @@ func parseHHMM(s string) (hour, min int, ok bool) {
 	}
 	return hour, min, true
 }
-

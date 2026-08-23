@@ -178,8 +178,8 @@ func (h *handler) handleGetImportedDanmaku(c *echo.Context) error {
 
 	type importedSource struct {
 		Source   string            `json:"source"`
-		Count   int               `json:"count"`
-		Saved   bool              `json:"saved"`
+		Count    int               `json:"count"`
+		Saved    bool              `json:"saved"`
 		Comments []danmaku.Comment `json:"comments"`
 	}
 

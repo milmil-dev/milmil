@@ -338,6 +338,7 @@ type User struct {
 	UpdatedAt        string `json:"updated_at"`
 	TotpSecret       string `json:"totp_secret"`
 	TwoFactorEnabled int64  `json:"two_factor_enabled"`
+	TokenVersion     int64  `json:"token_version"`
 }
 
 type UserPreference struct {

@@ -165,13 +165,15 @@ func (h *handler) handleTestBot(c *echo.Context) error {
 		}
 		defer resp.Body.Close()
 		var result struct {
-			OK          bool `json:"ok"`
+			OK          bool   `json:"ok"`
 			Description string `json:"description"`
 			Result      struct {
 				Username string `json:"username"`
 			} `json:"result"`
 		}
-		json.NewDecoder(resp.Body).Decode(&result)
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "unreadable response from Telegram"})
+		}
 		if !result.OK {
 			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": result.Description})
 		}
@@ -195,7 +197,9 @@ func (h *handler) handleTestBot(c *echo.Context) error {
 		var result struct {
 			Username string `json:"username"`
 		}
-		json.NewDecoder(resp.Body).Decode(&result)
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return c.JSON(http.StatusOK, map[string]any{"success": false, "error": "unreadable response from Discord"})
+		}
 		return c.JSON(http.StatusOK, map[string]any{"success": true, "bot_username": result.Username})
 
 	default:

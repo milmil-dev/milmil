@@ -23,3 +23,6 @@ UPDATE users SET totp_secret = '', two_factor_enabled = 0, updated_at = strftime
 
 -- name: SetTOTPSecret :exec
 UPDATE users SET totp_secret = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: BumpTokenVersion :exec
+UPDATE users SET token_version = token_version + 1, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;

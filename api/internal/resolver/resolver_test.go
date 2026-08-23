@@ -110,9 +110,9 @@ func (m *mockDandanplay) GetBangumiInfo(_ context.Context, _ int64) (*dandanplay
 }
 
 type mockBangumi struct {
-	subject    *bangumi.Subject
-	subjectErr error
-	episodes   []bangumi.Episode
+	subject     *bangumi.Subject
+	subjectErr  error
+	episodes    []bangumi.Episode
 	episodesErr error
 }
 
