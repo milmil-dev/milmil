@@ -20,11 +20,6 @@ jobs:
   go:
     name: Go
     runs-on: ubuntu-latest
-    # golangci-lint has to type-check the whole dependency graph, and this
-    # module pulls in rclone, the AWS SDK and anacrolix/torrent. A dependency
-    # bump changes go.sum, which misses setup-go's build cache, and the lint
-    # step alone then runs past 20 minutes from cold — #106 was cancelled at
-    # exactly 25. Warm runs finish the whole job in about 11.
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
@@ -32,7 +27,24 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: api/go.sum
+          # setup-go's own cache keys on go.sum exactly, so every dependency
+          # bump starts from nothing. The step below adds a fallback.
+          cache: false
+
+      # golangci-lint type-checks the whole graph — rclone, the AWS SDK and
+      # anacrolix/torrent — so a cold build cache costs 40 minutes. restore-keys
+      # lets a dependency bump reuse the previous run's cache and recompile only
+      # what actually changed.
+      - name: Restore Go module and build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+            ~/.cache/golangci-lint
+          key: go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('api/go.sum') }}
+          restore-keys: |
+            go-${{ runner.os }}-${{ env.GO_VERSION }}-
 
       - name: gofmt check
         working-directory: api
