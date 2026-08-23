@@ -33,6 +33,15 @@ enum DevSnapshot {
         #endif
     }
 
+    /// `MILMIL_SNAPSHOT_SETTINGS=1` opens the Settings scene (pair with `MILMIL_SNAPSHOT_WINDOW=settings`).
+    static var opensSettings: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_SETTINGS"] == "1"
+        #else
+        false
+        #endif
+    }
+
     /// `MILMIL_SNAPSHOT_CHROME=1` stops the player OSC from auto-hiding.
     static var keepsPlayerChrome: Bool {
         #if DEBUG
@@ -59,7 +68,10 @@ enum DevSnapshot {
             }
             // MILMIL_SNAPSHOT_WINDOW=player picks the player scene instead of the biggest window.
             if let wanted = env["MILMIL_SNAPSHOT_WINDOW"], !wanted.isEmpty {
-                windows = windows.filter { $0.identifier?.rawValue == wanted }
+                windows = windows.filter { window in
+                    let id = window.identifier?.rawValue ?? ""
+                    return id == wanted || (wanted == "settings" && id.contains("Settings"))
+                }
             }
             guard let window = windows.max(by: { $0.frame.width * $0.frame.height < $1.frame.width * $1.frame.height }),
                   let view = window.contentView else {

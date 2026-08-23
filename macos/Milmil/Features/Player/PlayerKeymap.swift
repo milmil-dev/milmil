@@ -212,10 +212,12 @@ struct PlayerKeymap {
     init(userBindings: [KeyBinding] = []) {
         var table: [KeyChord: PlayerAction] = [:]
         for (action, chord) in Self.defaults { table[chord] = action }
-        // A user rebind replaces every default chord of that action.
+        // A user rebind replaces every default chord of that action; an
+        // empty key means "unbound" (the settings UI writes that when a
+        // default chord is taken over by another action).
         let rebound = Set(userBindings.compactMap { PlayerAction(rawValue: $0.action) })
         table = table.filter { !rebound.contains($0.value) }
-        for binding in userBindings {
+        for binding in userBindings where !binding.key.isEmpty {
             guard let action = PlayerAction(rawValue: binding.action) else { continue }
             table[KeyChord(binding: binding)] = action
         }

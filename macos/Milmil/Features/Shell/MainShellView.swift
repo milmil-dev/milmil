@@ -50,6 +50,7 @@ struct MainShellView: View {
     @Environment(SessionStore.self) private var sessionStore
     @Environment(PlayerCoordinator.self) private var playerCoordinator
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
     let profile: ServerProfile
     let user: User
     let version: String
@@ -78,6 +79,7 @@ struct MainShellView: View {
             playerCoordinator.session = session
             if let destination = DevSnapshot.initialDestination { router.select(destination) }
             if let anime = DevSnapshot.initialAnime { router.openAnime(anime) }
+            if DevSnapshot.opensSettings { openSettings() }
             if let anime = DevSnapshot.initialPlayback {
                 router.openWatch(bangumiID: anime, episodeID: nil)
                 if ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_WINDOW"] == "player" {

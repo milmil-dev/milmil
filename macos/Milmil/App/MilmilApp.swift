@@ -26,6 +26,12 @@ struct MilmilApp: App {
             CommandGroup(replacing: .newItem) {}
         }
 
+        Settings {
+            SettingsView()
+                .environment(session)
+                .environment(player)
+        }
+
         // One player window, reused across episodes (one mpv instance).
         Window("播放器", id: "player") {
             PlayerWindowView()

@@ -60,10 +60,14 @@ final class PlayerController {
 
     init(session: ServerSession) {
         self.session = session
-        keymap = PlayerKeymap(userBindings: session.preferences.keyboardBindings)
+        keymap = PlayerKeymap(userBindings: session.preferences.keyboardBindings.filter { !$0.key.isEmpty })
         danmakuEnabled = session.preferences.danmakuEnabled
         var options = MPVOptions()
         options.userAgent = UserAgent.value
+        if let hwdec = UserDefaults.standard.string(forKey: DesktopDefaults.hardwareDecoding),
+           let choice = MPVOptions.HardwareDecoding(rawValue: hwdec) {
+            options.hardwareDecoding = choice
+        }
         options.subtitleLanguages = Self.languageChain(session.preferences.defaultSubtitleLanguage, fallback: ["zh-TW", "zh-Hant", "zh", "en"])
         options.audioLanguages = Self.languageChain(session.preferences.defaultAudioLanguage, fallback: ["ja", "jpn"])
         options.screenshotDirectory = Self.screenshotDirectory()
@@ -593,6 +597,11 @@ final class PlayerController {
         danmakuEnabled = enabled
         session.updatePreferences { $0.danmakuEnabled = enabled }
         flash(.text(enabled ? "彈幕：開" : "彈幕：關"))
+    }
+
+    /// Settings changed the shared `keyboardBindings`.
+    func refreshKeymap() {
+        keymap = PlayerKeymap(userBindings: session.preferences.keyboardBindings.filter { !$0.key.isEmpty })
     }
 
     /// Re-run the danmaku pipeline after a preferences change (settings UI, web sync).

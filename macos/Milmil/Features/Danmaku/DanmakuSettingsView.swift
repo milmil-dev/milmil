@@ -4,10 +4,21 @@ import SwiftUI
 /// All the web's danmaku keys, live-previewed, saved through the shared
 /// preferences (2 s debounce to the server).
 struct DanmakuSettingsView: View {
-    let controller: PlayerController
+    let session: ServerSession
+    /// The open player, if any — gets the new pipeline immediately.
+    var controller: PlayerController?
     @State private var keywordsText = ""
 
-    private var prefs: GlobalPreferences { controller.session.preferences }
+    init(session: ServerSession, controller: PlayerController?) {
+        self.session = session
+        self.controller = controller
+    }
+
+    init(controller: PlayerController) {
+        self.init(session: controller.session, controller: controller)
+    }
+
+    private var prefs: GlobalPreferences { session.preferences }
 
     var body: some View {
         Form {
@@ -69,14 +80,13 @@ struct DanmakuSettingsView: View {
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
-        .frame(width: 360, height: 560)
+        .frame(minWidth: 360, minHeight: 480)
         .onAppear { keywordsText = prefs.danmakuBlockKeywords.joined(separator: "\n") }
     }
 
     private func update(_ change: @escaping (inout GlobalPreferences) -> Void) {
-        controller.session.updatePreferences(change)
-        controller.danmakuStore?.apply(preferences: controller.session.preferences)
-        controller.danmakuEnabled = controller.session.preferences.danmakuEnabled
+        session.updatePreferences(change)
+        controller?.refreshDanmakuPreferences()
     }
 
     private func bind<T: Equatable>(_ keyPath: WritableKeyPath<GlobalPreferences, T>) -> Binding<T> {
