@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #2a2a2e; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'PingFang TC', 'Hiragino Sans', 'Noto Sans TC', sans-serif; color: rgba(255,255,255,0.92); -webkit-font-smoothing: antialiased; font-size: 13px; }
+    a { color: #a78bfa; text-decoration: none; } a:hover { color: #c4b5fd; }
+    .win { position: relative; overflow: hidden; background: #141416; border-radius: 12px;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 30px 80px rgba(0,0,0,0.6);
+            background-image:
+              radial-gradient(ellipse 700px 500px at 10% 0%, rgba(167,139,250,0.10), transparent),
+              radial-gradient(ellipse 600px 400px at 90% 0%, oklch(0.45 0.12 300 / 0.07), transparent); }
+    .lights { display: flex; gap: 8px; align-items: center; }
+    .lights span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .side-item { display: flex; align-items: center; gap: 9px; height: 28px; padding: 0 8px 0 9px; border-radius: 7px;
+                  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.92); }
+    .side-item.on { background: rgba(255,255,255,0.14); color: #fff; box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .side-item svg { color: #a78bfa; } .side-item.on svg { color: #fff; }
+    .side-sec { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.42); padding: 12px 9px 4px; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,0.10);
+             color: rgba(255,255,255,0.62); font-size: 11px; font-weight: 500; line-height: 1.25; }
+    .chip.on { background: rgba(167,139,250,0.22); color: #d6ccff; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap; }
+    .btn.pri { background: #fff; color: #111; }
+    .btn.sec { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.92); font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .btn.acc { background: #a78bfa; color: #14082e; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+    .h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: #fff; margin: 0; }
+    .more { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.42); display: inline-flex; align-items: center; gap: 2px; }
+    .poster { position: relative; border-radius: 8px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .poster .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: linear-gradient(to top, rgba(20,20,22,.9), transparent); }
+    .poster .score { position: absolute; top: 6px; right: 6px; display: inline-flex; align-items: center; gap: 2px; font-size: 10px; font-weight: 700; color: #fff;
+                      background: rgba(0,0,0,0.55); border-radius: 999px; padding: 3px 7px; line-height: 1; backdrop-filter: blur(6px); font-variant-numeric: tabular-nums; }
+    .poster .ep { position: absolute; top: 6px; left: 6px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(167,139,250,0.9); border-radius: 999px; padding: 3px 7px; line-height: 1; }
+    .poster .cnt { position: absolute; bottom: 6px; right: 6px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,.9); background: rgba(0,0,0,0.55); border-radius: 999px; padding: 3px 7px; line-height: 1; backdrop-filter: blur(6px); }
+    .poster .ttl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 12px; text-align: center; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.55); line-height: 1.4; }
+    .cap { font-size: 12px; font-weight: 600; color: #fff; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sub { font-size: 11px; color: rgba(255,255,255,0.42); margin-top: 2px; }
+    .still { position: relative; border-radius: 10px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .still .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.12); }
+    .still .bar i { display: block; height: 100%; background: #a78bfa; border-radius: 0 999px 999px 0; }
+    .still .fade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,20,22,0.8), transparent 50%); }
+    .still .playbtn { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,.4); color: #000; }
+    .still .menu { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(30,30,34,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .tb-btn { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.62); }
+    .field { display: flex; align-items: center; gap: 7px; height: 28px; padding: 0 9px; border-radius: 8px; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.42); font-size: 13px;
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10); }
+    .kbd { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.42); background: rgba(255,255,255,0.08); border-radius: 4px; padding: 2px 5px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'PingFang TC', 'Hiragino Sans', 'Noto Sans TC', sans-serif; }
+    .seg { display: inline-flex; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .seg span { padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.62); white-space: nowrap; display: inline-flex; align-items: center; }
+    .seg span.on { background: rgba(255,255,255,0.18); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .card { border-radius: 12px; background: rgba(255,255,255,0.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .row { display: flex; align-items: center; }
+    .tabs { display: inline-flex; align-self: flex-start; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .tabs span { padding: 4px 11px !important; border-radius: 999px; font-size: 12px !important; font-weight: 500 !important; color: rgba(255,255,255,0.62); position: relative; white-space: nowrap; }
+    .tabs span.on { color: #fff; background: rgba(255,255,255,0.18); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .toggle { width: 36px; height: 21px; border-radius: 999px; background: rgba(255,255,255,0.18); position: relative; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .toggle i { position: absolute; top: 2px; left: 2px; width: 17px; height: 17px; border-radius: 50%; background: #fff; display: block; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    .toggle.on { background: #a78bfa; } .toggle.on i { left: 17px; }
+    .slider { position: relative; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.14); flex: 1; }
+    .slider i { position: absolute; left: 0; top: 0; height: 100%; background: #a78bfa; border-radius: 2px; display: block; }
+    .slider b { position: absolute; top: -8px; width: 20px; height: 20px; border-radius: 50%; background: #fff; margin-left: -10px; box-shadow: 0 1px 4px rgba(0,0,0,.5), inset 0 0 0 0.5px rgba(0,0,0,.2); display: block; }
+    .dm { position: absolute; font-weight: 700; font-size: 22px; white-space: nowrap; line-height: 1;
+           text-shadow: 0 0 1px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+    .glass { background: rgba(34,34,38,0.62); backdrop-filter: blur(30px) saturate(170%);
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.14), 0 20px 50px rgba(0,0,0,0.5); }
+    .popup { width: 16px; height: 16px; border-radius: 5px; background: #a78bfa; display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex-shrink: 0; }
+    .mono { font-family: 'SF Mono', Menlo, monospace; }
+    </style>
+</helmet>
+<div style="width:840px;height:560px;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.12), 0 30px 60px rgba(0,0,0,.7)">
+    <div style="position:absolute;inset:0;background:#1c1c1e;display:flex;flex-direction:column">
+      <div class="row" style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);gap:12px"><div><div style="font-size:15px;font-weight:700;color:#fff">新增媒體庫</div><div style="font-size:11px;color:rgba(255,255,255,0.42);margin-top:2px">伺服器透過 rclone / SMB 讀取；桌面端只負責設定。</div></div></div>
+      <div style="flex:1;min-height:0;overflow:hidden;padding:16px 20px">
+    <div style="display:flex;gap:20px;height:100%">
+      <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+        <div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">來源類型</div><span class="seg"><span class="">本機</span><span class="on">SMB</span><span class="">SFTP</span><span class="">WebDAV</span><span class="">S3</span><span class="">rclone</span></span></div>
+        <div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">名稱</div><div class="field" style="height:32px;color:rgba(255,255,255,0.92)">NAS Anime</div></div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">主機</div><div class="field" style="height:32px;color:rgba(255,255,255,0.92)">nas.home.arpa</div></div><div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">分享</div><div class="field" style="height:32px;color:rgba(255,255,255,0.92)">media</div></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">使用者</div><div class="field" style="height:32px;color:rgba(255,255,255,0.92)">niskan</div></div><div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">密碼</div><div class="field" style="height:32px;color:rgba(255,255,255,0.92);letter-spacing:.2em">••••••••</div></div></div>
+        <div><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">路徑</div><div class="row" style="gap:8px"><div class="field" style="height:32px;color:rgba(255,255,255,0.92);flex:1"><span style="font-family:Menlo, monospace;font-size:11px;color:rgba(255,255,255,0.62)">/anime</span></div><span class="btn sec" style="padding:6px 12px;font-size:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>瀏覽…</span></div></div>
+        <div class="row" style="gap:10px"><span class="btn sec" style="padding:6px 12px;font-size:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>測試連線</span><span style="font-size:12px;color:#4ade80" class="row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M5 12l5 5 9-10"/></svg> 連線成功 · 312 個影片檔 · 1.2 TB</span></div>
+      </div>
+      <div style="width:260px;display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:10px"><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.42);margin-bottom:6px">網路上找到的主機</div><div class="row" style="gap:10px;padding:7px 10px;border-radius:8px;background:rgba(167,139,250,.1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg><span style="font-size:12px;color:#fff;flex:1">nas</span><span style="font-family:Menlo, monospace;font-size:11px;color:rgba(255,255,255,0.62)">nas.home.arpa · 192.168.1.10</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:8px;background:transparent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg><span style="font-size:12px;color:#fff;flex:1">TimeCapsule</span><span style="font-family:Menlo, monospace;font-size:11px;color:rgba(255,255,255,0.62)">192.168.1.3</span></div></div>
+        <div class="card" style="padding:12px;display:flex;flex-direction:column;gap:8px"><div class="row" style="justify-content:space-between"><span style="font-size:12px;color:rgba(255,255,255,0.92)">掃描間隔</span><span class="field" style="height:28px;color:rgba(255,255,255,0.92);width:110px;gap:8px">60 分鐘<span class="popup"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#14082e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M8 10l4-4 4 4M8 14l4 4 4-4"/></svg></span></span></div><div class="row" style="justify-content:space-between"><span style="font-size:12px;color:rgba(255,255,255,0.92)">自動重新命名</span><span class="toggle on"><i></i></span></div><div><div style="font-size:11px;color:rgba(255,255,255,0.42);margin-bottom:4px">範本</div><span style="font-family:Menlo, monospace;font-size:11px;color:rgba(255,255,255,0.62)">{title}/S{season:02}E{episode:02} - {ep_title}.{ext}</span></div></div>
+        <div class="card" style="padding:12px;background:rgba(167,139,250,.06);font-size:11px;color:rgba(255,255,255,0.62);line-height:1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" fill="currentColor" stroke="none"/></svg> 若此分享也掛載在 Finder，可在 設定 › 播放器 加入本機路徑對應，播放時直接開檔。</div>
+      </div>
+    </div></div><div class="row" style="padding:12px 20px;border-top:1px solid rgba(255,255,255,.06);gap:8px;justify-content:flex-end"><span class="btn sec">取消</span><span class="btn acc">建立並掃描</span></div>
+    </div></div>
+</x-dc>
+
+</body>
+</html>

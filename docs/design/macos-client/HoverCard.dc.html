@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #2a2a2e; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'PingFang TC', 'Hiragino Sans', 'Noto Sans TC', sans-serif; color: rgba(255,255,255,0.92); -webkit-font-smoothing: antialiased; font-size: 13px; }
+    a { color: #a78bfa; text-decoration: none; } a:hover { color: #c4b5fd; }
+    .win { position: relative; overflow: hidden; background: #141416; border-radius: 12px;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 30px 80px rgba(0,0,0,0.6);
+            background-image:
+              radial-gradient(ellipse 700px 500px at 10% 0%, rgba(167,139,250,0.10), transparent),
+              radial-gradient(ellipse 600px 400px at 90% 0%, oklch(0.45 0.12 300 / 0.07), transparent); }
+    .lights { display: flex; gap: 8px; align-items: center; }
+    .lights span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .side-item { display: flex; align-items: center; gap: 9px; height: 28px; padding: 0 8px 0 9px; border-radius: 7px;
+                  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.92); }
+    .side-item.on { background: rgba(255,255,255,0.14); color: #fff; box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .side-item svg { color: #a78bfa; } .side-item.on svg { color: #fff; }
+    .side-sec { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.42); padding: 12px 9px 4px; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,0.10);
+             color: rgba(255,255,255,0.62); font-size: 11px; font-weight: 500; line-height: 1.25; }
+    .chip.on { background: rgba(167,139,250,0.22); color: #d6ccff; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap; }
+    .btn.pri { background: #fff; color: #111; }
+    .btn.sec { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.92); font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .btn.acc { background: #a78bfa; color: #14082e; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+    .h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: #fff; margin: 0; }
+    .more { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.42); display: inline-flex; align-items: center; gap: 2px; }
+    .poster { position: relative; border-radius: 8px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .poster .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: linear-gradient(to top, rgba(20,20,22,.9), transparent); }
+    .poster .score { position: absolute; top: 6px; right: 6px; display: inline-flex; align-items: center; gap: 2px; font-size: 10px; font-weight: 700; color: #fff;
+                      background: rgba(0,0,0,0.55); border-radius: 999px; padding: 3px 7px; line-height: 1; backdrop-filter: blur(6px); font-variant-numeric: tabular-nums; }
+    .poster .ep { position: absolute; top: 6px; left: 6px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(167,139,250,0.9); border-radius: 999px; padding: 3px 7px; line-height: 1; }
+    .poster .cnt { position: absolute; bottom: 6px; right: 6px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,.9); background: rgba(0,0,0,0.55); border-radius: 999px; padding: 3px 7px; line-height: 1; backdrop-filter: blur(6px); }
+    .poster .ttl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 12px; text-align: center; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.55); line-height: 1.4; }
+    .cap { font-size: 12px; font-weight: 600; color: #fff; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sub { font-size: 11px; color: rgba(255,255,255,0.42); margin-top: 2px; }
+    .still { position: relative; border-radius: 10px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .still .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.12); }
+    .still .bar i { display: block; height: 100%; background: #a78bfa; border-radius: 0 999px 999px 0; }
+    .still .fade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,20,22,0.8), transparent 50%); }
+    .still .playbtn { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,.4); color: #000; }
+    .still .menu { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(30,30,34,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .tb-btn { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.62); }
+    .field { display: flex; align-items: center; gap: 7px; height: 28px; padding: 0 9px; border-radius: 8px; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.42); font-size: 13px;
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10); }
+    .kbd { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.42); background: rgba(255,255,255,0.08); border-radius: 4px; padding: 2px 5px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'PingFang TC', 'Hiragino Sans', 'Noto Sans TC', sans-serif; }
+    .seg { display: inline-flex; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .seg span { padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.62); white-space: nowrap; display: inline-flex; align-items: center; }
+    .seg span.on { background: rgba(255,255,255,0.18); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .card { border-radius: 12px; background: rgba(255,255,255,0.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .row { display: flex; align-items: center; }
+    .tabs { display: inline-flex; align-self: flex-start; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .tabs span { padding: 4px 11px !important; border-radius: 999px; font-size: 12px !important; font-weight: 500 !important; color: rgba(255,255,255,0.62); position: relative; white-space: nowrap; }
+    .tabs span.on { color: #fff; background: rgba(255,255,255,0.18); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .toggle { width: 36px; height: 21px; border-radius: 999px; background: rgba(255,255,255,0.18); position: relative; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .toggle i { position: absolute; top: 2px; left: 2px; width: 17px; height: 17px; border-radius: 50%; background: #fff; display: block; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    .toggle.on { background: #a78bfa; } .toggle.on i { left: 17px; }
+    .slider { position: relative; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.14); flex: 1; }
+    .slider i { position: absolute; left: 0; top: 0; height: 100%; background: #a78bfa; border-radius: 2px; display: block; }
+    .slider b { position: absolute; top: -8px; width: 20px; height: 20px; border-radius: 50%; background: #fff; margin-left: -10px; box-shadow: 0 1px 4px rgba(0,0,0,.5), inset 0 0 0 0.5px rgba(0,0,0,.2); display: block; }
+    .dm { position: absolute; font-weight: 700; font-size: 22px; white-space: nowrap; line-height: 1;
+           text-shadow: 0 0 1px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+    .glass { background: rgba(34,34,38,0.62); backdrop-filter: blur(30px) saturate(170%);
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.14), 0 20px 50px rgba(0,0,0,0.5); }
+    .popup { width: 16px; height: 16px; border-radius: 5px; background: #a78bfa; display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex-shrink: 0; }
+    .mono { font-family: 'SF Mono', Menlo, monospace; }
+    </style>
+</helmet>
+<div style="width:720px;height:420px;position:relative;overflow:hidden;border-radius:10px;box-shadow:0 0 0 1px rgba(255,255,255,.12)"><div style="position:absolute;inset:0;background:#141416"><div style="position:absolute;left:60px;top:60px;width:150px"><div class="poster" style="width:150px;height:225px;background:linear-gradient(150deg, oklch(40% 0.22 89) 0%, oklch(28% 0.26 188) 55%, oklch(18% 0.16 249) 100%);transform:translateY(-6px) scale(1.04);box-shadow:0 18px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.12);"><div class="ttl">尖帽子的魔法工房</div><div class="shade"></div><span class="score"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor" stroke="none"/></svg>7.1</span><span class="cnt">13 集</span><div style="position:absolute;left:0;right:0;bottom:0;padding:10px;display:flex;gap:6px;align-items:center"><span style="width:32px;height:32px;border-radius:50%;background:#fff;color:#000;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M7 5v14l12-7z" fill="currentColor" stroke="none"/></svg></span><span style="width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M12 5v14M5 12h14"/></svg></span><span style="width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.5"/></svg></span></div></div><div class="cap">尖帽子的魔法工房</div></div><div class="glass" style="position:absolute;left:250px;top:40px;width:400px;border-radius:14px;overflow:hidden"><div style="height:150px;background:linear-gradient(150deg, oklch(40% 0.22 141) 0%, oklch(28% 0.26 229) 55%, oklch(18% 0.16 300) 100%);position:relative"><div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(18,18,20,.95), transparent 60%)"></div><div style="position:absolute;left:14px;bottom:10px;font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.01em">尖帽子的魔法工房</div><div style="position:absolute;right:12px;top:10px" class="row"><span class="chip" style="font-size:10px;padding:2px 7px;background:rgba(59,130,246,.8);color:#fff">在看</span></div></div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px"><div class="row" style="gap:8px"><span class="btn pri" style="padding:6px 14px;font-size:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M7 5v14l12-7z" fill="currentColor" stroke="none"/></svg>繼續 EP 1 · 剩 7 分鐘</span><span class="btn sec" style="padding:6px 10px;font-size:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><path d="M12 5v14M5 12h14"/></svg></span><span class="btn sec" style="padding:6px 10px;font-size:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.5"/></svg></span></div><div class="row" style="gap:8px;font-size:12px;color:rgba(255,255,255,0.62)"><span style="color:#a78bfa;font-weight:700">♥ 7.1</span><span>2026 春</span><span>13 集</span><span style="color:#4ade80">5 集已下載</span></div><div class="row" style="gap:6px"><span class="chip" style="font-size:11px">奇幻</span><span class="chip" style="font-size:11px">冒險</span><span class="chip" style="font-size:11px">漫畫改編</span></div><div style="font-size:12px;color:rgba(255,255,255,0.62);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">眾人皆以為魔法是與生俱來的血統，可可卻意外撞見了通往魔女之路的另一種可能，這也讓她陷入左右世界命運的爭鬥核心。</div><div style="font-size:11px;color:rgba(255,255,255,0.42)">下一集 EP 6 · 週二 23:00</div></div></div><div style="position:absolute;left:60px;bottom:16px;font-size:11px;color:rgba(255,255,255,0.42)">hover 250ms → 海報 lift；停留 400ms → 右側 hover card（對應 web AnimeCard 的 hover card）</div></div></div>
+</x-dc>
+
+</body>
+</html>

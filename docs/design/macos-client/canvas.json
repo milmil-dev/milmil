@@ -1,0 +1,708 @@
+{
+  "artboards": [
+    {
+      "file": "Login.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "AnimeDetail.dc.html",
+      "x": 3080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "Schedule.dc.html",
+      "x": 0,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "Discover.dc.html",
+      "x": 1540,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "DiscoverCategory.dc.html",
+      "x": 3080,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "Search.dc.html",
+      "x": 4620,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "CommandPalette.dc.html",
+      "x": 0,
+      "y": 2120,
+      "w": 720,
+      "h": 560,
+      "page": "page-browse"
+    },
+    {
+      "file": "HoverCard.dc.html",
+      "x": 820,
+      "y": 2120,
+      "w": 720,
+      "h": 420,
+      "page": "page-browse"
+    },
+    {
+      "file": "ContextMenus.dc.html",
+      "x": 1640,
+      "y": 2120,
+      "w": 900,
+      "h": 420,
+      "page": "page-browse"
+    },
+    {
+      "file": "TrailerSheet.dc.html",
+      "x": 2640,
+      "y": 2120,
+      "w": 900,
+      "h": 560,
+      "page": "page-browse"
+    },
+    {
+      "file": "EmptyStates.dc.html",
+      "x": 0,
+      "y": 2840,
+      "w": 1080,
+      "h": 420,
+      "page": "page-browse"
+    },
+    {
+      "file": "Skeleton.dc.html",
+      "x": 1180,
+      "y": 2840,
+      "w": 1440,
+      "h": 900,
+      "page": "page-browse"
+    },
+    {
+      "file": "PlayerStartup.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "Player.dc.html",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerTheater.dc.html",
+      "x": 3080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerSubtitles.dc.html",
+      "x": 0,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerAudioVideo.dc.html",
+      "x": 1540,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerFullscreen.dc.html",
+      "x": 3080,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerChapters.dc.html",
+      "x": 0,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerSpeed.dc.html",
+      "x": 1540,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerTechInfo.dc.html",
+      "x": 3080,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerABLoop.dc.html",
+      "x": 0,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerHelp.dc.html",
+      "x": 1540,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerNextUp.dc.html",
+      "x": 3080,
+      "y": 3180,
+      "w": 1080,
+      "h": 640,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerOSD.dc.html",
+      "x": 0,
+      "y": 4240,
+      "w": 1080,
+      "h": 620,
+      "page": "page-player"
+    },
+    {
+      "file": "MiniPlayer.dc.html",
+      "x": 1180,
+      "y": 4240,
+      "w": 480,
+      "h": 270,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerCompact.dc.html",
+      "x": 1760,
+      "y": 4240,
+      "w": 760,
+      "h": 460,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerBuffering.dc.html",
+      "x": 0,
+      "y": 5020,
+      "w": 720,
+      "h": 405,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerError.dc.html",
+      "x": 820,
+      "y": 5020,
+      "w": 720,
+      "h": 405,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerTranscoding.dc.html",
+      "x": 1640,
+      "y": 5020,
+      "w": 720,
+      "h": 405,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerContextMenu.dc.html",
+      "x": 2460,
+      "y": 5020,
+      "w": 720,
+      "h": 405,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerDropSubtitle.dc.html",
+      "x": 3280,
+      "y": 5020,
+      "w": 720,
+      "h": 405,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerMultiWindow.dc.html",
+      "x": 0,
+      "y": 5585,
+      "w": 1440,
+      "h": 900,
+      "page": "page-player"
+    },
+    {
+      "file": "PlayerDanmaku.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuSend.dc.html",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuHeatmap.dc.html",
+      "x": 3080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "PlayerSources.dc.html",
+      "x": 0,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuOffset.dc.html",
+      "x": 1540,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuNoMatch.dc.html",
+      "x": 3080,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuMatch.dc.html",
+      "x": 0,
+      "y": 2120,
+      "w": 800,
+      "h": 520,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuBlocklist.dc.html",
+      "x": 900,
+      "y": 2120,
+      "w": 760,
+      "h": 520,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuImportLocal.dc.html",
+      "x": 1760,
+      "y": 2120,
+      "w": 600,
+      "h": 380,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "DanmakuListMenu.dc.html",
+      "x": 2460,
+      "y": 2120,
+      "w": 720,
+      "h": 480,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "SettingsDanmaku.dc.html",
+      "x": 0,
+      "y": 2800,
+      "w": 980,
+      "h": 680,
+      "page": "page-danmaku"
+    },
+    {
+      "file": "Collection.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "History.dc.html",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "Libraries.dc.html",
+      "x": 3080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "LibraryDetail.dc.html",
+      "x": 0,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "LibraryRename.dc.html",
+      "x": 1540,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "LibraryDuplicates.dc.html",
+      "x": 3080,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "LibraryMissing.dc.html",
+      "x": 0,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "LibraryAdd.dc.html",
+      "x": 1540,
+      "y": 2120,
+      "w": 840,
+      "h": 560,
+      "page": "page-manage"
+    },
+    {
+      "file": "MatchSheet.dc.html",
+      "x": 2480,
+      "y": 2120,
+      "w": 720,
+      "h": 560,
+      "page": "page-manage"
+    },
+    {
+      "file": "Notifications.dc.html",
+      "x": 3300,
+      "y": 2120,
+      "w": 420,
+      "h": 560,
+      "page": "page-manage"
+    },
+    {
+      "file": "Downloads.dc.html",
+      "x": 0,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "TorrentSearch.dc.html",
+      "x": 1540,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "page": "page-manage"
+    },
+    {
+      "file": "SubscribeSheet.dc.html",
+      "x": 3080,
+      "y": 3180,
+      "w": 640,
+      "h": 520,
+      "page": "page-manage"
+    },
+    {
+      "file": "RuleEditor.dc.html",
+      "x": 0,
+      "y": 4240,
+      "w": 860,
+      "h": 600,
+      "page": "page-manage"
+    },
+    {
+      "file": "AddLinkSheet.dc.html",
+      "x": 960,
+      "y": 4240,
+      "w": 560,
+      "h": 360,
+      "page": "page-manage"
+    },
+    {
+      "file": "SettingsGeneral.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 980,
+      "h": 680,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsServer.dc.html",
+      "x": 1080,
+      "y": 0,
+      "w": 980,
+      "h": 780,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsPlayer.dc.html",
+      "x": 2160,
+      "y": 0,
+      "w": 980,
+      "h": 1080,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsSubtitles.dc.html",
+      "x": 0,
+      "y": 1240,
+      "w": 980,
+      "h": 900,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsKeyboard.dc.html",
+      "x": 1080,
+      "y": 1240,
+      "w": 980,
+      "h": 680,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsIntegrations.dc.html",
+      "x": 2160,
+      "y": 1240,
+      "w": 980,
+      "h": 900,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsNotifications.dc.html",
+      "x": 0,
+      "y": 2300,
+      "w": 980,
+      "h": 720,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsDownloads.dc.html",
+      "x": 1080,
+      "y": 2300,
+      "w": 980,
+      "h": 680,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsAccount.dc.html",
+      "x": 2160,
+      "y": 2300,
+      "w": 980,
+      "h": 680,
+      "page": "page-settings"
+    },
+    {
+      "file": "SettingsAbout.dc.html",
+      "x": 0,
+      "y": 3180,
+      "w": 980,
+      "h": 780,
+      "page": "page-settings"
+    },
+    {
+      "file": "ServerAdd.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-onboard"
+    },
+    {
+      "file": "TwoFactor.dc.html",
+      "x": 1540,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-onboard"
+    },
+    {
+      "file": "SetupRedirect.dc.html",
+      "x": 3080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-onboard"
+    },
+    {
+      "file": "ConnectionError.dc.html",
+      "x": 0,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "page": "page-onboard"
+    },
+    {
+      "file": "MenuBarExtra.dc.html",
+      "x": 1540,
+      "y": 1060,
+      "w": 360,
+      "h": 420,
+      "page": "page-onboard"
+    },
+    {
+      "file": "SystemIntegration.dc.html",
+      "x": 2000,
+      "y": 1060,
+      "w": 1080,
+      "h": 620,
+      "page": "page-onboard"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-browse",
+      "name": "瀏覽"
+    },
+    {
+      "id": "page-player",
+      "name": "播放器"
+    },
+    {
+      "id": "page-danmaku",
+      "name": "彈幕"
+    },
+    {
+      "id": "page-manage",
+      "name": "管理"
+    },
+    {
+      "id": "page-settings",
+      "name": "設定"
+    },
+    {
+      "id": "page-onboard",
+      "name": "Onboarding + 系統"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "n-shell",
+      "x": 0,
+      "y": -260,
+      "w": 380,
+      "text": "Shell：Apple TV 式 labeled sidebar（已拍板）。工具列：返回/前進、頁名、⌘K 搜尋、通知。背景沿用 web 的 BannerImage 多層 gradient。第三、四列是瀏覽層的輔助 UI：⌘K、海報 hover card、右鍵選單、預告片 sheet、空狀態、載入骨架。",
+      "page": "page-browse"
+    },
+    {
+      "id": "n-hero",
+      "x": 1540,
+      "y": -260,
+      "w": 360,
+      "text": "Home：Hero 主按鈕改為「播放」（Apple TV），指標停留 1 秒才自動預告。繼續睇 shelf 第一張示範 hover 狀態（▶ + ⋯ 選單：移除 / 標記已看）。",
+      "page": "page-browse"
+    },
+    {
+      "id": "n-player",
+      "x": 0,
+      "y": -260,
+      "w": 420,
+      "text": "Player：開播前海報牆 → mpv 畫面 + Core Animation 彈幕層 + 玻璃 floating OSC（OP/ED 區段、縮圖 peek）。右側 inspector 六個 tab，T 收起 = theater（第三張）。第三、四列：章節/區段、倍速、技術資訊 (I)、A-B 循環、快捷鍵表、下一集。",
+      "page": "page-player"
+    },
+    {
+      "id": "n-osd",
+      "x": 0,
+      "y": 3300,
+      "w": 420,
+      "text": "OSD 總表、Mini 浮窗、窄視窗 OSC 降級；狀態列：緩衝 / 錯誤 / 轉碼 fallback / 右鍵 / 拖放字幕；最後一張是主視窗 + 播放器雙視窗的桌面情境。",
+      "page": "page-player"
+    },
+    {
+      "id": "n-manage",
+      "x": 0,
+      "y": -260,
+      "w": 380,
+      "text": "管理頁 v1 全原生：媒體庫（掃描進度來自 WS）、檔案表、重新命名預覽 + 批次撤銷、重複檔案（偏好規則）、缺集 + 一鍵搜尋、新增媒體庫 sheet（SMB/SFTP/WebDAV/S3/rclone + Bonjour 發現）、下載（分組卡 + RSS）、種子搜尋表、一鍵訂閱、規則編輯器（即時預覽比對）、新增連結。",
+      "page": "page-manage"
+    },
+    {
+      "id": "n-settings",
+      "x": 0,
+      "y": -260,
+      "w": 420,
+      "text": "設定用 macOS Settings 視窗（⌘,）、左側分頁。所有 player/danmaku/subtitle/keyboard 設定與 web 的 /user/preferences 共用同一組 key；「伺服器」分頁管理多 server profile 與各裝置 token；「播放器」含本機路徑對應與 yt-dlp。",
+      "page": "page-settings"
+    },
+    {
+      "id": "n-onboard",
+      "x": 0,
+      "y": -260,
+      "w": 400,
+      "text": "Onboarding：新增伺服器（Bonjour 自動發現或輸入網址）、2FA、伺服器未初始化（導去 web 完成 setup）、連線中斷。系統整合：menu bar extra（Now Playing + 下載 + 今天播出）、Dock 右鍵選單 + badge、系統通知、拖放 magnet。",
+      "page": "page-onboard"
+    },
+    {
+      "id": "n-danmaku",
+      "x": 0,
+      "y": -260,
+      "w": 460,
+      "text": "彈幕系統（一級功能）：列表 + 設定 popover → 發送 popover（模式/顏色/字級/預覽，shape {time,mode,color,comment}）→ seek bar 密度熱力圖 + 高能時刻。第二列：Bilibili 來源匯入、每來源時間偏移（OP 指紋自動對齊）、未匹配狀態。第三列：DandanPlay 匹配對話框（hash + 檔名候選）、封鎖規則（關鍵字/正則/使用者，本集命中數）、本機 XML/JSON 載入、列表右鍵。最後是設定頁的彈幕分頁。",
+      "page": "page-danmaku"
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-danmaku"
+  }
+}
