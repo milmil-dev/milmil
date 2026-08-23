@@ -165,4 +165,6 @@ Spotlight 索引、App Intents/Shortcuts、WidgetKit、真 PiP（SW render + `AV
 - **Phase 2 核心完成**（commits `2eef89fc`、`9a0ebf5a`）：`MilmilPlayer` 套件（MPVKit 1.0.0、純 Swift 綁定，暫不需 C shim）、in-app 播放頁（`Route.watch`，對齊 web WatchPage：劇院模式 / 沉浸全螢幕 / 側欄 = inspector）、獨立視窗 pop-out（同一個 render view 搬移）、OSC / OSD / seek bar thumbnail peek、字幕 sidecar、進度同步、Resume pill、自動下一集、OP/ED skip、Now Playing、防睡眠、快捷鍵表（與 web rebind 共用）。
   - **未做**：本機路徑直開（需 server 回 `media_file.path`）、thumbnail VTT 驗證（server 端需有 sprite）、A-B loop UI、截圖到剪貼簿、音訊輸出裝置、Anime4K shaders、UI smoke loop（50 次換集）。
   - **驗證方式**：ffmpeg 測試片 + 本機 OrbStack server，`MILMIL_SNAPSHOT_PLAY` 截圖（見 `macos/AGENTS.md`）。
-- **下一步**：Phase 3 彈幕（`MilmilDanmaku` + `DanmakuOverlayView`，`DanmakuOverlayHost` 與 `PlaybackClock` 已預留）。
+- **Phase 3 核心完成**（commits `fd71b1d6`、`b0463ac0`）：`MilmilDanmaku`（parser / pipeline / LaneScheduler，11 tests 含隨機不重疊驗證）、`DanmakuLayerView`（CA 渲染、暫停/倍速用 layer speed、seek 重 seed）、compose bar、Inspector 彈幕 / 來源 tabs、設定 popover（全部 web 同名 key）、SwiftyOpenCC 轉換。
+  - **未做**：磁碟快取 6h、Instruments 效能驗證（300 同屏）、Reduce Motion 只做了靜態化 fallback、`/regex/` 封鎖詞 UI 已支援但無即時預覽計數。
+- **下一步**：audit 修正 → Phase 4（桌面加值：本機路徑直開、Dock/Menu bar、快捷鍵設定頁、截圖到剪貼簿）與 Phase 5（管理頁）。
