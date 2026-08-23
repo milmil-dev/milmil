@@ -8,6 +8,7 @@ sqlc = "1.30.0"
 # macOS client (macos/). Xcode itself is not managed here — see macos/AGENTS.md.
 xcodegen = "2.44.1"
 swiftlint = "0.63.2"
+watchexec = "2.3.2"   # `make macos-watch`
 
 [tasks."macos:gen"]
 description = "Generate macos/Milmil.xcodeproj from project.yml"

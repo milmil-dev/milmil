@@ -1,7 +1,7 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
 .PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill \
-	macos-gen macos-build macos-test macos-lint macos-run
+	macos-gen macos-build macos-test macos-lint macos-run macos-watch
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -72,4 +72,10 @@ macos-run: macos-gen
 	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
 		-destination 'platform=macOS,arch=arm64' -configuration Debug \
 		-derivedDataPath DerivedData -quiet build \
+		&& (pkill -x milmil || true) \
 		&& open DerivedData/Build/Products/Debug/milmil.app
+
+# Dev-server-style loop: rebuild + relaunch whenever a Swift/yml file changes.
+# Incremental builds take a few seconds; use Xcode Previews for pure UI tweaks.
+macos-watch:
+	watchexec --project-origin . -w macos -e swift,yml,xcstrings -r --debounce 500ms -- $(MAKE) macos-run
