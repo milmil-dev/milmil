@@ -48,6 +48,7 @@ enum Destination: String, CaseIterable, Identifiable {
 /// detail that proves the session is live. Feature screens land here in Phase 1.
 struct MainShellView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
     let profile: ServerProfile
     let user: User
     let version: String

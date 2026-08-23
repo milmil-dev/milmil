@@ -6,6 +6,7 @@ struct OnboardingCard<Content: View>: View {
     let title: String
     let subtitle: String
     @ViewBuilder var content: () -> Content
+    @ObserveInjection private var inject
 
     var body: some View {
         ZStack {
@@ -69,6 +70,7 @@ struct AppMark: View {
 struct PosterWall: View {
     @Environment(SessionStore.self) private var session
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ObserveInjection private var inject
 
     private static let columns = 14
     private static let slots = 210

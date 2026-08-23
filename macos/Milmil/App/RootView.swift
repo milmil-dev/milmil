@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
 
     var body: some View {
         Group {

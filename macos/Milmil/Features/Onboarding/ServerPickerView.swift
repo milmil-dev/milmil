@@ -4,6 +4,7 @@ import SwiftUI
 /// First screen: pick a saved server or add one by URL.
 struct ServerPickerView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
     @State private var urlText = ""
     @State private var nameText = ""
     @State private var validationMessage: String?
@@ -104,6 +105,7 @@ private struct SavedServerRow: View {
 /// Connection failed: reachability hints + retry, without losing the profile.
 struct ConnectionErrorView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
     let profile: ServerProfile
     let message: String
 

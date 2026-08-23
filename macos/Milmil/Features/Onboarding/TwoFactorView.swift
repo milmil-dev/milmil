@@ -3,6 +3,7 @@ import SwiftUI
 
 struct TwoFactorView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
     @State private var code = ""
     @State private var errorMessage: String?
     @State private var isSubmitting = false

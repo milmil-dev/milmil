@@ -3,6 +3,7 @@ import SwiftUI
 
 struct LoginView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
     @State private var username = ""
     @State private var password = ""
     @State private var errorMessage: String?

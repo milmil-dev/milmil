@@ -5,6 +5,7 @@ import SwiftUI
 /// integrations) stays in the web wizard; we just send the user there.
 struct SetupRedirectView: View {
     @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
     @Environment(\.openURL) private var openURL
     let profile: ServerProfile
 

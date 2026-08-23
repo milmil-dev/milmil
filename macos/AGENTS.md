@@ -24,7 +24,20 @@ make macos-gen     # xcodegen generate
 make macos-test    # swift test in Packages/MilmilKit
 make macos-build   # xcodebuild the app (Debug, ad-hoc signed)
 make macos-lint    # swiftlint --strict
+make macos-run     # build + (re)launch the app without Xcode
+make macos-watch   # rebuild + relaunch on every save (watchexec)
 ```
+
+### Fast iteration
+
+- **Previews**: every screen has `#Preview` blocks driven by `PreviewHost` /
+  `Preview.session(phase)` (`Milmil/Preview Content/`). Add one for each new
+  view; it is the cheapest way to iterate on layout.
+- **Hot reload**: Debug builds load InjectionIII/InjectionNext
+  (`Milmil/Shared/HotReload.swift`, `-Xlinker -interposable` in Debug only).
+  Give every `View` an `@ObserveInjection private var inject` property so it
+  re-renders after injection. Run the app from Xcode (⌘R) with InjectionIII
+  open; saving a file swaps the code in place. Release carries none of it.
 
 ## Core Rules
 

@@ -64,6 +64,12 @@ targets:
         ENABLE_PREVIEWS: YES
         DEVELOPMENT_ASSET_PATHS: '"Milmil/Preview Content"'
         COMBINE_HIDPI_IMAGES: YES
+      configs:
+        Debug:
+          # Hot reload (InjectionIII): let the injected dylib interpose methods.
+          # Debug only — see Milmil/Shared/HotReload.swift.
+          OTHER_LDFLAGS: ["$(inherited)", "-Xlinker", "-interposable"]
+          EMIT_FRONTEND_COMMAND_LINES: YES
     info:
       path: Milmil/Resources/Info.plist
       properties:
