@@ -39,6 +39,29 @@ make macos-watch   # rebuild + relaunch on every save (watchexec)
   re-renders after injection. Run the app from Xcode (⌘R) with InjectionIII
   open; saving a file swaps the code in place. Release carries none of it.
 
+### Local dev server
+
+A full milmil stack runs in OrbStack from this checkout (`.env` +
+`docker-compose.local.yml` are gitignored, machine-specific):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.local.yml -p milmil-dev up -d --build
+```
+
+API `http://127.0.0.1:18080` (8080 is taken by another project), web
+`http://localhost:3000`. Admin comes from `ADMIN_USER`/`ADMIN_PASSWORD` in
+`api/.env`; the default library is `/media` → `/Volumes/Sandisk 250GB/Milmil`.
+Point the app at `127.0.0.1:18080` — localhost avoids the macOS 15 local-network
+prompt, which an ad-hoc-signed build would otherwise hit on every rebuild.
+
+### Seeing the UI without screen permissions
+
+`MILMIL_SNAPSHOT=/tmp/x.png MILMIL_SNAPSHOT_DELAY=8` (Debug only; see
+`App/DevSnapshot.swift`) makes the app capture its key window through the
+window server and quit. Launch via `open -n --env …` so TCC/networking behave
+as a normal app launch. Use it after every visual change; `cacheDisplay`-style
+renders hide 3D transforms and materials.
+
 ## Core Rules
 
 1. **Read before editing.** Match surrounding style; SwiftUI-first, AppKit only

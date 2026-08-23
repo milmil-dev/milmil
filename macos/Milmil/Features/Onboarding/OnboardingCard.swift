@@ -31,6 +31,7 @@ struct OnboardingCard<Content: View>: View {
                 .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08)))
                 .shadow(color: .black.opacity(0.5), radius: 30, y: 20)
             }
+            .compositingGroup()
         }
         .frame(minWidth: 800, minHeight: 560)
     }
@@ -88,10 +89,17 @@ struct PosterWall: View {
                 }
             }
             .frame(width: proxy.size.width * 1.8)
-            .offset(x: -proxy.size.width * 0.4, y: -proxy.size.height * 0.2)
+            // Isolate the grid in its own layer before transforming it, so the
+            // perspective never leaks onto siblings (the login card).
+            .compositingGroup()
             .rotation3DEffect(.degrees(-22), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
             .rotationEffect(.degrees(2))
+            .offset(x: -proxy.size.width * 0.4, y: -proxy.size.height * 0.2)
+            .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
+            .clipped()
         }
+        .compositingGroup()
+        .allowsHitTesting(false)
         .animation(reduceMotion ? nil : .easeOut(duration: 1.2), value: covers)
         .overlay(Color.black.opacity(0.55))
         .overlay(

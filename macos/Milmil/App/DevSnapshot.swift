@@ -21,16 +21,24 @@ enum DevSnapshot {
                 NSApp.terminate(nil)
                 return
             }
-            // `cacheDisplay` flattens the layer tree: layout, text and images are
-            // exact, but 3D transforms, materials and blurs are not applied.
-            // (Window-server capture needs Screen Recording — use `screencapture -l`
-            // from a terminal that has it when the real composite matters.)
-            let bounds = view.bounds
-            guard let rep = view.bitmapImageRepForCachingDisplay(in: bounds) else {
-                NSApp.terminate(nil)
-                return
+            // Prefer a window-server capture (keeps 3D transforms, materials,
+            // blurs). CGWindowListCreateImage is gone from the macOS 27 SDK but
+            // still exported at runtime, and an app may capture its own windows
+            // without Screen Recording access. Fall back to a flattened
+            // `cacheDisplay` render if the symbol is missing.
+            let rep: NSBitmapImageRep
+            if let cgImage = Self.windowServerImage(of: window) {
+                rep = NSBitmapImageRep(cgImage: cgImage)
+            } else {
+                let bounds = view.bounds
+                guard let cached = view.bitmapImageRepForCachingDisplay(in: bounds) else {
+                    NSApp.terminate(nil)
+                    return
+                }
+                view.cacheDisplay(in: bounds, to: cached)
+                rep = cached
+                FileHandle.standardError.write(Data("📸 snapshot: flattened render (no window-server capture)\n".utf8))
             }
-            view.cacheDisplay(in: bounds, to: rep)
             if let png = rep.representation(using: .png, properties: [:]) {
                 do {
                     try png.write(to: URL(fileURLWithPath: path))
@@ -41,6 +49,17 @@ enum DevSnapshot {
             }
             NSApp.terminate(nil)
         }
+    }
+
+    private typealias CreateImageFn = @convention(c) (CGRect, UInt32, UInt32, UInt32) -> Unmanaged<CGImage>?
+
+    private static func windowServerImage(of window: NSWindow) -> CGImage? {
+        guard let symbol = dlsym(UnsafeMutableRawPointer(bitPattern: -2), "CGWindowListCreateImage") else { return nil }
+        let create = unsafeBitCast(symbol, to: CreateImageFn.self)
+        let optionIncludingWindow: UInt32 = 1 << 3
+        let bestResolution: UInt32 = 1 << 3
+        let boundsIgnoreFraming: UInt32 = 1 << 0
+        return create(.null, optionIncludingWindow, UInt32(window.windowNumber), bestResolution | boundsIgnoreFraming)?.takeRetainedValue()
     }
     #else
     static func runIfRequested() {}
