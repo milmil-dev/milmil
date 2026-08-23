@@ -3,52 +3,24 @@ package store_test
 import (
 	"context"
 	"database/sql"
-	"os"
-	"path/filepath"
-	"sort"
 	"testing"
 
-	_ "github.com/mattn/go-sqlite3"
+	milmildb "github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/migrations"
 	"github.com/stretchr/testify/require"
 )
 
-// applyAllMigrations reads every *.up.sql file from api/migrations/ and runs
-// them in name-sorted order against the given DB. Used to bring an in-memory
-// SQLite to current schema for unit tests.
-func applyAllMigrations(t *testing.T, db *sql.DB) {
-	t.Helper()
-	migDir := "../../migrations"
-	entries, err := os.ReadDir(migDir)
-	require.NoError(t, err)
-
-	var ups []string
-	for _, e := range entries {
-		if e.IsDir() {
-			continue
-		}
-		name := e.Name()
-		if filepath.Ext(name) == ".sql" && len(name) > 7 && name[len(name)-7:] == ".up.sql" {
-			ups = append(ups, name)
-		}
-	}
-	sort.Strings(ups)
-
-	for _, name := range ups {
-		path := filepath.Join(migDir, name)
-		body, err := os.ReadFile(path)
-		require.NoError(t, err, "read %s", name)
-		_, err = db.Exec(string(body))
-		require.NoError(t, err, "exec %s", name)
-	}
-}
-
 func TestAuditLogCRUD(t *testing.T) {
-	db, err := sql.Open("sqlite3", ":memory:?_foreign_keys=on")
+	// Same driver and migration runner as production: this used to open the
+	// cgo mattn/go-sqlite3 driver and replay the .up.sql files by hand, so the
+	// tests exercised a different SQLite than the server ever runs.
+	dsn := "sqlite://" + t.TempDir() + "/audit.db"
+	db, err := milmildb.Open(dsn)
 	require.NoError(t, err)
 	defer db.Close()
 
-	applyAllMigrations(t, db)
+	require.NoError(t, milmildb.MigrateUp(migrations.FS, dsn))
 
 	q := store.New(db)
 
