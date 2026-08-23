@@ -170,4 +170,5 @@ Spotlight 索引、App Intents/Shortcuts、WidgetKit、真 PiP（SW render + `AV
 - **Audit 完成**（commits `087696c7`、`caff6fe0`）：Cursor Grok 4.6 ×3 scope + 3 個獨立 reviewer；修了 libmpv render-thread 規則（GL context current + 單一呼叫）、`keep-open` 下 EOF 不觸發、載入中進度寫 0、GL context 重建、彈幕倍速 retime、API 204/null/query 等 30+ 項。
 - **App icon**（`bcdc9f80`）：web 的 vesica-piscis 標誌 → macOS squircle，10 個 AppIcon slot 由 `scratch make_icon.py` 產出。
 - **Phase 5 部分完成**：Settings scene（`c01257d6`：播放 / 字幕 / 彈幕 / 快捷鍵重綁 / 伺服器 token / 關於）、媒體庫頁（`e8cdc046`：掃描進度、media-file Table、手動匹配 sheet、新增/刪除）、下載頁（`f5163c49`：進度、暫停/繼續/刪除、新增、拖放 .torrent）。**未做**：遠端來源表單、重複/缺集/rename、RSS 訂閱與規則、Integrations/Notifications/Account 設定 tab、audit undo。
-- **下一步**：Phase 4（桌面加值：本機路徑直開、Dock/Menu bar、快捷鍵設定頁、截圖到剪貼簿）與 Phase 5（管理頁）。
+- **Phase 4 部分完成**：server `media_file.path`（`20b0805d`，api）+ 本機路徑對應直開（`21a1ac55`，已在 Sandisk 掛載驗證「本機檔案」）、`milmil://` URL scheme、`.torrent` 文件類型/Dock 拖放、⌥S 截圖到剪貼簿、`make macos-dmg` + `release-macos.yml`（`e8dc5254`，ad-hoc 簽名 DMG 21 MB）。**未做**：Anime4K shaders、yt-dlp、Menu bar extra、web 端「在 App 開啟」按鈕。
+- **下一步**：i18n `.xcstrings`、Phase 5 其餘（遠端來源、RSS 規則、其他設定 tab）、Instruments 效能驗證。（桌面加值：本機路徑直開、Dock/Menu bar、快捷鍵設定頁、截圖到剪貼簿）與 Phase 5（管理頁）。
