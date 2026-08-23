@@ -24,7 +24,7 @@ jobs:
       matrix:
         image: [milmil-api, milmil-web]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # Push the English README to the Docker Hub overview page so
       # hub.docker.com/r/milmildev/milmil-{api,web} isn't blank.

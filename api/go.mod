@@ -21,7 +21,6 @@ require (
 	github.com/knadh/koanf/v2 v2.3.4
 	github.com/labstack/echo/v5 v5.3.1
 	github.com/longbridgeapp/opencc v0.3.13
-	github.com/mattn/go-sqlite3 v1.14.44
 	github.com/mmcdole/gofeed v1.3.0
 	github.com/pquerna/otp v1.5.0
 	github.com/rclone/rclone v1.74.0
@@ -203,6 +202,7 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mattn/go-runewidth v0.0.22 // indirect
+	github.com/mattn/go-sqlite3 v1.14.44 // indirect
 	github.com/miekg/dns v1.1.27 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
