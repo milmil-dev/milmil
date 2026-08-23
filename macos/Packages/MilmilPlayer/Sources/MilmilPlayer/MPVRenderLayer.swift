@@ -29,12 +29,15 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
         contentsGravity = .resizeAspect
     }
 
+    /// Presentation-layer copies (made whenever Core Animation animates the
+    /// layer's frame) must stay inert: they share no render context, so only
+    /// the model layer ever calls into mpv.
     override public init(layer: Any) {
         guard let other = layer as? MPVRenderLayer else {
             fatalError("MPVRenderLayer can only copy another MPVRenderLayer")
         }
         player = other.player
-        renderContext = other.renderContext
+        renderContext = nil
         super.init(layer: layer)
     }
 

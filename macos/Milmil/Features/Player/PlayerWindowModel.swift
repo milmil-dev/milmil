@@ -13,6 +13,15 @@ final class PlayerWindowModel: PlayerWindowActions {
     var isMini = false
     var hoveringControls = false
     var showTimeRemaining = false
+    /// Embedded in the main window (watch page) vs. the pop-out window.
+    private(set) var embedded = false
+    /// Watch-page-only actions the surface routes back to its owner.
+    var embeddedHandler: ((EmbeddedAction) -> Void)?
+
+    enum EmbeddedAction {
+        case theater
+        case popOut
+    }
 
     weak var controller: PlayerController?
     private(set) weak var window: NSWindow?
@@ -23,20 +32,23 @@ final class PlayerWindowModel: PlayerWindowActions {
 
     // MARK: Window wiring
 
-    func attach(window: NSWindow, controller: PlayerController) {
+    func attach(window: NSWindow, controller: PlayerController, embedded: Bool = false) {
         guard self.window !== window else { return }
         self.window = window
         self.controller = controller
-        window.title = controller.state.mediaTitle
-        window.titlebarAppearsTransparent = true
-        window.titleVisibility = .hidden
-        window.styleMask.insert(.fullSizeContentView)
-        window.isMovableByWindowBackground = true
-        window.backgroundColor = .black
-        window.collectionBehavior.insert(.fullScreenPrimary)
-        window.setFrameAutosaveName("PlayerWindow")
-        window.minSize = NSSize(width: 480, height: 270)
-        window.tabbingMode = .disallowed
+        self.embedded = embedded
+        if !embedded {
+            window.title = controller.state.mediaTitle
+            window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
+            window.styleMask.insert(.fullSizeContentView)
+            window.isMovableByWindowBackground = true
+            window.backgroundColor = .black
+            window.collectionBehavior.insert(.fullScreenPrimary)
+            window.setFrameAutosaveName("PlayerWindow")
+            window.minSize = NSSize(width: 480, height: 270)
+            window.tabbingMode = .disallowed
+        }
         isFullscreen = window.styleMask.contains(.fullScreen)
         let center = NotificationCenter.default
         fullscreenObservers = [
@@ -61,12 +73,13 @@ final class PlayerWindowModel: PlayerWindowActions {
     }
 
     func updateTitle(_ title: String) {
+        guard !embedded else { return }
         window?.title = title
     }
 
     /// Lock the window's aspect to the video once its size is known.
     func applyVideoSize(_ size: CGSize) {
-        guard let window, size.width > 0, size.height > 0, !isFullscreen else { return }
+        guard !embedded, let window, size.width > 0, size.height > 0, !isFullscreen else { return }
         window.contentAspectRatio = size
         if isMini {
             resizeMini()
@@ -85,16 +98,16 @@ final class PlayerWindowModel: PlayerWindowActions {
 
     func pokeControls() {
         controlsVisible = true
-        window?.standardWindowButton(.closeButton)?.superview?.isHidden = false
+        if !embedded { window?.standardWindowButton(.closeButton)?.superview?.isHidden = false }
         NSCursor.unhide()
         scheduleHide()
     }
 
     func hideControlsNow() {
-        guard !hoveringControls, !(controller?.state.paused ?? true), !helpShown else { return }
+        guard !hoveringControls, !(controller?.state.paused ?? true), !helpShown, !DevSnapshot.keepsPlayerChrome else { return }
         controlsVisible = false
         if isFullscreen { NSCursor.setHiddenUntilMouseMoves(true) }
-        window?.standardWindowButton(.closeButton)?.superview?.isHidden = true
+        if !embedded { window?.standardWindowButton(.closeButton)?.superview?.isHidden = true }
     }
 
     private func scheduleHide() {
@@ -113,6 +126,10 @@ final class PlayerWindowModel: PlayerWindowActions {
     }
 
     func toggleMini() {
+        if embedded {
+            embeddedHandler?(.popOut)
+            return
+        }
         guard let window else { return }
         if isFullscreen { window.toggleFullScreen(nil) }
         isMini.toggle()
@@ -173,9 +190,12 @@ final class PlayerWindowModel: PlayerWindowActions {
         case .miniPlayer: toggleMini()
         case .help: helpShown.toggle()
         case .techInfo: techInfoShown.toggle()
-        case .inspector: inspectorShown.toggle()
+        case .inspector:
+            if embedded { embeddedHandler?(.theater) } else { inspectorShown.toggle() }
+        case .theater:
+            if embedded { embeddedHandler?(.theater) }
         case .danmakuSettings, .danmakuCompose:
-            inspectorShown = true
+            if embedded { embeddedHandler?(.theater) } else { inspectorShown = true }
         default: break
         }
     }

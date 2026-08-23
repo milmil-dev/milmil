@@ -2,16 +2,75 @@ import AppKit
 import MilmilPlayer
 import SwiftUI
 
-/// mpv's picture. The view is created once per controller and kept alive
-/// across episode switches (the layer owns the GL context).
-struct MPVRenderRepresentable: NSViewRepresentable {
-    let player: MPVPlayer
+/// Hosts the controller's single `MPVRenderView`. Each host owns a plain
+/// container; whichever host updated last adopts the render view, so
+/// moving between the watch page and the pop-out window is a reparent,
+/// and a stale host's teardown cannot pull the view out of the new one.
+struct PlayerRenderHost: NSViewRepresentable {
+    let renderView: MPVRenderView
 
-    func makeNSView(context: Context) -> MPVRenderView {
-        MPVRenderView(player: player)
+    func makeNSView(context: Context) -> RenderContainerView {
+        let container = RenderContainerView()
+        adopt(into: container)
+        return container
     }
 
-    func updateNSView(_ nsView: MPVRenderView, context: Context) {}
+    func updateNSView(_ container: RenderContainerView, context: Context) {
+        adopt(into: container)
+    }
+
+    /// Flexible: AppKit's `fittingSize` would otherwise turn the render
+    /// view's current frame into a minimum size and the surface could only grow.
+    func sizeThatFits(_ proposal: ProposedViewSize, nsView: RenderContainerView, context: Context) -> CGSize? {
+        proposal.replacingUnspecifiedDimensions(by: CGSize(width: 320, height: 180))
+    }
+
+    static func dismantleNSView(_ container: RenderContainerView, coordinator: ()) {
+        // Only detach if we still own it; a newer host may have adopted it.
+        for subview in container.subviews where subview is MPVRenderView {
+            subview.removeFromSuperview()
+        }
+    }
+
+    private func adopt(into container: RenderContainerView) {
+        guard renderView.superview !== container else { return }
+        renderView.removeFromSuperview()
+        renderView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(renderView)
+        container.needsLayout = true
+    }
+
+    /// Keeps the render view glued to its bounds. The container is often
+    /// 0×0 when the view is adopted (SwiftUI lays out after `makeNSView`),
+    /// so autoresizing masks would scale from nothing.
+    final class RenderContainerView: NSView {
+        override init(frame: NSRect) {
+            super.init(frame: frame)
+            wantsLayer = true
+            layer?.backgroundColor = CGColor(gray: 0, alpha: 1)
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) is not supported")
+        }
+
+        override func layout() {
+            super.layout()
+            fitSubviews()
+        }
+
+        override func setFrameSize(_ newSize: NSSize) {
+            super.setFrameSize(newSize)
+            fitSubviews()
+        }
+
+        private func fitSubviews() {
+            for subview in subviews where subview.frame != bounds {
+                subview.frame = bounds
+            }
+        }
+    }
 }
 
 /// Empty layer-hosting view above the picture, reserved for the danmaku
@@ -25,6 +84,10 @@ struct DanmakuOverlayHost: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSView, context: Context) {}
+
+    func sizeThatFits(_ proposal: ProposedViewSize, nsView: NSView, context: Context) -> CGSize? {
+        proposal.replacingUnspecifiedDimensions(by: .zero)
+    }
 }
 
 /// Transparent AppKit view that turns raw mouse events into player
@@ -49,6 +112,10 @@ struct PlayerInteractionView: NSViewRepresentable {
 
     func updateNSView(_ nsView: InteractionNSView, context: Context) {
         update(nsView)
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, nsView: InteractionNSView, context: Context) -> CGSize? {
+        proposal.replacingUnspecifiedDimensions(by: .zero)
     }
 
     private func update(_ view: InteractionNSView) {

@@ -79,8 +79,12 @@ struct MainShellView: View {
             if let destination = DevSnapshot.initialDestination { router.select(destination) }
             if let anime = DevSnapshot.initialAnime { router.openAnime(anime) }
             if let anime = DevSnapshot.initialPlayback {
-                playerCoordinator.play(PlaybackRequest(bangumiID: anime, title: "Snapshot"))
-                openWindow(id: "player")
+                router.openWatch(bangumiID: anime, episodeID: nil)
+                if ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_WINDOW"] == "player" {
+                    playerCoordinator.play(PlaybackRequest(bangumiID: anime, title: "Snapshot"))
+                    playerCoordinator.popOut()
+                    openWindow(id: "player")
+                }
             }
         }
         .onDisappear {
@@ -91,7 +95,7 @@ struct MainShellView: View {
 
     private func shell(_ session: ServerSession) -> some View {
         @Bindable var router = router
-        return NavigationSplitView {
+        return NavigationSplitView(columnVisibility: Binding(get: { router.immersive ? .detailOnly : .all }, set: { _ in })) {
             Sidebar(version: version)
         } detail: {
             NavigationStack(path: $router.path) {
@@ -144,6 +148,8 @@ struct MainShellView: View {
             DiscoverCategoryView(title: title, route: route)
         case .history:
             HistoryView()
+        case let .watch(bangumiID, episodeID):
+            WatchView(bangumiID: bangumiID, episodeID: episodeID)
         }
     }
 }

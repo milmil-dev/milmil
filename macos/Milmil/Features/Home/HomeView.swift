@@ -6,7 +6,6 @@ struct HomeView: View {
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
     @Environment(PlayerCoordinator.self) private var playerCoordinator
-    @Environment(\.openWindow) private var openWindow
     @State private var store: HomeStore?
     @ObserveInjection private var inject
 
@@ -47,7 +46,7 @@ struct HomeView: View {
 
     private func play(_ request: PlaybackRequest) {
         playerCoordinator.play(request)
-        openWindow(id: "player")
+        router.openWatch(bangumiID: request.bangumiID, episodeID: request.episodeID)
     }
 
     @ViewBuilder

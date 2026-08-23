@@ -7,11 +7,13 @@ import SwiftUI
 struct PlayerOSC: View {
     let controller: PlayerController
     let model: PlayerWindowModel
-    @State private var width: CGFloat = 1000
+    /// Width of the picture area, measured by the surface (not by the OSC,
+    /// whose own width is what we are trying to bound).
+    var availableWidth: CGFloat = 1000
     @State private var volumeExpanded = false
 
     private var state: PlayerState { controller.state }
-    private var compact: Bool { width < 760 }
+    private var compact: Bool { availableWidth < 820 }
 
     var body: some View {
         VStack(spacing: 8) {
@@ -28,7 +30,7 @@ struct PlayerOSC: View {
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08), lineWidth: 0.5))
         .padding(.horizontal, 20)
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+        .frame(maxWidth: .infinity)
         .tint(.white)
     }
 
@@ -78,8 +80,13 @@ struct PlayerOSC: View {
                 controller.setDanmakuEnabled(!controller.danmakuEnabled)
             }
             if compact { overflowMenu }
-            OSCButton(symbol: "sidebar.right", label: "側欄", active: model.inspectorShown) { model.inspectorShown.toggle() }
-            OSCButton(symbol: model.isMini ? "pip.exit" : "pip.enter", label: "迷你播放器", active: model.isMini) { model.toggleMini() }
+            if model.embedded {
+                OSCButton(symbol: "rectangle.expand.vertical", label: "劇院模式（T）") { model.perform(.theater) }
+                OSCButton(symbol: "macwindow.badge.plus", label: "獨立視窗") { model.toggleMini() }
+            } else {
+                OSCButton(symbol: "sidebar.right", label: "側欄", active: model.inspectorShown) { model.inspectorShown.toggle() }
+                OSCButton(symbol: model.isMini ? "pip.exit" : "pip.enter", label: "迷你播放器", active: model.isMini) { model.toggleMini() }
+            }
             OSCButton(
                 symbol: model.isFullscreen ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
                 label: "全螢幕"
@@ -105,77 +112,130 @@ struct PlayerOSC: View {
     }
 
     private var speedMenu: some View {
-        Menu {
+        OSCPopover(label: String(format: "%.2g×", state.speed), help: "播放速度", width: 40) {
             ForEach([0.5, 0.75, 1, 1.25, 1.5, 2], id: \.self) { speed in
-                Button { controller.setSpeed(speed) } label: {
-                    if state.speed == speed { Label(String(format: "%.2g×", speed), systemImage: "checkmark") } else { Text(String(format: "%.2g×", speed)) }
-                }
+                OSCPopoverRow(title: String(format: "%.2g×", speed), selected: state.speed == speed) { controller.setSpeed(speed) }
             }
-        } label: {
-            Text(String(format: "%.2g×", state.speed)).font(.system(size: 12, weight: .semibold)).monospacedDigit().frame(minWidth: 36)
         }
-        .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
-        .help("播放速度")
     }
 
     private var subtitleMenu: some View {
-        Menu {
-            Button { controller.selectTrack(.sub, id: nil) } label: {
-                if state.subtitleID == nil { Label("關閉", systemImage: "checkmark") } else { Text("關閉") }
-            }
+        OSCPopover(symbol: state.subtitleID == nil ? "captions.bubble" : "captions.bubble.fill", help: "字幕") {
+            OSCPopoverRow(title: "關閉", selected: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
             ForEach(state.subtitleTracks) { track in
-                Button { controller.selectTrack(.sub, id: track.id) } label: {
-                    if state.subtitleID == track.id { Label(track.displayName, systemImage: "checkmark") } else { Text(track.displayName) }
-                }
+                OSCPopoverRow(title: track.displayName, selected: state.subtitleID == track.id) { controller.selectTrack(.sub, id: track.id) }
             }
-            Divider()
-            Button("字幕延遲 −0.1s") { controller.adjustSubtitleDelay(by: -0.1) }
-            Button("字幕延遲 +0.1s") { controller.adjustSubtitleDelay(by: 0.1) }
-            Button("載入外部字幕…") { PlayerContextMenu.openSubtitlePanel(controller: controller) }
-        } label: {
-            Image(systemName: state.subtitleID == nil ? "captions.bubble" : "captions.bubble.fill").font(.system(size: 15))
+            Divider().padding(.vertical, 4)
+            OSCPopoverRow(title: "字幕延遲 −0.1s", symbol: "minus.circle") { controller.adjustSubtitleDelay(by: -0.1) }
+            OSCPopoverRow(title: "字幕延遲 +0.1s", symbol: "plus.circle") { controller.adjustSubtitleDelay(by: 0.1) }
+            OSCPopoverRow(title: "載入外部字幕…", symbol: "doc.badge.plus") { PlayerContextMenu.openSubtitlePanel(controller: controller) }
         }
-        .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
-        .help("字幕")
     }
 
     private var audioMenu: some View {
-        Menu {
+        OSCPopover(symbol: "waveform", help: "音軌") {
             ForEach(state.audioTracks) { track in
-                Button { controller.selectTrack(.audio, id: track.id) } label: {
-                    if state.audioID == track.id { Label(track.displayName, systemImage: "checkmark") } else { Text(track.displayName) }
-                }
+                OSCPopoverRow(title: track.displayName, selected: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
             }
-        } label: {
-            Image(systemName: "waveform").font(.system(size: 15))
         }
-        .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
-        .help("音軌")
         .disabled(state.audioTracks.count < 2)
     }
 
     private var overflowMenu: some View {
-        Menu {
-            Menu("速度") {
+        OSCPopover(symbol: "ellipsis", help: "更多") {
+            Text("速度").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.Text.tertiary).padding(.horizontal, 8)
+            HStack(spacing: 4) {
                 ForEach([0.5, 0.75, 1, 1.25, 1.5, 2], id: \.self) { speed in
                     Button(String(format: "%.2g×", speed)) { controller.setSpeed(speed) }
+                        .buttonStyle(.bordered).controlSize(.mini)
+                        .tint(state.speed == speed ? Theme.accent : .white)
                 }
             }
-            Menu("字幕") {
-                Button("關閉") { controller.selectTrack(.sub, id: nil) }
-                ForEach(state.subtitleTracks) { track in Button(track.displayName) { controller.selectTrack(.sub, id: track.id) } }
+            .padding(.horizontal, 8).padding(.bottom, 4)
+            Divider().padding(.vertical, 4)
+            OSCPopoverRow(title: "字幕：關閉", selected: state.subtitleID == nil) { controller.selectTrack(.sub, id: nil) }
+            ForEach(state.subtitleTracks) { track in
+                OSCPopoverRow(title: "字幕：\(track.displayName)", selected: state.subtitleID == track.id) { controller.selectTrack(.sub, id: track.id) }
             }
-            Menu("音軌") {
-                ForEach(state.audioTracks) { track in Button(track.displayName) { controller.selectTrack(.audio, id: track.id) } }
+            if state.audioTracks.count > 1 {
+                Divider().padding(.vertical, 4)
+                ForEach(state.audioTracks) { track in
+                    OSCPopoverRow(title: "音軌：\(track.displayName)", selected: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
+                }
             }
-            Divider()
-            Button("截圖") { controller.screenshot(withSubtitles: false) }
-            Button("技術資訊") { model.techInfoShown.toggle() }
-            Button("快捷鍵") { model.helpShown.toggle() }
-        } label: {
-            Image(systemName: "ellipsis").font(.system(size: 15))
+            Divider().padding(.vertical, 4)
+            OSCPopoverRow(title: "截圖", symbol: "camera") { controller.screenshot(withSubtitles: false) }
+            OSCPopoverRow(title: "技術資訊", symbol: "info.circle") { model.techInfoShown.toggle() }
+            OSCPopoverRow(title: "快捷鍵", symbol: "keyboard") { model.helpShown.toggle() }
         }
-        .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+    }
+}
+
+/// An OSC button that opens a SwiftUI popover. Unlike `Menu`, it has no
+/// AppKit popup button underneath, so its width never grows with the
+/// widest item title (which is what clipped the OSC inside the watch page).
+struct OSCPopover<Content: View>: View {
+    var symbol: String?
+    var label: String?
+    let help: String
+    var width: CGFloat = 30
+    @ViewBuilder var content: () -> Content
+    @State private var shown = false
+
+    var body: some View {
+        Button {
+            shown.toggle()
+        } label: {
+            Group {
+                if let symbol {
+                    Image(systemName: symbol).font(.system(size: 15, weight: .semibold))
+                } else {
+                    Text(label ?? "").font(.system(size: 12, weight: .semibold)).monospacedDigit()
+                }
+            }
+            .foregroundStyle(.white.opacity(0.9))
+            .frame(width: width, height: 30)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(help)
+        .accessibilityLabel(help)
+        .popover(isPresented: $shown, arrowEdge: .top) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 2) { content() }
+                    .padding(6)
+            }
+            .frame(minWidth: 180, maxWidth: 320)
+            .frame(maxHeight: 360)
+            .preferredColorScheme(.dark)
+        }
+    }
+}
+
+struct OSCPopoverRow: View {
+    let title: String
+    var symbol: String?
+    var selected = false
+    var action: () -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        Button {
+            action()
+            dismiss()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: selected ? "checkmark" : (symbol ?? ""))
+                    .font(.system(size: 11, weight: .bold))
+                    .frame(width: 14)
+                    .foregroundStyle(selected ? Theme.accent : .secondary)
+                Text(title).font(.system(size: 12)).lineLimit(1)
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 8).padding(.vertical, 5)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 

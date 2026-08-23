@@ -9,6 +9,8 @@ enum Route: Hashable {
     case anime(bangumiID: Int)
     case discoverCategory(title: String, query: BrowseRoute)
     case history
+    /// In-app watch page; `episodeID == nil` resumes the series.
+    case watch(bangumiID: Int, episodeID: String?)
 }
 
 enum BrowseRoute: Hashable {
@@ -23,6 +25,8 @@ final class Router {
     var destination: Destination = .home
     var path: [Route] = []
     var paletteShown = false
+    /// Player fullscreen inside the main window: hide sidebar + toolbar.
+    var immersive = false
 
     func push(_ route: Route) {
         path.append(route)
@@ -31,6 +35,13 @@ final class Router {
     func openAnime(_ bangumiID: Int) {
         guard bangumiID > 0 else { return }
         push(.anime(bangumiID: bangumiID))
+    }
+
+    /// Replace an existing watch route instead of stacking them.
+    func openWatch(bangumiID: Int, episodeID: String?) {
+        guard bangumiID > 0 else { return }
+        if case .watch = path.last { path.removeLast() }
+        push(.watch(bangumiID: bangumiID, episodeID: episodeID))
     }
 
     private static let log = Logger(subsystem: "dev.milmil.macos", category: "router")

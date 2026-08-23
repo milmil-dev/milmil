@@ -30,6 +30,7 @@ enum PlayerAction: String, CaseIterable {
     case nextEpisode = "ui:next-episode"
     case previousEpisode = "ui:previous-episode"
     case inspector = "ui:inspector"
+    case theater = "ui:theater"
     case danmakuToggle = "danmaku:toggle"
     case danmakuSettings = "danmaku:settings"
     case danmakuCompose = "danmaku:compose"
@@ -65,6 +66,7 @@ enum PlayerAction: String, CaseIterable {
         case .nextEpisode: "下一集"
         case .previousEpisode: "上一集"
         case .inspector: "側欄"
+        case .theater: "劇院模式"
         case .danmakuToggle: "彈幕開關"
         case .danmakuSettings: "彈幕設定"
         case .danmakuCompose: "發送彈幕"
@@ -80,7 +82,7 @@ enum PlayerAction: String, CaseIterable {
              .speedDown, .speedUp, .speedReset, .abLoop, .skipSegment: "播放"
         case .volumeUp, .volumeDown, .mute: "音量"
         case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext: "字幕 / 音訊"
-        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector: "介面"
+        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater: "介面"
         case .danmakuToggle, .danmakuSettings, .danmakuCompose: "彈幕"
         case .screenshot, .screenshotWithSubs: "擷取"
         }
@@ -198,6 +200,7 @@ struct PlayerKeymap {
         (.nextEpisode, KeyChord(key: "n")),
         (.previousEpisode, KeyChord(key: "n", shift: true)),
         (.inspector, KeyChord(key: "e")),
+        (.theater, KeyChord(key: "t")),
         (.danmakuToggle, KeyChord(key: "d")),
         (.danmakuSettings, KeyChord(key: "d", shift: true)),
         (.danmakuCompose, KeyChord(key: "Enter", command: true)),

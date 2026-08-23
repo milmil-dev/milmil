@@ -33,6 +33,15 @@ enum DevSnapshot {
         #endif
     }
 
+    /// `MILMIL_SNAPSHOT_CHROME=1` stops the player OSC from auto-hiding.
+    static var keepsPlayerChrome: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_CHROME"] == "1"
+        #else
+        false
+        #endif
+    }
+
     #if DEBUG
     static func runIfRequested() {
         let env = ProcessInfo.processInfo.environment
@@ -42,6 +51,12 @@ enum DevSnapshot {
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(delay))
             var windows = NSApp.windows.filter { $0.isVisible && $0.frame.width > 200 }
+            for window in NSApp.windows {
+                let id = window.identifier?.rawValue ?? "-"
+                let frame = window.frame
+                let line = "📸 window \(id) '\(window.title)' visible=\(window.isVisible) \(Int(frame.width))×\(Int(frame.height))\n"
+                FileHandle.standardError.write(Data(line.utf8))
+            }
             // MILMIL_SNAPSHOT_WINDOW=player picks the player scene instead of the biggest window.
             if let wanted = env["MILMIL_SNAPSHOT_WINDOW"], !wanted.isEmpty {
                 windows = windows.filter { $0.identifier?.rawValue == wanted }
@@ -59,6 +74,13 @@ enum DevSnapshot {
             // still exported; own windows need no Screen Recording access).
             // That path occasionally catches the window mid-animation, so keep
             // it opt-in.
+            // The window server hands back a low-res thumbnail for windows that
+            // are not frontmost; bring ours forward before a composite capture.
+            if env["MILMIL_SNAPSHOT_COMPOSITE"] == "1" {
+                NSApp.activate()
+                window.makeKeyAndOrderFront(nil)
+                try? await Task.sleep(for: .milliseconds(700))
+            }
             let rep: NSBitmapImageRep
             if env["MILMIL_SNAPSHOT_COMPOSITE"] == "1", let cgImage = Self.windowServerImage(of: window) {
                 rep = NSBitmapImageRep(cgImage: cgImage)

@@ -24,6 +24,26 @@ public final class MPVRenderView: NSView {
     override public var acceptsFirstResponder: Bool { false }
     override public var mouseDownCanMoveWindow: Bool { false }
 
+    /// Layer-hosting views do not get their root layer resized by AppKit in
+    /// every hierarchy (SwiftUI containers included) — pin it explicitly.
+    override public func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        syncLayerFrame()
+    }
+
+    override public func layout() {
+        super.layout()
+        syncLayerFrame()
+    }
+
+    private func syncLayerFrame() {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        if renderLayer.frame != bounds { renderLayer.frame = bounds }
+        CATransaction.commit()
+        renderLayer.setNeedsDisplay()
+    }
+
     override public func viewDidChangeBackingProperties() {
         super.viewDidChangeBackingProperties()
         if let scale = window?.backingScaleFactor {

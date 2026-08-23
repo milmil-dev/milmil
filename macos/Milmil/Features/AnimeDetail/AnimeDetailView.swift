@@ -7,7 +7,6 @@ struct AnimeDetailView: View {
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
     @Environment(\.openURL) private var openURL
-    @Environment(\.openWindow) private var openWindow
     @Environment(PlayerCoordinator.self) private var playerCoordinator
     let bangumiID: Int
 
@@ -260,7 +259,7 @@ struct AnimeDetailView: View {
     private func startPlayback(_ episode: PlayableEpisode?, _ store: AnimeDetailStore) {
         guard let episode, episode.hasFile, let detail = store.detail.value else { return }
         playerCoordinator.play(PlaybackRequest(bangumiID: bangumiID, episodeID: episode.episodeID, title: detail.title, coverImage: detail.coverImage))
-        openWindow(id: "player")
+        router.openWatch(bangumiID: bangumiID, episodeID: episode.episodeID)
     }
 
     // MARK: Side column

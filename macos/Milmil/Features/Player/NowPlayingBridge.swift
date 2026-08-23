@@ -2,6 +2,12 @@ import AppKit
 import MediaPlayer
 
 /// Now Playing (Control Center, media keys, AirPods) for the single player.
+///
+/// MediaPlayer invokes command handlers and the artwork request block on
+/// its own queue, so every closure handed to it is `@Sendable` and hops
+/// back to the main actor explicitly — the app's default MainActor
+/// isolation would otherwise trap in `dispatch_assert_queue`.
+@MainActor
 final class NowPlayingBridge {
     static let shared = NowPlayingBridge()
 
@@ -15,18 +21,28 @@ final class NowPlayingBridge {
         guard !registered else { return }
         registered = true
         let center = MPRemoteCommandCenter.shared()
-        center.playCommand.addTarget { [weak self] _ in self?.withController { $0.togglePause() } ?? .noSuchContent }
-        center.pauseCommand.addTarget { [weak self] _ in self?.withController { $0.togglePause() } ?? .noSuchContent }
-        center.togglePlayPauseCommand.addTarget { [weak self] _ in self?.withController { $0.togglePause() } ?? .noSuchContent }
-        center.nextTrackCommand.addTarget { [weak self] _ in self?.withController { $0.playNext() } ?? .noSuchContent }
-        center.previousTrackCommand.addTarget { [weak self] _ in self?.withController { $0.playPrevious() } ?? .noSuchContent }
+        register(center.playCommand) { $0.togglePause() }
+        register(center.pauseCommand) { $0.togglePause() }
+        register(center.togglePlayPauseCommand) { $0.togglePause() }
+        register(center.nextTrackCommand) { $0.playNext() }
+        register(center.previousTrackCommand) { $0.playPrevious() }
         center.skipForwardCommand.preferredIntervals = [10]
-        center.skipForwardCommand.addTarget { [weak self] _ in self?.withController { $0.seek(by: 10) } ?? .noSuchContent }
+        register(center.skipForwardCommand) { $0.seek(by: 10) }
         center.skipBackwardCommand.preferredIntervals = [10]
-        center.skipBackwardCommand.addTarget { [weak self] _ in self?.withController { $0.seek(by: -10) } ?? .noSuchContent }
-        center.changePlaybackPositionCommand.addTarget { [weak self] event in
+        register(center.skipBackwardCommand) { $0.seek(by: -10) }
+        center.changePlaybackPositionCommand.addTarget { @Sendable event in
             guard let position = (event as? MPChangePlaybackPositionCommandEvent)?.positionTime else { return .commandFailed }
-            return self?.withController { $0.seek(to: position) } ?? .noSuchContent
+            Task { @MainActor in NowPlayingBridge.shared.controller?.seek(to: position) }
+            return .success
+        }
+    }
+
+    private func register(_ command: MPRemoteCommand, _ body: @escaping @MainActor (PlayerController) -> Void) {
+        command.addTarget { @Sendable _ in
+            Task { @MainActor in
+                if let controller = NowPlayingBridge.shared.controller { body(controller) }
+            }
+            return .success
         }
     }
 
@@ -61,14 +77,11 @@ final class NowPlayingBridge {
 
     private func loadArtwork(_ url: URL) async {
         guard let cgImage = await ImageCache.shared.image(for: url, maxPixel: 600) else { return }
-        let image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
-        artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
+        let size = NSSize(width: cgImage.width, height: cgImage.height)
+        // NSImage is not Sendable; the request block only reads it, and the
+        // image is never mutated after creation.
+        nonisolated(unsafe) let image = NSImage(cgImage: cgImage, size: size)
+        artwork = MPMediaItemArtwork(boundsSize: size) { @Sendable _ in image }
         if let controller { update(controller) }
-    }
-
-    private func withController(_ body: (PlayerController) -> Void) -> MPRemoteCommandHandlerStatus {
-        guard let controller else { return .noSuchContent }
-        body(controller)
-        return .success
     }
 }

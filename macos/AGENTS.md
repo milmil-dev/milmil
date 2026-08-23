@@ -67,9 +67,13 @@ on screen before chasing it). Headless logged-in runs: seed the profile in
 `defaults` and the token in the Keychain (see scratch `dev_login.py`).
 Navigation hooks: `MILMIL_SNAPSHOT_DESTINATION=<sidebar tab>`,
 `MILMIL_SNAPSHOT_ANIME=<bangumiID>` (push the detail page),
-`MILMIL_SNAPSHOT_PLAY=<bangumiID>` + `MILMIL_SNAPSHOT_WINDOW=player` (open the
-player on that series; use `MILMIL_SNAPSHOT_COMPOSITE=1`, the flattened render
-cannot see the OpenGL picture).
+`MILMIL_SNAPSHOT_PLAY=<bangumiID>` (open the in-app watch page on that series;
+add `MILMIL_SNAPSHOT_WINDOW=player` for the pop-out window) and
+`MILMIL_SNAPSHOT_CHROME=1` to stop the OSC auto-hiding. Use
+`MILMIL_SNAPSHOT_COMPOSITE=1` for anything with video — the flattened render
+cannot see the OpenGL picture — and launch through `open -n`, not the binary:
+the window server returns a 198 px thumbnail for windows of a process that
+LaunchServices did not activate.
 
 A library with no files can be seeded with an ffmpeg test clip — `testsrc2`
 video + `sine` audio + an SRT track muxed to `.../<Series name>/[Test] <Series

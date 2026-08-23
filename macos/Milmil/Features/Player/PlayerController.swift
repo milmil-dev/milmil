@@ -18,6 +18,9 @@ final class PlayerController {
     let state = PlayerState()
     let player: MPVPlayer?
     private(set) var keymap: PlayerKeymap
+    /// The one render view; `PlayerRenderHost` moves it between the watch
+    /// page and the pop-out window (libmpv allows one render context).
+    @ObservationIgnored private(set) lazy var renderView: MPVRenderView? = player.map { MPVRenderView(player: $0) }
 
     // Current series / episode
     private(set) var request: PlaybackRequest?
@@ -76,6 +79,33 @@ final class PlayerController {
         state.status = .loading("讀取集數…")
         state.mediaTitle = request.title
         Task { await loadSeries(request) }
+    }
+
+    /// Browse screens may only know the id; fill the title/cover in later.
+    func updateTitle(_ title: String, cover: URL?) {
+        guard let request, request.title != title || request.coverImage != cover else { return }
+        self.request = PlaybackRequest(bangumiID: request.bangumiID, episodeID: request.episodeID, title: title, coverImage: cover)
+        if let episode { state.mediaTitle = "\(title) 第 \(episode.number) 集" }
+        NowPlayingBridge.shared.update(self)
+    }
+
+    var isInCollection: Bool {
+        guard let status = playable?.watchStatus else { return false }
+        return status != .none
+    }
+
+    func toggleCollection() async {
+        guard let request else { return }
+        let next: WatchStatus = isInCollection ? .none : .watching
+        try? await session.client.setWatchStatus(bangumiID: request.bangumiID, next)
+        playable = try? await session.client.playableEpisodes(bangumiID: request.bangumiID)
+    }
+
+    func setScore(_ score: Int?) async {
+        guard let request else { return }
+        if let score, !(1...10).contains(score) { return }
+        try? await session.client.setScore(bangumiID: request.bangumiID, score)
+        playable = try? await session.client.playableEpisodes(bangumiID: request.bangumiID)
     }
 
     private func loadSeries(_ request: PlaybackRequest) async {
@@ -516,7 +546,7 @@ final class PlayerController {
         case .screenshot: screenshot(withSubtitles: false)
         case .screenshotWithSubs: screenshot(withSubtitles: true)
         case .danmakuToggle: setDanmakuEnabled(!danmakuEnabled)
-        case .fullscreen, .miniPlayer, .help, .techInfo, .inspector, .danmakuSettings, .danmakuCompose:
+        case .fullscreen, .miniPlayer, .help, .techInfo, .inspector, .danmakuSettings, .danmakuCompose, .theater:
             window?.perform(action)
         default: return false
         }

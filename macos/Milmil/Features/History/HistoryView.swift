@@ -82,7 +82,6 @@ struct HistoryView: View {
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
     @Environment(PlayerCoordinator.self) private var playerCoordinator
-    @Environment(\.openWindow) private var openWindow
     @State private var store: HistoryStore?
     @State private var confirmClear = false
     @ObserveInjection private var inject
@@ -147,7 +146,7 @@ struct HistoryView: View {
                                         playerCoordinator.play(PlaybackRequest(
                                             bangumiID: id, episodeID: entry.episodeID, title: entry.displayTitle, coverImage: entry.animeCoverImage
                                         ))
-                                        openWindow(id: "player")
+                                        router.openWatch(bangumiID: id, episodeID: entry.episodeID)
                                     }
                                 } open: {
                                     if let id = entry.animeBangumiID { router.openAnime(id) }

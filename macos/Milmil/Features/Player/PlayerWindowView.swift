@@ -6,12 +6,14 @@ import SwiftUI
 /// Root of the `player` window scene.
 struct PlayerWindowView: View {
     @Environment(PlayerCoordinator.self) private var coordinator
+    @State private var model = PlayerWindowModel()
 
     var body: some View {
         Group {
-            if let controller = coordinator.controller {
-                PlayerSurface(controller: controller)
+            if let controller = coordinator.controller, coordinator.presentation == .window {
+                PlayerSurface(controller: controller, model: model, embedded: false)
                     .id(ObjectIdentifier(controller))
+                    .onDisappear { coordinator.windowDidClose() }
             } else {
                 VStack(spacing: 10) {
                     Image(systemName: "play.rectangle").font(.system(size: 40)).foregroundStyle(Theme.Text.tertiary)
@@ -25,55 +27,74 @@ struct PlayerWindowView: View {
     }
 }
 
-/// Picture + every overlay, for one controller.
+/// Picture + every overlay, for one controller. Used by both the in-app
+/// watch page (`embedded`) and the pop-out window.
 struct PlayerSurface: View {
     let controller: PlayerController
-    @State private var model = PlayerWindowModel()
-    @Environment(\.openWindow) private var openWindow
+    let model: PlayerWindowModel
+    var embedded = false
+    var embeddedHandler: ((PlayerWindowModel.EmbeddedAction) -> Void)?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var surfaceWidth: CGFloat = 1000
     @ObserveInjection private var inject
 
     private var state: PlayerState { controller.state }
     private var chromeVisible: Bool { model.controlsVisible || state.paused || !state.status.isActive }
 
     var body: some View {
-        ZStack {
-            if let player = controller.player {
-                MPVRenderRepresentable(player: player)
-            } else {
-                Color.black
+        // `.inspector` is a window-level split container: inside the watch
+        // page it rewrites the size proposal, so only the pop-out window gets it.
+        if embedded {
+            surface
+        } else {
+            surface
+                .inspector(isPresented: Binding(get: { model.inspectorShown }, set: { model.inspectorShown = $0 })) {
+                    PlayerInspector(controller: controller)
+                        .inspectorColumnWidth(min: 280, ideal: 320, max: 420)
+                }
+        }
+    }
+
+    /// The picture is the only view that decides the surface's size; every
+    /// piece of chrome is an overlay, so a wide OSC can never inflate the
+    /// surface past the frame the watch page gives it.
+    private var surface: some View {
+        picture
+            .overlay { DanmakuOverlayHost().allowsHitTesting(false) }
+            .overlay {
+                PlayerInteractionView(
+                    onMouseMoved: { model.pokeControls() },
+                    onMouseExited: { model.hideControlsNow() },
+                    onClick: { controller.togglePause() },
+                    onDoubleClick: { model.toggleFullscreen() },
+                    onScrollSeek: { controller.seek(by: $0) },
+                    onScrollVolume: { controller.adjustVolume(by: $0) },
+                    onContextMenu: { view, event in PlayerContextMenu.show(controller: controller, model: model, in: view, with: event) },
+                    onDropFiles: { urls in urls.forEach { controller.addExternalSubtitle(fileURL: $0) } }
+                )
             }
-            DanmakuOverlayHost()
-                .allowsHitTesting(false)
-            PlayerInteractionView(
-                onMouseMoved: { model.pokeControls() },
-                onMouseExited: { model.hideControlsNow() },
-                onClick: { controller.togglePause() },
-                onDoubleClick: { model.toggleFullscreen() },
-                onScrollSeek: { controller.seek(by: $0) },
-                onScrollVolume: { controller.adjustVolume(by: $0) },
-                onContextMenu: { view, event in PlayerContextMenu.show(controller: controller, model: model, in: view, with: event) },
-                onDropFiles: { urls in urls.forEach { controller.addExternalSubtitle(fileURL: $0) } }
-            )
-            gradients
-            PlayerStatusLayer(controller: controller)
-            overlays
+            .overlay { gradients }
+            .overlay { PlayerStatusLayer(controller: controller) }
+            .overlay { overlays }
+            .background(Color.black)
+            .frame(minWidth: embedded ? 0 : 480, minHeight: embedded ? 0 : 270)
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { surfaceWidth = $0 }
+            .background(WindowAccessor { window in model.attach(window: window, controller: controller, embedded: embedded) })
+            .onAppear { model.embeddedHandler = embeddedHandler }
+            .onChange(of: state.mediaTitle) { _, title in model.updateTitle(title) }
+            .onChange(of: state.videoSize) { _, size in model.applyVideoSize(size) }
+            .onChange(of: state.paused) { _, paused in if paused { model.pokeControls() } }
+            .onDisappear { model.detach() }
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: chromeVisible)
+    }
+
+    @ViewBuilder
+    private var picture: some View {
+        if let renderView = controller.renderView {
+            PlayerRenderHost(renderView: renderView)
+        } else {
+            Color.black
         }
-        .background(Color.black)
-        .frame(minWidth: 480, minHeight: 270)
-        .inspector(isPresented: Binding(get: { model.inspectorShown }, set: { model.inspectorShown = $0 })) {
-            PlayerInspector(controller: controller)
-                .inspectorColumnWidth(min: 280, ideal: 320, max: 420)
-        }
-        .background(WindowAccessor { window in model.attach(window: window, controller: controller) })
-        .onChange(of: state.mediaTitle) { _, title in model.updateTitle(title) }
-        .onChange(of: state.videoSize) { _, size in model.applyVideoSize(size) }
-        .onChange(of: state.paused) { _, paused in if paused { model.pokeControls() } }
-        .onDisappear {
-            model.detach()
-            controller.windowClosed()
-        }
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: chromeVisible)
     }
 
     private var gradients: some View {
@@ -108,7 +129,7 @@ struct PlayerSurface: View {
 
     private var topBar: some View {
         HStack(spacing: 10) {
-            Spacer().frame(width: model.isFullscreen ? 0 : 72) // traffic lights
+            Spacer().frame(width: model.isFullscreen || embedded ? 0 : 72) // traffic lights
             VStack(alignment: .leading, spacing: 2) {
                 Text(controller.request?.title ?? "").font(.system(size: 13, weight: .semibold)).lineLimit(1)
                 if let episode = controller.episode {
@@ -154,7 +175,7 @@ struct PlayerSurface: View {
                 }
             }
             .padding(.horizontal, 20)
-            PlayerOSC(controller: controller, model: model)
+            PlayerOSC(controller: controller, model: model, availableWidth: surfaceWidth)
                 .opacity(chromeVisible ? 1 : 0)
                 .allowsHitTesting(chromeVisible)
                 .onHover { model.hoveringControls = $0 }
