@@ -44,51 +44,126 @@ enum Destination: String, CaseIterable, Identifiable {
     ]
 }
 
-/// Phase 0 shell: the split view with the real sidebar and a placeholder
-/// detail that proves the session is live. Feature screens land here in Phase 1.
+/// The logged-in window: sidebar + a NavigationStack per tab over the
+/// shared backdrop, with the ⌘K palette layered on top.
 struct MainShellView: View {
-    @Environment(SessionStore.self) private var session
-    @ObserveInjection private var inject
+    @Environment(SessionStore.self) private var sessionStore
     let profile: ServerProfile
     let user: User
     let version: String
-    @State private var selection: Destination? = .home
+
+    @State private var session: ServerSession?
+    @State private var router = Router()
+    @State private var backdrop = BackdropStore()
+    @ObserveInjection private var inject
 
     var body: some View {
-        NavigationSplitView {
-            List(selection: $selection) {
-                ForEach(Destination.sections, id: \.title) { section in
-                    Section(section.title) {
-                        ForEach(section.items) { item in
-                            Label(item.title, systemImage: item.symbol)
-                                .tag(item)
-                        }
+        Group {
+            if let session {
+                shell(session)
+                    .environment(session)
+                    .environment(router)
+                    .environment(backdrop)
+            } else {
+                Color.clear
+            }
+        }
+        .task {
+            guard session == nil, let client = sessionStore.client else { return }
+            let session = ServerSession(profile: profile, user: user, client: client)
+            self.session = session
+            session.start()
+        }
+        .onDisappear { session?.stop() }
+    }
+
+    private func shell(_ session: ServerSession) -> some View {
+        @Bindable var router = router
+        return NavigationSplitView {
+            Sidebar(version: version)
+        } detail: {
+            NavigationStack(path: $router.path) {
+                root(for: router.destination)
+                    .navigationDestination(for: Route.self) { route in
+                        destination(for: route)
+                    }
+            }
+            .background(BackdropLayer())
+        }
+        .navigationSplitViewStyle(.balanced)
+        .toolbar { ShellToolbar() }
+        .overlay {
+            if router.paletteShown {
+                CommandPaletteOverlay()
+            }
+        }
+        .background(Theme.background)
+        .tint(Theme.accent)
+        .onKeyPress(.escape) {
+            guard router.paletteShown else { return .ignored }
+            router.paletteShown = false
+            return .handled
+        }
+    }
+
+    @ViewBuilder
+    private func root(for destination: Destination) -> some View {
+        switch destination {
+        case .home: HomeView()
+        case .schedule: PlaceholderPage(destination: .schedule)
+        case .discover: PlaceholderPage(destination: .discover)
+        case .search: PlaceholderPage(destination: .search)
+        case .collection: PlaceholderPage(destination: .collection)
+        case .history: PlaceholderPage(destination: .history)
+        case .libraries: PlaceholderPage(destination: .libraries)
+        case .downloads: PlaceholderPage(destination: .downloads)
+        case .notifications: PlaceholderPage(destination: .notifications)
+        }
+    }
+
+    @ViewBuilder
+    private func destination(for route: Route) -> some View {
+        switch route {
+        case let .anime(bangumiID):
+            PlaceholderRoute(title: "作品 \(bangumiID)")
+        case let .discoverCategory(title, _):
+            PlaceholderRoute(title: title)
+        case .history:
+            PlaceholderPage(destination: .history)
+        }
+    }
+}
+
+private struct Sidebar: View {
+    @Environment(Router.self) private var router
+    @Environment(ServerSession.self) private var session
+    @Environment(SessionStore.self) private var sessionStore
+    let version: String
+
+    var body: some View {
+        @Bindable var router = router
+        List(selection: Binding<Destination?>(get: { router.destination }, set: { if let value = $0, value != router.destination { router.select(value) } })) {
+            ForEach(Destination.sections, id: \.title) { section in
+                Section(section.title) {
+                    ForEach(section.items) { item in
+                        Label(item.title, systemImage: item.symbol)
+                            .badge(item == .notifications ? session.unreadNotifications : 0)
+                            .tag(item)
                     }
                 }
             }
-            .listStyle(.sidebar)
-            .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 260)
-            .safeAreaInset(edge: .bottom) {
-                SidebarAccountFooter(profile: profile, user: user, version: version)
-            }
-        } detail: {
-            PlaceholderDetail(destination: selection ?? .home, profile: profile, user: user, version: version)
         }
-        .navigationTitle(selection?.title ?? "milmil")
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button("上一頁", systemImage: "chevron.left") {}
-                    .disabled(true)
-            }
+        .listStyle(.sidebar)
+        .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 260)
+        .safeAreaInset(edge: .bottom) {
+            SidebarAccountFooter(version: version)
         }
-        .tint(Theme.accent)
     }
 }
 
 private struct SidebarAccountFooter: View {
-    @Environment(SessionStore.self) private var session
-    let profile: ServerProfile
-    let user: User
+    @Environment(ServerSession.self) private var session
+    @Environment(SessionStore.self) private var sessionStore
     let version: String
 
     var body: some View {
@@ -98,13 +173,13 @@ private struct SidebarAccountFooter: View {
                 Circle()
                     .fill(LinearGradient(colors: [Color(hex: 0x6D28D9), Theme.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
                     .frame(width: 26, height: 26)
-                    .overlay(Text(String(user.username.prefix(1)).uppercased()).font(.system(size: 11, weight: .bold)).foregroundStyle(.white))
+                    .overlay(Text(String(session.user.username.prefix(1)).uppercased()).font(.system(size: 11, weight: .bold)).foregroundStyle(.white))
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(user.username)
+                    Text(session.user.username)
                         .font(.system(size: 12, weight: .semibold))
                     HStack(spacing: 4) {
-                        Circle().fill(.green).frame(width: 6, height: 6)
-                        Text("\(profile.name) · v\(version)")
+                        Circle().fill(session.isRealtimeConnected ? .green : .orange).frame(width: 6, height: 6)
+                        Text("\(session.profile.name) · v\(version)")
                     }
                     .font(.system(size: 10))
                     .foregroundStyle(Theme.Text.tertiary)
@@ -112,16 +187,19 @@ private struct SidebarAccountFooter: View {
                 }
                 Spacer()
                 Menu {
+                    SettingsLink { Label("設定…", systemImage: "gear") }
+                    Divider()
                     Button("登出", systemImage: "rectangle.portrait.and.arrow.right") {
-                        Task { await session.logout() }
+                        Task { await sessionStore.logout() }
                     }
-                    Button("切換伺服器", systemImage: "server.rack") { session.switchToNoServer() }
+                    Button("切換伺服器", systemImage: "server.rack") { sessionStore.switchToNoServer() }
                 } label: {
                     Image(systemName: "ellipsis")
                 }
                 .menuStyle(.borderlessButton)
                 .menuIndicator(.hidden)
                 .frame(width: 24)
+                .accessibilityLabel("帳號選單")
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
@@ -130,28 +208,84 @@ private struct SidebarAccountFooter: View {
     }
 }
 
-private struct PlaceholderDetail: View {
+/// Back + ⌘K search. Notifications live in the sidebar (badged), not here.
+private struct ShellToolbar: ToolbarContent {
+    @Environment(Router.self) private var router
+
+    var body: some ToolbarContent {
+        ToolbarItem(placement: .navigation) {
+            Button("上一頁", systemImage: "chevron.left") { _ = router.path.popLast() }
+                .disabled(router.path.isEmpty)
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button {
+                router.paletteShown.toggle()
+            } label: {
+                Label("搜尋", systemImage: "magnifyingglass")
+                    .labelStyle(.titleAndIcon)
+                    .frame(minWidth: 160, alignment: .leading)
+                    .foregroundStyle(Theme.Text.tertiary)
+            }
+            .keyboardShortcut("k", modifiers: .command)
+            .help("搜尋（⌘K）")
+        }
+    }
+}
+
+/// Until the palette lands (Commit D), ⌘K opens the search tab.
+private struct CommandPaletteOverlay: View {
+    @Environment(Router.self) private var router
+
+    var body: some View {
+        Color.black.opacity(0.35)
+            .ignoresSafeArea()
+            .onTapGesture { router.paletteShown = false }
+            .overlay(alignment: .top) {
+                VStack(spacing: 8) {
+                    Text("⌘K 搜尋面板在下一批實作")
+                        .font(.system(size: 13, weight: .semibold))
+                    Button("先到搜尋頁") {
+                        router.paletteShown = false
+                        router.select(.search)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding(20)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+                .padding(.top, 80)
+            }
+    }
+}
+
+struct PlaceholderPage: View {
     let destination: Destination
-    let profile: ServerProfile
-    let user: User
-    let version: String
 
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: destination.symbol)
-                .font(.system(size: 36, weight: .regular))
+                .font(.system(size: 36))
                 .foregroundStyle(Theme.accent)
             Text(destination.title)
                 .font(.system(size: 20, weight: .bold))
-            Text("已連線 · \(profile.name) · v\(version) · \(user.username)")
-                .font(.system(size: 13))
-                .foregroundStyle(Theme.Text.secondary)
-            Text("此畫面在 Phase 1 實作。")
+            Text("此畫面在 Phase 1 的下一批實作。")
                 .font(.system(size: 12))
                 .foregroundStyle(Theme.Text.tertiary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.background)
+        .navigationTitle(destination.title)
+    }
+}
+
+struct PlaceholderRoute: View {
+    let title: String
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Text(title).font(.system(size: 20, weight: .bold))
+            Text("此畫面在 Phase 1 的下一批實作。").font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationTitle(title)
     }
 }
 

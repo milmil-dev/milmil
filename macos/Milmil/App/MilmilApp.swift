@@ -17,6 +17,9 @@ struct MilmilApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
         .defaultSize(width: 1280, height: 800)
+        // Navigation state is ours (Router); AppKit restoring NSTableView
+        // selection would re-select a stale sidebar row on launch.
+        .restorationBehavior(.disabled)
         .commands {
             CommandGroup(replacing: .newItem) {}
         }

@@ -21,13 +21,15 @@ enum DevSnapshot {
                 NSApp.terminate(nil)
                 return
             }
-            // Prefer a window-server capture (keeps 3D transforms, materials,
-            // blurs). CGWindowListCreateImage is gone from the macOS 27 SDK but
-            // still exported at runtime, and an app may capture its own windows
-            // without Screen Recording access. Fall back to a flattened
-            // `cacheDisplay` render if the symbol is missing.
+            // Default: a flattened `cacheDisplay` render — exact layout, text
+            // and images, but no 3D transforms / materials / blurs.
+            // MILMIL_SNAPSHOT_COMPOSITE=1 captures through the window server
+            // instead (CGWindowListCreateImage is gone from the macOS 27 SDK but
+            // still exported; own windows need no Screen Recording access).
+            // That path occasionally catches the window mid-animation, so keep
+            // it opt-in.
             let rep: NSBitmapImageRep
-            if let cgImage = Self.windowServerImage(of: window) {
+            if env["MILMIL_SNAPSHOT_COMPOSITE"] == "1", let cgImage = Self.windowServerImage(of: window) {
                 rep = NSBitmapImageRep(cgImage: cgImage)
             } else {
                 let bounds = view.bounds
@@ -37,7 +39,6 @@ enum DevSnapshot {
                 }
                 view.cacheDisplay(in: bounds, to: cached)
                 rep = cached
-                FileHandle.standardError.write(Data("📸 snapshot: flattened render (no window-server capture)\n".utf8))
             }
             if let png = rep.representation(using: .png, properties: [:]) {
                 do {

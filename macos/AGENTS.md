@@ -57,10 +57,13 @@ prompt, which an ad-hoc-signed build would otherwise hit on every rebuild.
 ### Seeing the UI without screen permissions
 
 `MILMIL_SNAPSHOT=/tmp/x.png MILMIL_SNAPSHOT_DELAY=8` (Debug only; see
-`App/DevSnapshot.swift`) makes the app capture its key window through the
-window server and quit. Launch via `open -n --env …` so TCC/networking behave
-as a normal app launch. Use it after every visual change; `cacheDisplay`-style
-renders hide 3D transforms and materials.
+`App/DevSnapshot.swift`) makes the app render its key window to a PNG and
+quit. Launch via `open -n --env …` so TCC/networking behave as a normal app
+launch. The default render is flattened (no materials / 3D);
+`MILMIL_SNAPSHOT_COMPOSITE=1` captures through the window server instead but
+can catch the window mid-animation (a skewed capture is an artifact — confirm
+on screen before chasing it). Headless logged-in runs: seed the profile in
+`defaults` and the token in the Keychain (see scratch `dev_login.py`).
 
 ## Core Rules
 

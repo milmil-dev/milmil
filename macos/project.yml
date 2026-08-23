@@ -83,10 +83,11 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: dev.milmil.macos
             CFBundleURLSchemes: [milmil]
-        # Self-hosted servers are commonly plain http on the LAN.
+        # Self-hosted servers are commonly plain http on the LAN, and Bangumi
+        # covers are http://lain.bgm.tv. Only this key: adding
+        # NSAllowsLocalNetworking alongside makes ATS ignore it (Apple docs).
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
-          NSAllowsLocalNetworking: true
         # macOS 15+ prompts for local-network access the first time we reach a LAN server.
         NSLocalNetworkUsageDescription: milmil 需要連線到你區域網路內的 milmil 伺服器。
 

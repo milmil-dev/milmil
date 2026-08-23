@@ -70,7 +70,6 @@ struct AppMark: View {
 /// (or when there is no server yet). The only motion is a one-off fade-in.
 struct PosterWall: View {
     @Environment(SessionStore.self) private var session
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObserveInjection private var inject
 
     private static let columns = 14
@@ -78,29 +77,10 @@ struct PosterWall: View {
     private static let fallbackNames = ["尖帽子的魔法工房", "黄泉使者", "葬送的芙莉莲", "药屋少女的呢喃", "迷宫饭", "夏日重现", "异兽魔都", "左撇子艾伦"]
 
     var body: some View {
-        let covers = session.trendingCovers
-        GeometryReader { proxy in
-            let columns = Array(repeating: GridItem(.flexible(), spacing: 5), count: Self.columns)
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(0..<Self.slots, id: \.self) { index in
-                    cell(index: index, covers: covers)
-                        .aspectRatio(2 / 3, contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 3))
-                }
-            }
-            .frame(width: proxy.size.width * 1.8)
-            // Isolate the grid in its own layer before transforming it, so the
-            // perspective never leaks onto siblings (the login card).
-            .compositingGroup()
-            .rotation3DEffect(.degrees(-22), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
-            .rotationEffect(.degrees(2))
-            .offset(x: -proxy.size.width * 0.4, y: -proxy.size.height * 0.2)
-            .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
-            .clipped()
-        }
-        .compositingGroup()
+        // AppKit layer tree: the perspective lives on that view's own layer.
+        // (SwiftUI's rotation3DEffect leaked onto the whole window on macOS.)
+        PosterWallLayerView(covers: session.trendingCovers, fallbackSeeds: Self.fallbackNames, columns: Self.columns, slots: Self.slots)
         .allowsHitTesting(false)
-        .animation(reduceMotion ? nil : .easeOut(duration: 1.2), value: covers)
         .overlay(Color.black.opacity(0.55))
         .overlay(
             RadialGradient(
@@ -121,18 +101,6 @@ struct PosterWall: View {
         )
         .ignoresSafeArea()
         .accessibilityHidden(true)
-    }
-
-    @ViewBuilder
-    private func cell(index: Int, covers: [URL]) -> some View {
-        let fallback = Theme.animeGradient(Self.fallbackNames[index % Self.fallbackNames.count] + String(index))
-        if covers.isEmpty {
-            Rectangle().fill(fallback)
-        } else {
-            RemoteImage(url: covers[index % covers.count], maxPixel: 240) {
-                Rectangle().fill(fallback)
-            }
-        }
     }
 }
 
