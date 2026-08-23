@@ -49,6 +49,8 @@ targets:
     dependencies:
       - package: MilmilKit
         product: MilmilAPI
+      - package: MilmilKit
+        product: MilmilRealtime
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.milmil.macos
@@ -100,5 +102,6 @@ schemes:
       gatherCoverageData: true
       targets:
         - package: MilmilKit/MilmilAPITests
+        - package: MilmilKit/MilmilRealtimeTests
     archive:
       config: Release
