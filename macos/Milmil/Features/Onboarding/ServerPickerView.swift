@@ -24,9 +24,11 @@ struct ServerPickerView: View {
             }
 
             FormField(label: "伺服器網址") {
-                TextField("https://milmil.home.arpa", text: $urlText)
+                // No `.textContentType(.URL)` and no scheme in the placeholder:
+                // AppKit would otherwise paint the placeholder as a blue link.
+                TextField("192.168.1.10:8080 或 milmil.home.arpa", text: $urlText)
                     .textFieldStyle(.roundedBorder)
-                    .textContentType(.URL)
+                    .autocorrectionDisabled()
                     .onSubmit(add)
             }
             FormField(label: "名稱（選填）") {
