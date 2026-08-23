@@ -11,6 +11,7 @@ independently built workspaces.
 | `api/` | Go backend — HTTP API, scanner, matcher, downloader, Jellyfin-compatible layer | Go 1.26.1 |
 | `web/` | React SPA served as a static bundle by nginx | Bun 1.4.0 |
 | `docs-site/` | Public documentation site (Next.js + Fumadocs) | Bun 1.4.0 |
+| `macos/` | Native macOS client — SwiftUI, libmpv player, danmaku | Xcode 26+, XcodeGen, SwiftLint |
 
 Each workspace has its own `AGENTS.md`; read the one for the code you are
 touching. Tool versions are pinned in `mise.toml` and mirrored into
@@ -45,6 +46,9 @@ bunx playwright test     # e2e; specs stub the API with page.route
 
 # docs-site/
 bun run lint && bun run types:check && bun run build && bun run test:e2e
+
+# macos/  (see macos/AGENTS.md)
+make macos-lint && make macos-test && make macos-build
 ```
 
 Install the git hooks once with `cd web && bun run lefthook`; they run the

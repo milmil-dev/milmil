@@ -1,6 +1,7 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
-.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill
+.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill \
+	macos-gen macos-build macos-test macos-lint
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -48,3 +49,20 @@ kill:
 setup:
 	mise install
 	go install github.com/air-verse/air@latest
+
+# --- macOS client (macos/) ---------------------------------------------------
+# Requires Xcode 26+; xcodegen and swiftlint come from `mise install`.
+
+macos-gen:
+	cd macos && xcodegen generate --quiet
+
+macos-test:
+	swift test --package-path macos/Packages/MilmilKit
+
+macos-lint:
+	cd macos && swiftlint lint --strict --quiet
+
+macos-build: macos-gen
+	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
+		-destination 'platform=macOS,arch=arm64' -configuration Debug \
+		CODE_SIGNING_ALLOWED=NO -quiet build

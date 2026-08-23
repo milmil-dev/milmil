@@ -1,0 +1,133 @@
+import MilmilAPI
+import SwiftUI
+
+/// First screen: pick a saved server or add one by URL.
+struct ServerPickerView: View {
+    @Environment(SessionStore.self) private var session
+    @State private var urlText = ""
+    @State private var nameText = ""
+    @State private var validationMessage: String?
+
+    var body: some View {
+        OnboardingCard(title: "milmil", subtitle: "選擇或新增一個 milmil 伺服器") {
+            if !session.profiles.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("已儲存的伺服器")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Theme.Text.secondary)
+                    ForEach(session.profiles) { profile in
+                        SavedServerRow(profile: profile)
+                    }
+                }
+                Divider()
+            }
+
+            FormField(label: "伺服器網址") {
+                TextField("https://milmil.home.arpa", text: $urlText)
+                    .textFieldStyle(.roundedBorder)
+                    .textContentType(.URL)
+                    .onSubmit(add)
+            }
+            FormField(label: "名稱（選填）") {
+                TextField("home-nas", text: $nameText)
+                    .textFieldStyle(.roundedBorder)
+                    .onSubmit(add)
+            }
+            if let validationMessage {
+                InlineError(message: validationMessage)
+            }
+            Button(action: add) {
+                Text("連線")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(Theme.accent)
+            .disabled(urlText.trimmingCharacters(in: .whitespaces).isEmpty)
+            .keyboardShortcut(.defaultAction)
+        }
+    }
+
+    private func add() {
+        guard let url = ServerProfile.parseUserInput(urlText) else {
+            validationMessage = "請輸入有效的網址，例如 https://milmil.home.arpa 或 192.168.1.10:8080"
+            return
+        }
+        validationMessage = nil
+        let name = nameText.trimmingCharacters(in: .whitespaces)
+        Task { await session.addServer(name: name.isEmpty ? (url.host() ?? "milmil") : name, url: url) }
+    }
+}
+
+private struct SavedServerRow: View {
+    @Environment(SessionStore.self) private var session
+    let profile: ServerProfile
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "server.rack")
+                .foregroundStyle(Theme.accent)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(profile.name)
+                    .font(.system(size: 13, weight: .semibold))
+                HStack(spacing: 6) {
+                    Text(profile.baseURL.absoluteString)
+                    if let version = profile.lastKnownVersion {
+                        Text("· v\(version)")
+                    }
+                    if let username = profile.username {
+                        Text("· \(username)")
+                    }
+                }
+                .font(.system(size: 11))
+                .foregroundStyle(Theme.Text.tertiary)
+                .lineLimit(1)
+            }
+            Spacer()
+            Button("連線") {
+                Task { await session.connect(profile) }
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            Button("移除", systemImage: "trash", role: .destructive) {
+                session.removeServer(profile)
+            }
+            .labelStyle(.iconOnly)
+            .buttonStyle(.borderless)
+            .foregroundStyle(Theme.Text.tertiary)
+        }
+        .padding(8)
+        .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
+    }
+}
+
+/// Connection failed: reachability hints + retry, without losing the profile.
+struct ConnectionErrorView: View {
+    @Environment(SessionStore.self) private var session
+    let profile: ServerProfile
+    let message: String
+
+    var body: some View {
+        OnboardingCard(title: "連線中斷", subtitle: profile.baseURL.absoluteString) {
+            InlineError(message: message)
+            Text("• 確認伺服器已啟動（docker compose ps）\n• 若在外網，確認 VPN / 反向代理\n• 自簽憑證請用 http 或先在 Safari 信任")
+                .font(.system(size: 12))
+                .foregroundStyle(Theme.Text.secondary)
+                .lineSpacing(3)
+            Button {
+                Task { await session.retry() }
+            } label: {
+                Label("重試", systemImage: "arrow.clockwise")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(Theme.accent)
+            .keyboardShortcut(.defaultAction)
+            Button("切換伺服器") { session.switchToNoServer() }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .frame(maxWidth: .infinity)
+        }
+    }
+}

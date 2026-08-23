@@ -1,0 +1,41 @@
+included:
+  - Milmil
+  - Packages/MilmilKit/Sources
+  - Packages/MilmilKit/Tests
+excluded:
+  - Packages/MilmilKit/.build
+  - Milmil.xcodeproj
+
+disabled_rules:
+  - trailing_comma          # trailing commas everywhere (matches swift-format)
+  - opening_brace           # `} label: {` style is fine
+  - todo
+  - type_body_length
+  - function_body_length
+  - file_length
+  - identifier_name         # `h1`, `id`, `x` are fine
+
+opt_in_rules:
+  - closure_spacing
+  - contains_over_filter_is_empty
+  - empty_count
+  - first_where
+  - last_where
+  - sorted_first_last
+  - unneeded_parentheses_in_closure_argument
+  - vertical_whitespace_closing_braces
+
+line_length:
+  warning: 160
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+large_tuple:
+  warning: 3
+
+cyclomatic_complexity:
+  warning: 15
+
+nesting:
+  type_level: 2
