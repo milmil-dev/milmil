@@ -16,6 +16,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/labstack/echo/v5"
 	"github.com/rs/zerolog"
 	slogzerolog "github.com/samber/slog-zerolog/v2"
 
@@ -213,7 +214,9 @@ func main() {
 			AppID     string `json:"app_id"`
 			AppSecret string `json:"app_secret"`
 		}
-		json.Unmarshal([]byte(setting.Value), &creds)
+		if err := json.Unmarshal([]byte(setting.Value), &creds); err != nil {
+			return "", "", fmt.Errorf("parse dandanplay credentials: %w", err)
+		}
 		return creds.AppID, creds.AppSecret, nil
 	}
 	ddpClient := dandanplay.NewFallbackClient(
@@ -345,7 +348,23 @@ func main() {
 		},
 	})
 
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg, updateChecker)
+	e := api.NewRouter(api.Deps{
+		Config:        cfg,
+		DB:            database,
+		Cache:         cacheClient,
+		Metadata:      metadataSvc,
+		Matcher:       matcherSvc,
+		DandanPlay:    ddpClient,
+		Resolver:      resolverSvc,
+		Downloader:    dlEngine,
+		WSHub:         wsHub,
+		TMDB:          tmdbClient,
+		Torrents:      torrentReg,
+		Notifier:      notifier,
+		Sync:          syncSvc,
+		Danmaku:       danmakuReg,
+		UpdateChecker: updateChecker,
+	})
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	// Start update-checker background ticker. main.go does not currently
@@ -446,6 +465,12 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
+	// Echo v5 drives graceful shutdown by cancelling the context passed to
+	// StartConfig.Start; srvDone signals when the server has fully stopped.
+	srvCtx, srvCancel := context.WithCancel(context.Background())
+	defer srvCancel()
+	srvDone := make(chan struct{})
+
 	go func() {
 		<-quit
 		slog.Info("shutting down...")
@@ -478,10 +503,11 @@ func main() {
 			}()
 			go func() {
 				defer wg.Done()
-				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-				defer cancel()
-				if err := e.Shutdown(ctx); err != nil {
-					slog.Error("http shutdown", "err", err)
+				srvCancel()
+				select {
+				case <-srvDone:
+				case <-time.After(5 * time.Second):
+					slog.Error("http shutdown", "err", "timed out waiting for server to stop")
 				}
 			}()
 			wg.Wait()
@@ -505,7 +531,14 @@ func main() {
 	}
 
 	slog.Info("milmil-api starting", "addr", addr, "db", cfg.DatabaseURL)
-	if err := e.Start(addr); err != nil && !errors.Is(err, http.ErrServerClosed) {
+	startCfg := echo.StartConfig{
+		Address:         addr,
+		HideBanner:      true,
+		GracefulTimeout: 5 * time.Second,
+	}
+	err = startCfg.Start(srvCtx, e)
+	close(srvDone)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		slog.Error("server start failed", "err", err)
 		os.Exit(1)
 	}

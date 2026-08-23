@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
 )
@@ -29,7 +29,7 @@ type syncProviderStatus struct {
 // Returns per-provider tracker sync status for the authenticated user:
 // connection state, last successful sync timestamp, pending outbox count,
 // and the most recent errors (up to 10, from the outbox history).
-func (h *handler) handleSyncProvidersStatus(c echo.Context) error {
+func (h *handler) handleSyncProvidersStatus(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 
@@ -106,7 +106,7 @@ func (h *handler) handleSyncProvidersStatus(c echo.Context) error {
 //
 // Runs a one-shot pull from the remote provider, updating local watch
 // progress where the remote state is ahead.
-func (h *handler) handleSyncPullNow(c echo.Context) error {
+func (h *handler) handleSyncPullNow(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 	provider := c.Param("provider")
@@ -128,7 +128,7 @@ type setPullEnabledReq struct {
 //
 // Enables or disables the background pull loop for a given provider for the
 // current user. The state is persisted via sync_provider_state.
-func (h *handler) handleSyncSetPullEnabled(c echo.Context) error {
+func (h *handler) handleSyncSetPullEnabled(c *echo.Context) error {
 	ctx := c.Request().Context()
 	userID := getUserID(c)
 	provider := c.Param("provider")

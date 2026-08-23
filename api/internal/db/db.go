@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // postgres driver: "pgx"
-	_ "modernc.org/sqlite"              // sqlite driver: "sqlite"
+	_ "modernc.org/sqlite"             // sqlite driver: "sqlite"
 )
 
 // Open creates a database/sql connection for either SQLite or PostgreSQL.

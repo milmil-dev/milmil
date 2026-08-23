@@ -14,7 +14,7 @@ type AnimeSummary struct {
 	EpisodeCount  int      `json:"episode_count"`
 	Score         float64  `json:"score"`
 	NextEpisode   int      `json:"next_episode,omitempty"`
-	AirTime       string   `json:"air_time,omitempty"` // HH:mm (Asia/Tokyo)
+	AirTime       string   `json:"air_time,omitempty"`   // HH:mm (Asia/Tokyo)
 	MediaType     string   `json:"media_type,omitempty"` // TV, MOVIE, OVA, ONA, SPECIAL
 }
 
@@ -33,16 +33,16 @@ type AnimeDetail struct {
 }
 
 type AnimeCharacter struct {
-	Role      string          `json:"role"` // "MAIN" | "SUPPORTING"
-	Character CharacterPerson `json:"character"`
+	Role       string           `json:"role"` // "MAIN" | "SUPPORTING"
+	Character  CharacterPerson  `json:"character"`
 	VoiceActor *CharacterPerson `json:"voice_actor,omitempty"`
 }
 
 type CharacterPerson struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	NameNative  string `json:"name_native,omitempty"`
-	Image       string `json:"image,omitempty"`
+	ID         int    `json:"id"`
+	Name       string `json:"name"`
+	NameNative string `json:"name_native,omitempty"`
+	Image      string `json:"image,omitempty"`
 }
 
 type RelatedAnime struct {
@@ -81,17 +81,17 @@ type UserReview struct {
 }
 
 type FranchiseEntry struct {
-	AniListID     int      `json:"anilist_id"`
-	BangumiID     int      `json:"bangumi_id"`
-	Title         string   `json:"title"`
-	TitleOriginal string   `json:"title_original"`
-	TitleEN       string   `json:"title_en,omitempty"`
-	CoverImage    string   `json:"cover_image"`
-	MediaType     string   `json:"media_type,omitempty"`
-	AirDate       string   `json:"air_date,omitempty"`
-	EpisodeCount  int      `json:"episode_count"`
-	Score         float64  `json:"score"`
-	RelationType  string   `json:"relation_type,omitempty"`
+	AniListID     int     `json:"anilist_id"`
+	BangumiID     int     `json:"bangumi_id"`
+	Title         string  `json:"title"`
+	TitleOriginal string  `json:"title_original"`
+	TitleEN       string  `json:"title_en,omitempty"`
+	CoverImage    string  `json:"cover_image"`
+	MediaType     string  `json:"media_type,omitempty"`
+	AirDate       string  `json:"air_date,omitempty"`
+	EpisodeCount  int     `json:"episode_count"`
+	Score         float64 `json:"score"`
+	RelationType  string  `json:"relation_type,omitempty"`
 }
 
 type FranchiseResult struct {

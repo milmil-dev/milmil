@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/downloader"
@@ -37,6 +37,7 @@ type handler struct {
 	resolver        *resolver.Resolver
 	downloader      downloader.Manager
 	wsHub           *ws.Hub
+	wsTickets       *ws.TicketStore
 	tmdbMu          sync.RWMutex
 	tmdb            tmdb.Client
 	torrentRegistry *torrent.Registry
@@ -47,33 +48,67 @@ type handler struct {
 	encryptionKey   []byte
 }
 
+// Deps carries everything the API layer needs to serve requests.
+//
+// A struct rather than a parameter list: the handlers depend on fifteen
+// collaborators, and as positional arguments that made every call site an
+// unreadable run of nils and every addition a change to all of them. Fields
+// left zero disable the features that need them, which is how the tests build
+// a router with only the few services a given handler touches.
+type Deps struct {
+	Config        *config.Config
+	DB            *sql.DB
+	Cache         cache.Cache
+	Metadata      *metadata.Service
+	Matcher       *matcher.Matcher
+	DandanPlay    dandanplay.Client
+	Resolver      *resolver.Resolver
+	Downloader    downloader.Manager
+	WSHub         *ws.Hub
+	TMDB          tmdb.Client
+	Torrents      *torrent.Registry
+	Notifier      *notification.Service
+	Sync          *milmilsync.Service
+	Danmaku       *danmaku.Registry
+	UpdateChecker *updatecheck.Checker
+}
+
 // NewRouter creates the Echo instance with all middleware and routes.
-func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadataSvc *metadata.Service, matcherSvc *matcher.Matcher, ddpClient dandanplay.Client, resolverSvc *resolver.Resolver, dlManager downloader.Manager, wsHub *ws.Hub, tmdbClient tmdb.Client, torrentReg *torrent.Registry, notifier *notification.Service, syncSvc *milmilsync.Service, danmakuReg *danmaku.Registry, updateChecker *updatecheck.Checker) *echo.Echo {
+func NewRouter(deps Deps) *echo.Echo {
+	cfg := deps.Config
+	db := deps.DB
 	e := echo.New()
-	e.HideBanner = true
+	// Echo v5 no longer reads X-Forwarded-For by default (c.RealIP would
+	// return the reverse proxy's address). Restore client-IP extraction for
+	// the documented nginx/Docker deployment; only proxy hops on loopback,
+	// link-local, or private ranges are trusted.
+	e.IPExtractor = echo.ExtractIPFromXFFHeader()
 	attachMiddleware(e)
 
 	h := &handler{
 		cfg:             cfg,
 		db:              db,
 		queries:         store.New(db),
-		cache:           cacheClient,
-		metadata:        metadataSvc,
-		matcher:         matcherSvc,
-		dandanplay:      ddpClient,
-		resolver:        resolverSvc,
-		downloader:      dlManager,
-		wsHub:           wsHub,
-		tmdb:            tmdbClient,
-		torrentRegistry: torrentReg,
-		notifier:        notifier,
-		syncSvc:         syncSvc,
-		danmakuRegistry: danmakuReg,
-		updateChecker:   updateChecker,
+		cache:           deps.Cache,
+		metadata:        deps.Metadata,
+		matcher:         deps.Matcher,
+		dandanplay:      deps.DandanPlay,
+		resolver:        deps.Resolver,
+		downloader:      deps.Downloader,
+		wsHub:           deps.WSHub,
+		wsTickets:       ws.NewTicketStore(),
+		tmdb:            deps.TMDB,
+		torrentRegistry: deps.Torrents,
+		notifier:        deps.Notifier,
+		syncSvc:         deps.Sync,
+		danmakuRegistry: deps.Danmaku,
+		updateChecker:   deps.UpdateChecker,
 		encryptionKey:   cfg.EncryptionKey,
 	}
 
-	// WebSocket (no auth — WS auth is complex, keep it simple)
+	// WebSocket. The handshake cannot carry an Authorization header, so the
+	// client first calls GET /api/v1/ws/ticket (authenticated) and redeems the
+	// single-use ticket it gets back here.
 	e.GET("/ws", h.handleWebSocket)
 
 	// System routes
@@ -83,12 +118,14 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 
 	v1 := e.Group("/api/v1")
 
-	// Auth — public
+	// Auth — public. The three endpoints that verify a credential are rate
+	// limited per IP on top of the global limiter; /status is not, since the
+	// frontend polls it and it reveals nothing.
 	authGroup := v1.Group("/auth")
 	authGroup.GET("/status", h.handleAuthStatus)
-	authGroup.POST("/setup", h.handleAuthSetup)
-	authGroup.POST("/login", h.handleAuthLogin)
-	authGroup.POST("/login/2fa", h.handleAuthLogin2FA)
+	authGroup.POST("/setup", h.handleAuthSetup, authRateLimiter())
+	authGroup.POST("/login", h.handleAuthLogin, authRateLimiter())
+	authGroup.POST("/login/2fa", h.handleAuthLogin2FA, authRateLimiter())
 
 	// Setup wizard status — public. Front-end loaders call this before
 	// login to decide whether to show admin signup, library creation, or
@@ -112,6 +149,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	auditGroup.GET("", h.handleListAudit)
 	auditGroup.GET("/:id", h.handleGetAudit)
 	auditGroup.POST("/undo", h.handleUndoAudit)
+
+	// WebSocket ticket — protected. Exchanges the caller's API token for a
+	// single-use ticket that authorises one /ws upgrade.
+	v1.GET("/ws/ticket", h.handleWSTicket, authMiddleware(h.queries))
 
 	// CLI/agent supporting endpoints — read-only, no audit middleware
 	v1.GET("/search/anime", h.handleSearchAnime, authMiddleware(h.queries))
@@ -154,8 +195,10 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	libGroup.POST("/:id/rename/undo", h.handleRenameUndo)
 	libGroup.GET("/:id/rename/history", h.handleRenameHistory)
 
-	// Rclone remotes — public (used during library setup to pick OAuth remotes)
-	v1.GET("/rclone/remotes", h.handleListRcloneRemotes)
+	// Rclone remotes — protected. Listing configured remotes exposes the
+	// names of the operator's cloud accounts, so it stays behind auth even
+	// though the library setup wizard is the only caller.
+	v1.GET("/rclone/remotes", h.handleListRcloneRemotes, authMiddleware(h.queries))
 
 	// Media files — protected
 	mediaGroup := v1.Group("/media-files", authMiddleware(h.queries), auditMiddleware(h.queries))
@@ -351,6 +394,7 @@ func NewRouter(cfg *config.Config, db *sql.DB, cacheClient cache.Cache, metadata
 	notifSettingsGroup.GET("", h.handleGetNotificationSettings)
 	notifSettingsGroup.PUT("", h.handleUpdateNotificationSettings)
 	notifSettingsGroup.POST("/test", h.handleTestNotification)
+	notifSettingsGroup.POST("/test-bot", h.handleTestBot)
 	notifSettingsGroup.GET("/status", h.handleNotificationProviderStatus)
 
 	// System — protected

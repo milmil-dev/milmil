@@ -108,19 +108,6 @@ export function deriveNextFetch(feed?: RSSFeed): string | undefined {
 }
 
 /**
- * Aggregate stats across a group's active downloads.
- */
-export function aggregateActiveStats(eps: DownloadGroup['downloads']) {
-  const total = eps.reduce((s, d) => s + d.total_bytes, 0);
-  const downloaded = eps.reduce((s, d) => s + d.completed_bytes, 0);
-  const speed = eps.reduce((s, d) => s + d.speed_bytes, 0);
-  const remaining = Math.max(0, total - downloaded);
-  const etaSeconds = speed > 0 ? Math.round(remaining / speed) : 0;
-  const percent = total > 0 ? Math.min(100, Math.round((downloaded / total) * 100)) : 0;
-  return { speed, downloaded, total, etaSeconds, percent };
-}
-
-/**
  * Overall percent for a group (considers all downloads regardless of status).
  */
 export function deriveGroupPercent(group?: DownloadGroup): number {

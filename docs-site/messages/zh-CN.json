@@ -1,0 +1,41 @@
+{
+  "Landing": {
+    "ctaDesc": "几分钟内部署 milmil，掌控你的动漫收藏。",
+    "ctaTitle": "准备好了吗？",
+    "d1": "多储存源（本地、SMB、SFTP、WebDAV、40+ 云端后端），自动扫描和元数据匹配。",
+    "d2": "直接播放、MKV 转 MP4 转封装、FFmpeg HLS 自适应转码。",
+    "d3": "来自弹弹Play的实时弹幕叠加。",
+    "d4": "内置种子客户端、RSS 订阅、聚合种子搜索。",
+    "d5": "季度日历、热门排行、全文搜索。",
+    "d6": "观看进度和收藏状态与 Bangumi 和 AniList 同步。",
+    "deployDesc": "一条命令。包含所有服务 — PostgreSQL、Redis、API 和前端。",
+    "deployTitle": "秒级部署",
+    "desc": "管理、发现和串流你的动漫收藏，支持弹幕、自动下载和多来源元数据匹配。",
+    "detail": "动漫详情",
+    "detailCaption": "元数据、剧集、类型、评分，一键播放。",
+    "f1": "媒体库管理",
+    "f2": "串流播放",
+    "f3": "弹幕",
+    "f4": "自动下载",
+    "f5": "发现",
+    "f6": "同步追踪",
+    "featuresDesc": "为动漫爱好者打造的完整媒体服务器。",
+    "featuresTitle": "功能一览",
+    "getStarted": "开始使用",
+    "home": "首页",
+    "homeCaption": "热门轮播、继续观看和今日更新。",
+    "integrationsDesc": "连接你已经在使用的服务。",
+    "integrationsTitle": "无缝集成",
+    "player": "播放器 + 弹幕",
+    "playerCaption": "实时弹幕串流，带字幕和进度追踪。",
+    "readDocs": "查看文档",
+    "screenshotsDesc": "灵感来自最优秀的媒体服务器的精美界面。",
+    "screenshotsTitle": "产品预览",
+    "tagline": "自托管动漫媒体服务器",
+    "viewGithub": "查看 GitHub"
+  },
+  "Nav": {
+    "docs": "文档",
+    "github": "GitHub"
+  }
+}

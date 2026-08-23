@@ -1,7 +1,7 @@
 // web/src/components/downloads/MiscDownloadsSection.test.tsx
 
 import userEvent from '@testing-library/user-event';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { render, screen } from '@/test/test-utils';
 import { MiscDownloadsSection } from './MiscDownloadsSection';
 

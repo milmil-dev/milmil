@@ -45,12 +45,6 @@ const FILTER_TABS = [
   { value: 'system', msgKey: msg`notifications.filter.system` },
 ] as const;
 
-const SEVERITY_BORDER: Record<string, string> = {
-  success: 'border-l-green-400',
-  info: 'border-l-blue-400',
-  error: 'border-l-red-400',
-};
-
 const TYPE_BADGE: Record<string, string> = {
   download: 'bg-blue-500/15 text-blue-400',
   library: 'bg-green-500/15 text-green-400',
@@ -258,7 +252,6 @@ function NotificationCard({
   onMarkRead: () => void;
 }) {
   const { i18n } = useLingui();
-  const severity = notification.severity ?? 'info';
   const typePrefix = notification.type?.split('.')[0] ?? 'system';
   const titleKey = notification.type ? NOTIFICATION_TITLE_KEYS[notification.type] : undefined;
   const displayTitle = titleKey ? i18n._(titleKey) : notification.title;

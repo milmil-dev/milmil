@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
-func (h *Handler) handleGetSubtitle(c echo.Context) error {
+func (h *Handler) handleGetSubtitle(c *echo.Context) error {
 	itemIDEncoded := c.Param("itemId")
 	indexStr := c.Param("index")
 

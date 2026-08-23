@@ -12,7 +12,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
@@ -55,11 +55,11 @@ type subscribeRequest struct {
 }
 
 type subscribeResponse struct {
-	Feed *store.RssFeed     `json:"feed"`
+	Feed *store.RssFeed      `json:"feed"`
 	Rule *store.DownloadRule `json:"rule"`
 }
 
-func (h *handler) handleSubscribe(c echo.Context) error {
+func (h *handler) handleSubscribe(c *echo.Context) error {
 	var req subscribeRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")

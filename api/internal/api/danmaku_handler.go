@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/integration/dandanplay"
 )
 
-func (h *handler) handleGetDanmaku(c echo.Context) error {
+func (h *handler) handleGetDanmaku(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("mediaFileId")
 
@@ -59,7 +59,7 @@ func (h *handler) handleGetDanmaku(c echo.Context) error {
 	})
 }
 
-func (h *handler) handlePostDanmaku(c echo.Context) error {
+func (h *handler) handlePostDanmaku(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("mediaFileId")
 

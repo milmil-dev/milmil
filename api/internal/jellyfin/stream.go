@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/storage"
 )
@@ -24,7 +24,7 @@ var videoMimeTypes = map[string]string{
 	"ts":   "video/mp2t",
 }
 
-func (h *Handler) handleStream(c echo.Context) error {
+func (h *Handler) handleStream(c *echo.Context) error {
 	itemIDEncoded := c.Param("itemId")
 	typ, id, err := DecodeItemID(itemIDEncoded)
 	if err != nil {

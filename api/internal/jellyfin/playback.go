@@ -2,14 +2,15 @@ package jellyfin
 
 import (
 	"database/sql"
+	"log/slog"
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
-func (h *Handler) handlePlaybackStart(c echo.Context) error {
+func (h *Handler) handlePlaybackStart(c *echo.Context) error {
 	var req PlaybackStartRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request"})
@@ -17,7 +18,7 @@ func (h *Handler) handlePlaybackStart(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *Handler) handlePlaybackProgress(c echo.Context) error {
+func (h *Handler) handlePlaybackProgress(c *echo.Context) error {
 	var req PlaybackProgressRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request"})
@@ -53,7 +54,7 @@ func (h *Handler) handlePlaybackProgress(c echo.Context) error {
 
 	positionSeconds := int64(req.PositionTicks / 10_000_000)
 
-	h.queries.UpsertWatchProgress(c.Request().Context(), store.UpsertWatchProgressParams{
+	if _, err := h.queries.UpsertWatchProgress(c.Request().Context(), store.UpsertWatchProgressParams{
 		ID:              uuid.NewString(),
 		UserID:          userID,
 		EpisodeID:       episodeID,
@@ -61,12 +62,17 @@ func (h *Handler) handlePlaybackProgress(c echo.Context) error {
 		PositionSeconds: positionSeconds,
 		DurationSeconds: sql.NullInt64{},
 		Completed:       0,
-	})
+	}); err != nil {
+		// The client gets its 204 either way, but losing progress silently is
+		// how "it forgot where I was" bugs go unnoticed.
+		slog.Error("jellyfin: failed to save watch progress",
+			"episode_id", episodeID, "user_id", userID, "err", err)
+	}
 
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *Handler) handlePlaybackStop(c echo.Context) error {
+func (h *Handler) handlePlaybackStop(c *echo.Context) error {
 	var req PlaybackStopRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, JellyfinError{Message: "Invalid request"})
@@ -102,7 +108,7 @@ func (h *Handler) handlePlaybackStop(c echo.Context) error {
 
 	positionSeconds := int64(req.PositionTicks / 10_000_000)
 
-	h.queries.UpsertWatchProgress(c.Request().Context(), store.UpsertWatchProgressParams{
+	if _, err := h.queries.UpsertWatchProgress(c.Request().Context(), store.UpsertWatchProgressParams{
 		ID:              uuid.NewString(),
 		UserID:          userID,
 		EpisodeID:       episodeID,
@@ -110,7 +116,12 @@ func (h *Handler) handlePlaybackStop(c echo.Context) error {
 		PositionSeconds: positionSeconds,
 		DurationSeconds: sql.NullInt64{},
 		Completed:       0,
-	})
+	}); err != nil {
+		// The client gets its 204 either way, but losing progress silently is
+		// how "it forgot where I was" bugs go unnoticed.
+		slog.Error("jellyfin: failed to save watch progress",
+			"episode_id", episodeID, "user_id", userID, "err", err)
+	}
 
 	return c.NoContent(http.StatusNoContent)
 }

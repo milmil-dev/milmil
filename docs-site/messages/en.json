@@ -1,0 +1,41 @@
+{
+  "Landing": {
+    "ctaDesc": "Deploy milmil in minutes and take control of your anime collection.",
+    "ctaTitle": "Ready to get started?",
+    "d1": "Multiple storage backends (local, SMB, SFTP, WebDAV, 40+ cloud providers via rclone), auto-scanning and metadata matching.",
+    "d2": "Direct play, MKV to MP4 remuxing, FFmpeg HLS adaptive transcoding.",
+    "d3": "Real-time danmaku (bullet comments) overlay from DandanPlay.",
+    "d4": "Built-in torrent client, RSS subscriptions, aggregated torrent search.",
+    "d5": "Seasonal calendar, trending charts, full-text search with genre/tag filters.",
+    "d6": "Watch progress and collection status synced with Bangumi and AniList.",
+    "deployDesc": "One command. All services included — PostgreSQL, Redis, API and frontend.",
+    "deployTitle": "Deploy in seconds",
+    "desc": "Manage, discover, and stream your anime collection with danmaku, auto-downloads, and multi-provider metadata matching.",
+    "detail": "Anime Detail",
+    "detailCaption": "Metadata, episodes, genres, ratings — one click to play.",
+    "f1": "Library Management",
+    "f2": "Streaming",
+    "f3": "Danmaku",
+    "f4": "Auto Downloads",
+    "f5": "Discovery",
+    "f6": "Tracker Sync",
+    "featuresDesc": "A complete media server built for anime enthusiasts.",
+    "featuresTitle": "Features",
+    "getStarted": "Get Started",
+    "home": "Home",
+    "homeCaption": "Trending carousel, continue watching, and today's releases.",
+    "integrationsDesc": "Connect the services you already use.",
+    "integrationsTitle": "Seamless Integrations",
+    "player": "Player + Danmaku",
+    "playerCaption": "Real-time danmaku streaming with subtitles and progress tracking.",
+    "readDocs": "Read the Docs",
+    "screenshotsDesc": "A beautiful interface inspired by the best media servers.",
+    "screenshotsTitle": "Product Preview",
+    "tagline": "Self-hosted Anime Media Server",
+    "viewGithub": "View on GitHub"
+  },
+  "Nav": {
+    "docs": "Documentation",
+    "github": "GitHub"
+  }
+}

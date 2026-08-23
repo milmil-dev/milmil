@@ -222,7 +222,7 @@ func TestChecker_Run_NoNotifyOnInitialSeed(t *testing.T) {
 	c := updatecheck.NewChecker(updatecheck.Config{
 		Repo: "x/y", HTTPClient: srv.Client(), BaseURL: srv.URL,
 		Interval: 20 * time.Millisecond, TTL: 0,
-		Notify:   func(_ updatecheck.Result) { notified.Store(true) },
+		Notify: func(_ updatecheck.Result) { notified.Store(true) },
 	})
 
 	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond)

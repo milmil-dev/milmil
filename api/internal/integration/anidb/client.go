@@ -75,7 +75,7 @@ func (c *httpClient) fetch(ctx context.Context, url string) ([]byte, error) {
 		return nil, fmt.Errorf("anidb: GET %s returned %d", url, resp.StatusCode)
 	}
 
-	var reader io.Reader = io.LimitReader(resp.Body, maxReadBytes)
+	reader := io.LimitReader(resp.Body, maxReadBytes)
 	if isGzip(resp, url) {
 		gr, err := gzip.NewReader(reader)
 		if err != nil {

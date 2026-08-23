@@ -100,7 +100,7 @@ export function DanmakuSourceTab({
   const toggleSaveMutation = useMutation({
     mutationFn: ({ source, save }: { source: string; save: boolean }) =>
       externalDanmakuApi.toggleSave(episodeId!, source, save),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: externalDanmakuKeys.imported(episodeId ?? ''),
       });

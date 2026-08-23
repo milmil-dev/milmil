@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -24,7 +24,7 @@ type searchAnimeItem struct {
 // Query params:
 //   - q:     required substring to match against title/title_zh/title_en
 //   - limit: optional, 1..100 (default 20)
-func (h *handler) handleSearchAnime(c echo.Context) error {
+func (h *handler) handleSearchAnime(c *echo.Context) error {
 	q := strings.TrimSpace(c.QueryParam("q"))
 	if q == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing q")

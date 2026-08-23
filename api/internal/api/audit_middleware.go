@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -32,7 +32,7 @@ const auditSkipKey = "audit_skip"
 // scrubs top-level password/token/secret keys.
 func auditMiddleware(q *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			method := c.Request().Method
 			if method == http.MethodGet || method == http.MethodHead || method == http.MethodOptions {
 				return next(c)
@@ -63,7 +63,7 @@ func auditMiddleware(q *store.Queries) echo.MiddlewareFunc {
 				return nil
 			}
 
-			status := c.Response().Status
+			_, status := echo.ResolveResponseStatus(c.Response(), nil)
 			if status < 200 || status >= 300 {
 				return nil
 			}

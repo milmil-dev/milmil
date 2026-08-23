@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/library/completeness"
 )
 
-func (h *handler) handleAnimeMissing(c echo.Context) error {
+func (h *handler) handleAnimeMissing(c *echo.Context) error {
 	ctx := c.Request().Context()
 	idStr := c.Param("bangumiId")
 	bangumiID, err := strconv.ParseInt(idStr, 10, 64)
@@ -33,7 +33,7 @@ func (h *handler) handleAnimeMissing(c echo.Context) error {
 	return c.JSON(http.StatusOK, report)
 }
 
-func (h *handler) handleLibraryMissingSummary(c echo.Context) error {
+func (h *handler) handleLibraryMissingSummary(c *echo.Context) error {
 	ctx := c.Request().Context()
 	libraryID := c.Param("id")
 	reports, err := completeness.BuildLibrarySummary(ctx, h.queries, libraryID)

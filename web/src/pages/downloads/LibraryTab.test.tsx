@@ -1,7 +1,7 @@
 // web/src/pages/downloads/LibraryTab.test.tsx
 
 import userEvent from '@testing-library/user-event';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import * as discoverModule from '@/lib/api/discover';
 import { render, screen } from '@/test/test-utils';
 import LibraryTab from './LibraryTab';

@@ -1,7 +1,7 @@
 // web/src/components/downloads/CardMenu.test.tsx
 
 import userEvent from '@testing-library/user-event';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { render, screen } from '@/test/test-utils';
 import { CardMenu } from './CardMenu';
 

@@ -6,33 +6,42 @@ import (
 	"strings"
 	"time"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
+	"github.com/milmil/api/internal/store"
 )
 
 // EmbyAuthMiddleware parses X-Emby-Authorization or Authorization headers
 // with the MediaBrowser token scheme used by Jellyfin clients.
 // Format: MediaBrowser Token="<jwt>", Client="Infuse", Device="iPhone", ...
-func EmbyAuthMiddleware(secret string) echo.MiddlewareFunc {
+func EmbyAuthMiddleware(secret string, queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			token := extractEmbyToken(c.Request())
 			if token == "" {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Missing authentication token"})
 			}
 
-			userID, err := auth.VerifyToken(secret, token)
+			userID, tokenVersion, err := auth.VerifyToken(secret, token)
 			if err != nil {
+				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid or expired token"})
+			}
+			// A valid signature is not enough: the token must also match the
+			// user's current version, so changing the password logs external
+			// players out instead of leaving a 24h window open.
+			user, err := queries.GetUserByID(c.Request().Context(), userID)
+			if err != nil || user.TokenVersion != tokenVersion {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid or expired token"})
 			}
 			c.Set("userID", userID)
 
 			start := time.Now()
 			err = next(c)
+			_, status := echo.ResolveResponseStatus(c.Response(), err)
 			slog.Info("jellyfin request",
 				"method", c.Request().Method,
 				"path", c.Request().URL.Path,
-				"status", c.Response().Status,
+				"status", status,
 				"duration_ms", time.Since(start).Milliseconds(),
 				"client", extractEmbyParam(c.Request(), "Client"),
 			)
@@ -81,10 +90,10 @@ func extractEmbyParam(r *http.Request, key string) string {
 // jellyfinLogMiddleware logs all /jellyfin/* requests including unauthenticated ones.
 func jellyfinLogMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			start := time.Now()
 			err := next(c)
-			status := c.Response().Status
+			_, status := echo.ResolveResponseStatus(c.Response(), err)
 			level := slog.LevelInfo
 			if status >= 400 {
 				level = slog.LevelWarn

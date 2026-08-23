@@ -17,11 +17,11 @@ import { DanmakuBar } from '@/components/watch/DanmakuBar';
 import { EpisodeSidebar } from '@/components/watch/EpisodeSidebar';
 import { EpisodeTitleOverlay } from '@/components/watch/EpisodeTitleOverlay';
 import { RelatedAnimeList } from '@/components/watch/RelatedAnimeList';
-import { TechInfoPopover } from '@/components/watch/TechInfoPopover';
 import { UnifiedSettingsPanel } from '@/components/watch/UnifiedSettingsPanel';
 import { WatchTitleBar } from '@/components/watch/WatchTitleBar';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useSeriesPreferences } from '@/hooks/use-series-preferences';
+import { connectAuthenticatedWebSocket } from '@/hooks/use-websocket';
 import type { PlayableEpisode } from '@/lib/api/anime';
 import { animeApi, animeKeys } from '@/lib/api/anime';
 import { externalDanmakuApi, externalDanmakuKeys } from '@/lib/api/danmaku';
@@ -444,27 +444,42 @@ export function WatchPage() {
   useEffect(() => {
     if (transcodeStatus !== 'processing' || !fileId) return;
 
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsHost = API_URL ? new URL(API_URL).host : window.location.host;
-    const wsUrl = `${wsProtocol}//${wsHost}/ws`;
-    const ws = new WebSocket(wsUrl);
+    let ws: WebSocket | null = null;
+    let cancelled = false;
 
-    ws.onmessage = (event) => {
+    void (async () => {
+      let socket: WebSocket;
       try {
-        const msg = JSON.parse(event.data);
-        if (msg.type === 'transcode:ready' && msg.file_id === fileId) {
-          setTranscodeToken(msg.token);
-          setTranscodeStatus('ready');
-        } else if (msg.type === 'transcode:error' && msg.file_id === fileId) {
-          setTranscodeStatus('error');
-        }
+        socket = await connectAuthenticatedWebSocket();
       } catch {
-        // ignore parse errors
+        // Could not obtain a ticket; the transcode poll below still resolves.
+        return;
       }
-    };
+      // The await yields, so the effect may have been torn down meanwhile.
+      if (cancelled) {
+        socket.close();
+        return;
+      }
+      ws = socket;
+
+      socket.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'transcode:ready' && msg.file_id === fileId) {
+            setTranscodeToken(msg.token);
+            setTranscodeStatus('ready');
+          } else if (msg.type === 'transcode:error' && msg.file_id === fileId) {
+            setTranscodeStatus('error');
+          }
+        } catch {
+          // ignore parse errors
+        }
+      };
+    })();
 
     return () => {
-      ws.close();
+      cancelled = true;
+      ws?.close();
     };
   }, [transcodeStatus, fileId]);
 
@@ -919,9 +934,14 @@ export function WatchPage() {
             anime={animeDetail}
             episodesData={
               episodesData ?? {
+                anime_id: '',
                 watch_status: 'unwatched',
                 mal_id: null,
                 tmdb_id: null,
+                anidb_id: null,
+                user_score: null,
+                sync_disabled: 0,
+                watch_status_override: '',
                 episodes: mergedEpisodes,
               }
             }

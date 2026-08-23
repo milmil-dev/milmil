@@ -65,7 +65,6 @@ export function processDanmaku(input: ProcessInput): DanmakuComment[] {
 
 // Worker entry point — Vite compiles this as a separate module bundle.
 // In Worker context, `self` is a DedicatedWorkerGlobalScope (no `document`).
-// biome-ignore lint: Worker global scope setup
 const _self = self as unknown as DedicatedWorkerGlobalScope;
 _self.addEventListener('message', (e: MessageEvent<ProcessInput>) => {
   const result = processDanmaku(e.data);

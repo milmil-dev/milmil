@@ -16,13 +16,13 @@ func TestSearchAnime_LocalDBHit(t *testing.T) {
 	srv := newAuditTestServer(t)
 
 	_, err := srv.queries.CreateAnime(context.Background(), store.CreateAnimeParams{
-		ID:           "anime-1",
-		Title:        "Sousou no Frieren",
-		TitleZh:      sql.NullString{String: "葬送的芙莉蓮", Valid: true},
-		TitleEn:      sql.NullString{String: "Frieren: Beyond Journey's End", Valid: true},
-		Status:       "ongoing",
-		WatchStatus:  "watching",
-		Genres:       "fantasy",
+		ID:          "anime-1",
+		Title:       "Sousou no Frieren",
+		TitleZh:     sql.NullString{String: "葬送的芙莉蓮", Valid: true},
+		TitleEn:     sql.NullString{String: "Frieren: Beyond Journey's End", Valid: true},
+		Status:      "ongoing",
+		WatchStatus: "watching",
+		Genres:      "fantasy",
 	})
 	require.NoError(t, err)
 

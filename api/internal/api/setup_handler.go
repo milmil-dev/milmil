@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 // setupStatusResponse is what GET /api/v1/setup/status returns. It's a
@@ -18,7 +18,7 @@ type setupStatusResponse struct {
 // handleSetupStatus reports whether an admin user exists and how many
 // libraries are configured. Both signals come from a count(*) on existing
 // tables; no schema changes are needed.
-func (h *handler) handleSetupStatus(c echo.Context) error {
+func (h *handler) handleSetupStatus(c *echo.Context) error {
 	ctx := c.Request().Context()
 	hasAdmin, libCount, err := h.querySetupStatus(ctx)
 	if err != nil {

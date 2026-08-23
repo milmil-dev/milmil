@@ -507,13 +507,17 @@ test.describe('Auto-Download Page', () => {
 
   test('back button returns to anime search results', async ({ page }) => {
     await page.goto('/downloads');
-    await page.waitForTimeout(500);
 
+    // Wait on state rather than the clock: on a cold Vite the route is still
+    // compiling well past any fixed budget, and filling an input that is not
+    // there yet leaves the search never running.
     const searchInput = page.locator('input[placeholder]').first();
+    await expect(searchInput).toBeVisible();
     await searchInput.fill('Frieren');
-    await page.waitForTimeout(600);
-    await page.click('text=葬送的芙莉蓮');
-    await page.waitForTimeout(500);
+
+    const result = page.locator('text=葬送的芙莉蓮');
+    await expect(result).toBeVisible();
+    await result.click();
 
     // Torrent view should be showing — find and click back button
     const backButton = page

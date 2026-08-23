@@ -40,7 +40,9 @@ func StartDiscoveryServer(serverID, serverName, address string) (stop func(), er
 			msg := string(buf[:n])
 			if msg == discoveryQuery {
 				slog.Info("jellyfin discovery: client found us", "remote", remote.String())
-				conn.WriteToUDP(response, remote)
+				if _, err := conn.WriteToUDP(response, remote); err != nil {
+					slog.Debug("jellyfin discovery: reply failed", "remote", remote.String(), "err", err)
+				}
 			}
 		}
 	}()

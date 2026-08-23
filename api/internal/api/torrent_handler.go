@@ -6,13 +6,13 @@ import (
 	"sort"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/torrent"
 )
 
-func (h *handler) handleTorrentSearch(c echo.Context) error {
+func (h *handler) handleTorrentSearch(c *echo.Context) error {
 	q := c.QueryParam("q")
 	if q == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "q required")
@@ -40,7 +40,7 @@ func (h *handler) handleTorrentSearch(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func (h *handler) handleTorrentProviders(c echo.Context) error {
+func (h *handler) handleTorrentProviders(c *echo.Context) error {
 	return c.JSON(http.StatusOK, h.torrentRegistry.Names())
 }
 
@@ -49,7 +49,7 @@ type addTorrentRequest struct {
 	Name string `json:"name"`
 }
 
-func (h *handler) handleTorrentSearchAdd(c echo.Context) error {
+func (h *handler) handleTorrentSearchAdd(c *echo.Context) error {
 	var req addTorrentRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")

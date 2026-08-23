@@ -3,5 +3,7 @@ node_modules
 dist
 .source
 *.tsbuildinfo
-bun.lock
 test-results
+
+# Generated from api/internal/api/openapi.json by scripts/sync-openapi.mjs
+/lib/openapi.generated.json

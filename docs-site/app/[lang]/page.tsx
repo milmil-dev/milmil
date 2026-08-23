@@ -1,7 +1,7 @@
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
 import { LandingPage } from '@/components/landing';
 import { i18n } from '@/lib/i18n';
-import { baseOptions } from '@/lib/nav-options';
+import { baseOptions } from '@/lib/layout.shared';
 
 export default async function Home({
   params,
@@ -9,7 +9,7 @@ export default async function Home({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const options = baseOptions(lang);
+  const options = await baseOptions(lang);
   return (
     <HomeLayout {...options} nav={{ ...options.nav, transparentMode: 'top' }}>
       <LandingPage lang={lang} />

@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
 
@@ -106,7 +106,7 @@ var validWatchStatuses = map[string]struct{}{
 	"dropped":   {},
 }
 
-func (h *handler) handleListCollection(c echo.Context) error {
+func (h *handler) handleListCollection(c *echo.Context) error {
 	status := c.QueryParam("status")
 	search := c.QueryParam("search")
 	sortBy := c.QueryParam("sort")
@@ -136,7 +136,7 @@ func (h *handler) handleListCollection(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func (h *handler) handleListRecentCollection(c echo.Context) error {
+func (h *handler) handleListRecentCollection(c *echo.Context) error {
 	items, err := h.queries.ListRecentlyMatchedAnime(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -154,7 +154,7 @@ type updateWatchStatusRequest struct {
 	Status string `json:"status"`
 }
 
-func (h *handler) handleUpdateWatchStatus(c echo.Context) error {
+func (h *handler) handleUpdateWatchStatus(c *echo.Context) error {
 	bangumiIDStr := c.Param("bangumiId")
 	bangumiID, err := strconv.ParseInt(bangumiIDStr, 10, 64)
 	if err != nil {
@@ -226,7 +226,7 @@ func (h *handler) handleUpdateWatchStatus(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (h *handler) handleCollectionStatusCounts(c echo.Context) error {
+func (h *handler) handleCollectionStatusCounts(c *echo.Context) error {
 	counts, err := h.queries.CountCollectionByStatus(c.Request().Context())
 	if err != nil {
 		return echo.ErrInternalServerError

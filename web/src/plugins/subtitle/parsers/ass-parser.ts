@@ -1,26 +1,6 @@
 import { compile } from 'ass-compiler';
 import type { SubtitleCue } from '../types';
 
-export interface AssStyleDef {
-  Name: string;
-  Fontname: string;
-  Fontsize: string;
-  PrimaryColour: string; // ASS color format: &HAABBGGRR
-  SecondaryColour: string;
-  OutlineColour: string;
-  BackColour: string;
-  Bold: string;
-  Italic: string;
-  Underline: string;
-  BorderStyle: string;
-  Outline: string;
-  Shadow: string;
-  Alignment: string; // numpad alignment (1-9)
-  MarginL: string;
-  MarginR: string;
-  MarginV: string;
-}
-
 /**
  * Convert ASS color (&HAABBGGRR or &HBBGGRR) to CSS rgba string.
  * ASS stores colors as &HAABBGGRR where bytes are alpha, blue, green, red — reversed from CSS.
