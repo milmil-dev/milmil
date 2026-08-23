@@ -51,6 +51,7 @@ struct MainShellView: View {
     @Environment(PlayerCoordinator.self) private var playerCoordinator
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
+    @Environment(\.pendingOpenURLs) private var pendingOpenURLs
     let profile: ServerProfile
     let user: User
     let version: String
@@ -92,6 +93,26 @@ struct MainShellView: View {
         .onDisappear {
             session?.stop()
             playerCoordinator.session = nil
+        }
+        .onChange(of: pendingOpenURLs.links.wrappedValue.count, initial: true) { _, count in
+            guard count > 0, session != nil else { return }
+            for url in pendingOpenURLs.drainLinks() { router.handle(url: url) }
+        }
+        .onChange(of: pendingOpenURLs.files.wrappedValue.count, initial: true) { _, count in
+            guard count > 0, let session else { return }
+            let files = pendingOpenURLs.drainFiles().filter { $0.pathExtension.lowercased() == "torrent" }
+            guard !files.isEmpty else { return }
+            router.select(.downloads)
+            Task {
+                for file in files {
+                    _ = try? await session.client.addDownload(url: file.absoluteString, name: file.deletingPathExtension().lastPathComponent)
+                }
+            }
+        }
+        .onChange(of: router.pendingPlayback) { _, request in
+            guard let request else { return }
+            router.pendingPlayback = nil
+            playerCoordinator.play(request)
         }
     }
 

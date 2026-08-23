@@ -36,6 +36,7 @@ enum PlayerAction: String, CaseIterable {
     case danmakuCompose = "danmaku:compose"
     case screenshot = "capture:screenshot"
     case screenshotWithSubs = "capture:screenshot-with-subs"
+    case screenshotToClipboard = "capture:screenshot-clipboard"
     case skipSegment = "playback:skip-segment"
 
     var label: String {
@@ -72,6 +73,7 @@ enum PlayerAction: String, CaseIterable {
         case .danmakuCompose: "發送彈幕"
         case .screenshot: "截圖"
         case .screenshotWithSubs: "截圖（含字幕）"
+        case .screenshotToClipboard: "截圖到剪貼簿"
         case .skipSegment: "跳過 OP / ED"
         }
     }
@@ -84,7 +86,7 @@ enum PlayerAction: String, CaseIterable {
         case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext: "字幕 / 音訊"
         case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater: "介面"
         case .danmakuToggle, .danmakuSettings, .danmakuCompose: "彈幕"
-        case .screenshot, .screenshotWithSubs: "擷取"
+        case .screenshot, .screenshotWithSubs, .screenshotToClipboard: "擷取"
         }
     }
 }
@@ -206,6 +208,7 @@ struct PlayerKeymap {
         (.danmakuCompose, KeyChord(key: "Enter", command: true)),
         (.screenshot, KeyChord(key: "s")),
         (.screenshotWithSubs, KeyChord(key: "s", shift: true)),
+        (.screenshotToClipboard, KeyChord(key: "s", option: true)),
         (.skipSegment, KeyChord(key: "Tab")),
     ]
 

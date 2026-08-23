@@ -84,6 +84,11 @@ struct PlayerSettingsTab: View {
                 TextField("音訊語言（例如 ja）", text: optionalBind(\.defaultAudioLanguage))
                 Text("mpv 會依此順序挑選內嵌軌；留空用 zh-TW → zh → en / ja。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
             }
+            Section("本機路徑對應") {
+                LocalMappingsEditor()
+                Text("伺服器路徑前綴對應到本機掛載（例如 NAS）。命中且檔案存在時 mpv 直接開本機檔案，不經伺服器串流。")
+                    .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+            }
             Section("截圖") {
                 LabeledContent("儲存位置", value: "~/Pictures/milmil")
                 Button("在 Finder 顯示") {
@@ -104,6 +109,47 @@ struct PlayerSettingsTab: View {
         Binding(get: { prefs[keyPath: keyPath] ?? "" }, set: { value in
             session.updatePreferences { $0[keyPath: keyPath] = value.trimmingCharacters(in: .whitespaces).isEmpty ? nil : value }
         })
+    }
+}
+
+struct LocalMappingsEditor: View {
+    @State private var mappings = LocalPathMappings.shared
+    @State private var serverPrefix = ""
+    @State private var localPrefix = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(mappings.mappings) { mapping in
+                HStack(spacing: 8) {
+                    Text(mapping.serverPrefix).font(.system(size: 12, design: .monospaced)).lineLimit(1).truncationMode(.middle)
+                    Image(systemName: "arrow.right").font(.system(size: 10)).foregroundStyle(Theme.Text.tertiary)
+                    Text(mapping.localPrefix).font(.system(size: 12, design: .monospaced)).lineLimit(1).truncationMode(.middle)
+                    Spacer()
+                    Image(systemName: FileManager.default.fileExists(atPath: mapping.localPrefix) ? "checkmark.circle.fill" : "questionmark.circle")
+                        .foregroundStyle(FileManager.default.fileExists(atPath: mapping.localPrefix) ? Color(hex: 0x4ADE80) : Theme.Text.tertiary)
+                        .help(FileManager.default.fileExists(atPath: mapping.localPrefix) ? "本機路徑存在" : "本機路徑目前不存在（未掛載？）")
+                    Button { mappings.remove(mapping) } label: { Image(systemName: "minus.circle") }.buttonStyle(.plain).foregroundStyle(Theme.Text.tertiary)
+                }
+            }
+            HStack(spacing: 8) {
+                TextField("伺服器路徑（如 /media）", text: $serverPrefix).textFieldStyle(.roundedBorder)
+                Image(systemName: "arrow.right").font(.system(size: 10)).foregroundStyle(Theme.Text.tertiary)
+                TextField("本機路徑", text: $localPrefix).textFieldStyle(.roundedBorder)
+                Button("瀏覽…") {
+                    let panel = NSOpenPanel()
+                    panel.canChooseDirectories = true
+                    panel.canChooseFiles = false
+                    if panel.runModal() == .OK, let url = panel.url { localPrefix = url.path }
+                }
+                Button("加入") {
+                    mappings.add(serverPrefix: serverPrefix, localPrefix: localPrefix)
+                    serverPrefix = ""
+                    localPrefix = ""
+                }
+                .disabled(serverPrefix.trimmingCharacters(in: .whitespaces).isEmpty || localPrefix.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+            .controlSize(.small)
+        }
     }
 }
 

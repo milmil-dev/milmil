@@ -55,4 +55,33 @@ final class Router {
     func popToRoot() {
         path.removeAll()
     }
+
+    /// `milmil://anime/<bangumiID>`, `milmil://watch/<bangumiID>?ep=<episodeID>`,
+    /// `milmil://<tab>` (home, schedule, discover, search, collection, history,
+    /// libraries, downloads, notifications). Returns false when unrecognised.
+    @discardableResult
+    func handle(url: URL) -> Bool {
+        guard url.scheme == "milmil" else { return false }
+        let host = url.host() ?? ""
+        let parts = url.pathComponents.filter { $0 != "/" }
+        switch host {
+        case "anime":
+            guard let id = parts.first.flatMap(Int.init) else { return false }
+            select(.home)
+            openAnime(id)
+        case "watch":
+            guard let id = parts.first.flatMap(Int.init) else { return false }
+            let episode = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "ep" }?.value
+            select(.home)
+            pendingPlayback = PlaybackRequest(bangumiID: id, episodeID: episode, title: "")
+            openWatch(bangumiID: id, episodeID: episode)
+        default:
+            guard let destination = Destination(rawValue: host) else { return false }
+            select(destination)
+        }
+        return true
+    }
+
+    /// Set by `handle(url:)` for `watch` links; the shell consumes it.
+    var pendingPlayback: PlaybackRequest?
 }

@@ -92,9 +92,23 @@ targets:
         LSApplicationCategoryType: public.app-category.entertainment
         LSMinimumSystemVersion: "15.0"
         NSHumanReadableCopyright: "© milmil contributors"
+        # milmil://anime/<id>, milmil://watch/<id>?ep=<episodeID>, milmil://<tab>
         CFBundleURLTypes:
           - CFBundleURLName: dev.milmil.macos
             CFBundleURLSchemes: [milmil]
+        # Double-click / drop a .torrent on the Dock icon → queued as a download.
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: BitTorrent document
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [org.bittorrent.torrent]
+        UTImportedTypeDeclarations:
+          - UTTypeIdentifier: org.bittorrent.torrent
+            UTTypeDescription: BitTorrent document
+            UTTypeConformsTo: [public.data]
+            UTTypeTagSpecification:
+              public.filename-extension: [torrent]
+              public.mime-type: [application/x-bittorrent]
         # Self-hosted servers are commonly plain http on the LAN, and Bangumi
         # covers are http://lain.bgm.tv. Only this key: adding
         # NSAllowsLocalNetworking alongside makes ATS ignore it (Apple docs).

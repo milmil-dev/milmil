@@ -53,6 +53,9 @@ final class PlayerController {
     private var activity: NSObjectProtocol?
     private var loadGeneration = 0
     private var authToken: String?
+    /// The mapped local file for the current episode, when a mapping hits.
+    private var localFileURL: URL?
+    private var pendingClipboardShots: [UInt64: URL] = [:]
 
     var episodes: [PlayableEpisode] { playable?.episodes.sorted { $0.sort < $1.sort } ?? [] }
     var nextEpisode: PlayableEpisode? { adjacentEpisode(offset: 1) }
@@ -199,7 +202,8 @@ final class PlayerController {
             state.status = .failed("媒體庫目前離線，無法播放此檔案")
             return
         }
-        fallback = StreamFallback(hasLocalFile: false, canRemux: info?.canRemux ?? true, canTranscode: true)
+        localFileURL = file.path.flatMap { LocalPathMappings.shared.localURL(forServerPath: $0) }
+        fallback = StreamFallback(hasLocalFile: localFileURL != nil, canRemux: info?.canRemux ?? true, canTranscode: true)
         await refreshAuthHeader()
         guard generation == loadGeneration, !Task.isCancelled else { return }
         await loadCurrentStage(fileID: file.id)
@@ -233,8 +237,12 @@ final class PlayerController {
         let generation = loadGeneration
         switch stage {
         case .localFile:
-            fallback.advance()
-            await loadCurrentStage(fileID: fileID)
+            if let localFileURL {
+                load(url: localFileURL, generation: generation)
+            } else {
+                fallback.advance()
+                await loadCurrentStage(fileID: fileID)
+            }
         case .direct:
             load(url: session.client.directStreamURL(fileID: fileID), generation: generation)
         case .remux:
@@ -344,7 +352,9 @@ final class PlayerController {
             break
         case let .propertyChange(name, value):
             apply(name, value)
-        case .log, .commandReply, .queueOverflow, .shutdown:
+        case let .commandReply(id, error):
+            finishClipboardShot(id: id, error: error)
+        case .log, .queueOverflow, .shutdown:
             break
         }
     }
@@ -581,6 +591,27 @@ final class PlayerController {
         flash(.text("已儲存截圖"))
     }
 
+    /// Renders to a temp PNG via `screenshot-to-file`, then puts it on the
+    /// pasteboard when mpv's reply arrives.
+    func screenshotToClipboard(withSubtitles: Bool = true) {
+        guard let player else { return }
+        let url = FileManager.default.temporaryDirectory.appending(path: "milmil-shot-\(UUID().uuidString).png")
+        let id = player.commandAsync(["screenshot-to-file", url.path, withSubtitles ? "subtitles" : "video"])
+        pendingClipboardShots[id] = url
+    }
+
+    private func finishClipboardShot(id: UInt64, error: Int32) {
+        guard let url = pendingClipboardShots.removeValue(forKey: id) else { return }
+        defer { try? FileManager.default.removeItem(at: url) }
+        guard error >= 0, let image = NSImage(contentsOf: url) else {
+            flash(.text("截圖失敗"))
+            return
+        }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.writeObjects([image])
+        flash(.text("截圖已複製"))
+    }
+
     func addExternalSubtitle(fileURL: URL) {
         player?.addSubtitle(fileURL.path, title: fileURL.lastPathComponent)
         flash(.text("已載入 \(fileURL.lastPathComponent)"))
@@ -628,6 +659,7 @@ final class PlayerController {
         case .previousEpisode: playPrevious()
         case .screenshot: screenshot(withSubtitles: false)
         case .screenshotWithSubs: screenshot(withSubtitles: true)
+        case .screenshotToClipboard: screenshotToClipboard()
         case .danmakuToggle: setDanmakuEnabled(!danmakuEnabled)
         case .fullscreen, .miniPlayer, .help, .techInfo, .inspector, .danmakuSettings, .danmakuCompose, .theater:
             window?.perform(action)

@@ -126,9 +126,11 @@ public struct PlayableMediaFile: Decodable, Sendable, Hashable, Identifiable {
     public let height: Int?
     public let videoCodec: String?
     public let audioCodec: String?
+    /// Server-side absolute path (servers ≥ this change); used for local mounts.
+    public let path: String?
 
     enum CodingKeys: String, CodingKey {
-        case id, filename, width, height
+        case id, filename, width, height, path
         case sizeBytes = "size_bytes"
         case videoCodec = "video_codec"
         case audioCodec = "audio_codec"

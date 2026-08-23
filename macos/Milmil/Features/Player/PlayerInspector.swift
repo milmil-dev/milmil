@@ -261,6 +261,7 @@ enum PlayerContextMenu {
         menu.addItem(.separator())
         menu.addItem(withTitle: "截圖", state: false) { controller.screenshot(withSubtitles: false) }
         menu.addItem(withTitle: "截圖（含字幕）", state: false) { controller.screenshot(withSubtitles: true) }
+        menu.addItem(withTitle: "截圖到剪貼簿", state: false) { controller.screenshotToClipboard() }
         menu.addItem(.separator())
         menu.addItem(withTitle: model.isMini ? "離開迷你播放器" : "迷你播放器", state: false) { model.toggleMini() }
         menu.addItem(withTitle: "技術資訊", state: model.techInfoShown) { model.techInfoShown.toggle() }
