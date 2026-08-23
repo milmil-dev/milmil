@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.19](https://github.com/milmil-dev/milmil/compare/v0.1.18...v0.1.19) (2026-08-23)
+
+
+### Features
+
+* **sync:** tell a rewatch apart from a first watch ([#120](https://github.com/milmil-dev/milmil/issues/120)) ([36d388b](https://github.com/milmil-dev/milmil/commit/36d388b4109c43f4063709fb33c412aec4ca2847))
+
 ## [0.1.18](https://github.com/milmil-dev/milmil/compare/v0.1.17...v0.1.18) (2026-08-23)
 
 
