@@ -107,10 +107,9 @@ struct PosterWall: View {
             )
         )
         .overlay(
-            Circle()
-                .fill(Theme.accent.opacity(0.05))
-                .frame(width: 600, height: 600)
-                .blur(radius: 120)
+            // Accent glow behind the form (web: 600px circle at 5% + 120px blur).
+            // A radial gradient instead of `.blur` so nothing clips to a hard disc.
+            RadialGradient(colors: [Theme.accent.opacity(0.07), .clear], center: .center, startRadius: 0, endRadius: 420)
         )
         .ignoresSafeArea()
         .accessibilityHidden(true)

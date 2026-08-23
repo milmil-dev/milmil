@@ -85,6 +85,8 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
           NSAllowsLocalNetworking: true
+        # macOS 15+ prompts for local-network access the first time we reach a LAN server.
+        NSLocalNetworkUsageDescription: milmil 需要連線到你區域網路內的 milmil 伺服器。
 
 schemes:
   Milmil:

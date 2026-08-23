@@ -27,4 +27,17 @@ struct DiscoverTests {
         #expect(sparse.genres == ["奇幻"])
         #expect(sparse.anilistID == nil && sparse.nextEpisode == nil)
     }
+
+    @Test("a full live trending page (server 0.1.15) decodes with every cover")
+    func liveTrendingPage() async throws {
+        let transport = FakeTransport()
+        transport.stub("GET /api/v1/discover/trending", json: try Fixtures.string("trending_live"))
+        let client = APIClient(baseURL: URL(string: "http://192.168.50.178:8080")!, transport: transport)
+
+        let items = try await client.trending()
+
+        #expect(items.count == 20)
+        #expect(items.compactMap(\.coverImage).count == 20)
+        #expect(items.allSatisfy { !$0.title.isEmpty && $0.score >= 0 })
+    }
 }

@@ -1,6 +1,7 @@
 # Environment
 .env
 .env.local
+docker-compose.local.yml
 *.env.local
 *.env.*
 !.env.example

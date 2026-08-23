@@ -9,7 +9,10 @@ struct MilmilApp: App {
         WindowGroup {
             RootView()
                 .environment(session)
-                .task { await session.bootstrap() }
+                .task {
+                    DevSnapshot.runIfRequested()
+                    await session.bootstrap()
+                }
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
