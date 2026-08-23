@@ -1,6 +1,6 @@
 module github.com/milmil/api
 
-go 1.26.1
+go 1.27.0
 
 require (
 	github.com/anacrolix/torrent v1.61.0

@@ -98,7 +98,7 @@
 
 | 레이어 | 기술 |
 |--------|------|
-| 백엔드 | Go 1.26, Echo v4, SQLite / PostgreSQL |
+| 백엔드 | Go 1.27, Echo v5, SQLite / PostgreSQL |
 | 프론트엔드 | React 19, TanStack Router, Tailwind CSS v4 |
 | 상태 관리 | Zustand (UI), TanStack Query (서버) |
 | 번들러 | Vite 8, Bun |
@@ -117,7 +117,7 @@
 
 ### 사전 요구 사항
 
-- Go 1.26+
+- Go 1.27+
 - Bun 1.3+
 - FFmpeg (트랜스코딩 및 미디어 정보용)
 - Redis (선택 사항)
