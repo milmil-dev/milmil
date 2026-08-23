@@ -59,11 +59,39 @@ func TestDeriveStatus_WatchingPartial(t *testing.T) {
 }
 
 func TestDeriveStatus_CompletedWhenAllWatched(t *testing.T) {
-	q, cleanup := newTestQueries(t)
+	q, database, cleanup := newTestQueriesWithDB(t)
 	defer cleanup()
 	mustInsertAnime(t, q, "a1", 12, 0, 0)
 	mustInsertEpisodes(t, q, "a1", 12, 0)
 	mustMarkWatched(t, q, "u", "a1", 12)
+	// Pin the timestamps. Left to strftime('now') the whole series lands in one
+	// second only if the inserts are fast enough, which under -race they are
+	// not — this test used to fail intermittently for that reason alone.
+	setWatchedAt(t, database, "a1", 1, 12, "2026-01-01T00:00:00Z")
+
+	got, err := DeriveStatus(context.Background(), q, "u", "a1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != StatusCompleted {
+		t.Errorf("got %v want completed", got)
+	}
+}
+
+// A series watched an episode at a time over days is completed, not repeating.
+// The query used to compare the last watch against the *first* episode's
+// completion, so every ordinary watch-through reported "repeating" the first
+// time it finished.
+func TestDeriveStatus_CompletedWhenWatchedOverTime(t *testing.T) {
+	q, database, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 3, 0, 0)
+	mustInsertEpisodes(t, q, "a1", 3, 0)
+	mustMarkWatched(t, q, "u", "a1", 3)
+	setWatchedAt(t, database, "a1", 1, 1, "2026-01-01T00:00:00Z")
+	setWatchedAt(t, database, "a1", 2, 2, "2026-01-08T00:00:00Z")
+	setWatchedAt(t, database, "a1", 3, 3, "2026-01-15T00:00:00Z")
+
 	got, err := DeriveStatus(context.Background(), q, "u", "a1")
 	if err != nil {
 		t.Fatal(err)

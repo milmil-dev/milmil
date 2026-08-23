@@ -44,7 +44,7 @@ const countCompletedWatchProgressByAnime = `-- name: CountCompletedWatchProgress
 SELECT
     COALESCE(SUM(CASE WHEN wp.completed = 1 THEN 1 ELSE 0 END), 0) AS completed_count,
     COALESCE(MAX(wp.last_watched_at), '') AS last_played_at,
-    COALESCE(MIN(CASE WHEN wp.completed = 1 THEN wp.last_watched_at END), '') AS first_completed_at
+    COALESCE(MAX(CASE WHEN wp.completed = 1 THEN wp.last_watched_at END), '') AS series_completed_at
 FROM watch_progress wp
 JOIN episodes e ON e.id = wp.episode_id
 WHERE wp.user_id = ?1 AND e.anime_id = ?2
@@ -56,15 +56,15 @@ type CountCompletedWatchProgressByAnimeParams struct {
 }
 
 type CountCompletedWatchProgressByAnimeRow struct {
-	CompletedCount   interface{} `json:"completed_count"`
-	LastPlayedAt     interface{} `json:"last_played_at"`
-	FirstCompletedAt interface{} `json:"first_completed_at"`
+	CompletedCount    interface{} `json:"completed_count"`
+	LastPlayedAt      interface{} `json:"last_played_at"`
+	SeriesCompletedAt interface{} `json:"series_completed_at"`
 }
 
 func (q *Queries) CountCompletedWatchProgressByAnime(ctx context.Context, arg CountCompletedWatchProgressByAnimeParams) (CountCompletedWatchProgressByAnimeRow, error) {
 	row := q.db.QueryRowContext(ctx, countCompletedWatchProgressByAnime, arg.UserID, arg.AnimeID)
 	var i CountCompletedWatchProgressByAnimeRow
-	err := row.Scan(&i.CompletedCount, &i.LastPlayedAt, &i.FirstCompletedAt)
+	err := row.Scan(&i.CompletedCount, &i.LastPlayedAt, &i.SeriesCompletedAt)
 	return i, err
 }
 
