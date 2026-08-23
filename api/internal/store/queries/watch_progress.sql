@@ -112,3 +112,20 @@ WHERE user_id = sqlc.arg('user_id') AND id IN (sqlc.slice('ids'));
 
 -- name: DeleteAllWatchProgressByUser :execrows
 DELETE FROM watch_progress WHERE user_id = sqlc.arg('user_id');
+
+-- name: GetAnimeWatchState :one
+SELECT * FROM anime_watch_state WHERE user_id = ? AND anime_id = ? LIMIT 1;
+
+-- name: RecordSeriesCompletion :exec
+-- Counts a completion only when the series has become whole more recently than
+-- the last one recorded, so saving progress on an already-finished series is a
+-- no-op rather than an endless increment.
+INSERT INTO anime_watch_state (user_id, anime_id, times_completed, last_completed_at)
+VALUES (?, ?, 1, ?)
+ON CONFLICT(user_id, anime_id) DO UPDATE SET
+    times_completed   = anime_watch_state.times_completed + 1,
+    last_completed_at = excluded.last_completed_at
+WHERE excluded.last_completed_at > anime_watch_state.last_completed_at;
+
+-- name: DeleteAnimeWatchState :exec
+DELETE FROM anime_watch_state WHERE user_id = ? AND anime_id = ?;

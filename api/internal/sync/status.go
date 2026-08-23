@@ -2,6 +2,8 @@ package sync
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/milmil/api/internal/store"
@@ -12,9 +14,8 @@ import (
 // Precedence:
 //  1. anime.watch_status_override, if non-empty, wins unconditionally.
 //  2. Otherwise derive from completed-episode counts vs total episodes,
-//     with a "repeating" bump when the most recent watch happened after the
-//     series was completed — that is, after the last of its episodes was
-//     marked complete.
+//     with "repeating" when the series has been finished before (recorded in
+//     anime_watch_state) and is being watched again.
 //
 // A user with any watch_progress row but zero completions is StatusPlanning;
 // a user with no rows at all is StatusNone.
@@ -36,8 +37,6 @@ func DeriveStatus(ctx context.Context, q *store.Queries, userID, animeID string)
 	}
 
 	completed := asInt64(counts.CompletedCount)
-	lastPlayed := asString(counts.LastPlayedAt)
-	seriesCompleted := asString(counts.SeriesCompletedAt)
 
 	if completed == 0 {
 		hasProgress, err := q.HasAnyWatchProgress(ctx, store.HasAnyWatchProgressParams{
@@ -58,23 +57,25 @@ func DeriveStatus(ctx context.Context, q *store.Queries, userID, animeID string)
 		total = anime.TotalEpisodes.Int64
 	}
 	if total > 0 && completed >= total {
-		// Compare against when the series finished, not when its first episode
-		// did. The query used to take MIN over completed episodes, so any
-		// series watched across more than one instant — every real one — had
-		// lastPlayed after it and reported "repeating" the first time it was
-		// finished, which is what got pushed to AniList, Bangumi and Trakt.
-		//
-		// Note this makes derived "repeating" nearly unreachable: restarting an
-		// episode clears its completed flag, which drops the count below total
-		// and lands on StatusWatching instead. The schema records no rewatch
-		// count, so a real "currently rewatching" signal needs either that
-		// column or an explicit watch_status_override. Reporting completed
-		// series as completed is the correct half of the trade.
-		if lastPlayed > seriesCompleted {
-			return StatusRepeating, nil
-		}
 		return StatusCompleted, nil
 	}
+
+	// Partway through. Whether that is a first watch or a rewatch cannot be
+	// told from watch_progress alone — a half-finished episode looks identical
+	// either way — so it comes from the completion the user has already
+	// recorded. Deriving it from timestamps is what previously reported every
+	// finished series as "repeating".
+	state, err := q.GetAnimeWatchState(ctx, store.GetAnimeWatchStateParams{
+		UserID:  userID,
+		AnimeID: animeID,
+	})
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return StatusNone, err
+	}
+	if state.TimesCompleted > 0 {
+		return StatusRepeating, nil
+	}
+
 	return StatusWatching, nil
 }
 
@@ -117,4 +118,39 @@ func asString(v interface{}) string {
 	default:
 		return fmt.Sprintf("%v", x)
 	}
+}
+
+// RecordSeriesCompletion notes that (userID, animeID) is now fully watched, so
+// a later partial watch can be recognised as a rewatch rather than a first
+// pass.
+//
+// It is safe to call on every progress save: the underlying statement only
+// counts a completion when the series became whole more recently than the last
+// one recorded, so re-saving progress on a finished series does nothing. A
+// series that is not yet complete is ignored entirely.
+func RecordSeriesCompletion(ctx context.Context, q *store.Queries, userID, animeID string) error {
+	anime, err := q.GetAnime(ctx, animeID)
+	if err != nil {
+		return err
+	}
+	if !anime.TotalEpisodes.Valid || anime.TotalEpisodes.Int64 <= 0 {
+		return nil // unknown length; "complete" is not meaningful
+	}
+
+	counts, err := q.CountCompletedWatchProgressByAnime(ctx, store.CountCompletedWatchProgressByAnimeParams{
+		UserID:  userID,
+		AnimeID: animeID,
+	})
+	if err != nil {
+		return err
+	}
+	if asInt64(counts.CompletedCount) < anime.TotalEpisodes.Int64 {
+		return nil
+	}
+
+	return q.RecordSeriesCompletion(ctx, store.RecordSeriesCompletionParams{
+		UserID:          userID,
+		AnimeID:         animeID,
+		LastCompletedAt: asString(counts.SeriesCompletedAt),
+	})
 }

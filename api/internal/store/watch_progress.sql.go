@@ -80,6 +80,20 @@ func (q *Queries) DeleteAllWatchProgressByUser(ctx context.Context, userID strin
 	return result.RowsAffected()
 }
 
+const deleteAnimeWatchState = `-- name: DeleteAnimeWatchState :exec
+DELETE FROM anime_watch_state WHERE user_id = ? AND anime_id = ?
+`
+
+type DeleteAnimeWatchStateParams struct {
+	UserID  string `json:"user_id"`
+	AnimeID string `json:"anime_id"`
+}
+
+func (q *Queries) DeleteAnimeWatchState(ctx context.Context, arg DeleteAnimeWatchStateParams) error {
+	_, err := q.db.ExecContext(ctx, deleteAnimeWatchState, arg.UserID, arg.AnimeID)
+	return err
+}
+
 const deleteWatchProgress = `-- name: DeleteWatchProgress :execrows
 DELETE FROM watch_progress
 WHERE id = ?1 AND user_id = ?2
@@ -96,6 +110,27 @@ func (q *Queries) DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgre
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const getAnimeWatchState = `-- name: GetAnimeWatchState :one
+SELECT user_id, anime_id, times_completed, last_completed_at FROM anime_watch_state WHERE user_id = ? AND anime_id = ? LIMIT 1
+`
+
+type GetAnimeWatchStateParams struct {
+	UserID  string `json:"user_id"`
+	AnimeID string `json:"anime_id"`
+}
+
+func (q *Queries) GetAnimeWatchState(ctx context.Context, arg GetAnimeWatchStateParams) (AnimeWatchState, error) {
+	row := q.db.QueryRowContext(ctx, getAnimeWatchState, arg.UserID, arg.AnimeID)
+	var i AnimeWatchState
+	err := row.Scan(
+		&i.UserID,
+		&i.AnimeID,
+		&i.TimesCompleted,
+		&i.LastCompletedAt,
+	)
+	return i, err
 }
 
 const getWatchProgress = `-- name: GetWatchProgress :one
@@ -470,6 +505,29 @@ func (q *Queries) ListWatchProgressByUser(ctx context.Context, userID string) ([
 		return nil, err
 	}
 	return items, nil
+}
+
+const recordSeriesCompletion = `-- name: RecordSeriesCompletion :exec
+INSERT INTO anime_watch_state (user_id, anime_id, times_completed, last_completed_at)
+VALUES (?, ?, 1, ?)
+ON CONFLICT(user_id, anime_id) DO UPDATE SET
+    times_completed   = anime_watch_state.times_completed + 1,
+    last_completed_at = excluded.last_completed_at
+WHERE excluded.last_completed_at > anime_watch_state.last_completed_at
+`
+
+type RecordSeriesCompletionParams struct {
+	UserID          string `json:"user_id"`
+	AnimeID         string `json:"anime_id"`
+	LastCompletedAt string `json:"last_completed_at"`
+}
+
+// Counts a completion only when the series has become whole more recently than
+// the last one recorded, so saving progress on an already-finished series is a
+// no-op rather than an endless increment.
+func (q *Queries) RecordSeriesCompletion(ctx context.Context, arg RecordSeriesCompletionParams) error {
+	_, err := q.db.ExecContext(ctx, recordSeriesCompletion, arg.UserID, arg.AnimeID, arg.LastCompletedAt)
+	return err
 }
 
 const upsertWatchProgress = `-- name: UpsertWatchProgress :one

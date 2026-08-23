@@ -3,12 +3,14 @@ package api
 import (
 	"database/sql"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
+	milmilsync "github.com/milmil/api/internal/sync"
 )
 
 type saveProgressRequest struct {
@@ -78,12 +80,21 @@ func (h *handler) handleSaveProgress(c *echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	// A1 fix: synchronous enqueue so a crash between DB write and queue insert
-	// cannot lose the sync op. The enqueue is a fast transactional INSERT (<5ms).
-	if h.syncSvc != nil {
-		episode, epErr := h.queries.GetEpisode(c.Request().Context(), req.EpisodeID)
-		if epErr == nil {
-			h.syncSvc.OnProgressUpdate(c.Request().Context(), userID, episode.AnimeID)
+	ctx := c.Request().Context()
+	if episode, epErr := h.queries.GetEpisode(ctx, req.EpisodeID); epErr == nil {
+		// Note a finished series so a later partial watch reads as a rewatch.
+		// Not fatal: the progress row is already saved, and the next save
+		// records it just the same.
+		if err := milmilsync.RecordSeriesCompletion(ctx, h.queries, userID, episode.AnimeID); err != nil {
+			slog.Warn("failed to record series completion",
+				"user_id", userID, "anime_id", episode.AnimeID, "err", err)
+		}
+
+		// A1 fix: synchronous enqueue so a crash between DB write and queue
+		// insert cannot lose the sync op. The enqueue is a fast transactional
+		// INSERT (<5ms).
+		if h.syncSvc != nil {
+			h.syncSvc.OnProgressUpdate(ctx, userID, episode.AnimeID)
 		}
 	}
 
