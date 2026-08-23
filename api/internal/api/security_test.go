@@ -240,11 +240,17 @@ func TestChangePasswordRevokesOtherSessions(t *testing.T) {
 // The global limiter allows 100 req/s, which is no obstacle to sweeping a
 // 6-digit TOTP code. The credential endpoints get their own, far tighter
 // budget; this proves it is actually attached to the route.
+//
+// The username deliberately does not exist. A real one would send every
+// attempt through bcrypt, and under -race that costs seconds per call — slow
+// enough that the limiter refills faster than the loop can spend, so nothing
+// is ever refused and the test fails for a reason that has nothing to do with
+// rate limiting. Unknown users are rejected before the password check, so the
+// requests are fast and the burst is genuinely exhausted.
 func TestLoginIsRateLimited(t *testing.T) {
 	e := newTestApp(t)
-	getToken(t, e) // create the account so we exercise the wrong-password path
 
-	const wrongCreds = `{"username":"testuser","password":"not-the-password"}`
+	const wrongCreds = `{"username":"nobody-here","password":"not-the-password"}`
 	sawTooManyRequests := false
 	for range 30 {
 		req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/login", strings.NewReader(wrongCreds))
