@@ -20,7 +20,11 @@ actor ImageCache {
     init() {
         let config = URLSessionConfiguration.default
         config.requestCachePolicy = .returnCacheDataElseLoad
-        config.urlCache = URLCache(memoryCapacity: 64 << 20, diskCapacity: 512 << 20, diskPath: "milmil-images")
+        // An explicit directory: a relative `diskPath` lands in the process's
+        // working directory (the repo root when launched from a terminal).
+        let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first ?? FileManager.default.temporaryDirectory
+        let directory = caches.appending(path: Bundle.main.bundleIdentifier ?? "dev.milmil.macos").appending(path: "images")
+        config.urlCache = URLCache(memoryCapacity: 64 << 20, diskCapacity: 512 << 20, directory: directory)
         config.httpAdditionalHeaders = ["Accept": "image/*"]
         session = URLSession(configuration: config)
     }
