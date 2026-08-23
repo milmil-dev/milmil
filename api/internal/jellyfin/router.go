@@ -49,7 +49,7 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	jf.POST("/Users/AuthenticateByName", h.handleAuthenticateByName)
 
 	// Protected endpoints
-	auth := jf.Group("", EmbyAuthMiddleware(h.jwtSecret))
+	auth := jf.Group("", EmbyAuthMiddleware(h.jwtSecret, h.queries))
 	auth.GET("/System/Info", h.handleSystemInfo)
 
 	// Users

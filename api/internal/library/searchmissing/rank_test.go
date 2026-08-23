@@ -74,8 +74,8 @@ func TestRank_SizeTiebreak(t *testing.T) {
 
 func TestRank_SubgroupTiebreak(t *testing.T) {
 	in := []Result{
-		Result{Raw: Raw{Title: "Show - 01 [1080p].mkv", Seeders: 10, SizeBytes: 1_000_000_000}, Parsed: fileparse.ParsedFilename{Resolution: 1080, SubGroup: ""}},
-		Result{Raw: Raw{Title: "[SubsPlease] Show - 01 [1080p].mkv", Seeders: 10, SizeBytes: 1_000_000_000}, Parsed: fileparse.ParsedFilename{Resolution: 1080, SubGroup: "SubsPlease"}},
+		{Raw: Raw{Title: "Show - 01 [1080p].mkv", Seeders: 10, SizeBytes: 1_000_000_000}, Parsed: fileparse.ParsedFilename{Resolution: 1080, SubGroup: ""}},
+		{Raw: Raw{Title: "[SubsPlease] Show - 01 [1080p].mkv", Seeders: 10, SizeBytes: 1_000_000_000}, Parsed: fileparse.ParsedFilename{Resolution: 1080, SubGroup: "SubsPlease"}},
 	}
 	out := Rank(in)
 	if out[0].Parsed.SubGroup == "" {

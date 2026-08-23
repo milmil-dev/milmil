@@ -3,6 +3,8 @@ package renamer
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"math"
 	"regexp"
 	"strings"
@@ -54,9 +56,11 @@ func funcMap() texttemplate.FuncMap {
 		},
 		"upper": strings.ToUpper,
 		"lower": strings.ToLower,
-		// Note: strings.Title is deprecated; acceptable here to avoid pulling
-		// a new dep for a template helper. Users can layer their own casing.
-		"title": strings.Title,
+		// cases.Title replaces the deprecated strings.Title, which mishandles
+		// Unicode punctuation ("don't" became "Don'T"). NoLower preserves the
+		// old behaviour of leaving the rest of each word alone, so templates
+		// like {{title .Title}} do not suddenly rewrite "SPY x FAMILY".
+		"title": cases.Title(language.Und, cases.NoLower).String,
 	}
 }
 

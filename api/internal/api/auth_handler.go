@@ -175,6 +175,16 @@ func (h *handler) handleAuthLogin2FA(c *echo.Context) error {
 }
 
 func (h *handler) handleAuthLogout(c *echo.Context) error {
+	// API tokens are rows, so logging out means deleting the one this request
+	// authenticated with. Returning 204 without doing so left the token valid
+	// forever, which is exactly what a user clicking "log out" expects not to
+	// happen on a shared or lost device.
+	if err := h.queries.DeleteAPIToken(c.Request().Context(), store.DeleteAPITokenParams{
+		ID:     getTokenID(c),
+		UserID: getUserID(c),
+	}); err != nil {
+		return echo.ErrInternalServerError
+	}
 	return c.NoContent(http.StatusNoContent)
 }
 
@@ -269,6 +279,19 @@ func (h *handler) handleChangePassword(c *echo.Context) error {
 		PasswordHash: hash,
 		ID:           userID,
 	}); err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	// Changing a password is how someone reacts to a token having leaked, so it
+	// has to end the other sessions too. API tokens are deleted outright; the
+	// Jellyfin JWTs, which cannot be deleted, are invalidated by the version bump.
+	if err := h.queries.DeleteOtherAPITokens(ctx, store.DeleteOtherAPITokensParams{
+		UserID: userID,
+		ID:     getTokenID(c),
+	}); err != nil {
+		return echo.ErrInternalServerError
+	}
+	if err := h.queries.BumpTokenVersion(ctx, userID); err != nil {
 		return echo.ErrInternalServerError
 	}
 

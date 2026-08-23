@@ -136,7 +136,7 @@ func TestStripSeasonSuffix(t *testing.T) {
 		{"オーバーロード IV", "オーバーロード"},
 		{"Code Geass S2", "Code Geass"},
 		{"葬送のフリーレン", "葬送のフリーレン"},   // no suffix — unchanged
-		{"鬼滅の刃 柱稽古編", "鬼滅の刃 柱稽古編"},     // arc suffix isn't stripped
+		{"鬼滅の刃 柱稽古編", "鬼滅の刃 柱稽古編"}, // arc suffix isn't stripped
 		{"  彼女、お借りします 第5期  ", "彼女、お借りします"},
 		{"", ""},
 	}

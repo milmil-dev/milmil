@@ -221,4 +221,3 @@ func TestScanLibrary_Success(t *testing.T) {
 	// Wait briefly for the background goroutine to finish so TempDir cleanup succeeds.
 	time.Sleep(500 * time.Millisecond)
 }
-

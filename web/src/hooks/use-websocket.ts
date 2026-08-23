@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { api } from '../lib/api-client';
 import { useScanStore } from '../store/scan-store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
@@ -15,6 +16,21 @@ interface WSEvent {
 }
 
 /**
+ * Opens an authenticated WebSocket.
+ *
+ * A handshake cannot carry an Authorization header, so we exchange the stored
+ * API token for a single-use ticket first. The ticket is redeemed by the
+ * server on upgrade and expires within a minute, so it is safe for it to
+ * appear in the URL where the long-lived token would not be.
+ */
+export async function connectAuthenticatedWebSocket(): Promise<WebSocket> {
+  const { ticket } = await api.get<{ ticket: string; expires_in: number }>('/api/v1/ws/ticket');
+  return new WebSocket(`${WS_URL}?ticket=${encodeURIComponent(ticket)}`);
+}
+
+const RECONNECT_DELAY_MS = 3000;
+
+/**
  * Connects to the milmil WebSocket with auto-reconnect.
  * Routes scan/match events to the Zustand scan store.
  * Returns the latest event for consumers.
@@ -28,10 +44,29 @@ export function useMillilWebSocket() {
   useEffect(() => {
     mountedRef.current = true;
 
-    function connect() {
+    function scheduleReconnect() {
+      if (!mountedRef.current) return;
+      reconnectTimer.current = setTimeout(connect, RECONNECT_DELAY_MS);
+    }
+
+    async function connect() {
       if (!mountedRef.current) return;
 
-      const ws = new WebSocket(WS_URL);
+      let ws: WebSocket;
+      try {
+        ws = await connectAuthenticatedWebSocket();
+      } catch {
+        // No valid session yet (or the ticket call failed) — back off and
+        // retry rather than spinning on a rejected handshake.
+        scheduleReconnect();
+        return;
+      }
+
+      // The await above yields, so the component may have unmounted meanwhile.
+      if (!mountedRef.current) {
+        ws.close();
+        return;
+      }
       wsRef.current = ws;
 
       ws.onmessage = (msg) => {
@@ -53,10 +88,7 @@ export function useMillilWebSocket() {
 
       ws.onclose = () => {
         wsRef.current = null;
-        if (mountedRef.current) {
-          // Reconnect after 3 seconds
-          reconnectTimer.current = setTimeout(connect, 3000);
-        }
+        scheduleReconnect();
       };
 
       ws.onerror = () => {
@@ -64,7 +96,7 @@ export function useMillilWebSocket() {
       };
     }
 
-    connect();
+    void connect();
 
     return () => {
       mountedRef.current = false;

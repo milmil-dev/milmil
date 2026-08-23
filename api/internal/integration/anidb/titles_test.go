@@ -79,7 +79,9 @@ func TestTitlesPerfWithLargeIndex(t *testing.T) {
 	start := time.Now()
 	cs := idx.Search("Series Number 12345", 0)
 	elapsed := time.Since(start)
-	if elapsed > 1*time.Second {
+	// Race instrumentation slows this by ~10x, so the wall-clock budget only
+	// means something in an uninstrumented build. Correctness is checked either way.
+	if !raceEnabled && elapsed > 1*time.Second {
 		t.Errorf("search too slow: %v (must be <1s)", elapsed)
 	}
 	if len(cs) == 0 || cs[0].AniDBID != 12345 {

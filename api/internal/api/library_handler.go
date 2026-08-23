@@ -380,7 +380,9 @@ func (h *handler) handleListLibraryAnime(c *echo.Context) error {
 	for _, a := range animeList {
 		var genres []string
 		if a.Genres != "" {
-			json.Unmarshal([]byte(a.Genres), &genres)
+			if err := json.Unmarshal([]byte(a.Genres), &genres); err != nil {
+				slog.Debug("malformed genres column", "anime_id", a.ID, "err", err)
+			}
 		}
 		if genres == nil {
 			genres = []string{}
@@ -775,7 +777,7 @@ func listSMBSharesWithCredentials(ctx context.Context, host string, port int, us
 	}
 
 	names, err := s.ListSharenames()
-	s.Logoff()
+	_ = s.Logoff() // teardown; nothing to recover if it fails
 	conn.Close()
 
 	if err != nil {

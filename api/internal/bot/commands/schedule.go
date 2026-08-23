@@ -86,7 +86,7 @@ func buildDaySchedule(ctx context.Context, svc *Services, dayArg string) (*bot.B
 			if dayName == "" {
 				dayName = day.Weekday
 			}
-			sb.WriteString(fmt.Sprintf("\n<b>%s</b>\n", dayName))
+			fmt.Fprintf(&sb, "\n<b>%s</b>\n", dayName)
 			for _, item := range day.Items {
 				title := item.Title
 				if title == "" {
@@ -96,7 +96,7 @@ func buildDaySchedule(ctx context.Context, svc *Services, dayArg string) (*bot.B
 				if item.AirTime != "" {
 					airTime = " " + item.AirTime
 				}
-				sb.WriteString(fmt.Sprintf("  • %s%s\n", title, airTime))
+				fmt.Fprintf(&sb, "  • %s%s\n", title, airTime)
 			}
 		}
 		return &bot.BotResponse{
@@ -181,13 +181,13 @@ func buildDaySchedule(ctx context.Context, svc *Services, dayArg string) (*bot.B
 	targetDate := now.AddDate(0, 0, daysUntil)
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("<b>%s %s</b> (%d anime)\n\n", matchedDay.name, targetDate.Format("2006/1/2"), len(matchedDay.items)))
+	fmt.Fprintf(&sb, "<b>%s %s</b> (%d anime)\n\n", matchedDay.name, targetDate.Format("2006/1/2"), len(matchedDay.items))
 	for _, item := range matchedDay.items {
 		airTime := ""
 		if item.airTime != "" {
 			airTime = " " + item.airTime
 		}
-		sb.WriteString(fmt.Sprintf("• %s%s\n", item.title, airTime))
+		fmt.Fprintf(&sb, "• %s%s\n", item.title, airTime)
 	}
 
 	// Add detail buttons for first 5 anime

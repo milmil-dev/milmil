@@ -150,7 +150,9 @@ func (h *handler) handleStreamRemux(c *echo.Context) error {
 		}
 
 		tempDir := filepath.Join(os.TempDir(), "milmil", "remux-input")
-		os.MkdirAll(tempDir, 0o755)
+		if err := os.MkdirAll(tempDir, 0o755); err != nil {
+			return echo.ErrInternalServerError
+		}
 		tempInput = filepath.Join(tempDir, filepath.Base(mediaFile.Path))
 
 		reader, err := provider.Open(mediaFile.Path)
@@ -181,7 +183,9 @@ func (h *handler) handleStreamRemux(c *echo.Context) error {
 
 	// Remux to temp MP4
 	outputDir := filepath.Join(os.TempDir(), "milmil", "remux-output")
-	os.MkdirAll(outputDir, 0o755)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return echo.ErrInternalServerError
+	}
 	outputPath := filepath.Join(outputDir, fmt.Sprintf("%s.mp4", fileID))
 
 	// Check if already remuxed (cache)

@@ -28,10 +28,10 @@ milmil web frontend — the React SPA that talks to the milmil Go API. Built wit
 | Icons | Hugeicons (`@hugeicons/react` + `@hugeicons/core-free-icons`) |
 | State | Zustand v5 |
 | Data Fetching | TanStack Query v5 |
-| Forms | TanStack Form + Zod + `@tanstack/zod-form-adapter` |
+| Forms | TanStack Form |
 | i18n | Lingui v5 |
 | Animation | Motion |
-| Utilities | es-toolkit, clsx, cva, tailwind-merge |
+| Utilities | clsx, cva, tailwind-merge |
 | PWA | Serwist (`@serwist/vite`) |
 | Linting / Formatting | Vite+ (`vp lint` = Oxlint, `vp fmt` = Oxfmt; configured in the `lint`/`fmt` blocks of `vite.config.ts`) |
 | Testing | Vitest (bundled with Vite+; import from `vite-plus/test`) + Testing Library + Playwright |
@@ -187,3 +187,29 @@ bun run i18n:compile     # Compile translations
 - **E2E**: Playwright in `e2e/*.spec.ts`
 - **Test utils**: `src/test/test-utils.tsx` provides `render()` with all providers
 - **Setup**: `src/test/setup.ts` mocks `matchMedia`
+- **E2E waits**: the specs contain ~110 fixed `page.waitForTimeout(...)` sleeps.
+  They are timing bombs — on a cold Vite the route is still compiling when the
+  budget expires — and CI runs with `retries: 2` to absorb that. When you touch
+  a spec, replace the sleeps you pass with `await expect(locator).toBeVisible()`
+  and let Playwright wait on state instead of the clock.
+- **`builtin-torrent.spec.ts` needs a live backend** on `:8080` with hardcoded
+  local credentials, so it is excluded unless `MILMIL_E2E_LIVE=1` is set.
+
+## Unused-Code Checks (knip)
+
+`bun run knip` gates CI, reporting unreachable files, exports and
+dependencies. Two things it cannot see, so check them by hand before deleting
+a dependency it flags:
+
+- **CSS imports.** `src/styles/global.css` does `@import 'shadcn/tailwind.css'`
+  and `theme.css` imports the two `@fontsource-variable` packages. knip does
+  not follow imports out of CSS, so those packages look unused and are listed
+  in `ignoreDependencies`. Grepping `from '<pkg>'` will not find them —
+  `grep -r <pkg> src/styles` will.
+- **Directory imports.** `import { Disposables } from '../shared'` resolves to
+  `src/plugins/shared/index.ts`. A barrel can look dead while being the only
+  thing consumers import.
+
+`src/components/ui/**` and `src/lib/get-strict-context.tsx` are listed as
+entry points: they are public API by intent (vendored shadcn primitives, and a
+pattern this document recommends), so their exports are not "unused".

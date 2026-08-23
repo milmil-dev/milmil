@@ -87,7 +87,7 @@ func assToVTT(r io.Reader) string {
 			continue
 		}
 
-		sb.WriteString(fmt.Sprintf("%s --> %s\n%s\n\n", start, end, text))
+		fmt.Fprintf(&sb, "%s --> %s\n%s\n\n", start, end, text)
 	}
 
 	return sb.String()

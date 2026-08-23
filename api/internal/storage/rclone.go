@@ -22,10 +22,10 @@ type RcloneConfig struct {
 	// Backend-specific fields used across milmil source types.
 	Host       string `json:"host,omitempty"`
 	Port       int    `json:"port,omitempty"`
-	Share      string `json:"share,omitempty"`    // SMB share name
+	Share      string `json:"share,omitempty"` // SMB share name
 	Username   string `json:"username,omitempty"`
 	Password   string `json:"password,omitempty"`
-	Domain     string `json:"domain,omitempty"`    // SMB domain
+	Domain     string `json:"domain,omitempty"`     // SMB domain
 	PrivateKey string `json:"privateKey,omitempty"` // SFTP private key
 
 	// WebDAV / HTTP

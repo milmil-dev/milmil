@@ -85,10 +85,10 @@ func TodayHandler(svc *Services) bot.CommandHandler {
 		}
 
 		var sb strings.Builder
-		sb.WriteString(fmt.Sprintf("<b>📅 Today — %s %s</b>\n", dayName, nowJST.Format("1/2")))
+		fmt.Fprintf(&sb, "<b>📅 Today — %s %s</b>\n", dayName, nowJST.Format("1/2"))
 
 		if len(watching) > 0 {
-			sb.WriteString(fmt.Sprintf("\n<b>⭐ Watching (%d)</b>\n", len(watching)))
+			fmt.Fprintf(&sb, "\n<b>⭐ Watching (%d)</b>\n", len(watching))
 			for _, item := range watching {
 				epStr := ""
 				if item.ep > 0 {
@@ -98,18 +98,18 @@ func TodayHandler(svc *Services) bot.CommandHandler {
 				if item.airTime != "" {
 					timeStr = " " + item.airTime
 				}
-				sb.WriteString(fmt.Sprintf("  • %s%s%s\n", item.title, epStr, timeStr))
+				fmt.Fprintf(&sb, "  • %s%s%s\n", item.title, epStr, timeStr)
 			}
 		}
 
 		if len(other) > 0 {
-			sb.WriteString(fmt.Sprintf("\n<b>📺 All (%d)</b>\n", len(other)))
+			fmt.Fprintf(&sb, "\n<b>📺 All (%d)</b>\n", len(other))
 			for _, item := range other {
 				timeStr := ""
 				if item.airTime != "" {
 					timeStr = " " + item.airTime
 				}
-				sb.WriteString(fmt.Sprintf("  • %s%s\n", item.title, timeStr))
+				fmt.Fprintf(&sb, "  • %s%s\n", item.title, timeStr)
 			}
 		}
 

@@ -75,16 +75,16 @@ func buildText(resp *bot.BotResponse) string {
 	if len(resp.Fields) > 0 {
 		sb.WriteString("\n")
 		for _, f := range resp.Fields {
-			sb.WriteString(fmt.Sprintf("\n<b>%s:</b> %s", f.Label, f.Value))
+			fmt.Fprintf(&sb, "\n<b>%s:</b> %s", f.Label, f.Value)
 		}
 	}
 
 	if len(resp.List) > 0 {
 		sb.WriteString("\n")
 		for i, item := range resp.List {
-			sb.WriteString(fmt.Sprintf("\n<b>%d.</b> %s", i+1, item.Title))
+			fmt.Fprintf(&sb, "\n<b>%d.</b> %s", i+1, item.Title)
 			if item.Subtitle != "" {
-				sb.WriteString(fmt.Sprintf("\n    %s", item.Subtitle))
+				fmt.Fprintf(&sb, "\n    %s", item.Subtitle)
 			}
 		}
 	}

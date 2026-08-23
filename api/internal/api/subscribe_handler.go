@@ -55,7 +55,7 @@ type subscribeRequest struct {
 }
 
 type subscribeResponse struct {
-	Feed *store.RssFeed     `json:"feed"`
+	Feed *store.RssFeed      `json:"feed"`
 	Rule *store.DownloadRule `json:"rule"`
 }
 

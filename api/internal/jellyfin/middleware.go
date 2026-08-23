@@ -8,12 +8,13 @@ import (
 
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
+	"github.com/milmil/api/internal/store"
 )
 
 // EmbyAuthMiddleware parses X-Emby-Authorization or Authorization headers
 // with the MediaBrowser token scheme used by Jellyfin clients.
 // Format: MediaBrowser Token="<jwt>", Client="Infuse", Device="iPhone", ...
-func EmbyAuthMiddleware(secret string) echo.MiddlewareFunc {
+func EmbyAuthMiddleware(secret string, queries *store.Queries) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {
 			token := extractEmbyToken(c.Request())
@@ -21,8 +22,15 @@ func EmbyAuthMiddleware(secret string) echo.MiddlewareFunc {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Missing authentication token"})
 			}
 
-			userID, err := auth.VerifyToken(secret, token)
+			userID, tokenVersion, err := auth.VerifyToken(secret, token)
 			if err != nil {
+				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid or expired token"})
+			}
+			// A valid signature is not enough: the token must also match the
+			// user's current version, so changing the password logs external
+			// players out instead of leaving a 24h window open.
+			user, err := queries.GetUserByID(c.Request().Context(), userID)
+			if err != nil || user.TokenVersion != tokenVersion {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid or expired token"})
 			}
 			c.Set("userID", userID)
