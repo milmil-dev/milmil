@@ -165,3 +165,17 @@ func mustInsertAnimeWithTMDB(t *testing.T, q *store.Queries, id string, tmdbID i
 func nullInt64(v int64, valid bool) sql.NullInt64 {
 	return sql.NullInt64{Int64: v, Valid: valid}
 }
+
+// setWatchedAt pins last_watched_at for a contiguous range of episodes so
+// status tests do not depend on how fast their inserts run.
+func setWatchedAt(t *testing.T, database *sql.DB, animeID string, fromEp, toEp int, ts string) {
+	t.Helper()
+	for i := fromEp; i <= toEp; i++ {
+		if _, err := database.Exec(
+			`UPDATE watch_progress SET last_watched_at = ? WHERE episode_id = ?`,
+			ts, fmt.Sprintf("%s-ep-%d", animeID, i),
+		); err != nil {
+			t.Fatalf("setWatchedAt(%s ep %d): %v", animeID, i, err)
+		}
+	}
+}
