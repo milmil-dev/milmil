@@ -179,3 +179,29 @@ func setWatchedAt(t *testing.T, database *sql.DB, animeID string, fromEp, toEp i
 		}
 	}
 }
+
+func requireStatus(t *testing.T, q *store.Queries, stage string, want WatchStatus) {
+	t.Helper()
+	got, err := DeriveStatus(context.Background(), q, "u", "a1")
+	if err != nil {
+		t.Fatalf("%s: %v", stage, err)
+	}
+	if got != want {
+		t.Errorf("%s: got %v want %v", stage, got, want)
+	}
+}
+
+func requireTimesCompleted(t *testing.T, q *store.Queries, want int64) {
+	t.Helper()
+	state, err := q.GetAnimeWatchState(context.Background(),
+		store.GetAnimeWatchStateParams{UserID: "u", AnimeID: "a1"})
+	if err != nil {
+		if want == 0 {
+			return // no row at all is zero completions
+		}
+		t.Fatalf("GetAnimeWatchState: %v", err)
+	}
+	if state.TimesCompleted != want {
+		t.Errorf("times_completed = %d, want %d", state.TimesCompleted, want)
+	}
+}

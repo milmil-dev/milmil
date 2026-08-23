@@ -136,3 +136,74 @@ func TestDeriveStatus_UnknownTotalStaysWatching(t *testing.T) {
 		t.Errorf("unknown total must not auto-complete, got %v", got)
 	}
 }
+
+// The full lifecycle: first watch, finish, restart, finish again. "repeating"
+// has to come from the recorded completion, because a part-watched episode
+// looks the same on a first pass as on a rewatch.
+func TestDeriveStatus_RewatchLifecycle(t *testing.T) {
+	ctx := context.Background()
+	q, database, cleanup := newTestQueriesWithDB(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 3, 0, 0)
+	mustInsertEpisodes(t, q, "a1", 3, 0)
+
+	// Partway through a first watch — nothing finished before, so: watching.
+	mustMarkWatched(t, q, "u", "a1", 2)
+	setWatchedAt(t, database, "a1", 1, 2, "2026-01-01T00:00:00Z")
+	requireStatus(t, q, "watching", StatusWatching)
+
+	// Recording a completion is a no-op while the series is unfinished.
+	if err := RecordSeriesCompletion(ctx, q, "u", "a1"); err != nil {
+		t.Fatal(err)
+	}
+	requireStatus(t, q, "still watching", StatusWatching)
+
+	// Finish it.
+	mustMarkWatched(t, q, "u", "a1", 3)
+	setWatchedAt(t, database, "a1", 1, 3, "2026-01-15T00:00:00Z")
+	if err := RecordSeriesCompletion(ctx, q, "u", "a1"); err != nil {
+		t.Fatal(err)
+	}
+	requireStatus(t, q, "finished", StatusCompleted)
+	requireTimesCompleted(t, q, 1)
+
+	// Saving progress again on a finished series must not keep counting it.
+	for range 3 {
+		if err := RecordSeriesCompletion(ctx, q, "u", "a1"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	requireTimesCompleted(t, q, 1)
+
+	// Start episode 1 over: incomplete again, but now it is a rewatch.
+	if _, err := database.Exec(
+		`UPDATE watch_progress SET completed = 0, last_watched_at = ? WHERE episode_id = ?`,
+		"2026-02-01T00:00:00Z", "a1-ep-1",
+	); err != nil {
+		t.Fatal(err)
+	}
+	requireStatus(t, q, "rewatching", StatusRepeating)
+
+	// Finish the rewatch — completed again, and counted a second time.
+	mustMarkWatched(t, q, "u", "a1", 3)
+	setWatchedAt(t, database, "a1", 1, 3, "2026-02-20T00:00:00Z")
+	if err := RecordSeriesCompletion(ctx, q, "u", "a1"); err != nil {
+		t.Fatal(err)
+	}
+	requireStatus(t, q, "finished again", StatusCompleted)
+	requireTimesCompleted(t, q, 2)
+}
+
+// A series of unknown length can never be "complete", so nothing is recorded.
+func TestRecordSeriesCompletion_UnknownTotalIsIgnored(t *testing.T) {
+	q, cleanup := newTestQueries(t)
+	defer cleanup()
+	mustInsertAnime(t, q, "a1", 0, 0, 0)
+	mustInsertEpisodes(t, q, "a1", 3, 0)
+	mustMarkWatched(t, q, "u", "a1", 3)
+
+	if err := RecordSeriesCompletion(context.Background(), q, "u", "a1"); err != nil {
+		t.Fatal(err)
+	}
+	requireTimesCompleted(t, q, 0)
+}

@@ -45,6 +45,7 @@ type Querier interface {
 	DeleteAllNotifications(ctx context.Context) error
 	DeleteAllWatchProgressByUser(ctx context.Context, userID string) (int64, error)
 	DeleteAnime(ctx context.Context, id string) error
+	DeleteAnimeWatchState(ctx context.Context, arg DeleteAnimeWatchStateParams) error
 	DeleteBackupConfig(ctx context.Context, arg DeleteBackupConfigParams) error
 	DeleteCompletedSyncOpsOlderThan(ctx context.Context, completedAt sql.NullString) error
 	DeleteDownload(ctx context.Context, gid string) error
@@ -76,6 +77,7 @@ type Querier interface {
 	GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error)
 	GetAnimeByTMDBID(ctx context.Context, tmdbID sql.NullInt64) (Anime, error)
 	GetAnimeByTraktShowID(ctx context.Context, traktShowID sql.NullInt64) (Anime, error)
+	GetAnimeWatchState(ctx context.Context, arg GetAnimeWatchStateParams) (AnimeWatchState, error)
 	GetAuditLog(ctx context.Context, id string) (AuditLog, error)
 	GetBackupConfig(ctx context.Context, arg GetBackupConfigParams) (BackupConfig, error)
 	GetDownloadByGID(ctx context.Context, gid string) (Download, error)
@@ -182,6 +184,10 @@ type Querier interface {
 	MarkRenameHistoryReverted(ctx context.Context, id string) error
 	MarkSyncOpCompleted(ctx context.Context, id string) error
 	MarkUserProviderOpsFailed(ctx context.Context, arg MarkUserProviderOpsFailedParams) error
+	// Counts a completion only when the series has become whole more recently than
+	// the last one recorded, so saving progress on an already-finished series is a
+	// no-op rather than an endless increment.
+	RecordSeriesCompletion(ctx context.Context, arg RecordSeriesCompletionParams) error
 	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
 	// Fuzzy local anime search across all title columns. Caller passes a single
 	// LIKE pattern (e.g. "%Frieren%"); ranking is left to the caller.

@@ -83,6 +83,11 @@ func (s *Service) PullFromProvider(ctx context.Context, userID string, provider 
 		}
 		if updated {
 			res.UpdatedLocal++
+			// A pull that brings the series to fully-watched counts as having
+			// finished it, so a later local rewatch is recognised as one.
+			if err := RecordSeriesCompletion(ctx, s.q, userID, animeID); err != nil {
+				res.Errors = append(res.Errors, err.Error())
+			}
 		}
 	}
 
