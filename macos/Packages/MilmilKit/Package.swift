@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .library(name: "MilmilAPI", targets: ["MilmilAPI"]),
         .library(name: "MilmilRealtime", targets: ["MilmilRealtime"]),
+        .library(name: "MilmilDanmaku", targets: ["MilmilDanmaku"]),
     ],
     targets: [
         .target(
@@ -27,6 +28,20 @@ let package = Package(
                 .swiftLanguageMode(.v6),
                 .enableUpcomingFeature("ExistentialAny"),
             ]
+        ),
+        // Danmaku model, parsers, pipeline and lane scheduler — pure logic,
+        // no MilmilAPI dependency so it can be tested and reused anywhere.
+        .target(
+            name: "MilmilDanmaku",
+            swiftSettings: [
+                .swiftLanguageMode(.v6),
+                .enableUpcomingFeature("ExistentialAny"),
+            ]
+        ),
+        .testTarget(
+            name: "MilmilDanmakuTests",
+            dependencies: ["MilmilDanmaku"],
+            swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .testTarget(
             name: "MilmilAPITests",

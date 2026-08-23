@@ -108,6 +108,7 @@ schemes:
       targets:
         - package: MilmilKit/MilmilAPITests
         - package: MilmilKit/MilmilRealtimeTests
+        - package: MilmilKit/MilmilDanmakuTests
         - package: MilmilPlayer/MilmilPlayerTests
     archive:
       config: Release
