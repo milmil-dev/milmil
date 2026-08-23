@@ -18,6 +18,7 @@ struct WatchView: View {
     @AppStorage("watch.theater") private var theater = false
     @State private var store: WatchStore?
     @State private var surfaceModel = PlayerWindowModel()
+    @FocusState private var composeFocused: Bool
     @ObserveInjection private var inject
 
     private static let sidebarWidth: CGFloat = 380
@@ -60,6 +61,9 @@ struct WatchView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         playerArea(controller, available: proxy.size, immersive: immersive)
                         if !immersive {
+                            DanmakuComposeBar(controller: controller, focused: $composeFocused)
+                                .padding(.horizontal, 20)
+                                .padding(.top, 8)
                             WatchTitleBar(store: store, controller: controller, theater: $theater) {
                                 coordinator.popOut()
                                 openWindow(id: "player")
@@ -107,6 +111,7 @@ struct WatchView: View {
                 case .popOut:
                     coordinator.popOut()
                     openWindow(id: "player")
+                case .composeDanmaku: composeFocused = true
                 }
             }
             .frame(width: columnWidth, height: height)

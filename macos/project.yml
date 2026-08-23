@@ -39,6 +39,10 @@ packages:
     path: Packages/MilmilKit
   MilmilPlayer:
     path: Packages/MilmilPlayer
+  # Danmaku Simplified↔Traditional conversion (MIT, OpenCC dictionaries).
+  SwiftyOpenCC:
+    url: https://github.com/ddddxxx/SwiftyOpenCC
+    exactVersion: 2.0.0-beta
 
 targets:
   Milmil:
@@ -53,8 +57,12 @@ targets:
         product: MilmilAPI
       - package: MilmilKit
         product: MilmilRealtime
+      - package: MilmilKit
+        product: MilmilDanmaku
       - package: MilmilPlayer
         product: MilmilPlayer
+      - package: SwiftyOpenCC
+        product: OpenCC
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.milmil.macos

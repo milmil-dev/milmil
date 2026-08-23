@@ -31,6 +31,7 @@ final class PlayerController {
     var osd: OSDMessage?
     var postPlayCountdown: Int?
     var danmakuEnabled: Bool
+    private(set) var danmakuStore: DanmakuStore?
 
     private var fallback = StreamFallback(hasLocalFile: false)
     private var eventTask: Task<Void, Never>?
@@ -171,6 +172,18 @@ final class PlayerController {
         fallback = StreamFallback(hasLocalFile: false, canRemux: info?.canRemux ?? true, canTranscode: true)
         await refreshAuthHeader()
         await loadCurrentStage(fileID: file.id)
+
+        let danmaku = DanmakuStore(fileID: file.id, episodeID: episode.episodeID, client: session.client, preferences: session.preferences)
+        danmakuStore = danmaku
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_DANMAKU"] == "1" {
+            danmaku.injectSamples()
+        } else {
+            Task { await danmaku.load() }
+        }
+        #else
+        Task { await danmaku.load() }
+        #endif
 
         async let segments = session.client.segments(fileID: file.id)
         async let sidecars = session.client.subtitles(fileID: file.id)
@@ -525,6 +538,12 @@ final class PlayerController {
         danmakuEnabled = enabled
         session.updatePreferences { $0.danmakuEnabled = enabled }
         flash(.text(enabled ? "彈幕：開" : "彈幕：關"))
+    }
+
+    /// Re-run the danmaku pipeline after a preferences change (settings UI, web sync).
+    func refreshDanmakuPreferences() {
+        danmakuEnabled = session.preferences.danmakuEnabled
+        danmakuStore?.apply(preferences: session.preferences)
     }
 
     func dismissResumePill() { showResumePill = false }

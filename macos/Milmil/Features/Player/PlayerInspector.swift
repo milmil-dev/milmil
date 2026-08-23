@@ -7,15 +7,16 @@ import UniformTypeIdentifiers
 /// Right-hand panel: episodes, subtitles, audio, video, danmaku (Phase 3).
 struct PlayerInspector: View {
     enum Tab: String, CaseIterable, Identifiable {
-        case episodes, subtitles, audio, video, danmaku
+        case episodes, danmaku, sources, subtitles, audio, video
         var id: String { rawValue }
         var label: String {
             switch self {
             case .episodes: "集數"
+            case .danmaku: "彈幕"
+            case .sources: "來源"
             case .subtitles: "字幕"
             case .audio: "音訊"
             case .video: "視訊"
-            case .danmaku: "彈幕"
             }
         }
     }
@@ -37,9 +38,8 @@ struct PlayerInspector: View {
             case .subtitles: SubtitlesTab(controller: controller)
             case .audio: AudioTab(controller: controller)
             case .video: VideoTab(controller: controller)
-            case .danmaku:
-                EmptyState(symbol: "text.bubble", title: "彈幕", message: "彈幕列表與來源管理在 Phase 3 實作。")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            case .danmaku: DanmakuListTab(controller: controller)
+            case .sources: DanmakuSourcesTab(controller: controller)
             }
         }
         .background(Theme.background)

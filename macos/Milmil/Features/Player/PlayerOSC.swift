@@ -76,8 +76,14 @@ struct PlayerOSC: View {
                 subtitleMenu
                 audioMenu
             }
-            OSCButton(symbol: controller.danmakuEnabled ? "text.bubble.fill" : "text.bubble", label: "彈幕", active: controller.danmakuEnabled) {
+            OSCButton(symbol: controller.danmakuEnabled ? "text.bubble.fill" : "text.bubble", label: "彈幕（D，右鍵設定）", active: controller.danmakuEnabled) {
                 controller.setDanmakuEnabled(!controller.danmakuEnabled)
+            }
+            .contextMenu {
+                Button("彈幕設定…", systemImage: "slider.horizontal.3") { model.danmakuSettingsShown = true }
+            }
+            .popover(isPresented: Binding(get: { model.danmakuSettingsShown }, set: { model.danmakuSettingsShown = $0 }), arrowEdge: .top) {
+                DanmakuSettingsView(controller: controller).preferredColorScheme(.dark)
             }
             if compact { overflowMenu }
             if model.embedded {

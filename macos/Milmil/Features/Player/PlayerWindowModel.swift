@@ -9,6 +9,7 @@ final class PlayerWindowModel: PlayerWindowActions {
     var inspectorShown = false
     var helpShown = false
     var techInfoShown = false
+    var danmakuSettingsShown = false
     var isFullscreen = false
     var isMini = false
     var hoveringControls = false
@@ -21,6 +22,7 @@ final class PlayerWindowModel: PlayerWindowActions {
     enum EmbeddedAction {
         case theater
         case popOut
+        case composeDanmaku
     }
 
     weak var controller: PlayerController?
@@ -194,8 +196,10 @@ final class PlayerWindowModel: PlayerWindowActions {
             if embedded { embeddedHandler?(.theater) } else { inspectorShown.toggle() }
         case .theater:
             if embedded { embeddedHandler?(.theater) }
-        case .danmakuSettings, .danmakuCompose:
-            if embedded { embeddedHandler?(.theater) } else { inspectorShown = true }
+        case .danmakuSettings:
+            danmakuSettingsShown.toggle()
+        case .danmakuCompose:
+            if embedded { embeddedHandler?(.composeDanmaku) } else { inspectorShown = true }
         default: break
         }
     }

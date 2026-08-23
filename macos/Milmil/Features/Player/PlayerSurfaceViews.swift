@@ -73,23 +73,6 @@ struct PlayerRenderHost: NSViewRepresentable {
     }
 }
 
-/// Empty layer-hosting view above the picture, reserved for the danmaku
-/// renderer (Phase 3). Keeping it in the tree now pins the z-order.
-struct DanmakuOverlayHost: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        view.wantsLayer = true
-        view.layer?.masksToBounds = true
-        return view
-    }
-
-    func updateNSView(_ nsView: NSView, context: Context) {}
-
-    func sizeThatFits(_ proposal: ProposedViewSize, nsView: NSView, context: Context) -> CGSize? {
-        proposal.replacingUnspecifiedDimensions(by: .zero)
-    }
-}
-
 /// Transparent AppKit view that turns raw mouse events into player
 /// gestures: hover (throttled), click/double-click, scroll-wheel seek /
 /// volume, right-click menu, drag-and-drop subtitles.

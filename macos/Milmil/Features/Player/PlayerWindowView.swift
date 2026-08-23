@@ -60,7 +60,7 @@ struct PlayerSurface: View {
     /// surface past the frame the watch page gives it.
     private var surface: some View {
         picture
-            .overlay { DanmakuOverlayHost().allowsHitTesting(false) }
+            .overlay { DanmakuOverlayView(store: controller.danmakuStore, state: state, enabled: controller.danmakuEnabled).allowsHitTesting(false) }
             .overlay {
                 PlayerInteractionView(
                     onMouseMoved: { model.pokeControls() },
