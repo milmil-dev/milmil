@@ -41,3 +41,9 @@ struct SetupRedirectView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Setup redirect") {
+    PreviewHost(phase: .needsSetup(Preview.profile)) { SetupRedirectView(profile: Preview.profile) }
+}
+#endif

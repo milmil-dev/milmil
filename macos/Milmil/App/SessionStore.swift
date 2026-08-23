@@ -177,6 +177,21 @@ final class SessionStore {
         }
     }
 
+    // MARK: - Previews
+
+    #if DEBUG
+    /// Puts the store straight into a phase without touching the network or
+    /// the Keychain. Only for `#Preview` and UI tests.
+    func applyPreview(phase: SessionPhase, covers: [URL] = [], profiles: [ServerProfile] = []) {
+        self.profiles = profiles.isEmpty ? [phase.profile].compactMap { $0 } : profiles
+        self.phase = phase
+        trendingCovers = covers
+        if let profile = phase.profile {
+            client = makeClient(profile.baseURL, nil)
+        }
+    }
+    #endif
+
     // MARK: - Persistence
 
     private func update(_ profile: ServerProfile) {

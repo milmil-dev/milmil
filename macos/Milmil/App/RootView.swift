@@ -44,3 +44,9 @@ struct RootView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Root · connecting") {
+    PreviewHost(phase: .connecting(Preview.profile)) { RootView() }
+}
+#endif

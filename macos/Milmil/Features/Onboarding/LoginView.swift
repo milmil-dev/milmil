@@ -98,3 +98,13 @@ struct LoginView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Login") {
+    PreviewHost(phase: .login(Preview.profile, version: "0.1.17")) { LoginView() }
+}
+
+#Preview("Login · gradient fallback") {
+    PreviewHost(phase: .login(Preview.profile, version: "0.1.17"), covers: []) { LoginView() }
+}
+#endif

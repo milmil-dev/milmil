@@ -63,3 +63,9 @@ struct TwoFactorView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Two-factor") {
+    PreviewHost(phase: .twoFactor(Preview.profile, userID: "usr_preview")) { TwoFactorView() }
+}
+#endif

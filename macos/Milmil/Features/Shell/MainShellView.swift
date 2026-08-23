@@ -153,3 +153,11 @@ private struct PlaceholderDetail: View {
         .background(Theme.background)
     }
 }
+
+#if DEBUG
+#Preview("Main shell") {
+    PreviewHost(phase: .ready(Preview.profile, user: Preview.user, version: "0.1.17")) {
+        MainShellView(profile: Preview.profile, user: Preview.user, version: "0.1.17")
+    }
+}
+#endif

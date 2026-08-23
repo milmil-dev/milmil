@@ -131,3 +131,19 @@ struct ConnectionErrorView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Server picker · empty") {
+    PreviewHost(phase: .noServer, covers: []) { ServerPickerView() }
+}
+
+#Preview("Server picker · saved servers") {
+    PreviewHost(phase: .noServer, covers: [], profiles: [Preview.profile, Preview.secondProfile]) { ServerPickerView() }
+}
+
+#Preview("Connection error") {
+    PreviewHost(phase: .connectionFailed(Preview.profile, message: "無法連線到伺服器（連線被拒）")) {
+        ConnectionErrorView(profile: Preview.profile, message: "無法連線到伺服器（連線被拒）")
+    }
+}
+#endif
