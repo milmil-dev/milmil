@@ -1,42 +1,32 @@
-# EXAMPLE USAGE:
+# Git hooks. Install once with: cd web && bun run lefthook
 #
-#   Refer for explanation to following link:
-#   https://lefthook.dev/configuration/
-#
-# pre-push:
-#   jobs:
-#     - name: packages audit
-#       tags:
-#         - frontend
-#         - security
-#       run: yarn audit
-#
-#     - name: gems audit
-#       tags:
-#         - backend
-#         - security
-#       run: bundle audit
-#
-# pre-commit:
-#   parallel: true
-#   jobs:
-#     - run: yarn eslint {staged_files}
-#       glob: "*.{js,ts,jsx,tsx}"
-#
-#     - name: rubocop
-#       glob: "*.rb"
-#       exclude:
-#         - config/application.rb
-#         - config/routes.rb
-#       run: bundle exec rubocop --force-exclusion {all_files}
-#
-#     - name: govet
-#       files: git ls-files -m
-#       glob: "*.go"
-#       run: go vet {files}
-#
-#     - script: "hello.js"
-#       runner: node
-#
-#     - script: "hello.go"
-#       runner: go run
+# These mirror the cheap half of CI so a formatting or lint slip is caught
+# before it costs a full pipeline round trip. Anything slow (tests, race,
+# builds) is left to CI.
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: gofmt
+      glob: "*.go"
+      run: gofmt -s -w {staged_files} && git add {staged_files}
+
+    - name: go vet
+      glob: "api/**/*.go"
+      run: cd api && go vet ./...
+
+    - name: web lint
+      root: "web/"
+      glob: "*.{ts,tsx}"
+      run: bun run lint --fix {staged_files} && git add {staged_files}
+
+    - name: web format
+      root: "web/"
+      glob: "*.{ts,tsx,json,css,md}"
+      run: bun run format {staged_files} && git add {staged_files}
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      root: "web/"
+      run: bunx commitlint --edit {1}

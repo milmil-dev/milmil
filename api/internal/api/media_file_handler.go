@@ -245,10 +245,7 @@ func (h *handler) handleFileTree(c *echo.Context) error {
 
 	for _, f := range files {
 		// Get relative directory by stripping the library base path
-		relPath := f.Path
-		if strings.HasPrefix(relPath, basePath) {
-			relPath = relPath[len(basePath):]
-		}
+		relPath := strings.TrimPrefix(f.Path, basePath)
 		dir := filepath.Dir(relPath)
 
 		// Split directory into parts

@@ -96,7 +96,6 @@ vi.mock('@/store/preferences-store', () => {
 
 vi.mock('@/lib/api/stream', () => ({
   getStreamUrl: () => 'http://localhost/stream/test',
-  parseDandanplayComments: () => [],
   mediaApi: { info: () => Promise.resolve(null) },
   mediaKeys: { info: (fileId: string) => ['media', 'info', fileId] },
 }));

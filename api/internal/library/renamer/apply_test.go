@@ -10,9 +10,9 @@ import (
 // fsMover is a Mover backed by the real filesystem, used by Apply/Undo tests.
 type fsMover struct{}
 
-func (fsMover) Stat(path string) (any, error)   { return os.Stat(path) }
-func (fsMover) MkdirAll(path string) error      { return os.MkdirAll(path, 0o755) }
-func (fsMover) Rename(old, new string) error    { return os.Rename(old, new) }
+func (fsMover) Stat(path string) (any, error) { return os.Stat(path) }
+func (fsMover) MkdirAll(path string) error    { return os.MkdirAll(path, 0o755) }
+func (fsMover) Rename(old, new string) error  { return os.Rename(old, new) }
 
 func TestApply_MovesFileAndRecordsHistory(t *testing.T) {
 	q, cleanup := newTestQueries(t)

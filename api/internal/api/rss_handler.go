@@ -398,8 +398,8 @@ func (h *handler) handleRefreshRSSFeed(c *echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
-		"items_found":    len(items),
-		"items_added":    added,
-		"rules_checked":  len(rules),
+		"items_found":   len(items),
+		"items_added":   added,
+		"rules_checked": len(rules),
 	})
 }

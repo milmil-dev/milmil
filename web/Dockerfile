@@ -3,7 +3,7 @@
 # ---- Build stage -----------------------------------------------------------
 # Build on the native arch — Vite output is JS/HTML/CSS, fully arch-agnostic,
 # so there's no reason to run the Bun build under QEMU for arm64.
-FROM --platform=$BUILDPLATFORM oven/bun:1-alpine AS builder
+FROM --platform=$BUILDPLATFORM oven/bun:1.4-alpine AS builder
 WORKDIR /app
 
 ARG VERSION=dev

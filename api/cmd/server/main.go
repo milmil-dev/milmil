@@ -214,7 +214,9 @@ func main() {
 			AppID     string `json:"app_id"`
 			AppSecret string `json:"app_secret"`
 		}
-		json.Unmarshal([]byte(setting.Value), &creds)
+		if err := json.Unmarshal([]byte(setting.Value), &creds); err != nil {
+			return "", "", fmt.Errorf("parse dandanplay credentials: %w", err)
+		}
 		return creds.AppID, creds.AppSecret, nil
 	}
 	ddpClient := dandanplay.NewFallbackClient(
@@ -346,7 +348,23 @@ func main() {
 		},
 	})
 
-	e := api.NewRouter(cfg, database, cacheClient, metadataSvc, matcherSvc, ddpClient, resolverSvc, dlEngine, wsHub, tmdbClient, torrentReg, notifier, syncSvc, danmakuReg, updateChecker)
+	e := api.NewRouter(api.Deps{
+		Config:        cfg,
+		DB:            database,
+		Cache:         cacheClient,
+		Metadata:      metadataSvc,
+		Matcher:       matcherSvc,
+		DandanPlay:    ddpClient,
+		Resolver:      resolverSvc,
+		Downloader:    dlEngine,
+		WSHub:         wsHub,
+		TMDB:          tmdbClient,
+		Torrents:      torrentReg,
+		Notifier:      notifier,
+		Sync:          syncSvc,
+		Danmaku:       danmakuReg,
+		UpdateChecker: updateChecker,
+	})
 	slog.Debug("boot: router initialized", "took", time.Since(step))
 
 	// Start update-checker background ticker. main.go does not currently

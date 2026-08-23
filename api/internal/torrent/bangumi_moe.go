@@ -90,21 +90,6 @@ func (p *BangumiMoeProvider) searchByTags(ctx context.Context, tagIDs []string) 
 	return p.parseTorrents(resp.Body)
 }
 
-func (p *BangumiMoeProvider) fetchLatest(ctx context.Context) ([]SearchResult, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, bangumiMoeAPI+"/torrent/latest", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := p.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return p.parseTorrents(resp.Body)
-}
-
 type bangumiMoeTorrent struct {
 	ID          string   `json:"_id"`
 	Title       string   `json:"title"`

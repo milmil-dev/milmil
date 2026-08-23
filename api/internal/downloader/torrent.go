@@ -298,7 +298,7 @@ func (e *torrentEngine) checkSeeding() {
 		// Check ratio limit.
 		if e.seedRatio > 0 && entry.t.Info() != nil {
 			stats := entry.t.Stats()
-			uploaded := stats.ConnStats.BytesWrittenData.Int64()
+			uploaded := stats.BytesWrittenData.Int64()
 			total := entry.t.Length()
 			if total > 0 && float64(uploaded)/float64(total) >= e.seedRatio {
 				slog.Info("seed limit reached (ratio)", "name", entry.name,

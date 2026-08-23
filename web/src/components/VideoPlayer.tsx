@@ -1,5 +1,5 @@
 import '@videojs/react/video/skin.css';
-import type { HlsMedia } from '@videojs/core/dom/media/hls';
+import type { HlsJsMedia } from '@videojs/media/dom/hls-js';
 import {
   BufferingIndicator,
   Container,
@@ -24,7 +24,7 @@ import { Video } from '@videojs/react/video';
 import type { ReactNode } from 'react';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
-const Player = createPlayer({ features: videoFeatures });
+const { Player } = createPlayer({ features: videoFeatures });
 
 interface VideoPlayerProps {
   src: string;
@@ -397,7 +397,7 @@ function PlayerInner({
   useEffect(() => {
     if (!hlsConfig || !media) return;
     // media is HlsMedia when HLS playback is active — cast and access engine
-    const hlsMedia = media as HlsMedia;
+    const hlsMedia = media as HlsJsMedia;
     const engine = hlsMedia.engine;
     if (!engine) return;
     engine.config.maxBufferLength = hlsConfig.maxBufferLength;
@@ -499,8 +499,8 @@ function PlayerInner({
 
 export function VideoPlayer(props: VideoPlayerProps) {
   return (
-    <Player.Provider>
+    <Player>
       <PlayerInner {...props} />
-    </Player.Provider>
+    </Player>
   );
 }

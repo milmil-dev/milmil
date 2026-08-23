@@ -51,10 +51,10 @@ func (t *TelegramProvider) Send(ctx context.Context, event notification.Notifica
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("%s <b>%s</b>\n%s", emoji, event.Title, event.Message))
+	fmt.Fprintf(&sb, "%s <b>%s</b>\n%s", emoji, event.Title, event.Message)
 
 	for k, v := range event.Metadata {
-		sb.WriteString(fmt.Sprintf("\n%s: %s", k, v))
+		fmt.Fprintf(&sb, "\n%s: %s", k, v)
 	}
 
 	payload := map[string]string{

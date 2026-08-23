@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"strings"
 	"testing"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/milmil/api/internal/auth"
 	milmildb "github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/store"
+	"github.com/milmil/api/migrations"
 	"github.com/stretchr/testify/require"
 )
 
@@ -97,7 +97,7 @@ func createResetPasswordTestDB(t *testing.T, username string, password string) s
 	require.NoError(t, err)
 	defer database.Close()
 
-	createUsersTable(t, database)
+	createUsersTable(t, dbPath)
 	hash, err := auth.HashPassword(password)
 	require.NoError(t, err)
 
@@ -111,21 +111,14 @@ func createResetPasswordTestDB(t *testing.T, username string, password string) s
 	return dbPath
 }
 
-func createUsersTable(t *testing.T, database *sql.DB) {
+// createUsersTable builds the schema by running the real migrations rather
+// than a hand-copied CREATE TABLE. The copy silently drifted from the
+// migrations every time a column was added, failing this test for a reason
+// that had nothing to do with what it covers.
+func createUsersTable(t *testing.T, dbPath string) {
 	t.Helper()
 
-	_, err := database.Exec(`
-CREATE TABLE users (
-    id TEXT PRIMARY KEY,
-    username TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-    totp_secret TEXT NOT NULL DEFAULT '',
-    two_factor_enabled INTEGER NOT NULL DEFAULT 0
-);
-`)
-	require.NoError(t, err)
+	require.NoError(t, milmildb.MigrateUp(migrations.FS, "sqlite://"+dbPath))
 }
 
 func requirePasswordWorks(t *testing.T, dbPath string, username string, password string) {

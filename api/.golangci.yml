@@ -1,0 +1,40 @@
+version: "2"
+
+linters:
+  # The standard set (errcheck, govet, ineffassign, staticcheck, unused) plus a
+  # few that catch mistakes this codebase is actually exposed to: it talks to a
+  # lot of HTTP APIs and holds a lot of database rows open.
+  default: standard
+  enable:
+    - bodyclose   # leaked response bodies in the metadata/torrent integrations
+    - rowserrcheck # sql.Rows.Err() dropped after a scan loop
+    - misspell
+
+  settings:
+    errcheck:
+      # Close on a reader we are done with, and the response writers Echo has
+      # already committed, have no recovery path — checking them would only add
+      # noise. Everything else must be handled.
+      exclude-functions:
+        - (io.Closer).Close
+        - (io.ReadCloser).Close
+        - (*database/sql.Rows).Close
+        - (*github.com/gorilla/websocket.Conn).Close
+        - (*github.com/gorilla/websocket.Conn).WriteMessage
+        - (*github.com/gorilla/websocket.Conn).SetReadDeadline
+        - (*github.com/gorilla/websocket.Conn).SetWriteDeadline
+
+  exclusions:
+    presets:
+      - comments
+      - std-error-handling
+    rules:
+      # Test bodies may ignore errors on setup calls whose failure would fail
+      # the assertion that follows anyway.
+      - path: _test\.go
+        linters:
+          - errcheck
+
+formatters:
+  enable:
+    - gofmt

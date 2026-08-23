@@ -37,7 +37,9 @@ export default defineConfig({
     react(),
     babel({
       presets: [
-        ['@babel/preset-typescript', { isTSX: true, allExtensions: true }],
+        // preset-typescript v8 removed isTSX/allExtensions; JSX is detected
+        // from the .tsx extension, which matches where JSX actually lives.
+        '@babel/preset-typescript',
         reactCompilerPreset(),
       ],
       plugins: ['@lingui/babel-plugin-lingui-macro'],

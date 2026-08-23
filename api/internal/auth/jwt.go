@@ -11,13 +11,18 @@ const tokenTTL = 24 * time.Hour
 
 type Claims struct {
 	UserID string `json:"sub"`
+	// TokenVersion mirrors users.token_version at signing time. A JWT cannot be
+	// deleted server-side, so this is what makes one revocable: bumping the
+	// column invalidates every token already handed out for that user.
+	TokenVersion int64 `json:"tv"`
 	jwt.RegisteredClaims
 }
 
-// SignToken creates a signed JWT for the given userID.
-func SignToken(secret, userID string) (string, error) {
+// SignToken creates a signed JWT for the given userID at the given token version.
+func SignToken(secret, userID string, tokenVersion int64) (string, error) {
 	claims := Claims{
-		UserID: userID,
+		UserID:       userID,
+		TokenVersion: tokenVersion,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -31,8 +36,10 @@ func SignToken(secret, userID string) (string, error) {
 	return signed, nil
 }
 
-// VerifyToken validates the JWT and returns the userID (sub claim).
-func VerifyToken(secret, tokenStr string) (string, error) {
+// VerifyToken validates the JWT and returns the userID (sub claim) together
+// with the token version it was signed at. Callers must compare that version
+// against the user's current one before trusting the token.
+func VerifyToken(secret, tokenStr string) (string, int64, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
@@ -40,11 +47,11 @@ func VerifyToken(secret, tokenStr string) (string, error) {
 		return []byte(secret), nil
 	})
 	if err != nil {
-		return "", fmt.Errorf("parse token: %w", err)
+		return "", 0, fmt.Errorf("parse token: %w", err)
 	}
 	claims, ok := token.Claims.(*Claims)
 	if !ok || !token.Valid {
-		return "", fmt.Errorf("invalid token claims")
+		return "", 0, fmt.Errorf("invalid token claims")
 	}
-	return claims.UserID, nil
+	return claims.UserID, claims.TokenVersion, nil
 }
