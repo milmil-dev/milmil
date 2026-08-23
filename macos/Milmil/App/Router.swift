@@ -84,4 +84,12 @@ final class Router {
 
     /// Set by `handle(url:)` for `watch` links; the shell consumes it.
     var pendingPlayback: PlaybackRequest?
+
+    /// "找種子" from an anime page: Downloads opens its finder on this title.
+    var torrentAnime: AnimeSummary?
+
+    func findTorrents(for anime: AnimeSummary) {
+        torrentAnime = anime
+        select(.downloads)
+    }
 }

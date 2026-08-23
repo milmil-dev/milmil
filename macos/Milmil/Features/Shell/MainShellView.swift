@@ -81,6 +81,9 @@ struct MainShellView: View {
             if let destination = DevSnapshot.initialDestination { router.select(destination) }
             if let anime = DevSnapshot.initialAnime { router.openAnime(anime) }
             if DevSnapshot.opensSettings { openSettings() }
+            if let id = DevSnapshot.initialTorrents {
+                Task { if let detail = try? await session.client.animeDetail(bangumiID: id) { router.findTorrents(for: detail.summary) } }
+            }
             if let anime = DevSnapshot.initialPlayback {
                 router.openWatch(bangumiID: anime, episodeID: nil)
                 if ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_WINDOW"] == "player" {

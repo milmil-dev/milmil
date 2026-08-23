@@ -33,6 +33,24 @@ enum DevSnapshot {
         #endif
     }
 
+    /// `MILMIL_SNAPSHOT_TORRENTS=530725` opens 下載 › 找種子 on that series.
+    static var initialTorrents: Int? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_TORRENTS"].flatMap(Int.init)
+        #else
+        nil
+        #endif
+    }
+
+    /// `MILMIL_SNAPSHOT_DOWNLOADS_TAB=subscriptions` picks a tab on the Downloads page.
+    static var downloadsTab: String? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_DOWNLOADS_TAB"]
+        #else
+        nil
+        #endif
+    }
+
     /// `MILMIL_SNAPSHOT_SETTINGS=1` opens the Settings scene (pair with `MILMIL_SNAPSHOT_WINDOW=settings`).
     static var opensSettings: Bool {
         #if DEBUG

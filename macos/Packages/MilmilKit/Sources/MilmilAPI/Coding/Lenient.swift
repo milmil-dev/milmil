@@ -32,6 +32,53 @@ public struct LenientBool: Codable, Sendable, Hashable {
     }
 }
 
+/// Optional timestamps that some handlers pass through as a raw
+/// `sql.NullString` (`{"String": "", "Valid": false}`) instead of
+/// `string | null` — `rss-feeds.last_fetched_at`, `download-rules.last_triggered_at`.
+/// Accept a date string, null, or that object; missing keys decode as nil.
+@propertyWrapper
+public struct LenientDate: Codable, Sendable, Hashable {
+    public var wrappedValue: Date?
+
+    public init(wrappedValue: Date?) {
+        self.wrappedValue = wrappedValue
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            wrappedValue = nil
+        } else if let raw = try? container.decode(String.self) {
+            wrappedValue = MilmilDate.parse(raw)
+        } else if let null = try? container.decode(NullString.self) {
+            wrappedValue = null.valid ? MilmilDate.parse(null.string) : nil
+        } else {
+            wrappedValue = nil
+        }
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(wrappedValue)
+    }
+
+    private struct NullString: Decodable {
+        let string: String
+        let valid: Bool
+        enum CodingKeys: String, CodingKey {
+            case string = "String"
+            case valid = "Valid"
+        }
+    }
+}
+
+public extension KeyedDecodingContainer {
+    /// Lets `@LenientDate` properties tolerate an absent key.
+    func decode(_ type: LenientDate.Type, forKey key: Key) throws -> LenientDate {
+        try decodeIfPresent(type, forKey: key) ?? LenientDate(wrappedValue: nil)
+    }
+}
+
 /// `genres` is a JSON array on `/libraries/{id}/anime` but a JSON-encoded
 /// string on `/collection`. Accept both, and treat null as empty.
 @propertyWrapper

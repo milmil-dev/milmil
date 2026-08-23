@@ -28,7 +28,7 @@ LANGS = ["en", "ja", "ko", "zh-Hans", "zh-HK"]
 LIT = re.compile(r'"(?:\\\((?:[^()"]|"[^"]*"|\([^()]*\))*\)|[^"\\]|\\.)*"')
 CJK = re.compile(r"[　-鿿＀-￯]")
 LOCALIZED_CALLS = re.compile(
-    r"\b(Text|Button|Label|Toggle|Picker|Section|TextField|LabeledContent|Link|Tab|Menu|Stepper|ProgressView|SecureField|"
+    r"\b(Text|Button|Label|Toggle|Picker|Section|TextField|LabeledContent|Link|Tab|Menu|Stepper|ProgressView|SecureField|TableColumn|"
     r"navigationTitle|help|confirmationDialog|alert|badge|accessibilityLabel)\s*\(\s*$"
 )
 # Interpolated expressions that are Strings. Everything else is assumed Int.
@@ -36,7 +36,7 @@ LOCALIZED_CALLS = re.compile(
 STRING_HINTS = re.compile(
     r"(\.label|\.title|\.name|\.displayName|\.display|\.number|\.query|\.lastPathComponent|\.localizedDescription|\.host\(\)"
     r"|Formatters\.|String\(|DeviceName|\berror\b|\bep\b|\bjst\b|\blocal\b|\bnumber\b|\bquery\b|\bsize\b|\btitle\b|\bversion\b"
-    r"|\?\? \"\"|airDate|\bdate\b|duration)"
+    r"|\?\? \"\"|airDate|\bdate\b|duration|episodeRange)"
 )
 
 

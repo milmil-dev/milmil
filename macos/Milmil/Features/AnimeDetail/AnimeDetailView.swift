@@ -192,6 +192,12 @@ struct AnimeDetailView: View {
             .menuStyle(.button)
             .buttonStyle(HeroButtonStyle(primary: false))
 
+            if let summary = store.detail.value?.summary {
+                Button { router.findTorrents(for: summary) } label: { Label("找種子", systemImage: "magnet") }
+                    .buttonStyle(HeroButtonStyle(primary: false))
+                    .help("在各站搜尋這部作品的種子，或建立自動下載訂閱")
+            }
+
             Menu {
                 Button("重新整理中繼資料", systemImage: "arrow.clockwise") { Task { await store.refreshMetadata() } }
                 Button("在 Bangumi 開啟", systemImage: "safari") { openURL(URL(string: "https://bgm.tv/subject/\(bangumiID)")!) }

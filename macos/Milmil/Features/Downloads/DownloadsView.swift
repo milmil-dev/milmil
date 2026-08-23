@@ -54,12 +54,30 @@ final class DownloadsStore {
     }
 }
 
+enum DownloadsTab: String, CaseIterable, Identifiable {
+    case transfers, finder, subscriptions
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .transfers: String(localized: "傳輸")
+        case .finder: String(localized: "找種子")
+        case .subscriptions: String(localized: "訂閱")
+        }
+    }
+}
+
 /// 下載: active transfers with live progress, finished ones below, add by
 /// URL / magnet or by dropping a `.torrent` / magnet link onto the page.
+/// Two more tabs mirror the web: 找種子 (per-title torrent browser +
+/// one-click subscribe) and 訂閱 (RSS feeds + rules).
 struct DownloadsView: View {
     @Environment(ServerSession.self) private var session
     @Environment(BackdropStore.self) private var backdrop
+    @Environment(Router.self) private var router
     @State private var store: DownloadsStore?
+    @State private var finder: TorrentFinderStore?
+    @State private var subscriptions: SubscriptionsStore?
+    @State private var tab: DownloadsTab = .transfers
     @State private var showAdd = false
     @State private var confirmClear = false
     @State private var dropTargeted = false
@@ -72,9 +90,17 @@ struct DownloadsView: View {
         .navigationTitle("下載")
         .task {
             if store == nil { store = DownloadsStore(client: session.client) }
+            if finder == nil { finder = TorrentFinderStore(client: session.client) }
+            if subscriptions == nil { subscriptions = SubscriptionsStore(client: session.client) }
             backdrop.set(nil, seed: "downloads", dim: 0.6, owner: "downloads")
+            if let wanted = DevSnapshot.downloadsTab, let initial = DownloadsTab(rawValue: wanted) { tab = initial }
+            consumePendingTorrentAnime()
             await store?.load()
         }
+        .task(id: tab) {
+            if tab == .subscriptions { await subscriptions?.load() }
+        }
+        .onChange(of: router.torrentAnime) { consumePendingTorrentAnime() }
         .task(id: session.eventGeneration) {
             guard session.eventGeneration > 0, session.lastEvent?.type.hasPrefix("download") == true else { return }
             await store?.load(quiet: true)
@@ -91,36 +117,38 @@ struct DownloadsView: View {
         .onDisappear { backdrop.clear(owner: "downloads") }
     }
 
+    /// "找種子" from an anime page lands here with the title preselected.
+    private func consumePendingTorrentAnime() {
+        guard let anime = router.torrentAnime, let finder else { return }
+        router.torrentAnime = nil
+        tab = .finder
+        finder.mode = .anime
+        finder.select(anime)
+    }
+
     private func content(_ store: DownloadsStore) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 let speed = ByteCountFormatter.string(fromByteCount: store.totalSpeed, countStyle: .file)
                 PageHeader(title: String(localized: "下載"), subtitle: store.hasActive ? "↓ \(speed)/s" : nil) {
                     HStack(spacing: 8) {
-                        Button("新增", systemImage: "plus") { showAdd = true }.buttonStyle(.borderedProminent)
-                        Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }
-                            .buttonStyle(.bordered)
-                            .disabled((store.downloads.value ?? []).isEmpty)
+                        Segmented(options: DownloadsTab.allCases, selection: $tab) { $0.label }
+                            .frame(width: 240)
+                        if tab == .transfers {
+                            Button("新增", systemImage: "plus") { showAdd = true }.buttonStyle(.borderedProminent)
+                            Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }
+                                .buttonStyle(.bordered)
+                                .disabled((store.downloads.value ?? []).isEmpty)
+                        }
                     }
                 }
-                switch store.downloads {
-                case .loaded where (store.downloads.value ?? []).isEmpty:
-                    EmptyState(
-                        symbol: "arrow.down.circle", title: String(localized: "沒有下載"),
-                        message: String(localized: "貼上 magnet / torrent / HTTP 連結，或把 .torrent 拖進這裡。"), actionTitle: String(localized: "新增下載")
-                    ) { showAdd = true }
-                        .frame(maxWidth: .infinity).padding(.top, 40)
-                case .loaded:
-                    if !store.active.isEmpty {
-                        section(String(localized: "進行中"), store.active, store)
-                    }
-                    if !store.finished.isEmpty {
-                        section(String(localized: "已完成"), store.finished, store)
-                    }
-                case let .failed(message):
-                    ErrorBanner(message: message) { Task { await store.load() } }
-                default:
-                    ProgressView().frame(maxWidth: .infinity).padding(40)
+                switch tab {
+                case .finder:
+                    if let finder { TorrentFinderView(store: finder) { tab = .subscriptions } }
+                case .subscriptions:
+                    if let subscriptions { SubscriptionsView(store: subscriptions) }
+                case .transfers:
+                    transfers(store)
                 }
             }
             .padding(.horizontal, 40)
@@ -145,6 +173,28 @@ struct DownloadsView: View {
             Button("只移除記錄") { Task { await store.removeAll(deleteFiles: false) } }
             Button("連檔案一起刪除", role: .destructive) { Task { await store.removeAll(deleteFiles: true) } }
         }
+    }
+
+    @ViewBuilder private func transfers(_ store: DownloadsStore) -> some View {
+                switch store.downloads {
+                case .loaded where (store.downloads.value ?? []).isEmpty:
+                    EmptyState(
+                        symbol: "arrow.down.circle", title: String(localized: "沒有下載"),
+                        message: String(localized: "貼上 magnet / torrent / HTTP 連結，或把 .torrent 拖進這裡。"), actionTitle: String(localized: "新增下載")
+                    ) { showAdd = true }
+                        .frame(maxWidth: .infinity).padding(.top, 40)
+                case .loaded:
+                    if !store.active.isEmpty {
+                        section(String(localized: "進行中"), store.active, store)
+                    }
+                    if !store.finished.isEmpty {
+                        section(String(localized: "已完成"), store.finished, store)
+                    }
+                case let .failed(message):
+                    ErrorBanner(message: message) { Task { await store.load() } }
+                default:
+                    ProgressView().frame(maxWidth: .infinity).padding(40)
+                }
     }
 
     private func section(_ title: String, _ rows: [Download], _ store: DownloadsStore) -> some View {
