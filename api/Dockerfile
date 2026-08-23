@@ -3,7 +3,7 @@
 # ---- Build stage -----------------------------------------------------------
 # Build on the native arch and let Go cross-compile to the target arch — avoids
 # QEMU emulation, which turns a multi-arch publish from ~3min into ~30min.
-FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
