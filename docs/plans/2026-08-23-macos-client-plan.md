@@ -172,4 +172,6 @@ Spotlight 索引、App Intents/Shortcuts、WidgetKit、真 PiP（SW render + `AV
 - **Phase 5 部分完成**：Settings scene（`c01257d6`：播放 / 字幕 / 彈幕 / 快捷鍵重綁 / 伺服器 token / 關於）、媒體庫頁（`e8cdc046`：掃描進度、media-file Table、手動匹配 sheet、新增/刪除）、下載頁（`f5163c49`：進度、暫停/繼續/刪除、新增、拖放 .torrent）。**未做**：遠端來源表單、重複/缺集/rename、RSS 訂閱與規則、Integrations/Notifications/Account 設定 tab、audit undo。
 - **Phase 4 部分完成**：server `media_file.path`（`20b0805d`，api）+ 本機路徑對應直開（`21a1ac55`，已在 Sandisk 掛載驗證「本機檔案」）、`milmil://` URL scheme、`.torrent` 文件類型/Dock 拖放、⌥S 截圖到剪貼簿、`make macos-dmg` + `release-macos.yml`（`e8dc5254`，ad-hoc 簽名 DMG 21 MB）。**未做**：Anime4K shaders、yt-dlp、Menu bar extra、web 端「在 App 開啟」按鈕。
 - **i18n 完成**（`c7461316`）：537 個 key、en / ja / ko / zh-Hans / zh-HK 全翻；`macos/scripts/i18n_sync.py` 取代 Xcode 的字串擷取，CI 會擋未同步或未翻譯的 catalog。
-- **下一步**：Phase 5 其餘（遠端來源、RSS 規則、其他設定 tab）、Instruments 效能驗證、Anime4K / yt-dlp / Menu bar extra。（桌面加值：本機路徑直開、Dock/Menu bar、快捷鍵設定頁、截圖到剪貼簿）與 Phase 5（管理頁）。
+- **Phase 5 再推進**：下載頁三分頁（`360a5610`：找種子＝作品/關鍵字搜尋 → 各站結果 + 解析度/字幕組篩選 + 下載/「訂閱此篩選」；訂閱＝RSS 來源 + 規則 CRUD、預覽、立即抓取）、作品頁「找種子」、設定 › 整合/通知/帳號（`ee38af84`：DandanPlay/TMDB、AniList/Bangumi OAuth、Trakt device code、同步推拉；通知 providers/事件路由/bots；改密碼、TOTP）。**未做**：遠端來源表單、重複/缺集/rename、audit undo。
+- **Server 待修（另開 PR）**：`rss-feeds.last_fetched_at` / `download-rules.last_triggered_at` 直接吐 `sql.NullString`（`{"String":"","Valid":false}`），client 端已用 `@LenientDate` 容錯；web 型別標 `string | null` 其實拿到物件。
+- **下一步**：遠端媒體庫來源表單、重複/缺集/rename、audit undo；Instruments 效能驗證；Anime4K / yt-dlp / Menu bar extra。（桌面加值：本機路徑直開、Dock/Menu bar、快捷鍵設定頁、截圖到剪貼簿）與 Phase 5（管理頁）。
