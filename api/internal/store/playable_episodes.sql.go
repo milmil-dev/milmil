@@ -22,6 +22,7 @@ SELECT
   e.thumbnail_url AS image,
   mf.id AS media_file_id,
   mf.filename AS media_filename,
+  mf.path AS media_path,
   mf.size_bytes AS media_size_bytes,
   mf.width AS media_width,
   mf.height AS media_height,
@@ -48,6 +49,7 @@ type ListPlayableEpisodesRow struct {
 	Image            sql.NullString `json:"image"`
 	MediaFileID      sql.NullString `json:"media_file_id"`
 	MediaFilename    sql.NullString `json:"media_filename"`
+	MediaPath        sql.NullString `json:"media_path"`
 	MediaSizeBytes   sql.NullInt64  `json:"media_size_bytes"`
 	MediaWidth       sql.NullInt64  `json:"media_width"`
 	MediaHeight      sql.NullInt64  `json:"media_height"`
@@ -78,6 +80,7 @@ func (q *Queries) ListPlayableEpisodes(ctx context.Context, animeID string) ([]L
 			&i.Image,
 			&i.MediaFileID,
 			&i.MediaFilename,
+			&i.MediaPath,
 			&i.MediaSizeBytes,
 			&i.MediaWidth,
 			&i.MediaHeight,

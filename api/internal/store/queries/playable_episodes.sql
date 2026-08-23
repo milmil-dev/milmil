@@ -10,6 +10,7 @@ SELECT
   e.thumbnail_url AS image,
   mf.id AS media_file_id,
   mf.filename AS media_filename,
+  mf.path AS media_path,
   mf.size_bytes AS media_size_bytes,
   mf.width AS media_width,
   mf.height AS media_height,
