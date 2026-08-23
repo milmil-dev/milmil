@@ -136,7 +136,7 @@ struct MainShellView: View {
         case .collection: CollectionView()
         case .history: HistoryView()
         case .libraries: LibrariesView()
-        case .downloads: PlaceholderPage(destination: .downloads)
+        case .downloads: DownloadsView()
         case .notifications: NotificationsView()
         }
     }
