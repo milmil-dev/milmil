@@ -26,7 +26,7 @@ struct ServerPickerView: View {
             FormField(label: String(localized: "伺服器網址")) {
                 // No `.textContentType(.URL)` and no scheme in the placeholder:
                 // AppKit would otherwise paint the placeholder as a blue link.
-                TextField("192.168.1.10:8080 或 milmil.home.arpa", text: $urlText)
+                TextField("192.168.1.10:8080", text: $urlText)
                     .textFieldStyle(.roundedBorder)
                     .autocorrectionDisabled()
                     .onSubmit(add)
@@ -53,7 +53,7 @@ struct ServerPickerView: View {
 
     private func add() {
         guard let url = ServerProfile.parseUserInput(urlText) else {
-            validationMessage = String(localized: "請輸入有效的網址，例如 https://milmil.home.arpa 或 192.168.1.10:8080")
+            validationMessage = String(localized: "請輸入有效的網址，例如 192.168.1.10:8080")
             return
         }
         validationMessage = nil

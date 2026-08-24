@@ -63,11 +63,13 @@ enum DesktopDefaults {
     static let hardwareDecoding = "player.hwdec"
     static let pauseOnHeadphoneDisconnect = "player.pauseOnDisconnect"
     static let theater = "watch.theater"
+    static let menuBarExtra = "menubar.enabled"
 }
 
 struct PlayerSettingsTab: View {
     let session: ServerSession
     @Environment(PlayerCoordinator.self) private var coordinator
+    @Environment(MenuBarController.self) private var menuBar
     @AppStorage(DesktopDefaults.hardwareDecoding) private var hwdec = "videotoolbox"
 
     private var prefs: GlobalPreferences { session.preferences }
@@ -103,6 +105,9 @@ struct PlayerSettingsTab: View {
             }
             Section("yt-dlp") {
                 YtDlpSettingsSection()
+            }
+            Section("選單列") {
+                Toggle("在選單列顯示播放與下載狀態", isOn: Binding(get: { menuBar.isEnabled }, set: { menuBar.isEnabled = $0 }))
             }
             Section("本機路徑對應") {
                 LocalMappingsEditor()

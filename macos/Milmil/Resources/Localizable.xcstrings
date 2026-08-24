@@ -307,6 +307,40 @@
         }
       }
     },
+    "%lld 個下載": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld downloads"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 件のダウンロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다운로드 %lld개"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 个下载"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 個下載"
+          }
+        }
+      }
+    },
     "%lld 個檔案": {
       "localizations": {
         "en": {
@@ -1085,40 +1119,6 @@
           "stringUnit": {
             "state": "translated",
             "value": ".*芙莉蓮.*1080p.*"
-          }
-        }
-      }
-    },
-    "192.168.1.10:8080 或 milmil.home.arpa": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "192.168.1.10:8080 or milmil.home.arpa"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "192.168.1.10:8080 または milmil.home.arpa"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "192.168.1.10:8080 또는 milmil.home.arpa"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "192.168.1.10:8080 或 milmil.home.arpa"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "192.168.1.10:8080 或者 milmil.home.arpa"
           }
         }
       }
@@ -2887,6 +2887,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "下載開始"
+          }
+        }
+      }
+    },
+    "下載頁": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ダウンロードページ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다운로드 페이지"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下载页"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載頁"
           }
         }
       }
@@ -8667,6 +8701,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "睇緊"
+          }
+        }
+      }
+    },
+    "在選單列顯示播放與下載狀態": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show playback and download status in the menu bar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メニューバーに再生とダウンロードの状態を表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메뉴 막대에 재생 및 다운로드 상태 표시"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在菜单栏显示播放与下载状态"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "喺選單列顯示播放同下載狀態"
           }
         }
       }
@@ -18599,6 +18667,40 @@
         }
       }
     },
+    "沒有播放中的內容": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing playing"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再生中のコンテンツはありません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재생 중인 콘텐츠가 없습니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有播放中的内容"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇播放緊嘅內容"
+          }
+        }
+      }
+    },
     "沒有播放中的預告片": {
       "localizations": {
         "en": {
@@ -18799,6 +18901,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "冇通知"
+          }
+        }
+      }
+    },
+    "沒有進行中的下載": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No active downloads"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "進行中のダウンロードはありません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "진행 중인 다운로드가 없습니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有进行中的下载"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇進行緊嘅下載"
           }
         }
       }
@@ -21659,6 +21795,40 @@
         }
       }
     },
+    "結束": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "終了"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "종료"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結束"
+          }
+        }
+      }
+    },
     "統一顏色": {
       "localizations": {
         "en": {
@@ -23699,36 +23869,36 @@
         }
       }
     },
-    "請輸入有效的網址，例如 https://milmil.home.arpa 或 192.168.1.10:8080": {
+    "請輸入有效的網址，例如 192.168.1.10:8080": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter a valid URL, e.g. https://milmil.home.arpa or 192.168.1.10:8080"
+            "value": "Enter a valid address, e.g. 192.168.1.10:8080"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "有効な URL を入力してください（例: https://milmil.home.arpa または 192.168.1.10:8080）"
+            "value": "有効なアドレスを入力してください（例：192.168.1.10:8080）"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "유효한 주소를 입력하세요. 예: https://milmil.home.arpa 또는 192.168.1.10:8080"
+            "value": "올바른 주소를 입력하세요 (예: 192.168.1.10:8080)"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "请输入有效的网址，例如 https://milmil.home.arpa 或 192.168.1.10:8080"
+            "value": "请输入有效的网址，例如 192.168.1.10:8080"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "請輸入有效嘅網址，例如 https://milmil.home.arpa 或者 192.168.1.10:8080"
+            "value": "請輸入有效嘅網址，例如 192.168.1.10:8080"
           }
         }
       }
@@ -25399,6 +25569,40 @@
         }
       }
     },
+    "選單列": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu bar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メニューバー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메뉴 막대"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "菜单栏"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選單列"
+          }
+        }
+      }
+    },
     "選擇 mpv GLSL shader（.glsl / .hook）": {
       "localizations": {
         "en": {
@@ -25701,6 +25905,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "還原預設"
+          }
+        }
+      }
+    },
+    "還有 %lld 個…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld more…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ほか %lld 件…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그 외 %lld개…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还有 %lld 个…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仲有 %lld 個…"
           }
         }
       }
@@ -26551,6 +26789,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "開啟 URL…"
+          }
+        }
+      }
+    },
+    "開啟 milmil": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open milmil"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "milmil を開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "milmil 열기"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 milmil"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟 milmil"
           }
         }
       }

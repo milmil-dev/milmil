@@ -6,19 +6,21 @@ struct MilmilApp: App {
     @State private var session = SessionStore(tokenStore: DevSnapshot.tokenStore ?? KeychainTokenStore(), defaults: .standard)
     @State private var player = PlayerCoordinator()
     @State private var trailers = TrailerCoordinator()
+    @State private var menuBar = MenuBarController()
     /// `milmil://…` links and dropped / double-clicked `.torrent` files that
     /// arrived before the shell was ready.
     @State private var pendingLinks: [URL] = []
     @State private var pendingFiles: [URL] = []
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: "main") {
             RootView()
                 .environment(session)
                 .environment(player)
                 .environment(trailers)
                 .task {
                     DevSnapshot.runIfRequested()
+                    menuBar.attach(player: player)
                     await session.bootstrap()
                 }
                 .onOpenURL { url in
@@ -48,6 +50,7 @@ struct MilmilApp: App {
                 .environment(session)
                 .environment(player)
                 .environment(trailers)
+                .environment(menuBar)
         }
 
         // One player window, reused across episodes (one mpv instance).
