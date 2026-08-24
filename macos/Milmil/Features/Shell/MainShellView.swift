@@ -128,6 +128,10 @@ struct MainShellView: View {
                 root(for: router.destination)
                     .navigationDestination(for: Route.self) { route in
                         destination(for: route)
+                            // ShellToolbar already provides 上一頁 — without
+                            // this, pushed routes show the automatic back
+                            // button next to it (two chevrons).
+                            .navigationBarBackButtonHidden(true)
                     }
             }
             .background(BackdropLayer())

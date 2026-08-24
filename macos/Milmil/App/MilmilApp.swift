@@ -31,7 +31,12 @@ struct MilmilApp: App {
                     }
                 }
                 .environment(\.pendingOpenURLs, OpenURLQueue(links: $pendingLinks, files: $pendingFiles))
+                // Route milmil:// links into this (existing) window — without
+                // the preferring/allowing pair every deep link spawns a fresh
+                // window stuck on its own Home.
+                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         }
+        .handlesExternalEvents(matching: ["*"])
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
         .defaultSize(width: 1280, height: 800)
