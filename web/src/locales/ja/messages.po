@@ -462,19 +462,19 @@ msgstr "更新中..."
 msgid "Anime"
 msgstr "アニメ"
 
-#: src/pages/AnimeDetailPage.tsx:725
+#: src/pages/AnimeDetailPage.tsx:730
 msgid "anime.addToCollection"
 msgstr "コレクションに追加"
 
-#: src/pages/AnimeDetailPage.tsx:1078
+#: src/pages/AnimeDetailPage.tsx:1107
 msgid "anime.characters"
 msgstr "キャラクター"
 
-#: src/pages/AnimeDetailPage.tsx:266
+#: src/pages/AnimeDetailPage.tsx:271
 msgid "anime.collectionUpdated"
 msgstr "コレクションを更新しました"
 
-#: src/pages/AnimeDetailPage.tsx:1269
+#: src/pages/AnimeDetailPage.tsx:1298
 msgid "anime.comments"
 msgstr "コメント"
 
@@ -482,7 +482,7 @@ msgstr "コメント"
 #~ msgid "anime.continueWatching"
 #~ msgstr "視聴を続ける"
 
-#: src/pages/AnimeDetailPage.tsx:767
+#: src/pages/AnimeDetailPage.tsx:796
 msgid "anime.enableTrackerSync"
 msgstr "トラッカー同期を有効にする"
 
@@ -491,11 +491,11 @@ msgstr "トラッカー同期を有効にする"
 #~ msgstr "話"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:1000
+#: src/pages/AnimeDetailPage.tsx:1029
 msgid "anime.episodes"
 msgstr "エピソード"
 
-#: src/pages/AnimeDetailPage.tsx:768
+#: src/pages/AnimeDetailPage.tsx:797
 msgid "anime.excludeTrackerSync"
 msgstr "トラッカー同期から除外"
 
@@ -503,7 +503,7 @@ msgstr "トラッカー同期から除外"
 #~ msgid "anime.inCollection"
 #~ msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:300
+#: src/pages/AnimeDetailPage.tsx:305
 msgid "anime.metaRefreshed"
 msgstr "メタデータを更新しました"
 
@@ -514,37 +514,41 @@ msgstr "メタデータを更新しました"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:579
+#: src/pages/AnimeDetailPage.tsx:584
 msgid "anime.notAired"
 msgstr "未放送"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:356
 msgid "anime.notFound"
 msgstr "アニメが見つかりません"
 
-#: src/pages/AnimeDetailPage.tsx:592
+#: src/pages/AnimeDetailPage.tsx:779
+msgid "anime.openInApp"
+msgstr "アプリで開く"
+
+#: src/pages/AnimeDetailPage.tsx:597
 msgid "anime.playableEps"
 msgstr "話再生可能"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:572
+#: src/pages/AnimeDetailPage.tsx:577
 msgid "anime.ratings"
 msgstr "評価"
 
-#: src/pages/AnimeDetailPage.tsx:1183
+#: src/pages/AnimeDetailPage.tsx:1212
 msgid "anime.recommendations"
 msgstr "おすすめ"
 
-#: src/pages/AnimeDetailPage.tsx:414
-#: src/pages/AnimeDetailPage.tsx:415
+#: src/pages/AnimeDetailPage.tsx:419
+#: src/pages/AnimeDetailPage.tsx:420
 msgid "anime.refreshMeta"
 msgstr "メタデータを更新"
 
-#: src/pages/AnimeDetailPage.tsx:1153
+#: src/pages/AnimeDetailPage.tsx:1182
 msgid "anime.relations"
 msgstr "関連作品"
 
-#: src/pages/AnimeDetailPage.tsx:1221
+#: src/pages/AnimeDetailPage.tsx:1250
 msgid "anime.reviews"
 msgstr "レビュー"
 
@@ -552,22 +556,22 @@ msgstr "レビュー"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:750
+#: src/pages/AnimeDetailPage.tsx:755
 msgid "anime.searchResources"
 msgstr "リソースを検索"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
-#: src/pages/AnimeDetailPage.tsx:1103
+#: src/pages/AnimeDetailPage.tsx:1132
 msgid "anime.sideStories"
 msgstr "番外編・劇場版"
 
-#: src/pages/AnimeDetailPage.tsx:586
+#: src/pages/AnimeDetailPage.tsx:591
 msgid "anime.subscribed"
 msgstr "追跡中"
 
-#: src/pages/AnimeDetailPage.tsx:282
+#: src/pages/AnimeDetailPage.tsx:287
 msgid "anime.syncFlagsUpdated"
 msgstr "同期フラグを更新しました"
 
@@ -576,11 +580,11 @@ msgstr "同期フラグを更新しました"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:1047
+#: src/pages/AnimeDetailPage.tsx:1076
 msgid "anime.trailer"
 msgstr "予告編"
 
-#: src/pages/AnimeDetailPage.tsx:1085
+#: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -1391,14 +1395,14 @@ msgstr "すべて"
 #~ msgstr "ステータスを変更"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:833
+#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "視聴済み"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:839
+#: src/pages/AnimeDetailPage.tsx:868
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1420,14 +1424,14 @@ msgid "collection.goToLibraries"
 msgstr "ライブラリへ"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:836
+#: src/pages/AnimeDetailPage.tsx:865
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "一時停止"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:830
+#: src/pages/AnimeDetailPage.tsx:859
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1463,7 +1467,7 @@ msgid "collection.viewAll"
 msgstr "すべて表示"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:827
+#: src/pages/AnimeDetailPage.tsx:856
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1473,7 +1477,7 @@ msgstr "視聴中"
 msgid "common.back"
 msgstr "戻る"
 
-#: src/pages/AnimeDetailPage.tsx:366
+#: src/pages/AnimeDetailPage.tsx:371
 msgid "common.backHome"
 msgstr "ホームに戻る"
 
@@ -1512,14 +1516,14 @@ msgstr "危険な操作"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:562
-#: src/pages/AnimeDetailPage.tsx:1003
+#: src/pages/AnimeDetailPage.tsx:567
+#: src/pages/AnimeDetailPage.tsx:1032
 #: src/pages/DownloadsPage.tsx:838
 #: src/pages/LibraryDetailPage.tsx:1100
 msgid "common.ep"
 msgstr "話"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:356
 #: src/pages/LibraryDetailPage.tsx:2024
 #: src/routes/__root.tsx:68
 msgid "common.loadFailed"
@@ -1537,7 +1541,7 @@ msgstr "読み込み中…"
 msgid "common.minuteShort"
 msgstr "分"
 
-#: src/pages/AnimeDetailPage.tsx:360
+#: src/pages/AnimeDetailPage.tsx:365
 #: src/pages/SchedulePage.tsx:853
 #: src/pages/SchedulePage.tsx:1168
 #: src/routes/__root.tsx:82
@@ -3486,7 +3490,7 @@ msgid "player.memoryPressure"
 msgstr "メモリ使用量が高くなっています — バッファサイズを削減しています"
 
 #: src/components/HeroBanner.tsx:209
-#: src/pages/AnimeDetailPage.tsx:962
+#: src/pages/AnimeDetailPage.tsx:991
 msgid "player.remaining"
 msgstr "残り"
 

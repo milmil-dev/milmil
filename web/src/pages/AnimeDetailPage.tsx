@@ -16,6 +16,11 @@ import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { downloadKeys, ruleApi } from '../lib/api/downloads';
 import { translateGenre } from '../lib/genre-i18n';
 
+/** The milmil:// scheme is only registered by the native macOS client. */
+const IS_MAC = /Mac/.test(
+  typeof navigator === 'undefined' ? '' : (navigator.platform ?? navigator.userAgent)
+);
+
 const RELATION_LABELS: Record<string, Record<string, string>> = {
   PREQUEL: { en: 'Prequel', 'zh-Hant': '前作', 'zh-Hans': '前作' },
   SEQUEL: { en: 'Sequel', 'zh-Hant': '續作', 'zh-Hans': '续作' },
@@ -749,6 +754,30 @@ export function AnimeDetailPage() {
                           </svg>
                           {i18n._(msg`anime.searchResources`)}
                         </Link>
+                      )}
+
+                      {/* Open in the native macOS app (milmil:// URL scheme) */}
+                      {!isAniListOnly && IS_MAC && (
+                        <a
+                          href={`milmil://anime/${anime.bangumi_id}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="size-3.5"
+                          >
+                            <rect x={3} y={4} width={18} height={14} rx={2} />
+                            <path d="M8 21h8" />
+                            <path d="M12 18v3" />
+                          </svg>
+                          {i18n._(msg`anime.openInApp`)}
+                        </a>
                       )}
 
                       {/* Tracker sync toggle */}

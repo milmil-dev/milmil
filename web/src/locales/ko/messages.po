@@ -462,19 +462,19 @@ msgstr "업데이트 중..."
 msgid "Anime"
 msgstr "애니메이션"
 
-#: src/pages/AnimeDetailPage.tsx:725
+#: src/pages/AnimeDetailPage.tsx:730
 msgid "anime.addToCollection"
 msgstr "컬렉션에 추가"
 
-#: src/pages/AnimeDetailPage.tsx:1078
+#: src/pages/AnimeDetailPage.tsx:1107
 msgid "anime.characters"
 msgstr "캐릭터"
 
-#: src/pages/AnimeDetailPage.tsx:266
+#: src/pages/AnimeDetailPage.tsx:271
 msgid "anime.collectionUpdated"
 msgstr "컬렉션이 업데이트되었습니다"
 
-#: src/pages/AnimeDetailPage.tsx:1269
+#: src/pages/AnimeDetailPage.tsx:1298
 msgid "anime.comments"
 msgstr "댓글"
 
@@ -482,7 +482,7 @@ msgstr "댓글"
 #~ msgid "anime.continueWatching"
 #~ msgstr "이어보기"
 
-#: src/pages/AnimeDetailPage.tsx:767
+#: src/pages/AnimeDetailPage.tsx:796
 msgid "anime.enableTrackerSync"
 msgstr "트래커 동기화 활성화"
 
@@ -491,11 +491,11 @@ msgstr "트래커 동기화 활성화"
 #~ msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:1000
+#: src/pages/AnimeDetailPage.tsx:1029
 msgid "anime.episodes"
 msgstr "에피소드"
 
-#: src/pages/AnimeDetailPage.tsx:768
+#: src/pages/AnimeDetailPage.tsx:797
 msgid "anime.excludeTrackerSync"
 msgstr "트래커 동기화에서 제외"
 
@@ -503,7 +503,7 @@ msgstr "트래커 동기화에서 제외"
 #~ msgid "anime.inCollection"
 #~ msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:300
+#: src/pages/AnimeDetailPage.tsx:305
 msgid "anime.metaRefreshed"
 msgstr "메타데이터가 새로고침되었습니다"
 
@@ -514,37 +514,41 @@ msgstr "메타데이터가 새로고침되었습니다"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:579
+#: src/pages/AnimeDetailPage.tsx:584
 msgid "anime.notAired"
 msgstr "미방영"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:356
 msgid "anime.notFound"
 msgstr "애니메이션을 찾을 수 없습니다"
 
-#: src/pages/AnimeDetailPage.tsx:592
+#: src/pages/AnimeDetailPage.tsx:779
+msgid "anime.openInApp"
+msgstr "앱에서 열기"
+
+#: src/pages/AnimeDetailPage.tsx:597
 msgid "anime.playableEps"
 msgstr "편 재생 가능"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:572
+#: src/pages/AnimeDetailPage.tsx:577
 msgid "anime.ratings"
 msgstr "평점"
 
-#: src/pages/AnimeDetailPage.tsx:1183
+#: src/pages/AnimeDetailPage.tsx:1212
 msgid "anime.recommendations"
 msgstr "추천"
 
-#: src/pages/AnimeDetailPage.tsx:414
-#: src/pages/AnimeDetailPage.tsx:415
+#: src/pages/AnimeDetailPage.tsx:419
+#: src/pages/AnimeDetailPage.tsx:420
 msgid "anime.refreshMeta"
 msgstr "메타데이터 새로고침"
 
-#: src/pages/AnimeDetailPage.tsx:1153
+#: src/pages/AnimeDetailPage.tsx:1182
 msgid "anime.relations"
 msgstr "관련 작품"
 
-#: src/pages/AnimeDetailPage.tsx:1221
+#: src/pages/AnimeDetailPage.tsx:1250
 msgid "anime.reviews"
 msgstr "리뷰"
 
@@ -552,22 +556,22 @@ msgstr "리뷰"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:750
+#: src/pages/AnimeDetailPage.tsx:755
 msgid "anime.searchResources"
 msgstr "리소스 검색"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
-#: src/pages/AnimeDetailPage.tsx:1103
+#: src/pages/AnimeDetailPage.tsx:1132
 msgid "anime.sideStories"
 msgstr "Side Stories & Movies"
 
-#: src/pages/AnimeDetailPage.tsx:586
+#: src/pages/AnimeDetailPage.tsx:591
 msgid "anime.subscribed"
 msgstr "추적 중"
 
-#: src/pages/AnimeDetailPage.tsx:282
+#: src/pages/AnimeDetailPage.tsx:287
 msgid "anime.syncFlagsUpdated"
 msgstr "동기화 플래그가 업데이트되었습니다"
 
@@ -576,11 +580,11 @@ msgstr "동기화 플래그가 업데이트되었습니다"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:1047
+#: src/pages/AnimeDetailPage.tsx:1076
 msgid "anime.trailer"
 msgstr "예고편"
 
-#: src/pages/AnimeDetailPage.tsx:1085
+#: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -1391,14 +1395,14 @@ msgstr "전체"
 #~ msgstr "상태 변경"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:833
+#: src/pages/AnimeDetailPage.tsx:862
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "완료"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:839
+#: src/pages/AnimeDetailPage.tsx:868
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
@@ -1420,14 +1424,14 @@ msgid "collection.goToLibraries"
 msgstr "라이브러리로 이동"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:836
+#: src/pages/AnimeDetailPage.tsx:865
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "일시 중단"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:830
+#: src/pages/AnimeDetailPage.tsx:859
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1463,7 +1467,7 @@ msgid "collection.viewAll"
 msgstr "전체 보기"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:827
+#: src/pages/AnimeDetailPage.tsx:856
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
@@ -1473,7 +1477,7 @@ msgstr "시청 중"
 msgid "common.back"
 msgstr "뒤로"
 
-#: src/pages/AnimeDetailPage.tsx:366
+#: src/pages/AnimeDetailPage.tsx:371
 msgid "common.backHome"
 msgstr "홈으로 돌아가기"
 
@@ -1512,14 +1516,14 @@ msgstr "위험 영역"
 #: src/components/MatchModal.tsx:247
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:562
-#: src/pages/AnimeDetailPage.tsx:1003
+#: src/pages/AnimeDetailPage.tsx:567
+#: src/pages/AnimeDetailPage.tsx:1032
 #: src/pages/DownloadsPage.tsx:838
 #: src/pages/LibraryDetailPage.tsx:1100
 msgid "common.ep"
 msgstr "화"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:356
 #: src/pages/LibraryDetailPage.tsx:2024
 #: src/routes/__root.tsx:68
 msgid "common.loadFailed"
@@ -1537,7 +1541,7 @@ msgstr "불러오는 중…"
 msgid "common.minuteShort"
 msgstr "분"
 
-#: src/pages/AnimeDetailPage.tsx:360
+#: src/pages/AnimeDetailPage.tsx:365
 #: src/pages/SchedulePage.tsx:853
 #: src/pages/SchedulePage.tsx:1168
 #: src/routes/__root.tsx:82
@@ -3486,7 +3490,7 @@ msgid "player.memoryPressure"
 msgstr "메모리 사용량이 높습니다 — 버퍼 크기를 줄이고 있습니다"
 
 #: src/components/HeroBanner.tsx:209
-#: src/pages/AnimeDetailPage.tsx:962
+#: src/pages/AnimeDetailPage.tsx:991
 msgid "player.remaining"
 msgstr "남음"
 
