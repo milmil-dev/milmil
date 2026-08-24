@@ -24,6 +24,17 @@ func TestMatchRule_NoMatch(t *testing.T) {
 	}
 }
 
+// Release titles mix cases freely ("[ANi] BLEACH 死神…" vs "[ANi] Bleach
+// Sennen Kessenhen…"); a case-sensitive filter silently splits a season.
+func TestMatchRule_CaseInsensitive(t *testing.T) {
+	if !rss.MatchRule("[ANi]  BLEACH 死神 千年血戰篇-禍進譚- - 42 [1080P]", "Bleach", "") {
+		t.Error("filter should match regardless of case")
+	}
+	if rss.MatchRule("[ANi] Bleach - 42 [720P]", "Bleach", "720p") {
+		t.Error("exclude should match regardless of case")
+	}
+}
+
 func TestMatchRule_EmptyFilter(t *testing.T) {
 	if rss.MatchRule("anything", "", "") {
 		t.Error("empty filter should not match")
