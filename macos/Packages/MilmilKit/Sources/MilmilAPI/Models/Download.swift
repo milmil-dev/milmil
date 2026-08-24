@@ -38,7 +38,9 @@ public struct Download: Decodable, Sendable, Hashable, Identifiable {
         completedBytes = try c.decodeIfPresent(Int64.self, forKey: .completedBytes) ?? 0
         speedBytes = try c.decodeIfPresent(Int64.self, forKey: .speedBytes) ?? 0
         saveDir = try c.decodeIfPresent(String.self, forKey: .saveDir) ?? ""
-        ruleID = try c.decodeIfPresent(String.self, forKey: .ruleID).nonEmpty
+        // Plain string normally, but a rule-triggered row comes back as Go's
+        // `sql.NullString` object (`{"String": "…", "Valid": true}`).
+        ruleID = ((try? c.decodeIfPresent(LenientString.self, forKey: .ruleID))?.wrappedValue).nonEmpty
         createdAt = try c.decodeIfPresent(String.self, forKey: .createdAt).flatMap(MilmilDate.parse)
         updatedAt = try c.decodeIfPresent(String.self, forKey: .updatedAt).flatMap(MilmilDate.parse)
     }

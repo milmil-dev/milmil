@@ -97,4 +97,24 @@ struct TokenStoreTests {
         let json = try #require(try JSONSerialization.jsonObject(with: encoded) as? [String: Any])
         #expect(json["enabled"] as? Int == 1 && json["library_id"] as? String == "" && json["rss_feed_id"] as? String == "f1")
     }
+
+    @Test("download rows decode rule_id as string or Go NullString")
+    func downloadRuleID() throws {
+        let decoder = MilmilJSON.makeDecoder()
+        let plain = try decoder.decode(Download.self, from: Data(#"""
+        {"id":"d1","gid":"g1","url":"magnet:?x","name":"n","status":"active","total_bytes":10,"completed_bytes":5,
+         "speed_bytes":1,"save_dir":"","rule_id":"r1","created_at":"2026-08-23T16:38:03Z","updated_at":"2026-08-23T16:41:07Z"}
+        """#.utf8))
+        #expect(plain.ruleID == "r1")
+        let nullObject = try decoder.decode(Download.self, from: Data(#"""
+        {"id":"d2","gid":"g2","url":"u","name":"n","status":"complete","total_bytes":10,"completed_bytes":10,
+         "speed_bytes":0,"save_dir":"","rule_id":{"String":"r2","Valid":true},"created_at":"2026-08-23T16:38:03Z","updated_at":"2026-08-23T16:41:07Z"}
+        """#.utf8))
+        #expect(nullObject.ruleID == "r2")
+        let invalid = try decoder.decode(Download.self, from: Data(#"""
+        {"id":"d3","gid":"g3","url":"u","name":"n","status":"waiting","total_bytes":0,"completed_bytes":0,
+         "speed_bytes":0,"save_dir":"","rule_id":{"String":"","Valid":false}}
+        """#.utf8))
+        #expect(invalid.ruleID == nil)
+    }
 }
