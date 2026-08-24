@@ -359,8 +359,19 @@ func (h *handler) handleRefreshRSSFeed(c *echo.Context) error {
 				continue
 			}
 
+			// Resolve save dir from library path (authoritative) with rule
+			// fallback — same as the background RSS worker; without this a
+			// manual "Fetch now" drops the file into the engine's default
+			// data dir instead of the library.
+			saveDir := rule.SaveDir
+			if rule.LibraryID.Valid {
+				if lib, libErr := h.queries.GetLibrary(ctx, rule.LibraryID.String); libErr == nil {
+					saveDir = lib.Path
+				}
+			}
+
 			gid, err := h.downloader.Add(ctx, item.Link, downloader.AddOptions{
-				SaveDir: rule.SaveDir,
+				SaveDir: saveDir,
 				Name:    item.Title,
 			})
 			if err != nil {
@@ -374,7 +385,7 @@ func (h *handler) handleRefreshRSSFeed(c *echo.Context) error {
 				Url:       item.Link,
 				Name:      item.Title,
 				Status:    "active",
-				SaveDir:   rule.SaveDir,
+				SaveDir:   saveDir,
 				RuleID:    sql.NullString{String: rule.ID, Valid: true},
 				BangumiID: rule.BangumiID,
 				LibraryID: rule.LibraryID,
