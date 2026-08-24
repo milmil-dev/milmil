@@ -2,6 +2,8 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(SessionStore.self) private var session
+    @Environment(TrailerCoordinator.self) private var trailers
+    @Environment(\.openWindow) private var openWindow
     @ObserveInjection private var inject
 
     var body: some View {
@@ -30,6 +32,15 @@ struct RootView: View {
         .background(Theme.background)
         .preferredColorScheme(.dark)
         .animation(.snappy(duration: 0.25), value: phaseKey)
+        .sheet(isPresented: Binding(get: { trailers.showOpenURL }, set: { trailers.showOpenURL = $0 })) {
+            OpenURLSheet()
+        }
+        .task {
+            if let url = DevSnapshot.trailerURL {
+                trailers.play(url: url, title: url.host() ?? "trailer")
+                openWindow(id: "trailer")
+            }
+        }
     }
 
     /// Animate only between screens, not on every profile mutation.

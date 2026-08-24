@@ -7,7 +7,9 @@ struct AnimeDetailView: View {
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
     @Environment(\.openURL) private var openURL
+    @Environment(\.openWindow) private var openWindow
     @Environment(PlayerCoordinator.self) private var playerCoordinator
+    @Environment(TrailerCoordinator.self) private var trailers
     let bangumiID: Int
 
     @State private var store: AnimeDetailStore?
@@ -202,7 +204,7 @@ struct AnimeDetailView: View {
                 Button("重新整理中繼資料", systemImage: "arrow.clockwise") { Task { await store.refreshMetadata() } }
                 Button("在 Bangumi 開啟", systemImage: "safari") { openURL(URL(string: "https://bgm.tv/subject/\(bangumiID)")!) }
                 if let trailer = store.detail.value?.trailerURL {
-                    Button("預告片", systemImage: "play.rectangle") { openURL(trailer) }
+                    Button("預告片", systemImage: "play.rectangle") { playTrailer(trailer, title: store.detail.value?.title ?? "") }
                 }
             } label: {
                 Image(systemName: "ellipsis")
@@ -269,6 +271,16 @@ struct AnimeDetailView: View {
         router.openWatch(bangumiID: bangumiID, episodeID: episode.episodeID)
     }
 
+    /// In-app trailer window when yt-dlp is installed, else the browser.
+    private func playTrailer(_ url: URL, title: String) {
+        if trailers.canPlayInApp {
+            trailers.play(url: url, title: title.isEmpty ? String(localized: "預告片") : String(localized: "\(title) 預告片"))
+            openWindow(id: "trailer")
+        } else {
+            openURL(url)
+        }
+    }
+
     // MARK: Side column
 
     private func sideColumn(_ detail: AnimeDetail, _ store: AnimeDetailStore) -> some View {
@@ -276,7 +288,7 @@ struct AnimeDetailView: View {
             if let trailer = detail.trailerURL {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("預告片").font(.system(size: 13, weight: .bold))
-                    Button { openURL(trailer) } label: {
+                    Button { playTrailer(trailer, title: detail.title) } label: {
                         ZStack {
                             RemoteImage(url: detail.bannerImage ?? detail.coverImage, maxPixel: 800) {
                                 Rectangle().fill(Theme.animeGradient(detail.title + "pv"))

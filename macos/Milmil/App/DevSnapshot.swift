@@ -86,6 +86,16 @@ enum DevSnapshot {
         #endif
     }
 
+    /// `MILMIL_SNAPSHOT_TRAILER_URL=https://…` opens the trailer window on
+    /// that URL (pair with `MILMIL_SNAPSHOT_WINDOW=trailer`).
+    static var trailerURL: URL? {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["MILMIL_SNAPSHOT_TRAILER_URL"].flatMap(URL.init(string:))
+        #else
+        nil
+        #endif
+    }
+
     /// `MILMIL_SNAPSHOT_CHROME=1` stops the player OSC from auto-hiding.
     static var keepsPlayerChrome: Bool {
         #if DEBUG

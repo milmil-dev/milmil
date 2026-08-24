@@ -5,6 +5,7 @@ import SwiftUI
 struct MilmilApp: App {
     @State private var session = SessionStore(tokenStore: DevSnapshot.tokenStore ?? KeychainTokenStore(), defaults: .standard)
     @State private var player = PlayerCoordinator()
+    @State private var trailers = TrailerCoordinator()
     /// `milmil://…` links and dropped / double-clicked `.torrent` files that
     /// arrived before the shell was ready.
     @State private var pendingLinks: [URL] = []
@@ -15,6 +16,7 @@ struct MilmilApp: App {
             RootView()
                 .environment(session)
                 .environment(player)
+                .environment(trailers)
                 .task {
                     DevSnapshot.runIfRequested()
                     await session.bootstrap()
@@ -35,13 +37,17 @@ struct MilmilApp: App {
         // selection would re-select a stale sidebar row on launch.
         .restorationBehavior(.disabled)
         .commands {
-            CommandGroup(replacing: .newItem) {}
+            CommandGroup(replacing: .newItem) {
+                Button("開啟 URL…") { trailers.showOpenURL = true }
+                    .keyboardShortcut("o", modifiers: [.command, .shift])
+            }
         }
 
         Settings {
             SettingsView()
                 .environment(session)
                 .environment(player)
+                .environment(trailers)
         }
 
         // One player window, reused across episodes (one mpv instance).
@@ -52,6 +58,14 @@ struct MilmilApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1024, height: 576)
+        .restorationBehavior(.disabled)
+
+        // Trailers /「開啟 URL」get their own small mpv instance.
+        Window(String(localized: "預告片"), id: "trailer") {
+            TrailerWindowView()
+                .environment(trailers)
+        }
+        .defaultSize(width: 854, height: 480)
         .restorationBehavior(.disabled)
     }
 }

@@ -273,6 +273,40 @@
         }
       }
     },
+    "%@ 預告片": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ trailer"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 予告編"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 예고편"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 预告片"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 預告片"
+          }
+        }
+      }
+    },
     "%lld 個檔案": {
       "localizations": {
         "en": {
@@ -1905,6 +1939,40 @@
         }
       }
     },
+    "yt-dlp 執行失敗": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp failed to run"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp の実行に失敗しました"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp 실행에 실패했습니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp 运行失败"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp 執行失敗"
+          }
+        }
+      }
+    },
     "• 確認伺服器已啟動（docker compose ps）\\n• 若在外網，確認 VPN / 反向代理\\n• 自簽憑證請用 http 或先在 Safari 信任": {
       "localizations": {
         "en": {
@@ -2547,6 +2615,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "下載"
+          }
+        }
+      }
+    },
+    "下載 yt-dlp": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download yt-dlp"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp をダウンロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp 다운로드"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下载 yt-dlp"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載 yt-dlp"
+          }
+        }
+      }
+    },
+    "下載中…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloading…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ダウンロード中…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다운로드 중…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下载中…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載緊…"
           }
         }
       }
@@ -10133,6 +10269,40 @@
         }
       }
     },
+    "尚未安裝 yt-dlp，會改用瀏覽器開啟。可在設定 › 播放安裝。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp is not installed, so this will open in the browser. Install it in Settings › Player."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp が未インストールのためブラウザで開きます。設定 › 再生からインストールできます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp가 설치되어 있지 않아 브라우저로 엽니다. 설정 › 재생에서 설치할 수 있습니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未安装 yt-dlp，会改用浏览器打开。可在设置 › 播放安装。"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仲未裝 yt-dlp，會改用瀏覽器開。可以喺設定 › 播放安裝。"
+          }
+        }
+      }
+    },
     "尚未抓取": {
       "localizations": {
         "en": {
@@ -10673,6 +10843,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "啟用咗"
+          }
+        }
+      }
+    },
+    "已安裝": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "インストール済み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설치됨"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已安装"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已安裝"
+          }
+        }
+      }
+    },
+    "已安裝 · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed · %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "インストール済み · %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설치됨 · %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已安装 · %@"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已安裝 · %@"
           }
         }
       }
@@ -12067,6 +12305,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "由 %@ 繼續"
+          }
+        }
+      }
+    },
+    "從作品頁按「預告片」開啟。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open one from a series page with the Trailer button."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作品ページの「予告編」から開きます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작품 페이지의 '예고편' 버튼으로 엽니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从作品页点“预告片”打开。"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "喺作品頁㩒「預告片」開啟。"
           }
         }
       }
@@ -15097,6 +15369,40 @@
         }
       }
     },
+    "改用瀏覽器開啟看看。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try opening it in the browser instead."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "代わりにブラウザで開いてみてください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대신 브라우저에서 열어 보세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "改用浏览器打开试试。"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "改用瀏覽器開下先。"
+          }
+        }
+      }
+    },
     "放送中": {
       "localizations": {
         "en": {
@@ -16083,6 +16389,40 @@
         }
       }
     },
+    "更新": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업데이트"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新"
+          }
+        }
+      }
+    },
     "更新中…": {
       "localizations": {
         "en": {
@@ -16623,6 +16963,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "未匹配"
+          }
+        }
+      }
+    },
+    "未安裝": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not installed"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未インストール"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설치 안 됨"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未安装"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未安裝"
           }
         }
       }
@@ -18225,6 +18599,40 @@
         }
       }
     },
+    "沒有播放中的預告片": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No trailer playing"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再生中の予告編はありません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재생 중인 예고편이 없습니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有播放中的预告片"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇播放緊嘅預告片"
+          }
+        }
+      }
+    },
     "沒有未匹配的檔案": {
       "localizations": {
         "en": {
@@ -19343,6 +19751,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "播唔到呢個檔案（已經試晒所有串流方式）"
+          }
+        }
+      }
+    },
+    "無法播放這個網址": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can’t play this URL"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この URL は再生できません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 URL을 재생할 수 없습니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法播放这个网址"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇辦法播呢個網址"
           }
         }
       }
@@ -22335,6 +22777,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "衍生作"
+          }
+        }
+      }
+    },
+    "裝了之後，預告片和「開啟 URL」（⌘⇧O）會直接在 App 內播放；沒裝就交給瀏覽器。下載自 yt-dlp 官方 GitHub releases，存放在 ~/Library/Application Support/milmil/yt-dlp。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once installed, trailers and Open URL (⌘⇧O) play right inside the app; without it they go to the browser. Downloaded from the official yt-dlp GitHub releases into ~/Library/Application Support/milmil/yt-dlp."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "インストールすると、予告編と「URL を開く」（⌘⇧O）がアプリ内で再生されます。未インストール時はブラウザで開きます。yt-dlp 公式 GitHub releases からダウンロードし、~/Library/Application Support/milmil/yt-dlp に保存します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설치하면 예고편과 'URL 열기'(⌘⇧O)를 앱 안에서 바로 재생합니다. 없으면 브라우저로 엽니다. yt-dlp 공식 GitHub releases에서 내려받아 ~/Library/Application Support/milmil/yt-dlp에 저장합니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "装了之后，预告片和“打开 URL”（⌘⇧O）会直接在 App 内播放；没装就交给浏览器。下载自 yt-dlp 官方 GitHub releases，存放在 ~/Library/Application Support/milmil/yt-dlp。"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "裝咗之後，預告片同「開啟 URL」（⌘⇧O）會直接喺 App 入面播；冇裝就交畀瀏覽器。下載自 yt-dlp 官方 GitHub releases，存放喺 ~/Library/Application Support/milmil/yt-dlp。"
           }
         }
       }
@@ -26007,6 +26483,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "開咗"
+          }
+        }
+      }
+    },
+    "開啟 URL": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open URL"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL を開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL 열기"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 URL"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟 URL"
+          }
+        }
+      }
+    },
+    "開啟 URL…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open URL…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL を開く…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL 열기…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 URL…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟 URL…"
           }
         }
       }

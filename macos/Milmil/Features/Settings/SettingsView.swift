@@ -101,6 +101,9 @@ struct PlayerSettingsTab: View {
             Section("Anime4K") {
                 Anime4KSettingsSection()
             }
+            Section("yt-dlp") {
+                YtDlpSettingsSection()
+            }
             Section("本機路徑對應") {
                 LocalMappingsEditor()
                 Text("伺服器路徑前綴對應到本機掛載（例如 NAS）。命中且檔案存在時 mpv 直接開本機檔案，不經伺服器串流。")
