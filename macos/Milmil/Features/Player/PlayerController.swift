@@ -85,7 +85,29 @@ final class PlayerController {
         Task { await refreshAuthHeader() }
         startEventLoop()
         applySubtitleStyle(session.preferences.subtitleStyle)
+        applyAnime4K()
         NowPlayingBridge.shared.attach(self)
+    }
+
+    /// (Re)applies the Anime4K shader chain from UserDefaults. Safe to call
+    /// while playing — mpv swaps the `glsl-shaders` list on the fly.
+    func applyAnime4K() {
+        guard let player else { return }
+        let paths = Anime4K.shaderPaths()
+        do {
+            // clr + per-item append sidesteps the option's platform-specific
+            // separator parsing (a ':'-joined `set` lands as one item).
+            try player.command(["change-list", "glsl-shaders", "clr", ""])
+            for path in paths {
+                try player.command(["change-list", "glsl-shaders", "append", path])
+            }
+            // The property string joins items with ':' on macOS.
+            let active = player.getString("glsl-shaders") ?? ""
+            let count = active.isEmpty ? 0 : active.split(separator: ":").count(where: { $0.hasSuffix(".glsl") || $0.hasSuffix(".hook") })
+            Self.log.info("anime4k: \(paths.count) shaders requested, \(count) active")
+        } catch {
+            Self.log.error("anime4k: change-list failed: \(String(describing: error))")
+        }
     }
 
     // MARK: - Loading

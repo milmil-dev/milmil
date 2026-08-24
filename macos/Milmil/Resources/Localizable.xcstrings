@@ -1327,6 +1327,40 @@
         }
       }
     },
+    "Anime4K（bloc97 v4.0.1）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anime4K (bloc97 v4.0.1)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anime4K（bloc97 v4.0.1）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anime4K (bloc97 v4.0.1)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anime4K（bloc97 v4.0.1）"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anime4K（bloc97 v4.0.1）"
+          }
+        }
+      }
+    },
     "Bangumi ID（選填）": {
       "localizations": {
         "en": {
@@ -6291,6 +6325,40 @@
         }
       }
     },
+    "加入 shader 後由上到下依序套用。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added shaders apply in order, top to bottom."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "追加したシェーダーは上から順に適用されます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가한 셰이더는 위에서부터 순서대로 적용됩니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入 shader 后由上到下依序应用。"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入 shader 之後由上到下逐個套用。"
+          }
+        }
+      }
+    },
     "加入伺服器上的資料夾，掃描後就能在首頁看到作品。": {
       "localizations": {
         "en": {
@@ -6321,6 +6389,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "加入伺服器上面嘅資料夾，掃描完就可以喺首頁見到作品。"
+          }
+        }
+      }
+    },
+    "加入內建 shader": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Bundled Shader"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内蔵シェーダーを追加"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내장 셰이더 추가"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入内置 shader"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入內建 shader"
           }
         }
       }
@@ -6389,6 +6491,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "加入收藏"
+          }
+        }
+      }
+    },
+    "加入檔案…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add File…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルを追加…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일 추가…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入文件…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入檔案…"
           }
         }
       }
@@ -6627,6 +6763,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "匹配後自動重新命名"
+          }
+        }
+      }
+    },
+    "升頻預設": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upscaling preset"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アップスケーリングプリセット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업스케일링 프리셋"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "升频预设"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "升頻預設"
           }
         }
       }
@@ -11323,6 +11493,40 @@
         }
       }
     },
+    "建議：%@（%@）；即時生效，只影響這台 Mac。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggested: %1$@ (%2$@); takes effect immediately, this Mac only."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推奨：%1$@（%2$@）。即座に反映され、この Mac のみに影響します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "권장: %1$@ (%2$@). 즉시 적용되며 이 Mac에만 영향을 줍니다."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "建议：%1$@（%2$@）；即时生效，只影响这台 Mac。"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "建議：%1$@（%2$@）；即時生效，只影響呢部 Mac。"
+          }
+        }
+      }
+    },
     "彈幕": {
       "localizations": {
         "en": {
@@ -12445,6 +12649,40 @@
         }
       }
     },
+    "快速": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高速"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빠름"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速"
+          }
+        }
+      }
+    },
     "恐怖": {
       "localizations": {
         "en": {
@@ -12985,6 +13223,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "搵唔到「%@」"
+          }
+        }
+      }
+    },
+    "找不到檔案，播放時會略過": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File not found; skipped during playback"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルが見つからないため再生時にスキップされます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일을 찾을 수 없어 재생 시 건너뜁니다"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到文件，播放时会跳过"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到檔案，播放時會略過"
           }
         }
       }
@@ -24651,6 +24923,40 @@
         }
       }
     },
+    "選擇 mpv GLSL shader（.glsl / .hook）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose mpv GLSL shaders (.glsl / .hook)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mpv の GLSL シェーダーを選択（.glsl / .hook）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mpv GLSL 셰이더 선택 (.glsl / .hook)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择 mpv GLSL shader（.glsl / .hook）"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "揀 mpv GLSL shader（.glsl / .hook）"
+          }
+        }
+      }
+    },
     "選擇來源…": {
       "localizations": {
         "en": {
@@ -27469,6 +27775,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "高"
+          }
+        }
+      }
+    },
+    "高品質": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High quality"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高品質"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고품질"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高品质"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高品質"
           }
         }
       }

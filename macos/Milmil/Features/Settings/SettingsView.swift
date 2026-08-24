@@ -98,6 +98,9 @@ struct PlayerSettingsTab: View {
                 TextField("音訊語言（例如 ja）", text: optionalBind(\.defaultAudioLanguage))
                 Text("mpv 會依此順序挑選內嵌軌；留空用 zh-TW → zh → en / ja。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
             }
+            Section("Anime4K") {
+                Anime4KSettingsSection()
+            }
             Section("本機路徑對應") {
                 LocalMappingsEditor()
                 Text("伺服器路徑前綴對應到本機掛載（例如 NAS）。命中且檔案存在時 mpv 直接開本機檔案，不經伺服器串流。")
@@ -185,6 +188,7 @@ struct AboutTab: View {
                 Section("元件與授權") {
                     LabeledContent("mpv / FFmpeg（MPVKit 1.0.0）", value: "LGPL-2.1+")
                     LabeledContent("SwiftyOpenCC / OpenCC", value: "MIT / Apache-2.0")
+                    LabeledContent("Anime4K（bloc97 v4.0.1）", value: "MIT")
                     LabeledContent("Bangumi · AniList · DandanPlay", value: String(localized: "資料來源"))
                 }
                 Section {
