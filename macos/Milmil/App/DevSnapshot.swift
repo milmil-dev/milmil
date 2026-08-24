@@ -106,6 +106,10 @@ enum DevSnapshot {
     }
 
     #if DEBUG
+    /// Registered by `PlayerController` (Debug only) so `MILMIL_SNAPSHOT_DUMP`
+    /// can serialize the live player state next to the screenshot.
+    @MainActor static var playerStateDump: (() -> [String: Any])?
+
     static func runIfRequested() {
         let env = ProcessInfo.processInfo.environment
         guard let path = env["MILMIL_SNAPSHOT"], !path.isEmpty else { return }
@@ -146,6 +150,16 @@ enum DevSnapshot {
                 NSApp.activate()
                 window.makeKeyAndOrderFront(nil)
                 try? await Task.sleep(for: .milliseconds(700))
+            }
+            // MILMIL_SNAPSHOT_DUMP=<path> also writes the active player's state
+            // (stage, status, mpv track selection) as JSON — lets a headless run
+            // verify subtitle/audio selection without readable pixels.
+            if let dumpPath = env["MILMIL_SNAPSHOT_DUMP"], !dumpPath.isEmpty {
+                let dict = playerStateDump?() ?? [:]
+                if let data = try? JSONSerialization.data(withJSONObject: dict, options: [.prettyPrinted, .sortedKeys]) {
+                    try? data.write(to: URL(fileURLWithPath: dumpPath))
+                    FileHandle.standardError.write(Data("📸 dump: wrote \(dumpPath)\n".utf8))
+                }
             }
             let rep: NSBitmapImageRep
             if env["MILMIL_SNAPSHOT_COMPOSITE"] == "1", let cgImage = Self.windowServerImage(of: window) {

@@ -87,6 +87,35 @@ final class PlayerController {
         applySubtitleStyle(session.preferences.subtitleStyle)
         applyAnime4K()
         NowPlayingBridge.shared.attach(self)
+        #if DEBUG
+        DevSnapshot.playerStateDump = { [weak self] in
+            guard let self else { return [:] }
+            var dict: [String: Any] = [
+                "status": String(describing: state.status),
+                "stage": String(describing: state.stage),
+                "timePos": state.timePos,
+                "duration": state.duration,
+                "sidecarCount": state.sidecarSubtitles.count,
+            ]
+            if let player {
+                dict["path"] = player.getString("path") ?? ""
+                dict["subTitle"] = player.getString("current-tracks/sub/title") ?? ""
+                dict["subLang"] = player.getString("current-tracks/sub/lang") ?? ""
+                dict["subExternal"] = player.getString("current-tracks/sub/external") ?? ""
+                dict["audioLang"] = player.getString("current-tracks/audio/lang") ?? ""
+                dict["trackCount"] = player.getInt("track-list/count") ?? -1
+                dict["videoCodec"] = player.getString("video-codec") ?? ""
+                dict["hwdecCurrent"] = player.getString("hwdec-current") ?? ""
+                dict["containerFps"] = player.getDouble("container-fps") ?? 0
+                dict["estimatedVfFps"] = player.getDouble("estimated-vf-fps") ?? 0
+                dict["frameDropCount"] = player.getInt("frame-drop-count") ?? -1
+                dict["decoderFrameDropCount"] = player.getInt("decoder-frame-drop-count") ?? -1
+                dict["voDelayedFrameCount"] = player.getInt("vo-delayed-frame-count") ?? -1
+                dict["avsync"] = player.getDouble("avsync") ?? 0
+            }
+            return dict
+        }
+        #endif
     }
 
     /// (Re)applies the Anime4K shader chain from UserDefaults. Safe to call
@@ -261,6 +290,7 @@ final class PlayerController {
         case .localFile:
             if let localFileURL {
                 load(url: localFileURL, generation: generation)
+                armLocalFileWatchdog(fileID: fileID, generation: generation)
             } else {
                 fallback.advance()
                 await loadCurrentStage(fileID: fileID)
@@ -301,6 +331,23 @@ final class PlayerController {
                 } catch {
                     if !Task.isCancelled { state.status = .failed(String(localized: "無法開始轉碼：\(error.localizedDescription)")) }
                 }
+            }
+        }
+    }
+
+    /// A pending TCC consent dialog or a dead network mount blocks mpv's
+    /// open() without ever posting an event, which would pin the UI on
+    /// 準備串流 forever — give the local rung a deadline and fall back to the
+    /// server stream instead.
+    private func armLocalFileWatchdog(fileID: String, generation: Int) {
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(8))
+            guard let self, generation == loadGeneration,
+                  state.stage == .localFile, case .loading = state.status else { return }
+            Self.log.warning("local file did not open within 8s, falling back to server stream")
+            player?.stop()
+            if fallback.advance() != nil {
+                await loadCurrentStage(fileID: fileID)
             }
         }
     }

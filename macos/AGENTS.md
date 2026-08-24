@@ -83,6 +83,13 @@ add `MILMIL_SNAPSHOT_WINDOW=player` for the pop-out window) and
 no DandanPlay credentials), `MILMIL_SNAPSHOT_TORRENTS=<bangumiID>` (下載 › 找種子
 on that title), `MILMIL_SNAPSHOT_DOWNLOADS_TAB=subscriptions`,
 `MILMIL_SNAPSHOT_SETTINGS_TAB=integrations|notifications|account|…`.
+`MILMIL_SNAPSHOT_DUMP=<file.json>` additionally writes the live player state
+(stage, status, mpv track selection, time-pos, and the performance counters
+`estimated-vf-fps` / `frame-drop-count` / `decoder-frame-drop-count` /
+`vo-delayed-frame-count` / `avsync` / `hwdec-current`) next to the screenshot —
+the way to verify subtitle/audio selection when the display is asleep, and the
+ONLY way to verify playback smoothness: a static screenshot cannot see frame
+drops (a 60% VO-drop bug once passed every snapshot check).
 Pass `MILMIL_SNAPSHOT_TOKEN_FILE=<file with the mlml_ token>` to skip the
 Keychain entirely — every rebuilt ad-hoc signature otherwise trips a keychain
 prompt a headless run cannot answer. Use
