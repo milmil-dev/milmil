@@ -6,19 +6,76 @@ public extension APIClient {
         return rows ?? []
     }
 
-    func createLibrary(name: String, path: String, sourceType: String = "local", scanIntervalMinutes: Int = 60) async throws -> Library {
+    func createLibrary(
+        name: String, path: String, sourceType: String = "local",
+        sourceConfig: LibrarySourceConfig? = nil, scanIntervalMinutes: Int = 60
+    ) async throws -> Library {
         struct Body: Encodable {
             let name: String
             let path: String
             let sourceType: String
+            let sourceConfig: LibrarySourceConfig?
             let scanIntervalMinutes: Int
             enum CodingKeys: String, CodingKey {
                 case name, path
                 case sourceType = "source_type"
+                case sourceConfig = "source_config"
                 case scanIntervalMinutes = "scan_interval_minutes"
             }
         }
-        return try await post("/api/v1/libraries", body: Body(name: name, path: path, sourceType: sourceType, scanIntervalMinutes: scanIntervalMinutes))
+        return try await post("/api/v1/libraries", body: Body(
+            name: name, path: path, sourceType: sourceType, sourceConfig: sourceConfig, scanIntervalMinutes: scanIntervalMinutes
+        ))
+    }
+
+    func updateLibrary(
+        id: String, name: String, path: String, enabled: Bool,
+        sourceType: String, sourceConfig: LibrarySourceConfig? = nil, scanIntervalMinutes: Int = 60
+    ) async throws -> Library {
+        struct Body: Encodable {
+            let name: String
+            let path: String
+            let enabled: Bool
+            let scanIntervalMinutes: Int
+            let sourceType: String
+            let sourceConfig: LibrarySourceConfig?
+            enum CodingKeys: String, CodingKey {
+                case name, path, enabled
+                case scanIntervalMinutes = "scan_interval_minutes"
+                case sourceType = "source_type"
+                case sourceConfig = "source_config"
+            }
+        }
+        return try await put("/api/v1/libraries/\(id)", body: Body(
+            name: name, path: path, enabled: enabled, scanIntervalMinutes: scanIntervalMinutes,
+            sourceType: sourceType, sourceConfig: sourceConfig
+        ))
+    }
+
+    /// Validates a source's credentials server-side without creating anything.
+    func testLibraryConnection(sourceType: String, sourceConfig: LibrarySourceConfig, path: String) async throws -> TestConnectionResult {
+        try await post("/api/v1/libraries/test-connection", body: SourceProbe(sourceType: sourceType, sourceConfig: sourceConfig, path: path))
+    }
+
+    /// Lists the directories at `path` as seen by the server through `sourceType`.
+    func browseLibrarySource(sourceType: String, sourceConfig: LibrarySourceConfig, path: String) async throws -> [BrowseEntry] {
+        struct Response: Decodable { let directories: [BrowseEntry]? }
+        let response: Response = try await post("/api/v1/libraries/browse", body: SourceProbe(sourceType: sourceType, sourceConfig: sourceConfig, path: path))
+        return response.directories ?? []
+    }
+
+    /// Scans the server's LAN for SMB hosts/shares.
+    func discoverNetwork() async throws -> [DiscoveredHost] {
+        struct Response: Decodable { let hosts: [DiscoveredHost]? }
+        let response: Response = try await get("/api/v1/libraries/discover-network")
+        return response.hosts ?? []
+    }
+
+    /// Pre-configured rclone remotes for the OAuth backends (gdrive/onedrive/dropbox).
+    func rcloneRemotes() async throws -> [RcloneRemote] {
+        struct Response: Decodable { let remotes: [RcloneRemote]? }
+        let response: Response = try await get("/api/v1/rclone/remotes")
+        return response.remotes ?? []
     }
 
     func deleteLibrary(id: String) async throws {
@@ -64,5 +121,17 @@ public extension APIClient {
 
     func deleteMediaFile(id: String) async throws {
         try await delete("/api/v1/media-files/\(id)")
+    }
+}
+
+/// Shared body for `test-connection` and `browse`.
+private struct SourceProbe: Encodable {
+    let sourceType: String
+    let sourceConfig: LibrarySourceConfig
+    let path: String
+    enum CodingKeys: String, CodingKey {
+        case path
+        case sourceType = "source_type"
+        case sourceConfig = "source_config"
     }
 }

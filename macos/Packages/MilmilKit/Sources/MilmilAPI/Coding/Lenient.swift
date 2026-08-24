@@ -79,6 +79,52 @@ public extension KeyedDecodingContainer {
     }
 }
 
+/// Strings that some handlers pass through as a raw `sql.NullString`
+/// (`{"String": "match.apply", "Valid": true}`) — the audit log rows.
+/// Accept a plain string, null, or that object; missing keys decode as "".
+@propertyWrapper
+public struct LenientString: Codable, Sendable, Hashable {
+    public var wrappedValue: String
+
+    public init(wrappedValue: String) {
+        self.wrappedValue = wrappedValue
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            wrappedValue = ""
+        } else if let raw = try? container.decode(String.self) {
+            wrappedValue = raw
+        } else if let null = try? container.decode(NullString.self) {
+            wrappedValue = null.valid ? null.string : ""
+        } else {
+            wrappedValue = ""
+        }
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(wrappedValue)
+    }
+
+    private struct NullString: Decodable {
+        let string: String
+        let valid: Bool
+        enum CodingKeys: String, CodingKey {
+            case string = "String"
+            case valid = "Valid"
+        }
+    }
+}
+
+public extension KeyedDecodingContainer {
+    /// Lets `@LenientString` properties tolerate an absent key.
+    func decode(_ type: LenientString.Type, forKey key: Key) throws -> LenientString {
+        try decodeIfPresent(type, forKey: key) ?? LenientString(wrappedValue: "")
+    }
+}
+
 /// `genres` is a JSON array on `/libraries/{id}/anime` but a JSON-encoded
 /// string on `/collection`. Accept both, and treat null as empty.
 @propertyWrapper

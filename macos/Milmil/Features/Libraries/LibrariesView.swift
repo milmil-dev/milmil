@@ -39,10 +39,9 @@ final class LibrariesStore {
         }
     }
 
-    func create(name: String, path: String) async throws {
-        let library = try await client.createLibrary(name: name, path: path)
+    func reload(selecting id: String? = nil) async {
         await load()
-        selectedID = library.id
+        if let id { selectedID = id }
     }
 
     func delete(_ library: Library) async {
@@ -57,6 +56,7 @@ struct LibrariesView: View {
     @Environment(BackdropStore.self) private var backdrop
     @State private var store: LibrariesStore?
     @State private var showAdd = false
+    @State private var editing: Library?
     @State private var confirmDelete: Library?
     @ObserveInjection private var inject
 
@@ -95,7 +95,16 @@ struct LibrariesView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .sheet(isPresented: $showAdd) { AddLibrarySheet(store: store) }
+        .sheet(isPresented: $showAdd) {
+            LibraryFormSheet(client: session.client, editing: nil) { saved in
+                await store.reload(selecting: saved.id)
+            }
+        }
+        .sheet(item: $editing) { library in
+            LibraryFormSheet(client: session.client, editing: library) { _ in
+                await store.reload()
+            }
+        }
         .confirmationDialog(
             String(localized: "刪除媒體庫「\(confirmDelete?.name ?? "")」？"),
             isPresented: Binding(get: { confirmDelete != nil }, set: { if !$0 { confirmDelete = nil } }),
@@ -124,6 +133,7 @@ struct LibrariesView: View {
                         .tag(library.id)
                         .contextMenu {
                             Button("重新掃描", systemImage: "arrow.clockwise") { Task { await store.scan(library) } }
+                            Button("編輯媒體庫…", systemImage: "pencil") { editing = library }
                             Divider()
                             Button("刪除媒體庫…", systemImage: "trash", role: .destructive) { confirmDelete = library }
                         }
@@ -183,6 +193,9 @@ struct LibraryDetailView: View {
     @State private var selection: Set<String> = []
     @State private var matching: MediaFileRow?
     @State private var sortOrder = [KeyPathComparator(\MediaFileRow.filename)]
+    @State private var showDuplicates = false
+    @State private var showMissing = false
+    @State private var showRename = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -196,6 +209,17 @@ struct LibraryDetailView: View {
         .task(id: "\(library.id)|\(filter.rawValue)|\(pageNumber)|\(store.scans[library.id] == nil)") { await load() }
         .sheet(item: $matching) { row in
             MatchSheet(row: row, client: client) { await load(); await store.load() }
+        }
+        .sheet(isPresented: $showDuplicates) {
+            DuplicatesSheet(library: library, client: client) { await load(); await store.load() }
+        }
+        .sheet(isPresented: $showMissing) {
+            MissingSummarySheet(library: library, client: client) { bangumiID in
+                router.openAnime(bangumiID)
+            }
+        }
+        .sheet(isPresented: $showRename) {
+            RenameSheet(library: library, client: client) { await load(); await store.load() }
         }
     }
 
@@ -223,6 +247,14 @@ struct LibraryDetailView: View {
                     ProgressView().controlSize(.small)
                 }
             }
+            Menu {
+                Button("重複檔案…", systemImage: "doc.on.doc") { showDuplicates = true }
+                Button("缺集摘要…", systemImage: "questionmark.folder") { showMissing = true }
+                Button("重新命名…", systemImage: "textformat.abc") { showRename = true }
+            } label: {
+                Label("工具", systemImage: "wrench.and.screwdriver")
+            }
+            .fixedSize()
             Button("掃描", systemImage: "arrow.clockwise") { Task { await store.scan(library) } }
                 .buttonStyle(.borderedProminent)
                 .disabled(store.scans[library.id] != nil && store.scans[library.id]?.type != ServerEventType.scanError)
@@ -371,63 +403,6 @@ struct LibraryDetailView: View {
         for id in selection { try? await client.unmatchMediaFile(id: id) }
         await load()
         await store.load()
-    }
-}
-
-/// New library: the path is the *server's* path (the browse button is for
-/// when the server runs on this Mac).
-private struct AddLibrarySheet: View {
-    let store: LibrariesStore
-    @Environment(\.dismiss) private var dismiss
-    @State private var name = ""
-    @State private var path = ""
-    @State private var error: String?
-    @State private var busy = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("新增媒體庫").font(.system(size: 16, weight: .bold))
-            Form {
-                TextField("名稱", text: $name, prompt: Text("動畫"))
-                HStack {
-                    TextField("伺服器上的路徑", text: $path, prompt: Text("/data/anime"))
-                    Button("瀏覽…") {
-                        let panel = NSOpenPanel()
-                        panel.canChooseDirectories = true
-                        panel.canChooseFiles = false
-                        panel.message = String(localized: "選擇資料夾（伺服器在本機時才適用）")
-                        if panel.runModal() == .OK, let url = panel.url {
-                            path = url.path
-                            if name.isEmpty { name = url.lastPathComponent }
-                        }
-                    }
-                }
-                Text("遠端來源（SMB / SFTP / WebDAV / S3 / rclone）目前請在 web 介面設定。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
-            }
-            .formStyle(.columns)
-            if let error { Text(error).font(.system(size: 12)).foregroundStyle(Color(hex: 0xF87171)) }
-            HStack {
-                Spacer()
-                Button("取消") { dismiss() }.keyboardShortcut(.cancelAction)
-                Button("新增並掃描") {
-                    busy = true
-                    Task {
-                        do {
-                            try await store.create(name: name.trimmingCharacters(in: .whitespaces), path: path.trimmingCharacters(in: .whitespaces))
-                            if let library = store.selected { await store.scan(library) }
-                            dismiss()
-                        } catch {
-                            self.error = (error as? APIError)?.serverMessage.flatMap { $0.isEmpty ? nil : $0 } ?? error.localizedDescription
-                        }
-                        busy = false
-                    }
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || path.trimmingCharacters(in: .whitespaces).isEmpty || busy)
-            }
-        }
-        .padding(20)
-        .frame(width: 460)
     }
 }
 

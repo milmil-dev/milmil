@@ -14,6 +14,8 @@ public struct Library: Decodable, Sendable, Hashable, Identifiable {
     public let matchedCount: Int
     public let unmatchedCount: Int
     public let totalSizeBytes: Int64
+    public let renameTemplate: String
+    public let renameAuto: Bool
 
     enum CodingKeys: String, CodingKey {
         case id, name, path, enabled
@@ -24,6 +26,8 @@ public struct Library: Decodable, Sendable, Hashable, Identifiable {
         case matchedCount = "matched_count"
         case unmatchedCount = "unmatched_count"
         case totalSizeBytes = "total_size_bytes"
+        case renameTemplate = "rename_template"
+        case renameAuto = "rename_auto"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -39,6 +43,8 @@ public struct Library: Decodable, Sendable, Hashable, Identifiable {
         matchedCount = try c.decodeIfPresent(Int.self, forKey: .matchedCount) ?? 0
         unmatchedCount = try c.decodeIfPresent(Int.self, forKey: .unmatchedCount) ?? 0
         totalSizeBytes = try c.decodeIfPresent(Int64.self, forKey: .totalSizeBytes) ?? 0
+        renameTemplate = try c.decode(LenientString.self, forKey: .renameTemplate).wrappedValue
+        renameAuto = try c.decode(LenientBool.self, forKey: .renameAuto).wrappedValue
     }
 
     public var isLocal: Bool { sourceType == "local" }

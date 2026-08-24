@@ -42,6 +42,9 @@ struct AccountSettingsTab: View {
             Section("兩步驟驗證") {
                 twoFactorContent
             }
+            Section("最近變更") {
+                RecentChangesSection(session: session)
+            }
         }
         .formStyle(.grouped)
         .task { await loadTwoFactor() }
