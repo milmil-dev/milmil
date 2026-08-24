@@ -413,20 +413,27 @@ func (m *Matcher) upsertAnimeByBangumi(ctx context.Context, f store.MediaFile, b
 	if parsed.Year > 0 {
 		year = sql.NullInt64{Int64: int64(parsed.Year), Valid: true}
 	}
+	var titleOriginal, titleZh sql.NullString
 	if subj, subjErr := m.bangumi.GetSubject(ctx, int(bangumiID)); subjErr == nil && subj != nil {
 		if subj.Name != "" {
 			title = subj.Name
+			titleOriginal = sql.NullString{String: subj.Name, Valid: true}
+		}
+		if subj.NameCN != "" {
+			titleZh = sql.NullString{String: subj.NameCN, Valid: true}
 		}
 	}
 
 	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
-		ID:          uuid.NewString(),
-		Title:       title,
-		Status:      "unknown",
-		Genres:      "[]",
-		BangumiID:   nid,
-		Year:        year,
-		WatchStatus: "none",
+		ID:            uuid.NewString(),
+		Title:         title,
+		TitleZh:       titleZh,
+		TitleOriginal: titleOriginal,
+		Status:        "unknown",
+		Genres:        "[]",
+		BangumiID:     nid,
+		Year:          year,
+		WatchStatus:   "none",
 	})
 	if err != nil {
 		return "", err

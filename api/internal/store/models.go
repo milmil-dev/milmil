@@ -38,6 +38,7 @@ type Anime struct {
 	SyncDisabled         int64          `json:"sync_disabled"`
 	WatchStatusOverride  string         `json:"watch_status_override"`
 	TraktShowID          sql.NullInt64  `json:"trakt_show_id"`
+	TitleOriginal        sql.NullString `json:"title_original"`
 }
 
 type ApiToken struct {

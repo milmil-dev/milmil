@@ -202,6 +202,8 @@ type Querier interface {
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeSyncFlags(ctx context.Context, arg UpdateAnimeSyncFlagsParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
+	// Lazy backfill for rows created before title_original existed.
+	UpdateAnimeTitleOriginal(ctx context.Context, arg UpdateAnimeTitleOriginalParams) error
 	UpdateAnimeTraktShowID(ctx context.Context, arg UpdateAnimeTraktShowIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error

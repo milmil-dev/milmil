@@ -22,7 +22,7 @@ type searchAnimeItem struct {
 // handleSearchAnime returns local-database anime matches for a fuzzy query.
 //
 // Query params:
-//   - q:     required substring to match against title/title_zh/title_en
+//   - q:     required substring to match against title/title_zh/title_en/title_original
 //   - limit: optional, 1..100 (default 20)
 func (h *handler) handleSearchAnime(c *echo.Context) error {
 	q := strings.TrimSpace(c.QueryParam("q"))
@@ -50,12 +50,15 @@ func (h *handler) handleSearchAnime(c *echo.Context) error {
 }
 
 func animeToSearchItem(a store.Anime, query string) searchAnimeItem {
-	alts := make([]string, 0, 2)
+	alts := make([]string, 0, 3)
 	if a.TitleZh.Valid && a.TitleZh.String != "" {
 		alts = append(alts, a.TitleZh.String)
 	}
 	if a.TitleEn.Valid && a.TitleEn.String != "" {
 		alts = append(alts, a.TitleEn.String)
+	}
+	if a.TitleOriginal.Valid && a.TitleOriginal.String != "" && a.TitleOriginal.String != a.Title {
+		alts = append(alts, a.TitleOriginal.String)
 	}
 	item := searchAnimeItem{
 		ID:        a.ID,
