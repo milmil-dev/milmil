@@ -83,7 +83,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
-    "@vitest/coverage-v8": "4.1.10",
+    "@vitest/coverage-v8": "4.1.11",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "jsdom": "^30.0.1",
@@ -93,11 +93,11 @@
     "typescript": "^5.9.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.2.9",
     "vite-plus": "^0.2.9",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.2.9",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "devEngines": {
     "packageManager": {
