@@ -134,6 +134,29 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
 
     // MARK: - Drawing
 
+    /// A `display()` driven from the render queue draws into the GL surface,
+    /// but the result only reaches the screen with a Core Animation commit —
+    /// without an explicit flush the frame sits until some main-thread commit
+    /// happens to come along, and mpv drops the frames that piled up behind
+    /// it (~60% at 24fps). Same fix as IINA's ViewLayer.
+    override public func display() {
+        super.display()
+        CATransaction.flush()
+    }
+
+    /// Force one render regardless of mpv's pending-frame flag — the
+    /// recovery path after display wake / the window becoming visible again,
+    /// where the last frame flag was consumed without a visible draw.
+    /// Unlike `scheduleDraw` this ignores `isAsynchronous`, so a stuck
+    /// live-resize flag cannot wedge the recovery.
+    public func forceRedraw() {
+        renderQueue.async { [weak self] in
+            guard let self, !tornDown.load(ordering: .acquiring), renderContext != nil else { return }
+            forceRender.store(true, ordering: .releasing)
+            display()
+        }
+    }
+
     /// Update callback → schedule a display on the render queue. The
     /// mandatory `mpv_render_context_update` happens in `canDraw`, where the
     /// GL context is current. In live resize CA already drives draws.
