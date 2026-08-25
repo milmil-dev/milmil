@@ -19,6 +19,17 @@ public struct ServerSettings: Decodable, Sendable {
         return ""
     }
 
+    public func bool(_ section: String, _ key: String) -> Bool? {
+        if case let .bool(b) = sections[section]?[key] { return b }
+        return nil
+    }
+
+    /// Web locale code (`zh-TW`, `en`, …) shared with the web's General panel;
+    /// empty when never set.
+    public var appearanceLanguage: String { string("appearance", "language") }
+
+    public var autoAddToCollection: Bool { bool("collection", "auto_add_to_collection") ?? true }
+
     public var dandanplay: DandanPlayCredentials {
         DandanPlayCredentials(appID: string("dandanplay", "app_id"), appSecret: string("dandanplay", "app_secret"))
     }

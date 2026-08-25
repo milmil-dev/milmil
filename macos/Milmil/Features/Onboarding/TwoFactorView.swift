@@ -33,7 +33,7 @@ struct TwoFactorView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .glassProminentButtonStyle()
             .controlSize(.large)
             .tint(Theme.accent)
             .disabled(isSubmitting || code.count != 6)
@@ -68,5 +68,9 @@ struct TwoFactorView: View {
 #if DEBUG
 #Preview("Two-factor") {
     PreviewHost(phase: .twoFactor(Preview.profile, userID: "usr_preview")) { TwoFactorView() }
+}
+
+#Preview("Two-factor · English") {
+    PreviewHost(phase: .twoFactor(Preview.profile, userID: "usr_preview"), locale: Locale(identifier: "en")) { TwoFactorView() }
 }
 #endif

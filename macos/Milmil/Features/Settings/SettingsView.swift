@@ -5,16 +5,20 @@ import SwiftUI
 /// web also stores lives in the shared server preferences; the few
 /// desktop-only knobs live in `UserDefaults`.
 enum SettingsTab: String, CaseIterable {
-    case player, subtitles, danmaku, keyboard, integrations, notifications, account, server, about
+    case general, player, subtitles, danmaku, keyboard, integrations, notifications, account, server, about
 }
 
 struct SettingsView: View {
     @Environment(PlayerCoordinator.self) private var coordinator
     @Environment(SessionStore.self) private var sessionStore
-    @State private var tab: SettingsTab = DevSnapshot.settingsTab.flatMap(SettingsTab.init(rawValue:)) ?? .player
+    @AppStorage(DesktopDefaults.theme) private var theme = Theme.Preference.dark.rawValue
+    @State private var tab: SettingsTab = DevSnapshot.settingsTab.flatMap(SettingsTab.init(rawValue:)) ?? .general
 
     var body: some View {
         TabView(selection: $tab) {
+            Tab("一般", systemImage: "gearshape", value: .general) {
+                sessionGated { GeneralSettingsTab(session: $0) }
+            }
             Tab("播放", systemImage: "play.rectangle", value: .player) {
                 sessionGated { PlayerSettingsTab(session: $0) }
             }
@@ -44,7 +48,9 @@ struct SettingsView: View {
             }
         }
         .frame(width: 720, height: 600)
-        .preferredColorScheme(.dark)
+        .background(Theme.background)
+        .hardTopScrollEdge()
+        .preferredColorScheme((Theme.Preference(rawValue: theme) ?? .dark).colorScheme)
     }
 
     @ViewBuilder
@@ -60,6 +66,12 @@ struct SettingsView: View {
 
 /// Desktop-only defaults the server does not model.
 enum DesktopDefaults {
+    /// `AppLanguage` raw value; `AppleLanguages` carries the actual override.
+    static let language = "general.language"
+    /// `Theme.Preference` raw value — `dark` | `light` | `system`.
+    static let theme = "general.theme"
+    /// `monday` | `sunday` | `saturday`, like the web's UI store.
+    static let weekStart = "schedule.weekStart"
     static let hardwareDecoding = "player.hwdec"
     static let pauseOnHeadphoneDisconnect = "player.pauseOnDisconnect"
     static let theater = "watch.theater"

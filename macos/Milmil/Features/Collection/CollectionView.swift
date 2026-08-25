@@ -130,15 +130,15 @@ struct CollectionView: View {
                         Text("\(count)").font(.system(size: 11, weight: .semibold)).foregroundStyle(isOn ? Theme.accent : Theme.Text.muted)
                     }
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(isOn ? .white : Theme.Text.tertiary)
+                    .foregroundStyle(isOn ? Theme.ink() : Theme.Text.tertiary)
                     .padding(.horizontal, 12).padding(.vertical, 6)
-                    .background(isOn ? .white.opacity(0.12) : .clear, in: Capsule())
+                    .background(isOn ? Theme.ink(0.12) : .clear, in: Capsule())
                 }
                 .buttonStyle(.plain)
             }
         }
         .padding(3)
-        .background(.white.opacity(0.06), in: Capsule())
+        .background(Theme.ink(0.06), in: Capsule())
     }
 
     private func cornerBadge(_ item: CollectionItem) -> String? {

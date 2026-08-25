@@ -222,7 +222,7 @@ struct TorrentFinderView: View {
             Spacer()
             if store.mode == .anime {
                 Button { showSubscribe = true } label: { Label("訂閱此篩選", systemImage: "dot.radiowaves.up.forward") }
-                    .buttonStyle(.borderedProminent)
+                    .glassProminentButtonStyle()
                     .help("以目前的來源 / 解析度 / 字幕組建立 RSS 訂閱規則，之後新集數自動下載")
             }
         }
@@ -357,7 +357,7 @@ struct SubscribeSheet: View {
                 Spacer()
                 Button("取消") { dismiss() }.keyboardShortcut(.cancelAction)
                 Button(busy ? String(localized: "建立中…") : String(localized: "訂閱")) { Task { await submit() } }
-                    .keyboardShortcut(.defaultAction).buttonStyle(.borderedProminent).disabled(busy)
+                    .keyboardShortcut(.defaultAction).glassProminentButtonStyle().disabled(busy)
             }
         }
         .padding(20)

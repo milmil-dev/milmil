@@ -60,7 +60,7 @@ struct StillCard: View {
 
             Text(entry.displayTitle)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink())
                 .lineLimit(1)
                 .padding(.top, 8)
             Text(label)

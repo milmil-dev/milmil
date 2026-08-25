@@ -10,6 +10,11 @@ options:
   createIntermediateGroups: true
   generateEmptyDirectories: true
   groupSortPosition: top
+  # Icon Composer packages must be single file references or actool never
+  # compiles them (XcodeGen unpacks unknown bundles into loose files).
+  fileTypes:
+    icon:
+      file: true
 
 settings:
   base:
@@ -33,6 +38,11 @@ settings:
     Debug:
       ONLY_ACTIVE_ARCH: YES
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      # Stable signature so the Keychain keeps trusting rebuilt dev builds
+      # (ad-hoc re-signing logged the user out on every rebuild). Exact name —
+      # generic "Apple Development" + team fails Xcode's cert discovery here.
+      # CI is unaffected: it builds with CODE_SIGNING_ALLOWED=NO.
+      CODE_SIGN_IDENTITY: "Apple Development: Sin Hong KAN (S82R6V4C8C)"
 
 packages:
   MilmilKit:
@@ -73,7 +83,9 @@ targets:
         # unless marked otherwise. Library code in Packages/ stays nonisolated.
         SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
         CODE_SIGN_ENTITLEMENTS: Milmil/Resources/Milmil.entitlements
-        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Icon Composer package (Resources/milmil.icon) — Liquid Glass layered
+        # icon on macOS 26+; actool renders the flat fallback for older OSes.
+        ASSETCATALOG_COMPILER_APPICON_NAME: milmil
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_PREVIEWS: YES
         DEVELOPMENT_ASSET_PATHS: '"Milmil/Preview Content"'

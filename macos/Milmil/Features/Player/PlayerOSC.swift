@@ -27,7 +27,7 @@ struct PlayerOSC: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08), lineWidth: 0.5))
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity)
@@ -157,7 +157,7 @@ struct PlayerOSC: View {
             HStack(spacing: 4) {
                 ForEach([0.5, 0.75, 1, 1.25, 1.5, 2], id: \.self) { speed in
                     Button(String(format: "%.2g×", speed)) { controller.setSpeed(speed) }
-                        .buttonStyle(.bordered).controlSize(.mini)
+                        .glassButtonStyle().controlSize(.mini)
                         .tint(state.speed == speed ? Theme.accent : .white)
                 }
             }

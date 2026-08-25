@@ -7,6 +7,22 @@ public extension APIClient {
         try await get("/api/v1/settings")
     }
 
+    /// Replaces the whole `appearance` section, so merge the existing keys in
+    /// before calling (the web's General panel does the same).
+    func saveAppearance(_ section: [String: JSONValue]) async throws {
+        try await put("/api/v1/settings/appearance", body: section)
+    }
+
+    func saveCollection(autoAddToCollection: Bool) async throws {
+        struct Body: Encodable {
+            let autoAddToCollection: Bool
+            enum CodingKeys: String, CodingKey {
+                case autoAddToCollection = "auto_add_to_collection"
+            }
+        }
+        try await put("/api/v1/settings/collection", body: Body(autoAddToCollection: autoAddToCollection))
+    }
+
     func saveDandanPlay(_ credentials: DandanPlayCredentials) async throws {
         try await put("/api/v1/settings/dandanplay", body: credentials)
     }

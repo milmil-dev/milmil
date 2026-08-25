@@ -27,7 +27,7 @@ public extension APIClient {
     func browse(tag: String, sort: BrowseQuery.Sort = .popularity, page: Int = 1) async throws -> [AnimeSummary] {
         try await get("/api/v1/discover/browse/tag", query: [
             URLQueryItem(name: "tag", value: tag),
-            URLQueryItem(name: "sort", value: sort.rawValue),
+            URLQueryItem(name: "sort", value: sort.queryValue),
             URLQueryItem(name: "page", value: String(page)),
         ])
     }
@@ -55,5 +55,16 @@ public extension APIClient {
 
     func franchise(bangumiID: Int) async throws -> FranchiseResult {
         try await get("/api/v1/discover/anime/\(bangumiID)/franchise")
+    }
+
+    /// `GET /api/v1/discover/resolve?anilist_id=` — the Bangumi id for an
+    /// AniList-only entry, once one exists. 404 when there is no match yet.
+    func resolveAnilist(anilistID: Int) async throws -> Int {
+        struct Response: Decodable {
+            let bangumiID: Int
+            enum CodingKeys: String, CodingKey { case bangumiID = "bangumi_id" }
+        }
+        let response: Response = try await get("/api/v1/discover/resolve", query: [URLQueryItem(name: "anilist_id", value: String(anilistID))])
+        return response.bangumiID
     }
 }

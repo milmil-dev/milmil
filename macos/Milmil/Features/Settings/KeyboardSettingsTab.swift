@@ -65,7 +65,7 @@ struct KeyboardSettingsTab: View {
                     Text(chord.display)
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background((isUser ? Theme.accent : Color.white).opacity(0.14), in: RoundedRectangle(cornerRadius: 4))
+                        .background(isUser ? Theme.accent.opacity(0.14) : Theme.ink(0.14), in: RoundedRectangle(cornerRadius: 4))
                 }
                 if chords.isEmpty { Text("未綁定").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary) }
             }

@@ -24,11 +24,31 @@ public extension APIClient {
         try await patch("/api/v1/episodes/\(episodeID)/preferred", body: Body(mediaFileID: mediaFileID))
     }
 
+    func animeDuplicates(bangumiID: Int) async throws -> [DupSet] {
+        let rows: [DupSet]? = try await get("/api/v1/anime/\(bangumiID)/duplicates")
+        return rows ?? []
+    }
+
     // MARK: - Missing episodes
 
     func libraryMissingSummary(libraryID: String) async throws -> [CompletenessReport] {
         let rows: [CompletenessReport]? = try await get("/api/v1/libraries/\(libraryID)/missing-summary")
         return rows ?? []
+    }
+
+    /// One series' completeness (the detail page's episode-status card).
+    /// 404 when the series is not in the library.
+    func animeMissing(bangumiID: Int) async throws -> CompletenessReport {
+        try await get("/api/v1/anime/\(bangumiID)/missing")
+    }
+
+    /// Creates (or merges into) an auto-download rule covering the missing episodes.
+    func createMissingAutoRule(bangumiID: Int, episodeNumbers: [Double]) async throws -> AutoRuleResult {
+        struct Body: Encodable {
+            let episodeNumbers: [Double]
+            enum CodingKeys: String, CodingKey { case episodeNumbers = "episode_numbers" }
+        }
+        return try await post("/api/v1/anime/\(bangumiID)/missing/auto-rule", body: Body(episodeNumbers: episodeNumbers))
     }
 
     // MARK: - Rename

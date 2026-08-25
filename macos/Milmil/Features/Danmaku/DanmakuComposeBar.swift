@@ -66,7 +66,7 @@ struct DanmakuComposeBar: View {
                 .onSubmit(send)
                 .disabled(store == nil)
             Button("發送", action: send)
-                .buttonStyle(.borderedProminent)
+                .glassProminentButtonStyle()
                 .controlSize(.small)
                 .disabled(text.trimmingCharacters(in: .whitespaces).isEmpty || store == nil || (store?.isSending ?? false))
             if let error = store?.sendError {

@@ -12,23 +12,29 @@ struct PosterCard: View {
     var subtitle: String?
     var watchStatus: WatchStatus?
     var width: CGFloat = 150
+    /// When set, lingering on the card (~0.9 s) opens a synopsis popover —
+    /// the desktop take on the web's hover PreviewModal.
+    var preview: AnimeSummary?
     var onOpen: (() -> Void)?
     var onPlay: (() -> Void)?
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var hovered = false
     @State private var lifted = false
+    @State private var playHovered = false
+    @State private var previewShown = false
     @State private var hoverTask: Task<Void, Never>?
 
     private var height: CGFloat { width * 1.5 }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .center, spacing: 0) {
             poster
             Text(title)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.white)
-                .lineLimit(1)
+                .foregroundStyle(Theme.ink())
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
                 .padding(.top, 8)
             if let subtitle {
                 Text(subtitle)
@@ -40,18 +46,29 @@ struct PosterCard: View {
         }
         .frame(width: width)
         .contentShape(Rectangle())
-        .onTapGesture { onOpen?() }
+        .onTapGesture {
+            previewShown = false
+            onOpen?()
+        }
         .onHover { inside in
             hovered = inside
             hoverTask?.cancel()
             if inside {
                 hoverTask = Task {
                     try? await Task.sleep(for: .milliseconds(250))
-                    if !Task.isCancelled { lifted = true }
+                    guard !Task.isCancelled else { return }
+                    lifted = true
+                    guard preview != nil else { return }
+                    try? await Task.sleep(for: .milliseconds(650))
+                    if !Task.isCancelled { previewShown = true }
                 }
             } else {
                 lifted = false
+                previewShown = false
             }
+        }
+        .popover(isPresented: $previewShown, arrowEdge: .trailing) {
+            if let preview { AnimeHoverPreview(anime: preview) }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
@@ -72,6 +89,10 @@ struct PosterCard: View {
                             .padding(12)
                     )
             }
+            // Pin to the poster frame: scaledToFill covers report an oversized
+            // layout width, which would widen the ZStack and push the badge
+            // overlays outside the visible poster.
+            .frame(width: width, height: height)
             .overlay(alignment: .bottom) {
                 LinearGradient(colors: [.clear, Color(hex: 0x141416).opacity(0.9)], startPoint: .top, endPoint: .bottom)
                     .frame(height: height * 0.5)
@@ -98,7 +119,7 @@ struct PosterCard: View {
             }
             if lifted {
                 hoverActions
-                    .transition(.opacity)
+                    .transition(.opacity.combined(with: .scale(0.85, anchor: .bottomLeading)))
             }
         }
         .frame(width: width, height: height)
@@ -111,29 +132,27 @@ struct PosterCard: View {
         .zIndex(lifted ? 1 : 0)
     }
 
+    /// Just Play — clicking anywhere on the card already opens the detail
+    /// page, so a separate info button was noise.
+    @ViewBuilder
     private var hoverActions: some View {
-        HStack(spacing: 6) {
-            if let onPlay {
-                Button(action: onPlay) {
-                    Image(systemName: "play.fill").font(.system(size: 12, weight: .bold)).foregroundStyle(.black)
-                        .frame(width: 32, height: 32).background(.white, in: Circle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("播放")
-            }
-            Button {
-                onOpen?()
-            } label: {
-                Image(systemName: "info").font(.system(size: 12, weight: .bold)).foregroundStyle(.white)
-                    .frame(width: 32, height: 32).background(.black.opacity(0.55), in: Circle())
-                    .overlay(Circle().strokeBorder(.white.opacity(0.15)))
+        if let onPlay {
+            Button(action: onPlay) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.black.opacity(0.85))
+                    .frame(width: 34, height: 34)
+                    .background(.white, in: Circle())
+                    .shadow(color: .black.opacity(0.35), radius: 6, y: 2)
+                    .scaleEffect(playHovered && !reduceMotion ? 1.1 : 1)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("詳情")
-            Spacer()
+            .onHover { playHovered = $0 }
+            .animation(.spring(duration: 0.25, bounce: 0.35), value: playHovered)
+            .accessibilityLabel("播放")
+            .padding(10)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
         }
-        .padding(10)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
     }
 }
 
@@ -148,6 +167,7 @@ extension PosterCard {
             subtitle: subtitle,
             watchStatus: watchStatus,
             width: width,
+            preview: summary,
             onOpen: onOpen
         )
     }

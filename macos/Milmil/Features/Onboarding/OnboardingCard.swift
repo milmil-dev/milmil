@@ -27,8 +27,8 @@ struct OnboardingCard<Content: View>: View {
                 }
                 .padding(24)
                 .frame(width: 420)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08)))
+                .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.ink(0.08)))
                 .shadow(color: .black.opacity(0.5), radius: 30, y: 20)
             }
             .compositingGroup()
@@ -45,18 +45,10 @@ struct AppMark: View {
             RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
                 .fill(Theme.accent.opacity(0.1))
                 .overlay(RoundedRectangle(cornerRadius: size * 0.27, style: .continuous).strokeBorder(Theme.accent.opacity(0.2)))
-            Circle()
-                .fill(RadialGradient(
-                    colors: [Color(hex: 0xC4B5FD), Color(hex: 0x6D28D9)],
-                    center: .init(x: 0.35, y: 0.35),
-                    startRadius: 0,
-                    endRadius: size * 0.4
-                ))
-                .frame(width: size * 0.58, height: size * 0.58)
-            Image(systemName: "play.fill")
-                .font(.system(size: size * 0.22, weight: .bold))
-                .foregroundStyle(.white)
-                .offset(x: size * 0.02)
+            Image("BrandMark")
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.72, height: size * 0.72)
         }
         .frame(width: size, height: size)
         .accessibilityHidden(true)

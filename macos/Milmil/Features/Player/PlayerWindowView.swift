@@ -159,7 +159,7 @@ struct PlayerSurface: View {
                 Spacer()
                 if let segment = state.currentSegment {
                     Button("跳過 \(segment.label)", systemImage: "forward.end.fill") { controller.skipCurrentSegment() }
-                        .buttonStyle(.borderedProminent)
+                        .glassProminentButtonStyle()
                         .tint(.white.opacity(0.9))
                         .foregroundStyle(.black)
                         .keyboardShortcut(.tab, modifiers: [])
@@ -212,14 +212,14 @@ struct PlayerStatusLayer: View {
                     Text("無法播放").font(.system(size: 16, weight: .semibold))
                     Text(message).font(.system(size: 12)).foregroundStyle(.white.opacity(0.7)).multilineTextAlignment(.center).frame(maxWidth: 360)
                     HStack {
-                        Button("重試") { if let episode = controller.episode { controller.play(episode: episode) } }.buttonStyle(.borderedProminent)
+                        Button("重試") { if let episode = controller.episode { controller.play(episode: episode) } }.glassProminentButtonStyle()
                         if let next = controller.nextEpisode {
-                            Button("播放下一集") { controller.play(episode: next) }.buttonStyle(.bordered)
+                            Button("播放下一集") { controller.play(episode: next) }.glassButtonStyle()
                         }
                     }
                 }
                 .padding(28)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .glassSurface(in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             case .ended where controller.nextEpisode == nil:
                 Button {
                     controller.togglePause()
@@ -227,7 +227,7 @@ struct PlayerStatusLayer: View {
                     Label("重新播放", systemImage: "arrow.counterclockwise")
                         .font(.system(size: 14, weight: .semibold))
                         .padding(.horizontal, 18).padding(.vertical, 10)
-                        .background(.ultraThinMaterial, in: Capsule())
+                        .glassSurface(in: Capsule())
                 }
                 .buttonStyle(.plain)
             case .paused where !state.isSeeking:
@@ -255,7 +255,7 @@ struct OSDPill: View {
         }
         .font(.system(size: 13, weight: .semibold))
         .padding(.horizontal, 14).padding(.vertical, 8)
-        .background(.ultraThinMaterial, in: Capsule())
+        .glassSurface(in: Capsule())
         .allowsHitTesting(false)
     }
 
@@ -295,7 +295,7 @@ struct ResumePill: View {
                 .buttonStyle(.plain).foregroundStyle(.white.opacity(0.6)).accessibilityLabel("關閉")
         }
         .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(.ultraThinMaterial, in: Capsule())
+        .glassSurface(in: Capsule())
     }
 }
 
@@ -317,15 +317,15 @@ struct PostPlayCard: View {
                 Text("第 \(episode.number) 集").font(.system(size: 13, weight: .semibold))
                 if let title = episode.displayTitle { Text(title).font(.system(size: 11)).foregroundStyle(.white.opacity(0.8)).lineLimit(1) }
                 HStack(spacing: 8) {
-                    Button("立即播放", systemImage: "play.fill", action: playNow).buttonStyle(.borderedProminent).controlSize(.small)
-                    Button("取消", action: cancel).buttonStyle(.bordered).controlSize(.small)
+                    Button("立即播放", systemImage: "play.fill", action: playNow).glassProminentButtonStyle().controlSize(.small)
+                    Button("取消", action: cancel).glassButtonStyle().controlSize(.small)
                 }
                 .padding(.top, 2)
             }
         }
         .padding(12)
         .frame(width: 320, alignment: .leading)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .glassSurface(in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
@@ -402,7 +402,7 @@ struct HelpOverlay: View {
             }
             .padding(24)
             .frame(maxWidth: 820)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .glassSurface(in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .padding(40)
         }
     }

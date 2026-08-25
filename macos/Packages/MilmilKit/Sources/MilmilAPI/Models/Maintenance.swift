@@ -218,6 +218,27 @@ public struct CompletenessReport: Decodable, Sendable, Hashable, Identifiable {
     }
 }
 
+/// `POST /anime/{id}/missing/auto-rule`.
+public struct AutoRuleResult: Decodable, Sendable {
+    public let ruleID: String
+    public let episodeRange: String
+    /// "created" | "merged"
+    public let action: String
+
+    enum CodingKeys: String, CodingKey {
+        case action
+        case ruleID = "rule_id"
+        case episodeRange = "episode_range"
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        ruleID = try c.decodeIfPresent(String.self, forKey: .ruleID) ?? ""
+        episodeRange = try c.decodeIfPresent(String.self, forKey: .episodeRange) ?? ""
+        action = try c.decodeIfPresent(String.self, forKey: .action) ?? ""
+    }
+}
+
 // MARK: - Rename
 
 /// One planned rename (`GET …/rename/preview`; POSTed back verbatim on apply).

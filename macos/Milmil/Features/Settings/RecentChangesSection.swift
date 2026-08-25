@@ -48,7 +48,7 @@ struct RecentChangesSection: View {
                 HStack(spacing: 6) {
                     Text(Self.actionLabel(entry)).font(.system(size: 12, weight: .medium))
                     if entry.isUndone {
-                        PillBadge(text: String(localized: "已復原"), tint: Color.white.opacity(0.1))
+                        PillBadge(text: String(localized: "已復原"), tint: Theme.ink(0.1))
                     }
                 }
                 HStack(spacing: 6) {

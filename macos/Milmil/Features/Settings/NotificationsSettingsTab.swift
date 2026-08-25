@@ -102,7 +102,7 @@ private struct NotificationSettingsForm: View {
                 Spacer()
                 Button("還原") { store.draft = store.loaded.value }.disabled(!store.isDirty)
                 Button(store.busy.contains("save") ? String(localized: "儲存中…") : String(localized: "儲存")) { Task { await store.save() } }
-                    .buttonStyle(.borderedProminent).disabled(!store.isDirty || store.busy.contains("save"))
+                    .glassProminentButtonStyle().disabled(!store.isDirty || store.busy.contains("save"))
             }
             .padding(10)
         }

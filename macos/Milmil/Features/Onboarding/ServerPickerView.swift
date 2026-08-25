@@ -43,7 +43,7 @@ struct ServerPickerView: View {
                 Text("連線")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .glassProminentButtonStyle()
             .controlSize(.large)
             .tint(Theme.accent)
             .disabled(urlText.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -90,7 +90,7 @@ private struct SavedServerRow: View {
             Button("連線") {
                 Task { await session.connect(profile) }
             }
-            .buttonStyle(.bordered)
+            .glassButtonStyle()
             .controlSize(.small)
             Button("移除", systemImage: "trash", role: .destructive) {
                 session.removeServer(profile)
@@ -100,7 +100,7 @@ private struct SavedServerRow: View {
             .foregroundStyle(Theme.Text.tertiary)
         }
         .padding(8)
-        .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
+        .background(Theme.ink(0.04), in: RoundedRectangle(cornerRadius: 8))
     }
 }
 
@@ -124,12 +124,12 @@ struct ConnectionErrorView: View {
                 Label("重試", systemImage: "arrow.clockwise")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .glassProminentButtonStyle()
             .controlSize(.large)
             .tint(Theme.accent)
             .keyboardShortcut(.defaultAction)
             Button("切換伺服器") { session.switchToNoServer() }
-                .buttonStyle(.bordered)
+                .glassButtonStyle()
                 .controlSize(.large)
                 .frame(maxWidth: .infinity)
         }
@@ -143,6 +143,12 @@ struct ConnectionErrorView: View {
 
 #Preview("Server picker · saved servers") {
     PreviewHost(phase: .noServer, covers: [], profiles: [Preview.profile, Preview.secondProfile]) { ServerPickerView() }
+}
+
+#Preview("Server picker · English") {
+    PreviewHost(phase: .noServer, covers: [], profiles: [Preview.profile, Preview.secondProfile], locale: Locale(identifier: "en")) {
+        ServerPickerView()
+    }
 }
 
 #Preview("Connection error") {

@@ -106,7 +106,7 @@ struct WatchView: View {
             VStack(spacing: 12) {
                 Image(systemName: "macwindow.on.rectangle").font(.system(size: 36)).foregroundStyle(Theme.Text.tertiary)
                 Text("正在獨立視窗播放").font(.system(size: 14, weight: .semibold))
-                Button("拉回此頁") { dismissPopOut() }.buttonStyle(.borderedProminent)
+                Button("拉回此頁") { dismissPopOut() }.glassProminentButtonStyle()
             }
             .frame(width: columnWidth, height: height)
             .background(Color.black)

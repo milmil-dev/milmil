@@ -12,7 +12,7 @@ struct Chip: View {
             .lineLimit(1)
             .padding(.horizontal, small ? 8 : 10)
             .padding(.vertical, small ? 3 : 4)
-            .background(isOn ? Theme.accent.opacity(0.22) : .white.opacity(0.1), in: Capsule())
+            .background(isOn ? Theme.accent.opacity(0.22) : Theme.ink(0.1), in: Capsule())
             .foregroundStyle(isOn ? Color(hex: 0xD6CCFF) : Theme.Text.secondary)
     }
 }
@@ -64,7 +64,7 @@ struct SectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             Text(title)
                 .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink())
             if let count {
                 Text(count)
                     .font(.system(size: 13, weight: .medium))
@@ -111,7 +111,7 @@ struct EmptyState: View {
                 .lineSpacing(3)
             if let actionTitle, let action {
                 Button(actionTitle, action: action)
-                    .buttonStyle(.bordered)
+                    .glassButtonStyle()
                     .padding(.top, 4)
             }
         }
@@ -130,7 +130,7 @@ struct ErrorBanner: View {
             Text(message).font(.system(size: 12, weight: .medium)).lineLimit(2)
             Spacer()
             if let retry {
-                Button("重試", action: retry).buttonStyle(.bordered).controlSize(.small)
+                Button("重試", action: retry).glassButtonStyle().controlSize(.small)
             }
         }
         .padding(10)

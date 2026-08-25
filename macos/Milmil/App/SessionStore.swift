@@ -5,6 +5,9 @@ import Observation
 /// Which screen the window shows. One server is "current" at a time; the
 /// token for it is read from the `TokenStore` on connect.
 enum SessionPhase: Equatable {
+    /// Pre-`bootstrap()`: renders as a blank frame so neither the server
+    /// picker nor the login wall flashes before the stored session is read.
+    case launching
     case noServer
     case connecting(ServerProfile)
     case connectionFailed(ServerProfile, message: String)
@@ -15,7 +18,7 @@ enum SessionPhase: Equatable {
 
     var profile: ServerProfile? {
         switch self {
-        case .noServer: nil
+        case .launching, .noServer: nil
         case let .connecting(p), let .connectionFailed(p, _), let .needsSetup(p), let .login(p, _), let .twoFactor(p, _), let .ready(p, _, _): p
         }
     }
@@ -24,7 +27,7 @@ enum SessionPhase: Equatable {
 @Observable
 final class SessionStore {
     private(set) var profiles: [ServerProfile] = []
-    private(set) var phase: SessionPhase = .noServer
+    private(set) var phase: SessionPhase = .launching
     private(set) var client: APIClient?
     /// Covers for the onboarding poster wall; loaded once per connect.
     private(set) var trendingCovers: [URL] = []
@@ -55,7 +58,45 @@ final class SessionStore {
             phase = .noServer
             return
         }
+        // A stored token plus the cached identity is enough to open straight
+        // into the shell; the token is validated in the background so a
+        // returning user never sees the login wall.
+        if let token = (try? tokenStore.token(for: profile.id)) ?? nil,
+           let userID = profile.userID, let username = profile.username {
+            let client = makeClient(profile.baseURL, token)
+            self.client = client
+            phase = .ready(profile, user: User(id: userID, username: username), version: profile.lastKnownVersion ?? "")
+            await validate(profile, client: client)
+            return
+        }
         await connect(profile)
+    }
+
+    /// Confirms the restored token behind the already-visible shell. Kicks
+    /// back to login only when the server says the token is dead; a dead
+    /// network keeps the usual connection-error screen.
+    private func validate(_ profile: ServerProfile, client: APIClient) async {
+        do {
+            let health = try await client.health()
+            let user = try await client.me()
+            guard self.client === client else { return }
+            var updated = profile
+            updated.lastKnownVersion = health.version
+            updated.userID = user.id
+            updated.username = user.username
+            update(updated)
+            if case .ready = phase {
+                phase = .ready(updated, user: user, version: health.version)
+            }
+        } catch APIError.unauthorized {
+            try? tokenStore.setToken(nil, for: profile.id)
+            guard self.client === client else { return }
+            await client.setToken(nil)
+            await connect(profile)
+        } catch {
+            guard self.client === client, case .ready = phase else { return }
+            phase = .connectionFailed(profile, message: error.localizedDescription)
+        }
     }
 
     /// Adds (or updates) a server and connects to it.

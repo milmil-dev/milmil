@@ -22,7 +22,9 @@ public struct AnimeSummary: Decodable, Sendable, Hashable, Identifiable {
     /// TV, MOVIE, OVA, ONA, SPECIAL.
     public let mediaType: String?
 
-    public var id: Int { bangumiID }
+    /// AniList-only entries all have `bangumiID == 0`, so keying by it alone
+    /// makes `ForEach` collapse them; compose both ids like the web's card key.
+    public var id: String { "\(bangumiID)-\(anilistID ?? 0)" }
 
     enum CodingKeys: String, CodingKey {
         case bangumiID = "bangumi_id"

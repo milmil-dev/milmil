@@ -56,7 +56,7 @@ struct CommandPalette: View {
                         .focused($focused)
                         .onSubmit { activate(selection) }
                     Text("esc").font(.system(size: 10, weight: .semibold)).foregroundStyle(Theme.Text.tertiary)
-                        .padding(.horizontal, 5).padding(.vertical, 2).background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 4))
+                        .padding(.horizontal, 5).padding(.vertical, 2).background(Theme.ink(0.08), in: RoundedRectangle(cornerRadius: 4))
                 }
                 .padding(.horizontal, 16).padding(.vertical, 14)
                 Divider()
@@ -86,8 +86,8 @@ struct CommandPalette: View {
                 .padding(.horizontal, 16).padding(.vertical, 10)
             }
             .frame(width: 640)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
+            .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.ink(0.12)))
             .shadow(color: .black.opacity(0.5), radius: 40, y: 20)
             .padding(.top, 80)
         }
@@ -103,7 +103,7 @@ struct CommandPalette: View {
             Text(key)
                 .font(.system(size: 10, weight: .semibold))
                 .padding(.horizontal, 5).padding(.vertical, 2)
-                .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 4))
+                .background(Theme.ink(0.08), in: RoundedRectangle(cornerRadius: 4))
             Text(label).font(.system(size: 11))
         }
         .foregroundStyle(Theme.Text.tertiary)
@@ -135,14 +135,14 @@ struct CommandPalette: View {
             case let .action(title, symbol, _):
                 Image(systemName: symbol)
                     .frame(width: 34, height: 34)
-                    .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+                    .background(Theme.ink(0.06), in: RoundedRectangle(cornerRadius: 8))
                     .foregroundStyle(Theme.Text.secondary)
                 Text(title).font(.system(size: 13))
                 Spacer()
             }
         }
         .padding(.horizontal, 10).padding(.vertical, 6)
-        .background(selected ? .white.opacity(0.08) : .clear, in: RoundedRectangle(cornerRadius: 8))
+        .background(selected ? Theme.ink(0.08) : .clear, in: RoundedRectangle(cornerRadius: 8))
         .contentShape(Rectangle())
     }
 
@@ -171,7 +171,7 @@ struct CommandPalette: View {
         case let .local(hit):
             if let id = hit.bangumiID { router.openAnime(id) }
         case let .remote(item):
-            router.openAnime(item.bangumiID)
+            router.open(item)
         case let .action(_, _, run):
             run()
         }

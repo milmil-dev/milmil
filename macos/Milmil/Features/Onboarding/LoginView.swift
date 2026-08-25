@@ -37,7 +37,7 @@ struct LoginView: View {
                         .foregroundStyle(Theme.accent)
                 }
                 .padding(10)
-                .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
+                .background(Theme.ink(0.04), in: RoundedRectangle(cornerRadius: 8))
             }
 
             FormField(label: String(localized: "使用者名稱")) {
@@ -64,7 +64,7 @@ struct LoginView: View {
                 }
                 .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .glassProminentButtonStyle()
             .controlSize(.large)
             .tint(Theme.accent)
             .disabled(isSubmitting || username.isEmpty || password.isEmpty)
@@ -107,5 +107,9 @@ struct LoginView: View {
 
 #Preview("Login · gradient fallback") {
     PreviewHost(phase: .login(Preview.profile, version: "0.1.17"), covers: []) { LoginView() }
+}
+
+#Preview("Login · English") {
+    PreviewHost(phase: .login(Preview.profile, version: "0.1.17"), locale: Locale(identifier: "en")) { LoginView() }
 }
 #endif

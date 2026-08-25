@@ -51,10 +51,10 @@ struct Shelf<Content: View>: View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink())
                 .frame(width: 32, height: 32)
-                .background(.ultraThinMaterial, in: Circle())
-                .overlay(Circle().strokeBorder(.white.opacity(0.12)))
+                .glassSurface(in: Circle())
+                .overlay(Circle().strokeBorder(Theme.ink(0.12)))
                 .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
         }
         .buttonStyle(.plain)
@@ -62,5 +62,39 @@ struct Shelf<Content: View>: View {
         .opacity(visible ? 1 : 0)
         .animation(.easeOut(duration: 0.15), value: visible)
         .accessibilityHidden(!visible)
+    }
+}
+
+/// Poster-row placeholder in the same rhythm as `Shelf` + `PosterCard`, so a
+/// rail keeps its footprint while it loads (the shelf cousin of
+/// `PosterGridSkeleton`).
+struct ShelfSkeleton: View {
+    var cardWidth: CGFloat = 150
+    @State private var pulsing = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            RoundedRectangle(cornerRadius: 5)
+                .fill(Theme.ink(0.06))
+                .frame(width: 130, height: 18)
+            HStack(alignment: .top, spacing: 14) {
+                ForEach(0..<8, id: \.self) { _ in
+                    VStack(spacing: 8) {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Theme.ink(0.05))
+                            .frame(width: cardWidth, height: cardWidth * 1.5)
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Theme.ink(0.06))
+                            .frame(width: cardWidth * 0.6, height: 10)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .clipped()
+        }
+        .opacity(pulsing ? 0.55 : 1)
+        .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: pulsing)
+        .onAppear { pulsing = true }
+        .accessibilityLabel("載入中")
     }
 }

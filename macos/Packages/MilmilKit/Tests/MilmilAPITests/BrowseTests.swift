@@ -93,7 +93,7 @@ struct BrowseTests {
         query.season = "SPRING"
         let names = query.queryItems.map(\.name)
         #expect(names == ["page", "sort", "genre", "year", "season"])
-        #expect(query.queryItems.first { $0.name == "sort" }?.value == "score")
+        #expect(query.queryItems.first { $0.name == "sort" }?.value == "SCORE_DESC")
     }
 
     @Test("mutations hit the right paths and unwrap empty bodies")

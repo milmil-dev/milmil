@@ -28,7 +28,7 @@ struct SetupRedirectView: View {
                 Label("在瀏覽器開啟 \(profile.baseURL.host() ?? "")/setup", systemImage: "safari")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .glassProminentButtonStyle()
             .controlSize(.large)
             .tint(Theme.accent)
             Button {
@@ -37,7 +37,7 @@ struct SetupRedirectView: View {
                 Label("已完成，重新檢查", systemImage: "arrow.clockwise")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.bordered)
+            .glassButtonStyle()
             .controlSize(.large)
         }
     }
@@ -46,5 +46,9 @@ struct SetupRedirectView: View {
 #if DEBUG
 #Preview("Setup redirect") {
     PreviewHost(phase: .needsSetup(Preview.profile)) { SetupRedirectView(profile: Preview.profile) }
+}
+
+#Preview("Setup redirect · English") {
+    PreviewHost(phase: .needsSetup(Preview.profile), locale: Locale(identifier: "en")) { SetupRedirectView(profile: Preview.profile) }
 }
 #endif

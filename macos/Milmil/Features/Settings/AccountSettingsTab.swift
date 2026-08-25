@@ -99,7 +99,7 @@ struct AccountSettingsTab: View {
                 HStack {
                     TextField("6 位數代碼", text: $code).frame(width: 120).onSubmit { Task { await verify() } }
                     Button(twoFactorBusy ? String(localized: "驗證中…") : String(localized: "驗證並啟用")) { Task { await verify() } }
-                        .buttonStyle(.borderedProminent).disabled(code.count != 6 || twoFactorBusy)
+                        .glassProminentButtonStyle().disabled(code.count != 6 || twoFactorBusy)
                     Button("取消") { self.setup = nil; code = "" }
                 }
             }

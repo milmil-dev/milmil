@@ -36,7 +36,7 @@ LOCALIZED_CALLS = re.compile(
 STRING_HINTS = re.compile(
     r"(\.label|\.title|\.name|\.displayName|\.display|\.number|\.query|\.lastPathComponent|\.localizedDescription|\.host\(\)"
     r"|Formatters\.|String\(|DeviceName|\berror\b|\bep\b|\bjst\b|\blocal\b|\bnumber\b|\bquery\b|\bsize\b|\btitle\b|\bversion\b"
-    r"|\?\? \"\"|airDate|\bdate\b|duration|episodeRange|lastSync|\bsent\b|providerName|reclaimed|ByteCountFormatter|EpisodeRanges|gpuName)"
+    r"|episodeNumber|\?\? \"\"|airDate|\bdate\b|duration|episodeRange|lastSync|\bsent\b|providerName|reclaimed|ByteCountFormatter|EpisodeRanges|gpuName)"
 )
 
 

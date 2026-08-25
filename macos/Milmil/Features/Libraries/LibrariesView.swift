@@ -256,7 +256,7 @@ struct LibraryDetailView: View {
             }
             .fixedSize()
             Button("掃描", systemImage: "arrow.clockwise") { Task { await store.scan(library) } }
-                .buttonStyle(.borderedProminent)
+                .glassProminentButtonStyle()
                 .disabled(store.scans[library.id] != nil && store.scans[library.id]?.type != ServerEventType.scanError)
         }
         .padding(.horizontal, 24).padding(.vertical, 18)

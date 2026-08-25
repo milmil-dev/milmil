@@ -87,8 +87,8 @@ struct NotificationsView: View {
                                 session.setUnread(0)
                             }
                         }
-                        .buttonStyle(.bordered)
-                        Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }.buttonStyle(.bordered)
+                        .glassButtonStyle()
+                        Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }.glassButtonStyle()
                     }
                 }
                 switch store.items {
@@ -158,7 +158,7 @@ struct NotificationRow: View {
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 10)
-            .background(item.read ? .clear : .white.opacity(0.03), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .background(item.read ? .clear : Theme.ink(0.03), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -81,7 +81,7 @@ struct RenameSheet: View {
                 .frame(height: 56)
                 .scrollContentBackground(.hidden)
                 .padding(8)
-                .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 8))
+                .background(Theme.ink(0.05), in: RoundedRectangle(cornerRadius: 8))
                 .overlay(alignment: .topLeading) {
                     if template.isEmpty {
                         Text(verbatim: Self.placeholderTemplate)
@@ -99,7 +99,7 @@ struct RenameSheet: View {
                 Button(savingConfig ? String(localized: "儲存中…") : String(localized: "儲存設定")) { Task { await saveConfig() } }
                     .disabled(savingConfig)
                 Button("預覽") { Task { await preview() } }
-                    .buttonStyle(.borderedProminent)
+                    .glassProminentButtonStyle()
                     .disabled(template.trimmingCharacters(in: .whitespaces).isEmpty || plans.isLoading)
             }
         }
@@ -127,7 +127,7 @@ struct RenameSheet: View {
                     Text("\(applicablePlans.count)/\(list.count) 可套用").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                     Spacer()
                     Button(applying ? String(localized: "套用中…") : String(localized: "套用 \(applicablePlans.count) 項")) { confirmApply = true }
-                        .buttonStyle(.borderedProminent)
+                        .glassProminentButtonStyle()
                         .disabled(applicablePlans.isEmpty || applying)
                 }
                 VStack(spacing: 0) {
@@ -136,7 +136,7 @@ struct RenameSheet: View {
                         if plan.id != list.prefix(200).last?.id { Divider() }
                     }
                 }
-                .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 8))
+                .background(Theme.ink(0.03), in: RoundedRectangle(cornerRadius: 8))
                 if list.count > 200 {
                     Text("僅顯示前 200 項；套用時會包含全部。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                 }
@@ -165,11 +165,11 @@ struct RenameSheet: View {
     private func statusBadge(_ plan: RenamePlan) -> some View {
         let (text, tint): (String, Color) = switch plan.status {
         case "ok": (String(localized: "可套用"), Color(hex: 0x4ADE80).opacity(0.25))
-        case "skip_same_as_current": (String(localized: "已符合"), Color.white.opacity(0.1))
+        case "skip_same_as_current": (String(localized: "已符合"), Theme.ink(0.1))
         case "skip_collision": (String(localized: "路徑衝突"), Color(hex: 0xFBBF24).opacity(0.3))
         default: (String(localized: "錯誤"), Color(hex: 0xF87171).opacity(0.3))
         }
-        return PillBadge(text: text, tint: tint)
+        return PillBadge(text: text, tint: tint, foreground: Theme.ink(0.9))
     }
 
     // MARK: - History
@@ -197,7 +197,7 @@ struct RenameSheet: View {
                         if batch.id != batches.last?.id { Divider() }
                     }
                 }
-                .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 8))
+                .background(Theme.ink(0.03), in: RoundedRectangle(cornerRadius: 8))
             }
         }
     }

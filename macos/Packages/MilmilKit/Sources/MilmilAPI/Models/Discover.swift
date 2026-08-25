@@ -254,7 +254,20 @@ public struct FranchiseResult: Decodable, Sendable, Hashable {
 
 /// Query for `GET /discover/browse`.
 public struct BrowseQuery: Sendable, Hashable {
-    public enum Sort: String, Sendable, CaseIterable { case popularity, score, trending, date }
+    public enum Sort: String, Sendable, CaseIterable {
+        case popularity, score, trending, date
+
+        /// The AniList MediaSort value the API expects (mirrors web's SORT_OPTIONS);
+        /// the raw value is only a local identifier.
+        var queryValue: String {
+            switch self {
+            case .popularity: "POPULARITY_DESC"
+            case .score: "SCORE_DESC"
+            case .trending: "TRENDING_DESC"
+            case .date: "START_DATE_DESC"
+            }
+        }
+    }
 
     public var genre: String?
     public var sort: Sort = .popularity
@@ -292,7 +305,7 @@ public struct BrowseQuery: Sendable, Hashable {
     }
 
     var queryItems: [URLQueryItem] {
-        var items: [URLQueryItem] = [URLQueryItem(name: "page", value: String(page)), URLQueryItem(name: "sort", value: sort.rawValue)]
+        var items: [URLQueryItem] = [URLQueryItem(name: "page", value: String(page)), URLQueryItem(name: "sort", value: sort.queryValue)]
         if let genre { items.append(URLQueryItem(name: "genre", value: genre)) }
         if let year { items.append(URLQueryItem(name: "year", value: String(year))) }
         if let season { items.append(URLQueryItem(name: "season", value: season)) }

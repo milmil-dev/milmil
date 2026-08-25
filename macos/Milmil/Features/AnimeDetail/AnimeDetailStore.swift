@@ -15,6 +15,16 @@ final class AnimeDetailStore {
     private(set) var watchStatus: WatchStatus = .none
     private(set) var userScore: Int?
     private(set) var actionError: String?
+    /// Seasons and side stories from AniList's relation graph.
+    private(set) var franchise: FranchiseResult?
+    /// An enabled download rule targets this series.
+    private(set) var hasSubscription = false
+    /// Missing / not-yet-aired episodes; nil when the series is complete or unknown.
+    private(set) var completeness: CompletenessReport?
+    private(set) var duplicates: [DupSet] = []
+    private(set) var syncDisabled = false
+    /// Transient confirmation after 自動下載缺集.
+    private(set) var autoRuleNotice: String?
 
     private let client: APIClient
 
@@ -77,11 +87,26 @@ final class AnimeDetailStore {
     func load() async {
         async let detailTask: Void = loadDetail()
         async let playableTask: Void = loadPlayable()
-        _ = await (detailTask, playableTask)
+        async let franchiseTask = try? client.franchise(bangumiID: bangumiID)
+        async let rulesTask = try? client.downloadRules()
+        async let maintenanceTask: Void = loadMaintenance()
+        _ = await (detailTask, playableTask, maintenanceTask)
+        franchise = await franchiseTask
+        hasSubscription = await rulesTask?.contains { $0.bangumiID == bangumiID && $0.enabled } ?? false
         if episodes.isEmpty {
             discoverEpisodes = (try? await client.discoverEpisodes(bangumiID: bangumiID)) ?? []
         }
         comments = (try? await client.bangumiComments(bangumiID: bangumiID)) ?? []
+    }
+
+    /// Missing-episode and duplicate-file reports; both 404 for series
+    /// outside the library, which simply hides the cards.
+    func loadMaintenance() async {
+        async let missingTask = try? client.animeMissing(bangumiID: bangumiID)
+        async let duplicatesTask = try? client.animeDuplicates(bangumiID: bangumiID)
+        let report = await missingTask
+        completeness = (report?.unknownTotal ?? true) ? nil : report
+        duplicates = await duplicatesTask ?? []
     }
 
     func loadDetail() async {
@@ -96,6 +121,7 @@ final class AnimeDetailStore {
                 let response = try await client.playableEpisodes(bangumiID: bangumiID)
                 watchStatus = response.watchStatus
                 userScore = response.userScore
+                syncDisabled = response.syncDisabled
                 return response
             } catch APIError.http(status: 404, _) {
                 return nil // not in the library yet
@@ -144,8 +170,100 @@ final class AnimeDetailStore {
         await loadPlayable()
     }
 
+    func toggleSyncDisabled() async {
+        let previous = syncDisabled
+        syncDisabled.toggle()
+        do {
+            try await client.setSyncFlags(bangumiID: bangumiID, SyncFlagsUpdate(syncDisabled: syncDisabled))
+        } catch {
+            syncDisabled = previous
+            actionError = error.localizedDescription
+        }
+    }
+
+    func createAutoRuleForMissing() async {
+        guard let missing = completeness?.missing, !missing.isEmpty else { return }
+        do {
+            let result = try await client.createMissingAutoRule(bangumiID: bangumiID, episodeNumbers: missing)
+            autoRuleNotice = result.action == "merged"
+                ? String(localized: "已併入現有規則（\(result.episodeRange)）")
+                : String(localized: "已建立自動下載規則（\(result.episodeRange)）")
+            hasSubscription = true
+        } catch {
+            actionError = error.localizedDescription
+        }
+    }
+
+    func setPreferredFile(episodeID: String, mediaFileID: String) async {
+        do {
+            try await client.setPreferredMediaFile(episodeID: episodeID, mediaFileID: mediaFileID)
+            await loadMaintenance()
+        } catch {
+            actionError = error.localizedDescription
+        }
+    }
+
+    func deleteDuplicateFile(id: String) async {
+        do {
+            try await client.deleteMediaFile(id: id)
+            await loadMaintenance()
+            await loadPlayable()
+        } catch {
+            actionError = error.localizedDescription
+        }
+    }
+
+    /// A recommendation card may be AniList-only; ask the server for its
+    /// Bangumi id before navigating. Nil when there is no match yet.
+    func resolveBangumiID(for summary: AnimeSummary) async -> Int? {
+        if summary.bangumiID > 0 { return summary.bangumiID }
+        guard let anilistID = summary.anilistID, anilistID > 0 else { return nil }
+        return try? await client.resolveAnilist(anilistID: anilistID)
+    }
+
+    struct SeasonTab: Identifiable, Hashable {
+        let label: String
+        let title: String
+        let bangumiID: Int
+        let isCurrent: Bool
+        var id: String { "\(label)-\(bangumiID)" }
+    }
+
+    /// S1/S2/… pills — franchise-powered like the web, falling back to the
+    /// PREQUEL/SEQUEL chain in `relations`.
+    var seasonTabs: [SeasonTab] {
+        if let seasons = franchise?.mainSeries, seasons.count > 1 {
+            let anilistID = detail.value?.summary.anilistID
+            return seasons.enumerated().map { index, season in
+                SeasonTab(
+                    label: "S\(index + 1)",
+                    title: season.title,
+                    bangumiID: season.bangumiID,
+                    isCurrent: season.bangumiID == bangumiID || (anilistID != nil && season.anilistID == anilistID)
+                )
+            }
+        }
+        guard let detail = detail.value else { return [] }
+        let prequels = detail.relations.filter { $0.relationType.uppercased() == "PREQUEL" }
+        let sequels = detail.relations.filter { $0.relationType.uppercased() == "SEQUEL" }
+        guard !prequels.isEmpty || !sequels.isEmpty else { return [] }
+        var chain: [SeasonTab] = []
+        for prequel in prequels.reversed() {
+            chain.append(SeasonTab(label: "S\(chain.count + 1)", title: prequel.anime.title, bangumiID: prequel.anime.bangumiID, isCurrent: false))
+        }
+        chain.append(SeasonTab(label: "S\(chain.count + 1)", title: detail.title, bangumiID: bangumiID, isCurrent: true))
+        for sequel in sequels {
+            chain.append(SeasonTab(label: "S\(chain.count + 1)", title: sequel.anime.title, bangumiID: sequel.anime.bangumiID, isCurrent: false))
+        }
+        return chain
+    }
+
     func clearActionError() {
         actionError = nil
+    }
+
+    func clearAutoRuleNotice() {
+        autoRuleNotice = nil
     }
 }
 

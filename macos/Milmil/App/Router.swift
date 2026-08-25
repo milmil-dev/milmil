@@ -37,6 +37,19 @@ final class Router {
         push(.anime(bangumiID: bangumiID))
     }
 
+    /// AniList-only entries (`bangumiID == 0`) have no detail route — no
+    /// Bangumi episodes, comments or collection state — so they open the
+    /// shell's preview sheet instead of silently doing nothing.
+    var previewAnime: AnimeSummary?
+
+    func open(_ anime: AnimeSummary) {
+        if anime.bangumiID > 0 {
+            openAnime(anime.bangumiID)
+        } else {
+            previewAnime = anime
+        }
+    }
+
     /// Replace an existing watch route instead of stacking them.
     func openWatch(bangumiID: Int, episodeID: String?) {
         guard bangumiID > 0 else { return }

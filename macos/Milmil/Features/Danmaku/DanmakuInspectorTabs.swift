@@ -242,7 +242,7 @@ struct DanmakuSourcesTab: View {
         } label: {
             Label(title, systemImage: "square.and.arrow.down").font(.system(size: 11)).lineLimit(1)
         }
-        .buttonStyle(.bordered).controlSize(.small)
+        .glassButtonStyle().controlSize(.small)
         .disabled(store.sourceBusy)
     }
 

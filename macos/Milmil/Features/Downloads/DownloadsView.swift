@@ -135,9 +135,9 @@ struct DownloadsView: View {
                         Segmented(options: DownloadsTab.allCases, selection: $tab) { $0.label }
                             .frame(width: 240)
                         if tab == .transfers {
-                            Button("新增", systemImage: "plus") { showAdd = true }.buttonStyle(.borderedProminent)
+                            Button("新增", systemImage: "plus") { showAdd = true }.glassProminentButtonStyle()
                             Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }
-                                .buttonStyle(.bordered)
+                                .glassButtonStyle()
                                 .disabled((store.downloads.value ?? []).isEmpty)
                         }
                     }
@@ -266,7 +266,7 @@ private struct DownloadRow: View {
             }
         }
         .padding(.horizontal, 14).padding(.vertical, 10)
-        .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(Theme.ink(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .confirmationDialog("移除「\(download.displayName)」？", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("只移除記錄") { Task { await store.remove(download, deleteFiles: false) } }
             Button("連檔案一起刪除", role: .destructive) { Task { await store.remove(download, deleteFiles: true) } }

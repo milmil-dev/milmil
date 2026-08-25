@@ -59,11 +59,17 @@ struct PreviewHost<Content: View>: View {
     let phase: SessionPhase
     var covers: [URL] = Preview.covers
     var profiles: [ServerProfile] = []
+    /// Override to check another localization's text lengths in the canvas.
+    /// `Text`/`Label` literals re-resolve; strings built with
+    /// `String(localized:)` keep the app language — use the scheme's App
+    /// Language for a full-app pass.
+    var locale: Locale?
     @ViewBuilder var content: () -> Content
 
     var body: some View {
         content()
             .environment(Preview.session(phase, covers: covers, profiles: profiles))
+            .environment(\.locale, locale ?? .autoupdatingCurrent)
             .frame(width: 1280, height: 800)
             .background(Theme.background)
             .preferredColorScheme(.dark)

@@ -206,7 +206,7 @@ struct SubscriptionsView: View {
         }
         .buttonStyle(.borderless)
         .padding(.horizontal, 12).padding(.vertical, 9)
-        .background(.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(Theme.ink(0.05), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .opacity(feed.enabled ? 1 : 0.6)
     }
 
@@ -259,7 +259,7 @@ struct SubscriptionsView: View {
         }
         .buttonStyle(.borderless)
         .padding(.horizontal, 12).padding(.vertical, 9)
-        .background(.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(Theme.ink(0.05), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .opacity(rule.enabled ? 1 : 0.6)
     }
 }
@@ -321,7 +321,7 @@ struct FeedEditorSheet: View {
                 Spacer()
                 Button("取消") { dismiss() }.keyboardShortcut(.cancelAction)
                 Button(busy ? String(localized: "儲存中…") : String(localized: "儲存")) { Task { await save() } }
-                    .keyboardShortcut(.defaultAction).buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction).glassProminentButtonStyle()
                     .disabled(busy || draft.name.trimmingCharacters(in: .whitespaces).isEmpty || draft.url.trimmingCharacters(in: .whitespaces).isEmpty)
             }
         }
@@ -432,7 +432,7 @@ struct RuleEditorSheet: View {
                 Spacer()
                 Button("取消") { dismiss() }.keyboardShortcut(.cancelAction)
                 Button(busy ? String(localized: "儲存中…") : String(localized: "儲存")) { Task { await save() } }
-                    .keyboardShortcut(.defaultAction).buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction).glassProminentButtonStyle()
                     .disabled(busy || input.name.trimmingCharacters(in: .whitespaces).isEmpty || input.rssFeedID.isEmpty || input.filterRegex.isEmpty)
             }
         }

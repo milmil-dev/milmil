@@ -119,10 +119,10 @@ struct HistoryView: View {
                             Button("刪除 \(store.selection.count) 項", systemImage: "trash", role: .destructive) {
                                 Task { await store.delete(store.selection) }
                             }
-                            .buttonStyle(.bordered)
+                            .glassButtonStyle()
                         } else {
                             Button("清空", systemImage: "trash", role: .destructive) { confirmClear = true }
-                                .buttonStyle(.bordered)
+                                .glassButtonStyle()
                                 .disabled((store.entries.value ?? []).isEmpty)
                         }
                     }
@@ -211,7 +211,7 @@ struct HistoryRow: View {
             Spacer()
             Text(Formatters.relative(entry.lastWatchedAt)).font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary).monospacedDigit()
             Button("繼續", systemImage: "play.fill", action: play)
-                .buttonStyle(.bordered).controlSize(.small)
+                .glassButtonStyle().controlSize(.small)
             Menu {
                 Button("作品頁", systemImage: "info.circle", action: open)
                 Button("刪除記錄", systemImage: "trash", role: .destructive, action: remove)

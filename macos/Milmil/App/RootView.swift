@@ -4,11 +4,16 @@ struct RootView: View {
     @Environment(SessionStore.self) private var session
     @Environment(TrailerCoordinator.self) private var trailers
     @Environment(\.openWindow) private var openWindow
+    @AppStorage(DesktopDefaults.theme) private var theme = Theme.Preference.dark.rawValue
     @ObserveInjection private var inject
 
     var body: some View {
         Group {
             switch session.phase {
+            case .launching:
+                // One quiet frame while the stored session is restored;
+                // showing any onboarding screen here reads as a login flash.
+                Color.clear
             case .noServer:
                 ServerPickerView()
             case let .connecting(profile):
@@ -30,7 +35,7 @@ struct RootView: View {
             }
         }
         .background(Theme.background)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme((Theme.Preference(rawValue: theme) ?? .dark).colorScheme)
         .animation(.snappy(duration: 0.25), value: phaseKey)
         .sheet(isPresented: Binding(get: { trailers.showOpenURL }, set: { trailers.showOpenURL = $0 })) {
             OpenURLSheet()
@@ -46,6 +51,7 @@ struct RootView: View {
     /// Animate only between screens, not on every profile mutation.
     private var phaseKey: Int {
         switch session.phase {
+        case .launching: -1
         case .noServer: 0
         case .connecting: 1
         case .connectionFailed: 2
