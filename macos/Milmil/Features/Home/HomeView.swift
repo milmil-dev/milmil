@@ -7,6 +7,9 @@ struct HomeView: View {
     @Environment(BackdropStore.self) private var backdrop
     @Environment(PlayerCoordinator.self) private var playerCoordinator
     @State private var store: HomeStore?
+    /// Web BannerImage: the banner fades to near-nothing once scrolled past
+    /// the hero; remembered so a carousel rotation doesn't reset it.
+    @State private var scrollDim = 0.0
     @ObserveInjection private var inject
 
     var body: some View {
@@ -42,6 +45,12 @@ struct HomeView: View {
             .padding(.bottom, 40)
         }
         .scrollIndicators(.automatic)
+        .onScrollGeometryChange(for: Double.self) { geometry in
+            geometry.contentOffset.y > 120 ? 0.95 : 0
+        } action: { _, dim in
+            scrollDim = dim
+            backdrop.setDim(dim, owner: "home")
+        }
     }
 
     private func play(_ request: PlaybackRequest) {
@@ -55,9 +64,14 @@ struct HomeView: View {
         case .loaded where !store.heroItems.isEmpty:
             HeroCarousel(
                 items: store.heroItems,
-                onOpen: { router.openAnime($0.bangumiID) },
+                onOpen: { router.open($0) },
                 onPlay: { play(PlaybackRequest(bangumiID: $0.bangumiID, title: $0.title, coverImage: $0.coverImage)) },
-                onActiveChange: { backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, owner: "home") }
+                // A pushed route owns the backdrop; a covered Home whose data
+                // arrives late must not steal it back (deep-link launches).
+                onActiveChange: {
+                    guard router.path.isEmpty else { return }
+                    backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, dim: scrollDim, owner: "home")
+                }
             )
             .padding(.top, 40)
         case let .failed(message):
@@ -98,7 +112,11 @@ struct HomeView: View {
     private func todaySection(_ store: HomeStore) -> some View {
         if let day = store.today.value ?? nil, !day.items.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                SectionHeader(title: String(localized: "今日時刻表"), count: day.weekday, moreTitle: String(localized: "時刻表")) { router.select(.schedule) }
+                SectionHeader(
+                    title: String(localized: "今日時刻表"),
+                    count: Weekdays.japanese(for: day.weekdayEN),
+                    moreTitle: String(localized: "時刻表")
+                ) { router.select(.schedule) }
                 Shelf {
                     ForEach(day.items) { item in
                         PosterCard(
@@ -107,7 +125,8 @@ struct HomeView: View {
                             score: item.score,
                             badge: item.nextEpisode.map { "EP \($0)" },
                             subtitle: item.airTime.map(Formatters.airTime),
-                            onOpen: { router.openAnime(item.bangumiID) }
+                            preview: item,
+                            onOpen: { router.open(item) }
                         )
                     }
                 }
@@ -122,7 +141,7 @@ struct HomeView: View {
                 SectionHeader(title: String(localized: "現在熱門"), moreTitle: String(localized: "探索")) { router.select(.discover) }
                 Shelf {
                     ForEach(items) { item in
-                        PosterCard(summary: item, onOpen: { router.openAnime(item.bangumiID) })
+                        PosterCard(summary: item, onOpen: { router.open(item) })
                     }
                 }
             }
@@ -134,15 +153,15 @@ struct HomeView: View {
 struct HeroSkeleton: View {
     var body: some View {
         HStack(spacing: 32) {
-            RoundedRectangle(cornerRadius: 8).fill(.white.opacity(0.05)).frame(width: 220, height: 330)
+            RoundedRectangle(cornerRadius: 8).fill(Theme.ink(0.05)).frame(width: 220, height: 330)
             VStack(alignment: .leading, spacing: 14) {
-                RoundedRectangle(cornerRadius: 6).fill(.white.opacity(0.05)).frame(width: 360, height: 40)
-                RoundedRectangle(cornerRadius: 999).fill(.white.opacity(0.05)).frame(width: 280, height: 20)
-                RoundedRectangle(cornerRadius: 6).fill(.white.opacity(0.05)).frame(width: 560, height: 16)
-                RoundedRectangle(cornerRadius: 6).fill(.white.opacity(0.05)).frame(width: 500, height: 16)
+                RoundedRectangle(cornerRadius: 6).fill(Theme.ink(0.05)).frame(width: 360, height: 40)
+                RoundedRectangle(cornerRadius: 999).fill(Theme.ink(0.05)).frame(width: 280, height: 20)
+                RoundedRectangle(cornerRadius: 6).fill(Theme.ink(0.05)).frame(width: 560, height: 16)
+                RoundedRectangle(cornerRadius: 6).fill(Theme.ink(0.05)).frame(width: 500, height: 16)
                 HStack(spacing: 10) {
-                    Capsule().fill(.white.opacity(0.05)).frame(width: 110, height: 30)
-                    Capsule().fill(.white.opacity(0.05)).frame(width: 70, height: 30)
+                    Capsule().fill(Theme.ink(0.05)).frame(width: 110, height: 30)
+                    Capsule().fill(Theme.ink(0.05)).frame(width: 70, height: 30)
                 }
             }
             Spacer()

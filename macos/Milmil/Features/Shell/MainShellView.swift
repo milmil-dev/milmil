@@ -132,6 +132,11 @@ struct MainShellView: View {
                             // this, pushed routes show the automatic back
                             // button next to it (two chevrons).
                             .navigationBarBackButtonHidden(true)
+                            // Pushed destinations sit in their own opaque
+                            // container that hides the stack's backdrop, so
+                            // each pushed route carries its own copy — this
+                            // is what puts the hero banner on the detail page.
+                            .background(BackdropLayer())
                     }
             }
             .background(BackdropLayer())
@@ -145,6 +150,7 @@ struct MainShellView: View {
             }
         }
         .animation(.snappy(duration: 0.18), value: router.paletteShown)
+        .sheet(item: $router.previewAnime) { AnimePreviewSheet(anime: $0) }
         .background(Theme.background)
         .tint(Theme.accent)
         .onKeyPress(.escape) {
@@ -215,46 +221,74 @@ private struct SidebarAccountFooter: View {
     @Environment(ServerSession.self) private var session
     @Environment(SessionStore.self) private var sessionStore
     let version: String
+    @State private var hovering = false
 
     var body: some View {
         VStack(spacing: 0) {
             Divider()
-            HStack(spacing: 9) {
-                Circle()
-                    .fill(LinearGradient(colors: [Color(hex: 0x6D28D9), Theme.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
-                    .frame(width: 26, height: 26)
-                    .overlay(Text(String(session.user.username.prefix(1)).uppercased()).font(.system(size: 11, weight: .bold)).foregroundStyle(.white))
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(session.user.username)
-                        .font(.system(size: 12, weight: .semibold))
-                    HStack(spacing: 4) {
-                        Circle().fill(session.isRealtimeConnected ? .green : .orange).frame(width: 6, height: 6)
+            Menu {
+                SettingsLink { Label("設定…", systemImage: "gear") }
+                Divider()
+                Button("切換伺服器", systemImage: "server.rack") { sessionStore.switchToNoServer() }
+                Button("登出", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
+                    Task { await sessionStore.logout() }
+                }
+            } label: {
+                HStack(spacing: 10) {
+                    avatar
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(session.user.username)
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Theme.Text.primary)
                         Text("\(session.profile.name) · v\(version)")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Theme.Text.tertiary)
                     }
-                    .font(.system(size: 10))
-                    .foregroundStyle(Theme.Text.tertiary)
                     .lineLimit(1)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(hovering ? Theme.Text.secondary : Theme.Text.tertiary)
                 }
-                Spacer()
-                Menu {
-                    SettingsLink { Label("設定…", systemImage: "gear") }
-                    Divider()
-                    Button("登出", systemImage: "rectangle.portrait.and.arrow.right") {
-                        Task { await sessionStore.logout() }
-                    }
-                    Button("切換伺服器", systemImage: "server.rack") { sessionStore.switchToNoServer() }
-                } label: {
-                    Image(systemName: "ellipsis")
-                }
-                .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
-                .frame(width: 24)
-                .accessibilityLabel("帳號選單")
+                .padding(.horizontal, 8)
+                .padding(.vertical, 7)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .background(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Theme.ink(hovering ? 0.07 : 0))
+                )
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .menuStyle(.button)
+            .menuIndicator(.hidden)
+            .buttonStyle(.plain)
+            .onHover { hovering = $0 }
+            .animation(.easeOut(duration: 0.12), value: hovering)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .accessibilityLabel("帳號選單")
+            .help("帳號選單")
         }
         .background(.bar)
+    }
+
+    /// Gradient monogram with the realtime-connection state as a corner badge.
+    private var avatar: some View {
+        Circle()
+            .fill(LinearGradient(colors: [Color(hex: 0x6D28D9), Theme.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
+            .frame(width: 32, height: 32)
+            .overlay(
+                Text(String(session.user.username.prefix(1)).uppercased())
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+            )
+            .overlay(alignment: .bottomTrailing) {
+                Circle()
+                    .fill(session.isRealtimeConnected ? .green : .orange)
+                    .frame(width: 9, height: 9)
+                    .overlay(Circle().strokeBorder(Theme.background, lineWidth: 1.5))
+                    .offset(x: 1, y: 1)
+            }
     }
 }
 
@@ -267,15 +301,18 @@ private struct ShellToolbar: ToolbarContent {
             Button("上一頁", systemImage: "chevron.left") { _ = router.path.popLast() }
                 .disabled(router.path.isEmpty)
         }
+        // Flexible space — pins the search pill to the trailing edge (the
+        // hidden-title unified toolbar otherwise packs items from the left).
+        ToolbarItem(placement: .primaryAction) {
+            Spacer()
+        }
         ToolbarItem(placement: .primaryAction) {
             Button {
                 router.paletteShown.toggle()
             } label: {
                 Label("搜尋", systemImage: "magnifyingglass")
-                    .labelStyle(.titleAndIcon)
-                    .frame(minWidth: 160, alignment: .leading)
-                    .foregroundStyle(Theme.Text.tertiary)
             }
+            .labelStyle(.iconOnly)
             .keyboardShortcut("k", modifiers: .command)
             .help("搜尋（⌘K）")
         }

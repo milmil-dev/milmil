@@ -63,7 +63,12 @@ struct HeroCarousel: View {
         .overlay(alignment: .bottomTrailing) { arrows }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.4), value: index)
         .onHover { hovering = $0 }
-        .onAppear { restartTimer() }
+        .onAppear {
+            restartTimer()
+            // Re-announce after being covered by a pushed route, so the page
+            // backdrop comes back as soon as the user pops home.
+            if let featured { onActiveChange(featured) }
+        }
         .onDisappear { timer?.cancel() }
         .onChange(of: items.count) { restartTimer() }
         .onChange(of: index) { if let featured { onActiveChange(featured) } }
@@ -163,17 +168,23 @@ struct HeroCarousel: View {
 struct HeroButtonStyle: ButtonStyle {
     let primary: Bool
 
+    @ViewBuilder
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
+        let label = configuration.label
             .font(.system(size: 13, weight: primary ? .semibold : .medium))
             .foregroundStyle(primary ? .black : .white.opacity(0.85))
             .padding(.horizontal, primary ? 18 : 14)
             .frame(height: 30)
-            .background(primary ? .white : .white.opacity(0.1), in: Capsule())
-            .overlay(Capsule().strokeBorder(.white.opacity(primary ? 0 : 0.1)))
-            .opacity(configuration.isPressed ? 0.8 : 1)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
+        Group {
+            if primary {
+                label.background(.white, in: Capsule())
+            } else {
+                label.glassSurface(in: Capsule(), interactive: true)
+            }
+        }
+        .opacity(configuration.isPressed ? 0.8 : 1)
+        .scaleEffect(configuration.isPressed ? 0.97 : 1)
+        .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
