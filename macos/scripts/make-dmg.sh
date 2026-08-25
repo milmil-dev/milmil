@@ -12,7 +12,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 OUT="${1:-$ROOT/macos/dist}"
 DERIVED="$ROOT/macos/DerivedData-release"
-VERSION="$(sed -n 's/.*MARKETING_VERSION: "\(.*\)"/\1/p' "$ROOT/macos/project.yml" | head -1)"
+VERSION="$(sed -n 's/.*MARKETING_VERSION: "\([^"]*\)".*/\1/p' "$ROOT/macos/project.yml" | head -1)"
 DMG="$OUT/milmil-macos-${VERSION}.dmg"
 
 cd "$ROOT/macos"

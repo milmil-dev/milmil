@@ -9,6 +9,10 @@
           "type": "json",
           "path": "web/package.json",
           "jsonpath": "$.version"
+        },
+        {
+          "type": "generic",
+          "path": "macos/project.yml"
         }
       ]
     }

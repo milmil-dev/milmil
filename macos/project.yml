@@ -77,7 +77,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.milmil.macos
         PRODUCT_NAME: milmil
-        MARKETING_VERSION: "0.1.0"
+        MARKETING_VERSION: "0.1.19" # x-release-please-version
         CURRENT_PROJECT_VERSION: "1"
         # Swift 6.2 default isolation: everything in the app target is MainActor
         # unless marked otherwise. Library code in Packages/ stays nonisolated.
