@@ -233,16 +233,16 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
       {/* Section header */}
       <div className="flex items-baseline justify-between mb-4">
         <div className="flex items-baseline gap-2">
-          <h2 className="text-lg lg:text-xl font-semibold text-white tracking-tight">{title}</h2>
+          <h2 className="text-lg lg:text-xl font-semibold text-ink tracking-tight">{title}</h2>
           {!isLoading && data.length > 0 && (
-            <span className="text-[11px] text-white/20 tabular-nums">{data.length}</span>
+            <span className="text-[11px] text-ink/20 tabular-nums">{data.length}</span>
           )}
         </div>
         {def.viewAllTo && (
           <Link
             to={def.viewAllTo}
             search={def.viewAllSearch as any}
-            className="text-[12px] font-medium transition-colors hover:text-white text-white/40 cursor-pointer"
+            className="text-[12px] font-medium transition-colors hover:text-ink text-ink/40 cursor-pointer"
           >
             {i18n._(msg`home.viewAll`)}
           </Link>
@@ -319,7 +319,7 @@ function HotTagsSection() {
             key={genre}
             to="/search"
             search={{ genre } as any}
-            className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/70 transition-colors cursor-pointer"
+            className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08] hover:text-ink/70 transition-colors cursor-pointer"
           >
             {translateGenre(genre, i18n.locale)}
           </Link>
@@ -333,7 +333,7 @@ function HotTagsSection() {
             key={tag}
             to="/search"
             search={{ tag } as any}
-            className="shrink-0 px-2.5 py-1 text-[11px] font-medium rounded bg-white/[0.03] text-white/25 hover:bg-white/[0.06] hover:text-white/50 transition-colors cursor-pointer"
+            className="shrink-0 px-2.5 py-1 text-[11px] font-medium rounded bg-ink/[0.03] text-ink/25 hover:bg-ink/[0.06] hover:text-ink/50 transition-colors cursor-pointer"
           >
             {tag}
           </Link>

@@ -315,7 +315,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
           {/* ── Header ── */}
           <div className="flex items-center justify-between gap-4">
             {isCreateMode ? (
-              <h2 className="text-base font-semibold text-white truncate">
+              <h2 className="text-base font-semibold text-ink truncate">
                 {i18n._(msg`ruleEditor.createTitle`)}
               </h2>
             ) : (
@@ -323,14 +323,14 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                 <input
                   value={ruleName}
                   onChange={(e) => setRuleName(e.target.value)}
-                  className="text-base font-semibold text-white truncate bg-transparent border-none outline-none focus:ring-0 p-0 w-full placeholder:text-white/30"
+                  className="text-base font-semibold text-ink truncate bg-transparent border-none outline-none focus:ring-0 p-0 w-full placeholder:text-ink/30"
                   placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
                 />
-                <p className="text-[10px] text-white/20 font-mono mt-0.5">{rule!.id}</p>
+                <p className="text-[10px] text-ink/20 font-mono mt-0.5">{rule!.id}</p>
               </div>
             )}
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-[11px] text-white/40">
+              <span className="text-[11px] text-ink/40">
                 {enabled ? i18n._(msg`ruleEditor.enabled`) : i18n._(msg`ruleEditor.disabled`)}
               </span>
               <Switch checked={enabled} onCheckedChange={setEnabled} />
@@ -349,13 +349,13 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                   }}
                   placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
                   rows={3}
-                  className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-[13px] text-white placeholder:text-white/20 font-mono resize-none outline-none focus:border-white/15 transition-colors"
+                  className="w-full bg-ink/[0.03] border border-ink/[0.08] rounded-lg px-3 py-2 text-[13px] text-ink placeholder:text-ink/20 font-mono resize-none outline-none focus:border-ink/15 transition-colors"
                   autoFocus
                 />
                 <button
                   type="button"
                   onClick={() => setRssEditing(false)}
-                  className="text-[11px] text-white/50 hover:text-white px-2.5 py-1.5 rounded bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
+                  className="text-[11px] text-ink/50 hover:text-ink px-2.5 py-1.5 rounded bg-ink/[0.06] hover:bg-ink/[0.1] transition-colors"
                 >
                   {i18n._(msg`ruleEditor.done`)}
                 </button>
@@ -373,7 +373,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                 <button
                   type="button"
                   onClick={() => setRssEditing(true)}
-                  className="text-[11px] text-white/30 hover:text-white/60 px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+                  className="text-[11px] text-ink/30 hover:text-ink/60 px-2 py-1 rounded bg-ink/[0.04] hover:bg-ink/[0.08] transition-colors"
                 >
                   {i18n._(msg`ruleEditor.editUrl`)}
                 </button>
@@ -392,8 +392,8 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                   className={cn(
                     'px-3 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer capitalize',
                     feedType === t
-                      ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.15]'
-                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+                      ? 'bg-ink/[0.10] text-ink ring-1 ring-ink/[0.15]'
+                      : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.07] hover:text-ink/60'
                   )}
                 >
                   {t}
@@ -409,7 +409,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                 value={ruleName}
                 onChange={(e) => setRuleName(e.target.value)}
                 placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
-                className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+                className="bg-ink/[0.03] border-transparent text-ink text-[13px] placeholder:text-ink/20"
               />
             </Section>
           )}
@@ -418,17 +418,17 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
           <Section label={i18n._(msg`ruleEditor.linkedAnime`)}>
             <div ref={animePickerRef} className="relative">
               {bangumiId && selectedAnime ? (
-                <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white/[0.04]">
+                <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-ink/[0.04]">
                   <img
                     src={selectedAnime.cover_image}
                     alt=""
                     className="w-8 h-11 rounded object-cover shrink-0"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] text-white/90 font-medium truncate">
+                    <p className="text-[13px] text-ink/90 font-medium truncate">
                       {selectedAnime.title || selectedAnime.title_original}
                     </p>
-                    <p className="text-[10px] text-white/30">Bangumi #{bangumiId}</p>
+                    <p className="text-[10px] text-ink/30">Bangumi #{bangumiId}</p>
                   </div>
                   <button
                     type="button"
@@ -436,21 +436,21 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                       setBangumiId(null);
                       setSelectedAnime(null);
                     }}
-                    className="text-white/25 hover:text-white/50 transition-colors cursor-pointer shrink-0"
+                    className="text-ink/25 hover:text-ink/50 transition-colors cursor-pointer shrink-0"
                   >
                     <HugeiconsIcon icon={Cancel01Icon} size={12} />
                   </button>
                 </div>
               ) : bangumiId && !selectedAnime ? (
-                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.04]">
-                  <span className="text-[13px] text-white/50">Bangumi #{bangumiId}</span>
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-ink/[0.04]">
+                  <span className="text-[13px] text-ink/50">Bangumi #{bangumiId}</span>
                   <button
                     type="button"
                     onClick={() => {
                       setBangumiId(null);
                       setSelectedAnime(null);
                     }}
-                    className="text-white/25 hover:text-white/50 transition-colors cursor-pointer"
+                    className="text-ink/25 hover:text-ink/50 transition-colors cursor-pointer"
                   >
                     <HugeiconsIcon icon={Cancel01Icon} size={12} />
                   </button>
@@ -466,7 +466,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                     if (animeSearchQuery) setAnimePickerOpen(true);
                   }}
                   placeholder={i18n._(msg`ruleEditor.searchAnime`)}
-                  className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+                  className="bg-ink/[0.03] border-transparent text-ink text-[13px] placeholder:text-ink/20"
                 />
               )}
               {/* Dropdown results */}
@@ -477,7 +477,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.12 }}
-                    className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-zinc-900 shadow-xl shadow-black/40"
+                    className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-mm-bg-elevated shadow-xl shadow-black/40"
                   >
                     {animeResults.slice(0, 8).map((anime) => (
                       <button
@@ -491,7 +491,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                           // Auto-fill rule name if empty
                           setRuleName(anime.title || anime.title_original);
                         }}
-                        className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+                        className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-ink/[0.06] transition-colors cursor-pointer text-left"
                       >
                         <img
                           src={anime.cover_image}
@@ -499,13 +499,11 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                           className="w-7 h-10 rounded object-cover shrink-0"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="text-[12px] text-white/80 truncate">
+                          <p className="text-[12px] text-ink/80 truncate">
                             {anime.title || anime.title_original}
                           </p>
                           {anime.air_date && (
-                            <p className="text-[10px] text-white/25">
-                              {anime.air_date.slice(0, 4)}
-                            </p>
+                            <p className="text-[10px] text-ink/25">{anime.air_date.slice(0, 4)}</p>
                           )}
                         </div>
                       </button>
@@ -526,16 +524,16 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                   onChange={(e) => setLibraryId(e.target.value)}
                   className={cn(
                     'w-full appearance-none rounded-lg px-3 py-2 pr-8 text-[13px] font-medium',
-                    'bg-white/[0.04] text-white/90',
-                    'focus:outline-none focus:ring-1 focus:ring-white/10',
+                    'bg-ink/[0.04] text-ink/90',
+                    'focus:outline-none focus:ring-1 focus:ring-ink/10',
                     'cursor-pointer'
                   )}
                 >
-                  <option value="" className="bg-zinc-900">
+                  <option value="" className="bg-mm-bg-elevated">
                     {i18n._(msg`ruleEditor.noLibrary`)}
                   </option>
                   {libraries.map((lib) => (
-                    <option key={lib.id} value={lib.id} className="bg-zinc-900">
+                    <option key={lib.id} value={lib.id} className="bg-mm-bg-elevated">
                       {lib.name}
                     </option>
                   ))}
@@ -543,12 +541,12 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                 <HugeiconsIcon
                   icon={ArrowDown01Icon}
                   size={14}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink/30 pointer-events-none"
                 />
               </div>
               {/* Save path */}
               {savePath && (
-                <p className="text-[11px] text-white/30 font-mono truncate px-1">{savePath}</p>
+                <p className="text-[11px] text-ink/30 font-mono truncate px-1">{savePath}</p>
               )}
             </div>
           </Section>
@@ -572,13 +570,11 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
               </div>
               {/* Show filter regex read-only (edit mode only) */}
               {!isCreateMode && rule?.filter_regex && (
-                <div className="mt-2 px-3 py-2 rounded-lg bg-white/[0.03]">
-                  <p className="text-[10px] text-white/25 mb-0.5">
+                <div className="mt-2 px-3 py-2 rounded-lg bg-ink/[0.03]">
+                  <p className="text-[10px] text-ink/25 mb-0.5">
                     {i18n._(msg`ruleEditor.filterRegex`)}
                   </p>
-                  <p className="text-[12px] text-white/50 font-mono truncate">
-                    {rule.filter_regex}
-                  </p>
+                  <p className="text-[12px] text-ink/50 font-mono truncate">{rule.filter_regex}</p>
                 </div>
               )}
             </Section>
@@ -617,7 +613,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                       value={episodeRange}
                       onChange={(e) => setEpisodeRange(e.target.value)}
                       placeholder="1-12"
-                      className="mt-2 bg-white/[0.03] border-white/[0.06] text-white text-[13px] placeholder:text-white/20 font-mono"
+                      className="mt-2 bg-ink/[0.03] border-ink/[0.06] text-ink text-[13px] placeholder:text-ink/20 font-mono"
                     />
                   </motion.div>
                 )}
@@ -642,7 +638,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                           'inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1.5 rounded-md transition-all cursor-pointer',
                           isSelected
                             ? 'bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/20'
-                            : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+                            : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.07] hover:text-ink/60'
                         )}
                       >
                         {isSelected && <HugeiconsIcon icon={CheckmarkCircle02Icon} size={11} />}
@@ -699,12 +695,10 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                     ? i18n._(msg`ruleEditor.addGroupManual`)
                     : i18n._(msg`ruleEditor.addGroup`)
                 }
-                className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+                className="bg-ink/[0.03] border-transparent text-ink text-[13px] placeholder:text-ink/20"
               />
               {availableSubgroups.length === 0 && (
-                <p className="text-[10px] text-white/20 px-1">
-                  {i18n._(msg`ruleEditor.groupHint`)}
-                </p>
+                <p className="text-[10px] text-ink/20 px-1">{i18n._(msg`ruleEditor.groupHint`)}</p>
               )}
             </div>
           </Section>
@@ -720,8 +714,8 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                   className={cn(
                     'px-3 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer',
                     resolution === res
-                      ? 'bg-white/[0.10] text-white ring-1 ring-white/[0.15]'
-                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.07] hover:text-white/60'
+                      ? 'bg-ink/[0.10] text-ink ring-1 ring-ink/[0.15]'
+                      : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.07] hover:text-ink/60'
                   )}
                 >
                   {RESOLUTION_LABELS[res]}
@@ -749,7 +743,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
               type="button"
               variant="outline"
               onClick={onClose}
-              className="text-[12px] text-white/50 border-transparent hover:bg-white/[0.04]"
+              className="text-[12px] text-ink/50 border-transparent hover:bg-ink/[0.04]"
             >
               {i18n._(msg`ruleEditor.cancel`)}
             </Button>
@@ -757,7 +751,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
               type="button"
               onClick={() => saveMutation.mutate()}
               disabled={saveMutation.isPending || !createValid}
-              className="text-[12px] font-semibold text-black bg-mm-accent hover:bg-mm-accent/90 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-[12px] font-semibold text-ink-contrast bg-mm-accent hover:bg-mm-accent/90 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {saveMutation.isPending
                 ? i18n._(msg`ruleEditor.saving`)
@@ -770,11 +764,11 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
         {!isCreateMode && feed && (
           <div className="md:w-[400px] md:shrink-0 md:pl-5 pt-5 md:pt-0">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">
+              <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink/25">
                 {i18n._(msg`ruleEditor.preview`)}
               </span>
               {previewData && (
-                <span className="text-[10px] text-white/25 tabular-nums">
+                <span className="text-[10px] text-ink/25 tabular-nums">
                   {previewData.matched} / {previewData.total}
                 </span>
               )}
@@ -785,7 +779,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
               <button
                 type="button"
                 onClick={() => refetchPreview()}
-                className="text-[10px] text-white/25 hover:text-white/50 transition-colors cursor-pointer"
+                className="text-[10px] text-ink/25 hover:text-ink/50 transition-colors cursor-pointer"
               >
                 {i18n._(msg`ruleEditor.refreshPreview`)}
               </button>
@@ -795,7 +789,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
             {previewLoading ? (
               <div className="space-y-1.5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="h-8 rounded-lg bg-white/[0.03] animate-pulse" />
+                  <div key={i} className="h-8 rounded-lg bg-ink/[0.03] animate-pulse" />
                 ))}
               </div>
             ) : previewItems.length > 0 ? (
@@ -805,7 +799,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                     key={item.link}
                     className={cn(
                       'px-3 py-2 rounded-lg transition-colors',
-                      item.already_downloaded ? 'bg-green-500/[0.06]' : 'bg-white/[0.03]'
+                      item.already_downloaded ? 'bg-green-500/[0.06]' : 'bg-ink/[0.03]'
                     )}
                   >
                     <div className="flex items-start gap-2">
@@ -813,13 +807,13 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                         <p
                           className={cn(
                             'text-[12px] truncate leading-snug',
-                            item.already_downloaded ? 'text-white/30' : 'text-white/60'
+                            item.already_downloaded ? 'text-ink/30' : 'text-ink/60'
                           )}
                           title={item.title}
                         >
                           {item.title}
                         </p>
-                        <div className="flex items-center gap-2 mt-1 text-[10px] text-white/25">
+                        <div className="flex items-center gap-2 mt-1 text-[10px] text-ink/25">
                           {item.episode && <span>EP{item.episode}</span>}
                           {item.subgroup && (
                             <span className="text-orange-400/50">{item.subgroup}</span>
@@ -839,7 +833,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
                 ))}
               </div>
             ) : (
-              <p className="text-[11px] text-white/15 text-center py-8">
+              <p className="text-[11px] text-ink/15 text-center py-8">
                 {i18n._(msg`ruleEditor.noPreviewItems`)}
               </p>
             )}
@@ -855,7 +849,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">{label}</h3>
+      <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink/25">{label}</h3>
       {children}
     </div>
   );
@@ -880,15 +874,13 @@ function OptionCard({
       onClick={onClick}
       className={cn(
         'flex flex-col items-start gap-0.5 rounded-lg px-3 py-2.5 text-left transition-all cursor-pointer',
-        selected
-          ? 'bg-white/[0.08] ring-1 ring-white/[0.12]'
-          : 'bg-white/[0.04] hover:bg-white/[0.06]'
+        selected ? 'bg-ink/[0.08] ring-1 ring-ink/[0.12]' : 'bg-ink/[0.04] hover:bg-ink/[0.06]'
       )}
     >
-      <span className={cn('text-[12px] font-medium', selected ? 'text-white' : 'text-white/60')}>
+      <span className={cn('text-[12px] font-medium', selected ? 'text-ink' : 'text-ink/60')}>
         {label}
       </span>
-      {description && <span className="text-[10px] text-white/25">{description}</span>}
+      {description && <span className="text-[10px] text-ink/25">{description}</span>}
     </button>
   );
 }

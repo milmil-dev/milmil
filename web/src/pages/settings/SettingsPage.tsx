@@ -152,7 +152,7 @@ export function SettingsPage() {
           <>
             {/* Header — centered */}
             <div className="mb-8 text-center">
-              <h1 className="text-xl font-semibold text-white tracking-tight sm:text-2xl">
+              <h1 className="text-xl font-semibold text-ink tracking-tight sm:text-2xl">
                 {i18n._(msg`settings.pageTitle`)}
               </h1>
             </div>
@@ -161,7 +161,7 @@ export function SettingsPage() {
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[220px_1fr] lg:gap-8">
               {/* Nav column */}
               <div className="lg:sticky lg:top-8 lg:self-start">
-                <div className="lg:rounded-xl lg:border lg:border-white/[0.06] lg:bg-white/[0.02] lg:p-2">
+                <div className="lg:rounded-xl lg:border lg:border-ink/[0.06] lg:bg-ink/[0.02] lg:p-2">
                   <nav className="flex gap-1.5 lg:flex-col lg:gap-1">
                     {TABS.map((tab) => {
                       const isActive = activeTab === tab.id;
@@ -173,8 +173,8 @@ export function SettingsPage() {
                           className={cn(
                             'flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 lg:w-full lg:gap-2.5 lg:text-left',
                             isActive
-                              ? 'bg-white/[0.06] text-white'
-                              : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03]'
+                              ? 'bg-ink/[0.06] text-ink'
+                              : 'text-ink/40 hover:text-ink/70 hover:bg-ink/[0.03]'
                           )}
                         >
                           <HugeiconsIcon
@@ -182,7 +182,7 @@ export function SettingsPage() {
                             size={16}
                             className={cn(
                               'shrink-0 transition-colors',
-                              isActive ? 'text-mm-accent' : 'text-white/30'
+                              isActive ? 'text-mm-accent' : 'text-ink/30'
                             )}
                           />
                           {i18n._(tab.labelKey)}
@@ -221,7 +221,7 @@ export function SettingsPage() {
                 exit="exit"
               >
                 <div className="mb-4 px-1">
-                  <h1 className="text-[28px] font-bold tracking-tight text-white">
+                  <h1 className="text-[28px] font-bold tracking-tight text-ink">
                     {i18n._(msg`settings.pageTitle`)}
                   </h1>
                 </div>
@@ -229,22 +229,22 @@ export function SettingsPage() {
                   type="button"
                   variants={mobileRowVariants}
                   onClick={() => setActiveTab('account')}
-                  className="mb-4 flex min-h-[76px] w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.045] px-4 text-left shadow-[0_14px_32px_rgba(0,0,0,0.16)] transition-colors active:bg-white/[0.075]"
+                  className="mb-4 flex min-h-[76px] w-full items-center gap-3 rounded-2xl border border-ink/[0.07] bg-ink/[0.045] px-4 text-left shadow-[0_14px_32px_rgba(0,0,0,0.16)] transition-colors active:bg-ink/[0.075]"
                 >
                   <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-mm-accent/20 text-lg font-semibold text-mm-accent ring-1 ring-mm-accent/30">
                     {accountInitial}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[17px] font-semibold leading-6 text-white">
+                    <span className="block truncate text-[17px] font-semibold leading-6 text-ink">
                       {user?.username ?? i18n._(msg`settings.nav.account`)}
                     </span>
-                    <span className="block truncate text-xs leading-5 text-white/35">
+                    <span className="block truncate text-xs leading-5 text-ink/35">
                       {user?.id ? `ID: ${user.id}` : i18n._(msg`account.local`)}
                     </span>
                   </span>
-                  <span className="text-xl leading-none text-white/25">›</span>
+                  <span className="text-xl leading-none text-ink/25">›</span>
                 </motion.button>
-                <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.04]">
+                <div className="overflow-hidden rounded-2xl border border-ink/[0.06] bg-ink/[0.04]">
                   {TABS.map((tab, index) => (
                     <motion.button
                       key={tab.id}
@@ -252,17 +252,17 @@ export function SettingsPage() {
                       variants={mobileRowVariants}
                       onClick={() => setActiveTab(tab.id)}
                       className={cn(
-                        'flex min-h-12 w-full items-center gap-3 px-4 text-left transition-colors active:bg-white/[0.08]',
-                        index !== TABS.length - 1 && 'border-b border-white/[0.06]'
+                        'flex min-h-12 w-full items-center gap-3 px-4 text-left transition-colors active:bg-ink/[0.08]',
+                        index !== TABS.length - 1 && 'border-b border-ink/[0.06]'
                       )}
                     >
-                      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.07] text-mm-accent">
+                      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-ink/[0.07] text-mm-accent">
                         <HugeiconsIcon icon={tab.icon} size={17} />
                       </span>
-                      <span className="min-w-0 flex-1 text-[15px] font-medium text-white/90">
+                      <span className="min-w-0 flex-1 text-[15px] font-medium text-ink/90">
                         {i18n._(tab.labelKey)}
                       </span>
-                      <span className="text-xl leading-none text-white/25">›</span>
+                      <span className="text-xl leading-none text-ink/25">›</span>
                     </motion.button>
                   ))}
                 </div>
@@ -297,12 +297,12 @@ export function SettingsPage() {
                     type="button"
                     aria-label="Back to Settings"
                     onClick={goToSettingsRoot}
-                    className="absolute left-0 flex min-h-10 items-center gap-1.5 rounded-lg px-1.5 text-sm font-semibold text-mm-accent active:bg-white/[0.06]"
+                    className="absolute left-0 flex min-h-10 items-center gap-1.5 rounded-lg px-1.5 text-sm font-semibold text-mm-accent active:bg-ink/[0.06]"
                   >
                     <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
                     {i18n._(msg`settings.pageTitle`)}
                   </button>
-                  <h1 className="max-w-[48vw] truncate text-base font-bold text-white">
+                  <h1 className="max-w-[48vw] truncate text-base font-bold text-ink">
                     {activeTabLabel}
                   </h1>
                 </div>

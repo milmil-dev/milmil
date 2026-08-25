@@ -124,13 +124,13 @@ export function NotificationsPage() {
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-white">{i18n._(msg`notifications.title`)}</h1>
+          <h1 className="text-2xl font-bold text-ink">{i18n._(msg`notifications.title`)}</h1>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => markAllMut.mutate(undefined)}
-              className="text-xs text-white/40 hover:text-white/70"
+              className="text-xs text-ink/40 hover:text-ink/70"
             >
               {i18n._(msg`notifications.markAllRead`)}
             </Button>
@@ -138,7 +138,7 @@ export function NotificationsPage() {
               variant="ghost"
               size="sm"
               onClick={() => clearMut.mutate(undefined)}
-              className="text-xs text-white/40 hover:text-white/70"
+              className="text-xs text-ink/40 hover:text-ink/70"
             >
               {i18n._(msg`notifications.clearAll`)}
             </Button>
@@ -146,7 +146,7 @@ export function NotificationsPage() {
         </div>
 
         {/* Filter tabs */}
-        <div className="flex gap-1 mb-6 p-1 rounded-lg bg-white/[0.03] w-fit">
+        <div className="flex gap-1 mb-6 p-1 rounded-lg bg-ink/[0.03] w-fit">
           {FILTER_TABS.map((tab) => (
             <button
               key={tab.value}
@@ -158,8 +158,8 @@ export function NotificationsPage() {
               className={cn(
                 'px-3 py-1.5 rounded-md text-sm transition-colors cursor-pointer',
                 filter === tab.value
-                  ? 'bg-white/[0.08] text-white font-medium'
-                  : 'text-white/40 hover:text-white/60'
+                  ? 'bg-ink/[0.08] text-ink font-medium'
+                  : 'text-ink/40 hover:text-ink/60'
               )}
             >
               {i18n._(tab.msgKey)}
@@ -181,7 +181,7 @@ export function NotificationsPage() {
               if (!items?.length) return null;
               return (
                 <div key={group}>
-                  <h2 className="text-xs font-medium text-white/30 uppercase tracking-wider mb-3">
+                  <h2 className="text-xs font-medium text-ink/30 uppercase tracking-wider mb-3">
                     {i18n._(TIME_GROUP_KEYS[group])}
                   </h2>
                   <div className="space-y-1.5">
@@ -215,7 +215,7 @@ export function NotificationsPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
-                  className="text-xs text-white/40 hover:text-white/70"
+                  className="text-xs text-ink/40 hover:text-ink/70"
                 >
                   {i18n._(msg`notifications.loadMore`)}
                 </Button>
@@ -225,16 +225,16 @@ export function NotificationsPage() {
         ) : (
           /* Empty state */
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-white/[0.04] mb-4">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-ink/[0.04] mb-4">
               <HugeiconsIcon
                 icon={Notification03Icon}
                 size={28}
                 strokeWidth={1.5}
-                className="text-white/20"
+                className="text-ink/20"
               />
             </div>
-            <p className="text-sm text-white/40 mb-1">{i18n._(msg`notifications.empty`)}</p>
-            <p className="text-xs text-white/25 max-w-xs">{i18n._(msg`notifications.emptyHint`)}</p>
+            <p className="text-sm text-ink/40 mb-1">{i18n._(msg`notifications.empty`)}</p>
+            <p className="text-xs text-ink/25 max-w-xs">{i18n._(msg`notifications.emptyHint`)}</p>
           </div>
         )}
       </div>
@@ -261,8 +261,8 @@ function NotificationCard({
       type="button"
       onClick={onMarkRead}
       className={cn(
-        'w-full text-left flex gap-3 px-4 py-3 rounded-lg transition-colors cursor-pointer hover:bg-white/[0.03]',
-        !notification.read ? 'bg-white/[0.02]' : 'bg-transparent'
+        'w-full text-left flex gap-3 px-4 py-3 rounded-lg transition-colors cursor-pointer hover:bg-ink/[0.03]',
+        !notification.read ? 'bg-ink/[0.02]' : 'bg-transparent'
       )}
     >
       <div className="flex-1 min-w-0">
@@ -270,18 +270,18 @@ function NotificationCard({
           {!notification.read && (
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
           )}
-          <span className="text-sm font-medium text-white">{displayTitle}</span>
+          <span className="text-sm font-medium text-ink">{displayTitle}</span>
           <span
             className={cn(
               'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium',
-              TYPE_BADGE[typePrefix] ?? 'bg-white/[0.06] text-white/40'
+              TYPE_BADGE[typePrefix] ?? 'bg-ink/[0.06] text-ink/40'
             )}
           >
             {TYPE_LABEL_KEYS[typePrefix] ? i18n._(TYPE_LABEL_KEYS[typePrefix]) : typePrefix}
           </span>
         </div>
-        <p className="text-xs text-white/40 mt-1 line-clamp-2">{notification.message}</p>
-        <p className="text-[10px] text-white/25 mt-1.5">{timeAgo(notification.created_at, i18n)}</p>
+        <p className="text-xs text-ink/40 mt-1 line-clamp-2">{notification.message}</p>
+        <p className="text-[10px] text-ink/25 mt-1.5">{timeAgo(notification.created_at, i18n)}</p>
       </div>
     </button>
   );

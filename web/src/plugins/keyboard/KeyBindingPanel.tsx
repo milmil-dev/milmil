@@ -122,7 +122,7 @@ export function KeyBindingPanel() {
           {Object.entries(ACTION_GROUPS).map(([group, actions]) => (
             <div key={group}>
               {/* Group header */}
-              <div className="mb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-white/30">
+              <div className="mb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-ink/30">
                 {group}
               </div>
 
@@ -136,12 +136,10 @@ export function KeyBindingPanel() {
                   return (
                     <div
                       key={action}
-                      className="flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors hover:bg-white/[0.03]"
+                      className="flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors hover:bg-ink/[0.03]"
                     >
                       {/* Action label */}
-                      <span className="text-sm text-white/70">
-                        {ACTION_LABELS[action] ?? action}
-                      </span>
+                      <span className="text-sm text-ink/70">{ACTION_LABELS[action] ?? action}</span>
 
                       {/* Key badge — click to rebind */}
                       <button
@@ -153,10 +151,10 @@ export function KeyBindingPanel() {
                         className={[
                           'min-w-[60px] rounded-lg px-3 py-1 text-center font-mono text-xs transition-all',
                           capturing
-                            ? 'animate-pulse border border-white/40 bg-white/15 text-white'
+                            ? 'animate-pulse border border-ink/40 bg-ink/15 text-ink'
                             : custom
-                              ? 'border border-white/15 bg-white/10 text-white/90'
-                              : 'border border-white/[0.06] bg-white/[0.05] text-white/60',
+                              ? 'border border-ink/15 bg-ink/10 text-ink/90'
+                              : 'border border-ink/[0.06] bg-ink/[0.05] text-ink/60',
                         ].join(' ')}
                       >
                         {capturing
@@ -180,7 +178,7 @@ export function KeyBindingPanel() {
             type="button"
             onClick={handleReset}
             disabled={keyboardBindings.length === 0}
-            className="mt-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-1.5 text-xs text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white/70 disabled:cursor-not-allowed disabled:opacity-30"
+            className="mt-2 rounded-lg border border-ink/[0.06] bg-ink/[0.03] px-4 py-1.5 text-xs text-ink/50 transition-colors hover:bg-ink/[0.06] hover:text-ink/70 disabled:cursor-not-allowed disabled:opacity-30"
           >
             Reset to Defaults
           </button>

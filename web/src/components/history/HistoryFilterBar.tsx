@@ -55,7 +55,7 @@ export function HistoryFilterBar({
             onClick={() => onFilterChange(t.key)}
             className={cn(
               'relative cursor-pointer pb-3 pt-2 text-[14px] font-semibold transition-colors',
-              filter === t.key ? 'text-white' : 'text-white/40 hover:text-white/60'
+              filter === t.key ? 'text-ink' : 'text-ink/40 hover:text-ink/60'
             )}
           >
             {t.label}
@@ -68,7 +68,7 @@ export function HistoryFilterBar({
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-2 rounded-md bg-white/[0.03] px-3 py-1.5">
+      <div className="flex items-center gap-2 rounded-md bg-ink/[0.03] px-3 py-1.5">
         <svg
           width="14"
           height="14"
@@ -76,7 +76,7 @@ export function HistoryFilterBar({
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          className="text-white/30"
+          className="text-ink/30"
         >
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
@@ -85,14 +85,14 @@ export function HistoryFilterBar({
           value={local}
           onChange={(e) => setLocal(e.target.value)}
           placeholder={i18n._(msg`history.searchPlaceholder`)}
-          className="w-48 bg-transparent text-[13px] text-white placeholder:text-white/30 focus:outline-none"
+          className="w-48 bg-transparent text-[13px] text-ink placeholder:text-ink/30 focus:outline-none"
         />
       </div>
 
       <button
         type="button"
         onClick={onClearAll}
-        className="cursor-pointer rounded-md bg-white/[0.03] px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white"
+        className="cursor-pointer rounded-md bg-ink/[0.03] px-3 py-1.5 text-[13px] font-medium text-ink/60 transition-colors hover:bg-ink/[0.06] hover:text-ink"
       >
         {i18n._(msg`history.clearAll`)}
       </button>
@@ -102,8 +102,8 @@ export function HistoryFilterBar({
         className={cn(
           'cursor-pointer rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors',
           batchMode
-            ? 'bg-white/[0.1] text-white'
-            : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.06] hover:text-white'
+            ? 'bg-ink/[0.1] text-ink'
+            : 'bg-ink/[0.03] text-ink/60 hover:bg-ink/[0.06] hover:text-ink'
         )}
       >
         {i18n._(msg`history.batch`)}

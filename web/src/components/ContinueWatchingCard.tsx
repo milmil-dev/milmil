@@ -25,7 +25,7 @@ export function ContinueWatchingCard({
     <Link
       to={href}
       className={cn(
-        'group block rounded-lg overflow-hidden hover:ring-1 hover:ring-white/[0.06] transition-all duration-200',
+        'group block rounded-lg overflow-hidden hover:ring-1 hover:ring-ink/[0.06] transition-all duration-200',
         className
       )}
     >
@@ -57,7 +57,7 @@ export function ContinueWatchingCard({
           </div>
         </div>
         {/* Progress bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">
+        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-ink/10">
           <div
             className="h-full bg-mm-accent rounded-r-full transition-[width] duration-300"
             style={{ width: `${Math.min(progress * 100, 100)}%` }}
@@ -67,7 +67,7 @@ export function ContinueWatchingCard({
 
       {/* Info */}
       <div className="px-3 py-2.5">
-        <p className="text-[12px] font-semibold text-white truncate">{title}</p>
+        <p className="text-[12px] font-semibold text-ink truncate">{title}</p>
         <p className="text-[10px] mt-0.5 text-mm-text-tertiary">{episodeLabel}</p>
       </div>
     </Link>

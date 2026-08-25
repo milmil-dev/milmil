@@ -50,15 +50,15 @@ export function EpisodeRowActive({
   const isActive = status === 'active';
   const isPaused = status === 'paused';
   return (
-    <div className="group grid grid-cols-[92px_1fr_80px_70px_auto_50px] gap-5 items-center px-2 py-[9px] rounded-lg hover:bg-white/[0.02] transition-colors">
+    <div className="group grid grid-cols-[92px_1fr_80px_70px_auto_50px] gap-5 items-center px-2 py-[9px] rounded-lg hover:bg-ink/[0.02] transition-colors">
       <div className="text-center text-[11px] font-semibold tabular-nums tracking-[0.04em] text-[#4ade80]">
         {episodeLabel}
       </div>
-      <div className="text-[12px] text-white/65 tabular-nums truncate">
-        <span className="text-white/90 font-medium mr-1">
+      <div className="text-[12px] text-ink/65 tabular-nums truncate">
+        <span className="text-ink/90 font-medium mr-1">
           {fmt(downloadedBytes)} / {fmt(totalBytes)}
         </span>
-        <span className="text-white/25 mx-1.5">·</span>
+        <span className="text-ink/25 mx-1.5">·</span>
         <span>{fmt(speedBytes)}/s</span>
       </div>
       <div className="h-[2px] bg-[rgba(74,222,128,0.06)] rounded-sm overflow-hidden">
@@ -71,7 +71,7 @@ export function EpisodeRowActive({
           style={{ width: `${percent}%` }}
         />
       </div>
-      <div className="text-[11px] text-white/25 tabular-nums text-right">
+      <div className="text-[11px] text-ink/25 tabular-nums text-right">
         {etaSeconds > 0 ? fmtEta(etaSeconds) : ''}
       </div>
       <div className="flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
@@ -80,7 +80,7 @@ export function EpisodeRowActive({
             type="button"
             aria-label={i18n._(msg`downloads.pause`)}
             onClick={() => onPause(gid)}
-            className="text-white/35 hover:text-white/75"
+            className="text-ink/35 hover:text-ink/75"
           >
             <HugeiconsIcon icon={PauseIcon} size={12} />
           </button>
@@ -90,7 +90,7 @@ export function EpisodeRowActive({
             type="button"
             aria-label={i18n._(msg`downloads.resume`)}
             onClick={() => onResume(gid)}
-            className="text-white/35 hover:text-white/75"
+            className="text-ink/35 hover:text-ink/75"
           >
             <HugeiconsIcon icon={PlayIcon} size={12} />
           </button>
@@ -99,14 +99,12 @@ export function EpisodeRowActive({
           type="button"
           aria-label={i18n._(msg`downloads.delete`)}
           onClick={() => onDelete(gid)}
-          className="text-white/35 hover:text-red-400"
+          className="text-ink/35 hover:text-red-400"
         >
           <HugeiconsIcon icon={Delete02Icon} size={12} />
         </button>
       </div>
-      <div className="text-[11px] text-white/65 tabular-nums text-right font-medium">
-        {percent}%
-      </div>
+      <div className="text-[11px] text-ink/65 tabular-nums text-right font-medium">{percent}%</div>
     </div>
   );
 }

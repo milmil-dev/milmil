@@ -56,29 +56,27 @@ export function StoragePanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-white">{i18n._(msg`settings.nav.storage`)}</h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`settings.storage.subtitle`)}</p>
+      <h2 className="text-xl font-semibold text-ink">{i18n._(msg`settings.nav.storage`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-ink/35">{i18n._(msg`settings.storage.subtitle`)}</p>
 
       <div className="space-y-3">
         <SettingsCard label={i18n._(msg`settings.storage.diskUsage`)}>
           <div className="space-y-3">
             <div className="flex items-baseline justify-between">
-              <span className="text-[20px] font-bold text-white tabular-nums">
+              <span className="text-[20px] font-bold text-ink tabular-nums">
                 {formatBytes(totalSize)}
               </span>
-              <span className="text-xs text-white/30">
+              <span className="text-xs text-ink/30">
                 {fileCount} {i18n._(msg`settings.storage.files`)}
               </span>
             </div>
-            <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+            <div className="h-1.5 rounded-full bg-ink/[0.06] overflow-hidden">
               <div
                 className="h-full rounded-full bg-mm-accent transition-all"
                 style={{ width: totalSize > 0 ? '100%' : '0%' }}
               />
             </div>
-            <p className="text-[11px] text-white/25">
-              {i18n._(msg`settings.storage.transcodeDesc`)}
-            </p>
+            <p className="text-[11px] text-ink/25">{i18n._(msg`settings.storage.transcodeDesc`)}</p>
           </div>
         </SettingsCard>
 
@@ -106,7 +104,7 @@ export function StoragePanel() {
             <AlertDialogCancel>{i18n._(msg`common.cancel`)}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => clearMutation.mutate()}
-              className="bg-red-500 text-white hover:bg-red-600"
+              className="bg-red-500 text-ink hover:bg-red-600"
             >
               {clearMutation.isPending
                 ? i18n._(msg`settings.storage.clearing`)

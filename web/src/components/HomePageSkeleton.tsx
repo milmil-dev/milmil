@@ -29,7 +29,7 @@ export function HomePageSkeleton() {
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-3 w-16" />
             </div>
-            <div className="rounded-lg bg-white/[0.03] overflow-hidden">
+            <div className="rounded-lg bg-ink/[0.03] overflow-hidden">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton key={i} className="h-14 rounded-none" />
               ))}

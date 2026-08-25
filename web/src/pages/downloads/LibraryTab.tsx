@@ -137,13 +137,13 @@ export default function LibraryTab({
 
   if (rules.length === 0 && miscDownloads.length === 0) {
     return (
-      <div className="rounded-xl bg-white/[0.02] p-6">
+      <div className="rounded-xl bg-ink/[0.02] p-6">
         <div className="flex items-center gap-4">
-          <div className="p-3 rounded-lg bg-white/[0.04]">
-            <HugeiconsIcon icon={RssIcon} size={24} className="text-white/15" />
+          <div className="p-3 rounded-lg bg-ink/[0.04]">
+            <HugeiconsIcon icon={RssIcon} size={24} className="text-ink/15" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-white/50 mb-1">
+            <p className="text-sm font-medium text-ink/50 mb-1">
               {i18n._(msg`downloads.noRulesHint`)}
             </p>
           </div>
@@ -169,21 +169,21 @@ export default function LibraryTab({
           <HugeiconsIcon
             icon={Search01Icon}
             size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/20 pointer-events-none"
           />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={i18n._(msg`autoDownload.searchDownloads`)}
-            className="w-full pl-8 pr-3 py-1.5 rounded-md bg-white/[0.03] text-[12px] text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.05] transition-colors"
+            className="w-full pl-8 pr-3 py-1.5 rounded-md bg-ink/[0.03] text-[12px] text-ink placeholder:text-ink/20 focus:outline-none focus:bg-ink/[0.05] transition-colors"
           />
         </div>
         <div className="relative">
           <button
             type="button"
             onClick={() => setSortMenuOpen((o) => !o)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-white/[0.03] text-[11px] font-medium text-white/40 hover:text-white/60 hover:bg-white/[0.06] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-ink/[0.03] text-[11px] font-medium text-ink/40 hover:text-ink/60 hover:bg-ink/[0.06] transition-colors cursor-pointer"
           >
             <HugeiconsIcon icon={ArrowUpDownIcon} size={12} />
             {sortLabels[sort]}
@@ -191,7 +191,7 @@ export default function LibraryTab({
           {sortMenuOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setSortMenuOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 z-50 min-w-[140px] rounded-lg bg-[#1a1a1e] py-1 shadow-xl">
+              <div className="absolute right-0 top-full mt-1 z-50 min-w-[140px] rounded-lg bg-mm-bg-elevated py-1 shadow-xl">
                 {(Object.keys(sortLabels) as SortKey[]).map((key) => (
                   <button
                     key={key}
@@ -203,8 +203,8 @@ export default function LibraryTab({
                     className={cn(
                       'w-full px-3 py-1.5 text-left text-[11px] font-medium transition-colors cursor-pointer',
                       sort === key
-                        ? 'text-mm-accent bg-white/[0.04]'
-                        : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
+                        ? 'text-mm-accent bg-ink/[0.04]'
+                        : 'text-ink/50 hover:text-ink/70 hover:bg-ink/[0.03]'
                     )}
                   >
                     {sortLabels[key]}
@@ -217,35 +217,35 @@ export default function LibraryTab({
       </div>
 
       {(rules.length > 0 || miscDownloads.length > 0) && (
-        <div className="flex items-center gap-3 mb-3 text-[11px] text-white/20 flex-wrap">
+        <div className="flex items-center gap-3 mb-3 text-[11px] text-ink/20 flex-wrap">
           <span>
-            <b className="text-white/40 font-medium">{rules.length}</b>{' '}
+            <b className="text-ink/40 font-medium">{rules.length}</b>{' '}
             {i18n._(msg`downloads.summary.subscribed`)}
           </span>
-          <span className="text-white/10">·</span>
+          <span className="text-ink/10">·</span>
           <span>
             <span className="inline-block w-[5px] h-[5px] rounded-full bg-[#4ade80] mr-1.5 align-middle" />
-            <b className="text-white/40 font-medium">{stats.downloadingCount}</b>{' '}
+            <b className="text-ink/40 font-medium">{stats.downloadingCount}</b>{' '}
             {i18n._(msg`downloads.summary.downloading`)}
           </span>
           {stats.speed > 0 && (
             <>
-              <span className="text-white/10">·</span>
+              <span className="text-ink/10">·</span>
               <span className="tabular-nums">
-                <b className="text-white/40 font-medium">{formatBytes(stats.speed)}/s</b>
+                <b className="text-ink/40 font-medium">{formatBytes(stats.speed)}/s</b>
               </span>
             </>
           )}
-          <span className="text-white/10">·</span>
+          <span className="text-ink/10">·</span>
           <span className="tabular-nums">
-            <b className="text-white/40 font-medium">{formatBytes(stats.storedBytes)}</b>{' '}
+            <b className="text-ink/40 font-medium">{formatBytes(stats.storedBytes)}</b>{' '}
             {i18n._(msg`downloads.summary.stored`)}
           </span>
         </div>
       )}
 
       {query.trim() && sorted.length === 0 && (
-        <p className="text-[12px] text-white/30 mb-3">
+        <p className="text-[12px] text-ink/30 mb-3">
           {i18n._(msg`downloads.searchEmpty`).replace('{query}', query)}
         </p>
       )}
@@ -351,7 +351,7 @@ function LibraryCard({ item, onEdit }: { item: LibraryItem; onEdit: () => void }
         type="button"
         onClick={onEdit}
         aria-label={i18n._(msg`ruleEditor.openEditor`)}
-        className="w-[26px] h-[26px] rounded-[7px] flex items-center justify-center text-white/20 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+        className="w-[26px] h-[26px] rounded-[7px] flex items-center justify-center text-ink/20 hover:text-ink hover:bg-ink/[0.06] transition-colors cursor-pointer"
       >
         <HugeiconsIcon icon={Edit02Icon} size={12} />
       </button>

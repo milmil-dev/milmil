@@ -50,6 +50,26 @@
   </head>
 
   <body>
+    <!-- Apply the stored theme before first paint to avoid a flash of the wrong scheme. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('milmil-theme');
+          var theme =
+            stored === 'system'
+              ? window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark'
+              : stored === 'light'
+                ? 'light'
+                : 'dark';
+          var root = document.documentElement;
+          root.classList.remove('light', 'dark');
+          root.classList.add(theme);
+          root.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

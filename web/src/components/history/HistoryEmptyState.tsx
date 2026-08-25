@@ -5,7 +5,7 @@ export function HistoryEmptyState() {
   const { i18n } = useLingui();
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/[0.04] text-white/40">
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-ink/[0.04] text-ink/40">
         <svg
           width="24"
           height="24"
@@ -18,13 +18,13 @@ export function HistoryEmptyState() {
           <path d="M12 7v5l3 3" />
         </svg>
       </div>
-      <p className="text-[15px] font-medium text-white/80">{i18n._('history.empty.title')}</p>
-      <p className="mt-1.5 max-w-sm text-[13px] text-white/40">
+      <p className="text-[15px] font-medium text-ink/80">{i18n._('history.empty.title')}</p>
+      <p className="mt-1.5 max-w-sm text-[13px] text-ink/40">
         {i18n._('history.empty.description')}
       </p>
       <Link
         to="/"
-        className="mt-6 rounded-md bg-white/[0.06] px-4 py-2 text-[13px] font-medium text-white/70 transition-colors hover:bg-white/[0.10] hover:text-white"
+        className="mt-6 rounded-md bg-ink/[0.06] px-4 py-2 text-[13px] font-medium text-ink/70 transition-colors hover:bg-ink/[0.10] hover:text-ink"
       >
         {i18n._('nav.home')}
       </Link>

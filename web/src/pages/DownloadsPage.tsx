@@ -97,7 +97,7 @@ export function SourceBadge({ source }: { source: string }) {
     <span
       className={cn(
         'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium',
-        SOURCE_COLORS[source] ?? 'bg-white/10 text-white/60'
+        SOURCE_COLORS[source] ?? 'bg-ink/10 text-ink/60'
       )}
     >
       {SOURCE_LABELS[source] ?? source}
@@ -110,7 +110,7 @@ function MediaTypeBadge({ type }: { type: string }) {
     <span
       className={cn(
         'inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium uppercase',
-        MEDIA_TYPE_COLORS[type] ?? 'bg-white/10 text-white/60'
+        MEDIA_TYPE_COLORS[type] ?? 'bg-ink/10 text-ink/60'
       )}
     >
       {type}
@@ -217,22 +217,18 @@ function PreviewItemRow({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.02, 0.5) }}
-      className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-colors"
+      className="flex items-start gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.05] transition-colors"
     >
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-medium text-white break-words leading-relaxed">
-          {item.title}
-        </p>
+        <p className="text-[13px] font-medium text-ink break-words leading-relaxed">{item.title}</p>
         <div className="flex flex-wrap items-center gap-2 mt-1.5">
           {source && <SourceBadge source={source} />}
           {item.subgroup && (
             <span className="text-[10px] text-orange-400/60 font-medium">{item.subgroup}</span>
           )}
-          {item.size && <span className="text-[10px] text-white/25">{item.size}</span>}
+          {item.size && <span className="text-[10px] text-ink/25">{item.size}</span>}
           {item.publish_date && (
-            <span className="text-[10px] text-white/25">
-              {formatPublishDate(item.publish_date)}
-            </span>
+            <span className="text-[10px] text-ink/25">{formatPublishDate(item.publish_date)}</span>
           )}
         </div>
       </div>
@@ -372,7 +368,7 @@ export function DownloadsPage() {
               <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">
                 milmil
               </p>
-              <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">
+              <h1 className="text-3xl font-bold text-ink mt-1 tracking-tight">
                 {i18n._(msg`nav.autoDownload`)}
               </h1>
             </div>
@@ -383,7 +379,7 @@ export function DownloadsPage() {
                 className={cn(
                   'flex items-center gap-2 px-3 py-1.5 rounded-lg',
                   downloaderStatus?.healthy
-                    ? 'bg-white/[0.03]'
+                    ? 'bg-ink/[0.03]'
                     : 'bg-red-500/[0.06] border border-red-500/10'
                 )}
               >
@@ -398,7 +394,7 @@ export function DownloadsPage() {
                 <span
                   className={cn(
                     'text-[11px] font-medium',
-                    downloaderStatus?.healthy ? 'text-white/50' : 'text-red-400/70'
+                    downloaderStatus?.healthy ? 'text-ink/50' : 'text-red-400/70'
                   )}
                 >
                   {downloaderStatus?.healthy
@@ -409,7 +405,7 @@ export function DownloadsPage() {
               <button
                 type="button"
                 onClick={() => setAddUrlOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-ink/50 hover:text-ink hover:bg-ink/[0.06] transition-colors cursor-pointer"
               >
                 <HugeiconsIcon icon={Add01Icon} size={14} />
                 {i18n._(msg`autoDownload.addUrl`)}
@@ -429,7 +425,7 @@ export function DownloadsPage() {
                   onClick={() => setTab(t.key)}
                   className={cn(
                     'flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium transition-colors relative cursor-pointer',
-                    tab === t.key ? 'text-white' : 'text-white/35 hover:text-white/55'
+                    tab === t.key ? 'text-ink' : 'text-ink/35 hover:text-ink/55'
                   )}
                 >
                   <HugeiconsIcon icon={t.icon} size={14} />
@@ -520,7 +516,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
             <Button
               size="sm"
               variant="ghost"
-              className="shrink-0 text-[11px] text-white/50 bg-white/[0.03] hover:bg-white/[0.06]"
+              className="shrink-0 text-[11px] text-ink/50 bg-ink/[0.03] hover:bg-ink/[0.06]"
             >
               <HugeiconsIcon icon={ruleMode === 'keyword' ? TextIcon : Link01Icon} size={13} />
               {ruleMode === 'keyword'
@@ -531,7 +527,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="w-44 p-1.5 border border-white/[0.08] bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-150 rounded-xl shadow-lg shadow-black/40 space-y-0.5"
+            className="w-44 p-1.5 border border-ink/[0.08] bg-ink/[0.06] backdrop-blur-2xl backdrop-saturate-150 rounded-xl shadow-lg shadow-black/40 space-y-0.5"
           >
             <button
               type="button"
@@ -542,14 +538,14 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
               className={cn(
                 'flex items-center gap-2.5 w-full px-3 py-2 text-[12px] rounded-lg transition-colors cursor-pointer',
                 ruleMode === 'keyword'
-                  ? 'text-white bg-white/[0.1]'
-                  : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
+                  ? 'text-ink bg-ink/[0.1]'
+                  : 'text-ink/60 hover:text-ink/80 hover:bg-ink/[0.06]'
               )}
             >
               <HugeiconsIcon
                 icon={TextIcon}
                 size={13}
-                className={ruleMode === 'keyword' ? 'text-white/70' : 'text-white/30'}
+                className={ruleMode === 'keyword' ? 'text-ink/70' : 'text-ink/30'}
               />
               {i18n._(msg`ruleEditor.keywordMode`)}
             </button>
@@ -562,14 +558,14 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
               className={cn(
                 'flex items-center gap-2.5 w-full px-3 py-2 text-[12px] rounded-lg transition-colors cursor-pointer',
                 ruleMode === 'rss'
-                  ? 'text-white bg-white/[0.1]'
-                  : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
+                  ? 'text-ink bg-ink/[0.1]'
+                  : 'text-ink/60 hover:text-ink/80 hover:bg-ink/[0.06]'
               )}
             >
               <HugeiconsIcon
                 icon={Link01Icon}
                 size={13}
-                className={ruleMode === 'rss' ? 'text-white/70' : 'text-white/30'}
+                className={ruleMode === 'rss' ? 'text-ink/70' : 'text-ink/30'}
               />
               {i18n._(msg`ruleEditor.rssUrlMode`)}
             </button>
@@ -580,14 +576,14 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
             placeholder={i18n._(msg`autoDownload.searchAnime`)}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="bg-white/[0.03] border-transparent text-white placeholder:text-white/25 flex-1"
+            className="bg-ink/[0.03] border-transparent text-ink placeholder:text-ink/25 flex-1"
           />
         ) : (
           <Input
             placeholder="https://mikanani.me/RSS/Bangumi?bangumiId=..."
             value={rssUrl}
             onChange={(e) => setRssUrl(e.target.value)}
-            className="bg-white/[0.03] border-transparent text-white placeholder:text-white/20 flex-1 text-[13px]"
+            className="bg-ink/[0.03] border-transparent text-ink placeholder:text-ink/20 flex-1 text-[13px]"
           />
         )}
       </div>
@@ -611,12 +607,12 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                     {[1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
-                        className="flex gap-3 p-3 rounded-lg bg-white/[0.03] animate-pulse"
+                        className="flex gap-3 p-3 rounded-lg bg-ink/[0.03] animate-pulse"
                       >
-                        <div className="w-12 h-16 rounded bg-white/[0.06] shrink-0" />
+                        <div className="w-12 h-16 rounded bg-ink/[0.06] shrink-0" />
                         <div className="flex-1 space-y-2 py-1">
-                          <div className="h-3 rounded bg-white/[0.06] w-[60%]" />
-                          <div className="h-2.5 rounded bg-white/[0.04] w-[40%]" />
+                          <div className="h-3 rounded bg-ink/[0.06] w-[60%]" />
+                          <div className="h-2.5 rounded bg-ink/[0.04] w-[40%]" />
                         </div>
                       </div>
                     ))}
@@ -634,7 +630,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: Math.min(i * 0.03, 0.4) }}
                         onClick={() => setSelectedAnime(anime)}
-                        className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors text-left cursor-pointer"
+                        className="w-full flex items-center gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.06] transition-colors text-left cursor-pointer"
                       >
                         <img
                           src={anime.cover_image}
@@ -644,9 +640,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                           loading="lazy"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-medium text-white truncate">
-                            {anime.title}
-                          </p>
+                          <p className="text-[13px] font-medium text-ink truncate">{anime.title}</p>
                           <div className="flex flex-wrap items-center gap-2 mt-1.5">
                             {anime.media_type && <MediaTypeBadge type={anime.media_type} />}
                             {anime.score > 0 && (
@@ -655,12 +649,12 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                               </span>
                             )}
                             {anime.episode_count > 0 && (
-                              <span className="text-[11px] text-white/30">
+                              <span className="text-[11px] text-ink/30">
                                 {anime.episode_count} eps
                               </span>
                             )}
                             {anime.air_date && (
-                              <span className="text-[11px] text-white/20">{anime.air_date}</span>
+                              <span className="text-[11px] text-ink/20">{anime.air_date}</span>
                             )}
                           </div>
                         </div>
@@ -671,7 +665,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
 
                 {/* No results */}
                 {query && !isSearching && animeResults.length === 0 && (
-                  <p className="text-sm text-white/40 text-center py-8">
+                  <p className="text-sm text-ink/40 text-center py-8">
                     {i18n._(msg`autoDownload.noResults`)}
                   </p>
                 )}
@@ -682,9 +676,9 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                     <HugeiconsIcon
                       icon={Search01Icon}
                       size={32}
-                      className="mx-auto mb-4 text-white/10"
+                      className="mx-auto mb-4 text-ink/10"
                     />
-                    <p className="text-white/25 text-sm">{i18n._(msg`autoDownload.searchHint`)}</p>
+                    <p className="text-ink/25 text-sm">{i18n._(msg`autoDownload.searchHint`)}</p>
                   </div>
                 )}
               </>
@@ -777,7 +771,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
   return (
     <>
       {/* Anime context header */}
-      <div className="rounded-xl bg-white/[0.02] p-4 mb-6 relative overflow-hidden [&_a]:no-underline [&_a:hover]:no-underline">
+      <div className="rounded-xl bg-ink/[0.02] p-4 mb-6 relative overflow-hidden [&_a]:no-underline [&_a:hover]:no-underline">
         {/* Blurred background from cover */}
         {anime.cover_image && (
           <div
@@ -796,7 +790,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
           <button
             type="button"
             onClick={onBack}
-            className="shrink-0 self-center p-1.5 -ml-1 rounded-md hover:bg-white/[0.08] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+            className="shrink-0 self-center p-1.5 -ml-1 rounded-md hover:bg-ink/[0.08] text-ink/40 hover:text-ink/70 transition-colors cursor-pointer"
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
           </button>
@@ -818,11 +812,11 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
 
           {/* Info */}
           <div className="flex-1 min-w-0 py-0.5">
-            <h2 className="text-[17px] font-bold text-white leading-tight line-clamp-2">
+            <h2 className="text-[17px] font-bold text-ink leading-tight line-clamp-2">
               {anime.title}
             </h2>
             {anime.title_original && anime.title_original !== anime.title && (
-              <p className="text-[11px] text-white/35 mt-0.5 truncate">{anime.title_original}</p>
+              <p className="text-[11px] text-ink/35 mt-0.5 truncate">{anime.title_original}</p>
             )}
 
             {/* Meta row */}
@@ -834,25 +828,25 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
                 </span>
               )}
               {anime.episode_count > 0 && (
-                <span className="text-[12px] text-white/45">
+                <span className="text-[12px] text-ink/45">
                   {anime.episode_count} {i18n._(msg`common.ep`)}
                 </span>
               )}
               {anime.air_date && (
-                <span className="text-[12px] text-white/45">{anime.air_date.slice(0, 7)}</span>
+                <span className="text-[12px] text-ink/45">{anime.air_date.slice(0, 7)}</span>
               )}
             </div>
 
             {/* Description snippet */}
             {anime.description && (
-              <p className="text-[11px] text-white/30 mt-2 line-clamp-2 leading-relaxed max-w-[500px]">
+              <p className="text-[11px] text-ink/30 mt-2 line-clamp-2 leading-relaxed max-w-[500px]">
                 {anime.description}
               </p>
             )}
 
             {/* Torrent count summary */}
             {!isLoading && results.length > 0 && (
-              <p className="text-[11px] text-white/25 mt-2">
+              <p className="text-[11px] text-ink/25 mt-2">
                 {results.length} {i18n._(msg`autoDownload.torrentsFound`)}
               </p>
             )}
@@ -864,7 +858,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
       <div className="space-y-3 mb-5">
         {/* Source */}
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-white/30 w-16 shrink-0">
+          <span className="text-[11px] text-ink/30 w-16 shrink-0">
             {i18n._(msg`autoDownload.source`)}
           </span>
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -876,8 +870,8 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
                 className={cn(
                   'px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors whitespace-nowrap cursor-pointer',
                   source === s
-                    ? 'bg-white/[0.12] text-white'
-                    : 'text-white/40 hover:text-white/60 hover:bg-white/[0.04]'
+                    ? 'bg-ink/[0.12] text-ink'
+                    : 'text-ink/40 hover:text-ink/60 hover:bg-ink/[0.04]'
                 )}
               >
                 {SOURCE_LABELS[s] ?? s}
@@ -888,7 +882,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
 
         {/* Resolution */}
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-white/30 w-16 shrink-0">
+          <span className="text-[11px] text-ink/30 w-16 shrink-0">
             {i18n._(msg`autoDownload.resolution`)}
           </span>
           <div className="flex gap-1.5">
@@ -900,8 +894,8 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
                 className={cn(
                   'px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors cursor-pointer',
                   resolution === r
-                    ? 'bg-white/[0.12] text-white'
-                    : 'text-white/40 hover:text-white/60 hover:bg-white/[0.04]'
+                    ? 'bg-ink/[0.12] text-ink'
+                    : 'text-ink/40 hover:text-ink/60 hover:bg-ink/[0.04]'
                 )}
               >
                 {r}
@@ -913,13 +907,13 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
         {/* Subgroup */}
         {subgroups.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-white/30 w-16 shrink-0">
+            <span className="text-[11px] text-ink/30 w-16 shrink-0">
               {i18n._(msg`autoDownload.subgroup`)}
             </span>
             <select
               value={subgroup}
               onChange={(e) => setSubgroup(e.target.value)}
-              className="bg-white/[0.04] rounded-md text-[12px] text-white/70 px-2.5 py-1.5 outline-none cursor-pointer"
+              className="bg-ink/[0.04] rounded-md text-[12px] text-ink/70 px-2.5 py-1.5 outline-none cursor-pointer"
             >
               <option value="all">{i18n._(msg`autoDownload.allSubgroups`)}</option>
               {subgroups.map((sg) => (
@@ -939,12 +933,12 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
               <button
                 type="button"
                 onClick={() => setShowSubscribe(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-ink/[0.08] hover:bg-ink/[0.14] text-[12px] font-medium text-ink/70 hover:text-ink transition-colors cursor-pointer"
               >
                 <HugeiconsIcon icon={RssIcon} size={14} />
                 {i18n._(msg`autoDownload.subscribeFilter`)}
               </button>
-              <span className="text-[11px] text-white/25">
+              <span className="text-[11px] text-ink/25">
                 {SOURCE_LABELS[source]} ·{' '}
                 {resolution !== 'Any' ? resolution : i18n._(msg`autoDownload.anyResolution`)} ·{' '}
                 {subgroup !== 'all' ? subgroup : i18n._(msg`autoDownload.allSubgroups`)}
@@ -952,7 +946,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
             </div>
           )}
         {filteredResults.length > 0 && source === 'all' && (
-          <p className="text-[11px] text-white/20 mt-3 pt-3">
+          <p className="text-[11px] text-ink/20 mt-3 pt-3">
             {i18n._(msg`autoDownload.selectSourceToSubscribe`)}
           </p>
         )}
@@ -962,9 +956,9 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
       {isLoading && (
         <div className="space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="p-3 rounded-lg bg-white/[0.03] animate-pulse">
-              <div className="h-3 rounded bg-white/[0.06] w-[70%] mb-2" />
-              <div className="h-2.5 rounded bg-white/[0.04] w-[45%]" />
+            <div key={i} className="p-3 rounded-lg bg-ink/[0.03] animate-pulse">
+              <div className="h-3 rounded bg-ink/[0.06] w-[70%] mb-2" />
+              <div className="h-2.5 rounded bg-ink/[0.04] w-[45%]" />
             </div>
           ))}
         </div>
@@ -979,18 +973,18 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(i * 0.02, 0.5) }}
-              className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-colors"
+              className="flex items-start gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.05] transition-colors"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-white break-words leading-relaxed">
+                <p className="text-[13px] font-medium text-ink break-words leading-relaxed">
                   {item.title}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-1.5">
                   <SourceBadge source={item.source_site} />
                   {item.sub_group && (
-                    <span className="text-[10px] text-white/30">{item.sub_group}</span>
+                    <span className="text-[10px] text-ink/30">{item.sub_group}</span>
                   )}
-                  {item.size && <span className="text-[10px] text-white/25">{item.size}</span>}
+                  {item.size && <span className="text-[10px] text-ink/25">{item.size}</span>}
                   {item.seeders > 0 && (
                     <span className="text-[10px] text-green-400/70">↑{item.seeders}</span>
                   )}
@@ -998,7 +992,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
                     <span className="text-[10px] text-red-400/50">↓{item.leechers}</span>
                   )}
                   {item.publish_date && (
-                    <span className="text-[10px] text-white/25">
+                    <span className="text-[10px] text-ink/25">
                       {formatPublishDate(item.publish_date)}
                     </span>
                   )}
@@ -1009,7 +1003,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
                 variant="ghost"
                 disabled={pendingDownloads.has(downloadURL(item)) || !downloadURL(item)}
                 onClick={() => addMutation.mutate({ url: downloadURL(item), name: item.title })}
-                className="shrink-0 text-[11px] text-white/50 hover:text-white/80 hover:bg-white/[0.06]"
+                className="shrink-0 text-[11px] text-ink/50 hover:text-ink/80 hover:bg-ink/[0.06]"
               >
                 {i18n._(msg`autoDownload.download`)}
               </Button>
@@ -1020,12 +1014,12 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
 
       {/* No results */}
       {!isLoading && filteredResults.length === 0 && results.length > 0 && (
-        <p className="text-sm text-white/40 text-center py-8">
+        <p className="text-sm text-ink/40 text-center py-8">
           {i18n._(msg`autoDownload.noFilteredResults`)}
         </p>
       )}
       {!isLoading && results.length === 0 && (
-        <p className="text-sm text-white/40 text-center py-8">
+        <p className="text-sm text-ink/40 text-center py-8">
           {i18n._(msg`autoDownload.noTorrents`)}
         </p>
       )}
@@ -1147,7 +1141,7 @@ function SubscribePanel({
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md mx-4 rounded-xl bg-zinc-900 p-6 shadow-2xl"
+        className="w-full max-w-md mx-4 rounded-xl bg-mm-bg-elevated p-6 shadow-2xl"
       >
         {/* Header with anime cover */}
         <div className="flex gap-3 mb-5">
@@ -1159,9 +1153,9 @@ function SubscribePanel({
             />
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="text-[15px] font-bold text-white truncate">{anime.title}</h3>
+            <h3 className="text-[15px] font-bold text-ink truncate">{anime.title}</h3>
             {anime.title_original && anime.title_original !== anime.title && (
-              <p className="text-[11px] text-white/30 truncate mt-0.5">{anime.title_original}</p>
+              <p className="text-[11px] text-ink/30 truncate mt-0.5">{anime.title_original}</p>
             )}
             <div className="flex items-center gap-2 mt-1.5">
               {anime.media_type && (
@@ -1170,7 +1164,7 @@ function SubscribePanel({
                 </span>
               )}
               {matchCount > 0 && (
-                <span className="text-[10px] text-white/30">
+                <span className="text-[10px] text-ink/30">
                   {matchCount} {i18n._(msg`autoDownload.torrentsFound`)}
                 </span>
               )}
@@ -1181,7 +1175,7 @@ function SubscribePanel({
         <div className="space-y-4">
           {/* RSS Source picker — user must explicitly choose */}
           <div>
-            <label className="text-[11px] text-white/40 mb-1.5 block">
+            <label className="text-[11px] text-ink/40 mb-1.5 block">
               {i18n._(msg`autoDownload.rssSource`)}
             </label>
             <div className="flex gap-1.5">
@@ -1193,8 +1187,8 @@ function SubscribePanel({
                   className={cn(
                     'flex-1 px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
                     rssSource === s
-                      ? 'bg-white/[0.12] text-white'
-                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      ? 'bg-ink/[0.12] text-ink'
+                      : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                   )}
                 >
                   {SOURCE_LABELS[s] ?? s}
@@ -1206,7 +1200,7 @@ function SubscribePanel({
           {/* Subgroup picker — only subgroups available in this RSS source */}
           {sourceSubgroups.length > 0 && (
             <div>
-              <label className="text-[11px] text-white/40 mb-1.5 block">
+              <label className="text-[11px] text-ink/40 mb-1.5 block">
                 {i18n._(msg`autoDownload.subgroup`)}
               </label>
               <div className="flex gap-1.5 flex-wrap">
@@ -1216,8 +1210,8 @@ function SubscribePanel({
                   className={cn(
                     'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
                     selectedSubgroup === 'all'
-                      ? 'bg-white/[0.12] text-white'
-                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      ? 'bg-ink/[0.12] text-ink'
+                      : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                   )}
                 >
                   {i18n._(msg`autoDownload.allSubgroups`)}
@@ -1231,7 +1225,7 @@ function SubscribePanel({
                       'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
                       selectedSubgroup === sg
                         ? 'bg-orange-500/20 text-orange-400'
-                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                        : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                     )}
                   >
                     {sg}
@@ -1253,7 +1247,7 @@ function SubscribePanel({
           {/* Library picker */}
           {libraries.length > 0 && (
             <div>
-              <label className="text-[11px] text-white/40 mb-1.5 block">
+              <label className="text-[11px] text-ink/40 mb-1.5 block">
                 {i18n._(msg`autoDownload.library`)}
               </label>
               <div className="flex gap-1.5 flex-wrap">
@@ -1263,8 +1257,8 @@ function SubscribePanel({
                   className={cn(
                     'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
                     !libraryId
-                      ? 'bg-white/[0.12] text-white'
-                      : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                      ? 'bg-ink/[0.12] text-ink'
+                      : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                   )}
                 >
                   {i18n._(msg`autoDownload.noLibrary`)}
@@ -1277,8 +1271,8 @@ function SubscribePanel({
                     className={cn(
                       'px-3 py-1.5 rounded text-[11px] font-medium transition-colors cursor-pointer',
                       libraryId === lib.id
-                        ? 'bg-white/[0.12] text-white'
-                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                        ? 'bg-ink/[0.12] text-ink'
+                        : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                     )}
                   >
                     {lib.name}
@@ -1428,17 +1422,17 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
       <InlineSection label={i18n._(msg`ruleEditor.linkedAnime`)}>
         <div ref={animePickerRef} className="relative">
           {bangumiId && selectedAnime ? (
-            <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white/[0.04]">
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-ink/[0.04]">
               <img
                 src={selectedAnime.cover_image}
                 alt=""
                 className="w-8 h-11 rounded object-cover shrink-0"
               />
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] text-white/90 font-medium truncate">
+                <p className="text-[13px] text-ink/90 font-medium truncate">
                   {selectedAnime.title || selectedAnime.title_original}
                 </p>
-                <p className="text-[10px] text-white/30">Bangumi #{bangumiId}</p>
+                <p className="text-[10px] text-ink/30">Bangumi #{bangumiId}</p>
               </div>
               <button
                 type="button"
@@ -1446,7 +1440,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                   setBangumiId(null);
                   setSelectedAnime(null);
                 }}
-                className="text-white/25 hover:text-white/50 transition-colors cursor-pointer shrink-0"
+                className="text-ink/25 hover:text-ink/50 transition-colors cursor-pointer shrink-0"
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={12} />
               </button>
@@ -1462,7 +1456,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                 if (animeSearchQuery) setAnimePickerOpen(true);
               }}
               placeholder={i18n._(msg`ruleEditor.searchAnime`)}
-              className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+              className="bg-ink/[0.03] border-transparent text-ink text-[13px] placeholder:text-ink/20"
             />
           )}
           <AnimatePresence>
@@ -1472,7 +1466,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.12 }}
-                className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-zinc-900 shadow-xl shadow-black/40"
+                className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-mm-bg-elevated shadow-xl shadow-black/40"
               >
                 {animeResults.slice(0, 8).map((anime) => (
                   <button
@@ -1485,7 +1479,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                       setAnimeSearchInput('');
                       setRuleName(anime.title || anime.title_original);
                     }}
-                    className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+                    className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-ink/[0.06] transition-colors cursor-pointer text-left"
                   >
                     <img
                       src={anime.cover_image}
@@ -1493,11 +1487,11 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
                       className="w-7 h-10 rounded object-cover shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[12px] text-white/80 truncate">
+                      <p className="text-[12px] text-ink/80 truncate">
                         {anime.title || anime.title_original}
                       </p>
                       {anime.air_date && (
-                        <p className="text-[10px] text-white/25">{anime.air_date.slice(0, 4)}</p>
+                        <p className="text-[10px] text-ink/25">{anime.air_date.slice(0, 4)}</p>
                       )}
                     </div>
                   </button>
@@ -1514,7 +1508,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           value={ruleName}
           onChange={(e) => setRuleName(e.target.value)}
           placeholder={i18n._(msg`ruleEditor.ruleNamePlaceholder`)}
-          className="bg-white/[0.03] border-transparent text-white text-[13px] placeholder:text-white/20"
+          className="bg-ink/[0.03] border-transparent text-ink text-[13px] placeholder:text-ink/20"
         />
       </InlineSection>
 
@@ -1527,16 +1521,16 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
               onChange={(e) => setLibraryId(e.target.value)}
               className={cn(
                 'w-full appearance-none rounded-lg px-3 py-2 pr-8 text-[13px] font-medium',
-                'bg-white/[0.04] border border-white/[0.06] text-white/90',
-                'focus:outline-none focus:ring-1 focus:ring-white/10',
+                'bg-ink/[0.04] border border-ink/[0.06] text-ink/90',
+                'focus:outline-none focus:ring-1 focus:ring-ink/10',
                 'cursor-pointer'
               )}
             >
-              <option value="" className="bg-zinc-900">
+              <option value="" className="bg-mm-bg-elevated">
                 {i18n._(msg`ruleEditor.noLibrary`)}
               </option>
               {libraries.map((lib) => (
-                <option key={lib.id} value={lib.id} className="bg-zinc-900">
+                <option key={lib.id} value={lib.id} className="bg-mm-bg-elevated">
                   {lib.name}
                 </option>
               ))}
@@ -1544,11 +1538,11 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
             <HugeiconsIcon
               icon={ArrowDown01Icon}
               size={14}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink/30 pointer-events-none"
             />
           </div>
           {savePath && (
-            <p className="text-[11px] text-white/30 font-mono truncate px-1">{savePath}</p>
+            <p className="text-[11px] text-ink/30 font-mono truncate px-1">{savePath}</p>
           )}
         </div>
       </InlineSection>
@@ -1560,7 +1554,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           variant="ghost"
           onClick={() => previewMutation.mutate()}
           disabled={!rssUrl.trim() || previewMutation.isPending}
-          className="text-[11px] text-white/50 hover:text-white/80 hover:bg-white/[0.06] disabled:opacity-40"
+          className="text-[11px] text-ink/50 hover:text-ink/80 hover:bg-ink/[0.06] disabled:opacity-40"
         >
           <HugeiconsIcon icon={EyeIcon} size={13} />
           {previewMutation.isPending
@@ -1590,10 +1584,10 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           >
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">
+                <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink/25">
                   {i18n._(msg`ruleEditor.preview`)}
                 </span>
-                <span className="text-[10px] text-white/25 tabular-nums">
+                <span className="text-[10px] text-ink/25 tabular-nums">
                   {previewItems.length} {i18n._(msg`ruleEditor.items`)}
                 </span>
               </div>
@@ -1618,7 +1612,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
 function InlineSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-white/25">{label}</h3>
+      <h3 className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink/25">{label}</h3>
       {children}
     </div>
   );
@@ -1666,7 +1660,7 @@ function AddUrlDialog({
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
           placeholder={i18n._(msg`autoDownload.pasteUrl`)}
-          className="font-mono text-sm bg-white/[0.03] border-transparent text-white placeholder:text-white/25"
+          className="font-mono text-sm bg-ink/[0.03] border-transparent text-ink placeholder:text-ink/25"
           autoFocus
         />
         <div className="flex justify-end gap-2">
@@ -1674,14 +1668,14 @@ function AddUrlDialog({
             type="button"
             variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="text-[12px] text-white/50 hover:bg-white/[0.04]"
+            className="text-[12px] text-ink/50 hover:bg-ink/[0.04]"
           >
             {i18n._(msg`autoDownload.cancel`)}
           </Button>
           <Button
             type="submit"
             disabled={addMutation.isPending || !urlInput.trim()}
-            className="text-[12px] font-semibold text-black bg-mm-accent hover:bg-mm-accent/90"
+            className="text-[12px] font-semibold text-ink-contrast bg-mm-accent hover:bg-mm-accent/90"
           >
             {addMutation.isPending
               ? i18n._(msg`autoDownload.adding`)

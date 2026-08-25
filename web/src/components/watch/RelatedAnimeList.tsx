@@ -30,14 +30,14 @@ export function RelatedAnimeList({ relations }: RelatedAnimeListProps) {
 
   return (
     <div className="mt-4">
-      <h3 className="text-xs font-semibold text-white/60 mb-2">{i18n._(msg`watch.related`)}</h3>
+      <h3 className="text-xs font-semibold text-ink/60 mb-2">{i18n._(msg`watch.related`)}</h3>
       <div className="space-y-2">
         {items.map((r) => (
           <Link
             key={r.anime.bangumi_id}
             to="/watch/$animeId"
             params={{ animeId: String(r.anime.bangumi_id) }}
-            className="flex gap-2 rounded p-1 hover:bg-white/[0.04] transition-colors group"
+            className="flex gap-2 rounded p-1 hover:bg-ink/[0.04] transition-colors group"
           >
             {r.anime.cover_image ? (
               <img
@@ -46,13 +46,13 @@ export function RelatedAnimeList({ relations }: RelatedAnimeListProps) {
                 className="w-16 h-10 rounded object-cover shrink-0"
               />
             ) : (
-              <div className="w-16 h-10 rounded bg-white/[0.06] shrink-0" />
+              <div className="w-16 h-10 rounded bg-ink/[0.06] shrink-0" />
             )}
             <div className="min-w-0">
-              <p className="text-[11px] text-white/60 line-clamp-2 leading-tight group-hover:text-white/80">
+              <p className="text-[11px] text-ink/60 line-clamp-2 leading-tight group-hover:text-ink/80">
                 {r.anime.title}
               </p>
-              <p className="text-[10px] text-white/30 mt-0.5">
+              <p className="text-[10px] text-ink/30 mt-0.5">
                 {getRelationLabel(r.relation_type, i18n.locale)}
               </p>
             </div>

@@ -69,30 +69,30 @@ export function SessionsTab() {
   return (
     <div className="space-y-3">
       <SettingsCard label={i18n._(msg`sessions.title`)}>
-        <p className="mb-4 text-xs text-white/40">{i18n._(msg`sessions.description`)}</p>
+        <p className="mb-4 text-xs text-ink/40">{i18n._(msg`sessions.description`)}</p>
 
         <div className="space-y-2">
           {sessions.map((session) => (
             <div
               key={session.id}
-              className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3"
+              className="flex items-center justify-between rounded-lg border border-ink/[0.06] bg-ink/[0.02] px-3 py-3"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <HugeiconsIcon
                   icon={isMobile(session.last_user_agent) ? SmartPhone01Icon : ComputerIcon}
                   size={18}
-                  className={`shrink-0 ${session.is_current ? 'text-mm-accent' : 'text-white/25'}`}
+                  className={`shrink-0 ${session.is_current ? 'text-mm-accent' : 'text-ink/25'}`}
                 />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-[13px] font-medium text-white truncate">{session.name}</p>
+                    <p className="text-[13px] font-medium text-ink truncate">{session.name}</p>
                     {session.is_current && (
                       <span className="shrink-0 rounded-full bg-mm-accent/15 px-2 py-0.5 text-[10px] font-medium text-mm-accent">
                         {i18n._(msg`sessions.current`)}
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-white/25">
+                  <p className="text-[11px] text-ink/25">
                     {session.last_ip && <span>{session.last_ip}</span>}
                     {session.last_used_at && (
                       <span className="ml-2">· {formatRelativeTime(session.last_used_at)}</span>
@@ -109,7 +109,7 @@ export function SessionsTab() {
                     }
                   }}
                   disabled={revokeSession.isPending}
-                  className="shrink-0 rounded-md p-1.5 text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                  className="shrink-0 rounded-md p-1.5 text-ink/20 hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   title={i18n._(msg`sessions.revoke`)}
                 >
                   <HugeiconsIcon icon={Delete02Icon} size={14} />

@@ -99,8 +99,8 @@ export function LibraryStep() {
 
   return (
     <>
-      <h2 className="text-lg font-semibold text-white mb-1">{i18n._(msg`setup.library.title`)}</h2>
-      <p className="text-[13px] text-white/40 mb-6">{i18n._(msg`setup.library.subtitle`)}</p>
+      <h2 className="text-lg font-semibold text-ink mb-1">{i18n._(msg`setup.library.title`)}</h2>
+      <p className="text-[13px] text-ink/40 mb-6">{i18n._(msg`setup.library.subtitle`)}</p>
 
       <form
         onSubmit={(e) => {
@@ -176,7 +176,7 @@ function PathStatusLine({ status }: { status: PathStatus }) {
   if (status.kind === 'idle') return null;
   if (status.kind === 'checking') {
     return (
-      <p className="mt-2 flex items-center gap-2 text-[12px] text-white/50">
+      <p className="mt-2 flex items-center gap-2 text-[12px] text-ink/50">
         <Spinner className="h-3 w-3" size={12} />
         {i18n._(msg`setup.library.pathChecking`)}
       </p>

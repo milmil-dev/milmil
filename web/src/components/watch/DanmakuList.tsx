@@ -46,7 +46,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
 
       {/* Danmaku list */}
       {sorted.length === 0 ? (
-        <div className="flex items-center justify-center py-12 text-sm text-white/30">
+        <div className="flex items-center justify-center py-12 text-sm text-ink/30">
           {i18n._(msg`watch.danmaku.noData`)}
         </div>
       ) : (
@@ -61,7 +61,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
                   onClick={() => onSeek(comment.time)}
                   className={cn(
                     'absolute left-0 w-full flex items-start gap-3 px-2 py-1.5 text-left rounded transition-colors',
-                    'hover:bg-white/[0.05] group'
+                    'hover:bg-ink/[0.05] group'
                   )}
                   style={{
                     height: virtualItem.size,
@@ -71,7 +71,7 @@ export function DanmakuList({ comments, onSeek }: DanmakuListProps) {
                   <span className="shrink-0 text-[12px] tabular-nums text-blue-400/70 group-hover:text-blue-400 font-mono">
                     {formatTime(comment.time)}
                   </span>
-                  <span className="text-[13px] text-white/50 group-hover:text-white/70 truncate">
+                  <span className="text-[13px] text-ink/50 group-hover:text-ink/70 truncate">
                     {comment.text}
                   </span>
                 </button>
@@ -108,8 +108,8 @@ function BlockKeywordsModal() {
           className={cn(
             'inline-flex items-center justify-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-all',
             blockKeywords.length > 0
-              ? 'bg-white/[0.06] text-white/50 hover:bg-white/[0.1]'
-              : 'text-white/25 hover:bg-white/[0.04] hover:text-white/40'
+              ? 'bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.1]'
+              : 'text-ink/25 hover:bg-ink/[0.04] hover:text-ink/40'
           )}
         >
           {/* Shield icon */}
@@ -132,16 +132,19 @@ function BlockKeywordsModal() {
           </svg>
           <span>{i18n._(msg`watch.danmaku.blockKeywords`)}</span>
           {blockKeywords.length > 0 && (
-            <span className="text-[9px] bg-white/[0.08] text-white/40 rounded-full px-1.5 py-0.5 leading-none tabular-nums">
+            <span className="text-[9px] bg-ink/[0.08] text-ink/40 rounded-full px-1.5 py-0.5 leading-none tabular-nums">
               {blockKeywords.length}
             </span>
           )}
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-md bg-[#1c1c1c] border-white/[0.06]" data-settings-panel>
+      <DialogContent
+        className="sm:max-w-md bg-mm-bg-elevated border-ink/[0.06]"
+        data-settings-panel
+      >
         <DialogHeader>
-          <DialogTitle className="text-white/80">
+          <DialogTitle className="text-ink/80">
             {i18n._(msg`watch.danmaku.blockKeywords`)}
           </DialogTitle>
         </DialogHeader>
@@ -154,13 +157,13 @@ function BlockKeywordsModal() {
             onChange={(e) => setNewKeyword(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && addKeyword()}
             placeholder={i18n._(msg`watch.danmaku.blockPlaceholder`)}
-            className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-white/15"
+            className="flex-1 bg-ink/[0.04] border border-ink/[0.08] rounded-lg px-3 py-2 text-sm text-ink placeholder:text-ink/20 outline-none focus:border-ink/15"
           />
           <button
             type="button"
             onClick={addKeyword}
             disabled={!newKeyword.trim()}
-            className="shrink-0 text-sm text-white/60 hover:text-white px-3 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] disabled:opacity-30 transition-colors"
+            className="shrink-0 text-sm text-ink/60 hover:text-ink px-3 py-2 rounded-lg bg-ink/[0.06] hover:bg-ink/[0.1] disabled:opacity-30 transition-colors"
           >
             {i18n._(msg`watch.danmaku.addBlock`)}
           </button>
@@ -168,7 +171,7 @@ function BlockKeywordsModal() {
 
         {/* Keywords list */}
         {blockKeywords.length === 0 ? (
-          <div className="py-8 text-center text-sm text-white/20">
+          <div className="py-8 text-center text-sm text-ink/20">
             {i18n._(msg`watch.danmaku.noBlockKeywords`)}
           </div>
         ) : (
@@ -177,7 +180,7 @@ function BlockKeywordsModal() {
               {blockKeywords.map((kw, idx) => (
                 <span
                   key={`${kw}-${idx}`}
-                  className="inline-flex items-center gap-1.5 bg-white/[0.06] text-sm text-white/60 rounded-lg px-3 py-1.5 group"
+                  className="inline-flex items-center gap-1.5 bg-ink/[0.06] text-sm text-ink/60 rounded-lg px-3 py-1.5 group"
                 >
                   {kw}
                   <button
@@ -188,7 +191,7 @@ function BlockKeywordsModal() {
                         blockKeywords.filter((_, i) => i !== idx)
                       )
                     }
-                    className="text-white/20 group-hover:text-white/50 hover:!text-red-400/70 transition-colors"
+                    className="text-ink/20 group-hover:text-ink/50 hover:!text-red-400/70 transition-colors"
                   >
                     <svg viewBox="0 0 10 10" className="w-2.5 h-2.5">
                       <path

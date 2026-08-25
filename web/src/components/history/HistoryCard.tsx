@@ -160,7 +160,7 @@ export function HistoryCard({
       </div>
 
       <div className="px-0.5 pt-2.5">
-        <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-white">{title}</p>
+        <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-ink">{title}</p>
         <div className="mt-1 flex items-center justify-between text-[11px] text-mm-text-tertiary">
           <span>EP {formatEpisodeNumber(item.episode_number)}</span>
           <span>{new Date(item.last_watched_at).toLocaleString()}</span>

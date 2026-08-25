@@ -63,16 +63,16 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
       className="flex flex-col gap-1 px-1 py-2"
     >
       {/* Title */}
-      <h1 className="text-base font-semibold text-white/90 leading-snug line-clamp-1">
+      <h1 className="text-base font-semibold text-ink/90 leading-snug line-clamp-1">
         {anime.title}
       </h1>
 
       {/* Meta + Actions */}
       <div className="flex items-center justify-between gap-3">
         {/* Meta line */}
-        <span className="text-xs text-white/50 shrink-0">
+        <span className="text-xs text-ink/50 shrink-0">
           {year && <span>{year}</span>}
-          {year && episodeCount > 0 && <span className="mx-1.5 text-white/20">·</span>}
+          {year && episodeCount > 0 && <span className="mx-1.5 text-ink/20">·</span>}
           {episodeCount > 0 && (
             <span>
               {episodeCount} {i18n._(msg`watch.episodes`)}
@@ -89,7 +89,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
             disabled={scoreMutation.isPending}
             className={cn(
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
-              'hover:bg-white/[0.08] text-white/60 hover:text-white/80',
+              'hover:bg-ink/[0.08] text-ink/60 hover:text-ink/80',
               'disabled:opacity-40 disabled:pointer-events-none',
               userScore && 'text-amber-400/80 hover:text-amber-400'
             )}
@@ -105,7 +105,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
             disabled={collectionMutation.isPending}
             className={cn(
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
-              'hover:bg-white/[0.08] text-white/60 hover:text-white/80',
+              'hover:bg-ink/[0.08] text-ink/60 hover:text-ink/80',
               'disabled:opacity-40 disabled:pointer-events-none',
               isInCollection && 'text-blue-400/80 hover:text-blue-400'
             )}
@@ -129,7 +129,7 @@ export function WatchTitleBar({ anime, episodesData, bangumiId }: WatchTitleBarP
             onClick={handleShare}
             className={cn(
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
-              'hover:bg-white/[0.08] text-white/60 hover:text-white/80'
+              'hover:bg-ink/[0.08] text-ink/60 hover:text-ink/80'
             )}
           >
             <Share2 className="size-3.5" />

@@ -86,20 +86,20 @@ export function AnimeGroupHeader({
             <button
               type="button"
               onClick={onOpenAnime}
-              className="text-[15px] font-semibold text-white/90 tracking-[-0.01em] truncate text-left hover:underline underline-offset-2 decoration-white/30 cursor-pointer"
+              className="text-[15px] font-semibold text-ink/90 tracking-[-0.01em] truncate text-left hover:underline underline-offset-2 decoration-ink/30 cursor-pointer"
             >
               {title}
             </button>
           ) : (
-            <h3 className="text-[15px] font-semibold text-white/90 tracking-[-0.01em] truncate">
+            <h3 className="text-[15px] font-semibold text-ink/90 tracking-[-0.01em] truncate">
               {title}
             </h3>
           )}
-          <div className="mt-1 flex gap-2 items-center text-[11px] text-white/40">
+          <div className="mt-1 flex gap-2 items-center text-[11px] text-ink/40">
             {subChips.map((chip) => (
               <span
                 key={chip}
-                className="px-[7px] py-[2px] rounded bg-white/[0.04] text-white/65 text-[10px]"
+                className="px-[7px] py-[2px] rounded bg-ink/[0.04] text-ink/65 text-[10px]"
               >
                 {chip}
               </span>
@@ -120,7 +120,7 @@ export function AnimeGroupHeader({
           </div>
         )}
         {!showProgressBar && (
-          <div data-testid="progress-fill-neutral" className="mt-2.5 h-[1px] bg-white/[0.14]" />
+          <div data-testid="progress-fill-neutral" className="mt-2.5 h-[1px] bg-ink/[0.14]" />
         )}
       </div>
 
@@ -131,7 +131,7 @@ export function AnimeGroupHeader({
             type="button"
             onClick={onToggle}
             aria-label={expanded ? i18n._(msg`downloads.collapse`) : i18n._(msg`downloads.expand`)}
-            className="flex items-center gap-1.5 text-[11px] text-white/25 hover:text-white/65 cursor-pointer"
+            className="flex items-center gap-1.5 text-[11px] text-ink/25 hover:text-ink/65 cursor-pointer"
           >
             <span>
               {expanded ? i18n._(msg`downloads.collapse`) : i18n._(msg`downloads.expand`)}
@@ -139,9 +139,9 @@ export function AnimeGroupHeader({
             <HugeiconsIcon icon={expanded ? ArrowUp01Icon : ArrowDown01Icon} size={11} />
           </button>
         </div>
-        <div className="flex items-baseline gap-1 text-white/90">
+        <div className="flex items-baseline gap-1 text-ink/90">
           <span className="text-[20px] font-medium tracking-[-0.02em] tabular-nums">{percent}</span>
-          <span className="text-[14px] font-light text-white/50">%</span>
+          <span className="text-[14px] font-light text-ink/50">%</span>
         </div>
       </div>
     </div>
@@ -176,7 +176,7 @@ function StatLine({
       id: 'n',
       node: (
         <span>
-          <b className="text-white/90 font-medium">{stats.activeCount ?? 0}</b>{' '}
+          <b className="text-ink/90 font-medium">{stats.activeCount ?? 0}</b>{' '}
           {i18n._(msg`downloads.downloading`)}
         </span>
       ),
@@ -186,9 +186,7 @@ function StatLine({
         id: 's',
         node: (
           <span>
-            <b className="text-white/90 font-medium tabular-nums">
-              {formatSpeed(stats.speedBytes)}
-            </b>
+            <b className="text-ink/90 font-medium tabular-nums">{formatSpeed(stats.speedBytes)}</b>
           </span>
         ),
       });
@@ -261,10 +259,10 @@ function StatLine({
   }
 
   return (
-    <div className="mt-1 flex items-center gap-2 text-[12px] text-white/45 flex-wrap">
+    <div className="mt-1 flex items-center gap-2 text-[12px] text-ink/45 flex-wrap">
       {parts.map(({ id, node }, idx) => (
         <Fragment key={id}>
-          {idx > 0 && <span className="text-white/15">·</span>}
+          {idx > 0 && <span className="text-ink/15">·</span>}
           {node}
         </Fragment>
       ))}

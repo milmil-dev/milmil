@@ -64,7 +64,7 @@ function FeedRow({
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="font-semibold text-sm text-white truncate">{feed.name}</p>
+          <p className="font-semibold text-sm text-ink truncate">{feed.name}</p>
           <TypeBadge type={feed.type} />
           {!feed.enabled && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[oklch(18%_0.01_280)] text-[oklch(42%_0.01_280)]">
@@ -109,7 +109,7 @@ function RuleRow({
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="font-semibold text-sm text-white truncate">{rule.name}</p>
+          <p className="font-semibold text-sm text-ink truncate">{rule.name}</p>
           {!rule.enabled && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[oklch(18%_0.01_280)] text-[oklch(42%_0.01_280)]">
               OFF
@@ -181,7 +181,7 @@ function FeedForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder="Mikan Anime"
-              className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink"
             />
             <FieldError>
               {field.state.meta.isTouched && field.state.meta.errors[0]
@@ -209,7 +209,7 @@ function FeedForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder="https://mikanani.me/RSS/..."
-              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink"
             />
             <FieldError>
               {field.state.meta.isTouched && field.state.meta.errors[0]
@@ -239,7 +239,7 @@ function FeedForm({
                     'px-3 py-1.5 text-xs font-semibold rounded border transition-colors uppercase',
                     field.state.value === t
                       ? 'border-mm-accent text-mm-accent bg-mm-accent/10'
-                      : 'border-[oklch(22%_0.01_280)] text-mm-text-tertiary hover:text-white hover:border-[oklch(30%_0.01_280)]'
+                      : 'border-[oklch(22%_0.01_280)] text-mm-text-tertiary hover:text-ink hover:border-[oklch(30%_0.01_280)]'
                   )}
                 >
                   {t}
@@ -255,7 +255,7 @@ function FeedForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full font-bold text-black bg-mm-accent"
+            className="w-full font-bold text-ink-contrast bg-mm-accent"
           >
             {isSubmitting ? 'Saving\u2026' : submitLabel}
           </Button>
@@ -325,7 +325,7 @@ function RuleForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder="My Rule"
-              className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className="bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink"
             />
             <FieldError>
               {field.state.meta.isTouched && field.state.meta.errors[0]
@@ -352,7 +352,7 @@ function RuleForm({
               id="rule-feed"
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
-              className="flex h-9 w-full rounded border px-3 py-1 text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white outline-none"
+              className="flex h-9 w-full rounded border px-3 py-1 text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink outline-none"
             >
               <option value="" className="bg-mm-surface">
                 Select a feed...
@@ -389,7 +389,7 @@ function RuleForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder=".*1080p.*"
-              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink"
             />
             <FieldError>
               {field.state.meta.isTouched && field.state.meta.errors[0]
@@ -414,7 +414,7 @@ function RuleForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder=".*720p.*"
-              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink"
             />
           </Field>
         )}
@@ -434,7 +434,7 @@ function RuleForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder="/mnt/media/anime"
-              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-white"
+              className="font-mono text-sm bg-transparent border-[oklch(22%_0.01_280)] focus:border-[oklch(65%_0.2_35)] text-ink"
             />
           </Field>
         )}
@@ -445,7 +445,7 @@ function RuleForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full font-bold text-black bg-mm-accent"
+            className="w-full font-bold text-ink-contrast bg-mm-accent"
           >
             {isSubmitting ? 'Saving\u2026' : submitLabel}
           </Button>
@@ -470,7 +470,7 @@ function SectionHeader({
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-baseline gap-2">
-        <h2 className="text-lg font-semibold text-white">{title}</h2>
+        <h2 className="text-lg font-semibold text-ink">{title}</h2>
         <span className="text-xs font-mono text-mm-text-tertiary">{count}</span>
       </div>
       <Button size="sm" onClick={onAdd}>
@@ -633,9 +633,7 @@ export function RSSPage() {
           <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">
             milmil
           </p>
-          <h1 className="text-3xl font-bold text-white mt-1 tracking-tight">
-            RSS Feeds &amp; Rules
-          </h1>
+          <h1 className="text-3xl font-bold text-ink mt-1 tracking-tight">RSS Feeds &amp; Rules</h1>
         </div>
 
         {/* RSS Feeds section */}

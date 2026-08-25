@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 
-const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
+const INPUT_CLASS = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -619,25 +619,23 @@ function SyncControlsCard() {
             {status.map((entry) => (
               <div
                 key={entry.type}
-                className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2"
+                className="flex items-center justify-between rounded-lg border border-ink/[0.06] bg-ink/[0.02] px-3 py-2"
               >
                 <div className="flex items-center gap-2">
                   <div
                     className={cn(
                       'h-2 w-2 rounded-full',
-                      entry.enabled ? 'bg-emerald-500' : 'bg-white/20'
+                      entry.enabled ? 'bg-emerald-500' : 'bg-ink/20'
                     )}
                   />
-                  <span className="text-sm text-white/70 uppercase tracking-wide">
-                    {entry.type}
-                  </span>
+                  <span className="text-sm text-ink/70 uppercase tracking-wide">{entry.type}</span>
                 </div>
-                <span className="text-xs text-white/40">{formatDate(entry.last_sync_at)}</span>
+                <span className="text-xs text-ink/40">{formatDate(entry.last_sync_at)}</span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-white/30">{i18n._(msg`backup.noTargets`)}</p>
+          <p className="text-sm text-ink/30">{i18n._(msg`backup.noTargets`)}</p>
         )}
 
         <div className="flex justify-end">
@@ -664,8 +662,8 @@ export function BackupPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">{i18n._(msg`backup.title`)}</h2>
-        <p className="mt-1 text-sm text-white/40">{i18n._(msg`backup.description`)}</p>
+        <h2 className="text-xl font-semibold text-ink">{i18n._(msg`backup.title`)}</h2>
+        <p className="mt-1 text-sm text-ink/40">{i18n._(msg`backup.description`)}</p>
       </div>
 
       <JsonExportImportCard />

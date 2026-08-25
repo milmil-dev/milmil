@@ -48,7 +48,7 @@ export function MediaRail({ children, className }: MediaRailProps) {
           className="absolute left-0 top-0 bottom-2 w-10 flex items-center justify-center opacity-0 group-hover/rail:opacity-100 transition-opacity duration-200 z-10"
           style={{ background: 'linear-gradient(to right, var(--mm-bg), transparent)' }}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={20} className="text-white" />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={20} className="text-ink" />
         </button>
       )}
 
@@ -60,7 +60,7 @@ export function MediaRail({ children, className }: MediaRailProps) {
           className="absolute right-0 top-0 bottom-2 w-10 flex items-center justify-center opacity-0 group-hover/rail:opacity-100 transition-opacity duration-200 z-10"
           style={{ background: 'linear-gradient(to left, var(--mm-bg), transparent)' }}
         >
-          <HugeiconsIcon icon={ArrowRight02Icon} size={20} className="text-white" />
+          <HugeiconsIcon icon={ArrowRight02Icon} size={20} className="text-ink" />
         </button>
       )}
 

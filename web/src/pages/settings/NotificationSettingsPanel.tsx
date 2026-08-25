@@ -27,7 +27,7 @@ import {
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 
-const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
+const INPUT_CLASS = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
 
 const BOT_LANGUAGES = [
   { code: 'zh-HK', label: '粵語' },
@@ -41,7 +41,7 @@ const BOT_LANGUAGES = [
 const PROVIDER_META: Record<ProviderName, { label: string; color: string; colorClass: string }> = {
   discord: { label: 'Discord', color: '#5865F2', colorClass: 'text-[#5865F2]' },
   telegram: { label: 'Telegram', color: '#26A5E4', colorClass: 'text-[#26A5E4]' },
-  webhook: { label: 'Webhook', color: '', colorClass: 'text-white/50' },
+  webhook: { label: 'Webhook', color: '', colorClass: 'text-ink/50' },
 };
 
 const EVENT_LABEL_KEYS: Record<
@@ -127,8 +127,8 @@ function ProviderStatusBadge({ status }: { status: ProviderStatus | undefined })
       label: msg`notifications.providerStatus.error`,
     },
     unconfigured: {
-      dot: 'bg-white/15',
-      text: 'text-white/40',
+      dot: 'bg-ink/15',
+      text: 'text-ink/40',
       label: msg`notifications.providerStatus.unconfigured`,
     },
   };
@@ -170,7 +170,7 @@ function TestButton({ provider }: { provider: ProviderName }) {
           setResult(null);
           testMutation.mutate();
         }}
-        className="text-[11px] text-white/30 hover:text-white/60 hover:bg-white/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
+        className="text-[11px] text-ink/30 hover:text-ink/60 hover:bg-ink/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
           <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
@@ -228,7 +228,7 @@ function TestBotButton({ platform }: { platform: 'telegram' | 'discord' }) {
           setResult(null);
           testMutation.mutate();
         }}
-        className="text-[11px] text-white/30 hover:text-white/60 hover:bg-white/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
+        className="text-[11px] text-ink/30 hover:text-ink/60 hover:bg-ink/[0.06] px-2 py-1 rounded transition-colors disabled:opacity-40 cursor-pointer"
       >
         {testMutation.isPending ? (
           <HugeiconsIcon icon={Loading03Icon} size={14} className="animate-spin" />
@@ -302,12 +302,12 @@ function DiscordCard({
       {/* Feature toggles */}
       <div className="mt-4 space-y-3">
         {/* Push notifications section */}
-        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+        <div className="flex items-center justify-between rounded-lg bg-ink/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">
+            <div className="text-[13px] font-medium text-ink/80">
               {i18n._(msg`notifications.pushNotifications`)}
             </div>
-            <div className="text-[11px] text-white/30">
+            <div className="text-[11px] text-ink/30">
               {i18n._(msg`notifications.pushNotifications.desc`)}
             </div>
           </div>
@@ -327,7 +327,7 @@ function DiscordCard({
               transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="overflow-hidden"
             >
-              <div className="space-y-3 pl-3 border-l-2 border-white/[0.06]">
+              <div className="space-y-3 pl-3 border-l-2 border-ink/[0.06]">
                 <Field>
                   <FieldLabel htmlFor="discord-webhook-url">{i18n._(msg`Webhook URL`)}</FieldLabel>
                   <PasswordInput
@@ -345,12 +345,12 @@ function DiscordCard({
         </AnimatePresence>
 
         {/* Bot commands section */}
-        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+        <div className="flex items-center justify-between rounded-lg bg-ink/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">
+            <div className="text-[13px] font-medium text-ink/80">
               {i18n._(msg`notifications.botCommands`)}
             </div>
-            <div className="text-[11px] text-white/30">
+            <div className="text-[11px] text-ink/30">
               {i18n._(msg`notifications.botCommands.shortDesc`)}
             </div>
           </div>
@@ -371,7 +371,7 @@ function DiscordCard({
               transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="overflow-hidden"
             >
-              <div className="space-y-3 pl-3 border-l-2 border-white/[0.06]">
+              <div className="space-y-3 pl-3 border-l-2 border-ink/[0.06]">
                 <Field>
                   <FieldLabel htmlFor="discord-bot-token">
                     {i18n._(msg`notifications.bot.botToken`)}
@@ -407,7 +407,7 @@ function DiscordCard({
                     placeholder="123456789012345678"
                     className={INPUT_CLASS}
                   />
-                  <p className="mt-1 text-xs text-white/30">
+                  <p className="mt-1 text-xs text-ink/30">
                     {i18n._(msg`notifications.bot.allowedGuildIdsHelp`)}
                   </p>
                 </Field>
@@ -493,12 +493,12 @@ function TelegramCard({
 
       {/* Feature toggles */}
       <div className="mt-5 space-y-3">
-        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+        <div className="flex items-center justify-between rounded-lg bg-ink/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">
+            <div className="text-[13px] font-medium text-ink/80">
               {i18n._(msg`notifications.pushNotifications`)}
             </div>
-            <div className="text-[11px] text-white/30">
+            <div className="text-[11px] text-ink/30">
               {i18n._(msg`notifications.pushNotifications.desc`)}
             </div>
           </div>
@@ -511,12 +511,12 @@ function TelegramCard({
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-2.5">
+        <div className="flex items-center justify-between rounded-lg bg-ink/[0.03] px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-medium text-white/80">
+            <div className="text-[13px] font-medium text-ink/80">
               {i18n._(msg`notifications.botCommands`)}
             </div>
-            <div className="text-[11px] text-white/30">
+            <div className="text-[11px] text-ink/30">
               {i18n._(msg`notifications.botCommands.shortDesc`)}
             </div>
           </div>
@@ -542,7 +542,7 @@ function TelegramCard({
             transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="overflow-hidden"
           >
-            <div className="mt-3 space-y-3 pl-3 border-l-2 border-white/[0.06]">
+            <div className="mt-3 space-y-3 pl-3 border-l-2 border-ink/[0.06]">
               {/* Bot Language */}
               <Field>
                 <FieldLabel htmlFor="telegram-bot-lang">
@@ -555,8 +555,8 @@ function TelegramCard({
                     className={cn(
                       'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
                       !botConfig.language
-                        ? 'bg-white/[0.12] text-white'
-                        : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                        ? 'bg-ink/[0.12] text-ink'
+                        : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                     )}
                   >
                     {i18n._(msg`notifications.bot.language.system`)}
@@ -569,8 +569,8 @@ function TelegramCard({
                       className={cn(
                         'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
                         botConfig.language === lang.code
-                          ? 'bg-white/[0.12] text-white'
-                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                          ? 'bg-ink/[0.12] text-ink'
+                          : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                       )}
                     >
                       {lang.label}
@@ -593,8 +593,8 @@ function TelegramCard({
                       className={cn(
                         'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
                         (botConfig.airing_reminder_minutes ?? 0) === mins
-                          ? 'bg-white/[0.12] text-white'
-                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                          ? 'bg-ink/[0.12] text-ink'
+                          : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                       )}
                     >
                       {mins === 0
@@ -603,7 +603,7 @@ function TelegramCard({
                     </button>
                   ))}
                 </div>
-                <p className="mt-1 text-xs text-white/30">
+                <p className="mt-1 text-xs text-ink/30">
                   {i18n._(msg`notifications.bot.airingReminder.desc`)}
                 </p>
               </Field>
@@ -622,15 +622,15 @@ function TelegramCard({
                       className={cn(
                         'px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer',
                         (botConfig.daily_digest_time ?? '') === t
-                          ? 'bg-white/[0.12] text-white'
-                          : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+                          ? 'bg-ink/[0.12] text-ink'
+                          : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08]'
                       )}
                     >
                       {t === '' ? i18n._(msg`notifications.bot.dailyDigest.off`) : t}
                     </button>
                   ))}
                 </div>
-                <p className="mt-1 text-xs text-white/30">
+                <p className="mt-1 text-xs text-ink/30">
                   {i18n._(msg`notifications.bot.dailyDigest.desc`)}
                 </p>
               </Field>
@@ -647,14 +647,14 @@ function TelegramCard({
                   placeholder="123456789, 987654321"
                   className={INPUT_CLASS}
                 />
-                <p className="mt-1 text-xs text-white/30">
+                <p className="mt-1 text-xs text-ink/30">
                   {i18n._(msg`notifications.bot.allowedChatIdsHelp`)}
                 </p>
               </Field>
 
               {/* Advanced: Webhook URL (collapsed by default) */}
               <details className="group">
-                <summary className="text-[11px] text-white/25 cursor-pointer hover:text-white/40 transition-colors select-none">
+                <summary className="text-[11px] text-ink/25 cursor-pointer hover:text-ink/40 transition-colors select-none">
                   {i18n._(msg`notifications.bot.advanced`)}
                 </summary>
                 <div className="mt-2 space-y-3">
@@ -669,7 +669,7 @@ function TelegramCard({
                       placeholder="https://your-server.com/api/v1/bot/telegram/webhook"
                       className={INPUT_CLASS}
                     />
-                    <p className="mt-1 text-xs text-white/20">
+                    <p className="mt-1 text-xs text-ink/20">
                       {i18n._(msg`notifications.bot.webhookUrlHelp`)}
                     </p>
                   </Field>
@@ -737,7 +737,7 @@ function WebhookCard({
                 </FieldLabel>
                 {!showSecretField && config.secret?.includes('••••') ? (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-white/40">
+                    <span className="text-xs text-ink/40">
                       {i18n._(msg`notifications.secretIsSet`)}
                     </span>
                     <Button
@@ -795,7 +795,7 @@ function EventRoutingMatrix({
   if (enabledProviders.length === 0) {
     return (
       <SettingsCard>
-        <p className="text-sm text-white/40 text-center py-4">
+        <p className="text-sm text-ink/40 text-center py-4">
           {i18n._(msg`notifications.enableProviderAbove`)}
         </p>
       </SettingsCard>
@@ -804,7 +804,7 @@ function EventRoutingMatrix({
 
   return (
     <SettingsCard>
-      <div className="mb-3 text-xs font-medium uppercase tracking-[1px] text-white/50">
+      <div className="mb-3 text-xs font-medium uppercase tracking-[1px] text-ink/50">
         {i18n._(msg`notifications.eventRouting`)}
       </div>
 
@@ -812,8 +812,8 @@ function EventRoutingMatrix({
       <div className="hidden lg:block">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-white/[0.06]">
-              <th className="text-left text-xs font-medium text-white/40 pb-2 pr-4">
+            <tr className="border-b border-ink/[0.06]">
+              <th className="text-left text-xs font-medium text-ink/40 pb-2 pr-4">
                 {i18n._(msg`notifications.event`)}
               </th>
               {enabledProviders.map((p) => (
@@ -833,10 +833,10 @@ function EventRoutingMatrix({
             {NOTIFICATION_EVENTS.map((event) => {
               const meta = EVENT_LABEL_KEYS[event.id]!;
               return (
-                <tr key={event.id} className="border-b border-white/[0.04] last:border-0">
+                <tr key={event.id} className="border-b border-ink/[0.04] last:border-0">
                   <td className="py-3 pr-4">
-                    <div className="text-sm text-white">{i18n._(meta.label)}</div>
-                    <div className="text-xs text-white/40 mt-0.5">{i18n._(meta.desc)}</div>
+                    <div className="text-sm text-ink">{i18n._(meta.label)}</div>
+                    <div className="text-xs text-ink/40 mt-0.5">{i18n._(meta.desc)}</div>
                   </td>
                   {enabledProviders.map((p) => (
                     <td key={p} className="text-center px-3 py-3">
@@ -862,14 +862,14 @@ function EventRoutingMatrix({
           return (
             <div key={event.id} className="space-y-2">
               <div>
-                <div className="text-sm text-white">{i18n._(meta.label)}</div>
-                <div className="text-xs text-white/40 mt-0.5">{i18n._(meta.desc)}</div>
+                <div className="text-sm text-ink">{i18n._(meta.label)}</div>
+                <div className="text-xs text-ink/40 mt-0.5">{i18n._(meta.desc)}</div>
               </div>
               <div className="flex flex-wrap gap-3">
                 {enabledProviders.map((p) => (
                   <label
                     key={p}
-                    className="flex items-center gap-1.5 text-xs text-white/60 cursor-pointer"
+                    className="flex items-center gap-1.5 text-xs text-ink/60 cursor-pointer"
                   >
                     <Checkbox
                       size={16}
@@ -894,13 +894,10 @@ function SkeletonCards() {
   return (
     <div className="space-y-4">
       {[0, 1, 2].map((i) => (
-        <div
-          key={i}
-          className="rounded-[10px] border border-white/[0.06] bg-white/[0.025] p-4 px-5"
-        >
+        <div key={i} className="rounded-[10px] border border-ink/[0.06] bg-ink/[0.025] p-4 px-5">
           <div className="flex items-center justify-between">
-            <div className="h-4 w-24 rounded bg-white/[0.06] animate-pulse" />
-            <div className="h-4 w-8 rounded-full bg-white/[0.06] animate-pulse" />
+            <div className="h-4 w-24 rounded bg-ink/[0.06] animate-pulse" />
+            <div className="h-4 w-8 rounded-full bg-ink/[0.06] animate-pulse" />
           </div>
         </div>
       ))}
@@ -1031,10 +1028,10 @@ export function NotificationSettingsPanel() {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-ink">
             {i18n._(msg`settings.nav.notifications`)}
           </h2>
-          <p className="mt-1 text-sm text-white/40">{i18n._(msg`notifications.intro`)}</p>
+          <p className="mt-1 text-sm text-ink/40">{i18n._(msg`notifications.intro`)}</p>
         </div>
         <SkeletonCards />
       </div>
@@ -1045,17 +1042,17 @@ export function NotificationSettingsPanel() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-ink">
             {i18n._(msg`settings.nav.notifications`)}
           </h2>
-          <p className="mt-1 text-sm text-white/40">{i18n._(msg`notifications.intro`)}</p>
+          <p className="mt-1 text-sm text-ink/40">{i18n._(msg`notifications.intro`)}</p>
         </div>
         {docsUrl && (
           <a
             href={`${docsUrl}/docs/configuration/notifications`}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 text-xs text-white/30 hover:text-white/60 transition-colors mt-1"
+            className="shrink-0 text-xs text-ink/30 hover:text-ink/60 transition-colors mt-1"
           >
             {i18n._(msg`notifications.setupGuide`)} ↗
           </a>
@@ -1095,7 +1092,7 @@ export function NotificationSettingsPanel() {
       {/* Auto-save indicator */}
       {saveMutation.isPending && (
         <div className="flex justify-end">
-          <span className="text-[11px] text-white/20">{i18n._(msg`settings.saving`)}</span>
+          <span className="text-[11px] text-ink/20">{i18n._(msg`settings.saving`)}</span>
         </div>
       )}
     </div>

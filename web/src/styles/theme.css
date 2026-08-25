@@ -20,18 +20,78 @@
   --mm-border: rgba(255, 255, 255, 0.1); /* Seanime: rgba white 10% */
   --mm-border-subtle: rgba(255, 255, 255, 0.05);
   --mm-sidebar: #070707;
-  --mm-accent: #a78bfa; /* Vesica Violet — Luminous Geometry brand */
+  --mm-accent: #a78bfa; /* Arch Violet — Luminous Geometry brand */
   --mm-text-primary: rgba(255, 255, 255, 0.93); /* gray-200 equivalent */
   --mm-text-secondary: rgba(255, 255, 255, 0.6);
   --mm-text-tertiary: rgba(255, 255, 255, 0.4); /* Seanime --muted */
   --mm-text-muted: rgba(255, 255, 255, 0.2);
   --mm-overlay: rgba(0, 0, 0, 0.4);
   --mm-glass: rgba(12, 12, 12, 0.82);
+  /* Theme-flipping foreground: white in dark mode, near-black in light mode.
+     `text-ink/60` etc. replace the old hardcoded `text-white/60`; keep literal
+     `text-white` only for text drawn over artwork, which must not flip. */
+  --ink: #ffffff;
+  --ink-contrast: #0c0c10;
   /* Seanime-compatible aliases */
   --background: #070707;
   --foreground: rgba(255, 255, 255, 0.93);
   --muted: rgba(255, 255, 255, 0.4);
   --subtle: rgba(255, 255, 255, 0.06);
+}
+
+.light {
+  --mm-bg: #f6f6f8;
+  --mm-bg-elevated: #ffffff;
+  --mm-surface: #ffffff;
+  --mm-surface-hover: #efeff3;
+  --mm-border: rgba(12, 12, 24, 0.12);
+  --mm-border-subtle: rgba(12, 12, 24, 0.06);
+  --mm-sidebar: #f1f1f5;
+  /* Darker companion of Vesica Violet for AA contrast on light surfaces. */
+  --mm-accent: #7857e6;
+  --mm-text-primary: rgba(16, 16, 22, 0.92);
+  --mm-text-secondary: rgba(16, 16, 22, 0.62);
+  --mm-text-tertiary: rgba(16, 16, 22, 0.45);
+  --mm-text-muted: rgba(16, 16, 22, 0.28);
+  --mm-overlay: rgba(0, 0, 0, 0.35);
+  --mm-glass: rgba(250, 250, 252, 0.85);
+  --ink: #17171c;
+  --ink-contrast: #ffffff;
+  --background: #f6f6f8;
+  --foreground: rgba(16, 16, 22, 0.92);
+  --muted: rgba(16, 16, 22, 0.45);
+  --subtle: rgba(12, 12, 24, 0.06);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.56 0.21 354);
+  --primary-foreground: oklch(0.97 0.01 343);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0 0 0 / 10%);
+  --input: oklch(0 0 0 / 12%);
+  --ring: oklch(0.705 0.015 286.067);
+  --chart-1: oklch(0.72 0.13 346);
+  --chart-2: oklch(0.63 0.19 350);
+  --chart-3: oklch(0.56 0.21 354);
+  --chart-4: oklch(0.49 0.22 1);
+  --chart-5: oklch(0.42 0.2 4);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.63 0.19 350);
+  --sidebar-primary-foreground: oklch(0.97 0.01 343);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0 0 0 / 10%);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+  --scrollbar-thumb: color-mix(in oklch, var(--foreground) 30%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklch, var(--primary) 48%, var(--foreground) 14%);
+  --scrollbar-thumb-active: color-mix(in oklch, var(--primary) 62%, var(--foreground) 8%);
 }
 
 .dark {
@@ -72,6 +132,8 @@
 }
 
 @theme inline {
+  --color-ink: var(--ink);
+  --color-ink-contrast: var(--ink-contrast);
   --color-mm-bg: var(--mm-bg);
   --color-mm-bg-elevated: var(--mm-bg-elevated);
   --color-mm-surface: var(--mm-surface);
@@ -79,6 +141,8 @@
   --color-mm-border: var(--mm-border);
   --color-mm-border-subtle: var(--mm-border-subtle);
   --color-mm-sidebar: var(--mm-sidebar);
+  --color-mm-glass: var(--mm-glass);
+  --color-mm-overlay: var(--mm-overlay);
   --color-mm-accent: var(--mm-accent);
   --color-mm-text-primary: var(--mm-text-primary);
   --color-mm-text-secondary: var(--mm-text-secondary);

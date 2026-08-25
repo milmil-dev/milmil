@@ -17,14 +17,14 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
   if (isLoading) {
     return (
       <div className="mt-4">
-        <div className="h-4 w-16 bg-white/[0.06] rounded animate-pulse mb-3" />
+        <div className="h-4 w-16 bg-ink/[0.06] rounded animate-pulse mb-3" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex gap-2">
-              <div className="w-7 h-7 rounded-full bg-white/[0.06] animate-pulse shrink-0" />
+              <div className="w-7 h-7 rounded-full bg-ink/[0.06] animate-pulse shrink-0" />
               <div className="flex-1 space-y-1">
-                <div className="h-3 w-20 bg-white/[0.06] rounded animate-pulse" />
-                <div className="h-3 w-full bg-white/[0.06] rounded animate-pulse" />
+                <div className="h-3 w-20 bg-ink/[0.06] rounded animate-pulse" />
+                <div className="h-3 w-full bg-ink/[0.06] rounded animate-pulse" />
               </div>
             </div>
           ))}
@@ -48,7 +48,7 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
             {c.avatar ? (
               <img src={c.avatar} alt="" className="w-7 h-7 rounded-full shrink-0 object-cover" />
             ) : (
-              <div className="w-7 h-7 rounded-full bg-white/[0.08] shrink-0" />
+              <div className="w-7 h-7 rounded-full bg-ink/[0.08] shrink-0" />
             )}
             <div className="min-w-0">
               <div className="text-[11px] text-mm-text-secondary">

@@ -22,7 +22,7 @@ function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 
   if (active && direction) {
     return (
       <svg
-        className="w-3 h-3 shrink-0 text-white/50"
+        className="w-3 h-3 shrink-0 text-ink/50"
         viewBox="0 0 12 12"
         fill="currentColor"
         aria-hidden="true"
@@ -37,7 +37,7 @@ function SortIcon({ active, direction }: { active: boolean; direction?: 'asc' | 
   }
   return (
     <svg
-      className="w-3 h-3 shrink-0 text-white/10"
+      className="w-3 h-3 shrink-0 text-ink/10"
       viewBox="0 0 12 12"
       fill="currentColor"
       aria-hidden="true"
@@ -78,7 +78,7 @@ function ResizeHandle<T>({
       <span
         className={[
           'w-[2px] transition-colors',
-          isResizing ? 'bg-white/60' : 'bg-transparent group-hover:bg-white/30',
+          isResizing ? 'bg-ink/60' : 'bg-transparent group-hover:bg-ink/30',
         ].join(' ')}
       />
     </div>
@@ -111,7 +111,7 @@ export function MotionTable<T>({
     <Table className={tableClassName}>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id} className="border-white/[0.04] hover:bg-transparent">
+          <TableRow key={headerGroup.id} className="border-ink/[0.04] hover:bg-transparent">
             {headerGroup.headers.map((header) => {
               const width = header.getSize();
               const colId = header.column.id;
@@ -122,9 +122,9 @@ export function MotionTable<T>({
                 <TableHead
                   key={header.id}
                   className={[
-                    'relative text-[10px] uppercase tracking-wider text-white/30 font-medium h-auto pb-3',
+                    'relative text-[10px] uppercase tracking-wider text-ink/30 font-medium h-auto pb-3',
                     isSortable
-                      ? 'cursor-pointer select-none hover:text-white/50 transition-colors'
+                      ? 'cursor-pointer select-none hover:text-ink/50 transition-colors'
                       : '',
                   ]
                     .filter(Boolean)
@@ -156,7 +156,7 @@ export function MotionTable<T>({
         {table.getRowModel().rows.map((row) => (
           <TableRow
             key={row.id}
-            className="group border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-150"
+            className="group border-b border-ink/[0.04] hover:bg-ink/[0.02] transition-colors duration-150"
           >
             {row.getVisibleCells().map((cell) => {
               const width = cell.column.getSize();

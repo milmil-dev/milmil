@@ -35,9 +35,7 @@ export function DownloadPanel() {
             disconnectedText={i18n._(msg`settings.download.disconnected`)}
           />
         </div>
-        <p className="text-[12px] text-white/30 mt-3">
-          {i18n._(msg`settings.download.builtinDesc`)}
-        </p>
+        <p className="text-[12px] text-ink/30 mt-3">{i18n._(msg`settings.download.builtinDesc`)}</p>
       </SettingsCard>
 
       {/* Preferences */}
@@ -82,7 +80,7 @@ function AutoDeleteFilesSwitch() {
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="min-w-0 text-[13px] text-white/60">
+      <span className="min-w-0 text-[13px] text-ink/60">
         {i18n._(msg`settings.download.autoDeleteFiles`)}
       </span>
       <Switch

@@ -24,8 +24,8 @@ export function SelectorGroup<T extends string | number>({
           className={cn(
             'min-w-0 rounded px-3.5 py-1.5 text-xs font-semibold transition-colors',
             value === opt.value
-              ? 'bg-white/[0.10] text-white'
-              : 'bg-transparent text-mm-text-secondary hover:bg-white/[0.04] hover:text-white/70',
+              ? 'bg-ink/[0.10] text-ink'
+              : 'bg-transparent text-mm-text-secondary hover:bg-ink/[0.04] hover:text-ink/70',
             disabled && 'opacity-50 pointer-events-none'
           )}
         >

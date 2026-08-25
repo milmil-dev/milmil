@@ -4135,9 +4135,13 @@ msgstr "活躍工作階段"
 msgid "Set preferred"
 msgstr "設為偏好"
 
-#: src/pages/settings/GeneralPanel.tsx:87
+#: src/pages/settings/GeneralPanel.tsx:103
 msgid "settings.appearance.language"
 msgstr "語言"
+
+#: src/pages/settings/GeneralPanel.tsx:111
+msgid "settings.appearance.theme"
+msgstr "主題"
 
 #: src/pages/SettingsPage.tsx:367
 #~ msgid "settings.appearance.title"
@@ -4149,11 +4153,11 @@ msgstr "語言"
 msgid "settings.audioTrack"
 msgstr "音軌"
 
-#: src/pages/settings/GeneralPanel.tsx:111
+#: src/pages/settings/GeneralPanel.tsx:139
 msgid "settings.autoAddToCollection"
 msgstr "自動加入收藏"
 
-#: src/pages/settings/GeneralPanel.tsx:114
+#: src/pages/settings/GeneralPanel.tsx:142
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新匹配嘅動畫自動加入收藏"
 
@@ -4179,7 +4183,7 @@ msgstr "邊框樣式"
 msgid "settings.brightness"
 msgstr "亮度"
 
-#: src/pages/settings/GeneralPanel.tsx:107
+#: src/pages/settings/GeneralPanel.tsx:135
 msgid "settings.collection"
 msgstr "收藏"
 
@@ -4283,7 +4287,7 @@ msgstr "字體"
 msgid "settings.fontSize"
 msgstr "字體大小"
 
-#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:99
 msgid "settings.general.subtitle"
 msgstr "語言、收藏同應用程式偏好設定"
 
@@ -4437,7 +4441,7 @@ msgstr "備份"
 msgid "settings.nav.download"
 msgstr "下載"
 
-#: src/pages/settings/GeneralPanel.tsx:80
+#: src/pages/settings/GeneralPanel.tsx:96
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.general"
 msgstr "一般"
@@ -4688,8 +4692,9 @@ msgstr "儲存"
 
 #: src/pages/settings/BackupPanel.tsx:199
 #: src/pages/settings/BackupPanel.tsx:393
-#: src/pages/settings/GeneralPanel.tsx:63
-#: src/pages/settings/GeneralPanel.tsx:74
+#: src/pages/settings/GeneralPanel.tsx:72
+#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:90
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:180
 #: src/pages/settings/IntegrationsPanel.tsx:658
@@ -4699,8 +4704,8 @@ msgstr "儲存咗"
 
 #: src/pages/settings/BackupPanel.tsx:203
 #: src/pages/settings/BackupPanel.tsx:397
-#: src/pages/settings/GeneralPanel.tsx:56
-#: src/pages/settings/GeneralPanel.tsx:66
+#: src/pages/settings/GeneralPanel.tsx:65
+#: src/pages/settings/GeneralPanel.tsx:75
 #: src/pages/settings/IntegrationsPanel.tsx:58
 #: src/pages/settings/IntegrationsPanel.tsx:183
 #: src/pages/settings/IntegrationsPanel.tsx:661
@@ -4870,25 +4875,37 @@ msgstr "字幕時間"
 msgid "settings.textColor"
 msgstr "文字顏色"
 
+#: src/pages/settings/GeneralPanel.tsx:114
+msgid "settings.theme.dark"
+msgstr "深色"
+
+#: src/pages/settings/GeneralPanel.tsx:115
+msgid "settings.theme.light"
+msgstr "淺色"
+
+#: src/pages/settings/GeneralPanel.tsx:116
+msgid "settings.theme.system"
+msgstr "跟隨系統"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:412
 #: src/components/watch/UnifiedSettingsPanel.tsx:840
 #: src/components/watch/UnifiedSettingsPanel.tsx:953
 msgid "settings.volumeBoost"
 msgstr "音量增強"
 
-#: src/pages/settings/GeneralPanel.tsx:95
+#: src/pages/settings/GeneralPanel.tsx:123
 msgid "settings.weekStartDay"
 msgstr "每週起始日"
 
-#: src/pages/settings/GeneralPanel.tsx:98
+#: src/pages/settings/GeneralPanel.tsx:126
 msgid "settings.weekStartDay.monday"
 msgstr "星期一"
 
-#: src/pages/settings/GeneralPanel.tsx:100
+#: src/pages/settings/GeneralPanel.tsx:128
 msgid "settings.weekStartDay.saturday"
 msgstr "星期六"
 
-#: src/pages/settings/GeneralPanel.tsx:99
+#: src/pages/settings/GeneralPanel.tsx:127
 msgid "settings.weekStartDay.sunday"
 msgstr "星期日"
 

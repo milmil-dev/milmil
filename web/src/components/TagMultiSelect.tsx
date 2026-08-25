@@ -99,8 +99,8 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
           whileTap={{ scale: 0.97 }}
           className={cn(
             'inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-xs cursor-pointer transition-colors',
-            'bg-white/[0.04] border border-transparent hover:bg-white/[0.07]',
-            selected.length > 0 ? 'text-mm-accent' : 'text-white/70'
+            'bg-ink/[0.04] border border-transparent hover:bg-ink/[0.07]',
+            selected.length > 0 ? 'text-mm-accent' : 'text-ink/70'
           )}
         >
           <HugeiconsIcon icon={Tag01Icon} size={13} />
@@ -112,12 +112,12 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-[320px] p-0 bg-zinc-900/95 border-white/[0.08] backdrop-blur-xl shadow-2xl"
+        className="w-[320px] p-0 bg-mm-glass border-ink/[0.08] backdrop-blur-xl shadow-2xl"
       >
         <Command shouldFilter={false} className="bg-transparent">
           {/* Search input */}
-          <div className="flex items-center gap-2 border-b border-white/[0.06] px-3 h-9">
-            <HugeiconsIcon icon={Search01Icon} size={14} className="shrink-0 text-white/30" />
+          <div className="flex items-center gap-2 border-b border-ink/[0.06] px-3 h-9">
+            <HugeiconsIcon icon={Search01Icon} size={14} className="shrink-0 text-ink/30" />
             <input
               ref={inputRef}
               value={search}
@@ -129,7 +129,7 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
                 }
               }}
               placeholder={i18n._(msg`search.filter.tagSearch`)}
-              className="flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white/30"
+              className="flex-1 bg-transparent text-xs text-ink outline-none placeholder:text-ink/30"
             />
           </div>
 
@@ -141,7 +141,7 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="overflow-hidden border-b border-white/[0.06]"
+                className="overflow-hidden border-b border-ink/[0.06]"
               >
                 <div className="flex flex-wrap gap-1 px-2.5 py-2">
                   {selected.map((tag) => (
@@ -173,14 +173,14 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
             {search.trim() && !tagNames.includes(search.trim()) && (
               <CommandItem
                 onSelect={handleCustomTag}
-                className="text-xs text-white/50 mx-1 mt-1 rounded data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white"
+                className="text-xs text-ink/50 mx-1 mt-1 rounded data-[selected=true]:bg-ink/[0.06] data-[selected=true]:text-ink"
               >
                 <HugeiconsIcon icon={Tag01Icon} size={12} className="text-mm-accent/60" />
                 {i18n._(msg`search.filter.addCustomTag`)} &ldquo;{search.trim()}&rdquo;
               </CommandItem>
             )}
 
-            <CommandEmpty className="py-6 text-xs text-white/25">
+            <CommandEmpty className="py-6 text-xs text-ink/25">
               {i18n._(msg`search.filter.noTags`)}
             </CommandEmpty>
 
@@ -192,7 +192,7 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
                 <CommandGroup
                   key={cat}
                   heading={
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-white/25 px-1">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-ink/25 px-1">
                       {CATEGORY_LABELS[cat] ? i18n._(CATEGORY_LABELS[cat]!) : cat}
                     </span>
                   }
@@ -210,7 +210,7 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
                             'inline-flex !px-2 !py-1 rounded text-[11px] font-medium cursor-pointer transition-colors',
                             isSelected
                               ? 'bg-mm-accent/15 text-mm-accent data-[selected=true]:bg-mm-accent/20'
-                              : 'bg-white/[0.04] text-white/50 hover:text-white/70 data-[selected=true]:bg-white/[0.08] data-[selected=true]:text-white/70'
+                              : 'bg-ink/[0.04] text-ink/50 hover:text-ink/70 data-[selected=true]:bg-ink/[0.08] data-[selected=true]:text-ink/70'
                           )}
                         >
                           {tag.name}

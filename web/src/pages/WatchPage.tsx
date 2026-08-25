@@ -863,7 +863,7 @@ export function WatchPage() {
     return (
       <PageTransition>
         <div className="min-h-screen flex items-center justify-center">
-          <p className="text-white/50 text-sm">{i18n._(msg`watch.notFound`)}</p>
+          <p className="text-ink/50 text-sm">{i18n._(msg`watch.notFound`)}</p>
         </div>
       </PageTransition>
     );

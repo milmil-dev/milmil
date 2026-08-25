@@ -29,7 +29,7 @@ interface ApiTokenCreateResponse {
   created_at: string;
 }
 
-const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
+const inputClass = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
 
 export function ApiTokensCard() {
   const { i18n } = useLingui();
@@ -78,7 +78,7 @@ export function ApiTokensCard() {
 
   return (
     <SettingsCard label={i18n._(msg`apiTokens.title`)}>
-      <p className="mb-4 text-xs text-white/40">{i18n._(msg`apiTokens.description`)}</p>
+      <p className="mb-4 text-xs text-ink/40">{i18n._(msg`apiTokens.description`)}</p>
 
       {/* Created token banner — shown once after creation */}
       {createdToken && (
@@ -87,7 +87,7 @@ export function ApiTokensCard() {
             {i18n._(msg`apiTokens.createdWarning`)}
           </p>
           <div className="flex items-center gap-2">
-            <code className="flex-1 truncate rounded bg-black/30 px-2 py-1.5 text-xs font-mono text-white/80">
+            <code className="flex-1 truncate rounded bg-black/30 px-2 py-1.5 text-xs font-mono text-ink/80">
               {createdToken}
             </code>
             <Button
@@ -107,7 +107,7 @@ export function ApiTokensCard() {
           </div>
           <button
             type="button"
-            className="mt-2 text-[11px] text-white/30 hover:text-white/50 transition-colors"
+            className="mt-2 text-[11px] text-ink/30 hover:text-ink/50 transition-colors"
             onClick={() => setCreatedToken(null)}
           >
             {i18n._(msg`apiTokens.dismiss`)}
@@ -121,17 +121,13 @@ export function ApiTokensCard() {
           {tokens.map((token) => (
             <div
               key={token.id}
-              className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5"
+              className="flex items-center justify-between rounded-lg border border-ink/[0.06] bg-ink/[0.02] px-3 py-2.5"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <HugeiconsIcon
-                  icon={SmartPhone01Icon}
-                  size={15}
-                  className="shrink-0 text-white/30"
-                />
+                <HugeiconsIcon icon={SmartPhone01Icon} size={15} className="shrink-0 text-ink/30" />
                 <div className="min-w-0">
-                  <p className="text-[13px] font-medium text-white truncate">{token.name}</p>
-                  <p className="text-[11px] text-white/25">
+                  <p className="text-[13px] font-medium text-ink truncate">{token.name}</p>
+                  <p className="text-[11px] text-ink/25">
                     <span className="font-mono">mlml_{token.token_prefix}...</span>
                     <span className="ml-2 font-sans">
                       · {i18n._(msg`apiTokens.created`)} {formatDate(token.created_at)}
@@ -152,7 +148,7 @@ export function ApiTokensCard() {
                   }
                 }}
                 disabled={deleteToken.isPending}
-                className="shrink-0 rounded-md p-1.5 text-white/20 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                className="shrink-0 rounded-md p-1.5 text-ink/20 hover:text-red-400 hover:bg-red-400/10 transition-colors"
                 title={i18n._(msg`apiTokens.revoke`)}
               >
                 <HugeiconsIcon icon={Delete02Icon} size={14} />

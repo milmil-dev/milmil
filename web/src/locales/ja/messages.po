@@ -4137,9 +4137,13 @@ msgstr "アクティブなセッション"
 msgid "Set preferred"
 msgstr "優先に設定"
 
-#: src/pages/settings/GeneralPanel.tsx:87
+#: src/pages/settings/GeneralPanel.tsx:103
 msgid "settings.appearance.language"
 msgstr "言語"
+
+#: src/pages/settings/GeneralPanel.tsx:111
+msgid "settings.appearance.theme"
+msgstr "テーマ"
 
 #: src/pages/SettingsPage.tsx:367
 #~ msgid "settings.appearance.title"
@@ -4151,11 +4155,11 @@ msgstr "言語"
 msgid "settings.audioTrack"
 msgstr "音声トラック"
 
-#: src/pages/settings/GeneralPanel.tsx:111
+#: src/pages/settings/GeneralPanel.tsx:139
 msgid "settings.autoAddToCollection"
 msgstr "自動でコレクションに追加"
 
-#: src/pages/settings/GeneralPanel.tsx:114
+#: src/pages/settings/GeneralPanel.tsx:142
 msgid "settings.autoAddToCollectionDesc"
 msgstr "新しくマッチしたアニメを自動的にコレクションに追加"
 
@@ -4181,7 +4185,7 @@ msgstr "ボーダースタイル"
 msgid "settings.brightness"
 msgstr "明るさ"
 
-#: src/pages/settings/GeneralPanel.tsx:107
+#: src/pages/settings/GeneralPanel.tsx:135
 msgid "settings.collection"
 msgstr "コレクション"
 
@@ -4285,7 +4289,7 @@ msgstr "フォント"
 msgid "settings.fontSize"
 msgstr "フォントサイズ"
 
-#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:99
 msgid "settings.general.subtitle"
 msgstr "言語、コレクション、アプリの設定"
 
@@ -4439,7 +4443,7 @@ msgstr "バックアップ"
 msgid "settings.nav.download"
 msgstr "ダウンロード"
 
-#: src/pages/settings/GeneralPanel.tsx:80
+#: src/pages/settings/GeneralPanel.tsx:96
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.general"
 msgstr "一般"
@@ -4690,8 +4694,9 @@ msgstr "保存"
 
 #: src/pages/settings/BackupPanel.tsx:199
 #: src/pages/settings/BackupPanel.tsx:393
-#: src/pages/settings/GeneralPanel.tsx:63
-#: src/pages/settings/GeneralPanel.tsx:74
+#: src/pages/settings/GeneralPanel.tsx:72
+#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:90
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:180
 #: src/pages/settings/IntegrationsPanel.tsx:658
@@ -4701,8 +4706,8 @@ msgstr "保存しました"
 
 #: src/pages/settings/BackupPanel.tsx:203
 #: src/pages/settings/BackupPanel.tsx:397
-#: src/pages/settings/GeneralPanel.tsx:56
-#: src/pages/settings/GeneralPanel.tsx:66
+#: src/pages/settings/GeneralPanel.tsx:65
+#: src/pages/settings/GeneralPanel.tsx:75
 #: src/pages/settings/IntegrationsPanel.tsx:58
 #: src/pages/settings/IntegrationsPanel.tsx:183
 #: src/pages/settings/IntegrationsPanel.tsx:661
@@ -4872,25 +4877,37 @@ msgstr "字幕タイミング"
 msgid "settings.textColor"
 msgstr "テキスト色"
 
+#: src/pages/settings/GeneralPanel.tsx:114
+msgid "settings.theme.dark"
+msgstr "ダーク"
+
+#: src/pages/settings/GeneralPanel.tsx:115
+msgid "settings.theme.light"
+msgstr "ライト"
+
+#: src/pages/settings/GeneralPanel.tsx:116
+msgid "settings.theme.system"
+msgstr "システムに従う"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:412
 #: src/components/watch/UnifiedSettingsPanel.tsx:840
 #: src/components/watch/UnifiedSettingsPanel.tsx:953
 msgid "settings.volumeBoost"
 msgstr "音量ブースト"
 
-#: src/pages/settings/GeneralPanel.tsx:95
+#: src/pages/settings/GeneralPanel.tsx:123
 msgid "settings.weekStartDay"
 msgstr "週の開始曜日"
 
-#: src/pages/settings/GeneralPanel.tsx:98
+#: src/pages/settings/GeneralPanel.tsx:126
 msgid "settings.weekStartDay.monday"
 msgstr "月曜日"
 
-#: src/pages/settings/GeneralPanel.tsx:100
+#: src/pages/settings/GeneralPanel.tsx:128
 msgid "settings.weekStartDay.saturday"
 msgstr "土曜日"
 
-#: src/pages/settings/GeneralPanel.tsx:99
+#: src/pages/settings/GeneralPanel.tsx:127
 msgid "settings.weekStartDay.sunday"
 msgstr "日曜日"
 

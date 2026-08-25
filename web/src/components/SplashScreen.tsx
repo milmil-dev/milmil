@@ -21,7 +21,7 @@ export function SplashScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="mt-8 h-[2px] w-24 overflow-hidden rounded-full bg-white/[0.06]"
+        className="mt-8 h-[2px] w-24 overflow-hidden rounded-full bg-ink/[0.06]"
       >
         <motion.div
           className="h-full rounded-full bg-mm-accent"

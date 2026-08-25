@@ -4137,9 +4137,13 @@ msgstr "활성 세션"
 msgid "Set preferred"
 msgstr "선호로 설정"
 
-#: src/pages/settings/GeneralPanel.tsx:87
+#: src/pages/settings/GeneralPanel.tsx:103
 msgid "settings.appearance.language"
 msgstr "언어"
+
+#: src/pages/settings/GeneralPanel.tsx:111
+msgid "settings.appearance.theme"
+msgstr "테마"
 
 #: src/pages/SettingsPage.tsx:367
 #~ msgid "settings.appearance.title"
@@ -4151,11 +4155,11 @@ msgstr "언어"
 msgid "settings.audioTrack"
 msgstr "오디오 트랙"
 
-#: src/pages/settings/GeneralPanel.tsx:111
+#: src/pages/settings/GeneralPanel.tsx:139
 msgid "settings.autoAddToCollection"
 msgstr "자동으로 컬렉션에 추가"
 
-#: src/pages/settings/GeneralPanel.tsx:114
+#: src/pages/settings/GeneralPanel.tsx:142
 msgid "settings.autoAddToCollectionDesc"
 msgstr "새로 매치된 애니메이션을 자동으로 컬렉션에 추가"
 
@@ -4181,7 +4185,7 @@ msgstr "테두리 스타일"
 msgid "settings.brightness"
 msgstr "밝기"
 
-#: src/pages/settings/GeneralPanel.tsx:107
+#: src/pages/settings/GeneralPanel.tsx:135
 msgid "settings.collection"
 msgstr "컬렉션"
 
@@ -4285,7 +4289,7 @@ msgstr "글꼴"
 msgid "settings.fontSize"
 msgstr "글꼴 크기"
 
-#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:99
 msgid "settings.general.subtitle"
 msgstr "언어, 컬렉션 및 앱 환경설정"
 
@@ -4439,7 +4443,7 @@ msgstr "백업"
 msgid "settings.nav.download"
 msgstr "다운로드"
 
-#: src/pages/settings/GeneralPanel.tsx:80
+#: src/pages/settings/GeneralPanel.tsx:96
 #: src/pages/settings/SettingsPage.tsx:36
 msgid "settings.nav.general"
 msgstr "일반"
@@ -4690,8 +4694,9 @@ msgstr "저장"
 
 #: src/pages/settings/BackupPanel.tsx:199
 #: src/pages/settings/BackupPanel.tsx:393
-#: src/pages/settings/GeneralPanel.tsx:63
-#: src/pages/settings/GeneralPanel.tsx:74
+#: src/pages/settings/GeneralPanel.tsx:72
+#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:90
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:180
 #: src/pages/settings/IntegrationsPanel.tsx:658
@@ -4701,8 +4706,8 @@ msgstr "저장됨"
 
 #: src/pages/settings/BackupPanel.tsx:203
 #: src/pages/settings/BackupPanel.tsx:397
-#: src/pages/settings/GeneralPanel.tsx:56
-#: src/pages/settings/GeneralPanel.tsx:66
+#: src/pages/settings/GeneralPanel.tsx:65
+#: src/pages/settings/GeneralPanel.tsx:75
 #: src/pages/settings/IntegrationsPanel.tsx:58
 #: src/pages/settings/IntegrationsPanel.tsx:183
 #: src/pages/settings/IntegrationsPanel.tsx:661
@@ -4872,25 +4877,37 @@ msgstr "자막 타이밍"
 msgid "settings.textColor"
 msgstr "텍스트 색상"
 
+#: src/pages/settings/GeneralPanel.tsx:114
+msgid "settings.theme.dark"
+msgstr "다크"
+
+#: src/pages/settings/GeneralPanel.tsx:115
+msgid "settings.theme.light"
+msgstr "라이트"
+
+#: src/pages/settings/GeneralPanel.tsx:116
+msgid "settings.theme.system"
+msgstr "시스템 설정 따르기"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:412
 #: src/components/watch/UnifiedSettingsPanel.tsx:840
 #: src/components/watch/UnifiedSettingsPanel.tsx:953
 msgid "settings.volumeBoost"
 msgstr "음량 부스트"
 
-#: src/pages/settings/GeneralPanel.tsx:95
+#: src/pages/settings/GeneralPanel.tsx:123
 msgid "settings.weekStartDay"
 msgstr "주 시작 요일"
 
-#: src/pages/settings/GeneralPanel.tsx:98
+#: src/pages/settings/GeneralPanel.tsx:126
 msgid "settings.weekStartDay.monday"
 msgstr "월요일"
 
-#: src/pages/settings/GeneralPanel.tsx:100
+#: src/pages/settings/GeneralPanel.tsx:128
 msgid "settings.weekStartDay.saturday"
 msgstr "토요일"
 
-#: src/pages/settings/GeneralPanel.tsx:99
+#: src/pages/settings/GeneralPanel.tsx:127
 msgid "settings.weekStartDay.sunday"
 msgstr "일요일"
 

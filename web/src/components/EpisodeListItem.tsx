@@ -115,36 +115,36 @@ export function EpisodeListItem({
     const isImminent = diffDays >= 0 && diffDays <= 7;
 
     return (
-      <div className="group relative flex items-stretch gap-3 rounded-lg pl-1 pr-2 py-1.5 transition-colors duration-200 hover:bg-white/[0.02]">
+      <div className="group relative flex items-stretch gap-3 rounded-lg pl-1 pr-2 py-1.5 transition-colors duration-200 hover:bg-ink/[0.02]">
         {/* Calendar tile — pure white/opacity, accent only when imminent */}
         <div
           className={cn(
             'shrink-0 w-12 flex flex-col items-center justify-center rounded-md py-1.5 text-center',
-            'border border-white/[0.06] bg-white/[0.02]',
+            'border border-ink/[0.06] bg-ink/[0.02]',
             'transition-colors duration-200',
             isImminent
               ? 'border-mm-accent/25 bg-mm-accent/[0.04]'
-              : 'group-hover:border-white/[0.10] group-hover:bg-white/[0.03]'
+              : 'group-hover:border-ink/[0.10] group-hover:bg-ink/[0.03]'
           )}
         >
-          <span className="text-[9px] uppercase tracking-[0.10em] text-white/35 leading-none">
+          <span className="text-[9px] uppercase tracking-[0.10em] text-ink/35 leading-none">
             {monthShort}
           </span>
-          <span className="text-[17px] font-semibold tabular-nums leading-none mt-1 text-white/80">
+          <span className="text-[17px] font-semibold tabular-nums leading-none mt-1 text-ink/80">
             {day}
           </span>
-          <span className="text-[9px] text-white/25 leading-none mt-1">{weekdayShort}</span>
+          <span className="text-[9px] text-ink/25 leading-none mt-1">{weekdayShort}</span>
         </div>
 
         {/* Episode plate — quiet typography, no accent decoration */}
         <div className="flex-1 flex flex-col justify-center min-w-0 gap-0.5">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[10px] font-medium tracking-[0.12em] text-white/35">EP</span>
-            <span className="text-[17px] font-semibold tabular-nums leading-none text-white/80 group-hover:text-white/95 transition-colors">
+            <span className="text-[10px] font-medium tracking-[0.12em] text-ink/35">EP</span>
+            <span className="text-[17px] font-semibold tabular-nums leading-none text-ink/80 group-hover:text-ink/95 transition-colors">
               {sort}
             </span>
           </div>
-          <span className="text-[10px] tracking-[0.10em] text-white/25">
+          <span className="text-[10px] tracking-[0.10em] text-ink/25">
             {i18n._(msg`episode.upcoming`)}
           </span>
         </div>
@@ -157,7 +157,7 @@ export function EpisodeListItem({
               'border transition-colors duration-200',
               isImminent
                 ? 'border-mm-accent/20 bg-mm-accent/[0.06] text-mm-accent/85'
-                : 'border-white/[0.06] bg-white/[0.02] text-white/45 group-hover:border-white/[0.10] group-hover:text-white/55'
+                : 'border-ink/[0.06] bg-ink/[0.02] text-ink/45 group-hover:border-ink/[0.10] group-hover:text-ink/55'
             )}
           >
             <HugeiconsIcon icon={Clock01Icon} className="size-3" aria-hidden="true" />
@@ -179,7 +179,7 @@ export function EpisodeListItem({
     <>
       {/* Thumbnail */}
       {hasImage ? (
-        <div className="shrink-0 w-[200px] h-[130px] rounded-md overflow-hidden relative bg-white/[0.03]">
+        <div className="shrink-0 w-[200px] h-[130px] rounded-md overflow-hidden relative bg-ink/[0.03]">
           <img
             src={image}
             alt=""
@@ -220,7 +220,7 @@ export function EpisodeListItem({
             'shrink-0 w-11 h-11 my-auto rounded-md flex items-center justify-center text-[15px] font-bold tabular-nums transition-colors',
             isActive
               ? 'bg-mm-accent text-black'
-              : 'bg-white/[0.05] text-white/40 group-hover:bg-white/[0.08] group-hover:text-white/60'
+              : 'bg-ink/[0.05] text-ink/40 group-hover:bg-ink/[0.08] group-hover:text-ink/60'
           )}
         >
           {sort}
@@ -233,7 +233,7 @@ export function EpisodeListItem({
           <span
             className={cn(
               'text-[12px] font-bold tabular-nums',
-              isActive ? 'text-mm-accent' : 'text-white/50'
+              isActive ? 'text-mm-accent' : 'text-ink/50'
             )}
           >
             {i18n._(msg`episode.prefix`)}
@@ -241,15 +241,15 @@ export function EpisodeListItem({
             {i18n._(msg`episode.suffix`)}
           </span>
           {!hasFile && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/30">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-ink/[0.06] text-ink/30">
               {i18n._(msg`episode.noFile`)}
             </span>
           )}
           {durationLabel && (
-            <span className="text-[12px] text-white/30 tabular-nums">{durationLabel}</span>
+            <span className="text-[12px] text-ink/30 tabular-nums">{durationLabel}</span>
           )}
           {fileQuality && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/50">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-ink/[0.06] text-ink/50">
               {fileQuality}
             </span>
           )}
@@ -260,7 +260,7 @@ export function EpisodeListItem({
             className={cn(
               'text-[14px] font-bold leading-snug mt-0.5 transition-colors',
               hasImage ? 'line-clamp-1' : 'truncate',
-              isActive ? 'text-mm-accent' : 'text-white/90 group-hover:text-white'
+              isActive ? 'text-mm-accent' : 'text-ink/90 group-hover:text-ink'
             )}
           >
             {title}
@@ -268,15 +268,15 @@ export function EpisodeListItem({
         )}
 
         {synopsis ? (
-          <p className="text-[12px] text-white/35 line-clamp-2 mt-1 leading-relaxed">
+          <p className="text-[12px] text-ink/35 line-clamp-2 mt-1 leading-relaxed">
             {synopsis.replace(/<[^>]+>/g, '')}
           </p>
         ) : titleOriginal && titleOriginal !== title ? (
-          <p className="text-[12px] text-white/25 truncate mt-0.5">{titleOriginal}</p>
+          <p className="text-[12px] text-ink/25 truncate mt-0.5">{titleOriginal}</p>
         ) : null}
 
         {!hasImage && progress !== undefined && progress > 0 && (
-          <div className="w-full max-w-[120px] h-[3px] rounded-full bg-white/[0.06] overflow-hidden mt-2">
+          <div className="w-full max-w-[120px] h-[3px] rounded-full bg-ink/[0.06] overflow-hidden mt-2">
             <div
               className="h-full bg-mm-accent rounded-full"
               style={{ width: `${Math.min(progress * 100, 100)}%` }}
@@ -295,7 +295,7 @@ export function EpisodeListItem({
               e.stopPropagation();
               setShowInfo((v) => !v);
             }}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-white/20 hover:text-white/50 hover:bg-white/[0.06] transition-colors"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-ink/20 hover:text-ink/50 hover:bg-ink/[0.06] transition-colors"
           >
             <HugeiconsIcon icon={InformationCircleIcon} size={16} />
           </button>
@@ -304,7 +304,7 @@ export function EpisodeListItem({
           <span
             className={cn(
               'text-[11px] tabular-nums',
-              isActive ? 'text-mm-accent/60' : 'text-white/20'
+              isActive ? 'text-mm-accent/60' : 'text-ink/20'
             )}
           >
             {airDate}
@@ -321,7 +321,7 @@ export function EpisodeListItem({
       : isActive
         ? 'bg-mm-accent/8 ring-1 ring-mm-accent/25'
         : aired
-          ? 'hover:bg-white/[0.05]'
+          ? 'hover:bg-ink/[0.05]'
           : 'opacity-40 hover:opacity-60'
   );
 
@@ -361,10 +361,10 @@ export function EpisodeListItem({
               transition={{ duration: 0.15 }}
               className="absolute right-2 top-full mt-1 z-50 w-[320px] rounded-lg p-4 shadow-xl"
               style={{
-                backgroundColor: 'oklch(14% 0.01 260 / 0.92)',
+                backgroundColor: 'var(--mm-glass)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid var(--mm-border-subtle)',
               }}
             >
               {/* Popover header */}
@@ -374,23 +374,19 @@ export function EpisodeListItem({
                   {sort}
                   {i18n._(msg`episode.suffix`)}
                 </span>
-                {durationLabel && (
-                  <span className="text-[11px] text-white/30">{durationLabel}</span>
-                )}
-                {airDate && (
-                  <span className="text-[11px] text-white/25 tabular-nums">{airDate}</span>
-                )}
+                {durationLabel && <span className="text-[11px] text-ink/30">{durationLabel}</span>}
+                {airDate && <span className="text-[11px] text-ink/25 tabular-nums">{airDate}</span>}
               </div>
 
               {/* Title */}
-              <p className="text-[13px] font-bold text-white">{title}</p>
+              <p className="text-[13px] font-bold text-ink">{title}</p>
               {titleOriginal && titleOriginal !== title && (
-                <p className="text-[11px] text-white/30 mt-0.5">{titleOriginal}</p>
+                <p className="text-[11px] text-ink/30 mt-0.5">{titleOriginal}</p>
               )}
 
               {/* Synopsis — full, not clamped */}
               {synopsis && (
-                <p className="text-[12px] text-white/45 mt-2 leading-relaxed max-h-[160px] overflow-y-auto">
+                <p className="text-[12px] text-ink/45 mt-2 leading-relaxed max-h-[160px] overflow-y-auto">
                   {synopsis.replace(/<[^>]+>/g, '')}
                 </p>
               )}

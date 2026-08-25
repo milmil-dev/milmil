@@ -102,12 +102,12 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
       {/* Filename banner */}
       {file && (
         <motion.div
-          className="mb-5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-4 py-2.5"
+          className="mb-5 rounded-lg bg-ink/[0.04] border border-ink/[0.06] px-4 py-2.5"
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: 0.1 }}
         >
-          <p className="font-mono text-xs text-white/50 truncate" title={file.filename}>
+          <p className="font-mono text-xs text-ink/50 truncate" title={file.filename}>
             {file.filename}
           </p>
         </motion.div>
@@ -124,7 +124,10 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
           <motion.div
             className="w-1.5 h-1.5 rounded-full"
             animate={{
-              backgroundColor: step === 1 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
+              backgroundColor:
+                step === 1
+                  ? 'color-mix(in srgb, var(--ink) 60%, transparent)'
+                  : 'color-mix(in srgb, var(--ink) 15%, transparent)',
               scale: step === 1 ? 1.2 : 1,
             }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -132,20 +135,26 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
           <motion.div
             className="w-6 h-px"
             animate={{
-              backgroundColor: step === 2 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.06)',
+              backgroundColor:
+                step === 2
+                  ? 'color-mix(in srgb, var(--ink) 30%, transparent)'
+                  : 'color-mix(in srgb, var(--ink) 6%, transparent)',
             }}
             transition={{ duration: 0.3 }}
           />
           <motion.div
             className="w-1.5 h-1.5 rounded-full"
             animate={{
-              backgroundColor: step === 2 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
+              backgroundColor:
+                step === 2
+                  ? 'color-mix(in srgb, var(--ink) 60%, transparent)'
+                  : 'color-mix(in srgb, var(--ink) 15%, transparent)',
               scale: step === 2 ? 1.2 : 1,
             }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           />
         </div>
-        <span className="text-[11px] text-white/25 ml-1">
+        <span className="text-[11px] text-ink/25 ml-1">
           {step === 1
             ? i18n._(msg`library.detail.matchModal.stepSearch`)
             : i18n._(msg`library.detail.matchModal.stepEpisode`)}
@@ -164,7 +173,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
             {/* Search input */}
             <div className="relative mb-4">
               <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -180,7 +189,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={i18n._(msg`library.detail.matchModal.searchPlaceholder`)}
-                className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/[0.12] transition-colors"
+                className="w-full bg-ink/[0.04] border border-ink/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-ink placeholder:text-ink/20 focus:outline-none focus:border-ink/[0.12] transition-colors"
                 autoFocus
               />
             </div>
@@ -188,7 +197,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
             {/* Results */}
             {!debouncedSearch && (
               <motion.p
-                className="text-center text-[13px] text-white/20 py-12"
+                className="text-center text-[13px] text-ink/20 py-12"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -207,7 +216,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
 
             {debouncedSearch && !isSearching && searchResults && searchResults.length === 0 && (
               <motion.p
-                className="text-center text-[13px] text-white/20 py-12"
+                className="text-center text-[13px] text-ink/20 py-12"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
@@ -230,19 +239,21 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                       delay: Math.min(index * 0.04, 0.4),
                       ease: 'easeOut',
                     }}
-                    whileHover={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+                    whileHover={{
+                      backgroundColor: 'color-mix(in srgb, var(--ink) 6%, transparent)',
+                    }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <img
                       src={anime.cover_image}
                       alt={anime.title}
-                      className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-white/[0.06]"
+                      className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-ink/[0.06]"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-white/80 group-hover:text-white truncate transition-colors">
+                      <p className="text-sm font-medium text-ink/80 group-hover:text-ink truncate transition-colors">
                         {anime.title}
                       </p>
-                      <div className="flex items-center gap-2 text-[11px] text-white/30 mt-1">
+                      <div className="flex items-center gap-2 text-[11px] text-ink/30 mt-1">
                         <span>
                           {anime.episode_count} {i18n._(msg`common.ep`)}
                         </span>
@@ -252,7 +263,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                       </div>
                     </div>
                     <svg
-                      className="w-4 h-4 text-white/10 group-hover:text-white/30 transition-colors shrink-0"
+                      className="w-4 h-4 text-ink/10 group-hover:text-ink/30 transition-colors shrink-0"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -277,7 +288,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
           >
             {/* Selected anime header */}
             <motion.div
-              className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.06]"
+              className="flex items-center gap-3 mb-4 pb-4 border-b border-ink/[0.06]"
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -285,14 +296,14 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
               <img
                 src={selectedAnime.cover_image}
                 alt={selectedAnime.title}
-                className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-white/[0.06]"
+                className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-ink/[0.06]"
               />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-white truncate">{selectedAnime.title}</p>
+                <p className="text-sm font-medium text-ink truncate">{selectedAnime.title}</p>
                 <button
                   type="button"
                   onClick={handleGoBackToSearch}
-                  className="flex items-center gap-1 text-[12px] text-white/30 hover:text-white/60 transition-colors mt-1 cursor-pointer"
+                  className="flex items-center gap-1 text-[12px] text-ink/30 hover:text-ink/60 transition-colors mt-1 cursor-pointer"
                 >
                   <svg
                     className="w-3 h-3"
@@ -328,9 +339,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                       onClick={() => setSelectedEpisode(ep)}
                       className={cn(
                         'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-left transition-colors',
-                        isSelected
-                          ? 'bg-white/[0.08] ring-1 ring-white/[0.12]'
-                          : 'hover:bg-white/[0.04]'
+                        isSelected ? 'bg-ink/[0.08] ring-1 ring-ink/[0.12]' : 'hover:bg-ink/[0.04]'
                       )}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -345,7 +354,9 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                       <motion.span
                         className="text-[12px] font-bold tabular-nums whitespace-nowrap"
                         animate={{
-                          color: isSelected ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.25)',
+                          color: isSelected
+                            ? 'color-mix(in srgb, var(--ink) 80%, transparent)'
+                            : 'color-mix(in srgb, var(--ink) 25%, transparent)',
                         }}
                         transition={{ duration: 0.15 }}
                       >
@@ -354,19 +365,19 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
                       <span
                         className={cn(
                           'text-sm truncate flex-1 transition-colors',
-                          isSelected ? 'text-white' : 'text-white/50'
+                          isSelected ? 'text-ink' : 'text-ink/50'
                         )}
                       >
                         {ep.title || ep.title_original}
                       </span>
                       {ep.air_date && (
-                        <span className="text-[11px] text-white/20 whitespace-nowrap">
+                        <span className="text-[11px] text-ink/20 whitespace-nowrap">
                           {ep.air_date}
                         </span>
                       )}
                       {isSelected && (
                         <motion.svg
-                          className="w-4 h-4 text-white/50 shrink-0"
+                          className="w-4 h-4 text-ink/50 shrink-0"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -388,7 +399,7 @@ export function MatchModal({ file, onClose, libraryId }: MatchModalProps) {
 
             {episodes && episodes.length === 0 && !isLoadingEpisodes && (
               <motion.p
-                className="text-center text-[13px] text-white/20 py-12"
+                className="text-center text-[13px] text-ink/20 py-12"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
