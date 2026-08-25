@@ -79,3 +79,7 @@ make kill       # free the dev ports
   hand, so an API change needs a matching frontend change.
 - **i18n is compiled.** Run `bun run i18n:compile` in `web/` before a build, or
   translations resolve to their message IDs.
+- **Every icon is generated.** Favicons, PWA icons, app tiles, the macOS
+  `AppIcon.appiconset` and the brand lockups all come from
+  `docs/brand/src/mark.svg` via `make brand`. Edit the master and rebuild;
+  never hand-edit a PNG. See `docs/brand/README.md`.

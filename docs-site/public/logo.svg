@@ -1,16 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
-  <!-- Left circle (indigo) -->
-  <circle cx="15" cy="20" r="13" fill="#4338CA" opacity="0.75"/>
-  <!-- Right circle (violet) -->
-  <circle cx="25" cy="20" r="13" fill="#5B21B6" opacity="0.8"/>
-  <!-- Vesica piscis intersection — brighter -->
-  <clipPath id="left-clip">
-    <circle cx="15" cy="20" r="13"/>
-  </clipPath>
-  <clipPath id="right-clip">
-    <circle cx="25" cy="20" r="13"/>
-  </clipPath>
-  <circle cx="25" cy="20" r="13" clip-path="url(#left-clip)" fill="#7C3AED" opacity="0.9"/>
-  <!-- Play triangle cutout -->
-  <polygon points="18,15 18,25 25,20" fill="#0A0A0F"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="milmil">
+  <!-- milmil · Double Arch — the m of milmil, built from two identical semicircles.
+       Master mark. 64u grid. Every other asset is derived from this file.
+       One modulus: stem pitch s = 21u. Arch radius s/2, stroke s/3, stems at 11 / 32 / 53. -->
+  <defs>
+    <linearGradient id="mm-arch" gradientUnits="userSpaceOnUse" x1="7.5" y1="16" x2="56.5" y2="48">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset=".55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#4338CA"/>
+    </linearGradient>
+  </defs>
+  <path d="M11 44.5V30a10.5 10.5 0 0 1 21 0v14.5M32 30a10.5 10.5 0 0 1 21 0v14.5"
+        fill="none" stroke="url(#mm-arch)" stroke-width="7"
+        stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

@@ -1,6 +1,6 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
-.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill \
+.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill brand \
 	macos-gen macos-build macos-test macos-lint macos-run macos-watch macos-dmg
 
 # Prerequisites: go install github.com/air-verse/air@latest
@@ -42,6 +42,10 @@ test-e2e:
 lint:
 	cd api && go vet ./...
 	cd web && bun run lint
+
+# Regenerate every icon/lockup from docs/brand/src/mark.svg (needs librsvg)
+brand:
+	@python3 scripts/build-brand-assets.py
 
 kill:
 	@./scripts/release-ports.sh
