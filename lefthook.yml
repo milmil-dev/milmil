@@ -15,15 +15,19 @@ pre-commit:
       glob: "api/**/*.go"
       run: cd api && go vet ./...
 
+    # In a linked worktree git exports GIT_DIR to hooks; with cwd moved to
+    # root:web/ and no GIT_WORK_TREE, `git add src/...` would treat web/ as
+    # the work tree and stage phantom root-level src/ copies. Unset the
+    # exported vars so git rediscovers the repo from the job's cwd.
     - name: web lint
       root: "web/"
       glob: "*.{ts,tsx}"
-      run: bun run lint --fix {staged_files} && git add {staged_files}
+      run: bun run lint --fix {staged_files} && env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE git add {staged_files}
 
     - name: web format
       root: "web/"
       glob: "*.{ts,tsx,json,css,md}"
-      run: bun run format {staged_files} && git add {staged_files}
+      run: bun run format {staged_files} && env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE git add {staged_files}
 
 commit-msg:
   jobs:
