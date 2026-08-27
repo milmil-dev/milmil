@@ -92,6 +92,8 @@ type FranchiseEntry struct {
 	EpisodeCount  int     `json:"episode_count"`
 	Score         float64 `json:"score"`
 	RelationType  string  `json:"relation_type,omitempty"`
+	Season        int     `json:"season,omitempty"` // 1-based season number on main-series entries
+	Part          int     `json:"part,omitempty"`   // 1-based cour within a split season; 0 when the season aired in one run
 }
 
 type FranchiseResult struct {

@@ -8368,6 +8368,14 @@
           "relation_type": {
             "type": "string",
             "description": "Relation kind for side stories (e.g. `SEQUEL`, `SIDE_STORY`); empty on main-series entries"
+          },
+          "season": {
+            "type": "integer",
+            "description": "1-based season number on main-series entries. Split cours (Part 2 / \u7b2c2\u30af\u30fc\u30eb / \u5f8c\u7de8) share the season of the entry before them; omitted on side stories"
+          },
+          "part": {
+            "type": "integer",
+            "description": "1-based cour within a split season; omitted when the season aired as one run"
           }
         }
       },

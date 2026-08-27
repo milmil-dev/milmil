@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"regexp"
 	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/milmil/api/internal/integration/anilist"
@@ -49,10 +52,10 @@ func (s *Service) GetFranchise(ctx context.Context, bangumiID int) (*FranchiseRe
 
 	startID := detail.AniListID
 
-	refKey := fmt.Sprintf("meta:franchise:ref:%d", startID)
+	refKey := fmt.Sprintf("meta:franchise:v2:ref:%d", startID)
 	var rootID int
 	if s.getCache(ctx, refKey, &rootID) && rootID > 0 {
-		franchiseKey := fmt.Sprintf("meta:franchise:al:%d", rootID)
+		franchiseKey := fmt.Sprintf("meta:franchise:v2:al:%d", rootID)
 		var cached FranchiseResult
 		if s.getCache(ctx, franchiseKey, &cached) {
 			return &cached, nil
@@ -68,15 +71,15 @@ func (s *Service) GetFranchise(ctx context.Context, bangumiID int) (*FranchiseRe
 		rootID = startID
 	}
 
-	franchiseKey := fmt.Sprintf("meta:franchise:al:%d", rootID)
+	franchiseKey := fmt.Sprintf("meta:franchise:v2:al:%d", rootID)
 	s.setCache(ctx, franchiseKey, result, franchiseCacheTTL)
 
 	for _, entry := range result.MainSeries {
-		rk := fmt.Sprintf("meta:franchise:ref:%d", entry.AniListID)
+		rk := fmt.Sprintf("meta:franchise:v2:ref:%d", entry.AniListID)
 		s.setCache(ctx, rk, rootID, franchiseCacheTTL)
 	}
 	for _, entry := range result.SideStories {
-		rk := fmt.Sprintf("meta:franchise:ref:%d", entry.AniListID)
+		rk := fmt.Sprintf("meta:franchise:v2:ref:%d", entry.AniListID)
 		s.setCache(ctx, rk, rootID, franchiseCacheTTL)
 	}
 
@@ -185,6 +188,15 @@ func (s *Service) buildFranchiseResult(ctx context.Context, nodes map[int]*franc
 		}
 	}
 
+	// Number the seasons. Only TV-style entries count; movies, OVAs and
+	// specials sitting in the PREQUEL/SEQUEL chain (e.g. 呪術廻戦 0 in front
+	// of the first TV season) are demoted to side stories so they never
+	// steal an "S1" slot.
+	mainSeries, demoted := assignSeasons(mainSeries)
+	for _, entry := range demoted {
+		delete(mainIDs, entry.AniListID)
+	}
+
 	var sideStories []FranchiseEntry
 	for id, node := range nodes {
 		if mainIDs[id] {
@@ -290,4 +302,137 @@ func seasonToMonth(season string) string {
 		return "10"
 	}
 	return ""
+}
+
+// numberedFormats are the AniList formats that count as a "season" of the
+// main series when numbering S1/S2/…. Everything else in the chain is a
+// side story for display purposes.
+var numberedFormats = map[string]bool{
+	"TV":       true,
+	"TV_SHORT": true,
+	"ONA":      true,
+}
+
+// partMarkers recognise split-cour naming across AniList's romaji, English
+// and native titles. Each returns the cour/part number the title claims, or
+// 0 when the pattern does not match. A value of 1 means "first part of a
+// season" (starts a new season), >= 2 means "continuation of the previous
+// entry" (joins its season).
+var partMarkers = []func(title string) int{
+	regexpPart(`(?i)\bpart\s*(\d+)\b`),
+	regexpPart(`(?i)\bcour\s*(\d+)\b`),
+	regexpPart(`(?i)\b(\d+)(?:st|nd|rd|th)\s+cour\b`),
+	regexpPart(`第([0-9一二三四五六七八九十]+)クール`),
+	func(title string) int {
+		switch {
+		case strings.Contains(title, "前編"), strings.Contains(title, "前半"):
+			return 1
+		case strings.Contains(title, "後編"), strings.Contains(title, "後半"), strings.Contains(title, "中編"):
+			return 2
+		}
+		return 0
+	},
+}
+
+func regexpPart(pattern string) func(string) int {
+	re := regexp.MustCompile(pattern)
+	return func(title string) int {
+		m := re.FindStringSubmatch(title)
+		if m == nil {
+			return 0
+		}
+		return parseCourNumber(m[1])
+	}
+}
+
+var kanjiDigits = map[rune]int{'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9, '十': 10}
+
+func parseCourNumber(s string) int {
+	if n, err := strconv.Atoi(s); err == nil {
+		return n
+	}
+	// Kanji numerals: 一..十 and 十一..十九 cover every real split cour.
+	total := 0
+	for _, r := range s {
+		d, ok := kanjiDigits[r]
+		if !ok {
+			return 0
+		}
+		if d == 10 {
+			if total == 0 {
+				total = 10
+			} else {
+				total *= 10
+			}
+			continue
+		}
+		total += d
+	}
+	return total
+}
+
+// partMarker reports which cour a franchise entry's titles claim to be:
+// 0 when there is no split-cour marker, 1 for an explicit first part
+// (Part 1 / 前編 / 第1クール), >= 2 for a continuation.
+func partMarker(e FranchiseEntry) int {
+	for _, title := range []string{e.TitleEN, e.TitleOriginal, e.Title} {
+		if title == "" {
+			continue
+		}
+		for _, match := range partMarkers {
+			if n := match(title); n > 0 {
+				return n
+			}
+		}
+	}
+	return 0
+}
+
+// assignSeasons walks the main-series chain in air order and stamps each
+// entry with Season (1-based) and Part (1-based within a split season, 0 for
+// a season that aired as one run). Split cours — AniList lists 無職転生
+// 第2クール, 呪術廻戦 死滅回游 後編 and friends as their own media — fold
+// into the season of the entry before them instead of becoming S(n+1).
+//
+// Entries whose format is not TV-style are removed from the chain and
+// returned as demoted so the caller can file them as side stories. When no
+// entry has a TV-style format (an OVA-only series) every entry is kept.
+func assignSeasons(chain []FranchiseEntry) (main, demoted []FranchiseEntry) {
+	hasNumbered := false
+	for _, e := range chain {
+		if numberedFormats[e.MediaType] {
+			hasNumbered = true
+			break
+		}
+	}
+	main = make([]FranchiseEntry, 0, len(chain))
+	for _, e := range chain {
+		if hasNumbered && !numberedFormats[e.MediaType] {
+			demoted = append(demoted, e)
+			continue
+		}
+		main = append(main, e)
+	}
+
+	season := 0
+	for i := range main {
+		if season == 0 || partMarker(main[i]) < 2 {
+			season++
+		}
+		main[i].Season = season
+	}
+	// Part is only meaningful when a season is split across entries.
+	for start := 0; start < len(main); {
+		end := start
+		for end < len(main) && main[end].Season == main[start].Season {
+			end++
+		}
+		if end-start > 1 {
+			for i := start; i < end; i++ {
+				main[i].Part = i - start + 1
+			}
+		}
+		start = end
+	}
+	return main, demoted
 }
