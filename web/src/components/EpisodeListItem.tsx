@@ -6,6 +6,7 @@ import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { cn } from '../lib/utils';
+import { stripTags } from '../lib/sanitize';
 
 interface EpisodeListItemProps {
   sort: number;
@@ -269,7 +270,7 @@ export function EpisodeListItem({
 
         {synopsis ? (
           <p className="text-[12px] text-ink/35 line-clamp-2 mt-1 leading-relaxed">
-            {synopsis.replace(/<[^>]+>/g, '')}
+            {stripTags(synopsis)}
           </p>
         ) : titleOriginal && titleOriginal !== title ? (
           <p className="text-[12px] text-ink/25 truncate mt-0.5">{titleOriginal}</p>
@@ -387,7 +388,7 @@ export function EpisodeListItem({
               {/* Synopsis — full, not clamped */}
               {synopsis && (
                 <p className="text-[12px] text-ink/45 mt-2 leading-relaxed max-h-[160px] overflow-y-auto">
-                  {synopsis.replace(/<[^>]+>/g, '')}
+                  {stripTags(synopsis)}
                 </p>
               )}
             </motion.div>

@@ -10,6 +10,7 @@ import { animeGradient } from '../lib/gradient';
 import { EpisodeListItem } from './EpisodeListItem';
 import { Modal } from './Modal';
 import { Skeleton } from './Skeleton';
+import { stripTags } from '../lib/sanitize';
 
 interface PreviewModalProps {
   anime: AnimeSummary | null;
@@ -233,7 +234,7 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
                   </div>
                 ) : synopsis ? (
                   <p className="text-[15px] text-gray-200 line-clamp-3 max-w-xl leading-relaxed">
-                    {synopsis.replace(/<[^>]+>/g, '')}
+                    {stripTags(synopsis)}
                   </p>
                 ) : null}
               </div>

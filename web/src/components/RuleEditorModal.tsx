@@ -26,6 +26,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Switch } from './ui/switch';
 import { Skeleton } from './Skeleton';
+import { externalHref } from '../lib/sanitize';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -363,14 +364,20 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
               </div>
             ) : (
               <div className="space-y-1.5">
-                <a
-                  href={rssUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-[12px] text-blue-400/70 hover:text-blue-400 font-mono break-all leading-relaxed transition-colors"
-                >
-                  {rssUrl}
-                </a>
+                {externalHref(rssUrl) ? (
+                  <a
+                    href={externalHref(rssUrl)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-[12px] text-blue-400/70 hover:text-blue-400 font-mono break-all leading-relaxed transition-colors"
+                  >
+                    {rssUrl}
+                  </a>
+                ) : (
+                  <p className="block text-[12px] text-ink/50 font-mono break-all leading-relaxed">
+                    {rssUrl}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => setRssEditing(true)}

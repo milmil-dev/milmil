@@ -1,4 +1,5 @@
 import type { AnimeDetail } from '@/lib/api/discover';
+import { stripTags } from '../../lib/sanitize';
 
 interface AnimeInfoSectionProps {
   anime: AnimeDetail;
@@ -14,7 +15,7 @@ export function AnimeInfoSection({ anime }: AnimeInfoSectionProps) {
         <div className="min-w-0">
           {anime.synopsis && (
             <p className="text-xs text-mm-text-secondary line-clamp-4 leading-relaxed">
-              {anime.synopsis.replace(/<[^>]+>/g, '')}
+              {stripTags(anime.synopsis)}
             </p>
           )}
           {anime.genres && anime.genres.length > 0 && (

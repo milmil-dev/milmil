@@ -10,6 +10,7 @@ import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { PreviewModal } from './PreviewModal';
 import { Skeleton } from './Skeleton';
+import { stripTags } from '../lib/sanitize';
 
 const SLIDE_DURATION = 8000;
 
@@ -158,7 +159,7 @@ export function HeroBanner({
                     className="text-[14px] font-bold text-white/65 max-w-[560px] leading-relaxed line-clamp-3"
                     style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}
                   >
-                    {featured.description.replace(/<[^>]+>/g, '')}
+                    {stripTags(featured.description)}
                   </p>
                 )}
 

@@ -10,6 +10,7 @@ import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
+import { stripTags } from '../lib/sanitize';
 
 const STATUS_COLORS: Record<string, string> = {
   watching: 'bg-blue-500/80',
@@ -369,7 +370,7 @@ function HoverDetailCard({
             {/* Synopsis */}
             {synopsis && (
               <p className="text-[10px] text-white/40 leading-relaxed line-clamp-3">
-                {synopsis.replace(/<[^>]+>/g, '')}
+                {stripTags(synopsis)}
               </p>
             )}
           </div>
