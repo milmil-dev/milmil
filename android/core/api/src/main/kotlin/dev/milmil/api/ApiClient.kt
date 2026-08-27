@@ -27,6 +27,14 @@ import io.ktor.serialization.kotlinx.json.json
 public class ApiClient(
     baseUrl: String,
     engine: HttpClientEngine? = null,
+    /**
+     * Sent as `X-Milmil-Locale` so the API localizes titles and synopses to
+     * what this client shows, rather than the server-wide preference the web
+     * app picked. MilmilKit has always done this; the Android client did not,
+     * which is why the two showed different titles for the same row.
+     */
+    private val locale: String = defaultLocale(),
+    // Last, so `ApiClient(url) { token }` keeps binding the trailing lambda.
     private val tokenProvider: () -> String? = { null },
 ) {
     public val baseUrl: String = normalizeBaseUrl(baseUrl)
@@ -63,6 +71,7 @@ public class ApiClient(
 
     private fun applyAuth(builder: HttpRequestBuilder) {
         tokenProvider()?.takeIf { it.isNotBlank() }?.let { builder.header("Authorization", "Bearer $it") }
+        if (locale.isNotBlank()) builder.header("X-Milmil-Locale", locale)
     }
 
     public fun close(): Unit = http.close()
@@ -73,6 +82,9 @@ public class ApiClient(
     }
 
     public companion object {
+        /** The device language as a BCP-47 tag, e.g. `zh-Hant-HK`. */
+        public fun defaultLocale(): String = java.util.Locale.getDefault().toLanguageTag()
+
         /** Strips a trailing slash and a pasted `/api/v1` suffix, like `ServerProfile.normalize`. */
         public fun normalizeBaseUrl(raw: String): String {
             var url = raw.trim().trimEnd('/')
