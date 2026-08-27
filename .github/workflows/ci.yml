@@ -36,7 +36,7 @@ jobs:
       # lets a dependency bump reuse the previous run's cache and recompile only
       # what actually changed.
       - name: Restore Go module and build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cache/go-build
@@ -130,7 +130,7 @@ jobs:
 
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-playwright-report
           path: |
@@ -175,7 +175,7 @@ jobs:
 
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docs-playwright-report
           path: docs-site/test-results
@@ -212,7 +212,7 @@ jobs:
         run: python3 scripts/i18n_sync.py --check && git diff --exit-code Milmil/Resources/Localizable.xcstrings
 
       - name: Restore SwiftPM cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             macos/Packages/MilmilKit/.build
