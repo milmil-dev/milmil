@@ -1,11 +1,16 @@
 package danmaku
 
 import (
+	"bytes"
 	"compress/flate"
 	"compress/gzip"
 	"context"
+	"crypto/rand"
+	"encoding/binary"
+	"encoding/hex"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -15,61 +20,215 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 const (
-	bilibiliSearchURL  = "https://api.bilibili.com/x/web-interface/search/type"
-	bilibiliViewURL    = "https://api.bilibili.com/x/web-interface/view"
 	bilibiliDanmakuURL = "https://comment.bilibili.com"
 	bilibiliUserAgent  = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 
 // BilibiliSource implements Source for Bilibili danmaku.
+//
+// Bilibili's web search sits behind its "gaia" risk control: a request needs
+// a device identity (buvid3/buvid4/b_nut/_uuid cookies) that has been
+// activated once through ExClimbWuzhi, and the query must carry a WBI
+// signature (w_rid/wts) derived from keys that rotate daily. Without all of
+// that the API answers with an HTML block page or a `v_voucher` captcha
+// ticket instead of results.
 type BilibiliSource struct {
-	client  *http.Client
-	buvid3  string
-	buvidMu sync.Once
+	client   *http.Client
+	apiBase  string
+	cdnBase  string
+	mu       sync.Mutex
+	session  *bilibiliSession
+	sessions int // sessions created; tests use it to see a reset
 }
+
+type bilibiliSession struct {
+	cookie   string
+	mixinKey string
+	created  time.Time
+}
+
+// bilibiliSessionTTL bounds how long a device identity and its WBI keys are
+// reused; the keys rotate daily, so anything under that is safe.
+const bilibiliSessionTTL = 6 * time.Hour
 
 // NewBilibiliSource creates a new BilibiliSource with the given HTTP client.
 func NewBilibiliSource(c *http.Client) *BilibiliSource {
 	if c == nil {
 		c = http.DefaultClient
 	}
-	return &BilibiliSource{client: c}
+	return &BilibiliSource{client: c, apiBase: "https://api.bilibili.com", cdnBase: bilibiliDanmakuURL}
 }
 
-// initBuvid fetches a buvid3 session token from Bilibili's SPI endpoint.
-// Without this cookie, Bilibili returns 412 for many API requests.
-func (b *BilibiliSource) initBuvid() {
-	b.buvidMu.Do(func() {
-		resp, err := b.client.Get("https://api.bilibili.com/x/frontend/finger/spi")
-		if err != nil {
-			slog.Warn("bilibili: failed to fetch buvid", "err", err)
-			return
-		}
-		defer resp.Body.Close()
-
-		var result struct {
-			Data struct {
-				B3 string `json:"b_3"`
-			} `json:"data"`
-		}
-		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && result.Data.B3 != "" {
-			b.buvid3 = result.Data.B3
-			slog.Debug("bilibili: acquired buvid3", "buvid3", b.buvid3[:8]+"...")
-		}
-	})
+// getSession returns the cached device identity, building a fresh one when
+// there is none or it has aged out.
+func (b *BilibiliSource) getSession(ctx context.Context) (*bilibiliSession, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if b.session != nil && time.Since(b.session.created) < bilibiliSessionTTL {
+		return b.session, nil
+	}
+	sess, err := b.newSession(ctx)
+	if err != nil {
+		return nil, err
+	}
+	b.session = sess
+	b.sessions++
+	return sess, nil
 }
 
-// setHeaders adds required headers to bypass Bilibili's anti-bot (412).
-func (b *BilibiliSource) setHeaders(req *http.Request) {
-	b.initBuvid()
+// resetSession drops the cached identity so the next call registers a new
+// one — the response to a block page or a captcha voucher.
+func (b *BilibiliSource) resetSession() {
+	b.mu.Lock()
+	b.session = nil
+	b.mu.Unlock()
+}
+
+func (b *BilibiliSource) newSession(ctx context.Context) (*bilibiliSession, error) {
+	// 1. Device IDs from the fingerprint SPI endpoint.
+	var spi struct {
+		Data struct {
+			B3 string `json:"b_3"`
+			B4 string `json:"b_4"`
+		} `json:"data"`
+	}
+	if err := b.getJSON(ctx, b.apiBase+"/x/frontend/finger/spi", "", &spi); err != nil {
+		return nil, fmt.Errorf("bilibili: fetch buvid: %w", err)
+	}
+	if spi.Data.B3 == "" {
+		return nil, errors.New("bilibili: fetch buvid: empty buvid3")
+	}
+	now := time.Now()
+	cookie := fmt.Sprintf("buvid3=%s; buvid4=%s; b_nut=%d; _uuid=%s",
+		spi.Data.B3, spi.Data.B4, now.Unix(), bilibiliUUID(now))
+
+	// 2. Activate the identity. Failure here is not fatal — the search
+	// itself reports whether risk control accepted us.
+	if err := b.activate(ctx, cookie, spi.Data.B3); err != nil {
+		slog.Warn("bilibili: device activation failed", "err", err)
+	}
+
+	// 3. WBI signing keys.
+	var nav struct {
+		Data struct {
+			WbiImg struct {
+				ImgURL string `json:"img_url"`
+				SubURL string `json:"sub_url"`
+			} `json:"wbi_img"`
+		} `json:"data"`
+	}
+	if err := b.getJSON(ctx, b.apiBase+"/x/web-interface/nav", cookie, &nav); err != nil {
+		return nil, fmt.Errorf("bilibili: fetch wbi keys: %w", err)
+	}
+	mixin := wbiMixinKey(wbiKeyFromURL(nav.Data.WbiImg.ImgURL), wbiKeyFromURL(nav.Data.WbiImg.SubURL))
+	if mixin == "" {
+		return nil, errors.New("bilibili: fetch wbi keys: missing wbi_img")
+	}
+	slog.Debug("bilibili: session ready", "buvid3", spi.Data.B3[:min(8, len(spi.Data.B3))]+"...")
+	return &bilibiliSession{cookie: cookie, mixinKey: mixin, created: now}, nil
+}
+
+// activate posts the ExClimbWuzhi fingerprint the web client sends on first
+// load; the payload only needs to be well-formed for gaia to mark the buvid
+// as a real browser.
+func (b *BilibiliSource) activate(ctx context.Context, cookie, buvid3 string) error {
+	fingerprint := map[string]any{
+		"3064": 1,
+		"5062": strconv.FormatInt(time.Now().UnixMilli(), 10),
+		"03bf": "https://www.bilibili.com/",
+		"39c8": "333.1007.fp.risk",
+		"6e7c": "1920x1080",
+		"3c43": map[string]any{
+			"2673": 0, "5766": 24, "6527": 0, "7003": 1, "807e": 1,
+			"b8ce": bilibiliUserAgent, "641c": 0, "07a4": "zh-CN",
+			"1c57": "not available", "0bd0": 8, "725f": "1920x1080",
+			"3872": "24", "2e5c": "1920x1080", "f5e6": "20", "2ad2": "-480",
+			"c72c": "20", "2b1b": "1", "c7e2": "true", "3f02": "Win32", "8a67": "false",
+		},
+		"54ef": "{}",
+		"df35": buvid3,
+		"07a4": "zh-CN",
+		"db46": 0,
+	}
+	inner, _ := json.Marshal(fingerprint)
+	body, _ := json.Marshal(map[string]string{"payload": string(inner)})
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, b.apiBase+"/x/internal/gaia-gateway/ExClimbWuzhi", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	b.setHeaders(req, cookie)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Origin", "https://www.bilibili.com")
+	resp, err := b.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	_, _ = io.Copy(io.Discard, resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("status %d", resp.StatusCode)
+	}
+	return nil
+}
+
+// getJSON performs a GET with the browser headers and decodes JSON, turning
+// an HTML block page into a readable error.
+func (b *BilibiliSource) getJSON(ctx context.Context, rawURL, cookie string, out any) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
+	if err != nil {
+		return err
+	}
+	b.setHeaders(req, cookie)
+	resp, err := b.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	data, err := io.ReadAll(io.LimitReader(resp.Body, 4<<20))
+	if err != nil {
+		return err
+	}
+	if errBlocked := bilibiliBlocked(resp, data); errBlocked != nil {
+		return errBlocked
+	}
+	return json.Unmarshal(data, out)
+}
+
+// errBilibiliBlocked marks a response from risk control rather than the
+// API; callers drop their session and start over.
+var errBilibiliBlocked = errors.New("bilibili: request blocked by risk control")
+
+func bilibiliBlocked(resp *http.Response, data []byte) error {
+	trimmed := bytes.TrimSpace(data)
+	if resp.StatusCode == http.StatusPreconditionFailed || bytes.HasPrefix(trimmed, []byte("<")) {
+		return fmt.Errorf("%w (status %d)", errBilibiliBlocked, resp.StatusCode)
+	}
+	return nil
+}
+
+// setHeaders adds the browser identity Bilibili's anti-bot expects.
+func (b *BilibiliSource) setHeaders(req *http.Request, cookie string) {
 	req.Header.Set("User-Agent", bilibiliUserAgent)
 	req.Header.Set("Referer", "https://www.bilibili.com")
-	if b.buvid3 != "" {
-		req.Header.Set("Cookie", "buvid3="+b.buvid3)
+	if cookie != "" {
+		req.Header.Set("Cookie", cookie)
 	}
+}
+
+// bilibiliUUID mimics the web client's `_uuid` cookie: an upper-case UUID,
+// five digits of the millisecond clock, and the "infoc" suffix.
+func bilibiliUUID(now time.Time) string {
+	var raw [16]byte
+	if _, err := rand.Read(raw[:]); err != nil {
+		binary.BigEndian.PutUint64(raw[:8], uint64(now.UnixNano()))
+	}
+	hexs := strings.ToUpper(hex.EncodeToString(raw[:]))
+	return fmt.Sprintf("%s-%s-%s-%s-%s%05dinfoc",
+		hexs[0:8], hexs[8:12], hexs[12:16], hexs[16:20], hexs[20:32], now.UnixMilli()%100000)
 }
 
 func (b *BilibiliSource) Name() string {
@@ -80,7 +239,8 @@ func (b *BilibiliSource) Name() string {
 type bilibiliSearchResponse struct {
 	Code int `json:"code"`
 	Data struct {
-		Result []bilibiliSearchResult `json:"result"`
+		Result  []bilibiliSearchResult `json:"result"`
+		Voucher string                 `json:"v_voucher"`
 	} `json:"data"`
 }
 
@@ -93,31 +253,14 @@ type bilibiliSearchResult struct {
 }
 
 func (b *BilibiliSource) Search(ctx context.Context, keyword string, page int) ([]SearchResult, error) {
-	u, _ := url.Parse(bilibiliSearchURL)
-	q := u.Query()
-	q.Set("search_type", "video")
-	q.Set("keyword", keyword)
-	q.Set("page", strconv.Itoa(page))
-	u.RawQuery = q.Encode()
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	sr, err := b.search(ctx, keyword, page)
+	if errors.Is(err, errBilibiliBlocked) {
+		// A stale or unactivated identity; register a new one and try once more.
+		b.resetSession()
+		sr, err = b.search(ctx, keyword, page)
+	}
 	if err != nil {
-		return nil, fmt.Errorf("bilibili search: create request: %w", err)
-	}
-	b.setHeaders(req)
-
-	resp, err := b.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("bilibili search: %w", err)
-	}
-	defer resp.Body.Close()
-
-	var sr bilibiliSearchResponse
-	if err := json.NewDecoder(resp.Body).Decode(&sr); err != nil {
-		return nil, fmt.Errorf("bilibili search: decode response: %w", err)
-	}
-	if sr.Code != 0 {
-		return nil, fmt.Errorf("bilibili search: API error code %d", sr.Code)
+		return nil, err
 	}
 
 	results := make([]SearchResult, 0, len(sr.Data.Result))
@@ -131,6 +274,35 @@ func (b *BilibiliSource) Search(ctx context.Context, keyword string, page int) (
 		})
 	}
 	return results, nil
+}
+
+// search performs one signed request against the WBI search endpoint.
+func (b *BilibiliSource) search(ctx context.Context, keyword string, page int) (*bilibiliSearchResponse, error) {
+	sess, err := b.getSession(ctx)
+	if err != nil {
+		return nil, err
+	}
+	params := url.Values{}
+	params.Set("search_type", "video")
+	params.Set("keyword", keyword)
+	params.Set("page", strconv.Itoa(page))
+	u, _ := url.Parse(b.apiBase + "/x/web-interface/wbi/search/type")
+	u.RawQuery = wbiSign(params, sess.mixinKey, time.Now()).Encode()
+
+	var sr bilibiliSearchResponse
+	if err := b.getJSON(ctx, u.String(), sess.cookie, &sr); err != nil {
+		return nil, fmt.Errorf("bilibili search: %w", err)
+	}
+	switch {
+	case sr.Code == -412 || sr.Code == -403:
+		return nil, fmt.Errorf("bilibili search: %w (code %d)", errBilibiliBlocked, sr.Code)
+	case sr.Code != 0:
+		return nil, fmt.Errorf("bilibili search: API error code %d", sr.Code)
+	case sr.Data.Voucher != "" && len(sr.Data.Result) == 0:
+		// A captcha ticket in place of results: the identity was not accepted.
+		return nil, fmt.Errorf("bilibili search: %w (captcha voucher)", errBilibiliBlocked)
+	}
+	return &sr, nil
 }
 
 // bilibiliViewResponse is the API response for video detail (to get CID and pages).
@@ -188,12 +360,16 @@ func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string, partI
 		return nil, fmt.Errorf("bilibili: no cid for %s part %d", videoID, partIndex)
 	}
 
-	danmakuURL := fmt.Sprintf("%s/%d.xml", bilibiliDanmakuURL, cid)
+	danmakuURL := fmt.Sprintf("%s/%d.xml", b.cdnBase, cid)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, danmakuURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("bilibili danmaku: create request: %w", err)
 	}
-	b.setHeaders(req)
+	cookie := ""
+	if sess, sessErr := b.getSession(ctx); sessErr == nil {
+		cookie = sess.cookie
+	}
+	b.setHeaders(req, cookie)
 
 	resp, err := b.client.Do(req)
 	if err != nil {
@@ -225,26 +401,21 @@ func (b *BilibiliSource) FetchDanmaku(ctx context.Context, videoID string, partI
 }
 
 func (b *BilibiliSource) getVideoInfo(ctx context.Context, bvid string) (*bilibiliViewResponse, error) {
-	u, _ := url.Parse(bilibiliViewURL)
+	sess, err := b.getSession(ctx)
+	if err != nil {
+		return nil, err
+	}
+	u, _ := url.Parse(b.apiBase + "/x/web-interface/view")
 	q := u.Query()
 	q.Set("bvid", bvid)
 	u.RawQuery = q.Encode()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("bilibili view: create request: %w", err)
-	}
-	b.setHeaders(req)
-
-	resp, err := b.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("bilibili view: %w", err)
-	}
-	defer resp.Body.Close()
-
 	var vr bilibiliViewResponse
-	if err := json.NewDecoder(resp.Body).Decode(&vr); err != nil {
-		return nil, fmt.Errorf("bilibili view: decode response: %w", err)
+	if err := b.getJSON(ctx, u.String(), sess.cookie, &vr); err != nil {
+		if errors.Is(err, errBilibiliBlocked) {
+			b.resetSession()
+		}
+		return nil, fmt.Errorf("bilibili view: %w", err)
 	}
 	if vr.Code != 0 {
 		return nil, fmt.Errorf("bilibili view: API error code %d", vr.Code)
