@@ -389,7 +389,7 @@ struct HelpCommands: Commands {
 
     var body: some Commands {
         CommandGroup(replacing: .help) {
-            Button("milmil 說明") { openURL(URL(string: "https://milmil.dev")!) }
+            Button("milmil 說明") { openURL(URL(string: "https://milmil.vercel.app")!) }
             Button("鍵盤快捷鍵…") {
                 settings.requestedTab = .keyboard
                 openSettings()

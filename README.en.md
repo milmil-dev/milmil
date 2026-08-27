@@ -95,7 +95,7 @@ Or download `milmil-macos-<version>.dmg` from the [latest release](https://githu
 - **Apple Silicon** only — there is no Intel build
 - A reachable milmil server (0.1.20 or later)
 
-Full guide: [macOS App](https://milmil.dev/en/docs/getting-started/macos).
+Full guide: [macOS App](https://milmil.vercel.app/en/docs/getting-started/macos).
 
 ---
 

@@ -81,7 +81,7 @@ brew install --cask milmil-dev/milmil/milmil
 - **Apple Silicon** 전용 — Intel 빌드는 없습니다
 - 연결 가능한 milmil 서버(0.1.20 이상)
 
-자세한 내용은 [macOS 앱](https://milmil.dev/en/docs/getting-started/macos) 문서를 참고하세요.
+자세한 내용은 [macOS 앱](https://milmil.vercel.app/en/docs/getting-started/macos) 문서를 참고하세요.
 
 ---
 
