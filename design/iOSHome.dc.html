@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    /*
+      iOS 26 Liquid Glass. Not invented here — macos/Milmil/Design/GlassStyles.swift
+      already adopts it: glassEffect(.regular, in:) for floating chrome,
+      glassSurface(in: Capsule()) for the player HUD, and .glassProminent filled
+      with INK, never the accent ("Vesica Violet is for state and emphasis, not
+      for button backgrounds"). The iOS client inherits those rules verbatim.
+      System font: -apple-system renders as real SF Pro on a Mac.
+    */
+    :root {
+      --tint: #a78bfa;
+      --ink: rgba(255, 255, 255, 0.92);
+      --bg: #070707;
+      --label: #ffffff;
+      --label2: rgba(235, 235, 245, 0.6);
+      --label3: rgba(235, 235, 245, 0.3);
+      --sep: rgba(84, 84, 88, 0.5);
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--label);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+        'PingFang TC', 'Helvetica Neue', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--tint); text-decoration: none; }
+    a:hover { color: #c4b1fd; }
+    .safe-top { height: 59px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+
+    /* Liquid Glass: translucent layer, specular top edge, hairline rim, and a
+       cast shadow — the material floats above content rather than boxing it. */
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.045));
+      backdrop-filter: blur(26px) saturate(180%);
+      box-shadow:
+        inset 0 0.5px 0 rgba(255,255,255,0.5),
+        inset 0 -0.5px 0 rgba(255,255,255,0.1),
+        inset 0 0 0 0.5px rgba(255,255,255,0.13),
+        0 10px 30px rgba(0,0,0,0.45);
+    }
+    /* Larger surfaces read thinner or they turn milky. */
+    .glass-thin {
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      backdrop-filter: blur(30px) saturate(170%);
+      box-shadow:
+        inset 0 0.5px 0 rgba(255,255,255,0.36),
+        inset 0 0 0 0.5px rgba(255,255,255,0.1),
+        0 12px 34px rgba(0,0,0,0.5);
+    }
+    /* .glassProminent — ink fill, inverted label. Never the accent. */
+    .glass-prominent {
+      background: var(--ink);
+      box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.9), 0 8px 24px rgba(0,0,0,0.4);
+      color: #070707;
+    }
+    /* iOS type ramp */
+    .large-title { font-size: 34px; font-weight: 700; letter-spacing: 0.37px; line-height: 41px; }
+    .title3 { font-size: 20px; font-weight: 600; letter-spacing: 0.38px; }
+    .headline { font-size: 17px; font-weight: 600; letter-spacing: -0.41px; }
+    .body { font-size: 17px; font-weight: 400; letter-spacing: -0.41px; }
+    .subhead { font-size: 15px; font-weight: 400; letter-spacing: -0.24px; }
+    .footnote { font-size: 13px; font-weight: 400; letter-spacing: -0.08px; }
+    .caption { font-size: 12px; font-weight: 400; }
+    .tap { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    /* Circular glass chip — how iOS 26 floats a bar button over content. */
+    .chip { width: 38px; height: 38px; border-radius: 19px; display: flex; align-items: center; justify-content: center; }
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--bg);">
+
+  <div style="position: relative; height: 452px;">
+    <img src="hero.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,7,7,0.4) 0%, rgba(7,7,7,0.02) 32%, rgba(7,7,7,0.88) 82%, var(--bg) 100%);"></div>
+
+    <div class="safe-top"></div>
+    <!-- Bar buttons float as circular glass chips over the artwork -->
+    <div style="position: relative; display: flex; align-items: flex-start; justify-content: space-between; padding: 0 16px;">
+      <span class="large-title" style="text-shadow: 0 2px 12px rgba(0,0,0,0.5);">milmil</span>
+      <div style="display: flex; gap: 8px; padding-top: 4px;">
+        <div class="glass chip"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg></div>
+        <div class="glass chip" style="padding: 0;"><div style="width: 28px; height: 28px; border-radius: 14px; background: linear-gradient(135deg, #a78bfa, #6d5bd0); display: flex; align-items: center; justify-content: center;"><span style="font-size: 13px; font-weight: 600; color: #0c0c10;">A</span></div></div>
+      </div>
+    </div>
+
+    <div style="position: absolute; left: 16px; right: 16px; bottom: 18px;">
+      <div style="font-size: 28px; font-weight: 700; letter-spacing: 0.35px; line-height: 1.14; text-wrap: pretty; text-shadow: 0 2px 14px rgba(0,0,0,0.6);">BLEACH 千年血戰篇<br>禍進譚</div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-top: 9px;">
+        <span class="footnote" style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--tint);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#a78bfa"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9Z"/></svg>8.2</span>
+        <span class="footnote" style="color: rgba(255,255,255,0.72);">2026 夏 · 10 集</span>
+      </div>
+      <!-- .glassProminent: ink fill, inverted label. The accent stays for
+           state and emphasis, never as a button background. -->
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <div class="glass-prominent" style="flex: 1; height: 50px; border-radius: 25px; display: flex; align-items: center; justify-content: center; gap: 7px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="#070707"><path d="M7 4.5v15l12-7.5Z"/></svg>
+          <span class="headline">繼續看 EP 41</span></div>
+        <div class="glass" style="width: 50px; height: 50px; border-radius: 25px; display: flex; align-items: center; justify-content: center;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21Z"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 8px 0 0 16px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding-right: 16px;">
+      <span class="title3">今日時間表</span>
+      <span class="subhead" style="color: var(--tint);">全部</span>
+    </div>
+    <div class="shelf" style="margin-top: 10px;">
+      <div style="width: 108px; flex: none;"><div style="position: relative;"><img src="poster0.jpg" alt="" style="width: 108px; height: 154px; border-radius: 14px; object-fit: cover; display: block;"><span class="glass caption" style="position: absolute; top: 7px; left: 7px; border-radius: 9px; padding: 3px 8px; font-weight: 600; color: #fff;">EP 9</span></div><div class="footnote" style="margin-top: 7px; font-weight: 500;">MEBIUS DUST</div></div>
+      <div style="width: 108px; flex: none;"><div style="position: relative;"><img src="poster1.jpg" alt="" style="width: 108px; height: 154px; border-radius: 14px; object-fit: cover; display: block;"><span class="glass caption" style="position: absolute; top: 7px; left: 7px; border-radius: 9px; padding: 3px 8px; font-weight: 600; color: #fff;">EP 27</span></div><div class="footnote" style="margin-top: 7px; font-weight: 500;">花之天使</div></div>
+      <div style="width: 108px; flex: none;"><div style="position: relative;"><img src="poster2.jpg" alt="" style="width: 108px; height: 154px; border-radius: 14px; object-fit: cover; display: block;"><span class="glass caption" style="position: absolute; top: 7px; left: 7px; border-radius: 9px; padding: 3px 8px; font-weight: 600; color: #fff;">EP 13</span></div><div class="footnote" style="margin-top: 7px; font-weight: 500;">太古神尊</div></div>
+    </div>
+  </div>
+
+  <div style="padding: 18px 0 0 16px;">
+    <span class="title3">熱門</span>
+    <div class="shelf" style="margin-top: 10px;">
+      <div style="width: 108px; flex: none;"><img src="poster4.jpg" alt="" style="width: 108px; height: 154px; border-radius: 14px; object-fit: cover; display: block;"></div>
+      <div style="width: 108px; flex: none;"><img src="poster5.jpg" alt="" style="width: 108px; height: 154px; border-radius: 14px; object-fit: cover; display: block;"></div>
+      <div style="width: 108px; flex: none;"><img src="poster3.jpg" alt="" style="width: 108px; height: 154px; border-radius: 14px; object-fit: cover; display: block;"></div>
+    </div>
+  </div>
+<!-- iOS 26 tab bar: a floating glass capsule inset from the edges, content
+     running underneath it — not an opaque bar pinned to the bottom. -->
+<div style="position: absolute; left: 16px; right: 16px; bottom: 34px;">
+  <div class="glass" style="height: 60px; border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 0 6px;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="var(--tint)" stroke="var(--tint)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg>
+      <span style="font-size: 10px; font-weight: 500; color: var(--tint);">首頁</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="var(--label2)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      <span style="font-size: 10px; font-weight: 500; color: var(--label2);">時間表</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="var(--label2)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/></svg>
+      <span style="font-size: 10px; font-weight: 500; color: var(--label2);">探索</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="var(--label2)" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+      <span style="font-size: 10px; font-weight: 500; color: var(--label2);">搜尋</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px;">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="var(--label2)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21Z"/></svg>
+      <span style="font-size: 10px; font-weight: 500; color: var(--label2);">收藏</span>
+    </div>
+  </div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 8px; display: flex; justify-content: center;">
+  <div style="width: 140px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.3);"></div>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

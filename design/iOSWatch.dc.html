@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    /*
+      iOS 26 Liquid Glass. Not invented here — macos/Milmil/Design/GlassStyles.swift
+      already adopts it: glassEffect(.regular, in:) for floating chrome,
+      glassSurface(in: Capsule()) for the player HUD, and .glassProminent filled
+      with INK, never the accent ("Vesica Violet is for state and emphasis, not
+      for button backgrounds"). The iOS client inherits those rules verbatim.
+      System font: -apple-system renders as real SF Pro on a Mac.
+    */
+    :root {
+      --tint: #a78bfa;
+      --ink: rgba(255, 255, 255, 0.92);
+      --bg: #070707;
+      --label: #ffffff;
+      --label2: rgba(235, 235, 245, 0.6);
+      --label3: rgba(235, 235, 245, 0.3);
+      --sep: rgba(84, 84, 88, 0.5);
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--label);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+        'PingFang TC', 'Helvetica Neue', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--tint); text-decoration: none; }
+    a:hover { color: #c4b1fd; }
+    .safe-top { height: 59px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+
+    /* Liquid Glass: translucent layer, specular top edge, hairline rim, and a
+       cast shadow — the material floats above content rather than boxing it. */
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.045));
+      backdrop-filter: blur(26px) saturate(180%);
+      box-shadow:
+        inset 0 0.5px 0 rgba(255,255,255,0.5),
+        inset 0 -0.5px 0 rgba(255,255,255,0.1),
+        inset 0 0 0 0.5px rgba(255,255,255,0.13),
+        0 10px 30px rgba(0,0,0,0.45);
+    }
+    /* Larger surfaces read thinner or they turn milky. */
+    .glass-thin {
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      backdrop-filter: blur(30px) saturate(170%);
+      box-shadow:
+        inset 0 0.5px 0 rgba(255,255,255,0.36),
+        inset 0 0 0 0.5px rgba(255,255,255,0.1),
+        0 12px 34px rgba(0,0,0,0.5);
+    }
+    /* .glassProminent — ink fill, inverted label. Never the accent. */
+    .glass-prominent {
+      background: var(--ink);
+      box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.9), 0 8px 24px rgba(0,0,0,0.4);
+      color: #070707;
+    }
+    /* iOS type ramp */
+    .large-title { font-size: 34px; font-weight: 700; letter-spacing: 0.37px; line-height: 41px; }
+    .title3 { font-size: 20px; font-weight: 600; letter-spacing: 0.38px; }
+    .headline { font-size: 17px; font-weight: 600; letter-spacing: -0.41px; }
+    .body { font-size: 17px; font-weight: 400; letter-spacing: -0.41px; }
+    .subhead { font-size: 15px; font-weight: 400; letter-spacing: -0.24px; }
+    .footnote { font-size: 13px; font-weight: 400; letter-spacing: -0.08px; }
+    .caption { font-size: 12px; font-weight: 400; }
+    .tap { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    /* Circular glass chip — how iOS 26 floats a bar button over content. */
+    .chip { width: 38px; height: 38px; border-radius: 19px; display: flex; align-items: center; justify-content: center; }
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--bg);">
+  <div class="safe-top"></div>
+
+  <div style="position: relative; width: 390px; height: 219px; background: #000;">
+    <img src="still.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; left: 0; right: 0; top: 8px; height: 72px; overflow: hidden;">
+      <div style="position: absolute; left: 210px; top: 2px; font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">一護太帥了</div>
+      <div style="position: absolute; left: 96px; top: 22px; font-size: 12px; font-weight: 600; color: #a78bfa; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">這段作畫神了</div>
+      <div style="position: absolute; left: 268px; top: 42px; font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">來了來了</div>
+      <div style="position: absolute; left: 26px; top: 58px; font-size: 12px; font-weight: 600; color: #ffd66b; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">卍解！</div>
+    </div>
+
+    <div style="position: absolute; left: 12px; top: 10px;"><div class="glass chip" style="width: 34px; height: 34px; border-radius: 17px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></div></div>
+    <div style="position: absolute; right: 12px; top: 10px; display: flex; gap: 7px;">
+      <span class="glass caption" style="border-radius: 11px; padding: 5px 10px; font-weight: 600; color: #fff;">1080p</span>
+      <span class="glass caption" style="border-radius: 11px; padding: 5px 10px; font-weight: 600; color: #cbb8fd;">直接串流</span>
+    </div>
+
+    <!-- The HUD is a floating glass capsule, exactly as the macOS player does
+         it with glassSurface(in: Capsule()) — not a gradient scrim. -->
+    <div style="position: absolute; left: 12px; right: 12px; bottom: 12px;">
+      <div class="glass" style="border-radius: 24px; padding: 10px 14px 11px 14px;">
+        <div style="height: 3px; border-radius: 2px; background: rgba(255,255,255,0.28);"><div style="width: 26%; height: 3px; border-radius: 2px; background: #fff; position: relative;"><div style="position: absolute; right: -4px; top: -3px; width: 9px; height: 9px; border-radius: 5px; background: #fff;"></div></div></div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 9px;">
+          <span class="caption" style="color: rgba(255,255,255,0.85); font-variant-numeric: tabular-nums;">6:06</span>
+          <div style="display: flex; align-items: center; gap: 22px;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="#fff"><path d="M11 5 4 12l7 7zM20 5l-7 7 7 7z"/></svg>
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="#fff"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="#fff"><path d="M13 5l7 7-7 7zM4 5l7 7-7 7z"/></svg>
+          </div>
+          <span class="caption" style="color: rgba(255,255,255,0.85); font-variant-numeric: tabular-nums;">-17:44</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 10px; padding: 14px 16px;">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--tint)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H8l-4 3z"/></svg>
+    <div class="glass" style="flex: 1; height: 40px; border-radius: 20px; display: flex; align-items: center; padding: 0 14px;"><span class="subhead" style="color: var(--label3);">發送彈幕…</span></div>
+    <span class="body" style="color: var(--tint);">傳送</span>
+  </div>
+
+  <div style="padding: 0 16px;">
+    <div class="headline">第 41 集 · 雷神</div>
+    <div class="footnote" style="color: var(--label2); margin-top: 4px;">一護抵達白色高塔，與露琪亞重逢。</div>
+  </div>
+
+  <div class="glass-thin" style="margin: 14px 16px 0 16px; height: 36px; border-radius: 18px; display: flex; padding: 3px;">
+    <div class="glass" style="flex: 1; border-radius: 15px; display: flex; align-items: center; justify-content: center;"><span class="footnote" style="font-weight: 600;">分集</span></div>
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center;"><span class="footnote" style="color: var(--label2);">彈幕</span></div>
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center;"><span class="footnote" style="color: var(--label2);">字幕</span></div>
+  </div>
+
+  <div class="shelf" style="padding: 16px 0 0 16px;">
+    <div style="width: 140px; flex: none;"><div style="position: relative;"><img src="still.jpg" alt="" style="width: 140px; height: 79px; border-radius: 12px; object-fit: cover; display: block; outline: 2px solid var(--tint); outline-offset: -2px;"><div style="position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(0,0,0,0.5);"><div style="width: 26%; height: 4px; background: var(--tint);"></div></div></div><div class="caption" style="color: var(--tint); font-weight: 600; margin-top: 7px;">EP 41</div><div class="footnote" style="font-weight: 500;">雷神</div></div>
+    <div style="width: 140px; flex: none;"><img src="still.jpg" alt="" style="width: 140px; height: 79px; border-radius: 12px; object-fit: cover; display: block; opacity: 0.7;"><div class="caption" style="color: var(--label2); font-weight: 600; margin-top: 7px;">EP 42</div><div class="footnote" style="color: var(--label2);">黑暗之子</div></div>
+    <div style="width: 140px; flex: none;"><img src="still.jpg" alt="" style="width: 140px; height: 79px; border-radius: 12px; object-fit: cover; display: block; opacity: 0.7;"><div class="caption" style="color: var(--label2); font-weight: 600; margin-top: 7px;">EP 43</div><div class="footnote" style="color: var(--label2);">以血祭骨</div></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    /*
+      iOS 26 Liquid Glass. Not invented here — macos/Milmil/Design/GlassStyles.swift
+      already adopts it: glassEffect(.regular, in:) for floating chrome,
+      glassSurface(in: Capsule()) for the player HUD, and .glassProminent filled
+      with INK, never the accent ("Vesica Violet is for state and emphasis, not
+      for button backgrounds"). The iOS client inherits those rules verbatim.
+      System font: -apple-system renders as real SF Pro on a Mac.
+    */
+    :root {
+      --tint: #a78bfa;
+      --ink: rgba(255, 255, 255, 0.92);
+      --bg: #070707;
+      --label: #ffffff;
+      --label2: rgba(235, 235, 245, 0.6);
+      --label3: rgba(235, 235, 245, 0.3);
+      --sep: rgba(84, 84, 88, 0.5);
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--label);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+        'PingFang TC', 'Helvetica Neue', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--tint); text-decoration: none; }
+    a:hover { color: #c4b1fd; }
+    .safe-top { height: 59px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+
+    /* Liquid Glass: translucent layer, specular top edge, hairline rim, and a
+       cast shadow — the material floats above content rather than boxing it. */
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.045));
+      backdrop-filter: blur(26px) saturate(180%);
+      box-shadow:
+        inset 0 0.5px 0 rgba(255,255,255,0.5),
+        inset 0 -0.5px 0 rgba(255,255,255,0.1),
+        inset 0 0 0 0.5px rgba(255,255,255,0.13),
+        0 10px 30px rgba(0,0,0,0.45);
+    }
+    /* Larger surfaces read thinner or they turn milky. */
+    .glass-thin {
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      backdrop-filter: blur(30px) saturate(170%);
+      box-shadow:
+        inset 0 0.5px 0 rgba(255,255,255,0.36),
+        inset 0 0 0 0.5px rgba(255,255,255,0.1),
+        0 12px 34px rgba(0,0,0,0.5);
+    }
+    /* .glassProminent — ink fill, inverted label. Never the accent. */
+    .glass-prominent {
+      background: var(--ink);
+      box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.9), 0 8px 24px rgba(0,0,0,0.4);
+      color: #070707;
+    }
+    /* iOS type ramp */
+    .large-title { font-size: 34px; font-weight: 700; letter-spacing: 0.37px; line-height: 41px; }
+    .title3 { font-size: 20px; font-weight: 600; letter-spacing: 0.38px; }
+    .headline { font-size: 17px; font-weight: 600; letter-spacing: -0.41px; }
+    .body { font-size: 17px; font-weight: 400; letter-spacing: -0.41px; }
+    .subhead { font-size: 15px; font-weight: 400; letter-spacing: -0.24px; }
+    .footnote { font-size: 13px; font-weight: 400; letter-spacing: -0.08px; }
+    .caption { font-size: 12px; font-weight: 400; }
+    .tap { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    /* Circular glass chip — how iOS 26 floats a bar button over content. */
+    .chip { width: 38px; height: 38px; border-radius: 19px; display: flex; align-items: center; justify-content: center; }
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #000;">
+  <div style="position: absolute; inset: 0;"><img src="hero.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;"></div>
+
+  <!-- Glass sheet: the material lets the screen behind show through, which is
+       the whole point of the language — an opaque tray would waste it. -->
+  <div class="glass-thin" style="position: absolute; left: 0; right: 0; bottom: 0; height: 700px; border-radius: 34px 34px 0 0;">
+    <div style="display: flex; justify-content: center; padding-top: 8px;"><div style="width: 36px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.35);"></div></div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 0 20px;">
+      <span class="body" style="color: var(--tint);">取消</span>
+      <span class="headline">配對裝置</span>
+      <span class="body" style="color: transparent;">取消</span>
+    </div>
+
+    <div style="padding: 20px 20px 0 20px;">
+      <div class="subhead" style="color: rgba(255,255,255,0.72); line-height: 1.5;">喺 Web 版打開<span style="color: #fff; font-weight: 600;">設定 › 配對裝置</span>，用相機對準 QR 碼。伺服器地址同登入一次過搞掂。</div>
+    </div>
+
+    <div style="position: relative; margin: 20px 20px 0 20px; height: 296px; border-radius: 26px; background: rgba(0,0,0,0.55); overflow: hidden;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, rgba(167,139,250,0.18), transparent 62%);"></div>
+      <div style="position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); width: 186px; height: 186px;">
+        <div style="position: absolute; left: 0; top: 0; width: 42px; height: 42px; border-left: 3px solid var(--tint); border-top: 3px solid var(--tint); border-radius: 16px 0 0 0;"></div>
+        <div style="position: absolute; right: 0; top: 0; width: 42px; height: 42px; border-right: 3px solid var(--tint); border-top: 3px solid var(--tint); border-radius: 0 16px 0 0;"></div>
+        <div style="position: absolute; left: 0; bottom: 0; width: 42px; height: 42px; border-left: 3px solid var(--tint); border-bottom: 3px solid var(--tint); border-radius: 0 0 0 16px;"></div>
+        <div style="position: absolute; right: 0; bottom: 0; width: 42px; height: 42px; border-right: 3px solid var(--tint); border-bottom: 3px solid var(--tint); border-radius: 0 0 16px 0;"></div>
+        <div style="position: absolute; left: 8px; right: 8px; top: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--tint), transparent);"></div>
+      </div>
+      <div style="position: absolute; left: 0; right: 0; bottom: 16px; text-align: center;"><span class="caption" style="color: rgba(255,255,255,0.55);">將 QR 碼放入框內</span></div>
+    </div>
+
+    <div class="glass" style="margin: 18px 20px 0 20px; border-radius: 20px; display: flex; align-items: center; gap: 12px; padding: 12px 16px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tint)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg>
+      <div style="flex: 1; min-width: 0;">
+        <div class="subhead" style="font-weight: 500;">同一 Wi-Fi 找到 1 部</div>
+        <div class="caption" style="color: var(--label2); font-variant-numeric: tabular-nums; margin-top: 1px;">192.168.1.10:8080</div>
+      </div>
+      <div class="glass-prominent" style="height: 34px; border-radius: 17px; padding: 0 18px; display: flex; align-items: center;"><span class="footnote" style="font-weight: 600;">連線</span></div>
+    </div>
+
+    <div style="position: absolute; left: 20px; right: 20px; bottom: 44px; text-align: center;">
+      <span class="body" style="color: var(--tint);">手動輸入伺服器地址</span>
+    </div>
+  </div>
+  <div style="position: absolute; left: 0; right: 0; bottom: 8px; display: flex; justify-content: center;">
+    <div style="width: 140px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.4);"></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

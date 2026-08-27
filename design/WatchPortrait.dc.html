@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    /*
+      Material 3 dark scheme, tonal ramp derived from the brand accent
+      (#a78bfa, web/src/styles/theme.css) — M3 builds elevation out of surface
+      tone, not shadow, so a flat #0c0c0c everywhere is what made the first
+      pass read as "generic dark app" rather than Android.
+    */
+    :root {
+      --primary: #cbb8fd;
+      --on-primary: #2c1a63;
+      --primary-container: #43307c;
+      --on-primary-container: #e8ddff;
+      --secondary-container: #453d58;
+      --on-secondary-container: #e5dff4;
+
+      --surface: #070707;
+      --surface-c-low: #101010;
+      --surface-c: #151515;
+      --surface-c-high: #1d1d1d;
+      --surface-c-highest: #262626;
+
+      --on-surface: rgba(255, 255, 255, 0.93);
+      --on-surface-var: rgba(255, 255, 255, 0.62);
+      --on-surface-dim: rgba(255, 255, 255, 0.38);
+      --outline-var: rgba(255, 255, 255, 0.12);
+
+      /* M3 shape scale — the giveaway. xs 4 · sm 8 · md 12 · lg 16 · xl 28 */
+      --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 28px;
+    }
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--on-surface);
+      /* Android's system font. The macOS client uses .system in 531 places and a
+         custom face in one — native clients follow the platform, Figtree is web. */
+      font-family: 'Roboto', 'Noto Sans TC', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: #ded0ff; }
+    /* Real status bar and gesture bar render on top on device. */
+    .safe-top { height: 48px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+    /* M3 type scale */
+    .headline-s { font-size: 24px; font-weight: 700; line-height: 32px; letter-spacing: 0; }
+    .title-l { font-size: 22px; font-weight: 700; line-height: 28px; }
+    .title-m { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0.15px; }
+    .title-s { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .body-m { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: 0.25px; }
+    .body-s { font-size: 12px; font-weight: 400; line-height: 16px; letter-spacing: 0.4px; }
+    .label-l { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .label-m { font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.5px; }
+    /* Android's minimum touch target is 48dp, not 44. */
+    .tap { min-width: 48px; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+    .card { border-radius: var(--r-md); background: var(--surface-c-low); }
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--surface);">
+  <div class="safe-top"></div>
+
+  <div style="position: relative; width: 390px; height: 219px; background: #000;">
+    <img src="still.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; left: 0; right: 0; top: 8px; height: 72px; overflow: hidden;">
+      <div style="position: absolute; left: 210px; top: 2px; font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">一護太帥了</div>
+      <div style="position: absolute; left: 96px; top: 22px; font-size: 12px; font-weight: 600; color: #cbb8fd; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">這段作畫神了</div>
+      <div style="position: absolute; left: 268px; top: 42px; font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">來了來了</div>
+      <div style="position: absolute; left: 26px; top: 58px; font-size: 12px; font-weight: 600; color: #ffd66b; text-shadow: 0 1px 3px rgba(0,0,0,0.9);">卍解！</div>
+    </div>
+    <div style="position: absolute; left: 0; top: 0; display: flex; align-items: center;">
+      <div class="tap" style="min-width: 48px; min-height: 48px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></div>
+    </div>
+    <div style="position: absolute; right: 12px; top: 14px; display: flex; gap: 8px;">
+      <span class="label-m" style="background: rgba(0,0,0,0.62); border-radius: var(--r-sm); padding: 4px 8px; color: #fff;">1080p</span>
+      <span class="label-m" style="background: var(--primary-container); border-radius: var(--r-sm); padding: 4px 8px; color: var(--on-primary-container);">直接串流</span>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 0 12px 8px 12px; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.75));">
+      <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.28);"><div style="width: 26%; height: 4px; border-radius: 2px; background: var(--primary); position: relative;"><div style="position: absolute; right: -6px; top: -4px; width: 12px; height: 12px; border-radius: 6px; background: var(--primary);"></div></div></div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
+        <div style="display: flex; align-items: center;">
+          <div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></div>
+          <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M5 5v14l10-7zM16.5 5H19v14h-2.5z"/></svg></div>
+          <span class="label-m" style="color: #fff; font-variant-numeric: tabular-nums; margin-left: 4px;">6:06 / 23:50</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#cbb8fd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H8l-4 3z"/></svg></div>
+          <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9V4.5H8M16 4.5h4.5V9M20.5 15v4.5H16M8 19.5H3.5V15"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose row: M3 outlined text field, fully rounded, 48dp -->
+  <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px;">
+    <div style="flex: 1; height: 48px; border-radius: var(--r-xl); background: var(--surface-c-high); display: flex; align-items: center; gap: 10px; padding: 0 16px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H8l-4 3z"/></svg>
+      <span class="body-m" style="flex: 1; color: var(--on-surface-dim);">發送彈幕…</span>
+      <span class="label-m" style="color: var(--on-surface-var);">240</span>
+    </div>
+    <div style="width: 48px; height: 48px; border-radius: 24px; background: var(--secondary-container); display: flex; align-items: center; justify-content: center;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--on-secondary-container)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div>
+  </div>
+
+  <div style="padding: 0 16px;">
+    <div class="title-m">第 41 集 · 雷神</div>
+    <div class="body-s" style="color: var(--on-surface-var); margin-top: 4px;">一護抵達白色高塔，與露琪亞重逢。</div>
+  </div>
+
+  <div style="display: flex; margin-top: 16px; border-bottom: 1px solid var(--outline-var);">
+    <div style="flex: 1; height: 48px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 -3px 0 var(--primary);"><span class="title-s" style="color: var(--primary);">分集</span></div>
+    <div style="flex: 1; height: 48px; display: flex; align-items: center; justify-content: center;"><span class="title-s" style="color: var(--on-surface-var);">彈幕</span></div>
+    <div style="flex: 1; height: 48px; display: flex; align-items: center; justify-content: center;"><span class="title-s" style="color: var(--on-surface-var);">字幕</span></div>
+  </div>
+
+  <div class="shelf" style="padding: 16px 0 0 16px;">
+    <div style="width: 140px; flex: none;"><div style="position: relative;"><img src="still.jpg" alt="" style="width: 140px; height: 79px; border-radius: var(--r-sm); object-fit: cover; display: block; outline: 2px solid var(--primary); outline-offset: -2px;"><div style="position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(0,0,0,0.55);"><div style="width: 26%; height: 4px; background: var(--primary);"></div></div></div><div class="label-m" style="color: var(--primary); margin-top: 8px;">EP 41</div><div class="title-s">雷神</div></div>
+    <div style="width: 140px; flex: none;"><img src="still.jpg" alt="" style="width: 140px; height: 79px; border-radius: var(--r-sm); object-fit: cover; display: block; opacity: 0.7;"><div class="label-m" style="color: var(--on-surface-var); margin-top: 8px;">EP 42</div><div class="title-s" style="color: var(--on-surface-var);">黑暗之子</div></div>
+    <div style="width: 140px; flex: none;"><img src="still.jpg" alt="" style="width: 140px; height: 79px; border-radius: var(--r-sm); object-fit: cover; display: block; opacity: 0.7;"><div class="label-m" style="color: var(--on-surface-var); margin-top: 8px;">EP 43</div><div class="title-s" style="color: var(--on-surface-var);">以血祭骨</div></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

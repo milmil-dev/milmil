@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    /*
+      Material 3 dark scheme, tonal ramp derived from the brand accent
+      (#a78bfa, web/src/styles/theme.css) — M3 builds elevation out of surface
+      tone, not shadow, so a flat #0c0c0c everywhere is what made the first
+      pass read as "generic dark app" rather than Android.
+    */
+    :root {
+      --primary: #cbb8fd;
+      --on-primary: #2c1a63;
+      --primary-container: #43307c;
+      --on-primary-container: #e8ddff;
+      --secondary-container: #453d58;
+      --on-secondary-container: #e5dff4;
+
+      --surface: #070707;
+      --surface-c-low: #101010;
+      --surface-c: #151515;
+      --surface-c-high: #1d1d1d;
+      --surface-c-highest: #262626;
+
+      --on-surface: rgba(255, 255, 255, 0.93);
+      --on-surface-var: rgba(255, 255, 255, 0.62);
+      --on-surface-dim: rgba(255, 255, 255, 0.38);
+      --outline-var: rgba(255, 255, 255, 0.12);
+
+      /* M3 shape scale — the giveaway. xs 4 · sm 8 · md 12 · lg 16 · xl 28 */
+      --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 28px;
+    }
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--on-surface);
+      /* Android's system font. The macOS client uses .system in 531 places and a
+         custom face in one — native clients follow the platform, Figtree is web. */
+      font-family: 'Roboto', 'Noto Sans TC', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: #ded0ff; }
+    /* Real status bar and gesture bar render on top on device. */
+    .safe-top { height: 48px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+    /* M3 type scale */
+    .headline-s { font-size: 24px; font-weight: 700; line-height: 32px; letter-spacing: 0; }
+    .title-l { font-size: 22px; font-weight: 700; line-height: 28px; }
+    .title-m { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0.15px; }
+    .title-s { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .body-m { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: 0.25px; }
+    .body-s { font-size: 12px; font-weight: 400; line-height: 16px; letter-spacing: 0.4px; }
+    .label-l { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .label-m { font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.5px; }
+    /* Android's minimum touch target is 48dp, not 44. */
+    .tap { min-width: 48px; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+    .card { border-radius: var(--r-md); background: var(--surface-c-low); }
+  </style>
+</helmet>
+<div style="position: relative; width: 844px; height: 390px; overflow: hidden; background: #000;">
+  <img src="still.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+
+  <div style="position: absolute; left: 0; right: 0; top: 10px; height: 150px; overflow: hidden;">
+    <div style="position: absolute; left: 470px; top: 0; font-size: 15px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">一護太帥了</div>
+    <div style="position: absolute; left: 180px; top: 28px; font-size: 15px; font-weight: 600; color: #cbb8fd; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">這段作畫神了</div>
+    <div style="position: absolute; left: 620px; top: 56px; font-size: 15px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">來了來了</div>
+    <div style="position: absolute; left: 60px; top: 84px; font-size: 15px; font-weight: 600; color: #ffd66b; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">卍解！</div>
+    <div style="position: absolute; left: 380px; top: 112px; font-size: 15px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.9);">這集節奏好快</div>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 78px; text-align: center;">
+    <span style="font-size: 19px; font-weight: 700; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.95);">你能看見嗎</span>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; top: 0; padding: 4px 12px; background: linear-gradient(180deg, rgba(0,0,0,0.62), transparent); display: flex; align-items: center; gap: 8px;">
+    <div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></div>
+    <div style="flex: 1; min-width: 0;">
+      <div class="title-s" style="color: #fff;">BLEACH 千年血戰篇-禍進譚-</div>
+      <div class="body-s" style="color: rgba(255,255,255,0.68);">第 41 集 · 雷神</div>
+    </div>
+    <span class="label-m" style="background: rgba(0,0,0,0.62); border-radius: var(--r-sm); padding: 4px 8px; color: #fff;">1080p</span>
+    <span class="label-m" style="background: var(--primary-container); border-radius: var(--r-sm); padding: 4px 8px; color: var(--on-primary-container);">直接串流</span>
+    <div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></div>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 0 20px 10px 20px; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.8));">
+    <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.28);"><div style="width: 26%; height: 4px; border-radius: 2px; background: var(--primary); position: relative;"><div style="position: absolute; right: -7px; top: -5px; width: 14px; height: 14px; border-radius: 7px; background: var(--primary);"></div></div></div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px;">
+      <div style="display: flex; align-items: center;">
+        <div class="tap"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></div>
+        <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M5 5v14l10-7zM16.5 5H19v14h-2.5z"/></svg></div>
+        <span class="label-l" style="color: #fff; font-variant-numeric: tabular-nums; margin-left: 8px;">6:06 / 23:50</span>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <div class="tap"><span class="label-l" style="color: #fff;">1×</span></div>
+        <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6h17v11h-17z"/><path d="M7 13h3M13 13h4"/></svg></div>
+        <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#cbb8fd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H8l-4 3z"/></svg></div>
+        <div class="tap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 3.5H3.5V8.5M15.5 3.5h5V8.5M20.5 15.5v5h-5M3.5 15.5v5h5"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
