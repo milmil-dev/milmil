@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/milmil/api/internal/cache"
@@ -91,6 +92,19 @@ type mockDandanplay struct {
 
 func (m *mockDandanplay) MatchFile(_ context.Context, _, _ string, _ int64, _ int) (*dandanplay.MatchResult, error) {
 	return m.matchResult, m.matchErr
+}
+
+func (m *mockDandanplay) MatchFiles(_ context.Context, reqs []dandanplay.MatchRequest) (map[string]dandanplay.Match, error) {
+	if m.matchErr != nil {
+		return nil, m.matchErr
+	}
+	out := map[string]dandanplay.Match{}
+	if m.matchResult != nil && m.matchResult.IsMatched && len(m.matchResult.Matches) > 0 {
+		for _, r := range reqs {
+			out[strings.ToLower(r.FileHash)] = m.matchResult.Matches[0]
+		}
+	}
+	return out, nil
 }
 
 func (m *mockDandanplay) GetComments(_ context.Context, _ int64) ([]dandanplay.Comment, error) {

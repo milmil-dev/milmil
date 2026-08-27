@@ -9,6 +9,7 @@ import { SettingsCard } from '@/components/settings/SettingsCard';
 import { Switch } from '@/components/ui/switch';
 import { availableLanguages, detectBrowserLocale, loadAndActivate } from '@/i18n/config';
 import { api } from '@/lib/api-client';
+import { type Theme, useTheme } from '@/lib/theme-context';
 import { useUIStore, type WeekStartDay } from '@/store/ui-store';
 
 export function GeneralPanel() {
@@ -17,6 +18,7 @@ export function GeneralPanel() {
 
   const weekStartDay = useUIStore((s) => s.weekStartDay);
   const setWeekStartDay = useUIStore((s) => s.setWeekStartDay);
+  const { theme, setTheme } = useTheme();
 
   const [currentLang, setCurrentLang] = useState(
     () => localStorage.getItem('milmil-locale') ?? detectBrowserLocale()
@@ -39,15 +41,22 @@ export function GeneralPanel() {
   }, [settings?.appearance?.language, currentLang]);
 
   useEffect(() => {
+    const serverTheme = settings?.appearance?.theme;
+    if (!serverTheme || serverTheme === theme) return;
+    if (serverTheme !== 'system' && serverTheme !== 'light' && serverTheme !== 'dark') return;
+    setTheme(serverTheme);
+  }, [settings?.appearance?.theme, theme, setTheme]);
+
+  useEffect(() => {
     if (settings?.collection) {
       setAutoAdd(settings.collection.auto_add_to_collection ?? true);
     }
   }, [settings?.collection]);
 
   const updateAppearanceSettings = useMutation({
-    mutationFn: (data: { language: string }) =>
+    mutationFn: (data: { language?: string; theme?: Theme }) =>
       api.put('/api/v1/settings/appearance', {
-        ...(settings?.appearance ?? {}),
+        ...settings?.appearance,
         ...data,
       }),
     onSuccess: () => {
@@ -74,12 +83,19 @@ export function GeneralPanel() {
     toast.success(i18n._(msg`settings.saved`));
   };
 
+  const handleThemeChange = (value: string) => {
+    const next = value as Theme;
+    setTheme(next);
+    updateAppearanceSettings.mutate({ theme: next });
+    toast.success(i18n._(msg`settings.saved`));
+  };
+
   return (
     <div>
-      <h2 className="text-lg font-semibold text-white sm:text-xl">
+      <h2 className="text-lg font-semibold text-ink sm:text-xl">
         {i18n._(msg`settings.nav.general`)}
       </h2>
-      <p className="mt-1 mb-4 text-xs text-white/35 sm:mb-6">
+      <p className="mt-1 mb-4 text-xs text-ink/35 sm:mb-6">
         {i18n._(msg`settings.general.subtitle`)}
       </p>
 
@@ -89,6 +105,18 @@ export function GeneralPanel() {
             options={availableLanguages.map((l) => ({ label: l.label, value: l.code }))}
             value={currentLang}
             onChange={handleLanguageChange}
+          />
+        </SettingsCard>
+
+        <SettingsCard label={i18n._(msg`settings.appearance.theme`)}>
+          <SelectorGroup
+            options={[
+              { label: i18n._(msg`settings.theme.dark`), value: 'dark' },
+              { label: i18n._(msg`settings.theme.light`), value: 'light' },
+              { label: i18n._(msg`settings.theme.system`), value: 'system' },
+            ]}
+            value={theme}
+            onChange={handleThemeChange}
           />
         </SettingsCard>
 
@@ -107,10 +135,8 @@ export function GeneralPanel() {
         <SettingsCard label={i18n._(msg`settings.collection`)}>
           <div className="flex flex-col gap-3 min-[430px]:flex-row min-[430px]:items-center min-[430px]:justify-between">
             <div className="min-w-0">
-              <p className="text-[13px] text-white/85">
-                {i18n._(msg`settings.autoAddToCollection`)}
-              </p>
-              <p className="mt-0.5 text-[11px] text-white/30">
+              <p className="text-[13px] text-ink/85">{i18n._(msg`settings.autoAddToCollection`)}</p>
+              <p className="mt-0.5 text-[11px] text-ink/30">
                 {i18n._(msg`settings.autoAddToCollectionDesc`)}
               </p>
             </div>

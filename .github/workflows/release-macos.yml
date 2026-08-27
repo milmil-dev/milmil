@@ -1,0 +1,94 @@
+# Builds the ad-hoc signed macOS DMG for a release tag (or on demand) and
+# attaches it to the GitHub release. No Developer Team yet, so the app is
+# not notarized: users open it via right-click › Open. Switch
+# macos/scripts/make-dmg.sh to a Developer ID identity + notarytool once an
+# account exists; this workflow stays the same.
+name: Release macOS
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dmg:
+    name: DMG (ad-hoc signed)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          xcode=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Restore SwiftPM cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            macos/Packages/MilmilKit/.build
+            macos/Packages/MilmilPlayer/.build
+            macos/DerivedData-release/SourcePackages
+          key: macos-release-${{ runner.os }}-${{ hashFiles('macos/Packages/**/Package.swift', 'macos/project.yml') }}
+          restore-keys: |
+            macos-release-${{ runner.os }}-
+
+      - name: Build DMG
+        run: make macos-dmg
+
+      # The DMG is named from project.yml's MARKETING_VERSION (release-please
+      # keeps it in step with the tag); rename defensively so the asset always
+      # matches the URL the Homebrew cask computes from the tag.
+      - name: Name DMG after the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          src=(macos/dist/*.dmg)
+          dst="macos/dist/milmil-macos-${version}.dmg"
+          [ "${src[0]}" = "$dst" ] || mv "${src[0]}" "$dst"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: milmil-macos-dmg
+          path: macos/dist/*.dmg
+          if-no-files-found: error
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${GITHUB_REF_NAME}" macos/dist/*.dmg --clobber
+
+      # Point the Homebrew tap (milmil-dev/homebrew-milmil) at the new DMG.
+      # Auth is a write deploy key on the tap repo, stored as TAP_DEPLOY_KEY.
+      - name: Update Homebrew cask
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          TAP_DEPLOY_KEY: ${{ secrets.TAP_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          sha="$(shasum -a 256 "macos/dist/milmil-macos-${version}.dmg" | awk '{print $1}')"
+          key="$RUNNER_TEMP/tap_deploy_key"
+          printf '%s\n' "$TAP_DEPLOY_KEY" > "$key"
+          chmod 600 "$key"
+          export GIT_SSH_COMMAND="ssh -i $key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          git clone --depth 1 git@github.com:milmil-dev/homebrew-milmil.git "$RUNNER_TEMP/tap"
+          cd "$RUNNER_TEMP/tap"
+          sed -i '' -E "s|^  version \".*\"|  version \"${version}\"|" Casks/milmil.rb
+          sed -i '' -E "s|^  sha256 \".*\"|  sha256 \"${sha}\"|" Casks/milmil.rb
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -am "milmil ${version}"
+          git push

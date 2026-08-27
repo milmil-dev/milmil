@@ -38,6 +38,7 @@ type Anime struct {
 	SyncDisabled         int64          `json:"sync_disabled"`
 	WatchStatusOverride  string         `json:"watch_status_override"`
 	TraktShowID          sql.NullInt64  `json:"trakt_show_id"`
+	TitleOriginal        sql.NullString `json:"title_original"`
 }
 
 type AnimeWatchState struct {
@@ -153,6 +154,16 @@ type ExternalDanmaku struct {
 	CommentsJson string `json:"comments_json"`
 	CommentCount int64  `json:"comment_count"`
 	CreatedAt    string `json:"created_at"`
+}
+
+type ExternalDevice struct {
+	DeviceID   string `json:"device_id"`
+	UserID     string `json:"user_id"`
+	Client     string `json:"client"`
+	DeviceName string `json:"device_name"`
+	FirstSeen  string `json:"first_seen"`
+	LastSeen   string `json:"last_seen"`
+	Revoked    int64  `json:"revoked"`
 }
 
 type HotTag struct {
@@ -338,14 +349,16 @@ type TranscodeSession struct {
 }
 
 type User struct {
-	ID               string `json:"id"`
-	Username         string `json:"username"`
-	PasswordHash     string `json:"password_hash"`
-	CreatedAt        string `json:"created_at"`
-	UpdatedAt        string `json:"updated_at"`
-	TotpSecret       string `json:"totp_secret"`
-	TwoFactorEnabled int64  `json:"two_factor_enabled"`
-	TokenVersion     int64  `json:"token_version"`
+	ID               string         `json:"id"`
+	Username         string         `json:"username"`
+	PasswordHash     string         `json:"password_hash"`
+	CreatedAt        string         `json:"created_at"`
+	UpdatedAt        string         `json:"updated_at"`
+	TotpSecret       string         `json:"totp_secret"`
+	TwoFactorEnabled int64          `json:"two_factor_enabled"`
+	TokenVersion     int64          `json:"token_version"`
+	AvatarPath       sql.NullString `json:"avatar_path"`
+	AvatarUpdatedAt  sql.NullString `json:"avatar_updated_at"`
 }
 
 type UserPreference struct {

@@ -1,6 +1,7 @@
 export PATH := $(HOME)/go/bin:$(PATH)
 
-.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill
+.PHONY: dev dev-api dev-web dev-docs build build-docs test test-e2e lint setup kill brand \
+	macos-gen macos-build macos-test macos-lint macos-run macos-watch macos-dmg
 
 # Prerequisites: go install github.com/air-verse/air@latest
 
@@ -42,9 +43,49 @@ lint:
 	cd api && go vet ./...
 	cd web && bun run lint
 
+# Regenerate every icon/lockup from docs/brand/src/mark.svg (needs librsvg)
+brand:
+	@python3 scripts/build-brand-assets.py
+
 kill:
 	@./scripts/release-ports.sh
 
 setup:
 	mise install
 	go install github.com/air-verse/air@latest
+
+# --- macOS client (macos/) ---------------------------------------------------
+# Requires Xcode 26+; xcodegen and swiftlint come from `mise install`.
+
+macos-gen:
+	cd macos && xcodegen generate --quiet
+
+macos-test:
+	swift test --package-path macos/Packages/MilmilKit
+	swift test --package-path macos/Packages/MilmilPlayer
+
+macos-lint:
+	cd macos && swiftlint lint --strict --quiet
+	cd macos && python3 scripts/i18n_sync.py --check
+
+macos-build: macos-gen
+	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
+		-destination 'platform=macOS,arch=arm64' -configuration Debug \
+		CODE_SIGNING_ALLOWED=NO -quiet build
+
+# Release build → ad-hoc signed DMG in macos/dist (see macos/scripts/make-dmg.sh).
+macos-dmg:
+	macos/scripts/make-dmg.sh
+
+# Build into macos/DerivedData (gitignored) and launch the app — no Xcode UI needed.
+macos-run: macos-gen
+	cd macos && xcodebuild -project Milmil.xcodeproj -scheme Milmil \
+		-destination 'platform=macOS,arch=arm64' -configuration Debug \
+		-derivedDataPath DerivedData -quiet build \
+		&& (pkill -x milmil || true) \
+		&& open DerivedData/Build/Products/Debug/milmil.app
+
+# Dev-server-style loop: rebuild + relaunch whenever a Swift/yml file changes.
+# Incremental builds take a few seconds; use Xcode Previews for pure UI tweaks.
+macos-watch:
+	watchexec --project-origin . -w macos -e swift,yml,xcstrings -r --debounce 500ms -- $(MAKE) macos-run

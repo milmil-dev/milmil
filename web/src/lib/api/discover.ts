@@ -80,6 +80,10 @@ export interface FranchiseEntry {
   episode_count: number;
   score: number;
   relation_type?: string;
+  /** 1-based season number on main-series entries; split cours share one. */
+  season?: number;
+  /** 1-based cour within a split season; absent when it aired as one run. */
+  part?: number;
 }
 
 export interface FranchiseResult {
@@ -118,7 +122,10 @@ export interface BrowseParams {
 
 export interface HotTag {
   id: number;
+  /** Bangumi's own (Traditional Chinese) tag — what searches are made with. */
   name: string;
+  /** `name` rendered in the UI language by the server; absent on older servers. */
+  display?: string;
   category: string;
   count: number;
 }

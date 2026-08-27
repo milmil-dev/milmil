@@ -46,7 +46,7 @@ function PasswordInput(props: PasswordInputProps) {
       type="button"
       onClick={() => setShowPassword((prev) => !prev)}
       className={cn(
-        'absolute right-3 text-white/40 hover:text-white/90 transition-colors outline-none focus-visible:text-mm-accent focus-visible:ring-2 focus-visible:ring-mm-accent/30 rounded-sm flex items-center justify-center',
+        'absolute right-3 text-ink/40 hover:text-ink/90 transition-colors outline-none focus-visible:text-mm-accent focus-visible:ring-2 focus-visible:ring-mm-accent/30 rounded-sm flex items-center justify-center',
         props.multiline ? 'top-2.5' : 'top-1/2 -translate-y-1/2'
       )}
       aria-label={showPassword ? 'Hide password' : 'Show password'}

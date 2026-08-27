@@ -206,6 +206,7 @@ func (h *handler) handleUpdateWatchStatus(c *echo.Context) error {
 				Title:         detail.TitleOriginal,
 				TitleZh:       sql.NullString{String: detail.Title, Valid: detail.Title != ""},
 				TitleEn:       sql.NullString{String: detail.TitleEN, Valid: detail.TitleEN != ""},
+				TitleOriginal: sql.NullString{String: detail.TitleOriginal, Valid: detail.TitleOriginal != ""},
 				Synopsis:      sql.NullString{String: detail.Synopsis, Valid: detail.Synopsis != ""},
 				CoverImageUrl: sql.NullString{String: detail.CoverImage, Valid: detail.CoverImage != ""},
 				TotalEpisodes: sql.NullInt64{Int64: int64(detail.EpisodeCount), Valid: detail.EpisodeCount > 0},

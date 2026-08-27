@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #2a2a2e; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'PingFang TC', 'Hiragino Sans', 'Noto Sans TC', sans-serif; color: rgba(255,255,255,0.92); -webkit-font-smoothing: antialiased; font-size: 13px; }
+    a { color: #a78bfa; text-decoration: none; } a:hover { color: #c4b5fd; }
+    .win { position: relative; overflow: hidden; background: #141416; border-radius: 12px;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 30px 80px rgba(0,0,0,0.6);
+            background-image:
+              radial-gradient(ellipse 700px 500px at 10% 0%, rgba(167,139,250,0.10), transparent),
+              radial-gradient(ellipse 600px 400px at 90% 0%, oklch(0.45 0.12 300 / 0.07), transparent); }
+    .lights { display: flex; gap: 8px; align-items: center; }
+    .lights span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .side-item { display: flex; align-items: center; gap: 9px; height: 28px; padding: 0 8px 0 9px; border-radius: 7px;
+                  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.92); }
+    .side-item.on { background: rgba(255,255,255,0.14); color: #fff; box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .side-item svg { color: #a78bfa; } .side-item.on svg { color: #fff; }
+    .side-sec { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.42); padding: 12px 9px 4px; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,0.10);
+             color: rgba(255,255,255,0.62); font-size: 11px; font-weight: 500; line-height: 1.25; }
+    .chip.on { background: rgba(167,139,250,0.22); color: #d6ccff; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap; }
+    .btn.pri { background: #fff; color: #111; }
+    .btn.sec { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.92); font-weight: 500; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .btn.acc { background: #a78bfa; color: #14082e; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+    .h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: #fff; margin: 0; }
+    .more { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.42); display: inline-flex; align-items: center; gap: 2px; }
+    .poster { position: relative; border-radius: 8px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .poster .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: linear-gradient(to top, rgba(20,20,22,.9), transparent); }
+    .poster .score { position: absolute; top: 6px; right: 6px; display: inline-flex; align-items: center; gap: 2px; font-size: 10px; font-weight: 700; color: #fff;
+                      background: rgba(0,0,0,0.55); border-radius: 999px; padding: 3px 7px; line-height: 1; backdrop-filter: blur(6px); font-variant-numeric: tabular-nums; }
+    .poster .ep { position: absolute; top: 6px; left: 6px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(167,139,250,0.9); border-radius: 999px; padding: 3px 7px; line-height: 1; }
+    .poster .cnt { position: absolute; bottom: 6px; right: 6px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,.9); background: rgba(0,0,0,0.55); border-radius: 999px; padding: 3px 7px; line-height: 1; backdrop-filter: blur(6px); }
+    .poster .ttl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 12px; text-align: center; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.55); line-height: 1.4; }
+    .cap { font-size: 12px; font-weight: 600; color: #fff; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sub { font-size: 11px; color: rgba(255,255,255,0.42); margin-top: 2px; }
+    .still { position: relative; border-radius: 10px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08); }
+    .still .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.12); }
+    .still .bar i { display: block; height: 100%; background: #a78bfa; border-radius: 0 999px 999px 0; }
+    .still .fade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,20,22,0.8), transparent 50%); }
+    .still .playbtn { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,.4); color: #000; }
+    .still .menu { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(30,30,34,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10); }
+    .tb-btn { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.62); }
+    .field { display: flex; align-items: center; gap: 7px; height: 28px; padding: 0 9px; border-radius: 8px; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.42); font-size: 13px;
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10); }
+    .kbd { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.42); background: rgba(255,255,255,0.08); border-radius: 4px; padding: 2px 5px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'PingFang TC', 'Hiragino Sans', 'Noto Sans TC', sans-serif; }
+    .seg { display: inline-flex; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .seg span { padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.62); white-space: nowrap; display: inline-flex; align-items: center; }
+    .seg span.on { background: rgba(255,255,255,0.18); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .card { border-radius: 12px; background: rgba(255,255,255,0.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .row { display: flex; align-items: center; }
+    .tabs { display: inline-flex; align-self: flex-start; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .tabs span { padding: 4px 11px !important; border-radius: 999px; font-size: 12px !important; font-weight: 500 !important; color: rgba(255,255,255,0.62); position: relative; white-space: nowrap; }
+    .tabs span.on { color: #fff; background: rgba(255,255,255,0.18); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .toggle { width: 36px; height: 21px; border-radius: 999px; background: rgba(255,255,255,0.18); position: relative; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .toggle i { position: absolute; top: 2px; left: 2px; width: 17px; height: 17px; border-radius: 50%; background: #fff; display: block; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    .toggle.on { background: #a78bfa; } .toggle.on i { left: 17px; }
+    .slider { position: relative; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.14); flex: 1; }
+    .slider i { position: absolute; left: 0; top: 0; height: 100%; background: #a78bfa; border-radius: 2px; display: block; }
+    .slider b { position: absolute; top: -8px; width: 20px; height: 20px; border-radius: 50%; background: #fff; margin-left: -10px; box-shadow: 0 1px 4px rgba(0,0,0,.5), inset 0 0 0 0.5px rgba(0,0,0,.2); display: block; }
+    .dm { position: absolute; font-weight: 700; font-size: 22px; white-space: nowrap; line-height: 1;
+           text-shadow: 0 0 1px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
+    .glass { background: rgba(34,34,38,0.62); backdrop-filter: blur(30px) saturate(170%);
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.14), 0 20px 50px rgba(0,0,0,0.5); }
+    .popup { width: 16px; height: 16px; border-radius: 5px; background: #a78bfa; display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex-shrink: 0; }
+    .mono { font-family: 'SF Mono', Menlo, monospace; }
+    </style>
+</helmet>
+<div style="width:720px;height:480px;position:relative;overflow:hidden;border-radius:12px;box-shadow:0 0 0 1px rgba(255,255,255,.12)"><div style="position:absolute;inset:0;background:#1c1c1e"><div style="position:absolute;left:20px;top:16px;width:340px"><div class="tabs"><span class="">集數</span><span class="">彈幕 17</span><span class="">來源</span></div><div style="margin-top:12px;display:flex;flex-direction:column;gap:1px"><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:transparent"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">00:12</span><span style="font-size:12px;color:#fff;flex:1">前排</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">DDP</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:transparent"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">00:41</span><span style="font-size:12px;color:#fff;flex:1">這作畫是劇場版規格</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">DDP</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:transparent"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">01:05</span><span style="font-size:12px;color:#fff;flex:1">BGM 好有氣氛</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">B站</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:rgba(167,139,250,.2)"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">01:48</span><span style="font-size:12px;color:#fff;flex:1">Qifrey 老師真係靚仔</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">DDP</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:transparent"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">02:10</span><span style="font-size:12px;color:#fff;flex:1">魔法陣好複雜</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">B站</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:transparent"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">02:33</span><span style="font-size:12px;color:#fff;flex:1">哇好靚啊！</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">DDP</span></div><div class="row" style="gap:10px;padding:7px 10px;border-radius:6px;background:transparent"><span style="font-size:11px;color:rgba(255,255,255,0.42);width:36px;font-variant-numeric:tabular-nums">03:02</span><span style="font-size:12px;color:#fff;flex:1">可可加油！！</span><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,0.42)">DDP</span></div></div></div><div class="glass" style="position:absolute;left:300px;top:150px;width:230px;border-radius:10px;padding:5px 0;z-index:5"><div class="row" style="gap:8px;padding:5px 12px;font-size:13px;color:#fff"><span style="flex:1">跳到 01:48</span><span style=font-size:11px;color:rgba(255,255,255,0.42)>↩</span></div><div class="row" style="gap:8px;padding:5px 12px;font-size:13px;color:#fff"><span style="flex:1">複製內容</span><span style=font-size:11px;color:rgba(255,255,255,0.42)>⌘C</span></div><div style="height:1px;background:rgba(255,255,255,.08);margin:4px 10px"></div><div class="row" style="gap:8px;padding:5px 12px;font-size:13px;color:#fff"><span style="flex:1">在畫面上高亮 3 秒</span></div><div style="height:1px;background:rgba(255,255,255,.08);margin:4px 10px"></div><div class="row" style="gap:8px;padding:5px 12px;font-size:13px;color:#ff453a"><span style="flex:1">封鎖關鍵字「Qifrey」</span></div><div class="row" style="gap:8px;padding:5px 12px;font-size:13px;color:#ff453a"><span style="flex:1">封鎖此使用者</span></div><div class="row" style="gap:8px;padding:5px 12px;font-size:13px;color:#fff"><span style="flex:1">檢舉（DandanPlay）</span></div></div><div style="position:absolute;left:400px;top:340px;width:300px;font-size:11px;color:rgba(255,255,255,0.42);line-height:1.6">列表跟隨播放位置自動捲動並高亮目前條目；點擊 seek；右鍵即時加入封鎖詞（同步 web）。<br>`⌘F` 在列表中搜尋；可依來源 / 模式過濾。</div></div></div>
+</x-dc>
+
+</body>
+</html>

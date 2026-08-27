@@ -163,9 +163,9 @@
   input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 9999px transparent inset !important;
     box-shadow: 0 0 0 9999px transparent inset !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-    caret-color: rgba(255, 255, 255, 0.9) !important;
+    -webkit-text-fill-color: var(--mm-text-primary) !important;
+    color: var(--mm-text-primary) !important;
+    caret-color: var(--mm-text-primary) !important;
     border-color: var(--mm-border) !important;
     background-color: transparent !important;
     background-clip: text !important;

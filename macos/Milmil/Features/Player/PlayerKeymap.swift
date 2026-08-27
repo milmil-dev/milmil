@@ -1,0 +1,264 @@
+import AppKit
+import MilmilAPI
+
+/// Player actions. Identifiers match the web's `KeyBinding.action` so the
+/// shared `preferences.keyboardBindings` can rebind them.
+enum PlayerAction: String, CaseIterable {
+    case toggle = "playback:toggle"
+    case seekBack5 = "playback:seek-backward-5"
+    case seekForward5 = "playback:seek-forward-5"
+    case seekBack30 = "playback:seek-backward-30"
+    case seekForward30 = "playback:seek-forward-30"
+    case frameForward = "playback:frame-forward"
+    case frameBackward = "playback:frame-backward"
+    case speedDown = "playback:speed-down"
+    case speedUp = "playback:speed-up"
+    case speedReset = "playback:speed-reset"
+    case abLoop = "playback:ab-loop"
+    case volumeUp = "volume:up"
+    case volumeDown = "volume:down"
+    case mute = "volume:mute"
+    case subtitleToggle = "subtitle:toggle"
+    case subtitleNext = "subtitle:next-track"
+    case subtitleDelayDecrease = "subtitle:delay-decrease"
+    case subtitleDelayIncrease = "subtitle:delay-increase"
+    case audioNext = "audio:next-track"
+    case fullscreen = "ui:fullscreen"
+    case miniPlayer = "ui:pip"
+    case help = "ui:help"
+    case techInfo = "ui:tech-info"
+    case nextEpisode = "ui:next-episode"
+    case previousEpisode = "ui:previous-episode"
+    case inspector = "ui:inspector"
+    case theater = "ui:theater"
+    case danmakuToggle = "danmaku:toggle"
+    case danmakuSettings = "danmaku:settings"
+    case danmakuCompose = "danmaku:compose"
+    case screenshot = "capture:screenshot"
+    case screenshotWithSubs = "capture:screenshot-with-subs"
+    case screenshotToClipboard = "capture:screenshot-clipboard"
+    case skipSegment = "playback:skip-segment"
+    case sleepTimer = "playback:sleep-timer"
+    case nightMode = "audio:night-mode"
+    case reportProblem = "ui:report-problem"
+
+    var label: String {
+        switch self {
+        case .toggle: String(localized: "播放 / 暫停")
+        case .seekBack5: String(localized: "後退 5 秒")
+        case .seekForward5: String(localized: "前進 5 秒")
+        case .seekBack30: String(localized: "後退 30 秒")
+        case .seekForward30: String(localized: "前進 30 秒")
+        case .frameForward: String(localized: "下一格")
+        case .frameBackward: String(localized: "上一格")
+        case .speedDown: String(localized: "速度 −0.25×")
+        case .speedUp: String(localized: "速度 +0.25×")
+        case .speedReset: String(localized: "重設速度")
+        case .abLoop: String(localized: "A-B 循環")
+        case .volumeUp: String(localized: "音量 +")
+        case .volumeDown: String(localized: "音量 −")
+        case .mute: String(localized: "靜音")
+        case .subtitleToggle: String(localized: "字幕開關")
+        case .subtitleNext: String(localized: "下一個字幕軌")
+        case .subtitleDelayDecrease: String(localized: "字幕延遲 −0.1s")
+        case .subtitleDelayIncrease: String(localized: "字幕延遲 +0.1s")
+        case .audioNext: String(localized: "下一個音軌")
+        case .fullscreen: String(localized: "全螢幕")
+        case .miniPlayer: String(localized: "迷你播放器")
+        case .help: String(localized: "快捷鍵說明")
+        case .techInfo: String(localized: "技術資訊")
+        case .nextEpisode: String(localized: "下一集")
+        case .previousEpisode: String(localized: "上一集")
+        case .inspector: String(localized: "側欄")
+        case .theater: String(localized: "劇院模式")
+        case .danmakuToggle: String(localized: "彈幕開關")
+        case .danmakuSettings: String(localized: "彈幕設定")
+        case .danmakuCompose: String(localized: "發送彈幕")
+        case .screenshot: String(localized: "截圖")
+        case .screenshotWithSubs: String(localized: "截圖（含字幕）")
+        case .screenshotToClipboard: String(localized: "截圖到剪貼簿")
+        case .skipSegment: String(localized: "跳過 OP / ED")
+        case .sleepTimer: String(localized: "睡眠計時器")
+        case .nightMode: String(localized: "夜間模式")
+        case .reportProblem: String(localized: "複製播放問題報告")
+        }
+    }
+
+    /// Display order of `group` in the keyboard settings and the help overlay.
+    static var groupOrder: [String] {
+        [
+            String(localized: "播放"), String(localized: "音量"), String(localized: "字幕 / 音訊"),
+            String(localized: "介面"), String(localized: "彈幕"), String(localized: "擷取")
+        ]
+    }
+
+    var group: String {
+        switch self {
+        case .toggle, .seekBack5, .seekForward5, .seekBack30, .seekForward30, .frameForward, .frameBackward,
+             .speedDown, .speedUp, .speedReset, .abLoop, .skipSegment, .sleepTimer: String(localized: "播放")
+        case .volumeUp, .volumeDown, .mute: String(localized: "音量")
+        case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext, .nightMode: String(localized: "字幕 / 音訊")
+        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater, .reportProblem: String(localized: "介面")
+        case .danmakuToggle, .danmakuSettings, .danmakuCompose: String(localized: "彈幕")
+        case .screenshot, .screenshotWithSubs, .screenshotToClipboard: String(localized: "擷取")
+        }
+    }
+}
+
+/// A key chord in the web's representation (`key` is the DOM `KeyboardEvent.key`).
+struct KeyChord: Hashable {
+    let key: String
+    let shift: Bool
+    let control: Bool
+    let option: Bool
+    let command: Bool
+
+    init(key: String, shift: Bool = false, control: Bool = false, option: Bool = false, command: Bool = false) {
+        self.key = key
+        self.shift = shift
+        self.control = control
+        self.option = option
+        self.command = command
+    }
+
+    init(binding: KeyBinding) {
+        let modifiers = Set(binding.modifiers ?? [])
+        self.init(
+            key: binding.key,
+            shift: modifiers.contains("shift"),
+            control: modifiers.contains("ctrl"),
+            option: modifiers.contains("alt"),
+            command: modifiers.contains("meta")
+        )
+    }
+
+    /// Normalise an AppKit event to the DOM key names the web stores.
+    init?(event: NSEvent) {
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        let special: [UInt16: String] = [
+            123: "ArrowLeft", 124: "ArrowRight", 126: "ArrowUp", 125: "ArrowDown",
+            49: " ", 51: "Backspace", 53: "Escape", 36: "Enter", 48: "Tab",
+        ]
+        let key: String
+        if let named = special[event.keyCode] {
+            key = named
+        } else if let characters = event.charactersIgnoringModifiers, !characters.isEmpty {
+            key = characters
+        } else {
+            return nil
+        }
+        // "?" needs shift on most layouts; the web stores it without the modifier.
+        let shiftIsPartOfKey = key.count == 1 && key != key.lowercased() || key == "?"
+        self.init(
+            key: key == " " ? " " : (shiftIsPartOfKey ? key : key.lowercased()),
+            shift: flags.contains(.shift) && !shiftIsPartOfKey,
+            control: flags.contains(.control),
+            option: flags.contains(.option),
+            command: flags.contains(.command)
+        )
+    }
+
+    var display: String {
+        var parts: [String] = []
+        if control { parts.append("⌃") }
+        if option { parts.append("⌥") }
+        if shift { parts.append("⇧") }
+        if command { parts.append("⌘") }
+        let name: String = switch key {
+        case " ": "Space"
+        case "ArrowLeft": "←"
+        case "ArrowRight": "→"
+        case "ArrowUp": "↑"
+        case "ArrowDown": "↓"
+        case "Backspace": "⌫"
+        case "Escape": "⎋"
+        case "Enter": "↩"
+        default: key.count == 1 ? key.uppercased() : key
+        }
+        parts.append(name)
+        return parts.joined()
+    }
+}
+
+/// Default table = web defaults + mpv/desktop extras, overridden by the
+/// user's `keyboardBindings` (same action ids, so web rebinds apply here).
+struct PlayerKeymap {
+    private(set) var bindings: [KeyChord: PlayerAction]
+
+    static let defaults: [(PlayerAction, KeyChord)] = [
+        (.toggle, KeyChord(key: " ")),
+        (.toggle, KeyChord(key: "k")),
+        (.seekBack5, KeyChord(key: "ArrowLeft")),
+        (.seekForward5, KeyChord(key: "ArrowRight")),
+        (.seekBack30, KeyChord(key: "ArrowLeft", shift: true)),
+        (.seekForward30, KeyChord(key: "ArrowRight", shift: true)),
+        (.seekBack5, KeyChord(key: "j")),
+        (.seekForward5, KeyChord(key: "l", shift: false)),
+        (.frameForward, KeyChord(key: ".")),
+        (.frameBackward, KeyChord(key: ",")),
+        (.speedDown, KeyChord(key: "[")),
+        (.speedUp, KeyChord(key: "]")),
+        (.speedReset, KeyChord(key: "Backspace")),
+        (.abLoop, KeyChord(key: "l", shift: true)),
+        (.volumeUp, KeyChord(key: "ArrowUp")),
+        (.volumeDown, KeyChord(key: "ArrowDown")),
+        (.mute, KeyChord(key: "m")),
+        (.subtitleToggle, KeyChord(key: "c")),
+        (.subtitleNext, KeyChord(key: "v")),
+        (.subtitleDelayDecrease, KeyChord(key: "z")),
+        (.subtitleDelayIncrease, KeyChord(key: "x")),
+        (.audioNext, KeyChord(key: "b")),
+        (.fullscreen, KeyChord(key: "f")),
+        (.fullscreen, KeyChord(key: "f", control: true, command: true)),
+        (.miniPlayer, KeyChord(key: "p")),
+        (.help, KeyChord(key: "?")),
+        (.techInfo, KeyChord(key: "i")),
+        (.nextEpisode, KeyChord(key: "n")),
+        (.previousEpisode, KeyChord(key: "n", shift: true)),
+        (.inspector, KeyChord(key: "e")),
+        (.theater, KeyChord(key: "t")),
+        (.danmakuToggle, KeyChord(key: "d")),
+        (.danmakuSettings, KeyChord(key: "d", shift: true)),
+        (.danmakuCompose, KeyChord(key: "Enter", command: true)),
+        (.screenshot, KeyChord(key: "s")),
+        (.screenshotWithSubs, KeyChord(key: "s", shift: true)),
+        (.screenshotToClipboard, KeyChord(key: "s", option: true)),
+        (.skipSegment, KeyChord(key: "Tab")),
+        (.sleepTimer, KeyChord(key: "z", shift: true)),
+        (.nightMode, KeyChord(key: "m", shift: true)),
+        (.reportProblem, KeyChord(key: "r", option: true, command: true)),
+    ]
+
+    init(userBindings: [KeyBinding] = []) {
+        var table: [KeyChord: PlayerAction] = [:]
+        for (action, chord) in Self.defaults { table[chord] = action }
+        // A user rebind replaces every default chord of that action; an
+        // empty key means "unbound" (the settings UI writes that when a
+        // default chord is taken over by another action).
+        let rebound = Set(userBindings.compactMap { PlayerAction(rawValue: $0.action) })
+        table = table.filter { !rebound.contains($0.value) }
+        for binding in userBindings where !binding.key.isEmpty {
+            guard let action = PlayerAction(rawValue: binding.action) else { continue }
+            table[KeyChord(binding: binding)] = action
+        }
+        bindings = table
+    }
+
+    func action(for chord: KeyChord) -> PlayerAction? {
+        bindings[chord]
+    }
+
+    func chords(for action: PlayerAction) -> [KeyChord] {
+        bindings.filter { $0.value == action }.map(\.key).sorted { $0.display < $1.display }
+    }
+
+    /// Chords bound to more than one action (cannot happen through the
+    /// dictionary, but user tables can collide with *each other*).
+    static func conflicts(in userBindings: [KeyBinding]) -> [KeyChord] {
+        var seen: [KeyChord: Set<String>] = [:]
+        for binding in userBindings {
+            seen[KeyChord(binding: binding), default: []].insert(binding.action)
+        }
+        return seen.filter { $0.value.count > 1 }.map(\.key)
+    }
+}

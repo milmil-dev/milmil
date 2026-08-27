@@ -180,3 +180,60 @@ jobs:
           name: docs-playwright-report
           path: docs-site/test-results
           retention-days: 7
+
+  macos:
+    name: macOS
+    runs-on: macos-26
+    timeout-minutes: 40
+    env:
+      XCODEGEN_VERSION: "2.44.1"
+      SWIFTLINT_VERSION: "0.63.2"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          xcode=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+
+      # Homebrew bottles are the quickest way to the pinned versions on the
+      # hosted runner; mise.toml carries the same pins for local installs.
+      - name: Install xcodegen and swiftlint
+        run: brew install xcodegen swiftlint
+
+      - name: SwiftLint
+        working-directory: macos
+        run: swiftlint lint --strict --reporter github-actions-logging
+
+      - name: String catalog is in sync and fully translated
+        working-directory: macos
+        run: python3 scripts/i18n_sync.py --check && git diff --exit-code Milmil/Resources/Localizable.xcstrings
+
+      - name: Restore SwiftPM cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            macos/Packages/MilmilKit/.build
+            macos/Packages/MilmilPlayer/.build
+            ~/Library/Developer/Xcode/DerivedData
+          key: macos-${{ runner.os }}-${{ hashFiles('macos/Packages/**/Package.swift', 'macos/project.yml') }}
+          restore-keys: |
+            macos-${{ runner.os }}-
+
+      - name: Package tests
+        run: |
+          swift test --package-path macos/Packages/MilmilKit
+          swift test --package-path macos/Packages/MilmilPlayer
+
+      - name: Generate project
+        working-directory: macos
+        run: xcodegen generate --quiet
+
+      - name: Build app
+        working-directory: macos
+        run: |
+          xcodebuild -project Milmil.xcodeproj -scheme Milmil \
+            -destination 'platform=macOS,arch=arm64' -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO -quiet build

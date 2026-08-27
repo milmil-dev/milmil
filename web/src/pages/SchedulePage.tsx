@@ -132,8 +132,8 @@ function ScheduleSizeControl({
                     'relative flex size-7 items-center justify-center rounded-md transition-all duration-200 cursor-pointer',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mm-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
                     isActive
-                      ? 'bg-white/[0.12] text-white shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_6px_16px_rgba(166,130,255,0.14)]'
-                      : 'text-mm-text-tertiary hover:bg-white/[0.06] hover:text-mm-text-secondary'
+                      ? 'bg-ink/[0.12] text-ink shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_6px_16px_rgba(166,130,255,0.14)]'
+                      : 'text-mm-text-tertiary hover:bg-ink/[0.06] hover:text-mm-text-secondary'
                   )}
                 >
                   <ScheduleSizeGlyph size={option.value} active={isActive} />
@@ -545,7 +545,7 @@ function TimelineView({
                     <div className="absolute -inset-1.5 rounded-full bg-mm-accent/20 blur-sm" />
                     <div className="relative w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-mm-accent ring-[1.5px] ring-mm-accent/30 ring-offset-1 ring-offset-mm-bg shadow-[0_0_6px_rgba(var(--mm-accent-rgb,200,160,255),0.4)]" />
                   </div>
-                  <span className="px-2 sm:px-2.5 py-0.5 rounded-md bg-white/[0.06] backdrop-blur-sm border border-white/[0.06] text-mm-accent text-[10px] sm:text-[11px] font-bold tabular-nums whitespace-nowrap shadow-sm">
+                  <span className="px-2 sm:px-2.5 py-0.5 rounded-md bg-ink/[0.06] backdrop-blur-sm border border-ink/[0.06] text-mm-accent text-[10px] sm:text-[11px] font-bold tabular-nums whitespace-nowrap shadow-sm">
                     {group.time || '—'}
                   </span>
                 </div>
@@ -608,7 +608,7 @@ function MobileScheduleGrid({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-xl bg-white/[0.03] px-4 py-8 text-center">
+      <div className="rounded-xl bg-ink/[0.03] px-4 py-8 text-center">
         <p className="text-[13px] font-medium text-mm-text-muted">
           {i18n._(msg`schedule.noShows`)}
         </p>
@@ -648,7 +648,7 @@ function MobileDayHeading({ day, today }: { day: CalendarDay; today: string }) {
     <div className="mb-4 flex w-[var(--schedule-mobile-content-width)] max-w-full flex-wrap items-end justify-between gap-3">
       <div>
         <div className="flex items-center gap-2.5">
-          <h2 className="text-[24px] font-bold leading-none text-white">
+          <h2 className="text-[24px] font-bold leading-none text-ink">
             {getWeekdayJapanese(day.weekday)}
           </h2>
           {isToday && (
@@ -658,11 +658,11 @@ function MobileDayHeading({ day, today }: { day: CalendarDay; today: string }) {
             </span>
           )}
         </div>
-        <p className="mt-1.5 text-xs font-medium text-white/38 tabular-nums">
+        <p className="mt-1.5 text-xs font-medium text-ink/38 tabular-nums">
           {getDateForWeekday(day.weekday)}
         </p>
       </div>
-      <span className="rounded-full bg-white/[0.04] px-2.5 py-1 text-xs font-semibold text-white/45 tabular-nums">
+      <span className="rounded-full bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold text-ink/45 tabular-nums">
         {day.items.length} {i18n._(msg`schedule.totalShows`)}
       </span>
     </div>
@@ -708,8 +708,8 @@ function MobileWeekdayTabs({
               'relative flex h-[54px] min-w-[52px] snap-start flex-col items-center justify-center rounded-full transition-all duration-200 cursor-pointer',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mm-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
               activeDay === 'all'
-                ? 'bg-mm-accent text-black shadow-[0_8px_20px_rgba(168,132,255,0.22)]'
-                : 'bg-white/[0.055] text-white/62 hover:bg-white/[0.085] hover:text-white'
+                ? 'bg-mm-accent text-ink-contrast shadow-[0_8px_20px_rgba(168,132,255,0.22)]'
+                : 'bg-ink/[0.055] text-ink/62 hover:bg-ink/[0.085] hover:text-ink'
             )}
           >
             <span className="text-[11px] font-bold leading-none">{i18n._(msg`schedule.all`)}</span>
@@ -732,13 +732,13 @@ function MobileWeekdayTabs({
                 className={cn(
                   'relative flex h-[62px] min-w-[44px] snap-start flex-col items-center gap-1 rounded-full px-1.5 py-1 transition-colors duration-200 cursor-pointer',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mm-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
-                  isActive ? 'text-white' : 'text-white/58 hover:text-white'
+                  isActive ? 'text-ink' : 'text-ink/58 hover:text-ink'
                 )}
               >
                 <span
                   className={cn(
                     'text-[10px] font-bold leading-none',
-                    isActive ? 'text-mm-accent' : 'text-white/42'
+                    isActive ? 'text-mm-accent' : 'text-ink/42'
                   )}
                 >
                   {getWeekdayJapanese(day.weekday).slice(0, 1)}
@@ -747,10 +747,10 @@ function MobileWeekdayTabs({
                   className={cn(
                     'flex size-9 items-center justify-center rounded-full text-[13px] font-bold tabular-nums transition-all duration-200',
                     isActive
-                      ? 'bg-white text-black shadow-[0_8px_18px_rgba(0,0,0,0.25)]'
+                      ? 'bg-ink text-ink-contrast shadow-[0_8px_18px_rgba(0,0,0,0.25)]'
                       : isToday
                         ? 'bg-mm-accent/12 text-mm-accent ring-1 ring-mm-accent/40'
-                        : 'bg-transparent text-white/72'
+                        : 'bg-transparent text-ink/72'
                   )}
                 >
                   {getCompactDateForWeekday(day.weekday).split('/')[1]}
@@ -758,7 +758,7 @@ function MobileWeekdayTabs({
                 <span
                   className={cn(
                     'text-[9px] font-semibold leading-none tabular-nums',
-                    isActive ? 'text-white/58' : 'text-white/25'
+                    isActive ? 'text-ink/58' : 'text-ink/25'
                   )}
                 >
                   {day.items.length}
@@ -895,7 +895,7 @@ function CalendarView() {
             />
           )}
         </button>
-        <div className="w-px h-4 bg-white/[0.06] mx-0.5 mb-2 shrink-0" />
+        <div className="w-px h-4 bg-ink/[0.06] mx-0.5 mb-2 shrink-0" />
         {sortedCalendar.map((day) => {
           const isToday = day.weekday === today;
           const isActive = day.weekday === activeDay;
@@ -909,7 +909,7 @@ function CalendarView() {
               onClick={() => setActiveDay(day.weekday)}
               className={cn(
                 'relative shrink-0 flex items-center gap-1.5 px-3.5 pb-2.5 pt-2 cursor-pointer transition-colors duration-200 sm:px-3',
-                isActive ? 'text-mm-accent' : 'text-white/90 hover:text-white'
+                isActive ? 'text-mm-accent' : 'text-ink/90 hover:text-ink'
               )}
             >
               {isActive && (
@@ -922,11 +922,11 @@ function CalendarView() {
               <span
                 className={cn(
                   'text-[14px] font-bold whitespace-nowrap sm:text-[13px]',
-                  isActive ? 'text-mm-accent' : 'text-white/80'
+                  isActive ? 'text-mm-accent' : 'text-ink/80'
                 )}
               >
                 {day.weekday.replace(/^星期/, '週')} ({getWeekdayJapanese(day.weekday).slice(0, 1)})
-                <span className="ml-1 text-[11px] font-medium text-white/40 sm:text-[10px]">
+                <span className="ml-1 text-[11px] font-medium text-ink/40 sm:text-[10px]">
                   {getDateForWeekday(day.weekday)}
                 </span>
               </span>
@@ -993,7 +993,7 @@ function CalendarView() {
                   transition={{ duration: 0.15 }}
                 >
                   <div className="flex items-center gap-2.5 mb-4">
-                    <h2 className="text-lg font-semibold text-white">
+                    <h2 className="text-lg font-semibold text-ink">
                       {getWeekdayJapanese(activeCalendar.weekday)}
                     </h2>
                     <span className="text-[12px] font-medium text-mm-text-muted tabular-nums">
@@ -1033,15 +1033,15 @@ function CalendarView() {
                         <div
                           className={cn(
                             'text-[14px] font-semibold',
-                            isToday ? 'text-mm-accent' : 'text-white/70'
+                            isToday ? 'text-mm-accent' : 'text-ink/70'
                           )}
                         >
                           {getWeekdayJapanese(day.weekday)}
                         </div>
-                        <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
+                        <div className="mt-0.5 text-[11px] font-medium text-ink/30 tabular-nums">
                           {getDateForWeekday(day.weekday)}
                         </div>
-                        <div className="mt-0.5 text-[11px] font-medium text-white/30 tabular-nums">
+                        <div className="mt-0.5 text-[11px] font-medium text-ink/30 tabular-nums">
                           {day.items.length} {i18n._(msg`schedule.totalShows`)}
                         </div>
                       </div>
@@ -1108,7 +1108,7 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 
   return (
     <div ref={ref} className="flex justify-center py-8">
-      {loading && <Spinner size={24} className="text-white/30" />}
+      {loading && <Spinner size={24} className="text-ink/30" />}
     </div>
   );
 }
@@ -1238,18 +1238,18 @@ function MobileScheduleHeader({
             <button
               type="button"
               onClick={() => setSearch({ year: selectedYear - 1 })}
-              className="flex size-8 items-center justify-center rounded-full text-lg text-white/35 transition-colors cursor-pointer hover:bg-white/[0.05] hover:text-white/80"
+              className="flex size-8 items-center justify-center rounded-full text-lg text-ink/35 transition-colors cursor-pointer hover:bg-ink/[0.05] hover:text-ink/80"
             >
               ‹
             </button>
-            <span className="min-w-[76px] text-center text-[32px] font-bold leading-none text-white tabular-nums">
+            <span className="min-w-[76px] text-center text-[32px] font-bold leading-none text-ink tabular-nums">
               {selectedYear}
             </span>
             <button
               type="button"
               onClick={() => setSearch({ year: selectedYear + 1 })}
               disabled={selectedYear >= currentYear + 1}
-              className="flex size-8 items-center justify-center rounded-full text-lg text-white/35 transition-colors cursor-pointer hover:bg-white/[0.05] hover:text-white/80 disabled:cursor-default disabled:opacity-20"
+              className="flex size-8 items-center justify-center rounded-full text-lg text-ink/35 transition-colors cursor-pointer hover:bg-ink/[0.05] hover:text-ink/80 disabled:cursor-default disabled:opacity-20"
             >
               ›
             </button>
@@ -1264,7 +1264,7 @@ function MobileScheduleHeader({
         </div>
       </div>
 
-      <div className="mt-4 grid w-full grid-cols-4 gap-1 rounded-2xl bg-white/[0.035] p-1">
+      <div className="mt-4 grid w-full grid-cols-4 gap-1 rounded-2xl bg-ink/[0.035] p-1">
         {SEASONS.map((season) => {
           const isActive = selectedSeason === season;
           const isCurrent = selectedYear === currentYear && season === currentSeason;
@@ -1276,8 +1276,8 @@ function MobileScheduleHeader({
               className={cn(
                 'relative h-9 rounded-xl text-[13px] font-semibold transition-all duration-200 cursor-pointer',
                 isActive
-                  ? 'bg-white/[0.12] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]'
-                  : 'text-white/42 hover:bg-white/[0.055] hover:text-white/70'
+                  ? 'bg-ink/[0.12] text-ink shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]'
+                  : 'text-ink/42 hover:bg-ink/[0.055] hover:text-ink/70'
               )}
             >
               {getSeasonLabel(season, i18n)}
@@ -1377,18 +1377,18 @@ export function SchedulePage() {
               <button
                 type="button"
                 onClick={() => setSearch({ year: selectedYear - 1 })}
-                className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-sm"
+                className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-ink hover:bg-ink/[0.06] transition-colors cursor-pointer text-sm"
               >
                 ‹
               </button>
-              <span className="min-w-[64px] text-center text-2xl font-bold tabular-nums text-white md:min-w-[56px] md:text-xl">
+              <span className="min-w-[64px] text-center text-2xl font-bold tabular-nums text-ink md:min-w-[56px] md:text-xl">
                 {selectedYear}
               </span>
               <button
                 type="button"
                 onClick={() => setSearch({ year: selectedYear + 1 })}
                 disabled={selectedYear >= currentYear + 1}
-                className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-sm disabled:opacity-20 disabled:cursor-default"
+                className="w-7 h-7 flex items-center justify-center rounded-md text-mm-text-muted hover:text-ink hover:bg-ink/[0.06] transition-colors cursor-pointer text-sm disabled:opacity-20 disabled:cursor-default"
               >
                 ›
               </button>
@@ -1403,7 +1403,7 @@ export function SchedulePage() {
           </div>
 
           {/* Divider */}
-          <div className="hidden h-5 w-px bg-white/[0.08] md:block" />
+          <div className="hidden h-5 w-px bg-ink/[0.08] md:block" />
 
           {/* Season chips */}
           <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 scrollbar-none md:mx-0 md:px-0">
@@ -1419,7 +1419,7 @@ export function SchedulePage() {
                     'relative px-3 py-1.5 rounded-lg text-[13px] font-medium cursor-pointer transition-all duration-200',
                     isActive
                       ? 'bg-mm-accent/15 text-mm-accent'
-                      : 'text-mm-text-tertiary hover:text-mm-text-secondary hover:bg-white/[0.04]'
+                      : 'text-mm-text-tertiary hover:text-mm-text-secondary hover:bg-ink/[0.04]'
                   )}
                 >
                   {getSeasonLabel(season, i18n)}
@@ -1432,7 +1432,7 @@ export function SchedulePage() {
           </div>
 
           {/* Divider */}
-          <div className="hidden h-5 w-px bg-white/[0.08] md:block" />
+          <div className="hidden h-5 w-px bg-ink/[0.08] md:block" />
 
           {/* Card size density */}
           <div className="hidden md:block">

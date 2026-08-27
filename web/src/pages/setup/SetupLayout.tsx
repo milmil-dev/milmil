@@ -32,23 +32,23 @@ export function SetupLayout() {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20">
             <span className="text-lg font-semibold text-mm-accent">M</span>
           </div>
-          <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
-          <p className="mt-2 text-[12px] uppercase tracking-wider text-white/40">{activeLabel}</p>
+          <h1 className="text-xl font-semibold text-ink tracking-tight">milmil</h1>
+          <p className="mt-2 text-[12px] uppercase tracking-wider text-ink/40">{activeLabel}</p>
           <div className="mt-3 flex items-center justify-center gap-2">
             {STEPS.map((s, i) => (
               <span
                 key={s.key}
                 className={
                   i <= safeIndex
-                    ? 'h-1.5 w-1.5 rounded-full bg-white/80'
-                    : 'h-1.5 w-1.5 rounded-full bg-white/15'
+                    ? 'h-1.5 w-1.5 rounded-full bg-ink/80'
+                    : 'h-1.5 w-1.5 rounded-full bg-ink/15'
                 }
               />
             ))}
           </div>
         </div>
 
-        <div className="rounded-xl border border-white/[0.06] bg-mm-bg/70 p-8 backdrop-blur-xl shadow-2xl shadow-black/50">
+        <div className="rounded-xl border border-ink/[0.06] bg-mm-bg/70 p-8 backdrop-blur-xl shadow-2xl shadow-black/50">
           <Outlet />
         </div>
       </motion.div>

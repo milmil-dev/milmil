@@ -88,7 +88,7 @@ function RangeSlider({
       onTouchEnd={
         onCommit ? (e) => onCommit(Number((e.target as HTMLInputElement).value)) : undefined
       }
-      className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-white/50"
+      className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-ink/50"
       style={{
         background: `linear-gradient(to right, oklch(70% 0.01 280) ${String(pct)}%, oklch(18% 0.01 280) ${String(pct)}%)`,
       }}
@@ -118,7 +118,7 @@ function SubtitlePreview({ style }: { style: SubtitleStyle }) {
 
   return (
     <div
-      className="relative mt-3 flex overflow-hidden rounded-lg border border-white/[0.06]"
+      className="relative mt-3 flex overflow-hidden rounded-lg border border-ink/[0.06]"
       style={{
         height: 120,
         background: 'linear-gradient(135deg, #0a0a14 0%, #1a1a2e 100%)',
@@ -246,10 +246,10 @@ export function PlayerPanel() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-white sm:text-xl">
+      <h2 className="text-lg font-semibold text-ink sm:text-xl">
         {i18n._(msg`settings.nav.player`)}
       </h2>
-      <p className="mt-1 mb-4 text-xs text-white/35 sm:mb-6">
+      <p className="mt-1 mb-4 text-xs text-ink/35 sm:mb-6">
         {i18n._(msg`settings.player.subtitle`)}
       </p>
 
@@ -292,7 +292,7 @@ export function PlayerPanel() {
                   onTouchEnd={(e) =>
                     save({ opacity: Number((e.target as HTMLInputElement).value) })
                   }
-                  className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-white/50"
+                  className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-ink/50"
                   style={{
                     background: `linear-gradient(to right, oklch(70% 0.01 280) ${String(Math.round(danmakuOpacity * 100))}%, oklch(18% 0.01 280) ${String(Math.round(danmakuOpacity * 100))}%)`,
                   }}
@@ -389,7 +389,7 @@ export function PlayerPanel() {
               <select
                 value={subtitleStyle.fontFamily}
                 onChange={(e) => updateSubtitleStyle({ fontFamily: e.target.value })}
-                className="w-full rounded-md border border-white/[0.06] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-white/[0.12]"
+                className="w-full rounded-md border border-ink/[0.06] bg-ink/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-ink/[0.12]"
               >
                 {SUBTITLE_FONT_OPTIONS.map((f) => (
                   <option key={f.value} value={f.value}>
@@ -432,8 +432,8 @@ export function PlayerPanel() {
                     className={cn(
                       'size-7 rounded-full border-2 transition-all',
                       subtitleStyle.color === swatch.value
-                        ? 'border-white/60 scale-110'
-                        : 'border-white/10 hover:border-white/30'
+                        ? 'border-ink/60 scale-110'
+                        : 'border-ink/10 hover:border-ink/30'
                     )}
                     style={{ backgroundColor: swatch.value }}
                   />
@@ -447,9 +447,9 @@ export function PlayerPanel() {
                   />
                   <div
                     className={cn(
-                      'flex size-7 items-center justify-center rounded-full border-2 border-dashed border-white/20 text-xs text-white/40',
+                      'flex size-7 items-center justify-center rounded-full border-2 border-dashed border-ink/20 text-xs text-ink/40',
                       !COLOR_SWATCHES.some((s) => s.value === subtitleStyle.color) &&
-                        'border-white/60'
+                        'border-ink/60'
                     )}
                     style={
                       !COLOR_SWATCHES.some((s) => s.value === subtitleStyle.color)

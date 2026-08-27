@@ -11,14 +11,12 @@ export function SettingsCard({ label, children, className }: SettingsCardProps) 
   return (
     <div
       className={cn(
-        'rounded-[10px] border border-white/[0.06] bg-white/[0.025] p-3 sm:p-4 sm:px-5',
+        'rounded-[10px] border border-ink/[0.06] bg-ink/[0.025] p-3 sm:p-4 sm:px-5',
         className
       )}
     >
       {label && (
-        <div className="mb-3 text-xs font-medium uppercase tracking-[1px] text-white/50">
-          {label}
-        </div>
+        <div className="mb-3 text-xs font-medium uppercase tracking-[1px] text-ink/50">{label}</div>
       )}
       {children}
     </div>

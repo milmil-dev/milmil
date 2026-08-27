@@ -189,3 +189,25 @@ func TestLocaleNeedsTMDBOverride(t *testing.T) {
 		}
 	}
 }
+
+func TestResolveLocale_ClientHeaderBeatsAppearanceSetting(t *testing.T) {
+	cases := []struct {
+		name                                 string
+		explicit, appearance, acceptLanguage string
+		want                                 string
+	}{
+		{"header wins over server setting", "en", "zh-TW", "zh-TW,zh;q=0.9", "en-US"},
+		{"macOS bundle localization code", "zh-Hant", "en-US", "", "zh-TW"},
+		{"unknown header falls through to setting", "xx", "ja-JP", "en-US", "ja-JP"},
+		{"no header uses setting over browser", "", "zh-TW", "en-US", "zh-TW"},
+		{"no header or setting uses browser", "", "", "ko-KR,ko;q=0.9", "ko-KR"},
+		{"nothing at all defaults to zh-TW", "", "", "", "zh-TW"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := resolveLocale(tc.explicit, tc.appearance, tc.acceptLanguage); got != tc.want {
+				t.Errorf("resolveLocale(%q, %q, %q) = %q, want %q", tc.explicit, tc.appearance, tc.acceptLanguage, got, tc.want)
+			}
+		})
+	}
+}

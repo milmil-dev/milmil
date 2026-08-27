@@ -212,7 +212,19 @@ func (h *handler) handleHotTags(c *echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to list tags")
 	}
-	return c.JSON(http.StatusOK, tags)
+	locale := h.preferredLocale(c)
+	out := make([]hotTagResponse, len(tags))
+	for i, tag := range tags {
+		out[i] = hotTagResponse{HotTag: tag, Display: localizeTag(tag.Name, locale)}
+	}
+	return c.JSON(http.StatusOK, out)
+}
+
+// hotTagResponse carries the tag as stored — the value clients send back as a
+// search term — plus the name to render in the caller's UI language.
+type hotTagResponse struct {
+	store.HotTag
+	Display string `json:"display"`
 }
 
 func (h *handler) handleResolveAniList(c *echo.Context) error {

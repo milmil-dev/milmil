@@ -12,10 +12,20 @@ const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 interface DanmakuBarProps {
   fileId: string | null;
+  /** Everything on screen: 弹弹play + imported + local. */
   danmakuCount: number;
+  /** Only the 弹弹play feed — the credit line is owed to that source alone. */
+  dandanplayCount: number;
+  /** Playback position, so a posted comment lands where it was typed. */
+  currentTime?: () => number;
 }
 
-export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
+export function DanmakuBar({
+  fileId,
+  danmakuCount,
+  dandanplayCount,
+  currentTime,
+}: DanmakuBarProps) {
   const { i18n } = useLingui();
   const [text, setText] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -41,8 +51,18 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
     const token = localStorage.getItem('milmil-token') ?? '';
     await fetch(`${API_URL}/api/v1/danmaku/${fileId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ text: trimmed }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      // Matches the server's PostCommentReq (and the macOS client): mode 1 =
+      // scrolling, colour is 24-bit RGB as a decimal.
+      body: JSON.stringify({
+        comment: trimmed,
+        time: Math.max(0, currentTime?.() ?? 0),
+        mode: 1,
+        color: 16777215,
+      }),
     });
     setText('');
     inputRef.current?.focus();
@@ -62,8 +82,8 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         className={cn(
           'shrink-0 flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-full transition-all duration-300',
           enabled
-            ? 'bg-white/[0.12] text-white hover:bg-white/[0.18]'
-            : 'bg-white/[0.04] text-white/25 hover:bg-white/[0.08] hover:text-white/40'
+            ? 'bg-ink/[0.12] text-ink hover:bg-ink/[0.18]'
+            : 'bg-ink/[0.04] text-ink/25 hover:bg-ink/[0.08] hover:text-ink/40'
         )}
       >
         <svg viewBox="0 0 22 18" className="w-[18px] h-[15px] overflow-visible">
@@ -74,7 +94,11 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             height="2"
             rx="1"
             fill="currentColor"
-            animate={{ width: enabled ? 13 : 6, opacity: enabled ? 1 : 0.3, x: enabled ? 1 : 3 }}
+            animate={{
+              width: enabled ? 13 : 6,
+              opacity: enabled ? 1 : 0.3,
+              x: enabled ? 1 : 3,
+            }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
           />
           <motion.rect
@@ -83,7 +107,11 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             height="2"
             rx="1"
             fill="currentColor"
-            animate={{ width: enabled ? 16 : 8, opacity: enabled ? 0.75 : 0.2, x: enabled ? 4 : 5 }}
+            animate={{
+              width: enabled ? 16 : 8,
+              opacity: enabled ? 0.75 : 0.2,
+              x: enabled ? 4 : 5,
+            }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}
           />
           <motion.rect
@@ -108,7 +136,10 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
-            animate={{ opacity: enabled ? 0 : 0.5, pathLength: enabled ? 0 : 1 }}
+            animate={{
+              opacity: enabled ? 0 : 0.5,
+              pathLength: enabled ? 0 : 1,
+            }}
             transition={{ duration: 0.25 }}
           />
         </svg>
@@ -131,7 +162,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         <button
           type="button"
           onClick={() => setSettingsOpen((v) => !v)}
-          className="p-1.5 rounded text-white/30 hover:text-white/60 transition-colors"
+          className="p-1.5 rounded text-ink/30 hover:text-ink/60 transition-colors"
         >
           <HugeiconsIcon icon={Setting07Icon} size={16} strokeWidth={1.5} />
         </button>
@@ -143,7 +174,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.12 }}
-              className="absolute bottom-full left-0 mb-2 rounded-lg border border-white/[0.06] bg-[#1a1a1a] overflow-hidden shadow-xl shadow-black/40"
+              className="absolute bottom-full left-0 mb-2 rounded-lg border border-ink/[0.06] bg-mm-bg-elevated overflow-hidden shadow-xl shadow-black/40"
             >
               <DanmakuSettingsControls />
             </motion.div>
@@ -152,9 +183,23 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
       </div>
 
       {/* Label */}
-      <span className="shrink-0 text-[11px] text-white/30">
-        {i18n._({ ...msg`watch.danmaku.loaded`, values: { count: danmakuCount } })}
+      <span className="shrink-0 text-[11px] text-ink/30">
+        {i18n._({
+          ...msg`watch.danmaku.loaded`,
+          values: { count: danmakuCount },
+        })}
       </span>
+      {/* Source credit, only while 弹弹play comments are actually on screen —
+          imported or local-only sets owe it nothing. The terms require the
+          full name, never "dandan". */}
+      {dandanplayCount > 0 && (
+        <span
+          className="shrink-0 text-[10px] text-ink/25 hidden sm:inline"
+          title={i18n._(msg`watch.danmaku.attribution`)}
+        >
+          {i18n._(msg`watch.danmaku.attribution`)}
+        </span>
+      )}
 
       {/* Input */}
       <input
@@ -164,7 +209,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && sendDanmaku()}
         placeholder={i18n._(msg`watch.danmaku.placeholder`)}
-        className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2.5 py-1.5 text-xs text-white placeholder:text-white/20 outline-none focus:border-white/15 transition-colors"
+        className="flex-1 bg-ink/[0.04] border border-ink/[0.08] rounded px-2.5 py-1.5 text-xs text-ink placeholder:text-ink/20 outline-none focus:border-ink/15 transition-colors"
       />
 
       {/* Send */}
@@ -172,7 +217,7 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
         type="button"
         onClick={sendDanmaku}
         disabled={!text.trim() || !fileId}
-        className="shrink-0 bg-white/[0.08] text-white/60 font-medium text-xs px-3 py-1.5 rounded transition-colors hover:bg-white/[0.12] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+        className="shrink-0 bg-ink/[0.08] text-ink/60 font-medium text-xs px-3 py-1.5 rounded transition-colors hover:bg-ink/[0.12] hover:text-ink disabled:opacity-30 disabled:cursor-not-allowed"
       >
         {i18n._(msg`watch.danmaku.send`)}
       </button>

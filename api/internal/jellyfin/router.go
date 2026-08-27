@@ -3,6 +3,8 @@ package jellyfin
 import (
 	"net/http"
 	"strings"
+	"sync"
+	"sync/atomic"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
@@ -17,7 +19,19 @@ type Handler struct {
 	serverID      string
 	imageCache    *imagecache.Cache
 	encryptionKey []byte
+	devices       *deviceTracker
+	// enabled gates every /jellyfin route (503 when off); discovery owns the
+	// UDP responder so Settings › 服務 can start and stop both at runtime.
+	enabled          atomic.Bool
+	discoveryMu      sync.Mutex
+	discoveryAddress string
+	discoveryStop    func()
+	// avatarDir holds the JPEGs the main API renders (<DataDir>/avatars).
+	avatarDir string
 }
+
+// SetAvatarDir points /Users/{id}/Images/Primary at the avatar store.
+func (h *Handler) SetAvatarDir(dir string) { h.avatarDir = dir }
 
 // NewHandler creates a new Jellyfin API handler.
 func NewHandler(queries *store.Queries, jwtSecret string, imageCacheDir string, encryptionKey []byte) (*Handler, error) {
@@ -25,13 +39,76 @@ func NewHandler(queries *store.Queries, jwtSecret string, imageCacheDir string, 
 	if err != nil {
 		return nil, err
 	}
-	return &Handler{
+	h := &Handler{
 		queries:       queries,
 		jwtSecret:     jwtSecret,
 		serverID:      strings.ReplaceAll(uuid.NewString(), "-", ""),
 		imageCache:    cache,
 		encryptionKey: encryptionKey,
-	}, nil
+		devices:       newDeviceTracker(queries),
+	}
+	h.enabled.Store(true)
+	return h, nil
+}
+
+// Enabled reports whether the Jellyfin routes answer.
+func (h *Handler) Enabled() bool { return h.enabled.Load() }
+
+// SetEnabled turns the whole /jellyfin surface on or off at runtime.
+func (h *Handler) SetEnabled(on bool) { h.enabled.Store(on) }
+
+// ConfigureDiscovery sets the address the UDP responder advertises.
+func (h *Handler) ConfigureDiscovery(address string) {
+	h.discoveryMu.Lock()
+	h.discoveryAddress = address
+	h.discoveryMu.Unlock()
+}
+
+// DiscoveryEnabled reports whether the LAN responder is listening.
+func (h *Handler) DiscoveryEnabled() bool {
+	h.discoveryMu.Lock()
+	defer h.discoveryMu.Unlock()
+	return h.discoveryStop != nil
+}
+
+// StartDiscovery starts the UDP 7359 responder (idempotent).
+func (h *Handler) StartDiscovery() error {
+	h.discoveryMu.Lock()
+	defer h.discoveryMu.Unlock()
+	if h.discoveryStop != nil {
+		return nil
+	}
+	stop, err := StartDiscoveryServer(h.serverID, "milmil", h.discoveryAddress)
+	if err != nil {
+		return err
+	}
+	h.discoveryStop = stop
+	return nil
+}
+
+// StopDiscovery stops the responder (idempotent).
+func (h *Handler) StopDiscovery() {
+	h.discoveryMu.Lock()
+	defer h.discoveryMu.Unlock()
+	if h.discoveryStop != nil {
+		h.discoveryStop()
+		h.discoveryStop = nil
+	}
+}
+
+// DiscoveryPort is the UDP port Jellyfin clients broadcast to.
+const DiscoveryPort = discoveryPort
+
+// disabledGate answers 503 for every route while the layer is switched off.
+func (h *Handler) disabledGate() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c *echo.Context) error {
+			if !h.enabled.Load() {
+				return c.JSON(http.StatusServiceUnavailable, JellyfinError{Message: "milmil Jellyfin API is disabled"})
+			}
+			return next(c)
+		}
+	}
 }
 
 // ServerID returns the server's unique ID (for discovery).
@@ -40,6 +117,7 @@ func (h *Handler) ServerID() string { return h.serverID }
 // RegisterRoutes mounts all Jellyfin-compatible routes on the Echo instance.
 func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	jf := e.Group("/jellyfin")
+	jf.Use(h.disabledGate())
 	jf.Use(jellyfinLogMiddleware())
 
 	// Public endpoints (no auth)
@@ -49,11 +127,12 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	jf.POST("/Users/AuthenticateByName", h.handleAuthenticateByName)
 
 	// Protected endpoints
-	auth := jf.Group("", EmbyAuthMiddleware(h.jwtSecret, h.queries))
+	auth := jf.Group("", authMiddleware(h.jwtSecret, h.queries, h.devices))
 	auth.GET("/System/Info", h.handleSystemInfo)
 
 	// Users
 	auth.GET("/Users/:userId", h.handleGetUser)
+	auth.GET("/Users/:userId/Images/Primary", h.handleUserImage)
 	auth.GET("/Users/:userId/Views", h.handleGetUserViews)
 	auth.GET("/Users/:userId/GroupingOptions", h.handleGroupingOptions)
 	auth.GET("/Users/:userId/Items/Resume", h.handleItemsResume)

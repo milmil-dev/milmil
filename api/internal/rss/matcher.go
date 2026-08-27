@@ -42,12 +42,15 @@ func MatchRule(title, filterRegex, excludeRegex string) bool {
 	if filterRegex == "" {
 		return false
 	}
-	matched, err := regexp.MatchString(filterRegex, title)
+	// Case-insensitive: release titles mix "Bleach"/"BLEACH" freely, and a
+	// case-sensitive filter silently splits a season (some episodes match,
+	// others don't). A rule can opt back in with an inline (?-i) flag.
+	matched, err := regexp.MatchString("(?i)"+filterRegex, title)
 	if err != nil || !matched {
 		return false
 	}
 	if excludeRegex != "" {
-		excluded, err := regexp.MatchString(excludeRegex, title)
+		excluded, err := regexp.MatchString("(?i)"+excludeRegex, title)
 		if err == nil && excluded {
 			return false
 		}

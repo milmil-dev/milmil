@@ -1,8 +1,10 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"log/slog"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
@@ -23,6 +25,7 @@ import (
 	milmilsync "github.com/milmil/api/internal/sync"
 	"github.com/milmil/api/internal/torrent"
 	"github.com/milmil/api/internal/updatecheck"
+	"github.com/milmil/api/internal/worker"
 	"github.com/milmil/api/internal/ws"
 )
 
@@ -45,7 +48,15 @@ type handler struct {
 	syncSvc         *milmilsync.Service
 	danmakuRegistry *danmaku.Registry
 	updateChecker   *updatecheck.Checker
+	thumbnails      *thumbnailJobs
 	encryptionKey   []byte
+	// Settings › 服務: the scheduler's job registry, the Jellyfin layer and a
+	// hook to restart the chat bots after their enabled flag changes.
+	jobs       *worker.JobRegistry
+	jellyfin   *jellyfin.Handler
+	reloadBots func(context.Context, notification.NotificationConfig)
+	// avatarClient fetches source_url; nil uses the guarded default.
+	avatarClient *http.Client
 }
 
 // Deps carries everything the API layer needs to serve requests.
@@ -71,6 +82,15 @@ type Deps struct {
 	Sync          *milmilsync.Service
 	Danmaku       *danmaku.Registry
 	UpdateChecker *updatecheck.Checker
+	// Jobs is the scheduler's registry (list / toggle / run background jobs).
+	Jobs *worker.JobRegistry
+	// Jellyfin is the pre-built Jellyfin layer; nil builds one here.
+	Jellyfin *jellyfin.Handler
+	// AvatarHTTPClient fetches source_url for an avatar; nil uses the guarded
+	// client that refuses to dial anything but a public address.
+	AvatarHTTPClient *http.Client
+	// ReloadBots restarts the chat bots with a new config; nil = config only.
+	ReloadBots func(context.Context, notification.NotificationConfig)
 }
 
 // NewRouter creates the Echo instance with all middleware and routes.
@@ -103,7 +123,20 @@ func NewRouter(deps Deps) *echo.Echo {
 		syncSvc:         deps.Sync,
 		danmakuRegistry: deps.Danmaku,
 		updateChecker:   deps.UpdateChecker,
+		thumbnails:      newThumbnailJobs(),
 		encryptionKey:   cfg.EncryptionKey,
+		jobs:            deps.Jobs,
+		jellyfin:        deps.Jellyfin,
+		reloadBots:      deps.ReloadBots,
+		avatarClient:    deps.AvatarHTTPClient,
+	}
+
+	// Job state changes (start, finish, toggle) reach the clients live.
+	if h.jobs != nil && h.wsHub != nil {
+		hub := h.wsHub
+		h.jobs.OnChange = func(state worker.JobState) {
+			hub.Broadcast(ws.Event{Type: serviceChangedEvent, Data: workerStateDTO(state)})
+		}
 	}
 
 	// WebSocket. The handshake cannot carry an Authorization header, so the
@@ -136,6 +169,11 @@ func NewRouter(deps Deps) *echo.Echo {
 	authProtected := v1.Group("/auth", authMiddleware(h.queries), auditMiddleware(h.queries))
 	authProtected.POST("/logout", h.handleAuthLogout)
 	authProtected.GET("/me", h.handleAuthMe)
+	authProtected.PUT("/me/avatar", h.handlePutAvatar)
+	authProtected.DELETE("/me/avatar", h.handleDeleteAvatar)
+	// Public: <img> tags and external players cannot send a bearer header,
+	// user ids are UUIDs and an avatar is not a secret.
+	v1.GET("/users/:id/avatar", h.handleGetUserAvatar)
 	authProtected.PUT("/password", h.handleChangePassword)
 	authProtected.POST("/2fa/setup", h.handleTwoFactorSetup)
 	authProtected.POST("/2fa/verify", h.handleTwoFactorVerify)
@@ -277,6 +315,7 @@ func NewRouter(deps Deps) *echo.Echo {
 	animeGroup := v1.Group("/anime", authMiddleware(h.queries), auditMiddleware(h.queries))
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
 	animeGroup.GET("/:bangumiId/missing", h.handleAnimeMissing)
+	animeGroup.GET("/:bangumiId/offline-manifest", h.handleOfflineManifest)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 	animeGroup.PATCH("/:bangumiId/sync-flags", h.handleUpdateAnimeSyncFlags)
 	animeGroup.GET("/:bangumiId/duplicates", h.handleAnimeDuplicates)
@@ -404,14 +443,26 @@ func NewRouter(deps Deps) *echo.Echo {
 	systemGroup.DELETE("/transcode-cache", h.handleClearTranscodeCache)
 	systemGroup.GET("/downloader-status", h.handleDownloaderStatus)
 	systemGroup.GET("/update-check", h.handleUpdateCheck)
+	// Settings › 服務 — backend services (jobs, Jellyfin layer, bots, daemons)
+	systemGroup.GET("/services", h.handleListServices)
+	systemGroup.PATCH("/services/:id", h.handleUpdateService)
+	systemGroup.POST("/services/:id/run", h.handleRunService)
+	systemGroup.GET("/services/jellyfin/devices", h.handleListJellyfinDevices)
+	systemGroup.DELETE("/services/jellyfin/devices/:deviceId", h.handleRevokeJellyfinDevice)
 
-	// Jellyfin-compatible API for external players (Infuse, VLC, Kodi)
-	jellyfinCacheDir := filepath.Join(os.TempDir(), "milmil", "jellyfin-images")
-	jellyfinHandler, err := jellyfin.NewHandler(store.New(db), cfg.JWTSecret, jellyfinCacheDir, cfg.EncryptionKey)
-	if err != nil {
-		slog.Warn("jellyfin: failed to initialize", "err", err)
-	} else {
-		jellyfinHandler.RegisterRoutes(e)
+	// Jellyfin-compatible API for external players (Infuse, VLC, Kodi). main
+	// builds the handler itself so it can own LAN discovery; tests get one here.
+	if h.jellyfin == nil {
+		jellyfinCacheDir := filepath.Join(os.TempDir(), "milmil", "jellyfin-images")
+		jellyfinHandler, err := jellyfin.NewHandler(store.New(db), cfg.JWTSecret, jellyfinCacheDir, cfg.EncryptionKey)
+		if err != nil {
+			slog.Warn("jellyfin: failed to initialize", "err", err)
+		} else {
+			h.jellyfin = jellyfinHandler
+		}
+	}
+	if h.jellyfin != nil {
+		h.jellyfin.RegisterRoutes(e)
 		slog.Info("Jellyfin API enabled")
 	}
 

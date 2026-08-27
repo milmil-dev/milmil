@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ntf_1",
+    "type": "download.completed",
+    "title": "下載完成",
+    "message": "葬送的芙莉莲 EP 13 已加入 NAS Anime",
+    "severity": "success",
+    "read": 0,
+    "metadata": {"String": "{\"gid\":\"abc\"}", "Valid": true},
+    "created_at": "2026-08-23T10:00:00Z"
+  },
+  {
+    "id": "ntf_2",
+    "type": "library.scan_complete",
+    "title": "掃描完成",
+    "message": "Milmil · 新增 3 檔案",
+    "severity": "info",
+    "read": 1,
+    "metadata": null,
+    "created_at": "2026-08-23 09:00:00"
+  },
+  {
+    "id": "ntf_3",
+    "type": "system.error",
+    "title": "DMHY feed 抓取失敗",
+    "message": "timeout",
+    "severity": "error",
+    "read": false,
+    "metadata": "{\"feed\":\"dmhy\"}",
+    "created_at": "2026-08-22T10:00:00Z"
+  }
+]

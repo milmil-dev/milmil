@@ -2,7 +2,10 @@ package worker
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"log/slog"
+	"strconv"
 
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/downloader"
@@ -10,6 +13,7 @@ import (
 	"github.com/milmil/api/internal/matcher"
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/resolver"
+	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/scanner"
 	"github.com/milmil/api/internal/store"
 	"github.com/milmil/api/internal/ws"
@@ -38,14 +42,13 @@ type DownloadSyncWorker struct {
 	wsHub      *ws.Hub
 }
 
-func (w *DownloadSyncWorker) Run(ctx context.Context) {
+func (w *DownloadSyncWorker) Run(ctx context.Context) error {
 	downloads, err := w.queries.ListActiveDownloads(ctx)
 	if err != nil {
-		slog.Error("download_sync: list active", "err", err)
-		return
+		return fmt.Errorf("list active downloads: %w", err)
 	}
 	if len(downloads) == 0 {
-		return
+		return nil
 	}
 
 	// Collect progress for all active downloads to broadcast in one WS event
@@ -115,7 +118,10 @@ func (w *DownloadSyncWorker) Run(ctx context.Context) {
 			if libraryID.Valid {
 				slog.Info("download_sync: download complete, triggering full pipeline",
 					"name", dl.Name, "library_id", libraryID.String)
-				go w.TriggerFullPipeline(libraryID.String)
+				go func(dl store.Download, libraryID string) {
+					w.TriggerFullPipeline(libraryID)
+					w.notifyEpisodeReady(context.Background(), dl)
+				}(dl, libraryID.String)
 			}
 		}
 	}
@@ -127,6 +133,7 @@ func (w *DownloadSyncWorker) Run(ctx context.Context) {
 			Data: progressBatch,
 		})
 	}
+	return nil
 }
 
 // TriggerFullPipeline runs scan -> match -> resolve -> enrich for a library.
@@ -193,4 +200,58 @@ func (w *DownloadSyncWorker) TriggerFullPipeline(libraryID string) {
 	slog.Info("download_sync: full pipeline complete", "library", lib.Name)
 	w.notifier.Send(ctx, "library.scan_complete", "Library Scan Complete", lib.Name, "info",
 		map[string]any{"library_id": libraryID, "library_name": lib.Name})
+}
+
+// notifyEpisodeReady sends anime.episode_ready once a finished download for a
+// known series has been scanned, matched and linked to its episode — the
+// moment the episode can actually be played, unlike download.completed,
+// which fires while the file is still unmatched. Downloads without a
+// Bangumi ID or a parseable episode number, and files the pipeline did not
+// link, stay silent.
+func (w *DownloadSyncWorker) notifyEpisodeReady(ctx context.Context, dl store.Download) {
+	if !dl.BangumiID.Valid || dl.BangumiID.Int64 <= 0 {
+		return
+	}
+	number, err := strconv.ParseFloat(rss.ParseEpisode(dl.Name), 64)
+	if err != nil {
+		return
+	}
+	anime, err := w.queries.GetAnimeByBangumiID(ctx, dl.BangumiID)
+	if err != nil {
+		return
+	}
+	episode, err := w.queries.GetEpisodeByAnimeAndNumber(ctx, store.GetEpisodeByAnimeAndNumberParams{
+		AnimeID:       anime.ID,
+		EpisodeNumber: number,
+	})
+	if err != nil {
+		return
+	}
+	files, err := w.queries.ListMediaFilesByEpisode(ctx, sql.NullString{String: episode.ID, Valid: true})
+	if err != nil || len(files) == 0 {
+		return
+	}
+	title := anime.Title
+	if anime.TitleZh.Valid && anime.TitleZh.String != "" {
+		title = anime.TitleZh.String
+	}
+	episodeLabel := strconv.FormatFloat(number, 'f', -1, 64)
+	message := dl.Name
+	if episode.TitleZh.Valid && episode.TitleZh.String != "" {
+		message = episode.TitleZh.String
+	} else if episode.Title.Valid && episode.Title.String != "" {
+		message = episode.Title.String
+	}
+	metadata := map[string]any{
+		"bangumi_id":    dl.BangumiID.Int64,
+		"anime_name":    title,
+		"episode":       episodeLabel,
+		"episode_id":    episode.ID,
+		"media_file_id": files[0].ID,
+		"download_id":   dl.ID,
+	}
+	if anime.CoverImageUrl.Valid {
+		metadata["cover_image"] = anime.CoverImageUrl.String
+	}
+	w.notifier.Send(ctx, "anime.episode_ready", fmt.Sprintf("%s EP%s is ready to watch", title, episodeLabel), message, "success", metadata)
 }

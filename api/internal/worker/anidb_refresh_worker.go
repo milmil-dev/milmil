@@ -2,7 +2,7 @@ package worker
 
 import (
 	"context"
-	"log/slog"
+	"fmt"
 
 	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/ws"
@@ -15,15 +15,15 @@ type AnidbRefreshWorker struct {
 	wsHub *ws.Hub
 }
 
-func (w *AnidbRefreshWorker) Run(ctx context.Context) {
+func (w *AnidbRefreshWorker) Run(ctx context.Context) error {
 	if w.svc == nil {
-		return
+		return nil
 	}
 	if err := w.svc.Refresh(ctx); err != nil {
-		slog.Warn("anidb: refresh failed", "err", err)
-		return
+		return fmt.Errorf("refresh: %w", err)
 	}
 	if w.wsHub != nil {
 		w.wsHub.Broadcast(ws.Event{Type: "anidb:refreshed"})
 	}
+	return nil
 }

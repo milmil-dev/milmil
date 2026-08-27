@@ -2,6 +2,7 @@ package dandanplay_test
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -81,34 +82,39 @@ func TestFallbackClient_FallsBackWhenNoCredentials(t *testing.T) {
 	}
 }
 
-// TestFallbackClient_FallsBackOn429 verifies that when the official server
-// returns HTTP 429 (rate limited), the fallback server is tried instead.
-func TestFallbackClient_FallsBackOn429(t *testing.T) {
+// TestFallbackClient_NeverFallsBackOn429 verifies that a rate limit from the
+// official network is returned as-is: routing around a quota would be
+// circumventing 弹弹play's limit policy.
+func TestFallbackClient_NeverFallsBackOn429(t *testing.T) {
 	official := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusTooManyRequests)
 	}))
 	defer official.Close()
 
-	fallbackCalled := false
 	fallbackSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fallbackCalled = true
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"count":1,"comments":[{"cid":99,"p":"3.0,1,16711680","m":"rate limit fallback"}]}`))
+		t.Error("fallback must not be called on 429")
 	}))
 	defer fallbackSrv.Close()
 
-	// Both servers are independent httptest servers; use a plain http.Client.
-	sharedClient := &http.Client{}
+	c := dandanplay.NewFallbackClient(&http.Client{}, mockCredentials, official.URL, fallbackSrv.URL)
+	_, err := c.GetComments(context.Background(), 77)
+	if !errors.Is(err, dandanplay.ErrRateLimited) {
+		t.Fatalf("want ErrRateLimited, got %v", err)
+	}
+}
 
-	c := dandanplay.NewFallbackClient(sharedClient, mockCredentials, official.URL, fallbackSrv.URL)
-	comments, err := c.GetComments(context.Background(), 77)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !fallbackCalled {
-		t.Error("expected fallback server to be called after 429")
-	}
-	if len(comments) != 1 || comments[0].M != "rate limit fallback" {
-		t.Errorf("unexpected comments: %v", comments)
+// TestFallbackClient_OffWithoutURL verifies that no fallback exists unless a
+// proxy URL is configured: with empty credentials the call fails instead of
+// silently reaching a third-party mirror.
+func TestFallbackClient_OffWithoutURL(t *testing.T) {
+	official := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("official must not be reached without credentials")
+	}))
+	defer official.Close()
+
+	c := dandanplay.NewFallbackClient(&http.Client{}, emptyCredentials, official.URL, "")
+	_, err := c.GetComments(context.Background(), 1)
+	if !errors.Is(err, dandanplay.ErrNoCredentials) {
+		t.Fatalf("want ErrNoCredentials, got %v", err)
 	}
 }

@@ -52,6 +52,9 @@ func (h *handler) handleStreamDirect(c *echo.Context) error {
 		contentType = "application/octet-stream"
 	}
 	c.Response().Header().Set("Content-Type", contentType)
+	// Offline copies re-validate against this; ServeContent turns it into
+	// 304s and range checks for free.
+	c.Response().Header().Set("ETag", streamETag(mediaFile))
 
 	// Local files: use os.Open directly (supports ReadSeeker for Range requests)
 	if lib.SourceType == "local" || lib.SourceType == "" {
@@ -103,7 +106,10 @@ func (h *handler) handleStreamDirect(c *echo.Context) error {
 		return nil
 	}
 
-	// Fallback: stream without Range support
+	// Fallback: stream without Range support (a provider whose reader cannot
+	// seek); say so, so a resuming client downloads from the start instead
+	// of trusting a 200 for a partial request.
+	c.Response().Header().Set("Accept-Ranges", "none")
 	c.Response().Header().Set("Content-Disposition", "inline")
 	c.Response().WriteHeader(http.StatusOK)
 	_, err = io.Copy(c.Response(), reader)

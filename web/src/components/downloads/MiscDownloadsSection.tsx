@@ -22,7 +22,7 @@ export function MiscDownloadsSection({ downloads, onDelete }: Props) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 text-[11px] text-white/20 hover:text-white/60 uppercase tracking-[0.08em] cursor-pointer"
+        className="flex items-center gap-2 text-[11px] text-ink/20 hover:text-ink/60 uppercase tracking-[0.08em] cursor-pointer"
       >
         <HugeiconsIcon icon={open ? ArrowUp01Icon : ArrowDown01Icon} size={10} />
         <span>

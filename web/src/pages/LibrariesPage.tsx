@@ -39,6 +39,7 @@ import {
 } from '../lib/api/library';
 import { cn } from '../lib/utils';
 import { useScanStore } from '../store/scan-store';
+import { Skeleton, SkeletonText } from '../components/Skeleton';
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -107,7 +108,7 @@ function SourceBadge({ sourceType }: { sourceType: string }) {
   if (!sourceType || sourceType === 'local') return null;
   const label = sourceType.toUpperCase();
   return (
-    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/[0.08] text-white/50">
+    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-ink/[0.08] text-ink/50">
       {label}
     </span>
   );
@@ -150,7 +151,7 @@ function LibraryCard({
 
   return (
     <div
-      className="group flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-colors bg-white/[0.03] hover:bg-white/[0.06]"
+      className="group flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-colors bg-ink/[0.03] hover:bg-ink/[0.06]"
       onClick={() => navigate({ to: `/libraries/${lib.id}` })}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') navigate({ to: `/libraries/${lib.id}` });
@@ -159,17 +160,17 @@ function LibraryCard({
       tabIndex={0}
     >
       {/* Source icon */}
-      <div className="w-9 h-9 rounded-[10px] bg-white/[0.05] flex items-center justify-center shrink-0">
-        <SourceIcon sourceType={lib.source_type} className="w-[18px] h-[18px] text-white/25" />
+      <div className="w-9 h-9 rounded-[10px] bg-ink/[0.05] flex items-center justify-center shrink-0">
+        <SourceIcon sourceType={lib.source_type} className="w-[18px] h-[18px] text-ink/25" />
       </div>
 
       {/* Center info */}
       <div className="flex-1 min-w-0">
         {/* Line 1: name + badges */}
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-white/85 truncate">{lib.name}</span>
+          <span className="text-sm font-semibold text-ink/85 truncate">{lib.name}</span>
           {!lib.enabled && (
-            <span className="text-[9px] font-bold px-1.5 py-px rounded bg-white/[0.04] text-white/25">
+            <span className="text-[9px] font-bold px-1.5 py-px rounded bg-ink/[0.04] text-ink/25">
               {i18n._(msg`library.off`)}
             </span>
           )}
@@ -217,10 +218,10 @@ function LibraryCard({
         </div>
 
         {/* Line 2: path */}
-        <p className="text-[10px] font-mono text-white/20 truncate mt-1">{lib.path}</p>
+        <p className="text-[10px] font-mono text-ink/20 truncate mt-1">{lib.path}</p>
 
         {/* Progress bar */}
-        <div className="h-[3px] rounded-full bg-white/[0.04] mt-2 overflow-hidden">
+        <div className="h-[3px] rounded-full bg-ink/[0.04] mt-2 overflow-hidden">
           <div
             className={cn(
               'h-full rounded-full transition-all duration-500',
@@ -233,10 +234,10 @@ function LibraryCard({
 
       {/* Right stats */}
       <div className="text-right shrink-0 mr-1">
-        <p className="text-lg font-semibold text-white/65 tabular-nums tracking-tight">
+        <p className="text-lg font-semibold text-ink/65 tabular-nums tracking-tight">
           {lib.file_count.toLocaleString()}
         </p>
-        <p className="text-[9px] text-white/20 mt-0.5 tabular-nums">
+        <p className="text-[9px] text-ink/20 mt-0.5 tabular-nums">
           {capacity?.available && diskPct !== null ? (
             <>
               {formatBytes(capacity.used_bytes)} / {formatBytes(capacity.total_bytes)} ·{' '}
@@ -259,7 +260,7 @@ function LibraryCard({
 
       {/* Chevron */}
       <svg
-        className="w-4 h-4 text-white/10 group-hover:text-white/25 transition-colors shrink-0"
+        className="w-4 h-4 text-ink/10 group-hover:text-ink/25 transition-colors shrink-0"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -280,12 +281,12 @@ function AddCard({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.04]"
+      className="group flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl cursor-pointer transition-colors hover:bg-ink/[0.04]"
     >
-      <div className="w-7 h-7 rounded-lg bg-white/[0.06] flex items-center justify-center group-hover:bg-white/[0.10] transition-colors">
-        <span className="text-sm text-white/25 group-hover:text-white/45 transition-colors">+</span>
+      <div className="w-7 h-7 rounded-lg bg-ink/[0.06] flex items-center justify-center group-hover:bg-ink/[0.10] transition-colors">
+        <span className="text-sm text-ink/25 group-hover:text-ink/45 transition-colors">+</span>
       </div>
-      <span className="text-sm text-white/25 group-hover:text-white/45 transition-colors">
+      <span className="text-sm text-ink/25 group-hover:text-ink/45 transition-colors">
         {i18n._(msg`library.addLibrary`)}
       </span>
     </button>
@@ -299,7 +300,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
     <div className="flex flex-col items-center justify-center pt-32 pb-16">
       {/* Folder illustration */}
       <div className="mb-8">
-        <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
+        <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-ink/[0.07]">
           <path
             d="M10 22a4 4 0 0 1 4-4h16l6 6h28a4 4 0 0 1 4 4v30a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V22z"
             stroke="currentColor"
@@ -308,14 +309,14 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
           />
         </svg>
       </div>
-      <h2 className="text-xl font-semibold text-white/70 mb-2">
+      <h2 className="text-xl font-semibold text-ink/70 mb-2">
         {i18n._(msg`home.library.empty.title`)}
       </h2>
-      <p className="text-sm text-white/30 mb-8">{i18n._(msg`home.library.empty.subtitle`)}</p>
+      <p className="text-sm text-ink/30 mb-8">{i18n._(msg`home.library.empty.subtitle`)}</p>
       <button
         type="button"
         onClick={onAdd}
-        className="px-5 py-2.5 text-sm font-semibold rounded-lg bg-white/[0.06] text-white/60 hover:bg-white/[0.10] hover:text-white/80 transition-colors cursor-pointer"
+        className="px-5 py-2.5 text-sm font-semibold rounded-lg bg-ink/[0.06] text-ink/60 hover:bg-ink/[0.10] hover:text-ink/80 transition-colors cursor-pointer"
       >
         + {i18n._(msg`library.addLibrary`)}
       </button>
@@ -364,8 +365,8 @@ interface LibraryFormValues {
   rclone_remote_name: string;
 }
 
-const labelClass = 'text-[10px] font-medium uppercase tracking-[0.2em] text-gray-200';
-const inputClass = 'bg-white/[0.06] border-none outline-none text-white rounded-md';
+const labelClass = 'text-[10px] font-medium uppercase tracking-[0.2em] text-ink/85';
+const inputClass = 'bg-ink/[0.06] border-none outline-none text-ink rounded-md';
 
 // ─── Test connection button ───────────────────────────────────────────────────
 function TestConnectionButton({
@@ -391,7 +392,7 @@ function TestConnectionButton({
           testMutation.mutate(getConnectionInput());
         }}
         disabled={testMutation.isPending}
-        className="px-3 py-1.5 text-xs font-semibold rounded-md bg-white/[0.06] text-gray-200 hover:bg-white/[0.1] transition-colors disabled:opacity-40"
+        className="px-3 py-1.5 text-xs font-semibold rounded-md bg-ink/[0.06] text-ink/85 hover:bg-ink/[0.1] transition-colors disabled:opacity-40"
       >
         {testMutation.isPending
           ? i18n._(msg`library.testConnection.testing`)
@@ -440,7 +441,7 @@ function NetworkBrowser({
       {/* Scanning state */}
       {discoverMutation.isPending && (
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs text-white/50">
+          <div className="flex items-center gap-2 text-xs text-ink/50">
             <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle
                 cx="12"
@@ -455,7 +456,7 @@ function NetworkBrowser({
             {i18n._(msg`library.discover.scanning`)}
           </div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 rounded-lg bg-white/[0.04] animate-pulse" />
+            <Skeleton key={i} className="h-12 rounded-lg" />
           ))}
         </div>
       )}
@@ -463,7 +464,7 @@ function NetworkBrowser({
       {/* Empty state */}
       {discoverMutation.isSuccess && hosts.length === 0 && (
         <div className="text-center py-6">
-          <p className="text-xs text-white/40 mb-2">{i18n._(msg`library.discover.noHosts`)}</p>
+          <p className="text-xs text-ink/40 mb-2">{i18n._(msg`library.discover.noHosts`)}</p>
           <button
             type="button"
             onClick={() => discoverMutation.mutate()}
@@ -483,7 +484,7 @@ function NetworkBrowser({
             return (
               <div
                 key={host.ip}
-                className="rounded-lg border border-white/[0.06] hover:bg-white/[0.03] transition-all"
+                className="rounded-lg border border-ink/[0.06] hover:bg-ink/[0.03] transition-all"
               >
                 <button
                   type="button"
@@ -491,8 +492,8 @@ function NetworkBrowser({
                   className="w-full flex items-center gap-3 p-3 cursor-pointer"
                 >
                   {/* Server icon */}
-                  <div className="shrink-0 w-8 h-8 rounded-md bg-white/[0.06] flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white/50">
+                  <div className="shrink-0 w-8 h-8 rounded-md bg-ink/[0.06] flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-ink/50">
                       <rect
                         x="4"
                         y="5"
@@ -516,13 +517,13 @@ function NetworkBrowser({
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-medium text-white/80">{label}</p>
+                    <p className="text-sm font-medium text-ink/80">{label}</p>
                   </div>
                   {host.hostname && (
-                    <span className="text-[11px] font-mono text-white/30">{host.ip}</span>
+                    <span className="text-[11px] font-mono text-ink/30">{host.ip}</span>
                   )}
                   <span
-                    className="text-[10px] text-white/30 transition-transform duration-150"
+                    className="text-[10px] text-ink/30 transition-transform duration-150"
                     style={{ transform: isExpanded ? 'rotate(90deg)' : undefined }}
                   >
                     &#9654;
@@ -550,7 +551,7 @@ function NetworkBrowser({
                                     `${i18n._(msg`library.browse.selected`)} ${label}/${share}`
                                   );
                                 }}
-                                className="px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-white/60 transition-colors cursor-pointer"
+                                className="px-3 py-1.5 rounded-full bg-ink/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-ink/60 transition-colors cursor-pointer"
                               >
                                 {share}
                               </button>
@@ -558,7 +559,7 @@ function NetworkBrowser({
                           </div>
                         ) : (
                           <div className="space-y-2">
-                            <p className="text-[11px] text-white/30">
+                            <p className="text-[11px] text-ink/30">
                               {i18n._(msg`library.discover.noShares`)}
                             </p>
                             <button
@@ -567,7 +568,7 @@ function NetworkBrowser({
                                 if (onSelectHost) onSelectHost(host.ip, 445);
                                 toast.success(`${i18n._(msg`library.browse.selected`)} ${label}`);
                               }}
-                              className="px-3 py-1.5 rounded-md bg-white/[0.08] hover:bg-white/[0.12] text-xs text-white/60 hover:text-white transition-colors cursor-pointer"
+                              className="px-3 py-1.5 rounded-md bg-ink/[0.08] hover:bg-ink/[0.12] text-xs text-ink/60 hover:text-ink transition-colors cursor-pointer"
                             >
                               {i18n._(msg`library.discover.useThisHost`)}
                             </button>
@@ -585,7 +586,7 @@ function NetworkBrowser({
             type="button"
             onClick={() => discoverMutation.mutate()}
             disabled={discoverMutation.isPending}
-            className="text-xs text-white/40 hover:text-white/60 transition-colors disabled:opacity-40"
+            className="text-xs text-ink/40 hover:text-ink/60 transition-colors disabled:opacity-40"
           >
             {i18n._(msg`library.discover.browse`)}
           </button>
@@ -645,10 +646,10 @@ function LibraryForm({
     >
       {/* ── Source type read-only display ── */}
       <div className="flex items-center gap-2 mb-1">
-        <div className="text-white/30">
+        <div className="text-ink/30">
           <SourceIcon sourceType={fixedSourceType} className="w-6 h-6" />
         </div>
-        <span className="text-xs font-medium uppercase tracking-[0.15em] text-white/40">
+        <span className="text-xs font-medium uppercase tracking-[0.15em] text-ink/40">
           {sourceTypeName(fixedSourceType, i18n)}
         </span>
       </div>
@@ -695,7 +696,7 @@ function LibraryForm({
               />
               <Label
                 htmlFor="lib-enabled"
-                className="text-[9px] font-medium uppercase tracking-[0.15em] text-white/30"
+                className="text-[9px] font-medium uppercase tracking-[0.15em] text-ink/30"
               >
                 {i18n._(msg`library.enabled`)}
               </Label>
@@ -706,7 +707,7 @@ function LibraryForm({
 
       {/* ── Connection section (hidden in edit mode — config is encrypted) ── */}
       {fixedSourceType !== 'local' && !isEdit && (
-        <div className="rounded-lg border border-white/[0.06] p-4 space-y-4">
+        <div className="rounded-lg border border-ink/[0.06] p-4 space-y-4">
           {/* SMB fields */}
           {fixedSourceType === 'smb' && (
             <>
@@ -907,8 +908,8 @@ function LibraryForm({
                           className={cn(
                             'flex-1 px-3 py-2 text-xs font-semibold rounded-md transition-colors',
                             field.state.value === v
-                              ? 'bg-mm-accent text-black'
-                              : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
+                              ? 'bg-mm-accent text-ink-contrast'
+                              : 'bg-ink/[0.06] text-ink/85 hover:bg-ink/[0.1]'
                           )}
                         >
                           {v === 'nextcloud'
@@ -1107,7 +1108,7 @@ function LibraryForm({
                     placeholder="https://example.com/media/"
                     className={cn('font-mono text-sm', inputClass)}
                   />
-                  <p className="text-[11px] text-white/30">{i18n._(msg`library.http.readOnly`)}</p>
+                  <p className="text-[11px] text-ink/30">{i18n._(msg`library.http.readOnly`)}</p>
                 </Field>
               )}
             </form.Field>
@@ -1194,14 +1195,14 @@ function LibraryForm({
       </form.Subscribe>
 
       {/* ── Advanced section (collapsible) ── */}
-      <div className="rounded-lg border border-white/[0.06] overflow-hidden">
+      <div className="rounded-lg border border-ink/[0.06] overflow-hidden">
         <button
           type="button"
           onClick={() => setShowAdvanced((v) => !v)}
-          className="w-full flex items-center justify-between px-4 py-3 text-left cursor-pointer hover:bg-white/[0.02] transition-colors"
+          className="w-full flex items-center justify-between px-4 py-3 text-left cursor-pointer hover:bg-ink/[0.02] transition-colors"
         >
           <span className={labelClass}>{i18n._(msg`library.scanInterval`)}</span>
-          <span className="text-white/30 text-xs">{showAdvanced ? '\u25B2' : '\u25BC'}</span>
+          <span className="text-ink/30 text-xs">{showAdvanced ? '\u25B2' : '\u25BC'}</span>
         </button>
         {showAdvanced && (
           <div className="px-4 pb-4">
@@ -1224,7 +1225,7 @@ function LibraryForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full font-semibold text-white bg-white/[0.08] hover:bg-white/[0.14] transition-all rounded-lg h-11"
+            className="w-full font-semibold text-ink bg-ink/[0.08] hover:bg-ink/[0.14] transition-all rounded-lg h-11"
           >
             {isSubmitting ? i18n._(msg`library.saving`) : submitLabel}
           </Button>
@@ -1252,19 +1253,19 @@ function RcloneRemotePicker({
   const remotes = (data?.remotes ?? []).filter((r) => r.type === rcloneType);
 
   return (
-    <div className="space-y-3 p-4 rounded-md bg-white/[0.03]">
-      <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-200">
+    <div className="space-y-3 p-4 rounded-md bg-ink/[0.03]">
+      <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-ink/85">
         {i18n._(msg`library.rclone.availableRemotes`)}
       </p>
       {isLoading && (
         <div className="space-y-2">
           {[1, 2].map((i) => (
-            <div key={i} className="h-10 rounded-lg bg-white/[0.04] animate-pulse" />
+            <Skeleton key={i} className="h-10 rounded-lg" />
           ))}
         </div>
       )}
       {!isLoading && remotes.length === 0 && (
-        <p className="text-xs text-white/40 py-3">{i18n._(msg`library.rclone.noRemotes`)}</p>
+        <p className="text-xs text-ink/40 py-3">{i18n._(msg`library.rclone.noRemotes`)}</p>
       )}
       {remotes.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
@@ -1273,10 +1274,10 @@ function RcloneRemotePicker({
               key={remote.name}
               type="button"
               onClick={() => onSelect(remote.name)}
-              className="px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-white/60 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-full bg-ink/[0.06] hover:bg-mm-accent/20 hover:text-mm-accent text-xs text-ink/60 transition-colors cursor-pointer"
             >
               {remote.name}
-              <span className="ml-1.5 text-white/30">{remote.type}</span>
+              <span className="ml-1.5 text-ink/30">{remote.type}</span>
             </button>
           ))}
         </div>
@@ -1504,11 +1505,11 @@ function AddLibraryWizard({
             transition={{ duration: 0.18 }}
             className="space-y-3"
           >
-            <p className="text-xs text-white/35 mb-3">{i18n._(msg`library.wizard.chooseSource`)}</p>
+            <p className="text-xs text-ink/35 mb-3">{i18n._(msg`library.wizard.chooseSource`)}</p>
             <div className="space-y-4">
               {sourceSections.map((section) => (
                 <div key={section.label}>
-                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25 mb-2">
+                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-ink/25 mb-2">
                     {section.label}
                   </p>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -1517,14 +1518,14 @@ function AddLibraryWizard({
                         key={card.key}
                         type="button"
                         onClick={() => handleSelectSource(card.key)}
-                        className="rounded-lg bg-white/[0.04] px-4 py-3 hover:bg-white/[0.08] transition-colors cursor-pointer text-left flex items-center gap-3"
+                        className="rounded-lg bg-ink/[0.04] px-4 py-3 hover:bg-ink/[0.08] transition-colors cursor-pointer text-left flex items-center gap-3"
                       >
-                        <div className="text-white/30 shrink-0 [&_svg]:w-6 [&_svg]:h-6">
+                        <div className="text-ink/30 shrink-0 [&_svg]:w-6 [&_svg]:h-6">
                           {card.icon}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-white/80">{card.name}</p>
-                          <p className="text-[11px] text-white/30 leading-snug truncate">
+                          <p className="text-sm font-semibold text-ink/80">{card.name}</p>
+                          <p className="text-[11px] text-ink/30 leading-snug truncate">
                             {card.desc}
                           </p>
                         </div>
@@ -1548,10 +1549,10 @@ function AddLibraryWizard({
           >
             {/* Source header: icon + label + change-source link, single row */}
             <div className="flex items-center gap-2 mb-5">
-              <div className="text-white/30">
+              <div className="text-ink/30">
                 {allSourceCards.find((c) => c.key === sourceType)?.icon}
               </div>
-              <span className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.15em] text-white/40">
+              <span className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.15em] text-ink/40">
                 {allSourceCards.find((c) => c.key === sourceType)?.name}
               </span>
               <button
@@ -1560,7 +1561,7 @@ function AddLibraryWizard({
                   setStep('source');
                   setSmbStep('server');
                 }}
-                className="ml-auto shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.15em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+                className="ml-auto shrink-0 whitespace-nowrap flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.15em] text-ink/40 hover:text-ink/60 transition-colors cursor-pointer"
               >
                 <span>&#8592;</span> {i18n._(msg`library.wizard.changeSource`)}
               </button>
@@ -1637,13 +1638,13 @@ function AddLibraryWizard({
                       const isCompleted = stepIdx < currentIdx;
                       return (
                         <span key={s.key} className="flex items-center gap-2">
-                          {idx > 0 && <span className="text-white/15">&#8212;</span>}
+                          {idx > 0 && <span className="text-ink/15">&#8212;</span>}
                           <span
                             className={cn(
                               'font-bold transition-colors',
-                              isActive && 'text-white',
+                              isActive && 'text-ink',
                               isCompleted && 'text-green-400',
-                              !isActive && !isCompleted && 'text-white/25'
+                              !isActive && !isCompleted && 'text-ink/25'
                             )}
                           >
                             {isCompleted ? '\u2713' : s.num}
@@ -1651,9 +1652,9 @@ function AddLibraryWizard({
                           <span
                             className={cn(
                               'transition-colors',
-                              isActive && 'text-white/70',
+                              isActive && 'text-ink/70',
                               isCompleted && 'text-green-400/70',
-                              !isActive && !isCompleted && 'text-white/25'
+                              !isActive && !isCompleted && 'text-ink/25'
                             )}
                           >
                             {s.label}
@@ -1675,7 +1676,7 @@ function AddLibraryWizard({
                         transition={{ duration: 0.2 }}
                         className="space-y-4"
                       >
-                        <p className="text-xs text-white/40">
+                        <p className="text-xs text-ink/40">
                           {i18n._(msg`library.wizard.smb.chooseServer`)}
                         </p>
                         <NetworkBrowser
@@ -1696,7 +1697,7 @@ function AddLibraryWizard({
 
                         {/* Manual entry */}
                         <div className="space-y-2 pt-2">
-                          <p className="text-[11px] text-white/30">
+                          <p className="text-[11px] text-ink/30">
                             {i18n._(msg`library.wizard.smb.enterManually`)}
                           </p>
                           <div className="flex gap-2">
@@ -1722,7 +1723,7 @@ function AddLibraryWizard({
                                 form.setFieldValue('smb_port', 445);
                                 setSmbStep('credentials');
                               }}
-                              className="px-4 py-2 text-xs font-semibold rounded-md bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
+                              className="px-4 py-2 text-xs font-semibold rounded-md bg-ink/[0.08] text-ink/60 hover:bg-ink/[0.12] hover:text-ink transition-colors disabled:opacity-30 cursor-pointer"
                             >
                               {i18n._(msg`library.wizard.smb.next`)}
                             </button>
@@ -1747,12 +1748,12 @@ function AddLibraryWizard({
                           selector={(s) => ({ host: s.values.smb_host, port: s.values.smb_port })}
                         >
                           {({ host, port }) => (
-                            <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                              <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center">
+                            <div className="flex items-center gap-2 p-3 rounded-lg bg-ink/[0.03] border border-ink/[0.06]">
+                              <div className="shrink-0 w-7 h-7 rounded-md bg-ink/[0.06] flex items-center justify-center">
                                 <svg
                                   viewBox="0 0 24 24"
                                   fill="none"
-                                  className="w-3.5 h-3.5 text-white/50"
+                                  className="w-3.5 h-3.5 text-ink/50"
                                 >
                                   <rect
                                     x="4"
@@ -1776,9 +1777,9 @@ function AddLibraryWizard({
                                   <circle cx="7" cy="16.5" r="0.8" fill="currentColor" />
                                 </svg>
                               </div>
-                              <span className="text-sm text-white/70 font-medium">{host}</span>
+                              <span className="text-sm text-ink/70 font-medium">{host}</span>
                               {port !== 445 && (
-                                <span className="text-[11px] text-white/30">:{port}</span>
+                                <span className="text-[11px] text-ink/30">:{port}</span>
                               )}
                               <button
                                 type="button"
@@ -1791,7 +1792,7 @@ function AddLibraryWizard({
                           )}
                         </form.Subscribe>
 
-                        <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                        <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                           <form.Field name="smb_username">
                             {(field) => (
                               <Field>
@@ -1827,7 +1828,7 @@ function AddLibraryWizard({
                               <Field>
                                 <FieldLabel className={labelClass}>
                                   {i18n._(msg`library.smb.domain`)}
-                                  <span className="ml-1.5 text-white/25 normal-case tracking-normal font-normal">
+                                  <span className="ml-1.5 text-ink/25 normal-case tracking-normal font-normal">
                                     ({i18n._(msg`library.wizard.optional`)})
                                   </span>
                                 </FieldLabel>
@@ -1845,7 +1846,7 @@ function AddLibraryWizard({
                         <button
                           type="button"
                           onClick={() => setSmbStep('folder')}
-                          className="w-full px-4 py-2.5 text-sm font-semibold rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-white transition-all cursor-pointer"
+                          className="w-full px-4 py-2.5 text-sm font-semibold rounded-lg bg-ink/[0.08] hover:bg-ink/[0.14] text-ink transition-all cursor-pointer"
                         >
                           {i18n._(msg`library.wizard.smb.connect`)}
                         </button>
@@ -1871,11 +1872,11 @@ function AddLibraryWizard({
                           })}
                         >
                           {({ host, user }) => (
-                            <div className="flex items-center gap-2 text-xs text-white/40">
+                            <div className="flex items-center gap-2 text-xs text-ink/40">
                               <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                className="w-3.5 h-3.5 text-white/30"
+                                className="w-3.5 h-3.5 text-ink/30"
                               >
                                 <rect
                                   x="4"
@@ -1961,11 +1962,11 @@ function AddLibraryWizard({
                               data-invalid={
                                 field.state.meta.isTouched && field.state.meta.errors.length > 0
                               }
-                              className="mt-5 pt-5 border-t border-white/[0.06] px-1"
+                              className="mt-5 pt-5 border-t border-ink/[0.06] px-1"
                             >
                               <FieldLabel htmlFor="wiz-name-smb" className={labelClass}>
                                 {i18n._(msg`library.name`)}
-                                <span className="ml-2 font-normal normal-case tracking-normal text-white/25">
+                                <span className="ml-2 font-normal normal-case tracking-normal text-ink/25">
                                   — {i18n._(msg`library.wizard.smb.nameHint`)}
                                 </span>
                               </FieldLabel>
@@ -1994,7 +1995,7 @@ function AddLibraryWizard({
                               <Button
                                 type="submit"
                                 disabled={isSubmitting || !path}
-                                className="w-full font-semibold text-white bg-white/[0.08] hover:bg-white/[0.14] transition-all rounded-lg h-11"
+                                className="w-full font-semibold text-ink bg-ink/[0.08] hover:bg-ink/[0.14] transition-all rounded-lg h-11"
                               >
                                 {isSubmitting
                                   ? i18n._(msg`library.saving`)
@@ -2011,7 +2012,7 @@ function AddLibraryWizard({
 
               {/* ── SFTP fields ── */}
               {sourceType === 'sftp' && (
-                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                   <form.Field name="sftp_host">
                     {(field) => (
                       <Field>
@@ -2078,7 +2079,7 @@ function AddLibraryWizard({
 
               {/* ── WebDAV fields ── */}
               {sourceType === 'webdav' && (
-                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                   <form.Field name="webdav_url">
                     {(field) => (
                       <Field>
@@ -2109,8 +2110,8 @@ function AddLibraryWizard({
                               className={cn(
                                 'flex-1 px-3 py-2 text-xs font-semibold rounded-md transition-colors',
                                 field.state.value === v
-                                  ? 'bg-mm-accent text-black'
-                                  : 'bg-white/[0.06] text-gray-200 hover:bg-white/[0.1]'
+                                  ? 'bg-mm-accent text-ink-contrast'
+                                  : 'bg-ink/[0.06] text-ink/85 hover:bg-ink/[0.1]'
                               )}
                             >
                               {v === 'nextcloud'
@@ -2159,7 +2160,7 @@ function AddLibraryWizard({
 
               {/* ── S3 fields ── */}
               {sourceType === 's3' && (
-                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                   <form.Field name="s3_endpoint">
                     {(field) => (
                       <Field>
@@ -2240,7 +2241,7 @@ function AddLibraryWizard({
 
               {/* ── FTP fields ── */}
               {sourceType === 'ftp' && (
-                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                   <form.Field name="ftp_host">
                     {(field) => (
                       <Field>
@@ -2307,7 +2308,7 @@ function AddLibraryWizard({
 
               {/* ── HTTP fields ── */}
               {sourceType === 'http' && (
-                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                   <form.Field name="http_url">
                     {(field) => (
                       <Field>
@@ -2320,7 +2321,7 @@ function AddLibraryWizard({
                           placeholder="https://example.com/media/"
                           className={cn('font-mono text-sm', inputClass)}
                         />
-                        <p className="text-[11px] text-white/30">
+                        <p className="text-[11px] text-ink/30">
                           {i18n._(msg`library.http.readOnly`)}
                         </p>
                       </Field>
@@ -2341,7 +2342,7 @@ function AddLibraryWizard({
               {(sourceType === 'gdrive' ||
                 sourceType === 'onedrive' ||
                 sourceType === 'dropbox') && (
-                <div className="space-y-4 p-4 rounded-md bg-white/[0.03]">
+                <div className="space-y-4 p-4 rounded-md bg-ink/[0.03]">
                   <form.Field name="rclone_remote_name">
                     {(field) => (
                       <Field>
@@ -2424,11 +2425,11 @@ function AddLibraryWizard({
               {/* Advanced section + Submit — hidden for SMB (handled in sub-step 3) */}
               {sourceType !== 'smb' && (
                 <>
-                  <div className="border-t border-white/[0.06] pt-3">
+                  <div className="border-t border-ink/[0.06] pt-3">
                     <button
                       type="button"
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 text-xs text-ink/40 hover:text-ink/60 transition-colors cursor-pointer"
                     >
                       <span
                         className="text-[9px] transition-transform duration-150"
@@ -2488,7 +2489,7 @@ function AddLibraryWizard({
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full font-semibold text-white bg-white/[0.08] hover:bg-white/[0.14] transition-all rounded-lg h-11"
+                        className="w-full font-semibold text-ink bg-ink/[0.08] hover:bg-ink/[0.14] transition-all rounded-lg h-11"
                       >
                         {isSubmitting
                           ? i18n._(msg`library.saving`)
@@ -2629,7 +2630,7 @@ function RecentlyMatchedPreview() {
     <div className="px-8 mb-8">
       {/* Header row */}
       <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-semibold text-white/60 uppercase tracking-wider">
+        <span className="text-sm font-semibold text-ink/60 uppercase tracking-wider">
           {i18n._(msg`collection.recentlyMatched`)}
         </span>
         <Link
@@ -2769,7 +2770,7 @@ export function LibrariesPage() {
       <PageTransition>
         <div className="min-h-screen flex flex-col items-center justify-center px-4">
           <div className="mb-8">
-            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
+            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-ink/[0.07]">
               <path
                 d="M40 10a14 14 0 0 1 14 14v6H26v-6A14 14 0 0 1 40 10z"
                 stroke="currentColor"
@@ -2788,16 +2789,16 @@ export function LibrariesPage() {
               <circle cx="40" cy="46" r="4" fill="oklch(12% 0.01 260)" />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-white/70 mb-2">
+          <h2 className="text-xl font-semibold text-ink/70 mb-2">
             {i18n._(msg`auth.libraries.signInTitle`)}
           </h2>
-          <p className="text-sm text-white/30 mb-8 text-center max-w-xs">
+          <p className="text-sm text-ink/30 mb-8 text-center max-w-xs">
             {i18n._(msg`auth.libraries.signInSubtitle`)}
           </p>
           <button
             type="button"
             onClick={() => setShowLogin(true)}
-            className="px-5 py-2.5 text-sm font-semibold rounded-md text-black bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
+            className="px-5 py-2.5 text-sm font-semibold rounded-md text-ink-contrast bg-mm-accent hover:opacity-90 transition-opacity cursor-pointer"
           >
             {i18n._(msg`auth.login.submit`)}
           </button>
@@ -2815,7 +2816,7 @@ export function LibrariesPage() {
         {(hasLibraries || isLoading) && (
           <div className="px-8 pt-14 pb-8">
             <div className="flex items-center justify-between">
-              <h1 className="text-4xl font-bold text-white tracking-tight">
+              <h1 className="text-4xl font-bold text-ink tracking-tight">
                 {i18n._(msg`library.pageTitle`)}
               </h1>
               <div className="flex items-center gap-2">
@@ -2830,14 +2831,14 @@ export function LibrariesPage() {
                     toast.success(i18n._(msg`scan.scanAll`));
                   }}
                   disabled={libraries.length === 0}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/80 transition-colors cursor-pointer disabled:opacity-30"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/80 transition-colors cursor-pointer disabled:opacity-30"
                 >
                   {i18n._(msg`scan.scanAll`)}
                 </button>
                 <button
                   type="button"
                   onClick={() => setDrawerMode('add')}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.06] text-white/60 hover:bg-white/[0.10] hover:text-white/80 transition-colors cursor-pointer"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-ink/[0.06] text-ink/60 hover:bg-ink/[0.10] hover:text-ink/80 transition-colors cursor-pointer"
                 >
                   + {i18n._(msg`library.addLibrary`)}
                 </button>
@@ -2847,28 +2848,28 @@ export function LibrariesPage() {
             {/* Summary stats + sort bar */}
             {hasLibraries && (
               <div className="flex items-center gap-4 mt-4">
-                <div className="flex items-center gap-3 text-[11px] text-white/30">
+                <div className="flex items-center gap-3 text-[11px] text-ink/30">
                   <span className="tabular-nums">
                     {libraries.length} {i18n._(msg`library.summary.libraries`)}
                   </span>
-                  <span className="text-white/10">·</span>
+                  <span className="text-ink/10">·</span>
                   <span className="tabular-nums">
                     {totalFiles} {i18n._(msg`library.summary.files`)}
                   </span>
-                  <span className="text-white/10">·</span>
+                  <span className="text-ink/10">·</span>
                   <span className="tabular-nums">{formatBytes(totalSize)}</span>
-                  <span className="text-white/10">·</span>
+                  <span className="text-ink/10">·</span>
                   <span
                     className={cn(
                       'tabular-nums',
-                      matchPctAll === 100 ? 'text-green-400/50' : 'text-white/30'
+                      matchPctAll === 100 ? 'text-green-400/50' : 'text-ink/30'
                     )}
                   >
                     {matchPctAll}% {i18n._(msg`library.summary.matched`)}
                   </span>
                 </div>
                 {libraries.length > 1 && (
-                  <div className="ml-auto flex items-center rounded-md bg-white/[0.04] p-0.5">
+                  <div className="ml-auto flex items-center rounded-md bg-ink/[0.04] p-0.5">
                     {(['name', 'match', 'size', 'scanned'] as const).map((key) => (
                       <button
                         key={key}
@@ -2877,8 +2878,8 @@ export function LibrariesPage() {
                         className={cn(
                           'px-2 py-1 text-[10px] font-medium rounded transition-colors cursor-pointer',
                           sortKey === key
-                            ? 'bg-white/[0.08] text-white/70'
-                            : 'text-white/25 hover:text-white/50'
+                            ? 'bg-ink/[0.08] text-ink/70'
+                            : 'text-ink/25 hover:text-ink/50'
                         )}
                       >
                         {key === 'name' && i18n._(msg`library.sort.name`)}
@@ -2904,21 +2905,15 @@ export function LibrariesPage() {
               {skeletonCards.map((i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 px-4 py-3 rounded-xl animate-pulse bg-white/[0.025]"
+                  className="flex items-center gap-4 px-4 py-3 rounded-xl bg-ink/[0.025]"
                 >
-                  <div className="w-9 h-9 rounded-[10px] bg-white/[0.04]" />
+                  <Skeleton className="w-9 h-9 rounded-[10px]" />
                   <div className="flex-1 space-y-2">
-                    <div
-                      className="h-3 rounded w-1/3"
-                      style={{ backgroundColor: 'oklch(18% 0.01 280)' }}
-                    />
-                    <div
-                      className="h-2 rounded w-1/2"
-                      style={{ backgroundColor: 'oklch(15% 0.01 280)' }}
-                    />
-                    <div className="h-[3px] rounded-full w-full bg-white/[0.03]" />
+                    <SkeletonText className="w-1/3" />
+                    <SkeletonText className="h-2 w-1/2" />
+                    <Skeleton className="h-[3px] rounded-full w-full bg-ink/[0.03]" />
                   </div>
-                  <div className="w-12 h-6 rounded bg-white/[0.03]" />
+                  <Skeleton className="w-12 h-6 bg-ink/[0.03]" />
                 </div>
               ))}
             </div>
@@ -3032,7 +3027,7 @@ export function LibrariesPage() {
             <button
               type="button"
               onClick={() => setDeleteLib(null)}
-              className="px-4 py-2 text-[13px] font-medium rounded-md bg-white/[0.06] text-white hover:bg-white/[0.1] transition-colors"
+              className="px-4 py-2 text-[13px] font-medium rounded-md bg-ink/[0.06] text-ink hover:bg-ink/[0.1] transition-colors"
             >
               {i18n._(msg`library.cancel`)}
             </button>
@@ -3041,7 +3036,7 @@ export function LibrariesPage() {
               onClick={() => {
                 if (deleteLib) deleteMutation.mutate(deleteLib.id);
               }}
-              className="px-4 py-2 text-[13px] font-medium rounded-md text-white transition-colors"
+              className="px-4 py-2 text-[13px] font-medium rounded-md text-ink transition-colors"
               style={{ backgroundColor: 'oklch(45% 0.22 25)' }}
             >
               {i18n._(msg`library.delete`)}

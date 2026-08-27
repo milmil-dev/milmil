@@ -37,22 +37,22 @@ func NewDailyDigestWorker(
 	}
 }
 
-func (w *DailyDigestWorker) Run(ctx context.Context) {
+func (w *DailyDigestWorker) Run(ctx context.Context) error {
 	cfg, err := notification.LoadNotificationConfig(ctx, w.queries)
 	if err != nil {
 		slog.Debug("daily_digest: load config failed", "err", err)
-		return
+		return nil
 	}
 
 	digestTime := cfg.Bot.Telegram.DailyDigestTime
 	if digestTime == "" {
-		return
+		return nil
 	}
 
 	targetHour, targetMin, ok := parseHHMM(digestTime)
 	if !ok {
 		slog.Warn("daily_digest: invalid time format", "time", digestTime)
-		return
+		return nil
 	}
 
 	loc := time.FixedZone("Asia/HongKong", 8*60*60)
@@ -62,14 +62,14 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 	// Check DB for last sent date (survives restarts)
 	if setting, err := w.queries.GetSetting(ctx, digestSentKey); err == nil {
 		if setting.Value == todayStr {
-			return // already sent today
+			return nil // already sent today
 		}
 	}
 
 	// Check if current time has passed the target time
 	target := time.Date(now.Year(), now.Month(), now.Day(), targetHour, targetMin, 0, 0, loc)
 	if now.Before(target) {
-		return
+		return nil
 	}
 
 	// Mark as sent in DB before doing work (prevent double-send on concurrent ticks)
@@ -77,14 +77,13 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		Key: digestSentKey, Value: todayStr,
 	}); err != nil {
 		slog.Error("daily_digest: persist sent date", "err", err)
-		return
+		return nil
 	}
 
 	calendar, err := w.metadata.GetCalendar(ctx)
 	if err != nil {
-		slog.Error("daily_digest: get calendar", "err", err)
 		_ = w.queries.DeleteSetting(ctx, digestSentKey)
-		return
+		return fmt.Errorf("get calendar: %w", err)
 	}
 
 	// Use JST weekday since Bangumi calendar is JST-based
@@ -100,12 +99,12 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 
 	if len(todayItems) == 0 {
 		slog.Debug("daily_digest: no items for today")
-		return
+		return nil
 	}
 
 	watchingIDs := buildWatchingSet(ctx, w.queries)
 	if len(watchingIDs) == 0 {
-		return
+		return nil
 	}
 
 	var watchingToday []metadata.AnimeSummary
@@ -117,7 +116,7 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 
 	if len(watchingToday) == 0 {
 		slog.Debug("daily_digest: no watched anime airing today")
-		return
+		return nil
 	}
 
 	sort.Slice(watchingToday, func(i, j int) bool {
@@ -148,6 +147,7 @@ func (w *DailyDigestWorker) Run(ctx context.Context) {
 		map[string]any{"count": len(watchingToday)})
 
 	slog.Info("daily_digest: sent", "count", len(watchingToday))
+	return nil
 }
 
 // buildWatchingSet returns Bangumi IDs from collection + download rules.

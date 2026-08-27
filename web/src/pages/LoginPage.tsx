@@ -210,23 +210,20 @@ export function LoginPage() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.4 }}
-          className="rounded-xl border border-white/[0.06] bg-mm-bg/70 p-8 backdrop-blur-xl shadow-2xl shadow-black/50"
+          className="rounded-xl border border-ink/[0.06] bg-mm-bg/70 p-8 backdrop-blur-xl shadow-2xl shadow-black/50"
         >
           {/* 2FA verification step */}
           {pending2FA ? (
             <div className="space-y-5">
               <div>
-                <h2 className="mb-1 text-lg font-semibold text-white">
+                <h2 className="mb-1 text-lg font-semibold text-ink">
                   {i18n._(msg`auth.2fa.title`)}
                 </h2>
-                <p className="text-[13px] text-white/40">{i18n._(msg`auth.2fa.subtitle`)}</p>
+                <p className="text-[13px] text-ink/40">{i18n._(msg`auth.2fa.subtitle`)}</p>
               </div>
 
               <div>
-                <p
-                  id="totp-code-label"
-                  className="mb-2 block text-[13px] font-medium text-white/60"
-                >
+                <p id="totp-code-label" className="mb-2 block text-[13px] font-medium text-ink/60">
                   {i18n._(msg`auth.2fa.codeLabel`)}
                 </p>
                 <InputOTP
@@ -300,14 +297,14 @@ export function LoginPage() {
             <>
               {/* Mode tabs — only show if not initialized */}
               {!isInitialized && (
-                <div className="mb-6 flex border-b border-white/[0.06]">
+                <div className="mb-6 flex border-b border-ink/[0.06]">
                   <button
                     type="button"
                     onClick={() => switchMode('login')}
                     className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
                       mode === 'login'
-                        ? 'text-white border-b-2 border-mm-accent'
-                        : 'text-white/30 hover:text-white/50'
+                        ? 'text-ink border-b-2 border-mm-accent'
+                        : 'text-ink/30 hover:text-ink/50'
                     }`}
                   >
                     {i18n._(msg`auth.login.title`)}
@@ -317,8 +314,8 @@ export function LoginPage() {
                     onClick={() => switchMode('setup')}
                     className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
                       mode === 'setup'
-                        ? 'text-white border-b-2 border-mm-accent'
-                        : 'text-white/30 hover:text-white/50'
+                        ? 'text-ink border-b-2 border-mm-accent'
+                        : 'text-ink/30 hover:text-ink/50'
                     }`}
                   >
                     {i18n._(msg`auth.setup.title`)}
@@ -327,13 +324,13 @@ export function LoginPage() {
               )}
 
               {isInitialized && (
-                <h2 className="mb-6 text-lg font-semibold text-white">
+                <h2 className="mb-6 text-lg font-semibold text-ink">
                   {i18n._(msg`auth.login.title`)}
                 </h2>
               )}
 
               {mode === 'setup' && (
-                <p className="mb-4 text-[13px] text-white/40">{i18n._(msg`auth.setup.subtitle`)}</p>
+                <p className="mb-4 text-[13px] text-ink/40">{i18n._(msg`auth.setup.subtitle`)}</p>
               )}
 
               <form
@@ -441,16 +438,16 @@ export function LoginPage() {
                 </form.Subscribe>
 
                 {isInitialized && mode === 'login' && (
-                  <details className="group rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
-                    <summary className="flex cursor-pointer list-none items-center justify-center gap-2 text-center text-[12px] font-medium text-white/40 transition-colors hover:text-white/65 marker:hidden">
-                      <span className="flex size-5 items-center justify-center rounded-full bg-white/[0.04] text-white/35 transition-colors group-open:text-mm-accent group-hover:text-white/55">
+                  <details className="group rounded-lg border border-ink/[0.06] bg-ink/[0.02] px-3 py-2">
+                    <summary className="flex cursor-pointer list-none items-center justify-center gap-2 text-center text-[12px] font-medium text-ink/40 transition-colors hover:text-ink/65 marker:hidden">
+                      <span className="flex size-5 items-center justify-center rounded-full bg-ink/[0.04] text-ink/35 transition-colors group-open:text-mm-accent group-hover:text-ink/55">
                         <HugeiconsIcon icon={ForgotPasswordIcon} size={13} strokeWidth={1.8} />
                       </span>
                       <span>{i18n._(msg`auth.login.forgotPassword`)}</span>
                     </summary>
-                    <div className="mt-2 space-y-2 border-t border-white/[0.06] pt-2 text-[12px] leading-relaxed text-white/35">
+                    <div className="mt-2 space-y-2 border-t border-ink/[0.06] pt-2 text-[12px] leading-relaxed text-ink/35">
                       <p>{i18n._(msg`auth.login.recoveryNoEmail`)}</p>
-                      <code className="block overflow-x-auto rounded-md border border-white/[0.06] bg-black/30 px-2 py-1.5 font-mono text-[11px] text-white/60">
+                      <code className="block overflow-x-auto rounded-md border border-ink/[0.06] bg-black/30 px-2 py-1.5 font-mono text-[11px] text-ink/60">
                         {
                           'docker compose exec api /app/milmil-api admin reset-password --username admin --password-stdin'
                         }

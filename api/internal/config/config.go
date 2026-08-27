@@ -26,7 +26,7 @@ type Config struct {
 	DandanPlayAppSecret string
 	TMDBAPIKey          string
 	TMDBAccessToken     string
-	DanmuAPIURL         string // optional custom danmu_api proxy URL
+	DanmuAPIURL         string // optional self-hosted danmu_api proxy used only when 弹弹play is unreachable; never on rate limit
 	AdminUser           string // optional: auto-create admin on first boot
 	AdminPassword       string // optional: password for auto-created admin
 	// PublicWebURL is the externally-reachable base URL of the milmil web UI

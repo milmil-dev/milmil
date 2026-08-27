@@ -217,3 +217,38 @@ func TestBuildLibrarySummary_MultipleAnime(t *testing.T) {
 		t.Errorf("a3: want AiringPending=[3], got %v", r3.AiringPending)
 	}
 }
+
+// A cour stored with absolute numbers (41–50, total 10) must be judged on
+// those numbers: counting from 1 reported all ten missing and credited none
+// of the five files on disk.
+func TestBuildReport_AbsoluteNumberingAnchorsOnFirstEpisode(t *testing.T) {
+	q, cleanup := newTestQueries(t)
+	defer cleanup()
+	mustCreateLibrary(t, q, "lib-1")
+	mustInsertAnimeForLibrary(t, q, "a1", "lib-1", 10)
+	for n := 41; n <= 50; n++ {
+		id := mustInsertEpisode(t, q, "a1", float64(n), "")
+		if n <= 45 {
+			mustLinkMediaFile(t, q, id, "lib-1")
+		}
+	}
+
+	rep, err := BuildReport(context.Background(), q, "a1")
+	if err != nil {
+		t.Fatalf("BuildReport: %v", err)
+	}
+	if !reflect.DeepEqual(rep.Have, []int{41, 42, 43, 44, 45}) {
+		t.Errorf("want Have=41..45, got %v", rep.Have)
+	}
+	if !reflect.DeepEqual(rep.Missing, []int{46, 47, 48, 49, 50}) {
+		t.Errorf("want Missing=46..50, got %v", rep.Missing)
+	}
+
+	summary, err := BuildLibrarySummary(context.Background(), q, "lib-1")
+	if err != nil || len(summary) != 1 {
+		t.Fatalf("BuildLibrarySummary: %v (%d reports)", err, len(summary))
+	}
+	if !reflect.DeepEqual(summary[0].Missing, []int{46, 47, 48, 49, 50}) {
+		t.Errorf("summary Missing = %v", summary[0].Missing)
+	}
+}

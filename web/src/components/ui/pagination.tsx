@@ -48,8 +48,8 @@ function PaginationButton({ className, isActive, disabled, ...props }: Paginatio
         'inline-flex items-center justify-center size-8 rounded-md text-xs font-medium tabular-nums transition-colors cursor-pointer',
         'disabled:pointer-events-none disabled:opacity-30',
         isActive
-          ? 'bg-white/[0.10] text-white'
-          : 'text-white/40 hover:bg-white/[0.06] hover:text-white/70',
+          ? 'bg-ink/[0.10] text-ink'
+          : 'text-ink/40 hover:bg-ink/[0.06] hover:text-ink/70',
         className
       )}
       {...props}
@@ -94,7 +94,7 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn('flex size-8 items-center justify-center text-white/20', className)}
+      className={cn('flex size-8 items-center justify-center text-ink/20', className)}
       {...props}
     >
       <HugeiconsIcon icon={MoreHorizontalIcon} size={14} />

@@ -92,15 +92,9 @@ export function CommandPalette() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="fixed z-50 top-[20%] left-1/2 -translate-x-1/2 w-full max-w-[500px] rounded-lg border overflow-hidden bg-mm-surface"
-            style={{
-              borderColor: 'oklch(18% 0.01 280)',
-            }}
+            className="fixed z-50 top-[20%] left-1/2 -translate-x-1/2 w-full max-w-[500px] rounded-lg border border-mm-border overflow-hidden bg-mm-surface"
           >
-            <div
-              className="flex items-center gap-3 px-4 py-3 border-b"
-              style={{ borderColor: 'oklch(15% 0.01 280)' }}
-            >
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-mm-border-subtle">
               <HugeiconsIcon icon={Search01Icon} size={16} className="text-mm-text-tertiary" />
               <input
                 ref={inputRef}
@@ -111,14 +105,9 @@ export function CommandPalette() {
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder={i18n._(msg`search.placeholder`)}
-                className="flex-1 bg-transparent text-sm text-white placeholder:text-mm-text-muted outline-none"
+                className="flex-1 bg-transparent text-sm text-ink placeholder:text-mm-text-muted outline-none"
               />
-              <kbd
-                className="text-[10px] px-1.5 py-0.5 rounded text-mm-text-tertiary"
-                style={{
-                  backgroundColor: 'oklch(15% 0.01 280)',
-                }}
-              >
+              <kbd className="text-[10px] px-1.5 py-0.5 rounded text-mm-text-tertiary bg-ink/[0.06]">
                 ESC
               </kbd>
             </div>
@@ -132,10 +121,9 @@ export function CommandPalette() {
                       type="button"
                       key={anime.bangumi_id}
                       onClick={() => handleSelect(anime.bangumi_id)}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
-                      style={{
-                        backgroundColor: i === selectedIndex ? 'oklch(14% 0.01 280)' : undefined,
-                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-ink/[0.06] ${
+                        i === selectedIndex ? 'bg-mm-surface-hover' : ''
+                      }`}
                     >
                       <div
                         className="shrink-0 w-8 h-11 rounded overflow-hidden"
@@ -150,7 +138,7 @@ export function CommandPalette() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium text-white truncate">{anime.title}</p>
+                        <p className="text-[13px] font-medium text-ink truncate">{anime.title}</p>
                         <p className="text-[11px] truncate text-mm-text-tertiary">
                           {anime.title_original}
                         </p>

@@ -359,12 +359,24 @@ func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangu
 		}
 		// Backfill community score for pre-existing records
 		if existing.Score == 0 {
-			if subj, sErr := r.bangumi.GetSubject(ctx, int(bangumiID)); sErr == nil && subj.Rating.Score > 0 {
+			if subj, sErr := r.bangumi.GetSubject(ctx, int(bangumiID)); sErr == nil && subj != nil && subj.Rating.Score > 0 {
 				_ = r.queries.UpdateAnimeScore(ctx, store.UpdateAnimeScoreParams{
 					Score:     subj.Rating.Score,
 					BangumiID: existing.BangumiID,
 				})
 				existing.Score = subj.Rating.Score
+			}
+		}
+		// Backfill title_original for rows created before the column existed,
+		// so Latin-script searches ("BLEACH") can find a series stored under
+		// its Chinese title.
+		if !existing.TitleOriginal.Valid || existing.TitleOriginal.String == "" {
+			if subj, sErr := r.bangumi.GetSubject(ctx, int(bangumiID)); sErr == nil && subj != nil && subj.Name != "" {
+				_ = r.queries.UpdateAnimeTitleOriginal(ctx, store.UpdateAnimeTitleOriginalParams{
+					TitleOriginal: sql.NullString{String: subj.Name, Valid: true},
+					ID:            existing.ID,
+				})
+				existing.TitleOriginal = sql.NullString{String: subj.Name, Valid: true}
 			}
 		}
 		return existing, false, nil
@@ -401,6 +413,7 @@ func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangu
 		LibraryID:           sql.NullString{String: libraryID, Valid: true},
 		Title:               title,
 		TitleZh:             sql.NullString{String: subject.NameCN, Valid: subject.NameCN != ""},
+		TitleOriginal:       sql.NullString{String: subject.Name, Valid: subject.Name != ""},
 		Synopsis:            sql.NullString{String: subject.Summary, Valid: subject.Summary != ""},
 		CoverImageUrl:       sql.NullString{String: subject.Images.Large, Valid: subject.Images.Large != ""},
 		TotalEpisodes:       sql.NullInt64{Int64: int64(subject.Eps), Valid: subject.Eps > 0},

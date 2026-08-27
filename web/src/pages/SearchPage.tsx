@@ -28,28 +28,9 @@ import {
   discoverKeys,
 } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
+import { GENRES } from '../lib/genres';
 import { cn } from '../lib/utils';
-
-const POPULAR_GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Romance',
-  'Sci-Fi',
-  'Slice of Life',
-  'Supernatural',
-  'Mystery',
-  'Psychological',
-  'Thriller',
-  'Horror',
-  'Mahou Shoujo',
-  'Mecha',
-  'Sports',
-  'Music',
-  'Ecchi',
-];
+import { Skeleton, SkeletonText } from '../components/Skeleton';
 
 const SORT_OPTIONS = [
   { value: 'POPULARITY_DESC', label: msg`search.sort.popularity` },
@@ -121,7 +102,7 @@ function LoadMoreSentinel({ loading, onVisible }: { loading: boolean; onVisible:
 
   return (
     <div ref={ref} className="flex justify-center py-8">
-      {loading && <Spinner size={24} className="text-white/30" />}
+      {loading && <Spinner size={24} className="text-ink/30" />}
     </div>
   );
 }
@@ -302,7 +283,7 @@ export function SearchPage() {
           animate={{ opacity: 1 }}
           className="flex flex-wrap gap-2 mb-4"
         >
-          {POPULAR_GENRES.map((g) => (
+          {GENRES.map((g) => (
             <button
               key={g}
               type="button"
@@ -310,8 +291,8 @@ export function SearchPage() {
               className={cn(
                 'text-[12px] font-semibold px-3 py-1.5 rounded-md transition-colors',
                 selectedGenres.includes(g)
-                  ? 'bg-white/[0.05] text-mm-accent'
-                  : 'bg-white/[0.05] text-white/50 hover:bg-white/[0.08] hover:text-white/70'
+                  ? 'bg-ink/[0.05] text-mm-accent'
+                  : 'bg-ink/[0.05] text-ink/50 hover:bg-ink/[0.08] hover:text-ink/70'
               )}
             >
               {translateGenre(g, i18n.locale)}
@@ -320,13 +301,13 @@ export function SearchPage() {
           {selectedTags.map((t) => (
             <span
               key={`tag-${t}`}
-              className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1.5 rounded-md bg-white/[0.05] text-mm-accent"
+              className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1.5 rounded-md bg-ink/[0.05] text-mm-accent"
             >
               {t}
               <button
                 type="button"
                 onClick={() => removeTag(t)}
-                className="ml-0.5 text-white/30 hover:text-white/60"
+                className="ml-0.5 text-ink/30 hover:text-ink/60"
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={10} />
               </button>
@@ -349,7 +330,7 @@ export function SearchPage() {
             >
               <SelectTrigger
                 size="sm"
-                className="min-w-[120px] bg-white/[0.04] border-transparent text-xs text-white/70"
+                className="min-w-[120px] bg-ink/[0.04] border-transparent text-xs text-ink/70"
               >
                 <SelectValue placeholder={i18n._(msg`search.filter.sort`)} />
               </SelectTrigger>
@@ -369,7 +350,7 @@ export function SearchPage() {
             >
               <SelectTrigger
                 size="sm"
-                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+                className="min-w-[100px] bg-ink/[0.04] border-transparent text-xs text-ink/70"
               >
                 <SelectValue placeholder={i18n._(msg`search.filter.year`)} />
               </SelectTrigger>
@@ -389,7 +370,7 @@ export function SearchPage() {
             >
               <SelectTrigger
                 size="sm"
-                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+                className="min-w-[100px] bg-ink/[0.04] border-transparent text-xs text-ink/70"
               >
                 <SelectValue placeholder={i18n._(msg`search.filter.season`)} />
               </SelectTrigger>
@@ -409,7 +390,7 @@ export function SearchPage() {
             >
               <SelectTrigger
                 size="sm"
-                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+                className="min-w-[100px] bg-ink/[0.04] border-transparent text-xs text-ink/70"
               >
                 <SelectValue placeholder={i18n._(msg`search.filter.rating`)} />
               </SelectTrigger>
@@ -429,7 +410,7 @@ export function SearchPage() {
             >
               <SelectTrigger
                 size="sm"
-                className="min-w-[100px] bg-white/[0.04] border-transparent text-xs text-white/70"
+                className="min-w-[100px] bg-ink/[0.04] border-transparent text-xs text-ink/70"
               >
                 <SelectValue placeholder={i18n._(msg`search.filter.status`)} />
               </SelectTrigger>
@@ -453,7 +434,7 @@ export function SearchPage() {
                 'text-[12px] font-semibold px-3 py-1.5 rounded-md transition-colors',
                 urlAdult === 'true'
                   ? 'bg-red-500/15 text-red-400'
-                  : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/60'
+                  : 'bg-ink/[0.04] text-ink/40 hover:bg-ink/[0.08] hover:text-ink/60'
               )}
             >
               NSFW
@@ -466,7 +447,7 @@ export function SearchPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearAll}
-                className="text-xs text-white/40 hover:text-white/70"
+                className="text-xs text-ink/40 hover:text-ink/70"
               >
                 {i18n._(msg`search.filter.clear`)}
               </Button>
@@ -482,12 +463,12 @@ export function SearchPage() {
           className="relative mb-6"
         >
           <div className="relative group">
-            <div className="absolute inset-0 rounded-md bg-gradient-to-r from-white/[0.03] via-transparent to-white/[0.02] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
-            <div className="relative flex items-center rounded-md bg-white/[0.04] border border-transparent group-focus-within:border-transparent transition-colors">
+            <div className="absolute inset-0 rounded-md bg-gradient-to-r from-ink/[0.03] via-transparent to-ink/[0.02] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
+            <div className="relative flex items-center rounded-md bg-ink/[0.04] border border-transparent group-focus-within:border-transparent transition-colors">
               <HugeiconsIcon
                 icon={Search01Icon}
                 size={18}
-                className="ml-4 text-white/20 group-focus-within:text-white/50 transition-colors shrink-0"
+                className="ml-4 text-ink/20 group-focus-within:text-ink/50 transition-colors shrink-0"
               />
               <input
                 value={query}
@@ -504,7 +485,7 @@ export function SearchPage() {
                   }
                 }}
                 placeholder={i18n._(msg`search.inputPlaceholder`)}
-                className="flex-1 bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-white/20"
+                className="flex-1 bg-transparent px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/20"
               />
               {query && (
                 <button
@@ -513,7 +494,7 @@ export function SearchPage() {
                     setQuery('');
                     setDebouncedQuery('');
                   }}
-                  className="mr-3 p-1.5 rounded-md hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors"
+                  className="mr-3 p-1.5 rounded-md hover:bg-ink/[0.06] text-ink/30 hover:text-ink/60 transition-colors"
                 >
                   <HugeiconsIcon icon={Cancel01Icon} size={14} />
                 </button>
@@ -525,15 +506,15 @@ export function SearchPage() {
         {/* Active filter summary */}
         {isFilterActive && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
-            <h2 className="text-lg font-semibold text-white tracking-tight">
+            <h2 className="text-lg font-semibold text-ink tracking-tight">
               {isTagMode
                 ? selectedTags.join(' · ')
                 : selectedGenres.length > 0
                   ? selectedGenres.map((g) => translateGenre(g, i18n.locale)).join(' · ')
                   : i18n._(msg`search.browseResults`)}
-              {urlYear && <span className="text-white/40 font-normal ml-2">· {urlYear}</span>}
+              {urlYear && <span className="text-ink/40 font-normal ml-2">· {urlYear}</span>}
               {urlSeason && (
-                <span className="text-white/40 font-normal ml-1">
+                <span className="text-ink/40 font-normal ml-1">
                   · {i18n._(msg`search.season.${urlSeason.toLowerCase()}`)}
                 </span>
               )}
@@ -558,11 +539,11 @@ export function SearchPage() {
         {isLoading && hasQuery && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="animate-pulse rounded-md overflow-hidden">
-                <div className="aspect-[6/8] bg-white/[0.04]" />
+              <div key={i} className="rounded-md overflow-hidden">
+                <Skeleton className="aspect-[6/8] rounded-md" />
                 <div className="pt-2 space-y-1.5">
-                  <div className="h-3 rounded bg-white/[0.06]" style={{ width: '70%' }} />
-                  <div className="h-2.5 rounded bg-white/[0.03]" style={{ width: '40%' }} />
+                  <SkeletonText className="w-[70%]" />
+                  <SkeletonText className="h-2.5 w-[40%]" />
                 </div>
               </div>
             ))}

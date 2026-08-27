@@ -70,10 +70,10 @@ export function DataPagination({
   return (
     <div className="mt-5 flex items-center justify-between gap-4">
       {/* Left: rows-per-page + range */}
-      <div className="flex items-center gap-3 text-[11px] text-white/25">
+      <div className="flex items-center gap-3 text-[11px] text-ink/25">
         <div className="flex items-center gap-1.5">
           <span className="hidden sm:inline">{i18n._(msg`pagination.rows`)}</span>
-          <div className="flex rounded-md bg-white/[0.04] p-0.5">
+          <div className="flex rounded-md bg-ink/[0.04] p-0.5">
             {PAGE_SIZE_OPTIONS.map((size) => (
               <button
                 key={size}
@@ -83,9 +83,7 @@ export function DataPagination({
                   onPageChange(1);
                 }}
                 className={`px-1.5 py-0.5 text-[10px] tabular-nums rounded transition-colors cursor-pointer ${
-                  perPage === size
-                    ? 'bg-white/[0.10] text-white/70'
-                    : 'text-white/25 hover:text-white/50'
+                  perPage === size ? 'bg-ink/[0.10] text-ink/70' : 'text-ink/25 hover:text-ink/50'
                 }`}
               >
                 {size}
@@ -94,11 +92,10 @@ export function DataPagination({
           </div>
         </div>
         <span className="tabular-nums">
-          <span className="text-white/40">
+          <span className="text-ink/40">
             {rangeStart}–{rangeEnd}
           </span>{' '}
-          {i18n._(msg`pagination.of`)}{' '}
-          <span className="text-white/40">{total.toLocaleString()}</span>
+          {i18n._(msg`pagination.of`)} <span className="text-ink/40">{total.toLocaleString()}</span>
         </span>
       </div>
 
@@ -165,7 +162,7 @@ function PageJumpInput({
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[10px] text-white/20 hidden sm:inline">{goLabel}</span>
+      <span className="text-[10px] text-ink/20 hidden sm:inline">{goLabel}</span>
       <input
         type="text"
         inputMode="numeric"
@@ -176,7 +173,7 @@ function PageJumpInput({
           if (e.key === 'Enter') handleSubmit();
         }}
         onBlur={handleSubmit}
-        className="h-7 w-10 rounded-md bg-white/[0.05] text-center text-xs tabular-nums text-white/50 outline-none transition-colors placeholder:text-white/15 hover:bg-white/[0.08] focus:bg-white/[0.08] focus:text-white/70"
+        className="h-7 w-10 rounded-md bg-ink/[0.05] text-center text-xs tabular-nums text-ink/50 outline-none transition-colors placeholder:text-ink/15 hover:bg-ink/[0.08] focus:bg-ink/[0.08] focus:text-ink/70"
       />
     </div>
   );

@@ -16,6 +16,11 @@ import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { downloadKeys, ruleApi } from '../lib/api/downloads';
 import { translateGenre } from '../lib/genre-i18n';
 
+/** The milmil:// scheme is only registered by the native macOS client. */
+const IS_MAC = /Mac/.test(
+  typeof navigator === 'undefined' ? '' : (navigator.platform ?? navigator.userAgent)
+);
+
 const RELATION_LABELS: Record<string, Record<string, string>> = {
   PREQUEL: { en: 'Prequel', 'zh-Hant': '前作', 'zh-Hans': '前作' },
   SEQUEL: { en: 'Sequel', 'zh-Hant': '續作', 'zh-Hans': '续作' },
@@ -45,10 +50,12 @@ import { useAuth } from '../hooks/use-auth';
 import type { PlayableEpisode } from '../lib/api/anime';
 import { animeApi, animeKeys } from '../lib/api/anime';
 import { collectionApi, collectionKeys } from '../lib/api/collection';
-import type { AnimeCharacter, AnimeSummary } from '../lib/api/discover';
+import type { AnimeCharacter, AnimeSummary, FranchiseEntry } from '../lib/api/discover';
+import { groupSeasons, type SeasonGroup } from '../lib/franchise';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useBgStore } from '../store/bg-store';
+import { Skeleton, SkeletonParagraph, SkeletonText } from '../components/Skeleton';
 
 interface RelatedAnime {
   relation_type: string;
@@ -104,9 +111,75 @@ function buildSeasonChain(
   return chain;
 }
 
+function seasonLinkParams(entry: FranchiseEntry) {
+  return { id: entry.bangumi_id > 0 ? String(entry.bangumi_id) : `al-${entry.anilist_id}` };
+}
+
+/**
+ * One S-number pill. A season that aired as one run is a single link; a
+ * split season renders as "S1 | 1 | 2" with one link per cour so both halves
+ * stay reachable without pretending the second cour is a new season.
+ */
+function SeasonPill({
+  group,
+  isCurrent,
+}: {
+  group: SeasonGroup;
+  isCurrent: (entry: FranchiseEntry) => boolean;
+}) {
+  const active = group.parts.some(isCurrent);
+  const single = group.parts.length === 1 ? group.parts[0] : undefined;
+  if (single) {
+    return (
+      <Link
+        to="/anime/$id"
+        params={seasonLinkParams(single)}
+        className={cn(
+          'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
+          active
+            ? 'bg-mm-accent/20 text-mm-accent'
+            : 'bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
+        )}
+        title={single.title}
+      >
+        {`S${group.season}`}
+      </Link>
+    );
+  }
+  return (
+    <div
+      className={cn(
+        'flex items-stretch rounded-full overflow-hidden shrink-0 text-xs font-medium',
+        active ? 'bg-mm-accent/20' : 'bg-ink/[0.06]'
+      )}
+    >
+      <span className={cn('pl-3 pr-2 py-1', active ? 'text-mm-accent' : 'text-ink/50')}>
+        {`S${group.season}`}
+      </span>
+      {group.parts.map((entry, idx) => (
+        <Link
+          key={entry.anilist_id}
+          to="/anime/$id"
+          params={seasonLinkParams(entry)}
+          className={cn(
+            'px-2.5 py-1 border-l transition-colors',
+            active ? 'border-mm-accent/20' : 'border-ink/10',
+            isCurrent(entry)
+              ? 'bg-mm-accent/25 text-mm-accent'
+              : 'text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
+          )}
+          title={entry.title}
+        >
+          {entry.part || idx + 1}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 function SynopsisBlock({ text }: { text: string }) {
   return (
-    <div className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] font-medium text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+    <div className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] font-medium text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-ink/10 scrollbar-track-transparent">
       {text}
     </div>
   );
@@ -134,12 +207,12 @@ function ScoreSelector({
           }}
           className={cn(
             'w-2.5 h-2.5 rounded-full transition-colors cursor-pointer disabled:cursor-not-allowed',
-            score != null && i < score ? 'bg-mm-accent' : 'bg-white/[0.10] hover:bg-white/[0.20]'
+            score != null && i < score ? 'bg-mm-accent' : 'bg-ink/[0.10] hover:bg-ink/[0.20]'
           )}
           title={`${i + 1}/10`}
         />
       ))}
-      {score != null && <span className="ml-1 text-xs text-white/50 tabular-nums">{score}/10</span>}
+      {score != null && <span className="ml-1 text-xs text-ink/50 tabular-nums">{score}/10</span>}
     </div>
   );
 }
@@ -147,11 +220,11 @@ function ScoreSelector({
 function CharacterCard({ entry, cvLabel }: { entry: AnimeCharacter; cvLabel: string }) {
   const isMain = entry.role === 'MAIN';
   return (
-    <div className="flex flex-col gap-1.5 p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] transition-colors">
+    <div className="flex flex-col gap-1.5 p-2.5 rounded-lg bg-ink/[0.03] border border-ink/[0.05] hover:bg-ink/[0.06] transition-colors">
       {/* Images row */}
       <div className="flex items-end gap-2">
         {/* Character image */}
-        <div className="w-12 h-14 rounded-md overflow-hidden shrink-0 bg-white/[0.08]">
+        <div className="w-12 h-14 rounded-md overflow-hidden shrink-0 bg-ink/[0.08]">
           {entry.character.image ? (
             <img
               src={entry.character.image}
@@ -162,7 +235,7 @@ function CharacterCard({ entry, cvLabel }: { entry: AnimeCharacter; cvLabel: str
         </div>
         {/* Voice actor image */}
         {entry.voice_actor && (
-          <div className="w-10 h-12 rounded-md overflow-hidden shrink-0 bg-white/[0.08] -ml-4 border border-black/40">
+          <div className="w-10 h-12 rounded-md overflow-hidden shrink-0 bg-ink/[0.08] -ml-4 border border-black/40">
             {entry.voice_actor.image ? (
               <img
                 src={entry.voice_actor.image}
@@ -181,12 +254,12 @@ function CharacterCard({ entry, cvLabel }: { entry: AnimeCharacter; cvLabel: str
       </div>
       {/* Names */}
       <div className="min-w-0">
-        <p className="text-[12px] font-semibold text-white/90 leading-snug truncate">
+        <p className="text-[12px] font-semibold text-ink/90 leading-snug truncate">
           {entry.character.name}
         </p>
         {entry.voice_actor && (
-          <p className="text-[11px] text-white/45 truncate mt-0.5">
-            <span className="text-white/30">{cvLabel} </span>
+          <p className="text-[11px] text-ink/45 truncate mt-0.5">
+            <span className="text-ink/30">{cvLabel} </span>
             {entry.voice_actor.name}
           </p>
         )}
@@ -333,10 +406,11 @@ export function AnimeDetailPage() {
     return (
       <PageTransition>
         <div className="min-h-screen">
-          <div className="h-[340px] animate-pulse bg-white/[0.04]" />
+          <Skeleton className="h-[340px] rounded-none" />
           <div className="px-4 md:px-8 py-6 space-y-4">
-            <div className="h-6 rounded bg-white/[0.06]" style={{ width: '30%' }} />
-            <div className="h-4 rounded bg-white/[0.04]" style={{ width: '60%' }} />
+            <SkeletonText className="h-6 w-[30%]" />
+            <SkeletonText className="h-4 w-[60%]" />
+            <SkeletonParagraph lines={3} className="max-w-3xl pt-2" />
           </div>
         </div>
       </PageTransition>
@@ -530,11 +604,11 @@ export function AnimeDetailPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15, duration: 0.4 }}
                     >
-                      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight leading-7 sm:leading-8 line-clamp-2">
+                      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-ink tracking-tight leading-7 sm:leading-8 line-clamp-2">
                         {anime.title}
                       </h1>
                       {anime.title_original && anime.title_original !== anime.title && (
-                        <p className="text-[13px] font-medium text-white/60 mt-1 truncate">
+                        <p className="text-[13px] font-medium text-ink/60 mt-1 truncate">
                           {anime.title_original}
                         </p>
                       )}
@@ -553,22 +627,22 @@ export function AnimeDetailPage() {
                         </span>
                       )}
                       {anime.media_type && (
-                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-white/[0.10] text-white/60 font-medium">
+                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-ink/[0.10] text-ink/60 font-medium">
                           {anime.media_type}
                         </span>
                       )}
                       {anime.episode_count > 0 && (
-                        <span className="text-[12px] font-medium text-white/55">
+                        <span className="text-[12px] font-medium text-ink/55">
                           {anime.episode_count} {i18n._(msg`common.ep`)}
                         </span>
                       )}
                       {anime.air_date && (
-                        <span className="text-[12px] font-medium text-white/55">
+                        <span className="text-[12px] font-medium text-ink/55">
                           {anime.air_date.slice(0, 7)}
                         </span>
                       )}
                       {anime.rating && anime.rating.total > 0 && (
-                        <span className="text-[11px] font-medium text-white/35">
+                        <span className="text-[11px] font-medium text-ink/35">
                           {anime.rating.total} {i18n._(msg`anime.ratings`)}
                         </span>
                       )}
@@ -607,7 +681,7 @@ export function AnimeDetailPage() {
                             key={tag}
                             to="/search"
                             search={{ genre: tag }}
-                            className="text-[11px] font-semibold px-2 py-0.5 rounded bg-white/[0.08] text-white/60 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
+                            className="text-[11px] font-semibold px-2 py-0.5 rounded bg-ink/[0.08] text-ink/60 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
                           >
                             {translateGenre(tag, i18n.locale)}
                           </Link>
@@ -619,42 +693,13 @@ export function AnimeDetailPage() {
                     {(() => {
                       const franchiseSeasons = franchise?.main_series;
                       if (franchiseSeasons && franchiseSeasons.length > 1) {
+                        const isCurrent = (entry: FranchiseEntry) =>
+                          entry.bangumi_id === numericId || entry.anilist_id === anime.anilist_id;
                         return (
                           <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
-                            {franchiseSeasons.map((s, idx) => {
-                              const isCurrent =
-                                s.bangumi_id === numericId || s.anilist_id === anime.anilist_id;
-                              const targetId = s.bangumi_id > 0 ? s.bangumi_id : null;
-                              return targetId ? (
-                                <Link
-                                  key={s.anilist_id}
-                                  to="/anime/$id"
-                                  params={{ id: String(targetId) }}
-                                  className={cn(
-                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
-                                    isCurrent
-                                      ? 'bg-mm-accent/20 text-mm-accent'
-                                      : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
-                                  )}
-                                  title={s.title}
-                                >
-                                  {`S${idx + 1}`}
-                                </Link>
-                              ) : (
-                                <Link
-                                  key={s.anilist_id}
-                                  to="/anime/$id"
-                                  params={{ id: `al-${s.anilist_id}` }}
-                                  className={cn(
-                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
-                                    'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
-                                  )}
-                                  title={s.title}
-                                >
-                                  {`S${idx + 1}`}
-                                </Link>
-                              );
-                            })}
+                            {groupSeasons(franchiseSeasons).map((group) => (
+                              <SeasonPill key={group.season} group={group} isCurrent={isCurrent} />
+                            ))}
                           </div>
                         );
                       }
@@ -671,7 +716,7 @@ export function AnimeDetailPage() {
                                 'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
                                 s.isCurrent
                                   ? 'bg-mm-accent/20 text-mm-accent'
-                                  : 'bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/70'
+                                  : 'bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
                               )}
                               title={s.title}
                             >
@@ -703,7 +748,7 @@ export function AnimeDetailPage() {
                               }
                               disabled={statusMutation.isPending}
                               whileTap={{ scale: 0.97 }}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-ink/[0.08] hover:bg-ink/[0.14] text-ink/70 hover:text-ink transition-colors cursor-pointer"
                             >
                               <motion.svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -715,7 +760,7 @@ export function AnimeDetailPage() {
                                 strokeLinejoin="round"
                                 className={cn(
                                   'size-3.5',
-                                  isBookmarked ? 'text-mm-accent' : 'text-white/70'
+                                  isBookmarked ? 'text-mm-accent' : 'text-ink/70'
                                 )}
                                 animate={isBookmarked ? { scale: [1, 1.15, 1] } : { scale: 1 }}
                                 transition={{ duration: 0.3 }}
@@ -732,7 +777,7 @@ export function AnimeDetailPage() {
                         <Link
                           to="/downloads"
                           search={{ anime: String(anime.bangumi_id) }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] text-[12px] font-medium text-white/70 hover:text-white transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink/[0.08] hover:bg-ink/[0.14] text-[12px] font-medium text-ink/70 hover:text-ink transition-colors"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -749,6 +794,30 @@ export function AnimeDetailPage() {
                           </svg>
                           {i18n._(msg`anime.searchResources`)}
                         </Link>
+                      )}
+
+                      {/* Open in the native macOS app (milmil:// URL scheme) */}
+                      {!isAniListOnly && IS_MAC && (
+                        <a
+                          href={`milmil://anime/${anime.bangumi_id}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink/[0.08] hover:bg-ink/[0.14] text-[12px] font-medium text-ink/70 hover:text-ink transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="size-3.5"
+                          >
+                            <rect x={3} y={4} width={18} height={14} rx={2} />
+                            <path d="M8 21h8" />
+                            <path d="M12 18v3" />
+                          </svg>
+                          {i18n._(msg`anime.openInApp`)}
+                        </a>
                       )}
 
                       {/* Tracker sync toggle */}
@@ -770,8 +839,8 @@ export function AnimeDetailPage() {
                               className={cn(
                                 'inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors',
                                 syncDisabled
-                                  ? 'bg-white/[0.04] text-white/30 hover:bg-white/[0.10] hover:text-white/60'
-                                  : 'bg-white/[0.08] text-white/60 hover:bg-white/[0.14] hover:text-white'
+                                  ? 'bg-ink/[0.04] text-ink/30 hover:bg-ink/[0.10] hover:text-ink/60'
+                                  : 'bg-ink/[0.08] text-ink/60 hover:bg-ink/[0.14] hover:text-ink'
                               )}
                             >
                               <svg
@@ -816,26 +885,26 @@ export function AnimeDetailPage() {
                             transition={{ duration: 0.25, ease: 'easeOut' }}
                             className="flex items-center justify-center sm:justify-start gap-3 flex-wrap"
                           >
-                            <span className="text-white/20">·</span>
+                            <span className="text-ink/20">·</span>
                             <select
                               value={playableData.watch_status}
                               onChange={(e) => statusMutation.mutate(e.target.value)}
-                              className="text-[11px] px-2 py-1 rounded-lg bg-white/[0.06] text-white/60 border-none outline-none cursor-pointer hover:bg-white/[0.10] transition-colors appearance-none"
+                              className="text-[11px] px-2 py-1 rounded-lg bg-ink/[0.06] text-ink/60 border-none outline-none cursor-pointer hover:bg-ink/[0.10] transition-colors appearance-none"
                               disabled={statusMutation.isPending}
                             >
-                              <option value="watching" className="bg-zinc-900">
+                              <option value="watching" className="bg-mm-bg-elevated">
                                 {i18n._(msg`collection.watching`)}
                               </option>
-                              <option value="planning" className="bg-zinc-900">
+                              <option value="planning" className="bg-mm-bg-elevated">
                                 {i18n._(msg`collection.planning`)}
                               </option>
-                              <option value="completed" className="bg-zinc-900">
+                              <option value="completed" className="bg-mm-bg-elevated">
                                 {i18n._(msg`collection.completed`)}
                               </option>
-                              <option value="paused" className="bg-zinc-900">
+                              <option value="paused" className="bg-mm-bg-elevated">
                                 {i18n._(msg`collection.paused`)}
                               </option>
-                              <option value="dropped" className="bg-zinc-900">
+                              <option value="dropped" className="bg-mm-bg-elevated">
                                 {i18n._(msg`collection.dropped`)}
                               </option>
                             </select>
@@ -996,7 +1065,7 @@ export function AnimeDetailPage() {
               {episodeList.length > 0 && (
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-3 mb-4">
-                    <h2 className="text-lg font-semibold text-white">
+                    <h2 className="text-lg font-semibold text-ink">
                       {i18n._(msg`anime.episodes`)}
                     </h2>
                     <span className="text-[13px] text-mm-text-muted tabular-nums">
@@ -1043,12 +1112,12 @@ export function AnimeDetailPage() {
               {/* Trailer — right column, sticky */}
               {anime.trailer_url && (
                 <div className="lg:w-[360px] xl:w-[420px] shrink-0">
-                  <h2 className="text-lg font-semibold text-white mb-4">
+                  <h2 className="text-lg font-semibold text-ink mb-4">
                     {i18n._(msg`anime.trailer`)}
                   </h2>
                   <div className="lg:sticky lg:top-6">
                     <div
-                      className="relative rounded-lg overflow-hidden border border-white/[0.06]"
+                      className="relative rounded-lg overflow-hidden border border-ink/[0.06]"
                       style={{ aspectRatio: '16/9' }}
                     >
                       <iframe
@@ -1074,9 +1143,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.28 }}
             className="px-4 md:px-8 py-6"
           >
-            <h2 className="text-lg font-semibold text-white mb-4">
-              {i18n._(msg`anime.characters`)}
-            </h2>
+            <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.characters`)}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {anime.characters.map((c: AnimeCharacter) => (
                 <CharacterCard
@@ -1099,7 +1166,7 @@ export function AnimeDetailPage() {
                 transition={{ delay: 0.3 }}
                 className="px-4 md:px-8 py-6"
               >
-                <h2 className="text-lg font-semibold text-white mb-4">
+                <h2 className="text-lg font-semibold text-ink mb-4">
                   {i18n._(msg`anime.sideStories`)}
                 </h2>
                 <MediaRail>
@@ -1120,7 +1187,7 @@ export function AnimeDetailPage() {
                           <AnimeCard anime={cardAnime} />
                         ) : (
                           <Link to="/anime/$id" params={{ id: `al-${entry.anilist_id}` }}>
-                            <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/[0.05] hover:opacity-80 transition-opacity">
+                            <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-ink/[0.05] hover:opacity-80 transition-opacity">
                               <img
                                 src={entry.cover_image}
                                 alt={entry.title}
@@ -1129,7 +1196,7 @@ export function AnimeDetailPage() {
                             </div>
                           </Link>
                         )}
-                        <p className="text-xs text-white/70 mt-1.5 line-clamp-2">{entry.title}</p>
+                        <p className="text-xs text-ink/70 mt-1.5 line-clamp-2">{entry.title}</p>
                         <p className="text-[10px] font-medium uppercase tracking-wider text-mm-accent/60 mt-0.5">
                           {entry.media_type ||
                             getRelationLabel(entry.relation_type || '', i18n.locale)}
@@ -1149,7 +1216,7 @@ export function AnimeDetailPage() {
                 transition={{ delay: 0.3 }}
                 className="px-4 md:px-8 py-6"
               >
-                <h2 className="text-lg font-semibold text-white mb-4">
+                <h2 className="text-lg font-semibold text-ink mb-4">
                   {i18n._(msg`anime.relations`)}
                 </h2>
                 <MediaRail>
@@ -1179,7 +1246,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.35 }}
             className="px-4 md:px-8 py-6"
           >
-            <h2 className="text-lg font-semibold text-white mb-4">
+            <h2 className="text-lg font-semibold text-ink mb-4">
               {i18n._(msg`anime.recommendations`)}
             </h2>
             <div className="grid grid-cols-3 min-[768px]:grid-cols-5 min-[1080px]:grid-cols-7 min-[1320px]:grid-cols-8 gap-3">
@@ -1218,7 +1285,7 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.4 }}
             className="px-4 md:px-8 py-6 pb-16"
           >
-            <h2 className="text-lg font-semibold text-white mb-4">{i18n._(msg`anime.reviews`)}</h2>
+            <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.reviews`)}</h2>
             <div className="space-y-3 max-w-2xl">
               {anime.reviews.map((review) => (
                 <a
@@ -1226,7 +1293,7 @@ export function AnimeDetailPage() {
                   href={`https://anilist.co/review/${review.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+                  className="group flex items-start gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.06] transition-colors"
                 >
                   {/* Avatar */}
                   {review.avatar ? (
@@ -1236,22 +1303,22 @@ export function AnimeDetailPage() {
                       className="w-8 h-8 rounded-full shrink-0 object-cover"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full shrink-0 bg-white/[0.08]" />
+                    <div className="w-8 h-8 rounded-full shrink-0 bg-ink/[0.08]" />
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-semibold text-white/70">
+                      <span className="text-[12px] font-semibold text-ink/70">
                         {review.username}
                       </span>
                       <span className="text-[11px] font-bold text-mm-accent tabular-nums">
                         {review.score}/100
                       </span>
                     </div>
-                    <p className="text-[13px] text-white/50 leading-relaxed mt-0.5 line-clamp-2 group-hover:text-white/70 transition-colors">
+                    <p className="text-[13px] text-ink/50 leading-relaxed mt-0.5 line-clamp-2 group-hover:text-ink/70 transition-colors">
                       {review.summary}
                     </p>
                   </div>
-                  <span className="text-[11px] text-white/20 shrink-0 mt-1">↗</span>
+                  <span className="text-[11px] text-ink/20 shrink-0 mt-1">↗</span>
                 </a>
               ))}
             </div>
@@ -1266,10 +1333,10 @@ export function AnimeDetailPage() {
             transition={{ delay: 0.45 }}
             className="px-4 md:px-8 py-6 pb-16"
           >
-            <h2 className="text-lg font-semibold text-white mb-4">{i18n._(msg`anime.comments`)}</h2>
+            <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.comments`)}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl">
               {comments.map((c) => (
-                <div key={c.id} className="flex items-start gap-2.5 p-3 rounded-lg bg-white/[0.03]">
+                <div key={c.id} className="flex items-start gap-2.5 p-3 rounded-lg bg-ink/[0.03]">
                   {c.avatar ? (
                     <img
                       src={c.avatar}
@@ -1277,11 +1344,11 @@ export function AnimeDetailPage() {
                       className="w-7 h-7 rounded-full shrink-0 object-cover"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-full shrink-0 bg-white/[0.08]" />
+                    <div className="w-7 h-7 rounded-full shrink-0 bg-ink/[0.08]" />
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-medium text-white/60 truncate">
+                      <span className="text-[12px] font-medium text-ink/60 truncate">
                         {c.nickname || c.username}
                       </span>
                       {c.rate > 0 && (
@@ -1290,7 +1357,7 @@ export function AnimeDetailPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-[13px] text-white/50 leading-relaxed mt-0.5 line-clamp-3">
+                    <p className="text-[13px] text-ink/50 leading-relaxed mt-0.5 line-clamp-3">
                       {c.comment}
                     </p>
                   </div>

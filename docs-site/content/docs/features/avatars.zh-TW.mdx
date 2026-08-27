@@ -1,0 +1,41 @@
+---
+title: 使用者頭像
+description: 給帳號一張圖——自己上傳或借用角色立繪——在 Web、Mac App 和外部播放器上都會顯示。
+---
+
+## 概覽
+
+帳號可以帶一張圖片，而不只是一個首字母。設定一次，凡是出現帳號的地方都會用它：Web 側邊欄與帳號面板、macOS 客戶端，以及連上這台伺服器的 Jellyfin 客戶端。
+
+## 怎麼設
+
+打開**設定 › 帳號**：
+
+- **上傳圖片** —— PNG、JPEG 或 WebP，最大 2 MB。拖到卡片上或選擇檔案。
+- **用角色立繪** —— 從收藏裡挑一部作品，再選它的一個角色。立繪由伺服器端從提供 metadata 的來源複製過來，不會做外連盜圖。
+
+圖片會置中裁成正方形，以 JPEG 存成 512 px 與 128 px 兩份，放在伺服器的資料目錄下。刪除後會恢復成首字母。
+
+## 會在哪裡出現
+
+| 客戶端 | 位置 |
+|--------|------|
+| **Web** | 側邊欄、帳號選單、帳號設定 |
+| **macOS** | 帳號設定，以及任何顯示已登入帳號的地方 |
+| **Jellyfin 客戶端** | 使用者主圖片——Infuse、Apple TV 客戶端，以及任何會顯示使用者頭像的 App |
+
+頭像 URL 帶版本參數，所以換圖之後所有客戶端的快取會一次失效。
+
+<Callout type="info">
+頭像是刻意不做驗證的：`<img>` 標籤和外部播放器都沒辦法送 bearer token，使用者 id 是 UUID，而一張頭像也算不上祕密。
+</Callout>
+
+## API
+
+<Callout type="info">
+`PUT /api/v1/auth/me/avatar` 接受 multipart 檔案或帶 `source_url` 的 JSON body；同一路徑的 `DELETE` 會刪除頭像。`GET /api/v1/users/{id}/avatar` 提供圖片。`/auth/me` 與登入回應都會帶 `avatar_url`。見 [API 參考](/docs/api)。
+</Callout>
+
+<Callout type="warn">
+`source_url` 由伺服器去取，因此只允許公網位址——解析到回送、私有網段或連結本機位址的 URL 會被拒絕，重導到這些位址同樣會被拒絕。
+</Callout>

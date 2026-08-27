@@ -149,7 +149,7 @@ function LibraryDetailSkeleton() {
       </div>
 
       {/* Tab bar */}
-      <div className="flex gap-6 mb-6 border-b border-white/[0.06] pb-3">
+      <div className="flex gap-6 mb-6 border-b border-ink/[0.06] pb-3">
         {Array.from({ length: 2 }).map((_, i) => (
           <Skeleton key={i} className="h-4 w-20" />
         ))}
@@ -209,7 +209,7 @@ function FileActionMenu({
           type="button"
           size="icon-xs"
           variant="ghost"
-          className="text-white/25 hover:text-white/60"
+          className="text-ink/25 hover:text-ink/60"
         >
           <HugeiconsIcon icon={MoreHorizontalIcon} size={14} />
         </Button>
@@ -223,7 +223,7 @@ function FileActionMenu({
           <button
             type="button"
             onClick={() => onMatch(file)}
-            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-white hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer"
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-ink/60 hover:text-ink hover:bg-ink/[0.06] rounded-md transition-colors cursor-pointer"
           >
             <HugeiconsIcon icon={ShuffleIcon} size={13} />
             {i18n._(msg`library.detail.editMatch`)}
@@ -234,7 +234,7 @@ function FileActionMenu({
             type="button"
             onClick={() => unmatchMutation.mutate()}
             disabled={unmatchMutation.isPending}
-            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-red-400 hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer disabled:opacity-40"
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-ink/60 hover:text-red-400 hover:bg-ink/[0.06] rounded-md transition-colors cursor-pointer disabled:opacity-40"
           >
             <HugeiconsIcon icon={Cancel01Icon} size={13} />
             {i18n._(msg`library.detail.unmatch`)}
@@ -243,14 +243,14 @@ function FileActionMenu({
         <button
           type="button"
           onClick={copyPath}
-          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-white hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-ink/60 hover:text-ink hover:bg-ink/[0.06] rounded-md transition-colors cursor-pointer"
         >
           <HugeiconsIcon icon={Copy01Icon} size={13} />
           {i18n._(msg`library.detail.copyPath`)}
         </button>
         <button
           type="button"
-          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-white/60 hover:text-white hover:bg-white/[0.06] rounded-md transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] text-ink/60 hover:text-ink hover:bg-ink/[0.06] rounded-md transition-colors cursor-pointer"
         >
           <HugeiconsIcon icon={InformationCircleIcon} size={13} />
           {i18n._(msg`library.detail.fileInfo`)}
@@ -309,7 +309,7 @@ function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
 
   if (!animeList || animeList.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-white/30">
+      <div className="flex flex-col items-center justify-center py-16 text-ink/30">
         <HugeiconsIcon icon={SparklesIcon} size={40} className="mb-3 opacity-50" />
         <p className="text-sm">{i18n._(msg`library.anime.empty`)}</p>
       </div>
@@ -324,19 +324,19 @@ function LibraryAnimeGrid({ libraryId }: { libraryId: string }) {
     <div className="space-y-4">
       {/* Filter bar */}
       <div className="flex items-center justify-end">
-        <label className="flex items-center gap-2 text-sm text-white/70 cursor-pointer select-none">
+        <label className="flex items-center gap-2 text-sm text-ink/70 cursor-pointer select-none">
           <input
             type="checkbox"
             checked={incompleteOnly}
             onChange={(e) => setIncompleteOnly(e.target.checked)}
-            className="h-4 w-4 rounded border-white/20 bg-black/40"
+            className="h-4 w-4 rounded border-ink/20 bg-black/40"
           />
           {i18n._(msg`Incomplete only`)}
         </label>
       </div>
 
       {visibleAnime.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-white/30">
+        <div className="flex flex-col items-center justify-center py-16 text-ink/30">
           <HugeiconsIcon icon={SparklesIcon} size={40} className="mb-3 opacity-50" />
           <p className="text-sm">
             {incompleteOnly
@@ -543,7 +543,7 @@ function FileTable({
         cell: ({ row }) => (
           <div className="w-full min-w-0 overflow-hidden">
             <span
-              className="font-mono text-xs text-white/80 truncate block"
+              className="font-mono text-xs text-ink/80 truncate block"
               title={row.original.path}
             >
               {row.original.filename}
@@ -563,25 +563,25 @@ function FileTable({
               <div
                 className={cn(
                   'flex items-center gap-2 min-w-0 max-w-full px-2 py-1 rounded-md transition-colors overflow-hidden',
-                  hasBangumiLink && 'hover:bg-white/[0.06] group cursor-pointer'
+                  hasBangumiLink && 'hover:bg-ink/[0.06] group cursor-pointer'
                 )}
               >
                 <span
                   className={cn(
                     'text-sm truncate',
                     hasBangumiLink
-                      ? 'text-white/70 group-hover:text-mm-accent transition-colors'
-                      : 'text-white/60'
+                      ? 'text-ink/70 group-hover:text-mm-accent transition-colors'
+                      : 'text-ink/60'
                   )}
                 >
                   {file.matched_anime_title}
                 </span>
-                <span className="text-[10px] font-medium text-white/25 shrink-0 tabular-nums px-1 py-px rounded bg-white/[0.04]">
+                <span className="text-[10px] font-medium text-ink/25 shrink-0 tabular-nums px-1 py-px rounded bg-ink/[0.04]">
                   EP{String(file.matched_episode_sort).padStart(2, '0')}
                 </span>
                 {hasBangumiLink && (
                   <svg
-                    className="w-3 h-3 shrink-0 text-white/15 group-hover:text-mm-accent/60 transition-colors"
+                    className="w-3 h-3 shrink-0 text-ink/15 group-hover:text-mm-accent/60 transition-colors"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -607,7 +607,7 @@ function FileTable({
             }
             return content;
           }
-          return <span className="text-white/20">&mdash;</span>;
+          return <span className="text-ink/20">&mdash;</span>;
         },
       },
       {
@@ -621,7 +621,7 @@ function FileTable({
         header: () => i18n._(msg`library.detail.col.subs`),
         size: 70,
         cell: ({ row }) => (
-          <span className="text-xs text-white/40">{row.original.subtitle_count}</span>
+          <span className="text-xs text-ink/40">{row.original.subtitle_count}</span>
         ),
       },
       {
@@ -629,7 +629,7 @@ function FileTable({
         header: () => i18n._(msg`library.detail.col.size`),
         size: 100,
         cell: ({ row }) => (
-          <span className="text-xs text-white/50">{formatBytes(row.original.size_bytes)}</span>
+          <span className="text-xs text-ink/50">{formatBytes(row.original.size_bytes)}</span>
         ),
       },
       ...(onMatch
@@ -700,17 +700,17 @@ function FileTable({
   if (!isLoading && files.length === 0 && !debouncedSearch && statusFilter === 'all') {
     return (
       <div className="py-20 flex flex-col items-center text-center">
-        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-white/[0.08] mb-4">
+        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-ink/[0.08] mb-4">
           <path
             d="M6 14a3 3 0 0 1 3-3h10l4 4h16a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V14z"
             stroke="currentColor"
             strokeWidth="1.5"
           />
         </svg>
-        <h3 className="text-sm font-semibold text-white/50 mb-1">
+        <h3 className="text-sm font-semibold text-ink/50 mb-1">
           {i18n._(msg`library.detail.noFiles`)}
         </h3>
-        <p className="text-xs text-white/25 mb-5 max-w-[260px]">
+        <p className="text-xs text-ink/25 mb-5 max-w-[260px]">
           {i18n._(msg`library.detail.noFilesHint`)}
         </p>
       </div>
@@ -742,7 +742,7 @@ function FileTable({
       <div className="mb-5 flex items-center gap-3">
         <div className="relative flex-1">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25 pointer-events-none"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/25 pointer-events-none"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -758,10 +758,10 @@ function FileTable({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={i18n._(msg`library.detail.searchFiles`)}
-            className="w-full h-9 bg-white/[0.05] rounded-lg pl-10 pr-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.08] transition-colors"
+            className="w-full h-9 bg-ink/[0.05] rounded-lg pl-10 pr-3 text-sm text-ink placeholder:text-ink/20 focus:outline-none focus:bg-ink/[0.08] transition-colors"
           />
         </div>
-        <div className="flex h-9 rounded-lg bg-white/[0.05] p-0.5">
+        <div className="flex h-9 rounded-lg bg-ink/[0.05] p-0.5">
           {[
             { key: 'all' as const, label: i18n._(msg`schedule.all`) },
             {
@@ -780,8 +780,8 @@ function FileTable({
               className={cn(
                 'px-3 py-1.5 text-xs font-medium transition-all rounded-md cursor-pointer',
                 statusFilter === f.key
-                  ? 'bg-white/[0.10] text-white shadow-sm'
-                  : 'text-white/35 hover:text-white/55'
+                  ? 'bg-ink/[0.10] text-ink shadow-sm'
+                  : 'text-ink/35 hover:text-ink/55'
               )}
             >
               {f.label}
@@ -835,7 +835,7 @@ function FileTable({
                 showOverlay ? 'opacity-100 delay-300' : 'opacity-0'
               )}
             >
-              <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white/60 animate-spin" />
+              <div className="w-5 h-5 rounded-full border-2 border-ink/20 border-t-ink/60 animate-spin" />
             </div>
           </div>
         )}
@@ -856,12 +856,12 @@ function FileTable({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.15 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-white/[0.08] backdrop-blur-xl border border-white/[0.06] shadow-2xl"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-ink/[0.08] backdrop-blur-xl border border-ink/[0.06] shadow-2xl"
           >
-            <span className="text-sm text-white/70 tabular-nums">
+            <span className="text-sm text-ink/70 tabular-nums">
               {selectedCount} {i18n._(msg`library.detail.selected`)}
             </span>
-            <div className="w-px h-5 bg-white/10" />
+            <div className="w-px h-5 bg-ink/10" />
             <Button size="sm" variant="secondary" onClick={() => setBulkMatchOpen(true)}>
               {i18n._(msg`library.detail.bulkMatch`)}
             </Button>
@@ -957,12 +957,12 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
     >
       {/* File count banner */}
       <motion.div
-        className="mb-5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-4 py-2.5"
+        className="mb-5 rounded-lg bg-ink/[0.04] border border-ink/[0.06] px-4 py-2.5"
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, delay: 0.1 }}
       >
-        <p className="text-xs text-white/50">
+        <p className="text-xs text-ink/50">
           {fileIds.length} {i18n._(msg`library.detail.bulkMatchModal.filesSelected`)}
         </p>
       </motion.div>
@@ -999,7 +999,7 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           />
         </div>
-        <span className="text-[11px] text-white/25 ml-1">
+        <span className="text-[11px] text-ink/25 ml-1">
           {step === 1
             ? i18n._(msg`library.detail.matchModal.stepSearch`)
             : i18n._(msg`library.detail.bulkMatchModal.stepEpisodeStart`)}
@@ -1018,7 +1018,7 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
             {/* Search input */}
             <div className="relative mb-4">
               <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -1034,14 +1034,14 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={i18n._(msg`library.detail.matchModal.searchPlaceholder`)}
-                className="w-full bg-white/[0.04] border border-white/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/[0.12] transition-colors"
+                className="w-full bg-ink/[0.04] border border-ink/[0.06] rounded-lg pl-10 pr-3 py-2.5 text-sm text-ink placeholder:text-ink/20 focus:outline-none focus:border-ink/[0.12] transition-colors"
                 autoFocus
               />
             </div>
 
             {!debouncedSearch && (
               <motion.p
-                className="text-center text-[13px] text-white/20 py-12"
+                className="text-center text-[13px] text-ink/20 py-12"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -1060,7 +1060,7 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
 
             {debouncedSearch && !isSearching && searchResults && searchResults.length === 0 && (
               <motion.p
-                className="text-center text-[13px] text-white/20 py-12"
+                className="text-center text-[13px] text-ink/20 py-12"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
@@ -1089,13 +1089,13 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                     <img
                       src={anime.cover_image}
                       alt={anime.title}
-                      className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-white/[0.06]"
+                      className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-ink/[0.06]"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-white/80 group-hover:text-white truncate transition-colors">
+                      <p className="text-sm font-medium text-ink/80 group-hover:text-ink truncate transition-colors">
                         {anime.title}
                       </p>
-                      <div className="flex items-center gap-2 text-[11px] text-white/30 mt-1">
+                      <div className="flex items-center gap-2 text-[11px] text-ink/30 mt-1">
                         <span>
                           {anime.episode_count} {i18n._(msg`common.ep`)}
                         </span>
@@ -1105,7 +1105,7 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                       </div>
                     </div>
                     <svg
-                      className="w-4 h-4 text-white/10 group-hover:text-white/30 transition-colors shrink-0"
+                      className="w-4 h-4 text-ink/10 group-hover:text-ink/30 transition-colors shrink-0"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -1130,7 +1130,7 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
           >
             {/* Selected anime header */}
             <motion.div
-              className="flex items-center gap-3 mb-5 pb-4 border-b border-white/[0.06]"
+              className="flex items-center gap-3 mb-5 pb-4 border-b border-ink/[0.06]"
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -1138,17 +1138,17 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
               <img
                 src={selectedAnime.cover_image}
                 alt={selectedAnime.title}
-                className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-white/[0.06]"
+                className="w-12 h-16 object-cover rounded-md flex-shrink-0 ring-1 ring-ink/[0.06]"
               />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-white truncate">{selectedAnime.title}</p>
+                <p className="text-sm font-medium text-ink truncate">{selectedAnime.title}</p>
                 <button
                   type="button"
                   onClick={() => {
                     setStep(1);
                     setSelectedAnime(null);
                   }}
-                  className="flex items-center gap-1 text-[12px] text-white/30 hover:text-white/60 transition-colors mt-1 cursor-pointer"
+                  className="flex items-center gap-1 text-[12px] text-ink/30 hover:text-ink/60 transition-colors mt-1 cursor-pointer"
                 >
                   <svg
                     className="w-3 h-3"
@@ -1171,17 +1171,17 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
             >
-              <label className="block text-xs text-white/40 mb-2">
+              <label className="block text-xs text-ink/40 mb-2">
                 {i18n._(msg`library.detail.bulkMatchModal.episodeStartLabel`)}
               </label>
-              <p className="text-[11px] text-white/25 mb-3">
+              <p className="text-[11px] text-ink/25 mb-3">
                 {i18n._(msg`library.detail.bulkMatchModal.episodeStartHint`)}
               </p>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setEpisodeStart((n) => Math.max(1, n - 1))}
-                  className="w-8 h-8 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
+                  className="w-8 h-8 rounded-lg bg-ink/[0.06] hover:bg-ink/[0.10] text-ink/60 hover:text-ink transition-colors flex items-center justify-center cursor-pointer"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -1198,12 +1198,12 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                   min={1}
                   value={episodeStart}
                   onChange={(e) => setEpisodeStart(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-20 text-center bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-white/[0.18] transition-colors tabular-nums"
+                  className="w-20 text-center bg-ink/[0.06] border border-ink/[0.08] rounded-lg px-3 py-1.5 text-sm text-ink focus:outline-none focus:border-ink/[0.18] transition-colors tabular-nums"
                 />
                 <button
                   type="button"
                   onClick={() => setEpisodeStart((n) => n + 1)}
-                  className="w-8 h-8 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
+                  className="w-8 h-8 rounded-lg bg-ink/[0.06] hover:bg-ink/[0.10] text-ink/60 hover:text-ink transition-colors flex items-center justify-center cursor-pointer"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -1215,7 +1215,7 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
                     <path d="M12 5v14M5 12h14" />
                   </svg>
                 </button>
-                <span className="text-xs text-white/30 ml-1">
+                <span className="text-xs text-ink/30 ml-1">
                   EP {String(episodeStart).padStart(2, '0')} → EP{' '}
                   {String(episodeStart + fileIds.length - 1).padStart(2, '0')}
                 </span>
@@ -1285,7 +1285,7 @@ function FileTreeView({
 
   if (!tree) {
     return (
-      <div className="py-16 text-center text-sm text-white/25">
+      <div className="py-16 text-center text-sm text-ink/25">
         {i18n._(msg`library.detail.noFiles`)}
       </div>
     );
@@ -1312,7 +1312,7 @@ function FileTreeView({
           onClick={() => toggleFolder(node.path)}
           className={cn(
             'w-full flex items-center gap-2 py-1.5 rounded-md text-left cursor-pointer group',
-            isExpanded && 'bg-white/[0.02]'
+            isExpanded && 'bg-ink/[0.02]'
           )}
           style={{ paddingLeft: `${indent}px`, paddingRight: 8 }}
           whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
@@ -1320,7 +1320,7 @@ function FileTreeView({
           transition={{ duration: 0.15 }}
         >
           <motion.svg
-            className={cn('w-3.5 h-3.5 shrink-0 text-white/20', !hasChildren && 'invisible')}
+            className={cn('w-3.5 h-3.5 shrink-0 text-ink/20', !hasChildren && 'invisible')}
             animate={{ rotate: isExpanded ? 90 : 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             viewBox="0 0 24 24"
@@ -1341,10 +1341,10 @@ function FileTreeView({
           >
             <HugeiconsIcon icon={Folder01Icon} size={15} />
           </motion.div>
-          <span className="text-[13px] font-medium text-white/65 group-hover:text-white/90 truncate flex-1 min-w-0">
+          <span className="text-[13px] font-medium text-ink/65 group-hover:text-ink/90 truncate flex-1 min-w-0">
             {node.name}
           </span>
-          <span className="text-[10px] tabular-nums text-white/15 shrink-0 mr-2">
+          <span className="text-[10px] tabular-nums text-ink/15 shrink-0 mr-2">
             {node.file_count}
           </span>
           <span
@@ -1360,7 +1360,7 @@ function FileTreeView({
           >
             {matchPct}%
           </span>
-          <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
+          <span className="text-[10px] tabular-nums text-ink/15 shrink-0 w-16 text-right">
             {formatBytes(node.size_bytes)}
           </span>
         </motion.button>
@@ -1377,7 +1377,7 @@ function FileTreeView({
             >
               {/* Vertical guide line */}
               <motion.div
-                className="absolute top-0 bottom-0 w-px bg-white/[0.04]"
+                className="absolute top-0 bottom-0 w-px bg-ink/[0.04]"
                 style={{ left: `${indent + 7}px` }}
                 initial={{ scaleY: 0 }}
                 animate={{ scaleY: 1 }}
@@ -1390,7 +1390,7 @@ function FileTreeView({
                 return (
                   <motion.div
                     key={file.id}
-                    className="flex items-center gap-2 py-1 rounded-md hover:bg-white/[0.03] group/file"
+                    className="flex items-center gap-2 py-1 rounded-md hover:bg-ink/[0.03] group/file"
                     style={{ paddingLeft: `${fileIndent}px`, paddingRight: 8 }}
                     initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -1401,7 +1401,7 @@ function FileTreeView({
                     }}
                   >
                     <svg
-                      className="w-3.5 h-3.5 shrink-0 text-white/10"
+                      className="w-3.5 h-3.5 shrink-0 text-ink/10"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -1410,11 +1410,11 @@ function FileTreeView({
                       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                       <polyline points="14 2 14 8 20 8" />
                     </svg>
-                    <span className="text-[12px] font-mono text-white/40 group-hover/file:text-white/65 truncate flex-1 min-w-0">
+                    <span className="text-[12px] font-mono text-ink/40 group-hover/file:text-ink/65 truncate flex-1 min-w-0">
                       {file.filename}
                     </span>
                     <StatusBadge status={file.match_status} />
-                    <span className="text-[10px] tabular-nums text-white/15 shrink-0 w-16 text-right">
+                    <span className="text-[10px] tabular-nums text-ink/15 shrink-0 w-16 text-right">
                       {formatBytes(file.size_bytes)}
                     </span>
                     <div className="flex items-center gap-0.5 opacity-0 group-hover/file:opacity-100 transition-opacity shrink-0">
@@ -1422,7 +1422,7 @@ function FileTreeView({
                         <Button
                           size="icon-xs"
                           variant="ghost"
-                          className="text-white/25 hover:text-white/60"
+                          className="text-ink/25 hover:text-ink/60"
                           asChild
                         >
                           <Link
@@ -1438,7 +1438,7 @@ function FileTreeView({
                         <Button
                           size="icon-xs"
                           variant="ghost"
-                          className="text-white/25 hover:text-white/60"
+                          className="text-ink/25 hover:text-ink/60"
                           onClick={() =>
                             onMatch({
                               id: file.id,
@@ -1483,7 +1483,7 @@ function FileTreeView({
       ) : tree.files && tree.files.length > 0 ? (
         renderNode(tree, 0)
       ) : (
-        <div className="py-12 text-center text-sm text-white/25">
+        <div className="py-12 text-center text-sm text-ink/25">
           {i18n._(msg`library.detail.noFiles`)}
         </div>
       )}
@@ -1545,7 +1545,7 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
   if (sorted.length === 0) {
     return (
       <div className="py-20 flex flex-col items-center text-center">
-        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-white/[0.08] mb-4">
+        <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14 text-ink/[0.08] mb-4">
           <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.5" />
           <polyline
             points="24,14 24,24 32,28"
@@ -1555,10 +1555,10 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
             strokeLinejoin="round"
           />
         </svg>
-        <h3 className="text-sm font-semibold text-white/50 mb-1">
+        <h3 className="text-sm font-semibold text-ink/50 mb-1">
           {i18n._(msg`library.detail.noScans`)}
         </h3>
-        <p className="text-xs text-white/25 mb-5 max-w-[260px]">
+        <p className="text-xs text-ink/25 mb-5 max-w-[260px]">
           {i18n._(msg`library.detail.noScansHint`)}
         </p>
       </div>
@@ -1595,16 +1595,16 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
         const isExpanded = expandedIds.has(scan.id);
 
         return (
-          <div key={scan.id} className="rounded-lg p-4 bg-white/[0.03]">
+          <div key={scan.id} className="rounded-lg p-4 bg-ink/[0.03]">
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-4 text-[13px]">
-                <span className="text-white/40">{startDateLabel}</span>
-                <span className="text-white/25">
+                <span className="text-ink/40">{startDateLabel}</span>
+                <span className="text-ink/25">
                   {duration !== null ? `${duration}s` : i18n._(msg`library.detail.inProgress`)}
                 </span>
               </div>
               <div className="flex items-center gap-3 text-[12px] tabular-nums">
-                <span className="text-white/40">
+                <span className="text-ink/40">
                   {scan.files_found} {i18n._(msg`library.detail.found`)}
                 </span>
                 <span className="text-green-400/80">
@@ -1626,7 +1626,7 @@ function ScanHistoryList({ libraryId }: { libraryId: string }) {
               </div>
             </div>
             {isExpanded && errors.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-white/[0.04] space-y-1">
+              <div className="mt-3 pt-3 border-t border-ink/[0.04] space-y-1">
                 {errors.map((err, idx) => (
                   <p key={idx} className="text-[11px] font-mono text-red-400/80">
                     {err}
@@ -1739,9 +1739,9 @@ function SettingsModal({
     | 'onedrive'
     | 'dropbox';
 
-  const labelCls = 'text-[10px] font-medium uppercase tracking-[0.15em] text-white/35';
+  const labelCls = 'text-[10px] font-medium uppercase tracking-[0.15em] text-ink/35';
   const fieldCls =
-    'w-full bg-white/[0.04] rounded-lg px-4 py-2.5 text-sm text-white/90 placeholder:text-white/25 focus:outline-none focus:bg-white/[0.07] transition-colors';
+    'w-full bg-ink/[0.04] rounded-lg px-4 py-2.5 text-sm text-ink/90 placeholder:text-ink/25 focus:outline-none focus:bg-ink/[0.07] transition-colors';
 
   return (
     <Modal open={open} onClose={onClose} title={i18n._(msg`library.detail.settings`)}>
@@ -1793,19 +1793,19 @@ function SettingsModal({
 
         {/* Enabled — own row, matches auto-rename pattern */}
         <label className="flex items-center justify-between cursor-pointer select-none">
-          <span className="text-sm text-white/65">{i18n._(msg`library.enabled`)}</span>
+          <span className="text-sm text-ink/65">{i18n._(msg`library.enabled`)}</span>
           <button
             type="button"
             onClick={() => setEnabled((v) => !v)}
             aria-label={i18n._(msg`library.enabled`)}
             className={cn(
               'relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer',
-              enabled ? 'bg-mm-accent' : 'bg-white/[0.12]'
+              enabled ? 'bg-mm-accent' : 'bg-ink/[0.12]'
             )}
           >
             <span
               className={cn(
-                'inline-block h-4 w-4 rounded-full bg-white transition-transform',
+                'inline-block h-4 w-4 rounded-full bg-ink transition-transform',
                 enabled ? 'translate-x-6' : 'translate-x-1'
               )}
             />
@@ -1825,7 +1825,7 @@ function SettingsModal({
           type="button"
           onClick={() => updateMutation.mutate()}
           disabled={updateMutation.isPending || !name.trim()}
-          className="w-full h-11 bg-white/[0.08] hover:bg-white/[0.14] text-white font-semibold"
+          className="w-full h-11 bg-ink/[0.08] hover:bg-ink/[0.14] text-ink font-semibold"
         >
           {updateMutation.isPending
             ? i18n._(msg`library.saving`)
@@ -1849,10 +1849,10 @@ function SettingsModal({
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white/85 leading-none">
+              <p className="text-sm font-semibold text-ink/85 leading-none">
                 {i18n._(msg`library.delete`)}
               </p>
-              <p className="text-[11.5px] text-white/40 mt-1 leading-snug">
+              <p className="text-[11.5px] text-ink/40 mt-1 leading-snug">
                 {i18n._(msg`library.deleteConfirm`)}
               </p>
             </div>
@@ -1863,7 +1863,7 @@ function SettingsModal({
                     type="button"
                     onClick={() => setConfirmDelete(false)}
                     disabled={deleteMutation.isPending}
-                    className="text-xs text-white/50 hover:text-white/80 px-3 py-2 transition-colors cursor-pointer"
+                    className="text-xs text-ink/50 hover:text-ink/80 px-3 py-2 transition-colors cursor-pointer"
                   >
                     {i18n._(msg`common.cancel`)}
                   </button>
@@ -1871,7 +1871,7 @@ function SettingsModal({
                     type="button"
                     onClick={() => deleteMutation.mutate()}
                     disabled={deleteMutation.isPending}
-                    className="text-xs font-semibold text-white bg-red-500/80 hover:bg-red-500 px-3.5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-50"
+                    className="text-xs font-semibold text-ink bg-red-500/80 hover:bg-red-500 px-3.5 py-2 rounded-md transition-colors cursor-pointer disabled:opacity-50"
                   >
                     {deleteMutation.isPending
                       ? i18n._(msg`library.saving`)
@@ -1974,7 +1974,7 @@ export function LibraryDetailPage() {
       <PageTransition>
         <div className="min-h-screen flex flex-col items-center justify-center px-4">
           <div className="mb-8">
-            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-white/[0.07]">
+            <svg viewBox="0 0 80 80" fill="none" className="w-20 h-20 text-ink/[0.07]">
               <path
                 d="M40 10a14 14 0 0 1 14 14v6H26v-6A14 14 0 0 1 40 10z"
                 stroke="currentColor"
@@ -1993,10 +1993,10 @@ export function LibraryDetailPage() {
               <circle cx="40" cy="46" r="4" fill="oklch(12% 0.01 260)" />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-white/70 mb-2">
+          <h2 className="text-xl font-semibold text-ink/70 mb-2">
             {i18n._(msg`auth.libraries.signInTitle`)}
           </h2>
-          <p className="text-sm text-white/30 mb-8 text-center max-w-xs">
+          <p className="text-sm text-ink/30 mb-8 text-center max-w-xs">
             {i18n._(msg`auth.libraries.signInSubtitle`)}
           </p>
           <Button type="button" onClick={() => setShowLogin(true)}>
@@ -2066,7 +2066,7 @@ export function LibraryDetailPage() {
         <motion.div initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}>
           <Link
             to="/libraries"
-            className="inline-flex items-center gap-1.5 text-[12px] text-white/30 hover:text-white/50 transition-colors mb-8"
+            className="inline-flex items-center gap-1.5 text-[12px] text-ink/30 hover:text-ink/50 transition-colors mb-8"
           >
             <span>&larr;</span> {i18n._(msg`library.detail.backToLibraries`)}
           </Link>
@@ -2080,22 +2080,22 @@ export function LibraryDetailPage() {
         >
           <div className="flex items-start gap-4 min-w-0">
             {/* Library icon badge */}
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center">
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-ink/[0.05] flex items-center justify-center">
               <SourceIcon
                 sourceType={library.source_type ?? 'local'}
-                className="w-6 h-6 text-white/30"
+                className="w-6 h-6 text-ink/30"
               />
             </div>
             <div className="min-w-0">
-              <h1 className="text-3xl font-bold text-white tracking-tight">{library.name}</h1>
-              <p className="font-mono text-xs text-white/30 mt-1 truncate">{library.path}</p>
+              <h1 className="text-3xl font-bold text-ink tracking-tight">{library.name}</h1>
+              <p className="font-mono text-xs text-ink/30 mt-1 truncate">{library.path}</p>
               <div className="flex items-center gap-2 mt-2">
                 {sourceLabel && (
-                  <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">
+                  <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink/40">
                     {sourceLabel}
                   </span>
                 )}
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-white/30">
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink/30">
                   {lastScannedText}
                 </span>
               </div>
@@ -2203,14 +2203,14 @@ export function LibraryDetailPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4 mb-6"
+                  className="rounded-lg border border-ink/[0.06] bg-ink/[0.02] p-4 mb-6"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-blue-400/70 animate-pulse" />
-                      <span className="text-sm font-medium text-white/70">{phaseLabel}</span>
+                      <span className="text-sm font-medium text-ink/70">{phaseLabel}</span>
                     </div>
-                    <span className="text-xs text-white/30 tabular-nums">
+                    <span className="text-xs text-ink/30 tabular-nums">
                       {scanProgress.filesFound > 0 &&
                         `${scanProgress.filesFound} ${i18n._(msg`scan.files`)}`}
                       {scanProgress.filesMatched > 0 &&
@@ -2218,7 +2218,7 @@ export function LibraryDetailPage() {
                     </span>
                   </div>
                   {/* Progress bar */}
-                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden mb-2">
+                  <div className="h-1 rounded-full bg-ink/[0.06] overflow-hidden mb-2">
                     {isIndeterminate ? (
                       <div className="h-full w-1/3 rounded-full bg-blue-400/50 animate-pulse" />
                     ) : (
@@ -2231,7 +2231,7 @@ export function LibraryDetailPage() {
                     )}
                   </div>
                   {scanProgress.currentFile && (
-                    <p className="text-xs text-white/20 truncate">{scanProgress.currentFile}</p>
+                    <p className="text-xs text-ink/20 truncate">{scanProgress.currentFile}</p>
                   )}
                 </motion.div>
               );
@@ -2245,13 +2245,13 @@ export function LibraryDetailPage() {
           transition={{ delay: 0.05 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
         >
-          <div className="bg-white/[0.04] rounded-xl p-4">
-            <p className="text-2xl font-bold text-white tabular-nums">{library.file_count}</p>
-            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
+          <div className="bg-ink/[0.04] rounded-xl p-4">
+            <p className="text-2xl font-bold text-ink tabular-nums">{library.file_count}</p>
+            <p className="text-[11px] text-ink/35 mt-1 font-medium tracking-wide uppercase">
               {i18n._(msg`library.detail.stats.files`)}
             </p>
           </div>
-          <div className="bg-white/[0.04] rounded-xl p-4">
+          <div className="bg-ink/[0.04] rounded-xl p-4">
             <p
               className={cn(
                 'text-2xl font-bold tabular-nums',
@@ -2264,33 +2264,33 @@ export function LibraryDetailPage() {
             >
               {matchPct}%
             </p>
-            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
+            <p className="text-[11px] text-ink/35 mt-1 font-medium tracking-wide uppercase">
               {i18n._(msg`library.detail.stats.matched`)}
             </p>
           </div>
           <button
             type="button"
             onClick={() => setActiveTab('files')}
-            className="bg-white/[0.04] rounded-xl p-4 text-left hover:bg-white/[0.07] transition-all cursor-pointer"
+            className="bg-ink/[0.04] rounded-xl p-4 text-left hover:bg-ink/[0.07] transition-all cursor-pointer"
           >
             <p className="text-2xl font-bold text-amber-400 tabular-nums">
               {library.unmatched_count}
             </p>
-            <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
+            <p className="text-[11px] text-ink/35 mt-1 font-medium tracking-wide uppercase">
               {i18n._(msg`library.detail.stats.unmatched`)}
             </p>
           </button>
           {capacity?.available && capacity.total_bytes > 0 ? (
-            <div className="bg-white/[0.04] rounded-xl p-4">
+            <div className="bg-ink/[0.04] rounded-xl p-4">
               <div className="flex items-baseline gap-1.5">
-                <p className="text-2xl font-bold text-white tabular-nums leading-none">
+                <p className="text-2xl font-bold text-ink tabular-nums leading-none">
                   {formatBytes(capacity.used_bytes)}
                 </p>
-                <p className="text-xs text-white/40 tabular-nums">
+                <p className="text-xs text-ink/40 tabular-nums">
                   / {formatBytes(capacity.total_bytes)}
                 </p>
               </div>
-              <div className="mt-2 h-1 rounded-full bg-white/[0.05] overflow-hidden">
+              <div className="mt-2 h-1 rounded-full bg-ink/[0.05] overflow-hidden">
                 <div
                   className="h-full bg-mm-accent/60 transition-all"
                   style={{
@@ -2298,16 +2298,22 @@ export function LibraryDetailPage() {
                   }}
                 />
               </div>
-              <p className="text-[11px] text-white/35 mt-2 font-medium tracking-wide uppercase">
+              <p className="text-[11px] text-ink/35 mt-2 font-medium tracking-wide uppercase">
                 {i18n._(msg`library.detail.stats.diskUsage`)}
               </p>
+              {(capacity.downloaded_this_month_bytes ?? 0) > 0 ? (
+                <p className="text-[11px] text-ink/45 mt-1 tabular-nums">
+                  {i18n._(msg`library.detail.stats.downloadedThisMonth`)}{' '}
+                  {formatBytes(capacity.downloaded_this_month_bytes ?? 0)}
+                </p>
+              ) : null}
             </div>
           ) : (
-            <div className="bg-white/[0.04] rounded-xl p-4">
-              <p className="text-2xl font-bold text-white tabular-nums">
+            <div className="bg-ink/[0.04] rounded-xl p-4">
+              <p className="text-2xl font-bold text-ink tabular-nums">
                 {formatBytes(library.total_size_bytes)}
               </p>
-              <p className="text-[11px] text-white/35 mt-1 font-medium tracking-wide uppercase">
+              <p className="text-[11px] text-ink/35 mt-1 font-medium tracking-wide uppercase">
                 {i18n._(msg`library.detail.stats.size`)}
               </p>
             </div>
@@ -2316,7 +2322,7 @@ export function LibraryDetailPage() {
 
         {/* Tab bar */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-          <div className="flex items-end justify-between border-b border-white/[0.04] mb-6">
+          <div className="flex items-end justify-between border-b border-ink/[0.04] mb-6">
             <div className="flex items-end gap-0">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.key;
@@ -2327,7 +2333,7 @@ export function LibraryDetailPage() {
                     onClick={() => setActiveTab(tab.key)}
                     className={cn(
                       'relative px-4 pb-3 pt-2 text-sm font-medium uppercase tracking-wider cursor-pointer transition-colors duration-200',
-                      isActive ? 'text-white' : 'text-white/25 hover:text-white/40'
+                      isActive ? 'text-ink' : 'text-ink/25 hover:text-ink/40'
                     )}
                   >
                     {tab.label}
@@ -2359,8 +2365,8 @@ export function LibraryDetailPage() {
                         className={cn(
                           'p-1.5 rounded-md transition-colors cursor-pointer',
                           viewMode === 'table'
-                            ? 'text-white bg-white/[0.08]'
-                            : 'text-white/25 hover:text-white/50'
+                            ? 'text-ink bg-ink/[0.08]'
+                            : 'text-ink/25 hover:text-ink/50'
                         )}
                       >
                         <HugeiconsIcon icon={GridViewIcon} size={15} />
@@ -2378,8 +2384,8 @@ export function LibraryDetailPage() {
                         className={cn(
                           'p-1.5 rounded-md transition-colors cursor-pointer',
                           viewMode === 'tree'
-                            ? 'text-white bg-white/[0.08]'
-                            : 'text-white/25 hover:text-white/50'
+                            ? 'text-ink bg-ink/[0.08]'
+                            : 'text-ink/25 hover:text-ink/50'
                         )}
                       >
                         <HugeiconsIcon icon={ViewIcon} size={15} />

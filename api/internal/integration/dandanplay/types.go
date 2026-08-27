@@ -21,14 +21,20 @@ type Comment struct {
 	M   string `json:"m"`
 }
 
+// PostCommentReq is the `/comment/{episodeId}/app` body. Comment is capped
+// at 100 characters upstream; UserName is the display name the app chooses
+// for the sender.
 type PostCommentReq struct {
-	Time    float64 `json:"time"`
-	Mode    int     `json:"mode"`
-	Color   int     `json:"color"`
-	Comment string  `json:"comment"`
+	Time     float64 `json:"time"`
+	Mode     int     `json:"mode"`
+	Color    int     `json:"color"`
+	Comment  string  `json:"comment"`
+	UserName string  `json:"userName,omitempty"`
 }
 
-type matchRequest struct {
+// MatchRequest is one file to identify. FileHash is the MD5 of the first
+// 16 MiB; FileName should carry no directory or extension.
+type MatchRequest struct {
 	FileName      string `json:"fileName"`
 	FileHash      string `json:"fileHash"`
 	FileSize      int64  `json:"fileSize"`
@@ -36,11 +42,32 @@ type matchRequest struct {
 	MatchMode     string `json:"matchMode"`
 }
 
+type responseBase struct {
+	ErrorCode    int    `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+}
+
 type matchResponse struct {
 	ErrorCode    int     `json:"errorCode"`
 	ErrorMessage string  `json:"errorMessage"`
 	IsMatched    bool    `json:"isMatched"`
 	Matches      []Match `json:"matches"`
+}
+
+type batchMatchRequest struct {
+	Requests []MatchRequest `json:"requests"`
+}
+
+type batchMatchItem struct {
+	Success     bool   `json:"success"`
+	FileHash    string `json:"fileHash"`
+	MatchResult *Match `json:"matchResult"`
+}
+
+type batchMatchResponse struct {
+	ErrorCode    int              `json:"errorCode"`
+	ErrorMessage string           `json:"errorMessage"`
+	Results      []batchMatchItem `json:"results"`
 }
 
 type commentResponse struct {

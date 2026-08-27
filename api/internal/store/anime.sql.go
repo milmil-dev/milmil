@@ -11,14 +11,14 @@ import (
 )
 
 const createAnime = `-- name: CreateAnime :one
-INSERT INTO anime (id, library_id, title, title_zh, title_en, synopsis, cover_image_url,
+INSERT INTO anime (id, library_id, title, title_zh, title_en, title_original, synopsis, cover_image_url,
     total_episodes, status, air_date, year, season, genres, bangumi_id, dandanplay_bangumi_id,
     watch_status, score,
     created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
     ?, ?,
     strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id
+RETURNING id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original
 `
 
 type CreateAnimeParams struct {
@@ -27,6 +27,7 @@ type CreateAnimeParams struct {
 	Title               string         `json:"title"`
 	TitleZh             sql.NullString `json:"title_zh"`
 	TitleEn             sql.NullString `json:"title_en"`
+	TitleOriginal       sql.NullString `json:"title_original"`
 	Synopsis            sql.NullString `json:"synopsis"`
 	CoverImageUrl       sql.NullString `json:"cover_image_url"`
 	TotalEpisodes       sql.NullInt64  `json:"total_episodes"`
@@ -48,6 +49,7 @@ func (q *Queries) CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime
 		arg.Title,
 		arg.TitleZh,
 		arg.TitleEn,
+		arg.TitleOriginal,
 		arg.Synopsis,
 		arg.CoverImageUrl,
 		arg.TotalEpisodes,
@@ -92,6 +94,7 @@ func (q *Queries) CreateAnime(ctx context.Context, arg CreateAnimeParams) (Anime
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
@@ -115,7 +118,7 @@ func (q *Queries) DeleteEpisodesByAnimeID(ctx context.Context, animeID string) e
 }
 
 const getAnime = `-- name: GetAnime :one
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE id = ? LIMIT 1
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetAnime(ctx context.Context, id string) (Anime, error) {
@@ -151,12 +154,13 @@ func (q *Queries) GetAnime(ctx context.Context, id string) (Anime, error) {
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
 
 const getAnimeByAnidbID = `-- name: GetAnimeByAnidbID :one
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE anidb_id = ? LIMIT 1
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE anidb_id = ? LIMIT 1
 `
 
 func (q *Queries) GetAnimeByAnidbID(ctx context.Context, anidbID sql.NullInt64) (Anime, error) {
@@ -192,12 +196,13 @@ func (q *Queries) GetAnimeByAnidbID(ctx context.Context, anidbID sql.NullInt64) 
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
 
 const getAnimeByAnilistID = `-- name: GetAnimeByAnilistID :one
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE anilist_id = ? LIMIT 1
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE anilist_id = ? LIMIT 1
 `
 
 func (q *Queries) GetAnimeByAnilistID(ctx context.Context, anilistID sql.NullInt64) (Anime, error) {
@@ -233,12 +238,13 @@ func (q *Queries) GetAnimeByAnilistID(ctx context.Context, anilistID sql.NullInt
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
 
 const getAnimeByBangumiID = `-- name: GetAnimeByBangumiID :one
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE bangumi_id = ? LIMIT 1
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE bangumi_id = ? LIMIT 1
 `
 
 func (q *Queries) GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt64) (Anime, error) {
@@ -274,12 +280,13 @@ func (q *Queries) GetAnimeByBangumiID(ctx context.Context, bangumiID sql.NullInt
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
 
 const getAnimeByTMDBID = `-- name: GetAnimeByTMDBID :one
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE tmdb_id = ? LIMIT 1
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE tmdb_id = ? LIMIT 1
 `
 
 func (q *Queries) GetAnimeByTMDBID(ctx context.Context, tmdbID sql.NullInt64) (Anime, error) {
@@ -315,12 +322,13 @@ func (q *Queries) GetAnimeByTMDBID(ctx context.Context, tmdbID sql.NullInt64) (A
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
 
 const getAnimeByTraktShowID = `-- name: GetAnimeByTraktShowID :one
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE trakt_show_id = ? LIMIT 1
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE trakt_show_id = ? LIMIT 1
 `
 
 func (q *Queries) GetAnimeByTraktShowID(ctx context.Context, traktShowID sql.NullInt64) (Anime, error) {
@@ -356,12 +364,13 @@ func (q *Queries) GetAnimeByTraktShowID(ctx context.Context, traktShowID sql.Nul
 		&i.SyncDisabled,
 		&i.WatchStatusOverride,
 		&i.TraktShowID,
+		&i.TitleOriginal,
 	)
 	return i, err
 }
 
 const listAnimeByLibrary = `-- name: ListAnimeByLibrary :many
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE library_id = ?
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE library_id = ?
 `
 
 func (q *Queries) ListAnimeByLibrary(ctx context.Context, libraryID sql.NullString) ([]Anime, error) {
@@ -403,6 +412,7 @@ func (q *Queries) ListAnimeByLibrary(ctx context.Context, libraryID sql.NullStri
 			&i.SyncDisabled,
 			&i.WatchStatusOverride,
 			&i.TraktShowID,
+			&i.TitleOriginal,
 		); err != nil {
 			return nil, err
 		}
@@ -418,7 +428,7 @@ func (q *Queries) ListAnimeByLibrary(ctx context.Context, libraryID sql.NullStri
 }
 
 const listAnimeByLibraryID = `-- name: ListAnimeByLibraryID :many
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime WHERE library_id = ? ORDER BY title
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime WHERE library_id = ? ORDER BY title
 `
 
 func (q *Queries) ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullString) ([]Anime, error) {
@@ -460,6 +470,7 @@ func (q *Queries) ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullSt
 			&i.SyncDisabled,
 			&i.WatchStatusOverride,
 			&i.TraktShowID,
+			&i.TitleOriginal,
 		); err != nil {
 			return nil, err
 		}
@@ -475,7 +486,7 @@ func (q *Queries) ListAnimeByLibraryID(ctx context.Context, libraryID sql.NullSt
 }
 
 const listAnimeForUserWithProviderID = `-- name: ListAnimeForUserWithProviderID :many
-SELECT DISTINCT a.id, a.library_id, a.title, a.title_zh, a.title_en, a.synopsis, a.cover_image_url, a.total_episodes, a.status, a.air_date, a.year, a.season, a.genres, a.is_custom, a.anilist_id, a.bangumi_id, a.dandanplay_bangumi_id, a.mal_id, a.tmdb_id, a.created_at, a.updated_at, a.watch_status, a.watch_status_updated_at, a.user_score, a.score, a.anidb_id, a.sync_disabled, a.watch_status_override, a.trakt_show_id FROM anime a
+SELECT DISTINCT a.id, a.library_id, a.title, a.title_zh, a.title_en, a.synopsis, a.cover_image_url, a.total_episodes, a.status, a.air_date, a.year, a.season, a.genres, a.is_custom, a.anilist_id, a.bangumi_id, a.dandanplay_bangumi_id, a.mal_id, a.tmdb_id, a.created_at, a.updated_at, a.watch_status, a.watch_status_updated_at, a.user_score, a.score, a.anidb_id, a.sync_disabled, a.watch_status_override, a.trakt_show_id, a.title_original FROM anime a
 JOIN episodes e ON e.anime_id = a.id
 JOIN watch_progress wp ON wp.episode_id = e.id
 WHERE wp.user_id = ?1
@@ -530,6 +541,7 @@ func (q *Queries) ListAnimeForUserWithProviderID(ctx context.Context, arg ListAn
 			&i.SyncDisabled,
 			&i.WatchStatusOverride,
 			&i.TraktShowID,
+			&i.TitleOriginal,
 		); err != nil {
 			return nil, err
 		}
@@ -545,10 +557,11 @@ func (q *Queries) ListAnimeForUserWithProviderID(ctx context.Context, arg ListAn
 }
 
 const searchAnimeLocal = `-- name: SearchAnimeLocal :many
-SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id FROM anime
+SELECT id, library_id, title, title_zh, title_en, synopsis, cover_image_url, total_episodes, status, air_date, year, season, genres, is_custom, anilist_id, bangumi_id, dandanplay_bangumi_id, mal_id, tmdb_id, created_at, updated_at, watch_status, watch_status_updated_at, user_score, score, anidb_id, sync_disabled, watch_status_override, trakt_show_id, title_original FROM anime
 WHERE title LIKE ?1
    OR title_zh LIKE ?1
    OR title_en LIKE ?1
+   OR title_original LIKE ?1
 ORDER BY title
 LIMIT ?2
 `
@@ -599,6 +612,7 @@ func (q *Queries) SearchAnimeLocal(ctx context.Context, arg SearchAnimeLocalPara
 			&i.SyncDisabled,
 			&i.WatchStatusOverride,
 			&i.TraktShowID,
+			&i.TitleOriginal,
 		); err != nil {
 			return nil, err
 		}
@@ -715,6 +729,22 @@ type UpdateAnimeTMDBIDParams struct {
 
 func (q *Queries) UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error {
 	_, err := q.db.ExecContext(ctx, updateAnimeTMDBID, arg.TmdbID, arg.ID)
+	return err
+}
+
+const updateAnimeTitleOriginal = `-- name: UpdateAnimeTitleOriginal :exec
+UPDATE anime SET title_original = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+WHERE id = ?
+`
+
+type UpdateAnimeTitleOriginalParams struct {
+	TitleOriginal sql.NullString `json:"title_original"`
+	ID            string         `json:"id"`
+}
+
+// Lazy backfill for rows created before title_original existed.
+func (q *Queries) UpdateAnimeTitleOriginal(ctx context.Context, arg UpdateAnimeTitleOriginalParams) error {
+	_, err := q.db.ExecContext(ctx, updateAnimeTitleOriginal, arg.TitleOriginal, arg.ID)
 	return err
 }
 

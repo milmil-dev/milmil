@@ -318,143 +318,202 @@ msgstr ""
 msgid "Access Key"
 msgstr "액세스 키"
 
-#: src/pages/settings/AccountPanel.tsx:484
+#: src/pages/settings/AccountPanel.tsx:471
 msgid "account.2fa.activeMessage"
 msgstr "2단계 인증이 활성화되어 있습니다. 토글을 끄면 비활성화됩니다."
 
-#: src/pages/settings/AccountPanel.tsx:390
+#: src/pages/settings/AccountPanel.tsx:377
 msgid "account.2fa.description"
 msgstr "로그인 시 TOTP 코드를 요구하여 보안을 강화합니다."
 
-#: src/pages/settings/AccountPanel.tsx:372
+#: src/pages/settings/AccountPanel.tsx:359
 msgid "account.2fa.disabled"
 msgstr "2단계 인증이 비활성화되었습니다"
 
-#: src/pages/settings/AccountPanel.tsx:377
+#: src/pages/settings/AccountPanel.tsx:364
 msgid "account.2fa.disableFailed"
 msgstr "2단계 인증 비활성화에 실패했습니다"
 
-#: src/pages/settings/AccountPanel.tsx:361
+#: src/pages/settings/AccountPanel.tsx:348
 msgid "account.2fa.enabled"
 msgstr "2단계 인증이 활성화되었습니다"
 
-#: src/pages/settings/AccountPanel.tsx:366
+#: src/pages/settings/AccountPanel.tsx:353
 msgid "account.2fa.invalidCode"
 msgstr "유효하지 않은 코드입니다"
 
-#: src/pages/settings/AccountPanel.tsx:427
+#: src/pages/settings/AccountPanel.tsx:414
 msgid "account.2fa.manualEntry"
 msgstr "수동 입력"
 
-#: src/pages/settings/AccountPanel.tsx:413
+#: src/pages/settings/AccountPanel.tsx:400
 msgid "account.2fa.scanInstructions"
 msgstr "인증 앱으로 이 QR 코드를 스캔한 후, 6자리 인증 코드를 입력하여 확인하세요."
 
-#: src/pages/settings/AccountPanel.tsx:355
+#: src/pages/settings/AccountPanel.tsx:342
 msgid "account.2fa.setupFailed"
 msgstr "2단계 인증 설정에 실패했습니다"
 
-#: src/pages/settings/AccountPanel.tsx:399
+#: src/pages/settings/AccountPanel.tsx:386
 msgid "account.2fa.statusDisabled"
 msgstr "비활성화됨"
 
-#: src/pages/settings/AccountPanel.tsx:396
+#: src/pages/settings/AccountPanel.tsx:383
 msgid "account.2fa.statusEnabled"
 msgstr "활성화됨"
 
-#: src/pages/settings/AccountPanel.tsx:398
+#: src/pages/settings/AccountPanel.tsx:385
 msgid "account.2fa.statusPending"
 msgstr "인증 대기 중"
 
-#: src/pages/settings/AccountPanel.tsx:389
+#: src/pages/settings/AccountPanel.tsx:376
 msgid "account.2fa.title"
 msgstr "2단계 인증"
 
-#: src/pages/settings/AccountPanel.tsx:446
+#: src/pages/settings/AccountPanel.tsx:433
 msgid "account.2fa.verificationCode"
 msgstr "인증 코드"
 
-#: src/pages/settings/AccountPanel.tsx:474
+#: src/pages/settings/AccountPanel.tsx:461
 msgid "account.2fa.verifyEnable"
 msgstr "인증 후 활성화"
 
-#: src/pages/settings/AccountPanel.tsx:473
+#: src/pages/settings/AccountPanel.tsx:460
 msgid "account.2fa.verifying"
 msgstr "인증 중..."
 
-#: src/pages/settings/AccountPanel.tsx:164
+#: src/pages/settings/AvatarCard.tsx:203
+msgid "account.avatar.back"
+msgstr "뒤로"
+
+#: src/pages/settings/AvatarCard.tsx:104
+msgid "account.avatar.change"
+msgstr "변경…"
+
+#: src/pages/settings/AvatarCard.tsx:245
+msgid "account.avatar.emptyCollection"
+msgstr "먼저 컬렉션에 작품을 추가하세요."
+
+#: src/pages/settings/AvatarCard.tsx:129
+msgid "account.avatar.hint"
+msgstr "PNG, JPEG, WebP 최대 2 MB. 큰 이미지는 업로드 전에 축소됩니다. Jellyfin으로 로그인한 외부 플레이어에도 표시됩니다."
+
+#: src/pages/settings/AvatarCard.tsx:211
+msgid "account.avatar.noCharacters"
+msgstr "이 작품의 캐릭터 이미지가 아직 없습니다."
+
+#: src/pages/settings/AvatarCard.tsx:196
+msgid "account.avatar.pickCharacter"
+msgstr "캐릭터 선택"
+
+#: src/pages/settings/AvatarCard.tsx:192
+msgid "account.avatar.pickSeries"
+msgstr "작품 선택"
+
+#: src/pages/settings/AvatarCard.tsx:197
+msgid "account.avatar.pickSeriesHint"
+msgstr "캐릭터는 컬렉션의 작품에서 선택합니다."
+
+#: src/pages/settings/AvatarCard.tsx:125
+msgid "account.avatar.remove"
+msgstr "제거"
+
+#: src/pages/settings/AvatarCard.tsx:74
+msgid "account.avatar.removed"
+msgstr "아바타가 제거되었습니다"
+
+#: src/pages/settings/AvatarCard.tsx:55
+msgid "account.avatar.tooLarge"
+msgstr "축소 후에도 2 MB를 초과합니다"
+
+#: src/pages/settings/AvatarCard.tsx:50
+#: src/pages/settings/AvatarCard.tsx:65
+msgid "account.avatar.updated"
+msgstr "아바타가 업데이트되었습니다"
+
+#: src/pages/settings/AvatarCard.tsx:56
+#: src/pages/settings/AvatarCard.tsx:67
+#: src/pages/settings/AvatarCard.tsx:76
+msgid "account.avatar.updateFailed"
+msgstr "아바타를 업데이트할 수 없습니다"
+
+#: src/pages/settings/AvatarCard.tsx:114
+msgid "account.avatar.useCharacter"
+msgstr "캐릭터 사용…"
+
+#: src/pages/settings/AccountPanel.tsx:151
 msgid "account.changePassword"
 msgstr "비밀번호 변경"
 
-#: src/pages/settings/AccountPanel.tsx:257
+#: src/pages/settings/AccountPanel.tsx:244
 msgid "account.confirmPassword"
 msgstr "새 비밀번호 확인"
 
-#: src/pages/settings/AccountPanel.tsx:186
+#: src/pages/settings/AccountPanel.tsx:173
 msgid "account.currentPassword"
 msgstr "현재 비밀번호"
 
-#: src/pages/settings/AccountPanel.tsx:176
-#: src/pages/settings/AccountPanel.tsx:208
-#: src/pages/settings/AccountPanel.tsx:243
+#: src/pages/settings/AccountPanel.tsx:163
+#: src/pages/settings/AccountPanel.tsx:195
+#: src/pages/settings/AccountPanel.tsx:230
 msgid "account.fieldRequired"
 msgstr "필수 항목입니다"
 
-#: src/components/AppSidebar.tsx:154
-#: src/pages/settings/SettingsPage.tsx:242
+#: src/components/AppSidebar.tsx:151
+#: src/pages/settings/SettingsPage.tsx:246
 msgid "account.local"
 msgstr "로컬 계정"
 
-#: src/components/AppSidebar.tsx:182
-#: src/pages/settings/SettingsPage.tsx:280
+#: src/components/AppSidebar.tsx:179
+#: src/pages/settings/SettingsPage.tsx:284
 msgid "account.logout"
 msgstr "로그아웃"
 
-#: src/pages/settings/AccountPanel.tsx:221
+#: src/pages/settings/AccountPanel.tsx:208
 msgid "account.newPassword"
 msgstr "새 비밀번호"
 
-#: src/pages/settings/AccountPanel.tsx:209
+#: src/pages/settings/AccountPanel.tsx:196
 msgid "account.passwordMinLength"
 msgstr "비밀번호는 8자 이상이어야 합니다"
 
-#: src/pages/settings/AccountPanel.tsx:245
+#: src/pages/settings/AccountPanel.tsx:232
 msgid "account.passwordMismatch"
 msgstr "비밀번호가 일치하지 않습니다"
 
-#: src/pages/settings/AccountPanel.tsx:88
+#: src/pages/settings/AccountPanel.tsx:87
 msgid "account.passwordUpdated"
 msgstr "비밀번호가 업데이트되었습니다"
 
-#: src/pages/settings/AccountPanel.tsx:91
+#: src/pages/settings/AccountPanel.tsx:90
 msgid "account.passwordUpdateFailed"
 msgstr "비밀번호 업데이트에 실패했습니다"
 
-#: src/pages/settings/AccountPanel.tsx:151
+#: src/pages/settings/AvatarCard.tsx:82
 msgid "account.profile"
 msgstr "프로필"
 
-#: src/pages/settings/AccountPanel.tsx:111
+#: src/pages/settings/AccountPanel.tsx:110
 msgid "account.subtitle"
 msgstr "프로필 및 보안 설정 관리"
 
-#: src/pages/settings/AccountPanel.tsx:62
+#: src/pages/settings/AccountPanel.tsx:61
 msgid "account.tab.account"
 msgstr "계정"
 
-#: src/pages/settings/AccountPanel.tsx:64
+#: src/pages/settings/AccountPanel.tsx:63
 msgid "account.tab.sessions"
 msgstr "세션"
 
-#: src/pages/settings/AccountPanel.tsx:63
+#: src/pages/settings/AccountPanel.tsx:62
 msgid "account.tab.tokens"
 msgstr "API 토큰"
 
-#: src/pages/settings/AccountPanel.tsx:281
+#: src/pages/settings/AccountPanel.tsx:268
 msgid "account.updatePassword"
 msgstr "비밀번호 업데이트"
 
-#: src/pages/settings/AccountPanel.tsx:280
+#: src/pages/settings/AccountPanel.tsx:267
 msgid "account.updating"
 msgstr "업데이트 중..."
 
@@ -462,19 +521,19 @@ msgstr "업데이트 중..."
 msgid "Anime"
 msgstr "애니메이션"
 
-#: src/pages/AnimeDetailPage.tsx:725
+#: src/pages/AnimeDetailPage.tsx:768
 msgid "anime.addToCollection"
 msgstr "컬렉션에 추가"
 
-#: src/pages/AnimeDetailPage.tsx:1078
+#: src/pages/AnimeDetailPage.tsx:1144
 msgid "anime.characters"
 msgstr "캐릭터"
 
-#: src/pages/AnimeDetailPage.tsx:266
+#: src/pages/AnimeDetailPage.tsx:338
 msgid "anime.collectionUpdated"
 msgstr "컬렉션이 업데이트되었습니다"
 
-#: src/pages/AnimeDetailPage.tsx:1269
+#: src/pages/AnimeDetailPage.tsx:1334
 msgid "anime.comments"
 msgstr "댓글"
 
@@ -482,7 +541,7 @@ msgstr "댓글"
 #~ msgid "anime.continueWatching"
 #~ msgstr "이어보기"
 
-#: src/pages/AnimeDetailPage.tsx:767
+#: src/pages/AnimeDetailPage.tsx:834
 msgid "anime.enableTrackerSync"
 msgstr "트래커 동기화 활성화"
 
@@ -491,11 +550,11 @@ msgstr "트래커 동기화 활성화"
 #~ msgstr "화"
 
 #: src/components/PreviewModal.tsx:323
-#: src/pages/AnimeDetailPage.tsx:1000
+#: src/pages/AnimeDetailPage.tsx:1067
 msgid "anime.episodes"
 msgstr "에피소드"
 
-#: src/pages/AnimeDetailPage.tsx:768
+#: src/pages/AnimeDetailPage.tsx:835
 msgid "anime.excludeTrackerSync"
 msgstr "트래커 동기화에서 제외"
 
@@ -503,7 +562,7 @@ msgstr "트래커 동기화에서 제외"
 #~ msgid "anime.inCollection"
 #~ msgstr ""
 
-#: src/pages/AnimeDetailPage.tsx:300
+#: src/pages/AnimeDetailPage.tsx:372
 msgid "anime.metaRefreshed"
 msgstr "메타데이터가 새로고침되었습니다"
 
@@ -514,37 +573,41 @@ msgstr "메타데이터가 새로고침되었습니다"
 #~ msgid "anime.noLocalFile"
 #~ msgstr "No local file"
 
-#: src/pages/AnimeDetailPage.tsx:579
+#: src/pages/AnimeDetailPage.tsx:651
 msgid "anime.notAired"
 msgstr "미방영"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:423
 msgid "anime.notFound"
 msgstr "애니메이션을 찾을 수 없습니다"
 
-#: src/pages/AnimeDetailPage.tsx:592
+#: src/pages/AnimeDetailPage.tsx:817
+msgid "anime.openInApp"
+msgstr "앱에서 열기"
+
+#: src/pages/AnimeDetailPage.tsx:664
 msgid "anime.playableEps"
 msgstr "편 재생 가능"
 
 #: src/components/PreviewModal.tsx:221
-#: src/pages/AnimeDetailPage.tsx:572
+#: src/pages/AnimeDetailPage.tsx:644
 msgid "anime.ratings"
 msgstr "평점"
 
-#: src/pages/AnimeDetailPage.tsx:1183
+#: src/pages/AnimeDetailPage.tsx:1248
 msgid "anime.recommendations"
 msgstr "추천"
 
-#: src/pages/AnimeDetailPage.tsx:414
-#: src/pages/AnimeDetailPage.tsx:415
+#: src/pages/AnimeDetailPage.tsx:486
+#: src/pages/AnimeDetailPage.tsx:487
 msgid "anime.refreshMeta"
 msgstr "메타데이터 새로고침"
 
-#: src/pages/AnimeDetailPage.tsx:1153
+#: src/pages/AnimeDetailPage.tsx:1218
 msgid "anime.relations"
 msgstr "관련 작품"
 
-#: src/pages/AnimeDetailPage.tsx:1221
+#: src/pages/AnimeDetailPage.tsx:1286
 msgid "anime.reviews"
 msgstr "리뷰"
 
@@ -552,22 +615,22 @@ msgstr "리뷰"
 #~ msgid "anime.score"
 #~ msgstr "pts"
 
-#: src/pages/AnimeDetailPage.tsx:750
+#: src/pages/AnimeDetailPage.tsx:793
 msgid "anime.searchResources"
 msgstr "리소스 검색"
 
 #~ msgid "anime.season"
 #~ msgstr "Season"
 
-#: src/pages/AnimeDetailPage.tsx:1103
+#: src/pages/AnimeDetailPage.tsx:1168
 msgid "anime.sideStories"
 msgstr "Side Stories & Movies"
 
-#: src/pages/AnimeDetailPage.tsx:586
+#: src/pages/AnimeDetailPage.tsx:658
 msgid "anime.subscribed"
 msgstr "추적 중"
 
-#: src/pages/AnimeDetailPage.tsx:282
+#: src/pages/AnimeDetailPage.tsx:354
 msgid "anime.syncFlagsUpdated"
 msgstr "동기화 플래그가 업데이트되었습니다"
 
@@ -576,11 +639,11 @@ msgstr "동기화 플래그가 업데이트되었습니다"
 #~ msgstr "Synopsis"
 
 #: src/components/PreviewModal.tsx:286
-#: src/pages/AnimeDetailPage.tsx:1047
+#: src/pages/AnimeDetailPage.tsx:1114
 msgid "anime.trailer"
 msgstr "예고편"
 
-#: src/pages/AnimeDetailPage.tsx:1085
+#: src/pages/AnimeDetailPage.tsx:1150
 msgid "anime.voiceActor"
 msgstr "CV"
 
@@ -592,11 +655,11 @@ msgstr "API 키"
 msgid "API Read Access Token"
 msgstr "API 읽기 액세스 토큰"
 
-#: src/pages/settings/ApiTokensCard.tsx:187
+#: src/pages/settings/ApiTokensCard.tsx:183
 msgid "apiTokens.create"
 msgstr "생성"
 
-#: src/pages/settings/ApiTokensCard.tsx:137
+#: src/pages/settings/ApiTokensCard.tsx:133
 msgid "apiTokens.created"
 msgstr "생성일"
 
@@ -616,19 +679,19 @@ msgstr "모바일 앱과 외부 도구를 위한 액세스 토큰을 생성합�
 msgid "apiTokens.dismiss"
 msgstr "닫기"
 
-#: src/pages/settings/ApiTokensCard.tsx:141
+#: src/pages/settings/ApiTokensCard.tsx:137
 msgid "apiTokens.lastUsed"
 msgstr "마지막 사용"
 
-#: src/pages/settings/ApiTokensCard.tsx:169
+#: src/pages/settings/ApiTokensCard.tsx:165
 msgid "apiTokens.namePlaceholder"
 msgstr "기기 이름 (예: iPhone)"
 
-#: src/pages/settings/ApiTokensCard.tsx:156
+#: src/pages/settings/ApiTokensCard.tsx:152
 msgid "apiTokens.revoke"
 msgstr "취소"
 
-#: src/pages/settings/ApiTokensCard.tsx:150
+#: src/pages/settings/ApiTokensCard.tsx:146
 msgid "apiTokens.revokeConfirm"
 msgstr "이 토큰을 취소하시겠습니까? 해당 기기의 접근이 차단됩니다."
 
@@ -668,7 +731,7 @@ msgstr "{0}개 이름 변경을 적용합니다. 디스크의 파일이 이동�
 msgid "Apply all OK ({0})"
 msgstr "모두 적용 ({0})"
 
-#: src/pages/LoginPage.tsx:230
+#: src/pages/LoginPage.tsx:227
 msgid "auth.2fa.codeLabel"
 msgstr "인증 코드"
 
@@ -680,7 +743,7 @@ msgstr "인증 앱의 6자리 코드를 입력하세요"
 msgid "auth.2fa.title"
 msgstr "2단계 인증"
 
-#: src/pages/LoginPage.tsx:294
+#: src/pages/LoginPage.tsx:291
 msgid "auth.2fa.verify"
 msgstr "인증"
 
@@ -710,7 +773,7 @@ msgstr "라이브러리에 접근하려면 로그인하세요"
 msgid "auth.libraries.signInTitle"
 msgstr "로그인 필요"
 
-#: src/pages/LoginPage.tsx:449
+#: src/pages/LoginPage.tsx:446
 msgid "auth.login.forgotPassword"
 msgstr "비밀번호를 잊으셨나요?"
 
@@ -719,22 +782,22 @@ msgstr "비밀번호를 잊으셨나요?"
 #~ msgstr "Signing in..."
 
 #: src/components/LoginModal.tsx:150
-#: src/pages/LoginPage.tsx:381
+#: src/pages/LoginPage.tsx:378
 msgid "auth.login.password"
 msgstr "비밀번호"
 
-#: src/pages/LoginPage.tsx:458
+#: src/pages/LoginPage.tsx:455
 msgid "auth.login.recoveryAccessRequired"
 msgstr "이 복구 명령을 실행하려면 서버 또는 컨테이너 접근 권한이 필요합니다."
 
-#: src/pages/LoginPage.tsx:452
+#: src/pages/LoginPage.tsx:449
 msgid "auth.login.recoveryNoEmail"
 msgstr "milmil은 이메일 비밀번호 재설정을 지원하지 않습니다. 서버 컨테이너에서 관리자 비밀번호를 재설정하세요:"
 
 #: src/components/LoginModal.tsx:175
 #: src/pages/LibrariesPage.tsx:2802
 #: src/pages/LibraryDetailPage.tsx:2003
-#: src/pages/LoginPage.tsx:434
+#: src/pages/LoginPage.tsx:431
 msgid "auth.login.submit"
 msgstr "로그인"
 
@@ -745,13 +808,13 @@ msgstr "개인 애니메이션 미디어 서버"
 #: src/components/LoginModal.tsx:93
 #: src/components/LoginModal.tsx:108
 #: src/pages/LoginPage.tsx:122
-#: src/pages/LoginPage.tsx:313
-#: src/pages/LoginPage.tsx:331
+#: src/pages/LoginPage.tsx:310
+#: src/pages/LoginPage.tsx:328
 msgid "auth.login.title"
 msgstr "milmil 로그인"
 
 #: src/components/LoginModal.tsx:127
-#: src/pages/LoginPage.tsx:354
+#: src/pages/LoginPage.tsx:351
 msgid "auth.login.username"
 msgstr "사용자 이름"
 
@@ -778,19 +841,19 @@ msgid "auth.setup.passwordTooShort"
 msgstr "비밀번호는 최소 8자 이상이어야 합니다"
 
 #: src/components/LoginModal.tsx:176
-#: src/pages/LoginPage.tsx:435
+#: src/pages/LoginPage.tsx:432
 #: src/pages/setup/AdminStep.tsx:108
 msgid "auth.setup.submit"
 msgstr "계정 만들기"
 
 #: src/components/LoginModal.tsx:112
-#: src/pages/LoginPage.tsx:336
+#: src/pages/LoginPage.tsx:333
 #: src/pages/setup/AdminStep.tsx:50
 msgid "auth.setup.subtitle"
 msgstr "관리자 계정을 만들어 시작하세요."
 
 #: src/components/LoginModal.tsx:104
-#: src/pages/LoginPage.tsx:324
+#: src/pages/LoginPage.tsx:321
 #: src/pages/setup/AdminStep.tsx:21
 #: src/pages/setup/AdminStep.tsx:49
 msgid "auth.setup.title"
@@ -818,22 +881,22 @@ msgstr "자동 다운로드 규칙 {0} ({1})"
 #~ msgid "autoDownload.active"
 #~ msgstr "활성"
 
-#: src/pages/DownloadsPage.tsx:1688
+#: src/pages/DownloadsPage.tsx:1676
 msgid "autoDownload.add"
 msgstr "추가"
 
-#: src/pages/DownloadsPage.tsx:1687
+#: src/pages/DownloadsPage.tsx:1675
 msgid "autoDownload.adding"
 msgstr "추가 중…"
 
-#: src/pages/DownloadsPage.tsx:415
-#: src/pages/DownloadsPage.tsx:1655
+#: src/pages/DownloadsPage.tsx:405
+#: src/pages/DownloadsPage.tsx:1643
 msgid "autoDownload.addUrl"
 msgstr "URL 추가"
 
-#: src/pages/DownloadsPage.tsx:924
-#: src/pages/DownloadsPage.tsx:950
-#: src/pages/DownloadsPage.tsx:1223
+#: src/pages/DownloadsPage.tsx:912
+#: src/pages/DownloadsPage.tsx:938
+#: src/pages/DownloadsPage.tsx:1211
 msgid "autoDownload.allSubgroups"
 msgstr "모든 그룹"
 
@@ -842,12 +905,12 @@ msgstr "모든 그룹"
 #~ msgid "autoDownload.alsoDeleteFiles"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:949
+#: src/pages/DownloadsPage.tsx:937
 msgid "autoDownload.anyResolution"
 msgstr "모든 해상도"
 
-#: src/pages/DownloadsPage.tsx:1295
-#: src/pages/DownloadsPage.tsx:1679
+#: src/pages/DownloadsPage.tsx:1283
+#: src/pages/DownloadsPage.tsx:1667
 msgid "autoDownload.cancel"
 msgstr "취소"
 
@@ -867,7 +930,7 @@ msgstr "취소"
 #~ msgid "autoDownload.completed.timeline"
 #~ msgstr "타임라인"
 
-#: src/pages/DownloadsPage.tsx:1302
+#: src/pages/DownloadsPage.tsx:1290
 msgid "autoDownload.confirm"
 msgstr "추적 확인"
 
@@ -955,12 +1018,12 @@ msgstr "추적 확인"
 #~ msgid "autoDownload.detail.status"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1014
+#: src/pages/DownloadsPage.tsx:1002
 msgid "autoDownload.download"
 msgstr "다운로드"
 
-#: src/pages/DownloadsPage.tsx:758
-#: src/pages/DownloadsPage.tsx:1643
+#: src/pages/DownloadsPage.tsx:746
+#: src/pages/DownloadsPage.tsx:1631
 msgid "autoDownload.downloadAdded"
 msgstr "다운로드 추가됨"
 
@@ -1000,7 +1063,7 @@ msgstr "검색으로 이동"
 #~ msgid "autoDownload.lastTriggered"
 #~ msgstr "마지막 트리거"
 
-#: src/pages/DownloadsPage.tsx:1257
+#: src/pages/DownloadsPage.tsx:1245
 msgid "autoDownload.library"
 msgstr "라이브러리"
 
@@ -1024,7 +1087,7 @@ msgstr "라이브러리"
 #~ msgid "autoDownload.noDownloadsYet"
 #~ msgstr "아직 다운로드가 없습니다"
 
-#: src/pages/DownloadsPage.tsx:1024
+#: src/pages/DownloadsPage.tsx:1012
 msgid "autoDownload.noFilteredResults"
 msgstr "필터와 일치하는 결과 없음"
 
@@ -1032,11 +1095,11 @@ msgstr "필터와 일치하는 결과 없음"
 #~ msgid "autoDownload.noFilters"
 #~ msgstr "필터 없음"
 
-#: src/pages/DownloadsPage.tsx:1270
+#: src/pages/DownloadsPage.tsx:1258
 msgid "autoDownload.noLibrary"
 msgstr "기본 폴더"
 
-#: src/pages/DownloadsPage.tsx:675
+#: src/pages/DownloadsPage.tsx:663
 msgid "autoDownload.noResults"
 msgstr "결과를 찾을 수 없음"
 
@@ -1048,11 +1111,11 @@ msgstr "결과를 찾을 수 없음"
 #~ msgid "autoDownload.noSubscriptionsHint"
 #~ msgstr "검색 탭에서 애니메이션을 검색하여 자동 다운로드 추적을 만드세요."
 
-#: src/pages/DownloadsPage.tsx:1029
+#: src/pages/DownloadsPage.tsx:1017
 msgid "autoDownload.noTorrents"
 msgstr "토렌트를 찾을 수 없음"
 
-#: src/pages/DownloadsPage.tsx:1668
+#: src/pages/DownloadsPage.tsx:1656
 msgid "autoDownload.pasteUrl"
 msgstr "토렌트 또는 마그넷 URL 붙여넣기..."
 
@@ -1082,7 +1145,7 @@ msgstr "토렌트 또는 마그넷 URL 붙여넣기..."
 msgid "autoDownload.refreshed"
 msgstr "추적이 새로고침되었습니다"
 
-#: src/pages/DownloadsPage.tsx:892
+#: src/pages/DownloadsPage.tsx:880
 msgid "autoDownload.resolution"
 msgstr "해상도"
 
@@ -1096,11 +1159,11 @@ msgstr "해상도"
 #~ msgid "autoDownload.resumeAll"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1185
+#: src/pages/DownloadsPage.tsx:1173
 msgid "autoDownload.rssSource"
 msgstr "RSS 소스"
 
-#: src/pages/DownloadsPage.tsx:580
+#: src/pages/DownloadsPage.tsx:570
 msgid "autoDownload.searchAnime"
 msgstr "애니메이션 검색..."
 
@@ -1108,7 +1171,7 @@ msgstr "애니메이션 검색..."
 msgid "autoDownload.searchDownloads"
 msgstr "다운로드 검색…"
 
-#: src/pages/DownloadsPage.tsx:687
+#: src/pages/DownloadsPage.tsx:675
 msgid "autoDownload.searchHint"
 msgstr "애니메이션을 선택하여 토렌트 탐색"
 
@@ -1124,7 +1187,7 @@ msgstr "애니메이션을 선택하여 토렌트 탐색"
 #~ msgid "autoDownload.selected"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:956
+#: src/pages/DownloadsPage.tsx:944
 msgid "autoDownload.selectSourceToSubscribe"
 msgstr "추적하려면 특정 소스(Mikan, Nyaa, DMHY)를 선택하세요"
 
@@ -1144,12 +1207,12 @@ msgstr "추적하려면 특정 소스(Mikan, Nyaa, DMHY)를 선택하세요"
 #~ msgid "autoDownload.sort.status"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:868
+#: src/pages/DownloadsPage.tsx:856
 msgid "autoDownload.source"
 msgstr "소스"
 
-#: src/pages/DownloadsPage.tsx:917
-#: src/pages/DownloadsPage.tsx:1210
+#: src/pages/DownloadsPage.tsx:905
+#: src/pages/DownloadsPage.tsx:1198
 msgid "autoDownload.subgroup"
 msgstr "자막 그룹"
 
@@ -1157,11 +1220,11 @@ msgstr "자막 그룹"
 #~ msgid "autoDownload.subscribe"
 #~ msgstr "추적 중"
 
-#: src/pages/DownloadsPage.tsx:945
+#: src/pages/DownloadsPage.tsx:933
 msgid "autoDownload.subscribeFilter"
 msgstr "이 필터 추적"
 
-#: src/pages/DownloadsPage.tsx:1117
+#: src/pages/DownloadsPage.tsx:1105
 msgid "autoDownload.subscribeSuccess"
 msgstr "추적이 생성되었습니다"
 
@@ -1190,12 +1253,12 @@ msgstr "추적이 생성되었습니다"
 #~ msgid "autoDownload.tab.manage"
 #~ msgstr "관리"
 
-#: src/pages/DownloadsPage.tsx:361
+#: src/pages/DownloadsPage.tsx:351
 msgid "autoDownload.tab.search"
 msgstr "검색"
 
-#: src/pages/DownloadsPage.tsx:856
-#: src/pages/DownloadsPage.tsx:1174
+#: src/pages/DownloadsPage.tsx:844
+#: src/pages/DownloadsPage.tsx:1162
 msgid "autoDownload.torrentsFound"
 msgstr "개 토렌트"
 
@@ -1234,7 +1297,7 @@ msgstr "백업 삭제"
 msgid "backup.deleteFailed"
 msgstr "삭제 실패"
 
-#: src/pages/settings/BackupPanel.tsx:668
+#: src/pages/settings/BackupPanel.tsx:666
 msgid "backup.description"
 msgstr "데이터베이스와 설정을 백업 및 복원"
 
@@ -1284,7 +1347,7 @@ msgstr "JSON 내보내기/가져오기"
 msgid "backup.neverSynced"
 msgstr "동기화한 적 없음"
 
-#: src/pages/settings/BackupPanel.tsx:640
+#: src/pages/settings/BackupPanel.tsx:638
 msgid "backup.noTargets"
 msgstr "백업 대상이 없습니다"
 
@@ -1313,15 +1376,16 @@ msgstr "동기화 제어"
 msgid "backup.syncFailed"
 msgstr "동기화 실패"
 
-#: src/pages/settings/BackupPanel.tsx:651
+#: src/pages/settings/BackupPanel.tsx:649
 msgid "backup.syncing"
 msgstr "동기화 중…"
 
-#: src/pages/settings/BackupPanel.tsx:651
+#: src/pages/settings/BackupPanel.tsx:649
 msgid "backup.syncNow"
 msgstr "지금 동기화"
 
 #: src/pages/settings/BackupPanel.tsx:595
+#: src/pages/settings/ServicesPanel.tsx:389
 msgid "backup.syncSuccess"
 msgstr "동기화 성공"
 
@@ -1330,7 +1394,7 @@ msgstr "동기화 성공"
 msgid "backup.testConnection"
 msgstr "연결 테스트"
 
-#: src/pages/settings/BackupPanel.tsx:667
+#: src/pages/settings/BackupPanel.tsx:665
 msgid "backup.title"
 msgstr "백업"
 
@@ -1343,11 +1407,11 @@ msgstr "사용자 이름"
 msgid "Batch"
 msgstr "배치"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:383
+#: src/pages/settings/NotificationSettingsPanel.tsx:391
 msgid "Bot token"
 msgstr "봇 토큰"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:470
+#: src/pages/settings/NotificationSettingsPanel.tsx:478
 msgid "Bot Token"
 msgstr "봇 토큰"
 
@@ -1359,7 +1423,7 @@ msgstr "버킷"
 msgid "card.nextEp"
 msgstr "다음 EP"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:483
+#: src/pages/settings/NotificationSettingsPanel.tsx:491
 msgid "Chat ID"
 msgstr "채팅 ID"
 
@@ -1374,11 +1438,11 @@ msgstr "비선호 항목 정리 ({0})"
 msgid "Cleaned up {0} files ({1})"
 msgstr "{0}개 파일을 정리했습니다 ({1})"
 
-#: src/pages/settings/IntegrationsPanel.tsx:722
+#: src/pages/settings/IntegrationsPanel.tsx:720
 msgid "Client ID"
 msgstr "클라이언트 ID"
 
-#: src/pages/settings/IntegrationsPanel.tsx:744
+#: src/pages/settings/IntegrationsPanel.tsx:742
 msgid "Client Secret"
 msgstr "클라이언트 시크릿"
 
@@ -1391,43 +1455,43 @@ msgstr "전체"
 #~ msgstr "상태 변경"
 
 #: src/components/AnimeCard.tsx:25
-#: src/pages/AnimeDetailPage.tsx:833
+#: src/pages/AnimeDetailPage.tsx:900
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "완료"
 
 #: src/components/AnimeCard.tsx:27
-#: src/pages/AnimeDetailPage.tsx:839
+#: src/pages/AnimeDetailPage.tsx:906
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
 msgid "collection.dropped"
 msgstr "중단"
 
-#: src/pages/CollectionPage.tsx:371
+#: src/pages/CollectionPage.tsx:369
 msgid "collection.empty"
 msgstr "컬렉션에 애니메이션이 없습니다"
 
-#: src/pages/CollectionPage.tsx:374
+#: src/pages/CollectionPage.tsx:371
 msgid "collection.emptyDesc"
 msgstr "라이브러리를 스캔하고 애니메이션을 매치하여 컬렉션을 만드세요"
 
 #~ msgid "collection.episodes"
 #~ msgstr "episodes"
 
-#: src/pages/CollectionPage.tsx:381
+#: src/pages/CollectionPage.tsx:377
 msgid "collection.goToLibraries"
 msgstr "라이브러리로 이동"
 
 #: src/components/AnimeCard.tsx:26
-#: src/pages/AnimeDetailPage.tsx:836
+#: src/pages/AnimeDetailPage.tsx:903
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "일시 중단"
 
 #: src/components/AnimeCard.tsx:24
-#: src/pages/AnimeDetailPage.tsx:830
+#: src/pages/AnimeDetailPage.tsx:897
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
 msgid "collection.planning"
@@ -1437,19 +1501,19 @@ msgstr "시청 예정"
 msgid "collection.recentlyMatched"
 msgstr "최근 매치"
 
-#: src/pages/CollectionPage.tsx:344
+#: src/pages/CollectionPage.tsx:342
 msgid "collection.searchPlaceholder"
 msgstr "애니메이션 검색…"
 
-#: src/pages/CollectionPage.tsx:357
+#: src/pages/CollectionPage.tsx:355
 msgid "collection.sortByName"
 msgstr "이름"
 
-#: src/pages/CollectionPage.tsx:354
+#: src/pages/CollectionPage.tsx:352
 msgid "collection.sortByRecent"
 msgstr "최근 매치"
 
-#: src/components/AppSidebar.tsx:37
+#: src/components/AppSidebar.tsx:38
 #: src/pages/CollectionPage.tsx:275
 msgid "collection.title"
 msgstr "컬렉션"
@@ -1463,17 +1527,17 @@ msgid "collection.viewAll"
 msgstr "전체 보기"
 
 #: src/components/AnimeCard.tsx:23
-#: src/pages/AnimeDetailPage.tsx:827
+#: src/pages/AnimeDetailPage.tsx:894
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
 msgid "collection.watching"
 msgstr "시청 중"
 
-#: src/pages/LoginPage.tsx:274
+#: src/pages/LoginPage.tsx:271
 msgid "common.back"
 msgstr "뒤로"
 
-#: src/pages/AnimeDetailPage.tsx:366
+#: src/pages/AnimeDetailPage.tsx:438
 msgid "common.backHome"
 msgstr "홈으로 돌아가기"
 
@@ -1481,11 +1545,11 @@ msgstr "홈으로 돌아가기"
 #: src/pages/LibraryDetailPage.tsx:1868
 #: src/pages/settings/AboutPanel.tsx:248
 #: src/pages/settings/AboutPanel.tsx:265
-#: src/pages/settings/StoragePanel.tsx:106
+#: src/pages/settings/StoragePanel.tsx:104
 msgid "common.cancel"
 msgstr "취소"
 
-#: src/pages/settings/AccountPanel.tsx:436
+#: src/pages/settings/AccountPanel.tsx:423
 msgid "common.clickToCopy"
 msgstr "클릭하여 복사"
 
@@ -1497,7 +1561,7 @@ msgstr "확인"
 msgid "common.confirmDelete"
 msgstr "삭제 확인"
 
-#: src/pages/settings/AccountPanel.tsx:434
+#: src/pages/settings/AccountPanel.tsx:421
 #: src/pages/settings/ApiTokensCard.tsx:67
 msgid "common.copied"
 msgstr "복사됨"
@@ -1509,27 +1573,27 @@ msgstr "위험 영역"
 #: src/components/AnimeCard.tsx:161
 #: src/components/AnimeCard.tsx:325
 #: src/components/AnimeRow.tsx:48
-#: src/components/MatchModal.tsx:247
+#: src/components/MatchModal.tsx:258
 #: src/components/PreviewModal.tsx:216
 #: src/components/PreviewModal.tsx:349
-#: src/pages/AnimeDetailPage.tsx:562
-#: src/pages/AnimeDetailPage.tsx:1003
-#: src/pages/DownloadsPage.tsx:838
+#: src/pages/AnimeDetailPage.tsx:634
+#: src/pages/AnimeDetailPage.tsx:1070
+#: src/pages/DownloadsPage.tsx:826
 #: src/pages/LibraryDetailPage.tsx:1100
 msgid "common.ep"
 msgstr "화"
 
-#: src/pages/AnimeDetailPage.tsx:351
+#: src/pages/AnimeDetailPage.tsx:423
 #: src/pages/LibraryDetailPage.tsx:2024
 #: src/routes/__root.tsx:68
 msgid "common.loadFailed"
 msgstr "불러오기 실패"
 
 #: src/components/LoginModal.tsx:173
-#: src/components/MatchModal.tsx:412
+#: src/components/MatchModal.tsx:423
 #: src/pages/LibraryDetailPage.tsx:1238
-#: src/pages/LoginPage.tsx:291
-#: src/pages/LoginPage.tsx:422
+#: src/pages/LoginPage.tsx:288
+#: src/pages/LoginPage.tsx:419
 msgid "common.loading"
 msgstr "불러오는 중…"
 
@@ -1537,10 +1601,11 @@ msgstr "불러오는 중…"
 msgid "common.minuteShort"
 msgstr "분"
 
-#: src/pages/AnimeDetailPage.tsx:360
+#: src/pages/AnimeDetailPage.tsx:432
 #: src/pages/SchedulePage.tsx:853
 #: src/pages/SchedulePage.tsx:1168
-#: src/routes/__root.tsx:82
+#: src/pages/settings/ServicesPanel.tsx:185
+#: src/routes/__root.tsx:80
 msgid "common.retry"
 msgstr "다시 시도"
 
@@ -1580,19 +1645,19 @@ msgstr "삭제"
 msgid "Delete this file permanently?"
 msgstr "이 파일을 영구적으로 삭제하시겠습니까?"
 
-#: src/pages/DiscoverPage.tsx:114
+#: src/pages/DiscoverPage.tsx:100
 msgid "discover.airedRecently"
 msgstr "최근 방영"
 
-#: src/pages/DiscoverPage.tsx:102
+#: src/pages/DiscoverPage.tsx:88
 msgid "discover.bestLastSeason"
 msgstr "지난 시즌 최고"
 
-#: src/pages/DiscoverPage.tsx:141
+#: src/pages/DiscoverPage.tsx:127
 msgid "discover.comingSoon"
 msgstr "곧 공개"
 
-#: src/pages/DiscoverPage.tsx:133
+#: src/pages/DiscoverPage.tsx:119
 msgid "discover.genreSpotlight"
 msgstr "장르 스포트라이트"
 
@@ -1600,15 +1665,15 @@ msgstr "장르 스포트라이트"
 #~ msgid "discover.hotTags"
 #~ msgstr "인기 태그"
 
-#: src/pages/DiscoverPage.tsx:90
+#: src/pages/DiscoverPage.tsx:76
 msgid "discover.topOfSeason"
 msgstr "이번 시즌 최고"
 
-#: src/pages/DiscoverPage.tsx:125
+#: src/pages/DiscoverPage.tsx:111
 msgid "discover.trendingMovies"
 msgstr "인기 영화"
 
-#: src/pages/DiscoverPage.tsx:82
+#: src/pages/DiscoverPage.tsx:68
 msgid "discover.trendingNow"
 msgstr "지금 인기"
 
@@ -1621,11 +1686,11 @@ msgstr "다운로드"
 msgid "Download queued: {0}"
 msgstr "다운로드 대기열에 추가: {0}"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:214
+#: src/components/downloads/AnimeGroupHeader.tsx:212
 msgid "downloads.autoDisabled"
 msgstr "자동 다운로드 꺼짐"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:214
+#: src/components/downloads/AnimeGroupHeader.tsx:212
 msgid "downloads.autoEnabled"
 msgstr "자동 다운로드"
 
@@ -1634,7 +1699,7 @@ msgstr "자동 다운로드"
 msgid "downloads.collapse"
 msgstr "접기"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:257
+#: src/components/downloads/AnimeGroupHeader.tsx:255
 msgid "downloads.completedAt"
 msgstr "완료"
 
@@ -1672,11 +1737,11 @@ msgstr "자동 다운로드"
 msgid "downloads.menu.copied"
 msgstr "복사됨"
 
-#: src/components/downloads/CardMenu.tsx:102
+#: src/components/downloads/CardMenu.tsx:100
 msgid "downloads.menu.copyRSS"
 msgstr "RSS URL 복사"
 
-#: src/components/downloads/CardMenu.tsx:111
+#: src/components/downloads/CardMenu.tsx:109
 msgid "downloads.menu.delete"
 msgstr "구독 삭제"
 
@@ -1684,19 +1749,19 @@ msgstr "구독 삭제"
 msgid "downloads.menu.more"
 msgstr "더 보기"
 
-#: src/components/downloads/CardMenu.tsx:83
+#: src/components/downloads/CardMenu.tsx:81
 msgid "downloads.menu.off"
 msgstr "OFF"
 
-#: src/components/downloads/CardMenu.tsx:83
+#: src/components/downloads/CardMenu.tsx:81
 msgid "downloads.menu.on"
 msgstr "ON"
 
-#: src/components/downloads/CardMenu.tsx:96
+#: src/components/downloads/CardMenu.tsx:94
 msgid "downloads.menu.openAnime"
 msgstr "애니메 페이지 열기"
 
-#: src/components/downloads/CardMenu.tsx:90
+#: src/components/downloads/CardMenu.tsx:88
 msgid "downloads.menu.refresh"
 msgstr "지금 새로고침"
 
@@ -1704,7 +1769,7 @@ msgstr "지금 새로고침"
 msgid "downloads.miscHeader"
 msgstr "기타 다운로드"
 
-#: src/components/downloads/AnimeGroupHeader.tsx:223
+#: src/components/downloads/AnimeGroupHeader.tsx:221
 #: src/components/downloads/episode-rows/EpisodeRowPending.tsx:21
 msgid "downloads.nextFetch"
 msgstr "다음 갱신"
@@ -1773,7 +1838,7 @@ msgstr "구독 중"
 #~ msgid "downloads.tab.active"
 #~ msgstr "다운로드 중"
 
-#: src/pages/DownloadsPage.tsx:362
+#: src/pages/DownloadsPage.tsx:352
 msgid "downloads.tab.library"
 msgstr "라이브러리"
 
@@ -1851,7 +1916,7 @@ msgstr "공개 예정"
 msgid "error.serverUnavailable"
 msgstr "서버에 연결할 수 없습니다"
 
-#: src/routes/__root.tsx:72
+#: src/routes/__root.tsx:71
 msgid "error.serverUnavailableHint"
 msgstr "서버가 실행 중인지 확인하고 다시 시도하세요"
 
@@ -1962,7 +2027,7 @@ msgstr "시청 중"
 msgid "history.title"
 msgstr "시청 기록"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:760
+#: src/pages/settings/NotificationSettingsPanel.tsx:768
 msgid "HMAC signing secret (optional)"
 msgstr "HMAC 서명 시크릿(선택)"
 
@@ -1991,7 +2056,7 @@ msgstr "오늘 편성표"
 msgid "home.trending"
 msgstr "인기"
 
-#: src/pages/DiscoverPage.tsx:247
+#: src/pages/DiscoverPage.tsx:233
 #: src/pages/HomePage.tsx:215
 msgid "home.viewAll"
 msgstr "전체 보기 →"
@@ -2032,25 +2097,25 @@ msgstr "애니메이션 삭제 실패"
 msgid "library.anime.empty"
 msgstr "이 라이브러리에 매칭된 애니메이션이 없습니다"
 
-#: src/components/library/FolderPicker.tsx:333
+#: src/components/library/FolderPicker.tsx:329
 msgid "library.browse.folders"
 msgstr "폴더 찾아보기"
 
-#: src/components/library/FolderPicker.tsx:231
+#: src/components/library/FolderPicker.tsx:228
 msgid "library.browse.noSubdirectories"
 msgstr "하위 디렉토리를 찾을 수 없습니다"
 
-#: src/components/library/FolderPicker.tsx:387
+#: src/components/library/FolderPicker.tsx:383
 msgid "library.browse.select"
 msgstr "선택"
 
-#: src/components/library/FolderPicker.tsx:376
+#: src/components/library/FolderPicker.tsx:372
 #: src/pages/LibrariesPage.tsx:550
 #: src/pages/LibrariesPage.tsx:568
 msgid "library.browse.selected"
 msgstr "선택됨"
 
-#: src/components/library/FolderPicker.tsx:550
+#: src/components/library/FolderPicker.tsx:546
 msgid "library.browseFolder"
 msgstr "폴더 찾아보기"
 
@@ -2210,12 +2275,12 @@ msgstr "매치됨"
 #~ msgid "library.detail.matchedTo"
 #~ msgstr "Matched To"
 
-#: src/components/MatchModal.tsx:306
+#: src/components/MatchModal.tsx:317
 #: src/pages/LibraryDetailPage.tsx:1162
 msgid "library.detail.matchModal.change"
 msgstr "변경"
 
-#: src/components/MatchModal.tsx:413
+#: src/components/MatchModal.tsx:424
 msgid "library.detail.matchModal.confirm"
 msgstr "매치 확인"
 
@@ -2226,11 +2291,11 @@ msgstr "매치 확인"
 msgid "library.detail.matchModal.matched"
 msgstr "파일이 매치되었습니다"
 
-#: src/components/MatchModal.tsx:395
+#: src/components/MatchModal.tsx:406
 msgid "library.detail.matchModal.noEpisodes"
 msgstr "에피소드를 찾을 수 없습니다"
 
-#: src/components/MatchModal.tsx:214
+#: src/components/MatchModal.tsx:223
 #: src/pages/LibraryDetailPage.tsx:1067
 msgid "library.detail.matchModal.noResults"
 msgstr "결과를 찾을 수 없습니다"
@@ -2241,21 +2306,21 @@ msgstr "결과를 찾을 수 없습니다"
 #~ msgid "library.detail.matchModal.searchAnime"
 #~ msgstr "Search anime..."
 
-#: src/components/MatchModal.tsx:196
+#: src/components/MatchModal.tsx:205
 #: src/pages/LibraryDetailPage.tsx:1049
 msgid "library.detail.matchModal.searchHint"
 msgstr "이 파일에 매치할 애니메이션을 검색"
 
-#: src/components/MatchModal.tsx:182
+#: src/components/MatchModal.tsx:191
 #: src/pages/LibraryDetailPage.tsx:1036
 msgid "library.detail.matchModal.searchPlaceholder"
 msgstr "애니메이션 검색…"
 
-#: src/components/MatchModal.tsx:151
+#: src/components/MatchModal.tsx:160
 msgid "library.detail.matchModal.stepEpisode"
 msgstr "에피소드 선택"
 
-#: src/components/MatchModal.tsx:150
+#: src/components/MatchModal.tsx:159
 #: src/pages/LibraryDetailPage.tsx:1004
 msgid "library.detail.matchModal.stepSearch"
 msgstr "애니메이션 검색"
@@ -2356,6 +2421,10 @@ msgstr "라이브러리 설정"
 msgid "library.detail.stats.diskUsage"
 msgstr "디스크 사용량"
 
+#: src/pages/LibraryDetailPage.tsx:2306
+msgid "library.detail.stats.downloadedThisMonth"
+msgstr "이번 달 다운로드"
+
 #: src/pages/LibraryDetailPage.tsx:2251
 msgid "library.detail.stats.files"
 msgstr "파일"
@@ -2364,7 +2433,7 @@ msgstr "파일"
 msgid "library.detail.stats.matched"
 msgstr "매치됨"
 
-#: src/pages/LibraryDetailPage.tsx:2311
+#: src/pages/LibraryDetailPage.tsx:2317
 msgid "library.detail.stats.size"
 msgstr "크기"
 
@@ -2423,11 +2492,11 @@ msgstr "Unmatched"
 msgid "library.detail.unmatchedShort"
 msgstr "미매치"
 
-#: src/pages/LibraryDetailPage.tsx:2370
+#: src/pages/LibraryDetailPage.tsx:2376
 msgid "library.detail.viewTable"
 msgstr "테이블 보기"
 
-#: src/pages/LibraryDetailPage.tsx:2389
+#: src/pages/LibraryDetailPage.tsx:2395
 msgid "library.detail.viewTree"
 msgstr "트리 보기"
 
@@ -2473,26 +2542,26 @@ msgstr "활성화됨"
 #~ msgid "library.files"
 #~ msgstr "files"
 
-#: src/components/library/FolderPicker.tsx:502
+#: src/components/library/FolderPicker.tsx:498
 msgid "library.folderPicker.cancel"
 msgstr "취소"
 
 #~ msgid "library.folderPicker.invalidPath"
 #~ msgstr "경로를 찾을 수 없습니다"
 
-#: src/components/library/FolderPicker.tsx:473
+#: src/components/library/FolderPicker.tsx:469
 msgid "library.folderPicker.pathPlaceholder"
 msgstr "경로를 입력하고 Enter"
 
-#: src/components/library/FolderPicker.tsx:479
+#: src/components/library/FolderPicker.tsx:475
 msgid "library.folderPicker.refresh"
 msgstr "새로고침"
 
-#: src/components/library/FolderPicker.tsx:505
+#: src/components/library/FolderPicker.tsx:501
 msgid "library.folderPicker.select"
 msgstr "이 폴더 선택"
 
-#: src/components/library/FolderPicker.tsx:460
+#: src/components/library/FolderPicker.tsx:456
 msgid "library.folderPicker.title"
 msgstr "폴더 선택"
 
@@ -2960,7 +3029,7 @@ msgstr "사용자:"
 msgid "library.wizard.smb.change"
 msgstr "변경"
 
-#: src/components/library/FolderPicker.tsx:352
+#: src/components/library/FolderPicker.tsx:348
 #: src/pages/LibrariesPage.tsx:1679
 msgid "library.wizard.smb.chooseServer"
 msgstr "서버 선택"
@@ -3006,7 +3075,7 @@ msgstr "WebDAV 서버에 연결"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:263
+#: src/routes/__root.tsx:261
 msgid "match.completed"
 msgstr "매칭 완료"
 
@@ -3014,9 +3083,9 @@ msgstr "매칭 완료"
 msgid "Missing"
 msgstr "누락"
 
-#: src/components/AppSidebar.tsx:34
-#: src/pages/DownloadsPage.tsx:249
-#: src/pages/DownloadsPage.tsx:376
+#: src/components/AppSidebar.tsx:35
+#: src/pages/DownloadsPage.tsx:239
+#: src/pages/DownloadsPage.tsx:366
 msgid "nav.autoDownload"
 msgstr "자동 다운로드"
 
@@ -3024,8 +3093,8 @@ msgstr "자동 다운로드"
 msgid "nav.collection"
 msgstr "컬렉션"
 
-#: src/components/AppSidebar.tsx:30
-#: src/pages/DiscoverPage.tsx:158
+#: src/components/AppSidebar.tsx:31
+#: src/pages/DiscoverPage.tsx:144
 msgid "nav.discover"
 msgstr "탐색"
 
@@ -3033,24 +3102,24 @@ msgstr "탐색"
 #~ msgid "nav.downloads"
 #~ msgstr "다운로드"
 
-#: src/components/AppSidebar.tsx:36
+#: src/components/AppSidebar.tsx:37
 msgid "nav.history"
 msgstr "기록"
 
-#: src/components/AppSidebar.tsx:27
-#: src/components/AppSidebar.tsx:248
+#: src/components/AppSidebar.tsx:28
+#: src/components/AppSidebar.tsx:245
 #: src/pages/HomePage.tsx:36
 msgid "nav.home"
 msgstr "홈"
 
-#: src/components/AppSidebar.tsx:35
-#: src/components/AppSidebar.tsx:251
+#: src/components/AppSidebar.tsx:36
+#: src/components/AppSidebar.tsx:248
 #: src/pages/LibrariesPage.tsx:2661
 #: src/pages/LibraryDetailPage.tsx:1902
 msgid "nav.libraries"
 msgstr "라이브러리"
 
-#: src/components/AppSidebar.tsx:252
+#: src/components/AppSidebar.tsx:249
 msgid "nav.more"
 msgstr "더보기"
 
@@ -3062,22 +3131,22 @@ msgstr "알림"
 #~ msgid "nav.rss"
 #~ msgstr "RSS"
 
-#: src/components/AppSidebar.tsx:28
-#: src/components/AppSidebar.tsx:249
+#: src/components/AppSidebar.tsx:29
+#: src/components/AppSidebar.tsx:246
 #: src/pages/SchedulePage.tsx:1235
 #: src/pages/SchedulePage.tsx:1309
 msgid "nav.schedule"
 msgstr "편성표"
 
-#: src/components/AppSidebar.tsx:29
-#: src/components/AppSidebar.tsx:250
-#: src/pages/SearchPage.tsx:131
+#: src/components/AppSidebar.tsx:30
+#: src/components/AppSidebar.tsx:247
+#: src/pages/SearchPage.tsx:111
 msgid "nav.search"
 msgstr "검색"
 
-#: src/components/AppSidebar.tsx:38
-#: src/components/AppSidebar.tsx:170
-#: src/pages/settings/SettingsPage.tsx:102
+#: src/components/AppSidebar.tsx:39
+#: src/components/AppSidebar.tsx:167
+#: src/pages/settings/SettingsPage.tsx:106
 msgid "nav.settings"
 msgstr "설정"
 
@@ -3124,55 +3193,55 @@ msgstr "미방영"
 msgid "Not configured"
 msgstr "설정되지 않음"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:658
+#: src/pages/settings/NotificationSettingsPanel.tsx:666
 msgid "notifications.bot.advanced"
 msgstr "고급 설정"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:585
+#: src/pages/settings/NotificationSettingsPanel.tsx:593
 msgid "notifications.bot.airingReminder"
 msgstr "방영 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:607
+#: src/pages/settings/NotificationSettingsPanel.tsx:615
 msgid "notifications.bot.airingReminder.desc"
 msgstr "시청 중인 애니 방영 전 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:601
+#: src/pages/settings/NotificationSettingsPanel.tsx:609
 msgid "notifications.bot.airingReminder.off"
 msgstr "끄기"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:641
+#: src/pages/settings/NotificationSettingsPanel.tsx:649
 msgid "notifications.bot.allowedChatIds"
 msgstr "허용된 채팅 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:651
+#: src/pages/settings/NotificationSettingsPanel.tsx:659
 msgid "notifications.bot.allowedChatIdsHelp"
 msgstr "쉼표로 구분합니다. 비워 두면 모든 채팅을 허용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:401
+#: src/pages/settings/NotificationSettingsPanel.tsx:409
 msgid "notifications.bot.allowedGuildIds"
 msgstr "허용된 길드 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:411
+#: src/pages/settings/NotificationSettingsPanel.tsx:419
 msgid "notifications.bot.allowedGuildIdsHelp"
 msgstr "쉼표로 구분합니다. 비워 두면 모든 길드를 허용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:389
+#: src/pages/settings/NotificationSettingsPanel.tsx:397
 msgid "notifications.bot.applicationId"
 msgstr "애플리케이션 ID"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:377
+#: src/pages/settings/NotificationSettingsPanel.tsx:385
 msgid "notifications.bot.botToken"
 msgstr "봇 토큰"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:614
+#: src/pages/settings/NotificationSettingsPanel.tsx:622
 msgid "notifications.bot.dailyDigest"
 msgstr "일일 요약"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:634
+#: src/pages/settings/NotificationSettingsPanel.tsx:642
 msgid "notifications.bot.dailyDigest.desc"
 msgstr "하루에 한 번 알림 요약 전송"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:629
+#: src/pages/settings/NotificationSettingsPanel.tsx:637
 msgid "notifications.bot.dailyDigest.off"
 msgstr "꺼짐"
 
@@ -3180,11 +3249,11 @@ msgstr "꺼짐"
 #~ msgid "notifications.bot.discord"
 #~ msgstr "Discord 봇"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:549
+#: src/pages/settings/NotificationSettingsPanel.tsx:557
 msgid "notifications.bot.language"
 msgstr "봇 언어"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:562
+#: src/pages/settings/NotificationSettingsPanel.tsx:570
 msgid "notifications.bot.language.system"
 msgstr "시스템 따르기"
 
@@ -3192,16 +3261,16 @@ msgstr "시스템 따르기"
 #~ msgid "notifications.bot.telegram"
 #~ msgstr "Telegram 봇"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:663
+#: src/pages/settings/NotificationSettingsPanel.tsx:671
 msgid "notifications.bot.webhookUrl"
 msgstr "Webhook URL"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:673
+#: src/pages/settings/NotificationSettingsPanel.tsx:681
 msgid "notifications.bot.webhookUrlHelp"
 msgstr "선택 사항입니다. 비워 두면 롱 폴링을 사용합니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:351
-#: src/pages/settings/NotificationSettingsPanel.tsx:517
+#: src/pages/settings/NotificationSettingsPanel.tsx:359
+#: src/pages/settings/NotificationSettingsPanel.tsx:525
 msgid "notifications.botCommands"
 msgstr "봇 명령"
 
@@ -3209,12 +3278,12 @@ msgstr "봇 명령"
 #~ msgid "notifications.botCommands.desc"
 #~ msgstr "Telegram 또는 Discord에서 대화형 봇 명령을 활성화합니다"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:354
-#: src/pages/settings/NotificationSettingsPanel.tsx:520
+#: src/pages/settings/NotificationSettingsPanel.tsx:362
+#: src/pages/settings/NotificationSettingsPanel.tsx:528
 msgid "notifications.botCommands.shortDesc"
 msgstr "/search, /schedule 등 대화형 명령"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:752
+#: src/pages/settings/NotificationSettingsPanel.tsx:760
 msgid "notifications.change"
 msgstr "변경"
 
@@ -3235,11 +3304,11 @@ msgstr "알림 없음"
 msgid "notifications.emptyHint"
 msgstr "다운로드 완료 또는 새 에피소드 발견 시 알림이 표시됩니다."
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:799
+#: src/pages/settings/NotificationSettingsPanel.tsx:807
 msgid "notifications.enableProviderAbove"
 msgstr "이벤트 라우팅을 설정하려면 위에서 제공자를 활성화하세요"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:817
+#: src/pages/settings/NotificationSettingsPanel.tsx:825
 msgid "notifications.event"
 msgstr "이벤트"
 
@@ -3258,6 +3327,14 @@ msgstr "일일 요약"
 #: src/pages/settings/NotificationSettingsPanel.tsx:81
 msgid "notifications.event.animeDailyDigest.desc"
 msgstr "방영 중인 애니메이션과 최근 다운로드 일일 요약"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:84
+msgid "notifications.event.animeEpisodeReady"
+msgstr "새 에피소드 시청 가능"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:85
+msgid "notifications.event.animeEpisodeReady.desc"
+msgstr "구독 중인 작품의 새 에피소드가 다운로드·매칭되어 재생할 수 있습니다"
 
 #: src/pages/settings/NotificationSettingsPanel.tsx:72
 msgid "notifications.event.authLogin"
@@ -3307,7 +3384,15 @@ msgstr "시스템 오류"
 msgid "notifications.event.systemError.desc"
 msgstr "백그라운드 작업이 예기치 않게 실패했을 때"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:808
+#: src/pages/settings/NotificationSettingsPanel.tsx:88
+msgid "notifications.event.systemServiceFailed"
+msgstr "서비스 실패"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:89
+msgid "notifications.event.systemServiceFailed.desc"
+msgstr "서버의 백그라운드 작업 또는 서비스가 실패함"
+
+#: src/pages/settings/NotificationSettingsPanel.tsx:816
 msgid "notifications.eventRouting"
 msgstr "이벤트 라우팅"
 
@@ -3330,8 +3415,8 @@ msgstr "라이브러리"
 msgid "notifications.filter.system"
 msgstr "시스템"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1037
-#: src/pages/settings/NotificationSettingsPanel.tsx:1051
+#: src/pages/settings/NotificationSettingsPanel.tsx:1042
+#: src/pages/settings/NotificationSettingsPanel.tsx:1056
 msgid "notifications.intro"
 msgstr "다운로드 완료 또는 오류 발생 시 Discord, Telegram 또는 웹훅으로 알림을 받으세요."
 
@@ -3344,54 +3429,54 @@ msgstr "더 불러오기"
 msgid "notifications.markAllRead"
 msgstr "모두 읽음"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:127
+#: src/pages/settings/NotificationSettingsPanel.tsx:135
 msgid "notifications.providerStatus.error"
 msgstr "오류"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:122
+#: src/pages/settings/NotificationSettingsPanel.tsx:130
 msgid "notifications.providerStatus.ok"
 msgstr "연결됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:132
+#: src/pages/settings/NotificationSettingsPanel.tsx:140
 msgid "notifications.providerStatus.unconfigured"
 msgstr "미설정"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:308
-#: src/pages/settings/NotificationSettingsPanel.tsx:499
+#: src/pages/settings/NotificationSettingsPanel.tsx:316
+#: src/pages/settings/NotificationSettingsPanel.tsx:507
 msgid "notifications.pushNotifications"
 msgstr "푸시 알림"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:311
-#: src/pages/settings/NotificationSettingsPanel.tsx:502
+#: src/pages/settings/NotificationSettingsPanel.tsx:319
+#: src/pages/settings/NotificationSettingsPanel.tsx:510
 msgid "notifications.pushNotifications.desc"
 msgstr "다운로드 및 시스템 이벤트 알림 수신"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:741
+#: src/pages/settings/NotificationSettingsPanel.tsx:749
 msgid "notifications.secretIsSet"
 msgstr "시크릿 설정됨"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:736
+#: src/pages/settings/NotificationSettingsPanel.tsx:744
 msgid "notifications.secretPlaceholder"
 msgstr "서명 시크릿 (선택 사항)"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1060
+#: src/pages/settings/NotificationSettingsPanel.tsx:1065
 msgid "notifications.setupGuide"
 msgstr "설정 가이드"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:178
+#: src/pages/settings/NotificationSettingsPanel.tsx:186
 msgid "notifications.test"
 msgstr "테스트"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:236
+#: src/pages/settings/NotificationSettingsPanel.tsx:244
 msgid "notifications.testBot"
 msgstr "봇 테스트"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:194
-#: src/pages/settings/NotificationSettingsPanel.tsx:252
+#: src/pages/settings/NotificationSettingsPanel.tsx:202
+#: src/pages/settings/NotificationSettingsPanel.tsx:260
 msgid "notifications.testFailed"
 msgstr "테스트 실패"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:193
+#: src/pages/settings/NotificationSettingsPanel.tsx:201
 msgid "notifications.testSuccess"
 msgstr "전송됨!"
 
@@ -3441,7 +3526,7 @@ msgstr "오래된"
 #~ msgid "pagination.firstPage"
 #~ msgstr "First page"
 
-#: src/components/DataPagination.tsx:137
+#: src/components/DataPagination.tsx:134
 msgid "pagination.go"
 msgstr "이동"
 
@@ -3461,7 +3546,7 @@ msgstr "다음"
 msgid "pagination.nextPage"
 msgstr "다음 페이지"
 
-#: src/components/DataPagination.tsx:100
+#: src/components/DataPagination.tsx:98
 msgid "pagination.of"
 msgstr "/"
 
@@ -3486,7 +3571,7 @@ msgid "player.memoryPressure"
 msgstr "메모리 사용량이 높습니다 — 버퍼 크기를 줄이고 있습니다"
 
 #: src/components/HeroBanner.tsx:209
-#: src/pages/AnimeDetailPage.tsx:962
+#: src/pages/AnimeDetailPage.tsx:1029
 msgid "player.remaining"
 msgstr "남음"
 
@@ -3516,19 +3601,19 @@ msgstr "되돌림 완료"
 msgid "Reverted {0} files, skipped {1}"
 msgstr "{0}개 파일을 되돌리고, {1}개를 건너뛰었습니다"
 
-#: src/components/RuleEditorModal.tsx:700
+#: src/components/RuleEditorModal.tsx:696
 msgid "ruleEditor.addGroup"
 msgstr "그룹 추가..."
 
-#: src/components/RuleEditorModal.tsx:699
+#: src/components/RuleEditorModal.tsx:695
 msgid "ruleEditor.addGroupManual"
 msgstr "다른 그룹 추가..."
 
-#: src/components/RuleEditorModal.tsx:594
+#: src/components/RuleEditorModal.tsx:590
 msgid "ruleEditor.allEpisodes"
 msgstr "전체"
 
-#: src/components/RuleEditorModal.tsx:754
+#: src/components/RuleEditorModal.tsx:748
 msgid "ruleEditor.cancel"
 msgstr "취소"
 
@@ -3556,7 +3641,7 @@ msgstr "취소"
 msgid "ruleEditor.createTitle"
 msgstr "새 규칙"
 
-#: src/components/RuleEditorModal.tsx:744
+#: src/components/RuleEditorModal.tsx:738
 msgid "ruleEditor.delete"
 msgstr "삭제"
 
@@ -3564,8 +3649,8 @@ msgstr "삭제"
 msgid "ruleEditor.deleted"
 msgstr "추적이 삭제되었습니다"
 
-#: src/components/RuleEditorModal.tsx:520
-#: src/pages/DownloadsPage.tsx:1522
+#: src/components/RuleEditorModal.tsx:518
+#: src/pages/DownloadsPage.tsx:1510
 msgid "ruleEditor.destination"
 msgstr "저장 위치"
 
@@ -3577,7 +3662,7 @@ msgstr "비활성"
 msgid "ruleEditor.done"
 msgstr "완료"
 
-#: src/components/RuleEditorModal.tsx:832
+#: src/components/RuleEditorModal.tsx:826
 msgid "ruleEditor.downloaded"
 msgstr "다운로드됨"
 
@@ -3589,15 +3674,15 @@ msgstr "편집"
 msgid "ruleEditor.enabled"
 msgstr "활성"
 
-#: src/components/RuleEditorModal.tsx:589
+#: src/components/RuleEditorModal.tsx:585
 msgid "ruleEditor.episodes"
 msgstr "에피소드"
 
-#: src/components/RuleEditorModal.tsx:569
+#: src/components/RuleEditorModal.tsx:567
 msgid "ruleEditor.exact"
 msgstr "정확"
 
-#: src/components/RuleEditorModal.tsx:570
+#: src/components/RuleEditorModal.tsx:568
 msgid "ruleEditor.exactDesc"
 msgstr "제목에 키워드 포함 (대소문자 구분 없음)"
 
@@ -3605,19 +3690,19 @@ msgstr "제목에 키워드 포함 (대소문자 구분 없음)"
 msgid "ruleEditor.feedType"
 msgstr "피드 유형"
 
-#: src/components/RuleEditorModal.tsx:577
+#: src/components/RuleEditorModal.tsx:575
 msgid "ruleEditor.filterRegex"
 msgstr "필터 패턴"
 
-#: src/components/RuleEditorModal.tsx:563
+#: src/components/RuleEditorModal.tsx:561
 msgid "ruleEditor.fuzzy"
 msgstr "퍼지"
 
-#: src/components/RuleEditorModal.tsx:564
+#: src/components/RuleEditorModal.tsx:562
 msgid "ruleEditor.fuzzyDesc"
 msgstr "비교 알고리즘으로 분석"
 
-#: src/components/RuleEditorModal.tsx:706
+#: src/components/RuleEditorModal.tsx:701
 msgid "ruleEditor.groupHint"
 msgstr "모든 그룹 허용"
 
@@ -3625,7 +3710,7 @@ msgstr "모든 그룹 허용"
 #~ msgid "ruleEditor.hideDownloaded"
 #~ msgstr ""
 
-#: src/pages/DownloadsPage.tsx:1597
+#: src/pages/DownloadsPage.tsx:1585
 msgid "ruleEditor.items"
 msgstr "개"
 
@@ -3633,17 +3718,17 @@ msgstr "개"
 msgid "ruleEditor.justNow"
 msgstr "방금"
 
-#: src/pages/DownloadsPage.tsx:527
-#: src/pages/DownloadsPage.tsx:554
+#: src/pages/DownloadsPage.tsx:517
+#: src/pages/DownloadsPage.tsx:544
 msgid "ruleEditor.keywordMode"
 msgstr "키워드"
 
 #: src/components/RuleEditorModal.tsx:418
-#: src/pages/DownloadsPage.tsx:1428
+#: src/pages/DownloadsPage.tsx:1416
 msgid "ruleEditor.linkedAnime"
 msgstr "연결된 애니메"
 
-#: src/pages/DownloadsPage.tsx:1567
+#: src/pages/DownloadsPage.tsx:1555
 msgid "ruleEditor.loading"
 msgstr "로딩 중..."
 
@@ -3651,7 +3736,7 @@ msgstr "로딩 중..."
 #~ msgid "ruleEditor.matched"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:599
+#: src/components/RuleEditorModal.tsx:595
 msgid "ruleEditor.newOnly"
 msgstr "새 에피소드만"
 
@@ -3659,12 +3744,12 @@ msgstr "새 에피소드만"
 #~ msgid "ruleEditor.newRule"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:535
-#: src/pages/DownloadsPage.tsx:1536
+#: src/components/RuleEditorModal.tsx:533
+#: src/pages/DownloadsPage.tsx:1524
 msgid "ruleEditor.noLibrary"
 msgstr "라이브러리 없음"
 
-#: src/components/RuleEditorModal.tsx:843
+#: src/components/RuleEditorModal.tsx:837
 msgid "ruleEditor.noPreviewItems"
 msgstr "현재 필터에 일치하는 항목이 없습니다"
 
@@ -3672,25 +3757,25 @@ msgstr "현재 필터에 일치하는 항목이 없습니다"
 msgid "ruleEditor.openEditor"
 msgstr "규칙 편집기 열기"
 
-#: src/components/RuleEditorModal.tsx:774
-#: src/pages/DownloadsPage.tsx:1568
-#: src/pages/DownloadsPage.tsx:1594
+#: src/components/RuleEditorModal.tsx:768
+#: src/pages/DownloadsPage.tsx:1556
+#: src/pages/DownloadsPage.tsx:1582
 msgid "ruleEditor.preview"
 msgstr "미리보기"
 
-#: src/components/RuleEditorModal.tsx:604
+#: src/components/RuleEditorModal.tsx:600
 msgid "ruleEditor.range"
 msgstr "범위"
 
-#: src/components/RuleEditorModal.tsx:790
+#: src/components/RuleEditorModal.tsx:784
 msgid "ruleEditor.refreshPreview"
 msgstr "새로고침"
 
-#: src/components/RuleEditorModal.tsx:629
+#: src/components/RuleEditorModal.tsx:625
 msgid "ruleEditor.releaseGroups"
 msgstr "자막 그룹"
 
-#: src/components/RuleEditorModal.tsx:713
+#: src/components/RuleEditorModal.tsx:707
 msgid "ruleEditor.resolution"
 msgstr "해상도"
 
@@ -3698,40 +3783,40 @@ msgstr "해상도"
 msgid "ruleEditor.rssUrl"
 msgstr "RSS 피드 URL"
 
-#: src/pages/DownloadsPage.tsx:528
-#: src/pages/DownloadsPage.tsx:574
+#: src/pages/DownloadsPage.tsx:518
+#: src/pages/DownloadsPage.tsx:564
 msgid "ruleEditor.rssUrlMode"
 msgstr "RSS URL"
 
 #: src/components/RuleEditorModal.tsx:407
-#: src/pages/DownloadsPage.tsx:1512
+#: src/pages/DownloadsPage.tsx:1500
 msgid "ruleEditor.ruleName"
 msgstr "규칙 이름"
 
 #: src/components/RuleEditorModal.tsx:327
 #: src/components/RuleEditorModal.tsx:411
-#: src/pages/DownloadsPage.tsx:1516
+#: src/pages/DownloadsPage.tsx:1504
 msgid "ruleEditor.ruleNamePlaceholder"
 msgstr "예: 애니메이션 이름 시즌 1"
 
-#: src/components/RuleEditorModal.tsx:764
-#: src/pages/DownloadsPage.tsx:1577
+#: src/components/RuleEditorModal.tsx:758
+#: src/pages/DownloadsPage.tsx:1565
 msgid "ruleEditor.save"
 msgstr "저장"
 
 #: src/components/RuleEditorModal.tsx:209
 #: src/components/RuleEditorModal.tsx:251
-#: src/pages/DownloadsPage.tsx:1403
+#: src/pages/DownloadsPage.tsx:1391
 msgid "ruleEditor.saved"
 msgstr "규칙이 업데이트되었습니다"
 
-#: src/components/RuleEditorModal.tsx:763
-#: src/pages/DownloadsPage.tsx:1577
+#: src/components/RuleEditorModal.tsx:757
+#: src/pages/DownloadsPage.tsx:1565
 msgid "ruleEditor.saving"
 msgstr "저장 중..."
 
 #: src/components/RuleEditorModal.tsx:468
-#: src/pages/DownloadsPage.tsx:1464
+#: src/pages/DownloadsPage.tsx:1452
 msgid "ruleEditor.searchAnime"
 msgstr "애니메 검색하여 연결..."
 
@@ -3743,7 +3828,7 @@ msgstr "애니메 검색하여 연결..."
 #~ msgid "ruleEditor.tabRss"
 #~ msgstr ""
 
-#: src/components/RuleEditorModal.tsx:558
+#: src/components/RuleEditorModal.tsx:556
 msgid "ruleEditor.titleMatch"
 msgstr "제목 매칭"
 
@@ -3751,7 +3836,7 @@ msgstr "제목 매칭"
 #~ msgid "Save"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:259
+#: src/routes/__root.tsx:257
 msgid "scan.completed"
 msgstr "스캔 완료"
 
@@ -3874,11 +3959,11 @@ msgstr "이 에피소드 검색"
 msgid "Search missing episode {episodeNumber}"
 msgstr "누락된 제 {episodeNumber}화 검색"
 
-#: src/pages/SearchPage.tsx:533
+#: src/pages/SearchPage.tsx:513
 msgid "search.browseResults"
 msgstr "검색 결과"
 
-#: src/pages/SearchPage.tsx:553
+#: src/pages/SearchPage.tsx:533
 msgid "search.emptyHint"
 msgstr "좋아하는 애니메이션을 검색하세요"
 
@@ -3886,11 +3971,11 @@ msgstr "좋아하는 애니메이션을 검색하세요"
 msgid "search.filter.addCustomTag"
 msgstr "태그 추가"
 
-#: src/pages/SearchPage.tsx:600
+#: src/pages/SearchPage.tsx:580
 msgid "search.filter.applied"
 msgstr "현재 필터"
 
-#: src/pages/SearchPage.tsx:471
+#: src/pages/SearchPage.tsx:451
 msgid "search.filter.clear"
 msgstr "필터 초기화"
 
@@ -3898,19 +3983,19 @@ msgstr "필터 초기화"
 msgid "search.filter.noTags"
 msgstr "일치하는 태그 없음"
 
-#: src/pages/SearchPage.tsx:414
+#: src/pages/SearchPage.tsx:394
 msgid "search.filter.rating"
 msgstr "평점"
 
-#: src/pages/SearchPage.tsx:394
+#: src/pages/SearchPage.tsx:374
 msgid "search.filter.season"
 msgstr "시즌"
 
-#: src/pages/SearchPage.tsx:354
+#: src/pages/SearchPage.tsx:334
 msgid "search.filter.sort"
 msgstr "정렬"
 
-#: src/pages/SearchPage.tsx:434
+#: src/pages/SearchPage.tsx:414
 msgid "search.filter.status"
 msgstr "상태"
 
@@ -3923,11 +4008,11 @@ msgstr "태그"
 msgid "search.filter.tagSearch"
 msgstr "태그 검색 또는 추가..."
 
-#: src/pages/SearchPage.tsx:374
+#: src/pages/SearchPage.tsx:354
 msgid "search.filter.year"
 msgstr "연도"
 
-#: src/pages/SearchPage.tsx:506
+#: src/pages/SearchPage.tsx:486
 msgid "search.inputPlaceholder"
 msgstr "애니메이션 이름 또는 태그 검색…"
 
@@ -3939,81 +4024,81 @@ msgstr "애니메이션 이름 또는 태그 검색…"
 msgid "search.loadMore"
 msgstr "더 불러오기"
 
-#: src/components/CommandPalette.tsx:171
+#: src/components/CommandPalette.tsx:159
 msgid "search.noResults"
 msgstr "결과를 찾을 수 없습니다"
 
-#: src/pages/SearchPage.tsx:600
-#: src/pages/SearchPage.tsx:601
+#: src/pages/SearchPage.tsx:580
+#: src/pages/SearchPage.tsx:581
 msgid "search.noResultsFor"
 msgstr "관련 결과 없음:"
 
-#: src/components/CommandPalette.tsx:113
+#: src/components/CommandPalette.tsx:107
 msgid "search.placeholder"
 msgstr "애니메이션 검색…"
 
-#: src/pages/SearchPage.tsx:77
+#: src/pages/SearchPage.tsx:57
 msgid "search.rating.7plus"
 msgstr "7점 이상"
 
-#: src/pages/SearchPage.tsx:78
+#: src/pages/SearchPage.tsx:58
 msgid "search.rating.8plus"
 msgstr "8점 이상"
 
-#: src/pages/SearchPage.tsx:79
+#: src/pages/SearchPage.tsx:59
 msgid "search.rating.9plus"
 msgstr "9점 이상"
 
 #. placeholder {0}: urlSeason.toLowerCase()
-#: src/pages/SearchPage.tsx:537
+#: src/pages/SearchPage.tsx:517
 msgid "search.season.{0}"
 msgstr "{0}"
 
-#: src/pages/SearchPage.tsx:73
+#: src/pages/SearchPage.tsx:53
 msgid "search.season.fall"
 msgstr "가을"
 
-#: src/pages/SearchPage.tsx:71
+#: src/pages/SearchPage.tsx:51
 msgid "search.season.spring"
 msgstr "봄"
 
-#: src/pages/SearchPage.tsx:72
+#: src/pages/SearchPage.tsx:52
 msgid "search.season.summer"
 msgstr "여름"
 
-#: src/pages/SearchPage.tsx:70
+#: src/pages/SearchPage.tsx:50
 msgid "search.season.winter"
 msgstr "겨울"
 
-#: src/pages/SearchPage.tsx:58
+#: src/pages/SearchPage.tsx:38
 msgid "search.sort.newest"
 msgstr "최신순"
 
-#: src/pages/SearchPage.tsx:59
+#: src/pages/SearchPage.tsx:39
 msgid "search.sort.oldest"
 msgstr "오래된 순"
 
-#: src/pages/SearchPage.tsx:55
+#: src/pages/SearchPage.tsx:35
 msgid "search.sort.popularity"
 msgstr "인기순"
 
-#: src/pages/SearchPage.tsx:56
+#: src/pages/SearchPage.tsx:36
 msgid "search.sort.rating"
 msgstr "평점순"
 
-#: src/pages/SearchPage.tsx:57
+#: src/pages/SearchPage.tsx:37
 msgid "search.sort.trending"
 msgstr "트렌드"
 
-#: src/pages/SearchPage.tsx:83
+#: src/pages/SearchPage.tsx:63
 msgid "search.status.airing"
 msgstr "방영중"
 
-#: src/pages/SearchPage.tsx:84
+#: src/pages/SearchPage.tsx:64
 msgid "search.status.finished"
 msgstr "완결"
 
-#: src/pages/SearchPage.tsx:85
+#: src/pages/SearchPage.tsx:65
 msgid "search.status.upcoming"
 msgstr "방영 예정"
 
@@ -4071,6 +4156,196 @@ msgstr "시크릿 키"
 #: src/components/anime/MissingSearchModal.tsx:73
 msgid "Seeders"
 msgstr "시더 수"
+
+#: src/pages/settings/ServicesPanel.tsx:183
+msgid "services.error.load"
+msgstr "서비스 목록을 불러오지 못했습니다."
+
+#: src/pages/settings/ServicesPanel.tsx:463
+msgid "services.jellyfin.copied"
+msgstr "주소를 복사했습니다"
+
+#: src/pages/settings/ServicesPanel.tsx:497
+msgid "services.jellyfin.copy"
+msgstr "복사"
+
+#: src/pages/settings/ServicesPanel.tsx:474
+msgid "services.jellyfin.desc"
+msgstr "Infuse, VLC, Kodi가 milmil에 직접 연결할 수 있습니다."
+
+#: src/pages/settings/ServicesPanel.tsx:534
+msgid "services.jellyfin.devices"
+msgstr "연결된 기기"
+
+#: src/pages/settings/ServicesPanel.tsx:520
+#: src/pages/settings/ServicesPanel.tsx:528
+msgid "services.jellyfin.discovery"
+msgstr "LAN 자동 검색"
+
+#: src/pages/settings/ServicesPanel.tsx:482
+msgid "services.jellyfin.enabled"
+msgstr "Jellyfin API 활성화"
+
+#: src/pages/settings/ServicesPanel.tsx:516
+msgid "services.jellyfin.loginHint"
+msgstr "milmil 사용자 이름과 비밀번호로 로그인하세요."
+
+#: src/pages/settings/ServicesPanel.tsx:548
+msgid "services.jellyfin.noDevices"
+msgstr "아직 연결된 외부 플레이어가 없습니다."
+
+#: src/pages/settings/ServicesPanel.tsx:586
+msgid "services.jellyfin.revoke"
+msgstr "해제"
+
+#: src/pages/settings/ServicesPanel.tsx:453
+msgid "services.jellyfin.revoked"
+msgstr "기기 접근을 해제했습니다"
+
+#: src/pages/settings/ServicesPanel.tsx:470
+msgid "services.jellyfin.title"
+msgstr "외부 플레이어 (Jellyfin 호환)"
+
+#: src/pages/settings/ServicesPanel.tsx:49
+msgid "services.name.backup"
+msgstr "백업"
+
+#: src/pages/settings/ServicesPanel.tsx:51
+msgid "services.name.bot.discord"
+msgstr "Discord 봇"
+
+#: src/pages/settings/ServicesPanel.tsx:50
+msgid "services.name.bot.telegram"
+msgstr "Telegram 봇"
+
+#: src/pages/settings/ServicesPanel.tsx:46
+msgid "services.name.downloader"
+msgstr "다운로더 (aria2)"
+
+#: src/pages/settings/ServicesPanel.tsx:33
+msgid "services.name.jellyfin"
+msgstr "Jellyfin API"
+
+#: src/pages/settings/ServicesPanel.tsx:48
+msgid "services.name.sync"
+msgstr "클라우드 동기화"
+
+#: src/pages/settings/ServicesPanel.tsx:47
+msgid "services.name.transcode_cache"
+msgstr "트랜스코딩 캐시"
+
+#: src/pages/settings/ServicesPanel.tsx:39
+msgid "services.name.worker.airing_reminder"
+msgstr "방영 알림"
+
+#: src/pages/settings/ServicesPanel.tsx:41
+msgid "services.name.worker.anidb_refresh"
+msgstr "AniDB 새로고침"
+
+#: src/pages/settings/ServicesPanel.tsx:38
+msgid "services.name.worker.bot_report"
+msgstr "봇 리포트"
+
+#: src/pages/settings/ServicesPanel.tsx:40
+msgid "services.name.worker.daily_digest"
+msgstr "일일 요약"
+
+#: src/pages/settings/ServicesPanel.tsx:35
+msgid "services.name.worker.download_sync"
+msgstr "다운로드 동기화"
+
+#: src/pages/settings/ServicesPanel.tsx:36
+msgid "services.name.worker.library_reconcile"
+msgstr "라이브러리 정리"
+
+#: src/pages/settings/ServicesPanel.tsx:45
+msgid "services.name.worker.notification_cleanup"
+msgstr "알림 정리"
+
+#: src/pages/settings/ServicesPanel.tsx:37
+msgid "services.name.worker.notification_delivery"
+msgstr "알림 전송"
+
+#: src/pages/settings/ServicesPanel.tsx:34
+msgid "services.name.worker.rss_refresh"
+msgstr "RSS 새로고침"
+
+#: src/pages/settings/ServicesPanel.tsx:42
+msgid "services.name.worker.sync_outbox_drain"
+msgstr "동기화 발신함 처리"
+
+#: src/pages/settings/ServicesPanel.tsx:43
+msgid "services.name.worker.sync_outbox_gc"
+msgstr "동기화 발신함 정리"
+
+#: src/pages/settings/ServicesPanel.tsx:44
+msgid "services.name.worker.sync_pull"
+msgstr "동기화 가져오기"
+
+#: src/pages/settings/ServicesPanel.tsx:255
+msgid "services.other.title"
+msgstr "서비스"
+
+#: src/pages/settings/ServicesPanel.tsx:406
+msgid "services.row.clear"
+msgstr "비우기"
+
+#: src/pages/settings/ServicesPanel.tsx:368
+msgid "services.row.enabled"
+msgstr "활성화"
+
+#: src/pages/settings/ServicesPanel.tsx:319
+msgid "services.row.every"
+msgstr "주기"
+
+#: src/pages/settings/ServicesPanel.tsx:354
+#: src/pages/settings/ServicesPanel.tsx:361
+msgid "services.row.runNow"
+msgstr "지금 실행"
+
+#: src/pages/settings/ServicesPanel.tsx:420
+msgid "services.row.syncNow"
+msgstr "지금 동기화"
+
+#: src/pages/settings/ServicesPanel.tsx:279
+msgid "services.subtitle"
+msgstr "서버가 실행 중인 백그라운드 작업과 서비스 — 상태 확인, 즉시 실행, 활성화/비활성화."
+
+#: src/pages/settings/ServicesPanel.tsx:222
+msgid "services.system.allHealthy"
+msgstr "모든 서비스 정상"
+
+#: src/pages/settings/ServicesPanel.tsx:221
+msgid "services.system.failing"
+msgstr "{count}개 실패"
+
+#: src/pages/settings/ServicesPanel.tsx:215
+msgid "services.system.uptime"
+msgstr "가동 시간"
+
+#: src/pages/settings/ServicesPanel.tsx:169
+msgid "services.toast.alreadyRunning"
+msgstr "이미 실행 중입니다"
+
+#: src/pages/settings/ServicesPanel.tsx:171
+#: src/pages/settings/ServicesPanel.tsx:392
+msgid "services.toast.runFailed"
+msgstr "작업을 시작하지 못했습니다"
+
+#: src/pages/settings/ServicesPanel.tsx:164
+msgid "services.toast.runStarted"
+msgstr "작업을 시작했습니다"
+
+#: src/pages/settings/ServicesPanel.tsx:156
+#: src/pages/settings/ServicesPanel.tsx:235
+#: src/pages/settings/ServicesPanel.tsx:457
+#: src/pages/settings/ServicesPanel.tsx:465
+msgid "services.toast.updateFailed"
+msgstr "서비스를 업데이트하지 못했습니다"
+
+#: src/pages/settings/ServicesPanel.tsx:240
+msgid "services.workers.title"
+msgstr "백그라운드 작업"
 
 #: src/pages/settings/SessionsTab.tsx:48
 msgid "sessions.allOthersRevoked"
@@ -4133,9 +4408,13 @@ msgstr "활성 세션"
 msgid "Set preferred"
 msgstr "선호로 설정"
 
-#: src/pages/settings/GeneralPanel.tsx:87
+#: src/pages/settings/GeneralPanel.tsx:103
 msgid "settings.appearance.language"
 msgstr "언어"
+
+#: src/pages/settings/GeneralPanel.tsx:111
+msgid "settings.appearance.theme"
+msgstr "테마"
 
 #: src/pages/SettingsPage.tsx:367
 #~ msgid "settings.appearance.title"
@@ -4147,11 +4426,11 @@ msgstr "언어"
 msgid "settings.audioTrack"
 msgstr "오디오 트랙"
 
-#: src/pages/settings/GeneralPanel.tsx:111
+#: src/pages/settings/GeneralPanel.tsx:138
 msgid "settings.autoAddToCollection"
 msgstr "자동으로 컬렉션에 추가"
 
-#: src/pages/settings/GeneralPanel.tsx:114
+#: src/pages/settings/GeneralPanel.tsx:140
 msgid "settings.autoAddToCollectionDesc"
 msgstr "새로 매치된 애니메이션을 자동으로 컬렉션에 추가"
 
@@ -4177,7 +4456,7 @@ msgstr "테두리 스타일"
 msgid "settings.brightness"
 msgstr "밝기"
 
-#: src/pages/settings/GeneralPanel.tsx:107
+#: src/pages/settings/GeneralPanel.tsx:135
 msgid "settings.collection"
 msgstr "컬렉션"
 
@@ -4208,7 +4487,7 @@ msgstr "기본값"
 #~ msgid "settings.docsUrl.label"
 #~ msgstr "문서 웹사이트 URL"
 
-#: src/pages/settings/DownloadPanel.tsx:86
+#: src/pages/settings/DownloadPanel.tsx:84
 msgid "settings.download.autoDeleteFiles"
 msgstr "파일 자동 삭제"
 
@@ -4220,11 +4499,11 @@ msgstr "파일 자동 삭제"
 msgid "settings.download.builtin"
 msgstr "내장"
 
-#: src/pages/settings/DownloadPanel.tsx:39
+#: src/pages/settings/DownloadPanel.tsx:38
 msgid "settings.download.builtinDesc"
 msgstr "내장 다운로드 엔진 사용"
 
-#: src/pages/DownloadsPage.tsx:406
+#: src/pages/DownloadsPage.tsx:396
 #: src/pages/settings/DownloadPanel.tsx:35
 msgid "settings.download.disconnected"
 msgstr "연결 안 됨"
@@ -4249,7 +4528,7 @@ msgstr "다운로드 엔진"
 #~ msgid "settings.download.howItWorks"
 #~ msgstr "구독 방법"
 
-#: src/pages/settings/DownloadPanel.tsx:44
+#: src/pages/settings/DownloadPanel.tsx:42
 msgid "settings.download.preferences"
 msgstr "다운로드 설정"
 
@@ -4281,52 +4560,52 @@ msgstr "글꼴"
 msgid "settings.fontSize"
 msgstr "글꼴 크기"
 
-#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:99
 msgid "settings.general.subtitle"
 msgstr "언어, 컬렉션 및 앱 환경설정"
 
-#: src/pages/settings/IntegrationsPanel.tsx:463
-#: src/pages/settings/IntegrationsPanel.tsx:669
+#: src/pages/settings/IntegrationsPanel.tsx:461
+#: src/pages/settings/IntegrationsPanel.tsx:667
 msgid "settings.integration.authUrlFailed"
 msgstr "인증 URL 가져오기 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:416
+#: src/pages/settings/IntegrationsPanel.tsx:414
 msgid "settings.integration.autoPull"
 msgstr "자동 가져오기"
 
-#: src/pages/settings/IntegrationsPanel.tsx:570
-#: src/pages/settings/IntegrationsPanel.tsx:782
+#: src/pages/settings/IntegrationsPanel.tsx:568
+#: src/pages/settings/IntegrationsPanel.tsx:780
 msgid "settings.integration.connect"
 msgstr "연결"
 
-#: src/pages/settings/IntegrationsPanel.tsx:495
-#: src/pages/settings/IntegrationsPanel.tsx:522
-#: src/pages/settings/IntegrationsPanel.tsx:696
+#: src/pages/settings/IntegrationsPanel.tsx:493
+#: src/pages/settings/IntegrationsPanel.tsx:520
+#: src/pages/settings/IntegrationsPanel.tsx:694
 msgid "settings.integration.connected"
 msgstr "연결됨"
 
-#: src/pages/settings/IntegrationsPanel.tsx:569
-#: src/pages/settings/IntegrationsPanel.tsx:781
+#: src/pages/settings/IntegrationsPanel.tsx:567
+#: src/pages/settings/IntegrationsPanel.tsx:779
 msgid "settings.integration.connecting"
 msgstr "연결 중…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:582
-#: src/pages/settings/IntegrationsPanel.tsx:796
+#: src/pages/settings/IntegrationsPanel.tsx:580
+#: src/pages/settings/IntegrationsPanel.tsx:794
 msgid "settings.integration.disconnect"
 msgstr "연결 해제"
 
-#: src/pages/settings/IntegrationsPanel.tsx:469
-#: src/pages/settings/IntegrationsPanel.tsx:675
+#: src/pages/settings/IntegrationsPanel.tsx:467
+#: src/pages/settings/IntegrationsPanel.tsx:673
 msgid "settings.integration.disconnected"
 msgstr "연결 해제됨"
 
-#: src/pages/settings/IntegrationsPanel.tsx:472
-#: src/pages/settings/IntegrationsPanel.tsx:679
+#: src/pages/settings/IntegrationsPanel.tsx:470
+#: src/pages/settings/IntegrationsPanel.tsx:677
 msgid "settings.integration.disconnectFailed"
 msgstr "연결 해제 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:581
-#: src/pages/settings/IntegrationsPanel.tsx:795
+#: src/pages/settings/IntegrationsPanel.tsx:579
+#: src/pages/settings/IntegrationsPanel.tsx:793
 msgid "settings.integration.disconnecting"
 msgstr "연결 해제 중…"
 
@@ -4334,13 +4613,13 @@ msgstr "연결 해제 중…"
 msgid "settings.integration.lastSync"
 msgstr "마지막 동기화"
 
-#: src/pages/settings/IntegrationsPanel.tsx:453
-#: src/pages/settings/IntegrationsPanel.tsx:630
+#: src/pages/settings/IntegrationsPanel.tsx:451
+#: src/pages/settings/IntegrationsPanel.tsx:628
 msgid "settings.integration.needsReauth"
 msgstr "재인증이 필요합니다"
 
-#: src/pages/settings/IntegrationsPanel.tsx:523
-#: src/pages/settings/IntegrationsPanel.tsx:697
+#: src/pages/settings/IntegrationsPanel.tsx:521
+#: src/pages/settings/IntegrationsPanel.tsx:695
 msgid "settings.integration.notConnected"
 msgstr "연결되지 않음"
 
@@ -4348,23 +4627,23 @@ msgstr "연결되지 않음"
 msgid "settings.integration.pending"
 msgstr "대기 중"
 
-#: src/pages/settings/IntegrationsPanel.tsx:389
+#: src/pages/settings/IntegrationsPanel.tsx:387
 msgid "settings.integration.pulled"
 msgstr "가져옴"
 
-#: src/pages/settings/IntegrationsPanel.tsx:392
+#: src/pages/settings/IntegrationsPanel.tsx:390
 msgid "settings.integration.pullFailed"
 msgstr "가져오기 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:425
+#: src/pages/settings/IntegrationsPanel.tsx:423
 msgid "settings.integration.pulling"
 msgstr "가져오는 중…"
 
-#: src/pages/settings/IntegrationsPanel.tsx:426
+#: src/pages/settings/IntegrationsPanel.tsx:424
 msgid "settings.integration.pullNow"
 msgstr "지금 가져오기"
 
-#: src/pages/settings/IntegrationsPanel.tsx:400
+#: src/pages/settings/IntegrationsPanel.tsx:398
 msgid "settings.integration.pullToggleFailed"
 msgstr "자동 가져오기 전환 실패"
 
@@ -4372,13 +4651,13 @@ msgstr "자동 가져오기 전환 실패"
 msgid "settings.integration.recentErrors"
 msgstr "최근 오류"
 
-#: src/pages/settings/IntegrationsPanel.tsx:592
-#: src/pages/settings/IntegrationsPanel.tsx:806
+#: src/pages/settings/IntegrationsPanel.tsx:590
+#: src/pages/settings/IntegrationsPanel.tsx:804
 msgid "settings.integration.sync"
 msgstr "동기화"
 
-#: src/pages/settings/IntegrationsPanel.tsx:478
-#: src/pages/settings/IntegrationsPanel.tsx:685
+#: src/pages/settings/IntegrationsPanel.tsx:476
+#: src/pages/settings/IntegrationsPanel.tsx:683
 msgid "settings.integration.syncComplete"
 msgstr "동기화 완료"
 
@@ -4386,13 +4665,13 @@ msgstr "동기화 완료"
 #~ msgid "settings.integration.syncErrors"
 #~ msgstr "개 오류"
 
-#: src/pages/settings/IntegrationsPanel.tsx:481
-#: src/pages/settings/IntegrationsPanel.tsx:688
+#: src/pages/settings/IntegrationsPanel.tsx:479
+#: src/pages/settings/IntegrationsPanel.tsx:686
 msgid "settings.integration.syncFailed"
 msgstr "동기화 실패"
 
-#: src/pages/settings/IntegrationsPanel.tsx:591
-#: src/pages/settings/IntegrationsPanel.tsx:805
+#: src/pages/settings/IntegrationsPanel.tsx:589
+#: src/pages/settings/IntegrationsPanel.tsx:803
 msgid "settings.integration.syncing"
 msgstr "동기화 중…"
 
@@ -4400,63 +4679,68 @@ msgstr "동기화 중…"
 #~ msgid "settings.integration.title"
 #~ msgstr "Integration"
 
-#: src/pages/settings/IntegrationsPanel.tsx:540
+#: src/pages/settings/IntegrationsPanel.tsx:538
 msgid "settings.integration.trakt.openAndEnter"
 msgstr "Trakt를 열고 인증 코드를 입력하세요"
 
-#: src/pages/settings/IntegrationsPanel.tsx:554
+#: src/pages/settings/IntegrationsPanel.tsx:552
 msgid "settings.integration.trakt.waitingExpires"
 msgstr "대기 중, {0}에 만료"
 
-#: src/pages/settings/IntegrationsPanel.tsx:830
+#: src/pages/settings/IntegrationsPanel.tsx:828
 msgid "settings.integration.updatesPulled"
 msgstr "업데이트를 가져왔습니다"
 
-#: src/pages/settings/IntegrationsPanel.tsx:842
+#: src/pages/settings/IntegrationsPanel.tsx:837
 msgid "settings.integrations.description"
 msgstr "외부 서비스를 연결하고 데이터를 동기화"
 
 #: src/pages/settings/AboutPanel.tsx:147
-#: src/pages/settings/SettingsPage.tsx:44
+#: src/pages/settings/SettingsPage.tsx:47
 msgid "settings.nav.about"
 msgstr "정보"
 
-#: src/pages/settings/AccountPanel.tsx:110
-#: src/pages/settings/SettingsPage.tsx:41
-#: src/pages/settings/SettingsPage.tsx:239
+#: src/pages/settings/AccountPanel.tsx:109
+#: src/pages/settings/SettingsPage.tsx:43
+#: src/pages/settings/SettingsPage.tsx:243
 msgid "settings.nav.account"
 msgstr "계정"
 
-#: src/pages/settings/SettingsPage.tsx:42
+#: src/pages/settings/SettingsPage.tsx:44
 msgid "settings.nav.backup"
 msgstr "백업"
 
-#: src/pages/settings/SettingsPage.tsx:39
+#: src/pages/settings/SettingsPage.tsx:41
 msgid "settings.nav.download"
 msgstr "다운로드"
 
-#: src/pages/settings/GeneralPanel.tsx:80
-#: src/pages/settings/SettingsPage.tsx:36
+#: src/pages/settings/GeneralPanel.tsx:96
+#: src/pages/settings/SettingsPage.tsx:38
 msgid "settings.nav.general"
 msgstr "일반"
 
-#: src/pages/settings/IntegrationsPanel.tsx:839
-#: src/pages/settings/SettingsPage.tsx:37
+#: src/pages/settings/IntegrationsPanel.tsx:836
+#: src/pages/settings/SettingsPage.tsx:39
 msgid "settings.nav.integrations"
 msgstr "연동"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:1035
-#: src/pages/settings/NotificationSettingsPanel.tsx:1049
-#: src/pages/settings/SettingsPage.tsx:38
+#: src/pages/settings/NotificationSettingsPanel.tsx:1040
+#: src/pages/settings/NotificationSettingsPanel.tsx:1054
+#: src/pages/settings/SettingsPage.tsx:40
 msgid "settings.nav.notifications"
 msgstr "알림"
 
 #: src/pages/settings/PlayerPanel.tsx:250
-#: src/pages/settings/SettingsPage.tsx:40
+#: src/pages/settings/SettingsPage.tsx:42
 msgid "settings.nav.player"
 msgstr "플레이어"
 
-#: src/pages/settings/SettingsPage.tsx:43
+#: src/pages/settings/ServicesPanel.tsx:278
+#: src/pages/settings/SettingsPage.tsx:46
+msgid "settings.nav.services"
+msgstr "서비스"
+
+#: src/pages/settings/SettingsPage.tsx:45
 #: src/pages/settings/StoragePanel.tsx:59
 msgid "settings.nav.storage"
 msgstr "저장소"
@@ -4477,9 +4761,9 @@ msgstr "일반"
 msgid "settings.off"
 msgstr "끄기"
 
-#: src/pages/settings/SettingsPage.tsx:156
-#: src/pages/settings/SettingsPage.tsx:225
-#: src/pages/settings/SettingsPage.tsx:303
+#: src/pages/settings/SettingsPage.tsx:160
+#: src/pages/settings/SettingsPage.tsx:229
+#: src/pages/settings/SettingsPage.tsx:307
 msgid "settings.pageTitle"
 msgstr "설정"
 
@@ -4680,28 +4964,29 @@ msgstr "채도"
 #: src/pages/settings/BackupPanel.tsx:569
 #: src/pages/settings/IntegrationsPanel.tsx:116
 #: src/pages/settings/IntegrationsPanel.tsx:300
-#: src/pages/settings/IntegrationsPanel.tsx:768
+#: src/pages/settings/IntegrationsPanel.tsx:766
 msgid "settings.save"
 msgstr "저장"
 
 #: src/pages/settings/BackupPanel.tsx:199
 #: src/pages/settings/BackupPanel.tsx:393
-#: src/pages/settings/GeneralPanel.tsx:63
-#: src/pages/settings/GeneralPanel.tsx:74
+#: src/pages/settings/GeneralPanel.tsx:72
+#: src/pages/settings/GeneralPanel.tsx:83
+#: src/pages/settings/GeneralPanel.tsx:90
 #: src/pages/settings/IntegrationsPanel.tsx:55
 #: src/pages/settings/IntegrationsPanel.tsx:180
-#: src/pages/settings/IntegrationsPanel.tsx:658
+#: src/pages/settings/IntegrationsPanel.tsx:656
 #: src/pages/settings/PlayerPanel.tsx:203
 msgid "settings.saved"
 msgstr "저장됨"
 
 #: src/pages/settings/BackupPanel.tsx:203
 #: src/pages/settings/BackupPanel.tsx:397
-#: src/pages/settings/GeneralPanel.tsx:56
-#: src/pages/settings/GeneralPanel.tsx:66
+#: src/pages/settings/GeneralPanel.tsx:65
+#: src/pages/settings/GeneralPanel.tsx:75
 #: src/pages/settings/IntegrationsPanel.tsx:58
 #: src/pages/settings/IntegrationsPanel.tsx:183
-#: src/pages/settings/IntegrationsPanel.tsx:661
+#: src/pages/settings/IntegrationsPanel.tsx:659
 #: src/pages/settings/PlayerPanel.tsx:206
 msgid "settings.saveFailed"
 msgstr "저장 실패"
@@ -4710,37 +4995,39 @@ msgstr "저장 실패"
 #: src/pages/settings/BackupPanel.tsx:568
 #: src/pages/settings/IntegrationsPanel.tsx:115
 #: src/pages/settings/IntegrationsPanel.tsx:299
-#: src/pages/settings/IntegrationsPanel.tsx:767
-#: src/pages/settings/NotificationSettingsPanel.tsx:1098
+#: src/pages/settings/IntegrationsPanel.tsx:765
+#: src/pages/settings/NotificationSettingsPanel.tsx:1103
 msgid "settings.saving"
 msgstr "저장 중…"
 
-#: src/pages/settings/StoragePanel.tsx:85
+#: src/pages/settings/StoragePanel.tsx:83
 msgid "settings.storage.actions"
 msgstr "작업"
 
-#: src/pages/settings/StoragePanel.tsx:102
+#: src/pages/settings/StoragePanel.tsx:100
 msgid "settings.storage.clearConfirmDesc"
 msgstr "모든 트랜스코딩된 비디오 파일이 삭제됩니다. 이 작업은 취소할 수 없습니다."
 
-#: src/pages/settings/StoragePanel.tsx:100
+#: src/pages/settings/StoragePanel.tsx:98
 msgid "settings.storage.clearConfirmTitle"
 msgstr "트랜스코드 캐시를 지우시겠습니까?"
 
+#: src/pages/settings/ServicesPanel.tsx:381
 #: src/pages/settings/StoragePanel.tsx:47
 msgid "settings.storage.cleared"
 msgstr "캐시가 지워졌습니다"
 
+#: src/pages/settings/ServicesPanel.tsx:384
 #: src/pages/settings/StoragePanel.tsx:51
 msgid "settings.storage.clearFailed"
 msgstr "캐시 지우기 실패"
 
-#: src/pages/settings/StoragePanel.tsx:112
+#: src/pages/settings/StoragePanel.tsx:110
 msgid "settings.storage.clearing"
 msgstr "지우는 중…"
 
-#: src/pages/settings/StoragePanel.tsx:92
-#: src/pages/settings/StoragePanel.tsx:113
+#: src/pages/settings/StoragePanel.tsx:90
+#: src/pages/settings/StoragePanel.tsx:111
 msgid "settings.storage.clearTranscode"
 msgstr "트랜스코딩 파일 지우기"
 
@@ -4756,7 +5043,7 @@ msgstr "파일"
 msgid "settings.storage.subtitle"
 msgstr "트랜스코딩 파일 및 캐시 관리"
 
-#: src/pages/settings/StoragePanel.tsx:80
+#: src/pages/settings/StoragePanel.tsx:79
 msgid "settings.storage.transcodeDesc"
 msgstr "트랜스코딩된 비디오 파일이 임시 디렉토리에 저장됩니다"
 
@@ -4868,25 +5155,37 @@ msgstr "자막 타이밍"
 msgid "settings.textColor"
 msgstr "텍스트 색상"
 
+#: src/pages/settings/GeneralPanel.tsx:114
+msgid "settings.theme.dark"
+msgstr "다크"
+
+#: src/pages/settings/GeneralPanel.tsx:115
+msgid "settings.theme.light"
+msgstr "라이트"
+
+#: src/pages/settings/GeneralPanel.tsx:116
+msgid "settings.theme.system"
+msgstr "시스템 설정 따르기"
+
 #: src/components/watch/UnifiedSettingsPanel.tsx:412
 #: src/components/watch/UnifiedSettingsPanel.tsx:840
 #: src/components/watch/UnifiedSettingsPanel.tsx:953
 msgid "settings.volumeBoost"
 msgstr "음량 부스트"
 
-#: src/pages/settings/GeneralPanel.tsx:95
+#: src/pages/settings/GeneralPanel.tsx:123
 msgid "settings.weekStartDay"
 msgstr "주 시작 요일"
 
-#: src/pages/settings/GeneralPanel.tsx:98
+#: src/pages/settings/GeneralPanel.tsx:126
 msgid "settings.weekStartDay.monday"
 msgstr "월요일"
 
-#: src/pages/settings/GeneralPanel.tsx:100
+#: src/pages/settings/GeneralPanel.tsx:128
 msgid "settings.weekStartDay.saturday"
 msgstr "토요일"
 
-#: src/pages/settings/GeneralPanel.tsx:99
+#: src/pages/settings/GeneralPanel.tsx:127
 msgid "settings.weekStartDay.sunday"
 msgstr "일요일"
 
@@ -4894,7 +5193,7 @@ msgstr "일요일"
 msgid "setup.integrations.anilistDescription"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:55
+#: src/pages/setup/IntegrationsStep.tsx:52
 msgid "setup.integrations.availableInSettings"
 msgstr ""
 
@@ -4902,7 +5201,7 @@ msgstr ""
 msgid "setup.integrations.bangumiDescription"
 msgstr ""
 
-#: src/pages/setup/IntegrationsStep.tsx:63
+#: src/pages/setup/IntegrationsStep.tsx:60
 msgid "setup.integrations.finish"
 msgstr ""
 
@@ -5185,7 +5484,7 @@ msgid "Undo batch {0}?"
 msgstr "배치 {0}을(를) 되돌리시겠습니까?"
 
 #: src/pages/settings/BackupPanel.tsx:251
-#: src/pages/settings/NotificationSettingsPanel.tsx:725
+#: src/pages/settings/NotificationSettingsPanel.tsx:733
 msgid "URL"
 msgstr "URL"
 
@@ -5224,7 +5523,7 @@ msgstr "시청 완료"
 msgid "watch.danmaku"
 msgstr "탄막"
 
-#: src/components/watch/DanmakuList.tsx:165
+#: src/components/watch/DanmakuList.tsx:168
 msgid "watch.danmaku.addBlock"
 msgstr "추가"
 
@@ -5232,12 +5531,17 @@ msgstr "추가"
 msgid "watch.danmaku.antiSubtitle"
 msgstr "자막 회피"
 
+#: src/components/watch/DanmakuBar.tsx:160
+#: src/components/watch/DanmakuBar.tsx:162
+msgid "watch.danmaku.attribution"
+msgstr "댓글 출처: 弹弹play开放弹幕网络"
+
 #: src/components/watch/DanmakuList.tsx:133
-#: src/components/watch/DanmakuList.tsx:145
+#: src/components/watch/DanmakuList.tsx:148
 msgid "watch.danmaku.blockKeywords"
 msgstr "차단 키워드"
 
-#: src/components/watch/DanmakuList.tsx:156
+#: src/components/watch/DanmakuList.tsx:159
 msgid "watch.danmaku.blockPlaceholder"
 msgstr "키워드 입력..."
 
@@ -5259,7 +5563,7 @@ msgstr "하단"
 msgid "watch.danmaku.chineseConvert"
 msgstr "간번체 변환"
 
-#: src/components/watch/DanmakuList.tsx:212
+#: src/components/watch/DanmakuList.tsx:215
 msgid "watch.danmaku.clearAllBlock"
 msgstr "모두 삭제"
 
@@ -5271,15 +5575,15 @@ msgstr "탄막 숨기기"
 msgid "watch.danmaku.clickToEnable"
 msgstr "탄막 보이기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:380
+#: src/components/watch/DanmakuSourceTab.tsx:378
 msgid "watch.danmaku.clickToPin"
 msgstr "고정하여 영구 저장"
 
-#: src/components/watch/DanmakuSourceTab.tsx:379
+#: src/components/watch/DanmakuSourceTab.tsx:377
 msgid "watch.danmaku.clickToUnpin"
 msgstr "고정 해제 (24시간 캐시로 전환)"
 
-#: src/components/watch/DanmakuSourceTab.tsx:277
+#: src/components/watch/DanmakuSourceTab.tsx:275
 msgid "watch.danmaku.closeParts"
 msgstr "닫기"
 
@@ -5343,11 +5647,11 @@ msgstr "글꼴"
 msgid "watch.danmaku.fontSize"
 msgstr "글꼴 크기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:278
+#: src/components/watch/DanmakuSourceTab.tsx:276
 msgid "watch.danmaku.import"
 msgstr "가져오기"
 
-#: src/components/watch/DanmakuSourceTab.tsx:363
+#: src/components/watch/DanmakuSourceTab.tsx:361
 msgid "watch.danmaku.imported"
 msgstr "가져옴"
 
@@ -5363,7 +5667,7 @@ msgstr "가져오기 실패"
 msgid "watch.danmaku.loaded"
 msgstr "탄막 {count}개 로드됨"
 
-#: src/components/watch/DanmakuList.tsx:172
+#: src/components/watch/DanmakuList.tsx:175
 msgid "watch.danmaku.noBlockKeywords"
 msgstr "차단 키워드 없음"
 
@@ -5371,7 +5675,7 @@ msgstr "차단 키워드 없음"
 msgid "watch.danmaku.noData"
 msgstr "탄막 데이터가 없습니다"
 
-#: src/components/watch/DanmakuSourceTab.tsx:222
+#: src/components/watch/DanmakuSourceTab.tsx:220
 msgid "watch.danmaku.noResults"
 msgstr "결과 없음"
 
@@ -5392,7 +5696,7 @@ msgstr "켜기"
 msgid "watch.danmaku.opacity"
 msgstr "불투명도"
 
-#: src/components/watch/DanmakuBar.tsx:166
+#: src/components/watch/DanmakuBar.tsx:172
 msgid "watch.danmaku.placeholder"
 msgstr "탄막 보내기…"
 
@@ -5417,23 +5721,23 @@ msgstr "탄막이 영구 저장되었습니다"
 msgid "watch.danmaku.scroll"
 msgstr "스크롤"
 
-#: src/components/watch/DanmakuSourceTab.tsx:201
+#: src/components/watch/DanmakuSourceTab.tsx:199
 msgid "watch.danmaku.search"
 msgstr "검색"
 
-#: src/components/watch/DanmakuSourceTab.tsx:216
+#: src/components/watch/DanmakuSourceTab.tsx:214
 msgid "watch.danmaku.searchError"
 msgstr "검색 실패"
 
-#: src/components/watch/DanmakuSourceTab.tsx:192
+#: src/components/watch/DanmakuSourceTab.tsx:190
 msgid "watch.danmaku.searchPlaceholder"
 msgstr "애니메이션 이름 + 화 검색..."
 
-#: src/components/watch/DanmakuSourceTab.tsx:297
+#: src/components/watch/DanmakuSourceTab.tsx:295
 msgid "watch.danmaku.selectPart"
 msgstr "파트 선택"
 
-#: src/components/watch/DanmakuBar.tsx:177
+#: src/components/watch/DanmakuBar.tsx:183
 msgid "watch.danmaku.send"
 msgstr "보내기"
 
@@ -5445,7 +5749,7 @@ msgstr "보내기"
 msgid "watch.danmaku.slow"
 msgstr "느림"
 
-#: src/components/watch/DanmakuSourceTab.tsx:169
+#: src/components/watch/DanmakuSourceTab.tsx:168
 msgid "watch.danmaku.source"
 msgstr "소스"
 
@@ -5588,15 +5892,15 @@ msgstr "Transcoding..."
 #~ msgid "watch.unsupported"
 #~ msgstr "Not supported"
 
-#: src/pages/settings/NotificationSettingsPanel.tsx:332
+#: src/pages/settings/NotificationSettingsPanel.tsx:340
 msgid "Webhook URL"
 msgstr "Webhook URL"
 
-#: src/pages/settings/IntegrationsPanel.tsx:728
+#: src/pages/settings/IntegrationsPanel.tsx:726
 msgid "Your {label} Client ID"
 msgstr "{label} 클라이언트 ID"
 
-#: src/pages/settings/IntegrationsPanel.tsx:750
+#: src/pages/settings/IntegrationsPanel.tsx:748
 msgid "Your {label} Client Secret"
 msgstr "{label} 클라이언트 시크릿"
 

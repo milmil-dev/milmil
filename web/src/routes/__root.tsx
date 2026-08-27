@@ -38,7 +38,7 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
-      <div className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
+      <div className="w-12 h-12 rounded-full bg-ink/[0.06] flex items-center justify-center">
         <svg
           width="20"
           height="20"
@@ -46,7 +46,7 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
           fill="none"
           stroke="currentColor"
           strokeWidth="1.5"
-          className="text-white/40"
+          className="text-ink/40"
         >
           {isNetworkError ? (
             <path
@@ -64,20 +64,18 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
         </svg>
       </div>
       <div>
-        <p className="text-[15px] font-medium text-white/70">
+        <p className="text-[15px] font-medium text-ink/70">
           {isNetworkError ? i18n._(msg`error.serverUnavailable`) : i18n._(msg`common.loadFailed`)}
         </p>
         {isNetworkError && (
-          <p className="text-[13px] text-white/30 mt-1">
-            {i18n._(msg`error.serverUnavailableHint`)}
-          </p>
+          <p className="text-[13px] text-ink/30 mt-1">{i18n._(msg`error.serverUnavailableHint`)}</p>
         )}
       </div>
       <div className="flex gap-2">
         <button
           type="button"
           onClick={reset}
-          className="px-4 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] text-[13px] text-white/60 hover:text-white/80 transition-colors cursor-pointer"
+          className="px-4 py-2 rounded-lg bg-ink/[0.06] hover:bg-ink/[0.10] text-[13px] text-ink/60 hover:text-ink/80 transition-colors cursor-pointer"
         >
           {i18n._(msg`common.retry`)}
         </button>
@@ -206,7 +204,7 @@ function BannerImage({
         style={{
           maxWidth: '80rem',
           background:
-            'linear-gradient(to right, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)',
+            'linear-gradient(to right, var(--mm-bg) 0%, color-mix(in srgb, var(--mm-bg) 60%, transparent) 15%, transparent 50%)',
         }}
       />
       {/* Right gradient — Seanime: max-w-[60rem], opacity-90 */}
@@ -215,7 +213,7 @@ function BannerImage({
         style={{
           maxWidth: '60rem',
           background:
-            'linear-gradient(to left, var(--mm-bg) 0%, rgba(7,7,7,0.6) 15%, transparent 50%)',
+            'linear-gradient(to left, var(--mm-bg) 0%, color-mix(in srgb, var(--mm-bg) 60%, transparent) 15%, transparent 50%)',
         }}
       />
       {/* Sidebar-edge gradient — Seanime: max-w-[10rem] opacity-70 */}
@@ -269,6 +267,9 @@ function RootLayout() {
     }
     if (event.type === 'notification:new') {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    }
+    if (event.type === 'service:changed') {
+      queryClient.invalidateQueries({ queryKey: ['system', 'services'] });
     }
     if (event.type === 'system:update-available') {
       useUpdateStore.getState().setLatest({

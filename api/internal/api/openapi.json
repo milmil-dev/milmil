@@ -1225,6 +1225,11 @@
                     },
                     "username": {
                       "type": "string"
+                    },
+                    "avatar_url": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Public avatar URL (/api/v1/users/{id}/avatar?v=\u2026), null when unset"
                     }
                   }
                 }
@@ -2479,6 +2484,13 @@
                     "type": "object",
                     "properties": {
                       "name": {
+                        "type": "string"
+                      },
+                      "display": {
+                        "type": "string",
+                        "description": "Tag rendered in the caller's UI language (X-Milmil-Locale / Accept-Language); falls back to name"
+                      },
+                      "category": {
                         "type": "string"
                       },
                       "count": {
@@ -3989,6 +4001,11 @@
                     "available": {
                       "type": "boolean",
                       "description": "false when remote source or path is not accessible"
+                    },
+                    "downloaded_this_month_bytes": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Bytes of downloads completed into this library since the first of the current UTC month"
                     }
                   }
                 }
@@ -6639,7 +6656,7 @@
     "/api/v1/stream/{fileId}/thumbnails": {
       "get": {
         "summary": "Get the seek-preview thumbnail track",
-        "description": "WebVTT cues pointing into the sprite sheet served at ../sprite.jpg. Generating it on first request can take a moment.",
+        "description": "WebVTT cues pointing into the sprite sheet served at ../sprite.jpg. The first request renders the sprite, which can take a while; the render keeps running if the client disconnects, so a retry is served from cache.",
         "operationId": "getThumbnailVTT",
         "tags": [
           "Streaming"
@@ -7754,6 +7771,414 @@
           }
         }
       }
+    },
+    "/api/v1/system/services": {
+      "get": {
+        "summary": "List backend services (jobs, Jellyfin layer, bots, daemons)",
+        "operationId": "listServices",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Services and system info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "services": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Service"
+                      }
+                    },
+                    "system": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "string"
+                        },
+                        "uptime_seconds": {
+                          "type": "integer"
+                        },
+                        "started_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/services/{id}": {
+      "patch": {
+        "summary": "Enable or disable a service",
+        "operationId": "updateService",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "discovery_enabled": {
+                    "type": "boolean",
+                    "description": "jellyfin only"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not controllable or missing field"
+          },
+          "404": {
+            "description": "Unknown service"
+          }
+        }
+      }
+    },
+    "/api/v1/system/services/{id}/run": {
+      "post": {
+        "summary": "Run a service's job now",
+        "operationId": "runService",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "started": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not runnable"
+          },
+          "404": {
+            "description": "Unknown service"
+          },
+          "409": {
+            "description": "Already running"
+          }
+        }
+      }
+    },
+    "/api/v1/system/services/jellyfin/devices": {
+      "get": {
+        "summary": "List external players that signed in to the Jellyfin layer",
+        "operationId": "listJellyfinDevices",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Devices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "devices": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ExternalDevice"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/services/jellyfin/devices/{deviceId}": {
+      "delete": {
+        "summary": "Revoke an external player's tokens",
+        "operationId": "revokeJellyfinDevice",
+        "tags": [
+          "System"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Revoked"
+          },
+          "404": {
+            "description": "Unknown device"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me/avatar": {
+      "put": {
+        "summary": "Set the current user's avatar",
+        "operationId": "putAuthMeAvatar",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "PNG, JPEG or WebP, 2 MB max"
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_url": {
+                    "type": "string",
+                    "description": "http(s) image the server fetches (5 MB max)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avatar stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "avatar_url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported image or missing input"
+          },
+          "413": {
+            "description": "Image too large"
+          },
+          "502": {
+            "description": "source_url could not be fetched"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the current user's avatar",
+        "operationId": "deleteAuthMeAvatar",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}/avatar": {
+      "get": {
+        "summary": "Get a user's avatar (public)",
+        "operationId": "getUserAvatar",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                128,
+                512
+              ],
+              "default": 512
+            }
+          },
+          {
+            "name": "v",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Cache buster, ignored"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JPEG",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified"
+          },
+          "404": {
+            "description": "No avatar"
+          }
+        }
+      }
+    },
+    "/api/v1/anime/{bangumiId}/offline-manifest": {
+      "get": {
+        "summary": "Files, subtitles and danmaku URLs to keep a series offline",
+        "operationId": "getOfflineManifest",
+        "tags": [
+          "Anime"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bangumiId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manifest",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineManifest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Series not in the library"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -8361,6 +8786,14 @@
           "relation_type": {
             "type": "string",
             "description": "Relation kind for side stories (e.g. `SEQUEL`, `SIDE_STORY`); empty on main-series entries"
+          },
+          "season": {
+            "type": "integer",
+            "description": "1-based season number on main-series entries. Split cours (Part 2 / \u7b2c2\u30af\u30fc\u30eb / \u5f8c\u7de8) share the season of the entry before them; omitted on side stories"
+          },
+          "part": {
+            "type": "integer",
+            "description": "1-based cour within a split season; omitted when the season aired as one run"
           }
         }
       },
@@ -8900,6 +9333,177 @@
           },
           "updated_at": {
             "type": "string"
+          }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "description": "One backend service as shown in Settings \u203a \u670d\u52d9.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "worker.rss_refresh"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "api",
+              "worker",
+              "bot",
+              "daemon"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "controllable": {
+            "type": "boolean",
+            "description": "PATCH may flip enabled"
+          },
+          "runnable": {
+            "type": "boolean",
+            "description": "POST \u2026/run is accepted"
+          },
+          "running": {
+            "type": "boolean"
+          },
+          "interval_seconds": {
+            "type": "integer",
+            "nullable": true
+          },
+          "last_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "last_duration_ms": {
+            "type": "integer",
+            "nullable": true
+          },
+          "last_error": {
+            "type": "string"
+          },
+          "next_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "summary": {
+            "type": "string"
+          },
+          "extra": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          }
+        }
+      },
+      "ExternalDevice": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "type": "string"
+          },
+          "client": {
+            "type": "string"
+          },
+          "device_name": {
+            "type": "string"
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revoked": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OfflineManifest": {
+        "type": "object",
+        "properties": {
+          "bangumi_id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "episodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "episode_id": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "number"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "size_bytes": {
+                      "type": "integer"
+                    },
+                    "etag": {
+                      "type": "string"
+                    },
+                    "container": {
+                      "type": "string"
+                    },
+                    "width": {
+                      "type": "integer"
+                    },
+                    "height": {
+                      "type": "integer"
+                    },
+                    "video_codec": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "subtitles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "index": {
+                        "type": "integer"
+                      },
+                      "language": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "danmaku_url": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
+            }
           }
         }
       }

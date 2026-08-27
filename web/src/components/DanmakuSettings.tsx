@@ -58,12 +58,12 @@ function MenuRow({
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/[0.04] transition-colors"
+      className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-ink/[0.04] transition-colors"
     >
       {icon && <span className="shrink-0">{icon}</span>}
-      <span className="flex-1 text-[13px] text-white/80">{label}</span>
-      {value && <span className="text-[12px] text-white/35 flex items-center">{value}</span>}
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/20 shrink-0">
+      <span className="flex-1 text-[13px] text-ink/80">{label}</span>
+      {value && <span className="text-[12px] text-ink/35 flex items-center">{value}</span>}
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-ink/20 shrink-0">
         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
       </svg>
     </button>
@@ -85,10 +85,10 @@ function OptionRow({
       onClick={onClick}
       className={cn(
         'w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors',
-        selected ? 'bg-white/[0.04]' : 'hover:bg-white/[0.03]'
+        selected ? 'bg-ink/[0.04]' : 'hover:bg-ink/[0.03]'
       )}
     >
-      <span className={cn('flex-1 text-[13px]', selected ? 'text-white' : 'text-white/50')}>
+      <span className={cn('flex-1 text-[13px]', selected ? 'text-ink' : 'text-ink/50')}>
         {label}
       </span>
       {selected && (
@@ -105,18 +105,18 @@ function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
     <button
       type="button"
       onClick={onBack}
-      className="w-full flex items-center gap-2 px-3 py-2.5 border-b border-white/[0.06] hover:bg-white/[0.03] transition-colors"
+      className="w-full flex items-center gap-2 px-3 py-2.5 border-b border-ink/[0.06] hover:bg-ink/[0.03] transition-colors"
     >
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/40">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-ink/40">
         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
       </svg>
-      <span className="text-[13px] text-white/70 font-medium">{title}</span>
+      <span className="text-[13px] text-ink/70 font-medium">{title}</span>
     </button>
   );
 }
 
 function Divider() {
-  return <div className="mx-3 my-1 border-t border-white/[0.04]" />;
+  return <div className="mx-3 my-1 border-t border-ink/[0.04]" />;
 }
 
 function SliderRow({
@@ -139,8 +139,8 @@ function SliderRow({
   return (
     <div className="px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[13px] text-white/70">{label}</span>
-        <span className="text-[12px] text-white/30 tabular-nums">
+        <span className="text-[13px] text-ink/70">{label}</span>
+        <span className="text-[12px] text-ink/30 tabular-nums">
           {unit === '%' ? `${Math.round(value * 100)}%` : `${Math.round(value)}${unit ?? ''}`}
         </span>
       </div>
@@ -151,7 +151,7 @@ function SliderRow({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1 rounded-full appearance-none bg-white/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-sm"
+        className="w-full h-1 rounded-full appearance-none bg-ink/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-ink [&::-webkit-slider-thumb]:shadow-sm"
       />
     </div>
   );
@@ -170,19 +170,19 @@ function ToggleRow({
     <button
       type="button"
       onClick={onChange}
-      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-white/[0.03] transition-colors"
+      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-ink/[0.03] transition-colors"
     >
-      <span className="text-[13px] text-white/70">{label}</span>
+      <span className="text-[13px] text-ink/70">{label}</span>
       <div
         className={cn(
           'w-8 h-[18px] rounded-full transition-colors relative',
-          checked ? 'bg-white/20' : 'bg-white/[0.08]'
+          checked ? 'bg-ink/20' : 'bg-ink/[0.08]'
         )}
       >
         <div
           className={cn(
             'absolute top-[3px] w-3 h-3 rounded-full transition-all',
-            checked ? 'left-[17px] bg-white' : 'left-[3px] bg-white/40'
+            checked ? 'left-[17px] bg-ink' : 'left-[3px] bg-ink/40'
           )}
         />
       </div>
@@ -326,17 +326,17 @@ export function DanmakuSettingsControls() {
                   }}
                   className={cn(
                     'flex flex-col items-center gap-1.5 py-2 rounded-lg transition-colors',
-                    danmakuColor === c.value ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'
+                    danmakuColor === c.value ? 'bg-ink/[0.08]' : 'hover:bg-ink/[0.04]'
                   )}
                 >
                   <div
                     className={cn(
                       'w-6 h-6 rounded-full border-2',
-                      danmakuColor === c.value ? 'border-white/60' : 'border-white/10'
+                      danmakuColor === c.value ? 'border-ink/60' : 'border-ink/10'
                     )}
                     style={{ backgroundColor: c.value }}
                   />
-                  <span className="text-[10px] text-white/40">{c.label}</span>
+                  <span className="text-[10px] text-ink/40">{c.label}</span>
                 </button>
               ))}
             </div>
@@ -457,7 +457,7 @@ export function DanmakuSettingsControls() {
               label={i18n._(msg`watch.danmaku.fontColor`)}
               value={
                 <span
-                  className="inline-block w-3 h-3 rounded-full border border-white/20"
+                  className="inline-block w-3 h-3 rounded-full border border-ink/20"
                   style={{ backgroundColor: danmakuColor }}
                 />
               }

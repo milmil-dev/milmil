@@ -95,7 +95,7 @@ export function Modal({
             className={cn(
               'relative z-10 w-full max-h-[85vh] overflow-hidden',
               placement === 'center' ? 'rounded-2xl' : 'rounded-t-2xl md:rounded-2xl',
-              'bg-[var(--mm-bg-elevated)] border border-white/[0.06]',
+              'bg-[var(--mm-bg-elevated)] border border-ink/[0.06]',
               'shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]',
               sizeClasses[size],
               className
@@ -119,11 +119,11 @@ export function Modal({
               {/* Header */}
               {title && (
                 <div className="flex items-center justify-between px-6 pt-6 pb-2">
-                  <h2 className="text-base font-semibold text-white">{title}</h2>
+                  <h2 className="text-base font-semibold text-ink">{title}</h2>
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-7 h-7 rounded-full flex items-center justify-center bg-white/[0.05] hover:bg-white/[0.1] transition-colors text-white/40 hover:text-white/60 cursor-pointer"
+                    className="w-7 h-7 rounded-full flex items-center justify-center bg-ink/[0.05] hover:bg-ink/[0.1] transition-colors text-ink/40 hover:text-ink/60 cursor-pointer"
                   >
                     <svg
                       width="12"

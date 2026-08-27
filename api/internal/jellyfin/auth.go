@@ -35,20 +35,17 @@ func (h *Handler) handleAuthenticateByName(c *echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid username or password"})
 	}
 
-	token, err := auth.SignToken(h.jwtSecret, user.ID, user.TokenVersion)
+	deviceID := extractEmbyParam(c.Request(), "DeviceId")
+	token, err := auth.SignTokenForDevice(h.jwtSecret, user.ID, user.TokenVersion, deviceID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, JellyfinError{Message: "Failed to generate token"})
 	}
+	h.devices.record(c.Request().Context(), user.ID, deviceID,
+		extractEmbyParam(c.Request(), "Client"), extractEmbyParam(c.Request(), "Device"))
 
 	userID := EncodeItemID("user", user.ID)
 	return c.JSON(http.StatusOK, AuthResponse{
-		User: UserDTO{
-			Name:                  user.Username,
-			ServerID:              h.serverID,
-			ID:                    userID,
-			HasPassword:           true,
-			HasConfiguredPassword: true,
-		},
+		User:        h.userDTO(user, userID),
 		AccessToken: token,
 		ServerID:    h.serverID,
 	})

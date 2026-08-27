@@ -129,7 +129,7 @@ export function HistoryPage() {
 
         <div className="flex-1 min-w-0">
           <header className="mb-7 flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center text-white/60">
+            <span className="flex h-7 w-7 items-center justify-center text-ink/60">
               <svg
                 width="24"
                 height="24"
@@ -142,7 +142,7 @@ export function HistoryPage() {
                 <path d="M12 7v5l3 3" />
               </svg>
             </span>
-            <h1 className="text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-ink">
               {i18n._(msg`history.title`)}
             </h1>
           </header>

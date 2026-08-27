@@ -68,8 +68,18 @@ func BuildReport(ctx context.Context, q *store.Queries, animeID string) (Report,
 		}
 	}
 
+	numbers := make([]int, 0, len(episodes))
+	for n := range airDate {
+		numbers = append(numbers, n)
+	}
+	for _, ep := range episodes {
+		if ep.EpisodeNumber == math.Trunc(ep.EpisodeNumber) {
+			numbers = append(numbers, int(ep.EpisodeNumber))
+		}
+	}
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-	for n := 1; n <= total; n++ {
+	first := firstEpisodeNumber(numbers)
+	for n := first; n < first+total; n++ {
 		if have[n] {
 			rep.Have = append(rep.Have, n)
 			continue
@@ -81,6 +91,24 @@ func BuildReport(ctx context.Context, q *store.Queries, animeID string) (Report,
 		rep.Missing = append(rep.Missing, n)
 	}
 	return rep, nil
+}
+
+// firstEpisodeNumber is where the expected run of `total` episodes starts.
+// Split-cour and long-running series carry absolute numbers (a 10-episode
+// cour stored as 41–50), so counting from 1 would report every episode
+// missing and never credit the files on disk; the lowest known episode
+// number anchors the range instead, and 1 only when nothing is known.
+func firstEpisodeNumber(numbers []int) int {
+	first := 0
+	for _, n := range numbers {
+		if n > 0 && (first == 0 || n < first) {
+			first = n
+		}
+	}
+	if first == 0 {
+		return 1
+	}
+	return first
 }
 
 // BuildLibrarySummary computes completeness reports for every anime in a
@@ -166,7 +194,12 @@ func BuildLibrarySummary(ctx context.Context, q *store.Queries, libraryID string
 		rep.Total = total
 		have := haveByAnime[a.ID]
 		eps := episodesByAnime[a.ID]
-		for n := 1; n <= total; n++ {
+		numbers := make([]int, 0, len(eps))
+		for n := range eps {
+			numbers = append(numbers, n)
+		}
+		first := firstEpisodeNumber(numbers)
+		for n := first; n < first+total; n++ {
 			if have[n] {
 				rep.Have = append(rep.Have, n)
 				continue

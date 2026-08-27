@@ -1,6 +1,7 @@
 # Environment
 .env
 .env.local
+docker-compose.local.yml
 *.env.local
 *.env.*
 !.env.example
@@ -145,3 +146,6 @@ api/server
 /aria2-config/
 # Local build cache directory
 /.build/
+
+# LLVM coverage droppings from swift test / xcodebuild
+*.profraw

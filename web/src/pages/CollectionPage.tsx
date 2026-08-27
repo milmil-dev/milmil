@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
-import { Skeleton } from '../components/Skeleton';
+import { Skeleton, SkeletonPosterGrid } from '../components/Skeleton';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
 import type { AnimeSummary } from '../lib/api/discover';
@@ -208,15 +208,7 @@ function CollectionSkeleton() {
       {/* Search row skeleton */}
       <Skeleton className="h-9 w-full max-w-sm rounded-lg" />
       {/* Card grid skeletons */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="space-y-2">
-            <Skeleton className="aspect-[3/4] rounded-lg" />
-            <Skeleton className="h-3 rounded" style={{ width: `${60 + (i % 3) * 15}%` }} />
-            <Skeleton className="h-2.5 w-12 rounded" />
-          </div>
-        ))}
-      </div>
+      <SkeletonPosterGrid count={14} className="min-[1100px]:grid-cols-7" />
     </div>
   );
 }
@@ -271,7 +263,7 @@ export function CollectionPage() {
           <div className="flex items-center gap-3">
             <div className="w-1 h-7 rounded-full bg-gradient-to-b from-mm-accent to-mm-accent/30" />
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-2xl font-bold text-ink tracking-tight">
                 {i18n._(msg`collection.title`)}
               </h1>
               {statusCounts && (
@@ -292,7 +284,7 @@ export function CollectionPage() {
             transition={{ delay: 0.05 }}
           >
             {/* Status tabs */}
-            <div className="flex items-end gap-0 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none border-b border-white/[0.06] mb-5">
+            <div className="flex items-end gap-0 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none border-b border-ink/[0.06] mb-5">
               {STATUS_TAB_KEYS.map((tab) => {
                 const isActive = selectedStatus === tab.value;
                 const count = getCount(tab.value);
@@ -313,9 +305,7 @@ export function CollectionPage() {
                       <span
                         className={cn(
                           'text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full',
-                          isActive
-                            ? 'bg-mm-accent/20 text-mm-accent'
-                            : 'bg-white/[0.06] text-white/40'
+                          isActive ? 'bg-mm-accent/20 text-mm-accent' : 'bg-ink/[0.06] text-ink/40'
                         )}
                       >
                         {count}
@@ -336,24 +326,24 @@ export function CollectionPage() {
             {/* Search + Sort row */}
             <div className="flex items-center gap-3 mb-6">
               <div className="relative flex-1 max-w-xs">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink/30 pointer-events-none" />
                 <input
                   type="text"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder={i18n._(msg`collection.searchPlaceholder`)}
-                  className="w-full pl-8 pr-3 py-2 text-sm bg-white/[0.05] border border-white/[0.08] rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-mm-accent/40 focus:bg-white/[0.07] transition-colors"
+                  className="w-full pl-8 pr-3 py-2 text-sm bg-ink/[0.05] border border-ink/[0.08] rounded-lg text-ink placeholder:text-ink/30 focus:outline-none focus:border-mm-accent/40 focus:bg-ink/[0.07] transition-colors"
                 />
               </div>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="px-3 py-2 text-sm bg-white/[0.05] border border-white/[0.08] rounded-lg text-white/70 focus:outline-none focus:border-mm-accent/40 cursor-pointer appearance-none transition-colors hover:bg-white/[0.07]"
+                className="px-3 py-2 text-sm bg-ink/[0.05] border border-ink/[0.08] rounded-lg text-ink/70 focus:outline-none focus:border-mm-accent/40 cursor-pointer appearance-none transition-colors hover:bg-ink/[0.07]"
               >
-                <option value="recent" className="bg-zinc-900 text-white">
+                <option value="recent" className="bg-mm-bg-elevated text-ink">
                   {i18n._(msg`collection.sortByRecent`)}
                 </option>
-                <option value="name" className="bg-zinc-900 text-white">
+                <option value="name" className="bg-mm-bg-elevated text-ink">
                   {i18n._(msg`collection.sortByName`)}
                 </option>
               </select>
@@ -366,13 +356,11 @@ export function CollectionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col items-center justify-center py-24 text-center"
               >
-                <Bookmark className="w-10 h-10 text-white/20 mb-4" />
-                <p className="text-[15px] font-medium text-white/50 mb-1">
+                <Bookmark className="w-10 h-10 text-ink/20 mb-4" />
+                <p className="text-[15px] font-medium text-ink/50 mb-1">
                   {i18n._(msg`collection.empty`)}
                 </p>
-                <p className="text-[13px] text-white/30 mb-5">
-                  {i18n._(msg`collection.emptyDesc`)}
-                </p>
+                <p className="text-[13px] text-ink/30 mb-5">{i18n._(msg`collection.emptyDesc`)}</p>
                 {isOverallEmpty && (
                   <a
                     href="/libraries"

@@ -26,7 +26,7 @@ export function AnimeEpisodeList({ expanded, children }: Props) {
           transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
           className="overflow-hidden"
         >
-          <div data-testid="card-divider" className="mx-4 h-px bg-white/[0.035]" />
+          <div data-testid="card-divider" className="mx-4 h-px bg-ink/[0.035]" />
           <div className="px-2 pt-1.5 pb-2.5 flex flex-col">
             {shouldVirtualize ? <VirtualList items={items} /> : items}
           </div>

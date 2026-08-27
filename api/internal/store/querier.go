@@ -13,8 +13,10 @@ type Querier interface {
 	BatchDeleteWatchProgress(ctx context.Context, arg BatchDeleteWatchProgressParams) (int64, error)
 	BumpTokenVersion(ctx context.Context, id string) error
 	ClearMediaFileMatch(ctx context.Context, id string) error
+	ClearUserAvatar(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
+	CountActiveExternalDevices(ctx context.Context) (int64, error)
 	CountCollectionByStatus(ctx context.Context) ([]CountCollectionByStatusRow, error)
 	CountCompletedWatchProgressByAnime(ctx context.Context, arg CountCompletedWatchProgressByAnimeParams) (CountCompletedWatchProgressByAnimeRow, error)
 	CountLibraries(ctx context.Context) (int64, error)
@@ -88,6 +90,7 @@ type Querier interface {
 	GetEpisodeByAnimeAndNumber(ctx context.Context, arg GetEpisodeByAnimeAndNumberParams) (Episode, error)
 	GetEpisodeByDandanplayID(ctx context.Context, dandanplayEpisodeID sql.NullInt64) (Episode, error)
 	GetExternalDanmakuByMediaFile(ctx context.Context, mediaFileID string) ([]ExternalDanmaku, error)
+	GetExternalDevice(ctx context.Context, deviceID string) (ExternalDevice, error)
 	GetLastDeliveryByProvider(ctx context.Context, provider string) (NotificationDelivery, error)
 	GetLatestCompletedSyncOp(ctx context.Context, arg GetLatestCompletedSyncOpParams) (SyncOutbox, error)
 	// Returns the most recent scan_summary for a library, or sql.ErrNoRows if
@@ -140,6 +143,7 @@ type Querier interface {
 	ListEpisodesByAnimeID(ctx context.Context, animeID string) ([]Episode, error)
 	ListEpisodesByAnimeIDWithAirDate(ctx context.Context, animeID string) ([]ListEpisodesByAnimeIDWithAirDateRow, error)
 	ListEpisodesByLibraryIDWithAirDate(ctx context.Context, libraryID sql.NullString) ([]ListEpisodesByLibraryIDWithAirDateRow, error)
+	ListExternalDevices(ctx context.Context) ([]ExternalDevice, error)
 	// Paginated, filterable list of watch progress enriched with anime + episode.
 	// No per-anime dedup: every watch_progress row is returned (one per episode).
 	// Cursor pagination on (last_watched_at DESC, id DESC).
@@ -189,6 +193,7 @@ type Querier interface {
 	// no-op rather than an endless increment.
 	RecordSeriesCompletion(ctx context.Context, arg RecordSeriesCompletionParams) error
 	RescheduleSyncOp(ctx context.Context, arg RescheduleSyncOpParams) error
+	RevokeExternalDevice(ctx context.Context, deviceID string) (int64, error)
 	// Fuzzy local anime search across all title columns. Caller passes a single
 	// LIKE pattern (e.g. "%Frieren%"); ranking is left to the caller.
 	SearchAnimeLocal(ctx context.Context, arg SearchAnimeLocalParams) ([]Anime, error)
@@ -198,7 +203,10 @@ type Querier interface {
 	SetEpisodePreferredManual(ctx context.Context, arg SetEpisodePreferredManualParams) error
 	SetPullEnabled(ctx context.Context, arg SetPullEnabledParams) error
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
+	SetUserAvatar(ctx context.Context, arg SetUserAvatarParams) error
+	SumCompletedDownloadBytesSince(ctx context.Context, arg SumCompletedDownloadBytesSinceParams) (int64, error)
 	SupersedeProgressOps(ctx context.Context, arg SupersedeProgressOpsParams) error
+	TouchExternalDevice(ctx context.Context, arg TouchExternalDeviceParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error
 	UnlinkMediaFilesByAnimeID(ctx context.Context, animeID string) error
 	UpdateAPITokenActivity(ctx context.Context, arg UpdateAPITokenActivityParams) error
@@ -208,6 +216,8 @@ type Querier interface {
 	UpdateAnimeScore(ctx context.Context, arg UpdateAnimeScoreParams) error
 	UpdateAnimeSyncFlags(ctx context.Context, arg UpdateAnimeSyncFlagsParams) error
 	UpdateAnimeTMDBID(ctx context.Context, arg UpdateAnimeTMDBIDParams) error
+	// Lazy backfill for rows created before title_original existed.
+	UpdateAnimeTitleOriginal(ctx context.Context, arg UpdateAnimeTitleOriginalParams) error
 	UpdateAnimeTraktShowID(ctx context.Context, arg UpdateAnimeTraktShowIDParams) error
 	UpdateAnimeUserScore(ctx context.Context, arg UpdateAnimeUserScoreParams) error
 	UpdateAnimeWatchStatus(ctx context.Context, arg UpdateAnimeWatchStatusParams) error
@@ -234,6 +244,7 @@ type Querier interface {
 	UpdateTranscodeSessionStatus(ctx context.Context, arg UpdateTranscodeSessionStatusParams) error
 	UpsertBackupConfig(ctx context.Context, arg UpsertBackupConfigParams) (BackupConfig, error)
 	UpsertExternalDanmaku(ctx context.Context, arg UpsertExternalDanmakuParams) (ExternalDanmaku, error)
+	UpsertExternalDevice(ctx context.Context, arg UpsertExternalDeviceParams) (ExternalDevice, error)
 	UpsertMediaFile(ctx context.Context, arg UpsertMediaFileParams) (MediaFile, error)
 	UpsertSetting(ctx context.Context, arg UpsertSettingParams) (Setting, error)
 	UpsertSyncProviderState(ctx context.Context, arg UpsertSyncProviderStateParams) error

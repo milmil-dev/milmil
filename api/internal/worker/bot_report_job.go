@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"sync"
 	"time"
@@ -30,34 +31,34 @@ func NewBotReportWorker(queries *store.Queries, sendFn func(resp *bot.BotRespons
 }
 
 // Run checks if a report is due and sends it.
-func (w *BotReportWorker) Run(ctx context.Context) {
+func (w *BotReportWorker) Run(ctx context.Context) error {
 	cfg, err := notification.LoadNotificationConfig(ctx, w.queries)
 	if err != nil {
 		slog.Debug("bot_report: load config failed", "err", err)
-		return
+		return nil
 	}
 
 	interval := w.resolveInterval(cfg)
 	if interval == 0 {
-		return
+		return nil
 	}
 
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
 	if !w.lastSent.IsZero() && time.Since(w.lastSent) < interval {
-		return
+		return nil
 	}
 
 	report, err := w.generator.GenerateDailyReport(ctx)
 	if err != nil {
-		slog.Error("bot_report: generate failed", "err", err)
-		return
+		return fmt.Errorf("generate report: %w", err)
 	}
 
 	w.sendFn(report)
 	w.lastSent = time.Now()
 	slog.Info("bot_report: sent periodic report")
+	return nil
 }
 
 // resolveInterval reads the report_interval from both Telegram and Discord bot config.

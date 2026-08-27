@@ -5,3 +5,12 @@ bun = "1.4.0"
 # Newer sqlc changes generated signatures (1.31 returns bool where 1.30
 # returned int64), which would show up as unrelated churn.
 sqlc = "1.30.0"
+# macOS client (macos/). Xcode itself is not managed here — see macos/AGENTS.md.
+xcodegen = "2.44.1"
+swiftlint = "0.63.2"
+watchexec = "2.3.2"   # `make macos-watch`
+
+[tasks."macos:gen"]
+description = "Generate macos/Milmil.xcodeproj from project.yml"
+dir = "macos"
+run = "xcodegen generate --quiet"

@@ -21,6 +21,7 @@ import { useUpdateCheck } from '../hooks/use-update-check';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
 import { NotificationBell } from './NotificationBell';
+import { UserAvatar } from './UserAvatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
@@ -60,7 +61,7 @@ function NavItem({
           aria-label={i18n._(msgKey)}
           className={cn(
             'relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200',
-            isActive ? 'text-white' : 'text-white/40 hover:text-white/80 hover:bg-white/[0.04]'
+            isActive ? 'text-ink' : 'text-ink/40 hover:text-ink/80 hover:bg-ink/[0.04]'
           )}
         >
           <AnimatePresence>
@@ -71,7 +72,7 @@ function NavItem({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 rounded-md bg-white/[0.08]"
+                className="absolute inset-0 rounded-md bg-ink/[0.08]"
               />
             )}
           </AnimatePresence>
@@ -116,8 +117,6 @@ function AccountAvatar() {
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
-  const initial = user?.username?.charAt(0)?.toUpperCase() ?? '?';
-
   return (
     <div ref={ref} className="relative">
       <Tooltip>
@@ -125,10 +124,10 @@ function AccountAvatar() {
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.08] text-white/60 text-xs font-bold cursor-pointer transition-all hover:bg-white/[0.12] hover:text-white/80"
+            className="flex items-center justify-center w-9 h-9 rounded-full cursor-pointer transition-all hover:opacity-80"
             aria-label={user?.username ?? 'Account'}
           >
-            {initial}
+            <UserAvatar user={user} size={36} />
           </button>
         </TooltipTrigger>
         {!open && <TooltipContent side="right">{user?.username ?? 'Account'}</TooltipContent>}
@@ -141,17 +140,15 @@ function AccountAvatar() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -4, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-[calc(100%+8px)] bottom-0 w-48 rounded-lg border border-white/[0.08] bg-[#111] shadow-xl shadow-black/50 overflow-hidden z-50"
+            className="absolute left-[calc(100%+8px)] bottom-0 w-48 rounded-lg border border-ink/[0.08] bg-mm-bg-elevated shadow-xl shadow-black/50 overflow-hidden z-50"
           >
             {/* User info */}
-            <div className="px-3 py-3 border-b border-white/[0.06]">
+            <div className="px-3 py-3 border-b border-ink/[0.06]">
               <div className="flex items-center gap-2.5">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/[0.08] text-white/60 text-xs font-bold shrink-0">
-                  {initial}
-                </div>
+                <UserAvatar user={user} size={32} />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white truncate">{user?.username}</p>
-                  <p className="text-[10px] text-white/30">{i18n._(msg`account.local`)}</p>
+                  <p className="text-sm font-medium text-ink truncate">{user?.username}</p>
+                  <p className="text-[10px] text-ink/30">{i18n._(msg`account.local`)}</p>
                 </div>
               </div>
             </div>
@@ -164,7 +161,7 @@ function AccountAvatar() {
                   setOpen(false);
                   navigate({ to: '/settings' });
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-ink/60 hover:text-ink hover:bg-ink/[0.04] transition-colors cursor-pointer"
               >
                 <HugeiconsIcon icon={Setting07Icon} size={15} strokeWidth={1.5} />
                 {i18n._(msg`nav.settings`)}
@@ -215,7 +212,7 @@ export function AppSidebar() {
               <NavItem key={to} to={to} msgKey={msgKey} icon={icon} isActive={isActive(to)} />
             ))}
 
-            <div className="w-6 h-px my-3 bg-white/[0.06]" />
+            <div className="w-6 h-px my-3 bg-ink/[0.06]" />
 
             {bottomNav.map(({ to, msgKey, icon }) => (
               <NavItem
@@ -261,7 +258,7 @@ export function MobileNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around h-14 md:hidden safe-area-bottom"
       style={{
-        backgroundColor: 'rgba(7,7,7,0.85)',
+        backgroundColor: 'var(--mm-glass)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
       }}
@@ -272,7 +269,7 @@ export function MobileNav() {
           to={to}
           className={cn(
             'flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors',
-            isActive(to) ? 'text-mm-accent' : 'text-white/30'
+            isActive(to) ? 'text-mm-accent' : 'text-ink/30'
           )}
         >
           <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive(to) ? 2 : 1.5} />

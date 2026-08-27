@@ -33,8 +33,8 @@ export function AnimeDownloadCard({
     <div
       data-testid="anime-download-card"
       className={cn(
-        'relative bg-white/[0.02] hover:bg-white/[0.035] transition-colors',
-        'border border-white/[0.06] rounded-[14px] overflow-hidden',
+        'relative bg-ink/[0.02] hover:bg-ink/[0.035] transition-colors',
+        'border border-ink/[0.06] rounded-[14px] overflow-hidden',
         className
       )}
     >

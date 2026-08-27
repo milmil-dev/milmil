@@ -167,7 +167,7 @@ export function HomePage() {
                     key={genre}
                     to="/search"
                     search={{ genre }}
-                    className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors bg-transparent hover:bg-white/[0.06] text-white/40 hover:text-white/70 cursor-pointer"
+                    className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors bg-transparent hover:bg-ink/[0.06] text-ink/40 hover:text-ink/70 cursor-pointer"
                   >
                     {translateGenre(genre, i18n.locale)}
                   </Link>
@@ -207,10 +207,10 @@ function SectionHeader({ title, to }: { title: string; to: string }) {
   const { i18n } = useLingui();
   return (
     <div className="flex items-baseline justify-between mb-4">
-      <h2 className="text-lg lg:text-xl font-semibold text-white tracking-tight">{title}</h2>
+      <h2 className="text-lg lg:text-xl font-semibold text-ink tracking-tight">{title}</h2>
       <Link
         to={to}
-        className="text-[12px] font-medium transition-colors hover:text-white text-white/40 cursor-pointer"
+        className="text-[12px] font-medium transition-colors hover:text-ink text-ink/40 cursor-pointer"
       >
         {i18n._(msg`home.viewAll`)}
       </Link>

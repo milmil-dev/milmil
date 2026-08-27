@@ -19,7 +19,7 @@ export function AnimeRow({ anime, index = 0 }: { anime: AnimeSummary; index?: nu
     >
       <Link
         to={`/anime/${anime.bangumi_id}` as string}
-        className="group flex items-center gap-3 py-2.5 px-3 rounded-md transition-colors hover:bg-white/[0.04]"
+        className="group flex items-center gap-3 py-2.5 px-3 rounded-md transition-colors hover:bg-ink/[0.04]"
       >
         <div
           className="shrink-0 w-10 h-14 rounded overflow-hidden"
@@ -35,7 +35,7 @@ export function AnimeRow({ anime, index = 0 }: { anime: AnimeSummary; index?: nu
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-medium text-white truncate">{anime.title}</p>
+          <p className="text-[13px] font-medium text-ink truncate">{anime.title}</p>
           <p className="text-[11px] truncate mt-0.5 text-mm-text-tertiary">
             {anime.title_original}
           </p>

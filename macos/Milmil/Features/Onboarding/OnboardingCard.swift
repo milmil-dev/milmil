@@ -1,0 +1,130 @@
+import SwiftUI
+
+/// The centred glass card every pre-login screen sits in, over a tilted
+/// poster wall (the web login page's backdrop).
+struct OnboardingCard<Content: View>: View {
+    let title: String
+    let subtitle: String
+    @ViewBuilder var content: () -> Content
+    @ObserveInjection private var inject
+
+    var body: some View {
+        ZStack {
+            PosterWall()
+            VStack(spacing: 0) {
+                AppMark(size: 52)
+                    .padding(.bottom, 14)
+                Text(title)
+                    .font(.system(size: 22, weight: .bold))
+                Text(subtitle)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Theme.Text.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 4)
+                    .padding(.bottom, 24)
+                VStack(alignment: .leading, spacing: 14) {
+                    content()
+                }
+                .padding(24)
+                .frame(width: 420)
+                .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.ink(0.08)))
+                .shadow(color: .black.opacity(0.5), radius: 30, y: 20)
+            }
+            .compositingGroup()
+        }
+        .frame(minWidth: 800, minHeight: 560)
+    }
+}
+
+struct AppMark: View {
+    var size: CGFloat
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
+                .fill(Theme.accent.opacity(0.1))
+                .overlay(RoundedRectangle(cornerRadius: size * 0.27, style: .continuous).strokeBorder(Theme.accent.opacity(0.2)))
+            Image("BrandMark")
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.72, height: size * 0.72)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
+    }
+}
+
+/// The web login page's cinema wall: trending covers from
+/// `GET /discover/trending` in a 14-column grid, tilted in perspective
+/// (`rotateY(-22°) rotateZ(2°)`), dimmed 55 %, vignetted, with an accent glow
+/// behind the form. Falls back to title-keyed gradients until covers arrive
+/// (or when there is no server yet). The only motion is a one-off fade-in.
+struct PosterWall: View {
+    @Environment(SessionStore.self) private var session
+    @ObserveInjection private var inject
+
+    private static let columns = 14
+    private static let slots = 210
+    private static let fallbackNames = ["尖帽子的魔法工房", "黄泉使者", "葬送的芙莉莲", "药屋少女的呢喃", "迷宫饭", "夏日重现", "异兽魔都", "左撇子艾伦"]
+
+    var body: some View {
+        // AppKit layer tree: the perspective lives on that view's own layer.
+        // (SwiftUI's rotation3DEffect leaked onto the whole window on macOS.)
+        PosterWallLayerView(covers: session.trendingCovers, fallbackSeeds: Self.fallbackNames, columns: Self.columns, slots: Self.slots)
+        .allowsHitTesting(false)
+        .overlay(Color.black.opacity(0.55))
+        .overlay(
+            RadialGradient(
+                stops: [
+                    .init(color: .clear, location: 0),
+                    .init(color: Theme.background.opacity(0.35), location: 0.7),
+                    .init(color: Theme.background, location: 1),
+                ],
+                center: .center,
+                startRadius: 0,
+                endRadius: 900
+            )
+        )
+        .overlay(
+            // Accent glow behind the form (web: 600px circle at 5% + 120px blur).
+            // A radial gradient instead of `.blur` so nothing clips to a hard disc.
+            RadialGradient(colors: [Theme.accent.opacity(0.07), .clear], center: .center, startRadius: 0, endRadius: 420)
+        )
+        .ignoresSafeArea()
+        .accessibilityHidden(true)
+    }
+}
+
+/// Label + control stack used by the onboarding forms.
+struct FormField<Control: View>: View {
+    let label: String
+    @ViewBuilder var control: () -> Control
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.Text.secondary)
+            control()
+        }
+    }
+}
+
+struct InlineError: View {
+    let message: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "exclamationmark.circle.fill")
+                .foregroundStyle(.red)
+            Text(message)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(Theme.Text.primary)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .combine)
+    }
+}

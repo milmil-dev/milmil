@@ -43,9 +43,9 @@ export function EpisodeGrid({ episodes, currentSort, onSelectEpisode }: EpisodeG
 
     if (!hasFile) return 'opacity-25 cursor-not-allowed';
     if (isCurrent) return 'bg-blue-500/20 border border-blue-400/50 text-blue-300 font-bold';
-    if (completed) return 'bg-green-500/[0.12] text-white/50';
-    if (inProgress) return 'bg-amber-500/[0.12] text-white/50';
-    return 'bg-white/[0.05] text-white/40 hover:bg-white/[0.08]';
+    if (completed) return 'bg-green-500/[0.12] text-ink/50';
+    if (inProgress) return 'bg-amber-500/[0.12] text-ink/50';
+    return 'bg-ink/[0.05] text-ink/40 hover:bg-ink/[0.08]';
   }
 
   // Build page range labels like "1-24", "25-48"
@@ -95,7 +95,7 @@ export function EpisodeGrid({ episodes, currentSort, onSelectEpisode }: EpisodeG
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-white/30">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-ink/30">
         <span className="flex items-center gap-1.5">
           <span className="inline-block w-2.5 h-2.5 rounded-sm bg-blue-500/20 border border-blue-400/50" />
           {i18n._(msg`watch.playing`)}

@@ -67,7 +67,7 @@
 - **直接串流** — 相容格式的 byte-range 請求
 - **容器重新封裝** — MKV 轉 MP4，無需轉碼
 - **HLS 轉碼** — 基於 FFmpeg 的自適應串流，支援 session 快取
-- **彈幕** — 來自 DandanPlay 的彈幕留言覆蓋層
+- **彈幕** — 來自 弹弹play开放弹幕网络（DandanPlay） 的彈幕留言覆蓋層
 - **字幕支援** — 內嵌及外掛字幕軌
 - **觀看進度** — 自動儲存位置及續播
 - **外部播放器支援** — 透過 Jellyfin 相容 API 連接 Infuse、VLC、Kodi、mpv，支援 LAN 自動探索
@@ -175,7 +175,7 @@ API 執行於 `http://localhost:8080`，前端執行於 `http://localhost:5173`�
 |------|------|------|
 | **Bangumi** | 動畫中繼資料、OAuth 同步 | 設定 > 整合 |
 | **AniList** | 替代中繼資料來源、OAuth 同步 | 設定 > 整合 |
-| **DandanPlay** | 檔案比對、彈幕留言 | 環境變數或設定頁面 |
+| **弹弹play开放弹幕网络（DandanPlay）** | 檔案比對、彈幕留言 | 環境變數或設定頁面 |
 | **TMDB** | TV 節目交叉參照 | 設定 > 整合 |
 
 ---

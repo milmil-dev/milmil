@@ -12,6 +12,8 @@ import (
 	"github.com/milmil/api/internal/config"
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
+	"github.com/milmil/api/internal/integration/bilibili"
+	"github.com/milmil/api/internal/integration/jikan"
 	"github.com/milmil/api/internal/metadata"
 	_ "modernc.org/sqlite"
 )
@@ -94,6 +96,14 @@ func (m *stubAniList) GetMediaRelations(ctx context.Context, id int) (*anilist.M
 	return nil, nil
 }
 
+type stubBilibili struct{}
+
+func (stubBilibili) Timeline(ctx context.Context) ([]bilibili.Episode, error) { return nil, nil }
+
+type stubJikan struct{}
+
+func (stubJikan) CurrentSeason(ctx context.Context) ([]jikan.Anime, error) { return nil, nil }
+
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 func newTestAppWithMetadata(t *testing.T, bgm bangumi.Client, al anilist.Client) *echo.Echo {
@@ -101,7 +111,7 @@ func newTestAppWithMetadata(t *testing.T, bgm bangumi.Client, al anilist.Client)
 	database, dsn := newTestDB(t)
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn}
 	c := cache.New("")
-	metadataSvc := metadata.New(bgm, al, c)
+	metadataSvc := metadata.New(bgm, al, c, metadata.WithAirTimeSources(stubBilibili{}, stubJikan{}))
 	return api.NewRouter(api.Deps{
 		Config: cfg, DB: database, Cache: c, Metadata: metadataSvc, UpdateChecker: noopChecker(),
 	})

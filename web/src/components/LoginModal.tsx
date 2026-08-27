@@ -80,14 +80,14 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
       <div className="pt-2">
         {/* Mode tabs — only show setup tab if no admin exists yet */}
         {!isInitialized ? (
-          <div className="flex mb-6 border-b border-white/[0.06]">
+          <div className="flex mb-6 border-b border-ink/[0.06]">
             <button
               type="button"
               onClick={() => switchMode('login')}
               className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
                 mode === 'login'
-                  ? 'text-white border-b-2 border-mm-accent'
-                  : 'text-white/30 hover:text-white/50'
+                  ? 'text-ink border-b-2 border-mm-accent'
+                  : 'text-ink/30 hover:text-ink/50'
               }`}
             >
               {i18n._(msg`auth.login.title`)}
@@ -97,19 +97,19 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
               onClick={() => switchMode('setup')}
               className={`flex-1 pb-3 text-sm font-medium transition-colors cursor-pointer ${
                 mode === 'setup'
-                  ? 'text-white border-b-2 border-mm-accent'
-                  : 'text-white/30 hover:text-white/50'
+                  ? 'text-ink border-b-2 border-mm-accent'
+                  : 'text-ink/30 hover:text-ink/50'
               }`}
             >
               {i18n._(msg`auth.setup.title`)}
             </button>
           </div>
         ) : (
-          <h3 className="text-lg font-semibold text-white mb-6">{i18n._(msg`auth.login.title`)}</h3>
+          <h3 className="text-lg font-semibold text-ink mb-6">{i18n._(msg`auth.login.title`)}</h3>
         )}
 
         {mode === 'setup' && (
-          <p className="text-[13px] text-white/40 mb-4">{i18n._(msg`auth.setup.subtitle`)}</p>
+          <p className="text-[13px] text-ink/40 mb-4">{i18n._(msg`auth.setup.subtitle`)}</p>
         )}
 
         <form

@@ -157,30 +157,28 @@ export function FolderBrowserCore({
 
   return (
     <>
-      <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.06] overflow-x-auto">
+      <div className="flex items-center gap-1 px-3 py-2 border-b border-ink/[0.06] overflow-x-auto">
         <button
           type="button"
           onClick={() => handleCrumbClick(-1)}
           className={cn(
             'text-xs shrink-0 transition-colors cursor-pointer',
-            breadcrumbs.length === 0
-              ? 'text-white/70 font-medium'
-              : 'text-white/40 hover:text-white/60'
+            breadcrumbs.length === 0 ? 'text-ink/70 font-medium' : 'text-ink/40 hover:text-ink/60'
           )}
         >
           /
         </button>
         {displayBreadcrumbs.map((segment, i) => (
           <span key={`${segment}-${i}`} className="flex items-center gap-1 shrink-0">
-            <span className="text-white/20 text-[10px]">›</span>
+            <span className="text-ink/20 text-[10px]">›</span>
             <button
               type="button"
               onClick={() => handleCrumbClick(i)}
               className={cn(
                 'text-xs transition-colors cursor-pointer',
                 i === displayBreadcrumbs.length - 1
-                  ? 'text-white/70 font-medium'
-                  : 'text-white/40 hover:text-white/60'
+                  ? 'text-ink/70 font-medium'
+                  : 'text-ink/40 hover:text-ink/60'
               )}
             >
               {segment}
@@ -206,7 +204,7 @@ export function FolderBrowserCore({
                   initial={{ opacity: 0, scaleX: 0.7 }}
                   animate={{ opacity: 1, scaleX: 1 }}
                   transition={{ delay: i * 0.05, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                  className="h-10 rounded-md bg-white/[0.03] origin-left"
+                  className="h-10 rounded-md bg-ink/[0.03] origin-left"
                   style={{
                     animationName: 'pulse',
                     animationDuration: '1.5s',
@@ -227,9 +225,7 @@ export function FolderBrowserCore({
               transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
               className="flex items-center justify-center h-full"
             >
-              <p className="text-xs text-white/30">
-                {i18n._(msg`library.browse.noSubdirectories`)}
-              </p>
+              <p className="text-xs text-ink/30">{i18n._(msg`library.browse.noSubdirectories`)}</p>
             </motion.div>
           )}
 
@@ -257,10 +253,10 @@ export function FolderBrowserCore({
                       handleCrumbClick(-1);
                     }
                   }}
-                  className="w-full px-3 py-2 flex items-center gap-2.5 rounded-md cursor-pointer text-xs text-white/40 hover:text-white/60 hover:bg-white/[0.03] transition-colors mb-0.5"
+                  className="w-full px-3 py-2 flex items-center gap-2.5 rounded-md cursor-pointer text-xs text-ink/40 hover:text-ink/60 hover:bg-ink/[0.03] transition-colors mb-0.5"
                 >
-                  <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
-                    <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/30">
+                  <div className="shrink-0 w-7 h-7 rounded-md bg-ink/[0.04] flex items-center justify-center">
+                    <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-ink/30">
                       <path
                         d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
                         stroke="currentColor"
@@ -276,10 +272,10 @@ export function FolderBrowserCore({
                   key={entry.path}
                   type="button"
                   onClick={() => handleDirectoryClick(entry)}
-                  className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-white/70 hover:bg-white/[0.04] transition-colors"
+                  className="w-full px-3 py-2.5 flex items-center gap-2.5 rounded-md cursor-pointer text-sm text-ink/70 hover:bg-ink/[0.04] transition-colors"
                 >
-                  <div className="shrink-0 w-7 h-7 rounded-md bg-white/[0.04] flex items-center justify-center">
-                    <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-white/40">
+                  <div className="shrink-0 w-7 h-7 rounded-md bg-ink/[0.04] flex items-center justify-center">
+                    <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-ink/40">
                       <path
                         d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
                         stroke="currentColor"
@@ -288,7 +284,7 @@ export function FolderBrowserCore({
                     </svg>
                   </div>
                   <span className="truncate font-medium">{entry.name}</span>
-                  <span className="ml-auto text-white/15 text-[10px] shrink-0">&#9654;</span>
+                  <span className="ml-auto text-ink/15 text-[10px] shrink-0">&#9654;</span>
                 </button>
               ))}
             </motion.div>
@@ -328,13 +324,13 @@ export function FolderBrowser({
         <button
           type="button"
           onClick={() => setOpened(true)}
-          className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+          className="text-[10px] font-medium uppercase tracking-[0.2em] text-ink/40 hover:text-ink/60 transition-colors cursor-pointer"
         >
           {i18n._(msg`library.browse.folders`)}
         </button>
       </div>
       {opened && (
-        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+        <div className="rounded-lg border border-ink/[0.06] bg-ink/[0.02] overflow-hidden">
           <FolderBrowserCore
             sourceType={sourceType}
             getSourceConfig={getSourceConfig}
@@ -346,9 +342,9 @@ export function FolderBrowser({
             onLoadedChange={setHasLoaded}
             height={height}
           />
-          <div className="h-[52px] px-3 py-2.5 border-t border-white/[0.06] flex items-center">
+          <div className="h-[52px] px-3 py-2.5 border-t border-ink/[0.06] flex items-center">
             {isShareLevel ? (
-              <p className="text-[11px] text-white/25 text-center w-full">
+              <p className="text-[11px] text-ink/25 text-center w-full">
                 {i18n._(msg`library.wizard.smb.chooseServer`)}
               </p>
             ) : hasLoaded ? (
@@ -359,7 +355,7 @@ export function FolderBrowser({
                   'w-full px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer flex items-center justify-center gap-2',
                   currentPath === browsePath
                     ? 'bg-mm-accent/15 border border-mm-accent/30 text-mm-accent'
-                    : 'bg-white/[0.06] text-white/60 hover:bg-white/[0.10] hover:text-white/80'
+                    : 'bg-ink/[0.06] text-ink/60 hover:bg-ink/[0.10] hover:text-ink/80'
                 )}
               >
                 {currentPath === browsePath ? (
@@ -377,7 +373,7 @@ export function FolderBrowser({
                   </>
                 ) : (
                   <>
-                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-white/40">
+                    <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-ink/40">
                       <path
                         d="M3 6a2 2 0 0 1 2-2h3.5l2 2H15a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"
                         stroke="currentColor"
@@ -385,7 +381,7 @@ export function FolderBrowser({
                       />
                     </svg>
                     {i18n._(msg`library.browse.select`)}
-                    <span className="font-mono text-xs text-white/40">{browsePath}</span>
+                    <span className="font-mono text-xs text-ink/40">{browsePath}</span>
                   </>
                 )}
               </button>
@@ -477,12 +473,12 @@ export function FolderPickerDialog({
               type="button"
               onClick={reload}
               aria-label={i18n._(msg`library.folderPicker.refresh`)}
-              className="shrink-0 p-2 rounded-md text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              className="shrink-0 p-2 rounded-md text-ink/60 hover:text-ink/90 hover:bg-ink/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
             >
               <HugeiconsIcon icon={RefreshIcon} className="w-4 h-4" />
             </button>
           </div>
-          <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+          <div className="rounded-lg border border-ink/[0.06] bg-ink/[0.02] overflow-hidden">
             <FolderBrowserCore
               key={coreKey}
               sourceType={sourceType}
@@ -548,7 +544,7 @@ export function PathFieldWithPicker({
           type="button"
           onClick={() => setPickerOpen(true)}
           aria-label={i18n._(msg`library.browseFolder`)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-ink/60 hover:text-ink/90 hover:bg-ink/[0.06] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
         >
           <HugeiconsIcon icon={FolderOpenIcon} className="w-4 h-4" />
         </button>

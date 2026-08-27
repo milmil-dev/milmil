@@ -19,7 +19,7 @@ internal/store/    sqlc-GENERATED database access (do not hand-edit)
 internal/jellyfin/ Jellyfin-compatible API surface
 internal/library/  Scanning, renaming, completeness, duplicates
 internal/matcher/  Filename parsing and anime matching
-internal/metadata/ Provider aggregation (Bangumi, AniList, TMDB, AniDB)
+internal/metadata/ Provider aggregation (Bangumi, AniList, TMDB, AniDB, Bilibili/Jikan air times)
 internal/storage/  Local / SMB / SFTP / rclone backends
 migrations/        Numbered golang-migrate pairs, embedded via embed.go
 ```

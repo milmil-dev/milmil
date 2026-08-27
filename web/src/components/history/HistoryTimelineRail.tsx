@@ -107,7 +107,7 @@ export function HistoryTimelineRail({ visibleBuckets }: HistoryTimelineRailProps
           .map((b, i) => (
             <div
               key={b.key}
-              className="flex items-center justify-end gap-3 text-[14px] font-semibold text-white/70"
+              className="flex items-center justify-end gap-3 text-[14px] font-semibold text-ink/70"
               style={{ paddingRight: ROW_PR }}
             >
               <span>{labels[b.key]}</span>

@@ -49,7 +49,7 @@ export function EpisodeSidebar({
   return (
     <div className="flex flex-col h-[calc(100vh-6rem)]">
       {/* Tab bar */}
-      <div className="flex border-b border-white/[0.06]">
+      <div className="flex border-b border-ink/[0.06]">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -57,12 +57,12 @@ export function EpisodeSidebar({
             onClick={() => setActiveTab(tab.id)}
             className={cn(
               'relative px-4 py-2.5 text-sm font-medium transition-colors',
-              activeTab === tab.id ? 'text-blue-400' : 'text-white/40 hover:text-white/60'
+              activeTab === tab.id ? 'text-blue-400' : 'text-ink/40 hover:text-ink/60'
             )}
           >
             <span className="flex items-center gap-1.5">
               {tab.label}
-              {tab.badge && <span className="text-[11px] text-white/30">{tab.badge}</span>}
+              {tab.badge && <span className="text-[11px] text-ink/30">{tab.badge}</span>}
             </span>
             {activeTab === tab.id && (
               <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-blue-400 rounded-full" />

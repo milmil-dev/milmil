@@ -3,6 +3,7 @@ package jellyfin
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
@@ -20,13 +21,22 @@ func (h *Handler) handleGetUser(c *echo.Context) error {
 		return c.JSON(http.StatusNotFound, JellyfinError{Message: "User not found"})
 	}
 
-	return c.JSON(http.StatusOK, UserDTO{
+	return c.JSON(http.StatusOK, h.userDTO(user, userIDEncoded))
+}
+
+// userDTO builds the Jellyfin user document, with the avatar tag when set.
+func (h *Handler) userDTO(user store.User, encodedID string) UserDTO {
+	dto := UserDTO{
 		Name:                  user.Username,
 		ServerID:              h.serverID,
-		ID:                    userIDEncoded,
+		ID:                    encodedID,
 		HasPassword:           true,
 		HasConfiguredPassword: true,
-	})
+	}
+	if user.AvatarPath.Valid && user.AvatarUpdatedAt.Valid {
+		dto.PrimaryImageTag = strings.NewReplacer(":", "", "-", "").Replace(user.AvatarUpdatedAt.String)
+	}
+	return dto
 }
 
 func (h *Handler) handleGroupingOptions(c *echo.Context) error {

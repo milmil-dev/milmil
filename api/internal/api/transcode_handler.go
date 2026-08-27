@@ -168,23 +168,20 @@ func (h *handler) handleHLSMaster(c *echo.Context) error {
 		})
 	}
 
-	m3u8Path := filepath.Join(session.OutputDir, "master.m3u8")
-	return c.File(m3u8Path)
+	return serveLocalFile(c, session.OutputDir, "master.m3u8", "application/vnd.apple.mpegurl")
 }
 
 func (h *handler) handleHLSSegment(c *echo.Context) error {
 	token := c.Param("token")
 	segment := c.Param("segment")
+	if !safePathSegment(segment) {
+		return echo.NewHTTPError(http.StatusNotFound, "segment not found")
+	}
 
 	session, err := h.queries.GetTranscodeSession(c.Request().Context(), token)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "session not found")
 	}
 
-	segmentPath := filepath.Join(session.OutputDir, segment)
-	if _, statErr := os.Stat(segmentPath); os.IsNotExist(statErr) {
-		return echo.NewHTTPError(http.StatusNotFound, "segment not found")
-	}
-
-	return c.File(segmentPath)
+	return serveLocalFile(c, session.OutputDir, segment, "")
 }

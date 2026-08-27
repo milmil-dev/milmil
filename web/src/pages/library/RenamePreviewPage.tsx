@@ -48,16 +48,16 @@ export function RenamePreviewPage() {
           <Link
             to="/libraries/$id"
             params={{ id: libraryId }}
-            className="text-xs text-white/50 hover:text-white/80"
+            className="text-xs text-ink/50 hover:text-ink/80"
           >
             {i18n._(msg`← Back to library`)}
           </Link>
-          <h1 className="text-lg font-semibold text-white/90">{i18n._(msg`Rename preview`)}</h1>
+          <h1 className="text-lg font-semibold text-ink/90">{i18n._(msg`Rename preview`)}</h1>
         </div>
         <button
           type="button"
           disabled={ok.length === 0 || apply.isPending}
-          className="rounded bg-white/10 px-3 py-1 text-sm text-white hover:bg-red-500/30 disabled:opacity-50"
+          className="rounded bg-ink/10 px-3 py-1 text-sm text-ink hover:bg-red-500/30 disabled:opacity-50"
           onClick={() => {
             if (
               window.confirm(
@@ -73,10 +73,10 @@ export function RenamePreviewPage() {
       </div>
 
       {plans.length === 0 ? (
-        <div className="text-white/60">{i18n._(msg`No rename plans.`)}</div>
+        <div className="text-ink/60">{i18n._(msg`No rename plans.`)}</div>
       ) : (
         <table className="w-full text-xs">
-          <thead className="text-white/50">
+          <thead className="text-ink/50">
             <tr>
               <th className="py-1 text-left">{i18n._(msg`Status`)}</th>
               <th className="py-1 text-left">{i18n._(msg`Old`)}</th>
@@ -85,10 +85,10 @@ export function RenamePreviewPage() {
           </thead>
           <tbody>
             {plans.map((p) => (
-              <tr key={p.media_file_id} className="border-t border-white/10 align-top">
-                <td className="py-1 pr-2 text-white/70">{p.status}</td>
-                <td className="py-1 pr-2 text-white/60">{p.old_path}</td>
-                <td className="py-1 text-white/90">
+              <tr key={p.media_file_id} className="border-t border-ink/10 align-top">
+                <td className="py-1 pr-2 text-ink/70">{p.status}</td>
+                <td className="py-1 pr-2 text-ink/60">{p.old_path}</td>
+                <td className="py-1 text-ink/90">
                   {p.new_path}
                   {p.error ? <span className="ml-2 text-red-400">{p.error}</span> : null}
                 </td>

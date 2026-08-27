@@ -1,0 +1,150 @@
+# XcodeGen spec for the milmil macOS client. `Milmil.xcodeproj` is generated
+# (`mise run macos:gen` or `make macos-gen`) and not committed.
+name: Milmil
+
+options:
+  bundleIdPrefix: dev.milmil
+  developmentLanguage: zh-Hant
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  groupSortPosition: top
+  # Icon Composer packages must be single file references or actool never
+  # compiles them (XcodeGen unpacks unknown bundles into loose files).
+  fileTypes:
+    icon:
+      file: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    ARCHS: arm64
+    VALID_ARCHS: arm64
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    # No Developer Team yet: ad-hoc signing, no hardened runtime, no sandbox.
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    ENABLE_APP_SANDBOX: NO
+    SWIFT_EMIT_LOC_STRINGS: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+  configs:
+    Debug:
+      ONLY_ACTIVE_ARCH: YES
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      # Stable signature so the Keychain keeps trusting rebuilt dev builds
+      # (ad-hoc re-signing logged the user out on every rebuild). Exact name —
+      # generic "Apple Development" + team fails Xcode's cert discovery here.
+      # CI is unaffected: it builds with CODE_SIGNING_ALLOWED=NO.
+      CODE_SIGN_IDENTITY: "Apple Development: Sin Hong KAN (S82R6V4C8C)"
+
+packages:
+  MilmilKit:
+    path: Packages/MilmilKit
+  MilmilPlayer:
+    path: Packages/MilmilPlayer
+  # Danmaku Simplified↔Traditional conversion (MIT, OpenCC dictionaries).
+  SwiftyOpenCC:
+    url: https://github.com/ddddxxx/SwiftyOpenCC
+    exactVersion: 2.0.0-beta
+
+targets:
+  Milmil:
+    type: application
+    platform: macOS
+    sources:
+      - path: Milmil
+        excludes:
+          - "Resources/Info.plist"
+    dependencies:
+      - package: MilmilKit
+        product: MilmilAPI
+      - package: MilmilKit
+        product: MilmilRealtime
+      - package: MilmilKit
+        product: MilmilDanmaku
+      - package: MilmilPlayer
+        product: MilmilPlayer
+      - package: SwiftyOpenCC
+        product: OpenCC
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.milmil.macos
+        PRODUCT_NAME: milmil
+        MARKETING_VERSION: "0.1.19" # x-release-please-version
+        CURRENT_PROJECT_VERSION: "1"
+        # Swift 6.2 default isolation: everything in the app target is MainActor
+        # unless marked otherwise. Library code in Packages/ stays nonisolated.
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        CODE_SIGN_ENTITLEMENTS: Milmil/Resources/Milmil.entitlements
+        # Icon Composer package (Resources/milmil.icon) — Liquid Glass layered
+        # icon on macOS 26+; actool renders the flat fallback for older OSes.
+        ASSETCATALOG_COMPILER_APPICON_NAME: milmil
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+        DEVELOPMENT_ASSET_PATHS: '"Milmil/Preview Content"'
+        COMBINE_HIDPI_IMAGES: YES
+      configs:
+        Debug:
+          # Hot reload (InjectionIII): let the injected dylib interpose methods.
+          # Debug only — see Milmil/Shared/HotReload.swift.
+          OTHER_LDFLAGS: ["$(inherited)", "-Xlinker", "-interposable"]
+          EMIT_FRONTEND_COMMAND_LINES: YES
+    info:
+      path: Milmil/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: milmil
+        CFBundleName: milmil
+        LSApplicationCategoryType: public.app-category.entertainment
+        LSMinimumSystemVersion: "15.0"
+        NSHumanReadableCopyright: "© milmil contributors"
+        # Handoff: the watch page donates this activity with the web URL.
+        NSUserActivityTypes: [dev.milmil.watch]
+        # milmil://anime/<id>, milmil://watch/<id>?ep=<episodeID>, milmil://<tab>
+        CFBundleURLTypes:
+          - CFBundleURLName: dev.milmil.macos
+            CFBundleURLSchemes: [milmil]
+        # Double-click / drop a .torrent on the Dock icon → queued as a download.
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: BitTorrent document
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [org.bittorrent.torrent]
+        UTImportedTypeDeclarations:
+          - UTTypeIdentifier: org.bittorrent.torrent
+            UTTypeDescription: BitTorrent document
+            UTTypeConformsTo: [public.data]
+            UTTypeTagSpecification:
+              public.filename-extension: [torrent]
+              public.mime-type: [application/x-bittorrent]
+        # Self-hosted servers are commonly plain http on the LAN, and Bangumi
+        # covers are http://lain.bgm.tv. Only this key: adding
+        # NSAllowsLocalNetworking alongside makes ATS ignore it (Apple docs).
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        # macOS 15+ prompts for local-network access the first time we reach a LAN server.
+        NSLocalNetworkUsageDescription: milmil 需要連線到你區域網路內的 milmil 伺服器。
+
+schemes:
+  Milmil:
+    build:
+      targets:
+        Milmil: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - package: MilmilKit/MilmilAPITests
+        - package: MilmilKit/MilmilRealtimeTests
+        - package: MilmilKit/MilmilDanmakuTests
+        - package: MilmilPlayer/MilmilPlayerTests
+    archive:
+      config: Release

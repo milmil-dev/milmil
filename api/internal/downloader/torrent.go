@@ -7,6 +7,8 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -183,16 +185,56 @@ func (e *torrentEngine) resume(gid string) error {
 	return nil
 }
 
-func (e *torrentEngine) remove(gid string, _ bool) error {
+func (e *torrentEngine) remove(gid string, deleteFiles bool) error {
 	e.mu.Lock()
 	entry, ok := e.entries[gid]
+	var paths []string
 	if ok {
+		if deleteFiles {
+			paths = e.entryFilePaths(entry)
+		}
 		entry.t.Drop()
 		delete(e.entries, gid)
 	}
 	e.mu.Unlock()
-	// File deletion is handled by the caller (download handler).
+	for _, p := range paths {
+		if err := os.RemoveAll(p); err != nil {
+			slog.Warn("torrent: delete files", "path", p, "err", err)
+		}
+	}
 	return nil
+}
+
+// entryFilePaths lists what remove(deleteFiles:) may delete. With the default
+// per-infohash storage the whole directory belongs to the torrent; with an
+// explicit save dir (a library path) only the torrent's own files are listed —
+// never the directory, which contains other media. File paths come from the
+// torrent's metainfo (attacker-controlled), so anything absolute, traversing,
+// or resolving outside the save dir is refused.
+func (e *torrentEngine) entryFilePaths(entry *torrentEntry) []string {
+	if entry.saveDir == "" {
+		return []string{filepath.Join(e.dataDir, entry.gid)}
+	}
+	if entry.t.Info() == nil {
+		return nil // no metadata yet — nothing was written
+	}
+	base, err := filepath.Abs(entry.saveDir)
+	if err != nil {
+		return nil
+	}
+	paths := make([]string, 0, len(entry.t.Files()))
+	for _, f := range entry.t.Files() {
+		rel := f.Path()
+		if rel == "" || filepath.IsAbs(rel) {
+			continue
+		}
+		abs, err := filepath.Abs(filepath.Join(base, rel))
+		if err != nil || abs == base || !strings.HasPrefix(abs, base+string(os.PathSeparator)) {
+			continue
+		}
+		paths = append(paths, abs)
+	}
+	return paths
 }
 
 func (e *torrentEngine) status(gid string) (*Status, error) {

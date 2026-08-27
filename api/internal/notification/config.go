@@ -36,6 +36,21 @@ type ProvidersConfig struct {
 	Webhook  WebhookConfig  `json:"webhook"`
 }
 
+// KnownEvents lists every notification type the server emits; the clients'
+// event-routing matrices mirror it.
+var KnownEvents = []string{
+	"download.started",
+	"download.completed",
+	"download.failed",
+	"library.scan_complete",
+	"system.error",
+	"system.service_failed",
+	"auth.login",
+	"anime.airing",
+	"anime.daily_digest",
+	"anime.episode_ready",
+}
+
 // NotificationConfig is the top-level notification settings object stored in
 // the settings table under the "notifications" key.
 type NotificationConfig struct {

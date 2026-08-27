@@ -10,6 +10,7 @@ import { animeGradient } from '../lib/gradient';
 import { EpisodeListItem } from './EpisodeListItem';
 import { Modal } from './Modal';
 import { Skeleton } from './Skeleton';
+import { stripTags } from '../lib/sanitize';
 
 interface PreviewModalProps {
   anime: AnimeSummary | null;
@@ -104,11 +105,11 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.3) 50%, rgba(10,10,10,0.7) 100%)',
+                'linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--mm-bg-elevated) 30%, transparent) 50%, color-mix(in srgb, var(--mm-bg-elevated) 70%, transparent) 100%)',
             }}
           />
           {/* Scroll-driven dim overlay */}
-          <div ref={dimRef} className="absolute inset-0 bg-black" style={{ opacity: 0 }} />
+          <div ref={dimRef} className="absolute inset-0 bg-mm-bg-elevated" style={{ opacity: 0 }} />
         </div>
       }
     >
@@ -233,7 +234,7 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
                   </div>
                 ) : synopsis ? (
                   <p className="text-[15px] text-gray-200 line-clamp-3 max-w-xl leading-relaxed">
-                    {synopsis.replace(/<[^>]+>/g, '')}
+                    {stripTags(synopsis)}
                   </p>
                 ) : null}
               </div>
@@ -282,12 +283,12 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
       {/* Trailer — compact, max 320px wide */}
       {detail?.trailer_url && (
         <div className="relative pt-4">
-          <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-white/30 mb-2">
+          <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink/30 mb-2">
             {i18n._(msg`anime.trailer`)}
           </h3>
           <div className="max-w-[320px]">
             <div
-              className="relative rounded-lg overflow-hidden border border-white/[0.06]"
+              className="relative rounded-lg overflow-hidden border border-ink/[0.06]"
               style={{ aspectRatio: '16/9' }}
             >
               <iframe
@@ -319,7 +320,7 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
         )}
         {!episodesLoading && episodes.length > 0 && (
           <div>
-            <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-white/30 mb-2">
+            <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink/30 mb-2">
               {i18n._(msg`anime.episodes`)} ({episodes.length})
             </h3>
             <div className="space-y-0.5">
@@ -342,10 +343,10 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
               <Link
                 to={`/anime/${bangumiId}` as string}
                 onClick={onClose}
-                className="flex items-center justify-center gap-2 mt-4 py-2.5 rounded-lg bg-white/[0.06] text-[12px] font-semibold text-white/50 hover:bg-white/[0.1] hover:text-white/80 transition-colors"
+                className="flex items-center justify-center gap-2 mt-4 py-2.5 rounded-lg bg-ink/[0.06] text-[12px] font-semibold text-ink/50 hover:bg-ink/[0.1] hover:text-ink/80 transition-colors"
               >
                 <span>{i18n._(msg`search.loadMore`)}</span>
-                <span className="text-[11px] text-white/30">
+                <span className="text-[11px] text-ink/30">
                   +{episodes.length - 20} {i18n._(msg`common.ep`)}
                 </span>
                 <span>→</span>

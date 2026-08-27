@@ -8,16 +8,19 @@ import (
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/bangumi"
+	"github.com/milmil/api/internal/integration/bilibili"
+	"github.com/milmil/api/internal/integration/jikan"
 	"github.com/milmil/api/internal/metadata"
 )
 
 // ─── Mock Bangumi Client ──────────────────────────────────────────────────────
 
 type mockBangumi struct {
-	searchFn   func(ctx context.Context, query string) ([]bangumi.Subject, error)
-	calendarFn func(ctx context.Context) ([]bangumi.CalendarDay, error)
-	subjectFn  func(ctx context.Context, id int) (*bangumi.Subject, error)
-	episodesFn func(ctx context.Context, id int) ([]bangumi.Episode, error)
+	searchFn      func(ctx context.Context, query string) ([]bangumi.Subject, error)
+	searchByTagFn func(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error)
+	calendarFn    func(ctx context.Context) ([]bangumi.CalendarDay, error)
+	subjectFn     func(ctx context.Context, id int) (*bangumi.Subject, error)
+	episodesFn    func(ctx context.Context, id int) ([]bangumi.Episode, error)
 }
 
 func (m *mockBangumi) SearchSubjects(ctx context.Context, query string, opts ...bangumi.SearchOption) ([]bangumi.Subject, error) {
@@ -53,6 +56,9 @@ func (m *mockBangumi) GetSubjectComments(ctx context.Context, subjectID int, lim
 }
 
 func (m *mockBangumi) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error) {
+	if m.searchByTagFn != nil {
+		return m.searchByTagFn(ctx, tags, sort, page, limit)
+	}
 	return nil, 0, nil
 }
 
@@ -105,6 +111,26 @@ func (m *mockAniList) GetMediaRelations(ctx context.Context, id int) (*anilist.M
 	return nil, nil
 }
 
+// ─── Stub air-time fallbacks ──────────────────────────────────────────────────
+
+type stubBilibili struct{ eps []bilibili.Episode }
+
+func (s *stubBilibili) Timeline(ctx context.Context) ([]bilibili.Episode, error) {
+	return s.eps, nil
+}
+
+type stubJikan struct{ entries []jikan.Anime }
+
+func (s *stubJikan) CurrentSeason(ctx context.Context) ([]jikan.Anime, error) {
+	return s.entries, nil
+}
+
+// newService builds a Service with the network-backed air-time fallbacks
+// stubbed out so tests never leave the process.
+func newService(bgm bangumi.Client, al anilist.Client, c cache.Cache) *metadata.Service {
+	return metadata.New(bgm, al, c, metadata.WithAirTimeSources(&stubBilibili{}, &stubJikan{}))
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 func TestGetCalendar_ReturnsChinese(t *testing.T) {
@@ -119,7 +145,7 @@ func TestGetCalendar_ReturnsChinese(t *testing.T) {
 			}}, nil
 		},
 	}
-	svc := metadata.New(bgm, &mockAniList{}, cache.New(""))
+	svc := newService(bgm, &mockAniList{}, cache.New(""))
 
 	days, err := svc.GetCalendar(context.Background())
 	if err != nil {
@@ -144,7 +170,7 @@ func TestGetCalendar_CacheHit(t *testing.T) {
 			}}, nil
 		},
 	}
-	svc := metadata.New(bgm, &mockAniList{}, cache.New(""))
+	svc := newService(bgm, &mockAniList{}, cache.New(""))
 
 	svc.GetCalendar(context.Background())
 	svc.GetCalendar(context.Background())
@@ -171,7 +197,7 @@ func TestGetCalendar_FallsBackToStaleOnUpstreamError(t *testing.T) {
 		},
 	}
 	c := cache.New("")
-	svc := metadata.New(bgm, &mockAniList{}, c)
+	svc := newService(bgm, &mockAniList{}, c)
 
 	if _, err := svc.GetCalendar(context.Background()); err != nil {
 		t.Fatalf("seed call: %v", err)
@@ -215,7 +241,7 @@ func TestGetCalendar_FallsBackToAniListWhenBangumiFailsAndNoStale(t *testing.T) 
 			}}, nil
 		},
 	}
-	svc := metadata.New(bgm, al, cache.New(""))
+	svc := newService(bgm, al, cache.New(""))
 
 	days, err := svc.GetCalendar(context.Background())
 	if err != nil {
@@ -250,6 +276,98 @@ func TestGetCalendar_FallsBackToAniListWhenBangumiFailsAndNoStale(t *testing.T) 
 	}
 }
 
+func TestGetCalendar_AirTimeSurvivesProviderTitleDrift(t *testing.T) {
+	bgm := &mockBangumi{
+		calendarFn: func(ctx context.Context) ([]bangumi.CalendarDay, error) {
+			return []bangumi.CalendarDay{{
+				Weekday: bangumi.Weekday{CN: "星期一", EN: "Mon"},
+				Items: []bangumi.Subject{
+					// AniList appends a tagline Bangumi omits.
+					{ID: 1, Name: "最強出涸らし皇子の暗躍帝位争い", NameCN: "最强废渣皇子暗中活跃于帝位之争"},
+					// AniList uses full-width digits, Bangumi half-width.
+					{ID: 2, Name: "ここは俺に任せて先に行けと言ってから10年がたったら伝説になっていた。", NameCN: "于是10年后我成为了传说"},
+				},
+			}}, nil
+		},
+	}
+	al := &mockAniList{
+		airingFn: func(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error) {
+			return []anilist.AiringSchedule{
+				{
+					AiringAt: 1704110220, // 2024-01-01 20:57 JST
+					Media: anilist.Media{ID: 100, Title: anilist.MediaTitle{
+						Native: "最強出涸らし皇子の暗躍帝位争い 無能を演じるSSランク皇子は皇位継承戦を影から支配する",
+					}},
+				},
+				{
+					AiringAt: 1704067200, // 2024-01-01 09:00 JST
+					Media: anilist.Media{ID: 101, Title: anilist.MediaTitle{
+						Native: "ここは俺に任せて先に行けと言ってから１０年がたったら伝説になっていた。",
+					}},
+				},
+			}, nil
+		},
+	}
+	svc := newService(bgm, al, cache.New(""))
+
+	days, err := svc.GetCalendar(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(days) != 1 || len(days[0].Items) != 2 {
+		t.Fatalf("want 1 day with 2 items, got %+v", days)
+	}
+	if got := days[0].Items[0].AirTime; got != "20:57" {
+		t.Errorf("subtitle-drift item: want AirTime=20:57, got %q", got)
+	}
+	if got := days[0].Items[1].AirTime; got != "09:00" {
+		t.Errorf("full-width item: want AirTime=09:00, got %q", got)
+	}
+}
+
+func TestGetCalendar_AirTimeFallsBackToBilibiliAndJikan(t *testing.T) {
+	bgm := &mockBangumi{
+		calendarFn: func(ctx context.Context) ([]bangumi.CalendarDay, error) {
+			return []bangumi.CalendarDay{{
+				Weekday: bangumi.Weekday{CN: "星期一", EN: "Mon"},
+				Items: []bangumi.Subject{
+					// Donghua — absent from AniList's schedule, on Bilibili's
+					// timeline under the same simplified-Chinese title.
+					{ID: 1, Name: "万古至尊：李云霄传", NameCN: ""},
+					// JP anime AniList has no schedule for; MAL knows the slot.
+					{ID: 2, Name: "北斗の拳 拳王軍ザコたちの挽歌 第2クール", NameCN: "北斗神拳 第二季"},
+				},
+			}}, nil
+		},
+	}
+	b := &stubBilibili{eps: []bilibili.Episode{
+		// 2024-01-01 09:00 CST = 10:00 JST — the calendar's contract is JST.
+		{Title: "万古至尊：李云霄传", PubTS: 1704070800},
+	}}
+	j := &stubJikan{entries: []jikan.Anime{{
+		Titles: []jikan.Title{
+			{Type: "Default", Title: "Hokuto no Ken: Ken-Ou Gun Zako-tachi no Banka"},
+			{Type: "Japanese", Title: "北斗の拳 拳王軍ザコたちの挽歌 第2クール"},
+		},
+		Broadcast: jikan.Broadcast{Day: "Mondays", Time: "23:00", Timezone: "Asia/Tokyo"},
+	}}}
+	svc := metadata.New(bgm, &mockAniList{}, cache.New(""), metadata.WithAirTimeSources(b, j))
+
+	days, err := svc.GetCalendar(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(days) != 1 || len(days[0].Items) != 2 {
+		t.Fatalf("want 1 day with 2 items, got %+v", days)
+	}
+	if got := days[0].Items[0].AirTime; got != "10:00" {
+		t.Errorf("bilibili item: want AirTime=10:00 (JST), got %q", got)
+	}
+	if got := days[0].Items[1].AirTime; got != "23:00" {
+		t.Errorf("jikan item: want AirTime=23:00, got %q", got)
+	}
+}
+
 func TestGetCalendar_PrefersStaleOverAniListFallback(t *testing.T) {
 	callCount := 0
 	bgm := &mockBangumi{
@@ -274,7 +392,7 @@ func TestGetCalendar_PrefersStaleOverAniListFallback(t *testing.T) {
 		},
 	}
 	c := cache.New("")
-	svc := metadata.New(bgm, al, c)
+	svc := newService(bgm, al, c)
 
 	if _, err := svc.GetCalendar(context.Background()); err != nil {
 		t.Fatalf("seed: %v", err)
@@ -309,7 +427,7 @@ func TestGetCalendar_ReturnsErrorWhenNoStaleAvailable(t *testing.T) {
 			return nil, errors.New("anilist down too")
 		},
 	}
-	svc := metadata.New(bgm, al, cache.New(""))
+	svc := newService(bgm, al, cache.New(""))
 
 	if _, err := svc.GetCalendar(context.Background()); err == nil {
 		t.Fatal("want error when both Bangumi and AniList fail with no stale cache")
@@ -325,7 +443,7 @@ func TestSearch_ReturnsBangumiResults(t *testing.T) {
 			}}, nil
 		},
 	}
-	svc := metadata.New(bgm, &mockAniList{}, cache.New(""))
+	svc := newService(bgm, &mockAniList{}, cache.New(""))
 
 	results, err := svc.Search(context.Background(), "Frieren", false)
 	if err != nil {
@@ -370,7 +488,7 @@ func TestGetAnimeDetail_EnrichesWithAniList(t *testing.T) {
 			}, nil
 		},
 	}
-	svc := metadata.New(bgm, al, cache.New(""))
+	svc := newService(bgm, al, cache.New(""))
 
 	detail, err := svc.GetAnimeDetail(context.Background(), 425848, false)
 	if err != nil {
@@ -404,7 +522,7 @@ func TestGetAnimeDetail_RefreshBypassesCache(t *testing.T) {
 			return nil, nil
 		},
 	}
-	svc := metadata.New(bgm, al, cache.New(""))
+	svc := newService(bgm, al, cache.New(""))
 
 	if _, err := svc.GetAnimeDetail(context.Background(), 425848, false); err != nil {
 		t.Fatal(err)
@@ -443,7 +561,7 @@ func TestGetTrending_EnrichesWithBangumi(t *testing.T) {
 			}}, nil
 		},
 	}
-	svc := metadata.New(bgm, al, cache.New(""))
+	svc := newService(bgm, al, cache.New(""))
 
 	results, err := svc.GetTrending(context.Background(), 1)
 	if err != nil {
@@ -457,5 +575,32 @@ func TestGetTrending_EnrichesWithBangumi(t *testing.T) {
 	}
 	if results[0].BangumiID != 1 {
 		t.Errorf("want BangumiID=1, got %d", results[0].BangumiID)
+	}
+}
+
+func TestBrowseByTag_MapsAniListSortsToBangumi(t *testing.T) {
+	cases := map[string]string{
+		"":                "rank",
+		"POPULARITY_DESC": "heat",
+		"TRENDING_DESC":   "heat",
+		"SCORE_DESC":      "score",
+		"START_DATE_DESC": "rank",
+		"heat":            "heat",
+	}
+	for input, want := range cases {
+		var got string
+		bgm := &mockBangumi{
+			searchByTagFn: func(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error) {
+				got = sort
+				return nil, 0, nil
+			},
+		}
+		svc := newService(bgm, &mockAniList{}, cache.New(""))
+		if _, err := svc.BrowseByTag(context.Background(), []string{"原创"}, input, 1); err != nil {
+			t.Fatalf("BrowseByTag(sort=%q): %v", input, err)
+		}
+		if got != want {
+			t.Errorf("sort %q sent to Bangumi as %q, want %q", input, got, want)
+		}
 	}
 }

@@ -18,7 +18,6 @@ const SOURCE_LABELS: Record<string, string> = {
   mikan: 'Mikan',
   'bangumi.moe': 'Bangumi.moe',
   'acg.rip': 'ACG.RIP',
-  dandanplay: 'DanDanPlay',
 };
 
 function SourceBadge({ source }: { source: string }) {
@@ -28,11 +27,10 @@ function SourceBadge({ source }: { source: string }) {
     mikan: 'bg-orange-500/15 text-orange-400',
     'bangumi.moe': 'bg-pink-500/15 text-pink-400',
     'acg.rip': 'bg-purple-500/15 text-purple-400',
-    dandanplay: 'bg-cyan-500/15 text-cyan-400',
   };
   return (
     <span
-      className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${colors[source] ?? 'bg-white/10 text-white/60'}`}
+      className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${colors[source] ?? 'bg-ink/10 text-ink/60'}`}
     >
       {SOURCE_LABELS[source] ?? source}
     </span>
@@ -68,7 +66,7 @@ export function TorrentSearchPage() {
 
   const downloadURL = (item: TorrentResult) => item.magnet || item.torrent_url;
 
-  const sources = ['all', 'nyaa', 'dmhy', 'mikan', 'bangumi.moe', 'acg.rip', 'dandanplay'];
+  const sources = ['all', 'nyaa', 'dmhy', 'mikan', 'bangumi.moe', 'acg.rip'];
 
   return (
     <PageTransition>
@@ -79,7 +77,7 @@ export function TorrentSearchPage() {
           className="flex items-center gap-3 mb-6"
         >
           <HugeiconsIcon icon={MagnetIcon} size={22} className="text-mm-accent" />
-          <h1 className="text-lg font-semibold text-white tracking-tight">Torrent Search</h1>
+          <h1 className="text-lg font-semibold text-ink tracking-tight">Torrent Search</h1>
         </motion.div>
 
         {/* Search input */}
@@ -93,7 +91,7 @@ export function TorrentSearchPage() {
             placeholder="Search across all sources..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="bg-mm-surface border-mm-border text-white placeholder:text-mm-text-tertiary"
+            className="bg-mm-surface border-mm-border text-ink placeholder:text-mm-text-tertiary"
           />
         </motion.div>
 
@@ -106,8 +104,8 @@ export function TorrentSearchPage() {
               onClick={() => setSource(s)}
               className={`px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 source === s
-                  ? 'bg-white/[0.12] text-white'
-                  : 'text-white/40 hover:text-white/60 hover:bg-white/[0.04]'
+                  ? 'bg-ink/[0.12] text-ink'
+                  : 'text-ink/40 hover:text-ink/60 hover:bg-ink/[0.04]'
               }`}
             >
               {SOURCE_LABELS[s] ?? s}
@@ -130,18 +128,18 @@ export function TorrentSearchPage() {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(i * 0.02, 0.5) }}
-                className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.05] transition-colors"
+                className="flex items-start gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.05] transition-colors"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-white break-words leading-relaxed">
+                  <p className="text-[13px] font-medium text-ink break-words leading-relaxed">
                     {item.title}
                   </p>
                   <div className="flex flex-wrap items-center gap-2 mt-1.5">
                     <SourceBadge source={item.source_site} />
                     {item.sub_group && (
-                      <span className="text-[10px] text-white/30">{item.sub_group}</span>
+                      <span className="text-[10px] text-ink/30">{item.sub_group}</span>
                     )}
-                    {item.size && <span className="text-[10px] text-white/25">{item.size}</span>}
+                    {item.size && <span className="text-[10px] text-ink/25">{item.size}</span>}
                     {item.seeders > 0 && (
                       <span className="text-[10px] text-green-400/70">↑{item.seeders}</span>
                     )}
@@ -149,7 +147,7 @@ export function TorrentSearchPage() {
                       <span className="text-[10px] text-red-400/50">↓{item.leechers}</span>
                     )}
                     {item.publish_date && (
-                      <span className="text-[10px] text-white/20">
+                      <span className="text-[10px] text-ink/20">
                         {new Date(item.publish_date).toLocaleDateString()}
                       </span>
                     )}

@@ -30,7 +30,7 @@ function Checkbox({
       <motion.div
         className={cn(
           'absolute inset-0 rounded-[5px] border-[1.5px]',
-          checked ? 'border-mm-accent bg-mm-accent' : 'border-white/20 bg-white/[0.04]'
+          checked ? 'border-mm-accent bg-mm-accent' : 'border-ink/20 bg-ink/[0.04]'
         )}
         animate={{ scale: checked ? 1 : 1 }}
         whileTap={{ scale: 0.85 }}

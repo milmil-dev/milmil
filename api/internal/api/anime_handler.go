@@ -10,8 +10,11 @@ import (
 )
 
 type playableEpisodeMedia struct {
-	ID         string  `json:"id"`
-	Filename   string  `json:"filename"`
+	ID       string `json:"id"`
+	Filename string `json:"filename"`
+	// Absolute path on the server; desktop clients map it to a local mount
+	// to play straight from the filesystem.
+	Path       string  `json:"path"`
 	SizeBytes  *int64  `json:"size_bytes"`
 	Width      *int64  `json:"width"`
 	Height     *int64  `json:"height"`
@@ -89,6 +92,7 @@ func (h *handler) handlePlayableEpisodes(c *echo.Context) error {
 			ep.MediaFile = &playableEpisodeMedia{
 				ID:         row.MediaFileID.String,
 				Filename:   row.MediaFilename.String,
+				Path:       row.MediaPath.String,
 				SizeBytes:  nullInt(row.MediaSizeBytes),
 				Width:      nullInt(row.MediaWidth),
 				Height:     nullInt(row.MediaHeight),

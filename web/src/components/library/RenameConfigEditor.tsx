@@ -11,7 +11,7 @@ interface Props {
   onAutoChange: (value: boolean) => void;
 }
 
-const LABEL_CLS = 'text-[10px] font-medium uppercase tracking-[0.15em] text-white/35';
+const LABEL_CLS = 'text-[10px] font-medium uppercase tracking-[0.15em] text-ink/35';
 
 interface TemplateCheck {
   ok: boolean;
@@ -67,7 +67,7 @@ export function RenameConfigEditor({ template, auto, onTemplateChange, onAutoCha
         value={template}
         onChange={(e) => onTemplateChange(e.target.value)}
         placeholder="{{.Title}} ({{.Year}})/S{{pad .Season 2}}E{{pad .EpisodeNumber 2}}.{{.Ext}}"
-        className="w-full min-h-[96px] rounded-lg bg-white/[0.04] px-4 py-3 font-mono text-xs text-white/85 placeholder:text-white/25 focus:outline-none focus:bg-white/[0.07] transition-colors resize-y"
+        className="w-full min-h-[96px] rounded-lg bg-ink/[0.04] px-4 py-3 font-mono text-xs text-ink/85 placeholder:text-ink/25 focus:outline-none focus:bg-ink/[0.07] transition-colors resize-y"
       />
 
       {/* Verifier row */}
@@ -89,12 +89,12 @@ export function RenameConfigEditor({ template, auto, onTemplateChange, onAutoCha
                 />
               </svg>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] text-white/50">
+                <p className="text-[11px] text-ink/50">
                   {check.fields.length > 0
                     ? `${i18n._(msg`library.rename.fieldsDetected`)}: `
                     : i18n._(msg`library.rename.validEmpty`)}
                   {check.fields.length > 0 && (
-                    <span className="font-mono text-white/70">{check.fields.join(', ')}</span>
+                    <span className="font-mono text-ink/70">{check.fields.join(', ')}</span>
                   )}
                 </p>
               </div>
@@ -121,7 +121,7 @@ export function RenameConfigEditor({ template, auto, onTemplateChange, onAutoCha
       )}
 
       <label className="flex items-center justify-between cursor-pointer select-none pt-1">
-        <span className="text-sm text-white/65">{i18n._(msg`library.rename.autoOnMatch`)}</span>
+        <span className="text-sm text-ink/65">{i18n._(msg`library.rename.autoOnMatch`)}</span>
         <Switch checked={auto} onCheckedChange={onAutoChange} />
       </label>
     </div>

@@ -1,1 +1,20 @@
-{"title":"功能","pages":["library","streaming","downloads","discovery","collection"]}
+{
+  "title": "功能",
+  "pages": [
+    "library",
+    "file-management",
+    "streaming",
+    "history",
+    "player",
+    "danmaku",
+    "downloads",
+    "offline",
+    "discovery",
+    "collection",
+    "notifications",
+    "settings",
+    "services",
+    "avatars",
+    "bot"
+  ]
+}

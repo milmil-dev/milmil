@@ -36,6 +36,11 @@ func NewService(queries *store.Queries, wsHub *ws.Hub, lookups ...MetadataLookup
 }
 
 func (s *Service) Send(ctx context.Context, notifType, title, message, severity string, metadata map[string]any) {
+	// Enrich before the row is written so the in-app list, the WebSocket
+	// payload and the external providers all see "<Anime> EP5", not the raw
+	// torrent name. Previously only dispatchExternal rewrote the title.
+	title, message, metadata = s.enrichDownload(ctx, notifType, title, message, metadata)
+
 	var meta sql.NullString
 	if metadata != nil {
 		if b, err := json.Marshal(metadata); err == nil {
@@ -118,43 +123,8 @@ func (s *Service) dispatchExternal(notifType, title, message, severity string, m
 		return
 	}
 
-	// Enrich download events with anime metadata when possible.
 	if metadata == nil {
 		metadata = make(map[string]any)
-	}
-	if strings.HasPrefix(notifType, "download.") && s.metadata != nil {
-		if rawID, ok := metadata["download_id"]; ok {
-			downloadID := fmt.Sprintf("%v", rawID)
-			if downloadID != "" {
-				dl, err := s.queries.GetDownloadByID(ctx, downloadID)
-				if err == nil {
-					if ep := rss.ParseEpisode(dl.Name); ep != "" {
-						metadata["episode"] = ep
-					}
-					if sg := rss.ParseSubgroup(dl.Name); sg != "" {
-						metadata["subgroup"] = sg
-					}
-					if dl.BangumiID.Valid {
-						if detail, derr := s.metadata.GetAnimeDetail(ctx, int(dl.BangumiID.Int64), false); derr == nil && detail != nil {
-							metadata["anime_name"] = detail.Title
-							metadata["cover_image"] = detail.CoverImage
-							if name, _ := metadata["anime_name"].(string); name != "" {
-								if ep, _ := metadata["episode"].(string); ep != "" {
-									title = fmt.Sprintf("%s - %s", name, ep)
-								} else {
-									title = name
-								}
-								message = fmt.Sprintf("%s: %s", title, dl.Status)
-							}
-						} else if derr != nil {
-							slog.Debug("notification: enrich metadata lookup failed", "err", derr)
-						}
-					}
-				} else {
-					slog.Debug("notification: enrich download lookup failed", "id", downloadID, "err", err)
-				}
-			}
-		}
 	}
 
 	strMeta := make(map[string]string, len(metadata))
@@ -202,5 +172,72 @@ func (s *Service) dispatchExternal(notifType, title, message, severity string, m
 				slog.Error("notification: record delivery success failed", "provider", name, "deliveryID", deliveryID, "err", dbErr)
 			}
 		}
+	}
+}
+
+// enrichDownload folds the download's anime and episode into a download.*
+// event: `anime_name`, `cover_image`, `episode` and `subgroup` in the
+// metadata, and a "<Anime> EP<n> downloaded" title with the release name as
+// the message. Events that are not downloads, or downloads the lookup cannot
+// resolve, pass through untouched.
+func (s *Service) enrichDownload(ctx context.Context, notifType, title, message string, metadata map[string]any) (string, string, map[string]any) {
+	if !strings.HasPrefix(notifType, "download.") || s.metadata == nil {
+		return title, message, metadata
+	}
+	if metadata == nil {
+		metadata = make(map[string]any)
+	}
+	rawID, ok := metadata["download_id"]
+	if !ok {
+		return title, message, metadata
+	}
+	downloadID := fmt.Sprintf("%v", rawID)
+	if downloadID == "" {
+		return title, message, metadata
+	}
+	dl, err := s.queries.GetDownloadByID(ctx, downloadID)
+	if err != nil {
+		slog.Debug("notification: enrich download lookup failed", "err", err)
+		return title, message, metadata
+	}
+	episode := rss.ParseEpisode(dl.Name)
+	if episode != "" {
+		metadata["episode"] = episode
+	}
+	if sg := rss.ParseSubgroup(dl.Name); sg != "" {
+		metadata["subgroup"] = sg
+	}
+	if !dl.BangumiID.Valid {
+		return title, message, metadata
+	}
+	metadata["bangumi_id"] = dl.BangumiID.Int64
+	detail, derr := s.metadata.GetAnimeDetail(ctx, int(dl.BangumiID.Int64), false)
+	if derr != nil || detail == nil {
+		slog.Debug("notification: enrich metadata lookup failed", "err", derr)
+		return title, message, metadata
+	}
+	if detail.Title == "" {
+		return title, message, metadata
+	}
+	metadata["anime_name"] = detail.Title
+	metadata["cover_image"] = detail.CoverImage
+	return DownloadTitle(notifType, detail.Title, episode), dl.Name, metadata
+}
+
+// DownloadTitle is the enriched headline for a download.* event.
+func DownloadTitle(notifType, animeName, episode string) string {
+	subject := animeName
+	if episode != "" {
+		subject = fmt.Sprintf("%s EP%s", animeName, strings.TrimLeft(episode, "0"))
+	}
+	switch notifType {
+	case "download.started":
+		return subject + " download started"
+	case "download.completed":
+		return subject + " downloaded"
+	case "download.failed":
+		return subject + " download failed"
+	default:
+		return subject
 	}
 }

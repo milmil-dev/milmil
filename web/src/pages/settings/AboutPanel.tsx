@@ -22,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { SkeletonText } from '@/components/Skeleton';
 import { Button } from '@/components/ui/button';
 import { useUpdateCheck } from '@/hooks/use-update-check';
 import { api } from '@/lib/api-client';
@@ -35,13 +36,13 @@ function UpdateRow() {
   if (!latest) return null; // silent on offline / never-cached
 
   if (!hasUpdate) {
-    return <p className="text-[13px] text-white/40">{i18n._(msg`about.upToDate`)}</p>;
+    return <p className="text-[13px] text-ink/40">{i18n._(msg`about.upToDate`)}</p>;
   }
 
   const isDismissed = dismissedVersion === latest;
   return (
     <div className="flex items-center justify-between gap-3">
-      <p className="text-[13px] text-white/70">
+      <p className="text-[13px] text-ink/70">
         {i18n._(msg`about.updateAvailable`)} v{latest} —{' '}
         <a
           href={releaseUrl ?? '#'}
@@ -56,7 +57,7 @@ function UpdateRow() {
         <button
           type="button"
           onClick={() => dismiss(latest)}
-          className="text-[12px] text-white/40 transition-colors hover:text-white/70"
+          className="text-[12px] text-ink/40 transition-colors hover:text-ink/70"
         >
           {i18n._(msg`about.dismiss`)}
         </button>
@@ -144,8 +145,8 @@ export function AboutPanel() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-white">{i18n._(msg`settings.nav.about`)}</h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`about.subtitle`)}</p>
+      <h2 className="text-xl font-semibold text-ink">{i18n._(msg`settings.nav.about`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-ink/35">{i18n._(msg`about.subtitle`)}</p>
 
       <div className="space-y-3">
         {/* Card 1 — System Info */}
@@ -153,11 +154,11 @@ export function AboutPanel() {
           <div className="space-y-2.5">
             {infoRows.map((row) => (
               <div key={row.label} className="flex items-center justify-between">
-                <span className="text-[13px] text-white/50">{row.label}</span>
+                <span className="text-[13px] text-ink/50">{row.label}</span>
                 {isLoading ? (
-                  <div className="h-4 w-28 animate-pulse rounded bg-white/[0.06]" />
+                  <SkeletonText className="h-4 w-28" />
                 ) : (
-                  <span className="font-mono text-[13px] tabular-nums text-white/85">
+                  <span className="font-mono text-[13px] tabular-nums text-ink/85">
                     {row.value ?? '—'}
                   </span>
                 )}
@@ -172,8 +173,8 @@ export function AboutPanel() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-white/85">{i18n._(msg`about.exportSettings`)}</p>
-                <p className="mt-0.5 text-[11px] text-white/30">
+                <p className="text-[13px] text-ink/85">{i18n._(msg`about.exportSettings`)}</p>
+                <p className="mt-0.5 text-[11px] text-ink/30">
                   {i18n._(msg`about.exportSettingsDesc`)}
                 </p>
               </div>
@@ -183,12 +184,12 @@ export function AboutPanel() {
               </Button>
             </div>
 
-            <div className="h-px bg-white/[0.04]" />
+            <div className="h-px bg-ink/[0.04]" />
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-white/85">{i18n._(msg`about.importSettings`)}</p>
-                <p className="mt-0.5 text-[11px] text-white/30">
+                <p className="text-[13px] text-ink/85">{i18n._(msg`about.importSettings`)}</p>
+                <p className="mt-0.5 text-[11px] text-ink/30">
                   {i18n._(msg`about.importSettingsDesc`)}
                 </p>
               </div>
@@ -205,12 +206,12 @@ export function AboutPanel() {
               />
             </div>
 
-            <div className="h-px bg-white/[0.04]" />
+            <div className="h-px bg-ink/[0.04]" />
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] text-white/85">{i18n._(msg`about.resetToDefaults`)}</p>
-                <p className="mt-0.5 text-[11px] text-white/30">
+                <p className="text-[13px] text-ink/85">{i18n._(msg`about.resetToDefaults`)}</p>
+                <p className="mt-0.5 text-[11px] text-ink/30">
                   {i18n._(msg`about.resetToDefaultsDesc`)}
                 </p>
               </div>
@@ -228,7 +229,7 @@ export function AboutPanel() {
             href="https://github.com/milmil-dev/milmil"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[13px] text-white/60 transition-colors hover:text-white/90"
+            className="inline-flex items-center gap-2 text-[13px] text-ink/60 transition-colors hover:text-ink/90"
           >
             <HugeiconsIcon icon={GithubIcon} size={16} />
             GitHub
@@ -264,7 +265,7 @@ export function AboutPanel() {
           <AlertDialogFooter>
             <AlertDialogCancel>{i18n._(msg`common.cancel`)}</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-500 text-white hover:bg-red-600"
+              className="bg-red-500 text-ink hover:bg-red-600"
               onClick={handleResetConfirm}
             >
               {i18n._(msg`about.reset`)}

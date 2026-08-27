@@ -13,10 +13,8 @@ export function ConnectionBadge({
 }: ConnectionBadgeProps) {
   return (
     <span className="inline-flex items-center gap-1.5 text-xs font-semibold">
-      <span
-        className={cn('h-1.5 w-1.5 rounded-full', connected ? 'bg-green-400' : 'bg-white/15')}
-      />
-      <span className={connected ? 'text-green-400' : 'text-white/40'}>
+      <span className={cn('h-1.5 w-1.5 rounded-full', connected ? 'bg-green-400' : 'bg-ink/15')} />
+      <span className={connected ? 'text-green-400' : 'text-ink/40'}>
         {connected ? connectedText : disconnectedText}
       </span>
     </span>

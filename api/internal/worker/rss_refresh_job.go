@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log/slog"
 	"strings"
 
@@ -21,16 +22,16 @@ type RSSRefreshWorker struct {
 	notifier   *notification.Service
 }
 
-func (w *RSSRefreshWorker) Run(ctx context.Context) {
+func (w *RSSRefreshWorker) Run(ctx context.Context) error {
 	feeds, err := w.queries.ListRSSFeedsDue(ctx)
 	if err != nil {
 		slog.Error("rss_refresh: list due feeds", "err", err)
 		w.notifier.Send(ctx, "system.error", "RSS Refresh Failed", err.Error(), "error",
 			map[string]any{"worker": "rss_refresh"})
-		return
+		return fmt.Errorf("list due feeds: %w", err)
 	}
 	if len(feeds) == 0 {
-		return
+		return nil
 	}
 
 	slog.Info("rss_refresh: checking feeds", "count", len(feeds))
@@ -38,6 +39,7 @@ func (w *RSSRefreshWorker) Run(ctx context.Context) {
 	for _, feed := range feeds {
 		w.refreshFeed(ctx, feed)
 	}
+	return nil
 }
 
 func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) {

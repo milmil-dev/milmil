@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 
 	"golang.org/x/sync/errgroup"
 
@@ -15,17 +16,40 @@ import (
 	"github.com/milmil/api/internal/integration/anilist"
 	"github.com/milmil/api/internal/integration/anizip"
 	"github.com/milmil/api/internal/integration/bangumi"
+	"github.com/milmil/api/internal/integration/bilibili"
+	"github.com/milmil/api/internal/integration/jikan"
 )
 
 type Service struct {
-	bangumi bangumi.Client
-	anilist anilist.Client
-	anizip  *anizip.Client
-	cache   cache.Cache
+	bangumi  bangumi.Client
+	anilist  anilist.Client
+	anizip   *anizip.Client
+	bilibili bilibili.Client
+	jikan    jikan.Client
+	cache    cache.Cache
 }
 
-func New(bgm bangumi.Client, al anilist.Client, c cache.Cache) *Service {
-	return &Service{bangumi: bgm, anilist: al, anizip: anizip.New(), cache: c}
+type Option func(*Service)
+
+// WithAirTimeSources replaces the Bilibili and Jikan air-time fallbacks,
+// primarily so tests can stub them out.
+func WithAirTimeSources(b bilibili.Client, j jikan.Client) Option {
+	return func(s *Service) { s.bilibili, s.jikan = b, j }
+}
+
+func New(bgm bangumi.Client, al anilist.Client, c cache.Cache, opts ...Option) *Service {
+	s := &Service{
+		bangumi:  bgm,
+		anilist:  al,
+		anizip:   anizip.New(),
+		bilibili: bilibili.New(),
+		jikan:    jikan.New(),
+		cache:    c,
+	}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
 }
 
 func (s *Service) getCache(ctx context.Context, key string, target any) bool {
@@ -249,9 +273,37 @@ func (s *Service) calendarFromAniList(ctx context.Context) ([]CalendarDay, error
 	return result, nil
 }
 
-// enrichCalendarAirTimes fetches the week's airing schedule from AniList and
-// matches entries to Bangumi calendar items by native (Japanese) title.
+// enrichCalendarAirTimes fills AirTime (HH:mm JST) from keyless sources, one
+// rung at a time: AniList's airing schedule, then Bilibili's timeline (the
+// only source that has donghua), then MAL broadcast slots via Jikan. Each
+// rung only touches items the previous ones left empty, and every rung is
+// best-effort — a source failing just means fewer times.
 func (s *Service) enrichCalendarAirTimes(ctx context.Context, days []CalendarDay) {
+	s.airTimesFromAniList(ctx, days)
+	if !missingAirTimes(days) {
+		return
+	}
+	s.airTimesFromBilibili(ctx, days)
+	if !missingAirTimes(days) {
+		return
+	}
+	s.airTimesFromJikan(ctx, days)
+}
+
+func missingAirTimes(days []CalendarDay) bool {
+	for di := range days {
+		for ii := range days[di].Items {
+			if days[di].Items[ii].AirTime == "" {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// airTimesFromAniList matches the week's AniList airing schedule to calendar
+// items by native (Japanese) title.
+func (s *Service) airTimesFromAniList(ctx context.Context, days []CalendarDay) {
 	now := time.Now()
 	from := now.Add(-24 * time.Hour).Unix()
 	to := now.Add(7 * 24 * time.Hour).Unix()
@@ -261,41 +313,121 @@ func (s *Service) enrichCalendarAirTimes(ctx context.Context, days []CalendarDay
 		return
 	}
 
-	// Build lookup: normalized title → air time string (HH:mm JST)
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-	type airInfo struct {
-		time string
+	lookup := make(map[string]string, len(schedules))
+	for _, sched := range schedules {
+		airTime := time.Unix(int64(sched.AiringAt), 0).In(jst).Format("15:04")
+		if sched.Media.Title.Native != "" {
+			lookup[normalizeTitle(sched.Media.Title.Native)] = airTime
+		}
+		if sched.Media.Title.Romaji != "" {
+			lookup[normalizeTitle(sched.Media.Title.Romaji)] = airTime
+		}
 	}
-	lookup := make(map[string]airInfo, len(schedules))
-	for _, s := range schedules {
-		t := time.Unix(int64(s.AiringAt), 0).In(jst)
-		info := airInfo{time: t.Format("15:04")}
-		if s.Media.Title.Native != "" {
-			lookup[normalizeTitle(s.Media.Title.Native)] = info
-		}
-		if s.Media.Title.Romaji != "" {
-			lookup[normalizeTitle(s.Media.Title.Romaji)] = info
-		}
+	applyAirTimes(days, lookup)
+}
+
+// airTimesFromBilibili matches Bilibili's weekly timeline to calendar items
+// by simplified-Chinese title (Bilibili's titles line up with Bangumi's
+// name_cn). Drop timestamps are converted to JST to keep the field contract.
+func (s *Service) airTimesFromBilibili(ctx context.Context, days []CalendarDay) {
+	eps, err := s.bilibili.Timeline(ctx)
+	if err != nil || len(eps) == 0 {
+		return
 	}
 
-	// Match against Bangumi items
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	lookup := make(map[string]string, len(eps))
+	for _, ep := range eps {
+		if ep.PubTS == 0 || ep.Title == "" {
+			continue
+		}
+		lookup[normalizeTitle(ep.Title)] = time.Unix(ep.PubTS, 0).In(jst).Format("15:04")
+	}
+	applyAirTimes(days, lookup)
+}
+
+// airTimesFromJikan matches MAL's weekly broadcast slots (already JST) to
+// calendar items by Japanese or romaji title.
+func (s *Service) airTimesFromJikan(ctx context.Context, days []CalendarDay) {
+	entries, err := s.jikan.CurrentSeason(ctx)
+	if err != nil || len(entries) == 0 {
+		return
+	}
+
+	lookup := make(map[string]string, len(entries))
+	for _, a := range entries {
+		if a.Broadcast.Time == "" {
+			continue
+		}
+		for _, t := range a.Titles {
+			if t.Type == "Japanese" || t.Type == "Default" {
+				lookup[normalizeTitle(t.Title)] = a.Broadcast.Time
+			}
+		}
+	}
+	applyAirTimes(days, lookup)
+}
+
+// applyAirTimes fills empty AirTime fields from a normalized-title lookup,
+// trying the original title, the display title, then a prefix match.
+func applyAirTimes(days []CalendarDay, lookup map[string]string) {
+	if len(lookup) == 0 {
+		return
+	}
 	for di := range days {
 		for ii := range days[di].Items {
 			item := &days[di].Items[ii]
-			if info, ok := lookup[normalizeTitle(item.TitleOriginal)]; ok {
-				item.AirTime = info.time
-			} else if info, ok := lookup[normalizeTitle(item.Title)]; ok {
-				item.AirTime = info.time
+			if item.AirTime != "" {
+				continue
+			}
+			if t, ok := lookup[normalizeTitle(item.TitleOriginal)]; ok {
+				item.AirTime = t
+			} else if t, ok := lookup[normalizeTitle(item.Title)]; ok {
+				item.AirTime = t
+			} else if t, ok := prefixMatchAirTime(lookup, normalizeTitle(item.TitleOriginal)); ok {
+				item.AirTime = t
 			}
 		}
 	}
 }
 
+// prefixMatchAirTime handles subtitle drift between providers — AniList often
+// appends a tagline to the native title that Bangumi omits (or vice versa) —
+// by accepting a match when the shorter normalized title is a prefix of the
+// longer one and long enough to be distinctive. Prefers the longest overlap
+// so map iteration order cannot flip the result.
+func prefixMatchAirTime(lookup map[string]string, title string) (string, bool) {
+	const minRunes = 10
+	if utf8.RuneCountInString(title) < minRunes {
+		return "", false
+	}
+	best, bestLen := "", 0
+	for key, airTime := range lookup {
+		shorter, longer := key, title
+		if len(shorter) > len(longer) {
+			shorter, longer = longer, shorter
+		}
+		if utf8.RuneCountInString(shorter) < minRunes || !strings.HasPrefix(longer, shorter) {
+			continue
+		}
+		if len(shorter) > bestLen {
+			best, bestLen = airTime, len(shorter)
+		}
+	}
+	return best, bestLen > 0
+}
+
 func normalizeTitle(s string) string {
 	s = strings.TrimSpace(s)
 	s = strings.ToLower(s)
-	// Remove common punctuation differences
+	// Remove common punctuation differences and fold full-width alphanumerics,
+	// which the providers use inconsistently (e.g. "１０年" vs "10年").
 	s = strings.Map(func(r rune) rune {
+		switch {
+		case r >= '０' && r <= '９', r >= 'ａ' && r <= 'ｚ':
+			return r - 0xFEE0
+		}
 		switch r {
 		case '　', ' ', '-', '–', '—', '~', '〜', '・', ':', '：', '!', '！', '?', '？', ',', '、', '.', '。':
 			return -1
@@ -937,7 +1069,25 @@ func filterUnseen(media []anilist.Media, seen map[int]bool) []anilist.Media {
 	return out
 }
 
+// bangumiTagSort maps the AniList MediaSort values clients send (the same
+// `sort` param `/discover/browse` takes) onto the only sorts Bangumi's search
+// accepts — match/heat/rank/score. Anything unmappable (e.g. START_DATE_DESC)
+// falls back to rank rather than a Bangumi 400.
+func bangumiTagSort(sort string) string {
+	switch sort {
+	case "POPULARITY_DESC", "TRENDING_DESC":
+		return "heat"
+	case "SCORE_DESC":
+		return "score"
+	case "match", "heat", "rank", "score":
+		return sort
+	default:
+		return "rank"
+	}
+}
+
 func (s *Service) BrowseByTag(ctx context.Context, tags []string, sort string, page int) ([]AnimeSummary, error) {
+	sort = bangumiTagSort(sort)
 	cacheKey := fmt.Sprintf("meta:tag:%v:%s:%d", tags, sort, page)
 	var cached []AnimeSummary
 	if s.getCache(ctx, cacheKey, &cached) {

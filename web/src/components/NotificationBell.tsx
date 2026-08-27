@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { type Notification, notificationApi, notificationKeys } from '../lib/api/notifications';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
+import { Skeleton } from './Skeleton';
 
 /* ── Relative time helper ─────────────────────────────────── */
 
@@ -85,12 +86,12 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="relative flex items-center justify-center w-9 h-9 rounded-full text-white/40 hover:text-white/80 hover:bg-white/[0.04] transition-colors cursor-pointer"
+        className="relative flex items-center justify-center w-9 h-9 rounded-full text-ink/40 hover:text-ink/80 hover:bg-ink/[0.04] transition-colors cursor-pointer"
         aria-label={i18n._(msg`nav.notifications`)}
       >
         <HugeiconsIcon icon={Notification03Icon} size={18} strokeWidth={1.5} />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none">
+          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-[10px] font-bold text-ink leading-none">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -104,18 +105,18 @@ export function NotificationBell() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-[calc(100%+8px)] bottom-0 w-80 rounded-lg border border-white/[0.08] bg-[#111] shadow-xl shadow-black/50 overflow-hidden z-50"
+            className="absolute left-[calc(100%+8px)] bottom-0 w-80 rounded-lg border border-ink/[0.08] bg-mm-bg-elevated shadow-xl shadow-black/50 overflow-hidden z-50"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.06]">
-              <span className="text-sm font-medium text-white">
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-ink/[0.06]">
+              <span className="text-sm font-medium text-ink">
                 {i18n._(msg`notifications.title`)}
               </span>
               {unreadCount > 0 && (
                 <button
                   type="button"
                   onClick={() => markAllMut.mutate(undefined)}
-                  className="text-[11px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+                  className="text-[11px] text-ink/40 hover:text-ink/70 transition-colors cursor-pointer"
                 >
                   {i18n._(msg`notifications.markAllRead`)}
                 </button>
@@ -127,7 +128,7 @@ export function NotificationBell() {
               {isLoading ? (
                 <div className="space-y-1 p-2">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="h-16 rounded-md animate-pulse bg-white/[0.04]" />
+                    <Skeleton key={i} className="h-16" />
                   ))}
                 </div>
               ) : notifications && notifications.length > 0 ? (
@@ -141,18 +142,18 @@ export function NotificationBell() {
                   />
                 ))
               ) : (
-                <div className="px-3 py-8 text-center text-sm text-white/30">
+                <div className="px-3 py-8 text-center text-sm text-ink/30">
                   {i18n._(msg`notifications.empty`)}
                 </div>
               )}
             </div>
 
             {/* Footer */}
-            <div className="border-t border-white/[0.06]">
+            <div className="border-t border-ink/[0.06]">
               <Link
                 to="/notifications"
                 onClick={() => setOpen(false)}
-                className="block px-3 py-2.5 text-center text-xs text-white/40 hover:text-white/70 hover:bg-white/[0.02] transition-colors"
+                className="block px-3 py-2.5 text-center text-xs text-ink/40 hover:text-ink/70 hover:bg-ink/[0.02] transition-colors"
               >
                 {i18n._(msg`notifications.viewAll`)} &rarr;
               </Link>
@@ -180,8 +181,8 @@ function NotificationItem({
       type="button"
       onClick={onMarkRead}
       className={cn(
-        'w-full text-left flex gap-2.5 px-3 py-2.5 transition-colors cursor-pointer hover:bg-white/[0.03]',
-        !notification.read && 'bg-white/[0.02]'
+        'w-full text-left flex gap-2.5 px-3 py-2.5 transition-colors cursor-pointer hover:bg-ink/[0.03]',
+        !notification.read && 'bg-ink/[0.02]'
       )}
     >
       <div className="flex-1 min-w-0">
@@ -189,10 +190,10 @@ function NotificationItem({
           {!notification.read && (
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
           )}
-          <span className="text-sm font-medium text-white truncate">{notification.title}</span>
+          <span className="text-sm font-medium text-ink truncate">{notification.title}</span>
         </div>
-        <p className="text-xs text-white/40 mt-0.5 line-clamp-2">{notification.message}</p>
-        <p className="text-[10px] text-white/25 mt-1">{timeAgo(notification.created_at, i18n)}</p>
+        <p className="text-xs text-ink/40 mt-0.5 line-clamp-2">{notification.message}</p>
+        <p className="text-[10px] text-ink/25 mt-1">{timeAgo(notification.created_at, i18n)}</p>
       </div>
     </button>
   );

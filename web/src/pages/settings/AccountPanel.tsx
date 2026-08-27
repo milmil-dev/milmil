@@ -19,11 +19,11 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
-import { useAuthStore } from '@/store/auth-store';
 import { ApiTokensCard } from './ApiTokensCard';
+import { AvatarCard } from './AvatarCard';
 import { SessionsTab } from './SessionsTab';
 
-const inputClass = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
+const inputClass = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
 const EASE_OUT_QUINT = [0.22, 1, 0.36, 1] as const;
 const accountTabVariants = {
   hidden: { opacity: 0, x: 12 },
@@ -52,7 +52,6 @@ export function AccountPanel() {
   const [isMobileSettingsPanelLayout, setIsMobileSettingsPanelLayout] = useState(
     getIsMobileSettingsPanelLayout
   );
-  const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const [totpCode, setTotpCode] = useState('');
   const [setupData, setSetupData] = useState<TwoFactorSetupResponse | null>(null);
@@ -107,11 +106,11 @@ export function AccountPanel() {
 
   return (
     <div className="w-full max-w-full">
-      <h2 className="text-xl font-semibold text-white">{i18n._(msg`settings.nav.account`)}</h2>
-      <p className="mt-1 mb-6 text-xs text-white/35">{i18n._(msg`account.subtitle`)}</p>
+      <h2 className="text-xl font-semibold text-ink">{i18n._(msg`settings.nav.account`)}</h2>
+      <p className="mt-1 mb-6 text-xs text-ink/35">{i18n._(msg`account.subtitle`)}</p>
 
       {/* Inner tab bar */}
-      <div className="mb-6 flex w-full max-w-full gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+      <div className="mb-6 flex w-full max-w-full gap-1 rounded-lg border border-ink/[0.06] bg-ink/[0.02] p-1">
         {INNER_TABS.map((tab) => (
           <button
             key={tab.id}
@@ -119,9 +118,7 @@ export function AccountPanel() {
             onClick={() => setActiveTab(tab.id)}
             className={cn(
               'min-w-0 flex-1 truncate rounded-md px-2 py-1.5 text-[11px] font-medium transition-all duration-200 sm:px-3 sm:text-xs',
-              activeTab === tab.id
-                ? 'bg-white/[0.08] text-white'
-                : 'text-white/35 hover:text-white/60'
+              activeTab === tab.id ? 'bg-ink/[0.08] text-ink' : 'text-ink/35 hover:text-ink/60'
             )}
           >
             {tab.label}
@@ -147,18 +144,8 @@ export function AccountPanel() {
               exit={useMobileTabMotion ? 'exit' : { opacity: 1 }}
               className="space-y-3"
             >
-              {/* Profile */}
-              <SettingsCard label={i18n._(msg`account.profile`)}>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mm-accent/15 text-sm font-semibold text-mm-accent ring-1 ring-mm-accent/25">
-                    {user?.username?.charAt(0).toUpperCase() ?? '?'}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">{user?.username ?? '—'}</p>
-                    <p className="text-xs text-white/30">ID: {user?.id ?? '—'}</p>
-                  </div>
-                </div>
-              </SettingsCard>
+              {/* Profile + avatar */}
+              <AvatarCard />
 
               {/* Change Password */}
               <SettingsCard label={i18n._(msg`account.changePassword`)}>
@@ -387,11 +374,11 @@ function TwoFactorCard({
 
   return (
     <SettingsCard label={i18n._(msg`account.2fa.title`)}>
-      <p className="mb-4 text-xs text-white/40">{i18n._(msg`account.2fa.description`)}</p>
+      <p className="mb-4 text-xs text-ink/40">{i18n._(msg`account.2fa.description`)}</p>
 
       {/* Toggle row — label left, switch right */}
       <div className="flex items-center justify-between">
-        <label htmlFor="2fa-toggle" className="text-[13px] text-white/60">
+        <label htmlFor="2fa-toggle" className="text-[13px] text-ink/60">
           {enabled
             ? i18n._(msg`account.2fa.statusEnabled`)
             : setupData
@@ -409,12 +396,12 @@ function TwoFactorCard({
       {/* Setup flow — centered column */}
       {setupData && !enabled && (
         <div className="mt-5 flex flex-col items-center gap-5">
-          <p className="text-[11px] leading-relaxed text-white/45 text-center max-w-sm">
+          <p className="text-[11px] leading-relaxed text-ink/45 text-center max-w-sm">
             {i18n._(msg`account.2fa.scanInstructions`)}
           </p>
 
           {/* QR code */}
-          <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+          <div className="flex flex-col items-center gap-2 rounded-xl border border-ink/[0.06] bg-ink/[0.02] p-4">
             <div className="rounded-md bg-white p-2.5">
               <img
                 src={`data:image/png;base64,${setupData.qr_code}`}
@@ -423,7 +410,7 @@ function TwoFactorCard({
               />
             </div>
             <div className="text-center">
-              <p className="text-[8px] uppercase tracking-wider text-white/20">
+              <p className="text-[8px] uppercase tracking-wider text-ink/20">
                 {i18n._(msg`account.2fa.manualEntry`)}
               </p>
               <button
@@ -442,7 +429,7 @@ function TwoFactorCard({
 
           {/* Verify input */}
           <div className="flex flex-col items-center gap-2.5">
-            <label htmlFor="two-factor-code" className="text-[11px] font-medium text-white/50">
+            <label htmlFor="two-factor-code" className="text-[11px] font-medium text-ink/50">
               {i18n._(msg`account.2fa.verificationCode`)}
             </label>
             <InputOTP

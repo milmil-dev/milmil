@@ -16,7 +16,7 @@ import { type SyncProvider, type SyncProviderStatus, syncApi, syncKeys } from '@
 import { type DeviceCodeResponse, traktApi } from '@/lib/api/trakt';
 import { api } from '@/lib/api-client';
 
-const INPUT_CLASS = 'bg-transparent border-white/[0.08] focus:border-mm-accent text-white';
+const INPUT_CLASS = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
 
 // ─── DandanPlay Card ────────────────────────────────────────────────────────
 
@@ -59,7 +59,7 @@ function DandanPlayCard() {
   });
 
   return (
-    <SettingsCard label="DandanPlay">
+    <SettingsCard label="弹弹play开放弹幕网络（DandanPlay）">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -263,7 +263,7 @@ function TMDBCard() {
           )}
         </form.Field>
 
-        <p className="text-xs leading-relaxed text-white/45">
+        <p className="text-xs leading-relaxed text-ink/45">
           {i18n._(
             msg`Used for TMDB fallback matching and localized episode metadata based on your UI language. Read Access Token is preferred; v3 API key is still supported. Leave both blank to disable TMDB.`
           )}
@@ -325,36 +325,34 @@ function SyncStatusBlock({ status }: { status: SyncProviderStatus }) {
   const lastSync = formatLastSync(status.last_sync, i18n.locale);
 
   return (
-    <div className="mb-4 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
+    <div className="mb-4 rounded-lg border border-ink/[0.06] bg-ink/[0.02] p-3 space-y-2">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-white/40">{i18n._(msg`settings.integration.lastSync`)}</span>
-        <span className="text-white/70 tabular-nums">{lastSync}</span>
+        <span className="text-ink/40">{i18n._(msg`settings.integration.lastSync`)}</span>
+        <span className="text-ink/70 tabular-nums">{lastSync}</span>
       </div>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-white/40">{i18n._(msg`settings.integration.pending`)}</span>
-        <span className="text-white/70 tabular-nums">{status.pending}</span>
+        <span className="text-ink/40">{i18n._(msg`settings.integration.pending`)}</span>
+        <span className="text-ink/70 tabular-nums">{status.pending}</span>
       </div>
       {status.last_errors.length > 0 && (
         <details className="group text-xs">
-          <summary className="cursor-pointer text-white/60 hover:text-white/80 select-none">
+          <summary className="cursor-pointer text-ink/60 hover:text-ink/80 select-none">
             {i18n._(msg`settings.integration.recentErrors`)}
-            <span className="ml-1 text-white/40">({status.last_errors.length})</span>
+            <span className="ml-1 text-ink/40">({status.last_errors.length})</span>
           </summary>
           <ul className="mt-2 space-y-1.5">
             {status.last_errors.slice(0, 5).map((err) => (
               <li
                 key={`${err.anime_id}-${err.at}-${err.error}`}
-                className="rounded border border-white/[0.06] bg-black/20 px-2 py-1.5"
+                className="rounded border border-ink/[0.06] bg-black/20 px-2 py-1.5"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono text-[10px] text-white/50 truncate">
-                    {err.anime_id}
-                  </span>
-                  <span className="text-[10px] text-white/30 shrink-0">
+                  <span className="font-mono text-[10px] text-ink/50 truncate">{err.anime_id}</span>
+                  <span className="text-[10px] text-ink/30 shrink-0">
                     {formatLastSync(err.at, i18n.locale)}
                   </span>
                 </div>
-                <p className="mt-1 text-[11px] text-white/60 break-words">{err.error}</p>
+                <p className="mt-1 text-[11px] text-ink/60 break-words">{err.error}</p>
               </li>
             ))}
           </ul>
@@ -366,7 +364,7 @@ function SyncStatusBlock({ status }: { status: SyncProviderStatus }) {
 
 function SyncStatusSkeleton() {
   return (
-    <div className="mb-4 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 space-y-2">
+    <div className="mb-4 rounded-lg border border-ink/[0.06] bg-ink/[0.02] p-3 space-y-2">
       <Skeleton className="h-4" style={{ width: '60%' }} />
       <Skeleton className="h-4" style={{ width: '40%' }} />
     </div>
@@ -401,8 +399,8 @@ function PullControls({ provider }: { provider: SyncProvider }) {
   });
 
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-      <label className="flex items-center gap-2 text-xs text-white/70">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-ink/[0.06] bg-ink/[0.02] p-3">
+      <label className="flex items-center gap-2 text-xs text-ink/70">
         <input
           type="checkbox"
           checked={pullEnabled}
@@ -411,7 +409,7 @@ function PullControls({ provider }: { provider: SyncProvider }) {
             setPullEnabled(next);
             setEnabledMut.mutate(next);
           }}
-          className="h-4 w-4 rounded border-white/20 bg-transparent"
+          className="h-4 w-4 rounded border-ink/20 bg-transparent"
         />
         {i18n._(msg`settings.integration.autoPull`)}
       </label>
@@ -535,22 +533,22 @@ function TraktCard() {
         ) : null)}
 
       {deviceCode ? (
-        <div className="rounded-lg border border-white/[0.08] bg-black/30 p-4">
-          <p className="text-sm text-white/80">
+        <div className="rounded-lg border border-ink/[0.08] bg-black/30 p-4">
+          <p className="text-sm text-ink/80">
             {i18n._(msg`settings.integration.trakt.openAndEnter`)}{' '}
             <a
               href={deviceCode.verification_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline text-white"
+              className="underline text-ink"
             >
               {deviceCode.verification_url}
             </a>
           </p>
-          <div className="mt-3 font-mono text-3xl tracking-widest text-white select-all">
+          <div className="mt-3 font-mono text-3xl tracking-widest text-ink select-all">
             {deviceCode.user_code}
           </div>
-          <p className="mt-2 text-xs text-white/50">
+          <p className="mt-2 text-xs text-ink/50">
             {i18n._(msg`settings.integration.trakt.waitingExpires`)}{' '}
             {Math.max(1, Math.floor(deviceCode.expires_in / 60))}m
           </p>
@@ -835,12 +833,8 @@ export function IntegrationsPanel() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">
-          {i18n._(msg`settings.nav.integrations`)}
-        </h2>
-        <p className="mt-1 text-sm text-white/40">
-          {i18n._(msg`settings.integrations.description`)}
-        </p>
+        <h2 className="text-xl font-semibold text-ink">{i18n._(msg`settings.nav.integrations`)}</h2>
+        <p className="mt-1 text-sm text-ink/40">{i18n._(msg`settings.integrations.description`)}</p>
       </div>
 
       <div className="space-y-4">

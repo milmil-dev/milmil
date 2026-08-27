@@ -43,6 +43,7 @@ import (
 	_ "github.com/milmil/api/internal/notification/providers" // register provider factories
 	"github.com/milmil/api/internal/resolver"
 	"github.com/milmil/api/internal/scanner"
+	"github.com/milmil/api/internal/services"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
 	milmilsync "github.com/milmil/api/internal/sync"
@@ -222,7 +223,7 @@ func main() {
 		&http.Client{Timeout: 10 * time.Second},
 		ddpCredFn,
 		"",              // official URL — uses default
-		cfg.DanmuAPIURL, // fallback URL — empty uses default danmu.icu
+		cfg.DanmuAPIURL, // optional self-hosted proxy; empty means official only
 	)
 	// TMDB client (optional — only if API key is configured)
 	var tmdbClient tmdb.Client
@@ -287,7 +288,6 @@ func main() {
 	torrentReg.Register(torrent.NewMikanProvider())
 	torrentReg.Register(torrent.NewBangumiMoeProvider())
 	torrentReg.Register(torrent.NewACGRipProvider())
-	torrentReg.Register(torrent.NewDanDanPlayProvider(""))
 	slog.Debug("boot: torrent providers registered", "took", time.Since(step))
 
 	// External danmaku sources
@@ -347,9 +347,37 @@ func main() {
 		},
 	})
 
+	// Settings › 服務 shares the scheduler's job registry with the API, and
+	// the Jellyfin layer is built here so main can own its LAN discovery.
+	jobRegistry := worker.NewJobRegistry()
+	jellyfinCacheDir := filepath.Join(os.TempDir(), "milmil", "jellyfin-images")
+	jellyfinHandler, jfErr := jellyfin.NewHandler(store.New(database), cfg.JWTSecret, jellyfinCacheDir, cfg.EncryptionKey)
+	if jfErr != nil {
+		slog.Warn("jellyfin: failed to initialize", "err", jfErr)
+		jellyfinHandler = nil
+	}
+	var botEngine *bot.Engine
+	startTelegram := func(cfg notification.TelegramBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
+		return tgadapter.New(cfg, r)
+	}
+	startDiscord := func(cfg notification.DiscordBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
+		return dcadapter.New(cfg, r)
+	}
+	reloadBots := func(ctx context.Context, notifCfg notification.NotificationConfig) {
+		if botEngine == nil {
+			return
+		}
+		botEngine.Stop()
+		botEngine.Start(ctx, notifCfg, startTelegram, startDiscord)
+		slog.Info("bot engine reloaded", "telegram", notifCfg.Bot.Telegram.Enabled, "discord", notifCfg.Bot.Discord.Enabled)
+	}
+
 	e := api.NewRouter(api.Deps{
 		Config:        cfg,
 		DB:            database,
+		Jobs:          jobRegistry,
+		Jellyfin:      jellyfinHandler,
+		ReloadBots:    reloadBots,
 		Cache:         cacheClient,
 		Metadata:      metadataSvc,
 		Matcher:       matcherSvc,
@@ -416,22 +444,16 @@ func main() {
 	botRouter.RegisterCallback("rule_disable", commands.RuleDisableCallback(botSvc))
 	botRouter.RegisterCallback("cmd", commands.CmdCallback(botSvc, botRouter))
 
-	botEngine := bot.NewEngine(botRouter)
+	botEngine = bot.NewEngine(botRouter)
 	notifCfg, _ := notification.LoadNotificationConfig(context.Background(), store.New(database))
-	botEngine.Start(context.Background(), notifCfg,
-		func(cfg notification.TelegramBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
-			return tgadapter.New(cfg, r)
-		},
-		func(cfg notification.DiscordBotConfig, r *bot.Router) (bot.StoppableAdapter, error) {
-			return dcadapter.New(cfg, r)
-		},
-	)
+	botEngine.Start(context.Background(), notifCfg, startTelegram, startDiscord)
 	slog.Info("boot: bot engine started")
 
 	// Background job scheduler — goroutine-based tickers
 	sched := worker.NewScheduler(
 		store.New(database), dlEngine, sc, matcherSvc, resolverSvc, tmdbClient, cacheClient, notifier, metadataSvc, anidbSvc, syncSvc, wsHub, botEngine,
 	)
+	sched.SetRegistry(jobRegistry)
 	sched.Start()
 	slog.Info("boot: scheduler started")
 
@@ -518,15 +540,27 @@ func main() {
 		os.Exit(0)
 	}()
 
-	// Start Jellyfin LAN discovery (UDP 7359)
+	// Jellyfin layer + LAN discovery (UDP 7359), both switchable from
+	// Settings › 服務; the handler owns the responder so a toggle can stop it.
 	addr := fmt.Sprintf(":%d", cfg.APIPort)
-	discoveryAddr := fmt.Sprintf("http://%s%s", localIP(), addr)
-	stopDiscovery, discErr := jellyfin.StartDiscoveryServer("milmil", "milmil", discoveryAddr)
-	if discErr != nil {
-		slog.Warn("jellyfin discovery: failed to start", "err", discErr)
-	} else {
-		defer stopDiscovery()
-		slog.Info("Jellyfin LAN discovery enabled", "port", 7359)
+	if jellyfinHandler != nil {
+		jellyfinHandler.SetAvatarDir(filepath.Join(cfg.DataDir, "avatars"))
+	}
+	if jellyfinHandler != nil {
+		svcSettings, sErr := services.Load(context.Background(), store.New(database))
+		if sErr != nil {
+			slog.Warn("services: load settings", "err", sErr)
+		}
+		jellyfinHandler.SetEnabled(svcSettings.JellyfinEnabled())
+		jellyfinHandler.ConfigureDiscovery(fmt.Sprintf("http://%s%s/jellyfin", localIP(), addr))
+		if svcSettings.JellyfinEnabled() && svcSettings.DiscoveryEnabled() {
+			if discErr := jellyfinHandler.StartDiscovery(); discErr != nil {
+				slog.Warn("jellyfin discovery: failed to start", "err", discErr)
+			} else {
+				defer jellyfinHandler.StopDiscovery()
+				slog.Info("Jellyfin LAN discovery enabled", "port", jellyfin.DiscoveryPort)
+			}
+		}
 	}
 
 	slog.Info("milmil-api starting", "addr", addr, "db", cfg.DatabaseURL)

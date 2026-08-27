@@ -48,16 +48,16 @@ export function LibraryDuplicatesPage() {
           <Link
             to="/libraries/$id"
             params={{ id: libraryId }}
-            className="text-xs text-white/50 hover:text-white/80"
+            className="text-xs text-ink/50 hover:text-ink/80"
           >
             {i18n._(msg`← Back to library`)}
           </Link>
-          <h1 className="text-lg font-semibold text-white/90">{i18n._(msg`Duplicate files`)}</h1>
+          <h1 className="text-lg font-semibold text-ink/90">{i18n._(msg`Duplicate files`)}</h1>
         </div>
         <button
           type="button"
           disabled={sets.length === 0 || cleanup.isPending}
-          className="rounded bg-white/10 px-3 py-1 text-sm text-white hover:bg-red-500/30 disabled:opacity-50"
+          className="rounded bg-ink/10 px-3 py-1 text-sm text-ink hover:bg-red-500/30 disabled:opacity-50"
           onClick={() => {
             if (
               window.confirm(
@@ -75,10 +75,10 @@ export function LibraryDuplicatesPage() {
       </div>
 
       {sets.length === 0 ? (
-        <div className="text-white/60">{i18n._(msg`No duplicates.`)}</div>
+        <div className="text-ink/60">{i18n._(msg`No duplicates.`)}</div>
       ) : (
         <table className="w-full text-sm">
-          <thead className="text-white/50">
+          <thead className="text-ink/50">
             <tr>
               <th className="py-1 text-left">{i18n._(msg`Anime`)}</th>
               <th className="py-1 text-left">{i18n._(msg`Episode`)}</th>
@@ -88,11 +88,11 @@ export function LibraryDuplicatesPage() {
           </thead>
           <tbody>
             {sets.map((s) => (
-              <tr key={s.episode_id} className="border-t border-white/10">
-                <td className="py-1 text-white/80">{s.anime_title}</td>
-                <td className="py-1 text-white/60">#{s.episode_number}</td>
-                <td className="py-1 text-right text-white/60">{s.files.length}</td>
-                <td className="py-1 text-right text-white/60">{formatBytes(s.wasted_bytes)}</td>
+              <tr key={s.episode_id} className="border-t border-ink/10">
+                <td className="py-1 text-ink/80">{s.anime_title}</td>
+                <td className="py-1 text-ink/60">#{s.episode_number}</td>
+                <td className="py-1 text-right text-ink/60">{s.files.length}</td>
+                <td className="py-1 text-right text-ink/60">{formatBytes(s.wasted_bytes)}</td>
               </tr>
             ))}
           </tbody>
