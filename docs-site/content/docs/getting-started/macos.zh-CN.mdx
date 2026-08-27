@@ -1,0 +1,138 @@
+---
+title: macOS 应用
+description: 使用 Homebrew 或 DMG 安装原生 macOS 客户端，并连接到你的 milmil 服务器。
+---
+
+macOS 客户端是原生 SwiftUI 应用，内置以 [mpv](https://mpv.io) 为核心的播放器、Core Animation 弹幕，以及[离线下载](/docs/features/offline)。它使用与网页版相同的 `/api/v1`，因此需要一台已在运行的 milmil 服务器——如果你还没有，请先参阅[安装](/docs/getting-started/installation)。
+
+![首页——片架、今日时间表与热门](/screenshots/macos-home.png)
+
+![播放器——mpv 播放、弹幕栏与分集列表](/screenshots/macos-watch.png)
+
+## 系统要求
+
+| | |
+|---|---|
+| **macOS** | 15（Sequoia）或更高版本 |
+| **芯片** | 仅支持 Apple Silicon，没有 Intel 版本 |
+| **服务器** | 可连接的 milmil 服务器，0.1.20 以上任一版本 |
+
+<Callout type="warn">
+本应用为 **ad-hoc 签名且未经公证**——项目目前还没有 Apple Developer 账号。macOS 会拦截第一次启动。下面两种安装方式都会说明如何通过，而且只需处理一次。
+</Callout>
+
+## 安装
+
+<Tabs items={['Homebrew', 'DMG']}>
+
+<Tab value="Homebrew">
+
+```bash
+brew install --cask milmil-dev/milmil/milmil
+```
+
+由于未经公证，macOS 会将它隔离（quarantine）。你可以改用不加隔离标志的方式安装：
+
+```bash
+brew install --cask --no-quarantine milmil-dev/milmil/milmil
+```
+
+或者手动打开一次——在「应用程序」中右键点击 **milmil.app** 并选择「**打开**」，然后在对话框中再点一次「**打开**」。在 macOS 15 之后，对话框可能只提供「完成」；此时请前往「**系统设置 › 隐私与安全性**」并点击「**仍要打开**」。
+
+之后升级照常：
+
+```bash
+brew upgrade --cask milmil
+```
+
+</Tab>
+
+<Tab value="DMG">
+
+从[最新发行版本](https://github.com/milmil-dev/milmil/releases/latest)下载 `milmil-macos-<version>.dmg`，打开后把 **milmil.app** 拖入「应用程序」。
+
+第一次启动请右键点击 **milmil.app** 并选择「**打开**」，不要直接双击——双击只会得到一个没有出路的对话框。如果 macOS 仍然拒绝，请打开「**系统设置 › 隐私与安全性**」，滚动到关于 milmil 的提示并点击「**仍要打开**」。
+
+</Tab>
+
+</Tabs>
+
+## 连接到你的服务器
+
+<Steps>
+
+<Step>
+### 输入服务器地址
+
+首次启动时应用会询问服务器网址。请填入与你打开网页界面相同的地址，含端口：
+
+```
+http://192.168.1.10:8080
+```
+
+如果位于反向代理之后，请使用对外网址——支持路径前缀（`https://media.example.com/milmil`）。
+</Step>
+
+<Step>
+### 登录
+
+使用你的 milmil 用户名和密码。应用会把 `mlml_` API token 存入登录钥匙串，并与该服务器配置绑定；密码本身不会保留。
+</Step>
+
+<Step>
+### 添加更多服务器（可选）
+
+应用可同时保存多组服务器配置，并从侧边栏切换，家里的服务器和远程服务器可以并存。
+</Step>
+
+</Steps>
+
+<Callout type="info">
+首次连接局域网内的服务器会触发 macOS 15 的本地网络权限提示。请允许它，否则应用无法连上服务器。
+</Callout>
+
+## 相比网页版多了什么
+
+| | |
+|---|---|
+| **mpv 播放** | 直接播放浏览器不支持的格式——10-bit HEVC、含多音轨与多字幕的 MKV、完整样式的 ASS 字幕 |
+| **[离线下载](/docs/features/offline)** | 把一部作品复制到 Mac，在连不上服务器时照样播放，并受你设定的磁盘配额约束 |
+| **Anime4K 超分** | 内置 shader 预设集，用于提升老片源或低分辨率片源的画质 |
+| **系统集成** | 聚焦搜索、快捷指令、菜单栏的 Now Playing 与下载进度、`milmil://` 链接、种子文件拖放 |
+| **记住片头** | 学习你跳过的片头，并在下一集主动提供；支持每部作品的播放设置与睡眠定时器 |
+
+## 卸载
+
+<Tabs items={['Homebrew', 'DMG']}>
+
+<Tab value="Homebrew">
+
+```bash
+brew uninstall --cask milmil
+```
+
+若要连同偏好设置与缓存一并移除：
+
+```bash
+brew uninstall --zap --cask milmil
+```
+
+</Tab>
+
+<Tab value="DMG">
+
+把 **milmil.app** 拖到废纸篓，再移除它的数据：
+
+```bash
+rm -rf ~/Library/Application\ Support/milmil \
+       ~/Library/Caches/dev.milmil.macos \
+       ~/Library/Preferences/dev.milmil.macos.plist
+```
+
+</Tab>
+
+</Tabs>
+
+<Callout type="info">
+卸载不会动到服务器上的任何东西。离线副本存放在「Application Support」之下，会随应用数据一并移除。
+</Callout>

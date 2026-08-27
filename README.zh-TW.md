@@ -16,6 +16,7 @@
 <p align="center">
   <a href="#功能特色">功能特色</a> &bull;
   <a href="#截圖預覽">截圖預覽</a> &bull;
+  <a href="#macos-桌面應用程式">macOS 應用程式</a> &bull;
   <a href="#快速開始">快速開始</a> &bull;
   <a href="#部署">部署</a> &bull;
   <a href="#設定">設定</a> &bull;
@@ -46,6 +47,41 @@
 <p align="center">
   <img src="docs/screenshots/watch.png" width="800" alt="觀看頁 — 具粵語彈幕疊加層的播放器" />
 </p>
+
+---
+
+## macOS 桌面應用程式
+
+原生 SwiftUI 客戶端，內建以 [mpv](https://mpv.io) 為核心的播放器、Core Animation 彈幕，以及離線下載。它使用與網頁版相同的 API，因此需要一台已在運行的 milmil 伺服器。
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-home.png" width="800" alt="首頁——片架、今日時間表與熱門" />
+  <br/><sub>首頁——片架、今日時間表與熱門</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-watch.png" width="800" alt="播放器——mpv 播放、彈幕列與分集列表" />
+  <br/><sub>播放器——mpv 播放、彈幕列與分集列表</sub>
+</p>
+
+### 安裝
+
+```bash
+brew install --cask milmil-dev/milmil/milmil
+```
+
+或從[最新發行版本](https://github.com/milmil-dev/milmil/releases/latest)下載 `milmil-macos-<version>.dmg`。
+
+> [!NOTE]
+> 應用程式為 ad-hoc 簽章且未經公證，macOS 會阻擋第一次啟動。請以上方的 `--no-quarantine` 方式安裝，或對 **milmil.app** 按右鍵選擇「**打開**」（若仍被拒絕，請前往「**系統設定 › 隱私權與安全性 › 強制打開**」）。
+
+### 系統需求
+
+- **macOS 15（Sequoia）** 或更新版本
+- 僅支援 **Apple Silicon**，沒有 Intel 版本
+- 可連線的 milmil 伺服器（0.1.20 以上）
+
+完整說明：[macOS 應用程式](https://milmil.dev/zh-TW/docs/getting-started/macos)。
 
 ---
 
@@ -110,6 +146,7 @@
 | 快取 | Redis（選用，記憶體回退） |
 | 測試 | Vitest, Playwright, Go testing |
 | 程式碼品質 | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
+| macOS 客戶端 | Swift 6、SwiftUI、libmpv（MPVKit）、Core Animation |
 
 ---
 
