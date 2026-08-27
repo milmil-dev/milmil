@@ -1350,7 +1350,7 @@ function InlineRuleEditor({ rssUrl, onCreated }: { rssUrl: string; onCreated: ()
           resolution_filter: '',
           subgroup_filter: '',
           min_seeders: 0,
-          library_id: libraryId || null,
+          library_id: libraryId,
           bangumi_id: bangumiId,
           match_mode: 'fuzzy',
           episode_filter: 'all',

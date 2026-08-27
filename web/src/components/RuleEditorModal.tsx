@@ -193,7 +193,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
           resolution_filter: resolution,
           subgroup_filter: subgroupFilter.join(','),
           min_seeders: 0,
-          library_id: libraryId || null,
+          library_id: libraryId,
           bangumi_id: bangumiId,
           match_mode: matchMode,
           episode_filter: episodeFilter,
