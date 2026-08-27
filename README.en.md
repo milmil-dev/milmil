@@ -87,7 +87,7 @@ brew install --cask milmil-dev/milmil/milmil
 Or download `milmil-macos-<version>.dmg` from the [latest release](https://github.com/milmil-dev/milmil/releases/latest).
 
 > [!NOTE]
-> The app is ad-hoc signed and not notarized, so macOS blocks the first launch. Install with `--no-quarantine` as shown above, or right-click **milmil.app** and choose **Open** (then **System Settings › Privacy & Security › Open Anyway** if macOS still refuses).
+> The app is ad-hoc signed and not notarized, so macOS blocks the first launch. Right-click **milmil.app** and choose **Open** (then **System Settings › Privacy & Security › Open Anyway** if macOS still refuses), or clear the flag yourself with `xattr -d com.apple.quarantine /Applications/milmil.app`. Homebrew's `--no-quarantine` was removed in Homebrew 6.
 
 ### Requirements
 

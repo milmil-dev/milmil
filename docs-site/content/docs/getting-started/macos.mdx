@@ -31,13 +31,17 @@ The app is **ad-hoc signed and not notarized** — there is no Apple Developer a
 brew install --cask milmil-dev/milmil/milmil
 ```
 
-Because the build is not notarized, macOS quarantines it. Either install without the quarantine flag:
+Because the build is not notarized, macOS quarantines it and the first launch is blocked. Open it once by hand — right-click **milmil.app** in Applications and choose **Open**, then **Open** again in the dialog. On macOS 15 and later the dialog may only offer *Done*; in that case go to **System Settings › Privacy & Security** and press **Open Anyway**.
+
+Or clear the quarantine flag yourself, which is the same thing without the dialogs:
 
 ```bash
-brew install --cask --no-quarantine milmil-dev/milmil/milmil
+xattr -d com.apple.quarantine /Applications/milmil.app
 ```
 
-or open it once by hand — right-click **milmil.app** in Applications and choose **Open**, then **Open** again in the dialog. On macOS 15 and later the dialog may only offer *Done*; in that case go to **System Settings › Privacy & Security** and press **Open Anyway**.
+<Callout type="info">
+Homebrew's `--no-quarantine` option was removed in Homebrew 6 — if you have seen it in older instructions, it no longer exists.
+</Callout>
 
 Upgrading later is the usual:
 

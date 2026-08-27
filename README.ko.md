@@ -73,7 +73,7 @@ brew install --cask milmil-dev/milmil/milmil
 또는 [최신 릴리스](https://github.com/milmil-dev/milmil/releases/latest)에서 `milmil-macos-<version>.dmg`를 내려받으세요.
 
 > [!NOTE]
-> 앱은 ad-hoc 서명되어 있고 공증되지 않았으므로 macOS가 첫 실행을 차단합니다. 위와 같이 `--no-quarantine`으로 설치하거나 **milmil.app**을 우클릭해 「**열기**」를 선택하세요(그래도 거부되면 「**시스템 설정 › 개인 정보 보호 및 보안 › 확인 없이 열기**」).
+> 앱은 ad-hoc 서명되어 있고 공증되지 않았으므로 macOS가 첫 실행을 차단합니다. **milmil.app**을 우클릭해 「**열기**」를 선택하세요(그래도 거부되면 「**시스템 설정 › 개인 정보 보호 및 보안 › 확인 없이 열기**」). 또는 `xattr -d com.apple.quarantine /Applications/milmil.app`으로 직접 플래그를 지울 수 있습니다. Homebrew의 `--no-quarantine`은 Homebrew 6에서 제거되었습니다.
 
 ### 요구 사항
 

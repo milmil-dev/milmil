@@ -81,7 +81,7 @@ brew install --cask milmil-dev/milmil/milmil
 或者去[最新發行版本](https://github.com/milmil-dev/milmil/releases/latest)下載 `milmil-macos-<version>.dmg`。
 
 > [!NOTE]
-> 個應用程式係 ad-hoc 簽章、未經公證，所以 macOS 會攔住第一次啟動。用上面 `--no-quarantine` 嘅方式裝，或者撳右鍵㨂 **milmil.app** 選「**打開**」（仲係唔肯就去「**系統設定 › 私隱與安全性 › 仍要打開**」）。
+> 個應用程式係 ad-hoc 簽章、未經公證，所以 macOS 會攔住第一次啟動。撳右鍵㨂 **milmil.app** 選「**打開**」（仲係唔肯就去「**系統設定 › 私隱與安全性 › 仍要打開**」），或者自己執行 `xattr -d com.apple.quarantine /Applications/milmil.app` 清走個旗標。Homebrew 個 `--no-quarantine` 喺 Homebrew 6 已經移除。
 
 ### 系統要求
 
