@@ -69,8 +69,6 @@ final class PlayerController {
     private var localFileURL: URL?
     /// A copy kept on this Mac (離線到本機), tried before every other rung.
     private var offlineURL: URL?
-    private var pendingClipboardShots: [UInt64: URL] = [:]
-    private var pendingSavedShots: [UInt64: URL] = [:]
     /// The most recent capture, shown as a thumbnail card until it times out
     /// or the viewer dismisses it.
     var lastCapture: CaptureResult?
@@ -143,6 +141,7 @@ final class PlayerController {
         audioWatcher.start()
         NowPlayingBridge.shared.attach(self)
         #if DEBUG
+        DevSnapshot.playerScreenshot = { [weak self] in self?.screenshot(withSubtitles: false) }
         DevSnapshot.playerStateDump = { [weak self] in
             guard let self else { return [:] }
             var dict: [String: Any] = [
@@ -151,6 +150,7 @@ final class PlayerController {
                 "timePos": state.timePos,
                 "duration": state.duration,
                 "sidecarCount": state.sidecarSubtitles.count,
+                "log": Array(logRing.suffix(40)), // mpv errors never reach stderr (terminal=no)
             ]
             if let player {
                 dict["path"] = player.getString("path") ?? ""
@@ -355,6 +355,17 @@ final class PlayerController {
         await loadThumbnails(fileID: file.id, generation: generation)
     }
 
+    /// The rungs this file can actually be played from, best first — what the
+    /// quality menu offers.
+    var availableStages: [StreamStage] { fallback.stages }
+
+    /// Switch rung by hand. `load(url:generation:)` carries the position over,
+    /// and a rung that then fails still falls back down the ladder.
+    func selectStage(_ stage: StreamStage) {
+        guard stage != state.stage, let file = episode?.mediaFile, fallback.select(stage) else { return }
+        Task { await loadCurrentStage(fileID: file.id) }
+    }
+
     private func loadCurrentStage(fileID: String) async {
         let stage = fallback.current
         state.stage = stage
@@ -539,9 +550,8 @@ final class PlayerController {
             break
         case let .propertyChange(name, value):
             apply(name, value)
-        case let .commandReply(id, error):
-            finishClipboardShot(id: id, error: error)
-            finishSavedShot(id: id, error: error)
+        case .commandReply:
+            break
         case let .log(prefix, level, text):
             logRing.append("[\(prefix)] \(level): \(text.trimmingCharacters(in: .whitespacesAndNewlines))")
             if logRing.count > Self.logRingLimit { logRing.removeFirst(logRing.count - Self.logRingLimit) }
@@ -808,16 +818,34 @@ final class PlayerController {
     /// default was the wrong trade; "詢問儲存位置" brings the panel back for
     /// anyone who wants it.
     func screenshot(withSubtitles: Bool) {
-        guard let player else { return }
-        let url = FileManager.default.temporaryDirectory.appending(path: "milmil-shot-\(UUID().uuidString).png")
-        let id = player.commandAsync(["screenshot-to-file", url.path, withSubtitles ? "subtitles" : "video"])
-        pendingSavedShots[id] = url
+        Task { [weak self] in
+            guard let png = await self?.capturePNG(withSubtitles: withSubtitles) else {
+                self?.flash(.text(String(localized: "截圖失敗")))
+                return
+            }
+            self?.fileCapture(png: png)
+        }
     }
 
-    private func finishSavedShot(id: UInt64, error: Int32) {
-        guard let temp = pendingSavedShots.removeValue(forKey: id) else { return }
-        guard error >= 0, FileManager.default.fileExists(atPath: temp.path) else {
-            try? FileManager.default.removeItem(at: temp)
+    /// Grabs the frame and encodes it here rather than through mpv's
+    /// `screenshot-to-file`: MPVKit's FFmpeg carries no still-image encoder,
+    /// so mpv can decode the frame but never write one out.
+    private func capturePNG(withSubtitles: Bool) async -> Data? {
+        guard let player else { return nil }
+        return await Task.detached {
+            guard let frame = try? player.screenshotRaw(includeSubtitles: withSubtitles),
+                  let cgImage = frame.cgImage()
+            else { return nil }
+            return NSBitmapImageRep(cgImage: cgImage).representation(using: .png, properties: [:])
+        }.value
+    }
+
+    private func fileCapture(png: Data) {
+        let temp = FileManager.default.temporaryDirectory.appending(path: "milmil-shot-\(UUID().uuidString).png")
+        do {
+            try png.write(to: temp)
+        } catch {
+            logRing.append("[milmil] error: screenshot write failed: \(error.localizedDescription)")
             flash(.text(String(localized: "截圖失敗")))
             return
         }
@@ -961,22 +989,17 @@ final class PlayerController {
     /// Renders to a temp PNG via `screenshot-to-file`, then puts it on the
     /// pasteboard when mpv's reply arrives.
     func screenshotToClipboard(withSubtitles: Bool = true) {
-        guard let player else { return }
-        let url = FileManager.default.temporaryDirectory.appending(path: "milmil-shot-\(UUID().uuidString).png")
-        let id = player.commandAsync(["screenshot-to-file", url.path, withSubtitles ? "subtitles" : "video"])
-        pendingClipboardShots[id] = url
-    }
-
-    private func finishClipboardShot(id: UInt64, error: Int32) {
-        guard let url = pendingClipboardShots.removeValue(forKey: id) else { return }
-        defer { try? FileManager.default.removeItem(at: url) }
-        guard error >= 0, let image = NSImage(contentsOf: url) else {
-            flash(.text(String(localized: "截圖失敗")))
-            return
+        Task { [weak self] in
+            guard let png = await self?.capturePNG(withSubtitles: withSubtitles),
+                  let image = NSImage(data: png)
+            else {
+                self?.flash(.text(String(localized: "截圖失敗")))
+                return
+            }
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.writeObjects([image])
+            self?.flash(.text(String(localized: "截圖已複製")))
         }
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.writeObjects([image])
-        flash(.text(String(localized: "截圖已複製")))
     }
 
     func addExternalSubtitle(fileURL: URL) {
@@ -1192,6 +1215,14 @@ final class PlayerController {
     }
 
     var autoNextEnabled: Bool { session.preferences.autoNext }
+    var autoSkipOpEnabled: Bool { session.preferences.autoSkipOp }
+    var autoSkipEdEnabled: Bool { session.preferences.autoSkipEd }
+
+    /// The three playback habits worth flipping without leaving the picture;
+    /// Settings writes the same fields.
+    func setAutoNext(_ enabled: Bool) { session.updatePreferences { $0.autoNext = enabled } }
+    func setAutoSkipOp(_ enabled: Bool) { session.updatePreferences { $0.autoSkipOp = enabled } }
+    func setAutoSkipEd(_ enabled: Bool) { session.updatePreferences { $0.autoSkipEd = enabled } }
 
     // MARK: - OSD
 

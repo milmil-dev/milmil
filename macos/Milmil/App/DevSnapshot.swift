@@ -109,6 +109,9 @@ enum DevSnapshot {
     /// Registered by `PlayerController` (Debug only) so `MILMIL_SNAPSHOT_DUMP`
     /// can serialize the live player state next to the screenshot.
     @MainActor static var playerStateDump: (() -> [String: Any])?
+    /// Registered by `PlayerController` (Debug only) so
+    /// `MILMIL_SNAPSHOT_CAPTURE=1` can exercise the frame-capture action.
+    @MainActor static var playerScreenshot: (() -> Void)?
 
     static func runIfRequested() {
         let env = ProcessInfo.processInfo.environment
@@ -154,6 +157,12 @@ enum DevSnapshot {
             // MILMIL_SNAPSHOT_DUMP=<path> also writes the active player's state
             // (stage, status, mpv track selection) as JSON — lets a headless run
             // verify subtitle/audio selection without readable pixels.
+            // MILMIL_SNAPSHOT_CAPTURE=1 fires the OSC screenshot before the
+            // dump, so a headless run can prove a file lands on disk.
+            if env["MILMIL_SNAPSHOT_CAPTURE"] == "1" {
+                playerScreenshot?()
+                try? await Task.sleep(for: .seconds(4))
+            }
             if let dumpPath = env["MILMIL_SNAPSHOT_DUMP"], !dumpPath.isEmpty {
                 let dict = playerStateDump?() ?? [:]
                 if let data = try? JSONSerialization.data(withJSONObject: dict, options: [.prettyPrinted, .sortedKeys]) {
