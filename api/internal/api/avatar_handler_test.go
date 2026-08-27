@@ -27,7 +27,9 @@ func newAvatarTestApp(t *testing.T) (*echo.Echo, string) {
 	cfg := &config.Config{JWTSecret: "testsecret32chars!!!", DatabaseURL: dsn, DataDir: dataDir}
 	c := cache.New("")
 	return api.NewRouter(api.Deps{
-		Config: cfg, DB: database, Cache: c, Metadata: metadata.New(nil, nil, c), UpdateChecker: noopChecker(),
+		// The guarded default refuses to dial loopback, where httptest lives.
+		AvatarHTTPClient: http.DefaultClient,
+		Config:           cfg, DB: database, Cache: c, Metadata: metadata.New(nil, nil, c), UpdateChecker: noopChecker(),
 	}), dataDir
 }
 

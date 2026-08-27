@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
@@ -54,6 +55,8 @@ type handler struct {
 	jobs       *worker.JobRegistry
 	jellyfin   *jellyfin.Handler
 	reloadBots func(context.Context, notification.NotificationConfig)
+	// avatarClient fetches source_url; nil uses the guarded default.
+	avatarClient *http.Client
 }
 
 // Deps carries everything the API layer needs to serve requests.
@@ -83,6 +86,9 @@ type Deps struct {
 	Jobs *worker.JobRegistry
 	// Jellyfin is the pre-built Jellyfin layer; nil builds one here.
 	Jellyfin *jellyfin.Handler
+	// AvatarHTTPClient fetches source_url for an avatar; nil uses the guarded
+	// client that refuses to dial anything but a public address.
+	AvatarHTTPClient *http.Client
 	// ReloadBots restarts the chat bots with a new config; nil = config only.
 	ReloadBots func(context.Context, notification.NotificationConfig)
 }
@@ -122,6 +128,7 @@ func NewRouter(deps Deps) *echo.Echo {
 		jobs:            deps.Jobs,
 		jellyfin:        deps.Jellyfin,
 		reloadBots:      deps.ReloadBots,
+		avatarClient:    deps.AvatarHTTPClient,
 	}
 
 	// Job state changes (start, finish, toggle) reach the clients live.

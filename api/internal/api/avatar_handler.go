@@ -11,12 +11,14 @@ import (
 	_ "image/png" // avatar uploads
 	"io"
 	"mime"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/labstack/echo/v5"
@@ -33,6 +35,52 @@ const (
 )
 
 var avatarSizes = []int{avatarLarge, avatarSmall}
+
+// errPrivateAvatarSource is returned by the dialler, so the handler answers
+// the same "could not fetch" for a blocked address as for an unreachable one.
+var errPrivateAvatarSource = errors.New("source_url resolves to a non-public address")
+
+// avatarFetchClient is the default for handler.avatarClient. It refuses to
+// open a connection to anything but a public
+// address. source_url exists so the client can hand back a character picture
+// from the same CDN the API served it from; without this a signed-in user
+// could point it at the metadata service, at localhost or across the LAN and
+// read the answer off the status code. The check sits in the dialler's
+// Control hook, which runs on the resolved IP of every hop, so a DNS name
+// that resolves inward — or a redirect to one — is refused too.
+var avatarFetchClient = &http.Client{
+	Timeout: 10 * time.Second,
+	Transport: &http.Transport{
+		DialContext: (&net.Dialer{Timeout: 5 * time.Second, Control: blockPrivateDial}).DialContext,
+	},
+}
+
+func blockPrivateDial(_, address string, _ syscall.RawConn) error {
+	host, _, err := net.SplitHostPort(address)
+	if err != nil {
+		return err
+	}
+	ip := net.ParseIP(host)
+	if ip == nil || !isPublicIP(ip) {
+		return errPrivateAvatarSource
+	}
+	return nil
+}
+
+// isPublicIP reports whether an address is routable on the public internet.
+func isPublicIP(ip net.IP) bool {
+	if ip.IsLoopback() || ip.IsPrivate() || ip.IsUnspecified() ||
+		ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() ||
+		ip.IsInterfaceLocalMulticast() || ip.IsMulticast() {
+		return false
+	}
+	// 100.64.0.0/10 (carrier-grade NAT) is where a router's own services and
+	// a Tailscale peer live; net.IP has no predicate for it.
+	if v4 := ip.To4(); v4 != nil && v4[0] == 100 && v4[1] >= 64 && v4[1] <= 127 {
+		return false
+	}
+	return true
+}
 
 // avatarDir is where the rendered avatar JPEGs live: <DataDir>/avatars.
 func (h *handler) avatarDir() string {
@@ -142,7 +190,10 @@ func (h *handler) readAvatarSource(c *echo.Context) ([]byte, error) {
 	if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") || parsed.Host == "" {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, "source_url must be an http(s) URL")
 	}
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := h.avatarClient
+	if client == nil {
+		client = avatarFetchClient
+	}
 	resp, err := client.Get(parsed.String())
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadGateway, "could not fetch source_url")
