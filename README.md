@@ -89,7 +89,7 @@ brew install --cask milmil-dev/milmil/milmil
 - 淨係支援 **Apple Silicon**，冇 Intel 版本
 - 駁得到嘅 milmil 伺服器（0.1.20 或以上）
 
-完整說明：[macOS 應用程式](https://milmil.dev/zh-HK/docs/getting-started/macos)。
+完整說明：[macOS 應用程式](https://milmil.vercel.app/zh-HK/docs/getting-started/macos)。
 
 ---
 
