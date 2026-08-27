@@ -149,6 +149,16 @@ type ExternalDanmaku struct {
 	CreatedAt    string `json:"created_at"`
 }
 
+type ExternalDevice struct {
+	DeviceID   string `json:"device_id"`
+	UserID     string `json:"user_id"`
+	Client     string `json:"client"`
+	DeviceName string `json:"device_name"`
+	FirstSeen  string `json:"first_seen"`
+	LastSeen   string `json:"last_seen"`
+	Revoked    int64  `json:"revoked"`
+}
+
 type HotTag struct {
 	ID        int64  `json:"id"`
 	Name      string `json:"name"`

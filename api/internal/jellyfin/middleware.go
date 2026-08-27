@@ -15,6 +15,13 @@ import (
 // with the MediaBrowser token scheme used by Jellyfin clients.
 // Format: MediaBrowser Token="<jwt>", Client="Infuse", Device="iPhone", ...
 func EmbyAuthMiddleware(secret string, queries *store.Queries) echo.MiddlewareFunc {
+	return authMiddleware(secret, queries, nil)
+}
+
+// authMiddleware is EmbyAuthMiddleware plus per-device revocation: a token
+// bound to a device that Settings › 服務 revoked is refused, and the device's
+// last_seen is kept fresh. devices may be nil (no device tracking).
+func authMiddleware(secret string, queries *store.Queries, devices *deviceTracker) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c *echo.Context) error {
 			token := extractEmbyToken(c.Request())
@@ -22,16 +29,23 @@ func EmbyAuthMiddleware(secret string, queries *store.Queries) echo.MiddlewareFu
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Missing authentication token"})
 			}
 
-			userID, tokenVersion, err := auth.VerifyToken(secret, token)
+			claims, err := auth.VerifyTokenClaims(secret, token)
 			if err != nil {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid or expired token"})
 			}
+			userID, tokenVersion := claims.UserID, claims.TokenVersion
 			// A valid signature is not enough: the token must also match the
 			// user's current version, so changing the password logs external
 			// players out instead of leaving a 24h window open.
 			user, err := queries.GetUserByID(c.Request().Context(), userID)
 			if err != nil || user.TokenVersion != tokenVersion {
 				return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "Invalid or expired token"})
+			}
+			if devices != nil && claims.DeviceID != "" {
+				if devices.isRevoked(c.Request().Context(), claims.DeviceID) {
+					return c.JSON(http.StatusUnauthorized, JellyfinError{Message: "This device has been revoked"})
+				}
+				devices.touch(c.Request().Context(), claims.DeviceID)
 			}
 			c.Set("userID", userID)
 

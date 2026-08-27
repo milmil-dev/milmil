@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/milmil/api/internal/notification"
@@ -19,21 +18,19 @@ type NotificationDeliveryWorker struct {
 }
 
 // Run processes all pending deliveries whose next_retry_at has elapsed.
-func (w *NotificationDeliveryWorker) Run(ctx context.Context) {
+func (w *NotificationDeliveryWorker) Run(ctx context.Context) error {
 	now := time.Now().Format(time.RFC3339)
 	deliveries, err := w.queries.ListPendingDeliveries(ctx, sql.NullString{String: now, Valid: true})
 	if err != nil {
-		slog.Error("notification_delivery: list pending", "err", err)
-		return
+		return fmt.Errorf("list pending deliveries: %w", err)
 	}
 	if len(deliveries) == 0 {
-		return
+		return nil
 	}
 
 	cfg, err := notification.LoadNotificationConfig(ctx, w.queries)
 	if err != nil {
-		slog.Error("notification_delivery: load config", "err", err)
-		return
+		return fmt.Errorf("load notification config: %w", err)
 	}
 
 	for _, d := range deliveries {
@@ -90,4 +87,5 @@ func (w *NotificationDeliveryWorker) Run(ctx context.Context) {
 			_ = w.queries.UpdateDeliverySuccess(ctx, d.ID)
 		}
 	}
+	return nil
 }

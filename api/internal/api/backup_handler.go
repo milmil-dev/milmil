@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
@@ -167,13 +168,20 @@ func (h *handler) handleTestBackupConnection(c *echo.Context) error {
 
 // POST /api/v1/user/preferences/sync
 func (h *handler) handleTriggerSync(c *echo.Context) error {
-	userID := getUserID(c)
-	ctx := c.Request().Context()
+	results, err := h.runPreferenceSync(c.Request().Context(), getUserID(c))
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.JSON(http.StatusOK, results)
+}
 
+// runPreferenceSync exports the user's preferences and uploads them to every
+// enabled backup target. Shared by the trigger endpoint and Settings › 服務.
+func (h *handler) runPreferenceSync(ctx context.Context, userID string) ([]syncResult, error) {
 	// Get all user preferences and export as JSON.
 	prefs, err := h.queries.GetAllUserPreferences(ctx, userID)
 	if err != nil {
-		return echo.ErrInternalServerError
+		return nil, err
 	}
 
 	exported := make([]exportedPreference, len(prefs))
@@ -194,16 +202,16 @@ func (h *handler) handleTriggerSync(c *echo.Context) error {
 
 	data, err := json.Marshal(payload)
 	if err != nil {
-		return echo.ErrInternalServerError
+		return nil, err
 	}
 
 	// Get all enabled backup configs.
 	configs, err := h.queries.ListBackupConfigs(ctx, userID)
 	if err != nil {
-		return echo.ErrInternalServerError
+		return nil, err
 	}
 
-	var results []syncResult
+	results := []syncResult{}
 	for _, row := range configs {
 		if row.Enabled == 0 {
 			continue
@@ -250,7 +258,7 @@ func (h *handler) handleTriggerSync(c *echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, results)
+	return results, nil
 }
 
 // GET /api/v1/user/preferences/sync/status

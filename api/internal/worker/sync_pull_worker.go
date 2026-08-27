@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/milmil/api/internal/store"
@@ -16,18 +17,18 @@ type SyncPullWorker struct {
 	q   *store.Queries
 }
 
-func (w *SyncPullWorker) Run(ctx context.Context) {
+func (w *SyncPullWorker) Run(ctx context.Context) error {
 	if w.svc == nil || w.q == nil {
-		return
+		return nil
 	}
 	rows, err := w.q.ListPullEnabledProviders(ctx)
 	if err != nil {
-		slog.Warn("pull: list enabled", "err", err)
-		return
+		return fmt.Errorf("list pull-enabled providers: %w", err)
 	}
 	for _, r := range rows {
 		if _, err := w.svc.PullFromProvider(ctx, r.UserID, milmilsync.ProviderName(r.Provider)); err != nil {
 			slog.Warn("pull: provider failed", "user", r.UserID, "provider", r.Provider, "err", err)
 		}
 	}
+	return nil
 }

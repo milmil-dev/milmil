@@ -41,17 +41,17 @@ func NewAiringReminderWorker(
 
 // Run checks the airing calendar and sends reminders for anime the user is
 // watching or has download rules for.
-func (w *AiringReminderWorker) Run(ctx context.Context) {
+func (w *AiringReminderWorker) Run(ctx context.Context) error {
 	// Load config to check if reminders are enabled
 	cfg, err := notification.LoadNotificationConfig(ctx, w.queries)
 	if err != nil {
 		slog.Debug("airing_reminder: load config failed", "err", err)
-		return
+		return nil
 	}
 
 	reminderMinutes := cfg.Bot.Telegram.AiringReminderMinutes
 	if reminderMinutes <= 0 {
-		return
+		return nil
 	}
 
 	// Reset sent map on new day
@@ -69,8 +69,7 @@ func (w *AiringReminderWorker) Run(ctx context.Context) {
 	// Get today's weekday index (Monday=0 in Bangumi calendar)
 	calendar, err := w.metadata.GetCalendar(ctx)
 	if err != nil {
-		slog.Error("airing_reminder: get calendar", "err", err)
-		return
+		return fmt.Errorf("get calendar: %w", err)
 	}
 
 	// Find today's day in the calendar by matching weekday
@@ -84,13 +83,13 @@ func (w *AiringReminderWorker) Run(ctx context.Context) {
 	}
 
 	if len(todayItems) == 0 {
-		return
+		return nil
 	}
 
 	// Build set of Bangumi IDs the user is watching or has rules for
 	watchingIDs := buildWatchingSet(ctx, w.queries)
 	if len(watchingIDs) == 0 {
-		return
+		return nil
 	}
 
 	reminderWindow := time.Duration(reminderMinutes) * time.Minute
@@ -167,6 +166,7 @@ func (w *AiringReminderWorker) Run(ctx context.Context) {
 				"time_until", timeUntilStr)
 		}
 	}
+	return nil
 }
 
 // matchesWeekday checks if an English weekday name matches a time.Weekday.
