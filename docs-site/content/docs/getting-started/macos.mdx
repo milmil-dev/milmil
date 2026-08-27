@@ -1,0 +1,138 @@
+---
+title: macOS App
+description: Install the native macOS client with Homebrew or the DMG, and connect it to your milmil server.
+---
+
+The macOS client is a native SwiftUI app with an [mpv](https://mpv.io)-based player, Core Animation danmaku, and [offline downloads](/docs/features/offline). It talks to the same `/api/v1` the web app uses, so it needs a milmil server already running — see [Installation](/docs/getting-started/installation) if you don't have one yet.
+
+![Home — shelves, today's schedule and trending](/screenshots/macos-home.png)
+
+![Player — mpv playback with the danmaku bar and episode rail](/screenshots/macos-watch.png)
+
+## Requirements
+
+| | |
+|---|---|
+| **macOS** | 15 (Sequoia) or later |
+| **Chip** | Apple Silicon only — no Intel build |
+| **Server** | A reachable milmil server, any version from 0.1.20 |
+
+<Callout type="warn">
+The app is **ad-hoc signed and not notarized** — there is no Apple Developer account behind the project yet. macOS will block the first launch. Both install methods below tell you how to get past it, and neither is a workaround you have to repeat.
+</Callout>
+
+## Install
+
+<Tabs items={['Homebrew', 'DMG']}>
+
+<Tab value="Homebrew">
+
+```bash
+brew install --cask milmil-dev/milmil/milmil
+```
+
+Because the build is not notarized, macOS quarantines it. Either install without the quarantine flag:
+
+```bash
+brew install --cask --no-quarantine milmil-dev/milmil/milmil
+```
+
+or open it once by hand — right-click **milmil.app** in Applications and choose **Open**, then **Open** again in the dialog. On macOS 15 and later the dialog may only offer *Done*; in that case go to **System Settings › Privacy & Security** and press **Open Anyway**.
+
+Upgrading later is the usual:
+
+```bash
+brew upgrade --cask milmil
+```
+
+</Tab>
+
+<Tab value="DMG">
+
+Download `milmil-macos-<version>.dmg` from the [latest release](https://github.com/milmil-dev/milmil/releases/latest), open it, and drag **milmil.app** into Applications.
+
+On first launch, right-click **milmil.app** and choose **Open** rather than double-clicking it — a double-click gives you a dialog with no way through. If macOS still refuses, open **System Settings › Privacy & Security**, scroll to the message about milmil, and press **Open Anyway**.
+
+</Tab>
+
+</Tabs>
+
+## Connect to your server
+
+<Steps>
+
+<Step>
+### Enter the server address
+
+On first launch the app asks for a server URL. Use the same address you open the web UI with, including the port:
+
+```
+http://192.168.1.10:8080
+```
+
+Behind a reverse proxy, use the public URL — a path prefix (`https://media.example.com/milmil`) is supported.
+</Step>
+
+<Step>
+### Sign in
+
+Use your milmil username and password. The app stores an `mlml_` API token in the login Keychain, keyed to the server profile; your password is not kept.
+</Step>
+
+<Step>
+### Add more servers (optional)
+
+The app holds several server profiles at once and switches between them from the sidebar, so a home server and a remote one can live side by side.
+</Step>
+
+</Steps>
+
+<Callout type="info">
+Connecting to a server on your LAN for the first time triggers the macOS 15 local-network permission prompt. Allow it, or the app cannot reach the server.
+</Callout>
+
+## What the client adds over the web app
+
+| | |
+|---|---|
+| **mpv playback** | Direct play of formats the browser refuses — 10-bit HEVC, MKV with multiple audio and subtitle tracks, ASS subtitles with full styling |
+| **[Offline downloads](/docs/features/offline)** | Copy a series onto the Mac and play it with the server unreachable, inside a disk budget you set |
+| **Anime4K upscaling** | Bundled shader presets for upscaling older or low-resolution sources |
+| **System integration** | Spotlight, Shortcuts, menu-bar Now Playing and download progress, `milmil://` links, torrent drag-and-drop |
+| **Skip learning** | Learns the intro you skip and offers it on the next episode; per-series playback settings and a sleep timer |
+
+## Uninstall
+
+<Tabs items={['Homebrew', 'DMG']}>
+
+<Tab value="Homebrew">
+
+```bash
+brew uninstall --cask milmil
+```
+
+To remove preferences and caches as well:
+
+```bash
+brew uninstall --zap --cask milmil
+```
+
+</Tab>
+
+<Tab value="DMG">
+
+Drag **milmil.app** to the Trash, then remove its data:
+
+```bash
+rm -rf ~/Library/Application\ Support/milmil \
+       ~/Library/Caches/dev.milmil.macos \
+       ~/Library/Preferences/dev.milmil.macos.plist
+```
+
+</Tab>
+
+</Tabs>
+
+<Callout type="info">
+Uninstalling does not touch anything on the server. Offline copies live under **Application Support** and go with the app data.
+</Callout>

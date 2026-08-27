@@ -22,6 +22,8 @@ const FEATURES = [
   { icon: Refresh01Icon, title: 'f6', desc: 'd6' },
 ] as const;
 
+const MAC_POINTS = ['macPoint1', 'macPoint2', 'macPoint3', 'macPoint4'] as const;
+
 function BangumiLogo() {
   return (
     <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
@@ -197,6 +199,54 @@ export function LandingPage({ lang }: { lang: string }) {
         </div>
       </section>
 
+      {/* ═══ macOS APP ═══ */}
+      <section className="relative py-24 px-6 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.05)_0%,transparent_70%)] pointer-events-none" />
+        <div className="relative z-10 max-w-[1080px] mx-auto grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-center">
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <span className="inline-flex items-center gap-2 px-3 py-1 mb-5 rounded-full bg-[--mm-accent]/[0.08] border border-[--mm-accent]/[0.18] text-[11px] font-semibold tracking-wide text-[--mm-accent] uppercase">
+              {t('macBadge')}
+            </span>
+            <h2 className="text-4xl max-md:text-3xl font-bold tracking-tight mb-3.5">{t('macTitle')}</h2>
+            <p className="text-[15px] text-white/40 leading-relaxed mb-7">{t('macDesc')}</p>
+
+            <ul className="space-y-3 mb-8">
+              {MAC_POINTS.map((k) => (
+                <li key={k} className="flex gap-3 text-[13px] text-white/55 leading-relaxed">
+                  <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[--mm-accent]/70" />
+                  {t(k)}
+                </li>
+              ))}
+            </ul>
+
+            <div className="inline-flex items-center gap-2.5 px-5 py-3 rounded-[10px] bg-black/40 border border-white/[0.08] font-mono text-[13px] text-white/45 backdrop-blur-sm mb-5 max-w-full overflow-x-auto">
+              <span className="text-[--mm-accent] font-semibold">$</span>
+              <span className="text-white/70 whitespace-nowrap">brew install --cask milmil-dev/milmil/milmil</span>
+            </div>
+
+            <div className="flex gap-3 flex-wrap">
+              <a href="https://github.com/milmil-dev/milmil/releases/latest" className="inline-flex px-7 py-3 rounded-[10px] text-sm font-semibold bg-[--mm-accent] text-[--mm-bg] shadow-[0_4px_16px_rgba(167,139,250,0.25)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(167,139,250,0.35)] transition-all">
+                {t('macDownload')}
+              </a>
+              <a href={`/${lang}/docs/getting-started/macos`} className="inline-flex px-6 py-3 rounded-[10px] text-sm font-medium bg-white/5 border border-white/10 text-white/75 hover:bg-white/10 hover:border-white/[0.18] transition-all">
+                {t('macGuide')}
+              </a>
+            </div>
+
+            <p className="mt-5 text-xs text-white/25 leading-relaxed">{t('macRequirements')}</p>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+            <MacFrame src="/screenshots/macos-home.png" alt={t('macShotHome')} />
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <MacFrame src="/screenshots/macos-watch.png" alt={t('macShotWatch')} compact />
+              <MacFrame src="/screenshots/macos-detail.png" alt={t('macShotDetail')} compact />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ═══ DEPLOY ═══ */}
       <section className="relative py-20 px-6 overflow-hidden bg-gradient-to-b from-[--mm-bg] via-[#0c0a12] to-[--mm-bg]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.03)_0%,transparent_70%)] pointer-events-none" />
@@ -265,6 +315,21 @@ export function LandingPage({ lang }: { lang: string }) {
         </div>
         <p className="text-xs text-white/20">milmil — Self-hosted Anime Media Server</p>
       </footer>
+    </div>
+  );
+}
+
+// Real captures of the macOS client, in a window frame that matches SSFrame's.
+function MacFrame({ src, alt, compact = false }: { src: string; alt: string; compact?: boolean }) {
+  return (
+    <div className="rounded-xl overflow-hidden border border-white/[0.08] bg-[#111] shadow-[0_16px_48px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_24px_64px_rgba(0,0,0,0.5)]">
+      <div className={`${compact ? 'h-6 px-2 gap-1' : 'h-8 px-2.5 gap-[5px]'} bg-[#1a1a1a] flex items-center border-b border-white/5`}>
+        <div className={`${compact ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full bg-[#ff5f57]`} />
+        <div className={`${compact ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full bg-[#febc2e]`} />
+        <div className={`${compact ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full bg-[#28c840]`} />
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimizer */}
+      <img src={src} alt={alt} loading="lazy" className="block w-full h-auto" />
     </div>
   );
 }

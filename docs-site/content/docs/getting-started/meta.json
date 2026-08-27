@@ -1,4 +1,4 @@
 {
   "title": "Getting Started",
-  "pages": ["installation", "docker", "first-setup", "platforms"]
+  "pages": ["installation", "docker", "macos", "first-setup", "platforms"]
 }

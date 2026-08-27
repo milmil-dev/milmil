@@ -24,6 +24,7 @@
 <p align="center">
   <a href="#features">Features</a> &bull;
   <a href="#screenshots">Screenshots</a> &bull;
+  <a href="#macos-desktop-app">macOS App</a> &bull;
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="#deployment">Deployment</a> &bull;
   <a href="#configuration">Configuration</a> &bull;
@@ -60,6 +61,41 @@
   <img src="docs/screenshots/watch.png" width="800" alt="Watch — video player with Cantonese danmaku overlay" />
   <br/><sub>Watch — Player with danmaku overlay and external source picker</sub>
 </p>
+
+---
+
+## macOS Desktop App
+
+A native SwiftUI client with an [mpv](https://mpv.io)-based player, Core Animation danmaku, and offline downloads. It talks to the same API as the web app, so it needs a milmil server already running.
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-home.png" width="800" alt="Home — shelves, today's schedule and trending" />
+  <br/><sub>Home — shelves, today's schedule and trending</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-watch.png" width="800" alt="Player — mpv playback with the danmaku bar and episode rail" />
+  <br/><sub>Player — mpv playback with the danmaku bar and episode rail</sub>
+</p>
+
+### Install
+
+```bash
+brew install --cask milmil-dev/milmil/milmil
+```
+
+Or download `milmil-macos-<version>.dmg` from the [latest release](https://github.com/milmil-dev/milmil/releases/latest).
+
+> [!NOTE]
+> The app is ad-hoc signed and not notarized, so macOS blocks the first launch. Install with `--no-quarantine` as shown above, or right-click **milmil.app** and choose **Open** (then **System Settings › Privacy & Security › Open Anyway** if macOS still refuses).
+
+### Requirements
+
+- **macOS 15 (Sequoia)** or later
+- **Apple Silicon** only — there is no Intel build
+- A reachable milmil server (0.1.20 or later)
+
+Full guide: [macOS App](https://milmil.dev/en/docs/getting-started/macos).
 
 ---
 
@@ -124,6 +160,7 @@
 | Cache | Redis (optional, in-memory fallback) |
 | Testing | Vitest, Playwright, Go testing |
 | Linting | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
+| macOS client | Swift 6, SwiftUI, libmpv (MPVKit), Core Animation |
 
 ---
 

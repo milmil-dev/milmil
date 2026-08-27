@@ -16,6 +16,7 @@
 <p align="center">
   <a href="#機能">機能</a> &bull;
   <a href="#スクリーンショット">スクリーンショット</a> &bull;
+  <a href="#macos-デスクトップアプリ">macOS アプリ</a> &bull;
   <a href="#クイックスタート">クイックスタート</a> &bull;
   <a href="#デプロイ">デプロイ</a> &bull;
   <a href="#設定">設定</a> &bull;
@@ -46,6 +47,41 @@
 <p align="center">
   <img src="docs/screenshots/watch.png" width="800" alt="再生 — 広東語の弾幕オーバーレイ付きプレイヤー" />
 </p>
+
+---
+
+## macOS デスクトップアプリ
+
+[mpv](https://mpv.io) ベースのプレーヤー、Core Animation による弾幕、オフラインダウンロードを備えた ネイティブ SwiftUI クライアントです。Web 版と同じ API を使うため、稼働中の milmil サーバーが必要です。
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-home.png" width="800" alt="ホーム — 棚、今日の放送、トレンド" />
+  <br/><sub>ホーム — 棚、今日の放送、トレンド</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-watch.png" width="800" alt="プレーヤー — mpv 再生、弾幕バーとエピソード一覧" />
+  <br/><sub>プレーヤー — mpv 再生、弾幕バーとエピソード一覧</sub>
+</p>
+
+### インストール
+
+```bash
+brew install --cask milmil-dev/milmil/milmil
+```
+
+または[最新リリース](https://github.com/milmil-dev/milmil/releases/latest)から `milmil-macos-<version>.dmg` をダウンロードしてください。
+
+> [!NOTE]
+> アプリは ad-hoc 署名で公証されていないため、macOS が初回起動をブロックします。上記の `--no-quarantine` を付けてインストールするか、**milmil.app** を右クリックして「**開く**」を選んでください（それでも拒否される場合は「**システム設定 › プライバシーとセキュリティ › このまま開く**」）。
+
+### 動作環境
+
+- **macOS 15（Sequoia）** 以降
+- **Apple Silicon** のみ — Intel 版はありません
+- 接続可能な milmil サーバー（0.1.20 以降）
+
+詳しくは [macOS アプリ](https://milmil.dev/en/docs/getting-started/macos) を参照してください。
 
 ---
 
@@ -110,6 +146,7 @@
 | キャッシュ | Redis（オプション、インメモリフォールバック） |
 | テスト | Vitest, Playwright, Go testing |
 | リンティング | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
+| macOS クライアント | Swift 6、SwiftUI、libmpv（MPVKit）、Core Animation |
 
 ---
 

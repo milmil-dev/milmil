@@ -16,6 +16,7 @@
 <p align="center">
   <a href="#기능">기능</a> &bull;
   <a href="#스크린샷">스크린샷</a> &bull;
+  <a href="#macos-데스크톱-앱">macOS 앱</a> &bull;
   <a href="#빠른-시작">빠른 시작</a> &bull;
   <a href="#배포">배포</a> &bull;
   <a href="#설정">설정</a> &bull;
@@ -46,6 +47,41 @@
 <p align="center">
   <img src="docs/screenshots/watch.png" width="800" alt="시청 — 광둥어 탄막 오버레이가 있는 플레이어" />
 </p>
+
+---
+
+## macOS 데스크톱 앱
+
+[mpv](https://mpv.io) 기반 플레이어, Core Animation 탄막, 오프라인 다운로드를 갖춘 네이티브 SwiftUI 클라이언트입니다. 웹 앱과 동일한 API를 사용하므로 실행 중인 milmil 서버가 필요합니다.
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-home.png" width="800" alt="홈 — 선반, 오늘의 방송, 트렌딩" />
+  <br/><sub>홈 — 선반, 오늘의 방송, 트렌딩</sub>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/macos/macos-watch.png" width="800" alt="플레이어 — mpv 재생, 탄막 바와 에피소드 목록" />
+  <br/><sub>플레이어 — mpv 재생, 탄막 바와 에피소드 목록</sub>
+</p>
+
+### 설치
+
+```bash
+brew install --cask milmil-dev/milmil/milmil
+```
+
+또는 [최신 릴리스](https://github.com/milmil-dev/milmil/releases/latest)에서 `milmil-macos-<version>.dmg`를 내려받으세요.
+
+> [!NOTE]
+> 앱은 ad-hoc 서명되어 있고 공증되지 않았으므로 macOS가 첫 실행을 차단합니다. 위와 같이 `--no-quarantine`으로 설치하거나 **milmil.app**을 우클릭해 「**열기**」를 선택하세요(그래도 거부되면 「**시스템 설정 › 개인 정보 보호 및 보안 › 확인 없이 열기**」).
+
+### 요구 사항
+
+- **macOS 15(Sequoia)** 이상
+- **Apple Silicon** 전용 — Intel 빌드는 없습니다
+- 연결 가능한 milmil 서버(0.1.20 이상)
+
+자세한 내용은 [macOS 앱](https://milmil.dev/en/docs/getting-started/macos) 문서를 참고하세요.
 
 ---
 
@@ -110,6 +146,7 @@
 | 캐시 | Redis (선택 사항, 인메모리 폴백) |
 | 테스트 | Vitest, Playwright, Go testing |
 | 린팅 | Vite+ (Oxlint/Oxfmt), Lefthook, Commitlint |
+| macOS 클라이언트 | Swift 6, SwiftUI, libmpv(MPVKit), Core Animation |
 
 ---
 
