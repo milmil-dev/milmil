@@ -161,6 +161,9 @@ func (h *handler) generateThumbnails(ctx context.Context, mf store.MediaFile, li
 func (h *handler) handleThumbnailVTT(c *echo.Context) error {
 	ctx := c.Request().Context()
 	fileID := c.Param("fileId")
+	if !safePathSegment(fileID) {
+		return echo.NewHTTPError(http.StatusNotFound, "file not found")
+	}
 
 	mf, err := h.queries.GetMediaFileByID(ctx, fileID)
 	if err != nil {
@@ -207,6 +210,9 @@ func (h *handler) handleThumbnailVTT(c *echo.Context) error {
 // handleThumbnailSprite serves the sprite sheet image.
 func (h *handler) handleThumbnailSprite(c *echo.Context) error {
 	fileID := c.Param("fileId")
+	if !safePathSegment(fileID) {
+		return echo.NewHTTPError(http.StatusNotFound, "sprite not generated yet — request thumbnails.vtt first")
+	}
 	cacheDir := filepath.Join(h.cfg.DataDir, "thumbnails", fileID)
 	spritePath := filepath.Join(cacheDir, "sprite.jpg")
 

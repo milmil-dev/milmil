@@ -175,6 +175,9 @@ func (h *handler) handleHLSMaster(c *echo.Context) error {
 func (h *handler) handleHLSSegment(c *echo.Context) error {
 	token := c.Param("token")
 	segment := c.Param("segment")
+	if !safePathSegment(segment) {
+		return echo.NewHTTPError(http.StatusNotFound, "segment not found")
+	}
 
 	session, err := h.queries.GetTranscodeSession(c.Request().Context(), token)
 	if err != nil {
