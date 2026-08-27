@@ -50,5 +50,14 @@ public struct StreamFallback: Sendable, Equatable {
         return current
     }
 
+    /// Jump straight to a rung the user picked. Later failures still walk
+    /// down the ladder from there.
+    @discardableResult
+    public mutating func select(_ stage: StreamStage) -> Bool {
+        guard let position = stages.firstIndex(of: stage) else { return false }
+        index = position
+        return true
+    }
+
     public mutating func reset() { index = 0 }
 }
