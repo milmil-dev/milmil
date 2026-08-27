@@ -15,12 +15,15 @@ extension View {
     }
 
     /// `.buttonStyle(.glassProminent)` on macOS 26+, `.borderedProminent` before.
+    /// Filled with ink (white in dark mode, near-black in light) and inverted
+    /// text — the hero's "primary" look — never the accent: Vesica Violet is
+    /// for state and emphasis, not for button backgrounds.
     @ViewBuilder
     func glassProminentButtonStyle() -> some View {
         if #available(macOS 26.0, *) {
-            buttonStyle(.glassProminent)
+            buttonStyle(.glassProminent).tint(Theme.ink(0.92)).foregroundStyle(Theme.background)
         } else {
-            buttonStyle(.borderedProminent)
+            buttonStyle(.borderedProminent).tint(Theme.ink(0.92)).foregroundStyle(Theme.background)
         }
     }
 

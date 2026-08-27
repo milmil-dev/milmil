@@ -73,4 +73,54 @@ enum Formatters {
         formatter.unitsStyle = .short
         return formatter.localizedString(for: date, relativeTo: Date())
     }
+
+    /// `yyyy-MM-dd` (Bangumi air dates) → a local-calendar day, or nil.
+    nonisolated static func day(from airDate: String?) -> Date? {
+        guard let airDate, airDate.count >= 10 else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: String(airDate.prefix(10)))
+    }
+
+    /// "Aug" / "8月" — for the calendar stub on unaired episodes.
+    static func monthShort(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("MMM")
+        return formatter.string(from: date)
+    }
+
+    /// "29".
+    static func dayOfMonth(_ date: Date) -> String {
+        String(Calendar.current.component(.day, from: date))
+    }
+
+    /// "今天播出" / "明天播出" / "3 天後播出"; nil past 60 days.
+    static func airsIn(_ date: Date) -> String? {
+        let days = daysUntil(date)
+        switch days {
+        case 0: return String(localized: "今天播出")
+        case 1: return String(localized: "明天播出")
+        case 2...60: return String(localized: "\(days) 天後播出")
+        default: return nil
+        }
+    }
+
+    /// Whole days from today to `date` (0 today, 1 tomorrow, negative past).
+    static func daysUntil(_ date: Date) -> Int {
+        let calendar = Calendar.current
+        return calendar.dateComponents([.day], from: calendar.startOfDay(for: Date()), to: calendar.startOfDay(for: date)).day ?? 0
+    }
+
+    /// "今天" / "明天" / "3 天後" for an upcoming day; nil once it is past or
+    /// far enough out (> 60 d) that a countdown stops meaning anything.
+    static func countdown(to date: Date) -> String? {
+        let days = daysUntil(date)
+        switch days {
+        case 0: return String(localized: "今天")
+        case 1: return String(localized: "明天")
+        case 2...60: return String(localized: "\(days) 天後")
+        default: return nil
+        }
+    }
 }

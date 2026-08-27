@@ -1,5 +1,6 @@
 import AppKit
 import MilmilAPI
+import ServiceManagement
 import SwiftUI
 
 /// 一般: the web's General panel — interface language (persisted to the
@@ -53,6 +54,10 @@ struct GeneralSettingsTab: View {
     @State private var autoAdd = true
     @State private var needsRelaunch = false
     @State private var toast: String?
+    @AppStorage(DesktopDefaults.keepInMenuBar) private var keepInMenuBar = false
+    @Environment(MenuBarController.self) private var menuBar
+    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @State private var reindexing = false
 
     var body: some View {
         Form {
@@ -87,6 +92,41 @@ struct GeneralSettingsTab: View {
                     Text("星期六").tag("saturday")
                 }
             }
+            Section {
+                Toggle("登入時啟動", isOn: launchAtLoginBinding)
+                Toggle(isOn: $keepInMenuBar) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("關閉視窗後留在選單列")
+                        Text("視窗關閉後 App 留在選單列，通知與下載繼續運作；點 Dock 或選單列圖示可再開啟。")
+                            .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                    }
+                }
+                .disabled(!menuBar.isEnabled)
+            } header: {
+                Text("啟動")
+            } footer: {
+                if !menuBar.isEnabled {
+                    Text("留在選單列需要先在「播放」啟用選單列小工具。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                }
+            }
+            Section("Spotlight") {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("在 Spotlight 搜尋收藏")
+                        Text("收藏的番劇會出現在 Spotlight，選取後直接開啟作品頁。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                    }
+                    Spacer()
+                    Button(reindexing ? String(localized: "重建中…") : String(localized: "重建 Spotlight 索引")) {
+                        reindexing = true
+                        Task {
+                            await SpotlightIndexer.shared.reindex(client: session.client)
+                            reindexing = false
+                            toast = String(localized: "Spotlight 索引已重建")
+                        }
+                    }
+                    .disabled(reindexing)
+                }
+            }
             Section("收藏") {
                 Toggle(isOn: autoAddBinding) {
                     VStack(alignment: .leading, spacing: 2) {
@@ -116,6 +156,20 @@ struct GeneralSettingsTab: View {
             saveTheme(new)
         }
         .overlay(alignment: .bottom) { ToastLabel(text: $toast) }
+    }
+
+    /// `SMAppService` is the source of truth; the toggle mirrors its status
+    /// and reverts (with the system's reason) when registration fails.
+    private var launchAtLoginBinding: Binding<Bool> {
+        Binding(get: { launchAtLogin }, set: { value in
+            do {
+                if value { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
+                launchAtLogin = SMAppService.mainApp.status == .enabled
+            } catch {
+                launchAtLogin = SMAppService.mainApp.status == .enabled
+                toast = error.localizedDescription
+            }
+        })
     }
 
     private var autoAddBinding: Binding<Bool> {

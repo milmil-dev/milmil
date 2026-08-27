@@ -99,7 +99,8 @@ public struct HistoryPage: Decodable, Sendable {
     }
 }
 
-public enum HistoryFilter: String, Sendable, CaseIterable {
+public enum HistoryFilter: String, Sendable, CaseIterable, Identifiable {
+    public var id: String { rawValue }
     case all, inProgress = "in_progress", completed
 }
 

@@ -63,10 +63,17 @@ struct StillCard: View {
                 .foregroundStyle(Theme.ink())
                 .lineLimit(1)
                 .padding(.top, 8)
-            Text(label)
-                .font(.system(size: 11))
-                .foregroundStyle(Theme.Text.tertiary)
-                .padding(.top, 2)
+            HStack(spacing: 6) {
+                Text(label)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.Text.tertiary)
+                if almostDone {
+                    // Under five minutes left: the nudge that finishing takes less
+                    // time than deciding what to watch next.
+                    PillBadge(text: String(localized: "就快睇完"), tint: Theme.accent.opacity(0.15), foreground: Theme.accent)
+                }
+            }
+            .padding(.top, 2)
         }
         .frame(width: width)
         .contentShape(Rectangle())
@@ -83,9 +90,16 @@ struct StillCard: View {
         .accessibilityLabel("\(entry.displayTitle) \(label)")
     }
 
+    static let almostDoneSeconds = 5 * 60
+    private var almostDone: Bool {
+        guard !entry.completed, let remaining = entry.remainingSeconds else { return false }
+        return remaining <= Self.almostDoneSeconds && entry.positionSeconds > 0
+    }
+
     private var label: String {
         let ep = Formatters.episode(entry.episodeNumber)
         if entry.completed { return String(localized: "\(ep) · 已看完") }
+        if almostDone { return ep }
         if let remaining = entry.remainingSeconds { return "\(ep) · \(Formatters.remaining(remaining))" }
         return entry.positionSeconds > 0 ? String(localized: "\(ep) · 已開始") : ep
     }

@@ -69,7 +69,6 @@ struct ScheduleView: View {
             guard !isCurrentSeason else { return }
             await store?.loadSeason(year: year, season: season)
         }
-        .onDisappear { backdrop.clear(owner: "schedule") }
     }
 
     // MARK: Header — ‹ year › · seasons · card size
@@ -141,27 +140,35 @@ struct ScheduleView: View {
             case let .failed(message):
                 ErrorBanner(message: message) { Task { await store.loadWeek() } }
             default:
-                ProgressView().frame(maxWidth: .infinity).padding(40)
+                ScheduleSkeleton()
             }
         }
     }
 
+    /// The heading counts *this day*, not the week — and it sits over the
+    /// banner, so the count needs a readable tone rather than `muted`.
     private func dayHeading(_ day: CalendarDay) -> some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(Weekdays.japanese(for: day.weekdayEN))
                 .font(.system(size: 18, weight: .semibold))
-            Text("\(day.items.count) 部本週節目")
-                .font(.system(size: 12))
+                .foregroundStyle(Theme.ink())
+            Text("\(day.items.count) 部節目")
+                .font(.system(size: 12, weight: .medium))
                 .monospacedDigit()
-                .foregroundStyle(Theme.Text.muted)
+                .foregroundStyle(Theme.Text.secondary)
             if day.weekdayEN == Formatters.todayWeekdayJST {
                 HStack(spacing: 4) {
-                    Circle().fill(Theme.accent).frame(width: 6, height: 6)
+                    Circle().fill(Theme.accent).frame(width: 5, height: 5)
                     Text("今天")
                 }
-                .font(.system(size: 11, weight: .bold))
+                .font(.system(size: 10, weight: .bold))
                 .foregroundStyle(Theme.accent)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(Theme.accent.opacity(0.15), in: Capsule())
+                .alignmentGuide(.firstTextBaseline) { $0[.bottom] - 4 }
             }
+            Spacer(minLength: 0)
         }
     }
 
@@ -208,7 +215,7 @@ struct ScheduleView: View {
                     .font(.system(size: 11, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink(0.3))
-                Text("\(day.items.count) 部本週節目")
+                Text("\(day.items.count) 部節目")
                     .font(.system(size: 11, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink(0.3))
@@ -222,7 +229,7 @@ struct ScheduleView: View {
     }
 
     private var emptyDay: some View {
-        Text("本週沒有節目")
+        Text("沒有節目")
             .font(.system(size: 13, weight: .medium))
             .foregroundStyle(Theme.Text.muted)
             .frame(maxWidth: .infinity)
@@ -332,7 +339,7 @@ struct ScheduleView: View {
             case let .failed(message):
                 ErrorBanner(message: message) { Task { await store.loadSeason(year: year, season: season) } }
             default:
-                ProgressView().frame(maxWidth: .infinity).padding(40)
+                PosterGridSkeleton(minWidth: posterWidth)
             }
         }
     }
@@ -342,10 +349,6 @@ struct ScheduleView: View {
 
 enum Weekdays {
     static let order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    /// JST-day glyph shown beside the localized name in the tab bar (kept
-    /// Japanese in every locale, like the web).
-    private static let jstGlyphs = ["月", "火", "水", "木", "金", "土", "日"]
-
     /// Localized full weekday name for the day heading (月曜日 / Monday / 월요일 …).
     static func japanese(for weekdayEN: String) -> String {
         switch weekdayEN {
@@ -368,20 +371,21 @@ enum Weekdays {
         return rotated.compactMap { weekday in days.first { $0.weekdayEN == weekday } }
     }
 
-    /// "週一 (月)" / "Mon (月)" — the web tab label with the JST glyph.
+    /// Tab label. The whole thing is one key rather than a name plus a glued
+    /// "(月)": the Chinese locales keep the web's「週一 (月)」pairing, while an
+    /// English or Korean UI translates it outright instead of showing a
+    /// leftover kanji next to "Mon".
     static func tabLabel(for weekdayEN: String) -> String {
-        guard let idx = order.firstIndex(of: weekdayEN) else { return weekdayEN }
-        let name = switch weekdayEN {
-        case "Mon": String(localized: "週一")
-        case "Tue": String(localized: "週二")
-        case "Wed": String(localized: "週三")
-        case "Thu": String(localized: "週四")
-        case "Fri": String(localized: "週五")
-        case "Sat": String(localized: "週六")
-        case "Sun": String(localized: "週日")
+        switch weekdayEN {
+        case "Mon": String(localized: "週一 (月)")
+        case "Tue": String(localized: "週二 (火)")
+        case "Wed": String(localized: "週三 (水)")
+        case "Thu": String(localized: "週四 (木)")
+        case "Fri": String(localized: "週五 (金)")
+        case "Sat": String(localized: "週六 (土)")
+        case "Sun": String(localized: "週日 (日)")
         default: weekdayEN
         }
-        return "\(name) (\(jstGlyphs[idx]))"
     }
 }
 
@@ -610,5 +614,40 @@ struct TimelineFlow: Layout {
             x += size.width + itemSpacing
             rowHeight = max(rowHeight, size.height)
         }
+    }
+}
+
+/// Day heading plus timeline rows, so the week keeps its shape while it loads.
+private struct ScheduleSkeleton: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            ForEach(0..<3, id: \.self) { _ in
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        SkeletonText(width: 64, height: 16)
+                        SkeletonText(width: 40, height: 12)
+                    }
+                    VStack(spacing: 0) {
+                        ForEach(0..<3, id: \.self) { index in
+                            if index > 0 { RowDivider(inset: 62) }
+                            HStack(spacing: 12) {
+                                SkeletonText(width: 42, height: 12)
+                                SkeletonBox(cornerRadius: 6).frame(width: 34, height: 48)
+                                VStack(alignment: .leading, spacing: 7) {
+                                    SkeletonText(width: 240, height: 12)
+                                    SkeletonText(width: 120, height: 10)
+                                }
+                                Spacer(minLength: 0)
+                            }
+                            .padding(.horizontal, 14)
+                            .frame(height: 66)
+                        }
+                    }
+                    .groupedCard()
+                }
+            }
+        }
+        .shimmering()
+        .accessibilityLabel("載入中")
     }
 }

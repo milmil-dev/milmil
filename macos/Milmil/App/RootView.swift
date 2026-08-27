@@ -3,7 +3,10 @@ import SwiftUI
 struct RootView: View {
     @Environment(SessionStore.self) private var session
     @Environment(TrailerCoordinator.self) private var trailers
+    @Environment(PlayerCoordinator.self) private var player
+    @Environment(\.pendingOpenURLs) private var pendingOpenURLs
     @Environment(\.openWindow) private var openWindow
+    @State private var cheatSheet = ShortcutCheatSheet.shared
     @AppStorage(DesktopDefaults.theme) private var theme = Theme.Preference.dark.rawValue
     @ObserveInjection private var inject
 
@@ -40,9 +43,29 @@ struct RootView: View {
         .sheet(isPresented: Binding(get: { trailers.showOpenURL }, set: { trailers.showOpenURL = $0 })) {
             OpenURLSheet()
         }
+        // Hold ⌘: the shortcut sheet. Player rows join while something plays.
+        .overlay {
+            if cheatSheet.shown {
+                ShortcutCheatSheetView(playerActive: player.controller?.episode != nil)
+            }
+        }
+        .animation(.easeOut(duration: 0.2), value: cheatSheet.shown)
+        // A magnet / .torrent link dropped anywhere becomes a download and
+        // lands you on 下載 (the Downloads page's own drop zone wins there).
+        .onDrop(of: [.url, .plainText, .utf8PlainText], isTargeted: nil) { providers in
+            DroppedDownloadLinks.handle(providers) { links in
+                guard let client = session.client, !links.isEmpty else { return }
+                Task {
+                    for link in links { _ = try? await client.addDownload(url: link) }
+                    if let url = URL(string: "milmil://downloads") { pendingOpenURLs.links.wrappedValue.append(url) }
+                }
+            }
+        }
         .task {
+            ShortcutCheatSheet.shared.install()
+            QuickLookController.shared.install()
             if let url = DevSnapshot.trailerURL {
-                trailers.play(url: url, title: url.host() ?? "trailer")
+                trailers.play(url: url, title: url.host() ?? "trailer", caption: url.absoluteString)
                 openWindow(id: "trailer")
             }
         }
@@ -68,3 +91,37 @@ struct RootView: View {
     PreviewHost(phase: .connecting(Preview.profile)) { RootView() }
 }
 #endif
+
+/// Pulls magnet: and *.torrent links out of dropped text / URLs; anything
+/// else is left to whoever else wants the drop.
+enum DroppedDownloadLinks {
+    static func links(in text: String) -> [String] {
+        text.split(whereSeparator: \.isWhitespace)
+            .map(String.init)
+            .filter { $0.hasPrefix("magnet:") || ($0.hasPrefix("http") && $0.lowercased().hasSuffix(".torrent")) }
+    }
+
+    /// Returns true when a provider carried something we take.
+    @discardableResult
+    static func handle(_ providers: [NSItemProvider], completion: @escaping @MainActor ([String]) -> Void) -> Bool {
+        var claimed = false
+        for provider in providers {
+            if provider.canLoadObject(ofClass: NSURL.self) {
+                claimed = true
+                _ = provider.loadObject(ofClass: NSURL.self) { object, _ in
+                    guard let url = object as? URL else { return }
+                    let found = links(in: url.absoluteString)
+                    Task { @MainActor in completion(found) }
+                }
+            } else if provider.canLoadObject(ofClass: NSString.self) {
+                claimed = true
+                _ = provider.loadObject(ofClass: NSString.self) { object, _ in
+                    guard let text = object as? String else { return }
+                    let found = links(in: text)
+                    Task { @MainActor in completion(found) }
+                }
+            }
+        }
+        return claimed
+    }
+}

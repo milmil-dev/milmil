@@ -11,6 +11,7 @@ final class AnimeDetailStore {
     private(set) var playable: Loadable<PlayableEpisodesResponse?> = .idle
     /// Bangumi's episode list, used when the series is not in the library.
     private(set) var discoverEpisodes: [DiscoverEpisode] = []
+    private(set) var discoverLoading = false
     private(set) var comments: [BangumiComment] = []
     private(set) var watchStatus: WatchStatus = .none
     private(set) var userScore: Int?
@@ -27,13 +28,22 @@ final class AnimeDetailStore {
     private(set) var autoRuleNotice: String?
 
     private let client: APIClient
+    /// Per-server namespace for the disk cache; nil disables it.
+    private let cacheScope: String?
+    private let cache = PageCache.shared
 
-    init(bangumiID: Int, client: APIClient) {
+    init(bangumiID: Int, client: APIClient, cacheScope: String? = nil) {
         self.bangumiID = bangumiID
         self.client = client
+        self.cacheScope = cacheScope
     }
 
     var episodes: [PlayableEpisode] { playable.value??.episodes ?? [] }
+    /// Bangumi's rows by episode number, to fill the stills and synopses the
+    /// local DB usually lacks (the player inspector merges them the same way).
+    var discoverBySort: [Double: DiscoverEpisode] {
+        Dictionary(discoverEpisodes.map { ($0.sort, $0) }, uniquingKeysWith: { first, _ in first })
+    }
     var isInLibrary: Bool { episodes.contains(where: \.hasFile) }
 
     /// The most useful primary action, mirroring the web's resume logic.
@@ -84,19 +94,77 @@ final class AnimeDetailStore {
         return badges
     }
 
+    /// Paints whatever the disk cache has, then refreshes every section at
+    /// once — the Bangumi episode list used to wait for the three calls
+    /// before it, which is where most of the page's wait came from.
     func load() async {
+        await restoreCached()
         async let detailTask: Void = loadDetail()
         async let playableTask: Void = loadPlayable()
+        async let discoverTask: Void = loadDiscoverEpisodes()
         async let franchiseTask = try? client.franchise(bangumiID: bangumiID)
         async let rulesTask = try? client.downloadRules()
+        async let commentsTask = try? client.bangumiComments(bangumiID: bangumiID)
         async let maintenanceTask: Void = loadMaintenance()
-        _ = await (detailTask, playableTask, maintenanceTask)
+        _ = await (detailTask, playableTask, discoverTask, maintenanceTask)
         franchise = await franchiseTask
         hasSubscription = await rulesTask?.contains { $0.bangumiID == bangumiID && $0.enabled } ?? false
-        if episodes.isEmpty {
-            discoverEpisodes = (try? await client.discoverEpisodes(bangumiID: bangumiID)) ?? []
+        comments = await commentsTask ?? []
+    }
+
+    // MARK: Disk cache
+
+    private enum CacheKey: String { case detail, playable, discover }
+
+    private func cacheKey(_ key: CacheKey) -> String { "anime-\(bangumiID)-\(key.rawValue)" }
+
+    private func cached(_ key: CacheKey) async -> Data? {
+        guard let cacheScope else { return nil }
+        return await cache.read(cacheKey(key), scope: cacheScope)
+    }
+
+    private func store(_ data: Data?, for key: CacheKey) async {
+        guard let cacheScope else { return }
+        if let data {
+            await cache.write(data, key: cacheKey(key), scope: cacheScope)
+        } else {
+            await cache.remove(cacheKey(key), scope: cacheScope)
         }
-        comments = (try? await client.bangumiComments(bangumiID: bangumiID)) ?? []
+    }
+
+    private func restoreCached() async {
+        if detail.value == nil, let data = await cached(.detail), let value = try? await client.decode(AnimeDetail.self, from: data) {
+            detail = .loaded(value)
+        }
+        if playable.value == nil, let data = await cached(.playable),
+           let value = try? await client.decode(PlayableEpisodesResponse.self, from: data) {
+            playable = .loaded(value)
+            adopt(value)
+        }
+        if discoverEpisodes.isEmpty, let data = await cached(.discover), let value = try? await client.decode([DiscoverEpisode].self, from: data) {
+            discoverEpisodes = value
+        }
+    }
+
+    private func adopt(_ response: PlayableEpisodesResponse) {
+        watchStatus = response.watchStatus
+        userScore = response.userScore
+        syncDisabled = response.syncDisabled
+    }
+
+    /// A failed refresh keeps a value that is already on screen (cached or
+    /// from the last load) instead of replacing it with an error.
+    private func keepingValue<T>(_ current: Loadable<T>, _ next: Loadable<T>) -> Loadable<T> {
+        if case .failed = next, current.value != nil { return current }
+        return next
+    }
+
+    func loadDiscoverEpisodes() async {
+        discoverLoading = true
+        defer { discoverLoading = false }
+        guard let snapshot = try? await client.discoverEpisodesSnapshot(bangumiID: bangumiID) else { return }
+        discoverEpisodes = snapshot.value
+        await store(snapshot.data, for: .discover)
     }
 
     /// Missing-episode and duplicate-file reports; both 404 for series
@@ -111,22 +179,28 @@ final class AnimeDetailStore {
 
     func loadDetail() async {
         detail = detail.reloading
-        detail = await detail.reloaded { try await client.animeDetail(bangumiID: bangumiID) }
+        let next = await detail.reloaded {
+            let snapshot = try await client.animeDetailSnapshot(bangumiID: bangumiID)
+            await store(snapshot.data, for: .detail)
+            return snapshot.value
+        }
+        detail = keepingValue(detail, next)
     }
 
     func loadPlayable() async {
         playable = playable.reloading
-        playable = await playable.reloaded {
+        let next = await playable.reloaded {
             do {
-                let response = try await client.playableEpisodes(bangumiID: bangumiID)
-                watchStatus = response.watchStatus
-                userScore = response.userScore
-                syncDisabled = response.syncDisabled
-                return response
+                let snapshot = try await client.playableEpisodesSnapshot(bangumiID: bangumiID)
+                adopt(snapshot.value)
+                await store(snapshot.data, for: .playable)
+                return snapshot.value
             } catch APIError.http(status: 404, _) {
+                await store(nil, for: .playable)
                 return nil // not in the library yet
             }
         }
+        playable = keepingValue(playable, next)
     }
 
     func refreshMetadata() async {
@@ -229,20 +303,45 @@ final class AnimeDetailStore {
         var id: String { "\(label)-\(bangumiID)" }
     }
 
+    /// One S-number pill: a single entry, or the cours of a split season.
+    struct SeasonGroup: Identifiable, Hashable {
+        let season: Int
+        let parts: [SeasonTab]
+        var id: Int { season }
+        var isCurrent: Bool { parts.contains { $0.isCurrent } }
+    }
+
     /// S1/S2/… pills — franchise-powered like the web, falling back to the
-    /// PREQUEL/SEQUEL chain in `relations`.
-    var seasonTabs: [SeasonTab] {
+    /// PREQUEL/SEQUEL chain in `relations`. The API stamps each main-series
+    /// entry with `season`, folding split cours (無職転生 第2クール, 死滅回游
+    /// 後編) into the entry before them, so consecutive entries with the same
+    /// number become one group with a part tab per cour.
+    var seasonGroups: [SeasonGroup] {
         if let seasons = franchise?.mainSeries, seasons.count > 1 {
             let anilistID = detail.value?.summary.anilistID
-            return seasons.enumerated().map { index, season in
-                SeasonTab(
-                    label: "S\(index + 1)",
+            let hasSeasons = seasons.contains { $0.season > 0 }
+            var groups: [SeasonGroup] = []
+            for (index, season) in seasons.enumerated() {
+                let number = hasSeasons ? (season.season > 0 ? season.season : (groups.last?.season ?? 0) + 1) : index + 1
+                let tab = SeasonTab(
+                    label: season.part > 0 ? "\(season.part)" : "S\(number)",
                     title: season.title,
                     bangumiID: season.bangumiID,
                     isCurrent: season.bangumiID == bangumiID || (anilistID != nil && season.anilistID == anilistID)
                 )
+                if let last = groups.last, last.season == number {
+                    groups[groups.count - 1] = SeasonGroup(season: number, parts: last.parts + [tab])
+                } else {
+                    groups.append(SeasonGroup(season: number, parts: [tab]))
+                }
             }
+            return groups
         }
+        return relationSeasonChain.enumerated().map { SeasonGroup(season: $0 + 1, parts: [$1]) }
+    }
+
+    /// Bangumi-relations fallback when AniList has no franchise graph.
+    private var relationSeasonChain: [SeasonTab] {
         guard let detail = detail.value else { return [] }
         let prequels = detail.relations.filter { $0.relationType.uppercased() == "PREQUEL" }
         let sequels = detail.relations.filter { $0.relationType.uppercased() == "SEQUEL" }

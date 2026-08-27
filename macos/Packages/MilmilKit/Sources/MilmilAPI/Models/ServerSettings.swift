@@ -197,7 +197,7 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
 
     public static let eventIDs = [
         "download.started", "download.completed", "download.failed", "library.scan_complete",
-        "system.error", "auth.login", "anime.airing", "anime.daily_digest"
+        "system.error", "auth.login", "anime.airing", "anime.daily_digest", "anime.episode_ready", "system.service_failed"
     ]
     public static let providerNames = ["discord", "telegram", "webhook"]
 }

@@ -70,31 +70,22 @@ struct Shelf<Content: View>: View {
 /// `PosterGridSkeleton`).
 struct ShelfSkeleton: View {
     var cardWidth: CGFloat = 150
-    @State private var pulsing = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            RoundedRectangle(cornerRadius: 5)
-                .fill(Theme.ink(0.06))
-                .frame(width: 130, height: 18)
+            SkeletonText(width: 130, height: 18)
             HStack(alignment: .top, spacing: 14) {
                 ForEach(0..<8, id: \.self) { _ in
                     VStack(spacing: 8) {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Theme.ink(0.05))
-                            .frame(width: cardWidth, height: cardWidth * 1.5)
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Theme.ink(0.06))
-                            .frame(width: cardWidth * 0.6, height: 10)
+                        SkeletonBox().frame(width: cardWidth, height: cardWidth * 1.5)
+                        SkeletonText(width: cardWidth * 0.6, height: 10)
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .clipped()
         }
-        .opacity(pulsing ? 0.55 : 1)
-        .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: pulsing)
-        .onAppear { pulsing = true }
+        .shimmering()
         .accessibilityLabel("載入中")
     }
 }

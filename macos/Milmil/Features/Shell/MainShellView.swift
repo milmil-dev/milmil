@@ -1,4 +1,5 @@
 import MilmilAPI
+import MilmilRealtime
 import SwiftUI
 
 /// Sidebar destinations, in the order the design canvas shows them.
@@ -38,7 +39,7 @@ enum Destination: String, CaseIterable, Identifiable {
     }
 
     static let sections: [(title: String, items: [Destination])] = [
-        (String(localized: "首頁"), [.home, .schedule, .discover, .search]),
+        (String(localized: "瀏覽"), [.home, .schedule, .discover, .search]),
         (String(localized: "我的"), [.collection, .history]),
         (String(localized: "管理"), [.libraries, .downloads, .notifications]),
     ]
@@ -59,6 +60,12 @@ struct MainShellView: View {
     @State private var session: ServerSession?
     @State private var router = Router()
     @State private var backdrop = BackdropStore()
+    /// Version whose update banner was closed; a newer release shows again.
+    @State private var dismissedUpdate: String?
+    @State private var resumeReminder: ResumeReminder?
+    @State private var weeklyDigest: WeeklyDigestScheduler?
+    /// Bare `/` → search, unless a text field has the keyboard.
+    @State private var slashMonitor: Any?
     @ObserveInjection private var inject
 
     var body: some View {
@@ -68,6 +75,8 @@ struct MainShellView: View {
                     .environment(session)
                     .environment(router)
                     .environment(backdrop)
+                    // The menu bar's 前往 / 顯示方式 items drive this window's router.
+                    .focusedSceneValue(router)
             } else {
                 Color.clear
             }
@@ -78,6 +87,14 @@ struct MainShellView: View {
             self.session = session
             session.start()
             playerCoordinator.session = session
+            CurrentSession.shared.session = session
+            let reminder = ResumeReminder(coordinator: playerCoordinator)
+            reminder.start()
+            resumeReminder = reminder
+            let digest = WeeklyDigestScheduler(client: client)
+            digest.start()
+            weeklyDigest = digest
+            installSlashMonitor()
             if let destination = DevSnapshot.initialDestination { router.select(destination) }
             if let anime = DevSnapshot.initialAnime { router.openAnime(anime) }
             if DevSnapshot.opensSettings { openSettings() }
@@ -96,6 +113,13 @@ struct MainShellView: View {
         .onDisappear {
             session?.stop()
             playerCoordinator.session = nil
+            CurrentSession.shared.session = nil
+            resumeReminder?.stop()
+            resumeReminder = nil
+            weeklyDigest?.stop()
+            weeklyDigest = nil
+            if let slashMonitor { NSEvent.removeMonitor(slashMonitor) }
+            slashMonitor = nil
         }
         .onChange(of: pendingOpenURLs.links.wrappedValue.count, initial: true) { _, count in
             guard count > 0, session != nil else { return }
@@ -121,7 +145,14 @@ struct MainShellView: View {
 
     private func shell(_ session: ServerSession) -> some View {
         @Bindable var router = router
-        return NavigationSplitView(columnVisibility: Binding(get: { router.immersive ? .detailOnly : .all }, set: { _ in })) {
+        let columns = Binding<NavigationSplitViewVisibility>(
+            get: { router.immersive || router.sidebarCollapsed ? .detailOnly : .all },
+            set: { visibility in
+                guard !router.immersive else { return }
+                router.sidebarCollapsed = visibility == .detailOnly
+            }
+        )
+        return NavigationSplitView(columnVisibility: columns) {
             Sidebar(version: version)
         } detail: {
             NavigationStack(path: $router.path) {
@@ -140,9 +171,24 @@ struct MainShellView: View {
                     }
             }
             .background(BackdropLayer())
+            .safeAreaInset(edge: .top, spacing: 0) {
+                VStack(spacing: 0) {
+                    if session.offlineSince != nil, !router.immersive {
+                        OfflineBanner(session: session)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                    if let update = session.updateAvailable, update.latest != dismissedUpdate, !router.immersive {
+                        UpdateBanner(update: update) { dismissedUpdate = update.latest }
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+            }
+            .animation(.snappy(duration: 0.25), value: session.updateAvailable?.latest)
+            .animation(.snappy(duration: 0.25), value: session.offlineSince)
         }
         .navigationSplitViewStyle(.balanced)
         .toolbar { ShellToolbar() }
+        .onChange(of: backdropOwners, initial: true) { _, owners in backdrop.show(owners) }
         .overlay {
             if router.paletteShown {
                 CommandPalette()
@@ -157,6 +203,34 @@ struct MainShellView: View {
             guard router.paletteShown else { return .ignored }
             router.paletteShown = false
             return .handled
+        }
+    }
+
+    /// `/` as a bare key: an NSMenu key equivalent without modifiers would
+    /// take the character away from every text field, so the shell watches
+    /// key-downs itself and only acts when nothing is editing text.
+    private func installSlashMonitor() {
+        guard slashMonitor == nil else { return }
+        slashMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [router] event in
+            guard event.charactersIgnoringModifiers == "/", event.modifierFlags.isDisjoint(with: .deviceIndependentFlagsMask),
+                  let window = event.window, window.identifier?.rawValue.hasPrefix("main") ?? window.isMainWindow,
+                  !(window.firstResponder is NSTextView) else { return event }
+            FocusSearch.perform(router)
+            return nil
+        }
+    }
+
+    /// `BackdropStore` owner keys for what is on screen, root first. Each
+    /// page publishes under the same key (`HomeView` → "home", the detail
+    /// page → "detail-<id>"…), so the store can restore a covered page's
+    /// banner the moment the route above it pops.
+    private var backdropOwners: [String] {
+        [router.destination.rawValue] + router.path.map { route in
+            switch route {
+            case let .anime(bangumiID): "detail-\(bangumiID)"
+            case .history: "history"
+            case .watch: "watch"
+            }
         }
     }
 
@@ -180,8 +254,6 @@ struct MainShellView: View {
         switch route {
         case let .anime(bangumiID):
             AnimeDetailView(bangumiID: bangumiID)
-        case let .discoverCategory(title, route):
-            DiscoverCategoryView(title: title, route: route)
         case .history:
             HistoryView()
         case let .watch(bangumiID, episodeID):
@@ -198,13 +270,31 @@ private struct Sidebar: View {
 
     var body: some View {
         @Bindable var router = router
-        List(selection: Binding<Destination?>(get: { router.destination }, set: { if let value = $0, value != router.destination { router.select(value) } })) {
+        // No row is highlighted while a route is pushed (the watch page is
+        // not "Library"); clicking the tab you came from pops back to it.
+        let selection = Binding<Destination?>(
+            get: { router.path.isEmpty ? router.destination : nil },
+            set: { value in
+                guard let value else { return }
+                if value != router.destination {
+                    router.select(value)
+                } else if !router.path.isEmpty {
+                    router.popToRoot()
+                }
+            }
+        )
+        List(selection: selection) {
             ForEach(Destination.sections, id: \.title) { section in
                 Section(section.title) {
                     ForEach(section.items) { item in
-                        Label(item.title, systemImage: item.symbol)
-                            .badge(item == .notifications ? session.unreadNotifications : 0)
-                            .tag(item)
+                        HStack(spacing: 8) {
+                            Label(item.title, systemImage: item.symbol)
+                            Spacer(minLength: 4)
+                            if item == .notifications, session.unreadNotifications > 0 {
+                                SidebarBadge(count: session.unreadNotifications)
+                            }
+                        }
+                        .tag(item)
                     }
                 }
             }
@@ -217,17 +307,43 @@ private struct Sidebar: View {
     }
 }
 
+/// Unread count as a Mail-style capsule: accent fill, white digits, instead
+/// of `.badge`'s grey text that read like a caption. "99+" past two digits —
+/// a three-digit badge is noise, not information.
+private struct SidebarBadge: View {
+    let count: Int
+
+    var body: some View {
+        Text(count > 99 ? "99+" : String(count))
+            .font(.system(size: 11, weight: .semibold))
+            .monospacedDigit()
+            .foregroundStyle(.white)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 2)
+            .background(Theme.accent, in: Capsule())
+            .accessibilityLabel(String(localized: "\(count) 未讀"))
+    }
+}
+
 private struct SidebarAccountFooter: View {
     @Environment(ServerSession.self) private var session
     @Environment(SessionStore.self) private var sessionStore
     let version: String
     @State private var hovering = false
+    @State private var avatarStore: AvatarStore?
+    @State private var pickingCharacter = false
+    @State private var dropTargeted = false
 
     var body: some View {
         VStack(spacing: 0) {
             Divider()
             Menu {
                 SettingsLink { Label("設定…", systemImage: "gear") }
+                if let avatarStore {
+                    Menu("頭像") {
+                        AvatarActions(store: avatarStore, hasAvatar: session.user.avatarURL != nil, pickingCharacter: $pickingCharacter)
+                    }
+                }
                 Divider()
                 Button("切換伺服器", systemImage: "server.rack") { sessionStore.switchToNoServer() }
                 Button("登出", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
@@ -268,20 +384,30 @@ private struct SidebarAccountFooter: View {
             .padding(.vertical, 6)
             .accessibilityLabel("帳號選單")
             .help("帳號選單")
+            // Drop an image on the account row to make it the avatar.
+            .onDrop(of: [.fileURL, .image], isTargeted: $dropTargeted) { providers in
+                avatarStore?.handleDrop(providers) ?? false
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(Theme.accent, lineWidth: dropTargeted ? 1.5 : 0)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+            )
         }
         .background(.bar)
+        .task { if avatarStore == nil { avatarStore = AvatarStore(session: session) } }
+        .sheet(isPresented: $pickingCharacter) {
+            if let avatarStore { CharacterPickerSheet(session: session, store: avatarStore) }
+        }
+        .overlay(alignment: .top) {
+            if let avatarStore { ToastLabel(text: Binding(get: { avatarStore.toast }, set: { avatarStore.toast = $0 })).padding(.bottom, 4) }
+        }
     }
 
-    /// Gradient monogram with the realtime-connection state as a corner badge.
+    /// The avatar with the realtime-connection state as a corner badge.
     private var avatar: some View {
-        Circle()
-            .fill(LinearGradient(colors: [Color(hex: 0x6D28D9), Theme.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .frame(width: 32, height: 32)
-            .overlay(
-                Text(String(session.user.username.prefix(1)).uppercased())
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
-            )
+        UserAvatarView(user: session.user, client: session.client, size: 32)
             .overlay(alignment: .bottomTrailing) {
                 Circle()
                     .fill(session.isRealtimeConnected ? .green : .orange)
@@ -297,9 +423,12 @@ private struct ShellToolbar: ToolbarContent {
     @Environment(Router.self) private var router
 
     var body: some ToolbarContent {
-        ToolbarItem(placement: .navigation) {
-            Button("上一頁", systemImage: "chevron.left") { _ = router.path.popLast() }
-                .disabled(router.path.isEmpty)
+        // Only while a route is pushed — a permanently disabled glass
+        // capsule on the root pages reads as a dead button.
+        if !router.path.isEmpty {
+            ToolbarItem(placement: .navigation) {
+                Button("上一頁", systemImage: "chevron.left") { router.pop() }
+            }
         }
         // Flexible space — pins the search pill to the trailing edge (the
         // hidden-title unified toolbar otherwise packs items from the left).
@@ -310,11 +439,10 @@ private struct ShellToolbar: ToolbarContent {
             Button {
                 router.paletteShown.toggle()
             } label: {
-                Label("搜尋", systemImage: "magnifyingglass")
+                Label("快速搜尋", systemImage: "magnifyingglass")
             }
             .labelStyle(.iconOnly)
-            .keyboardShortcut("k", modifiers: .command)
-            .help("搜尋（⌘K）")
+            .help("快速搜尋（⌘K）")
         }
     }
 }
@@ -326,3 +454,59 @@ private struct ShellToolbar: ToolbarContent {
     }
 }
 #endif
+
+/// `system:update-available` (the web's toast): the version, the release
+/// notes, and the Homebrew one-liner since that is how the app installs.
+private struct UpdateBanner: View {
+    let update: UpdateAvailable
+    let dismiss: () -> Void
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        let version = update.latest
+        HStack(spacing: 12) {
+            Image(systemName: "arrow.down.app.fill").foregroundStyle(Theme.accent)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("milmil \(version) 已釋出").font(.system(size: 12, weight: .semibold))
+                Text(verbatim: "brew upgrade --cask milmil").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.Text.tertiary)
+                    .textSelection(.enabled)
+            }
+            Spacer()
+            if let url = update.releaseURL {
+                Button("查看更新") { openURL(url) }.glassButtonStyle().controlSize(.small)
+            }
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark").font(.system(size: 10, weight: .bold))
+            }
+            .buttonStyle(.plain).foregroundStyle(Theme.Text.tertiary)
+            .help("關閉")
+            .accessibilityLabel("關閉")
+        }
+        .padding(.horizontal, 14).padding(.vertical, 10)
+        .background(Theme.accent.opacity(0.1))
+        .overlay(alignment: .bottom) { Divider() }
+    }
+}
+
+/// The realtime stream dropped and stayed down: what the app is doing about
+/// it, so a stale page reads as "reconnecting", not "broken".
+private struct OfflineBanner: View {
+    let session: ServerSession
+
+    var body: some View {
+        let seconds = session.nextRetrySeconds
+        HStack(spacing: 12) {
+            ProgressView().controlSize(.small)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("連唔到 server，重試中…").font(.system(size: 12, weight: .semibold))
+                Text("每 \(seconds) 秒重試一次；連上後會自動更新。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 14).padding(.vertical, 10)
+        .background(Color(hex: 0xF59E0B).opacity(0.12))
+        .overlay(alignment: .bottom) { Divider() }
+    }
+}

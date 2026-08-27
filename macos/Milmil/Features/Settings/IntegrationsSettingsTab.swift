@@ -72,11 +72,11 @@ private struct IntegrationsForm: View {
 
     var body: some View {
         Form {
-            Section("DandanPlay（彈幕）") {
+            Section("弹弹play开放弹幕网络（彈幕）") {
                 TextField("App ID", text: $dandanplay.appID)
                 SecureField("App Secret", text: $dandanplay.appSecret)
                 HStack {
-                    Text("用於載入與發送彈幕；在 dandanplay.com 開發者頁申請。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                    Text("用於比對檔案與載入、發送彈幕；在 dev.dandanplay.com 申請 AppId。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                     Spacer()
                     saveButton("dandanplay") { try await store.client.saveDandanPlay(dandanplay); return nil }
                 }

@@ -115,6 +115,41 @@ public struct MediaFilesPage: Decodable, Sendable {
     }
 }
 
-public enum MediaFileFilter: String, Sendable, CaseIterable {
+public enum MediaFileFilter: String, Sendable, CaseIterable, Identifiable {
+    public var id: String { rawValue }
     case all, matched, unmatched
+}
+
+/// `GET /libraries/{id}/capacity` — disk usage of the library's root path
+/// (local sources only; `available == false` for remote or unreachable
+/// paths) plus the bytes downloaded into it this month.
+public struct LibraryCapacity: Decodable, Sendable, Hashable {
+    public let totalBytes: Int64
+    public let freeBytes: Int64
+    public let usedBytes: Int64
+    public let available: Bool
+    public let downloadedThisMonthBytes: Int64
+
+    enum CodingKeys: String, CodingKey {
+        case available
+        case totalBytes = "total_bytes"
+        case freeBytes = "free_bytes"
+        case usedBytes = "used_bytes"
+        case downloadedThisMonthBytes = "downloaded_this_month_bytes"
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        totalBytes = try c.decodeIfPresent(Int64.self, forKey: .totalBytes) ?? 0
+        freeBytes = try c.decodeIfPresent(Int64.self, forKey: .freeBytes) ?? 0
+        usedBytes = try c.decodeIfPresent(Int64.self, forKey: .usedBytes) ?? 0
+        available = try c.decodeIfPresent(Bool.self, forKey: .available) ?? false
+        downloadedThisMonthBytes = try c.decodeIfPresent(Int64.self, forKey: .downloadedThisMonthBytes) ?? 0
+    }
+
+    /// 0…1 of the volume in use; nil when the server could not stat the path.
+    public var usedFraction: Double? {
+        guard available, totalBytes > 0 else { return nil }
+        return Double(usedBytes) / Double(totalBytes)
+    }
 }

@@ -83,6 +83,10 @@ public extension APIClient {
     }
 
     /// 202; progress arrives over the realtime stream as `scan:*` events.
+    func libraryCapacity(id: String) async throws -> LibraryCapacity {
+        try await get("/api/v1/libraries/\(id)/capacity")
+    }
+
     func scanLibrary(id: String) async throws {
         try await post("/api/v1/libraries/\(id)/scan")
     }

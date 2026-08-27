@@ -7,13 +7,9 @@ struct BackdropLayer: View {
     @Environment(BackdropStore.self) private var backdrop
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    /// The decoded banner, swapped only after the next image finishes
-    /// loading, so carousel rotations crossfade image-to-image instead of
-    /// dipping through the fallback gradient while the network round-trips.
-    @State private var banner: CGImage?
-
     var body: some View {
         GeometryReader { proxy in
+            let banner = backdrop.banner
             let height = min(max(proxy.size.height * 0.62, 420), 640)
             ZStack(alignment: .top) {
                 Theme.background
@@ -31,9 +27,11 @@ struct BackdropLayer: View {
                 .clipped()
                 .overlay {
                     if backdrop.style == .hero {
-                        // Web BannerImage: even darkening (brightness 0.6),
-                        // no leading fade — the picture stays visible.
-                        Color.black.opacity(0.4)
+                        // Web BannerImage's even darkening (brightness 0.6),
+                        // but washed toward the page colour rather than to
+                        // black: in the light theme a black wash fights the
+                        // near-black `ink` text sitting on top of it.
+                        Theme.background.opacity(0.45)
                     } else {
                         LinearGradient(
                             stops: [
@@ -70,6 +68,26 @@ struct BackdropLayer: View {
                         )
                     }
                 }
+                // Web BannerImage's left gradient (`max-w-[80rem]`): the strip
+                // of banner under the title, tags and synopsis is washed back
+                // into the page colour, so hero text keeps its contrast even
+                // over bright artwork. Without it a red/orange banner swallows
+                // the `ink`-toned meta row and chips.
+                .overlay {
+                    if backdrop.style == .hero {
+                        LinearGradient(
+                            stops: [
+                                .init(color: Theme.background, location: 0),
+                                .init(color: Theme.background.opacity(0.6), location: 0.15),
+                                .init(color: .clear, location: 0.5),
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                        .frame(maxWidth: 1280, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
                 .overlay(Theme.background.opacity(backdrop.dim))
                 .frame(maxHeight: .infinity, alignment: .top)
             }
@@ -81,13 +99,5 @@ struct BackdropLayer: View {
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .accessibilityHidden(true)
-        .task(id: backdrop.image) {
-            guard let url = backdrop.image else {
-                banner = nil
-                return
-            }
-            guard let image = await ImageCache.shared.image(for: url, maxPixel: 1600) else { return }
-            banner = image
-        }
     }
 }

@@ -108,6 +108,7 @@ final class TorrentFinderStore {
 struct TorrentFinderView: View {
     @Bindable var store: TorrentFinderStore
     var onSubscribed: () -> Void
+    @Environment(ServerSession.self) private var session
     @State private var showSubscribe = false
     @State private var searchTask: Task<Void, Never>?
     @ObserveInjection private var inject
@@ -118,10 +119,15 @@ struct TorrentFinderView: View {
             if store.mode == .anime, store.selectedAnime == nil {
                 animePicker
             } else {
-                filters
+                // Filters only once there is something to filter; an idle
+                // keyword search shows starters instead of three empty menus.
+                if store.mode == .anime || store.torrents.value != nil {
+                    filters
+                }
                 results
             }
         }
+        .task { await loadStarters() }
         .sheet(isPresented: $showSubscribe) {
             if let anime = store.selectedAnime {
                 SubscribeSheet(
@@ -147,24 +153,100 @@ struct TorrentFinderView: View {
         .animation(.snappy, value: store.toast)
     }
 
+    /// One search bar: the mode toggle sits inside its leading edge, the
+    /// field takes the width, a clear button appears with text.
     private var controls: some View {
         HStack(spacing: 10) {
             Segmented(options: TorrentFinderStore.Mode.allCases, selection: $store.mode) { $0.label }
-                .frame(width: 160)
+                .frame(width: 150)
                 .onChange(of: store.mode) { store.reset() }
             if store.mode == .anime, let anime = store.selectedAnime {
                 Button { store.select(nil) } label: { Label("換一部", systemImage: "chevron.left") }
                     .controlSize(.small)
                 Text(anime.title).font(.system(size: 14, weight: .semibold)).lineLimit(1)
             } else {
-                TextField(store.mode == .anime ? String(localized: "搜尋作品…") : String(localized: "搜尋所有來源…"), text: $store.query)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(maxWidth: 360)
-                    .onSubmit { kick(immediate: true) }
-                    .onChange(of: store.query) { kick(immediate: false) }
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.Text.tertiary)
+                    TextField(store.mode == .anime ? String(localized: "搜尋作品…") : String(localized: "搜尋所有來源…"), text: $store.query)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 13))
+                        .onSubmit { remember(store.query); kick(immediate: true) }
+                        .onChange(of: store.query) { kick(immediate: false) }
+                    if !store.query.isEmpty {
+                        Button { store.query = "" } label: {
+                            Image(systemName: "xmark.circle.fill").foregroundStyle(Theme.Text.muted)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("清除")
+                    }
+                }
+                .padding(.horizontal, 10)
+                .frame(height: 32)
+                .background(Theme.ink(0.06), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(Theme.ink(0.08), lineWidth: 1))
+                .frame(maxWidth: 520)
             }
             Spacer()
         }
+    }
+
+    // MARK: Starters (idle keyword search)
+
+    private static let recentKey = "torrents.recentQueries"
+    @State private var recentQueries: [String] = UserDefaults.standard.stringArray(forKey: recentKey) ?? []
+    @State private var followedTitles: [String] = []
+
+    private func remember(_ query: String) {
+        let trimmed = query.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        var list = recentQueries.filter { $0.caseInsensitiveCompare(trimmed) != .orderedSame }
+        list.insert(trimmed, at: 0)
+        recentQueries = Array(list.prefix(8))
+        UserDefaults.standard.set(recentQueries, forKey: Self.recentKey)
+    }
+
+    private func loadStarters() async {
+        guard followedTitles.isEmpty, let watching = try? await session.client.collection(status: .watching) else { return }
+        followedTitles = Array(watching.map(\.title).prefix(8))
+    }
+
+    private func start(_ query: String) {
+        store.query = query
+        remember(query)
+        kick(immediate: true)
+    }
+
+    /// Recent keywords and the series being followed, as one-click searches —
+    /// the empty state used to be a lone icon under three empty filter menus.
+    /// Everything is centred under the icon and wraps, so one chip or eight
+    /// read as part of the same block.
+    private var starters: some View {
+        VStack(spacing: 14) {
+            EmptyState(symbol: "magnifyingglass", title: String(localized: "搜尋種子"), message: String(localized: "輸入關鍵字，在所有來源搜尋。"))
+            if !recentQueries.isEmpty {
+                starterRow(symbol: "clock", title: String(localized: "最近搜尋"), items: recentQueries)
+            }
+            if !followedTitles.isEmpty {
+                starterRow(symbol: "bookmark", title: String(localized: "追緊嘅番"), items: followedTitles)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 24)
+    }
+
+    private func starterRow(symbol: String, title: String, items: [String]) -> some View {
+        CenteredFlow(spacing: 8) {
+            Label(title, systemImage: symbol)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Theme.Text.tertiary)
+                .padding(.trailing, 2)
+            ForEach(items, id: \.self) { item in
+                StarterChip(title: item) { start(item) }
+            }
+        }
+        .frame(maxWidth: 760)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(title)
     }
 
     private func kick(immediate: Bool) {
@@ -195,30 +277,39 @@ struct TorrentFinderView: View {
             case let .failed(message):
                 ErrorBanner(message: message) { Task { await store.searchAnime() } }
             default:
-                ProgressView().frame(maxWidth: .infinity).padding(40)
+                PosterGridSkeleton(count: 8)
             }
         }
     }
 
+    /// Filter chips: the value is the label (no "Source:" prefixes), accent
+    /// when narrowed, sub-groups only once results say which exist.
     private var filters: some View {
         HStack(spacing: 8) {
-            Picker("來源", selection: $store.source) {
-                Text("全部來源").tag("all")
-                ForEach(TorrentResult.sources, id: \.self) { Text(Self.sourceLabel($0)).tag($0) }
+            filterChip(String(localized: "全部來源"), value: store.source == "all" ? nil : Self.sourceLabel(store.source)) {
+                Picker("來源", selection: $store.source) {
+                    Text("全部來源").tag("all")
+                    ForEach(TorrentResult.sources, id: \.self) { Text(Self.sourceLabel($0)).tag($0) }
+                }
+                .pickerStyle(.inline)
             }
-            .fixedSize()
             .onChange(of: store.source) { Task { await store.loadTorrents() } }
-            Picker("解析度", selection: $store.resolution) {
-                Text("任意解析度").tag("")
-                ForEach(DownloadRule.resolutions.filter { !$0.isEmpty }, id: \.self) { Text($0).tag($0) }
+            filterChip(String(localized: "任意解析度"), value: store.resolution.isEmpty ? nil : store.resolution) {
+                Picker("解析度", selection: $store.resolution) {
+                    Text("任意解析度").tag("")
+                    ForEach(DownloadRule.resolutions.filter { !$0.isEmpty }, id: \.self) { Text($0).tag($0) }
+                }
+                .pickerStyle(.inline)
             }
-            .fixedSize()
-            Picker("字幕組", selection: $store.subgroup) {
-                Text("所有字幕組").tag("all")
-                ForEach(store.subgroups, id: \.self) { Text($0).tag($0) }
+            if !store.subgroups.isEmpty {
+                filterChip(String(localized: "所有字幕組"), value: store.subgroup == "all" ? nil : store.subgroup) {
+                    Picker("字幕組", selection: $store.subgroup) {
+                        Text("所有字幕組").tag("all")
+                        ForEach(store.subgroups, id: \.self) { Text($0).tag($0) }
+                    }
+                    .pickerStyle(.inline)
+                }
             }
-            .fixedSize()
-            .disabled(store.subgroups.isEmpty)
             Spacer()
             if store.mode == .anime {
                 Button { showSubscribe = true } label: { Label("訂閱此篩選", systemImage: "dot.radiowaves.up.forward") }
@@ -228,14 +319,32 @@ struct TorrentFinderView: View {
         }
     }
 
+    private func filterChip(_ title: String, value: String?, @ViewBuilder menu: () -> some View) -> some View {
+        Menu {
+            menu()
+        } label: {
+            HStack(spacing: 4) {
+                Text(value ?? title)
+                Image(systemName: "chevron.down").font(.system(size: 8, weight: .bold))
+            }
+            .font(.system(size: 12, weight: .medium))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(value != nil ? Theme.accent.opacity(0.22) : Theme.ink(0.07), in: Capsule())
+            .foregroundStyle(value != nil ? Theme.accent : Theme.Text.secondary)
+        }
+        .buttonStyle(.plain)
+        .menuIndicator(.hidden)
+        .fixedSize()
+    }
+
     private var results: some View {
         Group {
             switch store.torrents {
             case .idle:
-                EmptyState(symbol: "magnet", title: String(localized: "搜尋種子"), message: String(localized: "輸入關鍵字，在所有來源搜尋。"))
-                    .frame(maxWidth: .infinity).padding(.top, 40)
+                starters
             case let .loaded(all) where all.isEmpty:
-                EmptyState(symbol: "magnet", title: String(localized: "沒有找到種子"), message: String(localized: "換個來源或關鍵字試試。"))
+                EmptyState(symbol: "tray", title: String(localized: "沒有找到種子"), message: String(localized: "換個來源或關鍵字試試。"))
                     .frame(maxWidth: .infinity).padding(.top, 40)
             case .loaded:
                 VStack(alignment: .leading, spacing: 6) {
@@ -248,7 +357,7 @@ struct TorrentFinderView: View {
             case let .failed(message):
                 ErrorBanner(message: message) { Task { await store.loadTorrents() } }
             default:
-                ProgressView().frame(maxWidth: .infinity).padding(40)
+                SkeletonRows(count: 8, height: 62, leading: 0)
             }
         }
     }
@@ -260,7 +369,6 @@ struct TorrentFinderView: View {
         case "mikan": "Mikan"
         case "bangumi.moe": "Bangumi.moe"
         case "acg.rip": "ACG.RIP"
-        case "dandanplay": "DanDanPlay"
         default: source
         }
     }
@@ -295,7 +403,7 @@ struct TorrentTable: View {
                     ProgressView().controlSize(.small)
                 } else {
                     Button { download(hit) } label: { Image(systemName: "arrow.down.circle") }
-                        .buttonStyle(.plain).foregroundStyle(Theme.accent).help("下載")
+                        .buttonStyle(.plain).foregroundStyle(Theme.accent).help("加入下載")
                         .disabled(hit.downloadURL.isEmpty)
                 }
             }
@@ -303,7 +411,7 @@ struct TorrentTable: View {
         }
         .contextMenu(forSelectionType: TorrentResult.ID.self) { ids in
             if let id = ids.first, let hit = hits.first(where: { $0.id == id }) {
-                Button("下載") { download(hit) }
+                Button("加入下載") { download(hit) }
                 Button("複製磁力連結") {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(hit.downloadURL, forType: .string)
@@ -381,5 +489,76 @@ struct SubscribeSheet: View {
         } catch {
             self.error = error.localizedDescription
         }
+    }
+}
+
+/// A one-click search suggestion; hover lifts it like the other chips.
+private struct StarterChip: View {
+    let title: String
+    let action: () -> Void
+    @State private var hovered = false
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 12, weight: .medium))
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .frame(maxWidth: 240)
+                .padding(.horizontal, 12).padding(.vertical, 6)
+                .background(Theme.ink(hovered ? 0.12 : 0.07), in: Capsule())
+                .foregroundStyle(hovered ? Theme.Text.primary : Theme.Text.secondary)
+        }
+        .buttonStyle(.plain)
+        .onHover { hovered = $0 }
+        .animation(.easeOut(duration: 0.12), value: hovered)
+    }
+}
+
+/// Wrapping row whose lines are centred — SwiftUI has no flow layout, and a
+/// horizontal ScrollView would clip the second line of chips.
+private struct CenteredFlow: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? .infinity
+        return CGSize(width: width == .infinity ? 0 : width, height: rows(subviews, width: width).height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let layout = rows(subviews, width: bounds.width)
+        var y = bounds.minY
+        for row in layout.rows {
+            let rowWidth = row.reduce(0) { $0 + subviews[$1].sizeThatFits(.unspecified).width } + spacing * CGFloat(max(0, row.count - 1))
+            var x = bounds.minX + (bounds.width - rowWidth) / 2
+            let rowHeight = row.map { subviews[$0].sizeThatFits(.unspecified).height }.max() ?? 0
+            for index in row {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(at: CGPoint(x: x, y: y + (rowHeight - size.height) / 2), proposal: .unspecified)
+                x += size.width + spacing
+            }
+            y += rowHeight + spacing
+        }
+    }
+
+    private func rows(_ subviews: Subviews, width: CGFloat) -> (rows: [[Int]], height: CGFloat) {
+        var rows: [[Int]] = [[]]
+        var lineWidth: CGFloat = 0
+        var height: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            if !rows[rows.count - 1].isEmpty, lineWidth + spacing + size.width > width {
+                height += lineHeight + spacing
+                rows.append([])
+                lineWidth = 0
+                lineHeight = 0
+            }
+            if !rows[rows.count - 1].isEmpty { lineWidth += spacing }
+            rows[rows.count - 1].append(index)
+            lineWidth += size.width
+            lineHeight = max(lineHeight, size.height)
+        }
+        return (rows, height + lineHeight)
     }
 }

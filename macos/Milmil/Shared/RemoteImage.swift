@@ -67,10 +67,15 @@ struct RemoteImage<Placeholder: View>: View {
     @ViewBuilder var placeholder: () -> Placeholder
 
     @State private var image: CGImage?
+    /// Distinguishes "still fetching" from "there is no image" — only the
+    /// former should shimmer, or a permanently coverless item would pulse
+    /// forever.
+    @State private var loading = false
 
     var body: some View {
         ZStack {
             placeholder()
+                .overlay { if loading { ShimmerSheen() } }
             if let image {
                 swiftUIImage(image)
                     .resizable()
@@ -82,9 +87,14 @@ struct RemoteImage<Placeholder: View>: View {
         .task(id: url) {
             guard let url else {
                 image = nil
+                loading = false
                 return
             }
+            // A cache hit returns immediately; the shimmer only becomes
+            // visible when the fetch actually takes time.
+            loading = true
             image = await ImageCache.shared.image(for: url, maxPixel: maxPixel)
+            loading = false
         }
     }
 

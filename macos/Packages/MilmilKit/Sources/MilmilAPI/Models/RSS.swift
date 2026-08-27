@@ -213,7 +213,7 @@ public struct TorrentResult: Codable, Sendable, Identifiable, Hashable {
         sourceSite = try c.decodeIfPresent(String.self, forKey: .sourceSite) ?? ""
     }
 
-    public static let sources = ["nyaa", "dmhy", "mikan", "bangumi.moe", "acg.rip", "dandanplay"]
+    public static let sources = ["nyaa", "dmhy", "mikan", "bangumi.moe", "acg.rip"]
     /// Sources that also serve an RSS feed the server can subscribe to.
     public static let rssSources = ["mikan", "nyaa", "dmhy"]
 }

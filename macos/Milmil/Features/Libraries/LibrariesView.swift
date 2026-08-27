@@ -74,13 +74,12 @@ struct LibrariesView: View {
             guard session.eventGeneration > 0, let event = session.lastEvent else { return }
             await store?.handle(event)
         }
-        .onDisappear { backdrop.clear(owner: "libraries") }
     }
 
     private func content(_ store: LibrariesStore) -> some View {
         HStack(spacing: 0) {
             librariesColumn(store)
-                .frame(width: 280)
+                .frame(width: 260)
             Divider()
             if let library = store.selected {
                 LibraryDetailView(library: library, store: store, client: session.client)
@@ -122,11 +121,11 @@ struct LibrariesView: View {
     private func librariesColumn(_ store: LibrariesStore) -> some View {
         VStack(spacing: 0) {
             HStack {
-                Text("媒體庫").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.Text.tertiary)
+                SectionLabel(title: String(localized: "媒體庫"), count: store.libraries.value?.count)
                 Spacer()
-                Button { showAdd = true } label: { Image(systemName: "plus") }.buttonStyle(.plain).help("新增媒體庫")
+                RowIconButton(symbol: "plus", label: String(localized: "新增媒體庫")) { showAdd = true }
             }
-            .padding(.horizontal, 16).padding(.vertical, 12)
+            .padding(.horizontal, 12).padding(.top, 14).padding(.bottom, 6)
             List(selection: Binding(get: { store.selectedID }, set: { store.selectedID = $0 })) {
                 ForEach(store.libraries.value ?? []) { library in
                     LibraryRow(library: library, scan: store.scans[library.id])
@@ -152,22 +151,38 @@ private struct LibraryRow: View {
     let library: Library
     let scan: ScanProgress?
 
+    private var isScanning: Bool { scan != nil && scan?.type != ServerEventType.scanError }
+
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: library.isLocal ? "internaldrive" : "externaldrive.connected.to.line.below")
-                .font(.system(size: 16)).foregroundStyle(Theme.accent).frame(width: 24)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(library.name).font(.system(size: 13, weight: .semibold))
-                if let scan, scan.type != ServerEventType.scanError {
-                    Text(scanText(scan)).font(.system(size: 11)).foregroundStyle(Theme.accent).lineLimit(1)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Theme.accent)
+                .frame(width: 30, height: 30)
+                .background(Theme.accent.opacity(0.14), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(library.name).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                    if isScanning { ProgressView().controlSize(.mini) }
+                    if !library.enabled {
+                        Text("已停用").font(.system(size: 9, weight: .bold)).foregroundStyle(Theme.Text.tertiary)
+                            .padding(.horizontal, 5).padding(.vertical, 1).background(Theme.ink(0.08), in: Capsule())
+                    }
+                }
+                if let scan, isScanning {
+                    Text(scanText(scan)).font(.system(size: 11)).foregroundStyle(Theme.accent).lineLimit(1).monospacedDigit()
                 } else {
                     let size = ByteCountFormatter.string(fromByteCount: library.totalSizeBytes, countStyle: .file)
-                    Text("\(library.fileCount) 檔案 · \(library.unmatchedCount) 未匹配 · \(size)")
-                        .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary).lineLimit(1)
+                    Text("\(library.fileCount) 檔案 · \(size)")
+                        .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary).lineLimit(1).monospacedDigit()
+                }
+                if library.fileCount > 0, !isScanning {
+                    ThinProgress(fraction: Double(library.matchedCount) / Double(library.fileCount), tint: Color(hex: 0x4ADE80), height: 2)
+                        .padding(.top, 2)
                 }
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
 
     private func scanText(_ scan: ScanProgress) -> String {
@@ -188,11 +203,12 @@ struct LibraryDetailView: View {
     @Environment(Router.self) private var router
     @State private var filter: MediaFileFilter = .all
     @State private var query = ""
+    @State private var loadedQuery = ""
     @State private var page: Loadable<MediaFilesPage> = .idle
     @State private var pageNumber = 1
     @State private var selection: Set<String> = []
     @State private var matching: MediaFileRow?
-    @State private var sortOrder = [KeyPathComparator(\MediaFileRow.filename)]
+    @State private var sort = MediaFileSort(key: .filename, ascending: true)
     @State private var showDuplicates = false
     @State private var showMissing = false
     @State private var showRename = false
@@ -200,7 +216,6 @@ struct LibraryDetailView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            Divider()
             toolbar
             table
             Divider()
@@ -224,69 +239,106 @@ struct LibraryDetailView: View {
     }
 
     private var header: some View {
-        HStack(alignment: .top, spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(library.name).font(.system(size: 20, weight: .bold))
-                Text(library.path).font(.system(size: 12, design: .monospaced)).foregroundStyle(Theme.Text.tertiary).lineLimit(1).truncationMode(.middle)
-                HStack(spacing: 12) {
-                    stat(String(localized: "檔案"), library.fileCount)
-                    stat(String(localized: "已匹配"), library.matchedCount)
-                    stat(String(localized: "未匹配"), library.unmatchedCount, warn: library.unmatchedCount > 0)
-                    if let date = library.lastScannedAt {
-                        Text("上次掃描 \(Formatters.relative(date))").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+        let scan = store.scans[library.id]
+        let scanning = scan != nil && scan?.type != ServerEventType.scanError
+        return VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(library.name).font(.system(size: 22, weight: .bold)).tracking(-0.3)
+                    Button(action: copyPath) {
+                        HStack(spacing: 5) {
+                            Image(systemName: "folder").font(.system(size: 10, weight: .semibold))
+                            Text(library.path).font(.system(size: 12, design: .monospaced)).lineLimit(1).truncationMode(.middle)
+                        }
+                        .foregroundStyle(Theme.Text.tertiary)
                     }
+                    .buttonStyle(.plain)
+                    .help("複製路徑")
                 }
-                .padding(.top, 4)
+                Spacer()
+                ChipMenu(title: String(localized: "工具"), symbol: "wrench.and.screwdriver") {
+                    Button("重複檔案…", systemImage: "doc.on.doc") { showDuplicates = true }
+                    Button("缺集摘要…", systemImage: "questionmark.folder") { showMissing = true }
+                    Button("重新命名…", systemImage: "textformat.abc") { showRename = true }
+                }
+                ChipButton(
+                    title: scanning ? String(localized: "掃描中…") : String(localized: "掃描"),
+                    symbol: "arrow.clockwise", prominent: true, busy: scanning
+                ) { Task { await store.scan(library) } }
+                .disabled(scanning)
             }
-            Spacer()
-            if let scan = store.scans[library.id] {
+            HStack(spacing: 8) {
+                stat(String(localized: "檔案"), "\(library.fileCount)")
+                stat(String(localized: "已匹配"), "\(library.matchedCount)", tint: Color(hex: 0x4ADE80))
+                stat(String(localized: "未匹配"), "\(library.unmatchedCount)", tint: library.unmatchedCount > 0 ? Color(hex: 0xFBBF24) : nil)
+                stat(String(localized: "大小"), ByteCountFormatter.string(fromByteCount: library.totalSizeBytes, countStyle: .file))
+                stat(String(localized: "上次掃描"), library.lastScannedAt.map(Formatters.relative) ?? "—")
+            }
+            LibraryStorageBar(library: library, client: client)
+            if let scan {
                 if scan.type == ServerEventType.scanError {
                     Label(scan.error ?? String(localized: "掃描失敗"), systemImage: "exclamationmark.triangle")
-                        .foregroundStyle(Color(hex: 0xF87171)).font(.system(size: 12))
+                        .font(.system(size: 12, weight: .medium)).foregroundStyle(Color(hex: 0xF87171))
                 } else {
-                    ProgressView().controlSize(.small)
+                    HStack(spacing: 8) {
+                        ProgressView().controlSize(.small)
+                        Text(scanText(scan)).font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.accent).monospacedDigit()
+                    }
                 }
             }
-            Menu {
-                Button("重複檔案…", systemImage: "doc.on.doc") { showDuplicates = true }
-                Button("缺集摘要…", systemImage: "questionmark.folder") { showMissing = true }
-                Button("重新命名…", systemImage: "textformat.abc") { showRename = true }
-            } label: {
-                Label("工具", systemImage: "wrench.and.screwdriver")
-            }
-            .fixedSize()
-            Button("掃描", systemImage: "arrow.clockwise") { Task { await store.scan(library) } }
-                .glassProminentButtonStyle()
-                .disabled(store.scans[library.id] != nil && store.scans[library.id]?.type != ServerEventType.scanError)
         }
-        .padding(.horizontal, 24).padding(.vertical, 18)
+        .padding(.horizontal, 24).padding(.top, 18).padding(.bottom, 16)
     }
 
-    private func stat(_ label: String, _ value: Int, warn: Bool = false) -> some View {
-        HStack(spacing: 4) {
-            Text("\(value)").font(.system(size: 13, weight: .semibold)).monospacedDigit().foregroundStyle(warn ? Color(hex: 0xFBBF24) : .primary)
-            Text(label).font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+    private func stat(_ label: String, _ value: String, tint: Color? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value).font(.system(size: 15, weight: .semibold)).monospacedDigit().foregroundStyle(tint ?? Theme.Text.primary).lineLimit(1)
+            Text(label).font(.system(size: 10.5)).foregroundStyle(Theme.Text.tertiary)
         }
+        .padding(.horizontal, 12).padding(.vertical, 8)
+        .frame(minWidth: 84, alignment: .leading)
+        .background(Theme.ink(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
+    private func scanText(_ scan: ScanProgress) -> String {
+        switch scan.type {
+        case ServerEventType.scanHash: String(localized: "雜湊中 \(scan.filesHashed)/\(scan.filesTotal)")
+        case ServerEventType.matchProgress, ServerEventType.matchStarted: String(localized: "匹配中 \(scan.filesMatched)/\(scan.filesTotal)")
+        default: String(localized: "掃描中 · 找到 \(scan.filesFound) 個檔案")
+        }
+    }
+
+    private func copyPath() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(library.path, forType: .string)
     }
 
     private var toolbar: some View {
-        HStack(spacing: 10) {
-            Segmented(options: MediaFileFilter.allCases, selection: $filter) { filter in
-                switch filter {
-                case .all: String(localized: "全部")
-                case .matched: String(localized: "已匹配")
-                case .unmatched: String(localized: "未匹配")
-                }
-            }
-            TextField("搜尋檔名…", text: $query).textFieldStyle(.roundedBorder).frame(width: 220)
-                .onSubmit { pageNumber = 1; Task { await load() } }
-            Spacer()
+        PageBar {
+            FilterTabs(
+                tabs: [
+                    FilterTab(value: MediaFileFilter.all, label: String(localized: "全部"), badge: library.fileCount),
+                    FilterTab(value: .matched, label: String(localized: "已匹配"), badge: library.matchedCount),
+                    FilterTab(value: .unmatched, label: String(localized: "未匹配"), badge: library.unmatchedCount),
+                ],
+                selection: $filter
+            )
+        } trailing: {
             if !selection.isEmpty {
-                Button("取消匹配 \(selection.count) 個") { Task { await unmatchSelected() } }.controlSize(.small)
+                Button("取消匹配 \(selection.count) 個", systemImage: "link.badge.plus") { Task { await unmatchSelected() } }
+                    .glassButtonStyle()
             }
+            SearchField(prompt: String(localized: "搜尋檔名…"), text: $query, width: 200)
         }
-        .padding(.horizontal, 24).padding(.vertical, 10)
+        .padding(.horizontal, 24)
         .onChange(of: filter) { pageNumber = 1 }
+        .task(id: query) {
+            guard query != loadedQuery else { return }
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            pageNumber = 1
+            await load()
+        }
     }
 
     @ViewBuilder
@@ -300,81 +352,67 @@ struct LibraryDetailView: View {
             )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case let .loaded(page):
-            Table(page.items.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
-                TableColumn(String(localized: "檔名"), value: \.filename) { row in
-                    Text(row.filename).lineLimit(1).truncationMode(.middle).help(row.path)
-                }
-                TableColumn(String(localized: "狀態")) { row in
-                    PillBadge(text: statusLabel(row), tint: statusTint(row))
-                }
-                .width(80)
-                TableColumn(String(localized: "作品")) { row in
-                    if row.isMatched {
-                        Button { router.openAnime(row.matchedBangumiID) } label: {
-                            Text("\(row.matchedAnimeTitle) · EP \(Formatters.episode(row.matchedEpisodeSort).dropFirst(3))").lineLimit(1)
+            let rows = page.items.sorted(using: sort)
+            ScrollView {
+                VStack(spacing: 0) {
+                    MediaFileListHeader(sort: $sort)
+                    ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
+                        if index > 0 { RowDivider() }
+                        MediaFileListRow(row: row, selected: selection.contains(row.id)) {
+                            select(row, in: rows)
+                        } onMatch: {
+                            matching = row
+                        } onUnmatch: {
+                            Task { await unmatch(row) }
+                        } onRemove: {
+                            Task { await remove(row) }
                         }
-                        .buttonStyle(.plain).foregroundStyle(Theme.accent)
-                    } else {
-                        Button("匹配…") { matching = row }.controlSize(.small)
                     }
                 }
-                TableColumn(String(localized: "大小")) { row in
-                    Text(ByteCountFormatter.string(fromByteCount: row.sizeBytes, countStyle: .file)).monospacedDigit().foregroundStyle(Theme.Text.tertiary)
-                }
-                .width(80)
-                TableColumn(String(localized: "字幕")) { row in
-                    Text(row.subtitleCount > 0 ? "\(row.subtitleCount)" : "—").foregroundStyle(Theme.Text.tertiary)
-                }
-                .width(40)
-            }
-            .alternatingRowBackgrounds(.disabled)
-            .contextMenu(forSelectionType: String.self) { ids in
-                if let id = ids.first, let row = page.items.first(where: { $0.id == id }) {
-                    if row.isMatched { Button("作品頁", systemImage: "info.circle") { router.openAnime(row.matchedBangumiID) } }
-                    Button("手動匹配…", systemImage: "link") { matching = row }
-                    if row.isMatched {
-                        Button("取消匹配", systemImage: "link.badge.plus") { Task { await unmatch(row) } }
-                    }
-                    Button("在 Finder 顯示路徑", systemImage: "doc.on.doc") {
-                        NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString(row.path, forType: .string)
-                    }
-                    Divider()
-                    Button("從媒體庫移除", systemImage: "trash", role: .destructive) { Task { await remove(row) } }
-                }
+                .groupedCard()
+                .padding(.horizontal, 24).padding(.top, 14).padding(.bottom, 20)
             }
         case let .failed(message):
             ErrorBanner(message: message) { Task { await load() } }.padding(24)
         default:
-            ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+            ScrollView {
+                SkeletonRows(count: 10, height: 44, leading: 0)
+                    .padding(.horizontal, 24).padding(.top, 14).padding(.bottom, 20)
+            }
         }
     }
 
     private var footer: some View {
-        HStack {
+        HStack(spacing: 8) {
             if let page = page.value {
                 let pages = max(1, Int((Double(page.total) / Double(max(1, page.perPage))).rounded(.up)))
-                Text("\(page.total) 個檔案").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                Text("\(page.total) 個檔案").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary).monospacedDigit()
                 Spacer()
-                Button { pageNumber = max(1, pageNumber - 1) } label: { Image(systemName: "chevron.left") }.disabled(pageNumber <= 1)
-                Text("\(pageNumber) / \(pages)").font(.system(size: 11)).monospacedDigit()
-                Button { pageNumber = min(pages, pageNumber + 1) } label: { Image(systemName: "chevron.right") }.disabled(pageNumber >= pages)
+                if pages > 1 {
+                    RowIconButton(symbol: "chevron.left", label: String(localized: "上一頁")) { pageNumber = max(1, pageNumber - 1) }
+                        .disabled(pageNumber <= 1).opacity(pageNumber <= 1 ? 0.4 : 1)
+                    Text("\(pageNumber) / \(pages)").font(.system(size: 11, weight: .medium)).monospacedDigit().foregroundStyle(Theme.Text.secondary)
+                    RowIconButton(symbol: "chevron.right", label: String(localized: "下一頁")) { pageNumber = min(pages, pageNumber + 1) }
+                        .disabled(pageNumber >= pages).opacity(pageNumber >= pages ? 0.4 : 1)
+                }
             }
         }
-        .controlSize(.small)
         .padding(.horizontal, 24).padding(.vertical, 8)
     }
 
-    private func statusLabel(_ row: MediaFileRow) -> String {
-        switch row.matchStatus {
-        case "auto": String(localized: "自動")
-        case "manual": String(localized: "手動")
-        default: String(localized: "未匹配")
+    /// Click selects one row; ⌘-click toggles; ⇧-click extends from the
+    /// last selected row, the way an AppKit table behaves.
+    private func select(_ row: MediaFileRow, in rows: [MediaFileRow]) {
+        let flags = NSApp.currentEvent?.modifierFlags ?? []
+        if flags.contains(.command) {
+            if selection.contains(row.id) { selection.remove(row.id) } else { selection.insert(row.id) }
+        } else if flags.contains(.shift),
+                  let anchor = rows.lastIndex(where: { selection.contains($0.id) }),
+                  let target = rows.firstIndex(of: row) {
+            for r in rows[min(anchor, target) ... max(anchor, target)] { selection.insert(r.id) }
+        } else {
+            selection = selection == [row.id] ? [] : [row.id]
         }
-    }
-
-    private func statusTint(_ row: MediaFileRow) -> Color {
-        row.isMatched ? Color(hex: 0x4ADE80).opacity(0.25) : Color(hex: 0xFBBF24).opacity(0.3)
     }
 
     private func load() async {
@@ -384,6 +422,7 @@ struct LibraryDetailView: View {
         let query = query
         let pageNumber = pageNumber
         page = await page.reloaded { try await client.mediaFiles(libraryID: libraryID, filter: filter, query: query, page: pageNumber) }
+        loadedQuery = query
         selection = []
     }
 
@@ -403,6 +442,217 @@ struct LibraryDetailView: View {
         for id in selection { try? await client.unmatchMediaFile(id: id) }
         await load()
         await store.load()
+    }
+}
+
+// MARK: - File list
+
+struct MediaFileSort: Equatable {
+    enum Key { case filename, title, status, size, subtitles }
+    var key: Key
+    var ascending: Bool
+
+    /// Selecting the active column flips direction; a new column sorts ascending.
+    mutating func toggle(_ key: Key) {
+        if self.key == key { ascending.toggle() } else { self = .init(key: key, ascending: true) }
+    }
+}
+
+private extension [MediaFileRow] {
+    func sorted(using sort: MediaFileSort) -> [MediaFileRow] {
+        let order: SortOrder = sort.ascending ? .forward : .reverse
+        return switch sort.key {
+        case .filename: sorted(using: KeyPathComparator(\.filename, order: order))
+        case .title: sorted(using: [KeyPathComparator(\.matchedAnimeTitle, order: order), KeyPathComparator(\.matchedEpisodeSort, order: order)])
+        case .status: sorted(using: KeyPathComparator(\.matchStatus, order: order))
+        case .size: sorted(using: KeyPathComparator(\.sizeBytes, order: order))
+        case .subtitles: sorted(using: KeyPathComparator(\.subtitleCount, order: order))
+        }
+    }
+}
+
+/// Fixed trailing column widths shared by the header and rows so the
+/// columns line up without a `Table`; 檔名 takes the remaining width.
+private enum FileColumns {
+    static let title: CGFloat = 280
+    static let status: CGFloat = 72
+    static let size: CGFloat = 78
+    static let subtitles: CGFloat = 40
+    static let actions: CGFloat = 66
+    static let spacing: CGFloat = 14
+}
+
+private struct MediaFileListHeader: View {
+    @Binding var sort: MediaFileSort
+
+    var body: some View {
+        HStack(spacing: FileColumns.spacing) {
+            header(String(localized: "檔名"), key: .filename).frame(maxWidth: .infinity, alignment: .leading)
+            header(String(localized: "作品"), key: .title).frame(width: FileColumns.title, alignment: .leading)
+            header(String(localized: "狀態"), key: .status).frame(width: FileColumns.status, alignment: .leading)
+            header(String(localized: "大小"), key: .size, trailing: true).frame(width: FileColumns.size, alignment: .trailing)
+            header(String(localized: "字幕"), key: .subtitles, trailing: true).frame(width: FileColumns.subtitles, alignment: .trailing)
+            Color.clear.frame(width: FileColumns.actions, height: 1)
+        }
+        .padding(.horizontal, 14).padding(.vertical, 8)
+        .overlay(alignment: .bottom) { Rectangle().fill(Theme.ink(0.06)).frame(height: 1) }
+    }
+
+    private func header(_ label: String, key: MediaFileSort.Key, trailing: Bool = false) -> some View {
+        let active = sort.key == key
+        return Button { sort.toggle(key) } label: {
+            HStack(spacing: 3) {
+                if trailing, active { chevron }
+                Text(label).font(.system(size: 11, weight: .bold)).lineLimit(1)
+                if !trailing, active { chevron }
+            }
+            .foregroundStyle(active ? Theme.Text.secondary : Theme.Text.tertiary)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(active ? .isSelected : [])
+    }
+
+    private var chevron: some View {
+        Image(systemName: sort.ascending ? "chevron.up" : "chevron.down").font(.system(size: 8, weight: .bold))
+    }
+}
+
+private struct MediaFileListRow: View {
+    let row: MediaFileRow
+    let selected: Bool
+    let onSelect: () -> Void
+    let onMatch: () -> Void
+    let onUnmatch: () -> Void
+    let onRemove: () -> Void
+
+    @Environment(Router.self) private var router
+    @State private var hovered = false
+    @State private var titleHovered = false
+    @State private var confirmDelete = false
+    /// Server path resolved through the player's local path mappings; nil
+    /// when this Mac can't see the file, so 在 Finder 顯示 is disabled.
+    private var localURL: URL? { LocalPathMappings.shared.localURL(forServerPath: row.path) }
+
+    var body: some View {
+        HStack(spacing: FileColumns.spacing) {
+            Text(row.filename)
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(Theme.ink(0.8))
+                .lineLimit(1).truncationMode(.middle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .help(row.path)
+            title.frame(width: FileColumns.title, alignment: .leading)
+            status.frame(width: FileColumns.status, alignment: .leading)
+            Text(ByteCountFormatter.string(fromByteCount: row.sizeBytes, countStyle: .file))
+                .font(.system(size: 11.5)).monospacedDigit().foregroundStyle(Theme.Text.tertiary).lineLimit(1)
+                .frame(width: FileColumns.size, alignment: .trailing)
+            Text(row.subtitleCount > 0 ? "\(row.subtitleCount)" : "—")
+                .font(.system(size: 11.5)).monospacedDigit()
+                .foregroundStyle(row.subtitleCount > 0 ? Theme.Text.tertiary : Theme.Text.muted)
+                .frame(width: FileColumns.subtitles, alignment: .trailing)
+            actions.frame(width: FileColumns.actions, alignment: .trailing)
+        }
+        .padding(.horizontal, 14).padding(.vertical, 7)
+        .background(rowBackground, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .padding(3)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onSelect)
+        .onHover { hovered = $0 }
+        .animation(.easeOut(duration: 0.12), value: hovered)
+        .contextMenu {
+            if row.isMatched { Button("作品頁", systemImage: "info.circle") { router.openAnime(row.matchedBangumiID) } }
+            Button("手動匹配…", systemImage: "link", action: onMatch)
+            if row.isMatched { Button("取消匹配", systemImage: "link.badge.plus", action: onUnmatch) }
+            Divider()
+            if let localURL {
+                Button("在 Finder 顯示", systemImage: "folder") { NSWorkspace.shared.activateFileViewerSelecting([localURL]) }
+            } else {
+                Button("在 Finder 顯示（需設定本機路徑對應）", systemImage: "folder") {}.disabled(true)
+            }
+            Button("複製路徑", systemImage: "doc.on.doc", action: copyPath)
+            Divider()
+            Button("從磁碟刪除…", systemImage: "trash", role: .destructive) { confirmDelete = true }
+        }
+        // DELETE /media-files/:id removes the file from disk, not just the row.
+        .confirmationDialog(String(localized: "刪除「\(String(row.filename))」？"), isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("從磁碟刪除", role: .destructive, action: onRemove)
+        } message: {
+            Text("檔案會從磁碟永久刪除，無法復原。")
+        }
+    }
+
+    private var rowBackground: Color {
+        if selected { return Theme.accent.opacity(0.14) }
+        return hovered ? Theme.ink(0.04) : .clear
+    }
+
+    @ViewBuilder
+    private var title: some View {
+        if row.isMatched {
+            Button { router.openAnime(row.matchedBangumiID) } label: {
+                HStack(spacing: 6) {
+                    Text(row.matchedAnimeTitle)
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(titleHovered ? Theme.accent : Theme.Text.secondary)
+                        .lineLimit(1)
+                    Text(Formatters.episode(row.matchedEpisodeSort))
+                        .font(.system(size: 10, weight: .bold)).monospacedDigit()
+                        .foregroundStyle(Theme.Text.tertiary)
+                        .padding(.horizontal, 5).padding(.vertical, 1.5)
+                        .background(Theme.ink(0.06), in: Capsule())
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .onHover { titleHovered = $0 }
+            .help(row.matchedAnimeTitle)
+        } else {
+            Text("—").font(.system(size: 12.5)).foregroundStyle(Theme.Text.muted)
+        }
+    }
+
+    private var status: some View {
+        HStack(spacing: 5) {
+            Circle().fill(statusTint).frame(width: 6, height: 6)
+            Text(statusLabel).font(.system(size: 11, weight: .medium)).foregroundStyle(Theme.Text.secondary).lineLimit(1)
+        }
+    }
+
+    private var statusLabel: String {
+        switch row.matchStatus {
+        case "auto": String(localized: "自動")
+        case "manual": String(localized: "手動")
+        default: String(localized: "未匹配")
+        }
+    }
+
+    private var statusTint: Color {
+        switch row.matchStatus {
+        case "auto": Color(hex: 0x4ADE80)
+        case "manual": Theme.accent
+        default: Color(hex: 0xFBBF24)
+        }
+    }
+
+    /// Matched rows: quiet icons on hover. Unmatched rows: the 匹配 chip
+    /// stays visible, since that's the row's whole point.
+    private var actions: some View {
+        HStack(spacing: 4) {
+            if row.isMatched {
+                RowIconButton(symbol: "info.circle", label: String(localized: "作品頁")) { router.openAnime(row.matchedBangumiID) }
+                RowIconButton(symbol: "link.badge.plus", label: String(localized: "取消匹配"), action: onUnmatch)
+            } else {
+                RowIconButton(symbol: "link", label: String(localized: "手動匹配…"), prominent: true, action: onMatch)
+                RowIconButton(symbol: "trash", label: String(localized: "從磁碟刪除…"), destructive: true) { confirmDelete = true }
+            }
+        }
+        .opacity(hovered || !row.isMatched ? 1 : 0)
+    }
+
+    private func copyPath() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(row.path, forType: .string)
     }
 }
 
@@ -546,5 +796,75 @@ private struct MatchSheet: View {
         if let range = name.range(of: #"\s-\s*\d+"#, options: .regularExpression) { name = String(name[..<range.lowerBound]) }
         name = name.replacingOccurrences(of: #"(?i)\b(S\d+E\d+|EP?\s*\d+|第\d+[話集])\b.*$"#, with: "", options: .regularExpression)
         return name.replacingOccurrences(of: "_", with: " ").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+/// Volume usage under the stats: library share, other data, free space,
+/// this month's downloads — and a quiet warning row once free space drops
+/// under 5 %, well before aria2 starts failing writes.
+private struct LibraryStorageBar: View {
+    let library: Library
+    let client: APIClient
+    @State private var capacity: LibraryCapacity?
+
+    private static let warnFraction = 0.05
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let capacity, let used = capacity.usedFraction {
+                let libraryShare = min(used, Double(library.totalSizeBytes) / Double(capacity.totalBytes))
+                let freeFraction = 1 - used
+                GeometryReader { proxy in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Theme.ink(0.08))
+                        Capsule().fill(Theme.ink(0.28)).frame(width: proxy.size.width * used)
+                        Capsule().fill(Theme.accent).frame(width: proxy.size.width * libraryShare)
+                    }
+                }
+                .frame(height: 6)
+                HStack(spacing: 12) {
+                    legend(Theme.accent, Self.labelled("媒體庫", size: Self.bytes(library.totalSizeBytes)))
+                    legend(Theme.ink(0.28), Self.labelled("其他", size: Self.bytes(max(0, capacity.usedBytes - library.totalSizeBytes))))
+                    legend(Theme.ink(0.08), Self.labelled("可用", size: Self.bytes(capacity.freeBytes)))
+                    if capacity.downloadedThisMonthBytes > 0 {
+                        let size = Self.bytes(capacity.downloadedThisMonthBytes)
+                        Text("本月下載 \(size)").foregroundStyle(Theme.Text.tertiary)
+                    }
+                    Spacer()
+                }
+                .font(.system(size: 11))
+                .monospacedDigit()
+                if freeFraction < Self.warnFraction {
+                    let size = Self.bytes(capacity.freeBytes)
+                    Label(
+                        String(localized: "磁碟只剩 \(size)，下載快將失敗；清理重複檔案或看過的集數騰出空間。"),
+                        systemImage: "externaldrive.badge.exclamationmark"
+                    )
+                    .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(Color(hex: 0xFBBF24))
+                }
+            } else if let capacity, capacity.downloadedThisMonthBytes > 0 {
+                let size = Self.bytes(capacity.downloadedThisMonthBytes)
+                Text("本月下載 \(size)")
+                    .font(.system(size: 11)).monospacedDigit().foregroundStyle(Theme.Text.tertiary)
+            }
+        }
+        .task(id: library.id) { capacity = try? await client.libraryCapacity(id: library.id) }
+    }
+
+    private func legend(_ color: Color, _ text: String) -> some View {
+        HStack(spacing: 5) {
+            Circle().fill(color).frame(width: 7, height: 7)
+            Text(text).foregroundStyle(Theme.Text.secondary)
+        }
+    }
+
+    private static func bytes(_ count: Int64) -> String {
+        ByteCountFormatter.string(fromByteCount: count, countStyle: .file)
+    }
+
+    /// "媒體庫 12.3 GB": the legend word, then the size.
+    private static func labelled(_ word: String.LocalizationValue, size: String) -> String {
+        "\(String(localized: word)) \(size)"
     }
 }

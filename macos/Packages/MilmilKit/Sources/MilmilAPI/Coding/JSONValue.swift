@@ -11,6 +11,16 @@ public indirect enum JSONValue: Codable, Sendable, Hashable {
     case array([JSONValue])
     case object([String: JSONValue])
 
+    /// Strings as-is, numbers formatted ("5", "12.5"); nil for the rest.
+    public var stringValue: String? {
+        switch self {
+        case let .string(string): string
+        case let .number(number):
+            if number.rounded() == number { String(Int(number)) } else { String(number) }
+        default: nil
+        }
+    }
+
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         if container.decodeNil() {

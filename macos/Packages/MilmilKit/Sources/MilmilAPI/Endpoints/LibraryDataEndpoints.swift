@@ -62,6 +62,11 @@ public extension APIClient {
         try await get("/api/v1/anime/\(bangumiID)/playable-episodes")
     }
 
+    /// Same, with the raw body for the series page's disk cache.
+    func playableEpisodesSnapshot(bangumiID: Int) async throws -> Snapshot<PlayableEpisodesResponse> {
+        try await getSnapshot("/api/v1/anime/\(bangumiID)/playable-episodes")
+    }
+
     /// 1–10, or nil to clear.
     func setScore(bangumiID: Int, _ score: Int?) async throws {
         try await patch("/api/v1/anime/\(bangumiID)/score", body: ScoreUpdate(score: score))

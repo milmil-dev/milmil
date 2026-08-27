@@ -73,7 +73,15 @@ struct ServerSettingsTab: View {
                 case let .failed(message):
                     ErrorBanner(message: message) { Task { await loadTokens() } }
                 default:
-                    ProgressView().controlSize(.small)
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(0..<3, id: \.self) { _ in
+                            VStack(alignment: .leading, spacing: 6) {
+                                SkeletonText(width: 180, height: 12)
+                                SkeletonText(width: 240, height: 10)
+                            }
+                        }
+                    }
+                    .shimmering()
                 }
             }
         }

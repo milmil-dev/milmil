@@ -11,9 +11,63 @@ final class SubscriptionsStore {
     private(set) var refreshing: Set<String> = []
     var toast: String?
     let client: APIClient
+    /// Quiet suggestions above the rule list; dismissals stick per series.
+    private(set) var advice: [SubscriptionAdvice] = []
+    private let defaults = UserDefaults.standard
+    private static let dismissedKey = "subscriptions.advice.dismissed"
 
     init(client: APIClient) {
         self.client = client
+    }
+
+    /// A rule whose series is complete on disk (nothing missing, nothing
+    /// pending) can go quiet; a followed series whose franchise has a newer
+    /// season airing without a rule of its own can be followed the same way.
+    func loadAdvice() async {
+        let active = (rules.value ?? []).filter { $0.enabled && ($0.bangumiID ?? 0) > 0 }.prefix(30)
+        let dismissed = Set(defaults.stringArray(forKey: Self.dismissedKey) ?? [])
+        let ruled = Set((rules.value ?? []).compactMap(\.bangumiID))
+        let found = await withTaskGroup(of: [SubscriptionAdvice].self) { group in
+            for rule in active {
+                guard let bangumiID = rule.bangumiID else { continue }
+                group.addTask { [client] in
+                    var out: [SubscriptionAdvice] = []
+                    if let report = try? await client.animeMissing(bangumiID: bangumiID),
+                       !report.unknownTotal, report.total > 0, report.missing.isEmpty, report.airingPending.isEmpty {
+                        out.append(SubscriptionAdvice(id: "disable-\(rule.id)", kind: .complete, rule: rule, sequel: nil))
+                    }
+                    if let franchise = try? await client.franchise(bangumiID: bangumiID),
+                       let sequel = Self.airingSequel(of: bangumiID, in: franchise.mainSeries, excluding: ruled) {
+                        out.append(SubscriptionAdvice(id: "sequel-\(sequel.bangumiID)", kind: .sequel, rule: rule, sequel: sequel))
+                    }
+                    return out
+                }
+            }
+            var all: [SubscriptionAdvice] = []
+            for await part in group { all.append(contentsOf: part) }
+            return all
+        }
+        advice = found.filter { !dismissed.contains($0.id) }.sorted { $0.id < $1.id }
+    }
+
+    func dismiss(_ item: SubscriptionAdvice) {
+        var list = defaults.stringArray(forKey: Self.dismissedKey) ?? []
+        list.append(item.id)
+        defaults.set(list, forKey: Self.dismissedKey)
+        advice.removeAll { $0.id == item.id }
+    }
+
+    /// The next season after `bangumiID` in the franchise's main line that
+    /// started airing within the last four months (or starts within a
+    /// month) and has no rule yet.
+    nonisolated static func airingSequel(of bangumiID: Int, in series: [FranchiseEntry], excluding ruled: Set<Int>, now: Date = Date()) -> FranchiseEntry? {
+        guard let current = series.first(where: { $0.bangumiID == bangumiID }) else { return nil }
+        let window = (now.addingTimeInterval(-120 * 24 * 3600))...(now.addingTimeInterval(30 * 24 * 3600))
+        return series
+            .filter { $0.bangumiID > 0 && $0.bangumiID != bangumiID && !ruled.contains($0.bangumiID) }
+            .filter { $0.season > current.season || ($0.season == current.season && $0.part > current.part) }
+            .filter { entry in Formatters.day(from: entry.airDate).map { window.contains($0) } ?? false }
+            .min { ($0.season, $0.part) < ($1.season, $1.part) }
     }
 
     func load(quiet: Bool = false) async {
@@ -24,6 +78,7 @@ final class SubscriptionsStore {
         async let f = feeds.reloaded { try await self.client.rssFeeds() }
         async let r = rules.reloaded { try await self.client.downloadRules() }
         (feeds, rules) = await (f, r)
+        await loadAdvice()
     }
 
     func feedName(_ id: String) -> String {
@@ -118,15 +173,19 @@ struct SubscriptionsView: View {
             switch (store.feeds, store.rules) {
             case (.loaded(let feeds), .loaded(let rules)):
                 feedsSection(feeds)
+                adviceSection
                 rulesSection(rules, feeds: feeds)
             case (.failed(let message), _), (_, .failed(let message)):
                 ErrorBanner(message: message) { Task { await store.load() } }
             default:
-                ProgressView().frame(maxWidth: .infinity).padding(40)
+                VStack(alignment: .leading, spacing: 22) {
+                    SkeletonSection(rows: 3, leading: 0)
+                    SkeletonSection(rows: 4, leading: 0)
+                }
             }
         }
         .sheet(item: $feedSheet) { target in FeedEditorSheet(store: store, feed: target.feed) }
-        .sheet(item: $ruleSheet) { target in RuleEditorSheet(store: store, rule: target.rule, feeds: store.feeds.value ?? []) }
+        .sheet(item: $ruleSheet) { target in RuleEditorSheet(store: store, rule: target.rule, prefill: target.prefill, feeds: store.feeds.value ?? []) }
         .sheet(item: $preview) { feed in FeedPreviewSheet(feed: feed, rules: store.rules(for: feed)) }
         .confirmationDialog(
             "刪除訂閱來源「\(confirmDeleteFeed?.name ?? "")」？", isPresented: Binding(get: { confirmDeleteFeed != nil }, set: { if !$0 { confirmDeleteFeed = nil } }),
@@ -210,6 +269,60 @@ struct SubscriptionsView: View {
         .opacity(feed.enabled ? 1 : 0.6)
     }
 
+    /// Quiet rows: a finished, complete series whose rule can rest; a newer
+    /// season airing that the old rule could follow. Each dismisses for good.
+    @ViewBuilder private var adviceSection: some View {
+        if !store.advice.isEmpty {
+            VStack(spacing: 6) {
+                ForEach(store.advice) { item in adviceRow(item) }
+            }
+            .transition(.opacity)
+        }
+    }
+
+    private func adviceRow(_ item: SubscriptionAdvice) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: item.kind == .complete ? "checkmark.seal" : "sparkles")
+                .font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.accent)
+            VStack(alignment: .leading, spacing: 2) {
+                let name = item.rule.name
+                switch item.kind {
+                case .complete:
+                    Text("「\(name)」呢套完咗，全部集數都齊，停用規則？").font(.system(size: 12, weight: .medium))
+                case .sequel:
+                    let title = item.sequel?.title ?? ""
+                    Text("《\(title)》開始咗，要唔要照「\(name)」嘅規則追？").font(.system(size: 12, weight: .medium))
+                }
+            }
+            Spacer(minLength: 8)
+            switch item.kind {
+            case .complete:
+                Button("停用") { Task { await store.setEnabled(item.rule, false); store.dismiss(item) } }
+                    .controlSize(.small)
+            case .sequel:
+                Button("照舊追") {
+                    var input = DownloadRuleInput(item.rule)
+                    input.name = item.sequel?.title ?? item.rule.name
+                    input.bangumiID = item.sequel?.bangumiID
+                    input.episodeRange = ""
+                    ruleSheet = RuleEditorTarget(rule: nil, prefill: input)
+                    store.dismiss(item)
+                }
+                .controlSize(.small)
+            }
+            Button {
+                store.dismiss(item)
+            } label: {
+                Image(systemName: "xmark").font(.system(size: 10, weight: .bold))
+            }
+            .buttonStyle(.plain).foregroundStyle(Theme.Text.tertiary)
+            .help("不再提示")
+            .accessibilityLabel("不再提示")
+        }
+        .padding(.horizontal, 12).padding(.vertical, 9)
+        .background(Theme.accent.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
     private func rulesSection(_ rules: [DownloadRule], feeds: [RSSFeed]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -271,7 +384,18 @@ struct FeedEditorTarget: Identifiable {
 
 struct RuleEditorTarget: Identifiable {
     let rule: DownloadRule?
-    var id: String { rule?.id ?? "new" }
+    /// A new rule opened from an advice row starts from the old rule's fields.
+    var prefill: DownloadRuleInput?
+    var id: String { rule?.id ?? prefill.map { "new-\($0.bangumiID ?? 0)" } ?? "new" }
+}
+
+/// One suggestion row above the rule list.
+struct SubscriptionAdvice: Identifiable, Equatable {
+    enum Kind { case complete, sequel }
+    let id: String
+    let kind: Kind
+    let rule: DownloadRule
+    let sequel: FranchiseEntry?
 }
 
 struct FeedTypeBadge: View {
@@ -371,6 +495,7 @@ struct RuleEditorSheet: View {
     @Environment(\.dismiss) private var dismiss
     let store: SubscriptionsStore
     let rule: DownloadRule?
+    var prefill: DownloadRuleInput?
     let feeds: [RSSFeed]
     @State private var input = DownloadRuleInput()
     @State private var libraries: [Library] = []
@@ -439,7 +564,13 @@ struct RuleEditorSheet: View {
         .padding(20)
         .frame(width: 560)
         .onAppear {
-            if let rule { input = DownloadRuleInput(rule) } else if feeds.count == 1 { input.rssFeedID = feeds[0].id }
+            if let rule {
+                input = DownloadRuleInput(rule)
+            } else if let prefill {
+                input = prefill
+            } else if feeds.count == 1 {
+                input.rssFeedID = feeds[0].id
+            }
         }
         .task { libraries = (try? await session.client.libraries()) ?? [] }
     }

@@ -34,7 +34,13 @@ extension Loadable {
     func reloaded(_ work: () async throws -> Value) async -> Loadable<Value> {
         do {
             return .loaded(try await work())
+        } catch is CancellationError {
+            // A superseded `.task(id:)` cancels the fetch in flight; that is
+            // not a failure, and turning it into one blanked rows (the Home
+            // page's 繼續觀看 flickered on every realtime event).
+            return self
         } catch {
+            if Task.isCancelled { return self }
             return .failed(error.localizedDescription)
         }
     }

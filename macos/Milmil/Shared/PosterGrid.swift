@@ -28,25 +28,18 @@ struct PosterGrid<Item: Identifiable, Card: View>: View {
 struct PosterGridSkeleton: View {
     var count = 12
     var minWidth: CGFloat = 150
-    @State private var pulsing = false
 
     var body: some View {
         let column = GridItem(.adaptive(minimum: minWidth, maximum: minWidth + 40), spacing: 14, alignment: .top)
         LazyVGrid(columns: [column], alignment: .leading, spacing: 24) {
             ForEach(0..<count, id: \.self) { _ in
                 VStack(alignment: .leading, spacing: 8) {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Theme.ink(0.05))
-                        .aspectRatio(2 / 3, contentMode: .fit)
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Theme.ink(0.06))
-                        .frame(width: minWidth * 0.6, height: 10)
+                    SkeletonBox().aspectRatio(2 / 3, contentMode: .fit)
+                    SkeletonText(width: minWidth * 0.6, height: 10)
                 }
             }
         }
-        .opacity(pulsing ? 0.55 : 1)
-        .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: pulsing)
-        .onAppear { pulsing = true }
+        .shimmering()
         .accessibilityLabel("載入中")
     }
 }

@@ -9,11 +9,15 @@ struct PosterCard: View {
     var score: Double?
     var badge: String?
     var cornerBadge: String?
+    /// A copy of at least one episode is kept on this Mac.
+    var offline = false
     var subtitle: String?
     var watchStatus: WatchStatus?
     var width: CGFloat = 150
-    /// When set, lingering on the card (~0.9 s) opens a synopsis popover —
-    /// the desktop take on the web's hover PreviewModal.
+    /// When set, Space over the card Quick-Looks it (`QuickLookController`).
+    /// The web's hover PreviewModal is deliberately not mirrored: a popover
+    /// that opens on its own while the pointer crosses a grid is not a Mac
+    /// pattern, and it competed with the hover play button and the context menu.
     var preview: AnimeSummary?
     var onOpen: (() -> Void)?
     var onPlay: (() -> Void)?
@@ -22,7 +26,6 @@ struct PosterCard: View {
     @State private var hovered = false
     @State private var lifted = false
     @State private var playHovered = false
-    @State private var previewShown = false
     @State private var hoverTask: Task<Void, Never>?
 
     private var height: CGFloat { width * 1.5 }
@@ -47,29 +50,28 @@ struct PosterCard: View {
         .frame(width: width)
         .contentShape(Rectangle())
         .onTapGesture {
-            previewShown = false
             onOpen?()
         }
         .onHover { inside in
             hovered = inside
             hoverTask?.cancel()
+            // Space over this card Quick-Looks it (see QuickLookController).
+            if inside {
+                if let preview { QuickLookController.shared.hovered = preview }
+            } else if QuickLookController.shared.hovered?.id == preview?.id {
+                QuickLookController.shared.hovered = nil
+            }
             if inside {
                 hoverTask = Task {
                     try? await Task.sleep(for: .milliseconds(250))
                     guard !Task.isCancelled else { return }
                     lifted = true
-                    guard preview != nil else { return }
-                    try? await Task.sleep(for: .milliseconds(650))
-                    if !Task.isCancelled { previewShown = true }
                 }
             } else {
                 lifted = false
-                previewShown = false
             }
         }
-        .popover(isPresented: $previewShown, arrowEdge: .trailing) {
-            if let preview { AnimeHoverPreview(anime: preview) }
-        }
+        .help(preview != nil ? String(localized: "按空白鍵預覽") : "")
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
         .accessibilityAddTraits(.isButton)
@@ -103,12 +105,12 @@ struct PosterCard: View {
                     .padding(6)
             }
             if let badge {
-                PillBadge(text: badge, tint: Theme.accent.opacity(0.9))
+                GlassBadge(text: badge)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .padding(6)
             }
             if let watchStatus, watchStatus.isInCollection, watchStatus != .watching {
-                PillBadge(text: watchStatus.label, tint: watchStatus.color.opacity(0.85))
+                GlassBadge(text: watchStatus.label, tint: watchStatus.color)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .padding(6)
             }
@@ -116,6 +118,14 @@ struct PosterCard: View {
                 PillBadge(text: cornerBadge)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .padding(6)
+            }
+            if offline {
+                Image(systemName: "arrow.down.circle.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white, Theme.accent)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                    .padding(6)
+                    .accessibilityLabel("已保留喺呢部 Mac")
             }
             if lifted {
                 hoverActions
