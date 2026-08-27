@@ -50,10 +50,12 @@ import { useAuth } from '../hooks/use-auth';
 import type { PlayableEpisode } from '../lib/api/anime';
 import { animeApi, animeKeys } from '../lib/api/anime';
 import { collectionApi, collectionKeys } from '../lib/api/collection';
-import type { AnimeCharacter, AnimeSummary } from '../lib/api/discover';
+import type { AnimeCharacter, AnimeSummary, FranchiseEntry } from '../lib/api/discover';
+import { groupSeasons, type SeasonGroup } from '../lib/franchise';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { useBgStore } from '../store/bg-store';
+import { Skeleton, SkeletonParagraph, SkeletonText } from '../components/Skeleton';
 
 interface RelatedAnime {
   relation_type: string;
@@ -107,6 +109,72 @@ function buildSeasonChain(
   }
 
   return chain;
+}
+
+function seasonLinkParams(entry: FranchiseEntry) {
+  return { id: entry.bangumi_id > 0 ? String(entry.bangumi_id) : `al-${entry.anilist_id}` };
+}
+
+/**
+ * One S-number pill. A season that aired as one run is a single link; a
+ * split season renders as "S1 | 1 | 2" with one link per cour so both halves
+ * stay reachable without pretending the second cour is a new season.
+ */
+function SeasonPill({
+  group,
+  isCurrent,
+}: {
+  group: SeasonGroup;
+  isCurrent: (entry: FranchiseEntry) => boolean;
+}) {
+  const active = group.parts.some(isCurrent);
+  const single = group.parts.length === 1 ? group.parts[0] : undefined;
+  if (single) {
+    return (
+      <Link
+        to="/anime/$id"
+        params={seasonLinkParams(single)}
+        className={cn(
+          'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
+          active
+            ? 'bg-mm-accent/20 text-mm-accent'
+            : 'bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
+        )}
+        title={single.title}
+      >
+        {`S${group.season}`}
+      </Link>
+    );
+  }
+  return (
+    <div
+      className={cn(
+        'flex items-stretch rounded-full overflow-hidden shrink-0 text-xs font-medium',
+        active ? 'bg-mm-accent/20' : 'bg-ink/[0.06]'
+      )}
+    >
+      <span className={cn('pl-3 pr-2 py-1', active ? 'text-mm-accent' : 'text-ink/50')}>
+        {`S${group.season}`}
+      </span>
+      {group.parts.map((entry, idx) => (
+        <Link
+          key={entry.anilist_id}
+          to="/anime/$id"
+          params={seasonLinkParams(entry)}
+          className={cn(
+            'px-2.5 py-1 border-l transition-colors',
+            active ? 'border-mm-accent/20' : 'border-ink/10',
+            isCurrent(entry)
+              ? 'bg-mm-accent/25 text-mm-accent'
+              : 'text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
+          )}
+          title={entry.title}
+        >
+          {entry.part || idx + 1}
+        </Link>
+      ))}
+    </div>
+  );
 }
 
 function SynopsisBlock({ text }: { text: string }) {
@@ -338,10 +406,11 @@ export function AnimeDetailPage() {
     return (
       <PageTransition>
         <div className="min-h-screen">
-          <div className="h-[340px] animate-pulse bg-ink/[0.04]" />
+          <Skeleton className="h-[340px] rounded-none" />
           <div className="px-4 md:px-8 py-6 space-y-4">
-            <div className="h-6 rounded bg-ink/[0.06]" style={{ width: '30%' }} />
-            <div className="h-4 rounded bg-ink/[0.04]" style={{ width: '60%' }} />
+            <SkeletonText className="h-6 w-[30%]" />
+            <SkeletonText className="h-4 w-[60%]" />
+            <SkeletonParagraph lines={3} className="max-w-3xl pt-2" />
           </div>
         </div>
       </PageTransition>
@@ -624,42 +693,13 @@ export function AnimeDetailPage() {
                     {(() => {
                       const franchiseSeasons = franchise?.main_series;
                       if (franchiseSeasons && franchiseSeasons.length > 1) {
+                        const isCurrent = (entry: FranchiseEntry) =>
+                          entry.bangumi_id === numericId || entry.anilist_id === anime.anilist_id;
                         return (
                           <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
-                            {franchiseSeasons.map((s, idx) => {
-                              const isCurrent =
-                                s.bangumi_id === numericId || s.anilist_id === anime.anilist_id;
-                              const targetId = s.bangumi_id > 0 ? s.bangumi_id : null;
-                              return targetId ? (
-                                <Link
-                                  key={s.anilist_id}
-                                  to="/anime/$id"
-                                  params={{ id: String(targetId) }}
-                                  className={cn(
-                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
-                                    isCurrent
-                                      ? 'bg-mm-accent/20 text-mm-accent'
-                                      : 'bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
-                                  )}
-                                  title={s.title}
-                                >
-                                  {`S${idx + 1}`}
-                                </Link>
-                              ) : (
-                                <Link
-                                  key={s.anilist_id}
-                                  to="/anime/$id"
-                                  params={{ id: `al-${s.anilist_id}` }}
-                                  className={cn(
-                                    'px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0',
-                                    'bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/70'
-                                  )}
-                                  title={s.title}
-                                >
-                                  {`S${idx + 1}`}
-                                </Link>
-                              );
-                            })}
+                            {groupSeasons(franchiseSeasons).map((group) => (
+                              <SeasonPill key={group.season} group={group} isCurrent={isCurrent} />
+                            ))}
                           </div>
                         );
                       }

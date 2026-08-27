@@ -64,7 +64,11 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    const tags = q ? hotTags.filter((t) => t.name.toLowerCase().includes(q)) : hotTags;
+    const tags = q
+      ? hotTags.filter(
+          (t) => t.name.toLowerCase().includes(q) || (t.display ?? '').toLowerCase().includes(q)
+        )
+      : hotTags;
     // Group by category
     const grouped = new Map<string, HotTag[]>();
     for (const tag of tags) {
@@ -213,7 +217,7 @@ export function TagMultiSelect({ selected, onAdd, onRemove }: TagMultiSelectProp
                               : 'bg-ink/[0.04] text-ink/50 hover:text-ink/70 data-[selected=true]:bg-ink/[0.08] data-[selected=true]:text-ink/70'
                           )}
                         >
-                          {tag.name}
+                          {tag.display ?? tag.name}
                         </CommandItem>
                       );
                     })}

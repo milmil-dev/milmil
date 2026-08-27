@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core';
+
 const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 export class ApiError extends Error {
@@ -16,6 +18,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      // The UI language the page is rendering in; the API localizes titles
+      // and synopses to it ahead of the server-wide appearance.language.
+      ...(i18n.locale ? { 'X-Milmil-Locale': i18n.locale } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },

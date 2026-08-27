@@ -12,26 +12,9 @@ import { Skeleton } from '../components/Skeleton';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
+import { GENRES, SPOTLIGHT_GENRES } from '../lib/genres';
 import { cn } from '../lib/utils';
 import { useBgStore } from '../store/bg-store';
-
-const GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Mystery',
-  'Psychological',
-  'Romance',
-  'Sci-Fi',
-  'Slice of Life',
-  'Supernatural',
-  'Thriller',
-  'Horror',
-  'Sports',
-  'Music',
-];
 
 /* ── Season helpers ───────────────────────────────────────── */
 
@@ -69,7 +52,10 @@ interface SectionDef {
 }
 
 function useRandomGenre(): string {
-  return useMemo(() => GENRES[Math.floor(Math.random() * GENRES.length)] ?? 'Action', []);
+  return useMemo(
+    () => SPOTLIGHT_GENRES[Math.floor(Math.random() * SPOTLIGHT_GENRES.length)] ?? 'Action',
+    []
+  );
 }
 
 function useSections(): SectionDef[] {
@@ -278,8 +264,9 @@ function DiscoverSection({ def, index }: { def: SectionDef; index: number }) {
 
 /* ── Hot Tags ─────────────────────────────────────────────── */
 
-/* Well-known Bangumi tags — always searchable via Bangumi's SearchByTag API */
-const BANGUMI_TAGS = [
+/* Fallback when /discover/tags/popular has nothing yet — well-known Bangumi
+   tags, always searchable via Bangumi's SearchByTag API */
+const FALLBACK_TAGS = [
   '漫畫改編',
   '輕小說改編',
   '原創',
@@ -305,6 +292,19 @@ const BANGUMI_TAGS = [
 function HotTagsSection() {
   const { i18n } = useLingui();
 
+  // Real hot tags, same source as the macOS client and TagMultiSelect.
+  const { data: hotTags = [] } = useQuery({
+    queryKey: ['discover', 'hotTags'],
+    queryFn: () => discoverApi.hotTags(),
+    staleTime: 10 * 60 * 1000,
+  });
+  // `name` is the search term Bangumi understands; `display` is the server's
+  // rendering of it in the UI language (the tag vocabulary is zh-Hant).
+  const tags =
+    hotTags.length > 0
+      ? hotTags.slice(0, 20).map((t) => ({ name: t.name, label: t.display ?? t.name }))
+      : FALLBACK_TAGS.map((name) => ({ name, label: name }));
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -328,14 +328,14 @@ function HotTagsSection() {
 
       {/* Bangumi tags */}
       <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-        {BANGUMI_TAGS.map((tag) => (
+        {tags.map((tag) => (
           <Link
-            key={tag}
+            key={tag.name}
             to="/search"
-            search={{ tag } as any}
+            search={{ tag: tag.name } as any}
             className="shrink-0 px-2.5 py-1 text-[11px] font-medium rounded bg-ink/[0.03] text-ink/25 hover:bg-ink/[0.06] hover:text-ink/50 transition-colors cursor-pointer"
           >
-            {tag}
+            {tag.label}
           </Link>
         ))}
       </div>
