@@ -1,0 +1,69 @@
+# XcodeGen spec for the milmil iOS client, mirroring macos/project.yml.
+# `Milmil.xcodeproj` is generated and never committed.
+name: Milmil
+options:
+  bundleIdPrefix: dev.milmil
+  # Source language is zh-Hant, matching macos/project.yml. It is not
+  # cosmetic: APIClient sends the bundle's resolved localization as
+  # X-Milmil-Locale, so without this the server answers in English.
+  developmentLanguage: zh-Hant
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+
+# The package is NOT copied here. Both app targets reference the one under
+# macos/Packages, so a change lands on both clients at once.
+packages:
+  MilmilKit:
+    path: ../macos/Packages/MilmilKit
+
+targets:
+  Milmil:
+    type: application
+    platform: iOS
+    sources:
+      - path: Milmil
+    dependencies:
+      - package: MilmilKit
+        product: MilmilAPI
+      - package: MilmilKit
+        product: MilmilRealtime
+      - package: MilmilKit
+        product: MilmilDanmaku
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.milmil.ios
+        PRODUCT_NAME: milmil
+        MARKETING_VERSION: "0.1.20" # x-release-please-version
+        CURRENT_PROJECT_VERSION: "1"
+        # Same default as the macOS target: the app layer is MainActor unless
+        # marked otherwise; the packages stay nonisolated.
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_PREVIEWS: YES
+    info:
+      path: Milmil/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: milmil
+        CFBundleName: milmil
+        CFBundleDevelopmentRegion: zh-Hant
+        CFBundleLocalizations: [zh-Hant, zh-HK, zh-Hans, en, ja, ko]
+        # Without these XcodeGen writes 1.0 / 1 and the shipped app reports the
+        # wrong version — the bug the macOS client shipped with until 0.1.20.
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        # Scanning the pairing QR.
+        NSCameraUsageDescription: 掃描 Web 版顯示嘅配對 QR 碼，用嚟連線到你部 milmil 伺服器。
+        # milmil is self-hosted and usually plain HTTP on a home network, so
+        # ATS has to allow it — the same call the Android client makes.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        # milmil://pair?url=…&token=… — the scheme the macOS client registers.
+        CFBundleURLTypes:
+          - CFBundleURLName: dev.milmil.ios
+            CFBundleURLSchemes: [milmil]

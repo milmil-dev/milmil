@@ -130,4 +130,19 @@ class DiscoverTest {
         val rows = kotlinx.coroutines.runBlocking { client.browse() }
         assertEquals(listOf(118335, 2782), rows.map { it.bangumiId })
     }
+
+    @Test
+    fun `every request carries the client's language, like MilmilKit does`() {
+        val headers = mutableListOf<String?>()
+        val engine = io.ktor.client.engine.mock.MockEngine { request ->
+            headers += request.headers["X-Milmil-Locale"]
+            respond(
+                content = "[]",
+                headers = io.ktor.http.headersOf(io.ktor.http.HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val client = ApiClient("http://host", engine, locale = "zh-Hant-HK")
+        kotlinx.coroutines.runBlocking { runCatching { client.trending() } }
+        assertEquals(listOf<String?>("zh-Hant-HK"), headers.toList())
+    }
 }
