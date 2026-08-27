@@ -16,10 +16,11 @@ import (
 // ─── Mock Bangumi Client ──────────────────────────────────────────────────────
 
 type mockBangumi struct {
-	searchFn   func(ctx context.Context, query string) ([]bangumi.Subject, error)
-	calendarFn func(ctx context.Context) ([]bangumi.CalendarDay, error)
-	subjectFn  func(ctx context.Context, id int) (*bangumi.Subject, error)
-	episodesFn func(ctx context.Context, id int) ([]bangumi.Episode, error)
+	searchFn      func(ctx context.Context, query string) ([]bangumi.Subject, error)
+	searchByTagFn func(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error)
+	calendarFn    func(ctx context.Context) ([]bangumi.CalendarDay, error)
+	subjectFn     func(ctx context.Context, id int) (*bangumi.Subject, error)
+	episodesFn    func(ctx context.Context, id int) ([]bangumi.Episode, error)
 }
 
 func (m *mockBangumi) SearchSubjects(ctx context.Context, query string, opts ...bangumi.SearchOption) ([]bangumi.Subject, error) {
@@ -55,6 +56,9 @@ func (m *mockBangumi) GetSubjectComments(ctx context.Context, subjectID int, lim
 }
 
 func (m *mockBangumi) SearchByTag(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error) {
+	if m.searchByTagFn != nil {
+		return m.searchByTagFn(ctx, tags, sort, page, limit)
+	}
 	return nil, 0, nil
 }
 
@@ -571,5 +575,32 @@ func TestGetTrending_EnrichesWithBangumi(t *testing.T) {
 	}
 	if results[0].BangumiID != 1 {
 		t.Errorf("want BangumiID=1, got %d", results[0].BangumiID)
+	}
+}
+
+func TestBrowseByTag_MapsAniListSortsToBangumi(t *testing.T) {
+	cases := map[string]string{
+		"":                "rank",
+		"POPULARITY_DESC": "heat",
+		"TRENDING_DESC":   "heat",
+		"SCORE_DESC":      "score",
+		"START_DATE_DESC": "rank",
+		"heat":            "heat",
+	}
+	for input, want := range cases {
+		var got string
+		bgm := &mockBangumi{
+			searchByTagFn: func(ctx context.Context, tags []string, sort string, page, limit int) ([]bangumi.Subject, int, error) {
+				got = sort
+				return nil, 0, nil
+			},
+		}
+		svc := newService(bgm, &mockAniList{}, cache.New(""))
+		if _, err := svc.BrowseByTag(context.Background(), []string{"原创"}, input, 1); err != nil {
+			t.Fatalf("BrowseByTag(sort=%q): %v", input, err)
+		}
+		if got != want {
+			t.Errorf("sort %q sent to Bangumi as %q, want %q", input, got, want)
+		}
 	}
 }

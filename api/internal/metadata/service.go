@@ -1069,7 +1069,25 @@ func filterUnseen(media []anilist.Media, seen map[int]bool) []anilist.Media {
 	return out
 }
 
+// bangumiTagSort maps the AniList MediaSort values clients send (the same
+// `sort` param `/discover/browse` takes) onto the only sorts Bangumi's search
+// accepts — match/heat/rank/score. Anything unmappable (e.g. START_DATE_DESC)
+// falls back to rank rather than a Bangumi 400.
+func bangumiTagSort(sort string) string {
+	switch sort {
+	case "POPULARITY_DESC", "TRENDING_DESC":
+		return "heat"
+	case "SCORE_DESC":
+		return "score"
+	case "match", "heat", "rank", "score":
+		return sort
+	default:
+		return "rank"
+	}
+}
+
 func (s *Service) BrowseByTag(ctx context.Context, tags []string, sort string, page int) ([]AnimeSummary, error) {
+	sort = bangumiTagSort(sort)
 	cacheKey := fmt.Sprintf("meta:tag:%v:%s:%d", tags, sort, page)
 	var cached []AnimeSummary
 	if s.getCache(ctx, cacheKey, &cached) {
