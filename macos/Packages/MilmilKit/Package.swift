@@ -9,9 +9,10 @@ let package = Package(
     defaultLocalization: "zh-Hant",
     // iOS added 2026-08-27: the three targets carry no UI imports, so the
     // mobile client shares this package rather than copying it.
-    // iOS 18 is macOS 15's peer release, and the floor is real: TokenStore
-    // uses Synchronization.Mutex, which is iOS 18+.
-    platforms: [.macOS(.v15), .iOS(.v18)],
+    // iOS 26: the mobile design is Liquid Glass, so the client needs the
+    // real glassEffect APIs rather than macOS's availability shims. Well
+    // above TokenStore's own floor (Synchronization.Mutex is iOS 18+).
+    platforms: [.macOS(.v15), .iOS("26.0")],
     products: [
         .library(name: "MilmilAPI", targets: ["MilmilAPI"]),
         .library(name: "MilmilRealtime", targets: ["MilmilRealtime"]),
