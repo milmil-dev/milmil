@@ -1,0 +1,47 @@
+---
+title: Service Management
+description: See every background service the server runs, switch one off, and run a job on demand.
+---
+
+## Overview
+
+A media server does most of its work when nobody is looking: refreshing RSS feeds, reconciling the library, delivering notifications, answering external players. **Settings › 服務 / Services** puts all of it on one page — what is running, when it last ran, how long it took, and what went wrong.
+
+## What is listed
+
+| Kind | Examples |
+|------|----------|
+| **API** | The Jellyfin-compatible layer used by Infuse, VLC, Kodi and mpv. |
+| **Worker** | The scheduler's tickers — RSS refresh, download sync, library reconcile, notification delivery, airing reminder, daily digest, AniDB mapping refresh, the watch-sync jobs, notification cleanup. |
+| **Daemon** | Downloader, transcode cache, watch sync, preference backup. |
+| **Bot** | The Telegram and Discord bots. |
+
+Each row carries its schedule, whether it is enabled, whether it is running right now, when it last ran and for how long, the error from that run if there was one, and when it is due next.
+
+## Switching a service off
+
+Most services have a switch. A disabled worker stops being scheduled; a disabled bot disconnects; the disabled Jellyfin layer answers `503` on every route and stops its LAN discovery responder, so external players no longer find the server on the network.
+
+<Callout type="warn">
+**Download sync** and **notification delivery** cannot be switched off — the server stops being coherent without them.
+</Callout>
+
+## Running a job now
+
+Any worker can be run on demand instead of waiting for its next tick, which is the fastest way to test a change: save an RSS rule, run **RSS refresh**, and watch what it matches. A job already running cannot be started twice.
+
+The page updates live — starting, finishing and toggling a service reaches every connected client over the WebSocket, so a job triggered from the Mac app shows as running in the browser.
+
+## When a job fails
+
+A failed run records its error on the service and raises a `system.service_failed` notification, rate limited so a job failing every minute does not flood the notification centre. Route that event to Telegram or Discord in **Settings › 通知** if you want to hear about it away from the server.
+
+## External players
+
+The Jellyfin section lists the devices that have signed in — the client name, the device name, when it first appeared and when it was last seen. Revoking one invalidates only that device's token; every other session keeps working, because a token now records the device it was issued to.
+
+## API
+
+<Callout type="info">
+`GET /api/v1/system/services` lists everything above, `PATCH /api/v1/system/services/{id}` enables or disables one, and `POST /api/v1/system/services/{id}/run` triggers a job. Devices live at `/api/v1/system/services/jellyfin/devices`. See the [API reference](/docs/api).
+</Callout>

@@ -1,0 +1,57 @@
+---
+title: Offline Downloads
+description: Keep episodes, subtitles and danmaku on a Mac and play them with no server in reach.
+---
+
+## Overview
+
+The macOS client can copy a series onto the Mac it runs on and play it back without the server. The copy is not a second library — it is a cache of what you are about to watch, kept inside a disk budget you set, and it disappears again once you have watched it.
+
+<Callout type="info">
+Offline downloads are a macOS client feature. The server's part is one endpoint that describes what a copy needs; the web app streams and does not keep local copies.
+</Callout>
+
+## What a copy contains
+
+Each episode is kept whole, so nothing has to be fetched at playback time:
+
+| Part | Notes |
+|------|-------|
+| **Media file** | The original file, byte for byte. No transcode, no remux. |
+| **External subtitles** | Every sidecar track the server knows about, with its language and title. Embedded tracks come along inside the file. |
+| **Danmaku** | A snapshot of the comment track as it stood when the copy was made. |
+
+## Keeping a series by hand
+
+From a series page or the **離線 / Offline** tab, choose the episodes to keep. Progress is shown per episode, downloads resume after a restart, and an episode can be pinned so the rules below never remove it.
+
+## Keeping episodes automatically
+
+Automatic keeping is **off by default** — spending gigabytes without being asked is a surprise. Turn it on in **Settings › 離線** and it will:
+
+- Keep the next **1, 2, 3 or 5** unwatched episodes of every series you follow.
+- Re-run on launch, once an hour, and whenever the server reports a new episode is ready.
+- Drop a watched copy **24 hours after you last played it**, unless it is pinned.
+- Stay under the quota — **5, 10, 20, 50 or 100 GB** — by removing the oldest watched copies first. Pinned copies are never removed.
+
+## Playback
+
+A local copy sits at the top of the playback ladder:
+
+1. **Offline copy** — played from the Mac's own disk.
+2. **Local file** — the library file over a mounted volume.
+3. **Direct stream** — byte-range requests to the server.
+4. **Remux** — MKV repackaged as MP4.
+5. **HLS transcode** — adaptive streaming.
+
+The player falls to the next rung when one is unavailable, so an offline copy that has been deleted behind the app's back simply streams instead.
+
+## Staying current
+
+Every file in the manifest carries an ETag and a size. When the server's copy of a file changes — replaced by a better release, repaired after a bad download — the local copy no longer matches and is fetched again on the next rule run.
+
+## API
+
+<Callout type="info">
+`GET /api/v1/anime/{bangumiId}/offline-manifest` returns every playable episode of a series with its file URL, size, ETag, container and codec, its subtitle tracks, and its danmaku URL — everything a client needs to make a copy in one call. See the [API reference](/docs/api).
+</Callout>

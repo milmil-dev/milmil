@@ -1,0 +1,41 @@
+---
+title: Profile Avatar
+description: Give the account a picture — uploaded or borrowed from a character — shown in the web, the Mac app and external players.
+---
+
+## Overview
+
+An account can carry a picture instead of an initial. It is set once and appears everywhere the account does: the web sidebar and account panel, the macOS client, and the Jellyfin clients that connect to the server.
+
+## Setting one
+
+Open **Settings › 帳號 / Account**:
+
+- **Upload an image** — PNG, JPEG or WebP, up to 2 MB. Drag it onto the card or pick a file.
+- **Use a character** — pick a series from your collection and choose one of its characters. The portrait is copied server-side from the metadata provider that supplied it, so nothing is hot-linked.
+
+The image is centre-cropped to a square and stored as JPEG at 512 px and 128 px under the server's data directory. Removing it puts the initial back.
+
+## Where it appears
+
+| Client | Where |
+|--------|-------|
+| **Web** | Sidebar, account menu, account settings |
+| **macOS** | Account settings and wherever the signed-in account is shown |
+| **Jellyfin clients** | The user's primary image — Infuse, the Apple TV client and anything else that shows a user picture |
+
+The avatar URL carries a version parameter, so changing the picture busts every client's cache at once.
+
+<Callout type="info">
+The avatar is served without authentication on purpose: an `<img>` tag and an external player cannot send a bearer token, user ids are UUIDs, and a profile picture is not a secret.
+</Callout>
+
+## API
+
+<Callout type="info">
+`PUT /api/v1/auth/me/avatar` takes either a multipart file or a JSON body with `source_url`; `DELETE` on the same path removes it. `GET /api/v1/users/{id}/avatar` serves the image. `/auth/me` and the login response carry `avatar_url`. See the [API reference](/docs/api).
+</Callout>
+
+<Callout type="warn">
+`source_url` is fetched by the server, so it is restricted to public addresses — a URL that resolves to loopback, a private range or a link-local address is refused, and so is a redirect to one.
+</Callout>

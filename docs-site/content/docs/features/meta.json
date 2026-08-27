@@ -1,4 +1,20 @@
 {
   "title": "Features",
-  "pages": ["library", "file-management", "streaming", "history", "player", "danmaku", "downloads", "discovery", "collection", "notifications", "settings", "bot"]
+  "pages": [
+    "library",
+    "file-management",
+    "streaming",
+    "history",
+    "player",
+    "danmaku",
+    "downloads",
+    "offline",
+    "discovery",
+    "collection",
+    "notifications",
+    "settings",
+    "services",
+    "avatars",
+    "bot"
+  ]
 }

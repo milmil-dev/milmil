@@ -1,0 +1,41 @@
+---
+title: 使用者頭像
+description: 俾個帳號一張相——自己上傳或者借角色立繪——喺 Web、Mac App 同外部播放器都會見到。
+---
+
+## 概覽
+
+帳號可以帶一張相，唔淨係一個字頭。設一次，凡係出現帳號嘅地方都會用佢：Web 側邊欄同帳號面板、macOS 客戶端，以及連住呢部伺服器嘅 Jellyfin 客戶端。
+
+## 點設
+
+打開**設定 › 帳號**：
+
+- **上傳圖片** —— PNG、JPEG 或者 WebP，最大 2 MB。拖去張卡上面，或者揀個檔案。
+- **用角色立繪** —— 喺收藏度揀一部番，再揀佢其中一個角色。立繪係伺服器端由提供 metadata 嘅來源複製過嚟，唔會外連盜圖。
+
+圖片會置中裁成正方形，以 JPEG 存做 512 px 同 128 px 兩份，擺喺伺服器嘅資料目錄下面。刪咗就會變返字頭。
+
+## 邊度會見到
+
+| 客戶端 | 位置 |
+|--------|------|
+| **Web** | 側邊欄、帳號選單、帳號設定 |
+| **macOS** | 帳號設定，同埋任何顯示登入緊嗰個帳號嘅地方 |
+| **Jellyfin 客戶端** | 使用者主圖片——Infuse、Apple TV 客戶端，同任何會顯示使用者頭像嘅 App |
+
+頭像 URL 帶版本參數，所以換完相之後所有客戶端嘅快取會一次過失效。
+
+<Callout type="info">
+頭像係特登唔做驗證嘅：`<img>` 標籤同外部播放器都送唔到 bearer token，使用者 id 係 UUID，而一張頭像都算唔上係祕密。
+</Callout>
+
+## API
+
+<Callout type="info">
+`PUT /api/v1/auth/me/avatar` 收 multipart 檔案或者帶 `source_url` 嘅 JSON body；同一條路徑嘅 `DELETE` 會刪走頭像。`GET /api/v1/users/{id}/avatar` 提供圖片。`/auth/me` 同登入回應都會帶 `avatar_url`。睇 [API 參考](/docs/api)。
+</Callout>
+
+<Callout type="warn">
+`source_url` 係伺服器去攞嘅，所以只准公網位址——解析到回送、私有網段或者連結本機位址嘅 URL 會俾人拒絕，重導去呢啲位址一樣會俾人拒絕。
+</Callout>
