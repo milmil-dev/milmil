@@ -81,7 +81,7 @@
 - **Direct streaming** — byte-range requests for compatible formats
 - **Container remuxing** — MKV to MP4 without transcoding
 - **HLS transcoding** — FFmpeg-based adaptive streaming with session caching
-- **Danmaku** — bullet comment overlay from DandanPlay
+- **Danmaku** — bullet comment overlay from 弹弹play开放弹幕网络（DandanPlay）
 - **Subtitle support** — embedded and external subtitle tracks
 - **Watch progress** — automatic position saving and resume
 - **External player support** — connect Infuse, VLC, Kodi, and mpv via Jellyfin-compatible API with LAN auto-discovery
@@ -189,7 +189,7 @@ See [docs-site/content/docs/getting-started/docker.mdx](docs-site/content/docs/g
 |---------|---------|-------|
 | **Bangumi** | Anime metadata, OAuth sync | Settings > Integrations |
 | **AniList** | Alternative metadata, OAuth sync | Settings > Integrations |
-| **DandanPlay** | File matching, danmaku comments | Environment variables or Settings |
+| **弹弹play开放弹幕网络（DandanPlay）** | File matching, danmaku comments | Environment variables or Settings |
 | **TMDB** | TV show cross-referencing | Settings > Integrations |
 
 ---
@@ -296,7 +296,7 @@ milmil is built on the shoulders of these excellent open-source projects and ser
 
 - [Bangumi](https://bangumi.tv) — Anime metadata and community
 - [AniList](https://anilist.co) — Anime tracking and metadata
-- [DandanPlay](https://www.dandanplay.com) — Danmaku comments and file matching
+- [弹弹play开放弹幕网络（DandanPlay）](https://www.dandanplay.com) — Danmaku comments and file matching
 - [Seanime](https://github.com/5rahim/seanime) — Design inspiration
 
 ---
