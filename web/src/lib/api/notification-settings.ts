@@ -87,6 +87,8 @@ export const NOTIFICATION_EVENTS = [
   { id: 'auth.login', labelKey: 'notifications.event.authLogin' },
   { id: 'anime.airing', labelKey: 'notifications.event.animeAiring' },
   { id: 'anime.daily_digest', labelKey: 'notifications.event.animeDailyDigest' },
+  { id: 'anime.episode_ready', labelKey: 'notifications.event.animeEpisodeReady' },
+  { id: 'system.service_failed', labelKey: 'notifications.event.systemServiceFailed' },
 ] as const;
 
 export const PROVIDERS = ['discord', 'telegram', 'webhook'] as const;

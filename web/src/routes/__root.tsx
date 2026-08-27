@@ -268,6 +268,9 @@ function RootLayout() {
     if (event.type === 'notification:new') {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
     }
+    if (event.type === 'service:changed') {
+      queryClient.invalidateQueries({ queryKey: ['system', 'services'] });
+    }
     if (event.type === 'system:update-available') {
       useUpdateStore.getState().setLatest({
         latest: event.data?.latest as string,

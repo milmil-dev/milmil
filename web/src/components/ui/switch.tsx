@@ -8,16 +8,19 @@ function Switch({
   onCheckedChange,
   id,
   disabled,
+  'aria-label': ariaLabel,
 }: {
   className?: string;
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
   id?: string;
   disabled?: boolean;
+  'aria-label'?: string;
 }) {
   return (
     <SwitchPrimitive.Root
       id={id}
+      aria-label={ariaLabel}
       data-slot="switch"
       checked={checked}
       onCheckedChange={onCheckedChange}

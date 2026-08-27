@@ -26,6 +26,7 @@ import {
 } from '@/lib/api/notification-settings';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
+import { SkeletonText } from '../../components/Skeleton';
 
 const INPUT_CLASS = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
 
@@ -79,6 +80,14 @@ const EVENT_LABEL_KEYS: Record<
   'anime.daily_digest': {
     label: msg`notifications.event.animeDailyDigest`,
     desc: msg`notifications.event.animeDailyDigest.desc`,
+  },
+  'anime.episode_ready': {
+    label: msg`notifications.event.animeEpisodeReady`,
+    desc: msg`notifications.event.animeEpisodeReady.desc`,
+  },
+  'system.service_failed': {
+    label: msg`notifications.event.systemServiceFailed`,
+    desc: msg`notifications.event.systemServiceFailed.desc`,
   },
 };
 
@@ -896,8 +905,8 @@ function SkeletonCards() {
       {[0, 1, 2].map((i) => (
         <div key={i} className="rounded-[10px] border border-ink/[0.06] bg-ink/[0.025] p-4 px-5">
           <div className="flex items-center justify-between">
-            <div className="h-4 w-24 rounded bg-ink/[0.06] animate-pulse" />
-            <div className="h-4 w-8 rounded-full bg-ink/[0.06] animate-pulse" />
+            <SkeletonText className="h-4 w-24" />
+            <SkeletonText className="h-4 w-8" />
           </div>
         </div>
       ))}

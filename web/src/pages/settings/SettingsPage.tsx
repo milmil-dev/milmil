@@ -8,6 +8,7 @@ import {
   Logout01Icon,
   Notification03Icon,
   PlayIcon,
+  ServerStack01Icon,
   Settings02Icon,
   UserIcon,
 } from '@hugeicons/core-free-icons';
@@ -30,6 +31,7 @@ import { GeneralPanel } from './GeneralPanel';
 import { IntegrationsPanel } from './IntegrationsPanel';
 import { NotificationSettingsPanel } from './NotificationSettingsPanel';
 import { PlayerPanel } from './PlayerPanel';
+import { ServicesPanel } from './ServicesPanel';
 import { StoragePanel } from './StoragePanel';
 
 const TABS = [
@@ -41,6 +43,7 @@ const TABS = [
   { id: 'account', labelKey: msg`settings.nav.account`, icon: UserIcon },
   { id: 'backup', labelKey: msg`settings.nav.backup`, icon: CloudIcon },
   { id: 'storage', labelKey: msg`settings.nav.storage`, icon: HardDriveIcon },
+  { id: 'services', labelKey: msg`settings.nav.services`, icon: ServerStack01Icon },
   { id: 'about', labelKey: msg`settings.nav.about`, icon: InformationCircleIcon },
 ] as const;
 
@@ -55,6 +58,7 @@ const PANELS: Record<TabId, React.FC> = {
   backup: BackupPanel,
   account: AccountPanel,
   storage: StoragePanel,
+  services: ServicesPanel,
   about: AboutPanel,
 };
 
