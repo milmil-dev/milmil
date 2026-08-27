@@ -14,6 +14,7 @@ struct PlayerOSC: View {
     /// whose own width is what we are trying to bound).
     var availableWidth: CGFloat = 0
     @State private var volumeExpanded = false
+    @AppStorage(Anime4K.presetKey) private var anime4KPreset = Anime4K.Preset.off.rawValue
 
     private var state: PlayerState { controller.state }
     private var compact: Bool { availableWidth > 0 && availableWidth < 720 }
@@ -68,6 +69,8 @@ struct PlayerOSC: View {
     private var trailing: some View {
         HStack(spacing: 0) {
             if !compact {
+                qualityMenu
+                sourceMenu
                 speedMenu
                 subtitleMenu
                 if state.audioTracks.count > 1 { audioMenu }
@@ -89,6 +92,7 @@ struct PlayerOSC: View {
                     .frame(minWidth: 360, minHeight: 480)
                     .preferredColorScheme(.dark)
             }
+            if !compact { preferencesMenu }
             if compact { overflowMenu }
             if model.embedded {
                 OSCButton(symbol: "rectangle.expand.vertical", label: String(localized: "劇院模式（T）")) { model.perform(.theater) }
@@ -106,6 +110,85 @@ struct PlayerOSC: View {
                 symbol: model.isFullscreen ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
                 label: String(localized: "全螢幕")
             ) { model.toggleFullscreen() }
+        }
+    }
+
+    /// Quality: the resolution is the button, matching the speed control's
+    /// text label, and it opens the facts about the picture. Separate from
+    /// the source control — one describes the file, the other where it is
+    /// read from, and conflating them said nothing you could act on.
+    private var qualityMenu: some View {
+        OSCPopover(
+            label: state.resolutionLabel.isEmpty ? String(localized: "畫質") : state.resolutionLabel,
+            help: String(localized: "畫質"),
+            width: 52
+        ) {
+            if !state.resolutionLabel.isEmpty {
+                OSCPopoverFact(title: state.resolutionLabel, symbol: "rectangle.on.rectangle")
+            }
+            if state.isHDR {
+                OSCPopoverFact(title: "HDR", symbol: "sun.max")
+            }
+            if !state.videoCodec.isEmpty {
+                OSCPopoverFact(title: state.videoCodec, symbol: "square.stack.3d.down.right")
+            }
+            Divider().padding(.vertical, 4)
+            OSCPopoverRow(title: String(localized: "技術資訊"), symbol: "info.circle") { model.techInfoShown.toggle() }
+        }
+    }
+
+    /// Source: which rung of the stream ladder is feeding the picture, and the
+    /// one control that can change it. The symbol tracks the current rung, so
+    /// "playing off my own disk" vs "the server is transcoding" reads without
+    /// opening anything.
+    private var sourceMenu: some View {
+        OSCPopover(symbol: state.stage.symbol, help: String(localized: "播放來源")) {
+            ForEach(controller.availableStages, id: \.self) { stage in
+                OSCPopoverRow(title: stage.localizedLabel, symbol: stage.symbol, selected: state.stage == stage) {
+                    controller.selectStage(stage)
+                }
+            }
+        }
+    }
+
+    /// The gear every player has: the habits and picture settings you change
+    /// mid-episode, plus the things that were only reachable by right-click or
+    /// keyboard (danmaku settings, tech info, shortcuts). Sleep timer and
+    /// Anime4K had no player surface at all before this.
+    private var preferencesMenu: some View {
+        OSCPopover(symbol: "gearshape", help: String(localized: "播放器偏好設定")) {
+            OSCPopoverSection(String(localized: "播放"))
+            OSCPopoverRow(title: String(localized: "自動播放下一集"), symbol: "forward.end", selected: controller.autoNextEnabled) {
+                controller.setAutoNext(!controller.autoNextEnabled)
+            }
+            OSCPopoverRow(title: String(localized: "自動跳過 OP"), symbol: "forward", selected: controller.autoSkipOpEnabled) {
+                controller.setAutoSkipOp(!controller.autoSkipOpEnabled)
+            }
+            OSCPopoverRow(title: String(localized: "自動跳過 ED"), symbol: "forward.frame", selected: controller.autoSkipEdEnabled) {
+                controller.setAutoSkipEd(!controller.autoSkipEdEnabled)
+            }
+
+            Divider().padding(.vertical, 4)
+            OSCPopoverSection(String(localized: "睡眠計時器"))
+            ForEach(SleepTimerMode.allCases, id: \.self) { mode in
+                OSCPopoverRow(title: mode.label, symbol: "moon.zzz", selected: controller.sleepTimerMode == mode) {
+                    controller.setSleepTimer(mode)
+                }
+            }
+
+            Divider().padding(.vertical, 4)
+            OSCPopoverSection(String(localized: "畫質增強"))
+            ForEach(Anime4K.Preset.allCases.filter { $0 != .custom }) { preset in
+                OSCPopoverRow(title: preset.label, symbol: "wand.and.sparkles", selected: anime4KPreset == preset.rawValue) {
+                    anime4KPreset = preset.rawValue
+                    controller.applyAnime4K()
+                }
+            }
+
+            Divider().padding(.vertical, 4)
+            OSCPopoverRow(title: String(localized: "彈幕設定…"), symbol: "slider.horizontal.3") { model.danmakuSettingsShown = true }
+            OSCPopoverRow(title: String(localized: "技術資訊"), symbol: "info.circle") { model.techInfoShown.toggle() }
+            OSCPopoverRow(title: String(localized: "快捷鍵"), symbol: "keyboard") { model.helpShown.toggle() }
         }
     }
 
@@ -277,6 +360,42 @@ struct OSCPopover<Content: View>: View {
             .frame(maxHeight: 360)
             .preferredColorScheme(.dark)
         }
+    }
+}
+
+/// A small caps-ish heading inside a popover list.
+struct OSCPopoverSection: View {
+    let title: String
+
+    init(_ title: String) { self.title = title }
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 10, weight: .bold))
+            .foregroundStyle(Theme.Text.tertiary)
+            .padding(.horizontal, 8)
+            .padding(.top, 2)
+            .padding(.bottom, 1)
+    }
+}
+
+/// A read-only line in a popover: same metrics as `OSCPopoverRow` so the list
+/// stays aligned, but it does not look or behave like a button.
+struct OSCPopoverFact: View {
+    let title: String
+    let symbol: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: symbol)
+                .font(.system(size: 11, weight: .bold))
+                .frame(width: 14)
+                .foregroundStyle(.secondary)
+            Text(title).font(.system(size: 12)).lineLimit(1)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 8).padding(.vertical, 5)
+        .accessibilityElement(children: .combine)
     }
 }
 

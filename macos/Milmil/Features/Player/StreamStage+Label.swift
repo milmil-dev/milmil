@@ -13,4 +13,16 @@ extension StreamStage {
         case .hls: String(localized: "轉碼 (HLS)")
         }
     }
+
+    /// Where the bytes come from, at a glance: local disk, mapped mount, the
+    /// network, or the server working on them.
+    var symbol: String {
+        switch self {
+        case .offlineCopy: "internaldrive"
+        case .localFile: "externaldrive"
+        case .direct: "antenna.radiowaves.left.and.right"
+        case .remux: "shippingbox"
+        case .hls: "arrow.triangle.2.circlepath"
+        }
+    }
 }

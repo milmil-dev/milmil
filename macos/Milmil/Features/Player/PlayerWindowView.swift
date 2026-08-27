@@ -159,9 +159,6 @@ struct PlayerSurface: View {
                 }
             }
             Spacer()
-            if state.isHDR { PillBadge(text: "HDR", tint: Color(hex: 0xFBBF24), foreground: .black) }
-            if !state.resolutionLabel.isEmpty { PillBadge(text: state.resolutionLabel, tint: .white.opacity(0.16)) }
-            PillBadge(text: state.stage.localizedLabel, tint: state.stage == .direct ? Color(hex: 0x4ADE80).opacity(0.25) : Color(hex: 0x7DD3FC).opacity(0.25))
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)
