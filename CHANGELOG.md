@@ -52,7 +52,6 @@
 * **macos:** Show and change the user's avatar ([185c70b](https://github.com/milmil-dev/milmil/commit/185c70b6ba028213d8dfd0f55d78863271bc1bc8))
 * **macos:** Show Now Playing and download progress in the menu bar ([c072504](https://github.com/milmil-dev/milmil/commit/c072504cfb8c7ef9fb6c3fe8cd9a1006ccb2aebe))
 * **macos:** Upscale with bundled Anime4K shader presets ([a0aa50e](https://github.com/milmil-dev/milmil/commit/a0aa50e15324af048d4978feb7017f71ae9ca710))
-* Native macOS client, offline downloads, service management and user avatars ([6db511c](https://github.com/milmil-dev/milmil/commit/6db511cf9aee38f1c0dc8343ecafba19c5a6cb80))
 * Native macOS client, offline downloads, service management and user avatars ([#128](https://github.com/milmil-dev/milmil/issues/128)) ([6db511c](https://github.com/milmil-dev/milmil/commit/6db511cf9aee38f1c0dc8343ecafba19c5a6cb80))
 * **web:** Add a light theme behind an adaptive ink token ([76d1383](https://github.com/milmil-dev/milmil/commit/76d1383fba57e106e6eff5157d879f64aa3cec2b))
 * **web:** Add the Services settings tab ([7bc7cfb](https://github.com/milmil-dev/milmil/commit/7bc7cfb80b9f7929256b06db68f687d273decdb9))
