@@ -308,6 +308,7 @@ func NewRouter(deps Deps) *echo.Echo {
 	animeGroup := v1.Group("/anime", authMiddleware(h.queries), auditMiddleware(h.queries))
 	animeGroup.GET("/:bangumiId/playable-episodes", h.handlePlayableEpisodes)
 	animeGroup.GET("/:bangumiId/missing", h.handleAnimeMissing)
+	animeGroup.GET("/:bangumiId/offline-manifest", h.handleOfflineManifest)
 	animeGroup.PATCH("/:bangumiId/score", h.handleUpdateScore)
 	animeGroup.PATCH("/:bangumiId/sync-flags", h.handleUpdateAnimeSyncFlags)
 	animeGroup.GET("/:bangumiId/duplicates", h.handleAnimeDuplicates)

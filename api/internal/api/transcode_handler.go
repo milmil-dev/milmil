@@ -169,7 +169,7 @@ func (h *handler) handleHLSMaster(c *echo.Context) error {
 	}
 
 	m3u8Path := filepath.Join(session.OutputDir, "master.m3u8")
-	return c.File(m3u8Path)
+	return serveLocalFile(c, m3u8Path, "application/vnd.apple.mpegurl")
 }
 
 func (h *handler) handleHLSSegment(c *echo.Context) error {
@@ -186,5 +186,5 @@ func (h *handler) handleHLSSegment(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "segment not found")
 	}
 
-	return c.File(segmentPath)
+	return serveLocalFile(c, segmentPath, "")
 }

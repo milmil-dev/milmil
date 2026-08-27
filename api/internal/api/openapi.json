@@ -8140,6 +8140,45 @@
           }
         }
       }
+    },
+    "/api/v1/anime/{bangumiId}/offline-manifest": {
+      "get": {
+        "summary": "Files, subtitles and danmaku URLs to keep a series offline",
+        "operationId": "getOfflineManifest",
+        "tags": [
+          "Anime"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bangumiId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manifest",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineManifest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Series not in the library"
+          }
+        }
+      }
     }
   },
   "components": {
