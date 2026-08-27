@@ -56,6 +56,13 @@ public class HomeViewModel(private val client: ApiClient) : ViewModel() {
 /**
  * The calendar carries every weekday; the shelf wants one. Matching on the
  * English name keeps this independent of the server's display language.
+ *
+ * The server abbreviates — `"Fri"`, not `"Friday"` — which an emulator run
+ * caught: a full-name lookup silently matched nothing and the shelf just did
+ * not appear. Comparing the first three letters accepts either spelling from
+ * either side, so neither has to know what the other picked.
  */
-internal fun List<CalendarDay>.today(todayEn: String): List<DiscoverAnime> =
-    firstOrNull { it.weekdayEn.equals(todayEn, ignoreCase = true) }?.items.orEmpty()
+internal fun List<CalendarDay>.today(todayEn: String): List<DiscoverAnime> {
+    val wanted = todayEn.take(3).lowercase()
+    return firstOrNull { it.weekdayEn.take(3).lowercase() == wanted }?.items.orEmpty()
+}

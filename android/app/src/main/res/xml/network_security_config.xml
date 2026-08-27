@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  milmil is self-hosted: the server address comes from the user, and on a home
+  network it is almost always plain HTTP (`http://192.168.1.10:8080`). Android
+  blocks cleartext by default from API 28, which makes the app unable to reach
+  a typical install at all — found by pairing against a real server on an
+  emulator, where it failed with:
+
+      CLEARTEXT communication to 10.0.2.2 not permitted by network security policy
+
+  There is no host list to allow-list ahead of time, so cleartext is permitted
+  and HTTPS is simply used whenever the user's URL asks for it. Other
+  self-hosted clients (Jellyfin's included) make the same call.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <!-- A reverse proxy with a private CA is common in this crowd. -->
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

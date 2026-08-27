@@ -94,8 +94,9 @@ private fun Home(paired: PairState.Paired, modifier: Modifier = Modifier) {
     val model: HomeViewModel = viewModel(key = paired.url) { HomeViewModel(client) }
     LaunchedEffect(paired.url) {
         // The calendar keys on the English weekday, so it stays right whatever
-        // language the server answers in.
-        model.load(LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH))
+        // language the server answers in. SHORT matches how the server spells
+        // it ("Fri"); `today()` tolerates either length regardless.
+        model.load(LocalDate.now().dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH))
     }
     val state by model.state.collectAsStateWithLifecycle()
     HomeScreen(state = state, modifier = modifier)
