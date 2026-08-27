@@ -3,6 +3,14 @@
 // on macOS. The Compose app module joins in Phase 1.
 rootProject.name = "milmil-android"
 
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -10,4 +18,5 @@ dependencyResolutionManagement {
     }
 }
 
+include(":app")
 include(":core:api")
