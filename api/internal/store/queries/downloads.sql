@@ -35,3 +35,7 @@ SELECT * FROM downloads WHERE library_id = ? ORDER BY created_at DESC;
 
 -- name: UnlinkDownloadsByRuleID :exec
 UPDATE downloads SET rule_id = NULL WHERE rule_id = ?;
+
+-- name: SumCompletedDownloadBytesSince :one
+SELECT CAST(COALESCE(SUM(completed_bytes), 0) AS INTEGER) AS bytes FROM downloads
+WHERE status = 'complete' AND library_id = ? AND updated_at >= ?;

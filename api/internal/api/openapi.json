@@ -3996,6 +3996,11 @@
                     "available": {
                       "type": "boolean",
                       "description": "false when remote source or path is not accessible"
+                    },
+                    "downloaded_this_month_bytes": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Bytes of downloads completed into this library since the first of the current UTC month"
                     }
                   }
                 }

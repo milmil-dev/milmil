@@ -363,6 +363,23 @@ func (q *Queries) ListDownloadsByRuleID(ctx context.Context, ruleID sql.NullStri
 	return items, nil
 }
 
+const sumCompletedDownloadBytesSince = `-- name: SumCompletedDownloadBytesSince :one
+SELECT CAST(COALESCE(SUM(completed_bytes), 0) AS INTEGER) AS bytes FROM downloads
+WHERE status = 'complete' AND library_id = ? AND updated_at >= ?
+`
+
+type SumCompletedDownloadBytesSinceParams struct {
+	LibraryID sql.NullString `json:"library_id"`
+	UpdatedAt string         `json:"updated_at"`
+}
+
+func (q *Queries) SumCompletedDownloadBytesSince(ctx context.Context, arg SumCompletedDownloadBytesSinceParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, sumCompletedDownloadBytesSince, arg.LibraryID, arg.UpdatedAt)
+	var bytes int64
+	err := row.Scan(&bytes)
+	return bytes, err
+}
+
 const unlinkDownloadsByRuleID = `-- name: UnlinkDownloadsByRuleID :exec
 UPDATE downloads SET rule_id = NULL WHERE rule_id = ?
 `
