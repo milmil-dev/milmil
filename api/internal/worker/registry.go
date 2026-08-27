@@ -152,6 +152,9 @@ func (r *JobRegistry) Run(ctx context.Context, name string) error {
 	}
 	job.running = true
 	fn := job.fn
+	// The registered name, not the caller's — Run is reachable from an API
+	// path parameter, and this one ends up in a log line.
+	jobName := job.name
 	started := r.now()
 	state := job.state()
 	announce := r.shouldAnnounce(job, started)
@@ -160,7 +163,7 @@ func (r *JobRegistry) Run(ctx context.Context, name string) error {
 		r.changed(state)
 	}
 
-	err := r.invoke(ctx, name, fn)
+	err := r.invoke(ctx, jobName, fn)
 
 	finished := r.now()
 	ms := finished.Sub(started).Milliseconds()

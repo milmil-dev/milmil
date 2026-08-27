@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -74,12 +75,35 @@ func (j *thumbnailJobs) run(parent context.Context, key string, generate func(ct
 // against the process working directory and 404s on the absolute DataDir
 // every deployment uses; http.ServeFile takes the path as-is and still
 // handles Range and conditional requests.
-func serveLocalFile(c *echo.Context, path, contentType string) error {
+//
+// The name is joined onto root here rather than by the caller, and the
+// result is checked to be inside it, so a name that came off the wire
+// cannot address a file elsewhere on disk even if a caller forgets to
+// validate it.
+func serveLocalFile(c *echo.Context, root, name, contentType string) error {
+	path, ok := resolveUnder(root, name)
+	if !ok {
+		return echo.NewHTTPError(http.StatusNotFound, "not found")
+	}
 	if contentType != "" {
 		c.Response().Header().Set(echo.HeaderContentType, contentType)
 	}
 	http.ServeFile(c.Response(), c.Request(), path)
 	return nil
+}
+
+// resolveUnder joins name onto root and returns the result only if it stays
+// within root once cleaned.
+func resolveUnder(root, name string) (string, bool) {
+	if !safePathSegment(name) {
+		return "", false
+	}
+	cleanRoot := filepath.Clean(root)
+	path := filepath.Clean(filepath.Join(cleanRoot, name))
+	if path != cleanRoot && !strings.HasPrefix(path, cleanRoot+string(filepath.Separator)) {
+		return "", false
+	}
+	return path, true
 }
 
 // resolveInputPath returns a local file path for the media file.
@@ -179,7 +203,7 @@ func (h *handler) handleThumbnailVTT(c *echo.Context) error {
 	vttPath := filepath.Join(cacheDir, "thumbnails.vtt")
 	if _, statErr := os.Stat(vttPath); statErr == nil {
 		// Already generated — serve it
-		return serveLocalFile(c, vttPath, "text/vtt; charset=utf-8")
+		return serveLocalFile(c, cacheDir, "thumbnails.vtt", "text/vtt; charset=utf-8")
 	}
 
 	lib, err := h.queries.GetLibrary(ctx, mf.LibraryID)
@@ -204,7 +228,7 @@ func (h *handler) handleThumbnailVTT(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("thumbnail generation failed: %v", job.err))
 	}
 
-	return serveLocalFile(c, vttPath, "text/vtt; charset=utf-8")
+	return serveLocalFile(c, cacheDir, "thumbnails.vtt", "text/vtt; charset=utf-8")
 }
 
 // handleThumbnailSprite serves the sprite sheet image.
@@ -220,5 +244,5 @@ func (h *handler) handleThumbnailSprite(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "sprite not generated yet — request thumbnails.vtt first")
 	}
 
-	return serveLocalFile(c, spritePath, "image/jpeg")
+	return serveLocalFile(c, cacheDir, "sprite.jpg", "image/jpeg")
 }
