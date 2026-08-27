@@ -164,6 +164,24 @@ public final class MPVPlayer: @unchecked Sendable {
         try Self.check(status)
     }
 
+    /// Runs a command and returns its result node. Blocks until the core
+    /// answers, so keep it off the main actor for anything but a one-shot.
+    public func commandNode(_ args: [String]) throws -> MPVNode {
+        let result: Result<MPVNode, MPVError>? = Self.withCStringArray(args) { argv in
+            withLiveHandle { handle -> Result<MPVNode, MPVError> in
+                var node = mpv_node()
+                let status = mpv_command_ret(handle, argv, &node)
+                guard status >= 0 else {
+                    return .failure(.status(code: status, message: Self.message(for: status)))
+                }
+                defer { mpv_free_node_contents(&node) }
+                return .success(MPVNode(node))
+            }
+        }
+        guard let result else { throw MPVError.destroyed }
+        return try result.get()
+    }
+
     /// Fire-and-forget; the reply arrives as `PlayerEvent.commandReply`.
     @discardableResult
     public func commandAsync(_ args: [String]) -> UInt64 {
