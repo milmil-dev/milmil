@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 	"time"
 
@@ -71,39 +70,28 @@ func (j *thumbnailJobs) run(parent context.Context, key string, generate func(ct
 	return job
 }
 
-// serveLocalFile streams a file from disk. Echo's c.File resolves paths
-// against the process working directory and 404s on the absolute DataDir
-// every deployment uses; http.ServeFile takes the path as-is and still
-// handles Range and conditional requests.
+// serveLocalFile streams one file out of a directory. Echo's c.File resolves
+// paths against the process working directory and 404s on the absolute
+// DataDir every deployment uses; http.ServeFileFS still handles Range and
+// conditional requests.
 //
-// The name is joined onto root here rather than by the caller, and the
-// result is checked to be inside it, so a name that came off the wire
-// cannot address a file elsewhere on disk even if a caller forgets to
-// validate it.
+// The name is opened through os.Root rather than joined by the caller, so it
+// is confined to root by the kernel — a traversal cannot escape even if a
+// caller forgets to validate the route parameter it passed in.
 func serveLocalFile(c *echo.Context, root, name, contentType string) error {
-	path, ok := resolveUnder(root, name)
-	if !ok {
+	if !safePathSegment(name) {
 		return echo.NewHTTPError(http.StatusNotFound, "not found")
 	}
+	dir, err := os.OpenRoot(root)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "not found")
+	}
+	defer func() { _ = dir.Close() }()
 	if contentType != "" {
 		c.Response().Header().Set(echo.HeaderContentType, contentType)
 	}
-	http.ServeFile(c.Response(), c.Request(), path)
+	http.ServeFileFS(c.Response(), c.Request(), dir.FS(), name)
 	return nil
-}
-
-// resolveUnder joins name onto root and returns the result only if it stays
-// within root once cleaned.
-func resolveUnder(root, name string) (string, bool) {
-	if !safePathSegment(name) {
-		return "", false
-	}
-	cleanRoot := filepath.Clean(root)
-	path := filepath.Clean(filepath.Join(cleanRoot, name))
-	if path != cleanRoot && !strings.HasPrefix(path, cleanRoot+string(filepath.Separator)) {
-		return "", false
-	}
-	return path, true
 }
 
 // resolveInputPath returns a local file path for the media file.
