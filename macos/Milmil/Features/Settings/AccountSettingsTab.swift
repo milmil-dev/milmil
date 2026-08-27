@@ -15,6 +15,9 @@ struct AccountSettingsTab: View {
     @State private var twoFactorBusy = false
     @State private var confirmDisable = false
     @State private var toast: String?
+    @State private var avatarStore: AvatarStore?
+    @State private var pickingCharacter = false
+    @State private var dropTargeted = false
 
     private var passwordValid: Bool {
         !current.isEmpty && new.count >= 8 && new == confirm && new != current
@@ -23,6 +26,7 @@ struct AccountSettingsTab: View {
     var body: some View {
         Form {
             Section {
+                avatarCard
                 LabeledContent("使用者", value: session.user.username)
                 LabeledContent("伺服器", value: session.profile.name)
             }
@@ -47,13 +51,60 @@ struct AccountSettingsTab: View {
             }
         }
         .formStyle(.grouped)
-        .task { await loadTwoFactor() }
+        .task {
+            if avatarStore == nil { avatarStore = AvatarStore(session: session) }
+            await loadTwoFactor()
+        }
+        .sheet(isPresented: $pickingCharacter) {
+            if let avatarStore { CharacterPickerSheet(session: session, store: avatarStore) }
+        }
+        .onChange(of: avatarStore?.toast) { _, message in
+            if let message {
+                toast = message
+                avatarStore?.toast = nil
+            }
+        }
         .overlay(alignment: .bottom) { ToastLabel(text: $toast) }
         .confirmationDialog("停用兩步驟驗證？", isPresented: $confirmDisable, titleVisibility: .visible) {
             Button("停用", role: .destructive) { Task { await disableTwoFactor() } }
         } message: {
             Text("之後登入只需要密碼。")
         }
+    }
+
+    /// Large avatar with the same three actions as the sidebar menu; drop an
+    /// image on it to upload.
+    private var avatarCard: some View {
+        HStack(spacing: 16) {
+            ZStack {
+                UserAvatarView(user: session.user, client: session.client, size: 72)
+                if avatarStore?.busy == true {
+                    Circle().fill(.black.opacity(0.45)).frame(width: 72, height: 72)
+                    ProgressView().controlSize(.small).tint(.white)
+                }
+            }
+            .overlay(Circle().strokeBorder(Theme.accent, lineWidth: dropTargeted ? 2 : 0))
+            .onDrop(of: [.fileURL, .image], isTargeted: $dropTargeted) { providers in
+                avatarStore?.handleDrop(providers) ?? false
+            }
+            VStack(alignment: .leading, spacing: 8) {
+                Text("頭像").font(.system(size: 13, weight: .semibold))
+                Text("拖放圖片到頭像即可更換；也可以用你追的番劇角色。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                if let avatarStore {
+                    HStack(spacing: 8) {
+                        Button("更換頭像…") { avatarStore.choose() }
+                        Button("用番劇角色…") { pickingCharacter = true }
+                        if session.user.avatarURL != nil {
+                            Button("移除頭像", role: .destructive) { Task { await avatarStore.remove() } }
+                        }
+                    }
+                    .controlSize(.small)
+                    .disabled(avatarStore.busy)
+                }
+            }
+            Spacer()
+        }
+        .padding(.vertical, 4)
     }
 
     @ViewBuilder private var twoFactorContent: some View {

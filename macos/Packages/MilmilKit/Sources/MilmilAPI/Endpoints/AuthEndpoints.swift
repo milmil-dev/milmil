@@ -28,6 +28,34 @@ public extension APIClient {
         try await get("/api/v1/auth/me")
     }
 
+    // MARK: Avatar
+
+    /// Upload an image (png / jpeg / webp, ≤ 2 MB after the client's downscale).
+    func uploadAvatar(_ data: Data, filename: String, mimeType: String) async throws -> AvatarResponse {
+        try await upload("/api/v1/auth/me/avatar", fileField: "file", data: data, filename: filename, mimeType: mimeType)
+    }
+
+    /// Have the server copy an image it can reach (a character portrait).
+    func setAvatar(sourceURL: URL) async throws -> AvatarResponse {
+        try await put("/api/v1/auth/me/avatar", body: AvatarSourceRequest(sourceURL: sourceURL.absoluteString))
+    }
+
+    func deleteAvatar() async throws {
+        try await delete("/api/v1/auth/me/avatar")
+    }
+
+    /// `avatar_url` is server-relative; `size` picks the 128 / 512 variant.
+    nonisolated func avatarURL(_ path: String?, size: Int? = nil) -> URL? {
+        guard let path, !path.isEmpty, var components = URLComponents(string: path) else { return nil }
+        if let size {
+            var items = components.queryItems ?? []
+            items.removeAll { $0.name == "size" }
+            items.append(URLQueryItem(name: "size", value: String(size)))
+            components.queryItems = items
+        }
+        return components.url(relativeTo: baseURL)?.absoluteURL
+    }
+
     /// Deletes the current token row server-side. Clear the local copy after.
     func logout() async throws {
         try await post("/api/v1/auth/logout")

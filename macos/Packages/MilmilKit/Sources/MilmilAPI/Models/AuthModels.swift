@@ -35,10 +35,49 @@ public struct AuthStatus: Decodable, Sendable, Equatable {
 public struct User: Codable, Sendable, Hashable, Identifiable {
     public let id: String
     public let username: String
+    /// Server-relative (`/api/v1/users/<id>/avatar?v=…`); nil when the user
+    /// has not set one. Resolve with `APIClient.avatarURL(_:size:)`.
+    public let avatarURL: String?
 
-    public init(id: String, username: String) {
+    enum CodingKeys: String, CodingKey {
+        case id, username
+        case avatarURL = "avatar_url"
+    }
+
+    public init(id: String, username: String, avatarURL: String? = nil) {
         self.id = id
         self.username = username
+        self.avatarURL = avatarURL
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        username = try c.decode(String.self, forKey: .username)
+        avatarURL = try c.decodeIfPresent(String.self, forKey: .avatarURL).nonEmpty
+    }
+}
+
+/// `PUT /auth/me/avatar` answer.
+public struct AvatarResponse: Decodable, Sendable, Equatable {
+    public let avatarURL: String?
+
+    enum CodingKeys: String, CodingKey {
+        case avatarURL = "avatar_url"
+    }
+}
+
+/// `PUT /auth/me/avatar` JSON form: copy an image the server can fetch
+/// (a Bangumi character portrait) instead of uploading bytes.
+public struct AvatarSourceRequest: Encodable, Sendable {
+    public let sourceURL: String
+
+    enum CodingKeys: String, CodingKey {
+        case sourceURL = "source_url"
+    }
+
+    public init(sourceURL: String) {
+        self.sourceURL = sourceURL
     }
 }
 
