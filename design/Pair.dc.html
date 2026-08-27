@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    /*
+      Material 3 dark scheme, tonal ramp derived from the brand accent
+      (#a78bfa, web/src/styles/theme.css) — M3 builds elevation out of surface
+      tone, not shadow, so a flat #0c0c0c everywhere is what made the first
+      pass read as "generic dark app" rather than Android.
+    */
+    :root {
+      --primary: #cbb8fd;
+      --on-primary: #2c1a63;
+      --primary-container: #43307c;
+      --on-primary-container: #e8ddff;
+      --secondary-container: #453d58;
+      --on-secondary-container: #e5dff4;
+
+      --surface: #070707;
+      --surface-c-low: #101010;
+      --surface-c: #151515;
+      --surface-c-high: #1d1d1d;
+      --surface-c-highest: #262626;
+
+      --on-surface: rgba(255, 255, 255, 0.93);
+      --on-surface-var: rgba(255, 255, 255, 0.62);
+      --on-surface-dim: rgba(255, 255, 255, 0.38);
+      --outline-var: rgba(255, 255, 255, 0.12);
+
+      /* M3 shape scale — the giveaway. xs 4 · sm 8 · md 12 · lg 16 · xl 28 */
+      --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 28px;
+    }
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--on-surface);
+      /* Android's system font. The macOS client uses .system in 531 places and a
+         custom face in one — native clients follow the platform, Figtree is web. */
+      font-family: 'Roboto', 'Noto Sans TC', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: #ded0ff; }
+    /* Real status bar and gesture bar render on top on device. */
+    .safe-top { height: 48px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+    /* M3 type scale */
+    .headline-s { font-size: 24px; font-weight: 700; line-height: 32px; letter-spacing: 0; }
+    .title-l { font-size: 22px; font-weight: 700; line-height: 28px; }
+    .title-m { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0.15px; }
+    .title-s { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .body-m { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: 0.25px; }
+    .body-s { font-size: 12px; font-weight: 400; line-height: 16px; letter-spacing: 0.4px; }
+    .label-l { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .label-m { font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.5px; }
+    /* Android's minimum touch target is 48dp, not 44. */
+    .tap { min-width: 48px; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+    .card { border-radius: var(--r-md); background: var(--surface-c-low); }
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--surface);">
+  <div class="safe-top"></div>
+  <div style="height: 64px; display: flex; align-items: center; padding: 0 4px;">
+    <div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></div>
+  </div>
+
+  <div style="padding: 0 24px;">
+    <div class="headline-s">掃碼連線</div>
+    <div class="body-m" style="color: var(--on-surface-var); margin-top: 8px;">喺 Web 版打開<span style="color: var(--on-surface); font-weight: 600;">設定 › 配對裝置</span>，用相機對準 QR 碼。伺服器地址同登入一次過搞掂。</div>
+  </div>
+
+  <div style="position: relative; margin: 24px 24px 0 24px; height: 320px; border-radius: var(--r-xl); background: #000; overflow: hidden;">
+    <div style="position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, rgba(203,184,253,0.14), transparent 62%);"></div>
+    <div style="position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); width: 196px; height: 196px;">
+      <div style="position: absolute; left: 0; top: 0; width: 44px; height: 44px; border-left: 3px solid var(--primary); border-top: 3px solid var(--primary); border-radius: var(--r-lg) 0 0 0;"></div>
+      <div style="position: absolute; right: 0; top: 0; width: 44px; height: 44px; border-right: 3px solid var(--primary); border-top: 3px solid var(--primary); border-radius: 0 var(--r-lg) 0 0;"></div>
+      <div style="position: absolute; left: 0; bottom: 0; width: 44px; height: 44px; border-left: 3px solid var(--primary); border-bottom: 3px solid var(--primary); border-radius: 0 0 0 var(--r-lg);"></div>
+      <div style="position: absolute; right: 0; bottom: 0; width: 44px; height: 44px; border-right: 3px solid var(--primary); border-bottom: 3px solid var(--primary); border-radius: 0 0 var(--r-lg) 0;"></div>
+      <div style="position: absolute; left: 8px; right: 8px; top: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent);"></div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 20px; text-align: center;"><span class="body-s" style="color: rgba(255,255,255,0.55);">將 QR 碼放入框內</span></div>
+  </div>
+
+  <!-- M3 filled card, 12dp -->
+  <div class="card" style="margin: 20px 24px 0 24px; min-height: 72px; display: flex; align-items: center; gap: 16px; padding: 12px 16px;">
+    <div style="width: 40px; height: 40px; border-radius: 20px; background: var(--primary-container); display: flex; align-items: center; justify-content: center;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--on-primary-container)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></div>
+    <div style="flex: 1; min-width: 0;">
+      <div class="title-m">同一 Wi-Fi 找到 1 部</div>
+      <div class="body-s" style="color: var(--on-surface-var); font-variant-numeric: tabular-nums;">192.168.1.10:8080</div>
+    </div>
+    <div style="height: 40px; padding: 0 24px; border-radius: 20px; background: var(--primary); display: flex; align-items: center;"><span class="label-l" style="color: var(--on-primary);">連線</span></div>
+  </div>
+
+  <div style="position: absolute; left: 24px; right: 24px; bottom: 32px; display: flex; justify-content: center;">
+    <div style="height: 40px; padding: 0 24px; border-radius: 20px; display: flex; align-items: center;"><span class="label-l" style="color: var(--primary);">手動輸入伺服器地址</span></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

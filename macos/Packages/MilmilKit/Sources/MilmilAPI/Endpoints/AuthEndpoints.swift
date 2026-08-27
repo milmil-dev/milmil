@@ -76,8 +76,16 @@ public extension APIClient {
 
 public enum DeviceName {
     /// "milmil for macOS — Pie" (truncated server-side to 100 chars).
+    ///
+    /// Foundation's `Host` is macOS-only, and UIKit is off limits here —
+    /// `MilmilAPI` stays free of UI frameworks so the mobile clients can share
+    /// it — so iOS reads the process host name instead.
     public static func current() -> String {
+        #if os(macOS)
         let host = Host.current().localizedName ?? ProcessInfo.processInfo.hostName
         return "milmil for macOS — \(host)"
+        #else
+        return "milmil for iOS — \(ProcessInfo.processInfo.hostName)"
+        #endif
     }
 }

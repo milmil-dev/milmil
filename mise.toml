@@ -9,6 +9,8 @@ sqlc = "1.30.0"
 xcodegen = "2.44.1"
 swiftlint = "0.63.2"
 watchexec = "2.3.2"   # `make macos-watch`
+java = "temurin-21.0.12+101.0.LTS"  # android/ — AGP needs a JDK 21 LTS
+gradle = "9.7.1"      # only to generate the wrapper; builds go through ./gradlew
 
 [tasks."macos:gen"]
 description = "Generate macos/Milmil.xcodeproj from project.yml"

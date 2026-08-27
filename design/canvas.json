@@ -1,0 +1,187 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Android · Material 3"
+    },
+    {
+      "id": "page-2",
+      "name": "iOS · SwiftUI"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "首頁 Home",
+      "page": "page-1",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Schedule.dc.html",
+      "title": "時間表",
+      "page": "page-1",
+      "x": 490,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Discover.dc.html",
+      "title": "探索",
+      "page": "page-1",
+      "x": 980,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Search.dc.html",
+      "title": "搜尋",
+      "page": "page-1",
+      "x": 1470,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Collection.dc.html",
+      "title": "收藏",
+      "page": "page-1",
+      "x": 1960,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Detail.dc.html",
+      "title": "作品詳情",
+      "page": "page-1",
+      "x": 0,
+      "y": 984,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "WatchPortrait.dc.html",
+      "title": "播放頁 直向",
+      "page": "page-1",
+      "x": 490,
+      "y": 984,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Pair.dc.html",
+      "title": "配對",
+      "page": "page-1",
+      "x": 980,
+      "y": 984,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "WatchLandscape.dc.html",
+      "title": "播放頁 橫向全螢幕",
+      "page": "page-1",
+      "x": 1470,
+      "y": 984,
+      "w": 844,
+      "h": 390
+    },
+    {
+      "file": "iOSHome.dc.html",
+      "title": "首頁 Home",
+      "page": "page-2",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "iOSSearch.dc.html",
+      "title": "搜尋",
+      "page": "page-2",
+      "x": 490,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "iOSCollection.dc.html",
+      "title": "收藏",
+      "page": "page-2",
+      "x": 980,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "iOSDetail.dc.html",
+      "title": "作品詳情",
+      "page": "page-2",
+      "x": 1470,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "iOSWatch.dc.html",
+      "title": "播放頁 直向",
+      "page": "page-2",
+      "x": 0,
+      "y": 984,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "iOSPair.dc.html",
+      "title": "配對（sheet）",
+      "page": "page-2",
+      "x": 490,
+      "y": 984,
+      "w": 390,
+      "h": 844
+    }
+  ],
+  "annotations": [
+    {
+      "id": "a-brief",
+      "page": "page-1",
+      "x": 0,
+      "y": -200,
+      "w": 760,
+      "text": "Android · Material 3\n\n第一版睇落唔似 Android，因為佢冇用 M3 嘅組件語彙。呢版改咗：導覽列 80dp 加 active indicator 藥丸、加返 extended FAB、shape scale 換成 4/8/12/16/28dp、surface 用 M3 tonal 層級（#070707 → #101010 → #151515 → #1d1d1d → #262626）、filter chip 選中出打勾、觸控目標 48dp。\n\n字型改咗 Roboto——macOS 客戶端用 .font(.system…) 有 531 處、自訂字型只有 1 處，即係原生客戶端跟平台系統字，Figtree 係 Web 專用。色系由品牌紫 #a78bfa 推導成 M3 dark scheme。"
+    },
+    {
+      "id": "a-tell",
+      "page": "page-1",
+      "x": 800,
+      "y": -200,
+      "w": 540,
+      "text": "認得出係 Android 嘅位：\n\n· 導覽列選中項有藥丸底，圖示由線框變實心\n· 右下角 extended FAB 承載主要動作\n· Filter chip 8dp 圓角、選中打勾\n· 搜尋列 56dp 全圓角 docked search bar\n· Tab 用 3dp indicator\n· 卡片 12dp、FAB 16dp、大面 28dp"
+    },
+    {
+      "id": "i-brief",
+      "page": "page-2",
+      "x": 0,
+      "y": -200,
+      "w": 760,
+      "text": "iOS 26 · Liquid Glass\n\n第一版用咗舊 iOS 語言（不透明 tab bar、填色 secondarySystemFill、inset grouped tray），完全冇 Liquid Glass。\n\n更加唔應該嘅係：呢套語言 macOS 客戶端已經做咗。macos/Milmil/Design/GlassStyles.swift 入面有 glassEffect(.regular, in:)、glassSurface(in: Capsule()) 同 .glassProminent — 呢版係照住嗰份 code 抄，唔係我自己諗。"
+    },
+    {
+      "id": "i-tell",
+      "page": "page-2",
+      "x": 800,
+      "y": -200,
+      "w": 540,
+      "text": "Liquid Glass 認得出嘅位：\n\n· Tab bar 係浮起嘅玻璃膠囊，離邊 16pt，內容喺下面穿過\n· Bar button 變成圓形玻璃 chip，浮喺主視覺上\n· 播放器 HUD 用玻璃膠囊 — 同 macOS 版 glassSurface(in: Capsule()) 一樣，唔再係漸層黑幕\n· Segmented control：玻璃軌 + 玻璃滑塊\n· 清單改用玻璃卡分組，唔再需要不透明 tray\n· 圓角同心放大：膠囊 25pt、卡 20pt、sheet 34pt\n\n重要修正：主要按鈕由紫色改成 ink（白）填色。GlassStyles.swift 明寫 .glassProminent 用 ink，「never the accent — Vesica Violet is for state and emphasis, not for button backgrounds」。上一版嗰個紫色「繼續看」直接違反咗產品規則。"
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-2"
+  }
+}

@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    /*
+      Material 3 dark scheme, tonal ramp derived from the brand accent
+      (#a78bfa, web/src/styles/theme.css) — M3 builds elevation out of surface
+      tone, not shadow, so a flat #0c0c0c everywhere is what made the first
+      pass read as "generic dark app" rather than Android.
+    */
+    :root {
+      --primary: #cbb8fd;
+      --on-primary: #2c1a63;
+      --primary-container: #43307c;
+      --on-primary-container: #e8ddff;
+      --secondary-container: #453d58;
+      --on-secondary-container: #e5dff4;
+
+      --surface: #070707;
+      --surface-c-low: #101010;
+      --surface-c: #151515;
+      --surface-c-high: #1d1d1d;
+      --surface-c-highest: #262626;
+
+      --on-surface: rgba(255, 255, 255, 0.93);
+      --on-surface-var: rgba(255, 255, 255, 0.62);
+      --on-surface-dim: rgba(255, 255, 255, 0.38);
+      --outline-var: rgba(255, 255, 255, 0.12);
+
+      /* M3 shape scale — the giveaway. xs 4 · sm 8 · md 12 · lg 16 · xl 28 */
+      --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 28px;
+    }
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--on-surface);
+      /* Android's system font. The macOS client uses .system in 531 places and a
+         custom face in one — native clients follow the platform, Figtree is web. */
+      font-family: 'Roboto', 'Noto Sans TC', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: #ded0ff; }
+    /* Real status bar and gesture bar render on top on device. */
+    .safe-top { height: 48px; }
+    .shelf { display: flex; gap: 12px; overflow: hidden; }
+    /* M3 type scale */
+    .headline-s { font-size: 24px; font-weight: 700; line-height: 32px; letter-spacing: 0; }
+    .title-l { font-size: 22px; font-weight: 700; line-height: 28px; }
+    .title-m { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0.15px; }
+    .title-s { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .body-m { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: 0.25px; }
+    .body-s { font-size: 12px; font-weight: 400; line-height: 16px; letter-spacing: 0.4px; }
+    .label-l { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.1px; }
+    .label-m { font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.5px; }
+    /* Android's minimum touch target is 48dp, not 44. */
+    .tap { min-width: 48px; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+    .card { border-radius: var(--r-md); background: var(--surface-c-low); }
+  </style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--surface);">
+  <div class="safe-top"></div>
+  <div style="height: 64px; display: flex; align-items: center; padding: 0 4px 0 16px;">
+    <span class="title-l" style="flex: 1;">時間表</span>
+    <div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+  </div>
+  <div style="display: flex; gap: 8px; padding: 4px 16px 12px 16px;">
+<div style="flex: 1; height: 64px; border-radius: var(--r-lg); background: var(--secondary-container); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;"><span class="label-m" style="color: var(--on-secondary-container); opacity: 0.8;">四</span><span class="title-m" style="color: var(--on-secondary-container);">27</span></div>
+<div style="flex: 1; height: 64px; border-radius: var(--r-lg); border: 1px solid var(--outline-var); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;"><span class="label-m" style="color: var(--on-surface-dim);">五</span><span class="title-m" style="color: var(--on-surface-var);">28</span></div>
+<div style="flex: 1; height: 64px; border-radius: var(--r-lg); border: 1px solid var(--outline-var); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;"><span class="label-m" style="color: var(--on-surface-dim);">六</span><span class="title-m" style="color: var(--on-surface-var);">29</span></div>
+<div style="flex: 1; height: 64px; border-radius: var(--r-lg); border: 1px solid var(--outline-var); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;"><span class="label-m" style="color: var(--on-surface-dim);">日</span><span class="title-m" style="color: var(--on-surface-var);">30</span></div>
+<div style="flex: 1; height: 64px; border-radius: var(--r-lg); border: 1px solid var(--outline-var); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;"><span class="label-m" style="color: var(--on-surface-dim);">一</span><span class="title-m" style="color: var(--on-surface-var);">31</span></div>
+</div>
+<div style="min-height: 72px; display: flex; gap: 16px; align-items: center; padding: 8px 16px;"><span class="label-l" style="width: 44px; color: var(--primary); font-variant-numeric: tabular-nums;">23:00</span><img src="poster0.jpg" alt="" style="width: 56px; height: 80px; border-radius: var(--r-sm); object-fit: cover;"><div style="flex: 1; min-width: 0;"><div class="title-m">MEBIUS DUST</div><div class="body-s" style="color: var(--on-surface-var); margin-top: 2px;">第 9 集 · 已在媒體庫</div></div><div class="tap"><div style="width: 40px; height: 40px; border-radius: 20px; background: var(--primary-container); display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--on-primary-container)"><path d="M7 4.5v15l12-7.5Z"/></svg></div></div></div>
+<div style="min-height: 72px; display: flex; gap: 16px; align-items: center; padding: 8px 16px;"><span class="label-l" style="width: 44px; color: var(--on-surface-dim); font-variant-numeric: tabular-nums;">23:30</span><img src="poster1.jpg" alt="" style="width: 56px; height: 80px; border-radius: var(--r-sm); object-fit: cover;"><div style="flex: 1; min-width: 0;"><div class="title-m">花之天使</div><div class="body-s" style="color: var(--on-surface-var); margin-top: 2px;">第 27 集</div></div><div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div></div>
+<div style="min-height: 72px; display: flex; gap: 16px; align-items: center; padding: 8px 16px;"><span class="label-l" style="width: 44px; color: var(--on-surface-dim); font-variant-numeric: tabular-nums;">24:00</span><img src="poster2.jpg" alt="" style="width: 56px; height: 80px; border-radius: var(--r-sm); object-fit: cover;"><div style="flex: 1; min-width: 0;"><div class="title-m">太古神尊</div><div class="body-s" style="color: var(--on-surface-var); margin-top: 2px;">第 13 集</div></div><div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div></div>
+<div style="min-height: 72px; display: flex; gap: 16px; align-items: center; padding: 8px 16px;"><span class="label-l" style="width: 44px; color: var(--on-surface-dim); font-variant-numeric: tabular-nums;">24:30</span><img src="poster3.jpg" alt="" style="width: 56px; height: 80px; border-radius: var(--r-sm); object-fit: cover;"><div style="flex: 1; min-width: 0;"><div class="title-m">轉生重騎士</div><div class="body-s" style="color: var(--on-surface-var); margin-top: 2px;">第 10 集</div></div><div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div></div>
+<div style="min-height: 72px; display: flex; gap: 16px; align-items: center; padding: 8px 16px;"><span class="label-l" style="width: 44px; color: var(--on-surface-dim); font-variant-numeric: tabular-nums;">25:00</span><img src="poster4.jpg" alt="" style="width: 56px; height: 80px; border-radius: var(--r-sm); object-fit: cover;"><div style="flex: 1; min-width: 0;"><div class="title-m">薩迦的邪惡</div><div class="body-s" style="color: var(--on-surface-var); margin-top: 2px;">第 5 集</div></div><div class="tap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div></div>
+<!-- M3 navigation bar: 80dp, active destination carries a 64x32 pill indicator
+     in secondaryContainer, its icon switches to the filled variant. -->
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 80px; background: var(--surface-c); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 12px;">
+  <div style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+    <div style="width: 64px; height: 32px; border-radius: 16px; background: transparent; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z"/></svg>
+    </div>
+    <span class="label-m" style="color: var(--on-surface-var);">首頁</span>
+  </div>
+  <div style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+    <div style="width: 64px; height: 32px; border-radius: 16px; background: var(--secondary-container); display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--on-secondary-container)" stroke="var(--on-secondary-container)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    </div>
+    <span class="label-m" style="color: var(--on-surface);">時間表</span>
+  </div>
+  <div style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+    <div style="width: 64px; height: 32px; border-radius: 16px; background: transparent; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c2.7 3.4 4.3 6 4.3 8.5a4.3 4.3 0 0 1-8.6 0c0-1 .3-2 1-3 .2 1.4.9 2.1 1.7 2.3C10.2 8 10.7 5.3 12 2.5Z"/><path d="M6.5 13.5a5.5 5.5 0 0 0 11 0"/></svg>
+    </div>
+    <span class="label-m" style="color: var(--on-surface-var);">探索</span>
+  </div>
+  <div style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+    <div style="width: 64px; height: 32px; border-radius: 16px; background: transparent; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+    </div>
+    <span class="label-m" style="color: var(--on-surface-var);">搜尋</span>
+  </div>
+  <div style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+    <div style="width: 64px; height: 32px; border-radius: 16px; background: transparent; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21Z"/></svg>
+    </div>
+    <span class="label-m" style="color: var(--on-surface-var);">收藏</span>
+  </div>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

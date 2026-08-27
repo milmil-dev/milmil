@@ -7,7 +7,11 @@ import PackageDescription
 let package = Package(
     name: "MilmilKit",
     defaultLocalization: "zh-Hant",
-    platforms: [.macOS(.v15)],
+    // iOS added 2026-08-27: the three targets carry no UI imports, so the
+    // mobile client shares this package rather than copying it.
+    // iOS 18 is macOS 15's peer release, and the floor is real: TokenStore
+    // uses Synchronization.Mutex, which is iOS 18+.
+    platforms: [.macOS(.v15), .iOS(.v18)],
     products: [
         .library(name: "MilmilAPI", targets: ["MilmilAPI"]),
         .library(name: "MilmilRealtime", targets: ["MilmilRealtime"]),

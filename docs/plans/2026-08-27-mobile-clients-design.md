@@ -23,15 +23,26 @@
 
 | 模組 | iOS 可用性 |
 |---|---|
-| `MilmilAPI`（client、models、Keychain） | ✅ 改 `Package.swift` 加 `.iOS(.v17)` 就編到 |
-| `MilmilRealtime`（WebSocket 事件） | ✅ 同上 |
-| `MilmilDanmaku`（LaneScheduler，有單元測試） | ✅ 同上，純運算 |
+| `MilmilAPI`（client、models、Keychain） | ✅ 已驗證（2026-08-27）—— 要改兩處，見下 |
+| `MilmilRealtime`（WebSocket 事件） | ✅ 已驗證，零改動 |
+| `MilmilDanmaku`（LaneScheduler，有單元測試） | ✅ 已驗證，零改動 |
 | `MilmilPlayer` | ⚠️ 引擎層可搬，`MPVRenderLayer` 用 `CAOpenGLLayer`（macOS only）要換 |
 
 MPVKit 本身已經出 `ios-arm64` slice（睇 `Libavcodec.xcframework` 嘅目錄），所以 libmpv
 喺 iOS 係行得通嘅，只係渲染層要由 `CAOpenGLLayer` 換成 Metal（`CAMetalLayer` / `MTKView`）。
 
 **估算：iOS v1 有七成核心 code 已經存在。**
+
+**已實測（2026-08-27）**：`platforms:` 加咗 `.iOS(.v18)` 之後，三個 target 全部
+`xcodebuild -destination 'generic/platform=iOS'` 通過。實際要改嘅只有兩處：
+
+1. **最低版本係 iOS 18，唔係 17。** `TokenStore` 用 `Synchronization.Mutex`，
+   而佢係 iOS 18+。iOS 18 本身就係 macOS 15 嘅同代版本，所以呢個底線係啱嘅。
+2. **`DeviceName.current()`** 用咗 `Foundation.Host`（macOS 專有），而且字串寫死
+   "milmil for macOS"。改成 `#if os(macOS)` 分支；iOS 用 `ProcessInfo.hostName`，
+   唔用 UIKit —— `MilmilAPI` 要保持無 UI framework，呢條規則就係令共用成立嘅原因。
+
+macOS 全部 gate（lint / 62 個測試 / build）改完之後照樣綠。
 
 ### 1.2 Android 係「重寫」
 
@@ -76,7 +87,7 @@ Keystore）、realtime、彈幕排程、播放器整合、成套 UI。
 |---|---|---|
 | 語言 | Swift 6（strict concurrency，同 macOS 一致） | Kotlin 2.x |
 | UI | SwiftUI | Jetpack Compose + Material 3 |
-| 最低版本 | iOS 17 | Android 8.0 (API 26) |
+| 最低版本 | iOS 18（見下）| Android 8.0 (API 26) |
 | 網路 | `MilmilAPI`（直接重用） | Ktor Client + kotlinx.serialization |
 | 憑證 | Keychain（`MilmilAPI` 已有） | EncryptedSharedPreferences（Keystore 支撐） |
 | 播放引擎 | libmpv（MPVKit iOS slice） | Media3/ExoPlayer → 之後可換 libmpv |
