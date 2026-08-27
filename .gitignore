@@ -149,3 +149,9 @@ api/server
 
 # LLVM coverage droppings from swift test / xcodebuild
 *.profraw
+
+# android/ — machine-specific SDK path
+android/local.properties
+android/.gradle/
+android/build/
+android/**/build/
