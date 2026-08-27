@@ -63,15 +63,14 @@ final class DiscoverStore {
 }
 
 extension APIClient {
-    func browse(route: BrowseRoute, sort: BrowseQuery.Sort? = nil, page: Int) async throws -> [AnimeSummary] {
+    func browse(route: BrowseRoute, page: Int) async throws -> [AnimeSummary] {
         switch route {
         case .trending: try await trending(page: page)
-        case let .genre(genre): try await browse(BrowseQuery(genre: genre, sort: sort ?? .popularity, page: page))
-        case let .tag(tag): try await browse(tag: tag, sort: sort ?? .popularity, page: page)
+        case let .genre(genre): try await browse(BrowseQuery(genre: genre, page: page))
+        case let .tag(tag): try await browse(tag: tag, page: page)
         case let .query(query):
             try await browse({
                 var q = query
-                if let sort { q.sort = sort }
                 q.page = page
                 return q
             }())
@@ -79,8 +78,9 @@ extension APIClient {
     }
 }
 
-/// Rotating billboard + genre/tag shelves + curated rails; each rail title
-/// opens the full grid. The backdrop dims as the rails scroll over the hero.
+/// Rotating billboard + genre/tag shelves + curated rails; every chip and
+/// rail "view all" lands on Search with the filters prefilled, like web's
+/// /search links. The backdrop dims as the rails scroll over the hero.
 struct DiscoverView: View {
     @Environment(ServerSession.self) private var session
     @Environment(Router.self) private var router
@@ -120,7 +120,6 @@ struct DiscoverView: View {
             if store == nil { store = DiscoverStore(client: session.client) }
             await store?.load()
         }
-        .onDisappear { backdrop.clear(owner: "discover") }
     }
 
     private func play(_ request: PlaybackRequest) {
@@ -135,12 +134,7 @@ struct DiscoverView: View {
                 items: store.heroItems,
                 onOpen: { router.open($0) },
                 onPlay: { play(PlaybackRequest(bangumiID: $0.bangumiID, title: $0.title, coverImage: $0.coverImage)) },
-                // A pushed route owns the backdrop; a covered Discover whose
-                // data arrives late must not steal it back (deep links).
-                onActiveChange: {
-                    guard router.path.isEmpty else { return }
-                    backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, dim: scrollDim, owner: "discover")
-                }
+                onActiveChange: { backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, dim: scrollDim, owner: "discover") }
             )
             .padding(.top, 40)
         } else if let message = store.rails.first?.items.errorMessage {
@@ -154,7 +148,7 @@ struct DiscoverView: View {
         VStack(alignment: .leading, spacing: 10) {
             Shelf(spacing: 8) {
                 ForEach(Genre.allCases) { genre in
-                    Button { router.push(.discoverCategory(title: genre.label, query: .genre(genre.rawValue))) } label: {
+                    Button { router.openSearch(SearchPrefill(genres: [genre.rawValue])) } label: {
                         GenreChip(genre: genre)
                     }
                     .buttonStyle(.plain)
@@ -163,8 +157,8 @@ struct DiscoverView: View {
             if let tags = store.tags.value, !tags.isEmpty {
                 Shelf(spacing: 8) {
                     ForEach(tags.prefix(18)) { tag in
-                        Button { router.push(.discoverCategory(title: tag.name, query: .tag(tag.name))) } label: {
-                            Chip(text: "#\(tag.name)")
+                        Button { router.openSearch(SearchPrefill(tags: [tag.name])) } label: {
+                            Chip(text: "#\(tag.label)")
                         }
                         .buttonStyle(.plain)
                     }
@@ -191,7 +185,7 @@ struct DiscoverView: View {
     private func railContent(_ rail: DiscoverStore.Rail, items: [AnimeSummary]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             SectionHeader(title: rail.title, moreTitle: String(localized: "查看全部")) {
-                router.push(.discoverCategory(title: rail.title, query: rail.route))
+                router.openSearch(SearchPrefill(route: rail.route))
             }
             if rail.id == "trending" {
                 Shelf(spacing: 6) {
@@ -333,102 +327,6 @@ struct FlowLayout: Layout {
             subview.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
             x += size.width + spacing
             rowHeight = max(rowHeight, size.height)
-        }
-    }
-}
-
-/// Full grid for a rail / genre / tag with sort + infinite scroll.
-struct DiscoverCategoryView: View {
-    @Environment(ServerSession.self) private var session
-    @Environment(Router.self) private var router
-    @Environment(BackdropStore.self) private var backdrop
-    let title: String
-    let route: BrowseRoute
-
-    @State private var sort: BrowseQuery.Sort
-    @State private var items: [AnimeSummary] = []
-    @State private var page = 1
-    @State private var loading = false
-    @State private var exhausted = false
-    @State private var error: String?
-    /// Bumped on every reset so a stale in-flight page can't land on top of
-    /// freshly sorted results.
-    @State private var generation = 0
-    @ObserveInjection private var inject
-
-    init(title: String, route: BrowseRoute) {
-        self.title = title
-        self.route = route
-        _sort = State(initialValue: {
-            if case let .query(query) = route { return query.sort }
-            return .popularity
-        }())
-    }
-
-    /// Trending has no server-side sort; every other route accepts one.
-    private var sortable: Bool {
-        if case .trending = route { return false }
-        return true
-    }
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                PageHeader(title: title, subtitle: items.isEmpty ? nil : String(localized: "\(items.count) 部")) {
-                    if sortable {
-                        Picker("排序", selection: $sort) {
-                            ForEach(BrowseQuery.Sort.allCases, id: \.rawValue) { option in
-                                Text(option.label).tag(option)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
-                        .fixedSize()
-                    }
-                }
-                if let error { ErrorBanner(message: error) { Task { await loadMore(reset: true) } } }
-                if items.isEmpty, loading {
-                    PosterGridSkeleton()
-                } else {
-                    PosterGrid(
-                        items: items,
-                        onReachEnd: { Task { await loadMore() } },
-                        card: { item in PosterCard(summary: item, onOpen: { router.open(item) }) }
-                    )
-                }
-                if loading, !items.isEmpty { ProgressView().frame(maxWidth: .infinity).padding() }
-            }
-            .padding(.horizontal, 40)
-            .padding(.top, 20)
-            .padding(.bottom, 40)
-        }
-        .navigationTitle(title)
-        .task { backdrop.set(nil, seed: title, dim: 0.6, owner: "category"); await loadMore(reset: true) }
-        .onChange(of: sort) { Task { await loadMore(reset: true) } }
-        .onDisappear { backdrop.clear(owner: "category") }
-    }
-
-    private func loadMore(reset: Bool = false) async {
-        if reset {
-            generation += 1
-            page = 1
-            exhausted = false
-            error = nil
-        } else {
-            guard !loading, !exhausted else { return }
-        }
-        let gen = generation
-        loading = true
-        defer { if gen == generation { loading = false } }
-        do {
-            let batch = try await session.client.browse(route: route, sort: sortable ? sort : nil, page: page)
-            guard gen == generation else { return }
-            if reset { items = batch } else { items += batch.filter { new in !items.contains { $0.id == new.id } } }
-            exhausted = batch.isEmpty
-            page += 1
-        } catch {
-            guard gen == generation else { return }
-            self.error = error.localizedDescription
         }
     }
 }

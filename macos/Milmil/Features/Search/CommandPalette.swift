@@ -39,7 +39,7 @@ struct CommandPalette: View {
                 .action(title: String(localized: "歷史"), symbol: "clock") { router.select(.history) },
             ]
         } else {
-            result.append(.action(title: String(localized: "在搜尋頁開啟「\(query)」"), symbol: "magnifyingglass") { router.select(.search) })
+            result.append(.action(title: String(localized: "在搜尋頁開啟「\(query)」"), symbol: "magnifyingglass") { router.openSearch(SearchPrefill(query: query)) })
         }
         return result
     }

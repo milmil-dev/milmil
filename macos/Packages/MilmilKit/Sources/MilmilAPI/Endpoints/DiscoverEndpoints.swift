@@ -49,6 +49,16 @@ public extension APIClient {
         try await get("/api/v1/discover/anime/\(bangumiID)/episodes", query: refresh ? [URLQueryItem(name: "refresh", value: "true")] : [])
     }
 
+    /// Detail / episode list with their raw bodies, for the series page's
+    /// disk cache.
+    func animeDetailSnapshot(bangumiID: Int) async throws -> Snapshot<AnimeDetail> {
+        try await getSnapshot("/api/v1/discover/anime/\(bangumiID)")
+    }
+
+    func discoverEpisodesSnapshot(bangumiID: Int) async throws -> Snapshot<[DiscoverEpisode]> {
+        try await getSnapshot("/api/v1/discover/anime/\(bangumiID)/episodes")
+    }
+
     func bangumiComments(bangumiID: Int) async throws -> [BangumiComment] {
         try await get("/api/v1/discover/anime/\(bangumiID)/comments")
     }

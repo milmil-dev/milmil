@@ -4,7 +4,10 @@ import SwiftUI
 @Observable
 final class SearchStore {
     var query = ""
-    var genres: Set<Genre> = []
+    /// AniList genre ids. Strings rather than `Genre` so chips arriving from
+    /// a detail page can carry genres outside the enum (Historical, Harem…),
+    /// like web's `?genre=` URL param.
+    var genres: Set<String> = []
     /// Bangumi tags (from the hot-tags row); tag browse is a server-side mode.
     var tags: [String] = []
     var year: Int?
@@ -41,13 +44,13 @@ final class SearchStore {
     var filterSignature: String {
         let parts = [
             sort.rawValue, year.map(String.init) ?? "", season?.rawValue ?? "", status?.rawValue ?? "",
-            genres.map(\.rawValue).sorted().joined(separator: ","), tags.joined(separator: ","),
+            genres.sorted().joined(separator: ","), tags.joined(separator: ","),
             String(minScore), String(adult),
         ]
         return parts.joined(separator: "|")
     }
 
-    func toggleGenre(_ genre: Genre) {
+    func toggleGenre(_ genre: String) {
         if genres.remove(genre) == nil { genres.insert(genre) }
     }
 
@@ -70,6 +73,20 @@ final class SearchStore {
         status = nil
         minScore = 0
         sort = .popularity
+        adult = false
+    }
+
+    /// Arriving from a Discover chip / rail, a detail page or the palette:
+    /// replace the whole filter state, like landing on a /search URL on web.
+    func apply(_ prefill: SearchPrefill) {
+        query = prefill.query
+        genres = prefill.genres
+        tags = prefill.tags
+        year = prefill.year
+        season = prefill.season
+        status = prefill.status
+        minScore = 0
+        sort = prefill.sort
         adult = false
     }
 
@@ -151,7 +168,7 @@ final class SearchStore {
 
     private func browseQuery(page: Int) -> BrowseQuery {
         BrowseQuery(
-            genre: genres.isEmpty ? nil : genres.map(\.rawValue).sorted().joined(separator: ","),
+            genre: genres.isEmpty ? nil : genres.sorted().joined(separator: ","),
             sort: sort,
             year: year,
             season: season?.rawValue,
@@ -166,7 +183,7 @@ final class SearchStore {
         items.filter { item in
             if !genres.isEmpty {
                 let itemGenres = Set(item.genres)
-                guard genres.allSatisfy({ itemGenres.contains($0.rawValue) || itemGenres.contains($0.label) }) else { return false }
+                guard genres.allSatisfy({ itemGenres.contains($0) || itemGenres.contains(Genre.label(for: $0)) }) else { return false }
             }
             if let year, !(item.airDate?.hasPrefix(String(year)) ?? false) { return false }
             if minScore > 0, item.score < minScore { return false }
@@ -200,15 +217,29 @@ struct SearchView: View {
         }
         .navigationTitle("搜尋")
         .task {
-            if store == nil {
-                store = SearchStore(client: session.client)
+            if store == nil { store = SearchStore(client: session.client) }
+            if let prefill = router.pendingSearch {
+                router.pendingSearch = nil
+                store?.apply(prefill)
+                // Debounced so the filter-signature onChange coalesces with
+                // it into a single fetch.
+                store?.scheduleSearch()
+            } else {
                 await store?.search()
             }
             focused = true
             backdrop.set(nil, seed: "search", dim: 0.6, owner: "search")
             await store?.loadHotTags()
         }
-        .onDisappear { backdrop.clear(owner: "search") }
+        // `/` from anywhere while Search is the current tab.
+        .onReceive(NotificationCenter.default.publisher(for: .milmilFocusSearch)) { _ in focused = true }
+        // Discover / detail chips while Search is already the current tab.
+        .onChange(of: router.pendingSearch) { _, prefill in
+            guard let prefill else { return }
+            router.pendingSearch = nil
+            store?.apply(prefill)
+            store?.scheduleSearch()
+        }
     }
 
     private func content(_ store: SearchStore) -> some View {
@@ -276,7 +307,7 @@ struct SearchView: View {
         VStack(alignment: .leading, spacing: 8) {
             FlowLayout(spacing: 8) {
                 ForEach(Genre.allCases) { genre in
-                    Button { store.toggleGenre(genre) } label: { Chip(text: genre.label, isOn: store.genres.contains(genre)) }
+                    Button { store.toggleGenre(genre.rawValue) } label: { Chip(text: genre.label, isOn: store.genres.contains(genre.rawValue)) }
                         .buttonStyle(.plain)
                 }
             }
@@ -284,7 +315,7 @@ struct SearchView: View {
                 FlowLayout(spacing: 8) {
                     ForEach(store.hotTags.prefix(14)) { tag in
                         Button { store.toggleTag(tag.name) } label: {
-                            Chip(text: tag.name, isOn: store.tags.contains(tag.name), small: true)
+                            Chip(text: tag.label, isOn: store.tags.contains(tag.name), small: true)
                                 .opacity(store.tags.contains(tag.name) ? 1 : 0.75)
                         }
                         .buttonStyle(.plain)
@@ -408,7 +439,7 @@ struct SearchView: View {
         if store.hasQuery {
             Label("Bangumi / AniList", systemImage: "flame").font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.Text.secondary)
         } else if store.hasActiveFilters {
-            let parts = store.tags + store.genres.map(\.label).sorted()
+            let parts = store.tags + store.genres.map(Genre.label(for:)).sorted()
                 + [store.year.map(String.init), store.season?.label, store.status?.label].compactMap(\.self)
             SectionHeader(title: parts.isEmpty ? String(localized: "篩選結果") : parts.joined(separator: " · "), count: "\(count)")
                 .padding(.bottom, -14)

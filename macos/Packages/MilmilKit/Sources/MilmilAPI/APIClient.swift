@@ -12,10 +12,21 @@ public actor APIClient {
     private let decoder = MilmilJSON.makeDecoder()
     private let encoder = MilmilJSON.makeEncoder()
     private var token: String?
+    /// UI language sent as `X-Milmil-Locale` so the API localizes titles and
+    /// synopses to what this client is showing, not the server-wide
+    /// `appearance.language` the web picked. Defaults to the bundle's
+    /// resolved localization (`en`, `zh-Hant`, `zh-HK`, …).
+    private let locale: String?
 
-    public init(baseURL: URL, token: String? = nil, transport: any HTTPTransport = URLSessionTransport()) {
+    public init(
+        baseURL: URL,
+        token: String? = nil,
+        locale: String? = Bundle.main.preferredLocalizations.first,
+        transport: any HTTPTransport = URLSessionTransport()
+    ) {
         self.baseURL = ServerProfile.normalize(baseURL)
         self.token = token
+        self.locale = locale
         self.transport = transport
     }
 
@@ -34,6 +45,20 @@ public actor APIClient {
     public func get<T: Decodable & Sendable>(_ path: String, query: [URLQueryItem] = []) async throws -> T {
         let request = try makeRequest(method: "GET", path: path, query: query, body: nil as Data?)
         return try decode(try await perform(request))
+    }
+
+    /// A decoded GET together with its raw body, for callers that keep a
+    /// stale-while-revalidate copy on disk and paint from it next time.
+    public func getSnapshot<T: Decodable & Sendable>(_ path: String, query: [URLQueryItem] = []) async throws -> Snapshot<T> {
+        let request = try makeRequest(method: "GET", path: path, query: query, body: nil as Data?)
+        let data = try await perform(request)
+        return Snapshot(value: try decode(data), data: data)
+    }
+
+    /// Decodes a body captured earlier by `getSnapshot` with the same lenient
+    /// decoder the live path uses.
+    public func decode<T: Decodable & Sendable>(_ type: T.Type, from data: Data) throws -> T {
+        try decode(data)
     }
 
     public func post<T: Decodable & Sendable>(_ path: String, body: some Encodable & Sendable) async throws -> T {
@@ -80,10 +105,38 @@ public actor APIClient {
         _ = try await perform(request)
     }
 
+    /// One-file `multipart/form-data` PUT (avatars). The body is built by
+    /// `multipartBody` so tests can check the framing without a transport.
+    public func upload<T: Decodable & Sendable>(
+        _ path: String, method: String = "PUT", fileField: String, data: Data, filename: String, mimeType: String
+    ) async throws -> T {
+        var request = try makeRequest(method: method, path: path, query: [], body: nil as Data?)
+        let boundary = "milmil-" + UUID().uuidString
+        request.httpBody = Self.multipartBody(fileField: fileField, data: data, filename: filename, mimeType: mimeType, boundary: boundary)
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        return try decode(try await perform(request))
+    }
+
+    nonisolated public static func multipartBody(fileField: String, data: Data, filename: String, mimeType: String, boundary: String) -> Data {
+        var body = Data()
+        body.append(Data("--\(boundary)\r\n".utf8))
+        body.append(Data("Content-Disposition: form-data; name=\"\(fileField)\"; filename=\"\(filename)\"\r\n".utf8))
+        body.append(Data("Content-Type: \(mimeType)\r\n\r\n".utf8))
+        body.append(data)
+        body.append(Data("\r\n--\(boundary)--\r\n".utf8))
+        return body
+    }
+
     // MARK: - Plumbing
 
     public struct EmptyBody: Encodable, Sendable {
         public init() {}
+    }
+
+    /// A decoded response plus the bytes it came from.
+    public struct Snapshot<T: Sendable>: Sendable {
+        public let value: T
+        public let data: Data
     }
 
     /// Status + body without the JSON/error mapping, for endpoints that
@@ -104,6 +157,7 @@ public actor APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let locale, !locale.isEmpty { request.setValue(locale, forHTTPHeaderField: "X-Milmil-Locale") }
         if let token { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
         if let body {
             request.httpBody = body

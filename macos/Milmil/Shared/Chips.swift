@@ -1,10 +1,16 @@
 import SwiftUI
 
 /// Capsule chip (genre, tag, meta). `.on` = accent-tinted.
+///
+/// `onArtwork` is for chips drawn over a banner: the ink tint alone is a wash
+/// over bright artwork, so a page-coloured scrim goes under it and the label
+/// steps up a stop. It stays theme-adaptive (dark scrim + light label in dark
+/// mode, and the reverse), unlike the fixed-white badges over posters.
 struct Chip: View {
     let text: String
     var isOn = false
     var small = false
+    var onArtwork = false
 
     var body: some View {
         Text(text)
@@ -12,8 +18,9 @@ struct Chip: View {
             .lineLimit(1)
             .padding(.horizontal, small ? 8 : 10)
             .padding(.vertical, small ? 3 : 4)
-            .background(isOn ? Theme.accent.opacity(0.22) : Theme.ink(0.1), in: Capsule())
-            .foregroundStyle(isOn ? Color(hex: 0xD6CCFF) : Theme.Text.secondary)
+            .background(isOn ? Theme.accent.opacity(0.22) : Theme.ink(onArtwork ? 0.14 : 0.1), in: Capsule())
+            .background(onArtwork ? Theme.background.opacity(0.55) : .clear, in: Capsule())
+            .foregroundStyle(isOn ? Color(hex: 0xD6CCFF) : (onArtwork ? Theme.ink(0.78) : Theme.Text.secondary))
     }
 }
 
@@ -50,6 +57,34 @@ struct PillBadge: View {
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
             .background(tint, in: Capsule())
+    }
+}
+
+/// Poster-corner badge in the macOS 26 idiom: frosted glass with a faint
+/// tint wash instead of a solid pill, so "EP 9" sits in the artwork without
+/// shouting yet stays legible on any poster (text shadow + hairline edge).
+struct GlassBadge: View {
+    let text: String
+    var tint: Color = Theme.accent
+
+    var body: some View {
+        let label = Text(text)
+            .font(.system(size: 10, weight: .bold))
+            .foregroundStyle(.white.opacity(0.94))
+            .shadow(color: .black.opacity(0.35), radius: 1.5, y: 0.5)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+        Group {
+            if #available(macOS 26.0, *) {
+                label.glassEffect(.regular.tint(tint.opacity(0.32)), in: Capsule())
+            } else {
+                label
+                    .background(.ultraThinMaterial, in: Capsule())
+                    .background(tint.opacity(0.32), in: Capsule())
+            }
+        }
+        .overlay(Capsule().strokeBorder(.white.opacity(0.16), lineWidth: 0.5))
+        .shadow(color: .black.opacity(0.18), radius: 4, y: 1)
     }
 }
 

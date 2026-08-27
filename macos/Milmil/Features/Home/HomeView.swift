@@ -25,12 +25,17 @@ struct HomeView: View {
             await store?.load()
         }
         .task(id: session.eventGeneration) {
-            // Realtime events are invalidation hints: refresh the cheap rows.
-            guard session.eventGeneration > 0 else { return }
+            // Realtime events are invalidation hints; only the ones that can
+            // move 繼續觀看 refetch it (download progress and job ticks arrive
+            // every few seconds and would just churn the row).
+            guard session.eventGeneration > 0, let type = session.lastEvent?.type, Self.continueWatchingEvents.contains(type) else { return }
             await store?.loadContinueWatching()
         }
-        .onDisappear { backdrop.clear(owner: "home") }
     }
+
+    private static let continueWatchingEvents: Set<String> = [
+        "notification:new", "sync:pulled", "scan:completed", "match:completed", "download:added",
+    ]
 
     private func content(_ store: HomeStore) -> some View {
         ScrollView {
@@ -66,12 +71,7 @@ struct HomeView: View {
                 items: store.heroItems,
                 onOpen: { router.open($0) },
                 onPlay: { play(PlaybackRequest(bangumiID: $0.bangumiID, title: $0.title, coverImage: $0.coverImage)) },
-                // A pushed route owns the backdrop; a covered Home whose data
-                // arrives late must not steal it back (deep-link launches).
-                onActiveChange: {
-                    guard router.path.isEmpty else { return }
-                    backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, dim: scrollDim, owner: "home")
-                }
+                onActiveChange: { backdrop.set($0.bannerImage ?? $0.coverImage, seed: $0.title, dim: scrollDim, owner: "home") }
             )
             .padding(.top, 40)
         case let .failed(message):
@@ -124,7 +124,6 @@ struct HomeView: View {
                             cover: item.coverImage,
                             score: item.score,
                             badge: item.nextEpisode.map { "EP \($0)" },
-                            subtitle: item.airTime.map(Formatters.airTime),
                             preview: item,
                             onOpen: { router.open(item) }
                         )
@@ -136,7 +135,10 @@ struct HomeView: View {
 
     @ViewBuilder
     private func trendingSection(_ store: HomeStore) -> some View {
-        if let items = store.trending.value, !items.isEmpty {
+        if session.offlineSince != nil {
+            Label("連唔到 server，只顯示本機可播嘅內容", systemImage: "arrow.down.circle")
+                .font(.system(size: 12)).foregroundStyle(Theme.Text.secondary)
+        } else if let items = store.trending.value, !items.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
                 SectionHeader(title: String(localized: "現在熱門"), moreTitle: String(localized: "探索")) { router.select(.discover) }
                 Shelf {
@@ -153,20 +155,21 @@ struct HomeView: View {
 struct HeroSkeleton: View {
     var body: some View {
         HStack(spacing: 32) {
-            RoundedRectangle(cornerRadius: 8).fill(Theme.ink(0.05)).frame(width: 220, height: 330)
+            SkeletonBox().frame(width: 220, height: 330)
             VStack(alignment: .leading, spacing: 14) {
-                RoundedRectangle(cornerRadius: 6).fill(Theme.ink(0.05)).frame(width: 360, height: 40)
-                RoundedRectangle(cornerRadius: 999).fill(Theme.ink(0.05)).frame(width: 280, height: 20)
-                RoundedRectangle(cornerRadius: 6).fill(Theme.ink(0.05)).frame(width: 560, height: 16)
-                RoundedRectangle(cornerRadius: 6).fill(Theme.ink(0.05)).frame(width: 500, height: 16)
+                SkeletonText(width: 360, height: 34)
+                SkeletonText(width: 280, height: 18)
+                SkeletonText(width: 560, height: 13)
+                SkeletonText(width: 500, height: 13)
                 HStack(spacing: 10) {
-                    Capsule().fill(Theme.ink(0.05)).frame(width: 110, height: 30)
-                    Capsule().fill(Theme.ink(0.05)).frame(width: 70, height: 30)
+                    SkeletonBox(cornerRadius: 15).frame(width: 110, height: 30)
+                    SkeletonBox(cornerRadius: 15).frame(width: 70, height: 30)
                 }
             }
             Spacer()
         }
         .frame(minHeight: 400)
+        .shimmering()
         .accessibilityLabel("載入中")
     }
 }

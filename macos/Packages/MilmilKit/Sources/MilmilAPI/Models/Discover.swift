@@ -195,10 +195,16 @@ public struct BangumiComment: Decodable, Sendable, Hashable, Identifiable {
 /// `GET /discover/tags/popular`.
 public struct HotTag: Decodable, Sendable, Hashable, Identifiable {
     public let id: Int
+    /// Bangumi's own (Traditional Chinese) tag — what searches are made with.
     public let name: String
+    /// `name` rendered in the app's UI language by the server; nil on older
+    /// servers, which is why every call site falls back to `name`.
+    public let display: String?
     /// theme / source / mood / …
     public let category: String
     public let count: Int
+
+    public var label: String { display ?? name }
 }
 
 public struct FranchiseEntry: Decodable, Sendable, Hashable, Identifiable {
@@ -212,11 +218,15 @@ public struct FranchiseEntry: Decodable, Sendable, Hashable, Identifiable {
     public let episodeCount: Int
     public let score: Double
     public let relationType: String?
+    /// 1-based season number on main-series entries; split cours share one. 0 on side stories.
+    public let season: Int
+    /// 1-based cour within a split season; 0 when the season aired as one run.
+    public let part: Int
 
     public var id: Int { anilistID != 0 ? anilistID : bangumiID }
 
     enum CodingKeys: String, CodingKey {
-        case title, score
+        case title, score, season, part
         case anilistID = "anilist_id"
         case bangumiID = "bangumi_id"
         case titleOriginal = "title_original"
@@ -239,6 +249,8 @@ public struct FranchiseEntry: Decodable, Sendable, Hashable, Identifiable {
         episodeCount = try c.decodeIfPresent(Int.self, forKey: .episodeCount) ?? 0
         score = try c.decodeIfPresent(Double.self, forKey: .score) ?? 0
         relationType = try c.decodeIfPresent(String.self, forKey: .relationType).nonEmpty
+        season = try c.decodeIfPresent(Int.self, forKey: .season) ?? 0
+        part = try c.decodeIfPresent(Int.self, forKey: .part) ?? 0
     }
 }
 

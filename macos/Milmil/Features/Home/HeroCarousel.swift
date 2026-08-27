@@ -63,12 +63,7 @@ struct HeroCarousel: View {
         .overlay(alignment: .bottomTrailing) { arrows }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.4), value: index)
         .onHover { hovering = $0 }
-        .onAppear {
-            restartTimer()
-            // Re-announce after being covered by a pushed route, so the page
-            // backdrop comes back as soon as the user pops home.
-            if let featured { onActiveChange(featured) }
-        }
+        .onAppear { restartTimer() }
         .onDisappear { timer?.cancel() }
         .onChange(of: items.count) { restartTimer() }
         .onChange(of: index) { if let featured { onActiveChange(featured) } }
@@ -100,9 +95,9 @@ struct HeroCarousel: View {
                 .foregroundStyle(Theme.accent)
                 Rectangle().fill(.white.opacity(0.15)).frame(width: 1, height: 14)
             }
-            ForEach(item.genres.prefix(4), id: \.self) { Chip(text: $0) }
+            ForEach(item.genres.prefix(4), id: \.self) { Chip(text: Genre.label(for: $0), onArtwork: true) }
             if let meta = metaText(item) {
-                Chip(text: meta).opacity(0.7)
+                Chip(text: meta, onArtwork: true).opacity(0.8)
             }
         }
     }
@@ -170,19 +165,17 @@ struct HeroButtonStyle: ButtonStyle {
 
     @ViewBuilder
     func makeBody(configuration: Configuration) -> some View {
-        let label = configuration.label
-            .font(.system(size: 13, weight: primary ? .semibold : .medium))
-            .foregroundStyle(primary ? .black : .white.opacity(0.85))
-            .padding(.horizontal, primary ? 18 : 14)
-            .frame(height: 30)
-        Group {
-            if primary {
-                label.background(.white, in: Capsule())
-            } else {
-                label.glassSurface(in: Capsule(), interactive: true)
-            }
-        }
-        .opacity(configuration.isPressed ? 0.8 : 1)
+        // Both variants share one geometry (same height, padding, fill
+        // shape) so Play and 詳情 sit as a matched pair; only the fill differs.
+        configuration.label
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(primary ? .black : .white.opacity(0.92))
+            .padding(.horizontal, 16)
+            .frame(height: 32)
+            .background(primary ? .white : .white.opacity(0.14), in: Capsule())
+            .overlay(Capsule().strokeBorder(.white.opacity(primary ? 0 : 0.14), lineWidth: 0.5))
+            .contentShape(Capsule())
+            .opacity(configuration.isPressed ? 0.8 : 1)
         .scaleEffect(configuration.isPressed ? 0.97 : 1)
         .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
