@@ -59,6 +59,10 @@
 	<string>© milmil contributors</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>milmil 需要連線到你區域網路內的 milmil 伺服器。</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>dev.milmil.watch</string>
+	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

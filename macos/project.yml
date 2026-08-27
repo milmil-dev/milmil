@@ -104,6 +104,8 @@ targets:
         LSApplicationCategoryType: public.app-category.entertainment
         LSMinimumSystemVersion: "15.0"
         NSHumanReadableCopyright: "© milmil contributors"
+        # Handoff: the watch page donates this activity with the web URL.
+        NSUserActivityTypes: [dev.milmil.watch]
         # milmil://anime/<id>, milmil://watch/<id>?ep=<episodeID>, milmil://<tab>
         CFBundleURLTypes:
           - CFBundleURLName: dev.milmil.macos

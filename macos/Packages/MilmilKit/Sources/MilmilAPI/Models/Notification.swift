@@ -21,12 +21,53 @@ public struct MilmilNotification: Decodable, Sendable, Hashable, Identifiable {
     public var category: Category {
         if type.hasPrefix("download") { return .download }
         if type.hasPrefix("library") || type.hasPrefix("scan") || type.hasPrefix("match") { return .library }
+        if type.hasPrefix("anime") { return .anime }
         return .system
     }
 
-    public enum Category: String, Sendable, CaseIterable {
-        case all, download, library, system
+    public enum Category: String, Sendable, CaseIterable, Identifiable {
+        public var id: String { rawValue }
+        case all, download, library, system, anime
     }
+
+    // MARK: Metadata
+
+    /// `metadata` parsed as an object; empty when absent or malformed.
+    public var payload: [String: JSONValue] {
+        guard let metadata, let data = metadata.data(using: .utf8),
+              let value = try? JSONDecoder().decode(JSONValue.self, from: data),
+              case let .object(object) = value else { return [:] }
+        return object
+    }
+
+    /// `bangumi_id` — set on airing reminders, enriched download events and
+    /// `anime.episode_ready`.
+    public var bangumiID: Int? {
+        switch payload["bangumi_id"] {
+        case let .number(number): number > 0 ? Int(number) : nil
+        case let .string(string): Int(string).flatMap { $0 > 0 ? $0 : nil }
+        default: nil
+        }
+    }
+
+    /// "5", "12.5" — `episode` (downloads) or `episode_number` (airing).
+    public var episodeLabel: String? {
+        for key in ["episode", "episode_number"] {
+            switch payload[key] {
+            case let .string(string) where !string.isEmpty:
+                return string.drop { $0 == "0" }.isEmpty ? string : String(string.drop { $0 == "0" })
+            case let .number(number) where number > 0:
+                return number.rounded() == number ? String(Int(number)) : String(number)
+            default: continue
+            }
+        }
+        return nil
+    }
+
+    public var episodeID: String? { payload["episode_id"]?.stringValue.nonEmpty }
+    public var mediaFileID: String? { payload["media_file_id"]?.stringValue.nonEmpty }
+    public var animeName: String? { payload["anime_name"]?.stringValue.nonEmpty }
+    public var coverImage: URL? { payload["cover_image"]?.stringValue.httpURL }
 
     enum CodingKeys: String, CodingKey {
         case id, type, title, message, severity, read, metadata

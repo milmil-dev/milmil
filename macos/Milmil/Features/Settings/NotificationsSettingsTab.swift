@@ -69,7 +69,7 @@ struct NotificationsSettingsTab: View {
 
     var body: some View {
         Group {
-            if let store { NotificationSettingsForm(store: store) } else { ProgressView() }
+            if let store { NotificationSettingsForm(store: store) } else { SettingsFormSkeleton() }
         }
         .task {
             if store == nil { store = NotificationSettingsStore(client: session.client) }
@@ -82,31 +82,49 @@ private struct NotificationSettingsForm: View {
     @Bindable var store: NotificationSettingsStore
 
     var body: some View {
-        VStack(spacing: 0) {
+        Group {
             if let draft = Binding($store.draft) {
                 Form {
+                    LocalNotificationSection()
                     providers(draft)
                     eventsMatrix(draft)
                     bots(draft)
+                    Section {} footer: {
+                        Text("與 web 共用；儲存後立即生效。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                    }
                 }
                 .formStyle(.grouped)
+                .safeAreaInset(edge: .bottom, spacing: 0) { saveBar }
+                .animation(.snappy(duration: 0.25), value: store.isDirty)
             } else if let message = store.loaded.errorMessage {
                 ErrorBanner(message: message) { Task { await store.load() } }.padding()
             } else {
-                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+                SettingsFormSkeleton()
             }
-            Divider()
-            HStack {
-                Text(store.isDirty ? String(localized: "有未儲存的變更") : String(localized: "與 web 共用；儲存後立即生效。"))
-                    .font(.system(size: 11)).foregroundStyle(store.isDirty ? Color(hex: 0xFBBF24) : Theme.Text.tertiary)
-                Spacer()
-                Button("還原") { store.draft = store.loaded.value }.disabled(!store.isDirty)
-                Button(store.busy.contains("save") ? String(localized: "儲存中…") : String(localized: "儲存")) { Task { await store.save() } }
-                    .glassProminentButtonStyle().disabled(!store.isDirty || store.busy.contains("save"))
-            }
-            .padding(10)
         }
-        .overlay(alignment: .bottom) { ToastLabel(text: $store.toast).padding(.bottom, 44) }
+        .overlay(alignment: .bottom) { ToastLabel(text: $store.toast).padding(.bottom, 16) }
+    }
+
+    /// Slides in only while there is something to save, so a clean form has no
+    /// dead grey buttons parked at the bottom.
+    @ViewBuilder private var saveBar: some View {
+        let saving = store.busy.contains("save")
+        if store.isDirty || saving {
+            HStack(spacing: 10) {
+                Circle().fill(Color(hex: 0xFBBF24)).frame(width: 7, height: 7)
+                Text(saving ? String(localized: "儲存中…") : String(localized: "有未儲存的變更"))
+                    .font(.system(size: 12, weight: .medium)).foregroundStyle(Theme.Text.primary)
+                Spacer()
+                Button("還原") { store.draft = store.loaded.value }
+                    .glassButtonStyle().disabled(saving)
+                Button("儲存") { Task { await store.save() } }
+                    .glassProminentButtonStyle().keyboardShortcut("s", modifiers: .command).disabled(saving)
+            }
+            .padding(.horizontal, 20).padding(.vertical, 12)
+            .background(.bar)
+            .overlay(alignment: .top) { Divider() }
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
     }
 
     @ViewBuilder private func providers(_ draft: Binding<NotificationSettings>) -> some View {
@@ -199,6 +217,8 @@ private struct NotificationSettingsForm: View {
         case "auth.login": String(localized: "登入")
         case "anime.airing": String(localized: "即將播出")
         case "anime.daily_digest": String(localized: "每日摘要")
+        case "anime.episode_ready": String(localized: "新集可播放")
+        case "system.service_failed": String(localized: "服務故障")
         default: id
         }
     }
@@ -245,5 +265,96 @@ private struct NotificationSettingsForm: View {
                 Button("測試 bot") { Task { await store.testBot(platform: "discord") } }.disabled(store.busy.contains("bot.discord") || store.isDirty)
             }
         }
+    }
+}
+
+/// 這部 Mac: what this machine does with the events — banners per category,
+/// sound, quiet hours and the local airing reminders. Stored in
+/// `UserDefaults`, never sent to the server.
+private struct LocalNotificationSection: View {
+    @State private var preferences = NotificationPreferences.shared
+
+    var body: some View {
+        Section {
+            ForEach([MilmilNotification.Category.anime, .download, .library, .system], id: \.self) { category in
+                Toggle(Self.label(category), isOn: Binding(
+                    get: { preferences.bannersEnabled(for: category) },
+                    set: { preferences.setBanners($0, for: category) }
+                ))
+            }
+            Toggle("提示音", isOn: $preferences.sound)
+        } header: {
+            Text("這部 Mac 的橫幅")
+        } footer: {
+            Text("只影響這部 Mac 的通知中心橫幅；未讀數與通知頁不受影響。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+        }
+        Section {
+            Toggle("播出前提醒", isOn: $preferences.airingReminders)
+            if preferences.airingReminders {
+                Picker("提前", selection: $preferences.airingLeadMinutes) {
+                    ForEach(NotificationPreferences.leadChoices, id: \.self) { minutes in
+                        Text("\(minutes) 分鐘").tag(minutes)
+                    }
+                }
+            }
+            Toggle("繼續睇提醒", isOn: $preferences.resumeReminders)
+            Toggle("星期日追番週報", isOn: $preferences.weeklyDigest)
+        } header: {
+            Text("播出提醒")
+        } footer: {
+            Text("依播出時間表，為「觀看中」與有自動下載規則的番劇排定本機提醒；App 沒有開啟也會送出。暫停半小時未看完會提醒一次；週報在星期日 20:00 總結本週新集數。")
+                .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+        }
+        Section {
+            Toggle("勿擾時段", isOn: $preferences.quietHoursEnabled)
+            if preferences.quietHoursEnabled {
+                DatePicker("開始", selection: minutesBinding($preferences.quietStartMinutes), displayedComponents: .hourAndMinute)
+                DatePicker("結束", selection: minutesBinding($preferences.quietEndMinutes), displayedComponents: .hourAndMinute)
+            }
+        } footer: {
+            Text("時段內不顯示橫幅，通知仍會留在通知頁。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+        }
+    }
+
+    private static func label(_ category: MilmilNotification.Category) -> String {
+        switch category {
+        case .anime: String(localized: "番劇")
+        case .download: String(localized: "下載")
+        case .library: String(localized: "媒體庫")
+        case .system, .all: String(localized: "系統")
+        }
+    }
+
+    /// Minutes-from-midnight stored value ⇄ a Date on today for the picker.
+    private func minutesBinding(_ minutes: Binding<Int>) -> Binding<Date> {
+        Binding(
+            get: { Calendar.current.date(bySettingHour: minutes.wrappedValue / 60, minute: minutes.wrappedValue % 60, second: 0, of: Date()) ?? Date() },
+            set: { date in
+                let parts = Calendar.current.dateComponents([.hour, .minute], from: date)
+                minutes.wrappedValue = (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
+            }
+        )
+    }
+}
+
+/// Grouped-form placeholder: section headings with a few rows each, so a
+/// settings tab does not flash an empty pane before its form arrives.
+struct SettingsFormSkeleton: View {
+    var sections = 3
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 26) {
+            ForEach(0..<sections, id: \.self) { _ in
+                VStack(alignment: .leading, spacing: 10) {
+                    SkeletonText(width: 88, height: 12)
+                    SkeletonParagraph(lines: 3, height: 13, spacing: 12)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .shimmering()
+        .accessibilityLabel("載入中")
     }
 }
