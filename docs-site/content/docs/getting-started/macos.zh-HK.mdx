@@ -31,13 +31,17 @@ macOS 客戶端係原生 SwiftUI 應用程式，內置以 [mpv](https://mpv.io) 
 brew install --cask milmil-dev/milmil/milmil
 ```
 
-因為未經公證，macOS 會將佢隔離（quarantine）。你可以改用唔加隔離旗標嘅方式裝：
+因為未經公證，macOS 會將佢隔離（quarantine），第一次啟動會被攔住。你要自己開一次——喺「應用程式」度撳右鍵㨂 **milmil.app**，選「**打開**」，再喺對話框度撳多次「**打開**」。macOS 15 之後個對話框可能淨係得「完成」；咁就去「**系統設定 › 私隱與安全性**」撳「**仍要打開**」。
+
+或者自己清走個隔離旗標，效果一樣但唔使經對話框：
 
 ```bash
-brew install --cask --no-quarantine milmil-dev/milmil/milmil
+xattr -d com.apple.quarantine /Applications/milmil.app
 ```
 
-或者自己開一次——喺「應用程式」度撳右鍵㨂 **milmil.app**，選「**打開**」，再喺對話框度撳多次「**打開**」。macOS 15 之後個對話框可能淨係得「完成」；咁就去「**系統設定 › 私隱與安全性**」撳「**仍要打開**」。
+<Callout type="info">
+Homebrew 個 `--no-quarantine` 選項喺 Homebrew 6 已經移除咗——如果你喺舊教學見過佢，佢而家已經冇咗。
+</Callout>
 
 之後更新照舊：
 
