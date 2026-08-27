@@ -17,6 +17,7 @@ import {
   ruleApi,
 } from '../lib/api/downloads';
 import { cn } from '../lib/utils';
+import { SkeletonText } from '../components/Skeleton';
 
 // ─── Feed type badge ──────────────────────────────────────────────────────────
 const feedTypeColors: Record<string, { bg: string; text: string }> = {
@@ -598,16 +599,10 @@ export function RSSPage() {
     return (
       <div className="space-y-1">
         {skeletonRows.map((i) => (
-          <div key={i} className="flex items-center gap-4 px-4 py-3 animate-pulse">
+          <div key={i} className="flex items-center gap-4 px-4 py-3">
             <div className="flex-1 space-y-2">
-              <div
-                className="h-3 rounded"
-                style={{ backgroundColor: 'oklch(18% 0.01 280)', width: '40%' }}
-              />
-              <div
-                className="h-2 rounded"
-                style={{ backgroundColor: 'oklch(15% 0.01 280)', width: '65%' }}
-              />
+              <SkeletonText className="w-2/5" />
+              <SkeletonText className="h-2 w-2/3" />
             </div>
           </div>
         ))}

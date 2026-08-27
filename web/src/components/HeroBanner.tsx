@@ -9,6 +9,7 @@ import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import { PreviewModal } from './PreviewModal';
+import { Skeleton } from './Skeleton';
 
 const SLIDE_DURATION = 8000;
 
@@ -240,7 +241,7 @@ function PosterCard({ src, title }: { src?: string; title: string }) {
     >
       {src && (
         <>
-          {!loaded && <div className="w-full h-full animate-pulse bg-white/[0.06]" />}
+          {!loaded && <Skeleton className="w-full h-full rounded-none bg-white/[0.06]" />}
           <img
             src={src}
             alt={title}

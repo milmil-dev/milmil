@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { PageTransition } from '../components/PageTransition';
-import { Skeleton } from '../components/Skeleton';
+import { SkeletonSection } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { type Notification, notificationApi, notificationKeys } from '../lib/api/notifications';
@@ -169,10 +169,9 @@ export function NotificationsPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 rounded-lg" />
-            ))}
+          <div className="space-y-6">
+            <SkeletonSection rows={4} />
+            <SkeletonSection rows={3} />
           </div>
         ) : notifications && notifications.length > 0 ? (
           <div className="space-y-6">

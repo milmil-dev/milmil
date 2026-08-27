@@ -25,6 +25,7 @@ import { Modal } from './Modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Switch } from './ui/switch';
+import { Skeleton } from './Skeleton';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -789,7 +790,7 @@ export function RuleEditorModal({ rule, feed, open, onClose }: RuleEditorModalPr
             {previewLoading ? (
               <div className="space-y-1.5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="h-8 rounded-lg bg-ink/[0.03] animate-pulse" />
+                  <Skeleton key={i} className="h-8 rounded-lg bg-ink/[0.03]" />
                 ))}
               </div>
             ) : previewItems.length > 0 ? (

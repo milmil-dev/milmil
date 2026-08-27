@@ -28,28 +28,9 @@ import {
   discoverKeys,
 } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
+import { GENRES } from '../lib/genres';
 import { cn } from '../lib/utils';
-
-const POPULAR_GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Romance',
-  'Sci-Fi',
-  'Slice of Life',
-  'Supernatural',
-  'Mystery',
-  'Psychological',
-  'Thriller',
-  'Horror',
-  'Mahou Shoujo',
-  'Mecha',
-  'Sports',
-  'Music',
-  'Ecchi',
-];
+import { Skeleton, SkeletonText } from '../components/Skeleton';
 
 const SORT_OPTIONS = [
   { value: 'POPULARITY_DESC', label: msg`search.sort.popularity` },
@@ -302,7 +283,7 @@ export function SearchPage() {
           animate={{ opacity: 1 }}
           className="flex flex-wrap gap-2 mb-4"
         >
-          {POPULAR_GENRES.map((g) => (
+          {GENRES.map((g) => (
             <button
               key={g}
               type="button"
@@ -558,11 +539,11 @@ export function SearchPage() {
         {isLoading && hasQuery && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="animate-pulse rounded-md overflow-hidden">
-                <div className="aspect-[6/8] bg-ink/[0.04]" />
+              <div key={i} className="rounded-md overflow-hidden">
+                <Skeleton className="aspect-[6/8] rounded-md" />
                 <div className="pt-2 space-y-1.5">
-                  <div className="h-3 rounded bg-ink/[0.06]" style={{ width: '70%' }} />
-                  <div className="h-2.5 rounded bg-ink/[0.03]" style={{ width: '40%' }} />
+                  <SkeletonText className="w-[70%]" />
+                  <SkeletonText className="h-2.5 w-[40%]" />
                 </div>
               </div>
             ))}

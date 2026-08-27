@@ -18,7 +18,6 @@ const SOURCE_LABELS: Record<string, string> = {
   mikan: 'Mikan',
   'bangumi.moe': 'Bangumi.moe',
   'acg.rip': 'ACG.RIP',
-  dandanplay: 'DanDanPlay',
 };
 
 function SourceBadge({ source }: { source: string }) {
@@ -28,7 +27,6 @@ function SourceBadge({ source }: { source: string }) {
     mikan: 'bg-orange-500/15 text-orange-400',
     'bangumi.moe': 'bg-pink-500/15 text-pink-400',
     'acg.rip': 'bg-purple-500/15 text-purple-400',
-    dandanplay: 'bg-cyan-500/15 text-cyan-400',
   };
   return (
     <span
@@ -68,7 +66,7 @@ export function TorrentSearchPage() {
 
   const downloadURL = (item: TorrentResult) => item.magnet || item.torrent_url;
 
-  const sources = ['all', 'nyaa', 'dmhy', 'mikan', 'bangumi.moe', 'acg.rip', 'dandanplay'];
+  const sources = ['all', 'nyaa', 'dmhy', 'mikan', 'bangumi.moe', 'acg.rip'];
 
   return (
     <PageTransition>

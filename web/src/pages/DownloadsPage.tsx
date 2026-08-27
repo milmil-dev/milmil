@@ -22,6 +22,7 @@ import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import { Skeleton, SkeletonText } from '../components/Skeleton';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { useWSEvent } from '../hooks/use-websocket';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
@@ -74,14 +75,12 @@ const SOURCE_LABELS: Record<string, string> = {
   nyaa: 'Nyaa',
   dmhy: 'DMHY',
   mikan: 'Mikan',
-  dandanplay: 'DanDanPlay',
 };
 
 const SOURCE_COLORS: Record<string, string> = {
   nyaa: 'bg-green-500/15 text-green-400',
   dmhy: 'bg-blue-500/15 text-blue-400',
   mikan: 'bg-orange-500/15 text-orange-400',
-  dandanplay: 'bg-cyan-500/15 text-cyan-400',
 };
 
 const MEDIA_TYPE_COLORS: Record<string, string> = {
@@ -133,34 +132,10 @@ export function formatSpeed(bytesPerSec: number): string {
   return `${formatBytes(bytesPerSec)}/s`;
 }
 
-const ALL_TORRENT_SOURCES = [
-  'all',
-  'nyaa',
-  'mikan',
-  'dmhy',
-  'dandanplay',
-  'bangumi.moe',
-  'acg.rip',
-] as const;
+const ALL_TORRENT_SOURCES = ['all', 'nyaa', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip'] as const;
 const RSS_SOURCES: ('mikan' | 'nyaa' | 'dmhy')[] = ['mikan', 'nyaa', 'dmhy'];
-const CJK_SOURCES = [
-  'all',
-  'mikan',
-  'dmhy',
-  'bangumi.moe',
-  'acg.rip',
-  'dandanplay',
-  'nyaa',
-] as const;
-const EN_SOURCES = [
-  'all',
-  'nyaa',
-  'dandanplay',
-  'mikan',
-  'dmhy',
-  'bangumi.moe',
-  'acg.rip',
-] as const;
+const CJK_SOURCES = ['all', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip', 'nyaa'] as const;
+const EN_SOURCES = ['all', 'nyaa', 'mikan', 'dmhy', 'bangumi.moe', 'acg.rip'] as const;
 const RESOLUTIONS = ['Any', '1080p', '720p', '4K'] as const;
 
 /**
@@ -199,7 +174,6 @@ function detectSourceFromUrl(url: string): string {
   if (url.includes('mikan')) return 'mikan';
   if (url.includes('nyaa')) return 'nyaa';
   if (url.includes('dmhy')) return 'dmhy';
-  if (url.includes('dandanplay')) return 'dandanplay';
   return '';
 }
 
@@ -605,14 +579,11 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                 {isSearching && query && (
                   <div className="space-y-2">
                     {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="flex gap-3 p-3 rounded-lg bg-ink/[0.03] animate-pulse"
-                      >
-                        <div className="w-12 h-16 rounded bg-ink/[0.06] shrink-0" />
+                      <div key={i} className="flex gap-3 p-3 rounded-lg bg-ink/[0.03]">
+                        <Skeleton className="w-12 h-16 shrink-0" />
                         <div className="flex-1 space-y-2 py-1">
-                          <div className="h-3 rounded bg-ink/[0.06] w-[60%]" />
-                          <div className="h-2.5 rounded bg-ink/[0.04] w-[40%]" />
+                          <SkeletonText className="w-[60%]" />
+                          <SkeletonText className="h-2.5 w-[40%]" />
                         </div>
                       </div>
                     ))}
@@ -956,9 +927,9 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
       {isLoading && (
         <div className="space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="p-3 rounded-lg bg-ink/[0.03] animate-pulse">
-              <div className="h-3 rounded bg-ink/[0.06] w-[70%] mb-2" />
-              <div className="h-2.5 rounded bg-ink/[0.04] w-[45%]" />
+            <div key={i} className="p-3 rounded-lg bg-ink/[0.03] space-y-2">
+              <SkeletonText className="w-[70%]" />
+              <SkeletonText className="h-2.5 w-[45%]" />
             </div>
           ))}
         </div>

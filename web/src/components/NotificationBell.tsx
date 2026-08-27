@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { type Notification, notificationApi, notificationKeys } from '../lib/api/notifications';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
+import { Skeleton } from './Skeleton';
 
 /* ── Relative time helper ─────────────────────────────────── */
 
@@ -127,7 +128,7 @@ export function NotificationBell() {
               {isLoading ? (
                 <div className="space-y-1 p-2">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="h-16 rounded-md animate-pulse bg-ink/[0.04]" />
+                    <Skeleton key={i} className="h-16" />
                   ))}
                 </div>
               ) : notifications && notifications.length > 0 ? (

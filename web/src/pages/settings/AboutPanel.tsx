@@ -22,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { SkeletonText } from '@/components/Skeleton';
 import { Button } from '@/components/ui/button';
 import { useUpdateCheck } from '@/hooks/use-update-check';
 import { api } from '@/lib/api-client';
@@ -155,7 +156,7 @@ export function AboutPanel() {
               <div key={row.label} className="flex items-center justify-between">
                 <span className="text-[13px] text-ink/50">{row.label}</span>
                 {isLoading ? (
-                  <div className="h-4 w-28 animate-pulse rounded bg-ink/[0.06]" />
+                  <SkeletonText className="h-4 w-28" />
                 ) : (
                   <span className="font-mono text-[13px] tabular-nums text-ink/85">
                     {row.value ?? '—'}

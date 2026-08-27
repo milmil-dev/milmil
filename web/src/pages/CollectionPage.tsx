@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
-import { Skeleton } from '../components/Skeleton';
+import { Skeleton, SkeletonPosterGrid } from '../components/Skeleton';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { type CollectionAnime, collectionApi, collectionKeys } from '../lib/api/collection';
 import type { AnimeSummary } from '../lib/api/discover';
@@ -208,15 +208,7 @@ function CollectionSkeleton() {
       {/* Search row skeleton */}
       <Skeleton className="h-9 w-full max-w-sm rounded-lg" />
       {/* Card grid skeletons */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="space-y-2">
-            <Skeleton className="aspect-[3/4] rounded-lg" />
-            <Skeleton className="h-3 rounded" style={{ width: `${60 + (i % 3) * 15}%` }} />
-            <Skeleton className="h-2.5 w-12 rounded" />
-          </div>
-        ))}
-      </div>
+      <SkeletonPosterGrid count={14} className="min-[1100px]:grid-cols-7" />
     </div>
   );
 }

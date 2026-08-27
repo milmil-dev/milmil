@@ -24,3 +24,37 @@
     height: 0;
   }
 }
+
+/* Skeleton shimmer: a highlight sweeping left→right across a placeholder.
+   The element paints the band as a background gradient and slides it, so
+   the sheen is clipped to the placeholder's own shape (rounded corners
+   included) without an extra masking element. */
+@keyframes skeleton-shimmer {
+  from {
+    background-position: -150% 0;
+  }
+  to {
+    background-position: 250% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    transparent 20%,
+    color-mix(in oklch, var(--ink) 7%, transparent) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-shimmer 1.6s linear infinite;
+}
+
+/* A travelling highlight is the kind of motion Reduce Motion asks us to
+   drop; a slow fade still reads as "working". */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    background-image: none;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}

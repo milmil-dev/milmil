@@ -2,6 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useState } from 'react';
 import type { BangumiComment } from '@/lib/api/discover';
+import { Skeleton, SkeletonText } from '../Skeleton';
 
 interface BangumiCommentsProps {
   comments: BangumiComment[] | undefined;
@@ -17,14 +18,14 @@ export function BangumiComments({ comments, isLoading }: BangumiCommentsProps) {
   if (isLoading) {
     return (
       <div className="mt-4">
-        <div className="h-4 w-16 bg-ink/[0.06] rounded animate-pulse mb-3" />
+        <SkeletonText className="h-4 w-16 mb-3" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex gap-2">
-              <div className="w-7 h-7 rounded-full bg-ink/[0.06] animate-pulse shrink-0" />
-              <div className="flex-1 space-y-1">
-                <div className="h-3 w-20 bg-ink/[0.06] rounded animate-pulse" />
-                <div className="h-3 w-full bg-ink/[0.06] rounded animate-pulse" />
+              <Skeleton className="w-7 h-7 rounded-full shrink-0" />
+              <div className="flex-1 space-y-1.5">
+                <SkeletonText className="w-20" />
+                <SkeletonText className="w-full" />
               </div>
             </div>
           ))}
