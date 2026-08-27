@@ -9,6 +9,7 @@ coil = "2.7.0"
 camerax = "1.4.1"
 mlkitBarcode = "17.3.0"
 accompanistPermissions = "0.36.0"
+securityCrypto = "1.1.0-alpha06"
 ktor = "3.0.3"
 coroutines = "1.9.0"
 serialization = "1.7.3"
@@ -43,6 +44,7 @@ camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = 
 camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
 mlkit-barcode = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkitBarcode" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
