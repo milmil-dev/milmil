@@ -21,6 +21,7 @@ import { useUpdateCheck } from '../hooks/use-update-check';
 import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/auth-store';
 import { NotificationBell } from './NotificationBell';
+import { UserAvatar } from './UserAvatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const mainNav = [
@@ -116,8 +117,6 @@ function AccountAvatar() {
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
-  const initial = user?.username?.charAt(0)?.toUpperCase() ?? '?';
-
   return (
     <div ref={ref} className="relative">
       <Tooltip>
@@ -125,10 +124,10 @@ function AccountAvatar() {
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className="flex items-center justify-center w-9 h-9 rounded-full bg-ink/[0.08] text-ink/60 text-xs font-bold cursor-pointer transition-all hover:bg-ink/[0.12] hover:text-ink/80"
+            className="flex items-center justify-center w-9 h-9 rounded-full cursor-pointer transition-all hover:opacity-80"
             aria-label={user?.username ?? 'Account'}
           >
-            {initial}
+            <UserAvatar user={user} size={36} />
           </button>
         </TooltipTrigger>
         {!open && <TooltipContent side="right">{user?.username ?? 'Account'}</TooltipContent>}
@@ -146,9 +145,7 @@ function AccountAvatar() {
             {/* User info */}
             <div className="px-3 py-3 border-b border-ink/[0.06]">
               <div className="flex items-center gap-2.5">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-ink/[0.08] text-ink/60 text-xs font-bold shrink-0">
-                  {initial}
-                </div>
+                <UserAvatar user={user} size={32} />
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-ink truncate">{user?.username}</p>
                   <p className="text-[10px] text-ink/30">{i18n._(msg`account.local`)}</p>

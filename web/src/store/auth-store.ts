@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-interface User {
+export interface User {
   id: string;
   username: string;
+  /** Server-relative image URL, null/absent when the user has no avatar. */
+  avatar_url?: string | null;
 }
 
 interface AuthState {
@@ -11,6 +13,8 @@ interface AuthState {
   user: User | null;
   initialized: boolean | null;
   login: (token: string, user: User) => void;
+  /** Refresh the profile in place (avatar changes) without touching the token. */
+  setUser: (user: User) => void;
   logout: () => void;
   setInitialized: (value: boolean) => void;
 }
@@ -33,6 +37,10 @@ export const useAuthStore = create<AuthState>()(
       login: (token, user) => {
         localStorage.setItem(TOKEN_KEY, token);
         set({ token, user, initialized: true }, false, 'auth/login');
+      },
+
+      setUser: (user) => {
+        set({ user }, false, 'auth/setUser');
       },
 
       logout: () => {

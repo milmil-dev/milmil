@@ -19,8 +19,8 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
-import { useAuthStore } from '@/store/auth-store';
 import { ApiTokensCard } from './ApiTokensCard';
+import { AvatarCard } from './AvatarCard';
 import { SessionsTab } from './SessionsTab';
 
 const inputClass = 'bg-transparent border-ink/[0.08] focus:border-mm-accent text-ink';
@@ -52,7 +52,6 @@ export function AccountPanel() {
   const [isMobileSettingsPanelLayout, setIsMobileSettingsPanelLayout] = useState(
     getIsMobileSettingsPanelLayout
   );
-  const user = useAuthStore((s) => s.user);
   const queryClient = useQueryClient();
   const [totpCode, setTotpCode] = useState('');
   const [setupData, setSetupData] = useState<TwoFactorSetupResponse | null>(null);
@@ -145,18 +144,8 @@ export function AccountPanel() {
               exit={useMobileTabMotion ? 'exit' : { opacity: 1 }}
               className="space-y-3"
             >
-              {/* Profile */}
-              <SettingsCard label={i18n._(msg`account.profile`)}>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-mm-accent/15 text-sm font-semibold text-mm-accent ring-1 ring-mm-accent/25">
-                    {user?.username?.charAt(0).toUpperCase() ?? '?'}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-ink">{user?.username ?? '—'}</p>
-                    <p className="text-xs text-ink/30">ID: {user?.id ?? '—'}</p>
-                  </div>
-                </div>
-              </SettingsCard>
+              {/* Profile + avatar */}
+              <AvatarCard />
 
               {/* Change Password */}
               <SettingsCard label={i18n._(msg`account.changePassword`)}>
