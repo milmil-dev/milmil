@@ -65,7 +65,11 @@ func GenerateSpriteSheet(ctx context.Context, inputPath, outputDir string, durat
 	// tile arranges into a grid
 	filter := fmt.Sprintf("fps=1/%d,scale=%d:-1,tile=%dx%d", interval, tileWidth, cols, rows)
 
+	// -skip_frame nokey decodes keyframes only. The fps filter then holds the
+	// nearest keyframe for each slot, which is indistinguishable at 160 px and
+	// several times faster than decoding every frame of the episode.
 	args := []string{
+		"-skip_frame", "nokey",
 		"-i", inputPath,
 		"-frames:v", "1",
 		"-vf", filter,

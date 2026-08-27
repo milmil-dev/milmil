@@ -45,6 +45,7 @@ type handler struct {
 	syncSvc         *milmilsync.Service
 	danmakuRegistry *danmaku.Registry
 	updateChecker   *updatecheck.Checker
+	thumbnails      *thumbnailJobs
 	encryptionKey   []byte
 }
 
@@ -103,6 +104,7 @@ func NewRouter(deps Deps) *echo.Echo {
 		syncSvc:         deps.Sync,
 		danmakuRegistry: deps.Danmaku,
 		updateChecker:   deps.UpdateChecker,
+		thumbnails:      newThumbnailJobs(),
 		encryptionKey:   cfg.EncryptionKey,
 	}
 

@@ -6646,7 +6646,7 @@
     "/api/v1/stream/{fileId}/thumbnails": {
       "get": {
         "summary": "Get the seek-preview thumbnail track",
-        "description": "WebVTT cues pointing into the sprite sheet served at ../sprite.jpg. Generating it on first request can take a moment.",
+        "description": "WebVTT cues pointing into the sprite sheet served at ../sprite.jpg. The first request renders the sprite, which can take a while; the render keeps running if the client disconnects, so a retry is served from cache.",
         "operationId": "getThumbnailVTT",
         "tags": [
           "Streaming"
