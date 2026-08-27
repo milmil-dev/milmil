@@ -43,5 +43,16 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.coil.compose)
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.mlkit.barcode)
+    implementation(libs.accompanist.permissions)
     debugImplementation(libs.compose.ui.tooling)
+    testImplementation(libs.kotlin.test.junit5)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
+
+tasks.withType<Test> { useJUnitPlatform() }

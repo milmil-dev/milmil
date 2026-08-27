@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,7 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import dev.milmil.api.ApiClient
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 /**
  * One activity, Compose throughout. A `milmil://pair` link can arrive either
@@ -43,7 +53,11 @@ public class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Scaffold { padding ->
                         val state by pairing.state.collectAsStateWithLifecycle()
-                        PairScreen(state = state, modifier = Modifier.padding(padding))
+                        Root(
+                            state = state,
+                            onScanned = pairing::pair,
+                            modifier = Modifier.padding(padding),
+                        )
                     }
                 }
             }
@@ -61,8 +75,53 @@ public class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * The whole flow so far: scan a code, or arrive by deep link, then land on
+ * the shelves. Pairing is the only gate — once it holds, the home screen
+ * fetches with the token the link carried.
+ */
 @Composable
-private fun PairScreen(state: PairState, modifier: Modifier = Modifier) {
+private fun Root(state: PairState, onScanned: (String) -> Unit, modifier: Modifier = Modifier) {
+    when (state) {
+        is PairState.Paired -> Home(state, modifier)
+        else -> PairFlow(state = state, onScanned = onScanned, modifier = modifier)
+    }
+}
+
+@Composable
+private fun Home(paired: PairState.Paired, modifier: Modifier = Modifier) {
+    val client = androidx.compose.runtime.remember(paired) { ApiClient(paired.url) { paired.token } }
+    val model: HomeViewModel = viewModel(key = paired.url) { HomeViewModel(client) }
+    LaunchedEffect(paired.url) {
+        // The calendar keys on the English weekday, so it stays right whatever
+        // language the server answers in.
+        model.load(LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH))
+    }
+    val state by model.state.collectAsStateWithLifecycle()
+    HomeScreen(state = state, modifier = modifier)
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun PairFlow(state: PairState, onScanned: (String) -> Unit, modifier: Modifier = Modifier) {
+    val camera = rememberPermissionState(CAMERA_PERMISSION)
+    if (state is PairState.Waiting && camera.status.isGranted) {
+        QrScanner(onPaired = onScanned, modifier = modifier)
+        return
+    }
+    PairScreen(
+        state = state,
+        modifier = modifier,
+        onGrantCamera = { camera.launchPermissionRequest() }.takeIf { state is PairState.Waiting && !camera.status.isGranted },
+    )
+}
+
+@Composable
+private fun PairScreen(
+    state: PairState,
+    modifier: Modifier = Modifier,
+    onGrantCamera: (() -> Unit)? = null,
+) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,6 +137,9 @@ private fun PairScreen(state: PairState, modifier: Modifier = Modifier) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                     )
+                    onGrantCamera?.let { grant ->
+                        Button(onClick = grant) { Text("開啟相機掃碼") }
+                    }
                 }
                 is PairState.Connecting -> {
                     CircularProgressIndicator(

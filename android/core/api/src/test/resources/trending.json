@@ -1,0 +1,44 @@
+[
+  {
+    "bangumi_id": 547888,
+    "anilist_id": 189046,
+    "title": "Re：从零开始的异世界生活 第四季 丧失篇",
+    "title_original": "Re:ゼロから始める異世界生活 4th season 喪失編",
+    "title_en": "Re:ZERO -Starting Life in Another World- Season 4",
+    "cover_image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx189046-yaHWtS5FII46.jpg",
+    "banner_image": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/189046-MDk2CaVuRWpb.jpg",
+    "description": "在水门都市朴利斯提拉的死战中，昴等人虽然勉强取得胜利，但付出的代价，却过于沉重。因「暴食」权能而陷入沉睡的雷姆，被夺走记",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama",
+      "Fantasy",
+      "Psychological",
+      "Romance",
+      "Thriller"
+    ],
+    "air_date": "2026-04-08",
+    "episode_count": 19,
+    "score": 7.8
+  },
+  {
+    "bangumi_id": 975,
+    "anilist_id": 21,
+    "title": "航海王",
+    "title_original": "ONE PIECE",
+    "title_en": "ONE PIECE",
+    "cover_image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-ELSYx3yMPcKM.jpg",
+    "banner_image": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21-wf37VakJmZqs.jpg",
+    "description": "在這部熱門漫畫改編的真人影集中，年輕的海盜蒙其·D·魯夫頭戴招牌草帽，率領一幫各具特色的怪咖，揚帆展開尋找寶藏的偉大航程",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy",
+      "Drama",
+      "Fantasy"
+    ],
+    "air_date": "1999-10-20",
+    "episode_count": 0,
+    "score": 8.3
+  }
+]

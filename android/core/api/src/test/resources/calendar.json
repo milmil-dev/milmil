@@ -1,0 +1,36 @@
+[
+  {
+    "weekday": "星期一",
+    "weekday_en": "Mon",
+    "items": [
+      {
+        "bangumi_id": 456080,
+        "title": "轉學後班上的清純可愛美少女，竟是小時候玩在一起的哥兒們",
+        "title_original": "転校先の清楚可憐な美少女が、昔男子と思って一緒に遊んだ幼馴染だった件",
+        "cover_image": "http://lain.bgm.tv/pic/cover/l/ce/e2/456080_C4q4C.jpg",
+        "description": "「我們永遠都是好朋友喔！」── 孩提時代的某個夏日尾聲，隼人跟最麻吉的哥兒們立下這個約定。當他七年後轉學到都市的高中，兩",
+        "episode_count": 0,
+        "score": 5,
+        "next_episode": 9,
+        "air_time": "23:30"
+      }
+    ]
+  },
+  {
+    "weekday": "星期二",
+    "weekday_en": "Tue",
+    "items": [
+      {
+        "bangumi_id": 325767,
+        "title": "感謝對戰。～大小姐才不玩格鬥遊戲～",
+        "title_original": "対ありでした。 ～お嬢さまは格闘ゲームなんてしない～",
+        "cover_image": "http://lain.bgm.tv/pic/cover/l/a1/d3/325767_u3pvR.jpg",
+        "description": "進入大小姐學校就讀的綾是喜歡袋裝拉麵的平民，這樣的她憧憬著校內第一的大小姐「白百合大人」。某天她目擊到「白百合大人」正熱",
+        "episode_count": 0,
+        "score": 7.1,
+        "next_episode": 9,
+        "air_time": "20:30"
+      }
+    ]
+  }
+]
