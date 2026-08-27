@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.mlkit.barcode)
     implementation(libs.accompanist.permissions)
+    implementation(libs.security.crypto)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.kotlin.test.junit5)
     testRuntimeOnly(libs.junit.platform.launcher)

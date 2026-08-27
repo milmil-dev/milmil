@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,6 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -42,12 +49,19 @@ import java.util.Locale
  * the same view model.
  */
 public class MainActivity : ComponentActivity() {
-    private val pairing: PairViewModel by viewModels()
+    private val pairing: PairViewModel by viewModels {
+        object : androidx.lifecycle.ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
+                PairViewModel(SessionStore(applicationContext)) as T
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        consume(intent)
+        // A pairing link beats a stored one; otherwise pick up where we left off.
+        if (!consume(intent)) pairing.restore()
         setContent {
             MilmilTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -69,9 +83,10 @@ public class MainActivity : ComponentActivity() {
         consume(intent)
     }
 
-    private fun consume(intent: Intent?) {
-        val data = intent?.takeIf { it.action == Intent.ACTION_VIEW }?.data ?: return
+    private fun consume(intent: Intent?): Boolean {
+        val data = intent?.takeIf { it.action == Intent.ACTION_VIEW }?.data ?: return false
         pairing.pair(data.toString())
+        return true
     }
 }
 
@@ -83,23 +98,97 @@ public class MainActivity : ComponentActivity() {
 @Composable
 private fun Root(state: PairState, onScanned: (String) -> Unit, modifier: Modifier = Modifier) {
     when (state) {
-        is PairState.Paired -> Home(state, modifier)
+        is PairState.Paired -> Shell(state, modifier)
         else -> PairFlow(state = state, onScanned = onScanned, modifier = modifier)
     }
 }
 
+/**
+ * The signed-in shell: one client for the session, a Material 3 navigation bar,
+ * and each tab loading the first time it is opened rather than all at once.
+ */
 @Composable
-private fun Home(paired: PairState.Paired, modifier: Modifier = Modifier) {
-    val client = androidx.compose.runtime.remember(paired) { ApiClient(paired.url) { paired.token } }
-    val model: HomeViewModel = viewModel(key = paired.url) { HomeViewModel(client) }
-    LaunchedEffect(paired.url) {
+private fun Shell(paired: PairState.Paired, modifier: Modifier = Modifier) {
+    val client = remember(paired) { ApiClient(paired.url) { paired.token } }
+    var destination by rememberSaveable { mutableStateOf(Destination.Home) }
+
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            NavigationBar {
+                Destination.entries.forEach { item ->
+                    val selected = item == destination
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = { destination = item },
+                        icon = {
+                            Icon(
+                                imageVector = if (selected) item.selected else item.unselected,
+                                contentDescription = item.label,
+                            )
+                        },
+                        label = { Text(item.label) },
+                    )
+                }
+            }
+        },
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
+            when (destination) {
+                Destination.Home -> HomeTab(client, paired.url)
+                Destination.Schedule -> ScheduleTab(client, paired.url)
+                Destination.Discover -> DiscoverTab(client, paired.url)
+                Destination.Search -> SearchTab(client, paired.url)
+                Destination.Collection -> CollectionTab(client, paired.url)
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeTab(client: ApiClient, key: String) {
+    val model: HomeViewModel = viewModel(key = "home-$key") { HomeViewModel(client) }
+    LaunchedEffect(key) {
         // The calendar keys on the English weekday, so it stays right whatever
         // language the server answers in. SHORT matches how the server spells
         // it ("Fri"); `today()` tolerates either length regardless.
         model.load(LocalDate.now().dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH))
     }
     val state by model.state.collectAsStateWithLifecycle()
-    HomeScreen(state = state, modifier = modifier)
+    HomeScreen(state = state)
+}
+
+@Composable
+private fun ScheduleTab(client: ApiClient, key: String) {
+    val model: ScheduleViewModel = viewModel(key = "schedule-$key") { ScheduleViewModel(client) }
+    LaunchedEffect(key) { model.load() }
+    val state by model.state.collectAsStateWithLifecycle()
+    ScheduleScreen(state = state)
+}
+
+@Composable
+private fun DiscoverTab(client: ApiClient, key: String) {
+    val model: DiscoverViewModel = viewModel(key = "discover-$key") { DiscoverViewModel(client) }
+    LaunchedEffect(key) { model.load() }
+    val state by model.state.collectAsStateWithLifecycle()
+    DiscoverScreen(state = state)
+}
+
+@Composable
+private fun SearchTab(client: ApiClient, key: String) {
+    val model: SearchViewModel = viewModel(key = "search-$key") { SearchViewModel(client) }
+    val query by model.query.collectAsStateWithLifecycle()
+    val results by model.results.collectAsStateWithLifecycle()
+    SearchScreen(query = query, results = results, onQuery = model::type)
+}
+
+@Composable
+private fun CollectionTab(client: ApiClient, key: String) {
+    val model: CollectionViewModel = viewModel(key = "collection-$key") { CollectionViewModel(client) }
+    LaunchedEffect(key) { model.load() }
+    val entries by model.entries.collectAsStateWithLifecycle()
+    val counts by model.counts.collectAsStateWithLifecycle()
+    CollectionScreen(entries = entries, counts = counts)
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

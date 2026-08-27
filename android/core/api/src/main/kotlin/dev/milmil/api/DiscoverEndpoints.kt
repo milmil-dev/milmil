@@ -40,6 +40,16 @@ public data class CalendarDay(
 )
 
 private val animeListSerializer = ListSerializer(DiscoverAnime.serializer())
+
+/**
+ * `/discover/browse` can return the same title twice — page 1 came back with
+ * 50 rows and 48 distinct ids, 進擊的巨人 and 火影忍者疾風傳 each doubled.
+ * A grid keyed on the id then crashes Compose outright ("Key was already
+ * used"), and even without that the user would see the same show twice.
+ * De-duplicating here keeps every caller safe rather than each screen
+ * remembering to.
+ */
+private fun List<DiscoverAnime>.deduped(): List<DiscoverAnime> = distinctBy { it.bangumiId }
 private val calendarSerializer = ListSerializer(CalendarDay.serializer())
 
 /** Mirrors `web/src/lib/api/discover.ts` — `discoverApi.trending`. */
@@ -47,7 +57,7 @@ public suspend fun ApiClient.trending(page: Int = 1): List<DiscoverAnime> =
     MilmilJson.decodeFromString(
         animeListSerializer,
         execute(HttpMethod.Get, "/api/v1/discover/trending?page=$page", null),
-    )
+    ).deduped()
 
 /**
  * `discoverApi.search`. The search response is a leaner shape than trending —
@@ -56,15 +66,15 @@ public suspend fun ApiClient.trending(page: Int = 1): List<DiscoverAnime> =
 public suspend fun ApiClient.search(query: String, page: Int = 1): List<DiscoverAnime> =
     MilmilJson.decodeFromString(
         animeListSerializer,
-        execute(HttpMethod.Get, "/api/v1/discover/search?q=${'$'}{query.encodeQuery()}&page=${'$'}page", null),
-    )
+        execute(HttpMethod.Get, "/api/v1/discover/search?q=${query.encodeQuery()}&page=$page", null),
+    ).deduped()
 
 /** `discoverApi.browse` — the filtered grid behind the Discover tab. */
 public suspend fun ApiClient.browse(page: Int = 1): List<DiscoverAnime> =
     MilmilJson.decodeFromString(
         animeListSerializer,
-        execute(HttpMethod.Get, "/api/v1/discover/browse?page=${'$'}page", null),
-    )
+        execute(HttpMethod.Get, "/api/v1/discover/browse?page=$page", null),
+    ).deduped()
 
 private fun String.encodeQuery(): String =
     java.net.URLEncoder.encode(this, java.nio.charset.StandardCharsets.UTF_8)
@@ -74,4 +84,4 @@ public suspend fun ApiClient.calendar(): List<CalendarDay> =
     MilmilJson.decodeFromString(
         calendarSerializer,
         execute(HttpMethod.Get, "/api/v1/discover/calendar", null),
-    )
+    ).map { day -> day.copy(items = day.items.deduped()) }
