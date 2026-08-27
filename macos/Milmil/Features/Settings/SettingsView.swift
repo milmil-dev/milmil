@@ -1,56 +1,112 @@
 import MilmilAPI
 import SwiftUI
 
-/// `Settings` scene (⌘,): System Settings-style tabs. Everything that the
-/// web also stores lives in the shared server preferences; the few
+/// `Settings` scene (⌘,): System Settings-style sidebar. Everything that
+/// the web also stores lives in the shared server preferences; the few
 /// desktop-only knobs live in `UserDefaults`.
-enum SettingsTab: String, CaseIterable {
-    case general, player, subtitles, danmaku, keyboard, integrations, notifications, account, server, about
+enum SettingsTab: String, CaseIterable, Identifiable {
+    case general, player, subtitles, danmaku, keyboard, offline, integrations, notifications, account, server, services, about
+
+    var id: Self { self }
+
+    /// Sidebar groups: how it looks and plays · the account and its
+    /// connections · about.
+    static let groups: [[SettingsTab]] = [
+        [.general, .player, .subtitles, .danmaku, .keyboard, .offline],
+        [.integrations, .notifications, .account, .server, .services],
+        [.about],
+    ]
+
+    var title: String {
+        switch self {
+        case .general: String(localized: "一般")
+        case .player: String(localized: "播放")
+        case .subtitles: String(localized: "字幕")
+        case .danmaku: String(localized: "彈幕")
+        case .keyboard: String(localized: "快捷鍵")
+        case .offline: String(localized: "離線")
+        case .integrations: String(localized: "整合")
+        case .notifications: String(localized: "通知")
+        case .account: String(localized: "帳號")
+        case .server: String(localized: "伺服器")
+        case .services: String(localized: "服務")
+        case .about: String(localized: "關於")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .general: "gearshape"
+        case .player: "play.rectangle"
+        case .subtitles: "captions.bubble"
+        case .danmaku: "text.bubble"
+        case .keyboard: "keyboard"
+        case .offline: "arrow.down.circle"
+        case .integrations: "link"
+        case .notifications: "bell.badge"
+        case .account: "person.crop.circle"
+        case .server: "server.rack"
+        case .services: "gearshape.2"
+        case .about: "info.circle"
+        }
+    }
 }
 
 struct SettingsView: View {
     @Environment(PlayerCoordinator.self) private var coordinator
     @Environment(SessionStore.self) private var sessionStore
+    @Environment(SettingsNavigator.self) private var navigator
     @AppStorage(DesktopDefaults.theme) private var theme = Theme.Preference.dark.rawValue
     @State private var tab: SettingsTab = DevSnapshot.settingsTab.flatMap(SettingsTab.init(rawValue:)) ?? .general
 
     var body: some View {
-        TabView(selection: $tab) {
-            Tab("一般", systemImage: "gearshape", value: .general) {
-                sessionGated { GeneralSettingsTab(session: $0) }
+        NavigationSplitView {
+            List(selection: $tab) {
+                ForEach(Array(SettingsTab.groups.enumerated()), id: \.offset) { _, group in
+                    Section {
+                        ForEach(group) { item in
+                            Label(item.title, systemImage: item.symbol).tag(item)
+                        }
+                    }
+                }
             }
-            Tab("播放", systemImage: "play.rectangle", value: .player) {
-                sessionGated { PlayerSettingsTab(session: $0) }
-            }
-            Tab("字幕", systemImage: "captions.bubble", value: .subtitles) {
-                sessionGated { SubtitleSettingsTab(session: $0) }
-            }
-            Tab("彈幕", systemImage: "text.bubble", value: .danmaku) {
-                sessionGated { DanmakuSettingsView(session: $0, controller: coordinator.controller).frame(width: nil, height: nil) }
-            }
-            Tab("快捷鍵", systemImage: "keyboard", value: .keyboard) {
-                sessionGated { KeyboardSettingsTab(session: $0) }
-            }
-            Tab("整合", systemImage: "link", value: .integrations) {
-                sessionGated { IntegrationsSettingsTab(session: $0) }
-            }
-            Tab("通知", systemImage: "bell.badge", value: .notifications) {
-                sessionGated { NotificationsSettingsTab(session: $0) }
-            }
-            Tab("帳號", systemImage: "person.crop.circle", value: .account) {
-                sessionGated { AccountSettingsTab(session: $0) }
-            }
-            Tab("伺服器", systemImage: "server.rack", value: .server) {
-                ServerSettingsTab()
-            }
-            Tab("關於", systemImage: "info.circle", value: .about) {
-                AboutTab()
-            }
+            .listStyle(.sidebar)
+            .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 240)
+            .toolbar(removing: .sidebarToggle)
+        } detail: {
+            detail
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationTitle(tab.title)
+                // Detail column only: on the sidebar the hard edge draws a
+                // hairline under the title bar.
+                .hardTopScrollEdge()
         }
-        .frame(width: 720, height: 600)
+        .frame(minWidth: 780, idealWidth: 880, maxWidth: .infinity, minHeight: 540, idealHeight: 640, maxHeight: .infinity)
         .background(Theme.background)
-        .hardTopScrollEdge()
         .preferredColorScheme((Theme.Preference(rawValue: theme) ?? .dark).colorScheme)
+        .onChange(of: navigator.requestedTab, initial: true) { _, requested in
+            guard let requested else { return }
+            navigator.requestedTab = nil
+            tab = requested
+        }
+    }
+
+    @ViewBuilder
+    private var detail: some View {
+        switch tab {
+        case .general: sessionGated { GeneralSettingsTab(session: $0) }
+        case .player: sessionGated { PlayerSettingsTab(session: $0) }
+        case .subtitles: sessionGated { SubtitleSettingsTab(session: $0) }
+        case .danmaku: sessionGated { DanmakuSettingsView(session: $0, controller: coordinator.controller) }
+        case .keyboard: sessionGated { KeyboardSettingsTab(session: $0) }
+        case .offline: OfflineSettingsTab()
+        case .integrations: sessionGated { IntegrationsSettingsTab(session: $0) }
+        case .notifications: sessionGated { NotificationsSettingsTab(session: $0) }
+        case .account: sessionGated { AccountSettingsTab(session: $0) }
+        case .server: ServerSettingsTab()
+        case .services: sessionGated { ServicesSettingsTab(session: $0) }
+        case .about: AboutTab()
+        }
     }
 
     @ViewBuilder
@@ -74,8 +130,16 @@ enum DesktopDefaults {
     static let weekStart = "schedule.weekStart"
     static let hardwareDecoding = "player.hwdec"
     static let pauseOnHeadphoneDisconnect = "player.pauseOnDisconnect"
+    /// Loudness normalisation (`loudnorm`) for late-night viewing.
+    static let nightMode = "player.nightMode"
     static let theater = "watch.theater"
     static let menuBarExtra = "menubar.enabled"
+    /// Closing the last window parks the app in the menu bar instead of quitting.
+    static let keepInMenuBar = "menubar.keepRunning"
+    /// Where captures are filed; empty means ~/Pictures/milmil.
+    static let screenshotFolder = "player.screenshotFolder"
+    /// Show a save panel per capture instead of filing it straight away.
+    static let screenshotAskWhere = "player.screenshotAskWhere"
 }
 
 struct PlayerSettingsTab: View {
@@ -83,6 +147,7 @@ struct PlayerSettingsTab: View {
     @Environment(PlayerCoordinator.self) private var coordinator
     @Environment(MenuBarController.self) private var menuBar
     @AppStorage(DesktopDefaults.hardwareDecoding) private var hwdec = "videotoolbox"
+    @AppStorage(DesktopDefaults.pauseOnHeadphoneDisconnect) private var pauseOnDisconnect = true
 
     private var prefs: GlobalPreferences { session.preferences }
 
@@ -100,6 +165,7 @@ struct PlayerSettingsTab: View {
                 Toggle("自動播放下一集", isOn: bind(\.autoNext))
                 Toggle("自動跳過 OP", isOn: bind(\.autoSkipOp))
                 Toggle("自動跳過 ED", isOn: bind(\.autoSkipEd))
+                Toggle("拔除耳機時暫停", isOn: $pauseOnDisconnect)
                 Picker("緩衝", selection: bind(\.bufferMode)) {
                     Text("自動").tag(BufferMode.auto)
                     Text("低").tag(BufferMode.low)
@@ -127,12 +193,7 @@ struct PlayerSettingsTab: View {
                     .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
             }
             Section("截圖") {
-                LabeledContent("儲存位置", value: "~/Pictures/milmil")
-                Button("在 Finder 顯示") {
-                    let url = FileManager.default.urls(for: .picturesDirectory, in: .userDomainMask)[0].appending(path: "milmil")
-                    try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
-                    NSWorkspace.shared.activateFileViewerSelecting([url])
-                }
+                ScreenshotSettingsSection()
             }
         }
         .formStyle(.grouped)
@@ -198,26 +259,81 @@ struct AboutTab: View {
     }
 
     var body: some View {
-        VStack(spacing: 18) {
-            Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 96, height: 96)
-            VStack(spacing: 4) {
-                Text("milmil for macOS").font(.system(size: 18, weight: .bold))
-                Text("版本 \(version) · macOS 15+ · Apple Silicon").font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary)
-            }
-            Form {
-                Section("元件與授權") {
-                    LabeledContent("mpv / FFmpeg（MPVKit 1.0.0）", value: "LGPL-2.1+")
-                    LabeledContent("SwiftyOpenCC / OpenCC", value: "MIT / Apache-2.0")
-                    LabeledContent("Anime4K（bloc97 v4.0.1）", value: "MIT")
-                    LabeledContent("Bangumi · AniList · DandanPlay", value: String(localized: "資料來源"))
+        // The header lives inside the Form so the whole page shares the
+        // grouped form's background, like every other tab.
+        Form {
+            Section {
+                VStack(spacing: 18) {
+                    Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 96, height: 96)
+                    VStack(spacing: 4) {
+                        Text("milmil for macOS").font(.system(size: 18, weight: .bold))
+                        Text("版本 \(version) · macOS 15+ · Apple Silicon").font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary)
+                    }
                 }
-                Section {
-                    Link("GitHub：milmil", destination: URL(string: "https://github.com/milmil-dev/milmil")!)
-                    Link("回報問題", destination: URL(string: "https://github.com/milmil-dev/milmil/issues")!)
-                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
             }
-            .formStyle(.grouped)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            Section("元件與授權") {
+                LabeledContent("mpv / FFmpeg（MPVKit 1.0.0）", value: "LGPL-2.1+")
+                LabeledContent("SwiftyOpenCC / OpenCC", value: "MIT / Apache-2.0")
+                LabeledContent("Anime4K（bloc97 v4.0.1）", value: "MIT")
+                LabeledContent("Bangumi · AniList · 弹弹play开放弹幕网络", value: String(localized: "資料來源"))
+            }
+            Section {
+                Link("GitHub：milmil", destination: URL(string: "https://github.com/milmil-dev/milmil")!)
+                Link("回報問題", destination: URL(string: "https://github.com/milmil-dev/milmil/issues")!)
+            }
         }
-        .padding(.top, 24)
+        .formStyle(.grouped)
+    }
+}
+
+/// 截圖: where captures land, and whether each one asks first.
+struct ScreenshotSettingsSection: View {
+    @AppStorage(DesktopDefaults.screenshotFolder) private var folder = ""
+    @AppStorage(DesktopDefaults.screenshotAskWhere) private var askWhere = false
+
+    var body: some View {
+        LabeledContent("儲存位置") {
+            HStack(spacing: 8) {
+                Text(displayPath)
+                    .font(.system(size: 12, design: .monospaced))
+                    .lineLimit(1).truncationMode(.middle)
+                    .foregroundStyle(Theme.Text.secondary)
+                Button("選擇…", action: pickFolder)
+                if !folder.isEmpty {
+                    Button("重設") { folder = "" }
+                }
+            }
+        }
+        .disabled(askWhere)
+        Toggle(isOn: $askWhere) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("每次詢問儲存位置")
+                Text("關閉時直接存進上面的資料夾，並在畫面角落顯示縮圖讓你複製、另存或刪除。")
+                    .font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+            }
+        }
+        Button("在 Finder 顯示") {
+            NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: PlayerController.screenshotDirectory())])
+        }
+    }
+
+    private var displayPath: String {
+        let path = PlayerController.screenshotDirectory()
+        return path.replacingOccurrences(of: NSHomeDirectory(), with: "~")
+    }
+
+    private func pickFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = true
+        panel.message = String(localized: "選擇截圖儲存位置")
+        panel.directoryURL = URL(fileURLWithPath: PlayerController.screenshotDirectory())
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        folder = url.path
     }
 }

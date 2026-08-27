@@ -19,6 +19,9 @@ let package = Package(
             ],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
+                // CAOpenGLLayer is deprecated but is what libmpv's GL render
+                // API draws into; the header honours this macro.
+                .unsafeFlags(["-Xcc", "-DGL_SILENCE_DEPRECATION"]),
             ]
         ),
         .testTarget(

@@ -94,3 +94,18 @@ struct TrackTests {
         #expect(chapters[1].segmentKind == nil)
     }
 }
+
+struct OfflineLadderTests {
+    @Test func offlineCopyLeadsTheLadder() {
+        var ladder = StreamFallback(hasOfflineCopy: true, hasLocalFile: true, canRemux: false, canTranscode: false)
+        #expect(ladder.current == .offlineCopy)
+        #expect(ladder.advance() == .localFile)
+        #expect(ladder.advance() == .direct)
+        #expect(ladder.advance() == nil)
+    }
+
+    @Test func defaultLadderIsUnchanged() {
+        let ladder = StreamFallback(hasLocalFile: false)
+        #expect(ladder.stages == [.direct, .remux, .hls])
+    }
+}

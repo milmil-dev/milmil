@@ -2,6 +2,8 @@ import Foundation
 
 /// Where a file is being played from. Ordered from best to worst.
 public enum StreamStage: String, Sendable, Equatable, CaseIterable {
+    /// A copy the client downloaded to its own disk (離線到本機).
+    case offlineCopy
     /// Server path mapped to a local mount — zero server I/O.
     case localFile
     /// `GET /stream/{id}/direct` with Range support.
@@ -13,6 +15,7 @@ public enum StreamStage: String, Sendable, Equatable, CaseIterable {
 
     public var label: String {
         switch self {
+        case .offlineCopy: "本機副本"
         case .localFile: "本機檔案"
         case .direct: "直接串流"
         case .remux: "Remux"
@@ -26,8 +29,9 @@ public struct StreamFallback: Sendable, Equatable {
     public private(set) var stages: [StreamStage]
     public private(set) var index = 0
 
-    public init(hasLocalFile: Bool, canRemux: Bool = true, canTranscode: Bool = true) {
+    public init(hasOfflineCopy: Bool = false, hasLocalFile: Bool, canRemux: Bool = true, canTranscode: Bool = true) {
         var stages: [StreamStage] = []
+        if hasOfflineCopy { stages.append(.offlineCopy) }
         if hasLocalFile { stages.append(.localFile) }
         stages.append(.direct)
         if canRemux { stages.append(.remux) }
