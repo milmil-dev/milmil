@@ -368,7 +368,11 @@ export function WatchPage() {
     }
     const monitor = new NetworkMonitor();
     networkMonitorRef.current = monitor;
-    const profileMap = { fast: 'high', medium: 'balanced', slow: 'low' } as const;
+    const profileMap = {
+      fast: 'high',
+      medium: 'balanced',
+      slow: 'low',
+    } as const;
     setActiveBufferProfile(profileMap[monitor.getProfile()]);
     const unsub = monitor.subscribe((profile) => {
       setActiveBufferProfile(profileMap[profile]);
@@ -404,7 +408,11 @@ export function WatchPage() {
         toast.info(i18n._(msg`player.memoryPressure`));
       } else {
         if (store.bufferMode === 'auto') {
-          const profileMap = { fast: 'high', medium: 'balanced', slow: 'low' } as const;
+          const profileMap = {
+            fast: 'high',
+            medium: 'balanced',
+            slow: 'low',
+          } as const;
           const netProfile = networkMonitorRef.current?.getProfile() ?? 'medium';
           setActiveBufferProfile(profileMap[netProfile]);
         }
@@ -494,11 +502,17 @@ export function WatchPage() {
 
     // Transcode ready — use HLS
     if (transcodeStatus === 'ready' && transcodeToken) {
-      return { streamUrl: getHLSUrl(transcodeToken), mimeType: 'application/x-mpegURL' };
+      return {
+        streamUrl: getHLSUrl(transcodeToken),
+        mimeType: 'application/x-mpegURL',
+      };
     }
     // Direct play
     if (mediaInfo.can_direct_play) {
-      return { streamUrl: getStreamUrl(fileId), mimeType: getMimeType(mediaInfo.filename) };
+      return {
+        streamUrl: getStreamUrl(fileId),
+        mimeType: getMimeType(mediaInfo.filename),
+      };
     }
     // Remux
     if (mediaInfo.can_remux) {
@@ -509,7 +523,10 @@ export function WatchPage() {
       return { streamUrl: null, mimeType: 'video/mp4' };
     }
     // Fallback: try direct
-    return { streamUrl: getStreamUrl(fileId), mimeType: getMimeType(mediaInfo.filename) };
+    return {
+      streamUrl: getStreamUrl(fileId),
+      mimeType: getMimeType(mediaInfo.filename),
+    };
   }, [fileId, mediaInfo, transcodeStatus, transcodeToken]);
 
   // --------------- Video element state ---------------
@@ -721,7 +738,9 @@ export function WatchPage() {
           duration_seconds: Math.floor(api.duration()),
           completed: true,
         });
-        queryClient.invalidateQueries({ queryKey: animeKeys.playableEpisodes(bangumiId) });
+        queryClient.invalidateQueries({
+          queryKey: animeKeys.playableEpisodes(bangumiId),
+        });
       });
     },
     [currentEpisode, saveProgress, fileId, bangumiId, queryClient, subtitles, i18n.locale]
@@ -959,7 +978,9 @@ export function WatchPage() {
                 className="relative aspect-video overflow-hidden bg-black lg:mx-auto"
                 style={
                   theaterMode
-                    ? { maxWidth: 'min(calc((100vh - 140px) * 16 / 9), 1600px)' }
+                    ? {
+                        maxWidth: 'min(calc((100vh - 140px) * 16 / 9), 1600px)',
+                      }
                     : undefined
                 }
               >
@@ -1092,7 +1113,12 @@ export function WatchPage() {
               </div>
 
               {/* Danmaku bar */}
-              <DanmakuBar fileId={fileId} danmakuCount={mergedDanmakuComments.length} />
+              <DanmakuBar
+                fileId={fileId}
+                danmakuCount={mergedDanmakuComments.length}
+                dandanplayCount={danmakuComments.length}
+                currentTime={() => playerRef.current?.currentTime() ?? 0}
+              />
 
               {/* Mobile only: sidebar content */}
               <div className="lg:hidden mt-4">
