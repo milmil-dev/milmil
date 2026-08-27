@@ -36,8 +36,11 @@ MPVKit 本身已經出 `ios-arm64` slice（睇 `Libavcodec.xcframework` 嘅目�
 **已實測（2026-08-27）**：`platforms:` 加咗 `.iOS(.v18)` 之後，三個 target 全部
 `xcodebuild -destination 'generic/platform=iOS'` 通過。實際要改嘅只有兩處：
 
-1. **最低版本係 iOS 18，唔係 17。** `TokenStore` 用 `Synchronization.Mutex`，
-   而佢係 iOS 18+。iOS 18 本身就係 macOS 15 嘅同代版本，所以呢個底線係啱嘅。
+1. **最低版本定咗 iOS 26。** 技術下限其實係 18（`TokenStore` 用
+   `Synchronization.Mutex`，iOS 18+），但設計係 Liquid Glass，客戶端要用真正嘅
+   `glassEffect` API，唔係好似 macOS 咁行 availability shim（`GlassStyles.swift`
+   為咗支援 macOS 15 先要 shim）。`.iOS(.v26)` 喺現時 SwiftPM 未開放，要寫
+   `.iOS("26.0")`。
 2. **`DeviceName.current()`** 用咗 `Foundation.Host`（macOS 專有），而且字串寫死
    "milmil for macOS"。改成 `#if os(macOS)` 分支；iOS 用 `ProcessInfo.hostName`，
    唔用 UIKit —— `MilmilAPI` 要保持無 UI framework，呢條規則就係令共用成立嘅原因。
@@ -87,7 +90,7 @@ Keystore）、realtime、彈幕排程、播放器整合、成套 UI。
 |---|---|---|
 | 語言 | Swift 6（strict concurrency，同 macOS 一致） | Kotlin 2.x |
 | UI | SwiftUI | Jetpack Compose + Material 3 |
-| 最低版本 | iOS 18（見下）| Android 8.0 (API 26) |
+| 最低版本 | **iOS 26**（見下）| Android 8.0 (API 26) |
 | 網路 | `MilmilAPI`（直接重用） | Ktor Client + kotlinx.serialization |
 | 憑證 | Keychain（`MilmilAPI` 已有） | EncryptedSharedPreferences（Keystore 支撐） |
 | 播放引擎 | libmpv（MPVKit iOS slice） | Media3/ExoPlayer → 之後可換 libmpv |
@@ -122,7 +125,7 @@ iOS 直接用 libmpv（因為 `MilmilPlayer` 嘅引擎層已經寫好，唔使�
 
 ```diff
 - platforms: [.macOS(.v15)],
-+ platforms: [.macOS(.v15), .iOS(.v18)],
++ platforms: [.macOS(.v15), .iOS("26.0")],
 ```
 
 規矩維持唔變：**`MilmilAPI` 唔准 import 任何 UI framework**。iOS app target 放 UI 型別，
@@ -181,8 +184,22 @@ Kotlin 端唔好逐行照譯 Swift。要守嘅係 `macos/AGENTS.md` 第 4 條：
 - 兩邊都要內建掃碼器（iOS `AVCaptureMetadataOutput`；Android CameraX + ML Kit Barcode）。
 - 掃完即刻連線，一步都唔使打字。
 
-另外兩邊都應該做 **LAN 自動探索**：伺服器已經喺 UDP 7359 廣播 Jellyfin discovery，
-手機喺同一個 Wi-Fi 應該自己搵到伺服器，連 QR 都慳埋。
+### 6.1 LAN 自動探索：Docker 部署下行唔通（2026-08-27 實測）
+
+原本計劃寫住「伺服器已經喺 UDP 7359 廣播 Jellyfin discovery，手機同一個 Wi-Fi
+自己搵到，連 QR 都慳埋」。實測之後呢句要收回：
+
+- `docker-compose.yml` **從來冇 publish UDP 7359**（只有 `${API_PORT}:8080`），
+  所以 responder 雖然喺容器入面行緊，但外面完全接觸唔到。
+- 就算補上 `7359:7359/udp` 都仲係唔夠：探索靠客戶端向 `255.255.255.255` 廣播，
+  而 Docker bridge 嘅 NAT 唔會轉發廣播封包。要真正行得通就要 `network_mode: host`
+  （只限 Linux），或者客戶端已經知道伺服器 IP —— 但知道 IP 就唔使探索。
+
+**影響唔止手機：**Web 設定頁而家對 Docker 用家展示緊一個實際上冇效嘅 Jellyfin
+discovery 功能。
+
+**結論：** v1 唔好靠 LAN 探索。QR 配對係主路徑（本身就唔使打字），手動輸入地址做後備。
+探索留返做 v2，而且要先喺伺服器嗰邊解決 host networking 嘅問題。
 
 ---
 
