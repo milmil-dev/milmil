@@ -1,6 +1,6 @@
 # milmil for iOS / Android — 原生行動客戶端設計
 
-> 狀態：設計（未動工）
+> 狀態：Android Phase 0 已完成；iOS 共用核心已驗證
 > 日期：2026-08-27
 > 相關：`2026-08-23-macos-client-design.md`、`2026-08-23-macos-client-plan.md`
 
@@ -122,7 +122,7 @@ iOS 直接用 libmpv（因為 `MilmilPlayer` 嘅引擎層已經寫好，唔使�
 
 ```diff
 - platforms: [.macOS(.v15)],
-+ platforms: [.macOS(.v15), .iOS(.v17)],
++ platforms: [.macOS(.v15), .iOS(.v18)],
 ```
 
 規矩維持唔變：**`MilmilAPI` 唔准 import 任何 UI framework**。iOS app target 放 UI 型別，
