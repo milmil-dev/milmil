@@ -56,6 +56,17 @@ func GenerateVariants(query string) []string {
 	return variants
 }
 
+// ToSimplified converts Traditional Chinese to Simplified, leaving anything
+// opencc cannot convert untouched. Response localization uses it so zh-CN
+// clients do not get Traditional text from Traditional-Chinese data.
+func ToSimplified(s string) string {
+	converted, err := t2s.Convert(s)
+	if err != nil {
+		return s
+	}
+	return converted
+}
+
 func containsCJK(s string) bool {
 	for _, r := range s {
 		if unicode.Is(unicode.Han, r) {

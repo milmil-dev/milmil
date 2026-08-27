@@ -2481,6 +2481,13 @@
                       "name": {
                         "type": "string"
                       },
+                      "display": {
+                        "type": "string",
+                        "description": "Tag rendered in the caller's UI language (X-Milmil-Locale / Accept-Language); falls back to name"
+                      },
+                      "category": {
+                        "type": "string"
+                      },
                       "count": {
                         "type": "integer"
                       }

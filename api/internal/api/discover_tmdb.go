@@ -17,18 +17,40 @@ import (
 	"github.com/milmil/api/internal/metadata"
 )
 
+// localeHeader carries the UI language the calling client is actually
+// rendering in. Both first-party clients send it (web from lingui's active
+// locale, macOS from Bundle.main.preferredLocalizations), so a desktop app
+// running in English gets English data even when the server-wide
+// appearance.language was set to zh-TW from the web.
+const localeHeader = "X-Milmil-Locale"
+
 // preferredLocale picks a canonical locale (zh-TW / zh-CN / zh-HK /
 // en-US / ja-JP / ko-KR) for response localization. Order of preference:
-//  1. The `appearance.language` setting the user picked in milmil itself
+//  1. The X-Milmil-Locale header — the language the requesting client's UI
+//     is showing right now.
+//  2. The `appearance.language` setting the user picked in milmil itself
 //     (so the configured UI language wins over whatever the browser says).
-//  2. The browser's Accept-Language header.
-//  3. zh-TW as a default — the project's primary audience and the
+//  3. The browser's Accept-Language header.
+//  4. zh-TW as a default — the project's primary audience and the
 //     matcher's default fallback.
 func (h *handler) preferredLocale(c *echo.Context) string {
-	if loc := h.appearanceLocale(c.Request().Context()); loc != "" {
+	req := c.Request()
+	if loc := canonicalizeLocale(req.Header.Get(localeHeader)); loc != "" {
 		return loc
 	}
-	return parseAcceptLanguageHeader(c.Request().Header.Get("Accept-Language"))
+	return resolveLocale("", h.appearanceLocale(req.Context()), req.Header.Get("Accept-Language"))
+}
+
+// resolveLocale is the pure precedence behind preferredLocale, split out so
+// it can be tested without a settings store.
+func resolveLocale(explicit, appearance, acceptLanguage string) string {
+	if loc := canonicalizeLocale(explicit); loc != "" {
+		return loc
+	}
+	if appearance != "" {
+		return appearance
+	}
+	return parseAcceptLanguageHeader(acceptLanguage)
 }
 
 // appearanceLocale reads the appearance.language setting and normalizes it.
