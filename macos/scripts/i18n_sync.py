@@ -28,15 +28,15 @@ LANGS = ["en", "ja", "ko", "zh-Hans", "zh-HK"]
 LIT = re.compile(r'"(?:\\\((?:[^()"]|"[^"]*"|\([^()]*\))*\)|[^"\\]|\\.)*"')
 CJK = re.compile(r"[　-鿿＀-￯]")
 LOCALIZED_CALLS = re.compile(
-    r"\b(Text|Button|Label|Toggle|Picker|Section|TextField|LabeledContent|Link|Tab|Menu|Stepper|ProgressView|SecureField|TableColumn|"
+    r"\b(Text|Button|Label|Toggle|Picker|Section|TextField|LabeledContent|Link|Tab|Menu|CommandMenu|Stepper|ProgressView|SecureField|TableColumn|"
     r"navigationTitle|help|confirmationDialog|alert|badge|accessibilityLabel)\s*\(\s*$"
 )
 # Interpolated expressions that are Strings. Everything else is assumed Int.
 # Keep this in sync when adding a localized literal that interpolates a String.
 STRING_HINTS = re.compile(
     r"(\.label|\.title|\.name|\.displayName|\.display|\.number|\.query|\.lastPathComponent|\.localizedDescription|\.host\(\)"
-    r"|Formatters\.|String\(|DeviceName|\berror\b|\bep\b|\bjst\b|\blocal\b|\bnumber\b|\bquery\b|\bsize\b|\btitle\b|\bversion\b"
-    r"|episodeNumber|\?\? \"\"|airDate|\bdate\b|duration|episodeRange|lastSync|\bsent\b|providerName|reclaimed|ByteCountFormatter|EpisodeRanges|gpuName)"
+    r"|Formatters\.|String\(|DeviceName|\berror\b|\bep\b|\bjst\b|\blocal\b|\bnumber\b|\bquery\b|\bsearch\b|\bsize\b|\btitle\b|\bversion\b"
+    r"|episodeNumber|\?\? \"\"|airDate|airTime|\bdate\b|duration|episodeRange|lastSync|\bsent\b|providerName|reclaimed|ByteCountFormatter|EpisodeRanges|gpuName|\bname\b|\bwhen\b|\w+Text\b|\brelative\b)"
 )
 
 
