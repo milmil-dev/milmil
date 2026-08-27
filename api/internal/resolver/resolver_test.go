@@ -99,6 +99,9 @@ type mockDandanplay struct {
 func (m *mockDandanplay) MatchFile(_ context.Context, _, _ string, _ int64, _ int) (*dandanplay.MatchResult, error) {
 	return nil, nil
 }
+func (m *mockDandanplay) MatchFiles(_ context.Context, _ []dandanplay.MatchRequest) (map[string]dandanplay.Match, error) {
+	return nil, nil
+}
 func (m *mockDandanplay) GetComments(_ context.Context, _ int64) ([]dandanplay.Comment, error) {
 	return nil, nil
 }

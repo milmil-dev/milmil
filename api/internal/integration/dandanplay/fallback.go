@@ -8,8 +8,11 @@ import (
 	"net/http"
 )
 
-const defaultFallbackURL = "https://api.danmu.icu/87654321"
-
+// fallbackClient reads from a self-hosted danmu_api-style proxy when the
+// official network is unreachable or no credentials are configured. It is
+// strictly opt-in (an empty fallbackURL yields the plain official client) and
+// never kicks in on a 429: a quota or rate limit from 弹弹play is a signal to
+// back off, not to route around.
 type fallbackClient struct {
 	official Client
 	fallback Client
@@ -19,16 +22,21 @@ func NewFallbackClient(httpClient *http.Client, credFn CredentialsFn, officialUR
 	if officialURL == "" {
 		officialURL = defaultBaseURL
 	}
+	official := NewClientWithURL(httpClient, credFn, officialURL)
 	if fallbackURL == "" {
-		fallbackURL = defaultFallbackURL
+		return official
 	}
 	noopCredFn := func(ctx context.Context) (string, string, error) {
 		return "noop", "noop", nil
 	}
 	return &fallbackClient{
-		official: NewClientWithURL(httpClient, credFn, officialURL),
+		official: official,
 		fallback: NewClientWithURL(httpClient, noopCredFn, fallbackURL),
 	}
+}
+
+func shouldFallback(err error) bool {
+	return errors.Is(err, ErrNoCredentials) || errors.Is(err, ErrUnavailable)
 }
 
 func (c *fallbackClient) GetComments(ctx context.Context, episodeID int64) ([]Comment, error) {
@@ -36,7 +44,7 @@ func (c *fallbackClient) GetComments(ctx context.Context, episodeID int64) ([]Co
 	if err == nil {
 		return comments, nil
 	}
-	if errors.Is(err, ErrNoCredentials) || errors.Is(err, ErrRateLimited) || errors.Is(err, ErrUnavailable) {
+	if shouldFallback(err) {
 		slog.Debug("dandanplay official failed, trying fallback", "error", err)
 		return c.fallback.GetComments(ctx, episodeID)
 	}
@@ -48,9 +56,21 @@ func (c *fallbackClient) MatchFile(ctx context.Context, fileName, fileHash strin
 	if err == nil {
 		return result, nil
 	}
-	if errors.Is(err, ErrNoCredentials) || errors.Is(err, ErrRateLimited) || errors.Is(err, ErrUnavailable) {
+	if shouldFallback(err) {
 		slog.Debug("dandanplay official failed, trying fallback", "error", err)
 		return c.fallback.MatchFile(ctx, fileName, fileHash, fileSize, videoDuration)
+	}
+	return nil, err
+}
+
+func (c *fallbackClient) MatchFiles(ctx context.Context, reqs []MatchRequest) (map[string]Match, error) {
+	matches, err := c.official.MatchFiles(ctx, reqs)
+	if err == nil {
+		return matches, nil
+	}
+	if shouldFallback(err) {
+		slog.Debug("dandanplay official failed, trying fallback", "error", err)
+		return c.fallback.MatchFiles(ctx, reqs)
 	}
 	return nil, err
 }
@@ -64,7 +84,7 @@ func (c *fallbackClient) GetBangumiInfo(ctx context.Context, dandanplayAnimeID i
 	if err == nil {
 		return info, nil
 	}
-	if errors.Is(err, ErrNoCredentials) || errors.Is(err, ErrRateLimited) || errors.Is(err, ErrUnavailable) {
+	if shouldFallback(err) {
 		slog.Debug("dandanplay official failed, trying fallback", "error", err)
 		return c.fallback.GetBangumiInfo(ctx, dandanplayAnimeID)
 	}

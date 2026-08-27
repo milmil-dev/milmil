@@ -165,23 +165,27 @@ func (m *Matcher) MatchLibrary(ctx context.Context, libraryID string, onProgress
 	}
 
 	// --- Pass 1: dandanplay hash matching ---
+	// One /match/batch call per 32 files rather than one /match per file: a
+	// first scan of a big library used to be thousands of requests in a burst,
+	// which is exactly what the open network's abuse detection watches for.
+	ddpResults := m.matchDandanplayBatch(ctx, files)
 	for _, f := range files {
 		if !f.FileHash.Valid || f.FileHash.String == "" {
 			continue
 		}
 
-		episodeID, animeID, ok, matchErr := m.matchDandanplay(ctx, f)
-		if matchErr != nil {
+		result := ddpResults[f.ID]
+		if result.err != nil {
 			summary.Errors++
 			continue
 		}
-		if ok {
+		if result.ok {
 			summary.Matched++
 			summary.ByDandanplay++
 			matched[f.ID] = true
 			if err := m.queries.UpdateMediaFileDandanplayIDs(ctx, store.UpdateMediaFileDandanplayIDsParams{
-				DandanplayEpisodeID: sql.NullInt64{Int64: episodeID, Valid: true},
-				DandanplayAnimeID:   sql.NullInt64{Int64: animeID, Valid: true},
+				DandanplayEpisodeID: sql.NullInt64{Int64: result.episodeID, Valid: true},
+				DandanplayAnimeID:   sql.NullInt64{Int64: result.animeID, Valid: true},
 				ID:                  f.ID,
 			}); err != nil {
 				slog.Warn("matcher: update media file failed", "file", f.ID, "err", err)
@@ -535,39 +539,87 @@ func (m *Matcher) upsertAnimeByAnidb(ctx context.Context, _ store.MediaFile, can
 	return created.ID, nil
 }
 
-// matchDandanplay tries to match a file by its hash via dandanplay API.
-func (m *Matcher) matchDandanplay(ctx context.Context, f store.MediaFile) (episodeID int64, animeID int64, ok bool, err error) {
-	cacheKey := fmt.Sprintf("danmaku:match:%s", f.FileHash.String)
+type ddpMatch struct {
+	episodeID int64
+	animeID   int64
+	ok        bool
+	err       error
+}
 
-	if data, cacheErr := m.cache.Get(ctx, cacheKey); cacheErr == nil {
-		var cached [2]int64
-		if json.Unmarshal(data, &cached) == nil && cached[0] > 0 {
-			return cached[0], cached[1], true, nil
+// batchMatchPause spaces consecutive /match/batch calls so a large scan reads
+// as a scan rather than a scrape.
+var batchMatchPause = 500 * time.Millisecond
+
+func ddpMatchCacheKey(fileHash string) string {
+	return fmt.Sprintf("danmaku:match:%s", strings.ToLower(fileHash))
+}
+
+// matchDandanplayBatch resolves every hashed file: the cache first, then the
+// rest through /match/batch in chunks of BatchMatchLimit. Results are keyed by
+// media file ID; a chunk-level API error is reported on each of its files.
+func (m *Matcher) matchDandanplayBatch(ctx context.Context, files []store.MediaFile) map[string]ddpMatch {
+	results := make(map[string]ddpMatch, len(files))
+	var pending []store.MediaFile
+	for _, f := range files {
+		if !f.FileHash.Valid || f.FileHash.String == "" {
+			continue
+		}
+		if data, cacheErr := m.cache.Get(ctx, ddpMatchCacheKey(f.FileHash.String)); cacheErr == nil {
+			var cached [2]int64
+			if json.Unmarshal(data, &cached) == nil && cached[0] > 0 {
+				results[f.ID] = ddpMatch{episodeID: cached[0], animeID: cached[1], ok: true}
+				continue
+			}
+		}
+		pending = append(pending, f)
+	}
+
+	for start := 0; start < len(pending); start += dandanplay.BatchMatchLimit {
+		chunk := pending[start:min(start+dandanplay.BatchMatchLimit, len(pending))]
+		if start > 0 {
+			select {
+			case <-ctx.Done():
+				for _, f := range pending[start:] {
+					results[f.ID] = ddpMatch{err: ctx.Err()}
+				}
+				return results
+			case <-time.After(batchMatchPause):
+			}
+		}
+
+		reqs := make([]dandanplay.MatchRequest, 0, len(chunk))
+		for _, f := range chunk {
+			duration := 0
+			if f.DurationSeconds.Valid {
+				duration = int(f.DurationSeconds.Int64)
+			}
+			reqs = append(reqs, dandanplay.MatchRequest{
+				FileName:      strings.TrimSuffix(f.Filename, filepath.Ext(f.Filename)),
+				FileHash:      f.FileHash.String,
+				FileSize:      f.SizeBytes,
+				VideoDuration: duration,
+			})
+		}
+		matches, err := m.dandanplay.MatchFiles(ctx, reqs)
+		if err != nil {
+			for _, f := range chunk {
+				results[f.ID] = ddpMatch{err: err}
+			}
+			continue
+		}
+		for _, f := range chunk {
+			match, ok := matches[strings.ToLower(f.FileHash.String)]
+			if !ok {
+				results[f.ID] = ddpMatch{}
+				continue
+			}
+			results[f.ID] = ddpMatch{episodeID: match.EpisodeID, animeID: match.AnimeID, ok: true}
+			if data, marshalErr := json.Marshal([2]int64{match.EpisodeID, match.AnimeID}); marshalErr == nil {
+				_ = m.cache.Set(ctx, ddpMatchCacheKey(f.FileHash.String), data, 7*24*time.Hour)
+			}
 		}
 	}
-
-	duration := 0
-	if f.DurationSeconds.Valid {
-		duration = int(f.DurationSeconds.Int64)
-	}
-
-	result, err := m.dandanplay.MatchFile(ctx, f.Filename, f.FileHash.String, f.SizeBytes, duration)
-	if err != nil {
-		return 0, 0, false, err
-	}
-
-	if !result.IsMatched || len(result.Matches) == 0 {
-		return 0, 0, false, nil
-	}
-
-	episodeID = result.Matches[0].EpisodeID
-	animeID = result.Matches[0].AnimeID
-
-	if data, marshalErr := json.Marshal([2]int64{episodeID, animeID}); marshalErr == nil {
-		_ = m.cache.Set(ctx, cacheKey, data, 7*24*time.Hour)
-	}
-
-	return episodeID, animeID, true, nil
+	return results
 }
 
 // matchBangumi searches Bangumi by parsed title and matches the episode by Sort field.
