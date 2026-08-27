@@ -8,6 +8,8 @@ struct DanmakuSettingsView: View {
     /// The open player, if any — gets the new pipeline immediately.
     var controller: PlayerController?
     @State private var keywordsText = ""
+    @State private var spoilerGuard = DanmakuSpoilerGuard.shared
+    @State private var spoilerKeywordsText = ""
 
     init(session: ServerSession, controller: PlayerController?) {
         self.session = session
@@ -77,11 +79,44 @@ struct DanmakuSettingsView: View {
                         }
                 }
             }
+            Section {
+                Toggle("防雷模式", isOn: Binding(get: { spoilerGuard.enabled }, set: { spoilerGuard.enabled = $0; controller?.refreshDanmakuPreferences() }))
+                if spoilerGuard.enabled {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("劇透關鍵字（每行一個，/regex/ 支援正則）").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                        TextEditor(text: $spoilerKeywordsText)
+                            .font(.system(size: 12))
+                            .frame(minHeight: 60, maxHeight: 120)
+                            .onChange(of: spoilerKeywordsText) { _, text in
+                                let words = text.split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+                                if words != spoilerGuard.keywords {
+                                    spoilerGuard.keywords = words
+                                    controller?.refreshDanmakuPreferences()
+                                }
+                            }
+                        Button("還原預設關鍵字") {
+                            spoilerGuard.resetKeywords()
+                            spoilerKeywordsText = spoilerGuard.keywords.joined(separator: "\n")
+                            controller?.refreshDanmakuPreferences()
+                        }
+                        .disabled(spoilerGuard.keywords == DanmakuSpoilerGuard.defaultKeywords)
+                    }
+                    if let hidden = controller?.danmakuStore?.spoilerHidden, hidden > 0 {
+                        Text("這集已隱藏 \(hidden) 則疑似劇透").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+                    }
+                }
+            } header: {
+                Text("防雷")
+            } footer: {
+                Text("隱藏提到後面集數（第 N 集 / EPN）或劇透關鍵字的彈幕；只在這部 Mac 生效。").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
+            }
         }
         .formStyle(.grouped)
-        .scrollContentBackground(.hidden)
-        .frame(minWidth: 360, minHeight: 480)
-        .onAppear { keywordsText = prefs.danmakuBlockKeywords.joined(separator: "\n") }
+        .onAppear {
+            keywordsText = prefs.danmakuBlockKeywords.joined(separator: "\n")
+            spoilerKeywordsText = spoilerGuard.keywords.joined(separator: "\n")
+            controller?.danmakuStore?.episodeNumber = controller?.episode?.sort
+        }
     }
 
     private func update(_ change: @escaping (inout GlobalPreferences) -> Void) {

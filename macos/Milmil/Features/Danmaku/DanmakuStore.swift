@@ -56,8 +56,17 @@ final class DanmakuStore {
     private(set) var parts: [DanmakuVideoPart] = []
     private(set) var sourceBusy = false
     private(set) var sourceError: String?
+    /// Comments 防雷模式 kept off the screen for this episode.
+    private(set) var spoilerHidden = 0
+    /// The episode's number, for "第 N 集" spoiler detection; the player's
+    /// danmaku views hand it over when they know it (the store only has the ID).
+    var episodeNumber: Double? {
+        didSet { if episodeNumber != oldValue, spoilerGuard.enabled { rebuild() } }
+    }
 
     private var preferences: GlobalPreferences
+    private let spoilerGuard = DanmakuSpoilerGuard.shared
+    private var spoilerSignature: (Bool, [String])?
 
     init(fileID: String, episodeID: String, client: APIClient, preferences: GlobalPreferences) {
         self.fileID = fileID
@@ -120,7 +129,16 @@ final class DanmakuStore {
             || old.danmakuFilterBottom != preferences.danmakuFilterBottom
             || old.danmakuBlockKeywords != preferences.danmakuBlockKeywords
             || old.danmakuChineseConvert != preferences.danmakuChineseConvert
-        if pipelineChanged { rebuild() }
+        if pipelineChanged || spoilerSettingsChanged { rebuild() }
+    }
+
+    /// 防雷模式 lives outside `GlobalPreferences`; the settings view calls
+    /// `apply(preferences:)` after every change, and this notices it.
+    private var spoilerSettingsChanged: Bool {
+        let signature = (spoilerGuard.enabled, spoilerGuard.keywords)
+        defer { spoilerSignature = signature }
+        guard let previous = spoilerSignature else { return true }
+        return previous.0 != signature.0 || previous.1 != signature.1
     }
 
     private func rebuild() {
@@ -135,7 +153,15 @@ final class DanmakuStore {
         options.showBottom = preferences.danmakuFilterBottom
         options.blockKeywords = preferences.danmakuBlockKeywords
         options.convert = DanmakuConverter.closure(for: preferences.danmakuChineseConvert)
-        timeline = DanmakuPipeline(options: options).process(dandanplay + importedComments + local)
+        var comments = dandanplay + importedComments + local
+        if let matcher = spoilerGuard.matcher(currentEpisode: episodeNumber) {
+            let before = comments.count
+            comments.removeAll { matcher.hides($0.text) }
+            spoilerHidden = before - comments.count
+        } else {
+            spoilerHidden = 0
+        }
+        timeline = DanmakuPipeline(options: options).process(comments)
     }
 
     // MARK: - Sending

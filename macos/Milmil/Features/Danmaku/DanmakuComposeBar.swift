@@ -47,39 +47,48 @@ struct DanmakuComposeBar: View {
                     }
                 }
             } label: {
-                HStack(spacing: 4) {
+                // Reads as "style": a colour swatch plus the position glyph,
+                // with the menu chevron visible so it is discoverable as a
+                // menu (a bare ← looked like a back button).
+                HStack(spacing: 5) {
                     Circle().fill(Color(hex: UInt32(RGB(hex: colorHex).intValue))).frame(width: 10, height: 10)
                         .overlay(Circle().strokeBorder(.white.opacity(0.3), lineWidth: 0.5))
-                    Image(systemName: modeSymbol).font(.system(size: 11))
+                    Image(systemName: modeSymbol).font(.system(size: 11, weight: .semibold))
                 }
-                .frame(width: 40, height: 24)
+                .padding(.horizontal, 6)
+                .frame(height: 24)
             }
-            .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+            .menuStyle(.borderlessButton).fixedSize()
             .help("彈幕樣式")
+            .accessibilityLabel("彈幕樣式")
 
             TextField(controller.danmakuEnabled ? String(localized: "發個彈幕…（⌘↩ 聚焦）") : String(localized: "開啟彈幕後即可發送"), text: $text)
                 .textFieldStyle(.plain)
-                .font(.system(size: 13))
-                .padding(.horizontal, 10).padding(.vertical, 6)
-                .background(.white.opacity(0.06), in: Capsule())
+                .font(.system(size: 12.5))
+                .padding(.horizontal, 9).padding(.vertical, 5)
+                .background(Theme.ink(0.05), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).strokeBorder(Theme.ink(focused ? 0.16 : 0.08)))
                 .focused($focused)
                 .onSubmit(send)
                 .disabled(store == nil)
             Button("發送", action: send)
-                .glassProminentButtonStyle()
+                .glassButtonStyle()
                 .controlSize(.small)
                 .disabled(text.trimmingCharacters(in: .whitespaces).isEmpty || store == nil || (store?.isSending ?? false))
             if let error = store?.sendError {
                 Text(error).font(.system(size: 11)).foregroundStyle(Color(hex: 0xF87171)).lineLimit(1)
             }
         }
+        // 防雷模式 needs the episode number; the store only knows the ID, and
+        // this bar is on screen whenever the watch page is.
+        .onChange(of: controller.episode?.sort, initial: true) { _, sort in controller.danmakuStore?.episodeNumber = sort }
     }
 
     private var modeSymbol: String {
         switch mode {
-        case .scroll: "arrow.left"
-        case .top: "arrow.up.to.line"
-        case .bottom: "arrow.down.to.line"
+        case .scroll: "text.line.first.and.arrowtriangle.forward"
+        case .top: "arrow.up.to.line.compact"
+        case .bottom: "arrow.down.to.line.compact"
         }
     }
 

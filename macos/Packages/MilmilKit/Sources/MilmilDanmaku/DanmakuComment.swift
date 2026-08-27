@@ -42,7 +42,9 @@ public struct DanmakuComment: Sendable, Hashable, Identifiable {
 
     public var sourceLabel: String {
         switch source {
-        case .dandanplay: "DandanPlay"
+        // The open network's terms require the full name; "dandan"-style
+        // abbreviations are explicitly disallowed.
+        case .dandanplay: "弹弹play"
         case let .external(name): name.capitalized
         case .local: "我"
         }

@@ -16,7 +16,23 @@ struct DanmakuListTab: View {
                 Toggle("跟隨", isOn: $follow).toggleStyle(.checkbox).controlSize(.small)
             }
             .padding(10)
-            Divider()
+            if let store, !store.dandanplay.isEmpty {
+                // Source credit the open network's terms ask for, in full.
+                Text("彈幕來源：弹弹play开放弹幕网络")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.Text.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 8)
+            }
+            if let hidden = store?.spoilerHidden, hidden > 0 {
+                // 防雷模式 at work; quiet, so it reads as reassurance, not a warning.
+                Label(String(localized: "已隱藏 \(hidden) 則疑似劇透"), systemImage: "eye.slash")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.Text.tertiary)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 8)
+            }
             if let store {
                 if store.isLoading, store.timeline.isEmpty {
                     ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -24,7 +40,7 @@ struct DanmakuListTab: View {
                     EmptyState(
                         symbol: "text.bubble",
                         title: String(localized: "這集還沒有彈幕"),
-                        message: store.loadError ?? String(localized: "可以在「來源」分頁從 Bilibili 匯入，或直接發一條。")
+                        message: store.loadError ?? String(localized: "可以在「彈幕 › 來源」從 Bilibili 匯入，或直接發一條。")
                     )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -35,6 +51,8 @@ struct DanmakuListTab: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        // The store only knows the episode ID; 防雷模式 needs the number.
+        .onChange(of: controller.episode?.sort, initial: true) { _, sort in controller.danmakuStore?.episodeNumber = sort }
     }
 
     private func list(_ store: DanmakuStore) -> some View {
@@ -114,7 +132,10 @@ private struct DanmakuRow: View {
     }
 }
 
-/// Inspector「來源」: external providers → search → parts → import → save / remove.
+/// Inspector「彈幕來源」: search first (source menu + query, mirroring the
+/// list tab's toolbar), then one scrolling area that holds what has been
+/// imported and what the search found — or an empty state that says what
+/// the pane is for, instead of a void under two headings.
 struct DanmakuSourcesTab: View {
     let controller: PlayerController
     @State private var source = ""
@@ -124,17 +145,49 @@ struct DanmakuSourcesTab: View {
 
     var body: some View {
         let store = controller.danmakuStore
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                if let store {
-                    importedSection(store)
-                    Divider()
-                    searchSection(store)
-                } else {
-                    EmptyState(symbol: "square.and.arrow.down", title: String(localized: "彈幕來源"), message: String(localized: "開始播放後可匯入。"))
+        VStack(spacing: 0) {
+            if let store {
+                searchRow(store)
+                if let error = store.sourceError {
+                    Label(error, systemImage: "exclamationmark.triangle")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color(hex: 0xF87171))
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
                 }
+                if store.imported.isEmpty, store.searchResults.isEmpty {
+                    if store.sourceBusy {
+                        ProgressView().controlSize(.small).frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        EmptyState(
+                            symbol: "square.and.arrow.down",
+                            title: String(localized: "從外部來源匯入彈幕"),
+                            message: String(localized: "選擇來源、搜尋標題並匯入；匯入的彈幕會與現有彈幕一起顯示。")
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                } else {
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 6) {
+                            if !store.imported.isEmpty {
+                                sectionHeader(String(localized: "已匯入"))
+                                importedRows(store)
+                            }
+                            if !store.searchResults.isEmpty {
+                                sectionHeader(String(localized: "搜尋結果"))
+                                    .padding(.top, store.imported.isEmpty ? 0 : 10)
+                                resultRows(store)
+                            }
+                        }
+                        .padding(12)
+                    }
+                }
+            } else {
+                EmptyState(symbol: "square.and.arrow.down", title: String(localized: "彈幕來源"), message: String(localized: "開始播放後可匯入。"))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding(12)
         }
         .task(id: store?.episodeID) {
             guard let store else { return }
@@ -159,12 +212,41 @@ struct DanmakuSourcesTab: View {
         return title
     }
 
-    @ViewBuilder
-    private func importedSection(_ store: DanmakuStore) -> some View {
-        Text("已匯入").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.Text.tertiary)
-        if store.imported.isEmpty {
-            Text("尚未匯入外部彈幕。").font(.system(size: 12)).foregroundStyle(Theme.Text.tertiary)
+    private func searchRow(_ store: DanmakuStore) -> some View {
+        HStack(spacing: 8) {
+            Picker("", selection: $source) {
+                ForEach(store.sources) { Text($0.label).tag($0.name) }
+                if store.sources.isEmpty { Text("Bilibili").tag("bilibili") }
+            }
+            .labelsHidden()
+            .fixedSize()
+            TextField("標題 第N話", text: $query)
+                .textFieldStyle(.roundedBorder)
+                .onSubmit { Task { await store.search(source: source, query: query) } }
+            if store.sourceBusy {
+                ProgressView().controlSize(.small)
+            } else {
+                Button {
+                    Task { await store.search(source: source, query: query) }
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+                .disabled(query.trimmingCharacters(in: .whitespaces).isEmpty)
+                .help("搜尋")
+            }
         }
+        .controlSize(.small)
+        .padding(10)
+    }
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(Theme.Text.tertiary)
+            .padding(.bottom, 2)
+    }
+
+    private func importedRows(_ store: DanmakuStore) -> some View {
         ForEach(store.imported, id: \.source) { row in
             HStack(spacing: 8) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -178,33 +260,17 @@ struct DanmakuSourcesTab: View {
                     .buttonStyle(.plain).foregroundStyle(Theme.Text.tertiary).help("移除")
             }
             .padding(10)
-            .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .background(Theme.ink(0.04), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
     }
 
-    @ViewBuilder
-    private func searchSection(_ store: DanmakuStore) -> some View {
-        Text("搜尋來源").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.Text.tertiary)
-        HStack(spacing: 6) {
-            Picker("", selection: $source) {
-                ForEach(store.sources) { Text($0.label).tag($0.name) }
-                if store.sources.isEmpty { Text("Bilibili").tag("bilibili") }
-            }
-            .labelsHidden().frame(width: 110)
-            TextField("標題 第N話", text: $query)
-                .textFieldStyle(.roundedBorder)
-                .onSubmit { Task { await store.search(source: source, query: query) } }
-            Button("搜尋") { Task { await store.search(source: source, query: query) } }
-                .disabled(query.trimmingCharacters(in: .whitespaces).isEmpty || store.sourceBusy)
-        }
-        .controlSize(.small)
-        if store.sourceBusy { ProgressView().controlSize(.small) }
-        if let error = store.sourceError { Text(error).font(.system(size: 11)).foregroundStyle(Color(hex: 0xF87171)) }
+    private func resultRows(_ store: DanmakuStore) -> some View {
         ForEach(store.searchResults) { result in
+            let expanded = selected?.id == result.id
             VStack(alignment: .leading, spacing: 6) {
                 Button {
-                    selected = result
-                    Task { await store.loadParts(source: source, videoID: result.videoId) }
+                    selected = expanded ? nil : result
+                    if !expanded { Task { await store.loadParts(source: source, videoID: result.videoId) } }
                 } label: {
                     HStack(spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
@@ -212,12 +278,15 @@ struct DanmakuSourcesTab: View {
                             Text("\(result.danmakuCount ?? 0) 條 · \(result.duration ?? "")").font(.system(size: 11)).foregroundStyle(Theme.Text.tertiary)
                         }
                         Spacer()
-                        Image(systemName: selected?.id == result.id ? "chevron.down" : "chevron.right").font(.system(size: 10)).foregroundStyle(Theme.Text.tertiary)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(Theme.Text.tertiary)
+                            .rotationEffect(.degrees(expanded ? 90 : 0))
                     }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                if selected?.id == result.id {
+                if expanded {
                     if store.parts.isEmpty {
                         importButton(store, videoID: result.videoId, part: 0, title: String(localized: "匯入"))
                     } else {
@@ -228,7 +297,8 @@ struct DanmakuSourcesTab: View {
                 }
             }
             .padding(8)
-            .background(.white.opacity(selected?.id == result.id ? 0.06 : 0.03), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .background(Theme.ink(expanded ? 0.06 : 0.03), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .animation(.easeOut(duration: 0.15), value: expanded)
         }
     }
 
