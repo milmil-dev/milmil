@@ -16,7 +16,13 @@ import kotlinx.coroutines.launch
 public sealed interface PairState {
     public data object Waiting : PairState
     public data class Connecting(val name: String) : PairState
-    public data class Paired(val name: String, val username: String, val version: String) : PairState
+    public data class Paired(
+        val name: String,
+        val username: String,
+        val version: String,
+        val url: String,
+        val token: String,
+    ) : PairState
     public data class Failed(val message: String) : PairState
 }
 
@@ -38,18 +44,17 @@ public class PairViewModel : ViewModel() {
         }
         _state.value = PairState.Connecting(parsed.name)
         viewModelScope.launch {
+            // Closed by the caller once the session ends; Home reuses the token.
             val client = ApiClient(parsed.url) { parsed.token }
             try {
                 val health = client.health()
                 val user = client.me()
-                _state.value = PairState.Paired(parsed.name, user.username, health.version)
+                _state.value = PairState.Paired(parsed.name, user.username, health.version, parsed.url, parsed.token)
             } catch (error: ApiError.Unauthorized) {
                 // The token never expires, so 401 means it was revoked.
                 _state.value = PairState.Failed("配對碼已經失效，請喺 Web 版重新產生")
             } catch (error: ApiError) {
                 _state.value = PairState.Failed(error.message ?: "連唔到伺服器")
-            } finally {
-                client.close()
             }
         }
     }
