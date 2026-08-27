@@ -45,4 +45,36 @@ class DiscoverTest {
         assertEquals("English", DiscoverAnime(titleEn = "English", titleOriginal = "原題").displayTitle)
         assertEquals("中文", DiscoverAnime(title = "中文", titleEn = "English").displayTitle)
     }
+
+    @Test
+    fun `a collection row is not a discover row — the field names differ`() {
+        val rows = MilmilJson.decodeFromString(
+            ListSerializer(CollectionEntry.serializer()),
+            fixture("collection.json"),
+        )
+        assertTrue(rows.isNotEmpty())
+        val row = rows.first()
+        assertTrue(row.bangumiId > 0)
+        // cover_image_url, not cover_image — decoding this as DiscoverAnime
+        // would leave the poster blank instead of failing loudly.
+        assertTrue(row.coverImageUrl.isNotBlank())
+        assertTrue(row.totalEpisodes >= 0)
+    }
+
+    @Test
+    fun `a collection title prefers the Chinese field the endpoint adds`() {
+        assertEquals("中文", CollectionEntry(titleZh = "中文", title = "Romaji").displayTitle)
+        assertEquals("Romaji", CollectionEntry(title = "Romaji", titleEn = "English").displayTitle)
+    }
+
+    @Test
+    fun `an explicit null falls back to the default, not an exception`() {
+        // Real collection rows carry "title_en": null.
+        val rows = MilmilJson.decodeFromString(
+            ListSerializer(CollectionEntry.serializer()),
+            """[{"bangumi_id":1,"title":"有","title_en":null,"cover_image_url":null}]""",
+        )
+        assertEquals("", rows.first().titleEn)
+        assertEquals("", rows.first().coverImageUrl)
+    }
 }

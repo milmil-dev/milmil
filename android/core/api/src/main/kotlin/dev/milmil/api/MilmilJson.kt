@@ -12,5 +12,10 @@ public val MilmilJson: Json = Json {
     explicitNulls = false
     // The API mixes `last_ip` and `token_prefix`; a naming strategy would map
     // them inconsistently, so DTOs carry explicit @SerialName.
-    coerceInputValues = false
+    //
+    // Explicit nulls are real: a collection row sends `"title_en": null` for a
+    // title it does not have. Coercing them to the property default is what
+    // MilmilKit does with optionals, and keeps every DTO free of nullable
+    // strings that every call site would then have to unwrap.
+    coerceInputValues = true
 }

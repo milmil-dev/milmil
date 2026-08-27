@@ -49,6 +49,26 @@ public suspend fun ApiClient.trending(page: Int = 1): List<DiscoverAnime> =
         execute(HttpMethod.Get, "/api/v1/discover/trending?page=$page", null),
     )
 
+/**
+ * `discoverApi.search`. The search response is a leaner shape than trending —
+ * no banner, no anilist id — which the defaults absorb.
+ */
+public suspend fun ApiClient.search(query: String, page: Int = 1): List<DiscoverAnime> =
+    MilmilJson.decodeFromString(
+        animeListSerializer,
+        execute(HttpMethod.Get, "/api/v1/discover/search?q=${'$'}{query.encodeQuery()}&page=${'$'}page", null),
+    )
+
+/** `discoverApi.browse` — the filtered grid behind the Discover tab. */
+public suspend fun ApiClient.browse(page: Int = 1): List<DiscoverAnime> =
+    MilmilJson.decodeFromString(
+        animeListSerializer,
+        execute(HttpMethod.Get, "/api/v1/discover/browse?page=${'$'}page", null),
+    )
+
+private fun String.encodeQuery(): String =
+    java.net.URLEncoder.encode(this, java.nio.charset.StandardCharsets.UTF_8)
+
 /** `discoverApi.calendar` — the whole week, each day carrying its own items. */
 public suspend fun ApiClient.calendar(): List<CalendarDay> =
     MilmilJson.decodeFromString(
