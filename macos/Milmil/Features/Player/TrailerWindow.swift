@@ -11,6 +11,9 @@ final class TrailerCoordinator {
     struct Request: Equatable {
         let url: URL
         let title: String
+        /// Second line under the title in the window's own title bar —
+        /// "預告片" for a series trailer, the full URL for 開啟 URL.
+        var caption: String?
         /// Backdrop shown while yt-dlp resolves the stream.
         var artwork: URL?
     }
@@ -25,8 +28,8 @@ final class TrailerCoordinator {
     var canPlayInApp: Bool { YtDlp.isInstalled }
 
     /// The caller opens the "trailer" window right after.
-    func play(url: URL, title: String, artwork: URL? = nil) {
-        request = Request(url: url, title: title, artwork: artwork)
+    func play(url: URL, title: String, caption: String? = nil, artwork: URL? = nil) {
+        request = Request(url: url, title: title, caption: caption, artwork: artwork)
         if player == nil { player = TrailerPlayer() }
         player?.load(url: url, title: title)
         YtDlp.updateInBackground()
@@ -61,6 +64,9 @@ final class TrailerPlayer {
     private var currentURL: URL?
     /// Position to restore after a quality-switch reload.
     private var pendingRestore: Double?
+    /// `load(url:)` before the window is on screen: held until the render
+    /// layer has its mpv context, else the file plays with no picture.
+    private var pendingLoad: URL?
     private var eventTask: Task<Void, Never>?
 
     init() {
@@ -89,6 +95,23 @@ final class TrailerPlayer {
         error = nil
         tracks = []
         pendingRestore = nil
+        guard let layer = renderView?.renderLayer, !layer.isRenderContextReady else {
+            pendingLoad = nil
+            player?.loadFile(url.absoluteString)
+            player?.set("pause", false)
+            return
+        }
+        // The window opens right after `play`; the layer creates its mpv
+        // context on its first draw, and only then can a file bring video.
+        pendingLoad = url
+        layer.onRenderContextReady = { [weak self] in
+            Task { @MainActor in self?.flushPendingLoad() }
+        }
+    }
+
+    private func flushPendingLoad() {
+        guard let url = pendingLoad else { return }
+        pendingLoad = nil
         player?.loadFile(url.absoluteString)
         player?.set("pause", false)
     }
@@ -205,6 +228,18 @@ struct TrailerWindowView: View {
 
     @State private var oscVisible = true
     @State private var hideTask: Task<Void, Never>?
+    @State private var window: NSWindow?
+    @State private var pinned = false
+    @State private var isFullscreen = false
+    /// Cursor over the title bar or the OSC: IINA destroys the hide timer
+    /// there and only restarts it once the cursor is back on the picture.
+    @State private var hoveringControls = false
+
+    /// IINA's title bar height: the strip the traffic lights sit in.
+    static let titleBarHeight: CGFloat = 28
+    /// IINA `UIAnimationDuration` / `controlBarAutoHideTimeout` default.
+    static let fadeDuration = 0.25
+    static let autoHideTimeout = 2.5
 
     var body: some View {
         ZStack {
@@ -216,7 +251,55 @@ struct TrailerWindowView: View {
                 EmptyState(symbol: "film", title: String(localized: "沒有播放中的預告片"), message: String(localized: "從作品頁按「預告片」開啟。"))
             }
         }
+        .background(WindowAccessor { configure($0) })
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)) { note in
+            if note.object as? NSWindow === window { isFullscreen = true }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)) { note in
+            if note.object as? NSWindow === window { isFullscreen = false }
+        }
         .onDisappear { coordinator.windowDidClose() }
+    }
+
+    /// IINA-style frame: the system title bar stays (so the traffic lights,
+    /// dragging and double-click-to-zoom all work) but goes transparent and
+    /// full-size, and our own strip is drawn where it was.
+    private func configure(_ window: NSWindow) {
+        guard self.window !== window else { return }
+        self.window = window
+        // `.hiddenTitleBar` already made the bar transparent and full-size;
+        // re-setting the style mask on a live window re-frames the content
+        // view and detaches mpv's render surface — only fill in what is missing.
+        if !window.titlebarAppearsTransparent { window.titlebarAppearsTransparent = true }
+        if window.titleVisibility != .hidden { window.titleVisibility = .hidden }
+        if !window.styleMask.contains(.fullSizeContentView) { window.styleMask.insert(.fullSizeContentView) }
+        window.isMovableByWindowBackground = true
+        isFullscreen = window.styleMask.contains(.fullScreen)
+        pinned = window.level == .floating
+    }
+
+    /// The traffic lights are AppKit's; fade them with the strip they sit in
+    /// (IINA does the same). Fullscreen leaves them to the system.
+    private func setTrafficLights(visible: Bool) {
+        guard let window, !isFullscreen else { return }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = Self.fadeDuration
+            for kind in [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton] {
+                window.standardWindowButton(kind)?.animator().alphaValue = visible ? 1 : 0
+            }
+        }
+    }
+
+    private func togglePin() {
+        guard let window else { return }
+        pinned.toggle()
+        window.level = pinned ? .floating : .normal
+    }
+
+    /// The OSC button used `NSApp.keyWindow`, which is nil while the click
+    /// is being handled — go through the window we were given instead.
+    private func toggleFullscreen() {
+        (window ?? NSApp.keyWindow)?.toggleFullScreen(nil)
     }
 
     @ViewBuilder
@@ -234,28 +317,94 @@ struct TrailerWindowView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { model.togglePause() }
+        // IINA: mouseMoved shows the UI and restarts the timer; mouseExited
+        // hides it straight away.
         .onContinuousHover { phase in
             switch phase {
-            case .active: showOSC()
-            case .ended: scheduleHide(after: 0.8)
+            case .active: showUI()
+            case .ended: hideUI(hidingCursor: false)
+            }
+        }
+        .overlay(alignment: .top) {
+            if model.error == nil {
+                let chromeVisible = oscVisible || model.loading
+                titleBar(model)
+                    // Into the title-bar safe area: the strip *is* the title bar.
+                    .ignoresSafeArea(edges: .top)
+                    .opacity(chromeVisible ? 1 : 0)
+                    .allowsHitTesting(chromeVisible)
+                    .animation(.easeOut(duration: Self.fadeDuration), value: chromeVisible)
+                    .onChange(of: chromeVisible, initial: true) { _, visible in setTrafficLights(visible: visible) }
+                    .onHover(perform: hoverControls)
             }
         }
         .overlay(alignment: .bottom) {
             if model.error == nil {
-                TrailerOSC(model: model) {
-                    if let url = coordinator.request?.url { openURL(url) }
-                }
-                .opacity(oscVisible || model.paused ? 1 : 0)
-                .animation(.easeOut(duration: 0.2), value: oscVisible || model.paused)
+                TrailerOSC(model: model, toggleFullscreen: toggleFullscreen)
+                    .opacity(oscVisible ? 1 : 0)
+                    .allowsHitTesting(oscVisible)
+                    .animation(.easeOut(duration: Self.fadeDuration), value: oscVisible)
+                    .onHover(perform: hoverControls)
             }
         }
         .focusable()
         .focusEffectDisabled()
-        .onKeyPress(.space) { model.togglePause(); showOSC(); return .handled }
-        .onKeyPress(.leftArrow) { model.seek(by: -5); showOSC(); return .handled }
-        .onKeyPress(.rightArrow) { model.seek(by: 5); showOSC(); return .handled }
-        .onKeyPress(KeyEquivalent("m")) { model.toggleMute(); showOSC(); return .handled }
-        .onKeyPress(KeyEquivalent("f")) { NSApp.keyWindow?.toggleFullScreen(nil); return .handled }
+        .onKeyPress(.space) { model.togglePause(); showUI(); return .handled }
+        .onKeyPress(.leftArrow) { model.seek(by: -5); showUI(); return .handled }
+        .onKeyPress(.rightArrow) { model.seek(by: 5); showUI(); return .handled }
+        .onKeyPress(KeyEquivalent("m")) { model.toggleMute(); showUI(); return .handled }
+        .onKeyPress(KeyEquivalent("f")) { toggleFullscreen(); return .handled }
+    }
+
+    private var titleText: Text {
+        let name = coordinator.player?.title ?? ""
+        var text = Text(name.isEmpty ? String(localized: "預告片") : name)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(.white.opacity(0.92))
+        if let caption = coordinator.request?.caption, !caption.isEmpty {
+            // swiftlint:disable:next shorthand_operator
+            text = text + Text(verbatim: "  ·  \(caption)")
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.5))
+        }
+        return text
+    }
+
+    /// IINA's title bar: one translucent strip across the top where the
+    /// system title bar was, the traffic lights at its left, the title
+    /// centred like a document title (the caption trails it, dimmed) and the
+    /// small accessory buttons — pin on top, open in browser — at its right.
+    /// Fades with the OSC, traffic lights included. The strip itself takes no
+    /// clicks, so dragging and double-click-to-zoom stay AppKit's.
+    private func titleBar(_ model: TrailerPlayer) -> some View {
+        ZStack {
+            // One string, so title and caption centre and truncate together —
+            // a caption in its own frame drifted away from the title.
+            titleText
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .padding(.horizontal, 96)
+                .frame(maxWidth: .infinity)
+                .allowsHitTesting(false)
+            HStack(spacing: 2) {
+                Spacer()
+                TitleBarButton(symbol: pinned ? "pin.fill" : "pin", label: String(localized: "置頂"), active: pinned, action: togglePin)
+                TitleBarButton(symbol: "safari", label: String(localized: "在瀏覽器開啟")) {
+                    if let url = coordinator.request?.url { openURL(url) }
+                }
+            }
+            .padding(.trailing, 6)
+        }
+        .frame(height: Self.titleBarHeight)
+        .frame(maxWidth: .infinity)
+        .background {
+            ZStack {
+                Rectangle().fill(.ultraThinMaterial)
+                Color.black.opacity(0.35)
+            }
+            .environment(\.colorScheme, .dark)
+        }
+        .overlay(alignment: .bottom) { Rectangle().fill(.white.opacity(0.08)).frame(height: 0.5) }
     }
 
     /// Artwork + spinner while yt-dlp resolves the stream, instead of a bare
@@ -285,9 +434,25 @@ struct TrailerWindowView: View {
         }
     }
 
-    private func showOSC() {
+    // MARK: IINA showUI / hideUI
+
+    /// Title bar, traffic lights and OSC are one set of fadeable views: they
+    /// appear together on any input and go together after the idle timeout
+    /// (unless the cursor is parked on them), on mouse exit, or never while
+    /// a stream is still resolving.
+    private func showUI() {
+        hideTask?.cancel()
         oscVisible = true
-        scheduleHide(after: 2.5)
+        if !hoveringControls { scheduleHide(after: Self.autoHideTimeout) }
+    }
+
+    private func hideUI(hidingCursor: Bool) {
+        hideTask?.cancel()
+        // Snapshot runs keep the chrome up, same as the main player.
+        guard !DevSnapshot.keepsPlayerChrome else { return }
+        oscVisible = false
+        // IINA hides the pointer with the controls; it returns on the next move.
+        if hidingCursor { NSCursor.setHiddenUntilMouseMoves(true) }
     }
 
     private func scheduleHide(after seconds: Double) {
@@ -295,71 +460,91 @@ struct TrailerWindowView: View {
         hideTask = Task {
             try? await Task.sleep(for: .seconds(seconds))
             guard !Task.isCancelled else { return }
-            oscVisible = false
+            hideUI(hidingCursor: true)
+        }
+    }
+
+    private func hoverControls(_ over: Bool) {
+        hoveringControls = over
+        if over {
+            hideTask?.cancel()
+        } else {
+            scheduleHide(after: Self.autoHideTimeout)
         }
     }
 }
 
-/// The main player's floating glass OSC, trimmed to what a trailer needs:
-/// seek, transport, time, volume and a browser escape hatch.
+/// QuickTime-on-Tahoe style transport: one floating glass capsule with the
+/// transport cluster, an inline scrubber between the two clocks, and the
+/// secondary controls on the right. Nothing is layered on the glass except
+/// the white primary play button.
 private struct TrailerOSC: View {
     let model: TrailerPlayer
-    var openInBrowser: () -> Void
+    var toggleFullscreen: () -> Void
 
     @State private var volumeExpanded = false
 
     var body: some View {
-        VStack(spacing: 8) {
+        HStack(spacing: 8) {
+            OSCButton(symbol: "gobackward.10", label: String(localized: "後退 10 秒")) { model.seek(by: -10) }
+            Button { model.togglePause() } label: {
+                Image(systemName: model.paused ? "play.fill" : "pause.fill")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(.black.opacity(0.85))
+                    .frame(width: 34, height: 34)
+                    .background(.white.opacity(0.92), in: Circle())
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(model.paused ? String(localized: "播放") : String(localized: "暫停"))
+            OSCButton(symbol: "goforward.10", label: String(localized: "前進 10 秒")) { model.seek(by: 10) }
+            clock(model.timePos)
+                .padding(.leading, 6)
             TrailerSeekBar(model: model)
-            HStack(spacing: 12) {
-                OSCButton(symbol: "gobackward.10", label: String(localized: "後退 10 秒")) { model.seek(by: -10) }
-                Button { model.togglePause() } label: {
-                    Image(systemName: model.paused ? "play.fill" : "pause.fill")
-                        .font(.system(size: 18, weight: .bold))
-                        .frame(width: 40, height: 40)
-                        .background(.white.opacity(0.14), in: Circle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(model.paused ? String(localized: "播放") : String(localized: "暫停"))
-                OSCButton(symbol: "goforward.10", label: String(localized: "前進 10 秒")) { model.seek(by: 10) }
-                Text(verbatim: "\(Formatters.clock(model.timePos)) / \(Formatters.clock(max(model.duration, 0)))")
-                    .font(.system(size: 12, weight: .medium)).monospacedDigit()
-                    .foregroundStyle(.white.opacity(0.85))
-                    .padding(.leading, 4)
-                Spacer(minLength: 8)
-                HStack(spacing: 6) {
-                    OSCButton(
-                        symbol: model.muted || model.volume == 0 ? "speaker.slash.fill" : "speaker.wave.2.fill",
-                        label: model.muted ? String(localized: "取消靜音") : String(localized: "靜音")
-                    ) { model.toggleMute() }
-                    if volumeExpanded {
-                        Slider(value: Binding(get: { model.muted ? 0 : model.volume }, set: { model.setVolume($0) }), in: 0...100)
-                            .controlSize(.mini)
-                            .frame(width: 90)
-                    }
-                }
-                .onHover { volumeExpanded = $0 }
-                speedMenu
-                subtitleMenu
-                if model.audioTracks.count > 1 { audioMenu }
-                qualityMenu
-                OSCButton(symbol: "safari", label: String(localized: "在瀏覽器開啟")) { openInBrowser() }
-                OSCButton(symbol: "arrow.up.left.and.arrow.down.right", label: String(localized: "全螢幕")) {
-                    NSApp.keyWindow?.toggleFullScreen(nil)
+                .frame(maxWidth: .infinity)
+            clock(max(model.duration, 0))
+                .padding(.trailing, 6)
+            HStack(spacing: 4) {
+                OSCButton(
+                    symbol: model.muted || model.volume == 0 ? "speaker.slash.fill" : "speaker.wave.2.fill",
+                    label: model.muted ? String(localized: "取消靜音") : String(localized: "靜音")
+                ) { model.toggleMute() }
+                if volumeExpanded {
+                    Slider(value: Binding(get: { model.muted ? 0 : model.volume }, set: { model.setVolume($0) }), in: 0...100)
+                        .controlSize(.mini)
+                        .frame(width: 80)
+                        .transition(.opacity.combined(with: .move(edge: .leading)))
                 }
             }
-            .foregroundStyle(.white)
+            .onHover { volumeExpanded = $0 }
+            .animation(.snappy(duration: 0.2), value: volumeExpanded)
+            speedMenu
+            subtitleMenu
+            if model.audioTracks.count > 1 { audioMenu }
+            qualityMenu
+            OSCButton(symbol: "arrow.up.left.and.arrow.down.right", label: String(localized: "全螢幕")) {
+                toggleFullscreen()
+            }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08), lineWidth: 0.5))
+        .foregroundStyle(.white)
+        .padding(.leading, 8)
+        .padding(.trailing, 10)
+        .padding(.vertical, 6)
+        .glassSurface(in: Capsule())
+        .legacyGlassRim(Capsule())
+        .frame(maxWidth: 780)
         .padding(.horizontal, 20)
-        .padding(.bottom, 16)
-        .frame(maxWidth: .infinity)
+        .padding(.bottom, 14)
         .tint(.white)
         .disabled(model.loading)
         .opacity(model.loading ? 0 : 1)
+    }
+
+    private func clock(_ seconds: Double) -> some View {
+        Text(Formatters.clock(seconds))
+            .font(.system(size: 12, weight: .medium)).monospacedDigit()
+            .foregroundStyle(.white.opacity(0.85))
+            .frame(minWidth: 34)
     }
 
     private var speedMenu: some View {
@@ -507,11 +692,50 @@ struct OpenURLSheet: View {
     private func open() {
         guard let url else { return }
         if trailers.canPlayInApp {
-            trailers.play(url: url, title: url.host() ?? url.absoluteString)
+            trailers.play(url: url, title: url.host() ?? url.absoluteString, caption: url.absoluteString)
             openWindow(id: "trailer")
         } else {
             NSWorkspace.shared.open(url)
         }
         dismiss()
+    }
+}
+
+private extension View {
+    /// Liquid Glass draws its own rim; the pre-26 material fallback needs a
+    /// hairline to read as a floating surface.
+    @ViewBuilder
+    func legacyGlassRim(_ shape: some InsettableShape) -> some View {
+        if #available(macOS 26.0, *) {
+            self
+        } else {
+            overlay(shape.strokeBorder(.white.opacity(0.08), lineWidth: 0.5))
+        }
+    }
+}
+
+/// IINA's title-bar accessory: a bare 12 pt symbol with a soft hover square,
+/// tinted when its state is on.
+private struct TitleBarButton: View {
+    let symbol: String
+    let label: String
+    var active = false
+    let action: () -> Void
+    @State private var hovered = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(active ? Theme.accent : .white.opacity(hovered ? 1 : 0.8))
+                .frame(width: 26, height: 22)
+                .background(hovered ? .white.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovered = $0 }
+        .animation(.easeOut(duration: 0.12), value: hovered)
+        .help(label)
+        .accessibilityLabel(label)
     }
 }

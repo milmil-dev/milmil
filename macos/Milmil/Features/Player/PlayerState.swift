@@ -61,6 +61,14 @@ final class PlayerState {
     var fps: Double = 0
     var videoBitrate: Double = 0
 
+    // Sleep timer (PlayerController owns the countdown; the OSC may show it)
+    /// When a minutes timer fires; nil when off.
+    var sleepTimerEndsAt: Date?
+    /// 播完呢集停: pause at the end of this episode instead of autoplaying.
+    var sleepAtEndOfEpisode = false
+    var sleepTimerActive: Bool { sleepTimerEndsAt != nil || sleepAtEndOfEpisode }
+    var sleepTimerRemaining: TimeInterval? { sleepTimerEndsAt.map { max(0, $0.timeIntervalSinceNow) } }
+
     // Server-side extras
     var segments: [SegmentMark] = []
     var sidecarSubtitles: [SubtitleFile] = []

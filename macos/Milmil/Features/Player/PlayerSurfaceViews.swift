@@ -78,7 +78,8 @@ struct PlayerRenderHost: NSViewRepresentable {
 }
 
 /// Transparent AppKit view that turns raw mouse events into player
-/// gestures: hover (throttled), click/double-click, scroll-wheel seek /
+/// gestures: hover (throttled), click/double-click, trackpad swipe seek /
+/// vertical-scroll volume / pinch zoom (IINA's set), mouse-wheel seek /
 /// volume, right-click menu, drag-and-drop subtitles.
 struct PlayerInteractionView: NSViewRepresentable {
     var onMouseMoved: () -> Void
@@ -87,6 +88,10 @@ struct PlayerInteractionView: NSViewRepresentable {
     var onDoubleClick: () -> Void
     var onScrollSeek: (Double) -> Void
     var onScrollVolume: (Double) -> Void
+    /// Pinch: the event's magnification delta (positive = spread).
+    var onMagnify: (CGFloat) -> Void = { _ in }
+    /// Two-finger double tap.
+    var onResetZoom: () -> Void = {}
     var onContextMenu: (NSView, NSEvent) -> Void
     var onDropFiles: ([URL]) -> Void
 
@@ -112,6 +117,8 @@ struct PlayerInteractionView: NSViewRepresentable {
         view.onDoubleClick = onDoubleClick
         view.onScrollSeek = onScrollSeek
         view.onScrollVolume = onScrollVolume
+        view.onMagnify = onMagnify
+        view.onResetZoom = onResetZoom
         view.onContextMenu = onContextMenu
         view.onDropFiles = onDropFiles
     }
@@ -123,12 +130,23 @@ struct PlayerInteractionView: NSViewRepresentable {
         var onDoubleClick: () -> Void = {}
         var onScrollSeek: (Double) -> Void = { _ in }
         var onScrollVolume: (Double) -> Void = { _ in }
+        var onMagnify: (CGFloat) -> Void = { _ in }
+        var onResetZoom: () -> Void = {}
         var onContextMenu: (NSView, NSEvent) -> Void = { _, _ in }
         var onDropFiles: ([URL]) -> Void = { _ in }
 
         private var lastMove: TimeInterval = 0
         private var pendingClick: DispatchWorkItem?
         private var scrollAccumulator: CGFloat = 0
+        /// Trackpad swipe: the axis is locked on the first clear movement of
+        /// a gesture so a slightly diagonal swipe does not seek *and* change
+        /// the volume; each `swipeStride` points of horizontal travel is one
+        /// 10 s seek, vertical travel is volume.
+        private enum SwipeAxis { case horizontal, vertical }
+        private var swipeAxis: SwipeAxis?
+        private var swipeTravel: CGFloat = 0
+        private static let swipeStride: CGFloat = 60
+        private static let swipeSeekSeconds = 10.0
 
         override var acceptsFirstResponder: Bool { false }
         override var mouseDownCanMoveWindow: Bool { false }
@@ -167,23 +185,71 @@ struct PlayerInteractionView: NSViewRepresentable {
         }
 
         override func scrollWheel(with event: NSEvent) {
+            if event.hasPreciseScrollingDeltas {
+                trackpadScroll(event)
+                return
+            }
+            // Mouse wheel: notches, vertical in the right 30 % is volume.
             let location = convert(event.locationInWindow, from: nil)
             let inVolumeZone = location.x > bounds.width * 0.7
-            let delta = event.hasPreciseScrollingDeltas ? event.scrollingDeltaY / 10 : event.scrollingDeltaY
             if inVolumeZone || abs(event.scrollingDeltaY) > abs(event.scrollingDeltaX) {
-                scrollAccumulator += delta
+                scrollAccumulator += event.scrollingDeltaY
                 guard abs(scrollAccumulator) >= 1 else { return }
                 let steps = scrollAccumulator.rounded(.towardZero)
                 scrollAccumulator -= steps
                 if inVolumeZone { onScrollVolume(Double(steps) * 2) } else { onScrollSeek(Double(-steps) * 2) }
             } else {
-                let horizontal = event.hasPreciseScrollingDeltas ? event.scrollingDeltaX / 10 : event.scrollingDeltaX
-                scrollAccumulator += horizontal
+                scrollAccumulator += event.scrollingDeltaX
                 guard abs(scrollAccumulator) >= 1 else { return }
                 let steps = scrollAccumulator.rounded(.towardZero)
                 scrollAccumulator -= steps
                 onScrollSeek(Double(-steps) * 2)
             }
+        }
+
+        /// IINA's trackpad mapping: horizontal swipe seeks (±10 s per
+        /// stride, the controller's OSD shows the delta), vertical swipe is
+        /// volume anywhere on the picture. Inertial scrolling is ignored so
+        /// a flick does not keep seeking after the fingers lift.
+        private func trackpadScroll(_ event: NSEvent) {
+            if event.phase == .began {
+                swipeAxis = nil
+                swipeTravel = 0
+                scrollAccumulator = 0
+            }
+            guard event.momentumPhase.isEmpty else { return }
+            let dx = event.scrollingDeltaX
+            let dy = event.scrollingDeltaY
+            if swipeAxis == nil, abs(dx) + abs(dy) > 2 {
+                swipeAxis = abs(dx) > abs(dy) ? .horizontal : .vertical
+            }
+            switch swipeAxis {
+            case .horizontal:
+                swipeTravel += dx
+                while abs(swipeTravel) >= Self.swipeStride {
+                    // Natural scrolling: fingers moving left pull the timeline forward.
+                    let direction: Double = swipeTravel > 0 ? -1 : 1
+                    swipeTravel -= Self.swipeStride * (swipeTravel > 0 ? 1 : -1)
+                    onScrollSeek(direction * Self.swipeSeekSeconds)
+                }
+            case .vertical:
+                scrollAccumulator += dy / 10
+                guard abs(scrollAccumulator) >= 1 else { return }
+                let steps = scrollAccumulator.rounded(.towardZero)
+                scrollAccumulator -= steps
+                onScrollVolume(Double(steps) * 2)
+            case nil:
+                break
+            }
+        }
+
+        override func magnify(with event: NSEvent) {
+            onMagnify(event.magnification)
+        }
+
+        /// Two-finger double tap: back to the natural picture size.
+        override func smartMagnify(with event: NSEvent) {
+            onResetZoom()
         }
 
         override func draggingEntered(_ sender: any NSDraggingInfo) -> NSDragOperation {

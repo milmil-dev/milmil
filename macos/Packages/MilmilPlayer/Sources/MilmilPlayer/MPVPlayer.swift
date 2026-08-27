@@ -157,8 +157,8 @@ public final class MPVPlayer: @unchecked Sendable {
     }
 
     public func command(_ args: [String]) throws {
-        let status: Int32? = try Self.withCStringArray(args) { argv in
-            try withLiveHandle { handle in mpv_command(handle, argv) }
+        let status: Int32? = Self.withCStringArray(args) { argv in
+            withLiveHandle { handle in mpv_command(handle, argv) }
         }
         guard let status else { throw MPVError.destroyed }
         try Self.check(status)

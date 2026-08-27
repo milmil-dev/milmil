@@ -48,6 +48,18 @@ final class PlayerController {
     /// mpv has reported a real `time-pos` for the current file; before that a
     /// progress save would write 0 and wipe the server's resume point.
     private var hasPosition = false
+    /// `loadGeneration` of the file mpv last finished opening. Timeline
+    /// updates from an older file are dropped: between `start(_:)` and the
+    /// new file's `fileLoaded` the previous episode keeps playing and
+    /// reporting `time-pos`, which used to refill `state.timePos` — so the
+    /// next episode opened at the previous one's position, and a progress
+    /// save in that window wrote it to the new episode as well.
+    private var loadedGeneration = -1
+    /// Consumed by the next `start(_:)`: 從頭播放 from a request.
+    private var startFromBeginning = false
+    /// `milmil://watch/…&t=<seconds>`: open at this position instead of the
+    /// server's resume point. Consumed by the next `start(_:)`.
+    private var startOffset: Double?
     /// The user dismissed the next-episode card for this episode.
     private var postPlayDismissed = false
     private var activity: NSObjectProtocol?
@@ -55,9 +67,49 @@ final class PlayerController {
     private var authToken: String?
     /// The mapped local file for the current episode, when a mapping hits.
     private var localFileURL: URL?
+    /// A copy kept on this Mac (離線到本機), tried before every other rung.
+    private var offlineURL: URL?
     private var pendingClipboardShots: [UInt64: URL] = [:]
+    private var pendingSavedShots: [UInt64: URL] = [:]
+    /// The most recent capture, shown as a thumbnail card until it times out
+    /// or the viewer dismisses it.
+    var lastCapture: CaptureResult?
+    private var captureDismissTask: Task<Void, Never>?
+
+    // Habits: per-series track memory, learned OP/ED skips, sleep timer,
+    // night mode, headphone watch, playback report.
+    private let seriesPreferences = SeriesPlaybackPreferences.shared
+    private let learnedSkips = LearnedSkips.shared
+    private var seriesPreferenceAppliedGeneration = -1
+    /// Learned skips already taken this episode (index into the series' list).
+    private var skippedLearned: Set<Int> = []
+    /// An OP/ED the user jumped over by hand twice; `acceptSkipSuggestion`
+    /// remembers it. The window shows it like the resume pill.
+    private(set) var skipSuggestion: LearnedSkip?
+    private var skipSuggestionTask: Task<Void, Never>?
+    private(set) var sleepTimerMode: SleepTimerMode = .off
+    private var sleepTask: Task<Void, Never>?
+    private var fadeTask: Task<Void, Never>?
+    private(set) var nightMode = UserDefaults.standard.bool(forKey: DesktopDefaults.nightMode)
+    private let audioWatcher = AudioDeviceWatcher()
+    /// mpv's last log lines, for 報告播放問題.
+    @ObservationIgnored private var logRing: [String] = []
+    private static let logRingLimit = 200
 
     var episodes: [PlayableEpisode] { playable?.episodes.sorted { $0.sort < $1.sort } ?? [] }
+    /// Bangumi / TMDB stills by episode `sort`, for episodes whose playable
+    /// row has no `image` (the local DB often lacks them — web merges the
+    /// discover list the same way).
+    private(set) var episodeImages: [Double: URL] = [:]
+
+    func updateEpisodeImages(_ images: [Double: URL]) {
+        guard images != episodeImages else { return }
+        episodeImages = images
+    }
+
+    func still(for episode: PlayableEpisode) -> URL? {
+        episode.image ?? episodeImages[episode.sort]
+    }
     var nextEpisode: PlayableEpisode? { adjacentEpisode(offset: 1) }
     var previousEpisode: PlayableEpisode? { adjacentEpisode(offset: -1) }
 
@@ -80,12 +132,15 @@ final class PlayerController {
         } catch {
             Self.log.error("mpv init failed: \(String(describing: error))")
             player = nil
-            state.status = .failed(String(localized: "無法初始化 mpv：\(error)"))
+            state.status = .failed(String(localized: "無法初始化 mpv：\(error.localizedDescription)"))
         }
         Task { await refreshAuthHeader() }
         startEventLoop()
         applySubtitleStyle(session.preferences.subtitleStyle)
         applyAnime4K()
+        if nightMode { applyNightMode(true) }
+        audioWatcher.onRouteLost = { [weak self] in self?.outputRouteLost() }
+        audioWatcher.start()
         NowPlayingBridge.shared.attach(self)
         #if DEBUG
         DevSnapshot.playerStateDump = { [weak self] in
@@ -143,6 +198,8 @@ final class PlayerController {
 
     func play(_ request: PlaybackRequest) {
         self.request = request
+        startFromBeginning = request.fromStart
+        startOffset = request.startSeconds
         state.status = .loading(String(localized: "讀取集數…"))
         state.mediaTitle = request.title
         loadTask?.cancel()
@@ -154,7 +211,10 @@ final class PlayerController {
     /// Browse screens may only know the id; fill the title/cover in later.
     func updateTitle(_ title: String, cover: URL?) {
         guard let request, request.title != title || request.coverImage != cover else { return }
-        self.request = PlaybackRequest(bangumiID: request.bangumiID, episodeID: request.episodeID, title: title, coverImage: cover)
+        self.request = PlaybackRequest(
+            bangumiID: request.bangumiID, episodeID: request.episodeID, title: title, coverImage: cover,
+            fromStart: request.fromStart, startSeconds: request.startSeconds
+        )
         if let episode { state.mediaTitle = String(localized: "\(title) 第 \(episode.number) 集") }
         NowPlayingBridge.shared.update(self)
     }
@@ -232,29 +292,42 @@ final class PlayerController {
         state.timePos = 0
         state.duration = Double(episode.progress?.durationSeconds ?? 0)
         skippedSegmentIDs = []
+        skippedLearned = []
+        skipSuggestion = nil
+        skipSuggestionTask?.cancel()
         lastSavedPosition = -1
         hasPosition = false
         postPlayDismissed = false
         let number = episode.number
         state.mediaTitle = String(localized: "\(request?.title ?? "") 第 \(number) 集")
-        if let progress = episode.progress, progress.positionSeconds > 0, !progress.completed {
+        applyScreenshotTemplate(title: request?.title ?? "", number: number)
+        if let startOffset, startOffset > 0 {
+            resumePosition = Int(startOffset)
+        } else if startFromBeginning {
+            resumePosition = nil
+        } else if let progress = episode.progress, progress.positionSeconds > 0, !progress.completed {
             resumePosition = progress.positionSeconds
         } else {
             resumePosition = nil
         }
+        startFromBeginning = false
+        startOffset = nil
         showResumePill = false
 
         // Ask the server what it knows; mpv ignores can_direct_play but the
         // ladder needs library_online and the transcode availability.
+        offlineURL = OfflineStore.shared.localURL(fileID: file.id)
         let info = try? await session.client.mediaInfo(fileID: file.id)
         guard generation == loadGeneration, !Task.isCancelled else { return }
-        if let info, !info.libraryOnline {
+        if let info, !info.libraryOnline, offlineURL == nil {
             player?.stop()
             state.status = .failed(String(localized: "媒體庫目前離線，無法播放此檔案"))
             return
         }
         localFileURL = file.path.flatMap { LocalPathMappings.shared.localURL(forServerPath: $0) }
-        fallback = StreamFallback(hasLocalFile: localFileURL != nil, canRemux: info?.canRemux ?? true, canTranscode: true)
+        fallback = StreamFallback(
+            hasOfflineCopy: offlineURL != nil, hasLocalFile: localFileURL != nil, canRemux: info?.canRemux ?? true, canTranscode: true
+        )
         await refreshAuthHeader()
         guard generation == loadGeneration, !Task.isCancelled else { return }
         await loadCurrentStage(fileID: file.id)
@@ -287,6 +360,14 @@ final class PlayerController {
         state.stage = stage
         let generation = loadGeneration
         switch stage {
+        case .offlineCopy:
+            if let offlineURL {
+                load(url: offlineURL, generation: generation)
+                OfflineStore.shared.markPlayed(fileID: fileID)
+            } else {
+                fallback.advance()
+                await loadCurrentStage(fileID: fileID)
+            }
         case .localFile:
             if let localFileURL {
                 load(url: localFileURL, generation: generation)
@@ -300,38 +381,7 @@ final class PlayerController {
         case .remux:
             load(url: session.client.remuxStreamURL(fileID: fileID), generation: generation)
         case .hls:
-            state.status = .loading(String(localized: "伺服器轉碼中…"))
-            transcodeTask?.cancel()
-            transcodeTask = Task { [weak self] in
-                guard let self else { return }
-                do {
-                    let start = try await session.client.startTranscode(fileID: fileID)
-                    guard generation == loadGeneration, !Task.isCancelled else { return }
-                    var token = start.token
-                    if start.status == "ready" {
-                        load(url: session.client.hlsURL(token: token), generation: generation)
-                        return
-                    }
-                    while !Task.isCancelled, generation == loadGeneration {
-                        try await Task.sleep(for: .seconds(2))
-                        let transcode = try await session.client.transcodeState(token: token)
-                        guard generation == loadGeneration, !Task.isCancelled else { return }
-                        switch transcode {
-                        case .ready:
-                            load(url: session.client.hlsURL(token: token), generation: generation)
-                            return
-                        case let .pending(progress):
-                            state.status = .loading(String(localized: "伺服器轉碼中… \(progress ?? 0)%"))
-                        case .failed:
-                            state.status = .failed(String(localized: "伺服器轉碼失敗"))
-                            return
-                        }
-                        token = start.token
-                    }
-                } catch {
-                    if !Task.isCancelled { state.status = .failed(String(localized: "無法開始轉碼：\(error.localizedDescription)")) }
-                }
-            }
+            loadTranscode(fileID: fileID, generation: generation)
         }
     }
 
@@ -354,10 +404,21 @@ final class PlayerController {
 
     private func load(url: URL, generation: Int) {
         guard let player, generation == loadGeneration else { return }
+        // libmpv's VO needs the render context, which the layer only creates
+        // on its first on-screen draw; a `loadfile` before that plays with no
+        // picture. Usually the network round-trip wins the race — the trailer
+        // window did not, so gate here too.
+        if let layer = renderView?.renderLayer, !layer.isRenderContextReady {
+            layer.onRenderContextReady = { [weak self] in
+                Task { @MainActor in self?.load(url: url, generation: generation) }
+            }
+            return
+        }
         var options: [String: String] = [:]
         // A fallback after playback already started continues where we were;
-        // the first load honours the server's resume position.
-        if state.timePos > 1 {
+        // the first load honours the server's resume position. `hasPosition`
+        // is only ever set by this generation's own file (see loadedGeneration).
+        if hasPosition, state.timePos > 1 {
             options["start"] = String(Int(state.timePos))
         } else if let resumePosition {
             options["start"] = String(resumePosition)
@@ -368,13 +429,68 @@ final class PlayerController {
         player.set("pause", false)
     }
 
+    /// The HLS rung: ask the server to transcode and poll until the playlist
+    /// is ready (split out of `loadCurrentStage` for readability).
+    private func loadTranscode(fileID: String, generation: Int) {
+        state.status = .loading(String(localized: "伺服器轉碼中…"))
+        transcodeTask?.cancel()
+        transcodeTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let start = try await session.client.startTranscode(fileID: fileID)
+                guard generation == loadGeneration, !Task.isCancelled else { return }
+                var token = start.token
+                if start.status == "ready" {
+                    load(url: session.client.hlsURL(token: token), generation: generation)
+                    return
+                }
+                while !Task.isCancelled, generation == loadGeneration {
+                    try await Task.sleep(for: .seconds(2))
+                    let transcode = try await session.client.transcodeState(token: token)
+                    guard generation == loadGeneration, !Task.isCancelled else { return }
+                    switch transcode {
+                    case .ready:
+                        load(url: session.client.hlsURL(token: token), generation: generation)
+                        return
+                    case let .pending(progress):
+                        state.status = .loading(String(localized: "伺服器轉碼中… \(progress ?? 0)%"))
+                    case .failed:
+                        state.status = .failed(String(localized: "伺服器轉碼失敗"))
+                        return
+                    }
+                    token = start.token
+                }
+            } catch {
+                if !Task.isCancelled { state.status = .failed(String(localized: "無法開始轉碼：\(error.localizedDescription)")) }
+            }
+        }
+    }
+
+    /// The server renders the sprite sheet on the first request for a file,
+    /// which can outlast `URLSession.milmil`'s idle timeout. The render
+    /// survives our disconnect, so keep asking until the cached track
+    /// appears or the episode changes.
     private func loadThumbnails(fileID: String, generation: Int) async {
         guard let vttURL = session.client.thumbnailsURL(fileID: fileID, token: authToken),
               let spriteURL = session.client.spriteURL(fileID: fileID, token: authToken) else { return }
-        guard let (data, response) = try? await URLSession.milmil.data(from: vttURL),
-              (response as? HTTPURLResponse)?.statusCode == 200,
-              let text = String(data: data, encoding: .utf8), generation == loadGeneration else { return }
-        state.thumbnails = ThumbnailTrack.parse(text, spriteURL: spriteURL)
+        for attempt in 0..<12 {
+            if attempt > 0 {
+                try? await Task.sleep(for: .seconds(10))
+            }
+            guard generation == loadGeneration, !Task.isCancelled else { return }
+            guard let (data, response) = try? await URLSession.milmil.data(from: vttURL) else { continue }
+            guard generation == loadGeneration else { return }
+            switch (response as? HTTPURLResponse)?.statusCode ?? 0 {
+            case 200:
+                guard let text = String(data: data, encoding: .utf8) else { return }
+                state.thumbnails = ThumbnailTrack.parse(text, spriteURL: spriteURL)
+                return
+            case 401, 403, 404:
+                return
+            default:
+                continue
+            }
+        }
     }
 
     private func refreshAuthHeader() async {
@@ -402,10 +518,12 @@ final class PlayerController {
         case .startFile:
             break
         case .fileLoaded:
+            loadedGeneration = loadGeneration
             state.status = state.paused ? .paused : .playing
             showResumePill = resumePosition != nil
             if showResumePill { scheduleHideResumePill() }
             addSidecarSubtitles()
+            applySeriesPreference()
             beginActivity()
             NowPlayingBridge.shared.update(self)
         case let .endFile(reason):
@@ -423,7 +541,11 @@ final class PlayerController {
             apply(name, value)
         case let .commandReply(id, error):
             finishClipboardShot(id: id, error: error)
-        case .log, .queueOverflow, .shutdown:
+            finishSavedShot(id: id, error: error)
+        case let .log(prefix, level, text):
+            logRing.append("[\(prefix)] \(level): \(text.trimmingCharacters(in: .whitespacesAndNewlines))")
+            if logRing.count > Self.logRingLimit { logRing.removeFirst(logRing.count - Self.logRingLimit) }
+        case .queueOverflow, .shutdown:
             break
         }
     }
@@ -434,6 +556,11 @@ final class PlayerController {
         case .eof:
             markCompleted()
             state.status = .ended
+            if state.sleepAtEndOfEpisode {
+                // 播完這集停止: mpv's keep-open already paused at the end.
+                finishSleepTimer()
+                return
+            }
             if session.preferences.autoNext, nextEpisode != nil, !postPlayDismissed { beginPostPlayCountdown(seconds: 5) }
         case .error:
             if fallback.advance() != nil, let file = episode?.mediaFile {
@@ -458,7 +585,7 @@ final class PlayerController {
     private func applyTimeline(_ name: String, _ value: MPVValue?, now: TimeInterval) -> Bool {
         switch name {
         case "time-pos":
-            guard let pos = value?.doubleValue else { return true }
+            guard let pos = value?.doubleValue, loadedGeneration == loadGeneration else { return true }
             hasPosition = true
             state.clock.update(position: pos, hostTime: now)
             if now - lastTimelinePush >= 0.1 {
@@ -466,6 +593,7 @@ final class PlayerController {
                 state.timePos = pos
                 checkAutoSkip(at: pos)
                 checkPostPlay(at: pos)
+                checkSleepFade(at: pos)
             }
         case "duration":
             state.duration = value?.doubleValue ?? 0
@@ -521,7 +649,10 @@ final class PlayerController {
 
     private func applyMedia(_ name: String, _ value: MPVValue?) {
         switch name {
-        case "track-list": state.tracks = MediaTrack.parseList(value?.nodeValue)
+        case "track-list":
+            state.tracks = MediaTrack.parseList(value?.nodeValue)
+            // Tracks can land after `fileLoaded`; apply the series memory then.
+            if state.status.isActive { applySeriesPreference() }
         case "chapter-list": state.chapters = MediaChapter.parseList(value?.nodeValue)
         case "vid": state.videoID = value?.intValue
         case "aid": state.audioID = value?.intValue
@@ -564,15 +695,24 @@ final class PlayerController {
         player.set("pause", paused)
     }
 
+    /// Pinch zoom: mpv resamples at source resolution (`video-zoom` is log2,
+    /// so 2× = 1) instead of the window scaling finished pixels.
+    func setVideoZoom(_ zoom: Double) {
+        player?.set("video-zoom", log2(max(zoom, 0.01)))
+    }
+
     func seek(to seconds: Double) {
-        player?.seek(to: max(0, min(seconds, state.duration)))
+        let target = max(0, min(seconds, state.duration))
+        noteManualSeek(from: state.timePos, to: target)
+        player?.seek(to: target)
         state.timePos = seconds
         flash(.seek(seconds))
     }
 
     func seek(by delta: Double) {
-        player?.seek(by: delta)
         let target = max(0, min(state.timePos + delta, state.duration))
+        noteManualSeek(from: state.timePos, to: target)
+        player?.seek(by: delta)
         state.timePos = target
         flash(.seekDelta(delta, target))
     }
@@ -602,6 +742,7 @@ final class PlayerController {
         player?.set("speed", clamped)
         state.speed = clamped
         flash(.speed(clamped))
+        rememberForSeries { $0.speed = clamped == 1 ? nil : clamped }
     }
 
     func adjustSpeed(by delta: Double) { setSpeed(state.speed + delta) }
@@ -610,6 +751,7 @@ final class PlayerController {
         let next = !state.subtitlesVisible
         player?.set("sub-visibility", next)
         flash(.text(next ? String(localized: "字幕：開") : String(localized: "字幕：關")))
+        rememberForSeries { $0.subtitlesVisible = next ? nil : false }
     }
 
     func selectTrack(_ kind: MediaTrack.Kind, id: Int64?) {
@@ -619,6 +761,7 @@ final class PlayerController {
         case .sub: "sid"
         }
         if let id { player?.set(property, id) } else { player?.set(property, "no") }
+        rememberTrack(kind, id: id)
     }
 
     func selectSecondarySubtitle(id: Int64?) {
@@ -628,11 +771,13 @@ final class PlayerController {
     func cycleSubtitle() {
         try? player?.command(["cycle", "sid"])
         flash(.text(String(localized: "切換字幕軌")))
+        rememberTrack(.sub, id: player?.getInt("sid"))
     }
 
     func cycleAudio() {
         try? player?.command(["cycle", "aid"])
         flash(.text(String(localized: "切換音軌")))
+        rememberTrack(.audio, id: player?.getInt("aid"))
     }
 
     func adjustSubtitleDelay(by delta: Double) {
@@ -655,9 +800,162 @@ final class PlayerController {
         }
     }
 
+    /// Captures the frame on screen to a temp PNG. When the reply lands the
+    /// file is filed into the screenshot folder straight away and a thumbnail
+    /// card offers the follow-ups (reveal, copy, save elsewhere, share,
+    /// delete) — the way macOS's own screenshot does it. Interrupting
+    /// playback with a modal save panel to answer a question that has a good
+    /// default was the wrong trade; "詢問儲存位置" brings the panel back for
+    /// anyone who wants it.
     func screenshot(withSubtitles: Bool) {
-        player?.commandAsync(["screenshot", withSubtitles ? "subtitles" : "video"])
-        flash(.text(String(localized: "已儲存截圖")))
+        guard let player else { return }
+        let url = FileManager.default.temporaryDirectory.appending(path: "milmil-shot-\(UUID().uuidString).png")
+        let id = player.commandAsync(["screenshot-to-file", url.path, withSubtitles ? "subtitles" : "video"])
+        pendingSavedShots[id] = url
+    }
+
+    private func finishSavedShot(id: UInt64, error: Int32) {
+        guard let temp = pendingSavedShots.removeValue(forKey: id) else { return }
+        guard error >= 0, FileManager.default.fileExists(atPath: temp.path) else {
+            try? FileManager.default.removeItem(at: temp)
+            flash(.text(String(localized: "截圖失敗")))
+            return
+        }
+        let name = screenshotFileName()
+        if UserDefaults.standard.bool(forKey: DesktopDefaults.screenshotAskWhere) {
+            guard let destination = askWhereToSave(named: name) else {
+                try? FileManager.default.removeItem(at: temp)
+                return
+            }
+            fileCapture(from: temp, to: destination)
+        } else {
+            let folder = URL(fileURLWithPath: Self.screenshotDirectory())
+            fileCapture(from: temp, to: Self.uniqueURL(in: folder, named: name))
+        }
+    }
+
+    private func askWhereToSave(named name: String) -> URL? {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.png]
+        panel.canCreateDirectories = true
+        panel.isExtensionHidden = false
+        panel.message = String(localized: "儲存截圖")
+        panel.nameFieldStringValue = name
+        panel.directoryURL = URL(fileURLWithPath: Self.screenshotDirectory())
+        return panel.runModal() == .OK ? panel.url : nil
+    }
+
+    private func fileCapture(from temp: URL, to destination: URL) {
+        do {
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try FileManager.default.removeItem(at: destination)
+            }
+            try FileManager.default.moveItem(at: temp, to: destination)
+        } catch {
+            try? FileManager.default.removeItem(at: temp)
+            logRing.append("[milmil] error: screenshot save failed: \(error.localizedDescription)")
+            flash(.text(String(localized: "截圖失敗")))
+            return
+        }
+        // Downscale for the card so a 4K PNG is not held in memory as-is.
+        let thumbnail = NSImage(contentsOf: destination).map { image -> NSImage in
+            let side = CGSize(width: 240, height: 240 * (image.size.height / max(image.size.width, 1)))
+            let scaled = NSImage(size: side)
+            scaled.lockFocus()
+            image.draw(in: NSRect(origin: .zero, size: side))
+            scaled.unlockFocus()
+            return scaled
+        }
+        showCapture(CaptureResult(url: destination, thumbnail: thumbnail))
+    }
+
+    private func showCapture(_ capture: CaptureResult) {
+        lastCapture = capture
+        captureDismissTask?.cancel()
+        captureDismissTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(6))
+            guard !Task.isCancelled else { return }
+            self?.lastCapture = nil
+        }
+    }
+
+    /// Keeps the card up while the pointer is on it, the way macOS's capture
+    /// thumbnail waits rather than sliding away under the cursor.
+    func holdCapture(_ hold: Bool) {
+        guard lastCapture != nil else { return }
+        if hold {
+            captureDismissTask?.cancel()
+        } else if let capture = lastCapture {
+            showCapture(capture)
+        }
+    }
+
+    func dismissCapture() {
+        captureDismissTask?.cancel()
+        lastCapture = nil
+    }
+
+    func revealCapture() {
+        guard let capture = lastCapture else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([capture.url])
+        dismissCapture()
+    }
+
+    func copyCapture() {
+        guard let capture = lastCapture, let image = NSImage(contentsOf: capture.url) else { return }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.writeObjects([image])
+        flash(.text(String(localized: "截圖已複製")))
+    }
+
+    /// Moves an already-filed capture somewhere else, so "save as…" after the
+    /// fact never leaves a stray copy behind.
+    func relocateCapture() {
+        guard let capture = lastCapture else { return }
+        guard let destination = askWhereToSave(named: capture.url.lastPathComponent) else { return }
+        do {
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try FileManager.default.removeItem(at: destination)
+            }
+            try FileManager.default.moveItem(at: capture.url, to: destination)
+            lastCapture = CaptureResult(url: destination, thumbnail: capture.thumbnail)
+            flash(.text(String(localized: "已儲存 \(destination.lastPathComponent)")))
+        } catch {
+            logRing.append("[milmil] error: screenshot move failed: \(error.localizedDescription)")
+            flash(.text(String(localized: "截圖失敗")))
+        }
+    }
+
+    func deleteCapture() {
+        guard let capture = lastCapture else { return }
+        try? FileManager.default.trashItem(at: capture.url, resultingItemURL: nil)
+        dismissCapture()
+        flash(.text(String(localized: "已刪除截圖")))
+    }
+
+    /// `name.png`, `name 2.png`, … so a second capture at the same timestamp
+    /// never overwrites the first.
+    private static func uniqueURL(in folder: URL, named name: String) -> URL {
+        let base = (name as NSString).deletingPathExtension
+        let ext = (name as NSString).pathExtension
+        var candidate = folder.appending(path: name)
+        var counter = 2
+        while FileManager.default.fileExists(atPath: candidate.path) {
+            candidate = folder.appending(path: "\(base) \(counter).\(ext)")
+            counter += 1
+        }
+        return candidate
+    }
+
+    /// `<title> 第N集 mm-ss.png` (`hh-mm-ss` past an hour), the same shape
+    /// mpv's template produces for the clipboard path.
+    private func screenshotFileName() -> String {
+        let title = Self.screenshotSafeTitle(request?.title ?? "")
+        let clock = Formatters.clock(state.timePos).replacingOccurrences(of: ":", with: "-")
+        if let number = episode?.number, !number.isEmpty {
+            return "\(title) 第\(number)集 \(clock).png"
+        }
+        return "\(title) \(clock).png"
     }
 
     /// Renders to a temp PNG via `screenshot-to-file`, then puts it on the
@@ -730,6 +1028,9 @@ final class PlayerController {
         case .screenshotWithSubs: screenshot(withSubtitles: true)
         case .screenshotToClipboard: screenshotToClipboard()
         case .danmakuToggle: setDanmakuEnabled(!danmakuEnabled)
+        case .sleepTimer: setSleepTimer(sleepTimerMode.next)
+        case .nightMode: setNightMode(!nightMode)
+        case .reportProblem: copyPlaybackReport()
         case .fullscreen, .miniPlayer, .help, .techInfo, .inspector, .danmakuSettings, .danmakuCompose, .theater:
             window?.perform(action)
         default: return false
@@ -825,16 +1126,35 @@ final class PlayerController {
     /// First entry into an OP/ED with the matching preference skips it,
     /// including when resuming into the middle of one (web `SkipSegment`).
     private func checkAutoSkip(at position: Double) {
-        guard let segment = state.currentSegment, !skippedSegmentIDs.contains(segment.id) else { return }
+        guard let segment = state.currentSegment, !skippedSegmentIDs.contains(segment.id) else {
+            checkLearnedSkip(at: position)
+            return
+        }
         let auto = (segment.type == "op" && session.preferences.autoSkipOp) || (segment.type == "ed" && session.preferences.autoSkipEd)
         guard auto else { return }
         skipCurrentSegment()
     }
 
+    /// Series without server segments use what the user taught the player:
+    /// entering the first 3 s of a learned range jumps to its end, once per
+    /// episode, so seeking back into it on purpose still works.
+    private func checkLearnedSkip(at position: Double) {
+        guard state.segments.isEmpty, let bangumiID = request?.bangumiID else { return }
+        let skips = learnedSkips.skips(for: bangumiID)
+        for (index, skip) in skips.enumerated() where !skippedLearned.contains(index) {
+            guard position >= skip.start, position < skip.start + 3, skip.end < state.duration else { continue }
+            skippedLearned.insert(index)
+            player?.seek(to: skip.end)
+            state.timePos = skip.end
+            flash(.text(String(localized: "跳過（學會的段落）")))
+            return
+        }
+    }
+
     /// Shows the next-episode card for the last 30 s with the seconds left;
     /// the actual switch waits for EOF (`handleEndFile`) like the web.
     private func checkPostPlay(at position: Double) {
-        guard state.duration > 0, nextEpisode != nil, postPlayTask == nil, !postPlayDismissed else { return }
+        guard state.duration > 0, nextEpisode != nil, postPlayTask == nil, !postPlayDismissed, !state.sleepAtEndOfEpisode else { return }
         let remaining = state.duration - position
         if remaining <= Self.postPlayLead, remaining > 0 {
             postPlayCountdown = Int(remaining.rounded(.up))
@@ -897,7 +1217,18 @@ final class PlayerController {
     // MARK: - Subtitles
 
     private func addSidecarSubtitles() {
-        guard let player, sidecarsAddedForGeneration != loadGeneration, !state.sidecarSubtitles.isEmpty else { return }
+        guard let player, sidecarsAddedForGeneration != loadGeneration else { return }
+        // Playing the kept copy: its saved subtitle files, no server needed.
+        if state.stage == .offlineCopy, let file = episode?.mediaFile {
+            let local = OfflineStore.shared.sidecars(fileID: file.id)
+            guard !local.isEmpty else { return }
+            sidecarsAddedForGeneration = loadGeneration
+            for item in local {
+                player.addSubtitle(item.url.absoluteString, title: item.sidecar.title ?? item.sidecar.filename, language: item.sidecar.language, select: false)
+            }
+            return
+        }
+        guard !state.sidecarSubtitles.isEmpty else { return }
         sidecarsAddedForGeneration = loadGeneration
         for subtitle in state.sidecarSubtitles {
             guard let url = session.client.subtitleContentURL(id: subtitle.id, token: authToken) else { continue }
@@ -943,6 +1274,8 @@ final class PlayerController {
     func shutdown() {
         saveProgressNow()
         cancelPostPlay()
+        cancelSleepTimer()
+        audioWatcher.stop()
         eventTask?.cancel()
         loadTask?.cancel()
         transcodeTask?.cancel()
@@ -950,6 +1283,265 @@ final class PlayerController {
         endActivity()
         NowPlayingBridge.shared.detach()
         player?.destroy()
+    }
+
+    // MARK: - Series memory
+
+    private func rememberForSeries(_ change: (inout SeriesPlaybackPreference) -> Void) {
+        guard let bangumiID = request?.bangumiID else { return }
+        seriesPreferences.update(bangumiID, change)
+    }
+
+    private func rememberTrack(_ kind: MediaTrack.Kind, id: Int64?) {
+        let track = id.flatMap { id in state.tracks.first { $0.kind == kind && $0.id == id } }
+        switch kind {
+        case .audio:
+            rememberForSeries {
+                $0.audioLanguage = track?.language
+                $0.audioTitle = track?.title
+            }
+        case .sub:
+            rememberForSeries {
+                $0.subtitleOff = id == nil
+                $0.subtitleLanguage = track?.language
+                $0.subtitleTitle = track?.title
+            }
+        case .video:
+            break
+        }
+    }
+
+    /// Re-applies what the user chose on this series' last episode, once
+    /// per file and only once the tracks are known. A remembered track wins
+    /// over mpv's language chain when it exists in this file; otherwise the
+    /// chain's pick stands.
+    private func applySeriesPreference() {
+        guard seriesPreferenceAppliedGeneration != loadGeneration, !state.tracks.isEmpty, let player,
+              let bangumiID = request?.bangumiID, let preference = seriesPreferences.preference(for: bangumiID) else { return }
+        seriesPreferenceAppliedGeneration = loadGeneration
+        if let audio = SeriesPlaybackPreferences.match(state.audioTracks, language: preference.audioLanguage, title: preference.audioTitle) {
+            player.set("aid", audio.id)
+        }
+        if preference.subtitleOff {
+            player.set("sid", "no")
+        } else if let sub = SeriesPlaybackPreferences.match(state.subtitleTracks, language: preference.subtitleLanguage, title: preference.subtitleTitle) {
+            player.set("sid", sub.id)
+        }
+        if let visible = preference.subtitlesVisible { player.set("sub-visibility", visible) }
+        if let speed = preference.speed, speed != state.speed {
+            player.set("speed", speed)
+            state.speed = speed
+        }
+    }
+
+    // MARK: - Learned skips
+
+    /// A hand-made forward jump the length of an OP/ED is a hint; the second
+    /// matching one on the same series becomes a suggestion.
+    private func noteManualSeek(from: Double, to: Double) {
+        guard let bangumiID = request?.bangumiID, hasPosition, to > from else { return }
+        guard let learned = learnedSkips.record(start: from, length: to - from, for: bangumiID) else { return }
+        skipSuggestion = learned
+        flash(.text(String(localized: "這段自動跳過？側欄 › 視訊 可以記住")))
+        skipSuggestionTask?.cancel()
+        skipSuggestionTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(20))
+            guard !Task.isCancelled else { return }
+            self?.skipSuggestion = nil
+        }
+    }
+
+    func acceptSkipSuggestion() {
+        guard let skip = skipSuggestion, let bangumiID = request?.bangumiID else { return }
+        learnedSkips.remember(skip, for: bangumiID)
+        skipSuggestion = nil
+        skipSuggestionTask?.cancel()
+        flash(.text(String(localized: "已記住：之後自動跳過這段")))
+    }
+
+    func declineSkipSuggestion() {
+        skipSuggestion = nil
+        skipSuggestionTask?.cancel()
+    }
+
+    /// Learned ranges for the current series, for the inspector.
+    var learnedSkipsForSeries: [LearnedSkip] {
+        request.map { learnedSkips.skips(for: $0.bangumiID) } ?? []
+    }
+
+    func forgetLearnedSkips() {
+        guard let bangumiID = request?.bangumiID else { return }
+        learnedSkips.forget(for: bangumiID)
+        skippedLearned = []
+        flash(.text(String(localized: "已忘記學會的段落")))
+    }
+
+    // MARK: - Sleep timer
+
+    func setSleepTimer(_ mode: SleepTimerMode) {
+        cancelSleepTimer()
+        sleepTimerMode = mode
+        switch mode {
+        case .off:
+            flash(.text(String(localized: "睡眠計時器：關")))
+        case .endOfEpisode:
+            state.sleepAtEndOfEpisode = true
+            cancelPostPlay()
+            flash(.text(String(localized: "播完這集停止")))
+        case let .minutes(minutes):
+            let endsAt = Date().addingTimeInterval(Double(minutes) * 60)
+            state.sleepTimerEndsAt = endsAt
+            flash(.text(String(localized: "\(minutes) 分鐘後停")))
+            sleepTask = Task { [weak self] in
+                // Fade starts 10 s before the deadline so the pause lands on time.
+                try? await Task.sleep(for: .seconds(max(0, Double(minutes) * 60 - 10)))
+                guard !Task.isCancelled else { return }
+                await self?.fadeOutAndPause()
+                self?.finishSleepTimer()
+            }
+        }
+    }
+
+    func cancelSleepTimer() {
+        sleepTask?.cancel()
+        sleepTask = nil
+        fadeTask?.cancel()
+        fadeTask = nil
+        state.sleepTimerEndsAt = nil
+        state.sleepAtEndOfEpisode = false
+        sleepTimerMode = .off
+    }
+
+    private func finishSleepTimer() {
+        cancelSleepTimer()
+        setPaused(true)
+        flash(.text(String(localized: "睡眠計時器：已暫停")))
+    }
+
+    /// 播完這集停止 fades over the episode's last 10 s.
+    private func checkSleepFade(at position: Double) {
+        guard state.sleepAtEndOfEpisode, fadeTask == nil, state.duration > 0, state.duration - position <= 10 else { return }
+        fadeTask = Task { [weak self] in await self?.fadeOutAndPause(pauseAtEnd: false) }
+    }
+
+    /// Volume to zero over ten seconds, then (optionally) pause, then the
+    /// volume back where it was so the next play is not silent.
+    private func fadeOutAndPause(pauseAtEnd: Bool = true) async {
+        guard let player else { return }
+        let original = state.volume
+        let steps = 40
+        for step in 1...steps {
+            guard !Task.isCancelled else {
+                player.set("volume", original)
+                return
+            }
+            player.set("volume", original * Double(steps - step) / Double(steps))
+            try? await Task.sleep(for: .milliseconds(250))
+        }
+        if pauseAtEnd { player.set("pause", true) }
+        player.set("volume", original)
+        state.volume = original
+    }
+
+    // MARK: - Night mode / headphones
+
+    /// Loudness normalisation for late nights: quieter peaks, clearer dialogue.
+    func setNightMode(_ enabled: Bool) {
+        nightMode = enabled
+        UserDefaults.standard.set(enabled, forKey: DesktopDefaults.nightMode)
+        applyNightMode(enabled)
+        flash(.text(enabled ? String(localized: "夜間模式：開") : String(localized: "夜間模式：關")))
+    }
+
+    private static let nightFilter = "@night:lavfi=[loudnorm=I=-24:LRA=7:TP=-2]"
+
+    private func applyNightMode(_ enabled: Bool) {
+        guard let player else { return }
+        do {
+            if enabled {
+                try player.command(["change-list", "af", "add", Self.nightFilter])
+            } else {
+                try player.command(["change-list", "af", "remove", "@night"])
+            }
+        } catch {
+            Self.log.error("night mode: af change failed: \(String(describing: error))")
+        }
+    }
+
+    /// Headphones / Bluetooth gone: pause rather than play on through the speakers.
+    private func outputRouteLost() {
+        guard UserDefaults.standard.object(forKey: DesktopDefaults.pauseOnHeadphoneDisconnect) as? Bool ?? true else { return }
+        guard state.status == .playing || { if case .buffering = state.status { return true }; return false }() else { return }
+        setPaused(true)
+        flash(.text(String(localized: "耳機已中斷，已暫停")))
+    }
+
+    // MARK: - Screenshots / report
+
+    /// `<title> 第N集 mm-ss.png` (`hh-mm-ss` past an hour) instead of mpv's
+    /// `mpv-shot0001`. `%` is mpv's own escape, so the title loses it.
+    private func applyScreenshotTemplate(title: String, number: String) {
+        guard let player else { return }
+        let clock = state.duration >= 3600 ? "%wH-%wM-%wS" : "%wM-%wS"
+        player.set("screenshot-template", "\(Self.screenshotSafeTitle(title)) 第\(number)集 \(clock)")
+    }
+
+    /// The title with path separators, mpv's `%` escape and other unsafe
+    /// filename characters removed, capped at 60 characters.
+    private static func screenshotSafeTitle(_ title: String) -> String {
+        let banned = CharacterSet(charactersIn: "/:%\\?*\"<>|").union(.controlCharacters).union(.newlines)
+        var safe = title.unicodeScalars.filter { !banned.contains($0) }.map(String.init).joined().trimmingCharacters(in: .whitespaces)
+        if safe.count > 60 { safe = String(safe.prefix(60)) }
+        return safe.isEmpty ? "milmil" : safe
+    }
+
+    /// Deep link to this moment, for sharing a screenshot with context:
+    /// `milmil://watch/<bangumiID>?ep=<episodeID>&t=<seconds>`.
+    var screenshotShareURL: URL? {
+        guard let request, let episode else { return nil }
+        return URL(string: "milmil://watch/\(request.bangumiID)?ep=\(episode.episodeID)&t=\(Int(state.timePos))")
+    }
+
+    /// Everything a bug report about this playback needs, as plain text.
+    func playbackReport() -> String {
+        var lines: [String] = []
+        lines.append("milmil playback report · \(Date().formatted(.iso8601))")
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        lines.append("app: \(version) · macOS \(ProcessInfo.processInfo.operatingSystemVersionString)")
+        if let request { lines.append("series: \(request.title) (bangumi \(request.bangumiID))") }
+        if let episode { lines.append("episode: \(episode.number) · \(episode.episodeID)") }
+        if let file = episode?.mediaFile { lines.append("file: \(file.filename) · \(file.path ?? "") · \(file.sizeBytes ?? 0) B") }
+        lines.append("stage: \(state.stage.rawValue) · status: \(state.status) · position: \(Int(state.timePos))/\(Int(state.duration)) s")
+        let size = "\(Int(state.videoSize.width))×\(Int(state.videoSize.height))"
+        lines.append("video: \(state.videoCodec) \(size) · hwdec: \(state.hwdec) · HDR: \(state.isHDR) · fps: \(state.fps)")
+        lines.append("audio: \(state.audioCodec) · speed: \(state.speed) · volume: \(Int(state.volume)) · night mode: \(nightMode)")
+        if let player {
+            lines.append("mpv: \(player.getString("mpv-version") ?? "?") · ffmpeg: \(player.getString("ffmpeg-version") ?? "?")")
+            lines.append("path: \(player.getString("path") ?? "")")
+            let drops = [
+                "frame \(player.getInt("frame-drop-count") ?? -1)",
+                "decoder \(player.getInt("decoder-frame-drop-count") ?? -1)",
+                "vo-delayed \(player.getInt("vo-delayed-frame-count") ?? -1)",
+            ]
+            lines.append("drops: " + drops.joined(separator: " · "))
+            let sync = "estimated-vf-fps: \(player.getDouble("estimated-vf-fps") ?? 0) · avsync: \(player.getDouble("avsync") ?? 0)"
+            lines.append("\(sync) · cache: \(Int(state.cacheSeconds)) s")
+            lines.append("tracks: aid \(player.getString("aid") ?? "?") · sid \(player.getString("sid") ?? "?")")
+            lines.append("af: \(player.getString("af") ?? "") · shaders: \(player.getString("glsl-shaders") ?? "")")
+        }
+        lines.append("tracks:")
+        for track in state.tracks { lines.append("  \(track.kind.rawValue) \(track.id) \(track.displayName)\(track.isSelected ? " *" : "")") }
+        lines.append("segments: \(state.segments.map { "\($0.type) \(Int($0.startTime))-\(Int($0.endTime))" }.joined(separator: ", "))")
+        lines.append("")
+        lines.append("mpv log (last \(logRing.count)):")
+        lines.append(contentsOf: logRing)
+        return lines.joined(separator: "\n")
+    }
+
+    func copyPlaybackReport() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(playbackReport(), forType: .string)
+        flash(.text(String(localized: "播放問題報告已複製")))
     }
 
     // MARK: - Helpers
@@ -970,9 +1562,17 @@ final class PlayerController {
         return [preferred] + fallback.filter { $0 != preferred }
     }
 
-    private static func screenshotDirectory() -> String {
-        let pictures = FileManager.default.urls(for: .picturesDirectory, in: .userDomainMask).first ?? URL(fileURLWithPath: NSHomeDirectory())
-        let dir = pictures.appending(path: "milmil")
+    /// The configured screenshot folder, falling back to ~/Pictures/milmil.
+    /// Created on demand — the old code assumed it existed.
+    static func screenshotDirectory() -> String {
+        let custom = UserDefaults.standard.string(forKey: DesktopDefaults.screenshotFolder)
+        let dir: URL
+        if let custom, !custom.isEmpty {
+            dir = URL(fileURLWithPath: custom)
+        } else {
+            let pictures = FileManager.default.urls(for: .picturesDirectory, in: .userDomainMask).first ?? URL(fileURLWithPath: NSHomeDirectory())
+            dir = pictures.appending(path: "milmil")
+        }
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.path
     }
@@ -1001,4 +1601,11 @@ extension PlayableEpisodesResponse {
         copy.episodes[index] = episodes[index].withProgress(PlayableProgress(positionSeconds: duration, durationSeconds: duration, completed: true))
         return copy
     }
+}
+
+/// A capture that has been written to disk, plus a small preview for the card.
+struct CaptureResult: Equatable, Identifiable {
+    let url: URL
+    let thumbnail: NSImage?
+    var id: URL { url }
 }

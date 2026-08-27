@@ -8,12 +8,18 @@ struct PlaybackRequest: Hashable, Sendable {
     let episodeID: String?
     let title: String
     let coverImage: URL?
+    /// 從頭播放: ignore the server's resume position for this open.
+    let fromStart: Bool
+    /// Open at this position (a shared `…&t=` link); wins over resume.
+    let startSeconds: Double?
 
-    init(bangumiID: Int, episodeID: String? = nil, title: String, coverImage: URL? = nil) {
+    init(bangumiID: Int, episodeID: String? = nil, title: String, coverImage: URL? = nil, fromStart: Bool = false, startSeconds: Double? = nil) {
         self.bangumiID = bangumiID
         self.episodeID = episodeID
         self.title = title
         self.coverImage = coverImage
+        self.fromStart = fromStart
+        self.startSeconds = startSeconds
     }
 }
 

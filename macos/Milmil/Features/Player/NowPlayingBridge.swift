@@ -64,9 +64,12 @@ final class NowPlayingBridge {
         if let artwork { info[MPMediaItemPropertyArtwork] = artwork }
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info
         MPNowPlayingInfoCenter.default().playbackState = state.paused ? .paused : .playing
-        if let cover = controller.request?.coverImage, cover != artworkURL {
-            artworkURL = cover
-            Task { await loadArtwork(cover) }
+        // The episode's still when one is known, so Control Center shows
+        // the scene rather than the series poster; the cover otherwise.
+        let still = controller.episode.flatMap { controller.still(for: $0) }
+        if let image = still ?? controller.request?.coverImage, image != artworkURL {
+            artworkURL = image
+            Task { await loadArtwork(image) }
         }
     }
 

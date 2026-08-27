@@ -38,6 +38,9 @@ enum PlayerAction: String, CaseIterable {
     case screenshotWithSubs = "capture:screenshot-with-subs"
     case screenshotToClipboard = "capture:screenshot-clipboard"
     case skipSegment = "playback:skip-segment"
+    case sleepTimer = "playback:sleep-timer"
+    case nightMode = "audio:night-mode"
+    case reportProblem = "ui:report-problem"
 
     var label: String {
         switch self {
@@ -75,6 +78,9 @@ enum PlayerAction: String, CaseIterable {
         case .screenshotWithSubs: String(localized: "截圖（含字幕）")
         case .screenshotToClipboard: String(localized: "截圖到剪貼簿")
         case .skipSegment: String(localized: "跳過 OP / ED")
+        case .sleepTimer: String(localized: "睡眠計時器")
+        case .nightMode: String(localized: "夜間模式")
+        case .reportProblem: String(localized: "複製播放問題報告")
         }
     }
 
@@ -89,10 +95,10 @@ enum PlayerAction: String, CaseIterable {
     var group: String {
         switch self {
         case .toggle, .seekBack5, .seekForward5, .seekBack30, .seekForward30, .frameForward, .frameBackward,
-             .speedDown, .speedUp, .speedReset, .abLoop, .skipSegment: String(localized: "播放")
+             .speedDown, .speedUp, .speedReset, .abLoop, .skipSegment, .sleepTimer: String(localized: "播放")
         case .volumeUp, .volumeDown, .mute: String(localized: "音量")
-        case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext: String(localized: "字幕 / 音訊")
-        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater: String(localized: "介面")
+        case .subtitleToggle, .subtitleNext, .subtitleDelayDecrease, .subtitleDelayIncrease, .audioNext, .nightMode: String(localized: "字幕 / 音訊")
+        case .fullscreen, .miniPlayer, .help, .techInfo, .nextEpisode, .previousEpisode, .inspector, .theater, .reportProblem: String(localized: "介面")
         case .danmakuToggle, .danmakuSettings, .danmakuCompose: String(localized: "彈幕")
         case .screenshot, .screenshotWithSubs, .screenshotToClipboard: String(localized: "擷取")
         }
@@ -218,6 +224,9 @@ struct PlayerKeymap {
         (.screenshotWithSubs, KeyChord(key: "s", shift: true)),
         (.screenshotToClipboard, KeyChord(key: "s", option: true)),
         (.skipSegment, KeyChord(key: "Tab")),
+        (.sleepTimer, KeyChord(key: "z", shift: true)),
+        (.nightMode, KeyChord(key: "m", shift: true)),
+        (.reportProblem, KeyChord(key: "r", option: true, command: true)),
     ]
 
     init(userBindings: [KeyBinding] = []) {

@@ -14,6 +14,13 @@ final class PlayerWindowModel: PlayerWindowActions {
     var isMini = false
     var hoveringControls = false
     var showTimeRemaining = false
+    /// Pinch zoom on the picture, 1 = fit; applied through mpv `video-zoom`
+    /// so the picture is resampled at source resolution.
+    var videoZoom: CGFloat = 1
+    /// Brief "縮放 1.5×" pill after a pinch.
+    var zoomHintShown = false
+    private var zoomHintTask: Task<Void, Never>?
+    static let maxVideoZoom: CGFloat = 4
     /// Embedded in the main window (watch page) vs. the pop-out window.
     private(set) var embedded = false
     /// Watch-page-only actions the surface routes back to its owner.
@@ -94,6 +101,33 @@ final class PlayerWindowModel: PlayerWindowActions {
             frame.size.height += delta
             frame.origin.y -= delta
             window.setFrame(frame, display: true, animate: true)
+        }
+    }
+
+    // MARK: Video zoom
+
+    func zoom(by magnification: CGFloat) {
+        let next = min(Self.maxVideoZoom, max(1, videoZoom * (1 + magnification)))
+        guard next != videoZoom else { return }
+        videoZoom = next
+        controller?.setVideoZoom(Double(next))
+        showZoomHint()
+    }
+
+    func resetZoom() {
+        guard videoZoom != 1 else { return }
+        videoZoom = 1
+        controller?.setVideoZoom(1)
+        showZoomHint()
+    }
+
+    private func showZoomHint() {
+        zoomHintShown = true
+        zoomHintTask?.cancel()
+        zoomHintTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(900))
+            guard !Task.isCancelled else { return }
+            self?.zoomHintShown = false
         }
     }
 

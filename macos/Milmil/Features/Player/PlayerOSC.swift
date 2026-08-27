@@ -1,53 +1,51 @@
+import AppKit
 import MilmilAPI
 import MilmilPlayer
 import SwiftUI
 
-/// Floating bottom controls. Degrades by width: under ~760 pt the secondary
-/// buttons collapse into the ⋯ menu.
+/// Bottom controls in the YouTube / Bilibili layout the web player uses: a
+/// full-width timeline, then one row with the transport, volume and clock on
+/// the left and the toggles on the right. No card of its own — it sits on the
+/// picture's bottom gradient. Under ~720 pt the track menus collapse into ⋯.
 struct PlayerOSC: View {
     let controller: PlayerController
     let model: PlayerWindowModel
     /// Width of the picture area, measured by the surface (not by the OSC,
     /// whose own width is what we are trying to bound).
-    var availableWidth: CGFloat = 1000
+    var availableWidth: CGFloat = 0
     @State private var volumeExpanded = false
 
     private var state: PlayerState { controller.state }
-    private var compact: Bool { availableWidth < 820 }
+    private var compact: Bool { availableWidth > 0 && availableWidth < 720 }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 0) {
             SeekBar(controller: controller)
-            HStack(spacing: compact ? 8 : 12) {
-                transport
-                timeLabel
+                .padding(.horizontal, 12)
+            HStack(spacing: 0) {
+                leading
                 Spacer(minLength: 8)
                 trailing
             }
+            .padding(.horizontal, 6)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.08), lineWidth: 0.5))
-        .padding(.horizontal, 20)
-        .frame(maxWidth: .infinity)
         .tint(.white)
     }
 
-    private var transport: some View {
-        HStack(spacing: 6) {
-            OSCButton(symbol: "backward.end.fill", label: String(localized: "上一集"), disabled: controller.previousEpisode == nil) { controller.playPrevious() }
-            OSCButton(symbol: "gobackward.10", label: String(localized: "後退 10 秒")) { controller.seek(by: -10) }
+    private var leading: some View {
+        HStack(spacing: 0) {
             Button { controller.togglePause() } label: {
                 Image(systemName: state.paused || state.status == .ended ? "play.fill" : "pause.fill")
-                    .font(.system(size: 18, weight: .bold))
-                    .frame(width: 40, height: 40)
-                    .background(.white.opacity(0.14), in: Circle())
+                    .font(.system(size: 20, weight: .semibold))
+                    .contentTransition(.symbolEffect(.replace.downUp))
+                    .frame(width: 40, height: 36)
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(OSCHoverButtonStyle())
             .accessibilityLabel(state.paused ? String(localized: "播放") : String(localized: "暫停"))
-            OSCButton(symbol: "goforward.10", label: String(localized: "前進 10 秒")) { controller.seek(by: 10) }
             OSCButton(symbol: "forward.end.fill", label: String(localized: "下一集"), disabled: controller.nextEpisode == nil) { controller.playNext() }
+            volumeControl
+            timeLabel
         }
     }
 
@@ -55,26 +53,25 @@ struct PlayerOSC: View {
         Button {
             model.showTimeRemaining.toggle()
         } label: {
-            Text(timeText)
-                .font(.system(size: 12, weight: .medium)).monospacedDigit()
-                .foregroundStyle(.white.opacity(0.85))
+            (Text(model.showTimeRemaining ? "−\(Formatters.clock(state.remaining))" : Formatters.clock(state.timePos))
+                + Text(" / ").foregroundStyle(.white.opacity(0.45))
+                + Text(Formatters.clock(state.duration)))
+                .font(.system(size: 13, weight: .medium)).monospacedDigit()
+                .foregroundStyle(.white.opacity(0.92))
+                .lineLimit(1)
+                .fixedSize()
         }
         .buttonStyle(.plain)
-        .padding(.leading, 4)
-    }
-
-    private var timeText: String {
-        let total = Formatters.clock(state.duration)
-        return model.showTimeRemaining ? "−\(Formatters.clock(state.remaining)) / \(total)" : "\(Formatters.clock(state.timePos)) / \(total)"
+        .padding(.leading, 6)
     }
 
     private var trailing: some View {
-        HStack(spacing: compact ? 6 : 10) {
-            volumeControl
+        HStack(spacing: 0) {
             if !compact {
                 speedMenu
                 subtitleMenu
-                audioMenu
+                if state.audioTracks.count > 1 { audioMenu }
+                captureButton
             }
             OSCButton(
                 symbol: controller.danmakuEnabled ? "text.bubble.fill" : "text.bubble",
@@ -87,7 +84,10 @@ struct PlayerOSC: View {
                 Button("彈幕設定…", systemImage: "slider.horizontal.3") { model.danmakuSettingsShown = true }
             }
             .popover(isPresented: Binding(get: { model.danmakuSettingsShown }, set: { model.danmakuSettingsShown = $0 }), arrowEdge: .top) {
-                DanmakuSettingsView(controller: controller).preferredColorScheme(.dark)
+                DanmakuSettingsView(controller: controller)
+                    .scrollContentBackground(.hidden) // let the popover material through
+                    .frame(minWidth: 360, minHeight: 480)
+                    .preferredColorScheme(.dark)
             }
             if compact { overflowMenu }
             if model.embedded {
@@ -95,7 +95,12 @@ struct PlayerOSC: View {
                 OSCButton(symbol: "macwindow.badge.plus", label: String(localized: "獨立視窗")) { model.toggleMini() }
             } else {
                 OSCButton(symbol: "sidebar.right", label: String(localized: "側欄"), active: model.inspectorShown) { model.inspectorShown.toggle() }
-                OSCButton(symbol: model.isMini ? "pip.exit" : "pip.enter", label: String(localized: "迷你播放器"), active: model.isMini) { model.toggleMini() }
+                OSCButton(
+                    symbol: model.isMini ? "pip.exit" : "pip.enter",
+                    label: String(localized: "迷你播放器"),
+                    active: model.isMini,
+                    morphs: true
+                ) { model.toggleMini() }
             }
             OSCButton(
                 symbol: model.isFullscreen ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
@@ -104,16 +109,31 @@ struct PlayerOSC: View {
         }
     }
 
-    private var volumeControl: some View {
-        HStack(spacing: 6) {
-            OSCButton(symbol: volumeSymbol, label: state.muted ? String(localized: "取消靜音") : String(localized: "靜音")) { controller.toggleMute() }
-            if volumeExpanded || compact == false {
-                Slider(value: Binding(get: { state.muted ? 0 : state.volume }, set: { controller.setVolume($0) }), in: 0...130)
-                    .controlSize(.mini)
-                    .frame(width: volumeExpanded ? 90 : 70)
+    /// Frame capture (Bilibili's 截图). Click grabs the clean frame and asks
+    /// where to save it; the context menu offers the subtitle-burned and
+    /// clipboard variants.
+    private var captureButton: some View {
+        OSCButton(symbol: "camera", label: String(localized: "截圖")) { controller.screenshot(withSubtitles: false) }
+            .contextMenu {
+                Button("截圖", systemImage: "camera") { controller.screenshot(withSubtitles: false) }
+                Button("截圖（含字幕）", systemImage: "captions.bubble") { controller.screenshot(withSubtitles: true) }
+                Button("截圖到剪貼簿", systemImage: "doc.on.clipboard") { controller.screenshotToClipboard() }
             }
+    }
+
+    private var volumeControl: some View {
+        HStack(spacing: 0) {
+            OSCButton(symbol: volumeSymbol, label: state.muted ? String(localized: "取消靜音") : String(localized: "靜音"), morphs: true) { controller.toggleMute() }
+            // The slider slides out of the speaker on hover (YouTube), so the
+            // row stays short until the pointer asks for it.
+            VolumeBar(value: state.muted ? 0 : state.volume, maximum: 130) { controller.setVolume($0) }
+                .frame(width: volumeExpanded ? 64 : 0, alignment: .leading)
+                .opacity(volumeExpanded ? 1 : 0)
+                .clipped()
+                .padding(.trailing, volumeExpanded ? 8 : 0)
         }
         .onHover { volumeExpanded = $0 }
+        .animation(.easeOut(duration: 0.15), value: volumeExpanded)
     }
 
     private var volumeSymbol: String {
@@ -122,7 +142,7 @@ struct PlayerOSC: View {
     }
 
     private var speedMenu: some View {
-        OSCPopover(label: String(format: "%.2g×", state.speed), help: String(localized: "播放速度"), width: 40) {
+        OSCPopover(label: String(format: "%.2g×", state.speed), help: String(localized: "播放速度"), width: 44) {
             ForEach([0.5, 0.75, 1, 1.25, 1.5, 2], id: \.self) { speed in
                 OSCPopoverRow(title: String(format: "%.2g×", speed), selected: state.speed == speed) { controller.setSpeed(speed) }
             }
@@ -148,7 +168,6 @@ struct PlayerOSC: View {
                 OSCPopoverRow(title: track.displayName, selected: state.audioID == track.id) { controller.selectTrack(.audio, id: track.id) }
             }
         }
-        .disabled(state.audioTracks.count < 2)
     }
 
     private var overflowMenu: some View {
@@ -174,10 +193,42 @@ struct PlayerOSC: View {
                 }
             }
             Divider().padding(.vertical, 4)
+            OSCPopoverRow(title: String(localized: "上一集"), symbol: "backward.end.fill") { controller.playPrevious() }
+                .disabled(controller.previousEpisode == nil)
             OSCPopoverRow(title: String(localized: "截圖"), symbol: "camera") { controller.screenshot(withSubtitles: false) }
             OSCPopoverRow(title: String(localized: "技術資訊"), symbol: "info.circle") { model.techInfoShown.toggle() }
             OSCPopoverRow(title: String(localized: "快捷鍵"), symbol: "keyboard") { model.helpShown.toggle() }
         }
+    }
+}
+
+/// The horizontal volume slider that slides out of the speaker button. Drawn
+/// to match the timeline (white on translucent) rather than an AppKit slider.
+struct VolumeBar: View {
+    let value: Double
+    let maximum: Double
+    let onChange: (Double) -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let fraction = maximum > 0 ? CGFloat(min(1, max(0, value / maximum))) : 0
+            ZStack(alignment: .leading) {
+                Capsule().fill(.white.opacity(0.25)).frame(height: 3)
+                Capsule().fill(.white).frame(width: width * fraction, height: 3)
+                Circle().fill(.white).frame(width: 12, height: 12).offset(x: width * fraction - 6)
+            }
+            .frame(height: 36)
+            .contentShape(Rectangle())
+            .gesture(DragGesture(minimumDistance: 0).onChanged { drag in
+                onChange(Double(min(1, max(0, drag.location.x / width))) * maximum)
+            })
+        }
+        .frame(height: 36)
+        .accessibilityElement()
+        .accessibilityLabel(String(localized: "音量"))
+        .accessibilityValue("\(Int(value))")
     }
 }
 
@@ -188,9 +239,11 @@ struct OSCPopover<Content: View>: View {
     var symbol: String?
     var label: String?
     let help: String
-    var width: CGFloat = 30
+    var width: CGFloat = 36
     @ViewBuilder var content: () -> Content
     @State private var shown = false
+    @State private var hovering = false
+    @State private var bounce = 0
 
     var body: some View {
         Button {
@@ -198,16 +251,21 @@ struct OSCPopover<Content: View>: View {
         } label: {
             Group {
                 if let symbol {
-                    Image(systemName: symbol).font(.system(size: 15, weight: .semibold))
+                    Image(systemName: symbol).font(.system(size: 16, weight: .semibold))
                 } else {
-                    Text(label ?? "").font(.system(size: 12, weight: .semibold)).monospacedDigit()
+                    Text(label ?? "").font(.system(size: 13, weight: .semibold)).monospacedDigit()
                 }
             }
-            .foregroundStyle(.white.opacity(0.9))
-            .frame(width: width, height: 30)
+            .foregroundStyle(.white.opacity(hovering || shown ? 1 : 0.85))
+            .symbolEffect(.bounce.up.byLayer, options: .nonRepeating, value: bounce)
+            .frame(width: width, height: 36)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(OSCHoverButtonStyle(raised: shown))
+        .onHover { over in
+            hovering = over
+            if over { bounce += 1 }
+        }
         .help(help)
         .accessibilityLabel(help)
         .popover(isPresented: $shown, arrowEdge: .top) {
@@ -254,50 +312,126 @@ struct OSCButton: View {
     let label: String
     var active = false
     var disabled = false
+    /// The symbol changes with state (volume level, pip in/out): cross-fade
+    /// the glyph layers instead of swapping images.
+    var morphs = false
     var action: () -> Void
+    @State private var hovering = false
+    @State private var bounce = 0
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            bounce += 1
+            action()
+        } label: {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(active ? Theme.accent : .white.opacity(disabled ? 0.3 : 0.9))
-                .frame(width: 30, height: 30)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(active ? Theme.accent : .white.opacity(disabled ? 0.3 : (hovering ? 1 : 0.85)))
+                .symbolEffect(.bounce.up.byLayer, options: .nonRepeating, value: bounce)
+                .contentTransition(morphs ? .symbolEffect(.replace.downUp) : .identity)
+                .frame(width: 36, height: 36)
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(OSCHoverButtonStyle(raised: active))
         .disabled(disabled)
+        .onHover { over in
+            hovering = over
+            if over, !disabled { bounce += 1 }
+        }
         .help(label)
         .accessibilityLabel(label)
     }
 }
 
+/// The OSC's shared hover / press feel: a soft pill rises under the glyph
+/// on hover and the whole button eases up a few percent; pressing squashes
+/// it back. Reduce Motion keeps the pill and drops the scaling.
+struct OSCHoverButtonStyle: ButtonStyle {
+    /// Already-on controls (sidebar shown, popover open) keep a faint pill so
+    /// hover reads as "brighter", not "appears".
+    var raised = false
+    @State private var hovering = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        let lift = hovering && isEnabled
+        configuration.label
+            .background {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .fill(.white.opacity(configuration.isPressed ? 0.18 : (lift ? 0.13 : (raised ? 0.07 : 0))))
+                    .padding(2)
+            }
+            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.92 : (lift ? 1.06 : 1)))
+            .animation(reduceMotion ? .easeOut(duration: 0.12) : .snappy(duration: 0.18, extraBounce: 0.08), value: lift)
+            .animation(reduceMotion ? nil : .snappy(duration: 0.12), value: configuration.isPressed)
+            .onHover { hovering = $0 }
+    }
+}
+
 /// Timeline with cache shading, chapter / OP-ED marks, hover time and
-/// thumbnail peek, and drag-to-seek that commits on release.
+/// thumbnail peek, and drag-to-seek that commits on release. A drag ticks
+/// (trackpad haptics) when it crosses a chapter or an OP/ED edge, and snaps
+/// to the live position with a softer tick when it passes within 4 pt of it.
 struct SeekBar: View {
     let controller: PlayerController
     @State private var hoverFraction: CGFloat?
     @State private var dragFraction: CGFloat?
     @State private var hovering = false
+    @State private var snappedToLive = false
 
     private var state: PlayerState { controller.state }
+
+    /// Chapter times and OP/ED edges as timeline fractions.
+    private var markerFractions: [CGFloat] {
+        guard state.duration > 0 else { return [] }
+        var marks = state.chapters.map { CGFloat($0.time / state.duration) }
+        for segment in state.segments {
+            marks.append(CGFloat(segment.startTime / state.duration))
+            marks.append(CGFloat(segment.endTime / state.duration))
+        }
+        return marks.filter { $0 > 0 && $0 < 1 }
+    }
+
+    private func drag(to x: CGFloat, width: CGFloat) {
+        var fraction = min(1, max(0, x / width))
+        let live = CGFloat(state.fraction)
+        if abs(fraction - live) * width < 4 {
+            if !snappedToLive {
+                snappedToLive = true
+                NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
+            }
+            fraction = live
+        } else {
+            snappedToLive = false
+        }
+        if let previous = dragFraction {
+            let low = min(previous, fraction)
+            let high = max(previous, fraction)
+            if markerFractions.contains(where: { $0 > low && $0 <= high }) {
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            }
+        }
+        dragFraction = fraction
+    }
 
     var body: some View {
         GeometryReader { proxy in
             let width = proxy.size.width
             let shown = dragFraction ?? CGFloat(state.fraction)
             ZStack(alignment: .leading) {
-                Capsule().fill(.white.opacity(0.18)).frame(height: hovering ? 6 : 4)
-                Capsule().fill(.white.opacity(0.28)).frame(width: width * CGFloat(state.cacheFraction), height: hovering ? 6 : 4)
+                Capsule().fill(.white.opacity(0.18)).frame(height: hovering ? 5 : 3)
+                Capsule().fill(.white.opacity(0.28)).frame(width: width * CGFloat(state.cacheFraction), height: hovering ? 5 : 3)
                 ForEach(state.segments) { segment in
                     let start = width * CGFloat(state.duration > 0 ? segment.startTime / state.duration : 0)
                     let end = width * CGFloat(state.duration > 0 ? segment.endTime / state.duration : 0)
-                    Capsule().fill(Color(hex: 0xFBBF24).opacity(0.55)).frame(width: max(2, end - start), height: hovering ? 6 : 4).offset(x: start)
+                    Capsule().fill(Color(hex: 0xFBBF24).opacity(0.55)).frame(width: max(2, end - start), height: hovering ? 5 : 3).offset(x: start)
                 }
                 ForEach(state.chapters) { chapter in
                     let x = width * CGFloat(state.duration > 0 ? chapter.time / state.duration : 0)
                     Rectangle().fill(.white.opacity(0.5)).frame(width: 1.5, height: 8).offset(x: x)
                 }
-                Capsule().fill(Theme.accent).frame(width: width * shown, height: hovering ? 6 : 4)
+                Capsule().fill(Theme.accent).frame(width: width * shown, height: hovering ? 5 : 3)
                 Circle().fill(.white).frame(width: hovering ? 14 : 0, height: 14).shadow(radius: 3).offset(x: width * shown - 7)
                 if let hoverFraction, hovering {
                     hoverBubble(fraction: hoverFraction, width: width)
@@ -317,10 +451,12 @@ struct SeekBar: View {
             }
             .gesture(
                 DragGesture(minimumDistance: 0)
-                    .onChanged { value in dragFraction = min(1, max(0, value.location.x / width)) }
+                    .onChanged { value in drag(to: value.location.x, width: width) }
                     .onEnded { value in
-                        let fraction = min(1, max(0, value.location.x / width))
+                        drag(to: value.location.x, width: width)
+                        let fraction = dragFraction ?? min(1, max(0, value.location.x / width))
                         dragFraction = nil
+                        snappedToLive = false
                         controller.seek(to: Double(fraction) * state.duration)
                     }
             )

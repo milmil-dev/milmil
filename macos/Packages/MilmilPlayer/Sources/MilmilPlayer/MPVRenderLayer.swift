@@ -27,6 +27,12 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
     private let renderLock = NSLock()
     private let tornDown = Atomic(false)
     private let forceRender = Atomic(false)
+    /// Fires once, on the render queue, when the mpv render context exists.
+    /// A file loaded before that point plays with no video — libmpv's VO
+    /// fails to initialise without a context — so a window that loads
+    /// before it is on screen defers its `loadfile` on this.
+    nonisolated(unsafe) public var onRenderContextReady: (@Sendable () -> Void)?
+    public var isRenderContextReady: Bool { renderContext != nil }
 
     public init(player: MPVPlayer) {
         self.player = player
@@ -130,6 +136,9 @@ public final class MPVRenderLayer: CAOpenGLLayer, @unchecked Sendable {
             Unmanaged<MPVRenderLayer>.fromOpaque(context).takeUnretainedValue().scheduleDraw()
         }, Unmanaged.passUnretained(self).toOpaque())
         player.setRenderTeardown { [weak self] in self?.teardown() }
+        let ready = onRenderContextReady
+        onRenderContextReady = nil
+        ready?()
     }
 
     // MARK: - Drawing

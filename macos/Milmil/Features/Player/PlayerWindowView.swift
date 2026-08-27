@@ -24,6 +24,8 @@ struct PlayerWindowView: View {
             }
         }
         .preferredColorScheme(.dark)
+        // 視窗 › 迷你播放器 / 播放器側欄 act on this window while it is key.
+        .focusedSceneValue(model)
     }
 }
 
@@ -36,7 +38,10 @@ struct PlayerSurface: View {
     var embeddedHandler: ((PlayerWindowModel.EmbeddedAction) -> Void)?
     @Environment(PlayerCoordinator.self) private var coordinator
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var surfaceWidth: CGFloat = 1000
+    /// Width of the picture, measured on `picture` itself (the one view
+    /// whose size the chrome can never inflate). 0 until the first layout,
+    /// which keeps the OSC compact rather than letting it overflow.
+    @State private var surfaceWidth: CGFloat = 0
     @ObserveInjection private var inject
 
     private var state: PlayerState { controller.state }
@@ -61,6 +66,8 @@ struct PlayerSurface: View {
     /// surface past the frame the watch page gives it.
     private var surface: some View {
         picture
+            .clipped()
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { surfaceWidth = $0 }
             .overlay { DanmakuOverlayView(store: controller.danmakuStore, state: state, enabled: controller.danmakuEnabled).allowsHitTesting(false) }
             .overlay {
                 PlayerInteractionView(
@@ -70,6 +77,8 @@ struct PlayerSurface: View {
                     onDoubleClick: { model.toggleFullscreen() },
                     onScrollSeek: { controller.seek(by: $0) },
                     onScrollVolume: { controller.adjustVolume(by: $0) },
+                    onMagnify: { model.zoom(by: $0) },
+                    onResetZoom: { model.resetZoom() },
                     onContextMenu: { view, event in PlayerContextMenu.show(controller: controller, model: model, in: view, with: event) },
                     onDropFiles: { urls in urls.forEach { controller.addExternalSubtitle(fileURL: $0) } }
                 )
@@ -79,7 +88,6 @@ struct PlayerSurface: View {
             .overlay { overlays }
             .background(Color.black)
             .frame(minWidth: embedded ? 0 : 480, minHeight: embedded ? 0 : 270)
-            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { surfaceWidth = $0 }
             .background(WindowAccessor { window in model.attach(window: window, controller: controller, embedded: embedded) })
             .onAppear { model.embeddedHandler = embeddedHandler }
             .onChange(of: state.mediaTitle) { _, title in model.updateTitle(title) }
@@ -102,7 +110,7 @@ struct PlayerSurface: View {
         VStack(spacing: 0) {
             LinearGradient(colors: [.black.opacity(0.55), .clear], startPoint: .top, endPoint: .bottom).frame(height: 90)
             Spacer()
-            LinearGradient(colors: [.clear, .black.opacity(0.7)], startPoint: .top, endPoint: .bottom).frame(height: 160)
+            LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .top, endPoint: .bottom).frame(height: 180)
         }
         .opacity(chromeVisible ? 1 : 0)
         .allowsHitTesting(false)
@@ -117,6 +125,9 @@ struct PlayerSurface: View {
         .overlay(alignment: .top) {
             if let osd = controller.osd {
                 OSDPill(message: osd).padding(.top, 56).transition(.opacity)
+            } else if model.zoomHintShown {
+                let title = model.videoZoom == 1 ? String(localized: "符合視窗") : String(format: "%.1f×", model.videoZoom)
+                OSDPill(message: .text(String(localized: "縮放 \(title)"))).padding(.top, 56).transition(.opacity)
             }
         }
         .overlay {
@@ -125,6 +136,15 @@ struct PlayerSurface: View {
         .overlay(alignment: .topLeading) {
             if model.techInfoShown { TechInfoOverlay(state: state).padding(.top, 48).padding(.leading, 16) }
         }
+        .overlay(alignment: .bottomTrailing) {
+            if let capture = controller.lastCapture {
+                CaptureCard(capture: capture, controller: controller)
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 96)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            }
+        }
+        .animation(reduceMotion ? nil : .snappy(duration: 0.28), value: controller.lastCapture)
         .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: controller.osd)
     }
 
@@ -141,7 +161,7 @@ struct PlayerSurface: View {
             Spacer()
             if state.isHDR { PillBadge(text: "HDR", tint: Color(hex: 0xFBBF24), foreground: .black) }
             if !state.resolutionLabel.isEmpty { PillBadge(text: state.resolutionLabel, tint: .white.opacity(0.16)) }
-            PillBadge(text: state.stage.label, tint: state.stage == .direct ? Color(hex: 0x4ADE80).opacity(0.25) : Color(hex: 0x7DD3FC).opacity(0.25))
+            PillBadge(text: state.stage.localizedLabel, tint: state.stage == .direct ? Color(hex: 0x4ADE80).opacity(0.25) : Color(hex: 0x7DD3FC).opacity(0.25))
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)
@@ -155,6 +175,14 @@ struct PlayerSurface: View {
                 if controller.showResumePill, let position = controller.resumePosition {
                     ResumePill(seconds: position) { controller.restartFromBeginning() } dismiss: { controller.dismissResumePill() }
                         .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                if let skip = controller.skipSuggestion {
+                    SkipSuggestionPill(skip: skip) { controller.acceptSkipSuggestion() } decline: { controller.declineSkipSuggestion() }
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                if state.sleepTimerActive {
+                    SleepTimerPill(state: state) { controller.cancelSleepTimer() }
+                        .transition(.opacity)
                 }
                 Spacer()
                 if let segment = state.currentSegment {
@@ -177,12 +205,14 @@ struct PlayerSurface: View {
             }
             .padding(.horizontal, 20)
             PlayerOSC(controller: controller, model: model, availableWidth: surfaceWidth)
+                .frame(maxWidth: .infinity)
                 .opacity(chromeVisible ? 1 : 0)
                 .allowsHitTesting(chromeVisible)
                 .onHover { model.hoveringControls = $0 }
         }
-        .padding(.bottom, 16)
+        .padding(.bottom, 4)
         .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: controller.showResumePill)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: controller.skipSuggestion == nil)
         .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: controller.postPlayCountdown == nil)
     }
 }
@@ -299,6 +329,52 @@ struct ResumePill: View {
     }
 }
 
+/// The second time the user jumps over the same stretch of a series, offer to
+/// remember it (learned OP/ED skip); the pill sits where the resume pill does.
+struct SkipSuggestionPill: View {
+    let skip: LearnedSkip
+    var accept: () -> Void
+    var decline: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "forward.end.circle.fill").foregroundStyle(Theme.accent)
+            Text("下次自動跳過 \(Formatters.clock(skip.start))–\(Formatters.clock(skip.end))？").font(.system(size: 12, weight: .semibold))
+            Button("記住", action: accept).buttonStyle(.plain).font(.system(size: 12, weight: .semibold)).foregroundStyle(Theme.accent)
+            Button("不用", action: decline).buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(.white.opacity(0.75))
+        }
+        .padding(.horizontal, 12).padding(.vertical, 8)
+        .glassSurface(in: Capsule())
+    }
+}
+
+/// Sleep timer status: remaining minutes (ticks every 30 s) or 播完呢集停.
+struct SleepTimerPill: View {
+    let state: PlayerState
+    var cancel: () -> Void
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 30)) { _ in
+            HStack(spacing: 8) {
+                Image(systemName: "moon.zzz.fill").foregroundStyle(Theme.accent)
+                Text(label).font(.system(size: 12, weight: .semibold))
+                Button { cancel() } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .bold)) }
+                    .buttonStyle(.plain).foregroundStyle(.white.opacity(0.6)).accessibilityLabel("取消睡眠計時")
+            }
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .glassSurface(in: Capsule())
+        }
+    }
+
+    private var label: String {
+        if let seconds = state.sleepTimerRemaining {
+            let when = Formatters.remaining(Int(seconds.rounded(.up)))
+            return String(localized: "睡眠計時 · \(when)")
+        }
+        return String(localized: "播完呢集停")
+    }
+}
+
 struct PostPlayCard: View {
     let episode: PlayableEpisode
     /// nil when auto-next is off: the card is just an offer.
@@ -341,7 +417,7 @@ struct TechInfoOverlay: View {
             row(String(localized: "位元率"), state.videoBitrate > 0 ? String(format: "%.1f Mbps", state.videoBitrate / 1_000_000) : "—")
             row(String(localized: "快取"), String(format: "%.1fs", state.cacheSeconds))
             row(String(localized: "速度"), String(format: "%.2g×", state.speed))
-            row(String(localized: "來源"), state.stage.label)
+            row(String(localized: "來源"), state.stage.localizedLabel)
             if state.isHDR { row("HDR", String(localized: "是")) }
         }
         .font(.system(size: 11, design: .monospaced))
@@ -405,5 +481,83 @@ struct HelpOverlay: View {
             .glassSurface(in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .padding(40)
         }
+    }
+}
+
+/// The capture card: a thumbnail that slides in at the bottom-right after a
+/// screenshot, naming the file and offering the follow-ups. Click the image
+/// to reveal it in Finder; it leaves on its own after a few seconds unless
+/// the pointer is on it.
+struct CaptureCard: View {
+    let capture: CaptureResult
+    let controller: PlayerController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button(action: controller.revealCapture) {
+                Group {
+                    if let thumbnail = capture.thumbnail {
+                        Image(nsImage: thumbnail).resizable().aspectRatio(contentMode: .fill)
+                    } else {
+                        Image(systemName: "photo").font(.system(size: 22)).foregroundStyle(.white.opacity(0.6))
+                    }
+                }
+                .frame(width: 208, height: 117)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(.white.opacity(0.15))
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help("在 Finder 顯示")
+            Text(capture.url.lastPathComponent)
+                .font(.system(size: 11, weight: .medium))
+                .lineLimit(1).truncationMode(.middle)
+                .frame(width: 208, alignment: .leading)
+            HStack(spacing: 2) {
+                CaptureAction(symbol: "folder", help: String(localized: "在 Finder 顯示"), action: controller.revealCapture)
+                CaptureAction(symbol: "doc.on.doc", help: String(localized: "複製"), action: controller.copyCapture)
+                CaptureAction(symbol: "square.and.arrow.down", help: String(localized: "另存新檔…"), action: controller.relocateCapture)
+                ShareLink(item: capture.url) {
+                    Image(systemName: "square.and.arrow.up").font(.system(size: 12, weight: .semibold)).frame(width: 28, height: 24)
+                }
+                .buttonStyle(.plain)
+                .help("分享")
+                Spacer(minLength: 0)
+                CaptureAction(symbol: "trash", help: String(localized: "刪除"), action: controller.deleteCapture)
+            }
+            .frame(width: 208)
+        }
+        .padding(10)
+        .glassSurface(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .onHover { controller.holdCapture($0) }
+        .contextMenu {
+            Button("在 Finder 顯示", systemImage: "folder", action: controller.revealCapture)
+            Button("複製", systemImage: "doc.on.doc", action: controller.copyCapture)
+            Button("另存新檔…", systemImage: "square.and.arrow.down", action: controller.relocateCapture)
+            Divider()
+            Button("刪除", systemImage: "trash", role: .destructive, action: controller.deleteCapture)
+        }
+    }
+}
+
+private struct CaptureAction: View {
+    let symbol: String
+    let help: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.white.opacity(hovering ? 1 : 0.75))
+                .frame(width: 28, height: 24)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .help(help)
     }
 }
