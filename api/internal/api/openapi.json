@@ -1225,6 +1225,11 @@
                     },
                     "username": {
                       "type": "string"
+                    },
+                    "avatar_url": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Public avatar URL (/api/v1/users/{id}/avatar?v=\u2026), null when unset"
                     }
                   }
                 }
@@ -7989,6 +7994,149 @@
           },
           "404": {
             "description": "Unknown device"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me/avatar": {
+      "put": {
+        "summary": "Set the current user's avatar",
+        "operationId": "putAuthMeAvatar",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "PNG, JPEG or WebP, 2 MB max"
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_url": {
+                    "type": "string",
+                    "description": "http(s) image the server fetches (5 MB max)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avatar stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "avatar_url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported image or missing input"
+          },
+          "413": {
+            "description": "Image too large"
+          },
+          "502": {
+            "description": "source_url could not be fetched"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the current user's avatar",
+        "operationId": "deleteAuthMeAvatar",
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}/avatar": {
+      "get": {
+        "summary": "Get a user's avatar (public)",
+        "operationId": "getUserAvatar",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                128,
+                512
+              ],
+              "default": 512
+            }
+          },
+          {
+            "name": "v",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Cache buster, ignored"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JPEG",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified"
+          },
+          "404": {
+            "description": "No avatar"
           }
         }
       }

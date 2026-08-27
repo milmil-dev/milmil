@@ -27,6 +27,9 @@ type UserDTO struct {
 	ID                    string `json:"Id"`
 	HasPassword           bool   `json:"HasPassword"`
 	HasConfiguredPassword bool   `json:"HasConfiguredPassword"`
+	// Set when the user has an avatar; clients fetch
+	// /Users/{id}/Images/Primary?tag=… and re-fetch when it changes.
+	PrimaryImageTag string `json:"PrimaryImageTag,omitempty"`
 }
 
 // ItemDTO represents any Jellyfin library item (series, episode, folder).

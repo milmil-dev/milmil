@@ -342,14 +342,16 @@ type TranscodeSession struct {
 }
 
 type User struct {
-	ID               string `json:"id"`
-	Username         string `json:"username"`
-	PasswordHash     string `json:"password_hash"`
-	CreatedAt        string `json:"created_at"`
-	UpdatedAt        string `json:"updated_at"`
-	TotpSecret       string `json:"totp_secret"`
-	TwoFactorEnabled int64  `json:"two_factor_enabled"`
-	TokenVersion     int64  `json:"token_version"`
+	ID               string         `json:"id"`
+	Username         string         `json:"username"`
+	PasswordHash     string         `json:"password_hash"`
+	CreatedAt        string         `json:"created_at"`
+	UpdatedAt        string         `json:"updated_at"`
+	TotpSecret       string         `json:"totp_secret"`
+	TwoFactorEnabled int64          `json:"two_factor_enabled"`
+	TokenVersion     int64          `json:"token_version"`
+	AvatarPath       sql.NullString `json:"avatar_path"`
+	AvatarUpdatedAt  sql.NullString `json:"avatar_updated_at"`
 }
 
 type UserPreference struct {

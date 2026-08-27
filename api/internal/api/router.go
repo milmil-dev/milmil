@@ -162,6 +162,11 @@ func NewRouter(deps Deps) *echo.Echo {
 	authProtected := v1.Group("/auth", authMiddleware(h.queries), auditMiddleware(h.queries))
 	authProtected.POST("/logout", h.handleAuthLogout)
 	authProtected.GET("/me", h.handleAuthMe)
+	authProtected.PUT("/me/avatar", h.handlePutAvatar)
+	authProtected.DELETE("/me/avatar", h.handleDeleteAvatar)
+	// Public: <img> tags and external players cannot send a bearer header,
+	// user ids are UUIDs and an avatar is not a secret.
+	v1.GET("/users/:id/avatar", h.handleGetUserAvatar)
 	authProtected.PUT("/password", h.handleChangePassword)
 	authProtected.POST("/2fa/setup", h.handleTwoFactorSetup)
 	authProtected.POST("/2fa/verify", h.handleTwoFactorVerify)

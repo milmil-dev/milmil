@@ -26,3 +26,9 @@ UPDATE users SET totp_secret = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'n
 
 -- name: BumpTokenVersion :exec
 UPDATE users SET token_version = token_version + 1, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: SetUserAvatar :exec
+UPDATE users SET avatar_path = ?, avatar_updated_at = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;
+
+-- name: ClearUserAvatar :exec
+UPDATE users SET avatar_path = NULL, avatar_updated_at = NULL, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;

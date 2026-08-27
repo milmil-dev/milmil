@@ -13,6 +13,7 @@ type Querier interface {
 	BatchDeleteWatchProgress(ctx context.Context, arg BatchDeleteWatchProgressParams) (int64, error)
 	BumpTokenVersion(ctx context.Context, id string) error
 	ClearMediaFileMatch(ctx context.Context, id string) error
+	ClearUserAvatar(ctx context.Context, id string) error
 	CompleteScanSummary(ctx context.Context, arg CompleteScanSummaryParams) error
 	CountAPITokensByUser(ctx context.Context, userID string) (int64, error)
 	CountActiveExternalDevices(ctx context.Context) (int64, error)
@@ -196,6 +197,8 @@ type Querier interface {
 	SetEpisodePreferredManual(ctx context.Context, arg SetEpisodePreferredManualParams) error
 	SetPullEnabled(ctx context.Context, arg SetPullEnabledParams) error
 	SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error
+	SetUserAvatar(ctx context.Context, arg SetUserAvatarParams) error
+	SumCompletedDownloadBytesSince(ctx context.Context, arg SumCompletedDownloadBytesSinceParams) (int64, error)
 	SupersedeProgressOps(ctx context.Context, arg SupersedeProgressOpsParams) error
 	TouchExternalDevice(ctx context.Context, arg TouchExternalDeviceParams) error
 	UnlinkDownloadsByRuleID(ctx context.Context, ruleID sql.NullString) error

@@ -26,8 +26,13 @@ type authLoginRequest struct {
 }
 
 type authUserDTO struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
+	ID        string  `json:"id"`
+	Username  string  `json:"username"`
+	AvatarURL *string `json:"avatar_url"`
+}
+
+func userDTO(user store.User) authUserDTO {
+	return authUserDTO{ID: user.ID, Username: user.Username, AvatarURL: avatarURL(user)}
 }
 
 type authLoginResponse struct {
@@ -99,7 +104,7 @@ func (h *handler) handleAuthSetup(c *echo.Context) error {
 	}
 	return c.JSON(http.StatusCreated, authLoginResponse{
 		Token: plaintext,
-		User:  authUserDTO{ID: user.ID, Username: user.Username},
+		User:  userDTO(user),
 	})
 }
 
@@ -196,7 +201,7 @@ func (h *handler) handleAuthMe(c *echo.Context) error {
 		}
 		return echo.ErrInternalServerError
 	}
-	return c.JSON(http.StatusOK, authUserDTO{ID: user.ID, Username: user.Username})
+	return c.JSON(http.StatusOK, userDTO(user))
 }
 
 type changePasswordRequest struct {
@@ -240,9 +245,13 @@ func (h *handler) issueAPIToken(c *echo.Context, userID, username, deviceName st
 	if err != nil {
 		return echo.ErrInternalServerError
 	}
+	dto := authUserDTO{ID: userID, Username: username}
+	if user, err := h.queries.GetUserByID(c.Request().Context(), userID); err == nil {
+		dto = userDTO(user)
+	}
 	return c.JSON(http.StatusOK, authLoginResponse{
 		Token: plaintext,
-		User:  authUserDTO{ID: userID, Username: username},
+		User:  dto,
 	})
 }
 

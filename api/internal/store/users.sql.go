@@ -7,6 +7,7 @@ package store
 
 import (
 	"context"
+	"database/sql"
 )
 
 const bumpTokenVersion = `-- name: BumpTokenVersion :exec
@@ -15,6 +16,15 @@ UPDATE users SET token_version = token_version + 1, updated_at = strftime('%Y-%m
 
 func (q *Queries) BumpTokenVersion(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, bumpTokenVersion, id)
+	return err
+}
+
+const clearUserAvatar = `-- name: ClearUserAvatar :exec
+UPDATE users SET avatar_path = NULL, avatar_updated_at = NULL, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+func (q *Queries) ClearUserAvatar(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, clearUserAvatar, id)
 	return err
 }
 
@@ -32,7 +42,7 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, username, password_hash, created_at, updated_at)
 VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
-RETURNING id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version
+RETURNING id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version, avatar_path, avatar_updated_at
 `
 
 type CreateUserParams struct {
@@ -53,6 +63,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.TotpSecret,
 		&i.TwoFactorEnabled,
 		&i.TokenVersion,
+		&i.AvatarPath,
+		&i.AvatarUpdatedAt,
 	)
 	return i, err
 }
@@ -81,7 +93,7 @@ func (q *Queries) EnableTwoFactor(ctx context.Context, arg EnableTwoFactorParams
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version FROM users WHERE id = ? LIMIT 1
+SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version, avatar_path, avatar_updated_at FROM users WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
@@ -96,12 +108,14 @@ func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
 		&i.TotpSecret,
 		&i.TwoFactorEnabled,
 		&i.TokenVersion,
+		&i.AvatarPath,
+		&i.AvatarUpdatedAt,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version FROM users WHERE username = ? LIMIT 1
+SELECT id, username, password_hash, created_at, updated_at, totp_secret, two_factor_enabled, token_version, avatar_path, avatar_updated_at FROM users WHERE username = ? LIMIT 1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -116,6 +130,8 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.TotpSecret,
 		&i.TwoFactorEnabled,
 		&i.TokenVersion,
+		&i.AvatarPath,
+		&i.AvatarUpdatedAt,
 	)
 	return i, err
 }
@@ -131,6 +147,21 @@ type SetTOTPSecretParams struct {
 
 func (q *Queries) SetTOTPSecret(ctx context.Context, arg SetTOTPSecretParams) error {
 	_, err := q.db.ExecContext(ctx, setTOTPSecret, arg.TotpSecret, arg.ID)
+	return err
+}
+
+const setUserAvatar = `-- name: SetUserAvatar :exec
+UPDATE users SET avatar_path = ?, avatar_updated_at = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?
+`
+
+type SetUserAvatarParams struct {
+	AvatarPath      sql.NullString `json:"avatar_path"`
+	AvatarUpdatedAt sql.NullString `json:"avatar_updated_at"`
+	ID              string         `json:"id"`
+}
+
+func (q *Queries) SetUserAvatar(ctx context.Context, arg SetUserAvatarParams) error {
+	_, err := q.db.ExecContext(ctx, setUserAvatar, arg.AvatarPath, arg.AvatarUpdatedAt, arg.ID)
 	return err
 }
 

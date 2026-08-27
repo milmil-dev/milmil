@@ -30,6 +30,9 @@ type Handler struct {
 	avatarDir string
 }
 
+// SetAvatarDir points /Users/{id}/Images/Primary at the avatar store.
+func (h *Handler) SetAvatarDir(dir string) { h.avatarDir = dir }
+
 // NewHandler creates a new Jellyfin API handler.
 func NewHandler(queries *store.Queries, jwtSecret string, imageCacheDir string, encryptionKey []byte) (*Handler, error) {
 	cache, err := imagecache.New(imageCacheDir)
@@ -129,6 +132,7 @@ func (h *Handler) RegisterRoutes(e *echo.Echo) {
 
 	// Users
 	auth.GET("/Users/:userId", h.handleGetUser)
+	auth.GET("/Users/:userId/Images/Primary", h.handleUserImage)
 	auth.GET("/Users/:userId/Views", h.handleGetUserViews)
 	auth.GET("/Users/:userId/GroupingOptions", h.handleGroupingOptions)
 	auth.GET("/Users/:userId/Items/Resume", h.handleItemsResume)
