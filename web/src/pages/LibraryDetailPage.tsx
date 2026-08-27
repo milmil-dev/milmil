@@ -2301,6 +2301,12 @@ export function LibraryDetailPage() {
               <p className="text-[11px] text-ink/35 mt-2 font-medium tracking-wide uppercase">
                 {i18n._(msg`library.detail.stats.diskUsage`)}
               </p>
+              {(capacity.downloaded_this_month_bytes ?? 0) > 0 ? (
+                <p className="text-[11px] text-ink/45 mt-1 tabular-nums">
+                  {i18n._(msg`library.detail.stats.downloadedThisMonth`)}{' '}
+                  {formatBytes(capacity.downloaded_this_month_bytes ?? 0)}
+                </p>
+              ) : null}
             </div>
           ) : (
             <div className="bg-ink/[0.04] rounded-xl p-4">

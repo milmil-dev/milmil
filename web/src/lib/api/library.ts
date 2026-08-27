@@ -63,6 +63,8 @@ export interface LibraryCapacity {
   free_bytes: number;
   used_bytes: number;
   available: boolean;
+  /** Bytes of downloads completed into this library since the first of the current UTC month. */
+  downloaded_this_month_bytes?: number;
 }
 
 export interface BrowseInput {
