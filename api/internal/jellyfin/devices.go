@@ -44,7 +44,9 @@ func (d *deviceTracker) record(ctx context.Context, userID, deviceID, client, de
 	if _, err := d.queries.UpsertExternalDevice(ctx, store.UpsertExternalDeviceParams{
 		DeviceID: deviceID, UserID: userID, Client: client, DeviceName: deviceName, FirstSeen: now, LastSeen: now,
 	}); err != nil {
-		slog.Warn("jellyfin: record device", "device", deviceID, "err", err)
+		// The device id comes straight off the MediaBrowser auth header, so it
+		// is not logged: the error is what makes this line worth keeping.
+		slog.Warn("jellyfin: record device", "err", err)
 		return
 	}
 	d.mu.Lock()
@@ -69,7 +71,7 @@ func (d *deviceTracker) isRevoked(ctx context.Context, deviceID string) bool {
 	if err == nil {
 		revoked = row.Revoked != 0
 	} else if !errors.Is(err, sql.ErrNoRows) {
-		slog.Debug("jellyfin: device lookup", "device", deviceID, "err", err)
+		slog.Debug("jellyfin: device lookup", "err", err)
 	}
 	d.mu.Lock()
 	d.revoked[deviceID] = revokedEntry{revoked: revoked, checkedAt: d.now()}

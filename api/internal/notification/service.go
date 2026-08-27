@@ -197,7 +197,7 @@ func (s *Service) enrichDownload(ctx context.Context, notifType, title, message 
 	}
 	dl, err := s.queries.GetDownloadByID(ctx, downloadID)
 	if err != nil {
-		slog.Debug("notification: enrich download lookup failed", "id", downloadID, "err", err)
+		slog.Debug("notification: enrich download lookup failed", "err", err)
 		return title, message, metadata
 	}
 	episode := rss.ParseEpisode(dl.Name)
