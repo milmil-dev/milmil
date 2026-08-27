@@ -12,10 +12,20 @@ const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 interface DanmakuBarProps {
   fileId: string | null;
+  /** Everything on screen: 弹弹play + imported + local. */
   danmakuCount: number;
+  /** Only the 弹弹play feed — the credit line is owed to that source alone. */
+  dandanplayCount: number;
+  /** Playback position, so a posted comment lands where it was typed. */
+  currentTime?: () => number;
 }
 
-export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
+export function DanmakuBar({
+  fileId,
+  danmakuCount,
+  dandanplayCount,
+  currentTime,
+}: DanmakuBarProps) {
   const { i18n } = useLingui();
   const [text, setText] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -41,8 +51,18 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
     const token = localStorage.getItem('milmil-token') ?? '';
     await fetch(`${API_URL}/api/v1/danmaku/${fileId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ text: trimmed }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      // Matches the server's PostCommentReq (and the macOS client): mode 1 =
+      // scrolling, colour is 24-bit RGB as a decimal.
+      body: JSON.stringify({
+        comment: trimmed,
+        time: Math.max(0, currentTime?.() ?? 0),
+        mode: 1,
+        color: 16777215,
+      }),
     });
     setText('');
     inputRef.current?.focus();
@@ -74,7 +94,11 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             height="2"
             rx="1"
             fill="currentColor"
-            animate={{ width: enabled ? 13 : 6, opacity: enabled ? 1 : 0.3, x: enabled ? 1 : 3 }}
+            animate={{
+              width: enabled ? 13 : 6,
+              opacity: enabled ? 1 : 0.3,
+              x: enabled ? 1 : 3,
+            }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
           />
           <motion.rect
@@ -83,7 +107,11 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             height="2"
             rx="1"
             fill="currentColor"
-            animate={{ width: enabled ? 16 : 8, opacity: enabled ? 0.75 : 0.2, x: enabled ? 4 : 5 }}
+            animate={{
+              width: enabled ? 16 : 8,
+              opacity: enabled ? 0.75 : 0.2,
+              x: enabled ? 4 : 5,
+            }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}
           />
           <motion.rect
@@ -108,7 +136,10 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
-            animate={{ opacity: enabled ? 0 : 0.5, pathLength: enabled ? 0 : 1 }}
+            animate={{
+              opacity: enabled ? 0 : 0.5,
+              pathLength: enabled ? 0 : 1,
+            }}
             transition={{ duration: 0.25 }}
           />
         </svg>
@@ -153,8 +184,22 @@ export function DanmakuBar({ fileId, danmakuCount }: DanmakuBarProps) {
 
       {/* Label */}
       <span className="shrink-0 text-[11px] text-ink/30">
-        {i18n._({ ...msg`watch.danmaku.loaded`, values: { count: danmakuCount } })}
+        {i18n._({
+          ...msg`watch.danmaku.loaded`,
+          values: { count: danmakuCount },
+        })}
       </span>
+      {/* Source credit, only while 弹弹play comments are actually on screen —
+          imported or local-only sets owe it nothing. The terms require the
+          full name, never "dandan". */}
+      {dandanplayCount > 0 && (
+        <span
+          className="shrink-0 text-[10px] text-ink/25 hidden sm:inline"
+          title={i18n._(msg`watch.danmaku.attribution`)}
+        >
+          {i18n._(msg`watch.danmaku.attribution`)}
+        </span>
+      )}
 
       {/* Input */}
       <input

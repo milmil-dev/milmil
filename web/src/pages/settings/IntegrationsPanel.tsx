@@ -59,7 +59,7 @@ function DandanPlayCard() {
   });
 
   return (
-    <SettingsCard label="DandanPlay">
+    <SettingsCard label="弹弹play开放弹幕网络（DandanPlay）">
       <form
         onSubmit={(e) => {
           e.preventDefault();
