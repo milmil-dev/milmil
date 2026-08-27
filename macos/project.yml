@@ -101,6 +101,11 @@ targets:
       properties:
         CFBundleDisplayName: milmil
         CFBundleName: milmil
+        # Without these XcodeGen writes its 1.0 / 1 defaults and the shipped
+        # app reports 1.0 forever; release-please only ever bumps
+        # MARKETING_VERSION above.
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSApplicationCategoryType: public.app-category.entertainment
         LSMinimumSystemVersion: "15.0"
         NSHumanReadableCopyright: "© milmil contributors"
