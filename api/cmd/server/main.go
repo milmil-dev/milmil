@@ -101,21 +101,20 @@ func isTerminal() bool {
 	return fi.Mode()&os.ModeCharDevice != 0
 }
 
-// redactRedisURL masks the password in redis://user:password@host:port format
+// redactRedisURL masks the password in redis://user:password@host:port format.
+//
+// Split on the last separator in each case: a password may itself contain '@'
+// or ':', and the host part legitimately carries a ':' before the port.
 func redactRedisURL(url string) string {
-	if !strings.Contains(url, "@") {
-		return url // No password present
+	credentials, host, ok := strings.CutLast(url, "@")
+	if !ok {
+		return url // no credentials present
 	}
-	// Format: redis://user:password@host:port → redis://user:***@host:port
-	at := strings.LastIndex(url, "@")
-	before := url[:at]
-	after := url[at:]
-
-	colon := strings.LastIndex(before, ":")
-	if colon == -1 {
-		return before + ":***" + after
+	user, _, ok := strings.CutLast(credentials, ":")
+	if !ok {
+		return credentials + ":***@" + host
 	}
-	return before[:colon] + ":***" + after
+	return user + ":***@" + host
 }
 
 func main() {

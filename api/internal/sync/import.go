@@ -47,6 +47,10 @@ func (s *Service) runImport(ctx context.Context, userID string, prov Provider, t
 				PositionSeconds: 0,
 			})
 		}
+		if err := RecordSeriesCompletion(ctx, s.q, userID, animeID); err != nil {
+			slog.Warn("sync: failed to record series completion",
+				"anime_id", animeID, "user", userID, "err", err)
+		}
 		if e.Status == StatusDropped || e.Status == StatusPaused {
 			anime, _ := s.q.GetAnime(ctx, animeID)
 			_ = s.q.UpdateAnimeSyncFlags(ctx, store.UpdateAnimeSyncFlagsParams{

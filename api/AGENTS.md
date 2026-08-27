@@ -69,6 +69,24 @@ Routes deliberately left undocumented are listed in `notInSpec` in that test,
 each with a reason. The whole `/jellyfin` prefix is excluded — it implements
 someone else's contract.
 
+## Watch Status
+
+`sync.DeriveStatus` computes the canonical status for a (user, anime) pair and
+is what gets pushed to AniList, Bangumi and Trakt. Precedence:
+
+1. `anime.watch_status_override` wins unconditionally.
+2. All episodes complete → completed.
+3. Partway through, and `anime_watch_state.times_completed > 0` → repeating.
+4. Otherwise watching / planning / none.
+
+Rule 3 needs the stored counter: a part-watched episode looks identical on a
+first pass and on a rewatch, so it cannot be derived from `watch_progress`
+alone. Call `sync.RecordSeriesCompletion` after any write that can finish a
+series — it is idempotent and ignores series that are not complete.
+
+Note the Jellyfin layer never sets `completed = 1`; external players record
+position only, so nothing there can finish a series today.
+
 ## Quality Gates
 
 ```bash

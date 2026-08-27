@@ -112,7 +112,7 @@
 
 | Layer | Technology |
 |-------|-----------|
-| Backend | Go 1.26, Echo v4, SQLite / PostgreSQL |
+| Backend | Go 1.27, Echo v5, SQLite / PostgreSQL |
 | Frontend | React 19, TanStack Router, Tailwind CSS v4 |
 | State | Zustand (UI), TanStack Query (server) |
 | Bundler | Vite 8, Bun |
@@ -147,7 +147,7 @@ Then open [http://localhost:3000](http://localhost:3000) and run the setup wizar
 
 Full install guide: [docs-site/content/docs/getting-started/installation.mdx](docs-site/content/docs/getting-started/installation.mdx).
 
-**From source** (Go 1.26+, Bun 1.3+, FFmpeg):
+**From source** (Go 1.27+, Bun 1.3+, FFmpeg):
 
 ```bash
 make setup

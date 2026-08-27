@@ -98,7 +98,7 @@
 
 | 层级 | 技术 |
 |------|------|
-| 后端 | Go 1.26, Echo v4, SQLite / PostgreSQL |
+| 后端 | Go 1.27, Echo v5, SQLite / PostgreSQL |
 | 前端 | React 19, TanStack Router, Tailwind CSS v4 |
 | 状态 | Zustand (UI), TanStack Query (服务器) |
 | 打包 | Vite 8, Bun |
@@ -133,7 +133,7 @@ docker compose up -d
 
 完整安装指南：[docs-site/content/docs/getting-started/installation.mdx](docs-site/content/docs/getting-started/installation.mdx)。
 
-**从源码构建**（Go 1.26+、Bun 1.3+、FFmpeg）：
+**从源码构建**（Go 1.27+、Bun 1.3+、FFmpeg）：
 
 ```bash
 make setup

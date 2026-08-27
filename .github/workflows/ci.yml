@@ -12,9 +12,9 @@ concurrency:
 
 # Pinned tool versions (mirror mise.toml).
 env:
-  GO_VERSION: "1.26.1"
+  GO_VERSION: "1.27.0"
   BUN_VERSION: "1.4.0"
-  GOLANGCI_LINT_VERSION: "v2.13.0"
+  GOLANGCI_LINT_VERSION: "v2.13.1"
 
 jobs:
   go:
@@ -63,12 +63,19 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.mod go.sum
 
+      # Installed directly rather than via golangci-lint-action: the action
+      # manages its own cache, which does not include the Go build cache that
+      # actually dominates the run here, so it kept overshooting the job
+      # timeout on dependency bumps. The prebuilt binary plus the shared cache
+      # above is one caching story instead of two fighting each other.
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh \
+            | sh -s -- -b "$(go env GOPATH)/bin" "${GOLANGCI_LINT_VERSION}"
+
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: ${{ env.GOLANGCI_LINT_VERSION }}
-          working-directory: api
-          args: --timeout=30m
+        working-directory: api
+        run: golangci-lint run --timeout=20m
 
       # Fast feedback before the much slower instrumented run below.
       - name: go test

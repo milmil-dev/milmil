@@ -41,6 +41,13 @@ type Anime struct {
 	TitleOriginal        sql.NullString `json:"title_original"`
 }
 
+type AnimeWatchState struct {
+	UserID          string `json:"user_id"`
+	AnimeID         string `json:"anime_id"`
+	TimesCompleted  int64  `json:"times_completed"`
+	LastCompletedAt string `json:"last_completed_at"`
+}
+
 type ApiToken struct {
 	ID            string         `json:"id"`
 	Name          string         `json:"name"`

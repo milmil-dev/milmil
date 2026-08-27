@@ -98,7 +98,7 @@
 
 | レイヤー | テクノロジー |
 |----------|-------------|
-| バックエンド | Go 1.26, Echo v4, SQLite / PostgreSQL |
+| バックエンド | Go 1.27, Echo v5, SQLite / PostgreSQL |
 | フロントエンド | React 19, TanStack Router, Tailwind CSS v4 |
 | 状態管理 | Zustand (UI), TanStack Query (サーバー) |
 | バンドラー | Vite 8, Bun |
@@ -117,7 +117,7 @@
 
 ### 前提条件
 
-- Go 1.26+
+- Go 1.27+
 - Bun 1.3+
 - FFmpeg（トランスコードとメディア情報用）
 - Redis（オプション）
