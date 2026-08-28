@@ -24,10 +24,20 @@ function serverURL(): string {
   return window.location.origin + import.meta.env.BASE_URL.replace(/\/$/, '');
 }
 
-/** `milmil://pair?…` — the native clients register this scheme. */
+/**
+ * `milmil://pair?…` — the native clients register this scheme.
+ *
+ * Built by hand rather than with URLSearchParams, which writes a space as `+`.
+ * That is form encoding; the clients read the query with the platform URL
+ * parsers, which leave `+` alone — so a paired server showed up named
+ * "living+room".
+ */
 function pairLink(token: string, name: string): string {
-  const params = new URLSearchParams({ url: serverURL(), token, name });
-  return `milmil://pair?${params.toString()}`;
+  const params = { url: serverURL(), token, name };
+  const query = Object.entries(params)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join('&');
+  return `milmil://pair?${query}`;
 }
 
 /**

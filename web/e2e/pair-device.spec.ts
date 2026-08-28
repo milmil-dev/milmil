@@ -57,6 +57,11 @@ test.describe('Settings › Account › pair a device', () => {
     expect(link).toContain('token=mlml_test_token');
     // The clients normalise this, but it must be the origin they can reach.
     expect(link).toContain(`url=${encodeURIComponent(new URL(page.url()).origin)}`);
+    // The device name comes from the page title and has spaces in it. Form
+    // encoding them as `+` gets through every URL parser the clients use and
+    // lands as a literal plus in the server's name.
+    expect(link).not.toContain('+');
+    expect(link).toContain('%20');
   });
 
   test('offers the same link to the app on this machine', async ({ page }) => {
