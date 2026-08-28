@@ -422,6 +422,14 @@ private fun WatchRoute(
         subtitle = episode?.let { "第 ${it.sort} 集 · ${it.displayTitle}" }.orEmpty(),
         state = state,
         tracks = tracks,
+        episodes = all,
+        playingId = playingId,
+        onSelectEpisode = { chosen ->
+            // Same commit-then-switch as the next-episode button: the position
+            // must be written before it becomes another episode's.
+            model.commit()
+            playingId = chosen.episodeId
+        },
         danmaku = danmakuComments,
         danmakuSettings = danmaku,
         saveFailed = saveFailed,

@@ -3,6 +3,12 @@ package dev.milmil.android
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import dev.milmil.api.PlayableEpisode
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,10 +81,16 @@ public fun PlayerScreen(
     onNext: () -> Unit,
     onSelectTrack: (TrackKind, String?) -> Unit,
     onSpeed: (Float) -> Unit,
+    episodes: List<PlayableEpisode>,
+    playingId: String,
+    onSelectEpisode: (PlayableEpisode) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ImmersiveLandscape()
+    // Portrait is the default: you watch with the episode list under the
+    // picture. Full screen is a choice, not the only way in.
+    var fullscreen by rememberSaveable { mutableStateOf(false) }
+    if (fullscreen) ImmersiveLandscape()
     PictureInPictureOnLeave(playing = state.status == PlaybackStatus.Playing)
 
     var chromeVisible by remember { mutableStateOf(true) }
@@ -96,6 +108,30 @@ public fun PlayerScreen(
             delay(CHROME_TIMEOUT_MILLIS)
             chromeVisible = false
         }
+    }
+
+    if (!fullscreen) {
+        PortraitPlayer(
+            engine = engine,
+            title = title,
+            subtitle = subtitle,
+            state = state,
+            tracks = tracks,
+            danmaku = danmaku,
+            danmakuSettings = danmakuSettings,
+            saveFailed = saveFailed,
+            hasNext = hasNext,
+            episodes = episodes,
+            playingId = playingId,
+            onSelectEpisode = onSelectEpisode,
+            onNext = onNext,
+            onSelectTrack = onSelectTrack,
+            onSpeed = onSpeed,
+            onFullscreen = { fullscreen = true },
+            onBack = onBack,
+            modifier = modifier,
+        )
+        return
     }
 
     Box(
@@ -166,6 +202,8 @@ public fun PlayerScreen(
                     scrubbing = null
                 },
                 onToggle = { if (state.status == PlaybackStatus.Playing) engine.pause() else engine.play() },
+                onFullscreen = { fullscreen = false },
+                fullscreen = true,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
@@ -310,6 +348,7 @@ private fun TopBar(title: String, subtitle: String, onBack: () -> Unit) {
     }
 }
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun BottomBar(
     state: PlaybackState,
@@ -322,6 +361,8 @@ private fun BottomBar(
     hasNext: Boolean,
     onNext: () -> Unit,
     onSkip: (Double) -> Unit,
+    onFullscreen: () -> Unit,
+    fullscreen: Boolean,
     scrubbing: Float?,
     onScrub: (Float) -> Unit,
     onScrubbed: (Double) -> Unit,
@@ -335,17 +376,34 @@ private fun BottomBar(
             .safeDrawingPadding()
             .padding(horizontal = 12.dp, vertical = 8.dp),
     ) {
+        // Material 3's expressive slider draws a 16dp track and a 44dp thumb,
+        // which is a lot of furniture across the bottom of a video. Both are
+        // drawn at 60% here; the touch target is left alone, because a scrub
+        // bar you cannot grab is worse than one that looks heavy.
         Slider(
             value = scrubbing ?: state.fraction,
             onValueChange = onScrub,
             onValueChangeFinished = {
                 scrubbing?.let { onScrubbed(it * state.durationSeconds) }
             },
-            colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.primary,
-                activeTrackColor = MaterialTheme.colorScheme.primary,
-                inactiveTrackColor = Color.White.copy(alpha = 0.3f),
-            ),
+            track = { sliderState ->
+                SliderDefaults.Track(
+                    sliderState = sliderState,
+                    colors = SliderDefaults.colors(
+                        activeTrackColor = MaterialTheme.colorScheme.primary,
+                        inactiveTrackColor = Color.White.copy(alpha = 0.3f),
+                    ),
+                    modifier = Modifier.height(SCRUB_TRACK_HEIGHT),
+                )
+            },
+            thumb = {
+                Box(
+                    Modifier
+                        .size(width = 4.dp, height = SCRUB_THUMB_HEIGHT)
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+            },
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             SkipButton(RewindArc, "倒退 10 秒") { onSkip(-SKIP_SECONDS) }
@@ -401,6 +459,13 @@ private fun BottomBar(
                     modifier = Modifier.padding(end = 8.dp),
                 )
             }
+            IconButton(onClick = onFullscreen) {
+                Icon(
+                    if (fullscreen) ExitFullscreen else EnterFullscreen,
+                    contentDescription = if (fullscreen) "退出全螢幕" else "全螢幕",
+                    tint = Color.White,
+                )
+            }
             // Which rung of the ladder the picture is coming from, the same
             // fact the macOS OSC shows.
             Text(
@@ -449,6 +514,228 @@ private fun clock(seconds: Double): String {
 }
 
 private const val CHROME_TIMEOUT_MILLIS = 3500L
+/** 60% of Material 3's 16dp expressive track. */
+private val SCRUB_TRACK_HEIGHT = 10.dp
+
+/** 60% of its 44dp thumb. */
+private val SCRUB_THUMB_HEIGHT = 26.dp
+
 private const val SKIP_SECONDS = 10.0
 private const val SKIP_SECONDS_LABEL = 10
 private val SPEEDS = listOf(0.75f, 1f, 1.25f, 1.5f, 2f)
+
+/**
+ * 豎屏播放.
+ *
+ * The picture keeps its 16:9 box at the top and the episode list sits under it,
+ * so picking the next episode does not mean leaving the player. Full screen is
+ * one tap away; it is a mode, not the only way to watch.
+ */
+@Composable
+private fun PortraitPlayer(
+    engine: Media3Engine,
+    title: String,
+    subtitle: String,
+    state: PlaybackState,
+    tracks: List<TrackOption>,
+    danmaku: List<DanmakuComment>,
+    danmakuSettings: DanmakuSettings,
+    saveFailed: Boolean,
+    hasNext: Boolean,
+    episodes: List<PlayableEpisode>,
+    playingId: String,
+    onSelectEpisode: (PlayableEpisode) -> Unit,
+    onNext: () -> Unit,
+    onSelectTrack: (TrackKind, String?) -> Unit,
+    onSpeed: (Float) -> Unit,
+    onFullscreen: () -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var chromeVisible by remember { mutableStateOf(true) }
+    var scrubbing by remember { mutableStateOf<Float?>(null) }
+    var sheet by remember { mutableStateOf<PlayerSheet?>(null) }
+    var danmakuOn by rememberSaveable(danmakuSettings.enabled) { mutableStateOf(danmakuSettings.enabled) }
+
+    LaunchedEffect(chromeVisible, state.status, sheet) {
+        if (chromeVisible && sheet == null && state.status == PlaybackStatus.Playing) {
+            delay(CHROME_TIMEOUT_MILLIS)
+            chromeVisible = false
+        }
+    }
+
+    Column(modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .background(Color.Black)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { chromeVisible = !chromeVisible },
+        ) {
+            AndroidView(
+                factory = { context ->
+                    PlayerView(context).apply {
+                        player = engine.player
+                        useController = false
+                    }
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            DanmakuOverlay(
+                comments = danmaku,
+                engine = engine,
+                settings = danmakuSettings.copy(enabled = danmakuOn),
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            if (state.status == PlaybackStatus.Buffering) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center).size(36.dp),
+                )
+            }
+
+            if (chromeVisible) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black.copy(alpha = 0.4f))
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "返回",
+                            tint = Color.White,
+                        )
+                    }
+                    Text(
+                        subtitle,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+
+                BottomBar(
+                    state = state,
+                    tracks = tracks,
+                    danmakuOn = danmakuOn,
+                    danmakuCount = danmaku.size,
+                    onToggleDanmaku = { danmakuOn = !danmakuOn },
+                    onOpenSheet = { sheet = it },
+                    saveFailed = saveFailed,
+                    hasNext = hasNext,
+                    onNext = onNext,
+                    onSkip = { engine.seekTo((state.positionSeconds + it).coerceAtLeast(0.0)) },
+                    onFullscreen = onFullscreen,
+                    fullscreen = false,
+                    scrubbing = scrubbing,
+                    onScrub = { scrubbing = it },
+                    onScrubbed = { seconds ->
+                        engine.seekTo(seconds)
+                        scrubbing = null
+                    },
+                    onToggle = {
+                        if (state.status == PlaybackStatus.Playing) engine.pause() else engine.play()
+                    },
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                )
+            }
+
+            sheet?.let { open ->
+                OptionSheet(
+                    sheet = open,
+                    tracks = tracks,
+                    speed = state.speed,
+                    onSelectTrack = { kind, id ->
+                        onSelectTrack(kind, id)
+                        sheet = null
+                    },
+                    onSpeed = {
+                        onSpeed(it)
+                        sheet = null
+                    },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+
+        Text(
+            title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = Tokens.Space.Margin, vertical = 12.dp),
+        )
+
+        LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
+            items(episodes, key = { it.episodeId }) { episode ->
+                Box(Modifier.padding(horizontal = Tokens.Space.Margin, vertical = 4.dp)) {
+                    PlaylistRow(
+                        episode = episode,
+                        playing = episode.episodeId == playingId,
+                        onClick = { onSelectEpisode(episode) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** One episode in the under-the-player list, with the current one marked. */
+@Composable
+private fun PlaylistRow(episode: PlayableEpisode, playing: Boolean, onClick: () -> Unit) {
+    CardRow(onClick = onClick.takeIf { episode.playable }) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Box(
+                Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        when {
+                            playing -> Tokens.Accent
+                            episode.playable -> Tokens.Accent.copy(alpha = 0.16f)
+                            else -> Color.White.copy(alpha = 0.06f)
+                        },
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "${episode.sort}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = when {
+                        playing -> Color.Black
+                        episode.playable -> Tokens.Accent
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                )
+            }
+            Column(Modifier.weight(1f)) {
+                Text(
+                    episode.displayTitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (episode.playable) MaterialTheme.colorScheme.onSurface
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    if (playing) "播放緊" else if (episode.playable) episode.airDate.orEmpty() else "未有檔案",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (playing) Tokens.Accent else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}

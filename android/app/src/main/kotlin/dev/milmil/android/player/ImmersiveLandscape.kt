@@ -9,13 +9,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 
 /**
- * Turns the screen over to the video for as long as this is composed: landscape,
- * and no status or navigation bar.
+ * Turns the screen over to the video for as long as this is composed:
+ * landscape, and no status or navigation bar.
  *
- * A phone held upright gives a 16:9 episode barely a third of the display, and
- * the first emulator run made that obvious — the picture was a band across the
- * middle with black above and below. Both settings are undone on the way out,
- * so the rest of the app stays portrait.
+ * Applied only in full-screen mode. Portrait playback is the default — you
+ * watch with the episode list under the picture, the way every phone video app
+ * behaves — and this is what the full-screen button turns on. Both settings are
+ * undone on the way out, so the rest of the app stays portrait.
  */
 @Composable
 public fun ImmersiveLandscape() {

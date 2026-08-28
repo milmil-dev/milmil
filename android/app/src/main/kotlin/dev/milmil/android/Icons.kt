@@ -290,3 +290,49 @@ public val MoreVertical: ImageVector = icon("MoreVertical", true) {
         close()
     }
 }
+
+/** Enter full screen: four corner brackets pointing outward. */
+public val EnterFullscreen: ImageVector = icon("EnterFullscreen", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 2f,
+        strokeLineCap = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(4f, 9f)
+        verticalLineTo(4f)
+        horizontalLineTo(9f)
+        moveTo(15f, 4f)
+        horizontalLineTo(20f)
+        verticalLineTo(9f)
+        moveTo(20f, 15f)
+        verticalLineTo(20f)
+        horizontalLineTo(15f)
+        moveTo(9f, 20f)
+        horizontalLineTo(4f)
+        verticalLineTo(15f)
+    }
+}
+
+/** Leave full screen: the same brackets pointing inward. */
+public val ExitFullscreen: ImageVector = icon("ExitFullscreen", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 2f,
+        strokeLineCap = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(9f, 4f)
+        verticalLineTo(9f)
+        horizontalLineTo(4f)
+        moveTo(20f, 9f)
+        horizontalLineTo(15f)
+        verticalLineTo(4f)
+        moveTo(15f, 20f)
+        verticalLineTo(15f)
+        horizontalLineTo(20f)
+        moveTo(4f, 15f)
+        horizontalLineTo(9f)
+        verticalLineTo(20f)
+    }
+}
