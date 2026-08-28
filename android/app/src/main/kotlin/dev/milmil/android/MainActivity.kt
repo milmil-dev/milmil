@@ -3,6 +3,7 @@ package dev.milmil.android
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -26,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.LaunchedEffect
@@ -103,13 +105,133 @@ private fun Root(state: PairState, onScanned: (String) -> Unit, modifier: Modifi
     }
 }
 
+/** Where the shell is: a tab, a series page pushed on top, or playing. */
+private sealed interface Route {
+    data object Tabs : Route
+    data class Detail(val bangumiId: Int) : Route
+    data class Watch(val bangumiId: Int, val episodeId: String) : Route
+}
+
 /**
  * The signed-in shell: one client for the session, a Material 3 navigation bar,
  * and each tab loading the first time it is opened rather than all at once.
+ * A series page pushes over the tabs, and the player over that — the design's
+ * rule that a detail page is a push and never a modal.
  */
 @Composable
 private fun Shell(paired: PairState.Paired, modifier: Modifier = Modifier) {
     val client = remember(paired) { ApiClient(paired.url) { paired.token } }
+    var route by remember { mutableStateOf<Route>(Route.Tabs) }
+
+    when (val current = route) {
+        is Route.Detail -> {
+            DetailRoute(
+                client = client,
+                bangumiId = current.bangumiId,
+                onBack = { route = Route.Tabs },
+                onPlay = { episode -> route = Route.Watch(current.bangumiId, episode.episodeId) },
+                modifier = modifier,
+            )
+            return
+        }
+        is Route.Watch -> {
+            WatchRoute(
+                client = client,
+                bangumiId = current.bangumiId,
+                episodeId = current.episodeId,
+                onBack = { route = Route.Detail(current.bangumiId) },
+                modifier = modifier,
+            )
+            return
+        }
+        Route.Tabs -> Unit
+    }
+
+    Tabs(client = client, paired = paired, onOpen = { route = Route.Detail(it) }, modifier = modifier)
+}
+
+/**
+ * The series page. Its episode list is re-read on the way back from the player
+ * so a part-watched episode shows its bar without a manual refresh.
+ */
+@Composable
+private fun DetailRoute(
+    client: ApiClient,
+    bangumiId: Int,
+    onBack: () -> Unit,
+    onPlay: (dev.milmil.api.PlayableEpisode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val model: DetailViewModel = viewModel(key = "detail-$bangumiId") { DetailViewModel(client) }
+    LaunchedEffect(bangumiId) { model.load(bangumiId) }
+    val state by model.state.collectAsStateWithLifecycle()
+    BackHandler(onBack = onBack)
+    DetailScreen(state = state, onBack = onBack, onPlay = onPlay, modifier = modifier)
+}
+
+/**
+ * The player. The episode is looked up from the list rather than passed as an
+ * object, so the resume position is whatever the server last recorded — which
+ * may be from another client entirely.
+ */
+@Composable
+private fun WatchRoute(
+    client: ApiClient,
+    bangumiId: Int,
+    episodeId: String,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val detail: DetailViewModel = viewModel(key = "detail-$bangumiId") { DetailViewModel(client) }
+    val model: PlayerViewModel = viewModel(key = "player-$episodeId") { PlayerViewModel(context, client) }
+    val content by detail.state.collectAsStateWithLifecycle()
+    val all = (content as? Loadable.Ready)?.value?.episodes?.episodes.orEmpty()
+    var playingId by rememberSaveable(episodeId) { mutableStateOf(episodeId) }
+    val episode = all.firstOrNull { it.episodeId == playingId }
+    // The next one with a file on the server, not simply the next row: an
+    // episode that is only listed cannot be played into.
+    val next = all
+        .dropWhile { it.episodeId != playingId }
+        .drop(1)
+        .firstOrNull { it.playable }
+
+    LaunchedEffect(playingId, episode?.episodeId) { episode?.let(model::play) }
+
+    val leave = {
+        model.commit()
+        detail.refreshEpisodes(bangumiId)
+        onBack()
+    }
+    BackHandler(onBack = leave)
+
+    val state by model.state.collectAsStateWithLifecycle()
+    val saveFailed by model.saveFailed.collectAsStateWithLifecycle()
+    PlayerScreen(
+        engine = model.engine,
+        title = (content as? Loadable.Ready)?.value?.detail?.displayTitle.orEmpty(),
+        subtitle = episode?.let { "第 ${it.sort} 集 · ${it.displayTitle}" }.orEmpty(),
+        state = state,
+        saveFailed = saveFailed,
+        hasNext = next != null,
+        onNext = {
+            // Write where we got to before the position becomes the next
+            // episode's, then switch without leaving the screen.
+            model.commit()
+            next?.let { playingId = it.episodeId }
+        },
+        onBack = leave,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun Tabs(
+    client: ApiClient,
+    paired: PairState.Paired,
+    onOpen: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var destination by rememberSaveable { mutableStateOf(Destination.Home) }
 
     Scaffold(
@@ -135,18 +257,18 @@ private fun Shell(paired: PairState.Paired, modifier: Modifier = Modifier) {
     ) { padding ->
         Box(Modifier.padding(padding)) {
             when (destination) {
-                Destination.Home -> HomeTab(client, paired.url)
-                Destination.Schedule -> ScheduleTab(client, paired.url)
-                Destination.Discover -> DiscoverTab(client, paired.url)
-                Destination.Search -> SearchTab(client, paired.url)
-                Destination.Collection -> CollectionTab(client, paired.url)
+                Destination.Home -> HomeTab(client, paired.url, onOpen)
+                Destination.Schedule -> ScheduleTab(client, paired.url, onOpen)
+                Destination.Discover -> DiscoverTab(client, paired.url, onOpen)
+                Destination.Search -> SearchTab(client, paired.url, onOpen)
+                Destination.Collection -> CollectionTab(client, paired.url, onOpen)
             }
         }
     }
 }
 
 @Composable
-private fun HomeTab(client: ApiClient, key: String) {
+private fun HomeTab(client: ApiClient, key: String, onOpen: (Int) -> Unit) {
     val model: HomeViewModel = viewModel(key = "home-$key") { HomeViewModel(client) }
     LaunchedEffect(key) {
         // The calendar keys on the English weekday, so it stays right whatever
@@ -155,40 +277,40 @@ private fun HomeTab(client: ApiClient, key: String) {
         model.load(LocalDate.now().dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH))
     }
     val state by model.state.collectAsStateWithLifecycle()
-    HomeScreen(state = state)
+    HomeScreen(state = state, onOpen = onOpen)
 }
 
 @Composable
-private fun ScheduleTab(client: ApiClient, key: String) {
+private fun ScheduleTab(client: ApiClient, key: String, onOpen: (Int) -> Unit) {
     val model: ScheduleViewModel = viewModel(key = "schedule-$key") { ScheduleViewModel(client) }
     LaunchedEffect(key) { model.load() }
     val state by model.state.collectAsStateWithLifecycle()
-    ScheduleScreen(state = state)
+    ScheduleScreen(state = state, onOpen = onOpen)
 }
 
 @Composable
-private fun DiscoverTab(client: ApiClient, key: String) {
+private fun DiscoverTab(client: ApiClient, key: String, onOpen: (Int) -> Unit) {
     val model: DiscoverViewModel = viewModel(key = "discover-$key") { DiscoverViewModel(client) }
     LaunchedEffect(key) { model.load() }
     val state by model.state.collectAsStateWithLifecycle()
-    DiscoverScreen(state = state)
+    DiscoverScreen(state = state, onOpen = onOpen)
 }
 
 @Composable
-private fun SearchTab(client: ApiClient, key: String) {
+private fun SearchTab(client: ApiClient, key: String, onOpen: (Int) -> Unit) {
     val model: SearchViewModel = viewModel(key = "search-$key") { SearchViewModel(client) }
     val query by model.query.collectAsStateWithLifecycle()
     val results by model.results.collectAsStateWithLifecycle()
-    SearchScreen(query = query, results = results, onQuery = model::type)
+    SearchScreen(query = query, results = results, onQuery = model::type, onOpen = onOpen)
 }
 
 @Composable
-private fun CollectionTab(client: ApiClient, key: String) {
+private fun CollectionTab(client: ApiClient, key: String, onOpen: (Int) -> Unit) {
     val model: CollectionViewModel = viewModel(key = "collection-$key") { CollectionViewModel(client) }
     LaunchedEffect(key) { model.load() }
     val entries by model.entries.collectAsStateWithLifecycle()
     val counts by model.counts.collectAsStateWithLifecycle()
-    CollectionScreen(entries = entries, counts = counts)
+    CollectionScreen(entries = entries, counts = counts, onOpen = onOpen)
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

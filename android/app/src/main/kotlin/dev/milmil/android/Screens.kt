@@ -85,8 +85,8 @@ private fun FilterChip(label: String, selected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-private fun Poster(url: String, title: String, width: Int = 108) {
-    Column(Modifier.width(width.dp)) {
+private fun Poster(url: String, title: String, onClick: () -> Unit, width: Int = 108) {
+    Column(Modifier.width(width.dp).clickable(onClick = onClick)) {
         AsyncImage(
             model = url,
             contentDescription = title,
@@ -104,7 +104,11 @@ private fun Poster(url: String, title: String, width: Int = 108) {
 }
 
 @Composable
-public fun ScheduleScreen(state: Loadable<List<CalendarDay>>, modifier: Modifier = Modifier) {
+public fun ScheduleScreen(
+    state: Loadable<List<CalendarDay>>,
+    onOpen: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Loaded(state, modifier) { week ->
         LazyColumn(
             contentPadding = PaddingValues(bottom = 96.dp),
@@ -121,7 +125,9 @@ public fun ScheduleScreen(state: Loadable<List<CalendarDay>>, modifier: Modifier
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                     ) {
-                        items(day.items, key = { it.bangumiId }) { Poster(it.coverImage, it.displayTitle) }
+                        items(day.items, key = { it.bangumiId }) {
+                            Poster(it.coverImage, it.displayTitle, onClick = { onOpen(it.bangumiId) })
+                        }
                     }
                 }
             }
@@ -130,7 +136,11 @@ public fun ScheduleScreen(state: Loadable<List<CalendarDay>>, modifier: Modifier
 }
 
 @Composable
-public fun DiscoverScreen(state: Loadable<List<DiscoverAnime>>, modifier: Modifier = Modifier) {
+public fun DiscoverScreen(
+    state: Loadable<List<DiscoverAnime>>,
+    onOpen: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Loaded(state, modifier) { items ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -139,7 +149,7 @@ public fun DiscoverScreen(state: Loadable<List<DiscoverAnime>>, modifier: Modifi
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(items, key = { it.bangumiId }) { anime ->
-                Column {
+                Column(Modifier.clickable { onOpen(anime.bangumiId) }) {
                     AsyncImage(
                         model = anime.coverImage,
                         contentDescription = anime.displayTitle,
@@ -164,6 +174,7 @@ public fun SearchScreen(
     query: String,
     results: Loadable<List<DiscoverAnime>>?,
     onQuery: (String) -> Unit,
+    onOpen: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize()) {
@@ -194,7 +205,10 @@ public fun SearchScreen(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onOpen(anime.bangumiId) }
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
                             ) {
                                 AsyncImage(
                                     model = anime.coverImage,
@@ -226,6 +240,7 @@ public fun SearchScreen(
 public fun CollectionScreen(
     entries: Loadable<List<CollectionEntry>>,
     counts: List<dev.milmil.api.StatusCount>,
+    onOpen: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize()) {
@@ -235,7 +250,7 @@ public fun CollectionScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             ) {
                 items(counts, key = { it.status }) { tally ->
-                    FilterChip("${tally.status} ${tally.count}", selected = false) {}
+                    FilterChip("${watchStatusLabel(tally.status)} ${tally.count}", selected = false) {}
                 }
             }
         }
@@ -250,7 +265,10 @@ public fun CollectionScreen(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onOpen(row.bangumiId) }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                         ) {
                             AsyncImage(
                                 model = row.coverImageUrl,
@@ -279,4 +297,18 @@ public fun CollectionScreen(
             }
         }
     }
+}
+
+/**
+ * The API answers with its internal status names. Web and macOS both show
+ * these translated, and a chip reading "watching" in an otherwise Chinese app
+ * is the sort of seam a user reads as unfinished.
+ */
+private fun watchStatusLabel(status: String): String = when (status) {
+    "watching" -> "睇緊"
+    "completed" -> "睇晒"
+    "plan_to_watch" -> "打算睇"
+    "on_hold" -> "暫停"
+    "dropped" -> "棄坑"
+    else -> status
 }

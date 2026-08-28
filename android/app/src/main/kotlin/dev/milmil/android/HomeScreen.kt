@@ -1,6 +1,7 @@
 package dev.milmil.android
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,7 @@ import dev.milmil.api.DiscoverAnime
  * posters at 12dp, the hero flush to the top edge.
  */
 @Composable
-public fun HomeScreen(state: HomeState, modifier: Modifier = Modifier) {
+public fun HomeScreen(state: HomeState, onOpen: (Int) -> Unit, modifier: Modifier = Modifier) {
     when (state) {
         HomeState.Loading -> Box(modifier.fillMaxSize(), Alignment.Center) {
             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -50,16 +51,16 @@ public fun HomeScreen(state: HomeState, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(20.dp),
             contentPadding = PaddingValues(bottom = 96.dp),
         ) {
-            state.hero?.let { hero -> item { Hero(hero) } }
-            if (state.today.isNotEmpty()) item { Shelf("今日時間表", state.today) }
-            if (state.trending.isNotEmpty()) item { Shelf("熱門", state.trending) }
+            state.hero?.let { hero -> item { Hero(hero, onOpen = { onOpen(hero.bangumiId) }) } }
+            if (state.today.isNotEmpty()) item { Shelf("今日時間表", state.today, onOpen) }
+            if (state.trending.isNotEmpty()) item { Shelf("熱門", state.trending, onOpen) }
         }
     }
 }
 
 @Composable
-private fun Hero(anime: DiscoverAnime) {
-    Box(Modifier.fillMaxWidth().height(400.dp)) {
+private fun Hero(anime: DiscoverAnime, onOpen: () -> Unit) {
+    Box(Modifier.fillMaxWidth().height(400.dp).clickable(onClick = onOpen)) {
         AsyncImage(
             model = anime.bannerImage.ifBlank { anime.coverImage },
             contentDescription = null,
@@ -98,7 +99,7 @@ private fun Hero(anime: DiscoverAnime) {
 }
 
 @Composable
-private fun Shelf(title: String, items: List<DiscoverAnime>) {
+private fun Shelf(title: String, items: List<DiscoverAnime>, onOpen: (Int) -> Unit) {
     Column {
         Text(
             title,
@@ -109,14 +110,16 @@ private fun Shelf(title: String, items: List<DiscoverAnime>) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-            items(items, key = { it.bangumiId }) { anime -> PosterCard(anime) }
+            items(items, key = { it.bangumiId }) { anime ->
+                PosterCard(anime, onOpen = { onOpen(anime.bangumiId) })
+            }
         }
     }
 }
 
 @Composable
-private fun PosterCard(anime: DiscoverAnime) {
-    Column(Modifier.width(108.dp)) {
+private fun PosterCard(anime: DiscoverAnime, onOpen: () -> Unit) {
+    Column(Modifier.width(108.dp).clickable(onClick = onOpen)) {
         AsyncImage(
             model = anime.coverImage,
             contentDescription = anime.displayTitle,

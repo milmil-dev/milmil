@@ -91,3 +91,80 @@ public val BookmarkOutlined: ImageVector = icon("BookmarkOutlined", false) {
         close()
     }
 }
+
+/**
+ * Pause. `material-icons-core` ships play but not pause, and a rotated plus is
+ * not a pause glyph — two 4×14 bars at the same optical weight as the play
+ * triangle next to it.
+ */
+public val PauseFilled: ImageVector = icon("PauseFilled", true) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(8f, 5f)
+        horizontalLineToRelative(3f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-3f)
+        close()
+        moveTo(13f, 5f)
+        horizontalLineToRelative(3f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-3f)
+        close()
+    }
+}
+
+/** Skip to the next episode: a play triangle against a bar. */
+public val SkipNextFilled: ImageVector = icon("SkipNextFilled", true) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6f, 5f)
+        lineTo(15f, 12f)
+        lineTo(6f, 19f)
+        close()
+        moveTo(16f, 5f)
+        horizontalLineToRelative(2.5f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-2.5f)
+        close()
+    }
+}
+
+/**
+ * Rewind: an open circle whose arrow head sits top-left, pointing the way the
+ * motion goes. The first cut had the two arcs curving the same way, so the
+ * rewind button read as fast-forward — the seconds label goes inside the ring
+ * at the call site, the way Material draws these.
+ */
+public val RewindArc: ImageVector = icon("RewindArc", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineCap = StrokeCap.Round,
+    ) {
+        // The long way round the circle, leaving a gap at the top for the head.
+        moveTo(14.7f, 4.5f)
+        arcToRelative(8f, 8f, 0f, isMoreThanHalf = true, isPositiveArc = true, -5.4f, 0f)
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6.6f, 4.5f)
+        lineTo(11.2f, 1.9f)
+        lineTo(11.2f, 7.1f)
+        close()
+    }
+}
+
+/** Fast forward: the same ring mirrored, head at the top-right. */
+public val ForwardArc: ImageVector = icon("ForwardArc", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineCap = StrokeCap.Round,
+    ) {
+        moveTo(9.3f, 4.5f)
+        arcToRelative(8f, 8f, 0f, isMoreThanHalf = true, isPositiveArc = false, 5.4f, 0f)
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(17.4f, 4.5f)
+        lineTo(12.8f, 1.9f)
+        lineTo(12.8f, 7.1f)
+        close()
+    }
+}
