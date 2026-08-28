@@ -268,3 +268,25 @@ public val DanmakuOutlined: ImageVector = icon("DanmakuOutlined", false) {
         close()
     }
 }
+
+/**
+ * The app-bar overflow: three dots stacked, which is the Android convention and
+ * also the only arrangement the unread badge does not sit on top of — a
+ * horizontal row put the badge straight over the right-hand dot.
+ */
+public val MoreVertical: ImageVector = icon("MoreVertical", true) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(12f, 6f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -4f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, 4f)
+        close()
+        moveTo(12f, 14f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -4f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, 4f)
+        close()
+        moveTo(12f, 22f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -4f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, 4f)
+        close()
+    }
+}

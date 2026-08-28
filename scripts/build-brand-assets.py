@@ -210,6 +210,15 @@ def spec_sheet(w: float = 1200, h: float = 1600) -> str:
 # build
 # --------------------------------------------------------------------------- #
 
+# Android launcher densities: mdpi through xxxhdpi at the legacy 48dp size.
+ANDROID_ICONS = [
+    ("mipmap-mdpi", 48),
+    ("mipmap-hdpi", 72),
+    ("mipmap-xhdpi", 96),
+    ("mipmap-xxhdpi", 144),
+    ("mipmap-xxxhdpi", 192),
+]
+
 MACOS_ICONS = [
     ("icon_16x16@1x.png", 16),
     ("icon_16x16@2x.png", 32),
@@ -294,6 +303,17 @@ def main() -> int:
     sheet.parent.mkdir(parents=True, exist_ok=True)
     run("rsvg-convert", "-w", "1200", "-h", "1600", str(s_sheet), "-o", str(sheet))
     written.append(sheet)
+
+    # Android client — only when that workspace is checked out.
+    android_res = ROOT / "android/app/src/main/res"
+    if android_res.is_dir():
+        # The adaptive foreground is drawn at 1/3 the mark's usual fill: the
+        # launcher masks the outer third away and may parallax what is left,
+        # so anything sized for a full-bleed tile gets its edges eaten.
+        s_adaptive = stage("android-adaptive.svg", mark_on("none", 1024, fill=0.42))
+        for folder, size in ANDROID_ICONS:
+            png(s_tile_rounded, android_res / folder / "ic_launcher.png", size)
+            png(s_adaptive, android_res / folder / "ic_launcher_foreground.png", round(size * 108 / 48))
 
     # macOS client — only when that workspace is checked out.
     appicon = ROOT / "macos/Milmil/Resources/Assets.xcassets/AppIcon.appiconset"

@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+
 import dev.milmil.api.DetailCharacter
 import dev.milmil.api.PlayableEpisode
 
@@ -53,6 +55,7 @@ public fun DetailScreen(
     state: Loadable<DetailContent>,
     onBack: () -> Unit,
     onPlay: (PlayableEpisode) -> Unit,
+    onFindTorrents: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier.fillMaxSize()) {
@@ -63,7 +66,7 @@ public fun DetailScreen(
             is Loadable.Failed -> Box(Modifier.fillMaxSize(), Alignment.Center) {
                 Text(state.message, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            is Loadable.Ready -> Content(state.value, onPlay)
+            is Loadable.Ready -> Content(state.value, onPlay, onFindTorrents)
         }
 
         // Over the banner, so it needs its own scrim rather than the app bar's.
@@ -81,7 +84,11 @@ public fun DetailScreen(
 }
 
 @Composable
-private fun Content(content: DetailContent, onPlay: (PlayableEpisode) -> Unit) {
+private fun Content(
+    content: DetailContent,
+    onPlay: (PlayableEpisode) -> Unit,
+    onFindTorrents: (String) -> Unit,
+) {
     val detail = content.detail
     Box(Modifier.fillMaxSize()) {
         LazyColumn(contentPadding = PaddingValues(bottom = 120.dp)) {
@@ -129,6 +136,17 @@ private fun Content(content: DetailContent, onPlay: (PlayableEpisode) -> Unit) {
                     EpisodeRow(episode, onPlay = { onPlay(episode) })
                 }
             }
+        }
+
+        // Nothing on disk: the useful action is to go and get it, which is what
+        // the web and macOS detail pages offer and the phone did not.
+        if (content.upNext == null) {
+            ExtendedFloatingActionButton(
+                onClick = { onFindTorrents(detail.displayTitle) },
+                icon = { Icon(Icons.Filled.Search, contentDescription = null) },
+                text = { Text("找種子") },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            )
         }
 
         content.upNext?.let { next ->

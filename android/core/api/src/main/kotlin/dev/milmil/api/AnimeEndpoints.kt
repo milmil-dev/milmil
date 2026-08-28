@@ -173,7 +173,26 @@ public data class RecentProgress(
 
     public val remainingMinutes: Int
         get() = (((durationSeconds ?: 0.0) - positionSeconds) / 60).toInt().coerceAtLeast(0)
+
+    /**
+     * What a history row says. An episode stopped 20 seconds from the end is
+     * finished for every purpose the user has, and "仲有 0 分鐘" is not a
+     * sentence — the same 92% the player uses to mark one complete.
+     */
+    public val watchLabel: String
+        get() {
+            val total = durationSeconds ?: 0.0
+            val done = completed || (total > 0 && positionSeconds / total >= COMPLETE_FRACTION)
+            return when {
+                done -> "睇晒"
+                remainingMinutes <= 0 -> "就快睇完"
+                else -> "仲有 $remainingMinutes 分鐘"
+            }
+        }
 }
+
+/** The player marks an episode complete at the same point; keep them in step. */
+private const val COMPLETE_FRACTION = 0.92
 
 /** `progressApi.recent` — what the home shelf's 繼續睇 row is built from. */
 public suspend fun ApiClient.recentProgress(): List<RecentProgress> =

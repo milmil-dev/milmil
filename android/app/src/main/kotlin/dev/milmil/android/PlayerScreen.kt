@@ -68,6 +68,7 @@ public fun PlayerScreen(
     state: PlaybackState,
     tracks: List<TrackOption>,
     danmaku: List<DanmakuComment>,
+    danmakuSettings: DanmakuSettings,
     saveFailed: Boolean,
     hasNext: Boolean,
     onNext: () -> Unit,
@@ -81,7 +82,8 @@ public fun PlayerScreen(
     var chromeVisible by remember { mutableStateOf(true) }
     var scrubbing by remember { mutableStateOf<Float?>(null) }
     var sheet by remember { mutableStateOf<PlayerSheet?>(null) }
-    var danmakuOn by rememberSaveable { mutableStateOf(true) }
+    // The switch in 設定 is the default; the OSC button is a per-episode override.
+    var danmakuOn by rememberSaveable(danmakuSettings.enabled) { mutableStateOf(danmakuSettings.enabled) }
 
     // Hide only while it is actually playing: a paused or failed player that
     // hides its controls looks like a frozen app.
@@ -116,7 +118,7 @@ public fun PlayerScreen(
         DanmakuOverlay(
             comments = danmaku,
             engine = engine,
-            settings = DanmakuSettings(enabled = danmakuOn),
+            settings = danmakuSettings.copy(enabled = danmakuOn),
             modifier = Modifier.fillMaxSize(),
         )
 

@@ -7,6 +7,9 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +17,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import dev.milmil.android.player.DanmakuSettings
 import dev.milmil.api.ApiClient
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -72,6 +81,8 @@ public class MainActivity : ComponentActivity() {
                         Root(
                             state = state,
                             onScanned = pairing::pair,
+                            onUnpair = pairing::unpair,
+                            onRetry = pairing::restore,
                             modifier = Modifier.padding(padding),
                         )
                     }
@@ -98,18 +109,41 @@ public class MainActivity : ComponentActivity() {
  * fetches with the token the link carried.
  */
 @Composable
-private fun Root(state: PairState, onScanned: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun Root(
+    state: PairState,
+    onScanned: (String) -> Unit,
+    onUnpair: () -> Unit,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     when (state) {
-        is PairState.Paired -> Shell(state, modifier)
-        else -> PairFlow(state = state, onScanned = onScanned, modifier = modifier)
+        is PairState.Paired -> Shell(state, onUnpair = onUnpair, modifier = modifier)
+        else -> PairFlow(
+            state = state,
+            onScanned = onScanned,
+            onRetry = onRetry,
+            modifier = modifier,
+        )
     }
 }
 
-/** Where the shell is: a tab, a series page pushed on top, or playing. */
+/**
+ * Where the shell is. The five tabs are the design's information architecture;
+ * everything else pushes over them, which keeps the navigation bar to the five
+ * things a phone actually browses rather than the nine the sidebar carries on
+ * a desktop.
+ */
 private sealed interface Route {
     data object Tabs : Route
     data class Detail(val bangumiId: Int) : Route
     data class Watch(val bangumiId: Int, val episodeId: String) : Route
+    data class Torrents(val bangumiId: Int, val title: String) : Route
+    data object More : Route
+    data object History : Route
+    data object Libraries : Route
+    data object Downloads : Route
+    data object Notifications : Route
+    data object Settings : Route
 }
 
 /**
@@ -119,17 +153,31 @@ private sealed interface Route {
  * rule that a detail page is a push and never a modal.
  */
 @Composable
-private fun Shell(paired: PairState.Paired, modifier: Modifier = Modifier) {
+private fun Shell(
+    paired: PairState.Paired,
+    onUnpair: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val client = remember(paired) { ApiClient(paired.url) { paired.token } }
     var route by remember { mutableStateOf<Route>(Route.Tabs) }
+    // Hoisted so a change in 設定 reaches the player without a round trip
+    // through the server, the way the web store does it.
+    var danmaku by remember { mutableStateOf(DanmakuSettings()) }
+    val notifications: NotificationsViewModel =
+        viewModel(key = "notifications-${paired.url}") { NotificationsViewModel(client) }
+    LaunchedEffect(paired.url) { notifications.refreshBadge() }
+    val unread by notifications.unread.collectAsStateWithLifecycle()
+
+    val back = { route = Route.Tabs }
 
     when (val current = route) {
         is Route.Detail -> {
             DetailRoute(
                 client = client,
                 bangumiId = current.bangumiId,
-                onBack = { route = Route.Tabs },
+                onBack = back,
                 onPlay = { episode -> route = Route.Watch(current.bangumiId, episode.episodeId) },
+                onFindTorrents = { title -> route = Route.Torrents(current.bangumiId, title) },
                 modifier = modifier,
             )
             return
@@ -139,15 +187,157 @@ private fun Shell(paired: PairState.Paired, modifier: Modifier = Modifier) {
                 client = client,
                 bangumiId = current.bangumiId,
                 episodeId = current.episodeId,
+                danmaku = danmaku,
                 onBack = { route = Route.Detail(current.bangumiId) },
                 modifier = modifier,
             )
             return
         }
+        is Route.Torrents -> {
+            val model: TorrentsViewModel =
+                viewModel(key = "torrents-${current.bangumiId}") { TorrentsViewModel(client) }
+            LaunchedEffect(current.bangumiId) { model.load(current.bangumiId) }
+            val rows by model.rows.collectAsStateWithLifecycle()
+            val started by model.started.collectAsStateWithLifecycle()
+            Pushed("找種子 · ${current.title}", onBack = { route = Route.Detail(current.bangumiId) }, modifier = modifier) {
+                TorrentsScreen(rows, started, onDownload = { model.download(it, current.bangumiId) })
+            }
+            return
+        }
+        Route.More -> {
+            Pushed("更多", onBack = back, modifier = modifier) {
+                MoreScreen(unread = unread, onOpen = { route = it })
+            }
+            return
+        }
+        Route.History -> {
+            val model: HistoryViewModel = viewModel(key = "history-${paired.url}") { HistoryViewModel(client) }
+            LaunchedEffect(paired.url) { model.load() }
+            val rows by model.rows.collectAsStateWithLifecycle()
+            Pushed("歷史", onBack = { route = Route.More }, modifier = modifier) {
+                HistoryScreen(rows, onOpen = { route = Route.Detail(it) }, onForget = model::forget)
+            }
+            return
+        }
+        Route.Libraries -> {
+            val model: LibrariesViewModel = viewModel(key = "libraries-${paired.url}") { LibrariesViewModel(client) }
+            LaunchedEffect(paired.url) { model.load() }
+            val rows by model.rows.collectAsStateWithLifecycle()
+            val scanning by model.scanning.collectAsStateWithLifecycle()
+            Pushed("媒體庫", onBack = { route = Route.More }, modifier = modifier) {
+                LibrariesScreen(rows, scanning, onScan = model::scan)
+            }
+            return
+        }
+        Route.Downloads -> {
+            val model: DownloadsViewModel = viewModel(key = "downloads-${paired.url}") { DownloadsViewModel(client) }
+            LaunchedEffect(paired.url) { model.load() }
+            val rows by model.rows.collectAsStateWithLifecycle()
+            Pushed("下載", onBack = { route = Route.More }, modifier = modifier) {
+                DownloadsScreen(rows, onToggle = model::toggle)
+            }
+            return
+        }
+        Route.Notifications -> {
+            LaunchedEffect(paired.url) { notifications.load() }
+            val rows by notifications.rows.collectAsStateWithLifecycle()
+            Pushed("通知", onBack = { route = Route.More }, modifier = modifier) {
+                NotificationsScreen(rows, onMarkAllRead = notifications::markAllRead)
+            }
+            return
+        }
+        Route.Settings -> {
+            Pushed("設定", onBack = { route = Route.More }, modifier = modifier) {
+                SettingsScreen(
+                    username = paired.username,
+                    serverName = paired.name,
+                    serverUrl = paired.url,
+                    version = paired.version,
+                    avatarUrl = paired.avatarUrl?.let { absoluteAvatar(paired.url, it) },
+                    danmaku = danmaku,
+                    onDanmaku = { danmaku = it },
+                    onUnpair = onUnpair,
+                )
+            }
+            return
+        }
         Route.Tabs -> Unit
     }
 
-    Tabs(client = client, paired = paired, onOpen = { route = Route.Detail(it) }, modifier = modifier)
+    Tabs(
+        client = client,
+        paired = paired,
+        unread = unread,
+        onOpen = { route = Route.Detail(it) },
+        onMore = { route = Route.More },
+        modifier = modifier,
+    )
+}
+
+/** An avatar path is relative to the server, like every other media URL. */
+private fun absoluteAvatar(baseUrl: String, path: String): String =
+    if (path.startsWith("http")) path else baseUrl.trimEnd('/') + "/" + path.trimStart('/')
+
+/** A pushed page: a back arrow, a title, and the screen under it. */
+@Composable
+private fun Pushed(
+    title: String,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    BackHandler(onBack = onBack)
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                }
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+            }
+        },
+    ) { padding -> Box(Modifier.padding(padding)) { content() } }
+}
+
+/**
+ * The nine-item desktop sidebar, minus the five that are tabs. A list rather
+ * than more tabs: these are places you visit occasionally, not places you
+ * switch between while browsing.
+ */
+@Composable
+private fun MoreScreen(unread: Int, onOpen: (Route) -> Unit) {
+    Column(Modifier.fillMaxWidth()) {
+        MoreRow("歷史") { onOpen(Route.History) }
+        MoreRow("媒體庫") { onOpen(Route.Libraries) }
+        MoreRow("下載") { onOpen(Route.Downloads) }
+        MoreRow("通知", badge = unread) { onOpen(Route.Notifications) }
+        MoreRow("設定") { onOpen(Route.Settings) }
+    }
+}
+
+@Composable
+private fun MoreRow(label: String, badge: Int = 0, onClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 18.dp),
+    ) {
+        Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+        if (badge > 0) {
+            Badge { Text("$badge") }
+        }
+    }
 }
 
 /**
@@ -160,13 +350,20 @@ private fun DetailRoute(
     bangumiId: Int,
     onBack: () -> Unit,
     onPlay: (dev.milmil.api.PlayableEpisode) -> Unit,
+    onFindTorrents: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val model: DetailViewModel = viewModel(key = "detail-$bangumiId") { DetailViewModel(client) }
     LaunchedEffect(bangumiId) { model.load(bangumiId) }
     val state by model.state.collectAsStateWithLifecycle()
     BackHandler(onBack = onBack)
-    DetailScreen(state = state, onBack = onBack, onPlay = onPlay, modifier = modifier)
+    DetailScreen(
+        state = state,
+        onBack = onBack,
+        onPlay = onPlay,
+        onFindTorrents = onFindTorrents,
+        modifier = modifier,
+    )
 }
 
 /**
@@ -179,6 +376,7 @@ private fun WatchRoute(
     client: ApiClient,
     bangumiId: Int,
     episodeId: String,
+    danmaku: DanmakuSettings,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -207,7 +405,7 @@ private fun WatchRoute(
 
     val state by model.state.collectAsStateWithLifecycle()
     val tracks by model.engine.tracks.collectAsStateWithLifecycle()
-    val danmaku by model.danmaku.collectAsStateWithLifecycle()
+    val danmakuComments by model.danmaku.collectAsStateWithLifecycle()
     val saveFailed by model.saveFailed.collectAsStateWithLifecycle()
     PlayerScreen(
         engine = model.engine,
@@ -215,7 +413,8 @@ private fun WatchRoute(
         subtitle = episode?.let { "第 ${it.sort} 集 · ${it.displayTitle}" }.orEmpty(),
         state = state,
         tracks = tracks,
-        danmaku = danmaku,
+        danmaku = danmakuComments,
+        danmakuSettings = danmaku,
         saveFailed = saveFailed,
         hasNext = next != null,
         onNext = {
@@ -235,13 +434,36 @@ private fun WatchRoute(
 private fun Tabs(
     client: ApiClient,
     paired: PairState.Paired,
+    unread: Int,
     onOpen: (Int) -> Unit,
+    onMore: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var destination by rememberSaveable { mutableStateOf(Destination.Home) }
 
     Scaffold(
         modifier = modifier,
+        topBar = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp),
+            ) {
+                Text(destination.label, style = MaterialTheme.typography.titleLarge)
+                Box(Modifier.weight(1f))
+                IconButton(onClick = onMore) {
+                    // The badge rides the entry point rather than a bell of its
+                    // own: one affordance, and the count is still visible from
+                    // any tab.
+                    if (unread > 0) {
+                        BadgedBox(badge = { Badge { Text("$unread") } }) {
+                            Icon(MoreVertical, contentDescription = "更多")
+                        }
+                    } else {
+                        Icon(MoreVertical, contentDescription = "更多")
+                    }
+                }
+            }
+        },
         bottomBar = {
             NavigationBar {
                 Destination.entries.forEach { item ->
@@ -321,7 +543,12 @@ private fun CollectionTab(client: ApiClient, key: String, onOpen: (Int) -> Unit)
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun PairFlow(state: PairState, onScanned: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun PairFlow(
+    state: PairState,
+    onScanned: (String) -> Unit,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val camera = rememberPermissionState(CAMERA_PERMISSION)
     if (state is PairState.Waiting && camera.status.isGranted) {
         QrScanner(onPaired = onScanned, modifier = modifier)
@@ -329,6 +556,7 @@ private fun PairFlow(state: PairState, onScanned: (String) -> Unit, modifier: Mo
     }
     PairScreen(
         state = state,
+        onRetry = onRetry,
         modifier = modifier,
         onGrantCamera = { camera.launchPermissionRequest() }.takeIf { state is PairState.Waiting && !camera.status.isGranted },
     )
@@ -337,6 +565,7 @@ private fun PairFlow(state: PairState, onScanned: (String) -> Unit, modifier: Mo
 @Composable
 private fun PairScreen(
     state: PairState,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier,
     onGrantCamera: (() -> Unit)? = null,
 ) {
@@ -382,6 +611,9 @@ private fun PairScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                     )
+                    // A dead end otherwise: the stored pairing is gone from
+                    // state but the scanner is two taps away, not zero.
+                    Button(onClick = onRetry) { Text("再試一次") }
                 }
             }
         }
