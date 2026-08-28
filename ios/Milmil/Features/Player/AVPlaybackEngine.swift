@@ -16,6 +16,7 @@ final class AVPlaybackEngine: PlaybackEngine {
     let capabilities: Set<Capability> = [.multiAudioTrack, .playbackSpeed]
 
     private(set) var state = PlaybackState()
+    private(set) var tracks: [TrackOption] = []
 
     let player = AVPlayer()
 
@@ -88,6 +89,7 @@ final class AVPlaybackEngine: PlaybackEngine {
         let item = AVPlayerItem(url: url)
         observe(item)
         player.replaceCurrentItem(with: item)
+        await refreshTracks()
         if resumeAt > 0 {
             await player.seek(to: CMTime(seconds: resumeAt, preferredTimescale: 600))
         }
@@ -156,6 +158,45 @@ final class AVPlaybackEngine: PlaybackEngine {
     func setSpeed(_ speed: Float) {
         player.rate = speed
         state.speed = speed
+    }
+
+    func select(track id: String?, kind: TrackKind) {
+        guard let item = player.currentItem else { return }
+        let characteristic: AVMediaCharacteristic = kind == .audio ? .audible : .legible
+        Task {
+            guard let group = try? await item.asset.loadMediaSelectionGroup(for: characteristic) else { return }
+            let option = group.options.first { optionID($0) == id }
+            item.select(option, in: group)
+            await refreshTracks()
+        }
+    }
+
+    /// AVFoundation identifies an option by object, which cannot survive a UI
+    /// event; its locale plus display name is stable while the file is open.
+    private nonisolated func optionID(_ option: AVMediaSelectionOption) -> String {
+        "\(option.extendedLanguageTag ?? "und"):\(option.displayName)"
+    }
+
+    private func refreshTracks() async {
+        guard let item = player.currentItem else {
+            tracks = []
+            return
+        }
+        var found: [TrackOption] = []
+        for (characteristic, kind) in [(AVMediaCharacteristic.audible, TrackKind.audio),
+                                       (AVMediaCharacteristic.legible, TrackKind.subtitle)] {
+            guard let group = try? await item.asset.loadMediaSelectionGroup(for: characteristic) else { continue }
+            let selected = item.currentMediaSelection.selectedMediaOption(in: group)
+            found += group.options.map { option in
+                TrackOption(
+                    id: optionID(option),
+                    label: option.displayName,
+                    kind: kind,
+                    selected: option == selected
+                )
+            }
+        }
+        tracks = found
     }
 
     func select(stage: StreamStage) {

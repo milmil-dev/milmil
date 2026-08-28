@@ -315,6 +315,12 @@ def main() -> int:
             png(s_tile_rounded, android_res / folder / "ic_launcher.png", size)
             png(s_adaptive, android_res / folder / "ic_launcher_foreground.png", round(size * 108 / 48))
 
+    # iOS client — one 1024 icon; iOS masks the corners itself, so the tile is
+    # full-bleed rather than the rounded one macOS needs.
+    ios_icon = ROOT / "ios/Milmil/Resources/Assets.xcassets/AppIcon.appiconset"
+    if ios_icon.is_dir():
+        png(s_tile, ios_icon / "icon_1024.png", 1024)
+
     # macOS client — only when that workspace is checked out.
     appicon = ROOT / "macos/Milmil/Resources/Assets.xcassets/AppIcon.appiconset"
     if appicon.is_dir():

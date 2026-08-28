@@ -67,8 +67,11 @@ public interface PlaybackEngine {
     /** Audio and subtitle tracks the current file offers, once it has opened. */
     public val tracks: StateFlow<List<TrackOption>>
 
-    /** Open a file, resuming at [startAtSeconds]. Walks the ladder on failure. */
-    public fun open(fileId: String, startAtSeconds: Double)
+    /**
+     * Open a file, resuming at [startAtSeconds]. Walks the ladder on failure.
+     * [title] and [subtitle] are what the lock screen shows.
+     */
+    public fun open(fileId: String, startAtSeconds: Double, title: String, subtitle: String)
 
     /**
      * The live position, for callers that redraw per frame. [state] only ticks

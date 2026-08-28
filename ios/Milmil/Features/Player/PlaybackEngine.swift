@@ -17,6 +17,18 @@ enum Capability: Hashable {
 
 enum PlaybackStatus { case idle, buffering, playing, paused, ended, failed }
 
+/// One selectable audio or subtitle track. `id` is opaque to the UI — the
+/// engine decides what identifies a track, because AVFoundation and libmpv do
+/// not agree and the screens must not care.
+struct TrackOption: Identifiable, Hashable {
+    let id: String
+    let label: String
+    let kind: TrackKind
+    let selected: Bool
+}
+
+enum TrackKind: Hashable { case audio, subtitle }
+
 struct PlaybackState {
     var status: PlaybackStatus = .idle
     var position: Double = 0
@@ -40,6 +52,9 @@ protocol PlaybackEngine: AnyObject {
     var capabilities: Set<Capability> { get }
     var state: PlaybackState { get }
 
+    /// Audio and subtitle tracks the current file offers, once it has opened.
+    var tracks: [TrackOption] { get }
+
     /// The live position. `state` ticks once a second, which is fine for a
     /// clock and far too coarse for danmaku.
     func positionNow() -> Double
@@ -49,6 +64,9 @@ protocol PlaybackEngine: AnyObject {
     func pause()
     func seek(to seconds: Double)
     func setSpeed(_ speed: Float)
+
+    /// Switch to one track; a subtitle id of nil turns them off.
+    func select(track id: String?, kind: TrackKind)
     func select(stage: StreamStage)
     func stop()
 }

@@ -5,12 +5,14 @@ import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
 import dev.milmil.api.ApiClient
 import dev.milmil.api.StreamFallback
 import dev.milmil.api.StreamStage
@@ -56,18 +58,30 @@ public class Media3Engine(
         playWhenReady = true
     }
 
+    /**
+     * Lock-screen and notification controls. Media3 wires the transport
+     * controls itself once the player is attached; without a session the
+     * episode plays with nothing on the lock screen, which the macOS client
+     * gets from Now Playing for free.
+     */
+    private val session: MediaSession = MediaSession.Builder(context, exo).build()
+
     /** Handed to the AndroidView that draws the video. */
     public val player: Player get() = exo
 
     private var ladder = StreamFallback()
     private var fileId: String? = null
+    private var title: String = ""
+    private var subtitle: String = ""
     private var resumeSeconds = 0.0
     private var ticker: Job? = null
     private var opening: Job? = null
 
-    override fun open(fileId: String, startAtSeconds: Double) {
+    override fun open(fileId: String, startAtSeconds: Double, title: String, subtitle: String) {
         this.fileId = fileId
         this.resumeSeconds = startAtSeconds
+        this.title = title
+        this.subtitle = subtitle
         _state.value = PlaybackState(status = PlaybackStatus.Buffering)
         opening?.cancel()
         opening = scope.launch {
@@ -100,7 +114,14 @@ public class Media3Engine(
             stage = stage,
             message = null,
         )
-        exo.setMediaItem(MediaItem.fromUri(url))
+        exo.setMediaItem(
+            MediaItem.Builder()
+                .setUri(url)
+                .setMediaMetadata(
+                    MediaMetadata.Builder().setTitle(subtitle).setArtist(title).build(),
+                )
+                .build(),
+        )
         exo.prepare()
         if (resumeSeconds > 0) exo.seekTo((resumeSeconds * 1000).toLong())
     }
@@ -192,6 +213,7 @@ public class Media3Engine(
     override fun release() {
         ticker?.cancel()
         opening?.cancel()
+        session.release()
         exo.release()
     }
 

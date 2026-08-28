@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.ui.PlayerView
 import dev.milmil.android.player.ImmersiveLandscape
+import dev.milmil.android.player.PictureInPictureOnLeave
 import dev.milmil.android.player.Media3Engine
 import dev.milmil.android.player.PlaybackState
 import dev.milmil.android.player.DanmakuOverlay
@@ -78,6 +79,7 @@ public fun PlayerScreen(
     modifier: Modifier = Modifier,
 ) {
     ImmersiveLandscape()
+    PictureInPictureOnLeave(playing = state.status == PlaybackStatus.Playing)
 
     var chromeVisible by remember { mutableStateOf(true) }
     var scrubbing by remember { mutableStateOf<Float?>(null) }

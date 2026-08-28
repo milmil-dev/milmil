@@ -394,7 +394,10 @@ private fun WatchRoute(
         .drop(1)
         .firstOrNull { it.playable }
 
-    LaunchedEffect(playingId, episode?.episodeId) { episode?.let(model::play) }
+    val seriesTitle = (content as? Loadable.Ready)?.value?.detail?.displayTitle.orEmpty()
+    LaunchedEffect(playingId, episode?.episodeId, seriesTitle) {
+        episode?.let { model.play(it, seriesTitle) }
+    }
 
     val leave = {
         model.commit()
@@ -409,7 +412,7 @@ private fun WatchRoute(
     val saveFailed by model.saveFailed.collectAsStateWithLifecycle()
     PlayerScreen(
         engine = model.engine,
-        title = (content as? Loadable.Ready)?.value?.detail?.displayTitle.orEmpty(),
+        title = seriesTitle,
         subtitle = episode?.let { "第 ${it.sort} 集 · ${it.displayTitle}" }.orEmpty(),
         state = state,
         tracks = tracks,

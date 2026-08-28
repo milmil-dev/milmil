@@ -21,13 +21,13 @@
 | 首頁書架 | ✅ | ✅ | ✅ | ✅ |
 | 時間表 | ✅ | ✅ | ✅ | ✅ |
 | 探索 | ✅ | ✅ | ✅ | ✅ |
-| 搜尋 | ✅ | ✅ | ✅ | 🚧 |
+| 搜尋 | ✅ | ✅ | ✅ | ✅ |
 | 收藏 | ✅ | ✅ | ✅ | ✅ |
 | 詳情頁 | ✅ | ✅ | ✅ | ✅ |
 | 播放頁 | ✅ | ✅ | ✅ | ✅ |
 | 歷史 | ✅ | ✅ | ✅ | ✅ |
 | 媒體庫管理 | ✅ | ✅ | ✅ | ✅ |
-| 下載 / 種子 | ✅ | ✅ | ✅ | 🚧 |
+| 下載 / 種子 | ✅ | ✅ | ✅ | ✅ |
 | 通知 | ✅ | ✅ | ✅ | ✅ |
 | 設定 | ✅ | ✅ | ✅ | ✅ |
 | 帳戶（唯讀）| ✅ | ✅ | ✅ | ✅ |
@@ -40,18 +40,21 @@
 | 續播（三端共用進度） | ✅ | ✅ | ✅ | ✅ |
 | 進度回寫 | ✅ | ✅ | ✅ | ✅ |
 | 前後跳 10 秒 | ✅ | ✅ | ✅ | ✅ |
-| 下一集 | ✅ | ✅ | ✅ | ⬜ |
+| 下一集 | ✅ | ✅ | ✅ | ✅ |
 | 全螢幕 / 橫向沉浸 | ✅ | ✅ | ✅ | 🚧 |
-| 字幕軌切換 | ✅ | ✅ | ✅ | ⬜ |
-| 音軌切換 | ✅ | ✅ | ✅ | ⬜ |
-| 播放速度 | ✅ | ✅ | ✅ | ⬜ |
-| 彈幕 | ✅ | ✅ | ✅ | 🚧 |
-| 畫中畫 / 背景播放 | ➖ | ➖ | ⬜ | 🚧 |
-| 鎖屏控制（MediaSession） | ➖ | ✅ | ⬜ | ⬜ |
-| 截圖 | ➖ | ✅ | ➖ | ⬜ |
+| 字幕軌切換 | ✅ | ✅ | ✅ | ✅ |
+| 音軌切換 | ✅ | ✅ | ✅ | ✅ |
+| 播放速度 | ✅ | ✅ | ✅ | ✅ |
+| 彈幕 | ✅ | ✅ | ✅ | ✅ |
+| 畫中畫 / 背景播放 | ➖ | ➖ | ✅ | 🚧 |
+| 鎖屏控制（MediaSession） | ➖ | ✅ | ✅ | ✅ |
+| 截圖 | ➖ | ✅ | ➖ | ➖ |
 
 ## 已知差距（唔止「未做」，係要記住點解）
 
+- **截圖：兩個手機端都冇**，唔係「未做」。Media3 同 AVPlayer 都攞唔到帶彈幕嘅畫面，
+  所以兩邊嘅 `PlaybackEngine.capabilities` 都冇 `Screenshot`——介面唔會出一個引擎
+  做唔到嘅掣。macOS 嗰個靜靜失敗嘅截圖掣就係呢套 capabilities 存在嘅原因。
 - **ASS 字幕**：Media3 淨係畫到文字，樣式掉晒。`PlaybackEngine.capabilities` 由第一日就
   暴露呢件事，換 libmpv 嗰陣唔使改任何一個畫面。
 - **彈幕鋪滿成個畫面**，唔淨係影片嗰格。橫向手機一定有黑邊，而主流手機彈幕播放器
@@ -66,7 +69,10 @@
   macOS 專用；要拆開先搬得到 iOS。`PlaybackEngine` 協定同 `capabilities` 由第一日就
   擺喺度，所以將來換引擎唔使改任何一個畫面——同 Android 用 Media3 嘅理由一樣。
 - **iOS 橫向未驗到**：`requestGeometryUpdate` 喺 Simulator 唔一定生效（真機先算數）。
-  Info.plist 已經容許橫向，用家自己轉都得。
+  Info.plist 已經容許橫向，用家自己轉都得。Android 嗰邊係實測過㗎。
+- **iOS 畫中畫未驗到**：`AVPlayerViewController` 開咗
+  `canStartPictureInPictureAutomaticallyFromInline`，但 Simulator 唔支援 PiP。
+  Android 嗰邊喺模擬器上面撳 Home 之後真係浮住繼續播（連彈幕）。
 - **`idb` 讀到 iOS 嘅 accessibility tree 但撳唔到**（Xcode-beta 冇 SimulatorKit），
   所以 iOS Debug 版有 `MILMIL_TAB` / `MILMIL_ANIME` / `MILMIL_MORE` / `MILMIL_PLAY`
   導航 hook，就好似 macOS 嘅 `MILMIL_SNAPSHOT_*`。

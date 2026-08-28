@@ -51,12 +51,17 @@ public class PlayerViewModel(
     private var episode: PlayableEpisode? = null
     private var lastWritten = 0.0
 
-    public fun play(episode: PlayableEpisode) {
+    public fun play(episode: PlayableEpisode, title: String) {
         this.episode = episode
         lastWritten = 0.0
         val resumeAt = episode.progress?.takeIf { it.resumable }?.positionSeconds ?: 0.0
         val fileId = checkNotNull(episode.mediaFile).id
-        engine.open(fileId, resumeAt)
+        engine.open(
+            fileId = fileId,
+            startAtSeconds = resumeAt,
+            title = title,
+            subtitle = "第 ${episode.sort} 集 · ${episode.displayTitle}",
+        )
         loadDanmaku(fileId)
         startReporting()
     }

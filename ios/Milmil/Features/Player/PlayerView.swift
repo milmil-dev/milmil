@@ -1,4 +1,5 @@
 import AVKit
+import Foundation
 import MilmilAPI
 import MilmilDanmaku
 import MilmilDanmakuAPI
@@ -47,6 +48,17 @@ final class PlayerModel {
     /// A server with no DandanPlay credentials answers "file not matched",
     /// which is not an error worth showing: the episode still plays.
     private func loadDanmaku(fileID: String) async {
+        #if DEBUG
+        // A dev server has no credentials, so the renderer cannot be verified
+        // against one at all. The twin of the Android client's
+        // `danmaku-sample.json` and the macOS `MILMIL_SNAPSHOT_DANMAKU`.
+        if let path = ProcessInfo.processInfo.environment["MILMIL_DANMAKU_SAMPLE"],
+           let data = FileManager.default.contents(atPath: path),
+           let sample = try? MilmilJSON.makeDecoder().decode(DandanPlayResponse.self, from: data) {
+            comments = DanmakuParser.comments(from: sample).sorted { $0.time < $1.time }
+            return
+        }
+        #endif
         guard let response = try? await client.danmaku(fileID: fileID) else { return }
         comments = DanmakuParser.comments(from: response).sorted { $0.time < $1.time }
     }
@@ -109,6 +121,7 @@ final class PlayerModel {
 struct PlayerView: View {
     let client: APIClient
     let episode: PlayableEpisode
+    let episodes: [PlayableEpisode]
     let title: String
     let danmaku: DanmakuSettings
     let onClose: () -> Void
@@ -119,27 +132,42 @@ struct PlayerView: View {
     @State private var scrubbing: Double?
     @State private var danmakuOn: Bool
     @State private var hideTask: Task<Void, Never>?
+    @State private var playing: PlayableEpisode
+    @State private var sheet: PlayerSheet?
 
     init(
         client: APIClient,
         episode: PlayableEpisode,
+        episodes: [PlayableEpisode],
         title: String,
         danmaku: DanmakuSettings,
         onClose: @escaping () -> Void
     ) {
         self.client = client
         self.episode = episode
+        self.episodes = episodes
         self.title = title
         self.danmaku = danmaku
         self.onClose = onClose
         _model = State(initialValue: PlayerModel(client: client))
         _danmakuOn = State(initialValue: danmaku.enabled)
+        _playing = State(initialValue: episode)
+    }
+
+    /// The next episode with a file on the server, not simply the next row: an
+    /// episode that is only listed cannot be played into.
+    private var next: PlayableEpisode? {
+        guard let index = episodes.firstIndex(where: { $0.id == playing.id }) else { return nil }
+        return episodes[(index + 1)...].first(where: \.hasFile)
     }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            VideoPlayer(player: model.engine.player)
+            // AVPlayerViewController rather than SwiftUI's VideoPlayer: PiP
+            // and Now Playing come from it, and its own controls are turned
+            // off so the app's OSC is the only one on screen.
+            PlayerSurface(player: model.engine.player)
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
 
@@ -171,10 +199,13 @@ struct PlayerView: View {
         .persistentSystemOverlays(.hidden)
         .contentShape(.rect)
         .onTapGesture { toggleChrome() }
-        .task {
+        .task(id: playing.id) {
             Orientation.request(.landscape)
-            model.play(episode)
+            model.play(playing)
             scheduleHide()
+        }
+        .overlay(alignment: .bottomLeading) {
+            if let sheet { optionSheet(sheet) }
         }
     }
 
@@ -193,7 +224,7 @@ struct PlayerView: View {
                 }
                 VStack(alignment: .leading, spacing: 1) {
                     Text(title).font(.subheadline.weight(.semibold)).lineLimit(1)
-                    Text("第 \(episode.number) 集 · \(episode.displayTitle ?? "")")
+                    Text("第 \(playing.number) 集 · \(playing.displayTitle ?? "")")
                         .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer()
@@ -233,14 +264,32 @@ struct PlayerView: View {
                     Button { model.engine.seek(to: model.engine.positionNow() + 10) } label: {
                         Image(systemName: "goforward.10")
                     }
+                    if let next {
+                        Button {
+                            Task {
+                                // Write where we got to before the position
+                                // becomes the next episode's.
+                                await model.commit()
+                                playing = next
+                            }
+                        } label: {
+                            Image(systemName: "forward.end.fill")
+                        }
+                    }
                     Text("\(clock(scrubbing.map { $0 * model.engine.state.duration } ?? model.engine.state.position)) / \(clock(model.engine.state.duration))")
                         .font(.caption.monospacedDigit())
                     Spacer()
                     if model.saveFailed {
                         Text("進度未儲存").font(.caption2).foregroundStyle(.red)
                     }
+                    Button { sheet = .subtitles } label: { Image(systemName: "captions.bubble") }
+                    Button { sheet = .audio } label: { Image(systemName: "speaker.wave.2") }
+                    Button { sheet = .speed } label: {
+                        Text("\(model.engine.state.speed.formatted(.number.precision(.fractionLength(0...2))))×")
+                            .font(.caption.weight(.medium))
+                    }
                     Button { danmakuOn.toggle() } label: {
-                        Image(systemName: danmakuOn ? "captions.bubble.fill" : "captions.bubble")
+                        Image(systemName: danmakuOn ? "text.bubble.fill" : "text.bubble")
                     }
                     .disabled(model.comments.isEmpty)
                     .tint(danmakuOn && !model.comments.isEmpty ? Theme.accent : .secondary)
@@ -260,18 +309,86 @@ struct PlayerView: View {
         .foregroundStyle(.white)
     }
 
+    /// One list of choices over the video. A sheet would cover the picture
+    /// edge to edge in landscape; this sits in the corner its control came from.
+    @ViewBuilder
+    private func optionSheet(_ open: PlayerSheet) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            switch open {
+            case .speed:
+                ForEach(SPEEDS, id: \.self) { option in
+                    sheetRow("\(option.formatted(.number.precision(.fractionLength(0...2))))×",
+                             selected: model.engine.state.speed == option) {
+                        model.engine.setSpeed(option)
+                    }
+                }
+            case .subtitles:
+                let subtitles = model.engine.tracks.filter { $0.kind == .subtitle }
+                sheetRow("關閉", selected: !subtitles.contains(where: \.selected)) {
+                    model.engine.select(track: nil, kind: .subtitle)
+                }
+                ForEach(subtitles) { track in
+                    sheetRow(track.label, selected: track.selected) {
+                        model.engine.select(track: track.id, kind: .subtitle)
+                    }
+                }
+                if subtitles.isEmpty { sheetRow("冇字幕軌", selected: false, enabled: false) {} }
+            case .audio:
+                let audio = model.engine.tracks.filter { $0.kind == .audio }
+                ForEach(audio) { track in
+                    sheetRow(track.label, selected: track.selected) {
+                        model.engine.select(track: track.id, kind: .audio)
+                    }
+                }
+                if audio.isEmpty { sheetRow("冇音軌", selected: false, enabled: false) {} }
+            }
+        }
+        .padding(.vertical, 6)
+        .frame(minWidth: 180)
+        .glassSurface(in: RoundedRectangle(cornerRadius: 16))
+        .padding(.leading, 16)
+        .padding(.bottom, 120)
+    }
+
+    private func sheetRow(
+        _ label: String,
+        selected: Bool,
+        enabled: Bool = true,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            action()
+            sheet = nil
+        } label: {
+            Text(label)
+                .font(.subheadline)
+                .foregroundStyle(enabled ? (selected ? Theme.accent : Color.primary) : .secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+    }
+
     private func toggleChrome() {
+        if sheet != nil {
+            sheet = nil
+            return
+        }
         chromeVisible.toggle()
         if chromeVisible { scheduleHide() }
     }
 
-    /// Hide only while it is actually playing: a paused or failed player that
-    /// hides its controls looks like a frozen app.
+    /// Hide only while it is actually playing, and never out from under an
+    /// open picker: a paused or failed player that hides its controls looks
+    /// like a frozen app, and choices floating on the video explain nothing.
     private func scheduleHide() {
         hideTask?.cancel()
         hideTask = Task {
             try? await Task.sleep(for: .seconds(3.5))
-            guard !Task.isCancelled, model.engine.state.status == .playing else { return }
+            guard !Task.isCancelled, sheet == nil, model.engine.state.status == .playing else { return }
             chromeVisible = false
         }
     }
@@ -281,5 +398,34 @@ struct PlayerView: View {
         let total = Int(seconds)
         let (h, m, s) = (total / 3600, (total % 3600) / 60, total % 60)
         return h > 0 ? String(format: "%d:%02d:%02d", h, m, s) : String(format: "%d:%02d", m, s)
+    }
+}
+
+/// Which picker is open. Nil is the common case: nothing over the picture.
+private enum PlayerSheet: Identifiable {
+    case subtitles, audio, speed
+    var id: Self { self }
+}
+
+private let SPEEDS: [Float] = [0.75, 1, 1.25, 1.5, 2]
+
+/// The video surface. `AVPlayerViewController` with its controls off: it is
+/// what makes picture-in-picture and the lock-screen controls work, neither of
+/// which SwiftUI's `VideoPlayer` offers on its own.
+private struct PlayerSurface: UIViewControllerRepresentable {
+    let player: AVPlayer
+
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        controller.showsPlaybackControls = false
+        controller.allowsPictureInPicturePlayback = true
+        controller.canStartPictureInPictureAutomaticallyFromInline = true
+        controller.videoGravity = .resizeAspect
+        return controller
+    }
+
+    func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
+        if controller.player !== player { controller.player = player }
     }
 }

@@ -1,5 +1,7 @@
 import MilmilDanmaku
+import QuartzCore
 import SwiftUI
+import UIKit
 
 /// Danmaku over the video, drawn on one Canvas driven by the display link.
 ///
@@ -12,12 +14,16 @@ struct DanmakuLayer: View {
     let engine: AVPlaybackEngine
     let settings: DanmakuSettings
 
+    @State private var clock = FrameClock()
+
     var body: some View {
-        TimelineView(.animation) { _ in
-            Canvas { context, size in
-                draw(in: &context, size: size)
-            }
+        Canvas { context, size in
+            // Read the tick so every vsync invalidates the draw.
+            _ = clock.tick
+            draw(in: &context, size: size)
         }
+        .onAppear { clock.start() }
+        .onDisappear { clock.stop() }
     }
 
     private func draw(in context: inout GraphicsContext, size: CGSize) {
@@ -121,5 +127,44 @@ private final class Runtime {
             blue: Double(comment.color.blue) / 255
         )
         .opacity(opacity)
+    }
+}
+
+/// A display-link tick the Canvas reads.
+///
+/// `TimelineView(.animation)` drew the layer exactly once and then stopped — a
+/// screenshot showed the first frame of an episode and nothing after it. A
+/// display link is explicit about when a frame happens, which is what a
+/// danmaku layer needs anyway.
+@Observable
+@MainActor
+final class FrameClock {
+    private(set) var tick: UInt64 = 0
+
+    @ObservationIgnored private var link: CADisplayLink?
+
+    func start() {
+        guard link == nil else { return }
+        let link = CADisplayLink(target: FrameTarget { [weak self] in self?.tick &+= 1 }, selector: #selector(FrameTarget.fire))
+        link.add(to: .main, forMode: .common)
+        self.link = link
+    }
+
+    func stop() {
+        link?.invalidate()
+        link = nil
+    }
+}
+
+/// `CADisplayLink` needs an ObjC target; this is the smallest one that works.
+private final class FrameTarget: NSObject {
+    private let onFrame: @MainActor () -> Void
+
+    init(onFrame: @escaping @MainActor () -> Void) {
+        self.onFrame = onFrame
+    }
+
+    @objc func fire() {
+        MainActor.assumeIsolated { onFrame() }
     }
 }

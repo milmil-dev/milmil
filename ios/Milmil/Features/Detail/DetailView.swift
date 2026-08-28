@@ -83,6 +83,7 @@ struct DetailView: View {
             PlayerView(
                 client: client,
                 episode: episode,
+                episodes: allEpisodes,
                 title: title,
                 danmaku: danmaku,
                 onClose: { Task { await model.refreshEpisodes() } }
@@ -93,6 +94,11 @@ struct DetailView: View {
     private var title: String {
         if case let .ready(detail, _) = model.state { return detail.title }
         return ""
+    }
+
+    private var allEpisodes: [PlayableEpisode] {
+        if case let .ready(_, episodes) = model.state { return episodes?.episodes ?? [] }
+        return []
     }
 
     @ViewBuilder

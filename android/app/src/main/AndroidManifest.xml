@@ -17,8 +17,9 @@
         android:theme="@style/Theme.Milmil">
         <activity
             android:name=".MainActivity"
+            android:supportsPictureInPicture="true"
             android:exported="true"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboardHidden|uiMode"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode"
             android:theme="@style/Theme.Milmil">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
