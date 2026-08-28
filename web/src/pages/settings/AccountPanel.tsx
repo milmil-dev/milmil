@@ -20,6 +20,7 @@ import { Switch } from '@/components/ui/switch';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { ApiTokensCard } from './ApiTokensCard';
+import { PairDeviceCard } from './PairDeviceCard';
 import { AvatarCard } from './AvatarCard';
 import { SessionsTab } from './SessionsTab';
 
@@ -295,6 +296,7 @@ export function AccountPanel() {
               animate={useMobileTabMotion ? 'show' : { opacity: 1 }}
               exit={useMobileTabMotion ? 'exit' : { opacity: 1 }}
             >
+              <PairDeviceCard />
               <ApiTokensCard />
             </motion.div>
           )}
