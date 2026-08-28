@@ -61,6 +61,18 @@ struct RootView: View {
                 }
             }
         }
+        // The shell drains links once it is up, but a pairing link arrives
+        // while we are still on the server picker or the login screen. Take
+        // only those and leave the rest of the queue for the shell.
+        .onChange(of: pendingOpenURLs.links.wrappedValue.count, initial: true) { _, _ in
+            var links = pendingOpenURLs.links.wrappedValue
+            guard let index = links.firstIndex(where: { PairRequest(link: $0) != nil }),
+                  let request = PairRequest(link: links[index])
+            else { return }
+            links.remove(at: index)
+            pendingOpenURLs.links.wrappedValue = links
+            Task { await session.pair(name: request.name, url: request.url, token: request.token) }
+        }
         .task {
             ShortcutCheatSheet.shared.install()
             QuickLookController.shared.install()

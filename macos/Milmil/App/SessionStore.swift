@@ -111,6 +111,22 @@ final class SessionStore {
         await connect(profile)
     }
 
+    /// `milmil://pair`: adopt a server *and* its token in one step, so a
+    /// device paired from the web UI never sees the login screen. Reuses an
+    /// existing profile for the same URL rather than stacking duplicates;
+    /// `connect` then validates the token and lands on `.ready`, or falls back
+    /// to the login screen if it has been revoked.
+    func pair(name: String, url: URL, token: String) async {
+        let normalized = ServerProfile.normalize(url)
+        let profile = profiles.first { $0.baseURL == normalized } ?? ServerProfile(name: name, baseURL: normalized)
+        if !profiles.contains(where: { $0.id == profile.id }) {
+            profiles.append(profile)
+            persistProfiles()
+        }
+        try? tokenStore.setToken(token, for: profile.id)
+        await connect(profile)
+    }
+
     func removeServer(_ profile: ServerProfile) {
         profiles.removeAll { $0.id == profile.id }
         try? tokenStore.setToken(nil, for: profile.id)
