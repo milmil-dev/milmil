@@ -121,6 +121,8 @@ public class Media3Engine(
         _state.value = _state.value.copy(status = PlaybackStatus.Failed, message = reason)
     }
 
+    override fun positionNow(): Double = exo.currentPosition.coerceAtLeast(0) / 1000.0
+
     override fun play() {
         exo.play()
     }

@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,9 +47,12 @@ import androidx.media3.ui.PlayerView
 import dev.milmil.android.player.ImmersiveLandscape
 import dev.milmil.android.player.Media3Engine
 import dev.milmil.android.player.PlaybackState
+import dev.milmil.android.player.DanmakuOverlay
+import dev.milmil.android.player.DanmakuSettings
 import dev.milmil.android.player.PlaybackStatus
 import dev.milmil.android.player.TrackKind
 import dev.milmil.android.player.TrackOption
+import dev.milmil.api.DanmakuComment
 import kotlinx.coroutines.delay
 
 /**
@@ -63,6 +67,7 @@ public fun PlayerScreen(
     subtitle: String,
     state: PlaybackState,
     tracks: List<TrackOption>,
+    danmaku: List<DanmakuComment>,
     saveFailed: Boolean,
     hasNext: Boolean,
     onNext: () -> Unit,
@@ -76,6 +81,7 @@ public fun PlayerScreen(
     var chromeVisible by remember { mutableStateOf(true) }
     var scrubbing by remember { mutableStateOf<Float?>(null) }
     var sheet by remember { mutableStateOf<PlayerSheet?>(null) }
+    var danmakuOn by rememberSaveable { mutableStateOf(true) }
 
     // Hide only while it is actually playing: a paused or failed player that
     // hides its controls looks like a frozen app.
@@ -107,6 +113,13 @@ public fun PlayerScreen(
             modifier = Modifier.fillMaxSize(),
         )
 
+        DanmakuOverlay(
+            comments = danmaku,
+            engine = engine,
+            settings = DanmakuSettings(enabled = danmakuOn),
+            modifier = Modifier.fillMaxSize(),
+        )
+
         if (state.status == PlaybackStatus.Buffering) {
             CircularProgressIndicator(
                 color = Color.White,
@@ -134,6 +147,9 @@ public fun PlayerScreen(
             BottomBar(
                 state = state,
                 tracks = tracks,
+                danmakuOn = danmakuOn,
+                danmakuCount = danmaku.size,
+                onToggleDanmaku = { danmakuOn = !danmakuOn },
                 onOpenSheet = { sheet = it },
                 saveFailed = saveFailed,
                 hasNext = hasNext,
@@ -294,6 +310,9 @@ private fun TopBar(title: String, subtitle: String, onBack: () -> Unit) {
 private fun BottomBar(
     state: PlaybackState,
     tracks: List<TrackOption>,
+    danmakuOn: Boolean,
+    danmakuCount: Int,
+    onToggleDanmaku: () -> Unit,
     onOpenSheet: (PlayerSheet) -> Unit,
     saveFailed: Boolean,
     hasNext: Boolean,
@@ -346,6 +365,19 @@ private fun BottomBar(
                 modifier = Modifier.padding(start = 4.dp),
             )
             Box(Modifier.weight(1f))
+            // Greyed rather than hidden when the episode has no comments: the
+            // control disappearing reads as the feature being broken.
+            IconButton(onClick = onToggleDanmaku, enabled = danmakuCount > 0) {
+                Icon(
+                    DanmakuOutlined,
+                    contentDescription = if (danmakuOn) "關閉彈幕" else "開啟彈幕",
+                    tint = when {
+                        danmakuCount == 0 -> Color.White.copy(alpha = 0.35f)
+                        danmakuOn -> MaterialTheme.colorScheme.primary
+                        else -> Color.White
+                    },
+                )
+            }
             IconButton(onClick = { onOpenSheet(PlayerSheet.Subtitles) }) {
                 Icon(SubtitlesOutlined, contentDescription = "字幕", tint = Color.White)
             }

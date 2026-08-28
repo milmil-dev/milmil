@@ -207,6 +207,7 @@ private fun WatchRoute(
 
     val state by model.state.collectAsStateWithLifecycle()
     val tracks by model.engine.tracks.collectAsStateWithLifecycle()
+    val danmaku by model.danmaku.collectAsStateWithLifecycle()
     val saveFailed by model.saveFailed.collectAsStateWithLifecycle()
     PlayerScreen(
         engine = model.engine,
@@ -214,6 +215,7 @@ private fun WatchRoute(
         subtitle = episode?.let { "第 ${it.sort} 集 · ${it.displayTitle}" }.orEmpty(),
         state = state,
         tracks = tracks,
+        danmaku = danmaku,
         saveFailed = saveFailed,
         hasNext = next != null,
         onNext = {

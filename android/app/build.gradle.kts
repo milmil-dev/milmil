@@ -19,7 +19,11 @@ android {
         versionName = "0.1.20"
     }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        // DanmakuSample keys off BuildConfig.DEBUG so Release never looks for it.
+        buildConfig = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21

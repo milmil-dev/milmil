@@ -7,7 +7,9 @@ import dev.milmil.android.player.Media3Engine
 import dev.milmil.android.player.PlaybackState
 import dev.milmil.android.player.PlaybackStatus
 import dev.milmil.api.ApiClient
+import dev.milmil.api.DanmakuComment
 import dev.milmil.api.PlayableEpisode
+import dev.milmil.api.danmaku
 import dev.milmil.api.saveProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +31,8 @@ public class PlayerViewModel(
     private val client: ApiClient,
 ) : ViewModel() {
 
+    private val sampleDanmaku = DanmakuSample.file(context)
+
     public val engine: Media3Engine = Media3Engine(context.applicationContext, client, viewModelScope)
     public val state: StateFlow<PlaybackState> = engine.state
 
@@ -40,6 +44,9 @@ public class PlayerViewModel(
     private val _saveFailed = MutableStateFlow(false)
     public val saveFailed: StateFlow<Boolean> = _saveFailed.asStateFlow()
 
+    private val _danmaku = MutableStateFlow<List<DanmakuComment>>(emptyList())
+    public val danmaku: StateFlow<List<DanmakuComment>> = _danmaku.asStateFlow()
+
     private val exiting = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var episode: PlayableEpisode? = null
     private var lastWritten = 0.0
@@ -48,8 +55,25 @@ public class PlayerViewModel(
         this.episode = episode
         lastWritten = 0.0
         val resumeAt = episode.progress?.takeIf { it.resumable }?.positionSeconds ?: 0.0
-        engine.open(checkNotNull(episode.mediaFile).id, resumeAt)
+        val fileId = checkNotNull(episode.mediaFile).id
+        engine.open(fileId, resumeAt)
+        loadDanmaku(fileId)
         startReporting()
+    }
+
+    /**
+     * Danmaku for this file. A server with no DandanPlay credentials answers
+     * "file not matched", which is not an error worth showing — the episode
+     * still plays, just without comments.
+     */
+    private fun loadDanmaku(fileId: String) {
+        _danmaku.value = emptyList()
+        viewModelScope.launch {
+            val comments = DanmakuSample.load(sampleDanmaku)
+                ?: runCatching { client.danmaku(fileId) }.getOrDefault(emptyList())
+            // The overlay binary-searches by time, so the list has to be sorted.
+            _danmaku.value = comments.sortedBy { it.time }
+        }
     }
 
     private fun startReporting() {

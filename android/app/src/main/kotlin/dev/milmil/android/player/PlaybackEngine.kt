@@ -70,6 +70,12 @@ public interface PlaybackEngine {
     /** Open a file, resuming at [startAtSeconds]. Walks the ladder on failure. */
     public fun open(fileId: String, startAtSeconds: Double)
 
+    /**
+     * The live position, for callers that redraw per frame. [state] only ticks
+     * once a second, which is fine for a clock and far too coarse for danmaku.
+     */
+    public fun positionNow(): Double
+
     public fun play()
     public fun pause()
     public fun seekTo(seconds: Double)

@@ -228,3 +228,43 @@ public val AudioTrackOutlined: ImageVector = icon("AudioTrackOutlined", false) {
         arcToRelative(8f, 8f, 0f, isMoreThanHalf = false, isPositiveArc = true, 0f, 11.6f)
     }
 }
+
+/** Danmaku: a comment bubble with the streaming lines inside it. */
+public val DanmakuOutlined: ImageVector = icon("DanmakuOutlined", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(3f, 5f)
+        horizontalLineToRelative(18f)
+        verticalLineToRelative(11f)
+        horizontalLineToRelative(-11f)
+        lineTo(6f, 20f)
+        verticalLineToRelative(-4f)
+        horizontalLineToRelative(-3f)
+        close()
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6f, 8f)
+        horizontalLineToRelative(9f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-9f)
+        close()
+        moveTo(16.5f, 8f)
+        horizontalLineToRelative(2f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-2f)
+        close()
+        moveTo(6f, 11.4f)
+        horizontalLineToRelative(4f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-4f)
+        close()
+        moveTo(11.5f, 11.4f)
+        horizontalLineToRelative(7f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-7f)
+        close()
+    }
+}
