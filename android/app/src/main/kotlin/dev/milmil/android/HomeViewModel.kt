@@ -6,6 +6,8 @@ import dev.milmil.api.ApiClient
 import dev.milmil.api.ApiError
 import dev.milmil.api.CalendarDay
 import dev.milmil.api.DiscoverAnime
+import dev.milmil.api.RecentProgress
+import dev.milmil.api.recentProgress
 import dev.milmil.api.calendar
 import dev.milmil.api.trending
 import kotlinx.coroutines.async
@@ -17,7 +19,8 @@ import kotlinx.coroutines.launch
 public sealed interface HomeState {
     public data object Loading : HomeState
     public data class Ready(
-        val hero: DiscoverAnime?,
+        val hero: List<DiscoverAnime>,
+        val continueWatching: List<RecentProgress>,
         val today: List<DiscoverAnime>,
         val trending: List<DiscoverAnime>,
     ) : HomeState
@@ -39,10 +42,15 @@ public class HomeViewModel(private val client: ApiClient) : ViewModel() {
             try {
                 val trendingCall = async { client.trending(page = 1) }
                 val calendarCall = async { client.calendar() }
+                // 繼續睇 is the row a returning user opens the app for, and it
+                // must not be able to fail the whole page.
+                val progressCall = async { runCatching { client.recentProgress() }.getOrDefault(emptyList()) }
                 val trending = trendingCall.await()
                 val week = calendarCall.await()
                 _state.value = HomeState.Ready(
-                    hero = trending.firstOrNull { it.bannerImage.isNotBlank() } ?: trending.firstOrNull(),
+                    // Five is what a pager can hold before it becomes a list.
+                    hero = trending.filter { it.bannerImage.isNotBlank() }.take(5),
+                    continueWatching = progressCall.await().filterNot { it.completed },
                     today = week.today(todayEn),
                     trending = trending,
                 )

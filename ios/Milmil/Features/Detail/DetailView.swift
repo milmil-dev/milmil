@@ -7,6 +7,12 @@ final class DetailModel {
     enum State { case loading, ready(AnimeDetail, PlayableEpisodesResponse?), failed(String) }
 
     private(set) var state: State = .loading
+    /// Bangumi's own comments — a whole section the macOS page has and the
+    /// first mobile port dropped.
+    private(set) var comments: [BangumiComment] = []
+    private(set) var watchStatus: WatchStatus = .none
+    private(set) var userScore: Int?
+
     private let client: APIClient
     private let bangumiID: Int
 
@@ -20,12 +26,30 @@ final class DetailModel {
         // A series with nothing scanned answers 404 for its episodes while the
         // header is perfectly fine — one missing list must not blank the page.
         async let episodesCall = try? await client.playableEpisodes(bangumiID: bangumiID)
+        async let commentsCall = try? await client.bangumiComments(bangumiID: bangumiID)
         do {
             let detail = try await client.animeDetail(bangumiID: bangumiID)
-            state = .ready(detail, await episodesCall)
+            let episodes = await episodesCall
+            state = .ready(detail, episodes)
+            comments = await commentsCall ?? []
+            watchStatus = episodes?.watchStatus ?? .none
+            userScore = episodes?.userScore
         } catch {
             state = .failed(error.localizedDescription)
         }
+    }
+
+    /// 加入收藏 and the status menu. Applied locally first: the round trip is
+    /// not worth a spinner on a two-tap action.
+    func setStatus(_ status: WatchStatus) {
+        watchStatus = status
+        Task { try? await client.setWatchStatus(bangumiID: bangumiID, status) }
+    }
+
+    /// Your own score, 1…10, or nil to clear it.
+    func setScore(_ score: Int?) {
+        userScore = score
+        Task { try? await client.setScore(bangumiID: bangumiID, score) }
     }
 
     /// Re-read just the episode list, so a part-watched episode shows its bar.
@@ -132,12 +156,20 @@ struct DetailView: View {
                     Poster(title: detail.title, url: detail.coverImage, width: 104, score: detail.summary.score)
                         .offset(y: -46)
                         .padding(.bottom, -46)
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: 5) {
                         Text(detail.title)
                             .font(.system(size: 22, weight: .bold))
                             .foregroundStyle(Theme.ink(0.96))
                             .lineLimit(3)
                             .fixedSize(horizontal: false, vertical: true)
+                        // The original title is what a viewer matches against a
+                        // fansub release name; macOS shows it, the phone did not.
+                        if let original = detail.summary.titleOriginal, original != detail.title {
+                            Text(original)
+                                .font(.system(size: 12))
+                                .foregroundStyle(Theme.ink(0.45))
+                                .lineLimit(2)
+                        }
                         Text(meta(detail))
                             .font(.system(size: 13))
                             .foregroundStyle(Theme.ink(0.55))
@@ -149,6 +181,10 @@ struct DetailView: View {
                 actions(detail: detail, episodes: episodes)
                     .padding(.horizontal, Theme.Space.margin)
                     .padding(.top, 18)
+
+                collectionControls
+                    .padding(.horizontal, Theme.Space.margin)
+                    .padding(.top, 10)
 
                 if !detail.summary.genres.isEmpty {
                     ChipRow(items: Array(detail.summary.genres.prefix(8)))
@@ -164,6 +200,39 @@ struct DetailView: View {
                 if !detail.characters.isEmpty {
                     CastRow(characters: detail.characters)
                         .padding(.top, Theme.Space.section)
+                }
+
+                if !detail.recommendations.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "推薦")
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(alignment: .top, spacing: 12) {
+                                ForEach(detail.recommendations.uniqued()) { anime in
+                                    PosterCard(
+                                        title: anime.title,
+                                        url: anime.coverImage,
+                                        width: 104,
+                                        score: anime.score
+                                    )
+                                }
+                            }
+                            .padding(.horizontal, Theme.Space.margin)
+                        }
+                    }
+                    .padding(.top, Theme.Space.section)
+                }
+
+                if !model.comments.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "評論")
+                        LazyVStack(spacing: 8) {
+                            ForEach(model.comments) { comment in
+                                CommentRow(comment: comment)
+                            }
+                        }
+                        .padding(.horizontal, Theme.Space.margin)
+                    }
+                    .padding(.top, Theme.Space.section)
                 }
 
                 if !list.isEmpty {
@@ -243,7 +312,55 @@ struct DetailView: View {
         if let year = detail.summary.airDate?.prefix(4), !year.isEmpty { parts.append(String(year)) }
         if let type = detail.summary.mediaType, !type.isEmpty { parts.append(type) }
         if detail.summary.episodeCount > 0 { parts.append("\(detail.summary.episodeCount) 集") }
+        // Bangumi's score means little without the size of the vote behind it.
+        if detail.rating.total > 0 {
+            let score = detail.rating.score.formatted(.number.precision(.fractionLength(0...1)))
+            parts.append("★ \(score) · \(detail.rating.total) 人評")
+        }
         return parts.joined(separator: " · ")
+    }
+
+    /// 收藏 and 評分 — the two things the macOS page lets you change from here.
+    private var collectionControls: some View {
+        HStack(spacing: 10) {
+            Menu {
+                ForEach(WatchStatus.allCases, id: \.self) { status in
+                    Button(label(for: status)) { model.setStatus(status) }
+                }
+            } label: {
+                Label(label(for: model.watchStatus), systemImage: model.watchStatus.isInCollection ? "bookmark.fill" : "bookmark")
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 9)
+            }
+            .buttonStyle(.glass)
+
+            Menu {
+                ForEach((1...10).reversed(), id: \.self) { score in
+                    Button("\(score)") { model.setScore(score) }
+                }
+                Button("清除評分", role: .destructive) { model.setScore(nil) }
+            } label: {
+                Label(model.userScore.map { "我評 \($0)" } ?? "評分", systemImage: "star")
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 9)
+            }
+            .buttonStyle(.glass)
+
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func label(for status: WatchStatus) -> String {
+        switch status {
+        case .watching: "睇緊"
+        case .completed: "睇晒"
+        case .planning: "打算睇"
+        case .paused: "暫停"
+        case .dropped: "棄坑"
+        case .none: "加入收藏"
+        }
     }
 }
 
@@ -329,7 +446,7 @@ private struct CastRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            SectionHeader(title: "角色")
+            SectionHeader(title: "角色 / 聲優")
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 14) {
                     ForEach(characters, id: \.character.id) { entry in
@@ -342,12 +459,22 @@ private struct CastRow: View {
                             .frame(width: 68, height: 68)
                             .clipShape(Circle())
                             .overlay { Circle().strokeBorder(.white.opacity(0.1), lineWidth: 0.5) }
-                            Text(entry.character.nameNative ?? entry.character.name)
-                                .font(.system(size: 11))
-                                .foregroundStyle(Theme.ink(0.7))
-                                .lineLimit(2)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 72)
+                            VStack(spacing: 1) {
+                                Text(entry.character.nameNative ?? entry.character.name)
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(Theme.ink(0.7))
+                                    .lineLimit(2)
+                                // The voice actor is half of why this section
+                                // exists, and macOS has always shown them.
+                                if let actor = entry.voiceActor {
+                                    Text(actor.nameNative ?? actor.name)
+                                        .font(.system(size: 10))
+                                        .foregroundStyle(Theme.ink(0.4))
+                                        .lineLimit(1)
+                                }
+                            }
+                            .multilineTextAlignment(.center)
+                            .frame(width: 76)
                         }
                     }
                 }
@@ -406,5 +533,52 @@ private struct EpisodeRow: View {
         .padding(12)
         .cardBackground()
         .contentShape(.rect)
+    }
+}
+
+private extension [AnimeSummary] {
+    /// Recommendations can repeat a title, and SwiftUI tolerates duplicate ids
+    /// less gracefully than it looks.
+    func uniqued() -> [AnimeSummary] {
+        var seen = Set<Int>()
+        return filter { seen.insert($0.bangumiID).inserted }
+    }
+}
+
+/// One Bangumi comment. Their score next to their name is the whole point of
+/// the section: it is what tells you whether to trust the sentence.
+private struct CommentRow: View {
+    let comment: BangumiComment
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            AsyncImage(url: comment.avatar) { image in
+                image.resizable().scaledToFill()
+            } placeholder: {
+                Theme.artworkGradient(comment.displayName)
+            }
+            .frame(width: 34, height: 34)
+            .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(comment.displayName)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Theme.ink(0.9))
+                    if comment.rate > 0 {
+                        Text("★ \(comment.rate)")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Theme.accent)
+                    }
+                }
+                Text(comment.comment)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.ink(0.6))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .cardBackground()
     }
 }

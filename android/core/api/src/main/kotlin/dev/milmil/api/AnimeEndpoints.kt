@@ -86,12 +86,29 @@ public data class PlayableEpisodes(
             ?: episodes.firstOrNull { it.playable }
 }
 
-/** One voice actor / character pair, as the detail page lists them. */
+/** Bangumi's rating: the score and the size of the vote behind it. */
+@Serializable
+public data class AnimeRating(
+    val score: Double = 0.0,
+    val total: Int = 0,
+)
+
+/** A character and who voices them — the macOS page shows both. */
 @Serializable
 public data class DetailCharacter(
     val role: String = "",
     val character: CharacterInfo = CharacterInfo(),
-)
+    @SerialName("voice_actor") val voiceActor: CharacterInfo? = null,
+) {
+    /** MAIN reads as 主角 everywhere else in the product. */
+    public val roleLabel: String
+        get() = when (role.uppercase()) {
+            "MAIN" -> "主角"
+            "SUPPORTING" -> "配角"
+            "BACKGROUND" -> "背景"
+            else -> role
+        }
+}
 
 @Serializable
 public data class CharacterInfo(
@@ -129,6 +146,10 @@ public data class AnimeDetail(
     @Serializable(with = LenientStringListSerializer::class) val tags: List<String> = emptyList(),
     @Serializable(with = LenientStringListSerializer::class) val genres: List<String> = emptyList(),
     val characters: List<DetailCharacter> = emptyList(),
+    /** Bangumi's own score and how many people voted. */
+    val rating: AnimeRating = AnimeRating(),
+    /** "More like this" — the same list the macOS detail page shows. */
+    val recommendations: List<DiscoverAnime> = emptyList(),
 ) {
     public val displayTitle: String
         get() = title.ifBlank { titleEn.ifBlank { titleOriginal } }
@@ -200,3 +221,47 @@ public suspend fun ApiClient.recentProgress(): List<RecentProgress> =
         progressSerializer,
         execute(HttpMethod.Get, "/api/v1/progress/recent", null),
     )
+
+/** One Bangumi comment, as the detail page's 評論 section lists them. */
+@Serializable
+public data class BangumiComment(
+    val id: Long = 0,
+    val username: String = "",
+    val nickname: String = "",
+    val avatar: String = "",
+    val rate: Int = 0,
+    val comment: String = "",
+    @SerialName("updated_at") val updatedAt: Long = 0,
+) {
+    public val displayName: String get() = nickname.ifBlank { username }
+}
+
+private val commentSerializer = ListSerializer(BangumiComment.serializer())
+
+/** `discoverApi.comments`. */
+public suspend fun ApiClient.bangumiComments(bangumiId: Int): List<BangumiComment> =
+    MilmilJson.decodeFromString(
+        commentSerializer,
+        execute(HttpMethod.Get, "/api/v1/discover/anime/$bangumiId/comments", null),
+    )
+
+@Serializable
+private data class WatchStatusUpdate(val status: String)
+
+/**
+ * `collectionApi.setStatus` — 加入收藏 and the watch-status menu, which the
+ * macOS detail page has had all along and the phones did not.
+ */
+public suspend fun ApiClient.setWatchStatus(bangumiId: Int, status: String) {
+    val body = MilmilJson.encodeToString(WatchStatusUpdate.serializer(), WatchStatusUpdate(status))
+    execute(HttpMethod.Patch, "/api/v1/collection/$bangumiId/status", body)
+}
+
+@Serializable
+private data class ScoreUpdate(val score: Int?)
+
+/** `animeApi.updateScore` — your own score, 1…10, or null to clear it. */
+public suspend fun ApiClient.setScore(bangumiId: Int, score: Int?) {
+    val body = MilmilJson.encodeToString(ScoreUpdate.serializer(), ScoreUpdate(score))
+    execute(HttpMethod.Patch, "/api/v1/anime/$bangumiId/score", body)
+}

@@ -178,6 +178,8 @@ private fun Shell(
                 onBack = back,
                 onPlay = { episode -> route = Route.Watch(current.bangumiId, episode.episodeId) },
                 onFindTorrents = { title -> route = Route.Torrents(current.bangumiId, title) },
+                // A recommendation opens its own page, like every other poster.
+                onOpen = { route = Route.Detail(it) },
                 modifier = modifier,
             )
             return
@@ -351,6 +353,7 @@ private fun DetailRoute(
     onBack: () -> Unit,
     onPlay: (dev.milmil.api.PlayableEpisode) -> Unit,
     onFindTorrents: (String) -> Unit,
+    onOpen: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val model: DetailViewModel = viewModel(key = "detail-$bangumiId") { DetailViewModel(client) }
@@ -362,6 +365,9 @@ private fun DetailRoute(
         onBack = onBack,
         onPlay = onPlay,
         onFindTorrents = onFindTorrents,
+        onOpen = onOpen,
+        onStatus = { model.setStatus(bangumiId, it) },
+        onScore = { model.setScore(bangumiId, it) },
         modifier = modifier,
     )
 }

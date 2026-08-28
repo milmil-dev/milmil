@@ -97,6 +97,31 @@ class WatchTest {
     }
 
     @Test
+    fun `the detail response carries the sections the macOS page shows`() {
+        val detail = MilmilJson.decodeFromString(AnimeDetail.serializer(), fixture("anime-detail.json"))
+
+        // Everything below was missing from the first mobile port, and the
+        // macOS detail page has shown all of it since it shipped.
+        assertTrue(detail.rating.total > 0, "no vote count")
+        assertEquals(detail.rating.score, detail.score)
+        assertTrue(detail.recommendations.isNotEmpty(), "no recommendations")
+        assertTrue(detail.trailerUrl.isNotBlank(), "no trailer")
+        assertEquals("主角", detail.characters.first().roleLabel)
+    }
+
+    @Test
+    fun `decodes Bangumi comments`() {
+        val comments = MilmilJson.decodeFromString(
+            kotlinx.serialization.builtins.ListSerializer(BangumiComment.serializer()),
+            fixture("comments.json"),
+        )
+
+        assertTrue(comments.isNotEmpty())
+        // A commenter with no nickname still needs a name on the row.
+        assertTrue(comments.first().displayName.isNotBlank())
+    }
+
+    @Test
     fun `the ladder falls in the same order as the macOS client`() {
         val ladder = StreamFallback()
 
