@@ -50,7 +50,22 @@ public data class AppNotification(
     val severity: String = "info",
     @Serializable(with = LenientBoolSerializer::class) val read: Boolean = false,
     @SerialName("created_at") @Serializable(with = NullableInstantSerializer::class) val createdAt: Instant? = null,
-)
+) {
+    /**
+     * A download notification carries the download's name, which for a fresh
+     * torrent is the whole magnet URI — six lines of percent-encoding in a
+     * notification list. The `dn` parameter inside it is the real name.
+     */
+    public val displayMessage: String
+        get() {
+            if (!message.startsWith("magnet:")) return message
+            val name = message.substringAfter("&dn=", "").substringBefore("&")
+            if (name.isEmpty()) return "種子"
+            return runCatching {
+                java.net.URLDecoder.decode(name, java.nio.charset.StandardCharsets.UTF_8)
+            }.getOrDefault(name)
+        }
+}
 
 @Serializable
 private data class UnreadCount(val count: Int = 0)

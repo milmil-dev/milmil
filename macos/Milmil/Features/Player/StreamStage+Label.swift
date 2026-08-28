@@ -1,7 +1,7 @@
-import MilmilPlayer
+import MilmilAPI
 
 extension StreamStage {
-    /// User-facing name of the rung. `MilmilPlayer` is platform-neutral and
+    /// User-facing name of the rung. `MilmilAPI` is platform-neutral and
     /// carries no string catalog, so its `label` is the raw zh-Hant literal;
     /// every badge / row / meta line in the app goes through this instead.
     var localizedLabel: String {

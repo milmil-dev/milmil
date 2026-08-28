@@ -48,15 +48,16 @@ private extension [AnimeSummary] {
 
 struct HomeView: View {
     let client: APIClient
+    let open: (Int) -> Void
     @State private var model: HomeModel
 
-    init(client: APIClient) {
+    init(client: APIClient, open: @escaping (Int) -> Void) {
         self.client = client
+        self.open = open
         _model = State(initialValue: HomeModel(client: client))
     }
 
     var body: some View {
-        NavigationStack {
             Group {
                 switch model.state {
                 case .loading:
@@ -67,9 +68,20 @@ struct HomeView: View {
                 case .ready:
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 22) {
-                            if let hero = model.hero { HeroCard(anime: hero) }
-                            if !model.today.isEmpty { Shelf(title: "今日時間表", items: model.today) }
-                            if !model.trending.isEmpty { Shelf(title: "熱門", items: model.trending) }
+                            if let hero = model.hero {
+                                Button { open(hero.bangumiID) } label: { HeroCard(anime: hero) }
+                                    .buttonStyle(.plain)
+                                    // Without this the button sizes to its
+                                    // content and the hero title runs off the
+                                    // right edge instead of wrapping.
+                                    .frame(maxWidth: .infinity)
+                            }
+                            if !model.today.isEmpty {
+                                Shelf(title: "今日時間表", items: model.today, open: open)
+                            }
+                            if !model.trending.isEmpty {
+                                Shelf(title: "熱門", items: model.trending, open: open)
+                            }
                         }
                         .padding(.bottom, 24)
                     }
@@ -77,8 +89,6 @@ struct HomeView: View {
                 }
             }
             .background(Theme.background)
-            .navigationBarHidden(true)
-        }
         .task { await model.load() }
     }
 }
@@ -87,14 +97,24 @@ private struct HeroCard: View {
     let anime: AnimeSummary
 
     var body: some View {
+        // The banner is wider than any phone, and `.fill` reports that width
+        // as the card's own unless the whole stack is pinned to the screen —
+        // which left the hero title running off the right edge.
         ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: anime.bannerImage ?? anime.coverImage) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Theme.background
-            }
-            .frame(height: 400)
-            .clipped()
+            // Color.clear takes the proposed width and the overlay does not
+            // affect layout: `.clipped()` alone only clips drawing, so a
+            // banner wider than the phone still reported its own width and
+            // pushed the title off the right edge.
+            Color.clear
+                .frame(height: 400)
+                .overlay {
+                    AsyncImage(url: anime.bannerImage ?? anime.coverImage) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
+                        Theme.background
+                    }
+                }
+                .clipped()
             // The scrim is what keeps the title readable over arbitrary art.
             LinearGradient(
                 stops: [
@@ -107,11 +127,18 @@ private struct HeroCard: View {
             )
             .frame(height: 400)
             VStack(alignment: .leading, spacing: 6) {
-                Text(anime.title).font(.title.weight(.bold)).lineLimit(2)
+                Text(anime.title)
+                    .font(.title.weight(.bold))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(summary).font(.footnote).foregroundStyle(.secondary)
             }
             .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .clipped()
     }
 
     private var summary: String {
@@ -125,6 +152,7 @@ private struct HeroCard: View {
 private struct Shelf: View {
     let title: String
     let items: [AnimeSummary]
+    let open: (Int) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -132,6 +160,7 @@ private struct Shelf: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(items) { anime in
+                        Button { open(anime.bangumiID) } label: {
                         VStack(alignment: .leading, spacing: 8) {
                             AsyncImage(url: anime.coverImage) { image in
                                 image.resizable().aspectRatio(contentMode: .fill)
@@ -143,6 +172,8 @@ private struct Shelf: View {
                             Text(anime.title).font(.footnote.weight(.medium)).lineLimit(2)
                         }
                         .frame(width: 108, alignment: .leading)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 16)

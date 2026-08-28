@@ -8,6 +8,14 @@ extension View {
     func glassSurface(in shape: some Shape, interactive: Bool = false) -> some View {
         glassEffect(interactive ? .regular.interactive() : .regular, in: shape)
     }
+
+    /// A screen's one prominent action. Fills with ink, never the accent —
+    /// Vesica Violet is for state and emphasis — and the label has to take the
+    /// background colour or it is white on white, which is how the first cut
+    /// of the detail page's play button shipped.
+    func inkProminentButtonStyle() -> some View {
+        buttonStyle(.glassProminent).tint(Theme.ink(0.92)).foregroundStyle(Theme.background)
+    }
 }
 
 enum Theme {

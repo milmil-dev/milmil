@@ -69,6 +69,8 @@ targets:
         product: MilmilRealtime
       - package: MilmilKit
         product: MilmilDanmaku
+      - package: MilmilKit
+        product: MilmilDanmakuAPI
       - package: MilmilPlayer
         product: MilmilPlayer
       - package: SwiftyOpenCC

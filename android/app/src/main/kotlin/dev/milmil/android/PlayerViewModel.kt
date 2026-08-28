@@ -81,6 +81,13 @@ public class PlayerViewModel(
             while (true) {
                 delay(REPORT_INTERVAL_MILLIS)
                 val current = state.value
+                // An episode that reaches the end has to be recorded there and
+                // then: the user may well swipe the app away rather than press
+                // back, and the final write would never run.
+                if (current.status == PlaybackStatus.Ended) {
+                    write(current, completed = true)
+                    return@launch
+                }
                 if (current.status != PlaybackStatus.Playing) continue
                 // Nothing moved (or the user is scrubbing back and forth over
                 // the same second) — do not spend a request on it.

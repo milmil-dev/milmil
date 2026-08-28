@@ -87,6 +87,17 @@ class ManageTest {
     }
 
     @Test
+    fun `a download notification shows the torrent name, not the magnet`() {
+        val magnet = "magnet:?xt=urn:btih:abc&dn=%5BYameii%5D+The+Elusive+Samurai&tr=x"
+        assertEquals(
+            "[Yameii] The Elusive Samurai",
+            AppNotification(message = magnet).displayMessage,
+        )
+        assertEquals("Milmil", AppNotification(message = "Milmil").displayMessage)
+        assertEquals("種子", AppNotification(message = "magnet:?xt=urn:btih:abc").displayMessage)
+    }
+
+    @Test
     fun `a history row says what state the episode is in`() {
         // 20 seconds from the end is finished for every purpose the user has;
         // the first cut rendered "仲有 0 分鐘", which is not a sentence.

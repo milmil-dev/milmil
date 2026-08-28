@@ -30,6 +30,8 @@ targets:
         product: MilmilRealtime
       - package: MilmilKit
         product: MilmilDanmaku
+      - package: MilmilKit
+        product: MilmilDanmakuAPI
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.milmil.ios

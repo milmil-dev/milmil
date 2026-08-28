@@ -211,7 +211,7 @@ public fun NotificationsScreen(
                     Text(item.title, style = MaterialTheme.typography.titleSmall)
                     if (item.message.isNotBlank()) {
                         Text(
-                            item.message,
+                            item.displayMessage,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

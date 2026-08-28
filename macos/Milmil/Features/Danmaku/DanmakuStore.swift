@@ -1,6 +1,7 @@
 import Foundation
 import MilmilAPI
 import MilmilDanmaku
+import MilmilDanmakuAPI
 import Observation
 import OSLog
 
@@ -271,15 +272,6 @@ nonisolated struct DanmakuImportResult: Decodable, Sendable {
 }
 
 extension APIClient {
-    func danmaku(fileID: String) async throws -> DandanPlayResponse {
-        try await get("/api/v1/danmaku/\(fileID)")
-    }
-
-    func postDanmaku(fileID: String, time: Double, mode: Int, color: Int, comment: String) async throws {
-        struct Body: Encodable { let time: Double; let mode: Int; let color: Int; let comment: String }
-        try await post("/api/v1/danmaku/\(fileID)", body: Body(time: time, mode: mode, color: color, comment: comment))
-    }
-
     /// The handler serialises "nothing imported" as JSON `null`, not `[]`.
     func importedDanmaku(episodeID: String) async throws -> [ImportedDanmaku] {
         let rows: [ImportedDanmaku]? = try await get("/api/v1/danmaku/external/imported/\(episodeID)")
