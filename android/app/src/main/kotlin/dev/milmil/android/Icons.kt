@@ -168,3 +168,63 @@ public val ForwardArc: ImageVector = icon("ForwardArc", false) {
         close()
     }
 }
+
+/** Subtitles: a frame with two text rules sitting low in it. */
+public val SubtitlesOutlined: ImageVector = icon("SubtitlesOutlined", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(3f, 5f)
+        horizontalLineToRelative(18f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-18f)
+        close()
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6f, 12.6f)
+        horizontalLineToRelative(6f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-6f)
+        close()
+        moveTo(13.5f, 12.6f)
+        horizontalLineToRelative(4.5f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-4.5f)
+        close()
+        moveTo(6f, 15.8f)
+        horizontalLineToRelative(3f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-3f)
+        close()
+        moveTo(10.5f, 15.8f)
+        horizontalLineToRelative(7.5f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-7.5f)
+        close()
+    }
+}
+
+/** Audio track: a speaker with one wave, distinct from the subtitle frame. */
+public val AudioTrackOutlined: ImageVector = icon("AudioTrackOutlined", false) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(4f, 9f)
+        horizontalLineToRelative(3f)
+        lineTo(11.5f, 4.5f)
+        verticalLineToRelative(15f)
+        lineTo(7f, 15f)
+        horizontalLineToRelative(-3f)
+        close()
+    }
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineCap = StrokeCap.Round,
+    ) {
+        moveTo(15f, 9f)
+        arcToRelative(4.2f, 4.2f, 0f, isMoreThanHalf = false, isPositiveArc = true, 0f, 6f)
+        moveTo(17.8f, 6.2f)
+        arcToRelative(8f, 8f, 0f, isMoreThanHalf = false, isPositiveArc = true, 0f, 11.6f)
+    }
+}

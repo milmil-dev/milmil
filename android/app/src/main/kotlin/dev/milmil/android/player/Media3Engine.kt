@@ -2,9 +2,13 @@ package dev.milmil.android.player
 
 import android.content.Context
 import androidx.annotation.OptIn
+import androidx.media3.common.C
+import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import dev.milmil.api.ApiClient
@@ -43,6 +47,9 @@ public class Media3Engine(
 
     private val _state = MutableStateFlow(PlaybackState())
     override val state: StateFlow<PlaybackState> = _state.asStateFlow()
+
+    private val _tracks = MutableStateFlow<List<TrackOption>>(emptyList())
+    override val tracks: StateFlow<List<TrackOption>> = _tracks.asStateFlow()
 
     private val exo: ExoPlayer = ExoPlayer.Builder(context).build().apply {
         addListener(Listener())
@@ -128,6 +135,50 @@ public class Media3Engine(
 
     override fun setSpeed(speed: Float) {
         exo.setPlaybackSpeed(speed)
+        _state.value = _state.value.copy(speed = speed)
+    }
+
+    override fun selectTrack(kind: TrackKind, id: String?) {
+        val type = if (kind == TrackKind.Audio) C.TRACK_TYPE_AUDIO else C.TRACK_TYPE_TEXT
+        val builder = exo.trackSelectionParameters.buildUpon()
+            .clearOverridesOfType(type)
+            .setTrackTypeDisabled(type, id == null)
+        val group = exo.currentTracks.groups
+            .filter { it.type == type }
+            .firstOrNull { trackId(it) == id }
+        if (group != null) {
+            builder.addOverride(TrackSelectionOverride(group.mediaTrackGroup, 0))
+        }
+        exo.trackSelectionParameters = builder.build()
+        publishTracks()
+    }
+
+    /**
+     * ExoPlayer identifies a group by object, which cannot survive a UI event.
+     * The group's own id plus its type is stable for as long as the file is
+     * open, which is exactly as long as the picker exists.
+     */
+    private fun trackId(group: Tracks.Group): String = "${group.type}:${group.mediaTrackGroup.id}"
+
+    private fun publishTracks() {
+        _tracks.value = exo.currentTracks.groups
+            .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
+            .map { group ->
+                val format = group.mediaTrackGroup.getFormat(0)
+                TrackOption(
+                    id = trackId(group),
+                    label = trackLabel(format),
+                    kind = if (group.type == C.TRACK_TYPE_AUDIO) TrackKind.Audio else TrackKind.Subtitle,
+                    selected = group.isSelected,
+                )
+            }
+    }
+
+    /** A track with no label at all still has to read as something. */
+    private fun trackLabel(format: Format): String {
+        format.label?.takeIf { it.isNotBlank() }?.let { return it }
+        val language = format.language?.takeIf { it.isNotBlank() && it != "und" }
+        return language?.let { java.util.Locale.forLanguageTag(it).displayName } ?: "音軌"
     }
 
     override fun selectStage(stage: StreamStage) {
@@ -176,6 +227,10 @@ public class Media3Engine(
             _state.value = _state.value.copy(
                 status = if (isPlaying) PlaybackStatus.Playing else PlaybackStatus.Paused,
             )
+        }
+
+        override fun onTracksChanged(tracks: Tracks) {
+            publishTracks()
         }
 
         override fun onPlayerError(error: PlaybackException) {

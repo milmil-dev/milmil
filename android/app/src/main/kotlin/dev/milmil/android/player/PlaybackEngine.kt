@@ -24,6 +24,20 @@ public enum class Capability {
     PlaybackSpeed,
 }
 
+/**
+ * One selectable audio or subtitle track. `id` is opaque to the UI — the
+ * engine decides what identifies a track, because libmpv and ExoPlayer do not
+ * agree on that and the screens must not care.
+ */
+public data class TrackOption(
+    val id: String,
+    val label: String,
+    val kind: TrackKind,
+    val selected: Boolean,
+)
+
+public enum class TrackKind { Audio, Subtitle }
+
 /** Where playback is, as coarse as the UI needs it to be. */
 public enum class PlaybackStatus { Idle, Buffering, Playing, Paused, Ended, Failed }
 
@@ -33,6 +47,7 @@ public data class PlaybackState(
     val durationSeconds: Double = 0.0,
     val bufferedSeconds: Double = 0.0,
     val stage: StreamStage = StreamStage.Direct,
+    val speed: Float = 1f,
     val message: String? = null,
 ) {
     public val fraction: Float
@@ -49,6 +64,9 @@ public interface PlaybackEngine {
     public val capabilities: Set<Capability>
     public val state: StateFlow<PlaybackState>
 
+    /** Audio and subtitle tracks the current file offers, once it has opened. */
+    public val tracks: StateFlow<List<TrackOption>>
+
     /** Open a file, resuming at [startAtSeconds]. Walks the ladder on failure. */
     public fun open(fileId: String, startAtSeconds: Double)
 
@@ -56,6 +74,9 @@ public interface PlaybackEngine {
     public fun pause()
     public fun seekTo(seconds: Double)
     public fun setSpeed(speed: Float)
+
+    /** Switch to one track; passing a subtitle id of null turns them off. */
+    public fun selectTrack(kind: TrackKind, id: String?)
 
     /** Jump to a rung the user picked; later failures still fall from there. */
     public fun selectStage(stage: StreamStage)

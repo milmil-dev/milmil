@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +47,8 @@ import dev.milmil.android.player.ImmersiveLandscape
 import dev.milmil.android.player.Media3Engine
 import dev.milmil.android.player.PlaybackState
 import dev.milmil.android.player.PlaybackStatus
+import dev.milmil.android.player.TrackKind
+import dev.milmil.android.player.TrackOption
 import kotlinx.coroutines.delay
 
 /**
@@ -56,9 +62,12 @@ public fun PlayerScreen(
     title: String,
     subtitle: String,
     state: PlaybackState,
+    tracks: List<TrackOption>,
     saveFailed: Boolean,
     hasNext: Boolean,
     onNext: () -> Unit,
+    onSelectTrack: (TrackKind, String?) -> Unit,
+    onSpeed: (Float) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -66,11 +75,14 @@ public fun PlayerScreen(
 
     var chromeVisible by remember { mutableStateOf(true) }
     var scrubbing by remember { mutableStateOf<Float?>(null) }
+    var sheet by remember { mutableStateOf<PlayerSheet?>(null) }
 
     // Hide only while it is actually playing: a paused or failed player that
     // hides its controls looks like a frozen app.
-    LaunchedEffect(chromeVisible, state.status) {
-        if (chromeVisible && state.status == PlaybackStatus.Playing) {
+    LaunchedEffect(chromeVisible, state.status, sheet) {
+        // A picker is open over the controls it came from; hiding them under it
+        // leaves the choices floating on the video with nothing to explain them.
+        if (chromeVisible && sheet == null && state.status == PlaybackStatus.Playing) {
             delay(CHROME_TIMEOUT_MILLIS)
             chromeVisible = false
         }
@@ -121,6 +133,8 @@ public fun PlayerScreen(
             TopBar(title = title, subtitle = subtitle, onBack = onBack)
             BottomBar(
                 state = state,
+                tracks = tracks,
+                onOpenSheet = { sheet = it },
                 saveFailed = saveFailed,
                 hasNext = hasNext,
                 onNext = onNext,
@@ -135,7 +149,113 @@ public fun PlayerScreen(
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
+
+        sheet?.let { open ->
+            OptionSheet(
+                sheet = open,
+                tracks = tracks,
+                speed = state.speed,
+                onSelectTrack = { kind, id ->
+                    onSelectTrack(kind, id)
+                    sheet = null
+                },
+                onSpeed = {
+                    onSpeed(it)
+                    sheet = null
+                },
+                onDismiss = { sheet = null },
+            )
+        }
     }
+}
+
+/** Which picker is open. Null is the common case: nothing over the picture. */
+private enum class PlayerSheet { Subtitles, Audio, Speed }
+
+/**
+ * One list of choices over the video. A bottom sheet would be the Material
+ * answer on a portrait screen, but the player is landscape and a sheet there
+ * covers the picture edge to edge — this sits in the corner the control came
+ * from and leaves the frame visible.
+ */
+@Composable
+private fun OptionSheet(
+    sheet: PlayerSheet,
+    tracks: List<TrackOption>,
+    speed: Float,
+    onSelectTrack: (TrackKind, String?) -> Unit,
+    onSpeed: (Float) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onDismiss,
+            ),
+    ) {
+        Column(
+            Modifier
+                .align(Alignment.BottomStart)
+                .safeDrawingPadding()
+                // Clears the whole bottom bar, scrub track included.
+                .padding(start = 12.dp, bottom = 112.dp)
+                // Intrinsic, not fillMaxWidth: the rows fill the panel, and
+                // without this they filled the screen instead.
+                .width(IntrinsicSize.Max)
+                .widthIn(min = 180.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color.Black.copy(alpha = 0.88f))
+                .padding(vertical = 6.dp),
+        ) {
+            when (sheet) {
+                PlayerSheet.Speed -> SPEEDS.forEach { option ->
+                    SheetRow("${option}×", selected = speed == option) { onSpeed(option) }
+                }
+                PlayerSheet.Subtitles -> {
+                    val subtitles = tracks.filter { it.kind == TrackKind.Subtitle }
+                    SheetRow("關閉", selected = subtitles.none { it.selected }) {
+                        onSelectTrack(TrackKind.Subtitle, null)
+                    }
+                    subtitles.forEach { track ->
+                        SheetRow(track.label, track.selected) { onSelectTrack(TrackKind.Subtitle, track.id) }
+                    }
+                    if (subtitles.isEmpty()) SheetRow("冇字幕軌", selected = false, enabled = false) {}
+                }
+                PlayerSheet.Audio -> {
+                    val audio = tracks.filter { it.kind == TrackKind.Audio }
+                    audio.forEach { track ->
+                        SheetRow(track.label, track.selected) { onSelectTrack(TrackKind.Audio, track.id) }
+                    }
+                    if (audio.isEmpty()) SheetRow("冇音軌", selected = false, enabled = false) {}
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SheetRow(
+    label: String,
+    selected: Boolean,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    Text(
+        label,
+        style = MaterialTheme.typography.bodyMedium,
+        color = when {
+            !enabled -> Color.White.copy(alpha = 0.4f)
+            selected -> MaterialTheme.colorScheme.primary
+            else -> Color.White
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 18.dp, vertical = 11.dp),
+    )
 }
 
 @Composable
@@ -173,6 +293,8 @@ private fun TopBar(title: String, subtitle: String, onBack: () -> Unit) {
 @Composable
 private fun BottomBar(
     state: PlaybackState,
+    tracks: List<TrackOption>,
+    onOpenSheet: (PlayerSheet) -> Unit,
     saveFailed: Boolean,
     hasNext: Boolean,
     onNext: () -> Unit,
@@ -224,6 +346,15 @@ private fun BottomBar(
                 modifier = Modifier.padding(start = 4.dp),
             )
             Box(Modifier.weight(1f))
+            IconButton(onClick = { onOpenSheet(PlayerSheet.Subtitles) }) {
+                Icon(SubtitlesOutlined, contentDescription = "字幕", tint = Color.White)
+            }
+            IconButton(onClick = { onOpenSheet(PlayerSheet.Audio) }) {
+                Icon(AudioTrackOutlined, contentDescription = "音軌", tint = Color.White)
+            }
+            TextButton(onClick = { onOpenSheet(PlayerSheet.Speed) }) {
+                Text("${state.speed}×", style = MaterialTheme.typography.labelLarge, color = Color.White)
+            }
             if (saveFailed) {
                 // A watch position the server rejected is worth saying out
                 // loud: silently losing it is what this replaced.
@@ -284,3 +415,4 @@ private fun clock(seconds: Double): String {
 private const val CHROME_TIMEOUT_MILLIS = 3500L
 private const val SKIP_SECONDS = 10.0
 private const val SKIP_SECONDS_LABEL = 10
+private val SPEEDS = listOf(0.75f, 1f, 1.25f, 1.5f, 2f)

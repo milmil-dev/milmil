@@ -206,12 +206,14 @@ private fun WatchRoute(
     BackHandler(onBack = leave)
 
     val state by model.state.collectAsStateWithLifecycle()
+    val tracks by model.engine.tracks.collectAsStateWithLifecycle()
     val saveFailed by model.saveFailed.collectAsStateWithLifecycle()
     PlayerScreen(
         engine = model.engine,
         title = (content as? Loadable.Ready)?.value?.detail?.displayTitle.orEmpty(),
         subtitle = episode?.let { "第 ${it.sort} 集 · ${it.displayTitle}" }.orEmpty(),
         state = state,
+        tracks = tracks,
         saveFailed = saveFailed,
         hasNext = next != null,
         onNext = {
@@ -220,6 +222,8 @@ private fun WatchRoute(
             model.commit()
             next?.let { playingId = it.episodeId }
         },
+        onSelectTrack = model.engine::selectTrack,
+        onSpeed = model.engine::setSpeed,
         onBack = leave,
         modifier = modifier,
     )
