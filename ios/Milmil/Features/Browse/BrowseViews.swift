@@ -33,27 +33,6 @@ struct Loaded<Value, Content: View>: View {
     }
 }
 
-/// A poster with its title, the one card every browsing screen uses.
-struct PosterCard: View {
-    let title: String
-    let cover: URL?
-    var width: CGFloat = 108
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            AsyncImage(url: cover) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 14).fill(.white.opacity(0.06))
-            }
-            .frame(width: width, height: width * 1.42)
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-            Text(title).font(.footnote.weight(.medium)).lineLimit(2)
-        }
-        .frame(width: width, alignment: .leading)
-    }
-}
-
 @Observable
 @MainActor
 final class WeekModel {
@@ -67,10 +46,18 @@ final class WeekModel {
     }
 }
 
+/// 時間表.
+///
+/// Not a stack of poster shelves — that is the home page, and it says nothing
+/// a schedule is for. The web page groups a day by air time and puts a weekday
+/// strip on top; this is that, at phone width: you pick a day, and read down
+/// it in the order the episodes actually go out.
 struct ScheduleView: View {
     let client: APIClient
     let open: (Int) -> Void
+    @Environment(\.zoomNamespace) private var zoom
     @State private var model: WeekModel
+    @State private var selected: String?
 
     init(client: APIClient, open: @escaping (Int) -> Void) {
         self.client = client
@@ -80,30 +67,172 @@ struct ScheduleView: View {
 
     var body: some View {
         Loaded(state: model.state, empty: "呢個星期冇新番") { week in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 22) {
-                    ForEach(week, id: \.weekdayEN) { day in
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(day.weekday).font(.title3.weight(.semibold)).padding(.horizontal, 16)
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(alignment: .top, spacing: 12) {
-                                    ForEach(day.items) { anime in
-                                        Button { open(anime.bangumiID) } label: {
-                                            PosterCard(title: anime.title, cover: anime.coverImage)
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                                .padding(.horizontal, 16)
-                            }
-                        }
-                    }
+            let wanted = selected ?? key(todayEN)
+            let day = week.first { key($0.weekdayEN) == wanted } ?? week.first
+            VStack(spacing: 0) {
+                dayStrip(week)
+                if let day {
+                    timeline(day)
+                } else {
+                    ContentUnavailableView("今日冇新番", systemImage: "calendar")
                 }
-                .padding(.bottom, 96)
             }
         }
         .background(Theme.background)
         .task { await model.load() }
+    }
+
+    private var todayEN: String {
+        Date.now.formatted(.dateTime.weekday(.abbreviated).locale(.init(identifier: "en_US_POSIX")))
+    }
+
+    /// The server spells a weekday "Fri" in one place and "Friday" in another,
+    /// and comparing the two spellings directly selected the wrong day — the
+    /// dot landed on today while the highlight sat three days away.
+    private func key(_ weekdayEN: String) -> String {
+        String(weekdayEN.prefix(3)).lowercased()
+    }
+
+    /// Seven pills: the weekday, the date, and a dot under today. Horizontally
+    /// scrollable because seven of them do not fit a phone at a comfortable
+    /// touch size, and a cramped week is worse than a scrolled one.
+    private func dayStrip(_ week: [CalendarDay]) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(week) { day in
+                    let isToday = key(day.weekdayEN) == key(todayEN)
+                    let isSelected = key(day.weekdayEN) == (selected ?? key(todayEN))
+                    Button { selected = key(day.weekdayEN) } label: {
+                        VStack(spacing: 3) {
+                            Text(day.weekday.replacingOccurrences(of: "星期", with: ""))
+                                .font(.subheadline.weight(.semibold))
+                            Text(date(for: key(day.weekdayEN)))
+                                .font(.caption2)
+                                .monospacedDigit()
+                                .foregroundStyle(isSelected ? .primary : .secondary)
+                            Circle()
+                                .fill(isToday ? Theme.accent : .clear)
+                                .frame(width: 4, height: 4)
+                        }
+                        .frame(width: 48, height: 58)
+                        .contentShape(.rect)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(isSelected ? Theme.accent : Color.primary)
+                    .background {
+                        if isSelected {
+                            RoundedRectangle(cornerRadius: 14).fill(Theme.accent.opacity(0.16))
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+        }
+    }
+
+    /// The date that weekday falls on this week, so "星期三" has something
+    /// concrete under it.
+    private func date(for weekdayKey: String) -> String {
+        let order = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        guard let target = order.firstIndex(of: weekdayKey),
+              let todayIndex = order.firstIndex(of: key(todayEN)),
+              let date = Calendar.current.date(byAdding: .day, value: target - todayIndex, to: .now)
+        else { return "" }
+        return date.formatted(.dateTime.month(.defaultDigits).day())
+    }
+
+    private func timeline(_ day: CalendarDay) -> some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                if day.items.isEmpty {
+                    ContentUnavailableView("呢日冇新番", systemImage: "calendar")
+                        .padding(.top, 60)
+                }
+                ForEach(groupByTime(day.items), id: \.time) { group in
+                    HStack(spacing: 10) {
+                        // A title the server has no time for sorts first but
+                        // must not claim to air at midnight.
+                        Text(group.time == "00:00" ? "時間未定" : group.time)
+                            .font(.footnote.weight(.semibold))
+                            .monospacedDigit()
+                            .foregroundStyle(Theme.accent)
+                        Rectangle()
+                            .fill(.white.opacity(0.08))
+                            .frame(height: 1)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 18)
+                    .padding(.bottom, 8)
+
+                    ForEach(group.animes) { anime in
+                        Button { open(anime.bangumiID) } label: {
+                            ScheduleRow(anime: anime)
+                        }
+                        .buttonStyle(PressableCard())
+                        .zoomSource(anime.bangumiID, in: zoom)
+                        .padding(.horizontal, Theme.Space.margin)
+                        .padding(.bottom, 8)
+                    }
+                }
+            }
+            .padding(.bottom, 96)
+        }
+    }
+
+    /// Sorted by air time and grouped, the way the web timeline builds it.
+    /// A title with no time sorts to `00:00` rather than disappearing.
+    private func groupByTime(_ items: [AnimeSummary]) -> [(time: String, animes: [AnimeSummary])] {
+        var groups: [(time: String, animes: [AnimeSummary])] = []
+        for anime in items.sorted(by: { ($0.airTime ?? "00:00") < ($1.airTime ?? "00:00") }) {
+            let time = anime.airTime ?? "00:00"
+            if groups.last?.time == time {
+                groups[groups.count - 1].animes.append(anime)
+            } else {
+                groups.append((time, [anime]))
+            }
+        }
+        return groups
+    }
+}
+
+/// One row of the timeline: the cover, the title, and which episode is due.
+private struct ScheduleRow: View {
+    let anime: AnimeSummary
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Poster(title: anime.title, url: anime.coverImage, width: 54)
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text(anime.title)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Theme.ink(0.92))
+                    .lineLimit(2)
+                HStack(spacing: 6) {
+                    if let episode = anime.nextEpisode, episode > 0 {
+                        Text("第 \(episode) 集")
+                            .font(.system(size: 11, weight: .semibold))
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 2)
+                            .background(Theme.accent.opacity(0.18), in: Capsule())
+                            .foregroundStyle(Theme.accent)
+                    }
+                    if anime.score > 0 {
+                        Text("★ \(anime.score.formatted(.number.precision(.fractionLength(0...1))))")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Theme.ink(0.45))
+                    }
+                }
+            }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.ink(0.25))
+        }
+        .padding(10)
+        .cardBackground()
+        .contentShape(.rect)
     }
 }
 
@@ -139,9 +268,14 @@ struct DiscoverView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(items) { anime in
                         Button { open(anime.bangumiID) } label: {
-                            PosterCard(title: anime.title, cover: anime.coverImage, width: 104)
+                            PosterCard(
+                                title: anime.title,
+                                url: anime.coverImage,
+                                width: 104,
+                                score: anime.score
+                            )
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(PressableCard())
                     }
                 }
                 .padding(.horizontal, 16)
@@ -183,6 +317,7 @@ final class SearchModel {
 struct SearchView: View {
     let client: APIClient
     let open: (Int) -> Void
+    @Environment(\.zoomNamespace) private var zoom
     @State private var model: SearchModel
 
     init(client: APIClient, open: @escaping (Int) -> Void) {
@@ -195,14 +330,19 @@ struct SearchView: View {
         Group {
             if let results = model.results {
                 Loaded(state: results, empty: "搵唔到") { items in
-                    List(items) { anime in
-                        Button { open(anime.bangumiID) } label: {
-                            SearchRow(anime: anime)
+                    ScrollView {
+                        LazyVStack(spacing: 8) {
+                            ForEach(items) { anime in
+                                Button { open(anime.bangumiID) } label: {
+                                    SearchRow(anime: anime)
+                                }
+                                .buttonStyle(PressableCard())
+                                .zoomSource(anime.bangumiID, in: zoom)
+                            }
                         }
-                        .tint(.primary)
+                        .padding(.horizontal, Theme.Space.margin)
+                        .padding(.bottom, 110)
                     }
-                    .listStyle(.plain)
-                    .safeAreaPadding(.bottom, 96)
                 }
             } else {
                 ContentUnavailableView("搜尋動畫", systemImage: "magnifyingglass", description: Text("輸入片名開始搜尋"))
@@ -218,19 +358,25 @@ private struct SearchRow: View {
     let anime: AnimeSummary
 
     var body: some View {
-        HStack(spacing: 14) {
-            AsyncImage(url: anime.coverImage) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8).fill(.white.opacity(0.06))
+        HStack(spacing: 12) {
+            Poster(title: anime.title, url: anime.coverImage, width: 54)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(anime.title)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Theme.ink(0.92))
+                    .lineLimit(2)
+                Text(summary)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.ink(0.45))
             }
-            .frame(width: 52, height: 74)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            VStack(alignment: .leading, spacing: 3) {
-                Text(anime.title).font(.body.weight(.medium)).lineLimit(2)
-                Text(summary).font(.caption).foregroundStyle(.secondary)
-            }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.ink(0.25))
         }
+        .padding(10)
+        .cardBackground()
+        .contentShape(.rect)
     }
 
     private var summary: String {
@@ -260,6 +406,7 @@ final class CollectionModel {
 struct CollectionView: View {
     let client: APIClient
     let open: (Int) -> Void
+    @Environment(\.zoomNamespace) private var zoom
     @State private var model: CollectionModel
 
     init(client: APIClient, open: @escaping (Int) -> Void) {
@@ -286,15 +433,20 @@ struct CollectionView: View {
                 .padding(.vertical, 8)
             }
             Loaded(state: model.state, empty: "收藏係空嘅") { rows in
-                List(rows) { row in
-                    Button { row.bangumiID.map(open) } label: {
-                        CollectionRow(item: row)
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        ForEach(rows) { row in
+                            Button { row.bangumiID.map(open) } label: {
+                                CollectionRow(item: row)
+                            }
+                            .buttonStyle(PressableCard())
+                            .zoomSource(row.bangumiID ?? 0, in: zoom)
+                            .disabled(row.bangumiID == nil)
+                        }
                     }
-                    .tint(.primary)
-                    .disabled(row.bangumiID == nil)
+                    .padding(.horizontal, Theme.Space.margin)
+                    .padding(.bottom, 110)
                 }
-                .listStyle(.plain)
-                .safeAreaPadding(.bottom, 96)
             }
         }
         .background(Theme.background)
@@ -306,24 +458,35 @@ private struct CollectionRow: View {
     let item: CollectionItem
 
     var body: some View {
-        HStack(spacing: 14) {
-            AsyncImage(url: item.coverImage) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8).fill(.white.opacity(0.06))
-            }
-            .frame(width: 52, height: 74)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+        HStack(spacing: 12) {
+            Poster(
+                title: item.titleZh ?? item.title,
+                url: item.coverImage,
+                width: 54,
+                progress: fraction
+            )
             VStack(alignment: .leading, spacing: 4) {
-                Text(item.titleZh ?? item.title).font(.body.weight(.medium)).lineLimit(2)
-                Text("\(item.localFileCount) / \(item.totalEpisodes ?? 0) 集")
-                    .font(.caption).foregroundStyle(.secondary)
-                if let total = item.totalEpisodes, total > 0 {
-                    ProgressView(value: Double(item.localFileCount), total: Double(total))
-                        .tint(Theme.accent)
-                }
+                Text(item.titleZh ?? item.title)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Theme.ink(0.92))
+                    .lineLimit(2)
+                Text("\(item.localFileCount) / \(item.totalEpisodes ?? 0) 集喺伺服器")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.ink(0.45))
             }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.ink(0.25))
         }
+        .padding(10)
+        .cardBackground()
+        .contentShape(.rect)
+    }
+
+    private var fraction: Double {
+        guard let total = item.totalEpisodes, total > 0 else { return 0 }
+        return min(1, Double(item.localFileCount) / Double(total))
     }
 }
 

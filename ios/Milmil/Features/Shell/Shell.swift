@@ -53,6 +53,7 @@ struct Shell: View {
     @State var path: [Destination] = []
     @State private var unread = 0
     @State private var danmaku = DanmakuSettings()
+    @Namespace private var zoom
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -72,7 +73,9 @@ struct Shell: View {
                 }
                 .navigationDestination(for: Destination.self) { destination in
                     view(for: destination)
+                        .zoomDestination(destination, in: zoom)
                 }
+                .environment(\.zoomNamespace, zoom)
         }
         // Only over the tabs. A pushed page is not a place you switch tabs
         // from, and the bar was sitting on top of the detail page's own action.
@@ -140,6 +143,10 @@ struct Shell: View {
                     }
                     .frame(maxWidth: .infinity, minHeight: 44)
                     .foregroundStyle(tab == item ? Theme.accent : Color.secondary)
+                    // Without this the target is the glyph and the caption —
+                    // about 20pt wide — and everything else in the slot falls
+                    // through to whatever is scrolling underneath.
+                    .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
             }
@@ -228,3 +235,16 @@ extension Shell {
     func applyDebugRoute() {}
 }
 #endif
+
+private extension View {
+    /// Only a series page zooms; the management screens are pushes, and a zoom
+    /// from nothing in particular is worse than a plain slide.
+    @ViewBuilder
+    func zoomDestination(_ destination: Destination, in namespace: Namespace.ID) -> some View {
+        if case let .detail(bangumiID) = destination {
+            navigationTransition(.zoom(sourceID: bangumiID, in: namespace))
+        } else {
+            self
+        }
+    }
+}

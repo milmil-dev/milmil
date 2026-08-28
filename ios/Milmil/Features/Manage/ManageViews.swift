@@ -61,14 +61,16 @@ struct HistoryView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     VStack(alignment: .leading, spacing: 3) {
                         Text(entry.animeTitleZh ?? entry.animeTitle).font(.body.weight(.medium)).lineLimit(1)
-                        Text("第 \(entry.episodeNumber) 集 · \(label(for: entry))")
+                        Text("第 \(entry.episodeLabel) 集 · \(label(for: entry))")
                             .font(.caption).foregroundStyle(.secondary)
                         if let total = entry.durationSeconds, total > 0 {
                             ProgressView(value: Double(entry.positionSeconds), total: Double(total))
                                 .tint(Theme.accent)
                         }
                     }
+                    Spacer(minLength: 0)
                 }
+                .contentShape(.rect)
             }
             .tint(.primary)
             .swipeActions {
