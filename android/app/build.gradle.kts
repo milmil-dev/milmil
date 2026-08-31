@@ -19,7 +19,11 @@ android {
         versionName = "0.1.20"
     }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        // DanmakuSample keys off BuildConfig.DEBUG so Release never looks for it.
+        buildConfig = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -51,6 +55,10 @@ dependencies {
     implementation(libs.mlkit.barcode)
     implementation(libs.accompanist.permissions)
     implementation(libs.security.crypto)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.hls)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.session)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.kotlin.test.junit5)
     testRuntimeOnly(libs.junit.platform.launcher)

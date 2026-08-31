@@ -40,8 +40,15 @@ public struct ProgressEntry: Decodable, Sendable, Hashable, Identifiable {
     public let animeTitleZh: String?
     public let animeCoverImage: URL?
     public let animeBangumiID: Int?
+    /// A `Double` because a special can be episode 5.5. Interpolate
+    /// [episodeLabel] rather than this, or a row reads "第 41.000000 集".
     public let episodeNumber: Double
 
+
+    /// "41", or "5.5" for a special — never "41.000000".
+    public var episodeLabel: String {
+        episodeNumber.formatted(.number.precision(.fractionLength(0...1)))
+    }
     public var displayTitle: String { animeTitleZh.nonEmpty ?? animeTitle }
 
     /// 0…1, or nil when the duration is unknown.

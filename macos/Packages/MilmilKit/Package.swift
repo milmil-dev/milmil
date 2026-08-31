@@ -17,6 +17,7 @@ let package = Package(
         .library(name: "MilmilAPI", targets: ["MilmilAPI"]),
         .library(name: "MilmilRealtime", targets: ["MilmilRealtime"]),
         .library(name: "MilmilDanmaku", targets: ["MilmilDanmaku"]),
+        .library(name: "MilmilDanmakuAPI", targets: ["MilmilDanmakuAPI"]),
     ],
     targets: [
         .target(
@@ -38,6 +39,15 @@ let package = Package(
         // no MilmilAPI dependency so it can be tested and reused anywhere.
         .target(
             name: "MilmilDanmaku",
+            swiftSettings: [
+                .swiftLanguageMode(.v6),
+                .enableUpcomingFeature("ExistentialAny"),
+            ]
+        ),
+        // Where danmaku meets the API: the endpoints both players call.
+        .target(
+            name: "MilmilDanmakuAPI",
+            dependencies: ["MilmilAPI", "MilmilDanmaku"],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
                 .enableUpcomingFeature("ExistentialAny"),

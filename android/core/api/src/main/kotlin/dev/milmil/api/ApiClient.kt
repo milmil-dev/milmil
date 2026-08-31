@@ -69,6 +69,14 @@ public class ApiClient(
         }
     }
 
+    /**
+     * The bearer token, for the one case a header cannot carry it: ExoPlayer
+     * opens the stream URL itself, so those URLs take `?token=` — the same
+     * exception the web player and MilmilKit make for thumbnails and sidecar
+     * subtitles.
+     */
+    public fun token(): String? = tokenProvider()
+
     private fun applyAuth(builder: HttpRequestBuilder) {
         tokenProvider()?.takeIf { it.isNotBlank() }?.let { builder.header("Authorization", "Bearer $it") }
         if (locale.isNotBlank()) builder.header("X-Milmil-Locale", locale)

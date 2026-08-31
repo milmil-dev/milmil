@@ -49,6 +49,26 @@ module deliberately applies only AGP plus `kotlin.compose`.
 ./gradlew assembleDebug
 ```
 
+## Seeing danmaku without DandanPlay credentials
+
+A dev server with no credentials answers `file not matched` for every file, so
+the renderer cannot be verified against it at all. Debug builds read a sample
+instead when one is present — the Android twin of the macOS client's
+`MILMIL_SNAPSHOT_DANMAKU`:
+
+```bash
+adb push comments.json \
+  /sdcard/Android/data/dev.milmil.android/files/danmaku-sample.json
+```
+
+The file is a `GET /danmaku/{fileId}` response verbatim, so a capture from a
+credentialed server drops in unchanged. Release builds never look for it.
+
+Debug builds also log one line a second under the `milmil.danmaku` tag —
+frames drawn, media time, comments on stage. **A screenshot cannot show that
+the overlay has quietly stopped advancing**, which is exactly what happened
+twice while it was being written; the log can.
+
 ## Things That Bite
 
 - **The server sends explicit `null`s** where a Kotlin default would do, so
@@ -71,5 +91,9 @@ module deliberately applies only AGP plus `kotlin.compose`.
 - **A glob inside KDoc opens a nested comment.** Kotlin block comments nest, so
   `/** … api/*.ts … */` swallows the rest of the file. Write such paths in
   backticks or use `//`.
+- **Never write snapshot state from inside a draw scope.** A `mutableStateOf`
+  assigned during `Canvas { }` is not applied, so the danmaku overlay rendered
+  on a fresh launch and silently froze afterwards. Per-frame bookkeeping lives
+  in a plain `remember`ed object.
 - **`ANDROID_SERIAL` may point at an absent device.** Always
   `adb -s emulator-5554 …` rather than relying on the default target.

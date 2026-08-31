@@ -47,6 +47,24 @@ public extension APIClient {
         baseURL.appending(path: "api/v1/stream/\(fileID)/remux")
     }
 
+    /// The same rung, with the credential in the query.
+    ///
+    /// mpv takes a Bearer header from its options, but AVPlayer opens the URL
+    /// itself and sends none of ours — an iOS run walked the whole ladder and
+    /// failed every rung with `CoreMediaErrorDomain -12667` until the token
+    /// moved into the query, which is the same exception the web player makes.
+    nonisolated func authorizedStreamURL(fileID: String, stage: StreamStage, token: String?) -> URL {
+        let base = switch stage {
+        case .remux: remuxStreamURL(fileID: fileID)
+        default: directStreamURL(fileID: fileID)
+        }
+        guard let token,
+              var components = URLComponents(url: base, resolvingAgainstBaseURL: false)
+        else { return base }
+        components.queryItems = [URLQueryItem(name: "token", value: token)]
+        return components.url ?? base
+    }
+
     nonisolated func hlsURL(token: String) -> URL {
         baseURL.appending(path: "api/v1/stream/hls/\(token)/master.m3u8")
     }

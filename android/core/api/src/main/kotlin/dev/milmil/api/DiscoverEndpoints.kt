@@ -25,6 +25,10 @@ public data class DiscoverAnime(
     @SerialName("episode_count") val episodeCount: Int = 0,
     @Serializable(with = LenientStringListSerializer::class) val genres: List<String> = emptyList(),
     val score: Double = 0.0,
+    /** Which episode is due — the calendar's `EP n` badge. */
+    @SerialName("next_episode") val nextEpisode: Int = 0,
+    /** `23:30`. The schedule groups a day by this, as the web timeline does. */
+    @SerialName("air_time") val airTime: String = "",
 ) {
     /** What a shelf card shows: the localized title, falling back outward. */
     public val displayTitle: String

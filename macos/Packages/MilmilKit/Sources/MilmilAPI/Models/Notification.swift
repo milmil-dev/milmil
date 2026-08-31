@@ -64,6 +64,20 @@ public struct MilmilNotification: Decodable, Sendable, Hashable, Identifiable {
         return nil
     }
 
+    /// A download notification carries the download's name, which for a fresh
+    /// torrent is the whole magnet URI — six lines of percent-encoding in a
+    /// notification list. The `dn` parameter inside it is the real name.
+    public var displayMessage: String {
+        guard message.hasPrefix("magnet:") else { return message }
+        guard let components = URLComponents(string: message),
+              let name = components.queryItems?.first(where: { $0.name == "dn" })?.value,
+              !name.isEmpty
+        else { return "種子" }
+        // `dn` is form encoded, and `URLComponents` leaves `+` alone — the same
+        // exception that once put a literal plus in a paired server's name.
+        return name.replacingOccurrences(of: "+", with: " ")
+    }
+
     public var episodeID: String? { payload["episode_id"]?.stringValue.nonEmpty }
     public var mediaFileID: String? { payload["media_file_id"]?.stringValue.nonEmpty }
     public var animeName: String? { payload["anime_name"]?.stringValue.nonEmpty }

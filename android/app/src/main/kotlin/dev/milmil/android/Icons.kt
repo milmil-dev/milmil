@@ -91,3 +91,248 @@ public val BookmarkOutlined: ImageVector = icon("BookmarkOutlined", false) {
         close()
     }
 }
+
+/**
+ * Pause. `material-icons-core` ships play but not pause, and a rotated plus is
+ * not a pause glyph — two 4×14 bars at the same optical weight as the play
+ * triangle next to it.
+ */
+public val PauseFilled: ImageVector = icon("PauseFilled", true) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(8f, 5f)
+        horizontalLineToRelative(3f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-3f)
+        close()
+        moveTo(13f, 5f)
+        horizontalLineToRelative(3f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-3f)
+        close()
+    }
+}
+
+/** Skip to the next episode: a play triangle against a bar. */
+public val SkipNextFilled: ImageVector = icon("SkipNextFilled", true) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6f, 5f)
+        lineTo(15f, 12f)
+        lineTo(6f, 19f)
+        close()
+        moveTo(16f, 5f)
+        horizontalLineToRelative(2.5f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-2.5f)
+        close()
+    }
+}
+
+/**
+ * Rewind: an open circle whose arrow head sits top-left, pointing the way the
+ * motion goes. The first cut had the two arcs curving the same way, so the
+ * rewind button read as fast-forward — the seconds label goes inside the ring
+ * at the call site, the way Material draws these.
+ */
+public val RewindArc: ImageVector = icon("RewindArc", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineCap = StrokeCap.Round,
+    ) {
+        // The long way round the circle, leaving a gap at the top for the head.
+        moveTo(14.7f, 4.5f)
+        arcToRelative(8f, 8f, 0f, isMoreThanHalf = true, isPositiveArc = true, -5.4f, 0f)
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6.6f, 4.5f)
+        lineTo(11.2f, 1.9f)
+        lineTo(11.2f, 7.1f)
+        close()
+    }
+}
+
+/** Fast forward: the same ring mirrored, head at the top-right. */
+public val ForwardArc: ImageVector = icon("ForwardArc", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineCap = StrokeCap.Round,
+    ) {
+        moveTo(9.3f, 4.5f)
+        arcToRelative(8f, 8f, 0f, isMoreThanHalf = true, isPositiveArc = false, 5.4f, 0f)
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(17.4f, 4.5f)
+        lineTo(12.8f, 1.9f)
+        lineTo(12.8f, 7.1f)
+        close()
+    }
+}
+
+/** Subtitles: a frame with two text rules sitting low in it. */
+public val SubtitlesOutlined: ImageVector = icon("SubtitlesOutlined", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(3f, 5f)
+        horizontalLineToRelative(18f)
+        verticalLineToRelative(14f)
+        horizontalLineToRelative(-18f)
+        close()
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6f, 12.6f)
+        horizontalLineToRelative(6f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-6f)
+        close()
+        moveTo(13.5f, 12.6f)
+        horizontalLineToRelative(4.5f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-4.5f)
+        close()
+        moveTo(6f, 15.8f)
+        horizontalLineToRelative(3f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-3f)
+        close()
+        moveTo(10.5f, 15.8f)
+        horizontalLineToRelative(7.5f)
+        verticalLineToRelative(1.8f)
+        horizontalLineToRelative(-7.5f)
+        close()
+    }
+}
+
+/** Audio track: a speaker with one wave, distinct from the subtitle frame. */
+public val AudioTrackOutlined: ImageVector = icon("AudioTrackOutlined", false) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(4f, 9f)
+        horizontalLineToRelative(3f)
+        lineTo(11.5f, 4.5f)
+        verticalLineToRelative(15f)
+        lineTo(7f, 15f)
+        horizontalLineToRelative(-3f)
+        close()
+    }
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineCap = StrokeCap.Round,
+    ) {
+        moveTo(15f, 9f)
+        arcToRelative(4.2f, 4.2f, 0f, isMoreThanHalf = false, isPositiveArc = true, 0f, 6f)
+        moveTo(17.8f, 6.2f)
+        arcToRelative(8f, 8f, 0f, isMoreThanHalf = false, isPositiveArc = true, 0f, 11.6f)
+    }
+}
+
+/** Danmaku: a comment bubble with the streaming lines inside it. */
+public val DanmakuOutlined: ImageVector = icon("DanmakuOutlined", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 1.7f,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(3f, 5f)
+        horizontalLineToRelative(18f)
+        verticalLineToRelative(11f)
+        horizontalLineToRelative(-11f)
+        lineTo(6f, 20f)
+        verticalLineToRelative(-4f)
+        horizontalLineToRelative(-3f)
+        close()
+    }
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(6f, 8f)
+        horizontalLineToRelative(9f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-9f)
+        close()
+        moveTo(16.5f, 8f)
+        horizontalLineToRelative(2f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-2f)
+        close()
+        moveTo(6f, 11.4f)
+        horizontalLineToRelative(4f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-4f)
+        close()
+        moveTo(11.5f, 11.4f)
+        horizontalLineToRelative(7f)
+        verticalLineToRelative(1.6f)
+        horizontalLineToRelative(-7f)
+        close()
+    }
+}
+
+/**
+ * The app-bar overflow: three dots stacked, which is the Android convention and
+ * also the only arrangement the unread badge does not sit on top of — a
+ * horizontal row put the badge straight over the right-hand dot.
+ */
+public val MoreVertical: ImageVector = icon("MoreVertical", true) {
+    path(fill = SolidColor(Color.Black)) {
+        moveTo(12f, 6f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -4f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, 4f)
+        close()
+        moveTo(12f, 14f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -4f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, 4f)
+        close()
+        moveTo(12f, 22f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -4f)
+        arcToRelative(2f, 2f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, 4f)
+        close()
+    }
+}
+
+/** Enter full screen: four corner brackets pointing outward. */
+public val EnterFullscreen: ImageVector = icon("EnterFullscreen", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 2f,
+        strokeLineCap = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(4f, 9f)
+        verticalLineTo(4f)
+        horizontalLineTo(9f)
+        moveTo(15f, 4f)
+        horizontalLineTo(20f)
+        verticalLineTo(9f)
+        moveTo(20f, 15f)
+        verticalLineTo(20f)
+        horizontalLineTo(15f)
+        moveTo(9f, 20f)
+        horizontalLineTo(4f)
+        verticalLineTo(15f)
+    }
+}
+
+/** Leave full screen: the same brackets pointing inward. */
+public val ExitFullscreen: ImageVector = icon("ExitFullscreen", false) {
+    path(
+        stroke = SolidColor(Color.Black),
+        strokeLineWidth = 2f,
+        strokeLineCap = StrokeCap.Round,
+        strokeLineJoin = StrokeJoin.Round,
+    ) {
+        moveTo(9f, 4f)
+        verticalLineTo(9f)
+        horizontalLineTo(4f)
+        moveTo(20f, 9f)
+        horizontalLineTo(15f)
+        verticalLineTo(4f)
+        moveTo(15f, 20f)
+        verticalLineTo(15f)
+        horizontalLineTo(20f)
+        moveTo(4f, 15f)
+        horizontalLineTo(9f)
+        verticalLineTo(20f)
+    }
+}

@@ -175,6 +175,9 @@ public struct BangumiComment: Decodable, Sendable, Hashable, Identifiable {
     /// Unix seconds.
     public let updatedAt: Int
 
+    /// A commenter with no nickname still needs a name on the row.
+    public var displayName: String { nickname.isEmpty ? username : nickname }
+
     enum CodingKeys: String, CodingKey {
         case id, username, nickname, avatar, rate, comment
         case updatedAt = "updated_at"

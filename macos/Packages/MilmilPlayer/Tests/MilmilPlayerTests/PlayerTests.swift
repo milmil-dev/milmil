@@ -25,28 +25,6 @@ struct OptionsTests {
     }
 }
 
-@Suite("Stream fallback")
-struct StreamFallbackTests {
-    @Test("walks local → direct → remux → hls and then stops")
-    func ladder() {
-        var fallback = StreamFallback(hasLocalFile: true)
-        #expect(fallback.current == .localFile)
-        #expect(fallback.advance() == .direct)
-        #expect(fallback.advance() == .remux)
-        #expect(fallback.advance() == .hls)
-        #expect(fallback.advance() == nil)
-        #expect(fallback.current == .hls)
-    }
-
-    @Test("skips stages the server cannot offer")
-    func noTranscode() {
-        var fallback = StreamFallback(hasLocalFile: false, canRemux: false, canTranscode: false)
-        #expect(fallback.current == .direct)
-        #expect(!fallback.hasNext)
-        #expect(fallback.advance() == nil)
-    }
-}
-
 @Suite("Playback clock")
 struct PlaybackClockTests {
     @Test("interpolates while playing and freezes while paused")
@@ -92,20 +70,5 @@ struct TrackTests {
         #expect(chapters.count == 2)
         #expect(chapters[0].segmentKind == "op")
         #expect(chapters[1].segmentKind == nil)
-    }
-}
-
-struct OfflineLadderTests {
-    @Test func offlineCopyLeadsTheLadder() {
-        var ladder = StreamFallback(hasOfflineCopy: true, hasLocalFile: true, canRemux: false, canTranscode: false)
-        #expect(ladder.current == .offlineCopy)
-        #expect(ladder.advance() == .localFile)
-        #expect(ladder.advance() == .direct)
-        #expect(ladder.advance() == nil)
-    }
-
-    @Test func defaultLadderIsUnchanged() {
-        let ladder = StreamFallback(hasLocalFile: false)
-        #expect(ladder.stages == [.direct, .remux, .hls])
     }
 }

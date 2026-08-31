@@ -47,6 +47,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>掃描 Web 版顯示嘅配對 QR 碼，用嚟連線到你部 milmil 伺服器。</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

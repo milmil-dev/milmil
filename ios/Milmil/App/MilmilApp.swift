@@ -38,7 +38,7 @@ struct RootView: View {
     var body: some View {
         switch session.phase {
         case .ready:
-            if let client = session.client { HomeView(client: client) }
+            if let client = session.client { Shell(client: client) }
         default:
             PairView()
         }

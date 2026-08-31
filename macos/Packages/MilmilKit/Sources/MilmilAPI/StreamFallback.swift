@@ -1,6 +1,11 @@
 import Foundation
 
 /// Where a file is being played from. Ordered from best to worst.
+///
+/// Lives in `MilmilAPI`, next to the URL builders for each rung, because both
+/// Apple clients need it and `MilmilPlayer` is macOS-only: the iOS player runs
+/// on AVFoundation and the macOS one on libmpv, and the whole point of the
+/// ladder is that they fall in the same order.
 public enum StreamStage: String, Sendable, Equatable, CaseIterable {
     /// A copy the client downloaded to its own disk (離線到本機).
     case offlineCopy

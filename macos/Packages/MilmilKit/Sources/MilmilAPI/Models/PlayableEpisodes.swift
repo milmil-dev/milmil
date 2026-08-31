@@ -44,10 +44,10 @@ public struct PlayableEpisodesResponse: Decodable, Sendable, Hashable {
     /// unwatched with a file, then the first with a file (web `resolveEpisode`).
     public var resumeCandidate: PlayableEpisode? {
         let playable = episodes.filter { $0.mediaFile != nil }.sorted { $0.sort < $1.sort }
-        if let inProgress = playable.first(where: { ($0.progress?.positionSeconds ?? 0) > 0 && !($0.progress?.completed ?? false) }) {
+        if let inProgress = playable.first(where: { $0.progress?.isResumable ?? false }) {
             return inProgress
         }
-        if let unwatched = playable.first(where: { !($0.progress?.completed ?? false) }) {
+        if let unwatched = playable.first(where: { !($0.progress?.isWatched ?? false) }) {
             return unwatched
         }
         return playable.first
@@ -177,6 +177,15 @@ public struct PlayableProgress: Decodable, Sendable, Hashable {
     }
 
     public var remainingSeconds: Int { max(0, durationSeconds - positionSeconds) }
+
+    /// The players mark an episode complete at 92%, so anything past that is
+    /// watched whatever the flag says — a session that ended without a final
+    /// write leaves the flag false at 99%.
+    public var isWatched: Bool { completed || fraction >= 0.92 }
+
+    /// Worth offering as "continue". Resuming seven seconds from the end just
+    /// plays the credits and stops, which is what an iOS run did before this.
+    public var isResumable: Bool { positionSeconds > 10 && !isWatched }
 }
 
 struct ScoreUpdate: Encodable, Sendable {
