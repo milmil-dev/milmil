@@ -81,6 +81,11 @@ func attachMiddleware(e *echo.Echo) {
 			echo.HeaderContentType,
 			echo.HeaderAccept,
 			echo.HeaderAuthorization,
+			// First-party clients send the UI locale on every request so
+			// titles/synopses match the page language, not the server default.
+			// Omitting it from this list makes the browser fail the preflight
+			// as TypeError "Failed to fetch" (Vite on :5173 → API on :8080).
+			localeHeader,
 		},
 		AllowMethods: []string{
 			http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch,

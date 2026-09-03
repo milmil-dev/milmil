@@ -133,6 +133,37 @@ func TestCheckWSOrigin(t *testing.T) {
 	}
 }
 
+// --- CORS preflight --------------------------------------------------------
+
+// The SPA on :5173 is a different origin from the API on :8080, so every
+// request that carries a non-simple header (Content-Type: application/json
+// plus X-Milmil-Locale) is preceded by an OPTIONS preflight. The browser
+// refuses the real request unless Access-Control-Allow-Headers names every
+// requested header; a miss surfaces as TypeError "Failed to fetch".
+func TestCORSPreflightAllowsLocaleHeader(t *testing.T) {
+	e := newTestApp(t)
+	req := httptest.NewRequest(http.MethodOptions, "/api/v1/auth/login", nil)
+	req.Header.Set("Origin", "http://localhost:5173")
+	req.Header.Set("Access-Control-Request-Method", http.MethodPost)
+	req.Header.Set("Access-Control-Request-Headers", "content-type,x-milmil-locale")
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNoContent && rec.Code != http.StatusOK {
+		t.Fatalf("want 204/200 from preflight, got %d: %s", rec.Code, rec.Body.String())
+	}
+	if got := rec.Header().Get("Access-Control-Allow-Origin"); got != "http://localhost:5173" {
+		t.Errorf("Access-Control-Allow-Origin = %q, want the Vite origin", got)
+	}
+	allowed := strings.ToLower(rec.Header().Get("Access-Control-Allow-Headers"))
+	if !strings.Contains(allowed, "x-milmil-locale") {
+		t.Errorf("Access-Control-Allow-Headers = %q, want it to include X-Milmil-Locale", rec.Header().Get("Access-Control-Allow-Headers"))
+	}
+	if !strings.Contains(allowed, "content-type") {
+		t.Errorf("Access-Control-Allow-Headers = %q, want it to include Content-Type", rec.Header().Get("Access-Control-Allow-Headers"))
+	}
+}
+
 // --- Access-log redaction --------------------------------------------------
 
 func TestRedactURI(t *testing.T) {
