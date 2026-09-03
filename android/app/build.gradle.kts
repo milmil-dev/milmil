@@ -10,7 +10,7 @@ plugins {
 // release-please-config.json). Android also needs a monotonically increasing
 // integer for upgrades to install, so derive it rather than bump it by hand:
 // 0.1.20 → 1020, 1.2.3 → 1002003.
-val milmilVersion = "0.1.20" // x-release-please-version
+val milmilVersion = "0.1.21" // x-release-please-version
 val milmilVersionCode = milmilVersion.split(".").map(String::toInt).let { (major, minor, patch) ->
     major * 1_000_000 + minor * 1_000 + patch
 }
