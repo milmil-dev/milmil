@@ -49,6 +49,23 @@ module deliberately applies only AGP plus `kotlin.compose`.
 ./gradlew assembleDebug
 ```
 
+## Release
+
+`release-android.yml` builds a signed APK + AAB on every `v*` tag and attaches
+them to the GitHub release as `milmil-android-<version>.apk` / `.aab`
+(`workflow_dispatch` builds them as a run artifact only). The version comes
+from the `// x-release-please-version` line in `app/build.gradle.kts`, which
+release-please bumps with the rest of the monorepo; `versionCode` is derived
+from it, never edited by hand.
+
+Signing reads `MILMIL_ANDROID_KEYSTORE`, `..._KEYSTORE_PASSWORD`,
+`..._KEY_ALIAS` and `..._KEY_PASSWORD` from the environment. CI fills them
+from the `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+`ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` secrets, which
+`scripts/make-keystore.sh` creates along with the keystore. The key is
+permanent — a different one means users must uninstall to upgrade — so the
+`.jks` is gitignored and must be backed up outside the repo.
+
 ## Things That Bite
 
 - **The server sends explicit `null`s** where a Kotlin default would do, so

@@ -13,6 +13,10 @@
         {
           "type": "generic",
           "path": "macos/project.yml"
+        },
+        {
+          "type": "generic",
+          "path": "android/app/build.gradle.kts"
         }
       ]
     }
