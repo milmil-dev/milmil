@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.1.21](https://github.com/milmil-dev/milmil/compare/v0.1.20...v0.1.21) (2026-09-03)
+
+
+### Features
+
+* **android:** Add the navigation bar and the four remaining tabs ([d715730](https://github.com/milmil-dev/milmil/commit/d71573086814d0b0e77021de0e3431e6d0cf61e6))
+* **android:** Pair from a QR link, end to end ([84a59d5](https://github.com/milmil-dev/milmil/commit/84a59d574e464fd2dcd0f32d3c4a547fc158c100))
+* **android:** Scaffold the client and lock the cross-client contract ([86d3aa2](https://github.com/milmil-dev/milmil/commit/86d3aa228bd4122663d19f2399d731472d6207b2))
+* **android:** Scan a code and land on the shelves ([ae7ad28](https://github.com/milmil-dev/milmil/commit/ae7ad28cf3a724c3da9b44bba124f3a2e0bb8bdf))
+* **android:** Ship signed APK and AAB on release tags ([ae7b841](https://github.com/milmil-dev/milmil/commit/ae7b841d2e207e5ac407ddb46ffe119f703d3c62))
+* Fold Discover into Home across web, macOS, and Android ([cf429e8](https://github.com/milmil-dev/milmil/commit/cf429e8433dae51eb01ca65414092d0f6e77e64a))
+* Fold Discover into Home and cut polish for v0.1.21 ([57fe314](https://github.com/milmil-dev/milmil/commit/57fe314c994d9acba71564b94847ee3c6ba97d6f))
+* **ios:** Add the client, sharing MilmilKit with macOS ([31408b9](https://github.com/milmil-dev/milmil/commit/31408b92a4af15d871e6b5fb5834778729747bdb))
+* **macos:** Adopt a server and its token from one pairing link ([276a2a2](https://github.com/milmil-dev/milmil/commit/276a2a20bbda4d664daec0a3f9a0a7e68c137f96))
+* **macos:** Build MilmilKit for iOS as well as macOS ([fc1850a](https://github.com/milmil-dev/milmil/commit/fc1850a476e94933a295062704a49ad5beb1cee2))
+* **macos:** Raise the iOS floor to 26 for Liquid Glass ([429199a](https://github.com/milmil-dev/milmil/commit/429199ad05a58499ea1cd5059a0266b1d8e2e6f7))
+* **web:** Hand a device a pairing code instead of a typed URL ([2bf632f](https://github.com/milmil-dev/milmil/commit/2bf632f7c12ea454c615d4467338bbefca96c159))
+* **web:** Soften light-theme atmosphere and add schedule swipe ([ca7898c](https://github.com/milmil-dev/milmil/commit/ca7898c61179dcb81b8d373268c433abb2f2c045))
+
+
+### Bug Fixes
+
+* **android:** Reach a self-hosted server, and find today's shelf ([217dd2d](https://github.com/milmil-dev/milmil/commit/217dd2dbe3f367901ab94104469b6e30894992d3))
+* **android:** Track the Gradle wrapper jar ([f5e6cce](https://github.com/milmil-dev/milmil/commit/f5e6ccee6701ef1bbda44bc0472c5b3c1860ec75))
+* **api:** Allow X-Milmil-Locale on CORS preflight ([7c0ae1f](https://github.com/milmil-dev/milmil/commit/7c0ae1f0b669e9656246e32f38964dc54a58b5e0))
+* **macos:** Restore the SwiftyOpenCC pin MilmilPlayer resolves to ([3a0fbb9](https://github.com/milmil-dev/milmil/commit/3a0fbb95ef68469f48882f235f95399ea034a8a7))
+* Point the docs links at a site that exists ([db727c0](https://github.com/milmil-dev/milmil/commit/db727c0a545098c540c0d2ea44af27180aa7f410))
+* Satisfy bot report lint and pin the notification e2e bell ([9462cc3](https://github.com/milmil-dev/milmil/commit/9462cc3de6aca279d5928e2c61fa7f5a7e7c9448))
+* **web:** Keep spaces in a paired device's name ([ddb1748](https://github.com/milmil-dev/milmil/commit/ddb17488bd883a0876c2ba428eb8e24915c1fc16))
+* **web:** Revalidate the shell and service worker ([2fad358](https://github.com/milmil-dev/milmil/commit/2fad3586b0dfe4933076aa6a0191cc87d00f1490))
+
 ## [0.1.20](https://github.com/milmil-dev/milmil/compare/v0.1.19...v0.1.20) (2026-08-27)
 
 
