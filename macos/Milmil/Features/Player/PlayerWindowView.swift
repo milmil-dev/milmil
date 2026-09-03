@@ -494,7 +494,7 @@ struct CaptureCard: View {
             Button(action: controller.revealCapture) {
                 Group {
                     if let thumbnail = capture.thumbnail {
-                        Image(nsImage: thumbnail).resizable().aspectRatio(contentMode: .fill)
+                        Image(nsImage: thumbnail).resizable().scaledToFill()
                     } else {
                         Image(systemName: "photo").font(.system(size: 22)).foregroundStyle(.white.opacity(0.6))
                     }
