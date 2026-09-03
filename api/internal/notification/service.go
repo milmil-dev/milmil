@@ -9,7 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/metadata"
 	"github.com/milmil/api/internal/rss"
 	"github.com/milmil/api/internal/store"
@@ -49,7 +50,7 @@ func (s *Service) Send(ctx context.Context, notifType, title, message, severity 
 	}
 
 	notif, err := s.queries.CreateNotification(ctx, store.CreateNotificationParams{
-		ID:       uuid.NewString(),
+		ID:       uuid.New().String(),
 		Type:     notifType,
 		Title:    title,
 		Message:  message,
@@ -141,7 +142,7 @@ func (s *Service) dispatchExternal(notifType, title, message, severity string, m
 	}
 
 	for _, name := range providerNames {
-		deliveryID := uuid.NewString()
+		deliveryID := uuid.New().String()
 		_, err := s.queries.CreateNotificationDelivery(ctx, store.CreateNotificationDeliveryParams{
 			ID:             deliveryID,
 			NotificationID: notifID,

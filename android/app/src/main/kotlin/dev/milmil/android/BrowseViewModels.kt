@@ -8,7 +8,6 @@ import dev.milmil.api.CalendarDay
 import dev.milmil.api.CollectionEntry
 import dev.milmil.api.DiscoverAnime
 import dev.milmil.api.StatusCount
-import dev.milmil.api.browse
 import dev.milmil.api.calendar
 import dev.milmil.api.collection
 import dev.milmil.api.search
@@ -40,15 +39,6 @@ public class ScheduleViewModel(private val client: ApiClient) : ViewModel() {
 
     public fun load() {
         viewModelScope.launch { _state.value = load { client.calendar() } }
-    }
-}
-
-public class DiscoverViewModel(private val client: ApiClient) : ViewModel() {
-    private val _state = MutableStateFlow<Loadable<List<DiscoverAnime>>>(Loadable.Loading)
-    public val state: StateFlow<Loadable<List<DiscoverAnime>>> = _state.asStateFlow()
-
-    public fun load() {
-        viewModelScope.launch { _state.value = load { client.browse(page = 1) } }
     }
 }
 

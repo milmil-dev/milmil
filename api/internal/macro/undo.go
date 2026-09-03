@@ -8,7 +8,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/store"
 )
 
@@ -199,10 +200,10 @@ func reverseRSSCreate(_ context.Context, _ *store.Queries, _ store.AuditLog) err
 }
 
 // newAuditID returns a fresh audit-log row ID (used for the UndoneBy
-// foreign-key on reversed entries). uuid.NewString matches the
+// foreign-key on reversed entries). uuid.New().String() matches the
 // convention every other entity in the codebase uses; the macro
 // package keeps its own helper purely to avoid an import cycle with
 // internal/api.
 func newAuditID() string {
-	return uuid.NewString()
+	return uuid.New().String()
 }

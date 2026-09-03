@@ -76,8 +76,7 @@ func (e *TransientError) Unwrap() error { return e.Err }
 
 // IsTransient reports whether err (or any wrapped error) is a *TransientError.
 func IsTransient(err error) (*TransientError, bool) {
-	var t *TransientError
-	if errors.As(err, &t) {
+	if t, ok := errors.AsType[*TransientError](err); ok {
 		return t, true
 	}
 	return nil, false

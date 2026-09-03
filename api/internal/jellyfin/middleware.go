@@ -74,7 +74,7 @@ func extractEmbyToken(r *http.Request) string {
 		return ""
 	}
 	params := header[len("MediaBrowser "):]
-	for _, part := range strings.Split(params, ",") {
+	for part := range strings.SplitSeq(params, ",") {
 		kv := strings.SplitN(strings.TrimSpace(part), "=", 2)
 		if len(kv) == 2 && strings.EqualFold(kv[0], "Token") {
 			return strings.Trim(kv[1], `"`)
@@ -92,7 +92,7 @@ func extractEmbyParam(r *http.Request, key string) string {
 	if !strings.HasPrefix(header, "MediaBrowser ") {
 		return ""
 	}
-	for _, part := range strings.Split(header[len("MediaBrowser "):], ",") {
+	for part := range strings.SplitSeq(header[len("MediaBrowser "):], ",") {
 		kv := strings.SplitN(strings.TrimSpace(part), "=", 2)
 		if len(kv) == 2 && strings.EqualFold(kv[0], key) {
 			return strings.Trim(kv[1], `"`)

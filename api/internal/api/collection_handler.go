@@ -8,7 +8,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
@@ -202,7 +203,7 @@ func (h *handler) handleUpdateWatchStatus(c *echo.Context) error {
 			}
 
 			if _, createErr := h.queries.CreateAnime(ctx, store.CreateAnimeParams{
-				ID:            uuid.NewString(),
+				ID:            uuid.New().String(),
 				Title:         detail.TitleOriginal,
 				TitleZh:       sql.NullString{String: detail.Title, Valid: detail.Title != ""},
 				TitleEn:       sql.NullString{String: detail.TitleEN, Valid: detail.TitleEN != ""},

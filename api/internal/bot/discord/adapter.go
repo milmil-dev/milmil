@@ -3,6 +3,7 @@ package discord
 import (
 	"context"
 	"log/slog"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -181,10 +182,5 @@ func (a *Adapter) isAllowed(guildID string) bool {
 	if len(a.cfg.AllowedGuildIDs) == 0 {
 		return true
 	}
-	for _, id := range a.cfg.AllowedGuildIDs {
-		if id == guildID {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(a.cfg.AllowedGuildIDs, guildID)
 }

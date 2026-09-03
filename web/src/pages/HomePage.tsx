@@ -1,39 +1,136 @@
+import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
-import { AnimeRow } from '../components/AnimeRow';
+import { type CatalogSectionDef, CatalogSection } from '../components/CatalogSection';
 import { ContinueWatchingCard } from '../components/ContinueWatchingCard';
 import { HeroBanner } from '../components/HeroBanner';
 import { HomePageSkeleton } from '../components/HomePageSkeleton';
+import { HotTagsSection } from '../components/HotTagsSection';
 import { MediaRail } from '../components/MediaRail';
+import { MemoriesSection } from '../components/MemoriesSection';
 import { PageTransition } from '../components/PageTransition';
 import { useDocumentTitle } from '../hooks/use-document-title';
 import { type AnimeSummary, discoverApi, discoverKeys } from '../lib/api/discover';
 import { libraryApi, libraryKeys } from '../lib/api/library';
 import { progressApi, progressKeys } from '../lib/api/progress';
-import { translateGenre } from '../lib/genre-i18n';
+import { SPOTLIGHT_GENRES } from '../lib/genres';
+import { getCurrentSeason, getPreviousSeason } from '../lib/season';
+import { todayWeekdayEN, weekdayFullName } from '../lib/weekday';
 import { useBgStore } from '../store/bg-store';
 
-const GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Mystery',
-  'Psychological',
-  'Romance',
-  'Slice of Life',
-  'Supernatural',
-];
+function useRandomGenre(): string {
+  return useMemo(
+    () => SPOTLIGHT_GENRES[Math.floor(Math.random() * SPOTLIGHT_GENRES.length)] ?? 'Action',
+    []
+  );
+}
+
+/** Catalog rails formerly on Discover — personal rails sit above these. */
+function useCatalogSections(): CatalogSectionDef[] {
+  const current = getCurrentSeason();
+  const prev = getPreviousSeason();
+  const randomGenre = useRandomGenre();
+
+  return [
+    {
+      titleKey: msg`discover.trendingNow`,
+      queryKey: discoverKeys.trending(1),
+      queryFn: () => discoverApi.trending(1),
+      viewAllTo: '/search',
+      viewAllSearch: { sort: 'TRENDING_DESC' },
+      cardWidth: 'w-[170px]',
+      testId: 'home-trending',
+    },
+    {
+      titleKey: msg`discover.topOfSeason`,
+      queryKey: ['discover', 'topSeason', current.season, current.year],
+      queryFn: () =>
+        discoverApi.browse({
+          season: current.season,
+          year: current.year,
+          sort: 'SCORE_DESC',
+        }),
+      viewAllTo: '/search',
+      viewAllSearch: {
+        season: current.season,
+        year: String(current.year),
+        sort: 'SCORE_DESC',
+      },
+      testId: 'home-top-season',
+    },
+    {
+      titleKey: msg`discover.bestLastSeason`,
+      queryKey: ['discover', 'bestLastSeason', prev.season, prev.year],
+      queryFn: () =>
+        discoverApi.browse({
+          season: prev.season,
+          year: prev.year,
+          sort: 'SCORE_DESC',
+        }),
+      viewAllTo: '/search',
+      viewAllSearch: {
+        season: prev.season,
+        year: String(prev.year),
+        sort: 'SCORE_DESC',
+      },
+      testId: 'home-last-season',
+    },
+    {
+      titleKey: msg`discover.airedRecently`,
+      queryKey: ['discover', 'airedRecently'],
+      queryFn: () =>
+        discoverApi.browse({
+          sort: 'START_DATE_DESC',
+          year: current.year,
+        }),
+      viewAllTo: '/search',
+      viewAllSearch: { sort: 'START_DATE_DESC', year: String(current.year) },
+      testId: 'home-aired-recently',
+    },
+    {
+      titleKey: msg`discover.trendingMovies`,
+      queryKey: ['discover', 'trendingMovies'],
+      queryFn: () => discoverApi.browse({ sort: 'TRENDING_DESC', format: 'MOVIE' }),
+      viewAllTo: '/search',
+      viewAllSearch: { sort: 'TRENDING_DESC' },
+      cardWidth: 'w-[170px]',
+      testId: 'home-movies',
+    },
+    {
+      titleKey: msg`discover.genreSpotlight`,
+      titleOverride: randomGenre,
+      queryKey: ['discover', 'genreSpotlight', randomGenre],
+      queryFn: () => discoverApi.browse({ genre: randomGenre, sort: 'SCORE_DESC' }),
+      viewAllTo: '/search',
+      viewAllSearch: { genre: randomGenre },
+      testId: 'home-genre-spotlight',
+    },
+    {
+      titleKey: msg`discover.comingSoon`,
+      queryKey: ['discover', 'comingSoon'],
+      queryFn: () =>
+        discoverApi.browse({
+          status: 'NOT_YET_RELEASED',
+          sort: 'POPULARITY_DESC',
+        }),
+      viewAllTo: '/search',
+      viewAllSearch: { sort: 'POPULARITY_DESC' },
+      testId: 'home-coming-soon',
+    },
+  ];
+}
 
 export function HomePage() {
   const { i18n } = useLingui();
   useDocumentTitle(i18n._(msg`nav.home`));
+  const catalog = useCatalogSections();
+
   const { data: calendar } = useQuery({
     queryKey: discoverKeys.calendar(),
     queryFn: discoverApi.calendar,
@@ -53,24 +150,18 @@ export function HomePage() {
 
   const continueWatching = recentProgress.filter((p) => p.completed !== 1).slice(0, 6);
 
-  const todayCN = (() => {
-    const weekdays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
-    const day = new Date().getDay();
-    return weekdays[day === 0 ? 6 : day - 1];
-  })();
-  const todayAnime = calendar?.find((d) => d.weekday === todayCN)?.items ?? [];
+  const todayKey = todayWeekdayEN();
+  const todayDay = calendar?.find((d) => d.weekday_en === todayKey);
+  const todayAnime = todayDay?.items ?? [];
+  const todayWeekday = todayDay
+    ? weekdayFullName(todayDay.weekday_en, i18n)
+    : weekdayFullName(todayKey, i18n);
 
   const isLoading = !calendar && !trending.length;
-
   const heroItems = trending.slice(0, 7);
-  // Deduplicate: exclude hero items from trending grid by bangumi_id
-  const heroIds = new Set(heroItems.map((h) => h.bangumi_id));
-  const trendingRest = trending.filter((t) => !heroIds.has(t.bangumi_id)).slice(0, 7);
 
   const setImage = useBgStore((s) => s.setImage);
-  // Clear bg on unmount
   useEffect(() => () => setImage(null), [setImage]);
-  // Update bg when hero carousel rotates
   const handleHeroChange = (item: AnimeSummary) => {
     const img = item.banner_image || item.cover_image;
     if (img?.startsWith('http')) setImage(img);
@@ -84,10 +175,13 @@ export function HomePage() {
     );
   }
 
+  // Personal → early catalog → memories → the rest (mirrors old Discover order).
+  const earlyCatalog = catalog.slice(0, 3);
+  const lateCatalog = catalog.slice(3);
+
   return (
     <PageTransition>
       <div className="min-h-screen">
-        {/* Hero — full width, no padding, edge-to-edge like Seanime */}
         {heroItems.length > 0 && (
           <HeroBanner
             items={heroItems}
@@ -96,123 +190,126 @@ export function HomePage() {
           />
         )}
 
-        {/* Main content grid */}
-        <div className="flex gap-6 px-4 md:px-6">
-          <div className="flex-1 min-w-0">
-            {/* Continue Watching */}
-            {continueWatching.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="mt-6"
-              >
-                <SectionHeader title={i18n._(msg`home.continueWatching`)} to="/history" />
-                <MediaRail>
-                  {continueWatching.map((item) => {
-                    const progress =
-                      item.duration_seconds && item.duration_seconds > 0
-                        ? item.position_seconds / item.duration_seconds
-                        : 0;
-                    const title =
-                      (i18n.locale.startsWith('zh')
-                        ? item.anime_title_zh || item.anime_title
-                        : item.anime_title) || 'Unknown';
-                    const epNum = Number.isInteger(item.episode_number)
-                      ? item.episode_number
-                      : item.episode_number.toFixed(1);
-                    return (
-                      <div key={item.id} className="shrink-0 w-[220px] md:w-[260px]">
-                        <ContinueWatchingCard
-                          title={title}
-                          episodeLabel={`EP ${epNum} · ${Math.round(progress * 100)}%`}
-                          progress={progress}
-                          coverImage={item.anime_cover_image ?? ''}
-                          href={`/watch/${item.anime_bangumi_id ?? item.anime_id}?ep=${item.episode_number}`}
-                        />
-                      </div>
-                    );
-                  })}
-                </MediaRail>
-              </motion.section>
-            )}
+        <div className="px-4 md:px-6 mt-4">
+          <HotTagsSection />
+        </div>
 
-            {/* Today's Schedule */}
-            {todayAnime.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-6"
-              >
-                <SectionHeader title={i18n._(msg`home.todaySchedule`)} to="/schedule" />
-                <div>
-                  {todayAnime.slice(0, 5).map((anime, i) => (
-                    <AnimeRow key={anime.bangumi_id} anime={anime} index={i} />
-                  ))}
-                </div>
-              </motion.section>
-            )}
-
-            {/* Genre chips with edge fade */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.35 }}
-              className="mt-6 relative"
+        <div className="px-4 md:px-6 pt-6 pb-16 space-y-8">
+          {continueWatching.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
             >
-              <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                {GENRES.map((genre) => (
-                  <Link
-                    key={genre}
-                    to="/search"
-                    search={{ genre }}
-                    className="shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-colors bg-transparent hover:bg-ink/[0.06] text-ink/40 hover:text-ink/70 cursor-pointer"
-                  >
-                    {translateGenre(genre, i18n.locale)}
-                  </Link>
-                ))}
-              </div>
-              {/* Right edge fade for scroll hint */}
-              <div
-                className="absolute right-0 top-0 bottom-0 w-10 pointer-events-none"
-                style={{ background: 'linear-gradient(to left, var(--mm-bg), transparent)' }}
-              />
-            </motion.div>
+              <PersonalHeader title={i18n._(msg`home.continueWatching`)} to="/history" />
+              <MediaRail>
+                {continueWatching.map((item) => {
+                  const progress =
+                    item.duration_seconds && item.duration_seconds > 0
+                      ? item.position_seconds / item.duration_seconds
+                      : 0;
+                  const title =
+                    (i18n.locale.startsWith('zh')
+                      ? item.anime_title_zh || item.anime_title
+                      : item.anime_title) || 'Unknown';
+                  const epNum = Number.isInteger(item.episode_number)
+                    ? item.episode_number
+                    : item.episode_number.toFixed(1);
+                  return (
+                    <div key={item.id} className="shrink-0 w-[220px] md:w-[260px]">
+                      <ContinueWatchingCard
+                        title={title}
+                        episodeLabel={`EP ${epNum} · ${Math.round(progress * 100)}%`}
+                        progress={progress}
+                        coverImage={item.anime_cover_image ?? ''}
+                        href={`/watch/${item.anime_bangumi_id ?? item.anime_id}?ep=${item.episode_number}`}
+                      />
+                    </div>
+                  );
+                })}
+              </MediaRail>
+            </motion.section>
+          )}
 
-            {/* Trending — Seanime-style responsive grid */}
-            {trendingRest.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6"
-              >
-                <SectionHeader title={i18n._(msg`home.trending`)} to="/discover" />
-                <div className="grid grid-cols-3 min-[768px]:grid-cols-4 min-[1080px]:grid-cols-5 min-[1320px]:grid-cols-6 min-[1750px]:grid-cols-7 min-[2000px]:grid-cols-8 gap-3">
-                  {trendingRest.map((anime, i) => (
-                    <AnimeCard key={anime.bangumi_id} anime={anime} index={i} />
-                  ))}
-                </div>
-              </motion.section>
-            )}
-          </div>
+          {todayAnime.length > 0 && (
+            <motion.section
+              data-testid="home-today"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16 }}
+            >
+              <PersonalHeader
+                title={i18n._(msg`home.todaySchedule`)}
+                count={todayWeekday}
+                to="/schedule"
+                moreLabel={i18n._(msg`nav.schedule`)}
+                chevron
+              />
+              <MediaRail>
+                {todayAnime.map((anime) => (
+                  <div key={anime.bangumi_id} className="shrink-0 w-[150px]">
+                    <AnimeCard
+                      anime={anime}
+                      badge={anime.next_episode ? `EP ${anime.next_episode}` : undefined}
+                    />
+                  </div>
+                ))}
+              </MediaRail>
+            </motion.section>
+          )}
+
+          {earlyCatalog.map((section, i) => (
+            <CatalogSection key={section.queryKey.join('-')} def={section} index={i} />
+          ))}
+
+          <MemoriesSection delay={0.28} testId="home-memories" />
+
+          {lateCatalog.map((section, i) => (
+            <CatalogSection
+              key={section.queryKey.join('-')}
+              def={section}
+              index={i + earlyCatalog.length + 1}
+            />
+          ))}
         </div>
       </div>
     </PageTransition>
   );
 }
 
-function SectionHeader({ title, to }: { title: string; to: string }) {
+function PersonalHeader({
+  title,
+  count,
+  to,
+  moreLabel,
+  chevron = false,
+}: {
+  title: string;
+  count?: string;
+  to: string;
+  moreLabel?: string;
+  chevron?: boolean;
+}) {
   const { i18n } = useLingui();
   return (
-    <div className="flex items-baseline justify-between mb-4">
-      <h2 className="text-lg lg:text-xl font-semibold text-ink tracking-tight">{title}</h2>
+    <div className="flex items-baseline justify-between mb-3.5">
+      <div className="flex items-baseline gap-2 min-w-0">
+        <h2 className="text-lg lg:text-xl font-bold text-ink tracking-tight">{title}</h2>
+        {count && <span className="text-[13px] font-medium text-ink/40 shrink-0">{count}</span>}
+      </div>
       <Link
         to={to}
-        className="text-[12px] font-medium transition-colors hover:text-ink text-ink/40 cursor-pointer"
+        className="inline-flex items-center gap-0.5 text-[12px] font-medium transition-colors hover:text-ink text-ink/40 cursor-pointer shrink-0"
       >
-        {i18n._(msg`home.viewAll`)}
+        {moreLabel ?? i18n._(msg`home.viewAll`)}
+        {chevron && (
+          <HugeiconsIcon
+            icon={ArrowRight01Icon}
+            size={10}
+            strokeWidth={2.5}
+            className="opacity-80"
+          />
+        )}
       </Link>
     </div>
   );

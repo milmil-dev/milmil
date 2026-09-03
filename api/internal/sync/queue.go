@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/store"
 )
 
@@ -43,7 +44,7 @@ func (qu *Queue) Enqueue(ctx context.Context, userID string, provider ProviderNa
 			}
 		}
 		return tx.EnqueueSyncOp(ctx, store.EnqueueSyncOpParams{
-			ID:       uuid.NewString(),
+			ID:       uuid.New().String(),
 			UserID:   userID,
 			Provider: string(provider),
 			AnimeID:  animeID,

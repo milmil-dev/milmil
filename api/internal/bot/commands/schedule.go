@@ -192,11 +192,8 @@ func buildDaySchedule(ctx context.Context, svc *Services, dayArg string) (*bot.B
 
 	// Add detail buttons for first 5 anime
 	var buttons [][]bot.BotButton
-	limit := len(matchedDay.items)
-	if limit > 5 {
-		limit = 5
-	}
-	for i := 0; i < limit; i++ {
+	limit := min(len(matchedDay.items), 5)
+	for i := range limit {
 		item := matchedDay.items[i]
 		if item.id > 0 {
 			shortTitle := item.title

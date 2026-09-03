@@ -5,7 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/auth"
 	milmildb "github.com/milmil/api/internal/db"
 	"github.com/milmil/api/internal/store"
@@ -102,7 +103,7 @@ func createResetPasswordTestDB(t *testing.T, username string, password string) s
 	require.NoError(t, err)
 
 	_, err = store.New(database).CreateUser(context.Background(), store.CreateUserParams{
-		ID:           uuid.NewString(),
+		ID:           uuid.New().String(),
 		Username:     username,
 		PasswordHash: hash,
 	})

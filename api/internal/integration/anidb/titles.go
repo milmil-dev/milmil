@@ -155,10 +155,7 @@ func (idx *TitleIndex) Search(query string, year int) []Candidate {
 // similarityFromLCS returns a score in [0,1] computed from a precomputed LCS
 // length. 1.0 means equal after normalization.
 func similarityFromLCS(lcs int, a, b []rune) float64 {
-	maxLen := len(a)
-	if len(b) > maxLen {
-		maxLen = len(b)
-	}
+	maxLen := max(len(b), len(a))
 	if maxLen == 0 {
 		return 0
 	}

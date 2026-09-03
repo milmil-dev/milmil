@@ -34,10 +34,8 @@ func SignTokenForDevice(secret, userID string, tokenVersion int64, deviceID stri
 		UserID:       userID,
 		TokenVersion: tokenVersion,
 		DeviceID:     deviceID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
+		ExpiresAt:    jwt.NewNumericDate(time.Now().Add(tokenTTL)),
+		IssuedAt:     jwt.NewNumericDate(time.Now()),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signed, err := token.SignedString([]byte(secret))

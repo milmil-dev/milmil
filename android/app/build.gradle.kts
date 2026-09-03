@@ -5,6 +5,23 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// release-please rewrites the marked line below on every release, keeping the
+// app's version in step with the server, web and macOS clients (see
+// release-please-config.json). Android also needs a monotonically increasing
+// integer for upgrades to install, so derive it rather than bump it by hand:
+// 0.1.20 → 1020, 1.2.3 → 1002003.
+val milmilVersion = "0.1.20" // x-release-please-version
+val milmilVersionCode = milmilVersion.split(".").map(String::toInt).let { (major, minor, patch) ->
+    major * 1_000_000 + minor * 1_000 + patch
+}
+
+// Release signing comes from the environment so the keystore never lives in
+// the tree: release-android.yml decodes it from GitHub Secrets, and
+// scripts/make-keystore.sh creates one (and the secrets) locally. Without
+// MILMIL_ANDROID_KEYSTORE the release build stays unsigned, which is fine for
+// assembleDebug in CI and wrong for anything users install.
+val releaseKeystore = System.getenv("MILMIL_ANDROID_KEYSTORE")?.takeIf { it.isNotBlank() }
+
 android {
     namespace = "dev.milmil.android"
     compileSdk = 36
@@ -15,8 +32,19 @@ android {
         // in the client needs newer platform APIs yet.
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.20"
+        versionCode = milmilVersionCode
+        versionName = milmilVersion
+    }
+
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = file(releaseKeystore)
+                storePassword = System.getenv("MILMIL_ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("MILMIL_ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("MILMIL_ANDROID_KEY_PASSWORD")
+            }
+        }
     }
 
     buildFeatures { compose = true }
@@ -29,6 +57,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (releaseKeystore != null) signingConfig = signingConfigs.getByName("release")
         }
     }
 }

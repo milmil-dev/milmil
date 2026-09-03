@@ -137,7 +137,6 @@ private fun Shell(paired: PairState.Paired, modifier: Modifier = Modifier) {
             when (destination) {
                 Destination.Home -> HomeTab(client, paired.url)
                 Destination.Schedule -> ScheduleTab(client, paired.url)
-                Destination.Discover -> DiscoverTab(client, paired.url)
                 Destination.Search -> SearchTab(client, paired.url)
                 Destination.Collection -> CollectionTab(client, paired.url)
             }
@@ -164,14 +163,6 @@ private fun ScheduleTab(client: ApiClient, key: String) {
     LaunchedEffect(key) { model.load() }
     val state by model.state.collectAsStateWithLifecycle()
     ScheduleScreen(state = state)
-}
-
-@Composable
-private fun DiscoverTab(client: ApiClient, key: String) {
-    val model: DiscoverViewModel = viewModel(key = "discover-$key") { DiscoverViewModel(client) }
-    LaunchedEffect(key) { model.load() }
-    val state by model.state.collectAsStateWithLifecycle()
-    DiscoverScreen(state = state)
 }
 
 @Composable

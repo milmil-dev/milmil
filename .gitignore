@@ -152,6 +152,10 @@ api/server
 
 # android/ — machine-specific SDK path
 android/local.properties
+# Release signing key: scripts/make-keystore.sh writes it here, CI decodes
+# it from a secret. Never commit one.
+android/*.jks
+android/*.keystore
 android/.gradle/
 android/build/
 android/**/build/

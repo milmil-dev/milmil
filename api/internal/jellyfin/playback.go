@@ -5,7 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
@@ -55,7 +56,7 @@ func (h *Handler) handlePlaybackProgress(c *echo.Context) error {
 	positionSeconds := int64(req.PositionTicks / 10_000_000)
 
 	if _, err := h.queries.UpsertWatchProgress(c.Request().Context(), store.UpsertWatchProgressParams{
-		ID:              uuid.NewString(),
+		ID:              uuid.New().String(),
 		UserID:          userID,
 		EpisodeID:       episodeID,
 		MediaFileID:     sql.NullString{String: mediaFileID, Valid: mediaFileID != ""},
@@ -109,7 +110,7 @@ func (h *Handler) handlePlaybackStop(c *echo.Context) error {
 	positionSeconds := int64(req.PositionTicks / 10_000_000)
 
 	if _, err := h.queries.UpsertWatchProgress(c.Request().Context(), store.UpsertWatchProgressParams{
-		ID:              uuid.NewString(),
+		ID:              uuid.New().String(),
 		UserID:          userID,
 		EpisodeID:       episodeID,
 		MediaFileID:     sql.NullString{String: mediaFileID, Valid: mediaFileID != ""},

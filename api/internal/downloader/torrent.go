@@ -261,10 +261,7 @@ func (e *torrentEngine) status(gid string) (*Status, error) {
 		now := time.Now()
 		dt := now.Sub(entry.lastCheckTime).Seconds()
 		if dt >= 1.0 {
-			delta := s.CompletedBytes - entry.lastBytes
-			if delta < 0 {
-				delta = 0
-			}
+			delta := max(s.CompletedBytes-entry.lastBytes, 0)
 			entry.speed = int64(float64(delta) / dt)
 			entry.lastBytes = s.CompletedBytes
 			entry.lastCheckTime = now

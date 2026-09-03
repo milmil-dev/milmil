@@ -1417,7 +1417,7 @@ msgstr "機器人權杖"
 msgid "Bucket"
 msgstr "儲存桶"
 
-#: src/components/AnimeCard.tsx:347
+#: src/components/AnimeCard.tsx:331
 msgid "card.nextEp"
 msgstr "下一集"
 
@@ -1452,14 +1452,14 @@ msgstr "全部"
 #~ msgid "collection.changeStatus"
 #~ msgstr "變更狀態"
 
-#: src/components/AnimeCard.tsx:26
+#: src/components/AnimeCard.tsx:27
 #: src/pages/AnimeDetailPage.tsx:902
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "已完成"
 
-#: src/components/AnimeCard.tsx:28
+#: src/components/AnimeCard.tsx:29
 #: src/pages/AnimeDetailPage.tsx:908
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
@@ -1481,14 +1481,14 @@ msgstr "掃描媒體庫並匹配動畫以建立您的收藏"
 msgid "collection.goToLibraries"
 msgstr "前往媒體庫"
 
-#: src/components/AnimeCard.tsx:27
+#: src/components/AnimeCard.tsx:28
 #: src/pages/AnimeDetailPage.tsx:905
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "暫停"
 
-#: src/components/AnimeCard.tsx:25
+#: src/components/AnimeCard.tsx:26
 #: src/pages/AnimeDetailPage.tsx:899
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
@@ -1524,7 +1524,7 @@ msgstr "部作品"
 msgid "collection.viewAll"
 msgstr "查看全部"
 
-#: src/components/AnimeCard.tsx:24
+#: src/components/AnimeCard.tsx:25
 #: src/pages/AnimeDetailPage.tsx:896
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
@@ -1561,7 +1561,7 @@ msgstr "確認刪除"
 
 #: src/pages/settings/AccountPanel.tsx:423
 #: src/pages/settings/ApiTokensCard.tsx:67
-#: src/pages/settings/PairDeviceCard.tsx:59
+#: src/pages/settings/PairDeviceCard.tsx:69
 msgid "common.copied"
 msgstr "已複製"
 
@@ -1569,9 +1569,10 @@ msgstr "已複製"
 msgid "common.dangerZone"
 msgstr "危險區"
 
-#: src/components/AnimeCard.tsx:162
-#: src/components/AnimeCard.tsx:326
+#: src/components/AnimeCard.tsx:146
+#: src/components/AnimeCard.tsx:310
 #: src/components/AnimeRow.tsx:48
+#: src/components/HeroBanner.tsx:171
 #: src/components/MatchModal.tsx:258
 #: src/components/PreviewModal.tsx:217
 #: src/components/PreviewModal.tsx:350
@@ -1584,7 +1585,7 @@ msgstr "集"
 
 #: src/pages/AnimeDetailPage.tsx:425
 #: src/pages/LibraryDetailPage.tsx:2024
-#: src/routes/__root.tsx:68
+#: src/routes/__root.tsx:69
 msgid "common.loadFailed"
 msgstr "載入失敗"
 
@@ -1601,10 +1602,10 @@ msgid "common.minuteShort"
 msgstr "分鐘"
 
 #: src/pages/AnimeDetailPage.tsx:434
-#: src/pages/SchedulePage.tsx:853
-#: src/pages/SchedulePage.tsx:1168
+#: src/pages/SchedulePage.tsx:953
+#: src/pages/SchedulePage.tsx:1270
 #: src/pages/settings/ServicesPanel.tsx:186
-#: src/routes/__root.tsx:80
+#: src/routes/__root.tsx:81
 msgid "common.retry"
 msgstr "重試"
 
@@ -1644,19 +1645,19 @@ msgstr "刪除"
 msgid "Delete this file permanently?"
 msgstr "確定要永久刪除此檔案？"
 
-#: src/pages/DiscoverPage.tsx:100
+#: src/pages/DiscoverPage.tsx:87
 msgid "discover.airedRecently"
 msgstr "最近播出"
 
-#: src/pages/DiscoverPage.tsx:88
+#: src/pages/DiscoverPage.tsx:75
 msgid "discover.bestLastSeason"
 msgstr "上季最佳"
 
-#: src/pages/DiscoverPage.tsx:127
+#: src/pages/DiscoverPage.tsx:114
 msgid "discover.comingSoon"
 msgstr "即將上映"
 
-#: src/pages/DiscoverPage.tsx:119
+#: src/pages/DiscoverPage.tsx:106
 msgid "discover.genreSpotlight"
 msgstr "類型精選"
 
@@ -1664,15 +1665,28 @@ msgstr "類型精選"
 #~ msgid "discover.hotTags"
 #~ msgstr "熱門標籤"
 
-#: src/pages/DiscoverPage.tsx:76
+#: src/pages/DiscoverPage.tsx:289
+#: src/pages/DiscoverPage.tsx:316
+msgid "discover.memories"
+msgstr "那年這個季節"
+
+#: src/pages/DiscoverPage.tsx:311
+msgid "discover.memories.watching"
+msgstr "那時大家都在看"
+
+#: src/pages/DiscoverPage.tsx:323
+msgid "discover.memories.yearsAgo {years}"
+msgstr "{years} 年前"
+
+#: src/pages/DiscoverPage.tsx:63
 msgid "discover.topOfSeason"
 msgstr "本季最佳"
 
-#: src/pages/DiscoverPage.tsx:111
+#: src/pages/DiscoverPage.tsx:98
 msgid "discover.trendingMovies"
 msgstr "熱門電影"
 
-#: src/pages/DiscoverPage.tsx:68
+#: src/pages/DiscoverPage.tsx:55
 msgid "discover.trendingNow"
 msgstr "現在熱門"
 
@@ -1911,11 +1925,11 @@ msgstr " 集"
 msgid "episode.upcoming"
 msgstr "即將播出"
 
-#: src/routes/__root.tsx:68
+#: src/routes/__root.tsx:69
 msgid "error.serverUnavailable"
 msgstr "無法連接伺服器"
 
-#: src/routes/__root.tsx:71
+#: src/routes/__root.tsx:72
 msgid "error.serverUnavailableHint"
 msgstr "請檢查伺服器是否運行並重試"
 
@@ -1928,13 +1942,13 @@ msgstr "檔案"
 msgid "Files"
 msgstr "檔案"
 
-#: src/components/HeroBanner.tsx:172
+#: src/components/HeroBanner.tsx:209
 #: src/components/PreviewModal.tsx:252
 #: src/components/PreviewModal.tsx:256
 msgid "hero.details"
 msgstr "詳情"
 
-#: src/components/HeroBanner.tsx:179
+#: src/components/HeroBanner.tsx:216
 msgid "hero.preview"
 msgstr "預覽"
 
@@ -2051,11 +2065,34 @@ msgstr "尚未新增媒體庫"
 msgid "home.todaySchedule"
 msgstr "今日時刻表"
 
+msgid "weekday.full.Mon"
+msgstr "月曜日"
+
+msgid "weekday.full.Tue"
+msgstr "火曜日"
+
+msgid "weekday.full.Wed"
+msgstr "水曜日"
+
+msgid "weekday.full.Thu"
+msgstr "木曜日"
+
+msgid "weekday.full.Fri"
+msgstr "金曜日"
+
+msgid "weekday.full.Sat"
+msgstr "土曜日"
+
+msgid "weekday.full.Sun"
+msgstr "日曜日"
+
+
 #: src/pages/HomePage.tsx:191
 msgid "home.trending"
 msgstr "熱門"
 
-#: src/pages/DiscoverPage.tsx:233
+#: src/pages/DiscoverPage.tsx:224
+#: src/pages/DiscoverPage.tsx:302
 #: src/pages/HomePage.tsx:215
 msgid "home.viewAll"
 msgstr "查看全部 →"
@@ -3074,7 +3111,7 @@ msgstr "連線到 WebDAV 伺服器"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:261
+#: src/routes/__root.tsx:264
 msgid "match.completed"
 msgstr "匹配完成"
 
@@ -3093,7 +3130,7 @@ msgid "nav.collection"
 msgstr "收藏"
 
 #: src/components/AppSidebar.tsx:31
-#: src/pages/DiscoverPage.tsx:144
+#: src/pages/DiscoverPage.tsx:131
 msgid "nav.discover"
 msgstr "探索"
 
@@ -3122,7 +3159,7 @@ msgstr "媒體庫"
 msgid "nav.more"
 msgstr "更多"
 
-#: src/components/NotificationBell.tsx:90
+#: src/components/NotificationBell.tsx:104
 msgid "nav.notifications"
 msgstr "通知"
 
@@ -3132,8 +3169,8 @@ msgstr "通知"
 
 #: src/components/AppSidebar.tsx:29
 #: src/components/AppSidebar.tsx:246
-#: src/pages/SchedulePage.tsx:1235
-#: src/pages/SchedulePage.tsx:1309
+#: src/pages/SchedulePage.tsx:1337
+#: src/pages/SchedulePage.tsx:1411
 msgid "nav.schedule"
 msgstr "時刻表"
 
@@ -3294,7 +3331,7 @@ msgstr "清除全部"
 msgid "notifications.earlier"
 msgstr "更早"
 
-#: src/components/NotificationBell.tsx:146
+#: src/components/NotificationBell.tsx:165
 #: src/pages/NotificationsPage.tsx:235
 msgid "notifications.empty"
 msgstr "暫無通知"
@@ -3423,7 +3460,7 @@ msgstr "當下載完成或出現問題時，透過Discord、Telegram或Webhook�
 msgid "notifications.loadMore"
 msgstr "載入更多"
 
-#: src/components/NotificationBell.tsx:121
+#: src/components/NotificationBell.tsx:140
 #: src/pages/NotificationsPage.tsx:135
 msgid "notifications.markAllRead"
 msgstr "全部已讀"
@@ -3479,7 +3516,7 @@ msgstr "測試失敗"
 msgid "notifications.testSuccess"
 msgstr "已發送！"
 
-#: src/components/NotificationBell.tsx:113
+#: src/components/NotificationBell.tsx:132
 #: src/pages/NotificationsPage.tsx:87
 #: src/pages/NotificationsPage.tsx:127
 msgid "notifications.title"
@@ -3509,7 +3546,7 @@ msgstr "新集數"
 msgid "notifications.type.systemError"
 msgstr "系統錯誤"
 
-#: src/components/NotificationBell.tsx:158
+#: src/components/NotificationBell.tsx:177
 msgid "notifications.viewAll"
 msgstr "查看全部"
 
@@ -3561,39 +3598,39 @@ msgstr "上一頁"
 msgid "pagination.rows"
 msgstr "列"
 
-#: src/pages/settings/PairDeviceCard.tsx:98
+#: src/pages/settings/PairDeviceCard.tsx:121
 msgid "pair.again"
 msgstr "換一個"
 
-#: src/pages/settings/PairDeviceCard.tsx:94
+#: src/pages/settings/PairDeviceCard.tsx:111
 msgid "pair.copyLink"
 msgstr "複製連結"
 
-#: src/pages/settings/PairDeviceCard.tsx:64
+#: src/pages/settings/PairDeviceCard.tsx:74
 msgid "pair.description"
 msgstr "一次過把伺服器位址與登入交給手機或 Mac，不必手動輸入。"
 
-#: src/pages/settings/PairDeviceCard.tsx:107
+#: src/pages/settings/PairDeviceCard.tsx:130
 msgid "pair.done"
 msgstr "完成"
 
-#: src/pages/settings/PairDeviceCard.tsx:53
+#: src/pages/settings/PairDeviceCard.tsx:63
 msgid "pair.failed"
 msgstr "無法產生配對碼"
 
-#: src/pages/settings/PairDeviceCard.tsx:90
+#: src/pages/settings/PairDeviceCard.tsx:107
 msgid "pair.openInApp"
 msgstr "在 App 中開啟"
 
-#: src/pages/settings/PairDeviceCard.tsx:83
+#: src/pages/settings/PairDeviceCard.tsx:100
 msgid "pair.scanHint"
 msgstr "用手機上的 milmil App 掃描。"
 
-#: src/pages/settings/PairDeviceCard.tsx:69
+#: src/pages/settings/PairDeviceCard.tsx:86
 msgid "pair.start"
 msgstr "產生配對碼"
 
-#: src/pages/settings/PairDeviceCard.tsx:63
+#: src/pages/settings/PairDeviceCard.tsx:73
 msgid "pair.title"
 msgstr "配對裝置"
 
@@ -3601,11 +3638,11 @@ msgstr "配對裝置"
 #~ msgid "pair.tokenName"
 #~ msgstr "配對 {date}"
 
-#: src/pages/settings/PairDeviceCard.tsx:46
+#: src/pages/settings/PairDeviceCard.tsx:56
 msgid "pair.tokenName {date}"
 msgstr "配對 {date}"
 
-#: src/pages/settings/PairDeviceCard.tsx:75
+#: src/pages/settings/PairDeviceCard.tsx:92
 msgid "pair.warning"
 msgstr "這個碼可以讓裝置登入，請當作密碼看待；用完請在下方撤銷。"
 
@@ -3617,7 +3654,7 @@ msgstr "記憶體使用已恢復正常"
 msgid "player.memoryPressure"
 msgstr "記憶體使用率過高 — 正在減少緩衝區大小"
 
-#: src/components/HeroBanner.tsx:211
+#: src/components/HeroBanner.tsx:250
 #: src/pages/AnimeDetailPage.tsx:1031
 msgid "player.remaining"
 msgstr "剩餘"
@@ -3883,7 +3920,7 @@ msgstr "標題匹配"
 #~ msgid "Save"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:257
+#: src/routes/__root.tsx:260
 msgid "scan.completed"
 msgstr "掃描完成"
 
@@ -3937,27 +3974,27 @@ msgid "scanInterval.weekly"
 msgstr "每週"
 
 #: src/pages/LibraryDetailPage.tsx:766
-#: src/pages/SchedulePage.tsx:715
-#: src/pages/SchedulePage.tsx:889
+#: src/pages/SchedulePage.tsx:787
+#: src/pages/SchedulePage.tsx:989
 msgid "schedule.all"
 msgstr "全部"
 
-#: src/pages/SchedulePage.tsx:1298
-#: src/pages/SchedulePage.tsx:1452
+#: src/pages/SchedulePage.tsx:1400
+#: src/pages/SchedulePage.tsx:1554
 msgid "schedule.backToCurrent"
 msgstr "回到當季"
 
-#: src/pages/SchedulePage.tsx:847
-#: src/pages/SchedulePage.tsx:1162
+#: src/pages/SchedulePage.tsx:947
+#: src/pages/SchedulePage.tsx:1264
 msgid "schedule.loadFailed"
 msgstr "載入日曆失敗"
 
 #~ msgid "schedule.next"
 #~ msgstr "下一頁"
 
-#: src/pages/SchedulePage.tsx:484
-#: src/pages/SchedulePage.tsx:613
-#: src/pages/SchedulePage.tsx:1177
+#: src/pages/SchedulePage.tsx:538
+#: src/pages/SchedulePage.tsx:667
+#: src/pages/SchedulePage.tsx:1279
 msgid "schedule.noShows"
 msgstr "沒有排定的節目"
 
@@ -3967,34 +4004,34 @@ msgstr "沒有排定的節目"
 #~ msgid "schedule.prev"
 #~ msgstr "上一頁"
 
-#: src/components/AnimeCard.tsx:44
-#: src/pages/SchedulePage.tsx:87
+#: src/lib/season.ts:49
+#: src/pages/SchedulePage.tsx:96
 msgid "schedule.season.fall"
 msgstr "秋季"
 
-#: src/components/AnimeCard.tsx:42
-#: src/pages/SchedulePage.tsx:83
+#: src/lib/season.ts:45
+#: src/pages/SchedulePage.tsx:92
 msgid "schedule.season.spring"
 msgstr "春季"
 
-#: src/components/AnimeCard.tsx:43
-#: src/pages/SchedulePage.tsx:85
+#: src/lib/season.ts:47
+#: src/pages/SchedulePage.tsx:94
 msgid "schedule.season.summer"
 msgstr "夏季"
 
-#: src/components/AnimeCard.tsx:41
-#: src/pages/SchedulePage.tsx:81
+#: src/lib/season.ts:43
+#: src/pages/SchedulePage.tsx:90
 msgid "schedule.season.winter"
 msgstr "冬季"
 
-#: src/pages/SchedulePage.tsx:657
-#: src/pages/SchedulePage.tsx:1005
+#: src/pages/SchedulePage.tsx:729
+#: src/pages/SchedulePage.tsx:1107
 msgid "schedule.today"
 msgstr "今天"
 
-#: src/pages/SchedulePage.tsx:666
-#: src/pages/SchedulePage.tsx:1000
-#: src/pages/SchedulePage.tsx:1045
+#: src/pages/SchedulePage.tsx:738
+#: src/pages/SchedulePage.tsx:1102
+#: src/pages/SchedulePage.tsx:1147
 msgid "schedule.totalShows"
 msgstr "部本週節目"
 

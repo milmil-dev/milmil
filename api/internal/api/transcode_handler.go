@@ -11,7 +11,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
 	"github.com/milmil/api/internal/ffmpeg"
@@ -53,11 +54,11 @@ func (h *handler) handleStartTranscode(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "library not found")
 	}
 
-	token := uuid.NewString()
+	token := uuid.New().String()
 	outputDir := filepath.Join(os.TempDir(), "milmil", "transcode", token)
 
 	session, err := h.queries.CreateTranscodeSession(ctx, store.CreateTranscodeSessionParams{
-		ID:           uuid.NewString(),
+		ID:           uuid.New().String(),
 		MediaFileID:  fileID,
 		SessionToken: token,
 		OutputDir:    outputDir,

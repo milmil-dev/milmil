@@ -250,10 +250,7 @@ func (s *Service) broadcastNeedsReauth(row store.SyncOutbox) {
 // demotes to dead-letter once deadLetterAttempts is reached.
 func (s *Service) retryRow(ctx context.Context, row store.SyncOutbox, te *TransientError) {
 	attempts := row.Attempts + 1
-	delay := Backoff(int(attempts))
-	if te.RetryAfter > delay {
-		delay = te.RetryAfter
-	}
+	delay := max(te.RetryAfter, Backoff(int(attempts)))
 	if attempts >= deadLetterAttempts {
 		s.failRow(ctx, row, "dead-letter: "+te.Err.Error(), true)
 		return

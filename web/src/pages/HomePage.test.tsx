@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { expect, test, vi } from 'vite-plus/test';
+import { getCurrentSeason, MEMORY_OFFSETS } from '@/lib/season';
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => () => {},
@@ -27,8 +29,6 @@ vi.mock('@tanstack/react-router', () => ({
   },
 }));
 
-// Lingui macros are compiled by Vite plugin — no mock needed for @lingui/core/macro
-// Only mock the runtime hook to return message IDs as-is
 vi.mock('@lingui/react', () => ({
   useLingui: () => ({
     i18n: {
@@ -42,6 +42,17 @@ vi.mock('@lingui/react', () => ({
   }),
 }));
 
+function fakeAnime(id: number, title: string) {
+  return {
+    bangumi_id: id,
+    title,
+    title_original: title,
+    cover_image: '',
+    episode_count: 12,
+    score: 8.0,
+  };
+}
+
 vi.mock('@tanstack/react-query', () => ({
   useQueryClient: () => ({
     invalidateQueries: () => {},
@@ -52,18 +63,17 @@ vi.mock('@tanstack/react-query', () => ({
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     const key = queryKey[1] as string;
     if (key === 'calendar') return { data: [] };
+    if (key === 'memories') {
+      const year = queryKey[3] as number;
+      return { data: [fakeAnime(year, `Classic ${year}`)], isLoading: false };
+    }
     if (key === 'trending') {
       return {
-        data: Array.from({ length: 10 }, (_, i) => ({
-          bangumi_id: i + 1,
-          title: `Anime ${i + 1}`,
-          title_original: `Anime ${i + 1}`,
-          cover_image: '',
-          episode_count: 12,
-          score: 8.0,
-        })),
+        data: Array.from({ length: 10 }, (_, i) => fakeAnime(i + 1, `Anime ${i + 1}`)),
+        isLoading: false,
       };
     }
+    if (key === 'hotTags') return { data: [], isLoading: false };
     if (key === 'recent') {
       return {
         data: [
@@ -76,25 +86,28 @@ vi.mock('@tanstack/react-query', () => ({
             duration_seconds: 1200,
             completed: 0,
             last_watched_at: '2026-03-26T00:00:00Z',
+            anime_title: 'Continue Me',
+            anime_cover_image: '',
+            episode_number: 3,
           },
         ],
       };
     }
-    return { data: [] };
+    return { data: [fakeAnime(99, 'Filler')], isLoading: false };
   },
 }));
 
 vi.mock('motion/react', () => {
   function stub(tag: string) {
     return function MotionStub(props: Record<string, unknown>) {
-      return React.createElement(
-        tag,
-        {
-          className: props.className,
-          style: props.style,
-        },
-        props.children as React.ReactNode
-      );
+      const passthrough: Record<string, unknown> = {
+        className: props.className,
+        style: props.style,
+        children: props.children as React.ReactNode,
+      };
+      if (props['data-testid']) passthrough['data-testid'] = props['data-testid'];
+      if (props.role) passthrough.role = props.role;
+      return React.createElement(tag, passthrough);
     };
   }
   return {
@@ -109,6 +122,7 @@ vi.mock('motion/react', () => {
       a: stub('a'),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    useReducedMotion: () => false,
   };
 });
 
@@ -119,6 +133,7 @@ vi.mock('@hugeicons/react', () => ({
 vi.mock('@hugeicons/core-free-icons', () => ({
   FolderLibraryIcon: 'mock-icon',
   ArrowLeft02Icon: 'mock-icon',
+  ArrowRight01Icon: 'mock-icon',
   ArrowRight02Icon: 'mock-icon',
 }));
 
@@ -127,17 +142,61 @@ vi.mock('@/store/bg-store', () => ({
     selector({ image: null, setImage: () => {} }),
 }));
 
+vi.mock('@/components/AnimeCard', () => ({
+  AnimeCard: ({ anime }: { anime: { title: string } }) => <div>{anime.title}</div>,
+}));
+
+vi.mock('@/components/ContinueWatchingCard', () => ({
+  ContinueWatchingCard: ({ title }: { title: string }) => <div>{title}</div>,
+}));
+
+vi.mock('@/components/HeroBanner', () => ({
+  HeroBanner: () => null,
+}));
+
+vi.mock('@/components/MediaRail', () => ({
+  MediaRail: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
+vi.mock('@/components/PageTransition', () => ({
+  PageTransition: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 import { HomePage } from '@/pages/HomePage';
 
-test('home page renders section headings for continue watching and trending', () => {
+test('home page renders continue watching and catalog rails', () => {
   render(<HomePage />);
-  // Section headings rendered via SectionHeader as <h2>
   const headings = screen.getAllByRole('heading', { level: 2 });
   expect(headings.length).toBeGreaterThanOrEqual(2);
+  expect(screen.getByTestId('home-trending')).toBeInTheDocument();
+  expect(screen.getByTestId('home-hot-tags')).toBeInTheDocument();
 });
 
-test('home page renders genre filter strip', () => {
+test('home page renders genre filter strip from hot tags', () => {
   render(<HomePage />);
   expect(screen.getByText('Action')).toBeInTheDocument();
   expect(screen.getByText('Drama')).toBeInTheDocument();
+});
+
+test('renders the memories section with era tabs', () => {
+  render(<HomePage />);
+  const section = screen.getByTestId('home-memories');
+  expect(section).toBeInTheDocument();
+  expect(section.querySelector('h2')).toBeTruthy();
+  for (const years of MEMORY_OFFSETS) {
+    expect(screen.getByTestId(`memories-era-${years}`)).toBeInTheDocument();
+  }
+});
+
+test('defaults to ten years ago and switches eras', async () => {
+  const user = userEvent.setup();
+  const { year } = getCurrentSeason();
+  render(<HomePage />);
+
+  expect(screen.getByText(`Classic ${year - 10}`)).toBeInTheDocument();
+  expect(screen.getByTestId('memories-era-10')).toHaveAttribute('aria-selected', 'true');
+
+  await user.click(screen.getByTestId('memories-era-5'));
+  expect(screen.getByTestId('memories-era-5')).toHaveAttribute('aria-selected', 'true');
+  expect(screen.getByText(`Classic ${year - 5}`)).toBeInTheDocument();
 });

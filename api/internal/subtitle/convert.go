@@ -46,9 +46,9 @@ func assToVTT(r io.Reader) string {
 			continue
 		}
 
-		if strings.HasPrefix(line, "Format:") {
-			raw := strings.TrimPrefix(line, "Format:")
-			for _, f := range strings.Split(raw, ",") {
+		if after, ok := strings.CutPrefix(line, "Format:"); ok {
+			raw := after
+			for f := range strings.SplitSeq(raw, ",") {
 				formatFields = append(formatFields, strings.TrimSpace(f))
 			}
 			continue

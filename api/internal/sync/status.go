@@ -82,7 +82,7 @@ func DeriveStatus(ctx context.Context, q *store.Queries, userID, animeID string)
 // asInt64 coerces the interface{} columns sqlc emits for COALESCE(SUM(...))
 // aggregates. SQLite drivers typically return int64, but COALESCE defaults
 // can surface as []byte on some paths, so we handle both.
-func asInt64(v interface{}) int64 {
+func asInt64(v any) int64 {
 	switch x := v.(type) {
 	case int64:
 		return x
@@ -107,7 +107,7 @@ func asInt64(v interface{}) int64 {
 
 // asString coerces the interface{} columns sqlc emits for COALESCE(MAX/MIN)
 // on TEXT aggregates.
-func asString(v interface{}) string {
+func asString(v any) string {
 	switch x := v.(type) {
 	case string:
 		return x

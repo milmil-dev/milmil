@@ -9,6 +9,7 @@ import type { AnimeSummary } from '../lib/api/discover';
 import { discoverApi, discoverKeys } from '../lib/api/discover';
 import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
+import { formatSeason } from '../lib/season';
 import { cn } from '../lib/utils';
 import { stripTags } from '../lib/sanitize';
 
@@ -28,23 +29,6 @@ const STATUS_LABELS: Record<string, ReturnType<typeof msg>> = {
   dropped: msg`collection.dropped`,
 };
 
-function formatSeason(
-  airDate: string | undefined,
-  i18n: ReturnType<typeof useLingui>['i18n']
-): string | null {
-  if (!airDate) return null;
-  const d = new Date(airDate);
-  if (Number.isNaN(d.getTime())) return null;
-  const month = d.getMonth() + 1;
-  const year = d.getFullYear();
-  let season: string;
-  if (month <= 3) season = i18n._(msg`schedule.season.winter`);
-  else if (month <= 6) season = i18n._(msg`schedule.season.spring`);
-  else if (month <= 9) season = i18n._(msg`schedule.season.summer`);
-  else season = i18n._(msg`schedule.season.fall`);
-  return `${season} ${year}`;
-}
-
 interface AnimeCardProps {
   anime: AnimeSummary;
   index?: number;
@@ -53,9 +37,11 @@ interface AnimeCardProps {
   children?: ReactNode;
   /** Override click behavior — when provided, navigation is skipped */
   onClick?: (e: React.MouseEvent) => void;
+  /** Top-leading glass badge (macOS Home "EP 12"). Replaces the watch-status chip. */
+  badge?: string;
 }
 
-export function AnimeCard({ anime, onPreview, children, onClick }: AnimeCardProps) {
+export function AnimeCard({ anime, onPreview, children, onClick, badge }: AnimeCardProps) {
   const { i18n } = useLingui();
   const [imgFailed, setImgFailed] = useState(false);
   const hasCover = !imgFailed && anime.cover_image?.startsWith('http');
@@ -146,18 +132,25 @@ export function AnimeCard({ anime, onPreview, children, onClick }: AnimeCardProp
             {anime.score.toFixed(1)}
           </span>
         )}
-        {/* Watch status badge */}
-        {watchStatus && watchStatus !== 'watching' && !children && (
-          <span
-            className={cn(
-              'absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded text-white backdrop-blur-md',
-              STATUS_COLORS[watchStatus] ?? 'bg-zinc-500/80'
-            )}
-          >
-            {STATUS_LABELS[watchStatus] ? i18n._(STATUS_LABELS[watchStatus]!) : watchStatus}
+        {badge ? (
+          <span className="absolute top-1.5 left-1.5 text-[10px] font-bold text-white tabular-nums bg-black/60 backdrop-blur-sm rounded px-1.5 py-0.5 leading-none">
+            {badge}
           </span>
+        ) : (
+          watchStatus &&
+          watchStatus !== 'watching' &&
+          !children && (
+            <span
+              className={cn(
+                'absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded text-white backdrop-blur-md',
+                STATUS_COLORS[watchStatus] ?? 'bg-zinc-500/80'
+              )}
+            >
+              {STATUS_LABELS[watchStatus] ? i18n._(STATUS_LABELS[watchStatus]!) : watchStatus}
+            </span>
+          )
         )}
-        {anime.episode_count > 0 && (
+        {anime.episode_count > 0 && !badge && (
           <span className="absolute bottom-2 right-2 text-[10px] font-medium text-white/70 bg-black/60 backdrop-blur-sm rounded px-1 py-0.5 leading-none">
             {anime.episode_count} {i18n._(msg`common.ep`)}
           </span>

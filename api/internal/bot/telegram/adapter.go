@@ -3,6 +3,7 @@ package telegram
 import (
 	"context"
 	"log/slog"
+	"slices"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/milmil/api/internal/bot"
@@ -197,10 +198,5 @@ func (a *Adapter) isAllowed(chatID int64) bool {
 	if len(a.cfg.AllowedChatIDs) == 0 {
 		return true
 	}
-	for _, id := range a.cfg.AllowedChatIDs {
-		if id == chatID {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(a.cfg.AllowedChatIDs, chatID)
 }

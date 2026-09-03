@@ -68,7 +68,7 @@ func TestTitlesPerfWithLargeIndex(t *testing.T) {
 	}
 	var b strings.Builder
 	b.WriteString(`<?xml version="1.0"?><animetitles>`)
-	for i := 0; i < 50000; i++ {
+	for i := range 50000 {
 		fmt.Fprintf(&b, `<anime aid="%d"><title>Series Number %d</title></anime>`, i, i)
 	}
 	b.WriteString(`</animetitles>`)

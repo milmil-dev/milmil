@@ -9,7 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 
 	"github.com/milmil/api/internal/auth"
@@ -61,7 +62,7 @@ func newServicesTestEnv(t *testing.T) *servicesTestEnv {
 		Jobs: jobs, Jellyfin: jf,
 	})
 
-	user, err := q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.NewString(), Username: "svc-admin", PasswordHash: "unused"})
+	user, err := q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.New().String(), Username: "svc-admin", PasswordHash: "unused"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +71,7 @@ func newServicesTestEnv(t *testing.T) *servicesTestEnv {
 		t.Fatal(err)
 	}
 	if _, err := q.CreateAPIToken(context.Background(), store.CreateAPITokenParams{
-		ID: uuid.NewString(), Name: "test", TokenHash: hash, TokenPrefix: prefix, UserID: user.ID,
+		ID: uuid.New().String(), Name: "test", TokenHash: hash, TokenPrefix: prefix, UserID: user.ID,
 		LastIp: "127.0.0.1", LastUserAgent: "test",
 	}); err != nil {
 		t.Fatal(err)
@@ -254,7 +255,7 @@ func TestServices_JellyfinDevices(t *testing.T) {
 	}
 	// A device that signed in through the Jellyfin layer shows up and can be revoked.
 	hash, _ := auth.HashPassword("correct horse battery")
-	if _, err := env.q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.NewString(), Username: "infuse", PasswordHash: hash}); err != nil {
+	if _, err := env.q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.New().String(), Username: "infuse", PasswordHash: hash}); err != nil {
 		t.Fatal(err)
 	}
 	req := httptest.NewRequest(http.MethodPost, "/jellyfin/Users/AuthenticateByName", strings.NewReader(`{"Username":"infuse","Pw":"correct horse battery"}`))

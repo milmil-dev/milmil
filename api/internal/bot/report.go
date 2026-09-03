@@ -3,6 +3,7 @@ package bot
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/milmil/api/internal/store"
@@ -31,31 +32,29 @@ func (r *ReportGenerator) GenerateDailyReport(ctx context.Context) (*BotResponse
 	// Download rules
 	rules, _ := r.Queries.ListDownloadRules(ctx)
 
-	text := "<b>📊 Daily Report</b>\n\n"
-	text += fmt.Sprintf("📥 Active downloads: <b>%d</b>\n", len(active))
+	var text strings.Builder
+	text.WriteString("<b>📊 Daily Report</b>\n\n")
+	fmt.Fprintf(&text, "📥 Active downloads: <b>%d</b>\n", len(active))
 	if len(errorDownloads) > 0 {
-		text += fmt.Sprintf("⚠️ Downloads with errors: <b>%d</b>\n", len(errorDownloads))
+		fmt.Fprintf(&text, "⚠️ Downloads with errors: <b>%d</b>\n", len(errorDownloads))
 	}
-	text += fmt.Sprintf("✅ Completed (24h): <b>%d</b>\n", len(recentComplete))
-	text += fmt.Sprintf("📡 RSS feeds: <b>%d</b>\n", len(feeds))
-	text += fmt.Sprintf("📋 追番規則：<b>%d</b>\n", len(rules))
+	fmt.Fprintf(&text, "✅ Completed (24h): <b>%d</b>\n", len(recentComplete))
+	fmt.Fprintf(&text, "📡 RSS feeds: <b>%d</b>\n", len(feeds))
+	fmt.Fprintf(&text, "📋 追番規則：<b>%d</b>\n", len(rules))
 
 	if len(recentComplete) > 0 {
-		text += "\n<b>Recent Downloads:</b>\n"
-		limit := len(recentComplete)
-		if limit > 5 {
-			limit = 5
-		}
-		for i := 0; i < limit; i++ {
-			text += fmt.Sprintf("• %s\n", recentComplete[i].Name)
+		text.WriteString("\n<b>Recent Downloads:</b>\n")
+		limit := min(len(recentComplete), 5)
+		for i := range limit {
+			fmt.Fprintf(&text, "• %s\n", recentComplete[i].Name)
 		}
 		if len(recentComplete) > 5 {
-			text += fmt.Sprintf("  <i>…and %d more</i>\n", len(recentComplete)-5)
+			fmt.Fprintf(&text, "  <i>…and %d more</i>\n", len(recentComplete)-5)
 		}
 	}
 
 	return &BotResponse{
-		Text: text,
+		Text: text.String(),
 		Buttons: [][]BotButton{
 			{{Label: "⬅️ Menu", Data: "menu"}},
 		},

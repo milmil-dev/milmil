@@ -8,7 +8,8 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/notification"
 	"github.com/milmil/api/internal/rss"
@@ -67,7 +68,7 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 			// Multi-subgroup matching (comma-separated)
 			if rule.SubgroupFilter != "" {
 				matched := false
-				for _, sg := range strings.Split(rule.SubgroupFilter, ",") {
+				for sg := range strings.SplitSeq(rule.SubgroupFilter, ",") {
 					if strings.Contains(item.Title, strings.TrimSpace(sg)) {
 						matched = true
 						break
@@ -111,7 +112,7 @@ func (w *RSSRefreshWorker) refreshFeed(ctx context.Context, feed store.RssFeed) 
 			}
 
 			_, err = w.queries.CreateDownload(ctx, store.CreateDownloadParams{
-				ID:        uuid.NewString(),
+				ID:        uuid.New().String(),
 				Gid:       gid,
 				Url:       item.Link,
 				Name:      item.Title,

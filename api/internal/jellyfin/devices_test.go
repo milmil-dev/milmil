@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/db"
@@ -58,7 +59,7 @@ func signIn(t *testing.T, e *echo.Echo, deviceID, client, device string) string 
 func TestDevices_RecordedOnSignInAndRevocable(t *testing.T) {
 	h, e, q := newDevicesTestHandler(t)
 	hash, _ := auth.HashPassword("correct horse battery")
-	if _, err := q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.NewString(), Username: "infuse-user", PasswordHash: hash}); err != nil {
+	if _, err := q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.New().String(), Username: "infuse-user", PasswordHash: hash}); err != nil {
 		t.Fatal(err)
 	}
 

@@ -5,7 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
@@ -128,7 +129,7 @@ func (h *handler) handleCreateDownloadRule(c *echo.Context) error {
 		episodeFilter = "all"
 	}
 	rule, err := h.queries.CreateDownloadRule(c.Request().Context(), store.CreateDownloadRuleParams{
-		ID:               uuid.NewString(),
+		ID:               uuid.New().String(),
 		Name:             req.Name,
 		Enabled:          req.Enabled,
 		RssFeedID:        req.RSSFeedID,

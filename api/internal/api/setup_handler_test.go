@@ -8,7 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/store"
 )
 
@@ -18,7 +19,7 @@ func seedSetupAdmin(t *testing.T, db *sql.DB, username string) {
 	t.Helper()
 	q := store.New(db)
 	_, err := q.CreateUser(context.Background(), store.CreateUserParams{
-		ID:           uuid.NewString(),
+		ID:           uuid.New().String(),
 		Username:     username,
 		PasswordHash: "unused-hash",
 	})
@@ -33,7 +34,7 @@ func seedSetupLibrary(t *testing.T, db *sql.DB, name, path string) {
 	t.Helper()
 	q := store.New(db)
 	_, err := q.CreateLibrary(context.Background(), store.CreateLibraryParams{
-		ID:                  uuid.NewString(),
+		ID:                  uuid.New().String(),
 		Name:                name,
 		Path:                path,
 		Enabled:             1,
@@ -87,7 +88,6 @@ func TestSetupStatus(t *testing.T) {
 			wantLibCnt: 2,
 		},
 	} {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			e, db := newTestAppWithDB(t)

@@ -7,6 +7,12 @@ import { cn } from '../lib/utils';
  * plus a film-grain overlay for texture. The wash angle and hue shift give each
  * page a unique feel while staying in the moe-pink family.
  *
+ * The alphas below are tuned against the near-black canvas of the dark theme.
+ * Over the light theme's #f6f6f8 the same wash turns the whole page pink and
+ * drags every muted text tier under AA, so the light theme scales the layer
+ * back with `--atmosphere-opacity` rather than each preset carrying two sets
+ * of colours.
+ *
  * Presets:
  *   search   — top-right sweep, warm pink
  *   schedule — left-to-right, rose-gold
@@ -54,7 +60,7 @@ export function PageAtmosphere({ preset, className }: { preset: Preset; classNam
     <div
       className={cn('pointer-events-none absolute inset-0 md:-left-20 overflow-hidden', className)}
       aria-hidden="true"
-      style={{ backgroundImage: presets[preset] }}
+      style={{ backgroundImage: presets[preset], opacity: 'var(--atmosphere-opacity)' }}
     />
   );
 }

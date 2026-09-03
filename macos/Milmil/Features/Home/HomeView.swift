@@ -6,10 +6,13 @@ struct HomeView: View {
     @Environment(Router.self) private var router
     @Environment(BackdropStore.self) private var backdrop
     @Environment(PlayerCoordinator.self) private var playerCoordinator
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var store: HomeStore?
     /// Web BannerImage: the banner fades to near-nothing once scrolled past
     /// the hero; remembered so a carousel rotation doesn't reset it.
     @State private var scrollDim = 0.0
+    /// Default 10 years ago — same nostalgia peak as web Home.
+    @State private var memoryOffset = 10
     @ObserveInjection private var inject
 
     var body: some View {
@@ -23,6 +26,10 @@ struct HomeView: View {
         .task {
             if store == nil { store = HomeStore(client: session.client) }
             await store?.load()
+        }
+        .task(id: memoryOffset) {
+            if store == nil { store = HomeStore(client: session.client) }
+            await store?.loadMemories(offset: memoryOffset)
         }
         .task(id: session.eventGeneration) {
             // Realtime events are invalidation hints; only the ones that can
@@ -39,11 +46,29 @@ struct HomeView: View {
 
     private func content(_ store: HomeStore) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: 28) {
                 heroSection(store)
+                chipRows(store)
                 continueSection(store)
                 todaySection(store)
-                trendingSection(store)
+                ForEach(Array(store.rails.enumerated()), id: \.element.id) { index, rail in
+                    railSection(rail, index: index)
+                    if rail.id == "lastSeason" {
+                        MemoriesRail(
+                            items: store.memoryItems,
+                            offset: $memoryOffset,
+                            onOpen: { router.open($0) },
+                            onViewAll: { year, season in
+                                router.openSearch(SearchPrefill(year: year, season: season, sort: .popularity))
+                            }
+                        )
+                        .animation(.spring(duration: 0.55, bounce: 0).delay(Double(index + 1) * 0.06), value: store.memoryItems.value != nil)
+                    }
+                }
+                if session.offlineSince != nil {
+                    Label("連唔到 server，只顯示本機可播嘅內容", systemImage: "arrow.down.circle")
+                        .font(.system(size: 12)).foregroundStyle(Theme.Text.secondary)
+                }
             }
             .padding(.horizontal, 40)
             .padding(.top, 24)
@@ -51,7 +76,8 @@ struct HomeView: View {
         }
         .scrollIndicators(.automatic)
         .onScrollGeometryChange(for: Double.self) { geometry in
-            geometry.contentOffset.y > 120 ? 0.95 : 0
+            let raw = min(0.55, max(0, (geometry.contentOffset.y - 120) / 480))
+            return (raw * 20).rounded() / 20
         } action: { _, dim in
             scrollDim = dim
             backdrop.setDim(dim, owner: "home")
@@ -79,6 +105,29 @@ struct HomeView: View {
         default:
             HeroSkeleton()
                 .padding(.top, 40)
+        }
+    }
+
+    private func chipRows(_ store: HomeStore) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Shelf(spacing: 8) {
+                ForEach(Genre.allCases) { genre in
+                    Button { router.openSearch(SearchPrefill(genres: [genre.rawValue])) } label: {
+                        GenreChip(genre: genre)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            if let tags = store.tags.value, !tags.isEmpty {
+                Shelf(spacing: 8) {
+                    ForEach(tags.prefix(18)) { tag in
+                        Button { router.openSearch(SearchPrefill(tags: [tag.name])) } label: {
+                            Chip(text: "#\(tag.label)")
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
         }
     }
 
@@ -134,13 +183,32 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func trendingSection(_ store: HomeStore) -> some View {
-        if session.offlineSince != nil {
-            Label("連唔到 server，只顯示本機可播嘅內容", systemImage: "arrow.down.circle")
-                .font(.system(size: 12)).foregroundStyle(Theme.Text.secondary)
-        } else if let items = store.trending.value, !items.isEmpty {
-            VStack(alignment: .leading, spacing: 0) {
-                SectionHeader(title: String(localized: "現在熱門"), moreTitle: String(localized: "探索")) { router.select(.discover) }
+    private func railSection(_ rail: HomeStore.Rail, index: Int) -> some View {
+        Group {
+            if let items = rail.items.value {
+                if !items.isEmpty {
+                    railContent(rail, items: items)
+                        .transition(reduceMotion ? .opacity : .opacity.combined(with: .offset(y: 14)))
+                }
+            } else if rail.items.errorMessage == nil {
+                ShelfSkeleton().transition(.opacity)
+            }
+        }
+        .animation(.spring(duration: 0.55, bounce: 0).delay(Double(index) * 0.06), value: rail.items.value != nil)
+    }
+
+    private func railContent(_ rail: HomeStore.Rail, items: [AnimeSummary]) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SectionHeader(title: rail.title, moreTitle: String(localized: "查看全部")) {
+                router.openSearch(SearchPrefill(route: rail.route))
+            }
+            if rail.id == "trending" {
+                Shelf(spacing: 6) {
+                    ForEach(Array(items.prefix(10).enumerated()), id: \.element.id) { rank, item in
+                        RankedPosterCard(rank: rank + 1, summary: item, onOpen: { router.open(item) })
+                    }
+                }
+            } else {
                 Shelf {
                     ForEach(items) { item in
                         PosterCard(summary: item, onOpen: { router.open(item) })
@@ -148,6 +216,49 @@ struct HomeView: View {
                 }
             }
         }
+    }
+}
+
+/// Ranked poster for the trending rail: a ghost numeral peeking out from
+/// behind the card, Netflix Top-10 style.
+private struct RankedPosterCard: View {
+    let rank: Int
+    let summary: AnimeSummary
+    var onOpen: () -> Void
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: -14) {
+            Text(rank, format: .number)
+                .font(.system(size: 92, weight: .heavy, design: .rounded))
+                .monospacedDigit()
+                .tracking(-6)
+                .foregroundStyle(Theme.ink(0.12))
+                .padding(.bottom, 24)
+                .accessibilityHidden(true)
+            PosterCard(summary: summary, onOpen: onOpen)
+        }
+        .accessibilityLabel("第 \(rank) 名：\(summary.title)")
+    }
+}
+
+/// Genre capsule with the genre's signature icon + tint.
+private struct GenreChip: View {
+    let genre: Genre
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: genre.symbol)
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(genre.tint)
+            Text(genre.label)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.ink(0.85))
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 11)
+        .padding(.vertical, 5)
+        .background(genre.tint.opacity(0.13), in: Capsule())
+        .overlay(Capsule().strokeBorder(genre.tint.opacity(0.2), lineWidth: 0.5))
     }
 }
 

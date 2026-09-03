@@ -85,8 +85,7 @@ func TestJobRegistry_RefusesOverlappingRuns(t *testing.T) {
 		return nil
 	})
 	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() { defer wg.Done(); _ = r.Run(context.Background(), "slow") }()
+	wg.Go(func() { ; _ = r.Run(context.Background(), "slow") })
 	<-started
 	if state, _ := r.Get("slow"); !state.Running {
 		t.Fatalf("expected running")
@@ -121,7 +120,7 @@ func TestJobRegistry_ThrottlesRoutineAnnouncements(t *testing.T) {
 	var events int
 	r.OnChange = func(JobState) { events++ }
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		_ = r.Run(context.Background(), "fast")
 		now = now.Add(3 * time.Second)
 	}

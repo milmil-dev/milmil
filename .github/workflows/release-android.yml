@@ -1,0 +1,102 @@
+# Builds the signed Android APK and AAB for a release tag (or on demand) and
+# attaches them to the GitHub release. The signing key is a self-generated
+# keystore held in GitHub Secrets — android/scripts/make-keystore.sh creates
+# both. The same key must sign every release or Android refuses the upgrade,
+# so keep the keystore backed up: a new key means users reinstall.
+name: Release Android
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-android-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apk:
+    name: APK + AAB (signed)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Mirrors ci.yml and mise.toml.
+      JAVA_VERSION: "21"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: gradle/actions/setup-gradle@v5
+
+      # Fail early with a message that says what to do, rather than letting
+      # Gradle produce an unsigned APK nobody can install.
+      - name: Decode signing keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Secret $name is not set. Run android/scripts/make-keystore.sh once to create the keystore and the four secrets."
+              exit 1
+            fi
+          done
+          keystore="$RUNNER_TEMP/release.jks"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$keystore"
+          echo "MILMIL_ANDROID_KEYSTORE=$keystore" >> "$GITHUB_ENV"
+
+      - name: Build release APK and AAB
+        working-directory: android
+        env:
+          MILMIL_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          MILMIL_ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          MILMIL_ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease bundleRelease
+
+      # The build is named from build.gradle.kts's version (release-please
+      # keeps it in step with the tag); rename defensively so the asset always
+      # matches the tag, the way release-macos.yml does for the DMG.
+      - name: Name artifacts after the version
+        id: name
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version="$(sed -n 's/^val milmilVersion = "\([^"]*\)".*/\1/p' android/app/build.gradle.kts)"
+          fi
+          mkdir -p android/dist
+          mv android/app/build/outputs/apk/release/app-release.apk "android/dist/milmil-android-${version}.apk"
+          mv android/app/build/outputs/bundle/release/app-release.aab "android/dist/milmil-android-${version}.aab"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      # Catch an unsigned or debug-signed build before it reaches a release.
+      - name: Verify signature
+        run: |
+          set -euo pipefail
+          tools=("$ANDROID_HOME"/build-tools/*)
+          apksigner="$(printf '%s\n' "${tools[@]}" | sort -V | tail -1)/apksigner"
+          "$apksigner" verify --print-certs "android/dist/milmil-android-${{ steps.name.outputs.version }}.apk"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: milmil-android
+          path: android/dist/*
+          if-no-files-found: error
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${GITHUB_REF_NAME}" android/dist/* --clobber

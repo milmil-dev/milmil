@@ -29,7 +29,16 @@ function timeAgo(dateStr: string, i18n: { _: (descriptor: any) => string }): str
 
 /* ── Component ────────────────────────────────────────────── */
 
-export function NotificationBell() {
+/**
+ * `sidebar` is the desktop rail button: it sits on the app background and drops
+ * its panel out to the right. `floating` is the mobile one, which sits on top
+ * of whatever the page draws — usually full-bleed key art — so it carries its
+ * own glass chip and non-flipping white glyph, and drops the panel downward.
+ */
+type Variant = 'sidebar' | 'floating';
+
+export function NotificationBell({ variant = 'sidebar' }: { variant?: Variant } = {}) {
+  const floating = variant === 'floating';
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -86,12 +95,18 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="relative flex items-center justify-center w-9 h-9 rounded-full text-ink/40 hover:text-ink/80 hover:bg-ink/[0.04] transition-colors cursor-pointer"
+        className={cn(
+          'relative flex items-center justify-center rounded-full transition-colors cursor-pointer',
+          floating
+            ? 'w-10 h-10 bg-black/35 text-white/85 ring-1 ring-white/15 backdrop-blur-md active:bg-black/50'
+            : 'w-9 h-9 text-ink/40 hover:text-ink/80 hover:bg-ink/[0.04]'
+        )}
         aria-label={i18n._(msg`nav.notifications`)}
+        data-testid={floating ? 'notification-bell-floating' : 'notification-bell'}
       >
-        <HugeiconsIcon icon={Notification03Icon} size={18} strokeWidth={1.5} />
+        <HugeiconsIcon icon={Notification03Icon} size={floating ? 20 : 18} strokeWidth={1.5} />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-[10px] font-bold text-ink leading-none">
+          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none tabular-nums shadow-[0_0_0_2px_rgba(0,0,0,0.25)]">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -105,7 +120,12 @@ export function NotificationBell() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-[calc(100%+8px)] bottom-0 w-80 rounded-lg border border-ink/[0.08] bg-mm-bg-elevated shadow-xl shadow-black/50 overflow-hidden z-50"
+            className={cn(
+              'absolute rounded-lg border border-ink/[0.08] bg-mm-bg-elevated shadow-xl shadow-black/50 overflow-hidden z-50',
+              floating
+                ? 'left-0 top-[calc(100%+10px)] w-[min(20rem,calc(100vw-2rem))]'
+                : 'left-[calc(100%+8px)] bottom-0 w-80'
+            )}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-ink/[0.06]">

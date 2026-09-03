@@ -9,7 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/auth"
@@ -78,7 +79,7 @@ func newAuditTestServer(t *testing.T) *auditTestServer {
 
 	q := store.New(database)
 	user, err := q.CreateUser(context.Background(), store.CreateUserParams{
-		ID:           uuid.NewString(),
+		ID:           uuid.New().String(),
 		Username:     "audit-tester",
 		PasswordHash: "unused",
 	})
@@ -94,7 +95,7 @@ func (s *auditTestServer) mintAPIToken(t *testing.T, name string) string {
 	plaintext, hash, prefix, err := auth.GenerateAPIToken()
 	require.NoError(t, err)
 	_, err = s.queries.CreateAPIToken(context.Background(), store.CreateAPITokenParams{
-		ID:            uuid.NewString(),
+		ID:            uuid.New().String(),
 		Name:          name,
 		TokenHash:     hash,
 		TokenPrefix:   prefix,

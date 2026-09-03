@@ -8,7 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/api"
 	"github.com/milmil/api/internal/auth"
@@ -35,21 +36,21 @@ func newThumbnailTestApp(t *testing.T) (e *echo.Echo, dataDir, fileID, token str
 
 	q := store.New(database)
 	ctx := context.Background()
-	user, err := q.CreateUser(ctx, store.CreateUserParams{ID: uuid.NewString(), Username: "thumbs", PasswordHash: "unused"})
+	user, err := q.CreateUser(ctx, store.CreateUserParams{ID: uuid.New().String(), Username: "thumbs", PasswordHash: "unused"})
 	require.NoError(t, err)
 	plaintext, hash, prefix, err := auth.GenerateAPIToken()
 	require.NoError(t, err)
 	_, err = q.CreateAPIToken(ctx, store.CreateAPITokenParams{
-		ID: uuid.NewString(), Name: "thumbs", TokenHash: hash, TokenPrefix: prefix, UserID: user.ID,
+		ID: uuid.New().String(), Name: "thumbs", TokenHash: hash, TokenPrefix: prefix, UserID: user.ID,
 	})
 	require.NoError(t, err)
 
 	lib, err := q.CreateLibrary(ctx, store.CreateLibraryParams{
-		ID: uuid.NewString(), Name: "lib", Path: dataDir, Enabled: 1, ScanIntervalMinutes: 60, SourceType: "local",
+		ID: uuid.New().String(), Name: "lib", Path: dataDir, Enabled: 1, ScanIntervalMinutes: 60, SourceType: "local",
 	})
 	require.NoError(t, err)
 	mf, err := q.UpsertMediaFile(ctx, store.UpsertMediaFileParams{
-		ID: uuid.NewString(), LibraryID: lib.ID, Path: filepath.Join(dataDir, "ep.mkv"), Filename: "ep.mkv", SizeBytes: 1,
+		ID: uuid.New().String(), LibraryID: lib.ID, Path: filepath.Join(dataDir, "ep.mkv"), Filename: "ep.mkv", SizeBytes: 1,
 	})
 	require.NoError(t, err)
 	return e, dataDir, mf.ID, plaintext
@@ -90,7 +91,7 @@ func TestThumbnailSprite_NotGeneratedYet(t *testing.T) {
 
 func TestThumbnailVTT_UnknownFile(t *testing.T) {
 	e, _, _, token := newThumbnailTestApp(t)
-	req := httptest.NewRequest(http.MethodGet, "/api/v1/stream/"+uuid.NewString()+"/thumbnails", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/stream/"+uuid.New().String()+"/thumbnails", nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	rec := httptest.NewRecorder()
 	e.ServeHTTP(rec, req)

@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
@@ -77,7 +78,7 @@ func (h *handler) handleAuthSetup(c *echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	user, err := h.queries.CreateUser(c.Request().Context(), store.CreateUserParams{
-		ID:           uuid.NewString(),
+		ID:           uuid.New().String(),
 		Username:     req.Username,
 		PasswordHash: hash,
 	})
@@ -91,7 +92,7 @@ func (h *handler) handleAuthSetup(c *echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	_, err = h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
-		ID:            uuid.NewString(),
+		ID:            uuid.New().String(),
 		Name:          deviceName,
 		TokenHash:     hash,
 		TokenPrefix:   prefix,
@@ -234,7 +235,7 @@ func (h *handler) issueAPIToken(c *echo.Context, userID, username, deviceName st
 		return echo.ErrInternalServerError
 	}
 	_, err = h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
-		ID:            uuid.NewString(),
+		ID:            uuid.New().String(),
 		Name:          deviceName,
 		TokenHash:     hash,
 		TokenPrefix:   prefix,

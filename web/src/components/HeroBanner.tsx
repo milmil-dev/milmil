@@ -7,12 +7,20 @@ import type { AnimeSummary } from '../lib/api/discover';
 import type { WatchProgress } from '../lib/api/progress';
 import { translateGenre } from '../lib/genre-i18n';
 import { animeGradient } from '../lib/gradient';
+import { formatSeason } from '../lib/season';
 import { cn } from '../lib/utils';
 import { PreviewModal } from './PreviewModal';
 import { Skeleton } from './Skeleton';
 import { stripTags } from '../lib/sanitize';
 
 const SLIDE_DURATION = 8000;
+
+// Fade the scrim out before the hero's bottom edge, or it ends in a hard seam
+// against the (taller) banner image it does not cover.
+const SCRIM_FADE: React.CSSProperties = {
+  maskImage: 'linear-gradient(to bottom, black 0%, black 55%, transparent 100%)',
+  WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 55%, transparent 100%)',
+};
 
 export function HeroBanner({
   items,
@@ -27,41 +35,32 @@ export function HeroBanner({
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [, setProgress] = useState(0);
-  const featured = items[activeIndex];
+  // Clamp: `items` can shrink under a stale index while a query refetches
+  const featured = items[Math.min(activeIndex, items.length - 1)];
+
+  const step = (delta: number) => setActiveIndex((i) => (i + delta + items.length) % items.length);
 
   // Notify parent when active item changes
   useEffect(() => {
     if (featured) onActiveChange?.(featured);
-  }, [activeIndex, featured, onActiveChange]);
+  }, [featured, onActiveChange]);
 
-  // Auto-advance with progress tracking
+  // Auto-advance
   useEffect(() => {
     if (items.length <= 1 || isPaused) return;
-    setProgress(0);
-    const start = Date.now();
-    const frame = () => {
-      const elapsed = Date.now() - start;
-      const pct = Math.min(elapsed / SLIDE_DURATION, 1);
-      setProgress(pct);
-      if (pct < 1) {
-        rafId = requestAnimationFrame(frame);
-      } else {
-        setActiveIndex((i) => (i + 1) % items.length);
-      }
-    };
-    let rafId = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(rafId);
+    const timer = setTimeout(() => setActiveIndex((i) => (i + 1) % items.length), SLIDE_DURATION);
+    return () => clearTimeout(timer);
   }, [items.length, isPaused, activeIndex]);
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') setActiveIndex((i) => (i - 1 + items.length) % items.length);
-      if (e.key === 'ArrowRight') setActiveIndex((i) => (i + 1) % items.length);
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [items.length]);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      step(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      step(1);
+    }
+  };
 
   if (!featured) return null;
 
@@ -71,17 +70,39 @@ export function HeroBanner({
     null;
 
   const hasCover = featured.cover_image?.startsWith('http');
+  const seasonLabel = formatSeason(featured.air_date, i18n);
+  const synopsis = featured.description ? stripTags(featured.description) : '';
 
   return (
     <div
-      className="relative w-full"
+      className="relative w-full outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/25"
       style={{ height: 'clamp(400px, 56vh, 520px)' }}
       tabIndex={0}
       role="region"
+      aria-roledescription="carousel"
       aria-label="Featured anime"
+      onKeyDown={handleKeyDown}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
     >
+      {/* Scrim — darken under the copy for contrast, but keep the left edge
+          (sidebar seam + poster) open so Home doesn't grow a hard
+          vertical shadow against the rail. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-[1]" style={SCRIM_FADE}>
+        {/* Below md the copy spans the full width, so darken all of it; wider
+            than that the artwork stays on show around the poster. */}
+        <div className="absolute inset-0 bg-black/50 md:hidden" />
+        <div
+          className="absolute inset-0 hidden md:block"
+          style={{
+            background:
+              'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.28) 14%, rgba(0,0,0,0.55) 36%, rgba(0,0,0,0.28) 58%, transparent 78%)',
+          }}
+        />
+      </div>
+
       {/* Content */}
       <div className="relative z-[2] h-full flex items-center">
         <div className="min-w-0 w-full px-6 md:px-8">
@@ -118,48 +139,63 @@ export function HeroBanner({
                   >
                     {featured.title}
                   </h2>
+                  {featured.title_original && featured.title_original !== featured.title && (
+                    <p className="mt-1.5 text-[13px] text-white/45 truncate">
+                      {featured.title_original}
+                    </p>
+                  )}
                 </Link>
 
-                {/* Meta row — genres + score inline */}
-                <div className="flex items-center gap-3 flex-wrap">
+                {/* Meta row — score, season, episodes, type */}
+                <div className="flex items-center gap-2.5 flex-wrap text-[13px]">
                   {featured.score > 0 && (
-                    <span className="text-mm-accent font-bold text-[15px] flex items-center gap-1">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="opacity-80"
-                      >
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    <span className="inline-flex items-center gap-1 font-bold text-amber-400 tabular-nums">
+                      <svg viewBox="0 0 12 12" fill="currentColor" className="w-3 h-3">
+                        <path d="M6 0.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L6 9.52 2.48 11.35l.67-3.93L.3 4.64l3.94-.57z" />
                       </svg>
                       {featured.score.toFixed(1)}
                     </span>
                   )}
-                  {featured.genres && featured.genres.length > 0 && (
-                    <>
-                      {featured.score > 0 && <span className="w-px h-3.5 bg-white/15" />}
-                      {featured.genres.slice(0, 4).map((g) => (
-                        <Link
-                          key={g}
-                          to="/search"
-                          search={{ genre: g }}
-                          className="text-[12px] font-medium px-2.5 py-1 rounded-full bg-white/[0.08] text-white/70 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
-                        >
-                          {translateGenre(g, i18n.locale)}
-                        </Link>
-                      ))}
-                    </>
+                  {featured.media_type && (
+                    <MetaItem showDivider={featured.score > 0}>{featured.media_type}</MetaItem>
+                  )}
+                  {seasonLabel && (
+                    <MetaItem showDivider={featured.score > 0 || !!featured.media_type}>
+                      {seasonLabel}
+                    </MetaItem>
+                  )}
+                  {featured.episode_count > 0 && (
+                    <MetaItem showDivider>
+                      <span className="tabular-nums">
+                        {featured.episode_count} {i18n._(msg`common.ep`)}
+                      </span>
+                    </MetaItem>
                   )}
                 </div>
 
+                {/* Genres */}
+                {featured.genres && featured.genres.length > 0 && (
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {featured.genres.slice(0, 4).map((g) => (
+                      <Link
+                        key={g}
+                        to="/search"
+                        search={{ genre: g }}
+                        className="text-[12px] font-medium px-2.5 py-1 rounded-full bg-white/[0.08] text-white/70 hover:bg-mm-accent/15 hover:text-mm-accent transition-colors"
+                      >
+                        {translateGenre(g, i18n.locale)}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
                 {/* Description */}
-                {featured.description && (
+                {synopsis && (
                   <p
-                    className="text-[14px] font-bold text-white/65 max-w-[560px] leading-relaxed line-clamp-3"
-                    style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}
+                    className="text-[14px] text-white/70 max-w-[600px] leading-relaxed line-clamp-3"
+                    style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
                   >
-                    {stripTags(featured.description)}
+                    {synopsis}
                   </p>
                 )}
 
@@ -185,15 +221,17 @@ export function HeroBanner({
 
           {/* Slide indicators */}
           {items.length > 1 && (
-            <div className="flex items-center gap-2.5 mt-6">
+            <div className="flex items-center gap-2 mt-6">
               {items.map((item, i) => (
                 <button
                   type="button"
                   key={item.bangumi_id}
+                  aria-label={item.title}
+                  aria-current={i === activeIndex}
                   onClick={() => setActiveIndex(i)}
                   className={cn(
-                    'size-2 rounded-full cursor-pointer transition-all duration-200',
-                    i === activeIndex ? 'h-[6px] w-5 bg-white' : 'bg-white/50 hover:bg-white/70'
+                    'h-1.5 rounded-full cursor-pointer transition-all duration-200',
+                    i === activeIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/70'
                   )}
                 />
               ))}
@@ -217,6 +255,16 @@ export function HeroBanner({
       {/* Preview modal */}
       <PreviewModal anime={featured} open={previewOpen} onClose={() => setPreviewOpen(false)} />
     </div>
+  );
+}
+
+/** One dot-separated entry in the hero meta row */
+function MetaItem({ children, showDivider }: { children: React.ReactNode; showDivider?: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-2.5 text-white/55 font-medium">
+      {showDivider && <span aria-hidden className="w-1 h-1 rounded-full bg-white/25" />}
+      {children}
+    </span>
   );
 }
 

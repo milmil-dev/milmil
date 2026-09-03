@@ -76,7 +76,7 @@ func TestChecker_Check_CacheHitWithinTTL(t *testing.T) {
 		Repo: "x/y", HTTPClient: srv.Client(), BaseURL: srv.URL, TTL: time.Hour,
 	})
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		if _, _, err := c.Check(context.Background()); err != nil {
 			t.Fatalf("Check #%d: %v", i, err)
 		}
@@ -154,7 +154,6 @@ func TestChecker_Check_SkipsPrereleaseAndDraft(t *testing.T) {
 		{"prerelease", fakeGitHubRelease{TagName: "v0.1.8", Prerelease: true, PublishedAt: time.Now().UTC()}},
 		{"draft", fakeGitHubRelease{TagName: "v0.1.8", Draft: true, PublishedAt: time.Now().UTC()}},
 	} {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			srv := newFakeGitHub(t, tc.rel, http.StatusOK)

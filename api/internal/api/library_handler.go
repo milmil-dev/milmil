@@ -15,7 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	smb2 "github.com/hirochachacha/go-smb2"
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/crypto"
@@ -237,7 +238,7 @@ func (h *handler) handleCreateLibrary(c *echo.Context) error {
 		interval = 60
 	}
 	lib, err := h.queries.CreateLibrary(c.Request().Context(), store.CreateLibraryParams{
-		ID:                    uuid.NewString(),
+		ID:                    uuid.New().String(),
 		Name:                  req.Name,
 		Path:                  req.Path,
 		Enabled:               1,
