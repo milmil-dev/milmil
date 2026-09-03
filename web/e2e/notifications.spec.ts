@@ -147,9 +147,10 @@ async function openBellDropdown(page: Page) {
   // The NotificationBell component re-mounts when Playwright dispatches native
   // pointer events (the sidebar parent re-renders). Use a JS .click() which
   // fires a synthetic click without mousedown/pointerdown, keeping the dropdown
-  // open reliably.
+  // open reliably. Prefer the sidebar bell — the floating mobile chip is also
+  // in the DOM (md:hidden) and would otherwise collide on aria-label.
   await page.evaluate(() => {
-    (document.querySelector('button[aria-label="Notifications"]') as HTMLElement)?.click();
+    (document.querySelector('[data-testid="notification-bell"]') as HTMLElement | null)?.click();
   });
   // Wait for the dropdown's data query to resolve
   await page.waitForTimeout(500);
@@ -169,8 +170,8 @@ test.describe('Notification Center', () => {
   // ── Bell + dropdown tests ─────────────────────────────────────────────
 
   test('bell shows unread badge count', async ({ page }) => {
-    // The bell button has aria-label="Notifications" (i18n nav.notifications)
-    const bellButton = page.locator('button[aria-label="Notifications"]');
+    // Sidebar bell — not the floating mobile chip (also in the DOM, md:hidden).
+    const bellButton = page.getByTestId('notification-bell');
     await expect(bellButton).toBeVisible({ timeout: 5000 });
 
     // Badge should show unread count of 3

@@ -34,22 +34,22 @@ func (r *ReportGenerator) GenerateDailyReport(ctx context.Context) (*BotResponse
 
 	var text strings.Builder
 	text.WriteString("<b>📊 Daily Report</b>\n\n")
-	text.WriteString(fmt.Sprintf("📥 Active downloads: <b>%d</b>\n", len(active)))
+	fmt.Fprintf(&text, "📥 Active downloads: <b>%d</b>\n", len(active))
 	if len(errorDownloads) > 0 {
-		text.WriteString(fmt.Sprintf("⚠️ Downloads with errors: <b>%d</b>\n", len(errorDownloads)))
+		fmt.Fprintf(&text, "⚠️ Downloads with errors: <b>%d</b>\n", len(errorDownloads))
 	}
-	text.WriteString(fmt.Sprintf("✅ Completed (24h): <b>%d</b>\n", len(recentComplete)))
-	text.WriteString(fmt.Sprintf("📡 RSS feeds: <b>%d</b>\n", len(feeds)))
-	text.WriteString(fmt.Sprintf("📋 追番規則：<b>%d</b>\n", len(rules)))
+	fmt.Fprintf(&text, "✅ Completed (24h): <b>%d</b>\n", len(recentComplete))
+	fmt.Fprintf(&text, "📡 RSS feeds: <b>%d</b>\n", len(feeds))
+	fmt.Fprintf(&text, "📋 追番規則：<b>%d</b>\n", len(rules))
 
 	if len(recentComplete) > 0 {
 		text.WriteString("\n<b>Recent Downloads:</b>\n")
 		limit := min(len(recentComplete), 5)
 		for i := range limit {
-			text.WriteString(fmt.Sprintf("• %s\n", recentComplete[i].Name))
+			fmt.Fprintf(&text, "• %s\n", recentComplete[i].Name)
 		}
 		if len(recentComplete) > 5 {
-			text.WriteString(fmt.Sprintf("  <i>…and %d more</i>\n", len(recentComplete)-5))
+			fmt.Fprintf(&text, "  <i>…and %d more</i>\n", len(recentComplete)-5)
 		}
 	}
 

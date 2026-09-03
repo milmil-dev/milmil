@@ -102,6 +102,7 @@ export function NotificationBell({ variant = 'sidebar' }: { variant?: Variant } 
             : 'w-9 h-9 text-ink/40 hover:text-ink/80 hover:bg-ink/[0.04]'
         )}
         aria-label={i18n._(msg`nav.notifications`)}
+        data-testid={floating ? 'notification-bell-floating' : 'notification-bell'}
       >
         <HugeiconsIcon icon={Notification03Icon} size={floating ? 20 : 18} strokeWidth={1.5} />
         {unreadCount > 0 && (
