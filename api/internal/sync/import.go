@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"log/slog"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/store"
 )
 
@@ -40,7 +41,7 @@ func (s *Service) runImport(ctx context.Context, userID string, prov Provider, t
 				break
 			}
 			_, _ = s.q.UpsertWatchProgress(ctx, store.UpsertWatchProgressParams{
-				ID:              uuid.NewString(),
+				ID:              uuid.New().String(),
 				UserID:          userID,
 				EpisodeID:       ep.ID,
 				Completed:       1,

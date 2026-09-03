@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/store"
@@ -69,7 +70,7 @@ func (h *handler) handleTorrentSearchAdd(c *echo.Context) error {
 	}
 
 	dl, err := h.queries.CreateDownload(c.Request().Context(), store.CreateDownloadParams{
-		ID:      uuid.NewString(),
+		ID:      uuid.New().String(),
 		Gid:     gid,
 		Url:     req.URL,
 		Name:    name,

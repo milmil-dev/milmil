@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/store"
 )
 
@@ -72,7 +73,7 @@ func (s *Service) PullFromProvider(ctx context.Context, userID string, provider 
 		updated := false
 		for i := 0; i < e.Progress && i < len(episodes); i++ {
 			if _, err := s.q.UpsertWatchProgress(ctx, store.UpsertWatchProgressParams{
-				ID:              uuid.NewString(),
+				ID:              uuid.New().String(),
 				UserID:          userID,
 				EpisodeID:       episodes[i].ID,
 				Completed:       1,

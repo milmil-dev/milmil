@@ -13,7 +13,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
 )
@@ -21,7 +22,7 @@ import (
 func TestUserImage_ServesAvatarAndTagsUser(t *testing.T) {
 	h, e, q := newDevicesTestHandler(t)
 	hash, _ := auth.HashPassword("correct horse battery")
-	user, err := q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.NewString(), Username: "infuse-user", PasswordHash: hash})
+	user, err := q.CreateUser(context.Background(), store.CreateUserParams{ID: uuid.New().String(), Username: "infuse-user", PasswordHash: hash})
 	if err != nil {
 		t.Fatal(err)
 	}

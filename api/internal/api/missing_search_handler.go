@@ -9,7 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/library/searchmissing"
@@ -113,7 +114,7 @@ func (h *handler) handleMissingDownload(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadGateway, "downloader: "+err.Error())
 	}
 
-	id := uuid.NewString()
+	id := uuid.New().String()
 	dl, err := h.queries.CreateDownload(ctx, store.CreateDownloadParams{
 		ID:        id,
 		Gid:       gid,
@@ -213,7 +214,7 @@ func (h *handler) handleMissingAutoRule(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "rss_feed_id required to create a new auto-download rule")
 	}
 
-	id := uuid.NewString()
+	id := uuid.New().String()
 	rule, err := h.queries.CreateDownloadRule(ctx, store.CreateDownloadRuleParams{
 		ID:               id,
 		Name:             anime.Title + " - auto",

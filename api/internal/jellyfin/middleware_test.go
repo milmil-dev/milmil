@@ -6,7 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/db"
@@ -36,7 +37,7 @@ func seedUser(t *testing.T, q *store.Queries, username string) store.User {
 		t.Fatal(err)
 	}
 	user, err := q.CreateUser(context.Background(), store.CreateUserParams{
-		ID:           uuid.NewString(),
+		ID:           uuid.New().String(),
 		Username:     username,
 		PasswordHash: hash,
 	})

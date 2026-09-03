@@ -3,12 +3,13 @@ package renamer
 import (
 	"bytes"
 	"fmt"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"math"
 	"regexp"
 	"strings"
 	texttemplate "text/template"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // Compiled is a validated, parsed rename template ready to Execute.

@@ -1,6 +1,7 @@
 package search
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -12,13 +13,7 @@ func TestGenerateVariants_TraditionalInput(t *testing.T) {
 	if variants[0] != "進擊的巨人" {
 		t.Errorf("first variant should be original, got: %s", variants[0])
 	}
-	found := false
-	for _, v := range variants {
-		if v == "进击的巨人" {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(variants, "进击的巨人")
 	if !found {
 		t.Errorf("expected simplified variant in: %v", variants)
 	}
@@ -32,13 +27,7 @@ func TestGenerateVariants_SimplifiedInput(t *testing.T) {
 	if variants[0] != "进击的巨人" {
 		t.Errorf("first variant should be original, got: %s", variants[0])
 	}
-	found := false
-	for _, v := range variants {
-		if v == "進擊的巨人" {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(variants, "進擊的巨人")
 	if !found {
 		t.Errorf("expected traditional variant in: %v", variants)
 	}

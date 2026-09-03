@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/bot"
 	"github.com/milmil/api/internal/store"
 )
@@ -132,7 +133,7 @@ func SubscribeDoCallback(svc *Services) bot.CallbackHandler {
 		}
 
 		feed, err := svc.Queries.CreateRSSFeed(ctx, store.CreateRSSFeedParams{
-			ID:                   uuid.NewString(),
+			ID:                   uuid.New().String(),
 			Name:                 fmt.Sprintf("[Bot] %s", title),
 			Url:                  feedURL,
 			Type:                 source,
@@ -145,7 +146,7 @@ func SubscribeDoCallback(svc *Services) bot.CallbackHandler {
 
 		filterRegex := fmt.Sprintf("(?i)%s", title)
 		_, err = svc.Queries.CreateDownloadRule(ctx, store.CreateDownloadRuleParams{
-			ID:               uuid.NewString(),
+			ID:               uuid.New().String(),
 			Name:             title,
 			Enabled:          1,
 			RssFeedID:        feed.ID,

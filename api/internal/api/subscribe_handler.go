@@ -11,7 +11,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/rss"
@@ -119,7 +120,7 @@ func (h *handler) handleSubscribe(c *echo.Context) error {
 
 	// Create RSS feed
 	feed, err := h.queries.CreateRSSFeed(ctx, store.CreateRSSFeedParams{
-		ID:                   uuid.NewString(),
+		ID:                   uuid.New().String(),
 		Name:                 fmt.Sprintf("[Auto] %s", req.AnimeName),
 		Url:                  feedURL,
 		Type:                 feedType,
@@ -155,7 +156,7 @@ func (h *handler) handleSubscribe(c *echo.Context) error {
 
 	// Create download rule
 	rule, err := h.queries.CreateDownloadRule(ctx, store.CreateDownloadRuleParams{
-		ID:               uuid.NewString(),
+		ID:               uuid.New().String(),
 		Name:             req.AnimeName,
 		Enabled:          1,
 		RssFeedID:        feed.ID,
@@ -255,7 +256,7 @@ func (h *handler) refreshNewSubscription(feed store.RssFeed, rule store.Download
 		}
 
 		_, err = h.queries.CreateDownload(ctx, store.CreateDownloadParams{
-			ID:        uuid.NewString(),
+			ID:        uuid.New().String(),
 			Gid:       gid,
 			Url:       item.Link,
 			Name:      item.Title,

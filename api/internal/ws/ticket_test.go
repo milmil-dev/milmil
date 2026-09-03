@@ -91,15 +91,13 @@ func TestTicketStoreIsConcurrencySafe(t *testing.T) {
 	)
 	for _, key := range keys {
 		for range 2 {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				if _, ok := s.Redeem(key); ok {
 					mu.Lock()
 					succeeded++
 					mu.Unlock()
 				}
-			}()
+			})
 		}
 	}
 	wg.Wait()

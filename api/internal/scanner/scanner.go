@@ -10,7 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/ffmpeg"
 	"github.com/milmil/api/internal/storage"
 	"github.com/milmil/api/internal/store"
@@ -87,7 +88,7 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 	defer provider.Close()
 
 	summary, err := s.queries.CreateScanSummary(ctx, store.CreateScanSummaryParams{
-		ID:        uuid.NewString(),
+		ID:        uuid.New().String(),
 		LibraryID: library.ID,
 	})
 	if err != nil {
@@ -119,7 +120,7 @@ func (s *Scanner) ScanLibrary(ctx context.Context, library store.Library, config
 			return nil
 		}
 		upsertedFile, upsertErr := s.queries.UpsertMediaFile(ctx, store.UpsertMediaFileParams{
-			ID:        uuid.NewString(),
+			ID:        uuid.New().String(),
 			LibraryID: library.ID,
 			Path:      path,
 			Filename:  info.Name(),
@@ -226,7 +227,7 @@ func (s *Scanner) scanSubtitles(ctx context.Context, scannedPaths map[string]str
 
 				lang := detectLanguage(subBase, videoBase)
 				_, createErr := s.queries.CreateSubtitleFile(ctx, store.CreateSubtitleFileParams{
-					ID:          uuid.NewString(),
+					ID:          uuid.New().String(),
 					MediaFileID: mediaFileID,
 					Path:        subPath,
 					Language:    lang,
@@ -304,7 +305,7 @@ func (s *Scanner) extractEmbeddedSubtitles(ctx context.Context, scannedPaths map
 
 			format := strings.TrimPrefix(ext, ".")
 			_, _ = s.queries.CreateSubtitleFile(ctx, store.CreateSubtitleFileParams{
-				ID:          uuid.NewString(),
+				ID:          uuid.New().String(),
 				MediaFileID: mediaFileID,
 				Path:        outPath,
 				Language:    label,
@@ -330,8 +331,8 @@ func detectLanguage(subBase, videoBase string) string {
 	}
 
 	// Check each dot-separated part against known language suffixes
-	parts := strings.Split(suffix, ".")
-	for _, part := range parts {
+	parts := strings.SplitSeq(suffix, ".")
+	for part := range parts {
 		lower := strings.ToLower(part)
 		if lang, ok := languageSuffixes[lower]; ok {
 			return lang

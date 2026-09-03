@@ -12,7 +12,8 @@ import (
 
 	"log/slog"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
@@ -429,7 +430,7 @@ func (m *Matcher) upsertAnimeByBangumi(ctx context.Context, f store.MediaFile, b
 	}
 
 	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
-		ID:            uuid.NewString(),
+		ID:            uuid.New().String(),
 		Title:         title,
 		TitleZh:       titleZh,
 		TitleOriginal: titleOriginal,
@@ -489,7 +490,7 @@ func (m *Matcher) upsertAnimeByTMDB(ctx context.Context, f store.MediaFile, tmdb
 		year = sql.NullInt64{Int64: int64(parsed.Year), Valid: true}
 	}
 	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
-		ID:          uuid.NewString(),
+		ID:          uuid.New().String(),
 		Title:       parsed.Title,
 		Status:      "unknown",
 		Genres:      "[]",
@@ -522,7 +523,7 @@ func (m *Matcher) upsertAnimeByAnidb(ctx context.Context, _ store.MediaFile, can
 		year = sql.NullInt64{Int64: int64(parsed.Year), Valid: true}
 	}
 	created, err := m.queries.CreateAnime(ctx, store.CreateAnimeParams{
-		ID:          uuid.NewString(),
+		ID:          uuid.New().String(),
 		Title:       title,
 		Status:      "unknown",
 		Genres:      "[]",

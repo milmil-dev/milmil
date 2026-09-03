@@ -6,7 +6,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/jellyfin/imagecache"
 	"github.com/milmil/api/internal/store"
@@ -42,7 +43,7 @@ func NewHandler(queries *store.Queries, jwtSecret string, imageCacheDir string, 
 	h := &Handler{
 		queries:       queries,
 		jwtSecret:     jwtSecret,
-		serverID:      strings.ReplaceAll(uuid.NewString(), "-", ""),
+		serverID:      strings.ReplaceAll(uuid.New().String(), "-", ""),
 		imageCache:    cache,
 		encryptionKey: encryptionKey,
 		devices:       newDeviceTracker(queries),

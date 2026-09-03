@@ -919,7 +919,6 @@ func (s *Service) BrowseByGenre(ctx context.Context, genre string, page int) ([]
 	g.SetLimit(5)
 
 	for i := range result {
-		i := i
 		g.Go(func() error {
 			bgmID := s.findBangumiID(gctx, result[i].AniListID, result[i].TitleOriginal)
 			if bgmID > 0 {
@@ -1029,7 +1028,6 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 	g.SetLimit(5)
 
 	for i := range result {
-		i := i
 		g.Go(func() error {
 			bgmID := s.findBangumiID(gctx, result[i].AniListID, result[i].TitleOriginal)
 			if bgmID > 0 {
@@ -1211,7 +1209,6 @@ func (s *Service) GetTrending(ctx context.Context, page int) ([]AnimeSummary, er
 	g.SetLimit(5)
 
 	for i := range result {
-		i := i
 		g.Go(func() error {
 			bgmID := s.findBangumiID(gctx, result[i].AniListID, result[i].Title)
 			if bgmID > 0 {

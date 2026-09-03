@@ -3,13 +3,14 @@ package api_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/milmil/api/internal/jellyfin"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/milmil/api/internal/jellyfin"
 )
 
 // jellyfinAuthHeader returns the X-Emby-Authorization header value for the given token.

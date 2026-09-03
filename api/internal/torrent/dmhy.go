@@ -70,8 +70,8 @@ func extractInfoHash(magnet string) string {
 		return ""
 	}
 	xt := u.Query().Get("xt")
-	if strings.HasPrefix(xt, "urn:btih:") {
-		return strings.TrimPrefix(xt, "urn:btih:")
+	if after, ok := strings.CutPrefix(xt, "urn:btih:"); ok {
+		return after
 	}
 	return ""
 }

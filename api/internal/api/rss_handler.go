@@ -9,7 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/downloader"
 	"github.com/milmil/api/internal/rss"
@@ -230,7 +231,7 @@ func (h *handler) handleCreateRSSFeed(c *echo.Context) error {
 		enabled = 1
 	}
 	feed, err := h.queries.CreateRSSFeed(c.Request().Context(), store.CreateRSSFeedParams{
-		ID:                   uuid.NewString(),
+		ID:                   uuid.New().String(),
 		Name:                 req.Name,
 		Url:                  req.URL,
 		Type:                 feedType,
@@ -380,7 +381,7 @@ func (h *handler) handleRefreshRSSFeed(c *echo.Context) error {
 			}
 
 			_, err = h.queries.CreateDownload(ctx, store.CreateDownloadParams{
-				ID:        uuid.NewString(),
+				ID:        uuid.New().String(),
 				Gid:       gid,
 				Url:       item.Link,
 				Name:      item.Title,

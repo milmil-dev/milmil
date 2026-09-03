@@ -172,7 +172,7 @@ func TestEndToEndRateLimitGroupingHonoredReal(t *testing.T) {
 
 	q, database, cleanup := itDB(t)
 	defer cleanup()
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		id := "a" + string(rune('1'+i))
 		itInsertAnime(t, q, id, 12, int64(100+i), 0)
 		itInsertEpisodes(t, q, id, 12)
@@ -181,7 +181,7 @@ func TestEndToEndRateLimitGroupingHonoredReal(t *testing.T) {
 
 	al := providers.NewAniList(srv.Client(), srv.URL)
 	svc := milmilsync.NewService(q, database, []milmilsync.Provider{al}, &itTokenStore{access: "tok"}, nil)
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		id := "a" + string(rune('1'+i))
 		svc.OnProgressUpdate(context.Background(), "u", id)
 	}

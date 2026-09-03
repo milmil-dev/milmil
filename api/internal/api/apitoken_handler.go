@@ -3,7 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/auth"
 	"github.com/milmil/api/internal/store"
@@ -83,7 +84,7 @@ func (h *handler) handleCreateAPIToken(c *echo.Context) error {
 	}
 
 	token, err := h.queries.CreateAPIToken(c.Request().Context(), store.CreateAPITokenParams{
-		ID:            uuid.NewString(),
+		ID:            uuid.New().String(),
 		Name:          req.Name,
 		TokenHash:     hash,
 		TokenPrefix:   prefix,

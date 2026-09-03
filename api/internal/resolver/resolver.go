@@ -9,7 +9,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/cache"
 	"github.com/milmil/api/internal/integration/anidb"
 	"github.com/milmil/api/internal/integration/bangumi"
@@ -409,7 +410,7 @@ func (r *Resolver) getOrCreateAnime(ctx context.Context, libraryID string, bangu
 	}
 
 	anime, err := r.queries.CreateAnime(ctx, store.CreateAnimeParams{
-		ID:                  uuid.NewString(),
+		ID:                  uuid.New().String(),
 		LibraryID:           sql.NullString{String: libraryID, Valid: true},
 		Title:               title,
 		TitleZh:             sql.NullString{String: subject.NameCN, Valid: subject.NameCN != ""},
@@ -451,7 +452,7 @@ func (r *Resolver) ensureEpisodes(ctx context.Context, animeID string, bangumiID
 			title = ep.Name
 		}
 		_, err := r.queries.CreateEpisode(ctx, store.CreateEpisodeParams{
-			ID:                  uuid.NewString(),
+			ID:                  uuid.New().String(),
 			AnimeID:             animeID,
 			EpisodeNumber:       ep.Sort,
 			Title:               sql.NullString{String: title, Valid: title != ""},

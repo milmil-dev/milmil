@@ -49,10 +49,7 @@ func GenerateSpriteSheet(ctx context.Context, inputPath, outputDir string, durat
 	}
 
 	// Use 10 columns per row
-	cols := 10
-	if count < cols {
-		cols = count
-	}
+	cols := min(count, 10)
 	rows := (count + cols - 1) / cols
 
 	tileHeight := tileWidth * 9 / 16 // Assume 16:9 aspect ratio
@@ -105,7 +102,7 @@ func generateVTT(vttPath, spriteFilename string, count, interval, cols, tileWidt
 	var b strings.Builder
 	b.WriteString("WEBVTT\n\n")
 
-	for i := 0; i < count; i++ {
+	for i := range count {
 		startSec := i * interval
 		endSec := (i + 1) * interval
 

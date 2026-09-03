@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"path/filepath"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/milmil/api/internal/store"
 )
 
@@ -31,7 +32,7 @@ type BatchResult struct {
 // to rename are accumulated in Errors; failures to write history/update path
 // are tolerated (logged via the error channel but don't roll the rename back).
 func Apply(ctx context.Context, q *store.Queries, mover Mover, libraryID string, plans []PlanResult) (BatchResult, error) {
-	batchID := uuid.NewString()
+	batchID := uuid.New().String()
 	res := BatchResult{BatchID: batchID}
 	for _, p := range plans {
 		if p.Status != StatusOK {
@@ -47,7 +48,7 @@ func Apply(ctx context.Context, q *store.Queries, mover Mover, libraryID string,
 			continue
 		}
 		_ = q.InsertRenameHistory(ctx, store.InsertRenameHistoryParams{
-			ID:          uuid.NewString(),
+			ID:          uuid.New().String(),
 			BatchID:     batchID,
 			LibraryID:   libraryID,
 			MediaFileID: sql.NullString{String: p.MediaFileID, Valid: p.MediaFileID != ""},

@@ -128,7 +128,7 @@ func TestWorkerMarksRowCompleted(t *testing.T) {
 func TestWorkerRateLimitGroupingDefersRest(t *testing.T) {
 	q, db, cleanup := newTestQueriesWithDB(t)
 	defer cleanup()
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		id := fmt.Sprintf("a%d", i+1)
 		mustInsertAnime(t, q, id, 12, int64(100+i), 0)
 	}
@@ -139,7 +139,7 @@ func TestWorkerRateLimitGroupingDefersRest(t *testing.T) {
 	}
 	s := NewService(q, db, []Provider{fp}, newStaticTS(), nil)
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		id := fmt.Sprintf("a%d", i+1)
 		if err := s.queue.Enqueue(context.Background(), "u", ProviderAniList, id,
 			SyncOp{Kind: KindProgress, AnimeID: id, Progress: 1}); err != nil {
