@@ -9,7 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/google/uuid"
+	"uuid"
+
 	"github.com/labstack/echo/v5"
 	"github.com/milmil/api/internal/store"
 )
@@ -126,10 +127,10 @@ func deriveActionType(path, method string) string {
 }
 
 // newAuditID returns a fresh audit-log row ID. The schema column is TEXT,
-// so any unique string works; using uuid.NewString matches every other
+// so any unique string works; using uuid.New().String() matches every other
 // entity in the codebase and keeps birthday-collision risk negligible.
 func newAuditID() string {
-	return uuid.NewString()
+	return uuid.New().String()
 }
 
 func auditNullStr(s string) sql.NullString {
