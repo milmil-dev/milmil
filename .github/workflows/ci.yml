@@ -199,10 +199,16 @@ jobs:
           sudo xcode-select -s "$xcode"
           xcodebuild -version
 
-      # Homebrew bottles are the quickest way to the pinned versions on the
-      # hosted runner; mise.toml carries the same pins for local installs.
+      # Pin to SWIFTLINT_VERSION / mise.toml — a floating `brew install
+      # swiftlint` jumped to 0.65 and failed rules this tree is not on yet.
       - name: Install xcodegen and swiftlint
-        run: brew install xcodegen swiftlint
+        run: |
+          set -euo pipefail
+          brew install xcodegen
+          curl -fsSL "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/portable_swiftlint.zip" -o /tmp/swiftlint.zip
+          unzip -qo /tmp/swiftlint.zip -d /tmp/swiftlint
+          install -m 755 /tmp/swiftlint/swiftlint "$(brew --prefix)/bin/swiftlint"
+          swiftlint version
 
       - name: SwiftLint
         working-directory: macos
