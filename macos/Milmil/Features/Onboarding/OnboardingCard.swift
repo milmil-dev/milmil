@@ -42,9 +42,25 @@ struct AppMark: View {
 
     var body: some View {
         ZStack {
+            // Match the brand tile plate (deep indigo, not a faint accent wash) so
+            // the mark still frames itself against the dark poster wall.
             RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
-                .fill(Theme.accent.opacity(0.1))
-                .overlay(RoundedRectangle(cornerRadius: size * 0.27, style: .continuous).strokeBorder(Theme.accent.opacity(0.2)))
+                .fill(
+                    RadialGradient(
+                        colors: [
+                            Color(hex: 0x2A2558),
+                            Color(hex: 0x15122E),
+                            Color(hex: 0x0C0A18),
+                        ],
+                        center: UnitPoint(x: 0.32, y: 0.22),
+                        startRadius: 0,
+                        endRadius: size * 1.05
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
+                        .strokeBorder(Theme.accent.opacity(0.22))
+                )
             Image("BrandMark")
                 .resizable()
                 .scaledToFit()

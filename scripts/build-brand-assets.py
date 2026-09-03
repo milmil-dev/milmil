@@ -34,11 +34,19 @@ TYPE_DARK = "#EDEDF2"
 TYPE_LIGHT = "#141419"
 MUTED_DARK = "#6E6E80"
 MUTED_LIGHT = "#8A8A9A"
+# App-tile plate — deep indigo, not void. Near-black tiles dissolve into dark
+# home screens / UI chrome; a lifted indigo still reads as "midnight" while
+# framing the luminous mark. Highlight sits upper-left (projected light), but
+# stays darker than the mark's #4338CA end so the stroke doesn't melt into it.
+TILE_HIGHLIGHT = "#2A2558"
+TILE_MID = "#15122E"
+TILE_EDGE = "#0C0A18"
 
 PALETTE = [
     ("#4338CA", "Indigo 700"),
     ("#7C3AED", "Violet 600"),
     ("#A78BFA", "Arch Violet"),
+    (TILE_MID, "Tile Indigo"),
     ("#0A0A0F", "Void"),
 ]
 
@@ -85,15 +93,22 @@ def tile(
     radius: float | None = None,
     fill: float = 0.62,
 ) -> str:
-    """Dark app tile. inset>0 leaves transparent margin (macOS); 0 is full-bleed."""
+    """Dark app tile. inset>0 leaves transparent margin (macOS); 0 is full-bleed.
+
+    The plate is deep indigo, not void black: on a dark home screen a near-black
+    tile dissolves into the wallpaper, and the mark looks unframed. The radial
+    keeps the philosophy's "projected light" reading — indigo highlight upper-
+    left, near-void at the rim — while staying dark enough that #A78BFA still
+    reads as luminous.
+    """
     x = size * inset
     box = size - 2 * x
     r = radius if radius is not None else (box * 0.2237 if inset else 0)
     body = (
-        '<defs><radialGradient id="tile-bg" cx="0.3" cy="0.2" r="1.05">'
-        '<stop offset="0" stop-color="#1C1B2E"/>'
-        '<stop offset="0.7" stop-color="#0B0B12"/>'
-        '<stop offset="1" stop-color="#08080D"/>'
+        '<defs><radialGradient id="tile-bg" cx="0.32" cy="0.22" r="1.05">'
+        f'<stop offset="0" stop-color="{TILE_HIGHLIGHT}"/>'
+        f'<stop offset="0.55" stop-color="{TILE_MID}"/>'
+        f'<stop offset="1" stop-color="{TILE_EDGE}"/>'
         "</radialGradient></defs>"
         f'<rect x="{x:g}" y="{x:g}" width="{box:g}" height="{box:g}" '
         f'rx="{r:g}" ry="{r:g}" fill="url(#tile-bg)"/>'
@@ -210,6 +225,15 @@ def spec_sheet(w: float = 1200, h: float = 1600) -> str:
 # build
 # --------------------------------------------------------------------------- #
 
+# Android launcher densities: mdpi through xxxhdpi at the legacy 48dp size.
+ANDROID_ICONS = [
+    ("mipmap-mdpi", 48),
+    ("mipmap-hdpi", 72),
+    ("mipmap-xhdpi", 96),
+    ("mipmap-xxhdpi", 144),
+    ("mipmap-xxxhdpi", 192),
+]
+
 MACOS_ICONS = [
     ("icon_16x16@1x.png", 16),
     ("icon_16x16@2x.png", 32),
@@ -294,6 +318,17 @@ def main() -> int:
     sheet.parent.mkdir(parents=True, exist_ok=True)
     run("rsvg-convert", "-w", "1200", "-h", "1600", str(s_sheet), "-o", str(sheet))
     written.append(sheet)
+
+    # Android client — only when that workspace is checked out.
+    android_res = ROOT / "android/app/src/main/res"
+    if android_res.is_dir():
+        # The adaptive foreground is drawn at 1/3 the mark's usual fill: the
+        # launcher masks the outer third away and may parallax what is left,
+        # so anything sized for a full-bleed tile gets its edges eaten.
+        s_adaptive = stage("android-adaptive.svg", mark_on("none", 1024, fill=0.42))
+        for folder, size in ANDROID_ICONS:
+            png(s_tile_rounded, android_res / folder / "ic_launcher.png", size)
+            png(s_adaptive, android_res / folder / "ic_launcher_foreground.png", round(size * 108 / 48))
 
     # macOS client — only when that workspace is checked out.
     appicon = ROOT / "macos/Milmil/Resources/Assets.xcassets/AppIcon.appiconset"

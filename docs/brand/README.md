@@ -48,7 +48,7 @@ gradient.
 | `web/public/icons/favicon-32.png` | mark | |
 | `web/public/icons/icon-{192,512}.png` | mark | transparent; also the sidebar, splash and README image |
 | `web/public/icons/maskable-512.png` | tile | full-bleed, mark at 55% so it survives the 80% safe circle |
-| `web/public/icons/apple-touch-icon.png` | tile | opaque — iOS composites transparency to black |
+| `web/public/icons/apple-touch-icon.png` | tile | opaque indigo plate — iOS composites transparency to black |
 | `docs-site/public/{favicon.svg,logo.svg}` | mark | |
 | `docs-site/public/{favicon-32,icon-192,icon-512,apple-touch-icon}.png` | mark / tile | |
 | `docs/brand/milmil-logo.png` | dark lockup | 2400px, mark over the wordmark |
@@ -59,6 +59,10 @@ gradient.
 | `docs/brand/milmil-logo.pdf` | dark lockup | vector |
 | `docs/design/milmil-logo-sheet.png` | spec sheet | the one-page reference |
 | `macos/…/AppIcon.appiconset/*.png` | rounded tile | only when the `macos/` workspace is checked out |
+
+The tile plate is a deep indigo radial (`#2A2558` → `#15122E` → `#0C0A18`),
+not void black — a near-black tile dissolves into dark home screens and leaves
+the mark unframed.
 
 ## Using it
 
