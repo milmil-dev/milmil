@@ -21,12 +21,27 @@
   --mm-border-subtle: rgba(255, 255, 255, 0.05);
   --mm-sidebar: #070707;
   --mm-accent: #a78bfa; /* Arch Violet — Luminous Geometry brand */
+  /* The accent as drawn over artwork (poster badges, hero chips). Those sit on
+     their own dark scrim, so this one must NOT flip with the theme — `.light`
+     deliberately leaves it alone. */
+  --mm-accent-fixed: #a78bfa;
   --mm-text-primary: rgba(255, 255, 255, 0.93); /* gray-200 equivalent */
   --mm-text-secondary: rgba(255, 255, 255, 0.6);
   --mm-text-tertiary: rgba(255, 255, 255, 0.4); /* Seanime --muted */
   --mm-text-muted: rgba(255, 255, 255, 0.2);
   --mm-overlay: rgba(0, 0, 0, 0.4);
   --mm-glass: rgba(12, 12, 12, 0.82);
+  /* Ambient body wash. Tuned for a near-black canvas: a 12% violet glow reads
+     as depth here. The light theme re-tunes these — see `.light` — because the
+     same strengths over #f6f6f8 turn the whole page lavender and drag every
+     muted text tier below AA. */
+  --mm-glow-primary: color-mix(in oklch, var(--mm-accent) 12%, transparent);
+  --mm-glow-secondary: oklch(0.45 0.12 300 / 0.08);
+  --mm-glow-center: color-mix(in oklch, var(--mm-accent) 4%, transparent);
+  --mm-grid-dot: oklch(1 0 0 / 0.025);
+  /* Multiplier for <PageAtmosphere>, whose per-page washes are authored for
+     this canvas. */
+  --atmosphere-opacity: 1;
   /* Theme-flipping foreground: white in dark mode, near-black in light mode.
      `text-ink/60` etc. replace the old hardcoded `text-white/60`; keep literal
      `text-white` only for text drawn over artwork, which must not flip. */
@@ -47,14 +62,24 @@
   --mm-border: rgba(12, 12, 24, 0.12);
   --mm-border-subtle: rgba(12, 12, 24, 0.06);
   --mm-sidebar: #f1f1f5;
-  /* Darker companion of Vesica Violet for AA contrast on light surfaces. */
-  --mm-accent: #7857e6;
+  /* Darker companion of Vesica Violet for AA contrast on light surfaces.
+     #7857e6 only cleared 3.9:1 once it sat on its own 12% tint (the "Today"
+     pill), so it goes a step deeper. */
+  --mm-accent: #6d4bd8;
   --mm-text-primary: rgba(16, 16, 22, 0.92);
   --mm-text-secondary: rgba(16, 16, 22, 0.62);
   --mm-text-tertiary: rgba(16, 16, 22, 0.45);
   --mm-text-muted: rgba(16, 16, 22, 0.28);
   --mm-overlay: rgba(0, 0, 0, 0.35);
   --mm-glass: rgba(250, 250, 252, 0.85);
+  /* A third of the dark theme's strength: enough tint to keep the brand warmth,
+     little enough that body copy still has a near-white ground to sit on. The
+     dot grid also has to flip — white dots are invisible over #f6f6f8. */
+  --mm-glow-primary: color-mix(in oklch, var(--mm-accent) 4%, transparent);
+  --mm-glow-secondary: oklch(0.45 0.12 300 / 0.025);
+  --mm-glow-center: color-mix(in oklch, var(--mm-accent) 1.5%, transparent);
+  --mm-grid-dot: oklch(0 0 0 / 0.03);
+  --atmosphere-opacity: 0.35;
   --ink: #17171c;
   --ink-contrast: #ffffff;
   --background: #f6f6f8;
@@ -144,6 +169,7 @@
   --color-mm-glass: var(--mm-glass);
   --color-mm-overlay: var(--mm-overlay);
   --color-mm-accent: var(--mm-accent);
+  --color-mm-accent-fixed: var(--mm-accent-fixed);
   --color-mm-text-primary: var(--mm-text-primary);
   --color-mm-text-secondary: var(--mm-text-secondary);
   --color-mm-text-tertiary: var(--mm-text-tertiary);

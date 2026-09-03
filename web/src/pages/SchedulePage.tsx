@@ -4,7 +4,16 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { format, getDay } from 'date-fns';
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
-import { type CSSProperties, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type CSSProperties,
+  Fragment,
+  type TouchEvent as ReactTouchEvent,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
 import { PageTransition } from '../components/PageTransition';
@@ -191,6 +200,51 @@ function getCompactDateForWeekday(bangumiWeekday: string): string {
   return format(target, 'M/d');
 }
 
+/* ── Horizontal swipe (mobile weekday paging) ─────────────── */
+
+// A swipe has to travel this far, mostly sideways, and quickly — anything
+// slower or steeper is the user scrolling the day's grid, which must keep
+// working untouched (we only observe touches; nothing is prevented).
+const SWIPE_MIN_DISTANCE = 48;
+const SWIPE_AXIS_RATIO = 1.5;
+const SWIPE_MAX_DURATION_MS = 800;
+
+function useHorizontalSwipe(onSwipe: (direction: 1 | -1) => void) {
+  const start = useRef<{ x: number; y: number; t: number } | null>(null);
+
+  const onTouchStart = (e: ReactTouchEvent) => {
+    if (e.touches.length !== 1) {
+      start.current = null;
+      return;
+    }
+    const touch = e.touches[0]!;
+    start.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
+  };
+
+  const onTouchEnd = (e: ReactTouchEvent) => {
+    const from = start.current;
+    start.current = null;
+    const touch = e.changedTouches[0];
+    if (!from || !touch) return;
+    const dx = touch.clientX - from.x;
+    const dy = touch.clientY - from.y;
+    if (Date.now() - from.t > SWIPE_MAX_DURATION_MS) return;
+    if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dx) < Math.abs(dy) * SWIPE_AXIS_RATIO) return;
+    // Swiping left (finger moves toward -x) pulls the next day in from the right.
+    onSwipe(dx < 0 ? 1 : -1);
+  };
+
+  return { onTouchStart, onTouchEnd, onTouchCancel: () => (start.current = null) };
+}
+
+// Direction-aware day transition: the incoming day slides in from the side the
+// user swiped toward, so the motion matches the gesture (and the tab order).
+const DAY_SLIDE_VARIANTS = {
+  enter: (direction: number) => ({ opacity: 0, x: direction === 0 ? 0 : direction > 0 ? 28 : -28 }),
+  center: { opacity: 1, x: 0 },
+  exit: (direction: number) => ({ opacity: 0, x: direction === 0 ? 0 : direction > 0 ? -20 : 20 }),
+};
+
 /* ── Schedule card wrapper — adds EP badge overlay ────────── */
 
 function ScheduleAnimeCard({ anime, index }: { anime: AnimeSummary; index: number }) {
@@ -204,7 +258,7 @@ function ScheduleAnimeCard({ anime, index }: { anime: AnimeSummary; index: numbe
       <AnimeCard anime={anime}>
         {anime.next_episode && anime.next_episode > 0 && (
           <span
-            className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent tabular-nums backdrop-blur-md"
+            className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-mm-accent-fixed tabular-nums backdrop-blur-md"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
           >
             EP {anime.next_episode}
@@ -616,25 +670,43 @@ function MobileScheduleGrid({
     );
   }
 
+  const groups = groupByTime(items);
+  let cardIndex = 0;
+
   return (
-    <div
-      className={cn(
-        'grid w-[var(--schedule-mobile-content-width)] max-w-full justify-start overflow-hidden',
-        MOBILE_SCHEDULE_GRID_CLASSES[cardSize]
-      )}
-      style={MOBILE_SCHEDULE_GRID_STYLES[cardSize]}
-    >
-      {items.map((anime, index) => (
-        <div
-          key={
-            anime.bangumi_id > 0
-              ? `mobile-bangumi-${anime.bangumi_id}`
-              : `mobile-anilist-${anime.anilist_id || anime.title}`
-          }
-          className="min-w-0 overflow-hidden [&_.group\\/media-entry-card]:min-w-0 [&_.group\\/media-entry-card]:overflow-hidden"
-        >
-          <ScheduleAnimeCard anime={anime} index={index < 40 ? index : 0} />
-        </div>
+    <div className="w-[var(--schedule-mobile-content-width)] max-w-full space-y-6">
+      {groups.map((group, groupIndex) => (
+        <section key={group.time || `mobile-slot-${groupIndex}`}>
+          <div className="mb-3 flex items-center gap-3">
+            <h3 className="text-[13px] font-bold leading-none text-mm-accent tabular-nums">
+              {group.time || '—'}
+            </h3>
+            <span aria-hidden className="h-px flex-1 bg-ink/10" />
+          </div>
+          <div
+            className={cn(
+              'grid w-full justify-start overflow-hidden',
+              MOBILE_SCHEDULE_GRID_CLASSES[cardSize]
+            )}
+            style={MOBILE_SCHEDULE_GRID_STYLES[cardSize]}
+          >
+            {group.animes.map((anime) => {
+              const index = cardIndex++;
+              return (
+                <div
+                  key={
+                    anime.bangumi_id > 0
+                      ? `mobile-bangumi-${anime.bangumi_id}`
+                      : `mobile-anilist-${anime.anilist_id || anime.title}`
+                  }
+                  className="min-w-0 overflow-hidden [&_.group\\/media-entry-card]:min-w-0 [&_.group\\/media-entry-card]:overflow-hidden"
+                >
+                  <ScheduleAnimeCard anime={anime} index={index < 40 ? index : 0} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
       ))}
     </div>
   );
@@ -658,11 +730,11 @@ function MobileDayHeading({ day, today }: { day: CalendarDay; today: string }) {
             </span>
           )}
         </div>
-        <p className="mt-1.5 text-xs font-medium text-ink/38 tabular-nums">
+        <p className="mt-1.5 text-xs font-medium text-ink/60 tabular-nums">
           {getDateForWeekday(day.weekday)}
         </p>
       </div>
-      <span className="rounded-full bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold text-ink/45 tabular-nums">
+      <span className="rounded-full bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold text-ink/62 tabular-nums">
         {day.items.length} {i18n._(msg`schedule.totalShows`)}
       </span>
     </div>
@@ -713,7 +785,7 @@ function MobileWeekdayTabs({
             )}
           >
             <span className="text-[11px] font-bold leading-none">{i18n._(msg`schedule.all`)}</span>
-            <span className="mt-1 text-[9px] font-semibold leading-none opacity-60 tabular-nums">
+            <span className="mt-1 text-[9px] font-semibold leading-none opacity-80 tabular-nums">
               {totalShows}
             </span>
           </button>
@@ -738,7 +810,7 @@ function MobileWeekdayTabs({
                 <span
                   className={cn(
                     'text-[10px] font-bold leading-none',
-                    isActive ? 'text-mm-accent' : 'text-ink/42'
+                    isActive ? 'text-mm-accent' : 'text-ink/62'
                   )}
                 >
                   {getWeekdayJapanese(day.weekday).slice(0, 1)}
@@ -758,7 +830,7 @@ function MobileWeekdayTabs({
                 <span
                   className={cn(
                     'text-[9px] font-semibold leading-none tabular-nums',
-                    isActive ? 'text-ink/58' : 'text-ink/25'
+                    isActive ? 'text-ink/78' : 'text-ink/62'
                   )}
                 >
                   {day.items.length}
@@ -797,8 +869,14 @@ function CalendarView() {
   });
 
   const today = todayWeekdayCN();
-  const [activeDay, setActiveDay] = useState<string | 'all'>(today);
+  const [activeDay, setActiveDayState] = useState<string | 'all'>(today);
+  // Which way the last day change went (+1 = forward in tab order), so the
+  // mobile day panel can slide in from the matching side. 0 = no slide.
+  const [slideDirection, setSlideDirection] = useState(0);
   const allTabRef = useRef<HTMLDivElement>(null);
+  // The first positioning of the weekday strip happens as the page appears,
+  // so it must land instantly; only later changes animate.
+  const hasPositionedTabsRef = useRef(false);
 
   const weekStartDay = useUIStore((s) => s.weekStartDay);
   const scheduleCardSize = useUIStore((s) => s.scheduleCardSize);
@@ -813,29 +891,51 @@ function CalendarView() {
       .filter((d): d is CalendarDay => d !== undefined);
   }, [calendar, weekStartDay]);
 
-  useEffect(() => {
-    if (sortedCalendar.length === 0) return;
-    const activeSelector = `[data-weekday="${activeDay}"]`;
-    const mobileScroller = mobileTabsRef.current;
-    const mobileActiveBtn = mobileScroller?.querySelector(activeSelector) as HTMLElement | null;
+  // Tab order as the user sees it: "All" first, then the week.
+  const dayOrder = useMemo(
+    () => ['all', ...sortedCalendar.map((d) => d.weekday)],
+    [sortedCalendar]
+  );
 
+  const setActiveDay = (day: string | 'all') => {
+    const from = dayOrder.indexOf(activeDay);
+    const to = dayOrder.indexOf(day);
+    setSlideDirection(from === -1 || to === -1 || from === to ? 0 : to > from ? 1 : -1);
+    setActiveDayState(day);
+  };
+
+  const stepDay = (direction: 1 | -1) => {
+    const next = dayOrder[dayOrder.indexOf(activeDay) + direction];
+    if (next !== undefined) setActiveDay(next);
+  };
+
+  const swipeHandlers = useHorizontalSwipe(stepDay);
+
+  // Keep the active tab in view on both surfaces. Runs before paint so the
+  // strip is already centred on today when the page becomes visible.
+  useLayoutEffect(() => {
+    if (sortedCalendar.length === 0) return;
+    const behavior: ScrollBehavior = hasPositionedTabsRef.current ? 'smooth' : 'auto';
+    hasPositionedTabsRef.current = true;
+    const activeSelector = `[data-weekday="${activeDay}"]`;
+
+    const mobileScroller = mobileTabsRef.current;
+    const mobileActiveBtn = mobileScroller?.querySelector<HTMLElement>(activeSelector);
     if (mobileScroller && mobileActiveBtn) {
+      // Measure in viewport space: offsetLeft is relative to the nearest
+      // positioned ancestor, which is not this scroller.
+      const scrollerRect = mobileScroller.getBoundingClientRect();
+      const buttonRect = mobileActiveBtn.getBoundingClientRect();
+      const buttonCenter = buttonRect.left - scrollerRect.left + buttonRect.width / 2;
       mobileScroller.scrollTo({
-        left:
-          mobileActiveBtn.offsetLeft -
-          mobileScroller.clientWidth / 2 +
-          mobileActiveBtn.offsetWidth / 2,
-        behavior: 'smooth',
+        left: Math.max(0, mobileScroller.scrollLeft + buttonCenter - scrollerRect.width / 2),
+        behavior,
       });
     }
 
     const desktopActiveBtn = desktopTabsRef.current?.querySelector(activeSelector);
     if (desktopActiveBtn) {
-      desktopActiveBtn.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      });
+      desktopActiveBtn.scrollIntoView({ behavior, block: 'nearest', inline: 'center' });
     }
   }, [activeDay, sortedCalendar.length]);
 
@@ -938,9 +1038,9 @@ function CalendarView() {
         })}
       </div>
 
-      {/* Content */}
-      <div className="md:hidden">
-        <AnimatePresence mode="wait">
+      {/* Content — swipe left/right pages through the tab order above */}
+      <div className="md:hidden" data-testid="schedule-mobile-content" {...swipeHandlers}>
+        <AnimatePresence mode="wait" custom={slideDirection}>
           {activeDay !== 'all' ? (
             (() => {
               const activeCalendar = sortedCalendar.find((d) => d.weekday === activeDay);
@@ -948,10 +1048,12 @@ function CalendarView() {
               return (
                 <motion.div
                   key={`mobile-${activeDay}`}
-                  initial={{ opacity: 0, x: 12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                  custom={slideDirection}
+                  variants={DAY_SLIDE_VARIANTS}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <MobileDayHeading day={activeCalendar} today={today} />
                   <MobileScheduleGrid items={activeCalendar.items} cardSize={scheduleCardSize} />
@@ -1038,10 +1140,10 @@ function CalendarView() {
                         >
                           {getWeekdayJapanese(day.weekday)}
                         </div>
-                        <div className="mt-0.5 text-[11px] font-medium text-ink/30 tabular-nums">
+                        <div className="mt-0.5 text-[11px] font-medium text-ink/55 tabular-nums">
                           {getDateForWeekday(day.weekday)}
                         </div>
-                        <div className="mt-0.5 text-[11px] font-medium text-ink/30 tabular-nums">
+                        <div className="mt-0.5 text-[11px] font-medium text-ink/55 tabular-nums">
                           {day.items.length} {i18n._(msg`schedule.totalShows`)}
                         </div>
                       </div>
@@ -1231,14 +1333,14 @@ function MobileScheduleHeader({
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-[11px] font-semibold text-mm-accent/75">
+          <div className="text-[11px] font-semibold text-mm-accent">
             {i18n._(msg`nav.schedule`)}
           </div>
           <div className="mt-1 flex items-center gap-1">
             <button
               type="button"
               onClick={() => setSearch({ year: selectedYear - 1 })}
-              className="flex size-8 items-center justify-center rounded-full text-lg text-ink/35 transition-colors cursor-pointer hover:bg-ink/[0.05] hover:text-ink/80"
+              className="flex size-8 items-center justify-center rounded-full text-lg text-ink/60 transition-colors cursor-pointer hover:bg-ink/[0.05] hover:text-ink/80"
             >
               ‹
             </button>
@@ -1249,7 +1351,7 @@ function MobileScheduleHeader({
               type="button"
               onClick={() => setSearch({ year: selectedYear + 1 })}
               disabled={selectedYear >= currentYear + 1}
-              className="flex size-8 items-center justify-center rounded-full text-lg text-ink/35 transition-colors cursor-pointer hover:bg-ink/[0.05] hover:text-ink/80 disabled:cursor-default disabled:opacity-20"
+              className="flex size-8 items-center justify-center rounded-full text-lg text-ink/60 transition-colors cursor-pointer hover:bg-ink/[0.05] hover:text-ink/80 disabled:cursor-default disabled:opacity-20"
             >
               ›
             </button>
@@ -1277,7 +1379,7 @@ function MobileScheduleHeader({
                 'relative h-9 rounded-xl text-[13px] font-semibold transition-all duration-200 cursor-pointer',
                 isActive
                   ? 'bg-ink/[0.12] text-ink shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]'
-                  : 'text-ink/42 hover:bg-ink/[0.055] hover:text-ink/70'
+                  : 'text-ink/62 hover:bg-ink/[0.055] hover:text-ink/80'
               )}
             >
               {getSeasonLabel(season, i18n)}
