@@ -885,6 +885,40 @@
         }
       }
     },
+    "%lld 年前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld years ago"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld年前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld년 전"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 年前"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 年前"
+          }
+        }
+      }
+    },
     "%lld 未讀": {
       "localizations": {
         "en": {
@@ -1221,40 +1255,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld 集"
-          }
-        }
-      }
-    },
-    "%lld 集 · %lld 有檔案": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld episodes · %lld with files"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "全 %lld 話 · %lld 話にファイルあり"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld화 · 파일 있음 %lld"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 集 · %lld 有文件"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 集 · %lld 集有檔案"
           }
         }
       }
@@ -6087,40 +6087,6 @@
         }
       }
     },
-    "依播出時間表，為「觀看中」與有自動下載規則的番劇排定本機提醒；App 沒有開啟也會送出。": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schedules local reminders from the airing calendar for shows you are watching or have an auto-download rule for; they fire even when the app is closed."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "放送スケジュールに基づき、「視聴中」または自動ダウンロールールのある作品にローカル通知を予約します。アプリを閉じていても届きます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "방영 일정에 따라 '시청 중'이거나 자동 다운로드 규칙이 있는 작품의 로컬 알림을 예약합니다. 앱이 닫혀 있어도 전송됩니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "依播出时间表，为“观看中”与有自动下载规则的番剧安排本机提醒；App 未开启也会送出。"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "跟播出時間表，幫「睇緊」同有自動下載規則嘅番劇排定本機提醒；App 冇開都會送出。"
-          }
-        }
-      }
-    },
     "依播出時間表，為「觀看中」與有自動下載規則的番劇排定本機提醒；App 沒有開啟也會送出。暫停半小時未看完會提醒一次；週報在星期日 20:00 總結本週新集數。": {
       "localizations": {
         "en": {
@@ -9351,40 +9317,6 @@
         }
       }
     },
-    "匹配…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Match…"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "マッチ…"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "매칭…"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "匹配…"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "匹配…"
-          }
-        }
-      }
-    },
     "匹配中 %lld/%lld": {
       "localizations": {
         "en": {
@@ -9691,36 +9623,36 @@
         }
       }
     },
-    "去探索": {
+    "去首頁": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Go explore"
+            "value": "Go to Home"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "探索する"
+            "value": "ホームへ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "둘러보기"
+            "value": "홈으로"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "去探索"
+            "value": "去首页"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "去探索"
+            "value": "去首頁"
           }
         }
       }
@@ -10201,40 +10133,6 @@
         }
       }
     },
-    "可以在「來源」分頁從 Bilibili 匯入，或直接發一條。": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import from Bilibili in the Sources tab, or just post one."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「ソース」タブで Bilibili からインポートするか、直接投稿してください。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "소스 탭에서 Bilibili에서 가져오거나 직접 하나 올려 보세요."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可以在「来源」分页从 Bilibili 导入，或直接发一条。"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可以喺「來源」分頁由 Bilibili 導入，或者直接發一條。"
-          }
-        }
-      }
-    },
     "可以在「彈幕 › 來源」從 Bilibili 匯入，或直接發一條。": {
       "localizations": {
         "en": {
@@ -10333,40 +10231,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "可套用"
-          }
-        }
-      }
-    },
-    "可用": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Free"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "空き"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "여유"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可用"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可用"
           }
         }
       }
@@ -11353,40 +11217,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "喺 Finder 顯示"
-          }
-        }
-      }
-    },
-    "在 Finder 顯示路徑": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show path in Finder"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finder でパスを表示"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finder에서 경로 보기"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在 Finder 显示路径"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "喺 Finder 顯示路徑"
           }
         }
       }
@@ -17069,40 +16899,6 @@
         }
       }
     },
-    "從媒體庫移除": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Remove from library"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ライブラリから削除"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "라이브러리에서 제거"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "从媒体库移除"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "從媒體庫移除"
-          }
-        }
-      }
-    },
     "從收藏移除": {
       "localizations": {
         "en": {
@@ -19245,40 +19041,6 @@
         }
       }
     },
-    "探索": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Discover"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "探索"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "탐색"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "探索"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "探索"
-          }
-        }
-      }
-    },
     "推薦": {
       "localizations": {
         "en": {
@@ -20159,40 +19921,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "搜尋（/）"
-          }
-        }
-      }
-    },
-    "搜尋（⌘K）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Search (⌘K)"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "検索 (⌘K)"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "검색 (⌘K)"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "搜索（⌘K）"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "搜尋（⌘K）"
           }
         }
       }
@@ -22437,40 +22165,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "時間"
-          }
-        }
-      }
-    },
-    "時間到會用 10 秒慢慢淡出再暫停；「播完這集停止」不會自動播下一集。": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When it fires the volume fades out over 10 s before pausing; “Stop after this episode” also skips autoplay."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "時間になると 10 秒かけてフェードアウトしてから一時停止します。「この話が終わったら停止」は次の話を自動再生しません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "시간이 되면 10초 동안 페이드아웃한 뒤 일시정지합니다. ‘이 에피소드 후 정지’는 다음 화를 자동 재생하지 않습니다."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "时间到会用 10 秒慢慢淡出再暂停；“播完这集停止”不会自动播下一集。"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "時間到會用 10 秒慢慢淡出再暫停；「播完呢集停」唔會自動播下一集。"
           }
         }
       }
@@ -28455,40 +28149,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "畫質增強"
-          }
-        }
-      }
-    },
-    "畫質與播放來源": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quality and source"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画質と再生ソース"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "화질 및 재생 소스"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画质与播放来源"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "畫質同播放來源"
           }
         }
       }
@@ -37503,6 +37163,74 @@
         }
       }
     },
+    "那年這個季節": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Then, this season"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あの頃の今期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그때의 이번 시즌"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "那年这个季节"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "嗰年呢個季節"
+          }
+        }
+      }
+    },
+    "那時大家都在看": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "what people were watching"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "みんな見ていた作品"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그때 사람들이 보던 작품"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "那时大家都在看"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "嗰陣大家都睇緊"
+          }
+        }
+      }
+    },
     "配對裝置": {
       "localizations": {
         "en": {
@@ -39947,74 +39675,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "預設"
-          }
-        }
-      }
-    },
-    "預設檢視": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exit theater"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "標準表示"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "기본 보기"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "默认检视"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "預設檢視"
-          }
-        }
-      }
-    },
-    "預設檢視（T）": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exit theater (T)"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "標準表示 (T)"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "기본 보기 (T)"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "默认检视（T）"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "預設檢視（T）"
           }
         }
       }

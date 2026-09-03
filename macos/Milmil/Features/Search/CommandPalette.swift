@@ -34,7 +34,7 @@ struct CommandPalette: View {
         if query.trimmingCharacters(in: .whitespaces).isEmpty {
             result += [
                 .action(title: String(localized: "時刻表"), symbol: "calendar") { router.select(.schedule) },
-                .action(title: String(localized: "探索"), symbol: "flame") { router.select(.discover) },
+                .action(title: String(localized: "首頁"), symbol: "house") { router.select(.home) },
                 .action(title: String(localized: "收藏"), symbol: "bookmark") { router.select(.collection) },
                 .action(title: String(localized: "歷史"), symbol: "clock") { router.select(.history) },
             ]

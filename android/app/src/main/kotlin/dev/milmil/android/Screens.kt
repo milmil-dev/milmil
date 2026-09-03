@@ -17,9 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -123,36 +120,6 @@ public fun ScheduleScreen(state: Loadable<List<CalendarDay>>, modifier: Modifier
                     ) {
                         items(day.items, key = { it.bangumiId }) { Poster(it.coverImage, it.displayTitle) }
                     }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-public fun DiscoverScreen(state: Loadable<List<DiscoverAnime>>, modifier: Modifier = Modifier) {
-    Loaded(state, modifier) { items ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 96.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            items(items, key = { it.bangumiId }) { anime ->
-                Column {
-                    AsyncImage(
-                        model = anime.coverImage,
-                        contentDescription = anime.displayTitle,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth().aspectRatio(3f / 4f).clip(RoundedCornerShape(12.dp)),
-                    )
-                    Text(
-                        anime.displayTitle,
-                        style = MaterialTheme.typography.titleSmall,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
                 }
             }
         }

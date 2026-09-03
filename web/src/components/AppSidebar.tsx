@@ -3,7 +3,6 @@ import {
   Calendar03Icon,
   Clock01Icon,
   Download04Icon,
-  FireIcon,
   FolderLibraryIcon,
   HouseIcon,
   Logout01Icon,
@@ -28,7 +27,6 @@ const mainNav = [
   { to: '/', msgKey: msg`nav.home`, icon: HouseIcon },
   { to: '/schedule', msgKey: msg`nav.schedule`, icon: Calendar03Icon },
   { to: '/search', msgKey: msg`nav.search`, icon: Search01Icon },
-  { to: '/discover', msgKey: msg`nav.discover`, icon: FireIcon },
 ] as const;
 
 const bottomNav = [
@@ -195,7 +193,8 @@ export function AppSidebar() {
 
   return (
     <>
-      {/* Desktop sidebar — Seanime: icon-only w-20, bg-[--background], tooltip on hover */}
+      {/* Desktop sidebar — Seanime: icon-only w-20, transparent so the banner
+          bleeds through with no edge (no border, no cast). */}
       <TooltipProvider delayDuration={100}>
         <aside
           className="fixed left-0 top-0 bottom-0 w-20 z-40 flex flex-col items-center max-md:hidden"
@@ -269,7 +268,7 @@ export function MobileNav() {
           to={to}
           className={cn(
             'flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors',
-            isActive(to) ? 'text-mm-accent' : 'text-ink/30'
+            isActive(to) ? 'text-mm-accent' : 'text-ink/62'
           )}
         >
           <HugeiconsIcon icon={icon} size={20} strokeWidth={isActive(to) ? 2 : 1.5} />

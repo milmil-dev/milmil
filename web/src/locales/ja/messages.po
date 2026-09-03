@@ -1419,7 +1419,7 @@ msgstr "ボットトークン"
 msgid "Bucket"
 msgstr "バケット"
 
-#: src/components/AnimeCard.tsx:347
+#: src/components/AnimeCard.tsx:331
 msgid "card.nextEp"
 msgstr "次回 EP"
 
@@ -1454,14 +1454,14 @@ msgstr "すべて"
 #~ msgid "collection.changeStatus"
 #~ msgstr "ステータスを変更"
 
-#: src/components/AnimeCard.tsx:26
+#: src/components/AnimeCard.tsx:27
 #: src/pages/AnimeDetailPage.tsx:902
 #: src/pages/CollectionPage.tsx:23
 #: src/pages/CollectionPage.tsx:39
 msgid "collection.completed"
 msgstr "視聴済み"
 
-#: src/components/AnimeCard.tsx:28
+#: src/components/AnimeCard.tsx:29
 #: src/pages/AnimeDetailPage.tsx:908
 #: src/pages/CollectionPage.tsx:25
 #: src/pages/CollectionPage.tsx:41
@@ -1483,14 +1483,14 @@ msgstr "ライブラリをスキャンしてアニメをマッチさせ、コレ
 msgid "collection.goToLibraries"
 msgstr "ライブラリへ"
 
-#: src/components/AnimeCard.tsx:27
+#: src/components/AnimeCard.tsx:28
 #: src/pages/AnimeDetailPage.tsx:905
 #: src/pages/CollectionPage.tsx:24
 #: src/pages/CollectionPage.tsx:40
 msgid "collection.paused"
 msgstr "一時停止"
 
-#: src/components/AnimeCard.tsx:25
+#: src/components/AnimeCard.tsx:26
 #: src/pages/AnimeDetailPage.tsx:899
 #: src/pages/CollectionPage.tsx:22
 #: src/pages/CollectionPage.tsx:38
@@ -1526,7 +1526,7 @@ msgstr "作品"
 msgid "collection.viewAll"
 msgstr "すべて表示"
 
-#: src/components/AnimeCard.tsx:24
+#: src/components/AnimeCard.tsx:25
 #: src/pages/AnimeDetailPage.tsx:896
 #: src/pages/CollectionPage.tsx:21
 #: src/pages/CollectionPage.tsx:37
@@ -1563,7 +1563,7 @@ msgstr "削除を確認"
 
 #: src/pages/settings/AccountPanel.tsx:423
 #: src/pages/settings/ApiTokensCard.tsx:67
-#: src/pages/settings/PairDeviceCard.tsx:59
+#: src/pages/settings/PairDeviceCard.tsx:69
 msgid "common.copied"
 msgstr "コピーしました"
 
@@ -1571,9 +1571,10 @@ msgstr "コピーしました"
 msgid "common.dangerZone"
 msgstr "危険な操作"
 
-#: src/components/AnimeCard.tsx:162
-#: src/components/AnimeCard.tsx:326
+#: src/components/AnimeCard.tsx:146
+#: src/components/AnimeCard.tsx:310
 #: src/components/AnimeRow.tsx:48
+#: src/components/HeroBanner.tsx:171
 #: src/components/MatchModal.tsx:258
 #: src/components/PreviewModal.tsx:217
 #: src/components/PreviewModal.tsx:350
@@ -1586,7 +1587,7 @@ msgstr "話"
 
 #: src/pages/AnimeDetailPage.tsx:425
 #: src/pages/LibraryDetailPage.tsx:2024
-#: src/routes/__root.tsx:68
+#: src/routes/__root.tsx:69
 msgid "common.loadFailed"
 msgstr "読み込みに失敗しました"
 
@@ -1603,10 +1604,10 @@ msgid "common.minuteShort"
 msgstr "分"
 
 #: src/pages/AnimeDetailPage.tsx:434
-#: src/pages/SchedulePage.tsx:853
-#: src/pages/SchedulePage.tsx:1168
+#: src/pages/SchedulePage.tsx:953
+#: src/pages/SchedulePage.tsx:1270
 #: src/pages/settings/ServicesPanel.tsx:186
-#: src/routes/__root.tsx:80
+#: src/routes/__root.tsx:81
 msgid "common.retry"
 msgstr "リトライ"
 
@@ -1646,19 +1647,19 @@ msgstr "削除"
 msgid "Delete this file permanently?"
 msgstr "このファイルを完全に削除しますか？"
 
-#: src/pages/DiscoverPage.tsx:100
+#: src/pages/DiscoverPage.tsx:87
 msgid "discover.airedRecently"
 msgstr "最近放送"
 
-#: src/pages/DiscoverPage.tsx:88
+#: src/pages/DiscoverPage.tsx:75
 msgid "discover.bestLastSeason"
 msgstr "前期ベスト"
 
-#: src/pages/DiscoverPage.tsx:127
+#: src/pages/DiscoverPage.tsx:114
 msgid "discover.comingSoon"
 msgstr "近日公開"
 
-#: src/pages/DiscoverPage.tsx:119
+#: src/pages/DiscoverPage.tsx:106
 msgid "discover.genreSpotlight"
 msgstr "ジャンル特集"
 
@@ -1666,15 +1667,28 @@ msgstr "ジャンル特集"
 #~ msgid "discover.hotTags"
 #~ msgstr "人気タグ"
 
-#: src/pages/DiscoverPage.tsx:76
+#: src/pages/DiscoverPage.tsx:289
+#: src/pages/DiscoverPage.tsx:316
+msgid "discover.memories"
+msgstr "あの頃の今期"
+
+#: src/pages/DiscoverPage.tsx:311
+msgid "discover.memories.watching"
+msgstr "みんな見ていた作品"
+
+#: src/pages/DiscoverPage.tsx:323
+msgid "discover.memories.yearsAgo {years}"
+msgstr "{years}年前"
+
+#: src/pages/DiscoverPage.tsx:63
 msgid "discover.topOfSeason"
 msgstr "今期ベスト"
 
-#: src/pages/DiscoverPage.tsx:111
+#: src/pages/DiscoverPage.tsx:98
 msgid "discover.trendingMovies"
 msgstr "トレンド映画"
 
-#: src/pages/DiscoverPage.tsx:68
+#: src/pages/DiscoverPage.tsx:55
 msgid "discover.trendingNow"
 msgstr "今トレンド"
 
@@ -1913,11 +1927,11 @@ msgstr "話"
 msgid "episode.upcoming"
 msgstr "配信予定"
 
-#: src/routes/__root.tsx:68
+#: src/routes/__root.tsx:69
 msgid "error.serverUnavailable"
 msgstr "サーバーに接続できません"
 
-#: src/routes/__root.tsx:71
+#: src/routes/__root.tsx:72
 msgid "error.serverUnavailableHint"
 msgstr "サーバーが起動しているか確認してください"
 
@@ -1930,13 +1944,13 @@ msgstr "ファイル"
 msgid "Files"
 msgstr "ファイル"
 
-#: src/components/HeroBanner.tsx:172
+#: src/components/HeroBanner.tsx:209
 #: src/components/PreviewModal.tsx:252
 #: src/components/PreviewModal.tsx:256
 msgid "hero.details"
 msgstr "詳細"
 
-#: src/components/HeroBanner.tsx:179
+#: src/components/HeroBanner.tsx:216
 msgid "hero.preview"
 msgstr "プレビュー"
 
@@ -2053,11 +2067,34 @@ msgstr "ライブラリが追加されていません"
 msgid "home.todaySchedule"
 msgstr "今日の番組表"
 
+msgid "weekday.full.Mon"
+msgstr "月曜日"
+
+msgid "weekday.full.Tue"
+msgstr "火曜日"
+
+msgid "weekday.full.Wed"
+msgstr "水曜日"
+
+msgid "weekday.full.Thu"
+msgstr "木曜日"
+
+msgid "weekday.full.Fri"
+msgstr "金曜日"
+
+msgid "weekday.full.Sat"
+msgstr "土曜日"
+
+msgid "weekday.full.Sun"
+msgstr "日曜日"
+
+
 #: src/pages/HomePage.tsx:191
 msgid "home.trending"
 msgstr "トレンド"
 
-#: src/pages/DiscoverPage.tsx:233
+#: src/pages/DiscoverPage.tsx:224
+#: src/pages/DiscoverPage.tsx:302
 #: src/pages/HomePage.tsx:215
 msgid "home.viewAll"
 msgstr "すべて表示 →"
@@ -3076,7 +3113,7 @@ msgstr "WebDAV サーバーに接続"
 msgid "library.wizard.webdav.name"
 msgstr "WebDAV"
 
-#: src/routes/__root.tsx:261
+#: src/routes/__root.tsx:264
 msgid "match.completed"
 msgstr "マッチング完了"
 
@@ -3095,7 +3132,7 @@ msgid "nav.collection"
 msgstr "コレクション"
 
 #: src/components/AppSidebar.tsx:31
-#: src/pages/DiscoverPage.tsx:144
+#: src/pages/DiscoverPage.tsx:131
 msgid "nav.discover"
 msgstr "探索"
 
@@ -3124,7 +3161,7 @@ msgstr "ライブラリ"
 msgid "nav.more"
 msgstr "もっと見る"
 
-#: src/components/NotificationBell.tsx:90
+#: src/components/NotificationBell.tsx:104
 msgid "nav.notifications"
 msgstr "通知"
 
@@ -3134,8 +3171,8 @@ msgstr "通知"
 
 #: src/components/AppSidebar.tsx:29
 #: src/components/AppSidebar.tsx:246
-#: src/pages/SchedulePage.tsx:1235
-#: src/pages/SchedulePage.tsx:1309
+#: src/pages/SchedulePage.tsx:1337
+#: src/pages/SchedulePage.tsx:1411
 msgid "nav.schedule"
 msgstr "番組表"
 
@@ -3296,7 +3333,7 @@ msgstr "すべてクリア"
 msgid "notifications.earlier"
 msgstr "それ以前"
 
-#: src/components/NotificationBell.tsx:146
+#: src/components/NotificationBell.tsx:165
 #: src/pages/NotificationsPage.tsx:235
 msgid "notifications.empty"
 msgstr "通知なし"
@@ -3425,7 +3462,7 @@ msgstr "ダウンロード完了やエラー発生時にDiscord、Telegram、ま
 msgid "notifications.loadMore"
 msgstr "もっと読み込む"
 
-#: src/components/NotificationBell.tsx:121
+#: src/components/NotificationBell.tsx:140
 #: src/pages/NotificationsPage.tsx:135
 msgid "notifications.markAllRead"
 msgstr "すべて既読"
@@ -3481,7 +3518,7 @@ msgstr "テスト失敗"
 msgid "notifications.testSuccess"
 msgstr "送信しました！"
 
-#: src/components/NotificationBell.tsx:113
+#: src/components/NotificationBell.tsx:132
 #: src/pages/NotificationsPage.tsx:87
 #: src/pages/NotificationsPage.tsx:127
 msgid "notifications.title"
@@ -3511,7 +3548,7 @@ msgstr "新しいエピソード"
 msgid "notifications.type.systemError"
 msgstr "システムエラー"
 
-#: src/components/NotificationBell.tsx:158
+#: src/components/NotificationBell.tsx:177
 msgid "notifications.viewAll"
 msgstr "すべて表示"
 
@@ -3563,39 +3600,39 @@ msgstr "前のページ"
 msgid "pagination.rows"
 msgstr "行"
 
-#: src/pages/settings/PairDeviceCard.tsx:98
+#: src/pages/settings/PairDeviceCard.tsx:121
 msgid "pair.again"
 msgstr "新しいコード"
 
-#: src/pages/settings/PairDeviceCard.tsx:94
+#: src/pages/settings/PairDeviceCard.tsx:111
 msgid "pair.copyLink"
 msgstr "リンクをコピー"
 
-#: src/pages/settings/PairDeviceCard.tsx:64
+#: src/pages/settings/PairDeviceCard.tsx:74
 msgid "pair.description"
 msgstr "サーバーのアドレスとサインインをまとめて iPhone や Mac に渡します。入力は不要です。"
 
-#: src/pages/settings/PairDeviceCard.tsx:107
+#: src/pages/settings/PairDeviceCard.tsx:130
 msgid "pair.done"
 msgstr "完了"
 
-#: src/pages/settings/PairDeviceCard.tsx:53
+#: src/pages/settings/PairDeviceCard.tsx:63
 msgid "pair.failed"
 msgstr "ペアリングコードを作成できませんでした"
 
-#: src/pages/settings/PairDeviceCard.tsx:90
+#: src/pages/settings/PairDeviceCard.tsx:107
 msgid "pair.openInApp"
 msgstr "アプリで開く"
 
-#: src/pages/settings/PairDeviceCard.tsx:83
+#: src/pages/settings/PairDeviceCard.tsx:100
 msgid "pair.scanHint"
 msgstr "スマートフォンの milmil アプリで読み取ってください。"
 
-#: src/pages/settings/PairDeviceCard.tsx:69
+#: src/pages/settings/PairDeviceCard.tsx:86
 msgid "pair.start"
 msgstr "ペアリングコードを作成"
 
-#: src/pages/settings/PairDeviceCard.tsx:63
+#: src/pages/settings/PairDeviceCard.tsx:73
 msgid "pair.title"
 msgstr "デバイスをペアリング"
 
@@ -3603,11 +3640,11 @@ msgstr "デバイスをペアリング"
 #~ msgid "pair.tokenName"
 #~ msgstr "ペアリング {date}"
 
-#: src/pages/settings/PairDeviceCard.tsx:46
+#: src/pages/settings/PairDeviceCard.tsx:56
 msgid "pair.tokenName {date}"
 msgstr "ペアリング {date}"
 
-#: src/pages/settings/PairDeviceCard.tsx:75
+#: src/pages/settings/PairDeviceCard.tsx:92
 msgid "pair.warning"
 msgstr "このコードはデバイスをサインインさせます。パスワードと同じ扱いにし、使い終わったら下で失効させてください。"
 
@@ -3619,7 +3656,7 @@ msgstr "メモリ使用量が通常に戻りました"
 msgid "player.memoryPressure"
 msgstr "メモリ使用量が高くなっています — バッファサイズを削減しています"
 
-#: src/components/HeroBanner.tsx:211
+#: src/components/HeroBanner.tsx:250
 #: src/pages/AnimeDetailPage.tsx:1031
 msgid "player.remaining"
 msgstr "残り"
@@ -3885,7 +3922,7 @@ msgstr "タイトルマッチ"
 #~ msgid "Save"
 #~ msgstr ""
 
-#: src/routes/__root.tsx:257
+#: src/routes/__root.tsx:260
 msgid "scan.completed"
 msgstr "スキャン完了"
 
@@ -3939,27 +3976,27 @@ msgid "scanInterval.weekly"
 msgstr "毎週"
 
 #: src/pages/LibraryDetailPage.tsx:766
-#: src/pages/SchedulePage.tsx:715
-#: src/pages/SchedulePage.tsx:889
+#: src/pages/SchedulePage.tsx:787
+#: src/pages/SchedulePage.tsx:989
 msgid "schedule.all"
 msgstr "すべて"
 
-#: src/pages/SchedulePage.tsx:1298
-#: src/pages/SchedulePage.tsx:1452
+#: src/pages/SchedulePage.tsx:1400
+#: src/pages/SchedulePage.tsx:1554
 msgid "schedule.backToCurrent"
 msgstr "今期に戻る"
 
-#: src/pages/SchedulePage.tsx:847
-#: src/pages/SchedulePage.tsx:1162
+#: src/pages/SchedulePage.tsx:947
+#: src/pages/SchedulePage.tsx:1264
 msgid "schedule.loadFailed"
 msgstr "カレンダーの読み込みに失敗しました"
 
 #~ msgid "schedule.next"
 #~ msgstr "次へ"
 
-#: src/pages/SchedulePage.tsx:484
-#: src/pages/SchedulePage.tsx:613
-#: src/pages/SchedulePage.tsx:1177
+#: src/pages/SchedulePage.tsx:538
+#: src/pages/SchedulePage.tsx:667
+#: src/pages/SchedulePage.tsx:1279
 msgid "schedule.noShows"
 msgstr "予定されている番組はありません"
 
@@ -3969,34 +4006,34 @@ msgstr "予定されている番組はありません"
 #~ msgid "schedule.prev"
 #~ msgstr "前へ"
 
-#: src/components/AnimeCard.tsx:44
-#: src/pages/SchedulePage.tsx:87
+#: src/lib/season.ts:49
+#: src/pages/SchedulePage.tsx:96
 msgid "schedule.season.fall"
 msgstr "秋"
 
-#: src/components/AnimeCard.tsx:42
-#: src/pages/SchedulePage.tsx:83
+#: src/lib/season.ts:45
+#: src/pages/SchedulePage.tsx:92
 msgid "schedule.season.spring"
 msgstr "春"
 
-#: src/components/AnimeCard.tsx:43
-#: src/pages/SchedulePage.tsx:85
+#: src/lib/season.ts:47
+#: src/pages/SchedulePage.tsx:94
 msgid "schedule.season.summer"
 msgstr "夏"
 
-#: src/components/AnimeCard.tsx:41
-#: src/pages/SchedulePage.tsx:81
+#: src/lib/season.ts:43
+#: src/pages/SchedulePage.tsx:90
 msgid "schedule.season.winter"
 msgstr "冬"
 
-#: src/pages/SchedulePage.tsx:657
-#: src/pages/SchedulePage.tsx:1005
+#: src/pages/SchedulePage.tsx:729
+#: src/pages/SchedulePage.tsx:1107
 msgid "schedule.today"
 msgstr "今日"
 
-#: src/pages/SchedulePage.tsx:666
-#: src/pages/SchedulePage.tsx:1000
-#: src/pages/SchedulePage.tsx:1045
+#: src/pages/SchedulePage.tsx:738
+#: src/pages/SchedulePage.tsx:1102
+#: src/pages/SchedulePage.tsx:1147
 msgid "schedule.totalShows"
 msgstr "件の今週の番組"
 

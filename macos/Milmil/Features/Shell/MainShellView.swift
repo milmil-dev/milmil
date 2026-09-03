@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Sidebar destinations, in the order the design canvas shows them.
 enum Destination: String, CaseIterable, Identifiable {
-    case home, schedule, discover, search
+    case home, schedule, search
     case collection, history
     case libraries, downloads, notifications
 
@@ -14,7 +14,6 @@ enum Destination: String, CaseIterable, Identifiable {
         switch self {
         case .home: String(localized: "首頁")
         case .schedule: String(localized: "時刻表")
-        case .discover: String(localized: "探索")
         case .search: String(localized: "搜尋")
         case .collection: String(localized: "收藏")
         case .history: String(localized: "歷史")
@@ -28,7 +27,6 @@ enum Destination: String, CaseIterable, Identifiable {
         switch self {
         case .home: "house"
         case .schedule: "calendar"
-        case .discover: "flame"
         case .search: "magnifyingglass"
         case .collection: "bookmark"
         case .history: "clock"
@@ -39,7 +37,7 @@ enum Destination: String, CaseIterable, Identifiable {
     }
 
     static let sections: [(title: String, items: [Destination])] = [
-        (String(localized: "瀏覽"), [.home, .schedule, .discover, .search]),
+        (String(localized: "瀏覽"), [.home, .schedule, .search]),
         (String(localized: "我的"), [.collection, .history]),
         (String(localized: "管理"), [.libraries, .downloads, .notifications]),
     ]
@@ -239,7 +237,6 @@ struct MainShellView: View {
         switch destination {
         case .home: HomeView()
         case .schedule: ScheduleView()
-        case .discover: DiscoverView()
         case .search: SearchView()
         case .collection: CollectionView()
         case .history: HistoryView()

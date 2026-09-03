@@ -21,7 +21,7 @@ enum BrowseRoute: Hashable {
     case query(BrowseQuery)
 }
 
-/// Filters Search applies on arrival. Discover's chips and rail "view all",
+/// Filters Search applies on arrival. Home's chips and rail "view all",
 /// the detail pages' genre/tag chips and the palette all land here —
 /// mirroring web, where each of those is a `/search` link with URL params.
 struct SearchPrefill: Hashable {
@@ -36,7 +36,7 @@ struct SearchPrefill: Hashable {
 }
 
 extension SearchPrefill {
-    /// A Discover rail or chip expressed as Search filters. `format` (劇場版)
+    /// A Home catalog rail or chip expressed as Search filters. `format` (劇場版)
     /// has no Search filter, so that rail keeps only its sort — the same
     /// lossy mapping web's "view all" links use.
     init(route: BrowseRoute) {
@@ -136,8 +136,9 @@ final class Router {
     }
 
     /// `milmil://anime/<bangumiID>`, `milmil://watch/<bangumiID>?ep=<episodeID>&t=<seconds>`,
-    /// `milmil://<tab>` (home, schedule, discover, search, collection, history,
-    /// libraries, downloads, notifications). Returns false when unrecognised.
+    /// `milmil://<tab>` (home, schedule, search, collection, history,
+    /// libraries, downloads, notifications; `discover` aliases to home).
+    /// Returns false when unrecognised.
     @discardableResult
     func handle(url: URL) -> Bool {
         guard url.scheme == "milmil" else { return false }
@@ -156,6 +157,9 @@ final class Router {
             select(.home)
             pendingPlayback = PlaybackRequest(bangumiID: id, episodeID: episode, title: "", startSeconds: seconds)
             openWatch(bangumiID: id, episodeID: episode)
+        case "discover":
+            // Discover merged into Home — keep deep links working.
+            select(.home)
         default:
             guard let destination = Destination(rawValue: host) else { return false }
             select(destination)

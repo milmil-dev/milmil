@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { expect, test, vi } from 'vite-plus/test';
 import { getCurrentSeason, MEMORY_OFFSETS } from '@/lib/season';
+import { todayWeekdayEN } from '@/lib/weekday';
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => () => {},
@@ -42,7 +42,7 @@ vi.mock('@lingui/react', () => ({
   }),
 }));
 
-function fakeAnime(id: number, title: string) {
+function fakeAnime(id: number, title: string, extra: Record<string, unknown> = {}) {
   return {
     bangumi_id: id,
     title,
@@ -50,6 +50,7 @@ function fakeAnime(id: number, title: string) {
     cover_image: '',
     episode_count: 12,
     score: 8.0,
+    ...extra,
   };
 }
 
@@ -62,38 +63,34 @@ vi.mock('@tanstack/react-query', () => ({
   useMutation: () => ({ mutate: () => {}, mutateAsync: async () => {}, isPending: false }),
   useQuery: ({ queryKey }: { queryKey: readonly unknown[] }) => {
     const key = queryKey[1] as string;
-    if (key === 'calendar') return { data: [] };
-    if (key === 'memories') {
-      const year = queryKey[3] as number;
-      return { data: [fakeAnime(year, `Classic ${year}`)], isLoading: false };
-    }
-    if (key === 'trending') {
-      return {
-        data: Array.from({ length: 10 }, (_, i) => fakeAnime(i + 1, `Anime ${i + 1}`)),
-        isLoading: false,
-      };
-    }
-    if (key === 'hotTags') return { data: [], isLoading: false };
-    if (key === 'recent') {
+    if (key === 'calendar') {
+      const today = todayWeekdayEN();
       return {
         data: [
           {
-            id: '1',
-            user_id: 'u1',
-            episode_id: 'e1',
-            media_file_id: 'f1',
-            position_seconds: 600,
-            duration_seconds: 1200,
-            completed: 0,
-            last_watched_at: '2026-03-26T00:00:00Z',
-            anime_title: 'Continue Me',
-            anime_cover_image: '',
-            episode_number: 3,
+            weekday: '星期四',
+            weekday_en: today,
+            items: [fakeAnime(42, 'Tonight Show', { next_episode: 5 })],
           },
         ],
       };
     }
-    return { data: [fakeAnime(99, 'Filler')], isLoading: false };
+    if (key === 'trending') {
+      return {
+        data: Array.from({ length: 10 }, (_, i) => fakeAnime(i + 1, `Anime ${i + 1}`)),
+      };
+    }
+    if (key === 'topSeason') {
+      return { data: [fakeAnime(100, 'Season Best')], isLoading: false };
+    }
+    if (key === 'memories') {
+      const year = queryKey[3] as number;
+      return { data: [fakeAnime(year, `Classic ${year}`)], isLoading: false };
+    }
+    if (key === 'recent') {
+      return { data: [] };
+    }
+    return { data: [], isLoading: false };
   },
 }));
 
@@ -106,7 +103,6 @@ vi.mock('motion/react', () => {
         children: props.children as React.ReactNode,
       };
       if (props['data-testid']) passthrough['data-testid'] = props['data-testid'];
-      if (props.role) passthrough.role = props.role;
       return React.createElement(tag, passthrough);
     };
   }
@@ -143,11 +139,12 @@ vi.mock('@/store/bg-store', () => ({
 }));
 
 vi.mock('@/components/AnimeCard', () => ({
-  AnimeCard: ({ anime }: { anime: { title: string } }) => <div>{anime.title}</div>,
-}));
-
-vi.mock('@/components/ContinueWatchingCard', () => ({
-  ContinueWatchingCard: ({ title }: { title: string }) => <div>{title}</div>,
+  AnimeCard: ({ anime, badge }: { anime: { title: string }; badge?: string }) => (
+    <div>
+      {badge ? <span>{badge}</span> : null}
+      {anime.title}
+    </div>
+  ),
 }));
 
 vi.mock('@/components/HeroBanner', () => ({
@@ -164,39 +161,25 @@ vi.mock('@/components/PageTransition', () => ({
 
 import { HomePage } from '@/pages/HomePage';
 
-test('home page renders continue watching and catalog rails', () => {
+test('today’s schedule is a poster shelf with the JST weekday mark', () => {
   render(<HomePage />);
-  const headings = screen.getAllByRole('heading', { level: 2 });
-  expect(headings.length).toBeGreaterThanOrEqual(2);
-  expect(screen.getByTestId('home-trending')).toBeInTheDocument();
-  expect(screen.getByTestId('home-hot-tags')).toBeInTheDocument();
+  const today = screen.getByTestId('home-today');
+  expect(today.querySelector('h2')).toBeTruthy();
+  // Lingui compiles msg ids to hashes; the mock returns those ids — assert structure.
+  expect(today).toHaveTextContent('Tonight Show');
+  expect(today).toHaveTextContent('EP 5');
+  // macOS uses "時刻表 ›" — destination label, not generic View All.
+  expect(today.querySelector('a[href="/schedule"]')).toBeTruthy();
 });
 
-test('home page renders genre filter strip from hot tags', () => {
+test('home carries top-of-season and memories teasers', () => {
+  const { year } = getCurrentSeason();
   render(<HomePage />);
-  expect(screen.getByText('Action')).toBeInTheDocument();
-  expect(screen.getByText('Drama')).toBeInTheDocument();
-});
-
-test('renders the memories section with era tabs', () => {
-  render(<HomePage />);
-  const section = screen.getByTestId('home-memories');
-  expect(section).toBeInTheDocument();
-  expect(section.querySelector('h2')).toBeTruthy();
+  expect(screen.getByTestId('home-top-season')).toHaveTextContent('Season Best');
+  const memories = screen.getByTestId('home-memories');
+  expect(memories).toBeInTheDocument();
+  expect(screen.getByText(`Classic ${year - 10}`)).toBeInTheDocument();
   for (const years of MEMORY_OFFSETS) {
     expect(screen.getByTestId(`memories-era-${years}`)).toBeInTheDocument();
   }
-});
-
-test('defaults to ten years ago and switches eras', async () => {
-  const user = userEvent.setup();
-  const { year } = getCurrentSeason();
-  render(<HomePage />);
-
-  expect(screen.getByText(`Classic ${year - 10}`)).toBeInTheDocument();
-  expect(screen.getByTestId('memories-era-10')).toHaveAttribute('aria-selected', 'true');
-
-  await user.click(screen.getByTestId('memories-era-5'));
-  expect(screen.getByTestId('memories-era-5')).toHaveAttribute('aria-selected', 'true');
-  expect(screen.getByText(`Classic ${year - 5}`)).toBeInTheDocument();
 });

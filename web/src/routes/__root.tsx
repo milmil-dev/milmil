@@ -13,6 +13,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AppSidebar } from '../components/AppSidebar';
 import { CommandPalette } from '../components/CommandPalette';
+import { NotificationBell } from '../components/NotificationBell';
 import { SplashScreen } from '../components/SplashScreen';
 import { useMillilWebSocket, useWSEvent } from '../hooks/use-websocket';
 import { setupApi } from '../lib/api/setup';
@@ -85,7 +86,7 @@ function RootErrorComponent({ error, reset }: { error: Error; reset: () => void 
 }
 
 function isPublicRoute(pathname: string): boolean {
-  const publicExact = ['/login', '/schedule', '/discover', '/search'];
+  const publicExact = ['/login', '/schedule', '/search'];
   if (publicExact.includes(pathname)) return true;
   if (pathname === '/setup' || pathname.startsWith('/setup/')) return true;
   if (pathname.startsWith('/anime/')) return true;
@@ -198,35 +199,30 @@ function BannerImage({
         </motion.div>
       </AnimatePresence>
 
-      {/* Left gradient — Seanime: max-w-[80rem], from-5% via-bg via-opacity-50 */}
+      {/* Left gradient — soft page-bg wash; keep the far-left open so the
+          transparent sidebar doesn't sit against a painted vertical wall. */}
       <div
-        className="hidden lg:block w-full z-[2] h-full absolute left-0"
+        className="hidden md:block w-full z-[2] h-full absolute left-0"
         style={{
           maxWidth: '80rem',
           background:
-            'linear-gradient(to right, var(--mm-bg) 0%, color-mix(in srgb, var(--mm-bg) 60%, transparent) 15%, transparent 50%)',
+            'linear-gradient(to right, color-mix(in srgb, var(--mm-bg) 35%, transparent) 0%, color-mix(in srgb, var(--mm-bg) 55%, transparent) 18%, transparent 52%)',
         }}
       />
       {/* Right gradient — Seanime: max-w-[60rem], opacity-90 */}
       <div
-        className="hidden lg:block w-full z-[2] h-full absolute right-0 opacity-90"
+        className="hidden md:block w-full z-[2] h-full absolute right-0 opacity-90"
         style={{
           maxWidth: '60rem',
           background:
             'linear-gradient(to left, var(--mm-bg) 0%, color-mix(in srgb, var(--mm-bg) 60%, transparent) 15%, transparent 50%)',
         }}
       />
-      {/* Sidebar-edge gradient — Seanime: max-w-[10rem] opacity-70 */}
+      {/* Content-facing gradient — gentle fade toward page content. The banner
+          is taller than the hero, so the top variant fades over a longer run:
+          the page's first sections sit inside that overlap. */}
       <div
-        className="hidden lg:block w-full z-[2] h-full absolute left-0 opacity-80"
-        style={{
-          maxWidth: '10rem',
-          background: 'linear-gradient(to right, var(--mm-bg), transparent)',
-        }}
-      />
-      {/* Content-facing gradient — gentle fade toward page content */}
-      <div
-        className={cn('w-full z-[2] absolute h-[8rem]', isBottom ? 'top-0' : 'bottom-0')}
+        className={cn('w-full z-[2] absolute', isBottom ? 'top-0 h-[8rem]' : 'bottom-0 h-[15rem]')}
         style={{
           background: isBottom
             ? 'linear-gradient(to bottom, var(--mm-bg), transparent)'
@@ -284,6 +280,11 @@ function RootLayout() {
     return <Outlet />;
   }
 
+  // The player owns the whole screen — no chrome floating over the video.
+  const isImmersive = pathname.startsWith('/watch');
+  // Pages whose own content runs edge to edge at the top of the screen.
+  const bleedsToTop = pathname === '/' || pathname.startsWith('/anime/');
+
   return (
     <div className="relative min-h-screen">
       {/* Banner image — Seanime pattern: fixed, h-[35rem], extends behind sidebar */}
@@ -292,8 +293,29 @@ function RootLayout() {
       {/* Sidebar */}
       <AppSidebar />
 
+      {/* Mobile notification button. The phone layout has no sidebar to hang a
+          bell off, so it floats in the top-left corner. Most pages reserve a
+          row for it below (see <main>); the ones that open on edge-to-edge key
+          art let it sit over the art instead, which is where it reads best. */}
+      {!isImmersive && (
+        <div
+          className="fixed left-4 z-40 md:hidden"
+          style={{ top: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
+        >
+          <NotificationBell variant="floating" />
+        </div>
+      )}
+
       {/* Main content — pl-20 for 80px sidebar */}
-      <main className="relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0">
+      <main
+        className={cn(
+          'relative z-[5] min-h-screen md:pl-20 overflow-y-auto pb-16 md:pb-0',
+          // Reserve the mobile bell's row. Pages that bleed art to the top edge
+          // opt out; anything not listed gets the row, so a page nobody thought
+          // about ends up with a small gap rather than a bell on its heading.
+          !bleedsToTop && !isImmersive && 'pt-14 md:pt-0'
+        )}
+      >
         <Suspense fallback={<SplashScreen />}>
           <AnimatePresence mode="wait" initial={false}>
             <Outlet key={pathname} />

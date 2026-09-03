@@ -199,8 +199,8 @@ struct CollectionView: View {
                 symbol: "bookmark",
                 title: String(localized: "這個清單還是空的"),
                 message: String(localized: "在作品頁按「加入收藏」，或開始播放時自動加入「在看」。"),
-                actionTitle: String(localized: "去探索")
-            ) { router.select(.discover) }
+                actionTitle: String(localized: "去首頁")
+            ) { router.select(.home) }
         }
     }
 

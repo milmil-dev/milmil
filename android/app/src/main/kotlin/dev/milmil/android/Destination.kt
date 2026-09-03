@@ -9,9 +9,8 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
- * The five destinations from the design canvas. Library, downloads and
- * notifications stay on web and macOS — a phone screen does not earn them,
- * and they are v1 non-goals.
+ * Bottom-nav destinations. Library, downloads and notifications stay on web
+ * and macOS — a phone screen does not earn them, and they are v1 non-goals.
  *
  * M3 swaps the icon between outlined and filled with selection, which is half
  * of what makes a navigation bar read as Android.
@@ -23,7 +22,6 @@ public enum class Destination(
 ) {
     Home("首頁", Icons.Filled.Home, Icons.Outlined.Home),
     Schedule("時間表", Icons.Filled.DateRange, Icons.Outlined.DateRange),
-    Discover("探索", DiscoverFlameFilled, DiscoverFlameOutlined),
     Search("搜尋", Icons.Filled.Search, Icons.Filled.Search),
     Collection("收藏", BookmarkFilled, BookmarkOutlined),
 }
