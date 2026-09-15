@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.22](https://github.com/milmil-dev/milmil/compare/v0.1.21...v0.1.22) (2026-09-15)
+
+
+### Bug Fixes
+
+* Keep Home usable when AniList is down ([40f2f4d](https://github.com/milmil-dev/milmil/commit/40f2f4d958702403ec0dd6da31449ad78666103a))
+* Keep Home usable when AniList is down ([776ed06](https://github.com/milmil-dev/milmil/commit/776ed0641c961bf6f2f4b0b50ece679f54e1d675))
+
 ## [0.1.21](https://github.com/milmil-dev/milmil/compare/v0.1.20...v0.1.21) (2026-09-03)
 
 
