@@ -68,6 +68,29 @@ func (s *Service) setCache(ctx context.Context, key string, value any, ttl time.
 	_ = s.cache.Set(ctx, key, data, ttl)
 }
 
+// Discover rails keep a short fresh TTL and a longer stale copy. The stale
+// key is only read when upstream (usually AniList) fails, so a 6-hour expiry
+// does not blank the home page during an outage.
+const (
+	discoverFreshTTL = 6 * time.Hour
+	discoverStaleTTL = 7 * 24 * time.Hour
+)
+
+func staleCacheKey(key string) string { return key + ":stale" }
+
+func (s *Service) setDiscoverCache(ctx context.Context, key string, result []AnimeSummary) {
+	s.setCache(ctx, key, result, discoverFreshTTL)
+	s.setCache(ctx, staleCacheKey(key), result, discoverStaleTTL)
+}
+
+func (s *Service) staleSummaries(ctx context.Context, key string) ([]AnimeSummary, bool) {
+	var stale []AnimeSummary
+	if s.getCache(ctx, staleCacheKey(key), &stale) && len(stale) > 0 {
+		return stale, true
+	}
+	return nil, false
+}
+
 func anilistMediaToSummary(m anilist.Media) AnimeSummary {
 	title := m.Title.Romaji
 	if m.Title.Native != "" {
@@ -906,6 +929,9 @@ func (s *Service) BrowseByGenre(ctx context.Context, genre string, page int) ([]
 
 	media, err := s.anilist.BrowseByGenre(ctx, genre, page, 20)
 	if err != nil {
+		if stale, ok := s.staleSummaries(ctx, cacheKey); ok {
+			return stale, nil
+		}
 		return nil, err
 	}
 
@@ -944,7 +970,7 @@ func (s *Service) BrowseByGenre(ctx context.Context, genre string, page int) ([]
 	}
 	_ = g.Wait()
 
-	s.setCache(ctx, cacheKey, result, 6*time.Hour)
+	s.setDiscoverCache(ctx, cacheKey, result)
 	return result, nil
 }
 
@@ -1002,6 +1028,9 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 			return err
 		})
 		if err := bg.Wait(); err != nil {
+			if stale, ok := s.staleSummaries(ctx, cacheKey); ok {
+				return stale, nil
+			}
 			return nil, err
 		}
 		// Deduplicate by ID: normal first, then adult
@@ -1014,6 +1043,9 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 		var err error
 		media, err = s.anilist.Browse(ctx, alFilter, page, 50)
 		if err != nil {
+			if stale, ok := s.staleSummaries(ctx, cacheKey); ok {
+				return stale, nil
+			}
 			return nil, err
 		}
 	}
@@ -1053,7 +1085,7 @@ func (s *Service) Browse(ctx context.Context, filter BrowseFilter, page int) ([]
 	}
 	_ = g.Wait()
 
-	s.setCache(ctx, cacheKey, result, 6*time.Hour)
+	s.setDiscoverCache(ctx, cacheKey, result)
 	return result, nil
 }
 
@@ -1094,6 +1126,9 @@ func (s *Service) BrowseByTag(ctx context.Context, tags []string, sort string, p
 
 	subjects, _, err := s.bangumi.SearchByTag(ctx, tags, sort, page, 20)
 	if err != nil {
+		if stale, ok := s.staleSummaries(ctx, cacheKey); ok {
+			return stale, nil
+		}
 		return nil, err
 	}
 
@@ -1102,7 +1137,7 @@ func (s *Service) BrowseByTag(ctx context.Context, tags []string, sort string, p
 		result = append(result, subjectToSummary(sub))
 	}
 
-	s.setCache(ctx, cacheKey, result, 6*time.Hour)
+	s.setDiscoverCache(ctx, cacheKey, result)
 	return result, nil
 }
 
@@ -1185,6 +1220,9 @@ func (s *Service) GetTrending(ctx context.Context, page int) ([]AnimeSummary, er
 
 	media, err := s.anilist.GetTrending(ctx, page, 20)
 	if err != nil {
+		if stale, ok := s.staleSummaries(ctx, cacheKey); ok {
+			return stale, nil
+		}
 		return nil, err
 	}
 
@@ -1235,7 +1273,7 @@ func (s *Service) GetTrending(ctx context.Context, page int) ([]AnimeSummary, er
 	}
 	_ = g.Wait()
 
-	s.setCache(ctx, cacheKey, result, 6*time.Hour)
+	s.setDiscoverCache(ctx, cacheKey, result)
 	return result, nil
 }
 

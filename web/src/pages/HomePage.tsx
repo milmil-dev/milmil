@@ -131,14 +131,16 @@ export function HomePage() {
   useDocumentTitle(i18n._(msg`nav.home`));
   const catalog = useCatalogSections();
 
-  const { data: calendar } = useQuery({
+  const calendarQuery = useQuery({
     queryKey: discoverKeys.calendar(),
     queryFn: discoverApi.calendar,
   });
-  const { data: trending = [] } = useQuery({
+  const trendingQuery = useQuery({
     queryKey: discoverKeys.trending(1),
     queryFn: () => discoverApi.trending(1),
   });
+  const calendar = calendarQuery.data;
+  const trending = trendingQuery.data ?? [];
   useQuery({
     queryKey: libraryKeys.list(),
     queryFn: libraryApi.list,
@@ -157,7 +159,10 @@ export function HomePage() {
     ? weekdayFullName(todayDay.weekday_en, i18n)
     : weekdayFullName(todayKey, i18n);
 
-  const isLoading = !calendar && !trending.length;
+  // Only the first in-flight pair should block the page. An AniList outage
+  // used to leave both queries empty, which looked like "still loading" and
+  // hid Continue Watching behind the skeleton forever.
+  const isLoading = calendarQuery.isPending && trendingQuery.isPending;
   const heroItems = trending.slice(0, 7);
 
   const setImage = useBgStore((s) => s.setImage);
