@@ -68,6 +68,7 @@ type mockAniList struct {
 	searchFn   func(ctx context.Context, query string, isAdult bool) ([]anilist.Media, error)
 	mediaFn    func(ctx context.Context, id int) (*anilist.Media, error)
 	trendingFn func(ctx context.Context, page, perPage int) ([]anilist.Media, error)
+	browseFn   func(ctx context.Context, filter anilist.BrowseFilter, page, perPage int) ([]anilist.Media, error)
 	airingFn   func(ctx context.Context, from, to int64) ([]anilist.AiringSchedule, error)
 }
 
@@ -97,6 +98,9 @@ func (m *mockAniList) BrowseByGenre(ctx context.Context, genre string, page, per
 }
 
 func (m *mockAniList) Browse(ctx context.Context, filter anilist.BrowseFilter, page, perPage int) ([]anilist.Media, error) {
+	if m.browseFn != nil {
+		return m.browseFn(ctx, filter, page, perPage)
+	}
 	return nil, nil
 }
 
@@ -602,5 +606,88 @@ func TestBrowseByTag_MapsAniListSortsToBangumi(t *testing.T) {
 		if got != want {
 			t.Errorf("sort %q sent to Bangumi as %q, want %q", input, got, want)
 		}
+	}
+}
+
+func TestGetTrending_FallsBackToStaleOnUpstreamError(t *testing.T) {
+	callCount := 0
+	al := &mockAniList{
+		trendingFn: func(ctx context.Context, page, perPage int) ([]anilist.Media, error) {
+			callCount++
+			if callCount == 1 {
+				return []anilist.Media{{
+					ID:    100,
+					Title: anilist.MediaTitle{Romaji: "Cached Show", Native: "キャッシュ"},
+				}}, nil
+			}
+			return nil, errors.New("anilist 403")
+		},
+	}
+	c := cache.New("")
+	svc := newService(&mockBangumi{}, al, c)
+
+	if _, err := svc.GetTrending(context.Background(), 1); err != nil {
+		t.Fatalf("seed: %v", err)
+	}
+	if err := c.Del(context.Background(), "meta:trending:1"); err != nil {
+		t.Fatal(err)
+	}
+
+	results, err := svc.GetTrending(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("want stale fallback, got error: %v", err)
+	}
+	if len(results) != 1 || results[0].AniListID != 100 {
+		t.Errorf("want stale trending item, got %+v", results)
+	}
+	if callCount != 2 {
+		t.Errorf("want upstream called twice (seed + retry), got %d", callCount)
+	}
+}
+
+func TestGetTrending_ReturnsErrorWhenNoStaleAvailable(t *testing.T) {
+	al := &mockAniList{
+		trendingFn: func(ctx context.Context, page, perPage int) ([]anilist.Media, error) {
+			return nil, errors.New("anilist 403")
+		},
+	}
+	svc := newService(&mockBangumi{}, al, cache.New(""))
+
+	if _, err := svc.GetTrending(context.Background(), 1); err == nil {
+		t.Fatal("want error when AniList fails with no stale cache")
+	}
+}
+
+func TestBrowse_FallsBackToStaleOnUpstreamError(t *testing.T) {
+	callCount := 0
+	al := &mockAniList{
+		browseFn: func(ctx context.Context, filter anilist.BrowseFilter, page, perPage int) ([]anilist.Media, error) {
+			callCount++
+			if callCount == 1 {
+				return []anilist.Media{{
+					ID:    200,
+					Title: anilist.MediaTitle{Romaji: "Season Best", Native: "今期"},
+				}}, nil
+			}
+			return nil, errors.New("anilist 403")
+		},
+	}
+	c := cache.New("")
+	svc := newService(&mockBangumi{}, al, c)
+	filter := metadata.BrowseFilter{Year: 2026, Season: "SUMMER", Sort: "SCORE_DESC"}
+
+	if _, err := svc.Browse(context.Background(), filter, 1); err != nil {
+		t.Fatalf("seed: %v", err)
+	}
+	if err := c.Del(context.Background(), "meta:browse::SCORE_DESC:2026:SUMMER:0:::false:1"); err != nil {
+		t.Fatal(err)
+	}
+
+	results, err := svc.Browse(context.Background(), filter, 1)
+	if err != nil {
+		t.Fatalf("want stale fallback, got error: %v", err)
+	}
+	if len(results) != 1 || results[0].AniListID != 200 {
+		t.Errorf("want stale browse item, got %+v", results)
 	}
 }

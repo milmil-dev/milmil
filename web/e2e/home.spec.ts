@@ -96,3 +96,59 @@ test('home today is a poster shelf; season and memories teasers follow', async (
     memories.getByRole('link', { name: new RegExp(`Classic ${year - 10}`) })
   ).toBeVisible();
 });
+
+test('home still shows continue watching when discover endpoints fail', async ({ page }) => {
+  await page.route('**/api/v1/auth/me', (r) =>
+    r.fulfill({ status: 200, body: JSON.stringify({ id: 'user-1', username: 'testuser' }) })
+  );
+  await page.route('**/api/v1/auth/status', (r) =>
+    r.fulfill({ status: 200, body: JSON.stringify({ initialized: true }) })
+  );
+  await page.route('**/api/v1/libraries', (r) => r.fulfill({ status: 200, body: '[]' }));
+  await page.route('**/api/v1/collection*', (r) => r.fulfill({ status: 200, body: '[]' }));
+  await page.route('**/api/v1/discover/tags/popular*', (r) =>
+    r.fulfill({ status: 200, body: '[]' })
+  );
+  await page.route('**/api/v1/discover/calendar*', (r) =>
+    r.fulfill({ status: 502, body: JSON.stringify({ message: 'external service unavailable' }) })
+  );
+  await page.route('**/api/v1/discover/trending*', (r) =>
+    r.fulfill({ status: 502, body: JSON.stringify({ message: 'external service unavailable' }) })
+  );
+  await page.route('**/api/v1/discover/browse*', (r) =>
+    r.fulfill({ status: 502, body: JSON.stringify({ message: 'external service unavailable' }) })
+  );
+  await page.route('**/api/v1/progress/recent', (r) =>
+    r.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          id: '1',
+          user_id: 'u1',
+          episode_id: 'e1',
+          media_file_id: 'f1',
+          position_seconds: 600,
+          duration_seconds: 1200,
+          completed: 0,
+          last_watched_at: '2026-03-26T00:00:00Z',
+          anime_id: 'a1',
+          anime_title: 'Continue Me',
+          anime_title_zh: null,
+          anime_cover_image: null,
+          anime_bangumi_id: 111,
+          episode_number: 3,
+        },
+      ]),
+    })
+  );
+
+  await page.goto('/');
+  await page.evaluate(() => {
+    localStorage.setItem('milmil-token', 'mlml_fake-token-for-e2e');
+  });
+  await page.goto('/');
+
+  await expect(page.getByText('Continue Me')).toBeVisible();
+  await expect(page.getByTestId('home-trending')).toHaveCount(0);
+});
