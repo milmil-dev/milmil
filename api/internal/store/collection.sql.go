@@ -14,11 +14,6 @@ const countCollectionByStatus = `-- name: CountCollectionByStatus :many
 SELECT watch_status, COUNT(*) AS count
 FROM anime a
 WHERE a.watch_status != 'none'
-  AND EXISTS (
-    SELECT 1 FROM episodes e
-    JOIN media_files mf ON mf.episode_id = e.id
-    WHERE e.anime_id = a.id AND mf.match_status != 'unmatched'
-  )
 GROUP BY watch_status
 `
 
@@ -69,15 +64,16 @@ SELECT
   a.created_at,
   a.user_score,
   a.score,
-  COUNT(DISTINCT mf.id) AS local_file_count
+  (
+    SELECT COUNT(DISTINCT mf.id)
+    FROM episodes e
+    JOIN media_files mf ON mf.episode_id = e.id
+    WHERE e.anime_id = a.id AND mf.match_status != 'unmatched'
+  ) AS local_file_count
 FROM anime a
-JOIN episodes e ON e.anime_id = a.id
-JOIN media_files mf ON mf.episode_id = e.id
-WHERE mf.match_status != 'unmatched'
-  AND a.watch_status != 'none'
+WHERE a.watch_status != 'none'
   AND (?1 = '' OR a.watch_status = ?1)
   AND (?2 = '' OR a.title LIKE '%' || ?2 || '%' OR COALESCE(a.title_zh, '') LIKE '%' || ?2 || '%')
-GROUP BY a.id
 ORDER BY a.watch_status_updated_at DESC, a.created_at DESC
 `
 
@@ -107,6 +103,7 @@ type ListCollectionAnimeRow struct {
 	LocalFileCount       int64          `json:"local_file_count"`
 }
 
+// Catalog-only bookmarks have no matched files; local_file_count is not a filter.
 func (q *Queries) ListCollectionAnime(ctx context.Context, arg ListCollectionAnimeParams) ([]ListCollectionAnimeRow, error) {
 	rows, err := q.db.QueryContext(ctx, listCollectionAnime, arg.StatusFilter, arg.SearchQuery)
 	if err != nil {

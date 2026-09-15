@@ -129,6 +129,7 @@ type Querier interface {
 	// C4 fix: list Bangumi episode IDs for all completed episodes of this anime.
 	ListBangumiEpisodeIDsForAnimeWatchedByUser(ctx context.Context, arg ListBangumiEpisodeIDsForAnimeWatchedByUserParams) ([]sql.NullInt64, error)
 	ListBangumiMatchedUnlinkedMediaFiles(ctx context.Context, libraryID string) ([]MediaFile, error)
+	// Catalog-only bookmarks have no matched files; local_file_count is not a filter.
 	ListCollectionAnime(ctx context.Context, arg ListCollectionAnimeParams) ([]ListCollectionAnimeRow, error)
 	ListCompletedDownloads(ctx context.Context) ([]Download, error)
 	ListCompletedWatchProgress(ctx context.Context, userID string) ([]WatchProgress, error)
