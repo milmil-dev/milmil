@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.23](https://github.com/milmil-dev/milmil/compare/v0.1.22...v0.1.23) (2026-09-15)
+
+
+### Bug Fixes
+
+* **api:** Show catalog-only bookmarks on the collection page ([#156](https://github.com/milmil-dev/milmil/issues/156)) ([5ab1f66](https://github.com/milmil-dev/milmil/commit/5ab1f66e6fa20b973184f79ee9615d7b9641685b))
+
 ## [0.1.22](https://github.com/milmil-dev/milmil/compare/v0.1.21...v0.1.22) (2026-09-15)
 
 
