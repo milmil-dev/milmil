@@ -1,9 +1,8 @@
-import { MagnetIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -70,15 +69,8 @@ export function TorrentSearchPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen px-6 pt-6 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 mb-6"
-        >
-          <HugeiconsIcon icon={MagnetIcon} size={22} className="text-mm-accent" />
-          <h1 className="text-lg font-semibold text-ink tracking-tight">Torrent Search</h1>
-        </motion.div>
+      <div className="min-h-screen px-4 md:px-8 pt-8 md:pt-10 pb-16">
+        <PageHeader title="Torrent Search" />
 
         {/* Search input */}
         <motion.div

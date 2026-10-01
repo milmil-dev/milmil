@@ -1,3 +1,4 @@
+import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQuery } from '@tanstack/react-query';
@@ -37,10 +38,10 @@ type SeasonKey = 'WINTER' | 'SPRING' | 'SUMMER' | 'FALL';
 const SEASONS: SeasonKey[] = ['WINTER', 'SPRING', 'SUMMER', 'FALL'];
 
 const SCHEDULE_SIZE_OPTIONS = [
-  { value: 'small', label: 'Small cards' },
-  { value: 'medium', label: 'Medium cards' },
-  { value: 'large', label: 'Large cards' },
-] as const satisfies ReadonlyArray<{ value: ScheduleCardSize; label: string }>;
+  { value: 'small', label: msg`schedule.cardSize.small` },
+  { value: 'medium', label: msg`schedule.cardSize.medium` },
+  { value: 'large', label: msg`schedule.cardSize.large` },
+] as const satisfies ReadonlyArray<{ value: ScheduleCardSize; label: MessageDescriptor }>;
 
 const TIMELINE_CARD_WIDTHS: Record<ScheduleCardSize, string> = {
   small: 'w-[calc(50%-4px)] sm:w-[148px] md:w-[168px] lg:w-[184px]',
@@ -64,8 +65,9 @@ const MOBILE_SCHEDULE_GRID_STYLES: Record<ScheduleCardSize, CSSProperties> = {
   small: {
     gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
   },
+  // Two up on a phone: one full-width poster per screen made the day unscannable.
   medium: {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(min(13rem, 100%), 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(9.5rem, 100%), 1fr))',
   },
   large: {
     gridTemplateColumns: 'repeat(auto-fit, minmax(min(21rem, 100%), 1fr))',
@@ -123,10 +125,11 @@ function ScheduleSizeControl({
   scheduleCardSize: ScheduleCardSize;
   setScheduleCardSize: (size: ScheduleCardSize) => void;
 }) {
+  const { i18n } = useLingui();
   return (
     <TooltipProvider delayDuration={250}>
       <fieldset className="flex items-center gap-0.5 rounded-lg bg-black/15 p-0.5 backdrop-blur-md">
-        <legend className="sr-only">Anime card size</legend>
+        <legend className="sr-only">{i18n._(msg`schedule.cardSize.legend`)}</legend>
         {SCHEDULE_SIZE_OPTIONS.map((option) => {
           const isActive = scheduleCardSize === option.value;
           return (
@@ -134,7 +137,7 @@ function ScheduleSizeControl({
               <TooltipTrigger asChild>
                 <button
                   type="button"
-                  aria-label={option.label}
+                  aria-label={i18n._(option.label)}
                   aria-pressed={isActive}
                   onClick={() => setScheduleCardSize(option.value)}
                   className={cn(
@@ -151,7 +154,7 @@ function ScheduleSizeControl({
                   )}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">{option.label}</TooltipContent>
+              <TooltipContent side="bottom">{i18n._(option.label)}</TooltipContent>
             </Tooltip>
           );
         })}
@@ -163,29 +166,46 @@ function ScheduleSizeControl({
 /* ── Bangumi weekday helpers (for calendar view) ──────────── */
 
 const BANGUMI_WEEKDAYS = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
-const BANGUMI_WEEKDAYS_JP = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
-
 function todayWeekdayCN(): string {
   const jsDay = getDay(new Date()); // 0=Sun
   return BANGUMI_WEEKDAYS[jsDay === 0 ? 6 : jsDay - 1] as string;
 }
 
-function getWeekdayJapanese(bangumiWeekday: string): string {
+/** The date this week that falls on a Bangumi weekday ("星期四"). */
+function dateForWeekday(bangumiWeekday: string): Date | null {
   const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
-  if (idx === -1) return '';
-  return BANGUMI_WEEKDAYS_JP[idx] ?? '';
-}
-
-function getDateForWeekday(bangumiWeekday: string): string {
-  const idx = BANGUMI_WEEKDAYS.indexOf(bangumiWeekday);
-  if (idx === -1) return '';
+  if (idx === -1) return null;
   const now = new Date();
   const jsDay = getDay(now);
   const currentIdx = jsDay === 0 ? 6 : jsDay - 1;
-  const diff = idx - currentIdx;
   const target = new Date(now);
-  target.setDate(target.getDate() + diff);
-  return format(target, 'M月d日');
+  target.setDate(target.getDate() + idx - currentIdx);
+  return target;
+}
+
+/** Bangumi keys weekdays in Chinese; show them in the viewer's language. */
+function weekdayLabel(
+  bangumiWeekday: string,
+  locale: string,
+  style: 'long' | 'short' | 'narrow' = 'long'
+): string {
+  const date = dateForWeekday(bangumiWeekday);
+  if (!date) return '';
+  try {
+    return new Intl.DateTimeFormat(locale, { weekday: style }).format(date);
+  } catch {
+    return bangumiWeekday;
+  }
+}
+
+function getDateForWeekday(bangumiWeekday: string, locale: string): string {
+  const date = dateForWeekday(bangumiWeekday);
+  if (!date) return '';
+  try {
+    return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(date);
+  } catch {
+    return format(date, 'M/d');
+  }
 }
 
 function getCompactDateForWeekday(bangumiWeekday: string): string {
@@ -721,7 +741,7 @@ function MobileDayHeading({ day, today }: { day: CalendarDay; today: string }) {
       <div>
         <div className="flex items-center gap-2.5">
           <h2 className="text-[24px] font-bold leading-none text-ink">
-            {getWeekdayJapanese(day.weekday)}
+            {weekdayLabel(day.weekday, i18n.locale)}
           </h2>
           {isToday && (
             <span className="inline-flex items-center gap-1 rounded-full bg-mm-accent/12 px-2 py-0.5 text-[10px] font-bold text-mm-accent">
@@ -731,7 +751,7 @@ function MobileDayHeading({ day, today }: { day: CalendarDay; today: string }) {
           )}
         </div>
         <p className="mt-1.5 text-xs font-medium text-ink/60 tabular-nums">
-          {getDateForWeekday(day.weekday)}
+          {getDateForWeekday(day.weekday, i18n.locale)}
         </p>
       </div>
       <span className="rounded-full bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold text-ink/62 tabular-nums">
@@ -813,7 +833,7 @@ function MobileWeekdayTabs({
                     isActive ? 'text-mm-accent' : 'text-ink/62'
                   )}
                 >
-                  {getWeekdayJapanese(day.weekday).slice(0, 1)}
+                  {weekdayLabel(day.weekday, i18n.locale, 'narrow')}
                 </span>
                 <span
                   className={cn(
@@ -1025,9 +1045,9 @@ function CalendarView() {
                   isActive ? 'text-mm-accent' : 'text-ink/80'
                 )}
               >
-                {day.weekday.replace(/^星期/, '週')} ({getWeekdayJapanese(day.weekday).slice(0, 1)})
+                {weekdayLabel(day.weekday, i18n.locale, 'short')}
                 <span className="ml-1 text-[11px] font-medium text-ink/40 sm:text-[10px]">
-                  {getDateForWeekday(day.weekday)}
+                  {getDateForWeekday(day.weekday, i18n.locale)}
                 </span>
               </span>
               {isToday && !isActive && (
@@ -1096,7 +1116,7 @@ function CalendarView() {
                 >
                   <div className="flex items-center gap-2.5 mb-4">
                     <h2 className="text-lg font-semibold text-ink">
-                      {getWeekdayJapanese(activeCalendar.weekday)}
+                      {weekdayLabel(activeCalendar.weekday, i18n.locale)}
                     </h2>
                     <span className="text-[12px] font-medium text-mm-text-muted tabular-nums">
                       {activeCalendar.items.length} {i18n._(msg`schedule.totalShows`)}
@@ -1138,10 +1158,10 @@ function CalendarView() {
                             isToday ? 'text-mm-accent' : 'text-ink/70'
                           )}
                         >
-                          {getWeekdayJapanese(day.weekday)}
+                          {weekdayLabel(day.weekday, i18n.locale)}
                         </div>
                         <div className="mt-0.5 text-[11px] font-medium text-ink/55 tabular-nums">
-                          {getDateForWeekday(day.weekday)}
+                          {getDateForWeekday(day.weekday, i18n.locale)}
                         </div>
                         <div className="mt-0.5 text-[11px] font-medium text-ink/55 tabular-nums">
                           {day.items.length} {i18n._(msg`schedule.totalShows`)}

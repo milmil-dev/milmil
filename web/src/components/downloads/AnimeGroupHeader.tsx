@@ -107,41 +107,45 @@ export function AnimeGroupHeader({
           </div>
         </div>
         <StatLine stats={stats} i18n={i18n} />
-        {showProgressBar && (
-          <div className="mt-2.5 h-[2px] bg-[rgba(74,222,128,0.06)] rounded-sm overflow-hidden">
-            <div
-              data-testid="progress-fill"
-              className="h-full rounded-sm"
-              style={{
-                width: `${percent}%`,
-                background: 'linear-gradient(90deg, rgba(74,222,128,0.85), #4ade80)',
-              }}
-            />
+        {/* The percentage sits on the bar it describes, not across the card */}
+        <div className="mt-2.5 flex items-center gap-3">
+          {showProgressBar ? (
+            <div className="flex-1 h-[2px] bg-[rgba(74,222,128,0.06)] rounded-sm overflow-hidden">
+              <div
+                data-testid="progress-fill"
+                className="h-full rounded-sm"
+                style={{
+                  width: `${percent}%`,
+                  background: 'linear-gradient(90deg, rgba(74,222,128,0.85), #4ade80)',
+                }}
+              />
+            </div>
+          ) : (
+            <div data-testid="progress-fill-neutral" className="flex-1 h-[1px] bg-ink/[0.14]" />
+          )}
+          <div className="flex items-baseline gap-0.5 text-ink/90 shrink-0">
+            <span className="text-[15px] font-medium tracking-[-0.02em] tabular-nums">
+              {percent}
+            </span>
+            <span className="text-[11px] font-light text-ink/50">%</span>
           </div>
-        )}
-        {!showProgressBar && (
-          <div data-testid="progress-fill-neutral" className="mt-2.5 h-[1px] bg-ink/[0.14]" />
-        )}
+        </div>
       </div>
 
-      <div className="flex flex-col items-end justify-between gap-2">
+      <div className="flex flex-col items-end gap-2">
         <div className="flex items-center gap-2">
           {headerActions}
           <button
             type="button"
             onClick={onToggle}
             aria-label={expanded ? i18n._(msg`downloads.collapse`) : i18n._(msg`downloads.expand`)}
-            className="flex items-center gap-1.5 text-[11px] text-ink/25 hover:text-ink/65 cursor-pointer"
+            className="flex items-center gap-1.5 text-[11px] text-ink/45 hover:text-ink/75 cursor-pointer"
           >
             <span>
               {expanded ? i18n._(msg`downloads.collapse`) : i18n._(msg`downloads.expand`)}
             </span>
             <HugeiconsIcon icon={expanded ? ArrowUp01Icon : ArrowDown01Icon} size={11} />
           </button>
-        </div>
-        <div className="flex items-baseline gap-1 text-ink/90">
-          <span className="text-[20px] font-medium tracking-[-0.02em] tabular-nums">{percent}</span>
-          <span className="text-[14px] font-light text-ink/50">%</span>
         </div>
       </div>
     </div>

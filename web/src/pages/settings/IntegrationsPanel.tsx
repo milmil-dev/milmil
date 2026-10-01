@@ -549,8 +549,9 @@ function TraktCard() {
             {deviceCode.user_code}
           </div>
           <p className="mt-2 text-xs text-ink/50">
-            {i18n._(msg`settings.integration.trakt.waitingExpires`)}{' '}
-            {Math.max(1, Math.floor(deviceCode.expires_in / 60))}m
+            {i18n._(
+              msg`settings.integration.trakt.waitingExpires ${Math.max(1, Math.floor(deviceCode.expires_in / 60))}`
+            )}
           </p>
         </div>
       ) : (

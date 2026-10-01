@@ -79,7 +79,6 @@ export default defineConfig({
       'src/components/AppSidebar.test.tsx',
       'src/components/image-fallbacks.test.tsx',
       'src/components/media-surfaces.test.tsx',
-      'src/pages/AnimeDetailPage.test.tsx',
       'src/pages/HomePage.test.tsx',
       'src/pages/WatchPage.test.tsx',
       'src/routes/__root.test.tsx',

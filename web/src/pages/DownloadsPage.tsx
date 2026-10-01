@@ -18,6 +18,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Modal } from '../components/Modal';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -39,6 +40,7 @@ import { libraryApi, libraryKeys } from '../lib/api/library';
 import type { TorrentResult } from '../lib/api/torrent';
 import { torrentApi } from '../lib/api/torrent';
 import { api } from '../lib/api-client';
+import { animeGradient } from '../lib/gradient';
 import { cn } from '../lib/utils';
 import type { DownloadsSearch } from '../routes/downloads';
 import LibraryTab from './downloads/LibraryTab';
@@ -336,60 +338,53 @@ export function DownloadsPage() {
     <PageTransition>
       <div className="min-h-screen">
         {/* Header */}
-        <div className="px-8 pt-12 pb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">
-                milmil
-              </p>
-              <h1 className="text-3xl font-bold text-ink mt-1 tracking-tight">
-                {i18n._(msg`nav.autoDownload`)}
-              </h1>
-            </div>
-            {/* Page-level actions: downloader status + Add URL */}
-            <div className="flex items-center gap-3">
-              {/* Downloader status */}
-              <div
-                className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-lg',
-                  downloaderStatus?.healthy
-                    ? 'bg-ink/[0.03]'
-                    : 'bg-red-500/[0.06] border border-red-500/10'
-                )}
-              >
-                <span
+        <div className="px-4 md:px-8 pt-8 md:pt-10">
+          <PageHeader
+            className="mb-4"
+            title={i18n._(msg`nav.autoDownload`)}
+            actions={
+              <>
+                {/* Downloader status */}
+                <div
                   className={cn(
-                    'h-1.5 w-1.5 rounded-full shrink-0',
+                    'flex items-center gap-2 px-3 py-1.5 rounded-lg',
                     downloaderStatus?.healthy
-                      ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.4)]'
-                      : 'bg-red-400/60'
-                  )}
-                />
-                <span
-                  className={cn(
-                    'text-[11px] font-medium',
-                    downloaderStatus?.healthy ? 'text-ink/50' : 'text-red-400/70'
+                      ? 'bg-ink/[0.03]'
+                      : 'bg-red-500/[0.06] border border-red-500/10'
                   )}
                 >
-                  {downloaderStatus?.healthy
-                    ? `${downloaderStatus.engine === 'builtin' ? 'Built-in' : downloaderStatus.engine}`
-                    : i18n._(msg`settings.download.disconnected`)}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAddUrlOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium text-ink/50 hover:text-ink hover:bg-ink/[0.06] transition-colors cursor-pointer"
-              >
-                <HugeiconsIcon icon={Add01Icon} size={14} />
-                {i18n._(msg`autoDownload.addUrl`)}
-              </button>
-            </div>
-          </div>
+                  <span
+                    className={cn(
+                      'h-1.5 w-1.5 rounded-full shrink-0',
+                      downloaderStatus?.healthy
+                        ? 'bg-green-400 shadow-[0_0_4px_rgba(74,222,128,0.4)]'
+                        : 'bg-red-400/60'
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      'text-[11px] font-medium',
+                      downloaderStatus?.healthy ? 'text-ink/50' : 'text-red-400/70'
+                    )}
+                  >
+                    {downloaderStatus?.healthy
+                      ? downloaderStatus.engine === 'builtin'
+                        ? i18n._(msg`settings.download.builtin`)
+                        : downloaderStatus.engine
+                      : i18n._(msg`settings.download.disconnected`)}
+                  </span>
+                </div>
+                <Button variant="secondary" size="sm" onClick={() => setAddUrlOpen(true)}>
+                  <HugeiconsIcon icon={Add01Icon} size={14} />
+                  {i18n._(msg`autoDownload.addUrl`)}
+                </Button>
+              </>
+            }
+          />
         </div>
 
         {/* Tabs */}
-        <div className="px-8 mb-6">
+        <div className="px-4 md:px-8 mb-6">
           <div className="flex items-center pb-px">
             <div className="flex gap-1">
               {tabs.map((t) => (
@@ -420,7 +415,7 @@ export function DownloadsPage() {
         <AddUrlDialog open={addUrlOpen} onOpenChange={setAddUrlOpen} />
 
         {/* Tab content */}
-        <div className="px-8 pb-16">
+        <div className="px-4 md:px-8 pb-16">
           {tab === 'search' && <SearchTab initialAnimeId={animeParam} />}
           {tab === 'library' && (
             <LibraryTab
@@ -603,13 +598,7 @@ function SearchTab({ initialAnimeId }: { initialAnimeId?: string }) {
                         onClick={() => setSelectedAnime(anime)}
                         className="w-full flex items-center gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.06] transition-colors text-left cursor-pointer"
                       >
-                        <img
-                          src={anime.cover_image}
-                          alt=""
-                          className="w-12 h-auto rounded object-cover shrink-0"
-                          style={{ aspectRatio: '3/4' }}
-                          loading="lazy"
-                        />
+                        <CoverThumb anime={anime} className="w-12 rounded" />
                         <div className="flex-1 min-w-0">
                           <p className="text-[13px] font-medium text-ink truncate">{anime.title}</p>
                           <div className="flex flex-wrap items-center gap-2 mt-1.5">
@@ -773,12 +762,7 @@ function AnimeTorrentView({ anime, onBack }: { anime: AnimeSummary; onBack: () =
             className="shrink-0 hover:opacity-90 transition-opacity no-underline"
             style={{ textDecoration: 'none' }}
           >
-            <img
-              src={anime.cover_image}
-              alt=""
-              className="w-[80px] h-auto rounded-lg object-cover shadow-lg"
-              style={{ aspectRatio: '3/4' }}
-            />
+            <CoverThumb anime={anime} className="w-[80px] rounded-lg shadow-lg" />
           </Link>
 
           {/* Info */}
@@ -1655,5 +1639,23 @@ function AddUrlDialog({
         </div>
       </form>
     </Modal>
+  );
+}
+
+/** Poster thumbnail with the app's gradient stand-in when there is no cover. */
+function CoverThumb({ anime, className }: { anime: AnimeSummary; className?: string }) {
+  const hasCover = anime.cover_image?.startsWith('http');
+  return (
+    <div
+      className={cn('shrink-0 overflow-hidden', className)}
+      style={{
+        aspectRatio: '3/4',
+        ...(hasCover ? {} : { background: animeGradient(anime.title) }),
+      }}
+    >
+      {hasCover && (
+        <img src={anime.cover_image} alt="" className="w-full h-full object-cover" loading="lazy" />
+      )}
+    </div>
   );
 }

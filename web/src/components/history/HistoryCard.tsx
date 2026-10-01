@@ -161,11 +161,27 @@ export function HistoryCard({
 
       <div className="px-0.5 pt-2.5">
         <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-ink">{title}</p>
-        <div className="mt-1 flex items-center justify-between text-[11px] text-mm-text-tertiary">
-          <span>EP {formatEpisodeNumber(item.episode_number)}</span>
-          <span>{new Date(item.last_watched_at).toLocaleString()}</span>
-        </div>
+        {/* The thumbnail already carries the EP badge and the page groups by
+            day, so this line only needs the time it was watched. */}
+        <p className="mt-1 text-[11px] text-mm-text-tertiary tabular-nums">
+          {formatWatchedAt(item.last_watched_at, i18n.locale)}
+        </p>
       </div>
     </Link>
   );
+}
+
+function formatWatchedAt(iso: string, locale: string): string {
+  const date = new Date(iso);
+  const sameDay = date.toDateString() === new Date().toDateString();
+  try {
+    return new Intl.DateTimeFormat(
+      locale,
+      sameDay
+        ? { hour: 'numeric', minute: '2-digit' }
+        : { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }
+    ).format(date);
+  } catch {
+    return date.toLocaleString();
+  }
 }

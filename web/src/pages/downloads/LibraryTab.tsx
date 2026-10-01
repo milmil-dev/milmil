@@ -217,28 +217,28 @@ export default function LibraryTab({
       </div>
 
       {(rules.length > 0 || miscDownloads.length > 0) && (
-        <div className="flex items-center gap-3 mb-3 text-[11px] text-ink/20 flex-wrap">
+        <div className="flex items-center gap-3 mb-3 text-[11px] text-ink/45 flex-wrap">
           <span>
-            <b className="text-ink/40 font-medium">{rules.length}</b>{' '}
+            <b className="text-ink/75 font-medium">{rules.length}</b>{' '}
             {i18n._(msg`downloads.summary.subscribed`)}
           </span>
-          <span className="text-ink/10">·</span>
+          <span className="text-ink/25">·</span>
           <span>
             <span className="inline-block w-[5px] h-[5px] rounded-full bg-[#4ade80] mr-1.5 align-middle" />
-            <b className="text-ink/40 font-medium">{stats.downloadingCount}</b>{' '}
+            <b className="text-ink/75 font-medium">{stats.downloadingCount}</b>{' '}
             {i18n._(msg`downloads.summary.downloading`)}
           </span>
           {stats.speed > 0 && (
             <>
-              <span className="text-ink/10">·</span>
+              <span className="text-ink/25">·</span>
               <span className="tabular-nums">
-                <b className="text-ink/40 font-medium">{formatBytes(stats.speed)}/s</b>
+                <b className="text-ink/75 font-medium">{formatBytes(stats.speed)}/s</b>
               </span>
             </>
           )}
-          <span className="text-ink/10">·</span>
+          <span className="text-ink/25">·</span>
           <span className="tabular-nums">
-            <b className="text-ink/40 font-medium">{formatBytes(stats.storedBytes)}</b>{' '}
+            <b className="text-ink/75 font-medium">{formatBytes(stats.storedBytes)}</b>{' '}
             {i18n._(msg`downloads.summary.stored`)}
           </span>
         </div>

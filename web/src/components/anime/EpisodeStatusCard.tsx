@@ -5,9 +5,13 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { MissingSearchModal } from '@/components/anime/MissingSearchModal';
+import { ConfirmDialog } from '@/components/history/ConfirmDialog';
 import { Skeleton } from '@/components/Skeleton';
 import { completenessApi, completenessKeys } from '@/lib/api/completeness';
 import { missingSearchApi } from '@/lib/api/missing_search';
+
+/** Past this many missing episodes the per-episode buttons collapse. */
+const MISSING_PREVIEW_COUNT = 20;
 
 interface Props {
   bangumiId: number;
@@ -22,6 +26,8 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
   });
 
   const [searchEp, setSearchEp] = useState<number | null>(null);
+  const [confirmAuto, setConfirmAuto] = useState(false);
+  const [showAllMissing, setShowAllMissing] = useState(false);
   const autoRule = useMutation({
     mutationFn: () => missingSearchApi.autoRule(bangumiId, data?.missing ?? []),
     onSuccess: (res) =>
@@ -31,7 +37,7 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border border-white/10 bg-black/40 p-4 backdrop-blur-sm">
+      <div className="rounded-lg border border-ink/[0.08] bg-ink/[0.04] p-4 backdrop-blur-sm">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="mt-2 h-3 w-40" />
       </div>
@@ -42,45 +48,49 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
   if (data.missing.length === 0 && data.airing_pending.length === 0) return null;
 
   const sortedMissing = [...data.missing].sort((a, b) => a - b);
+  const visibleMissing = showAllMissing
+    ? sortedMissing
+    : sortedMissing.slice(0, MISSING_PREVIEW_COUNT);
+  const hiddenMissing = sortedMissing.length - visibleMissing.length;
 
   return (
     <>
-      <div className="rounded-lg border border-white/10 bg-black/40 p-4 backdrop-blur-sm">
-        <h3 className="text-sm font-semibold text-white/80">{i18n._(msg`Episode status`)}</h3>
-        <div className="mt-2 space-y-2 text-sm text-white/60">
+      <div className="rounded-lg border border-ink/[0.08] bg-ink/[0.04] p-4 backdrop-blur-sm">
+        <h3 className="text-sm font-semibold text-ink/80">{i18n._(msg`Episode status`)}</h3>
+        <div className="mt-2 space-y-2 text-sm text-ink/60">
           {sortedMissing.length > 0 && (
             <div>
               <div className="flex flex-wrap items-center gap-1">
                 <span className="mr-1">{i18n._(msg`Missing`)}:</span>
-                {sortedMissing.map((n, idx) => (
+                {visibleMissing.map((n, idx) => (
                   <span key={n}>
                     <button
                       type="button"
                       onClick={() => setSearchEp(n)}
-                      className="text-white underline-offset-2 hover:underline"
+                      className="text-ink underline-offset-2 hover:underline hover:text-mm-accent"
                       title={i18n._(msg`Search for this episode`)}
                     >
                       {n}
                     </button>
-                    {idx < sortedMissing.length - 1 && <span className="text-white/40">,</span>}
+                    {idx < visibleMissing.length - 1 && <span className="text-ink/40">,</span>}
                   </span>
                 ))}
+                {sortedMissing.length > MISSING_PREVIEW_COUNT && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllMissing((v) => !v)}
+                    aria-expanded={showAllMissing}
+                    className="ml-1 text-xs text-ink/50 hover:text-mm-accent"
+                  >
+                    {showAllMissing ? i18n._(msg`watch.showLess`) : `+${hiddenMissing}`}
+                  </button>
+                )}
               </div>
               <button
                 type="button"
                 disabled={autoRule.isPending}
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      i18n._(
-                        msg`Create auto-download rule for ${sortedMissing.length} missing episodes?`
-                      )
-                    )
-                  ) {
-                    autoRule.mutate();
-                  }
-                }}
-                className="mt-2 rounded bg-white/10 px-2 py-0.5 text-xs text-white/80 hover:bg-white/20 disabled:opacity-50"
+                onClick={() => setConfirmAuto(true)}
+                className="mt-2 rounded bg-ink/[0.08] px-2 py-0.5 text-xs text-ink/80 hover:bg-ink/[0.14] disabled:opacity-50"
               >
                 {i18n._(msg`Auto-download missing`)}
               </button>
@@ -89,11 +99,20 @@ export function EpisodeStatusCard({ bangumiId }: Props) {
           {data.airing_pending.length > 0 && (
             <div>
               <span className="mr-1">{i18n._(msg`Not aired yet`)}:</span>
-              <span className="text-white">{formatRanges(data.airing_pending)}</span>
+              <span className="text-ink">{formatRanges(data.airing_pending)}</span>
             </div>
           )}
         </div>
       </div>
+      <ConfirmDialog
+        open={confirmAuto}
+        onOpenChange={setConfirmAuto}
+        title={i18n._(msg`Auto-download missing`)}
+        description={i18n._(
+          msg`Create auto-download rule for ${sortedMissing.length} missing episodes?`
+        )}
+        onConfirm={() => autoRule.mutate()}
+      />
       {searchEp !== null && (
         <MissingSearchModal
           bangumiId={bangumiId}

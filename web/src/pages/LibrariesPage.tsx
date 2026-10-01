@@ -1,3 +1,5 @@
+import { Add01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useForm } from '@tanstack/react-form';
@@ -15,6 +17,7 @@ import {
 } from '../components/library/FolderPicker';
 import { Modal } from '../components/Modal';
 import { PageAtmosphere } from '../components/PageAtmosphere';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Button } from '../components/ui/button';
@@ -2814,36 +2817,34 @@ export function LibrariesPage() {
         <PageAtmosphere preset="libraries" />
         {/* Header — only show when libraries exist */}
         {(hasLibraries || isLoading) && (
-          <div className="px-8 pt-14 pb-8">
-            <div className="flex items-center justify-between">
-              <h1 className="text-4xl font-bold text-ink tracking-tight">
-                {i18n._(msg`library.pageTitle`)}
-              </h1>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    for (const lib of libraries) {
-                      libraryApi
-                        .scan(lib.id)
-                        .catch((err: Error) => toast.error(`${lib.name}: ${err.message}`));
-                    }
-                    toast.success(i18n._(msg`scan.scanAll`));
-                  }}
-                  disabled={libraries.length === 0}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-ink/[0.06] text-ink/50 hover:bg-ink/[0.10] hover:text-ink/80 transition-colors cursor-pointer disabled:opacity-30"
-                >
-                  {i18n._(msg`scan.scanAll`)}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDrawerMode('add')}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-ink/[0.06] text-ink/60 hover:bg-ink/[0.10] hover:text-ink/80 transition-colors cursor-pointer"
-                >
-                  + {i18n._(msg`library.addLibrary`)}
-                </button>
-              </div>
-            </div>
+          <div className="px-4 md:px-8 pt-8 md:pt-10 pb-8">
+            <PageHeader
+              className="mb-0"
+              title={i18n._(msg`library.pageTitle`)}
+              actions={
+                <>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      for (const lib of libraries) {
+                        libraryApi
+                          .scan(lib.id)
+                          .catch((err: Error) => toast.error(`${lib.name}: ${err.message}`));
+                      }
+                      toast.success(i18n._(msg`scan.scanAll`));
+                    }}
+                    disabled={libraries.length === 0}
+                  >
+                    {i18n._(msg`scan.scanAll`)}
+                  </Button>
+                  <Button variant="accent" size="sm" onClick={() => setDrawerMode('add')}>
+                    <HugeiconsIcon icon={Add01Icon} size={14} />
+                    {i18n._(msg`library.addLibrary`)}
+                  </Button>
+                </>
+              }
+            />
 
             {/* Summary stats + sort bar */}
             {hasLibraries && (

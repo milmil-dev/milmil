@@ -155,6 +155,7 @@ export function LibraryStep() {
           {(isSubmitting) => (
             <Button
               type="submit"
+              variant="accent"
               disabled={
                 isSubmitting || pathStatus.kind === 'checking' || pathStatus.kind === 'error'
               }

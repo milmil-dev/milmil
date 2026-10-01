@@ -5,6 +5,8 @@ import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
+import { ConfirmDialog } from '../components/history/ConfirmDialog';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { SkeletonSection } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
@@ -83,6 +85,7 @@ export function NotificationsPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('all');
   const [limit, setLimit] = useState(PAGE_SIZE);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   useDocumentTitle(i18n._(msg`notifications.title`));
 
@@ -121,29 +124,34 @@ export function NotificationsPage() {
 
   return (
     <PageTransition>
-      <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-ink">{i18n._(msg`notifications.title`)}</h1>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => markAllMut.mutate(undefined)}
-              className="text-xs text-ink/40 hover:text-ink/70"
-            >
-              {i18n._(msg`notifications.markAllRead`)}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => clearMut.mutate(undefined)}
-              className="text-xs text-ink/40 hover:text-ink/70"
-            >
-              {i18n._(msg`notifications.clearAll`)}
-            </Button>
-          </div>
-        </div>
+      <div className="max-w-3xl mx-auto px-4 md:px-8 pt-8 md:pt-10 pb-20">
+        <PageHeader
+          title={i18n._(msg`notifications.title`)}
+          actions={
+            <>
+              <Button variant="ghost" size="sm" onClick={() => markAllMut.mutate(undefined)}>
+                {i18n._(msg`notifications.markAllRead`)}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setConfirmClear(true)}
+                className="text-red-500/80 hover:bg-red-500/10 hover:text-red-500 dark:text-red-400/80 dark:hover:text-red-400"
+              >
+                {i18n._(msg`notifications.clearAll`)}
+              </Button>
+            </>
+          }
+        />
+        <ConfirmDialog
+          open={confirmClear}
+          onOpenChange={setConfirmClear}
+          title={i18n._(msg`notifications.clearAll`)}
+          description={i18n._(msg`notifications.clearAll.description`)}
+          confirmLabel={i18n._(msg`notifications.clearAll`)}
+          destructive
+          onConfirm={() => clearMut.mutate(undefined)}
+        />
 
         {/* Filter tabs */}
         <div className="flex gap-1 mb-6 p-1 rounded-lg bg-ink/[0.03] w-fit">

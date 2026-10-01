@@ -105,10 +105,12 @@ function BannerImage({
   src,
   position,
   dimMode,
+  tone,
 }: {
   src: string | null;
   position: 'top' | 'bottom';
   dimMode: 'scroll-down' | 'scroll-up';
+  tone: 'artwork' | 'page';
 }) {
   const [dimmed, setDimmed] = useState(dimMode === 'scroll-up');
   const isBottom = position === 'bottom';
@@ -182,7 +184,10 @@ function BannerImage({
           <img
             src={src}
             alt=""
-            className="w-full h-full object-cover object-center brightness-[0.6]"
+            className={cn(
+              'w-full h-full object-cover object-center',
+              tone === 'page' ? 'dark:brightness-[0.6]' : 'brightness-[0.6]'
+            )}
             style={
               isBottom
                 ? {
@@ -198,6 +203,15 @@ function BannerImage({
           />
         </motion.div>
       </AnimatePresence>
+
+      {/* Light theme under ink text: wash the art toward the page background
+          so dark ink stays readable over it. */}
+      {tone === 'page' && (
+        <div
+          className="dark:hidden w-full h-full absolute inset-0 z-[2]"
+          style={{ background: 'color-mix(in srgb, var(--mm-bg) 62%, transparent)' }}
+        />
+      )}
 
       {/* Left gradient — soft page-bg wash; keep the far-left open so the
           transparent sidebar doesn't sit against a painted vertical wall. */}
@@ -239,6 +253,7 @@ function RootLayout() {
   const bgImage = useBgStore((s) => s.image);
   const bgPosition = useBgStore((s) => s.position);
   const bgDimMode = useBgStore((s) => s.dimMode);
+  const bgTone = useBgStore((s) => s.tone);
   const queryClient = useQueryClient();
   // Connect WebSocket (routes scan events to Zustand store)
   useMillilWebSocket();
@@ -288,7 +303,7 @@ function RootLayout() {
   return (
     <div className="relative min-h-screen">
       {/* Banner image — Seanime pattern: fixed, h-[35rem], extends behind sidebar */}
-      <BannerImage src={bgImage} position={bgPosition} dimMode={bgDimMode} />
+      <BannerImage src={bgImage} position={bgPosition} dimMode={bgDimMode} tone={bgTone} />
 
       {/* Sidebar */}
       <AppSidebar />

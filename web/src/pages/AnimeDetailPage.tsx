@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useMemo } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { AnimeCard } from '../components/AnimeCard';
 import { DuplicatesPanel } from '../components/anime/DuplicatesPanel';
@@ -177,10 +177,91 @@ function SeasonPill({
   );
 }
 
+/** Episode and cast lists collapse past these counts behind a "show more" toggle. */
+const EPISODE_PREVIEW_COUNT = 24;
+const CHARACTER_PREVIEW_COUNT = 10;
+
 function SynopsisBlock({ text }: { text: string }) {
+  const { i18n } = useLingui();
+  const [expanded, setExpanded] = useState(false);
+  // Rough guard so short synopses don't get a useless toggle.
+  const collapsible = text.length > 180 || text.split('\n').length > 3;
   return (
-    <div className="max-w-[660px] max-h-[120px] overflow-auto text-[13px] sm:text-[14px] font-medium text-gray-200 leading-relaxed whitespace-pre-line scrollbar-thin scrollbar-thumb-ink/10 scrollbar-track-transparent">
-      {text}
+    <div className="max-w-[660px]">
+      <p
+        className={cn(
+          'text-[13px] sm:text-[14px] font-medium text-ink/75 leading-relaxed whitespace-pre-line',
+          collapsible && !expanded && 'line-clamp-3'
+        )}
+      >
+        {text}
+      </p>
+      {collapsible && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          className="mt-1 text-[12px] font-semibold text-ink/50 hover:text-mm-accent transition-colors cursor-pointer"
+        >
+          {expanded ? i18n._(msg`watch.showLess`) : i18n._(msg`watch.showMore`)}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ExternalLinks({
+  links,
+  children,
+}: {
+  links: Array<{ label: string; href: string } | false>;
+  /** Trailing controls that act on this metadata, e.g. refresh. */
+  children?: ReactNode;
+}) {
+  const shown = links.filter((l): l is { label: string; href: string } => !!l);
+  return (
+    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 pt-1">
+      {shown.map((l) => (
+        <a
+          key={l.label}
+          href={l.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-0.5 text-[11px] font-medium text-ink/40 hover:text-mm-accent transition-colors"
+        >
+          {l.label}
+          <span aria-hidden="true" className="text-[10px]">
+            ↗
+          </span>
+        </a>
+      ))}
+      {children}
+    </div>
+  );
+}
+
+function ShowMoreToggle({
+  expanded,
+  hiddenCount,
+  onToggle,
+}: {
+  expanded: boolean;
+  hiddenCount: number;
+  onToggle: () => void;
+}) {
+  const { i18n } = useLingui();
+  return (
+    <div className="mt-4 flex justify-center">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={expanded}
+        className="px-4 py-1.5 rounded-full text-[12px] font-medium bg-ink/[0.06] text-ink/60 hover:bg-ink/[0.10] hover:text-ink transition-colors cursor-pointer"
+      >
+        {expanded
+          ? i18n._(msg`watch.showLess`)
+          : `${i18n._(msg`watch.showMore`)} (+${hiddenCount})`}
+      </button>
     </div>
   );
 }
@@ -393,11 +474,61 @@ export function AnimeDetailPage() {
     return playableData.episodes.find((ep) => ep.media_file) ?? null;
   }, [playableData]);
 
+  // Build episode list: merge playable data (local files + progress) with discover images
+  const episodeList: PlayableEpisode[] = (() => {
+    if (playableData?.episodes?.length) {
+      // Merge discover episode images into playable episodes (local DB may lack thumbnails)
+      const discoverImageMap = new Map(episodes?.map((e) => [e.sort, e.image]) ?? []);
+      return playableData.episodes.map((ep) => ({
+        ...ep,
+        image: ep.image || discoverImageMap.get(ep.sort) || null,
+        synopsis: ep.synopsis || episodes?.find((e) => e.sort === ep.sort)?.synopsis || null,
+      }));
+    }
+    return (
+      episodes?.map((e) => ({
+        episode_id: '',
+        sort: e.sort,
+        title: e.title,
+        title_zh: null,
+        air_date: e.air_date ?? null,
+        synopsis: e.synopsis ?? null,
+        synopsis_zh: null,
+        image: e.image ?? null,
+        media_file: null,
+        progress: null,
+      })) ?? []
+    );
+  })();
+
+  const [showAllEpisodes, setShowAllEpisodes] = useState(false);
+  // Collapsed, the list is a window that starts a few episodes before the one
+  // the viewer is on, so someone at episode 300 isn't shown episodes 1-24.
+  const continueIdx = continueEpisode
+    ? episodeList.findIndex((ep) => ep.sort === continueEpisode.sort)
+    : -1;
+  const episodeWindowStart = Math.max(
+    0,
+    Math.min(continueIdx - 3, episodeList.length - EPISODE_PREVIEW_COUNT)
+  );
+  const visibleEpisodes = showAllEpisodes
+    ? episodeList
+    : episodeList.slice(episodeWindowStart, episodeWindowStart + EPISODE_PREVIEW_COUNT);
+  const [showAllCharacters, setShowAllCharacters] = useState(false);
+  // Season pills and recommendations navigate between ids without remounting
+  // the page, so collapse the lists again when the anime changes.
+  const [expandedFor, setExpandedFor] = useState(id);
+  if (expandedFor !== id) {
+    setExpandedFor(id);
+    setShowAllEpisodes(false);
+    setShowAllCharacters(false);
+  }
+
   // Set full-screen background image (behind sidebar) — Seanime style
   useEffect(() => {
     const img = anime?.banner_image || anime?.cover_image;
     if (img?.startsWith('http')) {
-      setImage(img);
+      setImage(img, { tone: 'page' });
     }
     return () => setImage(null);
   }, [anime?.banner_image, anime?.cover_image, setImage]);
@@ -446,133 +577,13 @@ export function AnimeDetailPage() {
 
   const hasCover = anime.cover_image?.startsWith('http');
 
-  // Build episode list: merge playable data (local files + progress) with discover images
-  const episodeList: PlayableEpisode[] = useMemo(() => {
-    if (playableData?.episodes?.length) {
-      // Merge discover episode images into playable episodes (local DB may lack thumbnails)
-      const discoverImageMap = new Map(episodes?.map((e) => [e.sort, e.image]) ?? []);
-      return playableData.episodes.map((ep) => ({
-        ...ep,
-        image: ep.image || discoverImageMap.get(ep.sort) || null,
-        synopsis: ep.synopsis || episodes?.find((e) => e.sort === ep.sort)?.synopsis || null,
-      }));
-    }
-    return (
-      episodes?.map((e) => ({
-        episode_id: '',
-        sort: e.sort,
-        title: e.title,
-        title_zh: null,
-        air_date: e.air_date ?? null,
-        synopsis: e.synopsis ?? null,
-        synopsis_zh: null,
-        image: e.image ?? null,
-        media_file: null,
-        progress: null,
-      })) ?? []
-    );
-  }, [playableData, episodes]);
-
   return (
     <PageTransition>
-      <div className="min-h-screen">
+      <div className="min-h-screen pb-16">
         {/* Hero section */}
-        <div className="relative w-full overflow-hidden md:h-[clamp(340px,45vh,28rem)]">
-          {/* External link icons — top right */}
-          <div className="absolute top-4 right-4 md:top-6 md:right-6 z-[3] flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => refreshMetaMutation.mutate()}
-              disabled={refreshMetaMutation.isPending}
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed mr-1.5"
-              title={i18n._(msg`anime.refreshMeta`)}
-              aria-label={i18n._(msg`anime.refreshMeta`)}
-            >
-              <HugeiconsIcon
-                icon={Refresh03Icon}
-                size={14}
-                strokeWidth={1.8}
-                className={refreshMetaMutation.isPending ? 'animate-spin' : undefined}
-              />
-            </button>
-            <a
-              href={`https://bgm.tv/subject/${numericId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
-              title="Bangumi"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {/* TV antenna */}
-                <path d="M7 2l5 5 5-5" />
-                {/* TV body */}
-                <rect x="2" y="7" width="20" height="14" rx="2" />
-                {/* Screen */}
-                <rect x="5" y="10" width="14" height="8" rx="1" />
-              </svg>
-            </a>
-            {anime?.anilist_id && anime.anilist_id > 0 && (
-              <a
-                href={`https://anilist.co/anime/${anime.anilist_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
-                title="AniList"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M6.361 2.943L0 21.056h4.942l1.077-3.133H11.4l1.052 3.133H22.9c.71 0 1.1-.392 1.1-1.101V17.53c0-.71-.39-1.101-1.1-1.101h-6.483V4.045c0-.71-.392-1.102-1.101-1.102h-2.422c-.71 0-1.101.392-1.101 1.102v11.54H6.361z" />
-                </svg>
-              </a>
-            )}
-            {playableData?.mal_id && playableData.mal_id > 0 && (
-              <a
-                href={`https://myanimelist.net/anime/${playableData.mal_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
-                title="MyAnimeList"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 3h4v10.5l2.5-3.5H12l-3 4.5L12 18H9.5L7 14.5V18H3V3zm8 0h4v6h2V3h4v15h-4v-6h-2v6h-4V3z" />
-                </svg>
-              </a>
-            )}
-            {playableData?.tmdb_id && playableData.tmdb_id > 0 && (
-              <a
-                href={`https://www.themoviedb.org/tv/${playableData.tmdb_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors"
-                title="TMDB"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8zm-1 3v4H7v2h4v4h2v-4h4v-2h-4V7h-2z" />
-                </svg>
-              </a>
-            )}
-            {playableData?.anidb_id && playableData.anidb_id > 0 && (
-              <a
-                href={`https://anidb.net/anime/${playableData.anidb_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm text-white/60 hover:bg-black/60 hover:text-white transition-colors text-[9px] font-bold tracking-tight"
-                title="AniDB"
-              >
-                AniDB
-              </a>
-            )}
-          </div>
+        <div className="relative w-full overflow-hidden md:min-h-[clamp(340px,45vh,28rem)]">
           <div className="relative z-[2] h-full flex">
-            <div className="flex-1 flex flex-col justify-start p-4 pt-6 md:p-8 md:pt-12 min-w-0 max-w-[700px]">
+            <div className="flex-1 flex flex-col justify-start p-4 pt-6 md:p-8 md:pt-12 min-w-0 max-w-[900px]">
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -623,7 +634,7 @@ export function AnimeDetailPage() {
                     >
                       {anime.score > 0 && (
                         <span className="text-[15px] font-bold text-mm-accent tabular-nums">
-                          ♡ {anime.score.toFixed(1)}
+                          ★ {anime.score.toFixed(1)}
                         </span>
                       )}
                       {anime.media_type && (
@@ -648,20 +659,20 @@ export function AnimeDetailPage() {
                       )}
                       {/* Not yet aired */}
                       {anime.air_date && new Date(anime.air_date) > new Date() && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-semibold">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 text-[10px] font-semibold">
                           <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
                           {i18n._(msg`anime.notAired`)}
                         </span>
                       )}
                       {/* Inline status dots */}
                       {hasSubscription && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400 text-[10px] font-medium">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-700 dark:text-green-400 text-[10px] font-medium">
                           <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
                           {i18n._(msg`anime.subscribed`)}
                         </span>
                       )}
                       {hasPlayableFiles && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 text-[10px] font-medium">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 text-[10px] font-medium">
                           <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
                           {playableCount} {i18n._(msg`anime.playableEps`)}
                         </span>
@@ -734,6 +745,57 @@ export function AnimeDetailPage() {
                       transition={{ delay: 0.4, duration: 0.4 }}
                       className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap"
                     >
+                      {/* Primary: play / resume the next episode with a local file */}
+                      {continueEpisode?.media_file &&
+                        (() => {
+                          const prog = continueEpisode.progress;
+                          const resuming =
+                            !!prog &&
+                            !prog.completed &&
+                            prog.position_seconds > 0 &&
+                            prog.duration_seconds > 0;
+                          const epNum =
+                            continueEpisode.sort % 1 === 0
+                              ? Math.floor(continueEpisode.sort)
+                              : continueEpisode.sort;
+                          return (
+                            <Link
+                              to="/watch/$animeId"
+                              params={{ animeId: String(numericId) }}
+                              search={{ ep: epNum }}
+                              title={
+                                resuming
+                                  ? `${formatTime(prog.duration_seconds - prog.position_seconds)} ${i18n._(msg`player.remaining`)}`
+                                  : undefined
+                              }
+                              className="relative overflow-hidden inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-mm-accent text-[12px] font-semibold text-ink-contrast shadow-sm hover:brightness-110 transition-[filter]"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                              {resuming
+                                ? i18n._(msg`anime.continueWatching`)
+                                : i18n._(msg`anime.play`)}
+                              <span className="tabular-nums opacity-80">EP {epNum}</span>
+                              {resuming && (
+                                <span
+                                  aria-hidden="true"
+                                  className="absolute left-0 bottom-0 h-[3px] bg-ink-contrast/40"
+                                  style={{
+                                    width: `${(prog.position_seconds / prog.duration_seconds) * 100}%`,
+                                  }}
+                                />
+                              )}
+                            </Link>
+                          );
+                        })()}
+
                       {/* Bookmark toggle */}
                       {!isAniListOnly &&
                         isAuthenticated &&
@@ -747,8 +809,14 @@ export function AnimeDetailPage() {
                                 statusMutation.mutate(isBookmarked ? 'none' : 'planning')
                               }
                               disabled={statusMutation.isPending}
+                              aria-pressed={!!isBookmarked}
                               whileTap={{ scale: 0.97 }}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-ink/[0.08] hover:bg-ink/[0.14] text-ink/70 hover:text-ink transition-colors cursor-pointer"
+                              className={cn(
+                                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer',
+                                isBookmarked
+                                  ? 'bg-mm-accent/15 text-mm-accent hover:bg-mm-accent/25'
+                                  : 'bg-ink/[0.08] hover:bg-ink/[0.14] text-ink/70 hover:text-ink'
+                              )}
                             >
                               <motion.svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -767,7 +835,9 @@ export function AnimeDetailPage() {
                               >
                                 <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
                               </motion.svg>
-                              {i18n._(msg`anime.addToCollection`)}
+                              {isBookmarked
+                                ? i18n._(msg`anime.inCollection`)
+                                : i18n._(msg`anime.addToCollection`)}
                             </motion.button>
                           );
                         })()}
@@ -830,6 +900,12 @@ export function AnimeDetailPage() {
                             <button
                               type="button"
                               onClick={() => syncFlagsMutation.mutate(syncDisabled ? 0 : 1)}
+                              aria-pressed={!syncDisabled}
+                              aria-label={
+                                syncDisabled
+                                  ? i18n._(msg`anime.enableTrackerSync`)
+                                  : i18n._(msg`anime.excludeTrackerSync`)
+                              }
                               disabled={syncFlagsMutation.isPending}
                               title={
                                 syncDisabled
@@ -853,20 +929,10 @@ export function AnimeDetailPage() {
                                 strokeLinejoin="round"
                                 className="size-3.5"
                               >
-                                {syncDisabled ? (
-                                  <>
-                                    <path d="M18.364 5.636 5.636 18.364" />
-                                    <path d="M21 12a9 9 0 0 1-9 9" />
-                                    <path d="M3 12a9 9 0 0 1 9-9" />
-                                  </>
-                                ) : (
-                                  <>
-                                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                    <path d="M3 3v5h5" />
-                                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                                    <path d="M16 16h5v5" />
-                                  </>
-                                )}
+                                {/* Tracker sync: a link, struck through when excluded */}
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                {syncDisabled && <path d="m2 2 20 20" />}
                               </svg>
                             </button>
                           );
@@ -885,29 +951,41 @@ export function AnimeDetailPage() {
                             transition={{ duration: 0.25, ease: 'easeOut' }}
                             className="flex items-center justify-center sm:justify-start gap-3 flex-wrap"
                           >
-                            <span className="text-ink/20">·</span>
-                            <select
-                              value={playableData.watch_status}
-                              onChange={(e) => statusMutation.mutate(e.target.value)}
-                              className="text-[11px] px-2 py-1 rounded-lg bg-ink/[0.06] text-ink/60 border-none outline-none cursor-pointer hover:bg-ink/[0.10] transition-colors appearance-none"
-                              disabled={statusMutation.isPending}
-                            >
-                              <option value="watching" className="bg-mm-bg-elevated">
-                                {i18n._(msg`collection.watching`)}
-                              </option>
-                              <option value="planning" className="bg-mm-bg-elevated">
-                                {i18n._(msg`collection.planning`)}
-                              </option>
-                              <option value="completed" className="bg-mm-bg-elevated">
-                                {i18n._(msg`collection.completed`)}
-                              </option>
-                              <option value="paused" className="bg-mm-bg-elevated">
-                                {i18n._(msg`collection.paused`)}
-                              </option>
-                              <option value="dropped" className="bg-mm-bg-elevated">
-                                {i18n._(msg`collection.dropped`)}
-                              </option>
-                            </select>
+                            <div className="relative">
+                              <select
+                                aria-label={i18n._(msg`anime.inCollection`)}
+                                value={playableData.watch_status}
+                                onChange={(e) => statusMutation.mutate(e.target.value)}
+                                className="text-[11px] pl-2 pr-6 py-1 rounded-lg bg-ink/[0.06] text-ink/60 border-none outline-none cursor-pointer hover:bg-ink/[0.10] transition-colors appearance-none"
+                                disabled={statusMutation.isPending}
+                              >
+                                <option value="watching" className="bg-mm-bg-elevated">
+                                  {i18n._(msg`collection.watching`)}
+                                </option>
+                                <option value="planning" className="bg-mm-bg-elevated">
+                                  {i18n._(msg`collection.planning`)}
+                                </option>
+                                <option value="completed" className="bg-mm-bg-elevated">
+                                  {i18n._(msg`collection.completed`)}
+                                </option>
+                                <option value="paused" className="bg-mm-bg-elevated">
+                                  {i18n._(msg`collection.paused`)}
+                                </option>
+                                <option value="dropped" className="bg-mm-bg-elevated">
+                                  {i18n._(msg`collection.dropped`)}
+                                </option>
+                              </select>
+                              <svg
+                                aria-hidden="true"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 size-3 text-ink/40"
+                              >
+                                <path d="m6 9 6 6 6-6" />
+                              </svg>
+                            </div>
                             <ScoreSelector
                               score={playableData.user_score ?? null}
                               onChange={(s) => scoreMutation.mutate(s)}
@@ -918,124 +996,52 @@ export function AnimeDetailPage() {
                     </AnimatePresence>
 
                     {/* Synopsis — expandable */}
-                    {anime.synopsis && <SynopsisBlock text={anime.synopsis} />}
+                    {anime.synopsis && <SynopsisBlock key={id} text={anime.synopsis} />}
+
+                    <ExternalLinks
+                      links={[
+                        !isAniListOnly && {
+                          label: 'Bangumi',
+                          href: `https://bgm.tv/subject/${numericId}`,
+                        },
+                        (anime.anilist_id ?? 0) > 0 && {
+                          label: 'AniList',
+                          href: `https://anilist.co/anime/${anime.anilist_id}`,
+                        },
+                        (playableData?.mal_id ?? 0) > 0 && {
+                          label: 'MAL',
+                          href: `https://myanimelist.net/anime/${playableData!.mal_id}`,
+                        },
+                        (playableData?.tmdb_id ?? 0) > 0 && {
+                          label: 'TMDB',
+                          href: `https://www.themoviedb.org/tv/${playableData!.tmdb_id}`,
+                        },
+                        (playableData?.anidb_id ?? 0) > 0 && {
+                          label: 'AniDB',
+                          href: `https://anidb.net/anime/${playableData!.anidb_id}`,
+                        },
+                      ]}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => refreshMetaMutation.mutate()}
+                        disabled={refreshMetaMutation.isPending}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-ink/40 hover:text-mm-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        <HugeiconsIcon
+                          icon={Refresh03Icon}
+                          size={12}
+                          strokeWidth={1.8}
+                          className={refreshMetaMutation.isPending ? 'animate-spin' : undefined}
+                        />
+                        {i18n._(msg`anime.refreshMeta`)}
+                      </button>
+                    </ExternalLinks>
                   </div>
                 </div>
               </motion.div>
             </div>
           </div>
-
-          {/* Continue Watching — floating card (matches HeroBanner ResumeCard) */}
-          {continueEpisode &&
-            continueEpisode.media_file &&
-            (() => {
-              const prog = continueEpisode.progress;
-              const progress =
-                prog && prog.duration_seconds > 0
-                  ? prog.position_seconds / prog.duration_seconds
-                  : 0;
-              const timeLeft =
-                prog && !prog.completed ? prog.duration_seconds - prog.position_seconds : 0;
-              const epNum =
-                continueEpisode.sort % 1 === 0
-                  ? Math.floor(continueEpisode.sort)
-                  : continueEpisode.sort;
-
-              const coverSrc = anime.cover_image;
-              const hasCoverImg = coverSrc?.startsWith('http');
-
-              const radius = 34;
-              const circumference = 2 * Math.PI * radius;
-              const strokeDashoffset = circumference * (1 - progress);
-
-              return (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                  className="absolute right-6 bottom-8 z-[3] hidden lg:block"
-                >
-                  <Link
-                    to="/watch/$animeId"
-                    params={{ animeId: String(numericId) }}
-                    search={{ ep: epNum }}
-                    className="group flex items-center gap-5 rounded-xl overflow-hidden cursor-pointer border border-white/[0.08] pl-2 pr-6 py-2 transition-all duration-300 hover:border-white/[0.15] hover:scale-[1.02]"
-                    style={{
-                      backgroundColor: 'rgba(7,7,7,0.65)',
-                      backdropFilter: 'blur(20px) saturate(1.4)',
-                      boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
-                    }}
-                  >
-                    <div className="relative shrink-0 w-[86px] h-[115px] rounded-lg overflow-hidden">
-                      <div
-                        className="w-full h-full"
-                        style={hasCoverImg ? undefined : { background: animeGradient(anime.title) }}
-                      >
-                        {hasCoverImg && (
-                          <img
-                            src={coverSrc}
-                            alt={anime.title}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition-colors">
-                        <div className="relative w-[76px] h-[76px] flex items-center justify-center">
-                          <svg
-                            className="absolute inset-0 -rotate-90"
-                            width="76"
-                            height="76"
-                            viewBox="0 0 76 76"
-                          >
-                            <circle
-                              cx="38"
-                              cy="38"
-                              r={radius}
-                              fill="none"
-                              stroke="rgba(255,255,255,0.12)"
-                              strokeWidth="2.5"
-                            />
-                            <circle
-                              cx="38"
-                              cy="38"
-                              r={radius}
-                              fill="none"
-                              stroke="var(--mm-accent)"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              strokeDasharray={circumference}
-                              strokeDashoffset={strokeDashoffset}
-                              className="transition-all duration-500"
-                              style={{ filter: 'drop-shadow(0 0 4px rgba(232,143,170,0.4))' }}
-                            />
-                          </svg>
-                          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="black">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="min-w-0 py-0.5">
-                      <p className="text-[15px] font-semibold text-white truncate max-w-[210px]">
-                        {anime.title}
-                      </p>
-                      <p className="text-[13px] text-white/45 mt-1.5 font-medium">
-                        EP {epNum} · {prog ? formatTime(prog.position_seconds) : '0:00'}
-                        {prog?.duration_seconds ? ` / ${formatTime(prog.duration_seconds)}` : ''}
-                      </p>
-                      {timeLeft > 0 && (
-                        <p className="text-[11px] text-white/30 mt-2 font-medium tracking-wide">
-                          {formatTime(timeLeft)} {i18n._(msg`player.remaining`)}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })()}
         </div>
 
         {/* Episode completeness status — self-hides when everything is present */}
@@ -1073,12 +1079,13 @@ export function AnimeDetailPage() {
                     </span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
-                    {episodeList.map((ep, idx) => (
+                    {visibleEpisodes.map((ep, idx) => (
                       <motion.div
                         key={ep.episode_id || `ep-${ep.sort}`}
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.02, duration: 0.25 }}
+                        // Cap the stagger so long lists don't trickle in for seconds.
+                        transition={{ delay: Math.min(idx, 12) * 0.02, duration: 0.25 }}
                       >
                         <EpisodeListItem
                           sort={ep.sort % 1 === 0 ? Math.floor(ep.sort) : ep.sort}
@@ -1106,6 +1113,13 @@ export function AnimeDetailPage() {
                       </motion.div>
                     ))}
                   </div>
+                  {episodeList.length > EPISODE_PREVIEW_COUNT && (
+                    <ShowMoreToggle
+                      expanded={showAllEpisodes}
+                      hiddenCount={episodeList.length - EPISODE_PREVIEW_COUNT}
+                      onToggle={() => setShowAllEpisodes((v) => !v)}
+                    />
+                  )}
                 </div>
               )}
 
@@ -1145,7 +1159,10 @@ export function AnimeDetailPage() {
           >
             <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.characters`)}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {anime.characters.map((c: AnimeCharacter) => (
+              {(showAllCharacters
+                ? anime.characters
+                : anime.characters.slice(0, CHARACTER_PREVIEW_COUNT)
+              ).map((c: AnimeCharacter) => (
                 <CharacterCard
                   key={c.character.id}
                   entry={c}
@@ -1153,6 +1170,13 @@ export function AnimeDetailPage() {
                 />
               ))}
             </div>
+            {anime.characters.length > CHARACTER_PREVIEW_COUNT && (
+              <ShowMoreToggle
+                expanded={showAllCharacters}
+                hiddenCount={anime.characters.length - CHARACTER_PREVIEW_COUNT}
+                onToggle={() => setShowAllCharacters((v) => !v)}
+              />
+            )}
           </motion.div>
         )}
 
@@ -1249,123 +1273,130 @@ export function AnimeDetailPage() {
             <h2 className="text-lg font-semibold text-ink mb-4">
               {i18n._(msg`anime.recommendations`)}
             </h2>
-            <div className="grid grid-cols-3 min-[768px]:grid-cols-5 min-[1080px]:grid-cols-7 min-[1320px]:grid-cols-8 gap-3">
-              {anime.recommendations.slice(0, 6).map((rec) => (
-                <AnimeCard
-                  key={rec.anilist_id ?? rec.bangumi_id}
-                  anime={rec}
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    if (rec.bangumi_id > 0) {
-                      navigate({ to: `/anime/${rec.bangumi_id}` as string });
-                      return;
-                    }
-                    if (rec.anilist_id) {
-                      try {
-                        const resolved = await discoverApi.resolve(rec.anilist_id);
-                        if (resolved.bangumi_id > 0) {
-                          navigate({ to: `/anime/${resolved.bangumi_id}` as string });
-                        }
-                      } catch {
-                        // no bangumi match found
+            <MediaRail>
+              {anime.recommendations.map((rec) => (
+                <div key={rec.anilist_id ?? rec.bangumi_id} className="shrink-0 w-[150px]">
+                  <AnimeCard
+                    anime={rec}
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      if (rec.bangumi_id > 0) {
+                        navigate({ to: `/anime/${rec.bangumi_id}` as string });
+                        return;
                       }
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Reviews */}
-        {anime.reviews && anime.reviews.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="px-4 md:px-8 py-6 pb-16"
-          >
-            <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.reviews`)}</h2>
-            <div className="space-y-3 max-w-2xl">
-              {anime.reviews.map((review) => (
-                <a
-                  key={review.id}
-                  href={`https://anilist.co/review/${review.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-start gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.06] transition-colors"
-                >
-                  {/* Avatar */}
-                  {review.avatar ? (
-                    <img
-                      src={review.avatar}
-                      alt=""
-                      className="w-8 h-8 rounded-full shrink-0 object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full shrink-0 bg-ink/[0.08]" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-semibold text-ink/70">
-                        {review.username}
-                      </span>
-                      <span className="text-[11px] font-bold text-mm-accent tabular-nums">
-                        {review.score}/100
-                      </span>
-                    </div>
-                    <p className="text-[13px] text-ink/50 leading-relaxed mt-0.5 line-clamp-2 group-hover:text-ink/70 transition-colors">
-                      {review.summary}
-                    </p>
-                  </div>
-                  <span className="text-[11px] text-ink/20 shrink-0 mt-1">↗</span>
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Bangumi Comments (吐槽) */}
-        {comments.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45 }}
-            className="px-4 md:px-8 py-6 pb-16"
-          >
-            <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.comments`)}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl">
-              {comments.map((c) => (
-                <div key={c.id} className="flex items-start gap-2.5 p-3 rounded-lg bg-ink/[0.03]">
-                  {c.avatar ? (
-                    <img
-                      src={c.avatar}
-                      alt=""
-                      className="w-7 h-7 rounded-full shrink-0 object-cover"
-                    />
-                  ) : (
-                    <div className="w-7 h-7 rounded-full shrink-0 bg-ink/[0.08]" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-medium text-ink/60 truncate">
-                        {c.nickname || c.username}
-                      </span>
-                      {c.rate > 0 && (
-                        <span className="text-[11px] font-bold text-mm-accent tabular-nums shrink-0">
-                          ★ {c.rate}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[13px] text-ink/50 leading-relaxed mt-0.5 line-clamp-3">
-                      {c.comment}
-                    </p>
-                  </div>
+                      if (rec.anilist_id) {
+                        try {
+                          const resolved = await discoverApi.resolve(rec.anilist_id);
+                          if (resolved.bangumi_id > 0) {
+                            navigate({ to: `/anime/${resolved.bangumi_id}` as string });
+                          }
+                        } catch {
+                          // no bangumi match found
+                        }
+                      }
+                    }}
+                  />
                 </div>
               ))}
-            </div>
+            </MediaRail>
           </motion.div>
         )}
+
+        {/* Reviews + Bangumi comments — side by side on wide screens when both exist */}
+        <div
+          className={cn(
+            (anime.reviews?.length ?? 0) > 0 && comments.length > 0 && 'xl:grid xl:grid-cols-2'
+          )}
+        >
+          {anime.reviews && anime.reviews.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="px-4 md:px-8 py-6"
+            >
+              <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.reviews`)}</h2>
+              <div className="space-y-3 max-w-2xl xl:max-w-none">
+                {anime.reviews.map((review) => (
+                  <a
+                    key={review.id}
+                    href={`https://anilist.co/review/${review.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start gap-3 p-3 rounded-lg bg-ink/[0.03] hover:bg-ink/[0.06] transition-colors"
+                  >
+                    {/* Avatar */}
+                    {review.avatar ? (
+                      <img
+                        src={review.avatar}
+                        alt=""
+                        className="w-8 h-8 rounded-full shrink-0 object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full shrink-0 bg-ink/[0.08]" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] font-semibold text-ink/70">
+                          {review.username}
+                        </span>
+                        <span className="text-[11px] font-bold text-mm-accent tabular-nums">
+                          {review.score}/100
+                        </span>
+                      </div>
+                      <p className="text-[13px] text-ink/50 leading-relaxed mt-0.5 line-clamp-2 group-hover:text-ink/70 transition-colors">
+                        {review.summary}
+                      </p>
+                    </div>
+                    <span className="text-[11px] text-ink/20 shrink-0 mt-1">↗</span>
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Bangumi Comments (吐槽) */}
+          {comments.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              className="px-4 md:px-8 py-6"
+            >
+              <h2 className="text-lg font-semibold text-ink mb-4">{i18n._(msg`anime.comments`)}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl xl:max-w-none">
+                {comments.map((c) => (
+                  <div key={c.id} className="flex items-start gap-2.5 p-3 rounded-lg bg-ink/[0.03]">
+                    {c.avatar ? (
+                      <img
+                        src={c.avatar}
+                        alt=""
+                        className="w-7 h-7 rounded-full shrink-0 object-cover"
+                      />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full shrink-0 bg-ink/[0.08]" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] font-medium text-ink/60 truncate">
+                          {c.nickname || c.username}
+                        </span>
+                        {c.rate > 0 && (
+                          <span className="text-[11px] font-bold text-mm-accent tabular-nums shrink-0">
+                            ★ {c.rate}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[13px] text-ink/50 leading-relaxed mt-0.5 line-clamp-3">
+                        {c.comment}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </div>
       </div>
     </PageTransition>
   );

@@ -104,7 +104,7 @@ export function AdminStep() {
 
         <form.Subscribe selector={(s) => s.isSubmitting}>
           {(isSubmitting) => (
-            <Button type="submit" disabled={isSubmitting} className="w-full">
+            <Button type="submit" variant="accent" disabled={isSubmitting} className="w-full">
               {isSubmitting ? i18n._(msg`auth.setup.loading`) : i18n._(msg`auth.setup.submit`)}
             </Button>
           )}
