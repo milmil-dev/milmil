@@ -11,6 +11,7 @@ import { HistoryFilterBar } from '@/components/history/HistoryFilterBar';
 import { HistoryGrid } from '@/components/history/HistoryGrid';
 import { HistorySkeleton } from '@/components/history/HistorySkeleton';
 import { HistoryTimelineRail } from '@/components/history/HistoryTimelineRail';
+import { PageHeader } from '@/components/PageHeader';
 import { PageTransition } from '@/components/PageTransition';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 import { type HistoryFilter, historyApi, historyKeys } from '@/lib/api/history';
@@ -102,7 +103,7 @@ export function HistoryPage() {
   if (query.isLoading) {
     return (
       <PageTransition>
-        <div className="flex min-h-screen gap-6 px-4 md:px-6 pt-8">
+        <div className="flex min-h-screen gap-6 px-4 md:px-8 pt-8 md:pt-10">
           <HistoryTimelineRail visibleBuckets={[]} />
           <div className="flex-1 min-w-0">
             <HistorySkeleton />
@@ -116,7 +117,7 @@ export function HistoryPage() {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen gap-6 px-4 md:px-6 pt-8 pb-24">
+      <div className="flex min-h-screen gap-6 px-4 md:px-8 pt-8 md:pt-10 pb-24">
         <HistoryTimelineRail
           visibleBuckets={[
             { key: 'today', visible: buckets.today.length > 0 },
@@ -128,24 +129,7 @@ export function HistoryPage() {
         />
 
         <div className="flex-1 min-w-0">
-          <header className="mb-7 flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center text-ink/60">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7v5l3 3" />
-              </svg>
-            </span>
-            <h1 className="text-2xl font-bold tracking-tight text-ink">
-              {i18n._(msg`history.title`)}
-            </h1>
-          </header>
+          <PageHeader title={i18n._(msg`history.title`)} />
 
           <HistoryFilterBar
             filter={filter}

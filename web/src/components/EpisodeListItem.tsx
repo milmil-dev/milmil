@@ -220,7 +220,7 @@ export function EpisodeListItem({
           className={cn(
             'shrink-0 w-11 h-11 my-auto rounded-md flex items-center justify-center text-[15px] font-bold tabular-nums transition-colors',
             isActive
-              ? 'bg-mm-accent text-black'
+              ? 'bg-mm-accent text-ink-contrast'
               : 'bg-ink/[0.05] text-ink/40 group-hover:bg-ink/[0.08] group-hover:text-ink/60'
           )}
         >
@@ -237,9 +237,7 @@ export function EpisodeListItem({
               isActive ? 'text-mm-accent' : 'text-ink/50'
             )}
           >
-            {i18n._(msg`episode.prefix`)}
-            {sort}
-            {i18n._(msg`episode.suffix`)}
+            {i18n._(msg`episode.number ${sort}`)}
           </span>
           {!hasFile && (
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-ink/[0.06] text-ink/30">
@@ -250,8 +248,19 @@ export function EpisodeListItem({
             <span className="text-[12px] text-ink/30 tabular-nums">{durationLabel}</span>
           )}
           {fileQuality && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-ink/[0.06] text-ink/50">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-ink/[0.06] text-ink/50 whitespace-nowrap shrink-0">
               {fileQuality}
+            </span>
+          )}
+          {/* Without a thumbnail there's no overlay to carry the date; keep it with the title */}
+          {!hasImage && airDate && (
+            <span
+              className={cn(
+                'text-[11px] tabular-nums whitespace-nowrap',
+                isActive ? 'text-mm-accent/60' : 'text-ink/35'
+              )}
+            >
+              {airDate}
             </span>
           )}
         </div>
@@ -287,7 +296,7 @@ export function EpisodeListItem({
       </div>
 
       {/* Right side — info button + date */}
-      <div className="shrink-0 flex flex-col items-end justify-between py-0.5">
+      <div className="shrink-0 flex flex-col items-end py-0.5">
         {hasMeta && (
           <button
             type="button"
@@ -296,20 +305,12 @@ export function EpisodeListItem({
               e.stopPropagation();
               setShowInfo((v) => !v);
             }}
+            aria-label={i18n._(msg`episode.details`)}
+            aria-expanded={showInfo}
             className="w-7 h-7 rounded-full flex items-center justify-center text-ink/20 hover:text-ink/50 hover:bg-ink/[0.06] transition-colors"
           >
             <HugeiconsIcon icon={InformationCircleIcon} size={16} />
           </button>
-        )}
-        {!hasImage && airDate && (
-          <span
-            className={cn(
-              'text-[11px] tabular-nums',
-              isActive ? 'text-mm-accent/60' : 'text-ink/20'
-            )}
-          >
-            {airDate}
-          </span>
         )}
       </div>
     </>
@@ -371,9 +372,7 @@ export function EpisodeListItem({
               {/* Popover header */}
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[11px] font-bold text-mm-accent tabular-nums">
-                  {i18n._(msg`episode.prefix`)}
-                  {sort}
-                  {i18n._(msg`episode.suffix`)}
+                  {i18n._(msg`episode.number ${sort}`)}
                 </span>
                 {durationLabel && <span className="text-[11px] text-ink/30">{durationLabel}</span>}
                 {airDate && <span className="text-[11px] text-ink/25 tabular-nums">{airDate}</span>}

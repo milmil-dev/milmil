@@ -16,7 +16,7 @@ const buttonVariants = cva(
           'border border-ink/[0.08] bg-ink/[0.04] text-ink/80 hover:bg-ink/[0.08] hover:text-ink',
         secondary: 'bg-ink/[0.06] text-ink/70 hover:bg-ink/[0.10] hover:text-ink/90',
         ghost: 'text-ink/60 hover:bg-ink/[0.06] hover:text-ink/90',
-        accent: 'bg-mm-accent text-ink font-semibold hover:bg-mm-accent/85',
+        accent: 'bg-mm-accent text-ink-contrast font-semibold hover:bg-mm-accent/85',
         link: 'text-mm-accent underline-offset-4 hover:underline',
       },
       size: {

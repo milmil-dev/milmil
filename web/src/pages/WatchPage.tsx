@@ -1,7 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
+import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -10,6 +10,7 @@ import { PageTransition } from '@/components/PageTransition';
 import { Skeleton } from '@/components/Skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import type { VideoPlayerAPI } from '@/components/VideoPlayer';
+import { Button } from '@/components/ui/button';
 import { SkinButton, VideoPlayer } from '@/components/VideoPlayer';
 import { AnimeInfoSection } from '@/components/watch/AnimeInfoSection';
 import { BangumiComments } from '@/components/watch/BangumiComments';
@@ -881,8 +882,21 @@ export function WatchPage() {
   if (!animeDetail || mergedEpisodes.length === 0) {
     return (
       <PageTransition>
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-ink/50 text-sm">{i18n._(msg`watch.notFound`)}</p>
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 text-center">
+          <p className="text-ink/60 text-sm">{i18n._(msg`watch.notFound`)}</p>
+          {/* A dead end needs a way out: the anime page (to fix files) or home */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {animeDetail && (
+              <Button asChild variant="accent" size="sm">
+                <Link to="/anime/$id" params={{ id: String(animeDetail.bangumi_id) }}>
+                  {i18n._(msg`watch.notFound.openDetails`)}
+                </Link>
+              </Button>
+            )}
+            <Button asChild variant="secondary" size="sm">
+              <Link to="/">{i18n._(msg`common.backHome`)}</Link>
+            </Button>
+          </div>
         </div>
       </PageTransition>
     );

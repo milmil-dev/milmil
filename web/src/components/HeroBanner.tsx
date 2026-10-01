@@ -203,7 +203,7 @@ export function HeroBanner({
                 <div className="flex items-center gap-2.5 pt-1">
                   <Link
                     to={`/anime/${featured.bangumi_id}` as string}
-                    className="inline-flex items-center px-5 py-2 text-[13px] font-semibold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
+                    className="inline-flex items-center px-5 py-2 text-[13px] font-semibold rounded-md bg-mm-accent text-ink-contrast hover:bg-mm-accent/85 transition-colors cursor-pointer"
                   >
                     {i18n._(msg`hero.details`)}
                   </Link>

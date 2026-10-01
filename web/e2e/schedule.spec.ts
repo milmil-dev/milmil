@@ -4,7 +4,6 @@ import { expect, type Locator, type Page, test } from '@playwright/test';
 
 const WEEKDAYS = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
 const WEEKDAYS_EN = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const WEEKDAYS_JP = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
 
 /** Same mapping the page uses: JS Sunday (0) is the last Bangumi weekday. */
 function todayIndex(): number {
@@ -92,7 +91,7 @@ test.describe('schedule page on a phone', () => {
 
     // 1. The current weekday is selected on entry …
     await expect(activeTab).toHaveAttribute('data-weekday', WEEKDAYS[idx]!);
-    await expect(page.getByRole('heading', { level: 2, name: WEEKDAYS_JP[idx]! })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: WEEKDAYS_EN[idx]! })).toBeVisible();
 
     // … and its tab has been scrolled into the visible part of the strip.
     const inView = await activeTab.evaluate((btn) => {
@@ -116,7 +115,7 @@ test.describe('schedule page on a phone', () => {
     await swipe(content, forward ? -160 : 160);
 
     await expect(activeTab).toHaveAttribute('data-weekday', WEEKDAYS[target]!);
-    await expect(page.getByRole('heading', { level: 2, name: WEEKDAYS_JP[target]! })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: WEEKDAYS_EN[target]! })).toBeVisible();
     await expect(visibleCard(page, `${WEEKDAYS_EN[target]} Show Early`)).toBeVisible();
 
     // A mostly-vertical drag is scrolling, not paging — the day must not change.
@@ -150,6 +149,6 @@ test('schedule page on desktop opens on today', async ({ page }) => {
     .locator('[data-tab-surface="desktop"]')
     .and(page.locator('[data-active="true"]'));
   await expect(activeTab).toHaveAttribute('data-weekday', WEEKDAYS[idx]!);
-  await expect(page.getByRole('heading', { level: 2, name: WEEKDAYS_JP[idx]! })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: WEEKDAYS_EN[idx]! })).toBeVisible();
   await expect(visibleCard(page, `${WEEKDAYS_EN[idx]} Show Early`)).toBeVisible();
 });

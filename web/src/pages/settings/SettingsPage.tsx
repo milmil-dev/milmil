@@ -19,6 +19,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { PageAtmosphere } from '@/components/PageAtmosphere';
+import { PageHeader } from '@/components/PageHeader';
 import { PageTransition } from '@/components/PageTransition';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 import { cn } from '@/lib/utils';
@@ -154,12 +155,7 @@ export function SettingsPage() {
 
         {isDesktopSettingsLayout ? (
           <>
-            {/* Header — centered */}
-            <div className="mb-8 text-center">
-              <h1 className="text-xl font-semibold text-ink tracking-tight sm:text-2xl">
-                {i18n._(msg`settings.pageTitle`)}
-              </h1>
-            </div>
+            <PageHeader className="mb-8" title={i18n._(msg`settings.pageTitle`)} />
 
             {/* Desktop two-column grid: nav + content, centered */}
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[220px_1fr] lg:gap-8">
@@ -224,11 +220,7 @@ export function SettingsPage() {
                 animate="show"
                 exit="exit"
               >
-                <div className="mb-4 px-1">
-                  <h1 className="text-[28px] font-bold tracking-tight text-ink">
-                    {i18n._(msg`settings.pageTitle`)}
-                  </h1>
-                </div>
+                <PageHeader className="mb-4 px-1" title={i18n._(msg`settings.pageTitle`)} />
                 <motion.button
                   type="button"
                   variants={mobileRowVariants}

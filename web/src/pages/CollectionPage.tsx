@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { Skeleton, SkeletonPosterGrid } from '../components/Skeleton';
 import { useDocumentTitle } from '../hooks/use-document-title';
@@ -256,24 +257,12 @@ export function CollectionPage() {
 
   return (
     <PageTransition>
-      <div className="relative min-h-screen px-4 md:px-6 pt-6 pb-16">
+      <div className="relative min-h-screen px-4 md:px-8 pt-8 md:pt-10 pb-16">
         <PageAtmosphere preset="collection" />
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-7 rounded-full bg-gradient-to-b from-mm-accent to-mm-accent/30" />
-            <div>
-              <h1 className="text-2xl font-bold text-ink tracking-tight">
-                {i18n._(msg`collection.title`)}
-              </h1>
-              {statusCounts && (
-                <p className="text-[13px] text-mm-accent/50 mt-0.5">
-                  {getCount('')} {i18n._(msg`collection.totalShows`)}
-                </p>
-              )}
-            </div>
-          </div>
-        </motion.div>
+        <PageHeader
+          title={i18n._(msg`collection.title`)}
+          subtitle={statusCounts && `${getCount('')} ${i18n._(msg`collection.totalShows`)}`}
+        />
 
         {isLoading && <CollectionSkeleton />}
 
@@ -301,11 +290,16 @@ export function CollectionPage() {
                     )}
                   >
                     {i18n._(tab.msgKey)}
-                    {count !== undefined && count > 0 && (
+                    {/* Every tab shows its count once known; empty ones just recede */}
+                    {count !== undefined && (
                       <span
                         className={cn(
                           'text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full',
-                          isActive ? 'bg-mm-accent/20 text-mm-accent' : 'bg-ink/[0.06] text-ink/40'
+                          isActive
+                            ? 'bg-mm-accent/20 text-mm-accent'
+                            : count > 0
+                              ? 'bg-ink/[0.06] text-ink/40'
+                              : 'bg-ink/[0.03] text-ink/25'
                         )}
                       >
                         {count}
@@ -335,18 +329,31 @@ export function CollectionPage() {
                   className="w-full pl-8 pr-3 py-2 text-sm bg-ink/[0.05] border border-ink/[0.08] rounded-lg text-ink placeholder:text-ink/30 focus:outline-none focus:border-mm-accent/40 focus:bg-ink/[0.07] transition-colors"
                 />
               </div>
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="px-3 py-2 text-sm bg-ink/[0.05] border border-ink/[0.08] rounded-lg text-ink/70 focus:outline-none focus:border-mm-accent/40 cursor-pointer appearance-none transition-colors hover:bg-ink/[0.07]"
-              >
-                <option value="recent" className="bg-mm-bg-elevated text-ink">
-                  {i18n._(msg`collection.sortByRecent`)}
-                </option>
-                <option value="name" className="bg-mm-bg-elevated text-ink">
-                  {i18n._(msg`collection.sortByName`)}
-                </option>
-              </select>
+              <div className="relative">
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  aria-label={i18n._(msg`search.filter.sort`)}
+                  className="pl-3 pr-8 py-2 text-sm bg-ink/[0.05] border border-ink/[0.08] rounded-lg text-ink/70 focus:outline-none focus:border-mm-accent/40 cursor-pointer appearance-none transition-colors hover:bg-ink/[0.07]"
+                >
+                  <option value="recent" className="bg-mm-bg-elevated text-ink">
+                    {i18n._(msg`collection.sortByRecent`)}
+                  </option>
+                  <option value="name" className="bg-mm-bg-elevated text-ink">
+                    {i18n._(msg`collection.sortByName`)}
+                  </option>
+                </select>
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 text-ink/40"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
             </div>
 
             {/* Empty state */}

@@ -1,6 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { expect, test, vi } from 'vite-plus/test';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
+
+// Per-test overrides for the discover fixtures below.
+const fixture = vi.hoisted(() => ({
+  synopsis: 'A story about an elf mage.',
+  episodeCount: 2,
+}));
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => () => {},
@@ -46,7 +52,7 @@ vi.mock('@tanstack/react-query', () => ({
           banner_image: '',
           score: 9.1,
           episode_count: 28,
-          synopsis: 'A story about an elf mage.',
+          synopsis: fixture.synopsis,
           tags: ['Fantasy', 'Adventure'],
           rating: { score: 9.1, total: 5000 },
           air_date: '2023-09-29',
@@ -56,23 +62,15 @@ vi.mock('@tanstack/react-query', () => ({
       };
     }
     if (queryKey[0] === 'discover' && queryKey[1] === 'episodes') {
+      const titles = ['The Journey Begins', 'A New Dawn'];
       return {
-        data: [
-          {
-            bangumi_episode_id: 1,
-            sort: 1,
-            title: 'The Journey Begins',
-            title_original: '',
-            air_date: '2023-09-29',
-          },
-          {
-            bangumi_episode_id: 2,
-            sort: 2,
-            title: 'A New Dawn',
-            title_original: '',
-            air_date: '2023-10-06',
-          },
-        ],
+        data: Array.from({ length: fixture.episodeCount }, (_, i) => ({
+          bangumi_episode_id: i + 1,
+          sort: i + 1,
+          title: titles[i] ?? `Episode ${i + 1}`,
+          title_original: '',
+          air_date: '2023-09-29',
+        })),
       };
     }
     return { data: undefined };
@@ -121,7 +119,13 @@ vi.mock('@/store/bg-store', () => ({
     selector({ image: null, setImage: () => {} }),
 }));
 
+import { fireEvent } from '@testing-library/react';
 import { AnimeDetailPage } from '@/pages/AnimeDetailPage';
+
+beforeEach(() => {
+  fixture.synopsis = 'A story about an elf mage.';
+  fixture.episodeCount = 2;
+});
 
 test('detail page presents title, synopsis, and episode list', () => {
   render(<AnimeDetailPage />);
@@ -137,4 +141,35 @@ test('detail page shows score and tags', () => {
   render(<AnimeDetailPage />);
   expect(screen.getByText(/9\.1/)).toBeInTheDocument();
   expect(screen.getByText(/Fantasy/)).toBeInTheDocument();
+});
+
+// The msg macro compiles to hashed ids here, so toggles are found by state.
+// Labelled ones (an episode's info button) aren't show-more toggles.
+function expandToggles() {
+  return document.querySelectorAll('button[aria-expanded]:not([aria-label])');
+}
+
+test('short synopsis has no expand toggle', () => {
+  render(<AnimeDetailPage />);
+  expect(expandToggles()).toHaveLength(0);
+});
+
+test('long synopsis is clamped behind a show-more toggle', () => {
+  fixture.synopsis = 'Frieren walks on. '.repeat(20);
+  render(<AnimeDetailPage />);
+  const [toggle] = expandToggles();
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  expect(screen.getByText(/Frieren walks on/)).toHaveClass('line-clamp-3');
+  fireEvent.click(toggle!);
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(screen.getByText(/Frieren walks on/)).not.toHaveClass('line-clamp-3');
+});
+
+test('long episode lists collapse to a preview until expanded', () => {
+  fixture.episodeCount = 30;
+  render(<AnimeDetailPage />);
+  expect(screen.getByText('Episode 24')).toBeInTheDocument();
+  expect(screen.queryByText('Episode 25')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /\(\+6\)/ }));
+  expect(screen.getByText('Episode 30')).toBeInTheDocument();
 });

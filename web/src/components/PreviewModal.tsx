@@ -247,7 +247,7 @@ export function PreviewModal({ anime, open, onClose }: PreviewModalProps) {
               <Link
                 to={`/anime/${bangumiId}` as string}
                 onClick={onClose}
-                className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-semibold rounded-md bg-white text-black hover:bg-white/90 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-5 py-2 text-[13px] font-semibold rounded-md bg-mm-accent text-ink-contrast hover:bg-mm-accent/85 transition-colors cursor-pointer"
               >
                 {i18n._(msg`hero.details`)}
               </Link>

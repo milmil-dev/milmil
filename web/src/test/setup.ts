@@ -1,5 +1,12 @@
 import '@testing-library/jest-dom';
+import { i18n } from '@lingui/core';
 import { vi } from 'vite-plus/test';
+
+// Components that translate outside React (via the global i18n) need an active
+// locale even when a test renders them without the provider wrapper.
+if (!i18n.locale) {
+  i18n.loadAndActivate({ locale: 'en', messages: {} });
+}
 
 // Mock matchMedia for tests
 Object.defineProperty(window, 'matchMedia', {

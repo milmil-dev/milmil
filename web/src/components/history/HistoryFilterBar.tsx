@@ -91,13 +91,6 @@ export function HistoryFilterBar({
 
       <button
         type="button"
-        onClick={onClearAll}
-        className="cursor-pointer rounded-md bg-ink/[0.03] px-3 py-1.5 text-[13px] font-medium text-ink/60 transition-colors hover:bg-ink/[0.06] hover:text-ink"
-      >
-        {i18n._(msg`history.clearAll`)}
-      </button>
-      <button
-        type="button"
         onClick={onToggleBatch}
         className={cn(
           'cursor-pointer rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors',
@@ -107,6 +100,13 @@ export function HistoryFilterBar({
         )}
       >
         {i18n._(msg`history.batch`)}
+      </button>
+      <button
+        type="button"
+        onClick={onClearAll}
+        className="cursor-pointer rounded-md px-3 py-1.5 text-[13px] font-medium text-red-500/80 transition-colors hover:bg-red-500/10 hover:text-red-500 dark:text-red-400/80 dark:hover:text-red-400"
+      >
+        {i18n._(msg`history.clearAll`)}
       </button>
     </div>
   );

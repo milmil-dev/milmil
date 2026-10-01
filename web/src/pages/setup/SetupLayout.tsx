@@ -29,9 +29,8 @@ export function SetupLayout() {
         className="relative z-10 w-full max-w-[420px]"
       >
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20">
-            <span className="text-lg font-semibold text-mm-accent">M</span>
-          </div>
+          {/* Same mark as the sidebar, generated from docs/brand/src/mark.svg */}
+          <img src="/icons/icon-512.png" alt="" className="mx-auto mb-4 h-12 w-12" />
           <h1 className="text-xl font-semibold text-ink tracking-tight">milmil</h1>
           <p className="mt-2 text-[12px] uppercase tracking-wider text-ink/40">{activeLabel}</p>
           <div className="mt-3 flex items-center justify-center gap-2">

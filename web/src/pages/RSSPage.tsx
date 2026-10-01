@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Modal } from '../components/Modal';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/button';
 import { Field, FieldError, FieldLabel } from '../components/ui/field';
@@ -624,11 +625,8 @@ export function RSSPage() {
     <PageTransition>
       <div className="min-h-screen">
         {/* Header */}
-        <div className="px-8 pt-12 pb-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-mm-accent">
-            milmil
-          </p>
-          <h1 className="text-3xl font-bold text-ink mt-1 tracking-tight">RSS Feeds &amp; Rules</h1>
+        <div className="px-4 md:px-8 pt-8 md:pt-10">
+          <PageHeader title="RSS Feeds & Rules" />
         </div>
 
         {/* RSS Feeds section */}

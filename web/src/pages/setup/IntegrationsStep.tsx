@@ -56,7 +56,12 @@ export function IntegrationsStep() {
         ))}
       </ul>
 
-      <Button type="button" className="w-full" onClick={() => navigate({ to: '/' })}>
+      <Button
+        type="button"
+        variant="accent"
+        className="w-full"
+        onClick={() => navigate({ to: '/' })}
+      >
         {i18n._(msg`setup.integrations.finish`)}
       </Button>
     </>

@@ -8,6 +8,7 @@ import { motion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimeCard } from '../components/AnimeCard';
 import { PageAtmosphere } from '../components/PageAtmosphere';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { PreviewModal } from '../components/PreviewModal';
 import { TagMultiSelect } from '../components/TagMultiSelect';
@@ -275,44 +276,57 @@ export function SearchPage() {
 
   return (
     <PageTransition>
-      <div className="relative min-h-screen px-8 pt-10 pb-16">
+      <div className="relative min-h-screen px-4 md:px-8 pt-8 md:pt-10 pb-16">
         <PageAtmosphere preset="search" />
-        {/* Genre quick-filter chips */}
+        <PageHeader title={i18n._(msg`nav.search`)} />
+
+        {/* Search input */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-wrap gap-2 mb-4"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="relative mb-4"
         >
-          {GENRES.map((g) => (
-            <button
-              key={g}
-              type="button"
-              onClick={() => toggleGenre(g)}
-              className={cn(
-                'text-[12px] font-semibold px-3 py-1.5 rounded-md transition-colors',
-                selectedGenres.includes(g)
-                  ? 'bg-ink/[0.05] text-mm-accent'
-                  : 'bg-ink/[0.05] text-ink/50 hover:bg-ink/[0.08] hover:text-ink/70'
+          <div className="relative group">
+            <div className="absolute inset-0 rounded-md bg-gradient-to-r from-ink/[0.03] via-transparent to-ink/[0.02] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
+            <div className="relative flex items-center rounded-md bg-ink/[0.04] border border-transparent group-focus-within:border-transparent transition-colors">
+              <HugeiconsIcon
+                icon={Search01Icon}
+                size={18}
+                className="ml-4 text-ink/20 group-focus-within:text-ink/50 transition-colors shrink-0"
+              />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && query.trim()) {
+                    e.preventDefault();
+                    // Immediate text search on Enter
+                    setDebouncedQuery(query.trim());
+                    navigate({
+                      to: '/search',
+                      search: { ...searchParams, q: query.trim() } as any,
+                    });
+                  }
+                }}
+                placeholder={i18n._(msg`search.inputPlaceholder`)}
+                className="flex-1 bg-transparent px-3 py-3 text-[15px] text-ink outline-none placeholder:text-ink/35"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('');
+                    setDebouncedQuery('');
+                  }}
+                  aria-label={i18n._(msg`search.filter.clear`)}
+                  className="mr-3 p-1.5 rounded-md hover:bg-ink/[0.06] text-ink/30 hover:text-ink/60 transition-colors"
+                >
+                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                </button>
               )}
-            >
-              {translateGenre(g, i18n.locale)}
-            </button>
-          ))}
-          {selectedTags.map((t) => (
-            <span
-              key={`tag-${t}`}
-              className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1.5 rounded-md bg-ink/[0.05] text-mm-accent"
-            >
-              {t}
-              <button
-                type="button"
-                onClick={() => removeTag(t)}
-                className="ml-0.5 text-ink/30 hover:text-ink/60"
-              >
-                <HugeiconsIcon icon={Cancel01Icon} size={10} />
-              </button>
-            </span>
-          ))}
+            </div>
+          </div>
         </motion.div>
 
         {/* Filter bar — always visible */}
@@ -320,7 +334,7 @@ export function SearchPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.03 }}
-          className="mb-5"
+          className="mb-4"
         >
           <div className="flex flex-wrap items-center gap-2">
             {/* Sort */}
@@ -455,52 +469,43 @@ export function SearchPage() {
           </div>
         </motion.div>
 
-        {/* Search input */}
+        {/* Genre quick-filter chips */}
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="relative mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-wrap gap-2 mb-6"
         >
-          <div className="relative group">
-            <div className="absolute inset-0 rounded-md bg-gradient-to-r from-ink/[0.03] via-transparent to-ink/[0.02] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
-            <div className="relative flex items-center rounded-md bg-ink/[0.04] border border-transparent group-focus-within:border-transparent transition-colors">
-              <HugeiconsIcon
-                icon={Search01Icon}
-                size={18}
-                className="ml-4 text-ink/20 group-focus-within:text-ink/50 transition-colors shrink-0"
-              />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && query.trim()) {
-                    e.preventDefault();
-                    // Immediate text search on Enter
-                    setDebouncedQuery(query.trim());
-                    navigate({
-                      to: '/search',
-                      search: { ...searchParams, q: query.trim() } as any,
-                    });
-                  }
-                }}
-                placeholder={i18n._(msg`search.inputPlaceholder`)}
-                className="flex-1 bg-transparent px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/20"
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setQuery('');
-                    setDebouncedQuery('');
-                  }}
-                  className="mr-3 p-1.5 rounded-md hover:bg-ink/[0.06] text-ink/30 hover:text-ink/60 transition-colors"
-                >
-                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
-                </button>
+          {GENRES.map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => toggleGenre(g)}
+              aria-pressed={selectedGenres.includes(g)}
+              className={cn(
+                'text-[12px] font-semibold px-3 py-1.5 rounded-md transition-colors',
+                selectedGenres.includes(g)
+                  ? 'bg-mm-accent/15 text-mm-accent ring-1 ring-inset ring-mm-accent/30'
+                  : 'bg-ink/[0.05] text-ink/50 hover:bg-ink/[0.08] hover:text-ink/70'
               )}
-            </div>
-          </div>
+            >
+              {translateGenre(g, i18n.locale)}
+            </button>
+          ))}
+          {selectedTags.map((t) => (
+            <span
+              key={`tag-${t}`}
+              className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1.5 rounded-md bg-ink/[0.05] text-mm-accent"
+            >
+              {t}
+              <button
+                type="button"
+                onClick={() => removeTag(t)}
+                className="ml-0.5 text-ink/30 hover:text-ink/60"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={10} />
+              </button>
+            </span>
+          ))}
         </motion.div>
 
         {/* Active filter summary */}

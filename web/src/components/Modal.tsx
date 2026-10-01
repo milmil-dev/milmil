@@ -1,6 +1,8 @@
+import { msg } from '@lingui/core/macro';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { i18n } from '../i18n/config';
 import { cn } from '../lib/utils';
 
 interface ModalProps {
@@ -117,12 +119,14 @@ export function Modal({
             {/* Scrollable area */}
             <div className="relative z-[1] overflow-y-auto max-h-[85vh]" onScroll={onScroll}>
               {/* Header */}
+              {/* Sticky so the title and close button survive scrolling a long form */}
               {title && (
-                <div className="flex items-center justify-between px-6 pt-6 pb-2">
+                <div className="sticky top-0 z-10 flex items-center justify-between px-6 pt-6 pb-2 bg-[var(--mm-bg-elevated)]">
                   <h2 className="text-base font-semibold text-ink">{title}</h2>
                   <button
                     type="button"
                     onClick={onClose}
+                    aria-label={i18n._(msg`common.close`)}
                     className="w-7 h-7 rounded-full flex items-center justify-center bg-ink/[0.05] hover:bg-ink/[0.1] transition-colors text-ink/40 hover:text-ink/60 cursor-pointer"
                   >
                     <svg

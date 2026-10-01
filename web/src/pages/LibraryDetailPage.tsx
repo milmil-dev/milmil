@@ -33,6 +33,7 @@ import { MatchModal } from '../components/MatchModal';
 import { Modal } from '../components/Modal';
 import { MotionTable } from '../components/MotionTable';
 import { PageAtmosphere } from '../components/PageAtmosphere';
+import { PageHeader } from '../components/PageHeader';
 import { PageTransition } from '../components/PageTransition';
 import { ScanIntervalSelect } from '../components/ScanIntervalSelect';
 import { Skeleton } from '../components/Skeleton';
@@ -859,7 +860,7 @@ function FileTable({
             className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-ink/[0.08] backdrop-blur-xl border border-ink/[0.06] shadow-2xl"
           >
             <span className="text-sm text-ink/70 tabular-nums">
-              {selectedCount} {i18n._(msg`library.detail.selected`)}
+              {i18n._({ ...msg`library.detail.selected`, values: { 0: selectedCount } })}
             </span>
             <div className="w-px h-5 bg-ink/10" />
             <Button size="sm" variant="secondary" onClick={() => setBulkMatchOpen(true)}>
@@ -963,7 +964,10 @@ function BulkMatchModal({ fileIds, libraryId, onClose }: BulkMatchModalProps) {
         transition={{ duration: 0.25, delay: 0.1 }}
       >
         <p className="text-xs text-ink/50">
-          {fileIds.length} {i18n._(msg`library.detail.bulkMatchModal.filesSelected`)}
+          {i18n._({
+            ...msg`library.detail.bulkMatchModal.filesSelected`,
+            values: { 0: fileIds.length },
+          })}
         </p>
       </motion.div>
 
@@ -2050,7 +2054,9 @@ export function LibraryDetailPage() {
   const lastScannedDate = library.last_scanned_at ? new Date(library.last_scanned_at) : null;
   const lastScannedText =
     lastScannedDate && !Number.isNaN(lastScannedDate.getTime())
-      ? formatDistanceToNow(lastScannedDate, { addSuffix: true, locale: dateFnsLocale })
+      ? i18n._(
+          msg`library.detail.lastScanned ${formatDistanceToNow(lastScannedDate, { addSuffix: true, locale: dateFnsLocale })}`
+        )
       : i18n._(msg`library.neverScanned`);
 
   const sourceLabel =
@@ -2060,50 +2066,55 @@ export function LibraryDetailPage() {
 
   return (
     <PageTransition>
-      <div className="relative min-h-screen px-4 md:px-8 pt-6 pb-16">
+      <div className="relative min-h-screen px-4 md:px-8 pt-8 md:pt-10 pb-16">
         <PageAtmosphere preset="detail" />
-        {/* Back link */}
-        <motion.div initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}>
-          <Link
-            to="/libraries"
-            className="inline-flex items-center gap-1.5 text-[12px] text-ink/30 hover:text-ink/50 transition-colors mb-8"
-          >
-            <span>&larr;</span> {i18n._(msg`library.detail.backToLibraries`)}
-          </Link>
-        </motion.div>
-
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6"
-        >
-          <div className="flex items-start gap-4 min-w-0">
-            {/* Library icon badge */}
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-ink/[0.05] flex items-center justify-center">
+        <PageHeader
+          back={
+            <Link
+              to="/libraries"
+              className="inline-flex items-center gap-1.5 text-[12px] text-ink/40 hover:text-ink/70 transition-colors"
+            >
+              <span>&larr;</span> {i18n._(msg`library.detail.backToLibraries`)}
+            </Link>
+          }
+          title={library.name}
+          subtitle={
+            <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <SourceIcon
                 sourceType={library.source_type ?? 'local'}
-                className="w-6 h-6 text-ink/30"
+                className="w-3.5 h-3.5 shrink-0 text-ink/40"
               />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-3xl font-bold text-ink tracking-tight">{library.name}</h1>
-              <p className="font-mono text-xs text-ink/30 mt-1 truncate">{library.path}</p>
-              <div className="flex items-center gap-2 mt-2">
-                {sourceLabel && (
-                  <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink/40">
-                    {sourceLabel}
-                  </span>
-                )}
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink/30">
-                  {lastScannedText}
+              <span className="font-mono text-xs truncate max-w-[50vw]">{library.path}</span>
+              {sourceLabel && (
+                <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-ink/[0.06]">
+                  {sourceLabel}
                 </span>
-              </div>
-            </div>
-          </div>
-
-          <TooltipProvider delayDuration={300}>
-            <div className="flex gap-2 shrink-0">
+              )}
+              <span className="text-xs">{lastScannedText}</span>
+            </span>
+          }
+          actions={
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="accent"
+                    size="sm"
+                    onClick={() => scanMutation.mutate()}
+                    disabled={isScanning || scanMutation.isPending}
+                    className="gap-2"
+                  >
+                    <HugeiconsIcon icon={ScanIcon} size={15} />
+                    {isScanning
+                      ? i18n._(msg`library.scanning`)
+                      : i18n._(msg`library.detail.scanNow`)}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {i18n._(msg`library.detail.scanNowTooltip`)}
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -2128,27 +2139,7 @@ export function LibraryDetailPage() {
                 <TooltipTrigger asChild>
                   <Button
                     type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => scanMutation.mutate()}
-                    disabled={isScanning || scanMutation.isPending}
-                    className="gap-2"
-                  >
-                    <HugeiconsIcon icon={ScanIcon} size={15} />
-                    {isScanning
-                      ? i18n._(msg`library.scanning`)
-                      : i18n._(msg`library.detail.scanNow`)}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  {i18n._(msg`library.detail.scanNowTooltip`)}
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="secondary"
+                    variant="ghost"
                     size="sm"
                     onClick={() => setShowSettings(true)}
                     className="gap-2"
@@ -2163,7 +2154,7 @@ export function LibraryDetailPage() {
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button asChild type="button" variant="secondary" size="sm" className="gap-2">
+                  <Button asChild type="button" variant="ghost" size="sm" className="gap-2">
                     <Link to="/libraries/$id/duplicates" params={{ id }}>
                       <HugeiconsIcon icon={Copy01Icon} size={15} />
                       {i18n._(msg`library.detail.duplicates`)}
@@ -2174,9 +2165,9 @@ export function LibraryDetailPage() {
                   {i18n._(msg`library.detail.duplicatesTooltip`)}
                 </TooltipContent>
               </Tooltip>
-            </div>
-          </TooltipProvider>
-        </motion.div>
+            </TooltipProvider>
+          }
+        />
 
         {/* Scan progress banner */}
         <AnimatePresence>

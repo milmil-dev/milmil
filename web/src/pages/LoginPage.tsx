@@ -196,9 +196,8 @@ export function LoginPage() {
           transition={{ delay: 0.15, duration: 0.4 }}
           className="mb-8 text-center"
         >
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-mm-accent/10 ring-1 ring-mm-accent/20 backdrop-blur-sm">
-            <span className="text-lg font-semibold text-mm-accent">M</span>
-          </div>
+          {/* Same mark as the sidebar, generated from docs/brand/src/mark.svg */}
+          <img src="/icons/icon-512.png" alt="" className="mx-auto mb-4 h-12 w-12" />
           <h1 className="text-xl font-semibold text-white tracking-tight">milmil</h1>
           <p className="mt-1 text-[13px] font-medium text-white/60 drop-shadow-sm">
             {i18n._(msg`auth.login.subtitle`)}
@@ -401,6 +400,7 @@ export function LoginPage() {
                   {(isSubmitting) => (
                     <Button
                       type="submit"
+                      variant="accent"
                       disabled={loading || isSubmitting}
                       size="lg"
                       className="w-full"
@@ -438,7 +438,7 @@ export function LoginPage() {
                 </form.Subscribe>
 
                 {isInitialized && mode === 'login' && (
-                  <details className="group rounded-lg border border-ink/[0.06] bg-ink/[0.02] px-3 py-2">
+                  <details className="group rounded-lg border border-transparent px-3 py-2 open:border-ink/[0.06] open:bg-ink/[0.02]">
                     <summary className="flex cursor-pointer list-none items-center justify-center gap-2 text-center text-[12px] font-medium text-ink/40 transition-colors hover:text-ink/65 marker:hidden">
                       <span className="flex size-5 items-center justify-center rounded-full bg-ink/[0.04] text-ink/35 transition-colors group-open:text-mm-accent group-hover:text-ink/55">
                         <HugeiconsIcon icon={ForgotPasswordIcon} size={13} strokeWidth={1.8} />
