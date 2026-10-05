@@ -30,7 +30,7 @@
     "@fontsource-variable/noto-sans-tc": "^5.3.0",
     "@hugeicons/core-free-icons": "^4.3.0",
     "@hugeicons/react": "^1.1.10",
-    "@lingui/format-po": "6.6.0",
+    "@lingui/format-po": "6.7.0",
     "@lingui/react": "^6.6.0",
     "@serwist/vite": "^9.5.12",
     "@serwist/window": "^9.5.12",
@@ -92,7 +92,7 @@
     "playwright": "^1.62.1",
     "typescript": "^7.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.2.9",
-    "vite-plus": "^0.2.9",
+    "vite-plus": "^0.3.1",
     "vitest": "4.1.11"
   },
   "overrides": {
