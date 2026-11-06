@@ -266,12 +266,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
 
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
 
       # Android Lint fails the build on errors, which is where AGP puts the
       # things that actually break at runtime (manifest, resources, API level).
