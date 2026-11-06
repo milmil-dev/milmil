@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.24](https://github.com/milmil-dev/milmil/compare/v0.1.23...v0.1.24) (2026-10-01)
+
+
+### Features
+
+* **web:** Rework the anime detail page and unify page chrome ([#160](https://github.com/milmil-dev/milmil/issues/160)) ([5dcfc2b](https://github.com/milmil-dev/milmil/commit/5dcfc2b7111c49008946cc7581784e2dc65cd1e9))
+
 ## [0.1.23](https://github.com/milmil-dev/milmil/compare/v0.1.22...v0.1.23) (2026-09-15)
 
 
